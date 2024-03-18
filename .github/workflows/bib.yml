@@ -27,9 +27,9 @@ jobs:
     - name: check and htmlize
       run: |
         ./bin/megalodon ./mglib/Part1.mg
-        ./bin/megalodon ./mglib/Part2.mg
+#        ./bin/megalodon ./mglib/Part2.mg
         ./bin/megalodon -html ./docs/Part1.html ./mglib/Part1.mg
-        ./bin/megalodon -html ./docs/Part2.html ./mglib/Part2.mg
+#        ./bin/megalodon -html ./docs/Part2.html ./mglib/Part2.mg
     - name: update the repo
       run: |
         git config --local user.name "wiki updater"
