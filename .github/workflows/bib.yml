@@ -28,6 +28,7 @@ jobs:
       run: |
         ./bin/megalodon ./mglib/Part1.mg
         ./bin/megalodon -html ./docs/Part1.html ./mglib/Part1.mg
+        ls docs | perl -pe 'BEGIN {print "<html><body>\n";} s/^(.*)$/<a href="$1">$1<\/a>/; END {print "</body></html>\n"}' > ./docs/index.html
     - name: update the repo
       run: |
         git config --local user.name "wiki updater"
