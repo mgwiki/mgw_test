@@ -1,0 +1,41 @@
+# This workflow will install Python dependencies, run tests and lint with a single version of Python
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
+
+name: update-wiki
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  schedule:
+    - cron: "0 0 * * *" #runs at 00:00 UTC everyday
+  workflow_dispatch:
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+#    - name: Set up Python 3.7
+#      uses: actions/setup-python@v2
+#      with:
+#        python-version: "3.7"
+#    - run: pip3 install pyyaml pandas openpyxl
+    - name: check and htmlize
+      run: |
+        ./bin/megalodon ./mglib/Part1.mg
+        ./bin/megalodon -html ./docs/Part1.html ./mglib/Part1.mg
+    - name: update the repo
+      run: |
+        git config --local user.name "wiki updater"
+        git config --local user.email "mgwiki@github.com"
+        git add .
+        git commit -m "Update mgwiki" || true
+    - name: push changes 
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        force: true
