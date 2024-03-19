@@ -29,6 +29,7 @@ jobs:
         ./bin/megalodon ./mglib/Part1.mg
         ./bin/megalodon -html ./docs/Part1.html ./mglib/Part1.mg
         ls docs | perl -pe 'BEGIN {print "<html><body>\n";} s/^(.*)$/<a href="$1">$1<\/a>/; END {print "</body></html>\n"}' > ./docs/index.html
+	wget -O ./docs/test.html 'https://project-smart.uibk.ac.at/pgbce/q.php?b=454024461ad564ba9b35401281d00fcac971129526e49b0fb44c2b18245604a8'
     - name: update the repo
       run: |
         git config --local user.name "wiki updater"
