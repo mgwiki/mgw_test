@@ -1,3 +1,41 @@
+(* Parameter Eps_i "174b78e53fc239e8c2aab4ab5a996a27e3e5741e88070dad186e05fb13f275e5" *)
+Parameter Eps_i : (set->prop)->set.
+
+Axiom Eps_i_ax : forall P:set->prop, forall x:set, P x -> P (Eps_i P).
+
+Definition True : prop := forall p:prop, p -> p.
+Definition False : prop := forall p:prop, p.
+
+Definition not : prop -> prop := fun A:prop => A -> False.
+
+(* Unicode ~ "00ac" *)
+Prefix ~ 700 := not.
+
+Definition and : prop -> prop -> prop := fun A B:prop => forall p:prop, (A -> B -> p) -> p.
+
+(* Unicode /\ "2227" *)
+Infix /\ 780 left := and.
+
+Definition or : prop -> prop -> prop := fun A B:prop => forall p:prop, (A -> p) -> (B -> p) -> p.
+
+(* Unicode \/ "2228" *)
+Infix \/ 785 left := or.
+
+Definition iff : prop -> prop -> prop := fun A B:prop => and (A -> B) (B -> A).
+
+(* Unicode <-> "2194" *)
+Infix <-> 805 := iff.
+
+Section Eq.
+Variable A:SType.
+Definition eq : A->A->prop := fun x y:A => forall Q:A->A->prop, Q x y -> Q y x.
+Definition neq : A->A->prop := fun x y:A => ~ eq x y.
+End Eq.
+
+Infix = 502 := eq.
+(* Unicode <> "2260" *)
+Infix <> 502 := neq.
+
 Theorem t3_xregular:
  forall k3_tarski:set -> set,
  forall esk6_2:set -> set -> set,
