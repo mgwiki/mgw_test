@@ -23,7 +23,7 @@ jobs:
 #      uses: actions/setup-python@v2
 #      with:
 #        python-version: "3.7"
-#    - run: pip3 install pyyaml pandas openpyxl
+#    - run: pip3 install pyyaml pandas openpyxl 
     - name: check and htmlize
       run: |
         ./bin/megalodonw 10 ./mglib/Part1.mg ./mglib/Part1.mg
