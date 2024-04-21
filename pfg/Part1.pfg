@@ -1,15 +1,3 @@
-WARNING: The id 4d0b1b3ca489073915e8701e021a09da22887f41f83e407df8eafe040825db18 for the proposition for axiom Eps_i_ax [pfg 756d6e520a540dee983a2bc983f030fca1e15bc5c01cd10daa59ba9846775a89] is not indexed as previously known.
-WARNING: The id d8c32d0ac70c5760222c9adf1a3ca90f3cb6b5182b0f70a5d82cb9000abc77ef for the proposition for axiom prop_ext [pfg 1d1e565be0b2225dbdd84a1b9f843374545e89ad6f25ebf6856e801170f8d60b] is not indexed as previously known.
-WARNING: The id 5189b0389a1efe35ba744aa1436bb23541e75e8a85658313375e1e0b3321128f for the proposition for axiom set_ext [pfg 21238ac2a61503233d86f0ab5bbd1cfebd49fecaa7aa3a131715c5e08003430e] is not indexed as previously known.
-WARNING: The id 73fa935250c44cafb3971bffe3b0cdef8869cd5693da6149f81741261543e04d for the proposition for axiom In_ind [pfg 20faa51007fd5aff9dc54e343b9c7b57fab2eb829c71a0daa2e90c858707d2b7] is not indexed as previously known.
-WARNING: The id 920f955f033a1286fcaba96c8eb55d2079812a3041ff6b812df4cc2636156b59 for the proposition for axiom EmptyAx [pfg c7b0d7f466fd9528f6264e7a3a9eaeff8c18159e8679b3d6b840d2689bda8486] is not indexed as previously known.
-WARNING: The id 0b67fbe4188c03468f8cd69c462ea8e5fb2269bf1fd67125a6456853d4ab7c74 for the proposition for axiom UnionEq [pfg 40660fae1988a12c0dd433fed65b5971371ce274cfa7acb0152f6c8b11856323] is not indexed as previously known.
-WARNING: The id b492ab96942311595fd53c93243cb7ab5314986bb8460d580d9382dfab90f7d1 for the proposition for axiom PowerEq [pfg d67d718c245e91b738c984751e77f84e6db2b59131a6dd3dbf033e5c5b151dc0] is not indexed as previously known.
-WARNING: The id c10976371705fb97042c207e4021721b0543188b170452fb918fb78d30b85c02 for the proposition for axiom ReplEq [pfg 471122ee9aecdb9185d0ed855c4fd074596525d6ade7150ea945d05f732c1d91] is not indexed as previously known.
-WARNING: The id 64ad93d240a001e91d619642c36f7ea8387780b9860b748f282d12bc22d4a677 for the proposition for axiom UnivOf_In [pfg e805d44e6e3b129108fe3a5d7b86456ab1ded7fbabdb1e013db339c19e74fc3c] is not indexed as previously known.
-WARNING: The id 40723e6db0df4f3bce8b35ba709f46fd1f4a94f61bdd2e206b8d4e21ea660332 for the proposition for axiom UnivOf_TransSet [pfg cf4f5cdd03fb3fcd9b880d27f1bb10dfa697dda82fb891d4f01e8901f99e0ddd] is not indexed as previously known.
-WARNING: The id 4181a4a1a92ac574d2c6208a18ed79b8773a8c1de9330f96e76e3edabcf083ea for the proposition for axiom UnivOf_ZF_closed [pfg 0e736334ea6ea7d6454eede353e88ba0fa7a5e4c3a17f6c90921a2414dab6d08] is not indexed as previously known.
-WARNING: The id 9a6fd4292d63e7be0caf7c85f8d8c56e3be3c23ff46c2001263cd459da21e6ed for the proposition for axiom UnivOf_Min [pfg 1f793348811ae94e9d72c764a3e780c39a9a2f45f55507133ecc732e15133ce6] is not indexed as previously known.
 Document 29c988c5e6c620410ef4e61bcfcbe4213c77013974af40759d8b732c07d61967
 Base set
 Known Eps_i_ax : All x1 TpArr set Prop All x2 set Imp Ap x1 x2 Ap x1 Ap Prim 0 x1

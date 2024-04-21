@@ -1,4 +1,3 @@
-WARNING: The id 4d0b1b3ca489073915e8701e021a09da22887f41f83e407df8eafe040825db18 for the proposition for axiom Eps_i_ax [pfg 756d6e520a540dee983a2bc983f030fca1e15bc5c01cd10daa59ba9846775a89] is not indexed as previously known.
 Document 29c988c5e6c620410ef4e61bcfcbe4213c77013974af40759d8b732c07d61967
 Base set
 Known Eps_i_ax : All x1 TpArr set Prop All x2 set Imp Ap x1 x2 Ap x1 Ap Prim 0 x1
