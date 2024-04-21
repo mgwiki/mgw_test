@@ -29,11 +29,11 @@ jobs:
         ./bin/megalodonw.pl 10 ./mglib/Part1.mg ./mglib/Part1.mg
         ./bin/megalodonw.pl 10 ./mglib/t3_xregular.mg ./mglib/t3_xregular.mg
         ./bin/megalodonw.pl 10 ./mglib/oeis-A110451.mg ./mglib/oeis-A110451.mg
-        for i in `ls mglib/conj/oeis/* | head -n 100`; do ./bin/megalodonw.pl 10 $i $i; done
+        for i in `ls mglib/conj/oeis/* | head -n 1000`; do ./bin/megalodonw.pl 10 $i $i; done
         ./bin/megalodonw.pl 20 ./mglib/Part1.mg -pfg -html ./docs/Part1.html ./mglib/Part1.mg > ./pfg/Part1.pfg
         ./bin/megalodonw.pl 20 ./mglib/t3_xregular.mg -pfg -html ./docs/t3_xregular.html ./mglib/t3_xregular.mg > ./pfg/t3_xregular.pfg
         ./bin/megalodonw.pl 20 ./mglib/oeis-A110451.mg -pfg -html ./docs/oeis-A110451.html ./mglib/oeis-A110451.mg > ./pfg/oeis-A110451.pfg
-        for i in `ls mglib/conj/oeis/* | head -n 100`; do j=`echo -n $i | perl -pe 's/mglib/docs/'`; k=`echo -n $i | perl -pe 's/mglib/pfg/'`; ./bin/megalodonw.pl 20 $i -pfg -html $j.html $i > $k.pfg; done
+        for i in `ls mglib/conj/oeis/* | head -n 1000`; do j=`echo -n $i | perl -pe 's/mglib/docs/'`; k=`echo -n $i | perl -pe 's/mglib/pfg/'`; ./bin/megalodonw.pl 20 $i -pfg -html $j.html $i > $k.pfg; done
         find docs/ -type f | perl -pe 'BEGIN {print "<html><body>\n";} s/^docs.(.*)$/<a href="$1">$1<\/a>/; END {print "</body></html>\n"}' > ./docs/index.html
     - name: update the repo
       run: |
