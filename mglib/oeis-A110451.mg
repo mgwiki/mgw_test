@@ -1,8 +1,4 @@
-Prefix - 358 := minus_SNo.
-Infix + 360 right := add_SNo.
-Infix * 355 right := mul_SNo.
-Infix < 490 := SNoLt.
-Infix <= 490 := SNoLe.
+(** $I sig/OEISPreamble.mgs **)
 
 (** Bounty 1 PFG TMVgeGVd3d81ea9CfUTNfXByi6ZP1JCS3Uy **)
 Section A110451.
