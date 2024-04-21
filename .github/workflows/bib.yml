@@ -26,12 +26,12 @@ jobs:
 #    - run: pip3 install pyyaml pandas openpyxl
     - name: check and htmlize
       run: |
-        ./bin/megalodon ./mglib/Part1.mg
-        ./bin/megalodon ./mglib/t3_xregular.mg
-        ./bin/megalodon ./mglib/oeis-A110451.mg
-        ./bin/megalodon -pfg -html ./docs/Part1.html ./mglib/Part1.mg > ./pfg/Part1.pfg
-        ./bin/megalodon -pfg -html ./docs/t3_xregular.html ./mglib/t3_xregular.mg > ./pfg/t3_xregular.pfg
-        ./bin/megalodon -pfg -html ./docs/oeis-A110451.html ./mglib/oeis-A110451.mg > ./pfg/oeis-A110451.pfg
+        ./bin/megalodonw 10 ./mglib/Part1.mg ./mglib/Part1.mg
+        ./bin/megalodonw 10 ./mglib/t3_xregular.mg ./mglib/t3_xregular.mg
+#        ./bin/megalodon ./mglib/oeis-A110451.mg
+        ./bin/megalodonw 20 ./mglib/Part1.mg -pfg -html ./docs/Part1.html ./mglib/Part1.mg > ./pfg/Part1.pfg
+        ./bin/megalodonw 20 ./mglib/t3_xregular.mg -pfg -html ./docs/t3_xregular.html ./mglib/t3_xregular.mg > ./pfg/t3_xregular.pfg
+#        ./bin/megalodon -pfg -html ./docs/oeis-A110451.html ./mglib/oeis-A110451.mg > ./pfg/oeis-A110451.pfg
         wget -O ./docs/test.html 'https://project-smart.uibk.ac.at/pgbce/q.php?b=454024461ad564ba9b35401281d00fcac971129526e49b0fb44c2b18245604a8'
         ls docs | perl -pe 'BEGIN {print "<html><body>\n";} s/^(.*)$/<a href="$1">$1<\/a>/; END {print "</body></html>\n"}' > ./docs/index.html
     - name: update the repo
