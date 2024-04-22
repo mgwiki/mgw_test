@@ -1,3 +1,4 @@
+(** $T hf **)
 (** $I sig/PfgPreambleSep2020.mgs **)
 
 Section AIM2.
