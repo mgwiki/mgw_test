@@ -1,7 +1,7 @@
 $(document).ready(function () {
   const username = "mgwiki";
   const repo = "mgw_test";
-  const apiUrl = `https://api.github.com/repos/${username}/${repo}/contents`;
+  const apiUrl = `https://api.github.com/repos/${username}/${repo}/docs/contents`;
 
   $.ajax({
     url: apiUrl,
