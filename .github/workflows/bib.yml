@@ -35,6 +35,7 @@ jobs:
         ./bin/megalodonw.pl 20 ./mglib/oeis-A110451.mg -pfg -html ./docs/oeis-A110451.html ./mglib/oeis-A110451.mg > ./pfg/oeis-A110451.pfg
         ls mglib/conj/oeis | parallel --will-cite './bin/megalodonw.pl 20 mglib/conj/oeis/{} -pfg -html docs/conj/oeis/{}.html mglib/conj/oeis/{} > pfg/conj/oeis/{}.pfg'
         find docs/ -type f | perl -pe 'BEGIN {print "<html><body>\n";} s/^docs.(.*)$/<a href="$1">$1<\/a>/; END {print "</body></html>\n"}' > ./docs/index.html
+        for i in `find docs/ -type f`; do perl -e '$h=$ARGV[0]; while(<>) {if(m/<a name=([^\/]+)/) {$l=$1} while(m/php\?b=([0-9A-Fa-f]{64})\b/g) { print "$1:\047$h\047:$l\n"}   }' $i; done > etc/rindex.txt
     - name: update the repo
       run: |
         git config --local user.name "wiki updater"
