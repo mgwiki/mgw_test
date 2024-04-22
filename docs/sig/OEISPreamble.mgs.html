@@ -1,0 +1,75 @@
+<html><head>
+<style>
+.paramdecl {
+ margin-top: 3px;
+ margin-bottom: 3px;
+}
+.defdecl {
+ margin-top: 3px;
+ margin-bottom: 3px;
+}
+.axdecl {
+ margin-top: 3px;
+ margin-bottom: 3px;
+}
+.thmdecl {
+ margin-top: 3px;
+ margin-bottom: 3px;
+}
+.proof {
+ border-style: solid;
+ border-width: 2px;
+ padding: 1px;
+ margin: 1px;
+}
+.subproof {
+ border-style: solid;
+ border-width: 1px;
+ padding: 1px;
+ margin: 1px;
+}
+.section {
+ border-style: solid;
+ border-width: 2px;
+ padding: 1px;
+ margin: 1px;
+}
+.sectionbegin {
+ text-align: center;
+ text-decoration: underline;
+}
+.sectionend {
+ text-align: center;
+ text-decoration: underline;
+}
+</style>
+</head><body>
+<div class='section'>
+<div class='sectionbegin'>Beginning of Section <b>Eq</b></div>
+<div class='vardecl'><span class='docitemkeyword'>Variable</span> <span class='ltree'> A : <span class='ltree'>SType</span></span></div>
+<a name='eq'/><div class='defdecl'><b>Definition.</b> We define <span class='ltree'><a classname='anamelink' href='#eq'>eq</a></span> to be <span class='ltree'><span class='ltree'>&#x3bb;x y : <span class='ltree'>A</span> &#x21d2;  <span class='ltree'>&#x2200;Q : <span class='ltree'><span class='ltree'>A</span> &#x2192; <span class='ltree'><span class='ltree'>A</span> &#x2192; <span class='ltree'>prop</span></span></span>,  <span class='ltree'><span class='ltree'><span class='ltree'><span class='ltree'>Q</span> <span class='ltree'>x</span></span> <span class='ltree'>y</span></span> &#x2192; <span class='ltree'><span class='ltree'><span class='ltree'>Q</span> <span class='ltree'>y</span></span> <span class='ltree'>x</span></span></span></span></span></span> of type <span class='ltree'><span class='ltree'><span class='ltree'>A</span> &#x2192; <span class='ltree'><span class='ltree'>A</span> &#x2192; <span class='ltree'>prop</span></span></span></span>.</div>
+<div class='sectionend'>End of Section <b>Eq</b></div>
+</div>
+<div class='infixdecl'><a name='notation_1'/><b>Notation</b>. We use <span class='ltree'>=</span> as an infix operator with priority 502 and no associativity corresponding to applying term <span class='ltree'><span class='ltree'><a classname='anamelink' href='#eq'>eq</a></span></span>.</div>
+<a name='In'/><div class='paramdecl'><b>Primitive</b>. The name <span class='ltree'><a classname='anamelink' href='#In'>In</a></span> is a term of type <span class='ltree'><span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'>prop</span></span></span></span>.</div>
+<div class='infixdecl'><a name='In_notation'/><b>Notation</b>. We use <span class='ltree'>&#x2208;</span></span> as an infix operator with priority 500 and no associativity corresponding to applying term <span class='ltree'><a classname='anamelink' href='#In'>In</a></span>. Furthermore, we may write <span class='ltree'>&#x2200; <I>x</I> &#x2208; <I>A</I>, <I>B</I></span> to mean <span class='ltree'>&#x2200; <I>x</I> : set, <I>x</I> &#x2208; <I>A</I> &#x2192; <I>B</I></span>.</div>
+<a name='Empty'/><div class='paramdecl'><b>Primitive</b>. The name <span class='ltree'><a classname='anamelink' href='#Empty'>Empty</a></span> is a term of type <span class='ltree'><span class='ltree'>set</span></span>.</div>
+<a name='ordsucc'/><div class='paramdecl'><b>Primitive</b>. The name <span class='ltree'><a classname='anamelink' href='#ordsucc'>ordsucc</a></span> is a term of type <span class='ltree'><span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'>set</span></span></span>.</div>
+<div class='pfglinks'>In Proofgold the corresponding term root is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=65d8837d7b0172ae830bed36c8407fcd41b7d875033d2284eb2df245b42295a6'>65d883...</a> and object id is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=1452f7d6b185ccc8dd0cf665789667547457cc1e37f37eeb4542ea13bb0f3b7c'>1452f7...</a></div>
+<div class='notationdecl'><a name='notation_2'/><b>Notation</b>. Natural numbers 0,1,2,... are notation for the terms formed using <span class='ltree'><a classname='anamelink' href='#Empty'>Empty</a></span> as 0 and forming successors with <span class='ltree'><a classname='anamelink' href='#ordsucc'>ordsucc</a></span>.</div>
+<a name='If_5Fi'/><div class='paramdecl'><b>Primitive</b>. The name <span class='ltree'><a classname='anamelink' href='#If_5Fi'>If_i</a></span> is a term of type <span class='ltree'><span class='ltree'><span class='ltree'>prop</span> &#x2192; <span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'>set</span></span></span></span></span>.</div>
+<div class='pfglinks'>In Proofgold the corresponding term root is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=b8ff52f838d0ff97beb955ee0b26fad79602e1529f8a2854bda0ecd4193a8a3c'>b8ff52...</a> and object id is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=76c4c0ead9836400beb62a9590f920012eeb5b529d51bc098f0a4540dd3492bf'>76c4c0...</a></div>
+<div class='notationdecl'><a name='notation_3'/><b>Notation</b>. <span class='ltree'><span class='keyword'>if</span> <i>cond</i> <span class='keyword'>then</span> <i>T</i> <span class='keyword'>else</span> <i>E</i></span> is notation corresponding to <span class='ltree'>If_i <i>type</i> <i>cond</i> <i>T</i> <i>E</i></span> where <span class='ltree'><i>type</i></span> is the inferred type of <span class='ltree'><i>T</i></span>.</div>
+<a name='SNoLt'/><div class='paramdecl'><b>Primitive</b>. The name <span class='ltree'><a classname='anamelink' href='#SNoLt'>SNoLt</a></span> is a term of type <span class='ltree'><span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'>prop</span></span></span></span>.</div>
+<div class='pfglinks'>In Proofgold the corresponding term root is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=46e7ed0ee512360f08f5e5f9fc40a934ff27cfd0c79d3c2384e6fb16d461bd95'>46e7ed...</a> and object id is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=8c8aa9c7cd39e813a521dcca067bdc27aa59721372e00112d3a56e0af7f1c820'>8c8aa9...</a></div>
+<a name='SNoLe'/><div class='paramdecl'><b>Primitive</b>. The name <span class='ltree'><a classname='anamelink' href='#SNoLe'>SNoLe</a></span> is a term of type <span class='ltree'><span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'>prop</span></span></span></span>.</div>
+<div class='pfglinks'>In Proofgold the corresponding term root is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=ddf7d378c4df6fcdf73e416f8d4c08965e38e50abe1463a0312048d3dd7ac7e9'>ddf7d3...</a> and object id is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=54f405ff1c52a47311b5896cb2435cbca5240391e95a4473bb33d4f389ef4b27'>54f405...</a></div>
+<a name='minus_5FSNo'/><div class='paramdecl'><b>Primitive</b>. The name <span class='ltree'><a classname='anamelink' href='#minus_5FSNo'>minus_SNo</a></span> is a term of type <span class='ltree'><span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'>set</span></span></span>.</div>
+<div class='pfglinks'>In Proofgold the corresponding term root is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=268a6c1da15b8fe97d37be85147bc7767b27098cdae193faac127195e8824808'>268a6c...</a> and object id is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=8a6d8513b8fae7a11b1033553a028661380ee0d23337db3b5de7c37c00bf7d3a'>8a6d85...</a></div>
+<a name='add_5FSNo'/><div class='paramdecl'><b>Primitive</b>. The name <span class='ltree'><a classname='anamelink' href='#add_5FSNo'>add_SNo</a></span> is a term of type <span class='ltree'><span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'>set</span></span></span></span>.</div>
+<div class='pfglinks'>In Proofgold the corresponding term root is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=127d043261bd13d57aaeb99e7d2c02cae2bd0698c0d689b03e69f1ac89b3c2c6'>127d04...</a> and object id is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=f62f9ad0a4b78ce9ea1f70abc3f81bb4efd2f55019f5ea81fec6bff7d056a9c4'>f62f9a...</a></div>
+<a name='mul_5FSNo'/><div class='paramdecl'><b>Primitive</b>. The name <span class='ltree'><a classname='anamelink' href='#mul_5FSNo'>mul_SNo</a></span> is a term of type <span class='ltree'><span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'><span class='ltree'>set</span> &#x2192; <span class='ltree'>set</span></span></span></span>.</div>
+<div class='pfglinks'>In Proofgold the corresponding term root is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=48d05483e628cb37379dd5d279684d471d85c642fe63533c3ad520b84b18df9d'>48d054...</a> and object id is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=b14730ddd09967223586b7b73ba059d8fee46ef74b4d5c13b7276c084e8f3dea'>b14730...</a></div>
+<a name='int'/><div class='paramdecl'><b>Primitive</b>. The name <span class='ltree'><a classname='anamelink' href='#int'>int</a></span> is a term of type <span class='ltree'><span class='ltree'>set</span></span>.</div>
+<div class='pfglinks'>In Proofgold the corresponding term root is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=90ee851305d1ba4b80424ec6e2760ebabb1fd3e399fcb5c6b5c814d898138c16'>90ee85...</a> and object id is <a href='https://formalweb3.uibk.ac.at/pgbce/q.php?b=33166987959c3ab2e627cf46854b342dbb6c3d34a0cb9a250ba04d839674ded6'>331669...</a></div>
+</body></html>
