@@ -1,0 +1,1 @@
+while IFS=: read a b c; do echo "<a href=\"https://mgwiki.github.io/mgw_test/$b#$c\">$c</a>" | sed "s/[']//g;s/mgw_test\/docs/mgw_test/;s/_5F/_/g" > $a; done < rindex.txt
