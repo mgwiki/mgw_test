@@ -12,7 +12,7 @@ $(document).ready(function () {
         let itemLink = $("<a></a>");
 
         if (item.type === "file") {
-          itemLink.attr("href", item.download_url);
+          itemLink.attr("href", item.html_url);
           itemLink.text(item.name);
         } else if (item.type === "dir") {
           itemLink.attr("href", item.html_url);
