@@ -1,0 +1,85 @@
+Document 29c988c5e6c620410ef4e61bcfcbe4213c77013974af40759d8b732c07d61967
+Base set
+Param fd9743c836fc84a35eca7120bf513d8be118e8eff433fbcc8ca5369662cda164 MetaCat : TpArr TpArr set Prop TpArr TpArr set TpArr set TpArr set Prop TpArr TpArr set set TpArr TpArr set TpArr set TpArr set TpArr set TpArr set set Prop
+Param d335d40e85580857cc0be3657b910d5bce202e0fab6875adec93e2fc5e5e57e4 struct_e : TpArr set Prop
+Param d6f688b87f520e20f883436520c684182d8140f8ad0fdc595e075122f758500e Hom_struct_e : TpArr set TpArr set TpArr set Prop
+Param 6271864c471837aeded4c4e7dc37b9735f9fc4828a34ac9c7979945da815a3c7 lam_id : TpArr set set
+Param c7aaa670ef9b6f678b8cf10b13b2571e4dc1e6fde061d1f641a5fa6c30c09d46 decode_u : TpArr set TpArr set set
+Def struct_id : TpArr set set
+ := Lam X set Ap lam_id Ap Ap decode_u X Prim 2
+Param 29d9e2fc6403a0149dee771fde6a2efc8a94f848a3566f3ccd60af2065396289 lam_comp : TpArr set TpArr set TpArr set set
+Def struct_comp : TpArr set TpArr set TpArr set TpArr set TpArr set set
+ := Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g
+Known Known1 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_e x2 Ap Ap Ap Ap MetaCat x1 Hom_struct_e Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g
+Thm MetaCat_struct_e : Ap Ap Ap Ap MetaCat struct_e Hom_struct_e struct_id struct_comp
+ := PrAp TmAp Known1 struct_e TmLa X set PrLa H Ap struct_e X H
+Param f35b679c6bab1e6cf0fdcf922094790594854b8da194ab1c6b10991183d51c1a MetaFunctor : TpArr TpArr set Prop TpArr TpArr set TpArr set TpArr set Prop TpArr TpArr set set TpArr TpArr set TpArr set TpArr set TpArr set TpArr set set TpArr TpArr set Prop TpArr TpArr set TpArr set TpArr set Prop TpArr TpArr set set TpArr TpArr set TpArr set TpArr set TpArr set TpArr set set TpArr TpArr set set TpArr TpArr set TpArr set TpArr set set Prop
+Param f81b3934a73154a8595135f10d1564b0719278d3976cc83da7fda60151d770da True : Prop
+Param de8fdf3d1593629dc04bc929fc51714e9acdbd4d4b7e5ac4f6e31798f074955a SetHom : TpArr set TpArr set TpArr set Prop
+Known Known2 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_e x2 Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor x1 Hom_struct_e Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+Thm MetaCat_struct_e_Forgetful : Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor struct_e Hom_struct_e struct_id struct_comp Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+ := PrAp TmAp Known2 struct_e TmLa X set PrLa H Ap struct_e X H
+Param b927035076bdb3f2b856017733102a46ad6a0c52f1f4808b6c0cc6bde29328b6 struct_p : TpArr set Prop
+Param 5d0201189805d03fc856c2fa62f35171b88a531f7deeee6199625094c02eddd7 Hom_struct_p : TpArr set TpArr set TpArr set Prop
+Known Known3 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_p x2 Ap Ap Ap Ap MetaCat x1 Hom_struct_p Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g
+Thm MetaCat_struct_p : Ap Ap Ap Ap MetaCat struct_p Hom_struct_p struct_id struct_comp
+ := PrAp TmAp Known3 struct_p TmLa X set PrLa H Ap struct_p X H
+Known Known4 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_p x2 Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor x1 Hom_struct_p Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+Thm MetaCat_struct_p_Forgetful : Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor struct_p Hom_struct_p struct_id struct_comp Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+ := PrAp TmAp Known4 struct_p TmLa X set PrLa H Ap struct_p X H
+Param df14296f07f39c656a6467de607eb3ced299a130355447584c264061b5275b93 struct_u : TpArr set Prop
+Param 9579111144263dda4d1a69686bd1cd9e0ef4ffaecf2b279cf431d0a9e36f67ab Hom_struct_u : TpArr set TpArr set TpArr set Prop
+Known Known5 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_u x2 Ap Ap Ap Ap MetaCat x1 Hom_struct_u Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g
+Thm MetaCat_struct_u : Ap Ap Ap Ap MetaCat struct_u Hom_struct_u struct_id struct_comp
+ := PrAp TmAp Known5 struct_u TmLa X set PrLa H Ap struct_u X H
+Known Known6 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_u x2 Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor x1 Hom_struct_u Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+Thm MetaCat_struct_u_Forgetful : Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor struct_u Hom_struct_u struct_id struct_comp Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+ := PrAp TmAp Known6 struct_u TmLa X set PrLa H Ap struct_u X H
+Param 2c39441e10ec56a1684beb291702e235e2a9e44db516e916d62ce426108cfd26 struct_r : TpArr set Prop
+Param acf0f04c6a55a143e3ed8404c0fa6b09b323d938c83532f081b47091e31c4eb3 Hom_struct_r : TpArr set TpArr set TpArr set Prop
+Known Known7 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_r x2 Ap Ap Ap Ap MetaCat x1 Hom_struct_r Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g
+Thm MetaCat_struct_r : Ap Ap Ap Ap MetaCat struct_r Hom_struct_r struct_id struct_comp
+ := PrAp TmAp Known7 struct_r TmLa X set PrLa H Ap struct_r X H
+Known Known8 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_r x2 Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor x1 Hom_struct_r Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+Thm MetaCat_struct_r_Forgetful : Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor struct_r Hom_struct_r struct_id struct_comp Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+ := PrAp TmAp Known8 struct_r TmLa X set PrLa H Ap struct_r X H
+Param 54dbd3a1c5d7d09ab77e3b5f4c62ce5467ada0cf451d47ee29b7359cc44017cc struct_b : TpArr set Prop
+Param e815783558526a66c8f279c485040d57663745bc5f9348b1ebc671af74c2a305 Hom_struct_b : TpArr set TpArr set TpArr set Prop
+Known Known9 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_b x2 Ap Ap Ap Ap MetaCat x1 Hom_struct_b Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g
+Thm MetaCat_struct_b : Ap Ap Ap Ap MetaCat struct_b Hom_struct_b struct_id struct_comp
+ := PrAp TmAp Known9 struct_b TmLa X set PrLa H Ap struct_b X H
+Known Known10 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_b x2 Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor x1 Hom_struct_b Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+Thm MetaCat_struct_b_Forgetful : Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor struct_b Hom_struct_b struct_id struct_comp Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+ := PrAp TmAp Known10 struct_b TmLa X set PrLa H Ap struct_b X H
+Param 9e6b18b2a018f4fb700d2e18f2d46585471c8c96cd648d742b7dbda08c349b17 struct_c : TpArr set Prop
+Param 9dfc2adb8ff80515a79ba1b90379bbd0cea718993442413b2cb120bb9bf2d4fe Hom_struct_c : TpArr set TpArr set TpArr set Prop
+Known Known11 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_c x2 Ap Ap Ap Ap MetaCat x1 Hom_struct_c Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g
+Thm MetaCat_struct_c : Ap Ap Ap Ap MetaCat struct_c Hom_struct_c struct_id struct_comp
+ := PrAp TmAp Known11 struct_c TmLa X set PrLa H Ap struct_c X H
+Known Known12 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_c x2 Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor x1 Hom_struct_c Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+Thm MetaCat_struct_c_Forgetful : Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor struct_c Hom_struct_c struct_id struct_comp Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+ := PrAp TmAp Known12 struct_c TmLa X set PrLa H Ap struct_c X H
+Param 755e4e2e4854b160b8c7e63bfc53bb4f4d968d82ce993ef8c5b5c176c4d14b33 struct_b_b_e : TpArr set Prop
+Param 070862b0ccc9135ae23bdde1c11a01e0c0b72cd75efa4d430a1d263e3fdee115 Hom_struct_b_b_e : TpArr set TpArr set TpArr set Prop
+Known Known13 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_b_b_e x2 Ap Ap Ap Ap MetaCat x1 Hom_struct_b_b_e Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g
+Thm MetaCat_struct_b_b_e : Ap Ap Ap Ap MetaCat struct_b_b_e Hom_struct_b_b_e struct_id struct_comp
+ := PrAp TmAp Known13 struct_b_b_e TmLa X set PrLa H Ap struct_b_b_e X H
+Known Known14 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_b_b_e x2 Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor x1 Hom_struct_b_b_e Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+Thm MetaCat_struct_b_b_e_Forgetful : Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor struct_b_b_e Hom_struct_b_b_e struct_id struct_comp Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+ := PrAp TmAp Known14 struct_b_b_e TmLa X set PrLa H Ap struct_b_b_e X H
+Param 7685bdf4f6436a90f8002790ede7ec64e03b146138f7d85bc11be7d287d3652b struct_b_b_e_e : TpArr set Prop
+Param a11d43d40b40be26b4beae6694eb8d4748ce3fc4c449b32515fa45b747927e92 Hom_struct_b_b_e_e : TpArr set TpArr set TpArr set Prop
+Known Known15 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_b_b_e_e x2 Ap Ap Ap Ap MetaCat x1 Hom_struct_b_b_e_e Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g
+Thm MetaCat_struct_b_b_e_e : Ap Ap Ap Ap MetaCat struct_b_b_e_e Hom_struct_b_b_e_e struct_id struct_comp
+ := PrAp TmAp Known15 struct_b_b_e_e TmLa X set PrLa H Ap struct_b_b_e_e X H
+Known Known16 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_b_b_e_e x2 Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor x1 Hom_struct_b_b_e_e Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+Thm MetaCat_struct_b_b_e_e_Forgetful : Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor struct_b_b_e_e Hom_struct_b_b_e_e struct_id struct_comp Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+ := PrAp TmAp Known16 struct_b_b_e_e TmLa X set PrLa H Ap struct_b_b_e_e X H
+Param d542f60aebdbe4e018abe75d8586699fd6db6951a7fdc2bc884bfb42c0d77a22 struct_b_b_r_e_e : TpArr set Prop
+Param d75651ef535ae407614897001d784e4b70fa69476f5658eb076b9a809fe4d3d5 Hom_struct_b_b_r_e_e : TpArr set TpArr set TpArr set Prop
+Known Known17 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_b_b_r_e_e x2 Ap Ap Ap Ap MetaCat x1 Hom_struct_b_b_r_e_e Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g
+Thm MetaCat_struct_b_b_r_e_e : Ap Ap Ap Ap MetaCat struct_b_b_r_e_e Hom_struct_b_b_r_e_e struct_id struct_comp
+ := PrAp TmAp Known17 struct_b_b_r_e_e TmLa X set PrLa H Ap struct_b_b_r_e_e X H
+Known Known18 : All x1 TpArr set Prop Imp All x2 set Imp Ap x1 x2 Ap struct_b_b_r_e_e x2 Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor x1 Hom_struct_b_b_r_e_e Lam X set Ap lam_id Ap Ap decode_u X Prim 2 Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp Ap Ap decode_u X Prim 2 f g Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+Thm MetaCat_struct_b_b_r_e_e_Forgetful : Ap Ap Ap Ap Ap Ap Ap Ap Ap Ap MetaFunctor struct_b_b_r_e_e Hom_struct_b_b_r_e_e struct_id struct_comp Lam _ set True SetHom Lam X set Ap lam_id X Lam X set Lam _ set Lam _ set Lam f set Lam g set Ap Ap Ap lam_comp X f g Lam X set Ap Ap decode_u X Prim 2 Lam _ set Lam _ set Lam f set f
+ := PrAp TmAp Known18 struct_b_b_r_e_e TmLa X set PrLa H Ap struct_b_b_r_e_e X H
