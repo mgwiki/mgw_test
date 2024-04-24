@@ -1,3 +1,7 @@
+(** $I sig/Part1.mgs **)
+(** $I sig/Part2.mgs **)
+(** $I sig/Part3.mgs **)
+
 Section SurrealMinus.
 (* Parameter minus_SNo "6d39c64862ac40c95c6f5e4ed5f02bb019279bfb0cda8c9bbe0e1b813b1e876c" "268a6c1da15b8fe97d37be85147bc7767b27098cdae193faac127195e8824808" *)
 Parameter minus_SNo : set -> set.

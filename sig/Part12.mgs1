@@ -1,3 +1,15 @@
+(** $I sig/Part1.mgs **)
+(** $I sig/Part2.mgs **)
+(** $I sig/Part3.mgs **)
+(** $I sig/Part4.mgs **)
+(** $I sig/Part5.mgs **)
+(** $I sig/Part6.mgs **)
+(** $I sig/Part7.mgs **)
+(** $I sig/Part8.mgs **)
+(** $I sig/Part9.mgs **)
+(** $I sig/Part10.mgs **)
+(** $I sig/Part11.mgs **)
+
 Section Tags.
 Variable tagn : set.
 Hypothesis tagn_nat : nat_p tagn.

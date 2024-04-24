@@ -1,3 +1,17 @@
+(** $I sig/Part1.mgs **)
+(** $I sig/Part2.mgs **)
+(** $I sig/Part3.mgs **)
+(** $I sig/Part4.mgs **)
+(** $I sig/Part5.mgs **)
+(** $I sig/Part6.mgs **)
+(** $I sig/Part7.mgs **)
+(** $I sig/Part8.mgs **)
+(** $I sig/Part9.mgs **)
+(** $I sig/Part10.mgs **)
+(** $I sig/Part11.mgs **)
+(** $I sig/Part12.mgs **)
+(** $I sig/Part13.mgs **)
+
 Section SurOctonions.
 Axiom octonion_tag_fresh : forall x , HSNo x -> forall u :e x , {4} /:e u.
 Definition HSNo_pair : set -> set -> set := pair_tag {4}.

@@ -1,3 +1,6 @@
+(** $I sig/Part1.mgs **)
+(** $I sig/Part2.mgs **)
+
 Section TaggedSets.
 Let tag : set -> set := fun alpha => SetAdjoin alpha {1}.
 Postfix ' 100 := tag.

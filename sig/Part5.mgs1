@@ -1,3 +1,8 @@
+(** $I sig/Part1.mgs **)
+(** $I sig/Part2.mgs **)
+(** $I sig/Part3.mgs **)
+(** $I sig/Part4.mgs **)
+
 Section SurrealAdd.
 Prefix - 358 := minus_SNo.
 (* Parameter add_SNo "29b9b279a7a5b776b777d842e678a4acaf3b85b17a0223605e4cc68025e9b2a7" "127d043261bd13d57aaeb99e7d2c02cae2bd0698c0d689b03e69f1ac89b3c2c6" *)

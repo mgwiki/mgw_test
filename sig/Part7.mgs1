@@ -1,3 +1,10 @@
+(** $I sig/Part1.mgs **)
+(** $I sig/Part2.mgs **)
+(** $I sig/Part3.mgs **)
+(** $I sig/Part4.mgs **)
+(** $I sig/Part5.mgs **)
+(** $I sig/Part6.mgs **)
+
 Section Int.
 Prefix - 358 := minus_SNo.
 Infix + 360 right  := add_SNo.
