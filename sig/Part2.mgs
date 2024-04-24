@@ -1,7 +1,5 @@
 (** $I sig/Part1.mgs **)
 
-(** $I sig/Part1.mgs **)
-
 (* Unicode Sigma_ "2211" *)
 Binder+ Sigma_ , := Sigma.
 (* Unicode :*: "2a2f" *)
