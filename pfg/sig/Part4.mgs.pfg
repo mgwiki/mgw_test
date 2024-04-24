@@ -1,0 +1,38 @@
+Document 29c988c5e6c620410ef4e61bcfcbe4213c77013974af40759d8b732c07d61967
+Base set
+Param 268a6c1da15b8fe97d37be85147bc7767b27098cdae193faac127195e8824808 minus_SNo : TpArr set set
+Param 11faa7a742daf8e4f9aaf08e90b175467e22d0e6ad3ed089af1be90cfc17314b SNo : TpArr set Prop
+Param ec849efeaf83b2fcdbc828ebb9af38820604ea420adf2ef07bb54a73d0fcb75b SNoCut : TpArr set TpArr set set
+Param 73b2b912e42098857a1a0d2fc878581a3c1dcc1ca3769935edb92613cf441876 SNoR : TpArr set set
+Param 8cd812b65c6c466abea8433d21a39d35b8d8427ee973f9bb93567a1402705384 SNoL : TpArr set set
+Known minus_SNo_eq : All x1 set Imp Ap SNo x1 Eq set Ap minus_SNo x1 Ap Ap SNoCut Ap Ap Prim 5 Ap SNoR x1 Lam x3 set Ap minus_SNo x3 Ap Ap Prim 5 Ap SNoL x1 Lam x2 set Ap minus_SNo x2
+Param 2ba7d093d496c0f2909a6e2ea3b2e4a943a97740d27d15003a815d25340b379a and : TpArr Prop TpArr Prop Prop
+Param 46e7ed0ee512360f08f5e5f9fc40a934ff27cfd0c79d3c2384e6fb16d461bd95 SNoLt : TpArr set TpArr set Prop
+Param c083d829a4633f1bc9aeab80859255a8d126d7c6824bf5fd520d6daabfbbe976 SNoCutP : TpArr set TpArr set Prop
+Known minus_SNo_prop1 : All x1 set Imp Ap SNo x1 Ap Ap and Ap Ap and Ap Ap and Ap SNo Ap minus_SNo x1 All x5 set Imp Ap Ap Prim 1 x5 Ap SNoL x1 Ap Ap SNoLt Ap minus_SNo x1 Ap minus_SNo x5 All x4 set Imp Ap Ap Prim 1 x4 Ap SNoR x1 Ap Ap SNoLt Ap minus_SNo x4 Ap minus_SNo x1 Ap Ap SNoCutP Ap Ap Prim 5 Ap SNoR x1 Lam x3 set Ap minus_SNo x3 Ap Ap Prim 5 Ap SNoL x1 Lam x2 set Ap minus_SNo x2
+Known SNo_minus_SNo : All x1 set Imp Ap SNo x1 Ap SNo Ap minus_SNo x1
+Known minus_SNo_Lt_contra : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap Ap SNoLt x1 x2 Ap Ap SNoLt Ap minus_SNo x2 Ap minus_SNo x1
+Param ddf7d378c4df6fcdf73e416f8d4c08965e38e50abe1463a0312048d3dd7ac7e9 SNoLe : TpArr set TpArr set Prop
+Known minus_SNo_Le_contra : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap Ap SNoLe x1 x2 Ap Ap SNoLe Ap minus_SNo x2 Ap minus_SNo x1
+Known minus_SNo_SNoCutP : All x1 set Imp Ap SNo x1 Ap Ap SNoCutP Ap Ap Prim 5 Ap SNoR x1 Lam x3 set Ap minus_SNo x3 Ap Ap Prim 5 Ap SNoL x1 Lam x2 set Ap minus_SNo x2
+Known minus_SNo_SNoCutP_gen : All x1 set All x2 set Imp Ap Ap SNoCutP x1 x2 Ap Ap SNoCutP Ap Ap Prim 5 x2 Lam x4 set Ap minus_SNo x4 Ap Ap Prim 5 x1 Lam x3 set Ap minus_SNo x3
+Param ee28d96500ca4c012f9306ed26fad3b20524e7a89f9ac3210c88be4e6a7aed23 ordinal : TpArr set Prop
+Param d5069aa583583f8fbe5d4de1ba560cc89ea048cae55ea56270ec3dea15e52ca0 SNoS_ : TpArr set set
+Param 81c0efe6636cef7bc8041820a3ebc8dc5fa3bc816854d8b7f507e30425fc1cef Subq : TpArr set TpArr set Prop
+Param 293b77d05dab711767d698fb4484aab2a884304256765be0733e6bd5348119e8 SNoLev : TpArr set set
+Known minus_SNo_Lev_lem1 : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoS_ x1 Ap Ap Subq Ap SNoLev Ap minus_SNo x2 Ap SNoLev x2
+Known minus_SNo_Lev_lem2 : All x1 set Imp Ap SNo x1 Ap Ap Subq Ap SNoLev Ap minus_SNo x1 Ap SNoLev x1
+Known minus_SNo_invol : All x1 set Imp Ap SNo x1 Eq set Ap minus_SNo Ap minus_SNo x1 x1
+Known minus_SNo_Lev : All x1 set Imp Ap SNo x1 Eq set Ap SNoLev Ap minus_SNo x1 Ap SNoLev x1
+Param 4ab7e4afd8b51df80f04ef3dd42ae08c530697f7926635e26c92eb55ae427224 SNo_ : TpArr set TpArr set Prop
+Known minus_SNo_SNo_ : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap Ap SNo_ x1 x2 Ap Ap SNo_ x1 Ap minus_SNo x2
+Known minus_SNo_SNoS_ : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoS_ x1 Ap Ap Prim 1 Ap minus_SNo x2 Ap SNoS_ x1
+Known minus_SNoCut_eq_lem : All x1 set Imp Ap SNo x1 All x2 set All x3 set Imp Ap Ap SNoCutP x2 x3 Imp Eq set x1 Ap Ap SNoCut x2 x3 Eq set Ap minus_SNo x1 Ap Ap SNoCut Ap Ap Prim 5 x3 Lam x5 set Ap minus_SNo x5 Ap Ap Prim 5 x2 Lam x4 set Ap minus_SNo x4
+Known minus_SNoCut_eq : All x1 set All x2 set Imp Ap Ap SNoCutP x1 x2 Eq set Ap minus_SNo Ap Ap SNoCut x1 x2 Ap Ap SNoCut Ap Ap Prim 5 x2 Lam x4 set Ap minus_SNo x4 Ap Ap Prim 5 x1 Lam x3 set Ap minus_SNo x3
+Known minus_SNo_Lt_contra1 : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap Ap SNoLt Ap minus_SNo x1 x2 Ap Ap SNoLt Ap minus_SNo x2 x1
+Known minus_SNo_Lt_contra2 : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap Ap SNoLt x1 Ap minus_SNo x2 Ap Ap SNoLt x2 Ap minus_SNo x1
+Param 65d8837d7b0172ae830bed36c8407fcd41b7d875033d2284eb2df245b42295a6 ordsucc : TpArr set set
+Known mordinal_SNoLev_min_2 : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap SNo x2 Imp Ap Ap Prim 1 Ap SNoLev x2 Ap ordsucc x1 Ap Ap SNoLe Ap minus_SNo x1 x2
+Param 6fc30ac8f2153537e397b9ff2d9c981f80c151a73f96cf9d56ae2ee27dfd1eb2 omega : set
+Known minus_SNo_SNoS_omega : All x1 set Imp Ap Ap Prim 1 x1 Ap SNoS_ omega Ap Ap Prim 1 Ap minus_SNo x1 Ap SNoS_ omega
+Known SNoL_minus_SNoR : All x1 set Imp Ap SNo x1 Eq set Ap SNoL Ap minus_SNo x1 Ap Ap Prim 5 Ap SNoR x1 Lam x2 set Ap minus_SNo x2

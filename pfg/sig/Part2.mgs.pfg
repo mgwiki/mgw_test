@@ -1,0 +1,107 @@
+Document 29c988c5e6c620410ef4e61bcfcbe4213c77013974af40759d8b732c07d61967
+Base set
+Param 1d3fd4a14ef05bd43f5c147d7966cf05fd2fed808eea94f56380454b9a6044b2 DescrR_i_io_1 : TpArr TpArr set TpArr TpArr set Prop Prop set
+Param 768eb2ad186988375e6055394e36e90c81323954b8a44eb08816fb7a84db2272 DescrR_i_io_2 : TpArr TpArr set TpArr TpArr set Prop Prop TpArr set Prop
+Param 2ba7d093d496c0f2909a6e2ea3b2e4a943a97740d27d15003a815d25340b379a and : TpArr Prop TpArr Prop Prop
+Known DescrR_i_io_12 : All x1 TpArr set TpArr TpArr set Prop Prop Imp Ex x2 set Ap Ap and Ex x5 TpArr set Prop Ap Ap x1 x2 x5 All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap x1 x2 x3 Imp Ap Ap x1 x2 x4 Eq TpArr set Prop x3 x4 Ap Ap x1 Ap DescrR_i_io_1 x1 Ap DescrR_i_io_2 x1
+Param 98aaaf225067eca7b3f9af03e4905bbbf48fc0ccbe2b4777422caed3e8d4dfb9 iff : TpArr Prop TpArr Prop Prop
+Def PNoEq_ : TpArr set TpArr TpArr set Prop TpArr TpArr set Prop Prop
+ := Lam alpha set Lam p TpArr set Prop Lam q TpArr set Prop All x1 set Imp Ap Ap Prim 1 x1 alpha Ap Ap iff Ap p x1 Ap q x1
+Known PNoEq_ref_ : All x1 set All x2 TpArr set Prop Ap Ap Ap PNoEq_ x1 x2 x2
+Known PNoEq_sym_ : All x1 set All x2 TpArr set Prop All x3 TpArr set Prop Imp Ap Ap Ap PNoEq_ x1 x2 x3 Ap Ap Ap PNoEq_ x1 x3 x2
+Known PNoEq_tra_ : All x1 set All x2 TpArr set Prop All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap Ap PNoEq_ x1 x2 x3 Imp Ap Ap Ap PNoEq_ x1 x3 x4 Ap Ap Ap PNoEq_ x1 x2 x4
+Param ee28d96500ca4c012f9306ed26fad3b20524e7a89f9ac3210c88be4e6a7aed23 ordinal : TpArr set Prop
+Known PNoEq_antimon_ : All x1 TpArr set Prop All x2 TpArr set Prop All x3 set Imp Ap ordinal x3 All x4 set Imp Ap Ap Prim 1 x4 x3 Imp Ap Ap Ap PNoEq_ x3 x1 x2 Ap Ap Ap PNoEq_ x4 x1 x2
+Param f30435b6080d786f27e1adaca219d7927ddce994708aacaf4856c5b701fe9fa1 not : TpArr Prop Prop
+Def PNoLt_ : TpArr set TpArr TpArr set Prop TpArr TpArr set Prop Prop
+ := Lam alpha set Lam p TpArr set Prop Lam q TpArr set Prop Ex x1 set Ap Ap and Ap Ap Prim 1 x1 alpha Ap Ap and Ap Ap and Ap Ap Ap PNoEq_ x1 p q Ap not Ap p x1 Ap q x1
+Known PNoLt_E_ : All x1 set All x2 TpArr set Prop All x3 TpArr set Prop Imp Ap Ap Ap PNoLt_ x1 x2 x3 All x4 Prop Imp All x5 set Imp Ap Ap Prim 1 x5 x1 Imp Ap Ap Ap PNoEq_ x5 x2 x3 Imp Ap not Ap x2 x5 Imp Ap x3 x5 x4 x4
+Known PNoLt_irref_ : All x1 set All x2 TpArr set Prop Ap not Ap Ap Ap PNoLt_ x1 x2 x2
+Known PNoLt_mon_ : All x1 TpArr set Prop All x2 TpArr set Prop All x3 set Imp Ap ordinal x3 All x4 set Imp Ap Ap Prim 1 x4 x3 Imp Ap Ap Ap PNoLt_ x4 x1 x2 Ap Ap Ap PNoLt_ x3 x1 x2
+Param 9577468199161470abc0815b6a25e03706a4e61d5e628c203bf1f793606b1153 or : TpArr Prop TpArr Prop Prop
+Known PNoLt_trichotomy_or_ : All x1 TpArr set Prop All x2 TpArr set Prop All x3 set Imp Ap ordinal x3 Ap Ap or Ap Ap or Ap Ap Ap PNoLt_ x3 x1 x2 Ap Ap Ap PNoEq_ x3 x1 x2 Ap Ap Ap PNoLt_ x3 x2 x1
+Known PNoLt_tra_ : All x1 set Imp Ap ordinal x1 All x2 TpArr set Prop All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap Ap PNoLt_ x1 x2 x3 Imp Ap Ap Ap PNoLt_ x1 x3 x4 Ap Ap Ap PNoLt_ x1 x2 x4
+Param 8f57a05ce4764eff8bc94b278352b6755f1a46566cd7220a5488a4a595a47189 PNoLt : TpArr set TpArr TpArr set Prop TpArr set TpArr TpArr set Prop Prop
+Param b2abd2e5215c0170efe42d2fa0fb8a62cdafe2c8fbd0d37ca14e3497e54ba729 binintersect : TpArr set TpArr set set
+Known PNoLtI1 : All x1 set All x2 set All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap Ap PNoLt_ Ap Ap binintersect x1 x2 x3 x4 Ap Ap Ap Ap PNoLt x1 x3 x2 x4
+Known PNoLtI2 : All x1 set All x2 set All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap Prim 1 x1 x2 Imp Ap Ap Ap PNoEq_ x1 x3 x4 Imp Ap x4 x1 Ap Ap Ap Ap PNoLt x1 x3 x2 x4
+Known PNoLtI3 : All x1 set All x2 set All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap Prim 1 x2 x1 Imp Ap Ap Ap PNoEq_ x2 x3 x4 Imp Ap not Ap x3 x2 Ap Ap Ap Ap PNoLt x1 x3 x2 x4
+Known PNoLtE : All x1 set All x2 set All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap Ap Ap PNoLt x1 x3 x2 x4 All x5 Prop Imp Imp Ap Ap Ap PNoLt_ Ap Ap binintersect x1 x2 x3 x4 x5 Imp Imp Ap Ap Prim 1 x1 x2 Imp Ap Ap Ap PNoEq_ x1 x3 x4 Imp Ap x4 x1 x5 Imp Imp Ap Ap Prim 1 x2 x1 Imp Ap Ap Ap PNoEq_ x2 x3 x4 Imp Ap not Ap x3 x2 x5 x5
+Known PNoLt_irref : All x1 set All x2 TpArr set Prop Ap not Ap Ap Ap Ap PNoLt x1 x2 x1 x2
+Known PNoLt_trichotomy_or : All x1 set All x2 set All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap ordinal x1 Imp Ap ordinal x2 Ap Ap or Ap Ap or Ap Ap Ap Ap PNoLt x1 x3 x2 x4 Ap Ap and Eq set x1 x2 Ap Ap Ap PNoEq_ x1 x3 x4 Ap Ap Ap Ap PNoLt x2 x4 x1 x3
+Known PNoLtEq_tra : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 All x3 TpArr set Prop All x4 TpArr set Prop All x5 TpArr set Prop Imp Ap Ap Ap Ap PNoLt x1 x3 x2 x4 Imp Ap Ap Ap PNoEq_ x2 x4 x5 Ap Ap Ap Ap PNoLt x1 x3 x2 x5
+Known PNoEqLt_tra : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 All x3 TpArr set Prop All x4 TpArr set Prop All x5 TpArr set Prop Imp Ap Ap Ap PNoEq_ x1 x3 x4 Imp Ap Ap Ap Ap PNoLt x1 x4 x2 x5 Ap Ap Ap Ap PNoLt x1 x3 x2 x5
+Known PNoLt_tra : All x1 set All x2 set All x3 set Imp Ap ordinal x1 Imp Ap ordinal x2 Imp Ap ordinal x3 All x4 TpArr set Prop All x5 TpArr set Prop All x6 TpArr set Prop Imp Ap Ap Ap Ap PNoLt x1 x4 x2 x5 Imp Ap Ap Ap Ap PNoLt x2 x5 x3 x6 Ap Ap Ap Ap PNoLt x1 x4 x3 x6
+Def PNoLe : TpArr set TpArr TpArr set Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam alpha set Lam p TpArr set Prop Lam beta set Lam q TpArr set Prop Ap Ap or Ap Ap Ap Ap PNoLt alpha p beta q Ap Ap and Eq set alpha beta Ap Ap Ap PNoEq_ alpha p q
+Known PNoLeI1 : All x1 set All x2 set All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap Ap Ap PNoLt x1 x3 x2 x4 Ap Ap Ap Ap PNoLe x1 x3 x2 x4
+Known PNoLeI2 : All x1 set All x2 TpArr set Prop All x3 TpArr set Prop Imp Ap Ap Ap PNoEq_ x1 x2 x3 Ap Ap Ap Ap PNoLe x1 x2 x1 x3
+Known PNoLe_ref : All x1 set All x2 TpArr set Prop Ap Ap Ap Ap PNoLe x1 x2 x1 x2
+Known PNoLe_antisym : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap Ap Ap PNoLe x1 x3 x2 x4 Imp Ap Ap Ap Ap PNoLe x2 x4 x1 x3 Ap Ap and Eq set x1 x2 Ap Ap Ap PNoEq_ x1 x3 x4
+Known PNoLtLe_tra : All x1 set All x2 set All x3 set Imp Ap ordinal x1 Imp Ap ordinal x2 Imp Ap ordinal x3 All x4 TpArr set Prop All x5 TpArr set Prop All x6 TpArr set Prop Imp Ap Ap Ap Ap PNoLt x1 x4 x2 x5 Imp Ap Ap Ap Ap PNoLe x2 x5 x3 x6 Ap Ap Ap Ap PNoLt x1 x4 x3 x6
+Known PNoLeLt_tra : All x1 set All x2 set All x3 set Imp Ap ordinal x1 Imp Ap ordinal x2 Imp Ap ordinal x3 All x4 TpArr set Prop All x5 TpArr set Prop All x6 TpArr set Prop Imp Ap Ap Ap Ap PNoLe x1 x4 x2 x5 Imp Ap Ap Ap Ap PNoLt x2 x5 x3 x6 Ap Ap Ap Ap PNoLt x1 x4 x3 x6
+Known PNoEqLe_tra : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 All x3 TpArr set Prop All x4 TpArr set Prop All x5 TpArr set Prop Imp Ap Ap Ap PNoEq_ x1 x3 x4 Imp Ap Ap Ap Ap PNoLe x1 x4 x2 x5 Ap Ap Ap Ap PNoLe x1 x3 x2 x5
+Known PNoLe_tra : All x1 set All x2 set All x3 set Imp Ap ordinal x1 Imp Ap ordinal x2 Imp Ap ordinal x3 All x4 TpArr set Prop All x5 TpArr set Prop All x6 TpArr set Prop Imp Ap Ap Ap Ap PNoLe x1 x4 x2 x5 Imp Ap Ap Ap Ap PNoLe x2 x5 x3 x6 Ap Ap Ap Ap PNoLe x1 x4 x3 x6
+Def PNo_downc : TpArr TpArr set TpArr TpArr set Prop Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam L TpArr set TpArr TpArr set Prop Prop Lam alpha set Lam p TpArr set Prop Ex x1 set Ap Ap and Ap ordinal x1 Ex x2 TpArr set Prop Ap Ap and Ap Ap L x1 x2 Ap Ap Ap Ap PNoLe alpha p x1 x2
+Def PNo_upc : TpArr TpArr set TpArr TpArr set Prop Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam R TpArr set TpArr TpArr set Prop Prop Lam alpha set Lam p TpArr set Prop Ex x1 set Ap Ap and Ap ordinal x1 Ex x2 TpArr set Prop Ap Ap and Ap Ap R x1 x2 Ap Ap Ap Ap PNoLe x1 x2 alpha p
+Known PNoLe_downc : All x1 TpArr set TpArr TpArr set Prop Prop All x2 set All x3 set All x4 TpArr set Prop All x5 TpArr set Prop Imp Ap ordinal x2 Imp Ap ordinal x3 Imp Ap Ap Ap PNo_downc x1 x2 x4 Imp Ap Ap Ap Ap PNoLe x3 x5 x2 x4 Ap Ap Ap PNo_downc x1 x3 x5
+Known PNo_downc_ref : All x1 TpArr set TpArr TpArr set Prop Prop All x2 set Imp Ap ordinal x2 All x3 TpArr set Prop Imp Ap Ap x1 x2 x3 Ap Ap Ap PNo_downc x1 x2 x3
+Known PNo_upc_ref : All x1 TpArr set TpArr TpArr set Prop Prop All x2 set Imp Ap ordinal x2 All x3 TpArr set Prop Imp Ap Ap x1 x2 x3 Ap Ap Ap PNo_upc x1 x2 x3
+Known PNoLe_upc : All x1 TpArr set TpArr TpArr set Prop Prop All x2 set All x3 set All x4 TpArr set Prop All x5 TpArr set Prop Imp Ap ordinal x2 Imp Ap ordinal x3 Imp Ap Ap Ap PNo_upc x1 x2 x4 Imp Ap Ap Ap Ap PNoLe x2 x4 x3 x5 Ap Ap Ap PNo_upc x1 x3 x5
+Def PNoLt_pwise : TpArr TpArr set TpArr TpArr set Prop Prop TpArr TpArr set TpArr TpArr set Prop Prop Prop
+ := Lam L TpArr set TpArr TpArr set Prop Prop Lam R TpArr set TpArr TpArr set Prop Prop All x1 set Imp Ap ordinal x1 All x2 TpArr set Prop Imp Ap Ap L x1 x2 All x3 set Imp Ap ordinal x3 All x4 TpArr set Prop Imp Ap Ap R x3 x4 Ap Ap Ap Ap PNoLt x1 x2 x3 x4
+Known PNoLt_pwise_downc_upc : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop Imp Ap Ap PNoLt_pwise x1 x2 Ap Ap PNoLt_pwise Ap PNo_downc x1 Ap PNo_upc x2
+Def PNo_rel_strict_upperbd : TpArr TpArr set TpArr TpArr set Prop Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam L TpArr set TpArr TpArr set Prop Prop Lam alpha set Lam p TpArr set Prop All x1 set Imp Ap Ap Prim 1 x1 alpha All x2 TpArr set Prop Imp Ap Ap Ap PNo_downc L x1 x2 Ap Ap Ap Ap PNoLt x1 x2 alpha p
+Def PNo_rel_strict_lowerbd : TpArr TpArr set TpArr TpArr set Prop Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam R TpArr set TpArr TpArr set Prop Prop Lam alpha set Lam p TpArr set Prop All x1 set Imp Ap Ap Prim 1 x1 alpha All x2 TpArr set Prop Imp Ap Ap Ap PNo_upc R x1 x2 Ap Ap Ap Ap PNoLt alpha p x1 x2
+Def PNo_rel_strict_imv : TpArr TpArr set TpArr TpArr set Prop Prop TpArr TpArr set TpArr TpArr set Prop Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam L TpArr set TpArr TpArr set Prop Prop Lam R TpArr set TpArr TpArr set Prop Prop Lam alpha set Lam p TpArr set Prop Ap Ap and Ap Ap Ap PNo_rel_strict_upperbd L alpha p Ap Ap Ap PNo_rel_strict_lowerbd R alpha p
+Known PNoEq_rel_strict_upperbd : All x1 TpArr set TpArr TpArr set Prop Prop All x2 set Imp Ap ordinal x2 All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap Ap PNoEq_ x2 x3 x4 Imp Ap Ap Ap PNo_rel_strict_upperbd x1 x2 x3 Ap Ap Ap PNo_rel_strict_upperbd x1 x2 x4
+Known PNo_rel_strict_upperbd_antimon : All x1 TpArr set TpArr TpArr set Prop Prop All x2 set Imp Ap ordinal x2 All x3 TpArr set Prop All x4 set Imp Ap Ap Prim 1 x4 x2 Imp Ap Ap Ap PNo_rel_strict_upperbd x1 x2 x3 Ap Ap Ap PNo_rel_strict_upperbd x1 x4 x3
+Known PNoEq_rel_strict_lowerbd : All x1 TpArr set TpArr TpArr set Prop Prop All x2 set Imp Ap ordinal x2 All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap Ap PNoEq_ x2 x3 x4 Imp Ap Ap Ap PNo_rel_strict_lowerbd x1 x2 x3 Ap Ap Ap PNo_rel_strict_lowerbd x1 x2 x4
+Known PNo_rel_strict_lowerbd_antimon : All x1 TpArr set TpArr TpArr set Prop Prop All x2 set Imp Ap ordinal x2 All x3 TpArr set Prop All x4 set Imp Ap Ap Prim 1 x4 x2 Imp Ap Ap Ap PNo_rel_strict_lowerbd x1 x2 x3 Ap Ap Ap PNo_rel_strict_lowerbd x1 x4 x3
+Known PNoEq_rel_strict_imv : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop All x3 set Imp Ap ordinal x3 All x4 TpArr set Prop All x5 TpArr set Prop Imp Ap Ap Ap PNoEq_ x3 x4 x5 Imp Ap Ap Ap Ap PNo_rel_strict_imv x1 x2 x3 x4 Ap Ap Ap Ap PNo_rel_strict_imv x1 x2 x3 x5
+Known PNo_rel_strict_imv_antimon : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop All x3 set Imp Ap ordinal x3 All x4 TpArr set Prop All x5 set Imp Ap Ap Prim 1 x5 x3 Imp Ap Ap Ap Ap PNo_rel_strict_imv x1 x2 x3 x4 Ap Ap Ap Ap PNo_rel_strict_imv x1 x2 x5 x4
+Def PNo_rel_strict_uniq_imv : TpArr TpArr set TpArr TpArr set Prop Prop TpArr TpArr set TpArr TpArr set Prop Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam L TpArr set TpArr TpArr set Prop Prop Lam R TpArr set TpArr TpArr set Prop Prop Lam alpha set Lam p TpArr set Prop Ap Ap and Ap Ap Ap Ap PNo_rel_strict_imv L R alpha p All x1 TpArr set Prop Imp Ap Ap Ap Ap PNo_rel_strict_imv L R alpha x1 Ap Ap Ap PNoEq_ alpha p x1
+Param 65d8837d7b0172ae830bed36c8407fcd41b7d875033d2284eb2df245b42295a6 ordsucc : TpArr set set
+Def PNo_rel_strict_split_imv : TpArr TpArr set TpArr TpArr set Prop Prop TpArr TpArr set TpArr TpArr set Prop Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam L TpArr set TpArr TpArr set Prop Prop Lam R TpArr set TpArr TpArr set Prop Prop Lam alpha set Lam p TpArr set Prop Ap Ap and Ap Ap Ap Ap PNo_rel_strict_imv L R Ap ordsucc alpha Lam delta set Ap Ap and Ap p delta Imp Eq set delta alpha All p Prop p Ap Ap Ap Ap PNo_rel_strict_imv L R Ap ordsucc alpha Lam delta set Ap Ap or Ap p delta Eq set delta alpha
+Known PNo_extend0_eq : All x1 set All x2 TpArr set Prop Ap Ap Ap PNoEq_ x1 x2 Lam delta set Ap Ap and Ap x2 delta Imp Eq set delta x1 All p Prop p
+Known PNo_extend1_eq : All x1 set All x2 TpArr set Prop Ap Ap Ap PNoEq_ x1 x2 Lam delta set Ap Ap or Ap x2 delta Eq set delta x1
+Known PNo_rel_imv_ex : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop Imp Ap Ap PNoLt_pwise x1 x2 All x3 set Imp Ap ordinal x3 Ap Ap or Ex x6 TpArr set Prop Ap Ap Ap Ap PNo_rel_strict_uniq_imv x1 x2 x3 x6 Ex x4 set Ap Ap and Ap Ap Prim 1 x4 x3 Ex x5 TpArr set Prop Ap Ap Ap Ap PNo_rel_strict_split_imv x1 x2 x4 x5
+Def PNo_lenbdd : TpArr set TpArr TpArr set TpArr TpArr set Prop Prop Prop
+ := Lam alpha set Lam L TpArr set TpArr TpArr set Prop Prop All x1 set All x2 TpArr set Prop Imp Ap Ap L x1 x2 Ap Ap Prim 1 x1 alpha
+Known PNo_lenbdd_strict_imv_extend0 : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop All x3 set Imp Ap ordinal x3 Imp Ap Ap PNo_lenbdd x3 x1 Imp Ap Ap PNo_lenbdd x3 x2 All x4 TpArr set Prop Imp Ap Ap Ap Ap PNo_rel_strict_imv x1 x2 x3 x4 Ap Ap Ap Ap PNo_rel_strict_imv x1 x2 Ap ordsucc x3 Lam delta set Ap Ap and Ap x4 delta Imp Eq set delta x3 All p Prop p
+Known PNo_lenbdd_strict_imv_extend1 : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop All x3 set Imp Ap ordinal x3 Imp Ap Ap PNo_lenbdd x3 x1 Imp Ap Ap PNo_lenbdd x3 x2 All x4 TpArr set Prop Imp Ap Ap Ap Ap PNo_rel_strict_imv x1 x2 x3 x4 Ap Ap Ap Ap PNo_rel_strict_imv x1 x2 Ap ordsucc x3 Lam delta set Ap Ap or Ap x4 delta Eq set delta x3
+Known PNo_lenbdd_strict_imv_split : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop All x3 set Imp Ap ordinal x3 Imp Ap Ap PNo_lenbdd x3 x1 Imp Ap Ap PNo_lenbdd x3 x2 All x4 TpArr set Prop Imp Ap Ap Ap Ap PNo_rel_strict_imv x1 x2 x3 x4 Ap Ap Ap Ap PNo_rel_strict_split_imv x1 x2 x3 x4
+Known PNo_rel_imv_bdd_ex : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop Imp Ap Ap PNoLt_pwise x1 x2 All x3 set Imp Ap ordinal x3 Imp Ap Ap PNo_lenbdd x3 x1 Imp Ap Ap PNo_lenbdd x3 x2 Ex x4 set Ap Ap and Ap Ap Prim 1 x4 Ap ordsucc x3 Ex x5 TpArr set Prop Ap Ap Ap Ap PNo_rel_strict_split_imv x1 x2 x4 x5
+Def PNo_strict_upperbd : TpArr TpArr set TpArr TpArr set Prop Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam L TpArr set TpArr TpArr set Prop Prop Lam alpha set Lam p TpArr set Prop All x1 set Imp Ap ordinal x1 All x2 TpArr set Prop Imp Ap Ap L x1 x2 Ap Ap Ap Ap PNoLt x1 x2 alpha p
+Def PNo_strict_lowerbd : TpArr TpArr set TpArr TpArr set Prop Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam R TpArr set TpArr TpArr set Prop Prop Lam alpha set Lam p TpArr set Prop All x1 set Imp Ap ordinal x1 All x2 TpArr set Prop Imp Ap Ap R x1 x2 Ap Ap Ap Ap PNoLt alpha p x1 x2
+Def PNo_strict_imv : TpArr TpArr set TpArr TpArr set Prop Prop TpArr TpArr set TpArr TpArr set Prop Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam L TpArr set TpArr TpArr set Prop Prop Lam R TpArr set TpArr TpArr set Prop Prop Lam alpha set Lam p TpArr set Prop Ap Ap and Ap Ap Ap PNo_strict_upperbd L alpha p Ap Ap Ap PNo_strict_lowerbd R alpha p
+Known PNoEq_strict_upperbd : All x1 TpArr set TpArr TpArr set Prop Prop All x2 set Imp Ap ordinal x2 All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap Ap PNoEq_ x2 x3 x4 Imp Ap Ap Ap PNo_strict_upperbd x1 x2 x3 Ap Ap Ap PNo_strict_upperbd x1 x2 x4
+Known PNoEq_strict_lowerbd : All x1 TpArr set TpArr TpArr set Prop Prop All x2 set Imp Ap ordinal x2 All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap Ap Ap PNoEq_ x2 x3 x4 Imp Ap Ap Ap PNo_strict_lowerbd x1 x2 x3 Ap Ap Ap PNo_strict_lowerbd x1 x2 x4
+Known PNoEq_strict_imv : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop All x3 set Imp Ap ordinal x3 All x4 TpArr set Prop All x5 TpArr set Prop Imp Ap Ap Ap PNoEq_ x3 x4 x5 Imp Ap Ap Ap Ap PNo_strict_imv x1 x2 x3 x4 Ap Ap Ap Ap PNo_strict_imv x1 x2 x3 x5
+Known PNo_strict_upperbd_imp_rel_strict_upperbd : All x1 TpArr set TpArr TpArr set Prop Prop All x2 set Imp Ap ordinal x2 All x3 set Imp Ap Ap Prim 1 x3 Ap ordsucc x2 All x4 TpArr set Prop Imp Ap Ap Ap PNo_strict_upperbd x1 x2 x4 Ap Ap Ap PNo_rel_strict_upperbd x1 x3 x4
+Known PNo_strict_lowerbd_imp_rel_strict_lowerbd : All x1 TpArr set TpArr TpArr set Prop Prop All x2 set Imp Ap ordinal x2 All x3 set Imp Ap Ap Prim 1 x3 Ap ordsucc x2 All x4 TpArr set Prop Imp Ap Ap Ap PNo_strict_lowerbd x1 x2 x4 Ap Ap Ap PNo_rel_strict_lowerbd x1 x3 x4
+Known PNo_strict_imv_imp_rel_strict_imv : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop All x3 set Imp Ap ordinal x3 All x4 set Imp Ap Ap Prim 1 x4 Ap ordsucc x3 All x5 TpArr set Prop Imp Ap Ap Ap Ap PNo_strict_imv x1 x2 x3 x5 Ap Ap Ap Ap PNo_rel_strict_imv x1 x2 x4 x5
+Known PNo_rel_split_imv_imp_strict_imv : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop All x3 set Imp Ap ordinal x3 All x4 TpArr set Prop Imp Ap Ap Ap Ap PNo_rel_strict_split_imv x1 x2 x3 x4 Ap Ap Ap Ap PNo_strict_imv x1 x2 x3 x4
+Known PNo_lenbdd_strict_imv_ex : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop Imp Ap Ap PNoLt_pwise x1 x2 All x3 set Imp Ap ordinal x3 Imp Ap Ap PNo_lenbdd x3 x1 Imp Ap Ap PNo_lenbdd x3 x2 Ex x4 set Ap Ap and Ap Ap Prim 1 x4 Ap ordsucc x3 Ex x5 TpArr set Prop Ap Ap Ap Ap PNo_strict_imv x1 x2 x4 x5
+Def PNo_least_rep : TpArr TpArr set TpArr TpArr set Prop Prop TpArr TpArr set TpArr TpArr set Prop Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam L TpArr set TpArr TpArr set Prop Prop Lam R TpArr set TpArr TpArr set Prop Prop Lam beta set Lam p TpArr set Prop Ap Ap and Ap Ap and Ap ordinal beta Ap Ap Ap Ap PNo_strict_imv L R beta p All x1 set Imp Ap Ap Prim 1 x1 beta All x2 TpArr set Prop Ap not Ap Ap Ap Ap PNo_strict_imv L R x1 x2
+Param 36808cca33f2b3819497d3a1f10fcc77486a0cddbcb304e44cbf2d818e181c3e nIn : TpArr set TpArr set Prop
+Def PNo_least_rep2 : TpArr TpArr set TpArr TpArr set Prop Prop TpArr TpArr set TpArr TpArr set Prop Prop TpArr set TpArr TpArr set Prop Prop
+ := Lam L TpArr set TpArr TpArr set Prop Prop Lam R TpArr set TpArr TpArr set Prop Prop Lam beta set Lam p TpArr set Prop Ap Ap and Ap Ap Ap Ap PNo_least_rep L R beta p All x1 set Imp Ap Ap nIn x1 beta Ap not Ap p x1
+Known PNo_strict_imv_pred_eq : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop Imp Ap Ap PNoLt_pwise x1 x2 All x3 set Imp Ap ordinal x3 All x4 TpArr set Prop All x5 TpArr set Prop Imp Ap Ap Ap Ap PNo_least_rep x1 x2 x3 x4 Imp Ap Ap Ap Ap PNo_strict_imv x1 x2 x3 x5 All x6 set Imp Ap Ap Prim 1 x6 x3 Ap Ap iff Ap x4 x6 Ap x5 x6
+Known PNo_lenbdd_least_rep2_exuniq2 : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop Imp Ap Ap PNoLt_pwise x1 x2 All x3 set Imp Ap ordinal x3 Imp Ap Ap PNo_lenbdd x3 x1 Imp Ap Ap PNo_lenbdd x3 x2 Ex x4 set Ap Ap and Ex x7 TpArr set Prop Ap Ap Ap Ap PNo_least_rep2 x1 x2 x4 x7 All x5 TpArr set Prop All x6 TpArr set Prop Imp Ap Ap Ap Ap PNo_least_rep2 x1 x2 x4 x5 Imp Ap Ap Ap Ap PNo_least_rep2 x1 x2 x4 x6 Eq TpArr set Prop x5 x6
+Param ed76e76de9b58e621daa601cca73b4159a437ba0e73114924cb92ec8044f2aa2 PNo_bd : TpArr TpArr set TpArr TpArr set Prop Prop TpArr TpArr set TpArr TpArr set Prop Prop set
+Param b2d51dcfccb9527e9551b0d0c47d891c9031a1d4ee87bba5a9ae5215025d107a PNo_pred : TpArr TpArr set TpArr TpArr set Prop Prop TpArr TpArr set TpArr TpArr set Prop Prop TpArr set Prop
+Known PNo_bd_pred_lem : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop Imp Ap Ap PNoLt_pwise x1 x2 All x3 set Imp Ap ordinal x3 Imp Ap Ap PNo_lenbdd x3 x1 Imp Ap Ap PNo_lenbdd x3 x2 Ap Ap Ap Ap PNo_least_rep2 x1 x2 Ap Ap PNo_bd x1 x2 Ap Ap PNo_pred x1 x2
+Known PNo_bd_pred : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop Imp Ap Ap PNoLt_pwise x1 x2 All x3 set Imp Ap ordinal x3 Imp Ap Ap PNo_lenbdd x3 x1 Imp Ap Ap PNo_lenbdd x3 x2 Ap Ap Ap Ap PNo_least_rep x1 x2 Ap Ap PNo_bd x1 x2 Ap Ap PNo_pred x1 x2
+Known PNo_bd_In : All x1 TpArr set TpArr TpArr set Prop Prop All x2 TpArr set TpArr TpArr set Prop Prop Imp Ap Ap PNoLt_pwise x1 x2 All x3 set Imp Ap ordinal x3 Imp Ap Ap PNo_lenbdd x3 x1 Imp Ap Ap PNo_lenbdd x3 x2 Ap Ap Prim 1 Ap Ap PNo_bd x1 x2 Ap ordsucc x3

@@ -1,0 +1,174 @@
+Document 29c988c5e6c620410ef4e61bcfcbe4213c77013974af40759d8b732c07d61967
+Base set
+Param 4235a7ec116097b786860fa05ca09197cbbcea5e520801a717b25d8a21008ee1 CSNo : TpArr set Prop
+Param 36808cca33f2b3819497d3a1f10fcc77486a0cddbcb304e44cbf2d818e181c3e nIn : TpArr set TpArr set Prop
+Param bd01a809e97149be7e091bf7cbb44e0c2084c018911c24e159f585455d8e6bd0 Sing : TpArr set set
+Param 65d8837d7b0172ae830bed36c8407fcd41b7d875033d2284eb2df245b42295a6 ordsucc : TpArr set set
+Known quaternion_tag_fresh : All x1 set Imp Ap CSNo x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap nIn Ap Sing Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 x2
+Param abc4d9a02036ca6bb03da383ad06177224b45cf7aa024b008a587b0088f0cb63 pair_tag : TpArr set TpArr set TpArr set set
+Def CSNo_pair : TpArr set TpArr set set
+ := Ap pair_tag Ap Sing Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known CSNo_pair_0 : All x1 set Eq set Ap Ap CSNo_pair x1 Prim 2 x1
+Known CSNo_pair_prop_1 : All x1 set All x2 set All x3 set All x4 set Imp Ap CSNo x1 Imp Ap CSNo x3 Imp Eq set Ap Ap CSNo_pair x1 x2 Ap Ap CSNo_pair x3 x4 Eq set x1 x3
+Known CSNo_pair_prop_2 : All x1 set All x2 set All x3 set All x4 set Imp Ap CSNo x1 Imp Ap CSNo x2 Imp Ap CSNo x3 Imp Ap CSNo x4 Imp Eq set Ap Ap CSNo_pair x1 x2 Ap Ap CSNo_pair x3 x4 Eq set x2 x4
+Param 0c2c093b916057b76c377fc735ca4f5cf43faac41dbd2d3dd614aec17be1e1ce CD_carr : TpArr set TpArr TpArr set Prop TpArr set Prop
+Def HSNo : TpArr set Prop
+ := Ap Ap CD_carr Ap Sing Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 CSNo
+Known HSNo_I : All x1 set All x2 set Imp Ap CSNo x1 Imp Ap CSNo x2 Ap HSNo Ap Ap CSNo_pair x1 x2
+Known HSNo_E : All x1 set Imp Ap HSNo x1 All x2 TpArr set Prop Imp All x3 set All x4 set Imp Ap CSNo x3 Imp Ap CSNo x4 Imp Eq set x1 Ap Ap CSNo_pair x3 x4 Ap x2 Ap Ap CSNo_pair x3 x4 Ap x2 x1
+Known CSNo_HSNo : All x1 set Imp Ap CSNo x1 Ap HSNo x1
+Known HSNo_0 : Ap HSNo Prim 2
+Known HSNo_1 : Ap HSNo Ap ordsucc Prim 2
+Param 13321a30acbf25801c5181ac29cb0ad10ff31a15e3555773b3104349704cbc7b ExtendedSNoElt_ : TpArr set TpArr set Prop
+Known HSNo_ExtendedSNoElt_4 : All x1 set Imp Ap HSNo x1 Ap Ap ExtendedSNoElt_ Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 x1
+Def Quaternion_j : set
+ := Ap Ap CSNo_pair Prim 2 Ap ordsucc Prim 2
+Param ace1d58e185110764e46cbc1f7da7b426c20caebe3e3b0030d5dade0868711a1 Complex_i : set
+Def Quaternion_k : set
+ := Ap Ap CSNo_pair Prim 2 Complex_i
+Param e6d3c908403e809d0499044c6327107f48e159032f5d408db7c9a005219d76c5 CD_proj0 : TpArr set TpArr TpArr set Prop TpArr set set
+Def HSNo_proj0 : TpArr set set
+ := Ap Ap CD_proj0 Ap Sing Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 CSNo
+Param 934eedf1ea050179b5169b28a60315fede0e4412cfff04a00c8c4a41e918fb4a CD_proj1 : TpArr set TpArr TpArr set Prop TpArr set set
+Def HSNo_proj1 : TpArr set set
+ := Ap Ap CD_proj1 Ap Sing Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 CSNo
+Param 2ba7d093d496c0f2909a6e2ea3b2e4a943a97740d27d15003a815d25340b379a and : TpArr Prop TpArr Prop Prop
+Known HSNo_proj0_1 : All x1 set Imp Ap HSNo x1 Ap Ap and Ap CSNo Ap HSNo_proj0 x1 Ex x2 set Ap Ap and Ap CSNo x2 Eq set x1 Ap Ap CSNo_pair Ap HSNo_proj0 x1 x2
+Known HSNo_proj0_2 : All x1 set All x2 set Imp Ap CSNo x1 Imp Ap CSNo x2 Eq set Ap HSNo_proj0 Ap Ap CSNo_pair x1 x2 x1
+Known HSNo_proj1_1 : All x1 set Imp Ap HSNo x1 Ap Ap and Ap CSNo Ap HSNo_proj1 x1 Eq set x1 Ap Ap CSNo_pair Ap HSNo_proj0 x1 Ap HSNo_proj1 x1
+Known HSNo_proj1_2 : All x1 set All x2 set Imp Ap CSNo x1 Imp Ap CSNo x2 Eq set Ap HSNo_proj1 Ap Ap CSNo_pair x1 x2 x2
+Known HSNo_proj0R : All x1 set Imp Ap HSNo x1 Ap CSNo Ap HSNo_proj0 x1
+Known HSNo_proj1R : All x1 set Imp Ap HSNo x1 Ap CSNo Ap HSNo_proj1 x1
+Known HSNo_proj0p1 : All x1 set Imp Ap HSNo x1 Eq set x1 Ap Ap CSNo_pair Ap HSNo_proj0 x1 Ap HSNo_proj1 x1
+Known HSNo_proj0proj1_split : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Imp Eq set Ap HSNo_proj0 x1 Ap HSNo_proj0 x2 Imp Eq set Ap HSNo_proj1 x1 Ap HSNo_proj1 x2 Eq set x1 x2
+Param 5e1ac4ac93257583d0e9e17d6d048ff7c0d6ccc1a69875b2a505a2d4da305784 binunion : TpArr set TpArr set set
+Param f2958271da99009fb2da8a65f76c4aae93222390defcbd0a3db61dc9349b1268 CSNoLev : TpArr set set
+Def HSNoLev : TpArr set set
+ := Lam z set Ap Ap binunion Ap CSNoLev Ap HSNo_proj0 z Ap CSNoLev Ap HSNo_proj1 z
+Param ee28d96500ca4c012f9306ed26fad3b20524e7a89f9ac3210c88be4e6a7aed23 ordinal : TpArr set Prop
+Known HSNoLev_ordinal : All x1 set Imp Ap HSNo x1 Ap ordinal Ap HSNoLev x1
+Param 2d3588445fd168b15836ab7b6758efaf82a6f0a87ba550d8a138e77fd02b50e7 CD_minus : TpArr set TpArr TpArr set Prop TpArr TpArr set set TpArr set set
+Param 84edf6250efa183daa5d97710793416c455289f25e5c4ff24b9316496cb3edcc minus_CSNo : TpArr set set
+Def minus_HSNo : TpArr set set
+ := Ap Ap Ap CD_minus Ap Sing Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 CSNo minus_CSNo
+Param b39bd24227d03dc1058ece41a05ced6e07fc86a368553c9e9cad9950e6962f94 CD_conj : TpArr set TpArr TpArr set Prop TpArr TpArr set set TpArr TpArr set set TpArr set set
+Param f0317b853a5799dfcc8c1b80b61c63a878057a0cc57c6af584ed4cdd5a2eaf0f conj_CSNo : TpArr set set
+Def conj_HSNo : TpArr set set
+ := Ap Ap Ap Ap CD_conj Ap Sing Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 CSNo minus_CSNo conj_CSNo
+Param 7a5ff6ae3ec53ef0ca861a9a23a0849db2e922c9b8927dde4e2f9b8a94acda17 CD_add : TpArr set TpArr TpArr set Prop TpArr TpArr set TpArr set set TpArr set TpArr set set
+Param 1c8cce54f37fca653d20d5415ed4bc13353c15f33bfd0589f5ec9ffc056ac705 add_CSNo : TpArr set TpArr set set
+Def add_HSNo : TpArr set TpArr set set
+ := Ap Ap Ap CD_add Ap Sing Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 CSNo add_CSNo
+Param f53b0eacc4048b311cad977680319e85147a1491bc6b63f6c57aafe79efe25b9 CD_mul : TpArr set TpArr TpArr set Prop TpArr TpArr set set TpArr TpArr set set TpArr TpArr set TpArr set set TpArr TpArr set TpArr set set TpArr set TpArr set set
+Param fbcd2a31a3d887d7c161aa2314509f533c62f1962052dc5160d2ce16b45844e4 mul_CSNo : TpArr set TpArr set set
+Def mul_HSNo : TpArr set TpArr set set
+ := Ap Ap Ap Ap Ap Ap CD_mul Ap Sing Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 CSNo minus_CSNo conj_CSNo add_CSNo mul_CSNo
+Param 7fdc79d0bbcb8e25212e6590e58e780616267925d89e75438662efe2e5f1651d CD_exp_nat : TpArr set TpArr TpArr set Prop TpArr TpArr set set TpArr TpArr set set TpArr TpArr set TpArr set set TpArr TpArr set TpArr set set TpArr set TpArr set set
+Def exp_HSNo_nat : TpArr set TpArr set set
+ := Ap Ap Ap Ap Ap Ap CD_exp_nat Ap Sing Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 CSNo minus_CSNo conj_CSNo add_CSNo mul_CSNo
+Known HSNo_Complex_i : Ap HSNo Complex_i
+Known HSNo_Quaternion_j : Ap HSNo Quaternion_j
+Known HSNo_Quaternion_k : Ap HSNo Quaternion_k
+Known HSNo_minus_HSNo : All x1 set Imp Ap HSNo x1 Ap HSNo Ap minus_HSNo x1
+Known minus_HSNo_proj0 : All x1 set Imp Ap HSNo x1 Eq set Ap HSNo_proj0 Ap minus_HSNo x1 Ap minus_CSNo Ap HSNo_proj0 x1
+Known minus_HSNo_proj1 : All x1 set Imp Ap HSNo x1 Eq set Ap HSNo_proj1 Ap minus_HSNo x1 Ap minus_CSNo Ap HSNo_proj1 x1
+Known HSNo_conj_HSNo : All x1 set Imp Ap HSNo x1 Ap HSNo Ap conj_HSNo x1
+Known conj_HSNo_proj0 : All x1 set Imp Ap HSNo x1 Eq set Ap HSNo_proj0 Ap conj_HSNo x1 Ap conj_CSNo Ap HSNo_proj0 x1
+Known conj_HSNo_proj1 : All x1 set Imp Ap HSNo x1 Eq set Ap HSNo_proj1 Ap conj_HSNo x1 Ap minus_CSNo Ap HSNo_proj1 x1
+Known HSNo_add_HSNo : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Ap HSNo Ap Ap add_HSNo x1 x2
+Known add_HSNo_proj0 : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Eq set Ap HSNo_proj0 Ap Ap add_HSNo x1 x2 Ap Ap add_CSNo Ap HSNo_proj0 x1 Ap HSNo_proj0 x2
+Known add_HSNo_proj1 : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Eq set Ap HSNo_proj1 Ap Ap add_HSNo x1 x2 Ap Ap add_CSNo Ap HSNo_proj1 x1 Ap HSNo_proj1 x2
+Known HSNo_mul_HSNo : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Ap HSNo Ap Ap mul_HSNo x1 x2
+Known mul_HSNo_proj0 : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Eq set Ap HSNo_proj0 Ap Ap mul_HSNo x1 x2 Ap Ap add_CSNo Ap Ap mul_CSNo Ap HSNo_proj0 x1 Ap HSNo_proj0 x2 Ap minus_CSNo Ap Ap mul_CSNo Ap conj_CSNo Ap HSNo_proj1 x2 Ap HSNo_proj1 x1
+Known mul_HSNo_proj1 : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Eq set Ap HSNo_proj1 Ap Ap mul_HSNo x1 x2 Ap Ap add_CSNo Ap Ap mul_CSNo Ap HSNo_proj1 x2 Ap HSNo_proj0 x1 Ap Ap mul_CSNo Ap HSNo_proj1 x1 Ap conj_CSNo Ap HSNo_proj0 x2
+Known CSNo_HSNo_proj0 : All x1 set Imp Ap CSNo x1 Eq set Ap HSNo_proj0 x1 x1
+Known CSNo_HSNo_proj1 : All x1 set Imp Ap CSNo x1 Eq set Ap HSNo_proj1 x1 Prim 2
+Known HSNo_p0_0 : Eq set Ap HSNo_proj0 Prim 2 Prim 2
+Known HSNo_p1_0 : Eq set Ap HSNo_proj1 Prim 2 Prim 2
+Known HSNo_p0_1 : Eq set Ap HSNo_proj0 Ap ordsucc Prim 2 Ap ordsucc Prim 2
+Known HSNo_p1_1 : Eq set Ap HSNo_proj1 Ap ordsucc Prim 2 Prim 2
+Known HSNo_p0_i : Eq set Ap HSNo_proj0 Complex_i Complex_i
+Known HSNo_p1_i : Eq set Ap HSNo_proj1 Complex_i Prim 2
+Known HSNo_p0_j : Eq set Ap HSNo_proj0 Quaternion_j Prim 2
+Known HSNo_p1_j : Eq set Ap HSNo_proj1 Quaternion_j Ap ordsucc Prim 2
+Known HSNo_p0_k : Eq set Ap HSNo_proj0 Quaternion_k Prim 2
+Known HSNo_p1_k : Eq set Ap HSNo_proj1 Quaternion_k Complex_i
+Known minus_HSNo_minus_CSNo : All x1 set Imp Ap CSNo x1 Eq set Ap minus_HSNo x1 Ap minus_CSNo x1
+Known minus_HSNo_0 : Eq set Ap minus_HSNo Prim 2 Prim 2
+Known conj_HSNo_conj_CSNo : All x1 set Imp Ap CSNo x1 Eq set Ap conj_HSNo x1 Ap conj_CSNo x1
+Param 11faa7a742daf8e4f9aaf08e90b175467e22d0e6ad3ed089af1be90cfc17314b SNo : TpArr set Prop
+Known conj_HSNo_id_SNo : All x1 set Imp Ap SNo x1 Eq set Ap conj_HSNo x1 x1
+Known conj_HSNo_0 : Eq set Ap conj_HSNo Prim 2 Prim 2
+Known conj_HSNo_1 : Eq set Ap conj_HSNo Ap ordsucc Prim 2 Ap ordsucc Prim 2
+Known add_HSNo_add_CSNo : All x1 set All x2 set Imp Ap CSNo x1 Imp Ap CSNo x2 Eq set Ap Ap add_HSNo x1 x2 Ap Ap add_CSNo x1 x2
+Known mul_HSNo_mul_CSNo : All x1 set All x2 set Imp Ap CSNo x1 Imp Ap CSNo x2 Eq set Ap Ap mul_HSNo x1 x2 Ap Ap mul_CSNo x1 x2
+Known minus_HSNo_invol : All x1 set Imp Ap HSNo x1 Eq set Ap minus_HSNo Ap minus_HSNo x1 x1
+Known conj_HSNo_invol : All x1 set Imp Ap HSNo x1 Eq set Ap conj_HSNo Ap conj_HSNo x1 x1
+Known conj_minus_HSNo : All x1 set Imp Ap HSNo x1 Eq set Ap conj_HSNo Ap minus_HSNo x1 Ap minus_HSNo Ap conj_HSNo x1
+Known minus_add_HSNo : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Eq set Ap minus_HSNo Ap Ap add_HSNo x1 x2 Ap Ap add_HSNo Ap minus_HSNo x1 Ap minus_HSNo x2
+Known conj_add_HSNo : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Eq set Ap conj_HSNo Ap Ap add_HSNo x1 x2 Ap Ap add_HSNo Ap conj_HSNo x1 Ap conj_HSNo x2
+Known add_HSNo_com : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Eq set Ap Ap add_HSNo x1 x2 Ap Ap add_HSNo x2 x1
+Known add_HSNo_assoc : All x1 set All x2 set All x3 set Imp Ap HSNo x1 Imp Ap HSNo x2 Imp Ap HSNo x3 Eq set Ap Ap add_HSNo Ap Ap add_HSNo x1 x2 x3 Ap Ap add_HSNo x1 Ap Ap add_HSNo x2 x3
+Known add_HSNo_0L : All x1 set Imp Ap HSNo x1 Eq set Ap Ap add_HSNo Prim 2 x1 x1
+Known add_HSNo_0R : All x1 set Imp Ap HSNo x1 Eq set Ap Ap add_HSNo x1 Prim 2 x1
+Known add_HSNo_minus_HSNo_linv : All x1 set Imp Ap HSNo x1 Eq set Ap Ap add_HSNo Ap minus_HSNo x1 x1 Prim 2
+Known add_HSNo_minus_HSNo_rinv : All x1 set Imp Ap HSNo x1 Eq set Ap Ap add_HSNo x1 Ap minus_HSNo x1 Prim 2
+Known mul_HSNo_0R : All x1 set Imp Ap HSNo x1 Eq set Ap Ap mul_HSNo x1 Prim 2 Prim 2
+Known mul_HSNo_0L : All x1 set Imp Ap HSNo x1 Eq set Ap Ap mul_HSNo Prim 2 x1 Prim 2
+Known mul_HSNo_1R : All x1 set Imp Ap HSNo x1 Eq set Ap Ap mul_HSNo x1 Ap ordsucc Prim 2 x1
+Known mul_HSNo_1L : All x1 set Imp Ap HSNo x1 Eq set Ap Ap mul_HSNo Ap ordsucc Prim 2 x1 x1
+Known conj_mul_HSNo : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Eq set Ap conj_HSNo Ap Ap mul_HSNo x1 x2 Ap Ap mul_HSNo Ap conj_HSNo x2 Ap conj_HSNo x1
+Known mul_HSNo_distrL : All x1 set All x2 set All x3 set Imp Ap HSNo x1 Imp Ap HSNo x2 Imp Ap HSNo x3 Eq set Ap Ap mul_HSNo x1 Ap Ap add_HSNo x2 x3 Ap Ap add_HSNo Ap Ap mul_HSNo x1 x2 Ap Ap mul_HSNo x1 x3
+Known mul_HSNo_distrR : All x1 set All x2 set All x3 set Imp Ap HSNo x1 Imp Ap HSNo x2 Imp Ap HSNo x3 Eq set Ap Ap mul_HSNo Ap Ap add_HSNo x1 x2 x3 Ap Ap add_HSNo Ap Ap mul_HSNo x1 x3 Ap Ap mul_HSNo x2 x3
+Known minus_mul_HSNo_distrR : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Eq set Ap Ap mul_HSNo x1 Ap minus_HSNo x2 Ap minus_HSNo Ap Ap mul_HSNo x1 x2
+Known minus_mul_HSNo_distrL : All x1 set All x2 set Imp Ap HSNo x1 Imp Ap HSNo x2 Eq set Ap Ap mul_HSNo Ap minus_HSNo x1 x2 Ap minus_HSNo Ap Ap mul_HSNo x1 x2
+Known exp_HSNo_nat_0 : All x1 set Eq set Ap Ap exp_HSNo_nat x1 Prim 2 Ap ordsucc Prim 2
+Param 458be3a74fef41541068991d6ed4034dc3b5e637179369954ba21f6dff4448e4 nat_p : TpArr set Prop
+Known exp_HSNo_nat_S : All x1 set All x2 set Imp Ap nat_p x2 Eq set Ap Ap exp_HSNo_nat x1 Ap ordsucc x2 Ap Ap mul_HSNo x1 Ap Ap exp_HSNo_nat x1 x2
+Known exp_HSNo_nat_1 : All x1 set Imp Ap HSNo x1 Eq set Ap Ap exp_HSNo_nat x1 Ap ordsucc Prim 2 x1
+Known exp_HSNo_nat_2 : All x1 set Imp Ap HSNo x1 Eq set Ap Ap exp_HSNo_nat x1 Ap ordsucc Ap ordsucc Prim 2 Ap Ap mul_HSNo x1 x1
+Known HSNo_exp_HSNo_nat : All x1 set Imp Ap HSNo x1 All x2 set Imp Ap nat_p x2 Ap HSNo Ap Ap exp_HSNo_nat x1 x2
+Known add_CSNo_com_3b_1_2 : All x1 set All x2 set All x3 set Imp Ap CSNo x1 Imp Ap CSNo x2 Imp Ap CSNo x3 Eq set Ap Ap add_CSNo Ap Ap add_CSNo x1 x2 x3 Ap Ap add_CSNo Ap Ap add_CSNo x1 x3 x2
+Known add_CSNo_com_4_inner_mid : All x1 set All x2 set All x3 set All x4 set Imp Ap CSNo x1 Imp Ap CSNo x2 Imp Ap CSNo x3 Imp Ap CSNo x4 Eq set Ap Ap add_CSNo Ap Ap add_CSNo x1 x2 Ap Ap add_CSNo x3 x4 Ap Ap add_CSNo Ap Ap add_CSNo x1 x3 Ap Ap add_CSNo x2 x4
+Known add_CSNo_rotate_4_0312 : All x1 set All x2 set All x3 set All x4 set Imp Ap CSNo x1 Imp Ap CSNo x2 Imp Ap CSNo x3 Imp Ap CSNo x4 Eq set Ap Ap add_CSNo Ap Ap add_CSNo x1 x2 Ap Ap add_CSNo x3 x4 Ap Ap add_CSNo Ap Ap add_CSNo x1 x4 Ap Ap add_CSNo x2 x3
+Known Quaternion_i_sqr : Eq set Ap Ap mul_HSNo Complex_i Complex_i Ap minus_HSNo Ap ordsucc Prim 2
+Known Quaternion_j_sqr : Eq set Ap Ap mul_HSNo Quaternion_j Quaternion_j Ap minus_HSNo Ap ordsucc Prim 2
+Known Quaternion_k_sqr : Eq set Ap Ap mul_HSNo Quaternion_k Quaternion_k Ap minus_HSNo Ap ordsucc Prim 2
+Known Quaternion_i_j : Eq set Ap Ap mul_HSNo Complex_i Quaternion_j Quaternion_k
+Known Quaternion_j_k : Eq set Ap Ap mul_HSNo Quaternion_j Quaternion_k Complex_i
+Known Quaternion_k_i : Eq set Ap Ap mul_HSNo Quaternion_k Complex_i Quaternion_j
+Known Quaternion_j_i : Eq set Ap Ap mul_HSNo Quaternion_j Complex_i Ap minus_HSNo Quaternion_k
+Known Quaternion_k_j : Eq set Ap Ap mul_HSNo Quaternion_k Quaternion_j Ap minus_HSNo Complex_i
+Known Quaternion_i_k : Eq set Ap Ap mul_HSNo Complex_i Quaternion_k Ap minus_HSNo Quaternion_j
+Known add_CSNo_rotate_3_1 : All x1 set All x2 set All x3 set Imp Ap CSNo x1 Imp Ap CSNo x2 Imp Ap CSNo x3 Eq set Ap Ap add_CSNo x1 Ap Ap add_CSNo x2 x3 Ap Ap add_CSNo x3 Ap Ap add_CSNo x1 x2
+Known mul_CSNo_rotate_3_1 : All x1 set All x2 set All x3 set Imp Ap CSNo x1 Imp Ap CSNo x2 Imp Ap CSNo x3 Eq set Ap Ap mul_CSNo x1 Ap Ap mul_CSNo x2 x3 Ap Ap mul_CSNo x3 Ap Ap mul_CSNo x1 x2
+Known mul_HSNo_assoc : All x1 set All x2 set All x3 set Imp Ap HSNo x1 Imp Ap HSNo x2 Imp Ap HSNo x3 Eq set Ap Ap mul_HSNo x1 Ap Ap mul_HSNo x2 x3 Ap Ap mul_HSNo Ap Ap mul_HSNo x1 x2 x3
+Known conj_HSNo_i : Eq set Ap conj_HSNo Complex_i Ap minus_HSNo Complex_i
+Known conj_HSNo_j : Eq set Ap conj_HSNo Quaternion_j Ap minus_HSNo Quaternion_j
+Known conj_HSNo_k : Eq set Ap conj_HSNo Quaternion_k Ap minus_HSNo Quaternion_k
+Param fc0b600a21afd76820f1fb74092d9aa81687f3b0199e9b493dafd3e283c6e8ca setprod : TpArr set TpArr set set
+Param c599eedebd96cbafc70f07b3b25e3b11bb302cfb3f90733acf663afbb7ac8d9a complex : set
+Param c7aaa670ef9b6f678b8cf10b13b2571e4dc1e6fde061d1f641a5fa6c30c09d46 ap : TpArr set TpArr set set
+Def quaternion : set
+ := Ap Ap Prim 5 Ap Ap setprod complex complex Lam x1 set Ap Ap CSNo_pair Ap Ap ap x1 Prim 2 Ap Ap ap x1 Ap ordsucc Prim 2
+Known quaternion_I : All x1 set Imp Ap Ap Prim 1 x1 complex All x2 set Imp Ap Ap Prim 1 x2 complex Ap Ap Prim 1 Ap Ap CSNo_pair x1 x2 quaternion
+Known quaternion_E : All x1 set Imp Ap Ap Prim 1 x1 quaternion All x2 Prop Imp All x3 set Imp Ap Ap Prim 1 x3 complex All x4 set Imp Ap Ap Prim 1 x4 complex Imp Eq set x1 Ap Ap CSNo_pair x3 x4 x2 x2
+Known quaternion_HSNo : All x1 set Imp Ap Ap Prim 1 x1 quaternion Ap HSNo x1
+Param 81c0efe6636cef7bc8041820a3ebc8dc5fa3bc816854d8b7f507e30425fc1cef Subq : TpArr set TpArr set Prop
+Known complex_quaternion : Ap Ap Subq complex quaternion
+Known quaternion_0 : Ap Ap Prim 1 Prim 2 quaternion
+Known quaternion_1 : Ap Ap Prim 1 Ap ordsucc Prim 2 quaternion
+Known quaternion_i : Ap Ap Prim 1 Complex_i quaternion
+Known quaternion_j : Ap Ap Prim 1 Quaternion_j quaternion
+Known quaternion_k : Ap Ap Prim 1 Quaternion_k quaternion
+Known quaternion_p0_eq : All x1 set Imp Ap Ap Prim 1 x1 complex All x2 set Imp Ap Ap Prim 1 x2 complex Eq set Ap HSNo_proj0 Ap Ap CSNo_pair x1 x2 x1
+Known quaternion_p1_eq : All x1 set Imp Ap Ap Prim 1 x1 complex All x2 set Imp Ap Ap Prim 1 x2 complex Eq set Ap HSNo_proj1 Ap Ap CSNo_pair x1 x2 x2
+Known quaternion_p0_complex : All x1 set Imp Ap Ap Prim 1 x1 quaternion Ap Ap Prim 1 Ap HSNo_proj0 x1 complex
+Known quaternion_p1_complex : All x1 set Imp Ap Ap Prim 1 x1 quaternion Ap Ap Prim 1 Ap HSNo_proj1 x1 complex
+Known quaternion_proj0proj1_split : All x1 set Imp Ap Ap Prim 1 x1 quaternion All x2 set Imp Ap Ap Prim 1 x2 quaternion Imp Eq set Ap HSNo_proj0 x1 Ap HSNo_proj0 x2 Imp Eq set Ap HSNo_proj1 x1 Ap HSNo_proj1 x2 Eq set x1 x2
+Known quaternion_minus_HSNo : All x1 set Imp Ap Ap Prim 1 x1 quaternion Ap Ap Prim 1 Ap minus_HSNo x1 quaternion
+Known quaternion_conj_HSNo : All x1 set Imp Ap Ap Prim 1 x1 quaternion Ap Ap Prim 1 Ap conj_HSNo x1 quaternion
+Known quaternion_add_HSNo : All x1 set Imp Ap Ap Prim 1 x1 quaternion All x2 set Imp Ap Ap Prim 1 x2 quaternion Ap Ap Prim 1 Ap Ap add_HSNo x1 x2 quaternion
+Known quaternion_mul_HSNo : All x1 set Imp Ap Ap Prim 1 x1 quaternion All x2 set Imp Ap Ap Prim 1 x2 quaternion Ap Ap Prim 1 Ap Ap mul_HSNo x1 x2 quaternion
+Known complex_p0_eq : All x1 set Imp Ap Ap Prim 1 x1 complex Eq set Ap HSNo_proj0 x1 x1
+Known complex_p1_eq : All x1 set Imp Ap Ap Prim 1 x1 complex Eq set Ap HSNo_proj1 x1 Prim 2

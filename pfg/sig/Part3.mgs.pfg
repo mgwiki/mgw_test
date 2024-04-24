@@ -1,0 +1,210 @@
+Document 29c988c5e6c620410ef4e61bcfcbe4213c77013974af40759d8b732c07d61967
+Base set
+Param f30435b6080d786f27e1adaca219d7927ddce994708aacaf4856c5b701fe9fa1 not : TpArr Prop Prop
+Param 538bb76a522dc0736106c2b620bfc2d628d5ec8a27fe62fc505e3a0cdb60a5a2 TransSet : TpArr set Prop
+Param bd01a809e97149be7e091bf7cbb44e0c2084c018911c24e159f585455d8e6bd0 Sing : TpArr set set
+Param 65d8837d7b0172ae830bed36c8407fcd41b7d875033d2284eb2df245b42295a6 ordsucc : TpArr set set
+Known not_TransSet_Sing1 : Ap not Ap TransSet Ap Sing Ap ordsucc Prim 2
+Param ee28d96500ca4c012f9306ed26fad3b20524e7a89f9ac3210c88be4e6a7aed23 ordinal : TpArr set Prop
+Known not_ordinal_Sing1 : Ap not Ap ordinal Ap Sing Ap ordsucc Prim 2
+Param 1f3a09356e470bff37ef2408148f440357b92f92f9a27c828b37d777eb41ddc6 SetAdjoin : TpArr set TpArr set set
+Known tagged_not_ordinal : All x1 set Ap not Ap ordinal Ap Lam alpha set Ap Ap SetAdjoin alpha Ap Sing Ap ordsucc Prim 2 x1
+Param 36808cca33f2b3819497d3a1f10fcc77486a0cddbcb304e44cbf2d818e181c3e nIn : TpArr set TpArr set Prop
+Known tagged_notin_ordinal : All x1 set All x2 set Imp Ap ordinal x1 Ap Ap nIn Ap Lam alpha set Ap Ap SetAdjoin alpha Ap Sing Ap ordsucc Prim 2 x2 x1
+Param 81c0efe6636cef7bc8041820a3ebc8dc5fa3bc816854d8b7f507e30425fc1cef Subq : TpArr set TpArr set Prop
+Known tagged_eqE_Subq : All x1 set All x2 set Imp Ap ordinal x1 Imp Eq set Ap Lam alpha set Ap Ap SetAdjoin alpha Ap Sing Ap ordsucc Prim 2 x1 Ap Lam alpha set Ap Ap SetAdjoin alpha Ap Sing Ap ordsucc Prim 2 x2 Ap Ap Subq x1 x2
+Known tagged_eqE_eq : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 Imp Eq set Ap Lam alpha set Ap Ap SetAdjoin alpha Ap Sing Ap ordsucc Prim 2 x1 Ap Lam alpha set Ap Ap SetAdjoin alpha Ap Sing Ap ordsucc Prim 2 x2 Eq set x1 x2
+Known tagged_ReplE : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 Imp Ap Ap Prim 1 Ap Lam alpha set Ap Ap SetAdjoin alpha Ap Sing Ap ordsucc Prim 2 x2 Ap Ap Prim 5 x1 Lam x3 set Ap Lam alpha set Ap Ap SetAdjoin alpha Ap Sing Ap ordsucc Prim 2 x3 Ap Ap Prim 1 x2 x1
+Known ordinal_notin_tagged_Repl : All x1 set All x2 set Imp Ap ordinal x1 Ap Ap nIn x1 Ap Ap Prim 5 x2 Lam x3 set Ap Lam alpha set Ap Ap SetAdjoin alpha Ap Sing Ap ordsucc Prim 2 x3
+Param 5e1ac4ac93257583d0e9e17d6d048ff7c0d6ccc1a69875b2a505a2d4da305784 binunion : TpArr set TpArr set set
+Def SNoElts_ : TpArr set set
+ := Lam alpha set Ap Ap binunion alpha Ap Ap Prim 5 alpha Lam x1 set Ap Lam x2 set Ap Ap SetAdjoin x2 Ap Sing Ap ordsucc Prim 2 x1
+Known SNoElts_mon : All x1 set All x2 set Imp Ap Ap Subq x1 x2 Ap Ap Subq Ap SNoElts_ x1 Ap SNoElts_ x2
+Param 2ba7d093d496c0f2909a6e2ea3b2e4a943a97740d27d15003a815d25340b379a and : TpArr Prop TpArr Prop Prop
+Param 163602f90de012a7426ee39176523ca58bc964ccde619b652cb448bd678f7e21 exactly1of2 : TpArr Prop TpArr Prop Prop
+Def SNo_ : TpArr set TpArr set Prop
+ := Lam alpha set Lam x set Ap Ap and Ap Ap Subq x Ap SNoElts_ alpha All x1 set Imp Ap Ap Prim 1 x1 alpha Ap Ap exactly1of2 Ap Ap Prim 1 Ap Lam x2 set Ap Ap SetAdjoin x2 Ap Sing Ap ordsucc Prim 2 x1 x Ap Ap Prim 1 x1 x
+Param f336a4ec8d55185095e45a638507748bac5384e04e0c48d008e4f6a9653e9c44 Sep : TpArr set TpArr TpArr set Prop set
+Param ec807b205da3293041239ff9552e2912636525180ddecb3a2b285b91b53f70d8 ReplSep : TpArr set TpArr TpArr set Prop TpArr TpArr set set set
+Def PSNo : TpArr set TpArr TpArr set Prop set
+ := Lam alpha set Lam p TpArr set Prop Ap Ap binunion Ap Ap Sep alpha Lam x set Ap p x Ap Ap Ap ReplSep alpha Lam x set Ap not Ap p x Lam x1 set Ap Lam x2 set Ap Ap SetAdjoin x2 Ap Sing Ap ordsucc Prim 2 x1
+Param d7d95919a06c44c69c724884cd5a474ea8f909ef85aae19ffe4a0ce816fa65fd PNoEq_ : TpArr set TpArr TpArr set Prop TpArr TpArr set Prop Prop
+Known PNoEq_PSNo : All x1 set Imp Ap ordinal x1 All x2 TpArr set Prop Ap Ap Ap PNoEq_ x1 Lam beta set Ap Ap Prim 1 beta Ap Ap PSNo x1 x2 x2
+Known SNo_PSNo : All x1 set Imp Ap ordinal x1 All x2 TpArr set Prop Ap Ap SNo_ x1 Ap Ap PSNo x1 x2
+Known SNo_PSNo_eta_ : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap Ap SNo_ x1 x2 Eq set x2 Ap Ap PSNo x1 Lam beta set Ap Ap Prim 1 beta x2
+Param 11faa7a742daf8e4f9aaf08e90b175467e22d0e6ad3ed089af1be90cfc17314b SNo : TpArr set Prop
+Known SNo_SNo : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap Ap SNo_ x1 x2 Ap SNo x2
+Param 293b77d05dab711767d698fb4484aab2a884304256765be0733e6bd5348119e8 SNoLev : TpArr set set
+Known SNoLev_uniq_Subq : All x1 set All x2 set All x3 set Imp Ap ordinal x2 Imp Ap ordinal x3 Imp Ap Ap SNo_ x2 x1 Imp Ap Ap SNo_ x3 x1 Ap Ap Subq x2 x3
+Known SNoLev_uniq : All x1 set All x2 set All x3 set Imp Ap ordinal x2 Imp Ap ordinal x3 Imp Ap Ap SNo_ x2 x1 Imp Ap Ap SNo_ x3 x1 Eq set x2 x3
+Known SNoLev_prop : All x1 set Imp Ap SNo x1 Ap Ap and Ap ordinal Ap SNoLev x1 Ap Ap SNo_ Ap SNoLev x1 x1
+Known SNoLev_ordinal : All x1 set Imp Ap SNo x1 Ap ordinal Ap SNoLev x1
+Known SNoLev_ : All x1 set Imp Ap SNo x1 Ap Ap SNo_ Ap SNoLev x1 x1
+Known SNo_PSNo_eta : All x1 set Imp Ap SNo x1 Eq set x1 Ap Ap PSNo Ap SNoLev x1 Lam beta set Ap Ap Prim 1 beta x1
+Known SNoLev_PSNo : All x1 set Imp Ap ordinal x1 All x2 TpArr set Prop Eq set Ap SNoLev Ap Ap PSNo x1 x2 x1
+Param 98aaaf225067eca7b3f9af03e4905bbbf48fc0ccbe2b4777422caed3e8d4dfb9 iff : TpArr Prop TpArr Prop Prop
+Known SNo_Subq : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap Ap Subq Ap SNoLev x1 Ap SNoLev x2 Imp All x3 set Imp Ap Ap Prim 1 x3 Ap SNoLev x1 Ap Ap iff Ap Ap Prim 1 x3 x1 Ap Ap Prim 1 x3 x2 Ap Ap Subq x1 x2
+Def SNoEq_ : TpArr set TpArr set TpArr set Prop
+ := Lam alpha set Lam x set Lam y set Ap Ap Ap PNoEq_ alpha Lam beta set Ap Ap Prim 1 beta x Lam beta set Ap Ap Prim 1 beta y
+Known SNoEq_I : All x1 set All x2 set All x3 set Imp All x4 set Imp Ap Ap Prim 1 x4 x1 Ap Ap iff Ap Ap Prim 1 x4 x2 Ap Ap Prim 1 x4 x3 Ap Ap Ap SNoEq_ x1 x2 x3
+Known SNo_eq : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Eq set Ap SNoLev x1 Ap SNoLev x2 Imp Ap Ap Ap SNoEq_ Ap SNoLev x1 x1 x2 Eq set x1 x2
+Param 8f57a05ce4764eff8bc94b278352b6755f1a46566cd7220a5488a4a595a47189 PNoLt : TpArr set TpArr TpArr set Prop TpArr set TpArr TpArr set Prop Prop
+Def SNoLt : TpArr set TpArr set Prop
+ := Lam x set Lam y set Ap Ap Ap Ap PNoLt Ap SNoLev x Lam beta set Ap Ap Prim 1 beta x Ap SNoLev y Lam beta set Ap Ap Prim 1 beta y
+Param ac6311a95e065816a2b72527ee3a36906afc6b6afb8e67199361afdfc9fe02e2 PNoLe : TpArr set TpArr TpArr set Prop TpArr set TpArr TpArr set Prop Prop
+Def SNoLe : TpArr set TpArr set Prop
+ := Lam x set Lam y set Ap Ap Ap Ap PNoLe Ap SNoLev x Lam beta set Ap Ap Prim 1 beta x Ap SNoLev y Lam beta set Ap Ap Prim 1 beta y
+Known SNoLtLe : All x1 set All x2 set Imp Ap Ap SNoLt x1 x2 Ap Ap SNoLe x1 x2
+Param 9577468199161470abc0815b6a25e03706a4e61d5e628c203bf1f793606b1153 or : TpArr Prop TpArr Prop Prop
+Known SNoLeE : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap Ap SNoLe x1 x2 Ap Ap or Ap Ap SNoLt x1 x2 Eq set x1 x2
+Known SNoEq_sym_ : All x1 set All x2 set All x3 set Imp Ap Ap Ap SNoEq_ x1 x2 x3 Ap Ap Ap SNoEq_ x1 x3 x2
+Known SNoEq_tra_ : All x1 set All x2 set All x3 set All x4 set Imp Ap Ap Ap SNoEq_ x1 x2 x3 Imp Ap Ap Ap SNoEq_ x1 x3 x4 Ap Ap Ap SNoEq_ x1 x2 x4
+Param b2abd2e5215c0170efe42d2fa0fb8a62cdafe2c8fbd0d37ca14e3497e54ba729 binintersect : TpArr set TpArr set set
+Known SNoLtE : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap Ap SNoLt x1 x2 All x3 Prop Imp All x4 set Imp Ap SNo x4 Imp Ap Ap Prim 1 Ap SNoLev x4 Ap Ap binintersect Ap SNoLev x1 Ap SNoLev x2 Imp Ap Ap Ap SNoEq_ Ap SNoLev x4 x4 x1 Imp Ap Ap Ap SNoEq_ Ap SNoLev x4 x4 x2 Imp Ap Ap SNoLt x1 x4 Imp Ap Ap SNoLt x4 x2 Imp Ap Ap nIn Ap SNoLev x4 x1 Imp Ap Ap Prim 1 Ap SNoLev x4 x2 x3 Imp Imp Ap Ap Prim 1 Ap SNoLev x1 Ap SNoLev x2 Imp Ap Ap Ap SNoEq_ Ap SNoLev x1 x1 x2 Imp Ap Ap Prim 1 Ap SNoLev x1 x2 x3 Imp Imp Ap Ap Prim 1 Ap SNoLev x2 Ap SNoLev x1 Imp Ap Ap Ap SNoEq_ Ap SNoLev x2 x1 x2 Imp Ap Ap nIn Ap SNoLev x2 x1 x3 x3
+Known SNoLtI2 : All x1 set All x2 set Imp Ap Ap Prim 1 Ap SNoLev x1 Ap SNoLev x2 Imp Ap Ap Ap SNoEq_ Ap SNoLev x1 x1 x2 Imp Ap Ap Prim 1 Ap SNoLev x1 x2 Ap Ap SNoLt x1 x2
+Known SNoLtI3 : All x1 set All x2 set Imp Ap Ap Prim 1 Ap SNoLev x2 Ap SNoLev x1 Imp Ap Ap Ap SNoEq_ Ap SNoLev x2 x1 x2 Imp Ap Ap nIn Ap SNoLev x2 x1 Ap Ap SNoLt x1 x2
+Known SNoLt_irref : All x1 set Ap not Ap Ap SNoLt x1 x1
+Known SNoLt_trichotomy_or : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Ap Ap or Ap Ap or Ap Ap SNoLt x1 x2 Eq set x1 x2 Ap Ap SNoLt x2 x1
+Known SNoLt_trichotomy_or_impred : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 All x3 Prop Imp Imp Ap Ap SNoLt x1 x2 x3 Imp Imp Eq set x1 x2 x3 Imp Imp Ap Ap SNoLt x2 x1 x3 x3
+Known SNoLt_tra : All x1 set All x2 set All x3 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap SNo x3 Imp Ap Ap SNoLt x1 x2 Imp Ap Ap SNoLt x2 x3 Ap Ap SNoLt x1 x3
+Known SNoLe_ref : All x1 set Ap Ap SNoLe x1 x1
+Known SNoLe_antisym : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap Ap SNoLe x1 x2 Imp Ap Ap SNoLe x2 x1 Eq set x1 x2
+Known SNoLtLe_tra : All x1 set All x2 set All x3 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap SNo x3 Imp Ap Ap SNoLt x1 x2 Imp Ap Ap SNoLe x2 x3 Ap Ap SNoLt x1 x3
+Known SNoLeLt_tra : All x1 set All x2 set All x3 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap SNo x3 Imp Ap Ap SNoLe x1 x2 Imp Ap Ap SNoLt x2 x3 Ap Ap SNoLt x1 x3
+Known SNoLe_tra : All x1 set All x2 set All x3 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap SNo x3 Imp Ap Ap SNoLe x1 x2 Imp Ap Ap SNoLe x2 x3 Ap Ap SNoLe x1 x3
+Known SNoLtLe_or : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Ap Ap or Ap Ap SNoLt x1 x2 Ap Ap SNoLe x2 x1
+Known SNoLt_PSNo_PNoLt : All x1 set All x2 set All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap ordinal x1 Imp Ap ordinal x2 Imp Ap Ap SNoLt Ap Ap PSNo x1 x3 Ap Ap PSNo x2 x4 Ap Ap Ap Ap PNoLt x1 x3 x2 x4
+Known PNoLt_SNoLt_PSNo : All x1 set All x2 set All x3 TpArr set Prop All x4 TpArr set Prop Imp Ap ordinal x1 Imp Ap ordinal x2 Imp Ap Ap Ap Ap PNoLt x1 x3 x2 x4 Ap Ap SNoLt Ap Ap PSNo x1 x3 Ap Ap PSNo x2 x4
+Param ed76e76de9b58e621daa601cca73b4159a437ba0e73114924cb92ec8044f2aa2 PNo_bd : TpArr TpArr set TpArr TpArr set Prop Prop TpArr TpArr set TpArr TpArr set Prop Prop set
+Param b2d51dcfccb9527e9551b0d0c47d891c9031a1d4ee87bba5a9ae5215025d107a PNo_pred : TpArr TpArr set TpArr TpArr set Prop Prop TpArr TpArr set TpArr TpArr set Prop Prop TpArr set Prop
+Def SNoCut : TpArr set TpArr set set
+ := Lam L set Lam R set Ap Ap PSNo Ap Ap PNo_bd Lam alpha set Lam p TpArr set Prop Ap Ap and Ap ordinal alpha Ap Ap Prim 1 Ap Ap PSNo alpha p L Lam alpha set Lam p TpArr set Prop Ap Ap and Ap ordinal alpha Ap Ap Prim 1 Ap Ap PSNo alpha p R Ap Ap PNo_pred Lam alpha set Lam p TpArr set Prop Ap Ap and Ap ordinal alpha Ap Ap Prim 1 Ap Ap PSNo alpha p L Lam alpha set Lam p TpArr set Prop Ap Ap and Ap ordinal alpha Ap Ap Prim 1 Ap Ap PSNo alpha p R
+Def SNoCutP : TpArr set TpArr set Prop
+ := Lam L set Lam R set Ap Ap and Ap Ap and All x4 set Imp Ap Ap Prim 1 x4 L Ap SNo x4 All x3 set Imp Ap Ap Prim 1 x3 R Ap SNo x3 All x1 set Imp Ap Ap Prim 1 x1 L All x2 set Imp Ap Ap Prim 1 x2 R Ap Ap SNoLt x1 x2
+Param b3e3bf86a58af5d468d398d3acad61ccc50261f43c856a68f8594967a06ec07a famunion : TpArr set TpArr TpArr set set set
+Known SNoCutP_SNoCut : All x1 set All x2 set Imp Ap Ap SNoCutP x1 x2 Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap SNo Ap Ap SNoCut x1 x2 Ap Ap Prim 1 Ap SNoLev Ap Ap SNoCut x1 x2 Ap ordsucc Ap Ap binunion Ap Ap famunion x1 Lam y set Ap ordsucc Ap SNoLev y Ap Ap famunion x2 Lam y set Ap ordsucc Ap SNoLev y All x7 set Imp Ap Ap Prim 1 x7 x1 Ap Ap SNoLt x7 Ap Ap SNoCut x1 x2 All x6 set Imp Ap Ap Prim 1 x6 x2 Ap Ap SNoLt Ap Ap SNoCut x1 x2 x6 All x3 set Imp Ap SNo x3 Imp All x5 set Imp Ap Ap Prim 1 x5 x1 Ap Ap SNoLt x5 x3 Imp All x4 set Imp Ap Ap Prim 1 x4 x2 Ap Ap SNoLt x3 x4 Ap Ap and Ap Ap Subq Ap SNoLev Ap Ap SNoCut x1 x2 Ap SNoLev x3 Ap Ap Ap SNoEq_ Ap SNoLev Ap Ap SNoCut x1 x2 Ap Ap SNoCut x1 x2 x3
+Known SNoCutP_SNoCut_impred : All x1 set All x2 set Imp Ap Ap SNoCutP x1 x2 All x3 Prop Imp Imp Ap SNo Ap Ap SNoCut x1 x2 Imp Ap Ap Prim 1 Ap SNoLev Ap Ap SNoCut x1 x2 Ap ordsucc Ap Ap binunion Ap Ap famunion x1 Lam y set Ap ordsucc Ap SNoLev y Ap Ap famunion x2 Lam y set Ap ordsucc Ap SNoLev y Imp All x8 set Imp Ap Ap Prim 1 x8 x1 Ap Ap SNoLt x8 Ap Ap SNoCut x1 x2 Imp All x7 set Imp Ap Ap Prim 1 x7 x2 Ap Ap SNoLt Ap Ap SNoCut x1 x2 x7 Imp All x4 set Imp Ap SNo x4 Imp All x6 set Imp Ap Ap Prim 1 x6 x1 Ap Ap SNoLt x6 x4 Imp All x5 set Imp Ap Ap Prim 1 x5 x2 Ap Ap SNoLt x4 x5 Ap Ap and Ap Ap Subq Ap SNoLev Ap Ap SNoCut x1 x2 Ap SNoLev x4 Ap Ap Ap SNoEq_ Ap SNoLev Ap Ap SNoCut x1 x2 Ap Ap SNoCut x1 x2 x4 x3 x3
+Known SNoCutP_L_0 : All x1 set Imp All x2 set Imp Ap Ap Prim 1 x2 x1 Ap SNo x2 Ap Ap SNoCutP x1 Prim 2
+Known SNoCutP_0_R : All x1 set Imp All x2 set Imp Ap Ap Prim 1 x2 x1 Ap SNo x2 Ap Ap SNoCutP Prim 2 x1
+Known SNoCutP_0_0 : Ap Ap SNoCutP Prim 2 Prim 2
+Def SNoS_ : TpArr set set
+ := Lam alpha set Ap Ap Sep Ap Prim 4 Ap SNoElts_ alpha Lam x1 set Ex x2 set Ap Ap and Ap Ap Prim 1 x2 alpha Ap Ap SNo_ x2 x1
+Known SNoS_E : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoS_ x1 Ex x3 set Ap Ap and Ap Ap Prim 1 x3 x1 Ap Ap SNo_ x3 x2
+Known SNoS_I : All x1 set Imp Ap ordinal x1 All x2 set All x3 set Imp Ap Ap Prim 1 x3 x1 Imp Ap Ap SNo_ x3 x2 Ap Ap Prim 1 x2 Ap SNoS_ x1
+Known SNoS_I2 : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap Ap Prim 1 Ap SNoLev x1 Ap SNoLev x2 Ap Ap Prim 1 x1 Ap SNoS_ Ap SNoLev x2
+Known SNoS_Subq : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 Imp Ap Ap Subq x1 x2 Ap Ap Subq Ap SNoS_ x1 Ap SNoS_ x2
+Known SNoLev_uniq2 : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap Ap SNo_ x1 x2 Eq set Ap SNoLev x2 x1
+Known SNoS_E2 : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoS_ x1 All x3 Prop Imp Imp Ap Ap Prim 1 Ap SNoLev x2 x1 Imp Ap ordinal Ap SNoLev x2 Imp Ap SNo x2 Imp Ap Ap SNo_ Ap SNoLev x2 x2 x3 x3
+Known SNoS_In_neq : All x1 set Imp Ap SNo x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoS_ Ap SNoLev x1 Imp Eq set x2 x1 All p Prop p
+Known SNoS_SNoLev : All x1 set Imp Ap SNo x1 Ap Ap Prim 1 x1 Ap SNoS_ Ap ordsucc Ap SNoLev x1
+Def SNoL : TpArr set set
+ := Lam z set Ap Ap Sep Ap SNoS_ Ap SNoLev z Lam x1 set Ap Ap SNoLt x1 z
+Def SNoR : TpArr set set
+ := Lam z set Ap Ap Sep Ap SNoS_ Ap SNoLev z Lam x1 set Ap Ap SNoLt z x1
+Known SNoCutP_SNoL_SNoR : All x1 set Imp Ap SNo x1 Ap Ap SNoCutP Ap SNoL x1 Ap SNoR x1
+Known SNoL_E : All x1 set Imp Ap SNo x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoL x1 All x3 Prop Imp Imp Ap SNo x2 Imp Ap Ap Prim 1 Ap SNoLev x2 Ap SNoLev x1 Imp Ap Ap SNoLt x2 x1 x3 x3
+Known SNoR_E : All x1 set Imp Ap SNo x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoR x1 All x3 Prop Imp Imp Ap SNo x2 Imp Ap Ap Prim 1 Ap SNoLev x2 Ap SNoLev x1 Imp Ap Ap SNoLt x1 x2 x3 x3
+Known SNoL_SNoS_ : All x1 set Ap Ap Subq Ap SNoL x1 Ap SNoS_ Ap SNoLev x1
+Known SNoR_SNoS_ : All x1 set Ap Ap Subq Ap SNoR x1 Ap SNoS_ Ap SNoLev x1
+Known SNoL_SNoS : All x1 set Imp Ap SNo x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoL x1 Ap Ap Prim 1 x2 Ap SNoS_ Ap SNoLev x1
+Known SNoR_SNoS : All x1 set Imp Ap SNo x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoR x1 Ap Ap Prim 1 x2 Ap SNoS_ Ap SNoLev x1
+Known SNoL_I : All x1 set Imp Ap SNo x1 All x2 set Imp Ap SNo x2 Imp Ap Ap Prim 1 Ap SNoLev x2 Ap SNoLev x1 Imp Ap Ap SNoLt x2 x1 Ap Ap Prim 1 x2 Ap SNoL x1
+Known SNoR_I : All x1 set Imp Ap SNo x1 All x2 set Imp Ap SNo x2 Imp Ap Ap Prim 1 Ap SNoLev x2 Ap SNoLev x1 Imp Ap Ap SNoLt x1 x2 Ap Ap Prim 1 x2 Ap SNoR x1
+Known SNo_eta : All x1 set Imp Ap SNo x1 Eq set x1 Ap Ap SNoCut Ap SNoL x1 Ap SNoR x1
+Known SNoCutP_SNo_SNoCut : All x1 set All x2 set Imp Ap Ap SNoCutP x1 x2 Ap SNo Ap Ap SNoCut x1 x2
+Known SNoCutP_SNoCut_L : All x1 set All x2 set Imp Ap Ap SNoCutP x1 x2 All x3 set Imp Ap Ap Prim 1 x3 x1 Ap Ap SNoLt x3 Ap Ap SNoCut x1 x2
+Known SNoCutP_SNoCut_R : All x1 set All x2 set Imp Ap Ap SNoCutP x1 x2 All x3 set Imp Ap Ap Prim 1 x3 x2 Ap Ap SNoLt Ap Ap SNoCut x1 x2 x3
+Known SNoCutP_SNoCut_fst : All x1 set All x2 set Imp Ap Ap SNoCutP x1 x2 All x3 set Imp Ap SNo x3 Imp All x5 set Imp Ap Ap Prim 1 x5 x1 Ap Ap SNoLt x5 x3 Imp All x4 set Imp Ap Ap Prim 1 x4 x2 Ap Ap SNoLt x3 x4 Ap Ap and Ap Ap Subq Ap SNoLev Ap Ap SNoCut x1 x2 Ap SNoLev x3 Ap Ap Ap SNoEq_ Ap SNoLev Ap Ap SNoCut x1 x2 Ap Ap SNoCut x1 x2 x3
+Known SNoCut_Le : All x1 set All x2 set All x3 set All x4 set Imp Ap Ap SNoCutP x1 x2 Imp Ap Ap SNoCutP x3 x4 Imp All x6 set Imp Ap Ap Prim 1 x6 x1 Ap Ap SNoLt x6 Ap Ap SNoCut x3 x4 Imp All x5 set Imp Ap Ap Prim 1 x5 x4 Ap Ap SNoLt Ap Ap SNoCut x1 x2 x5 Ap Ap SNoLe Ap Ap SNoCut x1 x2 Ap Ap SNoCut x3 x4
+Known SNoCut_ext : All x1 set All x2 set All x3 set All x4 set Imp Ap Ap SNoCutP x1 x2 Imp Ap Ap SNoCutP x3 x4 Imp All x8 set Imp Ap Ap Prim 1 x8 x1 Ap Ap SNoLt x8 Ap Ap SNoCut x3 x4 Imp All x7 set Imp Ap Ap Prim 1 x7 x2 Ap Ap SNoLt Ap Ap SNoCut x3 x4 x7 Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Ap Ap SNoLt x6 Ap Ap SNoCut x1 x2 Imp All x5 set Imp Ap Ap Prim 1 x5 x4 Ap Ap SNoLt Ap Ap SNoCut x1 x2 x5 Eq set Ap Ap SNoCut x1 x2 Ap Ap SNoCut x3 x4
+Known SNoLt_SNoL_or_SNoR_impred : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 Imp Ap Ap SNoLt x1 x2 All x3 Prop Imp All x4 set Imp Ap Ap Prim 1 x4 Ap SNoL x2 Imp Ap Ap Prim 1 x4 Ap SNoR x1 x3 Imp Imp Ap Ap Prim 1 x1 Ap SNoL x2 x3 Imp Imp Ap Ap Prim 1 x2 Ap SNoR x1 x3 x3
+Known SNoL_or_SNoR_impred : All x1 set All x2 set Imp Ap SNo x1 Imp Ap SNo x2 All x3 Prop Imp Imp Eq set x1 x2 x3 Imp All x5 set Imp Ap Ap Prim 1 x5 Ap SNoL x2 Imp Ap Ap Prim 1 x5 Ap SNoR x1 x3 Imp Imp Ap Ap Prim 1 x1 Ap SNoL x2 x3 Imp Imp Ap Ap Prim 1 x2 Ap SNoR x1 x3 Imp All x4 set Imp Ap Ap Prim 1 x4 Ap SNoR x2 Imp Ap Ap Prim 1 x4 Ap SNoL x1 x3 Imp Imp Ap Ap Prim 1 x1 Ap SNoR x2 x3 Imp Imp Ap Ap Prim 1 x2 Ap SNoL x1 x3 x3
+Known SNoL_SNoCutP_ex : All x1 set All x2 set Imp Ap Ap SNoCutP x1 x2 All x3 set Imp Ap Ap Prim 1 x3 Ap SNoL Ap Ap SNoCut x1 x2 Ex x4 set Ap Ap and Ap Ap Prim 1 x4 x1 Ap Ap SNoLe x3 x4
+Known SNoR_SNoCutP_ex : All x1 set All x2 set Imp Ap Ap SNoCutP x1 x2 All x3 set Imp Ap Ap Prim 1 x3 Ap SNoR Ap Ap SNoCut x1 x2 Ex x4 set Ap Ap and Ap Ap Prim 1 x4 x2 Ap Ap SNoLe x4 x3
+Known ordinal_SNo_ : All x1 set Imp Ap ordinal x1 Ap Ap SNo_ x1 x1
+Known ordinal_SNo : All x1 set Imp Ap ordinal x1 Ap SNo x1
+Known ordinal_SNoLev : All x1 set Imp Ap ordinal x1 Eq set Ap SNoLev x1 x1
+Known ordinal_SNoLev_max : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap SNo x2 Imp Ap Ap Prim 1 Ap SNoLev x2 x1 Ap Ap SNoLt x2 x1
+Known ordinal_SNoL : All x1 set Imp Ap ordinal x1 Eq set Ap SNoL x1 Ap SNoS_ x1
+Known ordinal_SNoR : All x1 set Imp Ap ordinal x1 Eq set Ap SNoR x1 Prim 2
+Param 458be3a74fef41541068991d6ed4034dc3b5e637179369954ba21f6dff4448e4 nat_p : TpArr set Prop
+Known nat_p_SNo : All x1 set Imp Ap nat_p x1 Ap SNo x1
+Param 6fc30ac8f2153537e397b9ff2d9c981f80c151a73f96cf9d56ae2ee27dfd1eb2 omega : set
+Known omega_SNo : All x1 set Imp Ap Ap Prim 1 x1 omega Ap SNo x1
+Known omega_SNoS_omega : Ap Ap Subq omega Ap SNoS_ omega
+Known ordinal_In_SNoLt : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap SNoLt x2 x1
+Known ordinal_SNoLev_max_2 : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap SNo x2 Imp Ap Ap Prim 1 Ap SNoLev x2 Ap ordsucc x1 Ap Ap SNoLe x2 x1
+Known ordinal_Subq_SNoLe : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 Imp Ap Ap Subq x1 x2 Ap Ap SNoLe x1 x2
+Known ordinal_SNoLt_In : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 Imp Ap Ap SNoLt x1 x2 Ap Ap Prim 1 x1 x2
+Known omega_nonneg : All x1 set Imp Ap Ap Prim 1 x1 omega Ap Ap SNoLe Prim 2 x1
+Known SNo_0 : Ap SNo Prim 2
+Known SNo_1 : Ap SNo Ap ordsucc Prim 2
+Known SNo_2 : Ap SNo Ap ordsucc Ap ordsucc Prim 2
+Known SNoLev_0 : Eq set Ap SNoLev Prim 2 Prim 2
+Known SNoCut_0_0 : Eq set Ap Ap SNoCut Prim 2 Prim 2 Prim 2
+Known SNoL_0 : Eq set Ap SNoL Prim 2 Prim 2
+Known SNoR_0 : Eq set Ap SNoR Prim 2 Prim 2
+Known SNoL_1 : Eq set Ap SNoL Ap ordsucc Prim 2 Ap ordsucc Prim 2
+Known SNoR_1 : Eq set Ap SNoR Ap ordsucc Prim 2 Prim 2
+Known SNo_max_SNoLev : All x1 set Imp Ap SNo x1 Imp All x2 set Imp Ap Ap Prim 1 x2 Ap SNoS_ Ap SNoLev x1 Ap Ap SNoLt x2 x1 Eq set Ap SNoLev x1 x1
+Known SNo_max_ordinal : All x1 set Imp Ap SNo x1 Imp All x2 set Imp Ap Ap Prim 1 x2 Ap SNoS_ Ap SNoLev x1 Ap Ap SNoLt x2 x1 Ap ordinal x1
+Known pos_low_eq_one : All x1 set Imp Ap SNo x1 Imp Ap Ap SNoLt Prim 2 x1 Imp Ap Ap Subq Ap SNoLev x1 Ap ordsucc Prim 2 Eq set x1 Ap ordsucc Prim 2
+Def SNo_extend0 : TpArr set set
+ := Lam x set Ap Ap PSNo Ap ordsucc Ap SNoLev x Lam delta set Ap Ap and Ap Ap Prim 1 delta x Imp Eq set delta Ap SNoLev x All p Prop p
+Def SNo_extend1 : TpArr set set
+ := Lam x set Ap Ap PSNo Ap ordsucc Ap SNoLev x Lam delta set Ap Ap or Ap Ap Prim 1 delta x Eq set delta Ap SNoLev x
+Known SNo_extend0_SNo_ : All x1 set Imp Ap SNo x1 Ap Ap SNo_ Ap ordsucc Ap SNoLev x1 Ap SNo_extend0 x1
+Known SNo_extend1_SNo_ : All x1 set Imp Ap SNo x1 Ap Ap SNo_ Ap ordsucc Ap SNoLev x1 Ap SNo_extend1 x1
+Known SNo_extend0_SNo : All x1 set Imp Ap SNo x1 Ap SNo Ap SNo_extend0 x1
+Known SNo_extend1_SNo : All x1 set Imp Ap SNo x1 Ap SNo Ap SNo_extend1 x1
+Known SNo_extend0_SNoLev : All x1 set Imp Ap SNo x1 Eq set Ap SNoLev Ap SNo_extend0 x1 Ap ordsucc Ap SNoLev x1
+Known SNo_extend1_SNoLev : All x1 set Imp Ap SNo x1 Eq set Ap SNoLev Ap SNo_extend1 x1 Ap ordsucc Ap SNoLev x1
+Known SNo_extend0_nIn : All x1 set Imp Ap SNo x1 Ap Ap nIn Ap SNoLev x1 Ap SNo_extend0 x1
+Known SNo_extend1_In : All x1 set Imp Ap SNo x1 Ap Ap Prim 1 Ap SNoLev x1 Ap SNo_extend1 x1
+Known SNo_extend0_SNoEq : All x1 set Imp Ap SNo x1 Ap Ap Ap SNoEq_ Ap SNoLev x1 Ap SNo_extend0 x1 x1
+Known SNo_extend1_SNoEq : All x1 set Imp Ap SNo x1 Ap Ap Ap SNoEq_ Ap SNoLev x1 Ap SNo_extend1 x1 x1
+Known SNoLev_0_eq_0 : All x1 set Imp Ap SNo x1 Imp Eq set Ap SNoLev x1 Prim 2 Eq set x1 Prim 2
+Known SNo_0_eq_0 : All x1 set Imp Ap Ap SNo_ Prim 2 x1 Eq set x1 Prim 2
+Def eps_ : TpArr set set
+ := Lam n set Ap Ap binunion Ap Sing Prim 2 Ap Ap Prim 5 n Lam x1 set Ap Lam alpha set Ap Ap SetAdjoin alpha Ap Sing Ap ordsucc Prim 2 Ap ordsucc x1
+Known eps_ordinal_In_eq_0 : All x1 set All x2 set Imp Ap ordinal x2 Imp Ap Ap Prim 1 x2 Ap eps_ x1 Eq set x2 Prim 2
+Known eps_0_1 : Eq set Ap eps_ Prim 2 Ap ordsucc Prim 2
+Known SNo__eps_ : All x1 set Imp Ap Ap Prim 1 x1 omega Ap Ap SNo_ Ap ordsucc x1 Ap eps_ x1
+Known SNo_eps_ : All x1 set Imp Ap Ap Prim 1 x1 omega Ap SNo Ap eps_ x1
+Known SNo_eps_1 : Ap SNo Ap eps_ Ap ordsucc Prim 2
+Known SNoLev_eps_ : All x1 set Imp Ap Ap Prim 1 x1 omega Eq set Ap SNoLev Ap eps_ x1 Ap ordsucc x1
+Known SNo_eps_SNoS_omega : All x1 set Imp Ap Ap Prim 1 x1 omega Ap Ap Prim 1 Ap eps_ x1 Ap SNoS_ omega
+Known SNo_eps_decr : All x1 set Imp Ap Ap Prim 1 x1 omega All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap SNoLt Ap eps_ x1 Ap eps_ x2
+Known SNo_eps_pos : All x1 set Imp Ap Ap Prim 1 x1 omega Ap Ap SNoLt Prim 2 Ap eps_ x1
+Known SNo_pos_eps_Lt : All x1 set Imp Ap nat_p x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoS_ Ap ordsucc x1 Imp Ap Ap SNoLt Prim 2 x2 Ap Ap SNoLt Ap eps_ x1 x2
+Known SNo_pos_eps_Le : All x1 set Imp Ap nat_p x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoS_ Ap ordsucc Ap ordsucc x1 Imp Ap Ap SNoLt Prim 2 x2 Ap Ap SNoLe Ap eps_ x1 x2
+Known eps_SNo_eq : All x1 set Imp Ap nat_p x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoS_ Ap ordsucc x1 Imp Ap Ap SNoLt Prim 2 x2 Imp Ap Ap Ap SNoEq_ Ap SNoLev x2 Ap eps_ x1 x2 Ex x3 set Ap Ap and Ap Ap Prim 1 x3 x1 Eq set x2 Ap eps_ x3
+Known eps_SNoCutP : All x1 set Imp Ap Ap Prim 1 x1 omega Ap Ap SNoCutP Ap Sing Prim 2 Ap Ap Prim 5 x1 Lam x2 set Ap eps_ x2
+Known eps_SNoCut : All x1 set Imp Ap Ap Prim 1 x1 omega Eq set Ap eps_ x1 Ap Ap SNoCut Ap Sing Prim 2 Ap Ap Prim 5 x1 Lam x2 set Ap eps_ x2
+Known SNo_etaE : All x1 set Imp Ap SNo x1 All x2 Prop Imp All x3 set All x4 set Imp Ap Ap SNoCutP x3 x4 Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Ap Ap Prim 1 Ap SNoLev x6 Ap SNoLev x1 Imp All x5 set Imp Ap Ap Prim 1 x5 x4 Ap Ap Prim 1 Ap SNoLev x5 Ap SNoLev x1 Imp Eq set x1 Ap Ap SNoCut x3 x4 x2 x2
+Known SNo_ind : All x1 TpArr set Prop Imp All x3 set All x4 set Imp Ap Ap SNoCutP x3 x4 Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Ap x1 x6 Imp All x5 set Imp Ap Ap Prim 1 x5 x4 Ap x1 x5 Ap x1 Ap Ap SNoCut x3 x4 All x2 set Imp Ap SNo x2 Ap x1 x2
+Param be45dfaed6c479503a967f3834400c4fd18a8a567c8887787251ed89579f7be3 SNo_rec_i : TpArr TpArr set TpArr TpArr set set set TpArr set set
+Known SNo_rec_i_eq : All x1 TpArr set TpArr TpArr set set set Imp All x3 set Imp Ap SNo x3 All x4 TpArr set set All x5 TpArr set set Imp All x6 set Imp Ap Ap Prim 1 x6 Ap SNoS_ Ap SNoLev x3 Eq set Ap x4 x6 Ap x5 x6 Eq set Ap Ap x1 x3 x4 Ap Ap x1 x3 x5 All x2 set Imp Ap SNo x2 Eq set Ap Ap SNo_rec_i x1 x2 Ap Ap x1 x2 Ap SNo_rec_i x1
+Param e148e62186e718374accb69cda703e3440725cca8832aed55c0b32731f7401ab SNo_rec_ii : TpArr TpArr set TpArr TpArr set TpArr set set TpArr set set TpArr set TpArr set set
+Known SNo_rec_ii_eq : All x1 TpArr set TpArr TpArr set TpArr set set TpArr set set Imp All x3 set Imp Ap SNo x3 All x4 TpArr set TpArr set set All x5 TpArr set TpArr set set Imp All x6 set Imp Ap Ap Prim 1 x6 Ap SNoS_ Ap SNoLev x3 Eq TpArr set set Ap x4 x6 Ap x5 x6 Eq TpArr set set Ap Ap x1 x3 x4 Ap Ap x1 x3 x5 All x2 set Imp Ap SNo x2 Eq TpArr set set Ap Ap SNo_rec_ii x1 x2 Ap Ap x1 x2 Ap SNo_rec_ii x1
+Param 7d10ab58310ebefb7f8bf63883310aa10fc2535f53bb48db513a868bc02ec028 SNo_rec2 : TpArr TpArr set TpArr set TpArr TpArr set TpArr set set set TpArr set TpArr set set
+Param b8ff52f838d0ff97beb955ee0b26fad79602e1529f8a2854bda0ecd4193a8a3c If_i : TpArr Prop TpArr set TpArr set set
+Known SNo_rec2_G_prop : All x1 TpArr set TpArr set TpArr TpArr set TpArr set set set Imp All x18 set Imp Ap SNo x18 All x19 set Imp Ap SNo x19 All x20 TpArr set TpArr set set All x21 TpArr set TpArr set set Imp All x23 set Imp Ap Ap Prim 1 x23 Ap SNoS_ Ap SNoLev x18 All x24 set Imp Ap SNo x24 Eq set Ap Ap x20 x23 x24 Ap Ap x21 x23 x24 Imp All x22 set Imp Ap Ap Prim 1 x22 Ap SNoS_ Ap SNoLev x19 Eq set Ap Ap x20 x18 x22 Ap Ap x21 x18 x22 Eq set Ap Ap Ap x1 x18 x19 x20 Ap Ap Ap x1 x18 x19 x21 All x2 set Imp Ap SNo x2 All x3 TpArr set TpArr set set All x4 TpArr set TpArr set set Imp All x17 set Imp Ap Ap Prim 1 x17 Ap SNoS_ Ap SNoLev x2 Eq TpArr set set Ap x3 x17 Ap x4 x17 All x5 set Imp Ap SNo x5 All x6 TpArr set set All x7 TpArr set set Imp All x16 set Imp Ap Ap Prim 1 x16 Ap SNoS_ Ap SNoLev x5 Eq set Ap x6 x16 Ap x7 x16 Eq set Ap Ap Ap Ap Lam x12 set Lam x13 TpArr set TpArr set set Lam x14 set Lam x15 TpArr set set Ap Ap Ap x1 x12 x14 Lam x set Lam y set Ap Ap Ap If_i Eq set x x12 Ap x15 y Ap Ap x13 x y x2 x3 x5 x6 Ap Ap Ap Ap Lam x8 set Lam x9 TpArr set TpArr set set Lam x10 set Lam x11 TpArr set set Ap Ap Ap x1 x8 x10 Lam x set Lam y set Ap Ap Ap If_i Eq set x x8 Ap x11 y Ap Ap x9 x y x2 x4 x5 x7
+Known SNo_rec2_eq_1 : All x1 TpArr set TpArr set TpArr TpArr set TpArr set set set Imp All x17 set Imp Ap SNo x17 All x18 set Imp Ap SNo x18 All x19 TpArr set TpArr set set All x20 TpArr set TpArr set set Imp All x22 set Imp Ap Ap Prim 1 x22 Ap SNoS_ Ap SNoLev x17 All x23 set Imp Ap SNo x23 Eq set Ap Ap x19 x22 x23 Ap Ap x20 x22 x23 Imp All x21 set Imp Ap Ap Prim 1 x21 Ap SNoS_ Ap SNoLev x18 Eq set Ap Ap x19 x17 x21 Ap Ap x20 x17 x21 Eq set Ap Ap Ap x1 x17 x18 x19 Ap Ap Ap x1 x17 x18 x20 All x2 set Imp Ap SNo x2 All x3 TpArr set TpArr set set All x4 set Imp Ap SNo x4 Eq set Ap Ap SNo_rec_i Ap Ap Lam x13 set Lam x14 TpArr set TpArr set set Lam x15 set Lam x16 TpArr set set Ap Ap Ap x1 x13 x15 Lam x set Lam y set Ap Ap Ap If_i Eq set x x13 Ap x16 y Ap Ap x14 x y x2 x3 x4 Ap Ap Ap Ap Lam x9 set Lam x10 TpArr set TpArr set set Lam x11 set Lam x12 TpArr set set Ap Ap Ap x1 x9 x11 Lam x set Lam y set Ap Ap Ap If_i Eq set x x9 Ap x12 y Ap Ap x10 x y x2 x3 x4 Ap SNo_rec_i Ap Ap Lam x5 set Lam x6 TpArr set TpArr set set Lam x7 set Lam x8 TpArr set set Ap Ap Ap x1 x5 x7 Lam x set Lam y set Ap Ap Ap If_i Eq set x x5 Ap x8 y Ap Ap x6 x y x2 x3
+Known SNo_rec2_eq : All x1 TpArr set TpArr set TpArr TpArr set TpArr set set set Imp All x4 set Imp Ap SNo x4 All x5 set Imp Ap SNo x5 All x6 TpArr set TpArr set set All x7 TpArr set TpArr set set Imp All x9 set Imp Ap Ap Prim 1 x9 Ap SNoS_ Ap SNoLev x4 All x10 set Imp Ap SNo x10 Eq set Ap Ap x6 x9 x10 Ap Ap x7 x9 x10 Imp All x8 set Imp Ap Ap Prim 1 x8 Ap SNoS_ Ap SNoLev x5 Eq set Ap Ap x6 x4 x8 Ap Ap x7 x4 x8 Eq set Ap Ap Ap x1 x4 x5 x6 Ap Ap Ap x1 x4 x5 x7 All x2 set Imp Ap SNo x2 All x3 set Imp Ap SNo x3 Eq set Ap Ap Ap SNo_rec2 x1 x2 x3 Ap Ap Ap x1 x2 x3 Ap SNo_rec2 x1
+Known SNo_ordinal_ind : All x1 TpArr set Prop Imp All x3 set Imp Ap ordinal x3 All x4 set Imp Ap Ap Prim 1 x4 Ap SNoS_ x3 Ap x1 x4 All x2 set Imp Ap SNo x2 Ap x1 x2
+Known SNo_ordinal_ind2 : All x1 TpArr set TpArr set Prop Imp All x4 set Imp Ap ordinal x4 All x5 set Imp Ap ordinal x5 All x6 set Imp Ap Ap Prim 1 x6 Ap SNoS_ x4 All x7 set Imp Ap Ap Prim 1 x7 Ap SNoS_ x5 Ap Ap x1 x6 x7 All x2 set All x3 set Imp Ap SNo x2 Imp Ap SNo x3 Ap Ap x1 x2 x3
+Known SNo_ordinal_ind3 : All x1 TpArr set TpArr set TpArr set Prop Imp All x5 set Imp Ap ordinal x5 All x6 set Imp Ap ordinal x6 All x7 set Imp Ap ordinal x7 All x8 set Imp Ap Ap Prim 1 x8 Ap SNoS_ x5 All x9 set Imp Ap Ap Prim 1 x9 Ap SNoS_ x6 All x10 set Imp Ap Ap Prim 1 x10 Ap SNoS_ x7 Ap Ap Ap x1 x8 x9 x10 All x2 set All x3 set All x4 set Imp Ap SNo x2 Imp Ap SNo x3 Imp Ap SNo x4 Ap Ap Ap x1 x2 x3 x4
+Known SNoLev_ind : All x1 TpArr set Prop Imp All x3 set Imp Ap SNo x3 Imp All x4 set Imp Ap Ap Prim 1 x4 Ap SNoS_ Ap SNoLev x3 Ap x1 x4 Ap x1 x3 All x2 set Imp Ap SNo x2 Ap x1 x2
+Known SNoLev_ind2 : All x1 TpArr set TpArr set Prop Imp All x4 set All x5 set Imp Ap SNo x4 Imp Ap SNo x5 Imp All x9 set Imp Ap Ap Prim 1 x9 Ap SNoS_ Ap SNoLev x4 Ap Ap x1 x9 x5 Imp All x8 set Imp Ap Ap Prim 1 x8 Ap SNoS_ Ap SNoLev x5 Ap Ap x1 x4 x8 Imp All x6 set Imp Ap Ap Prim 1 x6 Ap SNoS_ Ap SNoLev x4 All x7 set Imp Ap Ap Prim 1 x7 Ap SNoS_ Ap SNoLev x5 Ap Ap x1 x6 x7 Ap Ap x1 x4 x5 All x2 set All x3 set Imp Ap SNo x2 Imp Ap SNo x3 Ap Ap x1 x2 x3
+Known SNoLev_ind3 : All x1 TpArr set TpArr set TpArr set Prop Imp All x5 set All x6 set All x7 set Imp Ap SNo x5 Imp Ap SNo x6 Imp Ap SNo x7 Imp All x19 set Imp Ap Ap Prim 1 x19 Ap SNoS_ Ap SNoLev x5 Ap Ap Ap x1 x19 x6 x7 Imp All x18 set Imp Ap Ap Prim 1 x18 Ap SNoS_ Ap SNoLev x6 Ap Ap Ap x1 x5 x18 x7 Imp All x17 set Imp Ap Ap Prim 1 x17 Ap SNoS_ Ap SNoLev x7 Ap Ap Ap x1 x5 x6 x17 Imp All x15 set Imp Ap Ap Prim 1 x15 Ap SNoS_ Ap SNoLev x5 All x16 set Imp Ap Ap Prim 1 x16 Ap SNoS_ Ap SNoLev x6 Ap Ap Ap x1 x15 x16 x7 Imp All x13 set Imp Ap Ap Prim 1 x13 Ap SNoS_ Ap SNoLev x5 All x14 set Imp Ap Ap Prim 1 x14 Ap SNoS_ Ap SNoLev x7 Ap Ap Ap x1 x13 x6 x14 Imp All x11 set Imp Ap Ap Prim 1 x11 Ap SNoS_ Ap SNoLev x6 All x12 set Imp Ap Ap Prim 1 x12 Ap SNoS_ Ap SNoLev x7 Ap Ap Ap x1 x5 x11 x12 Imp All x8 set Imp Ap Ap Prim 1 x8 Ap SNoS_ Ap SNoLev x5 All x9 set Imp Ap Ap Prim 1 x9 Ap SNoS_ Ap SNoLev x6 All x10 set Imp Ap Ap Prim 1 x10 Ap SNoS_ Ap SNoLev x7 Ap Ap Ap x1 x8 x9 x10 Ap Ap Ap x1 x5 x6 x7 All x2 set All x3 set All x4 set Imp Ap SNo x2 Imp Ap SNo x3 Imp Ap SNo x4 Ap Ap Ap x1 x2 x3 x4
+Known SNo_omega : Ap SNo omega
+Known SNoLt_0_1 : Ap Ap SNoLt Prim 2 Ap ordsucc Prim 2
+Known SNoLt_0_2 : Ap Ap SNoLt Prim 2 Ap ordsucc Ap ordsucc Prim 2
+Known SNoLt_1_2 : Ap Ap SNoLt Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Prim 2
+Known restr_SNo_ : All x1 set Imp Ap SNo x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoLev x1 Ap Ap SNo_ x2 Ap Ap binintersect x1 Ap SNoElts_ x2
+Known restr_SNo : All x1 set Imp Ap SNo x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoLev x1 Ap SNo Ap Ap binintersect x1 Ap SNoElts_ x2
+Known restr_SNoLev : All x1 set Imp Ap SNo x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoLev x1 Eq set Ap SNoLev Ap Ap binintersect x1 Ap SNoElts_ x2 x2
+Known restr_SNoEq : All x1 set Imp Ap SNo x1 All x2 set Imp Ap Ap Prim 1 x2 Ap SNoLev x1 Ap Ap Ap SNoEq_ x2 Ap Ap binintersect x1 Ap SNoElts_ x2 x1
+Known SNo_extend0_restr_eq : All x1 set Imp Ap SNo x1 Eq set x1 Ap Ap binintersect Ap SNo_extend0 x1 Ap SNoElts_ Ap SNoLev x1
+Known SNo_extend1_restr_eq : All x1 set Imp Ap SNo x1 Eq set x1 Ap Ap binintersect Ap SNo_extend1 x1 Ap SNoElts_ Ap SNoLev x1

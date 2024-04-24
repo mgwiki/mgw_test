@@ -1,0 +1,460 @@
+Document 29c988c5e6c620410ef4e61bcfcbe4213c77013974af40759d8b732c07d61967
+Base set
+Known Eps_i_ax : All x1 TpArr set Prop All x2 set Imp Ap x1 x2 Ap x1 Ap Prim 0 x1
+Def True : Prop
+ := All x1 Prop Imp x1 x1
+Def False : Prop
+ := All x1 Prop x1
+Def not : TpArr Prop Prop
+ := Lam A Prop Imp A False
+Def and : TpArr Prop TpArr Prop Prop
+ := Lam A Prop Lam B Prop All x1 Prop Imp Imp A Imp B x1 x1
+Def or : TpArr Prop TpArr Prop Prop
+ := Lam A Prop Lam B Prop All x1 Prop Imp Imp A x1 Imp Imp B x1 x1
+Def iff : TpArr Prop TpArr Prop Prop
+ := Lam A Prop Lam B Prop Ap Ap and Imp A B Imp B A
+Known prop_ext : All x1 Prop All x2 Prop Imp Ap Ap iff x1 x2 Eq Prop x1 x2
+Def Subq : TpArr set TpArr set Prop
+ := Lam A set Lam B set All x1 set Imp Ap Ap Prim 1 x1 A Ap Ap Prim 1 x1 B
+Known set_ext : All x1 set All x2 set Imp Ap Ap Subq x1 x2 Imp Ap Ap Subq x2 x1 Eq set x1 x2
+Known In_ind : All x1 TpArr set Prop Imp All x3 set Imp All x4 set Imp Ap Ap Prim 1 x4 x3 Ap x1 x4 Ap x1 x3 All x2 set Ap x1 x2
+Known EmptyAx : Ap not Ex x1 set Ap Ap Prim 1 x1 Prim 2
+Known UnionEq : All x1 set All x2 set Ap Ap iff Ap Ap Prim 1 x2 Ap Prim 3 x1 Ex x3 set Ap Ap and Ap Ap Prim 1 x2 x3 Ap Ap Prim 1 x3 x1
+Known PowerEq : All x1 set All x2 set Ap Ap iff Ap Ap Prim 1 x2 Ap Prim 4 x1 Ap Ap Subq x2 x1
+Known ReplEq : All x1 set All x2 TpArr set set All x3 set Ap Ap iff Ap Ap Prim 1 x3 Ap Ap Prim 5 x1 Lam x set Ap x2 x Ex x4 set Ap Ap and Ap Ap Prim 1 x4 x1 Eq set x3 Ap x2 x4
+Def TransSet : TpArr set Prop
+ := Lam U set All x1 set Imp Ap Ap Prim 1 x1 U Ap Ap Subq x1 U
+Def Union_closed : TpArr set Prop
+ := Lam U set All x1 set Imp Ap Ap Prim 1 x1 U Ap Ap Prim 1 Ap Prim 3 x1 U
+Def Power_closed : TpArr set Prop
+ := Lam U set All x1 set Imp Ap Ap Prim 1 x1 U Ap Ap Prim 1 Ap Prim 4 x1 U
+Def Repl_closed : TpArr set Prop
+ := Lam U set All x1 set Imp Ap Ap Prim 1 x1 U All x2 TpArr set set Imp All x3 set Imp Ap Ap Prim 1 x3 x1 Ap Ap Prim 1 Ap x2 x3 U Ap Ap Prim 1 Ap Ap Prim 5 x1 Lam x set Ap x2 x U
+Def ZF_closed : TpArr set Prop
+ := Lam U set Ap Ap and Ap Ap and Ap Union_closed U Ap Power_closed U Ap Repl_closed U
+Known UnivOf_In : All x1 set Ap Ap Prim 1 x1 Ap Prim 6 x1
+Known UnivOf_TransSet : All x1 set Ap TransSet Ap Prim 6 x1
+Known UnivOf_ZF_closed : All x1 set Ap ZF_closed Ap Prim 6 x1
+Known UnivOf_Min : All x1 set All x2 set Imp Ap Ap Prim 1 x1 x2 Imp Ap TransSet x2 Imp Ap ZF_closed x2 Ap Ap Subq Ap Prim 6 x1 x2
+Known FalseE : Imp False All x1 Prop x1
+Known TrueI : True
+Known andI : All x1 Prop All x2 Prop Imp x1 Imp x2 Ap Ap and x1 x2
+Known andEL : All x1 Prop All x2 Prop Imp Ap Ap and x1 x2 x1
+Known andER : All x1 Prop All x2 Prop Imp Ap Ap and x1 x2 x2
+Known orIL : All x1 Prop All x2 Prop Imp x1 Ap Ap or x1 x2
+Known orIR : All x1 Prop All x2 Prop Imp x2 Ap Ap or x1 x2
+Known and3I : All x1 Prop All x2 Prop All x3 Prop Imp x1 Imp x2 Imp x3 Ap Ap and Ap Ap and x1 x2 x3
+Known and3E : All x1 Prop All x2 Prop All x3 Prop Imp Ap Ap and Ap Ap and x1 x2 x3 All x4 Prop Imp Imp x1 Imp x2 Imp x3 x4 x4
+Known or3I1 : All x1 Prop All x2 Prop All x3 Prop Imp x1 Ap Ap or Ap Ap or x1 x2 x3
+Known or3I2 : All x1 Prop All x2 Prop All x3 Prop Imp x2 Ap Ap or Ap Ap or x1 x2 x3
+Known or3I3 : All x1 Prop All x2 Prop All x3 Prop Imp x3 Ap Ap or Ap Ap or x1 x2 x3
+Known or3E : All x1 Prop All x2 Prop All x3 Prop Imp Ap Ap or Ap Ap or x1 x2 x3 All x4 Prop Imp Imp x1 x4 Imp Imp x2 x4 Imp Imp x3 x4 x4
+Known and4I : All x1 Prop All x2 Prop All x3 Prop All x4 Prop Imp x1 Imp x2 Imp x3 Imp x4 Ap Ap and Ap Ap and Ap Ap and x1 x2 x3 x4
+Known and5I : All x1 Prop All x2 Prop All x3 Prop All x4 Prop All x5 Prop Imp x1 Imp x2 Imp x3 Imp x4 Imp x5 Ap Ap and Ap Ap and Ap Ap and Ap Ap and x1 x2 x3 x4 x5
+Known not_or_and_demorgan : All x1 Prop All x2 Prop Imp Ap not Ap Ap or x1 x2 Ap Ap and Ap not x1 Ap not x2
+Known not_ex_all_demorgan_i : All x1 TpArr set Prop Imp Ap not Ex x3 set Ap x1 x3 All x2 set Ap not Ap x1 x2
+Known iffI : All x1 Prop All x2 Prop Imp Imp x1 x2 Imp Imp x2 x1 Ap Ap iff x1 x2
+Known iffEL : All x1 Prop All x2 Prop Imp Ap Ap iff x1 x2 Imp x1 x2
+Known iffER : All x1 Prop All x2 Prop Imp Ap Ap iff x1 x2 Imp x2 x1
+Known iff_refl : All x1 Prop Ap Ap iff x1 x1
+Known iff_sym : All x1 Prop All x2 Prop Imp Ap Ap iff x1 x2 Ap Ap iff x2 x1
+Known iff_trans : All x1 Prop All x2 Prop All x3 Prop Imp Ap Ap iff x1 x2 Imp Ap Ap iff x2 x3 Ap Ap iff x1 x3
+Known eq_i_tra : All x1 set All x2 set All x3 set Imp Eq set x1 x2 Imp Eq set x2 x3 Eq set x1 x3
+Known f_eq_i : All x1 TpArr set set All x2 set All x3 set Imp Eq set x2 x3 Eq set Ap x1 x2 Ap x1 x3
+Known neq_i_sym : All x1 set All x2 set Imp Imp Eq set x1 x2 All p Prop p Imp Eq set x2 x1 All p Prop p
+Def nIn : TpArr set TpArr set Prop
+ := Lam x set Lam X set Ap not Ap Ap Prim 1 x X
+Known Eps_i_ex : All x1 TpArr set Prop Imp Ex x2 set Ap x1 x2 Ap x1 Ap Prim 0 x1
+Known pred_ext : All x1 TpArr set Prop All x2 TpArr set Prop Imp All x3 set Ap Ap iff Ap x1 x3 Ap x2 x3 Eq TpArr set Prop x1 x2
+Known prop_ext_2 : All x1 Prop All x2 Prop Imp Imp x1 x2 Imp Imp x2 x1 Eq Prop x1 x2
+Known Subq_ref : All x1 set Ap Ap Subq x1 x1
+Known Subq_tra : All x1 set All x2 set All x3 set Imp Ap Ap Subq x1 x2 Imp Ap Ap Subq x2 x3 Ap Ap Subq x1 x3
+Known Subq_contra : All x1 set All x2 set All x3 set Imp Ap Ap Subq x1 x2 Imp Ap Ap nIn x3 x2 Ap Ap nIn x3 x1
+Known EmptyE : All x1 set Ap Ap nIn x1 Prim 2
+Known Subq_Empty : All x1 set Ap Ap Subq Prim 2 x1
+Known Empty_Subq_eq : All x1 set Imp Ap Ap Subq x1 Prim 2 Eq set x1 Prim 2
+Known Empty_eq : All x1 set Imp All x2 set Ap Ap nIn x2 x1 Eq set x1 Prim 2
+Known UnionI : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x2 x3 Imp Ap Ap Prim 1 x3 x1 Ap Ap Prim 1 x2 Ap Prim 3 x1
+Known UnionE : All x1 set All x2 set Imp Ap Ap Prim 1 x2 Ap Prim 3 x1 Ex x3 set Ap Ap and Ap Ap Prim 1 x2 x3 Ap Ap Prim 1 x3 x1
+Known UnionE_impred : All x1 set All x2 set Imp Ap Ap Prim 1 x2 Ap Prim 3 x1 All x3 Prop Imp All x4 set Imp Ap Ap Prim 1 x2 x4 Imp Ap Ap Prim 1 x4 x1 x3 x3
+Known PowerI : All x1 set All x2 set Imp Ap Ap Subq x2 x1 Ap Ap Prim 1 x2 Ap Prim 4 x1
+Known PowerE : All x1 set All x2 set Imp Ap Ap Prim 1 x2 Ap Prim 4 x1 Ap Ap Subq x2 x1
+Known Empty_In_Power : All x1 set Ap Ap Prim 1 Prim 2 Ap Prim 4 x1
+Known Self_In_Power : All x1 set Ap Ap Prim 1 x1 Ap Prim 4 x1
+Known xm : All x1 Prop Ap Ap or x1 Ap not x1
+Known dneg : All x1 Prop Imp Ap not Ap not x1 x1
+Known not_all_ex_demorgan_i : All x1 TpArr set Prop Imp Ap not All x3 set Ap x1 x3 Ex x2 set Ap not Ap x1 x2
+Known eq_or_nand : Eq TpArr Prop TpArr Prop Prop or Lam x Prop Lam y Prop Ap not Ap Ap and Ap not x Ap not y
+Param 163602f90de012a7426ee39176523ca58bc964ccde619b652cb448bd678f7e21 exactly1of2 : TpArr Prop TpArr Prop Prop
+Known exactly1of2_I1 : All x1 Prop All x2 Prop Imp x1 Imp Ap not x2 Ap Ap exactly1of2 x1 x2
+Known exactly1of2_I2 : All x1 Prop All x2 Prop Imp Ap not x1 Imp x2 Ap Ap exactly1of2 x1 x2
+Known exactly1of2_E : All x1 Prop All x2 Prop Imp Ap Ap exactly1of2 x1 x2 All x3 Prop Imp Imp x1 Imp Ap not x2 x3 Imp Imp Ap not x1 Imp x2 x3 x3
+Known exactly1of2_or : All x1 Prop All x2 Prop Imp Ap Ap exactly1of2 x1 x2 Ap Ap or x1 x2
+Known ReplI : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 x1 Ap Ap Prim 1 Ap x2 x3 Ap Ap Prim 5 x1 Lam x set Ap x2 x
+Known ReplE : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Prim 5 x1 Lam x set Ap x2 x Ex x4 set Ap Ap and Ap Ap Prim 1 x4 x1 Eq set x3 Ap x2 x4
+Known ReplE_impred : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Prim 5 x1 Lam x set Ap x2 x All x4 Prop Imp All x5 set Imp Ap Ap Prim 1 x5 x1 Imp Eq set x3 Ap x2 x5 x4 x4
+Known ReplE' : All x1 set All x2 TpArr set set All x3 TpArr set Prop Imp All x5 set Imp Ap Ap Prim 1 x5 x1 Ap x3 Ap x2 x5 All x4 set Imp Ap Ap Prim 1 x4 Ap Ap Prim 5 x1 Lam x set Ap x2 x Ap x3 x4
+Known Repl_Empty : All x1 TpArr set set Eq set Ap Ap Prim 5 Prim 2 Lam x set Ap x1 x Prim 2
+Known ReplEq_ext_sub : All x1 set All x2 TpArr set set All x3 TpArr set set Imp All x4 set Imp Ap Ap Prim 1 x4 x1 Eq set Ap x2 x4 Ap x3 x4 Ap Ap Subq Ap Ap Prim 5 x1 Lam x set Ap x2 x Ap Ap Prim 5 x1 Lam x set Ap x3 x
+Known ReplEq_ext : All x1 set All x2 TpArr set set All x3 TpArr set set Imp All x4 set Imp Ap Ap Prim 1 x4 x1 Eq set Ap x2 x4 Ap x3 x4 Eq set Ap Ap Prim 5 x1 Lam x set Ap x2 x Ap Ap Prim 5 x1 Lam x set Ap x3 x
+Known Repl_inv_eq : All x1 TpArr set Prop All x2 TpArr set set All x3 TpArr set set Imp All x6 set Imp Ap x1 x6 Eq set Ap x3 Ap x2 x6 x6 All x4 set Imp All x5 set Imp Ap Ap Prim 1 x5 x4 Ap x1 x5 Eq set Ap Ap Prim 5 Ap Ap Prim 5 x4 Lam x set Ap x2 x Lam x set Ap x3 x x4
+Known Repl_invol_eq : All x1 TpArr set Prop All x2 TpArr set set Imp All x5 set Imp Ap x1 x5 Eq set Ap x2 Ap x2 x5 x5 All x3 set Imp All x4 set Imp Ap Ap Prim 1 x4 x3 Ap x1 x4 Eq set Ap Ap Prim 5 Ap Ap Prim 5 x3 Lam x set Ap x2 x Lam x set Ap x2 x x3
+Param b8ff52f838d0ff97beb955ee0b26fad79602e1529f8a2854bda0ecd4193a8a3c If_i : TpArr Prop TpArr set TpArr set set
+Known If_i_correct : All x1 Prop All x2 set All x3 set Ap Ap or Ap Ap and x1 Eq set Ap Ap Ap If_i x1 x2 x3 x2 Ap Ap and Ap not x1 Eq set Ap Ap Ap If_i x1 x2 x3 x3
+Known If_i_0 : All x1 Prop All x2 set All x3 set Imp Ap not x1 Eq set Ap Ap Ap If_i x1 x2 x3 x3
+Known If_i_1 : All x1 Prop All x2 set All x3 set Imp x1 Eq set Ap Ap Ap If_i x1 x2 x3 x2
+Known If_i_or : All x1 Prop All x2 set All x3 set Ap Ap or Eq set Ap Ap Ap If_i x1 x2 x3 x2 Eq set Ap Ap Ap If_i x1 x2 x3 x3
+Param 74243828e4e6c9c0b467551f19c2ddaebf843f72e2437cc2dea41d079a31107f UPair : TpArr set TpArr set set
+Known UPairE : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x1 Ap Ap UPair x2 x3 Ap Ap or Eq set x1 x2 Eq set x1 x3
+Known UPairI1 : All x1 set All x2 set Ap Ap Prim 1 x1 Ap Ap UPair x1 x2
+Known UPairI2 : All x1 set All x2 set Ap Ap Prim 1 x2 Ap Ap UPair x1 x2
+Param bd01a809e97149be7e091bf7cbb44e0c2084c018911c24e159f585455d8e6bd0 Sing : TpArr set set
+Known SingI : All x1 set Ap Ap Prim 1 x1 Ap Sing x1
+Known SingE : All x1 set All x2 set Imp Ap Ap Prim 1 x2 Ap Sing x1 Eq set x2 x1
+Known Sing_inj : All x1 set All x2 set Imp Eq set Ap Sing x1 Ap Sing x2 Eq set x1 x2
+Param 5e1ac4ac93257583d0e9e17d6d048ff7c0d6ccc1a69875b2a505a2d4da305784 binunion : TpArr set TpArr set set
+Known binunionI1 : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 x1 Ap Ap Prim 1 x3 Ap Ap binunion x1 x2
+Known binunionI2 : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 x2 Ap Ap Prim 1 x3 Ap Ap binunion x1 x2
+Known binunionE : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap binunion x1 x2 Ap Ap or Ap Ap Prim 1 x3 x1 Ap Ap Prim 1 x3 x2
+Known binunionE' : All x1 set All x2 set All x3 set All x4 Prop Imp Imp Ap Ap Prim 1 x3 x1 x4 Imp Imp Ap Ap Prim 1 x3 x2 x4 Imp Ap Ap Prim 1 x3 Ap Ap binunion x1 x2 x4
+Known binunion_asso : All x1 set All x2 set All x3 set Eq set Ap Ap binunion x1 Ap Ap binunion x2 x3 Ap Ap binunion Ap Ap binunion x1 x2 x3
+Known binunion_com_Subq : All x1 set All x2 set Ap Ap Subq Ap Ap binunion x1 x2 Ap Ap binunion x2 x1
+Known binunion_com : All x1 set All x2 set Eq set Ap Ap binunion x1 x2 Ap Ap binunion x2 x1
+Known binunion_idl : All x1 set Eq set Ap Ap binunion Prim 2 x1 x1
+Known binunion_idr : All x1 set Eq set Ap Ap binunion x1 Prim 2 x1
+Known binunion_Subq_1 : All x1 set All x2 set Ap Ap Subq x1 Ap Ap binunion x1 x2
+Known binunion_Subq_2 : All x1 set All x2 set Ap Ap Subq x2 Ap Ap binunion x1 x2
+Known binunion_Subq_min : All x1 set All x2 set All x3 set Imp Ap Ap Subq x1 x3 Imp Ap Ap Subq x2 x3 Ap Ap Subq Ap Ap binunion x1 x2 x3
+Known Subq_binunion_eq : All x1 set All x2 set Eq Prop Ap Ap Subq x1 x2 Eq set Ap Ap binunion x1 x2 x2
+Def SetAdjoin : TpArr set TpArr set set
+ := Lam X set Lam y set Ap Ap binunion X Ap Sing y
+Param b3e3bf86a58af5d468d398d3acad61ccc50261f43c856a68f8594967a06ec07a famunion : TpArr set TpArr TpArr set set set
+Known famunionI : All x1 set All x2 TpArr set set All x3 set All x4 set Imp Ap Ap Prim 1 x3 x1 Imp Ap Ap Prim 1 x4 Ap x2 x3 Ap Ap Prim 1 x4 Ap Ap famunion x1 Lam x set Ap x2 x
+Known famunionE : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap famunion x1 Lam x set Ap x2 x Ex x4 set Ap Ap and Ap Ap Prim 1 x4 x1 Ap Ap Prim 1 x3 Ap x2 x4
+Known famunionE_impred : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap famunion x1 Lam x set Ap x2 x All x4 Prop Imp All x5 set Imp Ap Ap Prim 1 x5 x1 Imp Ap Ap Prim 1 x3 Ap x2 x5 x4 x4
+Known famunion_Empty : All x1 TpArr set set Eq set Ap Ap famunion Prim 2 Lam x set Ap x1 x Prim 2
+Known famunion_Subq : All x1 set All x2 TpArr set set All x3 TpArr set set Imp All x4 set Imp Ap Ap Prim 1 x4 x1 Ap Ap Subq Ap x2 x4 Ap x3 x4 Ap Ap Subq Ap Ap famunion x1 x2 Ap Ap famunion x1 x3
+Known famunion_ext : All x1 set All x2 TpArr set set All x3 TpArr set set Imp All x4 set Imp Ap Ap Prim 1 x4 x1 Eq set Ap x2 x4 Ap x3 x4 Eq set Ap Ap famunion x1 x2 Ap Ap famunion x1 x3
+Param f336a4ec8d55185095e45a638507748bac5384e04e0c48d008e4f6a9653e9c44 Sep : TpArr set TpArr TpArr set Prop set
+Known SepI : All x1 set All x2 TpArr set Prop All x3 set Imp Ap Ap Prim 1 x3 x1 Imp Ap x2 x3 Ap Ap Prim 1 x3 Ap Ap Sep x1 Lam x set Ap x2 x
+Known SepE : All x1 set All x2 TpArr set Prop All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Sep x1 Lam x set Ap x2 x Ap Ap and Ap Ap Prim 1 x3 x1 Ap x2 x3
+Known SepE1 : All x1 set All x2 TpArr set Prop All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Sep x1 Lam x set Ap x2 x Ap Ap Prim 1 x3 x1
+Known SepE2 : All x1 set All x2 TpArr set Prop All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Sep x1 Lam x set Ap x2 x Ap x2 x3
+Known Sep_Empty : All x1 TpArr set Prop Eq set Ap Ap Sep Prim 2 Lam x set Ap x1 x Prim 2
+Known Sep_Subq : All x1 set All x2 TpArr set Prop Ap Ap Subq Ap Ap Sep x1 Lam x set Ap x2 x x1
+Known Sep_In_Power : All x1 set All x2 TpArr set Prop Ap Ap Prim 1 Ap Ap Sep x1 Lam x set Ap x2 x Ap Prim 4 x1
+Param ec807b205da3293041239ff9552e2912636525180ddecb3a2b285b91b53f70d8 ReplSep : TpArr set TpArr TpArr set Prop TpArr TpArr set set set
+Known ReplSepI : All x1 set All x2 TpArr set Prop All x3 TpArr set set All x4 set Imp Ap Ap Prim 1 x4 x1 Imp Ap x2 x4 Ap Ap Prim 1 Ap x3 x4 Ap Ap Ap ReplSep x1 Lam x set Ap x2 x Lam x set Ap x3 x
+Known ReplSepE : All x1 set All x2 TpArr set Prop All x3 TpArr set set All x4 set Imp Ap Ap Prim 1 x4 Ap Ap Ap ReplSep x1 Lam x set Ap x2 x Lam x set Ap x3 x Ex x5 set Ap Ap and Ap Ap and Ap Ap Prim 1 x5 x1 Ap x2 x5 Eq set x4 Ap x3 x5
+Known ReplSepE_impred : All x1 set All x2 TpArr set Prop All x3 TpArr set set All x4 set Imp Ap Ap Prim 1 x4 Ap Ap Ap ReplSep x1 Lam x set Ap x2 x Lam x set Ap x3 x All x5 Prop Imp All x6 set Imp Ap Ap Prim 1 x6 x1 Imp Ap x2 x6 Imp Eq set x4 Ap x3 x6 x5 x5
+Param b2abd2e5215c0170efe42d2fa0fb8a62cdafe2c8fbd0d37ca14e3497e54ba729 binintersect : TpArr set TpArr set set
+Known binintersectI : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 x1 Imp Ap Ap Prim 1 x3 x2 Ap Ap Prim 1 x3 Ap Ap binintersect x1 x2
+Known binintersectE : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap binintersect x1 x2 Ap Ap and Ap Ap Prim 1 x3 x1 Ap Ap Prim 1 x3 x2
+Known binintersectE1 : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap binintersect x1 x2 Ap Ap Prim 1 x3 x1
+Known binintersectE2 : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap binintersect x1 x2 Ap Ap Prim 1 x3 x2
+Known binintersect_Subq_1 : All x1 set All x2 set Ap Ap Subq Ap Ap binintersect x1 x2 x1
+Known binintersect_Subq_2 : All x1 set All x2 set Ap Ap Subq Ap Ap binintersect x1 x2 x2
+Known binintersect_Subq_eq_1 : All x1 set All x2 set Imp Ap Ap Subq x1 x2 Eq set Ap Ap binintersect x1 x2 x1
+Known binintersect_Subq_max : All x1 set All x2 set All x3 set Imp Ap Ap Subq x3 x1 Imp Ap Ap Subq x3 x2 Ap Ap Subq x3 Ap Ap binintersect x1 x2
+Known binintersect_com_Subq : All x1 set All x2 set Ap Ap Subq Ap Ap binintersect x1 x2 Ap Ap binintersect x2 x1
+Known binintersect_com : All x1 set All x2 set Eq set Ap Ap binintersect x1 x2 Ap Ap binintersect x2 x1
+Param c68e5a1f5f57bc5b6e12b423f8c24b51b48bcc32149a86fc2c30a969a15d8881 setminus : TpArr set TpArr set set
+Known setminusI : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 x1 Imp Ap Ap nIn x3 x2 Ap Ap Prim 1 x3 Ap Ap setminus x1 x2
+Known setminusE : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap setminus x1 x2 Ap Ap and Ap Ap Prim 1 x3 x1 Ap Ap nIn x3 x2
+Known setminusE1 : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap setminus x1 x2 Ap Ap Prim 1 x3 x1
+Known setminusE2 : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap setminus x1 x2 Ap Ap nIn x3 x2
+Known setminus_Subq : All x1 set All x2 set Ap Ap Subq Ap Ap setminus x1 x2 x1
+Known setminus_Subq_contra : All x1 set All x2 set All x3 set Imp Ap Ap Subq x3 x2 Ap Ap Subq Ap Ap setminus x1 x2 Ap Ap setminus x1 x3
+Known setminus_In_Power : All x1 set All x2 set Ap Ap Prim 1 Ap Ap setminus x1 x2 Ap Prim 4 x1
+Known setminus_idr : All x1 set Eq set Ap Ap setminus x1 Prim 2 x1
+Known In_irref : All x1 set Ap Ap nIn x1 x1
+Known In_no2cycle : All x1 set All x2 set Imp Ap Ap Prim 1 x1 x2 Imp Ap Ap Prim 1 x2 x1 False
+Param 65d8837d7b0172ae830bed36c8407fcd41b7d875033d2284eb2df245b42295a6 ordsucc : TpArr set set
+Known ordsuccI1 : All x1 set Ap Ap Subq x1 Ap ordsucc x1
+Known ordsuccI2 : All x1 set Ap Ap Prim 1 x1 Ap ordsucc x1
+Known ordsuccE : All x1 set All x2 set Imp Ap Ap Prim 1 x2 Ap ordsucc x1 Ap Ap or Ap Ap Prim 1 x2 x1 Eq set x2 x1
+Known neq_0_ordsucc : All x1 set Imp Eq set Prim 2 Ap ordsucc x1 All p Prop p
+Known neq_ordsucc_0 : All x1 set Imp Eq set Ap ordsucc x1 Prim 2 All p Prop p
+Known ordsucc_inj : All x1 set All x2 set Imp Eq set Ap ordsucc x1 Ap ordsucc x2 Eq set x1 x2
+Known ordsucc_inj_contra : All x1 set All x2 set Imp Imp Eq set x1 x2 All p Prop p Imp Eq set Ap ordsucc x1 Ap ordsucc x2 All p Prop p
+Known In_0_1 : Ap Ap Prim 1 Prim 2 Ap ordsucc Prim 2
+Known In_0_2 : Ap Ap Prim 1 Prim 2 Ap ordsucc Ap ordsucc Prim 2
+Known In_1_2 : Ap Ap Prim 1 Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Prim 2
+Known In_1_3 : Ap Ap Prim 1 Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known In_2_3 : Ap Ap Prim 1 Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known In_1_4 : Ap Ap Prim 1 Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known In_2_4 : Ap Ap Prim 1 Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known In_3_4 : Ap Ap Prim 1 Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known In_1_5 : Ap Ap Prim 1 Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known In_2_5 : Ap Ap Prim 1 Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known In_3_5 : Ap Ap Prim 1 Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known In_4_5 : Ap Ap Prim 1 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known In_1_6 : Ap Ap Prim 1 Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known In_1_7 : Ap Ap Prim 1 Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known In_1_8 : Ap Ap Prim 1 Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Def nat_p : TpArr set Prop
+ := Lam n set All x1 TpArr set Prop Imp Ap x1 Prim 2 Imp All x2 set Imp Ap x1 x2 Ap x1 Ap ordsucc x2 Ap x1 n
+Known nat_0 : Ap nat_p Prim 2
+Known nat_ordsucc : All x1 set Imp Ap nat_p x1 Ap nat_p Ap ordsucc x1
+Known nat_1 : Ap nat_p Ap ordsucc Prim 2
+Known nat_2 : Ap nat_p Ap ordsucc Ap ordsucc Prim 2
+Known nat_3 : Ap nat_p Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known nat_4 : Ap nat_p Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known nat_5 : Ap nat_p Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known nat_6 : Ap nat_p Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known nat_7 : Ap nat_p Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known nat_8 : Ap nat_p Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known nat_0_in_ordsucc : All x1 set Imp Ap nat_p x1 Ap Ap Prim 1 Prim 2 Ap ordsucc x1
+Known nat_ordsucc_in_ordsucc : All x1 set Imp Ap nat_p x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Prim 1 Ap ordsucc x2 Ap ordsucc x1
+Known nat_ind : All x1 TpArr set Prop Imp Ap x1 Prim 2 Imp All x3 set Imp Ap nat_p x3 Imp Ap x1 x3 Ap x1 Ap ordsucc x3 All x2 set Imp Ap nat_p x2 Ap x1 x2
+Known nat_inv_impred : All x1 TpArr set Prop Imp Ap x1 Prim 2 Imp All x3 set Imp Ap nat_p x3 Ap x1 Ap ordsucc x3 All x2 set Imp Ap nat_p x2 Ap x1 x2
+Known nat_inv : All x1 set Imp Ap nat_p x1 Ap Ap or Eq set x1 Prim 2 Ex x2 set Ap Ap and Ap nat_p x2 Eq set x1 Ap ordsucc x2
+Known nat_complete_ind : All x1 TpArr set Prop Imp All x3 set Imp Ap nat_p x3 Imp All x4 set Imp Ap Ap Prim 1 x4 x3 Ap x1 x4 Ap x1 x3 All x2 set Imp Ap nat_p x2 Ap x1 x2
+Known nat_p_trans : All x1 set Imp Ap nat_p x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap nat_p x2
+Known nat_trans : All x1 set Imp Ap nat_p x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Subq x2 x1
+Known nat_ordsucc_trans : All x1 set Imp Ap nat_p x1 All x2 set Imp Ap Ap Prim 1 x2 Ap ordsucc x1 Ap Ap Subq x2 x1
+Known Union_ordsucc_eq : All x1 set Imp Ap nat_p x1 Eq set Ap Prim 3 Ap ordsucc x1 x1
+Known cases_1 : All x1 set Imp Ap Ap Prim 1 x1 Ap ordsucc Prim 2 All x2 TpArr set Prop Imp Ap x2 Prim 2 Ap x2 x1
+Known cases_2 : All x1 set Imp Ap Ap Prim 1 x1 Ap ordsucc Ap ordsucc Prim 2 All x2 TpArr set Prop Imp Ap x2 Prim 2 Imp Ap x2 Ap ordsucc Prim 2 Ap x2 x1
+Known cases_3 : All x1 set Imp Ap Ap Prim 1 x1 Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 All x2 TpArr set Prop Imp Ap x2 Prim 2 Imp Ap x2 Ap ordsucc Prim 2 Imp Ap x2 Ap ordsucc Ap ordsucc Prim 2 Ap x2 x1
+Known neq_0_1 : Imp Eq set Prim 2 Ap ordsucc Prim 2 All p Prop p
+Known neq_1_0 : Imp Eq set Ap ordsucc Prim 2 Prim 2 All p Prop p
+Known neq_0_2 : Imp Eq set Prim 2 Ap ordsucc Ap ordsucc Prim 2 All p Prop p
+Known neq_2_0 : Imp Eq set Ap ordsucc Ap ordsucc Prim 2 Prim 2 All p Prop p
+Known neq_1_2 : Imp Eq set Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Prim 2 All p Prop p
+Known neq_1_3 : Imp Eq set Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 All p Prop p
+Known neq_2_3 : Imp Eq set Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 All p Prop p
+Known neq_2_4 : Imp Eq set Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 All p Prop p
+Known neq_3_4 : Imp Eq set Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 All p Prop p
+Known ZF_closed_E : All x1 set Imp Ap ZF_closed x1 All x2 Prop Imp Imp Ap Union_closed x1 Imp Ap Power_closed x1 Imp Ap Repl_closed x1 x2 x2
+Known ZF_Union_closed : All x1 set Imp Ap ZF_closed x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Prim 1 Ap Prim 3 x2 x1
+Known ZF_Power_closed : All x1 set Imp Ap ZF_closed x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Prim 1 Ap Prim 4 x2 x1
+Known ZF_Repl_closed : All x1 set Imp Ap ZF_closed x1 All x2 set Imp Ap Ap Prim 1 x2 x1 All x3 TpArr set set Imp All x4 set Imp Ap Ap Prim 1 x4 x2 Ap Ap Prim 1 Ap x3 x4 x1 Ap Ap Prim 1 Ap Ap Prim 5 x2 Lam x set Ap x3 x x1
+Known ZF_UPair_closed : All x1 set Imp Ap ZF_closed x1 All x2 set Imp Ap Ap Prim 1 x2 x1 All x3 set Imp Ap Ap Prim 1 x3 x1 Ap Ap Prim 1 Ap Ap UPair x2 x3 x1
+Known ZF_Sing_closed : All x1 set Imp Ap ZF_closed x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Prim 1 Ap Sing x2 x1
+Known ZF_binunion_closed : All x1 set Imp Ap ZF_closed x1 All x2 set Imp Ap Ap Prim 1 x2 x1 All x3 set Imp Ap Ap Prim 1 x3 x1 Ap Ap Prim 1 Ap Ap binunion x2 x3 x1
+Known ZF_ordsucc_closed : All x1 set Imp Ap ZF_closed x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Prim 1 Ap ordsucc x2 x1
+Known nat_p_UnivOf_Empty : All x1 set Imp Ap nat_p x1 Ap Ap Prim 1 x1 Ap Prim 6 Prim 2
+Param 6fc30ac8f2153537e397b9ff2d9c981f80c151a73f96cf9d56ae2ee27dfd1eb2 omega : set
+Known omega_nat_p : All x1 set Imp Ap Ap Prim 1 x1 omega Ap nat_p x1
+Known nat_p_omega : All x1 set Imp Ap nat_p x1 Ap Ap Prim 1 x1 omega
+Known omega_ordsucc : All x1 set Imp Ap Ap Prim 1 x1 omega Ap Ap Prim 1 Ap ordsucc x1 omega
+Def ordinal : TpArr set Prop
+ := Lam alpha set Ap Ap and Ap TransSet alpha All x1 set Imp Ap Ap Prim 1 x1 alpha Ap TransSet x1
+Known ordinal_TransSet : All x1 set Imp Ap ordinal x1 Ap TransSet x1
+Known ordinal_Empty : Ap ordinal Prim 2
+Known ordinal_Hered : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap ordinal x2
+Known TransSet_ordsucc : All x1 set Imp Ap TransSet x1 Ap TransSet Ap ordsucc x1
+Known ordinal_ordsucc : All x1 set Imp Ap ordinal x1 Ap ordinal Ap ordsucc x1
+Known nat_p_ordinal : All x1 set Imp Ap nat_p x1 Ap ordinal x1
+Known ordinal_1 : Ap ordinal Ap ordsucc Prim 2
+Known ordinal_2 : Ap ordinal Ap ordsucc Ap ordsucc Prim 2
+Known omega_TransSet : Ap TransSet omega
+Known omega_ordinal : Ap ordinal omega
+Known ordsucc_omega_ordinal : Ap ordinal Ap ordsucc omega
+Known TransSet_ordsucc_In_Subq : All x1 set Imp Ap TransSet x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Subq Ap ordsucc x2 x1
+Known ordinal_ordsucc_In_Subq : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Subq Ap ordsucc x2 x1
+Known ordinal_trichotomy_or : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 Ap Ap or Ap Ap or Ap Ap Prim 1 x1 x2 Eq set x1 x2 Ap Ap Prim 1 x2 x1
+Known ordinal_trichotomy_or_impred : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 All x3 Prop Imp Imp Ap Ap Prim 1 x1 x2 x3 Imp Imp Eq set x1 x2 x3 Imp Imp Ap Ap Prim 1 x2 x1 x3 x3
+Known ordinal_In_Or_Subq : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 Ap Ap or Ap Ap Prim 1 x1 x2 Ap Ap Subq x2 x1
+Known ordinal_linear : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 Ap Ap or Ap Ap Subq x1 x2 Ap Ap Subq x2 x1
+Known ordinal_ordsucc_In_eq : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap Ap Prim 1 x2 x1 Ap Ap or Ap Ap Prim 1 Ap ordsucc x2 x1 Eq set x1 Ap ordsucc x2
+Known ordinal_lim_or_succ : All x1 set Imp Ap ordinal x1 Ap Ap or All x3 set Imp Ap Ap Prim 1 x3 x1 Ap Ap Prim 1 Ap ordsucc x3 x1 Ex x2 set Ap Ap and Ap Ap Prim 1 x2 x1 Eq set x1 Ap ordsucc x2
+Known ordinal_ordsucc_In : All x1 set Imp Ap ordinal x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Prim 1 Ap ordsucc x2 Ap ordsucc x1
+Known ordinal_famunion : All x1 set All x2 TpArr set set Imp All x3 set Imp Ap Ap Prim 1 x3 x1 Ap ordinal Ap x2 x3 Ap ordinal Ap Ap famunion x1 Lam x set Ap x2 x
+Known ordinal_binintersect : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 Ap ordinal Ap Ap binintersect x1 x2
+Known ordinal_binunion : All x1 set All x2 set Imp Ap ordinal x1 Imp Ap ordinal x2 Ap ordinal Ap Ap binunion x1 x2
+Known ordinal_ind : All x1 TpArr set Prop Imp All x3 set Imp Ap ordinal x3 Imp All x4 set Imp Ap Ap Prim 1 x4 x3 Ap x1 x4 Ap x1 x3 All x2 set Imp Ap ordinal x2 Ap x1 x2
+Known least_ordinal_ex : All x1 TpArr set Prop Imp Ex x4 set Ap Ap and Ap ordinal x4 Ap x1 x4 Ex x2 set Ap Ap and Ap Ap and Ap ordinal x2 Ap x1 x2 All x3 set Imp Ap Ap Prim 1 x3 x2 Ap not Ap x1 x3
+Def inj : TpArr set TpArr set TpArr TpArr set set Prop
+ := Lam X set Lam Y set Lam f TpArr set set Ap Ap and All x3 set Imp Ap Ap Prim 1 x3 X Ap Ap Prim 1 Ap f x3 Y All x1 set Imp Ap Ap Prim 1 x1 X All x2 set Imp Ap Ap Prim 1 x2 X Imp Eq set Ap f x1 Ap f x2 Eq set x1 x2
+Def bij : TpArr set TpArr set TpArr TpArr set set Prop
+ := Lam X set Lam Y set Lam f TpArr set set Ap Ap and Ap Ap and All x5 set Imp Ap Ap Prim 1 x5 X Ap Ap Prim 1 Ap f x5 Y All x3 set Imp Ap Ap Prim 1 x3 X All x4 set Imp Ap Ap Prim 1 x4 X Imp Eq set Ap f x3 Ap f x4 Eq set x3 x4 All x1 set Imp Ap Ap Prim 1 x1 Y Ex x2 set Ap Ap and Ap Ap Prim 1 x2 X Eq set Ap f x2 x1
+Known bijI : All x1 set All x2 set All x3 TpArr set set Imp All x8 set Imp Ap Ap Prim 1 x8 x1 Ap Ap Prim 1 Ap x3 x8 x2 Imp All x6 set Imp Ap Ap Prim 1 x6 x1 All x7 set Imp Ap Ap Prim 1 x7 x1 Imp Eq set Ap x3 x6 Ap x3 x7 Eq set x6 x7 Imp All x4 set Imp Ap Ap Prim 1 x4 x2 Ex x5 set Ap Ap and Ap Ap Prim 1 x5 x1 Eq set Ap x3 x5 x4 Ap Ap Ap bij x1 x2 x3
+Known bijE : All x1 set All x2 set All x3 TpArr set set Imp Ap Ap Ap bij x1 x2 x3 All x4 Prop Imp Imp All x9 set Imp Ap Ap Prim 1 x9 x1 Ap Ap Prim 1 Ap x3 x9 x2 Imp All x7 set Imp Ap Ap Prim 1 x7 x1 All x8 set Imp Ap Ap Prim 1 x8 x1 Imp Eq set Ap x3 x7 Ap x3 x8 Eq set x7 x8 Imp All x5 set Imp Ap Ap Prim 1 x5 x2 Ex x6 set Ap Ap and Ap Ap Prim 1 x6 x1 Eq set Ap x3 x6 x5 x4 x4
+Param 896fa967e973688effc566a01c68f328848acd8b37e857ad23e133fdd4a50463 inv : TpArr set TpArr TpArr set set TpArr set set
+Known surj_rinv : All x1 set All x2 set All x3 TpArr set set Imp All x5 set Imp Ap Ap Prim 1 x5 x2 Ex x6 set Ap Ap and Ap Ap Prim 1 x6 x1 Eq set Ap x3 x6 x5 All x4 set Imp Ap Ap Prim 1 x4 x2 Ap Ap and Ap Ap Prim 1 Ap Ap Ap inv x1 x3 x4 x1 Eq set Ap x3 Ap Ap Ap inv x1 x3 x4 x4
+Known inj_linv : All x1 set All x2 TpArr set set Imp All x4 set Imp Ap Ap Prim 1 x4 x1 All x5 set Imp Ap Ap Prim 1 x5 x1 Imp Eq set Ap x2 x4 Ap x2 x5 Eq set x4 x5 All x3 set Imp Ap Ap Prim 1 x3 x1 Eq set Ap Ap Ap inv x1 x2 Ap x2 x3 x3
+Known bij_inv : All x1 set All x2 set All x3 TpArr set set Imp Ap Ap Ap bij x1 x2 x3 Ap Ap Ap bij x2 x1 Ap Ap inv x1 x3
+Known bij_id : All x1 set Ap Ap Ap bij x1 x1 Lam x set x
+Known bij_comp : All x1 set All x2 set All x3 set All x4 TpArr set set All x5 TpArr set set Imp Ap Ap Ap bij x1 x2 x4 Imp Ap Ap Ap bij x2 x3 x5 Ap Ap Ap bij x1 x3 Lam x set Ap x5 Ap x4 x
+Def equip : TpArr set TpArr set Prop
+ := Lam X set Lam Y set Ex x1 TpArr set set Ap Ap Ap bij X Y x1
+Known equip_ref : All x1 set Ap Ap equip x1 x1
+Known equip_sym : All x1 set All x2 set Imp Ap Ap equip x1 x2 Ap Ap equip x2 x1
+Known equip_tra : All x1 set All x2 set All x3 set Imp Ap Ap equip x1 x2 Imp Ap Ap equip x2 x3 Ap Ap equip x1 x3
+Known equip_0_Empty : All x1 set Imp Ap Ap equip x1 Prim 2 Eq set x1 Prim 2
+Known KnasterTarski_set : All x1 set All x2 TpArr set set Imp All x6 set Imp Ap Ap Prim 1 x6 Ap Prim 4 x1 Ap Ap Prim 1 Ap x2 x6 Ap Prim 4 x1 Imp All x4 set Imp Ap Ap Prim 1 x4 Ap Prim 4 x1 All x5 set Imp Ap Ap Prim 1 x5 Ap Prim 4 x1 Imp Ap Ap Subq x4 x5 Ap Ap Subq Ap x2 x4 Ap x2 x5 Ex x3 set Ap Ap and Ap Ap Prim 1 x3 Ap Prim 4 x1 Eq set Ap x2 x3 x3
+Known image_In_Power : All x1 set All x2 set All x3 TpArr set set Imp All x5 set Imp Ap Ap Prim 1 x5 x1 Ap Ap Prim 1 Ap x3 x5 x2 All x4 set Imp Ap Ap Prim 1 x4 Ap Prim 4 x1 Ap Ap Prim 1 Ap Ap Prim 5 x4 Lam x set Ap x3 x Ap Prim 4 x2
+Known image_monotone : All x1 TpArr set set All x2 set All x3 set Imp Ap Ap Subq x2 x3 Ap Ap Subq Ap Ap Prim 5 x2 Lam x set Ap x1 x Ap Ap Prim 5 x3 Lam x set Ap x1 x
+Known setminus_antimonotone : All x1 set All x2 set All x3 set Imp Ap Ap Subq x2 x3 Ap Ap Subq Ap Ap setminus x1 x3 Ap Ap setminus x1 x2
+Known SchroederBernstein : All x1 set All x2 set All x3 TpArr set set All x4 TpArr set set Imp Ap Ap Ap inj x1 x2 x3 Imp Ap Ap Ap inj x2 x1 x4 Ap Ap equip x1 x2
+Known PigeonHole_nat : All x1 set Imp Ap nat_p x1 All x2 TpArr set set Imp All x5 set Imp Ap Ap Prim 1 x5 Ap ordsucc x1 Ap Ap Prim 1 Ap x2 x5 x1 Ap not All x3 set Imp Ap Ap Prim 1 x3 Ap ordsucc x1 All x4 set Imp Ap Ap Prim 1 x4 Ap ordsucc x1 Imp Eq set Ap x2 x3 Ap x2 x4 Eq set x3 x4
+Known PigeonHole_nat_bij : All x1 set Imp Ap nat_p x1 All x2 TpArr set set Imp All x5 set Imp Ap Ap Prim 1 x5 x1 Ap Ap Prim 1 Ap x2 x5 x1 Imp All x3 set Imp Ap Ap Prim 1 x3 x1 All x4 set Imp Ap Ap Prim 1 x4 x1 Imp Eq set Ap x2 x3 Ap x2 x4 Eq set x3 x4 Ap Ap Ap bij x1 x1 x2
+Def finite : TpArr set Prop
+ := Lam X set Ex x1 set Ap Ap and Ap Ap Prim 1 x1 omega Ap Ap equip X x1
+Known finite_ind : All x1 TpArr set Prop Imp Ap x1 Prim 2 Imp All x3 set All x4 set Imp Ap finite x3 Imp Ap Ap nIn x4 x3 Imp Ap x1 x3 Ap x1 Ap Ap binunion x3 Ap Sing x4 All x2 set Imp Ap finite x2 Ap x1 x2
+Known finite_Empty : Ap finite Prim 2
+Known adjoin_finite : All x1 set All x2 set Imp Ap finite x1 Ap finite Ap Ap binunion x1 Ap Sing x2
+Known binunion_finite : All x1 set Imp Ap finite x1 All x2 set Imp Ap finite x2 Ap finite Ap Ap binunion x1 x2
+Known famunion_nat_finite : All x1 TpArr set set All x2 set Imp Ap nat_p x2 Imp All x3 set Imp Ap Ap Prim 1 x3 x2 Ap finite Ap x1 x3 Ap finite Ap Ap famunion x2 Lam x set Ap x1 x
+Known Subq_finite : All x1 set Imp Ap finite x1 All x2 set Imp Ap Ap Subq x2 x1 Ap finite x2
+Known TransSet_In_ordsucc_Subq : All x1 set All x2 set Imp Ap TransSet x2 Imp Ap Ap Prim 1 x1 Ap ordsucc x2 Ap Ap Subq x1 x2
+Known exandE_i : All x1 TpArr set Prop All x2 TpArr set Prop Imp Ex x5 set Ap Ap and Ap x1 x5 Ap x2 x5 All x3 Prop Imp All x4 set Imp Ap x1 x4 Imp Ap x2 x4 x3 x3
+Known exandE_ii : All x1 TpArr TpArr set set Prop All x2 TpArr TpArr set set Prop Imp Ex x5 TpArr set set Ap Ap and Ap x1 x5 Ap x2 x5 All x3 Prop Imp All x4 TpArr set set Imp Ap x1 x4 Imp Ap x2 x4 x3 x3
+Known exandE_iii : All x1 TpArr TpArr set TpArr set set Prop All x2 TpArr TpArr set TpArr set set Prop Imp Ex x5 TpArr set TpArr set set Ap Ap and Ap x1 x5 Ap x2 x5 All x3 Prop Imp All x4 TpArr set TpArr set set Imp Ap x1 x4 Imp Ap x2 x4 x3 x3
+Known exandE_iiii : All x1 TpArr TpArr set TpArr set TpArr set set Prop All x2 TpArr TpArr set TpArr set TpArr set set Prop Imp Ex x5 TpArr set TpArr set TpArr set set Ap Ap and Ap x1 x5 Ap x2 x5 All x3 Prop Imp All x4 TpArr set TpArr set TpArr set set Imp Ap x1 x4 Imp Ap x2 x4 x3 x3
+Param 3bae39e9880bbf5d70538d82bbb05caf44c2c11484d80d06dee0589d6f75178c Descr_ii : TpArr TpArr TpArr set set Prop TpArr set set
+Known Descr_ii_prop : All x1 TpArr TpArr set set Prop Imp Ex x4 TpArr set set Ap x1 x4 Imp All x2 TpArr set set All x3 TpArr set set Imp Ap x1 x2 Imp Ap x1 x3 Eq TpArr set set x2 x3 Ap x1 Ap Descr_ii x1
+Param ca5fc17a582fdd4350456951ccbb37275637ba6c06694213083ed9434fe3d545 Descr_iii : TpArr TpArr TpArr set TpArr set set Prop TpArr set TpArr set set
+Known Descr_iii_prop : All x1 TpArr TpArr set TpArr set set Prop Imp Ex x4 TpArr set TpArr set set Ap x1 x4 Imp All x2 TpArr set TpArr set set All x3 TpArr set TpArr set set Imp Ap x1 x2 Imp Ap x1 x3 Eq TpArr set TpArr set set x2 x3 Ap x1 Ap Descr_iii x1
+Param 615c0ac7fca2b62596ed34285f29a77b39225d1deed75d43b7ae87c33ba37083 Descr_Vo1 : TpArr TpArr TpArr set Prop Prop TpArr set Prop
+Known Descr_Vo1_prop : All x1 TpArr TpArr set Prop Prop Imp Ex x4 TpArr set Prop Ap x1 x4 Imp All x2 TpArr set Prop All x3 TpArr set Prop Imp Ap x1 x2 Imp Ap x1 x3 Eq TpArr set Prop x2 x3 Ap x1 Ap Descr_Vo1 x1
+Param 17057f3db7be61b4e6bd237e7b37125096af29c45cb784bb9cc29b1d52333779 If_ii : TpArr Prop TpArr TpArr set set TpArr TpArr set set TpArr set set
+Known If_ii_1 : All x1 Prop All x2 TpArr set set All x3 TpArr set set Imp x1 Eq TpArr set set Ap Ap Ap If_ii x1 x2 x3 x2
+Known If_ii_0 : All x1 Prop All x2 TpArr set set All x3 TpArr set set Imp Ap not x1 Eq TpArr set set Ap Ap Ap If_ii x1 x2 x3 x3
+Param 3314762dce5a2e94b7e9e468173b047dd4a9fac6ee2c5f553c6ea15e9c8b7542 If_iii : TpArr Prop TpArr TpArr set TpArr set set TpArr TpArr set TpArr set set TpArr set TpArr set set
+Known If_iii_1 : All x1 Prop All x2 TpArr set TpArr set set All x3 TpArr set TpArr set set Imp x1 Eq TpArr set TpArr set set Ap Ap Ap If_iii x1 x2 x3 x2
+Known If_iii_0 : All x1 Prop All x2 TpArr set TpArr set set All x3 TpArr set TpArr set set Imp Ap not x1 Eq TpArr set TpArr set set Ap Ap Ap If_iii x1 x2 x3 x3
+Def In_rec_i_G : TpArr TpArr set TpArr TpArr set set set TpArr set TpArr set Prop
+ := Lam x1 TpArr set TpArr TpArr set set set Lam X set Lam Y set All x2 TpArr set TpArr set Prop Imp All x3 set All x4 TpArr set set Imp All x5 set Imp Ap Ap Prim 1 x5 x3 Ap Ap x2 x5 Ap x4 x5 Ap Ap x2 x3 Ap Ap x1 x3 x4 Ap Ap x2 X Y
+Param fac413e747a57408ad38b3855d3cde8673f86206e95ccdadff2b5babaf0c219e In_rec_i : TpArr TpArr set TpArr TpArr set set set TpArr set set
+Known In_rec_i_G_c : All x1 TpArr set TpArr TpArr set set set All x2 set All x3 TpArr set set Imp All x4 set Imp Ap Ap Prim 1 x4 x2 Ap Ap Ap In_rec_i_G x1 x4 Ap x3 x4 Ap Ap Ap In_rec_i_G x1 x2 Ap Ap x1 x2 x3
+Known In_rec_i_G_inv : All x1 TpArr set TpArr TpArr set set set All x2 set All x3 set Imp Ap Ap Ap In_rec_i_G x1 x2 x3 Ex x4 TpArr set set Ap Ap and All x5 set Imp Ap Ap Prim 1 x5 x2 Ap Ap Ap In_rec_i_G x1 x5 Ap x4 x5 Eq set x3 Ap Ap x1 x2 x4
+Known In_rec_i_G_f : All x1 TpArr set TpArr TpArr set set set Imp All x5 set All x6 TpArr set set All x7 TpArr set set Imp All x8 set Imp Ap Ap Prim 1 x8 x5 Eq set Ap x6 x8 Ap x7 x8 Eq set Ap Ap x1 x5 x6 Ap Ap x1 x5 x7 All x2 set All x3 set All x4 set Imp Ap Ap Ap In_rec_i_G x1 x2 x3 Imp Ap Ap Ap In_rec_i_G x1 x2 x4 Eq set x3 x4
+Known In_rec_i_G_In_rec_i : All x1 TpArr set TpArr TpArr set set set Imp All x3 set All x4 TpArr set set All x5 TpArr set set Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Eq set Ap x4 x6 Ap x5 x6 Eq set Ap Ap x1 x3 x4 Ap Ap x1 x3 x5 All x2 set Ap Ap Ap In_rec_i_G x1 x2 Ap Ap In_rec_i x1 x2
+Known In_rec_i_G_In_rec_i_d : All x1 TpArr set TpArr TpArr set set set Imp All x3 set All x4 TpArr set set All x5 TpArr set set Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Eq set Ap x4 x6 Ap x5 x6 Eq set Ap Ap x1 x3 x4 Ap Ap x1 x3 x5 All x2 set Ap Ap Ap In_rec_i_G x1 x2 Ap Ap x1 x2 Ap In_rec_i x1
+Known In_rec_i_eq : All x1 TpArr set TpArr TpArr set set set Imp All x3 set All x4 TpArr set set All x5 TpArr set set Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Eq set Ap x4 x6 Ap x5 x6 Eq set Ap Ap x1 x3 x4 Ap Ap x1 x3 x5 All x2 set Eq set Ap Ap In_rec_i x1 x2 Ap Ap x1 x2 Ap In_rec_i x1
+Def In_rec_G_ii : TpArr TpArr set TpArr TpArr set TpArr set set TpArr set set TpArr set TpArr TpArr set set Prop
+ := Lam x1 TpArr set TpArr TpArr set TpArr set set TpArr set set Lam X set Lam Y TpArr set set All x2 TpArr set TpArr TpArr set set Prop Imp All x3 set All x4 TpArr set TpArr set set Imp All x5 set Imp Ap Ap Prim 1 x5 x3 Ap Ap x2 x5 Ap x4 x5 Ap Ap x2 x3 Ap Ap x1 x3 x4 Ap Ap x2 X Y
+Param f3c9abbc5074c0d68e744893a170de526469426a5e95400ae7fc81f74f412f7e In_rec_ii : TpArr TpArr set TpArr TpArr set TpArr set set TpArr set set TpArr set TpArr set set
+Known In_rec_G_ii_c : All x1 TpArr set TpArr TpArr set TpArr set set TpArr set set All x2 set All x3 TpArr set TpArr set set Imp All x4 set Imp Ap Ap Prim 1 x4 x2 Ap Ap Ap In_rec_G_ii x1 x4 Ap x3 x4 Ap Ap Ap In_rec_G_ii x1 x2 Ap Ap x1 x2 x3
+Known In_rec_G_ii_inv : All x1 TpArr set TpArr TpArr set TpArr set set TpArr set set All x2 set All x3 TpArr set set Imp Ap Ap Ap In_rec_G_ii x1 x2 x3 Ex x4 TpArr set TpArr set set Ap Ap and All x5 set Imp Ap Ap Prim 1 x5 x2 Ap Ap Ap In_rec_G_ii x1 x5 Ap x4 x5 Eq TpArr set set x3 Ap Ap x1 x2 x4
+Known In_rec_G_ii_f : All x1 TpArr set TpArr TpArr set TpArr set set TpArr set set Imp All x5 set All x6 TpArr set TpArr set set All x7 TpArr set TpArr set set Imp All x8 set Imp Ap Ap Prim 1 x8 x5 Eq TpArr set set Ap x6 x8 Ap x7 x8 Eq TpArr set set Ap Ap x1 x5 x6 Ap Ap x1 x5 x7 All x2 set All x3 TpArr set set All x4 TpArr set set Imp Ap Ap Ap In_rec_G_ii x1 x2 x3 Imp Ap Ap Ap In_rec_G_ii x1 x2 x4 Eq TpArr set set x3 x4
+Known In_rec_G_ii_In_rec_ii : All x1 TpArr set TpArr TpArr set TpArr set set TpArr set set Imp All x3 set All x4 TpArr set TpArr set set All x5 TpArr set TpArr set set Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Eq TpArr set set Ap x4 x6 Ap x5 x6 Eq TpArr set set Ap Ap x1 x3 x4 Ap Ap x1 x3 x5 All x2 set Ap Ap Ap In_rec_G_ii x1 x2 Ap Ap In_rec_ii x1 x2
+Known In_rec_G_ii_In_rec_ii_d : All x1 TpArr set TpArr TpArr set TpArr set set TpArr set set Imp All x3 set All x4 TpArr set TpArr set set All x5 TpArr set TpArr set set Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Eq TpArr set set Ap x4 x6 Ap x5 x6 Eq TpArr set set Ap Ap x1 x3 x4 Ap Ap x1 x3 x5 All x2 set Ap Ap Ap In_rec_G_ii x1 x2 Ap Ap x1 x2 Ap In_rec_ii x1
+Known In_rec_ii_eq : All x1 TpArr set TpArr TpArr set TpArr set set TpArr set set Imp All x3 set All x4 TpArr set TpArr set set All x5 TpArr set TpArr set set Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Eq TpArr set set Ap x4 x6 Ap x5 x6 Eq TpArr set set Ap Ap x1 x3 x4 Ap Ap x1 x3 x5 All x2 set Eq TpArr set set Ap Ap In_rec_ii x1 x2 Ap Ap x1 x2 Ap In_rec_ii x1
+Def In_rec_G_iii : TpArr TpArr set TpArr TpArr set TpArr set TpArr set set TpArr set TpArr set set TpArr set TpArr TpArr set TpArr set set Prop
+ := Lam x1 TpArr set TpArr TpArr set TpArr set TpArr set set TpArr set TpArr set set Lam X set Lam Y TpArr set TpArr set set All x2 TpArr set TpArr TpArr set TpArr set set Prop Imp All x3 set All x4 TpArr set TpArr set TpArr set set Imp All x5 set Imp Ap Ap Prim 1 x5 x3 Ap Ap x2 x5 Ap x4 x5 Ap Ap x2 x3 Ap Ap x1 x3 x4 Ap Ap x2 X Y
+Param 9b3a85b85e8269209d0ca8bf18ef658e56f967161bf5b7da5e193d24d345dd06 In_rec_iii : TpArr TpArr set TpArr TpArr set TpArr set TpArr set set TpArr set TpArr set set TpArr set TpArr set TpArr set set
+Known In_rec_G_iii_c : All x1 TpArr set TpArr TpArr set TpArr set TpArr set set TpArr set TpArr set set All x2 set All x3 TpArr set TpArr set TpArr set set Imp All x4 set Imp Ap Ap Prim 1 x4 x2 Ap Ap Ap In_rec_G_iii x1 x4 Ap x3 x4 Ap Ap Ap In_rec_G_iii x1 x2 Ap Ap x1 x2 x3
+Known In_rec_G_iii_inv : All x1 TpArr set TpArr TpArr set TpArr set TpArr set set TpArr set TpArr set set All x2 set All x3 TpArr set TpArr set set Imp Ap Ap Ap In_rec_G_iii x1 x2 x3 Ex x4 TpArr set TpArr set TpArr set set Ap Ap and All x5 set Imp Ap Ap Prim 1 x5 x2 Ap Ap Ap In_rec_G_iii x1 x5 Ap x4 x5 Eq TpArr set TpArr set set x3 Ap Ap x1 x2 x4
+Known In_rec_G_iii_f : All x1 TpArr set TpArr TpArr set TpArr set TpArr set set TpArr set TpArr set set Imp All x5 set All x6 TpArr set TpArr set TpArr set set All x7 TpArr set TpArr set TpArr set set Imp All x8 set Imp Ap Ap Prim 1 x8 x5 Eq TpArr set TpArr set set Ap x6 x8 Ap x7 x8 Eq TpArr set TpArr set set Ap Ap x1 x5 x6 Ap Ap x1 x5 x7 All x2 set All x3 TpArr set TpArr set set All x4 TpArr set TpArr set set Imp Ap Ap Ap In_rec_G_iii x1 x2 x3 Imp Ap Ap Ap In_rec_G_iii x1 x2 x4 Eq TpArr set TpArr set set x3 x4
+Known In_rec_G_iii_In_rec_iii : All x1 TpArr set TpArr TpArr set TpArr set TpArr set set TpArr set TpArr set set Imp All x3 set All x4 TpArr set TpArr set TpArr set set All x5 TpArr set TpArr set TpArr set set Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Eq TpArr set TpArr set set Ap x4 x6 Ap x5 x6 Eq TpArr set TpArr set set Ap Ap x1 x3 x4 Ap Ap x1 x3 x5 All x2 set Ap Ap Ap In_rec_G_iii x1 x2 Ap Ap In_rec_iii x1 x2
+Known In_rec_G_iii_In_rec_iii_d : All x1 TpArr set TpArr TpArr set TpArr set TpArr set set TpArr set TpArr set set Imp All x3 set All x4 TpArr set TpArr set TpArr set set All x5 TpArr set TpArr set TpArr set set Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Eq TpArr set TpArr set set Ap x4 x6 Ap x5 x6 Eq TpArr set TpArr set set Ap Ap x1 x3 x4 Ap Ap x1 x3 x5 All x2 set Ap Ap Ap In_rec_G_iii x1 x2 Ap Ap x1 x2 Ap In_rec_iii x1
+Known In_rec_iii_eq : All x1 TpArr set TpArr TpArr set TpArr set TpArr set set TpArr set TpArr set set Imp All x3 set All x4 TpArr set TpArr set TpArr set set All x5 TpArr set TpArr set TpArr set set Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Eq TpArr set TpArr set set Ap x4 x6 Ap x5 x6 Eq TpArr set TpArr set set Ap Ap x1 x3 x4 Ap Ap x1 x3 x5 All x2 set Eq TpArr set TpArr set set Ap Ap In_rec_iii x1 x2 Ap Ap x1 x2 Ap In_rec_iii x1
+Def nat_primrec : TpArr set TpArr TpArr set TpArr set set TpArr set set
+ := Lam x1 set Lam x2 TpArr set TpArr set set Ap In_rec_i Lam n set Lam g TpArr set set Ap Ap Ap If_i Ap Ap Prim 1 Ap Prim 3 n n Ap Ap x2 Ap Prim 3 n Ap g Ap Prim 3 n x1
+Known nat_primrec_r : All x1 set All x2 TpArr set TpArr set set All x3 set All x4 TpArr set set All x5 TpArr set set Imp All x10 set Imp Ap Ap Prim 1 x10 x3 Eq set Ap x4 x10 Ap x5 x10 Eq set Ap Ap Lam x8 set Lam x9 TpArr set set Ap Ap Ap If_i Ap Ap Prim 1 Ap Prim 3 x8 x8 Ap Ap x2 Ap Prim 3 x8 Ap x9 Ap Prim 3 x8 x1 x3 x4 Ap Ap Lam x6 set Lam x7 TpArr set set Ap Ap Ap If_i Ap Ap Prim 1 Ap Prim 3 x6 x6 Ap Ap x2 Ap Prim 3 x6 Ap x7 Ap Prim 3 x6 x1 x3 x5
+Known nat_primrec_0 : All x1 set All x2 TpArr set TpArr set set Eq set Ap Ap Ap nat_primrec x1 x2 Prim 2 x1
+Known nat_primrec_S : All x1 set All x2 TpArr set TpArr set set All x3 set Imp Ap nat_p x3 Eq set Ap Ap Ap nat_primrec x1 x2 Ap ordsucc x3 Ap Ap x2 x3 Ap Ap Ap nat_primrec x1 x2 x3
+Def add_nat : TpArr set TpArr set set
+ := Lam n set Lam m set Ap Ap Ap nat_primrec n Lam _ set Lam r set Ap ordsucc r m
+Known add_nat_0R : All x1 set Eq set Ap Ap add_nat x1 Prim 2 x1
+Known add_nat_SR : All x1 set All x2 set Imp Ap nat_p x2 Eq set Ap Ap add_nat x1 Ap ordsucc x2 Ap ordsucc Ap Ap add_nat x1 x2
+Known add_nat_p : All x1 set Imp Ap nat_p x1 All x2 set Imp Ap nat_p x2 Ap nat_p Ap Ap add_nat x1 x2
+Known add_nat_1_1_2 : Eq set Ap Ap add_nat Ap ordsucc Prim 2 Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Prim 2
+Known add_nat_0L : All x1 set Imp Ap nat_p x1 Eq set Ap Ap add_nat Prim 2 x1 x1
+Known add_nat_SL : All x1 set Imp Ap nat_p x1 All x2 set Imp Ap nat_p x2 Eq set Ap Ap add_nat Ap ordsucc x1 x2 Ap ordsucc Ap Ap add_nat x1 x2
+Known add_nat_com : All x1 set Imp Ap nat_p x1 All x2 set Imp Ap nat_p x2 Eq set Ap Ap add_nat x1 x2 Ap Ap add_nat x2 x1
+Known nat_Subq_add_ex : All x1 set Imp Ap nat_p x1 All x2 set Imp Ap nat_p x2 Imp Ap Ap Subq x1 x2 Ex x3 set Ap Ap and Ap nat_p x3 Eq set x2 Ap Ap add_nat x3 x1
+Def mul_nat : TpArr set TpArr set set
+ := Lam n set Lam m set Ap Ap Ap nat_primrec Prim 2 Lam _ set Lam r set Ap Ap add_nat n r m
+Known mul_nat_0R : All x1 set Eq set Ap Ap mul_nat x1 Prim 2 Prim 2
+Known mul_nat_SR : All x1 set All x2 set Imp Ap nat_p x2 Eq set Ap Ap mul_nat x1 Ap ordsucc x2 Ap Ap add_nat x1 Ap Ap mul_nat x1 x2
+Known mul_nat_p : All x1 set Imp Ap nat_p x1 All x2 set Imp Ap nat_p x2 Ap nat_p Ap Ap mul_nat x1 x2
+Def Inj1 : TpArr set set
+ := Ap In_rec_i Lam X set Lam f TpArr set set Ap Ap binunion Ap Sing Prim 2 Ap Ap Prim 5 X Lam x set Ap f x
+Known Inj1_eq : All x1 set Eq set Ap Inj1 x1 Ap Ap binunion Ap Sing Prim 2 Ap Ap Prim 5 x1 Lam x2 set Ap Inj1 x2
+Known Inj1I1 : All x1 set Ap Ap Prim 1 Prim 2 Ap Inj1 x1
+Known Inj1I2 : All x1 set All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Prim 1 Ap Inj1 x2 Ap Inj1 x1
+Known Inj1E : All x1 set All x2 set Imp Ap Ap Prim 1 x2 Ap Inj1 x1 Ap Ap or Eq set x2 Prim 2 Ex x3 set Ap Ap and Ap Ap Prim 1 x3 x1 Eq set x2 Ap Inj1 x3
+Known Inj1NE1 : All x1 set Imp Eq set Ap Inj1 x1 Prim 2 All p Prop p
+Known Inj1NE2 : All x1 set Ap Ap nIn Ap Inj1 x1 Ap Sing Prim 2
+Def Inj0 : TpArr set set
+ := Lam X set Ap Ap Prim 5 X Lam x1 set Ap Inj1 x1
+Known Inj0I : All x1 set All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Prim 1 Ap Inj1 x2 Ap Inj0 x1
+Known Inj0E : All x1 set All x2 set Imp Ap Ap Prim 1 x2 Ap Inj0 x1 Ex x3 set Ap Ap and Ap Ap Prim 1 x3 x1 Eq set x2 Ap Inj1 x3
+Def Unj : TpArr set set
+ := Ap In_rec_i Lam X set Lam f TpArr set set Ap Ap Prim 5 Ap Ap setminus X Ap Sing Prim 2 Lam x set Ap f x
+Known Unj_eq : All x1 set Eq set Ap Unj x1 Ap Ap Prim 5 Ap Ap setminus x1 Ap Sing Prim 2 Lam x2 set Ap Unj x2
+Known Unj_Inj1_eq : All x1 set Eq set Ap Unj Ap Inj1 x1 x1
+Known Inj1_inj : All x1 set All x2 set Imp Eq set Ap Inj1 x1 Ap Inj1 x2 Eq set x1 x2
+Known Unj_Inj0_eq : All x1 set Eq set Ap Unj Ap Inj0 x1 x1
+Known Inj0_inj : All x1 set All x2 set Imp Eq set Ap Inj0 x1 Ap Inj0 x2 Eq set x1 x2
+Known Inj0_0 : Eq set Ap Inj0 Prim 2 Prim 2
+Known Inj0_Inj1_neq : All x1 set All x2 set Imp Eq set Ap Inj0 x1 Ap Inj1 x2 All p Prop p
+Def setsum : TpArr set TpArr set set
+ := Lam X set Lam Y set Ap Ap binunion Ap Ap Prim 5 X Lam x2 set Ap Inj0 x2 Ap Ap Prim 5 Y Lam x1 set Ap Inj1 x1
+Known Inj0_setsum : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 x1 Ap Ap Prim 1 Ap Inj0 x3 Ap Ap setsum x1 x2
+Known Inj1_setsum : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 x2 Ap Ap Prim 1 Ap Inj1 x3 Ap Ap setsum x1 x2
+Known setsum_Inj_inv : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap setsum x1 x2 Ap Ap or Ex x5 set Ap Ap and Ap Ap Prim 1 x5 x1 Eq set x3 Ap Inj0 x5 Ex x4 set Ap Ap and Ap Ap Prim 1 x4 x2 Eq set x3 Ap Inj1 x4
+Known Inj0_setsum_0L : All x1 set Eq set Ap Ap setsum Prim 2 x1 Ap Inj0 x1
+Known Subq_1_Sing0 : Ap Ap Subq Ap ordsucc Prim 2 Ap Sing Prim 2
+Known Subq_Sing0_1 : Ap Ap Subq Ap Sing Prim 2 Ap ordsucc Prim 2
+Known eq_1_Sing0 : Eq set Ap ordsucc Prim 2 Ap Sing Prim 2
+Known Inj1_setsum_1L : All x1 set Eq set Ap Ap setsum Ap ordsucc Prim 2 x1 Ap Inj1 x1
+Known nat_setsum1_ordsucc : All x1 set Imp Ap nat_p x1 Eq set Ap Ap setsum Ap ordsucc Prim 2 x1 Ap ordsucc x1
+Known setsum_0_0 : Eq set Ap Ap setsum Prim 2 Prim 2 Prim 2
+Known setsum_1_0_1 : Eq set Ap Ap setsum Ap ordsucc Prim 2 Prim 2 Ap ordsucc Prim 2
+Known setsum_1_1_2 : Eq set Ap Ap setsum Ap ordsucc Prim 2 Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Prim 2
+Def proj0 : TpArr set set
+ := Lam Z set Ap Ap Ap ReplSep Z Lam x2 set Ex x3 set Eq set Ap Inj0 x3 x2 Lam x1 set Ap Unj x1
+Def proj1 : TpArr set set
+ := Lam Z set Ap Ap Ap ReplSep Z Lam x2 set Ex x3 set Eq set Ap Inj1 x3 x2 Lam x1 set Ap Unj x1
+Known Inj0_pair_0_eq : Eq TpArr set set Inj0 Ap setsum Prim 2
+Known Inj1_pair_1_eq : Eq TpArr set set Inj1 Ap setsum Ap ordsucc Prim 2
+Known pairI0 : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 x1 Ap Ap Prim 1 Ap Ap setsum Prim 2 x3 Ap Ap setsum x1 x2
+Known pairI1 : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 x2 Ap Ap Prim 1 Ap Ap setsum Ap ordsucc Prim 2 x3 Ap Ap setsum x1 x2
+Known pairE : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap setsum x1 x2 Ap Ap or Ex x5 set Ap Ap and Ap Ap Prim 1 x5 x1 Eq set x3 Ap Ap setsum Prim 2 x5 Ex x4 set Ap Ap and Ap Ap Prim 1 x4 x2 Eq set x3 Ap Ap setsum Ap ordsucc Prim 2 x4
+Known pairE0 : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 Ap Ap setsum Prim 2 x3 Ap Ap setsum x1 x2 Ap Ap Prim 1 x3 x1
+Known pairE1 : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 Ap Ap setsum Ap ordsucc Prim 2 x3 Ap Ap setsum x1 x2 Ap Ap Prim 1 x3 x2
+Known proj0I : All x1 set All x2 set Imp Ap Ap Prim 1 Ap Ap setsum Prim 2 x2 x1 Ap Ap Prim 1 x2 Ap proj0 x1
+Known proj0E : All x1 set All x2 set Imp Ap Ap Prim 1 x2 Ap proj0 x1 Ap Ap Prim 1 Ap Ap setsum Prim 2 x2 x1
+Known proj1I : All x1 set All x2 set Imp Ap Ap Prim 1 Ap Ap setsum Ap ordsucc Prim 2 x2 x1 Ap Ap Prim 1 x2 Ap proj1 x1
+Known proj1E : All x1 set All x2 set Imp Ap Ap Prim 1 x2 Ap proj1 x1 Ap Ap Prim 1 Ap Ap setsum Ap ordsucc Prim 2 x2 x1
+Known proj0_pair_eq : All x1 set All x2 set Eq set Ap proj0 Ap Ap setsum x1 x2 x1
+Known proj1_pair_eq : All x1 set All x2 set Eq set Ap proj1 Ap Ap setsum x1 x2 x2
+Def Sigma : TpArr set TpArr TpArr set set set
+ := Lam X set Lam Y TpArr set set Ap Ap famunion X Lam x set Ap Ap Prim 5 Ap Y x Lam x1 set Ap Ap setsum x x1
+Known pair_Sigma : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 x1 All x4 set Imp Ap Ap Prim 1 x4 Ap x2 x3 Ap Ap Prim 1 Ap Ap setsum x3 x4 Ap Ap Sigma x1 Lam x set Ap x2 x
+Known Sigma_eta_proj0_proj1 : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Sigma x1 Lam x set Ap x2 x Ap Ap and Ap Ap and Eq set Ap Ap setsum Ap proj0 x3 Ap proj1 x3 x3 Ap Ap Prim 1 Ap proj0 x3 x1 Ap Ap Prim 1 Ap proj1 x3 Ap x2 Ap proj0 x3
+Known proj_Sigma_eta : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Sigma x1 Lam x set Ap x2 x Eq set Ap Ap setsum Ap proj0 x3 Ap proj1 x3 x3
+Known proj0_Sigma : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Sigma x1 Lam x set Ap x2 x Ap Ap Prim 1 Ap proj0 x3 x1
+Known proj1_Sigma : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Sigma x1 Lam x set Ap x2 x Ap Ap Prim 1 Ap proj1 x3 Ap x2 Ap proj0 x3
+Known pair_Sigma_E1 : All x1 set All x2 TpArr set set All x3 set All x4 set Imp Ap Ap Prim 1 Ap Ap setsum x3 x4 Ap Ap Sigma x1 Lam x set Ap x2 x Ap Ap Prim 1 x4 Ap x2 x3
+Known Sigma_E : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Sigma x1 Lam x set Ap x2 x Ex x4 set Ap Ap and Ap Ap Prim 1 x4 x1 Ex x5 set Ap Ap and Ap Ap Prim 1 x5 Ap x2 x4 Eq set x3 Ap Ap setsum x4 x5
+Def setprod : TpArr set TpArr set set
+ := Lam X set Lam Y set Ap Ap Sigma X Lam _ set Y
+Def ap : TpArr set TpArr set set
+ := Lam f set Lam x set Ap Ap Ap ReplSep f Lam x2 set Ex x3 set Eq set x2 Ap Ap setsum x x3 Lam x1 set Ap proj1 x1
+Known lamI : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 x1 All x4 set Imp Ap Ap Prim 1 x4 Ap x2 x3 Ap Ap Prim 1 Ap Ap setsum x3 x4 Ap Ap Sigma x1 Lam x set Ap x2 x
+Known lamE : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Sigma x1 Lam x set Ap x2 x Ex x4 set Ap Ap and Ap Ap Prim 1 x4 x1 Ex x5 set Ap Ap and Ap Ap Prim 1 x5 Ap x2 x4 Eq set x3 Ap Ap setsum x4 x5
+Known apI : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 Ap Ap setsum x2 x3 x1 Ap Ap Prim 1 x3 Ap Ap ap x1 x2
+Known apE : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap ap x1 x2 Ap Ap Prim 1 Ap Ap setsum x2 x3 x1
+Known beta : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 x1 Eq set Ap Ap ap Ap Ap Sigma x1 Lam x set Ap x2 x x3 Ap x2 x3
+Known proj0_ap_0 : All x1 set Eq set Ap proj0 x1 Ap Ap ap x1 Prim 2
+Known proj1_ap_1 : All x1 set Eq set Ap proj1 x1 Ap Ap ap x1 Ap ordsucc Prim 2
+Known pair_ap_0 : All x1 set All x2 set Eq set Ap Ap ap Ap Ap setsum x1 x2 Prim 2 x1
+Known pair_ap_1 : All x1 set All x2 set Eq set Ap Ap ap Ap Ap setsum x1 x2 Ap ordsucc Prim 2 x2
+Known ap0_Sigma : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Sigma x1 Lam x set Ap x2 x Ap Ap Prim 1 Ap Ap ap x3 Prim 2 x1
+Known ap1_Sigma : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 Ap Ap Sigma x1 Lam x set Ap x2 x Ap Ap Prim 1 Ap Ap ap x3 Ap ordsucc Prim 2 Ap x2 Ap Ap ap x3 Prim 2
+Def pair_p : TpArr set Prop
+ := Lam u set Eq set Ap Ap setsum Ap Ap ap u Prim 2 Ap Ap ap u Ap ordsucc Prim 2 u
+Known pair_p_I : All x1 set All x2 set Ap pair_p Ap Ap setsum x1 x2
+Known Subq_2_UPair01 : Ap Ap Subq Ap ordsucc Ap ordsucc Prim 2 Ap Ap UPair Prim 2 Ap ordsucc Prim 2
+Known tuple_pair : All x1 set All x2 set Eq set Ap Ap setsum x1 x2 Ap Ap Sigma Ap ordsucc Ap ordsucc Prim 2 Lam x3 set Ap Ap Ap If_i Eq set x3 Prim 2 x1 x2
+Def Pi : TpArr set TpArr TpArr set set set
+ := Lam X set Lam Y TpArr set set Ap Ap Sep Ap Prim 4 Ap Ap Sigma X Lam x set Ap Prim 3 Ap Y x Lam x1 set All x2 set Imp Ap Ap Prim 1 x2 X Ap Ap Prim 1 Ap Ap ap x1 x2 Ap Y x2
+Known PiI : All x1 set All x2 TpArr set set All x3 set Imp All x5 set Imp Ap Ap Prim 1 x5 x3 Ap Ap and Ap pair_p x5 Ap Ap Prim 1 Ap Ap ap x5 Prim 2 x1 Imp All x4 set Imp Ap Ap Prim 1 x4 x1 Ap Ap Prim 1 Ap Ap ap x3 x4 Ap x2 x4 Ap Ap Prim 1 x3 Ap Ap Pi x1 Lam x set Ap x2 x
+Known lam_Pi : All x1 set All x2 TpArr set set All x3 TpArr set set Imp All x4 set Imp Ap Ap Prim 1 x4 x1 Ap Ap Prim 1 Ap x3 x4 Ap x2 x4 Ap Ap Prim 1 Ap Ap Sigma x1 Lam x set Ap x3 x Ap Ap Pi x1 Lam x set Ap x2 x
+Known ap_Pi : All x1 set All x2 TpArr set set All x3 set All x4 set Imp Ap Ap Prim 1 x3 Ap Ap Pi x1 Lam x set Ap x2 x Imp Ap Ap Prim 1 x4 x1 Ap Ap Prim 1 Ap Ap ap x3 x4 Ap x2 x4
+Def setexp : TpArr set TpArr set set
+ := Lam X set Lam Y set Ap Ap Pi Y Lam _ set X
+Known pair_tuple_fun : Eq TpArr set TpArr set set setsum Lam x set Lam y set Ap Ap Sigma Ap ordsucc Ap ordsucc Prim 2 Lam x1 set Ap Ap Ap If_i Eq set x1 Prim 2 x y
+Known lamI2 : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 x1 All x4 set Imp Ap Ap Prim 1 x4 Ap x2 x3 Ap Ap Prim 1 Ap Ap Sigma Ap ordsucc Ap ordsucc Prim 2 Lam x5 set Ap Ap Ap If_i Eq set x5 Prim 2 x3 x4 Ap Ap Sigma x1 Lam x set Ap x2 x
+Known tuple_2_0_eq : All x1 set All x2 set Eq set Ap Ap ap Ap Ap Sigma Ap ordsucc Ap ordsucc Prim 2 Lam x3 set Ap Ap Ap If_i Eq set x3 Prim 2 x1 x2 Prim 2 x1
+Known tuple_2_1_eq : All x1 set All x2 set Eq set Ap Ap ap Ap Ap Sigma Ap ordsucc Ap ordsucc Prim 2 Lam x3 set Ap Ap Ap If_i Eq set x3 Prim 2 x1 x2 Ap ordsucc Prim 2 x2
+Known ReplEq_setprod_ext : All x1 set All x2 set All x3 TpArr set TpArr set set All x4 TpArr set TpArr set set Imp All x7 set Imp Ap Ap Prim 1 x7 x1 All x8 set Imp Ap Ap Prim 1 x8 x2 Eq set Ap Ap x3 x7 x8 Ap Ap x4 x7 x8 Eq set Ap Ap Prim 5 Ap Ap setprod x1 x2 Lam x6 set Ap Ap x3 Ap Ap ap x6 Prim 2 Ap Ap ap x6 Ap ordsucc Prim 2 Ap Ap Prim 5 Ap Ap setprod x1 x2 Lam x5 set Ap Ap x4 Ap Ap ap x5 Prim 2 Ap Ap ap x5 Ap ordsucc Prim 2
+Known tuple_2_Sigma : All x1 set All x2 TpArr set set All x3 set Imp Ap Ap Prim 1 x3 x1 All x4 set Imp Ap Ap Prim 1 x4 Ap x2 x3 Ap Ap Prim 1 Ap Ap Sigma Ap ordsucc Ap ordsucc Prim 2 Lam x5 set Ap Ap Ap If_i Eq set x5 Prim 2 x3 x4 Ap Ap Sigma x1 Lam x set Ap x2 x
+Known tuple_2_setprod : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 x1 All x4 set Imp Ap Ap Prim 1 x4 x2 Ap Ap Prim 1 Ap Ap Sigma Ap ordsucc Ap ordsucc Prim 2 Lam x5 set Ap Ap Ap If_i Eq set x5 Prim 2 x3 x4 Ap Ap setprod x1 x2
