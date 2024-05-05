@@ -1,0 +1,63 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.thmandproof {
+    margin-bottom: 20px;
+}
+
+.thmdecl {
+    margin-bottom: 10px;
+}
+
+.thmprop {
+    padding-left: 20px;
+}
+
+.ltree {
+    color: #3F85AF;
+}
+
+.anamelink {
+    color: #3F85AF;
+    text-decoration: none;
+}
+
+.anamelink:hover {
+    text-decoration: underline;
+}
+
+.pfglinks {
+    margin-bottom: 10px;
+}
+
+.proof {
+    margin-left: 20px;
+    border-left: 2px solid #3F85AF;
+    padding-left: 10px;
+}
+
+.proofpres {
+    cursor: pointer;
+}
+
+.pftackeyword {
+    font-weight: bold;
+}
+
+.rewritetac, .applytac, .lettac, .assumetac, .provetac, .subproof, .exact {
+    margin-left: 20px;
+}
+
+.subproof {
+    margin-left: 40px;
+    border-left: 2px solid #3F85AF;
+    padding-left: 10px;
+}
+
+.sectionend {
+    margin-top: 30px;
+    font-weight: bold;
+}
