@@ -1,0 +1,38 @@
+Definition False : prop := forall p:prop, p.
+
+Definition not : prop -> prop := fun A:prop => A -> False.
+
+(* Unicode ~ "00ac" *)
+Prefix ~ 700 := not.
+
+Definition and : prop -> prop -> prop := fun A B:prop => forall p:prop, (A -> B -> p) -> p.
+
+(* Unicode /\ "2227" *)
+Infix /\ 780 left := and.
+
+Definition or : prop -> prop -> prop := fun A B:prop => forall p:prop, (A -> p) -> (B -> p) -> p.
+
+(* Unicode \/ "2228" *)
+Infix \/ 785 left := or.
+
+Section Eq.
+Variable A:SType.
+Definition eq : A->A->prop := fun x y:A => forall Q:A->A->prop, Q x y -> Q y x.
+Definition neq : A->A->prop := fun x y:A => ~ eq x y.
+End Eq.
+
+Infix = 502 := eq.
+(* Unicode <> "2260" *)
+Infix <> 502 := neq.
+
+Section Ex.
+Variable A:SType.
+Definition ex : (A->prop)->prop := fun Q:A->prop => forall P:prop, (forall x:A, Q x -> P) -> P.
+End Ex.
+
+(* Unicode exists "2203" *)
+Binder+ exists , := ex.
+
+
+Binder+ exists , := ex; and.
+
