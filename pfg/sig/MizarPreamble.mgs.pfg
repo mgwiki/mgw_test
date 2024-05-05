@@ -1,0 +1,10 @@
+Document 29c988c5e6c620410ef4e61bcfcbe4213c77013974af40759d8b732c07d61967
+Base set
+Def False : Prop
+ := All x1 Prop x1
+Def not : TpArr Prop Prop
+ := Lam A Prop Imp A False
+Def and : TpArr Prop TpArr Prop Prop
+ := Lam A Prop Lam B Prop All x1 Prop Imp Imp A Imp B x1 x1
+Def or : TpArr Prop TpArr Prop Prop
+ := Lam A Prop Lam B Prop All x1 Prop Imp Imp A x1 Imp Imp B x1 x1
