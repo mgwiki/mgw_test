@@ -1,0 +1,374 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" href="mg.css">
+    <title>Proofgold: HOHF Theory</title>
+  </head>
+<body>
+<h1>HOHF Theory</h1>
+
+<p>
+The logical framework of proofgold is <a href="https://prfgld.github.io/ihol.html">intuitionistic higher-order
+logic</a>. Different theories (declaring
+typed constructors and axioms) can be included on top of this
+framework. Proofgold builds in a (classical) higher-order theory of
+hereditarily finite sets (HOHF).  The reward bounty propositions
+until Block 5000 were
+all conjectures relative to this specific theory.
+</p>
+
+<p>
+The details of this theory can be printed with the command:<br>
+<b>theory 6ffc9680fbe00a58d70cdeb319f11205ed998131ce51bb96f16c7904faf74a3d</b><br>
+The implementation is in the file checking.ml.
+Here we give a high level description.
+</p>
+
+<p>
+The types consist of Prop (which we abbreviate as o below),
+one base type we call ι
+and all function types constructed from these.
+Two axioms (double negation and propositional extensionality)
+will imply o has (only) two elements (True and False).
+Constructors and axioms will imply ι consists of the
+hereditarily finite sets, and hereditarily finite sets
+will give the only standard model of the theory.
+</p>
+
+<h2>Primitive Typed Constructors</h2>
+
+<p>
+There are 104 primitive constructors, but 98
+of these have a meaning determined by a definitional axiom.
+The only primitives for which there is no definitional axiom
+are: 0 [Eps_i] (a choice function), 7 [In] (set membership),
+9 [Empty] (the empty set), 10 [Union] (union operator), 11 [Power] (power set operator)
+and 12 [Repl] (replacement set operator).
+</p>
+
+<ul>
+<li id="p0">0 [Eps_i] : (ι → o) → ι</li>
+<li id="p1">1 [False] : o</li>
+<li id="p2">2 [True] : o</li>
+<li id="p3">3 [not] : o → o</li>
+<li id="p4">4 [and] : o → o → o</li>
+<li id="p5">5 [or] : o → o → o</li>
+<li id="p6">6 [iff] : o → o → o</li>
+<li id="p7">7 [In] : ι → ι → o</li>
+<li id="p8">8 [Subq] : ι → ι → o</li>
+<li id="p9">9 [Empty] : ι</li>
+<li id="p10">10 [Union] : ι → ι</li>
+<li id="p11">11 [Power] : ι → ι</li>
+<li id="p12">12 [Repl] : ι → (ι → ι) → ι</li>
+<li id="p13">13 [TransSet] : ι → o</li>
+<li id="p14">14 [atleast2] : ι → o</li>
+<li id="p15">15 [atleast3] : ι → o</li>
+<li id="p16">16 [atleast4] : ι → o</li>
+<li id="p17">17 [atleast5] : ι → o</li>
+<li id="p18">18 [atleast6] : ι → o</li>
+<li id="p19">19 [exactly2] : ι → o</li>
+<li id="p20">20 [exactly3] : ι → o</li>
+<li id="p21">21 [exactly4] : ι → o</li>
+<li id="p22">22 [exactly5] : ι → o</li>
+<li id="p23">23 [exu_i] : (ι → o) → o</li>
+<li id="p24">24 [reflexive_i] : (ι → ι → o) → o</li>
+<li id="p25">25 [irreflexive_i] : (ι → ι → o) → o</li>
+<li id="p26">26 [symmetric_i] : (ι → ι → o) → o</li>
+<li id="p27">27 [antisymmetric_i] : (ι → ι → o) → o</li>
+<li id="p28">28 [transitive_i] : (ι → ι → o) → o</li>
+<li id="p29">29 [eqreln_i] : (ι → ι → o) → o</li>
+<li id="p30">30 [per_i] : (ι → ι → o) → o</li>
+<li id="p31">31 [linear_i] : (ι → ι → o) → o</li>
+<li id="p32">32 [trichotomous_or_i] : (ι → ι → o) → o</li>
+<li id="p33">33 [partialorder_i] : (ι → ι → o) → o</li>
+<li id="p34">34 [totalorder_i] : (ι → ι → o) → o</li>
+<li id="p35">35 [strictpartialorder_i] : (ι → ι → o) → o</li>
+<li id="p36">36 [stricttotalorder_i] : (ι → ι → o) → o</li>
+<li id="p37">37 [If_i] : o → ι → ι → ι</li>
+<li id="p38">38 [exactly1of2] : o → o → o</li>
+<li id="p39">39 [exactly1of3] : o → o → o → o</li>
+<li id="p40">40 [nIn] : ι → ι → o</li>
+<li id="p41">41 [nSubq] : ι → ι → o</li>
+<li id="p42">42 [UPair] : ι → ι → ι</li>
+<li id="p43">43 [Sing] : ι → ι</li>
+<li id="p44">44 [binunion] : ι → ι → ι</li>
+<li id="p45">45 [SetAdjoin] : ι → ι → ι</li>
+<li id="p46">46 [famunion] : ι → (ι → ι) → ι</li>
+<li id="p47">47 [Sep] : ι → (ι → o) → ι</li>
+<li id="p48">48 [ReplSep] : ι → (ι → o) → (ι → ι) → ι</li>
+<li id="p49">49 [binintersect] : ι → ι → ι</li>
+<li id="p50">50 [setminus] : ι → ι → ι</li>
+<li id="p51">51 [inj] : ι → ι → (ι → ι) → o</li>
+<li id="p52">52 [bij] : ι → ι → (ι → ι) → o</li>
+<li id="p53">53 [atleastp] : ι → ι → o</li>
+<li id="p54">54 [equip] : ι → ι → o</li>
+<li id="p55">55 [In_rec_poly_G_i] : (ι → (ι → ι) → ι) → ι → ι → o</li>
+<li id="p56">56 [In_rec_poly_i] : (ι → (ι → ι) → ι) → ι → ι</li>
+<li id="p57">57 [ordsucc] : ι → ι</li>
+<li id="p58">58 [nat_p] : ι → o</li>
+<li id="p59">59 [nat_primrec] : ι → (ι → ι → ι) → ι → ι</li>
+<li id="p60">60 [add_nat] : ι → ι → ι</li>
+<li id="p61">61 [mul_nat] : ι → ι → ι</li>
+<li id="p62">62 [ordinal] : ι → o</li>
+<li id="p63">63 [V_] : ι → ι</li>
+<li id="p64">64 [Inj1] : ι → ι</li>
+<li id="p65">65 [Inj0] : ι → ι</li>
+<li id="p66">66 [Unj] : ι → ι</li>
+<li id="p67">67 [combine_funcs] : ι → ι → (ι → ι) → (ι → ι) → ι → ι</li>
+<li id="p68">68 [setsum] : ι → ι → ι</li>
+<li id="p69">69 [proj0] : ι → ι</li>
+<li id="p70">70 [proj1] : ι → ι</li>
+<li id="p71">71 [binrep] : ι → ι → ι</li>
+<li id="p72">72 [lam] : ι → (ι → ι) → ι</li>
+<li id="p73">73 [setprod] : ι → ι → ι</li>
+<li id="p74">74 [ap] : ι → ι → ι</li>
+<li id="p75">75 [setsum_p] : ι → o</li>
+<li id="p76">76 [tuple_p] : ι → ι → o</li>
+<li id="p77">77 [Pi] : ι → (ι → ι) → ι</li>
+<li id="p78">78 [setexp] : ι → ι → ι</li>
+<li id="p79">79 [Sep2] : ι → (ι → ι) → (ι → ι → o) → ι</li>
+<li id="p80">80 [set_of_pairs] : ι → o</li>
+<li id="p81">81 [lam2] : ι → (ι → ι) → (ι → ι → ι) → ι</li>
+<li id="p82">82 [PNoEq_] : ι → (ι → o) → (ι → o) → o</li>
+<li id="p83">83 [PNoLt_] : ι → (ι → o) → (ι → o) → o</li>
+<li id="p84">84 [PNoLt] : ι → (ι → o) → ι → (ι → o) → o</li>
+<li id="p85">85 [PNoLe] : ι → (ι → o) → ι → (ι → o) → o</li>
+<li id="p86">86 [PNo_downc] : (ι → (ι → o) → o) → ι → (ι → o) → o</li>
+<li id="p87">87 [PNo_upc] : (ι → (ι → o) → o) → ι → (ι → o) → o</li>
+<li id="p88">88 [SNoElts_] : ι → ι</li>
+<li id="p89">89 [SNo_] : ι → ι → o</li>
+<li id="p90">90 [PSNo] : ι → (ι → o) → ι</li>
+<li id="p91">91 [SNo] : ι → o</li>
+<li id="p92">92 [SNoLev] : ι → ι</li>
+<li id="p93">93 [SNoEq_] : ι → ι → ι → o</li>
+<li id="p94">94 [SNoLt] : ι → ι → o</li>
+<li id="p95">95 [SNoLe] : ι → ι → o</li>
+<li id="p96">96 [binop_on] : ι → (ι → ι → ι) → o</li>
+<li id="p97">97 [Loop] : ι → (ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι) → ι → o</li>
+<li id="p98">98 [Loop_with_defs] : ι → (ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι) → ι
+ → (ι → ι → ι) → (ι → ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι → ι) → (ι → ι
+ → ι → ι) → (ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι) → o</li>
+<li id="p99">99 [Loop_with_defs_cex1] : ι → (ι → ι → ι) → (ι → ι → ι) → (ι → ι → 
+ι) → ι → (ι → ι → ι) → (ι → ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι → ι) →
+ (ι → ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι)
+ → o</li>
+<li id="p100">100 [Loop_with_defs_cex2] : ι → (ι → ι → ι) → (ι → ι → ι) → (ι → ι →
+ ι) → ι → (ι → ι → ι) → (ι → ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι → ι) →
+ (ι → ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι) → (ι → ι → ι)
+ → o</li>
+<li id="p101">101 [combinator] : ι → o</li>
+<li id="p102">102 [combinator_equiv] : ι → ι → o</li>
+<li id="p103">103 [equip_mod] : ι → ι → ι → o</li>
+</ul>
+
+<h2>Axioms</h2>
+
+<p>
+There are 108 axioms. The first 10 are proper axioms 
+and the remaining are definitional axioms.
+</p>
+
+<ul>
+<li id="a0">Axiom 0 [Choice]: (∀ X0:ι → o . (∀ X1 . ((X0 X1) → (X0 (Eps_i X0)))))</li>
+<li id="a1">Axiom 1 [Double Negation]: (∀ X0:o . ((not (not X0)) → X0))</li>
+<li id="a2">Axiom 2 [Propositional Extensionality]: (∀ X0:o . (∀ X1:o . ((iff X0 X1) → (X0 = X1))))</li>
+<li id="a3">Axiom 3 [Set Extensionality]: (∀ X0 . (∀ X1 . ((Subq X0 X1) → ((Subq X1 X0) → (X0 = X1)))))</li>
+<li id="a4">Axiom 4 [Empty Set Axiom]: (not (∃ X0 . (In X0 Empty)))</li>
+<li id="a5">Axiom 5 [Union Axiom]: (∀ X0 . (∀ X1 . (iff (In X1 (Union X0)) (∃ X2 . (and (In X1 X2) (In X2 X0))))))</li>
+<li id="a6">Axiom 6 [Power Set Axiom]: (∀ X0 . (∀ X1 . (iff (In X1 (Power X0)) (Subq X1 X0))))</li>
+<li id="a7">Axiom 7 [Replacement Axiom]: (∀ X0 . (∀ X1:ι → ι . (∀ X2 . (iff (In 
+X2 (Repl X0 (λ X3 . (X1 X3)))) (∃ X3 . (and (In X3 X0) (X2 = (X1 
+X3))))))))</li>
+<li id="a8">Axiom 8 [Hereditarily Finite Induction Axiom]: (∀ X0:ι → o . ((∀ X1 .
+ ((X0 X1) → (∀ X2 . ((In X2 X1) → (X0 X2))))) → ((X0 Empty) → ((∀ X1 . 
+((X0 X1) → (X0 (Union X1)))) → ((∀ X1 . ((X0 X1) → (X0 (Power X1)))) → 
+((∀ X1 . ((X0 X1) → (∀ X2:ι → ι . ((∀ X3 . ((In X3 X1) → (X0 (X2 X3)))) →
+ (X0 (Repl X1 (λ X3 . (X2 X3)))))))) → (∀ X1 . (X0 X1))))))))</li>
+<li id="a9">Axiom 9 [Epsilon Induction Axiom]: (∀ X0:ι → o . ((∀ X1 . ((∀ X2 . ((In X2 X1) → (X0 X2))) → (X0 X1))) → (∀ X1 . (X0 X1))))</li>
+<li id="a10">Axiom 10 [False Definition]: (False = (∀ X0:o . X0))</li>
+<li id="a11">Axiom 11 [True Definition]: (True = (∀ X0:o . (X0 → X0)))</li>
+<li id="a12">Axiom 12 [not Definition]: (not = (λ X0 . (X0 → False)))</li>
+<li id="a13">Axiom 13 [and Definition]: (and = (λ X0 . (λ X1 . (∀ X2:o . ((X0 → (X1 → X2)) → X2)))))</li>
+<li id="a14">Axiom 14 [or Definition]: (or = (λ X0 . (λ X1 . (∀ X2:o . ((X0 → X2) → ((X1 → X2) → X2))))))</li>
+<li id="a15">Axiom 15 [iff Definition]: (iff = (λ X0 . (λ X1 . (and (X0 → X1) (X1 → X0)))))</li>
+<li id="a16">Axiom 16 [Subq Definition]: (Subq = (λ X0 . (λ X1 . (∀ X2 . ((In X2 X0) → (In X2 X1))))))</li>
+<li id="a17">Axiom 17 [TransSet Definition]: (TransSet = (λ X0 . (∀ X1 . ((In X1 X0) → (Subq X1 X0)))))</li>
+<li id="a18">Axiom 18 [atleast2 Definition]: (atleast2 = (λ X0 . (∃ X1 . (and (In X1 X0) (not (Subq X0 (Power X1)))))))</li>
+<li id="a19">Axiom 19 [atleast3 Definition]: (atleast3 = (λ X0 . (∃ X1 . (and (Subq X1 X0) (and (not (Subq X0 X1)) (atleast2 X1))))))</li>
+<li id="a20">Axiom 20 [atleast4 Definition]: (atleast4 = (λ X0 . (∃ X1 . (and (Subq X1 X0) (and (not (Subq X0 X1)) (atleast3 X1))))))</li>
+<li id="a21">Axiom 21 [atleast5 Definition]: (atleast5 = (λ X0 . (∃ X1 . (and (Subq X1 X0) (and (not (Subq X0 X1)) (atleast4 X1))))))</li>
+<li id="a22">Axiom 22 [atleast6 Definition]: (atleast6 = (λ X0 . (∃ X1 . (and (Subq X1 X0) (and (not (Subq X0 X1)) (atleast5 X1))))))</li>
+<li id="a23">Axiom 23 [exactly2 Definition]: (exactly2 = (λ X0 . (and (atleast2 X0) (not (atleast3 X0)))))</li>
+<li id="a24">Axiom 24 [exactly3 Definition]: (exactly3 = (λ X0 . (and (atleast3 X0) (not (atleast4 X0)))))</li>
+<li id="a25">Axiom 25 [exactly4 Definition]: (exactly4 = (λ X0 . (and (atleast4 X0) (not (atleast5 X0)))))</li>
+<li id="a26">Axiom 26 [exactly5 Definition]: (exactly5 = (λ X0 . (and (atleast5 X0) (not (atleast6 X0)))))</li>
+<li id="a27">Axiom 27 [exu_i Definition]: (exu_i = (λ X0 . (and (∃ X1 . (X0 X1)) (∀ X1 . (∀ X2 . ((X0 X1) → ((X0 X2) → (X1 = X2))))))))</li>
+<li id="a28">Axiom 28 [reflexive_i Definition]: (reflexive_i = (λ X0 . (∀ X1 . (X0 X1 X1))))</li>
+<li id="a29">Axiom 29 [irreflexive_i Definition]: (irreflexive_i = (λ X0 . (∀ X1 . (not (X0 X1 X1)))))</li>
+<li id="a30">Axiom 30 [symmetric_i Definition]: (symmetric_i = (λ X0 . (∀ X1 . (∀ X2 . ((X0 X1 X2) → (X0 X2 X1))))))</li>
+<li id="a31">Axiom 31 [antisymmetric_i Definition]: (antisymmetric_i = (λ X0 . (∀ X1 . (∀ X2 . ((X0 X1 X2) → ((X0 X2 X1) → (X1 = X2)))))))</li>
+<li id="a32">Axiom 32 [transitive_i Definition]: (transitive_i = (λ X0 . (∀ X1 . 
+(∀ X2 . (∀ X3 . ((X0 X1 X2) → ((X0 X2 X3) → (X0 X1 X3))))))))</li>
+<li id="a33">Axiom 33 [eqreln_i Definition]: (eqreln_i = (λ X0 . (and (and (reflexive_i X0) (symmetric_i X0)) (transitive_i X0))))</li>
+<li id="a34">Axiom 34 [per_i Definition]: (per_i = (λ X0 . (and (symmetric_i X0) (transitive_i X0))))</li>
+<li id="a35">Axiom 35 [linear_i Definition]: (linear_i = (λ X0 . (∀ X1 . (∀ X2 . (or (X0 X1 X2) (X0 X2 X1))))))</li>
+<li id="a36">Axiom 36 [trichotomous_or_i Definition]: (trichotomous_or_i = (λ X0 .
+ (∀ X1 . (∀ X2 . (or (or (X0 X1 X2) (X1 = X2)) (X0 X2 X1))))))</li>
+<li id="a37">Axiom 37 [partialorder_i Definition]: (partialorder_i = (λ X0 . (and
+ (and (reflexive_i X0) (antisymmetric_i X0)) (transitive_i X0))))</li>
+<li id="a38">Axiom 38 [totalorder_i Definition]: (totalorder_i = (λ X0 . (and (partialorder_i X0) (linear_i X0))))</li>
+<li id="a39">Axiom 39 [strictpartialorder_i Definition]: (strictpartialorder_i = (λ X0 . (and (irreflexive_i X0) (transitive_i X0))))</li>
+<li id="a40">Axiom 40 [stricttotalorder_i Definition]: (stricttotalorder_i = (λ X0 . (and (strictpartialorder_i X0) (trichotomous_or_i X0))))</li>
+<li id="a41">Axiom 41 [If_i Definition]: (If_i = (λ X0 . (λ X1 . (λ X2 . (Eps_i 
+(λ X3 . (or (and X0 (X3 = X1)) (and (not X0) (X3 = X2)))))))))</li>
+<li id="a42">Axiom 42 [exactly1of2 Definition]: (exactly1of2 = (λ X0 . (λ X1 . (or (and X0 (not X1)) (and (not X0) X1)))))</li>
+<li id="a43">Axiom 43 [exactly1of3 Definition]: (exactly1of3 = (λ X0 . (λ X1 . (λ
+ X2 . (or (and (exactly1of2 X0 X1) (not X2)) (and (and (not X0) (not 
+X1)) X2))))))</li>
+<li id="a44">Axiom 44 [nIn Definition]: (nIn = (λ X0 . (λ X1 . (not (In X0 X1)))))</li>
+<li id="a45">Axiom 45 [nSubq Definition]: (nSubq = (λ X0 . (λ X1 . (not (Subq X0 X1)))))</li>
+<li id="a46">Axiom 46 [UPair Definition]: (UPair = (λ X0 . (λ X1 . (Repl (Power (Power Empty)) (λ X2 . (If_i (In Empty X2) X0 X1))))))</li>
+<li id="a47">Axiom 47 [Sing Definition]: (Sing = (λ X0 . (UPair X0 X0)))</li>
+<li id="a48">Axiom 48 [binunion Definition]: (binunion = (λ X0 . (λ X1 . (Union (UPair X0 X1)))))</li>
+<li id="a49">Axiom 49 [SetAdjoin Definition]: (SetAdjoin = (λ X0 . (λ X1 . (binunion X0 (Sing X1)))))</li>
+<li id="a50">Axiom 50 [famunion Definition]: (famunion = (λ X0 . (λ X1 . (Union (Repl X0 (λ X2 . (X1 X2)))))))</li>
+<li id="a51">Axiom 51 [Sep Definition]: (Sep = (λ X0 . (λ X1 . (If_i (∃ X2 . (and
+ (In X2 X0) (X1 X2))) (Repl X0 (λ X2 . ((λ X3 . (If_i (X1 X3) X3 (Eps_i 
+(λ X4 . (and (In X4 X0) (X1 X4)))))) X2))) Empty))))</li>
+<li id="a52">Axiom 52 [ReplSep Definition]: (ReplSep = (λ X0 . (λ X1 . (λ X2 . (Repl (Sep X0 (λ X3 . (X1 X3))) (λ X3 . (X2 X3)))))))</li>
+<li id="a53">Axiom 53 [binintersect Definition]: (binintersect = (λ X0 . (λ X1 . (Sep X0 (λ X2 . (In X2 X1))))))</li>
+<li id="a54">Axiom 54 [setminus Definition]: (setminus = (λ X0 . (λ X1 . (Sep X0 (λ X2 . (nIn X2 X1))))))</li>
+<li id="a55">Axiom 55 [inj Definition]: (inj = (λ X0 . (λ X1 . (λ X2 . (and (∀ X3
+ . ((In X3 X0) → (In (X2 X3) X1))) (∀ X3 . ((In X3 X0) → (∀ X4 . ((In X4
+ X0) → (((X2 X3) = (X2 X4)) → (X3 = X4)))))))))))</li>
+<li id="a56">Axiom 56 [bij Definition]: (bij = (λ X0 . (λ X1 . (λ X2 . (and (inj 
+X0 X1 X2) (∀ X3 . ((In X3 X1) → (∃ X4 . (and (In X4 X0) ((X2 X4) = 
+X3))))))))))</li>
+<li id="a57">Axiom 57 [atleastp Definition]: (atleastp = (λ X0 . (λ X1 . (∃ X2:ι → ι . (inj X0 X1 X2)))))</li>
+<li id="a58">Axiom 58 [equip Definition]: (equip = (λ X0 . (λ X1 . (∃ X2:ι → ι . (bij X0 X1 X2)))))</li>
+<li id="a59">Axiom 59 [In_rec_poly_G_i Definition]: (In_rec_poly_G_i = (λ X0 . (λ
+ X1 . (λ X2 . (∀ X3:ι → ι → o . ((∀ X4 . (∀ X5:ι → ι . ((∀ X6 . ((In X6 
+X4) → (X3 X6 (X5 X6)))) → (X3 X4 (X0 X4 X5))))) → (X3 X1 X2)))))))</li>
+<li id="a60">Axiom 60 [In_rec_poly_i Definition]: (In_rec_poly_i = (λ X0 . (λ X1 . (Eps_i (λ X2 . (In_rec_poly_G_i X0 X1 X2))))))</li>
+<li id="a61">Axiom 61 [ordsucc Definition]: (ordsucc = (λ X0 . (binunion X0 (Sing X0))))</li>
+<li id="a62">Axiom 62 [nat_p Definition]: (nat_p = (λ X0 . (∀ X1:ι → o . ((X1 Empty) → ((∀ X2 . ((X1 X2) → (X1 (ordsucc X2)))) → (X1 X0))))))</li>
+<li id="a63">Axiom 63 [nat_primrec Definition]: (nat_primrec = (λ X0 . (λ X1 . 
+(In_rec_poly_i (λ X2 . (λ X3 . (If_i (In (Union X2) X2) (X1 (Union X2) 
+(X3 (Union X2))) X0)))))))</li>
+<li id="a64">Axiom 64 [add_nat Definition]: (add_nat = (λ X0 . (λ X1 . (nat_primrec X0 (λ X2 . (λ X3 . (ordsucc X3))) X1))))</li>
+<li id="a65">Axiom 65 [mul_nat Definition]: (mul_nat = (λ X0 . (λ X1 . (nat_primrec Empty (λ X2 . (λ X3 . (add_nat X0 X3))) X1))))</li>
+<li id="a66">Axiom 66 [ordinal Definition]: (ordinal = (λ X0 . (and (TransSet X0) (∀ X1 . ((In X1 X0) → (TransSet X1))))))</li>
+<li id="a67">Axiom 67 [V_ Definition]: (V_ = (In_rec_poly_i (λ X0 . (λ X1 . (famunion X0 (λ X2 . (Power (X1 X2))))))))</li>
+<li id="a68">Axiom 68 [Inj1 Definition]: (Inj1 = (In_rec_poly_i (λ X0 . (λ X1 . (binunion (Sing Empty) (Repl X0 (λ X2 . (X1 X2))))))))</li>
+<li id="a69">Axiom 69 [Inj0 Definition]: (Inj0 = (λ X0 . (Repl X0 (λ X1 . (Inj1 X1)))))</li>
+<li id="a70">Axiom 70 [Unj Definition]: (Unj = (In_rec_poly_i (λ X0 . (λ X1 . (Repl (setminus X0 (Sing Empty)) (λ X2 . (X1 X2)))))))</li>
+<li id="a71">Axiom 71 [combine_funcs Definition]: (combine_funcs = (λ X0 . (λ X1 .
+ (λ X2 . (λ X3 . (λ X4 . (If_i (X4 = (Inj0 (Unj X4))) (X2 (Unj X4)) (X3 
+(Unj X4)))))))))</li>
+<li id="a72">Axiom 72 [setsum Definition]: (setsum = (λ X0 . (λ X1 . (binunion (Repl X0 (λ X2 . (Inj0 X2))) (Repl X1 (λ X2 . (Inj1 X2)))))))</li>
+<li id="a73">Axiom 73 [proj0 Definition]: (proj0 = (λ X0 . (ReplSep X0 (λ X1 . (∃ X2 . ((Inj0 X2) = X1))) (λ X1 . (Unj X1)))))</li>
+<li id="a74">Axiom 74 [proj1 Definition]: (proj1 = (λ X0 . (ReplSep X0 (λ X1 . (∃ X2 . ((Inj1 X2) = X1))) (λ X1 . (Unj X1)))))</li>
+<li id="a75">Axiom 75 [binrep Definition]: (binrep = (λ X0 . (λ X1 . (setsum X0 (Power X1)))))</li>
+<li id="a76">Axiom 76 [lam Definition]: (lam = (λ X0 . (λ X1 . (famunion X0 (λ X2 . (Repl (X1 X2) (λ X3 . (setsum X2 X3))))))))</li>
+<li id="a77">Axiom 77 [setprod Definition]: (setprod = (λ X0 . (λ X1 . (lam X0 (λ X2 . X1)))))</li>
+<li id="a78">Axiom 78 [ap Definition]: (ap = (λ X0 . (λ X1 . (ReplSep X0 (λ X2 . (∃ X3 . (X2 = (setsum X1 X3)))) (λ X2 . (proj1 X2))))))</li>
+<li id="a79">Axiom 79 [setsum_p Definition]: (setsum_p = (λ X0 . ((setsum (ap X0 Empty) (ap X0 (ordsucc Empty))) = X0)))</li>
+<li id="a80">Axiom 80 [tuple_p Definition]: (tuple_p = (λ X0 . (λ X1 . (∀ X2 . 
+((In X2 X1) → (∃ X3 . (and (In X3 X0) (∃ X4 . (X2 = (setsum X3 
+X4))))))))))</li>
+<li id="a81">Axiom 81 [Pi Definition]: (Pi = (λ X0 . (λ X1 . (Sep (Power (lam X0 
+(λ X2 . (Union (X1 X2))))) (λ X2 . (∀ X3 . ((In X3 X0) → (In (ap X2 X3) 
+(X1 X3)))))))))</li>
+<li id="a82">Axiom 82 [setexp Definition]: (setexp = (λ X0 . (λ X1 . (Pi X1 (λ X2 . X0)))))</li>
+<li id="a83">Axiom 83 [Sep2 Definition]: (Sep2 = (λ X0 . (λ X1 . (λ X2 . (Sep 
+(lam X0 (λ X3 . (X1 X3))) (λ X3 . (X2 (ap X3 Empty) (ap X3 (ordsucc 
+Empty)))))))))</li>
+<li id="a84">Axiom 84 [set_of_pairs Definition]: (set_of_pairs = (λ X0 . (∀ X1 . 
+((In X1 X0) → (∃ X2 . (∃ X3 . (X1 = (lam (ordsucc (ordsucc Empty)) (λ X4
+ . (If_i (X4 = Empty) X2 X3))))))))))</li>
+<li id="a85">Axiom 85 [lam2 Definition]: (lam2 = (λ X0 . (λ X1 . (λ X2 . (lam X0 (λ X3 . (lam (X1 X3) (λ X4 . (X2 X3 X4)))))))))</li>
+<li id="a86">Axiom 86 [PNoEq_ Definition]: (PNoEq_ = (λ X0 . (λ X1 . (λ X2 . (∀ X3 . ((In X3 X0) → (iff (X1 X3) (X2 X3))))))))</li>
+<li id="a87">Axiom 87 [PNoLt_ Definition]: (PNoLt_ = (λ X0 . (λ X1 . (λ X2 . (∃ 
+X3 . (and (In X3 X0) (and (and (PNoEq_ X3 X1 X2) (not (X1 X3))) (X2 
+X3))))))))</li>
+<li id="a88">Axiom 88 [PNoLt Definition]: (PNoLt = (λ X0 . (λ X1 . (λ X2 . (λ X3 .
+ (or (or (PNoLt_ (binintersect X0 X2) X1 X3) (and (and (In X0 X2) 
+(PNoEq_ X0 X1 X3)) (X3 X0))) (and (and (In X2 X0) (PNoEq_ X2 X1 X3)) 
+(not (X1 X2)))))))))</li>
+<li id="a89">Axiom 89 [PNoLe Definition]: (PNoLe = (λ X0 . (λ X1 . (λ X2 . (λ X3 .
+ (or (PNoLt X0 X1 X2 X3) (and (X0 = X2) (PNoEq_ X0 X1 X3))))))))</li>
+<li id="a90">Axiom 90 [PNo_downc Definition]: (PNo_downc = (λ X0 . (λ X1 . (λ X2 .
+ (∃ X3 . (and (ordinal X3) (∃ X4:ι → o . (and (X0 X3 X4) (PNoLe X1 X2 X3
+ X4)))))))))</li>
+<li id="a91">Axiom 91 [PNo_upc Definition]: (PNo_upc = (λ X0 . (λ X1 . (λ X2 . (∃
+ X3 . (and (ordinal X3) (∃ X4:ι → o . (and (X0 X3 X4) (PNoLe X3 X4 X1 
+X2)))))))))</li>
+<li id="a92">Axiom 92 [SNoElts_ Definition]: (SNoElts_ = (λ X0 . (binunion X0 
+(Repl X0 (λ X1 . ((λ X2 . (SetAdjoin X2 (Sing (ordsucc Empty)))) 
+X1))))))</li>
+<li id="a93">Axiom 93 [SNo_ Definition]: (SNo_ = (λ X0 . (λ X1 . (and (Subq X1 
+(SNoElts_ X0)) (∀ X2 . ((In X2 X0) → (exactly1of2 (In ((λ X3 . 
+(SetAdjoin X3 (Sing (ordsucc Empty)))) X2) X1) (In X2 X1))))))))</li>
+<li id="a94">Axiom 94 [PSNo Definition]: (PSNo = (λ X0 . (λ X1 . (binunion (Sep 
+X0 (λ X2 . (X1 X2))) (ReplSep X0 (λ X2 . (not (X1 X2))) (λ X2 . ((λ X3 .
+ (SetAdjoin X3 (Sing (ordsucc Empty)))) X2)))))))</li>
+<li id="a95">Axiom 95 [SNo Definition]: (SNo = (λ X0 . (∃ X1 . (and (ordinal X1) (SNo_ X1 X0)))))</li>
+<li id="a96">Axiom 96 [SNoLev Definition]: (SNoLev = (λ X0 . (Eps_i (λ X1 . (and (ordinal X1) (SNo_ X1 X0))))))</li>
+<li id="a97">Axiom 97 [SNoEq_ Definition]: (SNoEq_ = (λ X0 . (λ X1 . (λ X2 . (PNoEq_ X0 (λ X3 . (In X3 X1)) (λ X3 . (In X3 X2)))))))</li>
+<li id="a98">Axiom 98 [SNoLt Definition]: (SNoLt = (λ X0 . (λ X1 . (PNoLt (SNoLev X0) (λ X2 . (In X2 X0)) (SNoLev X1) (λ X2 . (In X2 X1))))))</li>
+<li id="a99">Axiom 99 [SNoLe Definition]: (SNoLe = (λ X0 . (λ X1 . (PNoLe (SNoLev X0) (λ X2 . (In X2 X0)) (SNoLev X1) (λ X2 . (In X2 X1))))))</li>
+<li id="a100">Axiom 100 [binop_on Definition]: (binop_on = (λ X0 . (λ X1 . (∀ X2 .
+ ((In X2 X0) → (∀ X3 . ((In X3 X0) → (In (X1 X2 X3) X0))))))))</li>
+<li id="a101">Axiom 101 [Loop Definition]: (Loop = (λ X0 . (λ X1 . (λ X2 . (λ X3 .
+ (λ X4 . (and (and (and (and (binop_on X0 X1) (binop_on X0 X2)) 
+(binop_on X0 X3)) (∀ X5 . ((In X5 X0) → (and ((X1 X4 X5) = X5) ((X1 X5 
+X4) = X5))))) (∀ X5 . ((In X5 X0) → (∀ X6 . ((In X6 X0) → (and (and (and
+ ((X2 X5 (X1 X5 X6)) = X6) ((X1 X5 (X2 X5 X6)) = X6)) ((X3 (X1 X5 X6) 
+X6) = X5)) ((X1 (X3 X5 X6) X6) = X5)))))))))))))<br>
+  <b>(Warning: The definition of Loop has a serious bug. The condition that the identity element is in the carrier is missing.)</b>
+</li>
+<li id="a102">Axiom 102 [Loop_with_defs Definition]: (Loop_with_defs = (λ X0 . (λ 
+X1 . (λ X2 . (λ X3 . (λ X4 . (λ X5 . (λ X6 . (λ X7 . (λ X8 . (λ X9 . (λ 
+X10 . (λ X11 . (λ X12 . (λ X13 . (and (and (and (and (Loop X0 X1 X2 X3 
+X4) (∀ X14 . ((In X14 X0) → (∀ X15 . ((In X15 X0) → ((X5 X14 X15) = (X2 
+(X1 X15 X14) (X1 X14 X15)))))))) (∀ X14 . ((In X14 X0) → (∀ X15 . ((In 
+X15 X0) → (∀ X16 . ((In X16 X0) → ((X6 X14 X15 X16) = (X2 (X1 X14 (X1 
+X15 X16)) (X1 (X1 X14 X15) X16)))))))))) (∀ X14 . ((In X14 X0) → (∀ X15 .
+ ((In X15 X0) → (and (and (and (and ((X7 X14 X15) = (X2 X14 (X1 X15 
+X14))) ((X10 X14 X15) = (X1 X14 (X1 X15 (X2 X14 X4))))) ((X11 X14 X15) =
+ (X1 (X1 (X3 X4 X14) X15) X14))) ((X12 X14 X15) = (X1 (X2 X14 X15) (X2 
+(X2 X14 X4) X4)))) ((X13 X14 X15) = (X1 (X3 X4 (X3 X4 X14)) (X3 X15 
+X14))))))))) (∀ X14 . ((In X14 X0) → (∀ X15 . ((In X15 X0) → (∀ X16 . 
+((In X16 X0) → (and ((X8 X14 X15 X16) = (X2 (X1 X15 X14) (X1 X15 (X1 X14
+ X16)))) ((X9 X14 X15 X16) = (X3 (X1 (X1 X16 X14) X15) (X1 X14 
+X15))))))))))))))))))))))))))</li>
+<li id="a103">Axiom 103 [Loop_with_defs_cex1 Definition]: (Loop_with_defs_cex1 = 
+(λ X0 . (λ X1 . (λ X2 . (λ X3 . (λ X4 . (λ X5 . (λ X6 . (λ X7 . (λ X8 . 
+(λ X9 . (λ X10 . (λ X11 . (λ X12 . (λ X13 . (and (Loop_with_defs X0 X1 
+X2 X3 X4 X5 X6 X7 X8 X9 X10 X11 X12 X13) (∃ X14 . (and (In X14 X0) (∃ 
+X15 . (and (In X15 X0) (∃ X16 . (and (In X16 X0) (∃ X17 . (and (In X17 
+X0) (not ((X5 (X1 (X2 (X8 X15 X16 X14) X4) X14) X17) = 
+X4))))))))))))))))))))))))))</li>
+<li id="a104">Axiom 104 [Loop_with_defs_cex2 Definition]: (Loop_with_defs_cex2 = 
+(λ X0 . (λ X1 . (λ X2 . (λ X3 . (λ X4 . (λ X5 . (λ X6 . (λ X7 . (λ X8 . 
+(λ X9 . (λ X10 . (λ X11 . (λ X12 . (λ X13 . (and (Loop_with_defs X0 X1 
+X2 X3 X4 X5 X6 X7 X8 X9 X10 X11 X12 X13) (∃ X14 . (and (In X14 X0) (∃ 
+X15 . (and (In X15 X0) (∃ X16 . (and (In X16 X0) (∃ X17 . (and (In X17 
+X0) (∃ X18 . (and (In X18 X0) (not ((X6 X18 (X1 (X3 X4 X14) (X9 X15 X16 
+X14)) X17) = X4))))))))))))))))))))))))))))</li>
+<li id="a105">Axiom 105 [combinator Definition]: (combinator = (λ X0 . (∀ X1:ι → o
+ . ((X1 (Inj0 Empty)) → ((X1 (Inj0 (Power Empty))) → ((∀ X2 . (∀ X3 . 
+((X1 X2) → ((X1 X3) → (X1 (Inj1 (setsum X2 X3))))))) → (X1 X0)))))))</li>
+<li id="a106">Axiom 106 [combinator_equiv Definition]: (combinator_equiv = (λ X0 .
+ (λ X1 . (∀ X2:ι → ι → o . ((λ X3 . (λ X4 . (λ X5 . ((per_i X2) → ((∀ X6
+ . ((combinator X6) → (X2 X6 X6))) → ((∀ X6 . (∀ X7 . (∀ X8 . (∀ X9 . 
+((combinator X6) → ((combinator X7) → ((combinator X8) → ((combinator 
+X9) → ((X2 X6 X8) → ((X2 X7 X9) → (X2 (X5 X6 X7) (X5 X8 X9)))))))))))) →
+ ((∀ X6 . (∀ X7 . (X2 (X5 (X5 X3 X6) X7) X6))) → ((∀ X6 . (∀ X7 . (∀ X8 .
+ (X2 (X5 (X5 (X5 X4 X6) X7) X8) (X5 (X5 X6 X8) (X5 X7 X8)))))) → (X2 X0 
+X1))))))))) (Inj0 Empty) (Inj0 (Power Empty)) (λ X3 . (λ X4 . (Inj1 
+(setsum X3 X4)))))))))</li>
+<li id="a107">Axiom 107 [equip_mod Definition]: (equip_mod = (λ X0 . (λ X1 . (λ X2
+ . (∃ X3 . (∃ X4 . (or (and (equip (setsum X0 X3) X1) (equip (setprod X4
+ X3) X2)) (and (equip (setsum X1 X3) X0) (equip (setprod X4 X3) 
+X2)))))))))</li>
+</ul>
+</html>
