@@ -41,13 +41,21 @@ is Proofgold Lava ([6],[7]).
 ## Resources
 
 Megalodon: http://grid01.ciirc.cvut.cz/~chad/megalodon/
+
 Megalodon: https://github.com/ai4reason/Megalodon
+
 Egal: http://arxiv.org/abs/1907.08368 , Brown, Chad E. and Pąk, Karol. A tale of two set theories. CICM 2019. pp 44-60.
+
 Proofgold explorer: https://formalweb3.uibk.ac.at/pgbce/
+
 Proofgold paper: https://doi.org/10.4230/OASIcs.FMBC.2022.4 Chad E. Brown, Cezary Kaliszyk, Thibault Gauthier, Josef Urban: Proofgold: Blockchain for Formal Methods. FMBC@CAV 2022: 4:1-4:15 . 
+
 Lava client: http://cl-informatik.uibk.ac.at/cek/proofgold/proofgold-lava-0.2.9.1.tgz
+
 Lava GitHub: https://github.com/cezaryka/proofgold-lava
+
 Core client and old forum: https://prfgld.github.io/
+
 Lite client: https://github.com/dalcoder/proofgoldlite
 
 
