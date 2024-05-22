@@ -16,8 +16,7 @@ When your edits are done, you can issue a pull request (PR) to the main mgwiki r
 The wiki can be used to create and solve open conjectures and put them
 into the Proofgold blockchain with bounties ([4],[5]).
 
-
-
+See also the list of all available bounties at the explorer ( https://formalweb3.uibk.ac.at/pgbce/bounties.php ) and also the list of recent open and collected bounties (https://formalweb3.uibk.ac.at/pgbce/recentbounties.php ) .
 
 
 [1] http://grid01.ciirc.cvut.cz/~chad/megalodon/
