@@ -18,9 +18,20 @@ into the Proofgold blockchain with bounties ([4],[5]).
 
 See also the list of all available bounties at the explorer ( https://formalweb3.uibk.ac.at/pgbce/bounties.php ) and also the list of recent open and collected bounties (https://formalweb3.uibk.ac.at/pgbce/recentbounties.php ) .
 
+## Proofgold
+
+Proofgold ([5],[4], is a blockchain for formal math. It allows
+decentralized solving of open conjectures, putting bounties on them,
+etc. There are several clients (Lava, Lite, Core - [6],[7],[8],[9]), the recommended one
+is Proofgold Lava ([6],[7]). 
+
 
 [1] http://grid01.ciirc.cvut.cz/~chad/megalodon/
 [2] https://github.com/ai4reason/Megalodon
 [3] Brown, Chad E. and Pąk, Karol. A tale of two set theories. CICM 2019. pp 44-60.  http://arxiv.org/abs/1907.08368
 [4] https://formalweb3.uibk.ac.at/pgbce/
 [5] Chad E. Brown, Cezary Kaliszyk, Thibault Gauthier, Josef Urban: Proofgold: Blockchain for Formal Methods. FMBC@CAV 2022: 4:1-4:15 . https://doi.org/10.4230/OASIcs.FMBC.2022.4
+[6] http://cl-informatik.uibk.ac.at/cek/proofgold/proofgold-lava-0.2.9.1.tgz
+[7] https://github.com/cezaryka/proofgold-lava
+[8] https://prfgld.github.io/
+[9] https://github.com/dalcoder/proofgoldlite
