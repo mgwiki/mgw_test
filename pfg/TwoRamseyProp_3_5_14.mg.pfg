@@ -1,0 +1,14 @@
+Document 29c988c5e6c620410ef4e61bcfcbe4213c77013974af40759d8b732c07d61967
+Base set
+Param 65d8837d7b0172ae830bed36c8407fcd41b7d875033d2284eb2df245b42295a6 ordsucc : TpArr set set
+Param 458be3a74fef41541068991d6ed4034dc3b5e637179369954ba21f6dff4448e4 nat_p : TpArr set Prop
+Param afa8ae66d018824f39cfa44fb10fe583334a7b9375ac09f92d622a4833578d1a add_nat : TpArr set TpArr set set
+Param c5d86cf97e40aa1fd6c7b0939b0974f704b1c792393b364c520e0e4558842cf6 TwoRamseyProp : TpArr set TpArr set TpArr set Prop
+Known TwoRamseyProp_2 : All x1 set Ap Ap Ap TwoRamseyProp Ap ordsucc Ap ordsucc Prim 2 x1 x1
+Known TwoRamseyProp_3_4_9 : Ap Ap Ap TwoRamseyProp Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known nat_4 : Ap nat_p Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known nat_8 : Ap nat_p Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known add_nat_8_4 : Eq set Ap Ap add_nat Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+Known TwoRamseyProp_bd : All x1 set All x2 set All x3 set All x4 set Imp Ap nat_p x3 Imp Ap nat_p x4 Imp Ap Ap Ap TwoRamseyProp Ap ordsucc x1 x2 Ap ordsucc x3 Imp Ap Ap Ap TwoRamseyProp x1 Ap ordsucc x2 Ap ordsucc x4 Ap Ap Ap TwoRamseyProp Ap ordsucc x1 Ap ordsucc x2 Ap ordsucc Ap ordsucc Ap Ap add_nat x3 x4
+Thm TwoRamseyProp_3_5_14 : Ap Ap Ap TwoRamseyProp Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
+ := PrAp TmAp add_nat_8_4 Lam x1 set Lam _ set Ap Ap Ap TwoRamseyProp Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc x1 PrAp PrAp PrAp PrAp TmAp TmAp TmAp TmAp TwoRamseyProp_bd Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2 nat_8 nat_4 TwoRamseyProp_3_4_9 TmAp TwoRamseyProp_2 Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Ap ordsucc Prim 2
