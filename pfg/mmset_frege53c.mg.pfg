@@ -1,0 +1,7 @@
+Document 85ecfdcf26657b94532af5af2393c6945cee05c4aabccb8a819f793a7dbc4acf
+Base set
+Known ax_mp : All x1 Prop All x2 Prop Imp x1 Imp Imp x1 x2 x2
+Known ax_frege52c : All x1 TpArr set Prop All x2 TpArr set TpArr set Prop All x3 TpArr set TpArr set Prop All x4 set Imp Ap Ap Prim 10 Ap x2 x4 Ap x3 x4 Imp Ap Ap Prim 33 Lam x6 set Ap x1 x6 Ap x2 x4 Ap Ap Prim 33 Lam x5 set Ap x1 x5 Ap x3 x4
+Known ax_frege8 : All x1 Prop All x2 Prop All x3 Prop Imp Imp x1 Imp x2 x3 Imp x2 Imp x1 x3
+Thm frege53c : All x1 TpArr set Prop All x2 TpArr set TpArr set Prop All x3 TpArr set TpArr set Prop All x4 set Imp Ap Ap Prim 33 Lam x6 set Ap x1 x6 Ap x2 x4 Imp Ap Ap Prim 10 Ap x2 x4 Ap x3 x4 Ap Ap Prim 33 Lam x5 set Ap x1 x5 Ap x3 x4
+ := TmLa x1 TpArr set Prop TmLa x2 TpArr set TpArr set Prop TmLa x3 TpArr set TpArr set Prop TmLa x4 set PrAp PrAp TmAp TmAp ax_mp Imp Ap Ap Prim 10 Ap x2 x4 Ap x3 x4 Imp Ap Ap Prim 33 Lam x13 set Ap x1 x13 Ap x2 x4 Ap Ap Prim 33 Lam x12 set Ap x1 x12 Ap x3 x4 Imp Ap Ap Prim 33 Lam x11 set Ap x1 x11 Ap x2 x4 Imp Ap Ap Prim 10 Ap x2 x4 Ap x3 x4 Ap Ap Prim 33 Lam x10 set Ap x1 x10 Ap x3 x4 TmAp TmAp TmAp TmAp ax_frege52c Lam x9 set Ap x1 x9 Lam x8 set Ap x2 x8 Lam x7 set Ap x3 x7 x4 TmAp TmAp TmAp ax_frege8 Ap Ap Prim 10 Ap x2 x4 Ap x3 x4 Ap Ap Prim 33 Lam x6 set Ap x1 x6 Ap x2 x4 Ap Ap Prim 33 Lam x5 set Ap x1 x5 Ap x3 x4
