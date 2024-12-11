@@ -51,5 +51,4 @@ If you also want to generate .html locally, run:
    ```
 
 
-
 Happy discussing!
