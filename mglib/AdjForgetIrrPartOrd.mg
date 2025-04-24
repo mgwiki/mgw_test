@@ -1,6 +1,8 @@
 Definition True : prop := forall p:prop, p -> p.
 Definition False : prop := forall p:prop, p.
 
+Axiom FalseE: False -> forall p:prop, p.
+
 Definition not : prop -> prop := fun A:prop => A -> False.
 
 (* Unicode ~ "00ac" *)
