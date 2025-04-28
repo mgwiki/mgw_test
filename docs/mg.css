@@ -47,9 +47,11 @@ body {
     font-weight: bold;
 }
 
+/* Removing this for now because special cases like "Use symmetry" and "Use f_equal" do not have a class but should be indented the same as the others listed here.
 .rewritetac, .applytac, .lettac, .assumetac, .provetac, .subproof, .exact, .claimtac, .settac, .witnesstac {
     margin-left: 10px;
 }
+*/
 
 .subproof {
     margin-left: 40px;
