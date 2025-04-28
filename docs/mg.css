@@ -47,8 +47,8 @@ body {
     font-weight: bold;
 }
 
-.rewritetac, .applytac, .lettac, .assumetac, .provetac, .subproof, .exact {
-    margin-left: 20px;
+.rewritetac, .applytac, .lettac, .assumetac, .provetac, .subproof, .exact, .claimtac, .settac, .witnesstac {
+    margin-left: 10px;
 }
 
 .subproof {
