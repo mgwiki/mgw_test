@@ -63,3 +63,5 @@ body {
     margin-top: 30px;
     font-weight: bold;
 }
+
+:target { background: #5D9BF7; border: solid 1px #aaa; }
