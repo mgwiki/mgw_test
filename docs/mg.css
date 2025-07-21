@@ -64,4 +64,9 @@ body {
     font-weight: bold;
 }
 
-:target { background: #5D9BF7; border: solid 1px #aaa; }
+a[name]:target {
+  display: block;
+  background: #5D9BF7;
+  height: 1em;
+  margin-bottom: 2px;
+}
