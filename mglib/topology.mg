@@ -6756,9 +6756,11 @@ let X U.
 apply iffI.
 - assume HU. exact (UPairE U Empty X HU).
 - assume Hcases : U = Empty \/ U = X.
-  apply (Hcases (U :e indiscrete_topology X)).
-  * assume HUE : U = Empty. rewrite HUE. apply UPairI1.
-  * assume HUX : U = X. rewrite HUX. apply UPairI2.
+  claim HUempty_branch : U = Empty -> U :e indiscrete_topology X.
+  { assume HUE : U = Empty. rewrite HUE. apply UPairI1. }
+  claim HUx_branch : U = X -> U :e indiscrete_topology X.
+  { assume HUX : U = X. rewrite HUX. apply UPairI2. }
+  exact (Hcases (U :e indiscrete_topology X) HUempty_branch HUx_branch).
 Qed.
 
 (** from §12 Example 3: finite complement openness criterion **)
