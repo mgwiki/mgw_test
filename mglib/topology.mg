@@ -6712,6 +6712,45 @@ Theorem lemma_finer_if_basis_refines : forall X B B':set,
 admit.
 Qed.
 
+Theorem open_as_union_of_basis_elements : forall X B:set,
+  basis_on X B ->
+  forall U:set, open_in X (generated_topology X B) U ->
+    U = Union {b :e B|b c= U}.
+admit.
+Qed.
+
+Theorem basis_element_open : forall X B:set,
+  basis_on X B ->
+  forall b :e B, open_in X (generated_topology X B) b.
+admit.
+Qed.
+
+Theorem discrete_topology_open_every_subset : forall X U:set,
+  open_in X (discrete_topology X) U.
+admit.
+Qed.
+
+Theorem indiscrete_topology_only_empty_full : forall X U:set,
+  open_in X (indiscrete_topology X) U -> U = Empty \/ U = X.
+admit.
+Qed.
+
+Theorem finite_complement_topology_open_iff_finite_complement : forall X U:set,
+  open_in X (finite_complement_topology X) U ->
+  finite (X :\: U) \/ U = X.
+admit.
+Qed.
+
+Theorem finite_complement_topology_contains_empty : forall X:set,
+  Empty :e finite_complement_topology X.
+admit.
+Qed.
+
+Theorem finite_complement_topology_contains_full : forall X:set,
+  X :e finite_complement_topology X.
+admit.
+Qed.
+
 Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
   topology_on X T1 /\ topology_on X T2 /\ T1 = T2.
 
