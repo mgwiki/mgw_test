@@ -9012,7 +9012,7 @@ Theorem Sorgenfrey_line_countability :
 admit.
 Qed.
 
-(* placeholders for later refinement of product/separation constructions *) 
+(** placeholders for later refinement of product/separation constructions **) 
 Parameter Sorgenfrey_plane_topology : set.
 Parameter ordered_square : set.
 Parameter ordered_square_topology : set.
