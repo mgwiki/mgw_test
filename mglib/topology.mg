@@ -8608,6 +8608,14 @@ Definition converges_to : set -> set -> set -> set -> prop :=
   fun X Tx seq x => topology_on X Tx /\ sequence_on seq X /\ x :e X.
 Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => y).
 
+Definition sequence_converges_metric : set -> set -> set -> set -> prop :=
+  fun X d seq x =>
+    metric_on X d /\ sequence_on seq X /\ x :e X /\
+    forall eps:set, eps :e R /\ Rlt 0 eps ->
+      exists N:set, N :e omega /\
+        forall n:set, n :e omega -> N c= n ->
+          Rlt (apply_fun d (OrderedPair (apply_fun seq n) x)) eps.
+
 (** from §21: uniqueness of limits in metric spaces **) 
 (** helper: function evaluation as graph lookup **) 
 Theorem metric_limits_unique : forall X d seq x y:set,
@@ -8641,14 +8649,6 @@ admit.
 Qed.
 
 (** from §21: convergence of sequences in metric spaces **) 
-Definition sequence_converges_metric : set -> set -> set -> set -> prop :=
-  fun X d seq x =>
-    metric_on X d /\ sequence_on seq X /\ x :e X /\
-    forall eps:set, eps :e R /\ Rlt 0 eps ->
-      exists N:set, N :e omega /\
-        forall n:set, n :e omega -> N c= n ->
-          Rlt (apply_fun d (OrderedPair (apply_fun seq n) x)) eps.
-
 Theorem sequence_convergence_metric : forall X d seq x:set,
   sequence_converges_metric X d seq x -> sequence_converges_metric X d seq x.
 admit.
