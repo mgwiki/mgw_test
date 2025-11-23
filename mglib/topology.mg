@@ -6495,6 +6495,7 @@ End form100_1.
 Section Topology.
 
 (** from §12 Topological Spaces: definition of topology on X **)
+(** LATEX VERSION: A topology on a set X is a collection T of subsets of X such that ∅ and X are in T, arbitrary unions of subcollections of T lie in T, and finite intersections of elements of T lie in T. **)
 Definition topology_on : set -> set -> prop := fun X T =>
   T c= Power X
 /\ Empty :e T
@@ -6503,14 +6504,17 @@ Definition topology_on : set -> set -> prop := fun X T =>
 /\ (forall U :e T, forall V :e T, U :/\: V :e T).
 
 (** from §12: definition of open sets in a topology **)
+(** LATEX VERSION: If X has topology T, a subset U of X is open exactly when U is an element of T. **)
 Definition open_in : set -> set -> set -> prop := fun X T U =>
   topology_on X T /\ U :e T.
 
 (** from §12: closed set as complement of open set **)
+(** LATEX VERSION: A set C is closed in X (with topology T) if there exists an open set U∈T whose complement in X equals C. **)
 Definition closed_in : set -> set -> set -> prop := fun X T C =>
   topology_on X T /\ exists U :e T, C = X :\: U.
 
 (** from §12: complement of open set is closed **)
+(** LATEX VERSION: If U is open in topology T on X, then X\\U is closed in that topology. **)
 Theorem closed_of_open_complement : forall X T U:set,
   topology_on X T -> U :e T -> closed_in X T (X :\: U).
 let X T U.
