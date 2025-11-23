@@ -7793,7 +7793,7 @@ Qed.
 (** from §13 Lemma 13.4: generated topology equals unions of basis elements **) 
 Theorem union_of_basis_equals_open : forall X B:set,
   basis_on X B ->
-generated_topology X B = {Union Fam|Fam :e Power B}.
+  generated_topology X B = {Union Fam|Fam :e Power B}.
 Proof.
 let X B. assume HB.
 (* characterization of opens as unions of basis elements; proof deferred *)
