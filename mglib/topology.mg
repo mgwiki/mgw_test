@@ -8614,13 +8614,19 @@ Qed.
 Theorem continuous_construction_rules : forall X Tx Y Ty Z Tz f g:set,
   continuous_map X Tx Y Ty f ->
   continuous_map X Tx Y Ty g ->
-  True.
+  continuous_map X Tx Y Ty f /\
+  continuous_map X Tx Y Ty g /\
+  continuous_map X Tx Y Ty g.
 admit.
 Qed.
 
 (** from §18 Definition: homeomorphism **) 
 Definition homeomorphism : set -> set -> set -> set -> set -> prop :=
-  fun X Tx Y Ty f => continuous_map X Tx Y Ty f.
+  fun X Tx Y Ty f =>
+    continuous_map X Tx Y Ty f /\
+    exists g:set, continuous_map Y Ty X Tx g /\
+      (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+      (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y).
 
 (** from §18: continuous maps on subspaces **) 
 Theorem continuous_on_subspace : forall X Tx Y Ty f A:set,
@@ -8637,14 +8643,20 @@ admit.
 Qed.
 
 (** from §18 Theorem 18.3: pasting lemma **) 
-Theorem pasting_lemma : forall X A B Y f g:set,
-  True.
+Theorem pasting_lemma : forall X A B Y Tx Ty f g:set,
+  topology_on X Tx ->
+  A :e Tx -> B :e Tx -> A :/\: B = Empty ->
+  continuous_map A (subspace_topology X Tx A) Y Ty f ->
+  continuous_map B (subspace_topology X Tx B) Y Ty g ->
+  continuous_map (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g).
 admit.
 Qed.
 
 (** from §18 Theorem 18.4: maps into products **) 
-Theorem maps_into_products : forall A X Tx Y Ty f:set,
-  True.
+Theorem maps_into_products : forall A X Tx Y Ty f g:set,
+  continuous_map A Tx X Ty f ->
+  continuous_map A Tx Y Ty g ->
+  continuous_map A Tx (OrderedPair X Y) (product_topology X Ty Y Ty) (f :/\: g).
 admit.
 Qed.
 
@@ -8676,7 +8688,9 @@ Definition metric_on : set -> set -> prop := fun X d =>
   (forall x y:set, x :e X -> y :e X ->
      ~(Rlt (apply_fun d (OrderedPair x y)) 0) /\
      apply_fun d (OrderedPair x y) = 0 -> x = y) /\
-  (forall x y z:set, x :e X -> y :e X -> z :e X -> True).
+  (forall x y z:set, x :e X -> y :e X -> z :e X ->
+     Rlt (apply_fun d (OrderedPair x z))
+         (apply_fun d (OrderedPair x y) :/\: apply_fun d (OrderedPair y z))).
 
 (** from §20 Definition: open ball **) 
 Definition open_ball : set -> set -> set -> set := fun X d x =>
