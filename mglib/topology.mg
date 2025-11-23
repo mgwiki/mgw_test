@@ -9075,7 +9075,8 @@ Definition relatively_compact_in_compact_convergence : set -> set -> set -> set 
     topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
     compact_space F (compact_convergence_topology X Tx Y Ty).
 Definition nowhere_differentiable : set -> prop := fun f => True.
-Definition sequentially_compact : set -> set -> prop := fun X Tx => True.
+Definition sequentially_compact : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\ forall seq:set, seq c= X -> exists x:set, converges_to X Tx seq x.
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 Theorem Sorgenfrey_plane_not_Lindelof :
