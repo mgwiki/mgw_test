@@ -7336,6 +7336,7 @@ claim proofD : forall UFam :e Power (generated_topology X B), Union UFam :e gene
     claim Hexb : exists b :e B, x :e b /\ b c= U.
     { exact (HUprop x HxU). }
     apply Hexb.
+    apply Hexb.
     let b. assume Hbpair.
     claim HbB : b :e B.
     { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
@@ -7826,13 +7827,16 @@ claim Hrefines : basis_refines X B' (generated_topology X B).
   - exact HTB.
   - let U. assume HU : U :e generated_topology X B.
     let x. assume HxU.
+    claim HUsubX : U c= X.
+    { exact (PowerE X U (SepE1 (Power X)
+                               (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0)
+                               U HU)). }
     claim HUprop : forall x0 :e U, exists b :e B, x0 :e b /\ b c= U.
     { exact (SepE2 (Power X)
                    (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0)
                    U HU). }
     claim Hexb : exists b :e B, x :e b /\ b c= U.
     { exact (HUprop x HxU). }
-    apply Hexb.
     let b. assume Hbpair.
     claim HbB : b :e B.
     { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
