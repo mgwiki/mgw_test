@@ -9675,8 +9675,11 @@ Definition complete_metric_space : set -> set -> prop := fun X d =>
     exists x:set, converges_to X (metric_topology X d) seq x.
 
 Definition discrete_metric : set -> set := fun X =>
-  {OrderedPair (OrderedPair x y) 0 | x :e X /\ y :e X /\ x = y} :\/:
-  {OrderedPair (OrderedPair x y) 1 | x :e X /\ y :e X /\ x <> y}.
+  {p :e OrderedPair X X |
+     exists x:set, exists y:set,
+       x :e X /\ y :e X /\
+       ((x = y /\ p = OrderedPair (OrderedPair x y) 0) \/
+        (x <> y /\ p = OrderedPair (OrderedPair x y) 1))}.
 (** helper: placeholder metric on euclidean_space n **) 
 Definition euclidean_metric : set -> set := fun n => discrete_metric (euclidean_space n).
 
