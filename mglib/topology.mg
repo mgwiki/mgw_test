@@ -6756,7 +6756,7 @@ let X U.
 apply iffI.
 - assume HU. exact (UPairE U Empty X HU).
 - assume Hcases : U = Empty \/ U = X.
-  apply orE U = Empty U = X Hcases.
+  apply (Hcases (U :e indiscrete_topology X)).
   * assume HUE : U = Empty. rewrite HUE. apply UPairI1.
   * assume HUX : U = X. rewrite HUX. apply UPairI2.
 Qed.
