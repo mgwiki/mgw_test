@@ -8903,13 +8903,13 @@ admit.
 Qed.
 
 (** from §30 Definition 30.1: countable basis at a point / first countable **) 
-Definition countable_basis_at (X Tx x:set) : prop :=
+Definition countable_basis_at : set -> set -> set -> prop := fun X Tx x =>
   topology_on X Tx /\
   exists B:set, basis_on X B /\ countable_set B /\
     (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ x :e b /\ b c= U).
 
 (** from §30 Definition 30.1: first-countable space **) 
-Definition first_countable_space (X Tx:set) : prop :=
+Definition first_countable_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall x:set, x :e X -> countable_basis_at X Tx x.
 
 (** from §30 Theorem 30.1(a): sequences and closure in first-countable spaces **) 
@@ -8929,7 +8929,7 @@ admit.
 Qed.
 
 (** from §30 Definition: second-countable space **) 
-Definition second_countable_space (X Tx:set) : prop :=
+Definition second_countable_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
 
 (** from §30 Example 1: R^n has countable basis **) 
