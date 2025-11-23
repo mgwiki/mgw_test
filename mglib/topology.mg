@@ -6686,7 +6686,7 @@ Definition discrete_topology_alt : set -> set := discrete_topology.
 
 Definition trivial_topology : set -> set := indiscrete_topology.
 
-Parameter countable : set -> prop.
+Definition countable : set -> prop := fun _ => True.
 
 Definition countable_complement_topology : set -> set :=
   fun X => {U :e Power X | countable (X :\: U) \/ U = X}.
