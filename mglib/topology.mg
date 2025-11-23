@@ -7452,7 +7452,48 @@ Theorem open_sets_as_unions_of_basis : forall X B:set,
   basis_on X B ->
   forall U:set, open_in X (generated_topology X B) U ->
     exists Fam :e Power B, Union Fam = U.
-admit.
+let X B. assume HBasis.
+claim HBsub : B c= Power X.
+{ exact (andEL (B c= Power X) (forall x :e X, exists b :e B, x :e b)
+               (andEL (B c= Power X /\ (forall x :e X, exists b :e B, x :e b))
+                     (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)
+                     HBasis)). }
+let U. assume HUopen.
+claim HUtop : U :e generated_topology X B.
+{ exact (andER (topology_on X (generated_topology X B)) (U :e generated_topology X B) HUopen). }
+claim HUprop : forall x :e U, exists b :e B, x :e b /\ b c= U.
+{ exact (SepE2 (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) U HUtop). }
+claim Fam : set := {b :e B|b c= U}.
+claim HFamPow : Fam :e Power B.
+{ apply PowerI B Fam.
+  let b. assume HbFam.
+  exact (SepE1 B (fun b0 : set => b0 c= U) b HbFam). }
+claim HUnion_eq : Union Fam = U.
+{ apply Ext.
+  - let x. assume HxUnion.
+    apply UnionE_impred Fam x HxUnion.
+    let b. assume Hxb HbFam.
+    claim HbsubU : b c= U.
+    { exact (SepE2 B (fun b0 : set => b0 c= U) b HbFam). }
+    exact (HbsubU x Hxb).
+  - let x. assume HxU.
+    claim Hexb : exists b :e B, x :e b /\ b c= U.
+    { exact (HUprop x HxU). }
+    apply Hexb.
+    let b. assume Hbpair.
+    claim HbB : b :e B.
+    { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
+    claim Hbprop : x :e b /\ b c= U.
+    { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
+    claim Hxb : x :e b.
+    { exact (andEL (x :e b) (b c= U) Hbprop). }
+    claim HbsubU : b c= U.
+    { exact (andER (x :e b) (b c= U) Hbprop). }
+    claim HbFam : b :e Fam.
+    { exact (SepI B (fun b0 : set => b0 c= U) b HbB HbsubU). }
+    exact (UnionI Fam x b Hxb HbFam). }
+witness Fam.
+apply andI; exact HFamPow || exact HUnion_eq.
 Qed.
 
 (** from §13 Lemma 13.1 converse direction **) 
