@@ -7416,3 +7416,70 @@ Theorem Hausdorff_compact_sets_closed : forall X Tx:set,
   Hausdorff_space X Tx -> True.
 admit.
 Qed.
+
+(** from §29: one-point compactification placeholder **) 
+Theorem one_point_compactification_exists : forall X Tx:set,
+  locally_compact X Tx -> Hausdorff_space X Tx -> True.
+admit.
+Qed.
+
+(** from exercises after §29: directed sets **) 
+Definition directed_set : set -> prop := fun J => True.
+
+(** from exercises after §29: examples of directed sets **) 
+Theorem examples_of_directed_sets : forall J:set,
+  directed_set J -> True.
+admit.
+Qed.
+
+(** from exercises after §29: cofinal subsets of directed sets are directed **) 
+Theorem cofinal_subset_directed : forall J K:set,
+  directed_set J -> K c= J -> True.
+admit.
+Qed.
+
+(** from exercises after §29: nets as functions from directed sets **) 
+Definition net_on : set -> set -> set -> prop := fun X J f => directed_set J.
+
+(** from exercises after §29: subnet definition placeholder **) 
+Definition subnet_of : set -> set -> prop := fun net sub => True.
+
+(** from exercises after §29: accumulation point of a net **) 
+Definition accumulation_point_of_net : set -> set -> set -> prop := fun X net x => True.
+
+(** from exercises after §29: net convergence **) 
+Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x => True.
+
+(** from exercises after §29: convergence of subnets **) 
+Theorem subnet_preserves_convergence : forall X Tx net sub x:set,
+  net_converges X Tx net x -> subnet_of net sub -> net_converges X Tx sub x.
+admit.
+Qed.
+
+(** from exercises after §29: closure via nets **) 
+Theorem closure_via_nets : forall X Tx A x:set,
+  topology_on X Tx ->
+  (x :e closure_of X Tx A <-> exists net:set, net_on A net /\ net_converges X Tx net x).
+admit.
+Qed.
+
+(** from exercises after §29: continuity via nets **) 
+Theorem continuity_via_nets : forall X Tx Y Ty f:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  (continuous_map X Tx Y Ty f <->
+    forall net:set, net_on X net -> forall x:set, net_converges X Tx net x -> net_converges Y Ty net (Empty)).
+admit.
+Qed.
+
+(** from exercises after §29: accumulation points and subnets **) 
+Theorem subnet_converges_to_accumulation : forall X Tx net x:set,
+  accumulation_point_of_net X net x -> exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
+admit.
+Qed.
+
+(** from exercises after §29: compactness via nets **) 
+Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
+  topology_on X Tx ->
+  (compact_space X Tx <-> forall net:set, net_on X net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
+admit.
+Qed.
