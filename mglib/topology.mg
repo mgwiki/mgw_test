@@ -7082,10 +7082,9 @@ claim Hdiff_empty : X :\: X = Empty.
   apply FalseE.
   exact (Hxnot Hxin).
 }
-apply SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) X (Self_In_Power X).
-apply orIL.
-rewrite Hdiff_empty.
-exact finite_Empty.
+claim HfinDiff : finite (X :\: X).
+{ rewrite Hdiff_empty. exact finite_Empty. }
+exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) X (Self_In_Power X) (orIL (finite (X :\: X)) (X = Empty) HfinDiff)).
 Qed.
 
 (** from §12 Example 4: openness via countable complement **) 
