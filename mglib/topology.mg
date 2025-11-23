@@ -7583,13 +7583,6 @@ Theorem continuous_image_compact : forall X Tx Y Ty f:set,
 admit.
 Qed.
 
-(** from §26 Theorem 26.7: finite products of compact spaces are compact **) 
-Theorem finite_product_compact : forall X Tx Y Ty:set,
-  compact_space X Tx -> compact_space Y Ty ->
-  compact_space (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit.
-Qed.
-
 (** from §26: tube lemma used in product compactness **) 
 Theorem tube_lemma : True.
 admit.
@@ -7598,6 +7591,13 @@ Qed.
 (** from §26 Theorem 26.6: compact-to-Hausdorff bijection is a homeomorphism **) 
 Theorem compact_to_Hausdorff_bijection_homeomorphism : forall X Tx Y Ty f:set,
   compact_space X Tx -> Hausdorff_space Y Ty -> continuous_map X Tx Y Ty f -> True.
+admit.
+Qed.
+
+(** from §26 Theorem 26.7: finite products of compact spaces are compact **) 
+Theorem finite_product_compact : forall X Tx Y Ty:set,
+  compact_space X Tx -> compact_space Y Ty ->
+  compact_space (OrderedPair X Y) (product_topology X Tx Y Ty).
 admit.
 Qed.
 
