@@ -7920,7 +7920,9 @@ apply set_ext.
   exact (SepE1 (Power X)
                (fun U0 : set => forall x0 :e U0, exists b0 :e singleton_basis X, x0 :e b0 /\ b0 c= U0)
                U HU).
-- let U. assume HUsubX.
+- let U. assume HUmem.
+  claim HUsubX : U c= X.
+  { exact (PowerE X U HUmem). }
   claim HUprop : forall x :e U, exists b :e singleton_basis X, x :e b /\ b c= U.
   { let x. assume HxU.
     claim HxX : x :e X.
