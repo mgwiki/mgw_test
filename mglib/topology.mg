@@ -7801,10 +7801,7 @@ prove generated_topology X B c= generated_topology X B'.
     claim Hb'subU : b' c= U.
     { let y. assume Hyb'.
       exact (HbsubU y (Hb'subb y Hyb')). }
-    witness b'.
-    apply andI.
-    - exact Hxb'.
-    - exact Hb'subU. } } }
+    exact (andI Hb'B (andI Hxb' Hb'subU)). } } }
   exact (SepI (Power X)
               (fun U0 : set => forall x0 :e U0, exists b0 :e B', x0 :e b0 /\ b0 c= U0)
               U
