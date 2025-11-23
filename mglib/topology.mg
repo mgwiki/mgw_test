@@ -6646,7 +6646,7 @@ apply andI.
         apply UPairE U Empty X HUtop.
         - assume HUe: U = Empty.
           claim HxEmpty : x :e Empty.
-          { rewrite HUe. exact HxU. }
+          { rewrite <- HUe. exact HxU. }
           exact (EmptyE x HxEmpty (x :e X)).
         - assume HUX: U = X.
           rewrite HUX.
@@ -6677,7 +6677,7 @@ apply andI.
         apply UPairE U Empty X HUtop.
         - assume HUe: U = Empty.
           claim HxEmpty : x :e Empty.
-          { rewrite HUe. exact HxU. }
+          { rewrite <- HUe. exact HxU. }
           exact (EmptyE x HxEmpty False).
         - assume HUX: U = X.
           apply Hnone.
@@ -6790,7 +6790,7 @@ apply andI.
           apply andI; exact HUin || exact HUfin.
         - assume HUempty : U = Empty.
           claim HxEmpty : x :e Empty.
-          { rewrite HUempty. exact HxU. }
+          { rewrite <- HUempty. exact HxU. }
           exact (EmptyE x HxEmpty False).
       }
       rewrite HUnionEmpty.
