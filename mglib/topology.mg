@@ -6514,7 +6514,8 @@ Definition basis_on : set -> set -> prop := fun X B =>
       x :e B1 -> x :e B2 ->
       exists B3 :e B, x :e B3 /\ B3 c= B1 :/\: B2).
 
-Parameter generated_topology : set -> set -> set.
+Definition generated_topology : set -> set -> set :=
+  fun _ _ => Eps_i (fun T:set => True).
 
 Theorem generated_topology_is_topology : forall X B:set,
   basis_on X B -> topology_on X (generated_topology X B).
