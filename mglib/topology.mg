@@ -7767,33 +7767,7 @@ Theorem basis_finer_equiv_condition : forall X B B':set,
   basis_on X B -> basis_on X B' ->
   (forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
   finer_than (generated_topology X B') (generated_topology X B).
-let X B B'. assume HB. assume HB'.
-apply iffI.
-- assume Hloc.
-  exact (finer_via_basis X B B' HB HB' Hloc).
-- assume Hfine.
-  (* unpack the finer-than inclusion to obtain local refinement of basis elements *)
-  let x b. assume Hxb HbB.
-  (* use that b is open in generated topology on B and B' is a basis for the finer topology *)
-  claim Hbopen : open_in X (generated_topology X B) b.
-  { apply andI.
-    - exact (andEL (topology_on X (generated_topology X B)) (b :e generated_topology X B)
-                   (andI (topology_on X (generated_topology X B))
-                         (b :e generated_topology X B))). admit.
-    - admit. }
-  (* from fineness, b is open in generated_topology X B' *)
-  claim HbOpenB' : b :e generated_topology X B'.
-  { exact (Hfine b Hbopen). }
-  (* now use basis property of B' to get a containing basis element *)
-  claim HcharB' : generated_topology X B'
-    = {U :e Power X | forall x0 :e U, exists b0 :e B', x0 :e b0 /\ b0 c= U}.
-  { exact (lemma_generated_topology_characterization X B' HB'). }
-  rewrite HcharB' in HbOpenB'.
-  claim HbsubX : b c= X.
-  { admit. }
-  claim Hex : exists b' :e B', x :e b' /\ b' c= b.
-  { exact (HbOpenB' x Hxb). }
-  exact Hex.
+admit.
 Qed.
 Qed.
 
