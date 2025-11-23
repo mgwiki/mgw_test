@@ -8815,24 +8815,36 @@ Qed.
 
 (** from §23 Lemma 23.1: separations in subspaces via limit points **) 
 Theorem separation_subspace_limit_points : forall X Tx Y:set,
-  topology_on X Tx -> True.
+  topology_on X Tx ->
+  (exists A B:set, A :/\: B = Empty /\ A :\/: B = Y /\ open_in X Tx A /\ open_in X Tx B) ->
+  exists a b:set, limit_point_of X Tx A a /\ limit_point_of X Tx B b /\ a :e Y /\ b :e Y.
 admit.
 Qed.
 
 (** from §23 Lemma 23.2: connected subspace lies in one side of a separation **) 
 Theorem connected_subset_in_separation_side : forall X Tx C D Y:set,
-  topology_on X Tx -> True.
+  topology_on X Tx ->
+  connected_space Y Tx ->
+  C :/\: D = Empty -> C :\/: D = X -> open_in X Tx C -> open_in X Tx D ->
+  Y c= C \/ Y c= D.
 admit.
 Qed.
 
 (** from §23 Theorem 23.3: union of connected sets with common point is connected **) 
-Theorem union_connected_common_point : forall X:set, True.
+Theorem union_connected_common_point : forall X Tx F:set,
+  topology_on X Tx ->
+  (forall C:set, C :e F -> connected_space C (subspace_topology X Tx C)) ->
+  (exists x:set, forall C:set, C :e F -> x :e C) ->
+  connected_space (Union F) (subspace_topology X Tx (Union F)).
 admit.
 Qed.
 
 (** from §23 Theorem 23.4: adjoining limit points preserves connectedness **) 
 Theorem connected_with_limit_points : forall X Tx A B:set,
-  topology_on X Tx -> connected_space A Tx -> True.
+  topology_on X Tx ->
+  connected_space A (subspace_topology X Tx A) ->
+  limit_point_of X Tx B a ->
+  connected_space (A :\/: B) (subspace_topology X Tx (A :\/: B)).
 admit.
 Qed.
 
