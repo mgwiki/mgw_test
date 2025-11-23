@@ -9277,6 +9277,9 @@ Theorem Smirnov_metrization : forall X Tx:set,
 admit.
 Qed.
 
+(** from §48 Definition: Baire space **) 
+Definition Baire_space : set -> prop := fun X => True.
+
 (** from §43 Definition: complete metric space **) 
 Definition complete_metric_space : set -> set -> prop := fun X d => True.
 
