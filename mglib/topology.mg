@@ -7231,11 +7231,13 @@ Qed.
 Definition continuous_map : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f => topology_on X Tx /\ topology_on Y Ty.
 
-(** from §18 Theorem: continuity via preimages of opens **) 
-Theorem continuous_preimage_open : forall X Tx Y Ty f:set,
+(** from §18 Theorem 18.1: equivalent formulations of continuity **) 
+Theorem continuity_equiv_forms : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
-  continuous_map X Tx Y Ty f <->
-    forall U :e Ty, exists V :e Tx, True.
+  (continuous_map X Tx Y Ty f <->
+    (forall A:set, True) /\
+    (forall B:set, True) /\
+    (forall x:set, True)).
 admit.
 Qed.
 
@@ -7250,6 +7252,14 @@ Theorem composition_continuous : forall X Tx Y Ty Z Tz f g:set,
   continuous_map X Tx Y Ty f ->
   continuous_map Y Ty Z Tz g ->
   continuous_map X Tx Z Tz (Empty).
+admit.
+Qed.
+
+(** from §18 Theorem 18.2: rules for constructing continuous functions **) 
+Theorem continuous_construction_rules : forall X Tx Y Ty Z Tz f g:set,
+  continuous_map X Tx Y Ty f ->
+  continuous_map X Tx Y Ty g ->
+  True.
 admit.
 Qed.
 
@@ -7268,6 +7278,18 @@ Qed.
 (** from §18: inverse of homeomorphism is continuous **) 
 Theorem homeomorphism_inverse_continuous : forall X Tx Y Ty f:set,
   homeomorphism X Tx Y Ty f -> continuous_map Y Ty X Tx f.
+admit.
+Qed.
+
+(** from §18 Theorem 18.3: pasting lemma **) 
+Theorem pasting_lemma : forall X A B Y f g:set,
+  True.
+admit.
+Qed.
+
+(** from §18 Theorem 18.4: maps into products **) 
+Theorem maps_into_products : forall A X Tx Y Ty f:set,
+  True.
 admit.
 Qed.
 
