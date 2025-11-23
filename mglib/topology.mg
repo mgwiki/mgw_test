@@ -8084,8 +8084,14 @@ admit.
 Qed.
 
 (** from §15 Definition: product topology on X×Y **) 
+Definition rectangle_set : set -> set -> set := fun U V =>
+  {OrderedPair u v|u :e U /\ v :e V}.
+
+Definition product_subbasis : set -> set -> set -> set -> set :=
+  fun X Tx Y Ty => {rectangle_set U V|U :e Tx /\ V :e Ty}.
+
 Definition product_topology : set -> set -> set -> set -> set :=
-  fun X Tx Y Ty => Empty.
+  fun X Tx Y Ty => generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty).
 
 (** from §15: product topology is a topology **) 
 Theorem product_topology_is_topology : forall X Tx Y Ty:set,
