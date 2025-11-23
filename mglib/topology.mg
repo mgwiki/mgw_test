@@ -8645,7 +8645,7 @@ Definition rational_rectangle_basis : set :=
 Theorem ex16_6_rational_rectangles_basis :
   basis_on (OrderedPair R R) rational_rectangle_basis /\
   generated_topology (OrderedPair R R) rational_rectangle_basis = R2_standard_topology.
-admit.
+admit. (** ContradictoryAxioms aby  top_abc_2�f open_in_subspace_iff EmptyAx discrete_open_all In_5Fno2cycle . **)
 Qed.
 
 (** helper: convex subset placeholder **) 
@@ -8663,7 +8663,7 @@ Theorem ex16_7_convex_interval_or_ray : forall A:set,
      exists a b:set, A = open_interval a b \/
        A = {x :e R|Rlt a x} \/
        A = {x :e R|Rlt x b}).
-admit.
+admit. (**  aby  top_abc_2�f EmptyAx open_in_subspace_iff discrete_open_all In_5Fno2cycle eq_1_Sing0 not_ordinal_Sing1 prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
@@ -8673,14 +8673,14 @@ Theorem ex16_8_lines_in_lower_limit_products :
     L = {OrderedPair x x|x :e R} /\
     subspace_topology (OrderedPair R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L =
       R_lower_limit_topology.
-admit.
+admit. (** ContradictoryAxioms aby  open_in_subspace_iff EmptyAx discrete_open_all In_5Fno2cycle . **)
 Qed.
 
 (** from §16 Exercise 9: dictionary order topology on ℝ×ℝ equals ℝ_d × ℝ **) 
 (** LATEX VERSION: Exercise 9: The dictionary order topology on ℝ×ℝ differs from the product topology ℝ_d×ℝ. **)
 Theorem ex16_9_dictionary_equals_product :
   R2_dictionary_order_topology <> product_topology R R_standard_topology R R_standard_topology.
-admit.
+admit. (** ContradictoryAxioms aby  open_in_subspace_iff EmptyAx discrete_open_all In_5Fno2cycle . **)
 Qed.
 
 (** from §16 Exercise 10: compare topologies on I×I **) 
@@ -8689,7 +8689,7 @@ Theorem ex16_10_compare_topologies_on_square :
   ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square /\
   subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square <>
     product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
-admit.
+admit. (**  aby  ex13_6_Rl_RK_not_comparable finer_than_def open_in_subspace_iff Sep_5FEmpty SepE2 prop_ext_2 . **)
 Qed.
 
 (** from §17 Definition: interior and closure of a set **) 
@@ -8707,7 +8707,7 @@ Theorem closed_sets_axioms : forall X T:set,
     X :e C /\ Empty :e C /\
     (forall F:set, F :e Power C -> intersection_of_family F :e C) /\
     (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §17 Theorem 17.2: closed sets in subspaces as intersections **) 
@@ -8716,7 +8716,7 @@ Theorem closed_in_subspace_iff_intersection : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X ->
   (closed_in Y (subspace_topology X Tx Y) A <->
    exists C:set, closed_in X Tx C /\ A = C :/\: Y).
-admit.
+admit. (**  aby  discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
 Qed.
 
 (** from §17 Theorem 17.3: closedness passes up when subspace is closed **) 
@@ -8725,7 +8725,7 @@ Theorem closed_in_closed_subspace : forall X Tx Y A:set,
   topology_on X Tx -> closed_in X Tx Y ->
   closed_in Y (subspace_topology X Tx Y) A ->
   closed_in X Tx A.
-admit.
+admit. (**  aby  ordered_square_topology�f convex_subspace_order_topology ordered_square�f ex16_10_compare_topologies_on_square binintersect_Subq_eq_1 binintersect_com open_in_subspace_iff Sep_5FEmpty SepE2 Repl_5FEmpty closed_sets_axioms binintersect_Subq_2 prop_ext_2 . **)
 Qed.
 
 (** from §17 Theorem 17.4: closure in subspace equals intersection **) 
@@ -8733,7 +8733,7 @@ Qed.
 Theorem closure_in_subspace : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X ->
   closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
-admit.
+admit. (**  aby  discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
 Qed.
 
 (** from §17 Theorem 17.5: closure via neighborhoods/basis **) 
@@ -8741,7 +8741,7 @@ Qed.
 Theorem closure_characterization : forall X Tx A x:set,
   topology_on X Tx ->
   (x :e closure_of X Tx A <-> (forall U :e Tx, x :e U -> U :/\: A <> Empty)).
-admit.
+admit. (**  aby  open_in_subspace_iff EmptyAx discrete_open_all SingI In_5Fno2cycle SNoLt_5Firref prop_ext_2 . **)
 Qed.
 
 (** from §17 Corollary 17.7: closed iff contains all limit points **) 
