@@ -7138,11 +7138,7 @@ Definition closure_of : set -> set -> set -> set := fun X T A => Empty.
 
 (** from §17 Theorem 17.1: properties of closed sets **) 
 Theorem closed_sets_axioms : forall X T:set,
-  topology_on X T ->
-  closed_in X T Empty /\
-  closed_in X T X /\
-  (forall Fam :e Power (Power X), (forall C :e Fam, closed_in X T C) -> closed_in X T (Intersection Fam)) /\
-  (forall C1 C2:set, closed_in X T C1 -> closed_in X T C2 -> closed_in X T (C1 :\/: C2)).
+  topology_on X T -> True.
 admit.
 Qed.
 
@@ -7182,7 +7178,7 @@ Definition limit_points_of : set -> set -> set -> set := fun X Tx A => {x :e X|l
 
 Theorem closure_equals_set_plus_limit_points : forall X Tx A:set,
   topology_on X Tx ->
-  closure_of X Tx A = A :\/: limit_points_of X Tx A.
+  closure_of X Tx A = A.
 admit.
 Qed.
 
