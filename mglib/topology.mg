@@ -8580,14 +8580,14 @@ Theorem quotient_universal_property : forall X Tx Y Ty f:set,
 admit.
 Qed.
 
+(** from §23 Definition: separation of a space **) 
+Definition separation_of : set -> set -> set -> prop := fun X U V =>
+  U :e Power X /\ V :e Power X /\ U :/\: V = Empty /\ U <> Empty /\ V <> Empty.
+
 (** from §23 Definition: connected space **) 
 Definition connected_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X).
-
-(** from §23 Definition: separation of a space **) 
-Definition separation_of : set -> set -> set -> prop := fun X U V =>
-  U :e Power X /\ V :e Power X /\ U :/\: V = Empty /\ U <> Empty /\ V <> Empty.
 
 (** from §23: no nontrivial clopen sets characterization **) 
 Theorem connected_iff_no_nontrivial_clopen : forall X Tx:set,
