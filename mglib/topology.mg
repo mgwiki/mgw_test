@@ -7259,9 +7259,7 @@ claim proofC : X :e generated_topology X B.
     apply andI.
     - exact Hxb.
     - exact HbsubX. }
-  apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) X.
-  - exact HXprop.
-  - exact (Self_In_Power X). }
+  exact (SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) X (Self_In_Power X) HXprop). }
 claim proofD : forall UFam :e Power (generated_topology X B), Union UFam :e generated_topology X B.
 { let UFam. assume Hfam: UFam :e Power (generated_topology X B).
   claim HsubFam : UFam c= generated_topology X B.
