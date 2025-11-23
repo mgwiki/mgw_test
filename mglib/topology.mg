@@ -7403,7 +7403,8 @@ let b0. assume Hb0.
 claim Hb0_subX : b0 c= X.
 { exact (PowerE X b0 (HBsub b0 Hb0)). }
 apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) b0.
-- exact Hb0_subX.
+- apply PowerI X b0.
+  exact Hb0_subX.
 - let x. assume Hxb0.
   claim Hexb3 : exists b3 :e B, x :e b3 /\ b3 c= b0 :/\: b0.
   { exact (HBint b0 Hb0 b0 Hb0 x Hxb0 Hxb0). }
