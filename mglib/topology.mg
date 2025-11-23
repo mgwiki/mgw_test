@@ -7986,14 +7986,14 @@ apply andI.
     rewrite HaEq.
     apply PowerI X {a}.
     let y. assume Hy.
-    apply UPairE y a Empty Hy.
+    apply UPairE y a a Hy.
     { assume Hya. rewrite Hya. exact HaX. }
     { assume HyEmpty. apply FalseE. exact (EmptyE y HyEmpty (y :e X)). }
   * let x. assume Hx.
     witness {x}.
     apply andI.
     { exact (ReplI X (fun x0 : set => {x0}) x Hx). }
-    { exact (UPairI1 x Empty). }
+    { exact (UPairI1 x x). }
 - let b1. assume Hb1.
  let b2. assume Hb2.
  let x. assume Hx1 Hx2.
@@ -8018,9 +8018,9 @@ apply andI.
   apply andI.
   { exact (ReplI X (fun x0 : set => {x0}) x HxX). }
   apply andI.
-  { exact (UPairI1 x Empty). }
+  { exact (UPairI1 x x). }
   { let y. assume Hy.
-    apply UPairE y x Empty Hy.
+    apply UPairE y x x Hy.
     - assume Hyx.
       apply binintersectI b1 b2 y.
       + rewrite HaEq1. exact Hyx.
@@ -8049,9 +8049,9 @@ apply set_ext.
     apply andI.
     - exact (ReplI X (fun x0 : set => {x0}) x (HUsubX x HxU)).
     - apply andI.
-      * exact (UPairI1 x Empty).
+      * exact (UPairI1 x x).
       * let y. assume Hy.
-        apply UPairE y x Empty Hy.
+        apply UPairE y x x Hy.
         { assume Hyx. rewrite Hyx. exact HxU. }
         { assume HyEmpty. apply FalseE. apply EmptyE y HyEmpty (y :e U). } }
   exact (SepI (Power X)
