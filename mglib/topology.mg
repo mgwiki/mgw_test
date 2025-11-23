@@ -6837,9 +6837,11 @@ Theorem lemma_union_of_topology_family_open : forall X T UFam:set,
   UFam :e Power T ->
   Union UFam :e T.
 let X T UFam. assume HT Hfam.
-claim Hax_union : forall UFam' :e Power T, Union UFam' :e T.
-{ exact (andEL (forall UFam' :e Power T, Union UFam' :e T) (forall U :e T, forall V :e T, U :/\: V :e T) (andER (X :e T) ((forall UFam' :e Power T, Union UFam' :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) (andER (Empty :e T) (X :e T /\ (forall UFam' :e Power T, Union UFam' :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) (andER (T c= Power X) (Empty :e T /\ X :e T /\ (forall UFam' :e Power T, Union UFam' :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HT)))) }
-exact (Hax_union UFam Hfam).
+claim Hchunk1 : ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam' :e Power T, Union UFam' :e T).
+{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam' :e Power T, Union UFam' :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT). }
+claim Hunion_axiom : forall UFam' :e Power T, Union UFam' :e T.
+{ exact (andER ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam' :e Power T, Union UFam' :e T) Hchunk1). }
+exact (Hunion_axiom UFam Hfam).
 Qed.
 
 (** from §12 axiom: finite intersections of opens are open **)
