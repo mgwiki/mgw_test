@@ -6575,8 +6575,10 @@ apply andI.
     let U. assume HUinx: x :e U. assume HUinFam: U :e UFam.
     claim HFamSub : UFam c= Power X.
     { apply PowerEq (Power X) UFam. exact Hfam. }
-    claim HUsub: U c= X.
-    { apply PowerEq X U. exact (HFamSub U HUinFam). }
+    claim HUinPower : U :e Power X.
+    { exact HFamSub U HUinFam. }
+    claim HUsub : U c= X.
+    { exact (iffEL (U :e Power X) (U c= X) (PowerEq X U) HUinPower). }
     exact (HUsub x HUinx).
 - prove forall U :e Power X, forall V :e Power X, U :/\: V :e Power X.
   let U. assume HU: U :e Power X.
@@ -6586,7 +6588,7 @@ apply andI.
   apply binintersectE U V x Hxcap.
   assume HxU HxV.
   claim HUsub: U c= X.
-  { apply PowerEq X U. exact HU. }
+  { exact (iffEL (U :e Power X) (U c= X) (PowerEq X U) HU). }
   exact (HUsub x HxU).
 Qed.
 Qed.
