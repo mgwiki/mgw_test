@@ -9238,7 +9238,7 @@ Theorem Tychonoff_theorem : forall I Xi:set,
 admit.
 Qed.
 
-(* from §38 Definition: Stone-Cech compactification and universal property *) 
+(** from §38 Definition: Stone-Cech compactification and universal property **) 
 Definition Stone_Cech_compactification : set -> set -> set := fun X Tx => Empty.
 Theorem Stone_Cech_universal_property : forall X Tx:set,
   Tychonoff_space X Tx ->
