@@ -7512,10 +7512,8 @@ claim HBsub : B c= Power X.
                      (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)
                      HBasis)). }
 let U. assume Hex.
-prove topology_on X (generated_topology X B) /\ U :e generated_topology X B.
-apply andI.
-- exact (lemma_topology_from_basis X B HBasis).
-- apply Hex.
+claim HUGen : U :e generated_topology X B.
+{ apply Hex.
   let Fam. assume HFampair.
   claim HFamPow : Fam :e Power B.
   { exact (andEL (Fam :e Power B) (Union Fam = U) HFampair). }
@@ -7563,6 +7561,7 @@ apply andI.
       * exact Hxb.
       * exact HbSubU. }
   exact (SepI (Power X) (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0) U (PowerI X U HUsubX) HUpropU). }
+exact (andI (topology_on X (generated_topology X B)) (U :e generated_topology X B) (lemma_topology_from_basis X B HBasis) HUGen).
 Qed.
 
 (** from §13 Lemma 13.1 corollary **) 
