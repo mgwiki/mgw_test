@@ -7801,10 +7801,10 @@ claim HBasisRef_prop : forall U :e generated_topology X B, forall x :e U, exists
     exact (HbsubU y (Hb'subb y Hyb')). }
   witness b'.
   apply andI.
-  - exact Hb'B.
   - apply andI.
+    + exact Hb'B.
     + exact Hxb'.
-    + exact Hb'subU. }
+  - exact Hb'subU. }
 claim HBasisRef : basis_refines X B' (generated_topology X B).
 { apply andI.
   - exact (lemma_topology_from_basis X B HB).
