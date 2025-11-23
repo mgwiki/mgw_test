@@ -7223,11 +7223,7 @@ Definition generated_topology : set -> set -> set := fun X B =>
 (** from §13: generated family is a topology **) 
 Theorem lemma_topology_from_basis : forall X B:set,
   basis_on X B ->
-  generated_topology X B c= Power X
-  /\ Empty :e generated_topology X B
-  /\ X :e generated_topology X B
-  /\ (forall UFam :e Power (generated_topology X B), Union UFam :e generated_topology X B)
-  /\ (forall U :e generated_topology X B, forall V :e generated_topology X B, U :/\: V :e generated_topology X B).
+  topology_on X (generated_topology X B).
 let X B. assume HBasis.
 claim HBleft : B c= Power X /\ (forall x :e X, exists b :e B, x :e b).
 { exact (andEL (B c= Power X /\ (forall x :e X, exists b :e B, x :e b))
@@ -7247,8 +7243,7 @@ claim proofA : generated_topology X B c= Power X.
 claim proofB : Empty :e generated_topology X B.
 { exact (SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) Empty (Empty_In_Power X) (fun x HxEmpty => EmptyE x HxEmpty (exists b :e B, x :e b /\ b c= Empty))). }
 claim proofC : X :e generated_topology X B.
-{ unfold generated_topology.
-  apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) X (Self_In_Power X).
+{ apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) X (Self_In_Power X).
   let x. assume HxX.
   claim Hexb : exists b :e B, x :e b.
   { exact (HBcov x HxX). }
@@ -7329,7 +7324,7 @@ claim proofE : forall U :e generated_topology X B, forall V :e generated_topolog
       assume Hyb1 Hyb2.
       apply binintersectI U V y (Hb1Sub y Hyb1) (Hb2Sub y Hyb2).
 }
-exact (andI (andI (andI (andI proofA proofB) proofC) proofD) proofE).
+exact (andI proofA (andI proofB (andI proofC (andI proofD proofE)))).
 Qed.
 
 (** from §13: basis elements belong to generated topology **) 
