@@ -7331,7 +7331,7 @@ claim proofE : forall U :e generated_topology X B, forall V :e generated_topolog
       assume Hyb1 Hyb2.
       apply binintersectI U V y (Hb1Sub y Hyb1) (Hb2Sub y Hyb2).
 }
-exact (andI proofA (andI proofB (andI proofC (andI proofD proofE)))).
+exact (andI (andI (andI (andI proofA proofB) proofC) proofD) proofE).
 Qed.
 
 (** from §13: basis elements belong to generated topology **) 
