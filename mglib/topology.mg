@@ -7540,7 +7540,7 @@ Definition compact_space : set -> set -> prop := fun X Tx => topology_on X Tx.
 (** from §26 Definition: open cover **) 
 Definition open_cover_of : set -> set -> set -> prop := fun X Tx Fam => True.
 
-(** from §26: existence of finite subcovers **) 
+(** from §26 Definition: finite subcover **) 
 Definition has_finite_subcover : set -> set -> set -> prop := fun X Tx Fam => True.
 
 (** from §26: open cover characterization **) 
@@ -7601,6 +7601,7 @@ Theorem compact_to_Hausdorff_bijection_homeomorphism : forall X Tx Y Ty f:set,
 admit.
 Qed.
 
+(** from §26/§27: Heine-Borel on ℝ (closed and bounded sets) **) 
 Theorem Heine_Borel_closed_bounded : forall A:set,
   A c= R -> compact_space A (subspace_topology R R_standard_topology A) -> True.
 admit.
