@@ -7759,7 +7759,6 @@ Theorem finer_via_basis : forall X B B':set,
   (forall x :e X, forall b:set, b :e B -> x :e b ->
       exists b':set, b' :e B' /\ x :e b' /\ b' c= b) ->
   finer_than (generated_topology X B') (generated_topology X B).
-Proof.
 let X B B'. assume HB HB' Hloc.
 unfold finer_than.
 prove generated_topology X B c= generated_topology X B'.
