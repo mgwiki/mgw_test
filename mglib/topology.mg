@@ -7873,8 +7873,10 @@ apply set_ext.
   rewrite <- HUnion.
   exact HUnionFam.
 - let U. assume HUUnion.
+  claim HexFamPow : exists Fam :e Power B, Union Fam = U.
+  { exact (ReplE (Power B) (fun Fam0 : set => Union Fam0) U HUUnion). }
   claim HUopen : open_in X (generated_topology X B) U.
-  { exact (basis_generates_open_sets X B HBasis U HUUnion). }
+  { exact (basis_generates_open_sets X B HBasis U HexFamPow). }
   exact (andER (topology_on X (generated_topology X B))
                (U :e generated_topology X B)
                HUopen).
