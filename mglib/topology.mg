@@ -6686,6 +6686,11 @@ Definition discrete_topology_alt : set -> set := discrete_topology.
 
 Definition trivial_topology : set -> set := indiscrete_topology.
 
+Parameter countable : set -> prop.
+
+Definition countable_complement_topology : set -> set :=
+  fun X => {U :e Power X | countable (X :\: U) \/ U = X}.
+
 Theorem lemma_generated_topology_characterization : forall X B:set,
   basis_on X B ->
   generated_topology X B
