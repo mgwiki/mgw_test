@@ -6746,7 +6746,6 @@ Qed.
 (** from §12: every subset is open in discrete topology **)
 Theorem discrete_open_all : forall X U:set, U c= X -> U :e discrete_topology X.
 let X U. assume HUsub.
-(* PowerI introduces membership in Power X from subset *)
 apply PowerI X U HUsub.
 Qed.
 
