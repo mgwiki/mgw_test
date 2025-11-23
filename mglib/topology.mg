@@ -6688,7 +6688,9 @@ apply andI.
           apply FalseE.
           apply Hnone.
           witness U.
-          apply andI; exact HUin || exact HUX.
+          apply andI.
+          + exact HUin.
+          + exact HUX.
       }
       rewrite HUnion_empty. exact (UPairI1 Empty X).
 - prove forall U :e indiscrete_topology X, forall V :e indiscrete_topology X, U :/\: V :e indiscrete_topology X.
@@ -6794,7 +6796,9 @@ apply andI.
           apply FalseE.
           apply Hnone.
           witness U.
-          apply andI; exact HUin || exact HUfin.
+          apply andI.
+          + exact HUin.
+          + exact HUfin.
         - assume HUempty : U = Empty.
           rewrite <- HUempty.
           exact HxU.
