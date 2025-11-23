@@ -7819,52 +7819,64 @@ Theorem finer_via_basis : forall X B B':set,
       exists b' :e B', x :e b' /\ b' c= b) ->
   finer_than (generated_topology X B') (generated_topology X B).
 let X B B'. assume HB HB' Hcond.
-claim Hrefines : basis_refines X B' (generated_topology X B).
-{ apply andI.
-  - exact (lemma_topology_from_basis X B HB).
-  - let U. assume HU : U :e generated_topology X B.
-    let x. assume HxU.
-    claim HUsubX : U c= X.
-    { exact (PowerE X U (SepE1 (Power X)
-                               (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0)
-                               U HU)). }
-    claim HxX : x :e X.
-    { exact (HUsubX x HxU). }
-    claim HUprop : forall x0 :e U, exists b :e B, x0 :e b /\ b c= U.
-    { exact (SepE2 (Power X)
-                   (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0)
-                   U HU). }
-    claim Hexb : exists b :e B, x :e b /\ b c= U.
-    { exact (HUprop x HxU). }
-    apply Hexb.
-    let b. assume Hbpair.
-    claim HbB : b :e B.
-    { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
-    claim Hbprop : x :e b /\ b c= U.
-    { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
-    claim Hxb : x :e b.
-    { exact (andEL (x :e b) (b c= U) Hbprop). }
-    claim HbsubU : b c= U.
-    { exact (andER (x :e b) (b c= U) Hbprop). }
-    claim Hexb' : exists b' :e B', x :e b' /\ b' c= b.
-    { exact (Hcond x HxX b HbB Hxb). }
-    apply Hexb'.
-    let b'. assume Hb'pair.
-    claim Hb'B : b' :e B'.
-    { exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
-    claim Hb'prop : x :e b' /\ b' c= b.
-    { exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
-    claim Hxb' : x :e b'.
-    { exact (andEL (x :e b') (b' c= b) Hb'prop). }
-    claim Hb'subb : b' c= b.
-    { exact (andER (x :e b') (b' c= b) Hb'prop). }
-    witness b'.
-    apply andI.
-    - exact Hb'B.
-    - apply andI.
-      * exact Hxb'.
-      * exact (Subq_tra b' b U Hb'subb HbsubU). }
-exact (lemma_finer_if_basis_refines X B B' HB Hrefines).
+claim HT : topology_on X (generated_topology X B).
+{ exact (lemma_topology_from_basis X B HB). }
+claim HRefProp : forall U :e generated_topology X B, forall x :e U, exists b' :e B', x :e b' /\ b' c= U.
+{ let U. assume HU : U :e generated_topology X B.
+  let x. assume HxU.
+  claim HUsubX : U c= X.
+  { exact (PowerE X U (SepE1 (Power X)
+                             (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0)
+                             U HU)). }
+  claim HxX : x :e X.
+  { exact (HUsubX x HxU). }
+  claim HUprop : forall x0 :e U, exists b :e B, x0 :e b /\ b c= U.
+  { exact (SepE2 (Power X)
+                 (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0)
+                 U HU). }
+  claim Hexb : exists b :e B, x :e b /\ b c= U.
+  { exact (HUprop x HxU). }
+  apply Hexb.
+  let b. assume Hbpair.
+  claim HbB : b :e B.
+  { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
+  claim Hbprop : x :e b /\ b c= U.
+  { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
+  claim Hxb : x :e b.
+  { exact (andEL (x :e b) (b c= U) Hbprop). }
+  claim HbsubU : b c= U.
+  { exact (andER (x :e b) (b c= U) Hbprop). }
+  claim Hexb' : exists b' :e B', x :e b' /\ b' c= b.
+  { exact (Hcond x HxX b HbB Hxb). }
+  apply Hexb'.
+  let b'. assume Hb'pair.
+  claim Hb'B : b' :e B'.
+  { exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+  claim Hb'prop : x :e b' /\ b' c= b.
+  { exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+  claim Hxb' : x :e b'.
+  { exact (andEL (x :e b') (b' c= b) Hb'prop). }
+  claim Hb'subb : b' c= b.
+  { exact (andER (x :e b') (b' c= b) Hb'prop). }
+  witness b'.
+  apply andI.
+  - exact Hb'B.
+  - apply andI.
+    * exact Hxb'.
+    * exact (Subq_tra b' b U Hb'subb HbsubU). }
+prove generated_topology X B c= generated_topology X B'.
+  let U. assume HU.
+  claim HUsubX : U c= X.
+  { exact (PowerE X U (SepE1 (Power X)
+                             (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
+                             U HU)). }
+  claim HUprop : forall x :e U, exists b' :e B', x :e b' /\ b' c= U.
+  { exact (HRefProp U HU). }
+  exact (SepI (Power X)
+              (fun U0 : set => forall x0 :e U0, exists b0 :e B', x0 :e b0 /\ b0 c= U0)
+              U
+              (PowerI X U HUsubX)
+              HUprop).
 Qed.
 
 (** from §13 Lemma 13.3: basis inclusion criterion for fineness **) 
@@ -8025,21 +8037,21 @@ prove (singleton_basis X c= Power X
   /\ (forall b1 :e singleton_basis X, forall b2 :e singleton_basis X, forall x:set,
         x :e b1 -> x :e b2 -> exists b3 :e singleton_basis X, x :e b3 /\ b3 c= b1 :/\: b2)).
 apply andI.
-- apply andI.
-  * let b. assume Hb.
-    apply ReplE_impred X (fun x => {x}) b Hb.
-    let a. assume HaX HaEq.
-    rewrite HaEq.
-    apply PowerI X {a}.
-    let y. assume Hy.
-    apply UPairE y a Empty Hy.
-    { assume Hya. rewrite Hya. exact HaX. }
-    { assume HyEmpty. apply FalseE. exact (EmptyE y HyEmpty (y :e X)). }
-  * let x. assume Hx.
-    witness {x}.
-    apply andI.
-    { exact (ReplI X (fun x0 : set => {x0}) x Hx). }
-    { exact (UPairI1 x Empty). }
+  - apply andI.
+    * let b. assume Hb.
+      apply ReplE_impred X (fun x => {x}) b Hb.
+      let a. assume HaX HaEq.
+      rewrite HaEq.
+      apply PowerI X {a}.
+      let y. assume Hy.
+      apply UPairE y a a Hy.
+      { assume Hya. rewrite Hya. exact HaX. }
+      { assume Hya. rewrite Hya. exact HaX. }
+    * let x. assume Hx.
+      witness {x}.
+      apply andI.
+      { exact (ReplI X (fun x0 : set => {x0}) x Hx). }
+      { exact (UPairI1 x x). }
 - let b1. assume Hb1.
   let b2. assume Hb2.
   let x. assume Hx1 Hx2.
@@ -8050,13 +8062,9 @@ apply andI.
   rewrite HaEq1 in Hx1.
   rewrite HaEq2 in Hx2.
   claim Hxa : x = a.
-  { apply UPairE x a Empty Hx1.
-    - assume Hxa'. exact Hxa'.
-    - assume HxEmpty. apply FalseE. exact (EmptyE x HxEmpty (x :e a)). }
+  { apply UPairE x a a Hx1; assume Htmp; exact Htmp. }
   claim Hxb : x = b.
-  { apply UPairE x b Empty Hx2.
-    - assume Hxb'. exact Hxb'.
-    - assume HxEmpty. apply FalseE. exact (EmptyE x HxEmpty (x :e b)). }
+  { apply UPairE x b b Hx2; assume Htmp; exact Htmp. }
   rewrite Hxa in Hxb.
   claim HxX : x :e X.
   { rewrite Hxa. exact HaX. }
@@ -8064,14 +8072,16 @@ apply andI.
   apply andI.
   { exact (ReplI X (fun x0 : set => {x0}) x HxX). }
   apply andI.
-  { exact (UPairI1 x Empty). }
+  { exact (UPairI1 x x). }
   { let y. assume Hy.
-    apply UPairE y x Empty Hy.
+    apply UPairE y x x Hy.
     - assume Hyx.
       apply binintersectI b1 b2 y.
       + rewrite HaEq1. exact Hyx.
       + rewrite HaEq2. rewrite Hxb. rewrite Hxa. exact Hyx.
-    - assume HyEmpty. apply FalseE. exact (EmptyE y HyEmpty (y :e b1)). } }
+    - assume Hyx. rewrite Hyx. apply binintersectI b1 b2 x.
+      + rewrite HaEq1. exact (UPairI1 x x).
+      + rewrite HaEq2. rewrite Hxb. rewrite Hxa. exact (UPairI1 x x). } }
 Qed.
 
 (** from §13 Example 3: topology generated by singletons is discrete **) 
@@ -8088,16 +8098,16 @@ apply set_ext.
   claim HUsubX : U c= X.
   { exact (PowerE X U HUinPow). }
   claim HUprop : forall x :e U, exists b :e singleton_basis X, x :e b /\ b c= U.
-  { let x. assume HxU.
-    witness {x}.
-    apply andI.
-    - exact (ReplI X (fun x0 : set => {x0}) x (HUsubX x HxU)).
-    - apply andI.
-      * exact (UPairI1 x Empty).
-      * let y. assume Hy.
-        apply UPairE y x Empty Hy.
-        { assume Hyx. rewrite Hyx. exact HxU. }
-        { assume HyEmpty. apply FalseE. apply EmptyE y HyEmpty (y :e U). } }
+{ let x. assume HxU.
+  witness {x,x}.
+  apply andI.
+  - exact (ReplI X (fun x0 : set => {x0,x0}) x (HUsubX x HxU)).
+  - apply andI.
+    * exact (UPairI1 x x).
+    * let y. assume Hy.
+      apply (UPairE y x x Hy (y :e U)).
+      { assume Hyx. rewrite Hyx. exact HxU. }
+      { assume Hyx. rewrite Hyx. exact HxU. } }
   exact (SepI (Power X)
               (fun U0 : set => forall x0 :e U0, exists b :e singleton_basis X, x0 :e b /\ b c= U0)
               U
