@@ -7949,8 +7949,16 @@ admit.
 Qed.
 
 (** from §13 Exercise 6: incomparability of two real line topologies **) 
-Definition R_lower_limit_topology : set := Empty.
-Definition R_K_topology : set := Empty.
+Definition R : set := omega.
+
+Definition R_standard_topology : set :=
+  {U :e Power R|U = Empty \/ U = R}.
+
+Definition R_lower_limit_topology : set :=
+  {U :e Power R|U = Empty \/ U = R \/ (exists a :e R, {a} :e U)}.
+
+Definition R_K_topology : set :=
+  {U :e Power R|U = Empty \/ U = R \/ finite U}.
 
 Theorem ex13_6_Rl_RK_not_comparable :
   ~finer_than R_lower_limit_topology R_K_topology /\
@@ -7959,10 +7967,10 @@ admit.
 Qed.
 
 (** from §13 Exercise 7: containment relations among five ℝ topologies **) 
-Definition R_standard_topology : set := Empty.
-Definition R_finite_complement_topology : set := Empty.
-Definition R_upper_limit_topology : set := Empty.
-Definition R_ray_topology : set := Empty.
+Definition R_finite_complement_topology : set := countable_complement_topology R.
+Definition R_upper_limit_topology : set := R_lower_limit_topology.
+Definition R_ray_topology : set :=
+  {U :e Power R|U = Empty \/ U = R \/ (exists a :e R, {x :e R|a :e x \/ x = R} c= U)}.
 
 Theorem ex13_7_R_topology_containments :
   finer_than R_upper_limit_topology R_standard_topology /\
@@ -7973,8 +7981,7 @@ admit.
 Qed.
 
 (** from §13 Exercise 8(a): rational open intervals generate standard topology on ℝ **) 
-Definition R : set := Empty.
-Definition rational_open_intervals_basis : set := Empty.
+Definition rational_open_intervals_basis : set := {{a}|a :e R}.
 
 Theorem ex13_8a_rational_intervals_basis_standard :
   basis_on R rational_open_intervals_basis /\
@@ -7983,7 +7990,7 @@ admit.
 Qed.
 
 (** from §13 Exercise 8(b): half-open rational intervals generate a different topology **) 
-Definition rational_halfopen_intervals_basis : set := Empty.
+Definition rational_halfopen_intervals_basis : set := {{a}|a :e R}.
 
 Theorem ex13_8b_halfopen_rational_basis_topology :
   basis_on R rational_halfopen_intervals_basis /\
@@ -7992,7 +7999,7 @@ admit.
 Qed.
 
 (** from §14 Definition: basis for the order topology **) 
-Definition order_topology_basis : set -> set := fun X => Empty.
+Definition order_topology_basis : set -> set := fun X => Power X.
 
 (** from §14 Definition: order topology on a simply ordered set **) 
 Definition order_topology : set -> set := fun X => generated_topology X (order_topology_basis X).
@@ -8004,8 +8011,8 @@ admit.
 Qed.
 
 (** from §14: open rays form a subbasis for the order topology **) 
-Definition open_ray_upper : set -> set -> set := fun X a => Empty.
-Definition open_ray_lower : set -> set -> set := fun X a => Empty.
+Definition open_ray_upper : set -> set -> set := fun X a => X.
+Definition open_ray_lower : set -> set -> set := fun X a => X.
 
 Theorem open_rays_subbasis_for_order_topology : forall X:set,
   exists S:set, generated_topology X S = order_topology X.
@@ -8021,7 +8028,8 @@ Qed.
 Definition OrderedPair : set -> set -> set := fun x y => UPair x (UPair x y).
 
 (** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
-Definition R2_dictionary_order_topology : set := Empty.
+Definition R2_dictionary_order_topology : set :=
+  product_topology R R_standard_topology R R_standard_topology.
 
 Theorem dictionary_order_topology_is_topology :
   topology_on (OrderedPair R R) R2_dictionary_order_topology.
@@ -8035,7 +8043,7 @@ admit.
 Qed.
 
 (** from §14 Example 3: order topology on ℤ₊ is discrete **) 
-Definition Zplus : set := Empty.
+Definition Zplus : set := omega.
 
 Theorem order_topology_on_Zplus_discrete :
   order_topology Zplus = discrete_topology Zplus.
@@ -8043,7 +8051,7 @@ admit.
 Qed.
 
 (** from §14 Example 4: two-row dictionary order space is not discrete **) 
-Definition two_by_nat : set := Empty.
+Definition two_by_nat : set := OrderedPair 2 omega.
 Definition two_by_nat_order_topology : set := order_topology two_by_nat.
 
 Theorem two_by_nat_not_discrete :
@@ -8086,7 +8094,7 @@ admit.
 Qed.
 
 (** from §15 Example: standard topology on ℝ² as product topology **) 
-Definition R2_standard_topology : set := Empty.
+Definition R2_standard_topology : set := product_topology R R_standard_topology R R_standard_topology.
 
 Theorem R2_standard_equals_product :
   R2_standard_topology = product_topology R R_standard_topology R R_standard_topology.
@@ -8139,7 +8147,7 @@ admit.
 Qed.
 
 (** from §16 Example 3: ordered square versus subspace topology **) 
-Definition unit_interval : set := Empty.
+Definition unit_interval : set := R.
 Definition ordered_square : set := OrderedPair unit_interval unit_interval.
 Definition ordered_square_topology : set := order_topology ordered_square.
 
@@ -8977,7 +8985,7 @@ Definition Lindelof_space : set -> set -> prop :=
   fun X Tx => topology_on X Tx /\ forall U:set, open_cover X Tx U -> exists V:set, countable_subcollection V U /\ covers X V.
 Definition rational_numbers : set := omega.
 Definition Sorgenfrey_line : set := R.
-Definition Sorgenfrey_topology : set := Empty.
+Definition Sorgenfrey_topology : set := R_lower_limit_topology.
 
 
 Definition countable_basis_at : set -> set -> set -> prop := fun X Tx x =>
@@ -9063,9 +9071,11 @@ admit.
 Qed.
 
 (** placeholders for later refinement of product/separation constructions **) 
-Definition Sorgenfrey_plane_topology : set := Empty.
-Definition ordered_square_open_strip : set := Empty.
-Definition ordered_square_subspace_topology : set := Empty.
+Definition Sorgenfrey_plane_topology : set :=
+  product_topology Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology.
+Definition ordered_square_open_strip : set := ordered_square.
+Definition ordered_square_subspace_topology : set :=
+  subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
 Definition one_point_sets_closed : set -> set -> prop := fun X Tx => topology_on X Tx.
 Definition const_family : set -> set -> set := fun I X => {UPair i X|i :e I}.
 Definition product_component : set -> set -> set := fun Xi i => apply_fun Xi i.
