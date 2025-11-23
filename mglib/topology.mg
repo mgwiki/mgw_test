@@ -8146,6 +8146,72 @@ Theorem convex_subspace_order_topology : forall X Y:set,
 admit.
 Qed.
 
+(** from §16 Exercise 1: subspace of subspace inherits same topology **) 
+Theorem ex16_1_subspace_transitive : forall X Tx Y A:set,
+  topology_on X Tx -> Y c= X -> A c= Y -> True.
+admit.
+Qed.
+
+(** from §16 Exercise 2: fineness relation passes to subspaces **) 
+Theorem ex16_2_finer_subspaces : forall X T T' Y:set,
+  topology_on X T -> topology_on X T' -> T' c= T -> True.
+admit.
+Qed.
+
+(** from §16 Exercise 3: openness of specific sets in subspace [-1,1] **) 
+Definition interval_A : set := Empty.
+Definition interval_B : set := Empty.
+Definition interval_C : set := Empty.
+Definition interval_D : set := Empty.
+Definition interval_E : set := Empty.
+
+Theorem ex16_3_open_sets_subspace : True.
+admit.
+Qed.
+
+(** from §16 Exercise 4: projections are open maps **) 
+Theorem ex16_4_projections_open : forall X Tx Y Ty:set,
+  topology_on X Tx -> topology_on Y Ty -> True.
+admit.
+Qed.
+
+(** from §16 Exercise 5(a): product topology monotonicity **) 
+Theorem ex16_5a_product_monotone : forall X T T' Y U U':set,
+  topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
+  True.
+admit.
+Qed.
+
+(** from §16 Exercise 5(b): converse question about product fineness **) 
+Theorem ex16_5b_product_converse : True.
+admit.
+Qed.
+
+(** from §16 Exercise 6: rational rectangles form a basis for ℝ² **) 
+Theorem ex16_6_rational_rectangles_basis : True.
+admit.
+Qed.
+
+(** from §16 Exercise 7: convex subset implies interval or ray? **) 
+Theorem ex16_7_convex_interval_or_ray : forall X Y:set, True.
+admit.
+Qed.
+
+(** from §16 Exercise 8: lines as subspaces of lower limit products **) 
+Theorem ex16_8_lines_in_lower_limit_products : True.
+admit.
+Qed.
+
+(** from §16 Exercise 9: dictionary order topology on ℝ×ℝ equals ℝ_d × ℝ **) 
+Theorem ex16_9_dictionary_equals_product : True.
+admit.
+Qed.
+
+(** from §16 Exercise 10: compare topologies on I×I **) 
+Theorem ex16_10_compare_topologies_on_square : True.
+admit.
+Qed.
+
 (** from §17 Definition: interior and closure of a set **) 
 Definition interior_of : set -> set -> set -> set := fun X T A => Empty.
 Definition closure_of : set -> set -> set -> set := fun X T A => Empty.
@@ -8238,6 +8304,91 @@ Qed.
 Theorem Hausdorff_stability : forall X Tx Y Ty:set,
   Hausdorff_space X Tx /\ Hausdorff_space Y Ty ->
   Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+admit.
+Qed.
+
+(** from §17 Exercises 1–20: closures, boundaries, Hausdorff properties **) 
+Theorem ex17_1_topology_from_closed_sets : forall X:set, True.
+admit.
+Qed.
+
+Theorem ex17_2_closed_in_closed_subspace : forall X Tx Y A:set, True.
+admit.
+Qed.
+
+Theorem ex17_3_product_of_closed_sets_closed : forall X Tx Y Ty A B:set, True.
+admit.
+Qed.
+
+Theorem ex17_4_open_minus_closed_and_closed_minus_open : forall X Tx U A:set, True.
+admit.
+Qed.
+
+Theorem ex17_5_closure_of_interval_in_order_topology : forall X:set, True.
+admit.
+Qed.
+
+Theorem ex17_6_closure_properties : forall X:set, True.
+admit.
+Qed.
+
+Theorem ex17_7_counterexample_union_closure : True.
+admit.
+Qed.
+
+Theorem ex17_8_closure_intersection_questions : True.
+admit.
+Qed.
+
+Theorem ex17_9_closure_of_product_subset : forall X Y:set, True.
+admit.
+Qed.
+
+Theorem ex17_10_order_topology_Hausdorff : forall X:set, True.
+admit.
+Qed.
+
+Theorem ex17_11_product_Hausdorff : forall X Tx Y Ty:set, True.
+admit.
+Qed.
+
+Theorem ex17_12_subspace_Hausdorff : forall X Tx Y:set, True.
+admit.
+Qed.
+
+Theorem ex17_13_diagonal_closed_iff_Hausdorff : forall X Tx:set, True.
+admit.
+Qed.
+
+Theorem ex17_14_sequence_in_finite_complement_topology : True.
+admit.
+Qed.
+
+Theorem ex17_15_T1_characterization : forall X:set, True.
+admit.
+Qed.
+
+Theorem ex17_16_closure_of_K_in_various_topologies : True.
+admit.
+Qed.
+
+Theorem ex17_17_closures_in_lower_limit_and_C_topology : True.
+admit.
+Qed.
+
+Theorem ex17_18_closures_in_ordered_square : True.
+admit.
+Qed.
+
+Theorem ex17_19_boundary_properties : forall X:set, True.
+admit.
+Qed.
+
+Theorem ex17_20_boundaries_and_interiors_in_R2 : True.
+admit.
+Qed.
+
+Theorem ex17_21_Kuratowski_closure_complement_maximal : forall X:set, True.
 admit.
 Qed.
 
