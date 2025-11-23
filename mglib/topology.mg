@@ -8581,7 +8581,9 @@ admit.
 Qed.
 
 (** from §23 Definition: connected space **) 
-Definition connected_space : set -> set -> prop := fun X Tx => topology_on X Tx.
+Definition connected_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X).
 
 (** from §23 Definition: separation of a space **) 
 Definition separation_of : set -> set -> set -> prop := fun X U V =>
@@ -8656,7 +8658,9 @@ Qed.
 Definition path_between : set -> set -> set -> set -> prop := fun X x y p =>
   function_on p unit_interval X /\
   apply_fun p 0 = x /\ apply_fun p 1 = y.
-Definition path_connected_space : set -> set -> prop := fun X Tx => topology_on X Tx.
+Definition path_connected_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p.
 
 (** from §24: path connected implies connected **) 
 Theorem path_connected_implies_connected : forall X Tx:set,
