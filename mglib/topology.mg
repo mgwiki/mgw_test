@@ -8422,8 +8422,8 @@ Qed.
 Theorem Hausdorff_unique_limits : forall X Tx seq x y:set,
   Hausdorff_space X Tx ->
   x <> y ->
-  sequence_converges_metric X (metric_topology X Empty) seq x ->
-  sequence_converges_metric X (metric_topology X Empty) seq y ->
+  converges_to X Tx seq x ->
+  converges_to X Tx seq y ->
   False.
 admit.
 Qed.
