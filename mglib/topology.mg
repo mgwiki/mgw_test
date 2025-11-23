@@ -9238,18 +9238,17 @@ Theorem Tychonoff_theorem : forall I Xi:set,
 admit.
 Qed.
 
-(** from §38 Definition: Stone-Cech compactification and universal property **) 
+(* from §38 Definition: Stone-Cech compactification and universal property *) 
+Definition Stone_Cech_compactification : set -> set -> set := fun X Tx => Empty.
 Theorem Stone_Cech_universal_property : forall X Tx:set,
   Tychonoff_space X Tx ->
-  exists Y Ty:set, compact_space Y Ty /\ Hausdorff_space Y Ty.
+  compact_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx) /\
+  Hausdorff_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx).
 admit.
 Qed.
 
 (** from §39 Definition: locally finite family **) 
 Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F => True.
-
-(** from §41 Definition: paracompact space **) 
-Definition paracompact_space : set -> set -> prop := fun X Tx => True.
 
 (** from §39 Theorem: existence of locally finite refinements **) 
 Theorem locally_finite_refinement : forall X Tx U:set,
@@ -9263,6 +9262,9 @@ Theorem Nagata_Smirnov_metrization : forall X Tx:set,
 admit.
 Qed.
 
+(** from §41 Definition: paracompact space **) 
+Definition paracompact_space : set -> set -> prop := fun X Tx => True.
+
 (** from §41 Theorem: paracompact Hausdorff implies normal **) 
 Theorem paracompact_Hausdorff_normal : forall X Tx:set,
   paracompact_space X Tx -> Hausdorff_space X Tx -> normal_space X Tx.
@@ -9275,9 +9277,6 @@ Theorem Smirnov_metrization : forall X Tx:set,
 admit.
 Qed.
 
-(** from section 48 Definition: Baire space, placed early for dependencies **) 
-Definition Baire_space : set -> prop := fun X => True.
-
 (** from §43 Definition: complete metric space **) 
 Definition complete_metric_space : set -> set -> prop := fun X d => True.
 
@@ -9288,8 +9287,6 @@ admit.
 Qed.
 
 (** from §44 Theorem: space-filling curve existence **) 
-Definition unit_square : set := Empty.
-Definition unit_square_topology : set := Empty.
 Theorem space_filling_curve : exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
 admit.
 Qed.
@@ -9312,6 +9309,9 @@ Theorem Ascoli_theorem : forall X Tx Y Ty:set,
 admit.
 Qed.
 
+(** from §48 Definition: Baire space **) 
+Definition Baire_space : set -> prop := fun X => True.
+
 (** from §48 Theorem: Baire category theorem general version **) 
 Theorem Baire_category_theorem : forall X:set,
   Baire_space X -> True.
@@ -9324,398 +9324,9 @@ admit.
 Qed.
 
 (** from §50 Definition: covering dimension zero/one etc **) 
-Definition covering_dimension : set -> set -> prop := fun X n => True.
+Definition covering_dimension : set -> nat -> prop := fun X n => True.
 
 (** from §50 Theorem: basic properties of covering dimension **) 
-Theorem covering_dimension_properties : forall X:set, exists n:set, covering_dimension X n.
-admit.
-Qed.
-
-(** from §30 Exercise 1: G_delta points in first-countable T1 **) 
-Theorem ex30_1_Gdelta_points : True.
-admit.
-Qed.
-
-(** from §30 Exercise 2: countable basis sub-basis selection **) 
-Theorem ex30_2_basis_contains_countable : True.
-admit.
-Qed.
-
-(** from §30 Exercise 3: uncountably many limit points in countable basis space **) 
-Theorem ex30_3_uncountably_many_limit_points : True.
-admit.
-Qed.
-
-(** from §30 Exercise 4: compact metrizable implies second countable **) 
-Theorem ex30_4_compact_metrizable_second_countable : True.
-admit.
-Qed.
-
-(** from §30 Exercise 5(a)(b): metrizable with countable dense subset / Lindelöf implies second countable **) 
-Theorem ex30_5_metrizable_density_Lindelof_imply_second_countable : True.
-admit.
-Qed.
-
-(** from §30 Exercise 6: R_l and ordered square not metrizable **) 
-Theorem ex30_6_Sorgenfrey_and_ordered_square_not_metrizable : True.
-admit.
-Qed.
-
-(** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **) 
-Theorem ex30_7_SOmega_countability_axioms : True.
-admit.
-Qed.
-
-(** from §30 Exercise 8: countability axioms for Romega uniform topology **) 
-Theorem ex30_8_Romega_uniform_countability : True.
-admit.
-Qed.
-
-(** from §30 Exercise 9: closed subspace of Lindelof is Lindelof; dense subset need not be **) 
-Theorem ex30_9_closed_Lindelof_and_dense_subsets : True.
-admit.
-Qed.
-
-(** from §30 Exercise 10: product with countable dense subsets has countable dense subset **) 
-Theorem ex30_10_product_countable_dense : True.
-admit.
-Qed.
-
-(** from §30 Exercise 11: images of Lindelof or countable dense under continuous map **) 
-Theorem ex30_11_image_preserves_Lindelof_or_dense : True.
-admit.
-Qed.
-
-(** from §30 Exercise 12: continuous open maps preserve first/second countable **) 
-Theorem ex30_12_open_map_preserves_countability_axioms : True.
-admit.
-Qed.
-
-(** from §30 Exercise 13: disjoint open sets countability when dense countable **) 
-Theorem ex30_13_disjoint_open_sets_countable : True.
-admit.
-Qed.
-
-(** from §30 Exercise 14: product of Lindelof with compact is Lindelof **) 
-Theorem ex30_14_product_Lindelof_compact : True.
-admit.
-Qed.
-
-(** from §30 Exercise 15: C(I,R) uniform topology countable dense subset **) 
-Theorem ex30_15_CI_has_countable_dense_uniform : True.
-admit.
-Qed.
-
-Definition ex30_16_product_RI_dense_subset_cardinality : prop := True.
-Definition ex30_17_star_Romega_box_countability : prop := True.
-Definition ex30_18_star_first_countable_group_countable_basis : prop := True.
-
-(** from §31 Exercise 1: regular implies closures of neighborhoods disjoint **) 
-Theorem ex31_1_regular_disjoint_closure_neighborhoods : True.
-admit.
-Qed.
-
-(** from §31 Exercise 2: normal implies closures of neighborhoods disjoint for closed sets **) 
-Theorem ex31_2_normal_disjoint_closure_neighborhoods : True.
-admit.
-Qed.
-
-(** from §31 Exercise 3: every order topology regular **) 
-Theorem ex31_3_order_topology_regular : True.
-admit.
-Qed.
-
-(** from §31 Exercise 4: compare finer/coarser Hausdorff/regular/normal topologies **) 
-Theorem ex31_4_comparison_topologies_separation : True.
-admit.
-Qed.
-
-(** from §31 Exercise 5: equalizer of continuous maps into Hausdorff is closed **) 
-Theorem ex31_5_equalizer_closed_in_Hausdorff : True.
-admit.
-Qed.
-
-(** from §31 Exercise 6: closed continuous surjection preserves normal **) 
-Theorem ex31_6_closed_map_preserves_normal : True.
-admit.
-Qed.
-
-(** from §31 Exercise 7(a)(b)(c)(d): perfect map preserves separation/countability/local compactness **) 
-Theorem ex31_7_perfect_map_properties : True.
-admit.
-Qed.
-
-(** from §31 Exercise 8: orbit space of compact group action preserves properties **) 
-Theorem ex31_8_orbit_space_properties : True.
-admit.
-Qed.
-
-(** from §31 Exercise *9: Sorgenfrey plane rational/irrational diagonal non-separation **) 
-Theorem ex31_9_star_Sorgenfrey_plane_no_separation : True.
-admit.
-Qed.
-
-(** from §32 Exercise 1: closed subspace of normal is normal **) 
-Theorem ex32_1_closed_subspace_normal : True.
-admit.
-Qed.
-
-(** from §32 Exercise 2: factor spaces of products inherit separation **) 
-Theorem ex32_2_factors_inherit_separation : True.
-admit.
-Qed.
-
-(** from §32 Exercise 3: locally compact Hausdorff implies regular **) 
-Theorem ex32_3_locally_compact_Hausdorff_regular : True.
-admit.
-Qed.
-
-(** from §32 Exercise 4: regular Lindelof implies normal **) 
-Theorem ex32_4_regular_Lindelof_normal : True.
-admit.
-Qed.
-
-(** from §32 Exercise 5: normality of Romega product topologies **) 
-Theorem ex32_5_Romega_normality_questions : True.
-admit.
-Qed.
-
-(** from §32 Exercise 6: completely normal characterization via separated sets **) 
-Theorem ex32_6_completely_normal_characterization : True.
-admit.
-Qed.
-
-(** from §32 Exercise 7: completely normal examples **) 
-Theorem ex32_7_completely_normal_examples : True.
-admit.
-Qed.
-
-(** from §32 Exercise *8: linear continuum normal **) 
-Theorem ex32_8_star_linear_continuum_normal : True.
-admit.
-Qed.
-
-(** from §32 Exercise *9: uncountable product of R not normal **) 
-Theorem ex32_9_star_uncountable_product_not_normal : True.
-admit.
-Qed.
-
-(** from §33 Exercise 1: expression for level sets in Urysohn proof **) 
-Theorem ex33_1_level_sets_urysohn : True.
-admit.
-Qed.
-
-(** from §33 Exercise 2(a)(b): connected normal/regular uncountable **) 
-Theorem ex33_2_connected_normal_regular_uncountable : True.
-admit.
-Qed.
-
-(** from §33 Exercise 3: direct Urysohn proof in metric space **) 
-Theorem ex33_3_urysohn_metric_direct : True.
-admit.
-Qed.
-
-(** from §33 Exercise 4: closed G_delta sets and vanishing functions **) 
-Theorem ex33_4_closed_Gdelta_vanishing_function : True.
-admit.
-Qed.
-
-(** from §33 Exercise 5: strong Urysohn lemma **) 
-Theorem ex33_5_strong_urysohn : True.
-admit.
-Qed.
-
-(** from §33 Exercise 6(a)(b)(c): perfect normality implications **) 
-Theorem ex33_6_perfect_normality : True.
-admit.
-Qed.
-
-(** from §33 Exercise 7: locally compact Hausdorff completely regular **) 
-Theorem ex33_7_locally_compact_Hausdorff_completely_regular : True.
-admit.
-Qed.
-
-(** from §33 Exercise 8: continuous separation when A compact **) 
-Theorem ex33_8_compact_subset_continuous_separation : True.
-admit.
-Qed.
-
-(** from §33 Exercise 9: Romega box topology completely regular **) 
-Theorem ex33_9_Romega_box_completely_regular : True.
-admit.
-Qed.
-
-(** from §33 Exercise *10: topological group completely regular **) 
-Theorem ex33_10_star_topological_group_completely_regular : True.
-admit.
-Qed.
-
-(** from §33 Exercise *11: regular not completely regular example **) 
-Theorem ex33_11_star_regular_not_completely_regular : True.
-admit.
-Qed.
-
-(** from §34 Exercise 1: Hausdorff with countable basis not metrizable **) 
-Theorem ex34_1_Hausdorff_countable_basis_not_metrizable_example : True.
-admit.
-Qed.
-
-(** from §34 Exercise 2: completely normal etc. not metrizable example **) 
-Theorem ex34_2_completely_normal_not_metrizable_example : True.
-admit.
-Qed.
-
-(** from §34 Exercise 3: compact Hausdorff metrizable iff countable basis **) 
-Theorem ex34_3_compact_Hausdorff_metrizable_iff_second_countable : True.
-admit.
-Qed.
-
-(** from §34 Exercise 4: locally compact Hausdorff and countable basis vs metrizable **) 
-Theorem ex34_4_locally_compact_Hausdorff_metrizable_questions : True.
-admit.
-Qed.
-
-(** from §34 Exercise 5: one-point compactification metrizable vs base **) 
-Theorem ex34_5_one_point_compactification_metrizable_questions : True.
-admit.
-Qed.
-
-(** from §34 Exercise 6: details of imbedding theorem proof **) 
-Theorem ex34_6_check_imbedding_proof : True.
-admit.
-Qed.
-
-(** from §34 Exercise 7: locally metrizable compact Hausdorff implies metrizable **) 
-Theorem ex34_7_locally_metrizable_compact_Hausdorff_metrizable : True.
-admit.
-Qed.
-
-(** from §34 Exercise 8: regular Lindelof locally metrizable implies metrizable **) 
-Theorem ex34_8_regular_Lindelof_locally_metrizable_metrizable : True.
-admit.
-Qed.
-
-(** from §34 Exercise 9: compact Hausdorff union of two metrizable closed sets is metrizable **) 
-Theorem ex34_9_compact_union_two_metrizable_closed_metrizable : True.
-admit.
-Qed.
-
-(** from §35 Exercise 1: Tietze implies Urysohn lemma **) 
-Theorem ex35_1_Tietze_implies_Urysohn : True.
-admit.
-Qed.
-
-(** from §35 Exercise 2: interval partition parameter a in Tietze proof **) 
-Theorem ex35_2_interval_partition_parameter : True.
-admit.
-Qed.
-
-(** from §35 Exercise 3: boundedness equivalences in metrizable spaces **) 
-Theorem ex35_3_boundedness_equivalences_metrizable : True.
-admit.
-Qed.
-
-(** from §35 Exercise 4(a)(b)(c): retract properties **) 
-Theorem ex35_4_retract_properties : True.
-admit.
-Qed.
-
-(** from §35 Exercise 5(a)(b): universal extension property and retracts **) 
-Theorem ex35_5_universal_extension_retracts : True.
-admit.
-Qed.
-
-(** from §35 Exercise 6(a)(b): absolute retract equivalence **) 
-Theorem ex35_6_absolute_retract_universal_extension : True.
-admit.
-Qed.
-
-(** from §35 Exercise 7(a)(b): retract examples spiral/knotted axis **) 
-Theorem ex35_7_retract_examples : True.
-admit.
-Qed.
-
-(** from §35 Exercise *8: absolute retract iff universal extension **) 
-Theorem ex35_8_star_absolute_retract_equivalence : True.
-admit.
-Qed.
-
-(** from §35 Exercise 9: coherent topology preserves normality **) 
-Theorem ex35_9_coherent_topology_normal : True.
-admit.
-Qed.
-
-(** from §36 Exercises: manifolds and partitions of unity (placeholder) **) 
-Theorem ex36_manifold_embedding_exercises : True.
-admit.
-Qed.
-
-(** from §37 Exercises: Tychonoff theorem applications (placeholder) **) 
-Theorem ex37_tychonoff_exercises : True.
-admit.
-Qed.
-
-(** from §38 Exercises: Stone-Cech compactification (placeholder) **) 
-Theorem ex38_stone_cech_exercises : True.
-admit.
-Qed.
-
-(** from §39 Exercises: local finiteness (placeholder) **) 
-Theorem ex39_local_finiteness_exercises : True.
-admit.
-Qed.
-
-(** from §40 Exercises: Nagata-Smirnov metrization (placeholder) **) 
-Theorem ex40_nagata_smirnov_exercises : True.
-admit.
-Qed.
-
-(** from §41 Exercises: paracompactness (placeholder) **) 
-Theorem ex41_paracompactness_exercises : True.
-admit.
-Qed.
-
-(** from §42 Exercises: Smirnov metrization (placeholder) **) 
-Theorem ex42_smirnov_exercises : True.
-admit.
-Qed.
-
-(** from §43 Exercises: complete metric spaces (placeholder) **) 
-Theorem ex43_complete_metric_exercises : True.
-admit.
-Qed.
-
-(** from §44 Exercises: space-filling curve (placeholder) **) 
-Theorem ex44_space_filling_exercises : True.
-admit.
-Qed.
-
-(** from §45 Exercises: compactness in metric spaces (placeholder) **) 
-Theorem ex45_compact_metric_exercises : True.
-admit.
-Qed.
-
-(** from §46 Exercises: pointwise/compact convergence (placeholder) **) 
-Theorem ex46_convergence_exercises : True.
-admit.
-Qed.
-
-(** from §47 Exercises: Ascoli theorem (placeholder) **) 
-Theorem ex47_ascoli_exercises : True.
-admit.
-Qed.
-
-(** from §48 Exercises: Baire spaces (placeholder) **) 
-Theorem ex48_baire_exercises : True.
-admit.
-Qed.
-
-(** from §49 Exercises: nowhere-differentiable function (placeholder) **) 
-Theorem ex49_nowhere_differentiable_exercises : True.
-admit.
-Qed.
-
-(** from §50 Exercises: dimension theory introduction (placeholder) **) 
-Theorem ex50_dimension_exercises : True.
+Theorem covering_dimension_properties : forall X:set, exists n:nat, covering_dimension X n.
 admit.
 Qed.
