@@ -6665,7 +6665,10 @@ apply andI.
         apply UnionI UFam x U HxU HUin.
       }
       claim HUnion_eq : Union UFam = X.
-      { apply set_ext; [exact HUnion_sub|exact HX_sub]. }
+      { apply set_ext.
+        - exact HUnion_sub.
+        - exact HX_sub.
+      }
       rewrite HUnion_eq.
       exact (UPairI2 Empty X).
     - assume Hnone: ~exists U:set, U :e UFam /\ U = X.
