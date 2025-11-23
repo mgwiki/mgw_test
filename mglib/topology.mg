@@ -7781,12 +7781,14 @@ claim HUpropB' : forall x :e U, exists b0 :e B', x :e b0 /\ b0 c= U.
   { exact (andEL (b :e B) (x :e b /\ b c= U) Hbp). }
   claim Hbprop : x :e b /\ b c= U.
   { exact (andER (b :e B) (x :e b /\ b c= U) Hbp). }
+  claim HxX : x :e X.
+  { exact (HUsubX x HxU). }
   claim Hxb : x :e b.
   { exact (andEL (x :e b) (b c= U) Hbprop). }
   claim HbsubU : b c= U.
   { exact (andER (x :e b) (b c= U) Hbprop). }
   claim Hexb' : exists b' :set, b' :e B' /\ x :e b' /\ b' c= b.
-  { exact (Hrefine x b HbB Hxb). }
+  { exact (Hrefine x HxX b HbB Hxb). }
   apply Hexb'.
   let b'. assume Hb'pair.
   claim Hb'B' : b' :e B'.
