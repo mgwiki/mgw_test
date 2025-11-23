@@ -9106,12 +9106,6 @@ Theorem compact_Hausdorff_normal : forall X Tx:set,
 admit.
 Qed.
 
-(** from §32 Theorem 32.4: well-ordered sets are normal in order topology **) 
-Theorem well_ordered_sets_normal : forall X:set,
-  well_ordered_set X -> normal_space X (order_topology X).
-admit.
-Qed.
-
 (** from §32 Example 1: uncountable product of R not normal **) 
 Theorem uncountable_product_R_not_normal : forall J:set,
   uncountable_set J -> ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
