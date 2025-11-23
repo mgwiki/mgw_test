@@ -9051,8 +9051,8 @@ Qed.
 
 (** from §23 Exercise: components and path components of ℝℓ **) 
 Theorem ex23_Rl_components :
-  component_of Sorgenfrey_line Sorgenfrey_topology 0 = {0} /\
-  (forall x:set, x :e Sorgenfrey_line -> component_of Sorgenfrey_line Sorgenfrey_topology x = {x}).
+  component_of R R_lower_limit_topology 0 = {0} /\
+  (forall x:set, x :e R -> component_of R R_lower_limit_topology x = {x}).
 admit.
 Qed.
 
