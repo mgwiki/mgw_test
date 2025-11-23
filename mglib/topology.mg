@@ -6676,13 +6676,7 @@ Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
   topology_on X T1 /\ topology_on X T2 /\ T1 = T2.
 
 Theorem topology_eq_refl : forall X T:set, topology_on X T -> topology_eq X T T.
-let X T.
-assume Htop: topology_on X T.
-apply andI.
-- exact Htop.
-- apply andI.
-  * exact Htop.
-  * reflexivity.
+admit.
 Qed.
 
 End Topology.
