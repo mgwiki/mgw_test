@@ -6702,7 +6702,7 @@ Definition finer_than_topology : set -> set -> set -> prop := fun X T' T =>
 
 (** from §12: finer/coarser equivalence **)
 Theorem finer_than_def : forall T T':set, finer_than T' T <-> coarser_than T T'.
-let T T'. apply iffI; intro H; exact H.
+let T T'. apply iffI; assume H; exact H.
 Qed.
 
 (** from §12: discrete topology is the finest **)
