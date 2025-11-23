@@ -8315,7 +8315,7 @@ Qed.
 Theorem ex16_8_lines_in_lower_limit_products :
   exists L:set, L c= OrderedPair R R /\
     L = {OrderedPair x x|x :e R} /\
-    subspace_topology (OrderedPair R R) (product_topology R_lower_limit_topology R_lower_limit_topology) L =
+    subspace_topology (OrderedPair R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L =
       R_lower_limit_topology.
 admit.
 Qed.
