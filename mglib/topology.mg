@@ -8422,7 +8422,9 @@ Qed.
 Theorem Hausdorff_unique_limits : forall X Tx seq x y:set,
   Hausdorff_space X Tx ->
   x <> y ->
-  True.
+  sequence_converges_metric X Empty seq x ->
+  sequence_converges_metric X Empty seq y ->
+  False.
 admit.
 Qed.
 
@@ -8434,19 +8436,25 @@ admit.
 Qed.
 
 (** from §17 Exercises 1–20: closures, boundaries, Hausdorff properties **) 
-Theorem ex17_1_topology_from_closed_sets : forall X:set, True.
+Theorem ex17_1_topology_from_closed_sets : forall X Tx:set,
+  closed_in X Tx X -> (forall A:set, closed_in X Tx A -> closed_in X Tx (X :\\: A)) -> topology_on X Tx.
 admit.
 Qed.
 
-Theorem ex17_2_closed_in_closed_subspace : forall X Tx Y A:set, True.
+Theorem ex17_2_closed_in_closed_subspace : forall X Tx Y A:set,
+  closed_in X Tx Y -> closed_in Y (subspace_topology X Tx Y) A -> closed_in X Tx A.
 admit.
 Qed.
 
-Theorem ex17_3_product_of_closed_sets_closed : forall X Tx Y Ty A B:set, True.
+Theorem ex17_3_product_of_closed_sets_closed : forall X Tx Y Ty A B:set,
+  closed_in X Tx A -> closed_in Y Ty B ->
+  closed_in (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
 admit.
 Qed.
 
-Theorem ex17_4_open_minus_closed_and_closed_minus_open : forall X Tx U A:set, True.
+Theorem ex17_4_open_minus_closed_and_closed_minus_open : forall X Tx U A:set,
+  topology_on X Tx -> open_in X Tx U -> closed_in X Tx A ->
+  open_in X Tx (U :\\: A) /\ closed_in X Tx (A :\\: U).
 admit.
 Qed.
 
@@ -8454,7 +8462,10 @@ Theorem ex17_5_closure_of_interval_in_order_topology : forall X:set, True.
 admit.
 Qed.
 
-Theorem ex17_6_closure_properties : forall X:set, True.
+Theorem ex17_6_closure_properties : forall X Tx A:set,
+  topology_on X Tx ->
+  closure_of X Tx (closure_of X Tx A) = closure_of X Tx A /\
+  closed_in X Tx (closure_of X Tx A).
 admit.
 Qed.
 
