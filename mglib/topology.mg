@@ -6743,9 +6743,23 @@ apply andI.
       apply andI.
       - let U. assume HU: U :e finite_complement_topology X.
         exact (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU).
-      - exact (finite_complement_topology_contains_empty X).
+      - exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) Empty (Empty_In_Power X) (orIR (finite (X :\: Empty)) (Empty = Empty) (fun P H => H))).
     }
-    { exact (finite_complement_topology_contains_full X). }
+    { claim Hdiff_empty : X :\: X = Empty.
+      { apply Empty_Subq_eq.
+        let x. assume Hx.
+        apply EmptyE x.
+        claim HxX : x :e X.
+        { exact (setminusE1 X X x Hx). }
+        claim Hxnot : x /:e X.
+        { exact (setminusE2 X X x Hx). }
+        exact (Hxnot HxX).
+      }
+      apply SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) X (Self_In_Power X).
+      apply orIL.
+      rewrite Hdiff_empty.
+      exact finite_Empty.
+    }
   * prove forall UFam :e Power (finite_complement_topology X), Union UFam :e finite_complement_topology X.
     let UFam. assume Hfam: UFam :e Power (finite_complement_topology X).
     claim Hsub : UFam c= finite_complement_topology X.
