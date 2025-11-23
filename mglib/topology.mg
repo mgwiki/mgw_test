@@ -9063,7 +9063,7 @@ Definition product_component_topology : set -> set -> set := fun Xi i => apply_f
 Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi =>
   forall i:set, i :e I -> Hausdorff_space (product_component Xi i) (product_component_topology Xi i).
 Definition regular_spaces_family : set -> set -> prop := fun I Xi =>
-  forall i:set, i :e I -> regular_space (product_component Xi i) (product_component_topology Xi i).
+  forall i:set, i :e I -> topology_on (product_component Xi i) (product_component_topology Xi i).
 
 Definition product_space : set -> set -> set := fun I Xi =>
   {f :e Power (Union Xi)|
