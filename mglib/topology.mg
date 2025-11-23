@@ -8140,6 +8140,11 @@ Theorem product_subbasis_from_projections : forall X Tx Y Ty:set,
 admit.
 Qed.
 
+(** helper: function evaluation as graph lookup **) 
+Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y :e f).
+Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
+Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
+
 (** from §15 Example: standard topology on ℝ² as product topology **) 
 Definition R2_standard_topology : set := product_topology R R_standard_topology R R_standard_topology.
 
@@ -8588,10 +8593,6 @@ Qed.
 
 (** from §21: uniqueness of limits in metric spaces **) 
 (** helper: function evaluation as graph lookup **) 
-Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y :e f).
-Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
-Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
-
 Theorem metric_limits_unique : forall X d seq x y:set,
   metric_on X d -> x <> y -> True.
 admit.
