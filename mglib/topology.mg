@@ -7786,24 +7786,25 @@ claim HBasisRef_prop : forall U :e generated_topology X B, forall x :e U, exists
   { exact (HUsubX x HxU). }
   claim Hexb' : exists b' :set, b' :e B' /\ x :e b' /\ b' c= b.
   { exact (Href x HxX b HbB Hxb). }
-  apply Hexb'.
-  let b'. assume Hb'pair.
-  claim Hb'B : b' :e B'.
-  { exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
-  claim Hb'prop : x :e b' /\ b' c= b.
-  { exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
-  claim Hxb' : x :e b'.
-  { exact (andEL (x :e b') (b' c= b) Hb'prop). }
-  claim Hb'subb : b' c= b.
-  { exact (andER (x :e b') (b' c= b) Hb'prop). }
-  claim Hb'subU : b' c= U.
-  { let y. assume Hyb'.
-    exact (HbsubU y (Hb'subb y Hyb')). }
-  prove exists b'' :e B', x :e b'' /\ b'' c= U.
-    witness b'.
-    apply andI.
-    - exact Hxb'.
-    - exact Hb'subU. }
+  prove exists b' :e B', x :e b' /\ b' c= U.
+    apply Hexb'.
+    let b'. assume Hb'pair.
+    claim Hb'B : b' :e B'.
+    { exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+    claim Hb'prop : x :e b' /\ b' c= b.
+    { exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+    claim Hxb' : x :e b'.
+    { exact (andEL (x :e b') (b' c= b) Hb'prop). }
+    claim Hb'subb : b' c= b.
+    { exact (andER (x :e b') (b' c= b) Hb'prop). }
+    claim Hb'subU : b' c= U.
+    { let y. assume Hyb'.
+      exact (HbsubU y (Hb'subb y Hyb')). }
+    prove exists b0 :e B', x :e b0 /\ b0 c= U.
+      witness b'.
+      apply andI.
+      - exact Hxb'.
+      - exact Hb'subU. }
 claim HBasisRef : basis_refines X B' (generated_topology X B).
 { apply andI.
   - exact (lemma_topology_from_basis X B HB).
