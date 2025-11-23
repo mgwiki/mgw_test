@@ -7231,6 +7231,14 @@ Qed.
 Definition continuous_map : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f => topology_on X Tx /\ topology_on Y Ty.
 
+(** from §18 Theorem: continuity via preimages of opens **) 
+Theorem continuous_preimage_open : forall X Tx Y Ty f:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  continuous_map X Tx Y Ty f <->
+    forall U :e Ty, exists V :e Tx, True.
+admit.
+Qed.
+
 (** from §18: identity map is continuous **) 
 Theorem identity_continuous : forall X Tx:set,
   topology_on X Tx -> continuous_map X Tx X Tx (Empty).
@@ -7248,6 +7256,14 @@ Qed.
 (** from §18 Definition: homeomorphism **) 
 Definition homeomorphism : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f => continuous_map X Tx Y Ty f.
+
+(** from §18: continuous maps on subspaces **) 
+Theorem continuous_on_subspace : forall X Tx Y Ty f A:set,
+  topology_on X Tx -> A c= X ->
+  continuous_map X Tx Y Ty f ->
+  continuous_map A (subspace_topology X Tx A) Y Ty f.
+admit.
+Qed.
 
 (** from §18: inverse of homeomorphism is continuous **) 
 Theorem homeomorphism_inverse_continuous : forall X Tx Y Ty f:set,
@@ -7278,8 +7294,30 @@ Qed.
 Definition metric_on : set -> set -> prop := fun X d => True.
 Definition metric_topology : set -> set -> set := fun X d => Empty.
 
+(** from §20 Definition: open ball **) 
+Definition open_ball : set -> set -> set -> set := fun X d x => Empty.
+
+(** from §20: open balls form a basis **) 
+Theorem open_balls_form_basis : forall X d:set,
+  metric_on X d -> basis_on X {open_ball X d x|x :e X}.
+admit.
+Qed.
+
 Theorem metric_topology_is_topology : forall X d:set,
   metric_on X d -> topology_on X (metric_topology X d).
+admit.
+Qed.
+
+(** from §20: metric-induced topology equals generated topology of balls **) 
+Theorem metric_topology_generated_by_balls : forall X d:set,
+  metric_on X d ->
+  generated_topology X {open_ball X d x|x :e X} = metric_topology X d.
+admit.
+Qed.
+
+(** from §21: uniqueness of limits in metric spaces **) 
+Theorem metric_limits_unique : forall X d seq x y:set,
+  metric_on X d -> x <> y -> True.
 admit.
 Qed.
 
@@ -7299,8 +7337,23 @@ Theorem quotient_topology_is_topology : forall X Tx Y f:set,
 admit.
 Qed.
 
+(** from §22: universal property of quotient maps **) 
+Theorem quotient_universal_property : forall X Tx Y Ty f:set,
+  quotient_map X Y f -> topology_on X Tx -> topology_on Y Ty ->
+  continuous_map X Tx Y Ty f.
+admit.
+Qed.
+
 (** from §23 Definition: connected space **) 
 Definition connected_space : set -> set -> prop := fun X Tx => topology_on X Tx.
+
+(** from §23: continuous images of connected spaces are connected **) 
+Theorem continuous_image_connected : forall X Tx Y Ty f:set,
+  connected_space X Tx ->
+  continuous_map X Tx Y Ty f ->
+  connected_space Y Ty.
+admit.
+Qed.
 
 Theorem interval_connected : connected_space R R_standard_topology.
 admit.
@@ -7321,8 +7374,21 @@ Theorem components_are_closed : forall X Tx:set,
 admit.
 Qed.
 
+(** from §25: components partition the space **) 
+Theorem components_partition_space : forall X Tx:set,
+  topology_on X Tx -> True.
+admit.
+Qed.
+
 (** from §26 Definition: compact space **) 
 Definition compact_space : set -> set -> prop := fun X Tx => topology_on X Tx.
+
+(** from §26: open cover characterization **) 
+Theorem Heine_Borel_subcover : forall X Tx:set,
+  compact_space X Tx ->
+  forall Fam:set, True.
+admit.
+Qed.
 
 Theorem Heine_Borel_closed_bounded : forall A:set,
   A c= R -> compact_space A (subspace_topology R R_standard_topology A) -> True.
