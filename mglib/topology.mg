@@ -7884,7 +7884,7 @@ apply set_ext.
     { exact (andER (Fam :e Power B) (U = Union Fam) HFamPair). }
     prove exists Fam0 :e Power B, Union Fam0 = U.
       witness Fam.
-      rewrite HUnion.
+      rewrite <- HUnion.
       reflexivity.
     Qed. }
   claim HUopen : open_in X (generated_topology X B) U.
