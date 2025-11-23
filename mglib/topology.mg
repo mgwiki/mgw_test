@@ -9014,8 +9014,6 @@ Qed.
 
 (** placeholders for later refinement of product/separation constructions **) 
 Definition Sorgenfrey_plane_topology : set := Empty.
-Definition ordered_square : set := Empty.
-Definition ordered_square_topology : set := Empty.
 Definition ordered_square_open_strip : set := Empty.
 Definition ordered_square_subspace_topology : set := Empty.
 Definition one_point_sets_closed : set -> set -> prop := fun X Tx => topology_on X Tx.
