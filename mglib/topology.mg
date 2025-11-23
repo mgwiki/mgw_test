@@ -9808,9 +9808,19 @@ Theorem nowhere_differentiable_function_exists : exists f:set, continuous_map R 
 admit.
 Qed.
 
+(** helper: finite cardinality placeholders (to refine) **) 
+Definition cardinality_exact : set -> set -> prop := fun S n => True.
+Definition cardinality_at_most : set -> set -> prop := fun S n => True.
+
 (** from §50 Definition: order of a collection of subsets **) 
 Definition collection_has_order_at_m_plus_one : set -> set -> set -> prop :=
-  fun X A m => True.
+  fun X A m =>
+    (exists x:set, x :e X /\
+      exists Fam:set, Fam c= A /\ finite Fam /\
+        cardinality_exact Fam m /\
+        forall U:set, U :e Fam -> x :e U) /\
+    forall x:set, x :e X ->
+      cardinality_at_most {U :e A|x :e U} m.
 
 (** from §50 Definition: covering dimension and finite dimensionality **) 
 Definition covering_dimension : set -> set -> prop := fun X n =>
