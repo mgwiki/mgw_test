@@ -7836,36 +7836,38 @@ claim Hrefines : basis_refines X B' (generated_topology X B).
                    U HU). }
     claim Hexb : exists b :e B, x :e b /\ b c= U.
     { exact (HUprop x HxU). }
-    apply Hexb.
-    let b. assume Hbpair.
-    claim HbB : b :e B.
-    { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
-    claim Hbprop : x :e b /\ b c= U.
-    { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
-    claim Hxb : x :e b.
-    { exact (andEL (x :e b) (b c= U) Hbprop). }
-    claim HbsubU : b c= U.
-    { exact (andER (x :e b) (b c= U) Hbprop). }
-    claim HxX : x :e X.
-    { exact (HUsubX x HxU). }
-    claim Hexb' : exists b' :e B', x :e b' /\ b' c= b.
-    { exact (Href x HxX b HbB Hxb). }
-    apply Hexb'.
-    let b'. assume Hb'pair.
-    claim Hb'B : b' :e B'.
-    { exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
-    claim Hb'prop : x :e b' /\ b' c= b.
-    { exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
-    claim Hxb' : x :e b'.
-    { exact (andEL (x :e b') (b' c= b) Hb'prop). }
-    claim Hb'subb : b' c= b.
-    { exact (andER (x :e b') (b' c= b) Hb'prop). }
-    witness b'.
-    apply andI.
-    - exact Hb'B.
-    - apply andI.
-      * exact Hxb'.
-      * exact (Subq_tra b' b U Hb'subb HbsubU). }
+    claim Hexb' : exists b' :e B', x :e b' /\ b' c= U.
+    { apply Hexb.
+      let b. assume Hbpair.
+      claim HbB : b :e B.
+      { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
+      claim Hbprop : x :e b /\ b c= U.
+      { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
+      claim Hxb : x :e b.
+      { exact (andEL (x :e b) (b c= U) Hbprop). }
+      claim HbsubU : b c= U.
+      { exact (andER (x :e b) (b c= U) Hbprop). }
+      claim HxX : x :e X.
+      { exact (HUsubX x HxU). }
+      claim Hexb'' : exists b' :e B', x :e b' /\ b' c= b.
+      { exact (Href x HxX b HbB Hxb). }
+      apply Hexb''.
+      let b'. assume Hb'pair.
+      claim Hb'B : b' :e B'.
+      { exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+      claim Hb'prop : x :e b' /\ b' c= b.
+      { exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+      claim Hxb' : x :e b'.
+      { exact (andEL (x :e b') (b' c= b) Hb'prop). }
+      claim Hb'subb : b' c= b.
+      { exact (andER (x :e b') (b' c= b) Hb'prop). }
+      witness b'.
+      apply andI.
+      - exact Hb'B.
+      - apply andI.
+        * exact Hxb'.
+        * exact (Subq_tra b' b U Hb'subb HbsubU). }
+    exact Hexb'. }
 }
 exact (lemma_finer_if_basis_refines X B B' HB Hrefines).
 Qed.
