@@ -9047,7 +9047,7 @@ Definition well_ordered_set : set -> prop := fun X => True.
 Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi => True.
 Definition apply_fun : set -> set -> set := fun f x => Empty.
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
-Definition function_space : set -> set -> set := fun X Y => {f:set|function_on f X Y}.
+Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
 Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
   fun X Tx F J =>
     topology_on X Tx /\ F c= function_space X J /\ True.
