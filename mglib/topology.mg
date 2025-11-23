@@ -10118,6 +10118,7 @@ Definition sigma_locally_finite_basis : set -> set -> prop := fun X Tx =>
     forall b:set, b :e Union Fams -> b :e Tx.
 
 (** from §40 Nagata-Smirnov metrization theorem **) 
+(** LATEX VERSION: Nagata–Smirnov: A regular space with a σ-locally-finite basis is metrizable. **)
 Theorem Nagata_Smirnov_metrization : forall X Tx:set,
   regular_space X Tx -> sigma_locally_finite_basis X Tx -> metrizable X Tx.
 admit.
@@ -10131,6 +10132,7 @@ Definition paracompact_space : set -> set -> prop := fun X Tx =>
     exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U.
 
 (** from §41 Theorem: existence of locally finite refinements **) 
+(** LATEX VERSION: Any paracompact space admits a locally finite open refinement of every open cover. **)
 Theorem locally_finite_refinement : forall X Tx U:set,
   paracompact_space X Tx -> open_cover X Tx U -> exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V.
 admit.
@@ -10144,6 +10146,7 @@ admit.
 Qed.
 
 (** from §42 Smirnov metrization theorem **) 
+(** LATEX VERSION: Smirnov metrization: regular spaces with a locally finite basis are metrizable. **)
 Theorem Smirnov_metrization : forall X Tx:set,
   regular_space X Tx -> locally_finite_basis X Tx -> metrizable X Tx.
 admit.
@@ -10179,6 +10182,7 @@ Definition euclidean_metric : set -> set := fun n => discrete_metric (euclidean_
 Definition bounded_product_metric : set -> set := fun J => discrete_metric (power_real J).
 
 (** from §43 Lemma 43.1: Cauchy with convergent subsequence converges **) 
+(** LATEX VERSION: In a metric space, a Cauchy sequence with a convergent subsequence converges to the same limit. **)
 Theorem Cauchy_with_convergent_subsequence_converges : forall X d seq x:set,
   metric_on X d -> cauchy_sequence X d seq ->
   (exists subseq:set, subseq c= seq /\ converges_to X (metric_topology X d) subseq x) ->
@@ -10187,12 +10191,14 @@ admit.
 Qed.
 
 (** from §43 Theorem 43.2: Euclidean space is complete **) 
+(** LATEX VERSION: Euclidean spaces are complete metric spaces. **)
 Theorem Euclidean_space_complete : forall k:set,
   complete_metric_space (euclidean_space k) (euclidean_metric k).
 admit.
 Qed.
 
 (** from §43 Lemma 43.3: product convergence via projections **) 
+(** LATEX VERSION: Convergence in a product metric topology iff coordinatewise convergence. **)
 Theorem product_sequence_convergence_iff_coordinates : forall X J:set,
   X = product_space J (const_family J R) ->
   forall seq x:set,
@@ -10206,6 +10212,7 @@ admit.
 Qed.
 
 (** from §43 Theorem 43.4: complete metric on R^omega **) 
+(** LATEX VERSION: The bounded product metric makes R^ω complete. **)
 Theorem product_Romega_complete : complete_metric_space (power_real omega) (bounded_product_metric omega).
 admit.
 Qed.
@@ -10259,10 +10266,12 @@ admit.
 Qed.
 
 (** helper: intersection over a family within a universe X **) 
+(** LATEX VERSION: Intersection_over_family X Fam collects points lying in every member of Fam. **)
 Definition intersection_over_family : set -> set -> set :=
   fun X Fam => {x :e X|forall U:set, U :e Fam -> x :e U}.
 
 (** from §48 Definition: Baire space **) 
+(** LATEX VERSION: A Baire space is one where countable intersections of dense open sets are dense. **)
 Definition Baire_space : set -> prop := fun Tx =>
   exists X:set,
     topology_on X Tx /\
@@ -10272,6 +10281,7 @@ Definition Baire_space : set -> prop := fun Tx =>
       dense_in (intersection_over_family X U) X Tx.
 
 (** from §48 Lemma 48.1: dense G_delta characterization of Baire space **) 
+(** LATEX VERSION: Equivalent dense G_δ characterization of Baire spaces. **)
 Theorem Baire_space_dense_Gdelta : forall Tx:set,
   (Baire_space Tx <->
     exists X:set,
@@ -10284,40 +10294,47 @@ admit.
 Qed.
 
 (** from §48 Theorem: Baire category theorem for complete metric spaces **) 
+(** LATEX VERSION: Complete metric spaces are Baire. **)
 Theorem Baire_category_complete_metric : forall X d:set,
   complete_metric_space X d -> Baire_space (metric_topology X d).
 admit.
 Qed.
 
 (** from §48 Theorem: compact Hausdorff spaces are Baire spaces **) 
+(** LATEX VERSION: Compact Hausdorff spaces are Baire. **)
 Theorem Baire_category_compact_Hausdorff : forall X Tx:set,
   compact_space X Tx -> Hausdorff_space X Tx -> Baire_space Tx.
 admit.
 Qed.
 
 (** from §48 Theorem: Baire category theorem general version **) 
+(** LATEX VERSION: General Baire category consequence: nonempty open sets in Baire space. **)
 Theorem Baire_category_theorem : forall X:set,
   Baire_space X -> forall U:set, open_in X X U -> U <> Empty.
 admit.
 Qed.
 
 (** from §49 Definition: differentiability placeholder and nowhere-differentiable function **) 
+(** LATEX VERSION: Placeholder differentiability notions; nowhere differentiable means no point of differentiability. **)
 Definition differentiable_at : set -> set -> prop := fun f x => False.
 Definition nowhere_differentiable : set -> prop := fun f =>
   function_on f R R /\ forall x:set, x :e R -> ~ differentiable_at f x.
 
 (** from §49 Existence: nowhere-differentiable function **) 
+(** LATEX VERSION: Existence of a continuous nowhere-differentiable function. **)
 Theorem nowhere_differentiable_function_exists : exists f:set, continuous_map R R_standard_topology R R_standard_topology f /\ nowhere_differentiable f.
 admit.
 Qed.
 
 (** helper: finite cardinality via equip to an ordinal **) 
+(** LATEX VERSION: Cardinality_exact/at_most helper predicates for dimension theory. **)
 Definition cardinality_exact : set -> set -> prop := fun S n =>
   ordinal n /\ equip S n.
 Definition cardinality_at_most : set -> set -> prop := fun S n =>
   ordinal n /\ exists k:set, ordinal k /\ k c= n /\ equip S k.
 
 (** from §50 Definition: order of a collection of subsets **) 
+(** LATEX VERSION: Order m+1: every point lies in at most m members and some point meets m members. **)
 Definition collection_has_order_at_m_plus_one : set -> set -> set -> prop :=
   fun X A m =>
     ordinal m /\
@@ -10329,29 +10346,34 @@ Definition collection_has_order_at_m_plus_one : set -> set -> set -> prop :=
       cardinality_at_most {U :e A|x :e U} m.
 
 (** from §50 Definition: covering dimension and finite dimensionality **) 
+(** LATEX VERSION: Covering dimension/finite dimensional space (placeholders). **)
 Definition covering_dimension : set -> set -> prop := fun X n =>
   n :e omega /\ exists Tx:set, topology_on X Tx.
 Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ exists m:set, covering_dimension X m.
 
 (** from §50 Theorem: basic properties of covering dimension **) 
+(** LATEX VERSION: Basic existence placeholder for covering dimension. **)
 Theorem covering_dimension_properties : forall X:set, exists n:set, covering_dimension X n.
 admit.
 Qed.
 
 (** from §50 Theorem: compact subspace of R^n has dimension at most n **) 
+(** LATEX VERSION: Compact subspace of ℝ^n has covering dimension ≤ n. **)
 Theorem compact_subspace_Rn_dimension_le : forall X n:set,
   compact_space X (euclidean_topology n) -> covering_dimension X n.
 admit.
 Qed.
 
 (** from §50 Theorem: compact m-manifold has dimension at most m **) 
+(** LATEX VERSION: Compact m-manifold has covering dimension ≤ m. **)
 Theorem compact_manifold_dimension_le : forall X Tx m:set,
   m_manifold X Tx -> compact_space X Tx -> covering_dimension X m.
 admit.
 Qed.
 
 (** from §50 Theorem (Menger-Nöbeling): compact metrizable space of dimension m embeds in R^{2m+1} **) 
+(** LATEX VERSION: Menger–Nöbeling embedding theorem (placeholder). **)
 Theorem Menger_Nobeling_embedding : forall X Tx m:set,
   compact_space X Tx -> metrizable X Tx -> covering_dimension X m ->
   exists N:set, exists e:set,
@@ -10360,12 +10382,14 @@ admit.
 Qed.
 
 (** from §50 Theorem 50.1: dimension of closed subspace bounded by ambient **) 
+(** LATEX VERSION: Dimension of a closed subspace does not exceed that of the ambient space. **)
 Theorem dimension_closed_subspace_le : forall X Tx Y n:set,
   covering_dimension X n -> closed_in X Tx Y -> covering_dimension Y n.
 admit.
 Qed.
 
 (** from §50 Theorem 50.2: dimension of union of closed sets is max **) 
+(** LATEX VERSION: Dimension of union of two closed sets is at most the max of their dimensions. **)
 Theorem dimension_union_closed_max : forall X Y Z n:set,
   covering_dimension Y n -> covering_dimension Z n ->
   covering_dimension (Y :\/: Z) n.
@@ -10381,78 +10405,114 @@ admit.
 Qed.
 
 (** from §30 Exercise 1: G_delta points in first-countable T1 **) 
+(** LATEX VERSION: Exercise 30.1 about G_δ points in first-countable T₁ spaces. **)
 Definition ex30_1_Gdelta_points : set := omega.
 (** from §30 Exercise 2: countable basis sub-basis selection **) 
+(** LATEX VERSION: Exercise 30.2 selecting countable sub-basis from a basis. **)
 Definition ex30_2_basis_contains_countable : set := omega.
 (** from §30 Exercise 3: uncountably many limit points in countable basis space **) 
+(** LATEX VERSION: Exercise 30.3 on limit points in spaces with countable basis. **)
 Definition ex30_3_uncountably_many_limit_points : set := omega.
 (** from §30 Exercise 4: compact metrizable implies second countable **) 
+(** LATEX VERSION: Exercise 30.4 proving compact metrizable spaces are second countable. **)
 Definition ex30_4_compact_metrizable_second_countable : set := omega.
 (** from §30 Exercise 5: metrizable countable dense or Lindelof imply second countable **) 
+(** LATEX VERSION: Exercise 30.5: metrizability plus separable/Lindelöf implies second countable. **)
 Definition ex30_5_metrizable_density_Lindelof_imply_second_countable : set := omega.
 (** from §30 Exercise 6: R_l and ordered square not metrizable **) 
+(** LATEX VERSION: Exercise 30.6: Show ℝ_ℓ and ordered square not metrizable. **)
 Definition ex30_6_Sorgenfrey_and_ordered_square_not_metrizable : set := omega.
 (** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **) 
+(** LATEX VERSION: Exercise 30.7: Countability properties of S_Ω and S̄_Ω. **)
 Definition ex30_7_SOmega_countability_axioms : set := omega.
 (** from §30 Exercise 8: countability axioms for Romega uniform topology **) 
+(** LATEX VERSION: Exercise 30.8: Countability properties of R^ω with uniform topology. **)
 Definition ex30_8_Romega_uniform_countability : set := omega.
 (** from §30 Exercise 9: closed subspace of Lindelof is Lindelof; dense subset need not be **) 
+(** LATEX VERSION: Exercise 30.9: Closed subspaces of Lindelöf spaces vs dense subsets. **)
 Definition ex30_9_closed_Lindelof_and_dense_subsets : set := omega.
 (** from §30 Exercise 10: product with countable dense subsets has countable dense subset **) 
+(** LATEX VERSION: Exercise 30.10: Products with countable dense subsets retain countable dense subsets. **)
 Definition ex30_10_product_countable_dense : set := omega.
 (** from §30 Exercise 11: images of Lindelof or countable dense under continuous map **) 
+(** LATEX VERSION: Exercise 30.11: Continuous images of Lindelöf or separable spaces. **)
 Definition ex30_11_image_preserves_Lindelof_or_dense : set := omega.
 (** from §30 Exercise 12: continuous open maps preserve countability axioms **) 
+(** LATEX VERSION: Exercise 30.12: Open continuous maps preserve countability axioms. **)
 Definition ex30_12_open_map_preserves_countability_axioms : set := omega.
 (** from §30 Exercise 13: disjoint open sets countable when dense countable **) 
+(** LATEX VERSION: Exercise 30.13: Countability of disjoint open families in separable spaces. **)
 Definition ex30_13_disjoint_open_sets_countable : set := omega.
 (** from §30 Exercise 14: product of Lindelof with compact is Lindelof **) 
+(** LATEX VERSION: Exercise 30.14: Lindelöf × compact is Lindelöf. **)
 Definition ex30_14_product_Lindelof_compact : set := omega.
 (** from §30 Exercise 15: C(I,R) uniform topology countable dense subset **) 
+(** LATEX VERSION: Exercise 30.15: Countable dense subset of C(I,ℝ) in uniform topology. **)
 Definition ex30_15_CI_has_countable_dense_uniform : set := omega.
 (** from §30 Exercise 16: product RI dense subsets cardinalities **) 
+(** LATEX VERSION: Exercise 30.16: Cardinality of dense subsets in products ∏R_i. **)
 Definition ex30_16_product_RI_dense_subset_cardinality : set := omega.
 (** from §30 Exercise 17: Romega box topology countability axioms **) 
+(** LATEX VERSION: Exercise 30.17: Countability axioms for box topology on R^ω. **)
 Definition ex30_17_Romega_box_countability : set := omega.
 (** from §30 Exercise 18: first-countable topological group with dense/Lindelof implies countable basis **) 
+(** LATEX VERSION: Exercise 30.18: First-countable topological groups with extra properties have countable bases. **)
 Definition ex30_18_first_countable_group_countable_basis : set := omega.
 
 (** from §31 Exercise 1: regular implies disjoint closures of neighborhoods **) 
+(** LATEX VERSION: Exercise 31.1: In regular spaces, neighborhoods with disjoint closures around points. **)
 Definition ex31_1_regular_disjoint_closure_neighborhoods : set := omega.
 (** from §31 Exercise 2: normal implies disjoint closures for closed sets **) 
+(** LATEX VERSION: Exercise 31.2: In normal spaces, disjoint closed sets have disjoint closures of neighborhoods. **)
 Definition ex31_2_normal_disjoint_closure_neighborhoods : set := omega.
 (** from §31 Exercise 3: every order topology regular **) 
+(** LATEX VERSION: Exercise 31.3: Show every order topology is regular. **)
 Definition ex31_3_order_topology_regular : set := omega.
 (** from §31 Exercise 4: comparing finer/coarser separation axioms **) 
+(** LATEX VERSION: Exercise 31.4: Compare separation properties under finer/coarser topologies. **)
 Definition ex31_4_comparison_topologies_separation : set := omega.
 (** from §31 Exercise 5: equalizer of continuous maps into Hausdorff is closed **) 
+(** LATEX VERSION: Exercise 31.5: Equalizers into Hausdorff spaces are closed. **)
 Definition ex31_5_equalizer_closed_in_Hausdorff : set := omega.
 (** from §31 Exercise 6: closed continuous surjection preserves normal **) 
+(** LATEX VERSION: Exercise 31.6: Closed continuous surjections preserve normality. **)
 Definition ex31_6_closed_map_preserves_normal : set := omega.
 (** from §31 Exercise 7: perfect map preserves separation/countability/local compactness **) 
+(** LATEX VERSION: Exercise 31.7: Perfect maps preserve various separation/countability properties. **)
 Definition ex31_7_perfect_map_properties : set := omega.
 (** from §31 Exercise 8: orbit space of compact group action preserves properties **) 
+(** LATEX VERSION: Exercise 31.8: Orbit space of compact group action retains properties. **)
 Definition ex31_8_orbit_space_properties : set := omega.
 (** from §31 Exercise 9: Sorgenfrey plane rational/irrational diagonal non-separation **) 
+(** LATEX VERSION: Exercise 31.9: Rational/irrational diagonal in Sorgenfrey plane are not separable by neighborhoods. **)
 Definition ex31_9_Sorgenfrey_plane_no_separation : set := omega.
 
 (** from §32 Exercise 1: closed subspace of normal is normal **) 
+(** LATEX VERSION: Exercise 32.1: Closed subspaces of normal spaces are normal. **)
 Definition ex32_1_closed_subspace_normal : set := omega.
 (** from §32 Exercise 2: factor spaces of products inherit separation **) 
+(** LATEX VERSION: Exercise 32.2: Factors of Hausdorff/regular products inherit separation. **)
 Definition ex32_2_factors_inherit_separation : set := omega.
 (** from §32 Exercise 3: locally compact Hausdorff implies regular **) 
+(** LATEX VERSION: Exercise 32.3: Locally compact Hausdorff spaces are regular. **)
 Definition ex32_3_locally_compact_Hausdorff_regular : set := omega.
 (** from §32 Exercise 4: regular Lindelof implies normal **) 
+(** LATEX VERSION: Exercise 32.4: Regular Lindelöf spaces are normal. **)
 Definition ex32_4_regular_Lindelof_normal : set := omega.
 (** from §32 Exercise 5: normality questions for Romega product topologies **) 
+(** LATEX VERSION: Exercise 32.5: Normality of various R^ω product topologies. **)
 Definition ex32_5_Romega_normality_questions : set := omega.
 (** from §32 Exercise 6: completely normal characterization via separated sets **) 
+(** LATEX VERSION: Exercise 32.6: Characterization of completely normal spaces via separated sets. **)
 Definition ex32_6_completely_normal_characterization : set := omega.
 (** from §32 Exercise 7: completely normal examples **) 
+(** LATEX VERSION: Exercise 32.7: Examples illustrating complete normality. **)
 Definition ex32_7_completely_normal_examples : set := omega.
 (** from §32 Exercise 8: linear continuum normal **) 
+(** LATEX VERSION: Exercise 32.8: Linear continua are normal. **)
 Definition ex32_8_linear_continuum_normal : set := omega.
 (** from §32 Exercise 9: uncountable product of R not normal **) 
+(** LATEX VERSION: Exercise 32.9: Uncountable product of ℝ is not normal. **)
 Definition ex32_9_uncountable_product_not_normal : set := omega.
 
 (** helper: G_delta subset coded via countable intersection of open sets **) 
@@ -10742,40 +10802,55 @@ Definition ex42_smirnov_exercises : set :=
       p = OrderedPair (OrderedPair X Tx) B /\
       (regular_space X Tx /\ basis_on X B /\ locally_finite_family X Tx B -> metrizable X Tx)}.
 (** from §43 Exercises: complete metric spaces (placeholder) **) 
+(** LATEX VERSION: Exercise set for completeness properties. **)
 Definition ex43_complete_metric_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X d Tx:set, p = OrderedPair (OrderedPair X d) Tx /\
       metric_on X d /\ Tx = metric_topology X d /\ complete_metric_space X d}.
+
 (** from §44 Exercises: space-filling curve (placeholder) **) 
+(** LATEX VERSION: Exercise set involving space-filling curves. **)
 Definition ex44_space_filling_exercises : set :=
   {f :e Power (Power (Power R)) |
     continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f /\
     surjective_map unit_interval unit_square f}.
+
 (** from §45 Exercises: compactness in metric spaces (placeholder) **) 
+(** LATEX VERSION: Exercise set on compactness equivalences in metric spaces. **)
 Definition ex45_compact_metric_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X d Tx:set, p = OrderedPair (OrderedPair X d) Tx /\
       metric_on X d /\ Tx = metric_topology X d /\ compact_space X Tx}.
+
 (** from §46 Exercises: pointwise/compact convergence (placeholder) **) 
+(** LATEX VERSION: Exercises on pointwise and compact convergence topologies. **)
 Definition ex46_convergence_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx Y Ty:set,
       p = OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) /\
       topology_on X Tx /\ topology_on Y Ty /\ True}.
+
 (** from §47 Exercises: Ascoli theorem (placeholder) **) 
+(** LATEX VERSION: Exercises related to the Ascoli–Arzelà theorem. **)
 Definition ex47_ascoli_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx Y Ty:set,
       p = OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) /\
       compact_space X Tx /\ Hausdorff_space Y Ty}.
+
 (** from §48 Exercises: Baire spaces (placeholder) **) 
+(** LATEX VERSION: Exercises concerning Baire spaces. **)
 Definition ex48_baire_exercises : set :=
   {Tx :e Power (Power R) | Baire_space Tx}.
+
 (** from §49 Exercises: nowhere-differentiable function (placeholder) **) 
+(** LATEX VERSION: Exercises on constructing nowhere-differentiable continuous functions. **)
 Definition ex49_nowhere_differentiable_exercises : set :=
   {f :e Power (Power R) |
     continuous_map R R_standard_topology R R_standard_topology f /\ nowhere_differentiable f}.
+
 (** from §50 Exercises: dimension theory introduction (placeholder) **) 
+(** LATEX VERSION: Exercises introducing dimension theory concepts. **)
 Definition ex50_dimension_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx n:set,
