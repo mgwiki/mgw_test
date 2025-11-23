@@ -7495,7 +7495,9 @@ claim HUnion_eq : Union Fam = U.
     { exact (SepI B (fun b0 : set => b0 c= U) b HbB HbsubU). }
     exact (UnionI Fam x b Hxb HbFam). }
 witness Fam.
-apply andI; exact HFamPow || exact HUnion_eq.
+apply andI.
+- exact HFamPow.
+- exact HUnion_eq.
 Qed.
 
 (** from §13 Lemma 13.1 converse direction **) 
