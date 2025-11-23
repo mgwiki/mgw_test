@@ -9032,6 +9032,14 @@ Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y 
 Definition power_real : set -> set := fun J => Empty.
 Definition unit_interval_power : set -> set := fun J => Empty.
 Definition apply_fun : set -> set -> set := fun f x => Empty.
+Definition Tychonoff_space : set -> set -> prop := fun X Tx => True.
+Definition sigma_locally_finite_basis : set -> set -> prop := fun X Tx => True.
+Definition metrizable : set -> set -> prop := fun X Tx => True.
+Definition locally_finite_basis : set -> set -> prop := fun X Tx => True.
+Definition equicontinuous_family : set -> set -> set -> set -> prop := fun X Tx Y Ty => True.
+Definition relatively_compact_in_compact_convergence : set -> set -> set -> set -> prop := fun X Tx Y Ty => True.
+Definition nowhere_differentiable : set -> prop := fun f => True.
+Definition sequentially_compact : set -> set -> prop := fun X Tx => True.
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 Theorem Sorgenfrey_plane_not_Lindelof :
