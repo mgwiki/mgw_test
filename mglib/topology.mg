@@ -6777,7 +6777,7 @@ Qed.
 Theorem finite_complement_topology_contains_empty : forall X:set,
   Empty :e finite_complement_topology X.
 let X.
-apply SepI.
+apply SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) Empty.
 - apply Empty_In_Power.
 - apply orIR. reflexivity.
 Qed.
@@ -6802,7 +6802,7 @@ Qed.
 Theorem countable_complement_topology_contains_empty : forall X:set,
   Empty :e countable_complement_topology X.
 let X.
-apply SepI.
+apply SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) Empty.
 - apply Empty_In_Power.
 - apply orIR. reflexivity.
 Qed.
