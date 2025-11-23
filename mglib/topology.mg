@@ -9248,10 +9248,21 @@ admit.
 Qed.
 
 (** from §39 Definition: locally finite family **) 
-Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F => True.
+Definition refine_of (V U:set) : prop :=
+  forall v:set, v :e V -> exists u:set, u :e U /\ v c= u.
+
+Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F =>
+  topology_on X Tx /\
+  forall x:set, x :e X ->
+    exists N:set, N :e Tx /\ x :e N /\
+      exists S:set, finite S /\ S c= F /\
+        forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
 
 (** from §41 Definition: paracompact space **) 
-Definition paracompact_space : set -> set -> prop := fun X Tx => True.
+Definition paracompact_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall U:set, open_cover X Tx U ->
+    exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U.
 
 (** from §39 Theorem: existence of locally finite refinements **) 
 Theorem locally_finite_refinement : forall X Tx U:set,
