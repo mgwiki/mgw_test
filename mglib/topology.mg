@@ -6712,7 +6712,6 @@ Qed.
 Theorem discrete_topology_finest : forall X T:set,
   topology_on X T -> finer_than (discrete_topology X) T.
 let X T. assume HT.
-(* peel off the five conjuncts in the left-associated conjunction *)
 claim H1 : ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
 { exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT). }
 claim H2 : (T c= Power X /\ Empty :e T) /\ X :e T.
