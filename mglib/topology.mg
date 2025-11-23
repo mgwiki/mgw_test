@@ -9038,6 +9038,11 @@ Definition one_point_sets_closed : set -> set -> prop := fun X Tx => topology_on
 Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi => True.
 Definition regular_spaces_family : set -> set -> prop := fun I Xi => True.
 Definition const_family : set -> set -> set := fun I X => {UPair i X|i :e I}.
+(** set-theoretic function evaluation via graphs **) 
+Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y :e f).
+
+Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
+Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
 
 Definition product_component : set -> set -> set := fun Xi i => apply_fun Xi i.
 Definition product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
@@ -9053,8 +9058,6 @@ Definition uncountable_set : set -> prop := fun X => ~ countable_set X.
 Definition well_ordered_set : set -> prop := fun X =>
   exists alpha:set, ordinal alpha /\ equip X alpha.
 Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi => True.
-(** set-theoretic function evaluation via graphs **) 
-Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y :e f).
 (** from §39 Definition: locally finite family and refinement **) 
 Definition refine_of : set -> set -> prop := fun V U =>
   forall v:set, v :e V -> exists u:set, u :e U /\ v c= u.
@@ -9064,8 +9067,6 @@ Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F =>
     exists N:set, N :e Tx /\ x :e N /\
       exists S:set, finite S /\ S c= F /\
         forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
-Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
-Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
 Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
   fun X Tx F J =>
     topology_on X Tx /\ F c= function_space X J /\ True.
