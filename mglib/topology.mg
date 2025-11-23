@@ -8017,8 +8017,8 @@ Theorem standard_topology_is_order_topology : order_topology R = R_standard_topo
 admit.
 Qed.
 
-(** helper: placeholder for cartesian product set **) 
-Definition OrderedPair : set -> set -> set := fun X Y => Empty.
+(** helper: Kuratowski ordered pair for cartesian products **) 
+Definition OrderedPair : set -> set -> set := fun x y => UPair x (UPair x y).
 
 (** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
 Definition R2_dictionary_order_topology : set := Empty.
@@ -9037,15 +9037,24 @@ Definition ordered_square_subspace_topology : set := Empty.
 Definition one_point_sets_closed : set -> set -> prop := fun X Tx => topology_on X Tx.
 Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi => True.
 Definition regular_spaces_family : set -> set -> prop := fun I Xi => True.
-Definition product_topology_full : set -> set -> set := fun I Xi => Empty.
-Definition product_space : set -> set -> set := fun I Xi => Empty.
-Definition product_component : set -> set -> set := fun Xi i => Empty.
-Definition product_component_topology : set -> set -> set := fun Xi i => Empty.
-Definition const_family : set -> set -> set := fun I X => Empty.
+Definition const_family : set -> set -> set := fun I X => {UPair i X|i :e I}.
+
+Definition product_component : set -> set -> set := fun Xi i => apply_fun Xi i.
+Definition product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
+
+Definition product_space : set -> set -> set := fun I Xi =>
+  {f :e Power (Union Xi)|
+     function_on f I (Union Xi) /\
+     forall i:set, i :e I -> apply_fun f i :e apply_fun Xi i}.
+
+Definition product_topology_full : set -> set -> set := fun I Xi =>
+  generated_topology (product_space I Xi) Empty.
 Definition uncountable_set : set -> prop := fun X => ~ countable_set X.
 Definition well_ordered_set : set -> prop := fun X =>
   exists alpha:set, ordinal alpha /\ equip X alpha.
 Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi => True.
+(** set-theoretic function evaluation via graphs **) 
+Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y :e f).
 (** from §39 Definition: locally finite family and refinement **) 
 Definition refine_of : set -> set -> prop := fun V U =>
   forall v:set, v :e V -> exists u:set, u :e U /\ v c= u.
