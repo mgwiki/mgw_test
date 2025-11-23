@@ -8141,6 +8141,20 @@ Definition projection2 : set -> set -> set := fun X Y =>
   {p :e Power (OrderedPair (OrderedPair X Y) Y) |
      exists x:set, exists y:set, x :e X /\ y :e Y /\ p = UPair (OrderedPair x y) y}.
 
+(** from §15 Theorem 15.2: projection preimages form a subbasis **) 
+Theorem product_subbasis_from_projections : forall X Tx Y Ty:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  exists S:set,
+    S = product_subbasis X Tx Y Ty /\
+    generated_topology (OrderedPair X Y) S = product_topology X Tx Y Ty.
+admit.
+Qed.
+
+(** helper: function evaluation as graph lookup **) 
+Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y :e f).
+Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
+Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
+
 Definition const_family : set -> set -> set := fun I X => {UPair i X|i :e I}.
 Definition product_component : set -> set -> set := fun Xi i => apply_fun Xi i.
 Definition product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
@@ -8158,20 +8172,6 @@ Definition countable_product_topology : set -> set -> set := fun I Xi =>
   product_topology_full I Xi.
 Definition euclidean_space : set -> set := fun n => product_space n (const_family n R).
 Definition euclidean_topology : set -> set := fun n => product_topology_full n (const_family n R).
-
-(** from §15 Theorem 15.2: projection preimages form a subbasis **) 
-Theorem product_subbasis_from_projections : forall X Tx Y Ty:set,
-  topology_on X Tx -> topology_on Y Ty ->
-  exists S:set,
-    S = product_subbasis X Tx Y Ty /\
-    generated_topology (OrderedPair X Y) S = product_topology X Tx Y Ty.
-admit.
-Qed.
-
-(** helper: function evaluation as graph lookup **) 
-Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y :e f).
-Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
-Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
 
 (** from §15 Example: standard topology on ℝ² as product topology **) 
 Definition R2_standard_topology : set := product_topology R R_standard_topology R R_standard_topology.
