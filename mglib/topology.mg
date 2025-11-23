@@ -8401,7 +8401,7 @@ Definition Zplus : set := omega.
 
 Theorem order_topology_on_Zplus_discrete :
   order_topology Zplus = discrete_topology Zplus.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §14 Example 4: two-row dictionary order space is not discrete **) 
@@ -8412,7 +8412,7 @@ Definition two_by_nat_order_topology : set := order_topology two_by_nat.
 (** LATEX VERSION: The two-by-ℕ dictionary order space fails to be discrete. **)
 Theorem two_by_nat_not_discrete :
   ~ (two_by_nat_order_topology = discrete_topology two_by_nat).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §15 Definition: product topology on X×Y **) 
@@ -8431,7 +8431,7 @@ Definition product_topology : set -> set -> set -> set -> set :=
 Theorem product_topology_is_topology : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §15 Theorem: basis of products of basis elements **) 
@@ -8444,7 +8444,7 @@ Theorem product_basis_generates :
       basis_on (OrderedPair X Y) B /\
       (forall U :e Bx, forall V :e By, OrderedPair U V :e B) /\
   generated_topology (OrderedPair X Y) B = product_topology X Tx Y Ty.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §15 Definition: projections on a product **) 
@@ -8463,7 +8463,7 @@ Theorem product_subbasis_from_projections : forall X Tx Y Ty:set,
   exists S:set,
     S = product_subbasis X Tx Y Ty /\
     generated_topology (OrderedPair X Y) S = product_topology X Tx Y Ty.
-admit.
+admit. (**  aby  product_subbasis�f product_topology�f generated_topology�f conj_myprob_8466_1_20251123_230252 . **)
 Qed.
 
 (** helper: function evaluation as graph lookup **) 
@@ -8495,7 +8495,7 @@ Definition R2_standard_topology : set := product_topology R R_standard_topology 
 
 Theorem R2_standard_equals_product :
   R2_standard_topology = product_topology R R_standard_topology R R_standard_topology.
-admit.
+admit. (**  aby  R2_5Fstandard_5Ftopology_def conj_myprob_8498_1_20251123_230310 . **)
 Qed.
 
 (** from §16 Definition: subspace topology **) 
@@ -8508,7 +8508,7 @@ Definition subspace_topology : set -> set -> set -> set :=
 Theorem subspace_topology_is_topology : forall X Tx Y:set,
   topology_on X Tx -> Y c= X ->
   topology_on Y (subspace_topology X Tx Y).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §16: openness in subspace via ambient openness **) 
@@ -8517,7 +8517,7 @@ Theorem open_in_subspace_iff : forall X Tx Y U:set,
   topology_on X Tx -> Y c= X ->
   open_in Y (subspace_topology X Tx Y) U <->
   exists V :e Tx, U = V :/\: Y.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §16 Lemma 16.1: basis for the subspace topology **) 
@@ -8527,7 +8527,7 @@ Theorem subspace_basis : forall X Tx Y B:set,
   basis_on X B /\ generated_topology X B = Tx ->
   basis_on Y {b :e B|b c= Y} /\
   generated_topology Y {b :e B|b c= Y} = subspace_topology X Tx Y.
-admit.
+admit. (**  aby  EmptyAx conj_myprob_8530_1_20251123_230448 open_set�f ex13_1_local_open_subset open_sets_as_unions_of_basis open_in_subspace_iff basis_generates_open_sets In_5Fno2cycle prop_ext_2 . **)
 Qed.
 
 (** from §16 Lemma 16.2: openness inherited when subspace is open **) 
@@ -8536,7 +8536,7 @@ Theorem open_in_subspace_if_ambient_open : forall X Tx Y U:set,
   topology_on X Tx -> Y :e Tx ->
   open_in Y (subspace_topology X Tx Y) U ->
   U :e Tx.
-admit.
+admit. (**  aby  EmptyAx open_in_subspace_iff open_set�f ex13_1_local_open_subset prop_ext_2 . **)
 Qed.
 
 (** from §16 Theorem 16.3: product of subspaces equals subspace of product **) 
@@ -8546,7 +8546,7 @@ Theorem product_subspace_topology : forall X Tx Y Ty A B:set,
   A c= X -> B c= Y ->
   product_topology A (subspace_topology X Tx A) B (subspace_topology Y Ty B) =
   subspace_topology (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
-admit.
+admit. (**  aby  Sep_5FEmpty SepE open_set�f ex13_1_local_open_subset In_5Find In_5Fno2cycle binintersect�f open_in_subspace_iff conj_myprob_8549_1_20251123_230603 binintersectE prop_ext_2 . **)
 Qed.
 
 (** from §16 Example 3: ordered square versus subspace topology **) 
@@ -8560,14 +8560,14 @@ Definition ordered_square_subspace_topology : set :=
 
 Theorem ordered_square_not_subspace_dictionary :
   ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
-admit.
+admit. (**  aby  top_abc_2�f discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
 Qed.
 
 (** from §16 Theorem 16.4: convex subspaces share the order topology **) 
 (** LATEX VERSION: Theorem 16.4: A convex subset Y of an ordered set X inherits the order topology as a subspace topology. **)
 Theorem convex_subspace_order_topology : forall X Y:set,
   order_topology Y = subspace_topology X (order_topology X) Y.
-admit.
+admit. (** ContradictoryAxioms aby  open_in_subspace_iff EmptyAx discrete_open_all top_abc_2�f In_5Fno2cycle . **)
 Qed.
 
 (** from §16 Exercise 1: subspace of subspace inherits same topology **) 
@@ -8576,7 +8576,7 @@ Theorem ex16_1_subspace_transitive : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X -> A c= Y ->
   subspace_topology Y (subspace_topology X Tx Y) A =
   subspace_topology X Tx A.
-admit.
+admit. (**  aby  EmptyAx open_in_subspace_iff discrete_open_all In_5Find prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 2: fineness relation passes to subspaces **) 
@@ -8584,7 +8584,7 @@ Qed.
 Theorem ex16_2_finer_subspaces : forall X T T' Y:set,
   topology_on X T -> topology_on X T' -> T' c= T ->
   subspace_topology X T' Y c= subspace_topology X T Y.
-admit.
+admit. (**  aby  prop_ext_2 open_in_subspace_iff EmptyAx subspace_topology�f conj_myprob_8587_1_20251123_230838 . **)
 Qed.
 
 (** from §16 Exercise 3: openness of specific sets in subspace [-1,1] **) 
@@ -8598,7 +8598,7 @@ Definition interval_E : set := open_interval (Power (Power Empty)) (Power (Power
 Theorem ex16_3_open_sets_subspace : forall X Tx Y:set,
   topology_on X Tx -> Y c= X ->
   forall U:set, open_in Y (subspace_topology X Tx Y) U -> exists V:set, open_in X Tx V /\ U = V :/\: Y.
-admit.
+admit. (**  aby  discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
 Qed.
 
 (** from §16 Exercise 4: projections are open maps **) 
@@ -8612,7 +8612,7 @@ Theorem ex16_4_projections_open : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   forall U:set, U :e product_topology X Tx Y Ty ->
     open_in X Tx (projection_image1 X Y U) /\ open_in Y Ty (projection_image2 X Y U).
-admit.
+admit. (**  aby  EmptyAx open_in_subspace_iff open_set�f ex13_1_local_open_subset prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 5(a): product topology monotonicity **) 
@@ -8621,7 +8621,7 @@ Theorem ex16_5a_product_monotone : forall X T T' Y U U':set,
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
   T c= T' /\ U c= U' ->
   product_topology X T Y U c= product_topology X T' Y U'.
-admit.
+admit. (**  aby  ex13_8b_halfopen_rational_basis_topology open_in_subspace_iff binintersect_Subq_eq_1 binintersect_com ex13_3b_Tinfty_not_topology binintersect_Subq_2 ex13_6_Rl_RK_not_comparable prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 5(b): converse question about product fineness **) 
@@ -8630,7 +8630,7 @@ Theorem ex16_5b_product_converse : forall X T T' Y U U':set,
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
   product_topology X T Y U c= product_topology X T' Y U' ->
   T c= T' /\ U c= U'.
-admit.
+admit. (**  aby  In_5Find open_in_subspace_iff conj_myprob_8633_1_20251123_231034 prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 6: rational rectangles form a basis for ℝ² **) 
