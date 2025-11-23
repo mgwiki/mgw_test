@@ -8903,6 +8903,10 @@ admit.
 Qed.
 
 (** from §30 Definition 30.1: countable basis at a point / first countable **) 
+Definition countable_set : set -> prop := fun A => A c= omega.
+
+Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ countable_set V.
+
 Definition countable_basis_at : set -> set -> set -> prop := fun X Tx x =>
   topology_on X Tx /\
   exists B:set, basis_on X B /\ countable_set B /\
@@ -9001,8 +9005,6 @@ Definition covers : set -> set -> prop :=
   fun X U => forall x:set, x :e X -> exists u:set, u :e U /\ x :e u.
 Definition open_cover : set -> set -> set -> prop :=
   fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
-Definition countable_set : set -> prop := fun A => A c= omega.
-Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ countable_set V.
 Definition Lindelof_space : set -> set -> prop :=
   fun X Tx => topology_on X Tx /\ forall U:set, open_cover X Tx U -> exists V:set, countable_subcollection V U /\ covers X V.
 Definition rational_numbers : set := omega.
