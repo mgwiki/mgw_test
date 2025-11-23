@@ -8559,21 +8559,23 @@ admit.
 Qed.
 
 (** from §22 Definition: quotient map and quotient topology **) 
-Definition quotient_map : set -> set -> set -> prop := fun X Y f =>
+Definition quotient_topology : set -> set -> set -> set -> set :=
+  fun X Tx Y f => {V :e Power Y|{x :e X|apply_fun f x :e V} :e Tx}.
+
+Definition quotient_map : set -> set -> set -> set -> prop := fun X Tx Y f =>
+  topology_on X Tx /\
   function_on f X Y /\
-  forall U:set, (exists V:set, V :e Y /\ U = V) ->
-    ({x :e X|apply_fun f x :e U} :e Power X).
-Definition quotient_topology : set -> set -> set := fun Y f => Empty.
+  (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y).
 
 Theorem quotient_topology_is_topology : forall X Tx Y f:set,
-  topology_on X Tx -> quotient_map X Y f ->
-  topology_on Y (quotient_topology Y f).
+  topology_on X Tx -> quotient_map X Tx Y f ->
+  topology_on Y (quotient_topology X Tx Y f).
 admit.
 Qed.
 
 (** from §22: universal property of quotient maps **) 
 Theorem quotient_universal_property : forall X Tx Y Ty f:set,
-  quotient_map X Y f -> topology_on X Tx -> topology_on Y Ty ->
+  quotient_map X Tx Y f -> topology_on Y Ty ->
   continuous_map X Tx Y Ty f.
 admit.
 Qed.
@@ -8714,7 +8716,7 @@ Qed.
 
 (** from §25: quotient of locally connected space is locally connected **) 
 Theorem quotient_preserves_local_connectedness : forall X Tx Y f:set,
-  quotient_map X Y f -> locally_connected X Tx -> locally_connected Y (quotient_topology Y f).
+  quotient_map X Tx Y f -> locally_connected X Tx -> locally_connected Y (quotient_topology X Tx Y f).
 admit.
 Qed.
 
