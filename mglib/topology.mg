@@ -7358,7 +7358,7 @@ claim proofE : forall U :e generated_topology X B, forall V :e generated_topolog
     claim HxB3 : x :e b3.
     { exact (andEL (x :e b3) (b3 c= b1 :/\: b2) Hb3prop). }
     claim Hb3Sub : b3 c= b1 :/\: b2.
-    { exact (andER (x :e b3) (b3 c= b1 :/\: b2) Hb3prop). }
+  { exact (andER (x :e b3) (b3 c= b1 :/\: b2) Hb3prop). }
     witness b3.
     apply andI.
     - exact Hb3.
@@ -7371,13 +7371,7 @@ claim proofE : forall U :e generated_topology X B, forall V :e generated_topolog
         assume Hyb1 Hyb2.
         apply binintersectI U V y (Hb1Sub y Hyb1) (Hb2Sub y Hyb2). }
   exact (SepI (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) (U :/\: V) HPowCap HCapProp). }
-apply andI.
-- apply andI.
-  * apply andI.
-    { apply andI; exact proofA || exact proofB. }
-    { exact proofC. }
-  * exact proofD.
-- exact proofE.
+exact (andI (andI (andI (andI proofA proofB) proofC) proofD) proofE).
 Qed.
 
 (** from §13: basis elements belong to generated topology **) 
