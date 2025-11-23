@@ -8873,7 +8873,8 @@ admit.
 Qed.
 
 (** from exercises after §29: directed sets **) 
-Definition directed_set : set -> prop := fun J => True.
+Definition directed_set : set -> prop := fun J =>
+  J <> Empty /\ forall i j:set, i :e J -> j :e J -> exists k:set, k :e J.
 
 (** from exercises after §29: examples of directed sets **) 
 Theorem examples_of_directed_sets : forall J:set,
@@ -8888,9 +8889,6 @@ admit.
 Qed.
 
 (** from exercises after §29: nets as functions from directed sets **) 
-Definition directed_set : set -> prop := fun J =>
-  J <> Empty /\ forall i j:set, i :e J -> j :e J -> exists k:set, k :e J.
-
 Definition net_on : set -> prop := fun net =>
   exists J:set, directed_set J /\
     forall i v1 v2:set, UPair i v1 :e net /\ UPair i v2 :e net -> v1 = v2.
