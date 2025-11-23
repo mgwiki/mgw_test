@@ -7248,7 +7248,11 @@ claim proofC : X :e generated_topology X B.
     claim Hexb : exists b :e B, x :e b.
     { exact (HBcov x HxX). }
     apply Hexb.
-    let b. assume HbB Hxb.
+    let b. assume Hbpair.
+    claim HbB : b :e B.
+    { exact (andEL (b :e B) (x :e b) Hbpair). }
+    claim Hxb : x :e b.
+    { exact (andER (b :e B) (x :e b) Hbpair). }
     claim HbsubX : b c= X.
     { exact (PowerE X b (HBsub b HbB)). }
     witness b.
