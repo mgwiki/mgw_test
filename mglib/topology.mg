@@ -8601,6 +8601,13 @@ Theorem metric_epsilon_delta_continuity : forall X dX Y dY f:set,
 admit.
 Qed.
 
+(** sequences as functions from omega **) 
+Definition sequence_in : set -> set -> prop := fun seq A => seq c= A.
+Definition sequence_on : set -> set -> prop := fun seq A => function_on seq omega A.
+Definition converges_to : set -> set -> set -> set -> prop :=
+  fun X Tx seq x => topology_on X Tx /\ sequence_on seq X /\ x :e X.
+Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => y).
+
 (** from §21: uniqueness of limits in metric spaces **) 
 (** helper: function evaluation as graph lookup **) 
 Theorem metric_limits_unique : forall X d seq x y:set,
@@ -9034,13 +9041,13 @@ Definition subnet_of : set -> set -> prop := fun net sub =>
 
 (** from exercises after §29: accumulation point of a net **) 
 Definition accumulation_point_of_net : set -> set -> set -> prop := fun X net x =>
-  net_on net /\ x :e X /\
-  forall U:set, x :e U -> exists i v:set, UPair i v :e net /\ v :e U /\ v <> x.
+  exists J X0:set, directed_set J /\ function_on net J X0 /\ x :e X /\
+    forall U:set, x :e U -> exists i:set, i :e J /\ apply_fun net i :e U /\ apply_fun net i <> x.
 
 (** from exercises after §29: net convergence **) 
 Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
-  topology_on X Tx /\ net_on net /\ x :e X /\
-  forall U:set, U :e Tx -> x :e U -> exists i v:set, UPair i v :e net /\ v :e U.
+  exists J X0:set, topology_on X Tx /\ directed_set J /\ function_on net J X0 /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U -> exists i:set, i :e J /\ apply_fun net i :e U.
 
 (** from exercises after §29: convergence of subnets **) 
 Theorem subnet_preserves_convergence : forall X Tx net sub x:set,
@@ -9081,11 +9088,6 @@ Definition countable_set : set -> prop := fun A => A c= omega.
 
 Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ countable_set V.
 
-Definition sequence_in : set -> set -> prop := fun seq A => seq c= A.
-Definition sequence_on : set -> set -> prop := fun seq A => function_on seq omega A.
-Definition converges_to : set -> set -> set -> set -> prop :=
-  fun X Tx seq x => topology_on X Tx /\ sequence_on seq X /\ x :e X.
-Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => y).
 Definition countable_index_set : set -> prop := fun I => I c= omega.
 Definition countable_product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
 Definition const_family : set -> set -> set := fun I X => {UPair i X|i :e I}.
