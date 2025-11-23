@@ -9161,6 +9161,9 @@ Theorem compact_to_Hausdorff_bijection_homeomorphism : forall X Tx Y Ty f:set,
 admit.
 Qed.
 
+Definition bounded_subset_of_reals : set -> prop := fun A =>
+  exists M:set, M :e R /\ forall x:set, x :e A -> ~(Rlt M (Abs x)).
+
 (** from §26 Theorem 26.7: finite products of compact spaces are compact **) 
 Theorem finite_product_compact : forall X Tx Y Ty:set,
   compact_space X Tx -> compact_space Y Ty ->
