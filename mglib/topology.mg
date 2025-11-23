@@ -9076,7 +9076,7 @@ Definition uncountable_set : set -> prop := fun X => ~ countable_set X.
 Definition well_ordered_set : set -> prop := fun X =>
   exists alpha:set, ordinal alpha /\ equip X alpha.
 Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi =>
-  forall i:set, i :e I -> completely_regular_space (product_component Xi i) (product_component_topology Xi i).
+  forall i:set, i :e I -> topology_on (product_component Xi i) (product_component_topology Xi i).
 (** from §39 Definition: locally finite family and refinement **) 
 Definition refine_of : set -> set -> prop := fun V U =>
   forall v:set, v :e V -> exists u:set, u :e U /\ v c= u.
