@@ -7836,6 +7836,7 @@ claim Hrefines : basis_refines X B' (generated_topology X B).
                    U HU). }
     claim Hexb : exists b :e B, x :e b /\ b c= U.
     { exact (HUprop x HxU). }
+    apply Hexb.
     let b. assume Hbpair.
     claim HbB : b :e B.
     { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
