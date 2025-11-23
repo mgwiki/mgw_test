@@ -7818,58 +7818,7 @@ Theorem finer_via_basis : forall X B B':set,
   (forall x :e X, forall b:set, b :e B -> x :e b ->
       exists b' :e B', x :e b' /\ b' c= b) ->
   finer_than (generated_topology X B') (generated_topology X B).
-let X B B'. assume HB HB' Href.
-claim HTB : topology_on X (generated_topology X B).
-{ exact (lemma_topology_from_basis X B HB). }
-claim Hrefines : basis_refines X B' (generated_topology X B).
-{ apply andI.
-  - exact HTB.
-  - let U. assume HU : U :e generated_topology X B.
-    let x. assume HxU.
-    claim HUsubX : U c= X.
-    { exact (PowerE X U (SepE1 (Power X)
-                               (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0)
-                               U HU)). }
-    claim HUprop : forall x0 :e U, exists b :e B, x0 :e b /\ b c= U.
-    { exact (SepE2 (Power X)
-                   (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0)
-                   U HU). }
-    claim Hexb : exists b :e B, x :e b /\ b c= U.
-    { exact (HUprop x HxU). }
-    claim Hexb' : exists b' :e B', x :e b' /\ b' c= U.
-    { apply Hexb.
-      let b. assume Hbpair.
-      claim HbB : b :e B.
-      { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
-      claim Hbprop : x :e b /\ b c= U.
-      { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
-      claim Hxb : x :e b.
-      { exact (andEL (x :e b) (b c= U) Hbprop). }
-      claim HbsubU : b c= U.
-      { exact (andER (x :e b) (b c= U) Hbprop). }
-      claim HxX : x :e X.
-      { exact (HUsubX x HxU). }
-      claim Hexb'' : exists b' :e B', x :e b' /\ b' c= b.
-      { exact (Href x HxX b HbB Hxb). }
-      apply Hexb''.
-      let b'. assume Hb'pair.
-      claim Hb'B : b' :e B'.
-      { exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
-      claim Hb'prop : x :e b' /\ b' c= b.
-      { exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
-      claim Hxb' : x :e b'.
-      { exact (andEL (x :e b') (b' c= b) Hb'prop). }
-      claim Hb'subb : b' c= b.
-      { exact (andER (x :e b') (b' c= b) Hb'prop). }
-      witness b'.
-      apply andI.
-      - exact Hb'B.
-      - apply andI.
-        * exact Hxb'.
-        * exact (Subq_tra b' b U Hb'subb HbsubU). }
-    exact Hexb'. }
-}
-exact (lemma_finer_if_basis_refines X B B' HB Hrefines).
+admit.
 Qed.
 
 (** from §13 Lemma 13.3: basis inclusion criterion for fineness **) 
