@@ -8983,7 +8983,7 @@ Theorem continuity_equiv_forms : forall X Tx Y Ty f:set,
     (forall x:set, x :e X ->
        forall V:set, V :e Ty -> apply_fun f x :e V ->
          exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V)).
-admit.
+admit. (**  aby  Sep_5FEmpty SepE2 Repl_5FEmpty closed_sets_axioms two_by_nat_not_discrete open_in_subspace_iff binintersect_com binunion_idr binunion_Subq_2 binintersect_Subq_eq_1 prop_ext_2 . **)
 Qed.
 
 (** from §18: identity map is continuous **) 
@@ -8992,7 +8992,7 @@ Theorem identity_continuous : forall X Tx:set,
   topology_on X Tx ->
   let id := {UPair x x|x :e X} in
   continuous_map X Tx X Tx id.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §18: composition of continuous maps is continuous **) 
@@ -9001,7 +9001,7 @@ Theorem composition_continuous : forall X Tx Y Ty Z Tz f g:set,
   continuous_map X Tx Y Ty f ->
   continuous_map Y Ty Z Tz g ->
   continuous_map X Tx Z Tz (Empty).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §18 Theorem 18.2: rules for constructing continuous functions **) 
@@ -9012,7 +9012,7 @@ Theorem continuous_construction_rules : forall X Tx Y Ty Z Tz f g:set,
   continuous_map X Tx Y Ty f /\
   continuous_map X Tx Y Ty g /\
   continuous_map X Tx Y Ty g.
-admit.
+admit. (**  aby  conj_myprob_9015_1_20251124_001920 . **)
 Qed.
 
 (** from §18 Definition: homeomorphism **) 
@@ -9030,14 +9030,14 @@ Theorem continuous_on_subspace : forall X Tx Y Ty f A:set,
   topology_on X Tx -> A c= X ->
   continuous_map X Tx Y Ty f ->
   continuous_map A (subspace_topology X Tx A) Y Ty f.
-admit.
+admit. (**  aby  open_in_subspace_iff EmptyAx discrete_open_all In_5Find In_5Fno2cycle prop_ext_2 . **)
 Qed.
 
 (** from §18: inverse of homeomorphism is continuous **) 
 (** LATEX VERSION: The inverse of a homeomorphism is continuous. **)
 Theorem homeomorphism_inverse_continuous : forall X Tx Y Ty f:set,
   homeomorphism X Tx Y Ty f -> continuous_map Y Ty X Tx f.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §18 Theorem 18.3: pasting lemma **) 
@@ -9048,7 +9048,7 @@ Theorem pasting_lemma : forall X A B Y Tx Ty f g:set,
   continuous_map A (subspace_topology X Tx A) Y Ty f ->
   continuous_map B (subspace_topology X Tx B) Y Ty g ->
   continuous_map (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g).
-admit.
+admit. (**  aby  binunion_idl In_5Fno2cycle binunionI1 binintersect�f conj_myprob_9051_1_20251124_002109 closure_of�f ex17_21_Kuratowski_closure_complement_maximal closure_characterization open_in_subspace_iff binintersectE binintersect_Subq_eq_1 binintersect_com subspace_topology�f prop_ext_2 . **)
 Qed.
 
 (** from §18 Theorem 18.4: maps into products **) 
@@ -9057,7 +9057,7 @@ Theorem maps_into_products : forall A X Tx Y Ty f g:set,
   continuous_map A Tx X Ty f ->
   continuous_map A Tx Y Ty g ->
   continuous_map A Tx (OrderedPair X Y) (product_topology X Ty Y Ty) (f :/\: g).
-admit.
+admit. (**  aby  ex16_9_dictionary_equals_product Sep_5FEmpty SepE Repl_5FEmpty closed_sets_axioms binintersect_com binintersect_Subq_1 Empty_5FSubq_5Feq open_in_subspace_iff ex17_7_counterexample_union_closure prop_ext_2 . **)
 Qed.
 
 (** from §19 Definition: product projections and universal property **) 
@@ -9069,7 +9069,7 @@ Theorem projections_are_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
   continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
-admit.
+admit. (**  aby  binunion_idr Sing_def UPairI2 binunionI2 UPairE In_5Find not_all_ex_demorgan_i closure_characterization Sep_5FEmpty SepE2 Repl_5FEmpty closed_sets_axioms open_in_subspace_iff binintersect_com binunion_Subq_2 binintersect_Subq_eq_1 prop_ext_2 . **)
 Qed.
 
 (** from §19: product topology is coarsest making projections continuous **) 
@@ -9079,7 +9079,7 @@ Theorem product_topology_universal : forall X Tx Y Ty:set,
   exists Tprod:set, topology_on (OrderedPair X Y) Tprod /\
     continuous_map (OrderedPair X Y) Tprod X Tx (projection_map X Y) /\
     continuous_map (OrderedPair X Y) Tprod Y Ty (projection_map Y X).
-admit.
+admit. (**  aby  conj_myprob_9082_1_20251124_002413 product_topology_is_topology projections_are_continuous . **)
 Qed.
 
 (** from §20 Definition: metric and metric topology **) 
