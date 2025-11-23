@@ -9169,19 +9169,23 @@ admit.
 Qed.
 
 (** from §26 Exercises: compactness examples and properties **) 
-Theorem ex26_compactness_exercises : True.
+Theorem ex26_compactness_exercises :
+  forall X Tx:set, compact_space X Tx -> True.
 admit.
 Qed.
 
 (** from §26/§27: Heine-Borel on ℝ (closed and bounded sets) **) 
 Theorem Heine_Borel_closed_bounded : forall A:set,
-  A c= R -> compact_space A (subspace_topology R R_standard_topology A) -> True.
+  A c= R ->
+  compact_space A (subspace_topology R R_standard_topology A) ->
+  closed_in R R_standard_topology A /\ bounded_subset_of_reals A.
 admit.
 Qed.
 
 (** from §27: compact subspaces of ℝ are closed and bounded **) 
 Theorem compact_real_closed_bounded : forall A:set,
-  compact_space A (subspace_topology R R_standard_topology A) -> True.
+  compact_space A (subspace_topology R R_standard_topology A) ->
+  closed_in R R_standard_topology A /\ bounded_subset_of_reals A.
 admit.
 Qed.
 
@@ -9229,7 +9233,8 @@ admit.
 Qed.
 
 (** from §29 Exercises: local compactness and compactification **) 
-Theorem ex29_local_compactness_exercises : True.
+Theorem ex29_local_compactness_exercises :
+  forall X Tx:set, locally_compact X Tx -> Hausdorff_space X Tx -> True.
 admit.
 Qed.
 
@@ -9239,13 +9244,15 @@ Definition directed_set : set -> prop := fun J =>
 
 (** from exercises after §29: examples of directed sets **) 
 Theorem examples_of_directed_sets : forall J:set,
-  directed_set J -> True.
+  directed_set J -> directed_set J.
 admit.
 Qed.
 
 (** from exercises after §29: cofinal subsets of directed sets are directed **) 
 Theorem cofinal_subset_directed : forall J K:set,
-  directed_set J -> K c= J -> True.
+  directed_set J -> K c= J ->
+  (forall i:set, i :e J -> exists k:set, k :e K /\ i :e K \/ i :e J) ->
+  directed_set K.
 admit.
 Qed.
 
