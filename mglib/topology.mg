@@ -8498,6 +8498,7 @@ admit.
 Qed.
 
 (** from §16 Exercise 2: fineness relation passes to subspaces **) 
+(** LATEX VERSION: Exercise 2: If T'⊂T on X, then the induced subspace topology from T' on Y is contained in that from T. **)
 Theorem ex16_2_finer_subspaces : forall X T T' Y:set,
   topology_on X T -> topology_on X T' -> T' c= T ->
   subspace_topology X T' Y c= subspace_topology X T Y.
@@ -8505,6 +8506,7 @@ admit.
 Qed.
 
 (** from §16 Exercise 3: openness of specific sets in subspace [-1,1] **) 
+(** LATEX VERSION: Exercise 3: Determine openness in subspace [-1,1]; formalized as existence of ambient open V with U=V∩Y. **)
 Definition interval_A : set := open_interval Empty (Power Empty).
 Definition interval_B : set := open_interval (Power Empty) (Power (Power Empty)).
 Definition interval_C : set := open_interval Empty Empty.
@@ -8518,6 +8520,7 @@ admit.
 Qed.
 
 (** from §16 Exercise 4: projections are open maps **) 
+(** LATEX VERSION: Exercise 4: Projections from a product are open maps. **)
 Definition projection_image1 : set -> set -> set -> set :=
   fun X Y U => {x :e X | exists y:set, OrderedPair x y :e U}.
 Definition projection_image2 : set -> set -> set -> set :=
@@ -8531,6 +8534,7 @@ admit.
 Qed.
 
 (** from §16 Exercise 5(a): product topology monotonicity **) 
+(** LATEX VERSION: Exercise 5(a): If T⊂T' and U⊂U', then the product topology from T,U is contained in that from T',U'. **)
 Theorem ex16_5a_product_monotone : forall X T T' Y U U':set,
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
   T c= T' /\ U c= U' ->
@@ -8539,6 +8543,7 @@ admit.
 Qed.
 
 (** from §16 Exercise 5(b): converse question about product fineness **) 
+(** LATEX VERSION: Exercise 5(b): If product topology from T,U is contained in that from T',U', then T⊂T' and U⊂U'. **)
 Theorem ex16_5b_product_converse : forall X T T' Y U U':set,
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
   product_topology X T Y U c= product_topology X T' Y U' ->
@@ -8547,6 +8552,7 @@ admit.
 Qed.
 
 (** from §16 Exercise 6: rational rectangles form a basis for ℝ² **) 
+(** LATEX VERSION: Exercise 6: Rational rectangles form a basis generating the standard topology on ℝ². **)
 Definition rational_rectangle_basis : set :=
   {r :e Power (OrderedPair R R) |
      exists a b c d:set,
@@ -8561,12 +8567,14 @@ admit.
 Qed.
 
 (** helper: convex subset placeholder **) 
+(** LATEX VERSION: Exercise 7: a convex subset A⊂ℝ contains with any x,y∈A the interval between them. **)
 Definition convex_subset : set -> prop := fun A =>
   A c= R /\
   forall x y:set, x :e A -> y :e A ->
     open_interval x y c= A.
 
 (** from §16 Exercise 7: convex subset implies interval or ray? **) 
+(** LATEX VERSION: Exercise 7: A convex subset of ℝ is either empty, all of ℝ, an open interval, or an open ray. **)
 Theorem ex16_7_convex_interval_or_ray : forall A:set,
   convex_subset A ->
     (A = Empty \/ A = R \/
@@ -8577,6 +8585,7 @@ admit.
 Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
+(** LATEX VERSION: Exercise 8: The diagonal line in ℝ×ℝ with the lower limit product topology is homeomorphic to ℝ with lower limit topology. **)
 Theorem ex16_8_lines_in_lower_limit_products :
   exists L:set, L c= OrderedPair R R /\
     L = {OrderedPair x x|x :e R} /\
@@ -8586,12 +8595,14 @@ admit.
 Qed.
 
 (** from §16 Exercise 9: dictionary order topology on ℝ×ℝ equals ℝ_d × ℝ **) 
+(** LATEX VERSION: Exercise 9: The dictionary order topology on ℝ×ℝ differs from the product topology ℝ_d×ℝ. **)
 Theorem ex16_9_dictionary_equals_product :
   R2_dictionary_order_topology <> product_topology R R_standard_topology R R_standard_topology.
 admit.
 Qed.
 
 (** from §16 Exercise 10: compare topologies on I×I **) 
+(** LATEX VERSION: Exercise 10: Compare ordered square topology, dictionary subspace topology, and product topology on I×I. **)
 Theorem ex16_10_compare_topologies_on_square :
   ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square /\
   subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square <>
@@ -8600,12 +8611,14 @@ admit.
 Qed.
 
 (** from §17 Definition: interior and closure of a set **) 
+(** LATEX VERSION: Interior of A is union of opens inside A; closure of A consists of points whose every open neighborhood meets A. **)
 Definition interior_of : set -> set -> set -> set := fun X T A =>
   {x :e X | exists U:set, U :e T /\ x :e U /\ U c= A}.
 Definition closure_of : set -> set -> set -> set := fun X T A =>
   {x :e X | forall U:set, U :e T -> x :e U -> U :/\: A <> Empty}.
 
 (** from §17 Theorem 17.1: properties of closed sets **) 
+(** LATEX VERSION: Theorem 17.1: Closed sets contain X and ∅, are closed under arbitrary intersections and finite unions. **)
 Theorem closed_sets_axioms : forall X T:set,
   topology_on X T ->
   let C := {X :\: U|U :e T} in
@@ -8616,6 +8629,7 @@ admit.
 Qed.
 
 (** from §17 Theorem 17.2: closed sets in subspaces as intersections **) 
+(** LATEX VERSION: Closed sets in a subspace are precisely intersections of the subspace with closed sets of the ambient space. **)
 Theorem closed_in_subspace_iff_intersection : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X ->
   (closed_in Y (subspace_topology X Tx Y) A <->
@@ -8624,6 +8638,7 @@ admit.
 Qed.
 
 (** from §17 Theorem 17.3: closedness passes up when subspace is closed **) 
+(** LATEX VERSION: If Y is closed in X, a set closed in the subspace Y is closed in X. **)
 Theorem closed_in_closed_subspace : forall X Tx Y A:set,
   topology_on X Tx -> closed_in X Tx Y ->
   closed_in Y (subspace_topology X Tx Y) A ->
@@ -8632,6 +8647,7 @@ admit.
 Qed.
 
 (** from §17 Theorem 17.4: closure in subspace equals intersection **) 
+(** LATEX VERSION: Closure in a subspace equals the ambient closure intersected with the subspace. **)
 Theorem closure_in_subspace : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X ->
   closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
@@ -8639,6 +8655,7 @@ admit.
 Qed.
 
 (** from §17 Theorem 17.5: closure via neighborhoods/basis **) 
+(** LATEX VERSION: Characterization of closure: x is in closure of A iff every open neighborhood of x meets A. **)
 Theorem closure_characterization : forall X Tx A x:set,
   topology_on X Tx ->
   (x :e closure_of X Tx A <-> (forall U :e Tx, x :e U -> U :/\: A <> Empty)).
