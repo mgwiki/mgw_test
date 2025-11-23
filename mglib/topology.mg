@@ -9011,10 +9011,6 @@ Definition converges_to : set -> set -> set -> set -> prop :=
 Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => y).
 Definition countable_index_set : set -> prop := fun I => I c= omega.
 Definition countable_product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
-Definition countable_product_space : set -> set -> set := fun I Xi =>
-  product_space I Xi.
-Definition countable_product_topology : set -> set -> set := fun I Xi =>
-  product_topology_full I Xi.
 Definition euclidean_space : set -> set := fun n => n.
 Definition euclidean_topology : set -> set := fun n => n.
 Definition real_sequences : set := Power R.
@@ -9134,6 +9130,11 @@ Definition product_space : set -> set -> set := fun I Xi =>
 Definition product_topology_full : set -> set -> set := fun I Xi =>
   generated_topology (product_space I Xi) Empty.
 Definition box_topology : set -> set -> set := fun I Xi =>
+  product_topology_full I Xi.
+
+Definition countable_product_space : set -> set -> set := fun I Xi =>
+  product_space I Xi.
+Definition countable_product_topology : set -> set -> set := fun I Xi =>
   product_topology_full I Xi.
 Definition uncountable_set : set -> prop := fun X => ~ countable_set X.
 Definition well_ordered_set : set -> prop := fun X =>
