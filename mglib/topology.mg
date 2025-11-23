@@ -7225,19 +7225,18 @@ Theorem lemma_topology_from_basis : forall X B:set,
   basis_on X B ->
   topology_on X (generated_topology X B).
 let X B. assume HBasis.
-claim HBsub : B c= Power X.
-{ exact (andEL (B c= Power X) ((forall x :e X, exists b :e B, x :e b) /\ (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2))
+claim HBleft : B c= Power X /\ (forall x :e X, exists b :e B, x :e b).
+{ exact (andEL (B c= Power X /\ (forall x :e X, exists b :e B, x :e b))
+               (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)
                HBasis). }
-claim HBpair : (forall x :e X, exists b :e B, x :e b) /\ (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2).
-{ exact (andER (B c= Power X) ((forall x :e X, exists b :e B, x :e b) /\ (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)) HBasis). }
-claim HBcov : forall x :e X, exists b :e B, x :e b.
-{ exact (andEL (forall x :e X, exists b :e B, x :e b)
-               (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)
-               HBpair). }
 claim HBint : forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2.
-{ exact (andER (forall x :e X, exists b :e B, x :e b)
+{ exact (andER (B c= Power X /\ (forall x :e X, exists b :e B, x :e b))
                (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)
-               HBpair). }
+               HBasis). }
+claim HBsub : B c= Power X.
+{ exact (andEL (B c= Power X) (forall x :e X, exists b :e B, x :e b) HBleft). }
+claim HBcov : forall x :e X, exists b :e B, x :e b.
+{ exact (andER (B c= Power X) (forall x :e X, exists b :e B, x :e b) HBleft). }
 prove generated_topology X B c= Power X
 /\ Empty :e generated_topology X B
 /\ X :e generated_topology X B
