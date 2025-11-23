@@ -7552,11 +7552,6 @@ Qed.
 (** from §23 Exercise: connected open subsets of locally path connected spaces are path connected **) 
 Theorem ex23_connected_open_sets_path_connected : forall X Tx U:set,
   locally_path_connected X Tx -> open_in X Tx U -> connected_space U (subspace_topology X Tx U) -> path_connected_space U (subspace_topology X Tx U).
-let X Tx U.
-assume Hloc:locally_path_connected X Tx.
-assume Hop:open_in X Tx U.
-assume Hconn:connected_space U (subspace_topology X Tx U).
-(* outline: use that components are open = path components, then connectedness forces single component *)
 admit.
 Qed.
 
