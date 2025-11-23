@@ -9334,168 +9334,168 @@ admit.
 Qed.
 
 (** from §30 Exercise 1: G_delta points in first-countable T1 **) 
-Parameter ex30_1_Gdelta_points : Prop.
+Parameter ex30_1_Gdelta_points : set.
 (** from §30 Exercise 2: countable basis sub-basis selection **) 
-Parameter ex30_2_basis_contains_countable : Prop.
+Parameter ex30_2_basis_contains_countable : set.
 (** from §30 Exercise 3: uncountably many limit points in countable basis space **) 
-Parameter ex30_3_uncountably_many_limit_points : Prop.
+Parameter ex30_3_uncountably_many_limit_points : set.
 (** from §30 Exercise 4: compact metrizable implies second countable **) 
-Parameter ex30_4_compact_metrizable_second_countable : Prop.
+Parameter ex30_4_compact_metrizable_second_countable : set.
 (** from §30 Exercise 5: metrizable countable dense or Lindelof imply second countable **) 
-Parameter ex30_5_metrizable_density_Lindelof_imply_second_countable : Prop.
+Parameter ex30_5_metrizable_density_Lindelof_imply_second_countable : set.
 (** from §30 Exercise 6: R_l and ordered square not metrizable **) 
-Parameter ex30_6_Sorgenfrey_and_ordered_square_not_metrizable : Prop.
+Parameter ex30_6_Sorgenfrey_and_ordered_square_not_metrizable : set.
 (** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **) 
-Parameter ex30_7_SOmega_countability_axioms : Prop.
+Parameter ex30_7_SOmega_countability_axioms : set.
 (** from §30 Exercise 8: countability axioms for Romega uniform topology **) 
-Parameter ex30_8_Romega_uniform_countability : Prop.
+Parameter ex30_8_Romega_uniform_countability : set.
 (** from §30 Exercise 9: closed subspace of Lindelof is Lindelof; dense subset need not be **) 
-Parameter ex30_9_closed_Lindelof_and_dense_subsets : Prop.
+Parameter ex30_9_closed_Lindelof_and_dense_subsets : set.
 (** from §30 Exercise 10: product with countable dense subsets has countable dense subset **) 
-Parameter ex30_10_product_countable_dense : Prop.
+Parameter ex30_10_product_countable_dense : set.
 (** from §30 Exercise 11: images of Lindelof or countable dense under continuous map **) 
-Parameter ex30_11_image_preserves_Lindelof_or_dense : Prop.
+Parameter ex30_11_image_preserves_Lindelof_or_dense : set.
 (** from §30 Exercise 12: continuous open maps preserve countability axioms **) 
-Parameter ex30_12_open_map_preserves_countability_axioms : Prop.
+Parameter ex30_12_open_map_preserves_countability_axioms : set.
 (** from §30 Exercise 13: disjoint open sets countable when dense countable **) 
-Parameter ex30_13_disjoint_open_sets_countable : Prop.
+Parameter ex30_13_disjoint_open_sets_countable : set.
 (** from §30 Exercise 14: product of Lindelof with compact is Lindelof **) 
-Parameter ex30_14_product_Lindelof_compact : Prop.
+Parameter ex30_14_product_Lindelof_compact : set.
 (** from §30 Exercise 15: C(I,R) uniform topology countable dense subset **) 
-Parameter ex30_15_CI_has_countable_dense_uniform : Prop.
+Parameter ex30_15_CI_has_countable_dense_uniform : set.
 (** from §30 Exercise 16: product R^I dense subsets cardinalities **) 
-Parameter ex30_16_product_RI_dense_subset_cardinality : Prop.
+Parameter ex30_16_product_RI_dense_subset_cardinality : set.
 (** from §30 Exercise *17: Romega box topology countability axioms **) 
-Parameter ex30_17_star_Romega_box_countability : Prop.
+Parameter ex30_17_star_Romega_box_countability : set.
 (** from §30 Exercise *18: first-countable topological group with dense/Lindelof implies countable basis **) 
-Parameter ex30_18_star_first_countable_group_countable_basis : Prop.
+Parameter ex30_18_star_first_countable_group_countable_basis : set.
 
 (** from §31 Exercise 1: regular implies disjoint closures of neighborhoods **) 
-Parameter ex31_1_regular_disjoint_closure_neighborhoods : Prop.
+Parameter ex31_1_regular_disjoint_closure_neighborhoods : set.
 (** from §31 Exercise 2: normal implies disjoint closures for closed sets **) 
-Parameter ex31_2_normal_disjoint_closure_neighborhoods : Prop.
+Parameter ex31_2_normal_disjoint_closure_neighborhoods : set.
 (** from §31 Exercise 3: every order topology regular **) 
-Parameter ex31_3_order_topology_regular : Prop.
+Parameter ex31_3_order_topology_regular : set.
 (** from §31 Exercise 4: comparing finer/coarser separation axioms **) 
-Parameter ex31_4_comparison_topologies_separation : Prop.
+Parameter ex31_4_comparison_topologies_separation : set.
 (** from §31 Exercise 5: equalizer of continuous maps into Hausdorff is closed **) 
-Parameter ex31_5_equalizer_closed_in_Hausdorff : Prop.
+Parameter ex31_5_equalizer_closed_in_Hausdorff : set.
 (** from §31 Exercise 6: closed continuous surjection preserves normal **) 
-Parameter ex31_6_closed_map_preserves_normal : Prop.
+Parameter ex31_6_closed_map_preserves_normal : set.
 (** from §31 Exercise 7: perfect map preserves separation/countability/local compactness **) 
-Parameter ex31_7_perfect_map_properties : Prop.
+Parameter ex31_7_perfect_map_properties : set.
 (** from §31 Exercise 8: orbit space of compact group action preserves properties **) 
-Parameter ex31_8_orbit_space_properties : Prop.
+Parameter ex31_8_orbit_space_properties : set.
 (** from §31 Exercise *9: Sorgenfrey plane rational/irrational diagonal non-separation **) 
-Parameter ex31_9_star_Sorgenfrey_plane_no_separation : Prop.
+Parameter ex31_9_star_Sorgenfrey_plane_no_separation : set.
 
 (** from §32 Exercise 1: closed subspace of normal is normal **) 
-Parameter ex32_1_closed_subspace_normal : Prop.
+Parameter ex32_1_closed_subspace_normal : set.
 (** from §32 Exercise 2: factor spaces of products inherit separation **) 
-Parameter ex32_2_factors_inherit_separation : Prop.
+Parameter ex32_2_factors_inherit_separation : set.
 (** from §32 Exercise 3: locally compact Hausdorff implies regular **) 
-Parameter ex32_3_locally_compact_Hausdorff_regular : Prop.
+Parameter ex32_3_locally_compact_Hausdorff_regular : set.
 (** from §32 Exercise 4: regular Lindelof implies normal **) 
-Parameter ex32_4_regular_Lindelof_normal : Prop.
+Parameter ex32_4_regular_Lindelof_normal : set.
 (** from §32 Exercise 5: normality questions for Romega product topologies **) 
-Parameter ex32_5_Romega_normality_questions : Prop.
+Parameter ex32_5_Romega_normality_questions : set.
 (** from §32 Exercise 6: completely normal characterization via separated sets **) 
-Parameter ex32_6_completely_normal_characterization : Prop.
+Parameter ex32_6_completely_normal_characterization : set.
 (** from §32 Exercise 7: completely normal examples **) 
-Parameter ex32_7_completely_normal_examples : Prop.
+Parameter ex32_7_completely_normal_examples : set.
 (** from §32 Exercise *8: linear continuum normal **) 
-Parameter ex32_8_star_linear_continuum_normal : Prop.
+Parameter ex32_8_star_linear_continuum_normal : set.
 (** from §32 Exercise *9: uncountable product of R not normal **) 
-Parameter ex32_9_star_uncountable_product_not_normal : Prop.
+Parameter ex32_9_star_uncountable_product_not_normal : set.
 
 (** from §33 Exercise 1: expression for level sets in Urysohn proof **) 
-Parameter ex33_1_level_sets_urysohn : Prop.
+Parameter ex33_1_level_sets_urysohn : set.
 (** from §33 Exercise 2: connected normal/regular uncountable **) 
-Parameter ex33_2_connected_normal_regular_uncountable : Prop.
+Parameter ex33_2_connected_normal_regular_uncountable : set.
 (** from §33 Exercise 3: direct Urysohn proof in metric space **) 
-Parameter ex33_3_urysohn_metric_direct : Prop.
+Parameter ex33_3_urysohn_metric_direct : set.
 (** from §33 Exercise 4: closed G_delta sets and vanishing functions **) 
-Parameter ex33_4_closed_Gdelta_vanishing_function : Prop.
+Parameter ex33_4_closed_Gdelta_vanishing_function : set.
 (** from §33 Exercise 5: strong Urysohn lemma **) 
-Parameter ex33_5_strong_urysohn : Prop.
+Parameter ex33_5_strong_urysohn : set.
 (** from §33 Exercise 6: perfect normality implications **) 
-Parameter ex33_6_perfect_normality : Prop.
+Parameter ex33_6_perfect_normality : set.
 (** from §33 Exercise 7: locally compact Hausdorff completely regular **) 
-Parameter ex33_7_locally_compact_Hausdorff_completely_regular : Prop.
+Parameter ex33_7_locally_compact_Hausdorff_completely_regular : set.
 (** from §33 Exercise 8: continuous separation when A compact **) 
-Parameter ex33_8_compact_subset_continuous_separation : Prop.
+Parameter ex33_8_compact_subset_continuous_separation : set.
 (** from §33 Exercise 9: Romega box topology completely regular **) 
-Parameter ex33_9_Romega_box_completely_regular : Prop.
+Parameter ex33_9_Romega_box_completely_regular : set.
 (** from §33 Exercise *10: topological group completely regular **) 
-Parameter ex33_10_star_topological_group_completely_regular : Prop.
+Parameter ex33_10_star_topological_group_completely_regular : set.
 (** from §33 Exercise *11: regular not completely regular example **) 
-Parameter ex33_11_star_regular_not_completely_regular : Prop.
+Parameter ex33_11_star_regular_not_completely_regular : set.
 
 (** from §34 Exercise 1: Hausdorff with countable basis need not be metrizable **) 
-Parameter ex34_1_Hausdorff_countable_basis_not_metrizable_example : Prop.
+Parameter ex34_1_Hausdorff_countable_basis_not_metrizable_example : set.
 (** from §34 Exercise 2: completely normal etc. not metrizable example **) 
-Parameter ex34_2_completely_normal_not_metrizable_example : Prop.
+Parameter ex34_2_completely_normal_not_metrizable_example : set.
 (** from §34 Exercise 3: compact Hausdorff metrizable iff countable basis **) 
-Parameter ex34_3_compact_Hausdorff_metrizable_iff_second_countable : Prop.
+Parameter ex34_3_compact_Hausdorff_metrizable_iff_second_countable : set.
 (** from §34 Exercise 4: locally compact Hausdorff and countable basis vs metrizable **) 
-Parameter ex34_4_locally_compact_Hausdorff_metrizable_questions : Prop.
+Parameter ex34_4_locally_compact_Hausdorff_metrizable_questions : set.
 (** from §34 Exercise 5: one-point compactification metrizable vs base **) 
-Parameter ex34_5_one_point_compactification_metrizable_questions : Prop.
+Parameter ex34_5_one_point_compactification_metrizable_questions : set.
 (** from §34 Exercise 6: details of imbedding theorem proof **) 
-Parameter ex34_6_check_imbedding_proof : Prop.
+Parameter ex34_6_check_imbedding_proof : set.
 (** from §34 Exercise 7: locally metrizable compact Hausdorff implies metrizable **) 
-Parameter ex34_7_locally_metrizable_compact_Hausdorff_metrizable : Prop.
+Parameter ex34_7_locally_metrizable_compact_Hausdorff_metrizable : set.
 (** from §34 Exercise 8: regular Lindelof locally metrizable implies metrizable **) 
-Parameter ex34_8_regular_Lindelof_locally_metrizable_metrizable : Prop.
+Parameter ex34_8_regular_Lindelof_locally_metrizable_metrizable : set.
 (** from §34 Exercise 9: compact Hausdorff union of two metrizable closed sets is metrizable **) 
-Parameter ex34_9_compact_union_two_metrizable_closed_metrizable : Prop.
+Parameter ex34_9_compact_union_two_metrizable_closed_metrizable : set.
 
 (** from §35 Exercise 1: Tietze implies Urysohn lemma **) 
-Parameter ex35_1_Tietze_implies_Urysohn : Prop.
+Parameter ex35_1_Tietze_implies_Urysohn : set.
 (** from §35 Exercise 2: interval partition parameter in Tietze proof **) 
-Parameter ex35_2_interval_partition_parameter : Prop.
+Parameter ex35_2_interval_partition_parameter : set.
 (** from §35 Exercise 3: boundedness equivalences in metrizable spaces **) 
-Parameter ex35_3_boundedness_equivalences_metrizable : Prop.
+Parameter ex35_3_boundedness_equivalences_metrizable : set.
 (** from §35 Exercise 4: retract properties **) 
-Parameter ex35_4_retract_properties : Prop.
+Parameter ex35_4_retract_properties : set.
 (** from §35 Exercise 5: universal extension property and retracts **) 
-Parameter ex35_5_universal_extension_retracts : Prop.
+Parameter ex35_5_universal_extension_retracts : set.
 (** from §35 Exercise 6: absolute retract equivalence **) 
-Parameter ex35_6_absolute_retract_universal_extension : Prop.
+Parameter ex35_6_absolute_retract_universal_extension : set.
 (** from §35 Exercise 7: retract examples spiral/knotted axis **) 
-Parameter ex35_7_retract_examples : Prop.
+Parameter ex35_7_retract_examples : set.
 (** from §35 Exercise *8: absolute retract iff universal extension **) 
-Parameter ex35_8_star_absolute_retract_equivalence : Prop.
+Parameter ex35_8_star_absolute_retract_equivalence : set.
 (** from §35 Exercise 9: coherent topology preserves normality **) 
-Parameter ex35_9_coherent_topology_normal : Prop.
+Parameter ex35_9_coherent_topology_normal : set.
 
 (** from §36 Exercises: manifolds and partitions of unity (placeholder) **) 
-Parameter ex36_manifold_embedding_exercises : Prop.
+Parameter ex36_manifold_embedding_exercises : set.
 (** from §37 Exercises: Tychonoff theorem applications (placeholder) **) 
-Parameter ex37_tychonoff_exercises : Prop.
+Parameter ex37_tychonoff_exercises : set.
 (** from §38 Exercises: Stone-Cech compactification (placeholder) **) 
-Parameter ex38_stone_cech_exercises : Prop.
+Parameter ex38_stone_cech_exercises : set.
 (** from §39 Exercises: local finiteness (placeholder) **) 
-Parameter ex39_local_finiteness_exercises : Prop.
+Parameter ex39_local_finiteness_exercises : set.
 (** from §40 Exercises: Nagata-Smirnov metrization (placeholder) **) 
-Parameter ex40_nagata_smirnov_exercises : Prop.
+Parameter ex40_nagata_smirnov_exercises : set.
 (** from §41 Exercises: paracompactness (placeholder) **) 
-Parameter ex41_paracompactness_exercises : Prop.
+Parameter ex41_paracompactness_exercises : set.
 (** from §42 Exercises: Smirnov metrization (placeholder) **) 
-Parameter ex42_smirnov_exercises : Prop.
+Parameter ex42_smirnov_exercises : set.
 (** from §43 Exercises: complete metric spaces (placeholder) **) 
-Parameter ex43_complete_metric_exercises : Prop.
+Parameter ex43_complete_metric_exercises : set.
 (** from §44 Exercises: space-filling curve (placeholder) **) 
-Parameter ex44_space_filling_exercises : Prop.
+Parameter ex44_space_filling_exercises : set.
 (** from §45 Exercises: compactness in metric spaces (placeholder) **) 
-Parameter ex45_compact_metric_exercises : Prop.
+Parameter ex45_compact_metric_exercises : set.
 (** from §46 Exercises: pointwise/compact convergence (placeholder) **) 
-Parameter ex46_convergence_exercises : Prop.
+Parameter ex46_convergence_exercises : set.
 (** from §47 Exercises: Ascoli theorem (placeholder) **) 
-Parameter ex47_ascoli_exercises : Prop.
+Parameter ex47_ascoli_exercises : set.
 (** from §48 Exercises: Baire spaces (placeholder) **) 
-Parameter ex48_baire_exercises : Prop.
+Parameter ex48_baire_exercises : set.
 (** from §49 Exercises: nowhere-differentiable function (placeholder) **) 
-Parameter ex49_nowhere_differentiable_exercises : Prop.
+Parameter ex49_nowhere_differentiable_exercises : set.
 (** from §50 Exercises: dimension theory introduction (placeholder) **) 
-Parameter ex50_dimension_exercises : Prop.
+Parameter ex50_dimension_exercises : set.
