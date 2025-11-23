@@ -7439,7 +7439,7 @@ admit.
 Qed.
 
 (** from exercises after §29: nets as functions from directed sets **) 
-Definition net_on : set -> set -> set -> prop := fun X J f => directed_set J.
+Definition net_on : set -> prop := fun net => True.
 
 (** from exercises after §29: subnet definition placeholder **) 
 Definition subnet_of : set -> set -> prop := fun net sub => True.
@@ -7459,7 +7459,7 @@ Qed.
 (** from exercises after §29: closure via nets **) 
 Theorem closure_via_nets : forall X Tx A x:set,
   topology_on X Tx ->
-  (x :e closure_of X Tx A <-> exists net:set, net_on A net /\ net_converges X Tx net x).
+  (x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x).
 admit.
 Qed.
 
@@ -7467,7 +7467,7 @@ Qed.
 Theorem continuity_via_nets : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f <->
-    forall net:set, net_on X net -> forall x:set, net_converges X Tx net x -> net_converges Y Ty net (Empty)).
+    forall net:set, net_on net -> forall x:set, net_converges X Tx net x -> net_converges Y Ty net (Empty)).
 admit.
 Qed.
 
@@ -7480,6 +7480,6 @@ Qed.
 (** from exercises after §29: compactness via nets **) 
 Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
   topology_on X Tx ->
-  (compact_space X Tx <-> forall net:set, net_on X net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
+  (compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
 admit.
 Qed.
