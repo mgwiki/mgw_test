@@ -7794,7 +7794,10 @@ Qed.
 Theorem union_of_basis_equals_open :
   forall X B:set, basis_on X B ->
   generated_topology X B = {Union Fam|Fam :e Power B}.
-Proof. let X B. assume HB. admit. Qed.
+Proof.
+let X B. assume HB.
+admit.
+Qed.
 
 (** from §13 Example 3: singleton basis **) 
 Definition singleton_basis : set -> set := fun X => {{x}|x :e X}.
