@@ -6633,17 +6633,47 @@ Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
 
 (** from §12: symmetry of topology equality **)
 Theorem topology_eq_sym : forall X T1 T2:set, topology_eq X T1 T2 -> topology_eq X T2 T1.
-admit.
+let X T1 T2.
+assume H.
+apply H.
+assume H12.
+apply H12.
+assume HT1 HT2 H12eq.
+prove topology_on X T2 /\ topology_on X T1 /\ T2 = T1.
+apply andI.
+- exact HT2.
+- apply andI.
+  + exact HT1.
+  + rewrite H12eq. reflexivity.
 Qed.
 
 (** from §12: transitivity of topology equality **)
 Theorem topology_eq_trans : forall X T1 T2 T3:set, topology_eq X T1 T2 -> topology_eq X T2 T3 -> topology_eq X T1 T3.
-admit.
+let X T1 T2 T3.
+assume H12 H23.
+apply H12.
+assume H12a.
+apply H23.
+assume H23a.
+assume HT1 HT2 H12eq.
+assume _ HT3 H23eq.
+prove topology_on X T1 /\ topology_on X T3 /\ T1 = T3.
+apply andI.
+- exact HT1.
+- apply andI.
+  + exact HT3.
+  + rewrite H12eq. rewrite H23eq. reflexivity.
 Qed.
 
 (** from §12: reflexivity of topology equality **)
 Theorem topology_eq_refl : forall X T:set, topology_on X T -> topology_eq X T T.
-admit.
+let X T. assume HT.
+prove topology_on X T /\ topology_on X T /\ T = T.
+apply andI.
+- exact HT.
+- apply andI.
+  + exact HT.
+  + reflexivity.
 Qed.
 
 (** from §12: strict fineness/coarseness **)
@@ -6661,30 +6691,55 @@ Definition finer_than_topology : set -> set -> set -> prop := fun X T' T =>
 
 (** from §12: finer/coarser equivalence **)
 Theorem finer_than_def : forall T T':set, finer_than T' T <-> coarser_than T T'.
-admit.
+let T T'. apply iffI; intro H; exact H.
 Qed.
 
 (** from §12: discrete topology is the finest **)
 Theorem discrete_topology_finest : forall X T:set,
   topology_on X T -> finer_than (discrete_topology X) T.
-admit.
+let X T. assume HT.
+(* Extract the first conjunct T c= Power X from the topology axiom. *)
+set H1 := andEL (((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT.
+set H2 := andEL ((T c= Power X) /\ Empty :e T /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1.
+set H3 := andEL ((T c= Power X) /\ Empty :e T) (X :e T) H2.
+set Hsub := andEL (T c= Power X) (Empty :e T) H3.
+exact Hsub.
 Qed.
 
 (** from §12: indiscrete topology is the coarsest **)
 Theorem indiscrete_topology_coarsest : forall X T:set,
   topology_on X T -> coarser_than (indiscrete_topology X) T.
-admit.
+let X T. assume HT.
+  prove {Empty, X} c= T.
+  let U. assume HU: U :e {Empty, X}.
+  apply UPairE Empty X U HU.
+  (* Extract Empty and X belonging to T from topology axioms. *)
+  set H1 := andEL (((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT.
+  set H2 := andEL ((T c= Power X) /\ Empty :e T /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1.
+  set H3 := andEL ((T c= Power X) /\ Empty :e T) (X :e T) H2.
+  set Hempty := andER (T c= Power X) (Empty :e T) (andEL (T c= Power X) (Empty :e T) H3).
+  set Hfull := andER ((T c= Power X) /\ Empty :e T) (X :e T) H2.
+  - intro HUeq. rewrite HUeq. exact Hempty.
+  - intro HUeq. rewrite HUeq. exact Hfull.
 Qed.
 
 (** from §12: every subset is open in discrete topology **)
 Theorem discrete_open_all : forall X U:set, U :e discrete_topology X.
-admit.
+let X U. apply PowerI. exact (Subq_ref _).
 Qed.
 
 (** from §12: opens in indiscrete topology are Empty or X **)
 Theorem indiscrete_open_iff : forall X U:set,
   U :e indiscrete_topology X <-> (U = Empty \/ U = X).
-admit.
+let X U.
+apply iffI.
+- intro HU. apply UPairE Empty X U HU.
+  + intro H. apply orIL. exact H.
+  + intro H. apply orIR. exact H.
+- intro H.
+  apply orE (U = Empty) (U = X) H.
+  * intro HUeq. rewrite HUeq. apply UPairI1.
+  * intro HUeq. rewrite HUeq. apply UPairI2.
 Qed.
 
 (** from §12 Example 3: finite complement openness criterion **)
