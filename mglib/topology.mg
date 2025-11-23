@@ -9674,13 +9674,13 @@ Definition complete_metric_space : set -> set -> prop := fun X d =>
   forall seq:set, seq c= X -> cauchy_sequence X d seq ->
     exists x:set, converges_to X (metric_topology X d) seq x.
 
+Definition discrete_metric : set -> set := fun X =>
+  {OrderedPair (OrderedPair x y) 0 | x :e X /\ y :e X /\ x = y} :\/:
+  {OrderedPair (OrderedPair x y) 1 | x :e X /\ y :e X /\ x <> y}.
 (** helper: placeholder metric on euclidean_space n **) 
 Definition euclidean_metric : set -> set := fun n => discrete_metric (euclidean_space n).
 
 (** helper: bounded product metric on R^omega **) 
-Definition discrete_metric : set -> set := fun X =>
-  {OrderedPair (OrderedPair x y) 0 | x :e X /\ y :e X /\ x = y} :\/:
-  {OrderedPair (OrderedPair x y) 1 | x :e X /\ y :e X /\ x <> y}.
 Definition bounded_product_metric : set -> set := fun J => discrete_metric (power_real J).
 
 (** from §43 Lemma 43.1: Cauchy with convergent subsequence converges **) 
