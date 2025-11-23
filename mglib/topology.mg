@@ -7535,6 +7535,7 @@ claim HUGen : U :e generated_topology X B.
     exact (HbSubX x Hxb). }
   apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) U.
   * rewrite <- HUnionEq.
+    apply PowerI X (Union Fam).
     exact HUnionSubX.
   * rewrite <- HUnionEq.
     let x. assume HxUnion.
