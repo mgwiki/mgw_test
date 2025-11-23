@@ -7767,8 +7767,8 @@ Theorem basis_finer_equiv_condition : forall X B B':set,
   basis_on X B -> basis_on X B' ->
   ((forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
    finer_than (generated_topology X B') (generated_topology X B)).
-let X B B'. assume HB. assume HB'.
 Proof.
+let X B B'. assume HB. assume HB'.
 admit.
 Qed.
 
