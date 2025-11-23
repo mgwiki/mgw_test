@@ -10351,3 +10351,5 @@ Definition ex50_dimension_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx n:set,
       p = OrderedPair (OrderedPair X Tx) n /\ topology_on X Tx /\ ordinal n}.
+Definition bounded_subset_of_reals : set -> prop := fun A =>
+  exists M:set, M :e R /\ forall x:set, x :e A -> ~(Rlt M (Abs x)).
