@@ -9149,6 +9149,10 @@ admit.
 Qed.
 
 (** from §26 Theorem 26.6: compact-to-Hausdorff bijection is a homeomorphism **) 
+Definition bijection : set -> set -> set -> prop := fun X Y f =>
+  function_on f X Y /\
+  (forall y:set, y :e Y -> exists! x:set, x :e X /\ apply_fun f x = y).
+
 Theorem compact_to_Hausdorff_bijection_homeomorphism : forall X Tx Y Ty f:set,
   compact_space X Tx -> Hausdorff_space Y Ty ->
   continuous_map X Tx Y Ty f -> bijection X Y f ->
