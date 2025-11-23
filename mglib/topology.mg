@@ -7527,8 +7527,12 @@ claim HUGen : U :e generated_topology X B.
     { exact (HFamSubB b HbFam). }
     exact (HBsub b HbB). }
   claim HUnionSubX : Union Fam c= X.
-  { apply UnionSub.
-    exact HFamSubX. }
+  { let x. assume HxUnion.
+    apply UnionE_impred Fam x HxUnion.
+    let b. assume Hxb HbFam.
+    claim HbSubX : b c= X.
+    { exact (PowerE X b (HFamSubX b HbFam)). }
+    exact (HbSubX x Hxb). }
   apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) U.
   * rewrite <- HUnionEq.
     exact HUnionSubX.
