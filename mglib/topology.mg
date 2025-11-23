@@ -6550,7 +6550,40 @@ Definition countable_complement_topology : set -> set :=
 
 (** from §12: discrete topology is a topology **)
 Theorem discrete_topology_on : forall X, topology_on X (discrete_topology X).
-admit.
+let X.
+prove Power X c= Power X
+/\ Empty :e Power X
+/\ X :e Power X
+/\ (forall UFam :e Power (Power X), Union UFam :e Power X)
+/\ (forall U :e Power X, forall V :e Power X, U :/\: V :e Power X).
+apply andI.
+- exact (Subq_ref (Power X)).
+- apply Empty_In_Power.
+- apply PowerI. exact (Subq_ref X).
+- prove forall UFam :e Power (Power X), Union UFam :e Power X.
+  let UFam. assume Hfam: UFam :e Power (Power X).
+  apply PowerEq X (Union UFam).
+  prove Union UFam c= X.
+  let x. assume HxUnion: x :e Union UFam.
+  apply UnionEq UFam x HxUnion.
+  let U. assume HUinx: x :e U. assume HUinFam: U :e UFam.
+  claim HFamSub : UFam c= Power X.
+  { apply PowerEq (Power X) UFam. exact Hfam. }
+  claim HUsub: U c= X.
+  { apply PowerEq X U. exact (HFamSub U HUinFam). }
+  exact (HUsub x HUinx).
+- prove forall U :e Power X, forall V :e Power X, U :/\: V :e Power X.
+  let U. assume HU: U :e Power X.
+  let V. assume HV: V :e Power X.
+  apply PowerEq X (U :/\: V).
+  prove U :/\: V c= X.
+  let x. assume Hxcap: x :e U :/\: V.
+  apply binintersectE U V x Hxcap.
+  assume HxU HxV.
+  claim HUsub: U c= X.
+  { apply PowerEq X U. exact HU. }
+  exact (HUsub x HxU).
+Qed.
 Qed.
 
 (** from §12: indiscrete topology is a topology **)
