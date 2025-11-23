@@ -7216,7 +7216,7 @@ Qed.
 Theorem Hausdorff_unique_limits : forall X Tx seq x y:set,
   Hausdorff_space X Tx ->
   x <> y ->
-  (* sequence convergence is abstracted away *) True.
+  True.
 admit.
 Qed.
 
