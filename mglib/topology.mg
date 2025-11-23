@@ -8640,6 +8640,7 @@ Definition uniform_convergence_functions : set -> set -> set -> set -> set -> pr
 Theorem uniform_limit_of_continuous_is_continuous :
   forall X dX Y dY f_seq f:set,
     metric_on X dX -> metric_on Y dY ->
+    function_on f_seq omega (function_space X Y) ->
     (forall n:set, n :e omega -> continuous_map X (metric_topology X dX) Y (metric_topology Y dY) (apply_fun f_seq n)) ->
     uniform_convergence_functions X dX Y dY f_seq f ->
     continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
