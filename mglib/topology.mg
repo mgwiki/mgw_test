@@ -6633,36 +6633,36 @@ Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
 
 (** from §12: symmetry of topology equality **)
 Theorem topology_eq_sym : forall X T1 T2:set, topology_eq X T1 T2 -> topology_eq X T2 T1.
-let X T1 T2.
-assume H.
-apply H.
-assume H12.
-apply H12.
-assume HT1 HT2 H12eq.
+let X T1 T2. assume H.
+set Hpair := andEL (topology_on X T1 /\ topology_on X T2) (T1 = T2) H.
+set Heq := andER (topology_on X T1 /\ topology_on X T2) (T1 = T2) H.
+set HT1 := andEL (topology_on X T1) (topology_on X T2) Hpair.
+set HT2 := andER (topology_on X T1) (topology_on X T2) Hpair.
 prove topology_on X T2 /\ topology_on X T1 /\ T2 = T1.
 apply andI.
-- exact HT2.
 - apply andI.
+  + exact HT2.
   + exact HT1.
-  + rewrite H12eq. reflexivity.
+- rewrite <- Heq. reflexivity.
 Qed.
 
 (** from §12: transitivity of topology equality **)
 Theorem topology_eq_trans : forall X T1 T2 T3:set, topology_eq X T1 T2 -> topology_eq X T2 T3 -> topology_eq X T1 T3.
 let X T1 T2 T3.
 assume H12 H23.
-apply H12.
-assume H12a.
-apply H23.
-assume H23a.
-assume HT1 HT2 H12eq.
-assume _ HT3 H23eq.
+set H12pair := andEL (topology_on X T1 /\ topology_on X T2) (T1 = T2) H12.
+set H12eq := andER (topology_on X T1 /\ topology_on X T2) (T1 = T2) H12.
+set HT1 := andEL (topology_on X T1) (topology_on X T2) H12pair.
+set HT2 := andER (topology_on X T1) (topology_on X T2) H12pair.
+set H23pair := andEL (topology_on X T2 /\ topology_on X T3) (T2 = T3) H23.
+set H23eq := andER (topology_on X T2 /\ topology_on X T3) (T2 = T3) H23.
+set HT3 := andER (topology_on X T2) (topology_on X T3) H23pair.
 prove topology_on X T1 /\ topology_on X T3 /\ T1 = T3.
 apply andI.
-- exact HT1.
 - apply andI.
+  + exact HT1.
   + exact HT3.
-  + rewrite H12eq. rewrite H23eq. reflexivity.
+- rewrite H12eq. rewrite H23eq. reflexivity.
 Qed.
 
 (** from §12: reflexivity of topology equality **)
