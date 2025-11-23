@@ -9362,15 +9362,6 @@ Definition well_ordered_set : set -> prop := fun X =>
   exists alpha:set, ordinal alpha /\ equip X alpha.
 Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi =>
   forall i:set, i :e I -> topology_on (product_component Xi i) (product_component_topology Xi i).
-(** from §39 Definition: locally finite family and refinement **) 
-Definition refine_of : set -> set -> prop := fun V U =>
-  forall v:set, v :e V -> exists u:set, u :e U /\ v c= u.
-Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F =>
-  topology_on X Tx /\
-  forall x:set, x :e X ->
-    exists N:set, N :e Tx /\ x :e N /\
-      exists S:set, finite S /\ S c= F /\
-        forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
 Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
   fun X Tx F J =>
     topology_on X Tx /\ F c= function_space X J /\ True.
@@ -9379,41 +9370,8 @@ Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y 
   (forall x1 x2:set, x1 :e X -> x2 :e X -> apply_fun f x1 = apply_fun f x2 -> x1 = x2).
 Definition power_real : set -> set := fun J => function_space J R.
 Definition unit_interval_power : set -> set := fun J => function_space J unit_interval.
-Definition locally_finite_basis : set -> set -> prop := fun X Tx =>
-  topology_on X Tx /\
-  exists B:set, basis_on X B /\ locally_finite_family X Tx B.
-
-Definition sigma_locally_finite_basis : set -> set -> prop := fun X Tx =>
-  topology_on X Tx /\
-  exists Fams:set, countable_set Fams /\
-    Fams c= Power (Power X) /\
-    (forall F:set, F :e Fams -> locally_finite_family X Tx F) /\
-    basis_on X (Union Fams) /\
-    forall b:set, b :e Union Fams -> b :e Tx.
-
 Definition metrizable : set -> set -> prop := fun X Tx =>
   exists d:set, metric_on X d /\ metric_topology X d = Tx.
-Definition equicontinuous_family : set -> set -> set -> set -> set -> prop :=
-  fun X Tx Y Ty F =>
-    topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
-    forall x:set, x :e X ->
-      forall V:set, V :e Ty ->
-        (exists f0:set, f0 :e F /\ apply_fun f0 x :e V) ->
-        exists U:set, U :e Tx /\ x :e U /\
-          forall f:set, f :e F -> forall y:set, y :e U -> apply_fun f y :e V.
-Definition pointwise_convergence_topology : set -> set -> set -> set -> set :=
-  fun X Tx Y Ty => generated_topology (function_space X Y) Empty.
-Definition compact_convergence_topology : set -> set -> set -> set -> set :=
-  fun X Tx Y Ty => generated_topology (function_space X Y) Empty.
-Definition relatively_compact_in_compact_convergence : set -> set -> set -> set -> set -> prop :=
-  fun X Tx Y Ty F =>
-    topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
-    compact_space F (compact_convergence_topology X Tx Y Ty).
-Definition differentiable_at : set -> set -> prop := fun f x => False.
-Definition nowhere_differentiable : set -> prop := fun f =>
-  function_on f R R /\ forall x:set, x :e R -> ~ differentiable_at f x.
-Definition sequentially_compact : set -> set -> prop := fun X Tx =>
-  topology_on X Tx /\ forall seq:set, seq c= X -> exists x:set, converges_to X Tx seq x.
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 Theorem Sorgenfrey_plane_not_Lindelof :
@@ -9794,12 +9752,59 @@ Theorem nowhere_differentiable_function_exists : exists f:set, continuous_map R 
 admit.
 Qed.
 
-(** from §50 Definition: covering dimension zero/one etc **) 
+(** from §50 Definition: order of a collection of subsets **) 
+Definition collection_has_order_at_m_plus_one : set -> set -> set -> prop :=
+  fun X A m => True.
+
+(** from §50 Definition: covering dimension and finite dimensionality **) 
 Definition covering_dimension : set -> set -> prop := fun X n =>
   n :e omega /\ exists Tx:set, topology_on X Tx.
+Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\ exists m:set, covering_dimension X m.
 
 (** from §50 Theorem: basic properties of covering dimension **) 
 Theorem covering_dimension_properties : forall X:set, exists n:set, covering_dimension X n.
+admit.
+Qed.
+
+(** from §50 Theorem: compact subspace of R^n has dimension at most n **) 
+Theorem compact_subspace_Rn_dimension_le : forall X n:set,
+  compact_space X (euclidean_topology n) -> covering_dimension X n.
+admit.
+Qed.
+
+(** from §50 Theorem: compact m-manifold has dimension at most m **) 
+Theorem compact_manifold_dimension_le : forall X Tx m:set,
+  m_manifold X Tx -> compact_space X Tx -> covering_dimension X m.
+admit.
+Qed.
+
+(** from §50 Theorem (Menger-Nöbeling): compact metrizable space of dimension m embeds in R^{2m+1} **) 
+Theorem Menger_Nobeling_embedding : forall X Tx m:set,
+  compact_space X Tx -> metrizable X Tx -> covering_dimension X m ->
+  exists N:set, exists e:set,
+    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
+admit.
+Qed.
+
+(** from §50 Theorem 50.1: dimension of closed subspace bounded by ambient **) 
+Theorem dimension_closed_subspace_le : forall X Tx Y n:set,
+  covering_dimension X n -> closed_in X Tx Y -> covering_dimension Y n.
+admit.
+Qed.
+
+(** from §50 Theorem 50.2: dimension of union of closed sets is max **) 
+Theorem dimension_union_closed_max : forall X Y Z n:set,
+  covering_dimension Y n -> covering_dimension Z n ->
+  covering_dimension (Y :\/: Z) n.
+admit.
+Qed.
+
+(** from §50 Corollary 50.3: finite union of closed finite-dimensional sets **) 
+Theorem dimension_finite_union_closed_max : forall X Fam n:set,
+  finite Fam ->
+  (forall Y:set, Y :e Fam -> covering_dimension Y n) ->
+  covering_dimension (Union Fam) n.
 admit.
 Qed.
 
