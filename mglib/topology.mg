@@ -8642,6 +8642,7 @@ Qed.
 (** from §24 Definition: path and path connectedness **) 
 Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y :e f).
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
+Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
 Definition path_between : set -> set -> set -> set -> prop := fun X x y p =>
   function_on p unit_interval X /\
   apply_fun p 0 = x /\ apply_fun p 1 = y.
