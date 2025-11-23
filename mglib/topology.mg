@@ -7824,7 +7824,7 @@ apply iffI.
 - assume Hcond.
   exact (finer_via_basis X B B' HB HB' Hcond).
 - assume Hfiner.
-  let x b. assume HbB Hxb.
+  let x. assume HxX. let b. assume HbB Hxb.
   claim HbGen : b :e generated_topology X B.
   { exact (generated_topology_contains_basis X B HB b HbB). }
   claim HbGen' : b :e generated_topology X B'.
