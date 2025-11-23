@@ -6573,9 +6573,12 @@ apply andI.
     let x. assume HxUnion: x :e Union UFam.
     apply UnionE_impred UFam x HxUnion.
     let U. assume HUinx: x :e U. assume HUinFam: U :e UFam.
-    let HFamSub: UFam c= Power X := iffEL (UFam :e Power (Power X)) (UFam c= Power X) (PowerEq (Power X) UFam) Hfam.
-    let HUinPower: U :e Power X := HFamSub U HUinFam.
-    let HUsub : U c= X := iffEL (U :e Power X) (U c= X) (PowerEq X U) HUinPower.
+    claim HFamSub: UFam c= Power X.
+    { exact (iffEL (UFam :e Power (Power X)) (UFam c= Power X) (PowerEq (Power X) UFam) Hfam). }
+    claim HUinPower: U :e Power X.
+    { exact HFamSub U HUinFam. }
+    claim HUsub : U c= X.
+    { exact (iffEL (U :e Power X) (U c= X) (PowerEq X U) HUinPower). }
     exact (HUsub x HUinx).
 - prove forall U :e Power X, forall V :e Power X, U :/\: V :e Power X.
   let U. assume HU: U :e Power X.
