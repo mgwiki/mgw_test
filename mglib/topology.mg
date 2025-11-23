@@ -7808,9 +7808,9 @@ admit.
 Qed.
 
 (** from §13 Example 4: circular vs rectangular region bases (abstract placeholders) **) 
-Definition EuclidPlane : set := Empty.
-Definition circular_regions : set := Empty.
-Definition rectangular_regions : set := Empty.
+Definition EuclidPlane : set := OrderedPair R R.
+Definition circular_regions : set := R2_standard_topology.
+Definition rectangular_regions : set := R2_standard_topology.
 
 Theorem circular_regions_basis_plane : basis_on EuclidPlane circular_regions.
 admit.
@@ -7880,16 +7880,20 @@ admit.
 Qed.
 
 (** from §13 Exercise 2: comparison of nine topologies on {a,b,c} **) 
-Definition abc_set : set := UPair Empty Empty.
-Definition top_abc_1 : set := Empty.
-Definition top_abc_2 : set := Empty.
-Definition top_abc_3 : set := Empty.
-Definition top_abc_4 : set := Empty.
-Definition top_abc_5 : set := Empty.
-Definition top_abc_6 : set := Empty.
-Definition top_abc_7 : set := Empty.
-Definition top_abc_8 : set := Empty.
-Definition top_abc_9 : set := Empty.
+Definition a_elt : set := Empty.
+Definition b_elt : set := {Empty}.
+Definition c_elt : set := {{Empty}}.
+Definition abc_set : set := {a_elt|True} :\/: {b_elt|True} :\/: {c_elt|True}.
+
+Definition top_abc_1 : set := {Empty, abc_set}.
+Definition top_abc_2 : set := Power abc_set.
+Definition top_abc_3 : set := {Empty, {a_elt}, abc_set}.
+Definition top_abc_4 : set := {Empty, {b_elt}, abc_set}.
+Definition top_abc_5 : set := {Empty, {c_elt}, abc_set}.
+Definition top_abc_6 : set := {Empty, {a_elt, b_elt}, abc_set}.
+Definition top_abc_7 : set := {Empty, {a_elt, c_elt}, abc_set}.
+Definition top_abc_8 : set := {Empty, {b_elt, c_elt}, abc_set}.
+Definition top_abc_9 : set := {Empty, {a_elt}, {a_elt, b_elt}, abc_set}.
 
 Theorem ex13_2_compare_nine_topologies :
   topology_on abc_set top_abc_1 /\ topology_on abc_set top_abc_2 /\
@@ -8194,11 +8198,11 @@ admit.
 Qed.
 
 (** from §16 Exercise 3: openness of specific sets in subspace [-1,1] **) 
-Definition interval_A : set := Empty.
-Definition interval_B : set := Empty.
-Definition interval_C : set := Empty.
-Definition interval_D : set := Empty.
-Definition interval_E : set := Empty.
+Definition interval_A : set := open_interval Empty (Power Empty).
+Definition interval_B : set := open_interval (Power Empty) (Power (Power Empty)).
+Definition interval_C : set := open_interval Empty Empty.
+Definition interval_D : set := open_interval (Power Empty) (Power Empty).
+Definition interval_E : set := open_interval (Power (Power Empty)) (Power (Power Empty)).
 
 Theorem ex16_3_open_sets_subspace : True.
 admit.
