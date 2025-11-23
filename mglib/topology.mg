@@ -6571,7 +6571,7 @@ apply andI.
     let UFam. assume Hfam: UFam :e Power (Power X).
     apply PowerI X (Union UFam).
     let x. assume HxUnion: x :e Union UFam.
-    apply UnionE UFam x HxUnion.
+    apply UnionE_impred UFam x HxUnion.
     let U. assume HUinx: x :e U. assume HUinFam: U :e UFam.
     claim HFamSub : UFam c= Power X.
     { apply PowerEq (Power X) UFam. exact Hfam. }
