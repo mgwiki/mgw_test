@@ -7763,9 +7763,10 @@ let X B B'. assume HB HB' Hrefine.
 prove generated_topology X B c= generated_topology X B'.
 let U. assume HU : U :e generated_topology X B.
 claim HUsubX : U c= X.
-{ exact (SepE1 (Power X)
-               (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
-               U HU). }
+{ exact (PowerE X U
+         (SepE1 (Power X)
+                (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
+                U HU)). }
 claim HUprop : forall x :e U, exists b :e B, x :e b /\ b c= U.
 { exact (SepE2 (Power X)
                (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
