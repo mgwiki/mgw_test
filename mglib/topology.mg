@@ -8528,6 +8528,11 @@ admit.
 Qed.
 
 (** from §21: uniqueness of limits in metric spaces **) 
+(** helper: function evaluation as graph lookup **) 
+Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y :e f).
+Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
+Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
+
 Theorem metric_limits_unique : forall X d seq x y:set,
   metric_on X d -> x <> y -> True.
 admit.
@@ -8646,9 +8651,6 @@ admit.
 Qed.
 
 (** from §24 Definition: path and path connectedness **) 
-Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y :e f).
-Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
-Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
 Definition path_between : set -> set -> set -> set -> prop := fun X x y p =>
   function_on p unit_interval X /\
   apply_fun p 0 = x /\ apply_fun p 1 = y.
@@ -9057,8 +9059,10 @@ Definition Sorgenfrey_plane_topology : set := Empty.
 Definition ordered_square_open_strip : set := Empty.
 Definition ordered_square_subspace_topology : set := Empty.
 Definition one_point_sets_closed : set -> set -> prop := fun X Tx => topology_on X Tx.
-Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi => True.
-Definition regular_spaces_family : set -> set -> prop := fun I Xi => True.
+Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi =>
+  forall i:set, i :e I -> Hausdorff_space (product_component Xi i) (product_component_topology Xi i).
+Definition regular_spaces_family : set -> set -> prop := fun I Xi =>
+  forall i:set, i :e I -> regular_space (product_component Xi i) (product_component_topology Xi i).
 Definition const_family : set -> set -> set := fun I X => {UPair i X|i :e I}.
 Definition product_component : set -> set -> set := fun Xi i => apply_fun Xi i.
 Definition product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
@@ -9073,7 +9077,8 @@ Definition product_topology_full : set -> set -> set := fun I Xi =>
 Definition uncountable_set : set -> prop := fun X => ~ countable_set X.
 Definition well_ordered_set : set -> prop := fun X =>
   exists alpha:set, ordinal alpha /\ equip X alpha.
-Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi => True.
+Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi =>
+  forall i:set, i :e I -> completely_regular_space (product_component Xi i) (product_component_topology Xi i).
 (** from §39 Definition: locally finite family and refinement **) 
 Definition refine_of : set -> set -> prop := fun V U =>
   forall v:set, v :e V -> exists u:set, u :e U /\ v c= u.
@@ -9086,7 +9091,9 @@ Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F =>
 Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
   fun X Tx F J =>
     topology_on X Tx /\ F c= function_space X J /\ True.
-Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f => True.
+Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f =>
+  function_on f X Y /\ continuous_map X Tx Y Ty f /\
+  (forall x1 x2:set, x1 :e X -> x2 :e X -> apply_fun f x1 = apply_fun f x2 -> x1 = x2).
 Definition power_real : set -> set := fun J => Empty.
 Definition unit_interval_power : set -> set := fun J => Empty.
 Definition locally_finite_basis : set -> set -> prop := fun X Tx =>
