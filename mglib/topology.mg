@@ -7061,12 +7061,14 @@ apply UPairE U Empty X HU.
 Qed.
 
 (** from §12: every subset is open in discrete topology **)
+(** LATEX VERSION: In the discrete topology on X, every subset U⊂X is open. **)
 Theorem discrete_open_all : forall X U:set, U c= X -> U :e discrete_topology X.
 let X U. assume HUsub.
 apply PowerI X U HUsub.
 Qed.
 
 (** from §12: opens in indiscrete topology are Empty or X **)
+(** LATEX VERSION: In the indiscrete topology, the only open sets are ∅ and X. **)
 Theorem indiscrete_open_iff : forall X U:set,
   U :e indiscrete_topology X <-> (U = Empty \/ U = X).
 let X U.
@@ -7081,6 +7083,7 @@ apply iffI.
 Qed.
 
 (** from §12 Example 3: finite complement openness criterion **)
+(** LATEX VERSION: In the finite complement topology, an open set U satisfies that X\\U is finite or U=∅. **)
 Theorem finite_complement_topology_open_criterion : forall X U:set,
   open_in X (finite_complement_topology X) U ->
   finite (X :\: U) \/ U = Empty.
@@ -7091,6 +7094,7 @@ exact (SepE2 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HUin)
 Qed.
 
 (** from §12 Example 3: Empty is open in finite complement topology **)
+(** LATEX VERSION: ∅ is an open set in the finite complement topology. **)
 Theorem finite_complement_topology_contains_empty : forall X:set,
   Empty :e finite_complement_topology X.
 let X.
@@ -7098,6 +7102,7 @@ exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) Empty (E
 Qed.
 
 (** from §12 Example 3: X is open in finite complement topology **)
+(** LATEX VERSION: X itself is open in the finite complement topology. **)
 Theorem finite_complement_topology_contains_full : forall X:set,
   X :e finite_complement_topology X.
 let X.
@@ -7117,6 +7122,7 @@ exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) X (Self_
 Qed.
 
 (** from §12 Example 4: openness via countable complement **) 
+(** LATEX VERSION: In the countable complement topology, an open set U has X\\U countable or U=∅. **)
 Theorem countable_complement_topology_open_iff : forall X U:set,
   open_in X (countable_complement_topology X) U ->
   countable (X :\: U) \/ U = Empty.
@@ -7127,6 +7133,7 @@ exact (SepE2 (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) U HU
 Qed.
 
 (** from §12 Example 4: Empty is open in countable complement topology **)
+(** LATEX VERSION: ∅ is open in the countable complement topology. **)
 Theorem countable_complement_topology_contains_empty : forall X:set,
   Empty :e countable_complement_topology X.
 let X.
@@ -7134,6 +7141,7 @@ exact (SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) Empty
 Qed.
 
 (** from §12 Example 4: X is open in countable complement topology **) 
+(** LATEX VERSION: X is open in the countable complement topology. **)
 Theorem countable_complement_topology_contains_full : forall X:set,
   X :e countable_complement_topology X.
 let X.
@@ -7153,6 +7161,7 @@ exact (SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) X (Se
 Qed.
 
 (** from §12 Example comparison: countable vs finite complement **)
+(** LATEX VERSION: The countable complement topology is finer than the finite complement topology. **)
 Theorem countable_complement_finer_than_finite_complement : forall X:set,
   finer_than (countable_complement_topology X) (finite_complement_topology X).
 let X.
@@ -7175,6 +7184,7 @@ exact (SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) U HUi
 Qed.
 
 (** from §12 examples: finite complement coarser than discrete **)
+(** LATEX VERSION: The finite complement topology is coarser than the discrete topology. **)
 Theorem finite_complement_coarser_than_discrete : forall X:set,
   coarser_than (finite_complement_topology X) (discrete_topology X).
 let X.
@@ -7184,6 +7194,7 @@ exact (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU).
 Qed.
 
 (** from §12 examples: indiscrete coarser than countable complement **) 
+(** LATEX VERSION: The indiscrete topology is coarser than the countable complement topology. **)
 Theorem indiscrete_coarser_than_countable_complement : forall X:set,
   coarser_than (indiscrete_topology X) (countable_complement_topology X).
 let X.
@@ -7195,9 +7206,12 @@ apply UPairE U Empty X HU.
 Qed.
 
 (** from §12: fineness via set inclusion of topologies **)
+(** LATEX VERSION: A restatement of fineness between topologies on X as inclusion of their open sets. **)
 Definition finer_than_topology_by_inclusion : set -> set -> set -> prop := fun X T' T =>
   topology_on X T' /\ topology_on X T /\ T c= T'.
 
+(** from §12: fineness via inclusion characterization **)
+(** LATEX VERSION: The earlier fineness notion between topologies on X is equivalent to plain inclusion of their open sets. **)
 Theorem finer_than_topology_by_inclusion_eq : forall X T' T:set,
   finer_than_topology X T' T <-> finer_than_topology_by_inclusion X T' T.
 let X T' T.
@@ -7207,6 +7221,7 @@ apply iffI.
 Qed.
 
 (** from §12 axiom: arbitrary unions of opens are open **)
+(** LATEX VERSION: In any topology, the union of any subfamily of open sets is open. **)
 Theorem lemma_union_of_topology_family_open : forall X T UFam:set,
   topology_on X T ->
   UFam :e Power T ->
@@ -7220,6 +7235,7 @@ exact (Hunion_axiom UFam Hfam).
 Qed.
 
 (** from §12 axiom: finite intersections of opens are open **)
+(** LATEX VERSION: In any topology, the intersection of two open sets is open (and hence any finite intersection). **)
 Theorem lemma_intersection_two_open : forall X T U V:set,
   topology_on X T ->
   U :e T -> V :e T ->
@@ -7231,6 +7247,7 @@ exact (Hax_inter U HU V HV).
 Qed.
 
 (** from §12: alternative naming for topological space **)
+(** LATEX VERSION: Using notation topological_space X T for topology_on X T and open_set_family/open_set for opens. **)
 Definition topological_space : set -> set -> prop := topology_on.
 
 Definition open_set_family : set -> set -> set := fun _ T => T.
@@ -7238,6 +7255,7 @@ Definition open_set_family : set -> set -> set := fun _ T => T.
 Definition open_set : set -> set -> set -> prop := fun X T U => topology_on X T /\ U :e T.
 
 (** from §13 Definition: basis for a topology **) 
+(** LATEX VERSION: A basis on X is a collection B⊂P(X) such that every x∈X lies in some b∈B and intersections around a point refine to another basis element. **)
 Definition basis_on : set -> set -> prop := fun X B =>
   B c= Power X
   /\ (forall x :e X, exists b :e B, x :e b)
@@ -7246,10 +7264,12 @@ Definition basis_on : set -> set -> prop := fun X B =>
         exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2).
 
 (** from §13 Definition: topology generated by a basis **) 
+(** LATEX VERSION: The topology generated by basis B on X consists of all U⊂X such that every x∈U lies in some b∈B with b⊂U. **)
 Definition generated_topology : set -> set -> set := fun X B =>
   {U :e Power X | forall x :e U, exists b :e B, x :e b /\ b c= U}.
 
 (** from §13: generated family is a topology **) 
+(** LATEX VERSION: The collection generated by a basis indeed satisfies the topology axioms. **)
 Theorem lemma_topology_from_basis : forall X B:set,
   basis_on X B ->
   topology_on X (generated_topology X B).
