@@ -7772,30 +7772,27 @@ let U. assume HU.
 (* rewrite membership via the characterizations *)
 rewrite HcharB in HU.
 rewrite HcharB'.
-assume x HxU.
-(* U :e Power X gives x ∈ X *)
-claim HUsubX : U c= X.
-{ exact (iffEL (U :e Power X) (U c= X) (PowerEq X U)
-               (andEL (U :e Power X)
-                      (forall x0 :e U, exists b0 :e B, x0 :e b0 /\ b0 c= U)
-                      HU)). }
-claim HxX : x :e X.
-{ exact (HUsubX x HxU). }
-claim Hx : exists b :e B, x :e b /\ b c= U.
-{ exact (HU x HxU). }
-destruct Hx as [b Hbprop].
-destruct Hbprop as [HbinB Hbprop].
-destruct Hbprop as [Hbx Hbsub].
-(* use local refinement hypothesis to pick b' in B' with x in b' subset b *)
-claim Hb' : exists b' :e B', x :e b' /\ b' c= b.
-{ exact (Hloc x HxX b HbinB Hbx). }
-destruct Hb' as [b' Hb'prop].
-destruct Hb'prop as [Hxb' Hb'subb].
-(* then b' is still contained in U *)
-claim Hb'subU : b' c= U.
-{ exact (Subq_trans b' b U Hb'subb Hbsub). }
-exists b'.
-apply andI; [exact Hxb'|exact Hb'subU].
+destruct HU as [HUsub HUprop].
+apply andI.
+- exact HUsub.
+- let x. assume HxU.
+  claim HxX : x :e X.
+  { exact (HUsub x HxU). }
+  claim Hx : exists b :e B, x :e b /\ b c= U.
+  { exact (HUprop x HxU). }
+  destruct Hx as [b Hbprop].
+  destruct Hbprop as [HbinB Hbprop].
+  destruct Hbprop as [Hbx Hbsub].
+  (* use local refinement hypothesis to pick b' in B' with x in b' subset b *)
+  claim Hb' : exists b' :e B', x :e b' /\ b' c= b.
+  { exact (Hloc x HxX b HbinB Hbx). }
+  destruct Hb' as [b' Hb'prop].
+  destruct Hb'prop as [Hxb' Hb'subb].
+  (* then b' is still contained in U *)
+  claim Hb'subU : b' c= U.
+  { exact (Subq_trans b' b U Hb'subb Hbsub). }
+  exists b'.
+  apply andI; [exact Hxb'|exact Hb'subU].
 admit.
 Qed.
 
