@@ -7238,6 +7238,10 @@ claim HBsub : B c= Power X.
 claim HBcov : forall x :e X, exists b :e B, x :e b.
 { exact (andER (B c= Power X) (forall x :e X, exists b :e B, x :e b) HBleft). }
 prove generated_topology X B c= Power X
+/\ Empty :e generated_topology X B
+/\ X :e generated_topology X B
+/\ (forall UFam :e Power (generated_topology X B), Union UFam :e generated_topology X B)
+/\ (forall U :e generated_topology X B, forall V :e generated_topology X B, U :/\: V :e generated_topology X B).
 apply andI.
 - prove generated_topology X B c= Power X.
   let U. assume HU: U :e generated_topology X B.
