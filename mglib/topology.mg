@@ -6835,18 +6835,17 @@ apply andI.
   * assume HUfin.
     apply HVdata (U :/\: V :e finite_complement_topology X).
     { assume HVfin.
-      unfold finite_complement_topology.
-      apply SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) (U :/\: V).
-      - claim HUsub : U c= X.
+      claim HcapInPower : U :/\: V :e Power X.
+      { claim HUsub : U c= X.
         { exact (PowerE X U (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU)). }
-        claim HVsub : V c= X.
-        { exact (PowerE X V (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) V HV)). }
         apply PowerI X (U :/\: V).
         let x. assume HxCap.
         apply binintersectE U V x HxCap.
         assume HxU HxV.
         exact (HUsub x HxU).
-      - apply orIL.
+      }
+      claim HcapPred : finite (X :\: (U :/\: V)) \/ U :/\: V = Empty.
+      { apply orIL.
         claim HfinUnion : finite ((X :\: U) :\/: (X :\: V)).
         { exact (binunion_finite (X :\: U) HUfin (X :\: V) HVfin). }
         claim Hsubset : X :\: (U :/\: V) c= (X :\: U) :\/: (X :\: V).
@@ -6869,6 +6868,8 @@ apply andI.
             apply setminusI X U x HxX HnotU.
         }
         exact (Subq_finite ((X :\: U) :\/: (X :\: V)) HfinUnion (X :\: (U :/\: V)) Hsubset).
+      }
+      exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) (U :/\: V) HcapInPower HcapPred).
     }
     { assume HVempty : V = Empty.
       claim Hcap_empty : U :/\: V = Empty.
