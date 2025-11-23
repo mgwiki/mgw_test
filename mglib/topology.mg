@@ -6776,6 +6776,21 @@ Theorem countable_complement_topology_contains_full : forall X:set,
 admit.
 Qed.
 
+Theorem countable_complement_finer_than_finite_complement : forall X:set,
+  finer_than (countable_complement_topology X) (finite_complement_topology X).
+admit.
+Qed.
+
+Theorem finite_complement_coarser_than_discrete : forall X:set,
+  coarser_than (finite_complement_topology X) (discrete_topology X).
+admit.
+Qed.
+
+Theorem indiscrete_coarser_than_countable_complement : forall X:set,
+  coarser_than (indiscrete_topology X) (countable_complement_topology X).
+admit.
+Qed.
+
 Definition singleton_basis : set -> set := fun X => {{x}|x :e X}.
 
 Theorem singleton_basis_is_basis : forall X:set, basis_on X (singleton_basis X).
