@@ -7760,7 +7760,7 @@ Theorem finer_via_basis : forall X B B':set,
       exists b':set, b' :e B' /\ x :e b' /\ b' c= b) ->
   finer_than (generated_topology X B') (generated_topology X B).
 let X B B'. assume HB HB' Hrefine.
-unfold finer_than.
+prove generated_topology X B c= generated_topology X B'.
 let U. assume HU : U :e generated_topology X B.
 claim HUsubX : U c= X.
 { exact (SepE1 (Power X)
