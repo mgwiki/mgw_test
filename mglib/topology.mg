@@ -7958,20 +7958,20 @@ Definition open_interval : set -> set -> set := fun a b => {x :e R|Rlt a x /\ Rl
 Definition halfopen_interval_left : set -> set -> set := fun a b => {x :e R|Rlt a x /\ ~(Rlt b x)}.
 
 Definition R_standard_basis : set :=
-  {open_interval a b|a :e R /\ b :e R /\ Rlt a b}.
+  \/_ a :e R, {open_interval a b|b :e R /\ Rlt a b}.
 
 Definition R_standard_topology : set :=
   generated_topology R R_standard_basis.
 
 Definition R_lower_limit_basis : set :=
-  {halfopen_interval_left a b|a :e R /\ b :e R /\ Rlt a b}.
+  \/_ a :e R, {halfopen_interval_left a b|b :e R /\ Rlt a b}.
 
 Definition R_lower_limit_topology : set :=
   generated_topology R R_lower_limit_basis.
 
 Definition K_set : set := omega.
 Definition R_K_basis : set :=
-  {open_interval a b :\: K_set|a :e R /\ b :e R /\ Rlt a b}.
+  \/_ a :e R, {open_interval a b :\: K_set|b :e R /\ Rlt a b}.
 
 Definition R_K_topology : set :=
   generated_topology R (R_standard_basis :\/: R_K_basis).
@@ -7998,7 +7998,7 @@ Qed.
 
 (** from §13 Exercise 8(a): rational open intervals generate standard topology on ℝ **) 
 Definition rational_open_intervals_basis : set :=
-  {open_interval q1 q2|q1 :e rational_numbers /\ q2 :e rational_numbers /\ Rlt q1 q2}.
+  \/_ q1 :e rational_numbers, {open_interval q1 q2|q2 :e rational_numbers /\ Rlt q1 q2}.
 
 Theorem ex13_8a_rational_intervals_basis_standard :
   basis_on R rational_open_intervals_basis /\
@@ -8008,7 +8008,7 @@ Qed.
 
 (** from §13 Exercise 8(b): half-open rational intervals generate a different topology **) 
 Definition rational_halfopen_intervals_basis : set :=
-  {halfopen_interval_left q1 q2|q1 :e rational_numbers /\ q2 :e rational_numbers /\ Rlt q1 q2}.
+  \/_ q1 :e rational_numbers, {halfopen_interval_left q1 q2|q2 :e rational_numbers /\ Rlt q1 q2}.
 
 Theorem ex13_8b_halfopen_rational_basis_topology :
   basis_on R rational_halfopen_intervals_basis /\
