@@ -9250,6 +9250,9 @@ Qed.
 (** from §39 Definition: locally finite family **) 
 Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F => True.
 
+(** from §41 Definition: paracompact space **) 
+Definition paracompact_space : set -> set -> prop := fun X Tx => True.
+
 (** from §39 Theorem: existence of locally finite refinements **) 
 Theorem locally_finite_refinement : forall X Tx U:set,
   paracompact_space X Tx -> open_cover X Tx U -> exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V.
@@ -9261,9 +9264,6 @@ Theorem Nagata_Smirnov_metrization : forall X Tx:set,
   regular_space X Tx -> sigma_locally_finite_basis X Tx -> metrizable X Tx.
 admit.
 Qed.
-
-(** from §41 Definition: paracompact space **) 
-Definition paracompact_space : set -> set -> prop := fun X Tx => True.
 
 (** from §41 Theorem: paracompact Hausdorff implies normal **) 
 Theorem paracompact_Hausdorff_normal : forall X Tx:set,
