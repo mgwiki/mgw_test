@@ -9025,10 +9025,10 @@ Definition const_family : set -> set -> set := fun I X => Empty.
 Definition uncountable_set : set -> prop := fun X => True.
 Definition well_ordered_set : set -> prop := fun X => True.
 Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi => True.
-Parameter separating_family_of_functions : set -> set -> set -> set -> prop.
-Parameter embedding_of : set -> set -> set -> set -> set -> prop.
-Parameter power_real : set -> set.
-Parameter unit_interval_power : set -> set.
+Definition separating_family_of_functions : set -> set -> set -> set -> prop := fun X Tx F J => True.
+Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f => True.
+Definition power_real : set -> set := fun J => Empty.
+Definition unit_interval_power : set -> set := fun J => Empty.
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 Theorem Sorgenfrey_plane_not_Lindelof :
