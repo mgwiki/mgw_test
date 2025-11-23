@@ -9154,6 +9154,8 @@ Definition bijection : set -> set -> set -> prop := fun X Y f =>
   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y /\
      (forall x':set, x' :e X -> apply_fun f x' = y -> x' = x)).
 
+Definition Abs : set -> set := abs_SNo.
+
 Theorem compact_to_Hausdorff_bijection_homeomorphism : forall X Tx Y Ty f:set,
   compact_space X Tx -> Hausdorff_space Y Ty ->
   continuous_map X Tx Y Ty f -> bijection X Y f ->
@@ -10354,5 +10356,3 @@ Definition ex50_dimension_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx n:set,
       p = OrderedPair (OrderedPair X Tx) n /\ topology_on X Tx /\ ordinal n}.
-Definition bounded_subset_of_reals : set -> prop := fun A =>
-  exists M:set, M :e R /\ forall x:set, x :e A -> ~(Rlt M (Abs x)).
