@@ -7390,7 +7390,44 @@ Qed.
 (** from §13: basis elements belong to generated topology **) 
 Theorem generated_topology_contains_basis : forall X B:set,
   basis_on X B -> forall b:set, b :e B -> b :e generated_topology X B.
-admit.
+let X B. assume HBasis.
+claim HBsub : B c= Power X.
+{ exact (andEL (B c= Power X) (forall x :e X, exists b :e B, x :e b) (andEL (B c= Power X /\ (forall x :e X, exists b :e B, x :e b))
+               (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)
+               HBasis)). }
+claim HBint : forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2.
+{ exact (andER (B c= Power X /\ (forall x :e X, exists b :e B, x :e b))
+               (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)
+               HBasis). }
+let b0. assume Hb0.
+claim Hb0_subX : b0 c= X.
+{ exact (PowerE X b0 (HBsub b0 Hb0)). }
+apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) b0.
+- exact Hb0_subX.
+- let x. assume Hxb0.
+  claim Hexb3 : exists b3 :e B, x :e b3 /\ b3 c= b0 :/\: b0.
+  { exact (HBint b0 Hb0 b0 Hb0 x Hxb0 Hxb0). }
+  apply Hexb3.
+  let b3. assume Hb3pair.
+  claim Hb3 : b3 :e B.
+  { exact (andEL (b3 :e B) (x :e b3 /\ b3 c= b0 :/\: b0) Hb3pair). }
+  claim Hb3prop : x :e b3 /\ b3 c= b0 :/\: b0.
+  { exact (andER (b3 :e B) (x :e b3 /\ b3 c= b0 :/\: b0) Hb3pair). }
+  claim Hxb3 : x :e b3.
+  { exact (andEL (x :e b3) (b3 c= b0 :/\: b0) Hb3prop). }
+  claim Hb3sub_inter : b3 c= b0 :/\: b0.
+  { exact (andER (x :e b3) (b3 c= b0 :/\: b0) Hb3prop). }
+  claim Hb3subb0 : b3 c= b0.
+  { let y. assume Hyb3.
+    claim Hycap : y :e b0 :/\: b0.
+    { exact (Hb3sub_inter y Hyb3). }
+    apply binintersectE b0 b0 y Hycap.
+    assume Hy1 Hy2.
+    exact Hy1. }
+  witness b3.
+  apply andI.
+  - exact Hxb3.
+  - exact Hb3subb0.
 Qed.
 
 (** from §13: shorthand for basis generating topology **) 
