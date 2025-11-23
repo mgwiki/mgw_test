@@ -6634,10 +6634,14 @@ Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
 (** from §12: symmetry of topology equality **)
 Theorem topology_eq_sym : forall X T1 T2:set, topology_eq X T1 T2 -> topology_eq X T2 T1.
 let X T1 T2. assume H.
-set Hpair := andEL (topology_on X T1 /\ topology_on X T2) (T1 = T2) H.
-set Heq := andER (topology_on X T1 /\ topology_on X T2) (T1 = T2) H.
-set HT1 := andEL (topology_on X T1) (topology_on X T2) Hpair.
-set HT2 := andER (topology_on X T1) (topology_on X T2) Hpair.
+claim Hpair: topology_on X T1 /\ topology_on X T2.
+{ exact (andEL (topology_on X T1 /\ topology_on X T2) (T1 = T2) H). }
+claim Heq: T1 = T2.
+{ exact (andER (topology_on X T1 /\ topology_on X T2) (T1 = T2) H). }
+claim HT1: topology_on X T1.
+{ exact (andEL (topology_on X T1) (topology_on X T2) Hpair). }
+claim HT2: topology_on X T2.
+{ exact (andER (topology_on X T1) (topology_on X T2) Hpair). }
 prove topology_on X T2 /\ topology_on X T1 /\ T2 = T1.
 apply andI.
 - apply andI.
@@ -6650,13 +6654,20 @@ Qed.
 Theorem topology_eq_trans : forall X T1 T2 T3:set, topology_eq X T1 T2 -> topology_eq X T2 T3 -> topology_eq X T1 T3.
 let X T1 T2 T3.
 assume H12 H23.
-set H12pair := andEL (topology_on X T1 /\ topology_on X T2) (T1 = T2) H12.
-set H12eq := andER (topology_on X T1 /\ topology_on X T2) (T1 = T2) H12.
-set HT1 := andEL (topology_on X T1) (topology_on X T2) H12pair.
-set HT2 := andER (topology_on X T1) (topology_on X T2) H12pair.
-set H23pair := andEL (topology_on X T2 /\ topology_on X T3) (T2 = T3) H23.
-set H23eq := andER (topology_on X T2 /\ topology_on X T3) (T2 = T3) H23.
-set HT3 := andER (topology_on X T2) (topology_on X T3) H23pair.
+claim H12pair: topology_on X T1 /\ topology_on X T2.
+{ exact (andEL (topology_on X T1 /\ topology_on X T2) (T1 = T2) H12). }
+claim H12eq: T1 = T2.
+{ exact (andER (topology_on X T1 /\ topology_on X T2) (T1 = T2) H12). }
+claim HT1: topology_on X T1.
+{ exact (andEL (topology_on X T1) (topology_on X T2) H12pair). }
+claim HT2: topology_on X T2.
+{ exact (andER (topology_on X T1) (topology_on X T2) H12pair). }
+claim H23pair: topology_on X T2 /\ topology_on X T3.
+{ exact (andEL (topology_on X T2 /\ topology_on X T3) (T2 = T3) H23). }
+claim H23eq: T2 = T3.
+{ exact (andER (topology_on X T2 /\ topology_on X T3) (T2 = T3) H23). }
+claim HT3: topology_on X T3.
+{ exact (andER (topology_on X T2) (topology_on X T3) H23pair). }
 prove topology_on X T1 /\ topology_on X T3 /\ T1 = T3.
 apply andI.
 - apply andI.
