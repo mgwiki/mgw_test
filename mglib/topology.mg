@@ -7634,11 +7634,10 @@ claim HBasis : basis_on X C.
               (fun c HcC => HTsubPow c (HCsub c HcC))
               (fun x HxX => Href X HXT x HxX))
            (fun c1 Hc1C => fun c2 Hc2C => fun x Hxc1 => fun Hxc2 =>
-              let Hc1T := HCsub c1 Hc1C in
-              let Hc2T := HCsub c2 Hc2C in
-              let HcapT := HInterClosed c1 Hc1T c2 Hc2T in
-              let HxCap := andI Hxc1 Hxc2 in
-              Href (c1 :/\: c2) HcapT x HxCap)). }
+              Href (c1 :/\: c2)
+                   (HInterClosed c1 (HCsub c1 Hc1C) c2 (HCsub c2 Hc2C))
+                   x
+                   (andI Hxc1 Hxc2))). }
 claim Hgen_sub_T : generated_topology X C c= T.
 { let U. assume HUgen : U :e generated_topology X C.
   claim HUsubX : U c= X.
