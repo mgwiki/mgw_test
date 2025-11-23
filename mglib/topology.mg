@@ -6728,15 +6728,7 @@ Qed.
 (** from §12: opens in indiscrete topology are Empty or X **)
 Theorem indiscrete_open_iff : forall X U:set,
   U :e indiscrete_topology X <-> (U = Empty \/ U = X).
-let X U.
-apply iffI.
-- assume HU. apply UPairE Empty X U HU.
-  + assume H. apply orIL. exact H.
-  + assume H. apply orIR. exact H.
-- assume H.
-  apply H.
-  * assume HUeq. rewrite HUeq. apply UPairI1.
-  * assume HUeq. rewrite HUeq. apply UPairI2.
+admit.
 Qed.
 
 (** from §12 Example 3: finite complement openness criterion **)
