@@ -6622,8 +6622,6 @@ Definition finer_than_topology : set -> set -> set -> prop := fun X T' T =>
 
 (** from §12: finer/coarser equivalence **)
 Theorem finer_than_def : forall T T':set, finer_than T' T <-> coarser_than T T'.
-let T T'. apply iffI.
-  (* ... *)
 admit.
 Qed.
 
