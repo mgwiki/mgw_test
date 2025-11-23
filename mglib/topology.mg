@@ -7443,7 +7443,8 @@ Theorem lemma_generated_topology_characterization : forall X B:set,
   basis_on X B ->
   generated_topology X B
   = {U :e Power X | forall x :e U, exists b :e B, x :e b /\ b c= U}.
-admit.
+let X B. assume HBasis.
+reflexivity.
 Qed.
 
 (** from §13 Lemma 13.1: open sets are unions of basis elements **) 
