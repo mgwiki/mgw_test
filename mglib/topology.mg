@@ -8342,7 +8342,11 @@ Definition closure_of : set -> set -> set -> set := fun X T A =>
 
 (** from §17 Theorem 17.1: properties of closed sets **) 
 Theorem closed_sets_axioms : forall X T:set,
-  topology_on X T -> True.
+  topology_on X T ->
+  let C := {X :\: U|U :e T} in
+    X :e C /\ Empty :e C /\
+    (forall F:set, F :e Power C -> intersection_of_family F :e C) /\
+    (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
 admit.
 Qed.
 
@@ -8507,27 +8511,39 @@ Theorem ex17_12_subspace_Hausdorff : forall X Tx Y:set,
 admit.
 Qed.
 
-Theorem ex17_13_diagonal_closed_iff_Hausdorff : forall X Tx:set, True.
+Theorem ex17_13_diagonal_closed_iff_Hausdorff : forall X Tx:set,
+  topology_on X Tx ->
+  (Hausdorff_space X Tx <->
+    closed_in (OrderedPair X X) (product_topology X Tx X Tx) {OrderedPair x x|x :e X}).
 admit.
 Qed.
 
-Theorem ex17_14_sequence_in_finite_complement_topology : True.
+Theorem ex17_14_sequence_in_finite_complement_topology : forall X seq:set,
+  sequence_on seq X ->
+  forall x:set, x :e X -> converges_to X (finite_complement_topology X) seq x.
 admit.
 Qed.
 
-Theorem ex17_15_T1_characterization : forall X:set, True.
+Theorem ex17_15_T1_characterization : forall X Tx:set,
+  topology_on X Tx ->
+  (T1_space X Tx <-> (forall x:set, closed_in X Tx {x})).
 admit.
 Qed.
 
-Theorem ex17_16_closure_of_K_in_various_topologies : True.
+Theorem ex17_16_closure_of_K_in_various_topologies :
+  closure_of R R_standard_topology K_set <> closure_of R R_lower_limit_topology K_set.
 admit.
 Qed.
 
-Theorem ex17_17_closures_in_lower_limit_and_C_topology : True.
+Theorem ex17_17_closures_in_lower_limit_and_C_topology :
+  closure_of R R_lower_limit_topology K_set <> closure_of R R_K_topology K_set.
 admit.
 Qed.
 
-Theorem ex17_18_closures_in_ordered_square : True.
+Theorem ex17_18_closures_in_ordered_square :
+  exists A:set, A c= ordered_square /\
+    closure_of ordered_square ordered_square_topology A <>
+    closure_of ordered_square ordered_square_subspace_topology A.
 admit.
 Qed.
 
