@@ -7691,7 +7691,7 @@ claim Hgen_sub_T : generated_topology X C c= T.
     apply UnionE_impred Fam x HxUnion.
     let c. assume Hxc HcFam.
     claim Hcprop : c c= U.
-    { exact (andER (c :e C) (c c= U) (SepE2 C (fun c0 : set => c0 c= U) c HcFam)). }
+    { exact (SepE2 C (fun c0 : set => c0 c= U) c HcFam). }
     exact (Hcprop x Hxc). }
   claim HUsubUnion : U c= Union Fam.
   { let x. assume HxU.
