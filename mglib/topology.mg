@@ -7813,10 +7813,16 @@ Definition OrderedPair : set -> set -> set := fun x y => UPair x (UPair x y).
 (** ambient real line placeholder **) 
 Definition R : set := Power (Power omega).
 
-(** from §13 Example 4: circular vs rectangular region bases (abstract placeholders) **) 
+(** from §13 Example 4: circular vs rectangular region bases **) 
 Definition EuclidPlane : set := OrderedPair R R.
-Definition circular_regions : set := Power EuclidPlane.
-Definition rectangular_regions : set := Power EuclidPlane.
+Definition euclid_metric : set := Eps_i (fun d => metric_on EuclidPlane d).
+Definition circular_regions : set :=
+  {open_ball EuclidPlane euclid_metric c|c :e EuclidPlane}.
+Definition rectangular_regions : set :=
+  {U :e Power EuclidPlane |
+     exists a b c d:set, a :e R /\ b :e R /\ c :e R /\ d :e R /\
+       U = {p :e EuclidPlane|
+              exists x y:set, p = OrderedPair x y /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}}.
 
 Theorem circular_regions_basis_plane : basis_on EuclidPlane circular_regions.
 admit.
