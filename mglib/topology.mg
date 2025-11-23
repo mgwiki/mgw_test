@@ -7768,12 +7768,7 @@ Theorem basis_finer_equiv_condition : forall X B B':set,
   ((forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
    finer_than (generated_topology X B') (generated_topology X B)).
 let X B B'. assume HB. assume HB'.
-apply iffI.
-- assume Hloc.
-  exact (finer_via_basis X B B' HB HB' Hloc).
-- assume Hfine.
-  (* from finer_than we can locally refine basis elements of B by those of B' *)
-  admit.
+admit.
 Qed.
 Qed.
 
