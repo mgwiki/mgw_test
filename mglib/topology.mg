@@ -7760,6 +7760,7 @@ Theorem finer_via_basis : forall X B B':set,
       exists b':set, b' :e B' /\ x :e b' /\ b' c= b) ->
 finer_than (generated_topology X B') (generated_topology X B).
 let X B B'. assume HB HB' Hloc.
+(* outline deferred *)
 admit.
 Qed.
 
@@ -7769,6 +7770,7 @@ Theorem basis_finer_equiv_condition : forall X B B':set,
   ((forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
 finer_than (generated_topology X B') (generated_topology X B)).
 let X B B'. assume HB. assume HB'.
+(* outline deferred *)
 admit.
 Qed.
 
@@ -7778,6 +7780,7 @@ Theorem generated_topology_finer : forall X B T:set,
   (forall b :e B, b :e T) ->
 finer_than T (generated_topology X B).
 let X B T. assume HB HT HBsub.
+(* outline deferred *)
 admit.
 Qed.
 
@@ -7787,6 +7790,7 @@ Theorem topology_generated_by_basis_is_smallest : forall X B T:set,
   (forall b :e B, b :e T) ->
 finer_than T (generated_topology X B).
 let X B T. assume HB HT HBsub.
+(* outline deferred *)
 admit.
 Qed.
 
@@ -7795,6 +7799,7 @@ Theorem union_of_basis_equals_open :
   forall X B:set, basis_on X B ->
   generated_topology X B = {Union Fam | Fam :e Power B}.
 let X B. assume HB.
+(* outline deferred *)
 admit.
 Qed.
 
