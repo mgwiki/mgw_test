@@ -7501,7 +7501,50 @@ Theorem basis_generates_open_sets : forall X B:set,
   basis_on X B ->
   forall U:set, (exists Fam :e Power B, Union Fam = U) ->
     open_in X (generated_topology X B) U.
-admit.
+let X B. assume HBasis.
+claim HBsub : B c= Power X.
+{ exact (andEL (B c= Power X) (forall x :e X, exists b :e B, x :e b)
+               (andEL (B c= Power X /\ (forall x :e X, exists b :e B, x :e b))
+                     (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)
+                     HBasis)). }
+let U. assume Hex.
+apply andI.
+- exact (lemma_topology_from_basis X B HBasis).
+- apply Hex.
+  let Fam. assume HFampair.
+  claim HFamPow : Fam :e Power B.
+  { exact (andEL (Fam :e Power B) (Union Fam = U) HFampair). }
+  claim HUnionEq : Union Fam = U.
+  { exact (andER (Fam :e Power B) (Union Fam = U) HFampair). }
+  claim HFamSubB : Fam c= B.
+  { exact (PowerE B Fam HFamPow). }
+  claim HFamSubX : Fam c= Power X.
+  { let b. assume HbFam.
+    claim HbB : b :e B.
+    { exact (HFamSubB b HbFam). }
+    exact (HBsub b HbB). }
+  claim HUnionSubX : Union Fam c= X.
+  { apply UnionSub.
+    exact HFamSubX. }
+  apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) U.
+  * rewrite <- HUnionEq.
+    exact HUnionSubX.
+  * rewrite <- HUnionEq.
+    let x. assume HxUnion.
+    apply UnionE_impred Fam x HxUnion.
+    let b. assume Hxb HbFam.
+    claim HbB : b :e B.
+    { exact (HFamSubB b HbFam). }
+    claim HbSubUnion : b c= Union Fam.
+    { let y. assume Hyb.
+      exact (UnionI Fam y b Hyb HbFam). }
+    claim HbSubU : b c= U.
+    { rewrite <- HUnionEq.
+      exact HbSubUnion. }
+    witness b.
+    apply andI.
+    { exact Hxb. }
+    { exact HbSubU. }
 Qed.
 
 (** from §13 Lemma 13.1 corollary **) 
