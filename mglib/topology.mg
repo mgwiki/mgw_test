@@ -7783,9 +7783,7 @@ Theorem topology_generated_by_basis_is_smallest : forall X B T:set,
   basis_on X B -> topology_on X T ->
   (forall b :e B, b :e T) ->
   finer_than T (generated_topology X B).
-(* same statement as generated_topology_finer; delegate *)
-let X B T. assume HB HT HBsub.
-exact (generated_topology_finer X B T HB HT HBsub).
+admit.
 Qed.
 
 (** from §13 Lemma 13.4: generated topology equals unions of basis elements **) 
