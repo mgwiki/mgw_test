@@ -7604,9 +7604,130 @@ Qed.
 (** from §13 Lemma 13.2: extracting a basis from an open refinement condition **) 
 Theorem basis_refines_topology : forall X T C:set,
   topology_on X T ->
+  (forall c :e C, c :e T) ->
   (forall U :e T, forall x :e U, exists Cx :e C, x :e Cx /\ Cx c= U) ->
   basis_on X C /\ generated_topology X C = T.
-admit.
+let X T C. assume Htop HCsub Href.
+claim Hleft : ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T))
+               (forall U :e T, forall V :e T, U :/\: V :e T)
+               Htop). }
+claim Hcore : (T c= Power X /\ Empty :e T) /\ X :e T.
+{ exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T)
+               (forall UFam :e Power T, Union UFam :e T)
+               Hleft). }
+claim HTPowEmpty : T c= Power X /\ Empty :e T.
+{ exact (andEL (T c= Power X /\ Empty :e T) (X :e T) Hcore). }
+claim HTsubPow : T c= Power X.
+{ exact (andEL (T c= Power X) (Empty :e T) HTPowEmpty). }
+claim HXT : X :e T.
+{ exact (andER (T c= Power X /\ Empty :e T) (X :e T) Hcore). }
+claim HUnionClosed : forall UFam :e Power T, Union UFam :e T.
+{ exact (andER ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) Hleft). }
+claim HInterClosed : forall U :e T, forall V :e T, U :/\: V :e T.
+{ exact (andER (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T))
+               (forall U :e T, forall V :e T, U :/\: V :e T)
+               Htop). }
+claim HBasis : basis_on X C.
+{ apply andI.
+  - let c. assume HcC.
+    claim HcT : c :e T.
+    { exact (HCsub c HcC). }
+    exact (HTsubPow c HcT).
+  - let x. assume HxX.
+    claim HexC : exists c :e C, x :e c /\ c c= X.
+    { exact (Href X HXT x HxX). }
+    exact HexC.
+  - let c1. assume Hc1C.
+    let c2. assume Hc2C.
+    let x. assume Hxc1 Hxc2.
+    claim Hc1T : c1 :e T.
+    { exact (HCsub c1 Hc1C). }
+    claim Hc2T : c2 :e T.
+    { exact (HCsub c2 Hc2C). }
+    claim HcapT : c1 :/\: c2 :e T.
+    { exact (HInterClosed c1 Hc1T c2 Hc2T). }
+    claim HxCap : x :e c1 :/\: c2.
+    { exact (andI Hxc1 Hxc2). }
+    claim Hex : exists c3 :e C, x :e c3 /\ c3 c= c1 :/\: c2.
+    { exact (Href (c1 :/\: c2) HcapT x HxCap). }
+    exact Hex. }
+claim Hgen_sub_T : generated_topology X C c= T.
+{ let U. assume HUgen : U :e generated_topology X C.
+  claim HUsubX : U c= X.
+  { exact (PowerE X U (SepE1 (Power X)
+                            (fun U0 : set => forall x0 :e U0, exists b0 :e C, x0 :e b0 /\ b0 c= U0)
+                            U HUgen)). }
+  claim HUprop : forall x :e U, exists c :e C, x :e c /\ c c= U.
+  { exact (SepE2 (Power X)
+                 (fun U0 : set => forall x0 :e U0, exists b0 :e C, x0 :e b0 /\ b0 c= U0)
+                 U HUgen). }
+  set Fam : set := {c :e C|c c= U}.
+  claim HFamSubC : Fam c= C.
+  { let c. assume HcFam.
+    exact (andEL (c :e C) (c c= U) (SepE2 C (fun c0 : set => c0 c= U) c HcFam)). }
+  claim HFamSubT : Fam c= T.
+  { let c. assume HcFam.
+    claim HcC : c :e C.
+    { exact (HFamSubC c HcFam). }
+    exact (HCsub c HcC). }
+  claim HFamPowT : Fam :e Power T.
+  { exact (PowerI T Fam HFamSubT). }
+  claim HUnionSubU : Union Fam c= U.
+  { let x. assume HxUnion.
+    apply UnionE_impred Fam x HxUnion.
+    let c. assume Hxc HcFam.
+    claim Hcprop : c c= U.
+    { exact (andER (c :e C) (c c= U) (SepE2 C (fun c0 : set => c0 c= U) c HcFam)). }
+    exact (Hcprop x Hxc). }
+  claim HUsubUnion : U c= Union Fam.
+  { let x. assume HxU.
+    claim Hex : exists c :e C, x :e c /\ c c= U.
+    { exact (HUprop x HxU). }
+    apply Hex.
+    let c. assume Hcpair.
+    claim HcC : c :e C.
+    { exact (andEL (c :e C) (x :e c /\ c c= U) Hcpair). }
+    claim Hcprop : x :e c /\ c c= U.
+    { exact (andER (c :e C) (x :e c /\ c c= U) Hcpair). }
+    claim Hxc : x :e c.
+    { exact (andEL (x :e c) (c c= U) Hcprop). }
+    claim HcsubU : c c= U.
+    { exact (andER (x :e c) (c c= U) Hcprop). }
+    claim HcFam : c :e Fam.
+    { exact (SepI C (fun c0 : set => c0 c= U) c HcC HcsubU). }
+    exact (UnionI Fam x c Hxc HcFam). }
+  claim HUnionEqU : Union Fam = U.
+  { apply set_ext.
+    - let x. assume HxUnion.
+      exact (HUnionSubU x HxUnion).
+    - let x. assume HxU.
+      exact (HUsubUnion x HxU). }
+  claim HUnionInT : Union Fam :e T.
+  { exact (HUnionClosed Fam HFamPowT). }
+  rewrite <- HUnionEqU.
+  exact HUnionInT. }
+claim HT_sub_gen : T c= generated_topology X C.
+{ let U. assume HU : U :e T.
+  claim HUsubX : U c= X.
+  { exact (PowerE X U (HTsubPow U HU)). }
+  claim HUprop : forall x :e U, exists c :e C, x :e c /\ c c= U.
+  { let x. assume HxU.
+    exact (Href U HU x HxU). }
+  exact (SepI (Power X)
+              (fun U0 : set => forall x0 :e U0, exists b0 :e C, x0 :e b0 /\ b0 c= U0)
+              U
+              (PowerI X U HUsubX)
+              HUprop). }
+claim HEqual : generated_topology X C = T.
+{ apply set_ext.
+  - let U. assume HUgen.
+    exact (Hgen_sub_T U HUgen).
+  - let U. assume HU.
+    exact (HT_sub_gen U HU). }
+apply andI.
+- exact HBasis.
+- exact HEqual.
 Qed.
 
 (** from §13 Lemma 13.2 (alias): open refinement family yields a basis **) 
@@ -7615,7 +7736,8 @@ Theorem lemma13_2_basis_from_open_subcollection : forall X T C:set,
   (forall c :e C, c :e T) ->
   (forall U :e T, forall x :e U, exists c :e C, x :e c /\ c c= U) ->
   basis_on X C /\ generated_topology X C = T.
-admit.
+let X T C. assume Htop HCsub Href.
+exact (basis_refines_topology X T C Htop HCsub Href).
 Qed.
 
 (** from §13: criterion for fineness via bases **) 
