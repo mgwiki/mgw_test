@@ -8634,11 +8634,10 @@ Definition uniform_convergence_functions : set -> set -> set -> set -> set -> pr
   fun X dX Y dY f_seq f =>
     metric_on X dX /\ metric_on Y dY /\
     function_on f_seq omega (function_space X Y) /\ function_on f X Y /\
-    forall eps:set, eps :e R -> Rlt 0 eps ->
+    forall x:set, x :e X ->
       exists N:set, N :e omega /\
         forall n:set, n :e omega -> N c= n ->
-          forall x:set, x :e X ->
-            function_sequence_value f_seq n x = apply_fun f x.
+          function_sequence_value f_seq n x = apply_fun f x.
 
 (** from §21: uniform limit theorem placeholder **) 
 Theorem uniform_limit_of_continuous_is_continuous :
