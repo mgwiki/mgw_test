@@ -7960,7 +7960,6 @@ Definition singleton_basis : set -> set := fun X => {{x}|x :e X}.
 
 (** from §13 Example 3: singleton collection forms a basis **) 
 Theorem singleton_basis_is_basis : forall X:set, basis_on X (singleton_basis X).
-Proof.
 let X.
 unfold basis_on.
 apply andI.
