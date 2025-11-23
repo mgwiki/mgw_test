@@ -7759,7 +7759,7 @@ Theorem finer_via_basis : forall X B B':set,
   (forall x :e X, forall b:set, b :e B -> x :e b ->
       exists b':set, b' :e B' /\ x :e b' /\ b' c= b) ->
   finer_than (generated_topology X B') (generated_topology X B).
-admit.
+Proof. admit. Qed.
 Qed.
 
 (** from §13 Lemma 13.3: basis inclusion criterion for fineness **) 
@@ -7767,6 +7767,7 @@ Theorem basis_finer_equiv_condition : forall X B B':set,
   basis_on X B -> basis_on X B' ->
   ((forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
    finer_than (generated_topology X B') (generated_topology X B)).
+Proof.
 let X B B'. assume HB. assume HB'.
 admit.
 Qed.
@@ -7776,6 +7777,7 @@ Theorem generated_topology_finer : forall X B T:set,
   basis_on X B -> topology_on X T ->
   (forall b :e B, b :e T) ->
   finer_than T (generated_topology X B).
+Proof.
 admit.
 Qed.
 
@@ -7784,6 +7786,7 @@ Theorem topology_generated_by_basis_is_smallest : forall X B T:set,
   basis_on X B -> topology_on X T ->
   (forall b :e B, b :e T) ->
   finer_than T (generated_topology X B).
+Proof.
 admit.
 Qed.
 
@@ -7791,6 +7794,7 @@ Qed.
 Theorem union_of_basis_equals_open : forall X B:set,
   basis_on X B ->
   generated_topology X B = {Union Fam|Fam :e Power B}.
+Proof.
 let X B. assume HB.
 (* characterization of opens as unions of basis elements; proof deferred *)
 admit.
