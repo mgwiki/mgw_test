@@ -7784,7 +7784,7 @@ claim HBasisRef_prop : forall U :e generated_topology X B, forall x :e U, exists
   { exact (andER (x :e b) (b c= U) Hbprop). }
   claim HxX : x :e X.
   { exact (HUsubX x HxU). }
-  claim Hexb' : exists b' :e B', x :e b' /\ b' c= b.
+  claim Hexb' : exists b' :set, b' :e B' /\ x :e b' /\ b' c= b.
   { exact (Href x HxX b HbB Hxb). }
   apply Hexb'.
   let b'. assume Hb'pair.
