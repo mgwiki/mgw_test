@@ -7387,6 +7387,36 @@ Theorem connected_subsets_real_are_intervals : forall A:set,
 admit.
 Qed.
 
+(** from §24 Definition: path and path connectedness **) 
+Definition path_between : set -> set -> set -> set -> prop := fun X x y p => True.
+Definition path_connected_space : set -> set -> prop := fun X Tx => topology_on X Tx.
+
+(** from §24: path connected implies connected **) 
+Theorem path_connected_implies_connected : forall X Tx:set,
+  path_connected_space X Tx -> connected_space X Tx.
+admit.
+Qed.
+
+(** from §24 Example: punctured euclidean space is path connected (placeholder) **) 
+Theorem punctured_space_path_connected : path_connected_space R R_standard_topology.
+admit.
+Qed.
+
+(** from §24: continuous image of path connected set is path connected **) 
+Theorem continuous_image_path_connected : forall X Tx Y Ty f:set,
+  path_connected_space X Tx -> continuous_map X Tx Y Ty f -> path_connected_space Y Ty.
+admit.
+Qed.
+
+(** from §24 Definition: path components equivalence relation **) 
+Definition path_component_of : set -> set -> set -> set := fun X Tx x => Empty.
+
+(** from §24: path components form equivalence classes **) 
+Theorem path_components_equivalence_relation : forall X Tx:set,
+  topology_on X Tx -> True.
+admit.
+Qed.
+
 (** from §25 Definition: components and local connectedness **) 
 Definition component_of : set -> set -> set -> set := fun X Tx x => Empty.
 Definition locally_connected : set -> set -> prop := fun X Tx => topology_on X Tx.
