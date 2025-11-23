@@ -6507,6 +6507,17 @@ Definition open_in : set -> set -> set -> prop := fun X T U =>
 Definition closed_in : set -> set -> set -> prop := fun X T C =>
   topology_on X T /\ exists U :e T, C = X :\: U.
 
+Theorem closed_of_open_complement : forall X T U:set,
+  topology_on X T -> U :e T -> closed_in X T (X :\: U).
+let X T U.
+assume Htop: topology_on X T.
+assume HU: U :e T.
+prove closed_in X T (X :\: U).
+apply andI.
+- exact Htop.
+- witness U. reflexivity.
+Qed.
+
 Definition finer_than : set -> set -> prop := fun T' T => T c= T'.
 
 Definition coarser_than : set -> set -> prop := fun T' T => T' c= T.
