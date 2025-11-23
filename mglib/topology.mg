@@ -9025,6 +9025,10 @@ Definition const_family : set -> set -> set := fun I X => Empty.
 Definition uncountable_set : set -> prop := fun X => True.
 Definition well_ordered_set : set -> prop := fun X => True.
 Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi => True.
+Parameter separating_family_of_functions : set -> set -> set -> set -> prop.
+Parameter embedding_of : set -> set -> set -> set -> set -> prop.
+Parameter power_real : set -> set.
+Parameter unit_interval_power : set -> set.
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 Theorem Sorgenfrey_plane_not_Lindelof :
@@ -9162,5 +9166,37 @@ Qed.
 (** from §34 Theorem 34.1: Urysohn metrization theorem **) 
 Theorem Urysohn_metrization_theorem : forall X Tx:set,
   regular_space X Tx -> second_countable_space X Tx -> exists d:set, metric_on X d /\ metric_topology X d = Tx.
+admit.
+Qed.
+
+(** from §34 Theorem 34.2: Imbedding via separating family of functions **) 
+Theorem embedding_via_functions : forall X Tx F J:set,
+  topology_on X Tx -> one_point_sets_closed X Tx ->
+  separating_family_of_functions X Tx F J ->
+  exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_family J R)) Fmap.
+admit.
+Qed.
+
+(** from §34 Corollary 34.3: completely regular iff embeds in [0,1]^J **) 
+Theorem completely_regular_iff_embeds_in_cube : forall X Tx:set,
+  (completely_regular_space X Tx <->
+    exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_family J unit_interval)) Fmap).
+admit.
+Qed.
+
+(** from §35 Theorem 35.1: Tietze extension theorem **) 
+Theorem Tietze_extension_interval : forall X Tx A a b f:set,
+  normal_space X Tx -> closed_in X Tx A ->
+  continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f ->
+  exists g:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) g /\
+    (forall x:set, x :e A -> g@x = f@x).
+admit.
+Qed.
+
+Theorem Tietze_extension_real : forall X Tx A f:set,
+  normal_space X Tx -> closed_in X Tx A ->
+  continuous_map A (subspace_topology X Tx A) R R_standard_topology f ->
+  exists g:set, continuous_map X Tx R R_standard_topology g /\
+    (forall x:set, x :e A -> g@x = f@x).
 admit.
 Qed.
