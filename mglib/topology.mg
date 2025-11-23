@@ -7810,6 +7810,9 @@ Qed.
 (** helper: Kuratowski ordered pair for cartesian products **) 
 Definition OrderedPair : set -> set -> set := fun x y => UPair x (UPair x y).
 
+(** ambient real line placeholder **) 
+Definition R : set := Power (Power omega).
+
 (** from §13 Example 4: circular vs rectangular region bases (abstract placeholders) **) 
 Definition EuclidPlane : set := OrderedPair R R.
 Definition circular_regions : set := R2_standard_topology.
@@ -7956,8 +7959,6 @@ admit.
 Qed.
 
 (** from §13 Exercise 6: incomparability of two real line topologies **) 
-Definition R : set := Power (Power omega).
-
 Definition rational_numbers : set := omega.
 
 Definition Rlt : set -> set -> prop := fun a b =>
