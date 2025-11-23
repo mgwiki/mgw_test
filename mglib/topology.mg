@@ -6544,4 +6544,41 @@ Theorem finer_via_basis : forall X B B':set,
 admit.
 Qed.
 
+Definition discrete_topology : set -> set := fun X => Power X.
+
+Definition indiscrete_topology : set -> set := fun X => {Empty, X}.
+
+Definition finite_complement_topology : set -> set :=
+  fun X => {U :e Power X | finite (X :\: U) \/ U = X}.
+
+Theorem discrete_topology_on : forall X, topology_on X (discrete_topology X).
+admit.
+Qed.
+
+Theorem indiscrete_topology_on : forall X, topology_on X (indiscrete_topology X).
+admit.
+Qed.
+
+Theorem finite_complement_topology_on : forall X, topology_on X (finite_complement_topology X).
+admit.
+Qed.
+
+Theorem finer_than_refl : forall T:set, finer_than T T.
+let T.
+exact (Subq_ref T).
+Qed.
+
+Theorem finer_than_trans : forall A B C:set, finer_than B A -> finer_than C B -> finer_than C A.
+let A B C.
+assume H1: finer_than B A.
+assume H2: finer_than C B.
+exact (Subq_tra A B C H1 H2).
+Qed.
+
+Theorem finer_coarser_dual : forall T T':set, finer_than T' T -> coarser_than T T'.
+let T T'.
+assume H.
+exact H.
+Qed.
+
 End Topology.
