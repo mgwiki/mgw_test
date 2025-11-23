@@ -8903,10 +8903,11 @@ admit.
 Qed.
 
 (** from §30 Definition 30.1: countable basis at a point / first countable **) 
-Parameter countable_basis_at : set -> set -> set -> prop.
+(* axioms capturing countability predicates to be elaborated later *) 
+Axiom countable_basis_at : set -> set -> set -> prop.
 
 (** from §30 Definition 30.1: first-countable space **) 
-Parameter first_countable_space : set -> set -> prop.
+Axiom first_countable_space : set -> set -> prop.
 
 (** from §30 Theorem 30.1(a): sequences and closure in first-countable spaces **) 
 Theorem first_countable_sequences_detect_closure : forall X Tx A x:set,
@@ -8925,7 +8926,7 @@ admit.
 Qed.
 
 (** from §30 Definition: second-countable space **) 
-Parameter second_countable_space : set -> set -> prop.
+Axiom second_countable_space : set -> set -> prop.
 
 (** from §30 Example 1: R^n has countable basis **) 
 Theorem euclidean_spaces_second_countable : forall n:set,
