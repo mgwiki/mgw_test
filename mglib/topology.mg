@@ -9123,3 +9123,12 @@ Theorem SOmega_SbarOmega_not_normal :
   ~ normal_space (product_space (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
 admit.
 Qed.
+
+(** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **) 
+Definition closed_interval : set -> set -> set := fun a b => Empty.
+
+Theorem Urysohn_lemma : forall X Tx A B a b:set,
+  normal_space X Tx -> closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+  continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)).
+admit.
+Qed.
