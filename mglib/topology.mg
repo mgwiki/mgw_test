@@ -9386,7 +9386,7 @@ Definition ex31_6_closed_map_preserves_normal : set := Empty.
 Definition ex31_7_perfect_map_properties : set := Empty.
 (** from §31 Exercise 8: orbit space of compact group action preserves properties **) 
 Definition ex31_8_orbit_space_properties : set := Empty.
-(** from §31 Exercise *9: Sorgenfrey plane rational/irrational diagonal non-separation **) 
+(** from §31 Exercise 9: Sorgenfrey plane rational/irrational diagonal non-separation **) 
 Definition ex31_9_star_Sorgenfrey_plane_no_separation : set := Empty.
 
 (** from §32 Exercise 1: closed subspace of normal is normal **) 
