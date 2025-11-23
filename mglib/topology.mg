@@ -7777,7 +7777,6 @@ Theorem generated_topology_finer : forall X B T:set,
   finer_than T (generated_topology X B).
 admit.
 Qed.
-Qed.
 
 (** from §13 Lemma 13.3 (direction): generated topology is smallest with given basis **) 
 Theorem topology_generated_by_basis_is_smallest : forall X B T:set,
