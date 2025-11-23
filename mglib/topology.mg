@@ -8744,7 +8744,10 @@ Definition locally_connected : set -> set -> prop := fun X Tx =>
       exists V:set, V :e Tx /\ x :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V).
 
 (** from §25 Definition: locally path connected **) 
-Definition locally_path_connected : set -> set -> prop := fun X Tx => topology_on X Tx.
+Definition locally_path_connected : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall x:set, x :e X ->
+    exists U:set, U :e Tx /\ x :e U /\ path_connected_space U (subspace_topology X Tx U).
 
 (** from §25: path components open in locally path connected spaces **) 
 Theorem path_components_open : forall X Tx:set,
@@ -8899,7 +8902,9 @@ admit.
 Qed.
 
 (** from §28 Definition: limit point compactness **) 
-Definition limit_point_compact : set -> set -> prop := fun X Tx => topology_on X Tx.
+Definition limit_point_compact : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall A:set, A c= X -> infinite A -> exists x:set, limit_point_of X Tx A x.
 
 Theorem compact_implies_limit_point_compact : forall X Tx:set,
   compact_space X Tx -> limit_point_compact X Tx.
@@ -8912,7 +8917,11 @@ admit.
 Qed.
 
 (** from §29 Definition: local compactness **) 
-Definition locally_compact : set -> set -> prop := fun X Tx => topology_on X Tx.
+Definition locally_compact : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall x:set, x :e X ->
+    exists U:set, U :e Tx /\ x :e U /\
+      compact_space (closure_of X Tx U) (subspace_topology X Tx (closure_of X Tx U)).
 
 Theorem Hausdorff_compact_sets_closed : forall X Tx:set,
   Hausdorff_space X Tx -> True.
@@ -9128,7 +9137,8 @@ Definition Sorgenfrey_plane_topology : set :=
 Definition ordered_square_open_strip : set := ordered_square.
 Definition ordered_square_subspace_topology : set :=
   subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
-Definition one_point_sets_closed : set -> set -> prop := fun X Tx => topology_on X Tx.
+Definition one_point_sets_closed : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\ forall x:set, x :e X -> closed_in X Tx {x}.
 Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi =>
   forall i:set, i :e I -> Hausdorff_space (product_component Xi i) (product_component_topology Xi i).
 Definition regular_spaces_family : set -> set -> prop := fun I Xi =>
