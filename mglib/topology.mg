@@ -7658,6 +7658,7 @@ apply set_ext.
 Qed.
 
 (** from §13 Lemma 13.2: extracting a basis from an open refinement condition **) 
+(** LATEX VERSION: Lemma 13.2: If every open set of topology T on X is locally contained in some element of C⊂T, then C is a basis and generates T. **)
 Theorem basis_refines_topology : forall X T C:set,
   topology_on X T ->
   (forall c :e C, c :e T) ->
