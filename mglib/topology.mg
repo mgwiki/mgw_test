@@ -9021,6 +9021,9 @@ Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi => True.
 Definition regular_spaces_family : set -> set -> prop := fun I Xi => True.
 Definition product_topology_full : set -> set -> set := fun I Xi => Empty.
 Definition product_space : set -> set -> set := fun I Xi => Empty.
+Parameter const_family : set -> set -> set.
+Parameter uncountable_set : set -> prop.
+Parameter well_ordered_set : set -> prop.
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 Theorem Sorgenfrey_plane_not_Lindelof :
@@ -9077,5 +9080,52 @@ Qed.
 Theorem Sorgenfrey_plane_not_normal :
   regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+admit.
+Qed.
+
+(** from §32 Theorem 32.1: regular space with countable basis is normal **) 
+Theorem regular_countable_basis_normal : forall X Tx:set,
+  regular_space X Tx -> second_countable_space X Tx -> normal_space X Tx.
+admit.
+Qed.
+
+(** from §32 Theorem 32.4: well-ordered sets are normal in order topology **) 
+Theorem well_ordered_sets_normal : forall X:set,
+  well_ordered_set X -> normal_space X (order_topology X).
+admit.
+Qed.
+(** from §32 Theorem 32.2: metrizable spaces are normal **) 
+Theorem metrizable_spaces_normal : forall X d:set,
+  metric_on X d -> normal_space X (metric_topology X d).
+admit.
+Qed.
+
+(** from §32 Theorem 32.3: compact Hausdorff spaces are normal **) 
+Theorem compact_Hausdorff_normal : forall X Tx:set,
+  compact_space X Tx -> Hausdorff_space X Tx -> normal_space X Tx.
+admit.
+Qed.
+
+(** from §32 Theorem 32.4: well-ordered sets are normal in order topology **) 
+Theorem well_ordered_sets_normal : forall X:set,
+  well_ordered_set X -> normal_space X (order_topology X).
+admit.
+Qed.
+
+(** from §32 Example 1: uncountable product of R not normal **) 
+Theorem uncountable_product_R_not_normal : forall J:set,
+  uncountable_set J -> ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
+admit.
+Qed.
+
+(** from §32 Example 2: SOmega x SbarOmega not normal **) 
+Parameter S_Omega : set.
+Parameter Sbar_Omega : set.
+Parameter SOmega_topology : set.
+Parameter SbarOmega_topology : set.
+
+Theorem SOmega_SbarOmega_not_normal :
+  normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
+  ~ normal_space (product_space (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
 admit.
 Qed.
