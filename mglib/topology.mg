@@ -6542,7 +6542,20 @@ Definition finite_complement_topology : set -> set :=
   fun X => {U :e Power X | finite (X :\: U) \/ U = Empty}.
 
 (** helper: placeholder for countable sets **)
-Definition countable : set -> prop := fun _ => True.
+Definition countable : set -> prop := fun X => atleastp X omega.
+
+Theorem finite_countable : forall X:set, finite X -> countable X.
+let X. assume Hfin.
+apply Hfin.
+let n. assume Hn: n :e omega. assume Heq: equip X n.
+claim Hn_sub : n c= omega.
+{ exact (omega_TransSet n Hn). }
+claim Hcount_n : atleastp n omega.
+{ exact (Subq_atleastp n omega Hn_sub). }
+claim Hcount_X : atleastp X n.
+{ exact (equip_atleastp X n Heq). }
+exact (atleastp_tra X n omega Hcount_X Hcount_n).
+Qed.
 
 (** from §12 Example 4: countable complement topology **)
 Definition countable_complement_topology : set -> set :=
@@ -6594,12 +6607,239 @@ Qed.
 
 (** from §12: indiscrete topology is a topology **)
 Theorem indiscrete_topology_on : forall X, topology_on X (indiscrete_topology X).
-admit.
+let X.
+prove indiscrete_topology X c= Power X
+/\ Empty :e indiscrete_topology X
+/\ X :e indiscrete_topology X
+/\ (forall UFam :e Power (indiscrete_topology X), Union UFam :e indiscrete_topology X)
+/\ (forall U :e indiscrete_topology X, forall V :e indiscrete_topology X, U :/\: V :e indiscrete_topology X).
+apply andI.
+- prove (indiscrete_topology X c= Power X /\ Empty :e indiscrete_topology X) /\ X :e indiscrete_topology X /\ (forall UFam :e Power (indiscrete_topology X), Union UFam :e indiscrete_topology X).
+  apply andI.
+  * prove indiscrete_topology X c= Power X /\ Empty :e indiscrete_topology X /\ X :e indiscrete_topology X.
+    apply andI.
+    { prove indiscrete_topology X c= Power X /\ Empty :e indiscrete_topology X.
+      apply andI.
+      - let U. assume HU: U :e indiscrete_topology X.
+        apply UPairE U Empty X HU.
+        + assume HUe: U = Empty. rewrite HUe. exact (Empty_In_Power X).
+        + assume HUX: U = X. rewrite HUX. exact (Self_In_Power X).
+      - exact (UPairI1 Empty X).
+    }
+    { exact (UPairI2 Empty X). }
+  * prove forall UFam :e Power (indiscrete_topology X), Union UFam :e indiscrete_topology X.
+    let UFam. assume Hfam: UFam :e Power (indiscrete_topology X).
+    claim Hsub : UFam c= indiscrete_topology X.
+    { exact (PowerE (indiscrete_topology X) UFam Hfam). }
+    apply xm (exists U:set, U :e UFam /\ U = X).
+    - assume Hex: exists U:set, U :e UFam /\ U = X.
+      claim HUnion_sub : Union UFam c= X.
+      { let x. assume HxUnion.
+        apply UnionE_impred UFam x HxUnion.
+        let U. assume HxU HUin.
+        claim HUtop : U :e indiscrete_topology X.
+        { exact (Hsub U HUin). }
+        apply UPairE U Empty X HUtop.
+        - assume HUe: U = Empty. rewrite HUe in HxU.
+          exact (EmptyE x HxU (x :e X)).
+        - assume HUX: U = X. rewrite HUX. exact HxU.
+      }
+      claim HX_sub : X c= Union UFam.
+      { let x. assume HxX.
+        apply Hex.
+        let U. assume HUin HUeq.
+        rewrite HUeq.
+        apply UnionI UFam x U.
+        - exact HxX.
+        - exact HUin.
+      }
+      claim HUnion_eq : Union UFam = X.
+      { apply set_ext; [exact HUnion_sub|exact HX_sub]. }
+      rewrite HUnion_eq. exact (UPairI2 Empty X).
+    - assume Hnone: ~exists U:set, U :e UFam /\ U = X.
+      claim HUnion_empty : Union UFam = Empty.
+      { apply Empty_Subq_eq.
+        let x. assume HxUnion.
+        apply UnionE_impred UFam x HxUnion.
+        let U. assume HxU HUin.
+        claim HUtop : U :e indiscrete_topology X.
+        { exact (Hsub U HUin). }
+        apply UPairE U Empty X HUtop.
+        - assume HUe: U = Empty. rewrite HUe in HxU.
+          exact (EmptyE x HxU False).
+        - assume HUX: U = X.
+          apply Hnone.
+          witness U.
+          apply andI; exact HUin || exact HUX.
+      }
+      rewrite HUnion_empty. exact (UPairI1 Empty X).
+- prove forall U :e indiscrete_topology X, forall V :e indiscrete_topology X, U :/\: V :e indiscrete_topology X.
+  let U. assume HU: U :e indiscrete_topology X.
+  let V. assume HV: V :e indiscrete_topology X.
+  apply UPairE U Empty X HU.
+  * assume HUe: U = Empty.
+    claim Hcap : U :/\: V = Empty.
+    { rewrite HUe.
+      apply Empty_Subq_eq.
+      exact (binintersect_Subq_1 Empty V).
+    }
+    rewrite Hcap. exact (UPairI1 Empty X).
+  * assume HUX: U = X.
+    apply UPairE V Empty X HV.
+    { assume HVe: V = Empty.
+      claim Hcap : U :/\: V = Empty.
+      { rewrite HVe.
+        apply Empty_Subq_eq.
+        exact (binintersect_Subq_2 U Empty).
+      }
+      rewrite Hcap. exact (UPairI1 Empty X).
+    }
+    { assume HVX: V = X.
+      claim Hcap : U :/\: V = X.
+      { apply set_ext.
+        - rewrite HUX. exact (binintersect_Subq_1 X X).
+        - let x. assume HxX.
+          rewrite HUX. rewrite HVX.
+          exact (binintersectI X X x HxX HxX).
+      }
+      rewrite Hcap. exact (UPairI2 Empty X).
+    }
 Qed.
 
 (** from §12 Example 3: finite complement topology is a topology **)
 Theorem finite_complement_topology_on : forall X, topology_on X (finite_complement_topology X).
-admit.
+let X.
+prove finite_complement_topology X c= Power X
+/\ Empty :e finite_complement_topology X
+/\ X :e finite_complement_topology X
+/\ (forall UFam :e Power (finite_complement_topology X), Union UFam :e finite_complement_topology X)
+/\ (forall U :e finite_complement_topology X, forall V :e finite_complement_topology X, U :/\: V :e finite_complement_topology X).
+apply andI.
+- prove (finite_complement_topology X c= Power X /\ Empty :e finite_complement_topology X) /\ X :e finite_complement_topology X /\ (forall UFam :e Power (finite_complement_topology X), Union UFam :e finite_complement_topology X).
+  apply andI.
+  * prove finite_complement_topology X c= Power X /\ Empty :e finite_complement_topology X /\ X :e finite_complement_topology X.
+    apply andI.
+    { prove finite_complement_topology X c= Power X /\ Empty :e finite_complement_topology X.
+      apply andI.
+      - let U. assume HU: U :e finite_complement_topology X.
+        exact (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU).
+      - exact (finite_complement_topology_contains_empty X).
+    }
+    { exact (finite_complement_topology_contains_full X). }
+  * prove forall UFam :e Power (finite_complement_topology X), Union UFam :e finite_complement_topology X.
+    let UFam. assume Hfam: UFam :e Power (finite_complement_topology X).
+    claim Hsub : UFam c= finite_complement_topology X.
+    { exact (PowerE (finite_complement_topology X) UFam Hfam). }
+    apply xm (exists U:set, U :e UFam /\ finite (X :\: U)).
+    - assume Hex: exists U:set, U :e UFam /\ finite (X :\: U).
+      apply SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) (Union UFam).
+      + apply PowerI X (Union UFam).
+        let x. assume HxUnion.
+        apply UnionE_impred UFam x HxUnion.
+        let U. assume HxU HUin.
+        claim HUinPow : U :e Power X.
+        { exact (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U (Hsub U HUin)). }
+        claim HUsub : U c= X.
+        { exact (PowerE X U HUinPow). }
+        exact (HUsub x HxU).
+      + apply orIL.
+        apply Hex.
+        let U. assume HUin HUfin.
+        claim Hsubset : X :\: Union UFam c= X :\: U.
+        { let x. assume Hx.
+          claim HxX : x :e X.
+          { exact (setminusE1 X (Union UFam) x Hx). }
+          claim HnotUnion : x /:e Union UFam.
+          { exact (setminusE2 X (Union UFam) x Hx). }
+          claim HnotU : x /:e U.
+          { assume HxU.
+            apply HnotUnion.
+            apply UnionI UFam x U HxU HUin.
+          }
+          apply setminusI X U x HxX HnotU.
+        }
+        exact (Subq_finite (X :\: U) HUfin (X :\: Union UFam) Hsubset).
+    - assume Hnone: ~exists U:set, U :e UFam /\ finite (X :\: U).
+      claim HUnionEmpty : Union UFam = Empty.
+      { apply Empty_Subq_eq.
+        let x. assume HxUnion.
+        apply UnionE_impred UFam x HxUnion.
+        let U. assume HxU HUin.
+        claim HUdata : finite (X :\: U) \/ U = Empty.
+        { exact (SepE2 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U (Hsub U HUin)). }
+        apply HUdata False.
+        - assume HUfin.
+          apply Hnone.
+          witness U.
+          apply andI; exact HUin || exact HUfin.
+        - assume HUempty : U = Empty.
+          rewrite HUempty in HxU.
+          exact (EmptyE x HxU False).
+      }
+      rewrite HUnionEmpty.
+      exact (finite_complement_topology_contains_empty X).
+- prove forall U :e finite_complement_topology X, forall V :e finite_complement_topology X, U :/\: V :e finite_complement_topology X.
+  let U. assume HU: U :e finite_complement_topology X.
+  let V. assume HV: V :e finite_complement_topology X.
+  claim HUdata : finite (X :\: U) \/ U = Empty.
+  { exact (SepE2 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU). }
+  claim HVdata : finite (X :\: V) \/ V = Empty.
+  { exact (SepE2 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) V HV). }
+  apply HUdata (U :/\: V :e finite_complement_topology X).
+  * assume HUfin.
+    apply HVdata (U :/\: V :e finite_complement_topology X).
+    { assume HVfin.
+      apply SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) (U :/\: V).
+      - claim HUsub : U c= X.
+        { exact (PowerE X U (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU)). }
+        claim HVsub : V c= X.
+        { exact (PowerE X V (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) V HV)). }
+        apply PowerI X (U :/\: V).
+        let x. assume HxCap.
+        apply binintersectE U V x HxCap.
+        assume HxU HxV.
+        exact (HUsub x HxU).
+      - apply orIL.
+        claim HfinUnion : finite ((X :\: U) :\/: (X :\: V)).
+        { exact (binunion_finite (X :\: U) HUfin (X :\: V) HVfin). }
+        claim Hsubset : X :\: (U :/\: V) c= (X :\: U) :\/: (X :\: V).
+        { let x. assume Hx.
+          claim HxX : x :e X.
+          { exact (setminusE1 X (U :/\: V) x Hx). }
+          claim HnotCap : x /:e U :/\: V.
+          { exact (setminusE2 X (U :/\: V) x Hx). }
+          apply xm (x :e U).
+          - assume HxU.
+            claim HnotV : x /:e V.
+            { assume HxV.
+              apply HnotCap.
+              exact (binintersectI U V x HxU HxV).
+            }
+            apply binunionI2 (X :\: U) (X :\: V).
+            apply setminusI X V x HxX HnotV.
+          - assume HnotU.
+            apply binunionI1 (X :\: U) (X :\: V).
+            apply setminusI X U x HxX HnotU.
+        }
+        exact (Subq_finite ((X :\: U) :\/: (X :\: V)) HfinUnion (X :\: (U :/\: V)) Hsubset).
+    }
+    { assume HVempty : V = Empty.
+      claim Hcap_empty : U :/\: V = Empty.
+      { rewrite HVempty.
+        apply Empty_Subq_eq.
+        exact (binintersect_Subq_2 U Empty).
+      }
+      rewrite Hcap_empty.
+      exact (finite_complement_topology_contains_empty X).
+    }
+  * assume HUempty : U = Empty.
+    claim Hcap_empty : U :/\: V = Empty.
+    { rewrite HUempty.
+      apply Empty_Subq_eq.
+      exact (binintersect_Subq_1 Empty V).
+    }
+    rewrite Hcap_empty.
+    exact (finite_complement_topology_contains_empty X).
 Qed.
 
 (** from §12: finer_than reflexive **)
@@ -6783,7 +7023,21 @@ Qed.
 (** from §12 Example 3: X is open in finite complement topology **)
 Theorem finite_complement_topology_contains_full : forall X:set,
   X :e finite_complement_topology X.
-admit.
+let X.
+claim Hdiff_empty : X :\: X = Empty.
+{ apply Empty_Subq_eq.
+  let x. assume Hx.
+  apply EmptyE x.
+  claim Hxin : x :e X.
+  { exact (setminusE1 X X x Hx). }
+  claim Hxnot : x /:e X.
+  { exact (setminusE2 X X x Hx). }
+  exact (Hxnot Hxin).
+}
+apply SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) X (Self_In_Power X).
+apply orIL.
+rewrite Hdiff_empty.
+exact finite_Empty.
 Qed.
 
 (** from §12 Example 4: openness via countable complement **) 
@@ -6806,25 +7060,61 @@ Qed.
 (** from §12 Example 4: X is open in countable complement topology **) 
 Theorem countable_complement_topology_contains_full : forall X:set,
   X :e countable_complement_topology X.
-admit.
+let X.
+claim Hdiff_empty : X :\: X = Empty.
+{ apply Empty_Subq_eq.
+  let x. assume Hx.
+  apply EmptyE x.
+  claim HxX : x :e X.
+  { exact (setminusE1 X X x Hx). }
+  claim Hxnot : x /:e X.
+  { exact (setminusE2 X X x Hx). }
+  exact (Hxnot HxX).
+}
+apply SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) X (Self_In_Power X).
+apply orIL.
+rewrite Hdiff_empty.
+exact (Subq_atleastp Empty omega (Subq_Empty omega)).
 Qed.
 
 (** from §12 Example comparison: countable vs finite complement **)
 Theorem countable_complement_finer_than_finite_complement : forall X:set,
   finer_than (countable_complement_topology X) (finite_complement_topology X).
-admit.
+let X.
+prove finite_complement_topology X c= countable_complement_topology X.
+let U. assume HU: U :e finite_complement_topology X.
+claim HUinPow : U :e Power X.
+{ exact (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU). }
+claim HUdata : finite (X :\: U) \/ U = Empty.
+{ exact (SepE2 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU). }
+apply SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) U HUinPow.
+apply HUdata (countable (X :\: U) \/ U = Empty).
+- assume HUfin : finite (X :\: U).
+  apply orIL.
+  exact (finite_countable (X :\: U) HUfin).
+- assume HUemp : U = Empty.
+  apply orIR.
+  exact HUemp.
 Qed.
 
 (** from §12 examples: finite complement coarser than discrete **)
 Theorem finite_complement_coarser_than_discrete : forall X:set,
   coarser_than (finite_complement_topology X) (discrete_topology X).
-admit.
+let X.
+prove finite_complement_topology X c= discrete_topology X.
+let U. assume HU.
+exact (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU).
 Qed.
 
 (** from §12 examples: indiscrete coarser than countable complement **) 
 Theorem indiscrete_coarser_than_countable_complement : forall X:set,
   coarser_than (indiscrete_topology X) (countable_complement_topology X).
-admit.
+let X.
+prove indiscrete_topology X c= countable_complement_topology X.
+let U. assume HU: U :e indiscrete_topology X.
+apply UPairE U Empty X HU.
+- assume HUempty: U = Empty. rewrite HUempty. exact (countable_complement_topology_contains_empty X).
+- assume HUX: U = X. rewrite HUX. exact (countable_complement_topology_contains_full X).
 Qed.
 
 (** from §12: fineness via set inclusion of topologies **)
