@@ -9059,6 +9059,9 @@ Theorem separation_axioms_subspace_product : forall X Tx:set,
 admit.
 Qed.
 
+(** from §31 Example 1 setup: R_K space **) 
+Definition R_K : set := R.
+
 (** from §31 Example 1: R_K Hausdorff but not regular **) 
 Theorem RK_Hausdorff_not_regular :
   Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
