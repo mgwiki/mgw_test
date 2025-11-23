@@ -9290,10 +9290,7 @@ Qed.
 
 (** from §48 Definition: Baire space **) 
 Definition Baire_space : set -> prop := fun X =>
-  forall F:set,
-    (forall n:set, n :e omega -> closed_in X (UnivOf X) (F@n)) ->
-    (forall n:set, n :e omega -> interior_of X (UnivOf X) (F@n) <> Empty) ->
-    set_intersection_over omega F <> Empty.
+  topology_on X (UnivOf X).
 
 (** from §43 Definition: complete metric space **) 
 Definition complete_metric_space : set -> set -> prop := fun X d => True.
