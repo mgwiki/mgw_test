@@ -6766,7 +6766,7 @@ Qed.
 (** from §12 Example 3: finite complement openness criterion **)
 Theorem finite_complement_topology_open_criterion : forall X U:set,
   open_in X (finite_complement_topology X) U ->
-  finite (X :\: U) \/ U = X.
+  finite (X :\: U) \/ U = Empty.
 admit.
 Qed.
 
@@ -6785,7 +6785,7 @@ Qed.
 (** from §12 Example 4: openness via countable complement **) 
 Theorem countable_complement_topology_open_iff : forall X U:set,
   open_in X (countable_complement_topology X) U ->
-  countable (X :\: U) \/ U = X.
+  countable (X :\: U) \/ U = Empty.
 admit.
 Qed.
 
