@@ -6672,6 +6672,44 @@ Theorem lemma_intersection_two_open : forall X T U V:set,
 admit.
 Qed.
 
+Definition basis_generates : set -> set -> set -> prop := fun X B T =>
+  basis_on X B /\ generated_topology X B = T.
+
+Definition basis_refines : set -> set -> set -> prop := fun X B T =>
+  topology_on X T /\ (forall U :e T, forall x :e U, exists b :e B, x :e b /\ b c= U).
+
+Definition topological_space : set -> set -> prop := topology_on.
+
+Definition open_set_family : set -> set -> set := fun _ T => T.
+
+Definition open_set : set -> set -> set -> prop := fun X T U => topology_on X T /\ U :e T.
+
+Theorem lemma_generated_topology_characterization : forall X B:set,
+  basis_on X B ->
+  generated_topology X B
+  = {U :e Power X | forall x :e U, exists b :e B, x :e b /\ b c= U}.
+admit.
+Qed.
+
+Theorem lemma_topology_from_basis : forall X B:set,
+  basis_on X B ->
+  topology_on X {U :e Power X | forall x :e U, exists b :e B, x :e b /\ b c= U}.
+admit.
+Qed.
+
+Theorem lemma_basis_condition_union : forall X B:set,
+  basis_on X B ->
+  forall U:set, open_in X (generated_topology X B) U ->
+    forall x :e U, exists b :e B, x :e b /\ b c= U.
+admit.
+Qed.
+
+Theorem lemma_finer_if_basis_refines : forall X B B':set,
+  basis_on X B -> basis_refines X B' (generated_topology X B) ->
+  finer_than (generated_topology X B) (generated_topology X B').
+admit.
+Qed.
+
 Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
   topology_on X T1 /\ topology_on X T2 /\ T1 = T2.
 
