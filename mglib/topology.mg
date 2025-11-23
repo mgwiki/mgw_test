@@ -8212,6 +8212,7 @@ Qed.
 Definition unit_interval : set := R.
 Definition ordered_square : set := OrderedPair unit_interval unit_interval.
 Definition ordered_square_topology : set := order_topology ordered_square.
+Definition ordered_square_open_strip : set := ordered_square.
 Definition ordered_square_subspace_topology : set :=
   subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
 
@@ -9314,7 +9315,6 @@ Qed.
 (** placeholders for later refinement of product/separation constructions **) 
 Definition Sorgenfrey_plane_topology : set :=
   product_topology Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology.
-Definition ordered_square_open_strip : set := ordered_square.
 Definition one_point_sets_closed : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall x:set, x :e X -> closed_in X Tx {x}.
 Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi =>
