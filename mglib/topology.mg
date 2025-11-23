@@ -9099,7 +9099,8 @@ Definition compact_space : set -> set -> prop := fun X Tx =>
 (** from §26: open cover characterization **) 
 Theorem Heine_Borel_subcover : forall X Tx Fam:set,
   compact_space X Tx ->
-  True.
+  open_cover_of X Tx Fam ->
+  has_finite_subcover X Tx Fam.
 admit.
 Qed.
 
@@ -9137,13 +9138,21 @@ admit.
 Qed.
 
 (** from §26: tube lemma used in product compactness **) 
-Theorem tube_lemma : True.
+Theorem tube_lemma : forall X Tx Y Ty:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  compact_space X Tx ->
+  forall x0:set, x0 :e X ->
+  forall N:set, N :e product_topology X Tx Y Ty /\ x0 :e N ->
+    exists U:set, U :e Tx /\ x0 :e U /\
+      (forall y:set, y :e Y -> OrderedPair U y :e N).
 admit.
 Qed.
 
 (** from §26 Theorem 26.6: compact-to-Hausdorff bijection is a homeomorphism **) 
 Theorem compact_to_Hausdorff_bijection_homeomorphism : forall X Tx Y Ty f:set,
-  compact_space X Tx -> Hausdorff_space Y Ty -> continuous_map X Tx Y Ty f -> True.
+  compact_space X Tx -> Hausdorff_space Y Ty ->
+  continuous_map X Tx Y Ty f -> bijection X Y f ->
+  homeomorphism X Tx Y Ty f.
 admit.
 Qed.
 
