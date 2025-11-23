@@ -7552,7 +7552,36 @@ Theorem open_as_union_of_basis_elements : forall X B:set,
   basis_on X B ->
   forall U:set, open_in X (generated_topology X B) U ->
     U = Union {b :e B|b c= U}.
-admit.
+let X B. assume HBasis.
+let U. assume HUopen.
+claim HUtop : U :e generated_topology X B.
+{ exact (andER (topology_on X (generated_topology X B)) (U :e generated_topology X B) HUopen). }
+claim HUprop : forall x :e U, exists b :e B, x :e b /\ b c= U.
+{ exact (SepE2 (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) U HUtop). }
+claim Fam : set := {b :e B|b c= U}.
+apply Ext.
+- let x. assume HxU.
+  claim Hexb : exists b :e B, x :e b /\ b c= U.
+  { exact (HUprop x HxU). }
+  apply Hexb.
+  let b. assume Hbpair.
+  claim HbB : b :e B.
+  { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
+  claim Hbprop : x :e b /\ b c= U.
+  { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
+  claim Hxb : x :e b.
+  { exact (andEL (x :e b) (b c= U) Hbprop). }
+  claim HbsubU : b c= U.
+  { exact (andER (x :e b) (b c= U) Hbprop). }
+  claim HbFam : b :e Fam.
+  { exact (SepI B (fun b0 : set => b0 c= U) b HbB HbsubU). }
+  exact (UnionI Fam x b Hxb HbFam).
+- let x. assume HxUnion.
+  apply UnionE_impred Fam x HxUnion.
+  let b. assume Hxb HbFam.
+  claim HbsubU : b c= U.
+  { exact (SepE2 B (fun b0 : set => b0 c= U) b HbFam). }
+  exact (HbsubU x Hxb).
 Qed.
 
 (** from §13 Lemma 13.2: extracting a basis from an open refinement condition **) 
