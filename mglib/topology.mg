@@ -8877,7 +8877,10 @@ Qed.
 
 (** from §24: connected subspaces of ℝ are intervals **) 
 Theorem connected_subsets_real_are_intervals : forall A:set,
-  A c= R -> connected_space A (subspace_topology R R_standard_topology A) -> True.
+  A c= R ->
+  connected_space A (subspace_topology R R_standard_topology A) ->
+  forall x y z:set, x :e A -> y :e A -> z :e R ->
+    (Rlt x z /\ Rlt z y \/ Rlt y z /\ Rlt z x) -> z :e A.
 admit.
 Qed.
 
@@ -8889,12 +8892,16 @@ admit.
 Qed.
 
 (** from §23 Example: product topology on R^ω is connected **) 
-Theorem R_omega_product_connected : connected_space Empty Empty.
+Theorem R_omega_product_connected :
+  connected_space (product_space omega (const_family omega R))
+    (product_topology_full omega (const_family omega R)).
 admit.
 Qed.
 
 (** from §23 Example: box topology on R^ω is disconnected **) 
-Theorem R_omega_box_not_connected : True.
+Theorem R_omega_box_not_connected :
+  ~ connected_space (product_space omega (const_family omega R))
+    (box_topology omega (const_family omega R)).
 admit.
 Qed.
 
@@ -8934,7 +8941,12 @@ Definition path_component_of : set -> set -> set -> set := fun X Tx x =>
 
 (** from §24: path components form equivalence classes **) 
 Theorem path_components_equivalence_relation : forall X Tx:set,
-  topology_on X Tx -> True.
+  topology_on X Tx ->
+  (forall x:set, x :e X -> x :e path_component_of X Tx x) /\
+  (forall x y:set, x :e X -> y :e X -> y :e path_component_of X Tx x -> x :e path_component_of X Tx y) /\
+  (forall x y z:set, x :e X -> y :e X -> z :e X ->
+     y :e path_component_of X Tx x -> z :e path_component_of X Tx y ->
+     z :e path_component_of X Tx x).
 admit.
 Qed.
 
@@ -8955,30 +8967,39 @@ Definition locally_path_connected : set -> set -> prop := fun X Tx =>
 
 (** from §25: path components open in locally path connected spaces **) 
 Theorem path_components_open : forall X Tx:set,
-  locally_path_connected X Tx -> True.
+  locally_path_connected X Tx ->
+  forall x:set, x :e X ->
+    open_in X Tx (path_component_of X Tx x).
 admit.
 Qed.
 
 (** from §25: components equal path components when locally path connected **) 
 Theorem components_equal_path_components : forall X Tx:set,
-  locally_path_connected X Tx -> True.
+  locally_path_connected X Tx ->
+  forall x:set, x :e X ->
+    path_component_of X Tx x = component_of X Tx x.
 admit.
 Qed.
 
 Theorem components_are_closed : forall X Tx:set,
-  topology_on X Tx -> True.
+  topology_on X Tx ->
+  forall x:set, x :e X -> closed_in X Tx (component_of X Tx x).
 admit.
 Qed.
 
 (** from §25: components partition the space **) 
 Theorem components_partition_space : forall X Tx:set,
-  topology_on X Tx -> True.
+  topology_on X Tx ->
+  covers X {component_of X Tx x | x :e X} /\
+  pairwise_disjoint {component_of X Tx x | x :e X}.
 admit.
 Qed.
 
 (** from §25: quotient of locally connected space is locally connected **) 
 Theorem quotient_preserves_local_connectedness : forall X Tx Y f:set,
-  quotient_map X Tx Y f -> locally_connected X Tx -> locally_connected Y (quotient_topology X Tx Y f).
+  quotient_map X Tx Y f ->
+  locally_connected X Tx ->
+  locally_connected Y (quotient_topology X Tx Y f).
 admit.
 Qed.
 
