@@ -9021,9 +9021,9 @@ Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi => True.
 Definition regular_spaces_family : set -> set -> prop := fun I Xi => True.
 Definition product_topology_full : set -> set -> set := fun I Xi => Empty.
 Definition product_space : set -> set -> set := fun I Xi => Empty.
-Parameter const_family : set -> set -> set.
-Parameter uncountable_set : set -> prop.
-Parameter well_ordered_set : set -> prop.
+Definition const_family : set -> set -> set := fun I X => Empty.
+Definition uncountable_set : set -> prop := fun X => True.
+Definition well_ordered_set : set -> prop := fun X => True.
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 Theorem Sorgenfrey_plane_not_Lindelof :
