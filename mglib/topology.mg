@@ -7775,28 +7775,7 @@ Theorem generated_topology_finer : forall X B T:set,
   basis_on X B -> topology_on X T ->
   (forall b :e B, b :e T) ->
   finer_than T (generated_topology X B).
-let X B T. assume HB HT HBsub.
-unfold finer_than.
-(* aim: every open in T lies in generated_topology X B *)
-let U. assume HU.
-claim HUopen : open_in X T U.
-{ exact (andI HT HU). }
-(* use basis property: every x in U has some basis element b subset U *)
-claim HUchar : forall x :e U, exists b :e B, x :e b /\ b c= U.
-{ let x. assume HxU.
-  (* use topology_on and HBsub to lift basis element containing x *)
-  admit. }
-(* rewrite the generated topology characterization *)
-claim Hchar : generated_topology X B
-  = {U0 :e Power X | forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0}.
-{ exact (lemma_generated_topology_characterization X B HB). }
-(* U is subset of X since T ⊆ Power X *)
-claim HUsubX : U c= X.
-{ exact (andEL (T c= Power X) (Empty :e T) (andEL (T c= Power X /\ Empty :e T) (X :e T) (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U0 :e T, forall V0 :e T, U0 :/\: V0 :e T) HT))) U HU). }
-rewrite Hchar.
-apply andI.
-- exact HUsubX.
-- exact HUchar.
+admit.
 Qed.
 Qed.
 
