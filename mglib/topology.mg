@@ -8114,9 +8114,11 @@ Qed.
 
 (** from §15 Definition: projections on a product **) 
 Definition projection1 : set -> set -> set := fun X Y =>
-  {UPair (OrderedPair x y) x | x :e X /\ y :e Y}.
+  {p :e Power (OrderedPair (OrderedPair X Y) X) |
+     exists x:set, exists y:set, x :e X /\ y :e Y /\ p = UPair (OrderedPair x y) x}.
 Definition projection2 : set -> set -> set := fun X Y =>
-  {UPair (OrderedPair x y) y | x :e X /\ y :e Y}.
+  {p :e Power (OrderedPair (OrderedPair X Y) Y) |
+     exists x:set, exists y:set, x :e X /\ y :e Y /\ p = UPair (OrderedPair x y) y}.
 
 (** from §15 Theorem 15.2: projection preimages form a subbasis **) 
 Theorem product_subbasis_from_projections : forall X Tx Y Ty:set,
