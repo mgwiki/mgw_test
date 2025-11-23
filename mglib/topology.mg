@@ -8536,7 +8536,7 @@ Theorem open_in_subspace_if_ambient_open : forall X Tx Y U:set,
   topology_on X Tx -> Y :e Tx ->
   open_in Y (subspace_topology X Tx Y) U ->
   U :e Tx.
-admit. (**  aby  EmptyAx open_in_subspace_iff open_set�f ex13_1_local_open_subset prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms EmptyAx open_in_subspace_iff open_set�f ex13_1_local_open_subset prop_ext_2 . **)
 Qed.
 
 (** from §16 Theorem 16.3: product of subspaces equals subspace of product **) 
@@ -8560,7 +8560,7 @@ Definition ordered_square_subspace_topology : set :=
 
 Theorem ordered_square_not_subspace_dictionary :
   ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
-admit. (**  aby  top_abc_2�f discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
+admit. (** aby ContradictoryAxioms top_abc_2�f discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
 Qed.
 
 (** from §16 Theorem 16.4: convex subspaces share the order topology **) 
@@ -8576,7 +8576,7 @@ Theorem ex16_1_subspace_transitive : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X -> A c= Y ->
   subspace_topology Y (subspace_topology X Tx Y) A =
   subspace_topology X Tx A.
-admit. (**  aby  EmptyAx open_in_subspace_iff discrete_open_all In_5Find prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms EmptyAx open_in_subspace_iff discrete_open_all In_5Find prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 2: fineness relation passes to subspaces **) 
@@ -8598,7 +8598,7 @@ Definition interval_E : set := open_interval (Power (Power Empty)) (Power (Power
 Theorem ex16_3_open_sets_subspace : forall X Tx Y:set,
   topology_on X Tx -> Y c= X ->
   forall U:set, open_in Y (subspace_topology X Tx Y) U -> exists V:set, open_in X Tx V /\ U = V :/\: Y.
-admit. (**  aby  discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
+admit. (** aby ContradictoryAxioms discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
 Qed.
 
 (** from §16 Exercise 4: projections are open maps **) 
@@ -8612,7 +8612,7 @@ Theorem ex16_4_projections_open : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   forall U:set, U :e product_topology X Tx Y Ty ->
     open_in X Tx (projection_image1 X Y U) /\ open_in Y Ty (projection_image2 X Y U).
-admit. (**  aby  EmptyAx open_in_subspace_iff open_set�f ex13_1_local_open_subset prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms EmptyAx open_in_subspace_iff open_set�f ex13_1_local_open_subset prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 5(a): product topology monotonicity **) 
@@ -8621,7 +8621,7 @@ Theorem ex16_5a_product_monotone : forall X T T' Y U U':set,
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
   T c= T' /\ U c= U' ->
   product_topology X T Y U c= product_topology X T' Y U'.
-admit. (**  aby  ex13_8b_halfopen_rational_basis_topology open_in_subspace_iff binintersect_Subq_eq_1 binintersect_com ex13_3b_Tinfty_not_topology binintersect_Subq_2 ex13_6_Rl_RK_not_comparable prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms ex13_8b_halfopen_rational_basis_topology open_in_subspace_iff binintersect_Subq_eq_1 binintersect_com ex13_3b_Tinfty_not_topology binintersect_Subq_2 ex13_6_Rl_RK_not_comparable prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 5(b): converse question about product fineness **) 
@@ -8663,7 +8663,7 @@ Theorem ex16_7_convex_interval_or_ray : forall A:set,
      exists a b:set, A = open_interval a b \/
        A = {x :e R|Rlt a x} \/
        A = {x :e R|Rlt x b}).
-admit. (**  aby  top_abc_2�f EmptyAx open_in_subspace_iff discrete_open_all In_5Fno2cycle eq_1_Sing0 not_ordinal_Sing1 prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms top_abc_2�f EmptyAx open_in_subspace_iff discrete_open_all In_5Fno2cycle eq_1_Sing0 not_ordinal_Sing1 prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
@@ -8689,7 +8689,7 @@ Theorem ex16_10_compare_topologies_on_square :
   ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square /\
   subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square <>
     product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
-admit. (**  aby  ex13_6_Rl_RK_not_comparable finer_than_def open_in_subspace_iff Sep_5FEmpty SepE2 prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms ex13_6_Rl_RK_not_comparable finer_than_def open_in_subspace_iff Sep_5FEmpty SepE2 prop_ext_2 . **)
 Qed.
 
 (** from §17 Definition: interior and closure of a set **) 
@@ -8716,7 +8716,7 @@ Theorem closed_in_subspace_iff_intersection : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X ->
   (closed_in Y (subspace_topology X Tx Y) A <->
    exists C:set, closed_in X Tx C /\ A = C :/\: Y).
-admit. (**  aby  discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
+admit. (** aby ContradictoryAxioms discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
 Qed.
 
 (** from §17 Theorem 17.3: closedness passes up when subspace is closed **) 
@@ -8725,7 +8725,7 @@ Theorem closed_in_closed_subspace : forall X Tx Y A:set,
   topology_on X Tx -> closed_in X Tx Y ->
   closed_in Y (subspace_topology X Tx Y) A ->
   closed_in X Tx A.
-admit. (**  aby  ordered_square_topology�f convex_subspace_order_topology ordered_square�f ex16_10_compare_topologies_on_square binintersect_Subq_eq_1 binintersect_com open_in_subspace_iff Sep_5FEmpty SepE2 Repl_5FEmpty closed_sets_axioms binintersect_Subq_2 prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms ordered_square_topology�f convex_subspace_order_topology ordered_square�f ex16_10_compare_topologies_on_square binintersect_Subq_eq_1 binintersect_com open_in_subspace_iff Sep_5FEmpty SepE2 Repl_5FEmpty closed_sets_axioms binintersect_Subq_2 prop_ext_2 . **)
 Qed.
 
 (** from §17 Theorem 17.4: closure in subspace equals intersection **) 
@@ -8733,7 +8733,7 @@ Qed.
 Theorem closure_in_subspace : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X ->
   closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
-admit. (**  aby  discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
+admit. (** aby ContradictoryAxioms discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
 Qed.
 
 (** from §17 Theorem 17.5: closure via neighborhoods/basis **) 
@@ -8741,7 +8741,7 @@ Qed.
 Theorem closure_characterization : forall X Tx A x:set,
   topology_on X Tx ->
   (x :e closure_of X Tx A <-> (forall U :e Tx, x :e U -> U :/\: A <> Empty)).
-admit. (**  aby  open_in_subspace_iff EmptyAx discrete_open_all SingI In_5Fno2cycle SNoLt_5Firref prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms open_in_subspace_iff EmptyAx discrete_open_all SingI In_5Fno2cycle SNoLt_5Firref prop_ext_2 . **)
 Qed.
 
 (** from §17 Corollary 17.7: closed iff contains all limit points **) 
@@ -8816,7 +8816,7 @@ Qed.
 (** LATEX VERSION: Exercise 1: Given a notion of closed sets satisfying axioms, prove they come from a topology. **)
 Theorem ex17_1_topology_from_closed_sets : forall X Tx:set,
   closed_in X Tx X -> (forall A:set, closed_in X Tx A -> closed_in X Tx (X :\: A)) -> topology_on X Tx.
-admit. (**  aby  ordsuccI2 In_5Fno2cycle open_in_subspace_iff EmptyAx discrete_open_all prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms ordsuccI2 In_5Fno2cycle open_in_subspace_iff EmptyAx discrete_open_all prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 2: If Y is closed in X and A is closed in the subspace Y, then A is closed in X. **)
@@ -8836,13 +8836,13 @@ Qed.
 Theorem ex17_4_open_minus_closed_and_closed_minus_open : forall X Tx U A:set,
   topology_on X Tx -> open_in X Tx U -> closed_in X Tx A ->
   open_in X Tx (U :\: A) /\ closed_in X Tx (A :\: U).
-admit. (**  aby  EmptyAx open_in_subspace_iff discrete_open_all In_5Firref nIn�f prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms EmptyAx open_in_subspace_iff discrete_open_all In_5Firref nIn�f prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 5: Closure of (0,1) in order topology on X equals (0,1). **)
 Theorem ex17_5_closure_of_interval_in_order_topology : forall X:set,
   closure_of X (order_topology X) (open_interval 0 1) = open_interval 0 1.
-admit. (**  aby  ordsuccI2 In_5Fno2cycle EmptyAx open_in_subspace_iff discrete_open_all prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms ordsuccI2 In_5Fno2cycle EmptyAx open_in_subspace_iff discrete_open_all prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 6: Closure is idempotent and closed; closure(A) is closed. **)
