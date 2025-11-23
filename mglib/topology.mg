@@ -9011,3 +9011,70 @@ Theorem Sorgenfrey_line_countability :
   ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
 admit.
 Qed.
+
+(* placeholders for later refinement of product/separation constructions *) 
+Parameter Sorgenfrey_plane_topology : set.
+Parameter ordered_square : set.
+Parameter ordered_square_topology : set.
+Parameter ordered_square_open_strip : set.
+Parameter ordered_square_subspace_topology : set.
+Parameter one_point_sets_closed : set -> set -> prop.
+Parameter Hausdorff_spaces_family : set -> set -> prop.
+Parameter regular_spaces_family : set -> set -> prop.
+Parameter product_topology_full : set -> set -> set.
+Parameter product_space : set -> set -> set.
+
+(** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
+Theorem Sorgenfrey_plane_not_Lindelof :
+  ~ Lindelof_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+admit.
+Qed.
+
+(** from §30 Example 5: subspace of Lindelöf space need not be Lindelöf **) 
+Theorem ordered_square_subspace_not_Lindelof :
+  Lindelof_space ordered_square ordered_square_topology /\
+  ~ Lindelof_space ordered_square_open_strip ordered_square_subspace_topology.
+admit.
+Qed.
+
+(** from §31 Definition: regular and normal spaces **) 
+Parameter regular_space : set -> set -> prop.
+Parameter normal_space : set -> set -> prop.
+
+(** from §31 Lemma 31.1: closure-neighborhood reformulations of regular/normal **) 
+Theorem regular_normal_via_closure : forall X Tx:set,
+  topology_on X Tx ->
+  (one_point_sets_closed X Tx -> (regular_space X Tx <->
+     forall x U:set, x :e X -> U :e Tx -> x :e U -> exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U)) /\
+  (one_point_sets_closed X Tx -> (normal_space X Tx <->
+     forall A U:set, closed_in X Tx A -> U :e Tx -> A c= U -> exists V:set, V :e Tx /\ A c= V /\ closure_of X Tx V c= U)).
+admit.
+Qed.
+
+(** from §31 Theorem 31.2: subspaces/products preserve Hausdorff and regular **) 
+Theorem separation_axioms_subspace_product : forall X Tx:set,
+  topology_on X Tx ->
+  (forall Y:set, Y c= X -> Hausdorff_space X Tx -> Hausdorff_space Y (subspace_topology X Tx Y)) /\
+  (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi)) /\
+  (forall Y:set, Y c= X -> regular_space X Tx -> regular_space Y (subspace_topology X Tx Y)) /\
+  (forall I Xi:set, regular_spaces_family I Xi -> regular_space (product_space I Xi) (product_topology_full I Xi)).
+admit.
+Qed.
+
+(** from §31 Example 1: R_K Hausdorff but not regular **) 
+Theorem RK_Hausdorff_not_regular :
+  Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
+admit.
+Qed.
+
+(** from §31 Example 2: Sorgenfrey line normal **) 
+Theorem Sorgenfrey_line_normal : normal_space Sorgenfrey_line Sorgenfrey_topology.
+admit.
+Qed.
+
+(** from §31 Example 3: Sorgenfrey plane not normal **) 
+Theorem Sorgenfrey_plane_not_normal :
+  regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
+  ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+admit.
+Qed.
