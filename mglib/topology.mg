@@ -7836,9 +7836,7 @@ claim Hrefines : basis_refines X B' (generated_topology X B).
     { exact (SepE2 (Power X)
                    (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0)
                    U HU). }
-    claim Hexb : exists b :e B, x :e b /\ b c= U.
-    { exact (HUprop x HxU). }
-    apply Hexb.
+    apply HUprop x HxU.
     let b. assume Hbpair.
     claim HbB : b :e B.
     { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
