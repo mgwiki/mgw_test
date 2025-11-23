@@ -6504,6 +6504,9 @@ Definition topology_on : set -> set -> prop := fun X T =>
 Definition open_in : set -> set -> set -> prop := fun X T U =>
   topology_on X T /\ U :e T.
 
+Definition closed_in : set -> set -> set -> prop := fun X T C =>
+  topology_on X T /\ exists U :e T, C = X :\: U.
+
 Definition finer_than : set -> set -> prop := fun T' T => T c= T'.
 
 Definition coarser_than : set -> set -> prop := fun T' T => T' c= T.
