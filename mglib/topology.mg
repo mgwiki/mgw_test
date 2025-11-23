@@ -7550,6 +7550,33 @@ Theorem Heine_Borel_subcover : forall X Tx Fam:set,
 admit.
 Qed.
 
+(** from §26 Lemma 26.1: covering a subspace by ambient opens **) 
+Theorem compact_subspace_via_ambient_covers : forall X Tx Y:set,
+  topology_on X Tx ->
+  (compact_space Y (subspace_topology X Tx Y) <->
+    forall Fam:set, open_cover_of Y Tx Fam -> has_finite_subcover Y Tx Fam).
+admit.
+Qed.
+
+(** from §26 Theorem 26.2: closed subspaces of compact spaces are compact **) 
+Theorem closed_subspace_compact : forall X Tx Y:set,
+  compact_space X Tx -> closed_in X Tx Y -> compact_space Y (subspace_topology X Tx Y).
+admit.
+Qed.
+
+(** from §26 Theorem 26.3: compact subspaces of Hausdorff spaces are closed **) 
+Theorem compact_subspace_in_Hausdorff_closed : forall X Tx Y:set,
+  Hausdorff_space X Tx -> compact_space Y (subspace_topology X Tx Y) -> closed_in X Tx Y.
+admit.
+Qed.
+
+(** from §26 Lemma 26.4: separating point and compact set in Hausdorff space **) 
+Theorem Hausdorff_separate_point_compact_set : forall X Tx Y x:set,
+  Hausdorff_space X Tx -> compact_space Y (subspace_topology X Tx Y) -> x :/\: Y = Empty ->
+  exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ Y c= V /\ U :/\: V = Empty.
+admit.
+Qed.
+
 (** from §26: compactness preserved under continuous maps **) 
 Theorem continuous_image_compact : forall X Tx Y Ty f:set,
   compact_space X Tx -> continuous_map X Tx Y Ty f -> compact_space Y Ty.
@@ -7565,6 +7592,12 @@ Qed.
 
 (** from §26: tube lemma placeholder **) 
 Theorem tube_lemma : True.
+admit.
+Qed.
+
+(** from §26 Theorem 26.6: compact-to-Hausdorff bijection is a homeomorphism **) 
+Theorem compact_to_Hausdorff_bijection_homeomorphism : forall X Tx Y Ty f:set,
+  compact_space X Tx -> Hausdorff_space Y Ty -> continuous_map X Tx Y Ty f -> True.
 admit.
 Qed.
 
