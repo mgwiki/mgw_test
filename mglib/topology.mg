@@ -9045,17 +9045,35 @@ Definition const_family : set -> set -> set := fun I X => Empty.
 Definition uncountable_set : set -> prop := fun X => True.
 Definition well_ordered_set : set -> prop := fun X => True.
 Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi => True.
-Definition separating_family_of_functions : set -> set -> set -> set -> prop := fun X Tx F J => True.
+Definition apply_fun : set -> set -> set := fun f x => Empty.
+Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
+Definition function_space : set -> set -> set := fun X Y => {f:set|function_on f X Y}.
+Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
+  fun X Tx F J =>
+    topology_on X Tx /\ F c= function_space X J /\ True.
 Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f => True.
 Definition power_real : set -> set := fun J => Empty.
 Definition unit_interval_power : set -> set := fun J => Empty.
-Definition apply_fun : set -> set -> set := fun f x => Empty.
 Definition Tychonoff_space : set -> set -> prop := fun X Tx => True.
 Definition sigma_locally_finite_basis : set -> set -> prop := fun X Tx => True.
 Definition metrizable : set -> set -> prop := fun X Tx => True.
 Definition locally_finite_basis : set -> set -> prop := fun X Tx => True.
-Definition equicontinuous_family : set -> set -> set -> set -> prop := fun X Tx Y Ty => True.
-Definition relatively_compact_in_compact_convergence : set -> set -> set -> set -> prop := fun X Tx Y Ty => True.
+Definition equicontinuous_family : set -> set -> set -> set -> set -> prop :=
+  fun X Tx Y Ty F =>
+    topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
+    forall x:set, x :e X ->
+      forall f:set, f :e F ->
+        forall V:set, V :e Ty -> apply_fun f x :e V ->
+          exists U:set, U :e Tx /\ x :e U /\
+            forall g:set, g :e F -> forall y:set, y :e U -> apply_fun g y :e V.
+Definition pointwise_convergence_topology : set -> set -> set -> set -> set :=
+  fun X Tx Y Ty => generated_topology (function_space X Y) Empty.
+Definition compact_convergence_topology : set -> set -> set -> set -> set :=
+  fun X Tx Y Ty => generated_topology (function_space X Y) Empty.
+Definition relatively_compact_in_compact_convergence : set -> set -> set -> set -> set -> prop :=
+  fun X Tx Y Ty F =>
+    topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
+    compact_space F (compact_convergence_topology X Tx Y Ty).
 Definition nowhere_differentiable : set -> prop := fun f => True.
 Definition sequentially_compact : set -> set -> prop := fun X Tx => True.
 
@@ -9347,9 +9365,9 @@ Definition pointwise_convergence_topology : set -> set := fun X => Empty.
 Definition compact_convergence_topology : set -> set := fun X => Empty.
 
 (** from §47 Ascoli theorem **) 
-Theorem Ascoli_theorem : forall X Tx Y Ty:set,
+Theorem Ascoli_theorem : forall X Tx Y Ty F:set,
   compact_space X Tx -> Hausdorff_space Y Ty ->
-  equicontinuous_family X Tx Y Ty -> relatively_compact_in_compact_convergence X Tx Y Ty.
+  equicontinuous_family X Tx Y Ty F -> relatively_compact_in_compact_convergence X Tx Y Ty F.
 admit.
 Qed.
 
