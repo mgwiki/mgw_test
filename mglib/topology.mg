@@ -6581,4 +6581,14 @@ assume H.
 exact H.
 Qed.
 
+Definition comparable_topologies : set -> set -> prop := fun T1 T2 =>
+  finer_than T1 T2 \/ finer_than T2 T1.
+
+Theorem basis_refines_topology : forall X T C:set,
+  topology_on X T ->
+  (forall U :e T, forall x :e U, exists Cx :e C, x :e Cx /\ Cx c= U) ->
+  basis_on X C /\ generated_topology X C = T.
+admit.
+Qed.
+
 End Topology.
