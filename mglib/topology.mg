@@ -7471,7 +7471,7 @@ claim HFamPow : Fam :e Power B.
   let b. assume HbFam.
   exact (SepE1 B (fun b0 : set => b0 c= U) b HbFam). }
 claim HUnion_eq : Union Fam = U.
-{ apply Ext.
+{ apply set_ext.
   - let x. assume HxUnion.
     apply UnionE_impred Fam x HxUnion.
     let b. assume Hxb HbFam.
@@ -7561,7 +7561,7 @@ claim HUtop : U :e generated_topology X B.
 claim HUprop : forall x :e U, exists b :e B, x :e b /\ b c= U.
 { exact (SepE2 (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) U HUtop). }
 set Fam : set := {b :e B|b c= U}.
-apply Ext.
+apply set_ext.
 - let x. assume HxU.
   claim Hexb : exists b :e B, x :e b /\ b c= U.
   { exact (HUprop x HxU). }
