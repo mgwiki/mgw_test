@@ -8663,11 +8663,13 @@ admit.
 Qed.
 
 (** from §17 Corollary 17.7: closed iff contains all limit points **) 
+(** LATEX VERSION: Limit point x of A means every neighborhood of x contains a point of A different from x; closure equals A plus its limit points. **)
 Definition limit_point_of : set -> set -> set -> set -> prop := fun X Tx A x =>
   topology_on X Tx /\ x :e X /\
   forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
 Definition limit_points_of : set -> set -> set -> set := fun X Tx A => {x :e X|limit_point_of X Tx A x}.
 
+(** LATEX VERSION: Corollary 17.7: The closure of A equals A together with all its limit points. **)
 Theorem closure_equals_set_plus_limit_points : forall X Tx A:set,
   topology_on X Tx ->
   closure_of X Tx A = A :\/: limit_points_of X Tx A.
@@ -8675,6 +8677,7 @@ admit.
 Qed.
 
 (** from §17: closed sets contain all limit points **) 
+(** LATEX VERSION: A set A is closed iff it contains all its limit points. **)
 Theorem closed_iff_contains_limit_points : forall X Tx A:set,
   topology_on X Tx ->
   closed_in X Tx A <-> limit_points_of X Tx A c= A.
@@ -8682,6 +8685,7 @@ admit.
 Qed.
 
 (** from §17 Definition: Hausdorff and T1 spaces **) 
+(** LATEX VERSION: Hausdorff (T₂): distinct points have disjoint neighborhoods; T₁: all finite sets closed. **)
 Definition Hausdorff_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall x1 x2:set, x1 <> x2 ->
@@ -8691,12 +8695,14 @@ Definition T1_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ (forall F:set, finite F -> closed_in X Tx F).
 
 (** from §17 Theorem 17.8: finite sets closed in Hausdorff **) 
+(** LATEX VERSION: In any Hausdorff space, every finite subset is closed. **)
 Theorem finite_sets_closed_in_Hausdorff : forall X Tx:set,
   Hausdorff_space X Tx -> forall F:set, finite F -> closed_in X Tx F.
 admit.
 Qed.
 
 (** from §17 Theorem 17.9: limit points in T1 spaces have infinite neighborhoods **) 
+(** LATEX VERSION: In T₁ spaces, x is a limit point of A iff every neighborhood of x meets A in infinitely many points. **)
 Theorem limit_points_infinite_neighborhoods : forall X Tx A x:set,
   T1_space X Tx ->
   limit_point_of X Tx A x <->
@@ -8705,6 +8711,7 @@ admit.
 Qed.
 
 (** from §17 Theorem 17.10: uniqueness of limits in Hausdorff spaces **) 
+(** LATEX VERSION: In Hausdorff spaces, sequences (or nets) have at most one limit. **)
 Theorem Hausdorff_unique_limits : forall X Tx seq x y:set,
   Hausdorff_space X Tx ->
   x <> y ->
@@ -8716,6 +8723,7 @@ admit.
 Qed.
 
 (** from §17 Theorem 17.11: Hausdorff stability under constructions **) 
+(** LATEX VERSION: Products of Hausdorff spaces are Hausdorff. **)
 Theorem Hausdorff_stability : forall X Tx Y Ty:set,
   Hausdorff_space X Tx /\ Hausdorff_space Y Ty ->
   Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
@@ -8723,33 +8731,39 @@ admit.
 Qed.
 
 (** from §17 Exercises 1–20: closures, boundaries, Hausdorff properties **) 
+(** LATEX VERSION: Exercise 1: Given a notion of closed sets satisfying axioms, prove they come from a topology. **)
 Theorem ex17_1_topology_from_closed_sets : forall X Tx:set,
   closed_in X Tx X -> (forall A:set, closed_in X Tx A -> closed_in X Tx (X :\: A)) -> topology_on X Tx.
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 2: If Y is closed in X and A is closed in the subspace Y, then A is closed in X. **)
 Theorem ex17_2_closed_in_closed_subspace : forall X Tx Y A:set,
   closed_in X Tx Y -> closed_in Y (subspace_topology X Tx Y) A -> closed_in X Tx A.
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 3: Products of closed sets are closed in the product topology. **)
 Theorem ex17_3_product_of_closed_sets_closed : forall X Tx Y Ty A B:set,
   closed_in X Tx A -> closed_in Y Ty B ->
   closed_in (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 4: For open U and closed A, U\\A is open and A\\U is closed. **)
 Theorem ex17_4_open_minus_closed_and_closed_minus_open : forall X Tx U A:set,
   topology_on X Tx -> open_in X Tx U -> closed_in X Tx A ->
   open_in X Tx (U :\: A) /\ closed_in X Tx (A :\: U).
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 5: Closure of (0,1) in order topology on X equals (0,1). **)
 Theorem ex17_5_closure_of_interval_in_order_topology : forall X:set,
   closure_of X (order_topology X) (open_interval 0 1) = open_interval 0 1.
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 6: Closure is idempotent and closed; closure(A) is closed. **)
 Theorem ex17_6_closure_properties : forall X Tx A:set,
   topology_on X Tx ->
   closure_of X Tx (closure_of X Tx A) = closure_of X Tx A /\
@@ -8757,6 +8771,7 @@ Theorem ex17_6_closure_properties : forall X Tx A:set,
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 7: Show union being closed does not imply each set is closed. **)
 Theorem ex17_7_counterexample_union_closure : forall X Tx A B:set,
   topology_on X Tx ->
   closed_in X Tx (A :\/: B) ->
@@ -8764,12 +8779,14 @@ Theorem ex17_7_counterexample_union_closure : forall X Tx A B:set,
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 8: Relation between closure of intersections and intersection of closures. **)
 Theorem ex17_8_closure_intersection_questions : forall X Tx A B:set,
   topology_on X Tx ->
   closure_of X Tx (A :/\: B) c= closure_of X Tx A :/\: closure_of X Tx B.
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 9: Closure of A×B in product is product of closures. **)
 Theorem ex17_9_closure_of_product_subset : forall X Y Tx Ty A B:set,
   topology_on X Tx -> topology_on Y Ty ->
   closure_of (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B) =
@@ -8777,22 +8794,26 @@ Theorem ex17_9_closure_of_product_subset : forall X Y Tx Ty A B:set,
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 10: Order topology is Hausdorff. **)
 Theorem ex17_10_order_topology_Hausdorff : forall X:set,
   Hausdorff_space X (order_topology X).
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 11: Product of Hausdorff spaces is Hausdorff. **)
 Theorem ex17_11_product_Hausdorff : forall X Tx Y Ty:set,
   Hausdorff_space X Tx -> Hausdorff_space Y Ty ->
   Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 12: Subspaces of Hausdorff spaces are Hausdorff. **)
 Theorem ex17_12_subspace_Hausdorff : forall X Tx Y:set,
   Hausdorff_space X Tx -> Hausdorff_space Y (subspace_topology X Tx Y).
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 13: Diagonal is closed in X×X iff X is Hausdorff. **)
 Theorem ex17_13_diagonal_closed_iff_Hausdorff : forall X Tx:set,
   topology_on X Tx ->
   (Hausdorff_space X Tx <->
@@ -8800,6 +8821,7 @@ Theorem ex17_13_diagonal_closed_iff_Hausdorff : forall X Tx:set,
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 14: In the finite-complement topology, every sequence eventually lies in any given open set. **)
 Theorem ex17_14_sequence_in_finite_complement_topology : forall X seq:set,
   function_on seq omega X ->
   forall x:set, x :e X ->
@@ -8808,22 +8830,26 @@ Theorem ex17_14_sequence_in_finite_complement_topology : forall X seq:set,
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 15: A topology is T₁ iff every singleton is closed. **)
 Theorem ex17_15_T1_characterization : forall X Tx:set,
   topology_on X Tx ->
   (T1_space X Tx <-> (forall x:set, closed_in X Tx {x})).
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 16: Closures of K in the standard and lower limit topologies differ. **)
 Theorem ex17_16_closure_of_K_in_various_topologies :
   closure_of R R_standard_topology K_set <> closure_of R R_lower_limit_topology K_set.
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 17: Closures of K differ between the lower limit topology and the K-topology. **)
 Theorem ex17_17_closures_in_lower_limit_and_C_topology :
   closure_of R R_lower_limit_topology K_set <> closure_of R R_K_topology K_set.
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 18: Find A in ordered square where closures differ between two topologies. **)
 Theorem ex17_18_closures_in_ordered_square :
   exists A:set, A c= ordered_square /\
     closure_of ordered_square ordered_square_topology A <>
@@ -8834,6 +8860,7 @@ Qed.
 Definition boundary_of : set -> set -> set -> set := fun X Tx A =>
   closure_of X Tx A :/\: closure_of X Tx (X :\: A).
 
+(** LATEX VERSION: Exercise 19: The boundary of A lies in closure(A) and in closure(X\\A). **)
 Theorem ex17_19_boundary_properties : forall X Tx A:set,
   topology_on X Tx ->
   boundary_of X Tx A c= closure_of X Tx A /\
@@ -8841,18 +8868,21 @@ Theorem ex17_19_boundary_properties : forall X Tx A:set,
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 20: Boundary of a strip differs between standard and dictionary topologies on ℝ². **)
 Theorem ex17_20_boundaries_and_interiors_in_R2 :
   boundary_of (OrderedPair R R) R2_standard_topology ordered_square_open_strip <>
   boundary_of (OrderedPair R R) R2_dictionary_order_topology ordered_square_open_strip.
 admit.
 Qed.
 
+(** LATEX VERSION: Exercise 21: Kuratowski example in discrete topology gives maximal closure after complement. **)
 Theorem ex17_21_Kuratowski_closure_complement_maximal : forall X:set,
   closure_of X (discrete_topology X) (X :\: Empty) = X.
 admit.
 Qed.
 
 (** from §18 Definition: continuous map between topological spaces **) 
+(** LATEX VERSION: Continuity defined via preimages of open sets being open. **)
 Definition preimage_of : set -> set -> set -> set := fun X f V =>
   {x :e X | apply_fun f x :e V}.
 
@@ -8862,6 +8892,7 @@ Definition continuous_map : set -> set -> set -> set -> set -> prop :=
     forall V:set, V :e Ty -> preimage_of X f V :e Tx.
 
 (** from §18 Theorem 18.1: equivalent formulations of continuity **) 
+(** LATEX VERSION: Equivalent characterizations of continuity: open-preimage, closed-preimage, neighborhood criterion. **)
 Theorem continuity_equiv_forms : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f <->
@@ -8874,6 +8905,7 @@ admit.
 Qed.
 
 (** from §18: identity map is continuous **) 
+(** LATEX VERSION: Identity map on any space is continuous. **)
 Theorem identity_continuous : forall X Tx:set,
   topology_on X Tx ->
   let id := {UPair x x|x :e X} in
@@ -8882,6 +8914,7 @@ admit.
 Qed.
 
 (** from §18: composition of continuous maps is continuous **) 
+(** LATEX VERSION: Composition of continuous functions remains continuous. **)
 Theorem composition_continuous : forall X Tx Y Ty Z Tz f g:set,
   continuous_map X Tx Y Ty f ->
   continuous_map Y Ty Z Tz g ->
@@ -8890,6 +8923,7 @@ admit.
 Qed.
 
 (** from §18 Theorem 18.2: rules for constructing continuous functions **) 
+(** LATEX VERSION: Theorem 18.2 provides construction rules preserving continuity. **)
 Theorem continuous_construction_rules : forall X Tx Y Ty Z Tz f g:set,
   continuous_map X Tx Y Ty f ->
   continuous_map X Tx Y Ty g ->
@@ -8900,6 +8934,7 @@ admit.
 Qed.
 
 (** from §18 Definition: homeomorphism **) 
+(** LATEX VERSION: A homeomorphism is a bijective continuous map whose inverse is continuous. **)
 Definition homeomorphism : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f =>
     continuous_map X Tx Y Ty f /\
@@ -8908,6 +8943,7 @@ Definition homeomorphism : set -> set -> set -> set -> set -> prop :=
       (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y).
 
 (** from §18: continuous maps on subspaces **) 
+(** LATEX VERSION: Restricting a continuous map to a subspace remains continuous. **)
 Theorem continuous_on_subspace : forall X Tx Y Ty f A:set,
   topology_on X Tx -> A c= X ->
   continuous_map X Tx Y Ty f ->
@@ -8916,12 +8952,14 @@ admit.
 Qed.
 
 (** from §18: inverse of homeomorphism is continuous **) 
+(** LATEX VERSION: The inverse of a homeomorphism is continuous. **)
 Theorem homeomorphism_inverse_continuous : forall X Tx Y Ty f:set,
   homeomorphism X Tx Y Ty f -> continuous_map Y Ty X Tx f.
 admit.
 Qed.
 
 (** from §18 Theorem 18.3: pasting lemma **) 
+(** LATEX VERSION: Pasting lemma: continuous pieces on closed (or appropriate) sets assemble to a continuous map. **)
 Theorem pasting_lemma : forall X A B Y Tx Ty f g:set,
   topology_on X Tx ->
   A :e Tx -> B :e Tx -> A :/\: B = Empty ->
@@ -8932,6 +8970,7 @@ admit.
 Qed.
 
 (** from §18 Theorem 18.4: maps into products **) 
+(** LATEX VERSION: A map into a product is continuous iff its coordinate functions are continuous. **)
 Theorem maps_into_products : forall A X Tx Y Ty f g:set,
   continuous_map A Tx X Ty f ->
   continuous_map A Tx Y Ty g ->
@@ -8940,8 +8979,10 @@ admit.
 Qed.
 
 (** from §19 Definition: product projections and universal property **) 
+(** LATEX VERSION: Projection maps from a product space; universal property characterizes the product topology. **)
 Definition projection_map : set -> set -> set := fun X Y => projection1 X Y.
 
+(** LATEX VERSION: Projections from a product are continuous. **)
 Theorem projections_are_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
@@ -8950,6 +8991,7 @@ admit.
 Qed.
 
 (** from §19: product topology is coarsest making projections continuous **) 
+(** LATEX VERSION: The product topology is the coarsest topology on X×Y making the projections continuous. **)
 Theorem product_topology_universal : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   exists Tprod:set, topology_on (OrderedPair X Y) Tprod /\
@@ -8959,6 +9001,7 @@ admit.
 Qed.
 
 (** from §20 Definition: metric and metric topology **) 
+(** LATEX VERSION: Definition of a metric d on X and the induced metric topology generated by open balls. **)
 Definition metric_on : set -> set -> prop := fun X d =>
   function_on d (OrderedPair X X) R /\
   (forall x y:set, x :e X -> y :e X ->
@@ -8972,6 +9015,7 @@ Definition metric_on : set -> set -> prop := fun X d =>
          (apply_fun d (OrderedPair x y) :/\: apply_fun d (OrderedPair y z))).
 
 (** from §20 Definition: open ball **) 
+(** LATEX VERSION: Open ball centered at x with radius r in metric d. **)
 Definition open_ball : set -> set -> set -> set := fun X d x =>
   {y :e X|exists r :e R, Rlt (d x y) r}.
 
@@ -8979,6 +9023,7 @@ Definition metric_topology : set -> set -> set := fun X d =>
   generated_topology X {open_ball X d x|x :e X}.
 
 (** from §20: open balls form a basis **) 
+(** LATEX VERSION: In a metric space, open balls form a basis for the metric topology. **)
 Theorem open_balls_form_basis : forall X d:set,
   metric_on X d -> basis_on X {open_ball X d x|x :e X}.
 admit.
@@ -9055,6 +9100,7 @@ Definition uniform_convergence_functions :
             Rlt (apply_fun dY (OrderedPair (apply_fun (apply_fun f_seq n) x) (apply_fun f x))) eps.
 
 (** from §21: uniform limit theorem placeholder **) 
+(** LATEX VERSION: Uniform limit of continuous functions between metric spaces is continuous. **)
 Theorem uniform_limit_of_continuous_is_continuous :
   forall X dX Y dY f_seq f:set,
     metric_on X dX -> metric_on Y dY ->
@@ -9066,12 +9112,14 @@ admit.
 Qed.
 
 (** from §21: convergence of sequences in metric spaces **) 
+(** LATEX VERSION: Immediate restatement of convergence (placeholder). **)
 Theorem sequence_convergence_metric : forall X d seq x:set,
   sequence_converges_metric X d seq x -> sequence_converges_metric X d seq x.
 admit.
 Qed.
 
 (** from §21: continuity via sequences in metric spaces **) 
+(** LATEX VERSION: Continuity between metric spaces is equivalent to preserving limits of convergent sequences. **)
 Theorem continuity_via_sequences_metric : forall X dX Y dY f:set,
   metric_on X dX -> metric_on Y dY ->
   (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
@@ -9084,6 +9132,7 @@ admit.
 Qed.
 
 (** from §22 Definition: quotient map and quotient topology **) 
+(** LATEX VERSION: Quotient topology on Y makes a surjective map f:X→Y continuous iff preimages of opens in Y are open in X. **)
 Definition quotient_topology : set -> set -> set -> set -> set :=
   fun X Tx Y f => {V :e Power Y|{x :e X|apply_fun f x :e V} :e Tx}.
 
@@ -9099,6 +9148,7 @@ admit.
 Qed.
 
 (** from §22: universal property of quotient maps **) 
+(** LATEX VERSION: Universal property: a quotient map f is continuous into any topology Ty on Y coarser than the quotient topology. **)
 Theorem quotient_universal_property : forall X Tx Y Ty f:set,
   quotient_map X Tx Y f -> topology_on Y Ty ->
   continuous_map X Tx Y Ty f.
@@ -9106,15 +9156,18 @@ admit.
 Qed.
 
 (** from §23 Definition: separation of a space **) 
+(** LATEX VERSION: A separation of X is a pair of disjoint nonempty open sets whose union is X. **)
 Definition separation_of : set -> set -> set -> prop := fun X U V =>
   U :e Power X /\ V :e Power X /\ U :/\: V = Empty /\ U <> Empty /\ V <> Empty.
 
 (** from §23 Definition: connected space **) 
+(** LATEX VERSION: X with topology Tx is connected if it admits no separation. **)
 Definition connected_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X).
 
 (** from §23: no nontrivial clopen sets characterization **) 
+(** LATEX VERSION: A space is connected iff it has no nontrivial clopen subsets. **)
 Theorem connected_iff_no_nontrivial_clopen : forall X Tx:set,
   connected_space X Tx <->
   ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
@@ -9234,6 +9287,7 @@ Definition path_component_of : set -> set -> set -> set := fun X Tx x =>
      apply_fun p 0 = x /\ apply_fun p 1 = y}.
 
 (** from §24: path components form equivalence classes **) 
+(** LATEX VERSION: Path components are equivalence classes under path-connectibility. **)
 Theorem path_components_equivalence_relation : forall X Tx:set,
   topology_on X Tx ->
   (forall x:set, x :e X -> x :e path_component_of X Tx x) /\
@@ -9245,6 +9299,7 @@ admit.
 Qed.
 
 (** from §25 Definition: components and local connectedness **) 
+(** LATEX VERSION: Component_of X Tx x is the union of connected subspaces containing x; locally_connected means every neighborhood contains a connected open neighborhood of the point. **)
 Definition component_of : set -> set -> set -> set := fun X Tx x =>
   {y :e X | exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y :e C}.
 Definition locally_connected : set -> set -> prop := fun X Tx =>
@@ -9254,6 +9309,7 @@ Definition locally_connected : set -> set -> prop := fun X Tx =>
       exists V:set, V :e Tx /\ x :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V).
 
 (** from §25 Definition: locally path connected **) 
+(** LATEX VERSION: Locally path connected means each point has a neighborhood basis of path-connected sets. **)
 Definition locally_path_connected : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall x:set, x :e X ->
@@ -9265,6 +9321,7 @@ Definition covers : set -> set -> prop :=
   fun X U => forall x:set, x :e X -> exists u:set, u :e U /\ x :e u.
 
 (** from §25: path components open in locally path connected spaces **) 
+(** LATEX VERSION: In a locally path connected space, every path component is open. **)
 Theorem path_components_open : forall X Tx:set,
   locally_path_connected X Tx ->
   forall x:set, x :e X ->
@@ -9273,6 +9330,7 @@ admit.
 Qed.
 
 (** from §25: components equal path components when locally path connected **) 
+(** LATEX VERSION: In a locally path connected space, components coincide with path components. **)
 Theorem components_equal_path_components : forall X Tx:set,
   locally_path_connected X Tx ->
   forall x:set, x :e X ->
@@ -9287,6 +9345,7 @@ admit.
 Qed.
 
 (** from §25: components partition the space **) 
+(** LATEX VERSION: Components cover X and are pairwise disjoint. **)
 Theorem components_partition_space : forall X Tx:set,
   topology_on X Tx ->
   covers X {component_of X Tx x | x :e X} /\
@@ -9295,6 +9354,7 @@ admit.
 Qed.
 
 (** from §25: quotient of locally connected space is locally connected **) 
+(** LATEX VERSION: Quotients of locally connected spaces remain locally connected. **)
 Theorem quotient_preserves_local_connectedness : forall X Tx Y f:set,
   quotient_map X Tx Y f ->
   locally_connected X Tx ->
@@ -9403,6 +9463,7 @@ admit.
 Qed.
 
 (** from §26: tube lemma used in product compactness **) 
+(** LATEX VERSION: Tube lemma: in X×Y with X compact, a neighborhood of {x0}×Y contains some U×Y. **)
 Theorem tube_lemma : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   compact_space X Tx ->
@@ -9414,6 +9475,7 @@ admit.
 Qed.
 
 (** from §26 Theorem 26.6: compact-to-Hausdorff bijection is a homeomorphism **) 
+(** LATEX VERSION: A continuous bijection from compact space to Hausdorff space is a homeomorphism. **)
 Definition bijection : set -> set -> set -> prop := fun X Y f =>
   function_on f X Y /\
   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y /\
@@ -9428,10 +9490,12 @@ Theorem compact_to_Hausdorff_bijection_homeomorphism : forall X Tx Y Ty f:set,
 admit.
 Qed.
 
+(** LATEX VERSION: A subset A⊂ℝ is bounded if |x|≤M for some real M. **)
 Definition bounded_subset_of_reals : set -> prop := fun A =>
   exists M:set, M :e R /\ forall x:set, x :e A -> ~(Rlt M (Abs x)).
 
 (** from §26 Theorem 26.7: finite products of compact spaces are compact **) 
+(** LATEX VERSION: Finite product of compact spaces is compact. **)
 Theorem finite_product_compact : forall X Tx Y Ty:set,
   compact_space X Tx -> compact_space Y Ty ->
   compact_space (OrderedPair X Y) (product_topology X Tx Y Ty).
@@ -9439,6 +9503,7 @@ admit.
 Qed.
 
 (** from §26 Exercises: compactness examples and properties **) 
+(** LATEX VERSION: Exercises: unit interval closed in ℝ, unit interval compact, etc. **)
 Theorem ex26_compactness_exercises :
   forall X Tx:set, compact_space X Tx ->
   (closed_in R R_standard_topology unit_interval) /\
@@ -9447,6 +9512,7 @@ admit.
 Qed.
 
 (** from §26/§27: Heine-Borel on ℝ (closed and bounded sets) **) 
+(** LATEX VERSION: Heine–Borel: compact subsets of ℝ are closed and bounded; converses addressed. **)
 Theorem Heine_Borel_closed_bounded : forall A:set,
   A c= R ->
   compact_space A (subspace_topology R R_standard_topology A) ->
@@ -9455,6 +9521,7 @@ admit.
 Qed.
 
 (** from §27: compact subspaces of ℝ are closed and bounded **) 
+(** LATEX VERSION: Any compact subspace of ℝ is closed and bounded. **)
 Theorem compact_real_closed_bounded : forall A:set,
   compact_space A (subspace_topology R R_standard_topology A) ->
   closed_in R R_standard_topology A /\ bounded_subset_of_reals A.
@@ -9462,28 +9529,33 @@ admit.
 Qed.
 
 (** from §28 Definition: limit point compactness **) 
+(** LATEX VERSION: Limit point compact means every infinite subset has a limit point in X. **)
 Definition limit_point_compact : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall A:set, A c= X -> infinite A -> exists x:set, limit_point_of X Tx A x.
 
+(** LATEX VERSION: Compact ⇒ limit point compact. **)
 Theorem compact_implies_limit_point_compact : forall X Tx:set,
   compact_space X Tx -> limit_point_compact X Tx.
 admit.
 Qed.
 
 (** from §28: limit point compactness vs compactness **) 
+(** LATEX VERSION: Limit point compact need not imply compact; provides counterexample placeholder. **)
 Theorem limit_point_compact_not_necessarily_compact :
   exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
 admit.
 Qed.
 
 (** from §29 Definition: local compactness **) 
+(** LATEX VERSION: Locally compact means each point has a neighborhood whose closure is compact. **)
 Definition locally_compact : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall x:set, x :e X ->
     exists U:set, U :e Tx /\ x :e U /\
       compact_space (closure_of X Tx U) (subspace_topology X Tx (closure_of X Tx U)).
 
+(** LATEX VERSION: In Hausdorff spaces, compact subsets are closed. **)
 Theorem Hausdorff_compact_sets_closed : forall X Tx A:set,
   Hausdorff_space X Tx ->
   compact_space A (subspace_topology X Tx A) ->
@@ -9492,6 +9564,7 @@ admit.
 Qed.
 
 (** from §29: one-point compactification placeholder **) 
+(** LATEX VERSION: One-point compactification of a locally compact Hausdorff space. **)
 Definition one_point_compactification : set -> set -> set -> set -> prop := fun X Tx Y Ty =>
   compact_space Y Ty /\ Hausdorff_space Y Ty /\ X c= Y /\
   exists p:set, p :e Y /\ ~ p :e X /\
@@ -9505,6 +9578,7 @@ admit.
 Qed.
 
 (** from §29 Exercises: local compactness and compactification **) 
+(** LATEX VERSION: Exercises on constructing one-point compactifications. **)
 Theorem ex29_local_compactness_exercises :
   forall X Tx:set, locally_compact X Tx -> Hausdorff_space X Tx ->
   exists Y Ty:set, one_point_compactification X Tx Y Ty.
@@ -9512,16 +9586,19 @@ admit.
 Qed.
 
 (** from exercises after §29: directed sets **) 
+(** LATEX VERSION: Directed set definition (nonempty, every pair has an upper bound). **)
 Definition directed_set : set -> prop := fun J =>
   J <> Empty /\ forall i j:set, i :e J -> j :e J -> exists k:set, k :e J.
 
 (** from exercises after §29: examples of directed sets **) 
+(** LATEX VERSION: Simple closure properties/examples of directed sets (placeholder). **)
 Theorem examples_of_directed_sets : forall J:set,
   directed_set J -> directed_set J.
 admit.
 Qed.
 
 (** from exercises after §29: cofinal subsets of directed sets are directed **) 
+(** LATEX VERSION: Cofinal subset of a directed set is directed. **)
 Theorem cofinal_subset_directed : forall J K:set,
   directed_set J -> K c= J ->
   (forall i:set, i :e J -> exists k:set, k :e K /\ i :e K \/ i :e J) ->
@@ -9530,10 +9607,12 @@ admit.
 Qed.
 
 (** from exercises after §29: nets as functions from directed sets **) 
+(** LATEX VERSION: A net is a function from a directed set into a space. **)
 Definition net_on : set -> prop := fun net =>
   exists J X:set, directed_set J /\ function_on net J X.
 
 (** from exercises after §29: subnet definition placeholder **) 
+(** LATEX VERSION: Definition of subnet (Exercise, placeholder formalization). **)
 Definition subnet_of : set -> set -> prop := fun net sub =>
   exists J X K Y phi:set,
     directed_set J /\ function_on net J X /\
@@ -9546,22 +9625,26 @@ Definition subnet_of : set -> set -> prop := fun net sub =>
          apply_fun sub k = apply_fun net j).
 
 (** from exercises after §29: accumulation point of a net **) 
+(** LATEX VERSION: An accumulation point of a net means every neighborhood contains infinitely many (or cofinal) net points; placeholder formalization. **)
 Definition accumulation_point_of_net : set -> set -> set -> prop := fun X net x =>
   exists J X0:set, directed_set J /\ function_on net J X0 /\ x :e X /\
     forall U:set, x :e U -> exists i:set, i :e J /\ apply_fun net i :e U /\ apply_fun net i <> x.
 
 (** from exercises after §29: net convergence **) 
+(** LATEX VERSION: A net converges to x if eventually in every neighborhood U of x. **)
 Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
   exists J X0:set, topology_on X Tx /\ directed_set J /\ function_on net J X0 /\ x :e X /\
     forall U:set, U :e Tx -> x :e U -> exists i:set, i :e J /\ apply_fun net i :e U.
 
 (** from exercises after §29: convergence of subnets **) 
+(** LATEX VERSION: Convergent nets have convergent subnets to same limit. **)
 Theorem subnet_preserves_convergence : forall X Tx net sub x:set,
   net_converges X Tx net x -> subnet_of net sub -> net_converges X Tx sub x.
 admit.
 Qed.
 
 (** from exercises after §29: closure via nets **) 
+(** LATEX VERSION: Closure characterized by existence of a convergent net. **)
 Theorem closure_via_nets : forall X Tx A x:set,
   topology_on X Tx ->
   (x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x).
@@ -9569,6 +9652,7 @@ admit.
 Qed.
 
 (** from exercises after §29: continuity via nets **) 
+(** LATEX VERSION: Continuity iff every convergent net’s image converges. **)
 Theorem continuity_via_nets : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f <->
@@ -9577,12 +9661,14 @@ admit.
 Qed.
 
 (** from exercises after §29: accumulation points and subnets **) 
+(** LATEX VERSION: Every accumulation point of a net has a subnet converging to it. **)
 Theorem subnet_converges_to_accumulation : forall X Tx net x:set,
   accumulation_point_of_net X net x -> exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
 admit.
 Qed.
 
 (** from exercises after §29: compactness via nets **) 
+(** LATEX VERSION: Compactness characterized by every net having a convergent subnet. **)
 Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
   topology_on X Tx ->
   (compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
@@ -9590,33 +9676,43 @@ admit.
 Qed.
 
 (** from §30 Definition 30.1: countable basis at a point / first countable **) 
+(** LATEX VERSION: Countable sets and related notions from §30 (countability axioms). **)
 Definition countable_set : set -> prop := fun A => A c= omega.
 
+(** LATEX VERSION: Countable subcollection V of U. **)
 Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ countable_set V.
 
+(** LATEX VERSION: Countable index set (subset of ω). **)
 Definition countable_index_set : set -> prop := fun I => I c= omega.
+(** LATEX VERSION: Component topology extractor for countable products. **)
 Definition countable_product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
+(** LATEX VERSION: Real sequences and uniform metric/topology on R^ω (setup). **)
 Definition real_sequences : set := Power R.
 Definition uniform_metric_Romega : set := Eps_i (fun d => metric_on real_sequences d).
 Definition uniform_topology : set := metric_topology real_sequences uniform_metric_Romega.
+(** LATEX VERSION: Open cover and Lindelöf space definitions. **)
 Definition open_cover : set -> set -> set -> prop :=
   fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
 Definition Lindelof_space : set -> set -> prop :=
   fun X Tx => topology_on X Tx /\ forall U:set, open_cover X Tx U -> exists V:set, countable_subcollection V U /\ covers X V.
+(** LATEX VERSION: Sorgenfrey line and its lower limit topology. **)
 Definition Sorgenfrey_line : set := R.
 Definition Sorgenfrey_topology : set := R_lower_limit_topology.
 
 
+(** LATEX VERSION: Countable basis at x (Definition 30.1). **)
 Definition countable_basis_at : set -> set -> set -> prop := fun X Tx x =>
   topology_on X Tx /\
   exists B:set, basis_on X B /\ countable_set B /\
     (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ x :e b /\ b c= U).
 
 (** from §30 Definition 30.1: first-countable space **) 
+(** LATEX VERSION: First countable means each point has a countable neighborhood basis. **)
 Definition first_countable_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall x:set, x :e X -> countable_basis_at X Tx x.
 
 (** from §30 Theorem 30.1(a): sequences and closure in first-countable spaces **) 
+(** LATEX VERSION: In first-countable spaces, sequential closure detects topological closure. **)
 Theorem first_countable_sequences_detect_closure : forall X Tx A x:set,
   topology_on X Tx ->
   (exists seq:set, sequence_in seq A /\ converges_to X Tx seq x) ->
@@ -9625,6 +9721,7 @@ admit.
 Qed.
 
 (** from §30 Theorem 30.1(b): sequences and continuity in first-countable spaces **) 
+(** LATEX VERSION: Sequential criterion for continuity in first-countable spaces. **)
 Theorem first_countable_sequences_detect_continuity : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f ->
@@ -9633,6 +9730,7 @@ admit.
 Qed.
 
 (** from §30 Definition: second-countable space **) 
+(** LATEX VERSION: Second countable means existence of a countable basis for the topology. **)
 Definition second_countable_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
 
@@ -9650,6 +9748,7 @@ admit.
 Qed.
 
 (** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **) 
+(** LATEX VERSION: First/second countability are inherited by subspaces and countable products (Theorem 30.2). **)
 Theorem countability_axioms_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall A:set, A c= X -> first_countable_space X Tx -> first_countable_space A (subspace_topology X Tx A)) /\
@@ -9665,6 +9764,7 @@ Qed.
 Definition dense_in : set -> set -> set -> prop := fun A X Tx => closure_of X Tx A = X.
 
 (** from §30 Theorem 30.3(a): countable basis implies Lindelöf **) 
+(** LATEX VERSION: A second-countable space is Lindelöf (every open cover has countable subcover). **)
 Theorem countable_basis_implies_Lindelof : forall X Tx:set,
   topology_on X Tx ->
   second_countable_space X Tx ->
@@ -9673,6 +9773,7 @@ admit.
 Qed.
 
 (** from §30 Theorem 30.3(b): countable basis yields countable dense subset **) 
+(** LATEX VERSION: Second-countable spaces are separable (have countable dense subset). **)
 Theorem countable_basis_implies_separable : forall X Tx:set,
   topology_on X Tx ->
   second_countable_space X Tx ->
@@ -9681,6 +9782,7 @@ admit.
 Qed.
 
 (** from §30 Example 3: Sorgenfrey line countability properties **) 
+(** LATEX VERSION: Sorgenfrey line is first countable, separable, Lindelöf, but not second countable. **)
 Theorem Sorgenfrey_line_countability :
   first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
@@ -9690,39 +9792,50 @@ admit.
 Qed.
 
 (** placeholders for later refinement of product/separation constructions **) 
+(** LATEX VERSION: Sorgenfrey plane topology = product of two Sorgenfrey lines. **)
 Definition Sorgenfrey_plane_topology : set :=
   product_topology Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology.
+(** LATEX VERSION: One-point sets closed predicate (T1-like helper). **)
 Definition one_point_sets_closed : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall x:set, x :e X -> closed_in X Tx {x}.
+(** LATEX VERSION: Families of Hausdorff/regular/completely regular spaces (helpers). **)
 Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi =>
   forall i:set, i :e I -> Hausdorff_space (product_component Xi i) (product_component_topology Xi i).
 Definition regular_spaces_family : set -> set -> prop := fun I Xi =>
   forall i:set, i :e I -> topology_on (product_component Xi i) (product_component_topology Xi i).
+(** LATEX VERSION: Uncountable set helper. **)
 Definition uncountable_set : set -> prop := fun X => ~ countable_set X.
+(** LATEX VERSION: Well-ordered set helper. **)
 Definition well_ordered_set : set -> prop := fun X =>
   exists alpha:set, ordinal alpha /\ equip X alpha.
+(** LATEX VERSION: Completely regular family helper. **)
 Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi =>
   forall i:set, i :e I -> topology_on (product_component Xi i) (product_component_topology Xi i).
+(** LATEX VERSION: Separating family of functions (embedding setup). **)
 Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
   fun X Tx F J =>
     topology_on X Tx /\ F c= function_space X J /\
     (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
        exists f:set, f :e F /\ apply_fun f x1 <> apply_fun f x2).
+(** LATEX VERSION: Embedding predicate. **)
 Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f =>
   function_on f X Y /\ continuous_map X Tx Y Ty f /\
   (forall x1 x2:set, x1 :e X -> x2 :e X -> apply_fun f x1 = apply_fun f x2 -> x1 = x2).
+(** LATEX VERSION: Power and unit-interval cubes helpers; metrizability predicate. **)
 Definition power_real : set -> set := fun J => function_space J R.
 Definition unit_interval_power : set -> set := fun J => function_space J unit_interval.
 Definition metrizable : set -> set -> prop := fun X Tx =>
   exists d:set, metric_on X d /\ metric_topology X d = Tx.
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
+(** LATEX VERSION: The product of two Lindelöf Sorgenfrey lines (the Sorgenfrey plane) is not Lindelöf. **)
 Theorem Sorgenfrey_plane_not_Lindelof :
   ~ Lindelof_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 admit.
 Qed.
 
 (** from §30 Example 5: subspace of Lindelöf space need not be Lindelöf **) 
+(** LATEX VERSION: A subspace of a Lindelöf space can fail to be Lindelöf (ordered square strip example). **)
 Theorem ordered_square_subspace_not_Lindelof :
   Lindelof_space ordered_square ordered_square_topology /\
   ~ Lindelof_space ordered_square_open_strip ordered_square_subspace_topology.
@@ -9730,18 +9843,21 @@ admit.
 Qed.
 
 (** from §31 Definition: regular and normal spaces **) 
+(** LATEX VERSION: Regular space: points and closed sets can be separated by disjoint open sets. **)
 Definition regular_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall x:set, x :e X ->
     forall F:set, closed_in X Tx F -> x /:e F ->
       exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty.
 
+(** LATEX VERSION: Normal space: disjoint closed sets can be separated by disjoint opens. **)
 Definition normal_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
     exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
 
 (** from §31 Lemma 31.1: closure-neighborhood reformulations of regular/normal **) 
+(** LATEX VERSION: Lemma 31.1: characterizations of regular/normal via closures and neighborhoods (assuming T1). **)
 Theorem regular_normal_via_closure : forall X Tx:set,
   topology_on X Tx ->
   (one_point_sets_closed X Tx -> (regular_space X Tx <->
@@ -9752,6 +9868,7 @@ admit.
 Qed.
 
 (** from §31 Theorem 31.2: subspaces/products preserve Hausdorff and regular **) 
+(** LATEX VERSION: Hausdorff/regular properties preserved under subspaces and products (with factorwise assumptions). **)
 Theorem separation_axioms_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall Y:set, Y c= X -> Hausdorff_space X Tx -> Hausdorff_space Y (subspace_topology X Tx Y)) /\
@@ -9765,17 +9882,20 @@ Qed.
 Definition R_K : set := R.
 
 (** from §31 Example 1: R_K Hausdorff but not regular **) 
+(** LATEX VERSION: The K-topology on ℝ is Hausdorff but not regular. **)
 Theorem RK_Hausdorff_not_regular :
   Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
 admit.
 Qed.
 
 (** from §31 Example 2: Sorgenfrey line normal **) 
+(** LATEX VERSION: The Sorgenfrey line is normal. **)
 Theorem Sorgenfrey_line_normal : normal_space Sorgenfrey_line Sorgenfrey_topology.
 admit.
 Qed.
 
 (** from §31 Example 3: Sorgenfrey plane not normal **) 
+(** LATEX VERSION: The Sorgenfrey plane is regular but not normal. **)
 Theorem Sorgenfrey_plane_not_normal :
   regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
@@ -9783,35 +9903,41 @@ admit.
 Qed.
 
 (** from §32 Theorem 32.1: regular space with countable basis is normal **) 
+(** LATEX VERSION: Regular + second countable ⇒ normal (Theorem 32.1). **)
 Theorem regular_countable_basis_normal : forall X Tx:set,
   regular_space X Tx -> second_countable_space X Tx -> normal_space X Tx.
 admit.
 Qed.
 
 (** from §32 Theorem 32.4: well-ordered sets are normal in order topology **) 
+(** LATEX VERSION: Well-ordered sets with the order topology are normal. **)
 Theorem well_ordered_sets_normal : forall X:set,
   well_ordered_set X -> normal_space X (order_topology X).
 admit.
 Qed.
 (** from §32 Theorem 32.2: metrizable spaces are normal **) 
+(** LATEX VERSION: Every metrizable space is normal. **)
 Theorem metrizable_spaces_normal : forall X d:set,
   metric_on X d -> normal_space X (metric_topology X d).
 admit.
 Qed.
 
 (** from §32 Theorem 32.3: compact Hausdorff spaces are normal **) 
+(** LATEX VERSION: Compact Hausdorff ⇒ normal (Theorem 32.3). **)
 Theorem compact_Hausdorff_normal : forall X Tx:set,
   compact_space X Tx -> Hausdorff_space X Tx -> normal_space X Tx.
 admit.
 Qed.
 
 (** from §32 Example 1: uncountable product of R not normal **) 
+(** LATEX VERSION: An uncountable product of ℝ with product topology need not be normal. **)
 Theorem uncountable_product_R_not_normal : forall J:set,
   uncountable_set J -> ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
 admit.
 Qed.
 
 (** from §32 Example 2: SOmega x SbarOmega not normal **) 
+(** LATEX VERSION: Product S_Ω×S̄_Ω gives a non-normal example. **)
 Definition S_Omega : set := omega.
 Definition Sbar_Omega : set := Power omega.
 Definition SOmega_topology : set := discrete_topology S_Omega.
@@ -9824,6 +9950,7 @@ admit.
 Qed.
 
 (** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **) 
+(** LATEX VERSION: Urysohn lemma: In a normal space, disjoint closed sets can be separated by continuous f: X→[a,b]. **)
 Definition closed_interval : set -> set -> set := fun a b =>
   {x :e R | ~(Rlt x a) /\ ~(Rlt b x)}.
 
@@ -9834,6 +9961,7 @@ admit.
 Qed.
 
 (** from §33 Definition: completely regular space **) 
+(** LATEX VERSION: Completely regular (Tikhonov) spaces admit continuous [0,1]-valued functions separating point and closed set. **)
 Definition completely_regular_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall x:set, x :e X ->
@@ -9843,10 +9971,12 @@ Definition completely_regular_space : set -> set -> prop := fun X Tx =>
         apply_fun f x = 0 /\ forall y:set, y :e F -> apply_fun f y = 1.
 
 (** from §33 Definition: Tychonoff space **) 
+(** LATEX VERSION: Tychonoff = completely regular and Hausdorff. **)
 Definition Tychonoff_space : set -> set -> prop := fun X Tx =>
   completely_regular_space X Tx /\ Hausdorff_space X Tx.
 
 (** from §33 Theorem 33.2: subspaces/products of completely regular spaces **) 
+(** LATEX VERSION: Subspaces and products of completely regular spaces remain completely regular. **)
 Theorem completely_regular_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall Y:set, Y c= X -> completely_regular_space X Tx -> completely_regular_space Y (subspace_topology X Tx Y)) /\
@@ -9855,6 +9985,7 @@ admit.
 Qed.
 
 (** from §33 Example 1: products giving completely regular but not normal spaces **) 
+(** LATEX VERSION: Sorgenfrey plane is completely regular but not normal. **)
 Theorem Sorgenfrey_plane_completely_regular_not_normal :
   completely_regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
@@ -9862,6 +9993,7 @@ admit.
 Qed.
 
 (** from §33 Example 1 cont.: SOmega x SbarOmega completely regular not normal **) 
+(** LATEX VERSION: Another example of completely regular but non-normal product. **)
 Theorem SOmega_SbarOmega_completely_regular_not_normal :
   completely_regular_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) /\
   ~ normal_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
@@ -9869,12 +10001,14 @@ admit.
 Qed.
 
 (** from §34 Theorem 34.1: Urysohn metrization theorem **) 
+(** LATEX VERSION: Regular second-countable spaces are metrizable (Urysohn). **)
 Theorem Urysohn_metrization_theorem : forall X Tx:set,
   regular_space X Tx -> second_countable_space X Tx -> exists d:set, metric_on X d /\ metric_topology X d = Tx.
 admit.
 Qed.
 
 (** from §34 Theorem 34.2: Imbedding via separating family of functions **) 
+(** LATEX VERSION: Embedding into product of reals via separating family of continuous functions. **)
 Theorem embedding_via_functions : forall X Tx:set,
   topology_on X Tx -> one_point_sets_closed X Tx ->
   forall F J:set, separating_family_of_functions X Tx F J ->
@@ -9883,6 +10017,7 @@ admit.
 Qed.
 
 (** from §34 Corollary 34.3: completely regular iff embeds in [0,1]^J **) 
+(** LATEX VERSION: Completely regular iff embeds into a Tychonoff cube [0,1]^J. **)
 Theorem completely_regular_iff_embeds_in_cube : forall X Tx:set,
   (completely_regular_space X Tx <->
     exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_family J unit_interval)) Fmap).
@@ -9890,6 +10025,7 @@ admit.
 Qed.
 
 (** from §35 Theorem 35.1: Tietze extension theorem **) 
+(** LATEX VERSION: Tietze extension theorem for normal spaces and intervals. **)
 Theorem Tietze_extension_interval : forall X Tx A a b f:set,
   normal_space X Tx -> closed_in X Tx A ->
   continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f ->
@@ -9907,9 +10043,11 @@ admit.
 Qed.
 
 (** from §36 Definition: m-manifold **) 
+(** LATEX VERSION: An m-manifold is Hausdorff and second countable (dimension suppressed here). **)
 Definition m_manifold : set -> set -> prop := fun X Tx => Hausdorff_space X Tx /\ second_countable_space X Tx.
 
 (** from §36 Definition: partition of unity dominated by a cover **) 
+(** LATEX VERSION: Partition of unity subordinate to an open cover (dominated). **)
 Definition partition_of_unity_dominated : set -> set -> set -> prop := fun X Tx U =>
   topology_on X Tx /\ open_cover X Tx U /\
   exists P:set,
@@ -9922,12 +10060,14 @@ Definition partition_of_unity_dominated : set -> set -> set -> prop := fun X Tx 
            exists u:set, u :e U /\ {y :e X|apply_fun f y <> 0} c= u)).
 
 (** from §36 Theorem 36.1: existence of finite partition of unity on normal space **) 
+(** LATEX VERSION: On a normal space, every finite open cover has a partition of unity subordinate to it. **)
 Theorem finite_partition_of_unity_exists : forall X Tx U:set,
   normal_space X Tx -> finite U -> open_cover X Tx U -> exists P:set, partition_of_unity_dominated X Tx U.
 admit.
 Qed.
 
 (** from §36 Theorem: compact manifold embeds in Euclidean space **) 
+(** LATEX VERSION: Any compact manifold embeds in some Euclidean space. **)
 Theorem compact_manifold_embeds_in_Euclidean : forall X Tx:set,
   m_manifold X Tx -> compact_space X Tx -> exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
@@ -9935,6 +10075,7 @@ admit.
 Qed.
 
 (** from §37 Theorem: Tychonoff theorem **) 
+(** LATEX VERSION: Arbitrary product of compact spaces is compact (Tychonoff). **)
 Theorem Tychonoff_theorem : forall I Xi:set,
   (forall i:set, compact_space (product_component Xi i) (product_component_topology Xi i)) ->
   compact_space (product_space I Xi) (product_topology_full I Xi).
@@ -9942,6 +10083,7 @@ admit.
 Qed.
 
 (** from §38 Definition: Stone-Cech compactification and universal property **) 
+(** LATEX VERSION: Stone–Čech compactification βX defined via universal property; placeholder representation. **)
 Definition Stone_Cech_compactification : set -> set -> set := fun X Tx =>
   {p :e Power (Power (Power X)) |
     exists Y Ty e:set,
@@ -9955,6 +10097,7 @@ admit.
 Qed.
 
 (** from §39 Definition: locally finite family and refinement **) 
+(** LATEX VERSION: Refinement and locally finite families/bases (Nagata–Smirnov context). **)
 Definition refine_of : set -> set -> prop := fun V U =>
   forall v:set, v :e V -> exists u:set, u :e U /\ v c= u.
 Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F =>
@@ -9981,6 +10124,7 @@ admit.
 Qed.
 
 (** from §41 Definition: paracompact space **) 
+(** LATEX VERSION: Paracompact = every open cover has a locally finite open refinement. **)
 Definition paracompact_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall U:set, open_cover X Tx U ->
@@ -9993,6 +10137,7 @@ admit.
 Qed.
 
 (** from §41 Theorem: paracompact Hausdorff implies normal **) 
+(** LATEX VERSION: Paracompact Hausdorff spaces are normal. **)
 Theorem paracompact_Hausdorff_normal : forall X Tx:set,
   paracompact_space X Tx -> Hausdorff_space X Tx -> normal_space X Tx.
 admit.
@@ -10005,6 +10150,7 @@ admit.
 Qed.
 
 (** helper: Cauchy sequence in a metric space **) 
+(** LATEX VERSION: Cauchy sequence definition (metric). **)
 Definition cauchy_sequence : set -> set -> set -> prop := fun X d seq =>
   metric_on X d /\ seq c= X /\
   forall eps:set, eps :e R ->
@@ -10013,6 +10159,7 @@ Definition cauchy_sequence : set -> set -> set -> prop := fun X d seq =>
         Rlt (d (apply_fun seq m) (apply_fun seq n)) eps.
 
 (** from §43 Definition: complete metric space **) 
+(** LATEX VERSION: Completeness: every Cauchy sequence converges. **)
 Definition complete_metric_space : set -> set -> prop := fun X d =>
   metric_on X d /\
   forall seq:set, seq c= X -> cauchy_sequence X d seq ->
@@ -10028,6 +10175,7 @@ Definition discrete_metric : set -> set := fun X =>
 Definition euclidean_metric : set -> set := fun n => discrete_metric (euclidean_space n).
 
 (** helper: bounded product metric on R^omega **) 
+(** LATEX VERSION: Bounded product metric on R^ω (placeholder). **)
 Definition bounded_product_metric : set -> set := fun J => discrete_metric (power_real J).
 
 (** from §43 Lemma 43.1: Cauchy with convergent subsequence converges **) 
@@ -10063,6 +10211,7 @@ admit.
 Qed.
 
 (** from §44 Theorem: space-filling curve existence **) 
+(** LATEX VERSION: Existence of a continuous surjection from [0,1] onto the unit square (Peano curve). **)
 Definition unit_square : set := OrderedPair unit_interval unit_interval.
 Definition unit_square_topology : set := product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
 Theorem space_filling_curve : exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
@@ -10070,10 +10219,12 @@ admit.
 Qed.
 
 (** from §45 Definition: sequential compactness **) 
+(** LATEX VERSION: Sequentially compact: every sequence has a convergent subsequence/limit in X. **)
 Definition sequentially_compact : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall seq:set, seq c= X -> exists x:set, converges_to X Tx seq x.
 
 (** from §45 Theorem: compactness in metric spaces equivalences **) 
+(** LATEX VERSION: In metric spaces, compact ⇔ sequentially compact. **)
 Theorem compact_metric_equivalences : forall X d:set,
   metric_on X d ->
   (compact_space X (metric_topology X d) <-> sequentially_compact X (metric_topology X d)).
@@ -10081,6 +10232,7 @@ admit.
 Qed.
 
 (** from §46 Definition: pointwise and compact convergence topologies **) 
+(** LATEX VERSION: Topologies of pointwise and compact convergence on function spaces (placeholders). **)
 Definition pointwise_convergence_topology : set -> set -> set -> set -> set :=
   fun X Tx Y Ty => generated_topology (function_space X Y) Empty.
 Definition compact_convergence_topology : set -> set -> set -> set -> set :=
@@ -10099,6 +10251,7 @@ Definition relatively_compact_in_compact_convergence : set -> set -> set -> set 
     compact_space F (compact_convergence_topology X Tx Y Ty).
 
 (** from §47 Ascoli theorem **) 
+(** LATEX VERSION: Ascoli–Arzelà theorem (placeholder statement) on compact convergence. **)
 Theorem Ascoli_theorem : forall X Tx Y Ty F:set,
   compact_space X Tx -> Hausdorff_space Y Ty ->
   equicontinuous_family X Tx Y Ty F -> relatively_compact_in_compact_convergence X Tx Y Ty F.
