@@ -7577,20 +7577,20 @@ Theorem Hausdorff_separate_point_compact_set : forall X Tx Y x:set,
 admit.
 Qed.
 
-(** from §26: compactness preserved under continuous maps **) 
+(** from §26 Theorem 26.5: compactness preserved under continuous maps **) 
 Theorem continuous_image_compact : forall X Tx Y Ty f:set,
   compact_space X Tx -> continuous_map X Tx Y Ty f -> compact_space Y Ty.
 admit.
 Qed.
 
-(** from §26: finite products of compact spaces are compact **) 
+(** from §26 Theorem 26.7: finite products of compact spaces are compact **) 
 Theorem finite_product_compact : forall X Tx Y Ty:set,
   compact_space X Tx -> compact_space Y Ty ->
   compact_space (OrderedPair X Y) (product_topology X Tx Y Ty).
 admit.
 Qed.
 
-(** from §26: tube lemma placeholder **) 
+(** from §26: tube lemma used in product compactness **) 
 Theorem tube_lemma : True.
 admit.
 Qed.
