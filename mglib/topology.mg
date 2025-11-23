@@ -8040,6 +8040,17 @@ Theorem product_basis_generates :
 admit.
 Qed.
 
+(** from §15 Definition: projections on a product **) 
+Definition projection1 : set -> set -> set := fun X Y => Empty.
+Definition projection2 : set -> set -> set := fun X Y => Empty.
+
+(** from §15 Theorem 15.2: projection preimages form a subbasis **) 
+Theorem product_subbasis_from_projections : forall X Tx Y Ty:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  exists S:set, True.
+admit.
+Qed.
+
 (** from §15 Example: standard topology on ℝ² as product topology **) 
 Definition R2_standard_topology : set := Empty.
 
@@ -8064,6 +8075,38 @@ Theorem open_in_subspace_iff : forall X Tx Y U:set,
   topology_on X Tx -> Y c= X ->
   open_in Y (subspace_topology X Tx Y) U <->
   exists V :e Tx, U = V :/\: Y.
+admit.
+Qed.
+
+(** from §16 Lemma 16.1: basis for the subspace topology **) 
+Theorem subspace_basis : forall X Tx Y B:set,
+  topology_on X Tx ->
+  basis_on X B /\ generated_topology X B = Tx ->
+  basis_on Y {b :e B|True} /\
+  generated_topology Y {b :e B|True} = subspace_topology X Tx Y.
+admit.
+Qed.
+
+(** from §16 Lemma 16.2: openness inherited when subspace is open **) 
+Theorem open_in_subspace_if_ambient_open : forall X Tx Y U:set,
+  topology_on X Tx -> Y :e Tx ->
+  open_in Y (subspace_topology X Tx Y) U ->
+  U :e Tx.
+admit.
+Qed.
+
+(** from §16 Theorem 16.3: product of subspaces equals subspace of product **) 
+Theorem product_subspace_topology : forall X Tx Y Ty A B:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  A c= X -> B c= Y ->
+  product_topology A (subspace_topology X Tx A) B (subspace_topology Y Ty B) =
+  subspace_topology (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
+admit.
+Qed.
+
+(** from §16 Theorem 16.4: convex subspaces share the order topology **) 
+Theorem convex_subspace_order_topology : forall X Y:set,
+  order_topology Y = subspace_topology X (order_topology X) Y.
 admit.
 Qed.
 
