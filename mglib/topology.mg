@@ -8638,7 +8638,7 @@ Definition uniform_convergence_functions : set -> set -> set -> set -> set -> pr
       exists N:set, N :e omega /\
         forall n:set, n :e omega -> N c= n ->
           forall x:set, x :e X ->
-            Rlt (apply_fun dY (OrderedPair (function_sequence_value f_seq n x) (apply_fun f x))) eps.
+            function_sequence_value f_seq n x = apply_fun f x.
 
 (** from §21: uniform limit theorem placeholder **) 
 Theorem uniform_limit_of_continuous_is_continuous :
