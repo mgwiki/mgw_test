@@ -7912,8 +7912,10 @@ apply set_ext.
     prove exists b0 :e B, x :e b0 /\ b0 c= U.
       witness b.
       apply andI.
-      - exact Hxb.
-      - exact HbsubU. }
+      - exact HbB.
+      - apply andI.
+        * exact Hxb.
+        * exact HbsubU. }
   exact (SepI (Power X)
               (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
               U
