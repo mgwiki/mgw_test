@@ -9050,17 +9050,25 @@ admit.
 Qed.
 
 (** from §23 Exercise: components and path components of ℝℓ **) 
-Theorem ex23_Rl_components : True.
+Theorem ex23_Rl_components :
+  component_of Sorgenfrey_line Sorgenfrey_topology 0 = {0} /\
+  (forall x:set, x :e Sorgenfrey_line -> component_of Sorgenfrey_line Sorgenfrey_topology x = {x}).
 admit.
 Qed.
 
 (** from §23 Exercise: components of ℝ^ω in product/uniform/box topologies **) 
-Theorem ex23_Romega_components : True.
+Theorem ex23_Romega_components :
+  component_of (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R)) (const_family omega 0) =
+    product_space omega (const_family omega R) /\
+  component_of (product_space omega (const_family omega R)) (box_topology omega (const_family omega R)) (const_family omega 0) =
+    {f :e product_space omega (const_family omega R) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
 admit.
 Qed.
 
 (** from §23 Exercise: ordered square locally connected but not locally path connected **) 
-Theorem ex23_ordered_square_locally_conn_not_pathconn : True.
+Theorem ex23_ordered_square_locally_conn_not_pathconn :
+  locally_connected ordered_square ordered_square_topology /\
+  ~ locally_path_connected ordered_square ordered_square_topology.
 admit.
 Qed.
 
@@ -9071,7 +9079,10 @@ admit.
 Qed.
 
 (** from §23 Exercise: examples of path connected but not locally connected subsets of ℝ^2 **) 
-Theorem ex23_path_connected_not_locally_connected_examples : True.
+Theorem ex23_path_connected_not_locally_connected_examples :
+  exists A:set,
+    A c= EuclidPlane /\ path_connected_space A (subspace_topology EuclidPlane R2_standard_topology A) /\
+    ~ locally_connected A (subspace_topology EuclidPlane R2_standard_topology A).
 admit.
 Qed.
 
