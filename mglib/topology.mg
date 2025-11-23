@@ -8985,7 +8985,7 @@ admit.
 Qed.
 
 (** from §30 Definition: dense subset **) 
-Definition dense_in (A X Tx:set) : prop := closure_of X Tx A = X.
+Definition dense_in : set -> set -> set -> prop := fun A X Tx => closure_of X Tx A = X.
 
 (** from §30 Theorem 30.3(a): countable basis implies Lindelöf **) 
 Theorem countable_basis_implies_Lindelof : forall X Tx:set,
