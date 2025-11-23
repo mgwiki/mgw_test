@@ -7402,10 +7402,8 @@ claim HBint : forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -
 let b0. assume Hb0.
 claim Hb0_subX : b0 c= X.
 { exact (PowerE X b0 (HBsub b0 Hb0)). }
-apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) b0.
-- apply PowerI X b0.
-  exact Hb0_subX.
-- let x. assume Hxb0.
+claim Hb0prop : forall x :e b0, exists b :e B, x :e b /\ b c= b0.
+{ let x. assume Hxb0.
   claim Hexb3 : exists b3 :e B, x :e b3 /\ b3 c= b0 :/\: b0.
   { exact (HBint b0 Hb0 b0 Hb0 x Hxb0 Hxb0). }
   apply Hexb3.
@@ -7428,7 +7426,8 @@ apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b
   witness b3.
   apply andI.
   - exact Hxb3.
-  - exact Hb3subb0.
+  - exact Hb3subb0. }
+exact (SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) b0 (PowerI X b0 Hb0_subX) Hb0prop).
 Qed.
 
 (** from §13: shorthand for basis generating topology **) 
