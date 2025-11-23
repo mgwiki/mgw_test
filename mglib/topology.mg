@@ -8574,22 +8574,31 @@ admit.
 Qed.
 
 (** from §18 Definition: continuous map between topological spaces **) 
+Definition preimage_of : set -> set -> set -> set := fun X f V =>
+  {x :e X | apply_fun f x :e V}.
+
 Definition continuous_map : set -> set -> set -> set -> set -> prop :=
-  fun X Tx Y Ty f => topology_on X Tx /\ topology_on Y Ty.
+  fun X Tx Y Ty f =>
+    topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
+    forall V:set, V :e Ty -> preimage_of X f V :e Tx.
 
 (** from §18 Theorem 18.1: equivalent formulations of continuity **) 
 Theorem continuity_equiv_forms : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f <->
-    (forall A:set, True) /\
-    (forall B:set, True) /\
-    (forall x:set, True)).
+    (forall V:set, V :e Ty -> preimage_of X f V :e Tx) /\
+    (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C)) /\
+    (forall x:set, x :e X ->
+       forall V:set, V :e Ty -> apply_fun f x :e V ->
+         exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V)).
 admit.
 Qed.
 
 (** from §18: identity map is continuous **) 
 Theorem identity_continuous : forall X Tx:set,
-  topology_on X Tx -> continuous_map X Tx X Tx (Empty).
+  topology_on X Tx ->
+  let id := {UPair x x|x :e X} in
+  continuous_map X Tx X Tx id.
 admit.
 Qed.
 
