@@ -8519,7 +8519,7 @@ admit.
 Qed.
 
 Theorem ex17_14_sequence_in_finite_complement_topology : forall X seq:set,
-  sequence_on seq X ->
+  function_on seq omega X ->
   forall x:set, x :e X -> converges_to X (finite_complement_topology X) seq x.
 admit.
 Qed.
