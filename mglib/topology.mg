@@ -7915,8 +7915,8 @@ apply set_ext.
       - exact HbB.
       - apply andI.
         * exact Hxb.
-        * exact HbsubU. }
-  Qed. }
+        * exact HbsubU.
+    Qed. }
   exact (SepI (Power X)
               (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
               U
