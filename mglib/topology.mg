@@ -7258,7 +7258,9 @@ apply andI.
     }
     { apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) X (Self_In_Power X).
       let x. assume HxX.
-      apply HBcov x HxX.
+      claim Hexb : exists b :e B, x :e b.
+      { exact (HBcov x HxX). }
+      apply Hexb.
       let b. assume HbB Hxb.
       claim HbsubX : b c= X.
       { exact (PowerE X b (HBsub b HbB)). }
