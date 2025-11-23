@@ -8226,13 +8226,16 @@ Qed.
 
 (** from §16 Exercise 1: subspace of subspace inherits same topology **) 
 Theorem ex16_1_subspace_transitive : forall X Tx Y A:set,
-  topology_on X Tx -> Y c= X -> A c= Y -> True.
+  topology_on X Tx -> Y c= X -> A c= Y ->
+  subspace_topology Y (subspace_topology X Tx Y) A =
+  subspace_topology X Tx A.
 admit.
 Qed.
 
 (** from §16 Exercise 2: fineness relation passes to subspaces **) 
 Theorem ex16_2_finer_subspaces : forall X T T' Y:set,
-  topology_on X T -> topology_on X T' -> T' c= T -> True.
+  topology_on X T -> topology_on X T' -> T' c= T ->
+  subspace_topology X T' Y c= subspace_topology X T Y.
 admit.
 Qed.
 
