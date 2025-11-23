@@ -6683,8 +6683,9 @@ apply andI.
         - assume HUe: U = Empty.
           claim HxEmpty : x :e Empty.
           { rewrite <- HUe. exact HxU. }
-          exact (EmptyE x HxEmpty False).
+          exact HxEmpty.
         - assume HUX: U = X.
+          apply FalseE.
           apply Hnone.
           witness U.
           apply andI; exact HUin || exact HUX.
@@ -6788,15 +6789,15 @@ apply andI.
         let U. assume HxU HUin.
         claim HUdata : finite (X :\: U) \/ U = Empty.
         { exact (SepE2 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U (Hsub U HUin)). }
-        apply HUdata False.
+        apply HUdata (x :e Empty).
         - assume HUfin.
+          apply FalseE.
           apply Hnone.
           witness U.
           apply andI; exact HUin || exact HUfin.
         - assume HUempty : U = Empty.
-          claim HxEmpty : x :e Empty.
-          { rewrite <- HUempty. exact HxU. }
-          exact (EmptyE x HxEmpty False).
+          rewrite <- HUempty.
+          exact HxU.
       }
       rewrite HUnionEmpty.
       exact (finite_complement_topology_contains_empty X).
