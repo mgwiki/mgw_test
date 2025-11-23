@@ -9288,9 +9288,18 @@ Theorem Smirnov_metrization : forall X Tx:set,
 admit.
 Qed.
 
+(** helper: intersection over a family within a universe X **) 
+Definition intersection_over_family : set -> set -> set :=
+  fun X Fam => {x :e X|forall U:set, U :e Fam -> x :e U}.
+
 (** from §48 Definition: Baire space **) 
-Definition Baire_space : set -> prop := fun X =>
-  topology_on X (UnivOf X).
+Definition Baire_space : set -> prop := fun Tx =>
+  exists X:set,
+    topology_on X Tx /\
+    forall U:set,
+      U c= Tx -> countable_set U ->
+      (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
+      dense_in (intersection_over_family X U) X Tx.
 
 (** from §43 Definition: complete metric space **) 
 Definition complete_metric_space : set -> set -> prop := fun X d => True.
