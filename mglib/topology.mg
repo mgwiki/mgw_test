@@ -7815,8 +7815,8 @@ Definition R : set := Power (Power omega).
 
 (** from §13 Example 4: circular vs rectangular region bases (abstract placeholders) **) 
 Definition EuclidPlane : set := OrderedPair R R.
-Definition circular_regions : set := R2_standard_topology.
-Definition rectangular_regions : set := R2_standard_topology.
+Definition circular_regions : set := Power EuclidPlane.
+Definition rectangular_regions : set := Power EuclidPlane.
 
 Theorem circular_regions_basis_plane : basis_on EuclidPlane circular_regions.
 admit.
