@@ -9175,7 +9175,9 @@ Qed.
 
 (** from §26 Exercises: compactness examples and properties **) 
 Theorem ex26_compactness_exercises :
-  forall X Tx:set, compact_space X Tx -> True.
+  forall X Tx:set, compact_space X Tx ->
+  (closed_in R R_standard_topology unit_interval) /\
+  (compact_space unit_interval R_standard_topology).
 admit.
 Qed.
 
@@ -9239,7 +9241,8 @@ Qed.
 
 (** from §29 Exercises: local compactness and compactification **) 
 Theorem ex29_local_compactness_exercises :
-  forall X Tx:set, locally_compact X Tx -> Hausdorff_space X Tx -> True.
+  forall X Tx:set, locally_compact X Tx -> Hausdorff_space X Tx ->
+  exists Y Ty:set, one_point_compactification X Tx Y Ty.
 admit.
 Qed.
 
@@ -9437,7 +9440,9 @@ Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi =>
   forall i:set, i :e I -> topology_on (product_component Xi i) (product_component_topology Xi i).
 Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
   fun X Tx F J =>
-    topology_on X Tx /\ F c= function_space X J /\ True.
+    topology_on X Tx /\ F c= function_space X J /\
+    (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+       exists f:set, f :e F /\ apply_fun f x1 <> apply_fun f x2).
 Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f =>
   function_on f X Y /\ continuous_map X Tx Y Ty f /\
   (forall x1 x2:set, x1 :e X -> x2 :e X -> apply_fun f x1 = apply_fun f x2 -> x1 = x2).
@@ -9873,7 +9878,7 @@ Qed.
 
 (** from §48 Theorem: Baire category theorem general version **) 
 Theorem Baire_category_theorem : forall X:set,
-  Baire_space X -> True.
+  Baire_space X -> forall U:set, open_in X X U -> U <> Empty.
 admit.
 Qed.
 
