@@ -9013,16 +9013,16 @@ admit.
 Qed.
 
 (** placeholders for later refinement of product/separation constructions **) 
-Parameter Sorgenfrey_plane_topology : set.
-Parameter ordered_square : set.
-Parameter ordered_square_topology : set.
-Parameter ordered_square_open_strip : set.
-Parameter ordered_square_subspace_topology : set.
-Parameter one_point_sets_closed : set -> set -> prop.
-Parameter Hausdorff_spaces_family : set -> set -> prop.
-Parameter regular_spaces_family : set -> set -> prop.
-Parameter product_topology_full : set -> set -> set.
-Parameter product_space : set -> set -> set.
+Definition Sorgenfrey_plane_topology : set := Empty.
+Definition ordered_square : set := Empty.
+Definition ordered_square_topology : set := Empty.
+Definition ordered_square_open_strip : set := Empty.
+Definition ordered_square_subspace_topology : set := Empty.
+Definition one_point_sets_closed : set -> set -> prop := fun X Tx => topology_on X Tx.
+Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi => True.
+Definition regular_spaces_family : set -> set -> prop := fun I Xi => True.
+Definition product_topology_full : set -> set -> set := fun I Xi => Empty.
+Definition product_space : set -> set -> set := fun I Xi => Empty.
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 Theorem Sorgenfrey_plane_not_Lindelof :
