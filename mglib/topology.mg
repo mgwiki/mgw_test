@@ -7776,8 +7776,6 @@ Theorem generated_topology_finer : forall X B T:set,
   basis_on X B -> topology_on X T ->
   (forall b :e B, b :e T) ->
   finer_than T (generated_topology X B).
-let X B T. assume HB HT HBsub.
-(* every open in T is open in the generated topology; outline deferred *)
 admit.
 Qed.
 
@@ -7786,8 +7784,6 @@ Theorem topology_generated_by_basis_is_smallest : forall X B T:set,
   basis_on X B -> topology_on X T ->
   (forall b :e B, b :e T) ->
   finer_than T (generated_topology X B).
-let X B T. assume HB HT HBsub.
-(* same claim as generated_topology_finer; proof deferred *)
 admit.
 Qed.
 Qed.
