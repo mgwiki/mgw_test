@@ -8686,7 +8686,11 @@ Qed.
 
 (** from §25 Definition: components and local connectedness **) 
 Definition component_of : set -> set -> set -> set := fun X Tx x => Empty.
-Definition locally_connected : set -> set -> prop := fun X Tx => topology_on X Tx.
+Definition locally_connected : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall x:set, x :e X ->
+    forall U:set, U :e Tx -> x :e U ->
+      exists V:set, V :e Tx /\ x :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V).
 
 (** from §25 Definition: locally path connected **) 
 Definition locally_path_connected : set -> set -> prop := fun X Tx => topology_on X Tx.
