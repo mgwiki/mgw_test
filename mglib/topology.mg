@@ -8243,35 +8243,45 @@ Definition interval_C : set := open_interval Empty Empty.
 Definition interval_D : set := open_interval (Power Empty) (Power Empty).
 Definition interval_E : set := open_interval (Power (Power Empty)) (Power (Power Empty)).
 
-Theorem ex16_3_open_sets_subspace : True.
+Theorem ex16_3_open_sets_subspace : forall X Tx Y:set,
+  topology_on X Tx -> Y c= X ->
+  forall U:set, open_in Y (subspace_topology X Tx Y) U -> exists V:set, open_in X Tx V /\ U = V :/\: Y.
 admit.
 Qed.
 
 (** from §16 Exercise 4: projections are open maps **) 
 Theorem ex16_4_projections_open : forall X Tx Y Ty:set,
-  topology_on X Tx -> topology_on Y Ty -> True.
+  topology_on X Tx -> topology_on Y Ty ->
+  forall U:set, U :e product_topology X Tx Y Ty ->
+    exists V:set, V :e Tx /\ projection_map X Y :``: U = V.
 admit.
 Qed.
 
 (** from §16 Exercise 5(a): product topology monotonicity **) 
 Theorem ex16_5a_product_monotone : forall X T T' Y U U':set,
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
-  True.
+  T c= T' /\ U c= U' ->
+  product_topology X T Y U c= product_topology X T' Y U'.
 admit.
 Qed.
 
 (** from §16 Exercise 5(b): converse question about product fineness **) 
-Theorem ex16_5b_product_converse : True.
+Theorem ex16_5b_product_converse : forall X T T' Y U U':set,
+  topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
+  product_topology X T Y U c= product_topology X T' Y U' ->
+  True.
 admit.
 Qed.
 
 (** from §16 Exercise 6: rational rectangles form a basis for ℝ² **) 
-Theorem ex16_6_rational_rectangles_basis : True.
+Theorem ex16_6_rational_rectangles_basis :
+  exists B:set, basis_on R2_standard_topology B.
 admit.
 Qed.
 
 (** from §16 Exercise 7: convex subset implies interval or ray? **) 
-Theorem ex16_7_convex_interval_or_ray : forall X Y:set, True.
+Theorem ex16_7_convex_interval_or_ray : forall X:set,
+  convex_subset X -> exists a b:set, True.
 admit.
 Qed.
 
