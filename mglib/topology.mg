@@ -9366,9 +9366,9 @@ Definition ex30_15_CI_has_countable_dense_uniform : set := Empty.
 (** from §30 Exercise 16: product RI dense subsets cardinalities **) 
 Definition ex30_16_product_RI_dense_subset_cardinality : set := Empty.
 (** from §30 Exercise 17: Romega box topology countability axioms **) 
-Definition ex30_17_star_Romega_box_countability : set := Empty.
+Definition ex30_17_Romega_box_countability : set := Empty.
 (** from §30 Exercise 18: first-countable topological group with dense/Lindelof implies countable basis **) 
-Definition ex30_18_star_first_countable_group_countable_basis : set := Empty.
+Definition ex30_18_first_countable_group_countable_basis : set := Empty.
 
 (** from §31 Exercise 1: regular implies disjoint closures of neighborhoods **) 
 Definition ex31_1_regular_disjoint_closure_neighborhoods : set := Empty.
@@ -9387,7 +9387,7 @@ Definition ex31_7_perfect_map_properties : set := Empty.
 (** from §31 Exercise 8: orbit space of compact group action preserves properties **) 
 Definition ex31_8_orbit_space_properties : set := Empty.
 (** from §31 Exercise 9: Sorgenfrey plane rational/irrational diagonal non-separation **) 
-Definition ex31_9_star_Sorgenfrey_plane_no_separation : set := Empty.
+Definition ex31_9_Sorgenfrey_plane_no_separation : set := Empty.
 
 (** from §32 Exercise 1: closed subspace of normal is normal **) 
 Definition ex32_1_closed_subspace_normal : set := Empty.
@@ -9403,10 +9403,10 @@ Definition ex32_5_Romega_normality_questions : set := Empty.
 Definition ex32_6_completely_normal_characterization : set := Empty.
 (** from §32 Exercise 7: completely normal examples **) 
 Definition ex32_7_completely_normal_examples : set := Empty.
-(** from §32 Exercise *8: linear continuum normal **) 
-Definition ex32_8_star_linear_continuum_normal : set := Empty.
-(** from §32 Exercise *9: uncountable product of R not normal **) 
-Definition ex32_9_star_uncountable_product_not_normal : set := Empty.
+(** from §32 Exercise 8: linear continuum normal **) 
+Definition ex32_8_linear_continuum_normal : set := Empty.
+(** from §32 Exercise 9: uncountable product of R not normal **) 
+Definition ex32_9_uncountable_product_not_normal : set := Empty.
 
 (** from §33 Exercise 1: expression for level sets in Urysohn proof **) 
 Definition ex33_1_level_sets_urysohn : set := Empty.
@@ -9426,10 +9426,10 @@ Definition ex33_7_locally_compact_Hausdorff_completely_regular : set := Empty.
 Definition ex33_8_compact_subset_continuous_separation : set := Empty.
 (** from §33 Exercise 9: Romega box topology completely regular **) 
 Definition ex33_9_Romega_box_completely_regular : set := Empty.
-(** from §33 Exercise *10: topological group completely regular **) 
-Definition ex33_10_star_topological_group_completely_regular : set := Empty.
-(** from §33 Exercise *11: regular not completely regular example **) 
-Definition ex33_11_star_regular_not_completely_regular : set := Empty.
+(** from §33 Exercise 10: topological group completely regular **) 
+Definition ex33_10_topological_group_completely_regular : set := Empty.
+(** from §33 Exercise 11: regular not completely regular example **) 
+Definition ex33_11_regular_not_completely_regular : set := Empty.
 
 (** from §34 Exercise 1: Hausdorff with countable basis need not be metrizable **) 
 Definition ex34_1_Hausdorff_countable_basis_not_metrizable_example : set := Empty.
@@ -9464,8 +9464,8 @@ Definition ex35_5_universal_extension_retracts : set := Empty.
 Definition ex35_6_absolute_retract_universal_extension : set := Empty.
 (** from §35 Exercise 7: retract examples spiral/knotted axis **) 
 Definition ex35_7_retract_examples : set := Empty.
-(** from §35 Exercise *8: absolute retract iff universal extension **) 
-Definition ex35_8_star_absolute_retract_equivalence : set := Empty.
+(** from §35 Exercise 8: absolute retract iff universal extension **) 
+Definition ex35_8_absolute_retract_equivalence : set := Empty.
 (** from §35 Exercise 9: coherent topology preserves normality **) 
 Definition ex35_9_coherent_topology_normal : set := Empty.
 
