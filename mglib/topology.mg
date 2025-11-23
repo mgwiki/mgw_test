@@ -7553,9 +7553,11 @@ claim HUGen : U :e generated_topology X B.
       exact HbSubUnion. }
     witness b.
     apply andI.
-    { exact Hxb. }
-    { exact HbSubU. } }
-  exact (SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) U (PowerI X U HUsubX) HUpropU). }
+    - exact HbB.
+    - apply andI.
+      * exact Hxb.
+      * exact HbSubU. } }
+exact (SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) U (PowerI X U HUsubX) HUpropU). }
 exact (andI (lemma_topology_from_basis X B HBasis) HUGen).
 Qed.
 
