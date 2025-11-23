@@ -9407,19 +9407,13 @@ admit.
 Qed.
 
 (** from §30 Exercise 16(a)(b): product R^I dense subsets cardinalities **) 
-Theorem ex30_16_product_RI_dense_subset_cardinality : True.
-admit.
-Qed.
+Axiom ex30_16_product_RI_dense_subset_cardinality : True.
 
 (** from §30 Exercise *17: Romega box topology countability axioms **) 
-Theorem ex30_17_star_Romega_box_countability : True.
-admit.
-Qed.
+Axiom ex30_17_star_Romega_box_countability : True.
 
 (** from §30 Exercise *18: first-countable topological group with dense/Lindelof implies countable basis **) 
-Theorem ex30_18_star_first_countable_group_countable_basis : True.
-admit.
-Qed.
+Axiom ex30_18_star_first_countable_group_countable_basis : True.
 
 (** from §31 Exercise 1: regular implies closures of neighborhoods disjoint **) 
 Theorem ex31_1_regular_disjoint_closure_neighborhoods : True.
