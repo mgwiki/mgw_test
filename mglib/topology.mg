@@ -7630,6 +7630,8 @@ claim HInterClosed : forall U :e T, forall V :e T, U :/\: V :e T.
                Htop). }
 claim HBasis : basis_on X C.
 { exact (andI
+           (C c= Power X /\ (forall x :e X, exists c :e C, x :e c))
+           (forall b1 :e C, forall b2 :e C, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e C, x :e b3 /\ b3 c= b1 :/\: b2)
            (andI
               (fun c HcC => HTsubPow c (HCsub c HcC))
               (fun x HxX => Href X HXT x HxX))
