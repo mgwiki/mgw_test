@@ -9024,6 +9024,7 @@ Definition product_space : set -> set -> set := fun I Xi => Empty.
 Definition const_family : set -> set -> set := fun I X => Empty.
 Definition uncountable_set : set -> prop := fun X => True.
 Definition well_ordered_set : set -> prop := fun X => True.
+Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi => True.
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 Theorem Sorgenfrey_plane_not_Lindelof :
@@ -9130,5 +9131,30 @@ Definition closed_interval : set -> set -> set := fun a b => Empty.
 Theorem Urysohn_lemma : forall X Tx A B a b:set,
   normal_space X Tx -> closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
   exists f:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) f.
+admit.
+Qed.
+
+(** from §33 Definition: completely regular space **) 
+Definition completely_regular_space : set -> set -> prop := fun X Tx => normal_space X Tx.
+
+(** from §33 Theorem 33.2: subspaces/products of completely regular spaces **) 
+Theorem completely_regular_subspace_product : forall X Tx:set,
+  topology_on X Tx ->
+  (forall Y:set, Y c= X -> completely_regular_space X Tx -> completely_regular_space Y (subspace_topology X Tx Y)) /\
+  (forall I Xi:set, completely_regular_spaces_family I Xi -> completely_regular_space (product_space I Xi) (product_topology_full I Xi)).
+admit.
+Qed.
+
+(** from §33 Example 1: products giving completely regular but not normal spaces **) 
+Theorem Sorgenfrey_plane_completely_regular_not_normal :
+  completely_regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
+  ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+admit.
+Qed.
+
+(** from §33 Example 1 cont.: SOmega x SbarOmega completely regular not normal **) 
+Theorem SOmega_SbarOmega_completely_regular_not_normal :
+  completely_regular_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) /\
+  ~ normal_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
 admit.
 Qed.
