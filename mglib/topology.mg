@@ -8840,11 +8840,11 @@ admit.
 Qed.
 
 (** from §23 Theorem 23.4: adjoining limit points preserves connectedness **) 
-Theorem connected_with_limit_points : forall X Tx A B:set,
+Theorem connected_with_limit_points : forall X Tx A b:set,
   topology_on X Tx ->
   connected_space A (subspace_topology X Tx A) ->
-  limit_point_of X Tx B a ->
-  connected_space (A :\/: B) (subspace_topology X Tx (A :\/: B)).
+  limit_point_of X Tx A b ->
+  connected_space (A :\/: {b}) (subspace_topology X Tx (A :\/: {b})).
 admit.
 Qed.
 
