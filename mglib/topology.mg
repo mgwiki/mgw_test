@@ -7629,30 +7629,42 @@ claim HInterClosed : forall U :e T, forall V :e T, U :/\: V :e T.
                (forall U :e T, forall V :e T, U :/\: V :e T)
                Htop). }
 claim HBasis : basis_on X C.
-{ exact (andI
-           (C c= Power X /\ (forall x :e X, exists c :e C, x :e c))
-           (forall b1 :e C, forall b2 :e C, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e C, x :e b3 /\ b3 c= b1 :/\: b2)
-           (andI (C c= Power X) (forall x :e X, exists c :e C, x :e c)
-                 (fun c HcC => HTsubPow c (HCsub c HcC))
-                 (fun x HxX =>
-                    let Hex := Href X HXT x HxX in
-                    apply Hex.
-                    let c. assume Hpair.
-                    claim HcC : c :e C.
-                    { exact (andEL (c :e C) (x :e c /\ c c= X) Hpair). }
-                    claim Hcprop : x :e c /\ c c= X.
-                    { exact (andER (c :e C) (x :e c /\ c c= X) Hpair). }
-                    claim Hxc : x :e c.
-                    { exact (andEL (x :e c) (c c= X) Hcprop). }
-                    witness c.
-                    apply andI.
-                    - exact HcC.
-                    - exact Hxc))
-           (fun c1 Hc1C => fun c2 Hc2C => fun x Hxc1 => fun Hxc2 =>
-              Href (c1 :/\: c2)
-                   (HInterClosed c1 (HCsub c1 Hc1C) c2 (HCsub c2 Hc2C))
-                   x
-                   (binintersectI c1 c2 x Hxc1 Hxc2))). }
+{ prove (C c= Power X
+         /\ (forall x :e X, exists c :e C, x :e c)
+         /\ (forall b1 :e C, forall b2 :e C, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e C, x :e b3 /\ b3 c= b1 :/\: b2)).
+  apply andI.
+  - apply andI.
+    * let c. assume HcC.
+      exact (HTsubPow c (HCsub c HcC)).
+    * let x. assume HxX.
+      claim Hex : exists c :e C, x :e c /\ c c= X.
+      { exact (Href X HXT x HxX). }
+      apply Hex.
+      let c. assume Hpair.
+      claim HcC : c :e C.
+      { exact (andEL (c :e C) (x :e c /\ c c= X) Hpair). }
+      claim Hcprop : x :e c /\ c c= X.
+      { exact (andER (c :e C) (x :e c /\ c c= X) Hpair). }
+      claim Hxc : x :e c.
+      { exact (andEL (x :e c) (c c= X) Hcprop). }
+      witness c.
+      apply andI.
+      - exact HcC.
+      - exact Hxc.
+  - let c1. assume Hc1C.
+    let c2. assume Hc2C.
+    let x. assume Hxc1 Hxc2.
+    claim Hc1T : c1 :e T.
+    { exact (HCsub c1 Hc1C). }
+    claim Hc2T : c2 :e T.
+    { exact (HCsub c2 Hc2C). }
+    claim HcapT : c1 :/\: c2 :e T.
+    { exact (HInterClosed c1 Hc1T c2 Hc2T). }
+    claim HxCap : x :e c1 :/\: c2.
+    { exact (binintersectI c1 c2 x Hxc1 Hxc2). }
+    claim Hex : exists c3 :e C, x :e c3 /\ c3 c= c1 :/\: c2.
+    { exact (Href (c1 :/\: c2) HcapT x HxCap). }
+    exact Hex. }
 claim Hgen_sub_T : generated_topology X C c= T.
 { let U. assume HUgen : U :e generated_topology X C.
   claim HUsubX : U c= X.
