@@ -7637,7 +7637,7 @@ claim HBasis : basis_on X C.
               Href (c1 :/\: c2)
                    (HInterClosed c1 (HCsub c1 Hc1C) c2 (HCsub c2 Hc2C))
                    x
-                   (andI Hxc1 Hxc2))). }
+                   (binintersectI c1 c2 x Hxc1 Hxc2))). }
 claim Hgen_sub_T : generated_topology X C c= T.
 { let U. assume HUgen : U :e generated_topology X C.
   claim HUsubX : U c= X.
