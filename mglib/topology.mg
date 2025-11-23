@@ -8087,7 +8087,8 @@ Qed.
 Definition rectangle_set : set -> set -> set := fun U V => OrderedPair U V.
 
 Definition product_subbasis : set -> set -> set -> set -> set :=
-  fun X Tx Y Ty => {rectangle_set U V|U :e Tx /\ V :e Ty}.
+  fun X Tx Y Ty =>
+    \/_ U :e Tx, {rectangle_set U V|V :e Ty}.
 
 Definition product_topology : set -> set -> set -> set -> set :=
   fun X Tx Y Ty => generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty).
