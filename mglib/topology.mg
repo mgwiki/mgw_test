@@ -8992,6 +8992,12 @@ admit.
 Qed.
 
 (** from §29: one-point compactification placeholder **) 
+Definition one_point_compactification : set -> set -> set -> set -> prop := fun X Tx Y Ty =>
+  compact_space Y Ty /\ Hausdorff_space Y Ty /\ X c= Y /\
+  exists p:set, p :e Y /\ ~ p :e X /\
+    subspace_topology Y Ty X = Tx /\
+    (forall y:set, y :e Y -> y :e X \/ y = p).
+
 Theorem one_point_compactification_exists : forall X Tx:set,
   locally_compact X Tx -> Hausdorff_space X Tx ->
   exists Y Ty:set, one_point_compactification X Tx Y Ty.
@@ -9798,13 +9804,6 @@ Definition locally_metrizable_space : set -> set -> prop := fun X Tx =>
   forall x:set, x :e X ->
     exists N:set, N :e Tx /\ x :e N /\
       exists d:set, metric_on N d /\ subspace_topology X Tx N = metric_topology N d.
-
-(** helper: one-point compactification schema **) 
-Definition one_point_compactification : set -> set -> set -> set -> prop := fun X Tx Y Ty =>
-  compact_space Y Ty /\ Hausdorff_space Y Ty /\ X c= Y /\
-  exists p:set, p :e Y /\ ~ p :e X /\
-    subspace_topology Y Ty X = Tx /\
-    (forall y:set, y :e Y -> y :e X \/ y = p).
 
 (** helper: retraction data **) 
 Definition retraction_of : set -> set -> set -> prop := fun X Tx A =>
