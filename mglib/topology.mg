@@ -9108,19 +9108,19 @@ Definition metric_topology : set -> set -> set := fun X d =>
 (** LATEX VERSION: In a metric space, open balls form a basis for the metric topology. **)
 Theorem open_balls_form_basis : forall X d:set,
   metric_on X d -> basis_on X {open_ball X d x|x :e X}.
-admit.
+admit. (**  aby  ex16_9_dictionary_equals_product EmptyAx Repl_5FEmpty closed_sets_axioms binintersect_com binintersect_Subq_1 Empty_5FSubq_5Feq open_in_subspace_iff ex13_6_Rl_RK_not_comparable prop_ext_2 . **)
 Qed.
 
 Theorem metric_topology_is_topology : forall X d:set,
   metric_on X d -> topology_on X (metric_topology X d).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §20: metric-induced topology equals generated topology of balls **) 
 Theorem metric_topology_generated_by_balls : forall X d:set,
   metric_on X d ->
   generated_topology X {open_ball X d x|x :e X} = metric_topology X d.
-admit.
+admit. (**  aby  metric_topology�f open_ball�f generated_topology�f conj_myprob_9123_1_20251124_004004 . **)
 Qed.
 
 (** from §21: epsilon-delta continuity in metric spaces **) 
@@ -9133,7 +9133,7 @@ Theorem metric_epsilon_delta_continuity : forall X dX Y dY f:set,
          (forall x:set, x :e X ->
             Rlt (apply_fun dX (OrderedPair x x0)) delta ->
             Rlt (apply_fun dY (OrderedPair (apply_fun f x) (apply_fun f x0))) eps)).
-admit.
+admit. (**  aby  ex16_9_dictionary_equals_product EmptyAx Repl_5FEmpty closed_sets_axioms binintersect_com binunion_idl binunion_Subq_1 binintersect_Subq_eq_1 open_in_subspace_iff SNoLt_5Firref prop_ext_2 . **)
 Qed.
 
 (** sequences as functions from omega **) 
@@ -9165,7 +9165,7 @@ Theorem metric_limits_unique : forall X d seq x y:set,
   sequence_converges_metric X d seq x ->
   sequence_converges_metric X d seq y ->
   x = y.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** uniform convergence of function sequences between metric spaces **) 
@@ -9190,14 +9190,14 @@ Theorem uniform_limit_of_continuous_is_continuous :
     (forall n:set, n :e omega -> continuous_map X (metric_topology X dX) Y (metric_topology Y dY) (apply_fun f_seq n)) ->
     uniform_convergence_functions X dX Y dY f_seq f ->
     continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
-admit.
+admit. (**  aby  Sep_5FEmpty SepE Repl_5FEmpty closed_sets_axioms binintersect_Subq_eq_1 binunion_idl binunion_Subq_1 binintersect_com ex17_18_closures_in_ordered_square open_in_subspace_iff binintersect_Subq_2 metric_limits_unique closure_characterization prop_ext_2 . **)
 Qed.
 
 (** from §21: convergence of sequences in metric spaces **) 
 (** LATEX VERSION: Immediate restatement of convergence (placeholder). **)
 Theorem sequence_convergence_metric : forall X d seq x:set,
   sequence_converges_metric X d seq x -> sequence_converges_metric X d seq x.
-admit.
+admit. (**  aby  conj_myprob_9200_1_20251124_004438 . **)
 Qed.
 
 (** from §21: continuity via sequences in metric spaces **) 
@@ -9210,7 +9210,7 @@ Theorem continuity_via_sequences_metric : forall X dX Y dY f:set,
       sequence_converges_metric Y dY
         ({OrderedPair n (apply_fun f (apply_fun seq n))|n :e omega})
         (apply_fun f x)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §22 Definition: quotient map and quotient topology **) 
