@@ -6672,12 +6672,6 @@ Theorem lemma_intersection_two_open : forall X T U V:set,
 admit.
 Qed.
 
-Definition basis_generates : set -> set -> set -> prop := fun X B T =>
-  basis_on X B /\ generated_topology X B = T.
-
-Definition basis_refines : set -> set -> set -> prop := fun X B T =>
-  topology_on X T /\ (forall U :e T, forall x :e U, exists b :e B, x :e b /\ b c= U).
-
 Definition topological_space : set -> set -> prop := topology_on.
 
 Definition open_set_family : set -> set -> set := fun _ T => T.
