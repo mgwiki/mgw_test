@@ -7759,7 +7759,49 @@ Theorem finer_via_basis : forall X B B':set,
   (forall x :e X, forall b:set, b :e B -> x :e b ->
       exists b':set, b' :e B' /\ x :e b' /\ b' c= b) ->
   finer_than (generated_topology X B') (generated_topology X B).
-admit.
+let X B B'. assume HB HB' Href.
+claim HBasisRef : basis_refines X B' (generated_topology X B).
+{ apply andI.
+  - exact (lemma_topology_from_basis X B HB).
+  - let U. assume HU. let x. assume HxU.
+    claim HUprop : forall x0 :e U, exists b :e B, x0 :e b /\ b c= U.
+    { exact (SepE2 (Power X)
+                   (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
+                   U HU). }
+    claim Hexb : exists b :e B, x :e b /\ b c= U.
+    { exact (HUprop x HxU). }
+    apply Hexb.
+    let b. assume Hbpair.
+    claim HbB : b :e B.
+    { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
+    claim Hbprop : x :e b /\ b c= U.
+    { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
+    claim Hxb : x :e b.
+    { exact (andEL (x :e b) (b c= U) Hbprop). }
+    claim HbsubU : b c= U.
+    { exact (andER (x :e b) (b c= U) Hbprop). }
+    claim Hexb' : exists b' :e B', x :e b' /\ b' c= b.
+    { exact (Href x b HbB Hxb). }
+    apply Hexb'.
+    let b'. assume Hb'pair.
+    claim Hb'B : b' :e B'.
+    { exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+    claim Hb'prop : x :e b' /\ b' c= b.
+    { exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+    claim Hxb' : x :e b'.
+    { exact (andEL (x :e b') (b' c= b) Hb'prop). }
+    claim Hb'subb : b' c= b.
+    { exact (andER (x :e b') (b' c= b) Hb'prop). }
+    claim Hb'subU : b' c= U.
+    { let y. assume Hyb'.
+      exact (HbsubU y (Hb'subb y Hyb')). }
+    prove exists b'' :e B', x :e b'' /\ b'' c= U.
+      witness b'.
+      apply andI.
+      - exact Hxb'.
+      - exact Hb'subU.
+    Qed. }
+exact (lemma_finer_if_basis_refines X B HB HBasisRef).
 Qed.
 
 (** from §13 Lemma 13.3: basis inclusion criterion for fineness **) 
@@ -7767,7 +7809,21 @@ Theorem basis_finer_equiv_condition : forall X B B':set,
   basis_on X B -> basis_on X B' ->
   ((forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
   finer_than (generated_topology X B') (generated_topology X B)).
-admit.
+let X B B'. assume HB HB'.
+apply iffI.
+- assume Hcond.
+  exact (finer_via_basis X B B' HB HB' Hcond).
+- assume Hfiner.
+  let x b. assume HbB Hxb.
+  claim HbGen : b :e generated_topology X B.
+  { exact (generated_topology_contains_basis X B HB b HbB). }
+  claim HbGen' : b :e generated_topology X B'.
+  { exact (Hfiner b HbGen). }
+  claim Hbprop : forall x0 :e b, exists b' :e B', x0 :e b' /\ b' c= b.
+  { exact (SepE2 (Power X)
+                 (fun U0 : set => forall x0 :e U0, exists b0 :e B', x0 :e b0 /\ b0 c= U0)
+                 b HbGen'). }
+  exact (Hbprop x Hxb).
 Qed.
 
 (** from §13 Lemma 13.3 (direction): generated topology is minimal containing basis **) 
@@ -7848,7 +7904,69 @@ Theorem union_of_basis_equals_open :
   forall X B:set, basis_on X B ->
   generated_topology X B = {Union Fam | Fam :e Power B}.
 let X B. assume HBasis.
-admit.
+apply set_ext.
+- let U. assume HU.
+  claim HUopen : open_in X (generated_topology X B) U.
+  { apply andI.
+    - exact (lemma_topology_from_basis X B HBasis).
+    - exact HU. }
+  claim HexFam : exists Fam :e Power B, Union Fam = U.
+  { exact (open_sets_as_unions_of_basis X B HBasis U HUopen). }
+  apply HexFam.
+  let Fam. assume HFampair.
+  claim HFamPow : Fam :e Power B.
+  { exact (andEL (Fam :e Power B) (Union Fam = U) HFampair). }
+  claim HUnion : Union Fam = U.
+  { exact (andER (Fam :e Power B) (Union Fam = U) HFampair). }
+  claim HUnionFam : Union Fam :e {Union Fam0 | Fam0 :e Power B}.
+  { exact (ReplI (Power B) (fun Fam0 : set => Union Fam0) Fam HFamPow). }
+  rewrite HUnion.
+  exact HUnionFam.
+- let U. assume HUUnion.
+  apply ReplE with (A := Power B) (F := fun Fam0 : set => Union Fam0) (y := U) in HUUnion.
+  let Fam. assume HFamPair.
+  claim HFamPow : Fam :e Power B.
+  { exact (andEL (Fam :e Power B) (U = Union Fam) HFamPair). }
+  claim HUnion : U = Union Fam.
+  { exact (andER (Fam :e Power B) (U = Union Fam) HFamPair). }
+  claim HBsub : B c= Power X.
+  { exact (andEL (B c= Power X) (forall x :e X, exists b :e B, x :e b)
+                 (andEL (B c= Power X /\ (forall x :e X, exists b :e B, x :e b))
+                       (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)
+                       HBasis)). }
+  claim HFamSubB : Fam c= B.
+  { exact (PowerE B Fam HFamPow). }
+  claim HUsubX : U c= X.
+  { rewrite HUnion.
+    let x. assume HxUnion.
+    apply UnionE_impred Fam x HxUnion.
+    let b. assume Hxb HbFam.
+    claim HbPowX : b :e Power X.
+    { exact (HBsub b (HFamSubB b HbFam)). }
+    claim HbsubX : b c= X.
+    { exact (PowerE X b HbPowX). }
+    exact (HbsubX x Hxb). }
+  claim HUprop : forall x :e U, exists b :e B, x :e b /\ b c= U.
+  { rewrite HUnion.
+    let x. assume HxUnion.
+    apply UnionE_impred Fam x HxUnion.
+    let b. assume Hxb HbFam.
+    claim HbB : b :e B.
+    { exact (HFamSubB b HbFam). }
+    claim HbsubU : b c= U.
+    { let y. assume Hyb.
+      rewrite <- HUnion.
+      exact (UnionI Fam y b Hyb HbFam). }
+    prove exists b0 :e B, x :e b0 /\ b0 c= U.
+      witness b.
+      apply andI.
+      - exact Hxb.
+      - exact HbsubU. }
+  exact (SepI (Power X)
+              (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
+              U
+              (PowerI X U HUsubX)
+              HUprop).
 Qed.
 
 (** from §13 Example 3: singleton basis **) 
