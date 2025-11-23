@@ -7981,13 +7981,9 @@ prove (singleton_basis X c= Power X
 apply andI.
 - apply andI.
   * let b. assume Hb.
-    apply ReplE (fun x => {x}) X b Hb.
-    let a. assume Ha.
-    claim HaX : a :e X.
-    { exact (andEL (a :e X) ({a} = b) Ha). }
-    claim Heq : b = {a}.
-    { exact (andER (a :e X) ({a} = b) Ha). }
-    rewrite Heq.
+    apply ReplE_impred X (fun x => {x}) b Hb.
+    let a. assume HaX HaEq.
+    rewrite HaEq.
     apply PowerI X {a}.
     let y. assume Hy.
     apply UPairE y a Empty Hy.
@@ -7998,23 +7994,15 @@ apply andI.
     apply andI.
     { exact (ReplI X (fun x0 : set => {x0}) x Hx). }
     { exact (UPairI1 x Empty). }
- - let b1. assume Hb1.
-  let b2. assume Hb2.
-  let x. assume Hx1 Hx2.
-  apply ReplE (fun x0 => {x0}) X b1 Hb1.
-  let a. assume Ha.
-  apply ReplE (fun x0 => {x0}) X b2 Hb2.
-  let b. assume Hb.
-  claim HaX : a :e X.
-  { exact (andEL (a :e X) ({a} = b1) Ha). }
-  claim HbX : b :e X.
-  { exact (andEL (b :e X) ({b} = b2) Hb). }
-  claim Heq1 : b1 = {a}.
-  { exact (andER (a :e X) ({a} = b1) Ha). }
-  claim Heq2 : b2 = {b}.
-  { exact (andER (b :e X) ({b} = b2) Hb). }
-  rewrite Heq1 in Hx1.
-  rewrite Heq2 in Hx2.
+- let b1. assume Hb1.
+ let b2. assume Hb2.
+ let x. assume Hx1 Hx2.
+  apply ReplE_impred X (fun x0 => {x0}) b1 Hb1.
+  let a. assume HaX HaEq1.
+  apply ReplE_impred X (fun x0 => {x0}) b2 Hb2.
+  let b. assume HbX HaEq2.
+  rewrite HaEq1 in Hx1.
+  rewrite HaEq2 in Hx2.
   claim Hxa : x = a.
   { apply UPairE x a Empty Hx1.
     - assume Hxa'. exact Hxa'.
@@ -8035,8 +8023,8 @@ apply andI.
     apply UPairE y x Empty Hy.
     - assume Hyx.
       apply binintersectI b1 b2 y.
-      + rewrite Heq1. exact Hyx.
-      + rewrite Heq2. rewrite Hxb. rewrite Hxa. exact Hyx.
+      + rewrite HaEq1. exact Hyx.
+      + rewrite HaEq2. rewrite Hxb. rewrite Hxa. exact Hyx.
     - assume HyEmpty. apply FalseE. exact (EmptyE y HyEmpty (y :e b1)). } }
 Qed.
 
