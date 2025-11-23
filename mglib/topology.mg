@@ -9406,13 +9406,8 @@ Theorem ex30_15_CI_has_countable_dense_uniform : True.
 admit.
 Qed.
 
-(** from Section 30 Exercise 16(a)(b): product R^I dense subsets cardinalities **) 
 Definition ex30_16_product_RI_dense_subset_cardinality : prop := True.
-
-(** from Section 30 Exercise *17: Romega box topology countability axioms **) 
 Definition ex30_17_star_Romega_box_countability : prop := True.
-
-(** from Section 30 Exercise *18: first-countable topological group with dense/Lindelof implies countable basis **) 
 Definition ex30_18_star_first_countable_group_countable_basis : prop := True.
 
 (** from §31 Exercise 1: regular implies closures of neighborhoods disjoint **) 
