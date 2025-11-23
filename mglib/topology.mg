@@ -8043,16 +8043,6 @@ Theorem two_by_nat_not_discrete :
 admit.
 Qed.
 
-(** from §14 Example: ordered square I₀² in the dictionary order topology **) 
-Definition unit_interval : set := Empty.
-Definition ordered_square : set := OrderedPair unit_interval unit_interval.
-Definition ordered_square_topology : set := order_topology ordered_square.
-
-Theorem ordered_square_not_subspace_dictionary :
-  ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
-admit.
-Qed.
-
 (** from §15 Definition: product topology on X×Y **) 
 Definition product_topology : set -> set -> set -> set -> set :=
   fun X Tx Y Ty => Empty.
@@ -8137,6 +8127,16 @@ Theorem product_subspace_topology : forall X Tx Y Ty A B:set,
   A c= X -> B c= Y ->
   product_topology A (subspace_topology X Tx A) B (subspace_topology Y Ty B) =
   subspace_topology (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
+admit.
+Qed.
+
+(** from §16 Example 3: ordered square versus subspace topology **) 
+Definition unit_interval : set := Empty.
+Definition ordered_square : set := OrderedPair unit_interval unit_interval.
+Definition ordered_square_topology : set := order_topology ordered_square.
+
+Theorem ordered_square_not_subspace_dictionary :
+  ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
 admit.
 Qed.
 
