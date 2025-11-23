@@ -6591,4 +6591,9 @@ Theorem basis_refines_topology : forall X T C:set,
 admit.
 Qed.
 
+Theorem generated_topology_contains_basis : forall X B:set,
+  basis_on X B -> forall b:set, b :e B -> b :e generated_topology X B.
+admit.
+Qed.
+
 End Topology.
