@@ -8816,7 +8816,9 @@ Theorem continuity_via_sequences_metric : forall X dX Y dY f:set,
   (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
     forall seq x:set,
       sequence_converges_metric X dX seq x ->
-      sequence_converges_metric Y dY ({apply_fun f (apply_fun seq n)|n :e omega}) (apply_fun f x)).
+      sequence_converges_metric Y dY
+        ({OrderedPair n (apply_fun f (apply_fun seq n))|n :e omega})
+        (apply_fun f x)).
 admit.
 Qed.
 
