@@ -7819,7 +7819,7 @@ Definition Rlt : set -> set -> prop := fun a b =>
 
 (** from §13 Example 4: circular vs rectangular region bases **) 
 Definition EuclidPlane : set := OrderedPair R R.
-Definition distance_R2 : set -> set -> set := fun p c => Eps_i (fun r => True).
+Definition distance_R2 : set -> set -> set := fun p c => Eps_i (fun r => r :e R).
 Definition circular_regions : set :=
   {U :e Power EuclidPlane |
      exists c:set, exists r:set,
@@ -8604,19 +8604,46 @@ Qed.
 (** from §21: uniqueness of limits in metric spaces **) 
 (** helper: function evaluation as graph lookup **) 
 Theorem metric_limits_unique : forall X d seq x y:set,
-  metric_on X d -> x <> y -> True.
+  metric_on X d ->
+  sequence_on seq X ->
+  sequence_converges_metric X d seq x ->
+  sequence_converges_metric X d seq y ->
+  x = y.
 admit.
 Qed.
 
+(** uniform convergence of function sequences between metric spaces **) 
+Definition uniform_convergence_functions : set -> set -> set -> set -> set -> prop :=
+  fun X dX Y dY f_seq f =>
+    metric_on X dX /\ metric_on Y dY /\
+    function_on f_seq omega (function_space X Y) /\ function_on f X Y /\
+    forall eps:set, eps :e R /\ Rlt 0 eps ->
+      exists N:set, N :e omega /\
+        forall n:set, n :e omega -> N c= n ->
+          forall x:set, x :e X ->
+            Rlt (apply_fun dY (OrderedPair (apply_fun (apply_fun f_seq n) x) (apply_fun f x))) eps.
+
 (** from §21: uniform limit theorem placeholder **) 
 Theorem uniform_limit_of_continuous_is_continuous :
-  forall X Tx Y Ty f_seq f:set, continuous_map X Tx Y Ty f.
+  forall X dX Y dY f_seq f:set,
+    metric_on X dX -> metric_on Y dY ->
+    (forall n:set, n :e omega -> continuous_map X (metric_topology X dX) Y (metric_topology Y dY) (apply_fun f_seq n)) ->
+    uniform_convergence_functions X dX Y dY f_seq f ->
+    continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
 admit.
 Qed.
 
 (** from §21: convergence of sequences in metric spaces **) 
+Definition sequence_converges_metric : set -> set -> set -> set -> prop :=
+  fun X d seq x =>
+    metric_on X d /\ sequence_on seq X /\ x :e X /\
+    forall eps:set, eps :e R /\ Rlt 0 eps ->
+      exists N:set, N :e omega /\
+        forall n:set, n :e omega -> N c= n ->
+          Rlt (apply_fun d (OrderedPair (apply_fun seq n) x)) eps.
+
 Theorem sequence_convergence_metric : forall X d seq x:set,
-  metric_on X d -> True.
+  sequence_converges_metric X d seq x -> sequence_converges_metric X d seq x.
 admit.
 Qed.
 
@@ -8739,7 +8766,9 @@ admit.
 Qed.
 
 (** from §24 Example: punctured euclidean space is path connected (placeholder) **) 
-Theorem punctured_space_path_connected : path_connected_space R R_standard_topology.
+Theorem punctured_space_path_connected :
+  path_connected_space (EuclidPlane :\: {OrderedPair 0 0})
+    (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {OrderedPair 0 0})).
 admit.
 Qed.
 
@@ -8940,7 +8969,8 @@ admit.
 Qed.
 
 (** from §28: limit point compactness vs compactness **) 
-Theorem limit_point_compact_not_necessarily_compact : True.
+Theorem limit_point_compact_not_necessarily_compact :
+  exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
 admit.
 Qed.
 
@@ -8951,14 +8981,17 @@ Definition locally_compact : set -> set -> prop := fun X Tx =>
     exists U:set, U :e Tx /\ x :e U /\
       compact_space (closure_of X Tx U) (subspace_topology X Tx (closure_of X Tx U)).
 
-Theorem Hausdorff_compact_sets_closed : forall X Tx:set,
-  Hausdorff_space X Tx -> True.
+Theorem Hausdorff_compact_sets_closed : forall X Tx A:set,
+  Hausdorff_space X Tx ->
+  compact_space A (subspace_topology X Tx A) ->
+  closed_in X Tx A.
 admit.
 Qed.
 
 (** from §29: one-point compactification placeholder **) 
 Theorem one_point_compactification_exists : forall X Tx:set,
-  locally_compact X Tx -> Hausdorff_space X Tx -> True.
+  locally_compact X Tx -> Hausdorff_space X Tx ->
+  exists Y Ty:set, one_point_compactification X Tx Y Ty.
 admit.
 Qed.
 
@@ -8985,13 +9018,19 @@ Qed.
 
 (** from exercises after §29: nets as functions from directed sets **) 
 Definition net_on : set -> prop := fun net =>
-  exists J:set, directed_set J /\
-    forall i v1 v2:set, UPair i v1 :e net /\ UPair i v2 :e net -> v1 = v2.
+  exists J X:set, directed_set J /\ function_on net J X.
 
 (** from exercises after §29: subnet definition placeholder **) 
 Definition subnet_of : set -> set -> prop := fun net sub =>
-  net_on net /\ net_on sub /\
-  forall i v:set, UPair i v :e sub -> exists j:set, UPair j v :e net.
+  exists J X K Y phi:set,
+    directed_set J /\ function_on net J X /\
+    directed_set K /\ function_on sub K Y /\
+    function_on phi K J /\
+    (forall k1 k2:set, k1 :e K -> k2 :e K -> exists k3:set,
+        k3 :e K /\ apply_fun phi k3 = apply_fun phi k1 /\ apply_fun phi k3 = apply_fun phi k2) /\
+    (forall k:set, k :e K ->
+       exists j:set, j :e J /\ apply_fun phi k = j /\
+         apply_fun sub k = apply_fun net j).
 
 (** from exercises after §29: accumulation point of a net **) 
 Definition accumulation_point_of_net : set -> set -> set -> prop := fun X net x =>
@@ -9043,8 +9082,9 @@ Definition countable_set : set -> prop := fun A => A c= omega.
 Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ countable_set V.
 
 Definition sequence_in : set -> set -> prop := fun seq A => seq c= A.
+Definition sequence_on : set -> set -> prop := fun seq A => function_on seq omega A.
 Definition converges_to : set -> set -> set -> set -> prop :=
-  fun X Tx seq x => topology_on X Tx /\ seq c= X /\ x :e X.
+  fun X Tx seq x => topology_on X Tx /\ sequence_on seq X /\ x :e X.
 Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => y).
 Definition countable_index_set : set -> prop := fun I => I c= omega.
 Definition countable_product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
@@ -9066,7 +9106,8 @@ Definition countable_product_topology : set -> set -> set := fun I Xi =>
 Definition euclidean_space : set -> set := fun n => product_space n (const_family n R).
 Definition euclidean_topology : set -> set := fun n => product_topology_full n (const_family n R).
 Definition real_sequences : set := Power R.
-Definition uniform_topology : set := metric_topology real_sequences Empty.
+Definition uniform_metric_Romega : set := Eps_i (fun d => metric_on real_sequences d).
+Definition uniform_topology : set := metric_topology real_sequences uniform_metric_Romega.
 Definition covers : set -> set -> prop :=
   fun X U => forall x:set, x :e X -> exists u:set, u :e U /\ x :e u.
 Definition open_cover : set -> set -> set -> prop :=
