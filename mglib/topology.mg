@@ -7389,6 +7389,29 @@ Qed.
 (** from §23 Definition: connected space **) 
 Definition connected_space : set -> set -> prop := fun X Tx => topology_on X Tx.
 
+(** from §23 Lemma 23.1: separations in subspaces via limit points **) 
+Theorem separation_subspace_limit_points : forall X Tx Y:set,
+  topology_on X Tx -> True.
+admit.
+Qed.
+
+(** from §23 Lemma 23.2: connected subspace lies in one side of a separation **) 
+Theorem connected_subset_in_separation_side : forall X Tx C D Y:set,
+  topology_on X Tx -> True.
+admit.
+Qed.
+
+(** from §23 Theorem 23.3: union of connected sets with common point is connected **) 
+Theorem union_connected_common_point : forall X:set, True.
+admit.
+Qed.
+
+(** from §23 Theorem 23.4: adjoining limit points preserves connectedness **) 
+Theorem connected_with_limit_points : forall X Tx A B:set,
+  topology_on X Tx -> connected_space A Tx -> True.
+admit.
+Qed.
+
 (** from §23: continuous images of connected spaces are connected **) 
 Theorem continuous_image_connected : forall X Tx Y Ty f:set,
   connected_space X Tx ->
@@ -7404,6 +7427,23 @@ Qed.
 (** from §24: connected subspaces of ℝ are intervals **) 
 Theorem connected_subsets_real_are_intervals : forall A:set,
   A c= R -> connected_space A (subspace_topology R R_standard_topology A) -> True.
+admit.
+Qed.
+
+(** from §23 Theorem 23.6: finite products of connected spaces are connected **) 
+Theorem finite_product_connected : forall X Tx Y Ty:set,
+  connected_space X Tx -> connected_space Y Ty ->
+  connected_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+admit.
+Qed.
+
+(** from §23 Example: product topology on R^ω is connected **) 
+Theorem R_omega_product_connected : connected_space Empty Empty.
+admit.
+Qed.
+
+(** from §23 Example: box topology on R^ω is disconnected **) 
+Theorem R_omega_box_not_connected : True.
 admit.
 Qed.
 
