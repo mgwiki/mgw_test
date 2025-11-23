@@ -8912,9 +8912,9 @@ Definition converges_to : set -> set -> set -> set -> prop :=
   fun X Tx seq x => topology_on X Tx /\ seq c= X /\ x :e X.
 Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => y).
 Definition countable_index_set : set -> prop := fun I => I c= omega.
-Definition product_component_topology : set -> set -> set := fun Xi i => Empty.
-Definition product_space : set -> set -> set := fun I Xi => Empty.
-Definition product_topology : set -> set -> set := fun I Xi => Empty.
+Definition countable_product_component_topology : set -> set -> set := fun Xi i => Empty.
+Definition countable_product_space : set -> set -> set := fun I Xi => Empty.
+Definition countable_product_topology : set -> set -> set := fun I Xi => Empty.
 Definition euclidean_space : set -> set := fun n => Empty.
 Definition euclidean_topology : set -> set := fun n => Empty.
 Definition real_sequences : set := Power R.
@@ -8977,10 +8977,10 @@ Theorem countability_axioms_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall A:set, A c= X -> first_countable_space X Tx -> first_countable_space A (subspace_topology X Tx A)) /\
   (forall A:set, A c= X -> second_countable_space X Tx -> second_countable_space A (subspace_topology X Tx A)) /\
-  (forall I Xi:set, countable_index_set I -> (forall i:set, first_countable_space Xi (product_component_topology Xi i)) ->
-     first_countable_space (product_space I Xi) (product_topology I Xi)) /\
-  (forall I Xi:set, countable_index_set I -> (forall i:set, second_countable_space Xi (product_component_topology Xi i)) ->
-     second_countable_space (product_space I Xi) (product_topology I Xi)).
+  (forall I Xi:set, countable_index_set I -> (forall i:set, first_countable_space Xi (countable_product_component_topology Xi i)) ->
+     first_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)) /\
+  (forall I Xi:set, countable_index_set I -> (forall i:set, second_countable_space Xi (countable_product_component_topology Xi i)) ->
+     second_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)).
 admit.
 Qed.
 
