@@ -7111,17 +7111,16 @@ let X.
 claim Hdiff_empty : X :\: X = Empty.
 { apply Empty_Subq_eq.
   let x. assume Hx.
-  apply EmptyE x.
   claim HxX : x :e X.
   { exact (setminusE1 X X x Hx). }
   claim Hxnot : x /:e X.
   { exact (setminusE2 X X x Hx). }
+  apply FalseE.
   exact (Hxnot HxX).
 }
-apply SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) X (Self_In_Power X).
-apply orIL.
-rewrite Hdiff_empty.
-exact (Subq_atleastp Empty omega (Subq_Empty omega)).
+claim HcountDiff : countable (X :\: X).
+{ rewrite Hdiff_empty. exact (Subq_atleastp Empty omega (Subq_Empty omega)). }
+exact (SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) X (Self_In_Power X) (orIL (countable (X :\: X)) (X = Empty) HcountDiff)).
 Qed.
 
 (** from §12 Example comparison: countable vs finite complement **)
