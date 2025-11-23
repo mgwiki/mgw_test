@@ -6717,10 +6717,6 @@ Qed.
 (** from §12: indiscrete topology is the coarsest **)
 Theorem indiscrete_topology_coarsest : forall X T:set,
   topology_on X T -> coarser_than (indiscrete_topology X) T.
-let X T. assume HT.
-prove {Empty, X} c= T.
-let U. assume HU: U :e {Empty, X}.
-(* Extract Empty and X belonging to T from topology axioms. *)
 admit.
 Qed.
 
