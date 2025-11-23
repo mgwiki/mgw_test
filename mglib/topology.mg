@@ -8278,6 +8278,9 @@ Theorem ex16_6_rational_rectangles_basis :
 admit.
 Qed.
 
+(** helper: convex subset placeholder **) 
+Definition convex_subset : set -> prop := fun _ => True.
+
 (** from §16 Exercise 7: convex subset implies interval or ray? **) 
 Theorem ex16_7_convex_interval_or_ray : forall X:set,
   convex_subset X -> exists a b:set, True.
