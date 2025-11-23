@@ -9045,6 +9045,15 @@ Definition const_family : set -> set -> set := fun I X => Empty.
 Definition uncountable_set : set -> prop := fun X => True.
 Definition well_ordered_set : set -> prop := fun X => True.
 Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi => True.
+(** from §39 Definition: locally finite family and refinement **) 
+Definition refine_of : set -> set -> prop := fun V U =>
+  forall v:set, v :e V -> exists u:set, u :e U /\ v c= u.
+Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F =>
+  topology_on X Tx /\
+  forall x:set, x :e X ->
+    exists N:set, N :e Tx /\ x :e N /\
+      exists S:set, finite S /\ S c= F /\
+        forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
 Definition apply_fun : set -> set -> set := fun f x => Empty.
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
@@ -9312,16 +9321,6 @@ Theorem Stone_Cech_universal_property : forall X Tx:set,
 admit.
 Qed.
 
-(** from §39 Definition: locally finite family **) 
-Definition refine_of : set -> set -> prop := fun V U =>
-  forall v:set, v :e V -> exists u:set, u :e U /\ v c= u.
-
-Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F =>
-  topology_on X Tx /\
-  forall x:set, x :e X ->
-    exists N:set, N :e Tx /\ x :e N /\
-      exists S:set, finite S /\ S c= F /\
-        forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
 
 (** from §41 Definition: paracompact space **) 
 Definition paracompact_space : set -> set -> prop := fun X Tx =>
