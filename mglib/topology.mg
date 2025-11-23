@@ -7759,6 +7759,43 @@ Theorem finer_via_basis : forall X B B':set,
   (forall x :e X, forall b:set, b :e B -> x :e b ->
       exists b':set, b' :e B' /\ x :e b' /\ b' c= b) ->
   finer_than (generated_topology X B') (generated_topology X B).
+let X B B'. assume HB HB' Hloc.
+unfold finer_than.
+(* use the characterization of generated topology by local basis witnesses *)
+claim HcharB : generated_topology X B
+  = {U :e Power X | forall x :e U, exists b :e B, x :e b /\ b c= U}.
+{ exact (lemma_generated_topology_characterization X B HB). }
+claim HcharB' : generated_topology X B'
+  = {U :e Power X | forall x :e U, exists b' :e B', x :e b' /\ b' c= U}.
+{ exact (lemma_generated_topology_characterization X B' HB'). }
+let U. assume HU.
+(* rewrite membership via the characterizations *)
+rewrite HcharB in HU.
+rewrite HcharB'.
+assume x HxU.
+(* U :e Power X gives x ∈ X *)
+claim HUsubX : U c= X.
+{ exact (iffEL (U :e Power X) (U c= X) (PowerEq X U)
+               (andEL (U :e Power X)
+                      (forall x0 :e U, exists b0 :e B, x0 :e b0 /\ b0 c= U)
+                      HU)). }
+claim HxX : x :e X.
+{ exact (HUsubX x HxU). }
+claim Hx : exists b :e B, x :e b /\ b c= U.
+{ exact (HU x HxU). }
+destruct Hx as [b Hbprop].
+destruct Hbprop as [HbinB Hbprop].
+destruct Hbprop as [Hbx Hbsub].
+(* use local refinement hypothesis to pick b' in B' with x in b' subset b *)
+claim Hb' : exists b' :e B', x :e b' /\ b' c= b.
+{ exact (Hloc x HxX b HbinB Hbx). }
+destruct Hb' as [b' Hb'prop].
+destruct Hb'prop as [Hxb' Hb'subb].
+(* then b' is still contained in U *)
+claim Hb'subU : b' c= U.
+{ exact (Subq_trans b' b U Hb'subb Hbsub). }
+exists b'.
+apply andI; [exact Hxb'|exact Hb'subU].
 admit.
 Qed.
 
