@@ -6757,9 +6757,9 @@ apply iffI.
 - assume HU. exact (UPairE U Empty X HU).
 - assume Hcases : U = Empty \/ U = X.
   claim HUempty_branch : U = Empty -> U :e indiscrete_topology X.
-  { assume HUE : U = Empty. rewrite HUE. apply UPairI1. }
+  { assume HUE : U = Empty. rewrite HUE. exact (UPairI1 Empty X). }
   claim HUx_branch : U = X -> U :e indiscrete_topology X.
-  { assume HUX : U = X. rewrite HUX. apply UPairI2. }
+  { assume HUX : U = X. rewrite HUX. exact (UPairI2 Empty X). }
   exact (Hcases (U :e indiscrete_topology X) HUempty_branch HUx_branch).
 Qed.
 
