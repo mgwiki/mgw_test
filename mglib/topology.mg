@@ -9064,7 +9064,6 @@ Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F =>
     exists N:set, N :e Tx /\ x :e N /\
       exists S:set, finite S /\ S c= F /\
         forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
-Definition apply_fun : set -> set -> set := fun f x => Empty.
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
 Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
