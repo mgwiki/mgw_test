@@ -8907,6 +8907,7 @@ Definition countable_set : set -> prop := fun A => A c= omega.
 
 Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ countable_set V.
 
+
 Definition countable_basis_at : set -> set -> set -> prop := fun X Tx x =>
   topology_on X Tx /\
   exists B:set, basis_on X B /\ countable_set B /\
