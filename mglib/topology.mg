@@ -8422,8 +8422,9 @@ Qed.
 Theorem Hausdorff_unique_limits : forall X Tx seq x y:set,
   Hausdorff_space X Tx ->
   x <> y ->
-  converges_to X Tx seq x ->
-  converges_to X Tx seq y ->
+  sequence_on seq X ->
+  (forall U:set, U :e Tx -> x :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U) ->
+  (forall U:set, U :e Tx -> y :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U) ->
   False.
 admit.
 Qed.
