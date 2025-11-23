@@ -8551,15 +8551,24 @@ Theorem ex17_18_closures_in_ordered_square :
 admit.
 Qed.
 
-Theorem ex17_19_boundary_properties : forall X:set, True.
+Definition boundary_of : set -> set -> set -> set := fun X Tx A =>
+  closure_of X Tx A :/\: closure_of X Tx (X :\: A).
+
+Theorem ex17_19_boundary_properties : forall X Tx A:set,
+  topology_on X Tx ->
+  boundary_of X Tx A c= closure_of X Tx A /\
+  boundary_of X Tx A c= closure_of X Tx (X :\: A).
 admit.
 Qed.
 
-Theorem ex17_20_boundaries_and_interiors_in_R2 : True.
+Theorem ex17_20_boundaries_and_interiors_in_R2 :
+  boundary_of (OrderedPair R R) R2_standard_topology ordered_square_open_strip <>
+  boundary_of (OrderedPair R R) R2_dictionary_order_topology ordered_square_open_strip.
 admit.
 Qed.
 
-Theorem ex17_21_Kuratowski_closure_complement_maximal : forall X:set, True.
+Theorem ex17_21_Kuratowski_closure_complement_maximal : forall X:set,
+  closure_of X (discrete_topology X) (X :\: Empty) = X.
 admit.
 Qed.
 
