@@ -6541,7 +6541,7 @@ Definition indiscrete_topology : set -> set := fun X => {Empty, X}.
 Definition finite_complement_topology : set -> set :=
   fun X => {U :e Power X | finite (X :\: U) \/ U = Empty}.
 
-(** helper: placeholder for countable sets **)
+(** helper: countable set: admits an injection into omega (at most countable) **)
 Definition countable : set -> prop := fun X => atleastp X omega.
 
 Theorem finite_countable : forall X:set, finite X -> countable X.
@@ -7810,12 +7810,12 @@ Qed.
 (** helper: Kuratowski ordered pair for cartesian products **) 
 Definition OrderedPair : set -> set -> set := fun x y => UPair x (UPair x y).
 
-(** ambient real line placeholder **) 
-Definition R : set := Power (Power omega).
+(** ambient real line **) 
+Definition R : set := real.
 
-(** ordering relation on the reals (placeholder strict order) **) 
+(** ordering relation on the reals **) 
 Definition Rlt : set -> set -> prop := fun a b =>
-  a :e R /\ b :e R /\ a <> b.
+  a :e R /\ b :e R /\ a < b.
 
 (** from §13 Example 4: circular vs rectangular region bases **) 
 Definition EuclidPlane : set := OrderedPair R R.
