@@ -7907,7 +7907,7 @@ apply set_ext.
     { exact (HFamSubB b HbFam). }
     claim HbsubU : b c= U.
     { let y. assume Hyb.
-      rewrite <- HUnion.
+      rewrite HUnion.
       exact (UnionI Fam y b Hyb HbFam). }
     prove exists b0 :e B, x :e b0 /\ b0 c= U.
       witness b.
