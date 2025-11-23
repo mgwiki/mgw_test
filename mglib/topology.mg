@@ -6714,13 +6714,13 @@ Theorem discrete_topology_finest : forall X T:set,
 let X T. assume HT.
 (* Extract the first conjunct T c= Power X from the topology axioms. *)
 claim H1: ((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U :e T, forall V :e T, U :/\: V :e T).
-{ exact (andEL ((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT). }
+. { exact (andEL ((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT). }
 claim H2: (T c= Power X) /\ Empty :e T /\ X :e T.
-{ exact (andEL ((T c= Power X) /\ Empty :e T /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
+. { exact (andEL ((T c= Power X) /\ Empty :e T /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
 claim HAB: (T c= Power X) /\ Empty :e T.
-{ exact (andEL ((T c= Power X) /\ Empty :e T) (X :e T) H2). }
+. { exact (andEL ((T c= Power X) /\ Empty :e T) (X :e T) H2). }
 claim Hsub: T c= Power X.
-{ exact (andEL (T c= Power X) (Empty :e T) HAB). }
+. { exact (andEL (T c= Power X) (Empty :e T) HAB). }
 exact Hsub.
 Qed.
 
@@ -6732,15 +6732,15 @@ prove {Empty, X} c= T.
 let U. assume HU: U :e {Empty, X}.
 (* Extract Empty and X belonging to T from topology axioms. *)
 claim H1: ((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U :e T, forall V :e T, U :/\: V :e T).
-{ exact (andEL ((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT). }
+. { exact (andEL ((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT). }
 claim H2: (T c= Power X) /\ Empty :e T /\ X :e T.
-{ exact (andEL ((T c= Power X) /\ Empty :e T /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
+. { exact (andEL ((T c= Power X) /\ Empty :e T /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
 claim HAB: (T c= Power X) /\ Empty :e T.
-{ exact (andEL ((T c= Power X) /\ Empty :e T) (X :e T) H2). }
+. { exact (andEL ((T c= Power X) /\ Empty :e T) (X :e T) H2). }
 claim Hempty: Empty :e T.
-{ exact (andER (T c= Power X) (Empty :e T) HAB). }
+. { exact (andER (T c= Power X) (Empty :e T) HAB). }
 claim Hfull: X :e T.
-{ exact (andER ((T c= Power X) /\ Empty :e T) (X :e T) H2). }
+. { exact (andER ((T c= Power X) /\ Empty :e T) (X :e T) H2). }
 apply UPairE Empty X U HU.
 - intro HUeq. rewrite HUeq. exact Hempty.
 - intro HUeq. rewrite HUeq. exact Hfull.
