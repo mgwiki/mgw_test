@@ -7075,11 +7075,11 @@ let X.
 claim Hdiff_empty : X :\: X = Empty.
 { apply Empty_Subq_eq.
   let x. assume Hx.
-  apply EmptyE x.
   claim Hxin : x :e X.
   { exact (setminusE1 X X x Hx). }
   claim Hxnot : x /:e X.
   { exact (setminusE2 X X x Hx). }
+  apply FalseE.
   exact (Hxnot Hxin).
 }
 apply SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) X (Self_In_Power X).
