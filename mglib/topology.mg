@@ -7465,7 +7465,7 @@ claim HUtop : U :e generated_topology X B.
 { exact (andER (topology_on X (generated_topology X B)) (U :e generated_topology X B) HUopen). }
 claim HUprop : forall x :e U, exists b :e B, x :e b /\ b c= U.
 { exact (SepE2 (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) U HUtop). }
-claim Fam : set := {b :e B|b c= U}.
+set Fam : set := {b :e B|b c= U}.
 claim HFamPow : Fam :e Power B.
 { apply PowerI B Fam.
   let b. assume HbFam.
@@ -7560,7 +7560,7 @@ claim HUtop : U :e generated_topology X B.
 { exact (andER (topology_on X (generated_topology X B)) (U :e generated_topology X B) HUopen). }
 claim HUprop : forall x :e U, exists b :e B, x :e b /\ b c= U.
 { exact (SepE2 (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) U HUtop). }
-claim Fam : set := {b :e B|b c= U}.
+set Fam : set := {b :e B|b c= U}.
 apply Ext.
 - let x. assume HxU.
   claim Hexb : exists b :e B, x :e b /\ b c= U.
