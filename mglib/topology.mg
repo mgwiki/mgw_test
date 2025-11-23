@@ -6808,6 +6808,9 @@ Theorem union_of_basis_equals_open : forall X B:set,
 admit.
 Qed.
 
+Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
+  topology_on X T1 /\ topology_on X T2 /\ T1 = T2.
+
 Theorem topology_eq_sym : forall X T1 T2:set, topology_eq X T1 T2 -> topology_eq X T2 T1.
 admit.
 Qed.
@@ -6815,9 +6818,6 @@ Qed.
 Theorem topology_eq_trans : forall X T1 T2 T3:set, topology_eq X T1 T2 -> topology_eq X T2 T3 -> topology_eq X T1 T3.
 admit.
 Qed.
-
-Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
-  topology_on X T1 /\ topology_on X T2 /\ T1 = T2.
 
 Theorem topology_eq_refl : forall X T:set, topology_on X T -> topology_eq X T T.
 admit.
