@@ -7813,6 +7813,10 @@ Definition OrderedPair : set -> set -> set := fun x y => UPair x (UPair x y).
 (** ambient real line placeholder **) 
 Definition R : set := Power (Power omega).
 
+(** ordering relation on the reals (placeholder strict order) **) 
+Definition Rlt : set -> set -> prop := fun a b =>
+  a :e R /\ b :e R /\ a <> b.
+
 (** from §13 Example 4: circular vs rectangular region bases **) 
 Definition EuclidPlane : set := OrderedPair R R.
 Definition distance_R2 : set -> set -> set := fun p c => Eps_i (fun r => True).
@@ -7980,9 +7984,6 @@ Qed.
 
 (** from §13 Exercise 6: incomparability of two real line topologies **) 
 Definition rational_numbers : set := omega.
-
-Definition Rlt : set -> set -> prop := fun a b =>
-  a :e R /\ b :e R /\ a <> b.
 
 Definition open_interval : set -> set -> set := fun a b => {x :e R|Rlt a x /\ Rlt x b}.
 Definition halfopen_interval_left : set -> set -> set := fun a b => {x :e R|Rlt a x /\ ~(Rlt b x)}.
