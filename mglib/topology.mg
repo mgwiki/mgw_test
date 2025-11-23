@@ -6712,7 +6712,6 @@ Qed.
 Theorem discrete_topology_finest : forall X T:set,
   topology_on X T -> finer_than (discrete_topology X) T.
 let X T. assume HT.
-(* finer_than (Power X) T is just T c= Power X, which is the first conjunct of topology_on *)
 claim HTsub : T c= Power X.
 { exact (andEL (T c= Power X) (Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HT). }
 exact HTsub.
@@ -6722,7 +6721,6 @@ Qed.
 Theorem indiscrete_topology_coarsest : forall X T:set,
   topology_on X T -> coarser_than (indiscrete_topology X) T.
 let X T. assume HT.
-(* coarser_than {Empty,X} T means every element of the pair is in T *)
 claim Hempty : Empty :e T.
 { exact (andEL (Empty :e T) (X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) (andER (T c= Power X) (Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HT)). }
 claim HX : X :e T.
