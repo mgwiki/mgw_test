@@ -8814,7 +8814,9 @@ Qed.
 Theorem continuity_via_sequences_metric : forall X dX Y dY f:set,
   metric_on X dX -> metric_on Y dY ->
   (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
-    forall seq x:set, True).
+    forall seq x:set,
+      sequence_converges_metric X dX seq x ->
+      sequence_converges_metric Y dY ({apply_fun f (apply_fun seq n)|n :e omega}) (apply_fun f x)).
 admit.
 Qed.
 
@@ -9652,8 +9654,9 @@ Definition partition_of_unity_dominated : set -> set -> set -> prop := fun X Tx 
     (forall f:set, f :e P -> continuous_map X Tx R R_standard_topology f) /\
     (forall x:set, x :e X ->
       exists F:set, finite F /\ F c= P /\
-        (forall f:set, f :e P -> (apply_fun f x = 0 \/ exists u:set, u :e U /\ {y :e X|apply_fun f y <> 0} c= u)) /\
-        (forall y:set, y :e X -> True)).
+        (forall f:set, f :e P -> apply_fun f x <> 0 -> f :e F) /\
+        (forall f:set, f :e F ->
+           exists u:set, u :e U /\ {y :e X|apply_fun f y <> 0} c= u)).
 
 (** from §36 Theorem 36.1: existence of finite partition of unity on normal space **) 
 Theorem finite_partition_of_unity_exists : forall X Tx U:set,
