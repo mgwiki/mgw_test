@@ -6651,11 +6651,13 @@ apply andI.
       claim HX_sub : X c= Union UFam.
       { let x. assume HxX.
         apply Hex.
-        let U. assume HUin HUeq.
+        let U. assume HUinpair : U :e UFam /\ U = X.
+        claim HUin : U :e UFam.
+        { exact (andEL (U :e UFam) (U = X) HUinpair). }
+        claim HUeq : U = X.
+        { exact (andER (U :e UFam) (U = X) HUinpair). }
         rewrite HUeq.
-        apply UnionI UFam x U.
-        - exact HxX.
-        - exact HUin.
+        apply UnionI UFam x U HxX HUin.
       }
       claim HUnion_eq : Union UFam = X.
       { apply set_ext; [exact HUnion_sub|exact HX_sub]. }
@@ -6748,7 +6750,11 @@ apply andI.
         exact (HUsub x HxU).
       + apply orIL.
         apply Hex.
-        let U. assume HUin HUfin.
+        let U. assume Hpair : U :e UFam /\ finite (X :\: U).
+        claim HUin : U :e UFam.
+        { exact (andEL (U :e UFam) (finite (X :\: U)) Hpair). }
+        claim HUfin : finite (X :\: U).
+        { exact (andER (U :e UFam) (finite (X :\: U)) Hpair). }
         claim Hsubset : X :\: Union UFam c= X :\: U.
         { let x. assume Hx.
           claim HxX : x :e X.
