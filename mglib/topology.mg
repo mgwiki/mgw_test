@@ -8640,7 +8640,9 @@ admit.
 Qed.
 
 (** from §24 Definition: path and path connectedness **) 
-Definition path_between : set -> set -> set -> set -> prop := fun X x y p => True.
+Definition path_between : set -> set -> set -> set -> prop := fun X x y p =>
+  function_on p unit_interval X /\
+  apply_fun p 0 = x /\ apply_fun p 1 = y.
 Definition path_connected_space : set -> set -> prop := fun X Tx => topology_on X Tx.
 
 (** from §24: path connected implies connected **) 
