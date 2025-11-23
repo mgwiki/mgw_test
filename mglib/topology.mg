@@ -6754,9 +6754,7 @@ Theorem indiscrete_open_iff : forall X U:set,
   U :e indiscrete_topology X <-> (U = Empty \/ U = X).
 let X U.
 apply iffI.
-- assume HU. apply UPairE U Empty X HU.
-  * assume HUE : U = Empty. apply orIL. exact HUE.
-  * assume HUX : U = X. apply orIR. exact HUX.
+- assume HU. exact (UPairE U Empty X HU).
 - assume Hcases : U = Empty \/ U = X.
   apply orE U = Empty U = X Hcases.
   * assume HUE : U = Empty. rewrite HUE. apply UPairI1.
