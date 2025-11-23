@@ -9011,6 +9011,21 @@ Definition converges_to : set -> set -> set -> set -> prop :=
 Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => y).
 Definition countable_index_set : set -> prop := fun I => I c= omega.
 Definition countable_product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
+Definition const_family : set -> set -> set := fun I X => {UPair i X|i :e I}.
+Definition product_component : set -> set -> set := fun Xi i => apply_fun Xi i.
+Definition product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
+Definition product_space : set -> set -> set := fun I Xi =>
+  {f :e Power (Union Xi)|
+     function_on f I (Union Xi) /\
+     forall i:set, i :e I -> apply_fun f i :e apply_fun Xi i}.
+Definition product_topology_full : set -> set -> set := fun I Xi =>
+  generated_topology (product_space I Xi) Empty.
+Definition box_topology : set -> set -> set := fun I Xi =>
+  product_topology_full I Xi.
+Definition countable_product_space : set -> set -> set := fun I Xi =>
+  product_space I Xi.
+Definition countable_product_topology : set -> set -> set := fun I Xi =>
+  product_topology_full I Xi.
 Definition euclidean_space : set -> set := fun n => n.
 Definition euclidean_topology : set -> set := fun n => n.
 Definition real_sequences : set := Power R.
@@ -9114,28 +9129,10 @@ Definition ordered_square_open_strip : set := ordered_square.
 Definition ordered_square_subspace_topology : set :=
   subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
 Definition one_point_sets_closed : set -> set -> prop := fun X Tx => topology_on X Tx.
-Definition const_family : set -> set -> set := fun I X => {UPair i X|i :e I}.
-Definition product_component : set -> set -> set := fun Xi i => apply_fun Xi i.
-Definition product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
 Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi =>
   forall i:set, i :e I -> Hausdorff_space (product_component Xi i) (product_component_topology Xi i).
 Definition regular_spaces_family : set -> set -> prop := fun I Xi =>
   forall i:set, i :e I -> topology_on (product_component Xi i) (product_component_topology Xi i).
-
-Definition product_space : set -> set -> set := fun I Xi =>
-  {f :e Power (Union Xi)|
-     function_on f I (Union Xi) /\
-     forall i:set, i :e I -> apply_fun f i :e apply_fun Xi i}.
-
-Definition product_topology_full : set -> set -> set := fun I Xi =>
-  generated_topology (product_space I Xi) Empty.
-Definition box_topology : set -> set -> set := fun I Xi =>
-  product_topology_full I Xi.
-
-Definition countable_product_space : set -> set -> set := fun I Xi =>
-  product_space I Xi.
-Definition countable_product_topology : set -> set -> set := fun I Xi =>
-  product_topology_full I Xi.
 Definition uncountable_set : set -> prop := fun X => ~ countable_set X.
 Definition well_ordered_set : set -> prop := fun X =>
   exists alpha:set, ordinal alpha /\ equip X alpha.
