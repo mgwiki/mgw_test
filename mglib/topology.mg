@@ -7873,55 +7873,11 @@ apply set_ext.
   rewrite <- HUnion.
   exact HUnionFam.
 - let U. assume HUUnion.
-  claim HexFamPow : exists Fam :e Power B, U = Union Fam.
-  { exact (ReplE (Power B) (fun Fam0 : set => Union Fam0) U HUUnion). }
-  apply HexFamPow.
-  let Fam. assume HFamPair.
-  claim HFamPow : Fam :e Power B.
-  { exact (andEL (Fam :e Power B) (U = Union Fam) HFamPair). }
-  claim HUnion : U = Union Fam.
-  { exact (andER (Fam :e Power B) (U = Union Fam) HFamPair). }
-  claim HBsub : B c= Power X.
-  { exact (andEL (B c= Power X) (forall x :e X, exists b :e B, x :e b)
-                 (andEL (B c= Power X /\ (forall x :e X, exists b :e B, x :e b))
-                       (forall b1 :e B, forall b2 :e B, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)
-                       HBasis)). }
-  claim HFamSubB : Fam c= B.
-  { exact (PowerE B Fam HFamPow). }
-  claim HUsubX : U c= X.
-  { rewrite HUnion.
-    let x. assume HxUnion.
-    apply UnionE_impred Fam x HxUnion.
-    let b. assume Hxb HbFam.
-    claim HbPowX : b :e Power X.
-    { exact (HBsub b (HFamSubB b HbFam)). }
-    claim HbsubX : b c= X.
-    { exact (PowerE X b HbPowX). }
-    exact (HbsubX x Hxb). }
-  claim HUprop : forall x :e U, exists b :e B, x :e b /\ b c= U.
-  { rewrite HUnion.
-    let x. assume HxUnion.
-    apply UnionE_impred Fam x HxUnion.
-    let b. assume Hxb HbFam.
-    claim HbB : b :e B.
-    { exact (HFamSubB b HbFam). }
-    claim HbsubU : b c= U.
-    { let y. assume Hyb.
-      rewrite HUnion.
-      exact (UnionI Fam y b Hyb HbFam). }
-    prove exists b0 :e B, x :e b0 /\ b0 c= U.
-      witness b.
-      apply andI.
-      - exact HbB.
-      - apply andI.
-        * exact Hxb.
-        * exact HbsubU.
-    Qed. }
-  exact (SepI (Power X)
-              (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
-              U
-              (PowerI X U HUsubX)
-              HUprop).
+  claim HUopen : open_in X (generated_topology X B) U.
+  { exact (basis_generates_open_sets X B HBasis U HUUnion). }
+  exact (andER (topology_on X (generated_topology X B))
+               (U :e generated_topology X B)
+               HUopen).
 Qed.
 
 (** from §13 Example 3: singleton basis **) 
