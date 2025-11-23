@@ -7807,6 +7807,9 @@ Theorem generated_topology_singletons_discrete : forall X:set,
 admit.
 Qed.
 
+(** helper: Kuratowski ordered pair for cartesian products **) 
+Definition OrderedPair : set -> set -> set := fun x y => UPair x (UPair x y).
+
 (** from §13 Example 4: circular vs rectangular region bases (abstract placeholders) **) 
 Definition EuclidPlane : set := OrderedPair R R.
 Definition circular_regions : set := R2_standard_topology.
@@ -8047,9 +8050,6 @@ Qed.
 Theorem standard_topology_is_order_topology : order_topology R = R_standard_topology.
 admit.
 Qed.
-
-(** helper: Kuratowski ordered pair for cartesian products **) 
-Definition OrderedPair : set -> set -> set := fun x y => UPair x (UPair x y).
 
 (** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
 Definition R2_dictionary_order_topology : set := order_topology (OrderedPair R R).
