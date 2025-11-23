@@ -7873,7 +7873,9 @@ apply set_ext.
   rewrite <- HUnion.
   exact HUnionFam.
 - let U. assume HUUnion.
-  apply (ReplE (Power B) (fun Fam0 : set => Union Fam0) U) in HUUnion.
+  claim HexFamPow : exists Fam :e Power B, U = Union Fam.
+  { exact (ReplE (Power B) (fun Fam0 : set => Union Fam0) U HUUnion). }
+  apply HexFamPow.
   let Fam. assume HFamPair.
   claim HFamPow : Fam :e Power B.
   { exact (andEL (Fam :e Power B) (U = Union Fam) HFamPair). }
