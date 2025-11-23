@@ -6512,10 +6512,13 @@ Theorem closed_of_open_complement : forall X T U:set,
 let X T U.
 assume Htop: topology_on X T.
 assume HU: U :e T.
-prove closed_in X T (X :\: U).
+prove topology_on X T /\ exists U0 :e T, X :\: U = X :\: U0.
 apply andI.
 - exact Htop.
-- witness U. reflexivity.
+- witness U.
+  apply andI.
+  - exact HU.
+  - reflexivity.
 Qed.
 
 Definition finer_than : set -> set -> prop := fun T' T => T c= T'.
@@ -6607,6 +6610,65 @@ Qed.
 
 Theorem generated_topology_contains_basis : forall X B:set,
   basis_on X B -> forall b:set, b :e B -> b :e generated_topology X B.
+admit.
+Qed.
+
+Definition basis_generates : set -> set -> set -> prop := fun X B T =>
+  basis_on X B /\ generated_topology X B = T.
+
+Definition basis_refines : set -> set -> set -> prop := fun X B T =>
+  topology_on X T /\ (forall U :e T, forall x :e U, exists b :e B, x :e b /\ b c= U).
+
+Definition finer_than_topology : set -> set -> set -> prop := fun X T' T =>
+  topology_on X T' /\ topology_on X T /\ finer_than T' T.
+
+Theorem finer_than_def : forall T T':set, finer_than T' T <-> coarser_than T T'.
+let T T'. apply iffI.
+- assume H. exact H.
+- assume H. exact H.
+Qed.
+
+Theorem discrete_is_finer : forall X T:set, topology_on X T -> finer_than (discrete_topology X) T.
+admit.
+Qed.
+
+Theorem indiscrete_is_coarser : forall X T:set, topology_on X T -> coarser_than (indiscrete_topology X) T.
+admit.
+Qed.
+
+Theorem generated_topology_finer : forall X B T:set,
+  basis_on X B -> topology_on X T ->
+  (forall b :e B, b :e T) ->
+  finer_than T (generated_topology X B).
+admit.
+Qed.
+
+Theorem topology_generated_by_basis_is_smallest : forall X B T:set,
+  basis_on X B -> topology_on X T ->
+  (forall b :e B, b :e T) ->
+  finer_than T (generated_topology X B).
+admit.
+Qed.
+
+Definition finer_than_topology_by_inclusion : set -> set -> set -> prop := fun X T' T =>
+  topology_on X T' /\ topology_on X T /\ T c= T'.
+
+Theorem finer_than_topology_by_inclusion_eq : forall X T' T:set,
+  finer_than_topology X T' T <-> finer_than_topology_by_inclusion X T' T.
+admit.
+Qed.
+
+Theorem lemma_union_of_topology_family_open : forall X T UFam:set,
+  topology_on X T ->
+  UFam :e Power T ->
+  Union UFam :e T.
+admit.
+Qed.
+
+Theorem lemma_intersection_two_open : forall X T U V:set,
+  topology_on X T ->
+  U :e T -> V :e T ->
+  U :/\: V :e T.
 admit.
 Qed.
 
