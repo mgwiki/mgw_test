@@ -7425,8 +7425,10 @@ claim Hb0prop : forall x :e b0, exists b :e B, x :e b /\ b c= b0.
     exact Hy1. }
   witness b3.
   apply andI.
-  - exact Hxb3.
-  - exact Hb3subb0. }
+  - exact Hb3.
+  - apply andI.
+    * exact Hxb3.
+    * exact Hb3subb0. }
 exact (SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) b0 (PowerI X b0 Hb0_subX) Hb0prop).
 Qed.
 
