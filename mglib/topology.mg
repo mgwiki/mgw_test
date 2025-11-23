@@ -6756,8 +6756,8 @@ apply andI.
         exact (Hxnot HxX).
       }
       apply SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) X (Self_In_Power X).
-      apply orIL.
       rewrite Hdiff_empty.
+      apply orIL.
       exact finite_Empty.
     }
   * prove forall UFam :e Power (finite_complement_topology X), Union UFam :e finite_complement_topology X.
