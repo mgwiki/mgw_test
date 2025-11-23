@@ -7336,7 +7336,6 @@ claim proofD : forall UFam :e Power (generated_topology X B), Union UFam :e gene
     claim Hexb : exists b :e B, x :e b /\ b c= U.
     { exact (HUprop x HxU). }
     apply Hexb.
-    apply Hexb.
     let b. assume Hbpair.
     claim HbB : b :e B.
     { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
