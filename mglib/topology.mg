@@ -8261,7 +8261,9 @@ admit.
 Qed.
 
 (** from §17 Corollary 17.7: closed iff contains all limit points **) 
-Definition limit_point_of : set -> set -> set -> set -> prop := fun X Tx A x => True.
+Definition limit_point_of : set -> set -> set -> set -> prop := fun X Tx A x =>
+  topology_on X Tx /\ x :e X /\
+  forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
 Definition limit_points_of : set -> set -> set -> set := fun X Tx A => {x :e X|limit_point_of X Tx A x}.
 
 Theorem closure_equals_set_plus_limit_points : forall X Tx A:set,
@@ -8552,7 +8554,10 @@ admit.
 Qed.
 
 (** from §22 Definition: quotient map and quotient topology **) 
-Definition quotient_map : set -> set -> set -> prop := fun X Y f => True.
+Definition quotient_map : set -> set -> set -> prop := fun X Y f =>
+  function_on f X Y /\
+  forall U:set, (exists V:set, V :e Y /\ U = V) ->
+    ({x :e X|apply_fun f x :e U} :e Power X).
 Definition quotient_topology : set -> set -> set := fun Y f => Empty.
 
 Theorem quotient_topology_is_topology : forall X Tx Y f:set,
@@ -8572,7 +8577,8 @@ Qed.
 Definition connected_space : set -> set -> prop := fun X Tx => topology_on X Tx.
 
 (** from §23 Definition: separation of a space **) 
-Definition separation_of : set -> set -> set -> prop := fun X U V => True.
+Definition separation_of : set -> set -> set -> prop := fun X U V =>
+  U :e Power X /\ V :e Power X /\ U :/\: V = Empty /\ U <> Empty /\ V <> Empty.
 
 (** from §23: no nontrivial clopen sets characterization **) 
 Theorem connected_iff_no_nontrivial_clopen : forall X Tx:set,
@@ -8880,16 +8886,27 @@ admit.
 Qed.
 
 (** from exercises after §29: nets as functions from directed sets **) 
-Definition net_on : set -> prop := fun net => True.
+Definition directed_set : set -> prop := fun J =>
+  J <> Empty /\ forall i j:set, i :e J -> j :e J -> exists k:set, k :e J.
+
+Definition net_on : set -> prop := fun net =>
+  exists J:set, directed_set J /\
+    forall i v1 v2:set, UPair i v1 :e net /\ UPair i v2 :e net -> v1 = v2.
 
 (** from exercises after §29: subnet definition placeholder **) 
-Definition subnet_of : set -> set -> prop := fun net sub => True.
+Definition subnet_of : set -> set -> prop := fun net sub =>
+  net_on net /\ net_on sub /\
+  forall i v:set, UPair i v :e sub -> exists j:set, UPair j v :e net.
 
 (** from exercises after §29: accumulation point of a net **) 
-Definition accumulation_point_of_net : set -> set -> set -> prop := fun X net x => True.
+Definition accumulation_point_of_net : set -> set -> set -> prop := fun X net x =>
+  net_on net /\ x :e X /\
+  forall U:set, x :e U -> exists i v:set, UPair i v :e net /\ v :e U /\ v <> x.
 
 (** from exercises after §29: net convergence **) 
-Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x => True.
+Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
+  topology_on X Tx /\ net_on net /\ x :e X /\
+  forall U:set, U :e Tx -> x :e U -> exists i v:set, UPair i v :e net /\ v :e U.
 
 (** from exercises after §29: convergence of subnets **) 
 Theorem subnet_preserves_convergence : forall X Tx net sub x:set,
