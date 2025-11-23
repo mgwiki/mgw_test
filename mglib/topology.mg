@@ -8901,3 +8901,100 @@ Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
   (compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
 admit.
 Qed.
+
+(** from §30 Definition 30.1: countable basis at a point / first countable **) 
+Parameter countable_basis_at : set -> set -> set -> prop.
+
+(** from §30 Definition 30.1: first-countable space **) 
+Parameter first_countable_space : set -> set -> prop.
+
+(** from §30 Theorem 30.1(a): sequences and closure in first-countable spaces **) 
+Theorem first_countable_sequences_detect_closure : forall X Tx A x:set,
+  topology_on X Tx ->
+  (exists seq:set, sequence_in seq A /\ converges_to X Tx seq x) ->
+  x :e closure_of X Tx A.
+admit.
+Qed.
+
+(** from §30 Theorem 30.1(b): sequences and continuity in first-countable spaces **) 
+Theorem first_countable_sequences_detect_continuity : forall X Tx Y Ty f:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  (continuous_map X Tx Y Ty f ->
+    forall seq:set, sequence_in seq X -> converges_to X Tx seq (Empty) -> converges_to Y Ty (image_of f seq) (f@Empty)).
+admit.
+Qed.
+
+(** from §30 Definition: second-countable space **) 
+Parameter second_countable_space : set -> set -> prop.
+
+(** from §30 Example 1: R^n has countable basis **) 
+Theorem euclidean_spaces_second_countable : forall n:set,
+  second_countable_space (euclidean_space n) (euclidean_topology n).
+admit.
+Qed.
+
+(** from §30 Example 2: uniform topology on R^omega not second countable **) 
+Theorem Romega_uniform_first_not_second_countable :
+  first_countable_space real_sequences uniform_topology /\
+  ~ second_countable_space real_sequences uniform_topology.
+admit.
+Qed.
+
+(** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **) 
+Theorem countability_axioms_subspace_product : forall X Tx:set,
+  topology_on X Tx ->
+  (forall A:set, A c= X -> first_countable_space X Tx -> first_countable_space A (subspace_topology X Tx A)) /\
+  (forall A:set, A c= X -> second_countable_space X Tx -> second_countable_space A (subspace_topology X Tx A)) /\
+  (forall I Xi:set, countable_index_set I -> (forall i:set, first_countable_space (Xi@i) (product_component_topology Xi i)) ->
+     first_countable_space (product_space I Xi) (product_topology I Xi)) /\
+  (forall I Xi:set, countable_index_set I -> (forall i:set, second_countable_space (Xi@i) (product_component_topology Xi i)) ->
+     second_countable_space (product_space I Xi) (product_topology I Xi)).
+admit.
+Qed.
+
+(** from §30 Definition: dense subset **) 
+Definition dense_in (A X Tx:set) : prop := closure_of X Tx A = X.
+
+(** from §30 Theorem 30.3(a): countable basis implies Lindelöf **) 
+Theorem countable_basis_implies_Lindelof : forall X Tx:set,
+  topology_on X Tx ->
+  second_countable_space X Tx ->
+  forall U:set, open_cover X Tx U -> exists V:set, countable_subcollection V U /\ covers X V.
+admit.
+Qed.
+
+(** from §30 Theorem 30.3(b): countable basis yields countable dense subset **) 
+Theorem countable_basis_implies_separable : forall X Tx:set,
+  topology_on X Tx ->
+  second_countable_space X Tx ->
+  exists D:set, countable_set D /\ dense_in D X Tx.
+admit.
+Qed.
+
+(** from §30 Example 3: Sorgenfrey line countability properties **) 
+Theorem Sorgenfrey_line_countability :
+  first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
+  dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
+  Lindelof_space Sorgenfrey_line Sorgenfrey_topology /\
+  ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
+admit.
+Qed.
+(** auxiliary parameters for sequences and basic constructions in §30 **) 
+Parameter sequence_in : set -> set -> prop.
+Parameter converges_to : set -> set -> set -> set -> prop.
+Parameter image_of : set -> set -> set.
+Parameter countable_index_set : set -> prop.
+Parameter product_component_topology : set -> set -> set.
+Parameter product_space : set -> set -> set.
+Parameter product_topology : set -> set -> set.
+Parameter euclidean_space : set -> set.
+Parameter euclidean_topology : set -> set.
+Parameter real_sequences : set.
+Parameter uniform_topology : set.
+Parameter open_cover : set -> set -> set -> prop.
+Parameter countable_subcollection : set -> set -> prop.
+Parameter covers : set -> set -> prop.
+Parameter Lindelof_space : set -> set -> prop.
+Parameter rational_numbers : set.
+Parameter Sorgenfrey_line : set.
+Parameter Sorgenfrey_topology : set.
