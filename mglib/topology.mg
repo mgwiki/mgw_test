@@ -7065,6 +7065,9 @@ Theorem standard_topology_is_order_topology : order_topology R = R_standard_topo
 admit.
 Qed.
 
+(** helper: placeholder for cartesian product set **) 
+Definition OrderedPair : set -> set -> set := fun X Y => Empty.
+
 (** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
 Definition R2_dictionary_order_topology : set := Empty.
 
