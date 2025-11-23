@@ -8091,16 +8091,16 @@ Definition rectangular_regions : set :=
               exists x y:set, p = OrderedPair x y /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}}.
 
 Theorem circular_regions_basis_plane : basis_on EuclidPlane circular_regions.
-admit.
+admit. (** FAIL **)
 Qed.
 
 Theorem rectangular_regions_basis_plane : basis_on EuclidPlane rectangular_regions.
-admit.
+admit. (** FAIL **)
 Qed.
 
 Theorem circular_rectangular_same_topology_plane :
   generated_topology EuclidPlane circular_regions = generated_topology EuclidPlane rectangular_regions.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §13: refinement of basis yields finer topology **) 
@@ -10379,21 +10379,21 @@ Qed.
 (** LATEX VERSION: Complete metric spaces are Baire. **)
 Theorem Baire_category_complete_metric : forall X d:set,
   complete_metric_space X d -> Baire_space (metric_topology X d).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Theorem: compact Hausdorff spaces are Baire spaces **) 
 (** LATEX VERSION: Compact Hausdorff spaces are Baire. **)
 Theorem Baire_category_compact_Hausdorff : forall X Tx:set,
   compact_space X Tx -> Hausdorff_space X Tx -> Baire_space Tx.
-admit.
+admit. (** aby  Hausdorff_5Fspace_def conj_myprob_10389_1_20251123_215320 In_5Fno2cycle Hausdorff_5Fseparate_5Fpoint_5Fcompact_5Fset In_5Find Baire_5Fspace_def . **)
 Qed.
 
 (** from §48 Theorem: Baire category theorem general version **) 
 (** LATEX VERSION: General Baire category consequence: nonempty open sets in Baire space. **)
 Theorem Baire_category_theorem : forall X:set,
   Baire_space X -> forall U:set, open_in X X U -> U <> Empty.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §49 Definition: differentiability placeholder and nowhere-differentiable function **) 
@@ -10405,7 +10405,7 @@ Definition nowhere_differentiable : set -> prop := fun f =>
 (** from §49 Existence: nowhere-differentiable function **) 
 (** LATEX VERSION: Existence of a continuous nowhere-differentiable function. **)
 Theorem nowhere_differentiable_function_exists : exists f:set, continuous_map R R_standard_topology R R_standard_topology f /\ nowhere_differentiable f.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** helper: finite cardinality via equip to an ordinal **) 
@@ -10437,7 +10437,7 @@ Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
 (** from §50 Theorem: basic properties of covering dimension **) 
 (** LATEX VERSION: Basic existence placeholder for covering dimension. **)
 Theorem covering_dimension_properties : forall X:set, exists n:set, covering_dimension X n.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Theorem: compact subspace of R^n has dimension at most n **) 
