@@ -8607,6 +8607,8 @@ Definition sequence_on : set -> set -> prop := fun seq A => function_on seq omeg
 Definition converges_to : set -> set -> set -> set -> prop :=
   fun X Tx seq x => topology_on X Tx /\ sequence_on seq X /\ x :e X.
 Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => y).
+Definition function_sequence_value : set -> set -> set -> set :=
+  fun f_seq n x => apply_fun (apply_fun f_seq n) x.
 
 Definition sequence_converges_metric : set -> set -> set -> set -> prop :=
   fun X d seq x =>
@@ -8636,7 +8638,7 @@ Definition uniform_convergence_functions : set -> set -> set -> set -> set -> pr
       exists N:set, N :e omega /\
         forall n:set, n :e omega -> N c= n ->
           forall x:set, x :e X ->
-            Rlt (apply_fun dY (OrderedPair (apply_fun (apply_fun f_seq n) x) (apply_fun f x))) eps.
+            Rlt (apply_fun dY (OrderedPair (function_sequence_value f_seq n x) (apply_fun f x))) eps.
 
 (** from §21: uniform limit theorem placeholder **) 
 Theorem uniform_limit_of_continuous_is_continuous :
