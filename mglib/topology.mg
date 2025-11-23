@@ -6547,7 +6547,11 @@ Definition countable : set -> prop := fun X => atleastp X omega.
 Theorem finite_countable : forall X:set, finite X -> countable X.
 let X. assume Hfin.
 apply Hfin.
-let n. assume Hn: n :e omega. assume Heq: equip X n.
+let n. assume Hpair: n :e omega /\ equip X n.
+claim Hn : n :e omega.
+{ exact (andEL (n :e omega) (equip X n) Hpair). }
+claim Heq : equip X n.
+{ exact (andER (n :e omega) (equip X n) Hpair). }
 claim Hn_sub : n c= omega.
 { exact (omega_TransSet n Hn). }
 claim Hcount_n : atleastp n omega.
