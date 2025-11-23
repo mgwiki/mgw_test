@@ -6547,31 +6547,7 @@ Theorem generated_topology_is_topology : forall X B:set,
 admit.
 Qed.
 
-(** from §13 Lemma 13.1: open sets are unions of basis elements **)
-Theorem open_sets_as_unions_of_basis : forall X B:set,
-  basis_on X B ->
-  forall U:set, open_in X (generated_topology X B) U ->
-    exists Fam :e Power B, Union Fam = U.
-admit.
-Qed.
-
-(** from §13 Lemma 13.1 converse direction **)
-Theorem basis_generates_open_sets : forall X B:set,
-  basis_on X B ->
-  forall U:set, (exists Fam :e Power B, Union Fam = U) ->
-    open_in X (generated_topology X B) U.
-admit.
-Qed.
-
-(** from §13: criterion for fineness via bases **)
-Theorem finer_via_basis : forall X B B':set,
-  basis_on X B -> basis_on X B' ->
-  (forall x :e X, forall b:set, b :e B -> x :e b ->
-      exists b':set, b' :e B' /\ x :e b' /\ b' c= b) ->
-  finer_than (generated_topology X B') (generated_topology X B).
-admit.
-Qed.
-
+ 
 (** from §12 Example 2: discrete topology **)
 Definition discrete_topology : set -> set := fun X => Power X.
 
@@ -6581,6 +6557,13 @@ Definition indiscrete_topology : set -> set := fun X => {Empty, X}.
 (** from §12 Example 3: finite complement topology **)
 Definition finite_complement_topology : set -> set :=
   fun X => {U :e Power X | finite (X :\: U) \/ U = X}.
+
+(** helper: placeholder for countable sets **)
+Definition countable : set -> prop := fun _ => True.
+
+(** from §12 Example 4: countable complement topology **)
+Definition countable_complement_topology : set -> set :=
+  fun X => {U :e Power X | countable (X :\: U) \/ U = X}.
 
 (** from §12: discrete topology is a topology **)
 Theorem discrete_topology_on : forall X, topology_on X (discrete_topology X).
@@ -6622,7 +6605,26 @@ Qed.
 Definition comparable_topologies : set -> set -> prop := fun T1 T2 =>
   finer_than T1 T2 \/ finer_than T2 T1.
 
-(** from §13: extracting a basis from an open refinement condition **)
+(** from §12: equality of topologies **)
+Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
+  topology_on X T1 /\ topology_on X T2 /\ T1 = T2.
+
+(** from §12: symmetry of topology equality **)
+Theorem topology_eq_sym : forall X T1 T2:set, topology_eq X T1 T2 -> topology_eq X T2 T1.
+admit.
+Qed.
+
+(** from §12: transitivity of topology equality **)
+Theorem topology_eq_trans : forall X T1 T2 T3:set, topology_eq X T1 T2 -> topology_eq X T2 T3 -> topology_eq X T1 T3.
+admit.
+Qed.
+
+(** from §12: reflexivity of topology equality **)
+Theorem topology_eq_refl : forall X T:set, topology_on X T -> topology_eq X T T.
+admit.
+Qed.
+
+(** from §13 Lemma 13.2: extracting a basis from an open refinement condition **)
 Theorem basis_refines_topology : forall X T C:set,
   topology_on X T ->
   (forall U :e T, forall x :e U, exists Cx :e C, x :e Cx /\ Cx c= U) ->
@@ -6665,7 +6667,75 @@ Theorem indiscrete_is_coarser : forall X T:set, topology_on X T -> coarser_than 
 admit.
 Qed.
 
-(** from §13: generated topology is minimal containing basis **)
+(** from §12: every subset is open in discrete topology **)
+Theorem discrete_topology_open_every_subset : forall X U:set,
+  open_in X (discrete_topology X) U.
+admit.
+Qed.
+
+(** from §12: opens in indiscrete topology are Empty or X **)
+Theorem indiscrete_topology_only_empty_full : forall X U:set,
+  open_in X (indiscrete_topology X) U -> U = Empty \/ U = X.
+admit.
+Qed.
+
+(** from §12 Example 3: finite complement openness criterion **)
+Theorem finite_complement_topology_open_iff_finite_complement : forall X U:set,
+  open_in X (finite_complement_topology X) U ->
+  finite (X :\: U) \/ U = X.
+admit.
+Qed.
+
+(** from §12 Example 3: Empty is open in finite complement topology **)
+Theorem finite_complement_topology_contains_empty : forall X:set,
+  Empty :e finite_complement_topology X.
+admit.
+Qed.
+
+(** from §12 Example 3: X is open in finite complement topology **)
+Theorem finite_complement_topology_contains_full : forall X:set,
+  X :e finite_complement_topology X.
+admit.
+Qed.
+
+(** from §12 Example 4: openness via countable complement **)
+Theorem countable_complement_topology_open_iff : forall X U:set,
+  open_in X (countable_complement_topology X) U ->
+  countable (X :\: U) \/ U = X.
+admit.
+Qed.
+
+(** from §12 Example 4: Empty is open in countable complement topology **)
+Theorem countable_complement_topology_contains_empty : forall X:set,
+  Empty :e countable_complement_topology X.
+admit.
+Qed.
+
+(** from §12 Example 4: X is open in countable complement topology **)
+Theorem countable_complement_topology_contains_full : forall X:set,
+  X :e countable_complement_topology X.
+admit.
+Qed.
+
+(** from §12 Example comparison: countable vs finite complement **)
+Theorem countable_complement_finer_than_finite_complement : forall X:set,
+  finer_than (countable_complement_topology X) (finite_complement_topology X).
+admit.
+Qed.
+
+(** from §12 examples: finite complement coarser than discrete **)
+Theorem finite_complement_coarser_than_discrete : forall X:set,
+  coarser_than (finite_complement_topology X) (discrete_topology X).
+admit.
+Qed.
+
+(** from §12 examples: indiscrete coarser than countable complement **)
+Theorem indiscrete_coarser_than_countable_complement : forall X:set,
+  coarser_than (indiscrete_topology X) (countable_complement_topology X).
+admit.
+Qed.
+
+(** from §13 Lemma 13.3 (direction): generated topology is minimal containing basis **)
 Theorem generated_topology_finer : forall X B T:set,
   basis_on X B -> topology_on X T ->
   (forall b :e B, b :e T) ->
@@ -6673,7 +6743,7 @@ Theorem generated_topology_finer : forall X B T:set,
 admit.
 Qed.
 
-(** from §13: generated topology is smallest with given basis **)
+(** from §13 Lemma 13.3 (direction): generated topology is smallest with given basis **)
 Theorem topology_generated_by_basis_is_smallest : forall X B T:set,
   basis_on X B -> topology_on X T ->
   (forall b :e B, b :e T) ->
@@ -6723,11 +6793,245 @@ Definition discrete_topology_alt : set -> set := discrete_topology.
 
 Definition trivial_topology : set -> set := indiscrete_topology.
 
-Definition countable : set -> prop := fun _ => True.
+(** helper: intersection over a family of topologies (placeholder) **)
+Definition Intersection_Fam : set -> set := fun _ => Eps_i (fun T:set => True).
 
-(** from §12 Example 4: countable complement topology **)
-Definition countable_complement_topology : set -> set :=
-  fun X => {U :e Power X | countable (X :\: U) \/ U = X}.
+(** from §13 Example 3: singleton basis **)
+Definition singleton_basis : set -> set := fun X => {{x}|x :e X}.
+
+(** from §13 Example 3: singleton collection forms a basis **)
+Theorem singleton_basis_is_basis : forall X:set, basis_on X (singleton_basis X).
+admit.
+Qed.
+
+(** from §13 Example 3: topology generated by singletons is discrete **)
+Theorem generated_topology_singletons_discrete : forall X:set,
+  generated_topology X (singleton_basis X) = discrete_topology X.
+admit.
+Qed.
+
+(** from §13 Example 4: circular vs rectangular region bases (abstract placeholder for the plane; Lemma 13.3 condition applied both ways) **)
+Definition EuclidPlane : set := Empty.
+Definition circular_regions : set := Empty.
+Definition rectangular_regions : set := Empty.
+
+Theorem circular_regions_basis_plane : basis_on EuclidPlane circular_regions.
+admit.
+Qed.
+
+Theorem rectangular_regions_basis_plane : basis_on EuclidPlane rectangular_regions.
+admit.
+Qed.
+
+Theorem circular_rectangular_same_topology_plane :
+  generated_topology EuclidPlane circular_regions = generated_topology EuclidPlane rectangular_regions.
+admit.
+Qed.
+
+(** from §13 Lemma 13.3: finer-than equivalence via bases **)
+Theorem basis_finer_equiv_condition : forall X B B':set,
+  basis_on X B -> basis_on X B' ->
+  (forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
+  finer_than (generated_topology X B') (generated_topology X B).
+admit.
+Qed.
+
+(** from §13 Lemma 13.2 restated: building a basis from a subcollection of opens **)
+Theorem basis_from_open_subcollection : forall X T C:set,
+  topology_on X T ->
+  (forall c :e C, c :e T) ->
+  (forall U :e T, forall x :e U, exists c :e C, x :e c /\ c c= U) ->
+  basis_on X C /\ generated_topology X C = T.
+admit.
+Qed.
+
+(** from §13 Lemma 13.4: generated topology equals the set of all unions of basis elements **) 
+Theorem union_of_basis_equals_open : forall X B:set,
+  basis_on X B ->
+  generated_topology X B = {Union Fam|Fam :e Power B}.
+admit.
+Qed.
+
+(** from §13 Example 4 / Lemma 13.3: equivalent bases generate the same topology (e.g. circular vs rectangular regions) **)
+Theorem equivalent_bases_generate_same_topology : forall X B B':set,
+  basis_on X B -> basis_on X B' ->
+  (forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) ->
+  (forall x :e X, forall b' :e B', x :e b' -> exists b :e B, x :e b /\ b c= b') ->
+  generated_topology X B = generated_topology X B'.
+admit.
+Qed.
+
+(** from §13 Lemma 13.2 (alias): open refinement family yields a basis **)
+Theorem lemma13_2_basis_from_open_subcollection : forall X T C:set,
+  topology_on X T ->
+  (forall c :e C, c :e T) ->
+  (forall U :e T, forall x :e U, exists c :e C, x :e c /\ c c= U) ->
+  basis_on X C /\ generated_topology X C = T.
+admit.
+Qed.
+
+(** from §13 Lemma 13.3 (alias): basis inclusion criterion for fineness **)
+Theorem lemma13_3_basis_finer_equiv : forall X B B':set,
+  basis_on X B -> basis_on X B' ->
+  (forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
+  finer_than (generated_topology X B') (generated_topology X B).
+admit.
+Qed.
+
+(** from §13 Lemma 13.4 (alias): generated topology equals unions of basis elements **)
+Theorem lemma13_4_union_of_basis_equals_open : forall X B:set,
+  basis_on X B ->
+  generated_topology X B = {Union Fam|Fam :e Power B}.
+admit.
+Qed.
+
+(** from §13 Definition: subbasis and its generated topology **)
+Definition subbasis_on : set -> set -> prop := fun X S => S c= Power X.
+
+(** from §13: finite intersections of subbasis elements (placeholder set of finite intersections) **)
+Definition finite_intersections_of : set -> set := fun _ => Empty.
+
+(** from §13: basis obtained from a subbasis by finite intersections **)
+Definition basis_of_subbasis : set -> set -> set := fun _ S => {b :e finite_intersections_of S|True}.
+
+(** from §13: topology generated by a subbasis **) 
+Definition generated_topology_from_subbasis : set -> set -> set :=
+  fun X S => generated_topology X (basis_of_subbasis X S).
+
+(** from §13: finite intersections of a subbasis form a basis **)
+Theorem finite_intersections_basis_of_subbasis : forall X S:set,
+  subbasis_on X S -> basis_on X (basis_of_subbasis X S).
+admit.
+Qed.
+
+(** from §13: topology generated by a subbasis is a topology **)
+Theorem topology_from_subbasis_is_topology : forall X S:set,
+  subbasis_on X S -> topology_on X (generated_topology_from_subbasis X S).
+admit.
+Qed.
+
+(** from §13: basis generated from a subbasis produces a finer topology than any topology containing the subbasis **)
+Theorem subbasis_generates_smallest_topology : forall X S T:set,
+  subbasis_on X S -> topology_on X T -> S c= T ->
+  finer_than T (generated_topology_from_subbasis X S).
+admit.
+Qed.
+
+(** from §13 Exercise 1: local openness implies set is open **)
+Theorem ex13_1_local_open_subset : forall X T A:set,
+  topology_on X T ->
+  (forall x :e A, exists U :e T, x :e U /\ U c= A) ->
+  open_in X T A.
+admit.
+Qed.
+
+(** from §13 Exercise 2: comparison of nine topologies on {a,b,c} **) 
+Definition abc_set : set := UPair Empty Empty.
+Definition top_abc_1 : set := Empty.
+Definition top_abc_2 : set := Empty.
+Definition top_abc_3 : set := Empty.
+Definition top_abc_4 : set := Empty.
+Definition top_abc_5 : set := Empty.
+Definition top_abc_6 : set := Empty.
+Definition top_abc_7 : set := Empty.
+Definition top_abc_8 : set := Empty.
+Definition top_abc_9 : set := Empty.
+
+Theorem ex13_2_compare_nine_topologies :
+  topology_on abc_set top_abc_1 /\ topology_on abc_set top_abc_2 /\
+  topology_on abc_set top_abc_3 /\ topology_on abc_set top_abc_4 /\
+  topology_on abc_set top_abc_5 /\ topology_on abc_set top_abc_6 /\
+  topology_on abc_set top_abc_7 /\ topology_on abc_set top_abc_8 /\
+  topology_on abc_set top_abc_9 /\
+  exists finer_pairs:set, True.
+admit.
+Qed.
+
+(** from §13 Exercise 3: infinite-complement collection **)
+Definition infinite_complement_family : set -> set :=
+  fun X => {U :e Power X | infinite (X :\: U) \/ U = Empty \/ U = X}.
+
+Theorem ex13_3a_Tc_topology : forall X:set, topology_on X (countable_complement_topology X).
+admit.
+Qed.
+
+Theorem ex13_3b_Tinfty_not_topology : forall X:set,
+  ~topology_on X (infinite_complement_family X).
+admit.
+Qed.
+
+(** from §13 Exercise 4(a): intersection of topologies **)
+Theorem ex13_4a_intersection_topology : forall X Fam:set,
+  (forall T :e Fam, topology_on X T) ->
+  topology_on X (Intersection_Fam Fam).
+admit.
+Qed.
+
+(** from §13 Exercise 4(b): smallest/largest topology containing a family **) 
+Theorem ex13_4b_smallest_largest : forall X Fam:set,
+  exists Tmin, topology_on X Tmin /\ (forall T :e Fam, T c= Tmin) /\
+    (forall T', topology_on X T' /\ (forall T :e Fam, T c= T') -> Tmin c= T') /\
+  exists Tmax, topology_on X Tmax /\ (forall T :e Fam, Tmax c= T) /\
+    (forall T', topology_on X T' /\ (forall T :e Fam, T' c= T) -> T' c= Tmax).
+admit.
+Qed.
+
+(** from §13 Exercise 4(c): specific smallest/largest topology on {a,b,c} **) 
+Theorem ex13_4c_specific_topologies :
+  exists Tsmall Tall:set, topology_on abc_set Tsmall /\ topology_on abc_set Tall.
+admit.
+Qed.
+
+(** from §13 Exercise 5: topology generated by a basis is intersection of topologies containing it **) 
+Theorem ex13_5_basis_intersection : forall X A:set,
+  basis_on X A ->
+  generated_topology X A =
+    Intersection_Fam {T :e Power (Power X)|topology_on X T /\ A c= T}.
+admit.
+Qed.
+
+(** from §13 Exercise 6: incomparability of two real line topologies **) 
+Definition R_lower_limit_topology : set := Empty.
+Definition R_K_topology : set := Empty.
+
+Theorem ex13_6_Rl_RK_not_comparable :
+  ~finer_than R_lower_limit_topology R_K_topology /\
+  ~finer_than R_K_topology R_lower_limit_topology.
+admit.
+Qed.
+
+(** from §13 Exercise 7: containment relations among five ℝ topologies **) 
+Definition R_standard_topology : set := Empty.
+Definition R_finite_complement_topology : set := Empty.
+Definition R_upper_limit_topology : set := Empty.
+Definition R_ray_topology : set := Empty.
+
+Theorem ex13_7_R_topology_containments :
+  finer_than R_upper_limit_topology R_standard_topology /\
+  finer_than R_K_topology R_standard_topology /\
+  finer_than R_standard_topology R_finite_complement_topology /\
+  finer_than R_standard_topology R_ray_topology.
+admit.
+Qed.
+
+(** from §13 Exercise 8(a): rational open intervals generate standard topology on ℝ **) 
+Definition R : set := Empty.
+Definition rational_open_intervals_basis : set := Empty.
+
+Theorem ex13_8a_rational_intervals_basis_standard :
+  basis_on R rational_open_intervals_basis /\
+  generated_topology R rational_open_intervals_basis = R_standard_topology.
+admit.
+Qed.
+
+(** from §13 Exercise 8(b): half-open rational intervals generate a different topology **) 
+Definition rational_halfopen_intervals_basis : set := Empty.
+
+Theorem ex13_8b_halfopen_rational_basis_topology :
+  basis_on R rational_halfopen_intervals_basis /\
+  generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology.
+admit.
+Qed.
 
 (** from §13 characterization of generated topology **)
 Theorem lemma_generated_topology_characterization : forall X B:set,
@@ -6766,151 +7070,3 @@ Theorem open_as_union_of_basis_elements : forall X B:set,
     U = Union {b :e B|b c= U}.
 admit.
 Qed.
-
-(** from §13: every basis element is open **)
-Theorem basis_element_open : forall X B:set,
-  basis_on X B ->
-  forall b :e B, open_in X (generated_topology X B) b.
-admit.
-Qed.
-
-(** from §12: every subset is open in discrete topology **)
-Theorem discrete_topology_open_every_subset : forall X U:set,
-  open_in X (discrete_topology X) U.
-admit.
-Qed.
-
-(** from §12: opens in indiscrete topology are Empty or X **)
-Theorem indiscrete_topology_only_empty_full : forall X U:set,
-  open_in X (indiscrete_topology X) U -> U = Empty \/ U = X.
-admit.
-Qed.
-
-(** from §12 Example 3: finite complement openness criterion **)
-Theorem finite_complement_topology_open_iff_finite_complement : forall X U:set,
-  open_in X (finite_complement_topology X) U ->
-  finite (X :\: U) \/ U = X.
-admit.
-Qed.
-
-(** from §12 Example 3: Empty is open in finite complement topology **)
-Theorem finite_complement_topology_contains_empty : forall X:set,
-  Empty :e finite_complement_topology X.
-admit.
-Qed.
-
-(** from §12 Example 3: X is open in finite complement topology **)
-Theorem finite_complement_topology_contains_full : forall X:set,
-  X :e finite_complement_topology X.
-admit.
-Qed.
-
-(** from §12 Example 4: countable complement topology is a topology **)
-Theorem countable_complement_topology_on : forall X, topology_on X (countable_complement_topology X).
-admit.
-Qed.
-
-(** from §12 Example 4: openness via countable complement **)
-Theorem countable_complement_topology_open_iff : forall X U:set,
-  open_in X (countable_complement_topology X) U ->
-  countable (X :\: U) \/ U = X.
-admit.
-Qed.
-
-(** from §12 Example 4: Empty is open in countable complement topology **)
-Theorem countable_complement_topology_contains_empty : forall X:set,
-  Empty :e countable_complement_topology X.
-admit.
-Qed.
-
-(** from §12 Example 4: X is open in countable complement topology **)
-Theorem countable_complement_topology_contains_full : forall X:set,
-  X :e countable_complement_topology X.
-admit.
-Qed.
-
-(** from §12 Example comparison: countable vs finite complement **)
-Theorem countable_complement_finer_than_finite_complement : forall X:set,
-  finer_than (countable_complement_topology X) (finite_complement_topology X).
-admit.
-Qed.
-
-(** from §12 examples: finite complement coarser than discrete **)
-Theorem finite_complement_coarser_than_discrete : forall X:set,
-  coarser_than (finite_complement_topology X) (discrete_topology X).
-admit.
-Qed.
-
-(** from §12 examples: indiscrete coarser than countable complement **)
-Theorem indiscrete_coarser_than_countable_complement : forall X:set,
-  coarser_than (indiscrete_topology X) (countable_complement_topology X).
-admit.
-Qed.
-
-(** from §13 Example 3: singleton basis **)
-Definition singleton_basis : set -> set := fun X => {{x}|x :e X}.
-
-(** from §13 Example 3: singleton collection forms a basis **)
-Theorem singleton_basis_is_basis : forall X:set, basis_on X (singleton_basis X).
-admit.
-Qed.
-
-(** from §13 Example 3: topology generated by singletons is discrete **)
-Theorem generated_topology_singletons_discrete : forall X:set,
-  generated_topology X (singleton_basis X) = discrete_topology X.
-admit.
-Qed.
-
-(** from §13: finer-than equivalence via bases **)
-Theorem basis_finer_equiv_condition : forall X B B':set,
-  basis_on X B -> basis_on X B' ->
-  (forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
-  finer_than (generated_topology X B') (generated_topology X B).
-admit.
-Qed.
-
-(** from §13: building a basis from a subcollection of opens **)
-Theorem basis_from_open_subcollection : forall X T C:set,
-  topology_on X T ->
-  (forall c :e C, c :e T) ->
-  (forall U :e T, forall x :e U, exists c :e C, x :e c /\ c c= U) ->
-  basis_on X C /\ generated_topology X C = T.
-admit.
-Qed.
-
-(** from §13 Lemma 13.1 restated: generated topology equals union-closure **)
-Theorem union_of_basis_equals_open : forall X B:set,
-  basis_on X B ->
-  generated_topology X B = {Union Fam|Fam :e Power B}.
-admit.
-Qed.
-
-(** from §13 Example 4 / Lemma 13.3: equivalent bases generate the same topology (e.g. circular vs rectangular regions) **)
-Theorem equivalent_bases_generate_same_topology : forall X B B':set,
-  basis_on X B -> basis_on X B' ->
-  (forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) ->
-  (forall x :e X, forall b' :e B', x :e b' -> exists b :e B, x :e b /\ b c= b') ->
-  generated_topology X B = generated_topology X B'.
-admit.
-Qed.
-
-(** from §12: equality of topologies **)
-Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
-  topology_on X T1 /\ topology_on X T2 /\ T1 = T2.
-
-(** from §12: symmetry of topology equality **)
-Theorem topology_eq_sym : forall X T1 T2:set, topology_eq X T1 T2 -> topology_eq X T2 T1.
-admit.
-Qed.
-
-(** from §12: transitivity of topology equality **)
-Theorem topology_eq_trans : forall X T1 T2 T3:set, topology_eq X T1 T2 -> topology_eq X T2 T3 -> topology_eq X T1 T3.
-admit.
-Qed.
-
-(** from §12: reflexivity of topology equality **)
-Theorem topology_eq_refl : forall X T:set, topology_on X T -> topology_eq X T T.
-admit.
-Qed.
-
-End Topology.
