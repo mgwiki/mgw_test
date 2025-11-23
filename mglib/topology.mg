@@ -6539,14 +6539,14 @@ Definition indiscrete_topology : set -> set := fun X => {Empty, X}.
 
 (** from §12 Example 3: finite complement topology **)
 Definition finite_complement_topology : set -> set :=
-  fun X => {U :e Power X | finite (X :\: U) \/ U = X}.
+  fun X => {U :e Power X | finite (X :\: U) \/ U = Empty}.
 
 (** helper: placeholder for countable sets **)
 Definition countable : set -> prop := fun _ => True.
 
 (** from §12 Example 4: countable complement topology **)
 Definition countable_complement_topology : set -> set :=
-  fun X => {U :e Power X | countable (X :\: U) \/ U = X}.
+  fun X => {U :e Power X | countable (X :\: U) \/ U = Empty}.
 
 (** from §12: discrete topology is a topology **)
 Theorem discrete_topology_on : forall X, topology_on X (discrete_topology X).
