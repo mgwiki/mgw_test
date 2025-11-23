@@ -8455,7 +8455,7 @@ Qed.
 
 Theorem ex17_4_open_minus_closed_and_closed_minus_open : forall X Tx U A:set,
   topology_on X Tx -> open_in X Tx U -> closed_in X Tx A ->
-  open_in X Tx (U :\\: A) /\ closed_in X Tx (A :\\: U).
+  open_in X Tx (U :\: A) /\ closed_in X Tx (A :\: U).
 admit.
 Qed.
 
