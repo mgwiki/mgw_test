@@ -7673,7 +7673,6 @@ Qed.
 
 (** from §29 Exercises: local compactness and compactification **) 
 Theorem ex29_local_compactness_exercises : True.
-(* outline placeholder for local compactness exercise parts *)
 admit.
 Qed.
 
