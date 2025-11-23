@@ -7241,14 +7241,14 @@ claim HBsub : B c= Power X.
 { exact (andEL (B c= Power X) (forall x :e X, exists b :e B, x :e b) HBleft). }
 claim HBcov : forall x :e X, exists b :e B, x :e b.
 { exact (andER (B c= Power X) (forall x :e X, exists b :e B, x :e b) HBleft). }
-let proofA : generated_topology X B c= Power X.
+claim proofA : generated_topology X B c= Power X.
 { let U. assume HU: U :e generated_topology X B.
   exact (SepE1 (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) U HU). }
-let proofB : Empty :e generated_topology X B.
+claim proofB : Empty :e generated_topology X B.
 { apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) Empty (Empty_In_Power X).
   let x. assume HxEmpty.
   exact (EmptyE x HxEmpty (exists b :e B, x :e b /\ b c= Empty)). }
-let proofC : X :e generated_topology X B.
+claim proofC : X :e generated_topology X B.
 { apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) X (Self_In_Power X).
   let x. assume HxX.
   claim Hexb : exists b :e B, x :e b.
@@ -7259,7 +7259,7 @@ let proofC : X :e generated_topology X B.
   { exact (PowerE X b (HBsub b HbB)). }
   witness b.
   apply andI; exact Hxb || exact HbsubX. }
-let proofD : forall UFam :e Power (generated_topology X B), Union UFam :e generated_topology X B.
+claim proofD : forall UFam :e Power (generated_topology X B), Union UFam :e generated_topology X B.
 { let UFam. assume Hfam: UFam :e Power (generated_topology X B).
   claim HsubFam : UFam c= generated_topology X B.
   { exact (PowerE (generated_topology X B) UFam Hfam). }
@@ -7290,7 +7290,7 @@ let proofD : forall UFam :e Power (generated_topology X B), Union UFam :e genera
     - let y. assume Hyb.
       apply UnionI UFam y U (HbSubU y Hyb) HUin.
 }
-let proofE : forall U :e generated_topology X B, forall V :e generated_topology X B, U :/\: V :e generated_topology X B.
+claim proofE : forall U :e generated_topology X B, forall V :e generated_topology X B, U :/\: V :e generated_topology X B.
 { let U. assume HUtop.
   let V. assume HVtop.
   claim HUprop : forall x0 :e U, exists b :e B, x0 :e b /\ b c= U.
@@ -7331,7 +7331,6 @@ let proofE : forall U :e generated_topology X B, forall V :e generated_topology 
       apply binintersectI U V y (Hb1Sub y Hyb1) (Hb2Sub y Hyb2).
 }
 exact (andI (andI (andI (andI proofA proofB) proofC) proofD) proofE).
-Qed.
 Qed.
 
 (** from §13: basis elements belong to generated topology **) 
