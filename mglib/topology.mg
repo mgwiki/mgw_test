@@ -6802,20 +6802,6 @@ Theorem generated_topology_singletons_discrete : forall X:set,
 admit.
 Qed.
 
-Theorem basis_from_open_subcollection : forall X T C:set,
-  topology_on X T ->
-  (forall c :e C, c :e T) ->
-  (forall U :e T, forall x :e U, exists c :e C, x :e c /\ c c= U) ->
-  basis_on X C /\ generated_topology X C = T.
-admit.
-Qed.
-
-Theorem union_of_basis_equals_open : forall X B:set,
-  basis_on X B ->
-  generated_topology X B = {Union Fam|Fam :e Power B}.
-admit.
-Qed.
-
 Theorem basis_finer_equiv_condition : forall X B B':set,
   basis_on X B -> basis_on X B' ->
   (forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
