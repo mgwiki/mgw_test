@@ -7769,7 +7769,6 @@ Theorem basis_finer_equiv_condition : forall X B B':set,
   finer_than (generated_topology X B') (generated_topology X B).
 admit.
 Qed.
-Qed.
 
 (** from §13 Lemma 13.3 (direction): generated topology is minimal containing basis **) 
 Theorem generated_topology_finer : forall X B T:set,
