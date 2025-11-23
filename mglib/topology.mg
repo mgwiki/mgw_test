@@ -7245,9 +7245,7 @@ claim proofA : generated_topology X B c= Power X.
 { let U. assume HU: U :e generated_topology X B.
   exact (SepE1 (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) U HU). }
 claim proofB : Empty :e generated_topology X B.
-{ apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) Empty (Empty_In_Power X).
-  let x. assume HxEmpty.
-  exact (EmptyE x HxEmpty (exists b :e B, x :e b /\ b c= Empty)). }
+{ exact (SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) Empty (Empty_In_Power X) (fun x HxEmpty => EmptyE x HxEmpty (exists b :e B, x :e b /\ b c= Empty))). }
 claim proofC : X :e generated_topology X B.
 { apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) X (Self_In_Power X).
   let x. assume HxX.
