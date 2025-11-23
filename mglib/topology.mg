@@ -9326,9 +9326,9 @@ admit.
 Qed.
 
 (** from §50 Definition: covering dimension zero/one etc **) 
-Definition covering_dimension : set -> nat -> prop := fun X n => True.
+Definition covering_dimension : set -> set -> prop := fun X n => True.
 
 (** from §50 Theorem: basic properties of covering dimension **) 
-Theorem covering_dimension_properties : forall X:set, exists n:nat, covering_dimension X n.
+Theorem covering_dimension_properties : forall X:set, exists n:set, covering_dimension X n.
 admit.
 Qed.
