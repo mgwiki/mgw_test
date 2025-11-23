@@ -7629,7 +7629,8 @@ claim HInterClosed : forall U :e T, forall V :e T, U :/\: V :e T.
                (forall U :e T, forall V :e T, U :/\: V :e T)
                Htop). }
 claim HBasis : basis_on X C.
-{ apply andI.
+{ unfold basis_on.
+  apply andI.
   - let c. assume HcC.
     claim HcT : c :e T.
     { exact (HCsub c HcC). }
