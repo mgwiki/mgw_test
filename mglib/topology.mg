@@ -9113,10 +9113,10 @@ admit.
 Qed.
 
 (** from §32 Example 2: SOmega x SbarOmega not normal **) 
-Parameter S_Omega : set.
-Parameter Sbar_Omega : set.
-Parameter SOmega_topology : set.
-Parameter SbarOmega_topology : set.
+Definition S_Omega : set := Empty.
+Definition Sbar_Omega : set := Empty.
+Definition SOmega_topology : set := Empty.
+Definition SbarOmega_topology : set := Empty.
 
 Theorem SOmega_SbarOmega_not_normal :
   normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
