@@ -8983,6 +8983,11 @@ Definition locally_path_connected : set -> set -> prop := fun X Tx =>
   forall x:set, x :e X ->
     exists U:set, U :e Tx /\ x :e U /\ path_connected_space U (subspace_topology X Tx U).
 
+Definition pairwise_disjoint : set -> prop := fun Fam =>
+  forall U V:set, U :e Fam -> V :e Fam -> U <> V -> U :/\: V = Empty.
+Definition covers : set -> set -> prop :=
+  fun X U => forall x:set, x :e X -> exists u:set, u :e U /\ x :e u.
+
 (** from §25: path components open in locally path connected spaces **) 
 Theorem path_components_open : forall X Tx:set,
   locally_path_connected X Tx ->
@@ -9278,8 +9283,6 @@ Definition countable_product_component_topology : set -> set -> set := fun Xi i 
 Definition real_sequences : set := Power R.
 Definition uniform_metric_Romega : set := Eps_i (fun d => metric_on real_sequences d).
 Definition uniform_topology : set := metric_topology real_sequences uniform_metric_Romega.
-Definition covers : set -> set -> prop :=
-  fun X U => forall x:set, x :e X -> exists u:set, u :e U /\ x :e u.
 Definition open_cover : set -> set -> set -> prop :=
   fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
 Definition Lindelof_space : set -> set -> prop :=
