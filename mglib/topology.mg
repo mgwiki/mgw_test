@@ -7629,7 +7629,6 @@ Qed.
 
 (** from §26 Exercises: compactness examples and properties **) 
 Theorem ex26_compactness_exercises : True.
-(* outline placeholder for multiple subparts on compactness examples *)
 admit.
 Qed.
 
