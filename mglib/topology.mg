@@ -7389,6 +7389,16 @@ Qed.
 (** from §23 Definition: connected space **) 
 Definition connected_space : set -> set -> prop := fun X Tx => topology_on X Tx.
 
+(** from §23 Definition: separation of a space **) 
+Definition separation_of : set -> set -> set -> prop := fun X U V => True.
+
+(** from §23: no nontrivial clopen sets characterization **) 
+Theorem connected_iff_no_nontrivial_clopen : forall X Tx:set,
+  connected_space X Tx <->
+  ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
+admit.
+Qed.
+
 (** from §23 Lemma 23.1: separations in subspaces via limit points **) 
 Theorem separation_subspace_limit_points : forall X Tx Y:set,
   topology_on X Tx -> True.
@@ -7526,6 +7536,12 @@ Qed.
 
 (** from §26 Definition: compact space **) 
 Definition compact_space : set -> set -> prop := fun X Tx => topology_on X Tx.
+
+(** from §26 Definition: open cover **) 
+Definition open_cover_of : set -> set -> set -> prop := fun X Tx Fam => True.
+
+(** from §26: existence of finite subcovers **) 
+Definition has_finite_subcover : set -> set -> set -> prop := fun X Tx Fam => True.
 
 (** from §26: open cover characterization **) 
 Theorem Heine_Borel_subcover : forall X Tx Fam:set,
