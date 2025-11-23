@@ -8253,9 +8253,15 @@ admit.
 Qed.
 
 (** from §16 Exercise 4: projections are open maps **) 
+Definition projection_image1 : set -> set -> set -> set :=
+  fun X Y U => {x :e X | exists y:set, OrderedPair x y :e U}.
+Definition projection_image2 : set -> set -> set -> set :=
+  fun X Y U => {y :e Y | exists x:set, OrderedPair x y :e U}.
+
 Theorem ex16_4_projections_open : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
-  forall U:set, U :e product_topology X Tx Y Ty -> True.
+  forall U:set, U :e product_topology X Tx Y Ty ->
+    open_in X Tx (projection_image1 X Y U) /\ open_in Y Ty (projection_image2 X Y U).
 admit.
 Qed.
 
@@ -8271,37 +8277,58 @@ Qed.
 Theorem ex16_5b_product_converse : forall X T T' Y U U':set,
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
   product_topology X T Y U c= product_topology X T' Y U' ->
-  True.
+  T c= T' /\ U c= U'.
 admit.
 Qed.
 
 (** from §16 Exercise 6: rational rectangles form a basis for ℝ² **) 
+Definition rational_rectangle_basis : set :=
+  {OrderedPair (open_interval a b) (open_interval c d) |
+     a :e rational_numbers /\ b :e rational_numbers /\
+     c :e rational_numbers /\ d :e rational_numbers}.
+
 Theorem ex16_6_rational_rectangles_basis :
-  exists B:set, basis_on R2_standard_topology B.
+  basis_on (OrderedPair R R) rational_rectangle_basis /\
+  generated_topology (OrderedPair R R) rational_rectangle_basis = R2_standard_topology.
 admit.
 Qed.
 
 (** helper: convex subset placeholder **) 
-Definition convex_subset : set -> prop := fun _ => True.
+Definition convex_subset : set -> prop := fun A =>
+  A c= R /\
+  forall x y:set, x :e A -> y :e A ->
+    open_interval x y c= A.
 
 (** from §16 Exercise 7: convex subset implies interval or ray? **) 
-Theorem ex16_7_convex_interval_or_ray : forall X:set,
-  convex_subset X -> exists a b:set, True.
+Theorem ex16_7_convex_interval_or_ray : forall A:set,
+  convex_subset A ->
+    (A = Empty \/ A = R \/
+     exists a b:set, A = open_interval a b \/
+       A = {x :e R|Rlt a x} \/
+       A = {x :e R|Rlt x b}).
 admit.
 Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
-Theorem ex16_8_lines_in_lower_limit_products : True.
+Theorem ex16_8_lines_in_lower_limit_products :
+  exists L:set, L c= OrderedPair R R /\
+    L = {OrderedPair x x|x :e R} /\
+    subspace_topology (OrderedPair R R) (product_topology R_lower_limit_topology R_lower_limit_topology) L =
+      R_lower_limit_topology.
 admit.
 Qed.
 
 (** from §16 Exercise 9: dictionary order topology on ℝ×ℝ equals ℝ_d × ℝ **) 
-Theorem ex16_9_dictionary_equals_product : True.
+Theorem ex16_9_dictionary_equals_product :
+  R2_dictionary_order_topology <> product_topology R R_standard_topology R R_standard_topology.
 admit.
 Qed.
 
 (** from §16 Exercise 10: compare topologies on I×I **) 
-Theorem ex16_10_compare_topologies_on_square : True.
+Theorem ex16_10_compare_topologies_on_square :
+  ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square /\
+  subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square <>
+    product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
 admit.
 Qed.
 
