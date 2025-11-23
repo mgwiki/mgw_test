@@ -9652,6 +9652,31 @@ Theorem Stone_Cech_universal_property : forall X Tx:set,
 admit.
 Qed.
 
+(** from §39 Definition: locally finite family and refinement **) 
+Definition refine_of : set -> set -> prop := fun V U =>
+  forall v:set, v :e V -> exists u:set, u :e U /\ v c= u.
+Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F =>
+  topology_on X Tx /\
+  forall x:set, x :e X ->
+    exists N:set, N :e Tx /\ x :e N /\
+      exists S:set, finite S /\ S c= F /\
+        forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
+Definition locally_finite_basis : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  exists B:set, basis_on X B /\ locally_finite_family X Tx B.
+Definition sigma_locally_finite_basis : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  exists Fams:set, countable_set Fams /\
+    Fams c= Power (Power X) /\
+    (forall F:set, F :e Fams -> locally_finite_family X Tx F) /\
+    basis_on X (Union Fams) /\
+    forall b:set, b :e Union Fams -> b :e Tx.
+
+(** from §40 Nagata-Smirnov metrization theorem **) 
+Theorem Nagata_Smirnov_metrization : forall X Tx:set,
+  regular_space X Tx -> sigma_locally_finite_basis X Tx -> metrizable X Tx.
+admit.
+Qed.
 
 (** from §41 Definition: paracompact space **) 
 Definition paracompact_space : set -> set -> prop := fun X Tx =>
@@ -9659,15 +9684,9 @@ Definition paracompact_space : set -> set -> prop := fun X Tx =>
   forall U:set, open_cover X Tx U ->
     exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U.
 
-(** from §39 Theorem: existence of locally finite refinements **) 
+(** from §41 Theorem: existence of locally finite refinements **) 
 Theorem locally_finite_refinement : forall X Tx U:set,
   paracompact_space X Tx -> open_cover X Tx U -> exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V.
-admit.
-Qed.
-
-(** from §40 Nagata-Smirnov metrization theorem **) 
-Theorem Nagata_Smirnov_metrization : forall X Tx:set,
-  regular_space X Tx -> sigma_locally_finite_basis X Tx -> metrizable X Tx.
 admit.
 Qed.
 
@@ -9680,6 +9699,63 @@ Qed.
 (** from §42 Smirnov metrization theorem **) 
 Theorem Smirnov_metrization : forall X Tx:set,
   regular_space X Tx -> locally_finite_basis X Tx -> metrizable X Tx.
+admit.
+Qed.
+
+(** helper: Cauchy sequence in a metric space **) 
+Definition cauchy_sequence : set -> set -> set -> prop := fun X d seq =>
+  metric_on X d /\ seq c= X /\
+  forall eps:set, eps :e R ->
+    exists N:set, N :e omega /\
+      forall m n:set, m :e omega -> n :e omega -> N c= omega ->
+        Rlt (d (apply_fun seq m) (apply_fun seq n)) eps.
+
+(** from §43 Definition: complete metric space **) 
+Definition complete_metric_space : set -> set -> prop := fun X d =>
+  metric_on X d /\
+  forall seq:set, seq c= X -> cauchy_sequence X d seq ->
+    exists x:set, converges_to X (metric_topology X d) seq x.
+
+(** from §44 Theorem: space-filling curve existence **) 
+Definition unit_square : set := OrderedPair unit_interval unit_interval.
+Definition unit_square_topology : set := product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
+Theorem space_filling_curve : exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
+admit.
+Qed.
+
+(** from §45 Definition: sequential compactness **) 
+Definition sequentially_compact : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\ forall seq:set, seq c= X -> exists x:set, converges_to X Tx seq x.
+
+(** from §45 Theorem: compactness in metric spaces equivalences **) 
+Theorem compact_metric_equivalences : forall X d:set,
+  metric_on X d ->
+  (compact_space X (metric_topology X d) <-> sequentially_compact X (metric_topology X d)).
+admit.
+Qed.
+
+(** from §46 Definition: pointwise and compact convergence topologies **) 
+Definition pointwise_convergence_topology : set -> set -> set -> set -> set :=
+  fun X Tx Y Ty => generated_topology (function_space X Y) Empty.
+Definition compact_convergence_topology : set -> set -> set -> set -> set :=
+  fun X Tx Y Ty => generated_topology (function_space X Y) Empty.
+Definition equicontinuous_family : set -> set -> set -> set -> set -> prop :=
+  fun X Tx Y Ty F =>
+    topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
+    forall x:set, x :e X ->
+      forall V:set, V :e Ty ->
+        (exists f0:set, f0 :e F /\ apply_fun f0 x :e V) ->
+        exists U:set, U :e Tx /\ x :e U /\
+          forall f:set, f :e F -> forall y:set, y :e U -> apply_fun f y :e V.
+Definition relatively_compact_in_compact_convergence : set -> set -> set -> set -> set -> prop :=
+  fun X Tx Y Ty F =>
+    topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
+    compact_space F (compact_convergence_topology X Tx Y Ty).
+
+(** from §47 Ascoli theorem **) 
+Theorem Ascoli_theorem : forall X Tx Y Ty F:set,
+  compact_space X Tx -> Hausdorff_space Y Ty ->
+  equicontinuous_family X Tx Y Ty F -> relatively_compact_in_compact_convergence X Tx Y Ty F.
 admit.
 Qed.
 
@@ -9696,46 +9772,9 @@ Definition Baire_space : set -> prop := fun Tx =>
       (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
       dense_in (intersection_over_family X U) X Tx.
 
-(** helper: Cauchy sequence in a metric space **) 
-Definition cauchy_sequence : set -> set -> set -> prop := fun X d seq =>
-  metric_on X d /\ seq c= X /\
-  forall eps:set, eps :e R ->
-    exists N:set, N :e omega /\
-      forall m n:set, m :e omega -> n :e omega -> N c= omega ->
-        Rlt (d (apply_fun seq m) (apply_fun seq n)) eps.
-
-(** from §43 Definition: complete metric space **) 
-Definition complete_metric_space : set -> set -> prop := fun X d =>
-  metric_on X d /\
-  forall seq:set, seq c= X -> cauchy_sequence X d seq ->
-    exists x:set, converges_to X (metric_topology X d) seq x.
-
-(** from §43 Theorem: Baire category for complete metric spaces **) 
+(** from §48 Theorem: Baire category theorem for complete metric spaces **) 
 Theorem Baire_category_complete_metric : forall X d:set,
   complete_metric_space X d -> Baire_space (metric_topology X d).
-admit.
-Qed.
-
-(** from §44 Theorem: space-filling curve existence **) 
-Definition unit_square : set := OrderedPair unit_interval unit_interval.
-Definition unit_square_topology : set := product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
-Theorem space_filling_curve : exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
-admit.
-Qed.
-
-(** from §45 Theorem: compactness in metric spaces equivalences **) 
-Theorem compact_metric_equivalences : forall X d:set,
-  metric_on X d ->
-  (compact_space X (metric_topology X d) <-> sequentially_compact X (metric_topology X d)).
-admit.
-Qed.
-
-(** from §46 Definition: pointwise and compact convergence topologies (see definitions above) **) 
-
-(** from §47 Ascoli theorem **) 
-Theorem Ascoli_theorem : forall X Tx Y Ty F:set,
-  compact_space X Tx -> Hausdorff_space Y Ty ->
-  equicontinuous_family X Tx Y Ty F -> relatively_compact_in_compact_convergence X Tx Y Ty F.
 admit.
 Qed.
 
@@ -9744,6 +9783,11 @@ Theorem Baire_category_theorem : forall X:set,
   Baire_space X -> True.
 admit.
 Qed.
+
+(** from §49 Definition: differentiability placeholder and nowhere-differentiable function **) 
+Definition differentiable_at : set -> set -> prop := fun f x => False.
+Definition nowhere_differentiable : set -> prop := fun f =>
+  function_on f R R /\ forall x:set, x :e R -> ~ differentiable_at f x.
 
 (** from §49 Existence: nowhere-differentiable function **) 
 Theorem nowhere_differentiable_function_exists : exists f:set, continuous_map R R_standard_topology R R_standard_topology f /\ nowhere_differentiable f.
