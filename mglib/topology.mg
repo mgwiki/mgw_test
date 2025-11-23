@@ -6649,7 +6649,7 @@ apply andI.
           { rewrite <- HUe. exact HxU. }
           exact (EmptyE x HxEmpty (x :e X)).
         - assume HUX: U = X.
-          rewrite HUX.
+          rewrite <- HUX.
           exact HxU.
       }
       claim HX_sub : X c= Union UFam.
