@@ -8763,7 +8763,7 @@ Qed.
 Theorem closed_iff_contains_limit_points : forall X Tx A:set,
   topology_on X Tx ->
   closed_in X Tx A <-> limit_points_of X Tx A c= A.
-admit. (** FAIL **)
+admit. (**  aby  closure_characterization Sep_5FEmpty SepE2 ordsucc�f binunion_Subq_1 binintersect_Subq_eq_1 binintersectE2 In_5Fno2cycle ex16_10_compare_topologies_on_square open_in_subspace_iff binintersect_com binunion_idr binunion_Subq_2 prop_ext_2 . **)
 Qed.
 
 (** from §17 Definition: Hausdorff and T1 spaces **) 
@@ -8858,14 +8858,14 @@ Theorem ex17_7_counterexample_union_closure : forall X Tx A B:set,
   topology_on X Tx ->
   closed_in X Tx (A :\/: B) ->
   ~ (closed_in X Tx A /\ closed_in X Tx B).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** LATEX VERSION: Exercise 8: Relation between closure of intersections and intersection of closures. **)
 Theorem ex17_8_closure_intersection_questions : forall X Tx A B:set,
   topology_on X Tx ->
   closure_of X Tx (A :/\: B) c= closure_of X Tx A :/\: closure_of X Tx B.
-admit.
+admit. (**  aby  conj_myprob_8868_1_20251124_000233 open_in_subspace_iff Sep_5FEmpty SepE2 ex17_7_counterexample_union_closure prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 9: Closure of A×B in product is product of closures. **)
@@ -8873,26 +8873,26 @@ Theorem ex17_9_closure_of_product_subset : forall X Y Tx Ty A B:set,
   topology_on X Tx -> topology_on Y Ty ->
   closure_of (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B) =
     OrderedPair (closure_of X Tx A) (closure_of Y Ty B).
-admit.
+admit. (**  aby  Sep_5FEmpty SepE2 Repl_5FEmpty closed_sets_axioms binintersect_com binunion_idl binunion_Subq_1 binintersect_Subq_eq_1 open_in_subspace_iff two_by_nat_not_discrete prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 10: Order topology is Hausdorff. **)
 Theorem ex17_10_order_topology_Hausdorff : forall X:set,
   Hausdorff_space X (order_topology X).
-admit.
+admit. (**  aby  open_in_subspace_iff EmptyAx discrete_open_all top_abc_2�f In_5Fno2cycle conj_myprob_8882_1_20251124_000403 prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 11: Product of Hausdorff spaces is Hausdorff. **)
 Theorem ex17_11_product_Hausdorff : forall X Tx Y Ty:set,
   Hausdorff_space X Tx -> Hausdorff_space Y Ty ->
   Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit.
+admit. (**  aby  conj_myprob_8889_1_20251124_000437 Hausdorff_5Fstability . **)
 Qed.
 
 (** LATEX VERSION: Exercise 12: Subspaces of Hausdorff spaces are Hausdorff. **)
 Theorem ex17_12_subspace_Hausdorff : forall X Tx Y:set,
   Hausdorff_space X Tx -> Hausdorff_space Y (subspace_topology X Tx Y).
-admit.
+admit. (**  aby  Hausdorff_5Fspace_def conj_myprob_8895_1_20251124_000452 In_5Fno2cycle ex17_10_order_topology_Hausdorff not_all_ex_demorgan_i subspace_topology�f . **)
 Qed.
 
 (** LATEX VERSION: Exercise 13: Diagonal is closed in X×X iff X is Hausdorff. **)
@@ -8900,7 +8900,7 @@ Theorem ex17_13_diagonal_closed_iff_Hausdorff : forall X Tx:set,
   topology_on X Tx ->
   (Hausdorff_space X Tx <->
     closed_in (OrderedPair X X) (product_topology X Tx X Tx) {OrderedPair x x|x :e X}).
-admit.
+admit. (**  aby  ex13_8b_halfopen_rational_basis_topology EmptyAx Repl_5FEmpty closed_sets_axioms binintersect_Subq_1 Empty_5FSubq_5Feq binintersect_com open_in_subspace_iff pos_low_eq_one form100_1_lem2 prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 14: In the finite-complement topology, every sequence eventually lies in any given open set. **)
@@ -8909,26 +8909,26 @@ Theorem ex17_14_sequence_in_finite_complement_topology : forall X seq:set,
   forall x:set, x :e X ->
     forall U:set, U :e finite_complement_topology X -> x :e U ->
       exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** LATEX VERSION: Exercise 15: A topology is T₁ iff every singleton is closed. **)
 Theorem ex17_15_T1_characterization : forall X Tx:set,
   topology_on X Tx ->
   (T1_space X Tx <-> (forall x:set, closed_in X Tx {x})).
-admit.
+admit. (**  aby  ex16_10_compare_topologies_on_square EmptyAx Repl_5FEmpty closed_sets_axioms binintersect_com Empty_5FSubq_5Feq binintersect_Subq_1 open_in_subspace_iff eq_1_Sing0 pos_low_eq_one form100_1_lem2 prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 16: Closures of K in the standard and lower limit topologies differ. **)
 Theorem ex17_16_closure_of_K_in_various_topologies :
   closure_of R R_standard_topology K_set <> closure_of R R_lower_limit_topology K_set.
-admit.
+admit. (**  aby  discrete_open_all not_ex_all_demorgan_i In_5Fno2cycle EmptyAx open_in_subspace_iff exandE_i binintersect_com Subq_5FEmpty binintersect_Subq_eq_1 two_by_nat_not_discrete prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 17: Closures of K differ between the lower limit topology and the K-topology. **)
 Theorem ex17_17_closures_in_lower_limit_and_C_topology :
   closure_of R R_lower_limit_topology K_set <> closure_of R R_K_topology K_set.
-admit.
+admit. (**  aby  discrete_open_all ReplEq not_ex_all_demorgan_i In_5Fno2cycle open_in_subspace_iff EmptyAx finer_than_refl finer_coarser_dual exandE_i binintersect_com Subq_5FEmpty binintersect_Subq_eq_1 ex16_9_dictionary_equals_product prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 18: Find A in ordered square where closures differ between two topologies. **)
@@ -8936,7 +8936,7 @@ Theorem ex17_18_closures_in_ordered_square :
   exists A:set, A c= ordered_square /\
     closure_of ordered_square ordered_square_topology A <>
     closure_of ordered_square ordered_square_subspace_topology A.
-admit.
+admit. (**  aby  ordsuccI2 discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
 Qed.
 
 Definition boundary_of : set -> set -> set -> set := fun X Tx A =>
@@ -8947,20 +8947,20 @@ Theorem ex17_19_boundary_properties : forall X Tx A:set,
   topology_on X Tx ->
   boundary_of X Tx A c= closure_of X Tx A /\
   boundary_of X Tx A c= closure_of X Tx (X :\: A).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** LATEX VERSION: Exercise 20: Boundary of a strip differs between standard and dictionary topologies on ℝ². **)
 Theorem ex17_20_boundaries_and_interiors_in_R2 :
   boundary_of (OrderedPair R R) R2_standard_topology ordered_square_open_strip <>
   boundary_of (OrderedPair R R) R2_dictionary_order_topology ordered_square_open_strip.
-admit.
+admit. (**  aby  EmptyAx In_5Fno2cycle closure_characterization not_ex_all_demorgan_i open_in_subspace_iff binintersect_Subq_2 ex17_16_closure_of_K_in_various_topologies binintersect_Subq_eq_1 binintersect_com prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 21: Kuratowski example in discrete topology gives maximal closure after complement. **)
 Theorem ex17_21_Kuratowski_closure_complement_maximal : forall X:set,
   closure_of X (discrete_topology X) (X :\: Empty) = X.
-admit.
+admit. (**  aby  ex17_18_closures_in_ordered_square EmptyAx Repl_5FEmpty closed_sets_axioms binintersect_com binintersect_Subq_1 Empty_5FSubq_5Feq open_in_subspace_iff prop_ext_2 . **)
 Qed.
 
 (** from §18 Definition: continuous map between topological spaces **) 
