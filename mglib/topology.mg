@@ -7534,6 +7534,32 @@ Theorem components_vs_quasicomponents : forall X Tx:set,
 admit.
 Qed.
 
+(** from §23 Exercise: components and path components of ℝℓ **) 
+Theorem ex23_Rl_components : True.
+admit.
+Qed.
+
+(** from §23 Exercise: components of ℝ^ω in product/uniform/box topologies **) 
+Theorem ex23_Romega_components : True.
+admit.
+Qed.
+
+(** from §23 Exercise: ordered square locally connected but not locally path connected **) 
+Theorem ex23_ordered_square_locally_conn_not_pathconn : True.
+admit.
+Qed.
+
+(** from §23 Exercise: connected open subsets of locally path connected spaces are path connected **) 
+Theorem ex23_connected_open_sets_path_connected : forall X Tx U:set,
+  locally_path_connected X Tx -> open_in X Tx U -> connected_space U (subspace_topology X Tx U) -> path_connected_space U (subspace_topology X Tx U).
+admit.
+Qed.
+
+(** from §23 Exercise: examples of path connected but not locally connected subsets of ℝ^2 **) 
+Theorem ex23_path_connected_not_locally_connected_examples : True.
+admit.
+Qed.
+
 (** from §26 Definition: compact space **) 
 Definition compact_space : set -> set -> prop := fun X Tx => topology_on X Tx.
 
@@ -7601,6 +7627,11 @@ Theorem finite_product_compact : forall X Tx Y Ty:set,
 admit.
 Qed.
 
+(** from §26 Exercises: compactness examples and properties **) 
+Theorem ex26_compactness_exercises : True.
+admit.
+Qed.
+
 (** from §26/§27: Heine-Borel on ℝ (closed and bounded sets) **) 
 Theorem Heine_Borel_closed_bounded : forall A:set,
   A c= R -> compact_space A (subspace_topology R R_standard_topology A) -> True.
@@ -7637,6 +7668,11 @@ Qed.
 (** from §29: one-point compactification placeholder **) 
 Theorem one_point_compactification_exists : forall X Tx:set,
   locally_compact X Tx -> Hausdorff_space X Tx -> True.
+admit.
+Qed.
+
+(** from §29 Exercises: local compactness and compactification **) 
+Theorem ex29_local_compactness_exercises : True.
 admit.
 Qed.
 
