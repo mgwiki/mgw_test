@@ -9641,61 +9641,79 @@ Definition topological_group : set -> set -> prop := fun G Tg =>
 
 (** from §33 Exercise 1: expression for level sets in Urysohn proof **) 
 Definition ex33_1_level_sets_urysohn : set :=
-  {OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair A B)) f |
-    normal_space X Tx /\ closed_in X Tx A /\ closed_in X Tx B /\ A :/\: B = Empty /\
-    function_on f X R /\ continuous_map X Tx R R_standard_topology f /\
-    (forall x:set, x :e A -> apply_fun f x = 0) /\
-    (forall x:set, x :e B -> apply_fun f x = 1)}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx A B f:set,
+      p = OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair A B)) f /\
+      normal_space X Tx /\ closed_in X Tx A /\ closed_in X Tx B /\ A :/\: B = Empty /\
+      function_on f X R /\ continuous_map X Tx R R_standard_topology f /\
+      (forall x:set, x :e A -> apply_fun f x = 0) /\
+      (forall x:set, x :e B -> apply_fun f x = 1)}.
 (** from §33 Exercise 2: connected normal/regular uncountable **) 
 Definition ex33_2_connected_normal_regular_uncountable : set :=
-  {OrderedPair X Tx | connected_space X Tx /\ normal_space X Tx /\
-    regular_space X Tx /\ uncountable_set X}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\
+      connected_space X Tx /\ normal_space X Tx /\ regular_space X Tx /\ uncountable_set X}.
 (** from §33 Exercise 3: direct Urysohn proof in metric space **) 
 Definition ex33_3_urysohn_metric_direct : set :=
-  {OrderedPair (OrderedPair (OrderedPair X d) (OrderedPair A B)) f |
-    metric_on X d /\ closed_in X (metric_topology X d) A /\ closed_in X (metric_topology X d) B /\
-    A :/\: B = Empty /\
-    function_on f X R /\ continuous_map X (metric_topology X d) R R_standard_topology f /\
-    (forall x:set, x :e A -> apply_fun f x = 0) /\
-    (forall x:set, x :e B -> apply_fun f x = 1)}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X d A B f:set,
+      p = OrderedPair (OrderedPair (OrderedPair X d) (OrderedPair A B)) f /\
+      metric_on X d /\ closed_in X (metric_topology X d) A /\ closed_in X (metric_topology X d) B /\
+      A :/\: B = Empty /\
+      function_on f X R /\ continuous_map X (metric_topology X d) R R_standard_topology f /\
+      (forall x:set, x :e A -> apply_fun f x = 0) /\
+      (forall x:set, x :e B -> apply_fun f x = 1)}.
 (** from §33 Exercise 4: closed G_delta sets and vanishing functions **) 
 Definition ex33_4_closed_Gdelta_vanishing_function : set :=
-  {OrderedPair (OrderedPair (OrderedPair X Tx) F) f |
-    normal_space X Tx /\ closed_in X Tx F /\ Gdelta_in X Tx F /\
-    function_on f X R /\ continuous_map X Tx R R_standard_topology f /\
-    (forall x:set, x :e F -> apply_fun f x = 0)}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx F f:set,
+      p = OrderedPair (OrderedPair (OrderedPair X Tx) F) f /\
+      normal_space X Tx /\ closed_in X Tx F /\ Gdelta_in X Tx F /\
+      function_on f X R /\ continuous_map X Tx R R_standard_topology f /\
+      (forall x:set, x :e F -> apply_fun f x = 0)}.
 (** from §33 Exercise 5: strong Urysohn lemma **) 
 Definition ex33_5_strong_urysohn : set :=
-  {OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair A B)) f |
-    normal_space X Tx /\ closed_in X Tx A /\ closed_in X Tx B /\ A :/\: B = Empty /\
-    function_on f X (closed_interval 0 1) /\
-    continuous_map X Tx R R_standard_topology f /\
-    (forall x:set, x :e A -> apply_fun f x = 0) /\
-    (forall x:set, x :e B -> apply_fun f x = 1)}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx A B f:set,
+      p = OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair A B)) f /\
+      normal_space X Tx /\ closed_in X Tx A /\ closed_in X Tx B /\ A :/\: B = Empty /\
+      function_on f X (closed_interval 0 1) /\
+      continuous_map X Tx R R_standard_topology f /\
+      (forall x:set, x :e A -> apply_fun f x = 0) /\
+      (forall x:set, x :e B -> apply_fun f x = 1)}.
 (** from §33 Exercise 6: perfect normality implications **) 
 Definition ex33_6_perfect_normality : set :=
-  {OrderedPair X Tx | perfectly_normal_space X Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\ perfectly_normal_space X Tx}.
 (** from §33 Exercise 7: locally compact Hausdorff completely regular **) 
 Definition ex33_7_locally_compact_Hausdorff_completely_regular : set :=
-  {OrderedPair X Tx | locally_compact X Tx /\ Hausdorff_space X Tx /\ completely_regular_space X Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\
+      locally_compact X Tx /\ Hausdorff_space X Tx /\ completely_regular_space X Tx}.
 (** from §33 Exercise 8: continuous separation when A compact **) 
 Definition ex33_8_compact_subset_continuous_separation : set :=
-  {OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair A B)) f |
-    normal_space X Tx /\ compact_space A (subspace_topology X Tx A) /\
-    closed_in X Tx B /\ A :/\: B = Empty /\
-    function_on f X R /\ continuous_map X Tx R R_standard_topology f /\
-    (forall x:set, x :e A -> apply_fun f x = 0) /\
-    (forall x:set, x :e B -> apply_fun f x = 1)}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx A B f:set,
+      p = OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair A B)) f /\
+      normal_space X Tx /\ compact_space A (subspace_topology X Tx A) /\
+      closed_in X Tx B /\ A :/\: B = Empty /\
+      function_on f X R /\ continuous_map X Tx R R_standard_topology f /\
+      (forall x:set, x :e A -> apply_fun f x = 0) /\
+      (forall x:set, x :e B -> apply_fun f x = 1)}.
 (** from §33 Exercise 9: Romega box topology completely regular **) 
 Definition ex33_9_Romega_box_completely_regular : set :=
-  {OrderedPair X Tx | X = product_space omega (const_family omega R) /\
-    Tx = box_topology omega (const_family omega R) /\ completely_regular_space X Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\
+      X = product_space omega (const_family omega R) /\
+      Tx = box_topology omega (const_family omega R) /\ completely_regular_space X Tx}.
 (** from §33 Exercise 10: topological group completely regular **) 
 Definition ex33_10_topological_group_completely_regular : set :=
-  {OrderedPair G Tg | topological_group G Tg /\ completely_regular_space G Tg}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists G Tg:set, p = OrderedPair G Tg /\ topological_group G Tg /\ completely_regular_space G Tg}.
 (** from §33 Exercise 11: regular not completely regular example **) 
 Definition ex33_11_regular_not_completely_regular : set :=
-  {OrderedPair X Tx | regular_space X Tx /\ ~ completely_regular_space X Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\ regular_space X Tx /\ ~ completely_regular_space X Tx}.
 
 (** helper: local metrizability **) 
 Definition locally_metrizable_space : set -> set -> prop := fun X Tx =>
@@ -9738,134 +9756,189 @@ Definition surjective_map : set -> set -> set -> prop := fun X Y f =>
 
 (** from §34 Exercise 1: Hausdorff with countable basis need not be metrizable **) 
 Definition ex34_1_Hausdorff_countable_basis_not_metrizable_example : set :=
-  {OrderedPair X Tx | Hausdorff_space X Tx /\ second_countable_space X Tx /\ ~ metrizable X Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\
+      Hausdorff_space X Tx /\ second_countable_space X Tx /\ ~ metrizable X Tx}.
 (** from §34 Exercise 2: completely normal etc. not metrizable example **) 
 Definition ex34_2_completely_normal_not_metrizable_example : set :=
-  {OrderedPair X Tx | completely_normal_space X Tx /\ ~ metrizable X Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\ completely_normal_space X Tx /\ ~ metrizable X Tx}.
 (** from §34 Exercise 3: compact Hausdorff metrizable iff countable basis **) 
 Definition ex34_3_compact_Hausdorff_metrizable_iff_second_countable : set :=
-  {OrderedPair X Tx | compact_space X Tx /\ Hausdorff_space X Tx /\
-    (metrizable X Tx <-> second_countable_space X Tx)}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\
+      compact_space X Tx /\ Hausdorff_space X Tx /\
+      (metrizable X Tx <-> second_countable_space X Tx)}.
 (** from §34 Exercise 4: locally compact Hausdorff and countable basis vs metrizable **) 
 Definition ex34_4_locally_compact_Hausdorff_metrizable_questions : set :=
-  {OrderedPair X Tx | locally_compact X Tx /\ Hausdorff_space X Tx /\
-    (second_countable_space X Tx -> metrizable X Tx)}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\
+      locally_compact X Tx /\ Hausdorff_space X Tx /\
+      (second_countable_space X Tx -> metrizable X Tx)}.
 (** from §34 Exercise 5: one-point compactification metrizable vs base **) 
 Definition ex34_5_one_point_compactification_metrizable_questions : set :=
-  {OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty)) p |
-    one_point_compactification X Tx Y Ty /\ p :e Y /\ ~ p :e X /\
-    (metrizable X Tx <-> metrizable Y Ty)}.
+  {q :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx Y Ty p:set,
+      q = OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty)) p /\
+      one_point_compactification X Tx Y Ty /\ p :e Y /\ ~ p :e X /\
+      (metrizable X Tx <-> metrizable Y Ty)}.
 (** from §34 Exercise 6: details of imbedding theorem proof **) 
 Definition ex34_6_check_imbedding_proof : set :=
-  {OrderedPair (OrderedPair X Tx) f |
-    completely_regular_space X Tx /\ Hausdorff_space X Tx /\
-    embedding_of X Tx (power_real omega) (product_topology_full omega (const_family omega R)) f}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx f:set,
+      p = OrderedPair (OrderedPair X Tx) f /\
+      completely_regular_space X Tx /\ Hausdorff_space X Tx /\
+      embedding_of X Tx (power_real omega) (product_topology_full omega (const_family omega R)) f}.
 (** from §34 Exercise 7: locally metrizable compact Hausdorff implies metrizable **) 
 Definition ex34_7_locally_metrizable_compact_Hausdorff_metrizable : set :=
-  {OrderedPair X Tx | locally_metrizable_space X Tx /\ compact_space X Tx /\ Hausdorff_space X Tx /\
-    metrizable X Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\
+      locally_metrizable_space X Tx /\ compact_space X Tx /\ Hausdorff_space X Tx /\
+      metrizable X Tx}.
 (** from §34 Exercise 8: regular Lindelof locally metrizable implies metrizable **) 
 Definition ex34_8_regular_Lindelof_locally_metrizable_metrizable : set :=
-  {OrderedPair X Tx | (regular_space X Tx /\ Lindelof_space X Tx /\ locally_metrizable_space X Tx ->
-    metrizable X Tx)}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\
+      (regular_space X Tx /\ Lindelof_space X Tx /\ locally_metrizable_space X Tx ->
+        metrizable X Tx)}.
 (** from §34 Exercise 9: compact Hausdorff union of two metrizable closed sets is metrizable **) 
 Definition ex34_9_compact_union_two_metrizable_closed_metrizable : set :=
-  {OrderedPair (OrderedPair X Tx) (OrderedPair A B) |
-    compact_space X Tx /\ Hausdorff_space X Tx /\
-    closed_in X Tx A /\ closed_in X Tx B /\ Union (UPair A B) = X /\
-    metrizable A (subspace_topology X Tx A) /\ metrizable B (subspace_topology X Tx B) /\
-    metrizable X Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx A B:set,
+      p = OrderedPair (OrderedPair X Tx) (OrderedPair A B) /\
+      compact_space X Tx /\ Hausdorff_space X Tx /\
+      closed_in X Tx A /\ closed_in X Tx B /\ Union (UPair A B) = X /\
+      metrizable A (subspace_topology X Tx A) /\ metrizable B (subspace_topology X Tx B) /\
+      metrizable X Tx}.
 
 (** from §35 Exercise 1: Tietze implies Urysohn lemma **) 
 Definition ex35_1_Tietze_implies_Urysohn : set :=
-  {OrderedPair X Tx | normal_space X Tx /\
-    (forall A B:set, closed_in X Tx A /\ closed_in X Tx B /\ A :/\: B = Empty ->
-       exists f:set, continuous_map X Tx R R_standard_topology f /\
-         (forall x:set, x :e A -> apply_fun f x = 0) /\
-         (forall x:set, x :e B -> apply_fun f x = 1))}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\
+      normal_space X Tx /\
+      (forall A B:set, closed_in X Tx A /\ closed_in X Tx B /\ A :/\: B = Empty ->
+         exists f:set, continuous_map X Tx R R_standard_topology f /\
+           (forall x:set, x :e A -> apply_fun f x = 0) /\
+           (forall x:set, x :e B -> apply_fun f x = 1))}.
 (** from §35 Exercise 2: interval partition parameter in Tietze proof **) 
 Definition ex35_2_interval_partition_parameter : set :=
-  {OrderedPair X Tx | normal_space X Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\ normal_space X Tx}.
 (** from §35 Exercise 3: boundedness equivalences in metrizable spaces **) 
 Definition ex35_3_boundedness_equivalences_metrizable : set :=
-  {OrderedPair (OrderedPair X Tx) d | metric_on X d /\ metric_topology X d = Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx d:set, p = OrderedPair (OrderedPair X Tx) d /\
+      metric_on X d /\ metric_topology X d = Tx}.
 (** from §35 Exercise 4: retract properties **) 
 Definition ex35_4_retract_properties : set :=
-  {OrderedPair (OrderedPair X Tx) A | retraction_of X Tx A}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx A:set, p = OrderedPair (OrderedPair X Tx) A /\ retraction_of X Tx A}.
 (** from §35 Exercise 5: universal extension property and retracts **) 
 Definition ex35_5_universal_extension_retracts : set :=
-  {OrderedPair (OrderedPair X Tx) A |
-    normal_space X Tx /\ retraction_of X Tx A /\
-    forall Y Ty f:set, continuous_map A (subspace_topology X Tx A) Y Ty f ->
-      exists g:set, continuous_map X Tx Y Ty g /\
-        forall x:set, x :e A -> apply_fun g x = apply_fun f x}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx A:set,
+      p = OrderedPair (OrderedPair X Tx) A /\
+      normal_space X Tx /\ retraction_of X Tx A /\
+      forall Y Ty f:set, continuous_map A (subspace_topology X Tx A) Y Ty f ->
+        exists g:set, continuous_map X Tx Y Ty g /\
+          forall x:set, x :e A -> apply_fun g x = apply_fun f x}.
 (** from §35 Exercise 6: absolute retract equivalence **) 
 Definition ex35_6_absolute_retract_universal_extension : set :=
-  {OrderedPair X Tx | absolute_retract X Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\ absolute_retract X Tx}.
 (** from §35 Exercise 7: retract examples spiral/knotted axis **) 
 Definition ex35_7_retract_examples : set :=
-  {OrderedPair (OrderedPair X Tx) A | retraction_of X Tx A}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx A:set, p = OrderedPair (OrderedPair X Tx) A /\ retraction_of X Tx A}.
 (** from §35 Exercise 8: absolute retract iff universal extension **) 
 Definition ex35_8_absolute_retract_equivalence : set :=
-  {OrderedPair X Tx | absolute_retract X Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx:set, p = OrderedPair X Tx /\ absolute_retract X Tx}.
 (** from §35 Exercise 9: coherent topology preserves normality **) 
 Definition ex35_9_coherent_topology_normal : set :=
-  {OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) |
-    (topology_on X Tx /\ topology_on Y Ty /\ coherent_topology X Tx Y Ty -> normal_space Y Ty)}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx Y Ty:set,
+      p = OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) /\
+      (topology_on X Tx /\ topology_on Y Ty /\ coherent_topology X Tx Y Ty -> normal_space Y Ty)}.
 
 (** from §36 Exercises: manifolds and partitions of unity (placeholder) **) 
 Definition ex36_manifold_embedding_exercises : set :=
-  {OrderedPair (OrderedPair M TM) f | m_manifold M TM ->
-    exists n:set, embedding_of M TM (euclidean_space n) (euclidean_topology n) f}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists M TM f:set,
+      p = OrderedPair (OrderedPair M TM) f /\
+      m_manifold M TM ->
+      exists n:set, embedding_of M TM (euclidean_space n) (euclidean_topology n) f}.
 (** from §37 Exercises: Tychonoff theorem applications (placeholder) **) 
 Definition ex37_tychonoff_exercises : set :=
-  {OrderedPair I Xi | compact_spaces_family I Xi /\
-    compact_space (product_space I Xi) (product_topology_full I Xi)}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists I Xi:set,
+      p = OrderedPair I Xi /\
+      compact_spaces_family I Xi /\
+      compact_space (product_space I Xi) (product_topology_full I Xi)}.
 (** from §38 Exercises: Stone-Cech compactification (placeholder) **) 
 Definition ex38_stone_cech_exercises : set :=
-  {OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) |
-    completely_regular_space X Tx /\ compact_space Y Ty /\ Hausdorff_space Y Ty /\
-    exists e:set, embedding_of X Tx Y Ty e}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx Y Ty:set,
+      p = OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) /\
+      completely_regular_space X Tx /\ compact_space Y Ty /\ Hausdorff_space Y Ty /\
+      exists e:set, embedding_of X Tx Y Ty e}.
 (** from §39 Exercises: local finiteness (placeholder) **) 
 Definition ex39_local_finiteness_exercises : set :=
-  {OrderedPair (OrderedPair X Tx) U | locally_finite_family X Tx U}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx U:set, p = OrderedPair (OrderedPair X Tx) U /\ locally_finite_family X Tx U}.
 (** from §40 Exercises: Nagata-Smirnov metrization (placeholder) **) 
 Definition ex40_nagata_smirnov_exercises : set :=
-  {OrderedPair (OrderedPair X Tx) B |
-    (regular_space X Tx /\ basis_on X B /\ locally_finite_family X Tx B -> metrizable X Tx)}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx B:set,
+      p = OrderedPair (OrderedPair X Tx) B /\
+      (regular_space X Tx /\ basis_on X B /\ locally_finite_family X Tx B -> metrizable X Tx)}.
 (** from §41 Exercises: paracompactness (placeholder) **) 
 Definition ex41_paracompactness_exercises : set :=
-  {OrderedPair (OrderedPair X Tx) U | paracompact_space X Tx /\ open_cover X Tx U}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx U:set, p = OrderedPair (OrderedPair X Tx) U /\
+      paracompact_space X Tx /\ open_cover X Tx U}.
 (** from §42 Exercises: Smirnov metrization (placeholder) **) 
 Definition ex42_smirnov_exercises : set :=
-  {OrderedPair (OrderedPair X Tx) B |
-    (regular_space X Tx /\ basis_on X B /\ locally_finite_family X Tx B -> metrizable X Tx)}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx B:set,
+      p = OrderedPair (OrderedPair X Tx) B /\
+      (regular_space X Tx /\ basis_on X B /\ locally_finite_family X Tx B -> metrizable X Tx)}.
 (** from §43 Exercises: complete metric spaces (placeholder) **) 
 Definition ex43_complete_metric_exercises : set :=
-  {OrderedPair (OrderedPair X d) Tx | metric_on X d /\ Tx = metric_topology X d /\ complete_metric_space X d}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X d Tx:set, p = OrderedPair (OrderedPair X d) Tx /\
+      metric_on X d /\ Tx = metric_topology X d /\ complete_metric_space X d}.
 (** from §44 Exercises: space-filling curve (placeholder) **) 
 Definition ex44_space_filling_exercises : set :=
-  {f:set | continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f /\
+  {f :e Power (Power (Power R)) |
+    continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f /\
     surjective_map unit_interval unit_square f}.
 (** from §45 Exercises: compactness in metric spaces (placeholder) **) 
 Definition ex45_compact_metric_exercises : set :=
-  {OrderedPair (OrderedPair X d) Tx | metric_on X d /\ Tx = metric_topology X d /\
-    compact_space X Tx}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X d Tx:set, p = OrderedPair (OrderedPair X d) Tx /\
+      metric_on X d /\ Tx = metric_topology X d /\ compact_space X Tx}.
 (** from §46 Exercises: pointwise/compact convergence (placeholder) **) 
 Definition ex46_convergence_exercises : set :=
-  {OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) |
-    topology_on X Tx /\ topology_on Y Ty /\ True}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx Y Ty:set,
+      p = OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) /\
+      topology_on X Tx /\ topology_on Y Ty /\ True}.
 (** from §47 Exercises: Ascoli theorem (placeholder) **) 
 Definition ex47_ascoli_exercises : set :=
-  {OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) |
-    compact_space X Tx /\ Hausdorff_space Y Ty}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx Y Ty:set,
+      p = OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) /\
+      compact_space X Tx /\ Hausdorff_space Y Ty}.
 (** from §48 Exercises: Baire spaces (placeholder) **) 
 Definition ex48_baire_exercises : set :=
-  {Tx:set | Baire_space Tx}.
+  {Tx :e Power (Power R) | Baire_space Tx}.
 (** from §49 Exercises: nowhere-differentiable function (placeholder) **) 
 Definition ex49_nowhere_differentiable_exercises : set :=
-  {f:set | continuous_map R R_standard_topology R R_standard_topology f /\ nowhere_differentiable f}.
+  {f :e Power (Power R) |
+    continuous_map R R_standard_topology R R_standard_topology f /\ nowhere_differentiable f}.
 (** from §50 Exercises: dimension theory introduction (placeholder) **) 
 Definition ex50_dimension_exercises : set :=
-  {OrderedPair (OrderedPair X Tx) n |
-    topology_on X Tx /\ ordinal n}.
+  {p :e Power (Power (Power (Power (Power (Power R))))) |
+    exists X Tx n:set,
+      p = OrderedPair (OrderedPair X Tx) n /\ topology_on X Tx /\ ordinal n}.
