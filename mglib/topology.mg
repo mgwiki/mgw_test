@@ -6711,24 +6711,47 @@ Qed.
 (** from §12: discrete topology is the finest **)
 Theorem discrete_topology_finest : forall X T:set,
   topology_on X T -> finer_than (discrete_topology X) T.
-admit.
+let X T. assume HT.
+(* finer_than (Power X) T is just T c= Power X, which is the first conjunct of topology_on *)
+claim HTsub : T c= Power X.
+{ exact (andEL (T c= Power X) (Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HT). }
+exact HTsub.
 Qed.
 
 (** from §12: indiscrete topology is the coarsest **)
 Theorem indiscrete_topology_coarsest : forall X T:set,
   topology_on X T -> coarser_than (indiscrete_topology X) T.
-admit.
+let X T. assume HT.
+(* coarser_than {Empty,X} T means every element of the pair is in T *)
+claim Hempty : Empty :e T.
+{ exact (andEL (Empty :e T) (X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) (andER (T c= Power X) (Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HT)). }
+claim HX : X :e T.
+{ exact (andEL (X :e T) ((forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) (andER (Empty :e T) (X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) (andER (T c= Power X) (Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HT))). }
+let U. assume HU : U :e indiscrete_topology X.
+apply UPairE U Empty X HU.
+- assume HUempty : U = Empty. rewrite HUempty. exact Hempty.
+- assume HUX : U = X. rewrite HUX. exact HX.
 Qed.
 
 (** from §12: every subset is open in discrete topology **)
-Theorem discrete_open_all : forall X U:set, U :e discrete_topology X.
-admit.
+Theorem discrete_open_all : forall X U:set, U c= X -> U :e discrete_topology X.
+let X U. assume HUsub.
+(* PowerI introduces membership in Power X from subset *)
+apply PowerI X U HUsub.
 Qed.
 
 (** from §12: opens in indiscrete topology are Empty or X **)
 Theorem indiscrete_open_iff : forall X U:set,
   U :e indiscrete_topology X <-> (U = Empty \/ U = X).
-admit.
+let X U.
+apply iffI.
+- assume HU. apply UPairE U Empty X HU.
+  * assume HUE : U = Empty. apply orIL. exact HUE.
+  * assume HUX : U = X. apply orIR. exact HUX.
+- assume Hcases : U = Empty \/ U = X.
+  apply orE U = Empty U = X Hcases.
+  * assume HUE : U = Empty. rewrite HUE. apply UPairI1.
+  * assume HUX : U = X. rewrite HUX. apply UPairI2.
 Qed.
 
 (** from §12 Example 3: finite complement openness criterion **)
