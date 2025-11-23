@@ -7313,13 +7313,14 @@ claim proofE : forall U :e generated_topology X B, forall V :e generated_topolog
   { exact (SepE2 (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) V HVtop). }
   claim HUsubX : U c= X.
   { exact (PowerE X U (SepE1 (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) U HUtop)). }
-  apply SepI (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) (U :/\: V).
-  - apply PowerI X (U :/\: V).
+  claim HPowCap : U :/\: V :e Power X.
+  { apply PowerI X (U :/\: V).
     let x. assume HxCap.
     apply binintersectE U V x HxCap.
     assume HxU HxV.
-    exact (HUsubX x HxU).
-  - let x. assume HxCap.
+    exact (HUsubX x HxU). }
+  claim HCapProp : forall x :e U :/\: V, exists b :e B, x :e b /\ b c= U :/\: V.
+  { let x. assume HxCap.
     apply binintersectE U V x HxCap.
     assume HxU HxV.
     claim Hexb1 : exists b1 :e B, x :e b1 /\ b1 c= U.
@@ -7368,8 +7369,8 @@ claim proofE : forall U :e generated_topology X B, forall V :e generated_topolog
         { exact (Hb3Sub y Hyb3). }
         apply binintersectE b1 b2 y Hy_in_b1b2.
         assume Hyb1 Hyb2.
-        apply binintersectI U V y (Hb1Sub y Hyb1) (Hb2Sub y Hyb2).
-}
+        apply binintersectI U V y (Hb1Sub y Hyb1) (Hb2Sub y Hyb2). }
+  exact (SepI (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) (U :/\: V) HPowCap HCapProp). }
 exact (andI (andI (andI (andI proofA proofB) proofC) proofD) proofE).
 Qed.
 
