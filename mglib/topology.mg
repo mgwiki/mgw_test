@@ -6644,9 +6644,13 @@ apply andI.
         claim HUtop : U :e indiscrete_topology X.
         { exact (Hsub U HUin). }
         apply UPairE U Empty X HUtop.
-        - assume HUe: U = Empty. rewrite HUe in HxU.
-          exact (EmptyE x HxU (x :e X)).
-        - assume HUX: U = X. rewrite HUX. exact HxU.
+        - assume HUe: U = Empty.
+          claim HxEmpty : x :e Empty.
+          { rewrite HUe. exact HxU. }
+          exact (EmptyE x HxEmpty (x :e X)).
+        - assume HUX: U = X.
+          rewrite HUX.
+          exact HxU.
       }
       claim HX_sub : X c= Union UFam.
       { let x. assume HxX.
@@ -6671,8 +6675,10 @@ apply andI.
         claim HUtop : U :e indiscrete_topology X.
         { exact (Hsub U HUin). }
         apply UPairE U Empty X HUtop.
-        - assume HUe: U = Empty. rewrite HUe in HxU.
-          exact (EmptyE x HxU False).
+        - assume HUe: U = Empty.
+          claim HxEmpty : x :e Empty.
+          { rewrite HUe. exact HxU. }
+          exact (EmptyE x HxEmpty False).
         - assume HUX: U = X.
           apply Hnone.
           witness U.
@@ -6783,8 +6789,9 @@ apply andI.
           witness U.
           apply andI; exact HUin || exact HUfin.
         - assume HUempty : U = Empty.
-          rewrite HUempty in HxU.
-          exact (EmptyE x HxU False).
+          claim HxEmpty : x :e Empty.
+          { rewrite HUempty. exact HxU. }
+          exact (EmptyE x HxEmpty False).
       }
       rewrite HUnionEmpty.
       exact (finite_complement_topology_contains_empty X).
