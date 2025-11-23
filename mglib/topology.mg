@@ -6717,7 +6717,7 @@ apply andI.
     { assume HVX: V = X.
       claim Hcap : U :/\: V = X.
       { apply set_ext.
-        - rewrite HUX. exact (binintersect_Subq_1 X X).
+        - rewrite HUX. rewrite HVX. exact (binintersect_Subq_1 X X).
         - let x. assume HxX.
           rewrite HUX. rewrite HVX.
           exact (binintersectI X X x HxX HxX).
