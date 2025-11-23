@@ -7629,30 +7629,16 @@ claim HInterClosed : forall U :e T, forall V :e T, U :/\: V :e T.
                (forall U :e T, forall V :e T, U :/\: V :e T)
                Htop). }
 claim HBasis : basis_on X C.
-{ unfold basis_on.
-  apply andI.
-  - let c. assume HcC.
-    claim HcT : c :e T.
-    { exact (HCsub c HcC). }
-    exact (HTsubPow c HcT).
-  - let x. assume HxX.
-    claim HexC : exists c :e C, x :e c /\ c c= X.
-    { exact (Href X HXT x HxX). }
-    exact HexC.
-  - let c1. assume Hc1C.
-    let c2. assume Hc2C.
-    let x. assume Hxc1 Hxc2.
-    claim Hc1T : c1 :e T.
-    { exact (HCsub c1 Hc1C). }
-    claim Hc2T : c2 :e T.
-    { exact (HCsub c2 Hc2C). }
-    claim HcapT : c1 :/\: c2 :e T.
-    { exact (HInterClosed c1 Hc1T c2 Hc2T). }
-    claim HxCap : x :e c1 :/\: c2.
-    { exact (andI Hxc1 Hxc2). }
-    claim Hex : exists c3 :e C, x :e c3 /\ c3 c= c1 :/\: c2.
-    { exact (Href (c1 :/\: c2) HcapT x HxCap). }
-    exact Hex. }
+{ exact (andI
+           (andI
+              (fun c HcC => HTsubPow c (HCsub c HcC))
+              (fun x HxX => Href X HXT x HxX))
+           (fun c1 Hc1C => fun c2 Hc2C => fun x Hxc1 => fun Hxc2 =>
+              let Hc1T := HCsub c1 Hc1C in
+              let Hc2T := HCsub c2 Hc2C in
+              let HcapT := HInterClosed c1 Hc1T c2 Hc2T in
+              let HxCap := andI Hxc1 Hxc2 in
+              Href (c1 :/\: c2) HcapT x HxCap)). }
 claim Hgen_sub_T : generated_topology X C c= T.
 { let U. assume HUgen : U :e generated_topology X C.
   claim HUsubX : U c= X.
