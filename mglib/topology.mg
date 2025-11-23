@@ -6765,6 +6765,7 @@ apply andI.
     { exact (PowerE (finite_complement_topology X) UFam Hfam). }
     apply xm (exists U:set, U :e UFam /\ finite (X :\: U)).
     - assume Hex: exists U:set, U :e UFam /\ finite (X :\: U).
+      unfold finite_complement_topology.
       apply SepI.
       + apply PowerI X (Union UFam).
         let x. assume HxUnion.
@@ -6829,6 +6830,7 @@ apply andI.
   * assume HUfin.
     apply HVdata (U :/\: V :e finite_complement_topology X).
     { assume HVfin.
+      unfold finite_complement_topology.
       apply SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) (U :/\: V).
       - claim HUsub : U c= X.
         { exact (PowerE X U (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU)). }
