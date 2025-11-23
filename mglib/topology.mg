@@ -7047,3 +7047,84 @@ Theorem ex13_8b_halfopen_rational_basis_topology :
   generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology.
 admit.
 Qed.
+
+(** from §14 Definition: basis for the order topology **) 
+Definition order_topology_basis : set -> set := fun X => Empty.
+
+(** from §14 Definition: order topology on a simply ordered set **) 
+Definition order_topology : set -> set := fun X => generated_topology X (order_topology_basis X).
+
+(** from §14: order topology is a topology **) 
+Theorem order_topology_is_topology : forall X:set,
+  topology_on X (order_topology X).
+admit.
+Qed.
+
+(** from §14 Example 1: standard topology on ℝ is the order topology **) 
+Theorem standard_topology_is_order_topology : order_topology R = R_standard_topology.
+admit.
+Qed.
+
+(** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
+Definition R2_dictionary_order_topology : set := Empty.
+
+Theorem dictionary_order_topology_is_topology :
+  topology_on (OrderedPair R R) R2_dictionary_order_topology.
+admit.
+Qed.
+
+(** from §14 Example 2: rectangle subbasis yields product-style topology **) 
+Theorem rectangles_basis_for_R2 :
+  exists B:set, basis_on (OrderedPair R R) B /\ generated_topology (OrderedPair R R) B = R2_dictionary_order_topology.
+admit.
+Qed.
+
+(** from §15 Definition: product topology on X×Y **) 
+Definition product_topology : set -> set -> set -> set -> set :=
+  fun X Tx Y Ty => Empty.
+
+(** from §15: product topology is a topology **) 
+Theorem product_topology_is_topology : forall X Tx Y Ty:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
+admit.
+Qed.
+
+(** from §15 Theorem: basis of products of basis elements **) 
+Theorem product_basis_generates :
+  forall X Tx Y Ty Bx By:set,
+    basis_on X Bx /\ generated_topology X Bx = Tx ->
+    basis_on Y By /\ generated_topology Y By = Ty ->
+    exists B:set,
+      basis_on (OrderedPair X Y) B /\
+      (forall U :e Bx, forall V :e By, OrderedPair U V :e B) /\
+      generated_topology (OrderedPair X Y) B = product_topology X Tx Y Ty.
+admit.
+Qed.
+
+(** from §15 Example: standard topology on ℝ² as product topology **) 
+Definition R2_standard_topology : set := Empty.
+
+Theorem R2_standard_equals_product :
+  R2_standard_topology = product_topology R R_standard_topology R R_standard_topology.
+admit.
+Qed.
+
+(** from §16 Definition: subspace topology **) 
+Definition subspace_topology : set -> set -> set -> set :=
+  fun X Tx Y => {U :e Power Y | exists V :e Tx, U = V :/\: Y}.
+
+(** from §16: subspace topology is a topology **) 
+Theorem subspace_topology_is_topology : forall X Tx Y:set,
+  topology_on X Tx -> Y c= X ->
+  topology_on Y (subspace_topology X Tx Y).
+admit.
+Qed.
+
+(** from §16: openness in subspace via ambient openness **) 
+Theorem open_in_subspace_iff : forall X Tx Y U:set,
+  topology_on X Tx -> Y c= X ->
+  open_in Y (subspace_topology X Tx Y) U <->
+  exists V :e Tx, U = V :/\: Y.
+admit.
+Qed.
