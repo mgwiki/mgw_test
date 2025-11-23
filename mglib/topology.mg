@@ -7794,6 +7794,8 @@ prove generated_topology X B c= generated_topology X B'.
     { exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
     claim Hb'prop : x :e b' /\ b' c= b.
     { exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+    claim Hxb' : x :e b'.
+    { exact (andEL (x :e b') (b' c= b) Hb'prop). }
     claim Hb'subb : b' c= b.
     { exact (andER (x :e b') (b' c= b) Hb'prop). }
     claim Hb'subU : b' c= U.
@@ -7803,7 +7805,7 @@ prove generated_topology X B c= generated_topology X B'.
     apply andI.
     - exact Hb'B.
     - apply andI.
-      + exact (andEL (x :e b') (b' c= b) Hb'prop).
+      + exact Hxb'.
       + exact Hb'subU. } } }
   exact (SepI (Power X)
               (fun U0 : set => forall x0 :e U0, exists b0 :e B', x0 :e b0 /\ b0 c= U0)
