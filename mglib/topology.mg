@@ -6530,24 +6530,31 @@ apply andI.
 Qed.
 
 (** from §12: “finer than” / “coarser than” topologies **)
+(** LATEX VERSION: Given topologies T and T' on X, T' is finer than T if T' ⊃ T; T is coarser than T'; the topologies are comparable if one contains the other. **)
 Definition finer_than : set -> set -> prop := fun T' T => T c= T'.
 
+(** LATEX VERSION: Coarser is the reverse inclusion: T' is coarser than T when T' ⊂ T. **)
 Definition coarser_than : set -> set -> prop := fun T' T => T' c= T.
 
- 
+
 (** from §12 Example 2: discrete topology **)
+(** LATEX VERSION: Example 2 defines the discrete topology on X as the collection of all subsets of X. **)
 Definition discrete_topology : set -> set := fun X => Power X.
 
 (** from §12: indiscrete/trivial topology **)
+(** LATEX VERSION: The indiscrete (trivial) topology on X consists only of X and ∅. **)
 Definition indiscrete_topology : set -> set := fun X => {Empty, X}.
 
 (** from §12 Example 3: finite complement topology **)
+(** LATEX VERSION: Example 3 defines T_f = { U ⊂ X | X\\U is finite or U = ∅ }, the finite complement topology. **)
 Definition finite_complement_topology : set -> set :=
   fun X => {U :e Power X | finite (X :\: U) \/ U = Empty}.
 
 (** helper: countable set: admits an injection into omega (at most countable) **)
+(** LATEX VERSION: A set is countable if it admits an injection into ω (at most countable). **)
 Definition countable : set -> prop := fun X => atleastp X omega.
 
+(** LATEX VERSION: Every finite set is countable. **)
 Theorem finite_countable : forall X:set, finite X -> countable X.
 let X. assume Hfin.
 apply Hfin.
@@ -6566,10 +6573,12 @@ exact (atleastp_tra X n omega Hcount_X Hcount_n).
 Qed.
 
 (** from §12 Example 4: countable complement topology **)
+(** LATEX VERSION: Example 4 defines T_c = { U ⊂ X | X\\U is countable or U = ∅ }, the countable complement topology. **)
 Definition countable_complement_topology : set -> set :=
   fun X => {U :e Power X | countable (X :\: U) \/ U = Empty}.
 
 (** from §12: discrete topology is a topology **)
+(** LATEX VERSION: The discrete topology on any set X satisfies the axioms of a topology. **)
 Theorem discrete_topology_on : forall X, topology_on X (discrete_topology X).
 let X.
 prove Power X c= Power X
