@@ -6660,8 +6660,9 @@ apply andI.
         { exact (andEL (U :e UFam) (U = X) HUinpair). }
         claim HUeq : U = X.
         { exact (andER (U :e UFam) (U = X) HUinpair). }
-        rewrite HUeq.
-        apply UnionI UFam x U HxX HUin.
+        claim HxU : x :e U.
+        { rewrite HUeq. exact HxX. }
+        apply UnionI UFam x U HxU HUin.
       }
       claim HUnion_eq : Union UFam = X.
       { apply set_ext; [exact HUnion_sub|exact HX_sub]. }
