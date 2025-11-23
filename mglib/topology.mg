@@ -7762,6 +7762,7 @@ Theorem finer_via_basis : forall X B B':set,
 Proof.
 let X B B'. assume HB HB' Hloc.
 unfold finer_than.
+prove generated_topology X B c= generated_topology X B'.
 (* use the characterization of generated topology by local basis witnesses *)
 claim HcharB : generated_topology X B
   = {U :e Power X | forall x :e U, exists b :e B, x :e b /\ b c= U}.
