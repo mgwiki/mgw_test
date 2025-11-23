@@ -7780,7 +7780,6 @@ let X B T. assume HB HT HBsub.
 (* every open in T is open in the generated topology; outline deferred *)
 admit.
 Qed.
-Qed.
 
 (** from §13 Lemma 13.3 (direction): generated topology is smallest with given basis **) 
 Theorem topology_generated_by_basis_is_smallest : forall X B T:set,
