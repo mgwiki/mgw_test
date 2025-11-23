@@ -6756,6 +6756,33 @@ Theorem finite_complement_topology_contains_full : forall X:set,
 admit.
 Qed.
 
+Theorem countable_complement_topology_on : forall X, topology_on X (countable_complement_topology X).
+admit.
+Qed.
+
+Theorem countable_complement_topology_open_iff : forall X U:set,
+  open_in X (countable_complement_topology X) U ->
+  countable (X :\: U) \/ U = X.
+admit.
+Qed.
+
+Theorem countable_complement_topology_contains_empty : forall X:set,
+  Empty :e countable_complement_topology X.
+admit.
+Qed.
+
+Theorem countable_complement_topology_contains_full : forall X:set,
+  X :e countable_complement_topology X.
+admit.
+Qed.
+
+Theorem basis_finer_equiv_condition : forall X B B':set,
+  basis_on X B -> basis_on X B' ->
+  (forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
+  finer_than (generated_topology X B') (generated_topology X B).
+admit.
+Qed.
+
 Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
   topology_on X T1 /\ topology_on X T2 /\ T1 = T2.
 
