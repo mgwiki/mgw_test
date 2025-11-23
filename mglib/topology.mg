@@ -7771,41 +7771,43 @@ claim HUprop : forall x :e U, exists b :e B, x :e b /\ b c= U.
 { exact (SepE2 (Power X)
                (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
                U HU). }
-apply (SepI (Power X)
+claim HUpropB' : forall x :e U, exists b0 :e B', x :e b0 /\ b0 c= U.
+{ let x. assume HxU.
+  claim Hexb : exists b :e B, x :e b /\ b c= U.
+  { exact (HUprop x HxU). }
+  apply Hexb.
+  let b. assume Hbp.
+  claim HbB : b :e B.
+  { exact (andEL (b :e B) (x :e b /\ b c= U) Hbp). }
+  claim Hbprop : x :e b /\ b c= U.
+  { exact (andER (b :e B) (x :e b /\ b c= U) Hbp). }
+  claim Hxb : x :e b.
+  { exact (andEL (x :e b) (b c= U) Hbprop). }
+  claim HbsubU : b c= U.
+  { exact (andER (x :e b) (b c= U) Hbprop). }
+  claim Hexb' : exists b' :set, b' :e B' /\ x :e b' /\ b' c= b.
+  { exact (Hrefine x b HbB Hxb). }
+  apply Hexb'.
+  let b'. assume Hb'pair.
+  claim Hb'B' : b' :e B'.
+  { exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+  claim Hb'prop : x :e b' /\ b' c= b.
+  { exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+  claim Hxb' : x :e b'.
+  { exact (andEL (x :e b') (b' c= b) Hb'prop). }
+  claim Hb'subb : b' c= b.
+  { exact (andER (x :e b') (b' c= b) Hb'prop). }
+  claim Hb'subU : b' c= U.
+  { exact (Subq_tra b' b U Hb'subb HbsubU). }
+  witness b'.
+  apply andI.
+  - exact Hb'B'.
+  - apply andI; [exact Hxb'|exact Hb'subU]. }
+exact (SepI (Power X)
             (fun U0 : set => forall x0 :e U0, exists b0 :e B', x0 :e b0 /\ b0 c= U0)
             U
-            (PowerI X U HUsubX)).
-let x. assume HxU.
-claim Hexb : exists b :e B, x :e b /\ b c= U.
-{ exact (HUprop x HxU). }
-apply Hexb.
-let b. assume Hbp.
-claim HbB : b :e B.
-{ exact (andEL (b :e B) (x :e b /\ b c= U) Hbp). }
-claim Hbprop : x :e b /\ b c= U.
-{ exact (andER (b :e B) (x :e b /\ b c= U) Hbp). }
-claim Hxb : x :e b.
-{ exact (andEL (x :e b) (b c= U) Hbprop). }
-claim HbsubU : b c= U.
-{ exact (andER (x :e b) (b c= U) Hbprop). }
-claim Hexb' : exists b' :set, b' :e B' /\ x :e b' /\ b' c= b.
-{ exact (Hrefine x b HbB Hxb). }
-apply Hexb'.
-let b'. assume Hb'pair.
-claim Hb'B' : b' :e B'.
-{ exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
-claim Hb'prop : x :e b' /\ b' c= b.
-{ exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
-claim Hxb' : x :e b'.
-{ exact (andEL (x :e b') (b' c= b) Hb'prop). }
-claim Hb'subb : b' c= b.
-{ exact (andER (x :e b') (b' c= b) Hb'prop). }
-claim Hb'subU : b' c= U.
-{ exact (Subq_tra b' b U Hb'subb HbsubU). }
-witness b'.
-apply andI.
-- exact Hb'B'.
-- apply andI; [exact Hxb'|exact Hb'subU].
+            (PowerI X U HUsubX)
+            HUpropB').
 Qed.
 
 (** from §13 Lemma 13.3: basis inclusion criterion for fineness **) 
