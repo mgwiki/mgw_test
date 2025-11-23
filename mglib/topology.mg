@@ -9674,6 +9674,38 @@ Definition complete_metric_space : set -> set -> prop := fun X d =>
   forall seq:set, seq c= X -> cauchy_sequence X d seq ->
     exists x:set, converges_to X (metric_topology X d) seq x.
 
+(** from §43 Lemma 43.1: Cauchy with convergent subsequence converges **) 
+Theorem Cauchy_with_convergent_subsequence_converges : forall X d seq x:set,
+  metric_on X d -> cauchy_sequence X d seq ->
+  (exists subseq:set, subseq c= seq /\ converges_to X (metric_topology X d) subseq x) ->
+  converges_to X (metric_topology X d) seq x.
+admit.
+Qed.
+
+(** from §43 Theorem 43.2: Euclidean space is complete **) 
+Theorem Euclidean_space_complete : forall k:set,
+  complete_metric_space (euclidean_space k) (euclidean_metric k).
+admit.
+Qed.
+
+(** from §43 Lemma 43.3: product convergence via projections **) 
+Theorem product_sequence_convergence_iff_coordinates : forall X J:set,
+  X = product_space J (const_family J R) ->
+  forall seq x:set,
+    converges_to X (product_topology_full J (const_family J R)) seq x <->
+    (forall j:set, j :e J ->
+      converges_to (product_component (const_family J R) j)
+                   (product_component_topology (const_family J R) j)
+                   (Repl seq (fun s => apply_fun s j))
+                   (apply_fun x j)).
+admit.
+Qed.
+
+(** from §43 Theorem 43.4: complete metric on R^omega **) 
+Theorem product_Romega_complete : complete_metric_space (power_real omega) (bounded_product_metric omega).
+admit.
+Qed.
+
 (** from §44 Theorem: space-filling curve existence **) 
 Definition unit_square : set := OrderedPair unit_interval unit_interval.
 Definition unit_square_topology : set := product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
@@ -9730,9 +9762,27 @@ Definition Baire_space : set -> prop := fun Tx =>
       (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
       dense_in (intersection_over_family X U) X Tx.
 
+(** from §48 Lemma 48.1: dense G_delta characterization of Baire space **) 
+Theorem Baire_space_dense_Gdelta : forall Tx:set,
+  (Baire_space Tx <->
+    exists X:set,
+      topology_on X Tx /\
+      forall U:set,
+        U c= Tx -> countable_set U ->
+        (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
+        dense_in (intersection_over_family X U) X Tx)).
+admit.
+Qed.
+
 (** from §48 Theorem: Baire category theorem for complete metric spaces **) 
 Theorem Baire_category_complete_metric : forall X d:set,
   complete_metric_space X d -> Baire_space (metric_topology X d).
+admit.
+Qed.
+
+(** from §48 Theorem: compact Hausdorff spaces are Baire spaces **) 
+Theorem Baire_category_compact_Hausdorff : forall X Tx:set,
+  compact_space X Tx -> Hausdorff_space X Tx -> Baire_space Tx.
 admit.
 Qed.
 
