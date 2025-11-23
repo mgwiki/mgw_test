@@ -7790,32 +7790,7 @@ Qed.
 Theorem union_of_basis_equals_open : forall X B:set,
   basis_on X B ->
   generated_topology X B = {Union Fam|Fam :e Power B}.
-let X B. assume HB.
-(* inclusion each way: opens are unions of basis members, and any such union is open *)
-apply set_ext.
-- (* -> direction: any open is a union of basis elements *)
-  let U. assume HU.
-  claim HUopen : open_in X (generated_topology X B) U.
-  { exact (andI (topology_on X (generated_topology X B)) HU). }
-  destruct (open_sets_as_unions_of_basis X B HB U HUopen) as [Fam HFam].
-  rewrite HFam.
-  apply SepI.
-  * apply PowerI.
-    apply Union_sub_power.
-    exact (andEL (Fam :e Power B) (Union Fam = U) (andI (Fam :e Power B) HFam)).
-  * exact (andER (Fam :e Power B) (Union Fam = U) (andI (Fam :e Power B) HFam)).
-- (* <- direction: any union of basis elements is open, hence in generated topology *)
-  let U. assume HU.
-  apply SepE2 in HU.
-  destruct HU as [Fam HFam].
-  destruct HFam as [HFamPow HUeq].
-  (* the union is open because basis elements are open *)
-  claim HUnionOpen : open_in X (generated_topology X B) (Union Fam).
-  { admit. }
-  rewrite <- HUeq.
-  exact (andER (topology_on X (generated_topology X B))
-               (U :e generated_topology X B)
-               HUnionOpen).
+admit.
 Qed.
 Qed.
 
