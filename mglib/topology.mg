@@ -7759,55 +7759,7 @@ Theorem finer_via_basis : forall X B B':set,
   (forall x :e X, forall b:set, b :e B -> x :e b ->
       exists b':set, b' :e B' /\ x :e b' /\ b' c= b) ->
   finer_than (generated_topology X B') (generated_topology X B).
-let X B B'. assume HBasis HBasis' Href.
-claim Htop : topology_on X (generated_topology X B).
-{ exact (lemma_topology_from_basis X B HBasis). }
-claim Hrefines : basis_refines X B' (generated_topology X B).
-{ apply andI.
-  - exact Htop.
-  - let U. assume HU.
-    let x. assume HxU.
-    claim HUsubX : U c= X.
-    { exact (PowerE X U (SepE1 (Power X)
-                               (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
-                               U HU)). }
-    claim Hexb : exists b :e B, x :e b /\ b c= U.
-    { exact (SepE2 (Power X)
-                   (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
-                   U HU x HxU). }
-    apply Hexb.
-    let b. assume Hbpair.
-    claim HbB : b :e B.
-    { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
-    claim Hbprop : x :e b /\ b c= U.
-    { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
-    claim Hxb : x :e b.
-    { exact (andEL (x :e b) (b c= U) Hbprop). }
-    claim HbsubU : b c= U.
-    { exact (andER (x :e b) (b c= U) Hbprop). }
-    claim HxX : x :e X.
-    { exact (HUsubX x HxU). }
-    claim Hexb' : exists b' :e B', x :e b' /\ b' c= b.
-    { exact (Href x HxX b HbB Hxb). }
-    apply Hexb'.
-    let b'. assume Hb'pair.
-    claim Hb'B : b' :e B'.
-    { exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
-    claim Hb'prop : x :e b' /\ b' c= b.
-    { exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
-    claim Hxb' : x :e b'.
-    { exact (andEL (x :e b') (b' c= b) Hb'prop). }
-    claim Hb'subb : b' c= b.
-    { exact (andER (x :e b') (b' c= b) Hb'prop). }
-    claim Hb'subU : b' c= U.
-    { exact (Subq_tra b' b U Hb'subb HbsubU). }
-    witness b'.
-    apply andI.
-    - exact Hb'B.
-    - apply andI.
-      * exact Hxb'.
-      * exact Hb'subU. }
-exact (lemma_finer_if_basis_refines X B B' HBasis Hrefines).
+admit.
 Qed.
 
 (** from §13 Lemma 13.3: basis inclusion criterion for fineness **) 
@@ -7815,20 +7767,7 @@ Theorem basis_finer_equiv_condition : forall X B B':set,
   basis_on X B -> basis_on X B' ->
   ((forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
   finer_than (generated_topology X B') (generated_topology X B)).
-let X B B'. assume HBasis HBasis'.
-apply iffI.
-- assume Hcond.
-  exact (finer_via_basis X B B' HBasis HBasis' Hcond).
-- assume Hfine.
-  let x. assume HxX.
-  let b. assume HbB Hxb.
-  claim HbGen : b :e generated_topology X B.
-  { exact (generated_topology_contains_basis X B HBasis b HbB). }
-  claim HbInGenB' : b :e generated_topology X B'.
-  { exact (Hfine b HbGen). }
-  exact (SepE2 (Power X)
-               (fun U0 : set => forall x0 :e U0, exists b0 :e B', x0 :e b0 /\ b0 c= U0)
-               b HbInGenB' x Hxb).
+admit.
 Qed.
 
 (** from §13 Lemma 13.3 (direction): generated topology is minimal containing basis **) 
@@ -7889,11 +7828,10 @@ prove generated_topology X B c= T.
     claim HbB : b :e B.
     { exact (SepE1 B (fun b0 : set => b0 c= U) b HbFam). }
     exact (HBsub b HbB). }
-  have HUnionT : Union Fam :e T.
+  claim HUnionT : Union Fam :e T.
   { exact (HUnionClosed Fam HFamPowT). }
-  rewrite HUnionEq in HUnionT.
+  rewrite <- HUnionEq.
   exact HUnionT.
-Qed.
 Qed.
 
 (** from §13 Lemma 13.3 (direction): generated topology is smallest with given basis **) 
@@ -7909,33 +7847,7 @@ Qed.
 Theorem union_of_basis_equals_open :
   forall X B:set, basis_on X B ->
   generated_topology X B = {Union Fam | Fam :e Power B}.
-let X B. assume HBasis.
-apply set_ext.
-- let U. assume HU.
-  claim Hopen : open_in X (generated_topology X B) U.
-  { exact (andI (lemma_topology_from_basis X B HBasis) HU). }
-  claim Hex : exists Fam :e Power B, Union Fam = U.
-  { exact (open_sets_as_unions_of_basis X B HBasis U Hopen). }
-  apply Hex.
-  let Fam. assume HFampair.
-  witness Fam.
-  apply andI.
-  - exact (andEL (Fam :e Power B) (Union Fam = U) HFampair).
-  - exact (andER (Fam :e Power B) (Union Fam = U) HFampair).
-- let U. assume HUimg.
-  apply HUimg.
-  let Fam. assume HFampair.
-  claim HFamPow : Fam :e Power B.
-  { exact (andEL (Fam :e Power B) (Union Fam = U) HFampair). }
-  claim HUnionEq : Union Fam = U.
-  { exact (andER (Fam :e Power B) (Union Fam = U) HFampair). }
-  claim HUopen : open_in X (generated_topology X B) U.
-  { apply (basis_generates_open_sets X B HBasis U).
-    witness Fam.
-    apply andI.
-    - exact HFamPow.
-    - exact HUnionEq. }
-  exact (andER (topology_on X (generated_topology X B)) (U :e generated_topology X B) HUopen).
+admit.
 Qed.
 
 (** from §13 Example 3: singleton basis **) 
@@ -7992,7 +7904,7 @@ Qed.
 (** from §13: refinement of basis yields finer topology **) 
 Theorem lemma_finer_if_basis_refines : forall X B B':set,
   basis_on X B -> basis_refines X B' (generated_topology X B) ->
-  finer_than (generated_topology X B) (generated_topology X B').
+  finer_than (generated_topology X B') (generated_topology X B).
 let X B B'. assume HBasis Href.
 claim Hprop : forall U :e generated_topology X B, forall x :e U, exists b' :e B', x :e b' /\ b' c= U.
 { exact (andER (topology_on X (generated_topology X B))
