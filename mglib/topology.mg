@@ -6767,13 +6767,19 @@ Qed.
 Theorem finite_complement_topology_open_criterion : forall X U:set,
   open_in X (finite_complement_topology X) U ->
   finite (X :\: U) \/ U = Empty.
-admit.
+let X U. assume Hopen.
+claim HUin : U :e finite_complement_topology X.
+{ exact (andER (topology_on X (finite_complement_topology X)) (U :e finite_complement_topology X) Hopen). }
+exact (SepE2 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HUin).
 Qed.
 
 (** from §12 Example 3: Empty is open in finite complement topology **)
 Theorem finite_complement_topology_contains_empty : forall X:set,
   Empty :e finite_complement_topology X.
-admit.
+let X.
+apply SepI.
+- apply Empty_In_Power.
+- apply orIR. reflexivity.
 Qed.
 
 (** from §12 Example 3: X is open in finite complement topology **)
@@ -6786,13 +6792,19 @@ Qed.
 Theorem countable_complement_topology_open_iff : forall X U:set,
   open_in X (countable_complement_topology X) U ->
   countable (X :\: U) \/ U = Empty.
-admit.
+let X U. assume Hopen.
+claim HUin : U :e countable_complement_topology X.
+{ exact (andER (topology_on X (countable_complement_topology X)) (U :e countable_complement_topology X) Hopen). }
+exact (SepE2 (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) U HUin).
 Qed.
 
 (** from §12 Example 4: Empty is open in countable complement topology **)
 Theorem countable_complement_topology_contains_empty : forall X:set,
   Empty :e countable_complement_topology X.
-admit.
+let X.
+apply SepI.
+- apply Empty_In_Power.
+- apply orIR. reflexivity.
 Qed.
 
 (** from §12 Example 4: X is open in countable complement topology **) 
