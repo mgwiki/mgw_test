@@ -7552,7 +7552,7 @@ claim HUGen : U :e generated_topology X B.
     { let y. assume Hyb.
       claim HyUnion : y :e Union Fam.
       { exact (HbSubUnion y Hyb). }
-      rewrite HUnionEq in HyUnion.
+      rewrite <- HUnionEq.
       exact HyUnion. }
     witness b.
     apply andI.
