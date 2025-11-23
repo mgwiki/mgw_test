@@ -8910,7 +8910,7 @@ Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ 
 Definition sequence_in : set -> set -> prop := fun seq A => seq c= A.
 Definition converges_to : set -> set -> set -> set -> prop :=
   fun X Tx seq x => topology_on X Tx /\ seq c= X /\ x :e X.
-Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => f@y).
+Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => y).
 Definition countable_index_set : set -> prop := fun I => I c= omega.
 Definition product_component_topology : set -> set -> set := fun Xi i => Empty.
 Definition product_space : set -> set -> set := fun I Xi => Empty.
@@ -8951,7 +8951,7 @@ Qed.
 Theorem first_countable_sequences_detect_continuity : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f ->
-    forall seq:set, sequence_in seq X -> converges_to X Tx seq (Empty) -> converges_to Y Ty (image_of f seq) (f@Empty)).
+    forall seq:set, sequence_in seq X -> converges_to X Tx seq (Empty) -> converges_to Y Ty (image_of f seq) f).
 admit.
 Qed.
 
@@ -8977,9 +8977,9 @@ Theorem countability_axioms_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall A:set, A c= X -> first_countable_space X Tx -> first_countable_space A (subspace_topology X Tx A)) /\
   (forall A:set, A c= X -> second_countable_space X Tx -> second_countable_space A (subspace_topology X Tx A)) /\
-  (forall I Xi:set, countable_index_set I -> (forall i:set, first_countable_space (Xi@i) (product_component_topology Xi i)) ->
+  (forall I Xi:set, countable_index_set I -> (forall i:set, first_countable_space Xi (product_component_topology Xi i)) ->
      first_countable_space (product_space I Xi) (product_topology I Xi)) /\
-  (forall I Xi:set, countable_index_set I -> (forall i:set, second_countable_space (Xi@i) (product_component_topology Xi i)) ->
+  (forall I Xi:set, countable_index_set I -> (forall i:set, second_countable_space Xi (product_component_topology Xi i)) ->
      second_countable_space (product_space I Xi) (product_topology I Xi)).
 admit.
 Qed.
@@ -9011,25 +9011,3 @@ Theorem Sorgenfrey_line_countability :
   ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
 admit.
 Qed.
-(** auxiliary definitions for sequences and basic constructions in §30 **) 
-Definition sequence_in : set -> set -> prop := fun seq A => seq c= A.
-Definition converges_to : set -> set -> set -> set -> prop :=
-  fun X Tx seq x => topology_on X Tx /\ seq c= X /\ x :e X.
-Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => f@y).
-Definition countable_index_set : set -> prop := fun I => I c= omega.
-Definition product_component_topology : set -> set -> set := fun Xi i => Empty.
-Definition product_space : set -> set -> set := fun I Xi => Empty.
-Definition product_topology : set -> set -> set := fun I Xi => Empty.
-Definition euclidean_space : set -> set := fun n => Empty.
-Definition euclidean_topology : set -> set := fun n => Empty.
-Definition real_sequences : set := Power R.
-Definition uniform_topology : set := Empty.
-Definition covers : set -> set -> prop :=
-  fun X U => forall x:set, x :e X -> exists u:set, u :e U /\ x :e u.
-Definition open_cover : set -> set -> set -> prop :=
-  fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
-Definition Lindelof_space : set -> set -> prop :=
-  fun X Tx => topology_on X Tx /\ forall U:set, open_cover X Tx U -> exists V:set, countable_subcollection V U /\ covers X V.
-Definition rational_numbers : set := omega.
-Definition Sorgenfrey_line : set := R.
-Definition Sorgenfrey_topology : set := Empty.
