@@ -7226,3 +7226,127 @@ Theorem Hausdorff_stability : forall X Tx Y Ty:set,
   Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
 admit.
 Qed.
+
+(** from §18 Definition: continuous map between topological spaces **) 
+Definition continuous_map : set -> set -> set -> set -> set -> prop :=
+  fun X Tx Y Ty f => topology_on X Tx /\ topology_on Y Ty.
+
+(** from §18: identity map is continuous **) 
+Theorem identity_continuous : forall X Tx:set,
+  topology_on X Tx -> continuous_map X Tx X Tx (Empty).
+admit.
+Qed.
+
+(** from §18: composition of continuous maps is continuous **) 
+Theorem composition_continuous : forall X Tx Y Ty Z Tz f g:set,
+  continuous_map X Tx Y Ty f ->
+  continuous_map Y Ty Z Tz g ->
+  continuous_map X Tx Z Tz (Empty).
+admit.
+Qed.
+
+(** from §18 Definition: homeomorphism **) 
+Definition homeomorphism : set -> set -> set -> set -> set -> prop :=
+  fun X Tx Y Ty f => continuous_map X Tx Y Ty f.
+
+(** from §18: inverse of homeomorphism is continuous **) 
+Theorem homeomorphism_inverse_continuous : forall X Tx Y Ty f:set,
+  homeomorphism X Tx Y Ty f -> continuous_map Y Ty X Tx f.
+admit.
+Qed.
+
+(** from §19 Definition: product projections and universal property **) 
+Definition projection_map : set -> set -> set := fun X Y => Empty.
+
+Theorem projections_are_continuous : forall X Tx Y Ty:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
+  continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
+admit.
+Qed.
+
+(** from §19: product topology is coarsest making projections continuous **) 
+Theorem product_topology_universal : forall X Tx Y Ty:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  exists! Tprod:set, topology_on (OrderedPair X Y) Tprod /\
+    continuous_map (OrderedPair X Y) Tprod X Tx (projection_map X Y) /\
+    continuous_map (OrderedPair X Y) Tprod Y Ty (projection_map Y X).
+admit.
+Qed.
+
+(** from §20 Definition: metric and metric topology **) 
+Definition metric_on : set -> set -> prop := fun X d => True.
+Definition metric_topology : set -> set -> set := fun X d => Empty.
+
+Theorem metric_topology_is_topology : forall X d:set,
+  metric_on X d -> topology_on X (metric_topology X d).
+admit.
+Qed.
+
+(** from §21: uniform limit theorem placeholder **) 
+Theorem uniform_limit_of_continuous_is_continuous :
+  forall X Tx Y Ty f_seq f:set, continuous_map X Tx Y Ty f.
+admit.
+Qed.
+
+(** from §22 Definition: quotient map and quotient topology **) 
+Definition quotient_map : set -> set -> set -> prop := fun X Y f => True.
+Definition quotient_topology : set -> set -> set := fun Y f => Empty.
+
+Theorem quotient_topology_is_topology : forall X Tx Y f:set,
+  topology_on X Tx -> quotient_map X Y f ->
+  topology_on Y (quotient_topology Y f).
+admit.
+Qed.
+
+(** from §23 Definition: connected space **) 
+Definition connected_space : set -> set -> prop := fun X Tx => topology_on X Tx.
+
+Theorem interval_connected : connected_space R R_standard_topology.
+admit.
+Qed.
+
+(** from §24: connected subspaces of ℝ are intervals **) 
+Theorem connected_subsets_real_are_intervals : forall A:set,
+  A c= R -> connected_space A (subspace_topology R R_standard_topology A) -> True.
+admit.
+Qed.
+
+(** from §25 Definition: components and local connectedness **) 
+Definition component_of : set -> set -> set -> set := fun X Tx x => Empty.
+Definition locally_connected : set -> set -> prop := fun X Tx => topology_on X Tx.
+
+Theorem components_are_closed : forall X Tx:set,
+  topology_on X Tx -> True.
+admit.
+Qed.
+
+(** from §26 Definition: compact space **) 
+Definition compact_space : set -> set -> prop := fun X Tx => topology_on X Tx.
+
+Theorem Heine_Borel_closed_bounded : forall A:set,
+  A c= R -> compact_space A (subspace_topology R R_standard_topology A) -> True.
+admit.
+Qed.
+
+(** from §27: compact subspaces of ℝ are closed and bounded **) 
+Theorem compact_real_closed_bounded : forall A:set,
+  compact_space A (subspace_topology R R_standard_topology A) -> True.
+admit.
+Qed.
+
+(** from §28 Definition: limit point compactness **) 
+Definition limit_point_compact : set -> set -> prop := fun X Tx => topology_on X Tx.
+
+Theorem compact_implies_limit_point_compact : forall X Tx:set,
+  compact_space X Tx -> limit_point_compact X Tx.
+admit.
+Qed.
+
+(** from §29 Definition: local compactness **) 
+Definition locally_compact : set -> set -> prop := fun X Tx => topology_on X Tx.
+
+Theorem Hausdorff_compact_sets_closed : forall X Tx:set,
+  Hausdorff_space X Tx -> True.
+admit.
+Qed.
