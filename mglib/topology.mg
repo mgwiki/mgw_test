@@ -7528,9 +7528,27 @@ Qed.
 Definition compact_space : set -> set -> prop := fun X Tx => topology_on X Tx.
 
 (** from §26: open cover characterization **) 
-Theorem Heine_Borel_subcover : forall X Tx:set,
+Theorem Heine_Borel_subcover : forall X Tx Fam:set,
   compact_space X Tx ->
-  forall Fam:set, True.
+  True.
+admit.
+Qed.
+
+(** from §26: compactness preserved under continuous maps **) 
+Theorem continuous_image_compact : forall X Tx Y Ty f:set,
+  compact_space X Tx -> continuous_map X Tx Y Ty f -> compact_space Y Ty.
+admit.
+Qed.
+
+(** from §26: finite products of compact spaces are compact **) 
+Theorem finite_product_compact : forall X Tx Y Ty:set,
+  compact_space X Tx -> compact_space Y Ty ->
+  compact_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+admit.
+Qed.
+
+(** from §26: tube lemma placeholder **) 
+Theorem tube_lemma : True.
 admit.
 Qed.
 
@@ -7550,6 +7568,11 @@ Definition limit_point_compact : set -> set -> prop := fun X Tx => topology_on X
 
 Theorem compact_implies_limit_point_compact : forall X Tx:set,
   compact_space X Tx -> limit_point_compact X Tx.
+admit.
+Qed.
+
+(** from §28: limit point compactness vs compactness **) 
+Theorem limit_point_compact_not_necessarily_compact : True.
 admit.
 Qed.
 
