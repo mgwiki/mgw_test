@@ -8113,8 +8113,10 @@ admit.
 Qed.
 
 (** from §15 Definition: projections on a product **) 
-Definition projection1 : set -> set -> set := fun X Y => Empty.
-Definition projection2 : set -> set -> set := fun X Y => Empty.
+Definition projection1 : set -> set -> set := fun X Y =>
+  {UPair (OrderedPair x y) x | x :e X /\ y :e Y}.
+Definition projection2 : set -> set -> set := fun X Y =>
+  {UPair (OrderedPair x y) y | x :e X /\ y :e Y}.
 
 (** from §15 Theorem 15.2: projection preimages form a subbasis **) 
 Theorem product_subbasis_from_projections : forall X Tx Y Ty:set,
@@ -8259,8 +8261,10 @@ admit.
 Qed.
 
 (** from §17 Definition: interior and closure of a set **) 
-Definition interior_of : set -> set -> set -> set := fun X T A => Empty.
-Definition closure_of : set -> set -> set -> set := fun X T A => Empty.
+Definition interior_of : set -> set -> set -> set := fun X T A =>
+  {x :e X | exists U:set, U :e T /\ x :e U /\ U c= A}.
+Definition closure_of : set -> set -> set -> set := fun X T A =>
+  {x :e X | forall U:set, U :e T -> x :e U -> U :/\: A <> Empty}.
 
 (** from §17 Theorem 17.1: properties of closed sets **) 
 Theorem closed_sets_axioms : forall X T:set,
@@ -8507,7 +8511,7 @@ admit.
 Qed.
 
 (** from §19 Definition: product projections and universal property **) 
-Definition projection_map : set -> set -> set := fun X Y => Empty.
+Definition projection_map : set -> set -> set := fun X Y => projection1 X Y.
 
 Theorem projections_are_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
@@ -8716,7 +8720,11 @@ admit.
 Qed.
 
 (** from §24 Definition: path components equivalence relation **) 
-Definition path_component_of : set -> set -> set -> set := fun X Tx x => Empty.
+Definition path_component_of : set -> set -> set -> set := fun X Tx x =>
+  {y :e X | exists p:set,
+     function_on p unit_interval X /\
+     continuous_map unit_interval R_standard_topology X Tx p /\
+     apply_fun p 0 = x /\ apply_fun p 1 = y}.
 
 (** from §24: path components form equivalence classes **) 
 Theorem path_components_equivalence_relation : forall X Tx:set,
@@ -8725,7 +8733,8 @@ admit.
 Qed.
 
 (** from §25 Definition: components and local connectedness **) 
-Definition component_of : set -> set -> set -> set := fun X Tx x => Empty.
+Definition component_of : set -> set -> set -> set := fun X Tx x =>
+  {y :e X | exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y :e C}.
 Definition locally_connected : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall x:set, x :e X ->
@@ -8765,7 +8774,8 @@ admit.
 Qed.
 
 (** from §25 Definition: quasicomponent equivalence relation **) 
-Definition quasicomponent_of : set -> set -> set -> set := fun X Tx x => Empty.
+Definition quasicomponent_of : set -> set -> set -> set := fun X Tx x =>
+  {y :e X | forall U:set, open_in X Tx U -> closed_in X Tx U -> x :e U -> y :e U}.
 
 (** from §25: components vs quasicomponents **) 
 Theorem components_vs_quasicomponents : forall X Tx:set,
@@ -9119,6 +9129,8 @@ Definition product_space : set -> set -> set := fun I Xi =>
 
 Definition product_topology_full : set -> set -> set := fun I Xi =>
   generated_topology (product_space I Xi) Empty.
+Definition box_topology : set -> set -> set := fun I Xi =>
+  product_topology_full I Xi.
 Definition uncountable_set : set -> prop := fun X => ~ countable_set X.
 Definition well_ordered_set : set -> prop := fun X =>
   exists alpha:set, ordinal alpha /\ equip X alpha.
@@ -9139,8 +9151,8 @@ Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
 Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f =>
   function_on f X Y /\ continuous_map X Tx Y Ty f /\
   (forall x1 x2:set, x1 :e X -> x2 :e X -> apply_fun f x1 = apply_fun f x2 -> x1 = x2).
-Definition power_real : set -> set := fun J => Empty.
-Definition unit_interval_power : set -> set := fun J => Empty.
+Definition power_real : set -> set := fun J => function_space J R.
+Definition unit_interval_power : set -> set := fun J => function_space J unit_interval.
 Definition locally_finite_basis : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   exists B:set, basis_on X B /\ locally_finite_family X Tx B.
@@ -9285,7 +9297,8 @@ admit.
 Qed.
 
 (** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **) 
-Definition closed_interval : set -> set -> set := fun a b => Empty.
+Definition closed_interval : set -> set -> set := fun a b =>
+  {x :e R | ~(Rlt x a) /\ ~(Rlt b x)}.
 
 Theorem Urysohn_lemma : forall X Tx A B a b:set,
   normal_space X Tx -> closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
@@ -9401,7 +9414,9 @@ admit.
 Qed.
 
 (** from §38 Definition: Stone-Cech compactification and universal property **) 
-Definition Stone_Cech_compactification : set -> set -> set := fun X Tx => Empty.
+Definition Stone_Cech_compactification : set -> set -> set := fun X Tx =>
+  {OrderedPair (OrderedPair Y Ty) e |
+    compact_space Y Ty /\ Hausdorff_space Y Ty /\ embedding_of X Tx Y Ty e}.
 Theorem Stone_Cech_universal_property : forall X Tx:set,
   Tychonoff_space X Tx ->
   compact_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx) /\
@@ -9517,168 +9532,336 @@ admit.
 Qed.
 
 (** from §30 Exercise 1: G_delta points in first-countable T1 **) 
-Definition ex30_1_Gdelta_points : set := Empty.
+Definition ex30_1_Gdelta_points : set := omega.
 (** from §30 Exercise 2: countable basis sub-basis selection **) 
-Definition ex30_2_basis_contains_countable : set := Empty.
+Definition ex30_2_basis_contains_countable : set := omega.
 (** from §30 Exercise 3: uncountably many limit points in countable basis space **) 
-Definition ex30_3_uncountably_many_limit_points : set := Empty.
+Definition ex30_3_uncountably_many_limit_points : set := omega.
 (** from §30 Exercise 4: compact metrizable implies second countable **) 
-Definition ex30_4_compact_metrizable_second_countable : set := Empty.
+Definition ex30_4_compact_metrizable_second_countable : set := omega.
 (** from §30 Exercise 5: metrizable countable dense or Lindelof imply second countable **) 
-Definition ex30_5_metrizable_density_Lindelof_imply_second_countable : set := Empty.
+Definition ex30_5_metrizable_density_Lindelof_imply_second_countable : set := omega.
 (** from §30 Exercise 6: R_l and ordered square not metrizable **) 
-Definition ex30_6_Sorgenfrey_and_ordered_square_not_metrizable : set := Empty.
+Definition ex30_6_Sorgenfrey_and_ordered_square_not_metrizable : set := omega.
 (** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **) 
-Definition ex30_7_SOmega_countability_axioms : set := Empty.
+Definition ex30_7_SOmega_countability_axioms : set := omega.
 (** from §30 Exercise 8: countability axioms for Romega uniform topology **) 
-Definition ex30_8_Romega_uniform_countability : set := Empty.
+Definition ex30_8_Romega_uniform_countability : set := omega.
 (** from §30 Exercise 9: closed subspace of Lindelof is Lindelof; dense subset need not be **) 
-Definition ex30_9_closed_Lindelof_and_dense_subsets : set := Empty.
+Definition ex30_9_closed_Lindelof_and_dense_subsets : set := omega.
 (** from §30 Exercise 10: product with countable dense subsets has countable dense subset **) 
-Definition ex30_10_product_countable_dense : set := Empty.
+Definition ex30_10_product_countable_dense : set := omega.
 (** from §30 Exercise 11: images of Lindelof or countable dense under continuous map **) 
-Definition ex30_11_image_preserves_Lindelof_or_dense : set := Empty.
+Definition ex30_11_image_preserves_Lindelof_or_dense : set := omega.
 (** from §30 Exercise 12: continuous open maps preserve countability axioms **) 
-Definition ex30_12_open_map_preserves_countability_axioms : set := Empty.
+Definition ex30_12_open_map_preserves_countability_axioms : set := omega.
 (** from §30 Exercise 13: disjoint open sets countable when dense countable **) 
-Definition ex30_13_disjoint_open_sets_countable : set := Empty.
+Definition ex30_13_disjoint_open_sets_countable : set := omega.
 (** from §30 Exercise 14: product of Lindelof with compact is Lindelof **) 
-Definition ex30_14_product_Lindelof_compact : set := Empty.
+Definition ex30_14_product_Lindelof_compact : set := omega.
 (** from §30 Exercise 15: C(I,R) uniform topology countable dense subset **) 
-Definition ex30_15_CI_has_countable_dense_uniform : set := Empty.
+Definition ex30_15_CI_has_countable_dense_uniform : set := omega.
 (** from §30 Exercise 16: product RI dense subsets cardinalities **) 
-Definition ex30_16_product_RI_dense_subset_cardinality : set := Empty.
+Definition ex30_16_product_RI_dense_subset_cardinality : set := omega.
 (** from §30 Exercise 17: Romega box topology countability axioms **) 
-Definition ex30_17_Romega_box_countability : set := Empty.
+Definition ex30_17_Romega_box_countability : set := omega.
 (** from §30 Exercise 18: first-countable topological group with dense/Lindelof implies countable basis **) 
-Definition ex30_18_first_countable_group_countable_basis : set := Empty.
+Definition ex30_18_first_countable_group_countable_basis : set := omega.
 
 (** from §31 Exercise 1: regular implies disjoint closures of neighborhoods **) 
-Definition ex31_1_regular_disjoint_closure_neighborhoods : set := Empty.
+Definition ex31_1_regular_disjoint_closure_neighborhoods : set := omega.
 (** from §31 Exercise 2: normal implies disjoint closures for closed sets **) 
-Definition ex31_2_normal_disjoint_closure_neighborhoods : set := Empty.
+Definition ex31_2_normal_disjoint_closure_neighborhoods : set := omega.
 (** from §31 Exercise 3: every order topology regular **) 
-Definition ex31_3_order_topology_regular : set := Empty.
+Definition ex31_3_order_topology_regular : set := omega.
 (** from §31 Exercise 4: comparing finer/coarser separation axioms **) 
-Definition ex31_4_comparison_topologies_separation : set := Empty.
+Definition ex31_4_comparison_topologies_separation : set := omega.
 (** from §31 Exercise 5: equalizer of continuous maps into Hausdorff is closed **) 
-Definition ex31_5_equalizer_closed_in_Hausdorff : set := Empty.
+Definition ex31_5_equalizer_closed_in_Hausdorff : set := omega.
 (** from §31 Exercise 6: closed continuous surjection preserves normal **) 
-Definition ex31_6_closed_map_preserves_normal : set := Empty.
+Definition ex31_6_closed_map_preserves_normal : set := omega.
 (** from §31 Exercise 7: perfect map preserves separation/countability/local compactness **) 
-Definition ex31_7_perfect_map_properties : set := Empty.
+Definition ex31_7_perfect_map_properties : set := omega.
 (** from §31 Exercise 8: orbit space of compact group action preserves properties **) 
-Definition ex31_8_orbit_space_properties : set := Empty.
+Definition ex31_8_orbit_space_properties : set := omega.
 (** from §31 Exercise 9: Sorgenfrey plane rational/irrational diagonal non-separation **) 
-Definition ex31_9_Sorgenfrey_plane_no_separation : set := Empty.
+Definition ex31_9_Sorgenfrey_plane_no_separation : set := omega.
 
 (** from §32 Exercise 1: closed subspace of normal is normal **) 
-Definition ex32_1_closed_subspace_normal : set := Empty.
+Definition ex32_1_closed_subspace_normal : set := omega.
 (** from §32 Exercise 2: factor spaces of products inherit separation **) 
-Definition ex32_2_factors_inherit_separation : set := Empty.
+Definition ex32_2_factors_inherit_separation : set := omega.
 (** from §32 Exercise 3: locally compact Hausdorff implies regular **) 
-Definition ex32_3_locally_compact_Hausdorff_regular : set := Empty.
+Definition ex32_3_locally_compact_Hausdorff_regular : set := omega.
 (** from §32 Exercise 4: regular Lindelof implies normal **) 
-Definition ex32_4_regular_Lindelof_normal : set := Empty.
+Definition ex32_4_regular_Lindelof_normal : set := omega.
 (** from §32 Exercise 5: normality questions for Romega product topologies **) 
-Definition ex32_5_Romega_normality_questions : set := Empty.
+Definition ex32_5_Romega_normality_questions : set := omega.
 (** from §32 Exercise 6: completely normal characterization via separated sets **) 
-Definition ex32_6_completely_normal_characterization : set := Empty.
+Definition ex32_6_completely_normal_characterization : set := omega.
 (** from §32 Exercise 7: completely normal examples **) 
-Definition ex32_7_completely_normal_examples : set := Empty.
+Definition ex32_7_completely_normal_examples : set := omega.
 (** from §32 Exercise 8: linear continuum normal **) 
-Definition ex32_8_linear_continuum_normal : set := Empty.
+Definition ex32_8_linear_continuum_normal : set := omega.
 (** from §32 Exercise 9: uncountable product of R not normal **) 
-Definition ex32_9_uncountable_product_not_normal : set := Empty.
+Definition ex32_9_uncountable_product_not_normal : set := omega.
+
+(** helper: G_delta subset coded via countable intersection of open sets **) 
+Definition Gdelta_in : set -> set -> set -> prop := fun X Tx A =>
+  exists Fam:set, countable Fam /\
+    (forall U :e Fam, open_in X Tx U) /\
+    Intersection_Fam Fam = A.
+
+(** helper: perfect normality predicate **) 
+Definition perfectly_normal_space : set -> set -> prop := fun X Tx =>
+  normal_space X Tx /\ (forall A:set, closed_in X Tx A -> Gdelta_in X Tx A).
+
+(** helper: completely normal predicate **) 
+Definition separated_subsets : set -> set -> set -> set -> prop := fun X Tx A B =>
+  closure_of X Tx A :/\: B = Empty /\ A :/\: closure_of X Tx B = Empty.
+
+Definition completely_normal_space : set -> set -> prop := fun X Tx =>
+  normal_space X Tx /\
+  (forall A B:set, separated_subsets X Tx A B -> exists U V:set,
+      open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
+
+(** helper: simple topological group structure **) 
+Definition topological_group : set -> set -> prop := fun G Tg =>
+  topology_on G Tg /\
+  exists mult inv e:set,
+    function_on mult (OrderedPair G G) G /\
+    function_on inv G G /\
+    e :e G /\
+    continuous_map (OrderedPair G G) (product_topology G Tg G Tg) G Tg mult /\
+    continuous_map G Tg G Tg inv.
 
 (** from §33 Exercise 1: expression for level sets in Urysohn proof **) 
-Definition ex33_1_level_sets_urysohn : set := Empty.
+Definition ex33_1_level_sets_urysohn : set :=
+  {OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair A B)) f |
+    normal_space X Tx /\ closed_in X Tx A /\ closed_in X Tx B /\ A :/\: B = Empty /\
+    function_on f X R /\ continuous_map X Tx R R_standard_topology f /\
+    (forall x:set, x :e A -> apply_fun f x = 0) /\
+    (forall x:set, x :e B -> apply_fun f x = 1)}.
 (** from §33 Exercise 2: connected normal/regular uncountable **) 
-Definition ex33_2_connected_normal_regular_uncountable : set := Empty.
+Definition ex33_2_connected_normal_regular_uncountable : set :=
+  {OrderedPair X Tx | connected_space X Tx /\ normal_space X Tx /\
+    regular_space X Tx /\ uncountable_set X}.
 (** from §33 Exercise 3: direct Urysohn proof in metric space **) 
-Definition ex33_3_urysohn_metric_direct : set := Empty.
+Definition ex33_3_urysohn_metric_direct : set :=
+  {OrderedPair (OrderedPair (OrderedPair X d) (OrderedPair A B)) f |
+    metric_on X d /\ closed_in X (metric_topology X d) A /\ closed_in X (metric_topology X d) B /\
+    A :/\: B = Empty /\
+    function_on f X R /\ continuous_map X (metric_topology X d) R R_standard_topology f /\
+    (forall x:set, x :e A -> apply_fun f x = 0) /\
+    (forall x:set, x :e B -> apply_fun f x = 1)}.
 (** from §33 Exercise 4: closed G_delta sets and vanishing functions **) 
-Definition ex33_4_closed_Gdelta_vanishing_function : set := Empty.
+Definition ex33_4_closed_Gdelta_vanishing_function : set :=
+  {OrderedPair (OrderedPair (OrderedPair X Tx) F) f |
+    normal_space X Tx /\ closed_in X Tx F /\ Gdelta_in X Tx F /\
+    function_on f X R /\ continuous_map X Tx R R_standard_topology f /\
+    (forall x:set, x :e F -> apply_fun f x = 0)}.
 (** from §33 Exercise 5: strong Urysohn lemma **) 
-Definition ex33_5_strong_urysohn : set := Empty.
+Definition ex33_5_strong_urysohn : set :=
+  {OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair A B)) f |
+    normal_space X Tx /\ closed_in X Tx A /\ closed_in X Tx B /\ A :/\: B = Empty /\
+    function_on f X (closed_interval 0 1) /\
+    continuous_map X Tx R R_standard_topology f /\
+    (forall x:set, x :e A -> apply_fun f x = 0) /\
+    (forall x:set, x :e B -> apply_fun f x = 1)}.
 (** from §33 Exercise 6: perfect normality implications **) 
-Definition ex33_6_perfect_normality : set := Empty.
+Definition ex33_6_perfect_normality : set :=
+  {OrderedPair X Tx | perfectly_normal_space X Tx}.
 (** from §33 Exercise 7: locally compact Hausdorff completely regular **) 
-Definition ex33_7_locally_compact_Hausdorff_completely_regular : set := Empty.
+Definition ex33_7_locally_compact_Hausdorff_completely_regular : set :=
+  {OrderedPair X Tx | locally_compact X Tx /\ Hausdorff_space X Tx /\ completely_regular_space X Tx}.
 (** from §33 Exercise 8: continuous separation when A compact **) 
-Definition ex33_8_compact_subset_continuous_separation : set := Empty.
+Definition ex33_8_compact_subset_continuous_separation : set :=
+  {OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair A B)) f |
+    normal_space X Tx /\ compact_space A (subspace_topology X Tx A) /\
+    closed_in X Tx B /\ A :/\: B = Empty /\
+    function_on f X R /\ continuous_map X Tx R R_standard_topology f /\
+    (forall x:set, x :e A -> apply_fun f x = 0) /\
+    (forall x:set, x :e B -> apply_fun f x = 1)}.
 (** from §33 Exercise 9: Romega box topology completely regular **) 
-Definition ex33_9_Romega_box_completely_regular : set := Empty.
+Definition ex33_9_Romega_box_completely_regular : set :=
+  {OrderedPair X Tx | X = product_space omega (const_family omega R) /\
+    Tx = box_topology omega (const_family omega R) /\ completely_regular_space X Tx}.
 (** from §33 Exercise 10: topological group completely regular **) 
-Definition ex33_10_topological_group_completely_regular : set := Empty.
+Definition ex33_10_topological_group_completely_regular : set :=
+  {OrderedPair G Tg | topological_group G Tg /\ completely_regular_space G Tg}.
 (** from §33 Exercise 11: regular not completely regular example **) 
-Definition ex33_11_regular_not_completely_regular : set := Empty.
+Definition ex33_11_regular_not_completely_regular : set :=
+  {OrderedPair X Tx | regular_space X Tx /\ ~ completely_regular_space X Tx}.
+
+(** helper: local metrizability **) 
+Definition locally_metrizable_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall x:set, x :e X ->
+    exists N:set, N :e Tx /\ x :e N /\
+      exists d:set, metric_on N d /\ subspace_topology X Tx N = metric_topology N d.
+
+(** helper: one-point compactification schema **) 
+Definition one_point_compactification : set -> set -> set -> set -> prop := fun X Tx Y Ty =>
+  compact_space Y Ty /\ Hausdorff_space Y Ty /\ X c= Y /\
+  exists p:set, p :e Y /\ ~ p :e X /\
+    subspace_topology Y Ty X = Tx /\
+    (forall y:set, y :e Y -> y :e X \/ y = p).
+
+(** helper: retraction data **) 
+Definition retraction_of : set -> set -> set -> prop := fun X Tx A =>
+  A c= X /\ exists r:set,
+    function_on r X X /\ continuous_map X Tx X Tx r /\
+    (forall x:set, x :e X -> apply_fun r x :e A) /\
+    (forall x:set, x :e A -> apply_fun r x = x).
+
+Definition image_of_map : set -> set -> set -> set -> set -> set :=
+  fun X Tx Y Ty f => {apply_fun f x|x :e X}.
+
+Definition absolute_retract : set -> set -> prop := fun X Tx =>
+  Hausdorff_space X Tx /\
+  forall Y Ty, normal_space Y Ty ->
+    exists e:set, embedding_of X Tx Y Ty e /\
+      exists r:set, retraction_of Y Ty (image_of_map X Tx Y Ty e).
+
+Definition coherent_topology : set -> set -> set -> set -> prop := fun X Tx Y Ty =>
+  topology_on X Tx /\ topology_on Y Ty /\ X c= Y /\ subspace_topology Y Ty X = Tx.
+
+Definition compact_spaces_family : set -> set -> prop := fun I Xi =>
+  forall i:set, i :e I -> compact_space (product_component Xi i) (product_component_topology Xi i).
+
+Definition surjective_map : set -> set -> set -> prop := fun X Y f =>
+  function_on f X Y /\ forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y.
 
 (** from §34 Exercise 1: Hausdorff with countable basis need not be metrizable **) 
-Definition ex34_1_Hausdorff_countable_basis_not_metrizable_example : set := Empty.
+Definition ex34_1_Hausdorff_countable_basis_not_metrizable_example : set :=
+  {OrderedPair X Tx | Hausdorff_space X Tx /\ second_countable_space X Tx /\ ~ metrizable X Tx}.
 (** from §34 Exercise 2: completely normal etc. not metrizable example **) 
-Definition ex34_2_completely_normal_not_metrizable_example : set := Empty.
+Definition ex34_2_completely_normal_not_metrizable_example : set :=
+  {OrderedPair X Tx | completely_normal_space X Tx /\ ~ metrizable X Tx}.
 (** from §34 Exercise 3: compact Hausdorff metrizable iff countable basis **) 
-Definition ex34_3_compact_Hausdorff_metrizable_iff_second_countable : set := Empty.
+Definition ex34_3_compact_Hausdorff_metrizable_iff_second_countable : set :=
+  {OrderedPair X Tx | compact_space X Tx /\ Hausdorff_space X Tx /\
+    (metrizable X Tx <-> second_countable_space X Tx)}.
 (** from §34 Exercise 4: locally compact Hausdorff and countable basis vs metrizable **) 
-Definition ex34_4_locally_compact_Hausdorff_metrizable_questions : set := Empty.
+Definition ex34_4_locally_compact_Hausdorff_metrizable_questions : set :=
+  {OrderedPair X Tx | locally_compact X Tx /\ Hausdorff_space X Tx /\
+    (second_countable_space X Tx -> metrizable X Tx)}.
 (** from §34 Exercise 5: one-point compactification metrizable vs base **) 
-Definition ex34_5_one_point_compactification_metrizable_questions : set := Empty.
+Definition ex34_5_one_point_compactification_metrizable_questions : set :=
+  {OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty)) p |
+    one_point_compactification X Tx Y Ty /\ p :e Y /\ ~ p :e X /\
+    (metrizable X Tx <-> metrizable Y Ty)}.
 (** from §34 Exercise 6: details of imbedding theorem proof **) 
-Definition ex34_6_check_imbedding_proof : set := Empty.
+Definition ex34_6_check_imbedding_proof : set :=
+  {OrderedPair (OrderedPair X Tx) f |
+    completely_regular_space X Tx /\ Hausdorff_space X Tx /\
+    embedding_of X Tx (power_real omega) (product_topology_full omega (const_family omega R)) f}.
 (** from §34 Exercise 7: locally metrizable compact Hausdorff implies metrizable **) 
-Definition ex34_7_locally_metrizable_compact_Hausdorff_metrizable : set := Empty.
+Definition ex34_7_locally_metrizable_compact_Hausdorff_metrizable : set :=
+  {OrderedPair X Tx | locally_metrizable_space X Tx /\ compact_space X Tx /\ Hausdorff_space X Tx /\
+    metrizable X Tx}.
 (** from §34 Exercise 8: regular Lindelof locally metrizable implies metrizable **) 
-Definition ex34_8_regular_Lindelof_locally_metrizable_metrizable : set := Empty.
+Definition ex34_8_regular_Lindelof_locally_metrizable_metrizable : set :=
+  {OrderedPair X Tx | (regular_space X Tx /\ Lindelof_space X Tx /\ locally_metrizable_space X Tx ->
+    metrizable X Tx)}.
 (** from §34 Exercise 9: compact Hausdorff union of two metrizable closed sets is metrizable **) 
-Definition ex34_9_compact_union_two_metrizable_closed_metrizable : set := Empty.
+Definition ex34_9_compact_union_two_metrizable_closed_metrizable : set :=
+  {OrderedPair (OrderedPair X Tx) (OrderedPair A B) |
+    compact_space X Tx /\ Hausdorff_space X Tx /\
+    closed_in X Tx A /\ closed_in X Tx B /\ Union (UPair A B) = X /\
+    metrizable A (subspace_topology X Tx A) /\ metrizable B (subspace_topology X Tx B) /\
+    metrizable X Tx}.
 
 (** from §35 Exercise 1: Tietze implies Urysohn lemma **) 
-Definition ex35_1_Tietze_implies_Urysohn : set := Empty.
+Definition ex35_1_Tietze_implies_Urysohn : set :=
+  {OrderedPair X Tx | normal_space X Tx /\
+    (forall A B:set, closed_in X Tx A /\ closed_in X Tx B /\ A :/\: B = Empty ->
+       exists f:set, continuous_map X Tx R R_standard_topology f /\
+         (forall x:set, x :e A -> apply_fun f x = 0) /\
+         (forall x:set, x :e B -> apply_fun f x = 1))}.
 (** from §35 Exercise 2: interval partition parameter in Tietze proof **) 
-Definition ex35_2_interval_partition_parameter : set := Empty.
+Definition ex35_2_interval_partition_parameter : set :=
+  {OrderedPair X Tx | normal_space X Tx}.
 (** from §35 Exercise 3: boundedness equivalences in metrizable spaces **) 
-Definition ex35_3_boundedness_equivalences_metrizable : set := Empty.
+Definition ex35_3_boundedness_equivalences_metrizable : set :=
+  {OrderedPair (OrderedPair X Tx) d | metric_on X d /\ metric_topology X d = Tx}.
 (** from §35 Exercise 4: retract properties **) 
-Definition ex35_4_retract_properties : set := Empty.
+Definition ex35_4_retract_properties : set :=
+  {OrderedPair (OrderedPair X Tx) A | retraction_of X Tx A}.
 (** from §35 Exercise 5: universal extension property and retracts **) 
-Definition ex35_5_universal_extension_retracts : set := Empty.
+Definition ex35_5_universal_extension_retracts : set :=
+  {OrderedPair (OrderedPair X Tx) A |
+    normal_space X Tx /\ retraction_of X Tx A /\
+    forall Y Ty f:set, continuous_map A (subspace_topology X Tx A) Y Ty f ->
+      exists g:set, continuous_map X Tx Y Ty g /\
+        forall x:set, x :e A -> apply_fun g x = apply_fun f x}.
 (** from §35 Exercise 6: absolute retract equivalence **) 
-Definition ex35_6_absolute_retract_universal_extension : set := Empty.
+Definition ex35_6_absolute_retract_universal_extension : set :=
+  {OrderedPair X Tx | absolute_retract X Tx}.
 (** from §35 Exercise 7: retract examples spiral/knotted axis **) 
-Definition ex35_7_retract_examples : set := Empty.
+Definition ex35_7_retract_examples : set :=
+  {OrderedPair (OrderedPair X Tx) A | retraction_of X Tx A}.
 (** from §35 Exercise 8: absolute retract iff universal extension **) 
-Definition ex35_8_absolute_retract_equivalence : set := Empty.
+Definition ex35_8_absolute_retract_equivalence : set :=
+  {OrderedPair X Tx | absolute_retract X Tx}.
 (** from §35 Exercise 9: coherent topology preserves normality **) 
-Definition ex35_9_coherent_topology_normal : set := Empty.
+Definition ex35_9_coherent_topology_normal : set :=
+  {OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) |
+    (topology_on X Tx /\ topology_on Y Ty /\ coherent_topology X Tx Y Ty -> normal_space Y Ty)}.
 
 (** from §36 Exercises: manifolds and partitions of unity (placeholder) **) 
-Definition ex36_manifold_embedding_exercises : set := Empty.
+Definition ex36_manifold_embedding_exercises : set :=
+  {OrderedPair (OrderedPair M TM) f | m_manifold M TM ->
+    exists n:set, embedding_of M TM (euclidean_space n) (euclidean_topology n) f}.
 (** from §37 Exercises: Tychonoff theorem applications (placeholder) **) 
-Definition ex37_tychonoff_exercises : set := Empty.
+Definition ex37_tychonoff_exercises : set :=
+  {OrderedPair I Xi | compact_spaces_family I Xi /\
+    compact_space (product_space I Xi) (product_topology_full I Xi)}.
 (** from §38 Exercises: Stone-Cech compactification (placeholder) **) 
-Definition ex38_stone_cech_exercises : set := Empty.
+Definition ex38_stone_cech_exercises : set :=
+  {OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) |
+    completely_regular_space X Tx /\ compact_space Y Ty /\ Hausdorff_space Y Ty /\
+    exists e:set, embedding_of X Tx Y Ty e}.
 (** from §39 Exercises: local finiteness (placeholder) **) 
-Definition ex39_local_finiteness_exercises : set := Empty.
+Definition ex39_local_finiteness_exercises : set :=
+  {OrderedPair (OrderedPair X Tx) U | locally_finite_family X Tx U}.
 (** from §40 Exercises: Nagata-Smirnov metrization (placeholder) **) 
-Definition ex40_nagata_smirnov_exercises : set := Empty.
+Definition ex40_nagata_smirnov_exercises : set :=
+  {OrderedPair (OrderedPair X Tx) B |
+    (regular_space X Tx /\ basis_on X B /\ locally_finite_family X Tx B -> metrizable X Tx)}.
 (** from §41 Exercises: paracompactness (placeholder) **) 
-Definition ex41_paracompactness_exercises : set := Empty.
+Definition ex41_paracompactness_exercises : set :=
+  {OrderedPair (OrderedPair X Tx) U | paracompact_space X Tx /\ open_cover X Tx U}.
 (** from §42 Exercises: Smirnov metrization (placeholder) **) 
-Definition ex42_smirnov_exercises : set := Empty.
+Definition ex42_smirnov_exercises : set :=
+  {OrderedPair (OrderedPair X Tx) B |
+    (regular_space X Tx /\ basis_on X B /\ locally_finite_family X Tx B -> metrizable X Tx)}.
 (** from §43 Exercises: complete metric spaces (placeholder) **) 
-Definition ex43_complete_metric_exercises : set := Empty.
+Definition ex43_complete_metric_exercises : set :=
+  {OrderedPair (OrderedPair X d) Tx | metric_on X d /\ Tx = metric_topology X d /\ complete_metric_space X d}.
 (** from §44 Exercises: space-filling curve (placeholder) **) 
-Definition ex44_space_filling_exercises : set := Empty.
+Definition ex44_space_filling_exercises : set :=
+  {f:set | continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f /\
+    surjective_map unit_interval unit_square f}.
 (** from §45 Exercises: compactness in metric spaces (placeholder) **) 
-Definition ex45_compact_metric_exercises : set := Empty.
+Definition ex45_compact_metric_exercises : set :=
+  {OrderedPair (OrderedPair X d) Tx | metric_on X d /\ Tx = metric_topology X d /\
+    compact_space X Tx}.
 (** from §46 Exercises: pointwise/compact convergence (placeholder) **) 
-Definition ex46_convergence_exercises : set := Empty.
+Definition ex46_convergence_exercises : set :=
+  {OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) |
+    topology_on X Tx /\ topology_on Y Ty /\ True}.
 (** from §47 Exercises: Ascoli theorem (placeholder) **) 
-Definition ex47_ascoli_exercises : set := Empty.
+Definition ex47_ascoli_exercises : set :=
+  {OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) |
+    compact_space X Tx /\ Hausdorff_space Y Ty}.
 (** from §48 Exercises: Baire spaces (placeholder) **) 
-Definition ex48_baire_exercises : set := Empty.
+Definition ex48_baire_exercises : set :=
+  {Tx:set | Baire_space Tx}.
 (** from §49 Exercises: nowhere-differentiable function (placeholder) **) 
-Definition ex49_nowhere_differentiable_exercises : set := Empty.
+Definition ex49_nowhere_differentiable_exercises : set :=
+  {f:set | continuous_map R R_standard_topology R R_standard_topology f /\ nowhere_differentiable f}.
 (** from §50 Exercises: dimension theory introduction (placeholder) **) 
-Definition ex50_dimension_exercises : set := Empty.
+Definition ex50_dimension_exercises : set :=
+  {OrderedPair (OrderedPair X Tx) n |
+    topology_on X Tx /\ ordinal n}.
