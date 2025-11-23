@@ -9029,6 +9029,7 @@ Definition separating_family_of_functions : set -> set -> set -> set -> prop := 
 Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f => True.
 Definition power_real : set -> set := fun J => Empty.
 Definition unit_interval_power : set -> set := fun J => Empty.
+Definition apply_fun : set -> set -> set := fun f x => Empty.
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 Theorem Sorgenfrey_plane_not_Lindelof :
@@ -9189,7 +9190,7 @@ Theorem Tietze_extension_interval : forall X Tx A a b f:set,
   normal_space X Tx -> closed_in X Tx A ->
   continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f ->
   exists g:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) g /\
-    (forall x:set, x :e A -> g @ x = f @ x).
+    (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
 admit.
 Qed.
 
@@ -9197,6 +9198,6 @@ Theorem Tietze_extension_real : forall X Tx A f:set,
   normal_space X Tx -> closed_in X Tx A ->
   continuous_map A (subspace_topology X Tx A) R R_standard_topology f ->
   exists g:set, continuous_map X Tx R R_standard_topology g /\
-    (forall x:set, x :e A -> g @ x = f @ x).
+    (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
 admit.
 Qed.
