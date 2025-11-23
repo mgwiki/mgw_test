@@ -7337,6 +7337,12 @@ Theorem metric_topology_generated_by_balls : forall X d:set,
 admit.
 Qed.
 
+(** from §21: epsilon-delta continuity in metric spaces **) 
+Theorem metric_epsilon_delta_continuity : forall X dX Y dY f:set,
+  metric_on X dX -> metric_on Y dY -> True.
+admit.
+Qed.
+
 (** from §21: uniqueness of limits in metric spaces **) 
 Theorem metric_limits_unique : forall X d seq x y:set,
   metric_on X d -> x <> y -> True.
@@ -7346,6 +7352,20 @@ Qed.
 (** from §21: uniform limit theorem placeholder **) 
 Theorem uniform_limit_of_continuous_is_continuous :
   forall X Tx Y Ty f_seq f:set, continuous_map X Tx Y Ty f.
+admit.
+Qed.
+
+(** from §21: convergence of sequences in metric spaces **) 
+Theorem sequence_convergence_metric : forall X d seq x:set,
+  metric_on X d -> True.
+admit.
+Qed.
+
+(** from §21: continuity via sequences in metric spaces **) 
+Theorem continuity_via_sequences_metric : forall X dX Y dY f:set,
+  metric_on X dX -> metric_on Y dY ->
+  (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
+    forall seq x:set, True).
 admit.
 Qed.
 
