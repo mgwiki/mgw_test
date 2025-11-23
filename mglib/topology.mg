@@ -7910,14 +7910,15 @@ Theorem ex13_2_compare_nine_topologies :
   topology_on abc_set top_abc_9 /\
   exists finer_pairs:set,
     finer_pairs =
-      {OrderedPair T1 T2 :e Power (Power abc_set)|
-         (T1 = top_abc_1 \/ T1 = top_abc_2 \/ T1 = top_abc_3 \/
-          T1 = top_abc_4 \/ T1 = top_abc_5 \/ T1 = top_abc_6 \/
-          T1 = top_abc_7 \/ T1 = top_abc_8 \/ T1 = top_abc_9) /\
-         (T2 = top_abc_1 \/ T2 = top_abc_2 \/ T2 = top_abc_3 \/
-          T2 = top_abc_4 \/ T2 = top_abc_5 \/ T2 = top_abc_6 \/
-          T2 = top_abc_7 \/ T2 = top_abc_8 \/ T2 = top_abc_9) /\
-         T1 c= T2}.
+      {p :e Power (Power (Power abc_set))|
+         exists T1 T2:set, p = OrderedPair T1 T2 /\
+           (T1 = top_abc_1 \/ T1 = top_abc_2 \/ T1 = top_abc_3 \/
+            T1 = top_abc_4 \/ T1 = top_abc_5 \/ T1 = top_abc_6 \/
+            T1 = top_abc_7 \/ T1 = top_abc_8 \/ T1 = top_abc_9) /\
+           (T2 = top_abc_1 \/ T2 = top_abc_2 \/ T2 = top_abc_3 \/
+            T2 = top_abc_4 \/ T2 = top_abc_5 \/ T2 = top_abc_6 \/
+            T2 = top_abc_7 \/ T2 = top_abc_8 \/ T2 = top_abc_9) /\
+           T1 c= T2}.
 admit.
 Qed.
 
