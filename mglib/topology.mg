@@ -8734,13 +8734,14 @@ admit.
 Qed.
 
 (** from §26 Definition: compact space **) 
-Definition compact_space : set -> set -> prop := fun X Tx => topology_on X Tx.
+Definition open_cover_of : set -> set -> set -> prop := fun X Tx Fam =>
+  topology_on X Tx /\ Fam c= Power X /\ X c= Union Fam /\ (forall U:set, U :e Fam -> U :e Tx).
 
-(** from §26 Definition: open cover **) 
-Definition open_cover_of : set -> set -> set -> prop := fun X Tx Fam => True.
+Definition has_finite_subcover : set -> set -> set -> prop := fun X Tx Fam =>
+  exists G:set, G c= Fam /\ finite G /\ X c= Union G.
 
-(** from §26 Definition: finite subcover **) 
-Definition has_finite_subcover : set -> set -> set -> prop := fun X Tx Fam => True.
+Definition compact_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\ forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
 
 (** from §26: open cover characterization **) 
 Theorem Heine_Borel_subcover : forall X Tx Fam:set,
