@@ -7539,7 +7539,7 @@ claim HUGen : U :e generated_topology X B.
   claim HUpropU : forall x :e U, exists b :e B, x :e b /\ b c= U.
   { let x. assume HxU.
     claim HxUnion : x :e Union Fam.
-    { rewrite <- HUnionEq.
+    { rewrite HUnionEq.
       exact HxU. }
     apply UnionE_impred Fam x HxUnion.
     let b. assume Hxb HbFam.
