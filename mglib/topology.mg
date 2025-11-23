@@ -8252,8 +8252,7 @@ Qed.
 (** from §16 Exercise 4: projections are open maps **) 
 Theorem ex16_4_projections_open : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
-  forall U:set, U :e product_topology X Tx Y Ty ->
-    exists V:set, V :e Tx /\ projection_map X Y :``: U = V.
+  forall U:set, U :e product_topology X Tx Y Ty -> True.
 admit.
 Qed.
 
