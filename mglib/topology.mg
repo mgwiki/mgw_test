@@ -7133,14 +7133,16 @@ claim HUinPow : U :e Power X.
 { exact (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU). }
 claim HUdata : finite (X :\: U) \/ U = Empty.
 { exact (SepE2 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU). }
-apply SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) U HUinPow.
-apply HUdata (countable (X :\: U) \/ U = Empty).
-- assume HUfin : finite (X :\: U).
-  apply orIL.
-  exact (finite_countable (X :\: U) HUfin).
-- assume HUemp : U = Empty.
-  apply orIR.
-  exact HUemp.
+claim HUpred : countable (X :\: U) \/ U = Empty.
+{ apply HUdata (countable (X :\: U) \/ U = Empty).
+  - assume HUfin : finite (X :\: U).
+    apply orIL.
+    exact (finite_countable (X :\: U) HUfin).
+  - assume HUemp : U = Empty.
+    apply orIR.
+    exact HUemp.
+}
+exact (SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) U HUinPow HUpred).
 Qed.
 
 (** from §12 examples: finite complement coarser than discrete **)
