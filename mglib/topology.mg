@@ -7951,6 +7951,8 @@ Qed.
 (** from §13 Exercise 6: incomparability of two real line topologies **) 
 Definition R : set := Power (Power omega).
 
+Definition rational_numbers : set := omega.
+
 Definition Rlt : set -> set -> prop := fun a b =>
   a :e R /\ b :e R /\ a <> b.
 
@@ -8998,7 +9000,6 @@ Definition open_cover : set -> set -> set -> prop :=
   fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
 Definition Lindelof_space : set -> set -> prop :=
   fun X Tx => topology_on X Tx /\ forall U:set, open_cover X Tx U -> exists V:set, countable_subcollection V U /\ covers X V.
-Definition rational_numbers : set := omega.
 Definition Sorgenfrey_line : set := R.
 Definition Sorgenfrey_topology : set := R_lower_limit_topology.
 
