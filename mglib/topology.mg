@@ -7951,6 +7951,9 @@ Qed.
 (** from §13 Exercise 6: incomparability of two real line topologies **) 
 Definition R : set := Power (Power omega).
 
+Definition Rlt : set -> set -> prop := fun a b =>
+  a :e R /\ b :e R /\ a <> b.
+
 Definition open_interval : set -> set -> set := fun a b => {x :e R|Rlt a x /\ Rlt x b}.
 Definition halfopen_interval_left : set -> set -> set := fun a b => {x :e R|Rlt a x /\ ~(Rlt b x)}.
 
@@ -8510,8 +8513,6 @@ admit.
 Qed.
 
 (** from §20 Definition: metric and metric topology **) 
-Definition Rlt : set -> set -> prop := fun a b => a :e R /\ b :e R /\ a <> b.
-
 Definition metric_on : set -> set -> prop := fun X d =>
   (forall x y:set, x :e X -> y :e X -> d x y :e R) /\
   (forall x y:set, x :e X -> y :e X -> d x y = d y x) /\
