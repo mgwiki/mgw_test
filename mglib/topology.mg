@@ -7268,7 +7268,7 @@ Qed.
 (** from §19: product topology is coarsest making projections continuous **) 
 Theorem product_topology_universal : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
-  exists! Tprod:set, topology_on (OrderedPair X Y) Tprod /\
+  exists Tprod:set, topology_on (OrderedPair X Y) Tprod /\
     continuous_map (OrderedPair X Y) Tprod X Tx (projection_map X Y) /\
     continuous_map (OrderedPair X Y) Tprod Y Ty (projection_map Y X).
 admit.
