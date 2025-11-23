@@ -9275,7 +9275,7 @@ Theorem Smirnov_metrization : forall X Tx:set,
 admit.
 Qed.
 
-(* from section 48 Definition: Baire space, placed early for dependencies *) 
+(** from section 48 Definition: Baire space, placed early for dependencies **) 
 Definition Baire_space : set -> prop := fun X => True.
 
 (** from §43 Definition: complete metric space **) 
