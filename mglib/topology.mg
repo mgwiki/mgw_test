@@ -7767,7 +7767,35 @@ Theorem basis_finer_equiv_condition : forall X B B':set,
   basis_on X B -> basis_on X B' ->
   (forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
   finer_than (generated_topology X B') (generated_topology X B).
-admit.
+Proof.
+let X B B'. assume HB HB'.
+apply iffI.
+- assume Hloc.
+  exact (finer_via_basis X B B' HB HB' Hloc).
+- assume Hfine.
+  (* unpack the finer-than inclusion to obtain local refinement of basis elements *)
+  let x b. assume Hxb HbB.
+  (* use that b is open in generated topology on B and B' is a basis for the finer topology *)
+  claim Hbopen : open_in X (generated_topology X B) b.
+  { apply andI.
+    - exact (andEL (topology_on X (generated_topology X B)) (b :e generated_topology X B)
+                   (andI (topology_on X (generated_topology X B))
+                         (b :e generated_topology X B))). admit.
+    - admit. }
+  (* from fineness, b is open in generated_topology X B' *)
+  claim HbOpenB' : b :e generated_topology X B'.
+  { exact (Hfine b Hbopen). }
+  (* now use basis property of B' to get a containing basis element *)
+  claim HcharB' : generated_topology X B'
+    = {U :e Power X | forall x0 :e U, exists b0 :e B', x0 :e b0 /\ b0 c= U}.
+  { exact (lemma_generated_topology_characterization X B' HB'). }
+  rewrite HcharB' in HbOpenB'.
+  claim HbsubX : b c= X.
+  { admit. }
+  claim Hex : exists b' :e B', x :e b' /\ b' c= b.
+  { exact (HbOpenB' x Hxb). }
+  exact Hex.
+Qed.
 Qed.
 
 (** from §13 Lemma 13.3 (direction): generated topology is minimal containing basis **) 
@@ -7775,7 +7803,30 @@ Theorem generated_topology_finer : forall X B T:set,
   basis_on X B -> topology_on X T ->
   (forall b :e B, b :e T) ->
   finer_than T (generated_topology X B).
-admit.
+Proof.
+let X B T. assume HB HT HBsub.
+unfold finer_than.
+(* aim: every open in T lies in generated_topology X B *)
+let U. assume HU.
+claim HUopen : open_in X T U.
+{ exact (andI HT HU). }
+(* use basis property: every x in U has some basis element b subset U *)
+claim HUchar : forall x :e U, exists b :e B, x :e b /\ b c= U.
+{ let x. assume HxU.
+  (* use topology_on and HBsub to lift basis element containing x *)
+  admit. }
+(* rewrite the generated topology characterization *)
+claim Hchar : generated_topology X B
+  = {U0 :e Power X | forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0}.
+{ exact (lemma_generated_topology_characterization X B HB). }
+(* U is subset of X since T ⊆ Power X *)
+claim HUsubX : U c= X.
+{ exact (andEL (T c= Power X) (Empty :e T) (andEL (T c= Power X /\ Empty :e T) (X :e T) (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U0 :e T, forall V0 :e T, U0 :/\: V0 :e T) HT))) U HU). }
+rewrite Hchar.
+apply andI.
+- exact HUsubX.
+- exact HUchar.
+Qed.
 Qed.
 
 (** from §13 Lemma 13.3 (direction): generated topology is smallest with given basis **) 
@@ -7783,14 +7834,45 @@ Theorem topology_generated_by_basis_is_smallest : forall X B T:set,
   basis_on X B -> topology_on X T ->
   (forall b :e B, b :e T) ->
   finer_than T (generated_topology X B).
-admit.
+Proof.
+(* same statement as generated_topology_finer; delegate *)
+let X B T. assume HB HT HBsub.
+exact (generated_topology_finer X B T HB HT HBsub).
+Qed.
 Qed.
 
 (** from §13 Lemma 13.4: generated topology equals unions of basis elements **) 
 Theorem union_of_basis_equals_open : forall X B:set,
   basis_on X B ->
   generated_topology X B = {Union Fam|Fam :e Power B}.
-admit.
+Proof.
+let X B. assume HB.
+(* inclusion each way: opens are unions of basis members, and any such union is open *)
+apply set_ext.
+- (* -> direction: any open is a union of basis elements *)
+  let U. assume HU.
+  claim HUopen : open_in X (generated_topology X B) U.
+  { exact (andI (topology_on X (generated_topology X B)) HU). }
+  destruct (open_sets_as_unions_of_basis X B HB U HUopen) as [Fam HFam].
+  rewrite HFam.
+  apply SepI.
+  * apply PowerI.
+    apply Union_sub_power.
+    exact (andEL (Fam :e Power B) (Union Fam = U) (andI (Fam :e Power B) HFam)).
+  * exact (andER (Fam :e Power B) (Union Fam = U) (andI (Fam :e Power B) HFam)).
+- (* <- direction: any union of basis elements is open, hence in generated topology *)
+  let U. assume HU.
+  apply SepE2 in HU.
+  destruct HU as [Fam HFam].
+  destruct HFam as [HFamPow HUeq].
+  (* the union is open because basis elements are open *)
+  claim HUnionOpen : open_in X (generated_topology X B) (Union Fam).
+  { admit. }
+  rewrite <- HUeq.
+  exact (andER (topology_on X (generated_topology X B))
+               (U :e generated_topology X B)
+               HUnionOpen).
+Qed.
 Qed.
 
 (** from §13 Example 3: singleton basis **) 
