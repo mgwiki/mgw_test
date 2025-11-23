@@ -8459,7 +8459,8 @@ Theorem ex17_4_open_minus_closed_and_closed_minus_open : forall X Tx U A:set,
 admit.
 Qed.
 
-Theorem ex17_5_closure_of_interval_in_order_topology : forall X:set, True.
+Theorem ex17_5_closure_of_interval_in_order_topology : forall X:set,
+  closure_of X (order_topology X) (open_interval 0 1) = open_interval 0 1.
 admit.
 Qed.
 
@@ -8470,27 +8471,39 @@ Theorem ex17_6_closure_properties : forall X Tx A:set,
 admit.
 Qed.
 
-Theorem ex17_7_counterexample_union_closure : True.
+Theorem ex17_7_counterexample_union_closure : forall X Tx A B:set,
+  topology_on X Tx ->
+  closed_in X Tx (A :\/: B) ->
+  ~ (closed_in X Tx A /\ closed_in X Tx B).
 admit.
 Qed.
 
-Theorem ex17_8_closure_intersection_questions : True.
+Theorem ex17_8_closure_intersection_questions : forall X Tx A B:set,
+  topology_on X Tx ->
+  closure_of X Tx (A :/\: B) c= closure_of X Tx A :/\: closure_of X Tx B.
 admit.
 Qed.
 
-Theorem ex17_9_closure_of_product_subset : forall X Y:set, True.
+Theorem ex17_9_closure_of_product_subset : forall X Y Tx Ty A B:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  closure_of (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B) =
+    OrderedPair (closure_of X Tx A) (closure_of Y Ty B).
 admit.
 Qed.
 
-Theorem ex17_10_order_topology_Hausdorff : forall X:set, True.
+Theorem ex17_10_order_topology_Hausdorff : forall X:set,
+  Hausdorff_space X (order_topology X).
 admit.
 Qed.
 
-Theorem ex17_11_product_Hausdorff : forall X Tx Y Ty:set, True.
+Theorem ex17_11_product_Hausdorff : forall X Tx Y Ty:set,
+  Hausdorff_space X Tx -> Hausdorff_space Y Ty ->
+  Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
 admit.
 Qed.
 
-Theorem ex17_12_subspace_Hausdorff : forall X Tx Y:set, True.
+Theorem ex17_12_subspace_Hausdorff : forall X Tx Y:set,
+  Hausdorff_space X Tx -> Hausdorff_space Y (subspace_topology X Tx Y).
 admit.
 Qed.
 
