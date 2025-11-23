@@ -6777,7 +6777,7 @@ Qed.
 Theorem finite_complement_topology_contains_empty : forall X:set,
   Empty :e finite_complement_topology X.
 let X.
-exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) Empty (Empty_In_Power X) (orIR (finite (X :\: Empty)) (Empty = Empty) eq_refl)).
+exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) Empty (Empty_In_Power X) (orIR (finite (X :\: Empty)) (Empty = Empty) (fun P H => H))).
 Qed.
 
 (** from §12 Example 3: X is open in finite complement topology **)
@@ -6800,7 +6800,7 @@ Qed.
 Theorem countable_complement_topology_contains_empty : forall X:set,
   Empty :e countable_complement_topology X.
 let X.
-exact (SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) Empty (Empty_In_Power X) (orIR (countable (X :\: Empty)) (Empty = Empty) eq_refl)).
+exact (SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) Empty (Empty_In_Power X) (orIR (countable (X :\: Empty)) (Empty = Empty) (fun P H => H))).
 Qed.
 
 (** from §12 Example 4: X is open in countable complement topology **) 
