@@ -9170,10 +9170,10 @@ admit.
 Qed.
 
 (** from §34 Theorem 34.2: Imbedding via separating family of functions **) 
-Theorem embedding_via_functions : forall X Tx F J:set,
+Theorem embedding_via_functions : forall X Tx:set,
   topology_on X Tx -> one_point_sets_closed X Tx ->
-  separating_family_of_functions X Tx F J ->
-  exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_family J R)) Fmap.
+  forall F J:set, separating_family_of_functions X Tx F J ->
+    exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_family J R)) Fmap.
 admit.
 Qed.
 
