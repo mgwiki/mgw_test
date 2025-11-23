@@ -7889,17 +7889,17 @@ Qed.
 Definition a_elt : set := Empty.
 Definition b_elt : set := {Empty}.
 Definition c_elt : set := {{Empty}}.
-Definition abc_set : set := {a_elt|True} :\/: {b_elt|True} :\/: {c_elt|True}.
+Definition abc_set : set := UPair a_elt (UPair b_elt c_elt).
 
-Definition top_abc_1 : set := {Empty, abc_set}.
+Definition top_abc_1 : set := UPair Empty abc_set.
 Definition top_abc_2 : set := Power abc_set.
-Definition top_abc_3 : set := {Empty, {a_elt}, abc_set}.
-Definition top_abc_4 : set := {Empty, {b_elt}, abc_set}.
-Definition top_abc_5 : set := {Empty, {c_elt}, abc_set}.
-Definition top_abc_6 : set := {Empty, {a_elt, b_elt}, abc_set}.
-Definition top_abc_7 : set := {Empty, {a_elt, c_elt}, abc_set}.
-Definition top_abc_8 : set := {Empty, {b_elt, c_elt}, abc_set}.
-Definition top_abc_9 : set := {Empty, {a_elt}, {a_elt, b_elt}, abc_set}.
+Definition top_abc_3 : set := UPair Empty (UPair {a_elt} abc_set).
+Definition top_abc_4 : set := UPair Empty (UPair {b_elt} abc_set).
+Definition top_abc_5 : set := UPair Empty (UPair {c_elt} abc_set).
+Definition top_abc_6 : set := UPair Empty (UPair (UPair a_elt b_elt) abc_set).
+Definition top_abc_7 : set := UPair Empty (UPair (UPair a_elt c_elt) abc_set).
+Definition top_abc_8 : set := UPair Empty (UPair (UPair b_elt c_elt) abc_set).
+Definition top_abc_9 : set := UPair Empty (UPair {a_elt} (UPair (UPair a_elt b_elt) abc_set)).
 
 Theorem ex13_2_compare_nine_topologies :
   topology_on abc_set top_abc_1 /\ topology_on abc_set top_abc_2 /\
