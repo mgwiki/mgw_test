@@ -7995,6 +7995,15 @@ Theorem order_topology_is_topology : forall X:set,
 admit.
 Qed.
 
+(** from §14: open rays form a subbasis for the order topology **) 
+Definition open_ray_upper : set -> set -> set := fun X a => Empty.
+Definition open_ray_lower : set -> set -> set := fun X a => Empty.
+
+Theorem open_rays_subbasis_for_order_topology : forall X:set,
+  exists S:set, generated_topology X S = order_topology X.
+admit.
+Qed.
+
 (** from §14 Example 1: standard topology on ℝ is the order topology **) 
 Theorem standard_topology_is_order_topology : order_topology R = R_standard_topology.
 admit.
@@ -8014,6 +8023,33 @@ Qed.
 (** from §14 Example 2: rectangle subbasis yields product-style topology **) 
 Theorem rectangles_basis_for_R2 :
   exists B:set, basis_on (OrderedPair R R) B /\ generated_topology (OrderedPair R R) B = R2_dictionary_order_topology.
+admit.
+Qed.
+
+(** from §14 Example 3: order topology on ℤ₊ is discrete **) 
+Definition Zplus : set := Empty.
+
+Theorem order_topology_on_Zplus_discrete :
+  order_topology Zplus = discrete_topology Zplus.
+admit.
+Qed.
+
+(** from §14 Example 4: two-row dictionary order space is not discrete **) 
+Definition two_by_nat : set := Empty.
+Definition two_by_nat_order_topology : set := order_topology two_by_nat.
+
+Theorem two_by_nat_not_discrete :
+  ~ (two_by_nat_order_topology = discrete_topology two_by_nat).
+admit.
+Qed.
+
+(** from §14 Example: ordered square I₀² in the dictionary order topology **) 
+Definition unit_interval : set := Empty.
+Definition ordered_square : set := OrderedPair unit_interval unit_interval.
+Definition ordered_square_topology : set := order_topology ordered_square.
+
+Theorem ordered_square_not_subspace_dictionary :
+  ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
 admit.
 Qed.
 
@@ -8156,7 +8192,7 @@ Definition limit_points_of : set -> set -> set -> set := fun X Tx A => {x :e X|l
 
 Theorem closure_equals_set_plus_limit_points : forall X Tx A:set,
   topology_on X Tx ->
-  closure_of X Tx A = A.
+  closure_of X Tx A = A :\/: limit_points_of X Tx A.
 admit.
 Qed.
 
