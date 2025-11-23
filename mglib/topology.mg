@@ -8495,15 +8495,15 @@ Definition metric_on : set -> set -> prop := fun X d =>
   (forall x y z:set, x :e X -> y :e X -> z :e X -> True).
 
 (** from §20 Definition: open ball **) 
-Definition open_ball : set -> set -> set -> set -> set := fun X d x r =>
-  {y :e X|Rlt (d x y) r}.
+Definition open_ball : set -> set -> set -> set := fun X d x =>
+  {y :e X|exists r :e R, Rlt (d x y) r}.
 
 Definition metric_topology : set -> set -> set := fun X d =>
-  generated_topology X {open_ball X d x r|x :e X /\ r :e R}.
+  generated_topology X {open_ball X d x|x :e X}.
 
 (** from §20: open balls form a basis **) 
 Theorem open_balls_form_basis : forall X d:set,
-  metric_on X d -> basis_on X {open_ball X d x r|x :e X /\ r :e R}.
+  metric_on X d -> basis_on X {open_ball X d x|x :e X}.
 admit.
 Qed.
 
@@ -8515,7 +8515,7 @@ Qed.
 (** from §20: metric-induced topology equals generated topology of balls **) 
 Theorem metric_topology_generated_by_balls : forall X d:set,
   metric_on X d ->
-  generated_topology X {open_ball X d x r|x :e X /\ r :e R} = metric_topology X d.
+  generated_topology X {open_ball X d x|x :e X} = metric_topology X d.
 admit.
 Qed.
 
