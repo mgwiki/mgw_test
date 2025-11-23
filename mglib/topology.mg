@@ -7266,8 +7266,8 @@ claim proofD : forall UFam :e Power (generated_topology X B), Union UFam :e gene
 { let UFam. assume Hfam: UFam :e Power (generated_topology X B).
   claim HsubFam : UFam c= generated_topology X B.
   { exact (PowerE (generated_topology X B) UFam Hfam). }
-  apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) (Union UFam).
-  - apply PowerI X (Union UFam).
+  claim HPowUnion : Union UFam :e Power X.
+  { apply PowerI X (Union UFam).
     let x. assume HxUnion.
     apply UnionE_impred UFam x HxUnion.
     let U. assume HxU HUin.
@@ -7275,8 +7275,9 @@ claim proofD : forall UFam :e Power (generated_topology X B), Union UFam :e gene
     { exact (HsubFam U HUin). }
     claim HUsubX : U c= X.
     { exact (SepE1 (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) U HUtop). }
-    exact (HUsubX x HxU).
-  - let x. assume HxUnion.
+    exact (HUsubX x HxU). }
+  claim HUnionProp : forall x :e Union UFam, exists b :e B, x :e b /\ b c= Union UFam.
+  { let x. assume HxUnion.
     apply UnionE_impred UFam x HxUnion.
     let U. assume HxU HUin.
     claim HUtop : U :e generated_topology X B.
@@ -7301,8 +7302,8 @@ claim proofD : forall UFam :e Power (generated_topology X B), Union UFam :e gene
     - apply andI.
       * exact Hxb.
       * let y. assume Hyb.
-        apply UnionI UFam y U (HbSubU y Hyb) HUin.
-}
+        apply UnionI UFam y U (HbSubU y Hyb) HUin. }
+  exact (SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) (Union UFam) HPowUnion HUnionProp). }
 claim proofE : forall U :e generated_topology X B, forall V :e generated_topology X B, U :/\: V :e generated_topology X B.
 { let U. assume HUtop.
   let V. assume HVtop.
