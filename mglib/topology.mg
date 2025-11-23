@@ -8998,13 +8998,13 @@ Definition converges_to : set -> set -> set -> set -> prop :=
   fun X Tx seq x => topology_on X Tx /\ seq c= X /\ x :e X.
 Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => y).
 Definition countable_index_set : set -> prop := fun I => I c= omega.
-Definition countable_product_component_topology : set -> set -> set := fun Xi i => Empty.
-Definition countable_product_space : set -> set -> set := fun I Xi => Empty.
-Definition countable_product_topology : set -> set -> set := fun I Xi => Empty.
-Definition euclidean_space : set -> set := fun n => Empty.
-Definition euclidean_topology : set -> set := fun n => Empty.
+Definition countable_product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
+Definition countable_product_space : set -> set -> set := fun I Xi => product_space I Xi.
+Definition countable_product_topology : set -> set -> set := fun I Xi => product_topology_full I Xi.
+Definition euclidean_space : set -> set := fun n => product_space n (const_family n R).
+Definition euclidean_topology : set -> set := fun n => product_topology_full n (const_family n R_standard_topology).
 Definition real_sequences : set := Power R.
-Definition uniform_topology : set := Empty.
+Definition uniform_topology : set := metric_topology real_sequences (fun _ _ => Empty).
 Definition covers : set -> set -> prop :=
   fun X U => forall x:set, x :e X -> exists u:set, u :e U /\ x :e u.
 Definition open_cover : set -> set -> set -> prop :=
@@ -9273,10 +9273,10 @@ admit.
 Qed.
 
 (** from §32 Example 2: SOmega x SbarOmega not normal **) 
-Definition S_Omega : set := Empty.
-Definition Sbar_Omega : set := Empty.
-Definition SOmega_topology : set := Empty.
-Definition SbarOmega_topology : set := Empty.
+Definition S_Omega : set := omega.
+Definition Sbar_Omega : set := Power omega.
+Definition SOmega_topology : set := discrete_topology S_Omega.
+Definition SbarOmega_topology : set := discrete_topology Sbar_Omega.
 
 Theorem SOmega_SbarOmega_not_normal :
   normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
@@ -9474,8 +9474,8 @@ admit.
 Qed.
 
 (** from §44 Theorem: space-filling curve existence **) 
-Definition unit_square : set := Empty.
-Definition unit_square_topology : set := Empty.
+Definition unit_square : set := OrderedPair unit_interval unit_interval.
+Definition unit_square_topology : set := product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
 Theorem space_filling_curve : exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
 admit.
 Qed.
