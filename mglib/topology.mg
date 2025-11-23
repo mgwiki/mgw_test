@@ -6729,6 +6729,8 @@ Qed.
 (** from §12 Example 3: finite complement topology is a topology **)
 Theorem finite_complement_topology_on : forall X, topology_on X (finite_complement_topology X).
 let X.
+claim HEmptyOpen : Empty :e finite_complement_topology X.
+{ exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) Empty (Empty_In_Power X) (orIR (finite (X :\: Empty)) (Empty = Empty) (fun P H => H))). }
 prove finite_complement_topology X c= Power X
 /\ Empty :e finite_complement_topology X
 /\ X :e finite_complement_topology X
@@ -6821,7 +6823,7 @@ apply andI.
           exact HxU.
       }
       rewrite HUnionEmpty.
-      exact (finite_complement_topology_contains_empty X).
+      exact HEmptyOpen.
 - prove forall U :e finite_complement_topology X, forall V :e finite_complement_topology X, U :/\: V :e finite_complement_topology X.
   let U. assume HU: U :e finite_complement_topology X.
   let V. assume HV: V :e finite_complement_topology X.
@@ -6875,7 +6877,7 @@ apply andI.
         exact (binintersect_Subq_2 U Empty).
       }
       rewrite Hcap_empty.
-      exact (finite_complement_topology_contains_empty X).
+      exact HEmptyOpen.
     }
   * assume HUempty : U = Empty.
     claim Hcap_empty : U :/\: V = Empty.
@@ -6884,7 +6886,7 @@ apply andI.
       exact (binintersect_Subq_1 Empty V).
     }
     rewrite Hcap_empty.
-    exact (finite_complement_topology_contains_empty X).
+    exact HEmptyOpen.
 Qed.
 
 (** from §12: finer_than reflexive **)
