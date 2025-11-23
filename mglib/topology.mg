@@ -6776,6 +6776,17 @@ Theorem countable_complement_topology_contains_full : forall X:set,
 admit.
 Qed.
 
+Definition singleton_basis : set -> set := fun X => {{x}|x :e X}.
+
+Theorem singleton_basis_is_basis : forall X:set, basis_on X (singleton_basis X).
+admit.
+Qed.
+
+Theorem generated_topology_singletons_discrete : forall X:set,
+  generated_topology X (singleton_basis X) = discrete_topology X.
+admit.
+Qed.
+
 Theorem basis_finer_equiv_condition : forall X B B':set,
   basis_on X B -> basis_on X B' ->
   (forall x :e X, forall b :e B, x :e b -> exists b' :e B', x :e b' /\ b' c= b) <->
