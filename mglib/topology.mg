@@ -9129,6 +9129,8 @@ Definition closed_interval : set -> set -> set := fun a b => Empty.
 
 Theorem Urysohn_lemma : forall X Tx A B a b:set,
   normal_space X Tx -> closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
-  continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)).
+  exists f:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) f /\
+                (forall x:set, x :e A -> f@x = a) /\
+                (forall x:set, x :e B -> f@x = b).
 admit.
 Qed.
