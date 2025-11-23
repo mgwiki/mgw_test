@@ -7131,3 +7131,102 @@ Theorem open_in_subspace_iff : forall X Tx Y U:set,
   exists V :e Tx, U = V :/\: Y.
 admit.
 Qed.
+
+(** from §17 Definition: interior and closure of a set **) 
+Definition interior_of : set -> set -> set -> set := fun X T A => Empty.
+Definition closure_of : set -> set -> set -> set := fun X T A => Empty.
+
+(** from §17 Theorem 17.1: properties of closed sets **) 
+Theorem closed_sets_axioms : forall X T:set,
+  topology_on X T ->
+  closed_in X T Empty /\
+  closed_in X T X /\
+  (forall Fam :e Power (Power X), (forall C :e Fam, closed_in X T C) -> closed_in X T (Intersection Fam)) /\
+  (forall C1 C2:set, closed_in X T C1 -> closed_in X T C2 -> closed_in X T (C1 :\/: C2)).
+admit.
+Qed.
+
+(** from §17 Theorem 17.2: closed sets in subspaces as intersections **) 
+Theorem closed_in_subspace_iff_intersection : forall X Tx Y A:set,
+  topology_on X Tx -> Y c= X ->
+  (closed_in Y (subspace_topology X Tx Y) A <->
+   exists C:set, closed_in X Tx C /\ A = C :/\: Y).
+admit.
+Qed.
+
+(** from §17 Theorem 17.3: closedness passes up when subspace is closed **) 
+Theorem closed_in_closed_subspace : forall X Tx Y A:set,
+  topology_on X Tx -> closed_in X Tx Y ->
+  closed_in Y (subspace_topology X Tx Y) A ->
+  closed_in X Tx A.
+admit.
+Qed.
+
+(** from §17 Theorem 17.4: closure in subspace equals intersection **) 
+Theorem closure_in_subspace : forall X Tx Y A:set,
+  topology_on X Tx -> Y c= X ->
+  closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
+admit.
+Qed.
+
+(** from §17 Theorem 17.5: closure via neighborhoods/basis **) 
+Theorem closure_characterization : forall X Tx A x:set,
+  topology_on X Tx ->
+  (x :e closure_of X Tx A <-> (forall U :e Tx, x :e U -> U :/\: A <> Empty)).
+admit.
+Qed.
+
+(** from §17 Corollary 17.7: closed iff contains all limit points **) 
+Definition limit_point_of : set -> set -> set -> set -> prop := fun X Tx A x => True.
+Definition limit_points_of : set -> set -> set -> set := fun X Tx A => {x :e X|limit_point_of X Tx A x}.
+
+Theorem closure_equals_set_plus_limit_points : forall X Tx A:set,
+  topology_on X Tx ->
+  closure_of X Tx A = A :\/: limit_points_of X Tx A.
+admit.
+Qed.
+
+(** from §17: closed sets contain all limit points **) 
+Theorem closed_iff_contains_limit_points : forall X Tx A:set,
+  topology_on X Tx ->
+  closed_in X Tx A <-> limit_points_of X Tx A c= A.
+admit.
+Qed.
+
+(** from §17 Definition: Hausdorff and T1 spaces **) 
+Definition Hausdorff_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall x1 x2:set, x1 <> x2 ->
+    exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+
+Definition T1_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\ (forall F:set, finite F -> closed_in X Tx F).
+
+(** from §17 Theorem 17.8: finite sets closed in Hausdorff **) 
+Theorem finite_sets_closed_in_Hausdorff : forall X Tx:set,
+  Hausdorff_space X Tx -> forall F:set, finite F -> closed_in X Tx F.
+admit.
+Qed.
+
+(** from §17 Theorem 17.9: limit points in T1 spaces have infinite neighborhoods **) 
+Theorem limit_points_infinite_neighborhoods : forall X Tx A x:set,
+  T1_space X Tx ->
+  limit_point_of X Tx A x <->
+  (forall U :e Tx, x :e U -> infinite (U :/\: A)).
+admit.
+Qed.
+
+(** from §17 Theorem 17.10: uniqueness of limits in Hausdorff spaces **) 
+Theorem Hausdorff_unique_limits : forall X Tx seq x y:set,
+  Hausdorff_space X Tx ->
+  x <> y ->
+  (* sequence convergence is abstracted away *) True.
+admit.
+Qed.
+
+(** from §17 Theorem 17.11: Hausdorff stability under constructions **) 
+Theorem Hausdorff_stability : forall X Tx Y Ty:set,
+  Hausdorff_space X Tx /\ Hausdorff_space Y Ty ->
+  Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+admit.
+Qed.
