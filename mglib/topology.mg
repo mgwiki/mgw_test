@@ -7257,8 +7257,10 @@ claim proofC : X :e generated_topology X B.
       { exact (PowerE X b (HBsub b HbB)). }
       witness b.
       apply andI.
-      - exact Hxb.
-      - exact HbsubX. }
+      - exact HbB.
+      - apply andI.
+        * exact Hxb.
+        * exact HbsubX. }
   apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) X.
   - exact (Self_In_Power X).
   - let x. assume HxX.
@@ -7274,8 +7276,10 @@ claim proofC : X :e generated_topology X B.
     { exact (PowerE X b (HBsub b HbB)). }
     witness b.
     apply andI.
-    * exact Hxb.
-    * exact HbsubX. }
+    - exact HbB.
+    - apply andI.
+      * exact Hxb.
+      * exact HbsubX. }
 claim proofD : forall UFam :e Power (generated_topology X B), Union UFam :e generated_topology X B.
 { let UFam. assume Hfam: UFam :e Power (generated_topology X B).
   claim HsubFam : UFam c= generated_topology X B.
@@ -7300,12 +7304,22 @@ claim proofD : forall UFam :e Power (generated_topology X B), Union UFam :e gene
     claim Hexb : exists b :e B, x :e b /\ b c= U.
     { exact (HUprop x HxU). }
     apply Hexb.
-    let b. assume HbB Hxb HbSubU.
+    let b. assume Hbpair.
+    claim HbB : b :e B.
+    { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
+    claim Hbprop : x :e b /\ b c= U.
+    { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
+    claim Hxb : x :e b.
+    { exact (andEL (x :e b) (b c= U) Hbprop). }
+    claim HbSubU : b c= U.
+    { exact (andER (x :e b) (b c= U) Hbprop). }
     witness b.
     apply andI.
-    - exact Hxb.
-    - let y. assume Hyb.
-      apply UnionI UFam y U (HbSubU y Hyb) HUin.
+    - exact HbB.
+    - apply andI.
+      * exact Hxb.
+      * let y. assume Hyb.
+        apply UnionI UFam y U (HbSubU y Hyb) HUin.
 }
 claim proofE : forall U :e generated_topology X B, forall V :e generated_topology X B, U :/\: V :e generated_topology X B.
 { let U. assume HUtop.
@@ -7330,22 +7344,48 @@ claim proofE : forall U :e generated_topology X B, forall V :e generated_topolog
     claim Hexb2 : exists b2 :e B, x :e b2 /\ b2 c= V.
     { exact (HVprop x HxV). }
     apply Hexb1.
-    let b1. assume Hb1 Hb1x Hb1Sub.
+    let b1. assume Hbpair1.
+    claim Hb1 : b1 :e B.
+    { exact (andEL (b1 :e B) (x :e b1 /\ b1 c= U) Hbpair1). }
+    claim Hb1prop : x :e b1 /\ b1 c= U.
+    { exact (andER (b1 :e B) (x :e b1 /\ b1 c= U) Hbpair1). }
+    claim Hb1x : x :e b1.
+    { exact (andEL (x :e b1) (b1 c= U) Hb1prop). }
+    claim Hb1Sub : b1 c= U.
+    { exact (andER (x :e b1) (b1 c= U) Hb1prop). }
     apply Hexb2.
-    let b2. assume Hb2 Hb2x Hb2Sub.
+    let b2. assume Hbpair2.
+    claim Hb2 : b2 :e B.
+    { exact (andEL (b2 :e B) (x :e b2 /\ b2 c= V) Hbpair2). }
+    claim Hb2prop : x :e b2 /\ b2 c= V.
+    { exact (andER (b2 :e B) (x :e b2 /\ b2 c= V) Hbpair2). }
+    claim Hb2x : x :e b2.
+    { exact (andEL (x :e b2) (b2 c= V) Hb2prop). }
+    claim Hb2Sub : b2 c= V.
+    { exact (andER (x :e b2) (b2 c= V) Hb2prop). }
     claim Hexb3 : exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2.
     { exact (HBint b1 Hb1 b2 Hb2 x Hb1x Hb2x). }
     apply Hexb3.
-    let b3. assume Hb3 HxB3 Hb3Sub.
+    let b3. assume Hbpair3.
+    claim Hb3 : b3 :e B.
+    { exact (andEL (b3 :e B) (x :e b3 /\ b3 c= b1 :/\: b2) Hbpair3). }
+    claim Hb3prop : x :e b3 /\ b3 c= b1 :/\: b2.
+    { exact (andER (b3 :e B) (x :e b3 /\ b3 c= b1 :/\: b2) Hbpair3). }
+    claim HxB3 : x :e b3.
+    { exact (andEL (x :e b3) (b3 c= b1 :/\: b2) Hb3prop). }
+    claim Hb3Sub : b3 c= b1 :/\: b2.
+    { exact (andER (x :e b3) (b3 c= b1 :/\: b2) Hb3prop). }
     witness b3.
     apply andI.
-    - exact HxB3.
-    - let y. assume Hyb3.
-      claim Hy_in_b1b2 : y :e b1 :/\: b2.
-      { exact (Hb3Sub y Hyb3). }
-      apply binintersectE b1 b2 y Hy_in_b1b2.
-      assume Hyb1 Hyb2.
-      apply binintersectI U V y (Hb1Sub y Hyb1) (Hb2Sub y Hyb2).
+    - exact Hb3.
+    - apply andI.
+      * exact HxB3.
+      * let y. assume Hyb3.
+        claim Hy_in_b1b2 : y :e b1 :/\: b2.
+        { exact (Hb3Sub y Hyb3). }
+        apply binintersectE b1 b2 y Hy_in_b1b2.
+        assume Hyb1 Hyb2.
+        apply binintersectI U V y (Hb1Sub y Hyb1) (Hb2Sub y Hyb2).
 }
 exact (andI (andI (andI (andI proofA proofB) proofC) proofD) proofE).
 Qed.
