@@ -8438,7 +8438,7 @@ Qed.
 
 (** from §17 Exercises 1–20: closures, boundaries, Hausdorff properties **) 
 Theorem ex17_1_topology_from_closed_sets : forall X Tx:set,
-  closed_in X Tx X -> (forall A:set, closed_in X Tx A -> closed_in X Tx (X :\\: A)) -> topology_on X Tx.
+  closed_in X Tx X -> (forall A:set, closed_in X Tx A -> closed_in X Tx (X :\: A)) -> topology_on X Tx.
 admit.
 Qed.
 
