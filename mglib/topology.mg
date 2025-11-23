@@ -7856,7 +7856,10 @@ let X B. assume HBasis.
 apply set_ext.
 - let U. assume HU.
   claim HUopen : open_in X (generated_topology X B) U.
-  { exact (andI (lemma_topology_from_basis X B HBasis) HU). }
+  { exact (andI (topology_on X (generated_topology X B))
+                 (U :e generated_topology X B)
+                 (lemma_topology_from_basis X B HBasis)
+                 HU). }
   claim HexFam : exists Fam :e Power B, Union Fam = U.
   { exact (open_sets_as_unions_of_basis X B HBasis U HUopen). }
   apply HexFam.
