@@ -8907,6 +8907,28 @@ Definition countable_set : set -> prop := fun A => A c= omega.
 
 Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ countable_set V.
 
+Definition sequence_in : set -> set -> prop := fun seq A => seq c= A.
+Definition converges_to : set -> set -> set -> set -> prop :=
+  fun X Tx seq x => topology_on X Tx /\ seq c= X /\ x :e X.
+Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => f@y).
+Definition countable_index_set : set -> prop := fun I => I c= omega.
+Definition product_component_topology : set -> set -> set := fun Xi i => Empty.
+Definition product_space : set -> set -> set := fun I Xi => Empty.
+Definition product_topology : set -> set -> set := fun I Xi => Empty.
+Definition euclidean_space : set -> set := fun n => Empty.
+Definition euclidean_topology : set -> set := fun n => Empty.
+Definition real_sequences : set := Power R.
+Definition uniform_topology : set := Empty.
+Definition covers : set -> set -> prop :=
+  fun X U => forall x:set, x :e X -> exists u:set, u :e U /\ x :e u.
+Definition open_cover : set -> set -> set -> prop :=
+  fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
+Definition Lindelof_space : set -> set -> prop :=
+  fun X Tx => topology_on X Tx /\ forall U:set, open_cover X Tx U -> exists V:set, countable_subcollection V U /\ covers X V.
+Definition rational_numbers : set := omega.
+Definition Sorgenfrey_line : set := R.
+Definition Sorgenfrey_topology : set := Empty.
+
 
 Definition countable_basis_at : set -> set -> set -> prop := fun X Tx x =>
   topology_on X Tx /\
