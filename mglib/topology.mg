@@ -9054,9 +9054,6 @@ Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
 Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f => True.
 Definition power_real : set -> set := fun J => Empty.
 Definition unit_interval_power : set -> set := fun J => Empty.
-Definition Tychonoff_space : set -> set -> prop := fun X Tx =>
-  completely_regular_space X Tx /\ Hausdorff_space X Tx.
-
 Definition locally_finite_basis : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   exists B:set, basis_on X B /\ locally_finite_family X Tx B.
@@ -9215,6 +9212,10 @@ Definition completely_regular_space : set -> set -> prop := fun X Tx =>
       exists f:set,
         continuous_map X Tx R R_standard_topology f /\
         apply_fun f x = 0 /\ forall y:set, y :e F -> apply_fun f y = 1.
+
+(** from §33 Definition: Tychonoff space **) 
+Definition Tychonoff_space : set -> set -> prop := fun X Tx =>
+  completely_regular_space X Tx /\ Hausdorff_space X Tx.
 
 (** from §33 Theorem 33.2: subspaces/products of completely regular spaces **) 
 Theorem completely_regular_subspace_product : forall X Tx:set,
