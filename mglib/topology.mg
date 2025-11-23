@@ -8630,8 +8630,17 @@ admit.
 Qed.
 
 (** uniform convergence of function sequences between metric spaces **) 
-Definition uniform_convergence_functions : set -> set -> set -> set -> set -> set -> prop :=
-  fun _ _ _ _ _ _ => True.
+Definition uniform_convergence_functions :
+  set -> set -> set -> set -> set -> set -> prop :=
+  fun X dX Y dY f_seq f =>
+    metric_on X dX /\ metric_on Y dY /\
+    function_on f_seq omega (function_space X Y) /\ function_on f X Y /\
+    (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y) /\
+    forall eps:set, eps :e R /\ Rlt 0 eps ->
+      exists N:set, N :e omega /\
+        forall n:set, n :e omega -> N c= n ->
+          forall x:set, x :e X ->
+            Rlt (apply_fun dY (OrderedPair (apply_fun (apply_fun f_seq n) x) (apply_fun f x))) eps.
 
 (** from §21: uniform limit theorem placeholder **) 
 Theorem uniform_limit_of_continuous_is_continuous :
