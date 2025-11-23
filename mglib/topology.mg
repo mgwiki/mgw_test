@@ -7766,6 +7766,10 @@ claim HBasisRef_prop : forall U :e generated_topology X B, forall x :e U, exists
   { exact (SepE2 (Power X)
                  (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
                  U HU). }
+  claim HUsubX : U c= X.
+  { exact (PowerE X U (SepE1 (Power X)
+                             (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
+                             U HU)). }
   claim Hexb : exists b :e B, x :e b /\ b c= U.
   { exact (HUprop x HxU). }
   apply Hexb.
@@ -7778,8 +7782,10 @@ claim HBasisRef_prop : forall U :e generated_topology X B, forall x :e U, exists
   { exact (andEL (x :e b) (b c= U) Hbprop). }
   claim HbsubU : b c= U.
   { exact (andER (x :e b) (b c= U) Hbprop). }
+  claim HxX : x :e X.
+  { exact (HUsubX x HxU). }
   claim Hexb' : exists b' :e B', x :e b' /\ b' c= b.
-  { exact (Href x b HbB Hxb). }
+  { exact (Href x HxX b HbB Hxb). }
   apply Hexb'.
   let b'. assume Hb'pair.
   claim Hb'B : b' :e B'.
