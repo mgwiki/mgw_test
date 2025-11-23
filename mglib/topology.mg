@@ -9036,8 +9036,8 @@ admit.
 Qed.
 
 (** from §31 Definition: regular and normal spaces **) 
-Parameter regular_space : set -> set -> prop.
-Parameter normal_space : set -> set -> prop.
+Definition regular_space : set -> set -> prop := fun X Tx => topology_on X Tx.
+Definition normal_space : set -> set -> prop := fun X Tx => topology_on X Tx.
 
 (** from §31 Lemma 31.1: closure-neighborhood reformulations of regular/normal **) 
 Theorem regular_normal_via_closure : forall X Tx:set,
