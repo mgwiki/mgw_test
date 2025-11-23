@@ -8755,7 +8755,7 @@ Definition limit_points_of : set -> set -> set -> set := fun X Tx A => {x :e X|l
 Theorem closure_equals_set_plus_limit_points : forall X Tx A:set,
   topology_on X Tx ->
   closure_of X Tx A = A :\/: limit_points_of X Tx A.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §17: closed sets contain all limit points **) 
@@ -8763,7 +8763,7 @@ Qed.
 Theorem closed_iff_contains_limit_points : forall X Tx A:set,
   topology_on X Tx ->
   closed_in X Tx A <-> limit_points_of X Tx A c= A.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §17 Definition: Hausdorff and T1 spaces **) 
@@ -8780,7 +8780,7 @@ Definition T1_space : set -> set -> prop := fun X Tx =>
 (** LATEX VERSION: In any Hausdorff space, every finite subset is closed. **)
 Theorem finite_sets_closed_in_Hausdorff : forall X Tx:set,
   Hausdorff_space X Tx -> forall F:set, finite F -> closed_in X Tx F.
-admit.
+admit. (**  aby  Hausdorff_5Fspace_def conj_myprob_8783_1_20251123_233455 In_5Fno2cycle finite�f Sing_5Ffinite not_ex_all_demorgan_i In_5Find EmptyAx . **)
 Qed.
 
 (** from §17 Theorem 17.9: limit points in T1 spaces have infinite neighborhoods **) 
@@ -8789,7 +8789,7 @@ Theorem limit_points_infinite_neighborhoods : forall X Tx A x:set,
   T1_space X Tx ->
   limit_point_of X Tx A x <->
   (forall U :e Tx, x :e U -> infinite (U :/\: A)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §17 Theorem 17.10: uniqueness of limits in Hausdorff spaces **) 
@@ -8801,7 +8801,7 @@ Theorem Hausdorff_unique_limits : forall X Tx seq x y:set,
   (forall U:set, U :e Tx -> x :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U) ->
   (forall U:set, U :e Tx -> y :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U) ->
   False.
-admit.
+admit. (**  aby  In_5Fno2cycle Hausdorff_5Fspace_def conj_myprob_8804_1_20251123_233607 prop_ext_2 . **)
 Qed.
 
 (** from §17 Theorem 17.11: Hausdorff stability under constructions **) 
@@ -8809,40 +8809,40 @@ Qed.
 Theorem Hausdorff_stability : forall X Tx Y Ty:set,
   Hausdorff_space X Tx /\ Hausdorff_space Y Ty ->
   Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit.
+admit. (**  aby  Hausdorff_5Fspace_def conj_myprob_8812_1_20251123_233626 In_5Fno2cycle ex16_9_dictionary_equals_product . **)
 Qed.
 
 (** from §17 Exercises 1–20: closures, boundaries, Hausdorff properties **) 
 (** LATEX VERSION: Exercise 1: Given a notion of closed sets satisfying axioms, prove they come from a topology. **)
 Theorem ex17_1_topology_from_closed_sets : forall X Tx:set,
   closed_in X Tx X -> (forall A:set, closed_in X Tx A -> closed_in X Tx (X :\: A)) -> topology_on X Tx.
-admit.
+admit. (**  aby  ordsuccI2 In_5Fno2cycle open_in_subspace_iff EmptyAx discrete_open_all prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 2: If Y is closed in X and A is closed in the subspace Y, then A is closed in X. **)
 Theorem ex17_2_closed_in_closed_subspace : forall X Tx Y A:set,
   closed_in X Tx Y -> closed_in Y (subspace_topology X Tx Y) A -> closed_in X Tx A.
-admit.
+admit. (**  aby  setminus_In_Power open_in_subspace_iff conj_myprob_8825_1_20251123_233737 closed_in_closed_subspace binintersect_com binintersectE1 EmptyAx In_5Fno2cycle prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 3: Products of closed sets are closed in the product topology. **)
 Theorem ex17_3_product_of_closed_sets_closed : forall X Tx Y Ty A B:set,
   closed_in X Tx A -> closed_in Y Ty B ->
   closed_in (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
-admit.
+admit. (**  aby  open_in_subspace_iff EmptyAx discrete_open_all not_ex_all_demorgan_i In_5Fno2cycle conj_myprob_8832_1_20251123_233805 exandE_i prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 4: For open U and closed A, U\\A is open and A\\U is closed. **)
 Theorem ex17_4_open_minus_closed_and_closed_minus_open : forall X Tx U A:set,
   topology_on X Tx -> open_in X Tx U -> closed_in X Tx A ->
   open_in X Tx (U :\: A) /\ closed_in X Tx (A :\: U).
-admit.
+admit. (**  aby  EmptyAx open_in_subspace_iff discrete_open_all In_5Firref nIn�f prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 5: Closure of (0,1) in order topology on X equals (0,1). **)
 Theorem ex17_5_closure_of_interval_in_order_topology : forall X:set,
   closure_of X (order_topology X) (open_interval 0 1) = open_interval 0 1.
-admit.
+admit. (**  aby  ordsuccI2 In_5Fno2cycle EmptyAx open_in_subspace_iff discrete_open_all prop_ext_2 . **)
 Qed.
 
 (** LATEX VERSION: Exercise 6: Closure is idempotent and closed; closure(A) is closed. **)
@@ -8850,7 +8850,7 @@ Theorem ex17_6_closure_properties : forall X Tx A:set,
   topology_on X Tx ->
   closure_of X Tx (closure_of X Tx A) = closure_of X Tx A /\
   closed_in X Tx (closure_of X Tx A).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** LATEX VERSION: Exercise 7: Show union being closed does not imply each set is closed. **)
