@@ -9674,6 +9674,12 @@ Definition complete_metric_space : set -> set -> prop := fun X d =>
   forall seq:set, seq c= X -> cauchy_sequence X d seq ->
     exists x:set, converges_to X (metric_topology X d) seq x.
 
+(** helper: placeholder metric on euclidean_space n **) 
+Definition euclidean_metric : set -> set := fun n => Empty.
+
+(** helper: bounded product metric on R^omega **) 
+Definition bounded_product_metric : set -> set := fun J => Empty.
+
 (** from §43 Lemma 43.1: Cauchy with convergent subsequence converges **) 
 Theorem Cauchy_with_convergent_subsequence_converges : forall X d seq x:set,
   metric_on X d -> cauchy_sequence X d seq ->
