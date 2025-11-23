@@ -9417,8 +9417,10 @@ Qed.
 
 (** from §38 Definition: Stone-Cech compactification and universal property **) 
 Definition Stone_Cech_compactification : set -> set -> set := fun X Tx =>
-  {OrderedPair (OrderedPair Y Ty) e |
-    compact_space Y Ty /\ Hausdorff_space Y Ty /\ embedding_of X Tx Y Ty e}.
+  {p :e Power (Power (Power X)) |
+    exists Y Ty e:set,
+      p = OrderedPair (OrderedPair Y Ty) e /\
+      compact_space Y Ty /\ Hausdorff_space Y Ty /\ embedding_of X Tx Y Ty e}.
 Theorem Stone_Cech_universal_property : forall X Tx:set,
   Tychonoff_space X Tx ->
   compact_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx) /\
