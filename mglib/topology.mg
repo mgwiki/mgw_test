@@ -6640,6 +6640,7 @@ Qed.
 Definition basis_generates : set -> set -> set -> prop := fun X B T =>
   basis_on X B /\ generated_topology X B = T.
 
+(** from §13: shorthand that a family refines all opens **)
 Definition basis_refines : set -> set -> set -> prop := fun X B T =>
   topology_on X T /\ (forall U :e T, forall x :e U, exists b :e B, x :e b /\ b c= U).
 
