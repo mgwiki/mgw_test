@@ -6851,7 +6851,7 @@ Theorem lemma_intersection_two_open : forall X T U V:set,
   U :/\: V :e T.
 let X T U V. assume HT HU HV.
 claim Hax_inter : forall U' :e T, forall V' :e T, U' :/\: V' :e T.
-{ exact (andER (forall UFam :e Power T, Union UFam :e T) (forall U' :e T, forall V' :e T, U' :/\: V' :e T) (andER (X :e T) ((forall UFam :e Power T, Union UFam :e T) /\ (forall U' :e T, forall V' :e T, U' :/\: V' :e T)) (andER (Empty :e T) (X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U' :e T, forall V' :e T, U' :/\: V' :e T)) (andER (T c= Power X) (Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U' :e T, forall V' :e T, U' :/\: V' :e T)) HT)))}
+{ exact (andER ((T c= Power X /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T))) (forall U' :e T, forall V' :e T, U' :/\: V' :e T) HT). }
 exact (Hax_inter U HU V HV).
 Qed.
 
