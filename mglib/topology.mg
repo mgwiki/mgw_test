@@ -9054,18 +9054,31 @@ Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
 Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f => True.
 Definition power_real : set -> set := fun J => Empty.
 Definition unit_interval_power : set -> set := fun J => Empty.
-Definition Tychonoff_space : set -> set -> prop := fun X Tx => True.
-Definition sigma_locally_finite_basis : set -> set -> prop := fun X Tx => True.
-Definition metrizable : set -> set -> prop := fun X Tx => True.
-Definition locally_finite_basis : set -> set -> prop := fun X Tx => True.
+Definition Tychonoff_space : set -> set -> prop := fun X Tx =>
+  completely_regular_space X Tx /\ Hausdorff_space X Tx.
+
+Definition locally_finite_basis : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  exists B:set, basis_on X B /\ locally_finite_family X Tx B.
+
+Definition sigma_locally_finite_basis : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  exists Fams:set, countable_set Fams /\
+    Fams c= Power (Power X) /\
+    (forall F:set, F :e Fams -> locally_finite_family X Tx F) /\
+    basis_on X (Union Fams) /\
+    forall b:set, b :e Union Fams -> b :e Tx.
+
+Definition metrizable : set -> set -> prop := fun X Tx =>
+  exists d:set, metric_on X d /\ metric_topology X d = Tx.
 Definition equicontinuous_family : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty F =>
     topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
     forall x:set, x :e X ->
-      forall f:set, f :e F ->
-        forall V:set, V :e Ty -> apply_fun f x :e V ->
-          exists U:set, U :e Tx /\ x :e U /\
-            forall g:set, g :e F -> forall y:set, y :e U -> apply_fun g y :e V.
+      forall V:set, V :e Ty ->
+        (exists f0:set, f0 :e F /\ apply_fun f0 x :e V) ->
+        exists U:set, U :e Tx /\ x :e U /\
+          forall f:set, f :e F -> forall y:set, y :e U -> apply_fun f y :e V.
 Definition pointwise_convergence_topology : set -> set -> set -> set -> set :=
   fun X Tx Y Ty => generated_topology (function_space X Y) Empty.
 Definition compact_convergence_topology : set -> set -> set -> set -> set :=
@@ -9092,8 +9105,16 @@ admit.
 Qed.
 
 (** from §31 Definition: regular and normal spaces **) 
-Definition regular_space : set -> set -> prop := fun X Tx => topology_on X Tx.
-Definition normal_space : set -> set -> prop := fun X Tx => topology_on X Tx.
+Definition regular_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall x:set, x :e X ->
+    forall F:set, closed_in X Tx F -> x /:e F ->
+      exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty.
+
+Definition normal_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+    exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
 
 (** from §31 Lemma 31.1: closure-neighborhood reformulations of regular/normal **) 
 Theorem regular_normal_via_closure : forall X Tx:set,
@@ -9187,7 +9208,13 @@ admit.
 Qed.
 
 (** from §33 Definition: completely regular space **) 
-Definition completely_regular_space : set -> set -> prop := fun X Tx => normal_space X Tx.
+Definition completely_regular_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall x:set, x :e X ->
+    forall F:set, closed_in X Tx F -> x /:e F ->
+      exists f:set,
+        continuous_map X Tx R R_standard_topology f /\
+        apply_fun f x = 0 /\ forall y:set, y :e F -> apply_fun f y = 1.
 
 (** from §33 Theorem 33.2: subspaces/products of completely regular spaces **) 
 Theorem completely_regular_subspace_product : forall X Tx:set,
@@ -9338,8 +9365,19 @@ Definition Baire_space : set -> prop := fun Tx =>
       (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
       dense_in (intersection_over_family X U) X Tx.
 
+(** helper: Cauchy sequence in a metric space **) 
+Definition cauchy_sequence : set -> set -> set -> prop := fun X d seq =>
+  metric_on X d /\ seq c= X /\
+  forall eps:set, eps :e R ->
+    exists N:set, N :e omega /\
+      forall m n:set, m :e omega -> n :e omega -> N c= omega ->
+        Rlt (d (apply_fun seq m) (apply_fun seq n)) eps.
+
 (** from §43 Definition: complete metric space **) 
-Definition complete_metric_space : set -> set -> prop := fun X d => True.
+Definition complete_metric_space : set -> set -> prop := fun X d =>
+  metric_on X d /\
+  forall seq:set, seq c= X -> cauchy_sequence X d seq ->
+    exists x:set, converges_to X (metric_topology X d) seq x.
 
 (** from §43 Theorem: Baire category for complete metric spaces **) 
 Theorem Baire_category_complete_metric : forall X d:set,
