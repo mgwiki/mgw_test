@@ -7533,23 +7533,27 @@ claim HUGen : U :e generated_topology X B.
     claim HbSubX : b c= X.
     { exact (PowerE X b (HFamSubX b HbFam)). }
     exact (HbSubX x Hxb). }
-  apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) U.
-  * rewrite <- HUnionEq.
-    apply PowerI X (Union Fam).
-    exact HUnionSubX.
-  * rewrite <- HUnionEq.
-    let x. assume HxUnion.
-    apply UnionE_impred Fam x HxUnion.
+  claim HUsubX : U c= X.
+  { rewrite <- HUnionEq.
+    exact HUnionSubX. }
+  claim HUpropU : forall x :e U, exists b :e B, x :e b /\ b c= U.
+  { let x. assume HxU.
+    rewrite <- HUnionEq in HxU.
+    apply UnionE_impred Fam x HxU.
     let b. assume Hxb HbFam.
     claim HbB : b :e B.
     { exact (HFamSubB b HbFam). }
     claim HbSubUnion : b c= Union Fam.
     { let y. assume Hyb.
       exact (UnionI Fam y b Hyb HbFam). }
+    claim HbSubU : b c= U.
+    { rewrite HUnionEq.
+      exact HbSubUnion. }
     witness b.
     apply andI.
     { exact Hxb. }
-    { exact HbSubUnion. } }
+    { exact HbSubU. } }
+  exact (SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) U (PowerI X U HUsubX) HUpropU). }
 exact (andI (lemma_topology_from_basis X B HBasis) HUGen).
 Qed.
 
