@@ -7784,8 +7784,24 @@ claim HBasisRef_prop : forall U :e generated_topology X B, forall x :e U, exists
   { exact (andER (x :e b) (b c= U) Hbprop). }
   claim HxX : x :e X.
   { exact (HUsubX x HxU). }
-  claim Hexb' : exists b' :set, b' :e B' /\ x :e b' /\ b' c= b.
-  { exact (Href x HxX b HbB Hxb). }
+  claim Hexb' : exists b' :e B', x :e b' /\ b' c= b.
+  { claim HexbRaw : exists b' :set, b' :e B' /\ x :e b' /\ b' c= b.
+    { exact (Href x HxX b HbB Hxb). }
+    apply HexbRaw.
+    let b'. assume Hb'pair.
+    claim Hb'B : b' :e B'.
+    { exact (andEL (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+    claim Hb'prop : x :e b' /\ b' c= b.
+    { exact (andER (b' :e B') (x :e b' /\ b' c= b) Hb'pair). }
+    claim Hxb' : x :e b'.
+    { exact (andEL (x :e b') (b' c= b) Hb'prop). }
+    claim Hb'subb : b' c= b.
+    { exact (andER (x :e b') (b' c= b) Hb'prop). }
+    prove exists b0 :e B', x :e b0 /\ b0 c= b.
+      witness b'.
+      apply andI.
+      - exact Hxb'.
+      - exact Hb'subb. }
   apply Hexb'.
   let b'. assume Hb'pair.
   claim Hb'B : b' :e B'.
