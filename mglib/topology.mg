@@ -6591,7 +6591,6 @@ apply andI.
   { exact (iffEL (U :e Power X) (U c= X) (PowerEq X U) HU). }
   exact (HUsub x HxU).
 Qed.
-Qed.
 
 (** from §12: indiscrete topology is a topology **)
 Theorem indiscrete_topology_on : forall X, topology_on X (indiscrete_topology X).
