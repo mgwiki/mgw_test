@@ -9776,7 +9776,7 @@ Theorem Baire_space_dense_Gdelta : forall Tx:set,
       forall U:set,
         U c= Tx -> countable_set U ->
         (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
-        dense_in (intersection_over_family X U) X Tx)).
+        dense_in (intersection_over_family X U) X Tx).
 admit.
 Qed.
 
