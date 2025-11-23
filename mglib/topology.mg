@@ -6711,7 +6711,6 @@ Qed.
 (** from §12: discrete topology is the finest **)
 Theorem discrete_topology_finest : forall X T:set,
   topology_on X T -> finer_than (discrete_topology X) T.
-Proof.
 let X T. assume HT.
 (* finer_than (Power X) T is just T c= Power X, which is the first conjunct of topology_on *)
 claim HTsub : T c= Power X.
