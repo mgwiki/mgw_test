@@ -7761,9 +7761,7 @@ Theorem finer_via_basis : forall X B B':set,
   finer_than (generated_topology X B') (generated_topology X B).
 let X B B'. assume HB HB' Href.
 claim HBasisRef : basis_refines X B' (generated_topology X B).
-{ change (topology_on X (generated_topology X B)
-         /\ (forall U :e generated_topology X B, forall x :e U, exists b' :e B', x :e b' /\ b' c= U)).
-  apply andI.
+{ apply andI.
   - exact (lemma_topology_from_basis X B HB).
   - let U. assume HU. let x. assume HxU.
     claim HUprop : forall x0 :e U, exists b :e B, x0 :e b /\ b c= U.
