@@ -8028,8 +8028,7 @@ Qed.
 Definition OrderedPair : set -> set -> set := fun x y => UPair x (UPair x y).
 
 (** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
-Definition R2_dictionary_order_topology : set :=
-  product_topology R R_standard_topology R R_standard_topology.
+Definition R2_dictionary_order_topology : set := order_topology (OrderedPair R R).
 
 Theorem dictionary_order_topology_is_topology :
   topology_on (OrderedPair R R) R2_dictionary_order_topology.
