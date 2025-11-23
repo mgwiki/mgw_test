@@ -6765,7 +6765,7 @@ apply andI.
     { exact (PowerE (finite_complement_topology X) UFam Hfam). }
     apply xm (exists U:set, U :e UFam /\ finite (X :\: U)).
     - assume Hex: exists U:set, U :e UFam /\ finite (X :\: U).
-      apply SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) (Union UFam).
+      apply SepI.
       + apply PowerI X (Union UFam).
         let x. assume HxUnion.
         apply UnionE_impred UFam x HxUnion.
