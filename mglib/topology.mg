@@ -6765,9 +6765,8 @@ apply andI.
     { exact (PowerE (finite_complement_topology X) UFam Hfam). }
     apply xm (exists U:set, U :e UFam /\ finite (X :\: U)).
     - assume Hex: exists U:set, U :e UFam /\ finite (X :\: U).
-      unfold finite_complement_topology.
-      apply SepI.
-      + apply PowerI X (Union UFam).
+      claim HUnionInPower : Union UFam :e Power X.
+      { apply PowerI X (Union UFam).
         let x. assume HxUnion.
         apply UnionE_impred UFam x HxUnion.
         let U. assume HxU HUin.
@@ -6776,7 +6775,9 @@ apply andI.
         claim HUsub : U c= X.
         { exact (PowerE X U HUinPow). }
         exact (HUsub x HxU).
-      + apply orIL.
+      }
+      claim HUnionPred : finite (X :\: Union UFam) \/ Union UFam = Empty.
+      { apply orIL.
         apply Hex.
         let U. assume Hpair : U :e UFam /\ finite (X :\: U).
         claim HUin : U :e UFam.
@@ -6797,6 +6798,8 @@ apply andI.
           apply setminusI X U x HxX HnotU.
         }
         exact (Subq_finite (X :\: U) HUfin (X :\: Union UFam) Hsubset).
+      }
+      exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) (Union UFam) HUnionInPower HUnionPred).
     - assume Hnone: ~exists U:set, U :e UFam /\ finite (X :\: U).
       claim HUnionEmpty : Union UFam = Empty.
       { apply Empty_Subq_eq.
