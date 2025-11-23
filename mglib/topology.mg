@@ -8283,9 +8283,11 @@ Qed.
 
 (** from §16 Exercise 6: rational rectangles form a basis for ℝ² **) 
 Definition rational_rectangle_basis : set :=
-  {OrderedPair (open_interval a b) (open_interval c d) |
-     a :e rational_numbers /\ b :e rational_numbers /\
-     c :e rational_numbers /\ d :e rational_numbers}.
+  {r :e Power (OrderedPair R R) |
+     exists a b c d:set,
+       a :e rational_numbers /\ b :e rational_numbers /\
+       c :e rational_numbers /\ d :e rational_numbers /\
+       r = OrderedPair (open_interval a b) (open_interval c d)}.
 
 Theorem ex16_6_rational_rectangles_basis :
   basis_on (OrderedPair R R) rational_rectangle_basis /\
