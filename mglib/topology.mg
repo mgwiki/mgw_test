@@ -9314,9 +9314,6 @@ Theorem Ascoli_theorem : forall X Tx Y Ty:set,
 admit.
 Qed.
 
-(** from §48 Definition: Baire space **) 
-Definition Baire_space : set -> prop := fun X => True.
-
 (** from §48 Theorem: Baire category theorem general version **) 
 Theorem Baire_category_theorem : forall X:set,
   Baire_space X -> True.
