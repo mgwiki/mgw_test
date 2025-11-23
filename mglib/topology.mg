@@ -6816,7 +6816,10 @@ Definition finer_than_topology_by_inclusion : set -> set -> set -> prop := fun X
 
 Theorem finer_than_topology_by_inclusion_eq : forall X T' T:set,
   finer_than_topology X T' T <-> finer_than_topology_by_inclusion X T' T.
-admit.
+let X T' T.
+apply iffI.
+- assume H. exact H.
+- assume H. exact H.
 Qed.
 
 (** from §12 axiom: arbitrary unions of opens are open **)
@@ -6824,7 +6827,10 @@ Theorem lemma_union_of_topology_family_open : forall X T UFam:set,
   topology_on X T ->
   UFam :e Power T ->
   Union UFam :e T.
-admit.
+let X T UFam. assume HT Hfam.
+claim Hax_union : forall UFam' :e Power T, Union UFam' :e T.
+{ exact (andEL (forall UFam' :e Power T, Union UFam' :e T) (forall U :e T, forall V :e T, U :/\: V :e T) (andER (X :e T) ((forall UFam' :e Power T, Union UFam' :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) (andER (Empty :e T) (X :e T /\ (forall UFam' :e Power T, Union UFam' :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) (andER (T c= Power X) (Empty :e T /\ X :e T /\ (forall UFam' :e Power T, Union UFam' :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HT)))) }
+exact (Hax_union UFam Hfam).
 Qed.
 
 (** from §12 axiom: finite intersections of opens are open **)
@@ -6832,7 +6838,10 @@ Theorem lemma_intersection_two_open : forall X T U V:set,
   topology_on X T ->
   U :e T -> V :e T ->
   U :/\: V :e T.
-admit.
+let X T U V. assume HT HU HV.
+claim Hax_inter : forall U' :e T, forall V' :e T, U' :/\: V' :e T.
+{ exact (andER (forall UFam :e Power T, Union UFam :e T) (forall U' :e T, forall V' :e T, U' :/\: V' :e T) (andER (X :e T) ((forall UFam :e Power T, Union UFam :e T) /\ (forall U' :e T, forall V' :e T, U' :/\: V' :e T)) (andER (Empty :e T) (X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U' :e T, forall V' :e T, U' :/\: V' :e T)) (andER (T c= Power X) (Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U' :e T, forall V' :e T, U' :/\: V' :e T)) HT)))}
+exact (Hax_inter U HU V HV).
 Qed.
 
 (** from §12: alternative naming for topological space **)
