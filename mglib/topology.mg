@@ -7632,9 +7632,9 @@ claim HBasis : basis_on X C.
 { exact (andI
            (C c= Power X /\ (forall x :e X, exists c :e C, x :e c))
            (forall b1 :e C, forall b2 :e C, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e C, x :e b3 /\ b3 c= b1 :/\: b2)
-           (andI
-              (fun c HcC => HTsubPow c (HCsub c HcC))
-              (fun x HxX => Href X HXT x HxX))
+           (andI (C c= Power X) (forall x :e X, exists c :e C, x :e c)
+                 (fun c HcC => HTsubPow c (HCsub c HcC))
+                 (fun x HxX => Href X HXT x HxX))
            (fun c1 Hc1C => fun c2 Hc2C => fun x Hxc1 => fun Hxc2 =>
               Href (c1 :/\: c2)
                    (HInterClosed c1 (HCsub c1 Hc1C) c2 (HCsub c2 Hc2C))
