@@ -9360,9 +9360,7 @@ Theorem compact_metric_equivalences : forall X d:set,
 admit.
 Qed.
 
-(** from §46 Definition: pointwise and compact convergence topologies **) 
-Definition pointwise_convergence_topology : set -> set := fun X => Empty.
-Definition compact_convergence_topology : set -> set := fun X => Empty.
+(** from §46 Definition: pointwise and compact convergence topologies (see definitions above) **) 
 
 (** from §47 Ascoli theorem **) 
 Theorem Ascoli_theorem : forall X Tx Y Ty F:set,
