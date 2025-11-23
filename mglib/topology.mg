@@ -7822,7 +7822,9 @@ let X B B'. assume HB HB' Hcond.
 claim HT : topology_on X (generated_topology X B).
 { exact (lemma_topology_from_basis X B HB). }
 claim Hrefines : basis_refines X B' (generated_topology X B).
-{ apply andI.
+{ prove topology_on X (generated_topology X B)
+  /\ (forall U :e generated_topology X B, forall x :e U, exists b' :e B', x :e b' /\ b' c= U).
+  apply andI.
   - exact HT.
   - let U. assume HU : U :e generated_topology X B.
     let x. assume HxU.
