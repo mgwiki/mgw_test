@@ -9026,8 +9026,8 @@ Definition countable_product_space : set -> set -> set := fun I Xi =>
   product_space I Xi.
 Definition countable_product_topology : set -> set -> set := fun I Xi =>
   product_topology_full I Xi.
-Definition euclidean_space : set -> set := fun n => n.
-Definition euclidean_topology : set -> set := fun n => n.
+Definition euclidean_space : set -> set := fun n => product_space n (const_family n R).
+Definition euclidean_topology : set -> set := fun n => product_topology_full n (const_family n R).
 Definition real_sequences : set := Power R.
 Definition uniform_topology : set := metric_topology real_sequences Empty.
 Definition covers : set -> set -> prop :=
