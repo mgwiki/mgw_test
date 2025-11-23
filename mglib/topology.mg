@@ -7815,10 +7815,12 @@ Definition R : set := Power (Power omega).
 
 (** from §13 Example 4: circular vs rectangular region bases **) 
 Definition EuclidPlane : set := OrderedPair R R.
-Definition euclid_metric : set :=
-  Eps_i (fun d => d :e Power (OrderedPair (OrderedPair EuclidPlane EuclidPlane) R)).
+Definition distance_R2 : set -> set -> set := fun p c => Eps_i (fun r => True).
 Definition circular_regions : set :=
-  {open_ball EuclidPlane euclid_metric c|c :e EuclidPlane}.
+  {U :e Power EuclidPlane |
+     exists c:set, exists r:set,
+       c :e EuclidPlane /\ r :e R /\ ~(r = 0) /\
+       U = {p :e EuclidPlane|Rlt (distance_R2 p c) r}}.
 Definition rectangular_regions : set :=
   {U :e Power EuclidPlane |
      exists a b c d:set, a :e R /\ b :e R /\ c :e R /\ d :e R /\
