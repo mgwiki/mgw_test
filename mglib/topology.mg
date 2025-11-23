@@ -7903,7 +7903,7 @@ Qed.
 
 (** helper for §13 exercises: intersection of a family of topologies (placeholder) **) 
 Definition Intersection_Fam : set -> set :=
-  fun Fam => {U:set|forall T:set, T :e Fam -> U :e T}.
+  fun Fam => {U :e Union Fam|forall T:set, T :e Fam -> U :e T}.
 
 (** from §13 Exercise 3: infinite-complement collection **) 
 Definition infinite_complement_family : set -> set :=
