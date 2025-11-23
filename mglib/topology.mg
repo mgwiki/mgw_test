@@ -6712,11 +6712,15 @@ Qed.
 Theorem discrete_topology_finest : forall X T:set,
   topology_on X T -> finer_than (discrete_topology X) T.
 let X T. assume HT.
-(* Extract the first conjunct T c= Power X from the topology axiom. *)
-set H1 := andEL (((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT.
-set H2 := andEL ((T c= Power X) /\ Empty :e T /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1.
-set H3 := andEL ((T c= Power X) /\ Empty :e T) (X :e T) H2.
-set Hsub := andEL (T c= Power X) (Empty :e T) H3.
+(* Extract the first conjunct T c= Power X from the topology axioms. *)
+claim H1: ((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U :e T, forall V :e T, U :/\: V :e T).
+{ exact (andEL ((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT). }
+claim H2: (T c= Power X) /\ Empty :e T /\ X :e T.
+{ exact (andEL ((T c= Power X) /\ Empty :e T /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
+claim HAB: (T c= Power X) /\ Empty :e T.
+{ exact (andEL ((T c= Power X) /\ Empty :e T) (X :e T) H2). }
+claim Hsub: T c= Power X.
+{ exact (andEL (T c= Power X) (Empty :e T) HAB). }
 exact Hsub.
 Qed.
 
@@ -6724,17 +6728,22 @@ Qed.
 Theorem indiscrete_topology_coarsest : forall X T:set,
   topology_on X T -> coarser_than (indiscrete_topology X) T.
 let X T. assume HT.
-  prove {Empty, X} c= T.
-  let U. assume HU: U :e {Empty, X}.
-  apply UPairE Empty X U HU.
-  (* Extract Empty and X belonging to T from topology axioms. *)
-  set H1 := andEL (((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT.
-  set H2 := andEL ((T c= Power X) /\ Empty :e T /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1.
-  set H3 := andEL ((T c= Power X) /\ Empty :e T) (X :e T) H2.
-  set Hempty := andER (T c= Power X) (Empty :e T) (andEL (T c= Power X) (Empty :e T) H3).
-  set Hfull := andER ((T c= Power X) /\ Empty :e T) (X :e T) H2.
-  - intro HUeq. rewrite HUeq. exact Hempty.
-  - intro HUeq. rewrite HUeq. exact Hfull.
+prove {Empty, X} c= T.
+let U. assume HU: U :e {Empty, X}.
+(* Extract Empty and X belonging to T from topology axioms. *)
+claim H1: ((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U :e T, forall V :e T, U :/\: V :e T).
+{ exact (andEL ((T c= Power X) /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT). }
+claim H2: (T c= Power X) /\ Empty :e T /\ X :e T.
+{ exact (andEL ((T c= Power X) /\ Empty :e T /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
+claim HAB: (T c= Power X) /\ Empty :e T.
+{ exact (andEL ((T c= Power X) /\ Empty :e T) (X :e T) H2). }
+claim Hempty: Empty :e T.
+{ exact (andER (T c= Power X) (Empty :e T) HAB). }
+claim Hfull: X :e T.
+{ exact (andER ((T c= Power X) /\ Empty :e T) (X :e T) H2). }
+apply UPairE Empty X U HU.
+- intro HUeq. rewrite HUeq. exact Hempty.
+- intro HUeq. rewrite HUeq. exact Hfull.
 Qed.
 
 (** from §12: every subset is open in discrete topology **)
