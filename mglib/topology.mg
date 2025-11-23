@@ -7678,7 +7678,7 @@ claim Hgen_sub_T : generated_topology X C c= T.
   set Fam : set := {c :e C|c c= U}.
   claim HFamSubC : Fam c= C.
   { let c. assume HcFam.
-    exact (andEL (c :e C) (c c= U) (SepE2 C (fun c0 : set => c0 c= U) c HcFam)). }
+    exact (SepE1 C (fun c0 : set => c0 c= U) c HcFam). }
   claim HFamSubT : Fam c= T.
   { let c. assume HcFam.
     claim HcC : c :e C.
