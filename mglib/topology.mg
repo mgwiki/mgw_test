@@ -9004,7 +9004,7 @@ Definition countable_product_topology : set -> set -> set := fun I Xi => Xi.
 Definition euclidean_space : set -> set := fun n => n.
 Definition euclidean_topology : set -> set := fun n => n.
 Definition real_sequences : set := Power R.
-Definition uniform_topology : set := metric_topology real_sequences (fun _ _ => Empty).
+Definition uniform_topology : set := metric_topology real_sequences Empty.
 Definition covers : set -> set -> prop :=
   fun X U => forall x:set, x :e X -> exists u:set, u :e U /\ x :e u.
 Definition open_cover : set -> set -> set -> prop :=
