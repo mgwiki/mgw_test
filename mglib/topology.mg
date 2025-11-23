@@ -8084,8 +8084,7 @@ admit.
 Qed.
 
 (** from §15 Definition: product topology on X×Y **) 
-Definition rectangle_set : set -> set -> set := fun U V =>
-  {p :e OrderedPair U V| True}.
+Definition rectangle_set : set -> set -> set := fun U V => OrderedPair U V.
 
 Definition product_subbasis : set -> set -> set -> set -> set :=
   fun X Tx Y Ty => {rectangle_set U V|U :e Tx /\ V :e Ty}.
