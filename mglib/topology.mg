@@ -7243,17 +7243,14 @@ prove generated_topology X B c= Power X
 /\ (forall UFam :e Power (generated_topology X B), Union UFam :e generated_topology X B)
 /\ (forall U :e generated_topology X B, forall V :e generated_topology X B, U :/\: V :e generated_topology X B).
 apply andI.
-- prove generated_topology X B c= Power X.
-  let U. assume HU: U :e generated_topology X B.
+- let U. assume HU: U :e generated_topology X B.
   exact (SepE1 (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) U HU).
 - apply andI.
-  + prove Empty :e generated_topology X B.
-    apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) Empty (Empty_In_Power X).
+  + apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) Empty (Empty_In_Power X).
     let x. assume HxEmpty.
     exact (EmptyE x HxEmpty (exists b :e B, x :e b /\ b c= Empty)).
   + apply andI.
-    * prove X :e generated_topology X B.
-      apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) X (Self_In_Power X).
+    * apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) X (Self_In_Power X).
       let x. assume HxX.
       claim Hexb : exists b :e B, x :e b.
       { exact (HBcov x HxX). }
@@ -7266,8 +7263,7 @@ apply andI.
       - exact Hxb.
       - exact HbsubX.
     * apply andI.
-      { prove forall UFam :e Power (generated_topology X B), Union UFam :e generated_topology X B.
-        let UFam. assume Hfam: UFam :e Power (generated_topology X B).
+      { let UFam. assume Hfam: UFam :e Power (generated_topology X B).
         claim HsubFam : UFam c= generated_topology X B.
         { exact (PowerE (generated_topology X B) UFam Hfam). }
         apply SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) (Union UFam).
@@ -7297,8 +7293,7 @@ apply andI.
           - let y. assume Hyb.
             apply UnionI UFam y U (HbSubU y Hyb) HUin.
       }
-      { prove forall U :e generated_topology X B, forall V :e generated_topology X B, U :/\: V :e generated_topology X B.
-        let U. assume HUtop.
+      { let U. assume HUtop.
         let V. assume HVtop.
         claim HUprop : forall x0 :e U, exists b :e B, x0 :e b /\ b c= U.
         { exact (SepE2 (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) U HUtop). }
