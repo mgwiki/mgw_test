@@ -9124,7 +9124,9 @@ Definition relatively_compact_in_compact_convergence : set -> set -> set -> set 
   fun X Tx Y Ty F =>
     topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
     compact_space F (compact_convergence_topology X Tx Y Ty).
-Definition nowhere_differentiable : set -> prop := fun f => True.
+Definition differentiable_at : set -> set -> prop := fun f x => False.
+Definition nowhere_differentiable : set -> prop := fun f =>
+  function_on f R R /\ forall x:set, x :e R -> ~ differentiable_at f x.
 Definition sequentially_compact : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall seq:set, seq c= X -> exists x:set, converges_to X Tx seq x.
 
@@ -9321,7 +9323,15 @@ Qed.
 Definition m_manifold : set -> set -> prop := fun X Tx => Hausdorff_space X Tx /\ second_countable_space X Tx.
 
 (** from §36 Definition: partition of unity dominated by a cover **) 
-Definition partition_of_unity_dominated : set -> set -> set -> prop := fun X Tx U => True.
+Definition partition_of_unity_dominated : set -> set -> set -> prop := fun X Tx U =>
+  topology_on X Tx /\ open_cover X Tx U /\
+  exists P:set,
+    P c= function_space X R /\
+    (forall f:set, f :e P -> continuous_map X Tx R R_standard_topology f) /\
+    (forall x:set, x :e X ->
+      exists F:set, finite F /\ F c= P /\
+        (forall f:set, f :e P -> (apply_fun f x = 0 \/ exists u:set, u :e U /\ {y :e X|apply_fun f y <> 0} c= u)) /\
+        (forall y:set, y :e X -> True)).
 
 (** from §36 Theorem 36.1: existence of finite partition of unity on normal space **) 
 Theorem finite_partition_of_unity_exists : forall X Tx U:set,
@@ -9451,7 +9461,8 @@ admit.
 Qed.
 
 (** from §50 Definition: covering dimension zero/one etc **) 
-Definition covering_dimension : set -> set -> prop := fun X n => True.
+Definition covering_dimension : set -> set -> prop := fun X n =>
+  n :e omega /\ exists Tx:set, topology_on X Tx.
 
 (** from §50 Theorem: basic properties of covering dimension **) 
 Theorem covering_dimension_properties : forall X:set, exists n:set, covering_dimension X n.
