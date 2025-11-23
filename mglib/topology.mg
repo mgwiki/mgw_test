@@ -6678,6 +6678,14 @@ Definition open_set_family : set -> set -> set := fun _ T => T.
 
 Definition open_set : set -> set -> set -> prop := fun X T U => topology_on X T /\ U :e T.
 
+Definition strictly_finer_than : set -> set -> prop := fun T' T => finer_than T' T /\ ~finer_than T T'.
+
+Definition strictly_coarser_than : set -> set -> prop := fun T' T => coarser_than T' T /\ ~coarser_than T T'.
+
+Definition discrete_topology_alt : set -> set := discrete_topology.
+
+Definition trivial_topology : set -> set := indiscrete_topology.
+
 Theorem lemma_generated_topology_characterization : forall X B:set,
   basis_on X B ->
   generated_topology X B
