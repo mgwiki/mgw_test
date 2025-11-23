@@ -6572,27 +6572,6 @@ Theorem finer_via_basis : forall X B B':set,
 admit.
 Qed.
 
-(** from §13 Example 1: circular regions in the plane form a basis **)
-Parameter plane : set.
-Parameter circular_regions : set.
-
-Theorem circular_regions_basis_plane : basis_on plane circular_regions.
-admit.
-Qed.
-
-(** from §13 Example 2: rectangular regions in the plane form a basis **)
-Parameter rectangular_regions : set.
-
-Theorem rectangular_regions_basis_plane : basis_on plane rectangular_regions.
-admit.
-Qed.
-
-(** from §13 Example 4: circular and rectangular bases generate the same topology on the plane **)
-Theorem circular_rectangular_same_topology_plane :
-  generated_topology plane circular_regions = generated_topology plane rectangular_regions.
-admit.
-Qed.
-
 (** from §12 Example 2: discrete topology **)
 Definition discrete_topology : set -> set := fun X => Power X.
 
