@@ -9189,7 +9189,7 @@ Theorem Tietze_extension_interval : forall X Tx A a b f:set,
   normal_space X Tx -> closed_in X Tx A ->
   continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f ->
   exists g:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) g /\
-    (forall x:set, x :e A -> g@x = f@x).
+    (forall x:set, x :e A -> g @ x = f @ x).
 admit.
 Qed.
 
@@ -9197,6 +9197,6 @@ Theorem Tietze_extension_real : forall X Tx A f:set,
   normal_space X Tx -> closed_in X Tx A ->
   continuous_map A (subspace_topology X Tx A) R R_standard_topology f ->
   exists g:set, continuous_map X Tx R R_standard_topology g /\
-    (forall x:set, x :e A -> g@x = f@x).
+    (forall x:set, x :e A -> g @ x = f @ x).
 admit.
 Qed.
