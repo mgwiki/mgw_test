@@ -7836,7 +7836,11 @@ Qed.
 Definition subbasis_on : set -> set -> prop := fun X S => S c= Power X.
 
 (** from §13: finite intersections of subbasis elements (placeholder set of finite intersections) **) 
-Definition finite_intersections_of : set -> set := fun _ => Empty.
+Definition intersection_of_family : set -> set :=
+  fun Fam => {x :e Union Fam|forall U:set, U :e Fam -> x :e U}.
+
+Definition finite_intersections_of : set -> set := fun S =>
+  {intersection_of_family F|F :e Power S /\ finite F}.
 
 (** from §13: basis obtained from a subbasis by finite intersections **) 
 Definition basis_of_subbasis : set -> set -> set := fun _ S => {b :e finite_intersections_of S|True}.
@@ -7895,7 +7899,8 @@ admit.
 Qed.
 
 (** helper for §13 exercises: intersection of a family of topologies (placeholder) **) 
-Definition Intersection_Fam : set -> set := fun _ => Empty.
+Definition Intersection_Fam : set -> set :=
+  fun Fam => {U:set|forall T:set, T :e Fam -> U :e T}.
 
 (** from §13 Exercise 3: infinite-complement collection **) 
 Definition infinite_complement_family : set -> set :=
