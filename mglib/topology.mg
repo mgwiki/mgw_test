@@ -8633,8 +8633,7 @@ Qed.
 Definition uniform_convergence_functions : set -> set -> set -> set -> set -> prop :=
   fun X dX Y dY f_seq f =>
     metric_on X dX /\ metric_on Y dY /\
-    function_on f_seq omega (function_space X Y) /\ function_on f X Y /\
-    exists N:set, N :e omega.
+    function_on f_seq omega (function_space X Y) /\ function_on f X Y.
 
 (** from §21: uniform limit theorem placeholder **) 
 Theorem uniform_limit_of_continuous_is_continuous :
