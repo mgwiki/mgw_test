@@ -9275,6 +9275,9 @@ Theorem Smirnov_metrization : forall X Tx:set,
 admit.
 Qed.
 
+(* from §48 Definition: Baire space, placed early for dependencies *) 
+Definition Baire_space : set -> prop := fun X => True.
+
 (** from §43 Definition: complete metric space **) 
 Definition complete_metric_space : set -> set -> prop := fun X d => True.
 
@@ -9306,9 +9309,6 @@ Theorem Ascoli_theorem : forall X Tx Y Ty:set,
   equicontinuous_family X Tx Y Ty -> relatively_compact_in_compact_convergence X Tx Y Ty.
 admit.
 Qed.
-
-(** from §48 Definition: Baire space **) 
-Definition Baire_space : set -> prop := fun X => True.
 
 (** from §48 Theorem: Baire category theorem general version **) 
 Theorem Baire_category_theorem : forall X:set,
