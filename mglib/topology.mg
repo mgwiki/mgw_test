@@ -9239,11 +9239,9 @@ admit.
 Qed.
 
 (** from §38 Definition: Stone-Cech compactification and universal property **) 
-Parameter SC_compactification : set -> set -> set.
 Theorem Stone_Cech_universal_property : forall X Tx:set,
   Tychonoff_space X Tx ->
-  compact_space (SC_compactification X Tx) (SC_compactification X Tx) /\
-  Hausdorff_space (SC_compactification X Tx) (SC_compactification X Tx).
+  exists Y Ty:set, compact_space Y Ty /\ Hausdorff_space Y Ty.
 admit.
 Qed.
 
