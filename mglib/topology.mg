@@ -6623,6 +6623,7 @@ apply andI.
 Qed.
 
 (** from §12: indiscrete topology is a topology **)
+(** LATEX VERSION: The trivial/indiscrete topology {∅, X} on any set X satisfies the topology axioms. **)
 Theorem indiscrete_topology_on : forall X, topology_on X (indiscrete_topology X).
 let X.
 prove indiscrete_topology X c= Power X
@@ -6740,6 +6741,7 @@ apply andI.
 Qed.
 
 (** from §12 Example 3: finite complement topology is a topology **)
+(** LATEX VERSION: The finite complement collection T_f on X is a topology: ∅, X are open; arbitrary unions and finite intersections remain in T_f. **)
 Theorem finite_complement_topology_on : forall X, topology_on X (finite_complement_topology X).
 let X.
 claim HEmptyOpen : Empty :e finite_complement_topology X.
@@ -6904,12 +6906,14 @@ apply andI.
 Qed.
 
 (** from §12: finer_than reflexive **)
+(** LATEX VERSION: Any topology is finer than itself. **)
 Theorem finer_than_refl : forall T:set, finer_than T T.
 let T.
 exact (Subq_ref T).
 Qed.
 
 (** from §12: finer_than transitive **)
+(** LATEX VERSION: Finer-than is transitive: if T'' finer than T' and T' finer than T, then T'' finer than T. **)
 Theorem finer_than_trans : forall A B C:set, finer_than B A -> finer_than C B -> finer_than C A.
 let A B C.
 assume H1: finer_than B A.
@@ -6918,6 +6922,7 @@ exact (Subq_tra A B C H1 H2).
 Qed.
 
 (** from §12: equivalence of finer/coarser phrasing **)
+(** LATEX VERSION: Saying T' is finer than T is equivalent to saying T is coarser than T'. **)
 Theorem finer_coarser_dual : forall T T':set, finer_than T' T -> coarser_than T T'.
 let T T'.
 assume H.
@@ -6925,14 +6930,17 @@ exact H.
 Qed.
 
 (** from §12: comparability of topologies **)
+(** LATEX VERSION: Two topologies are comparable if one contains the other. **)
 Definition comparable_topologies : set -> set -> prop := fun T1 T2 =>
   finer_than T1 T2 \/ finer_than T2 T1.
 
 (** from §12: equality of topologies **)
+(** LATEX VERSION: Topology equality on X means both are topologies on X and have identical collections of opens. **)
 Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
   topology_on X T1 /\ topology_on X T2 /\ T1 = T2.
 
 (** from §12: symmetry of topology equality **)
+(** LATEX VERSION: Equality of topologies is symmetric. **)
 Theorem topology_eq_sym : forall X T1 T2:set, topology_eq X T1 T2 -> topology_eq X T2 T1.
 let X T1 T2. assume H.
 claim Hpair: topology_on X T1 /\ topology_on X T2.
@@ -6952,6 +6960,7 @@ apply andI.
 Qed.
 
 (** from §12: transitivity of topology equality **)
+(** LATEX VERSION: Equality of topologies is transitive. **)
 Theorem topology_eq_trans : forall X T1 T2 T3:set, topology_eq X T1 T2 -> topology_eq X T2 T3 -> topology_eq X T1 T3.
 let X T1 T2 T3.
 assume H12 H23.
@@ -6978,6 +6987,7 @@ apply andI.
 Qed.
 
 (** from §12: reflexivity of topology equality **)
+(** LATEX VERSION: Any topology equals itself (with the requisite topology_on hypotheses). **)
 Theorem topology_eq_refl : forall X T:set, topology_on X T -> topology_eq X T T.
 let X T. assume HT.
 prove topology_on X T /\ topology_on X T /\ T = T.
@@ -6989,19 +6999,23 @@ apply andI.
 Qed.
 
 (** from §12: strict fineness/coarseness **)
+(** LATEX VERSION: T' is strictly finer than T if T'⊃T and not conversely; strictly coarser is the dual. **)
 Definition strictly_finer_than : set -> set -> prop := fun T' T => finer_than T' T /\ ~finer_than T T'.
 
 Definition strictly_coarser_than : set -> set -> prop := fun T' T => coarser_than T' T /\ ~coarser_than T T'.
 
 (** from §12 examples: auxiliary aliases **)
+(** LATEX VERSION: Alternate notation: discrete topology and trivial (indiscrete) topology. **)
 Definition discrete_topology_alt : set -> set := discrete_topology.
 Definition trivial_topology : set -> set := indiscrete_topology.
 
 (** from §12: finer_than between topologies on same X **)
+(** LATEX VERSION: A notion of T' finer than T together with both being topologies on X. **)
 Definition finer_than_topology : set -> set -> set -> prop := fun X T' T =>
   topology_on X T' /\ topology_on X T /\ finer_than T' T.
 
 (** from §12: finer/coarser equivalence **)
+(** LATEX VERSION: Finer-than and coarser-than are logically equivalent statements with reversed arguments. **)
 Theorem finer_than_def : forall T T':set, finer_than T' T <-> coarser_than T T'.
 let T T'.
 apply iffI.
@@ -7010,6 +7024,7 @@ apply iffI.
 Qed.
 
 (** from §12: discrete topology is the finest **)
+(** LATEX VERSION: The discrete topology on X is finer than any other topology on X. **)
 Theorem discrete_topology_finest : forall X T:set,
   topology_on X T -> finer_than (discrete_topology X) T.
 let X T. assume HT.
@@ -7025,6 +7040,7 @@ exact HTsub.
 Qed.
 
 (** from §12: indiscrete topology is the coarsest **)
+(** LATEX VERSION: The indiscrete topology on X is coarser than any other topology on X. **)
 Theorem indiscrete_topology_coarsest : forall X T:set,
   topology_on X T -> coarser_than (indiscrete_topology X) T.
 let X T. assume HT.
