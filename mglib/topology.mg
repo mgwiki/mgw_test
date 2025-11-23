@@ -6681,10 +6681,10 @@ Theorem topology_eq_refl : forall X T:set, topology_on X T -> topology_eq X T T.
 let X T. assume HT.
 prove topology_on X T /\ topology_on X T /\ T = T.
 apply andI.
-- exact HT.
 - apply andI.
   + exact HT.
-  + reflexivity.
+  + exact HT.
+- reflexivity.
 Qed.
 
 (** from §12: strict fineness/coarseness **)
