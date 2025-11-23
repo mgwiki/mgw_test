@@ -9158,3 +9158,9 @@ Theorem SOmega_SbarOmega_completely_regular_not_normal :
   ~ normal_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
 admit.
 Qed.
+
+(** from §34 Theorem 34.1: Urysohn metrization theorem **) 
+Theorem Urysohn_metrization_theorem : forall X Tx:set,
+  regular_space X Tx -> second_countable_space X Tx -> exists d:set, metric_on X d /\ metric_topology X d = Tx.
+admit.
+Qed.
