@@ -8903,11 +8903,14 @@ admit.
 Qed.
 
 (** from §30 Definition 30.1: countable basis at a point / first countable **) 
-(* axioms capturing countability predicates to be elaborated later *) 
-Parameter countable_basis_at : set -> set -> set -> prop.
+Definition countable_basis_at (X Tx x:set) : prop :=
+  topology_on X Tx /\
+  exists B:set, basis_on X B /\ countable_set B /\
+    (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ x :e b /\ b c= U).
 
 (** from §30 Definition 30.1: first-countable space **) 
-Parameter first_countable_space : set -> set -> prop.
+Definition first_countable_space (X Tx:set) : prop :=
+  topology_on X Tx /\ forall x:set, x :e X -> countable_basis_at X Tx x.
 
 (** from §30 Theorem 30.1(a): sequences and closure in first-countable spaces **) 
 Theorem first_countable_sequences_detect_closure : forall X Tx A x:set,
@@ -8926,7 +8929,8 @@ admit.
 Qed.
 
 (** from §30 Definition: second-countable space **) 
-Parameter second_countable_space : set -> set -> prop.
+Definition second_countable_space (X Tx:set) : prop :=
+  topology_on X Tx /\ exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
 
 (** from §30 Example 1: R^n has countable basis **) 
 Theorem euclidean_spaces_second_countable : forall n:set,
@@ -8980,22 +8984,27 @@ Theorem Sorgenfrey_line_countability :
   ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
 admit.
 Qed.
-(** auxiliary parameters for sequences and basic constructions in §30 **) 
-Parameter sequence_in : set -> set -> prop.
-Parameter converges_to : set -> set -> set -> set -> prop.
-Parameter image_of : set -> set -> set.
-Parameter countable_index_set : set -> prop.
-Parameter product_component_topology : set -> set -> set.
-Parameter product_space : set -> set -> set.
-Parameter product_topology : set -> set -> set.
-Parameter euclidean_space : set -> set.
-Parameter euclidean_topology : set -> set.
-Parameter real_sequences : set.
-Parameter uniform_topology : set.
-Parameter open_cover : set -> set -> set -> prop.
-Parameter countable_subcollection : set -> set -> prop.
-Parameter covers : set -> set -> prop.
-Parameter Lindelof_space : set -> set -> prop.
-Parameter rational_numbers : set.
-Parameter Sorgenfrey_line : set.
-Parameter Sorgenfrey_topology : set.
+(** auxiliary definitions for sequences and basic constructions in §30 **) 
+Definition sequence_in : set -> set -> prop := fun seq A => seq c= A.
+Definition converges_to : set -> set -> set -> set -> prop :=
+  fun X Tx seq x => topology_on X Tx /\ seq c= X /\ x :e X.
+Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => f@y).
+Definition countable_index_set : set -> prop := fun I => I c= omega.
+Definition product_component_topology : set -> set -> set := fun Xi i => Empty.
+Definition product_space : set -> set -> set := fun I Xi => Empty.
+Definition product_topology : set -> set -> set := fun I Xi => Empty.
+Definition euclidean_space : set -> set := fun n => Empty.
+Definition euclidean_topology : set -> set := fun n => Empty.
+Definition real_sequences : set := Power R.
+Definition uniform_topology : set := Empty.
+Definition covers : set -> set -> prop :=
+  fun X U => forall x:set, x :e X -> exists u:set, u :e U /\ x :e u.
+Definition open_cover : set -> set -> set -> prop :=
+  fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
+Definition countable_set : set -> prop := fun A => A c= omega.
+Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ countable_set V.
+Definition Lindelof_space : set -> set -> prop :=
+  fun X Tx => topology_on X Tx /\ forall U:set, open_cover X Tx U -> exists V:set, countable_subcollection V U /\ covers X V.
+Definition rational_numbers : set := omega.
+Definition Sorgenfrey_line : set := R.
+Definition Sorgenfrey_topology : set := Empty.
