@@ -9042,8 +9042,9 @@ Definition product_space : set -> set -> set := fun I Xi => Empty.
 Definition product_component : set -> set -> set := fun Xi i => Empty.
 Definition product_component_topology : set -> set -> set := fun Xi i => Empty.
 Definition const_family : set -> set -> set := fun I X => Empty.
-Definition uncountable_set : set -> prop := fun X => True.
-Definition well_ordered_set : set -> prop := fun X => True.
+Definition uncountable_set : set -> prop := fun X => ~ countable_set X.
+Definition well_ordered_set : set -> prop := fun X =>
+  exists alpha:set, ordinal alpha /\ equip X alpha.
 Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi => True.
 (** from §39 Definition: locally finite family and refinement **) 
 Definition refine_of : set -> set -> prop := fun V U =>
