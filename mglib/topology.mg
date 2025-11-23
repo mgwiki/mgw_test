@@ -8737,7 +8737,14 @@ Qed.
 
 (** from §21: epsilon-delta continuity in metric spaces **) 
 Theorem metric_epsilon_delta_continuity : forall X dX Y dY f:set,
-  metric_on X dX -> metric_on Y dY -> True.
+  metric_on X dX -> metric_on Y dY ->
+  continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
+  (forall x0:set, x0 :e X ->
+     forall eps:set, eps :e R /\ Rlt 0 eps ->
+       exists delta:set, delta :e R /\ Rlt 0 delta /\
+         (forall x:set, x :e X ->
+            Rlt (apply_fun dX (OrderedPair x x0)) delta ->
+            Rlt (apply_fun dY (OrderedPair (apply_fun f x) (apply_fun f x0))) eps)).
 admit.
 Qed.
 
@@ -8745,7 +8752,11 @@ Qed.
 Definition sequence_in : set -> set -> prop := fun seq A => seq c= A.
 Definition sequence_on : set -> set -> prop := fun seq A => function_on seq omega A.
 Definition converges_to : set -> set -> set -> set -> prop :=
-  fun X Tx seq x => topology_on X Tx /\ sequence_on seq X /\ x :e X.
+  fun X Tx seq x =>
+    topology_on X Tx /\ sequence_on seq X /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U ->
+      exists N:set, N :e omega /\
+        forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
 Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => y).
 Definition function_sequence_value : set -> set -> set -> set :=
   fun f_seq n x => apply_fun (apply_fun f_seq n) x.
