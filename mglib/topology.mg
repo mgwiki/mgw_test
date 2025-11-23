@@ -7223,7 +7223,11 @@ Definition generated_topology : set -> set -> set := fun X B =>
 (** from §13: generated family is a topology **) 
 Theorem lemma_topology_from_basis : forall X B:set,
   basis_on X B ->
-  topology_on X (generated_topology X B).
+  generated_topology X B c= Power X
+  /\ Empty :e generated_topology X B
+  /\ X :e generated_topology X B
+  /\ (forall UFam :e Power (generated_topology X B), Union UFam :e generated_topology X B)
+  /\ (forall U :e generated_topology X B, forall V :e generated_topology X B, U :/\: V :e generated_topology X B).
 let X B. assume HBasis.
 claim HBleft : B c= Power X /\ (forall x :e X, exists b :e B, x :e b).
 { exact (andEL (B c= Power X /\ (forall x :e X, exists b :e B, x :e b))
