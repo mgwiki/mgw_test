@@ -9021,6 +9021,8 @@ Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi => True.
 Definition regular_spaces_family : set -> set -> prop := fun I Xi => True.
 Definition product_topology_full : set -> set -> set := fun I Xi => Empty.
 Definition product_space : set -> set -> set := fun I Xi => Empty.
+Definition product_component : set -> set -> set := fun Xi i => Empty.
+Definition product_component_topology : set -> set -> set := fun Xi i => Empty.
 Definition const_family : set -> set -> set := fun I X => Empty.
 Definition uncountable_set : set -> prop := fun X => True.
 Definition well_ordered_set : set -> prop := fun X => True.
@@ -9223,7 +9225,7 @@ Qed.
 
 (** from §37 Theorem: Tychonoff theorem **) 
 Theorem Tychonoff_theorem : forall I Xi:set,
-  (forall i:set, compact_space (Xi@i) (product_component_topology Xi i)) ->
+  (forall i:set, compact_space (product_component Xi i) (product_component_topology Xi i)) ->
   compact_space (product_space I Xi) (product_topology_full I Xi).
 admit.
 Qed.
