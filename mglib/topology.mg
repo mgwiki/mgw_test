@@ -8114,6 +8114,24 @@ Definition product_subbasis : set -> set -> set -> set -> set :=
 Definition product_topology : set -> set -> set -> set -> set :=
   fun X Tx Y Ty => generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty).
 
+Definition const_family : set -> set -> set := fun I X => {UPair i X|i :e I}.
+Definition product_component : set -> set -> set := fun Xi i => apply_fun Xi i.
+Definition product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
+Definition product_space : set -> set -> set := fun I Xi =>
+  {f :e Power (Union Xi)|
+     function_on f I (Union Xi) /\
+     forall i:set, i :e I -> apply_fun f i :e apply_fun Xi i}.
+Definition product_topology_full : set -> set -> set := fun I Xi =>
+  generated_topology (product_space I Xi) Empty.
+Definition box_topology : set -> set -> set := fun I Xi =>
+  product_topology_full I Xi.
+Definition countable_product_space : set -> set -> set := fun I Xi =>
+  product_space I Xi.
+Definition countable_product_topology : set -> set -> set := fun I Xi =>
+  product_topology_full I Xi.
+Definition euclidean_space : set -> set := fun n => product_space n (const_family n R).
+Definition euclidean_topology : set -> set := fun n => product_topology_full n (const_family n R).
+
 (** from §15: product topology is a topology **) 
 Theorem product_topology_is_topology : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
@@ -9256,24 +9274,6 @@ Definition countable_set : set -> prop := fun A => A c= omega.
 Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ countable_set V.
 
 Definition countable_index_set : set -> prop := fun I => I c= omega.
-Definition countable_product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
-Definition const_family : set -> set -> set := fun I X => {UPair i X|i :e I}.
-Definition product_component : set -> set -> set := fun Xi i => apply_fun Xi i.
-Definition product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
-Definition product_space : set -> set -> set := fun I Xi =>
-  {f :e Power (Union Xi)|
-     function_on f I (Union Xi) /\
-     forall i:set, i :e I -> apply_fun f i :e apply_fun Xi i}.
-Definition product_topology_full : set -> set -> set := fun I Xi =>
-  generated_topology (product_space I Xi) Empty.
-Definition box_topology : set -> set -> set := fun I Xi =>
-  product_topology_full I Xi.
-Definition countable_product_space : set -> set -> set := fun I Xi =>
-  product_space I Xi.
-Definition countable_product_topology : set -> set -> set := fun I Xi =>
-  product_topology_full I Xi.
-Definition euclidean_space : set -> set := fun n => product_space n (const_family n R).
-Definition euclidean_topology : set -> set := fun n => product_topology_full n (const_family n R).
 Definition real_sequences : set := Power R.
 Definition uniform_metric_Romega : set := Eps_i (fun d => metric_on real_sequences d).
 Definition uniform_topology : set := metric_topology real_sequences uniform_metric_Romega.
