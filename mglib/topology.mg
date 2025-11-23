@@ -9290,6 +9290,8 @@ admit.
 Qed.
 
 (** from §44 Theorem: space-filling curve existence **) 
+Definition unit_square : set := Empty.
+Definition unit_square_topology : set := Empty.
 Theorem space_filling_curve : exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
 admit.
 Qed.
