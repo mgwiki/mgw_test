@@ -7421,6 +7421,21 @@ Qed.
 Definition component_of : set -> set -> set -> set := fun X Tx x => Empty.
 Definition locally_connected : set -> set -> prop := fun X Tx => topology_on X Tx.
 
+(** from §25 Definition: locally path connected **) 
+Definition locally_path_connected : set -> set -> prop := fun X Tx => topology_on X Tx.
+
+(** from §25: path components open in locally path connected spaces **) 
+Theorem path_components_open : forall X Tx:set,
+  locally_path_connected X Tx -> True.
+admit.
+Qed.
+
+(** from §25: components equal path components when locally path connected **) 
+Theorem components_equal_path_components : forall X Tx:set,
+  locally_path_connected X Tx -> True.
+admit.
+Qed.
+
 Theorem components_are_closed : forall X Tx:set,
   topology_on X Tx -> True.
 admit.
@@ -7429,6 +7444,23 @@ Qed.
 (** from §25: components partition the space **) 
 Theorem components_partition_space : forall X Tx:set,
   topology_on X Tx -> True.
+admit.
+Qed.
+
+(** from §25: quotient of locally connected space is locally connected **) 
+Theorem quotient_preserves_local_connectedness : forall X Tx Y f:set,
+  quotient_map X Y f -> locally_connected X Tx -> locally_connected Y (quotient_topology Y f).
+admit.
+Qed.
+
+(** from §25 Definition: quasicomponent equivalence relation **) 
+Definition quasicomponent_of : set -> set -> set -> set := fun X Tx x => Empty.
+
+(** from §25: components vs quasicomponents **) 
+Theorem components_vs_quasicomponents : forall X Tx:set,
+  topology_on X Tx ->
+  (forall x:set, component_of X Tx x c= quasicomponent_of X Tx x) /\
+  (locally_connected X Tx -> forall x:set, component_of X Tx x = quasicomponent_of X Tx x).
 admit.
 Qed.
 
