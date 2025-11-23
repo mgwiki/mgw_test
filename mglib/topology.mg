@@ -7634,7 +7634,20 @@ claim HBasis : basis_on X C.
            (forall b1 :e C, forall b2 :e C, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e C, x :e b3 /\ b3 c= b1 :/\: b2)
            (andI (C c= Power X) (forall x :e X, exists c :e C, x :e c)
                  (fun c HcC => HTsubPow c (HCsub c HcC))
-                 (fun x HxX => Href X HXT x HxX))
+                 (fun x HxX =>
+                    let Hex := Href X HXT x HxX in
+                    apply Hex.
+                    let c. assume Hpair.
+                    claim HcC : c :e C.
+                    { exact (andEL (c :e C) (x :e c /\ c c= X) Hpair). }
+                    claim Hcprop : x :e c /\ c c= X.
+                    { exact (andER (c :e C) (x :e c /\ c c= X) Hpair). }
+                    claim Hxc : x :e c.
+                    { exact (andEL (x :e c) (c c= X) Hcprop). }
+                    witness c.
+                    apply andI.
+                    - exact HcC.
+                    - exact Hxc))
            (fun c1 Hc1C => fun c2 Hc2C => fun x Hxc1 => fun Hxc2 =>
               Href (c1 :/\: c2)
                    (HInterClosed c1 (HCsub c1 Hc1C) c2 (HCsub c2 Hc2C))
