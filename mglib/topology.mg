@@ -6794,6 +6794,28 @@ Theorem basis_finer_equiv_condition : forall X B B':set,
 admit.
 Qed.
 
+Theorem basis_from_open_subcollection : forall X T C:set,
+  topology_on X T ->
+  (forall c :e C, c :e T) ->
+  (forall U :e T, forall x :e U, exists c :e C, x :e c /\ c c= U) ->
+  basis_on X C /\ generated_topology X C = T.
+admit.
+Qed.
+
+Theorem union_of_basis_equals_open : forall X B:set,
+  basis_on X B ->
+  generated_topology X B = {Union Fam|Fam :e Power B}.
+admit.
+Qed.
+
+Theorem topology_eq_sym : forall X T1 T2:set, topology_eq X T1 T2 -> topology_eq X T2 T1.
+admit.
+Qed.
+
+Theorem topology_eq_trans : forall X T1 T2 T3:set, topology_eq X T1 T2 -> topology_eq X T2 T3 -> topology_eq X T1 T3.
+admit.
+Qed.
+
 Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
   topology_on X T1 /\ topology_on X T2 /\ T1 = T2.
 
