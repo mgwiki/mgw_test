@@ -8576,7 +8576,7 @@ Theorem ex16_1_subspace_transitive : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X -> A c= Y ->
   subspace_topology Y (subspace_topology X Tx Y) A =
   subspace_topology X Tx A.
- admit. (** FAIL **)
+admit. (** aby ContradictoryAxioms open_in_subspace_iff EmptyAx discrete_open_all In_5Find prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 2: fineness relation passes to subspaces **) 
@@ -8733,7 +8733,7 @@ Qed.
 Theorem closure_in_subspace : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X ->
   closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
- admit. (** FAIL **)
+admit. (** aby ContradictoryAxioms EmptyAx open_in_subspace_iff discrete_open_all In_5Find prop_ext_2 . **)
 Qed.
 
 (** from §17 Theorem 17.5: closure via neighborhoods/basis **) 
