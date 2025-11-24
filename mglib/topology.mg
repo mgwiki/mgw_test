@@ -8039,41 +8039,38 @@ claim Hgoal :
         x :e b1 -> x :e b2 ->
         exists b3 :e singleton_basis X, x :e b3 /\ b3 c= b1 :/\: b2).
 { apply andI.
-  - (* singleton sets are subsets of X *)
-    let b. assume HbB.
-    apply PowerI.
-    let y. assume Hyb.
-    destruct (ReplE X (fun x0 : set => {x0,x0}) b HbB) as [x [HxX HbEq]].
-    rewrite HbEq in Hyb.
-    apply (UPairE y x x Hyb).
-    { intro Hyx. rewrite Hyx. exact HxX. }
-    { intro Hyx. rewrite Hyx. exact HxX. }
-  - apply andI.
-    + (* every point lies in some singleton *)
-      let x. assume HxX.
-      witness {x,x}.
-      apply andI.
-      * exact (ReplI X (fun x0 : set => {x0,x0}) x HxX).
-      * exact (UPairI1 x x).
-    + (* intersections around a point refine to a singleton containing it *)
-      let b1. let b2. let x.
-      assume Hb1 Hb2 Hx1 Hx2.
-      destruct (ReplE X (fun x0 : set => {x0,x0}) b1 Hb1) as [x1 [Hx1X Hb1Eq]].
-      destruct (ReplE X (fun x0 : set => {x0,x0}) b2 Hb2) as [x2 [Hx2X Hb2Eq]].
-      claim HxX : x :e X.
-      { rewrite Hb1Eq in Hx1.
-        apply (UPairE x x1 x1 Hx1).
-        { intro Hxx1. rewrite Hxx1. exact Hx1X. }
-        { intro Hxx1. rewrite Hxx1. exact Hx1X. } }
-      witness {x,x}.
-      apply andI.
-      * exact (ReplI X (fun x0 : set => {x0,x0}) x HxX).
-      * apply andI.
-        { exact (UPairI1 x x). }
-        { let y. assume Hy.
-          apply (UPairE y x x Hy).
-          { intro Hyx. rewrite Hyx. apply binintersectI; assumption. }
-          { intro Hyx. rewrite Hyx. apply binintersectI; assumption. } } } }
+  let b. assume HbB.
+  apply PowerI.
+  let y. assume Hyb.
+  destruct (ReplE X (fun x0 : set => {x0,x0}) b HbB) as [x [HxX HbEq]].
+  rewrite HbEq in Hyb.
+  apply (UPairE y x x Hyb).
+  { intro Hyx. rewrite Hyx. exact HxX. }
+  { intro Hyx. rewrite Hyx. exact HxX. }
+  apply andI.
+  let x. assume HxX.
+  witness {x,x}.
+  apply andI.
+  * exact (ReplI X (fun x0 : set => {x0,x0}) x HxX).
+  * exact (UPairI1 x x).
+  let b1. let b2. let x.
+  assume Hb1 Hb2 Hx1 Hx2.
+  destruct (ReplE X (fun x0 : set => {x0,x0}) b1 Hb1) as [x1 [Hx1X Hb1Eq]].
+  destruct (ReplE X (fun x0 : set => {x0,x0}) b2 Hb2) as [x2 [Hx2X Hb2Eq]].
+  claim HxX : x :e X.
+  { rewrite Hb1Eq in Hx1.
+    apply (UPairE x x1 x1 Hx1).
+    { intro Hxx1. rewrite Hxx1. exact Hx1X. }
+    { intro Hxx1. rewrite Hxx1. exact Hx1X. } }
+  witness {x,x}.
+  apply andI.
+  * exact (ReplI X (fun x0 : set => {x0,x0}) x HxX).
+  * apply andI.
+    { exact (UPairI1 x x). }
+    { let y. assume Hy.
+      apply (UPairE y x x Hy).
+      { intro Hyx. rewrite Hyx. apply binintersectI; assumption. }
+      { intro Hyx. rewrite Hyx. apply binintersectI; assumption. } } }
 exact Hgoal.
 Qed.
 
