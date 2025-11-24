@@ -6520,13 +6520,15 @@ Theorem closed_of_open_complement : forall X T U:set,
 let X T U.
 assume Htop: topology_on X T.
 assume HU: U :e T.
-prove topology_on X T /\ exists U0 :e T, X :\: U = X :\: U0.
+prove topology_on X T /\ (X :\: U) c= X /\ exists U0 :e T, X :\: U = X :\: U0.
 apply andI.
 - exact Htop.
-- witness U.
-  apply andI.
-  - exact HU.
-  - reflexivity.
+- apply andI.
+  * apply setminus_Subq.
+  * witness U.
+    apply andI.
+    { exact HU. }
+    { reflexivity. }
 Qed.
 
 (** from §12: “finer than” / “coarser than” topologies **)
