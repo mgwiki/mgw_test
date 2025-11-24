@@ -1677,15 +1677,17 @@ Conj ex13_8a_rational_intervals_basis_standard : Ap Ap and Ap Ap basis_on R rati
 Def rational_halfopen_intervals_basis : set
  := Ap Ap famunion K_set Lam q1 set Ap Ap Prim 5 K_set Lam x1 set Ap Ap halfopen_interval_left q1 x1
 Conj ex13_8b_halfopen_rational_basis_topology : Ap Ap and Ap Ap basis_on R rational_halfopen_intervals_basis Imp Eq set Ap Ap generated_topology R rational_halfopen_intervals_basis R_upper_limit_topology All p Prop p
+Def order_rel : TpArr set TpArr set TpArr set Prop
+ := Lam X set Lam a set Lam b set Ap Ap or Ap Ap and Eq set X R Ap Ap Rlt a b Ap Ap and Eq set X Ap Ap OrderedPair R R Ex x1 set Ex x2 set Ex x3 set Ex x4 set Ap Ap and Ap Ap and Eq set a Ap Ap OrderedPair x1 x2 Eq set b Ap Ap OrderedPair x3 x4 Ap Ap or Ap Ap Rlt x1 x3 Ap Ap and Eq set x1 x3 Ap Ap Rlt x2 x4
 Def order_topology_basis : TpArr set set
- := Lam X set Ap Prim 4 X
+ := Lam X set Ap Ap binunion Ap Ap binunion Ap Ap Sep Ap Prim 4 X Lam x7 set Ex x8 set Ap Ap and Ap Ap Prim 1 x8 X Ex x9 set Ap Ap and Ap Ap Prim 1 x9 X Eq set x7 Ap Ap Sep X Lam x10 set Ap Ap and Ap Ap Ap order_rel X x8 x10 Ap Ap Ap order_rel X x10 x9 Ap Ap Sep Ap Prim 4 X Lam x4 set Ex x5 set Ap Ap and Ap Ap Prim 1 x5 X Eq set x4 Ap Ap Sep X Lam x6 set Ap Ap Ap order_rel X x6 x5 Ap Ap Sep Ap Prim 4 X Lam x1 set Ex x2 set Ap Ap and Ap Ap Prim 1 x2 X Eq set x1 Ap Ap Sep X Lam x3 set Ap Ap Ap order_rel X x2 x3
 Def order_topology : TpArr set set
- := Lam X set Ap Ap generated_topology X Ap Prim 4 X
+ := Lam X set Ap Ap generated_topology X Ap order_topology_basis X
 Conj order_topology_is_topology : All x1 set Ap Ap topological_space x1 Ap order_topology x1
 Def open_ray_upper : TpArr set TpArr set set
- := Lam X set Lam _ set X
+ := Lam X set Lam a set Ap Ap Sep X Lam x1 set Ap Ap Ap order_rel X a x1
 Def open_ray_lower : TpArr set TpArr set set
- := Lam X set Lam _ set X
+ := Lam X set Lam a set Ap Ap Sep X Lam x1 set Ap Ap Ap order_rel X x1 a
 Conj open_rays_subbasis_for_order_topology : All x1 set Ex x2 set Eq set Ap Ap generated_topology x1 x2 Ap order_topology x1
 Conj standard_topology_is_order_topology : Eq set Ap order_topology R R_standard_topology
 Def R2_dictionary_order_topology : set
@@ -1901,7 +1903,7 @@ Def separation_of : TpArr set TpArr set TpArr set Prop
 Def connected_space : TpArr set TpArr set Prop
  := Lam X set Lam Tx set Ap Ap and Ap Ap topological_space X Tx Ap not Ex x1 set Ex x2 set Ap Ap and Ap Ap and Ap Ap and Ap Ap Prim 1 x1 Tx Ap Ap Prim 1 x2 Tx Ap Ap Ap separation_of X x1 x2 Eq set Ap Ap binunion x1 x2 X
 Conj connected_iff_no_nontrivial_clopen : All x1 set All x2 set Ap Ap iff Ap Ap connected_space x1 x2 Ap not Ex x3 set Ap Ap and Ap Ap and Ap Ap and Imp Eq set x3 Prim 2 All p Prop p Imp Eq set x3 x1 All p Prop p Ap Ap Ap open_set x1 x2 x3 Ap Ap Ap closed_in x1 x2 x3
-Conj separation_subspace_limit_points : All x1 set All x2 set All x3 set Imp Ap Ap topological_space x1 x2 Ex x4 set Ex x5 set Ap Ap and Ap Ap and Ap Ap and Ap Ap and Eq set Ap Ap binintersect x4 x5 Prim 2 Eq set Ap Ap binunion x4 x5 x3 Ap Ap Ap open_set x1 x2 x4 Ap Ap Ap open_set x1 x2 x5 Ex x6 set Ex x7 set Ap Ap and Ap Ap and Ap Ap and Ap Ap Ap Ap limit_point_of x1 x2 x4 x6 Ap Ap Ap Ap limit_point_of x1 x2 x5 x7 Ap Ap Prim 1 x6 x3 Ap Ap Prim 1 x7 x3
+Conj separation_subspace_limit_points : All x1 set All x2 set All x3 set All x4 set All x5 set Imp Ap Ap topological_space x1 x2 Imp Eq set Ap Ap binintersect x4 x5 Prim 2 Imp Eq set Ap Ap binunion x4 x5 x3 Imp Ap Ap Ap open_set x1 x2 x4 Imp Ap Ap Ap open_set x1 x2 x5 Ex x6 set Ex x7 set Ap Ap and Ap Ap and Ap Ap and Ap Ap Ap Ap limit_point_of x1 x2 x4 x6 Ap Ap Ap Ap limit_point_of x1 x2 x5 x7 Ap Ap Prim 1 x6 x3 Ap Ap Prim 1 x7 x3
 Conj connected_subset_in_separation_side : All x1 set All x2 set All x3 set All x4 set All x5 set Imp Ap Ap topological_space x1 x2 Imp Ap Ap connected_space x5 x2 Imp Eq set Ap Ap binintersect x3 x4 Prim 2 Imp Eq set Ap Ap binunion x3 x4 x1 Imp Ap Ap Ap open_set x1 x2 x3 Imp Ap Ap Ap open_set x1 x2 x4 Ap Ap or Ap Ap sequence_in x5 x3 Ap Ap sequence_in x5 x4
 Conj union_connected_common_point : All x1 set All x2 set All x3 set Imp Ap Ap topological_space x1 x2 Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Ap Ap connected_space x6 Ap Ap Ap subspace_topology x1 x2 x6 Imp Ex x4 set All x5 set Imp Ap Ap Prim 1 x5 x3 Ap Ap Prim 1 x4 x5 Ap Ap connected_space Ap Prim 3 x3 Ap Ap Ap subspace_topology x1 x2 Ap Prim 3 x3
 Conj connected_with_limit_points : All x1 set All x2 set All x3 set All x4 set Imp Ap Ap topological_space x1 x2 Imp Ap Ap connected_space x3 Ap Ap Ap subspace_topology x1 x2 x3 Imp Ap Ap Ap Ap limit_point_of x1 x2 x3 x4 Ap Ap connected_space Ap Ap binunion x3 Ap Sing x4 Ap Ap Ap subspace_topology x1 x2 Ap Ap binunion x3 Ap Sing x4
