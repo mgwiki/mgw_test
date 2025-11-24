@@ -8576,7 +8576,7 @@ Theorem ex16_1_subspace_transitive : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X -> A c= Y ->
   subspace_topology Y (subspace_topology X Tx Y) A =
   subspace_topology X Tx A.
-admit. (** aby ContradictoryAxioms EmptyAx open_in_subspace_iff discrete_open_all In_5Find prop_ext_2 . **)
+admit. (**  aby  open_in_subspace_iff EmptyAx discrete_open_all In_5Find prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 2: fineness relation passes to subspaces **) 
@@ -8598,7 +8598,7 @@ Definition interval_E : set := open_interval (Power (Power Empty)) (Power (Power
 Theorem ex16_3_open_sets_subspace : forall X Tx Y:set,
   topology_on X Tx -> Y c= X ->
   forall U:set, open_in Y (subspace_topology X Tx Y) U -> exists V:set, open_in X Tx V /\ U = V :/\: Y.
-admit. (** aby ContradictoryAxioms Self_5FIn_5FPower discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
+admit. (**  aby  Self_5FIn_5FPower discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
 Qed.
 
 (** from §16 Exercise 4: projections are open maps **) 
@@ -8663,7 +8663,7 @@ Theorem ex16_7_convex_interval_or_ray : forall A:set,
      exists a b:set, A = open_interval a b \/
        A = {x :e R|Rlt a x} \/
        A = {x :e R|Rlt x b}).
-admit. (** aby ContradictoryAxioms top_abc_2�f EmptyAx open_in_subspace_iff discrete_open_all In_5Fno2cycle eq_1_Sing0 not_ordinal_Sing1 prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
