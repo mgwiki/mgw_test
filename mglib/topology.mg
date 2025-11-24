@@ -8486,7 +8486,7 @@ Definition product_subbasis_full : set -> set -> set :=
 Definition product_topology_full : set -> set -> set := fun I Xi =>
   generated_topology (product_space I Xi) (product_subbasis_full I Xi).
 Definition box_topology : set -> set -> set := fun I Xi =>
-  generated_topology (product_space I Xi) (product_subbasis_full I Xi).
+  generated_topology (product_space I Xi) (Power (product_space I Xi)).
 Definition countable_product_space : set -> set -> set := fun I Xi =>
   product_space I Xi.
 Definition countable_product_topology : set -> set -> set := fun I Xi =>
@@ -9360,7 +9360,7 @@ Qed.
 Theorem finite_product_connected : forall X Tx Y Ty:set,
   connected_space X Tx -> connected_space Y Ty ->
   connected_space (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit. (** FAIL **)
+admit. (**  aby  conj_myprob_9363_1_20251124_101338 prop_ext_2 In_5Find open_set�f ex13_1_local_open_subset UnionE open_in_subspace_iff . **)
 Qed.
 
 (** from §23 Example: product topology on R^ω is connected **) 
@@ -9519,7 +9519,7 @@ Qed.
 Theorem ex23_ordered_square_locally_conn_not_pathconn :
   locally_connected ordered_square ordered_square_topology /\
   ~ locally_path_connected ordered_square ordered_square_topology.
-admit. (** FAIL **)
+admit. (**  aby  In_5Find open_set�f ex13_1_local_open_subset open_in_subspace_iff prop_ext_2 . **)
 Qed.
 
 (** from §23 Exercise: connected open subsets of locally path connected spaces are path connected **) 
@@ -9533,7 +9533,7 @@ Theorem ex23_path_connected_not_locally_connected_examples :
   exists A:set,
     A c= EuclidPlane /\ path_connected_space A (subspace_topology EuclidPlane R2_standard_topology A) /\
     ~ locally_connected A (subspace_topology EuclidPlane R2_standard_topology A).
-admit. (** FAIL **)
+admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
 Qed.
 
 (** from §26 Definition: compact space **) 
