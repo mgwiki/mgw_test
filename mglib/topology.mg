@@ -8040,7 +8040,7 @@ claim Hgoal :
         exists b3 :e singleton_basis X, x :e b3 /\ b3 c= b1 :/\: b2).
 { apply andI.
   let b. assume HbB.
-  apply PowerI.
+  apply (PowerI X b).
   let y. assume Hyb.
   destruct (ReplE X (fun x0 : set => {x0,x0}) b HbB) as [x [HxX HbEq]].
   rewrite HbEq in Hyb.
