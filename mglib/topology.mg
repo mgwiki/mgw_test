@@ -9533,7 +9533,7 @@ Qed.
 Theorem ex23_ordered_square_locally_conn_not_pathconn :
   locally_connected ordered_square ordered_square_topology /\
   ~ locally_path_connected ordered_square ordered_square_topology.
- admit. (** aby ContradictoryAxioms In_5Find open_in_subspace_iff closure_characterization In_5Fno2cycle connected_iff_no_nontrivial_clopen ordered_square_subspace_topology�f ex16_10_compare_topologies_on_square prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §23 Exercise: connected open subsets of locally path connected spaces are path connected **) 
