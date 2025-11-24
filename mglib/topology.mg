@@ -9533,7 +9533,7 @@ Qed.
 Theorem ex23_ordered_square_locally_conn_not_pathconn :
   locally_connected ordered_square ordered_square_topology /\
   ~ locally_path_connected ordered_square ordered_square_topology.
-admit. (**  aby  In_5Find open_in_subspace_iff closure_characterization In_5Fno2cycle connected_iff_no_nontrivial_clopen ordered_square_subspace_topology�f ex16_10_compare_topologies_on_square prop_ext_2 . **)
+ admit. (** aby ContradictoryAxioms In_5Find open_in_subspace_iff closure_characterization In_5Fno2cycle connected_iff_no_nontrivial_clopen ordered_square_subspace_topology�f ex16_10_compare_topologies_on_square prop_ext_2 . **)
 Qed.
 
 (** from §23 Exercise: connected open subsets of locally path connected spaces are path connected **) 
@@ -10024,7 +10024,7 @@ Definition R_K : set := R.
 (** LATEX VERSION: The K-topology on ℝ is Hausdorff but not regular. **)
 Theorem RK_Hausdorff_not_regular :
   Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
-admit. (**  aby  Hausdorff_5Fspace_def ex17_10_order_topology_Hausdorff In_5Fno2cycle R_5FK_5Ftopology_def ex17_17_closures_in_lower_limit_and_C_topology prop_ext_2 . **)
+ admit. (** aby ContradictoryAxioms Hausdorff_5Fspace_def ex17_10_order_topology_Hausdorff In_5Fno2cycle R_5FK_5Ftopology_def ex17_17_closures_in_lower_limit_and_C_topology prop_ext_2 . **)
 Qed.
 
 (** from §31 Example 2: Sorgenfrey line normal **) 
