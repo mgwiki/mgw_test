@@ -8463,7 +8463,7 @@ Theorem product_subbasis_from_projections : forall X Tx Y Ty:set,
   exists S:set,
     S = product_subbasis X Tx Y Ty /\
     generated_topology (OrderedPair X Y) S = product_topology X Tx Y Ty.
-admit. (**  aby  product_subbasis�f product_topology�f generated_topology�f conj_myprob_8466_1_20251123_230252 . **)
+admit. (** FAIL **)
 Qed.
 
 (** helper: function evaluation as graph lookup **) 
@@ -8533,10 +8533,10 @@ Qed.
 (** from §16 Lemma 16.2: openness inherited when subspace is open **) 
 (** LATEX VERSION: Lemma 16.2: If Y itself is open in X, any set open in the subspace Y is open in X. **)
 Theorem open_in_subspace_if_ambient_open : forall X Tx Y U:set,
-  topology_on X Tx -> Y :e Tx ->
+  topology_on X Tx -> Y :e Tx -> U c= Y ->
   open_in Y (subspace_topology X Tx Y) U ->
   U :e Tx.
-admit. (** aby ContradictoryAxioms EmptyAx open_in_subspace_iff open_set�f ex13_1_local_open_subset prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §16 Theorem 16.3: product of subspaces equals subspace of product **) 
@@ -8582,9 +8582,9 @@ Qed.
 (** from §16 Exercise 2: fineness relation passes to subspaces **) 
 (** LATEX VERSION: Exercise 2: If T'⊂T on X, then the induced subspace topology from T' on Y is contained in that from T. **)
 Theorem ex16_2_finer_subspaces : forall X T T' Y:set,
-  topology_on X T -> topology_on X T' -> T' c= T ->
+  topology_on X T -> topology_on X T' -> T' c= T -> Y c= X ->
   subspace_topology X T' Y c= subspace_topology X T Y.
-admit. (**  aby  prop_ext_2 open_in_subspace_iff EmptyAx subspace_topology�f conj_myprob_8587_1_20251123_230838 . **)
+admit. (**  aby  open_in_subspace_iff conj_myprob_8587_1_20251124_004939 EmptyAx . **)
 Qed.
 
 (** from §16 Exercise 3: openness of specific sets in subspace [-1,1] **) 
@@ -8612,7 +8612,7 @@ Theorem ex16_4_projections_open : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   forall U:set, U :e product_topology X Tx Y Ty ->
     open_in X Tx (projection_image1 X Y U) /\ open_in Y Ty (projection_image2 X Y U).
-admit. (** aby ContradictoryAxioms EmptyAx open_in_subspace_iff open_set�f ex13_1_local_open_subset prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §16 Exercise 5(a): product topology monotonicity **) 
