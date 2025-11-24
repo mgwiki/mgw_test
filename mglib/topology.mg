@@ -6511,7 +6511,7 @@ Definition open_in : set -> set -> set -> prop := fun X T U =>
 (** from §12: closed set as complement of open set **)
 (** LATEX VERSION: A set C is closed in X (with topology T) if there exists an open set U∈T whose complement in X equals C. **)
 Definition closed_in : set -> set -> set -> prop := fun X T C =>
-  topology_on X T /\ C c= X /\ exists U :e T, C = X :\: U.
+  topology_on X T /\ (C c= X /\ exists U :e T, C = X :\: U).
 
 (** from §12: complement of open set is closed **)
 (** LATEX VERSION: If U is open in topology T on X, then X\\U is closed in that topology. **)
