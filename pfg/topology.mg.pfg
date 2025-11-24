@@ -1730,11 +1730,11 @@ Def product_space : TpArr set TpArr set set
 Def product_topology_full : TpArr set TpArr set set
  := Lam I set Lam Xi set Ap Ap generated_topology Ap Ap product_space I Xi Prim 2
 Def box_topology : TpArr set TpArr set set
- := Lam I set Lam Xi set Ap Ap product_topology_full I Xi
+ := Lam I set Lam Xi set Ap Ap generated_topology Ap Ap product_space I Xi Ap Prim 4 Ap Ap product_space I Xi
 Def countable_product_space : TpArr set TpArr set set
  := Lam I set Lam Xi set Ap Ap product_space I Xi
 Def countable_product_topology : TpArr set TpArr set set
- := Lam I set Lam Xi set Ap Ap box_topology I Xi
+ := Lam I set Lam Xi set Ap Ap product_topology_full I Xi
 Def euclidean_space : TpArr set set
  := Lam n set Ap Ap countable_product_space n Ap Ap const_family n R
 Def euclidean_topology : TpArr set set
@@ -1906,7 +1906,7 @@ Conj interval_connected : Ap Ap connected_space unit_interval R_standard_topolog
 Conj connected_subsets_real_are_intervals : All x1 set Imp Ap Ap sequence_in x1 unit_interval Imp Ap Ap connected_space x1 Ap Ap Ap subspace_topology unit_interval R_standard_topology x1 All x2 set All x3 set All x4 set Imp Ap Ap Prim 1 x2 x1 Imp Ap Ap Prim 1 x3 x1 Imp Ap Ap Prim 1 x4 unit_interval Imp Ap Ap or Ap Ap and Ap Ap Rlt x2 x4 Ap Ap Rlt x4 x3 Ap Ap and Ap Ap Rlt x3 x4 Ap Ap Rlt x4 x2 Ap Ap Prim 1 x4 x1
 Conj finite_product_connected : All x1 set All x2 set All x3 set All x4 set Imp Ap Ap connected_space x1 x2 Imp Ap Ap connected_space x3 x4 Ap Ap connected_space Ap Ap rectangle_set x1 x3 Ap Ap Ap Ap product_topology x1 x2 x3 x4
 Conj R_omega_product_connected : Ap Ap connected_space Ap Ap countable_product_space Zplus Ap Ap const_family Zplus unit_interval Ap Ap countable_product_topology Zplus Ap Ap const_family Zplus unit_interval
-Conj R_omega_box_not_connected : Ap not Ap Ap connected_space Ap Ap countable_product_space Zplus Ap Ap const_family Zplus unit_interval Ap Ap countable_product_topology Zplus Ap Ap const_family Zplus unit_interval
+Conj R_omega_box_not_connected : Ap not Ap Ap connected_space Ap Ap countable_product_space Zplus Ap Ap const_family Zplus unit_interval Ap Ap box_topology Zplus Ap Ap const_family Zplus unit_interval
 Def path_between : TpArr set TpArr set TpArr set TpArr set Prop
  := Lam X set Lam x set Lam y set Lam p set Ap Ap and Ap Ap and Ap Ap Ap function_on p unit_interval X Eq set Ap Ap product_component_topology p Prim 2 x Eq set Ap Ap product_component_topology p Ap ordsucc Prim 2 y
 Def path_connected_space : TpArr set TpArr set Prop
@@ -1936,7 +1936,7 @@ Def quasicomponent_of : TpArr set TpArr set TpArr set set
  := Lam X set Lam Tx set Lam x set Ap Ap Sep X Lam x1 set All x2 set Imp Ap Ap Ap open_set X Tx x2 Imp Ap Ap Ap closed_in X Tx x2 Imp Ap Ap Prim 1 x x2 Ap Ap Prim 1 x1 x2
 Conj components_vs_quasicomponents : All x1 set All x2 set Imp Ap Ap topological_space x1 x2 Ap Ap and All x4 set Ap Ap sequence_in Ap Ap Ap component_of x1 x2 x4 Ap Ap Ap quasicomponent_of x1 x2 x4 Imp Ap Ap locally_connected x1 x2 All x3 set Eq set Ap Ap Ap component_of x1 x2 x3 Ap Ap Ap quasicomponent_of x1 x2 x3
 Conj ex23_Rl_components : Ap Ap and Eq set Ap Ap Ap component_of unit_interval R_upper_limit_topology Prim 2 Ap Sing Prim 2 All x1 set Imp Ap Ap Prim 1 x1 unit_interval Eq set Ap Ap Ap component_of unit_interval R_upper_limit_topology x1 Ap Sing x1
-Conj ex23_Romega_components : Ap Ap and Eq set Ap Ap Ap component_of Ap Ap countable_product_space Zplus Ap Ap const_family Zplus unit_interval Ap Ap countable_product_topology Zplus Ap Ap const_family Zplus unit_interval Ap Ap const_family Zplus Prim 2 Ap Ap countable_product_space Zplus Ap Ap const_family Zplus unit_interval Eq set Ap Ap Ap component_of Ap Ap countable_product_space Zplus Ap Ap const_family Zplus unit_interval Ap Ap countable_product_topology Zplus Ap Ap const_family Zplus unit_interval Ap Ap const_family Zplus Prim 2 Ap Ap Sep Ap Ap countable_product_space Zplus Ap Ap const_family Zplus unit_interval Lam x1 set Ex x2 set Ap Ap and Ap finite x2 All x3 set Imp Ap Ap Prim 1 x3 Ap Ap setminus Zplus x2 Eq set Ap Ap product_component_topology x1 x3 Prim 2
+Conj ex23_Romega_components : Ap Ap and Eq set Ap Ap Ap component_of Ap Ap countable_product_space Zplus Ap Ap const_family Zplus unit_interval Ap Ap countable_product_topology Zplus Ap Ap const_family Zplus unit_interval Ap Ap const_family Zplus Prim 2 Ap Ap countable_product_space Zplus Ap Ap const_family Zplus unit_interval Eq set Ap Ap Ap component_of Ap Ap countable_product_space Zplus Ap Ap const_family Zplus unit_interval Ap Ap box_topology Zplus Ap Ap const_family Zplus unit_interval Ap Ap const_family Zplus Prim 2 Ap Ap Sep Ap Ap countable_product_space Zplus Ap Ap const_family Zplus unit_interval Lam x1 set Ex x2 set Ap Ap and Ap finite x2 All x3 set Imp Ap Ap Prim 1 x3 Ap Ap setminus Zplus x2 Eq set Ap Ap product_component_topology x1 x3 Prim 2
 Conj ex23_ordered_square_locally_conn_not_pathconn : Ap Ap and Ap Ap locally_connected ordered_square_open_strip ordered_square_topology Ap not Ap Ap locally_path_connected ordered_square_open_strip ordered_square_topology
 Conj ex23_connected_open_sets_path_connected : All x1 set All x2 set All x3 set Imp Ap Ap locally_path_connected x1 x2 Imp Ap Ap Ap open_set x1 x2 x3 Imp Ap Ap connected_space x3 Ap Ap Ap subspace_topology x1 x2 x3 Ap Ap path_connected_space x3 Ap Ap Ap subspace_topology x1 x2 x3
 Conj ex23_path_connected_not_locally_connected_examples : Ex x1 set Ap Ap and Ap Ap and Ap Ap sequence_in x1 ordered_square_open_strip Ap Ap path_connected_space x1 Ap Ap Ap subspace_topology ordered_square_open_strip R2_standard_topology x1 Ap not Ap Ap locally_connected x1 Ap Ap Ap subspace_topology ordered_square_open_strip R2_standard_topology x1
@@ -2280,7 +2280,7 @@ Def ex33_7_locally_compact_Hausdorff_completely_regular : set
 Def ex33_8_compact_subset_continuous_separation : set
  := Ap Ap Sep Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 R_K Lam x1 set Ex x2 set Ex x3 set Ex x4 set Ex x5 set Ex x6 set Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap and Eq set x1 Ap Ap rectangle_set Ap Ap rectangle_set Ap Ap rectangle_set x2 x3 Ap Ap rectangle_set x4 x5 x6 Ap Ap normal_space x2 x3 Ap Ap compact_space x4 Ap Ap Ap subspace_topology x2 x3 x4 Ap Ap Ap closed_in x2 x3 x5 Eq set Ap Ap binintersect x4 x5 Prim 2 Ap Ap Ap function_on x6 x2 R_K Ap Ap Ap Ap Ap continuous_map x2 x3 R_K R_standard_topology x6 All x8 set Imp Ap Ap Prim 1 x8 x4 Eq set Ap Ap countable_product_component_topology x6 x8 Prim 2 All x7 set Imp Ap Ap Prim 1 x7 x5 Eq set Ap Ap countable_product_component_topology x6 x7 Ap ordsucc Prim 2
 Def ex33_9_Romega_box_completely_regular : set
- := Ap Ap Sep Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 R_K Lam x1 set Ex x2 set Ex x3 set Ap Ap and Ap Ap and Ap Ap and Eq set x1 Ap Ap rectangle_set x2 x3 Eq set x2 Ap Ap countable_product_space ex32_9_uncountable_product_not_normal Ap Ap const_family ex32_9_uncountable_product_not_normal R_K Eq set x3 Ap Ap countable_product_topology ex32_9_uncountable_product_not_normal Ap Ap const_family ex32_9_uncountable_product_not_normal R_K Ap Ap completely_regular_space x2 x3
+ := Ap Ap Sep Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 R_K Lam x1 set Ex x2 set Ex x3 set Ap Ap and Ap Ap and Ap Ap and Eq set x1 Ap Ap rectangle_set x2 x3 Eq set x2 Ap Ap countable_product_space ex32_9_uncountable_product_not_normal Ap Ap const_family ex32_9_uncountable_product_not_normal R_K Eq set x3 Ap Ap box_topology ex32_9_uncountable_product_not_normal Ap Ap const_family ex32_9_uncountable_product_not_normal R_K Ap Ap completely_regular_space x2 x3
 Def ex33_10_topological_group_completely_regular : set
  := Ap Ap Sep Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 R_K Lam x1 set Ex x2 set Ex x3 set Ap Ap and Ap Ap and Eq set x1 Ap Ap rectangle_set x2 x3 Ap Ap topological_group x2 x3 Ap Ap completely_regular_space x2 x3
 Def ex33_11_regular_not_completely_regular : set
