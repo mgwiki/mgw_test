@@ -8995,14 +8995,16 @@ Theorem identity_continuous : forall X Tx:set,
 admit. (** FAIL **)
 Qed.
 
-(** from §18: composition of continuous maps is continuous **) 
-(** LATEX VERSION: Composition of continuous functions remains continuous. **)
-Theorem composition_continuous : forall X Tx Y Ty Z Tz f g:set,
-  continuous_map X Tx Y Ty f ->
-  continuous_map Y Ty Z Tz g ->
-  continuous_map X Tx Z Tz (Empty).
-admit. (** FAIL **)
-Qed.
+ (** from §18: composition of continuous maps is continuous **) 
+ (** LATEX VERSION: Composition of continuous functions remains continuous. **)
+ Definition compose_fun : set -> set -> set -> set -> set := fun X f g =>
+   {UPair x (apply_fun g (apply_fun f x))|x :e X}.
+ Theorem composition_continuous : forall X Tx Y Ty Z Tz f g:set,
+   continuous_map X Tx Y Ty f ->
+   continuous_map Y Ty Z Tz g ->
+   continuous_map X Tx Z Tz (compose_fun X f g).
+ admit. (** FAIL **)
+ Qed.
 
 (** from §18 Theorem 18.2: rules for constructing continuous functions **) 
 (** LATEX VERSION: Theorem 18.2 provides construction rules preserving continuity. **)
