@@ -9315,11 +9315,10 @@ admit. (** FAIL **)
 Qed.
 
 (** from §23 Lemma 23.1: separations in subspaces via limit points **) 
-Theorem separation_subspace_limit_points : forall X Tx Y:set,
+Theorem separation_subspace_limit_points : forall X Tx Y A B:set,
   topology_on X Tx ->
-  exists A B:set,
-    A :/\: B = Empty /\ A :\/: B = Y /\ open_in X Tx A /\ open_in X Tx B /\
-    exists a b:set, limit_point_of X Tx A a /\ limit_point_of X Tx B b /\ a :e Y /\ b :e Y.
+  A :/\: B = Empty -> A :\/: B = Y -> open_in X Tx A -> open_in X Tx B ->
+  exists a b:set, limit_point_of X Tx A a /\ limit_point_of X Tx B b /\ a :e Y /\ b :e Y.
 admit. (** FAIL **)
 Qed.
 
