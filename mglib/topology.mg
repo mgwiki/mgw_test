@@ -8560,7 +8560,7 @@ Definition ordered_square_subspace_topology : set :=
 
 Theorem ordered_square_not_subspace_dictionary :
   ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
-admit. (** aby ContradictoryAxioms top_abc_2�f discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
+admit. (**  aby  Sep_5FEmpty SepE2 open_in_subspace_iff discrete_open_all Sing_def UPairI1 In_5Fno2cycle prop_ext_2 . **)
 Qed.
 
 (** from §16 Theorem 16.4: convex subspaces share the order topology **) 
@@ -8598,7 +8598,7 @@ Definition interval_E : set := open_interval (Power (Power Empty)) (Power (Power
 Theorem ex16_3_open_sets_subspace : forall X Tx Y:set,
   topology_on X Tx -> Y c= X ->
   forall U:set, open_in Y (subspace_topology X Tx Y) U -> exists V:set, open_in X Tx V /\ U = V :/\: Y.
-admit. (** aby ContradictoryAxioms discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
+admit. (** aby ContradictoryAxioms Self_5FIn_5FPower discrete_open_all In_5Fno2cycle open_in_subspace_iff EmptyAx . **)
 Qed.
 
 (** from §16 Exercise 4: projections are open maps **) 
@@ -8621,7 +8621,7 @@ Theorem ex16_5a_product_monotone : forall X T T' Y U U':set,
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
   T c= T' /\ U c= U' ->
   product_topology X T Y U c= product_topology X T' Y U'.
-admit. (** aby ContradictoryAxioms ex13_8b_halfopen_rational_basis_topology open_in_subspace_iff binintersect_Subq_eq_1 binintersect_com ex13_3b_Tinfty_not_topology binintersect_Subq_2 ex13_6_Rl_RK_not_comparable prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §16 Exercise 5(b): converse question about product fineness **) 
@@ -8689,7 +8689,7 @@ Theorem ex16_10_compare_topologies_on_square :
   ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square /\
   subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square <>
     product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
-admit. (** aby ContradictoryAxioms ex13_6_Rl_RK_not_comparable finer_than_def open_in_subspace_iff Sep_5FEmpty SepE2 prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §17 Definition: interior and closure of a set **) 
