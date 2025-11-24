@@ -8478,10 +8478,15 @@ Definition product_space : set -> set -> set := fun I Xi =>
   {f :e Power (Union Xi)|
      function_on f I (Union Xi) /\
      forall i:set, i :e I -> apply_fun f i :e apply_fun Xi i}.
+Definition product_cylinder : set -> set -> set -> set -> set :=
+  fun I Xi i U =>
+    {f :e product_space I Xi | i :e I /\ U :e apply_fun Xi i /\ apply_fun f i :e U}.
+Definition product_subbasis_full : set -> set -> set :=
+  fun I Xi => \/_ i :e I, {product_cylinder I Xi i U|U :e apply_fun Xi i}.
 Definition product_topology_full : set -> set -> set := fun I Xi =>
-  generated_topology (product_space I Xi) Empty.
+  generated_topology (product_space I Xi) (product_subbasis_full I Xi).
 Definition box_topology : set -> set -> set := fun I Xi =>
-  generated_topology (product_space I Xi) (Power (product_space I Xi)).
+  generated_topology (product_space I Xi) (product_subbasis_full I Xi).
 Definition countable_product_space : set -> set -> set := fun I Xi =>
   product_space I Xi.
 Definition countable_product_topology : set -> set -> set := fun I Xi =>
