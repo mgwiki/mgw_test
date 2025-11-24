@@ -8481,7 +8481,7 @@ Definition product_space : set -> set -> set := fun I Xi =>
 Definition product_topology_full : set -> set -> set := fun I Xi =>
   generated_topology (product_space I Xi) Empty.
 Definition box_topology : set -> set -> set := fun I Xi =>
-  product_topology_full I Xi.
+  generated_topology (product_space I Xi) (Power (product_space I Xi)).
 Definition countable_product_space : set -> set -> set := fun I Xi =>
   product_space I Xi.
 Definition countable_product_topology : set -> set -> set := fun I Xi =>
