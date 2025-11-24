@@ -8032,7 +8032,7 @@ Definition singleton_basis : set -> set := fun X => {{x,x}|x :e X}.
 (** LATEX VERSION: The collection of singletons on X satisfies the two basis axioms. **)
 Theorem singleton_basis_is_basis : forall X:set, basis_on X (singleton_basis X).
 let X.
-unfold basis_on.
+simpl.
 apply andI.
 - (* singleton sets are subsets of X *)
   let b. assume HbB.
