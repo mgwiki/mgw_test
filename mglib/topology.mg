@@ -8284,20 +8284,20 @@ Definition open_interval : set -> set -> set := fun a b => {x :e R|Rlt a x /\ Rl
 Definition halfopen_interval_left : set -> set -> set := fun a b => {x :e R|Rlt a x /\ ~(Rlt b x)}.
 
 Definition R_standard_basis : set :=
-  \/_ a :e R, {open_interval a b|b :e R}.
+  {open_interval a b|a :e R /\ b :e R}.
 
 Definition R_standard_topology : set :=
   generated_topology R R_standard_basis.
 
 Definition R_lower_limit_basis : set :=
-  \/_ a :e R, {halfopen_interval_left a b|b :e R}.
+  {halfopen_interval_left a b|a :e R /\ b :e R}.
 
 Definition R_lower_limit_topology : set :=
   generated_topology R R_lower_limit_basis.
 
 Definition K_set : set := omega.
 Definition R_K_basis : set :=
-  \/_ a :e R, {open_interval a b :\: K_set|b :e R}.
+  {open_interval a b :\: K_set|a :e R /\ b :e R}.
 
 Definition R_K_topology : set :=
   generated_topology R (R_standard_basis :\/: R_K_basis).
@@ -8997,8 +8997,8 @@ Qed.
 
  (** from §18: composition of continuous maps is continuous **) 
  (** LATEX VERSION: Composition of continuous functions remains continuous. **)
- Definition compose_fun : set -> set -> set -> set -> set := fun X f g =>
-   {UPair x (apply_fun g (apply_fun f x))|x :e X}.
+Definition compose_fun : set -> set -> set -> set := fun X f g =>
+  {UPair x (apply_fun g (apply_fun f x))|x :e X}.
  Theorem composition_continuous : forall X Tx Y Ty Z Tz f g:set,
    continuous_map X Tx Y Ty f ->
    continuous_map Y Ty Z Tz g ->
