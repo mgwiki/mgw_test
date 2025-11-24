@@ -8296,7 +8296,10 @@ Definition R_lower_limit_basis : set :=
 Definition R_lower_limit_topology : set :=
   generated_topology R R_lower_limit_basis.
 
-Definition K_set : set := omega.
+Parameter inv_nat : set -> set.
+Axiom inv_nat_real : forall n:set, n :e omega -> inv_nat n :e R.
+
+Definition K_set : set := {inv_nat n|n :e omega}.
 Definition R_K_basis : set :=
   \/_ a :e R, {open_interval a b :\: K_set|b :e R}.
 
