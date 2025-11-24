@@ -9299,11 +9299,11 @@ Theorem continuous_image_connected : forall X Tx Y Ty f:set,
   connected_space X Tx ->
   continuous_map X Tx Y Ty f ->
   connected_space Y Ty.
-admit.
+admit. (**  aby  binunion�f binunion_idl conj_myprob_9302_1_20251124_020904 prop_ext_2 In_5Fno2cycle binunionI1 Repl_5FEmpty ReplE_27 UPairI1 UPairI2 UnionEq binintersect�f open_in_subspace_iff binintersectE open_set�f ex13_1_local_open_subset ReplEq . **)
 Qed.
 
 Theorem interval_connected : connected_space R R_standard_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §24: connected subspaces of ℝ are intervals **) 
@@ -9312,7 +9312,7 @@ Theorem connected_subsets_real_are_intervals : forall A:set,
   connected_space A (subspace_topology R R_standard_topology A) ->
   forall x y z:set, x :e A -> y :e A -> z :e R ->
     (Rlt x z /\ Rlt z y \/ Rlt y z /\ Rlt z x) -> z :e A.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §23 Theorem 23.6: finite products of connected spaces are connected **) 
