@@ -9369,7 +9369,7 @@ Qed.
 Theorem R_omega_box_not_connected :
   ~ connected_space (product_space omega (const_family omega R))
     (box_topology omega (const_family omega R)).
-admit. (** FAIL **)
+admit. (**  aby  Repl_5FEmpty ReplE ReplEq UPairI1 In_5Find open_in_subspace_iff open_set�f ex13_1_local_open_subset In_5Fno2cycle UPairI2 prop_ext_2 . **)
 Qed.
 
 (** from §24 Definition: path and path connectedness **) 
@@ -9383,20 +9383,20 @@ Definition path_connected_space : set -> set -> prop := fun X Tx =>
 (** from §24: path connected implies connected **) 
 Theorem path_connected_implies_connected : forall X Tx:set,
   path_connected_space X Tx -> connected_space X Tx.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (**  aby  conj_myprob_9386_1_20251124_085337 prop_ext_2 open_set�f ex13_1_local_open_subset In_5Find open_in_subspace_iff . **)
 Qed.
 
 (** from §24 Example: punctured euclidean space is path connected (placeholder) **) 
 Theorem punctured_space_path_connected :
   path_connected_space (EuclidPlane :\: {OrderedPair 0 0})
     (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {OrderedPair 0 0})).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §24: continuous image of path connected set is path connected **) 
 Theorem continuous_image_path_connected : forall X Tx Y Ty f:set,
   path_connected_space X Tx -> continuous_map X Tx Y Ty f -> path_connected_space Y Ty.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §24 Definition: path components equivalence relation **) 
@@ -9415,7 +9415,7 @@ Theorem path_components_equivalence_relation : forall X Tx:set,
   (forall x y z:set, x :e X -> y :e X -> z :e X ->
      y :e path_component_of X Tx x -> z :e path_component_of X Tx y ->
      z :e path_component_of X Tx x).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §25 Definition: components and local connectedness **) 
@@ -9455,13 +9455,13 @@ Theorem components_equal_path_components : forall X Tx:set,
   locally_path_connected X Tx ->
   forall x:set, x :e X ->
     path_component_of X Tx x = component_of X Tx x.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 Theorem components_are_closed : forall X Tx:set,
   topology_on X Tx ->
   forall x:set, x :e X -> closed_in X Tx (component_of X Tx x).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §25: components partition the space **) 
@@ -9470,7 +9470,7 @@ Theorem components_partition_space : forall X Tx:set,
   topology_on X Tx ->
   covers X {component_of X Tx x | x :e X} /\
   pairwise_disjoint {component_of X Tx x | x :e X}.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **) 
 Qed.
 
 (** from §25: quotient of locally connected space is locally connected **) 
@@ -9479,7 +9479,7 @@ Theorem quotient_preserves_local_connectedness : forall X Tx Y f:set,
   quotient_map X Tx Y f ->
   locally_connected X Tx ->
   locally_connected Y (quotient_topology X Tx Y f).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §25 Definition: quasicomponent equivalence relation **) 
@@ -9491,14 +9491,14 @@ Theorem components_vs_quasicomponents : forall X Tx:set,
   topology_on X Tx ->
   (forall x:set, component_of X Tx x c= quasicomponent_of X Tx x) /\
   (locally_connected X Tx -> forall x:set, component_of X Tx x = quasicomponent_of X Tx x).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (**  aby  Sep_5FEmpty SepE conj_myprob_9494_1_20251124_090101 separation_subspace_limit_points prop_ext_2 . **)
 Qed.
 
 (** from §23 Exercise: components and path components of ℝℓ **) 
 Theorem ex23_Rl_components :
   component_of R R_lower_limit_topology 0 = {0} /\
   (forall x:set, x :e R -> component_of R R_lower_limit_topology x = {x}).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §23 Exercise: components of ℝ^ω in product/uniform/box topologies **) 
@@ -9507,20 +9507,20 @@ Theorem ex23_Romega_components :
     product_space omega (const_family omega R) /\
   component_of (product_space omega (const_family omega R)) (box_topology omega (const_family omega R)) (const_family omega 0) =
     {f :e product_space omega (const_family omega R) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
-admit. (** ContradictoryAxioms aby  const_family�f R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §23 Exercise: ordered square locally connected but not locally path connected **) 
 Theorem ex23_ordered_square_locally_conn_not_pathconn :
   locally_connected ordered_square ordered_square_topology /\
   ~ locally_path_connected ordered_square ordered_square_topology.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (**  aby  prop_ext_2 In_5Fno2cycle In_5Find open_set�f ex13_1_local_open_subset open_in_subspace_iff . **)
 Qed.
 
 (** from §23 Exercise: connected open subsets of locally path connected spaces are path connected **) 
 Theorem ex23_connected_open_sets_path_connected : forall X Tx U:set,
   locally_path_connected X Tx -> open_in X Tx U -> connected_space U (subspace_topology X Tx U) -> path_connected_space U (subspace_topology X Tx U).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (**  aby  open_in_subspace_iff In_5Find open_set�f ex13_1_local_open_subset conj_myprob_9523_1_20251124_090409 subspace_topology�f subspace_topology_is_topology prop_ext_2 path_connected_space�f . **)
 Qed.
 
 (** from §23 Exercise: examples of path connected but not locally connected subsets of ℝ^2 **) 
@@ -9528,7 +9528,7 @@ Theorem ex23_path_connected_not_locally_connected_examples :
   exists A:set,
     A c= EuclidPlane /\ path_connected_space A (subspace_topology EuclidPlane R2_standard_topology A) /\
     ~ locally_connected A (subspace_topology EuclidPlane R2_standard_topology A).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (**  aby  Sep_5FEmpty SepE EuclidPlane_def dictionary_order_topology_is_topology separation_subspace_limit_points eq_1_Sing0 not_ordinal_Sing1 prop_ext_2 . **)
 Qed.
 
 (** from §26 Definition: compact space **) 
@@ -9554,7 +9554,7 @@ Theorem compact_subspace_via_ambient_covers : forall X Tx Y:set,
   topology_on X Tx ->
   (compact_space Y (subspace_topology X Tx Y) <->
     forall Fam:set, open_cover_of Y Tx Fam -> has_finite_subcover Y Tx Fam).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §26 Theorem 26.2: closed subspaces of compact spaces are compact **) 
@@ -9579,7 +9579,7 @@ Qed.
 (** from §26 Theorem 26.5: compactness preserved under continuous maps **) 
 Theorem continuous_image_compact : forall X Tx Y Ty f:set,
   compact_space X Tx -> continuous_map X Tx Y Ty f -> compact_space Y Ty.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §26: tube lemma used in product compactness **) 
@@ -9591,7 +9591,7 @@ Theorem tube_lemma : forall X Tx Y Ty:set,
   forall N:set, N :e product_topology X Tx Y Ty /\ x0 :e N ->
     exists U:set, U :e Tx /\ x0 :e U /\
       (forall y:set, y :e Y -> OrderedPair U y :e N).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §26 Theorem 26.6: compact-to-Hausdorff bijection is a homeomorphism **) 
@@ -9619,7 +9619,7 @@ Definition bounded_subset_of_reals : set -> prop := fun A =>
 Theorem finite_product_compact : forall X Tx Y Ty:set,
   compact_space X Tx -> compact_space Y Ty ->
   compact_space (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (**  aby  In_5Find ex13_8a_rational_intervals_basis_standard lemma_topology_from_basis separation_subspace_limit_points ex23_ordered_square_locally_conn_not_pathconn prop_ext_2 . **)
 Qed.
 
 (** from §26 Exercises: compactness examples and properties **) 
@@ -9628,7 +9628,7 @@ Theorem ex26_compactness_exercises :
   forall X Tx:set, compact_space X Tx ->
   (closed_in R R_standard_topology unit_interval) /\
   (compact_space unit_interval R_standard_topology).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §26/§27: Heine-Borel on ℝ (closed and bounded sets) **) 
@@ -9645,7 +9645,7 @@ Qed.
 Theorem compact_real_closed_bounded : forall A:set,
   compact_space A (subspace_topology R R_standard_topology A) ->
   closed_in R R_standard_topology A /\ bounded_subset_of_reals A.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §28 Definition: limit point compactness **) 
@@ -9657,14 +9657,14 @@ Definition limit_point_compact : set -> set -> prop := fun X Tx =>
 (** LATEX VERSION: Compact ⇒ limit point compact. **)
 Theorem compact_implies_limit_point_compact : forall X Tx:set,
   compact_space X Tx -> limit_point_compact X Tx.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §28: limit point compactness vs compactness **) 
 (** LATEX VERSION: Limit point compact need not imply compact; provides counterexample placeholder. **)
 Theorem limit_point_compact_not_necessarily_compact :
   exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §29 Definition: local compactness **) 
@@ -9723,7 +9723,7 @@ Theorem cofinal_subset_directed : forall J K:set,
   directed_set J -> K c= J ->
   (forall i:set, i :e J -> exists k:set, k :e K /\ i :e K \/ i :e J) ->
   directed_set K.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from exercises after §29: nets as functions from directed sets **) 
@@ -9760,7 +9760,7 @@ Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
 (** LATEX VERSION: Convergent nets have convergent subnets to same limit. **)
 Theorem subnet_preserves_convergence : forall X Tx net sub x:set,
   net_converges X Tx net x -> subnet_of net sub -> net_converges X Tx sub x.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from exercises after §29: closure via nets **) 
@@ -9768,7 +9768,7 @@ Qed.
 Theorem closure_via_nets : forall X Tx A x:set,
   topology_on X Tx ->
   (x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from exercises after §29: continuity via nets **) 
@@ -9777,7 +9777,7 @@ Theorem continuity_via_nets : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f <->
     forall net:set, net_on net -> forall x:set, net_converges X Tx net x -> net_converges Y Ty net (Empty)).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from exercises after §29: accumulation points and subnets **) 
@@ -9792,7 +9792,7 @@ Qed.
 Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
   topology_on X Tx ->
   (compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Definition 30.1: countable basis at a point / first countable **) 
@@ -9846,7 +9846,7 @@ Theorem first_countable_sequences_detect_continuity : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f ->
     forall seq:set, sequence_in seq X -> converges_to X Tx seq (Empty) -> converges_to Y Ty (image_of f seq) f).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Definition: second-countable space **) 
@@ -9857,14 +9857,14 @@ Definition second_countable_space : set -> set -> prop := fun X Tx =>
 (** from §30 Example 1: R^n has countable basis **) 
 Theorem euclidean_spaces_second_countable : forall n:set,
   second_countable_space (euclidean_space n) (euclidean_topology n).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Example 2: uniform topology on R^omega not second countable **) 
 Theorem Romega_uniform_first_not_second_countable :
   first_countable_space real_sequences uniform_topology /\
   ~ second_countable_space real_sequences uniform_topology.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **) 
@@ -9877,7 +9877,7 @@ Theorem countability_axioms_subspace_product : forall X Tx:set,
     first_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)) /\
   (forall I Xi:set, countable_index_set I -> (forall i:set, second_countable_space Xi (countable_product_component_topology Xi i)) ->
     second_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Definition: dense subset **) 
@@ -9889,7 +9889,7 @@ Theorem countable_basis_implies_Lindelof : forall X Tx:set,
   topology_on X Tx ->
   second_countable_space X Tx ->
   forall U:set, open_cover X Tx U -> exists V:set, countable_subcollection V U /\ covers X V.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Theorem 30.3(b): countable basis yields countable dense subset **) 
@@ -9898,7 +9898,7 @@ Theorem countable_basis_implies_separable : forall X Tx:set,
   topology_on X Tx ->
   second_countable_space X Tx ->
   exists D:set, countable_set D /\ dense_in D X Tx.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Example 3: Sorgenfrey line countability properties **) 
@@ -9908,7 +9908,7 @@ Theorem Sorgenfrey_line_countability :
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
   Lindelof_space Sorgenfrey_line Sorgenfrey_topology /\
   ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** placeholders for later refinement of product/separation constructions **) 
@@ -9951,7 +9951,7 @@ Definition metrizable : set -> set -> prop := fun X Tx =>
 (** LATEX VERSION: The product of two Lindelöf Sorgenfrey lines (the Sorgenfrey plane) is not Lindelöf. **)
 Theorem Sorgenfrey_plane_not_Lindelof :
   ~ Lindelof_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Example 5: subspace of Lindelöf space need not be Lindelöf **) 
@@ -9959,7 +9959,7 @@ Qed.
 Theorem ordered_square_subspace_not_Lindelof :
   Lindelof_space ordered_square ordered_square_topology /\
   ~ Lindelof_space ordered_square_open_strip ordered_square_subspace_topology.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §31 Definition: regular and normal spaces **) 
@@ -9984,7 +9984,7 @@ Theorem regular_normal_via_closure : forall X Tx:set,
      forall x U:set, x :e X -> U :e Tx -> x :e U -> exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U)) /\
   (one_point_sets_closed X Tx -> (normal_space X Tx <->
      forall A U:set, closed_in X Tx A -> U :e Tx -> A c= U -> exists V:set, V :e Tx /\ A c= V /\ closure_of X Tx V c= U)).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §31 Theorem 31.2: subspaces/products preserve Hausdorff and regular **) 
@@ -9995,7 +9995,7 @@ Theorem separation_axioms_subspace_product : forall X Tx:set,
   (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi)) /\
   (forall Y:set, Y c= X -> regular_space X Tx -> regular_space Y (subspace_topology X Tx Y)) /\
   (forall I Xi:set, regular_spaces_family I Xi -> regular_space (product_space I Xi) (product_topology_full I Xi)).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (**  aby  In_5Find not_all_ex_demorgan_i conj_myprob_9998_1_20251124_092003 subspace_topology�f union_connected_common_point R_5Fomega_5Fbox_5Fnot_5Fconnected Hausdorff_5Fspace_def ex17_10_order_topology_Hausdorff In_5Fno2cycle . **)
 Qed.
 
 (** from §31 Example 1 setup: R_K space **) 
@@ -10011,7 +10011,7 @@ Qed.
 (** from §31 Example 2: Sorgenfrey line normal **) 
 (** LATEX VERSION: The Sorgenfrey line is normal. **)
 Theorem Sorgenfrey_line_normal : normal_space Sorgenfrey_line Sorgenfrey_topology.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (**  aby  binintersect�f regular_space�f RK_5FHausdorff_5Fnot_5Fregular In_5Fno2cycle prop_ext_2 Hausdorff_5Fspace_def ex17_17_closures_in_lower_limit_and_C_topology ex17_7_counterexample_union_closure . **)
 Qed.
 
 (** from §31 Example 3: Sorgenfrey plane not normal **) 
@@ -10019,27 +10019,27 @@ Qed.
 Theorem Sorgenfrey_plane_not_normal :
   regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (**  aby  prop_ext_2 binintersect�f Hausdorff_5Fspace_def RK_5FHausdorff_5Fnot_5Fregular In_5Fno2cycle nIn�f Empty_5Feq ex17_17_closures_in_lower_limit_and_C_topology . **)
 Qed.
 
 (** from §32 Theorem 32.1: regular space with countable basis is normal **) 
 (** LATEX VERSION: Regular + second countable ⇒ normal (Theorem 32.1). **)
 Theorem regular_countable_basis_normal : forall X Tx:set,
   regular_space X Tx -> second_countable_space X Tx -> normal_space X Tx.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §32 Theorem 32.4: well-ordered sets are normal in order topology **) 
 (** LATEX VERSION: Well-ordered sets with the order topology are normal. **)
 Theorem well_ordered_sets_normal : forall X:set,
   well_ordered_set X -> normal_space X (order_topology X).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 (** from §32 Theorem 32.2: metrizable spaces are normal **) 
 (** LATEX VERSION: Every metrizable space is normal. **)
 Theorem metrizable_spaces_normal : forall X d:set,
   metric_on X d -> normal_space X (metric_topology X d).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §32 Theorem 32.3: compact Hausdorff spaces are normal **) 
@@ -10053,7 +10053,7 @@ Qed.
 (** LATEX VERSION: An uncountable product of ℝ with product topology need not be normal. **)
 Theorem uncountable_product_R_not_normal : forall J:set,
   uncountable_set J -> ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
-admit. (** ContradictoryAxioms aby  const_family�f R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §32 Example 2: SOmega x SbarOmega not normal **) 
@@ -10066,7 +10066,7 @@ Definition SbarOmega_topology : set := discrete_topology Sbar_Omega.
 Theorem SOmega_SbarOmega_not_normal :
   normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
   ~ normal_space (product_space (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
-admit. (** ContradictoryAxioms aby  const_family�f R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **) 
@@ -10101,7 +10101,7 @@ Theorem completely_regular_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall Y:set, Y c= X -> completely_regular_space X Tx -> completely_regular_space Y (subspace_topology X Tx Y)) /\
   (forall I Xi:set, completely_regular_spaces_family I Xi -> completely_regular_space (product_space I Xi) (product_topology_full I Xi)).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §33 Example 1: products giving completely regular but not normal spaces **) 
@@ -10109,7 +10109,7 @@ Qed.
 Theorem Sorgenfrey_plane_completely_regular_not_normal :
   completely_regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §33 Example 1 cont.: SOmega x SbarOmega completely regular not normal **) 
@@ -10117,14 +10117,14 @@ Qed.
 Theorem SOmega_SbarOmega_completely_regular_not_normal :
   completely_regular_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) /\
   ~ normal_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
-admit. (** ContradictoryAxioms aby  const_family�f R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §34 Theorem 34.1: Urysohn metrization theorem **) 
 (** LATEX VERSION: Regular second-countable spaces are metrizable (Urysohn). **)
 Theorem Urysohn_metrization_theorem : forall X Tx:set,
   regular_space X Tx -> second_countable_space X Tx -> exists d:set, metric_on X d /\ metric_topology X d = Tx.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §34 Theorem 34.2: Imbedding via separating family of functions **) 
@@ -10133,7 +10133,7 @@ Theorem embedding_via_functions : forall X Tx:set,
   topology_on X Tx -> one_point_sets_closed X Tx ->
   forall F J:set, separating_family_of_functions X Tx F J ->
     exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_family J R)) Fmap.
-admit. (** ContradictoryAxioms aby  const_family�f R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (**  aby  ex13_4c_specific_topologies separation_subspace_limit_points ReplSepE conj_myprob_10136_1_20251124_092721 . **)
 Qed.
 
 (** from §34 Corollary 34.3: completely regular iff embeds in [0,1]^J **) 
@@ -10141,7 +10141,7 @@ Qed.
 Theorem completely_regular_iff_embeds_in_cube : forall X Tx:set,
   (completely_regular_space X Tx <->
     exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_family J unit_interval)) Fmap).
-admit. (** ContradictoryAxioms aby  const_family�f R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §35 Theorem 35.1: Tietze extension theorem **) 
@@ -10151,7 +10151,7 @@ Theorem Tietze_extension_interval : forall X Tx A a b f:set,
   continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f ->
   exists g:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) g /\
     (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (**  aby  In_5Fno2cycle prop_ext_2 binintersect�f normal_space�f conj_myprob_10154_1_20251124_092803 Subq_def Subq_5Fbinunion_5Feq ex17_7_counterexample_union_closure order_topology�f Rlt_def closed_interval�f . **)
 Qed.
 
 Theorem Tietze_extension_real : forall X Tx A f:set,
@@ -10159,7 +10159,7 @@ Theorem Tietze_extension_real : forall X Tx A f:set,
   continuous_map A (subspace_topology X Tx A) R R_standard_topology f ->
   exists g:set, continuous_map X Tx R R_standard_topology g /\
     (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (**  aby  binintersect�f normal_space�f conj_myprob_10162_1_20251124_092832 Subq_def Subq_5Fbinunion_5Feq ex17_7_counterexample_union_closure prop_ext_2 . **)
 Qed.
 
 (** from §36 Definition: m-manifold **) 
@@ -10183,7 +10183,7 @@ Definition partition_of_unity_dominated : set -> set -> set -> prop := fun X Tx 
 (** LATEX VERSION: On a normal space, every finite open cover has a partition of unity subordinate to it. **)
 Theorem finite_partition_of_unity_exists : forall X Tx U:set,
   normal_space X Tx -> finite U -> open_cover X Tx U -> exists P:set, partition_of_unity_dominated X Tx U.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §36 Theorem: compact manifold embeds in Euclidean space **) 
@@ -10191,7 +10191,7 @@ Qed.
 Theorem compact_manifold_embeds_in_Euclidean : forall X Tx:set,
   m_manifold X Tx -> compact_space X Tx -> exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (**  aby  conj_myprob_10194_1_20251124_092918 binintersect�f Hausdorff_5Fspace_def m_manifold�f In_5Fno2cycle Hausdorff_5Fseparate_5Fpoint_5Fcompact_5Fset . **)
 Qed.
 
 (** from §37 Theorem: Tychonoff theorem **) 
@@ -10199,7 +10199,7 @@ Qed.
 Theorem Tychonoff_theorem : forall I Xi:set,
   (forall i:set, compact_space (product_component Xi i) (product_component_topology Xi i)) ->
   compact_space (product_space I Xi) (product_topology_full I Xi).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §38 Definition: Stone-Cech compactification and universal property **) 
@@ -10213,7 +10213,7 @@ Theorem Stone_Cech_universal_property : forall X Tx:set,
   Tychonoff_space X Tx ->
   compact_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx) /\
   Hausdorff_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (**  aby  completely_regular_space�f binintersect�f Hausdorff_5Fspace_def Tychonoff_5Fspace_def conj_myprob_10216_1_20251124_093005 In_5Fno2cycle ex17_7_counterexample_union_closure not_all_ex_demorgan_i ex17_1_topology_from_closed_sets ex17_3_product_of_closed_sets_closed ex17_13_diagonal_closed_iff_Hausdorff . **)
 Qed.
 
 (** from §39 Definition: locally finite family and refinement **) 
@@ -10241,7 +10241,7 @@ Definition sigma_locally_finite_basis : set -> set -> prop := fun X Tx =>
 (** LATEX VERSION: Nagata–Smirnov: A regular space with a σ-locally-finite basis is metrizable. **)
 Theorem Nagata_Smirnov_metrization : forall X Tx:set,
   regular_space X Tx -> sigma_locally_finite_basis X Tx -> metrizable X Tx.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §41 Definition: paracompact space **) 
@@ -10262,14 +10262,14 @@ Qed.
 (** LATEX VERSION: Paracompact Hausdorff spaces are normal. **)
 Theorem paracompact_Hausdorff_normal : forall X Tx:set,
   paracompact_space X Tx -> Hausdorff_space X Tx -> normal_space X Tx.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (**  aby  binintersect�f Hausdorff_5Fspace_def conj_myprob_10265_1_20251124_093116 In_5Fno2cycle ReplI Sing_5Ffinite not_ex_all_demorgan_i ex17_7_counterexample_union_closure finite_sets_closed_in_Hausdorff normal_space�f . **)
 Qed.
 
 (** from §42 Smirnov metrization theorem **) 
 (** LATEX VERSION: Smirnov metrization: regular spaces with a locally finite basis are metrizable. **)
 Theorem Smirnov_metrization : forall X Tx:set,
   regular_space X Tx -> locally_finite_basis X Tx -> metrizable X Tx.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** helper: Cauchy sequence in a metric space **) 
@@ -10307,14 +10307,14 @@ Theorem Cauchy_with_convergent_subsequence_converges : forall X d seq x:set,
   metric_on X d -> cauchy_sequence X d seq ->
   (exists subseq:set, subseq c= seq /\ converges_to X (metric_topology X d) subseq x) ->
   converges_to X (metric_topology X d) seq x.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §43 Theorem 43.2: Euclidean space is complete **) 
 (** LATEX VERSION: Euclidean spaces are complete metric spaces. **)
 Theorem Euclidean_space_complete : forall k:set,
   complete_metric_space (euclidean_space k) (euclidean_metric k).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §43 Lemma 43.3: product convergence via projections **) 
@@ -10328,13 +10328,13 @@ Theorem product_sequence_convergence_iff_coordinates : forall X J:set,
                    (product_component_topology (const_family J R) j)
                    (Repl seq (fun s => apply_fun s j))
                    (apply_fun x j)).
-admit. (** ContradictoryAxioms aby  const_family�f R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §43 Theorem 43.4: complete metric on R^omega **) 
 (** LATEX VERSION: The bounded product metric makes R^ω complete. **)
 Theorem product_Romega_complete : complete_metric_space (power_real omega) (bounded_product_metric omega).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §44 Theorem: space-filling curve existence **) 
@@ -10342,7 +10342,7 @@ Qed.
 Definition unit_square : set := OrderedPair unit_interval unit_interval.
 Definition unit_square_topology : set := product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
 Theorem space_filling_curve : exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §45 Definition: sequential compactness **) 
@@ -10355,7 +10355,7 @@ Definition sequentially_compact : set -> set -> prop := fun X Tx =>
 Theorem compact_metric_equivalences : forall X d:set,
   metric_on X d ->
   (compact_space X (metric_topology X d) <-> sequentially_compact X (metric_topology X d)).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §46 Definition: pointwise and compact convergence topologies **) 
@@ -10410,7 +10410,7 @@ Theorem Baire_space_dense_Gdelta : forall Tx:set,
         U c= Tx -> countable_set U ->
         (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
         dense_in (intersection_over_family X U) X Tx).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Theorem: Baire category theorem for complete metric spaces **) 
@@ -10482,7 +10482,7 @@ Qed.
 (** LATEX VERSION: Compact subspace of ℝ^n has covering dimension ≤ n. **)
 Theorem compact_subspace_Rn_dimension_le : forall X n:set,
   compact_space X (euclidean_topology n) -> covering_dimension X n.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Theorem: compact m-manifold has dimension at most m **) 
@@ -10498,7 +10498,7 @@ Theorem Menger_Nobeling_embedding : forall X Tx m:set,
   compact_space X Tx -> metrizable X Tx -> covering_dimension X m ->
   exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fbox_5Fnot_5Fconnected R_5Fomega_5Fproduct_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Theorem 50.1: dimension of closed subspace bounded by ambient **) 
@@ -10521,7 +10521,7 @@ Theorem dimension_finite_union_closed_max : forall X Fam n:set,
   finite Fam ->
   (forall Y:set, Y :e Fam -> covering_dimension Y n) ->
   covering_dimension (Union Fam) n.
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Exercise 1: G_delta points in first-countable T1 **) 
