@@ -8573,7 +8573,38 @@ Qed.
 (** helper: intersection with a subset can drop the larger set **) 
 Theorem binintersect_right_absorb_subset : forall W Y A:set,
   A c= Y -> (W :/\: Y) :/\: A = W :/\: A.
-admit. (** FAIL **)
+let W Y A.
+assume Hsub: A c= Y.
+apply set_ext.
+- let x. assume Hx: x :e (W :/\: Y) :/\: A.
+  claim Hpair : x :e W :/\: Y /\ x :e A.
+  { exact (binintersectE (W :/\: Y) A x Hx). }
+  claim HWY : x :e W :/\: Y.
+  { exact (andEL (x :e W :/\: Y) (x :e A) Hpair). }
+  claim HA : x :e A.
+  { exact (andER (x :e W :/\: Y) (x :e A) Hpair). }
+  claim HWYpair : x :e W /\ x :e Y.
+  { exact (binintersectE W Y x HWY). }
+  claim HW : x :e W.
+  { exact (andEL (x :e W) (x :e Y) HWYpair). }
+  apply binintersectI.
+  * exact HW.
+  * exact HA.
+- let x. assume Hx: x :e W :/\: A.
+  claim Hpair : x :e W /\ x :e A.
+  { exact (binintersectE W A x Hx). }
+  claim HW : x :e W.
+  { exact (andEL (x :e W) (x :e A) Hpair). }
+  claim HA : x :e A.
+  { exact (andER (x :e W) (x :e A) Hpair). }
+  claim HY : x :e Y.
+  { exact (Hsub x HA). }
+  claim HWY : x :e W :/\: Y.
+  { exact (binintersectI W Y x HW HY). }
+  apply binintersectI.
+  * exact HWY.
+  * exact HA.
+Qed.
 Qed.
 
 (** from §16 Exercise 1: subspace of subspace inherits same topology **) 
