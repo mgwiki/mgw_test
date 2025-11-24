@@ -1439,9 +1439,8 @@ Def topology_on : TpArr set TpArr set Prop
 Def open_in : TpArr set TpArr set TpArr set Prop
  := Lam X set Lam T set Lam U set Ap Ap and Ap Ap topology_on X T Ap Ap Prim 1 U T
 Def closed_in : TpArr set TpArr set TpArr set Prop
- := Lam X set Lam T set Lam C set Ap Ap and Ap Ap topology_on X T Ex x1 set Ap Ap and Ap Ap Prim 1 x1 T Eq set C Ap Ap setminus X x1
-Thm closed_of_open_complement : All x1 set All x2 set All x3 set Imp Ap Ap topology_on x1 x2 Imp Ap Ap Prim 1 x3 x2 Ap Ap Ap closed_in x1 x2 Ap Ap setminus x1 x3
- := TmLa x1 set TmLa x2 set TmLa x3 set PrLa A1 Ap Ap topology_on x1 x2 PrLa A2 Ap Ap Prim 1 x3 x2 PrAp PrAp TmAp TmAp andI Ap Ap topology_on x1 x2 Ex x7 set Ap Ap and Ap Ap Prim 1 x7 x2 Eq set Ap Ap setminus x1 x3 Ap Ap setminus x1 x7 A1 TmLa x4 Prop PrLa A3 All x6 set Imp Ap Ap and Ap Ap Prim 1 x6 x2 Eq set Ap Ap setminus x1 x3 Ap Ap setminus x1 x6 x4 PrAp TmAp A3 x3 PrAp PrAp TmAp TmAp andI Ap Ap Prim 1 x3 x2 Eq set Ap Ap setminus x1 x3 Ap Ap setminus x1 x3 A2 TmLa x5 TpArr set TpArr set Prop PrLa A4 Ap Ap x5 Ap Ap setminus x1 x3 Ap Ap setminus x1 x3 A4
+ := Lam X set Lam T set Lam C set Ap Ap and Ap Ap topology_on X T Ap Ap and Ap Ap Subq C X Ex x1 set Ap Ap and Ap Ap Prim 1 x1 T Eq set C Ap Ap setminus X x1
+Conj closed_of_open_complement : All x1 set All x2 set All x3 set Imp Ap Ap topology_on x1 x2 Imp Ap Ap Prim 1 x3 x2 Ap Ap Ap closed_in x1 x2 Ap Ap setminus x1 x3
 Def finer_than : TpArr set TpArr set Prop
  := Lam T' set Lam T set Ap Ap Subq T T'
 Def coarser_than : TpArr set TpArr set Prop
@@ -1657,8 +1656,11 @@ Def R_lower_limit_basis : set
  := Ap Ap famunion R Lam a set Ap Ap Prim 5 R Lam x1 set Ap Ap halfopen_interval_left a x1
 Def R_lower_limit_topology : set
  := Ap Ap generated_topology R R_lower_limit_basis
+Def inv_nat : TpArr set set
+ := Lam y set y
+Known inv_nat_real : All x1 set Imp Ap Ap Prim 1 x1 rational_numbers Ap Ap Prim 1 Ap inv_nat x1 R
 Def K_set : set
- := rational_numbers
+ := Ap Ap Prim 5 rational_numbers Lam x1 set Ap inv_nat x1
 Def R_K_basis : set
  := Ap Ap famunion R Lam a set Ap Ap Prim 5 R Lam x1 set Ap Ap setminus Ap Ap open_interval a x1 K_set
 Def R_K_topology : set
@@ -1672,10 +1674,10 @@ Def R_ray_topology : set
  := Ap Ap Sep Ap Prim 4 R Lam x1 set Ap Ap or Ap Ap or Eq set x1 Prim 2 Eq set x1 R Ex x2 set Ap Ap and Ap Ap Prim 1 x2 R Ap Ap coarser_than Ap Ap Sep R Lam x3 set Ap Ap Rlt x2 x3 x1
 Conj ex13_7_R_topology_containments : Ap Ap and Ap Ap and Ap Ap and Ap Ap finer_than R_upper_limit_topology R_standard_topology Ap Ap finer_than R_K_topology R_standard_topology Ap Ap finer_than R_standard_topology R_finite_complement_topology Ap Ap finer_than R_standard_topology R_ray_topology
 Def rational_open_intervals_basis : set
- := Ap Ap famunion K_set Lam q1 set Ap Ap Prim 5 K_set Lam x1 set Ap Ap open_interval q1 x1
+ := Ap Ap famunion rational_numbers Lam q1 set Ap Ap Prim 5 rational_numbers Lam x1 set Ap Ap open_interval q1 x1
 Conj ex13_8a_rational_intervals_basis_standard : Ap Ap and Ap Ap basis_on R rational_open_intervals_basis Eq set Ap Ap generated_topology R rational_open_intervals_basis R_standard_topology
 Def rational_halfopen_intervals_basis : set
- := Ap Ap famunion K_set Lam q1 set Ap Ap Prim 5 K_set Lam x1 set Ap Ap halfopen_interval_left q1 x1
+ := Ap Ap famunion rational_numbers Lam q1 set Ap Ap Prim 5 rational_numbers Lam x1 set Ap Ap halfopen_interval_left q1 x1
 Conj ex13_8b_halfopen_rational_basis_topology : Ap Ap and Ap Ap basis_on R rational_halfopen_intervals_basis Imp Eq set Ap Ap generated_topology R rational_halfopen_intervals_basis R_upper_limit_topology All p Prop p
 Def order_rel : TpArr set TpArr set TpArr set Prop
  := Lam X set Lam a set Lam b set Ap Ap or Ap Ap and Eq set X R Ap Ap Rlt a b Ap Ap and Eq set X Ap Ap OrderedPair R R Ex x1 set Ex x2 set Ex x3 set Ex x4 set Ap Ap and Ap Ap and Eq set a Ap Ap OrderedPair x1 x2 Eq set b Ap Ap OrderedPair x3 x4 Ap Ap or Ap Ap Rlt x1 x3 Ap Ap and Eq set x1 x3 Ap Ap Rlt x2 x4
@@ -1695,7 +1697,7 @@ Def R2_dictionary_order_topology : set
 Conj dictionary_order_topology_is_topology : Ap Ap topological_space Ap Ap OrderedPair R R R2_dictionary_order_topology
 Conj rectangles_basis_for_R2 : Ex x1 set Ap Ap and Ap Ap basis_on Ap Ap OrderedPair R R x1 Eq set Ap Ap generated_topology Ap Ap OrderedPair R R x1 R2_dictionary_order_topology
 Def Zplus : set
- := K_set
+ := rational_numbers
 Conj order_topology_on_Zplus_discrete : Eq set Ap order_topology Zplus Ap Prim 4 Zplus
 Def two_by_nat : set
  := Ap Ap OrderedPair Ap ordsucc Ap ordsucc Prim 2 Zplus
@@ -1836,8 +1838,8 @@ Conj ex17_12_subspace_Hausdorff : All x1 set All x2 set All x3 set Imp Ap Ap Hau
 Conj ex17_13_diagonal_closed_iff_Hausdorff : All x1 set All x2 set Imp Ap Ap topological_space x1 x2 Ap Ap iff Ap Ap Hausdorff_space x1 x2 Ap Ap Ap closed_in Ap Ap rectangle_set x1 x1 Ap Ap Ap Ap product_topology x1 x2 x1 x2 Ap Ap Prim 5 x1 Lam x3 set Ap Ap rectangle_set x3 x3
 Conj ex17_14_sequence_in_finite_complement_topology : All x1 set All x2 set Imp Ap Ap Ap function_on x2 Zplus x1 All x3 set Imp Ap Ap Prim 1 x3 x1 All x4 set Imp Ap Ap Prim 1 x4 Ap finite_complement_topology x1 Imp Ap Ap Prim 1 x3 x4 Ex x5 set Ap Ap and Ap Ap Prim 1 x5 Zplus All x6 set Imp Ap Ap Prim 1 x6 Zplus Imp Ap Ap coarser_than x5 x6 Ap Ap Prim 1 Ap Ap product_component_topology x2 x6 x4
 Conj ex17_15_T1_characterization : All x1 set All x2 set Imp Ap Ap topological_space x1 x2 Ap Ap iff Ap Ap T1_space x1 x2 All x3 set Ap Ap Ap closed_in x1 x2 Ap Sing x3
-Conj ex17_16_closure_of_K_in_various_topologies : Imp Eq set Ap Ap Ap closure_of unit_interval R_standard_topology Zplus Ap Ap Ap closure_of unit_interval R_upper_limit_topology Zplus All p Prop p
-Conj ex17_17_closures_in_lower_limit_and_C_topology : Imp Eq set Ap Ap Ap closure_of unit_interval R_upper_limit_topology Zplus Ap Ap Ap closure_of unit_interval R_K_topology Zplus All p Prop p
+Conj ex17_16_closure_of_K_in_various_topologies : Imp Eq set Ap Ap Ap closure_of unit_interval R_standard_topology K_set Ap Ap Ap closure_of unit_interval R_upper_limit_topology K_set All p Prop p
+Conj ex17_17_closures_in_lower_limit_and_C_topology : Imp Eq set Ap Ap Ap closure_of unit_interval R_upper_limit_topology K_set Ap Ap Ap closure_of unit_interval R_K_topology K_set All p Prop p
 Conj ex17_18_closures_in_ordered_square : Ex x1 set Ap Ap and Ap Ap coarser_than x1 ordered_square_open_strip Imp Eq set Ap Ap Ap closure_of ordered_square_open_strip ordered_square_topology x1 Ap Ap Ap closure_of ordered_square_open_strip ordered_square_subspace_topology x1 All p Prop p
 Def boundary_of : TpArr set TpArr set TpArr set set
  := Lam X set Lam Tx set Lam A set Ap Ap binintersect Ap Ap Ap closure_of X Tx A Ap Ap Ap closure_of X Tx Ap Ap setminus X A
