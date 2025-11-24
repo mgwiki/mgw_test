@@ -1727,8 +1727,12 @@ Def product_component_topology : TpArr set TpArr set set
  := Lam Xi set Lam i set Ap Ap product_component Xi i
 Def product_space : TpArr set TpArr set set
  := Lam I set Lam Xi set Ap Ap Sep Ap Prim 4 Ap Prim 3 Xi Lam x1 set Ap Ap and Ap Ap Ap function_on x1 I Ap Prim 3 Xi All x2 set Imp Ap Ap Prim 1 x2 I Ap Ap Prim 1 Ap Ap product_component_topology x1 x2 Ap Ap product_component_topology Xi x2
+Def product_cylinder : TpArr set TpArr set TpArr set TpArr set set
+ := Lam I set Lam Xi set Lam i set Lam U set Ap Ap Sep Ap Ap product_space I Xi Lam x1 set Ap Ap and Ap Ap and Ap Ap Prim 1 i I Ap Ap Prim 1 U Ap Ap product_component_topology Xi i Ap Ap Prim 1 Ap Ap product_component_topology x1 i U
+Def product_subbasis_full : TpArr set TpArr set set
+ := Lam I set Lam Xi set Ap Ap famunion I Lam i set Ap Ap Prim 5 Ap Ap product_component_topology Xi i Lam x1 set Ap Ap Ap Ap product_cylinder I Xi i x1
 Def product_topology_full : TpArr set TpArr set set
- := Lam I set Lam Xi set Ap Ap generated_topology Ap Ap product_space I Xi Prim 2
+ := Lam I set Lam Xi set Ap Ap generated_topology Ap Ap product_space I Xi Ap Ap product_subbasis_full I Xi
 Def box_topology : TpArr set TpArr set set
  := Lam I set Lam Xi set Ap Ap generated_topology Ap Ap product_space I Xi Ap Prim 4 Ap Ap product_space I Xi
 Def countable_product_space : TpArr set TpArr set set
