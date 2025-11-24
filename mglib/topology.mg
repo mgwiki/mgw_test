@@ -9533,7 +9533,7 @@ Theorem ex23_path_connected_not_locally_connected_examples :
   exists A:set,
     A c= EuclidPlane /\ path_connected_space A (subspace_topology EuclidPlane R2_standard_topology A) /\
     ~ locally_connected A (subspace_topology EuclidPlane R2_standard_topology A).
-admit. (** ContradictoryAxioms aby  R_5Fomega_5Fproduct_5Fconnected R_5Fomega_5Fbox_5Fnot_5Fconnected . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §26 Definition: compact space **) 
@@ -10010,7 +10010,7 @@ Definition R_K : set := R.
 (** LATEX VERSION: The K-topology on ℝ is Hausdorff but not regular. **)
 Theorem RK_Hausdorff_not_regular :
   Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
-admit. (** FAIL **)
+admit. (**  aby  Hausdorff_5Fspace_def ex17_10_order_topology_Hausdorff In_5Fno2cycle R_5FK_5Ftopology_def ex17_17_closures_in_lower_limit_and_C_topology prop_ext_2 . **)
 Qed.
 
 (** from §31 Example 2: Sorgenfrey line normal **) 
@@ -10138,7 +10138,7 @@ Theorem embedding_via_functions : forall X Tx:set,
   topology_on X Tx -> one_point_sets_closed X Tx ->
   forall F J:set, separating_family_of_functions X Tx F J ->
     exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_family J R)) Fmap.
-admit. (** FAIL **)
+admit. (**  aby  conj_myprob_10141_1_20251124_102528 separation_subspace_limit_points ReplSepE . **)
 Qed.
 
 (** from §34 Corollary 34.3: completely regular iff embeds in [0,1]^J **) 
@@ -10156,7 +10156,7 @@ Theorem Tietze_extension_interval : forall X Tx A a b f:set,
   continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f ->
   exists g:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) g /\
     (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
-admit. (** FAIL **)
+admit. (**  aby  binintersect�f normal_space�f conj_myprob_10159_1_20251124_102542 Subq_def Subq_5Fbinunion_5Feq ex17_7_counterexample_union_closure order_topology�f Rlt_def closed_interval�f prop_ext_2 . **)
 Qed.
 
 Theorem Tietze_extension_real : forall X Tx A f:set,
@@ -10164,7 +10164,7 @@ Theorem Tietze_extension_real : forall X Tx A f:set,
   continuous_map A (subspace_topology X Tx A) R R_standard_topology f ->
   exists g:set, continuous_map X Tx R R_standard_topology g /\
     (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
-admit. (** FAIL **)
+admit. (**  aby  binintersect�f normal_space�f conj_myprob_10167_1_20251124_102606 Subq_def Subq_5Fbinunion_5Feq ex17_7_counterexample_union_closure prop_ext_2 . **)
 Qed.
 
 (** from §36 Definition: m-manifold **) 
