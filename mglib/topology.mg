@@ -9305,8 +9305,7 @@ Definition connected_space : set -> set -> prop := fun X Tx =>
 Theorem connected_iff_no_nontrivial_clopen : forall X Tx:set,
   connected_space X Tx <->
   ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
-let X Tx.
-admit. (** ContradictoryAxioms aby  open_in_subspace_iff In_5Find open_set�f ex13_1_local_open_subset In_5Fno2cycle prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §23 Lemma 23.1: separations in subspaces via limit points **) 
