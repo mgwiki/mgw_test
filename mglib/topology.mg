@@ -8560,7 +8560,7 @@ Definition ordered_square_subspace_topology : set :=
 
 Theorem ordered_square_not_subspace_dictionary :
   ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
-admit. (**  aby  Sep_5FEmpty SepE2 open_in_subspace_iff discrete_open_all Sing_def UPairI1 In_5Fno2cycle prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms Sep_5FEmpty SepE2 open_in_subspace_iff discrete_open_all Sing_def UPairI1 In_5Fno2cycle prop_ext_2 . **)
 Qed.
 
 (** from §16 Theorem 16.4: convex subspaces share the order topology **) 
@@ -8576,7 +8576,7 @@ Theorem ex16_1_subspace_transitive : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X -> A c= Y ->
   subspace_topology Y (subspace_topology X Tx Y) A =
   subspace_topology X Tx A.
-admit. (**  aby  open_in_subspace_iff EmptyAx discrete_open_all In_5Find prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms open_in_subspace_iff EmptyAx discrete_open_all In_5Find prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 2: fineness relation passes to subspaces **) 
@@ -8733,7 +8733,7 @@ Qed.
 Theorem closure_in_subspace : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X ->
   closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
-admit. (**  aby  EmptyAx open_in_subspace_iff discrete_open_all In_5Find prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms EmptyAx open_in_subspace_iff discrete_open_all In_5Find prop_ext_2 . **)
 Qed.
 
 (** from §17 Theorem 17.5: closure via neighborhoods/basis **) 
@@ -9032,7 +9032,7 @@ Theorem continuous_on_subspace : forall X Tx Y Ty f A:set,
   topology_on X Tx -> A c= X ->
   continuous_map X Tx Y Ty f ->
   continuous_map A (subspace_topology X Tx A) Y Ty f.
-admit. (**  aby  open_in_subspace_iff EmptyAx discrete_open_all In_5Find In_5Fno2cycle prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms open_in_subspace_iff EmptyAx discrete_open_all In_5Find In_5Fno2cycle prop_ext_2 . **)
 Qed.
 
 (** from §18: inverse of homeomorphism is continuous **) 
@@ -9059,7 +9059,7 @@ Theorem maps_into_products : forall A X Tx Y Ty f g:set,
   continuous_map A Tx X Ty f ->
   continuous_map A Tx Y Ty g ->
   continuous_map A Tx (OrderedPair X Y) (product_topology X Ty Y Ty) (f :/\: g).
-admit. (**  aby  ex16_9_dictionary_equals_product Sep_5FEmpty SepE Repl_5FEmpty closed_sets_axioms binintersect_com binintersect_Subq_1 Empty_5FSubq_5Feq open_in_subspace_iff ex17_7_counterexample_union_closure prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms ex16_9_dictionary_equals_product Sep_5FEmpty SepE Repl_5FEmpty closed_sets_axioms binintersect_com binintersect_Subq_1 Empty_5FSubq_5Feq open_in_subspace_iff ex17_7_counterexample_union_closure prop_ext_2 . **)
 Qed.
 
 (** from §19 Definition: product projections and universal property **) 
@@ -9071,7 +9071,7 @@ Theorem projections_are_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
   continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
-admit. (**  aby  binunion_idr Sing_def UPairI2 binunionI2 UPairE In_5Find not_all_ex_demorgan_i closure_characterization Sep_5FEmpty SepE2 Repl_5FEmpty closed_sets_axioms open_in_subspace_iff binintersect_com binunion_Subq_2 binintersect_Subq_eq_1 prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms binunion_idr Sing_def UPairI2 binunionI2 UPairE In_5Find not_all_ex_demorgan_i closure_characterization Sep_5FEmpty SepE2 Repl_5FEmpty closed_sets_axioms open_in_subspace_iff binintersect_com binunion_Subq_2 binintersect_Subq_eq_1 prop_ext_2 . **)
 Qed.
 
 (** from §19: product topology is coarsest making projections continuous **) 
@@ -9110,7 +9110,7 @@ Definition metric_topology : set -> set -> set := fun X d =>
 (** LATEX VERSION: In a metric space, open balls form a basis for the metric topology. **)
 Theorem open_balls_form_basis : forall X d:set,
   metric_on X d -> basis_on X {open_ball X d x|x :e X}.
-admit. (**  aby  ex16_9_dictionary_equals_product EmptyAx Repl_5FEmpty closed_sets_axioms binintersect_com binintersect_Subq_1 Empty_5FSubq_5Feq open_in_subspace_iff ex13_6_Rl_RK_not_comparable prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms ex16_9_dictionary_equals_product EmptyAx Repl_5FEmpty closed_sets_axioms binintersect_com binintersect_Subq_1 Empty_5FSubq_5Feq open_in_subspace_iff ex13_6_Rl_RK_not_comparable prop_ext_2 . **)
 Qed.
 
 Theorem metric_topology_is_topology : forall X d:set,
@@ -9135,7 +9135,7 @@ Theorem metric_epsilon_delta_continuity : forall X dX Y dY f:set,
          (forall x:set, x :e X ->
             Rlt (apply_fun dX (OrderedPair x x0)) delta ->
             Rlt (apply_fun dY (OrderedPair (apply_fun f x) (apply_fun f x0))) eps)).
-admit. (**  aby  ex16_9_dictionary_equals_product EmptyAx Repl_5FEmpty closed_sets_axioms binintersect_com binunion_idl binunion_Subq_1 binintersect_Subq_eq_1 open_in_subspace_iff SNoLt_5Firref prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms ex16_9_dictionary_equals_product EmptyAx Repl_5FEmpty closed_sets_axioms binintersect_com binunion_idl binunion_Subq_1 binintersect_Subq_eq_1 open_in_subspace_iff SNoLt_5Firref prop_ext_2 . **)
 Qed.
 
 (** sequences as functions from omega **) 
@@ -9192,7 +9192,7 @@ Theorem uniform_limit_of_continuous_is_continuous :
     (forall n:set, n :e omega -> continuous_map X (metric_topology X dX) Y (metric_topology Y dY) (apply_fun f_seq n)) ->
     uniform_convergence_functions X dX Y dY f_seq f ->
     continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
-admit. (**  aby  Sep_5FEmpty SepE Repl_5FEmpty closed_sets_axioms binintersect_Subq_eq_1 binunion_idl binunion_Subq_1 binintersect_com ex17_18_closures_in_ordered_square open_in_subspace_iff binintersect_Subq_2 metric_limits_unique closure_characterization prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms Sep_5FEmpty SepE Repl_5FEmpty closed_sets_axioms binintersect_Subq_eq_1 binunion_idl binunion_Subq_1 binintersect_com ex17_18_closures_in_ordered_square open_in_subspace_iff binintersect_Subq_2 metric_limits_unique closure_characterization prop_ext_2 . **)
 Qed.
 
 (** from §21: convergence of sequences in metric spaces **) 
@@ -9282,7 +9282,7 @@ Theorem union_connected_common_point : forall X Tx F:set,
   (forall C:set, C :e F -> connected_space C (subspace_topology X Tx C)) ->
   (exists x:set, forall C:set, C :e F -> x :e C) ->
   connected_space (Union F) (subspace_topology X Tx (Union F)).
-admit. (**  aby  EmptyAx separation_subspace_limit_points ordered_square�f ex17_20_boundaries_and_interiors_in_R2 open_in_subspace_iff binintersect_Subq_2 Empty_5FSubq_5Feq prop_ext_2 . **)
+admit. (** aby ContradictoryAxioms EmptyAx separation_subspace_limit_points ordered_square�f ex17_20_boundaries_and_interiors_in_R2 open_in_subspace_iff binintersect_Subq_2 Empty_5FSubq_5Feq prop_ext_2 . **)
 Qed.
 
 (** from §23 Theorem 23.4: adjoining limit points preserves connectedness **) 
