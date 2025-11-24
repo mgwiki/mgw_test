@@ -8571,31 +8571,9 @@ admit. (** FAIL **)
 Qed.
 
 (** helper: intersection with a subset can drop the larger set **) 
-Lemma binintersect_right_absorb_subset : forall W Y A:set,
+Theorem binintersect_right_absorb_subset : forall W Y A:set,
   A c= Y -> (W :/\: Y) :/\: A = W :/\: A.
-let W Y A.
-assume Hsub: A c= Y.
-apply set_ext.
-- let x. assume Hx: x :e (W :/\: Y) :/\: A.
-  apply binintersectE in Hx.
-  let HWY := andEL (x :e W :/\: Y) (x :e A) Hx.
-  let HA := andER (x :e W :/\: Y) (x :e A) Hx.
-  apply binintersectE in HWY.
-  let HW := andEL (x :e W) (x :e Y) HWY.
-  apply binintersectI.
-  * exact HW.
-  * exact HA.
-- let x. assume Hx: x :e W :/\: A.
-  apply binintersectE in Hx.
-  apply andEL in Hx.
-  let HW := Hx.
-  apply andER in Hx.
-  let HA := Hx.
-  apply binintersectI.
-  * apply binintersectI.
-    { exact HW. }
-    { apply Hsub. exact HA. }
-  * exact HA.
+admit. (** FAIL **)
 Qed.
 
 (** from §16 Exercise 1: subspace of subspace inherits same topology **) 
@@ -8761,7 +8739,7 @@ Qed.
 Theorem closure_in_subspace : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X ->
   closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
-admit. (** aby ContradictoryAxioms EmptyAx open_in_subspace_iff discrete_open_all In_5Find prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §17 Theorem 17.5: closure via neighborhoods/basis **) 
