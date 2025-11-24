@@ -9360,7 +9360,7 @@ Qed.
 Theorem finite_product_connected : forall X Tx Y Ty:set,
   connected_space X Tx -> connected_space Y Ty ->
   connected_space (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit. (** aby ContradictoryAxioms binunion_idl binunion_Subq_1 binintersect_Subq_eq_1 binintersect_com binintersectE SingE EuclidPlane_def dictionary_order_topology_is_topology is_limit_point_of_def separation_subspace_limit_points ordsucc�f binintersect_Subq_2 Subq_5Fbinunion_5Feq binunion_com SingI binunionI2 In_5Fno2cycle connected_iff_no_nontrivial_clopen closure_characterization prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §23 Example: product topology on R^ω is connected **) 
@@ -9374,7 +9374,7 @@ Qed.
 Theorem R_omega_box_not_connected :
   ~ connected_space (product_space omega (const_family omega R))
     (box_topology omega (const_family omega R)).
-admit. (** aby ContradictoryAxioms Repl_5FEmpty ReplE ReplEq UPairI1 In_5Find open_in_subspace_iff open_set�f ex13_1_local_open_subset In_5Fno2cycle UPairI2 prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §24 Definition: path and path connectedness **) 
@@ -9519,7 +9519,7 @@ Qed.
 Theorem ex23_ordered_square_locally_conn_not_pathconn :
   locally_connected ordered_square ordered_square_topology /\
   ~ locally_path_connected ordered_square ordered_square_topology.
-admit. (** aby ContradictoryAxioms prop_ext_2 In_5Fno2cycle In_5Find open_set�f ex13_1_local_open_subset open_in_subspace_iff . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §23 Exercise: connected open subsets of locally path connected spaces are path connected **) 
@@ -9533,7 +9533,7 @@ Theorem ex23_path_connected_not_locally_connected_examples :
   exists A:set,
     A c= EuclidPlane /\ path_connected_space A (subspace_topology EuclidPlane R2_standard_topology A) /\
     ~ locally_connected A (subspace_topology EuclidPlane R2_standard_topology A).
-admit. (** aby ContradictoryAxioms Sep_5FEmpty SepE EuclidPlane_def dictionary_order_topology_is_topology separation_subspace_limit_points eq_1_Sing0 not_ordinal_Sing1 prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §26 Definition: compact space **) 
@@ -9624,7 +9624,7 @@ Definition bounded_subset_of_reals : set -> prop := fun A =>
 Theorem finite_product_compact : forall X Tx Y Ty:set,
   compact_space X Tx -> compact_space Y Ty ->
   compact_space (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit. (** aby ContradictoryAxioms In_5Find ex13_8a_rational_intervals_basis_standard lemma_topology_from_basis separation_subspace_limit_points ex23_ordered_square_locally_conn_not_pathconn prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §26 Exercises: compactness examples and properties **) 
@@ -9642,7 +9642,7 @@ Theorem Heine_Borel_closed_bounded : forall A:set,
   A c= R ->
   compact_space A (subspace_topology R R_standard_topology A) ->
   closed_in R R_standard_topology A /\ bounded_subset_of_reals A.
-admit. (** aby ContradictoryAxioms In_5Find binunion_idr binunion_idl In_5Fno2cycle binunionI1 Subq_def Subq_5Fbinunion_5Feq open_in_subspace_iff open_set�f ex13_1_local_open_subset prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §27: compact subspaces of ℝ are closed and bounded **) 
@@ -10000,7 +10000,7 @@ Theorem separation_axioms_subspace_product : forall X Tx:set,
   (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi)) /\
   (forall Y:set, Y c= X -> regular_space X Tx -> regular_space Y (subspace_topology X Tx Y)) /\
   (forall I Xi:set, regular_spaces_family I Xi -> regular_space (product_space I Xi) (product_topology_full I Xi)).
-admit. (**  aby  In_5Find not_all_ex_demorgan_i conj_myprob_9998_1_20251124_092003 subspace_topology�f union_connected_common_point R_5Fomega_5Fbox_5Fnot_5Fconnected Hausdorff_5Fspace_def ex17_10_order_topology_Hausdorff In_5Fno2cycle . **)
+admit. (**  aby  In_5Find not_all_ex_demorgan_i conj_myprob_9998_1_20251124_092003 subspace_topology�f union_connected_common_point R_5Fomega_5Fbox_5Fnot_5Fconnected Hausdorff_5Fspace_def ex17_10_order_topology_Hausdorff In_5Fno2cycle . **) 
 Qed.
 
 (** from §31 Example 1 setup: R_K space **) 
@@ -10010,13 +10010,13 @@ Definition R_K : set := R.
 (** LATEX VERSION: The K-topology on ℝ is Hausdorff but not regular. **)
 Theorem RK_Hausdorff_not_regular :
   Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
-admit. (** aby ContradictoryAxioms Hausdorff_5Fspace_def ex17_10_order_topology_Hausdorff In_5Fno2cycle R_5FK_5Ftopology_def ex17_17_closures_in_lower_limit_and_C_topology prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §31 Example 2: Sorgenfrey line normal **) 
 (** LATEX VERSION: The Sorgenfrey line is normal. **)
 Theorem Sorgenfrey_line_normal : normal_space Sorgenfrey_line Sorgenfrey_topology.
-admit. (** aby ContradictoryAxioms binintersect�f regular_space�f RK_5FHausdorff_5Fnot_5Fregular In_5Fno2cycle prop_ext_2 Hausdorff_5Fspace_def ex17_17_closures_in_lower_limit_and_C_topology ex17_7_counterexample_union_closure . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §31 Example 3: Sorgenfrey plane not normal **) 
@@ -10024,7 +10024,7 @@ Qed.
 Theorem Sorgenfrey_plane_not_normal :
   regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit. (** aby ContradictoryAxioms prop_ext_2 binintersect�f Hausdorff_5Fspace_def RK_5FHausdorff_5Fnot_5Fregular In_5Fno2cycle nIn�f Empty_5Feq ex17_17_closures_in_lower_limit_and_C_topology . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §32 Theorem 32.1: regular space with countable basis is normal **) 
@@ -10138,7 +10138,7 @@ Theorem embedding_via_functions : forall X Tx:set,
   topology_on X Tx -> one_point_sets_closed X Tx ->
   forall F J:set, separating_family_of_functions X Tx F J ->
     exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_family J R)) Fmap.
-admit. (** aby ContradictoryAxioms ex13_4c_specific_topologies separation_subspace_limit_points ReplSepE conj_myprob_10136_1_20251124_092721 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §34 Corollary 34.3: completely regular iff embeds in [0,1]^J **) 
@@ -10156,7 +10156,7 @@ Theorem Tietze_extension_interval : forall X Tx A a b f:set,
   continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f ->
   exists g:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) g /\
     (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
-admit. (** aby ContradictoryAxioms In_5Fno2cycle prop_ext_2 binintersect�f normal_space�f conj_myprob_10154_1_20251124_092803 Subq_def Subq_5Fbinunion_5Feq ex17_7_counterexample_union_closure order_topology�f Rlt_def closed_interval�f . **)
+admit. (** FAIL **)
 Qed.
 
 Theorem Tietze_extension_real : forall X Tx A f:set,
@@ -10164,7 +10164,7 @@ Theorem Tietze_extension_real : forall X Tx A f:set,
   continuous_map A (subspace_topology X Tx A) R R_standard_topology f ->
   exists g:set, continuous_map X Tx R R_standard_topology g /\
     (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
-admit. (** aby ContradictoryAxioms binintersect�f normal_space�f conj_myprob_10162_1_20251124_092832 Subq_def Subq_5Fbinunion_5Feq ex17_7_counterexample_union_closure prop_ext_2 . **)
+admit. (** FAIL **)
 Qed.
 
 (** from §36 Definition: m-manifold **) 
