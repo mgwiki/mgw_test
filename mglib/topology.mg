@@ -9228,7 +9228,7 @@ Definition quotient_map : set -> set -> set -> set -> prop := fun X Tx Y f =>
 Theorem quotient_topology_is_topology : forall X Tx Y f:set,
   topology_on X Tx -> quotient_map X Tx Y f ->
   topology_on Y (quotient_topology X Tx Y f).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §22: universal property of quotient maps **) 
@@ -9236,7 +9236,7 @@ Qed.
 Theorem quotient_universal_property : forall X Tx Y Ty f:set,
   quotient_map X Tx Y f -> topology_on Y Ty ->
   continuous_map X Tx Y Ty f.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §23 Definition: separation of a space **) 
@@ -9255,7 +9255,7 @@ Definition connected_space : set -> set -> prop := fun X Tx =>
 Theorem connected_iff_no_nontrivial_clopen : forall X Tx:set,
   connected_space X Tx <->
   ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
-admit.
+admit. (** ContradictoryAxioms aby  open_in_subspace_iff In_5Find open_set�f ex13_1_local_open_subset . **)
 Qed.
 
 (** from §23 Lemma 23.1: separations in subspaces via limit points **) 
@@ -9264,7 +9264,7 @@ Theorem separation_subspace_limit_points : forall X Tx Y:set,
   exists A B:set,
     A :/\: B = Empty /\ A :\/: B = Y /\ open_in X Tx A /\ open_in X Tx B /\
     exists a b:set, limit_point_of X Tx A a /\ limit_point_of X Tx B b /\ a :e Y /\ b :e Y.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §23 Lemma 23.2: connected subspace lies in one side of a separation **) 
@@ -9273,7 +9273,7 @@ Theorem connected_subset_in_separation_side : forall X Tx C D Y:set,
   connected_space Y Tx ->
   C :/\: D = Empty -> C :\/: D = X -> open_in X Tx C -> open_in X Tx D ->
   Y c= C \/ Y c= D.
-admit.
+admit. (**  aby  open_in_subspace_iff conj_myprob_9276_1_20251124_010744 prop_ext_2 EmptyAx discrete_open_all In_5Fno2cycle . **)
 Qed.
 
 (** from §23 Theorem 23.3: union of connected sets with common point is connected **) 
@@ -9282,7 +9282,7 @@ Theorem union_connected_common_point : forall X Tx F:set,
   (forall C:set, C :e F -> connected_space C (subspace_topology X Tx C)) ->
   (exists x:set, forall C:set, C :e F -> x :e C) ->
   connected_space (Union F) (subspace_topology X Tx (Union F)).
-admit.
+admit. (**  aby  EmptyAx separation_subspace_limit_points ordered_square�f ex17_20_boundaries_and_interiors_in_R2 open_in_subspace_iff binintersect_Subq_2 Empty_5FSubq_5Feq prop_ext_2 . **)
 Qed.
 
 (** from §23 Theorem 23.4: adjoining limit points preserves connectedness **) 
@@ -9291,7 +9291,7 @@ Theorem connected_with_limit_points : forall X Tx A b:set,
   connected_space A (subspace_topology X Tx A) ->
   limit_point_of X Tx A b ->
   connected_space (A :\/: {b}) (subspace_topology X Tx (A :\/: {b})).
-admit.
+admit. (**  aby  conj_myprob_9294_1_20251124_010913 separation_subspace_limit_points binunion_idr binunionI2 SingE connected_space�f connected_iff_no_nontrivial_clopen SingI binunion_idl ordsucc�f not_ordinal_Sing1 subspace_topology�f prop_ext_2 . **)
 Qed.
 
 (** from §23: continuous images of connected spaces are connected **) 
