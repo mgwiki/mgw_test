@@ -9314,6 +9314,7 @@ Definition connected_space : set -> set -> prop := fun X Tx =>
 Theorem connected_iff_no_nontrivial_clopen : forall X Tx:set,
   connected_space X Tx <->
   ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
+Proof.
 let X Tx.
 split.
 - admit.
