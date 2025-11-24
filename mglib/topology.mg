@@ -8605,7 +8605,6 @@ apply set_ext.
   * exact HWY.
   * exact HA.
 Qed.
-Qed.
 
 (** from §16 Exercise 1: subspace of subspace inherits same topology **) 
 (** LATEX VERSION: Exercise 1: Subspace of a subspace has the same topology as taking the subspace directly. **)
