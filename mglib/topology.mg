@@ -8312,31 +8312,7 @@ Theorem ex13_4a_intersection_topology : forall X Fam:set,
   (forall T :e Fam, topology_on X T) ->
   topology_on X (Intersection_Fam Fam).
 let X Fam. assume HfamTop.
-prove (Intersection_Fam Fam c= Power X
-      /\ Empty :e Intersection_Fam Fam
-      /\ X :e Intersection_Fam Fam
-      /\ (forall UFam :e Power (Intersection_Fam Fam), Union UFam :e Intersection_Fam Fam)
-      /\ (forall U :e Intersection_Fam Fam, forall V :e Intersection_Fam Fam,
-            U :/\: V :e Intersection_Fam Fam)).
-claim H1 : Intersection_Fam Fam c= Power X.
-{ admit. (** FAIL **) }
-claim H2 : Empty :e Intersection_Fam Fam.
-{ admit. (** FAIL **) }
-claim H3 : X :e Intersection_Fam Fam.
-{ admit. (** FAIL **) }
-claim H4 : forall UFam :e Power (Intersection_Fam Fam), Union UFam :e Intersection_Fam Fam.
-{ admit. (** FAIL **) }
-claim H5 : forall U :e Intersection_Fam Fam, forall V :e Intersection_Fam Fam, U :/\: V :e Intersection_Fam Fam.
-{ admit. (** FAIL **) }
-apply andI.
-- exact H1.
-- apply andI.
-  * apply andI.
-    { apply andI.
-      - exact H2.
-      - exact H3. }
-    { exact H4. }
-  * exact H5.
+admit. (** FAIL **)
 Qed.
 
 (** from §13 Exercise 4(b): smallest/largest topology containing a family **) 
