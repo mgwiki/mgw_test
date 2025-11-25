@@ -6521,13 +6521,13 @@ let X. let T. let U.
 assume Htop HU.
 unfold closed_in.
 apply andI.
-- exact Htop.
-- apply andI.
-  + apply setminus_Subq.
-  + apply exI with U.
-    apply andI.
-    * exact HU.
-    * reflexivity.
+exact Htop.
+apply andI.
+apply setminus_Subq.
+apply exI with U.
+apply andI.
+exact HU.
+reflexivity.
 Qed.
 
 (** from §12: “finer than” / “coarser than” topologies **)
