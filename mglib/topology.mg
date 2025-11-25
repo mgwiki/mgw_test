@@ -8281,7 +8281,7 @@ Theorem ex13_2_compare_nine_topologies :
             T2 = top_abc_4 \/ T2 = top_abc_5 \/ T2 = top_abc_6 \/
            T2 = top_abc_7 \/ T2 = top_abc_8 \/ T2 = top_abc_9) /\
            T1 c= T2}.
-admit. (** FAIL **)
+ admit. (** FAIL **)
 Qed.
 
 (** helper for §13 exercises: intersection of a family of topologies (placeholder) **) 
