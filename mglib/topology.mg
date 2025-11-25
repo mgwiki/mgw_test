@@ -6523,7 +6523,7 @@ apply andI.
 - exact Htop.
 - apply andI.
   + apply setminus_Subq.
-  + apply exI with U.
+  + witness U.
     apply andI.
     * exact HU.
     * reflexivity.
