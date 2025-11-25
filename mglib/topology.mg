@@ -8244,7 +8244,45 @@ Theorem ex13_1_local_open_subset : forall X T A:set,
   topology_on X T ->
   (forall x :e A, exists U :e T, x :e U /\ U c= A) ->
   open_in X T A.
-admit. (** FAIL **)
+let X T A. assume HT Hloc.
+prove topology_on X T /\ A :e T.
+apply andI.
+- exact HT.
+- claim HsubT : T c= Power X.
+  { exact (andEL (T c= Power X)
+                 (Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T))
+                 HT). }
+  set Fam := {U :e T|U c= A}.
+  claim HFamSubT : Fam c= T.
+  { let U. assume HU.
+    exact (SepE1 T (fun U0 : set => U0 c= A) U HU). }
+  claim HFamPow : Fam :e Power T.
+  { apply PowerI T Fam HFamSubT. }
+  claim HUnionFamT : Union Fam :e T.
+  { claim Hax_union : forall UFam :e Power T, Union UFam :e T.
+    { exact (andEL (forall UFam :e Power T, Union UFam :e T)
+                   (forall U :e T, forall V :e T, U :/\: V :e T)
+                   (andER (T c= Power X)
+                          (Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T))
+                          HT)). }
+    exact (Hax_union Fam HFamPow). }
+  claim HAeq : A = Union Fam.
+  { apply set_ext.
+    - let x. assume HxA.
+      claim HexU : exists U :e T, x :e U /\ U c= A.
+      { exact (Hloc x HxA). }
+      let U. assume HUin HUx HUsub.
+      apply UnionI_ex Fam U.
+      * apply SepI T (fun U0 : set => U0 c= A) U HUin HUsub.
+      * exact HUx.
+    - let x. assume HxUnion.
+      apply UnionE_impred Fam x HxUnion.
+      let U. assume HUx HUinFam.
+      claim HUsubA : U c= A.
+      { exact (SepE2 T (fun U0 : set => U0 c= A) U HUinFam). }
+      exact (HUsubA x HUx). }
+  rewrite HAeq.
+  exact HUnionFamT.
 Qed.
 
 (** from §13 Exercise 2: comparison of nine topologies on {a,b,c} **) 
