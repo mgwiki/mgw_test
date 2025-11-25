@@ -6519,6 +6519,7 @@ Theorem closed_of_open_complement : forall X T U:set, topology_on X T -> U :e T 
 let X. let T. let U.
 assume Htop.
 assume HU.
+unfold closed_in.
 apply andI.
 - exact Htop.
 - apply andI.
