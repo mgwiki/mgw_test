@@ -8326,6 +8326,14 @@ Theorem ex13_3a_union_helper : forall X:set, forall UFam :e Power (countable_com
 admit. (** FAIL **)
 Qed.
 
+(** helper: witness sets for infinite-complement failure (placeholder) **) 
+Theorem ex13_3b_witness_sets : forall X:set,
+  exists U V:set,
+    U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
+    ~(U :/\: V :e infinite_complement_family X).
+admit. (** FAIL **)
+Qed.
+
 (** LATEX VERSION: Exercise 3(b): The infinite-complement family is not a topology. **)
 Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   ~topology_on X (infinite_complement_family X).
@@ -8337,14 +8345,6 @@ claim HexU : exists U V:set,
 { apply ex13_3b_witness_sets. }
 apply HexU.
 let U. let V. assume HUV.
-admit. (** FAIL **)
-Qed.
-
-(** helper: witness sets for infinite-complement failure (placeholder) **) 
-Theorem ex13_3b_witness_sets : forall X:set,
-  exists U V:set,
-    U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
-    ~(U :/\: V :e infinite_complement_family X).
 admit. (** FAIL **)
 Qed.
 
