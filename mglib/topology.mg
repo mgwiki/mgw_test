@@ -11061,7 +11061,3 @@ Definition ex50_dimension_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx n:set,
       p = OrderedPair (OrderedPair X Tx) n /\ topology_on X Tx /\ ordinal n}.
-claim HexU : exists U V:set,
-  U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
-  ~(U :/\: V :e infinite_complement_family X).
-{ admit. (** FAIL **) }
