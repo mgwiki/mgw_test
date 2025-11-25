@@ -8200,6 +8200,13 @@ Definition subbasis_on : set -> set -> prop := fun X S => S c= Power X.
 Definition intersection_of_family : set -> set :=
   fun Fam => {x :e Union Fam|forall U:set, U :e Fam -> x :e U}.
 
+(** helper: intersection of a family stays in the ambient union **) 
+(** LATEX VERSION: Placeholder lemma: each member of an intersection lies in the union of the family (to be proved properly). **)
+Theorem intersection_of_family_sub_union : forall Fam:set,
+  intersection_of_family Fam c= Union Fam.
+admit. (** FAIL **)
+Qed.
+
 Definition finite_subcollections : set -> set :=
   fun S => {F :e Power S|finite F}.
 
