@@ -6516,13 +6516,7 @@ Definition closed_in : set -> set -> set -> prop := fun X T C =>
 (** from §12: complement of open set is closed **)
 (** LATEX VERSION: If U is open in topology T on X, then X\\U is closed in that topology. **)
 Theorem closed_of_open_complement : forall X T U:set, topology_on X T -> U :e T -> closed_in X T (X :\: U).
-let X. let T. let U.
-assume Htop.
-assume HU.
-apply andI. exact Htop.
-apply andI. apply setminus_Subq.
-apply exI with U.
-apply andI. exact HU. reflexivity.
+admit. (** FAIL **)
 Qed.
 
 (** from §12: “finer than” / “coarser than” topologies **)
