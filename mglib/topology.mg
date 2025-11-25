@@ -8310,7 +8310,27 @@ Definition infinite_complement_family : set -> set :=
 
 (** LATEX VERSION: Exercise 3(a): The countable-complement topology T_c on X is a topology. **)
 Theorem ex13_3a_Tc_topology : forall X:set, topology_on X (countable_complement_topology X).
-admit. (** FAIL **)
+let X.
+claim Hsub : countable_complement_topology X c= Power X.
+{ admit. (** FAIL **) }
+claim Hem : Empty :e countable_complement_topology X.
+{ admit. (** FAIL **) }
+claim HX : X :e countable_complement_topology X.
+{ admit. (** FAIL **) }
+claim Hunion : forall UFam :e Power (countable_complement_topology X), Union UFam :e countable_complement_topology X.
+{ admit. (** FAIL **) }
+claim Hinter : forall U :e countable_complement_topology X, forall V :e countable_complement_topology X,
+  U :/\: V :e countable_complement_topology X.
+{ admit. (** FAIL **) }
+apply andI.
+- exact Hsub.
+- apply andI.
+  * exact Hem.
+  * apply andI.
+    { exact HX. }
+    { apply andI.
+      - exact Hunion.
+      - exact Hinter. }
 Qed.
 
 (** helper: unions of Tc open families remain Tc-open (placeholder) **) 
@@ -8323,7 +8343,35 @@ Qed.
 Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   ~topology_on X (infinite_complement_family X).
 let X. assume Htop.
-admit. (** FAIL **)
+prove False.
+claim HexU : exists U V:set,
+  U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
+  ~(U :/\: V :e infinite_complement_family X).
+{ admit. (** FAIL **) }
+apply HexU.
+let U. let V. assume HUV.
+claim HU : U :e infinite_complement_family X.
+{ exact (andEL (U :e infinite_complement_family X)
+               (V :e infinite_complement_family X /\ ~(U :/\: V :e infinite_complement_family X))
+               HUV). }
+claim HV : V :e infinite_complement_family X.
+{ exact (andEL (V :e infinite_complement_family X)
+               (~(U :/\: V :e infinite_complement_family X))
+               (andER (U :e infinite_complement_family X)
+                      (V :e infinite_complement_family X /\ ~(U :/\: V :e infinite_complement_family X))
+                      HUV)). }
+claim Hnot : ~(U :/\: V :e infinite_complement_family X).
+{ exact (andER (V :e infinite_complement_family X)
+               (~(U :/\: V :e infinite_complement_family X))
+               (andER (U :e infinite_complement_family X)
+                      (V :e infinite_complement_family X /\ ~(U :/\: V :e infinite_complement_family X))
+                      HUV)). }
+claim Hax_inter : forall U0 :e infinite_complement_family X, forall V0 :e infinite_complement_family X,
+  U0 :/\: V0 :e infinite_complement_family X.
+{ exact (andER (infinite_complement_family X c= Power X /\ Empty :e infinite_complement_family X /\ X :e infinite_complement_family X /\ (forall UFam :e Power (infinite_complement_family X), Union UFam :e infinite_complement_family X))
+               (forall U0 :e infinite_complement_family X, forall V0 :e infinite_complement_family X, U0 :/\: V0 :e infinite_complement_family X)
+               Htop). }
+exact (Hnot (Hax_inter U HU V HV)).
 Qed.
 
 (** from §13 Exercise 4(a): intersection of topologies **) 
@@ -8332,7 +8380,26 @@ Theorem ex13_4a_intersection_topology : forall X Fam:set,
   (forall T :e Fam, topology_on X T) ->
   topology_on X (Intersection_Fam Fam).
 let X Fam. assume HfamTop.
-admit. (** FAIL **)
+claim Hsub : Intersection_Fam Fam c= Power X.
+{ admit. (** FAIL **) }
+claim Hem : Empty :e Intersection_Fam Fam.
+{ admit. (** FAIL **) }
+claim HX : X :e Intersection_Fam Fam.
+{ admit. (** FAIL **) }
+claim Hunion : forall UFam :e Power (Intersection_Fam Fam), Union UFam :e Intersection_Fam Fam.
+{ admit. (** FAIL **) }
+claim Hinter : forall U :e Intersection_Fam Fam, forall V :e Intersection_Fam Fam,
+  U :/\: V :e Intersection_Fam Fam.
+{ admit. (** FAIL **) }
+apply andI.
+- exact Hsub.
+- apply andI.
+  * exact Hem.
+  * apply andI.
+    { exact HX. }
+    { apply andI.
+      - exact Hunion.
+      - exact Hinter. }
 Qed.
 
 (** from §13 Exercise 4(b): smallest/largest topology containing a family **) 
