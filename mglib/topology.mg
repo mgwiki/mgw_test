@@ -8051,6 +8051,7 @@ prove (forall x :e X, exists b :e singleton_basis X, x :e b).
   apply andI.
   - apply ReplI. exact HxX.
   - exact (SingI x).
+apply andI.
 prove (forall b1 :e singleton_basis X, forall b2 :e singleton_basis X, forall x:set,
               x :e b1 -> x :e b2 ->
               exists b3 :e singleton_basis X, x :e b3 /\ b3 c= b1 :/\: b2).
