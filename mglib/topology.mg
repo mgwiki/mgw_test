@@ -8038,8 +8038,7 @@ prove (singleton_basis X c= Power X
               x :e b1 -> x :e b2 ->
               exists b3 :e singleton_basis X, x :e b3 /\ b3 c= b1 :/\: b2)).
 apply andI.
-- (* subset of Power X *)
-  let b. assume Hb.
+- let b. assume Hb.
   apply ReplE X (fun x0 : set => {x0,x0}) b Hb.
   let x. assume HxX Heq.
   rewrite Heq.
@@ -8050,14 +8049,12 @@ apply andI.
   rewrite Hyx.
   exact HxX.
 - apply andI.
-  + (* covering property *)
-    let x. assume HxX.
+  + let x. assume HxX.
     witness {x,x}.
     apply andI.
     * apply ReplI. exact HxX.
     * exact (SingI x).
-  + (* intersection property *)
-    let b1. assume Hb1.
+  + let b1. assume Hb1.
     let b2. assume Hb2.
     let x. assume Hx1 Hx2.
     claim Hex1 : exists x1 :e X, b1 = {x1,x1}.
