@@ -8331,12 +8331,12 @@ claim H5 : forall U :e Intersection_Fam Fam, forall V :e Intersection_Fam Fam, U
 apply andI.
 - exact H1.
 - apply andI.
-  * exact H2.
   * apply andI.
-    { exact H3. }
     { apply andI.
-      - exact H4.
-      - exact H5. }
+      - exact H2.
+      - exact H3. }
+    { exact H4. }
+  * exact H5.
 Qed.
 
 (** from §13 Exercise 4(b): smallest/largest topology containing a family **) 
