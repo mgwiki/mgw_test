@@ -8323,35 +8323,7 @@ Qed.
 Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   ~topology_on X (infinite_complement_family X).
 let X. assume Htop.
-prove False.
-claim HexU : exists U V:set,
-  U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
-  ~(U :/\: V :e infinite_complement_family X).
-{ admit. (** FAIL **) }
-apply HexU.
-let U. let V. assume HUV.
-claim HU : U :e infinite_complement_family X.
-{ exact (andEL (U :e infinite_complement_family X)
-               (V :e infinite_complement_family X /\ ~(U :/\: V :e infinite_complement_family X))
-               HUV). }
-claim HV : V :e infinite_complement_family X.
-{ exact (andEL (V :e infinite_complement_family X)
-               (~(U :/\: V :e infinite_complement_family X))
-               (andER (U :e infinite_complement_family X)
-                      (V :e infinite_complement_family X /\ ~(U :/\: V :e infinite_complement_family X))
-                      HUV)). }
-claim Hnot : ~(U :/\: V :e infinite_complement_family X).
-{ exact (andER (V :e infinite_complement_family X)
-               (~(U :/\: V :e infinite_complement_family X))
-               (andER (U :e infinite_complement_family X)
-                      (V :e infinite_complement_family X /\ ~(U :/\: V :e infinite_complement_family X))
-                      HUV)). }
-claim Hax_inter : forall U0 :e infinite_complement_family X, forall V0 :e infinite_complement_family X,
-  U0 :/\: V0 :e infinite_complement_family X.
-{ exact (andER (infinite_complement_family X c= Power X /\ Empty :e infinite_complement_family X /\ X :e infinite_complement_family X /\ (forall UFam :e Power (infinite_complement_family X), Union UFam :e infinite_complement_family X))
-               (forall U0 :e infinite_complement_family X, forall V0 :e infinite_complement_family X, U0 :/\: V0 :e infinite_complement_family X)
-               Htop). }
-exact (Hnot (Hax_inter U HU V HV)).
+admit. (** FAIL **)
 Qed.
 
 (** from §13 Exercise 4(a): intersection of topologies **) 
