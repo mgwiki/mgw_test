@@ -8154,11 +8154,6 @@ Definition rectangular_regions : set :=
               exists x y:set, p = OrderedPair x y /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}}.
 
 Theorem circular_regions_basis_plane : basis_on EuclidPlane circular_regions.
-prove ((circular_regions c= Power EuclidPlane)
-       /\ ((forall p :e EuclidPlane, exists b :e circular_regions, p :e b)
-           /\ (forall b1 :e circular_regions, forall b2 :e circular_regions, forall p:set,
-                  p :e b1 -> p :e b2 ->
-                  exists b3 :e circular_regions, p :e b3 /\ b3 c= b1 :/\: b2))).
 apply andI.
 - admit. (** FAIL **)
 - apply andI.
@@ -8167,11 +8162,6 @@ apply andI.
 Qed.
 
 Theorem rectangular_regions_basis_plane : basis_on EuclidPlane rectangular_regions.
-prove ((rectangular_regions c= Power EuclidPlane)
-       /\ ((forall p :e EuclidPlane, exists b :e rectangular_regions, p :e b)
-           /\ (forall b1 :e rectangular_regions, forall b2 :e rectangular_regions, forall p:set,
-                  p :e b1 -> p :e b2 ->
-                  exists b3 :e rectangular_regions, p :e b3 /\ b3 c= b1 :/\: b2))).
 apply andI.
 - admit. (** FAIL **)
 - apply andI.
