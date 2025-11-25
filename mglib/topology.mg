@@ -8296,12 +8296,31 @@ Definition infinite_complement_family : set -> set :=
 
 (** LATEX VERSION: Exercise 3(a): The countable-complement topology T_c on X is a topology. **)
 Theorem ex13_3a_Tc_topology : forall X:set, topology_on X (countable_complement_topology X).
-admit. (** FAIL **)
+let X.
+prove (countable_complement_topology X c= Power X
+      /\ Empty :e countable_complement_topology X
+      /\ countable_complement_topology X :e countable_complement_topology X
+      /\ (forall UFam :e Power (countable_complement_topology X),
+            Union UFam :e countable_complement_topology X)
+      /\ (forall U :e countable_complement_topology X,
+            forall V :e countable_complement_topology X,
+              U :/\: V :e countable_complement_topology X)).
+apply andI.
+- admit. (** FAIL **)
+- apply andI.
+  * admit. (** FAIL **)
+  * apply andI.
+    { admit. (** FAIL **) }
+    { apply andI.
+      - admit. (** FAIL **)
+      - admit. (** FAIL **) }
 Qed.
 
 (** LATEX VERSION: Exercise 3(b): The infinite-complement family is not a topology. **)
 Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   ~topology_on X (infinite_complement_family X).
+let X. assume Htop.
+prove False.
 admit. (** FAIL **)
 Qed.
 
@@ -8310,6 +8329,7 @@ Qed.
 Theorem ex13_4a_intersection_topology : forall X Fam:set,
   (forall T :e Fam, topology_on X T) ->
   topology_on X (Intersection_Fam Fam).
+let X Fam. assume HfamTop.
 admit. (** FAIL **)
 Qed.
 
