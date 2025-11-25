@@ -6518,6 +6518,7 @@ Definition closed_in : set -> set -> set -> prop := fun X T C =>
 Theorem closed_of_open_complement : forall X T U:set, topology_on X T -> U :e T -> closed_in X T (X :\: U).
 let X. let T. let U.
 assume Htop HU.
+prove topology_on X T /\ (X :\: U c= X /\ exists V :e T, X :\: U = X :\: V).
 apply andI.
 - exact Htop.
 - apply andI.
