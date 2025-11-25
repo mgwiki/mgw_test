@@ -8040,7 +8040,9 @@ prove (singleton_basis X c= Power X
 apply andI.
 - (** B ⊆ Power X **)
   let b. assume Hb.
-  apply (ReplE_impred X (fun x0:set => {x0,x0}) b Hb).
+  claim Hpair : exists x :e X, b = {x,x}.
+  { exact (ReplE X (fun x0:set => {x0,x0}) b Hb). }
+  apply Hpair.
   let x. assume HxX Heqb.
   rewrite Heqb.
   apply PowerI.
