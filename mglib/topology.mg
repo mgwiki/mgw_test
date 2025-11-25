@@ -8311,26 +8311,21 @@ Definition infinite_complement_family : set -> set :=
 (** LATEX VERSION: Exercise 3(a): The countable-complement topology T_c on X is a topology. **)
 Theorem ex13_3a_Tc_topology : forall X:set, topology_on X (countable_complement_topology X).
 let X.
-claim Hsub : countable_complement_topology X c= Power X.
-{ admit. (** FAIL **) }
-claim Hem : Empty :e countable_complement_topology X.
-{ admit. (** FAIL **) }
-claim HX : X :e countable_complement_topology X.
-{ admit. (** FAIL **) }
-claim Hunion : forall UFam :e Power (countable_complement_topology X), Union UFam :e countable_complement_topology X.
-{ admit. (** FAIL **) }
-claim Hinter : forall U :e countable_complement_topology X, forall V :e countable_complement_topology X,
-  U :/\: V :e countable_complement_topology X.
-{ admit. (** FAIL **) }
+prove (countable_complement_topology X c= Power X
+      /\ Empty :e countable_complement_topology X
+      /\ X :e countable_complement_topology X
+      /\ (forall UFam :e Power (countable_complement_topology X), Union UFam :e countable_complement_topology X)
+      /\ (forall U :e countable_complement_topology X, forall V :e countable_complement_topology X,
+            U :/\: V :e countable_complement_topology X)).
 apply andI.
-- exact Hsub.
+- admit. (** FAIL **)
 - apply andI.
-  * exact Hem.
+  * admit. (** FAIL **)
   * apply andI.
-    { exact HX. }
+    { admit. (** FAIL **) }
     { apply andI.
-      - exact Hunion.
-      - exact Hinter. }
+      - admit. (** FAIL **)
+      - admit. (** FAIL **) }
 Qed.
 
 (** helper: nonempty open sets in T_c have countable complement (placeholder) **) 
