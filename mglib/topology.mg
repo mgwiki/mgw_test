@@ -8317,15 +8317,7 @@ prove (countable_complement_topology X c= Power X
       /\ (forall UFam :e Power (countable_complement_topology X), Union UFam :e countable_complement_topology X)
       /\ (forall U :e countable_complement_topology X, forall V :e countable_complement_topology X,
             U :/\: V :e countable_complement_topology X)).
-apply andI.
-- admit. (** FAIL **)
-- apply andI.
-  * admit. (** FAIL **)
-  * apply andI.
-    { admit. (** FAIL **) }
-    { apply andI.
-      - admit. (** FAIL **)
-      - admit. (** FAIL **) }
+admit. (** FAIL **)
 Qed.
 
 (** helper: nonempty open sets in T_c have countable complement (placeholder) **) 
