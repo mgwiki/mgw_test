@@ -8310,33 +8310,7 @@ Definition infinite_complement_family : set -> set :=
 
 (** LATEX VERSION: Exercise 3(a): The countable-complement topology T_c on X is a topology. **)
 Theorem ex13_3a_Tc_topology : forall X:set, topology_on X (countable_complement_topology X).
-let X.
-prove (countable_complement_topology X c= Power X
-      /\ Empty :e countable_complement_topology X
-      /\ X :e countable_complement_topology X
-      /\ (forall UFam :e Power (countable_complement_topology X), Union UFam :e countable_complement_topology X)
-      /\ (forall U :e countable_complement_topology X, forall V :e countable_complement_topology X,
-            U :/\: V :e countable_complement_topology X)).
-claim Hsub : countable_complement_topology X c= Power X.
-{ admit. (** FAIL **) }
-claim Hem : Empty :e countable_complement_topology X.
-{ admit. (** FAIL **) }
-claim HX : X :e countable_complement_topology X.
-{ admit. (** FAIL **) }
-claim Hunion : forall UFam :e Power (countable_complement_topology X), Union UFam :e countable_complement_topology X.
-{ admit. (** FAIL **) }
-claim Hinter : forall U :e countable_complement_topology X, forall V :e countable_complement_topology X,
-  U :/\: V :e countable_complement_topology X.
-{ admit. (** FAIL **) }
-apply andI.
-- exact Hsub.
-- apply andI.
-  * exact Hem.
-  * apply andI.
-    { exact HX. }
-    { apply andI.
-      - exact Hunion.
-      - exact Hinter. }
+admit. (** FAIL **)
 Qed.
 
 (** helper: unions of Tc open families remain Tc-open (placeholder) **) 
@@ -8386,32 +8360,7 @@ Theorem ex13_4a_intersection_topology : forall X Fam:set,
   (forall T :e Fam, topology_on X T) ->
   topology_on X (Intersection_Fam Fam).
 let X Fam. assume HfamTop.
-prove (Intersection_Fam Fam c= Power X
-      /\ Empty :e Intersection_Fam Fam
-      /\ X :e Intersection_Fam Fam
-      /\ (forall UFam :e Power (Intersection_Fam Fam), Union UFam :e Intersection_Fam Fam)
-      /\ (forall U :e Intersection_Fam Fam, forall V :e Intersection_Fam Fam,
-            U :/\: V :e Intersection_Fam Fam)).
-claim Hsub : Intersection_Fam Fam c= Power X.
-{ admit. (** FAIL **) }
-claim Hem : Empty :e Intersection_Fam Fam.
-{ admit. (** FAIL **) }
-claim HX : X :e Intersection_Fam Fam.
-{ admit. (** FAIL **) }
-claim Hunion : forall UFam :e Power (Intersection_Fam Fam), Union UFam :e Intersection_Fam Fam.
-{ admit. (** FAIL **) }
-claim Hinter : forall U :e Intersection_Fam Fam, forall V :e Intersection_Fam Fam,
-  U :/\: V :e Intersection_Fam Fam.
-{ admit. (** FAIL **) }
-apply andI.
-- exact Hsub.
-- apply andI.
-  * exact Hem.
-  * apply andI.
-    { exact HX. }
-    { apply andI.
-      - exact Hunion.
-      - exact Hinter. }
+admit. (** FAIL **)
 Qed.
 
 (** from §13 Exercise 4(b): smallest/largest topology containing a family **) 
