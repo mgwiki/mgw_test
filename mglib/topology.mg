@@ -8304,6 +8304,10 @@ Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   ~topology_on X (infinite_complement_family X).
 let X. assume Htop.
 prove False.
+claim HexU : exists U V:set,
+  U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
+  ~(U :/\: V :e infinite_complement_family X).
+{ admit. (** FAIL **) }
 apply HexU.
 let U. let V. assume HUV.
 claim HU : U :e infinite_complement_family X.
