@@ -8313,6 +8313,12 @@ Theorem ex13_3a_Tc_topology : forall X:set, topology_on X (countable_complement_
 admit. (** FAIL **)
 Qed.
 
+(** helper: nonempty open sets in T_c have countable complement (placeholder) **) 
+Theorem ex13_3a_countable_complement_open : forall X:set, forall U :e countable_complement_topology X,
+  U <> Empty -> countable (X :\: U).
+admit. (** FAIL **)
+Qed.
+
 (** helper: unions of Tc open families remain Tc-open (placeholder) **) 
 Theorem ex13_3a_union_helper : forall X:set, forall UFam :e Power (countable_complement_topology X),
   Union UFam :e countable_complement_topology X.
@@ -8323,6 +8329,14 @@ Qed.
 Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   ~topology_on X (infinite_complement_family X).
 let X. assume Htop.
+admit. (** FAIL **)
+Qed.
+
+(** helper: witness sets for infinite-complement failure (placeholder) **) 
+Theorem ex13_3b_witness_sets : forall X:set,
+  exists U V:set,
+    U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
+    ~(U :/\: V :e infinite_complement_family X).
 admit. (** FAIL **)
 Qed.
 
