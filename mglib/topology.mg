@@ -8202,16 +8202,6 @@ Definition intersection_of_family : set -> set :=
 
 (** helper: intersection of a family stays in the ambient union **) 
 (** LATEX VERSION: Placeholder lemma: each member of an intersection lies in the union of the family (to be proved properly). **)
-Theorem intersection_of_family_sub_union : forall Fam:set,
-  intersection_of_family Fam c= Union Fam.
-admit. (** FAIL **)
-Qed.
-
-(** helper: empty set belongs to intersection family if every topology contains Empty (placeholder) **) 
-Theorem intersection_of_family_empty : forall Fam:set, Empty :e Intersection_Fam Fam.
-admit. (** FAIL **)
-Qed.
-
 Definition finite_subcollections : set -> set :=
   fun S => {F :e Power S|finite F}.
 
@@ -8300,6 +8290,18 @@ Qed.
 (** LATEX VERSION: Intersection_Fam Fam denotes the intersection (common opens) of all topologies in Fam. **)
 Definition Intersection_Fam : set -> set :=
   fun Fam => {U :e Power (Union Fam)|forall T:set, T :e Fam -> U :e T}.
+
+(** helper: intersection of a family stays within the union (placeholder) **) 
+Theorem intersection_of_family_sub_union : forall Fam:set,
+  intersection_of_family Fam c= Union Fam.
+admit. (** FAIL **)
+Qed.
+
+(** helper: empty set is in every intersection family when all members contain Empty (placeholder) **) 
+Theorem intersection_of_family_empty : forall Fam:set,
+  Empty :e Intersection_Fam Fam.
+admit. (** FAIL **)
+Qed.
 
 (** from §13 Exercise 3: infinite-complement collection **) 
 (** LATEX VERSION: Exercise 3 examines countable-complement topology vs. infinite-complement family on X. **)
