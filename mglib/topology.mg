@@ -6518,13 +6518,16 @@ Definition closed_in : set -> set -> set -> prop := fun X T C =>
 Theorem closed_of_open_complement : forall X T U:set,
   topology_on X T -> U :e T -> closed_in X T (X :\: U).
 Proof.
-  intros X T U Htop HU.
+  let X T U. assume Htop HU.
   unfold closed_in.
-  split.
+  apply andI.
   - exact Htop.
-  - split.
+  - apply andI.
     + apply setminus_Subq.
-    + exists U. split; [exact HU | reflexivity].
+    + apply exI with U.
+      apply andI.
+      * exact HU.
+      * reflexivity.
 Qed.
 
 (** from §12: “finer than” / “coarser than” topologies **)
