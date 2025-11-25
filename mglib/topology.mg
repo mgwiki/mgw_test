@@ -8334,7 +8334,7 @@ prove False.
 claim HexU : exists U V:set,
   U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
   ~(U :/\: V :e infinite_complement_family X).
-{ exact (ex13_3b_witness_sets X). }
+{ apply ex13_3b_witness_sets. }
 apply HexU.
 let U. let V. assume HUV.
 admit. (** FAIL **)
