@@ -6520,12 +6520,12 @@ let X. let T. let U.
 assume Htop HU.
 unfold closed_in.
 apply andI.
-exact Htop.
+{ exact Htop. }
 apply andI.
-apply setminus_Subq.
+{ apply setminus_Subq. }
 apply exI with U.
 apply andI.
-exact HU.
+{ exact HU. }
 reflexivity.
 Qed.
 
