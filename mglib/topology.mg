@@ -8039,13 +8039,16 @@ prove (singleton_basis X c= Power X
               exists b3 :e singleton_basis X, x :e b3 /\ b3 c= b1 :/\: b2)).
 apply andI.
 - let b. assume Hb.
-  apply (ReplE_impred X (fun x0:set => {x0,x0}) b Hb (b :e Power X)).
-  let x. assume HxX Heq.
-  rewrite Heq.
+  prove b :e Power X.
   apply PowerI.
-  let y. assume Hy.
+  let y. assume Hyb.
+  claim Hex : exists x :e X, b = {x,x}.
+  { exact (ReplE X (fun x0:set => {x0,x0}) b Hb). }
+  apply Hex.
+  let x. assume HxX Heq.
+  rewrite Heq in Hyb.
   claim Hyx : y = x.
-  { exact (SingE x y Hy). }
+  { exact (SingE x y Hyb). }
   rewrite Hyx.
   exact HxX.
 - apply andI.
