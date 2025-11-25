@@ -8041,6 +8041,7 @@ apply andI.
 - let b. assume Hb.
   prove b :e Power X.
   apply PowerI.
+  prove b c= X.
   let y. assume Hyb.
   claim Hex : exists x :e X, b = {x,x}.
   { exact (ReplE X (fun x0:set => {x0,x0}) b Hb). }
