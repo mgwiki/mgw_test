@@ -8339,8 +8339,6 @@ Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   ~topology_on X (infinite_complement_family X).
 let X. assume Htop.
 prove False.
-apply ex13_3b_witness_sets.
-let U. let V. assume HUV.
 admit. (** FAIL **)
 Qed.
 
