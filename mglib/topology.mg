@@ -8037,15 +8037,16 @@ apply andI.
 - (* B ⊆ Power X *)
   prove (singleton_basis X) c= Power X.
   let b. assume Hb.
-  apply Hb.
-  let x. assume HxX Heqb.
-  rewrite Heqb.
-  apply PowerI.
-  let y. assume Hy.
-  claim Hyx : y = x.
-  { exact (SingE x y Hy). }
-  rewrite Hyx.
-  exact HxX.
+  apply ReplE_impred with (p := fun x : set => b :e Power X) in Hb.
+  - exact Hb.
+  - let x. assume HxX Heqb.
+    rewrite Heqb.
+    apply PowerI.
+    let y. assume Hy.
+    claim Hyx : y = x.
+    { exact (SingE x y Hy). }
+    rewrite Hyx.
+    exact HxX.
 - apply andI.
   + (* every point is covered *)
     let x. assume HxX.
