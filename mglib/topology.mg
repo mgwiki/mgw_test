@@ -8306,6 +8306,12 @@ Theorem ex13_3a_Tc_topology : forall X:set, topology_on X (countable_complement_
 admit. (** FAIL **)
 Qed.
 
+(** helper: unions of Tc open families remain Tc-open (placeholder) **) 
+Theorem ex13_3a_union_helper : forall X:set, forall UFam :e Power (countable_complement_topology X),
+  Union UFam :e countable_complement_topology X.
+admit. (** FAIL **)
+Qed.
+
 (** LATEX VERSION: Exercise 3(b): The infinite-complement family is not a topology. **)
 Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   ~topology_on X (infinite_complement_family X).
