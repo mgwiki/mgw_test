@@ -8039,7 +8039,6 @@ prove (singleton_basis X c= Power X
               exists b3 :e singleton_basis X, x :e b3 /\ b3 c= b1 :/\: b2)).
 apply andI.
 - (** B ⊆ Power X **)
-  prove (singleton_basis X) c= Power X.
   let b. assume Hb.
   claim Hpair : exists x :e X, b = {x,x}.
   { exact (ReplE X (fun x0:set => {x0,x0}) b Hb). }
