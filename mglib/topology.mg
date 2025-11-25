@@ -8311,15 +8311,7 @@ Definition infinite_complement_family : set -> set :=
 (** LATEX VERSION: Exercise 3(a): The countable-complement topology T_c on X is a topology. **)
 Theorem ex13_3a_Tc_topology : forall X:set, topology_on X (countable_complement_topology X).
 let X.
-apply andI.
-- admit. (** FAIL **)
-- apply andI.
-  * admit. (** FAIL **)
-  * apply andI.
-    { admit. (** FAIL **) }
-    { apply andI.
-      - admit. (** FAIL **)
-      - admit. (** FAIL **) }
+admit. (** FAIL **)
 Qed.
 
 (** helper: nonempty open sets in T_c have countable complement (placeholder) **) 
