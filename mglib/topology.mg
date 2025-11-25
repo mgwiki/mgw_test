@@ -8032,7 +8032,11 @@ Definition singleton_basis : set -> set := fun X => {{x,x}|x :e X}.
 (** LATEX VERSION: The collection of singletons on X satisfies the two basis axioms. **)
 Theorem singleton_basis_is_basis : forall X:set, basis_on X (singleton_basis X).
 let X.
-prove basis_on X (singleton_basis X).
+prove (singleton_basis X c= Power X
+       /\ (forall x :e X, exists b :e singleton_basis X, x :e b)
+       /\ (forall b1 :e singleton_basis X, forall b2 :e singleton_basis X, forall x:set,
+              x :e b1 -> x :e b2 ->
+              exists b3 :e singleton_basis X, x :e b3 /\ b3 c= b1 :/\: b2)).
 apply andI.
 - (* B ⊆ Power X *)
   prove (singleton_basis X) c= Power X.
@@ -8079,8 +8083,13 @@ apply andI.
         { exact (SingE x y Hyb3). }
         rewrite Hyx.
         apply binintersectI.
-        - rewrite Heq1 in Hx1.
-          exact Hx1.
+        - apply Hex1.
+          let x1. assume Hx1X Heq1.
+          rewrite Heq1 in Hx1.
+          claim Hxeq1 : x = x1.
+          { exact (SingE x1 x Hx1). }
+          rewrite Hxeq1.
+          exact Hx1X.
         - apply Hex2.
           let x2. assume Hx2X Heq2.
           rewrite Heq2 in Hx2.
