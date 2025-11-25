@@ -8321,12 +8321,12 @@ prove (Intersection_Fam Fam c= Power X
 apply andI.
 - admit. (** FAIL **)
 - apply andI.
-  * admit. (** FAIL **)
   * apply andI.
-    { admit. (** FAIL **) }
     { apply andI.
       - admit. (** FAIL **)
       - admit. (** FAIL **) }
+    { admit. (** FAIL **) }
+  * admit. (** FAIL **)
 Qed.
 
 (** from §13 Exercise 4(b): smallest/largest topology containing a family **) 
