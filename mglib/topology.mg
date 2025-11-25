@@ -8207,6 +8207,11 @@ Theorem intersection_of_family_sub_union : forall Fam:set,
 admit. (** FAIL **)
 Qed.
 
+(** helper: empty set belongs to intersection family if every topology contains Empty (placeholder) **) 
+Theorem intersection_of_family_empty : forall Fam:set, Empty :e Intersection_Fam Fam.
+admit. (** FAIL **)
+Qed.
+
 Definition finite_subcollections : set -> set :=
   fun S => {F :e Power S|finite F}.
 
