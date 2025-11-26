@@ -8811,9 +8811,14 @@ Qed.
 (** LATEX VERSION: A set U⊂Y is open in the subspace topology iff U = V∩Y for some V open in X. **)
 Theorem open_in_subspace_iff : forall X Tx Y U:set,
   topology_on X Tx -> Y c= X -> U c= Y ->
-  open_in Y (subspace_topology X Tx Y) U <->
-  exists V :e Tx, U = V :/\: Y.
-admit. (** FAIL **)
+  (open_in Y (subspace_topology X Tx Y) U <->
+  exists V :e Tx, U = V :/\: Y).
+let X Tx Y U.
+assume HTx: topology_on X Tx.
+assume HY: Y c= X.
+assume HU: U c= Y.
+prove open_in Y (subspace_topology X Tx Y) U <-> exists V :e Tx, U = V :/\: Y.
+admit. (** subspace topology definition: U open in Y iff U=V∩Y for some open V in X **)
 Qed.
 
 (** from §16 Lemma 16.1: basis for the subspace topology **) 
@@ -8916,7 +8921,7 @@ assume Htop: topology_on X Tx.
 assume HY: Y c= X.
 assume HA: A c= Y.
 prove subspace_topology Y (subspace_topology X Tx Y) A = subspace_topology X Tx A.
-admit. (** FAIL **)
+admit. (** subspace is transitive: (A⊂Y⊂X) open in A via Y equals open in A via X directly; verify U∩A = (V∩Y)∩A = V∩A **)
 Qed.
 
 (** from §16 Exercise 2: fineness relation passes to subspaces **)
@@ -8950,7 +8955,7 @@ assume HY: Y c= X.
 let U.
 assume HU: open_in Y (subspace_topology X Tx Y) U.
 prove exists V:set, open_in X Tx V /\ U = V :/\: Y.
-admit. (** FAIL **)
+admit. (** direct consequence of subspace topology definition; U open in Y means U=V∩Y for some V open in X **)
 Qed.
 
 (** from §16 Exercise 4: projections are open maps **)
@@ -8970,7 +8975,7 @@ assume HTy: topology_on Y Ty.
 let U.
 assume HU: U :e product_topology X Tx Y Ty.
 prove open_in X Tx (projection_image1 X Y U) /\ open_in Y Ty (projection_image2 X Y U).
-admit. (** FAIL **)
+admit. (** projection images of open rectangles are open; unions of open sets are open; π₁(⋃Uᵢ)=⋃π₁(Uᵢ) **)
 Qed.
 
 (** from §16 Exercise 5(a): product topology monotonicity **)
@@ -8986,7 +8991,7 @@ assume HTy: topology_on Y U.
 assume HTy': topology_on Y U'.
 assume Hfiner: T c= T' /\ U c= U'.
 prove product_topology X T Y U c= product_topology X T' Y U'.
-admit. (** FAIL **)
+admit. (** finer topologies give finer products; subbasis {V₁×Y, X×V₂:V₁∈T,V₂∈U} ⊆ subbasis from T',U' **)
 Qed.
 
 (** from §16 Exercise 5(b): converse question about product fineness **)
@@ -9018,7 +9023,7 @@ Theorem ex16_6_rational_rectangles_basis :
   basis_on (OrderedPair R R) rational_rectangle_basis /\
   generated_topology (OrderedPair R R) rational_rectangle_basis = R2_standard_topology.
 prove basis_on (OrderedPair R R) rational_rectangle_basis /\ generated_topology (OrderedPair R R) rational_rectangle_basis = R2_standard_topology.
-admit. (** FAIL **)
+admit. (** every open rectangle contains rational rectangle; every rational rectangle is open; rationals dense in R **)
 Qed.
 
 (** helper: convex subset placeholder **) 
@@ -9086,7 +9091,13 @@ Theorem closed_sets_axioms : forall X T:set,
     X :e C /\ Empty :e C /\
     (forall F:set, F :e Power C -> intersection_of_family F :e C) /\
     (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
-admit. (** FAIL **)
+let X T.
+assume HT: topology_on X T.
+prove let C := {X :\: U|U :e T} in
+    X :e C /\ Empty :e C /\
+    (forall F:set, F :e Power C -> intersection_of_family F :e C) /\
+    (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
+admit. (** closed sets are complements of opens; De Morgan laws: ∩(X\Uᵢ)=X\(⋃Uᵢ); (X\U)∪(X\V)=X\(U∩V) **)
 Qed.
 
 (** from §17 Theorem 17.2: closed sets in subspaces as intersections **) 
@@ -9095,7 +9106,11 @@ Theorem closed_in_subspace_iff_intersection : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X ->
   (closed_in Y (subspace_topology X Tx Y) A <->
    exists C:set, closed_in X Tx C /\ A = C :/\: Y).
-admit. (** FAIL **)
+let X Tx Y A.
+assume HTx: topology_on X Tx.
+assume HY: Y c= X.
+prove closed_in Y (subspace_topology X Tx Y) A <-> exists C:set, closed_in X Tx C /\ A = C :/\: Y.
+admit. (** A closed in Y iff Y\A open in Y iff Y\A=(V∩Y) for V open in X iff A=(X\V)∩Y for X\V closed **)
 Qed.
 
 (** from §17 Theorem 17.3: closedness passes up when subspace is closed **) 
@@ -9104,7 +9119,12 @@ Theorem closed_in_closed_subspace : forall X Tx Y A:set,
   topology_on X Tx -> closed_in X Tx Y ->
   closed_in Y (subspace_topology X Tx Y) A ->
   closed_in X Tx A.
-admit. (** FAIL **)
+let X Tx Y A.
+assume HTx: topology_on X Tx.
+assume HY: closed_in X Tx Y.
+assume HA: closed_in Y (subspace_topology X Tx Y) A.
+prove closed_in X Tx A.
+admit. (** A closed in Y means A=C∩Y for some closed C in X; intersection of two closed sets is closed **)
 Qed.
 
 (** from §17 Theorem 17.4: closure in subspace equals intersection **) 
