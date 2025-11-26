@@ -9199,9 +9199,12 @@ Qed.
 (** LATEX VERSION: In T₁ spaces, x is a limit point of A iff every neighborhood of x meets A in infinitely many points. **)
 Theorem limit_points_infinite_neighborhoods : forall X Tx A x:set,
   T1_space X Tx ->
-  limit_point_of X Tx A x <->
-  (forall U :e Tx, x :e U -> infinite (U :/\: A)).
-admit. (** FAIL **)
+  (limit_point_of X Tx A x <->
+  (forall U :e Tx, x :e U -> infinite (U :/\: A))).
+let X Tx A x.
+assume HT1: T1_space X Tx.
+prove limit_point_of X Tx A x <-> (forall U :e Tx, x :e U -> infinite (U :/\: A)).
+admit. (** in T1 space, singletons closed; limit point means every open nbhd meets A infinitely **)
 Qed.
 
 (** from §17 Theorem 17.10: uniqueness of limits in Hausdorff spaces **) 
@@ -9468,7 +9471,16 @@ Theorem continuity_equiv_forms : forall X Tx Y Ty f:set,
     (forall x:set, x :e X ->
        forall V:set, V :e Ty -> apply_fun f x :e V ->
          exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V)).
-admit. (** FAIL **)
+let X Tx Y Ty f.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+prove continuous_map X Tx Y Ty f <->
+    (forall V:set, V :e Ty -> preimage_of X f V :e Tx) /\
+    (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C)) /\
+    (forall x:set, x :e X ->
+       forall V:set, V :e Ty -> apply_fun f x :e V ->
+         exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V).
+admit. (** equivalence of continuity definitions: preimages of opens are open; preimages of closed are closed; local nbhd condition **)
 Qed.
 
 (** from §18: identity map is continuous **) 
@@ -9477,7 +9489,10 @@ Theorem identity_continuous : forall X Tx:set,
   topology_on X Tx ->
   let id := {UPair x x|x :e X} in
   continuous_map X Tx X Tx id.
-admit. (** FAIL **)
+let X Tx.
+assume HTx: topology_on X Tx.
+prove let id := {UPair x x|x :e X} in continuous_map X Tx X Tx id.
+admit. (** identity preimage of any set U is U itself; U open implies id⁻¹(U)=U open **)
 Qed.
 
  (** from §18: composition of continuous maps is continuous **) 
@@ -9488,8 +9503,12 @@ Definition compose_fun : set -> set -> set -> set := fun X f g =>
    continuous_map X Tx Y Ty f ->
    continuous_map Y Ty Z Tz g ->
    continuous_map X Tx Z Tz (compose_fun X f g).
- admit. (** FAIL **)
- Qed.
+let X Tx Y Ty Z Tz f g.
+assume Hf: continuous_map X Tx Y Ty f.
+assume Hg: continuous_map Y Ty Z Tz g.
+prove continuous_map X Tx Z Tz (compose_fun X f g).
+admit. (** preimage of open W under g∘f equals f⁻¹(g⁻¹(W)); g⁻¹(W) open, then f⁻¹(g⁻¹(W)) open **)
+Qed.
 
 (** from §18 Theorem 18.2: rules for constructing continuous functions **) 
 (** LATEX VERSION: Theorem 18.2 provides construction rules preserving continuity. **)
@@ -9517,7 +9536,12 @@ Theorem continuous_on_subspace : forall X Tx Y Ty f A:set,
   topology_on X Tx -> A c= X ->
   continuous_map X Tx Y Ty f ->
   continuous_map A (subspace_topology X Tx A) Y Ty f.
- admit. (** FAIL **)
+let X Tx Y Ty f A.
+assume HTx: topology_on X Tx.
+assume HA: A c= X.
+assume Hf: continuous_map X Tx Y Ty f.
+prove continuous_map A (subspace_topology X Tx A) Y Ty f.
+admit. (** restriction preserves continuity; preimage f⁻¹(V) open in X means f⁻¹(V)∩A open in subspace A **)
 Qed.
 
 (** from §18: inverse of homeomorphism is continuous **) 
