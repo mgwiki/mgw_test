@@ -11869,7 +11869,10 @@ Theorem ex32_2_factors_inherit_separation : forall Idx Fam:set,
       forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ regular_space Xi Txi) /\
    (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
       forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ normal_space Xi Txi)).
-admit.
+let Idx Fam.
+assume Hnemp: forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ Xi <> Empty.
+prove (Hausdorff_space (product_space Idx Fam) (product_topology_full Idx Fam) -> forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ Hausdorff_space Xi Txi) /\ (regular_space (product_space Idx Fam) (product_topology_full Idx Fam) -> forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ regular_space Xi Txi) /\ (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) -> forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ normal_space Xi Txi).
+admit. (** projection maps preserve separation properties; subspaces of factor spaces inherit properties **)
 Qed.
 (** from §32 Exercise 3: locally compact Hausdorff implies regular **)
 (** LATEX VERSION: Every locally compact Hausdorff space is regular. **)
@@ -11902,7 +11905,8 @@ Theorem ex32_5_Romega_normality_questions :
    ~ normal_space (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R))) /\
   (exists Romega Tunif:set,
     (normal_space Romega Tunif \/ ~ normal_space Romega Tunif)).
-admit.
+prove (normal_space (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R)) \/ ~ normal_space (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R))) /\ (exists Romega Tunif:set, (normal_space Romega Tunif \/ ~ normal_space Romega Tunif)).
+admit. (** R^omega normal in product topology; uniform topology also normal via metrizability **)
 Qed.
 (** from §32 Exercise 6: completely normal characterization via separated sets **)
 (** LATEX VERSION: X is completely normal iff for every separated pair A,B, there exist disjoint open sets containing them. **)
@@ -11941,7 +11945,8 @@ Theorem ex32_7_completely_normal_examples :
   (forall X Tx:set, regular_space X Tx -> second_countable_space X Tx ->
     (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
   (exists Rl Tl:set, completely_normal_space Rl Tl \/ ~ completely_normal_space Rl Tl).
-admit.
+prove (forall X Tx A:set, completely_normal_space X Tx -> completely_normal_space A (subspace_topology X Tx A)) /\ (forall X Tx Y Ty Idx Fam:set, completely_normal_space X Tx -> completely_normal_space Y Ty -> (completely_normal_space (product_space Idx Fam) (product_topology_full Idx Fam) \/ ~ completely_normal_space (product_space Idx Fam) (product_topology_full Idx Fam))) /\ (forall X:set, completely_normal_space X (order_topology X)) /\ (forall X Tx:set, metrizable X Tx -> completely_normal_space X Tx) /\ (forall X Tx:set, compact_space X Tx -> Hausdorff_space X Tx -> (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\ (forall X Tx:set, regular_space X Tx -> second_countable_space X Tx -> (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\ (exists Rl Tl:set, completely_normal_space Rl Tl \/ ~ completely_normal_space Rl Tl).
+admit. (** (a) yes subspace (c) yes well-ordered (d) yes metrizable; (b) no product fails (e) no compact Hausdorff not always (f) yes regular+second-countable (g) no Rl^2 **)
 Qed.
 (** from §32 Exercise 8: linear continuum normal **)
 (** LATEX VERSION: Every linear continuum X is normal. **)
@@ -11958,7 +11963,10 @@ Qed.
 Theorem ex32_9_uncountable_product_not_normal : forall J:set,
   ~ countable J ->
   ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
-admit.
+let J.
+assume Huncnt: ~ countable J.
+prove ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
+admit. (** construct disjoint closed sets that cannot be separated by Jones lemma **)
 Qed.
 
 (** helper: perfect normality predicate **)
