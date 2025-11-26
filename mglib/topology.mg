@@ -11320,10 +11320,16 @@ prove m_manifold C (subspace_topology X Tx C).
 admit. (** components of metrizable locally euclidean are manifolds **)
 Qed.
 
+(** helper: G_delta subset coded via countable intersection of open sets **)
+Definition Gdelta_in : set -> set -> set -> prop := fun X Tx A =>
+  exists Fam:set, countable Fam /\
+    (forall U :e Fam, open_in X Tx U) /\
+    Intersection_Fam Fam = A.
+
 (** from §30 Exercise 1a: one-point sets are G_delta in first-countable T1 **)
 (** LATEX VERSION: In a first-countable T₁ space, every one-point set is a G_δ set. **)
 Theorem ex30_1a_onepoint_Gdelta_firstcountable_T1 : forall X Tx x:set,
-  first_countable X Tx ->
+  first_countable_space X Tx ->
   T1_space X Tx ->
   x :e X ->
   Gdelta_in X Tx (Sing x).
@@ -11336,7 +11342,7 @@ Theorem ex30_1b_Gdelta_not_firstcountable_exists :
   exists X:set, exists Tx:set,
     topology_on X Tx /\
     (forall x:set, x :e X -> Gdelta_in X Tx (Sing x)) /\
-    ~ first_countable X Tx.
+    ~ first_countable_space X Tx.
 admit.
 Qed.
 (** from §30 Exercise 2: every basis contains countable basis when space has one **)
@@ -11406,31 +11412,100 @@ Qed.
 Theorem ex30_7_SOmega_Sbar_Omega_countability : forall Tx_SO Tx_SbarO:set,
   Tx_SO = SOmega_topology ->
   Tx_SbarO = SbarOmega_topology ->
-  (first_countable S_Omega Tx_SO /\
+  (first_countable_space S_Omega Tx_SO /\
    second_countable_space S_Omega Tx_SO /\
    Lindelof_space S_Omega Tx_SO /\
    (exists D:set, D c= S_Omega /\ countable D /\ dense_in D S_Omega Tx_SO)) /\
-  (first_countable Sbar_Omega Tx_SbarO /\
+  (first_countable_space Sbar_Omega Tx_SbarO /\
    ~ second_countable_space Sbar_Omega Tx_SbarO /\
    ~ Lindelof_space Sbar_Omega Tx_SbarO /\
    ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega Tx_SbarO)).
 admit.
 Qed.
-(** from §30 Exercise 8: countability axioms for Romega uniform topology **) 
-(** LATEX VERSION: Exercise 30.8: Countability properties of R^ω with uniform topology. **)
-Definition ex30_8_Romega_uniform_countability : set := omega.
-(** from §30 Exercise 9: closed subspace of Lindelof is Lindelof; dense subset need not be **) 
-(** LATEX VERSION: Exercise 30.9: Closed subspaces of Lindelöf spaces vs dense subsets. **)
-Definition ex30_9_closed_Lindelof_and_dense_subsets : set := omega.
-(** from §30 Exercise 10: product with countable dense subsets has countable dense subset **) 
-(** LATEX VERSION: Exercise 30.10: Products with countable dense subsets retain countable dense subsets. **)
-Definition ex30_10_product_countable_dense : set := omega.
-(** from §30 Exercise 11: images of Lindelof or countable dense under continuous map **) 
-(** LATEX VERSION: Exercise 30.11: Continuous images of Lindelöf or separable spaces. **)
-Definition ex30_11_image_preserves_Lindelof_or_dense : set := omega.
-(** from §30 Exercise 12: continuous open maps preserve countability axioms **) 
-(** LATEX VERSION: Exercise 30.12: Open continuous maps preserve countability axioms. **)
-Definition ex30_12_open_map_preserves_countability_axioms : set := omega.
+(** from §30 Exercise 8: countability axioms for R^omega uniform topology **)
+(** LATEX VERSION: Determine which countability axioms R^ω satisfies in the uniform topology. **)
+Theorem ex30_8_Romega_uniform_countability : forall Tx:set,
+  Tx = R (** stub: R^omega with uniform topology **) ->
+  first_countable_space R Tx /\
+  ~ second_countable_space R Tx /\
+  ~ Lindelof_space R Tx /\
+  ~ (exists D:set, D c= R /\ countable D /\ dense_in D R Tx).
+admit.
+Qed.
+(** from §30 Exercise 9a: closed subspace of Lindelof is Lindelof **)
+(** LATEX VERSION: If A is closed in Lindelöf space X, then A is Lindelöf. **)
+Theorem ex30_9a_closed_Lindelof : forall X Tx A:set,
+  Lindelof_space X Tx ->
+  closed_in X Tx A ->
+  Lindelof_space A (subspace_topology X Tx A).
+admit.
+Qed.
+
+(** from §30 Exercise 9b: dense subspace need not have countable dense subset **)
+(** LATEX VERSION: If X has countable dense subset, dense subspace A need not have one. **)
+Theorem ex30_9b_dense_not_countable_dense :
+  exists X:set, exists Tx:set, exists A:set,
+    (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) /\
+    dense_in A X Tx /\
+    ~ (exists DA:set, DA c= A /\ countable DA /\ dense_in DA A (subspace_topology X Tx A)).
+admit.
+Qed.
+
+(** from §30 Exercise 10: countable product has countable dense if factors do **)
+(** LATEX VERSION: If X is countable product of spaces with countable dense subsets, then X has one. **)
+Theorem ex30_10_product_countable_dense : forall Idx:set, forall Fam:set,
+  countable Idx ->
+  (forall i:set, i :e Idx ->
+    exists Xi:set, exists Txi:set, exists Di:set,
+      apply_fun Fam i = OrderedPair Xi Txi /\
+      Di c= Xi /\ countable Di /\ dense_in Di Xi Txi) ->
+  exists D:set,
+    D c= product_space Idx Fam /\
+    countable D /\
+    dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
+admit.
+Qed.
+
+(** from §30 Exercise 11a: continuous image of Lindelof is Lindelof **)
+(** LATEX VERSION: If f:X→Y continuous and X Lindelöf, then f(X) is Lindelöf. **)
+Theorem ex30_11a_image_Lindelof : forall X Tx Y Ty f:set,
+  Lindelof_space X Tx ->
+  continuous_map X Tx Y Ty f ->
+  Lindelof_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+admit.
+Qed.
+
+(** from §30 Exercise 11b: continuous image of separable is separable **)
+(** LATEX VERSION: If f:X→Y continuous and X has countable dense subset, then f(X) does too. **)
+Theorem ex30_11b_image_countable_dense : forall X Tx Y Ty f:set,
+  (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
+  continuous_map X Tx Y Ty f ->
+  exists Df:set,
+    Df c= (apply_fun f X) /\
+    countable Df /\
+    dense_in Df (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+admit.
+Qed.
+
+(** from §30 Exercise 12a: open continuous map preserves first countability **)
+(** LATEX VERSION: If f:X→Y is continuous open and X first-countable, then f(X) is too. **)
+Theorem ex30_12a_open_map_first_countable : forall X Tx Y Ty f:set,
+  first_countable_space X Tx ->
+  continuous_map X Tx Y Ty f ->
+  open_map X Tx Y Ty f ->
+  first_countable_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+admit.
+Qed.
+
+(** from §30 Exercise 12b: open continuous map preserves second countability **)
+(** LATEX VERSION: If f:X→Y is continuous open and X second-countable, then f(X) is too. **)
+Theorem ex30_12b_open_map_second_countable : forall X Tx Y Ty f:set,
+  second_countable_space X Tx ->
+  continuous_map X Tx Y Ty f ->
+  open_map X Tx Y Ty f ->
+  second_countable_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+admit.
+Qed.
 (** from §30 Exercise 13: disjoint open sets countable when dense countable **) 
 (** LATEX VERSION: Exercise 30.13: Countability of disjoint open families in separable spaces. **)
 Definition ex30_13_disjoint_open_sets_countable : set := omega.
@@ -11505,12 +11580,6 @@ Definition ex32_8_linear_continuum_normal : set := omega.
 (** from §32 Exercise 9: uncountable product of R not normal **) 
 (** LATEX VERSION: Exercise 32.9: Uncountable product of ℝ is not normal. **)
 Definition ex32_9_uncountable_product_not_normal : set := omega.
-
-(** helper: G_delta subset coded via countable intersection of open sets **) 
-Definition Gdelta_in : set -> set -> set -> prop := fun X Tx A =>
-  exists Fam:set, countable Fam /\
-    (forall U :e Fam, open_in X Tx U) /\
-    Intersection_Fam Fam = A.
 
 (** helper: perfect normality predicate **) 
 Definition perfectly_normal_space : set -> set -> prop := fun X Tx =>
