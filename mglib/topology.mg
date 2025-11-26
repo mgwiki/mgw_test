@@ -8240,13 +8240,13 @@ Theorem topology_generated_by_basis_is_minimal : forall X S T:set,
 admit. (** FAIL **)
 Qed.
 
-(** from §13 Exercise 1: local openness implies set is open **) 
+(** from §13 Exercise 1: local openness implies set is open **)
 (** LATEX VERSION: Exercise 1: If every x∈A lies in some open U⊂A, then A is open. **)
 Theorem ex13_1_local_open_subset : forall X T A:set,
   topology_on X T ->
   (forall x :e A, exists U :e T, x :e U /\ U c= A) ->
   open_in X T A.
-admit. (** FAIL **)
+admit. (** FAIL on 2025-11-25 **)
 Qed.
 
 (** from §13 Exercise 2: comparison of nine topologies on {a,b,c} **) 
