@@ -10905,6 +10905,108 @@ Definition locally_m_euclidean : set -> set -> set -> prop := fun X Tx m =>
       open_in (euclidean_space m) (euclidean_topology m) V /\
       homeomorphism U (subspace_topology X Tx U) V (subspace_topology (euclidean_space m) (euclidean_topology m) V) f.
 
+(** from §50 Exercise 1: discrete space has dimension 0 **)
+(** LATEX VERSION: Every discrete space has topological dimension 0. **)
+Theorem ex50_1_discrete_dimension_0 : forall X Tx:set,
+  Tx = discrete_topology X ->
+  topology_on X Tx ->
+  covering_dimension X Empty.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from §50 Exercise 2: connected T1 space with >1 point has dimension ≥1 **)
+(** LATEX VERSION: Any connected T₁ space with more than one point has dimension at least 1. **)
+Theorem ex50_2_connected_T1_dimension_ge_1 : forall X Tx:set,
+  connected_space X Tx ->
+  T1_space X Tx ->
+  (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
+  covering_dimension X Empty -> False.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from §50 Exercise 3: topologist's sine curve has dimension 1 **)
+(** LATEX VERSION: The topologist's sine curve has topological dimension 1. **)
+Theorem ex50_3_sine_curve_dimension_1 : forall X Tx:set,
+  X = R (** stub: actual definition of topologist's sine curve needed **) ->
+  covering_dimension X (Sing Empty).
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from §50 Exercise 6: locally compact Hausdorff with countable basis embeds in R^{2m+1} **)
+(** LATEX VERSION: A locally compact Hausdorff space with countable basis whose compact subspaces have dimension ≤m is homeomorphic to a closed subspace of R^{2m+1}. **)
+Theorem ex50_6_locally_compact_embeds : forall X Tx m:set,
+  m :e omega ->
+  locally_compact_space X Tx ->
+  Hausdorff_space X Tx ->
+  second_countable X Tx ->
+  (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C m) ->
+  exists N:set, exists e:set,
+    N = m :\/: m :\/: (Sing Empty) /\
+    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
+    closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from §50 Exercise 7: every m-manifold embeds in R^{2m+1} as closed subspace **)
+(** LATEX VERSION: Every m-manifold can be embedded in R^{2m+1} as a closed subspace. **)
+Theorem ex50_7_manifold_closed_embedding : forall X Tx m:set,
+  m :e omega ->
+  m_manifold X Tx ->
+  exists N:set, exists e:set,
+    N = m :\/: m :\/: (Sing Empty) /\
+    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
+    closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from §50 Exercise 8: sigma-compact Hausdorff with compact subspaces of dimension ≤m has dimension ≤m **)
+(** LATEX VERSION: A σ-compact Hausdorff space whose compact subspaces have dimension ≤m has dimension ≤m. **)
+Definition sigma_compact : set -> set -> prop := fun X Tx =>
+  exists Fam:set,
+    countable Fam /\
+    (forall C:set, C :e Fam -> C c= X /\ compact_space C (subspace_topology X Tx C)) /\
+    X = Union {C :e Fam | exists U:set, open_in X Tx U /\ C c= U}.
+
+Theorem ex50_8_sigma_compact_dimension : forall X Tx m:set,
+  m :e omega ->
+  sigma_compact X Tx ->
+  Hausdorff_space X Tx ->
+  (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C m) ->
+  covering_dimension X m.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from §50 Exercise 9: every m-manifold has dimension ≤m **)
+(** LATEX VERSION: Every m-manifold has topological dimension at most m. **)
+Theorem ex50_9_manifold_dimension_le_m : forall X Tx m:set,
+  m :e omega ->
+  m_manifold X Tx ->
+  covering_dimension X m.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from §50 Exercise 10: closed subspace of R^N has dimension ≤N **)
+(** LATEX VERSION: Every closed subspace of R^N has topological dimension at most N. **)
+Theorem ex50_10_closed_subspace_RN_dimension : forall X N:set,
+  N :e omega ->
+  X c= (euclidean_space N) ->
+  closed_in (euclidean_space N) (euclidean_topology N) X ->
+  covering_dimension X N.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from §50 Exercise 11: embedding in R^N characterization **)
+(** LATEX VERSION: A space X can be embedded as a closed subspace of R^N for some N iff X is locally compact Hausdorff with countable basis and finite dimension. **)
+Theorem ex50_11_embedding_characterization : forall X Tx:set,
+  (exists N:set, exists e:set,
+    N :e omega /\
+    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
+    closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X))
+  <->
+  (locally_compact_space X Tx /\ Hausdorff_space X Tx /\ second_countable X Tx /\ finite_dimensional_space X Tx).
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
 (** from §30 Exercise 1: G_delta points in first-countable T1 **) 
 (** LATEX VERSION: Exercise 30.1 about G_δ points in first-countable T₁ spaces. **)
 Definition ex30_1_Gdelta_points : set := omega.
