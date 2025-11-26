@@ -2277,62 +2277,48 @@ Conj supp_ex_locally_euclidean_5 : All x1 set All x2 set Imp Eq set x1 R_K Imp E
 Conj supp_ex_locally_euclidean_7 : All x1 set All x2 set All x3 set Imp Ap Ap Ap locally_m_euclidean x1 x2 x3 Ap Ap iff Ap Ap Hausdorff_space x1 x2 Ap Ap completely_regular_space x1 x2
 Conj supp_ex_locally_euclidean_8 : All x1 set All x2 set All x3 set Imp Ap Ap Ap locally_m_euclidean x1 x2 x3 Ap Ap iff Ap Ap metrizable x1 x2 Ap Ap and Ap Ap paracompact_space x1 x2 Ap Ap Hausdorff_space x1 x2
 Conj supp_ex_locally_euclidean_9 : All x1 set All x2 set All x3 set Imp Ap Ap Ap locally_m_euclidean x1 x2 x3 Imp Ap Ap metrizable x1 x2 All x4 set Imp Ap Ap sequence_in x4 x1 Ap Ap m_manifold x4 Ap Ap Ap subspace_topology x1 x2 x4
-Def ex30_1_Gdelta_points : set
- := S_Omega
-Def ex30_2_basis_contains_countable : set
- := ex30_1_Gdelta_points
-Def ex30_3_uncountably_many_limit_points : set
- := ex30_2_basis_contains_countable
-Def ex30_4_compact_metrizable_second_countable : set
- := ex30_3_uncountably_many_limit_points
-Def ex30_5_metrizable_density_Lindelof_imply_second_countable : set
- := ex30_4_compact_metrizable_second_countable
-Def ex30_6_Sorgenfrey_and_ordered_square_not_metrizable : set
- := ex30_5_metrizable_density_Lindelof_imply_second_countable
-Def ex30_7_SOmega_countability_axioms : set
- := ex30_6_Sorgenfrey_and_ordered_square_not_metrizable
-Def ex30_8_Romega_uniform_countability : set
- := ex30_7_SOmega_countability_axioms
-Def ex30_9_closed_Lindelof_and_dense_subsets : set
- := ex30_8_Romega_uniform_countability
-Def ex30_10_product_countable_dense : set
- := ex30_9_closed_Lindelof_and_dense_subsets
-Def ex30_11_image_preserves_Lindelof_or_dense : set
- := ex30_10_product_countable_dense
-Def ex30_12_open_map_preserves_countability_axioms : set
- := ex30_11_image_preserves_Lindelof_or_dense
-Def ex30_13_disjoint_open_sets_countable : set
- := ex30_12_open_map_preserves_countability_axioms
-Def ex30_14_product_Lindelof_compact : set
- := ex30_13_disjoint_open_sets_countable
-Def ex30_15_CI_has_countable_dense_uniform : set
- := ex30_14_product_Lindelof_compact
-Def ex30_16_product_RI_dense_subset_cardinality : set
- := ex30_15_CI_has_countable_dense_uniform
-Def ex30_17_Romega_box_countability : set
- := ex30_16_product_RI_dense_subset_cardinality
-Def ex30_18_first_countable_group_countable_basis : set
- := ex30_17_Romega_box_countability
-Def ex31_1_regular_disjoint_closure_neighborhoods : set
- := ex30_18_first_countable_group_countable_basis
-Def ex31_2_normal_disjoint_closure_neighborhoods : set
- := ex31_1_regular_disjoint_closure_neighborhoods
-Def ex31_3_order_topology_regular : set
- := ex31_2_normal_disjoint_closure_neighborhoods
-Def ex31_4_comparison_topologies_separation : set
- := ex31_3_order_topology_regular
-Def ex31_5_equalizer_closed_in_Hausdorff : set
- := ex31_4_comparison_topologies_separation
-Def ex31_6_closed_map_preserves_normal : set
- := ex31_5_equalizer_closed_in_Hausdorff
-Def ex31_7_perfect_map_properties : set
- := ex31_6_closed_map_preserves_normal
-Def ex31_8_orbit_space_properties : set
- := ex31_7_perfect_map_properties
-Def ex31_9_Sorgenfrey_plane_no_separation : set
- := ex31_8_orbit_space_properties
+Def Gdelta_in : TpArr set TpArr set TpArr set Prop
+ := Lam X set Lam Tx set Lam A set Ex x1 set Ap Ap and Ap Ap and Ap countable x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Ap open_set X Tx x2 Eq set Ap Intersection_Fam x1 A
+Def open_map : TpArr set TpArr set TpArr set TpArr set TpArr set Prop
+ := Lam X set Lam Tx set Lam Y set Lam Ty set Lam f set Ap Ap and Ap Ap and Ap Ap and Ap Ap topological_space X Tx Ap Ap topological_space Y Ty Ap Ap Ap function_on f X Y All x1 set Imp Ap Ap Prim 1 x1 Tx Ap Ap Prim 1 Ap Ap countable_product_component_topology f x1 Ty
+Def topological_group : TpArr set TpArr set Prop
+ := Lam G set Lam Tg set Ap Ap and Ap Ap topological_space G Tg Ex x1 set Ex x2 set Ex x3 set Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap Ap function_on x1 Ap Ap rectangle_set G G G Ap Ap Ap function_on x2 G G Ap Ap Prim 1 x3 G Ap Ap Ap Ap Ap continuous_map Ap Ap rectangle_set G G Ap Ap Ap Ap product_topology G Tg G Tg G Tg x1 Ap Ap Ap Ap Ap continuous_map G Tg G Tg x2
+Conj ex30_1a_onepoint_Gdelta_firstcountable_T1 : All x1 set All x2 set All x3 set Imp Ap Ap first_countable_space x1 x2 Imp Ap Ap T1_space x1 x2 Imp Ap Ap Prim 1 x3 x1 Ap Ap Ap Gdelta_in x1 x2 Ap Sing x3
+Conj ex30_1b_Gdelta_not_firstcountable_exists : Ex x1 set Ex x2 set Ap Ap and Ap Ap and Ap Ap topological_space x1 x2 All x3 set Imp Ap Ap Prim 1 x3 x1 Ap Ap Ap Gdelta_in x1 x2 Ap Sing x3 Ap not Ap Ap first_countable_space x1 x2
+Conj ex30_2_basis_contains_countable : All x1 set All x2 set All x3 set Imp Ap Ap second_countable_space x1 x2 Imp Ap Ap basis_on x1 x3 Ex x4 set Ap Ap and Ap Ap and Ap Ap sequence_in x4 x3 Ap countable x4 Ap Ap basis_on x1 x4
+Conj ex30_3_uncountably_many_limit_points : All x1 set All x2 set All x3 set Imp Ap Ap second_countable_space x1 x2 Imp Ap Ap sequence_in x3 x1 Imp Ap not Ap countable x3 Ap not Ap countable Ap Ap Sep x3 Lam x4 set Ap Ap Ap Ap limit_point_of x4 x3 x1 x2
+Conj ex30_4_compact_metrizable_second_countable : All x1 set All x2 set All x3 set Imp Ap Ap compact_space x1 x2 Imp Ap Ap metrizable x1 x2 Imp Ap Ap metric_on x1 x3 Imp Eq set x2 Ap Ap metric_topology x1 x3 Ap Ap second_countable_space x1 x2
+Conj ex30_5a_metrizable_countable_dense_second_countable : All x1 set All x2 set Imp Ap Ap metrizable x1 x2 Imp Ex x3 set Ap Ap and Ap Ap and Ap Ap sequence_in x3 x1 Ap countable x3 Ap Ap Ap dense_in x3 x1 x2 Ap Ap second_countable_space x1 x2
+Conj ex30_5b_metrizable_Lindelof_second_countable : All x1 set All x2 set Imp Ap Ap metrizable x1 x2 Imp Ap Ap Lindelof_space x1 x2 Ap Ap second_countable_space x1 x2
+Conj ex30_6a_Rl_not_metrizable : Ap not Ap Ap metrizable R_K Sorgenfrey_topology
+Conj ex30_6b_ordered_square_not_metrizable : All x1 set Imp Eq set x1 R_K Ap not Ap Ap metrizable unit_square x1
+Conj ex30_7_SOmega_Sbar_Omega_countability : All x1 set All x2 set Imp Eq set x1 SOmega_topology Imp Eq set x2 SbarOmega_topology Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap first_countable_space S_Omega x1 Ap Ap second_countable_space S_Omega x1 Ap Ap Lindelof_space S_Omega x1 Ex x4 set Ap Ap and Ap Ap and Ap Ap sequence_in x4 S_Omega Ap countable x4 Ap Ap Ap dense_in x4 S_Omega x1 Ap Ap and Ap Ap and Ap Ap and Ap Ap first_countable_space SOmega_topology x2 Ap not Ap Ap second_countable_space SOmega_topology x2 Ap not Ap Ap Lindelof_space SOmega_topology x2 Ap not Ex x3 set Ap Ap and Ap Ap and Ap Ap sequence_in x3 SOmega_topology Ap countable x3 Ap Ap Ap dense_in x3 SOmega_topology x2
+Conj ex30_8_Romega_uniform_countability : All x1 set Imp Eq set x1 R_K Ap Ap and Ap Ap and Ap Ap and Ap Ap first_countable_space R_K x1 Ap not Ap Ap second_countable_space R_K x1 Ap not Ap Ap Lindelof_space R_K x1 Ap not Ex x2 set Ap Ap and Ap Ap and Ap Ap sequence_in x2 R_K Ap countable x2 Ap Ap Ap dense_in x2 R_K x1
+Conj ex30_9a_closed_Lindelof : All x1 set All x2 set All x3 set Imp Ap Ap Lindelof_space x1 x2 Imp Ap Ap Ap closed_in x1 x2 x3 Ap Ap Lindelof_space x3 Ap Ap Ap subspace_topology x1 x2 x3
+Conj ex30_9b_dense_not_countable_dense : Ex x1 set Ex x2 set Ex x3 set Ap Ap and Ap Ap and Ex x5 set Ap Ap and Ap Ap and Ap Ap sequence_in x5 x1 Ap countable x5 Ap Ap Ap dense_in x5 x1 x2 Ap Ap Ap dense_in x3 x1 x2 Ap not Ex x4 set Ap Ap and Ap Ap and Ap Ap sequence_in x4 x3 Ap countable x4 Ap Ap Ap dense_in x4 x3 Ap Ap Ap subspace_topology x1 x2 x3
+Conj ex30_10_product_countable_dense : All x1 set All x2 set Imp Ap countable x1 Imp All x4 set Imp Ap Ap Prim 1 x4 x1 Ex x5 set Ex x6 set Ex x7 set Ap Ap and Ap Ap and Ap Ap and Eq set Ap Ap countable_product_component_topology x2 x4 Ap Ap rectangle_set x5 x6 Ap Ap sequence_in x7 x5 Ap countable x7 Ap Ap Ap dense_in x7 x5 x6 Ex x3 set Ap Ap and Ap Ap and Ap Ap sequence_in x3 Ap Ap countable_product_space x1 x2 Ap countable x3 Ap Ap Ap dense_in x3 Ap Ap countable_product_space x1 x2 Ap Ap countable_product_topology x1 x2
+Conj ex30_11a_image_Lindelof : All x1 set All x2 set All x3 set All x4 set All x5 set Imp Ap Ap Lindelof_space x1 x2 Imp Ap Ap Ap Ap Ap continuous_map x1 x2 x3 x4 x5 Ap Ap Lindelof_space Ap Ap countable_product_component_topology x5 x1 Ap Ap Ap subspace_topology x3 x4 Ap Ap countable_product_component_topology x5 x1
+Conj ex30_11b_image_countable_dense : All x1 set All x2 set All x3 set All x4 set All x5 set Imp Ex x7 set Ap Ap and Ap Ap and Ap Ap sequence_in x7 x1 Ap countable x7 Ap Ap Ap dense_in x7 x1 x2 Imp Ap Ap Ap Ap Ap continuous_map x1 x2 x3 x4 x5 Ex x6 set Ap Ap and Ap Ap and Ap Ap sequence_in x6 Ap Ap countable_product_component_topology x5 x1 Ap countable x6 Ap Ap Ap dense_in x6 Ap Ap countable_product_component_topology x5 x1 Ap Ap Ap subspace_topology x3 x4 Ap Ap countable_product_component_topology x5 x1
+Conj ex30_12a_open_map_first_countable : All x1 set All x2 set All x3 set All x4 set All x5 set Imp Ap Ap first_countable_space x1 x2 Imp Ap Ap Ap Ap Ap continuous_map x1 x2 x3 x4 x5 Imp Ap Ap Ap Ap Ap open_map x1 x2 x3 x4 x5 Ap Ap first_countable_space Ap Ap countable_product_component_topology x5 x1 Ap Ap Ap subspace_topology x3 x4 Ap Ap countable_product_component_topology x5 x1
+Conj ex30_12b_open_map_second_countable : All x1 set All x2 set All x3 set All x4 set All x5 set Imp Ap Ap second_countable_space x1 x2 Imp Ap Ap Ap Ap Ap continuous_map x1 x2 x3 x4 x5 Imp Ap Ap Ap Ap Ap open_map x1 x2 x3 x4 x5 Ap Ap second_countable_space Ap Ap countable_product_component_topology x5 x1 Ap Ap Ap subspace_topology x3 x4 Ap Ap countable_product_component_topology x5 x1
+Conj ex30_13_disjoint_open_sets_countable : All x1 set All x2 set Imp Ex x7 set Ap Ap and Ap Ap and Ap Ap sequence_in x7 x1 Ap countable x7 Ap Ap Ap dense_in x7 x1 x2 All x3 set Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Ap Ap Ap open_set x1 x2 x6 Imp All x4 set All x5 set Imp Ap Ap Prim 1 x4 x3 Imp Ap Ap Prim 1 x5 x3 Imp Imp Eq set x4 x5 All p Prop p Eq set Ap Ap binintersect x4 x5 Prim 2 Ap countable x3
+Conj ex30_14_product_Lindelof_compact : All x1 set All x2 set All x3 set All x4 set All x5 set All x6 set Imp Ap Ap Lindelof_space x1 x2 Imp Ap Ap compact_space x3 x4 Ap Ap Lindelof_space Ap Ap countable_product_space x5 x6 Ap Ap countable_product_topology x5 x6
+Conj ex30_15_CI_has_countable_dense_uniform : Ex x1 set Ex x2 set Ex x3 set Ap Ap and Ap Ap and Ap Ap and Ap Ap sequence_in x3 x1 Ap countable x3 Ap Ap Ap dense_in x3 x1 x2 Ap Ap second_countable_space x1 x2
+Conj ex30_16a_product_RI_countable_dense : Ex x1 set Ex x2 set Ex x3 set Ap Ap and Ap Ap and Ap Ap sequence_in x3 Ap Ap countable_product_space x1 x2 Ap countable x3 Ap Ap Ap dense_in x3 Ap Ap countable_product_space x1 x2 Ap Ap countable_product_topology x1 x2
+Conj ex30_16b_large_product_no_countable_dense : All x1 set Imp Ap Ap atleastp Ap Prim 4 S_Omega x1 Imp Ap not Ap Ap equip x1 Ap Prim 4 S_Omega All x2 set Ap not Ex x3 set Ap Ap and Ap Ap and Ap Ap sequence_in x3 Ap Ap countable_product_space x1 x2 Ap countable x3 Ap Ap Ap dense_in x3 Ap Ap countable_product_space x1 x2 Ap Ap countable_product_topology x1 x2
+Conj ex30_17_Romega_box_countability : Ex x1 set Ex x2 set Ex x3 set Ex x4 set Ap Ap and Ap Ap and Ap Ap and Ap Ap and Eq set x4 Ap Ap Ap subspace_topology x1 x2 x3 Ap Ap or Ap Ap first_countable_space x3 x4 Ap not Ap Ap first_countable_space x3 x4 Ap Ap or Ap Ap second_countable_space x3 x4 Ap not Ap Ap second_countable_space x3 x4 Ap Ap or Ap Ap Lindelof_space x3 x4 Ap not Ap Ap Lindelof_space x3 x4 Ap Ap or Ex x6 set Ap Ap and Ap Ap and Ap Ap sequence_in x6 x3 Ap countable x6 Ap Ap Ap dense_in x6 x3 x4 Ap not Ex x5 set Ap Ap and Ap Ap and Ap Ap sequence_in x5 x3 Ap countable x5 Ap Ap Ap dense_in x5 x3 x4
+Conj ex30_18_first_countable_group_countable_basis : All x1 set All x2 set Imp Ap Ap topological_group x1 x2 Imp Ap Ap first_countable_space x1 x2 Imp Ap Ap or Ex x3 set Ap Ap and Ap Ap and Ap Ap sequence_in x3 x1 Ap countable x3 Ap Ap Ap dense_in x3 x1 x2 Ap Ap Lindelof_space x1 x2 Ap Ap second_countable_space x1 x2
+Conj ex31_1_regular_disjoint_closure_neighborhoods : All x1 set All x2 set All x3 set All x4 set Imp Ap Ap regular_space x1 x2 Imp Ap Ap Prim 1 x3 x1 Imp Ap Ap Prim 1 x4 x1 Imp Imp Eq set x3 x4 All p Prop p Ex x5 set Ex x6 set Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap Ap open_set x1 x2 x5 Ap Ap Ap open_set x1 x2 x6 Ap Ap Prim 1 x3 x5 Ap Ap Prim 1 x4 x6 Eq set Ap Ap binintersect Ap Ap Ap closure_of x1 x2 x5 Ap Ap Ap closure_of x1 x2 x6 Prim 2
+Conj ex31_2_normal_disjoint_closure_neighborhoods : All x1 set All x2 set All x3 set All x4 set Imp Ap Ap normal_space x1 x2 Imp Ap Ap Ap closed_in x1 x2 x3 Imp Ap Ap Ap closed_in x1 x2 x4 Imp Eq set Ap Ap binintersect x3 x4 Prim 2 Ex x5 set Ex x6 set Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap Ap open_set x1 x2 x5 Ap Ap Ap open_set x1 x2 x6 Ap Ap sequence_in x3 x5 Ap Ap sequence_in x4 x6 Eq set Ap Ap binintersect Ap Ap Ap closure_of x1 x2 x5 Ap Ap Ap closure_of x1 x2 x6 Prim 2
+Conj ex31_3_order_topology_regular : All x1 set Ap Ap regular_space x1 Ap order_topology x1
+Conj ex31_4_comparison_topologies_separation : All x1 set All x2 set All x3 set Imp Ap Ap sequence_in x2 x3 Ap Ap and Ap Ap and Imp Ap Ap Hausdorff_space x1 x3 Ap Ap Hausdorff_space x1 x2 Imp Ap Ap regular_space x1 x2 Ap Ap regular_space x1 x3 Imp Ap Ap normal_space x1 x2 Ap Ap normal_space x1 x3
+Conj ex31_5_equalizer_closed_in_Hausdorff : All x1 set All x2 set All x3 set All x4 set All x5 set All x6 set Imp Ap Ap Ap Ap Ap continuous_map x1 x2 x3 x4 x5 Imp Ap Ap Ap Ap Ap continuous_map x1 x2 x3 x4 x6 Imp Ap Ap Hausdorff_space x3 x4 Ap Ap Ap closed_in x1 x2 Ap Ap Sep x1 Lam x7 set Eq set Ap Ap countable_product_component_topology x5 x7 Ap Ap countable_product_component_topology x6 x7
+Conj ex31_6_closed_map_preserves_normal : All x1 set All x2 set All x3 set All x4 set All x5 set Imp Ap Ap normal_space x1 x2 Imp Ap Ap Ap Ap Ap continuous_map x1 x2 x3 x4 x5 Imp All x8 set Imp Ap Ap Ap closed_in x1 x2 x8 Ap Ap Ap closed_in x3 x4 Ap Ap countable_product_component_topology x5 x8 Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Ex x7 set Ap Ap and Ap Ap Prim 1 x7 x1 Eq set Ap Ap countable_product_component_topology x5 x7 x6 Ap Ap normal_space x3 x4
+Conj ex31_7_perfect_map_properties : All x1 set All x2 set All x3 set All x4 set All x5 set Imp Ap Ap Ap Ap Ap continuous_map x1 x2 x3 x4 x5 Imp All x11 set Imp Ap Ap Ap closed_in x1 x2 x11 Ap Ap Ap closed_in x3 x4 Ap Ap countable_product_component_topology x5 x11 Imp All x9 set Imp Ap Ap Prim 1 x9 x3 Ex x10 set Ap Ap and Ap Ap Prim 1 x10 x1 Eq set Ap Ap countable_product_component_topology x5 x10 x9 Imp All x6 set Imp Ap Ap Prim 1 x6 x3 Ap Ap compact_space Ap Ap Sep x1 Lam x8 set Eq set Ap Ap countable_product_component_topology x5 x8 x6 Ap Ap Ap subspace_topology x1 x2 Ap Ap Sep x1 Lam x7 set Eq set Ap Ap countable_product_component_topology x5 x7 x6 Ap Ap and Ap Ap and Ap Ap and Imp Ap Ap Hausdorff_space x1 x2 Ap Ap Hausdorff_space x3 x4 Imp Ap Ap regular_space x1 x2 Ap Ap regular_space x3 x4 Imp Ap Ap locally_compact x1 x2 Ap Ap locally_compact x3 x4 Imp Ap Ap second_countable_space x1 x2 Ap Ap second_countable_space x3 x4
+Conj ex31_8_orbit_space_properties : All x1 set All x2 set All x3 set All x4 set All _ set Imp Ap Ap topological_group x1 x2 Imp Ap Ap compact_space x1 x2 Ap Ap and Ap Ap and Ap Ap and Ap Ap and Imp Ap Ap Hausdorff_space x3 x4 Ex x13 set Ex x14 set Ap Ap Hausdorff_space x13 x14 Imp Ap Ap regular_space x3 x4 Ex x11 set Ex x12 set Ap Ap regular_space x11 x12 Imp Ap Ap normal_space x3 x4 Ex x9 set Ex x10 set Ap Ap normal_space x9 x10 Imp Ap Ap locally_compact x3 x4 Ex x7 set Ex x8 set Ap Ap locally_compact x7 x8 Imp Ap Ap second_countable_space x3 x4 Ex x5 set Ex x6 set Ap Ap second_countable_space x5 x6
+Conj ex31_9_Sorgenfrey_plane_no_separation : Ex x1 set Ex x2 set Ex x3 set Ex x4 set Ap not Ex x5 set Ex x6 set Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap Ap open_set x1 x2 x5 Ap Ap Ap open_set x1 x2 x6 Ap Ap sequence_in x3 x5 Ap Ap sequence_in x4 x6 Eq set Ap Ap binintersect x5 x6 Prim 2
 Def ex32_1_closed_subspace_normal : set
- := ex31_9_Sorgenfrey_plane_no_separation
+ := S_Omega
 Def ex32_2_factors_inherit_separation : set
  := ex32_1_closed_subspace_normal
 Def ex32_3_locally_compact_Hausdorff_regular : set
@@ -2349,16 +2335,12 @@ Def ex32_8_linear_continuum_normal : set
  := ex32_7_completely_normal_examples
 Def ex32_9_uncountable_product_not_normal : set
  := ex32_8_linear_continuum_normal
-Def Gdelta_in : TpArr set TpArr set TpArr set Prop
- := Lam X set Lam Tx set Lam A set Ex x1 set Ap Ap and Ap Ap and Ap countable x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap Ap open_set X Tx x2 Eq set Ap Intersection_Fam x1 A
 Def perfectly_normal_space : TpArr set TpArr set Prop
  := Lam X set Lam Tx set Ap Ap and Ap Ap normal_space X Tx All x1 set Imp Ap Ap Ap closed_in X Tx x1 Ap Ap Ap Gdelta_in X Tx x1
 Def separated_subsets : TpArr set TpArr set TpArr set TpArr set Prop
  := Lam X set Lam Tx set Lam A set Lam B set Ap Ap and Eq set Ap Ap binintersect Ap Ap Ap closure_of X Tx A B Prim 2 Eq set Ap Ap binintersect A Ap Ap Ap closure_of X Tx B Prim 2
 Def completely_normal_space : TpArr set TpArr set Prop
  := Lam X set Lam Tx set Ap Ap and Ap Ap normal_space X Tx All x1 set All x2 set Imp Ap Ap Ap Ap separated_subsets X Tx x1 x2 Ex x3 set Ex x4 set Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap Ap open_set X Tx x3 Ap Ap Ap open_set X Tx x4 Ap Ap sequence_in x1 x3 Ap Ap sequence_in x2 x4 Eq set Ap Ap binintersect x3 x4 Prim 2
-Def topological_group : TpArr set TpArr set Prop
- := Lam G set Lam Tg set Ap Ap and Ap Ap topological_space G Tg Ex x1 set Ex x2 set Ex x3 set Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap Ap function_on x1 Ap Ap rectangle_set G G G Ap Ap Ap function_on x2 G G Ap Ap Prim 1 x3 G Ap Ap Ap Ap Ap continuous_map Ap Ap rectangle_set G G Ap Ap Ap Ap product_topology G Tg G Tg G Tg x1 Ap Ap Ap Ap Ap continuous_map G Tg G Tg x2
 Def ex33_1_level_sets_urysohn : set
  := Ap Ap Sep Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 Ap Prim 4 R_K Lam x1 set Ex x2 set Ex x3 set Ex x4 set Ex x5 set Ex x6 set Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap and Eq set x1 Ap Ap rectangle_set Ap Ap rectangle_set Ap Ap rectangle_set x2 x3 Ap Ap rectangle_set x4 x5 x6 Ap Ap normal_space x2 x3 Ap Ap Ap closed_in x2 x3 x4 Ap Ap Ap closed_in x2 x3 x5 Eq set Ap Ap binintersect x4 x5 Prim 2 Ap Ap Ap function_on x6 x2 R_K Ap Ap Ap Ap Ap continuous_map x2 x3 R_K R_standard_topology x6 All x8 set Imp Ap Ap Prim 1 x8 x4 Eq set Ap Ap countable_product_component_topology x6 x8 Prim 2 All x7 set Imp Ap Ap Prim 1 x7 x5 Eq set Ap Ap countable_product_component_topology x6 x7 Ap ordsucc Prim 2
 Def ex33_2_connected_normal_regular_uncountable : set
