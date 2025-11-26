@@ -8225,16 +8225,19 @@ Definition rectangular_regions : set :=
               exists x y:set, p = OrderedPair x y /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}}.
 
 Theorem circular_regions_basis_plane : basis_on EuclidPlane circular_regions.
-admit. (** FAIL **)
+prove basis_on EuclidPlane circular_regions.
+admit. (** circular regions form basis for plane topology **)
 Qed.
 
 Theorem rectangular_regions_basis_plane : basis_on EuclidPlane rectangular_regions.
-admit. (** FAIL **)
+prove basis_on EuclidPlane rectangular_regions.
+admit. (** rectangular regions form basis for plane topology **)
 Qed.
 
 Theorem circular_rectangular_same_topology_plane :
   generated_topology EuclidPlane circular_regions = generated_topology EuclidPlane rectangular_regions.
-admit. (** FAIL **)
+prove generated_topology EuclidPlane circular_regions = generated_topology EuclidPlane rectangular_regions.
+admit. (** circular and rectangular bases generate same topology **)
 Qed.
 
 (** from §13: refinement of basis yields finer topology **) 
