@@ -11620,10 +11620,8 @@ admit.
 Qed.
 (** from §31 Exercise 3: every order topology regular **)
 (** LATEX VERSION: Every order topology is regular. **)
-Theorem ex31_3_order_topology_regular : forall X:set, forall less:set -> set -> prop,
-  forall Tx:set,
-    Tx = order_topology X less ->
-    regular_space X Tx.
+Theorem ex31_3_order_topology_regular : forall X:set,
+  regular_space X (order_topology X).
 admit.
 Qed.
 (** from §31 Exercise 4: comparing finer/coarser separation axioms **)
