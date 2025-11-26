@@ -11758,11 +11758,11 @@ Theorem ex32_6_completely_normal_characterization : forall X Tx:set,
   completely_normal_space X Tx <->
   (forall A B:set, separated_subsets X Tx A B ->
     exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
+let X Tx.
 apply iffI.
 - assume H1: completely_normal_space X Tx.
   let A B.
   assume H2: separated_subsets X Tx A B.
-  apply H1.
   admit.
 - assume H1: forall A B:set, separated_subsets X Tx A B -> exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty.
   prove completely_normal_space X Tx.
