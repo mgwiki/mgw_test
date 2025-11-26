@@ -1844,7 +1844,7 @@ Def limit_point_of : TpArr set TpArr set TpArr set TpArr set Prop
 Def limit_points_of : TpArr set TpArr set TpArr set set
  := Lam X set Lam Tx set Lam A set Ap Ap Sep X Lam x set Ap Ap Ap Ap limit_point_of X Tx A x
 Conj closure_equals_set_plus_limit_points : All x1 set All x2 set All x3 set Imp Ap Ap topological_space x1 x2 Eq set Ap Ap Ap closure_of x1 x2 x3 Ap Ap binunion x3 Ap Ap Ap limit_points_of x1 x2 x3
-Conj closed_iff_contains_limit_points : All x1 set All x2 set All x3 set Ap Ap iff Imp Ap Ap topological_space x1 x2 Ap Ap Ap closed_in x1 x2 x3 Ap Ap coarser_than Ap Ap Ap limit_points_of x1 x2 x3 x3
+Conj closed_iff_contains_limit_points : All x1 set All x2 set All x3 set Imp Ap Ap topological_space x1 x2 Ap Ap iff Ap Ap Ap closed_in x1 x2 x3 Ap Ap coarser_than Ap Ap Ap limit_points_of x1 x2 x3 x3
 Def Hausdorff_space : TpArr set TpArr set Prop
  := Lam X set Lam Tx set Ap Ap and Ap Ap topological_space X Tx All x1 set All x2 set Imp Imp Eq set x1 x2 All p Prop p Ex x3 set Ex x4 set Ap Ap and Ap Ap and Ap Ap and Ap Ap and Ap Ap Prim 1 x3 Tx Ap Ap Prim 1 x4 Tx Ap Ap Prim 1 x1 x3 Ap Ap Prim 1 x2 x4 Eq set Ap Ap binintersect x3 x4 Prim 2
 Def T1_space : TpArr set TpArr set Prop
