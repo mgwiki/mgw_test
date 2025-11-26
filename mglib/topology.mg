@@ -11078,7 +11078,9 @@ Qed.
 Theorem supp_ex_locally_euclidean_1 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   locally_compact X Tx /\ True. (** stub: locally_metrizable not defined **)
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx m.
+assume Hloc.
+admit. (** each point has nbhd homeomorphic to open in R^m, which is locally compact **)
 Qed.
 
 (** from Supplementary Exercises Exercise 2: implications among conditions **)
@@ -11088,7 +11090,10 @@ Theorem supp_ex_locally_euclidean_2_i_implies_ii : forall X Tx m:set,
   compact_space X Tx ->
   Hausdorff_space X Tx ->
   m_manifold X Tx.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx m.
+assume Hloc Hcomp HHaus.
+prove m_manifold X Tx.
+admit. (** need to show compact Hausdorff implies second countable **)
 Qed.
 
 Theorem supp_ex_locally_euclidean_2_ii_implies_iii : forall X Tx m:set,
