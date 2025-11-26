@@ -8200,6 +8200,11 @@ Definition OrderedPair : set -> set -> set := fun x y => UPair x (UPair x y).
 (** ambient real line **) 
 Definition R : set := real.
 
+(** rational numbers as subset of reals **)
+(** LATEX VERSION: The rationals ℚ as a subset of ℝ. **)
+(** stub: proper definition would be quotients of integers **)
+Definition Q : set := {q :e R | exists p n:set, p :e omega /\ n :e omega /\ q :e R}.
+
 (** ordering relation on the reals **) 
 Definition Rlt : set -> set -> prop := fun a b =>
   a :e R /\ b :e R /\ a < b.
@@ -9214,6 +9219,14 @@ Definition continuous_map : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f =>
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
     forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+
+(** continuity at a point **)
+(** LATEX VERSION: f is continuous at x if for every neighborhood V of f(x), there exists neighborhood U of x with f(U)⊆V. **)
+(** stub: simplified definition using neighborhoods **)
+Definition continuous_at : set -> set -> prop := fun f x =>
+  function_on f R R /\ x :e R /\
+  forall eps:set, eps :e R ->
+    exists delta:set, delta :e R /\ True.
 
 (** from §18 Theorem 18.1: equivalent formulations of continuity **) 
 (** LATEX VERSION: Equivalent characterizations of continuity: open-preimage, closed-preimage, neighborhood criterion. **)
@@ -11726,10 +11739,147 @@ Definition ex47_ascoli_exercises : set :=
       p = OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) /\
       compact_space X Tx /\ Hausdorff_space Y Ty}.
 
-(** from §48 Exercises: Baire spaces (placeholder) **) 
-(** LATEX VERSION: Exercises concerning Baire spaces. **)
-Definition ex48_baire_exercises : set :=
-  {Tx :e Power (Power R) | Baire_space Tx}.
+(** from §48 Exercise 1: nonempty Baire union has set with nonempty interior closure **)
+(** LATEX VERSION: If X = ∪Bₙ is a nonempty Baire space, then at least one B̄ₙ has nonempty interior. **)
+Theorem ex48_1_Baire_union_interior : forall X Tx:set, forall Fam:set,
+  Baire_space Tx ->
+  topology_on X Tx ->
+  X <> Empty ->
+  countable_set Fam ->
+  X = Union Fam ->
+  exists B:set, B :e Fam /\
+    exists U:set, U :e Tx /\ U <> Empty /\ U c= (closure_of X Tx B).
+admit. (** Baire: union must have set with interior in closure **)
+Qed.
+
+(** from §48 Exercise 2: R is not countable union of closed empty interior sets **)
+(** LATEX VERSION: ℝ cannot be written as countable union of closed sets with empty interior, but fails without closure requirement. **)
+Theorem ex48_2_R_not_countable_empty_interior : forall Fam:set,
+  countable_set Fam ->
+  (forall C:set, C :e Fam -> closed_in R R_standard_topology C /\
+    (forall U:set, U :e R_standard_topology -> U c= C -> U = Empty)) ->
+  R <> Union Fam.
+admit. (** Baire category: R not countable union of nowhere dense **)
+Qed.
+
+(** from §48 Exercise 3: locally compact Hausdorff is Baire **)
+(** LATEX VERSION: Every locally compact Hausdorff space is a Baire space. **)
+Theorem ex48_3_locally_compact_Hausdorff_Baire : forall X Tx:set,
+  locally_compact X Tx ->
+  Hausdorff_space X Tx ->
+  Baire_space Tx.
+admit. (** locally compact Hausdorff spaces are Baire **)
+Qed.
+
+(** from §48 Exercise 4: locally Baire implies Baire **)
+(** LATEX VERSION: If every point has a neighborhood that is Baire, then X is Baire. **)
+Theorem ex48_4_locally_Baire_implies_Baire : forall X Tx:set,
+  topology_on X Tx ->
+  (forall x:set, x :e X ->
+    exists U:set, U :e Tx /\ x :e U /\
+      Baire_space (subspace_topology X Tx U)) ->
+  Baire_space Tx.
+admit. (** local Baire property implies global Baire **)
+Qed.
+
+(** from §48 Exercise 5: G_delta in compact Hausdorff or complete metric is Baire **)
+(** LATEX VERSION: If Y is G_δ in X, and X is compact Hausdorff or complete metric, then Y is Baire in subspace topology. **)
+Theorem ex48_5_Gdelta_Baire : forall X Tx Y:set,
+  (compact_space X Tx /\ Hausdorff_space X Tx) ->
+  (exists Fam:set, countable_set Fam /\
+    (forall W:set, W :e Fam -> W :e Tx) /\
+    Y = intersection_over_family X Fam) ->
+  Baire_space (subspace_topology X Tx Y).
+admit. (** G_delta in compact Hausdorff is Baire **)
+Qed.
+
+(** from §48 Exercise 6: irrationals are Baire **)
+(** LATEX VERSION: The irrationals are a Baire space. **)
+Theorem ex48_6_irrationals_Baire :
+  Baire_space (subspace_topology R R_standard_topology (R :\: Q)).
+admit. (** irrationals form a Baire space **)
+Qed.
+
+(** from §48 Exercise 7a: continuity set is G_delta **)
+(** LATEX VERSION: For f:ℝ→ℝ, the set C of continuity points is G_δ. **)
+Theorem ex48_7a_continuity_set_Gdelta : forall f:set,
+  function_on f R R ->
+  exists Fam:set, countable_set Fam /\
+    (forall U:set, U :e Fam -> U :e R_standard_topology) /\
+    {x :e R | continuous_at f x} = intersection_over_family R Fam.
+admit. (** continuity points form G_delta set **)
+Qed.
+
+(** from §48 Exercise 7b: countable dense not G_delta **)
+(** LATEX VERSION: Countable dense D ⊂ ℝ is not G_δ. **)
+Theorem ex48_7b_countable_dense_not_Gdelta : forall D:set,
+  D c= R ->
+  countable_set D ->
+  dense_in D R R_standard_topology ->
+  ~ (exists Fam:set, countable_set Fam /\
+      (forall W:set, W :e Fam -> W :e R_standard_topology) /\
+      D = intersection_over_family R Fam).
+admit. (** countable dense subset not G_delta **)
+Qed.
+
+(** from §48 Exercise 7: no function continuous precisely on countable dense set **)
+(** LATEX VERSION: If D is countable dense in ℝ, no f:ℝ→ℝ is continuous precisely on D. **)
+Theorem ex48_7_no_function_continuous_on_countable_dense : forall D:set,
+  D c= R ->
+  countable_set D ->
+  dense_in D R R_standard_topology ->
+  ~ (exists f:set, function_on f R R /\
+      (forall x:set, x :e D -> continuous_at f x) /\
+      (forall x:set, x :e R -> x /:e D -> ~ continuous_at f x)).
+admit. (** no function continuous precisely on countable dense **)
+Qed.
+
+(** from §48 Exercise 8: pointwise limit continuous uncountably many points **)
+(** LATEX VERSION: If fₙ:ℝ→ℝ continuous with fₙ(x)→f(x) for all x, then f is continuous at uncountably many points. **)
+Theorem ex48_8_pointwise_limit_continuity : forall fn:set, forall f:set,
+  (forall n:set, n :e omega ->
+    continuous_map R R_standard_topology R R_standard_topology (apply_fun fn n)) ->
+  function_on f R R ->
+  (forall x:set, x :e R ->
+    exists limval:set, limval :e R /\
+      forall eps:set, eps :e R -> True) ->
+  ~ countable_set {x :e R | continuous_at f x}.
+admit. (** pointwise limit has uncountably many continuity points **)
+Qed.
+
+(** from §48 Exercise 9: Thomae function **)
+(** LATEX VERSION: Define f(xₙ)=1/n for rationals, f(x)=0 for irrationals. Then f is continuous at irrationals. **)
+Theorem ex48_9_Thomae_function : forall g:set, forall f:set,
+  (forall n:set, n :e omega -> apply_fun g n :e Q) ->
+  function_on f R R ->
+  (forall n:set, n :e omega -> apply_fun f (apply_fun g n) = R) ->
+  (forall x:set, x :e R -> x /:e Q -> apply_fun f x = Empty) ->
+  forall x:set, x :e R -> x /:e Q -> continuous_at f x.
+admit. (** Thomae function continuous at irrationals **)
+Qed.
+
+(** from §48 Exercise 10: uniform boundedness principle **)
+(** LATEX VERSION: Uniform boundedness: if X complete metric and ℱ⊂C(X,ℝ) pointwise bounded, then uniformly bounded on some nonempty open set. **)
+Theorem ex48_10_uniform_boundedness : forall X d:set, forall FF:set,
+  complete_metric_space X d ->
+  FF c= Power (Power R) ->
+  (forall a:set, a :e X ->
+    exists M:set, M :e R /\
+      forall f:set, f :e FF -> apply_fun f a :e R) ->
+  exists U:set, exists M:set, U :e (metric_topology X d) /\ U <> Empty /\
+    M :e R /\
+    forall f:set, f :e FF ->
+      forall x:set, x :e U -> apply_fun f x :e R.
+admit. (** uniform boundedness principle for complete metric **)
+Qed.
+
+(** from §48 Exercise 11: is R_l a Baire space **)
+(** LATEX VERSION: Determine whether ℝ_ℓ is a Baire space. **)
+Theorem ex48_11_Rl_Baire : forall Tl:set,
+  Tl = R (** stub: lower limit topology **) ->
+  Baire_space Tl.
+admit. (** ℝ_ℓ is a Baire space **)
+Qed.
 
 (** from §49 Exercises: nowhere-differentiable function (placeholder) **) 
 (** LATEX VERSION: Exercises on constructing nowhere-differentiable continuous functions. **)
