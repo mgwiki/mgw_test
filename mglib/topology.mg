@@ -8827,14 +8827,17 @@ Definition ordered_square_subspace_topology : set :=
 
 Theorem ordered_square_not_subspace_dictionary :
   ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
- admit. (** FAIL **)
+prove ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
+admit. (** vertical lines open in dictionary subspace but not in order topology on square **)
 Qed.
 
 (** from §16 Theorem 16.4: convex subspaces share the order topology **) 
 (** LATEX VERSION: Theorem 16.4: A convex subset Y of an ordered set X inherits the order topology as a subspace topology. **)
 Theorem convex_subspace_order_topology : forall X Y:set,
   order_topology Y = subspace_topology X (order_topology X) Y.
-admit. (** FAIL **)
+let X Y.
+prove order_topology Y = subspace_topology X (order_topology X) Y.
+admit. (** convex Y: intervals in Y = ambient intervals intersected with Y; bases generate same topology **)
 Qed.
 
 (** helper: intersection with a subset can drop the larger set **) 
@@ -9794,7 +9797,8 @@ Qed.
 Theorem R_omega_box_not_connected :
   ~ connected_space (product_space omega (const_family omega R))
     (box_topology omega (const_family omega R)).
-admit. (** FAIL **)
+prove ~ connected_space (product_space omega (const_family omega R)) (box_topology omega (const_family omega R)).
+admit. (** separate via {f | f(0) > 0} and {f | f(0) < 0}; both open in box topology **)
 Qed.
 
 (** from §24 Definition: path and path connectedness **) 
@@ -9815,13 +9819,18 @@ Qed.
 Theorem punctured_space_path_connected :
   path_connected_space (EuclidPlane :\: {OrderedPair 0 0})
     (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {OrderedPair 0 0})).
-admit. (** FAIL **)
+prove path_connected_space (EuclidPlane :\: {OrderedPair 0 0}) (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {OrderedPair 0 0})).
+admit. (** connect any two points via path avoiding origin; use arc around origin if needed **)
 Qed.
 
 (** from §24: continuous image of path connected set is path connected **) 
 Theorem continuous_image_path_connected : forall X Tx Y Ty f:set,
   path_connected_space X Tx -> continuous_map X Tx Y Ty f -> path_connected_space Y Ty.
-admit. (** FAIL **)
+let X Tx Y Ty f.
+assume Hpath: path_connected_space X Tx.
+assume Hf: continuous_map X Tx Y Ty f.
+prove path_connected_space Y Ty.
+admit. (** given y1,y2 in Y, find x1,x2 in X with f(x1)=y1, f(x2)=y2; path p from x1 to x2; f∘p connects y1,y2 **)
 Qed.
 
 (** from §24 Definition: path components equivalence relation **) 
@@ -9886,7 +9895,12 @@ Qed.
 Theorem components_are_closed : forall X Tx:set,
   topology_on X Tx ->
   forall x:set, x :e X -> closed_in X Tx (component_of X Tx x).
-admit. (** FAIL **)
+let X Tx.
+assume HTx: topology_on X Tx.
+let x.
+assume Hx: x :e X.
+prove closed_in X Tx (component_of X Tx x).
+admit. (** component is union of all connected sets containing x; closure is connected; component = closure **)
 Qed.
 
 (** from §25: components partition the space **) 
@@ -10007,7 +10021,11 @@ Qed.
 (** from §26 Theorem 26.5: compactness preserved under continuous maps **) 
 Theorem continuous_image_compact : forall X Tx Y Ty f:set,
   compact_space X Tx -> continuous_map X Tx Y Ty f -> compact_space Y Ty.
-admit. (** FAIL **)
+let X Tx Y Ty f.
+assume Hcomp: compact_space X Tx.
+assume Hf: continuous_map X Tx Y Ty f.
+prove compact_space Y Ty.
+admit. (** given open cover of Y, pull back to cover of X; extract finite subcover; images cover Y **)
 Qed.
 
 (** from §26: tube lemma used in product compactness **) 
@@ -10047,7 +10065,11 @@ Definition bounded_subset_of_reals : set -> prop := fun A =>
 Theorem finite_product_compact : forall X Tx Y Ty:set,
   compact_space X Tx -> compact_space Y Ty ->
   compact_space (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit. (** FAIL **)
+let X Tx Y Ty.
+assume HX: compact_space X Tx.
+assume HY: compact_space Y Ty.
+prove compact_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+admit. (** use tube lemma: cover by tubes; finitely many tubes cover; finitely many rectangles cover **)
 Qed.
 
 (** from §26 Exercises: compactness examples and properties **) 
@@ -10076,7 +10098,10 @@ Qed.
 Theorem compact_real_closed_bounded : forall A:set,
   compact_space A (subspace_topology R R_standard_topology A) ->
   closed_in R R_standard_topology A /\ bounded_subset_of_reals A.
-admit. (** FAIL **)
+let A.
+assume Hcomp: compact_space A (subspace_topology R R_standard_topology A).
+prove closed_in R R_standard_topology A /\ bounded_subset_of_reals A.
+admit. (** Hausdorff implies closed; cover by (-n,n) gives bounded **)
 Qed.
 
 (** from §28 Definition: limit point compactness **) 
@@ -10088,14 +10113,18 @@ Definition limit_point_compact : set -> set -> prop := fun X Tx =>
 (** LATEX VERSION: Compact ⇒ limit point compact. **)
 Theorem compact_implies_limit_point_compact : forall X Tx:set,
   compact_space X Tx -> limit_point_compact X Tx.
-admit. (** FAIL **)
+let X Tx.
+assume Hcomp: compact_space X Tx.
+prove limit_point_compact X Tx.
+admit. (** if A infinite has no limit point, each x has nbhd meeting A finitely; contradiction to compactness **)
 Qed.
 
 (** from §28: limit point compactness vs compactness **) 
 (** LATEX VERSION: Limit point compact need not imply compact; provides counterexample placeholder. **)
 Theorem limit_point_compact_not_necessarily_compact :
   exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
-admit. (** FAIL **)
+prove exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
+admit. (** countable discrete space is limit point compact but not compact **)
 Qed.
 
 (** from §29 Definition: local compactness **) 
