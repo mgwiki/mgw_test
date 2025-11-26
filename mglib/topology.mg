@@ -11551,7 +11551,8 @@ Qed.
 (** from §30 Exercise 16b: large product does not have countable dense subset **)
 (** LATEX VERSION: If J has cardinality > 𝒫(ℤ₊), then ℝ^J does not have countable dense subset. **)
 Theorem ex30_16b_large_product_no_countable_dense : forall J:set,
-  ~ (J equip Power omega) ->
+  atleastp (Power omega) J ->
+  ~ equip J (Power omega) ->
   forall Fam:set,
     ~ (exists D:set,
         D c= product_space J Fam /\
