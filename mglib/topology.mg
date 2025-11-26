@@ -10932,6 +10932,30 @@ Theorem ex50_3_sine_curve_dimension_1 : forall X Tx:set,
 admit. (** FAIL on 2025-11-26 03:10 **)
 Qed.
 
+(** from §50 Exercise 4: specific points in general position in R³ **)
+(** LATEX VERSION: Show that 0, ε₁, ε₂, ε₃, and (1,1,1) are in general position in R³. **)
+Theorem ex50_4_points_general_position_R3 : forall zero e1 e2 e3 ones:set,
+  zero = R (** stub: need ordered tuple (0,0,0) **) ->
+  e1 = R (** stub: need ordered tuple (1,0,0) **) ->
+  e2 = R (** stub: need ordered tuple (0,1,0) **) ->
+  e3 = R (** stub: need ordered tuple (0,0,1) **) ->
+  ones = R (** stub: need ordered tuple (1,1,1) **) ->
+  general_position_RN (Sing (Sing (Sing Empty))) {zero, e1, e2, e3, ones}.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from §50 Exercise 5: embedding theorem for m=1 maps to linear graph **)
+(** LATEX VERSION: For m=1, the map g in the embedding theorem proof maps X onto a linear graph in R³. **)
+Theorem ex50_5_embedding_m1_linear_graph : forall X Tx:set,
+  covering_dimension X (Sing Empty) ->
+  compact_space X Tx ->
+  metrizable X Tx ->
+  exists g:set,
+    (forall x:set, x :e X -> apply_fun g x :e (euclidean_space (Sing (Sing (Sing Empty))))) /\
+    linear_graph (apply_fun g X) R_standard_topology.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
 (** from §50 Exercise 6: locally compact Hausdorff with countable basis embeds in R^{2m+1} **)
 (** LATEX VERSION: A locally compact Hausdorff space with countable basis whose compact subspaces have dimension ≤m is homeomorphic to a closed subspace of R^{2m+1}. **)
 Theorem ex50_6_locally_compact_embeds : forall X Tx m:set,
@@ -11004,6 +11028,99 @@ Theorem ex50_11_embedding_characterization : forall X Tx:set,
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X))
   <->
   (locally_compact X Tx /\ Hausdorff_space X Tx /\ second_countable_space X Tx /\ finite_dimensional_space X Tx).
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from Supplementary Exercises Exercise 1: locally m-euclidean implies locally compact and locally metrizable **)
+(** LATEX VERSION: If X is locally m-euclidean, then X is locally compact and locally metrizable. **)
+Theorem supp_ex_locally_euclidean_1 : forall X Tx m:set,
+  locally_m_euclidean X Tx m ->
+  locally_compact X Tx /\ True. (** stub: locally_metrizable not defined **)
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from Supplementary Exercises Exercise 2: implications among conditions **)
+(** LATEX VERSION: For locally m-euclidean X: (i) compact Hausdorff ⇒ (ii) m-manifold ⇒ (iii) metrizable ⇒ (iv) normal ⇒ (v) Hausdorff. **)
+Theorem supp_ex_locally_euclidean_2_i_implies_ii : forall X Tx m:set,
+  locally_m_euclidean X Tx m ->
+  compact_space X Tx ->
+  Hausdorff_space X Tx ->
+  m_manifold X Tx.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+Theorem supp_ex_locally_euclidean_2_ii_implies_iii : forall X Tx m:set,
+  locally_m_euclidean X Tx m ->
+  m_manifold X Tx ->
+  metrizable X Tx.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+Theorem supp_ex_locally_euclidean_2_iii_implies_iv : forall X Tx:set,
+  metrizable X Tx ->
+  normal_space X Tx.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+Theorem supp_ex_locally_euclidean_2_iv_implies_v : forall X Tx:set,
+  normal_space X Tx ->
+  Hausdorff_space X Tx.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from Supplementary Exercises Exercise 3: R is locally 1-euclidean satisfies (ii) not (i) **)
+(** LATEX VERSION: R is locally 1-euclidean and satisfies (ii) but not (i). **)
+Theorem supp_ex_locally_euclidean_3 :
+  locally_m_euclidean R R_standard_topology (Sing Empty) /\
+  m_manifold R R_standard_topology /\
+  ~ (compact_space R R_standard_topology /\ Hausdorff_space R R_standard_topology).
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from Supplementary Exercises Exercise 4: R×R dictionary order is locally 1-euclidean satisfies (iii) not (ii) **)
+(** LATEX VERSION: R×R in dictionary order topology is locally 1-euclidean and satisfies (iii) but not (ii). **)
+Theorem supp_ex_locally_euclidean_4 : forall Tdict:set,
+  Tdict = R (** stub: dictionary order topology on R×R **) ->
+  locally_m_euclidean R Tdict (Sing Empty) /\
+  metrizable R Tdict /\
+  ~ m_manifold R Tdict.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from Supplementary Exercises Exercise 5: long line is locally 1-euclidean satisfies (iv) not (iii) **)
+(** LATEX VERSION: The long line is locally 1-euclidean and satisfies (iv) but not (iii). **)
+Theorem supp_ex_locally_euclidean_5 : forall L TL:set,
+  L = R (** stub: long line **) ->
+  TL = R (** stub: long line topology **) ->
+  locally_m_euclidean L TL (Sing Empty) /\
+  normal_space L TL /\
+  ~ metrizable L TL.
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from Supplementary Exercises Exercise 7: Hausdorff iff completely regular **)
+(** LATEX VERSION: For locally m-euclidean X: X is Hausdorff iff X is completely regular. **)
+Theorem supp_ex_locally_euclidean_7 : forall X Tx m:set,
+  locally_m_euclidean X Tx m ->
+  (Hausdorff_space X Tx <-> completely_regular_space X Tx).
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from Supplementary Exercises Exercise 8: metrizable iff paracompact Hausdorff **)
+(** LATEX VERSION: For locally m-euclidean X: X is metrizable iff X is paracompact Hausdorff. **)
+Theorem supp_ex_locally_euclidean_8 : forall X Tx m:set,
+  locally_m_euclidean X Tx m ->
+  (metrizable X Tx <-> (paracompact_space X Tx /\ Hausdorff_space X Tx)).
+admit. (** FAIL on 2025-11-26 03:10 **)
+Qed.
+
+(** from Supplementary Exercises Exercise 9: metrizable implies components are m-manifolds **)
+(** LATEX VERSION: If locally m-euclidean X is metrizable, then each component of X is an m-manifold. **)
+Theorem supp_ex_locally_euclidean_9 : forall X Tx m:set,
+  locally_m_euclidean X Tx m ->
+  metrizable X Tx ->
+  forall C:set, (** stub: C is a component of X **) ->
+    m_manifold C (subspace_topology X Tx C).
 admit. (** FAIL on 2025-11-26 03:10 **)
 Qed.
 
