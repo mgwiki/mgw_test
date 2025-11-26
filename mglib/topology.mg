@@ -10936,9 +10936,9 @@ Qed.
 (** LATEX VERSION: A locally compact Hausdorff space with countable basis whose compact subspaces have dimension ≤m is homeomorphic to a closed subspace of R^{2m+1}. **)
 Theorem ex50_6_locally_compact_embeds : forall X Tx m:set,
   m :e omega ->
-  locally_compact_space X Tx ->
+  locally_compact X Tx ->
   Hausdorff_space X Tx ->
-  second_countable X Tx ->
+  second_countable_space X Tx ->
   (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C m) ->
   exists N:set, exists e:set,
     N = m :\/: m :\/: (Sing Empty) /\
@@ -11003,7 +11003,7 @@ Theorem ex50_11_embedding_characterization : forall X Tx:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X))
   <->
-  (locally_compact_space X Tx /\ Hausdorff_space X Tx /\ second_countable X Tx /\ finite_dimensional_space X Tx).
+  (locally_compact X Tx /\ Hausdorff_space X Tx /\ second_countable_space X Tx /\ finite_dimensional_space X Tx).
 admit. (** FAIL on 2025-11-26 03:10 **)
 Qed.
 
