@@ -11881,11 +11881,31 @@ Theorem ex48_11_Rl_Baire : forall Tl:set,
 admit. (** ℝ_ℓ is a Baire space **)
 Qed.
 
-(** from §49 Exercises: nowhere-differentiable function (placeholder) **) 
-(** LATEX VERSION: Exercises on constructing nowhere-differentiable continuous functions. **)
-Definition ex49_nowhere_differentiable_exercises : set :=
-  {f :e Power (Power R) |
-    continuous_map R R_standard_topology R R_standard_topology f /\ nowhere_differentiable f}.
+(** from §49 Exercise 1: verify properties of example functions **)
+(** LATEX VERSION: Check the stated properties of the functions f, g, and k of Example 1. **)
+(** stub: Example 1 functions f, g, k not fully formalized **)
+Theorem ex49_1_verify_example_functions : forall f g k:set,
+  f = R (** stub: Example 1 function f **) ->
+  g = R (** stub: Example 1 function g **) ->
+  k = R (** stub: Example 1 function k **) ->
+  continuous_map R R_standard_topology R R_standard_topology f /\
+  continuous_map R R_standard_topology R R_standard_topology g /\
+  continuous_map R R_standard_topology R R_standard_topology k.
+admit. (** verify properties from §49 Example 1 **)
+Qed.
+
+(** from §49 Exercise 2: construct continuous function in U_n with bounded values **)
+(** LATEX VERSION: Given n and ε, define continuous f:I→ℝ such that f∈Uₙ and |f(x)|≤ε for all x. **)
+(** stub: U_n not defined (related to nowhere-differentiable construction) **)
+Theorem ex49_2_construct_bounded_function : forall n:set, forall eps:set,
+  n :e omega ->
+  eps :e R ->
+  exists f:set,
+    continuous_map unit_interval R_standard_topology R R_standard_topology f /\
+    (forall x:set, x :e unit_interval -> apply_fun f x :e R) /\
+    True. (** stub: need U_n membership and bound condition **)
+admit. (** construct bounded continuous function in U_n **)
+Qed.
 
 (** from §50 Exercises: dimension theory introduction (placeholder) **) 
 (** LATEX VERSION: Exercises introducing dimension theory concepts. **)
