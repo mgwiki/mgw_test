@@ -11369,7 +11369,12 @@ Theorem ex30_1a_onepoint_Gdelta_firstcountable_T1 : forall X Tx x:set,
   T1_space X Tx ->
   x :e X ->
   Gdelta_in X Tx (Sing x).
-admit.
+let X Tx x.
+assume H1: first_countable_space X Tx.
+assume H2: T1_space X Tx.
+assume H3: x :e X.
+prove Gdelta_in X Tx (Sing x).
+admit. (** use countable neighborhood basis at x; each nbhd in T1 contains {x} by closedness **)
 Qed.
 
 (** from §30 Exercise 1b: space with G_delta points but not first-countable **)
@@ -11379,7 +11384,11 @@ Theorem ex30_1b_Gdelta_not_firstcountable_exists :
     topology_on X Tx /\
     (forall x:set, x :e X -> Gdelta_in X Tx (Sing x)) /\
     ~ first_countable_space X Tx.
-admit.
+prove exists X:set, exists Tx:set,
+  topology_on X Tx /\
+  (forall x:set, x :e X -> Gdelta_in X Tx (Sing x)) /\
+  ~ first_countable_space X Tx.
+admit. (** cocountable topology on uncountable set; points are G_delta but no countable nbhd basis **)
 Qed.
 (** from §30 Exercise 2: every basis contains countable basis when space has one **)
 (** LATEX VERSION: If X has a countable basis, then every basis for X contains a countable basis. **)
@@ -11390,7 +11399,11 @@ Theorem ex30_2_basis_contains_countable : forall X Tx:set, forall Basis:set,
     CountableSub c= Basis /\
     countable CountableSub /\
     basis_on X CountableSub.
-admit.
+let X Tx Basis.
+assume H1: second_countable_space X Tx.
+assume H2: basis_on X Basis.
+prove exists CountableSub:set, CountableSub c= Basis /\ countable CountableSub /\ basis_on X CountableSub.
+admit. (** let B be countable basis for Tx; for each B_i select basis element from Basis refining it **)
 Qed.
 (** from §30 Exercise 3: uncountable subset has uncountably many limit points **)
 (** LATEX VERSION: If X has countable basis and A is uncountable subset, then uncountably many points of A are limit points. **)
@@ -11399,7 +11412,12 @@ Theorem ex30_3_uncountably_many_limit_points : forall X Tx A:set,
   A c= X ->
   ~ countable A ->
   ~ countable {x :e A | limit_point_of x A X Tx}.
-admit.
+let X Tx A.
+assume H1: second_countable_space X Tx.
+assume H2: A c= X.
+assume H3: ~ countable A.
+prove ~ countable {x :e A | limit_point_of x A X Tx}.
+admit. (** if only countably many limit points, then A is union of countable set and isolated points; contradiction **)
 Qed.
 (** from §30 Exercise 4: compact metrizable implies second countable **)
 (** LATEX VERSION: Every compact metrizable space has a countable basis. **)
@@ -11409,7 +11427,13 @@ Theorem ex30_4_compact_metrizable_second_countable : forall X Tx d:set,
   metric_on X d ->
   Tx = metric_topology X d ->
   second_countable_space X Tx.
-admit.
+let X Tx d.
+assume H1: compact_space X Tx.
+assume H2: metrizable X Tx.
+assume H3: metric_on X d.
+assume H4: Tx = metric_topology X d.
+prove second_countable_space X Tx.
+admit. (** for each n cover by 1/n-balls, extract finite subcover, countable union gives basis **)
 Qed.
 (** from §30 Exercise 5a: metrizable with countable dense has countable basis **)
 (** LATEX VERSION: Every metrizable space with a countable dense subset has a countable basis. **)
@@ -11417,7 +11441,11 @@ Theorem ex30_5a_metrizable_countable_dense_second_countable : forall X Tx:set,
   metrizable X Tx ->
   (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
   second_countable_space X Tx.
-admit.
+let X Tx.
+assume Hmet: metrizable X Tx.
+assume Hdense: exists D:set, D c= X /\ countable D /\ dense_in D X Tx.
+prove second_countable_space X Tx.
+admit. (** balls of radius 1/n around dense points form countable basis **)
 Qed.
 
 (** from §30 Exercise 5b: metrizable Lindelof has countable basis **)
@@ -11436,7 +11464,8 @@ Qed.
 (** LATEX VERSION: The Sorgenfrey line ℝ_ℓ is not metrizable. **)
 Theorem ex30_6a_Rl_not_metrizable :
   ~ metrizable R R_lower_limit_topology.
-admit.
+prove ~ metrizable R R_lower_limit_topology.
+admit. (** R_l^2 has uncountable discrete subspace; metrizable would imply separable **)
 Qed.
 
 (** from §30 Exercise 6b: ordered square not metrizable **)
@@ -11444,7 +11473,10 @@ Qed.
 Theorem ex30_6b_ordered_square_not_metrizable : forall Tx:set,
   Tx = R (** stub: order topology on ordered square **) ->
   ~ metrizable ordered_square Tx.
-admit.
+let Tx.
+assume H: Tx = R.
+prove ~ metrizable ordered_square Tx.
+admit. (** anti-diagonal is closed discrete uncountable; metrizable separable spaces have countable closed discrete subsets **)
 Qed.
 (** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **)
 (** LATEX VERSION: Determine which countability axioms S_Ω and S̄_Ω satisfy. **)
@@ -11460,7 +11492,11 @@ Theorem ex30_7_SOmega_Sbar_Omega_countability : forall Tx_SO Tx_SbarO:set,
    ~ second_countable_space Sbar_Omega Tx_SbarO /\
    ~ Lindelof_space Sbar_Omega Tx_SbarO /\
    ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega Tx_SbarO)).
-admit.
+let Tx_SO Tx_SbarO.
+assume H1: Tx_SO = SOmega_topology.
+assume H2: Tx_SbarO = SbarOmega_topology.
+prove (first_countable_space S_Omega Tx_SO /\ second_countable_space S_Omega Tx_SO /\ Lindelof_space S_Omega Tx_SO /\ (exists D:set, D c= S_Omega /\ countable D /\ dense_in D S_Omega Tx_SO)) /\ (first_countable_space Sbar_Omega Tx_SbarO /\ ~ second_countable_space Sbar_Omega Tx_SbarO /\ ~ Lindelof_space Sbar_Omega Tx_SbarO /\ ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega Tx_SbarO)).
+admit. (** S_Omega countable metrizable; Sbar_Omega first-countable but uncountable limit point blocks second-countability **)
 Qed.
 (** from §30 Exercise 8: countability axioms for R^omega uniform topology **)
 (** LATEX VERSION: Determine which countability axioms R^ω satisfies in the uniform topology. **)
@@ -11470,7 +11506,10 @@ Theorem ex30_8_Romega_uniform_countability : forall Tx:set,
   ~ second_countable_space R Tx /\
   ~ Lindelof_space R Tx /\
   ~ (exists D:set, D c= R /\ countable D /\ dense_in D R Tx).
-admit.
+let Tx.
+assume H: Tx = R.
+prove first_countable_space R Tx /\ ~ second_countable_space R Tx /\ ~ Lindelof_space R Tx /\ ~ (exists D:set, D c= R /\ countable D /\ dense_in D R Tx).
+admit. (** uniform metric balls give countable nbhd basis; uncountable disjoint open sets show not Lindelof **)
 Qed.
 (** from §30 Exercise 9a: closed subspace of Lindelof is Lindelof **)
 (** LATEX VERSION: If A is closed in Lindelöf space X, then A is Lindelöf. **)
@@ -11492,7 +11531,11 @@ Theorem ex30_9b_dense_not_countable_dense :
     (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) /\
     dense_in A X Tx /\
     ~ (exists DA:set, DA c= A /\ countable DA /\ dense_in DA A (subspace_topology X Tx A)).
-admit.
+prove exists X:set, exists Tx:set, exists A:set,
+  (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) /\
+  dense_in A X Tx /\
+  ~ (exists DA:set, DA c= A /\ countable DA /\ dense_in DA A (subspace_topology X Tx A)).
+admit. (** R with usual topology and Q dense; take A = R \ Q which is also dense but has no countable dense subset **)
 Qed.
 
 (** from §30 Exercise 10: countable product has countable dense if factors do **)
@@ -11507,7 +11550,11 @@ Theorem ex30_10_product_countable_dense : forall Idx:set, forall Fam:set,
     D c= product_space Idx Fam /\
     countable D /\
     dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
-admit.
+let Idx Fam.
+assume H1: countable Idx.
+assume H2: forall i:set, i :e Idx -> exists Xi:set, exists Txi:set, exists Di:set, apply_fun Fam i = OrderedPair Xi Txi /\ Di c= Xi /\ countable Di /\ dense_in Di Xi Txi.
+prove exists D:set, D c= product_space Idx Fam /\ countable D /\ dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
+admit. (** countable product of countable sets is countable; finitely-varying sequences form dense subset **)
 Qed.
 
 (** from §30 Exercise 11a: continuous image of Lindelof is Lindelof **)
@@ -11516,7 +11563,11 @@ Theorem ex30_11a_image_Lindelof : forall X Tx Y Ty f:set,
   Lindelof_space X Tx ->
   continuous_map X Tx Y Ty f ->
   Lindelof_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
-admit.
+let X Tx Y Ty f.
+assume H1: Lindelof_space X Tx.
+assume H2: continuous_map X Tx Y Ty f.
+prove Lindelof_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+admit. (** preimages of cover give countable subcover; apply f to get countable subcover of image **)
 Qed.
 
 (** from §30 Exercise 11b: continuous image of separable is separable **)
@@ -11528,7 +11579,11 @@ Theorem ex30_11b_image_countable_dense : forall X Tx Y Ty f:set,
     Df c= (apply_fun f X) /\
     countable Df /\
     dense_in Df (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
-admit.
+let X Tx Y Ty f.
+assume H1: exists D:set, D c= X /\ countable D /\ dense_in D X Tx.
+assume H2: continuous_map X Tx Y Ty f.
+prove exists Df:set, Df c= (apply_fun f X) /\ countable Df /\ dense_in Df (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+admit. (** image f(D) is countable and dense in f(X) **)
 Qed.
 
 (** from §30 Exercise 12a: open continuous map preserves first countability **)
@@ -11538,7 +11593,12 @@ Theorem ex30_12a_open_map_first_countable : forall X Tx Y Ty f:set,
   continuous_map X Tx Y Ty f ->
   open_map X Tx Y Ty f ->
   first_countable_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
-admit.
+let X Tx Y Ty f.
+assume H1: first_countable_space X Tx.
+assume H2: continuous_map X Tx Y Ty f.
+assume H3: open_map X Tx Y Ty f.
+prove first_countable_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+admit. (** for y in f(X), take preimage x, use countable nbhd basis at x, apply f to get countable nbhd basis at y **)
 Qed.
 
 (** from §30 Exercise 12b: open continuous map preserves second countability **)
@@ -11548,7 +11608,12 @@ Theorem ex30_12b_open_map_second_countable : forall X Tx Y Ty f:set,
   continuous_map X Tx Y Ty f ->
   open_map X Tx Y Ty f ->
   second_countable_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
-admit.
+let X Tx Y Ty f.
+assume H1: second_countable_space X Tx.
+assume H2: continuous_map X Tx Y Ty f.
+assume H3: open_map X Tx Y Ty f.
+prove second_countable_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+admit. (** image of countable basis is countable basis for f(X) **)
 Qed.
 (** from §30 Exercise 13: disjoint open sets countable when dense countable **)
 (** LATEX VERSION: If X has countable dense subset, every collection of disjoint open sets in X is countable. **)
@@ -11558,7 +11623,13 @@ Theorem ex30_13_disjoint_open_sets_countable : forall X Tx:set,
     (forall U:set, U :e Fam -> open_in X Tx U) ->
     (forall U V:set, U :e Fam -> V :e Fam -> U <> V -> U :/\: V = Empty) ->
     countable Fam.
-admit.
+let X Tx.
+assume H1: exists D:set, D c= X /\ countable D /\ dense_in D X Tx.
+let Fam.
+assume H2: forall U:set, U :e Fam -> open_in X Tx U.
+assume H3: forall U V:set, U :e Fam -> V :e Fam -> U <> V -> U :/\: V = Empty.
+prove countable Fam.
+admit. (** each open set contains point from D; disjointness gives injection from Fam to D **)
 Qed.
 (** from §30 Exercise 14: product of Lindelof with compact is Lindelof **)
 (** LATEX VERSION: If X is Lindelöf and Y is compact, then X × Y is Lindelöf. **)
@@ -11566,7 +11637,11 @@ Theorem ex30_14_product_Lindelof_compact : forall X Tx Y Ty Idx Fam:set,
   Lindelof_space X Tx ->
   compact_space Y Ty ->
   Lindelof_space (product_space Idx Fam) (product_topology_full Idx Fam).
-admit.
+let X Tx Y Ty Idx Fam.
+assume H1: Lindelof_space X Tx.
+assume H2: compact_space Y Ty.
+prove Lindelof_space (product_space Idx Fam) (product_topology_full Idx Fam).
+admit. (** use tube lemma and Lindelof property of X **)
 Qed.
 (** from §30 Exercise 15: C(I,R) uniform topology countable dense subset **)
 (** LATEX VERSION: C(I,ℝ) with uniform metric has countable dense subset and countable basis. **)
@@ -11574,7 +11649,8 @@ Theorem ex30_15_CI_has_countable_dense_uniform :
   exists CI:set, exists TCI:set, exists D:set,
     D c= CI /\ countable D /\ dense_in D CI TCI /\
     second_countable_space CI TCI.
-admit.
+prove exists CI:set, exists TCI:set, exists D:set, D c= CI /\ countable D /\ dense_in D CI TCI /\ second_countable_space CI TCI.
+admit. (** piecewise linear functions with rational breakpoints dense in uniform metric; metrizable separable implies second-countable **)
 Qed.
 (** from §30 Exercise 16a: product R^I where I=[0,1] has countable dense subset **)
 (** LATEX VERSION: The product space ℝ^I, where I=[0,1], has a countable dense subset. **)
@@ -11583,7 +11659,8 @@ Theorem ex30_16a_product_RI_countable_dense :
     D c= product_space Idx Fam /\
     countable D /\
     dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
-admit.
+prove exists Idx:set, exists Fam:set, exists D:set, D c= product_space Idx Fam /\ countable D /\ dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
+admit. (** finitely-varying sequences with rational values give countable dense subset **)
 Qed.
 
 (** from §30 Exercise 16b: large product does not have countable dense subset **)
@@ -11596,7 +11673,12 @@ Theorem ex30_16b_large_product_no_countable_dense : forall J:set,
         D c= product_space J Fam /\
         countable D /\
         dense_in D (product_space J Fam) (product_topology_full J Fam)).
-admit.
+let J.
+assume H1: atleastp (Power omega) J.
+assume H2: ~ equip J (Power omega).
+let Fam.
+prove ~ (exists D:set, D c= product_space J Fam /\ countable D /\ dense_in D (product_space J Fam) (product_topology_full J Fam)).
+admit. (** cardinality argument: dense subset must distinguish uncountably many functions **)
 Qed.
 (** from §30 Exercise 17: Romega box topology countability axioms **)
 (** LATEX VERSION: ℝ^ω with box topology, subspace ℚ^∞ (rationals ending in infinite 0s): which countability axioms? **)
@@ -11608,7 +11690,8 @@ Theorem ex30_17_Romega_box_countability :
     (Lindelof_space Qinf SubTop \/ ~ Lindelof_space Qinf SubTop) /\
     ((exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop) \/
      ~ (exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop)).
-admit.
+prove exists Romega:set, exists BoxTop:set, exists Qinf:set, exists SubTop:set, SubTop = subspace_topology Romega BoxTop Qinf /\ (first_countable_space Qinf SubTop \/ ~ first_countable_space Qinf SubTop) /\ (second_countable_space Qinf SubTop \/ ~ second_countable_space Qinf SubTop) /\ (Lindelof_space Qinf SubTop \/ ~ Lindelof_space Qinf SubTop) /\ ((exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop) \/ ~ (exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop)).
+admit. (** Q^inf has countable dense subset; first-countable; not second-countable **)
 Qed.
 (** from §30 Exercise 18: first-countable topological group with dense/Lindelof implies countable basis **)
 (** LATEX VERSION: If G is first-countable topological group with countable dense subset or Lindelöf, then G has countable basis. **)
@@ -11617,7 +11700,12 @@ Theorem ex30_18_first_countable_group_countable_basis : forall G Tg:set,
   first_countable_space G Tg ->
   ((exists D:set, D c= G /\ countable D /\ dense_in D G Tg) \/ Lindelof_space G Tg) ->
   second_countable_space G Tg.
-admit.
+let G Tg.
+assume H1: topological_group G Tg.
+assume H2: first_countable_space G Tg.
+assume H3: (exists D:set, D c= G /\ countable D /\ dense_in D G Tg) \/ Lindelof_space G Tg.
+prove second_countable_space G Tg.
+admit. (** countable nbhd basis at identity translates to global basis via group multiplication **)
 Qed.
 
 (** from §31 Exercise 1: regular implies disjoint closures of neighborhoods **)
