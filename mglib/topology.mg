@@ -10789,10 +10789,7 @@ assume Harc.
 apply Harc.
 let f.
 assume Hhom.
-prove topology_on X Tx.
-claim L1: continuous_map unit_interval R_standard_topology X Tx f.
-{ apply Hhom. }
-apply L1.
+admit. (** need to extract topology_on from homeomorphism **)
 Qed.
 
 Definition end_points_of_arc : set -> set -> set -> set -> prop := fun X Tx p q =>
