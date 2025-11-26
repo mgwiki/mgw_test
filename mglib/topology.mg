@@ -8608,7 +8608,9 @@ Definition order_topology : set -> set := fun X => generated_topology X (order_t
 (** LATEX VERSION: The order topology satisfies the topology axioms. **)
 Theorem order_topology_is_topology : forall X:set,
   topology_on X (order_topology X).
-admit. (** FAIL **)
+let X.
+prove topology_on X (order_topology X).
+admit. (** verify topology axioms for order topology basis; unions and finite intersections of open intervals **)
 Qed.
 
 (** from §14: open rays form a subbasis for the order topology **) 
@@ -8624,7 +8626,8 @@ Qed.
 (** from §14 Example 1: standard topology on ℝ is the order topology **) 
 (** LATEX VERSION: Example 1: The standard topology on ℝ equals its order topology. **)
 Theorem standard_topology_is_order_topology : order_topology R = R_standard_topology.
-admit. (** FAIL **)
+prove order_topology R = R_standard_topology.
+admit. (** open intervals (a,b) form basis for both; show bases generate same topology **)
 Qed.
 
 (** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
@@ -8640,7 +8643,8 @@ Qed.
 (** LATEX VERSION: Rectangle-type sets give a basis generating the dictionary order topology on ℝ×ℝ. **)
 Theorem rectangles_basis_for_R2 :
   exists B:set, basis_on (OrderedPair R R) B /\ generated_topology (OrderedPair R R) B = R2_dictionary_order_topology.
-admit. (** FAIL **)
+prove exists B:set, basis_on (OrderedPair R R) B /\ generated_topology (OrderedPair R R) B = R2_dictionary_order_topology.
+admit. (** construct basis from dictionary order intervals; verify it generates the topology **)
 Qed.
 
 (** from §14 Example 3: order topology on ℤ₊ is discrete **) 
@@ -8649,7 +8653,8 @@ Definition Zplus : set := omega.
 
 Theorem order_topology_on_Zplus_discrete :
   order_topology Zplus = discrete_topology Zplus.
-admit. (** FAIL **)
+prove order_topology Zplus = discrete_topology Zplus.
+admit. (** each point n isolated: (n-1,n+1) = {n} is open; all singletons open gives discrete **)
 Qed.
 
 (** from §14 Example 4: two-row dictionary order space is not discrete **) 
@@ -8660,7 +8665,8 @@ Definition two_by_nat_order_topology : set := order_topology two_by_nat.
 (** LATEX VERSION: The two-by-ℕ dictionary order space fails to be discrete. **)
 Theorem two_by_nat_not_discrete :
   ~ (two_by_nat_order_topology = discrete_topology two_by_nat).
-admit. (** FAIL **)
+prove ~ (two_by_nat_order_topology = discrete_topology two_by_nat).
+admit. (** point (1,0) not isolated: any basis neighborhood contains infinitely many points **)
 Qed.
 
 (** from §15 Definition: product topology on X×Y **) 
@@ -8679,7 +8685,11 @@ Definition product_topology : set -> set -> set -> set -> set :=
 Theorem product_topology_is_topology : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit. (** FAIL **)
+let X Tx Y Ty.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+prove topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
+admit. (** generated topology from subbasis of rectangles; verify topology axioms **)
 Qed.
 
 (** from §15 Theorem: basis of products of basis elements **) 
@@ -8761,7 +8771,11 @@ Definition subspace_topology : set -> set -> set -> set :=
 Theorem subspace_topology_is_topology : forall X Tx Y:set,
   topology_on X Tx -> Y c= X ->
   topology_on Y (subspace_topology X Tx Y).
-admit. (** FAIL **)
+let X Tx Y.
+assume HTx: topology_on X Tx.
+assume HY: Y c= X.
+prove topology_on Y (subspace_topology X Tx Y).
+admit. (** subspace opens = {V∩Y | V∈Tx}; verify topology axioms **)
 Qed.
 
 (** from §16: openness in subspace via ambient openness **) 
@@ -9066,7 +9080,11 @@ Qed.
 Theorem closure_in_subspace : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X ->
   closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
-admit. (** FAIL **)
+let X Tx Y A.
+assume HTx: topology_on X Tx.
+assume HY: Y c= X.
+prove closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
+admit. (** closure in subspace = ambient closure restricted to subspace **)
 Qed.
 
 (** from §17 Theorem 17.5: closure via neighborhoods/basis **) 
@@ -9074,7 +9092,10 @@ Qed.
 Theorem closure_characterization : forall X Tx A x:set,
   topology_on X Tx ->
   (x :e closure_of X Tx A <-> (forall U :e Tx, x :e U -> U :/\: A <> Empty)).
-admit. (** FAIL **)
+let X Tx A x.
+assume HTx: topology_on X Tx.
+prove x :e closure_of X Tx A <-> (forall U :e Tx, x :e U -> U :/\: A <> Empty).
+admit. (** x in closure iff every neighborhood meets A; follows from definition **)
 Qed.
 
 (** from §17 Corollary 17.7: closed iff contains all limit points **) 
@@ -9088,15 +9109,21 @@ Definition limit_points_of : set -> set -> set -> set := fun X Tx A => {x :e X|l
 Theorem closure_equals_set_plus_limit_points : forall X Tx A:set,
   topology_on X Tx ->
   closure_of X Tx A = A :\/: limit_points_of X Tx A.
-admit. (** FAIL **)
+let X Tx A.
+assume HTx: topology_on X Tx.
+prove closure_of X Tx A = A :\/: limit_points_of X Tx A.
+admit. (** closure = A ∪ limit points; points in A plus points all nbhds meet A **)
 Qed.
 
 (** from §17: closed sets contain all limit points **) 
 (** LATEX VERSION: A set A is closed iff it contains all its limit points. **)
 Theorem closed_iff_contains_limit_points : forall X Tx A:set,
   topology_on X Tx ->
-  closed_in X Tx A <-> limit_points_of X Tx A c= A.
-admit. (** FAIL **)
+  (closed_in X Tx A <-> limit_points_of X Tx A c= A).
+let X Tx A.
+assume HTx: topology_on X Tx.
+prove closed_in X Tx A <-> limit_points_of X Tx A c= A.
+admit. (** A closed iff cl(A) = A iff A ∪ lim(A) = A iff lim(A) ⊆ A **)
 Qed.
 
 (** from §17 Definition: Hausdorff and T1 spaces **) 
@@ -9445,7 +9472,10 @@ Qed.
 (** LATEX VERSION: The inverse of a homeomorphism is continuous. **)
 Theorem homeomorphism_inverse_continuous : forall X Tx Y Ty f:set,
   homeomorphism X Tx Y Ty f -> continuous_map Y Ty X Tx f.
-admit. (** FAIL **)
+let X Tx Y Ty f.
+assume Hhom: homeomorphism X Tx Y Ty f.
+prove continuous_map Y Ty X Tx f.
+admit. (** homeomorphism includes continuous inverse by definition **)
 Qed.
 
 (** from §18 Theorem 18.3: pasting lemma **) 
