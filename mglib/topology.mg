@@ -10863,7 +10863,13 @@ Theorem finite_set_approximation_general_position : forall N:set, forall pts:set
     general_position_RN N pts' /\
     finite pts' /\
     equip pts pts'.
-admit. (** FAIL on 2025-11-26 03:07 **)
+let N pts delta.
+assume HN Hfin Hpts Hdelta.
+prove exists pts':set,
+  general_position_RN N pts' /\
+  finite pts' /\
+  equip pts pts'.
+admit. (** Lemma 50.4: approximate finite set by one in general position **)
 Qed.
 
 (** from §50 Theorem 50.5: Menger-Nöbeling embedding theorem **)
@@ -10876,7 +10882,12 @@ Theorem Menger_Nobeling_embedding_full : forall X Tx m:set,
   exists N:set, exists e:set,
     N = m :\/: m :\/: (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit. (** FAIL on 2025-11-26 03:07 **)
+let X Tx m.
+assume Hcomp Hmet Hdim Hm.
+prove exists N:set, exists e:set,
+  N = m :\/: m :\/: (Sing Empty) /\
+  embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
+admit. (** Theorem 50.5: Menger-Nöbeling embedding in R^{2m+1} **)
 Qed.
 
 (** from §50 Theorem 50.6: compact subspace of R^N has dimension at most N **)
@@ -10888,7 +10899,8 @@ Theorem compact_subspace_RN_dimension_le_N : forall X N:set,
   covering_dimension X N.
 let X N.
 assume HN Hcomp Hsub.
-admit. (** requires proper formulation of euclidean space and dimension theory **)
+prove covering_dimension X N.
+admit. (** Theorem 50.6: compact subspace of R^N has dimension ≤ N **)
 Qed.
 
 (** from §50 Corollary 50.7: compact m-manifold has dimension at most m **)
@@ -10900,7 +10912,8 @@ Theorem compact_m_manifold_dimension_le_m : forall X Tx m:set,
   covering_dimension X m.
 let X Tx m.
 assume Hm Hcomp Hman.
-admit. (** requires proper dimension theory and manifold theory **)
+prove covering_dimension X m.
+admit. (** Corollary 50.7: compact m-manifold has dimension ≤ m **)
 Qed.
 
 (** from §50 Corollary 50.8: compact m-manifold embeds in R^{2m+1} **)
@@ -10912,7 +10925,12 @@ Theorem compact_m_manifold_embeds_R2mp1 : forall X Tx m:set,
   exists N:set, exists e:set,
     N = m :\/: m :\/: (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit. (** FAIL on 2025-11-26 03:07 **)
+let X Tx m.
+assume Hm Hcomp Hman.
+prove exists N:set, exists e:set,
+  N = m :\/: m :\/: (Sing Empty) /\
+  embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
+admit. (** Corollary 50.8: compact m-manifold embeds in R^{2m+1} **)
 Qed.
 
 (** from §50 Corollary 50.9: compact metrizable embeds in R^N iff finite dimensional **)
@@ -10925,7 +10943,14 @@ Theorem compact_metrizable_embeds_iff_finite_dim : forall X Tx:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e)
   <->
   finite_dimensional_space X Tx.
-admit. (** FAIL on 2025-11-26 03:07 **)
+let X Tx.
+assume Hcomp Hmet.
+prove (exists N:set, exists e:set,
+  N :e omega /\
+  embedding_of X Tx (euclidean_space N) (euclidean_topology N) e)
+<->
+finite_dimensional_space X Tx.
+admit. (** Corollary 50.9: embedding iff finite dimensional **)
 Qed.
 
 (** from Supplementary Exercises: locally m-euclidean space **)
