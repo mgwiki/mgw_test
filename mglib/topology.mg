@@ -11524,11 +11524,10 @@ admit.
 Qed.
 (** from §30 Exercise 14: product of Lindelof with compact is Lindelof **)
 (** LATEX VERSION: If X is Lindelöf and Y is compact, then X × Y is Lindelöf. **)
-Theorem ex30_14_product_Lindelof_compact : forall X Tx Y Ty:set,
+Theorem ex30_14_product_Lindelof_compact : forall X Tx Y Ty Idx Fam:set,
   Lindelof_space X Tx ->
   compact_space Y Ty ->
-  Lindelof_space (product_space (UPair Empty X) (fun i => if i = Empty then OrderedPair X Tx else OrderedPair Y Ty))
-                 (product_topology_full (UPair Empty X) (fun i => if i = Empty then OrderedPair X Tx else OrderedPair Y Ty)).
+  Lindelof_space (product_space Idx Fam) (product_topology_full Idx Fam).
 admit.
 Qed.
 (** from §30 Exercise 15: C(I,R) uniform topology countable dense subset **)
