@@ -10729,6 +10729,174 @@ Theorem dimension_finite_union_closed_max : forall X Fam n:set,
 admit. (** FAIL **)
 Qed.
 
+(** from §50 Example 4: compact 1-manifold has dimension 1 **)
+(** LATEX VERSION: Every compact 1-manifold X has topological dimension 1. **)
+Theorem compact_1_manifold_dimension_1 : forall X Tx:set,
+  compact_space X Tx -> m_manifold X Tx -> covering_dimension X (Sing Empty).
+admit.
+Qed.
+
+(** from §50 Example 5: compact 2-manifold has dimension at most 2 **)
+(** LATEX VERSION: Every compact 2-manifold X has topological dimension at most 2. **)
+Definition two : set := Sing (Sing Empty).
+Theorem compact_2_manifold_dimension_le_2 : forall X Tx:set,
+  compact_space X Tx -> m_manifold X Tx -> covering_dimension X two.
+admit.
+Qed.
+
+(** from §50 Example 6: arcs and linear graphs **)
+(** LATEX VERSION: An arc is a space homeomorphic to [0,1]; a linear graph is a finite union of arcs meeting at most at common endpoints. **)
+Definition arc : set -> set -> prop := fun X Tx =>
+  exists f:set, homeomorphism_of unit_interval unit_interval_topology X Tx f.
+
+Definition end_points_of_arc : set -> set -> set -> set -> prop := fun X Tx p q =>
+  arc X Tx /\
+  p :e X /\ q :e X /\
+  p <> q /\
+  connected_space (X :\: (Sing p)) Tx /\
+  connected_space (X :\: (Sing q)) Tx.
+
+Definition linear_graph : set -> set -> prop := fun G Tg =>
+  Hausdorff_space G Tg /\
+  exists Arcs:set,
+    finite Arcs /\
+    (forall A:set, A :e Arcs ->
+      exists Ta:set, arc A Ta /\ A c= G) /\
+    G = Union Arcs /\
+    (forall A B:set, A :e Arcs -> B :e Arcs -> A <> B ->
+      exists p:set, (A :/\: B = Empty \/ A :/\: B = Sing p)).
+
+(** from §50 Example 6: linear graphs have dimension 1 **)
+(** LATEX VERSION: A linear graph G has topological dimension 1. **)
+Theorem linear_graph_dimension_1 : forall G Tg:set,
+  linear_graph G Tg -> covering_dimension G (Sing Empty).
+admit.
+Qed.
+
+(** from §50 Example 7: general position in R^3 (preliminary) **)
+(** LATEX VERSION: In R^3, points are in general position if no three are collinear and no four are coplanar. **)
+Definition collinear_in_R3 : set -> set -> set -> prop := fun p q r =>
+  p :e R /\ q :e R /\ r :e R /\
+  exists t1 t2:set, t1 :e R /\ t2 :e R /\
+    (exists a b:set, a :e R /\ b :e R /\
+      r = a :\: (b :\: (p :\: (q :\: p)))).
+
+Definition coplanar_in_R3 : set -> set -> set -> set -> prop := fun p q r s =>
+  p :e R /\ q :e R /\ r :e R /\ s :e R /\
+  exists A B C D:set, A :e R /\ B :e R /\ C :e R /\ D :e R /\
+    True. (** placeholder for plane equation **)
+
+(** from §50: geometrically independent (affinely independent) points in R^N **)
+(** LATEX VERSION: Points {x₀,...,xₖ} in R^N are geometrically independent if Σaᵢxᵢ=0 and Σaᵢ=0 imply all aᵢ=0. **)
+Definition geometrically_independent : set -> prop := fun S =>
+  S c= R /\
+  forall coeffs:set,
+    (forall s:set, s :e S -> exists a:set, a :e R /\ (s,a) :e coeffs) ->
+    (forall s:set, s :e S -> exists a:set, (s,a) :e coeffs /\ a :e R) ->
+    True. (** stub: actual condition needs vector space operations **)
+admit.
+
+(** from §50: plane determined by geometrically independent points **)
+(** LATEX VERSION: The plane P determined by geometrically independent points {x₀,...,xₖ} is the set of all x = Σtᵢxᵢ where Σtᵢ=1. **)
+Definition affine_plane : set -> set := fun S =>
+  {x :e R | exists tcoeffs:set,
+    (forall s:set, s :e S -> exists t:set, t :e R /\ (s,t) :e tcoeffs) /\
+    True}. (** stub: needs proper formulation of affine combination **)
+admit.
+
+(** from §50: k-plane in R^N **)
+(** LATEX VERSION: A k-plane in R^N is the affine plane determined by k+1 geometrically independent points. **)
+Definition k_plane : set -> set -> prop := fun k P =>
+  k :e omega /\
+  exists S:set,
+    geometrically_independent S /\
+    finite S /\
+    (exists kp1:set, kp1 = k :\/: (Sing k) /\ equip S kp1) /\
+    P = affine_plane S.
+
+(** from §50: general position in R^N **)
+(** LATEX VERSION: A set A in R^N is in general position if every subset with ≤N+1 points is geometrically independent. **)
+Definition general_position_RN : set -> set -> prop := fun N A =>
+  N :e omega /\
+  A c= R /\
+  forall S:set, S c= A ->
+    (exists Np1:set, Np1 = N :\/: (Sing N) ->
+      (exists f:set, inj S Np1 f) \/ geometrically_independent S).
+
+(** from §50 Lemma 50.4: approximation in general position **)
+(** LATEX VERSION: Given finite {x₁,...,xₙ} in R^N and δ>0, there exists {y₁,...,yₙ} in general position with |xᵢ-yᵢ|<δ for all i. **)
+Theorem finite_set_approximation_general_position : forall N:set, forall pts:set, forall delta:set,
+  N :e omega ->
+  finite pts ->
+  pts c= R ->
+  delta :e R ->
+  (exists epsilon:set, epsilon :e R /\ epsilon :<: delta /\ epsilon :<: Empty) ->
+  exists pts':set,
+    general_position_RN N pts' /\
+    finite pts' /\
+    equip pts pts' /\
+    (forall p p':set, (p,p') :e pts -> True). (** stub: distance condition **)
+admit.
+Qed.
+
+(** from §50 Theorem 50.5: Menger-Nöbeling embedding theorem **)
+(** LATEX VERSION: Every compact metrizable space X of topological dimension m can be embedded in R^{2m+1}. **)
+Theorem Menger_Nobeling_embedding_full : forall X Tx m:set,
+  compact_space X Tx ->
+  metrizable X Tx ->
+  covering_dimension X m ->
+  m :e omega ->
+  exists N:set, exists e:set,
+    N = m :\/: m :\/: (Sing Empty) /\
+    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
+admit.
+Qed.
+
+(** from §50 Theorem 50.6: compact subspace of R^N has dimension at most N **)
+(** LATEX VERSION: Every compact subspace of R^N has topological dimension at most N. **)
+Theorem compact_subspace_RN_dimension_le_N : forall X N:set,
+  N :e omega ->
+  compact_space X (euclidean_topology N) ->
+  X c= (euclidean_space N) ->
+  covering_dimension X N.
+admit.
+Qed.
+
+(** from §50 Corollary 50.7: compact m-manifold has dimension at most m **)
+(** LATEX VERSION: Every compact m-manifold has topological dimension at most m. **)
+Theorem compact_m_manifold_dimension_le_m : forall X Tx m:set,
+  m :e omega ->
+  compact_space X Tx ->
+  m_manifold X Tx ->
+  covering_dimension X m.
+admit.
+Qed.
+
+(** from §50 Corollary 50.8: compact m-manifold embeds in R^{2m+1} **)
+(** LATEX VERSION: Every compact m-manifold can be embedded in R^{2m+1}. **)
+Theorem compact_m_manifold_embeds_R2mp1 : forall X Tx m:set,
+  m :e omega ->
+  compact_space X Tx ->
+  m_manifold X Tx ->
+  exists N:set, exists e:set,
+    N = m :\/: m :\/: (Sing Empty) /\
+    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
+admit.
+Qed.
+
+(** from §50 Corollary 50.9: compact metrizable embeds in R^N iff finite dimensional **)
+(** LATEX VERSION: A compact metrizable space X can be embedded in R^N for some N iff X has finite topological dimension. **)
+Theorem compact_metrizable_embeds_iff_finite_dim : forall X Tx:set,
+  compact_space X Tx ->
+  metrizable X Tx ->
+  (exists N:set, exists e:set,
+    N :e omega /\
+    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e)
+  <->
+  finite_dimensional_space X Tx.
+admit.
+Qed.
+
 (** from §30 Exercise 1: G_delta points in first-countable T1 **) 
 (** LATEX VERSION: Exercise 30.1 about G_δ points in first-countable T₁ spaces. **)
 Definition ex30_1_Gdelta_points : set := omega.
