@@ -12404,6 +12404,13 @@ Theorem ex48_1_Baire_union_interior : forall X Tx:set, forall Fam:set,
   X = Union Fam ->
   exists B:set, B :e Fam /\
     exists U:set, U :e Tx /\ U <> Empty /\ U c= (closure_of X Tx B).
+let X Tx Fam.
+assume HBaire: Baire_space Tx.
+assume Htop: topology_on X Tx.
+assume Hnemp: X <> Empty.
+assume Hcount: countable_set Fam.
+assume Hunion: X = Union Fam.
+prove exists B:set, B :e Fam /\ exists U:set, U :e Tx /\ U <> Empty /\ U c= (closure_of X Tx B).
 admit. (** Baire: union must have set with interior in closure **)
 Qed.
 
@@ -12414,6 +12421,10 @@ Theorem ex48_2_R_not_countable_empty_interior : forall Fam:set,
   (forall C:set, C :e Fam -> closed_in R R_standard_topology C /\
     (forall U:set, U :e R_standard_topology -> U c= C -> U = Empty)) ->
   R <> Union Fam.
+let Fam.
+assume Hcount: countable_set Fam.
+assume Hnowhere: forall C:set, C :e Fam -> closed_in R R_standard_topology C /\ (forall U:set, U :e R_standard_topology -> U c= C -> U = Empty).
+prove R <> Union Fam.
 admit. (** Baire category: R not countable union of nowhere dense **)
 Qed.
 
@@ -12423,6 +12434,10 @@ Theorem ex48_3_locally_compact_Hausdorff_Baire : forall X Tx:set,
   locally_compact X Tx ->
   Hausdorff_space X Tx ->
   Baire_space Tx.
+let X Tx.
+assume Hlc: locally_compact X Tx.
+assume HHaus: Hausdorff_space X Tx.
+prove Baire_space Tx.
 admit. (** locally compact Hausdorff spaces are Baire **)
 Qed.
 
@@ -12434,6 +12449,10 @@ Theorem ex48_4_locally_Baire_implies_Baire : forall X Tx:set,
     exists U:set, U :e Tx /\ x :e U /\
       Baire_space (subspace_topology X Tx U)) ->
   Baire_space Tx.
+let X Tx.
+assume Htop: topology_on X Tx.
+assume Hlocal: forall x:set, x :e X -> exists U:set, U :e Tx /\ x :e U /\ Baire_space (subspace_topology X Tx U).
+prove Baire_space Tx.
 admit. (** local Baire property implies global Baire **)
 Qed.
 
@@ -12445,6 +12464,10 @@ Theorem ex48_5_Gdelta_Baire : forall X Tx Y:set,
     (forall W:set, W :e Fam -> W :e Tx) /\
     Y = intersection_over_family X Fam) ->
   Baire_space (subspace_topology X Tx Y).
+let X Tx Y.
+assume Hcomp: compact_space X Tx /\ Hausdorff_space X Tx.
+assume HGdelta: exists Fam:set, countable_set Fam /\ (forall W:set, W :e Fam -> W :e Tx) /\ Y = intersection_over_family X Fam.
+prove Baire_space (subspace_topology X Tx Y).
 admit. (** G_delta in compact Hausdorff is Baire **)
 Qed.
 
@@ -12452,6 +12475,7 @@ Qed.
 (** LATEX VERSION: The irrationals are a Baire space. **)
 Theorem ex48_6_irrationals_Baire :
   Baire_space (subspace_topology R R_standard_topology (R :\: Q)).
+prove Baire_space (subspace_topology R R_standard_topology (R :\: Q)).
 admit. (** irrationals form a Baire space **)
 Qed.
 
@@ -12462,6 +12486,9 @@ Theorem ex48_7a_continuity_set_Gdelta : forall f:set,
   exists Fam:set, countable_set Fam /\
     (forall U:set, U :e Fam -> U :e R_standard_topology) /\
     {x :e R | continuous_at f x} = intersection_over_family R Fam.
+let f.
+assume Hf: function_on f R R.
+prove exists Fam:set, countable_set Fam /\ (forall U:set, U :e Fam -> U :e R_standard_topology) /\ {x :e R | continuous_at f x} = intersection_over_family R Fam.
 admit. (** continuity points form G_delta set **)
 Qed.
 
@@ -12474,6 +12501,11 @@ Theorem ex48_7b_countable_dense_not_Gdelta : forall D:set,
   ~ (exists Fam:set, countable_set Fam /\
       (forall W:set, W :e Fam -> W :e R_standard_topology) /\
       D = intersection_over_family R Fam).
+let D.
+assume Hsub: D c= R.
+assume Hcount: countable_set D.
+assume Hdense: dense_in D R R_standard_topology.
+prove ~ (exists Fam:set, countable_set Fam /\ (forall W:set, W :e Fam -> W :e R_standard_topology) /\ D = intersection_over_family R Fam).
 admit. (** countable dense subset not G_delta **)
 Qed.
 
@@ -12486,6 +12518,11 @@ Theorem ex48_7_no_function_continuous_on_countable_dense : forall D:set,
   ~ (exists f:set, function_on f R R /\
       (forall x:set, x :e D -> continuous_at f x) /\
       (forall x:set, x :e R -> x /:e D -> ~ continuous_at f x)).
+let D.
+assume Hsub: D c= R.
+assume Hcount: countable_set D.
+assume Hdense: dense_in D R R_standard_topology.
+prove ~ (exists f:set, function_on f R R /\ (forall x:set, x :e D -> continuous_at f x) /\ (forall x:set, x :e R -> x /:e D -> ~ continuous_at f x)).
 admit. (** no function continuous precisely on countable dense **)
 Qed.
 
@@ -12499,6 +12536,11 @@ Theorem ex48_8_pointwise_limit_continuity : forall fn:set, forall f:set,
     exists limval:set, limval :e R /\
       forall eps:set, eps :e R -> True) ->
   ~ countable_set {x :e R | continuous_at f x}.
+let fn f.
+assume Hfn: forall n:set, n :e omega -> continuous_map R R_standard_topology R R_standard_topology (apply_fun fn n).
+assume Hf: function_on f R R.
+assume Hlim: forall x:set, x :e R -> exists limval:set, limval :e R /\ forall eps:set, eps :e R -> True.
+prove ~ countable_set {x :e R | continuous_at f x}.
 admit. (** pointwise limit has uncountably many continuity points **)
 Qed.
 
@@ -12510,6 +12552,15 @@ Theorem ex48_9_Thomae_function : forall g:set, forall f:set,
   (forall n:set, n :e omega -> apply_fun f (apply_fun g n) = R) ->
   (forall x:set, x :e R -> x /:e Q -> apply_fun f x = Empty) ->
   forall x:set, x :e R -> x /:e Q -> continuous_at f x.
+let g f.
+assume Hg: forall n:set, n :e omega -> apply_fun g n :e Q.
+assume Hf: function_on f R R.
+assume Hfg: forall n:set, n :e omega -> apply_fun f (apply_fun g n) = R.
+assume Hfirr: forall x:set, x :e R -> x /:e Q -> apply_fun f x = Empty.
+let x.
+assume Hx: x :e R.
+assume Hirr: x /:e Q.
+prove continuous_at f x.
 admit. (** Thomae function continuous at irrationals **)
 Qed.
 
@@ -12525,6 +12576,11 @@ Theorem ex48_10_uniform_boundedness : forall X d:set, forall FF:set,
     M :e R /\
     forall f:set, f :e FF ->
       forall x:set, x :e U -> apply_fun f x :e R.
+let X d FF.
+assume Hcomplete: complete_metric_space X d.
+assume HFF: FF c= Power (Power R).
+assume Hbound: forall a:set, a :e X -> exists M:set, M :e R /\ forall f:set, f :e FF -> apply_fun f a :e R.
+prove exists U:set, exists M:set, U :e (metric_topology X d) /\ U <> Empty /\ M :e R /\ forall f:set, f :e FF -> forall x:set, x :e U -> apply_fun f x :e R.
 admit. (** uniform boundedness principle for complete metric **)
 Qed.
 
@@ -12533,6 +12589,9 @@ Qed.
 Theorem ex48_11_Rl_Baire : forall Tl:set,
   Tl = R (** stub: lower limit topology **) ->
   Baire_space Tl.
+let Tl.
+assume HTl: Tl = R.
+prove Baire_space Tl.
 admit. (** ℝ_ℓ is a Baire space **)
 Qed.
 
@@ -12546,6 +12605,11 @@ Theorem ex49_1_verify_example_functions : forall f g k:set,
   continuous_map R R_standard_topology R R_standard_topology f /\
   continuous_map R R_standard_topology R R_standard_topology g /\
   continuous_map R R_standard_topology R R_standard_topology k.
+let f g k.
+assume Hf: f = R.
+assume Hg: g = R.
+assume Hk: k = R.
+prove continuous_map R R_standard_topology R R_standard_topology f /\ continuous_map R R_standard_topology R R_standard_topology g /\ continuous_map R R_standard_topology R R_standard_topology k.
 admit. (** verify properties from §49 Example 1 **)
 Qed.
 
@@ -12559,6 +12623,10 @@ Theorem ex49_2_construct_bounded_function : forall n:set, forall eps:set,
     continuous_map unit_interval R_standard_topology R R_standard_topology f /\
     (forall x:set, x :e unit_interval -> apply_fun f x :e R) /\
     True. (** stub: need U_n membership and bound condition **)
+let n eps.
+assume Hn: n :e omega.
+assume Heps: eps :e R.
+prove exists f:set, continuous_map unit_interval R_standard_topology R R_standard_topology f /\ (forall x:set, x :e unit_interval -> apply_fun f x :e R) /\ True.
 admit. (** construct bounded continuous function in U_n **)
 Qed.
 
