@@ -11795,81 +11795,144 @@ Qed.
 Definition perfectly_normal_space : set -> set -> prop := fun X Tx =>
   normal_space X Tx /\ (forall A:set, closed_in X Tx A -> Gdelta_in X Tx A).
 
-(** from §33 Exercise 1: expression for level sets in Urysohn proof **) 
-Definition ex33_1_level_sets_urysohn : set :=
-  {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx A B f:set,
-      p = OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair A B)) f /\
-      normal_space X Tx /\ closed_in X Tx A /\ closed_in X Tx B /\ A :/\: B = Empty /\
-      function_on f X R /\ continuous_map X Tx R R_standard_topology f /\
-      (forall x:set, x :e A -> apply_fun f x = 0) /\
-      (forall x:set, x :e B -> apply_fun f x = 1)}.
-(** from §33 Exercise 2: connected normal/regular uncountable **) 
-Definition ex33_2_connected_normal_regular_uncountable : set :=
-  {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\
-      connected_space X Tx /\ normal_space X Tx /\ regular_space X Tx /\ uncountable_set X}.
-(** from §33 Exercise 3: direct Urysohn proof in metric space **) 
-Definition ex33_3_urysohn_metric_direct : set :=
-  {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X d A B f:set,
-      p = OrderedPair (OrderedPair (OrderedPair X d) (OrderedPair A B)) f /\
-      metric_on X d /\ closed_in X (metric_topology X d) A /\ closed_in X (metric_topology X d) B /\
-      A :/\: B = Empty /\
-      function_on f X R /\ continuous_map X (metric_topology X d) R R_standard_topology f /\
-      (forall x:set, x :e A -> apply_fun f x = 0) /\
-      (forall x:set, x :e B -> apply_fun f x = 1)}.
-(** from §33 Exercise 4: closed G_delta sets and vanishing functions **) 
-Definition ex33_4_closed_Gdelta_vanishing_function : set :=
-  {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx F f:set,
-      p = OrderedPair (OrderedPair (OrderedPair X Tx) F) f /\
-      normal_space X Tx /\ closed_in X Tx F /\ Gdelta_in X Tx F /\
-      function_on f X R /\ continuous_map X Tx R R_standard_topology f /\
-      (forall x:set, x :e F -> apply_fun f x = 0)}.
-(** from §33 Exercise 5: strong Urysohn lemma **) 
-Definition ex33_5_strong_urysohn : set :=
-  {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx A B f:set,
-      p = OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair A B)) f /\
-      normal_space X Tx /\ closed_in X Tx A /\ closed_in X Tx B /\ A :/\: B = Empty /\
-      function_on f X (closed_interval 0 1) /\
+(** from §33 Exercise 1: expression for level sets in Urysohn proof **)
+(** LATEX VERSION: In Urysohn lemma proof, show f^{-1}(r) = ∩_{p>r} U_p - ∪_{q<r} U_q for rational p,q. **)
+Theorem ex33_1_level_sets_urysohn : forall X Tx A B:set, forall U:set -> set,
+  normal_space X Tx ->
+  closed_in X Tx A ->
+  closed_in X Tx B ->
+  A :/\: B = Empty ->
+  exists f:set,
+    continuous_map X Tx R R_standard_topology f /\
+    (forall x:set, x :e A -> apply_fun f x = 0) /\
+    (forall x:set, x :e B -> apply_fun f x = 1) /\
+    (forall r:set, apply_fun f X = {x :e X | apply_fun f x = r}).
+admit.
+Qed.
+(** from §33 Exercise 2: connected normal/regular uncountable **)
+(** LATEX VERSION: Connected normal/regular space with >1 point is uncountable. **)
+Theorem ex33_2a_connected_normal_uncountable : forall X Tx:set,
+  connected_space X Tx ->
+  normal_space X Tx ->
+  (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
+  ~ countable X.
+admit.
+Qed.
+
+Theorem ex33_2b_connected_regular_uncountable : forall X Tx:set,
+  connected_space X Tx ->
+  regular_space X Tx ->
+  (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
+  ~ countable X.
+admit.
+Qed.
+(** from §33 Exercise 3: direct Urysohn proof in metric space **)
+(** LATEX VERSION: For metric space, Urysohn lemma direct proof: f(x) = d(x,A)/(d(x,A)+d(x,B)). **)
+Theorem ex33_3_urysohn_metric_direct : forall X d A B:set,
+  metric_on X d ->
+  closed_in X (metric_topology X d) A ->
+  closed_in X (metric_topology X d) B ->
+  A :/\: B = Empty ->
+  exists f:set,
+    continuous_map X (metric_topology X d) R R_standard_topology f /\
+    (forall x:set, x :e A -> apply_fun f x = 0) /\
+    (forall x:set, x :e B -> apply_fun f x = 1).
+admit.
+Qed.
+(** from §33 Exercise 4: closed G_delta sets and vanishing functions **)
+(** LATEX VERSION: In normal X, ∃f:X→[0,1] vanishing precisely on A iff A is closed G_δ. **)
+Theorem ex33_4_closed_Gdelta_vanishing_function : forall X Tx A:set,
+  normal_space X Tx ->
+  closed_in X Tx A ->
+  (Gdelta_in X Tx A <->
+    exists f:set,
       continuous_map X Tx R R_standard_topology f /\
       (forall x:set, x :e A -> apply_fun f x = 0) /\
-      (forall x:set, x :e B -> apply_fun f x = 1)}.
-(** from §33 Exercise 6: perfect normality implications **) 
-Definition ex33_6_perfect_normality : set :=
-  {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\ perfectly_normal_space X Tx}.
-(** from §33 Exercise 7: locally compact Hausdorff completely regular **) 
-Definition ex33_7_locally_compact_Hausdorff_completely_regular : set :=
-  {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\
-      locally_compact X Tx /\ Hausdorff_space X Tx /\ completely_regular_space X Tx}.
-(** from §33 Exercise 8: continuous separation when A compact **) 
-Definition ex33_8_compact_subset_continuous_separation : set :=
-  {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx A B f:set,
-      p = OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair A B)) f /\
-      normal_space X Tx /\ compact_space A (subspace_topology X Tx A) /\
-      closed_in X Tx B /\ A :/\: B = Empty /\
-      function_on f X R /\ continuous_map X Tx R R_standard_topology f /\
+      (forall x:set, x /:e A -> ~ (apply_fun f x = 0))).
+admit.
+Qed.
+(** from §33 Exercise 5: strong Urysohn lemma **)
+(** LATEX VERSION: Strong Urysohn: ∃f with f(A)=0, f(B)=1, 0<f<1 elsewhere iff A,B closed G_δ. **)
+Theorem ex33_5_strong_urysohn : forall X Tx A B:set,
+  normal_space X Tx ->
+  closed_in X Tx A ->
+  closed_in X Tx B ->
+  A :/\: B = Empty ->
+  (Gdelta_in X Tx A /\ Gdelta_in X Tx B <->
+    exists f:set,
+      continuous_map X Tx R R_standard_topology f /\
       (forall x:set, x :e A -> apply_fun f x = 0) /\
-      (forall x:set, x :e B -> apply_fun f x = 1)}.
-(** from §33 Exercise 9: Romega box topology completely regular **) 
-Definition ex33_9_Romega_box_completely_regular : set :=
-  {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\
-      X = product_space omega (const_family omega R) /\
-      Tx = box_topology omega (const_family omega R) /\ completely_regular_space X Tx}.
-(** from §33 Exercise 10: topological group completely regular **) 
-Definition ex33_10_topological_group_completely_regular : set :=
-  {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists G Tg:set, p = OrderedPair G Tg /\ topological_group G Tg /\ completely_regular_space G Tg}.
-(** from §33 Exercise 11: regular not completely regular example **) 
-Definition ex33_11_regular_not_completely_regular : set :=
-  {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\ regular_space X Tx /\ ~ completely_regular_space X Tx}.
+      (forall x:set, x :e B -> apply_fun f x = 1) /\
+      (forall x:set, x :e X -> x /:e A -> x /:e B -> ~ (apply_fun f x = 0) /\ ~ (apply_fun f x = 1))).
+admit.
+Qed.
+(** from §33 Exercise 6a: metrizable implies perfectly normal **)
+(** LATEX VERSION: Every metrizable space is perfectly normal. **)
+Theorem ex33_6a_metrizable_perfectly_normal : forall X Tx:set,
+  metrizable X Tx ->
+  perfectly_normal_space X Tx.
+admit.
+Qed.
+
+(** from §33 Exercise 6b: perfectly normal implies completely normal **)
+(** LATEX VERSION: Every perfectly normal space is completely normal. **)
+Theorem ex33_6b_perfectly_completely_normal : forall X Tx:set,
+  perfectly_normal_space X Tx ->
+  completely_normal_space X Tx.
+admit.
+Qed.
+
+(** from §33 Exercise 6c: completely normal not perfectly normal example **)
+(** LATEX VERSION: There exists completely normal but not perfectly normal space. **)
+Theorem ex33_6c_completely_not_perfectly_normal :
+  exists X Tx:set,
+    completely_normal_space X Tx /\
+    ~ perfectly_normal_space X Tx.
+admit.
+Qed.
+(** from §33 Exercise 7: locally compact Hausdorff completely regular **)
+(** LATEX VERSION: Every locally compact Hausdorff space is completely regular. **)
+Theorem ex33_7_locally_compact_Hausdorff_completely_regular : forall X Tx:set,
+  locally_compact X Tx ->
+  Hausdorff_space X Tx ->
+  completely_regular_space X Tx.
+admit.
+Qed.
+(** from §33 Exercise 8: continuous separation when A compact **)
+(** LATEX VERSION: If X completely regular, A compact, B closed disjoint from A, then ∃f:X→[0,1] with f(A)=0, f(B)=1. **)
+Theorem ex33_8_compact_subset_continuous_separation : forall X Tx A B:set,
+  completely_regular_space X Tx ->
+  compact_space A (subspace_topology X Tx A) ->
+  closed_in X Tx B ->
+  A :/\: B = Empty ->
+  exists f:set,
+    continuous_map X Tx R R_standard_topology f /\
+    (forall x:set, x :e A -> apply_fun f x = 0) /\
+    (forall x:set, x :e B -> apply_fun f x = 1).
+admit.
+Qed.
+(** from §33 Exercise 9: Romega box topology completely regular **)
+(** LATEX VERSION: ℝ^ω in box topology is completely regular. **)
+Theorem ex33_9_Romega_box_completely_regular :
+  completely_regular_space (product_space omega (const_family omega R))
+                           (box_topology omega (const_family omega R)).
+admit.
+Qed.
+(** from §33 Exercise 10: topological group completely regular **)
+(** LATEX VERSION: Every topological group is completely regular. **)
+Theorem ex33_10_topological_group_completely_regular : forall G Tg:set,
+  topological_group G Tg ->
+  completely_regular_space G Tg.
+admit.
+Qed.
+(** from §33 Exercise 11: regular not completely regular example **)
+(** LATEX VERSION: There exists regular space that is not completely regular. **)
+Theorem ex33_11_regular_not_completely_regular :
+  exists X Tx:set,
+    regular_space X Tx /\
+    ~ completely_regular_space X Tx.
+admit.
+Qed.
 
 (** helper: local metrizability **) 
 Definition locally_metrizable_space : set -> set -> prop := fun X Tx =>
