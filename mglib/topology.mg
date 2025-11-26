@@ -11768,6 +11768,7 @@ apply iffI.
   exact Hsep A B H2.
 - assume H1: forall A B:set, separated_subsets X Tx A B -> exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty.
   prove completely_normal_space X Tx.
+  prove normal_space X Tx /\ (forall A B:set, separated_subsets X Tx A B -> exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
   apply andI.
   + prove normal_space X Tx.
     admit. (** need to prove normality from separated set separation **)
