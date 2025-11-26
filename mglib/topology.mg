@@ -8368,11 +8368,10 @@ Theorem ex13_4a_intersection_topology : forall X Fam:set,
   topology_on X (Intersection_Fam Fam).
 let X Fam. assume HfamTop.
 prove (Intersection_Fam Fam c= Power X
-      /\ (Empty :e Intersection_Fam Fam
-      /\ (X :e Intersection_Fam Fam
+      /\ Empty :e Intersection_Fam Fam
+      /\ X :e Intersection_Fam Fam
       /\ (forall UFam :e Power (Intersection_Fam Fam), Union UFam :e Intersection_Fam Fam)
-      /\ (forall U :e Intersection_Fam Fam, forall V :e Intersection_Fam Fam,
-            U :/\: V :e Intersection_Fam Fam)))).
+      /\ (forall U :e Intersection_Fam Fam, forall V :e Intersection_Fam Fam, U :/\: V :e Intersection_Fam Fam)).
 apply andI.
 - admit. (** FAIL **)
 - apply andI.
