@@ -10691,14 +10691,20 @@ Qed.
 (** LATEX VERSION: Compact subspace of ℝ^n has covering dimension ≤ n. **)
 Theorem compact_subspace_Rn_dimension_le : forall X n:set,
   compact_space X (euclidean_topology n) -> covering_dimension X n.
-admit. (** FAIL **)
+let X n.
+assume Hcomp.
+prove covering_dimension X n.
+admit. (** compact subspace of R^n has dimension ≤ n **)
 Qed.
 
 (** from §50 Theorem: compact m-manifold has dimension at most m **) 
 (** LATEX VERSION: Compact m-manifold has covering dimension ≤ m. **)
 Theorem compact_manifold_dimension_le : forall X Tx m:set,
   m_manifold X Tx -> compact_space X Tx -> covering_dimension X m.
-admit. (**  aby  Hausdorff_5Fspace_def m_manifold�f conj_myprob_10492_1_20251124_032256 In_5Fno2cycle covering_dimension�f covering_dimension_properties . **)
+let X Tx m.
+assume Hman Hcomp.
+prove covering_dimension X m.
+admit. (** compact m-manifold has dimension ≤ m **)
 Qed.
 
 (** from §50 Theorem (Menger-Nöbeling): compact metrizable space of dimension m embeds in R^{2m+1} **) 
@@ -10707,14 +10713,21 @@ Theorem Menger_Nobeling_embedding : forall X Tx m:set,
   compact_space X Tx -> metrizable X Tx -> covering_dimension X m ->
   exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit. (** FAIL **)
+let X Tx m.
+assume Hcomp Hmet Hdim.
+prove exists N:set, exists e:set,
+  embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
+admit. (** Menger-Nöbeling: compact metrizable dim-m embeds in some R^N **)
 Qed.
 
 (** from §50 Theorem 50.1: dimension of closed subspace bounded by ambient **) 
 (** LATEX VERSION: Dimension of a closed subspace does not exceed that of the ambient space. **)
 Theorem dimension_closed_subspace_le : forall X Tx Y n:set,
   covering_dimension X n -> closed_in X Tx Y -> covering_dimension Y n.
-admit. (**  aby  covering_dimension�f conj_myprob_10508_1_20251124_032354 ex13_4b_smallest_largest . **)
+let X Tx Y n.
+assume HX HY.
+prove covering_dimension Y n.
+admit. (** Theorem 50.1: closed subspace dimension ≤ ambient dimension **)
 Qed.
 
 (** from §50 Theorem 50.2: dimension of union of closed sets is max **)
