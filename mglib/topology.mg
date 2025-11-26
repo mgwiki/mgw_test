@@ -10545,7 +10545,10 @@ Qed.
 (** LATEX VERSION: An uncountable product of ℝ with product topology need not be normal. **)
 Theorem uncountable_product_R_not_normal : forall J:set,
   uncountable_set J -> ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
-admit. (** FAIL **)
+let J.
+assume HJ: uncountable_set J.
+prove ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
+admit. (** construct disjoint closed sets that cannot be separated by disjoint open sets; use diagonal argument **)
 Qed.
 
 (** from §32 Example 2: SOmega x SbarOmega not normal **) 
@@ -10558,7 +10561,9 @@ Definition SbarOmega_topology : set := discrete_topology Sbar_Omega.
 Theorem SOmega_SbarOmega_not_normal :
   normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
   ~ normal_space (product_space (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
-admit. (** FAIL **)
+prove normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
+  ~ normal_space (product_space (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
+admit. (** discrete spaces normal; product gives Jones' lemma counterexample **)
 Qed.
 
 (** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **) 
@@ -10593,7 +10598,11 @@ Theorem completely_regular_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall Y:set, Y c= X -> completely_regular_space X Tx -> completely_regular_space Y (subspace_topology X Tx Y)) /\
   (forall I Xi:set, completely_regular_spaces_family I Xi -> completely_regular_space (product_space I Xi) (product_topology_full I Xi)).
-admit. (** FAIL **)
+let X Tx.
+assume HTx: topology_on X Tx.
+prove (forall Y:set, Y c= X -> completely_regular_space X Tx -> completely_regular_space Y (subspace_topology X Tx Y)) /\
+  (forall I Xi:set, completely_regular_spaces_family I Xi -> completely_regular_space (product_space I Xi) (product_topology_full I Xi)).
+admit. (** subspace: restrict separating function to Y; product: use component functions **)
 Qed.
 
 (** from §33 Example 1: products giving completely regular but not normal spaces **) 
@@ -10601,7 +10610,9 @@ Qed.
 Theorem Sorgenfrey_plane_completely_regular_not_normal :
   completely_regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit. (** FAIL **)
+prove completely_regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
+  ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+admit. (** product of completely regular spaces is completely regular; not normal by antidiagonal argument **)
 Qed.
 
 (** from §33 Example 1 cont.: SOmega x SbarOmega completely regular not normal **) 
@@ -10609,14 +10620,20 @@ Qed.
 Theorem SOmega_SbarOmega_completely_regular_not_normal :
   completely_regular_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) /\
   ~ normal_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
-admit. (** FAIL **)
+prove completely_regular_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) /\
+  ~ normal_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
+admit. (** product of completely regular spaces is completely regular; not normal by previous theorem **)
 Qed.
 
 (** from §34 Theorem 34.1: Urysohn metrization theorem **) 
 (** LATEX VERSION: Regular second-countable spaces are metrizable (Urysohn). **)
 Theorem Urysohn_metrization_theorem : forall X Tx:set,
   regular_space X Tx -> second_countable_space X Tx -> exists d:set, metric_on X d /\ metric_topology X d = Tx.
-admit. (** FAIL **)
+let X Tx.
+assume Hreg: regular_space X Tx.
+assume Hscc: second_countable_space X Tx.
+prove exists d:set, metric_on X d /\ metric_topology X d = Tx.
+admit. (** embed into Hilbert cube via countable family of Urysohn functions; induce metric from product **)
 Qed.
 
 (** from §34 Theorem 34.2: Imbedding via separating family of functions **) 
@@ -10633,7 +10650,10 @@ Qed.
 Theorem completely_regular_iff_embeds_in_cube : forall X Tx:set,
   (completely_regular_space X Tx <->
     exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_family J unit_interval)) Fmap).
-admit. (** FAIL **)
+let X Tx.
+prove (completely_regular_space X Tx <->
+    exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_family J unit_interval)) Fmap).
+admit. (** forward: use separating family to build embedding; reverse: subspace of product inherits complete regularity **)
 Qed.
 
 (** from §35 Theorem 35.1: Tietze extension theorem **) 
