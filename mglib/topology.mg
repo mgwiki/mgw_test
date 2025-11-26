@@ -11895,7 +11895,13 @@ Theorem ex33_3_urysohn_metric_direct : forall X d A B:set,
     continuous_map X (metric_topology X d) R R_standard_topology f /\
     (forall x:set, x :e A -> apply_fun f x = 0) /\
     (forall x:set, x :e B -> apply_fun f x = 1).
-admit.
+let X d A B.
+assume Hmet: metric_on X d.
+assume HcA: closed_in X (metric_topology X d) A.
+assume HcB: closed_in X (metric_topology X d) B.
+assume Hdisj: A :/\: B = Empty.
+prove exists f:set, continuous_map X (metric_topology X d) R R_standard_topology f /\ (forall x:set, x :e A -> apply_fun f x = 0) /\ (forall x:set, x :e B -> apply_fun f x = 1).
+admit. (** define f(x) = d(x,A)/(d(x,A)+d(x,B)) using distance function **)
 Qed.
 (** from §33 Exercise 4: closed G_delta sets and vanishing functions **)
 (** LATEX VERSION: In normal X, ∃f:X→[0,1] vanishing precisely on A iff A is closed G_δ. **)
@@ -11929,7 +11935,10 @@ Qed.
 Theorem ex33_6a_metrizable_perfectly_normal : forall X Tx:set,
   metrizable X Tx ->
   perfectly_normal_space X Tx.
-admit.
+let X Tx.
+assume Hmet: metrizable X Tx.
+prove perfectly_normal_space X Tx.
+admit. (** metric spaces: closed sets are G_delta via open ball neighborhoods **)
 Qed.
 
 (** from §33 Exercise 6b: perfectly normal implies completely normal **)
@@ -11971,7 +11980,13 @@ Theorem ex33_8_compact_subset_continuous_separation : forall X Tx A B:set,
     continuous_map X Tx R R_standard_topology f /\
     (forall x:set, x :e A -> apply_fun f x = 0) /\
     (forall x:set, x :e B -> apply_fun f x = 1).
-admit.
+let X Tx A B.
+assume Hcr: completely_regular_space X Tx.
+assume Hcpt: compact_space A (subspace_topology X Tx A).
+assume HcB: closed_in X Tx B.
+assume Hdisj: A :/\: B = Empty.
+prove exists f:set, continuous_map X Tx R R_standard_topology f /\ (forall x:set, x :e A -> apply_fun f x = 0) /\ (forall x:set, x :e B -> apply_fun f x = 1).
+admit. (** use compactness of A to combine separating functions for each point **)
 Qed.
 (** from §33 Exercise 9: Romega box topology completely regular **)
 (** LATEX VERSION: ℝ^ω in box topology is completely regular. **)
