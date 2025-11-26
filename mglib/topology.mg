@@ -8338,8 +8338,6 @@ Qed.
 Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   ~topology_on X (infinite_complement_family X).
 let X. assume Htop.
-prove False.
-prove False.
 admit. (** FAIL **)
 Qed.
 
@@ -8349,21 +8347,7 @@ Theorem ex13_4a_intersection_topology : forall X Fam:set,
   (forall T :e Fam, topology_on X T) ->
   topology_on X (Intersection_Fam Fam).
 let X Fam. assume HfamTop.
-prove (Intersection_Fam Fam c= Power X
-      /\ (Empty :e Intersection_Fam Fam
-      /\ (X :e Intersection_Fam Fam
-      /\ ((forall UFam :e Power (Intersection_Fam Fam), Union UFam :e Intersection_Fam Fam)
-      /\ (forall U :e Intersection_Fam Fam, forall V :e Intersection_Fam Fam,
-            U :/\: V :e Intersection_Fam Fam))))).
-apply andI.
-- admit. (** FAIL **)
-- apply andI.
-  * admit. (** FAIL **)
-  * apply andI.
-    { admit. (** FAIL **) }
-    { apply andI.
-      - admit. (** FAIL **)
-      - admit. (** FAIL **) }
+admit. (** FAIL **)
 Qed.
 
 (** from §13 Exercise 4(b): smallest/largest topology containing a family **) 
