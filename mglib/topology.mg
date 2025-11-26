@@ -10733,19 +10733,24 @@ apply andI.
 - admit. (** need to construct topology on union; requires proper setup **)
 Qed.
 
-(** from §50 Corollary 50.3: finite union of closed finite-dimensional sets **) 
+(** from §50 Corollary 50.3: finite union of closed finite-dimensional sets **)
 Theorem dimension_finite_union_closed_max : forall X Fam n:set,
   finite Fam ->
   (forall Y:set, Y :e Fam -> covering_dimension Y n) ->
   covering_dimension (Union Fam) n.
-admit. (** FAIL **)
+let X Fam n.
+assume Hfin Hall.
+prove covering_dimension (Union Fam) n.
+admit. (** requires induction on finite sets **)
 Qed.
 
 (** from §50 Example 4: compact 1-manifold has dimension 1 **)
 (** LATEX VERSION: Every compact 1-manifold X has topological dimension 1. **)
 Theorem compact_1_manifold_dimension_1 : forall X Tx:set,
   compact_space X Tx -> m_manifold X Tx -> covering_dimension X (Sing Empty).
-admit. (** FAIL on 2025-11-26 03:07 **)
+let X Tx.
+assume Hcomp Hman.
+admit. (** requires full 1-manifold theory and dimension computation **)
 Qed.
 
 (** from §50 Example 5: compact 2-manifold has dimension at most 2 **)
