@@ -10330,14 +10330,17 @@ Definition second_countable_space : set -> set -> prop := fun X Tx =>
 (** from §30 Example 1: R^n has countable basis **) 
 Theorem euclidean_spaces_second_countable : forall n:set,
   second_countable_space (euclidean_space n) (euclidean_topology n).
-admit. (** FAIL **)
+let n.
+prove second_countable_space (euclidean_space n) (euclidean_topology n).
+admit. (** rational rectangles form countable basis for R^n **)
 Qed.
 
 (** from §30 Example 2: uniform topology on R^omega not second countable **) 
 Theorem Romega_uniform_first_not_second_countable :
   first_countable_space real_sequences uniform_topology /\
   ~ second_countable_space real_sequences uniform_topology.
-admit. (** FAIL **)
+prove first_countable_space real_sequences uniform_topology /\ ~ second_countable_space real_sequences uniform_topology.
+admit. (** balls at each point form countable basis; but uncountably many separated open sets **)
 Qed.
 
 (** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **) 
@@ -10424,7 +10427,8 @@ Definition metrizable : set -> set -> prop := fun X Tx =>
 (** LATEX VERSION: The product of two Lindelöf Sorgenfrey lines (the Sorgenfrey plane) is not Lindelöf. **)
 Theorem Sorgenfrey_plane_not_Lindelof :
   ~ Lindelof_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit. (** FAIL **)
+prove ~ Lindelof_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+admit. (** antidiagonal is discrete uncountable closed; cover requires uncountably many opens **)
 Qed.
 
 (** from §30 Example 5: subspace of Lindelöf space need not be Lindelöf **) 
@@ -10432,7 +10436,8 @@ Qed.
 Theorem ordered_square_subspace_not_Lindelof :
   Lindelof_space ordered_square ordered_square_topology /\
   ~ Lindelof_space ordered_square_open_strip ordered_square_subspace_topology.
-admit. (** FAIL **)
+prove Lindelof_space ordered_square ordered_square_topology /\ ~ Lindelof_space ordered_square_open_strip ordered_square_subspace_topology.
+admit. (** ordered square compact hence Lindelöf; but subspace strip contains uncountable discrete closed **)
 Qed.
 
 (** from §31 Definition: regular and normal spaces **) 
@@ -10478,13 +10483,15 @@ Definition R_K : set := R.
 (** LATEX VERSION: The K-topology on ℝ is Hausdorff but not regular. **)
 Theorem RK_Hausdorff_not_regular :
   Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
-admit. (** FAIL **)
+prove Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
+admit. (** K-topology Hausdorff; but K and 0 cannot be separated by disjoint open nbhds **)
 Qed.
 
 (** from §31 Example 2: Sorgenfrey line normal **) 
 (** LATEX VERSION: The Sorgenfrey line is normal. **)
 Theorem Sorgenfrey_line_normal : normal_space Sorgenfrey_line Sorgenfrey_topology.
-admit. (** FAIL **)
+prove normal_space Sorgenfrey_line Sorgenfrey_topology.
+admit. (** for disjoint closed sets A,B use half-open intervals to separate; regularity proof extends **)
 Qed.
 
 (** from §31 Example 3: Sorgenfrey plane not normal **) 
@@ -10492,27 +10499,39 @@ Qed.
 Theorem Sorgenfrey_plane_not_normal :
   regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit. (** FAIL **)
+prove regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
+  ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+admit. (** regular by product; antidiagonal H={(x,-x):x∈R} closed, discrete subspace; uncountable discrete closed not normal **)
 Qed.
 
 (** from §32 Theorem 32.1: regular space with countable basis is normal **) 
 (** LATEX VERSION: Regular + second countable ⇒ normal (Theorem 32.1). **)
 Theorem regular_countable_basis_normal : forall X Tx:set,
   regular_space X Tx -> second_countable_space X Tx -> normal_space X Tx.
-admit. (** FAIL **)
+let X Tx.
+assume Hreg: regular_space X Tx.
+assume Hscc: second_countable_space X Tx.
+prove normal_space X Tx.
+admit. (** use countable basis to separate disjoint closed sets; enumerate basis elements, build separating opens inductively **)
 Qed.
 
 (** from §32 Theorem 32.4: well-ordered sets are normal in order topology **) 
 (** LATEX VERSION: Well-ordered sets with the order topology are normal. **)
 Theorem well_ordered_sets_normal : forall X:set,
   well_ordered_set X -> normal_space X (order_topology X).
-admit. (** FAIL **)
+let X.
+assume Hwo: well_ordered_set X.
+prove normal_space X (order_topology X).
+admit. (** use well-ordering to construct separating neighborhoods; for disjoint closed A,B, use rays and intervals **)
 Qed.
 (** from §32 Theorem 32.2: metrizable spaces are normal **) 
 (** LATEX VERSION: Every metrizable space is normal. **)
 Theorem metrizable_spaces_normal : forall X d:set,
   metric_on X d -> normal_space X (metric_topology X d).
-admit. (** FAIL **)
+let X d.
+assume Hd: metric_on X d.
+prove normal_space X (metric_topology X d).
+admit. (** for disjoint closed A,B, use distance functions: U={x:d(x,A)<d(x,B)}, V={x:d(x,B)<d(x,A)} disjoint open **)
 Qed.
 
 (** from §32 Theorem 32.3: compact Hausdorff spaces are normal **) 
