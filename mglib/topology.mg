@@ -10747,7 +10747,7 @@ Qed.
 (** from §50 Example 6: arcs and linear graphs **)
 (** LATEX VERSION: An arc is a space homeomorphic to [0,1]; a linear graph is a finite union of arcs meeting at most at common endpoints. **)
 Definition arc : set -> set -> prop := fun X Tx =>
-  exists f:set, homeomorphism_of unit_interval unit_interval_topology X Tx f.
+  exists f:set, homeomorphism unit_interval R_standard_topology X Tx f.
 
 Definition end_points_of_arc : set -> set -> set -> set -> prop := fun X Tx p q =>
   arc X Tx /\
@@ -10788,21 +10788,17 @@ Definition coplanar_in_R3 : set -> set -> set -> set -> prop := fun p q r s =>
 
 (** from §50: geometrically independent (affinely independent) points in R^N **)
 (** LATEX VERSION: Points {x₀,...,xₖ} in R^N are geometrically independent if Σaᵢxᵢ=0 and Σaᵢ=0 imply all aᵢ=0. **)
+(** stub: actual condition needs vector space operations **)
 Definition geometrically_independent : set -> prop := fun S =>
-  S c= R /\
-  forall coeffs:set,
-    (forall s:set, s :e S -> exists a:set, a :e R /\ (s,a) :e coeffs) ->
-    (forall s:set, s :e S -> exists a:set, (s,a) :e coeffs /\ a :e R) ->
-    True. (** stub: actual condition needs vector space operations **)
-admit.
+  S c= R.
 
 (** from §50: plane determined by geometrically independent points **)
 (** LATEX VERSION: The plane P determined by geometrically independent points {x₀,...,xₖ} is the set of all x = Σtᵢxᵢ where Σtᵢ=1. **)
+(** stub: needs proper formulation of affine combination **)
 Definition affine_plane : set -> set := fun S =>
   {x :e R | exists tcoeffs:set,
     (forall s:set, s :e S -> exists t:set, t :e R /\ (s,t) :e tcoeffs) /\
-    True}. (** stub: needs proper formulation of affine combination **)
-admit.
+    True}.
 
 (** from §50: k-plane in R^N **)
 (** LATEX VERSION: A k-plane in R^N is the affine plane determined by k+1 geometrically independent points. **)
@@ -10820,22 +10816,21 @@ Definition general_position_RN : set -> set -> prop := fun N A =>
   N :e omega /\
   A c= R /\
   forall S:set, S c= A ->
-    (exists Np1:set, Np1 = N :\/: (Sing N) ->
-      (exists f:set, inj S Np1 f) \/ geometrically_independent S).
+    (forall Np1:set, Np1 = N :\/: (Sing N) ->
+      (exists f:set -> set, inj S Np1 f) -> geometrically_independent S).
 
 (** from §50 Lemma 50.4: approximation in general position **)
 (** LATEX VERSION: Given finite {x₁,...,xₙ} in R^N and δ>0, there exists {y₁,...,yₙ} in general position with |xᵢ-yᵢ|<δ for all i. **)
+(** stub: proper ordering and metric conditions need to be formulated **)
 Theorem finite_set_approximation_general_position : forall N:set, forall pts:set, forall delta:set,
   N :e omega ->
   finite pts ->
   pts c= R ->
   delta :e R ->
-  (exists epsilon:set, epsilon :e R /\ epsilon :<: delta /\ epsilon :<: Empty) ->
   exists pts':set,
     general_position_RN N pts' /\
     finite pts' /\
-    equip pts pts' /\
-    (forall p p':set, (p,p') :e pts -> True). (** stub: distance condition **)
+    equip pts pts'.
 admit.
 Qed.
 
