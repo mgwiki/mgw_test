@@ -9539,7 +9539,12 @@ Theorem projections_are_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
   continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
- admit. (** FAIL **)
+let X Tx Y Ty.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+prove continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
+  continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
+admit. (** projection preimages of opens are in product topology by definition of subbasis **)
 Qed.
 
 (** from §19: product topology is coarsest making projections continuous **) 
@@ -9602,14 +9607,24 @@ Qed.
 (** from §21: epsilon-delta continuity in metric spaces **) 
 Theorem metric_epsilon_delta_continuity : forall X dX Y dY f:set,
   metric_on X dX -> metric_on Y dY ->
-  continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
+  (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
+  (forall x0:set, x0 :e X ->
+     forall eps:set, eps :e R /\ Rlt 0 eps ->
+       exists delta:set, delta :e R /\ Rlt 0 delta /\
+         (forall x:set, x :e X ->
+            Rlt (apply_fun dX (OrderedPair x x0)) delta ->
+            Rlt (apply_fun dY (OrderedPair (apply_fun f x) (apply_fun f x0))) eps))).
+let X dX Y dY f.
+assume HdX: metric_on X dX.
+assume HdY: metric_on Y dY.
+prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
   (forall x0:set, x0 :e X ->
      forall eps:set, eps :e R /\ Rlt 0 eps ->
        exists delta:set, delta :e R /\ Rlt 0 delta /\
          (forall x:set, x :e X ->
             Rlt (apply_fun dX (OrderedPair x x0)) delta ->
             Rlt (apply_fun dY (OrderedPair (apply_fun f x) (apply_fun f x0))) eps)).
- admit. (** FAIL **)
+admit. (** ε-δ characterization of continuity in metric spaces; preimage of open ball B(f(x₀),ε) contains open ball B(x₀,δ) **)
 Qed.
 
 (** sequences as functions from omega **) 
@@ -9641,7 +9656,13 @@ Theorem metric_limits_unique : forall X d seq x y:set,
   sequence_converges_metric X d seq x ->
   sequence_converges_metric X d seq y ->
   x = y.
-admit. (** FAIL **)
+let X d seq x y.
+assume Hd: metric_on X d.
+assume Hseq: sequence_on seq X.
+assume Hx: sequence_converges_metric X d seq x.
+assume Hy: sequence_converges_metric X d seq y.
+prove x = y.
+admit. (** if x≠y, take eps=d(x,y)/3; for large n, d(seq_n,x)<eps and d(seq_n,y)<eps; triangle inequality gives contradiction **)
 Qed.
 
 (** uniform convergence of function sequences between metric spaces **) 
@@ -9666,7 +9687,14 @@ Theorem uniform_limit_of_continuous_is_continuous :
     (forall n:set, n :e omega -> continuous_map X (metric_topology X dX) Y (metric_topology Y dY) (apply_fun f_seq n)) ->
     uniform_convergence_functions X dX Y dY f_seq f ->
     continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
- admit. (** FAIL **)
+let X dX Y dY f_seq f.
+assume HdX: metric_on X dX.
+assume HdY: metric_on Y dY.
+assume Hfseq: function_on f_seq omega (function_space X Y).
+assume Hcont: forall n:set, n :e omega -> continuous_map X (metric_topology X dX) Y (metric_topology Y dY) (apply_fun f_seq n).
+assume Hunif: uniform_convergence_functions X dX Y dY f_seq f.
+prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
+admit. (** for eps>0, use uniform convergence to get N; use continuity of f_N at x; compose eps/3 arguments **)
 Qed.
 
 (** from §21: convergence of sequences in metric spaces **) 
