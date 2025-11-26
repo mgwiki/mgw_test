@@ -11921,7 +11921,11 @@ Theorem ex33_7_locally_compact_Hausdorff_completely_regular : forall X Tx:set,
   locally_compact X Tx ->
   Hausdorff_space X Tx ->
   completely_regular_space X Tx.
-admit.
+let X Tx.
+assume Hlc: locally_compact X Tx.
+assume Hh: Hausdorff_space X Tx.
+prove completely_regular_space X Tx.
+admit. (** use local compactness to construct separating functions **)
 Qed.
 (** from §33 Exercise 8: continuous separation when A compact **)
 (** LATEX VERSION: If X completely regular, A compact, B closed disjoint from A, then ∃f:X→[0,1] with f(A)=0, f(B)=1. **)
@@ -11948,7 +11952,10 @@ Qed.
 Theorem ex33_10_topological_group_completely_regular : forall G Tg:set,
   topological_group G Tg ->
   completely_regular_space G Tg.
-admit.
+let G Tg.
+assume Htg: topological_group G Tg.
+prove completely_regular_space G Tg.
+admit. (** use group operations and translation to construct separating functions **)
 Qed.
 (** from §33 Exercise 11: regular not completely regular example **)
 (** LATEX VERSION: There exists regular space that is not completely regular. **)
