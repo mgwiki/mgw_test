@@ -10874,7 +10874,9 @@ Theorem compact_subspace_RN_dimension_le_N : forall X N:set,
   compact_space X (euclidean_topology N) ->
   X c= (euclidean_space N) ->
   covering_dimension X N.
-admit. (** FAIL on 2025-11-26 03:07 **)
+let X N.
+assume HN Hcomp Hsub.
+admit. (** requires proper formulation of euclidean space and dimension theory **)
 Qed.
 
 (** from §50 Corollary 50.7: compact m-manifold has dimension at most m **)
@@ -10884,7 +10886,9 @@ Theorem compact_m_manifold_dimension_le_m : forall X Tx m:set,
   compact_space X Tx ->
   m_manifold X Tx ->
   covering_dimension X m.
-admit. (** FAIL on 2025-11-26 03:07 **)
+let X Tx m.
+assume Hm Hcomp Hman.
+admit. (** requires proper dimension theory and manifold theory **)
 Qed.
 
 (** from §50 Corollary 50.8: compact m-manifold embeds in R^{2m+1} **)
