@@ -10713,11 +10713,14 @@ Theorem dimension_closed_subspace_le : forall X Tx Y n:set,
 admit. (**  aby  covering_dimension�f conj_myprob_10508_1_20251124_032354 ex13_4b_smallest_largest . **)
 Qed.
 
-(** from §50 Theorem 50.2: dimension of union of closed sets is max **) 
+(** from §50 Theorem 50.2: dimension of union of closed sets is max **)
 (** LATEX VERSION: Dimension of union of two closed sets is at most the max of their dimensions. **)
 Theorem dimension_union_closed_max : forall X Y Z n:set,
   covering_dimension Y n -> covering_dimension Z n ->
   covering_dimension (Y :\/: Z) n.
+let X Y Z n.
+assume HY HZ.
+prove covering_dimension (Y :\/: Z) n.
 admit. (**  aby  covering_dimension�f covering_dimension_properties conj_myprob_10516_1_20251124_032410 . **)
 Qed.
 
