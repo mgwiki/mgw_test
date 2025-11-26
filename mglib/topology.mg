@@ -9857,7 +9857,12 @@ Theorem union_connected_common_point : forall X Tx F:set,
   (forall C:set, C :e F -> connected_space C (subspace_topology X Tx C)) ->
   (exists x:set, forall C:set, C :e F -> x :e C) ->
   connected_space (Union F) (subspace_topology X Tx (Union F)).
- admit. (** FAIL **)
+let X Tx F.
+assume HTx: topology_on X Tx.
+assume HF: forall C:set, C :e F -> connected_space C (subspace_topology X Tx C).
+assume Hcommon: exists x:set, forall C:set, C :e F -> x :e C.
+prove connected_space (Union F) (subspace_topology X Tx (Union F)).
+admit. (** union of connected sets with common point is connected; separation would separate one Cᵢ **)
 Qed.
 
 (** from §23 Theorem 23.4: adjoining limit points preserves connectedness **) 
@@ -9970,7 +9975,14 @@ Theorem path_components_equivalence_relation : forall X Tx:set,
   (forall x y z:set, x :e X -> y :e X -> z :e X ->
      y :e path_component_of X Tx x -> z :e path_component_of X Tx y ->
      z :e path_component_of X Tx x).
-admit. (** FAIL **)
+let X Tx.
+assume HTx: topology_on X Tx.
+prove (forall x:set, x :e X -> x :e path_component_of X Tx x) /\
+  (forall x y:set, x :e X -> y :e X -> y :e path_component_of X Tx x -> x :e path_component_of X Tx y) /\
+  (forall x y z:set, x :e X -> y :e X -> z :e X ->
+     y :e path_component_of X Tx x -> z :e path_component_of X Tx y ->
+     z :e path_component_of X Tx x).
+admit. (** reflexive: constant path; symmetric: reverse path; transitive: concatenate paths **)
 Qed.
 
 (** from §25 Definition: components and local connectedness **) 
@@ -10010,7 +10022,12 @@ Theorem components_equal_path_components : forall X Tx:set,
   locally_path_connected X Tx ->
   forall x:set, x :e X ->
     path_component_of X Tx x = component_of X Tx x.
-admit. (** FAIL **)
+let X Tx.
+assume Hlpc: locally_path_connected X Tx.
+let x.
+assume Hx: x :e X.
+prove path_component_of X Tx x = component_of X Tx x.
+admit. (** path component is connected and open; component is maximal connected; local path connectivity ensures equality **)
 Qed.
 
 Theorem components_are_closed : forall X Tx:set,
@@ -10030,7 +10047,10 @@ Theorem components_partition_space : forall X Tx:set,
   topology_on X Tx ->
   covers X {component_of X Tx x | x :e X} /\
   pairwise_disjoint {component_of X Tx x | x :e X}.
-admit. (** FAIL **) 
+let X Tx.
+assume HTx: topology_on X Tx.
+prove covers X {component_of X Tx x | x :e X} /\ pairwise_disjoint {component_of X Tx x | x :e X}.
+admit. (** every point in its component; distinct components either equal or disjoint by connectedness **)
 Qed.
 
 (** from §25: quotient of locally connected space is locally connected **) 
@@ -10039,7 +10059,11 @@ Theorem quotient_preserves_local_connectedness : forall X Tx Y f:set,
   quotient_map X Tx Y f ->
   locally_connected X Tx ->
   locally_connected Y (quotient_topology X Tx Y f).
-admit. (** FAIL **)
+let X Tx Y f.
+assume Hquot: quotient_map X Tx Y f.
+assume Hloc: locally_connected X Tx.
+prove locally_connected Y (quotient_topology X Tx Y f).
+admit. (** open connected nbhd in X maps to open connected nbhd in Y via quotient; use continuity and surjectivity **)
 Qed.
 
 (** from §25 Definition: quasicomponent equivalence relation **) 
