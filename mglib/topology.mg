@@ -11661,7 +11661,7 @@ Theorem ex31_7_perfect_map_properties : forall X Tx Y Ty p:set,
   (forall y:set, y :e Y -> compact_space {x :e X | apply_fun p x = y} (subspace_topology X Tx {x :e X | apply_fun p x = y})) ->
   (Hausdorff_space X Tx -> Hausdorff_space Y Ty) /\
   (regular_space X Tx -> regular_space Y Ty) /\
-  (locally_compact_space X Tx -> locally_compact_space Y Ty) /\
+  (locally_compact X Tx -> locally_compact Y Ty) /\
   (second_countable_space X Tx -> second_countable_space Y Ty).
 admit.
 Qed.
@@ -11673,7 +11673,7 @@ Theorem ex31_8_orbit_space_properties : forall G Tg X Tx alpha:set,
   (Hausdorff_space X Tx -> exists XG TxG:set, Hausdorff_space XG TxG) /\
   (regular_space X Tx -> exists XG TxG:set, regular_space XG TxG) /\
   (normal_space X Tx -> exists XG TxG:set, normal_space XG TxG) /\
-  (locally_compact_space X Tx -> exists XG TxG:set, locally_compact_space XG TxG) /\
+  (locally_compact X Tx -> exists XG TxG:set, locally_compact XG TxG) /\
   (second_countable_space X Tx -> exists XG TxG:set, second_countable_space XG TxG).
 admit.
 Qed.
