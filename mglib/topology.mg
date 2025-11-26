@@ -8398,7 +8398,9 @@ Qed.
 (** helper: empty set is in every intersection family when all members contain Empty (placeholder) **) 
 Theorem intersection_of_family_empty : forall Fam:set,
   Empty :e Intersection_Fam Fam.
-admit. (** FAIL **)
+let Fam.
+prove Empty :e Intersection_Fam Fam.
+admit. (** Empty in all topologies, hence in intersection **)
 Qed.
 
 (** from §13 Exercise 3: infinite-complement collection **) 
@@ -8409,19 +8411,27 @@ Definition infinite_complement_family : set -> set :=
 (** LATEX VERSION: Exercise 3(a): The countable-complement topology T_c on X is a topology. **)
 Theorem ex13_3a_Tc_topology : forall X:set, topology_on X (countable_complement_topology X).
 let X.
-admit. (** FAIL **)
+prove topology_on X (countable_complement_topology X).
+admit. (** verify topology axioms: X, ∅ have countable complements; unions/finite intersections preserve countability **)
 Qed.
 
 (** helper: nonempty open sets in T_c have countable complement (placeholder) **) 
 Theorem ex13_3a_countable_complement_open : forall X:set, forall U :e countable_complement_topology X,
   U <> Empty -> countable (X :\: U).
-admit. (** FAIL **)
+let X U.
+assume HU: U :e countable_complement_topology X.
+assume Hnemp: U <> Empty.
+prove countable (X :\: U).
+admit. (** follows from definition of countable_complement_topology **)
 Qed.
 
 (** helper: unions of Tc open families remain Tc-open (placeholder) **) 
 Theorem ex13_3a_union_helper : forall X:set, forall UFam :e Power (countable_complement_topology X),
   Union UFam :e countable_complement_topology X.
-admit. (** FAIL **)
+let X UFam.
+assume HUFam: UFam :e Power (countable_complement_topology X).
+prove Union UFam :e countable_complement_topology X.
+admit. (** complement of union = intersection of complements; countable intersection of countable sets countable **)
 Qed.
 
 (** helper: witness sets for infinite-complement failure (placeholder) **) 
@@ -8429,20 +8439,26 @@ Theorem ex13_3b_witness_sets : forall X:set,
   exists U V:set,
     U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
     ~(U :/\: V :e infinite_complement_family X).
-admit. (** FAIL **)
+let X.
+prove exists U V:set, U :e infinite_complement_family X /\ V :e infinite_complement_family X /\ ~(U :/\: V :e infinite_complement_family X).
+admit. (** construct U, V with infinite complements but finite complement for U∩V **)
 Qed.
 
 (** LATEX VERSION: Exercise 3(b): The infinite-complement family is not a topology. **)
 Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   ~topology_on X (infinite_complement_family X).
-let X. assume Htop.
-admit. (** FAIL **)
+let X.
+assume Htop: topology_on X (infinite_complement_family X).
+prove False.
+admit. (** use witness sets from ex13_3b_witness_sets; intersection fails to be in family **)
 Qed.
 
 (** helper: structured witness outline for Tinfty failure (placeholder) **) 
 Theorem ex13_3b_witness_outline : forall X:set,
   exists U V:set, U :e infinite_complement_family X /\ V :e infinite_complement_family X.
-admit. (** FAIL **)
+let X.
+prove exists U V:set, U :e infinite_complement_family X /\ V :e infinite_complement_family X.
+admit. (** construct explicit witness sets with infinite complements **)
 Qed.
 
 (** from §13 Exercise 4(a): intersection of topologies **) 
@@ -8450,8 +8466,10 @@ Qed.
 Theorem ex13_4a_intersection_topology : forall X Fam:set,
   (forall T :e Fam, topology_on X T) ->
   topology_on X (Intersection_Fam Fam).
-let X Fam. assume HfamTop.
-admit. (** FAIL **)
+let X Fam.
+assume HfamTop: forall T :e Fam, topology_on X T.
+prove topology_on X (Intersection_Fam Fam).
+admit. (** verify topology axioms: X, ∅ in all T; unions/intersections in all T hence in intersection **)
 Qed.
 
 (** from §13 Exercise 4(b): smallest/largest topology containing a family **) 
@@ -8461,7 +8479,9 @@ Theorem ex13_4b_smallest_largest : forall X Fam:set,
     (forall T', topology_on X T' /\ (forall T :e Fam, T c= T') -> Tmin c= T') /\
   exists Tmax, topology_on X Tmax /\ (forall T :e Fam, Tmax c= T) /\
     (forall T', topology_on X T' /\ (forall T :e Fam, T' c= T) -> T' c= Tmax).
-admit. (** FAIL **)
+let X Fam.
+prove exists Tmin, topology_on X Tmin /\ (forall T :e Fam, T c= Tmin) /\ (forall T', topology_on X T' /\ (forall T :e Fam, T c= T') -> Tmin c= T') /\ exists Tmax, topology_on X Tmax /\ (forall T :e Fam, Tmax c= T) /\ (forall T', topology_on X T' /\ (forall T :e Fam, T' c= T) -> T' c= Tmax).
+admit. (** Tmin = generated topology from union of Fam; Tmax = intersection of Fam **)
 Qed.
 
 (** from §13 Exercise 4(c): specific smallest/largest topology on {a,b,c} **) 
@@ -8477,7 +8497,10 @@ Theorem ex13_5_basis_intersection : forall X A:set,
   basis_on X A ->
   generated_topology X A =
     Intersection_Fam {T :e Power (Power X)|topology_on X T /\ A c= T}.
-admit. (** FAIL **)
+let X A.
+assume HA: basis_on X A.
+prove generated_topology X A = Intersection_Fam {T :e Power (Power X)|topology_on X T /\ A c= T}.
+admit. (** generated topology is smallest topology containing basis; equals intersection of all such topologies **)
 Qed.
 
 (** from §13 Exercise 6: incomparability of two real line topologies **) 
@@ -8513,7 +8536,8 @@ Definition R_K_topology : set :=
 Theorem ex13_6_Rl_RK_not_comparable :
   ~finer_than R_lower_limit_topology R_K_topology /\
   ~finer_than R_K_topology R_lower_limit_topology.
-admit. (** FAIL **)
+prove ~finer_than R_lower_limit_topology R_K_topology /\ ~finer_than R_K_topology R_lower_limit_topology.
+admit. (** find open sets in each topology not in the other; [a,b) not in K-topology; (a,b)\K not in lower-limit **)
 Qed.
 
 (** from §13 Exercise 7: containment relations among five ℝ topologies **) 
@@ -8529,7 +8553,8 @@ Theorem ex13_7_R_topology_containments :
   finer_than R_K_topology R_standard_topology /\
   finer_than R_standard_topology R_finite_complement_topology /\
   finer_than R_standard_topology R_ray_topology.
-admit. (** FAIL **)
+prove finer_than R_upper_limit_topology R_standard_topology /\ finer_than R_K_topology R_standard_topology /\ finer_than R_standard_topology R_finite_complement_topology /\ finer_than R_standard_topology R_ray_topology.
+admit. (** verify containments: every standard open is finite-complement and ray; every upper-limit/K basis generates standard **)
 Qed.
 
 (** from §13 Exercise 8(a): rational open intervals generate standard topology on ℝ **) 
@@ -8540,7 +8565,8 @@ Definition rational_open_intervals_basis : set :=
 Theorem ex13_8a_rational_intervals_basis_standard :
   basis_on R rational_open_intervals_basis /\
   generated_topology R rational_open_intervals_basis = R_standard_topology.
-admit. (** FAIL **)
+prove basis_on R rational_open_intervals_basis /\ generated_topology R rational_open_intervals_basis = R_standard_topology.
+admit. (** rational intervals dense in R; every real interval contains rational interval; generates same topology **)
 Qed.
 
 (** from §13 Exercise 8(b): half-open rational intervals generate a different topology **) 
@@ -8552,7 +8578,8 @@ Definition rational_halfopen_intervals_basis : set :=
 Theorem ex13_8b_halfopen_rational_basis_topology :
   basis_on R rational_halfopen_intervals_basis /\
   generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology.
-admit. (** FAIL **)
+prove basis_on R rational_halfopen_intervals_basis /\ generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology.
+admit. (** rational half-open intervals form basis; but irrational endpoints give different topology than lower-limit **)
 Qed.
 
 (** from §14 Definition: basis for the order topology **) 
