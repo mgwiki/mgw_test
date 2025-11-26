@@ -10115,7 +10115,10 @@ Theorem ex23_path_connected_not_locally_connected_examples :
   exists A:set,
     A c= EuclidPlane /\ path_connected_space A (subspace_topology EuclidPlane R2_standard_topology A) /\
     ~ locally_connected A (subspace_topology EuclidPlane R2_standard_topology A).
-admit. (** FAIL **)
+prove exists A:set,
+    A c= EuclidPlane /\ path_connected_space A (subspace_topology EuclidPlane R2_standard_topology A) /\
+    ~ locally_connected A (subspace_topology EuclidPlane R2_standard_topology A).
+admit. (** topologist's sine curve or comb space: path connected but not locally connected at limit points **)
 Qed.
 
 (** from §26 Definition: compact space **) 
@@ -10141,7 +10144,11 @@ Theorem compact_subspace_via_ambient_covers : forall X Tx Y:set,
   topology_on X Tx ->
   (compact_space Y (subspace_topology X Tx Y) <->
     forall Fam:set, open_cover_of Y Tx Fam -> has_finite_subcover Y Tx Fam).
-admit. (** FAIL **)
+let X Tx Y.
+assume HTx: topology_on X Tx.
+prove compact_space Y (subspace_topology X Tx Y) <->
+    forall Fam:set, open_cover_of Y Tx Fam -> has_finite_subcover Y Tx Fam.
+admit. (** subspace compactness: cover of Y by opens in X gives cover by subspace opens; extract finite subcover **)
 Qed.
 
 (** from §26 Theorem 26.2: closed subspaces of compact spaces are compact **) 
@@ -10182,7 +10189,16 @@ Theorem tube_lemma : forall X Tx Y Ty:set,
   forall N:set, N :e product_topology X Tx Y Ty /\ x0 :e N ->
     exists U:set, U :e Tx /\ x0 :e U /\
       (forall y:set, y :e Y -> OrderedPair U y :e N).
-admit. (** FAIL **)
+let X Tx Y Ty.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+assume Hcomp: compact_space X Tx.
+let x0.
+assume Hx0: x0 :e X.
+let N.
+assume HN: N :e product_topology X Tx Y Ty /\ x0 :e N.
+prove exists U:set, U :e Tx /\ x0 :e U /\ (forall y:set, y :e Y -> OrderedPair U y :e N).
+admit. (** for each y, find rectangle containing (x₀,y) in N; cover {x₀}×Y by rectangles; use compactness to get finite subcover; intersect finitely many opens to get U **)
 Qed.
 
 (** from §26 Theorem 26.6: compact-to-Hausdorff bijection is a homeomorphism **) 
@@ -10235,7 +10251,11 @@ Theorem Heine_Borel_closed_bounded : forall A:set,
   A c= R ->
   compact_space A (subspace_topology R R_standard_topology A) ->
   closed_in R R_standard_topology A /\ bounded_subset_of_reals A.
-admit. (** FAIL **)
+let A.
+assume HA: A c= R.
+assume Hcomp: compact_space A (subspace_topology R R_standard_topology A).
+prove closed_in R R_standard_topology A /\ bounded_subset_of_reals A.
+admit. (** Heine-Borel: compact in R is closed in Hausdorff space; bounded by finite cover of bounded intervals **)
 Qed.
 
 (** from §27: compact subspaces of ℝ are closed and bounded **) 
@@ -10328,7 +10348,12 @@ Theorem cofinal_subset_directed : forall J K:set,
   directed_set J -> K c= J ->
   (forall i:set, i :e J -> exists k:set, k :e K /\ i :e K \/ i :e J) ->
   directed_set K.
-admit. (** FAIL **)
+let J K.
+assume HJ: directed_set J.
+assume HK: K c= J.
+assume Hcofinal: forall i:set, i :e J -> exists k:set, k :e K /\ i :e K \/ i :e J.
+prove directed_set K.
+admit. (** cofinal subset of directed set is directed; upper bounds in J give upper bounds in K via cofinality **)
 Qed.
 
 (** from exercises after §29: nets as functions from directed sets **) 
@@ -10389,7 +10414,12 @@ Theorem continuity_via_nets : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f <->
     forall net:set, net_on net -> forall x:set, net_converges X Tx net x -> net_converges Y Ty net (Empty)).
-admit. (** FAIL **)
+let X Tx Y Ty f.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+prove continuous_map X Tx Y Ty f <->
+    forall net:set, net_on net -> forall x:set, net_converges X Tx net x -> net_converges Y Ty net (Empty).
+admit. (** f continuous iff for all nets x_i→x, have f(x_i)→f(x); use net characterization of convergence **)
 Qed.
 
 (** from exercises after §29: accumulation points and subnets **) 
@@ -10464,7 +10494,12 @@ Theorem first_countable_sequences_detect_continuity : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f ->
     forall seq:set, sequence_in seq X -> converges_to X Tx seq (Empty) -> converges_to Y Ty (image_of f seq) f).
-admit. (** FAIL **)
+let X Tx Y Ty f.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+prove continuous_map X Tx Y Ty f ->
+    forall seq:set, sequence_in seq X -> converges_to X Tx seq (Empty) -> converges_to Y Ty (image_of f seq) f.
+admit. (** f continuous preserves limits: if x_n→x then f(x_n)→f(x); use first countability and sequential characterization **)
 Qed.
 
 (** from §30 Definition: second-countable space **) 
@@ -10498,7 +10533,15 @@ Theorem countability_axioms_subspace_product : forall X Tx:set,
     first_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)) /\
   (forall I Xi:set, countable_index_set I -> (forall i:set, second_countable_space Xi (countable_product_component_topology Xi i)) ->
     second_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)).
-admit. (** FAIL **)
+let X Tx.
+assume HTx: topology_on X Tx.
+prove (forall A:set, A c= X -> first_countable_space X Tx -> first_countable_space A (subspace_topology X Tx A)) /\
+  (forall A:set, A c= X -> second_countable_space X Tx -> second_countable_space A (subspace_topology X Tx A)) /\
+  (forall I Xi:set, countable_index_set I -> (forall i:set, first_countable_space Xi (countable_product_component_topology Xi i)) ->
+    first_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)) /\
+  (forall I Xi:set, countable_index_set I -> (forall i:set, second_countable_space Xi (countable_product_component_topology Xi i)) ->
+    second_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)).
+admit. (** subspace: restrict basis; countable product: countable union of countable bases from each coordinate **)
 Qed.
 
 (** from §30 Definition: dense subset **) 
@@ -10510,7 +10553,13 @@ Theorem countable_basis_implies_Lindelof : forall X Tx:set,
   topology_on X Tx ->
   second_countable_space X Tx ->
   forall U:set, open_cover X Tx U -> exists V:set, countable_subcollection V U /\ covers X V.
-admit. (** FAIL **)
+let X Tx.
+assume HTx: topology_on X Tx.
+assume Hscc: second_countable_space X Tx.
+let U.
+assume HU: open_cover X Tx U.
+prove exists V:set, countable_subcollection V U /\ covers X V.
+admit. (** for each basis element, pick one cover element containing it; countable basis gives countable subcover **)
 Qed.
 
 (** from §30 Theorem 30.3(b): countable basis yields countable dense subset **) 
@@ -10519,7 +10568,11 @@ Theorem countable_basis_implies_separable : forall X Tx:set,
   topology_on X Tx ->
   second_countable_space X Tx ->
   exists D:set, countable_set D /\ dense_in D X Tx.
-admit. (** FAIL **)
+let X Tx.
+assume HTx: topology_on X Tx.
+assume Hscc: second_countable_space X Tx.
+prove exists D:set, countable_set D /\ dense_in D X Tx.
+admit. (** pick one point from each nonempty basis element; countable union of singletons is countable and dense **)
 Qed.
 
 (** from §30 Example 3: Sorgenfrey line countability properties **) 
@@ -10529,7 +10582,11 @@ Theorem Sorgenfrey_line_countability :
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
   Lindelof_space Sorgenfrey_line Sorgenfrey_topology /\
   ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
-admit. (** FAIL **)
+prove first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
+  dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
+  Lindelof_space Sorgenfrey_line Sorgenfrey_topology /\
+  ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
+admit. (** [x,x+1/n) basis at x; rationals dense; Lindelöf by special argument; uncountably many disjoint opens prevent 2nd countability **)
 Qed.
 
 (** placeholders for later refinement of product/separation constructions **) 
