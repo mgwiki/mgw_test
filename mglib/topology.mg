@@ -11332,6 +11332,16 @@ Definition open_map : set -> set -> set -> set -> set -> prop :=
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
     forall U:set, U :e Tx -> apply_fun f U :e Ty.
 
+(** helper: simple topological group structure **)
+Definition topological_group : set -> set -> prop := fun G Tg =>
+  topology_on G Tg /\
+  exists mult inv e:set,
+    function_on mult (OrderedPair G G) G /\
+    function_on inv G G /\
+    e :e G /\
+    continuous_map (OrderedPair G G) (product_topology G Tg G Tg) G Tg mult /\
+    continuous_map G Tg G Tg inv.
+
 (** from §30 Exercise 1a: one-point sets are G_delta in first-countable T1 **)
 (** LATEX VERSION: In a first-countable T₁ space, every one-point set is a G_δ set. **)
 Theorem ex30_1a_onepoint_Gdelta_firstcountable_T1 : forall X Tx x:set,
@@ -11650,16 +11660,6 @@ Definition completely_normal_space : set -> set -> prop := fun X Tx =>
   normal_space X Tx /\
   (forall A B:set, separated_subsets X Tx A B -> exists U V:set,
       open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
-
-(** helper: simple topological group structure **) 
-Definition topological_group : set -> set -> prop := fun G Tg =>
-  topology_on G Tg /\
-  exists mult inv e:set,
-    function_on mult (OrderedPair G G) G /\
-    function_on inv G G /\
-    e :e G /\
-    continuous_map (OrderedPair G G) (product_topology G Tg G Tg) G Tg mult /\
-    continuous_map G Tg G Tg inv.
 
 (** from §33 Exercise 1: expression for level sets in Urysohn proof **) 
 Definition ex33_1_level_sets_urysohn : set :=
