@@ -9867,7 +9867,8 @@ Qed.
 Theorem ex23_Rl_components :
   component_of R R_lower_limit_topology 0 = {0} /\
   (forall x:set, x :e R -> component_of R R_lower_limit_topology x = {x}).
-admit. (** FAIL **)
+prove component_of R R_lower_limit_topology 0 = {0} /\ (forall x:set, x :e R -> component_of R R_lower_limit_topology x = {x}).
+admit. (** lower-limit topology totally disconnected; every point is its own component **)
 Qed.
 
 (** from §23 Exercise: components of ℝ^ω in product/uniform/box topologies **) 
@@ -9876,14 +9877,16 @@ Theorem ex23_Romega_components :
     product_space omega (const_family omega R) /\
   component_of (product_space omega (const_family omega R)) (box_topology omega (const_family omega R)) (const_family omega 0) =
     {f :e product_space omega (const_family omega R) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
-admit. (** FAIL **)
+prove component_of (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R)) (const_family omega 0) = product_space omega (const_family omega R) /\ component_of (product_space omega (const_family omega R)) (box_topology omega (const_family omega R)) (const_family omega 0) = {f :e product_space omega (const_family omega R) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
+admit. (** product topology: entire space connected; box topology: component consists of functions finite-different from 0 **)
 Qed.
 
 (** from §23 Exercise: ordered square locally connected but not locally path connected **) 
 Theorem ex23_ordered_square_locally_conn_not_pathconn :
   locally_connected ordered_square ordered_square_topology /\
   ~ locally_path_connected ordered_square ordered_square_topology.
-admit. (** FAIL **)
+prove locally_connected ordered_square ordered_square_topology /\ ~ locally_path_connected ordered_square ordered_square_topology.
+admit. (** order topology basis gives local connectedness; vertical lines prevent local path-connectedness **)
 Qed.
 
 (** from §23 Exercise: connected open subsets of locally path connected spaces are path connected **) 
