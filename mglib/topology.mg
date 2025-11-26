@@ -11426,7 +11426,11 @@ Theorem ex30_5b_metrizable_Lindelof_second_countable : forall X Tx:set,
   metrizable X Tx ->
   Lindelof_space X Tx ->
   second_countable_space X Tx.
-admit.
+let X Tx.
+assume Hmet: metrizable X Tx.
+assume Hlin: Lindelof_space X Tx.
+prove second_countable_space X Tx.
+admit. (** use metric balls and Lindelof to get countable basis **)
 Qed.
 (** from §30 Exercise 6a: R_l not metrizable **)
 (** LATEX VERSION: The Sorgenfrey line ℝ_ℓ is not metrizable. **)
@@ -11474,7 +11478,11 @@ Theorem ex30_9a_closed_Lindelof : forall X Tx A:set,
   Lindelof_space X Tx ->
   closed_in X Tx A ->
   Lindelof_space A (subspace_topology X Tx A).
-admit.
+let X Tx A.
+assume Hlin: Lindelof_space X Tx.
+assume Hcl: closed_in X Tx A.
+prove Lindelof_space A (subspace_topology X Tx A).
+admit. (** open cover of A extends to open cover of X, use Lindelof property **)
 Qed.
 
 (** from §30 Exercise 9b: dense subspace need not have countable dense subset **)
@@ -11723,7 +11731,11 @@ Theorem ex32_1_closed_subspace_normal : forall X Tx A:set,
   normal_space X Tx ->
   closed_in X Tx A ->
   normal_space A (subspace_topology X Tx A).
-admit.
+let X Tx A.
+assume Hnorm: normal_space X Tx.
+assume Hcl: closed_in X Tx A.
+prove normal_space A (subspace_topology X Tx A).
+admit. (** closed subspace inherits normality from ambient space **)
 Qed.
 (** from §32 Exercise 2: factor spaces of products inherit separation **)
 (** LATEX VERSION: If ∏X_α is Hausdorff/regular/normal, then so is each X_α (assuming X_α nonempty). **)
@@ -11743,7 +11755,11 @@ Theorem ex32_3_locally_compact_Hausdorff_regular : forall X Tx:set,
   locally_compact X Tx ->
   Hausdorff_space X Tx ->
   regular_space X Tx.
-admit.
+let X Tx.
+assume Hlc: locally_compact X Tx.
+assume Hh: Hausdorff_space X Tx.
+prove regular_space X Tx.
+admit. (** compact Hausdorff spaces are regular, use local compactness **)
 Qed.
 (** from §32 Exercise 4: regular Lindelof implies normal **)
 (** LATEX VERSION: Every regular Lindelöf space is normal. **)
@@ -11751,7 +11767,11 @@ Theorem ex32_4_regular_Lindelof_normal : forall X Tx:set,
   regular_space X Tx ->
   Lindelof_space X Tx ->
   normal_space X Tx.
-admit.
+let X Tx.
+assume Hreg: regular_space X Tx.
+assume Hlin: Lindelof_space X Tx.
+prove normal_space X Tx.
+admit. (** regular + Lindelof implies second countable, which implies normal **)
 Qed.
 (** from §32 Exercise 5: normality questions for Romega product topologies **)
 (** LATEX VERSION: Is ℝ^ω normal in product topology? In uniform topology? **)
@@ -11806,7 +11826,10 @@ Qed.
 Theorem ex32_8_linear_continuum_normal : forall X Tx:set,
   linear_continuum X Tx ->
   normal_space X Tx.
-admit.
+let X Tx.
+assume Hlc: linear_continuum X Tx.
+prove normal_space X Tx.
+admit. (** linear continuum order structure separates closed sets **)
 Qed.
 (** from §32 Exercise 9: uncountable product of R not normal **)
 (** LATEX VERSION: If J is uncountable, then ℝ^J is not normal. **)
@@ -11841,7 +11864,12 @@ Theorem ex33_2a_connected_normal_uncountable : forall X Tx:set,
   normal_space X Tx ->
   (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
   ~ countable X.
-admit.
+let X Tx.
+assume Hconn: connected_space X Tx.
+assume Hnorm: normal_space X Tx.
+assume Hneq: exists x y:set, x :e X /\ y :e X /\ x <> y.
+prove ~ countable X.
+admit. (** use Urysohn to construct uncountably many continuous functions **)
 Qed.
 
 Theorem ex33_2b_connected_regular_uncountable : forall X Tx:set,
@@ -11849,7 +11877,12 @@ Theorem ex33_2b_connected_regular_uncountable : forall X Tx:set,
   regular_space X Tx ->
   (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
   ~ countable X.
-admit.
+let X Tx.
+assume Hconn: connected_space X Tx.
+assume Hreg: regular_space X Tx.
+assume Hneq: exists x y:set, x :e X /\ y :e X /\ x <> y.
+prove ~ countable X.
+admit. (** countable connected implies Lindelof, contradiction with regularity **)
 Qed.
 (** from §33 Exercise 3: direct Urysohn proof in metric space **)
 (** LATEX VERSION: For metric space, Urysohn lemma direct proof: f(x) = d(x,A)/(d(x,A)+d(x,B)). **)
