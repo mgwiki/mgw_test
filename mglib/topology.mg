@@ -8832,24 +8832,35 @@ apply set_ext.
   * exact HA.
 Qed.
 
-(** from §16 Exercise 1: subspace of subspace inherits same topology **) 
+(** from §16 Exercise 1: subspace of subspace inherits same topology **)
 (** LATEX VERSION: Exercise 1: Subspace of a subspace has the same topology as taking the subspace directly. **)
 Theorem ex16_1_subspace_transitive : forall X Tx Y A:set,
   topology_on X Tx -> Y c= X -> A c= Y ->
   subspace_topology Y (subspace_topology X Tx Y) A =
   subspace_topology X Tx A.
+let X Tx Y A.
+assume Htop: topology_on X Tx.
+assume HY: Y c= X.
+assume HA: A c= Y.
+prove subspace_topology Y (subspace_topology X Tx Y) A = subspace_topology X Tx A.
 admit. (** FAIL **)
 Qed.
 
-(** from §16 Exercise 2: fineness relation passes to subspaces **) 
+(** from §16 Exercise 2: fineness relation passes to subspaces **)
 (** LATEX VERSION: Exercise 2: If T'⊂T on X, then the induced subspace topology from T' on Y is contained in that from T. **)
 Theorem ex16_2_finer_subspaces : forall X T T' Y:set,
   topology_on X T -> topology_on X T' -> T' c= T -> Y c= X ->
   subspace_topology X T' Y c= subspace_topology X T Y.
+let X T T' Y.
+assume Htop: topology_on X T.
+assume Htop': topology_on X T'.
+assume Hfiner: T' c= T.
+assume HY: Y c= X.
+prove subspace_topology X T' Y c= subspace_topology X T Y.
 admit. (**  aby  open_in_subspace_iff conj_myprob_8587_1_20251124_004939 EmptyAx . **)
 Qed.
 
-(** from §16 Exercise 3: openness of specific sets in subspace [-1,1] **) 
+(** from §16 Exercise 3: openness of specific sets in subspace [-1,1] **)
 (** LATEX VERSION: Exercise 3: Determine openness in subspace [-1,1]; formalized as existence of ambient open V with U=V∩Y. **)
 Definition interval_A : set := open_interval Empty (Power Empty).
 Definition interval_B : set := open_interval (Power Empty) (Power (Power Empty)).
@@ -8860,10 +8871,16 @@ Definition interval_E : set := open_interval (Power (Power Empty)) (Power (Power
 Theorem ex16_3_open_sets_subspace : forall X Tx Y:set,
   topology_on X Tx -> Y c= X ->
   forall U:set, open_in Y (subspace_topology X Tx Y) U -> exists V:set, open_in X Tx V /\ U = V :/\: Y.
+let X Tx Y.
+assume Htop: topology_on X Tx.
+assume HY: Y c= X.
+let U.
+assume HU: open_in Y (subspace_topology X Tx Y) U.
+prove exists V:set, open_in X Tx V /\ U = V :/\: Y.
 admit. (** FAIL **)
 Qed.
 
-(** from §16 Exercise 4: projections are open maps **) 
+(** from §16 Exercise 4: projections are open maps **)
 (** LATEX VERSION: Exercise 4: Projections from a product are open maps. **)
 Definition projection_image1 : set -> set -> set -> set :=
   fun X Y U => {x :e X | exists y:set, OrderedPair x y :e U}.
@@ -8874,28 +8891,48 @@ Theorem ex16_4_projections_open : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   forall U:set, U :e product_topology X Tx Y Ty ->
     open_in X Tx (projection_image1 X Y U) /\ open_in Y Ty (projection_image2 X Y U).
+let X Tx Y Ty.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+let U.
+assume HU: U :e product_topology X Tx Y Ty.
+prove open_in X Tx (projection_image1 X Y U) /\ open_in Y Ty (projection_image2 X Y U).
 admit. (** FAIL **)
 Qed.
 
-(** from §16 Exercise 5(a): product topology monotonicity **) 
+(** from §16 Exercise 5(a): product topology monotonicity **)
 (** LATEX VERSION: Exercise 5(a): If T⊂T' and U⊂U', then the product topology from T,U is contained in that from T',U'. **)
 Theorem ex16_5a_product_monotone : forall X T T' Y U U':set,
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
   T c= T' /\ U c= U' ->
   product_topology X T Y U c= product_topology X T' Y U'.
+let X T T' Y U U'.
+assume HTx: topology_on X T.
+assume HTx': topology_on X T'.
+assume HTy: topology_on Y U.
+assume HTy': topology_on Y U'.
+assume Hfiner: T c= T' /\ U c= U'.
+prove product_topology X T Y U c= product_topology X T' Y U'.
 admit. (** FAIL **)
 Qed.
 
-(** from §16 Exercise 5(b): converse question about product fineness **) 
+(** from §16 Exercise 5(b): converse question about product fineness **)
 (** LATEX VERSION: Exercise 5(b): If product topology from T,U is contained in that from T',U', then T⊂T' and U⊂U'. **)
 Theorem ex16_5b_product_converse : forall X T T' Y U U':set,
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
   product_topology X T Y U c= product_topology X T' Y U' ->
   T c= T' /\ U c= U'.
+let X T T' Y U U'.
+assume HTx: topology_on X T.
+assume HTx': topology_on X T'.
+assume HTy: topology_on Y U.
+assume HTy': topology_on Y U'.
+assume Hprod: product_topology X T Y U c= product_topology X T' Y U'.
+prove T c= T' /\ U c= U'.
 admit. (**  aby  In_5Find open_in_subspace_iff conj_myprob_8633_1_20251123_231034 prop_ext_2 . **)
 Qed.
 
-(** from §16 Exercise 6: rational rectangles form a basis for ℝ² **) 
+(** from §16 Exercise 6: rational rectangles form a basis for ℝ² **)
 (** LATEX VERSION: Exercise 6: Rational rectangles form a basis generating the standard topology on ℝ². **)
 Definition rational_rectangle_basis : set :=
   {r :e Power (OrderedPair R R) |
@@ -8907,6 +8944,7 @@ Definition rational_rectangle_basis : set :=
 Theorem ex16_6_rational_rectangles_basis :
   basis_on (OrderedPair R R) rational_rectangle_basis /\
   generated_topology (OrderedPair R R) rational_rectangle_basis = R2_standard_topology.
+prove basis_on (OrderedPair R R) rational_rectangle_basis /\ generated_topology (OrderedPair R R) rational_rectangle_basis = R2_standard_topology.
 admit. (** FAIL **)
 Qed.
 
@@ -8925,7 +8963,10 @@ Theorem ex16_7_convex_interval_or_ray : forall A:set,
      exists a b:set, A = open_interval a b \/
        A = {x :e R|Rlt a x} \/
        A = {x :e R|Rlt x b}).
-admit. (** FAIL **)
+let A.
+assume HA: convex_subset A.
+prove A = Empty \/ A = R \/ exists a b:set, A = open_interval a b \/ A = {x :e R|Rlt a x} \/ A = {x :e R|Rlt x b}.
+admit. (** if nonempty, let a = inf A, b = sup A; convexity forces (a,b) ⊆ A; show A is one of stated forms **)
 Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
@@ -8935,14 +8976,16 @@ Theorem ex16_8_lines_in_lower_limit_products :
     L = {OrderedPair x x|x :e R} /\
     subspace_topology (OrderedPair R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L =
       R_lower_limit_topology.
-admit. (** FAIL **)
+prove exists L:set, L c= OrderedPair R R /\ L = {OrderedPair x x|x :e R} /\ subspace_topology (OrderedPair R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L = R_lower_limit_topology.
+admit. (** construct diagonal L; projection map is homeomorphism; basis elements [a,b)×[a,b) restrict to [a,b) on diagonal **)
 Qed.
 
 (** from §16 Exercise 9: dictionary order topology on ℝ×ℝ equals ℝ_d × ℝ **) 
 (** LATEX VERSION: Exercise 9: The dictionary order topology on ℝ×ℝ differs from the product topology ℝ_d×ℝ. **)
 Theorem ex16_9_dictionary_equals_product :
   R2_dictionary_order_topology <> product_topology R R_standard_topology R R_standard_topology.
-admit. (** FAIL **)
+prove R2_dictionary_order_topology <> product_topology R R_standard_topology R R_standard_topology.
+admit. (** show basis element containing (0,0) in dictionary order has no product rectangle inside it **)
 Qed.
 
 (** from §16 Exercise 10: compare topologies on I×I **) 
@@ -8951,7 +8994,8 @@ Theorem ex16_10_compare_topologies_on_square :
   ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square /\
   subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square <>
     product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
-admit. (** FAIL **)
+prove ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square /\ subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square <> product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
+admit. (** check bases at specific points; ordered square has finer neighborhoods than dictionary subspace; dictionary subspace finer than product **)
 Qed.
 
 (** from §17 Definition: interior and closure of a set **) 
@@ -9078,33 +9122,52 @@ Qed.
 (** LATEX VERSION: Exercise 1: Given a notion of closed sets satisfying axioms, prove they come from a topology. **)
 Theorem ex17_1_topology_from_closed_sets : forall X Tx:set,
   closed_in X Tx X -> (forall A:set, closed_in X Tx A -> closed_in X Tx (X :\: A)) -> topology_on X Tx.
-admit. (** FAIL **)
+let X Tx.
+assume H1: closed_in X Tx X.
+assume H2: forall A:set, closed_in X Tx A -> closed_in X Tx (X :\: A).
+prove topology_on X Tx.
+admit. (** verify topology axioms: use H2 to show opens via complements; verify unions and intersections **)
 Qed.
 
 (** LATEX VERSION: Exercise 2: If Y is closed in X and A is closed in the subspace Y, then A is closed in X. **)
 Theorem ex17_2_closed_in_closed_subspace : forall X Tx Y A:set,
   closed_in X Tx Y -> closed_in Y (subspace_topology X Tx Y) A -> closed_in X Tx A.
-admit. (**  aby  setminus_In_Power open_in_subspace_iff conj_myprob_8825_1_20251123_233737 closed_in_closed_subspace binintersect_com binintersectE1 EmptyAx In_5Fno2cycle prop_ext_2 . **)
+let X Tx Y A.
+assume HY: closed_in X Tx Y.
+assume HA: closed_in Y (subspace_topology X Tx Y) A.
+prove closed_in X Tx A.
+admit. (** A closed in Y means A = C ∩ Y for closed C in X; since Y closed, A = C ∩ Y closed **)
 Qed.
 
 (** LATEX VERSION: Exercise 3: Products of closed sets are closed in the product topology. **)
 Theorem ex17_3_product_of_closed_sets_closed : forall X Tx Y Ty A B:set,
   closed_in X Tx A -> closed_in Y Ty B ->
   closed_in (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
-admit. (**  aby  open_in_subspace_iff EmptyAx discrete_open_all not_ex_all_demorgan_i In_5Fno2cycle conj_myprob_8832_1_20251123_233805 exandE_i prop_ext_2 . **)
+let X Tx Y Ty A B.
+assume HA: closed_in X Tx A.
+assume HB: closed_in Y Ty B.
+prove closed_in (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
+admit. (** complement of A×B = (X\A)×Y ∪ X×(Y\B), union of products of opens is open **)
 Qed.
 
 (** LATEX VERSION: Exercise 4: For open U and closed A, U\\A is open and A\\U is closed. **)
 Theorem ex17_4_open_minus_closed_and_closed_minus_open : forall X Tx U A:set,
   topology_on X Tx -> open_in X Tx U -> closed_in X Tx A ->
   open_in X Tx (U :\: A) /\ closed_in X Tx (A :\: U).
-admit. (** FAIL **)
+let X Tx U A.
+assume Htop: topology_on X Tx.
+assume HU: open_in X Tx U.
+assume HA: closed_in X Tx A.
+prove open_in X Tx (U :\: A) /\ closed_in X Tx (A :\: U).
+admit. (** U\A = U ∩ (X\A) is intersection of opens; A\U = A ∩ (X\U) is intersection of closeds **)
 Qed.
 
 (** LATEX VERSION: Exercise 5: Closure of (0,1) in order topology on X equals (0,1). **)
 Theorem ex17_5_closure_of_interval_in_order_topology : forall X:set,
   closure_of X (order_topology X) (open_interval 0 1) = open_interval 0 1.
-admit. (** FAIL **)
+let X.
+prove closure_of X (order_topology X) (open_interval 0 1) = open_interval 0 1.
+admit. (** (0,1) is already open in order topology; open sets are their own closures if they equal X **)
 Qed.
 
 (** LATEX VERSION: Exercise 6: Closure is idempotent and closed; closure(A) is closed. **)
@@ -9112,7 +9175,10 @@ Theorem ex17_6_closure_properties : forall X Tx A:set,
   topology_on X Tx ->
   closure_of X Tx (closure_of X Tx A) = closure_of X Tx A /\
   closed_in X Tx (closure_of X Tx A).
-admit. (** FAIL **)
+let X Tx A.
+assume Htop: topology_on X Tx.
+prove closure_of X Tx (closure_of X Tx A) = closure_of X Tx A /\ closed_in X Tx (closure_of X Tx A).
+admit. (** closure is smallest closed set containing A; closed sets equal their own closure **)
 Qed.
 
 (** LATEX VERSION: Exercise 7: Show union being closed does not imply each set is closed. **)
@@ -9120,14 +9186,21 @@ Theorem ex17_7_counterexample_union_closure : forall X Tx A B:set,
   topology_on X Tx ->
   closed_in X Tx (A :\/: B) ->
   ~ (closed_in X Tx A /\ closed_in X Tx B).
-admit. (** FAIL **)
+let X Tx A B.
+assume Htop: topology_on X Tx.
+assume HAB: closed_in X Tx (A :\/: B).
+prove ~ (closed_in X Tx A /\ closed_in X Tx B).
+admit. (** counterexample: A = (-∞,0], B = [0,∞) in R\{0}; union is R\{0}, neither part closed **)
 Qed.
 
 (** LATEX VERSION: Exercise 8: Relation between closure of intersections and intersection of closures. **)
 Theorem ex17_8_closure_intersection_questions : forall X Tx A B:set,
   topology_on X Tx ->
   closure_of X Tx (A :/\: B) c= closure_of X Tx A :/\: closure_of X Tx B.
-admit. (**  aby  conj_myprob_8868_1_20251124_000233 open_in_subspace_iff Sep_5FEmpty SepE2 ex17_7_counterexample_union_closure prop_ext_2 . **)
+let X Tx A B.
+assume Htop: topology_on X Tx.
+prove closure_of X Tx (A :/\: B) c= closure_of X Tx A :/\: closure_of X Tx B.
+admit. (** A∩B ⊆ A and A∩B ⊆ B; closure preserves inclusion; equality fails in general **)
 Qed.
 
 (** LATEX VERSION: Exercise 9: Closure of A×B in product is product of closures. **)
@@ -9135,26 +9208,39 @@ Theorem ex17_9_closure_of_product_subset : forall X Y Tx Ty A B:set,
   topology_on X Tx -> topology_on Y Ty ->
   closure_of (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B) =
     OrderedPair (closure_of X Tx A) (closure_of Y Ty B).
-admit. (** FAIL **)
+let X Y Tx Ty A B.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+prove closure_of (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B) = OrderedPair (closure_of X Tx A) (closure_of Y Ty B).
+admit. (** show both inclusions using basis elements U×V; (x,y) in closure iff x in cl(A), y in cl(B) **)
 Qed.
 
 (** LATEX VERSION: Exercise 10: Order topology is Hausdorff. **)
 Theorem ex17_10_order_topology_Hausdorff : forall X:set,
   Hausdorff_space X (order_topology X).
-admit. (**  aby  open_in_subspace_iff EmptyAx discrete_open_all top_abc_2�f In_5Fno2cycle conj_myprob_8882_1_20251124_000403 prop_ext_2 . **)
+let X.
+prove Hausdorff_space X (order_topology X).
+admit. (** given x < y, separate with intervals (a,x] and [y,b) **)
 Qed.
 
 (** LATEX VERSION: Exercise 11: Product of Hausdorff spaces is Hausdorff. **)
 Theorem ex17_11_product_Hausdorff : forall X Tx Y Ty:set,
   Hausdorff_space X Tx -> Hausdorff_space Y Ty ->
   Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit. (**  aby  conj_myprob_8889_1_20251124_000437 Hausdorff_5Fstability . **)
+let X Tx Y Ty.
+assume HX: Hausdorff_space X Tx.
+assume HY: Hausdorff_space Y Ty.
+prove Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+admit. (** separate (x1,y1) and (x2,y2): if x1≠x2 use X-separation; if y1≠y2 use Y-separation **)
 Qed.
 
 (** LATEX VERSION: Exercise 12: Subspaces of Hausdorff spaces are Hausdorff. **)
 Theorem ex17_12_subspace_Hausdorff : forall X Tx Y:set,
   Hausdorff_space X Tx -> Hausdorff_space Y (subspace_topology X Tx Y).
-admit. (**  aby  Hausdorff_5Fspace_def conj_myprob_8895_1_20251124_000452 In_5Fno2cycle ex17_10_order_topology_Hausdorff not_all_ex_demorgan_i subspace_topology�f . **)
+let X Tx Y.
+assume HX: Hausdorff_space X Tx.
+prove Hausdorff_space Y (subspace_topology X Tx Y).
+admit. (** separate y1,y2 in Y using X-neighborhoods, restrict to Y **)
 Qed.
 
 (** LATEX VERSION: Exercise 13: Diagonal is closed in X×X iff X is Hausdorff. **)
@@ -9162,7 +9248,10 @@ Theorem ex17_13_diagonal_closed_iff_Hausdorff : forall X Tx:set,
   topology_on X Tx ->
   (Hausdorff_space X Tx <->
     closed_in (OrderedPair X X) (product_topology X Tx X Tx) {OrderedPair x x|x :e X}).
-admit. (** FAIL **)
+let X Tx.
+assume Htop: topology_on X Tx.
+prove Hausdorff_space X Tx <-> closed_in (OrderedPair X X) (product_topology X Tx X Tx) {OrderedPair x x|x :e X}.
+admit. (** complement of diagonal = {(x,y)|x≠y}; Hausdorff iff each (x,y) has nbhd in complement **)
 Qed.
 
 (** LATEX VERSION: Exercise 14: In the finite-complement topology, every sequence eventually lies in any given open set. **)
@@ -9171,26 +9260,39 @@ Theorem ex17_14_sequence_in_finite_complement_topology : forall X seq:set,
   forall x:set, x :e X ->
     forall U:set, U :e finite_complement_topology X -> x :e U ->
       exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
-admit. (** FAIL **)
+let X seq.
+assume Hseq: function_on seq omega X.
+let x.
+assume Hx: x :e X.
+let U.
+assume HU: U :e finite_complement_topology X.
+assume HxU: x :e U.
+prove exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
+admit. (** X\U finite; sequence hits at most finitely many points outside U; eventually stays in U **)
 Qed.
 
 (** LATEX VERSION: Exercise 15: A topology is T₁ iff every singleton is closed. **)
 Theorem ex17_15_T1_characterization : forall X Tx:set,
   topology_on X Tx ->
   (T1_space X Tx <-> (forall x:set, closed_in X Tx {x})).
-admit. (** FAIL **)
+let X Tx.
+assume Htop: topology_on X Tx.
+prove T1_space X Tx <-> (forall x:set, closed_in X Tx {x}).
+admit. (** T1 means all finite sets closed; singletons are finite; conversely finite = union of singletons **)
 Qed.
 
 (** LATEX VERSION: Exercise 16: Closures of K in the standard and lower limit topologies differ. **)
 Theorem ex17_16_closure_of_K_in_various_topologies :
   closure_of R R_standard_topology K_set <> closure_of R R_lower_limit_topology K_set.
-admit. (** FAIL **)
+prove closure_of R R_standard_topology K_set <> closure_of R R_lower_limit_topology K_set.
+admit. (** in standard topology K closed; in lower limit topology 0 is limit point but not in K **)
 Qed.
 
 (** LATEX VERSION: Exercise 17: Closures of K differ between the lower limit topology and the K-topology. **)
 Theorem ex17_17_closures_in_lower_limit_and_C_topology :
   closure_of R R_lower_limit_topology K_set <> closure_of R R_K_topology K_set.
-admit. (** FAIL **)
+prove closure_of R R_lower_limit_topology K_set <> closure_of R R_K_topology K_set.
+admit. (** K-topology finer than lower limit; closures differ at specific points **)
 Qed.
 
 (** LATEX VERSION: Exercise 18: Find A in ordered square where closures differ between two topologies. **)
@@ -9198,7 +9300,8 @@ Theorem ex17_18_closures_in_ordered_square :
   exists A:set, A c= ordered_square /\
     closure_of ordered_square ordered_square_topology A <>
     closure_of ordered_square ordered_square_subspace_topology A.
-admit. (** FAIL **)
+prove exists A:set, A c= ordered_square /\ closure_of ordered_square ordered_square_topology A <> closure_of ordered_square ordered_square_subspace_topology A.
+admit. (** construct specific A using dictionary vs standard differences; check limit points **)
 Qed.
 
 Definition boundary_of : set -> set -> set -> set := fun X Tx A =>
@@ -9209,20 +9312,26 @@ Theorem ex17_19_boundary_properties : forall X Tx A:set,
   topology_on X Tx ->
   boundary_of X Tx A c= closure_of X Tx A /\
   boundary_of X Tx A c= closure_of X Tx (X :\: A).
-admit. (** FAIL **)
+let X Tx A.
+assume Htop: topology_on X Tx.
+prove boundary_of X Tx A c= closure_of X Tx A /\ boundary_of X Tx A c= closure_of X Tx (X :\: A).
+admit. (** boundary defined as cl(A) ∩ cl(X\A); both inclusions immediate from definition **)
 Qed.
 
 (** LATEX VERSION: Exercise 20: Boundary of a strip differs between standard and dictionary topologies on ℝ². **)
 Theorem ex17_20_boundaries_and_interiors_in_R2 :
   boundary_of (OrderedPair R R) R2_standard_topology ordered_square_open_strip <>
   boundary_of (OrderedPair R R) R2_dictionary_order_topology ordered_square_open_strip.
-admit. (** FAIL **)
+prove boundary_of (OrderedPair R R) R2_standard_topology ordered_square_open_strip <> boundary_of (OrderedPair R R) R2_dictionary_order_topology ordered_square_open_strip.
+admit. (** compute closures of strip in both topologies; boundaries differ on vertical lines **)
 Qed.
 
 (** LATEX VERSION: Exercise 21: Kuratowski example in discrete topology gives maximal closure after complement. **)
 Theorem ex17_21_Kuratowski_closure_complement_maximal : forall X:set,
   closure_of X (discrete_topology X) (X :\: Empty) = X.
-admit. (** FAIL **)
+let X.
+prove closure_of X (discrete_topology X) (X :\: Empty) = X.
+admit. (** in discrete topology all sets closed; X\∅ = X; closure of X is X **)
 Qed.
 
 (** from §18 Definition: continuous map between topological spaces **) 
