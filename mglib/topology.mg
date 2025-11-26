@@ -10938,18 +10938,11 @@ Qed.
 Theorem compact_metrizable_embeds_iff_finite_dim : forall X Tx:set,
   compact_space X Tx ->
   metrizable X Tx ->
-  (exists N:set, exists e:set,
+  ((exists N:set, exists e:set,
     N :e omega /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e)
   <->
-  finite_dimensional_space X Tx.
-let X Tx.
-assume Hcomp Hmet.
-prove (exists N:set, exists e:set,
-  N :e omega /\
-  embedding_of X Tx (euclidean_space N) (euclidean_topology N) e)
-<->
-finite_dimensional_space X Tx.
+  finite_dimensional_space X Tx).
 admit. (** Corollary 50.9: embedding iff finite dimensional **)
 Qed.
 
