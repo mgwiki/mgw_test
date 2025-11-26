@@ -11719,7 +11719,13 @@ Theorem ex31_1_regular_disjoint_closure_neighborhoods : forall X Tx x y:set,
     open_in X Tx U /\ open_in X Tx V /\
     x :e U /\ y :e V /\
     closure_of X Tx U :/\: closure_of X Tx V = Empty.
-admit.
+let X Tx x y.
+assume Hreg: regular_space X Tx.
+assume Hx: x :e X.
+assume Hy: y :e X.
+assume Hneq: x <> y.
+prove exists U V:set, open_in X Tx U /\ open_in X Tx V /\ x :e U /\ y :e V /\ closure_of X Tx U :/\: closure_of X Tx V = Empty.
+admit. (** separate x from {y} and y from {x} using regularity; closures contained in neighborhoods **)
 Qed.
 (** from §31 Exercise 2: normal implies disjoint closures for closed sets **)
 (** LATEX VERSION: If X is normal, every pair of disjoint closed sets have neighborhoods whose closures are disjoint. **)
@@ -11732,7 +11738,13 @@ Theorem ex31_2_normal_disjoint_closure_neighborhoods : forall X Tx A B:set,
     open_in X Tx U /\ open_in X Tx V /\
     A c= U /\ B c= V /\
     closure_of X Tx U :/\: closure_of X Tx V = Empty.
-admit.
+let X Tx A B.
+assume Hnorm: normal_space X Tx.
+assume HA: closed_in X Tx A.
+assume HB: closed_in X Tx B.
+assume Hdisj: A :/\: B = Empty.
+prove exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ closure_of X Tx U :/\: closure_of X Tx V = Empty.
+admit. (** separate A from complement of V1, and B from complement of U1; iterate to get disjoint closures **)
 Qed.
 (** from §31 Exercise 3: every order topology regular **)
 (** LATEX VERSION: Every order topology is regular. **)
@@ -11766,7 +11778,12 @@ Theorem ex31_5_equalizer_closed_in_Hausdorff : forall X Tx Y Ty f g:set,
   continuous_map X Tx Y Ty g ->
   Hausdorff_space Y Ty ->
   closed_in X Tx {x :e X | apply_fun f x = apply_fun g x}.
-admit.
+let X Tx Y Ty f g.
+assume Hf: continuous_map X Tx Y Ty f.
+assume Hg: continuous_map X Tx Y Ty g.
+assume HHaus: Hausdorff_space Y Ty.
+prove closed_in X Tx {x :e X | apply_fun f x = apply_fun g x}.
+admit. (** complement is open: for f(x) <> g(x), separate in Y, pull back to get open neighborhood **)
 Qed.
 (** from §31 Exercise 6: closed continuous surjection preserves normal **)
 (** LATEX VERSION: Let p: X → Y be closed continuous surjective map. If X is normal, then so is Y. **)
@@ -11776,7 +11793,13 @@ Theorem ex31_6_closed_map_preserves_normal : forall X Tx Y Ty p:set,
   (forall A:set, closed_in X Tx A -> closed_in Y Ty (apply_fun p A)) ->
   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) ->
   normal_space Y Ty.
-admit.
+let X Tx Y Ty p.
+assume Hnorm: normal_space X Tx.
+assume Hcont: continuous_map X Tx Y Ty p.
+assume Hclosed: forall A:set, closed_in X Tx A -> closed_in Y Ty (apply_fun p A).
+assume Hsurj: forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y.
+prove normal_space Y Ty.
+admit. (** for disjoint closed A B in Y, preimages disjoint closed in X, separate, images separate A B **)
 Qed.
 (** from §31 Exercise 7: perfect map preserves separation/countability/local compactness **)
 (** LATEX VERSION: Perfect map (closed continuous surjective with compact fibers) preserves Hausdorff, regular, locally compact, second-countable. **)
@@ -11789,7 +11812,13 @@ Theorem ex31_7_perfect_map_properties : forall X Tx Y Ty p:set,
   (regular_space X Tx -> regular_space Y Ty) /\
   (locally_compact X Tx -> locally_compact Y Ty) /\
   (second_countable_space X Tx -> second_countable_space Y Ty).
-admit.
+let X Tx Y Ty p.
+assume Hcont: continuous_map X Tx Y Ty p.
+assume Hclosed: forall A:set, closed_in X Tx A -> closed_in Y Ty (apply_fun p A).
+assume Hsurj: forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y.
+assume Hcompact: forall y:set, y :e Y -> compact_space {x :e X | apply_fun p x = y} (subspace_topology X Tx {x :e X | apply_fun p x = y}).
+prove (Hausdorff_space X Tx -> Hausdorff_space Y Ty) /\ (regular_space X Tx -> regular_space Y Ty) /\ (locally_compact X Tx -> locally_compact Y Ty) /\ (second_countable_space X Tx -> second_countable_space Y Ty).
+admit. (** perfect maps preserve all these properties using compact fibers and closedness **)
 Qed.
 (** from §31 Exercise 8: orbit space of compact group action preserves properties **)
 (** LATEX VERSION: Let G be compact topological group, α action of G on X. Orbit space X/G retains Hausdorff, regular, normal, locally compact, second-countable properties. **)
@@ -11801,7 +11830,11 @@ Theorem ex31_8_orbit_space_properties : forall G Tg X Tx alpha:set,
   (normal_space X Tx -> exists XG TxG:set, normal_space XG TxG) /\
   (locally_compact X Tx -> exists XG TxG:set, locally_compact XG TxG) /\
   (second_countable_space X Tx -> exists XG TxG:set, second_countable_space XG TxG).
-admit.
+let G Tg X Tx alpha.
+assume Hgrp: topological_group G Tg.
+assume Hcomp: compact_space G Tg.
+prove (Hausdorff_space X Tx -> exists XG TxG:set, Hausdorff_space XG TxG) /\ (regular_space X Tx -> exists XG TxG:set, regular_space XG TxG) /\ (normal_space X Tx -> exists XG TxG:set, normal_space XG TxG) /\ (locally_compact X Tx -> exists XG TxG:set, locally_compact XG TxG) /\ (second_countable_space X Tx -> exists XG TxG:set, second_countable_space XG TxG).
+admit. (** quotient map by compact group action is perfect; apply Ex 7 **)
 Qed.
 (** from §31 Exercise 9: Sorgenfrey plane rational/irrational diagonal non-separation **)
 (** LATEX VERSION: In ℝ_ℓ², let A = {x × (-x) | x rational}, B = {x × (-x) | x irrational}. No open sets separate A and B. **)
@@ -11810,7 +11843,8 @@ Theorem ex31_9_Sorgenfrey_plane_no_separation :
     ~ (exists U V:set,
         open_in Rl2 Tl2 U /\ open_in Rl2 Tl2 V /\
         A c= U /\ B c= V /\ U :/\: V = Empty).
-admit.
+prove exists Rl2 Tl2 A B:set, ~ (exists U V:set, open_in Rl2 Tl2 U /\ open_in Rl2 Tl2 V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
+admit. (** any basic open around rational point hits irrationals and vice versa; dense interaction **)
 Qed.
 
 (** from §32 Exercise 1: closed subspace of normal is normal **)
