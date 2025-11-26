@@ -11116,10 +11116,11 @@ Qed.
 
 (** from Supplementary Exercises Exercise 9: metrizable implies components are m-manifolds **)
 (** LATEX VERSION: If locally m-euclidean X is metrizable, then each component of X is an m-manifold. **)
+(** stub: need proper definition of component **)
 Theorem supp_ex_locally_euclidean_9 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   metrizable X Tx ->
-  forall C:set, (** stub: C is a component of X **) ->
+  forall C:set, C c= X ->
     m_manifold C (subspace_topology X Tx C).
 admit. (** FAIL on 2025-11-26 03:10 **)
 Qed.
