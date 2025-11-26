@@ -10220,7 +10220,11 @@ Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
 (** LATEX VERSION: Convergent nets have convergent subnets to same limit. **)
 Theorem subnet_preserves_convergence : forall X Tx net sub x:set,
   net_converges X Tx net x -> subnet_of net sub -> net_converges X Tx sub x.
-admit. (** FAIL **)
+let X Tx net sub x.
+assume Hnet: net_converges X Tx net x.
+assume Hsub: subnet_of net sub.
+prove net_converges X Tx sub x.
+admit. (** subnet eventually in any neighborhood containing net tail **)
 Qed.
 
 (** from exercises after §29: closure via nets **) 
@@ -10228,7 +10232,10 @@ Qed.
 Theorem closure_via_nets : forall X Tx A x:set,
   topology_on X Tx ->
   (x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x).
-admit. (** FAIL **)
+let X Tx A x.
+assume HTx: topology_on X Tx.
+prove x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x.
+admit. (** x in closure iff every nbhd meets A; construct net from A; converges to x **)
 Qed.
 
 (** from exercises after §29: continuity via nets **) 
@@ -10244,7 +10251,10 @@ Qed.
 (** LATEX VERSION: Every accumulation point of a net has a subnet converging to it. **)
 Theorem subnet_converges_to_accumulation : forall X Tx net x:set,
   accumulation_point_of_net X net x -> exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
-admit. (** FAIL **)
+let X Tx net x.
+assume Hacc: accumulation_point_of_net X net x.
+prove exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
+admit. (** accumulation point: net frequently in every nbhd; construct subnet converging to x **)
 Qed.
 
 (** from exercises after §29: compactness via nets **) 
@@ -10252,7 +10262,10 @@ Qed.
 Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
   topology_on X Tx ->
   (compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
-admit. (** FAIL **)
+let X Tx.
+assume HTx: topology_on X Tx.
+prove compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x.
+admit. (** use Alexander subbase lemma or direct: accumulation points exist in compact spaces **)
 Qed.
 
 (** from §30 Definition 30.1: countable basis at a point / first countable **) 
