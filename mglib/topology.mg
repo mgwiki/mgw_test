@@ -10959,7 +10959,10 @@ Theorem ex50_2_connected_T1_dimension_ge_1 : forall X Tx:set,
   T1_space X Tx ->
   (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
   covering_dimension X Empty -> False.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx.
+assume Hconn HT1 Hdist Hdim0.
+prove False.
+admit. (** connected T1 with >1 point cannot have dimension 0 **)
 Qed.
 
 (** from §50 Exercise 3: topologist's sine curve has dimension 1 **)
@@ -10967,7 +10970,10 @@ Qed.
 Theorem ex50_3_sine_curve_dimension_1 : forall X Tx:set,
   X = R (** stub: actual definition of topologist's sine curve needed **) ->
   covering_dimension X (Sing Empty).
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx.
+assume HX.
+prove covering_dimension X (Sing Empty).
+admit. (** topologist's sine curve has dimension 1 **)
 Qed.
 
 (** from §50 Exercise 4: specific points in general position in R³ **)
@@ -10979,7 +10985,10 @@ Theorem ex50_4_points_general_position_R3 : forall zero e1 e2 e3 ones:set,
   e3 = R (** stub: need ordered tuple (0,0,1) **) ->
   ones = R (** stub: need ordered tuple (1,1,1) **) ->
   general_position_RN (Sing (Sing (Sing Empty))) {zero, e1, e2, e3, ones}.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let zero e1 e2 e3 ones.
+assume Hz He1 He2 He3 Hones.
+prove general_position_RN (Sing (Sing (Sing Empty))) {zero, e1, e2, e3, ones}.
+admit. (** verify geometric independence of these 5 points in R³ **)
 Qed.
 
 (** from §50 Exercise 5: embedding theorem for m=1 maps to linear graph **)
@@ -10991,7 +11000,12 @@ Theorem ex50_5_embedding_m1_linear_graph : forall X Tx:set,
   exists g:set,
     (forall x:set, x :e X -> apply_fun g x :e (euclidean_space (Sing (Sing (Sing Empty))))) /\
     linear_graph (apply_fun g X) R_standard_topology.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx.
+assume Hdim Hcomp Hmet.
+prove exists g:set,
+  (forall x:set, x :e X -> apply_fun g x :e (euclidean_space (Sing (Sing (Sing Empty))))) /\
+  linear_graph (apply_fun g X) R_standard_topology.
+admit. (** embedding for m=1 produces linear graph in R³ **)
 Qed.
 
 (** from §50 Exercise 6: locally compact Hausdorff with countable basis embeds in R^{2m+1} **)
@@ -11006,7 +11020,13 @@ Theorem ex50_6_locally_compact_embeds : forall X Tx m:set,
     N = m :\/: m :\/: (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx m.
+assume Hm Hlc HHaus Hsec Hdim.
+prove exists N:set, exists e:set,
+  N = m :\/: m :\/: (Sing Empty) /\
+  embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
+  closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
+admit. (** extends Theorem 50.6 to locally compact case **)
 Qed.
 
 (** from §50 Exercise 7: every m-manifold embeds in R^{2m+1} as closed subspace **)
@@ -11018,7 +11038,13 @@ Theorem ex50_7_manifold_closed_embedding : forall X Tx m:set,
     N = m :\/: m :\/: (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx m.
+assume Hm Hman.
+prove exists N:set, exists e:set,
+  N = m :\/: m :\/: (Sing Empty) /\
+  embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
+  closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
+admit. (** every manifold embeds in R^{2m+1} as closed subspace **)
 Qed.
 
 (** from §50 Exercise 8: sigma-compact Hausdorff with compact subspaces of dimension ≤m has dimension ≤m **)
@@ -11035,7 +11061,10 @@ Theorem ex50_8_sigma_compact_dimension : forall X Tx m:set,
   Hausdorff_space X Tx ->
   (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C m) ->
   covering_dimension X m.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx m.
+assume Hm Hsig HHaus Hdim.
+prove covering_dimension X m.
+admit. (** sigma-compact: dimension equals sup of compact subspace dimensions **)
 Qed.
 
 (** from §50 Exercise 9: every m-manifold has dimension ≤m **)
@@ -11070,7 +11099,14 @@ Theorem ex50_11_embedding_characterization : forall X Tx:set,
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X))
   <->
   (locally_compact X Tx /\ Hausdorff_space X Tx /\ second_countable_space X Tx /\ finite_dimensional_space X Tx).
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx.
+prove (exists N:set, exists e:set,
+  N :e omega /\
+  embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
+  closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X))
+<->
+(locally_compact X Tx /\ Hausdorff_space X Tx /\ second_countable_space X Tx /\ finite_dimensional_space X Tx).
+admit. (** characterization of embeddable spaces: combines previous results **)
 Qed.
 
 (** from Supplementary Exercises Exercise 1: locally m-euclidean implies locally compact and locally metrizable **)
