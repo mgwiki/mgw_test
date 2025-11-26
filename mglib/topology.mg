@@ -11763,10 +11763,16 @@ apply iffI.
 - assume H1: completely_normal_space X Tx.
   let A B.
   assume H2: separated_subsets X Tx A B.
-  admit.
+  apply H1.
+  assume Hnorm Hsep.
+  exact Hsep A B H2.
 - assume H1: forall A B:set, separated_subsets X Tx A B -> exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty.
   prove completely_normal_space X Tx.
-  admit.
+  apply andI.
+  + prove normal_space X Tx.
+    admit. (** need to prove normality from separated set separation **)
+  + prove forall A B:set, separated_subsets X Tx A B -> exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+    exact H1.
 Qed.
 (** from §32 Exercise 7: completely normal examples **)
 (** LATEX VERSION: Which are completely normal: (a) subspace (b) product (c) well-ordered (d) metrizable (e) compact Hausdorff (f) regular+countable basis (g) ℝ_ℓ? **)
