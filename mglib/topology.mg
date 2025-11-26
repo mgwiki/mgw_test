@@ -9754,7 +9754,8 @@ admit. (**  aby  binunion�f binunion_idl conj_myprob_9302_1_20251124_020904 pr
 Qed.
 
 Theorem interval_connected : connected_space R R_standard_topology.
-admit. (** FAIL **)
+prove connected_space R R_standard_topology.
+admit. (** assume separation; intermediate value theorem gives contradiction **)
 Qed.
 
 (** from §24: connected subspaces of ℝ are intervals **) 
@@ -9763,7 +9764,16 @@ Theorem connected_subsets_real_are_intervals : forall A:set,
   connected_space A (subspace_topology R R_standard_topology A) ->
   forall x y z:set, x :e A -> y :e A -> z :e R ->
     (Rlt x z /\ Rlt z y \/ Rlt y z /\ Rlt z x) -> z :e A.
-admit. (** FAIL **)
+let A.
+assume HA: A c= R.
+assume Hconn: connected_space A (subspace_topology R R_standard_topology A).
+let x y z.
+assume Hx: x :e A.
+assume Hy: y :e A.
+assume Hz: z :e R.
+assume Hbetw: Rlt x z /\ Rlt z y \/ Rlt y z /\ Rlt z x.
+prove z :e A.
+admit. (** if z ∉ A, separate A into A∩(-∞,z) and A∩(z,∞); contradicts connectedness **)
 Qed.
 
 (** from §23 Theorem 23.6: finite products of connected spaces are connected **) 
