@@ -10839,14 +10839,21 @@ Theorem Cauchy_with_convergent_subsequence_converges : forall X d seq x:set,
   metric_on X d -> cauchy_sequence X d seq ->
   (exists subseq:set, subseq c= seq /\ converges_to X (metric_topology X d) subseq x) ->
   converges_to X (metric_topology X d) seq x.
-admit. (** FAIL **)
+let X d seq x.
+assume Hd: metric_on X d.
+assume Hcauchy: cauchy_sequence X d seq.
+assume Hsub: exists subseq:set, subseq c= seq /\ converges_to X (metric_topology X d) subseq x.
+prove converges_to X (metric_topology X d) seq x.
+admit. (** for eps>0, use Cauchy to get N₁; use subseq convergence to get N₂; for n>max(N₁,N₂), d(seq_n,x) < eps **)
 Qed.
 
 (** from §43 Theorem 43.2: Euclidean space is complete **) 
 (** LATEX VERSION: Euclidean spaces are complete metric spaces. **)
 Theorem Euclidean_space_complete : forall k:set,
   complete_metric_space (euclidean_space k) (euclidean_metric k).
-admit. (** FAIL **)
+let k.
+prove complete_metric_space (euclidean_space k) (euclidean_metric k).
+admit. (** Cauchy in R^k is Cauchy coordinatewise; R complete; product of complete is complete **)
 Qed.
 
 (** from §43 Lemma 43.3: product convergence via projections **) 
@@ -10860,13 +10867,23 @@ Theorem product_sequence_convergence_iff_coordinates : forall X J:set,
                    (product_component_topology (const_family J R) j)
                    (Repl seq (fun s => apply_fun s j))
                    (apply_fun x j)).
-admit. (** FAIL **)
+let X J.
+assume HX: X = product_space J (const_family J R).
+let seq x.
+prove converges_to X (product_topology_full J (const_family J R)) seq x <->
+    (forall j:set, j :e J ->
+    converges_to (product_component (const_family J R) j)
+                   (product_component_topology (const_family J R) j)
+                   (Repl seq (fun s => apply_fun s j))
+                   (apply_fun x j)).
+admit. (** convergence in product topology iff projection π_j(seq) → π_j(x) for all j; use subbasis characterization **)
 Qed.
 
 (** from §43 Theorem 43.4: complete metric on R^omega **) 
 (** LATEX VERSION: The bounded product metric makes R^ω complete. **)
 Theorem product_Romega_complete : complete_metric_space (power_real omega) (bounded_product_metric omega).
-admit. (** FAIL **)
+prove complete_metric_space (power_real omega) (bounded_product_metric omega).
+admit. (** Cauchy in product metric means Cauchy coordinatewise; R complete; bounded metric ensures convergence **)
 Qed.
 
 (** from §44 Theorem: space-filling curve existence **) 
@@ -10874,7 +10891,8 @@ Qed.
 Definition unit_square : set := OrderedPair unit_interval unit_interval.
 Definition unit_square_topology : set := product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
 Theorem space_filling_curve : exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
-admit. (** FAIL **)
+prove exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
+admit. (** construct Peano curve via iterative midpoint subdivision; limit of continuous approximations is continuous **)
 Qed.
 
 (** from §45 Definition: sequential compactness **) 
