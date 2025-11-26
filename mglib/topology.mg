@@ -11100,19 +11100,28 @@ Theorem supp_ex_locally_euclidean_2_ii_implies_iii : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   m_manifold X Tx ->
   metrizable X Tx.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx m.
+assume Hloc Hman.
+prove metrizable X Tx.
+admit. (** manifold is second countable locally euclidean, hence metrizable **)
 Qed.
 
 Theorem supp_ex_locally_euclidean_2_iii_implies_iv : forall X Tx:set,
   metrizable X Tx ->
   normal_space X Tx.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx.
+assume Hmet.
+prove normal_space X Tx.
+admit. (** metrizable spaces are normal by standard theorem **)
 Qed.
 
 Theorem supp_ex_locally_euclidean_2_iv_implies_v : forall X Tx:set,
   normal_space X Tx ->
   Hausdorff_space X Tx.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx.
+assume Hnorm.
+prove Hausdorff_space X Tx.
+admit. (** normal spaces are Hausdorff: use definition of normal **)
 Qed.
 
 (** from Supplementary Exercises Exercise 3: R is locally 1-euclidean satisfies (ii) not (i) **)
@@ -11121,7 +11130,10 @@ Theorem supp_ex_locally_euclidean_3 :
   locally_m_euclidean R R_standard_topology (Sing Empty) /\
   m_manifold R R_standard_topology /\
   ~ (compact_space R R_standard_topology /\ Hausdorff_space R R_standard_topology).
-admit. (** FAIL on 2025-11-26 03:10 **)
+prove locally_m_euclidean R R_standard_topology (Sing Empty) /\
+      m_manifold R R_standard_topology /\
+      ~ (compact_space R R_standard_topology /\ Hausdorff_space R R_standard_topology).
+admit. (** R is locally 1-euclidean and a manifold, but not compact Hausdorff **)
 Qed.
 
 (** from Supplementary Exercises Exercise 4: R×R dictionary order is locally 1-euclidean satisfies (iii) not (ii) **)
@@ -11131,7 +11143,12 @@ Theorem supp_ex_locally_euclidean_4 : forall Tdict:set,
   locally_m_euclidean R Tdict (Sing Empty) /\
   metrizable R Tdict /\
   ~ m_manifold R Tdict.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let Tdict.
+assume HTdict.
+prove locally_m_euclidean R Tdict (Sing Empty) /\
+      metrizable R Tdict /\
+      ~ m_manifold R Tdict.
+admit. (** dictionary order topology: locally euclidean, metrizable, not second countable **)
 Qed.
 
 (** from Supplementary Exercises Exercise 5: long line is locally 1-euclidean satisfies (iv) not (iii) **)
@@ -11142,7 +11159,12 @@ Theorem supp_ex_locally_euclidean_5 : forall L TL:set,
   locally_m_euclidean L TL (Sing Empty) /\
   normal_space L TL /\
   ~ metrizable L TL.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let L TL.
+assume HL HTL.
+prove locally_m_euclidean L TL (Sing Empty) /\
+      normal_space L TL /\
+      ~ metrizable L TL.
+admit. (** long line: locally euclidean, normal, not metrizable **)
 Qed.
 
 (** from Supplementary Exercises Exercise 7: Hausdorff iff completely regular **)
@@ -11150,7 +11172,10 @@ Qed.
 Theorem supp_ex_locally_euclidean_7 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   (Hausdorff_space X Tx <-> completely_regular_space X Tx).
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx m.
+assume Hloc.
+prove Hausdorff_space X Tx <-> completely_regular_space X Tx.
+admit. (** locally euclidean: Hausdorff iff completely regular **)
 Qed.
 
 (** from Supplementary Exercises Exercise 8: metrizable iff paracompact Hausdorff **)
@@ -11158,7 +11183,10 @@ Qed.
 Theorem supp_ex_locally_euclidean_8 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   (metrizable X Tx <-> (paracompact_space X Tx /\ Hausdorff_space X Tx)).
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx m.
+assume Hloc.
+prove metrizable X Tx <-> (paracompact_space X Tx /\ Hausdorff_space X Tx).
+admit. (** locally euclidean: metrizable iff paracompact Hausdorff **)
 Qed.
 
 (** from Supplementary Exercises Exercise 9: metrizable implies components are m-manifolds **)
@@ -11169,7 +11197,12 @@ Theorem supp_ex_locally_euclidean_9 : forall X Tx m:set,
   metrizable X Tx ->
   forall C:set, C c= X ->
     m_manifold C (subspace_topology X Tx C).
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx m.
+assume Hloc Hmet.
+let C.
+assume HC.
+prove m_manifold C (subspace_topology X Tx C).
+admit. (** components of metrizable locally euclidean are manifolds **)
 Qed.
 
 (** from §30 Exercise 1: G_delta points in first-countable T1 **) 
