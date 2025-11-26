@@ -8379,7 +8379,23 @@ Theorem ex13_2_compare_nine_topologies :
             T2 = top_abc_4 \/ T2 = top_abc_5 \/ T2 = top_abc_6 \/
            T2 = top_abc_7 \/ T2 = top_abc_8 \/ T2 = top_abc_9) /\
            T1 c= T2}.
- admit. (** FAIL **)
+prove topology_on abc_set top_abc_1 /\ topology_on abc_set top_abc_2 /\
+  topology_on abc_set top_abc_3 /\ topology_on abc_set top_abc_4 /\
+  topology_on abc_set top_abc_5 /\ topology_on abc_set top_abc_6 /\
+  topology_on abc_set top_abc_7 /\ topology_on abc_set top_abc_8 /\
+  topology_on abc_set top_abc_9 /\
+  exists finer_pairs:set,
+    finer_pairs =
+      {p :e Power (Power (Power abc_set))|
+         exists T1 T2:set, p = OrderedPair T1 T2 /\
+           (T1 = top_abc_1 \/ T1 = top_abc_2 \/ T1 = top_abc_3 \/
+            T1 = top_abc_4 \/ T1 = top_abc_5 \/ T1 = top_abc_6 \/
+            T1 = top_abc_7 \/ T1 = top_abc_8 \/ T1 = top_abc_9) /\
+           (T2 = top_abc_1 \/ T2 = top_abc_2 \/ T2 = top_abc_3 \/
+            T2 = top_abc_4 \/ T2 = top_abc_5 \/ T2 = top_abc_6 \/
+           T2 = top_abc_7 \/ T2 = top_abc_8 \/ T2 = top_abc_9) /\
+           T1 c= T2}.
+admit. (** verify each is topology by checking axioms; enumerate all refinement pairs by subset checking **)
 Qed.
 
 (** helper for §13 exercises: intersection of a family of topologies (placeholder) **) 
@@ -8702,7 +8718,14 @@ Theorem product_basis_generates :
       basis_on (OrderedPair X Y) B /\
       (forall U :e Bx, forall V :e By, OrderedPair U V :e B) /\
   generated_topology (OrderedPair X Y) B = product_topology X Tx Y Ty.
-admit. (** FAIL **)
+let X Tx Y Ty Bx By.
+assume HBx: basis_on X Bx /\ generated_topology X Bx = Tx.
+assume HBy: basis_on Y By /\ generated_topology Y By = Ty.
+prove exists B:set,
+      basis_on (OrderedPair X Y) B /\
+      (forall U :e Bx, forall V :e By, OrderedPair U V :e B) /\
+  generated_topology (OrderedPair X Y) B = product_topology X Tx Y Ty.
+admit. (** construct B as rectangles U×V with U∈Bx,V∈By; verify B is basis and generates product topology **)
 Qed.
 
 (** from §15 Definition: projections on a product **) 
@@ -8721,7 +8744,13 @@ Theorem product_subbasis_from_projections : forall X Tx Y Ty:set,
   exists S:set,
     S = product_subbasis X Tx Y Ty /\
     generated_topology (OrderedPair X Y) S = product_topology X Tx Y Ty.
-admit. (** FAIL **)
+let X Tx Y Ty.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+prove exists S:set,
+    S = product_subbasis X Tx Y Ty /\
+    generated_topology (OrderedPair X Y) S = product_topology X Tx Y Ty.
+admit. (** projection preimages of opens form subbasis; verify generated topology equals product topology definition **)
 Qed.
 
 (** helper: function evaluation as graph lookup **) 
@@ -10905,7 +10934,10 @@ Definition sequentially_compact : set -> set -> prop := fun X Tx =>
 Theorem compact_metric_equivalences : forall X d:set,
   metric_on X d ->
   (compact_space X (metric_topology X d) <-> sequentially_compact X (metric_topology X d)).
-admit. (** FAIL **)
+let X d.
+assume Hd: metric_on X d.
+prove compact_space X (metric_topology X d) <-> sequentially_compact X (metric_topology X d).
+admit. (** compact→seq compact: Lebesgue number lemma; seq compact→compact: construct finite cover from seq compactness **)
 Qed.
 
 (** from §46 Definition: pointwise and compact convergence topologies **) 
