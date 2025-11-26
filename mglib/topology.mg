@@ -10758,6 +10758,17 @@ Qed.
 Definition arc : set -> set -> prop := fun X Tx =>
   exists f:set, homeomorphism unit_interval R_standard_topology X Tx f.
 
+(** Helper: arc is a topological space **)
+Theorem arc_is_topological_space : forall X Tx:set,
+  arc X Tx -> topology_on X Tx.
+let X Tx.
+assume Harc.
+apply Harc.
+let f.
+assume Hhom.
+admit. (** need to extract topology_on from homeomorphism **)
+Qed.
+
 Definition end_points_of_arc : set -> set -> set -> set -> prop := fun X Tx p q =>
   arc X Tx /\
   p :e X /\ q :e X /\
