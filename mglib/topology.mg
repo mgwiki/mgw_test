@@ -11342,6 +11342,16 @@ Definition topological_group : set -> set -> prop := fun G Tg =>
     continuous_map (OrderedPair G G) (product_topology G Tg G Tg) G Tg mult /\
     continuous_map G Tg G Tg inv.
 
+(** helper: separated subsets predicate **)
+Definition separated_subsets : set -> set -> set -> set -> prop := fun X Tx A B =>
+  closure_of X Tx A :/\: B = Empty /\ A :/\: closure_of X Tx B = Empty.
+
+(** helper: completely normal predicate **)
+Definition completely_normal_space : set -> set -> prop := fun X Tx =>
+  normal_space X Tx /\
+  (forall A B:set, separated_subsets X Tx A B -> exists U V:set,
+      open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
+
 (** from §30 Exercise 1a: one-point sets are G_delta in first-countable T1 **)
 (** LATEX VERSION: In a first-countable T₁ space, every one-point set is a G_δ set. **)
 Theorem ex30_1a_onepoint_Gdelta_firstcountable_T1 : forall X Tx x:set,
@@ -11771,18 +11781,9 @@ Theorem ex32_9_uncountable_product_not_normal : forall J:set,
 admit.
 Qed.
 
-(** helper: perfect normality predicate **) 
+(** helper: perfect normality predicate **)
 Definition perfectly_normal_space : set -> set -> prop := fun X Tx =>
   normal_space X Tx /\ (forall A:set, closed_in X Tx A -> Gdelta_in X Tx A).
-
-(** helper: completely normal predicate **) 
-Definition separated_subsets : set -> set -> set -> set -> prop := fun X Tx A B =>
-  closure_of X Tx A :/\: B = Empty /\ A :/\: closure_of X Tx B = Empty.
-
-Definition completely_normal_space : set -> set -> prop := fun X Tx =>
-  normal_space X Tx /\
-  (forall A B:set, separated_subsets X Tx A B -> exists U V:set,
-      open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
 
 (** from §33 Exercise 1: expression for level sets in Urysohn proof **) 
 Definition ex33_1_level_sets_urysohn : set :=
