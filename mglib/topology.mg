@@ -11642,7 +11642,9 @@ Qed.
 (** LATEX VERSION: Every order topology is regular. **)
 Theorem ex31_3_order_topology_regular : forall X:set,
   regular_space X (order_topology X).
-admit.
+let X.
+prove regular_space X (order_topology X).
+admit. (** order topologies are regular by construction **)
 Qed.
 (** from §31 Exercise 4: comparing finer/coarser separation axioms **)
 (** LATEX VERSION: Let X have two topologies T and T', with T' ⊃ T. Compare separation properties. **)
@@ -11651,7 +11653,15 @@ Theorem ex31_4_comparison_topologies_separation : forall X Tx Tx':set,
   ((Hausdorff_space X Tx' -> Hausdorff_space X Tx) /\
    (regular_space X Tx -> regular_space X Tx') /\
    (normal_space X Tx -> normal_space X Tx')).
-admit.
+let X Tx Tx'.
+assume Hfiner: Tx c= Tx'.
+apply and3I.
+- prove Hausdorff_space X Tx' -> Hausdorff_space X Tx.
+  admit. (** finer topology has more open sets, easier to be Hausdorff **)
+- prove regular_space X Tx -> regular_space X Tx'.
+  admit. (** finer topology can separate points from closed sets better **)
+- prove normal_space X Tx -> normal_space X Tx'.
+  admit. (** finer topology can separate closed sets better **)
 Qed.
 (** from §31 Exercise 5: equalizer of continuous maps into Hausdorff is closed **)
 (** LATEX VERSION: Let f,g: X → Y be continuous, Y Hausdorff. Then {x | f(x) = g(x)} is closed in X. **)
