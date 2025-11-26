@@ -8291,10 +8291,12 @@ Qed.
 Definition Intersection_Fam : set -> set :=
   fun Fam => {U :e Power (Union Fam)|forall T:set, T :e Fam -> U :e T}.
 
-(** helper: intersection of a family stays within the union (placeholder) **) 
+(** helper: intersection of a family stays within the union (placeholder) **)
 Theorem intersection_of_family_sub_union : forall Fam:set,
   intersection_of_family Fam c= Union Fam.
-admit. (** FAIL **)
+let Fam.
+let x. assume Hx.
+exact (SepE1 (Union Fam) (fun x0 => forall U:set, U :e Fam -> x0 :e U) x Hx).
 Qed.
 
 (** helper: empty set is in every intersection family when all members contain Empty (placeholder) **) 
