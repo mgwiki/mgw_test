@@ -11044,7 +11044,9 @@ Theorem ex50_9_manifold_dimension_le_m : forall X Tx m:set,
   m :e omega ->
   m_manifold X Tx ->
   covering_dimension X m.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx m.
+assume Hm Hman.
+admit. (** requires full manifold dimension theory **)
 Qed.
 
 (** from §50 Exercise 10: closed subspace of R^N has dimension ≤N **)
@@ -11054,7 +11056,9 @@ Theorem ex50_10_closed_subspace_RN_dimension : forall X N:set,
   X c= (euclidean_space N) ->
   closed_in (euclidean_space N) (euclidean_topology N) X ->
   covering_dimension X N.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X N.
+assume HN Hsub Hclosed.
+admit. (** follows from Theorem 50.6 generalized **)
 Qed.
 
 (** from §50 Exercise 11: embedding in R^N characterization **)
