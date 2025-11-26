@@ -10892,6 +10892,19 @@ Theorem compact_metrizable_embeds_iff_finite_dim : forall X Tx:set,
 admit. (** FAIL on 2025-11-26 03:07 **)
 Qed.
 
+(** from Supplementary Exercises: locally m-euclidean space **)
+(** LATEX VERSION: A space X is locally m-euclidean if each point has a neighborhood homeomorphic to an open set of R^m. **)
+Definition locally_m_euclidean : set -> set -> set -> prop := fun X Tx m =>
+  m :e omega /\
+  topology_on X Tx /\
+  forall x:set, x :e X ->
+    exists U:set, exists V:set, exists f:set,
+      open_in X Tx U /\
+      x :e U /\
+      V c= (euclidean_space m) /\
+      open_in (euclidean_space m) (euclidean_topology m) V /\
+      homeomorphism U (subspace_topology X Tx U) V (subspace_topology (euclidean_space m) (euclidean_topology m) V) f.
+
 (** from §30 Exercise 1: G_delta points in first-countable T1 **) 
 (** LATEX VERSION: Exercise 30.1 about G_δ points in first-countable T₁ spaces. **)
 Definition ex30_1_Gdelta_points : set := omega.
