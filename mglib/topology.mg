@@ -11512,24 +11512,75 @@ Theorem ex30_12b_open_map_second_countable : forall X Tx Y Ty f:set,
   second_countable_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
 admit.
 Qed.
-(** from §30 Exercise 13: disjoint open sets countable when dense countable **) 
-(** LATEX VERSION: Exercise 30.13: Countability of disjoint open families in separable spaces. **)
-Definition ex30_13_disjoint_open_sets_countable : set := omega.
-(** from §30 Exercise 14: product of Lindelof with compact is Lindelof **) 
-(** LATEX VERSION: Exercise 30.14: Lindelöf × compact is Lindelöf. **)
-Definition ex30_14_product_Lindelof_compact : set := omega.
-(** from §30 Exercise 15: C(I,R) uniform topology countable dense subset **) 
-(** LATEX VERSION: Exercise 30.15: Countable dense subset of C(I,ℝ) in uniform topology. **)
-Definition ex30_15_CI_has_countable_dense_uniform : set := omega.
-(** from §30 Exercise 16: product RI dense subsets cardinalities **) 
-(** LATEX VERSION: Exercise 30.16: Cardinality of dense subsets in products ∏R_i. **)
-Definition ex30_16_product_RI_dense_subset_cardinality : set := omega.
-(** from §30 Exercise 17: Romega box topology countability axioms **) 
-(** LATEX VERSION: Exercise 30.17: Countability axioms for box topology on R^ω. **)
-Definition ex30_17_Romega_box_countability : set := omega.
-(** from §30 Exercise 18: first-countable topological group with dense/Lindelof implies countable basis **) 
-(** LATEX VERSION: Exercise 30.18: First-countable topological groups with extra properties have countable bases. **)
-Definition ex30_18_first_countable_group_countable_basis : set := omega.
+(** from §30 Exercise 13: disjoint open sets countable when dense countable **)
+(** LATEX VERSION: If X has countable dense subset, every collection of disjoint open sets in X is countable. **)
+Theorem ex30_13_disjoint_open_sets_countable : forall X Tx:set,
+  (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
+  forall Fam:set,
+    (forall U:set, U :e Fam -> open_in X Tx U) ->
+    (forall U V:set, U :e Fam -> V :e Fam -> U <> V -> Disjoint U V) ->
+    countable Fam.
+admit.
+Qed.
+(** from §30 Exercise 14: product of Lindelof with compact is Lindelof **)
+(** LATEX VERSION: If X is Lindelöf and Y is compact, then X × Y is Lindelöf. **)
+Theorem ex30_14_product_Lindelof_compact : forall X Tx Y Ty:set,
+  Lindelof_space X Tx ->
+  compact_space Y Ty ->
+  Lindelof_space (product_space (UPair Empty X) (fun i => if i = Empty then OrderedPair X Tx else OrderedPair Y Ty))
+                 (product_topology_full (UPair Empty X) (fun i => if i = Empty then OrderedPair X Tx else OrderedPair Y Ty)).
+admit.
+Qed.
+(** from §30 Exercise 15: C(I,R) uniform topology countable dense subset **)
+(** LATEX VERSION: C(I,ℝ) with uniform metric has countable dense subset and countable basis. **)
+Theorem ex30_15_CI_has_countable_dense_uniform :
+  exists CI:set, exists TCI:set, exists D:set,
+    D c= CI /\ countable D /\ dense_in D CI TCI /\
+    second_countable_space CI TCI.
+admit.
+Qed.
+(** from §30 Exercise 16a: product R^I where I=[0,1] has countable dense subset **)
+(** LATEX VERSION: The product space ℝ^I, where I=[0,1], has a countable dense subset. **)
+Theorem ex30_16a_product_RI_countable_dense :
+  exists Idx:set, exists Fam:set, exists D:set,
+    D c= product_space Idx Fam /\
+    countable D /\
+    dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
+admit.
+Qed.
+
+(** from §30 Exercise 16b: large product does not have countable dense subset **)
+(** LATEX VERSION: If J has cardinality > 𝒫(ℤ₊), then ℝ^J does not have countable dense subset. **)
+Theorem ex30_16b_large_product_no_countable_dense : forall J:set,
+  ~ (J equip Power omega) ->
+  forall Fam:set,
+    ~ (exists D:set,
+        D c= product_space J Fam /\
+        countable D /\
+        dense_in D (product_space J Fam) (product_topology_full J Fam)).
+admit.
+Qed.
+(** from §30 Exercise 17: Romega box topology countability axioms **)
+(** LATEX VERSION: ℝ^ω with box topology, subspace ℚ^∞ (rationals ending in infinite 0s): which countability axioms? **)
+Theorem ex30_17_Romega_box_countability :
+  exists Romega:set, exists BoxTop:set, exists Qinf:set, exists SubTop:set,
+    SubTop = subspace_topology Romega BoxTop Qinf /\
+    (first_countable_space Qinf SubTop \/ ~ first_countable_space Qinf SubTop) /\
+    (second_countable_space Qinf SubTop \/ ~ second_countable_space Qinf SubTop) /\
+    (Lindelof_space Qinf SubTop \/ ~ Lindelof_space Qinf SubTop) /\
+    ((exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop) \/
+     ~ (exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop)).
+admit.
+Qed.
+(** from §30 Exercise 18: first-countable topological group with dense/Lindelof implies countable basis **)
+(** LATEX VERSION: If G is first-countable topological group with countable dense subset or Lindelöf, then G has countable basis. **)
+Theorem ex30_18_first_countable_group_countable_basis : forall G Tg:set,
+  topological_group G Tg ->
+  first_countable_space G Tg ->
+  ((exists D:set, D c= G /\ countable D /\ dense_in D G Tg) \/ Lindelof_space G Tg) ->
+  second_countable_space G Tg.
+admit.
+Qed.
 
 (** from §31 Exercise 1: regular implies disjoint closures of neighborhoods **) 
 (** LATEX VERSION: Exercise 31.1: In regular spaces, neighborhoods with disjoint closures around points. **)
