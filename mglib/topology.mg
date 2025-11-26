@@ -11687,33 +11687,89 @@ Theorem ex31_9_Sorgenfrey_plane_no_separation :
 admit.
 Qed.
 
-(** from §32 Exercise 1: closed subspace of normal is normal **) 
-(** LATEX VERSION: Exercise 32.1: Closed subspaces of normal spaces are normal. **)
-Definition ex32_1_closed_subspace_normal : set := omega.
-(** from §32 Exercise 2: factor spaces of products inherit separation **) 
-(** LATEX VERSION: Exercise 32.2: Factors of Hausdorff/regular products inherit separation. **)
-Definition ex32_2_factors_inherit_separation : set := omega.
-(** from §32 Exercise 3: locally compact Hausdorff implies regular **) 
-(** LATEX VERSION: Exercise 32.3: Locally compact Hausdorff spaces are regular. **)
-Definition ex32_3_locally_compact_Hausdorff_regular : set := omega.
-(** from §32 Exercise 4: regular Lindelof implies normal **) 
-(** LATEX VERSION: Exercise 32.4: Regular Lindelöf spaces are normal. **)
-Definition ex32_4_regular_Lindelof_normal : set := omega.
-(** from §32 Exercise 5: normality questions for Romega product topologies **) 
-(** LATEX VERSION: Exercise 32.5: Normality of various R^ω product topologies. **)
-Definition ex32_5_Romega_normality_questions : set := omega.
-(** from §32 Exercise 6: completely normal characterization via separated sets **) 
-(** LATEX VERSION: Exercise 32.6: Characterization of completely normal spaces via separated sets. **)
-Definition ex32_6_completely_normal_characterization : set := omega.
-(** from §32 Exercise 7: completely normal examples **) 
-(** LATEX VERSION: Exercise 32.7: Examples illustrating complete normality. **)
-Definition ex32_7_completely_normal_examples : set := omega.
-(** from §32 Exercise 8: linear continuum normal **) 
-(** LATEX VERSION: Exercise 32.8: Linear continua are normal. **)
-Definition ex32_8_linear_continuum_normal : set := omega.
-(** from §32 Exercise 9: uncountable product of R not normal **) 
-(** LATEX VERSION: Exercise 32.9: Uncountable product of ℝ is not normal. **)
-Definition ex32_9_uncountable_product_not_normal : set := omega.
+(** from §32 Exercise 1: closed subspace of normal is normal **)
+(** LATEX VERSION: A closed subspace of a normal space is normal. **)
+Theorem ex32_1_closed_subspace_normal : forall X Tx A:set,
+  normal_space X Tx ->
+  closed_in X Tx A ->
+  normal_space A (subspace_topology X Tx A).
+admit.
+Qed.
+(** from §32 Exercise 2: factor spaces of products inherit separation **)
+(** LATEX VERSION: If ∏X_α is Hausdorff/regular/normal, then so is each X_α (assuming X_α nonempty). **)
+Theorem ex32_2_factors_inherit_separation : forall Idx Fam:set,
+  (forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ Xi <> Empty) ->
+  ((Hausdorff_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ Hausdorff_space Xi Txi) /\
+   (regular_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ regular_space Xi Txi) /\
+   (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ normal_space Xi Txi)).
+admit.
+Qed.
+(** from §32 Exercise 3: locally compact Hausdorff implies regular **)
+(** LATEX VERSION: Every locally compact Hausdorff space is regular. **)
+Theorem ex32_3_locally_compact_Hausdorff_regular : forall X Tx:set,
+  locally_compact X Tx ->
+  Hausdorff_space X Tx ->
+  regular_space X Tx.
+admit.
+Qed.
+(** from §32 Exercise 4: regular Lindelof implies normal **)
+(** LATEX VERSION: Every regular Lindelöf space is normal. **)
+Theorem ex32_4_regular_Lindelof_normal : forall X Tx:set,
+  regular_space X Tx ->
+  Lindelof_space X Tx ->
+  normal_space X Tx.
+admit.
+Qed.
+(** from §32 Exercise 5: normality questions for Romega product topologies **)
+(** LATEX VERSION: Is ℝ^ω normal in product topology? In uniform topology? **)
+Theorem ex32_5_Romega_normality_questions :
+  (normal_space (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R)) \/
+   ~ normal_space (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R))) /\
+  (exists Romega Tunif:set,
+    (normal_space Romega Tunif \/ ~ normal_space Romega Tunif)).
+admit.
+Qed.
+(** from §32 Exercise 6: completely normal characterization via separated sets **)
+(** LATEX VERSION: X is completely normal iff for every separated pair A,B, there exist disjoint open sets containing them. **)
+Theorem ex32_6_completely_normal_characterization : forall X Tx:set,
+  completely_normal_space X Tx <->
+  (forall A B:set, separated_subsets X Tx A B ->
+    exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
+admit.
+Qed.
+(** from §32 Exercise 7: completely normal examples **)
+(** LATEX VERSION: Which are completely normal: (a) subspace (b) product (c) well-ordered (d) metrizable (e) compact Hausdorff (f) regular+countable basis (g) ℝ_ℓ? **)
+Theorem ex32_7_completely_normal_examples :
+  (forall X Tx A:set, completely_normal_space X Tx -> completely_normal_space A (subspace_topology X Tx A)) /\
+  (forall X Tx Y Ty Idx Fam:set, completely_normal_space X Tx -> completely_normal_space Y Ty ->
+    (completely_normal_space (product_space Idx Fam) (product_topology_full Idx Fam) \/
+     ~ completely_normal_space (product_space Idx Fam) (product_topology_full Idx Fam))) /\
+  (forall X:set, completely_normal_space X (order_topology X)) /\
+  (forall X Tx:set, metrizable X Tx -> completely_normal_space X Tx) /\
+  (forall X Tx:set, compact_space X Tx -> Hausdorff_space X Tx ->
+    (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
+  (forall X Tx:set, regular_space X Tx -> second_countable_space X Tx ->
+    (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
+  (exists Rl Tl:set, completely_normal_space Rl Tl \/ ~ completely_normal_space Rl Tl).
+admit.
+Qed.
+(** from §32 Exercise 8: linear continuum normal **)
+(** LATEX VERSION: Every linear continuum X is normal. **)
+Theorem ex32_8_linear_continuum_normal : forall X Tx:set,
+  linear_continuum X Tx ->
+  normal_space X Tx.
+admit.
+Qed.
+(** from §32 Exercise 9: uncountable product of R not normal **)
+(** LATEX VERSION: If J is uncountable, then ℝ^J is not normal. **)
+Theorem ex32_9_uncountable_product_not_normal : forall J:set,
+  ~ countable J ->
+  ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
+admit.
+Qed.
 
 (** helper: perfect normality predicate **) 
 Definition perfectly_normal_space : set -> set -> prop := fun X Tx =>
