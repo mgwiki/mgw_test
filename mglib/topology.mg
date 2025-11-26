@@ -11326,6 +11326,12 @@ Definition Gdelta_in : set -> set -> set -> prop := fun X Tx A =>
     (forall U :e Fam, open_in X Tx U) /\
     Intersection_Fam Fam = A.
 
+(** helper: open map - images of open sets are open **)
+Definition open_map : set -> set -> set -> set -> set -> prop :=
+  fun X Tx Y Ty f =>
+    topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
+    forall U:set, U :e Tx -> apply_fun f U :e Ty.
+
 (** from §30 Exercise 1a: one-point sets are G_delta in first-countable T1 **)
 (** LATEX VERSION: In a first-countable T₁ space, every one-point set is a G_δ set. **)
 Theorem ex30_1a_onepoint_Gdelta_firstcountable_T1 : forall X Tx x:set,
