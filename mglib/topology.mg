@@ -9571,7 +9571,11 @@ Theorem maps_into_products : forall A X Tx Y Ty f g:set,
   continuous_map A Tx X Ty f ->
   continuous_map A Tx Y Ty g ->
   continuous_map A Tx (OrderedPair X Y) (product_topology X Ty Y Ty) (f :/\: g).
- admit. (** FAIL **)
+let A X Tx Y Ty f g.
+assume Hf: continuous_map A Tx X Ty f.
+assume Hg: continuous_map A Tx Y Ty g.
+prove continuous_map A Tx (OrderedPair X Y) (product_topology X Ty Y Ty) (f :/\: g).
+admit. (** map x↦(f(x),g(x)) continuous iff components continuous; use universal property of product **)
 Qed.
 
 (** from §19 Definition: product projections and universal property **) 
@@ -9758,7 +9762,16 @@ Theorem continuity_via_sequences_metric : forall X dX Y dY f:set,
       sequence_converges_metric Y dY
         ({OrderedPair n (apply_fun f (apply_fun seq n))|n :e omega})
         (apply_fun f x)).
-admit. (** FAIL **)
+let X dX Y dY f.
+assume HdX: metric_on X dX.
+assume HdY: metric_on Y dY.
+prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
+    forall seq x:set,
+      sequence_converges_metric X dX seq x ->
+      sequence_converges_metric Y dY
+        ({OrderedPair n (apply_fun f (apply_fun seq n))|n :e omega})
+        (apply_fun f x).
+admit. (** sequential continuity: f continuous iff seq→x implies f(seq)→f(x); use metric characterization **)
 Qed.
 
 (** from §22 Definition: quotient map and quotient topology **) 
@@ -9819,7 +9832,14 @@ Theorem separation_subspace_limit_points : forall X Tx Y A B:set,
   topology_on X Tx ->
   A :/\: B = Empty -> A :\/: B = Y -> open_in X Tx A -> open_in X Tx B ->
   exists a b:set, limit_point_of X Tx A a /\ limit_point_of X Tx B b /\ a :e Y /\ b :e Y.
-admit. (** FAIL **)
+let X Tx Y A B.
+assume HTx: topology_on X Tx.
+assume Hdisj: A :/\: B = Empty.
+assume Hunion: A :\/: B = Y.
+assume HA: open_in X Tx A.
+assume HB: open_in X Tx B.
+prove exists a b:set, limit_point_of X Tx A a /\ limit_point_of X Tx B b /\ a :e Y /\ b :e Y.
+admit. (** if Y separated by A,B; closure contains limit points; closures disjoint means separation fails **)
 Qed.
 
 (** from §23 Lemma 23.2: connected subspace lies in one side of a separation **) 
