@@ -11320,27 +11320,102 @@ prove m_manifold C (subspace_topology X Tx C).
 admit. (** components of metrizable locally euclidean are manifolds **)
 Qed.
 
-(** from §30 Exercise 1: G_delta points in first-countable T1 **) 
-(** LATEX VERSION: Exercise 30.1 about G_δ points in first-countable T₁ spaces. **)
-Definition ex30_1_Gdelta_points : set := omega.
-(** from §30 Exercise 2: countable basis sub-basis selection **) 
-(** LATEX VERSION: Exercise 30.2 selecting countable sub-basis from a basis. **)
-Definition ex30_2_basis_contains_countable : set := omega.
-(** from §30 Exercise 3: uncountably many limit points in countable basis space **) 
-(** LATEX VERSION: Exercise 30.3 on limit points in spaces with countable basis. **)
-Definition ex30_3_uncountably_many_limit_points : set := omega.
-(** from §30 Exercise 4: compact metrizable implies second countable **) 
-(** LATEX VERSION: Exercise 30.4 proving compact metrizable spaces are second countable. **)
-Definition ex30_4_compact_metrizable_second_countable : set := omega.
-(** from §30 Exercise 5: metrizable countable dense or Lindelof imply second countable **) 
-(** LATEX VERSION: Exercise 30.5: metrizability plus separable/Lindelöf implies second countable. **)
-Definition ex30_5_metrizable_density_Lindelof_imply_second_countable : set := omega.
-(** from §30 Exercise 6: R_l and ordered square not metrizable **) 
-(** LATEX VERSION: Exercise 30.6: Show ℝ_ℓ and ordered square not metrizable. **)
-Definition ex30_6_Sorgenfrey_and_ordered_square_not_metrizable : set := omega.
-(** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **) 
-(** LATEX VERSION: Exercise 30.7: Countability properties of S_Ω and S̄_Ω. **)
-Definition ex30_7_SOmega_countability_axioms : set := omega.
+(** from §30 Exercise 1a: one-point sets are G_delta in first-countable T1 **)
+(** LATEX VERSION: In a first-countable T₁ space, every one-point set is a G_δ set. **)
+Theorem ex30_1a_onepoint_Gdelta_firstcountable_T1 : forall X Tx x:set,
+  first_countable X Tx ->
+  T1_space X Tx ->
+  x :e X ->
+  Gdelta_in X Tx (Sing x).
+admit.
+Qed.
+
+(** from §30 Exercise 1b: space with G_delta points but not first-countable **)
+(** LATEX VERSION: There exists a space where every one-point set is G_δ but which doesn't satisfy the first countability axiom. **)
+Theorem ex30_1b_Gdelta_not_firstcountable_exists :
+  exists X:set, exists Tx:set,
+    topology_on X Tx /\
+    (forall x:set, x :e X -> Gdelta_in X Tx (Sing x)) /\
+    ~ first_countable X Tx.
+admit.
+Qed.
+(** from §30 Exercise 2: every basis contains countable basis when space has one **)
+(** LATEX VERSION: If X has a countable basis, then every basis for X contains a countable basis. **)
+Theorem ex30_2_basis_contains_countable : forall X Tx:set, forall Basis:set,
+  second_countable_space X Tx ->
+  basis_on X Basis ->
+  exists CountableSub:set,
+    CountableSub c= Basis /\
+    countable CountableSub /\
+    basis_on X CountableSub.
+admit.
+Qed.
+(** from §30 Exercise 3: uncountable subset has uncountably many limit points **)
+(** LATEX VERSION: If X has countable basis and A is uncountable subset, then uncountably many points of A are limit points. **)
+Theorem ex30_3_uncountably_many_limit_points : forall X Tx A:set,
+  second_countable_space X Tx ->
+  A c= X ->
+  ~ countable A ->
+  ~ countable {x :e A | limit_point_of x A X Tx}.
+admit.
+Qed.
+(** from §30 Exercise 4: compact metrizable implies second countable **)
+(** LATEX VERSION: Every compact metrizable space has a countable basis. **)
+Theorem ex30_4_compact_metrizable_second_countable : forall X Tx d:set,
+  compact_space X Tx ->
+  metrizable X Tx ->
+  metric_on X d ->
+  Tx = metric_topology X d ->
+  second_countable_space X Tx.
+admit.
+Qed.
+(** from §30 Exercise 5a: metrizable with countable dense has countable basis **)
+(** LATEX VERSION: Every metrizable space with a countable dense subset has a countable basis. **)
+Theorem ex30_5a_metrizable_countable_dense_second_countable : forall X Tx:set,
+  metrizable X Tx ->
+  (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
+  second_countable_space X Tx.
+admit.
+Qed.
+
+(** from §30 Exercise 5b: metrizable Lindelof has countable basis **)
+(** LATEX VERSION: Every metrizable Lindelöf space has a countable basis. **)
+Theorem ex30_5b_metrizable_Lindelof_second_countable : forall X Tx:set,
+  metrizable X Tx ->
+  Lindelof_space X Tx ->
+  second_countable_space X Tx.
+admit.
+Qed.
+(** from §30 Exercise 6a: R_l not metrizable **)
+(** LATEX VERSION: The Sorgenfrey line ℝ_ℓ is not metrizable. **)
+Theorem ex30_6a_Rl_not_metrizable :
+  ~ metrizable R R_lower_limit_topology.
+admit.
+Qed.
+
+(** from §30 Exercise 6b: ordered square not metrizable **)
+(** LATEX VERSION: The ordered square is not metrizable. **)
+Theorem ex30_6b_ordered_square_not_metrizable : forall Tx:set,
+  Tx = R (** stub: order topology on ordered square **) ->
+  ~ metrizable ordered_square Tx.
+admit.
+Qed.
+(** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **)
+(** LATEX VERSION: Determine which countability axioms S_Ω and S̄_Ω satisfy. **)
+(** stub: need actual topologies for S_Omega and Sbar_Omega **)
+Theorem ex30_7_SOmega_Sbar_Omega_countability : forall Tx_SO Tx_SbarO:set,
+  Tx_SO = SOmega_topology ->
+  Tx_SbarO = SbarOmega_topology ->
+  (first_countable S_Omega Tx_SO /\
+   second_countable_space S_Omega Tx_SO /\
+   Lindelof_space S_Omega Tx_SO /\
+   (exists D:set, D c= S_Omega /\ countable D /\ dense_in D S_Omega Tx_SO)) /\
+  (first_countable Sbar_Omega Tx_SbarO /\
+   ~ second_countable_space Sbar_Omega Tx_SbarO /\
+   ~ Lindelof_space Sbar_Omega Tx_SbarO /\
+   ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega Tx_SbarO)).
+admit.
+Qed.
 (** from §30 Exercise 8: countability axioms for Romega uniform topology **) 
 (** LATEX VERSION: Exercise 30.8: Countability properties of R^ω with uniform topology. **)
 Definition ex30_8_Romega_uniform_countability : set := omega.
