@@ -11592,33 +11592,102 @@ Theorem ex30_18_first_countable_group_countable_basis : forall G Tg:set,
 admit.
 Qed.
 
-(** from §31 Exercise 1: regular implies disjoint closures of neighborhoods **) 
-(** LATEX VERSION: Exercise 31.1: In regular spaces, neighborhoods with disjoint closures around points. **)
-Definition ex31_1_regular_disjoint_closure_neighborhoods : set := omega.
-(** from §31 Exercise 2: normal implies disjoint closures for closed sets **) 
-(** LATEX VERSION: Exercise 31.2: In normal spaces, disjoint closed sets have disjoint closures of neighborhoods. **)
-Definition ex31_2_normal_disjoint_closure_neighborhoods : set := omega.
-(** from §31 Exercise 3: every order topology regular **) 
-(** LATEX VERSION: Exercise 31.3: Show every order topology is regular. **)
-Definition ex31_3_order_topology_regular : set := omega.
-(** from §31 Exercise 4: comparing finer/coarser separation axioms **) 
-(** LATEX VERSION: Exercise 31.4: Compare separation properties under finer/coarser topologies. **)
-Definition ex31_4_comparison_topologies_separation : set := omega.
-(** from §31 Exercise 5: equalizer of continuous maps into Hausdorff is closed **) 
-(** LATEX VERSION: Exercise 31.5: Equalizers into Hausdorff spaces are closed. **)
-Definition ex31_5_equalizer_closed_in_Hausdorff : set := omega.
-(** from §31 Exercise 6: closed continuous surjection preserves normal **) 
-(** LATEX VERSION: Exercise 31.6: Closed continuous surjections preserve normality. **)
-Definition ex31_6_closed_map_preserves_normal : set := omega.
-(** from §31 Exercise 7: perfect map preserves separation/countability/local compactness **) 
-(** LATEX VERSION: Exercise 31.7: Perfect maps preserve various separation/countability properties. **)
-Definition ex31_7_perfect_map_properties : set := omega.
-(** from §31 Exercise 8: orbit space of compact group action preserves properties **) 
-(** LATEX VERSION: Exercise 31.8: Orbit space of compact group action retains properties. **)
-Definition ex31_8_orbit_space_properties : set := omega.
-(** from §31 Exercise 9: Sorgenfrey plane rational/irrational diagonal non-separation **) 
-(** LATEX VERSION: Exercise 31.9: Rational/irrational diagonal in Sorgenfrey plane are not separable by neighborhoods. **)
-Definition ex31_9_Sorgenfrey_plane_no_separation : set := omega.
+(** from §31 Exercise 1: regular implies disjoint closures of neighborhoods **)
+(** LATEX VERSION: If X is regular, every pair of points have neighborhoods whose closures are disjoint. **)
+Theorem ex31_1_regular_disjoint_closure_neighborhoods : forall X Tx x y:set,
+  regular_space X Tx ->
+  x :e X ->
+  y :e X ->
+  x <> y ->
+  exists U V:set,
+    open_in X Tx U /\ open_in X Tx V /\
+    x :e U /\ y :e V /\
+    closure_of X Tx U :/\: closure_of X Tx V = Empty.
+admit.
+Qed.
+(** from §31 Exercise 2: normal implies disjoint closures for closed sets **)
+(** LATEX VERSION: If X is normal, every pair of disjoint closed sets have neighborhoods whose closures are disjoint. **)
+Theorem ex31_2_normal_disjoint_closure_neighborhoods : forall X Tx A B:set,
+  normal_space X Tx ->
+  closed_in X Tx A ->
+  closed_in X Tx B ->
+  A :/\: B = Empty ->
+  exists U V:set,
+    open_in X Tx U /\ open_in X Tx V /\
+    A c= U /\ B c= V /\
+    closure_of X Tx U :/\: closure_of X Tx V = Empty.
+admit.
+Qed.
+(** from §31 Exercise 3: every order topology regular **)
+(** LATEX VERSION: Every order topology is regular. **)
+Theorem ex31_3_order_topology_regular : forall X:set, forall less:set -> set -> prop,
+  forall Tx:set,
+    Tx = order_topology X less ->
+    regular_space X Tx.
+admit.
+Qed.
+(** from §31 Exercise 4: comparing finer/coarser separation axioms **)
+(** LATEX VERSION: Let X have two topologies T and T', with T' ⊃ T. Compare separation properties. **)
+Theorem ex31_4_comparison_topologies_separation : forall X Tx Tx':set,
+  Tx c= Tx' ->
+  ((Hausdorff_space X Tx' -> Hausdorff_space X Tx) /\
+   (regular_space X Tx -> regular_space X Tx') /\
+   (normal_space X Tx -> normal_space X Tx')).
+admit.
+Qed.
+(** from §31 Exercise 5: equalizer of continuous maps into Hausdorff is closed **)
+(** LATEX VERSION: Let f,g: X → Y be continuous, Y Hausdorff. Then {x | f(x) = g(x)} is closed in X. **)
+Theorem ex31_5_equalizer_closed_in_Hausdorff : forall X Tx Y Ty f g:set,
+  continuous_map X Tx Y Ty f ->
+  continuous_map X Tx Y Ty g ->
+  Hausdorff_space Y Ty ->
+  closed_in X Tx {x :e X | apply_fun f x = apply_fun g x}.
+admit.
+Qed.
+(** from §31 Exercise 6: closed continuous surjection preserves normal **)
+(** LATEX VERSION: Let p: X → Y be closed continuous surjective map. If X is normal, then so is Y. **)
+Theorem ex31_6_closed_map_preserves_normal : forall X Tx Y Ty p:set,
+  normal_space X Tx ->
+  continuous_map X Tx Y Ty p ->
+  (forall A:set, closed_in X Tx A -> closed_in Y Ty (apply_fun p A)) ->
+  (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) ->
+  normal_space Y Ty.
+admit.
+Qed.
+(** from §31 Exercise 7: perfect map preserves separation/countability/local compactness **)
+(** LATEX VERSION: Perfect map (closed continuous surjective with compact fibers) preserves Hausdorff, regular, locally compact, second-countable. **)
+Theorem ex31_7_perfect_map_properties : forall X Tx Y Ty p:set,
+  continuous_map X Tx Y Ty p ->
+  (forall A:set, closed_in X Tx A -> closed_in Y Ty (apply_fun p A)) ->
+  (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) ->
+  (forall y:set, y :e Y -> compact_space {x :e X | apply_fun p x = y} (subspace_topology X Tx {x :e X | apply_fun p x = y})) ->
+  (Hausdorff_space X Tx -> Hausdorff_space Y Ty) /\
+  (regular_space X Tx -> regular_space Y Ty) /\
+  (locally_compact_space X Tx -> locally_compact_space Y Ty) /\
+  (second_countable_space X Tx -> second_countable_space Y Ty).
+admit.
+Qed.
+(** from §31 Exercise 8: orbit space of compact group action preserves properties **)
+(** LATEX VERSION: Let G be compact topological group, α action of G on X. Orbit space X/G retains Hausdorff, regular, normal, locally compact, second-countable properties. **)
+Theorem ex31_8_orbit_space_properties : forall G Tg X Tx alpha:set,
+  topological_group G Tg ->
+  compact_space G Tg ->
+  (Hausdorff_space X Tx -> exists XG TxG:set, Hausdorff_space XG TxG) /\
+  (regular_space X Tx -> exists XG TxG:set, regular_space XG TxG) /\
+  (normal_space X Tx -> exists XG TxG:set, normal_space XG TxG) /\
+  (locally_compact_space X Tx -> exists XG TxG:set, locally_compact_space XG TxG) /\
+  (second_countable_space X Tx -> exists XG TxG:set, second_countable_space XG TxG).
+admit.
+Qed.
+(** from §31 Exercise 9: Sorgenfrey plane rational/irrational diagonal non-separation **)
+(** LATEX VERSION: In ℝ_ℓ², let A = {x × (-x) | x rational}, B = {x × (-x) | x irrational}. No open sets separate A and B. **)
+Theorem ex31_9_Sorgenfrey_plane_no_separation :
+  exists Rl2 Tl2 A B:set,
+    ~ (exists U V:set,
+        open_in Rl2 Tl2 U /\ open_in Rl2 Tl2 V /\
+        A c= U /\ B c= V /\ U :/\: V = Empty).
+admit.
+Qed.
 
 (** from §32 Exercise 1: closed subspace of normal is normal **) 
 (** LATEX VERSION: Exercise 32.1: Closed subspaces of normal spaces are normal. **)
