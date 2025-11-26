@@ -10664,7 +10664,13 @@ Theorem regular_normal_via_closure : forall X Tx:set,
      forall x U:set, x :e X -> U :e Tx -> x :e U -> exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U)) /\
   (one_point_sets_closed X Tx -> (normal_space X Tx <->
      forall A U:set, closed_in X Tx A -> U :e Tx -> A c= U -> exists V:set, V :e Tx /\ A c= V /\ closure_of X Tx V c= U)).
-admit. (** FAIL **)
+let X Tx.
+assume HTx: topology_on X Tx.
+prove (one_point_sets_closed X Tx -> (regular_space X Tx <->
+     forall x U:set, x :e X -> U :e Tx -> x :e U -> exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U)) /\
+  (one_point_sets_closed X Tx -> (normal_space X Tx <->
+     forall A U:set, closed_in X Tx A -> U :e Tx -> A c= U -> exists V:set, V :e Tx /\ A c= V /\ closure_of X Tx V c= U)).
+admit. (** Lemma 31.1: regular/normal equivalence via closures; separate point/closed from complement by nested open nbhds **)
 Qed.
 
 (** from §31 Theorem 31.2: subspaces/products preserve Hausdorff and regular **) 
