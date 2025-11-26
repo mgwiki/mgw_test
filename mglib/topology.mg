@@ -11518,7 +11518,7 @@ Theorem ex30_13_disjoint_open_sets_countable : forall X Tx:set,
   (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
   forall Fam:set,
     (forall U:set, U :e Fam -> open_in X Tx U) ->
-    (forall U V:set, U :e Fam -> V :e Fam -> U <> V -> Disjoint U V) ->
+    (forall U V:set, U :e Fam -> V :e Fam -> U <> V -> U :/\: V = Empty) ->
     countable Fam.
 admit.
 Qed.
