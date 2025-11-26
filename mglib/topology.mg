@@ -8508,7 +8508,7 @@ Definition R2_dictionary_order_topology : set := order_topology (OrderedPair R R
 
 Theorem dictionary_order_topology_is_topology :
   topology_on (OrderedPair R R) R2_dictionary_order_topology.
-admit. (**  aby  order_topology_is_topology R2_5Fdictionary_5Forder_5Ftopology_def OrderedPair_def conj_myprob_8388_1_20251123_225755 . **)
+admit. (**  aby on 2025-11-25 order_topology_is_topology R2_5Fdictionary_5Forder_5Ftopology_def OrderedPair_def conj_myprob_8511_1_20251125_204342 . **)
 Qed.
 
 (** from §14 Example 2: rectangle subbasis yields product-style topology **) 
@@ -8623,7 +8623,7 @@ Definition R2_standard_topology : set := product_topology R R_standard_topology 
 
 Theorem R2_standard_equals_product :
   R2_standard_topology = product_topology R R_standard_topology R R_standard_topology.
-admit. (**  aby  R2_5Fstandard_5Ftopology_def conj_myprob_8498_1_20251123_230310 . **)
+admit. (**  aby on 2025-11-25 R2_5Fstandard_5Ftopology_def conj_myprob_8626_1_20251125_204344 . **)
 Qed.
 
 (** from §16 Definition: subspace topology **) 
