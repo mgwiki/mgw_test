@@ -10000,7 +10000,10 @@ Theorem ex26_compactness_exercises :
   forall X Tx:set, compact_space X Tx ->
   (closed_in R R_standard_topology unit_interval) /\
   (compact_space unit_interval R_standard_topology).
-admit. (** FAIL **)
+let X Tx.
+assume HX: compact_space X Tx.
+prove closed_in R R_standard_topology unit_interval /\ compact_space unit_interval R_standard_topology.
+admit. (** unit interval [0,1] is complement of (-∞,0)∪(1,∞); compact by Heine-Borel **)
 Qed.
 
 (** from §26/§27: Heine-Borel on ℝ (closed and bounded sets) **) 
