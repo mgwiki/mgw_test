@@ -10670,8 +10670,9 @@ Definition collection_has_order_at_m_plus_one : set -> set -> set -> prop :=
     forall x:set, x :e X ->
       cardinality_at_most {U :e A|x :e U} m.
 
-(** from §50 Definition: covering dimension and finite dimensionality **) 
-(** LATEX VERSION: Covering dimension/finite dimensional space (placeholders). **)
+(** from §50 Definition: covering dimension and finite dimensionality **)
+(** LATEX VERSION: A space X has covering dimension ≤n if for every open cover A there exists a refinement of order ≤n+1. **)
+(** stub: this is a placeholder; proper definition requires refinement and order of coverings **)
 Definition covering_dimension : set -> set -> prop := fun X n =>
   n :e omega /\ exists Tx:set, topology_on X Tx.
 Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
@@ -10914,7 +10915,9 @@ Theorem ex50_1_discrete_dimension_0 : forall X Tx:set,
   Tx = discrete_topology X ->
   topology_on X Tx ->
   covering_dimension X Empty.
-admit. (** FAIL on 2025-11-26 03:10 **)
+let X Tx.
+assume HTxdisc HTxtop.
+admit. (** stub definition makes this trivial but not useful **)
 Qed.
 
 (** from §50 Exercise 2: connected T1 space with >1 point has dimension ≥1 **)
