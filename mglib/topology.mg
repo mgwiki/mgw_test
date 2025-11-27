@@ -9365,7 +9365,25 @@ let X Tx Y A.
 assume HTx: topology_on X Tx.
 assume HY: Y c= X.
 prove closed_in Y (subspace_topology X Tx Y) A <-> exists C:set, closed_in X Tx C /\ A = C :/\: Y.
-admit. (** A closed in Y iff Y\A open in Y iff Y\A=(V∩Y) for V open in X iff A=(X\V)∩Y for X\V closed **)
+apply iffI.
+- assume HAclosed: closed_in Y (subspace_topology X Tx Y) A.
+  prove exists C:set, closed_in X Tx C /\ A = C :/\: Y.
+  claim HTsubspace: topology_on Y (subspace_topology X Tx Y).
+  { exact (subspace_topology_is_topology X Tx Y HTx HY). }
+  claim HAdef: topology_on Y (subspace_topology X Tx Y) /\ (A c= Y /\ exists U :e subspace_topology X Tx Y, A = Y :\: U).
+  { exact HAclosed. }
+  claim HAandEx: A c= Y /\ exists U :e subspace_topology X Tx Y, A = Y :\: U.
+  { exact (andER (topology_on Y (subspace_topology X Tx Y)) (A c= Y /\ exists U :e subspace_topology X Tx Y, A = Y :\: U) HAdef). }
+  claim HexU: exists U :e subspace_topology X Tx Y, A = Y :\: U.
+  { exact (andER (A c= Y) (exists U :e subspace_topology X Tx Y, A = Y :\: U) HAandEx). }
+  apply HexU.
+  let U. assume HandEq. apply HandEq.
+  assume HUsubspace: U :e subspace_topology X Tx Y.
+  assume HAeq: A = Y :\: U.
+  admit. (** need U=V∩Y for some V∈Tx, then A=Y\U=Y\(V∩Y)=(X\V)∩Y where X\V is closed **)
+- assume Hexists: exists C:set, closed_in X Tx C /\ A = C :/\: Y.
+  prove closed_in Y (subspace_topology X Tx Y) A.
+  admit. (** C closed in X means C=X\V for V∈Tx; A=C∩Y=(X\V)∩Y, so Y\A open in Y as needed **)
 Qed.
 
 (** from §17 Theorem 17.3: closedness passes up when subspace is closed **) 
