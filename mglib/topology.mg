@@ -9601,7 +9601,16 @@ Theorem pasting_lemma : forall X A B Y Tx Ty f g:set,
   continuous_map A (subspace_topology X Tx A) Y Ty f ->
   continuous_map B (subspace_topology X Tx B) Y Ty g ->
   continuous_map (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g).
-admit. (**  aby  binunion_idl In_5Fno2cycle binunionI1 binintersect�f conj_myprob_9051_1_20251124_002109 closure_of�f ex17_21_Kuratowski_closure_complement_maximal closure_characterization open_in_subspace_iff binintersectE binintersect_Subq_eq_1 binintersect_com subspace_topology�f prop_ext_2 . **)
+let X A B Y Tx Ty f g.
+assume HTx: topology_on X Tx.
+assume HA: A :e Tx.
+assume HB: B :e Tx.
+assume Hdisj: A :/\: B = Empty.
+assume Hf: continuous_map A (subspace_topology X Tx A) Y Ty f.
+assume Hg: continuous_map B (subspace_topology X Tx B) Y Ty g.
+prove continuous_map (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g).
+admit. (** preimage of open V is union of preimages in A and B; both open since f,g continuous and A,B open
+        aby: binunion_idl In_5Fno2cycle binunionI1 binintersect�f conj_myprob_9051_1_20251124_002109 closure_of�f ex17_21_Kuratowski_closure_complement_maximal closure_characterization open_in_subspace_iff binintersectE binintersect_Subq_eq_1 binintersect_com subspace_topology�f prop_ext_2 . **)
 Qed.
 
 (** from §18 Theorem 18.4: maps into products **) 
@@ -9641,7 +9650,14 @@ Theorem product_topology_universal : forall X Tx Y Ty:set,
   exists Tprod:set, topology_on (OrderedPair X Y) Tprod /\
     continuous_map (OrderedPair X Y) Tprod X Tx (projection_map X Y) /\
     continuous_map (OrderedPair X Y) Tprod Y Ty (projection_map Y X).
-admit. (**  aby  conj_myprob_9082_1_20251124_002413 product_topology_is_topology projections_are_continuous . **)
+let X Tx Y Ty.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+prove exists Tprod:set, topology_on (OrderedPair X Y) Tprod /\
+    continuous_map (OrderedPair X Y) Tprod X Tx (projection_map X Y) /\
+    continuous_map (OrderedPair X Y) Tprod Y Ty (projection_map Y X).
+admit. (** product topology satisfies universal property; projections continuous by construction
+        aby: conj_myprob_9082_1_20251124_002413 product_topology_is_topology projections_are_continuous . **)
 Qed.
 
 (** from §20 Definition: metric and metric topology **) 
@@ -9895,7 +9911,16 @@ Theorem connected_subset_in_separation_side : forall X Tx C D Y:set,
   connected_space Y Tx ->
   C :/\: D = Empty -> C :\/: D = X -> open_in X Tx C -> open_in X Tx D ->
   Y c= C \/ Y c= D.
-admit. (**  aby  open_in_subspace_iff conj_myprob_9276_1_20251124_010744 prop_ext_2 EmptyAx discrete_open_all In_5Fno2cycle . **)
+let X Tx C D Y.
+assume HTx: topology_on X Tx.
+assume HY: connected_space Y Tx.
+assume Hdisj: C :/\: D = Empty.
+assume Hunion: C :\/: D = X.
+assume HC: open_in X Tx C.
+assume HD: open_in X Tx D.
+prove Y c= C \/ Y c= D.
+admit. (** if Y intersects both C and D, then Y∩C and Y∩D separate Y; contradicts connectedness of Y
+        aby: open_in_subspace_iff conj_myprob_9276_1_20251124_010744 prop_ext_2 EmptyAx discrete_open_all In_5Fno2cycle . **)
 Qed.
 
 (** from §23 Theorem 23.3: union of connected sets with common point is connected **) 
@@ -10322,7 +10347,14 @@ Theorem compact_to_Hausdorff_bijection_homeomorphism : forall X Tx Y Ty f:set,
   compact_space X Tx -> Hausdorff_space Y Ty ->
   continuous_map X Tx Y Ty f -> bijection X Y f ->
   homeomorphism X Tx Y Ty f.
-admit. (**  aby  In_5Fno2cycle binintersect�f Hausdorff_5Fspace_def conj_myprob_9610_1_20251124_034838 ReplI UPairI2 . **)
+let X Tx Y Ty f.
+assume Hcomp: compact_space X Tx.
+assume HH: Hausdorff_space Y Ty.
+assume Hcont: continuous_map X Tx Y Ty f.
+assume Hbij: bijection X Y f.
+prove homeomorphism X Tx Y Ty f.
+admit. (** continuous bijection compact→Hausdorff; show f maps closed to closed; image of compact closed is compact; use bijection for inverse
+        aby: In_5Fno2cycle binintersect�f Hausdorff_5Fspace_def conj_myprob_9610_1_20251124_034838 ReplI UPairI2 . **)
 Qed.
 
 (** LATEX VERSION: A subset A⊂ℝ is bounded if |x|≤M for some real M. **)
@@ -10413,7 +10445,12 @@ Theorem Hausdorff_compact_sets_closed : forall X Tx A:set,
   Hausdorff_space X Tx ->
   compact_space A (subspace_topology X Tx A) ->
   closed_in X Tx A.
-admit. (**  aby  conj_myprob_9683_1_20251124_035407 compact_subspace_in_Hausdorff_closed . **)
+let X Tx A.
+assume HH: Hausdorff_space X Tx.
+assume Hcomp: compact_space A (subspace_topology X Tx A).
+prove closed_in X Tx A.
+admit. (** direct application of compact_subspace_in_Hausdorff_closed
+        aby: conj_myprob_9683_1_20251124_035407 compact_subspace_in_Hausdorff_closed . **)
 Qed.
 
 (** from §29: one-point compactification placeholder **) 
@@ -10427,7 +10464,12 @@ Definition one_point_compactification : set -> set -> set -> set -> prop := fun 
 Theorem one_point_compactification_exists : forall X Tx:set,
   locally_compact X Tx -> Hausdorff_space X Tx ->
   exists Y Ty:set, one_point_compactification X Tx Y Ty.
-admit. (**  aby  ex13_2_compare_nine_topologies separation_subspace_limit_points ReplSepE conj_myprob_9697_1_20251124_035437 . **)
+let X Tx.
+assume Hlc: locally_compact X Tx.
+assume HH: Hausdorff_space X Tx.
+prove exists Y Ty:set, one_point_compactification X Tx Y Ty.
+admit. (** add point ∞ to X; topology: opens of X plus complements of compact closed sets; verify Hausdorff and compact
+        aby: ex13_2_compare_nine_topologies separation_subspace_limit_points ReplSepE conj_myprob_9697_1_20251124_035437 . **)
 Qed.
 
 (** from §29 Exercises: local compactness and compactification **) 
@@ -10435,7 +10477,12 @@ Qed.
 Theorem ex29_local_compactness_exercises :
   forall X Tx:set, locally_compact X Tx -> Hausdorff_space X Tx ->
   exists Y Ty:set, one_point_compactification X Tx Y Ty.
-admit. (**  aby  conj_myprob_9705_1_20251124_035516 one_point_compactification_exists . **)
+let X Tx.
+assume Hlc: locally_compact X Tx.
+assume HH: Hausdorff_space X Tx.
+prove exists Y Ty:set, one_point_compactification X Tx Y Ty.
+admit. (** direct application of one_point_compactification_exists
+        aby: conj_myprob_9705_1_20251124_035516 one_point_compactification_exists . **)
 Qed.
 
 (** from exercises after §29: directed sets **) 
