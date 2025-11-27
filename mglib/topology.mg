@@ -8814,7 +8814,56 @@ let X Tx Y.
 assume HTx: topology_on X Tx.
 assume HY: Y c= X.
 prove topology_on Y (subspace_topology X Tx Y).
-admit. (** subspace opens = {V∩Y | V∈Tx}; verify topology axioms **)
+prove subspace_topology X Tx Y c= Power Y
+  /\ Empty :e subspace_topology X Tx Y
+  /\ Y :e subspace_topology X Tx Y
+  /\ (forall UFam :e Power (subspace_topology X Tx Y), Union UFam :e subspace_topology X Tx Y)
+  /\ (forall U :e subspace_topology X Tx Y, forall V :e subspace_topology X Tx Y, U :/\: V :e subspace_topology X Tx Y).
+apply andI.
+- prove (subspace_topology X Tx Y c= Power Y /\ Empty :e subspace_topology X Tx Y) /\ Y :e subspace_topology X Tx Y /\ (forall UFam :e Power (subspace_topology X Tx Y), Union UFam :e subspace_topology X Tx Y).
+  apply andI.
+  + prove subspace_topology X Tx Y c= Power Y /\ Empty :e subspace_topology X Tx Y /\ Y :e subspace_topology X Tx Y.
+    apply andI.
+    * prove subspace_topology X Tx Y c= Power Y /\ Empty :e subspace_topology X Tx Y.
+      apply andI.
+      { prove subspace_topology X Tx Y c= Power Y.
+        let U. assume HU: U :e subspace_topology X Tx Y.
+        exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HU).
+      }
+      { prove Empty :e subspace_topology X Tx Y.
+        claim HEmptyTx: Empty :e Tx.
+        { exact (topology_has_empty X Tx HTx). }
+        claim HPred: exists V :e Tx, Empty = V :/\: Y.
+        { witness Empty.
+          apply andI.
+          - exact HEmptyTx.
+          - prove Empty = Empty :/\: Y.
+            claim H1: Empty :/\: Y = Empty.
+            { apply Empty_Subq_eq.
+              exact (binintersect_Subq_1 Empty Y). }
+            rewrite H1.
+            reflexivity.
+        }
+        exact (SepI (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) Empty (Empty_In_Power Y) HPred).
+      }
+    * prove Y :e subspace_topology X Tx Y.
+      claim HXTx: X :e Tx.
+      { exact (topology_has_X X Tx HTx). }
+      claim HPredY: exists V :e Tx, Y = V :/\: Y.
+      { witness X.
+        apply andI.
+        - exact HXTx.
+        - prove Y = X :/\: Y.
+          apply set_ext.
+          + let y. assume Hy: y :e Y.
+            apply binintersectI.
+            * exact (HY y Hy).
+            * exact Hy.
+          + exact (binintersect_Subq_2 X Y).
+      }
+      exact (SepI (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) Y (Self_In_Power Y) HPredY).
+  + admit. (** unions: if each U_i = V_i ∩ Y, then ⋃U_i = (⋃V_i) ∩ Y **)
+- admit. (** binary intersections: (V_1∩Y) ∩ (V_2∩Y) = (V_1∩V_2) ∩ Y **)
 Qed.
 
 (** from §16: openness in subspace via ambient openness **) 
