@@ -9069,8 +9069,20 @@ assume HY: Y :e Tx.
 assume HU: U c= Y.
 assume HUopen: open_in Y (subspace_topology X Tx Y) U.
 prove U :e Tx.
-admit. (** U open in Y means U = V ∩ Y for some V ∈ Tx; since Y ∈ Tx and U ⊆ Y, have U = V ∩ Y ∈ Tx by intersection
-        aby: open_in_subspace_iff conj_myprob_8539_1_20251124_022852 prop_ext_2 In_5Find open_set�f ex13_1_local_open_subset In_5Fno2cycle . **)
+claim HYsub: Y c= X.
+{ exact (topology_elem_subset X Tx Y HTx HY). }
+claim HUiffExists: open_in Y (subspace_topology X Tx Y) U <-> exists V :e Tx, U = V :/\: Y.
+{ exact (open_in_subspace_iff X Tx Y U HTx HYsub HU). }
+claim Hexists: exists V :e Tx, U = V :/\: Y.
+{ exact (iffEL (open_in Y (subspace_topology X Tx Y) U) (exists V :e Tx, U = V :/\: Y) HUiffExists HUopen). }
+apply Hexists.
+let V. assume HVandEq. apply HVandEq.
+assume HV: V :e Tx. assume HUeq: U = V :/\: Y.
+claim HVY: V :/\: Y :e Tx.
+{ exact (topology_binintersect_closed X Tx V Y HTx HV HY). }
+claim HUinTx: U :e Tx.
+{ rewrite HUeq. exact HVY. }
+exact HUinTx.
 Qed.
 
 (** from §16 Theorem 16.3: product of subspaces equals subspace of product **) 
