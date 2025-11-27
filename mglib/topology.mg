@@ -9380,10 +9380,143 @@ apply iffI.
   let U. assume HandEq. apply HandEq.
   assume HUsubspace: U :e subspace_topology X Tx Y.
   assume HAeq: A = Y :\: U.
-  admit. (** need U=V∩Y for some V∈Tx, then A=Y\U=Y\(V∩Y)=(X\V)∩Y where X\V is closed **)
+  claim HUexV: exists V :e Tx, U = V :/\: Y.
+  { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUsubspace). }
+  apply HUexV.
+  let V. assume HVandEq. apply HVandEq.
+  assume HV: V :e Tx. assume HUeq: U = V :/\: Y.
+  set C := X :\: V.
+  claim HCclosed: closed_in X Tx C.
+  { prove topology_on X Tx /\ (C c= X /\ exists W :e Tx, C = X :\: W).
+    apply andI.
+    - exact HTx.
+    - apply andI.
+      + exact (setminus_Subq X V).
+      + witness V.
+        apply andI.
+        * exact HV.
+        * reflexivity.
+  }
+  claim HAeqC: A = C :/\: Y.
+  { rewrite HAeq.
+    rewrite HUeq.
+    prove Y :\: (V :/\: Y) = (X :\: V) :/\: Y.
+    apply set_ext.
+    - let x. assume Hx: x :e Y :\: (V :/\: Y).
+      claim HxY: x :e Y.
+      { exact (setminusE1 Y (V :/\: Y) x Hx). }
+      claim HxnotVY: x /:e V :/\: Y.
+      { exact (setminusE2 Y (V :/\: Y) x Hx). }
+      claim HxnotV: x /:e V.
+      { assume HxV: x :e V.
+        apply HxnotVY.
+        apply binintersectI.
+        - exact HxV.
+        - exact HxY.
+      }
+      claim HxX: x :e X.
+      { exact (HY x HxY). }
+      apply binintersectI.
+      + apply setminusI.
+        * exact HxX.
+        * exact HxnotV.
+      + exact HxY.
+    - let x. assume Hx: x :e (X :\: V) :/\: Y.
+      claim HxXV: x :e X :\: V.
+      { exact (binintersectE1 (X :\: V) Y x Hx). }
+      claim HxY: x :e Y.
+      { exact (binintersectE2 (X :\: V) Y x Hx). }
+      claim HxnotV: x /:e V.
+      { exact (setminusE2 X V x HxXV). }
+      apply setminusI.
+      + exact HxY.
+      + assume HxVY: x :e V :/\: Y.
+        apply HxnotV.
+        exact (binintersectE1 V Y x HxVY).
+  }
+  witness C.
+  apply andI.
+  - exact HCclosed.
+  - exact HAeqC.
 - assume Hexists: exists C:set, closed_in X Tx C /\ A = C :/\: Y.
   prove closed_in Y (subspace_topology X Tx Y) A.
-  admit. (** C closed in X means C=X\V for V∈Tx; A=C∩Y=(X\V)∩Y, so Y\A open in Y as needed **)
+  apply Hexists.
+  let C. assume HCandEq. apply HCandEq.
+  assume HCclosed: closed_in X Tx C.
+  assume HAeq: A = C :/\: Y.
+  claim HTsubspace: topology_on Y (subspace_topology X Tx Y).
+  { exact (subspace_topology_is_topology X Tx Y HTx HY). }
+  claim HCdef: topology_on X Tx /\ (C c= X /\ exists V :e Tx, C = X :\: V).
+  { exact HCclosed. }
+  claim HCandEx: C c= X /\ exists V :e Tx, C = X :\: V.
+  { exact (andER (topology_on X Tx) (C c= X /\ exists V :e Tx, C = X :\: V) HCdef). }
+  claim HexV: exists V :e Tx, C = X :\: V.
+  { exact (andER (C c= X) (exists V :e Tx, C = X :\: V) HCandEx). }
+  apply HexV.
+  let V. assume HVandEq. apply HVandEq.
+  assume HV: V :e Tx. assume HCeq: C = X :\: V.
+  set U := V :/\: Y.
+  claim HUsubspace: U :e subspace_topology X Tx Y.
+  { claim HUinPowerY: U :e Power Y.
+    { apply PowerI.
+      exact (binintersect_Subq_2 V Y). }
+    claim HPred: exists W :e Tx, U = W :/\: Y.
+    { witness V.
+      apply andI.
+      - exact HV.
+      - reflexivity.
+    }
+    exact (SepI (Power Y) (fun U0:set => exists W :e Tx, U0 = W :/\: Y) U HUinPowerY HPred).
+  }
+  claim HAeqYU: A = Y :\: U.
+  { rewrite HAeq.
+    rewrite HCeq.
+    prove (X :\: V) :/\: Y = Y :\: (V :/\: Y).
+    apply set_ext.
+    - let x. assume Hx: x :e (X :\: V) :/\: Y.
+      claim HxXV: x :e X :\: V.
+      { exact (binintersectE1 (X :\: V) Y x Hx). }
+      claim HxY: x :e Y.
+      { exact (binintersectE2 (X :\: V) Y x Hx). }
+      claim HxnotV: x /:e V.
+      { exact (setminusE2 X V x HxXV). }
+      apply setminusI.
+      + exact HxY.
+      + assume HxVY: x :e V :/\: Y.
+        apply HxnotV.
+        exact (binintersectE1 V Y x HxVY).
+    - let x. assume Hx: x :e Y :\: (V :/\: Y).
+      claim HxY: x :e Y.
+      { exact (setminusE1 Y (V :/\: Y) x Hx). }
+      claim HxnotVY: x /:e V :/\: Y.
+      { exact (setminusE2 Y (V :/\: Y) x Hx). }
+      claim HxnotV: x /:e V.
+      { assume HxV: x :e V.
+        apply HxnotVY.
+        apply binintersectI.
+        - exact HxV.
+        - exact HxY.
+      }
+      claim HxX: x :e X.
+      { exact (HY x HxY). }
+      apply binintersectI.
+      + apply setminusI.
+        * exact HxX.
+        * exact HxnotV.
+      + exact HxY.
+  }
+  claim HAsub: A c= Y.
+  { rewrite HAeq.
+    exact (binintersect_Subq_2 C Y). }
+  prove topology_on Y (subspace_topology X Tx Y) /\ (A c= Y /\ exists U :e subspace_topology X Tx Y, A = Y :\: U).
+  apply andI.
+  - exact HTsubspace.
+  - apply andI.
+    + exact HAsub.
+    + witness U.
+      apply andI.
+      * exact HUsubspace.
+      * exact HAeqYU.
 Qed.
 
 (** from §17 Theorem 17.3: closedness passes up when subspace is closed **) 
