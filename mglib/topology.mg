@@ -9530,7 +9530,157 @@ assume HTx: topology_on X Tx.
 assume HY: closed_in X Tx Y.
 assume HA: closed_in Y (subspace_topology X Tx Y) A.
 prove closed_in X Tx A.
-admit. (** A closed in Y means A=C∩Y for some closed C in X; intersection of two closed sets is closed **)
+(** Strategy: A = C ∩ Y where C closed in X (by closed_in_subspace_iff_intersection).
+    C = X \ U and Y = X \ V for some U,V ∈ Tx.
+    Then A = (X\U) ∩ (X\V) = X \ (U∪V), and U∪V ∈ Tx. **)
+claim HYsub: Y c= X.
+{ exact (andEL (Y c= X) (exists U :e Tx, Y = X :\: U) (andER (topology_on X Tx) (Y c= X /\ exists U :e Tx, Y = X :\: U) HY)). }
+claim Hexists: exists C:set, closed_in X Tx C /\ A = C :/\: Y.
+{ apply (iffEL (closed_in Y (subspace_topology X Tx Y) A) (exists C:set, closed_in X Tx C /\ A = C :/\: Y) (closed_in_subspace_iff_intersection X Tx Y A HTx HYsub)).
+  exact HA. }
+apply Hexists.
+let C.
+assume HCandA: closed_in X Tx C /\ A = C :/\: Y.
+claim HCclosed: closed_in X Tx C.
+{ exact (andEL (closed_in X Tx C) (A = C :/\: Y) HCandA). }
+claim HAeq: A = C :/\: Y.
+{ exact (andER (closed_in X Tx C) (A = C :/\: Y) HCandA). }
+(** C is closed in X, so C = X \ U for some U ∈ Tx **)
+claim HCexists: exists U :e Tx, C = X :\: U.
+{ exact (andER (C c= X) (exists U :e Tx, C = X :\: U) (andER (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HCclosed)). }
+apply HCexists.
+let U.
+assume HU: U :e Tx /\ C = X :\: U.
+claim HUinTx: U :e Tx.
+{ exact (andEL (U :e Tx) (C = X :\: U) HU). }
+claim HCeq: C = X :\: U.
+{ exact (andER (U :e Tx) (C = X :\: U) HU). }
+(** Y is closed in X, so Y = X \ V for some V ∈ Tx **)
+claim HYexists: exists V :e Tx, Y = X :\: V.
+{ exact (andER (Y c= X) (exists V :e Tx, Y = X :\: V) (andER (topology_on X Tx) (Y c= X /\ exists V :e Tx, Y = X :\: V) HY)). }
+apply HYexists.
+let V.
+assume HV: V :e Tx /\ Y = X :\: V.
+claim HVinTx: V :e Tx.
+{ exact (andEL (V :e Tx) (Y = X :\: V) HV). }
+claim HYeq: Y = X :\: V.
+{ exact (andER (V :e Tx) (Y = X :\: V) HV). }
+(** Now A = C ∩ Y = (X\U) ∩ (X\V) = X \ (U∪V) **)
+claim HAeqSetminus: A = (X :\: U) :/\: (X :\: V).
+{ rewrite HAeq.
+  rewrite HCeq.
+  rewrite HYeq.
+  reflexivity. }
+(** Prove (X\U) ∩ (X\V) = X \ (U∪V) by set extensionality **)
+claim HDeM: (X :\: U) :/\: (X :\: V) = X :\: (U :\/: V).
+{ apply set_ext.
+  - let x.
+    assume Hx: x :e (X :\: U) :/\: (X :\: V).
+    prove x :e X :\: (U :\/: V).
+    claim HxXU: x :e X :\: U.
+    { exact (binintersectE1 (X :\: U) (X :\: V) x Hx). }
+    claim HxXV: x :e X :\: V.
+    { exact (binintersectE2 (X :\: U) (X :\: V) x Hx). }
+    claim HxX: x :e X.
+    { exact (setminusE1 X U x HxXU). }
+    claim HxninU: x /:e U.
+    { exact (setminusE2 X U x HxXU). }
+    claim HxninV: x /:e V.
+    { exact (setminusE2 X V x HxXV). }
+    apply setminusI.
+    + exact HxX.
+    + assume HxUV: x :e U :\/: V.
+      prove False.
+      apply (binunionE U V x HxUV).
+      * assume HxU: x :e U.
+        exact (HxninU HxU).
+      * assume HxV: x :e V.
+        exact (HxninV HxV).
+  - let x.
+    assume Hx: x :e X :\: (U :\/: V).
+    prove x :e (X :\: U) :/\: (X :\: V).
+    claim HxX: x :e X.
+    { exact (setminusE1 X (U :\/: V) x Hx). }
+    claim HxninUV: x /:e U :\/: V.
+    { exact (setminusE2 X (U :\/: V) x Hx). }
+    apply binintersectI.
+    + prove x :e X :\: U.
+      apply setminusI.
+      * exact HxX.
+      * assume HxU: x :e U.
+        prove False.
+        claim HxUV: x :e U :\/: V.
+        { exact (binunionI1 U V x HxU). }
+        exact (HxninUV HxUV).
+    + prove x :e X :\: V.
+      apply setminusI.
+      * exact HxX.
+      * assume HxV: x :e V.
+        prove False.
+        claim HxUV: x :e U :\/: V.
+        { exact (binunionI2 U V x HxV). }
+        exact (HxninUV HxUV). }
+(** So A = X \ (U∪V), and since U,V ∈ Tx, we have U∪V ∈ Tx **)
+claim HUV: U :\/: V :e Tx.
+{ (** U ∪ V = ⋃{U, V}, and {U, V} ⊆ Tx, so by topology_union_closed, Union {U,V} ∈ Tx **)
+  claim HUV_eq: U :\/: V = Union (UPair U V).
+  { apply set_ext.
+    - let x.
+      assume Hx: x :e U :\/: V.
+      prove x :e Union (UPair U V).
+      apply (binunionE U V x Hx).
+      + assume HxU: x :e U.
+        apply (UnionI (UPair U V) x U HxU).
+        exact (UPairI1 U V).
+      + assume HxV: x :e V.
+        apply (UnionI (UPair U V) x V HxV).
+        exact (UPairI2 U V).
+    - let x.
+      assume Hx: x :e Union (UPair U V).
+      prove x :e U :\/: V.
+      apply (UnionE_impred (UPair U V) x Hx (x :e U :\/: V)).
+      let W.
+      assume HxW: x :e W.
+      assume HWin: W :e UPair U V.
+      apply (UPairE W U V HWin).
+      * assume HWeqU: W = U.
+        claim HxU: x :e U.
+        { rewrite <- HWeqU. exact HxW. }
+        exact (binunionI1 U V x HxU).
+      * assume HWeqV: W = V.
+        claim HxV: x :e V.
+        { rewrite <- HWeqV. exact HxW. }
+        exact (binunionI2 U V x HxV). }
+  rewrite HUV_eq.
+  claim HUPairSub: UPair U V c= Tx.
+  { let W.
+    assume HW: W :e UPair U V.
+    prove W :e Tx.
+    apply (UPairE W U V HW).
+    * assume HWeqU: W = U.
+      rewrite HWeqU.
+      exact HUinTx.
+    * assume HWeqV: W = V.
+      rewrite HWeqV.
+      exact HVinTx. }
+  exact (topology_union_closed X Tx (UPair U V) HTx HUPairSub). }
+(** Now A = X \ (U∪V) where U∪V ∈ Tx **)
+claim HAeqFinal: A = X :\: (U :\/: V).
+{ rewrite HAeqSetminus.
+  exact HDeM. }
+(** Therefore A is closed in X **)
+prove topology_on X Tx /\ (A c= X /\ exists U0 :e Tx, A = X :\: U0).
+apply andI.
+- exact HTx.
+- apply andI.
+  + prove A c= X.
+    rewrite HAeqFinal.
+    exact (setminus_Subq X (U :\/: V)).
+  + prove exists U0 :e Tx, A = X :\: U0.
+    witness (U :\/: V).
+    apply andI.
+    * exact HUV.
+    * exact HAeqFinal.
 Qed.
 
 (** from §17 Theorem 17.4: closure in subspace equals intersection **) 
