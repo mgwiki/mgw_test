@@ -9174,7 +9174,85 @@ assume Htop: topology_on X Tx.
 assume HY: Y c= X.
 assume HA: A c= Y.
 prove subspace_topology Y (subspace_topology X Tx Y) A = subspace_topology X Tx A.
-admit. (** subspace is transitive: (A⊂Y⊂X) open in A via Y equals open in A via X directly; verify U∩A = (V∩Y)∩A = V∩A **)
+(** Strategy: Prove both sides equal {W ∈ Power A | ∃V∈Tx, W = V∩A} using binintersect_right_absorb_subset: (V∩Y)∩A = V∩A when A⊆Y **)
+apply set_ext.
+- let W.
+  assume HW: W :e subspace_topology Y (subspace_topology X Tx Y) A.
+  prove W :e subspace_topology X Tx A.
+  (** W ∈ subspace_topology Y (subspace_topology X Tx Y) A means:
+      W ∈ Power A ∧ ∃U∈(subspace_topology X Tx Y), W = U ∩ A **)
+  claim HWPowerA: W :e Power A.
+  { exact (SepE1 (Power A) (fun U0:set => exists U :e subspace_topology X Tx Y, U0 = U :/\: A) W HW). }
+  claim HWexists: exists U :e subspace_topology X Tx Y, W = U :/\: A.
+  { exact (SepE2 (Power A) (fun U0:set => exists U :e subspace_topology X Tx Y, U0 = U :/\: A) W HW). }
+  apply HWexists.
+  let U.
+  assume HU: U :e subspace_topology X Tx Y /\ W = U :/\: A.
+  claim HUinSubY: U :e subspace_topology X Tx Y.
+  { exact (andEL (U :e subspace_topology X Tx Y) (W = U :/\: A) HU). }
+  claim HWeqUA: W = U :/\: A.
+  { exact (andER (U :e subspace_topology X Tx Y) (W = U :/\: A) HU). }
+  (** U ∈ subspace_topology X Tx Y means U ∈ Power Y ∧ ∃V∈Tx, U = V ∩ Y **)
+  claim HUPowerY: U :e Power Y.
+  { exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSubY). }
+  claim HUexists: exists V :e Tx, U = V :/\: Y.
+  { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSubY). }
+  apply HUexists.
+  let V.
+  assume HV: V :e Tx /\ U = V :/\: Y.
+  claim HVinTx: V :e Tx.
+  { exact (andEL (V :e Tx) (U = V :/\: Y) HV). }
+  claim HUeqVY: U = V :/\: Y.
+  { exact (andER (V :e Tx) (U = V :/\: Y) HV). }
+  (** Now W = U ∩ A = (V ∩ Y) ∩ A = V ∩ A by binintersect_right_absorb_subset **)
+  claim HWeqVA: W = V :/\: A.
+  { rewrite HWeqUA.
+    rewrite HUeqVY.
+    exact (binintersect_right_absorb_subset V Y A HA). }
+  (** So W ∈ {W ∈ Power A | ∃V∈Tx, W = V∩A} = subspace_topology X Tx A **)
+  claim HWPred: exists V0 :e Tx, W = V0 :/\: A.
+  { witness V.
+    apply andI.
+    - exact HVinTx.
+    - exact HWeqVA. }
+  exact (SepI (Power A) (fun W0:set => exists V0 :e Tx, W0 = V0 :/\: A) W HWPowerA HWPred).
+- let W.
+  assume HW: W :e subspace_topology X Tx A.
+  prove W :e subspace_topology Y (subspace_topology X Tx Y) A.
+  (** W ∈ subspace_topology X Tx A means W ∈ Power A ∧ ∃V∈Tx, W = V ∩ A **)
+  claim HWPowerA: W :e Power A.
+  { exact (SepE1 (Power A) (fun W0:set => exists V :e Tx, W0 = V :/\: A) W HW). }
+  claim HWexists: exists V :e Tx, W = V :/\: A.
+  { exact (SepE2 (Power A) (fun W0:set => exists V :e Tx, W0 = V :/\: A) W HW). }
+  apply HWexists.
+  let V.
+  assume HV: V :e Tx /\ W = V :/\: A.
+  claim HVinTx: V :e Tx.
+  { exact (andEL (V :e Tx) (W = V :/\: A) HV). }
+  claim HWeqVA: W = V :/\: A.
+  { exact (andER (V :e Tx) (W = V :/\: A) HV). }
+  (** Set U = V ∩ Y. Then U ∈ subspace_topology X Tx Y, and W = U ∩ A **)
+  set U := V :/\: Y.
+  claim HUinSubY: U :e subspace_topology X Tx Y.
+  { claim HUPowerY: U :e Power Y.
+    { exact (PowerI Y U (binintersect_Subq_2 V Y)). }
+    claim HUPred: exists V0 :e Tx, U = V0 :/\: Y.
+    { witness V.
+      apply andI.
+      - exact HVinTx.
+      - reflexivity. }
+    exact (SepI (Power Y) (fun U0:set => exists V0 :e Tx, U0 = V0 :/\: Y) U HUPowerY HUPred). }
+  claim HWeqUA: W = U :/\: A.
+  { rewrite HWeqVA.
+    symmetry.
+    exact (binintersect_right_absorb_subset V Y A HA). }
+  (** So W ∈ {W ∈ Power A | ∃U∈(subspace_topology X Tx Y), W = U∩A} **)
+  claim HWPred: exists U0 :e subspace_topology X Tx Y, W = U0 :/\: A.
+  { witness U.
+    apply andI.
+    - exact HUinSubY.
+    - exact HWeqUA. }
+  exact (SepI (Power A) (fun W0:set => exists U0 :e subspace_topology X Tx Y, W0 = U0 :/\: A) W HWPowerA HWPred).
 Qed.
 
 (** from §16 Exercise 2: fineness relation passes to subspaces **)
