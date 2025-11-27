@@ -9266,8 +9266,33 @@ assume Htop': topology_on X T'.
 assume Hfiner: T' c= T.
 assume HY: Y c= X.
 prove subspace_topology X T' Y c= subspace_topology X T Y.
-admit. (** U open in subspace from T' means U=V'∩Y for V'∈T'; since T'⊆T have V'∈T; so U also open in subspace from T
-        aby: open_in_subspace_iff conj_myprob_8587_1_20251124_004939 EmptyAx . **)
+(** Strategy: If W ∈ subspace_topology X T' Y, then W = V' ∩ Y for some V' ∈ T'.
+    Since T' ⊆ T, we have V' ∈ T, so W ∈ subspace_topology X T Y. **)
+let W.
+assume HW: W :e subspace_topology X T' Y.
+prove W :e subspace_topology X T Y.
+(** W ∈ subspace_topology X T' Y means W ∈ Power Y ∧ ∃V'∈T', W = V' ∩ Y **)
+claim HWPowerY: W :e Power Y.
+{ exact (SepE1 (Power Y) (fun W0:set => exists V :e T', W0 = V :/\: Y) W HW). }
+claim HWexists: exists V :e T', W = V :/\: Y.
+{ exact (SepE2 (Power Y) (fun W0:set => exists V :e T', W0 = V :/\: Y) W HW). }
+apply HWexists.
+let V'.
+assume HV': V' :e T' /\ W = V' :/\: Y.
+claim HV'inT': V' :e T'.
+{ exact (andEL (V' :e T') (W = V' :/\: Y) HV'). }
+claim HWeqV'Y: W = V' :/\: Y.
+{ exact (andER (V' :e T') (W = V' :/\: Y) HV'). }
+(** Since T' ⊆ T, we have V' ∈ T **)
+claim HV'inT: V' :e T.
+{ exact (Hfiner V' HV'inT'). }
+(** So W = V' ∩ Y with V' ∈ T, meaning W ∈ subspace_topology X T Y **)
+claim HWPred: exists V :e T, W = V :/\: Y.
+{ witness V'.
+  apply andI.
+  - exact HV'inT.
+  - exact HWeqV'Y. }
+exact (SepI (Power Y) (fun W0:set => exists V :e T, W0 = V :/\: Y) W HWPowerY HWPred).
 Qed.
 
 (** from §16 Exercise 3: openness of specific sets in subspace [-1,1] **)
