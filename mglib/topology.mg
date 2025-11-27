@@ -8964,7 +8964,8 @@ assume Htop': topology_on X T'.
 assume Hfiner: T' c= T.
 assume HY: Y c= X.
 prove subspace_topology X T' Y c= subspace_topology X T Y.
-admit. (**  aby  open_in_subspace_iff conj_myprob_8587_1_20251124_004939 EmptyAx . **)
+admit. (** U open in subspace from T' means U=V'∩Y for V'∈T'; since T'⊆T have V'∈T; so U also open in subspace from T
+        aby: open_in_subspace_iff conj_myprob_8587_1_20251124_004939 EmptyAx . **)
 Qed.
 
 (** from §16 Exercise 3: openness of specific sets in subspace [-1,1] **)
@@ -9036,7 +9037,8 @@ assume HTy: topology_on Y U.
 assume HTy': topology_on Y U'.
 assume Hprod: product_topology X T Y U c= product_topology X T' Y U'.
 prove T c= T' /\ U c= U'.
-admit. (**  aby  In_5Find open_in_subspace_iff conj_myprob_8633_1_20251123_231034 prop_ext_2 . **)
+admit. (** projection preimages of opens in T,U are in product; must be in coarser product; implies T⊆T' and U⊆U'
+        aby: In_5Find open_in_subspace_iff conj_myprob_8633_1_20251123_231034 prop_ext_2 . **)
 Qed.
 
 (** from §16 Exercise 6: rational rectangles form a basis for ℝ² **)
@@ -9251,7 +9253,15 @@ Theorem Hausdorff_unique_limits : forall X Tx seq x y:set,
   (forall U:set, U :e Tx -> x :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U) ->
   (forall U:set, U :e Tx -> y :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U) ->
   False.
-admit. (**  aby  In_5Fno2cycle Hausdorff_5Fspace_def conj_myprob_8804_1_20251123_233607 prop_ext_2 . **)
+let X Tx seq x y.
+assume HH: Hausdorff_space X Tx.
+assume Hneq: x <> y.
+assume Hseq: function_on seq omega X.
+assume Hx: forall U:set, U :e Tx -> x :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
+assume Hy: forall U:set, U :e Tx -> y :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
+prove False.
+admit. (** separate x and y by disjoint opens U,V; seq eventually in both U and V; contradiction
+        aby: In_5Fno2cycle Hausdorff_5Fspace_def conj_myprob_8804_1_20251123_233607 prop_ext_2 . **)
 Qed.
 
 (** from §17 Theorem 17.11: Hausdorff stability under constructions **) 
@@ -9557,7 +9567,12 @@ Theorem continuous_construction_rules : forall X Tx Y Ty Z Tz f g:set,
   continuous_map X Tx Y Ty f /\
   continuous_map X Tx Y Ty g /\
   continuous_map X Tx Y Ty g.
-admit. (**  aby  conj_myprob_9015_1_20251124_001920 . **)
+let X Tx Y Ty Z Tz f g.
+assume Hf: continuous_map X Tx Y Ty f.
+assume Hg: continuous_map X Tx Y Ty g.
+prove continuous_map X Tx Y Ty f /\ continuous_map X Tx Y Ty g /\ continuous_map X Tx Y Ty g.
+admit. (** trivial restatement of assumptions; placeholder for actual construction rules
+        aby: conj_myprob_9015_1_20251124_001920 . **)
 Qed.
 
 (** from §18 Definition: homeomorphism **) 
