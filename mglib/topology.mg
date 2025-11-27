@@ -8862,7 +8862,20 @@ apply andI.
           + exact (binintersect_Subq_2 X Y).
       }
       exact (SepI (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) Y (Self_In_Power Y) HPredY).
-  + admit. (** unions: if each U_i = V_i ∩ Y, then ⋃U_i = (⋃V_i) ∩ Y **)
+  + prove forall UFam :e Power (subspace_topology X Tx Y), Union UFam :e subspace_topology X Tx Y.
+    let UFam. assume HUFam: UFam :e Power (subspace_topology X Tx Y).
+    prove Union UFam :e subspace_topology X Tx Y.
+    claim HUFamsub: UFam c= subspace_topology X Tx Y.
+    { exact (PowerE (subspace_topology X Tx Y) UFam HUFam). }
+    set VFam := {V :e Tx | exists U :e UFam, U = V :/\: Y}.
+    claim HVFamTx: VFam c= Tx.
+    { let V. assume HV: V :e VFam.
+      exact (SepE1 Tx (fun V0 => exists U :e UFam, U = V0 :/\: Y) V HV). }
+    claim HVFamPower: VFam :e Power Tx.
+    { apply PowerI. exact HVFamTx. }
+    claim HUnionVFam: Union VFam :e Tx.
+    { exact (topology_union_closed X Tx VFam HTx HVFamTx). }
+    admit. (** need to show Union UFam = (Union VFam) :/\: Y **)
 - admit. (** binary intersections: (V_1∩Y) ∩ (V_2∩Y) = (V_1∩V_2) ∩ Y **)
 Qed.
 
