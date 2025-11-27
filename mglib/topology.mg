@@ -9024,7 +9024,22 @@ assume HTx: topology_on X Tx.
 assume HY: Y c= X.
 assume HU: U c= Y.
 prove open_in Y (subspace_topology X Tx Y) U <-> exists V :e Tx, U = V :/\: Y.
-admit. (** subspace topology definition: U open in Y iff U=V∩Y for some open V in X **)
+apply iffI.
+- assume HopenU: open_in Y (subspace_topology X Tx Y) U.
+  prove exists V :e Tx, U = V :/\: Y.
+  claim HUinSubspace: U :e subspace_topology X Tx Y.
+  { exact (andER (topology_on Y (subspace_topology X Tx Y)) (U :e subspace_topology X Tx Y) HopenU). }
+  exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSubspace).
+- assume Hexists: exists V :e Tx, U = V :/\: Y.
+  prove open_in Y (subspace_topology X Tx Y) U.
+  prove topology_on Y (subspace_topology X Tx Y) /\ U :e subspace_topology X Tx Y.
+  apply andI.
+  + prove topology_on Y (subspace_topology X Tx Y).
+    exact (subspace_topology_is_topology X Tx Y HTx HY).
+  + prove U :e subspace_topology X Tx Y.
+    claim HUinPowerY: U :e Power Y.
+    { apply PowerI. exact HU. }
+    exact (SepI (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinPowerY Hexists).
 Qed.
 
 (** from §16 Lemma 16.1: basis for the subspace topology **) 
