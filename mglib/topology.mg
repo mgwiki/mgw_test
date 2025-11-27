@@ -8319,7 +8319,8 @@ Theorem topology_from_subbasis_is_topology : forall X S:set,
 let X S.
 assume HS.
 prove topology_on X (generated_topology_from_subbasis X S).
-admit. (** subbasis generates a topology **)
+admit. (** subbasis generates a topology
+        aby: subbasis_on�f HS finite_intersections_basis_of_subbasis lemma_topology_from_basis generated_topology_from_subbasis�f conj_myprob_8322_1_20251127_011132 . **)
 Qed.
 
 (** from §13: generated topology from subbasis is minimal among topologies containing S **) 
