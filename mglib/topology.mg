@@ -8875,8 +8875,142 @@ apply andI.
     { apply PowerI. exact HVFamTx. }
     claim HUnionVFam: Union VFam :e Tx.
     { exact (topology_union_closed X Tx VFam HTx HVFamTx). }
-    admit. (** need to show Union UFam = (Union VFam) :/\: Y **)
-- admit. (** binary intersections: (V_1∩Y) ∩ (V_2∩Y) = (V_1∩V_2) ∩ Y **)
+    claim HUnionEq: Union UFam = (Union VFam) :/\: Y.
+    { apply set_ext.
+      - let x. assume Hx: x :e Union UFam.
+        apply UnionE_impred UFam x Hx.
+        let U. assume HxU: x :e U. assume HUinFam: U :e UFam.
+        claim HUinSubspace: U :e subspace_topology X Tx Y.
+        { exact (HUFamsub U HUinFam). }
+        claim HUexists: exists V :e Tx, U = V :/\: Y.
+        { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSubspace). }
+        apply HUexists.
+        let V. assume HVandEq. apply HVandEq.
+        assume HVTx: V :e Tx. assume HUeq: U = V :/\: Y.
+        apply binintersectI.
+        + prove x :e Union VFam.
+          claim HxV: x :e V.
+          { claim HxVY: x :e V :/\: Y.
+            { rewrite <- HUeq. exact HxU. }
+            exact (binintersectE1 V Y x HxVY).
+          }
+          claim HVinVFam: V :e VFam.
+          { apply (SepI Tx (fun V0 => exists U :e UFam, U = V0 :/\: Y) V HVTx).
+            witness U. apply andI.
+            - exact HUinFam.
+            - exact HUeq.
+          }
+          exact (UnionI VFam x V HxV HVinVFam).
+        + prove x :e Y.
+          claim HxVY: x :e V :/\: Y.
+          { rewrite <- HUeq. exact HxU. }
+          exact (binintersectE2 V Y x HxVY).
+      - let x. assume Hx: x :e (Union VFam) :/\: Y.
+        claim HxUnionV: x :e Union VFam.
+        { exact (binintersectE1 (Union VFam) Y x Hx). }
+        claim HxY: x :e Y.
+        { exact (binintersectE2 (Union VFam) Y x Hx). }
+        apply UnionE_impred VFam x HxUnionV.
+        let V. assume HxV: x :e V. assume HVinVFam: V :e VFam.
+        claim HVexists: exists U :e UFam, U = V :/\: Y.
+        { exact (SepE2 Tx (fun V0 => exists U :e UFam, U = V0 :/\: Y) V HVinVFam). }
+        apply HVexists.
+        let U. assume HUandEq. apply HUandEq.
+        assume HUinFam: U :e UFam. assume HUeq: U = V :/\: Y.
+        claim HxU: x :e U.
+        { rewrite HUeq.
+          apply binintersectI.
+          - exact HxV.
+          - exact HxY.
+        }
+        exact (UnionI UFam x U HxU HUinFam).
+    }
+    claim HPredUnion: exists V :e Tx, Union UFam = V :/\: Y.
+    { witness (Union VFam).
+      apply andI.
+      - exact HUnionVFam.
+      - exact HUnionEq.
+    }
+    claim HUnionInPowerY: Union UFam :e Power Y.
+    { apply PowerI.
+      let x. assume Hx: x :e Union UFam.
+      claim HxVY: x :e (Union VFam) :/\: Y.
+      { rewrite <- HUnionEq. exact Hx. }
+      exact (binintersectE2 (Union VFam) Y x HxVY).
+    }
+    exact (SepI (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) (Union UFam) HUnionInPowerY HPredUnion).
+- prove forall U :e subspace_topology X Tx Y, forall V :e subspace_topology X Tx Y, U :/\: V :e subspace_topology X Tx Y.
+  let U. assume HU: U :e subspace_topology X Tx Y.
+  let V. assume HV: V :e subspace_topology X Tx Y.
+  prove U :/\: V :e subspace_topology X Tx Y.
+  claim HUexists: exists V1 :e Tx, U = V1 :/\: Y.
+  { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HU). }
+  claim HVexists: exists V2 :e Tx, V = V2 :/\: Y.
+  { exact (SepE2 (Power Y) (fun V0:set => exists V :e Tx, V0 = V :/\: Y) V HV). }
+  apply HUexists.
+  let V1. assume HV1andEq. apply HV1andEq.
+  assume HV1Tx: V1 :e Tx. assume HUeq: U = V1 :/\: Y.
+  apply HVexists.
+  let V2. assume HV2andEq. apply HV2andEq.
+  assume HV2Tx: V2 :e Tx. assume HVeq: V = V2 :/\: Y.
+  claim HV1V2: V1 :/\: V2 :e Tx.
+  { exact (topology_binintersect_closed X Tx V1 V2 HTx HV1Tx HV2Tx). }
+  claim HIntEq: U :/\: V = (V1 :/\: V2) :/\: Y.
+  { rewrite HUeq.
+    rewrite HVeq.
+    prove (V1 :/\: Y) :/\: (V2 :/\: Y) = (V1 :/\: V2) :/\: Y.
+    apply set_ext.
+    - let x. assume Hx: x :e (V1 :/\: Y) :/\: (V2 :/\: Y).
+      claim HxV1Y: x :e V1 :/\: Y.
+      { exact (binintersectE1 (V1 :/\: Y) (V2 :/\: Y) x Hx). }
+      claim HxV2Y: x :e V2 :/\: Y.
+      { exact (binintersectE2 (V1 :/\: Y) (V2 :/\: Y) x Hx). }
+      claim HxV1: x :e V1.
+      { exact (binintersectE1 V1 Y x HxV1Y). }
+      claim HxV2: x :e V2.
+      { exact (binintersectE1 V2 Y x HxV2Y). }
+      claim HxY: x :e Y.
+      { exact (binintersectE2 V1 Y x HxV1Y). }
+      apply binintersectI.
+      + apply binintersectI.
+        * exact HxV1.
+        * exact HxV2.
+      + exact HxY.
+    - let x. assume Hx: x :e (V1 :/\: V2) :/\: Y.
+      claim HxV1V2: x :e V1 :/\: V2.
+      { exact (binintersectE1 (V1 :/\: V2) Y x Hx). }
+      claim HxY: x :e Y.
+      { exact (binintersectE2 (V1 :/\: V2) Y x Hx). }
+      claim HxV1: x :e V1.
+      { exact (binintersectE1 V1 V2 x HxV1V2). }
+      claim HxV2: x :e V2.
+      { exact (binintersectE2 V1 V2 x HxV1V2). }
+      apply binintersectI.
+      + apply binintersectI.
+        * exact HxV1.
+        * exact HxY.
+      + apply binintersectI.
+        * exact HxV2.
+        * exact HxY.
+  }
+  claim HPredInt: exists W :e Tx, U :/\: V = W :/\: Y.
+  { witness (V1 :/\: V2).
+    apply andI.
+    - exact HV1V2.
+    - exact HIntEq.
+  }
+  claim HIntInPowerY: U :/\: V :e Power Y.
+  { apply PowerI.
+    let x. assume Hx: x :e U :/\: V.
+    claim HxU: x :e U.
+    { exact (binintersectE1 U V x Hx). }
+    claim HUinPowerY: U :e Power Y.
+    { exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HU). }
+    claim HUsub: U c= Y.
+    { exact (PowerE Y U HUinPowerY). }
+    exact (HUsub x HxU).
+  }
+  exact (SepI (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) (U :/\: V) HIntInPowerY HPredInt).
 Qed.
 
 (** from §16: openness in subspace via ambient openness **) 
