@@ -9312,7 +9312,31 @@ assume HY: Y c= X.
 let U.
 assume HU: open_in Y (subspace_topology X Tx Y) U.
 prove exists V:set, open_in X Tx V /\ U = V :/\: Y.
-admit. (** direct consequence of subspace topology definition; U open in Y means U=V∩Y for some V open in X **)
+(** open_in Y (subspace_topology X Tx Y) U means:
+    topology_on Y (subspace_topology X Tx Y) ∧ U ∈ subspace_topology X Tx Y **)
+claim HtopY: topology_on Y (subspace_topology X Tx Y).
+{ exact (andEL (topology_on Y (subspace_topology X Tx Y)) (U :e subspace_topology X Tx Y) HU). }
+claim HUinSub: U :e subspace_topology X Tx Y.
+{ exact (andER (topology_on Y (subspace_topology X Tx Y)) (U :e subspace_topology X Tx Y) HU). }
+(** U ∈ subspace_topology X Tx Y means U ∈ Power Y ∧ ∃V∈Tx, U = V ∩ Y **)
+claim HUPowerY: U :e Power Y.
+{ exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSub). }
+claim HUexists: exists V :e Tx, U = V :/\: Y.
+{ exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSub). }
+apply HUexists.
+let V.
+assume HV: V :e Tx /\ U = V :/\: Y.
+claim HVinTx: V :e Tx.
+{ exact (andEL (V :e Tx) (U = V :/\: Y) HV). }
+claim HUeqVY: U = V :/\: Y.
+{ exact (andER (V :e Tx) (U = V :/\: Y) HV). }
+(** Now open_in X Tx V means topology_on X Tx ∧ V ∈ Tx, both of which we have **)
+claim HVopen: open_in X Tx V.
+{ exact (andI (topology_on X Tx) (V :e Tx) Htop HVinTx). }
+witness V.
+apply andI.
+- exact HVopen.
+- exact HUeqVY.
 Qed.
 
 (** from §16 Exercise 4: projections are open maps **)
