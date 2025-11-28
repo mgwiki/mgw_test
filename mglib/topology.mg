@@ -10226,8 +10226,7 @@ let X Tx Y Ty Z Tz f g.
 assume Hf: continuous_map X Tx Y Ty f.
 assume Hg: continuous_map X Tx Y Ty g.
 prove continuous_map X Tx Y Ty f /\ continuous_map X Tx Y Ty g /\ continuous_map X Tx Y Ty g.
-admit. (** trivial restatement of assumptions; placeholder for actual construction rules
-        aby: conj_myprob_9015_1_20251124_001920 . **)
+exact (andI (continuous_map X Tx Y Ty f /\ continuous_map X Tx Y Ty g) (continuous_map X Tx Y Ty g) (andI (continuous_map X Tx Y Ty f) (continuous_map X Tx Y Ty g) Hf Hg) Hg).
 Qed.
 
 (** from §18 Definition: homeomorphism **) 
