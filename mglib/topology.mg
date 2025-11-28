@@ -11170,8 +11170,7 @@ Theorem examples_of_directed_sets : forall J:set,
 let J.
 assume H: directed_set J.
 prove directed_set J.
-admit. (** trivial tautology: P → P
-        aby: conj_myprob_9717_1_20251124_035539 . **)
+exact H.
 Qed.
 
 (** from exercises after §29: cofinal subsets of directed sets are directed **) 
