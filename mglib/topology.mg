@@ -10128,7 +10128,12 @@ Theorem ex17_19_boundary_properties : forall X Tx A:set,
 let X Tx A.
 assume Htop: topology_on X Tx.
 prove boundary_of X Tx A c= closure_of X Tx A /\ boundary_of X Tx A c= closure_of X Tx (X :\: A).
-admit. (** boundary defined as cl(A) ∩ cl(X\A); both inclusions immediate from definition **)
+(** boundary_of is defined as closure(A) ∩ closure(X\A), so both inclusions follow from binintersect_Subq **)
+apply andI.
+- prove boundary_of X Tx A c= closure_of X Tx A.
+  exact (binintersect_Subq_1 (closure_of X Tx A) (closure_of X Tx (X :\: A))).
+- prove boundary_of X Tx A c= closure_of X Tx (X :\: A).
+  exact (binintersect_Subq_2 (closure_of X Tx A) (closure_of X Tx (X :\: A))).
 Qed.
 
 (** LATEX VERSION: Exercise 20: Boundary of a strip differs between standard and dictionary topologies on ℝ². **)
