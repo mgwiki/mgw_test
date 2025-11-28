@@ -10485,8 +10485,7 @@ Theorem sequence_convergence_metric : forall X d seq x:set,
 let X d seq x.
 assume H: sequence_converges_metric X d seq x.
 prove sequence_converges_metric X d seq x.
-admit. (** trivial tautology: P → P
-        aby: conj_myprob_9200_1_20251124_004438 . **)
+exact H.
 Qed.
 
 (** from §21: continuity via sequences in metric spaces **) 
