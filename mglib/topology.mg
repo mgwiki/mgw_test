@@ -9946,7 +9946,10 @@ let X Tx Y A.
 assume HY: closed_in X Tx Y.
 assume HA: closed_in Y (subspace_topology X Tx Y) A.
 prove closed_in X Tx A.
-admit. (** A closed in Y means A = C ∩ Y for closed C in X; since Y closed, A = C ∩ Y closed **)
+(** Extract topology_on X Tx from closed_in X Tx Y and apply closed_in_closed_subspace **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (Y c= X /\ exists U :e Tx, Y = X :\: U) HY). }
+exact (closed_in_closed_subspace X Tx Y A HTx HY HA).
 Qed.
 
 (** LATEX VERSION: Exercise 3: Products of closed sets are closed in the product topology. **)
