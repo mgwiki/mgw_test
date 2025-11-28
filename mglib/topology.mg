@@ -8439,7 +8439,17 @@ let X U.
 assume HU: U :e countable_complement_topology X.
 assume Hnemp: U <> Empty.
 prove countable (X :\: U).
-admit. (** follows from definition of countable_complement_topology **)
+(** By definition, U ∈ countable_complement_topology X means countable(X\U) ∨ U = Empty.
+    Since U ≠ Empty, we get countable(X\U). **)
+claim Hprop: countable (X :\: U) \/ U = Empty.
+{ exact (SepE2 (Power X) (fun V:set => countable (X :\: V) \/ V = Empty) U HU). }
+claim Hcount_branch: countable (X :\: U) -> countable (X :\: U).
+{ assume Hcount. exact Hcount. }
+claim Hempty_branch: U = Empty -> countable (X :\: U).
+{ assume HUeq.
+  apply FalseE.
+  exact (Hnemp HUeq). }
+exact (Hprop (countable (X :\: U)) Hcount_branch Hempty_branch).
 Qed.
 
 (** helper: unions of Tc open families remain Tc-open (placeholder) **) 
