@@ -9475,6 +9475,31 @@ Definition interior_of : set -> set -> set -> set := fun X T A =>
 Definition closure_of : set -> set -> set -> set := fun X T A =>
   {x :e X | forall U:set, U :e T -> x :e U -> U :/\: A <> Empty}.
 
+(** Helper: A is a subset of its closure **)
+Theorem subset_of_closure : forall X Tx A:set,
+  topology_on X Tx -> A c= X -> A c= closure_of X Tx A.
+let X Tx A.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+prove A c= closure_of X Tx A.
+let x. assume Hx: x :e A.
+prove x :e closure_of X Tx A.
+(** Show x :e X and for all U open containing x, U ∩ A ≠ ∅ **)
+claim HxX: x :e X.
+{ exact (HA x Hx). }
+claim Hcond: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+{ let U. assume HU: U :e Tx. assume HxU: x :e U.
+  prove U :/\: A <> Empty.
+  assume Hempty: U :/\: A = Empty.
+  (** Derive contradiction: x :e U and x :e A, so x :e U ∩ A **)
+  claim HxUA: x :e U :/\: A.
+  { exact (binintersectI U A x HxU Hx). }
+  claim HxEmpty: x :e Empty.
+  { rewrite <- Hempty. exact HxUA. }
+  exact (EmptyE x HxEmpty). }
+exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x HxX Hcond).
+Qed.
+
 (** from §17 Theorem 17.1: properties of closed sets **) 
 (** LATEX VERSION: Theorem 17.1: Closed sets contain X and ∅, are closed under arbitrary intersections and finite unions. **)
 Theorem closed_sets_axioms : forall X T:set,
