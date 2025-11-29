@@ -9982,7 +9982,123 @@ assume Htop: topology_on X Tx.
 assume HU: open_in X Tx U.
 assume HA: closed_in X Tx A.
 prove open_in X Tx (U :\: A) /\ closed_in X Tx (A :\: U).
-admit. (** U\A = U ∩ (X\A) is intersection of opens; A\U = A ∩ (X\U) is intersection of closeds **)
+(** Strategy: U\A = U ∩ V for some V open (from A = X\V); A\U = A ∩ (X\U) closed **)
+claim HUtop: U :e Tx.
+{ exact (andER (topology_on X Tx) (U :e Tx) HU). }
+claim HAdef: A c= X /\ (exists V :e Tx, A = X :\: V).
+{ exact (andER (topology_on X Tx) (A c= X /\ (exists V :e Tx, A = X :\: V)) HA). }
+claim HexV: exists V :e Tx, A = X :\: V.
+{ exact (andER (A c= X) (exists V :e Tx, A = X :\: V) HAdef). }
+apply HexV.
+let V. assume HVandEq. apply HVandEq.
+assume HV: V :e Tx.
+assume HAeq: A = X :\: V.
+apply andI.
+- prove open_in X Tx (U :\: A).
+  (** U :\: A = U :\: (X :\: V) = U :/\: V when U c= X **)
+  claim HUsub: U c= X.
+  { exact (topology_elem_subset X Tx U Htop HUtop). }
+  claim HUminusA_eq_UinterV: U :\: A = U :/\: V.
+  { rewrite HAeq.
+    apply set_ext.
+    + let x. assume Hx: x :e U :\: (X :\: V).
+      claim HxU: x :e U.
+      { exact (setminusE1 U (X :\: V) x Hx). }
+      claim HxnotXV: x /:e X :\: V.
+      { exact (setminusE2 U (X :\: V) x Hx). }
+      claim HxV: x :e V.
+      { claim HxX: x :e X.
+        { exact (HUsub x HxU). }
+        apply xm (x :e V).
+        * assume Hv. exact Hv.
+        * assume Hnv.
+          apply FalseE.
+          apply HxnotXV.
+          exact (setminusI X V x HxX Hnv). }
+      exact (binintersectI U V x HxU HxV).
+    + let x. assume Hx: x :e U :/\: V.
+      claim HxU: x :e U.
+      { exact (binintersectE1 U V x Hx). }
+      claim HxV: x :e V.
+      { exact (binintersectE2 U V x Hx). }
+      claim HxnotXV: x /:e X :\: V.
+      { assume H. apply (setminusE2 X V x H). exact HxV. }
+      exact (setminusI U (X :\: V) x HxU HxnotXV). }
+  rewrite HUminusA_eq_UinterV.
+  claim HUinterV: U :/\: V :e Tx.
+  { exact (topology_binintersect_closed X Tx U V Htop HUtop HV). }
+  exact (andI (topology_on X Tx) (U :/\: V :e Tx) Htop HUinterV).
+- prove closed_in X Tx (A :\: U).
+  (** A :\: U = (X :\: V) :\: U = X :\: (V :\/: U), and V :\/: U is open **)
+  claim HAsub: A c= X.
+  { exact (andEL (A c= X) (exists V0 :e Tx, A = X :\: V0) HAdef). }
+  claim HAminusU_sub: A :\: U c= X.
+  { let x. assume Hx. claim HxA: x :e A. { exact (setminusE1 A U x Hx). }
+    exact (HAsub x HxA). }
+  claim HVU: V :\/: U :e Tx.
+  { set UFam := UPair V U.
+    claim HUFamsub: UFam c= Tx.
+    { let W. assume HW: W :e UFam.
+      apply (UPairE W V U HW).
+      - assume HWeqV. rewrite HWeqV. exact HV.
+      - assume HWeqU. rewrite HWeqU. exact HUtop. }
+    claim HUnionVU: Union UFam = V :\/: U.
+    { apply set_ext.
+      - let x. assume Hx: x :e Union UFam.
+        apply UnionE_impred UFam x Hx.
+        let W. assume HxW: x :e W. assume HW: W :e UFam.
+        apply (UPairE W V U HW).
+        + assume HWeqV.
+          claim HxV: x :e V.
+          { rewrite <- HWeqV. exact HxW. }
+          exact (binunionI1 V U x HxV).
+        + assume HWeqU.
+          claim HxU: x :e U.
+          { rewrite <- HWeqU. exact HxW. }
+          exact (binunionI2 V U x HxU).
+      - let x. assume Hx: x :e V :\/: U.
+        apply (binunionE V U x Hx).
+        + assume HxV.
+          exact (UnionI UFam x V HxV (UPairI1 V U)).
+        + assume HxU.
+          exact (UnionI UFam x U HxU (UPairI2 V U)). }
+    rewrite <- HUnionVU.
+    exact (topology_union_closed X Tx UFam Htop HUFamsub). }
+  claim HAminusU_eq_XminusVU: A :\: U = X :\: (V :\/: U).
+  { rewrite HAeq.
+    apply set_ext.
+    + let x. assume Hx: x :e (X :\: V) :\: U.
+      claim HxXV: x :e X :\: V.
+      { exact (setminusE1 (X :\: V) U x Hx). }
+      claim HxnotU: x /:e U.
+      { exact (setminusE2 (X :\: V) U x Hx). }
+      claim HxX: x :e X.
+      { exact (setminusE1 X V x HxXV). }
+      claim HxnotV: x /:e V.
+      { exact (setminusE2 X V x HxXV). }
+      claim HxnotVU: x /:e V :\/: U.
+      { assume H. apply (binunionE V U x H).
+        - assume HxV. exact (HxnotV HxV).
+        - assume HxU. exact (HxnotU HxU). }
+      exact (setminusI X (V :\/: U) x HxX HxnotVU).
+    + let x. assume Hx: x :e X :\: (V :\/: U).
+      claim HxX: x :e X.
+      { exact (setminusE1 X (V :\/: U) x Hx). }
+      claim HxnotVU: x /:e V :\/: U.
+      { exact (setminusE2 X (V :\/: U) x Hx). }
+      claim HxnotV: x /:e V.
+      { assume HxV. apply HxnotVU. exact (binunionI1 V U x HxV). }
+      claim HxnotU: x /:e U.
+      { assume HxU. apply HxnotVU. exact (binunionI2 V U x HxU). }
+      claim HxXV: x :e X :\: V.
+      { exact (setminusI X V x HxX HxnotV). }
+      exact (setminusI (X :\: V) U x HxXV HxnotU). }
+  claim HPred: exists W :e Tx, A :\: U = X :\: W.
+  { witness (V :\/: U).
+    apply andI.
+    - exact HVU.
+    - exact HAminusU_eq_XminusVU. }
+  exact (andI (topology_on X Tx) (A :\: U c= X /\ (exists W :e Tx, A :\: U = X :\: W)) Htop (andI (A :\: U c= X) (exists W :e Tx, A :\: U = X :\: W) HAminusU_sub HPred)).
 Qed.
 
 (** LATEX VERSION: Exercise 5: Closure of (0,1) in order topology on X equals (0,1). **)
