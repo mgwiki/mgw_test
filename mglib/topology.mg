@@ -10023,7 +10023,66 @@ Theorem ex17_8_closure_intersection_questions : forall X Tx A B:set,
 let X Tx A B.
 assume Htop: topology_on X Tx.
 prove closure_of X Tx (A :/\: B) c= closure_of X Tx A :/\: closure_of X Tx B.
-admit. (** A∩B ⊆ A and A∩B ⊆ B; closure preserves inclusion; equality fails in general **)
+(** Strategy: if x in closure(A∩B), then every open containing x meets A∩B,
+    hence meets A (and B), so x in closure(A) (and closure(B)). **)
+let x.
+assume Hx: x :e closure_of X Tx (A :/\: B).
+prove x :e closure_of X Tx A :/\: closure_of X Tx B.
+claim HxX: x :e X.
+{ exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: (A :/\: B) <> Empty) x Hx). }
+claim HxAB: forall U:set, U :e Tx -> x :e U -> U :/\: (A :/\: B) <> Empty.
+{ exact (SepE2 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: (A :/\: B) <> Empty) x Hx). }
+apply binintersectI.
+- prove x :e closure_of X Tx A.
+  claim HxA: x :e X /\ (forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty).
+  { apply andI.
+    + exact HxX.
+    + let U. assume HU: U :e Tx. assume HxU: x :e U.
+      prove U :/\: A <> Empty.
+      claim HABne: U :/\: (A :/\: B) <> Empty.
+      { exact (HxAB U HU HxU). }
+      assume Hempty: U :/\: A = Empty.
+      apply HABne.
+      apply Empty_Subq_eq.
+      let y. assume Hy: y :e U :/\: (A :/\: B).
+      claim HyU: y :e U.
+      { exact (binintersectE1 U (A :/\: B) y Hy). }
+      claim HyAB: y :e A :/\: B.
+      { exact (binintersectE2 U (A :/\: B) y Hy). }
+      claim HyA: y :e A.
+      { exact (binintersectE1 A B y HyAB). }
+      claim HyUA: y :e U :/\: A.
+      { apply binintersectI.
+        - exact HyU.
+        - exact HyA. }
+      rewrite <- Hempty. exact HyUA.
+  }
+  exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x HxX (andER (x :e X) (forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty) HxA)).
+- prove x :e closure_of X Tx B.
+  claim HxB: x :e X /\ (forall U:set, U :e Tx -> x :e U -> U :/\: B <> Empty).
+  { apply andI.
+    + exact HxX.
+    + let U. assume HU: U :e Tx. assume HxU: x :e U.
+      prove U :/\: B <> Empty.
+      claim HABne: U :/\: (A :/\: B) <> Empty.
+      { exact (HxAB U HU HxU). }
+      assume Hempty: U :/\: B = Empty.
+      apply HABne.
+      apply Empty_Subq_eq.
+      let y. assume Hy: y :e U :/\: (A :/\: B).
+      claim HyU: y :e U.
+      { exact (binintersectE1 U (A :/\: B) y Hy). }
+      claim HyAB: y :e A :/\: B.
+      { exact (binintersectE2 U (A :/\: B) y Hy). }
+      claim HyB: y :e B.
+      { exact (binintersectE2 A B y HyAB). }
+      claim HyUB: y :e U :/\: B.
+      { apply binintersectI.
+        - exact HyU.
+        - exact HyB. }
+      rewrite <- Hempty. exact HyUB.
+  }
+  exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: B <> Empty) x HxX (andER (x :e X) (forall U:set, U :e Tx -> x :e U -> U :/\: B <> Empty) HxB)).
 Qed.
 
 (** LATEX VERSION: Exercise 9: Closure of A×B in product is product of closures. **)
