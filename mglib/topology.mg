@@ -9500,6 +9500,48 @@ claim Hcond: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
 exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x HxX Hcond).
 Qed.
 
+(** Helper: Closure is monotone **)
+Theorem closure_monotone : forall X Tx A B:set,
+  topology_on X Tx -> A c= B -> B c= X -> closure_of X Tx A c= closure_of X Tx B.
+let X Tx A B.
+assume Htop: topology_on X Tx.
+assume HAB: A c= B.
+assume HB: B c= X.
+prove closure_of X Tx A c= closure_of X Tx B.
+let x. assume Hx: x :e closure_of X Tx A.
+prove x :e closure_of X Tx B.
+(** x satisfies: x :e X and for all U open containing x, U ∩ A ≠ ∅ **)
+claim HxX: x :e X.
+{ exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+claim HcondA: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+{ exact (SepE2 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+(** Need to show: for all U open containing x, U ∩ B ≠ ∅ **)
+claim HcondB: forall U:set, U :e Tx -> x :e U -> U :/\: B <> Empty.
+{ let U. assume HU: U :e Tx. assume HxU: x :e U.
+  prove U :/\: B <> Empty.
+  (** We know U ∩ A ≠ ∅, and A ⊆ B, so U ∩ A ⊆ U ∩ B **)
+  claim HUA_ne: U :/\: A <> Empty.
+  { exact (HcondA U HU HxU). }
+  assume Hempty: U :/\: B = Empty.
+  (** Show U ∩ A = ∅ by showing U ∩ A ⊆ U ∩ B = ∅ **)
+  claim HUA_sub_UB: U :/\: A c= U :/\: B.
+  { let y. assume Hy: y :e U :/\: A.
+    claim HyU: y :e U.
+    { exact (binintersectE1 U A y Hy). }
+    claim HyA: y :e A.
+    { exact (binintersectE2 U A y Hy). }
+    claim HyB: y :e B.
+    { exact (HAB y HyA). }
+    exact (binintersectI U B y HyU HyB). }
+  claim HUA_empty: U :/\: A = Empty.
+  { apply Empty_Subq_eq.
+    claim HUB_sub_Empty: U :/\: B c= Empty.
+    { rewrite Hempty. exact (Subq_ref Empty). }
+    exact (Subq_tra (U :/\: A) (U :/\: B) Empty HUA_sub_UB HUB_sub_Empty). }
+  exact (HUA_ne HUA_empty). }
+exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: B <> Empty) x HxX HcondB).
+Qed.
+
 (** from §17 Theorem 17.1: properties of closed sets **) 
 (** LATEX VERSION: Theorem 17.1: Closed sets contain X and ∅, are closed under arbitrary intersections and finite unions. **)
 Theorem closed_sets_axioms : forall X T:set,
