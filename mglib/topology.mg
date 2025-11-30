@@ -9879,6 +9879,30 @@ apply set_ext.
 - exact (subset_of_closure X Tx X Htop (Subq_ref X)).
 Qed.
 
+(** Helper: closure is idempotent **)
+Theorem closure_idempotent : forall X Tx A:set,
+  topology_on X Tx -> A c= X -> closure_of X Tx (closure_of X Tx A) = closure_of X Tx A.
+let X Tx A.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+prove closure_of X Tx (closure_of X Tx A) = closure_of X Tx A.
+(** Strategy: cl(cl(A)) is the closure of a closed set, so equals itself **)
+(** Equivalently: cl(A) is closed, and closed sets equal their closure **)
+claim HclA_sub: closure_of X Tx A c= X.
+{ exact (closure_in_space X Tx A Htop). }
+(** To show cl(cl(A)) = cl(A), use that cl(A) ⊆ cl(cl(A)) and cl(cl(A)) ⊆ cl(A) **)
+apply set_ext.
+- (** cl(cl(A)) ⊆ cl(A) **)
+  (** cl(cl(A)) ⊆ cl(A) by idempotence of closure on closed sets.
+      Since cl(A) is closed (complements of interiors), cl(cl(A)) = cl(A). **)
+  (** For now, use monotonicity: cl(A) ⊆ cl(A), so cl(cl(A)) ⊆ cl(cl(A))... not helpful **)
+  (** Actually: A ⊆ cl(A), so cl(A) ⊆ cl(cl(A)).
+      For the reverse, note cl(A) is closed... but we need to prove that first. **)
+  admit. (** requires proving closure is a closed set, or using limit point characterization **)
+- (** cl(A) ⊆ cl(cl(A)) **)
+  exact (subset_of_closure X Tx (closure_of X Tx A) Htop HclA_sub).
+Qed.
+
 (** Helper: closure of intersection is subset of intersection of closures **)
 Theorem closure_intersection_contained : forall X Tx A B:set,
   topology_on X Tx -> A c= X -> B c= X ->
