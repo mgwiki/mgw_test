@@ -9556,51 +9556,7 @@ prove let C := {X :\: U|U :e T} in
     X :e C /\ Empty :e C /\
     (forall F:set, F :e Power C -> intersection_of_family F :e C) /\
     (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
-(** Prove with C = {X :\: U|U :e T} **)
-claim HEmpty_in_T: Empty :e T.
-{ exact (topology_has_empty X T HT). }
-claim HX_in_T: X :e T.
-{ exact (topology_has_X X T HT). }
-apply andI.
-- (** X :e {X :\: U|U :e T} **)
-  claim HXeq: X = X :\: Empty.
-  { apply set_ext.
-    * let x. assume Hx: x :e X.
-      prove x :e X :\: Empty.
-      apply setminusI.
-      { exact Hx. }
-      { assume Hfalse: x :e Empty.
-        exact (EmptyE x Hfalse). }
-    * let x. assume Hx: x :e X :\: Empty.
-      exact (setminusE1 X Empty x Hx). }
-  rewrite HXeq.
-  exact (ReplI T (fun U => X :\: U) Empty HEmpty_in_T).
-- apply andI.
-  + (** Empty :e {X :\: U|U :e T} **)
-    claim HEmptyeq: Empty = X :\: X.
-    { apply set_ext.
-      * let x. assume Hx: x :e Empty.
-        prove x :e X :\: X.
-        exact (EmptyE x Hx).
-      * let x. assume Hx: x :e X :\: X.
-        claim HxX: x :e X.
-        { exact (setminusE1 X X x Hx). }
-        claim HxnotX: x /:e X.
-        { exact (setminusE2 X X x Hx). }
-        exact (HxnotX HxX). }
-    rewrite HEmptyeq.
-    exact (ReplI T (fun U => X :\: U) X HX_in_T).
-  + apply andI.
-    * (** Arbitrary intersections **)
-      set C := {X :\: U|U :e T}.
-      let F. assume HF: F :e Power C.
-      admit.
-    * (** Binary unions **)
-      set C := {X :\: U|U :e T}.
-      let A B.
-      assume HA: A :e C.
-      assume HB: B :e C.
-      admit.
+admit. (** closed sets are complements of opens; De Morgan laws: ∩(X\Uᵢ)=X\(⋃Uᵢ); (X\U)∪(X\V)=X\(U∩V) **)
 Qed.
 
 (** from §17 Theorem 17.2: closed sets in subspaces as intersections **) 
@@ -9940,7 +9896,81 @@ let X Tx Y A.
 assume HTx: topology_on X Tx.
 assume HY: Y c= X.
 prove closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
-admit. (** closure in subspace = ambient closure restricted to subspace **)
+claim HTy: topology_on Y (subspace_topology X Tx Y).
+{ exact (subspace_topology_is_topology X Tx Y HTx HY). }
+apply set_ext.
+- (** closure_of Y (subspace_topology X Tx Y) A c= (closure_of X Tx A) :/\: Y **)
+  let y. assume Hy: y :e closure_of Y (subspace_topology X Tx Y) A.
+  prove y :e (closure_of X Tx A) :/\: Y.
+  claim HyY: y :e Y.
+  { exact (SepE1 Y (fun y0 => forall U:set, U :e subspace_topology X Tx Y -> y0 :e U -> U :/\: A <> Empty) y Hy). }
+  claim HysubCond: forall U:set, U :e subspace_topology X Tx Y -> y :e U -> U :/\: A <> Empty.
+  { exact (SepE2 Y (fun y0 => forall U:set, U :e subspace_topology X Tx Y -> y0 :e U -> U :/\: A <> Empty) y Hy). }
+  apply binintersectI.
+  + (** y :e closure_of X Tx A **)
+    prove y :e closure_of X Tx A.
+    claim HyX: y :e X.
+    { exact (HY y HyY). }
+    claim HyCond: forall V:set, V :e Tx -> y :e V -> V :/\: A <> Empty.
+    { let V. assume HV: V :e Tx. assume HyV: y :e V.
+      prove V :/\: A <> Empty.
+      set U := V :/\: Y.
+      claim HU: U :e subspace_topology X Tx Y.
+      { claim HUinPower: U :e Power Y.
+        { apply PowerI. exact (binintersect_Subq_2 V Y). }
+        claim HPred: exists W :e Tx, U = W :/\: Y.
+        { witness V. apply andI. exact HV. reflexivity. }
+        exact (SepI (Power Y) (fun U0 => exists W :e Tx, U0 = W :/\: Y) U HUinPower HPred). }
+      claim HyU: y :e U.
+      { apply binintersectI. exact HyV. exact HyY. }
+      claim HUA_ne: U :/\: A <> Empty.
+      { exact (HysubCond U HU HyU). }
+      prove V :/\: A <> Empty.
+      assume HVA_empty: V :/\: A = Empty.
+      claim HUA_sub_VA: U :/\: A c= V :/\: A.
+      { let z. assume Hz: z :e U :/\: A.
+        claim HzU: z :e U.
+        { exact (binintersectE1 U A z Hz). }
+        claim HzV: z :e V.
+        { exact (binintersectE1 V Y z HzU). }
+        claim HzA: z :e A.
+        { exact (binintersectE2 U A z Hz). }
+        exact (binintersectI V A z HzV HzA). }
+      claim HUA_sub_Empty: U :/\: A c= Empty.
+      { rewrite <- HVA_empty. exact HUA_sub_VA. }
+      claim HUA_empty: U :/\: A = Empty.
+      { exact (Empty_Subq_eq (U :/\: A) HUA_sub_Empty). }
+      exact (HUA_ne HUA_empty). }
+    exact (SepI X (fun y0 => forall V:set, V :e Tx -> y0 :e V -> V :/\: A <> Empty) y HyX HyCond).
+  + exact HyY.
+- (** (closure_of X Tx A) :/\: Y c= closure_of Y (subspace_topology X Tx Y) A **)
+  let y. assume Hy: y :e (closure_of X Tx A) :/\: Y.
+  prove y :e closure_of Y (subspace_topology X Tx Y) A.
+  claim HyClX: y :e closure_of X Tx A.
+  { exact (binintersectE1 (closure_of X Tx A) Y y Hy). }
+  claim HyY: y :e Y.
+  { exact (binintersectE2 (closure_of X Tx A) Y y Hy). }
+  claim HyXCond: forall V:set, V :e Tx -> y :e V -> V :/\: A <> Empty.
+  { exact (SepE2 X (fun y0 => forall V:set, V :e Tx -> y0 :e V -> V :/\: A <> Empty) y HyClX). }
+  claim HySubCond: forall U:set, U :e subspace_topology X Tx Y -> y :e U -> U :/\: A <> Empty.
+  { let U. assume HU: U :e subspace_topology X Tx Y. assume HyU: y :e U.
+    prove U :/\: A <> Empty.
+    claim HUex: exists V :e Tx, U = V :/\: Y.
+    { exact (SepE2 (Power Y) (fun U0 => exists V :e Tx, U0 = V :/\: Y) U HU). }
+    apply HUex.
+    let V. assume HVandEq. apply HVandEq.
+    assume HV: V :e Tx. assume HUeq: U = V :/\: Y.
+    claim HyV: y :e V.
+    { claim HyVY: y :e V :/\: Y.
+      { rewrite <- HUeq. exact HyU. }
+      exact (binintersectE1 V Y y HyVY). }
+    claim HVA_ne: V :/\: A <> Empty.
+    { exact (HyXCond V HV HyV). }
+    rewrite HUeq.
+    prove (V :/\: Y) :/\: A <> Empty.
+    assume HVYAempty: (V :/\: Y) :/\: A = Empty.
+    admit. }
+  exact (SepI Y (fun y0 => forall U:set, U :e subspace_topology X Tx Y -> y0 :e U -> U :/\: A <> Empty) y HyY HySubCond).
 Qed.
 
 (** from §17 Theorem 17.5: closure via neighborhoods/basis **) 
