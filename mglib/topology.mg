@@ -9632,6 +9632,30 @@ apply set_ext.
   exact (SepI X (fun x0 => exists V:set, V :e Tx /\ x0 :e V /\ V c= U) x HxX Hexists).
 Qed.
 
+(** Helper: interior of empty set is empty **)
+Theorem interior_of_empty : forall X Tx:set,
+  topology_on X Tx -> interior_of X Tx Empty = Empty.
+let X Tx.
+assume Htop: topology_on X Tx.
+prove interior_of X Tx Empty = Empty.
+apply set_ext.
+- (** interior(Empty) ⊆ Empty **)
+  exact (interior_subset X Tx Empty Htop).
+- (** Empty ⊆ interior(Empty) **)
+  exact (Subq_Empty (interior_of X Tx Empty)).
+Qed.
+
+(** Helper: interior of whole space is the space **)
+Theorem interior_of_space : forall X Tx:set,
+  topology_on X Tx -> interior_of X Tx X = X.
+let X Tx.
+assume Htop: topology_on X Tx.
+prove interior_of X Tx X = X.
+claim HXopen: X :e Tx.
+{ exact (topology_has_X X Tx Htop). }
+exact (open_interior_eq X Tx X Htop HXopen).
+Qed.
+
 (** Helper: closure contains the set **)
 Theorem closure_contains_set : forall X Tx A:set,
   topology_on X Tx -> A c= X -> A c= closure_of X Tx A.
