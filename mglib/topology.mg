@@ -9803,6 +9803,19 @@ prove interior_of X Tx A = X :\: closure_of X Tx (X :\: A).
 admit. (** requires proving closure is closed, and that complement of closed is open **)
 Qed.
 
+(** Helper: closure of a set is closed **)
+Theorem closure_is_closed : forall X Tx A:set,
+  topology_on X Tx -> A c= X -> closed_in X Tx (closure_of X Tx A).
+let X Tx A.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+prove closed_in X Tx (closure_of X Tx A).
+(** Need to show: topology_on X Tx /\ closure(A) c= X /\ exists U :e Tx, closure(A) = X \ U **)
+(** The open set we need is U = X \ closure(A), i.e., we need to show X \ closure(A) is open **)
+(** Equivalently, X \ closure(A) = interior(X \ A by duality **)
+admit. (** requires interior-closure duality or direct proof that complement of closure is open **)
+Qed.
+
 (** Helper: closure contains the set **)
 Theorem closure_contains_set : forall X Tx A:set,
   topology_on X Tx -> A c= X -> A c= closure_of X Tx A.
