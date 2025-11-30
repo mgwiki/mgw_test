@@ -9652,6 +9652,33 @@ apply set_ext.
 - exact (subset_of_closure X Tx X Htop (Subq_ref X)).
 Qed.
 
+(** Helper: closure of intersection is subset of intersection of closures **)
+Theorem closure_intersection_contained : forall X Tx A B:set,
+  topology_on X Tx -> A c= X -> B c= X ->
+  closure_of X Tx (A :/\: B) c= closure_of X Tx A :/\: closure_of X Tx B.
+let X Tx A B.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+assume HB: B c= X.
+prove closure_of X Tx (A :/\: B) c= closure_of X Tx A :/\: closure_of X Tx B.
+(** Use monotonicity: A ∩ B ⊆ A and A ∩ B ⊆ B **)
+claim HAB_A: A :/\: B c= A.
+{ exact (binintersect_Subq_1 A B). }
+claim HAB_B: A :/\: B c= B.
+{ exact (binintersect_Subq_2 A B). }
+claim HAB_X: A :/\: B c= X.
+{ let x. assume Hx: x :e A :/\: B.
+  exact (HA x (binintersectE1 A B x Hx)). }
+claim HclAB_A: closure_of X Tx (A :/\: B) c= closure_of X Tx A.
+{ exact (closure_monotone X Tx (A :/\: B) A Htop HAB_A HA). }
+claim HclAB_B: closure_of X Tx (A :/\: B) c= closure_of X Tx B.
+{ exact (closure_monotone X Tx (A :/\: B) B Htop HAB_B HB). }
+let x. assume Hx: x :e closure_of X Tx (A :/\: B).
+apply binintersectI.
+- exact (HclAB_A x Hx).
+- exact (HclAB_B x Hx).
+Qed.
+
 (** from §17 Theorem 17.1: properties of closed sets **) 
 (** LATEX VERSION: Theorem 17.1: Closed sets contain X and ∅, are closed under arbitrary intersections and finite unions. **)
 Theorem closed_sets_axioms : forall X T:set,
