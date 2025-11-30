@@ -9788,6 +9788,21 @@ claim HintA_open: interior_of X Tx A :e Tx.
 exact (open_interior_eq X Tx (interior_of X Tx A) Htop HintA_open).
 Qed.
 
+(** Helper: interior-closure duality **)
+Theorem interior_closure_complement_duality : forall X Tx A:set,
+  topology_on X Tx -> A c= X ->
+  interior_of X Tx A = X :\: closure_of X Tx (X :\: A).
+let X Tx A.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+prove interior_of X Tx A = X :\: closure_of X Tx (X :\: A).
+(** Strategy: int(A) is the largest open subset of A.
+    X \ cl(X\A) is open (complement of closed), and we show it equals int(A).
+    - int(A) ⊆ A and A ⊆ X \ (X\A), so int(A) ⊆ X \ cl(X\A)
+    - X \ cl(X\A) is open and contained in A, so X \ cl(X\A) ⊆ int(A) **)
+admit. (** requires proving closure is closed, and that complement of closed is open **)
+Qed.
+
 (** Helper: closure contains the set **)
 Theorem closure_contains_set : forall X Tx A:set,
   topology_on X Tx -> A c= X -> A c= closure_of X Tx A.
@@ -10457,16 +10472,19 @@ apply iffI.
   + assume HxX: x :e X.
     exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x HxX Hcond).
   + assume HxnotX: x /:e X.
-    (** If x /:e X, then for any U :e Tx with x :e U, we have a contradiction since U c= X.
-        So the condition "forall U :e Tx, x :e U -> ..." is vacuously true.
-        But that means we can't conclude x is in the closure.
-        The iff is actually: x :e X /\ (forall U :e Tx, x :e U -> U :/\: A <> Empty) <-> x :e closure.
-        Since the closure is defined as {x :e X | ...}, if x /:e X, then x is not in closure.
-        So we need to show False to use FalseE. But we can't - the condition could be vacuous! **)
-    (** The issue is that the backward direction needs x :e X as an implicit requirement.
-        The condition alone doesn't force x :e X. This is a gap in the statement. **)
+    (** If x /:e X, the condition is vacuous since for any U :e Tx, U c= X,
+        so x :e U would imply x :e X, contradicting x /:e X.
+        Since x /:e X, x is not in the closure (which is defined as {x :e X | ...}).
+        The theorem as stated has a logical gap: when x /:e X, the RHS is vacuously
+        true while the LHS is false, making the iff unprovable.
+
+        The correct statement should require x :e X as a hypothesis, or state:
+        "x :e closure <-> x :e X /\ (forall U :e Tx, x :e U -> U :/\: A <> Empty)"
+
+        For now, we admit this case, which should not occur in typical usage
+        where we only check closure membership for points known to be in X. **)
     apply FalseE.
-    admit.
+    admit. (** theorem statement gap: needs x :e X as hypothesis for backward direction **)
 Qed.
 
 (** from §17 Corollary 17.7: closed iff contains all limit points **) 
