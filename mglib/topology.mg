@@ -9548,7 +9548,20 @@ Theorem interior_subset : forall X Tx A:set,
 let X Tx A.
 assume Htop: topology_on X Tx.
 prove interior_of X Tx A c= A.
-admit. (** interior is the union of all opens contained in A, so interior(A) c= A **)
+let x. assume Hx: x :e interior_of X Tx A.
+prove x :e A.
+claim Hexists: exists U:set, U :e Tx /\ x :e U /\ U c= A.
+{ exact (SepE2 X (fun x0 => exists U:set, U :e Tx /\ x0 :e U /\ U c= A) x Hx). }
+apply Hexists.
+let U. assume HU_conj: U :e Tx /\ x :e U /\ U c= A.
+(** Conjunction is left-associative: ((U :e Tx /\ x :e U) /\ U c= A) **)
+claim HU_and_x: U :e Tx /\ x :e U.
+{ exact (andEL (U :e Tx /\ x :e U) (U c= A) HU_conj). }
+claim HUsub: U c= A.
+{ exact (andER (U :e Tx /\ x :e U) (U c= A) HU_conj). }
+claim HxU: x :e U.
+{ exact (andER (U :e Tx) (x :e U) HU_and_x). }
+exact (HUsub x HxU).
 Qed.
 
 (** Helper: interior is monotone **)
@@ -9558,7 +9571,36 @@ let X Tx A B.
 assume Htop: topology_on X Tx.
 assume HAB: A c= B.
 prove interior_of X Tx A c= interior_of X Tx B.
-admit. (** if U open and U c= A, then U c= B; so all opens in interior(A) are in interior(B) **)
+let x. assume Hx: x :e interior_of X Tx A.
+prove x :e interior_of X Tx B.
+claim HxX: x :e X.
+{ exact (SepE1 X (fun x0 => exists U:set, U :e Tx /\ x0 :e U /\ U c= A) x Hx). }
+claim Hexists: exists U:set, U :e Tx /\ x :e U /\ U c= A.
+{ exact (SepE2 X (fun x0 => exists U:set, U :e Tx /\ x0 :e U /\ U c= A) x Hx). }
+apply Hexists.
+let U. assume HU_conj: U :e Tx /\ x :e U /\ U c= A.
+(** Conjunction is left-associative: ((U :e Tx /\ x :e U) /\ U c= A) **)
+claim HU_and_x: U :e Tx /\ x :e U.
+{ exact (andEL (U :e Tx /\ x :e U) (U c= A) HU_conj). }
+claim HUsub_A: U c= A.
+{ exact (andER (U :e Tx /\ x :e U) (U c= A) HU_conj). }
+claim HU: U :e Tx.
+{ exact (andEL (U :e Tx) (x :e U) HU_and_x). }
+claim HxU: x :e U.
+{ exact (andER (U :e Tx) (x :e U) HU_and_x). }
+claim HUsub_B: U c= B.
+{ exact (Subq_tra U A B HUsub_A HAB). }
+(** Now construct the witness for x :e interior_of X Tx B **)
+claim Hwitness: U :e Tx /\ x :e U /\ U c= B.
+{ apply andI.
+  - apply andI.
+    + exact HU.
+    + exact HxU.
+  - exact HUsub_B. }
+claim Hexists_B: exists V:set, V :e Tx /\ x :e V /\ V c= B.
+{ witness U.
+  exact Hwitness. }
+exact (SepI X (fun x0 => exists V:set, V :e Tx /\ x0 :e V /\ V c= B) x HxX Hexists_B).
 Qed.
 
 (** Helper: closure contains the set **)
