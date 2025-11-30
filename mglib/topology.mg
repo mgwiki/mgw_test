@@ -10178,6 +10178,33 @@ apply andI.
         exact (binintersectI C D x HxC HxD).
 Qed.
 
+(** Helper: closure of intersection of closed sets **)
+Theorem closure_intersection_of_closed : forall X Tx C D:set,
+  topology_on X Tx -> closed_in X Tx C -> closed_in X Tx D ->
+  closure_of X Tx (C :/\: D) = C :/\: D.
+let X Tx C D.
+assume Htop: topology_on X Tx.
+assume HC: closed_in X Tx C.
+assume HD: closed_in X Tx D.
+prove closure_of X Tx (C :/\: D) = C :/\: D.
+(** Strategy: C ∩ D is closed (by intersection_of_closed_is_closed), so closure(C ∩ D) = C ∩ D **)
+claim HCD_closed: closed_in X Tx (C :/\: D).
+{ exact (intersection_of_closed_is_closed X Tx C D Htop HC HD). }
+claim HCD_sub: C :/\: D c= X.
+{ let x. assume Hx: x :e C :/\: D.
+  claim HxC: x :e C.
+  { exact (binintersectE1 C D x Hx). }
+  claim HC_sub: C c= X.
+  { exact (andEL (C c= X) (exists U :e Tx, C = X :\: U)
+           (andER (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HC)). }
+  exact (HC_sub x HxC). }
+apply set_ext.
+- (** closure(C ∩ D) ⊆ C ∩ D **)
+  admit. (** requires: closed sets equal their closure **)
+- (** C ∩ D ⊆ closure(C ∩ D) **)
+  exact (subset_of_closure X Tx (C :/\: D) Htop HCD_sub).
+Qed.
+
 (** Helper: closure of union of closed sets **)
 Theorem closure_union_of_closed : forall X Tx C D:set,
   topology_on X Tx -> closed_in X Tx C -> closed_in X Tx D ->
