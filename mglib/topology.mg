@@ -9610,6 +9610,37 @@ apply (binunionE (closure_of X Tx A) (closure_of X Tx B) x Hx).
 - assume HxB: x :e closure_of X Tx B. exact (HclB x HxB).
 Qed.
 
+(** Helper: closure of empty set is empty **)
+Theorem closure_of_empty : forall X Tx:set,
+  topology_on X Tx -> closure_of X Tx Empty = Empty.
+let X Tx.
+assume Htop: topology_on X Tx.
+prove closure_of X Tx Empty = Empty.
+apply set_ext.
+- prove closure_of X Tx Empty c= Empty.
+  let x. assume Hx: x :e closure_of X Tx Empty.
+  prove x :e Empty.
+  (** x :e closure means: x :e X and for all U open with x :e U, U ∩ Empty ≠ Empty.
+      But U ∩ Empty = Empty always, so this is impossible unless X is open and x :e X forces contradiction. **)
+  apply (SepE X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: Empty <> Empty) x Hx).
+  assume HxX: x :e X.
+  assume Hcond: forall U:set, U :e Tx -> x :e U -> U :/\: Empty <> Empty.
+  (** Get X itself as an open set containing x **)
+  claim HXopen: X :e Tx.
+  { exact (topology_has_X X Tx Htop). }
+  claim HXne: X :/\: Empty <> Empty.
+  { exact (Hcond X HXopen HxX). }
+  (** But X ∩ Empty = Empty **)
+  claim HXempty: X :/\: Empty = Empty.
+  { apply set_ext.
+    - let y. assume Hy: y :e X :/\: Empty.
+      exact (binintersectE2 X Empty y Hy).
+    - exact (Subq_Empty (X :/\: Empty)). }
+  apply HXne.
+  exact HXempty.
+- exact (Subq_Empty (closure_of X Tx Empty)).
+Qed.
+
 (** from §17 Theorem 17.1: properties of closed sets **) 
 (** LATEX VERSION: Theorem 17.1: Closed sets contain X and ∅, are closed under arbitrary intersections and finite unions. **)
 Theorem closed_sets_axioms : forall X T:set,
