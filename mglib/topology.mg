@@ -10232,6 +10232,85 @@ apply andI.
         exact (binintersectI C D x HxC HxD).
 Qed.
 
+Theorem closed_closure_eq : forall X Tx C:set,
+  topology_on X Tx -> closed_in X Tx C -> closure_of X Tx C = C.
+let X Tx C.
+assume Htop: topology_on X Tx.
+assume HC: closed_in X Tx C.
+prove closure_of X Tx C = C.
+(** closed_in means there exists U :e Tx such that C = X :\: U **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HC). }
+claim HCsub_and_ex: C c= X /\ exists U :e Tx, C = X :\: U.
+{ exact (andER (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HC). }
+claim HCsub: C c= X.
+{ exact (andEL (C c= X) (exists U :e Tx, C = X :\: U) HCsub_and_ex). }
+apply set_ext.
+- (** closure(C) ⊆ C **)
+  prove closure_of X Tx C c= C.
+  (** We need to show: if x ∈ closure(C), then x ∈ C.
+      By closure characterization, x ∈ closure(C) means every open containing x meets C.
+      If x ∉ C, then x ∈ X \ C. Since C is closed, X \ C is open.
+      So X \ C is an open containing x. If it meets C, we'd have a point in both C and X \ C, contradiction. **)
+  let x. assume Hx: x :e closure_of X Tx C.
+  prove x :e C.
+  (** Use excluded middle **)
+  apply (xm (x :e C)).
+  + assume HxC: x :e C. exact HxC.
+  + assume HxnotC: x /:e C.
+    (** Get the open U such that C = X \ U **)
+    claim Hex: exists U :e Tx, C = X :\: U.
+    { exact (andER (C c= X) (exists U :e Tx, C = X :\: U) HCsub_and_ex). }
+    apply Hex.
+    let U. assume HU_conj: U :e Tx /\ C = X :\: U.
+    claim HU: U :e Tx.
+    { exact (andEL (U :e Tx) (C = X :\: U) HU_conj). }
+    claim HCeq: C = X :\: U.
+    { exact (andER (U :e Tx) (C = X :\: U) HU_conj). }
+    (** x ∈ closure(C) means x ∈ X and every open containing x meets C **)
+    claim HxX: x :e X.
+    { exact (closure_in_space X Tx C Htop x Hx). }
+    claim Hcond: forall V:set, V :e Tx -> x :e V -> V :/\: C <> Empty.
+    { exact (SepE2 X (fun x0 => forall V:set, V :e Tx -> x0 :e V -> V :/\: C <> Empty) x Hx). }
+    (** Since x ∉ C and C = X \ U, we have x ∈ U **)
+    claim HxU: x :e U.
+    { (** x ∈ X and x ∉ C = X \ U implies x ∈ U **)
+      apply (xm (x :e U)).
+      - assume H. exact H.
+      - assume HxnotU: x /:e U.
+        (** Then x ∈ X \ U = C, contradicting x ∉ C **)
+        apply HxnotC.
+        claim HxXU: x :e X :\: U.
+        { apply setminusI. exact HxX. exact HxnotU. }
+        rewrite HCeq. exact HxXU. }
+    (** Now U is open, x ∈ U, so U ∩ C ≠ Empty by Hcond **)
+    claim HUC_ne: U :/\: C <> Empty.
+    { exact (Hcond U HU HxU). }
+    (** But U ∩ C = Empty since C = X \ U **)
+    claim HUC_empty: U :/\: C = Empty.
+    { apply set_ext.
+      - let y. assume Hy: y :e U :/\: C.
+        prove y :e Empty.
+        claim HyU: y :e U.
+        { exact (binintersectE1 U C y Hy). }
+        claim HyC: y :e C.
+        { exact (binintersectE2 U C y Hy). }
+        (** C = X \ U, so y ∈ C means y ∈ X and y ∉ U **)
+        claim HyXU: y :e X :\: U.
+        { rewrite <- HCeq. exact HyC. }
+        claim HynotU: y /:e U.
+        { exact (setminusE2 X U y HyXU). }
+        (** Contradiction: y ∈ U and y ∉ U **)
+        apply FalseE.
+        exact (HynotU HyU).
+      - exact (Subq_Empty (U :/\: C)). }
+    (** Contradiction **)
+    apply FalseE.
+    exact (HUC_ne HUC_empty).
+- (** C ⊆ closure(C) **)
+  exact (subset_of_closure X Tx C Htop HCsub).
+Qed.
+
 (** Helper: closure of intersection of closed sets **)
 Theorem closure_intersection_of_closed : forall X Tx C D:set,
   topology_on X Tx -> closed_in X Tx C -> closed_in X Tx D ->
@@ -10254,7 +10333,10 @@ claim HCD_sub: C :/\: D c= X.
   exact (HC_sub x HxC). }
 apply set_ext.
 - (** closure(C ∩ D) ⊆ C ∩ D **)
-  admit. (** requires: closed sets equal their closure **)
+  let x. assume Hx: x :e closure_of X Tx (C :/\: D).
+  prove x :e C :/\: D.
+  rewrite <- (closed_closure_eq X Tx (C :/\: D) Htop HCD_closed).
+  exact Hx.
 - (** C ∩ D ⊆ closure(C ∩ D) **)
   exact (subset_of_closure X Tx (C :/\: D) Htop HCD_sub).
 Qed.
@@ -10393,7 +10475,10 @@ claim HCD_sub: C :\/: D c= X.
 apply set_ext.
 - (** closure(C ∪ D) ⊆ C ∪ D **)
   (** Since C ∪ D is closed, closure(C ∪ D) ⊆ C ∪ D **)
-  admit. (** requires: closed sets equal their closure, or direct proof **)
+  let x. assume Hx: x :e closure_of X Tx (C :\/: D).
+  prove x :e C :\/: D.
+  rewrite <- (closed_closure_eq X Tx (C :\/: D) Htop HCD_closed).
+  exact Hx.
 - (** C ∪ D ⊆ closure(C ∪ D) **)
   exact (subset_of_closure X Tx (C :\/: D) Htop HCD_sub).
 Qed.
@@ -10450,84 +10535,6 @@ apply binintersectI.
 Qed.
 
 (** Helper: closed sets equal their closure **)
-Theorem closed_closure_eq : forall X Tx C:set,
-  topology_on X Tx -> closed_in X Tx C -> closure_of X Tx C = C.
-let X Tx C.
-assume Htop: topology_on X Tx.
-assume HC: closed_in X Tx C.
-prove closure_of X Tx C = C.
-(** closed_in means there exists U :e Tx such that C = X :\: U **)
-claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HC). }
-claim HCsub_and_ex: C c= X /\ exists U :e Tx, C = X :\: U.
-{ exact (andER (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HC). }
-claim HCsub: C c= X.
-{ exact (andEL (C c= X) (exists U :e Tx, C = X :\: U) HCsub_and_ex). }
-apply set_ext.
-- (** closure(C) ⊆ C **)
-  prove closure_of X Tx C c= C.
-  (** We need to show: if x ∈ closure(C), then x ∈ C.
-      By closure characterization, x ∈ closure(C) means every open containing x meets C.
-      If x ∉ C, then x ∈ X \ C. Since C is closed, X \ C is open.
-      So X \ C is an open containing x. If it meets C, we'd have a point in both C and X \ C, contradiction. **)
-  let x. assume Hx: x :e closure_of X Tx C.
-  prove x :e C.
-  (** Use excluded middle **)
-  apply (xm (x :e C)).
-  + assume HxC: x :e C. exact HxC.
-  + assume HxnotC: x /:e C.
-    (** Get the open U such that C = X \ U **)
-    claim Hex: exists U :e Tx, C = X :\: U.
-    { exact (andER (C c= X) (exists U :e Tx, C = X :\: U) HCsub_and_ex). }
-    apply Hex.
-    let U. assume HU_conj: U :e Tx /\ C = X :\: U.
-    claim HU: U :e Tx.
-    { exact (andEL (U :e Tx) (C = X :\: U) HU_conj). }
-    claim HCeq: C = X :\: U.
-    { exact (andER (U :e Tx) (C = X :\: U) HU_conj). }
-    (** x ∈ closure(C) means x ∈ X and every open containing x meets C **)
-    claim HxX: x :e X.
-    { exact (closure_in_space X Tx C Htop x Hx). }
-    claim Hcond: forall V:set, V :e Tx -> x :e V -> V :/\: C <> Empty.
-    { exact (SepE2 X (fun x0 => forall V:set, V :e Tx -> x0 :e V -> V :/\: C <> Empty) x Hx). }
-    (** Since x ∉ C and C = X \ U, we have x ∈ U **)
-    claim HxU: x :e U.
-    { (** x ∈ X and x ∉ C = X \ U implies x ∈ U **)
-      apply (xm (x :e U)).
-      - assume H. exact H.
-      - assume HxnotU: x /:e U.
-        (** Then x ∈ X \ U = C, contradicting x ∉ C **)
-        apply HxnotC.
-        claim HxXU: x :e X :\: U.
-        { apply setminusI. exact HxX. exact HxnotU. }
-        rewrite HCeq. exact HxXU. }
-    (** Now U is open, x ∈ U, so U ∩ C ≠ Empty by Hcond **)
-    claim HUC_ne: U :/\: C <> Empty.
-    { exact (Hcond U HU HxU). }
-    (** But U ∩ C = Empty since C = X \ U **)
-    claim HUC_empty: U :/\: C = Empty.
-    { apply set_ext.
-      - let y. assume Hy: y :e U :/\: C.
-        prove y :e Empty.
-        claim HyU: y :e U.
-        { exact (binintersectE1 U C y Hy). }
-        claim HyC: y :e C.
-        { exact (binintersectE2 U C y Hy). }
-        (** C = X \ U, so y ∈ C means y ∈ X and y ∉ U **)
-        claim HyXU: y :e X :\: U.
-        { rewrite <- HCeq. exact HyC. }
-        claim HynotU: y /:e U.
-        { exact (setminusE2 X U y HyXU). }
-        (** Contradiction: y ∈ U and y ∉ U **)
-        apply FalseE.
-        exact (HynotU HyU).
-      - exact (Subq_Empty (U :/\: C)). }
-    (** Contradiction **)
-    apply FalseE.
-    exact (HUC_ne HUC_empty).
-- (** C ⊆ closure(C) **)
-  exact (subset_of_closure X Tx C Htop HCsub).
-Qed.
 
 (** from §17 Theorem 17.1: properties of closed sets **)
 (** LATEX VERSION: Theorem 17.1: Closed sets contain X and ∅, are closed under arbitrary intersections and finite unions. **)
