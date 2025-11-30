@@ -9922,6 +9922,20 @@ apply set_ext.
 - exact (subset_of_closure X Tx X Htop (Subq_ref X)).
 Qed.
 
+(** Helper: closure of union of closed sets **)
+Theorem closure_union_of_closed : forall X Tx C D:set,
+  topology_on X Tx -> closed_in X Tx C -> closed_in X Tx D ->
+  closure_of X Tx (C :\/: D) = C :\/: D.
+let X Tx C D.
+assume Htop: topology_on X Tx.
+assume HC: closed_in X Tx C.
+assume HD: closed_in X Tx D.
+prove closure_of X Tx (C :\/: D) = C :\/: D.
+(** Strategy: C ∪ D is closed (by closed set axioms), so closure(C ∪ D) = C ∪ D **)
+(** First need to show C ∪ D is closed, then apply closed_closure_eq **)
+admit. (** requires proving union of two closed sets is closed **)
+Qed.
+
 (** Helper: closure is idempotent **)
 Theorem closure_idempotent : forall X Tx A:set,
   topology_on X Tx -> A c= X -> closure_of X Tx (closure_of X Tx A) = closure_of X Tx A.
