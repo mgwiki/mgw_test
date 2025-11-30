@@ -9581,6 +9581,18 @@ prove x :e X.
 exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx).
 Qed.
 
+(** Helper: closure of union contains union of closures **)
+Theorem closure_union_contains_union_closures : forall X Tx A B:set,
+  topology_on X Tx -> A c= X -> B c= X ->
+  closure_of X Tx A :\/: closure_of X Tx B c= closure_of X Tx (A :\/: B).
+let X Tx A B.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+assume HB: B c= X.
+prove closure_of X Tx A :\/: closure_of X Tx B c= closure_of X Tx (A :\/: B).
+admit. (** cl(A) c= cl(A union B) by monotonicity; similarly cl(B) c= cl(A union B); so union of closures c= closure of union **)
+Qed.
+
 (** from §17 Theorem 17.1: properties of closed sets **) 
 (** LATEX VERSION: Theorem 17.1: Closed sets contain X and ∅, are closed under arbitrary intersections and finite unions. **)
 Theorem closed_sets_axioms : forall X T:set,
