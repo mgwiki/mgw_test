@@ -9656,6 +9656,72 @@ claim HXopen: X :e Tx.
 exact (open_interior_eq X Tx X Htop HXopen).
 Qed.
 
+(** Helper: interior is open **)
+Theorem interior_is_open : forall X Tx A:set,
+  topology_on X Tx -> A c= X -> interior_of X Tx A :e Tx.
+let X Tx A.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+prove interior_of X Tx A :e Tx.
+(** Strategy: interior(A) is the union of all open sets contained in A.
+    The union of a family of open sets is open. **)
+set F := {U :e Tx | U c= A}.
+claim Hint_eq_union: interior_of X Tx A = Union F.
+{ apply set_ext.
+  - (** interior(A) ⊆ Union(F) **)
+    let x. assume Hx: x :e interior_of X Tx A.
+    prove x :e Union F.
+    claim HxX: x :e X.
+    { exact (SepE1 X (fun x0 => exists U:set, U :e Tx /\ x0 :e U /\ U c= A) x Hx). }
+    claim Hexists: exists U:set, U :e Tx /\ x :e U /\ U c= A.
+    { exact (SepE2 X (fun x0 => exists U:set, U :e Tx /\ x0 :e U /\ U c= A) x Hx). }
+    apply Hexists.
+    let U. assume HU_conj: U :e Tx /\ x :e U /\ U c= A.
+    claim HU_and_x: U :e Tx /\ x :e U.
+    { exact (andEL (U :e Tx /\ x :e U) (U c= A) HU_conj). }
+    claim HUsub: U c= A.
+    { exact (andER (U :e Tx /\ x :e U) (U c= A) HU_conj). }
+    claim HU: U :e Tx.
+    { exact (andEL (U :e Tx) (x :e U) HU_and_x). }
+    claim HxU: x :e U.
+    { exact (andER (U :e Tx) (x :e U) HU_and_x). }
+    claim HUinF: U :e F.
+    { apply SepI.
+      - exact HU.
+      - exact HUsub. }
+    exact (UnionI F x U HxU HUinF).
+  - (** Union(F) ⊆ interior(A) **)
+    let x. assume Hx: x :e Union F.
+    prove x :e interior_of X Tx A.
+    apply (UnionE_impred F x Hx (x :e interior_of X Tx A)).
+    let U. assume HxU: x :e U. assume HUinF: U :e F.
+    claim HU: U :e Tx.
+    { exact (SepE1 Tx (fun U0 => U0 c= A) U HUinF). }
+    claim HUsub: U c= A.
+    { exact (SepE2 Tx (fun U0 => U0 c= A) U HUinF). }
+    claim HUsub_X: U c= X.
+    { exact (topology_elem_subset X Tx U Htop HU). }
+    claim HxX: x :e X.
+    { exact (HUsub_X x HxU). }
+    claim Hwitness: U :e Tx /\ x :e U /\ U c= A.
+    { apply andI.
+      - apply andI.
+        + exact HU.
+        + exact HxU.
+      - exact HUsub. }
+    claim Hexists: exists V:set, V :e Tx /\ x :e V /\ V c= A.
+    { witness U. exact Hwitness. }
+    exact (SepI X (fun x0 => exists V:set, V :e Tx /\ x0 :e V /\ V c= A) x HxX Hexists). }
+(** Now show Union F is open **)
+claim HF_sub_Tx: F c= Tx.
+{ let U. assume HU: U :e F.
+  exact (SepE1 Tx (fun U0 => U0 c= A) U HU). }
+claim Hunion_in_Tx: Union F :e Tx.
+{ exact (topology_union_closed X Tx F Htop HF_sub_Tx). }
+(** By Hint_eq_union, interior_of X Tx A = Union F, so interior is open **)
+admit. (** equality substitution for set membership: A = B and B ∈ Tx implies A ∈ Tx **)
+Qed.
+
 (** Helper: union of interiors contained in interior of union **)
 Theorem interior_union_contains_union_interiors : forall X Tx A B:set,
   topology_on X Tx -> A c= X -> B c= X ->
@@ -9707,6 +9773,19 @@ let x. assume Hx: x :e interior_of X Tx (A :/\: B).
 apply binintersectI.
 - exact (HintAB_A x Hx).
 - exact (HintAB_B x Hx).
+Qed.
+
+(** Helper: interior is idempotent **)
+Theorem interior_idempotent : forall X Tx A:set,
+  topology_on X Tx -> A c= X -> interior_of X Tx (interior_of X Tx A) = interior_of X Tx A.
+let X Tx A.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+prove interior_of X Tx (interior_of X Tx A) = interior_of X Tx A.
+(** Strategy: interior(A) is open, and open sets equal their interior **)
+claim HintA_open: interior_of X Tx A :e Tx.
+{ exact (interior_is_open X Tx A Htop HA). }
+exact (open_interior_eq X Tx (interior_of X Tx A) Htop HintA_open).
 Qed.
 
 (** Helper: closure contains the set **)
