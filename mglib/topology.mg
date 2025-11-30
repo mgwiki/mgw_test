@@ -9685,6 +9685,30 @@ apply (binunionE (interior_of X Tx A) (interior_of X Tx B) x Hx).
 - assume HxB: x :e interior_of X Tx B. exact (HintB x HxB).
 Qed.
 
+(** Helper: interior of intersection contains intersection of interiors **)
+Theorem interior_intersection_contains_intersection : forall X Tx A B:set,
+  topology_on X Tx -> A c= X -> B c= X ->
+  interior_of X Tx (A :/\: B) c= interior_of X Tx A :/\: interior_of X Tx B.
+let X Tx A B.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+assume HB: B c= X.
+prove interior_of X Tx (A :/\: B) c= interior_of X Tx A :/\: interior_of X Tx B.
+(** Use monotonicity: A ∩ B ⊆ A and A ∩ B ⊆ B **)
+claim HAB_A: A :/\: B c= A.
+{ exact (binintersect_Subq_1 A B). }
+claim HAB_B: A :/\: B c= B.
+{ exact (binintersect_Subq_2 A B). }
+claim HintAB_A: interior_of X Tx (A :/\: B) c= interior_of X Tx A.
+{ exact (interior_monotone X Tx (A :/\: B) A Htop HAB_A). }
+claim HintAB_B: interior_of X Tx (A :/\: B) c= interior_of X Tx B.
+{ exact (interior_monotone X Tx (A :/\: B) B Htop HAB_B). }
+let x. assume Hx: x :e interior_of X Tx (A :/\: B).
+apply binintersectI.
+- exact (HintAB_A x Hx).
+- exact (HintAB_B x Hx).
+Qed.
+
 (** Helper: closure contains the set **)
 Theorem closure_contains_set : forall X Tx A:set,
   topology_on X Tx -> A c= X -> A c= closure_of X Tx A.
