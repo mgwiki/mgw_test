@@ -10470,7 +10470,61 @@ apply set_ext.
       By closure characterization, x ∈ closure(C) means every open containing x meets C.
       If x ∉ C, then x ∈ X \ C. Since C is closed, X \ C is open.
       So X \ C is an open containing x. If it meets C, we'd have a point in both C and X \ C, contradiction. **)
-  admit.
+  let x. assume Hx: x :e closure_of X Tx C.
+  prove x :e C.
+  (** Use excluded middle **)
+  apply (xm (x :e C)).
+  + assume HxC: x :e C. exact HxC.
+  + assume HxnotC: x /:e C.
+    (** Get the open U such that C = X \ U **)
+    claim Hex: exists U :e Tx, C = X :\: U.
+    { exact (andER (C c= X) (exists U :e Tx, C = X :\: U) HCsub_and_ex). }
+    apply Hex.
+    let U. assume HU_conj: U :e Tx /\ C = X :\: U.
+    claim HU: U :e Tx.
+    { exact (andEL (U :e Tx) (C = X :\: U) HU_conj). }
+    claim HCeq: C = X :\: U.
+    { exact (andER (U :e Tx) (C = X :\: U) HU_conj). }
+    (** x ∈ closure(C) means x ∈ X and every open containing x meets C **)
+    claim HxX: x :e X.
+    { exact (closure_in_space X Tx C Htop x Hx). }
+    claim Hcond: forall V:set, V :e Tx -> x :e V -> V :/\: C <> Empty.
+    { exact (SepE2 X (fun x0 => forall V:set, V :e Tx -> x0 :e V -> V :/\: C <> Empty) x Hx). }
+    (** Since x ∉ C and C = X \ U, we have x ∈ U **)
+    claim HxU: x :e U.
+    { (** x ∈ X and x ∉ C = X \ U implies x ∈ U **)
+      apply (xm (x :e U)).
+      - assume H. exact H.
+      - assume HxnotU: x /:e U.
+        (** Then x ∈ X \ U = C, contradicting x ∉ C **)
+        apply HxnotC.
+        claim HxXU: x :e X :\: U.
+        { apply setminusI. exact HxX. exact HxnotU. }
+        rewrite HCeq. exact HxXU. }
+    (** Now U is open, x ∈ U, so U ∩ C ≠ Empty by Hcond **)
+    claim HUC_ne: U :/\: C <> Empty.
+    { exact (Hcond U HU HxU). }
+    (** But U ∩ C = Empty since C = X \ U **)
+    claim HUC_empty: U :/\: C = Empty.
+    { apply set_ext.
+      - let y. assume Hy: y :e U :/\: C.
+        prove y :e Empty.
+        claim HyU: y :e U.
+        { exact (binintersectE1 U C y Hy). }
+        claim HyC: y :e C.
+        { exact (binintersectE2 U C y Hy). }
+        (** C = X \ U, so y ∈ C means y ∈ X and y ∉ U **)
+        claim HyXU: y :e X :\: U.
+        { rewrite <- HCeq. exact HyC. }
+        claim HynotU: y /:e U.
+        { exact (setminusE2 X U y HyXU). }
+        (** Contradiction: y ∈ U and y ∉ U **)
+        apply FalseE.
+        exact (HynotU HyU).
+      - exact (Subq_Empty (U :/\: C)). }
+    (** Contradiction **)
+    apply FalseE.
+    exact (HUC_ne HUC_empty).
 - (** C ⊆ closure(C) **)
   exact (subset_of_closure X Tx C Htop HCsub).
 Qed.
