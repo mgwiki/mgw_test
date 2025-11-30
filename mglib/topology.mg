@@ -9656,6 +9656,35 @@ claim HXopen: X :e Tx.
 exact (open_interior_eq X Tx X Htop HXopen).
 Qed.
 
+(** Helper: union of interiors contained in interior of union **)
+Theorem interior_union_contains_union_interiors : forall X Tx A B:set,
+  topology_on X Tx -> A c= X -> B c= X ->
+  interior_of X Tx A :\/: interior_of X Tx B c= interior_of X Tx (A :\/: B).
+let X Tx A B.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+assume HB: B c= X.
+prove interior_of X Tx A :\/: interior_of X Tx B c= interior_of X Tx (A :\/: B).
+(** Use monotonicity: A ⊆ A∪B and B ⊆ A∪B **)
+claim HAB_union_A: A c= A :\/: B.
+{ let x. assume Hx: x :e A. exact (binunionI1 A B x Hx). }
+claim HAB_union_B: B c= A :\/: B.
+{ let x. assume Hx: x :e B. exact (binunionI2 A B x Hx). }
+claim HAB_sub: A :\/: B c= X.
+{ let x. assume Hx: x :e A :\/: B.
+  apply (binunionE A B x Hx).
+  - assume HxA: x :e A. exact (HA x HxA).
+  - assume HxB: x :e B. exact (HB x HxB). }
+claim HintA: interior_of X Tx A c= interior_of X Tx (A :\/: B).
+{ exact (interior_monotone X Tx A (A :\/: B) Htop HAB_union_A). }
+claim HintB: interior_of X Tx B c= interior_of X Tx (A :\/: B).
+{ exact (interior_monotone X Tx B (A :\/: B) Htop HAB_union_B). }
+let x. assume Hx: x :e interior_of X Tx A :\/: interior_of X Tx B.
+apply (binunionE (interior_of X Tx A) (interior_of X Tx B) x Hx).
+- assume HxA: x :e interior_of X Tx A. exact (HintA x HxA).
+- assume HxB: x :e interior_of X Tx B. exact (HintB x HxB).
+Qed.
+
 (** Helper: closure contains the set **)
 Theorem closure_contains_set : forall X Tx A:set,
   topology_on X Tx -> A c= X -> A c= closure_of X Tx A.
