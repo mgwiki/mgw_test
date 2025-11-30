@@ -10046,6 +10046,60 @@ apply andI.
           exact (binunionI1 C D x HxC).
 Qed.
 
+(** Helper: Empty is closed **)
+Theorem empty_is_closed : forall X Tx:set,
+  topology_on X Tx -> closed_in X Tx Empty.
+let X Tx.
+assume Htop: topology_on X Tx.
+prove closed_in X Tx Empty.
+(** Empty = X \ X, and X is open **)
+prove topology_on X Tx /\ (Empty c= X /\ exists U :e Tx, Empty = X :\: U).
+apply andI.
+- exact Htop.
+- apply andI.
+  + exact (Subq_Empty X).
+  + witness X.
+    apply andI.
+    * exact (topology_has_X X Tx Htop).
+    * prove Empty = X :\: X.
+      apply set_ext.
+      - exact (Subq_Empty (X :\: X)).
+      - let x. assume Hx: x :e X :\: X.
+        claim HxX: x :e X.
+        { exact (setminusE1 X X x Hx). }
+        claim HxnotX: x /:e X.
+        { exact (setminusE2 X X x Hx). }
+        prove x :e Empty.
+        apply FalseE.
+        exact (HxnotX HxX).
+Qed.
+
+(** Helper: X is closed **)
+Theorem space_is_closed : forall X Tx:set,
+  topology_on X Tx -> closed_in X Tx X.
+let X Tx.
+assume Htop: topology_on X Tx.
+prove closed_in X Tx X.
+(** X = X \ Empty, and Empty is open **)
+prove topology_on X Tx /\ (X c= X /\ exists U :e Tx, X = X :\: U).
+apply andI.
+- exact Htop.
+- apply andI.
+  + exact (Subq_ref X).
+  + witness Empty.
+    apply andI.
+    * exact (topology_has_empty X Tx Htop).
+    * prove X = X :\: Empty.
+      apply set_ext.
+      - let x. assume Hx: x :e X.
+        apply setminusI.
+        + exact Hx.
+        + assume Hcontra: x :e Empty.
+          exact (EmptyE x Hcontra False).
+      - let x. assume Hx: x :e X :\: Empty.
+        exact (setminusE1 X Empty x Hx).
+Qed.
+
 (** Helper: intersection of two closed sets is closed **)
 Theorem intersection_of_closed_is_closed : forall X Tx C D:set,
   topology_on X Tx -> closed_in X Tx C -> closed_in X Tx D ->
