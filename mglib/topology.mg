@@ -10512,7 +10512,27 @@ Theorem ex17_12_subspace_Hausdorff : forall X Tx Y:set,
 let X Tx Y.
 assume HX: Hausdorff_space X Tx.
 prove Hausdorff_space Y (subspace_topology X Tx Y).
-admit. (** separate y1,y2 in Y using X-neighborhoods, restrict to Y **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HX). }
+claim HYsubX: Y c= X.
+{ admit. }
+claim HTy: topology_on Y (subspace_topology X Tx Y).
+{ exact (subspace_topology_is_topology X Tx Y HTx HYsubX). }
+prove topology_on Y (subspace_topology X Tx Y) /\
+      (forall y1 y2:set, y1 <> y2 ->
+       exists U V:set, U :e subspace_topology X Tx Y /\ V :e subspace_topology X Tx Y /\
+                       y1 :e U /\ y2 :e V /\ U :/\: V = Empty).
+apply andI.
+- exact HTy.
+- let y1 y2. assume Hne: y1 <> y2.
+  prove exists U V:set, U :e subspace_topology X Tx Y /\ V :e subspace_topology X Tx Y /\
+                        y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
+  (** Strategy: y1, y2 are distinct points. If both in Y, they're distinct in X.
+      Get disjoint X-neighborhoods U', V' from Hausdorff property.
+      Then U' ∩ Y and V' ∩ Y are disjoint Y-neighborhoods. **)
+  admit.
 Qed.
 
 (** LATEX VERSION: Exercise 13: Diagonal is closed in X×X iff X is Hausdorff. **)
@@ -10608,7 +10628,23 @@ Theorem ex17_21_Kuratowski_closure_complement_maximal : forall X:set,
   closure_of X (discrete_topology X) (X :\: Empty) = X.
 let X.
 prove closure_of X (discrete_topology X) (X :\: Empty) = X.
-admit. (** in discrete topology all sets closed; X\∅ = X; closure of X is X **)
+claim Htop: topology_on X (discrete_topology X).
+{ exact (discrete_topology_on X). }
+claim HXE: X :\: Empty = X.
+{ apply set_ext.
+  - let x. assume Hx: x :e X :\: Empty.
+    exact (setminusE1 X Empty x Hx).
+  - let x. assume Hx: x :e X.
+    apply setminusI.
+    + exact Hx.
+    + assume Hfalse: x :e Empty.
+      exact (EmptyE x Hfalse). }
+(** Rewrite the LHS using HXE **)
+rewrite HXE.
+(** Now we need to prove closure_of X (discrete_topology X) X = X **)
+apply set_ext.
+- exact (closure_in_space X (discrete_topology X) X Htop).
+- exact (subset_of_closure X (discrete_topology X) X Htop (Subq_ref X)).
 Qed.
 
 (** from §18 Definition: continuous map between topological spaces **) 
