@@ -9556,7 +9556,51 @@ prove let C := {X :\: U|U :e T} in
     X :e C /\ Empty :e C /\
     (forall F:set, F :e Power C -> intersection_of_family F :e C) /\
     (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
-admit. (** closed sets are complements of opens; De Morgan laws: ∩(X\Uᵢ)=X\(⋃Uᵢ); (X\U)∪(X\V)=X\(U∩V) **)
+(** Prove with C = {X :\: U|U :e T} **)
+claim HEmpty_in_T: Empty :e T.
+{ exact (topology_has_empty X T HT). }
+claim HX_in_T: X :e T.
+{ exact (topology_has_X X T HT). }
+apply andI.
+- (** X :e {X :\: U|U :e T} **)
+  claim HXeq: X = X :\: Empty.
+  { apply set_ext.
+    * let x. assume Hx: x :e X.
+      prove x :e X :\: Empty.
+      apply setminusI.
+      { exact Hx. }
+      { assume Hfalse: x :e Empty.
+        exact (EmptyE x Hfalse). }
+    * let x. assume Hx: x :e X :\: Empty.
+      exact (setminusE1 X Empty x Hx). }
+  rewrite HXeq.
+  exact (ReplI T (fun U => X :\: U) Empty HEmpty_in_T).
+- apply andI.
+  + (** Empty :e {X :\: U|U :e T} **)
+    claim HEmptyeq: Empty = X :\: X.
+    { apply set_ext.
+      * let x. assume Hx: x :e Empty.
+        prove x :e X :\: X.
+        exact (EmptyE x Hx).
+      * let x. assume Hx: x :e X :\: X.
+        claim HxX: x :e X.
+        { exact (setminusE1 X X x Hx). }
+        claim HxnotX: x /:e X.
+        { exact (setminusE2 X X x Hx). }
+        exact (HxnotX HxX). }
+    rewrite HEmptyeq.
+    exact (ReplI T (fun U => X :\: U) X HX_in_T).
+  + apply andI.
+    * (** Arbitrary intersections **)
+      set C := {X :\: U|U :e T}.
+      let F. assume HF: F :e Power C.
+      admit.
+    * (** Binary unions **)
+      set C := {X :\: U|U :e T}.
+      let A B.
+      assume HA: A :e C.
+      assume HB: B :e C.
+      admit.
 Qed.
 
 (** from §17 Theorem 17.2: closed sets in subspaces as intersections **) 
