@@ -9775,6 +9775,21 @@ apply binintersectI.
 - exact (HintAB_B x Hx).
 Qed.
 
+(** Helper: interior of intersection of open sets **)
+Theorem interior_intersection_of_opens : forall X Tx U V:set,
+  topology_on X Tx -> U :e Tx -> V :e Tx ->
+  interior_of X Tx (U :/\: V) = U :/\: V.
+let X Tx U V.
+assume Htop: topology_on X Tx.
+assume HU: U :e Tx.
+assume HV: V :e Tx.
+prove interior_of X Tx (U :/\: V) = U :/\: V.
+(** Strategy: U ∩ V is open (by topology axioms), and open sets equal their interior **)
+claim HUV_open: U :/\: V :e Tx.
+{ exact (lemma_intersection_two_open X Tx U V Htop HU HV). }
+exact (open_interior_eq X Tx (U :/\: V) Htop HUV_open).
+Qed.
+
 (** Helper: interior is idempotent **)
 Theorem interior_idempotent : forall X Tx A:set,
   topology_on X Tx -> A c= X -> interior_of X Tx (interior_of X Tx A) = interior_of X Tx A.
