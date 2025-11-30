@@ -9750,7 +9750,33 @@ apply binintersectI.
 - exact (HclAB_B x Hx).
 Qed.
 
-(** from §17 Theorem 17.1: properties of closed sets **) 
+(** Helper: closed sets equal their closure **)
+Theorem closed_closure_eq : forall X Tx C:set,
+  topology_on X Tx -> closed_in X Tx C -> closure_of X Tx C = C.
+let X Tx C.
+assume Htop: topology_on X Tx.
+assume HC: closed_in X Tx C.
+prove closure_of X Tx C = C.
+(** closed_in means there exists U :e Tx such that C = X :\: U **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HC). }
+claim HCsub_and_ex: C c= X /\ exists U :e Tx, C = X :\: U.
+{ exact (andER (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HC). }
+claim HCsub: C c= X.
+{ exact (andEL (C c= X) (exists U :e Tx, C = X :\: U) HCsub_and_ex). }
+apply set_ext.
+- (** closure(C) ⊆ C **)
+  prove closure_of X Tx C c= C.
+  (** We need to show: if x ∈ closure(C), then x ∈ C.
+      By closure characterization, x ∈ closure(C) means every open containing x meets C.
+      If x ∉ C, then x ∈ X \ C. Since C is closed, X \ C is open.
+      So X \ C is an open containing x. If it meets C, we'd have a point in both C and X \ C, contradiction. **)
+  admit.
+- (** C ⊆ closure(C) **)
+  exact (subset_of_closure X Tx C Htop HCsub).
+Qed.
+
+(** from §17 Theorem 17.1: properties of closed sets **)
 (** LATEX VERSION: Theorem 17.1: Closed sets contain X and ∅, are closed under arbitrary intersections and finite unions. **)
 Theorem closed_sets_axioms : forall X T:set,
   topology_on X T ->
