@@ -9603,6 +9603,35 @@ claim Hexists_B: exists V:set, V :e Tx /\ x :e V /\ V c= B.
 exact (SepI X (fun x0 => exists V:set, V :e Tx /\ x0 :e V /\ V c= B) x HxX Hexists_B).
 Qed.
 
+(** Helper: open sets equal their interior **)
+Theorem open_interior_eq : forall X Tx U:set,
+  topology_on X Tx -> U :e Tx -> interior_of X Tx U = U.
+let X Tx U.
+assume Htop: topology_on X Tx.
+assume HU: U :e Tx.
+prove interior_of X Tx U = U.
+apply set_ext.
+- (** interior(U) ⊆ U **)
+  exact (interior_subset X Tx U Htop).
+- (** U ⊆ interior(U) **)
+  let x. assume Hx: x :e U.
+  prove x :e interior_of X Tx U.
+  claim HUsub: U c= X.
+  { exact (topology_elem_subset X Tx U Htop HU). }
+  claim HxX: x :e X.
+  { exact (HUsub x Hx). }
+  claim Hwitness: U :e Tx /\ x :e U /\ U c= U.
+  { apply andI.
+    - apply andI.
+      + exact HU.
+      + exact Hx.
+    - exact (Subq_ref U). }
+  claim Hexists: exists V:set, V :e Tx /\ x :e V /\ V c= U.
+  { witness U.
+    exact Hwitness. }
+  exact (SepI X (fun x0 => exists V:set, V :e Tx /\ x0 :e V /\ V c= U) x HxX Hexists).
+Qed.
+
 (** Helper: closure contains the set **)
 Theorem closure_contains_set : forall X Tx A:set,
   topology_on X Tx -> A c= X -> A c= closure_of X Tx A.
