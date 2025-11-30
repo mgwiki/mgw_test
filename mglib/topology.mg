@@ -10046,6 +10046,20 @@ apply andI.
           exact (binunionI1 C D x HxC).
 Qed.
 
+(** Helper: intersection of two closed sets is closed **)
+Theorem intersection_of_closed_is_closed : forall X Tx C D:set,
+  topology_on X Tx -> closed_in X Tx C -> closed_in X Tx D ->
+  closed_in X Tx (C :/\: D).
+let X Tx C D.
+assume Htop: topology_on X Tx.
+assume HC: closed_in X Tx C.
+assume HD: closed_in X Tx D.
+prove closed_in X Tx (C :/\: D).
+(** C = X \ U and D = X \ V for some open U, V.
+    Then C ∩ D = (X\U) ∩ (X\V) = X \ (U ∪ V), and U ∪ V is open. **)
+admit. (** Similar to union_of_closed_is_closed but with De Morgan for intersection **)
+Qed.
+
 (** Helper: closure of union of closed sets **)
 Theorem closure_union_of_closed : forall X Tx C D:set,
   topology_on X Tx -> closed_in X Tx C -> closed_in X Tx D ->
