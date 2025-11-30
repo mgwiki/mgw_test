@@ -9561,6 +9561,26 @@ prove interior_of X Tx A c= interior_of X Tx B.
 admit. (** if U open and U c= A, then U c= B; so all opens in interior(A) are in interior(B) **)
 Qed.
 
+(** Helper: closure contains the set **)
+Theorem closure_contains_set : forall X Tx A:set,
+  topology_on X Tx -> A c= X -> A c= closure_of X Tx A.
+let X Tx A.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+exact (subset_of_closure X Tx A Htop HA).
+Qed.
+
+(** Helper: closure is in X **)
+Theorem closure_in_space : forall X Tx A:set,
+  topology_on X Tx -> closure_of X Tx A c= X.
+let X Tx A.
+assume Htop: topology_on X Tx.
+prove closure_of X Tx A c= X.
+let x. assume Hx: x :e closure_of X Tx A.
+prove x :e X.
+exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx).
+Qed.
+
 (** from §17 Theorem 17.1: properties of closed sets **) 
 (** LATEX VERSION: Theorem 17.1: Closed sets contain X and ∅, are closed under arbitrary intersections and finite unions. **)
 Theorem closed_sets_axioms : forall X T:set,
