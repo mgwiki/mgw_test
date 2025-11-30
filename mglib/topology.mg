@@ -10053,17 +10053,24 @@ apply iffI.
 - assume Hcond: forall U :e Tx, x :e U -> U :/\: A <> Empty.
   prove x :e closure_of X Tx A.
   (** Need to show x :e X and the condition **)
+  (** Strategy: use that X is itself in Tx. If x :e X, then by the condition with U=X,
+      we get X :/\: A <> Empty. If x /:e X, the condition is vacuous but we can derive
+      contradiction by showing x must be in X if the condition holds nontrivially. **)
+  claim HXinTx: X :e Tx.
+  { exact (topology_has_X X Tx HTx). }
   apply xm (x :e X).
   + assume HxX: x :e X.
     exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x HxX Hcond).
   + assume HxnotX: x /:e X.
-    (** If x /:e X, then the condition is vacuous. We need to derive contradiction or show x :e X somehow **)
-    (** Actually, we need x :e X for x to be in closure. But the condition doesn't guarantee this. **)
-    (** Let's use excluded middle more carefully - if x is in the closure, it must be in X by definition **)
+    (** If x /:e X, then for any U :e Tx with x :e U, we have a contradiction since U c= X.
+        So the condition "forall U :e Tx, x :e U -> ..." is vacuously true.
+        But that means we can't conclude x is in the closure.
+        The iff is actually: x :e X /\ (forall U :e Tx, x :e U -> U :/\: A <> Empty) <-> x :e closure.
+        Since the closure is defined as {x :e X | ...}, if x /:e X, then x is not in closure.
+        So we need to show False to use FalseE. But we can't - the condition could be vacuous! **)
+    (** The issue is that the backward direction needs x :e X as an implicit requirement.
+        The condition alone doesn't force x :e X. This is a gap in the statement. **)
     apply FalseE.
-    (** We need to show this leads to contradiction. Actually, this is a problem - the statement might be incomplete **)
-    (** Let me reconsider. If the condition holds for all U in Tx but x not in X, we can't derive anything useful **)
-    (** Actually, I think we need an additional hypothesis that x :e X, or we need to be more careful **)
     admit.
 Qed.
 
@@ -10341,7 +10348,18 @@ Theorem ex17_6_closure_properties : forall X Tx A:set,
 let X Tx A.
 assume Htop: topology_on X Tx.
 prove closure_of X Tx (closure_of X Tx A) = closure_of X Tx A /\ closed_in X Tx (closure_of X Tx A).
-admit. (** closure is smallest closed set containing A; closed sets equal their own closure **)
+apply andI.
+- (** cl(cl(A)) = cl(A) **)
+  prove closure_of X Tx (closure_of X Tx A) = closure_of X Tx A.
+  (** This needs: closure is idempotent - requires that closure is a closed set **)
+  admit.
+- (** cl(A) is closed **)
+  prove closed_in X Tx (closure_of X Tx A).
+  (** Need to show: closure_of X Tx A is closed.
+      This means X :\: closure_of X Tx A is open.
+      Key fact: X :\: cl(A) = interior(X :\: A).
+      To prove this properly requires showing interior of complement equals complement of closure. **)
+  admit.
 Qed.
 
 (** LATEX VERSION: Exercise 7: Show union being closed does not imply each set is closed. **)
