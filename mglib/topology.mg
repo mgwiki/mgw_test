@@ -9641,6 +9641,17 @@ apply set_ext.
 - exact (Subq_Empty (closure_of X Tx Empty)).
 Qed.
 
+(** Helper: closure of the whole space is the space itself **)
+Theorem closure_of_space : forall X Tx:set,
+  topology_on X Tx -> closure_of X Tx X = X.
+let X Tx.
+assume Htop: topology_on X Tx.
+prove closure_of X Tx X = X.
+apply set_ext.
+- exact (closure_in_space X Tx X Htop).
+- exact (subset_of_closure X Tx X Htop (Subq_ref X)).
+Qed.
+
 (** from §17 Theorem 17.1: properties of closed sets **) 
 (** LATEX VERSION: Theorem 17.1: Closed sets contain X and ∅, are closed under arbitrary intersections and finite unions. **)
 Theorem closed_sets_axioms : forall X T:set,
