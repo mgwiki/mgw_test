@@ -9943,7 +9943,132 @@ assume HD: closed_in X Tx D.
 prove closure_of X Tx (C :\/: D) = C :\/: D.
 (** Strategy: C ∪ D is closed (by closed set axioms), so closure(C ∪ D) = C ∪ D **)
 (** First need to show C ∪ D is closed, then apply closed_closure_eq **)
-admit. (** requires proving union of two closed sets is closed **)
+(** First prove that union of two closed sets is closed **)
+claim HCD_closed: closed_in X Tx (C :\/: D).
+{ (** C = X \ U and D = X \ V for some open U, V.
+      Then C ∪ D = X \ (U ∩ V), and U ∩ V is open. **)
+  prove topology_on X Tx /\ (C :\/: D c= X /\ exists W :e Tx, C :\/: D = X :\: W).
+  apply andI.
+  - exact Htop.
+  - claim HC_parts: C c= X /\ exists U :e Tx, C = X :\: U.
+    { exact (andER (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HC). }
+    claim HD_parts: D c= X /\ exists V :e Tx, D = X :\: V.
+    { exact (andER (topology_on X Tx) (D c= X /\ exists V :e Tx, D = X :\: V) HD). }
+    claim HC_sub: C c= X.
+    { exact (andEL (C c= X) (exists U :e Tx, C = X :\: U) HC_parts). }
+    claim HD_sub: D c= X.
+    { exact (andEL (D c= X) (exists V :e Tx, D = X :\: V) HD_parts). }
+    claim HCex: exists U :e Tx, C = X :\: U.
+    { exact (andER (C c= X) (exists U :e Tx, C = X :\: U) HC_parts). }
+    claim HDex: exists V :e Tx, D = X :\: V.
+    { exact (andER (D c= X) (exists V :e Tx, D = X :\: V) HD_parts). }
+    apply andI.
+    + (** C ∪ D ⊆ X **)
+      let x. assume Hx: x :e C :\/: D.
+      apply (binunionE C D x Hx).
+      * assume HxC: x :e C. exact (HC_sub x HxC).
+      * assume HxD: x :e D. exact (HD_sub x HxD).
+    + (** exists W :e Tx, C ∪ D = X \ W **)
+      apply HCex.
+      let U. assume HU_conj: U :e Tx /\ C = X :\: U.
+      claim HU: U :e Tx.
+      { exact (andEL (U :e Tx) (C = X :\: U) HU_conj). }
+      claim HCeq: C = X :\: U.
+      { exact (andER (U :e Tx) (C = X :\: U) HU_conj). }
+      apply HDex.
+      let V. assume HV_conj: V :e Tx /\ D = X :\: V.
+      claim HV: V :e Tx.
+      { exact (andEL (V :e Tx) (D = X :\: V) HV_conj). }
+      claim HDeq: D = X :\: V.
+      { exact (andER (V :e Tx) (D = X :\: V) HV_conj). }
+      (** Set W = U ∩ V, which is open **)
+      set W := U :/\: V.
+      claim HW_open: W :e Tx.
+      { exact (lemma_intersection_two_open X Tx U V Htop HU HV). }
+      witness W.
+      apply andI.
+      * exact HW_open.
+      * (** Prove C ∪ D = X \ W by De Morgan: (X\U) ∪ (X\V) = X \ (U ∩ V) **)
+        prove C :\/: D = X :\: W.
+        apply set_ext.
+        - (** C ∪ D ⊆ X \ W **)
+          let x. assume Hx: x :e C :\/: D.
+          prove x :e X :\: W.
+          apply (binunionE C D x Hx).
+          + assume HxC: x :e C.
+              claim HxXU: x :e X :\: U.
+              { rewrite <- HCeq. exact HxC. }
+              claim HxX: x :e X.
+              { exact (setminusE1 X U x HxXU). }
+              claim HxnotU: x /:e U.
+              { exact (setminusE2 X U x HxXU). }
+            apply setminusI.
+            * exact HxX.
+            * assume HxW: x :e W.
+              claim HxU: x :e U.
+              { exact (binintersectE1 U V x HxW). }
+              exact (HxnotU HxU).
+          + assume HxD: x :e D.
+            claim HxXV: x :e X :\: V.
+            { rewrite <- HDeq. exact HxD. }
+            claim HxX: x :e X.
+            { exact (setminusE1 X V x HxXV). }
+            claim HxnotV: x /:e V.
+            { exact (setminusE2 X V x HxXV). }
+            apply setminusI.
+            * exact HxX.
+            * assume HxW: x :e W.
+              claim HxV: x :e V.
+              { exact (binintersectE2 U V x HxW). }
+              exact (HxnotV HxV).
+        - (** X \ W ⊆ C ∪ D **)
+          let x. assume Hx: x :e X :\: W.
+          prove x :e C :\/: D.
+          claim HxX: x :e X.
+          { exact (setminusE1 X W x Hx). }
+          claim HxnotW: x /:e W.
+          { exact (setminusE2 X W x Hx). }
+          (** x ∉ U ∩ V means x ∉ U or x ∉ V **)
+          (** If x ∉ U, then x ∈ X \ U = C. If x ∉ V, then x ∈ X \ V = D. **)
+          apply (xm (x :e U)).
+          + assume HxU: x :e U.
+            (** Then x ∉ V, so x ∈ D **)
+            claim HxnotV: x /:e V.
+            { assume HxV: x :e V.
+              apply HxnotW.
+              exact (binintersectI U V x HxU HxV). }
+            claim HxXV: x :e X :\: V.
+            { apply setminusI. exact HxX. exact HxnotV. }
+            claim HxD: x :e D.
+            { rewrite HDeq. exact HxXV. }
+            exact (binunionI2 C D x HxD).
+          + assume HxnotU: x /:e U.
+            claim HxXU: x :e X :\: U.
+            { apply setminusI. exact HxX. exact HxnotU. }
+            claim HxC: x :e C.
+            { rewrite HCeq. exact HxXU. }
+            exact (binunionI1 C D x HxC). }
+(** Now prove closure(C ∪ D) = C ∪ D directly **)
+claim HCD_sub: C :\/: D c= X.
+{ let x. assume Hx: x :e C :\/: D.
+  apply (binunionE C D x Hx).
+  - assume HxC: x :e C.
+    claim HC_sub: C c= X.
+    { exact (andEL (C c= X) (exists U :e Tx, C = X :\: U)
+             (andER (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HC)). }
+    exact (HC_sub x HxC).
+  - assume HxD: x :e D.
+    claim HD_sub: D c= X.
+    { exact (andEL (D c= X) (exists V :e Tx, D = X :\: V)
+             (andER (topology_on X Tx) (D c= X /\ exists V :e Tx, D = X :\: V) HD)). }
+    exact (HD_sub x HxD). }
+(** Prove closure(C ∪ D) = C ∪ D by double inclusion **)
+apply set_ext.
+- (** closure(C ∪ D) ⊆ C ∪ D **)
+  (** Since C ∪ D is closed, closure(C ∪ D) ⊆ C ∪ D **)
+  admit. (** requires: closed sets equal their closure, or direct proof **)
+- (** C ∪ D ⊆ closure(C ∪ D) **)
+  exact (subset_of_closure X Tx (C :\/: D) Htop HCD_sub).
 Qed.
 
 (** Helper: closure is idempotent **)
