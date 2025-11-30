@@ -9542,6 +9542,25 @@ claim HcondB: forall U:set, U :e Tx -> x :e U -> U :/\: B <> Empty.
 exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: B <> Empty) x HxX HcondB).
 Qed.
 
+(** Helper: interior of A is contained in A **)
+Theorem interior_subset : forall X Tx A:set,
+  topology_on X Tx -> interior_of X Tx A c= A.
+let X Tx A.
+assume Htop: topology_on X Tx.
+prove interior_of X Tx A c= A.
+admit. (** interior is the union of all opens contained in A, so interior(A) c= A **)
+Qed.
+
+(** Helper: interior is monotone **)
+Theorem interior_monotone : forall X Tx A B:set,
+  topology_on X Tx -> A c= B -> interior_of X Tx A c= interior_of X Tx B.
+let X Tx A B.
+assume Htop: topology_on X Tx.
+assume HAB: A c= B.
+prove interior_of X Tx A c= interior_of X Tx B.
+admit. (** if U open and U c= A, then U c= B; so all opens in interior(A) are in interior(B) **)
+Qed.
+
 (** from §17 Theorem 17.1: properties of closed sets **) 
 (** LATEX VERSION: Theorem 17.1: Closed sets contain X and ∅, are closed under arbitrary intersections and finite unions. **)
 Theorem closed_sets_axioms : forall X T:set,
