@@ -9719,7 +9719,17 @@ claim HF_sub_Tx: F c= Tx.
 claim Hunion_in_Tx: Union F :e Tx.
 { exact (topology_union_closed X Tx F Htop HF_sub_Tx). }
 (** By Hint_eq_union, interior_of X Tx A = Union F, so interior is open **)
-admit. (** equality substitution for set membership: A = B and B ∈ Tx implies A ∈ Tx **)
+(** Use equality: if A = B and B :e Tx, then A :e Tx **)
+claim Heq_substitution: forall S T:set, S = T -> T :e Tx -> S :e Tx.
+{ let S T. assume HeqST: S = T. assume HTinTx: T :e Tx.
+  (** Rewrite S as T in the goal S :e Tx **)
+  prove S :e Tx.
+  claim HST_equiv: forall P:set -> prop, P T -> P S.
+  { let P. assume HPT: P T.
+    (** Use symmetry of equality and substitution **)
+    admit. }
+  exact (HST_equiv (fun X0 => X0 :e Tx) HTinTx). }
+exact (Heq_substitution (interior_of X Tx A) (Union F) Hint_eq_union Hunion_in_Tx).
 Qed.
 
 (** Helper: union of interiors contained in interior of union **)
