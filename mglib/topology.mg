@@ -9548,7 +9548,21 @@ Theorem interior_subset : forall X Tx A:set,
 let X Tx A.
 assume Htop: topology_on X Tx.
 prove interior_of X Tx A c= A.
-admit. (** interior is the union of all opens contained in A, so interior(A) c= A **)
+let x. assume Hx: x :e interior_of X Tx A.
+prove x :e A.
+(** Unpack interior: x in X and there exists open U with x in U and U c= A **)
+apply (SepE X (fun x0 => exists U:set, U :e Tx /\ x0 :e U /\ U c= A) x Hx).
+assume HxX: x :e X.
+assume Hexists: exists U:set, U :e Tx /\ x :e U /\ U c= A.
+apply Hexists.
+let U. assume Hand: U :e Tx /\ x :e U /\ U c= A.
+apply Hand.
+assume HU: U :e Tx.
+assume Hand2: x :e U /\ U c= A.
+apply Hand2.
+assume HxU: x :e U.
+assume HUA: U c= A.
+exact (HUA x HxU).
 Qed.
 
 (** Helper: interior is monotone **)
@@ -9558,7 +9572,31 @@ let X Tx A B.
 assume Htop: topology_on X Tx.
 assume HAB: A c= B.
 prove interior_of X Tx A c= interior_of X Tx B.
-admit. (** if U open and U c= A, then U c= B; so all opens in interior(A) are in interior(B) **)
+let x. assume Hx: x :e interior_of X Tx A.
+prove x :e interior_of X Tx B.
+(** Unpack interior_of A **)
+apply (SepE X (fun x0 => exists U:set, U :e Tx /\ x0 :e U /\ U c= A) x Hx).
+assume HxX: x :e X.
+assume Hexists: exists U:set, U :e Tx /\ x :e U /\ U c= A.
+apply Hexists.
+let U. assume Hand: U :e Tx /\ x :e U /\ U c= A.
+apply Hand.
+assume HU: U :e Tx.
+assume Hand2: x :e U /\ U c= A.
+apply Hand2.
+assume HxU: x :e U.
+assume HUA: U c= A.
+(** Now show x in interior_of X Tx B using same U **)
+claim HUB: U c= B.
+{ exact (Subq_tra U A B HUA HAB). }
+apply (SepI X (fun x0 => exists U:set, U :e Tx /\ x0 :e U /\ U c= B) x HxX).
+prove exists U:set, U :e Tx /\ x :e U /\ U c= B.
+witness U.
+apply andI.
+- exact HU.
+- apply andI.
+  + exact HxU.
+  + exact HUB.
 Qed.
 
 (** Helper: closure contains the set **)
@@ -9590,7 +9628,24 @@ assume Htop: topology_on X Tx.
 assume HA: A c= X.
 assume HB: B c= X.
 prove closure_of X Tx A :\/: closure_of X Tx B c= closure_of X Tx (A :\/: B).
-admit. (** cl(A) c= cl(A union B) by monotonicity; similarly cl(B) c= cl(A union B); so union of closures c= closure of union **)
+(** Use monotonicity of closure with A c= A∪B and B c= A∪B **)
+claim HAB_union: A c= A :\/: B.
+{ let x. assume Hx: x :e A. exact (binunionI1 A B x Hx). }
+claim HBB_union: B c= A :\/: B.
+{ let x. assume Hx: x :e B. exact (binunionI2 A B x Hx). }
+claim HAB_sub: A :\/: B c= X.
+{ let x. assume Hx: x :e A :\/: B.
+  apply (binunionE A B x Hx).
+  - assume HxA: x :e A. exact (HA x HxA).
+  - assume HxB: x :e B. exact (HB x HxB). }
+claim HclA: closure_of X Tx A c= closure_of X Tx (A :\/: B).
+{ exact (closure_monotone X Tx A (A :\/: B) Htop HAB_union HAB_sub). }
+claim HclB: closure_of X Tx B c= closure_of X Tx (A :\/: B).
+{ exact (closure_monotone X Tx B (A :\/: B) Htop HBB_union HAB_sub). }
+let x. assume Hx: x :e closure_of X Tx A :\/: closure_of X Tx B.
+apply (binunionE (closure_of X Tx A) (closure_of X Tx B) x Hx).
+- assume HxA: x :e closure_of X Tx A. exact (HclA x HxA).
+- assume HxB: x :e closure_of X Tx B. exact (HclB x HxB).
 Qed.
 
 (** from §17 Theorem 17.1: properties of closed sets **) 
