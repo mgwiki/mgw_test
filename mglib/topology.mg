@@ -9969,6 +9969,50 @@ apply set_ext.
     rewrite HUeq.
     prove (V :/\: Y) :/\: A <> Empty.
     assume HVYAempty: (V :/\: Y) :/\: A = Empty.
+    (** Since V :/\: A is nonempty, there exists w in V :/\: A.
+        (V :/\: Y) :/\: A = V :/\: (Y :/\: A) by associativity.
+        If this is empty, then V is disjoint from Y :/\: A.
+        But we need to show this contradicts V :/\: A being nonempty and y in V :/\: Y. **)
+    claim HVA_sub_VYA: V :/\: (Y :/\: A) c= V :/\: A.
+    { let z. assume Hz: z :e V :/\: (Y :/\: A).
+      claim HzV: z :e V.
+      { exact (binintersectE1 V (Y :/\: A) z Hz). }
+      claim HzYA: z :e Y :/\: A.
+      { exact (binintersectE2 V (Y :/\: A) z Hz). }
+      claim HzA: z :e A.
+      { exact (binintersectE2 Y A z HzYA). }
+      exact (binintersectI V A z HzV HzA). }
+    claim HVYAeq: V :/\: (Y :/\: A) = (V :/\: Y) :/\: A.
+    { apply set_ext.
+      - let z. assume Hz: z :e V :/\: (Y :/\: A).
+        claim HzV: z :e V.
+        { exact (binintersectE1 V (Y :/\: A) z Hz). }
+        claim HzYA: z :e Y :/\: A.
+        { exact (binintersectE2 V (Y :/\: A) z Hz). }
+        claim HzY: z :e Y.
+        { exact (binintersectE1 Y A z HzYA). }
+        claim HzA: z :e A.
+        { exact (binintersectE2 Y A z HzYA). }
+        claim HzVY: z :e V :/\: Y.
+        { exact (binintersectI V Y z HzV HzY). }
+        exact (binintersectI (V :/\: Y) A z HzVY HzA).
+      - let z. assume Hz: z :e (V :/\: Y) :/\: A.
+        claim HzVY: z :e V :/\: Y.
+        { exact (binintersectE1 (V :/\: Y) A z Hz). }
+        claim HzV: z :e V.
+        { exact (binintersectE1 V Y z HzVY). }
+        claim HzY: z :e Y.
+        { exact (binintersectE2 V Y z HzVY). }
+        claim HzA: z :e A.
+        { exact (binintersectE2 (V :/\: Y) A z Hz). }
+        claim HzYA: z :e Y :/\: A.
+        { exact (binintersectI Y A z HzY HzA). }
+        exact (binintersectI V (Y :/\: A) z HzV HzYA). }
+    claim HVYAempty2: V :/\: (Y :/\: A) = Empty.
+    { rewrite HVYAeq. exact HVYAempty. }
+    (** Now we need to derive a contradiction. We know V :/\: A <> Empty.
+        But we don't immediately know that V :/\: (Y :/\: A) <> Empty.
+        This requires that the witness in V :/\: A is also in Y. **)
     admit. }
   exact (SepI Y (fun y0 => forall U:set, U :e subspace_topology X Tx Y -> y0 :e U -> U :/\: A <> Empty) y HyY HySubCond).
 Qed.
