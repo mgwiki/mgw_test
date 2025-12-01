@@ -9816,21 +9816,7 @@ exact (open_interior_eq X Tx (interior_of X Tx A) Htop HintA_open).
 Qed.
 
 (** Helper: interior-closure duality **)
-Theorem interior_closure_complement_duality : forall X Tx A:set,
-  topology_on X Tx -> A c= X ->
-  interior_of X Tx A = X :\: closure_of X Tx (X :\: A).
-let X Tx A.
-assume Htop: topology_on X Tx.
-assume HA: A c= X.
-prove interior_of X Tx A = X :\: closure_of X Tx (X :\: A).
-(** Strategy: int(A) is the largest open subset of A.
-    X \ cl(X\A) is open (complement of closed), and we show it equals int(A).
-    - int(A) ⊆ A and A ⊆ X \ (X\A), so int(A) ⊆ X \ cl(X\A)
-    - X \ cl(X\A) is open and contained in A, so X \ cl(X\A) ⊆ int(A) **)
-admit. (** requires proving closure is closed, and that complement of closed is open **)
-Qed.
 
-(** Helper: point not in closure has disjoint open neighborhood **)
 Theorem not_in_closure_has_disjoint_open : forall X Tx A x:set,
   topology_on X Tx -> A c= X -> x :e X -> x /:e closure_of X Tx A ->
   exists U:set, U :e Tx /\ x :e U /\ U :/\: A = Empty.
@@ -9866,7 +9852,6 @@ apply (xm (exists U:set, U :e Tx /\ x :e U /\ U :/\: A = Empty)).
     * exact Heq.
 Qed.
 
-(** Helper: closure of a set is closed **)
 Theorem closure_is_closed : forall X Tx A:set,
   topology_on X Tx -> A c= X -> closed_in X Tx (closure_of X Tx A).
 let X Tx A.
@@ -9969,6 +9954,170 @@ apply andI.
           - exact HxX.
           - exact Hxnotcl.
 Qed.
+
+Theorem interior_closure_complement_duality : forall X Tx A:set,
+  topology_on X Tx -> A c= X ->
+  interior_of X Tx A = X :\: closure_of X Tx (X :\: A).
+let X Tx A.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+prove interior_of X Tx A = X :\: closure_of X Tx (X :\: A).
+(** Strategy: int(A) is the largest open subset of A.
+    X \ cl(X\A) is open (complement of closed), and we show it equals int(A). **)
+claim HXA_sub: X :\: A c= X.
+{ let x. assume Hx: x :e X :\: A.
+  exact (setminusE1 X A x Hx). }
+(** cl(X\A) is closed, so X \ cl(X\A) is open **)
+claim Hclosed: closed_in X Tx (closure_of X Tx (X :\: A)).
+{ exact (closure_is_closed X Tx (X :\: A) Htop HXA_sub). }
+(** Extract that there exists U open with cl(X\A) = X \ U, so X \ cl(X\A) = U is open **)
+claim Hclosed_parts: topology_on X Tx /\ (closure_of X Tx (X :\: A) c= X /\ exists U :e Tx, closure_of X Tx (X :\: A) = X :\: U).
+{ exact Hclosed. }
+claim Hexists: exists U :e Tx, closure_of X Tx (X :\: A) = X :\: U.
+{ claim Hpart2: closure_of X Tx (X :\: A) c= X /\ exists U :e Tx, closure_of X Tx (X :\: A) = X :\: U.
+  { exact (andER (topology_on X Tx) (closure_of X Tx (X :\: A) c= X /\ exists U :e Tx, closure_of X Tx (X :\: A) = X :\: U) Hclosed_parts). }
+  exact (andER (closure_of X Tx (X :\: A) c= X) (exists U :e Tx, closure_of X Tx (X :\: A) = X :\: U) Hpart2). }
+apply Hexists.
+let U. assume HU_conj: U :e Tx /\ closure_of X Tx (X :\: A) = X :\: U.
+claim HU_open: U :e Tx.
+{ exact (andEL (U :e Tx) (closure_of X Tx (X :\: A) = X :\: U) HU_conj). }
+claim Heq_clXA: closure_of X Tx (X :\: A) = X :\: U.
+{ exact (andER (U :e Tx) (closure_of X Tx (X :\: A) = X :\: U) HU_conj). }
+(** Now show X \ cl(X\A) = U **)
+claim HcompU: X :\: closure_of X Tx (X :\: A) = U.
+{ apply set_ext.
+  - let x. assume Hx: x :e X :\: closure_of X Tx (X :\: A).
+    prove x :e U.
+    claim HxX: x :e X.
+    { exact (setminusE1 X (closure_of X Tx (X :\: A)) x Hx). }
+    claim Hxnotcl: x /:e closure_of X Tx (X :\: A).
+    { exact (setminusE2 X (closure_of X Tx (X :\: A)) x Hx). }
+    (** From Heq_clXA: cl(X\A) = X \ U, so x ∉ cl(X\A) means x ∉ X \ U, i.e., x ∈ U **)
+    apply (xm (x :e U)).
+    + assume H. exact H.
+    + assume HxnotU: x /:e U.
+      apply FalseE.
+      apply Hxnotcl.
+      (** x ∈ X and x ∉ U, so x ∈ X \ U = cl(X\A) **)
+      claim HxXminusU: x :e X :\: U.
+      { apply setminusI. exact HxX. exact HxnotU. }
+      (** Use Heq_clXA: cl(X\A) = X \ U **)
+      prove x :e closure_of X Tx (X :\: A).
+      rewrite Heq_clXA.
+      exact HxXminusU.
+  - let x. assume Hx: x :e U.
+    prove x :e X :\: closure_of X Tx (X :\: A).
+    claim HUsub: U c= X.
+    { exact (topology_elem_subset X Tx U Htop HU_open). }
+    claim HxX: x :e X.
+    { exact (HUsub x Hx). }
+    apply setminusI.
+    + exact HxX.
+    + assume Hxcl: x :e closure_of X Tx (X :\: A).
+      (** From Heq_clXA: cl(X\A) = X \ U, so x ∈ cl(X\A) means x ∈ X \ U, so x ∉ U **)
+      claim HxXminusU: x :e X :\: U.
+      { rewrite <- Heq_clXA. exact Hxcl. }
+      claim HxnotU: x /:e U.
+      { exact (setminusE2 X U x HxXminusU). }
+      exact (HxnotU Hx). }
+(** Now show U ⊆ A **)
+claim HUsub_A: U c= A.
+{ let x. assume Hx: x :e U.
+  prove x :e A.
+  claim HUsub: U c= X.
+  { exact (topology_elem_subset X Tx U Htop HU_open). }
+  claim HxX: x :e X.
+  { exact (HUsub x Hx). }
+  apply (xm (x :e A)).
+  - assume H. exact H.
+  - assume HxnotA: x /:e A.
+    (** Then x ∈ X \ A, so x ∈ cl(X\A) = X \ U, so x ∉ U, contradiction **)
+    apply FalseE.
+    claim HxXminusA: x :e X :\: A.
+    { apply setminusI. exact HxX. exact HxnotA. }
+    claim Hxincl: x :e closure_of X Tx (X :\: A).
+    { exact (subset_of_closure X Tx (X :\: A) Htop HXA_sub x HxXminusA). }
+    claim HxXminusU: x :e X :\: U.
+    { rewrite <- Heq_clXA. exact Hxincl. }
+    claim HxnotU: x /:e U.
+    { exact (setminusE2 X U x HxXminusU). }
+    exact (HxnotU Hx). }
+(** Finally show int(A) = U **)
+claim Hint_eq_U: interior_of X Tx A = U.
+{ apply set_ext.
+- (** int(A) ⊆ U **)
+  let x. assume Hx: x :e interior_of X Tx A.
+  prove x :e U.
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun y => exists V:set, V :e Tx /\ y :e V /\ V c= A) x Hx). }
+  claim Hexists_V: exists V:set, V :e Tx /\ x :e V /\ V c= A.
+  { exact (SepE2 X (fun y => exists V:set, V :e Tx /\ y :e V /\ V c= A) x Hx). }
+  apply Hexists_V.
+  let V. assume HV_conj.
+  claim HV_and_xV: V :e Tx /\ x :e V.
+  { exact (andEL (V :e Tx /\ x :e V) (V c= A) HV_conj). }
+  claim HV: V :e Tx.
+  { exact (andEL (V :e Tx) (x :e V) HV_and_xV). }
+  claim HxV: x :e V.
+  { exact (andER (V :e Tx) (x :e V) HV_and_xV). }
+  claim HVsub: V c= A.
+  { exact (andER (V :e Tx /\ x :e V) (V c= A) HV_conj). }
+  (** Show x ∉ cl(X\A), which means x ∈ U **)
+  apply (xm (x :e U)).
+  + assume H. exact H.
+  + assume HxnotU: x /:e U.
+    (** Then x ∈ X \ U = cl(X\A), but V is open with x ∈ V ⊆ A, so V ∩ (X\A) = ∅, contradiction **)
+    apply FalseE.
+    claim HxXminusU: x :e X :\: U.
+    { apply setminusI. exact HxX. exact HxnotU. }
+    claim Hxcl: x :e closure_of X Tx (X :\: A).
+    { rewrite Heq_clXA. exact HxXminusU. }
+    (** x ∈ cl(X\A) means V ∩ (X\A) ≠ ∅ **)
+    claim Hcond: forall W:set, W :e Tx -> x :e W -> W :/\: (X :\: A) <> Empty.
+    { exact (SepE2 X (fun y => forall W:set, W :e Tx -> y :e W -> W :/\: (X :\: A) <> Empty) x Hxcl). }
+    claim HVmeets: V :/\: (X :\: A) <> Empty.
+    { exact (Hcond V HV HxV). }
+    (** But V ⊆ A, so V ∩ (X\A) = ∅ **)
+    claim HVdisj: V :/\: (X :\: A) = Empty.
+    { apply set_ext.
+      - let y. assume Hy: y :e V :/\: (X :\: A).
+        prove y :e Empty.
+        claim HyV: y :e V.
+        { exact (binintersectE1 V (X :\: A) y Hy). }
+        claim HyXminusA: y :e X :\: A.
+        { exact (binintersectE2 V (X :\: A) y Hy). }
+        claim HyA: y :e A.
+        { exact (HVsub y HyV). }
+        claim HynotA: y /:e A.
+        { exact (setminusE2 X A y HyXminusA). }
+        apply FalseE.
+        exact (HynotA HyA).
+      - exact (Subq_Empty (V :/\: (X :\: A))). }
+    exact (HVmeets HVdisj).
+- (** U ⊆ int(A) **)
+  let x. assume Hx: x :e U.
+  prove x :e interior_of X Tx A.
+  claim HUsub: U c= X.
+  { exact (topology_elem_subset X Tx U Htop HU_open). }
+  claim HxX: x :e X.
+  { exact (HUsub x Hx). }
+  prove x :e {y :e X | exists V:set, V :e Tx /\ y :e V /\ V c= A}.
+  apply SepI.
+  + exact HxX.
+  + prove exists V:set, V :e Tx /\ x :e V /\ V c= A.
+    witness U.
+    prove U :e Tx /\ x :e U /\ U c= A.
+    apply andI.
+    * apply andI.
+      - exact HU_open.
+      - exact Hx.
+    * exact HUsub_A. }
+(** Now use HcompU to get the final result **)
+prove interior_of X Tx A = X :\: closure_of X Tx (X :\: A).
+rewrite HcompU.
+exact Hint_eq_U.
+Qed.
+
 
 (** Helper: closure contains the set **)
 Theorem closure_contains_set : forall X Tx A:set,
