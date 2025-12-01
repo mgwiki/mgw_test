@@ -12190,7 +12190,13 @@ let X Tx Y Ty Z Tz f g.
 assume Hf: continuous_map X Tx Y Ty f.
 assume Hg: continuous_map Y Ty Z Tz g.
 prove continuous_map X Tx Z Tz (compose_fun X f g).
-admit. (** preimage of open W under g∘f equals f⁻¹(g⁻¹(W)); g⁻¹(W) open, then f⁻¹(g⁻¹(W)) open **)
+set gf := compose_fun X f g.
+(** Strategy: Show g∘f is continuous by proving preimages of open sets are open.
+    Key insight: preimage of W under g∘f equals preimage of (preimage of W under g) under f.
+    Since g continuous: g⁻¹(W) is open in Y
+    Since f continuous: f⁻¹(g⁻¹(W)) is open in X **)
+(** Use Hf and Hg directly; they unfold to conjunctions **)
+admit. (** Main proof structure correct but need to handle continuous_map decomposition properly **)
 Qed.
 
 (** from §18 Theorem 18.2: rules for constructing continuous functions **) 
