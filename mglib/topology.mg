@@ -11479,7 +11479,22 @@ Theorem closed_iff_contains_limit_points : forall X Tx A:set,
 let X Tx A.
 assume HTx: topology_on X Tx.
 prove closed_in X Tx A <-> limit_points_of X Tx A c= A.
-admit. (** A closed iff cl(A) = A iff A ∪ lim(A) = A iff lim(A) ⊆ A **)
+(** Strategy: A closed iff cl(A) = A iff A ∪ lim(A) = A iff lim(A) ⊆ A **)
+apply iffI.
+- (** Forward: If A closed, then lim(A) ⊆ A **)
+  assume HAclosed: closed_in X Tx A.
+  prove limit_points_of X Tx A c= A.
+  let x. assume Hx: x :e limit_points_of X Tx A.
+  prove x :e A.
+  (** A is closed means cl(A) = A. We have cl(A) = A ∪ lim(A), so A = A ∪ lim(A), thus lim(A) ⊆ A. **)
+  claim Heq_cl: closure_of X Tx A = A.
+  { exact (closed_closure_eq X Tx A HTx HAclosed). }
+  admit. (** Use closure_equals_set_plus_limit_points to show A = A ∪ lim(A), then x ∈ lim(A) → x ∈ A **)
+- (** Backward: If lim(A) ⊆ A, then A closed **)
+  assume Hlim_sub: limit_points_of X Tx A c= A.
+  prove closed_in X Tx A.
+  (** Need to show A = cl(A). We have cl(A) = A ∪ lim(A). If lim(A) ⊆ A, then A ∪ lim(A) = A. **)
+  admit. (** Use closure_equals_set_plus_limit_points and show cl(A) = A **)
 Qed.
 
 (** from §17 Definition: Hausdorff and T1 spaces **) 
