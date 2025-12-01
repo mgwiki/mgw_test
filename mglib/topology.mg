@@ -12495,7 +12495,28 @@ Theorem homeomorphism_inverse_continuous : forall X Tx Y Ty f:set,
 let X Tx Y Ty f.
 assume Hhom: homeomorphism X Tx Y Ty f.
 prove continuous_map Y Ty X Tx f.
-admit. (** homeomorphism includes continuous inverse by definition **)
+(** Strategy: By definition of homeomorphism, there exists g: Y → X continuous
+    such that g∘f = id_X and f∘g = id_Y. We need to extract this g from the definition.
+    NOTE: The theorem statement may have a type issue - homeomorphism X Tx Y Ty f
+    means f:X→Y, but we're asked to prove f:Y→X is continuous. The inverse g should
+    be what we extract. **)
+claim Hfcont: continuous_map X Tx Y Ty f.
+{ exact (andEL (continuous_map X Tx Y Ty f)
+               (exists g:set, continuous_map Y Ty X Tx g /\
+                  (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+                  (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
+               Hhom). }
+claim Hexg: exists g:set, continuous_map Y Ty X Tx g /\
+                  (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+                  (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y).
+{ exact (andER (continuous_map X Tx Y Ty f)
+               (exists g:set, continuous_map Y Ty X Tx g /\
+                  (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+                  (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
+               Hhom). }
+(** The statement appears to have an issue: we have g:Y→X continuous, not f:Y→X.
+    Possibly f represents the inverse here, or the statement needs correction. **)
+admit. (** Possible theorem statement issue: definition gives g:Y→X continuous, not f:Y→X **)
 Qed.
 
 (** from §18 Theorem 18.3: pasting lemma **) 
