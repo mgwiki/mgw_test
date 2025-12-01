@@ -11940,19 +11940,24 @@ let X Tx A.
 assume Htop: topology_on X Tx.
 prove closure_of X Tx (closure_of X Tx A) = closure_of X Tx A /\ closed_in X Tx (closure_of X Tx A).
 (** Strategy: Prove part 2 first (cl(A) is closed), then use it for part 1 (idempotence) **)
+set clA := closure_of X Tx A.
+claim HclA_sub: clA c= X.
+{ let x. assume Hx: x :e clA.
+  prove x :e X.
+  exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+(** To prove clA is closed, we would normally apply closure_is_closed, but that requires clA c= X
+    which we have. However, closure_is_closed X Tx clA gives us closed_in X Tx (closure_of X Tx clA),
+    not closed_in X Tx clA. We need a more direct proof that closure is closed. **)
 apply andI.
 - (** cl(cl(A)) = cl(A) - idempotence follows from closure being closed **)
-  prove closure_of X Tx (closure_of X Tx A) = closure_of X Tx A.
-  (** Need to show closure_of X Tx A is closed, then apply closed_closure_eq.
-      However, closure_is_closed requires A c= X to prove closure_of X Tx A is closed.
-      The theorem statement doesn't assume A c= X, which may be a gap. **)
-  claim HclA_closed: closed_in X Tx (closure_of X Tx A).
-  { admit. (** Need: A c= X to apply closure_is_closed, but not given in theorem statement **)
+  prove closure_of X Tx clA = clA.
+  claim HclA_closed: closed_in X Tx clA.
+  { admit. (** Need: direct proof that closure_of X Tx A is closed without adding another layer **)
   }
-  exact (closed_closure_eq X Tx (closure_of X Tx A) Htop HclA_closed).
+  exact (closed_closure_eq X Tx clA Htop HclA_closed).
 - (** cl(A) is closed **)
-  prove closed_in X Tx (closure_of X Tx A).
-  admit. (** Need: A c= X to apply closure_is_closed, but not given in theorem statement **)
+  prove closed_in X Tx clA.
+  admit. (** Need: direct proof that closure_of X Tx A is closed without adding another layer **)
 Qed.
 
 (** LATEX VERSION: Exercise 7: Show union being closed does not imply each set is closed. **)
