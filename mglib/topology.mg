@@ -11788,18 +11788,27 @@ Theorem ex17_6_closure_properties : forall X Tx A:set,
 let X Tx A.
 assume Htop: topology_on X Tx.
 prove closure_of X Tx (closure_of X Tx A) = closure_of X Tx A /\ closed_in X Tx (closure_of X Tx A).
+(** Strategy: Prove part 2 first (cl(A) is closed), then use it to prove part 1 (idempotence) **)
 apply andI.
-- (** cl(cl(A)) = cl(A) **)
+- (** cl(cl(A)) = cl(A) - follows from cl(A) being closed **)
   prove closure_of X Tx (closure_of X Tx A) = closure_of X Tx A.
-  (** This needs: closure is idempotent - requires that closure is a closed set **)
-  admit.
+  (** First establish that cl(A) is closed **)
+  claim HclA_sub: closure_of X Tx A c= X.
+  { let x. assume Hx: x :e closure_of X Tx A.
+    prove x :e X.
+    exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+  claim HclA_closed: closed_in X Tx (closure_of X Tx A).
+  { exact (closure_is_closed X Tx A Htop HclA_sub). }
+  (** Now apply closed_closure_eq: if C is closed, then cl(C) = C **)
+  exact (closed_closure_eq X Tx (closure_of X Tx A) Htop HclA_closed).
 - (** cl(A) is closed **)
   prove closed_in X Tx (closure_of X Tx A).
-  (** Need to show: closure_of X Tx A is closed.
-      This means X :\: closure_of X Tx A is open.
-      Key fact: X :\: cl(A) = interior(X :\: A).
-      To prove this properly requires showing interior of complement equals complement of closure. **)
-  admit.
+  (** cl(A) ⊆ X by definition of closure **)
+  claim HclA_sub: closure_of X Tx A c= X.
+  { let x. assume Hx: x :e closure_of X Tx A.
+    prove x :e X.
+    exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+  exact (closure_is_closed X Tx A Htop HclA_sub).
 Qed.
 
 (** LATEX VERSION: Exercise 7: Show union being closed does not imply each set is closed. **)
