@@ -11346,7 +11346,129 @@ Theorem closure_equals_set_plus_limit_points : forall X Tx A:set,
 let X Tx A.
 assume HTx: topology_on X Tx.
 prove closure_of X Tx A = A :\/: limit_points_of X Tx A.
-admit. (** closure = A ∪ limit points; points in A plus points all nbhds meet A **)
+(** Strategy: cl(A) = A ∪ lim(A) by double inclusion.
+    - A ⊆ cl(A) already known, and lim(A) ⊆ cl(A) since limit points satisfy closure condition
+    - If x ∈ cl(A) and x ∉ A, then x is a limit point **)
+apply set_ext.
+- (** cl(A) ⊆ A ∪ lim(A) **)
+  let x. assume Hx: x :e closure_of X Tx A.
+  prove x :e A :\/: limit_points_of X Tx A.
+  apply (xm (x :e A)).
+  + assume HxA: x :e A.
+    apply binunionI1.
+    exact HxA.
+  + assume HxnotA: x /:e A.
+    (** Show x is a limit point **)
+    apply binunionI2.
+    prove x :e limit_points_of X Tx A.
+    prove x :e {y :e X|limit_point_of X Tx A y}.
+    claim HxX: x :e X.
+    { exact (closure_in_space X Tx A HTx x Hx). }
+    claim Hcond: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+    { exact (SepE2 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+    apply SepI.
+    * exact HxX.
+    * prove limit_point_of X Tx A x.
+      prove topology_on X Tx /\ x :e X /\ forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+      apply andI.
+      - apply andI.
+        + exact HTx.
+        + exact HxX.
+      - prove forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+          let U. assume HU: U :e Tx. assume HxU: x :e U.
+          prove exists y:set, y :e A /\ y <> x /\ y :e U.
+          claim HUne: U :/\: A <> Empty.
+          { exact (Hcond U HU HxU). }
+          claim Hexists: exists y:set, y :e U :/\: A.
+          { apply (xm (exists y:set, y :e U :/\: A)).
+            - assume H. exact H.
+            - assume Hnoex: ~(exists y:set, y :e U :/\: A).
+              apply FalseE.
+              apply HUne.
+              apply set_ext.
+              + let y. assume Hy: y :e U :/\: A.
+                apply FalseE.
+                apply Hnoex.
+                witness y. exact Hy.
+              + exact (Subq_Empty (U :/\: A)). }
+          apply Hexists.
+          let y. assume Hy: y :e U :/\: A.
+          witness y.
+          claim HyU: y :e U.
+          { exact (binintersectE1 U A y Hy). }
+          claim HyA: y :e A.
+          { exact (binintersectE2 U A y Hy). }
+          prove y :e A /\ y <> x /\ y :e U.
+          apply andI.
+          - apply andI.
+            + exact HyA.
+            + prove y <> x.
+              assume Heq: y = x.
+              apply HxnotA.
+              rewrite <- Heq.
+              exact HyA.
+          - exact HyU.
+- (** A ∪ lim(A) ⊆ cl(A) **)
+  let x. assume Hx: x :e A :\/: limit_points_of X Tx A.
+  prove x :e closure_of X Tx A.
+  apply (binunionE A (limit_points_of X Tx A) x Hx).
+  + assume HxA: x :e A.
+    (** Show x ∈ cl(A) directly. Need x ∈ X first. **)
+    apply (xm (x :e X)).
+    * assume HxX: x :e X.
+      (** Now show for all U open containing x, U ∩ A ≠ ∅ **)
+      prove x :e {y :e X | forall U:set, U :e Tx -> y :e U -> U :/\: A <> Empty}.
+      apply SepI.
+      - exact HxX.
+      - prove forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+        let U. assume HU: U :e Tx. assume HxU: x :e U.
+        assume Hempty: U :/\: A = Empty.
+        (** x ∈ U and x ∈ A, so x ∈ U ∩ A, contradiction **)
+        claim HxUA: x :e U :/\: A.
+        { apply binintersectI. exact HxU. exact HxA. }
+        claim HxEmpty: x :e Empty.
+        { rewrite <- Hempty. exact HxUA. }
+        exact (EmptyE x HxEmpty).
+    * assume HxnotX: x /:e X.
+      (** x ∉ X but x ∈ A. Since cl(A) ⊆ X, we have x ∉ cl(A).
+          This case appears when A ⊈ X. The theorem seems to need A ⊆ X assumption,
+          or should be interpreted as cl(A) = (A ∩ X) ∪ lim(A). **)
+      admit. (** Requires A ⊆ X or reinterpretation of theorem **)
+  + assume Hxlim: x :e limit_points_of X Tx A.
+    (** x is a limit point, so for all U open containing x, exists y ∈ A with y ≠ x in U, thus U ∩ A ≠ ∅ **)
+    claim Hlimparts: x :e X /\ limit_point_of X Tx A x.
+    { exact (SepE X (fun y => limit_point_of X Tx A y) x Hxlim). }
+    claim HxX: x :e X.
+    { exact (andEL (x :e X) (limit_point_of X Tx A x) Hlimparts). }
+    claim Hlim: limit_point_of X Tx A x.
+    { exact (andER (x :e X) (limit_point_of X Tx A x) Hlimparts). }
+    claim Hlim_cond: forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+    { claim Hlim_full: topology_on X Tx /\ x :e X /\ forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+      { exact Hlim. }
+      exact (andER (topology_on X Tx /\ x :e X) (forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U) Hlim_full). }
+    prove x :e {y :e X | forall U:set, U :e Tx -> y :e U -> U :/\: A <> Empty}.
+    apply SepI.
+    * exact HxX.
+    * prove forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+      let U. assume HU: U :e Tx. assume HxU: x :e U.
+      prove U :/\: A <> Empty.
+      claim Hexists: exists y:set, y :e A /\ y <> x /\ y :e U.
+      { exact (Hlim_cond U HU HxU). }
+      apply Hexists.
+      let y. assume Hy_parts: y :e A /\ y <> x /\ y :e U.
+      (** Extract components from (y :e A /\ y <> x) /\ y :e U **)
+      claim Hy_left: y :e A /\ y <> x.
+      { exact (andEL (y :e A /\ y <> x) (y :e U) Hy_parts). }
+      claim HyA: y :e A.
+      { exact (andEL (y :e A) (y <> x) Hy_left). }
+      claim HyU: y :e U.
+      { exact (andER (y :e A /\ y <> x) (y :e U) Hy_parts). }
+      assume Heq: U :/\: A = Empty.
+      claim HyUA: y :e U :/\: A.
+      { apply binintersectI. exact HyU. exact HyA. }
+      claim HyEmpty: y :e Empty.
+      { rewrite <- Heq. exact HyUA. }
+      exact (EmptyE y HyEmpty).
 Qed.
 
 (** from §17: closed sets contain all limit points **) 
