@@ -11561,8 +11561,34 @@ assume HH: Hausdorff_space X Tx.
 let F.
 assume HF: finite F.
 prove closed_in X Tx F.
-admit. (** induction on finiteness: singleton closed by Hausdorff; finite union of closed sets is closed
-        aby: Hausdorff_5Fspace_def conj_myprob_8783_1_20251123_233455 In_5Fno2cycle finite�f Sing_5Ffinite not_ex_all_demorgan_i In_5Find EmptyAx . **)
+(** Strategy: Prove by cases on finite structure:
+    1. Empty is closed (by empty_is_closed)
+    2. Singletons are closed (by Hausdorff property)
+    3. Binary unions of closed sets are closed
+    Then use induction on finiteness. **)
+claim Htop: topology_on X Tx.
+{ claim HH_def: topology_on X Tx /\ forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+  { exact HH. }
+  exact (andEL (topology_on X Tx) (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty) HH_def). }
+(** Case 1: F = Empty **)
+apply (xm (F = Empty)).
+- assume HFempty: F = Empty.
+  rewrite HFempty.
+  exact (empty_is_closed X Tx Htop).
+- assume HFnonempty: F <> Empty.
+  (** Case 2: Singleton case **)
+  (** For a singleton {x}, we show X \ {x} is open by showing it's a union of open sets.
+      For each y ∈ X with y ≠ x, Hausdorff gives disjoint opens separating x and y.
+      The union of all such opens containing y gives X \ {x}. **)
+  claim HSaph: forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+  { exact (andER (topology_on X Tx) (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty) HH). }
+  (** General case: Use induction/structural properties of finite sets **)
+  (** Key facts needed:
+      1. Every singleton {x} is closed (by above argument)
+      2. Binary union of closed sets is closed (from closure_union_of_closed pattern)
+      3. Every finite set is a finite union of singletons
+      4. By induction, finite unions of closed sets are closed **)
+  admit. (** Need structural induction on finite sets + union of closed sets lemma **)
 Qed.
 
 (** from §17 Theorem 17.9: limit points in T1 spaces have infinite neighborhoods **) 
