@@ -11489,12 +11489,21 @@ apply iffI.
   (** A is closed means cl(A) = A. We have cl(A) = A ∪ lim(A), so A = A ∪ lim(A), thus lim(A) ⊆ A. **)
   claim Heq_cl: closure_of X Tx A = A.
   { exact (closed_closure_eq X Tx A HTx HAclosed). }
-  admit. (** Use closure_equals_set_plus_limit_points to show A = A ∪ lim(A), then x ∈ lim(A) → x ∈ A **)
+  (** Use closure_equals_set_plus_limit_points: cl(A) = A ∪ lim(A) **)
+  claim Heq_union: closure_of X Tx A = A :\/: limit_points_of X Tx A.
+  { exact (closure_equals_set_plus_limit_points X Tx A HTx). }
+  (** From Heq_cl: A = cl(A), and Heq_union: cl(A) = A ∪ lim(A), we get A = A ∪ lim(A) **)
+  (** So x ∈ lim(A) implies x ∈ A ∪ lim(A) = A **)
+  claim HxclA: x :e closure_of X Tx A.
+  { rewrite Heq_union. apply binunionI2. exact Hx. }
+  claim HxA: x :e A.
+  { rewrite <- Heq_cl. exact HxclA. }
+  exact HxA.
 - (** Backward: If lim(A) ⊆ A, then A closed **)
   assume Hlim_sub: limit_points_of X Tx A c= A.
   prove closed_in X Tx A.
-  (** Need to show A = cl(A). We have cl(A) = A ∪ lim(A). If lim(A) ⊆ A, then A ∪ lim(A) = A. **)
-  admit. (** Use closure_equals_set_plus_limit_points and show cl(A) = A **)
+  (** Need to show cl(A) = A. We have cl(A) = A ∪ lim(A). If lim(A) ⊆ A, then A ∪ lim(A) = A. **)
+  admit. (** Need A ⊆ X; then use closure_equals_set_plus_limit_points and closed_closure_eq_iff **)
 Qed.
 
 (** from §17 Definition: Hausdorff and T1 spaces **) 
