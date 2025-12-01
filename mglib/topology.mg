@@ -9830,6 +9830,42 @@ prove interior_of X Tx A = X :\: closure_of X Tx (X :\: A).
 admit. (** requires proving closure is closed, and that complement of closed is open **)
 Qed.
 
+(** Helper: point not in closure has disjoint open neighborhood **)
+Theorem not_in_closure_has_disjoint_open : forall X Tx A x:set,
+  topology_on X Tx -> A c= X -> x :e X -> x /:e closure_of X Tx A ->
+  exists U:set, U :e Tx /\ x :e U /\ U :/\: A = Empty.
+let X Tx A x.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+assume HxX: x :e X.
+assume Hxnotcl: x /:e closure_of X Tx A.
+prove exists U:set, U :e Tx /\ x :e U /\ U :/\: A = Empty.
+(** By definition, x ∈ cl(A) means x ∈ X and ∀U open, x ∈ U → U ∩ A ≠ ∅ **)
+(** Since x ∉ cl(A) and x ∈ X, there must exist U open with x ∈ U and U ∩ A = ∅ **)
+apply (xm (exists U:set, U :e Tx /\ x :e U /\ U :/\: A = Empty)).
+- assume H. exact H.
+- assume Hnoex: ~(exists U:set, U :e Tx /\ x :e U /\ U :/\: A = Empty).
+  (** Then ∀U open, x ∈ U → U ∩ A ≠ ∅, which means x ∈ cl(A) **)
+  apply FalseE.
+  apply Hxnotcl.
+  prove x :e closure_of X Tx A.
+  prove x :e {y :e X | forall U:set, U :e Tx -> y :e U -> U :/\: A <> Empty}.
+  apply SepI.
+  + exact HxX.
+  + prove forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+    let U. assume HU: U :e Tx. assume HxU: x :e U.
+    prove U :/\: A <> Empty.
+    assume Heq: U :/\: A = Empty.
+    apply Hnoex.
+    witness U.
+    prove U :e Tx /\ x :e U /\ U :/\: A = Empty.
+    apply andI.
+    * apply andI.
+      + exact HU.
+      + exact HxU.
+    * exact Heq.
+Qed.
+
 (** Helper: closure of a set is closed **)
 Theorem closure_is_closed : forall X Tx A:set,
   topology_on X Tx -> A c= X -> closed_in X Tx (closure_of X Tx A).
@@ -9837,10 +9873,101 @@ let X Tx A.
 assume Htop: topology_on X Tx.
 assume HA: A c= X.
 prove closed_in X Tx (closure_of X Tx A).
-(** Need to show: topology_on X Tx /\ closure(A) c= X /\ exists U :e Tx, closure(A) = X \ U **)
-(** The open set we need is U = X \ closure(A), i.e., we need to show X \ closure(A) is open **)
-(** Equivalently, X \ closure(A) = interior(X \ A by duality **)
-admit. (** requires interior-closure duality or direct proof that complement of closure is open **)
+(** Strategy: Show X \ cl(A) is open by showing it's a union of open sets **)
+(** For each x ∈ X \ cl(A), there exists open Uₓ with x ∈ Uₓ and Uₓ ∩ A = ∅ **)
+(** Then X \ cl(A) = ⋃{Uₓ : x ∈ X \ cl(A)}, which is open **)
+prove topology_on X Tx /\ (closure_of X Tx A c= X /\ exists U :e Tx, closure_of X Tx A = X :\: U).
+apply andI.
+- exact Htop.
+- prove closure_of X Tx A c= X /\ exists U :e Tx, closure_of X Tx A = X :\: U.
+  apply andI.
+  + (** closure(A) ⊆ X **)
+    prove closure_of X Tx A c= X.
+    let x. assume Hx: x :e closure_of X Tx A.
+    exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx).
+  + (** Prove X \ cl(A) is open **)
+    set Complement := X :\: closure_of X Tx A.
+    set OpenFamily := {U :e Tx | U :/\: A = Empty}.
+    claim Hcomp_eq: Complement = Union OpenFamily.
+    { apply set_ext.
+      - (** Complement ⊆ Union OpenFamily **)
+        let x. assume Hx: x :e Complement.
+        prove x :e Union OpenFamily.
+        claim HxX: x :e X.
+        { exact (setminusE1 X (closure_of X Tx A) x Hx). }
+        claim Hxnotcl: x /:e closure_of X Tx A.
+        { exact (setminusE2 X (closure_of X Tx A) x Hx). }
+        claim Hexists: exists U:set, U :e Tx /\ x :e U /\ U :/\: A = Empty.
+        { exact (not_in_closure_has_disjoint_open X Tx A x Htop HA HxX Hxnotcl). }
+        apply Hexists.
+        let U. assume HU_parts.
+        claim HU_and_xU: U :e Tx /\ x :e U.
+        { exact (andEL (U :e Tx /\ x :e U) (U :/\: A = Empty) HU_parts). }
+        claim HU: U :e Tx.
+        { exact (andEL (U :e Tx) (x :e U) HU_and_xU). }
+        claim HxU: x :e U.
+        { exact (andER (U :e Tx) (x :e U) HU_and_xU). }
+        claim HUdisj: U :/\: A = Empty.
+        { exact (andER (U :e Tx /\ x :e U) (U :/\: A = Empty) HU_parts). }
+        claim HUinFam: U :e OpenFamily.
+        { exact (SepI Tx (fun V => V :/\: A = Empty) U HU HUdisj). }
+        exact (UnionI OpenFamily x U HxU HUinFam).
+      - (** Union OpenFamily ⊆ Complement **)
+        let x. assume Hx: x :e Union OpenFamily.
+        prove x :e Complement.
+        apply (UnionE_impred OpenFamily x Hx).
+        let U. assume HxU: x :e U. assume HUFam: U :e OpenFamily.
+        claim HU: U :e Tx.
+        { exact (SepE1 Tx (fun V => V :/\: A = Empty) U HUFam). }
+        claim HUdisj: U :/\: A = Empty.
+        { exact (SepE2 Tx (fun V => V :/\: A = Empty) U HUFam). }
+        claim HUsub: U c= X.
+        { exact (topology_elem_subset X Tx U Htop HU). }
+        claim HxX: x :e X.
+        { exact (HUsub x HxU). }
+        apply setminusI.
+        + exact HxX.
+        + assume Hxcl: x :e closure_of X Tx A.
+          claim Hcond: forall V:set, V :e Tx -> x :e V -> V :/\: A <> Empty.
+          { exact (SepE2 X (fun y => forall V:set, V :e Tx -> y :e V -> V :/\: A <> Empty) x Hxcl). }
+          claim Hcontra: U :/\: A <> Empty.
+          { exact (Hcond U HU HxU). }
+          exact (Hcontra HUdisj). }
+    claim Hopen_subset: OpenFamily c= Tx.
+    { let U. assume HU: U :e OpenFamily.
+      exact (SepE1 Tx (fun V => V :/\: A = Empty) U HU). }
+    claim Hcomp_open: Complement :e Tx.
+    { rewrite Hcomp_eq.
+      exact (topology_union_closed X Tx OpenFamily Htop Hopen_subset). }
+    witness Complement.
+    apply andI.
+    * exact Hcomp_open.
+    * (** closure(A) = X \ Complement **)
+      apply set_ext.
+      + let x. assume Hx: x :e closure_of X Tx A.
+        prove x :e X :\: Complement.
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+        apply setminusI.
+        * exact HxX.
+        * assume Hxcomp: x :e Complement.
+          claim Hxnotcl: x /:e closure_of X Tx A.
+          { exact (setminusE2 X (closure_of X Tx A) x Hxcomp). }
+          exact (Hxnotcl Hx).
+      + let x. assume Hx: x :e X :\: Complement.
+        prove x :e closure_of X Tx A.
+        claim HxX: x :e X.
+        { exact (setminusE1 X Complement x Hx). }
+        claim Hxnotcomp: x /:e Complement.
+        { exact (setminusE2 X Complement x Hx). }
+        apply (xm (x :e closure_of X Tx A)).
+        * assume H. exact H.
+        * assume Hxnotcl: x /:e closure_of X Tx A.
+          apply FalseE.
+          apply Hxnotcomp.
+          apply setminusI.
+          - exact HxX.
+          - exact Hxnotcl.
 Qed.
 
 (** Helper: closure contains the set **)
