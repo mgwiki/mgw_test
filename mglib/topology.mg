@@ -10845,16 +10845,42 @@ claim HX_in_T: X :e T.
 { exact (topology_has_X X T HT). }
 (** Build the 4-way conjunction left-to-right **)
 claim Hpart1: X :e C.
-{ (** X = X \ ∅ **)
+{ (** Use ReplEq: need to show exists U :e T such that X = X :\: U **)
   prove X :e {X :\: U|U :e T}.
-  admit. (** Need ReplI with X = X \ ∅ and ∅ ∈ T **)
-}
+  apply (ReplEq T (fun U => X :\: U) X).
+  assume _ H. apply H.
+  witness Empty.
+  apply andI.
+  * exact Hempty_in_T.
+  * prove X = X :\: Empty.
+    apply set_ext.
+    - let x. assume Hx: x :e X.
+      apply setminusI.
+      + exact Hx.
+      + assume Hcontra: x :e Empty.
+        exact (EmptyE x Hcontra False).
+    - let x. assume Hx: x :e X :\: Empty.
+      exact (setminusE1 X Empty x Hx). }
 claim Hpart2: X :e C /\ Empty :e C.
 { apply andI.
   - exact Hpart1.
-  - (** ∅ = X \ X **)
-    prove Empty :e {X :\: U|U :e T}.
-    admit. (** Need ReplI with ∅ = X \ X and X ∈ T **)
+  - prove Empty :e {X :\: U|U :e T}.
+    apply (ReplEq T (fun U => X :\: U) Empty).
+    assume _ H. apply H.
+    witness X.
+    apply andI.
+    * exact HX_in_T.
+    * prove Empty = X :\: X.
+      apply set_ext.
+      - let x. assume Hx: x :e Empty.
+        exact (EmptyE x Hx (x :e X :\: X)).
+      - let x. assume Hx: x :e X :\: X.
+        claim HxX: x :e X.
+        { exact (setminusE1 X X x Hx). }
+        claim HxnotX: x /:e X.
+        { exact (setminusE2 X X x Hx). }
+        apply FalseE.
+        exact (HxnotX HxX).
 }
 claim Hpart3: (X :e C /\ Empty :e C) /\ (forall F:set, F :e Power C -> intersection_of_family F :e C).
 { apply andI.
@@ -10862,14 +10888,219 @@ claim Hpart3: (X :e C /\ Empty :e C) /\ (forall F:set, F :e Power C -> intersect
   - (** Arbitrary intersections: ∩(X\Uᵢ) = X \ (⋃Uᵢ) **)
     let F. assume HF: F :e Power C.
     prove intersection_of_family F :e C.
-    admit. (** De Morgan: ∩{X\U | U ∈ some family} = X \ ⋃(that family) **)
+    (** Handle empty case separately **)
+    apply (xm (F = Empty)).
+    + assume HFempty: F = Empty.
+      (** ∩∅ = ∅ :e C **)
+      (** ∩∅ = ∅ since it's {x :e ⋃∅ | ...} and ⋃∅ = ∅ **)
+      claim Hintersect_empty: intersection_of_family F = Empty.
+      { rewrite HFempty.
+        (** intersection_of_family ∅ = {x :e ⋃∅ | forall U :e ∅, x :e U} = {x :e ∅ | ...} = ∅ **)
+        apply set_ext.
+        - let x. assume Hx: x :e intersection_of_family Empty.
+          (** x :e {y :e Union ∅ | ...}, so x :e Union ∅ **)
+          claim HxU: x :e Union Empty.
+          { exact (SepE1 (Union Empty) (fun y => forall U0:set, U0 :e Empty -> y :e U0) x Hx). }
+          (** But Union ∅ = ∅ **)
+          apply (UnionE_impred Empty x HxU).
+          let Z. assume _. assume HZ: Z :e Empty.
+          apply FalseE.
+          exact (EmptyE Z HZ).
+        - let x. assume Hx: x :e Empty.
+          apply FalseE.
+          exact (EmptyE x Hx). }
+      rewrite Hintersect_empty.
+      exact (andER (X :e C) (Empty :e C) Hpart2).
+    + assume HFnonempty: F <> Empty.
+      (** Extract the family of open sets: G = {U :e T | X \ U :e F} **)
+      set G := {U :e T | X :\: U :e F}.
+      (** Show ∩F = X \ ⋃G **)
+      prove intersection_of_family F :e {X :\: U|U :e T}.
+    apply (ReplEq T (fun U => X :\: U) (intersection_of_family F)).
+    assume _ H. apply H.
+    witness (Union G).
+    apply andI.
+    * (** ⋃G :e T **)
+      claim HGsub: G c= T.
+      { let U. assume HU: U :e G.
+        exact (SepE1 T (fun U0 => X :\: U0 :e F) U HU). }
+      exact (topology_union_closed X T G HT HGsub).
+    * (** ∩F = X \ ⋃G by De Morgan **)
+      prove intersection_of_family F = X :\: Union G.
+      apply set_ext.
+      - (** ∩F ⊆ X \ ⋃G **)
+        let x. assume Hx: x :e intersection_of_family F.
+        prove x :e X :\: Union G.
+        apply setminusI.
+        + (** x ∈ X: use that x ∈ Union F and Union F ⊆ X **)
+          claim HxUnion: x :e Union F.
+          { exact (SepE1 (Union F) (fun y => forall U0:set, U0 :e F -> y :e U0) x Hx). }
+          apply (UnionE_impred F x HxUnion).
+          let Y. assume HxY: x :e Y. assume HYF: Y :e F.
+          claim HYC: Y :e C.
+          { exact (PowerE C F HF Y HYF). }
+          (** Y ∈ C means Y = X \ U for some U ∈ T **)
+          apply (ReplE T (fun U => X :\: U) Y HYC).
+          let U. assume H. apply H.
+          assume HU: U :e T. assume HYeq: Y = X :\: U.
+          claim HxXminusU: x :e X :\: U.
+          { rewrite <- HYeq. exact HxY. }
+          exact (setminusE1 X U x HxXminusU).
+        + (** x ∉ ⋃G **)
+          assume Hcontra: x :e Union G.
+          apply (UnionE_impred G x Hcontra).
+          let U. assume HxU: x :e U. assume HUG: U :e G.
+          claim HXminusU_in_F: X :\: U :e F.
+          { exact (SepE2 T (fun U0 => X :\: U0 :e F) U HUG). }
+          claim Hxall: forall Y :e F, x :e Y.
+          { exact (SepE2 (Union F) (fun y => forall U0:set, U0 :e F -> y :e U0) x Hx). }
+          claim Hx_in_XminusU: x :e X :\: U.
+          { exact (Hxall (X :\: U) HXminusU_in_F). }
+          claim HxnotU: x /:e U.
+          { exact (setminusE2 X U x Hx_in_XminusU). }
+          exact (HxnotU HxU).
+      - (** X \ ⋃G ⊆ ∩F **)
+        let x. assume Hx: x :e X :\: Union G.
+        prove x :e intersection_of_family F.
+        claim HxX: x :e X.
+        { exact (setminusE1 X (Union G) x Hx). }
+        claim HxnotUG: x /:e Union G.
+        { exact (setminusE2 X (Union G) x Hx). }
+        (** Show x ∈ Union F and forall Y :e F, x :e Y **)
+        prove x :e {y :e Union F|forall U0:set, U0 :e F -> y :e U0}.
+        apply SepI.
+        + (** x ∈ Union F: We know F ≠ ∅ from outer context **)
+          (** Since F ≠ ∅, by classical logic there exists Y ∈ F **)
+          apply (xm (exists Y:set, Y :e F)).
+          * assume HFhas.
+            apply HFhas.
+            let Y. assume HYF: Y :e F.
+            (** Show x ∈ Y, then x ∈ Union F follows **)
+            claim HYC: Y :e C.
+            { exact (PowerE C F HF Y HYF). }
+            apply (ReplE T (fun U => X :\: U) Y HYC).
+            let U. assume H. apply H.
+            assume HU: U :e T. assume HYeq: Y = X :\: U.
+            claim HUG: U :e G.
+            { apply SepI.
+              - exact HU.
+              - prove X :\: U :e F.
+                rewrite <- HYeq. exact HYF. }
+            claim HxnotU: x /:e U.
+            { assume Hcontra: x :e U.
+              apply HxnotUG.
+              exact (UnionI G x U Hcontra HUG). }
+            claim HxY: x :e Y.
+            { rewrite HYeq.
+              apply setminusI.
+              - exact HxX.
+              - exact HxnotU. }
+            exact (UnionI F x Y HxY HYF).
+          * assume HFno: ~(exists Y:set, Y :e F).
+            (** This contradicts F ≠ ∅ **)
+            apply FalseE.
+            apply HFnonempty.
+            apply set_ext.
+            - let Y. assume HY: Y :e F.
+              apply FalseE.
+              apply HFno.
+              witness Y.
+              exact HY.
+            - let Y. assume HY: Y :e Empty.
+              apply FalseE.
+              exact (EmptyE Y HY).
+        + (** forall Y :e F, x :e Y **)
+          let Y. assume HYF: Y :e F.
+          prove x :e Y.
+          claim HYC: Y :e C.
+          { exact (PowerE C F HF Y HYF). }
+          apply (ReplE T (fun U => X :\: U) Y HYC).
+          let U. assume H. apply H.
+          assume HU: U :e T. assume HYeq: Y = X :\: U.
+          claim HUG: U :e G.
+          { apply SepI.
+            - exact HU.
+            - prove X :\: U :e F.
+              rewrite <- HYeq. exact HYF. }
+          claim HxnotU: x /:e U.
+          { assume Hcontra: x :e U.
+            apply HxnotUG.
+            exact (UnionI G x U Hcontra HUG). }
+          rewrite HYeq.
+          apply setminusI.
+          * exact HxX.
+          * exact HxnotU.
 }
 apply andI.
 - exact Hpart3.
 - (** Binary unions: (X\U) ∪ (X\V) = X \ (U ∩ V) **)
   let A B. assume HA: A :e C. assume HB: B :e C.
   prove A :\/: B :e C.
-  admit. (** De Morgan: (X\U) ∪ (X\V) = X \ (U ∩ V) and U ∩ V ∈ T **)
+  (** A = X \ U for some U ∈ T **)
+  apply (ReplE T (fun U => X :\: U) A HA).
+  let U. assume H1. apply H1.
+  assume HU: U :e T. assume HAeq: A = X :\: U.
+  (** B = X \ V for some V ∈ T **)
+  apply (ReplE T (fun U => X :\: U) B HB).
+  let V. assume H2. apply H2.
+  assume HV: V :e T. assume HBeq: B = X :\: V.
+  (** Show A ∪ B = X \ (U ∩ V) and U ∩ V ∈ T **)
+  prove A :\/: B :e {X :\: W|W :e T}.
+  apply (ReplEq T (fun W => X :\: W) (A :\/: B)).
+  assume _ H. apply H.
+  witness (U :/\: V).
+  apply andI.
+  * (** U ∩ V ∈ T **)
+    exact (topology_binintersect_closed X T U V HT HU HV).
+  * (** A ∪ B = X \ (U ∩ V) by De Morgan **)
+    prove A :\/: B = X :\: (U :/\: V).
+    rewrite HAeq. rewrite HBeq.
+    apply set_ext.
+    + (** (X\U) ∪ (X\V) ⊆ X \ (U ∩ V) **)
+      let x. assume Hx: x :e (X :\: U) :\/: (X :\: V).
+      apply (binunionE (X :\: U) (X :\: V) x Hx).
+      - assume HxA: x :e X :\: U.
+        claim HxX: x :e X.
+        { exact (setminusE1 X U x HxA). }
+        claim HxnotU: x /:e U.
+        { exact (setminusE2 X U x HxA). }
+        apply setminusI.
+        * exact HxX.
+        * assume Hcontra: x :e U :/\: V.
+          claim HxU: x :e U.
+          { exact (binintersectE1 U V x Hcontra). }
+          exact (HxnotU HxU).
+      - assume HxB: x :e X :\: V.
+        claim HxX: x :e X.
+        { exact (setminusE1 X V x HxB). }
+        claim HxnotV: x /:e V.
+        { exact (setminusE2 X V x HxB). }
+        apply setminusI.
+        * exact HxX.
+        * assume Hcontra: x :e U :/\: V.
+          claim HxV: x :e V.
+          { exact (binintersectE2 U V x Hcontra). }
+          exact (HxnotV HxV).
+    + (** X \ (U ∩ V) ⊆ (X\U) ∪ (X\V) **)
+      let x. assume Hx: x :e X :\: (U :/\: V).
+      claim HxX: x :e X.
+      { exact (setminusE1 X (U :/\: V) x Hx). }
+      claim HxnotUV: x /:e U :/\: V.
+      { exact (setminusE2 X (U :/\: V) x Hx). }
+      (** x ∉ U ∩ V means x ∉ U or x ∉ V **)
+      apply (xm (x :e U)).
+      - assume HxU: x :e U.
+        (** Then x ∉ V, so x ∈ X \ V **)
+        claim HxnotV: x /:e V.
+        { assume HxV: x :e V.
+          apply HxnotUV.
+          exact (binintersectI U V x HxU HxV). }
+        apply binunionI2.
+        exact (setminusI X V x HxX HxnotV).
+      - assume HxnotU: x /:e U.
+        (** Then x ∈ X \ U **)
+        apply binunionI1.
+        exact (setminusI X U x HxX HxnotU).
 Qed.
 
 (** from §17 Theorem 17.2: closed sets in subspaces as intersections **) 
