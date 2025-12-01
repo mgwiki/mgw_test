@@ -11732,7 +11732,9 @@ let X Tx.
 assume H1: closed_in X Tx X.
 assume H2: forall A:set, closed_in X Tx A -> closed_in X Tx (X :\: A).
 prove topology_on X Tx.
-admit. (** verify topology axioms: use H2 to show opens via complements; verify unions and intersections **)
+(** By definition, closed_in X Tx X means topology_on X Tx /\ ... **)
+(** So we can extract topology_on X Tx directly from H1 **)
+exact (andEL (topology_on X Tx) (X c= X /\ exists U :e Tx, X = X :\: U) H1).
 Qed.
 
 (** LATEX VERSION: Exercise 2: If Y is closed in X and A is closed in the subspace Y, then A is closed in X. **)
