@@ -11502,8 +11502,44 @@ apply iffI.
 - (** Backward: If lim(A) ⊆ A, then A closed **)
   assume Hlim_sub: limit_points_of X Tx A c= A.
   prove closed_in X Tx A.
-  (** Need to show cl(A) = A. We have cl(A) = A ∪ lim(A). If lim(A) ⊆ A, then A ∪ lim(A) = A. **)
-  admit. (** Need A ⊆ X; then use closure_equals_set_plus_limit_points and closed_closure_eq_iff **)
+  (** Strategy:
+      1. cl(A) = A ∪ lim(A) by closure_equals_set_plus_limit_points
+      2. lim(A) ⊆ A given, so A ∪ lim(A) = A
+      3. Therefore cl(A) = A
+      4. cl(A) ⊆ X by definition, so A ⊆ X
+      5. cl(A) is closed by closure_is_closed
+      6. Since A = cl(A) and cl(A) is closed, A is closed **)
+  claim Heq_union: closure_of X Tx A = A :\/: limit_points_of X Tx A.
+  { exact (closure_equals_set_plus_limit_points X Tx A HTx). }
+  (** Show A ∪ lim(A) = A when lim(A) ⊆ A **)
+  claim Hunion_eq: A :\/: limit_points_of X Tx A = A.
+  { apply set_ext.
+    - let x. assume Hx: x :e A :\/: limit_points_of X Tx A.
+      prove x :e A.
+      apply (binunionE A (limit_points_of X Tx A) x Hx).
+      + assume HxA: x :e A. exact HxA.
+      + assume Hxlim: x :e limit_points_of X Tx A.
+        exact (Hlim_sub x Hxlim).
+    - let x. assume HxA: x :e A.
+      prove x :e A :\/: limit_points_of X Tx A.
+      apply binunionI1. exact HxA. }
+  (** Therefore cl(A) = A **)
+  claim HclA_eq: closure_of X Tx A = A.
+  { rewrite Heq_union. exact Hunion_eq. }
+  (** cl(A) ⊆ X by definition, so A ⊆ X **)
+  claim HA_sub: A c= X.
+  { let x. assume HxA: x :e A.
+    prove x :e X.
+    claim HxclA: x :e closure_of X Tx A.
+    { rewrite HclA_eq. exact HxA. }
+    exact (closure_in_space X Tx A HTx x HxclA). }
+  (** cl(A) is closed by closure_is_closed **)
+  claim HclA_closed: closed_in X Tx (closure_of X Tx A).
+  { exact (closure_is_closed X Tx A HTx HA_sub). }
+  (** Since A = cl(A) and cl(A) is closed, A is closed **)
+  prove closed_in X Tx A.
+  rewrite <- HclA_eq.
+  exact HclA_closed.
 Qed.
 
 (** from §17 Definition: Hausdorff and T1 spaces **) 
