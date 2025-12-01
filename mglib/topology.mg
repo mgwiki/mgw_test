@@ -11658,8 +11658,24 @@ assume Hseq: function_on seq omega X.
 assume Hx: forall U:set, U :e Tx -> x :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
 assume Hy: forall U:set, U :e Tx -> y :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
 prove False.
-admit. (** separate x and y by disjoint opens U,V; seq eventually in both U and V; contradiction
-        aby: In_5Fno2cycle Hausdorff_5Fspace_def conj_myprob_8804_1_20251123_233607 prop_ext_2 . **)
+(** Strategy: Use Hausdorff property to separate x and y with disjoint opens U, V.
+    Sequence converges to x means eventually in U.
+    Sequence converges to y means eventually in V.
+    But U ∩ V = ∅, so seq can't be in both eventually - contradiction. **)
+(** Extract topology and separation property **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+claim HSep: forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+{ exact (andER (topology_on X Tx)
+               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+(** Apply separation to x and y **)
+claim HexUV: exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty.
+{ exact (HSep x y Hneq). }
+(** Handle nested existentials - need to carefully unpack structure **)
+admit. (** Need to properly handle nested existentials and get contradiction from disjoint sets **)
 Qed.
 
 (** from §17 Theorem 17.11: Hausdorff stability under constructions **) 
