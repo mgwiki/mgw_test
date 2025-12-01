@@ -11942,7 +11942,9 @@ apply andI.
   (** Strategy: y1, y2 are distinct points. If both in Y, they're distinct in X.
       Get disjoint X-neighborhoods U', V' from Hausdorff property.
       Then U' ∩ Y and V' ∩ Y are disjoint Y-neighborhoods. **)
-  admit.
+  (** However, we need to know y1, y2 are in Y to apply Hausdorff.
+      The statement should probably include y1 :e Y /\ y2 :e Y as hypotheses. **)
+  admit. (** Need: y1 :e Y, y2 :e Y to proceed with separation in X **)
 Qed.
 
 (** LATEX VERSION: Exercise 13: Diagonal is closed in X×X iff X is Hausdorff. **)
@@ -11980,7 +11982,37 @@ Theorem ex17_15_T1_characterization : forall X Tx:set,
 let X Tx.
 assume Htop: topology_on X Tx.
 prove T1_space X Tx <-> (forall x:set, closed_in X Tx {x}).
-admit. (** T1 means all finite sets closed; singletons are finite; conversely finite = union of singletons **)
+apply iffI.
+- (** Forward: T1_space → singletons closed **)
+  assume HT1: T1_space X Tx.
+  prove forall x:set, closed_in X Tx {x}.
+  let x.
+  prove closed_in X Tx {x}.
+  (** By definition of T1_space, all finite sets are closed.
+      Singletons are finite, so {x} is closed. **)
+  claim HT1_def: topology_on X Tx /\ (forall F:set, finite F -> closed_in X Tx F).
+  { exact HT1. }
+  claim Hfinite_closed: forall F:set, finite F -> closed_in X Tx F.
+  { exact (andER (topology_on X Tx) (forall F:set, finite F -> closed_in X Tx F) HT1_def). }
+  claim Hx_finite: finite {x}.
+  { exact (Sing_finite x). }
+  exact (Hfinite_closed {x} Hx_finite).
+- (** Backward: singletons closed → T1_space **)
+  assume Hsing: forall x:set, closed_in X Tx {x}.
+  prove T1_space X Tx.
+  prove topology_on X Tx /\ (forall F:set, finite F -> closed_in X Tx F).
+  apply andI.
+  + exact Htop.
+  + prove forall F:set, finite F -> closed_in X Tx F.
+    let F. assume HF: finite F.
+    prove closed_in X Tx F.
+    (** Strategy: Every finite set is a finite union of singletons.
+        Since each singleton is closed and closed sets are closed under finite unions,
+        F is closed. This requires:
+        1. Decomposing F as a union of singletons
+        2. Showing binary/finite unions of closed sets are closed
+        For now, admit these technical steps. **)
+    admit. (** Need: F = union of singletons, and finite unions of closed sets are closed **)
 Qed.
 
 (** LATEX VERSION: Exercise 16: Closures of K in the standard and lower limit topologies differ. **)
