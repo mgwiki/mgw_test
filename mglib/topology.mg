@@ -9727,7 +9727,9 @@ claim Heq_substitution: forall S T:set, S = T -> T :e Tx -> S :e Tx.
   claim HST_equiv: forall P:set -> prop, P T -> P S.
   { let P. assume HPT: P T.
     (** Use symmetry of equality and substitution **)
-    admit. }
+    prove P S.
+    rewrite HeqST.
+    exact HPT. }
   exact (HST_equiv (fun X0 => X0 :e Tx) HTinTx). }
 exact (Heq_substitution (interior_of X Tx A) (Union F) Hint_eq_union Hunion_in_Tx).
 Qed.
