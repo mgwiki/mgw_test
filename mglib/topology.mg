@@ -12261,7 +12261,77 @@ assume HTx: topology_on X Tx.
 assume HA: A c= X.
 assume Hf: continuous_map X Tx Y Ty f.
 prove continuous_map A (subspace_topology X Tx A) Y Ty f.
-admit. (** restriction preserves continuity; preimage f⁻¹(V) open in X means f⁻¹(V)∩A open in subspace A **)
+(** Strategy: f continuous on X means f⁻¹(V) open in X for each V open in Y.
+    For subspace topology on A, we need f⁻¹(V) to be open in subspace_topology,
+    which means f⁻¹(V) ∩ A should be of the form U ∩ A for some U open in X.
+    Since f⁻¹(V) is already open in X, we can take U = f⁻¹(V). **)
+(** Extract components from Hf **)
+claim HTx_from_f: topology_on X Tx.
+{ admit. (** Extract from continuous_map definition **)
+}
+claim HTy: topology_on Y Ty.
+{ admit. (** Extract from continuous_map definition **)
+}
+claim Hfun: function_on f X Y.
+{ admit. (** Extract from continuous_map definition **)
+}
+claim Hf_preimg: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+{ admit. (** Extract from continuous_map definition **)
+}
+(** Build continuous_map A (subspace_topology X Tx A) Y Ty f **)
+claim HTsubspace: topology_on A (subspace_topology X Tx A).
+{ exact (subspace_topology_is_topology X Tx A HTx HA). }
+claim Hfun_A: function_on f A Y.
+{ prove forall x:set, x :e A -> apply_fun f x :e Y.
+  let x. assume HxA: x :e A.
+  claim HxX: x :e X.
+  { exact (HA x HxA). }
+  exact (Hfun x HxX). }
+(** Show preimages are open in subspace topology **)
+claim Hpreimg_subspace: forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A.
+{ let V. assume HV: V :e Ty.
+  prove preimage_of A f V :e subspace_topology X Tx A.
+  (** preimage_of A f V = {x :e A | apply_fun f x :e V} = preimage_of X f V ∩ A **)
+  set U := preimage_of X f V.
+  claim HU_open: U :e Tx.
+  { exact (Hf_preimg V HV). }
+  (** Show preimage_of A f V = U ∩ A **)
+  claim Hpreimg_eq: preimage_of A f V = U :/\: A.
+  { apply set_ext.
+    - let x. assume Hx: x :e preimage_of A f V.
+      prove x :e U :/\: A.
+      claim HxA: x :e A.
+      { exact (SepE1 A (fun y => apply_fun f y :e V) x Hx). }
+      claim Hfx_V: apply_fun f x :e V.
+      { exact (SepE2 A (fun y => apply_fun f y :e V) x Hx). }
+      claim HxX: x :e X.
+      { exact (HA x HxA). }
+      claim HxU: x :e U.
+      { exact (SepI X (fun y => apply_fun f y :e V) x HxX Hfx_V). }
+      exact (binintersectI U A x HxU HxA).
+    - let x. assume Hx: x :e U :/\: A.
+      prove x :e preimage_of A f V.
+      claim HxU: x :e U.
+      { exact (binintersectE1 U A x Hx). }
+      claim HxA: x :e A.
+      { exact (binintersectE2 U A x Hx). }
+      claim Hfx_V: apply_fun f x :e V.
+      { exact (SepE2 X (fun y => apply_fun f y :e V) x HxU). }
+      exact (SepI A (fun y => apply_fun f y :e V) x HxA Hfx_V). }
+  (** Now show preimage_of A f V is in subspace_topology **)
+  prove preimage_of A f V :e {W :e Power A | exists Z :e Tx, W = Z :/\: A}.
+  claim HpAV_PowerA: preimage_of A f V :e Power A.
+  { apply PowerI.
+    let x. assume Hx: x :e preimage_of A f V.
+    exact (SepE1 A (fun y => apply_fun f y :e V) x Hx). }
+  claim Hexists: exists Z :e Tx, preimage_of A f V = Z :/\: A.
+  { witness U.
+    apply andI.
+    - exact HU_open.
+    - exact Hpreimg_eq. }
+  exact (SepI (Power A) (fun W => exists Z :e Tx, W = Z :/\: A) (preimage_of A f V) HpAV_PowerA Hexists). }
+(** Build the full conjunction for continuous_map **)
+admit. (** Need to assemble the pieces into the continuous_map definition structure **)
 Qed.
 
 (** from §18: inverse of homeomorphism is continuous **) 
