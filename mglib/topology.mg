@@ -12501,15 +12501,22 @@ prove continuous_map A (subspace_topology X Tx A) Y Ty f.
     which means f⁻¹(V) ∩ A should be of the form U ∩ A for some U open in X.
     Since f⁻¹(V) is already open in X, we can take U = f⁻¹(V). **)
 (** Extract components from Hf - but we already have HTx as a hypothesis, so we mainly need the others **)
+(** Hf: topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\ (forall V...) **)
 claim HTy: topology_on Y Ty.
-{ admit. (** Extract topology_on Y Ty from continuous_map - complex conjunction extraction **)
-}
+{ exact (andER (topology_on X Tx) (topology_on Y Ty)
+          (andEL (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y)
+            (andEL (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
+                   (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                   Hf))). }
 claim Hfun: function_on f X Y.
-{ admit. (** Extract function_on f X Y from continuous_map - complex conjunction extraction **)
-}
+{ exact (andER (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y)
+          (andEL (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
+                 (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                 Hf)). }
 claim Hf_preimg: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
-{ admit. (** Extract preimage property from continuous_map - complex conjunction extraction **)
-}
+{ exact (andER (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+               Hf). }
 (** Build continuous_map A (subspace_topology X Tx A) Y Ty f **)
 claim HTsubspace: topology_on A (subspace_topology X Tx A).
 { exact (subspace_topology_is_topology X Tx A HTx HA). }
