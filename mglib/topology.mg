@@ -10830,7 +10830,146 @@ prove let C := {X :\: U|U :e T} in
     X :e C /\ Empty :e C /\
     (forall F:set, F :e Power C -> intersection_of_family F :e C) /\
     (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
-admit. (** closed sets are complements of opens; De Morgan laws: ∩(X\Uᵢ)=X\(⋃Uᵢ); (X\U)∪(X\V)=X\(U∩V) **)
+(** Extract topology axioms **)
+claim HTPower: T c= Power X.
+{ exact (andEL (T c= Power X) (Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HT). }
+claim HTrest: Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T).
+{ exact (andER (T c= Power X) (Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HT). }
+claim HEmpty: Empty :e T.
+{ exact (andEL (Empty :e T) (X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HTrest). }
+claim HXandRest: X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T).
+{ exact (andER (Empty :e T) (X :e T /\ (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HTrest). }
+claim HX: X :e T.
+{ exact (andEL (X :e T) ((forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HXandRest). }
+claim HUnionAndInter: (forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T).
+{ exact (andER (X :e T) ((forall UFam :e Power T, Union UFam :e T) /\ (forall U :e T, forall V :e T, U :/\: V :e T)) HXandRest). }
+claim HUnion: forall UFam :e Power T, Union UFam :e T.
+{ exact (andEL (forall UFam :e Power T, Union UFam :e T) (forall U :e T, forall V :e T, U :/\: V :e T) HUnionAndInter). }
+claim HInter: forall U :e T, forall V :e T, U :/\: V :e T.
+{ exact (andER (forall UFam :e Power T, Union UFam :e T) (forall U :e T, forall V :e T, U :/\: V :e T) HUnionAndInter). }
+set C := {X :\: U|U :e T}.
+apply andI.
+- (** X :e C **)
+  prove X :e C.
+  prove X :e {X :\: U|U :e T}.
+  (** X = X \ Empty, and Empty :e T **)
+  claim HXeq: X = X :\: Empty.
+  { apply set_ext.
+    - let x. assume Hx: x :e X.
+      apply setminusI.
+      + exact Hx.
+      + assume HxEmpty: x :e Empty.
+        exact (EmptyE x HxEmpty).
+    - let x. assume Hx: x :e X :\: Empty.
+      exact (setminusE1 X Empty x Hx). }
+  witness Empty.
+  apply andI.
+  + exact HEmpty.
+  + exact HXeq.
+- apply andI.
+  + (** Empty :e C **)
+    prove Empty :e C.
+    prove Empty :e {X :\: U|U :e T}.
+    (** Empty = X \ X, and X :e T **)
+    claim HEmptyeq: Empty = X :\: X.
+    { apply set_ext.
+      - exact (Subq_Empty (X :\: X)).
+      - let x. assume Hx: x :e X :\: X.
+        claim HxX: x :e X.
+        { exact (setminusE1 X X x Hx). }
+        claim HxnotX: x /:e X.
+        { exact (setminusE2 X X x Hx). }
+        apply FalseE.
+        exact (HxnotX HxX). }
+    witness X.
+    apply andI.
+    * exact HX.
+    * exact HEmptyeq.
+  + apply andI.
+    * (** Arbitrary intersections of closed sets are closed **)
+      prove forall F:set, F :e Power C -> intersection_of_family F :e C.
+      admit. (** De Morgan: ∩{X\Uᵢ} = X \ (∪Uᵢ), need to construct family of opens **)
+    * (** Binary unions of closed sets are closed **)
+      prove forall A B:set, A :e C -> B :e C -> A :\/: B :e C.
+      let A B.
+      assume HA: A :e C.
+      assume HB: B :e C.
+      prove A :\/: B :e C.
+      (** A = X \ U for some U :e T, B = X \ V for some V :e T **)
+      apply (ReplE T (fun U => X :\: U) A HA).
+      let U. assume HU_conj: U :e T /\ A = X :\: U.
+      claim HU: U :e T.
+      { exact (andEL (U :e T) (A = X :\: U) HU_conj). }
+      claim HAeq: A = X :\: U.
+      { exact (andER (U :e T) (A = X :\: U) HU_conj). }
+      apply (ReplE T (fun V => X :\: V) B HB).
+      let V. assume HV_conj: V :e T /\ B = X :\: V.
+      claim HV: V :e T.
+      { exact (andEL (V :e T) (B = X :\: V) HV_conj). }
+      claim HBeq: B = X :\: V.
+      { exact (andER (V :e T) (B = X :\: V) HV_conj). }
+      (** Show A ∪ B = X \ (U ∩ V), and U ∩ V :e T **)
+      set W := U :/\: V.
+      claim HW: W :e T.
+      { exact (HInter U HU V HV). }
+      prove A :\/: B :e {X :\: Z|Z :e T}.
+      witness W.
+      apply andI.
+      - exact HW.
+      - (** Prove A ∪ B = X \ W by De Morgan **)
+        prove A :\/: B = X :\: W.
+        rewrite HAeq.
+        rewrite HBeq.
+        apply set_ext.
+        + let x. assume Hx: x :e (X :\: U) :\/: (X :\: V).
+          prove x :e X :\: W.
+          apply (binunionE (X :\: U) (X :\: V) x Hx).
+          * assume HxXU: x :e X :\: U.
+            claim HxX: x :e X.
+            { exact (setminusE1 X U x HxXU). }
+            claim HxnotU: x /:e U.
+            { exact (setminusE2 X U x HxXU). }
+            apply setminusI.
+            - exact HxX.
+            - assume HxW: x :e W.
+              claim HxU: x :e U.
+              { exact (binintersectE1 U V x HxW). }
+              exact (HxnotU HxU).
+          * assume HxXV: x :e X :\: V.
+            claim HxX: x :e X.
+            { exact (setminusE1 X V x HxXV). }
+            claim HxnotV: x /:e V.
+            { exact (setminusE2 X V x HxXV). }
+            apply setminusI.
+            - exact HxX.
+            - assume HxW: x :e W.
+              claim HxV: x :e V.
+              { exact (binintersectE2 U V x HxW). }
+              exact (HxnotV HxV).
+        + let x. assume Hx: x :e X :\: W.
+          prove x :e (X :\: U) :\/: (X :\: V).
+          claim HxX: x :e X.
+          { exact (setminusE1 X W x Hx). }
+          claim HxnotW: x /:e W.
+          { exact (setminusE2 X W x Hx). }
+          (** x ∉ U ∩ V means x ∉ U or x ∉ V **)
+          apply (xm (x :e U)).
+          * assume HxU: x :e U.
+            (** Then x ∉ V, so x ∈ X \ V **)
+            apply binunionI2.
+            apply setminusI.
+            - exact HxX.
+            - assume HxV: x :e V.
+              apply HxnotW.
+              apply binintersectI.
+              + exact HxU.
+              + exact HxV.
+          * assume HxnotU: x /:e U.
+            (** x ∈ X \ U **)
+            apply binunionI1.
+            apply setminusI.
+            - exact HxX.
+            - exact HxnotU.
 Qed.
 
 (** from §17 Theorem 17.2: closed sets in subspaces as intersections **) 
