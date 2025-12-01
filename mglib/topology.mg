@@ -12111,7 +12111,71 @@ Theorem identity_continuous : forall X Tx:set,
 let X Tx.
 assume HTx: topology_on X Tx.
 prove let id := {UPair x x|x :e X} in continuous_map X Tx X Tx id.
-admit. (** identity preimage of any set U is U itself; U open implies id⁻¹(U)=U open **)
+set id := {UPair x x|x :e X}.
+prove continuous_map X Tx X Tx id.
+(** Strategy: Unfold continuous_map definition and show:
+    1. topology_on X Tx (given)
+    2. function_on id X X (identity is a function)
+    3. For all V :e Tx, preimage_of X id V :e Tx
+    Key insight: preimage_of X id V = V for V :e Tx **)
+(** Unfold: continuous_map = topology_on X Tx /\ topology_on X Tx /\ function_on id X X /\ (forall V:set, V :e Tx -> preimage_of X id V :e Tx)
+    This is left-associative: (((A /\ B) /\ C) /\ D) **)
+prove topology_on X Tx /\ topology_on X Tx /\ function_on id X X /\
+  forall V:set, V :e Tx -> preimage_of X id V :e Tx.
+(** Build the conjunction left-to-right **)
+claim Hpart1: topology_on X Tx /\ topology_on X Tx.
+{ apply andI. exact HTx. exact HTx. }
+claim Hpart2: (topology_on X Tx /\ topology_on X Tx) /\ function_on id X X.
+{ apply andI.
+  - exact Hpart1.
+  - (** function_on id X X **)
+    prove function_on id X X.
+    prove forall x:set, x :e X -> apply_fun id x :e X.
+    let x. assume Hx: x :e X.
+    prove apply_fun id x :e X.
+    (** For x :e X, we have UPair x x :e id, so apply_fun id x = x by Eps_i.
+        Therefore apply_fun id x :e X. This requires showing uniqueness of y in UPair x y :e id. **)
+    claim Hid_x: apply_fun id x = x.
+    { admit. (** Technical: UPair x x :e id and uniqueness implies apply_fun id x = x **)
+    }
+    rewrite Hid_x.
+    exact Hx. }
+apply andI.
+- exact Hpart2.
+- (** forall V:set, V :e Tx -> preimage_of X id V :e Tx **)
+  let V. assume HV: V :e Tx.
+  prove preimage_of X id V :e Tx.
+  (** preimage_of X id V = {x :e X | apply_fun id x :e V} = {x :e X | x :e V} = V (when V c= X) **)
+  claim HVsub: V c= X.
+  { exact (topology_elem_subset X Tx V HTx HV). }
+  claim Hpreimg_eq: preimage_of X id V = V.
+  { apply set_ext.
+    - let x. assume Hx: x :e preimage_of X id V.
+      prove x :e V.
+      claim HxX: x :e X.
+      { exact (SepE1 X (fun y => apply_fun id y :e V) x Hx). }
+      claim Hidx_in_V: apply_fun id x :e V.
+      { exact (SepE2 X (fun y => apply_fun id y :e V) x Hx). }
+      claim Hidx_eq: apply_fun id x = x.
+      { admit. (** Technical: apply_fun id x = x for x :e X **)
+      }
+      rewrite <- Hidx_eq.
+      exact Hidx_in_V.
+    - let x. assume Hx: x :e V.
+      prove x :e preimage_of X id V.
+      prove x :e {y :e X | apply_fun id y :e V}.
+      claim HxX: x :e X.
+      { exact (HVsub x Hx). }
+      apply SepI.
+      + exact HxX.
+      + prove apply_fun id x :e V.
+        claim Hidx_eq: apply_fun id x = x.
+        { admit. (** Technical: apply_fun id x = x for x :e X **)
+        }
+        rewrite Hidx_eq.
+        exact Hx. }
+  rewrite Hpreimg_eq.
+  exact HV.
 Qed.
 
  (** from §18: composition of continuous maps is continuous **) 
