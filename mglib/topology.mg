@@ -12572,7 +12572,19 @@ claim Hpreimg_subspace: forall V:set, V :e Ty -> preimage_of A f V :e subspace_t
 (** Build the full conjunction for continuous_map **)
 (** Need: topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty /\ function_on f A Y /\ (forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A)
     This is left-associative: (((A /\ B) /\ C) /\ D) **)
-admit. (** Assembly of conjunction - need to handle admits in components first **)
+claim Hpart1: topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty.
+{ apply andI.
+  - exact HTsubspace.
+  - exact HTy. }
+claim Hpart2: (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty) /\ function_on f A Y.
+{ apply andI.
+  - exact Hpart1.
+  - exact Hfun_A. }
+prove (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty /\ function_on f A Y) /\
+      (forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A).
+apply andI.
+- exact Hpart2.
+- exact Hpreimg_subspace.
 Qed.
 
 (** from §18: inverse of homeomorphism is continuous **) 
