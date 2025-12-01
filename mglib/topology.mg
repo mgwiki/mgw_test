@@ -12183,12 +12183,168 @@ apply andI.
 - (** cl(cl(A)) = cl(A) - idempotence follows from closure being closed **)
   prove closure_of X Tx clA = clA.
   claim HclA_closed: closed_in X Tx clA.
-  { admit. (** Need: direct proof that closure_of X Tx A is closed without adding another layer **)
+  { (** Apply closure_is_closed with (A :/\: X) instead of A **)
+    (** Since closure_of X Tx (A :/\: X) = closure_of X Tx A, and (A :/\: X) c= X **)
+    claim HAX_sub: A :/\: X c= X.
+    { exact (binintersect_Subq_2 A X). }
+    claim Heq_closure: closure_of X Tx (A :/\: X) = closure_of X Tx A.
+    { apply set_ext.
+      - let x. assume Hx: x :e closure_of X Tx (A :/\: X).
+        prove x :e closure_of X Tx A.
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: (A :/\: X) <> Empty) x Hx). }
+        claim Hcond: forall U:set, U :e Tx -> x :e U -> U :/\: (A :/\: X) <> Empty.
+        { exact (SepE2 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: (A :/\: X) <> Empty) x Hx). }
+        claim Hpred: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+        { let U. assume HU: U :e Tx. assume HxU: x :e U.
+          claim HUX: U c= X.
+          { exact (topology_elem_subset X Tx U Htop HU). }
+          claim Hinter1: U :/\: (A :/\: X) <> Empty.
+          { exact (Hcond U HU HxU). }
+          (** U :/\: (A :/\: X) = (U :/\: A) :/\: X, but since U c= X, this equals U :/\: A **)
+          claim Heq_inter: U :/\: (A :/\: X) = U :/\: A.
+          { apply set_ext.
+            - let y. assume Hy: y :e U :/\: (A :/\: X).
+              claim HyU: y :e U.
+              { exact (binintersectE1 U (A :/\: X) y Hy). }
+              claim HyAX: y :e A :/\: X.
+              { exact (binintersectE2 U (A :/\: X) y Hy). }
+              claim HyA: y :e A.
+              { exact (binintersectE1 A X y HyAX). }
+              exact (binintersectI U A y HyU HyA).
+            - let y. assume Hy: y :e U :/\: A.
+              claim HyU: y :e U.
+              { exact (binintersectE1 U A y Hy). }
+              claim HyA: y :e A.
+              { exact (binintersectE2 U A y Hy). }
+              claim HyX: y :e X.
+              { exact (HUX y HyU). }
+              claim HyAX: y :e A :/\: X.
+              { exact (binintersectI A X y HyA HyX). }
+              exact (binintersectI U (A :/\: X) y HyU HyAX). }
+          rewrite <- Heq_inter.
+          exact Hinter1. }
+        exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x HxX Hpred).
+      - let x. assume Hx: x :e closure_of X Tx A.
+        prove x :e closure_of X Tx (A :/\: X).
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+        claim Hcond: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+        { exact (SepE2 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+        claim Hpred: forall U:set, U :e Tx -> x :e U -> U :/\: (A :/\: X) <> Empty.
+        { let U. assume HU: U :e Tx. assume HxU: x :e U.
+          claim HUX: U c= X.
+          { exact (topology_elem_subset X Tx U Htop HU). }
+          claim Hinter1: U :/\: A <> Empty.
+          { exact (Hcond U HU HxU). }
+          claim Heq_inter: U :/\: (A :/\: X) = U :/\: A.
+          { apply set_ext.
+            - let y. assume Hy: y :e U :/\: (A :/\: X).
+              claim HyU: y :e U.
+              { exact (binintersectE1 U (A :/\: X) y Hy). }
+              claim HyAX: y :e A :/\: X.
+              { exact (binintersectE2 U (A :/\: X) y Hy). }
+              claim HyA: y :e A.
+              { exact (binintersectE1 A X y HyAX). }
+              exact (binintersectI U A y HyU HyA).
+            - let y. assume Hy: y :e U :/\: A.
+              claim HyU: y :e U.
+              { exact (binintersectE1 U A y Hy). }
+              claim HyA: y :e A.
+              { exact (binintersectE2 U A y Hy). }
+              claim HyX: y :e X.
+              { exact (HUX y HyU). }
+              claim HyAX: y :e A :/\: X.
+              { exact (binintersectI A X y HyA HyX). }
+              exact (binintersectI U (A :/\: X) y HyU HyAX). }
+          rewrite Heq_inter.
+          exact Hinter1. }
+        exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: (A :/\: X) <> Empty) x HxX Hpred).
+    }
+    rewrite <- Heq_closure.
+    exact (closure_is_closed X Tx (A :/\: X) Htop HAX_sub).
   }
   exact (closed_closure_eq X Tx clA Htop HclA_closed).
 - (** cl(A) is closed **)
   prove closed_in X Tx clA.
-  admit. (** Need: direct proof that closure_of X Tx A is closed without adding another layer **)
+  (** Same proof as above **)
+  claim HAX_sub: A :/\: X c= X.
+  { exact (binintersect_Subq_2 A X). }
+  claim Heq_closure: closure_of X Tx (A :/\: X) = closure_of X Tx A.
+  { apply set_ext.
+    - let x. assume Hx: x :e closure_of X Tx (A :/\: X).
+      prove x :e closure_of X Tx A.
+      claim HxX: x :e X.
+      { exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: (A :/\: X) <> Empty) x Hx). }
+      claim Hcond: forall U:set, U :e Tx -> x :e U -> U :/\: (A :/\: X) <> Empty.
+      { exact (SepE2 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: (A :/\: X) <> Empty) x Hx). }
+      claim Hpred: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+      { let U. assume HU: U :e Tx. assume HxU: x :e U.
+        claim HUX: U c= X.
+        { exact (topology_elem_subset X Tx U Htop HU). }
+        claim Hinter1: U :/\: (A :/\: X) <> Empty.
+        { exact (Hcond U HU HxU). }
+        claim Heq_inter: U :/\: (A :/\: X) = U :/\: A.
+        { apply set_ext.
+          - let y. assume Hy: y :e U :/\: (A :/\: X).
+            claim HyU: y :e U.
+            { exact (binintersectE1 U (A :/\: X) y Hy). }
+            claim HyAX: y :e A :/\: X.
+            { exact (binintersectE2 U (A :/\: X) y Hy). }
+            claim HyA: y :e A.
+            { exact (binintersectE1 A X y HyAX). }
+            exact (binintersectI U A y HyU HyA).
+          - let y. assume Hy: y :e U :/\: A.
+            claim HyU: y :e U.
+            { exact (binintersectE1 U A y Hy). }
+            claim HyA: y :e A.
+            { exact (binintersectE2 U A y Hy). }
+            claim HyX: y :e X.
+            { exact (HUX y HyU). }
+            claim HyAX: y :e A :/\: X.
+            { exact (binintersectI A X y HyA HyX). }
+            exact (binintersectI U (A :/\: X) y HyU HyAX). }
+        rewrite <- Heq_inter.
+        exact Hinter1. }
+      exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x HxX Hpred).
+    - let x. assume Hx: x :e closure_of X Tx A.
+      prove x :e closure_of X Tx (A :/\: X).
+      claim HxX: x :e X.
+      { exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+      claim Hcond: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+      { exact (SepE2 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+      claim Hpred: forall U:set, U :e Tx -> x :e U -> U :/\: (A :/\: X) <> Empty.
+      { let U. assume HU: U :e Tx. assume HxU: x :e U.
+        claim HUX: U c= X.
+        { exact (topology_elem_subset X Tx U Htop HU). }
+        claim Hinter1: U :/\: A <> Empty.
+        { exact (Hcond U HU HxU). }
+        claim Heq_inter: U :/\: (A :/\: X) = U :/\: A.
+        { apply set_ext.
+          - let y. assume Hy: y :e U :/\: (A :/\: X).
+            claim HyU: y :e U.
+            { exact (binintersectE1 U (A :/\: X) y Hy). }
+            claim HyAX: y :e A :/\: X.
+            { exact (binintersectE2 U (A :/\: X) y Hy). }
+            claim HyA: y :e A.
+            { exact (binintersectE1 A X y HyAX). }
+            exact (binintersectI U A y HyU HyA).
+          - let y. assume Hy: y :e U :/\: A.
+            claim HyU: y :e U.
+            { exact (binintersectE1 U A y Hy). }
+            claim HyA: y :e A.
+            { exact (binintersectE2 U A y Hy). }
+            claim HyX: y :e X.
+            { exact (HUX y HyU). }
+            claim HyAX: y :e A :/\: X.
+            { exact (binintersectI A X y HyA HyX). }
+            exact (binintersectI U (A :/\: X) y HyU HyAX). }
+        rewrite Heq_inter.
+        exact Hinter1. }
+      exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: (A :/\: X) <> Empty) x HxX Hpred).
+  }
+  rewrite <- Heq_closure.
+  exact (closure_is_closed X Tx (A :/\: X) Htop HAX_sub).
 Qed.
 
 (** LATEX VERSION: Exercise 7: Show union being closed does not imply each set is closed. **)
