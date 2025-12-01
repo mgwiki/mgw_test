@@ -12412,27 +12412,50 @@ set gf := compose_fun X f g.
     Since g continuous: g⁻¹(W) is open in Y
     Since f continuous: f⁻¹(g⁻¹(W)) is open in X **)
 (** Extract components from continuous_map definitions **)
+(** Hf: topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\ (forall V...) **)
 claim HTx: topology_on X Tx.
-{ admit. (** Extract from Hf **)
-}
-claim HTy: topology_on Y Ty.
-{ admit. (** Extract from Hf or Hg **)
-}
-claim HTz: topology_on Z Tz.
-{ admit. (** Extract from Hg **)
-}
+{ exact (andEL (topology_on X Tx) (topology_on Y Ty)
+          (andEL (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y)
+            (andEL (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
+                   (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                   Hf))). }
+claim HTy_from_f: topology_on Y Ty.
+{ exact (andER (topology_on X Tx) (topology_on Y Ty)
+          (andEL (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y)
+            (andEL (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
+                   (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                   Hf))). }
 claim Hfun_f: function_on f X Y.
-{ admit. (** Extract from Hf **)
-}
-claim Hfun_g: function_on g Y Z.
-{ admit. (** Extract from Hg **)
-}
+{ exact (andER (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y)
+          (andEL (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
+                 (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                 Hf)). }
 claim Hpreimg_f: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
-{ admit. (** Extract from Hf **)
-}
+{ exact (andER (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+               Hf). }
+(** Hg: topology_on Y Ty /\ topology_on Z Tz /\ function_on g Y Z /\ (forall W...) **)
+claim HTy: topology_on Y Ty.
+{ exact (andEL (topology_on Y Ty) (topology_on Z Tz)
+          (andEL (topology_on Y Ty /\ topology_on Z Tz) (function_on g Y Z)
+            (andEL (topology_on Y Ty /\ topology_on Z Tz /\ function_on g Y Z)
+                   (forall W:set, W :e Tz -> preimage_of Y g W :e Ty)
+                   Hg))). }
+claim HTz: topology_on Z Tz.
+{ exact (andER (topology_on Y Ty) (topology_on Z Tz)
+          (andEL (topology_on Y Ty /\ topology_on Z Tz) (function_on g Y Z)
+            (andEL (topology_on Y Ty /\ topology_on Z Tz /\ function_on g Y Z)
+                   (forall W:set, W :e Tz -> preimage_of Y g W :e Ty)
+                   Hg))). }
+claim Hfun_g: function_on g Y Z.
+{ exact (andER (topology_on Y Ty /\ topology_on Z Tz) (function_on g Y Z)
+          (andEL (topology_on Y Ty /\ topology_on Z Tz /\ function_on g Y Z)
+                 (forall W:set, W :e Tz -> preimage_of Y g W :e Ty)
+                 Hg)). }
 claim Hpreimg_g: forall W:set, W :e Tz -> preimage_of Y g W :e Ty.
-{ admit. (** Extract from Hg **)
-}
+{ exact (andER (topology_on Y Ty /\ topology_on Z Tz /\ function_on g Y Z)
+               (forall W:set, W :e Tz -> preimage_of Y g W :e Ty)
+               Hg). }
 (** Show gf = g∘f is continuous **)
 (** Need: topology_on X Tx /\ topology_on Z Tz /\ function_on gf X Z /\ (forall W:set, W :e Tz -> preimage_of X gf W :e Tx) **)
 admit. (** Assembly + showing preimage_of X gf W = preimage_of X f (preimage_of Y g W) **)
