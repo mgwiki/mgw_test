@@ -11792,21 +11792,16 @@ prove closure_of X Tx (closure_of X Tx A) = closure_of X Tx A /\ closed_in X Tx 
 apply andI.
 - (** cl(cl(A)) = cl(A) - idempotence follows from closure being closed **)
   prove closure_of X Tx (closure_of X Tx A) = closure_of X Tx A.
-  (** First, we need that closure_of X Tx A c= X **)
-  claim HclA_sub: closure_of X Tx A c= X.
-  { let x. assume Hx: x :e closure_of X Tx A.
-    prove x :e X.
-    exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
-  (** To prove cl(A) is closed, we need A c= X which isn't given in the theorem statement.
-      In practice, closure only makes sense when A is related to X. For now, admit this part. **)
+  (** Need to show closure_of X Tx A is closed, then apply closed_closure_eq.
+      However, closure_is_closed requires A c= X to prove closure_of X Tx A is closed.
+      The theorem statement doesn't assume A c= X, which may be a gap. **)
   claim HclA_closed: closed_in X Tx (closure_of X Tx A).
-  { admit. }
-  (** Apply closed_closure_eq: if C is closed, then cl(C) = C **)
+  { admit. (** Need: A c= X to apply closure_is_closed, but not given in theorem statement **)
+  }
   exact (closed_closure_eq X Tx (closure_of X Tx A) Htop HclA_closed).
 - (** cl(A) is closed **)
   prove closed_in X Tx (closure_of X Tx A).
-  (** Would need A c= X to apply closure_is_closed, but not given in theorem statement **)
-  admit.
+  admit. (** Need: A c= X to apply closure_is_closed, but not given in theorem statement **)
 Qed.
 
 (** LATEX VERSION: Exercise 7: Show union being closed does not imply each set is closed. **)
