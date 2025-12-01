@@ -10626,12 +10626,14 @@ claim HclA_sub: closure_of X Tx A c= X.
 (** To show cl(cl(A)) = cl(A), use that cl(A) ⊆ cl(cl(A)) and cl(cl(A)) ⊆ cl(A) **)
 apply set_ext.
 - (** cl(cl(A)) ⊆ cl(A) **)
-  (** cl(cl(A)) ⊆ cl(A) by idempotence of closure on closed sets.
-      Since cl(A) is closed (complements of interiors), cl(cl(A)) = cl(A). **)
-  (** For now, use monotonicity: cl(A) ⊆ cl(A), so cl(cl(A)) ⊆ cl(cl(A))... not helpful **)
-  (** Actually: A ⊆ cl(A), so cl(A) ⊆ cl(cl(A)).
-      For the reverse, note cl(A) is closed... but we need to prove that first. **)
-  admit. (** requires proving closure is a closed set, or using limit point characterization **)
+  (** Since cl(A) is closed, cl(cl(A)) = cl(A), so cl(cl(A)) ⊆ cl(A) **)
+  claim HclA_closed: closed_in X Tx (closure_of X Tx A).
+  { exact (closure_is_closed X Tx A Htop HA). }
+  claim Heq: closure_of X Tx (closure_of X Tx A) = closure_of X Tx A.
+  { exact (closed_closure_eq X Tx (closure_of X Tx A) Htop HclA_closed). }
+  let x. assume Hx: x :e closure_of X Tx (closure_of X Tx A).
+  rewrite <- Heq.
+  exact Hx.
 - (** cl(A) ⊆ cl(cl(A)) **)
   exact (subset_of_closure X Tx (closure_of X Tx A) Htop HclA_sub).
 Qed.
