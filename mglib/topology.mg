@@ -10888,7 +10888,158 @@ apply andI.
   + apply andI.
     * (** Arbitrary intersections of closed sets are closed **)
       prove forall F:set, F :e Power C -> intersection_of_family F :e C.
-      admit. (** De Morgan: ∩{X\Uᵢ} = X \ (∪Uᵢ), need to construct family of opens **)
+      let F. assume HF: F :e Power C.
+      prove intersection_of_family F :e C.
+      (** Strategy: Each A ∈ F is of form X \ U for some U ∈ T.
+          Construct UFam = {U ∈ T | X \ U ∈ F}.
+          Then ∩F = ∩{X \ U | X \ U ∈ F} = X \ (∪UFam) by De Morgan. **)
+      set UFam := {U :e T | X :\: U :e F}.
+      claim HUFamsub: UFam c= T.
+      { let U. assume HU: U :e UFam.
+        exact (SepE1 T (fun U0 => X :\: U0 :e F) U HU). }
+      claim HUnionUFam: Union UFam :e T.
+      { claim HUFamPower: UFam :e Power T.
+        { exact (PowerI T UFam HUFamsub). }
+        exact (HUnion UFam HUFamPower). }
+      (** Now show intersection_of_family F = X \ (Union UFam) **)
+      claim HFeq: intersection_of_family F = X :\: (Union UFam).
+      { apply set_ext.
+        - (** ∩F ⊆ X \ (∪UFam) **)
+          let x. assume Hx: x :e intersection_of_family F.
+          prove x :e X :\: (Union UFam).
+          (** x ∈ ∩F means x ∈ ⋃F and for all A ∈ F, x ∈ A **)
+          claim HxUnionF: x :e Union F.
+          { exact (SepE1 (Union F) (fun y => forall A:set, A :e F -> y :e A) x Hx). }
+          claim HxAll: forall A:set, A :e F -> x :e A.
+          { exact (SepE2 (Union F) (fun y => forall A:set, A :e F -> y :e A) x Hx). }
+          (** Get some A ∈ F to show x ∈ X **)
+          apply (xm (F = Empty)).
+          + assume HFempty: F = Empty.
+            (** If F = Empty, then ∩F = X and ∪UFam = Empty, so X \ Empty = X **)
+            admit. (** edge case: empty family **)
+          + assume HFne: F <> Empty.
+            (** Get witness A ∈ F **)
+            claim HexA: exists A:set, A :e F.
+            { apply (xm (exists A:set, A :e F)).
+              - assume H. exact H.
+              - assume Hno: ~(exists A:set, A :e F).
+                apply FalseE.
+                apply HFne.
+                apply Empty_Subq_eq.
+                let x. assume Hx: x :e F.
+                apply Hno.
+                witness x. exact Hx. }
+            apply HexA.
+            let A0. assume HA0: A0 :e F.
+            claim HxA0: x :e A0.
+            { exact (HxAll A0 HA0). }
+            (** A0 ∈ F ⊆ C, so A0 = X \ U0 for some U0 ∈ T **)
+            claim HA0C: A0 :e C.
+            { exact (PowerE C A0 F HF HA0). }
+            claim HA0ex: exists U0 :e T, A0 = X :\: U0.
+            { exact (ReplE T (fun U => X :\: U) A0 HA0C). }
+            apply HA0ex.
+            let U0. assume HU0_conj: U0 :e T /\ A0 = X :\: U0.
+            claim HA0eq: A0 = X :\: U0.
+            { exact (andER (U0 :e T) (A0 = X :\: U0) HU0_conj). }
+            claim HxXU0: x :e X :\: U0.
+            { rewrite <- HA0eq. exact HxA0. }
+            claim HxX: x :e X.
+            { exact (setminusE1 X U0 x HxXU0). }
+            apply setminusI.
+            * exact HxX.
+            * (** Show x ∉ ∪UFam **)
+              assume HxUnionUFam: x :e Union UFam.
+              (** Then x ∈ U for some U ∈ UFam, so X \ U ∈ F **)
+              apply (UnionE_impred UFam x HxUnionUFam False).
+              let U. assume HxU: x :e U. assume HUFam: U :e UFam.
+              claim HXminusU_F: X :\: U :e F.
+              { exact (SepE2 T (fun U0 => X :\: U0 :e F) U HUFam). }
+              claim HxXminusU: x :e X :\: U.
+              { exact (HxAll (X :\: U) HXminusU_F). }
+              claim HxnotU: x /:e U.
+              { exact (setminusE2 X U x HxXminusU). }
+              exact (HxnotU HxU).
+        - (** X \ (∪UFam) ⊆ ∩F **)
+          let x. assume Hx: x :e X :\: (Union UFam).
+          prove x :e intersection_of_family F.
+          claim HxX: x :e X.
+          { exact (setminusE1 X (Union UFam) x Hx). }
+          claim HxnotUnion: x /:e Union UFam.
+          { exact (setminusE2 X (Union UFam) x Hx). }
+          apply (xm (F = Empty)).
+          + assume HFempty: F = Empty.
+            admit. (** edge case: ∩∅ = X in some conventions, requires x ∈ ⋃∅ which is Empty **)
+          + assume HFne: F <> Empty.
+            (** Show x ∈ ⋃F and x ∈ A for all A ∈ F **)
+            claim HxUnionF: x :e Union F.
+            { (** Get some A ∈ F to show x is in the union **)
+              claim HexA: exists A:set, A :e F.
+              { apply (xm (exists A:set, A :e F)).
+                - assume H. exact H.
+                - assume Hno: ~(exists A:set, A :e F).
+                  apply FalseE.
+                  apply HFne.
+                  apply Empty_Subq_eq.
+                  let y. assume Hy: y :e F.
+                  apply Hno.
+                  witness y. exact Hy. }
+              apply HexA.
+              let A. assume HA: A :e F.
+              claim HAC: A :e C.
+              { exact (PowerE C A F HF HA). }
+              claim HAex: exists U :e T, A = X :\: U.
+              { exact (ReplE T (fun U => X :\: U) A HAC). }
+              apply HAex.
+              let U. assume HU_conj: U :e T /\ A = X :\: U.
+              claim HU: U :e T.
+              { exact (andEL (U :e T) (A = X :\: U) HU_conj). }
+              claim HAeq: A = X :\: U.
+              { exact (andER (U :e T) (A = X :\: U) HU_conj). }
+              claim HUnotFam: U /:e UFam \/ X :\: U :e F.
+              { apply orIR. exact HA. }
+              (** Since X \ U ∈ F, we have U ∈ UFam (by definition) **)
+              claim HUFam: U :e UFam.
+              { apply SepI.
+                - exact HU.
+                - rewrite <- HAeq. exact HA. }
+              (** But x ∉ ∪UFam, so x ∉ U **)
+              claim HxnotU: x /:e U.
+              { assume HxU: x :e U.
+                apply HxnotUnion.
+                exact (UnionI UFam x U HxU HUFam). }
+              (** Therefore x ∈ X \ U = A **)
+              claim HxA: x :e A.
+              { rewrite HAeq. apply setminusI. exact HxX. exact HxnotU. }
+              exact (UnionI F x A HxA HA). }
+            claim HxAll: forall A:set, A :e F -> x :e A.
+            { let A. assume HA: A :e F.
+              prove x :e A.
+              claim HAC: A :e C.
+              { exact (PowerE C A F HF HA). }
+              claim HAex: exists U :e T, A = X :\: U.
+              { exact (ReplE T (fun U => X :\: U) A HAC). }
+              apply HAex.
+              let U. assume HU_conj: U :e T /\ A = X :\: U.
+              claim HU: U :e T.
+              { exact (andEL (U :e T) (A = X :\: U) HU_conj). }
+              claim HAeq: A = X :\: U.
+              { exact (andER (U :e T) (A = X :\: U) HU_conj). }
+              claim HUFam: U :e UFam.
+              { apply SepI. exact HU. rewrite <- HAeq. exact HA. }
+              claim HxnotU: x /:e U.
+              { assume HxU: x :e U.
+                apply HxnotUnion.
+                exact (UnionI UFam x U HxU HUFam). }
+              rewrite HAeq.
+              apply setminusI. exact HxX. exact HxnotU. }
+            exact (SepI (Union F) (fun y => forall A:set, A :e F -> y :e A) x HxUnionF HxAll). }
+      (** Finally, intersection_of_family F = X \ (Union UFam), so it's in C **)
+      prove intersection_of_family F :e {X :\: U|U :e T}.
+      witness (Union UFam).
+      apply andI.
+      - exact HUnionUFam.
+      - exact HFeq.
     * (** Binary unions of closed sets are closed **)
       prove forall A B:set, A :e C -> B :e C -> A :\/: B :e C.
       let A B.
