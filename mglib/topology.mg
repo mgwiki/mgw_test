@@ -11706,7 +11706,41 @@ let X Tx Y Ty A B.
 assume HA: closed_in X Tx A.
 assume HB: closed_in Y Ty B.
 prove closed_in (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
-admit. (** complement of A×B = (X\A)×Y ∪ X×(Y\B), union of products of opens is open **)
+(** Strategy: Show complement of A×B is open in product topology.
+    (X×Y) \ (A×B) = (X\A)×Y ∪ X×(Y\B)
+    Since A,B closed, X\A,Y\B are open.
+    Products of opens are open in product topology.
+    Union of two opens is open. **)
+(** Extract topologies and components from closed_in **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (A c= X /\ exists U :e Tx, A = X :\: U) HA). }
+claim HTy: topology_on Y Ty.
+{ exact (andEL (topology_on Y Ty) (B c= Y /\ exists V :e Ty, B = Y :\: V) HB). }
+claim HAparts: A c= X /\ exists U :e Tx, A = X :\: U.
+{ exact (andER (topology_on X Tx) (A c= X /\ exists U :e Tx, A = X :\: U) HA). }
+claim HBparts: B c= Y /\ exists V :e Ty, B = Y :\: V.
+{ exact (andER (topology_on Y Ty) (B c= Y /\ exists V :e Ty, B = Y :\: V) HB). }
+claim HAsub: A c= X.
+{ exact (andEL (A c= X) (exists U :e Tx, A = X :\: U) HAparts). }
+claim HBsub: B c= Y.
+{ exact (andEL (B c= Y) (exists V :e Ty, B = Y :\: V) HBparts). }
+claim HexU: exists U :e Tx, A = X :\: U.
+{ exact (andER (A c= X) (exists U :e Tx, A = X :\: U) HAparts). }
+claim HexV: exists V :e Ty, B = Y :\: V.
+{ exact (andER (B c= Y) (exists V :e Ty, B = Y :\: V) HBparts). }
+(** Build the closed set property for product **)
+claim HTProd: topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
+{ exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
+prove topology_on (OrderedPair X Y) (product_topology X Tx Y Ty) /\
+      (OrderedPair A B c= OrderedPair X Y /\
+       exists W :e product_topology X Tx Y Ty, OrderedPair A B = (OrderedPair X Y) :\: W).
+apply andI.
+- exact HTProd.
+- apply andI.
+  + (** A×B ⊆ X×Y **)
+    admit. (** Need: subset property for products **)
+  + (** exists open W such that A×B = (X×Y) \ W **)
+    admit. (** Need: construct W = (X\A)×Y ∪ X×(Y\B), show it's open, show complement equals A×B **)
 Qed.
 
 (** LATEX VERSION: Exercise 4: For open U and closed A, U\\A is open and A\\U is closed. **)
@@ -11978,7 +12012,40 @@ let X Tx Y Ty.
 assume HX: Hausdorff_space X Tx.
 assume HY: Hausdorff_space Y Ty.
 prove Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit. (** separate (x1,y1) and (x2,y2): if x1≠x2 use X-separation; if y1≠y2 use Y-separation **)
+(** Strategy: Given distinct (x1,y1) and (x2,y2):
+    - If x1≠x2: separate with U1×Y and U2×Y where U1,U2 separate x1,x2 in X
+    - If y1≠y2: separate with X×V1 and X×V2 where V1,V2 separate y1,y2 in Y **)
+(** Extract components from Hausdorff definitions **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HX). }
+claim HTy: topology_on Y Ty.
+{ exact (andEL (topology_on Y Ty)
+               (forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
+               HY). }
+claim HSepX: forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+{ exact (andER (topology_on X Tx)
+               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HX). }
+claim HSepY: forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
+{ exact (andER (topology_on Y Ty)
+               (forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
+               HY). }
+(** Build Hausdorff property for product **)
+claim HTProd: topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
+{ exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
+prove topology_on (OrderedPair X Y) (product_topology X Tx Y Ty) /\
+      (forall p1 p2:set, p1 <> p2 ->
+       exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
+                       p1 :e U /\ p2 :e V /\ U :/\: V = Empty).
+apply andI.
+- exact HTProd.
+- let p1 p2. assume Hne: p1 <> p2.
+  prove exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
+                        p1 :e U /\ p2 :e V /\ U :/\: V = Empty.
+  (** Need to decompose p1 and p2 as ordered pairs and separate by coordinates **)
+  admit. (** Need: decompose p1=(x1,y1), p2=(x2,y2); case analysis on which coordinate differs; use rectangles **)
 Qed.
 
 (** LATEX VERSION: Exercise 12: Subspaces of Hausdorff spaces are Hausdorff. **)
