@@ -12265,18 +12265,15 @@ prove continuous_map A (subspace_topology X Tx A) Y Ty f.
     For subspace topology on A, we need f⁻¹(V) to be open in subspace_topology,
     which means f⁻¹(V) ∩ A should be of the form U ∩ A for some U open in X.
     Since f⁻¹(V) is already open in X, we can take U = f⁻¹(V). **)
-(** Extract components from Hf **)
-claim HTx_from_f: topology_on X Tx.
-{ admit. (** Extract from continuous_map definition **)
-}
+(** Extract components from Hf - but we already have HTx as a hypothesis, so we mainly need the others **)
 claim HTy: topology_on Y Ty.
-{ admit. (** Extract from continuous_map definition **)
+{ admit. (** Extract topology_on Y Ty from continuous_map - complex conjunction extraction **)
 }
 claim Hfun: function_on f X Y.
-{ admit. (** Extract from continuous_map definition **)
+{ admit. (** Extract function_on f X Y from continuous_map - complex conjunction extraction **)
 }
 claim Hf_preimg: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
-{ admit. (** Extract from continuous_map definition **)
+{ admit. (** Extract preimage property from continuous_map - complex conjunction extraction **)
 }
 (** Build continuous_map A (subspace_topology X Tx A) Y Ty f **)
 claim HTsubspace: topology_on A (subspace_topology X Tx A).
@@ -12331,7 +12328,9 @@ claim Hpreimg_subspace: forall V:set, V :e Ty -> preimage_of A f V :e subspace_t
     - exact Hpreimg_eq. }
   exact (SepI (Power A) (fun W => exists Z :e Tx, W = Z :/\: A) (preimage_of A f V) HpAV_PowerA Hexists). }
 (** Build the full conjunction for continuous_map **)
-admit. (** Need to assemble the pieces into the continuous_map definition structure **)
+(** Need: topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty /\ function_on f A Y /\ (forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A)
+    This is left-associative: (((A /\ B) /\ C) /\ D) **)
+admit. (** Assembly of conjunction - need to handle admits in components first **)
 Qed.
 
 (** from §18: inverse of homeomorphism is continuous **) 
