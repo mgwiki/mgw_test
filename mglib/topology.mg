@@ -12248,8 +12248,31 @@ set gf := compose_fun X f g.
     Key insight: preimage of W under g∘f equals preimage of (preimage of W under g) under f.
     Since g continuous: g⁻¹(W) is open in Y
     Since f continuous: f⁻¹(g⁻¹(W)) is open in X **)
-(** Use Hf and Hg directly; they unfold to conjunctions **)
-admit. (** Main proof structure correct but need to handle continuous_map decomposition properly **)
+(** Extract components from continuous_map definitions **)
+claim HTx: topology_on X Tx.
+{ admit. (** Extract from Hf **)
+}
+claim HTy: topology_on Y Ty.
+{ admit. (** Extract from Hf or Hg **)
+}
+claim HTz: topology_on Z Tz.
+{ admit. (** Extract from Hg **)
+}
+claim Hfun_f: function_on f X Y.
+{ admit. (** Extract from Hf **)
+}
+claim Hfun_g: function_on g Y Z.
+{ admit. (** Extract from Hg **)
+}
+claim Hpreimg_f: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+{ admit. (** Extract from Hf **)
+}
+claim Hpreimg_g: forall W:set, W :e Tz -> preimage_of Y g W :e Ty.
+{ admit. (** Extract from Hg **)
+}
+(** Show gf = g∘f is continuous **)
+(** Need: topology_on X Tx /\ topology_on Z Tz /\ function_on gf X Z /\ (forall W:set, W :e Tz -> preimage_of X gf W :e Tx) **)
+admit. (** Assembly + showing preimage_of X gf W = preimage_of X f (preimage_of Y g W) **)
 Qed.
 
 (** from §18 Theorem 18.2: rules for constructing continuous functions **) 
