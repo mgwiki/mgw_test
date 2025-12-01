@@ -11686,8 +11686,42 @@ Theorem Hausdorff_stability : forall X Tx Y Ty:set,
 let X Tx Y Ty.
 assume H: Hausdorff_space X Tx /\ Hausdorff_space Y Ty.
 prove Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit. (** separate (x₁,y₁) ≠ (x₂,y₂) by rectangles: if x₁≠x₂ use Hausdorff on X; if y₁≠y₂ use Hausdorff on Y
-        aby: Hausdorff_5Fspace_def conj_myprob_8812_1_20251123_233626 In_5Fno2cycle ex16_9_dictionary_equals_product . **)
+(** Strategy: Same as ex17_11_product_Hausdorff - use rectangles to separate distinct points **)
+(** Extract components from Hausdorff definitions **)
+claim HX: Hausdorff_space X Tx.
+{ exact (andEL (Hausdorff_space X Tx) (Hausdorff_space Y Ty) H). }
+claim HY: Hausdorff_space Y Ty.
+{ exact (andER (Hausdorff_space X Tx) (Hausdorff_space Y Ty) H). }
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HX). }
+claim HTy: topology_on Y Ty.
+{ exact (andEL (topology_on Y Ty)
+               (forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
+               HY). }
+claim HSepX: forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+{ exact (andER (topology_on X Tx)
+               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HX). }
+claim HSepY: forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
+{ exact (andER (topology_on Y Ty)
+               (forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
+               HY). }
+(** Build Hausdorff property for product **)
+claim HTProd: topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
+{ exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
+prove topology_on (OrderedPair X Y) (product_topology X Tx Y Ty) /\
+      (forall p1 p2:set, p1 <> p2 ->
+       exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
+                       p1 :e U /\ p2 :e V /\ U :/\: V = Empty).
+apply andI.
+- exact HTProd.
+- let p1 p2. assume Hne: p1 <> p2.
+  prove exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
+                        p1 :e U /\ p2 :e V /\ U :/\: V = Empty.
+  (** Need to decompose p1 and p2 as ordered pairs and separate by coordinates **)
+  admit. (** Need: decompose p1=(x1,y1), p2=(x2,y2); case analysis on which coordinate differs; use rectangles **)
 Qed.
 
 (** from §17 Exercises 1–20: closures, boundaries, Hausdorff properties **) 
