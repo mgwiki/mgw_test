@@ -10830,7 +10830,46 @@ prove let C := {X :\: U|U :e T} in
     X :e C /\ Empty :e C /\
     (forall F:set, F :e Power C -> intersection_of_family F :e C) /\
     (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
-admit. (** closed sets are complements of opens; De Morgan laws: ∩(X\Uᵢ)=X\(⋃Uᵢ); (X\U)∪(X\V)=X\(U∩V) **)
+set C := {X :\: U|U :e T}.
+prove X :e C /\ Empty :e C /\
+    (forall F:set, F :e Power C -> intersection_of_family F :e C) /\
+    (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
+(** Strategy: Use De Morgan laws and topology axioms
+    - X = X \ ∅, and ∅ ∈ T
+    - ∅ = X \ X, and X ∈ T
+    - ∩(X\Uᵢ) = X \ (⋃Uᵢ), and ⋃Uᵢ ∈ T
+    - (X\U) ∪ (X\V) = X \ (U ∩ V), and U ∩ V ∈ T **)
+claim Hempty_in_T: Empty :e T.
+{ exact (topology_has_empty X T HT). }
+claim HX_in_T: X :e T.
+{ exact (topology_has_X X T HT). }
+(** Build the 4-way conjunction left-to-right **)
+claim Hpart1: X :e C.
+{ (** X = X \ ∅ **)
+  prove X :e {X :\: U|U :e T}.
+  admit. (** Need ReplI with X = X \ ∅ and ∅ ∈ T **)
+}
+claim Hpart2: X :e C /\ Empty :e C.
+{ apply andI.
+  - exact Hpart1.
+  - (** ∅ = X \ X **)
+    prove Empty :e {X :\: U|U :e T}.
+    admit. (** Need ReplI with ∅ = X \ X and X ∈ T **)
+}
+claim Hpart3: (X :e C /\ Empty :e C) /\ (forall F:set, F :e Power C -> intersection_of_family F :e C).
+{ apply andI.
+  - exact Hpart2.
+  - (** Arbitrary intersections: ∩(X\Uᵢ) = X \ (⋃Uᵢ) **)
+    let F. assume HF: F :e Power C.
+    prove intersection_of_family F :e C.
+    admit. (** De Morgan: ∩{X\U | U ∈ some family} = X \ ⋃(that family) **)
+}
+apply andI.
+- exact Hpart3.
+- (** Binary unions: (X\U) ∪ (X\V) = X \ (U ∩ V) **)
+  let A B. assume HA: A :e C. assume HB: B :e C.
+  prove A :\/: B :e C.
+  admit. (** De Morgan: (X\U) ∪ (X\V) = X \ (U ∩ V) and U ∩ V ∈ T **)
 Qed.
 
 (** from §17 Theorem 17.2: closed sets in subspaces as intersections **) 
