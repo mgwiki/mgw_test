@@ -11953,7 +11953,80 @@ claim HSep: forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ 
 claim HexUV: exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty.
 { exact (HSep x y Hneq). }
 (** Handle nested existentials - need to carefully unpack structure **)
-admit. (** Need to properly handle nested existentials and get contradiction from disjoint sets **)
+(** Unpack to get specific disjoint open sets U and V **)
+apply HexUV.
+let U. assume HU. apply HU.
+let V. assume HV.
+(** HV: U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty **)
+(** Left-associative: (((U :e Tx /\ V :e Tx) /\ x :e U) /\ y :e V) /\ U :/\: V = Empty **)
+claim Hdisj: U :/\: V = Empty.
+{ exact (andER (((U :e Tx /\ V :e Tx) /\ x :e U) /\ y :e V) (U :/\: V = Empty) HV). }
+claim Hy_in_V: y :e V.
+{ exact (andER ((U :e Tx /\ V :e Tx) /\ x :e U) (y :e V) (andEL (((U :e Tx /\ V :e Tx) /\ x :e U) /\ y :e V) (U :/\: V = Empty) HV)). }
+claim Hx_in_U: x :e U.
+{ exact (andER (U :e Tx /\ V :e Tx) (x :e U) (andEL ((U :e Tx /\ V :e Tx) /\ x :e U) (y :e V) (andEL (((U :e Tx /\ V :e Tx) /\ x :e U) /\ y :e V) (U :/\: V = Empty) HV))). }
+claim HV_in_Tx: V :e Tx.
+{ exact (andER (U :e Tx) (V :e Tx) (andEL (U :e Tx /\ V :e Tx) (x :e U) (andEL ((U :e Tx /\ V :e Tx) /\ x :e U) (y :e V) (andEL (((U :e Tx /\ V :e Tx) /\ x :e U) /\ y :e V) (U :/\: V = Empty) HV)))). }
+claim HU_in_Tx: U :e Tx.
+{ exact (andEL (U :e Tx) (V :e Tx) (andEL (U :e Tx /\ V :e Tx) (x :e U) (andEL ((U :e Tx /\ V :e Tx) /\ x :e U) (y :e V) (andEL (((U :e Tx /\ V :e Tx) /\ x :e U) /\ y :e V) (U :/\: V = Empty) HV)))). }
+(** Apply convergence to x to get N1 **)
+claim HexN1: exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
+{ exact (Hx U HU_in_Tx Hx_in_U). }
+apply HexN1.
+let N1. assume HN1. apply HN1.
+assume HN1_in_omega: N1 :e omega.
+assume Hconv_U: forall n:set, n :e omega -> N1 c= n -> apply_fun seq n :e U.
+(** Apply convergence to y to get N2 **)
+claim HexN2: exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e V.
+{ exact (Hy V HV_in_Tx Hy_in_V). }
+apply HexN2.
+let N2. assume HN2. apply HN2.
+assume HN2_in_omega: N2 :e omega.
+assume Hconv_V: forall n:set, n :e omega -> N2 c= n -> apply_fun seq n :e V.
+(** N1 and N2 are ordinals in omega **)
+claim Hord_N1: ordinal N1.
+{ exact (nat_p_ordinal N1 (omega_nat_p N1 HN1_in_omega)). }
+claim Hord_N2: ordinal N2.
+{ exact (nat_p_ordinal N2 (omega_nat_p N2 HN2_in_omega)). }
+(** By ordinal linearity, either N1 c= N2 or N2 c= N1 **)
+claim Hlinear: N1 c= N2 \/ N2 c= N1.
+{ exact (ordinal_linear N1 N2 Hord_N1 Hord_N2). }
+(** Case analysis on which is larger **)
+apply Hlinear.
+- (** Case: N1 c= N2 **)
+  assume HN1_le_N2: N1 c= N2.
+  (** Then seq(N2) is in both U and V **)
+  claim Hseq_N2_U: apply_fun seq N2 :e U.
+  { exact (Hconv_U N2 HN2_in_omega HN1_le_N2). }
+  claim HN2_le_N2: N2 c= N2.
+  { exact (Subq_ref N2). }
+  claim Hseq_N2_V: apply_fun seq N2 :e V.
+  { exact (Hconv_V N2 HN2_in_omega HN2_le_N2). }
+  (** So seq(N2) :e U :/\: V **)
+  claim Hseq_in_inter: apply_fun seq N2 :e U :/\: V.
+  { exact (binintersectI U V (apply_fun seq N2) Hseq_N2_U Hseq_N2_V). }
+  (** But U :/\: V = Empty, so seq(N2) :e Empty **)
+  claim Hseq_in_empty: apply_fun seq N2 :e Empty.
+  { rewrite <- Hdisj. exact Hseq_in_inter. }
+  (** Contradiction **)
+  exact (EmptyE (apply_fun seq N2) Hseq_in_empty).
+- (** Case: N2 c= N1 **)
+  assume HN2_le_N1: N2 c= N1.
+  (** Then seq(N1) is in both U and V **)
+  claim HN1_le_N1: N1 c= N1.
+  { exact (Subq_ref N1). }
+  claim Hseq_N1_U: apply_fun seq N1 :e U.
+  { exact (Hconv_U N1 HN1_in_omega HN1_le_N1). }
+  claim Hseq_N1_V: apply_fun seq N1 :e V.
+  { exact (Hconv_V N1 HN1_in_omega HN2_le_N1). }
+  (** So seq(N1) :e U :/\: V **)
+  claim Hseq_in_inter: apply_fun seq N1 :e U :/\: V.
+  { exact (binintersectI U V (apply_fun seq N1) Hseq_N1_U Hseq_N1_V). }
+  (** But U :/\: V = Empty, so seq(N1) :e Empty **)
+  claim Hseq_in_empty: apply_fun seq N1 :e Empty.
+  { rewrite <- Hdisj. exact Hseq_in_inter. }
+  (** Contradiction **)
+  exact (EmptyE (apply_fun seq N1) Hseq_in_empty).
 Qed.
 
 (** from §17 Theorem 17.11: Hausdorff stability under constructions **) 
