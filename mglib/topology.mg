@@ -6492,6 +6492,12 @@ Qed.
 
 End form100_1.
 
+(*********************************************************************)
+(** TOPOLOGY SECTION STARTS HERE - LINE 6495                       **)
+(** ALL CLAUDE EDITS MUST BE AT OR BELOW THIS LINE                 **)
+(** DO NOT EDIT ANYTHING ABOVE THIS LINE                           **)
+(*********************************************************************)
+
 Section Topology.
 
 (** from §12 Topological Spaces: definition of topology on X **)
@@ -8343,7 +8349,48 @@ Theorem ex13_1_local_open_subset : forall X T A:set,
 let X T A.
 assume HT Hlocal.
 prove open_in X T A.
-admit. (** local openness implies global openness **)
+(** Strategy: Show A = Union of open sets contained in A, use topology_union_closed **)
+prove topology_on X T /\ A :e T.
+apply andI.
+- exact HT.
+- prove A :e T.
+  (** Define F = {U ∈ T | U ⊆ A} **)
+  set F := {U :e T | U c= A}.
+  claim HF_in_T: F c= T.
+  { let U. assume HU: U :e F.
+    exact (SepE1 T (fun U0 => U0 c= A) U HU). }
+  claim HA_eq_union: A = Union F.
+  { apply set_ext.
+    - (** A ⊆ ⋃F **)
+      let x. assume Hx: x :e A.
+      prove x :e Union F.
+      (** By Hlocal, get open U with x ∈ U ⊆ A **)
+      apply (Hlocal x Hx).
+      let U. assume H. apply H.
+      assume HU_in_T: U :e T.
+      assume H2. apply H2.
+      assume HxU: x :e U.
+      assume HU_sub_A: U c= A.
+      (** Show U ∈ F **)
+      claim HU_in_F: U :e F.
+      { prove U :e {V :e T | V c= A}.
+        exact (SepI T (fun V => V c= A) U HU_in_T HU_sub_A). }
+      (** So x ∈ ⋃F **)
+      exact (UnionI F x U HxU HU_in_F).
+    - (** ⋃F ⊆ A **)
+      let x. assume Hx: x :e Union F.
+      prove x :e A.
+      apply (UnionE F x Hx).
+      let U. assume H. apply H.
+      assume HxU: x :e U.
+      assume HU_in_F: U :e F.
+      (** From U ∈ F, get U ⊆ A **)
+      claim HU_sub_A: U c= A.
+      { exact (SepE2 T (fun U0 => U0 c= A) U HU_in_F). }
+      exact (HU_sub_A x HxU). }
+  (** Rewrite A as ⋃F and apply topology_union_closed **)
+  rewrite HA_eq_union.
+  exact (topology_union_closed X T F HT HF_in_T).
 Qed.
 
 (** from §13 Exercise 2: comparison of nine topologies on {a,b,c} **) 
