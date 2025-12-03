@@ -13418,7 +13418,168 @@ Theorem connected_iff_no_nontrivial_clopen : forall X Tx:set,
   ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
 let X Tx.
 prove connected_space X Tx <-> ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
-admit. (** separation gives clopen; clopen gives separation via A and X\A **)
+apply iffI.
+- (** Forward: connected → no nontrivial clopen **)
+  assume Hconn: connected_space X Tx.
+  prove ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
+  assume Hexclopen: exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A.
+  (** Extract A **)
+  apply Hexclopen.
+  let A. assume HA.
+  (** HA: (((A <> Empty /\ A <> X) /\ open_in X Tx A) /\ closed_in X Tx A) **)
+  claim HAclosed: closed_in X Tx A.
+  { exact (andER (((A <> Empty /\ A <> X) /\ open_in X Tx A)) (closed_in X Tx A) HA). }
+  claim HAopen: open_in X Tx A.
+  { exact (andER ((A <> Empty /\ A <> X)) (open_in X Tx A)
+                 (andEL (((A <> Empty /\ A <> X) /\ open_in X Tx A)) (closed_in X Tx A) HA)). }
+  claim HAneX: A <> X.
+  { exact (andER (A <> Empty) (A <> X)
+                 (andEL ((A <> Empty /\ A <> X)) (open_in X Tx A)
+                        (andEL (((A <> Empty /\ A <> X) /\ open_in X Tx A)) (closed_in X Tx A) HA))). }
+  claim HAne: A <> Empty.
+  { exact (andEL (A <> Empty) (A <> X)
+                 (andEL ((A <> Empty /\ A <> X)) (open_in X Tx A)
+                        (andEL (((A <> Empty /\ A <> X) /\ open_in X Tx A)) (closed_in X Tx A) HA))). }
+  (** Extract topology from connected_space **)
+  claim HTx: topology_on X Tx.
+  { exact (andEL (topology_on X Tx)
+                 (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X))
+                 Hconn). }
+  (** A is open, so A ∈ Tx **)
+  claim HAinTx: A :e Tx.
+  { exact (andER (topology_on X Tx) (A :e Tx) HAopen). }
+  (** A is closed, so A = X \ V for some V ∈ Tx **)
+  claim HAclosedparts: A c= X /\ (exists V :e Tx, A = X :\: V).
+  { exact (andER (topology_on X Tx) (A c= X /\ (exists V :e Tx, A = X :\: V)) HAclosed). }
+  claim HexV: exists V :e Tx, A = X :\: V.
+  { exact (andER (A c= X) (exists V :e Tx, A = X :\: V) HAclosedparts). }
+  apply HexV.
+  let V. assume HV_conj. apply HV_conj.
+  assume HVinTx: V :e Tx.
+  assume HAeq: A = X :\: V.
+  (** Show V = X \ A **)
+  claim HVeq: V = X :\: A.
+  { apply set_ext.
+    - let x. assume Hx: x :e V.
+      prove x :e X :\: A.
+      (** x ∈ V, so we need x ∈ X and x ∉ A **)
+      claim HxnotA: x /:e A.
+      { assume Hcontra: x :e A.
+        (** A = X \ V, so x ∈ X \ V, so x ∉ V **)
+        claim HxnotV: x /:e V.
+        { claim HxXV: x :e X :\: V.
+          { rewrite <- HAeq. exact Hcontra. }
+          exact (setminusE2 X V x HxXV). }
+        exact (HxnotV Hx). }
+      (** Need to show x ∈ X **)
+      claim HxX: x :e X.
+      { (** V ∈ Tx and Tx ⊆ Power X, so V ⊆ X **)
+        claim HVsub: V c= X.
+        { exact (topology_elem_subset X Tx V HTx HVinTx). }
+        exact (HVsub x Hx). }
+      exact (setminusI X A x HxX HxnotA).
+    - let x. assume Hx: x :e X :\: A.
+      prove x :e V.
+      claim HxX: x :e X.
+      { exact (setminusE1 X A x Hx). }
+      claim HxnotA: x /:e A.
+      { exact (setminusE2 X A x Hx). }
+      (** A = X \ V, so x ∉ A means ¬(x ∈ X ∧ x ∉ V) **)
+      (** Since x ∈ X, we have x ∈ V **)
+      apply xm (x :e V).
+      + assume Hv. exact Hv.
+      + assume Hnv.
+        apply FalseE.
+        apply HxnotA.
+        rewrite HAeq.
+        exact (setminusI X V x HxX Hnv). }
+  (** Extract subset facts that we'll need multiple times **)
+  claim HAsub: A c= X.
+  { exact (andEL (A c= X) (exists V0 :e Tx, A = X :\: V0) HAclosedparts). }
+  claim HVsub: V c= X.
+  { exact (topology_elem_subset X Tx V HTx HVinTx). }
+  (** Now show A and V form a separation **)
+  claim Hsep: separation_of X A V.
+  { prove A :e Power X /\ V :e Power X /\ A :/\: V = Empty /\ A <> Empty /\ V <> Empty.
+    claim HApow: A :e Power X.
+    { exact (PowerI X A HAsub). }
+    claim HVpow: V :e Power X.
+    { exact (PowerI X V HVsub). }
+    claim Hdisj: A :/\: V = Empty.
+    { rewrite HVeq.
+      (** A ∩ (X \ A) = ∅ **)
+      apply set_ext.
+      - let x. assume Hx: x :e A :/\: (X :\: A).
+        claim HxA: x :e A.
+        { exact (binintersectE1 A (X :\: A) x Hx). }
+        claim HxXA: x :e X :\: A.
+        { exact (binintersectE2 A (X :\: A) x Hx). }
+        claim HxnotA: x /:e A.
+        { exact (setminusE2 X A x HxXA). }
+        apply FalseE.
+        exact (HxnotA HxA).
+      - let x. assume Hx: x :e Empty.
+        apply FalseE.
+        exact (EmptyE x Hx). }
+    claim HVne: V <> Empty.
+    { assume HVempty: V = Empty.
+      (** Then X \ A = ∅, so A = X, contradiction **)
+      claim HAeqX: A = X.
+      { (** From HVeq: V = X \ A and HVempty: V = ∅, we have X \ A = ∅ **)
+        claim HXAempty: X :\: A = Empty.
+        { rewrite <- HVeq. exact HVempty. }
+        (** X \ A = ∅ means A = X **)
+        apply set_ext.
+        - exact HAsub.
+        - let x. assume Hx: x :e X.
+          apply xm (x :e A).
+          + assume Ha. exact Ha.
+          + assume Hna.
+            claim HxXA: x :e X :\: A.
+            { exact (setminusI X A x Hx Hna). }
+            claim HxEmpty: x :e Empty.
+            { rewrite <- HXAempty. exact HxXA. }
+            apply FalseE.
+            exact (EmptyE x HxEmpty). }
+      exact (HAneX HAeqX). }
+    exact (andI (A :e Power X /\ V :e Power X /\ A :/\: V = Empty /\ A <> Empty) (V <> Empty)
+                (andI (A :e Power X /\ V :e Power X /\ A :/\: V = Empty) (A <> Empty)
+                      (andI (A :e Power X /\ V :e Power X) (A :/\: V = Empty)
+                            (andI (A :e Power X) (V :e Power X) HApow HVpow)
+                            Hdisj)
+                      HAne)
+                HVne). }
+  (** A ∪ V = X **)
+  claim Hunion: A :\/: V = X.
+  { rewrite HVeq.
+    (** A ∪ (X \ A) = X **)
+    apply set_ext.
+    - let x. assume Hx: x :e A :\/: (X :\: A).
+      apply (binunionE A (X :\: A) x Hx).
+      + assume HxA. exact (HAsub x HxA).
+      + assume HxXA. exact (setminusE1 X A x HxXA).
+    - let x. assume Hx: x :e X.
+      apply xm (x :e A).
+      + assume Ha. exact (binunionI1 A (X :\: A) x Ha).
+      + assume Hna. exact (binunionI2 A (X :\: A) x (setminusI X A x Hx Hna)). }
+  (** Contradiction: we have a separation **)
+  claim Hsepexists: exists U V0:set, U :e Tx /\ V0 :e Tx /\ separation_of X U V0 /\ U :\/: V0 = X.
+  { witness A. witness V.
+    exact (andI (A :e Tx /\ V :e Tx /\ separation_of X A V) (A :\/: V = X)
+                (andI (A :e Tx /\ V :e Tx) (separation_of X A V)
+                      (andI (A :e Tx) (V :e Tx) HAinTx HVinTx)
+                      Hsep)
+                Hunion). }
+  claim Hnotconn: ~(exists U V0:set, U :e Tx /\ V0 :e Tx /\ separation_of X U V0 /\ U :\/: V0 = X).
+  { exact (andER (topology_on X Tx)
+                 (~(exists U V0:set, U :e Tx /\ V0 :e Tx /\ separation_of X U V0 /\ U :\/: V0 = X))
+                 Hconn). }
+  exact (Hnotconn Hsepexists).
+- (** Backward: no nontrivial clopen → connected **)
+  assume Hnoclopen: ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
+  prove connected_space X Tx.
+  (** Need to show: topology_on X Tx and no separation **)
+  admit. (** Need: extract topology from the statement or assume it **)
 Qed.
 
 (** from §23 Lemma 23.1: separations in subspaces via limit points **) 
@@ -13450,8 +13611,282 @@ assume Hunion: C :\/: D = X.
 assume HC: open_in X Tx C.
 assume HD: open_in X Tx D.
 prove Y c= C \/ Y c= D.
-admit. (** if Y intersects both C and D, then Y∩C and Y∩D separate Y; contradicts connectedness of Y
-        aby: open_in_subspace_iff conj_myprob_9276_1_20251124_010744 prop_ext_2 EmptyAx discrete_open_all In_5Fno2cycle . **)
+(** Proof by contradiction: if Y intersects both C and D, they separate Y **)
+apply (xm (Y c= C)).
+- assume HYC: Y c= C.
+  prove Y c= C \/ Y c= D.
+  apply orIL.
+  exact HYC.
+- assume HnYC: ~(Y c= C).
+  (** Y is not entirely in C, so check if Y ⊆ D **)
+  apply (xm (Y c= D)).
+  + assume HYD: Y c= D.
+    prove Y c= C \/ Y c= D.
+    apply orIR.
+    exact HYD.
+  + assume HnYD: ~(Y c= D).
+    (** Y intersects both C and D; derive contradiction from separation **)
+    (** First, extract Y ⊆ X from connectedness **)
+    claim HTxY: topology_on Y Tx.
+    { exact (andEL (topology_on Y Tx)
+                   (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of Y U V /\ U :\/: V = Y))
+                   HY). }
+    (** Extract Y :e Tx for later use **)
+    claim HYinTx: Y :e Tx.
+    { claim Htemp1: (((Tx c= Power Y /\ Empty :e Tx) /\ Y :e Tx) /\
+                     (forall UFam :e Power Tx, Union UFam :e Tx)) /\
+                    (forall U :e Tx, forall V :e Tx, U :/\: V :e Tx).
+      { exact HTxY. }
+      claim Htemp2: ((Tx c= Power Y /\ Empty :e Tx) /\ Y :e Tx) /\
+                    (forall UFam :e Power Tx, Union UFam :e Tx).
+      { exact (andEL (((Tx c= Power Y /\ Empty :e Tx) /\ Y :e Tx) /\
+                      (forall UFam :e Power Tx, Union UFam :e Tx))
+                     (forall U :e Tx, forall V :e Tx, U :/\: V :e Tx)
+                     Htemp1). }
+      claim Htemp3: (Tx c= Power Y /\ Empty :e Tx) /\ Y :e Tx.
+      { exact (andEL ((Tx c= Power Y /\ Empty :e Tx) /\ Y :e Tx)
+                     (forall UFam :e Power Tx, Union UFam :e Tx)
+                     Htemp2). }
+      exact (andER (Tx c= Power Y /\ Empty :e Tx) (Y :e Tx) Htemp3).
+    }
+    claim HYsubX: Y c= X.
+    { (** From topology_on Y Tx, we get Y :e Tx.
+          From topology_on X Tx, we get Tx c= Power X.
+          So Y :e Power X, hence Y c= X. **)
+      (** Extract Tx c= Power X from topology_on X Tx **)
+      (** topology_on X Tx = ((((Tx c= Power X /\ Empty :e Tx) /\ X :e Tx) /\ D) /\ E) **)
+      claim HTxsubPowerX: Tx c= Power X.
+      { claim Hx1: (((Tx c= Power X /\ Empty :e Tx) /\ X :e Tx) /\
+                    (forall UFam :e Power Tx, Union UFam :e Tx)) /\
+                   (forall U :e Tx, forall V :e Tx, U :/\: V :e Tx).
+        { exact HTx. }
+        claim Hx2: ((Tx c= Power X /\ Empty :e Tx) /\ X :e Tx) /\
+                   (forall UFam :e Power Tx, Union UFam :e Tx).
+        { exact (andEL (((Tx c= Power X /\ Empty :e Tx) /\ X :e Tx) /\
+                        (forall UFam :e Power Tx, Union UFam :e Tx))
+                       (forall U :e Tx, forall V :e Tx, U :/\: V :e Tx)
+                       Hx1). }
+        claim Hx3: (Tx c= Power X /\ Empty :e Tx) /\ X :e Tx.
+        { exact (andEL ((Tx c= Power X /\ Empty :e Tx) /\ X :e Tx)
+                       (forall UFam :e Power Tx, Union UFam :e Tx)
+                       Hx2). }
+        claim Hx4: Tx c= Power X /\ Empty :e Tx.
+        { exact (andEL (Tx c= Power X /\ Empty :e Tx) (X :e Tx) Hx3). }
+        exact (andEL (Tx c= Power X) (Empty :e Tx) Hx4).
+      }
+      (** Extract Y :e Tx from topology_on Y Tx **)
+      (** topology_on Y Tx = ((((Tx c= Power Y /\ Empty :e Tx) /\ Y :e Tx) /\ D) /\ E) **)
+      claim Hrest1: (((Tx c= Power Y /\ Empty :e Tx) /\ Y :e Tx) /\
+                     (forall UFam :e Power Tx, Union UFam :e Tx)) /\
+                    (forall U :e Tx, forall V :e Tx, U :/\: V :e Tx).
+      { exact HTxY. }
+      claim Hrest2: ((Tx c= Power Y /\ Empty :e Tx) /\ Y :e Tx) /\
+                    (forall UFam :e Power Tx, Union UFam :e Tx).
+      { exact (andEL (((Tx c= Power Y /\ Empty :e Tx) /\ Y :e Tx) /\
+                      (forall UFam :e Power Tx, Union UFam :e Tx))
+                     (forall U :e Tx, forall V :e Tx, U :/\: V :e Tx)
+                     Hrest1). }
+      claim Hrest3: (Tx c= Power Y /\ Empty :e Tx) /\ Y :e Tx.
+      { exact (andEL ((Tx c= Power Y /\ Empty :e Tx) /\ Y :e Tx)
+                     (forall UFam :e Power Tx, Union UFam :e Tx)
+                     Hrest2). }
+      claim HYinTx: Y :e Tx.
+      { exact (andER (Tx c= Power Y /\ Empty :e Tx) (Y :e Tx) Hrest3). }
+      (** Now Y :e Tx and Tx c= Power X give Y :e Power X **)
+      claim HYinPowerX: Y :e Power X.
+      { exact (HTxsubPowerX Y HYinTx). }
+      exact (PowerE X Y HYinPowerX).
+    }
+    (** Now show Y ∩ C and Y ∩ D form a separation of Y **)
+    (** First, extract that C and D are elements of Tx **)
+    claim HCinTx: C :e Tx.
+    { exact (andER (topology_on X Tx) (C :e Tx) HC). }
+    claim HDinTx: D :e Tx.
+    { exact (andER (topology_on X Tx) (D :e Tx) HD). }
+    (** Y is also in Tx **)
+    (** Y ∩ C and Y ∩ D are in Tx by closure under intersection **)
+    claim HintClos: forall U :e Tx, forall V :e Tx, U :/\: V :e Tx.
+    { (** Extract from topology_on X Tx (or Y Tx, both should give this) **)
+      claim Htemp: ((((Tx c= Power X /\ Empty :e Tx) /\ X :e Tx) /\
+                     (forall UFam :e Power Tx, Union UFam :e Tx)) /\
+                    (forall U :e Tx, forall V :e Tx, U :/\: V :e Tx)).
+      { exact HTx. }
+      exact (andER (((Tx c= Power X /\ Empty :e Tx) /\ X :e Tx) /\
+                    (forall UFam :e Power Tx, Union UFam :e Tx))
+                   (forall U :e Tx, forall V :e Tx, U :/\: V :e Tx)
+                   Htemp).
+    }
+    claim HYCinTx: Y :/\: C :e Tx.
+    { exact (HintClos Y HYinTx C HCinTx). }
+    claim HYDinTx: Y :/\: D :e Tx.
+    { exact (HintClos Y HYinTx D HDinTx). }
+    (** Show Y ∩ D is nonempty **)
+    (** If Y ∩ D = ∅, then Y ⊆ C (since C ∪ D = X covers everything) **)
+    claim HYDnonempty: Y :/\: D <> Empty.
+    { assume HYDempty: Y :/\: D = Empty.
+      (** Show Y c= C **)
+      claim HYsubC: Y c= C.
+      { let y. assume Hy: y :e Y.
+        prove y :e C.
+        (** y ∈ Y ⊆ X, and X = C ∪ D, so y ∈ C or y ∈ D **)
+        claim HyinX: y :e X.
+        { exact (HYsubX y Hy). }
+        claim HyinCD: y :e C :\/: D.
+        { rewrite Hunion.
+          exact HyinX.
+        }
+        apply (binunionE C D y HyinCD).
+        - assume HyC: y :e C.
+          exact HyC.
+        - assume HyD: y :e D.
+          (** y ∈ Y and y ∈ D means y ∈ Y ∩ D, contradicting Y ∩ D = ∅ **)
+          claim HyYD: y :e Y :/\: D.
+          { exact (binintersectI Y D y Hy HyD). }
+          claim Hfalse: y :e Empty.
+          { rewrite <- HYDempty. exact HyYD. }
+          exact (FalseE (EmptyE y Hfalse) (y :e C)).
+      }
+      (** But Y c= C contradicts HnYD via... wait, we need Y c= C to contradict HnYC **)
+      exact (HnYC HYsubC).
+    }
+    (** Show Y ∩ C is nonempty by symmetry **)
+    claim HYCnonempty: Y :/\: C <> Empty.
+    { assume HYCempty: Y :/\: C = Empty.
+      claim HYsubD: Y c= D.
+      { let y. assume Hy: y :e Y.
+        prove y :e D.
+        claim HyinX: y :e X.
+        { exact (HYsubX y Hy). }
+        claim HyinCD: y :e C :\/: D.
+        { rewrite Hunion. exact HyinX. }
+        apply (binunionE C D y HyinCD).
+        - assume HyC: y :e C.
+          claim HyYC: y :e Y :/\: C.
+          { exact (binintersectI Y C y Hy HyC). }
+          claim Hfalse: y :e Empty.
+          { rewrite <- HYCempty. exact HyYC. }
+          exact (FalseE (EmptyE y Hfalse) (y :e D)).
+        - assume HyD: y :e D.
+          exact HyD.
+      }
+      exact (HnYD HYsubD).
+    }
+    (** Now show Y ∩ C and Y ∩ D form a separation of Y **)
+    (** They are disjoint **)
+    claim HYCYDdisj: (Y :/\: C) :/\: (Y :/\: D) = Empty.
+    { apply set_ext.
+      - let z. assume Hz: z :e (Y :/\: C) :/\: (Y :/\: D).
+        prove z :e Empty.
+        claim HzYC: z :e Y :/\: C.
+        { exact (binintersectE1 (Y :/\: C) (Y :/\: D) z Hz). }
+        claim HzYD: z :e Y :/\: D.
+        { exact (binintersectE2 (Y :/\: C) (Y :/\: D) z Hz). }
+        claim HzC: z :e C.
+        { exact (binintersectE2 Y C z HzYC). }
+        claim HzD: z :e D.
+        { exact (binintersectE2 Y D z HzYD). }
+        claim HzCD: z :e C :/\: D.
+        { exact (binintersectI C D z HzC HzD). }
+        claim Hfalse: z :e Empty.
+        { rewrite <- Hdisj. exact HzCD. }
+        exact Hfalse.
+      - let z. assume Hz: z :e Empty.
+        prove z :e (Y :/\: C) :/\: (Y :/\: D).
+        exact (FalseE (EmptyE z Hz) (z :e (Y :/\: C) :/\: (Y :/\: D))).
+    }
+    (** They cover Y **)
+    claim HYCYDcover: (Y :/\: C) :\/: (Y :/\: D) = Y.
+    { apply set_ext.
+      - let z. assume Hz: z :e (Y :/\: C) :\/: (Y :/\: D).
+        prove z :e Y.
+        apply (binunionE (Y :/\: C) (Y :/\: D) z Hz).
+        + assume HzYC: z :e Y :/\: C.
+          exact (binintersectE1 Y C z HzYC).
+        + assume HzYD: z :e Y :/\: D.
+          exact (binintersectE1 Y D z HzYD).
+      - let z. assume Hz: z :e Y.
+        prove z :e (Y :/\: C) :\/: (Y :/\: D).
+        claim HzX: z :e X.
+        { exact (HYsubX z Hz). }
+        claim HzCD: z :e C :\/: D.
+        { rewrite Hunion. exact HzX. }
+        apply (binunionE C D z HzCD).
+        + assume HzC: z :e C.
+          claim HzYC: z :e Y :/\: C.
+          { exact (binintersectI Y C z Hz HzC). }
+          exact (binunionI1 (Y :/\: C) (Y :/\: D) z HzYC).
+        + assume HzD: z :e D.
+          claim HzYD: z :e Y :/\: D.
+          { exact (binintersectI Y D z Hz HzD). }
+          exact (binunionI2 (Y :/\: C) (Y :/\: D) z HzYD).
+    }
+    (** Build the separation **)
+    claim Hsep: separation_of Y (Y :/\: C) (Y :/\: D).
+    { prove (Y :/\: C) :e Power Y /\ (Y :/\: D) :e Power Y /\
+            (Y :/\: C) :/\: (Y :/\: D) = Empty /\
+            (Y :/\: C) <> Empty /\ (Y :/\: D) <> Empty.
+      claim HYCsubY: (Y :/\: C) c= Y.
+      { let z. assume Hz: z :e Y :/\: C.
+        prove z :e Y.
+        exact (binintersectE1 Y C z Hz).
+      }
+      claim HYDsubY: (Y :/\: D) c= Y.
+      { let z. assume Hz: z :e Y :/\: D.
+        prove z :e Y.
+        exact (binintersectE1 Y D z Hz).
+      }
+      claim HYCpow: (Y :/\: C) :e Power Y.
+      { exact (PowerI Y (Y :/\: C) HYCsubY). }
+      claim HYDpow: (Y :/\: D) :e Power Y.
+      { exact (PowerI Y (Y :/\: D) HYDsubY). }
+      (** Build 5-way conjunction step by step **)
+      (** separation_of Y (Y :/\: C) (Y :/\: D) = A /\ B /\ C /\ D /\ E **)
+      (** In left-associative form: ((((A /\ B) /\ C) /\ D) /\ E) **)
+      claim H12: (Y :/\: C) :e Power Y /\ (Y :/\: D) :e Power Y.
+      { exact (andI ((Y :/\: C) :e Power Y) ((Y :/\: D) :e Power Y) HYCpow HYDpow). }
+      claim H123: ((Y :/\: C) :e Power Y /\ (Y :/\: D) :e Power Y) /\
+                  (Y :/\: C) :/\: (Y :/\: D) = Empty.
+      { exact (andI ((Y :/\: C) :e Power Y /\ (Y :/\: D) :e Power Y)
+                    ((Y :/\: C) :/\: (Y :/\: D) = Empty)
+                    H12
+                    HYCYDdisj). }
+      claim H1234: (((Y :/\: C) :e Power Y /\ (Y :/\: D) :e Power Y) /\
+                    (Y :/\: C) :/\: (Y :/\: D) = Empty) /\
+                   (Y :/\: C) <> Empty.
+      { exact (andI (((Y :/\: C) :e Power Y /\ (Y :/\: D) :e Power Y) /\
+                     (Y :/\: C) :/\: (Y :/\: D) = Empty)
+                    ((Y :/\: C) <> Empty)
+                    H123
+                    HYCnonempty). }
+      exact (andI ((((Y :/\: C) :e Power Y /\ (Y :/\: D) :e Power Y) /\
+                    (Y :/\: C) :/\: (Y :/\: D) = Empty) /\
+                   (Y :/\: C) <> Empty)
+                  ((Y :/\: D) <> Empty)
+                  H1234
+                  HYDnonempty).
+    }
+    (** Derive contradiction **)
+    claim Hsepexists: exists U V:set, U :e Tx /\ V :e Tx /\ separation_of Y U V /\ U :\/: V = Y.
+    { witness (Y :/\: C).
+      witness (Y :/\: D).
+      (** Build 4-way conjunction: (((A /\ B) /\ C) /\ D) **)
+      claim Hconj12: (Y :/\: C) :e Tx /\ (Y :/\: D) :e Tx.
+      { exact (andI ((Y :/\: C) :e Tx) ((Y :/\: D) :e Tx) HYCinTx HYDinTx). }
+      claim Hconj123: ((Y :/\: C) :e Tx /\ (Y :/\: D) :e Tx) /\ separation_of Y (Y :/\: C) (Y :/\: D).
+      { exact (andI ((Y :/\: C) :e Tx /\ (Y :/\: D) :e Tx)
+                    (separation_of Y (Y :/\: C) (Y :/\: D))
+                    Hconj12
+                    Hsep). }
+      exact (andI (((Y :/\: C) :e Tx /\ (Y :/\: D) :e Tx) /\ separation_of Y (Y :/\: C) (Y :/\: D))
+                  ((Y :/\: C) :\/: (Y :/\: D) = Y)
+                  Hconj123
+                  HYCYDcover).
+    }
+    claim Hnotsep: ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of Y U V /\ U :\/: V = Y).
+    { exact (andER (topology_on Y Tx)
+                   (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of Y U V /\ U :\/: V = Y))
+                   HY). }
+    exact (FalseE (Hnotsep Hsepexists) (Y c= C \/ Y c= D)).
 Qed.
 
 (** from §23 Theorem 23.3: union of connected sets with common point is connected **) 
