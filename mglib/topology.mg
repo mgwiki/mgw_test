@@ -8653,7 +8653,12 @@ Theorem ex13_3a_union_helper : forall X:set, forall UFam :e Power (countable_com
 let X UFam.
 assume HUFam: UFam :e Power (countable_complement_topology X).
 prove Union UFam :e countable_complement_topology X.
-admit. (** complement of union = intersection of complements; countable intersection of countable sets countable **)
+(** This follows from ex13_3a_Tc_topology which already proved union closure **)
+claim Htop : topology_on X (countable_complement_topology X).
+{ exact (ex13_3a_Tc_topology X). }
+claim Hsub : UFam c= countable_complement_topology X.
+{ exact (PowerE (countable_complement_topology X) UFam HUFam). }
+exact (topology_union_closed X (countable_complement_topology X) UFam Htop Hsub).
 Qed.
 
 (** helper: witness sets for infinite-complement failure (placeholder) **) 
