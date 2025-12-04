@@ -8327,8 +8327,7 @@ apply andI.
     (** finite_intersections_of S = {intersection_of_family F | F :e finite_subcollections S} **)
     (** So b = intersection_of_family F for some finite F c= S **)
     claim Hex: exists F :e finite_subcollections S, b = intersection_of_family F.
-    { admit. (** Need to extract from ReplSep definition of finite_intersections_of **)
-    }
+    { exact (ReplE (finite_subcollections S) (fun F => intersection_of_family F) b Hb_in_finite). }
     apply Hex.
     let F. assume HF_and_eq. apply HF_and_eq.
     assume HF: F :e finite_subcollections S.
@@ -8384,7 +8383,157 @@ apply andI.
   }
   (** Need to show b3 :e basis_of_subbasis X S **)
   (** b3 = b1 :/\: b2 where b1, b2 are finite intersections **)
-  admit. (** Need to show intersection of two finite intersections is in basis **)
+  witness b3.
+  apply andI.
+  + (** b3 :e basis_of_subbasis X S **)
+    prove b3 :e basis_of_subbasis X S.
+    (** Extract that b1, b2 are finite intersections **)
+    claim Hb1_finite: b1 :e finite_intersections_of S.
+    { exact (SepE1 (finite_intersections_of S) (fun b0 => b0 <> Empty) b1 Hb1). }
+    claim Hb2_finite: b2 :e finite_intersections_of S.
+    { exact (SepE1 (finite_intersections_of S) (fun b0 => b0 <> Empty) b2 Hb2). }
+    (** Get witnesses F1, F2 **)
+    claim Hex1: exists F1 :e finite_subcollections S, b1 = intersection_of_family F1.
+    { exact (ReplE (finite_subcollections S) (fun F => intersection_of_family F) b1 Hb1_finite). }
+    apply Hex1.
+    let F1. assume HF1_and_eq1. apply HF1_and_eq1.
+    assume HF1: F1 :e finite_subcollections S.
+    assume Hb1eq: b1 = intersection_of_family F1.
+    claim Hex2: exists F2 :e finite_subcollections S, b2 = intersection_of_family F2.
+    { exact (ReplE (finite_subcollections S) (fun F => intersection_of_family F) b2 Hb2_finite). }
+    apply Hex2.
+    let F2. assume HF2_and_eq2. apply HF2_and_eq2.
+    assume HF2: F2 :e finite_subcollections S.
+    assume Hb2eq: b2 = intersection_of_family F2.
+    (** Now b3 = b1 :/\: b2 = intersection_of_family (F1 :\/: F2) **)
+    set F12 := F1 :\/: F2.
+    (** Show F12 :e finite_subcollections S **)
+    claim HF12_finite: F12 :e finite_subcollections S.
+    { prove F12 :e {F :e Power S | finite F}.
+      claim HF12_sub: F12 c= S.
+      { claim HF1_sub: F1 c= S.
+        { claim HF1_power: F1 :e Power S.
+          { exact (SepE1 (Power S) (fun F0 => finite F0) F1 HF1). }
+          exact (PowerE S F1 HF1_power).
+        }
+        claim HF2_sub: F2 c= S.
+        { claim HF2_power: F2 :e Power S.
+          { exact (SepE1 (Power S) (fun F0 => finite F0) F2 HF2). }
+          exact (PowerE S F2 HF2_power).
+        }
+        exact (binunion_Subq_min F1 F2 S HF1_sub HF2_sub).
+      }
+      claim HF12_power: F12 :e Power S.
+      { apply PowerI. exact HF12_sub. }
+      claim HF12_is_finite: finite F12.
+      { claim HF1_is_finite: finite F1.
+        { exact (SepE2 (Power S) (fun F0 => finite F0) F1 HF1). }
+        claim HF2_is_finite: finite F2.
+        { exact (SepE2 (Power S) (fun F0 => finite F0) F2 HF2). }
+        exact (binunion_finite F1 HF1_is_finite F2 HF2_is_finite).
+      }
+      exact (SepI (Power S) (fun F => finite F) F12 HF12_power HF12_is_finite).
+    }
+    (** Show b3 = intersection_of_family F12 **)
+    claim Hb3_eq: b3 = intersection_of_family F12.
+    { (** b3 = b1 :/\: b2 = (intersection_of_family F1) :/\: (intersection_of_family F2)                        = intersection_of_family (F1 :\/: F2) = intersection_of_family F12 **)
+      apply set_ext.
+      - (** b3 c= intersection_of_family F12 **)
+        let z. assume Hz: z :e b3.
+        prove z :e intersection_of_family F12.
+        claim Hzb1: z :e b1.
+        { exact (binintersectE1 b1 b2 z Hz). }
+        claim Hzb2: z :e b2.
+        { exact (binintersectE2 b1 b2 z Hz). }
+        (** z :e intersection_of_family F1 **)
+        claim Hz_intersect1: z :e intersection_of_family F1.
+        { rewrite <- Hb1eq. exact Hzb1. }
+        (** z :e intersection_of_family F2 **)
+        claim Hz_intersect2: z :e intersection_of_family F2.
+        { rewrite <- Hb2eq. exact Hzb2. }
+        (** Show z :e intersection_of_family F12 **)
+        prove z :e intersection_of_family F12.
+        (** intersection_of_family F = {x :e Union F | forall U :e F, x :e U} **)
+        claim Hz_union1: z :e Union F1.
+        { exact (SepE1 (Union F1) (fun x => forall U:set, U :e F1 -> x :e U) z Hz_intersect1). }
+        claim Hz_all1: forall U:set, U :e F1 -> z :e U.
+        { exact (SepE2 (Union F1) (fun x => forall U:set, U :e F1 -> x :e U) z Hz_intersect1). }
+        claim Hz_union2: z :e Union F2.
+        { exact (SepE1 (Union F2) (fun x => forall U:set, U :e F2 -> x :e U) z Hz_intersect2). }
+        claim Hz_all2: forall U:set, U :e F2 -> z :e U.
+        { exact (SepE2 (Union F2) (fun x => forall U:set, U :e F2 -> x :e U) z Hz_intersect2). }
+        claim Hz_union12: z :e Union F12.
+        { apply UnionE_impred F1 z Hz_union1.
+          let U. assume HzU: z :e U. assume HUF1: U :e F1.
+          apply (UnionI F12 z U HzU).
+          exact (binunionI1 F1 F2 U HUF1).
+        }
+        claim Hz_all12: forall U:set, U :e F12 -> z :e U.
+        { let U. assume HU: U :e F12.
+          prove z :e U.
+          apply (binunionE F1 F2 U HU).
+          - assume HUF1: U :e F1. exact (Hz_all1 U HUF1).
+          - assume HUF2: U :e F2. exact (Hz_all2 U HUF2).
+        }
+        exact (SepI (Union F12) (fun x => forall U:set, U :e F12 -> x :e U) z Hz_union12 Hz_all12).
+      - (** intersection_of_family F12 c= b3 **)
+        let z. assume Hz: z :e intersection_of_family F12.
+        prove z :e b3.
+        claim Hz_union12: z :e Union F12.
+        { exact (SepE1 (Union F12) (fun x => forall U:set, U :e F12 -> x :e U) z Hz). }
+        claim Hz_all12: forall U:set, U :e F12 -> z :e U.
+        { exact (SepE2 (Union F12) (fun x => forall U:set, U :e F12 -> x :e U) z Hz). }
+        claim Hz_all1: forall U:set, U :e F1 -> z :e U.
+        { let U. assume HU: U :e F1.
+          prove z :e U.
+          exact (Hz_all12 U (binunionI1 F1 F2 U HU)).
+        }
+        claim Hz_all2: forall U:set, U :e F2 -> z :e U.
+        { let U. assume HU: U :e F2.
+          prove z :e U.
+          exact (Hz_all12 U (binunionI2 F1 F2 U HU)).
+        }
+        (** Show z :e Union F1 and z :e Union F2 **)
+        claim Hz_union1: z :e Union F1.
+        { apply UnionE_impred F12 z Hz_union12.
+          let U. assume HzU: z :e U. assume HU: U :e F12.
+          prove z :e Union F1.
+          apply (binunionE F1 F2 U HU).
+          - assume HUF1: U :e F1. exact (UnionI F1 z U HzU HUF1).
+          - assume HUF2: U :e F2.
+            (** Use that F1 and F2 are nonempty finite collections, or use a different approach **)
+            (** Actually, if F1 is nonempty, pick any V :e F1 and use Hz_all1 V **)
+            admit. (** Need to show Union F1 is inhabited; may need F1 nonempty **)
+        }
+        claim Hz_intersect1: z :e intersection_of_family F1.
+        { exact (SepI (Union F1) (fun x => forall U:set, U :e F1 -> x :e U) z Hz_union1 Hz_all1). }
+        claim Hz_union2: z :e Union F2.
+        { admit. (** Similar to Hz_union1 **)
+        }
+        claim Hz_intersect2: z :e intersection_of_family F2.
+        { exact (SepI (Union F2) (fun x => forall U:set, U :e F2 -> x :e U) z Hz_union2 Hz_all2). }
+        claim Hzb1: z :e b1.
+        { rewrite Hb1eq. exact Hz_intersect1. }
+        claim Hzb2: z :e b2.
+        { rewrite Hb2eq. exact Hz_intersect2. }
+        exact (binintersectI b1 b2 z Hzb1 Hzb2).
+    }
+    (** Now show b3 :e basis_of_subbasis X S using finite_intersection_in_basis **)
+    claim H_intersect_ne: intersection_of_family F12 <> Empty.
+    { assume Hempty_intersect: intersection_of_family F12 = Empty.
+      claim Hb3_empty: b3 = Empty.
+      { rewrite Hb3_eq. exact Hempty_intersect. }
+      exact (Hb3_ne Hb3_empty).
+    }
+    claim H_intersect_in_basis: intersection_of_family F12 :e basis_of_subbasis X S.
+    { exact (finite_intersection_in_basis X S F12 HF12_finite H_intersect_ne). }
+    claim Hb3_in_basis: b3 :e basis_of_subbasis X S.
+    { rewrite Hb3_eq. exact H_intersect_in_basis. }
+    exact Hb3_in_basis.
+  + (** x :e b3 /\ b3 c= b1 :/\: b2 **)
+    apply andI.
+    * exact Hxb3.
+    * exact (Subq_ref (b1 :/\: b2)).
 Qed.
 
 (** from §13: topology generated by a subbasis is a topology **) 
