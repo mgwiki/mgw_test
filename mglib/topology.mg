@@ -12163,10 +12163,23 @@ claim HN_omega: N :e omega.
       claim Hmax_eq_Ny: Nx :\/: Ny = Ny.
       { (** Nx ⊆ Ny since Nx :e Ny and Ny is an ordinal (transitive) **)
         claim HNx_sub_Ny: Nx c= Ny.
-        { exact (omega_TransSet Ny HNy Nx HNx_in_Ny). }
+        { (** Ny is a natural, hence ordinal, hence TransSet **)
+          claim HNy_nat: nat_p Ny.
+          { exact (omega_nat_p Ny HNy). }
+          claim HNy_ord: ordinal Ny.
+          { exact (nat_p_ordinal Ny HNy_nat). }
+          claim HNy_trans: TransSet Ny.
+          { exact (andEL (TransSet Ny) (forall beta :e Ny, TransSet beta) HNy_ord). }
+          (** Now use TransSet property: x :e Ny implies x c= Ny **)
+          exact (HNy_trans Nx HNx_in_Ny).
+        }
         apply set_ext.
-        - exact (binunion_Subq_max Nx Ny HNx_sub_Ny).
-        - exact (binunion_Subq_2 Nx Ny).
+        - (** Nx :\/: Ny c= Ny **)
+          claim HNy_refl: Ny c= Ny.
+          { exact (Subq_ref Ny). }
+          exact (binunion_Subq_min Nx Ny Ny HNx_sub_Ny HNy_refl).
+        - (** Ny c= Nx :\/: Ny **)
+          exact (binunion_Subq_2 Nx Ny).
       }
       rewrite Hmax_eq_Ny.
       exact HNy.
@@ -12174,14 +12187,33 @@ claim HN_omega: N :e omega.
       (** If Nx >= Ny, then Ny ⊆ Nx **)
       claim HNy_sub_or_eq_Nx: Ny c= Nx.
       { (** In omega, if Nx /:e Ny, then Ny :e Nx or Ny = Nx (trichotomy) **)
-        admit. (** Need trichotomy for omega or ordinals **)
+        (** Use ordinal trichotomy: Nx and Ny are ordinals since they're in omega **)
+        claim HNx_nat: nat_p Nx.
+        { exact (omega_nat_p Nx HNx). }
+        claim HNy_nat: nat_p Ny.
+        { exact (omega_nat_p Ny HNy). }
+        claim HNx_ord: ordinal Nx.
+        { exact (nat_p_ordinal Nx HNx_nat). }
+        claim HNy_ord: ordinal Ny.
+        { exact (nat_p_ordinal Ny HNy_nat). }
+        (** Apply ordinal_In_Or_Subq: either Nx :e Ny or Ny c= Nx **)
+        claim Hcases: Nx :e Ny \/ Ny c= Nx.
+        { exact (ordinal_In_Or_Subq Nx Ny HNx_ord HNy_ord). }
+        (** We have Nx /:e Ny, so must have Ny c= Nx **)
+        apply (Hcases (Ny c= Nx)).
+        - assume HNx_in_Ny: Nx :e Ny.
+          apply FalseE.
+          exact (HNx_nin_Ny HNx_in_Ny).
+        - assume H. exact H.
       }
       claim Hmax_eq_Nx: Nx :\/: Ny = Nx.
       { apply set_ext.
-        - claim HNy_sub_Nx: Ny c= Nx.
-          { exact HNy_sub_or_eq_Nx. }
-          exact (binunion_Subq_max Ny Nx HNy_sub_Nx).
-        - exact (binunion_Subq_1 Nx Ny).
+        - (** Nx :\/: Ny c= Nx **)
+          claim HNx_refl: Nx c= Nx.
+          { exact (Subq_ref Nx). }
+          exact (binunion_Subq_min Nx Ny Nx HNx_refl HNy_sub_or_eq_Nx).
+        - (** Nx c= Nx :\/: Ny **)
+          exact (binunion_Subq_1 Nx Ny).
       }
       rewrite Hmax_eq_Nx.
       exact HNx.
@@ -12190,11 +12222,19 @@ claim HN_omega: N :e omega.
 }
 claim HNx_sub_N: Nx c= N.
 { (** Nx ⊆ Nx ∪ Ny ⊂ ordsucc(Nx ∪ Ny) **)
-  admit. (** Nx c= ordsucc (Nx :\/: Ny) **)
+  claim HNx_sub_union: Nx c= Nx :\/: Ny.
+  { exact (binunion_Subq_1 Nx Ny). }
+  claim Hunion_sub_ordsucc: Nx :\/: Ny c= ordsucc (Nx :\/: Ny).
+  { exact (ordsuccI1 (Nx :\/: Ny)). }
+  exact (Subq_tra Nx (Nx :\/: Ny) (ordsucc (Nx :\/: Ny)) HNx_sub_union Hunion_sub_ordsucc).
 }
 claim HNy_sub_N: Ny c= N.
 { (** Ny ⊆ Nx ∪ Ny ⊂ ordsucc(Nx ∪ Ny) **)
-  admit. (** Ny c= ordsucc (Nx :\/: Ny) **)
+  claim HNy_sub_union: Ny c= Nx :\/: Ny.
+  { exact (binunion_Subq_2 Nx Ny). }
+  claim Hunion_sub_ordsucc: Nx :\/: Ny c= ordsucc (Nx :\/: Ny).
+  { exact (ordsuccI1 (Nx :\/: Ny)). }
+  exact (Subq_tra Ny (Nx :\/: Ny) (ordsucc (Nx :\/: Ny)) HNy_sub_union Hunion_sub_ordsucc).
 }
 (** Then apply_fun seq N is in both U and V **)
 claim Hseq_N_in_U: apply_fun seq N :e U.
