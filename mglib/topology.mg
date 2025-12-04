@@ -1764,19 +1764,24 @@ prove X = 0.
 (** equip X 0 means there's a bijection f : X -> 0, so X must be empty **)
 apply Hequip.
 let f. assume Hbij: bij X 0 f.
-(** bij X 0 f means forall u :e X, f u :e 0, but 0 is Empty, so X must be empty **)
+(** bij X 0 f means (forall u :e X, f u :e 0) /\ inj /\ surj
+    In left-associative form: ((A /\ B) /\ C) **)
+claim Htemp: ((forall u :e X, f u :e 0) /\ (forall u v :e X, f u = f v -> u = v)) /\
+             (forall w :e 0, exists u :e X, f u = w).
+{ exact Hbij. }
 claim Hfun: forall u :e X, f u :e 0.
 { exact (andEL (forall u :e X, f u :e 0)
-               ((forall u v :e X, f u = f v -> u = v) /\
-                (forall w :e 0, exists u :e X, f u = w))
+               (forall u v :e X, f u = f v -> u = v)
                (andEL ((forall u :e X, f u :e 0) /\ (forall u v :e X, f u = f v -> u = v))
                       (forall w :e 0, exists u :e X, f u = w)
-                      Hbij)). }
+                      Htemp)). }
 apply Empty_Subq_eq.
 let x. assume Hx: x :e X.
+prove x :e 0.
 claim Hfx: f x :e 0.
 { exact (Hfun x Hx). }
-exact Hfx.
+(** f x :e 0 is impossible since 0 is empty, so we derive False and use FalseE **)
+exact (FalseE (EmptyE (f x) Hfx) (x :e 0)).
 Qed.
 
 Theorem equip_adjoin_ordsucc : forall N X y, y /:e X -> equip N X -> equip (ordsucc N) (X :\/: {y}).
