@@ -8679,12 +8679,78 @@ claim Hbasis_in_T: forall b :e basis_of_subbasis X S, b :e T.
     { rewrite Hb_eq_X. exact HX_in_T. }
     exact Hb_in_T_case1.
   - assume Hb_ne_X: b <> X.
-    (** b is a nonempty finite intersection - but actually showing this requires more work **)
-    (** For now, use that finite intersections of T elements are in T **)
-    admit. (** Need to show b is finite intersection of S elements, S c= T, T closed under finite intersections => b :e T **)
+    (** b is a nonempty finite intersection of S elements **)
+    (** b :e basis_of_subbasis X S = {b :e finite_intersections_of S | b <> Empty} **)
+    claim Hb_finite_inter: b :e finite_intersections_of S.
+    { exact (SepE1 (finite_intersections_of S) (fun b0 => b0 <> Empty) b Hb). }
+    (** finite_intersections_of S = {intersection_of_family F | F :e finite_subcollections S} **)
+    claim Hex_F: exists F :e finite_subcollections S, b = intersection_of_family F.
+    { exact (ReplE (finite_subcollections S) (fun F => intersection_of_family F) b Hb_finite_inter). }
+    apply Hex_F.
+    let F. assume HF_and_eq. apply HF_and_eq.
+    assume HF: F :e finite_subcollections S.
+    assume Hb_eq: b = intersection_of_family F.
+    (** F is a finite subcollection of S, so F c= S and finite F **)
+    claim HF_sub_S: F c= S.
+    { claim HF_power: F :e Power S.
+      { exact (SepE1 (Power S) (fun F0 => finite F0) F HF). }
+      exact (PowerE S F HF_power).
+    }
+    claim HF_finite: finite F.
+    { exact (SepE2 (Power S) (fun F0 => finite F0) F HF). }
+    (** Now b = intersection_of_family F where each element of F is in S, hence in T **)
+    (** Need to show: finite intersection of T elements is in T **)
+    (** Strategy: use induction on finite F, or use that T is closed under binary intersections repeatedly **)
+    admit. (** Need lemma: finite intersection of topology elements is in topology **)
 }
 (** Now show U is union of basis elements, hence in T **)
-admit. (** Need to show U equals union of {b :e basis | b c= U}, then use T closed under unions **)
+(** Strategy: U = Union {b :e basis_of_subbasis X S | b c= U}, and this is a union of T elements **)
+set Fam := {b :e basis_of_subbasis X S | b c= U}.
+claim HU_eq_union: U = Union Fam.
+{ apply set_ext.
+  - (** U c= Union Fam **)
+    let x. assume Hx: x :e U.
+    (** By HUlocal, exists b :e basis_of_subbasis X S with x :e b /\ b c= U **)
+    claim Hex_b: exists b :e basis_of_subbasis X S, x :e b /\ b c= U.
+    { exact (HUlocal x Hx). }
+    apply Hex_b.
+    let b. assume Hb_and_props. apply Hb_and_props.
+    assume Hb_basis: b :e basis_of_subbasis X S.
+    assume Hxb_and_sub. apply Hxb_and_sub.
+    assume Hxb: x :e b.
+    assume Hb_sub_U: b c= U.
+    claim Hb_in_Fam: b :e Fam.
+    { exact (SepI (basis_of_subbasis X S) (fun b0 => b0 c= U) b Hb_basis Hb_sub_U). }
+    exact (UnionI Fam x b Hxb Hb_in_Fam).
+  - (** Union Fam c= U **)
+    let x. assume Hx: x :e Union Fam.
+    apply UnionE_impred Fam x Hx.
+    let b. assume Hxb: x :e b. assume Hb_Fam: b :e Fam.
+    claim Hb_sub_U: b c= U.
+    { exact (SepE2 (basis_of_subbasis X S) (fun b0 => b0 c= U) b Hb_Fam). }
+    exact (Hb_sub_U x Hxb).
+}
+(** Now show U :e T using that U = Union Fam and Fam c= T **)
+claim HFam_sub_T: Fam c= T.
+{ let b. assume Hb: b :e Fam.
+  claim Hb_basis: b :e basis_of_subbasis X S.
+  { exact (SepE1 (basis_of_subbasis X S) (fun b0 => b0 c= U) b Hb). }
+  exact (Hbasis_in_T b Hb_basis).
+}
+claim HFam_in_PowerT: Fam :e Power T.
+{ apply PowerI. exact HFam_sub_T. }
+(** T is closed under unions, so Union Fam :e T **)
+claim HUnion_Fam_in_T: Union Fam :e T.
+{ (** Extract union closure from topology_on X T **)
+  claim H1: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+  { exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT). }
+  claim H_union_closure: forall UFam :e Power T, Union UFam :e T.
+  { exact (andER (((T c= Power X /\ Empty :e T) /\ X :e T)) (forall UFam :e Power T, Union UFam :e T) H1). }
+  exact (H_union_closure Fam HFam_in_PowerT).
+}
+claim HU_in_T: U :e T.
+{ rewrite HU_eq_union. exact HUnion_Fam_in_T. }
+exact HU_in_T.
 Qed.
 
 (** from §13 Exercise 1: local openness implies set is open **)
