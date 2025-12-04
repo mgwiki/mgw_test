@@ -1803,11 +1803,30 @@ apply andI.
 Qed.
 
 Theorem equip_sym : forall X Y, equip X Y -> equip Y X.
-admit.
+let X Y.
+assume Hequip: equip X Y.
+prove equip Y X.
+prove exists g : set -> set, bij Y X g.
+(** Extract bijection f: X -> Y, then use bij_inv to get bijection Y -> X **)
+apply Hequip.
+let f. assume Hbij: bij X Y f.
+witness (inv X f).
+exact (bij_inv X Y f Hbij).
 Qed.
 
 Theorem equip_tra : forall X Y Z, equip X Y -> equip Y Z -> equip X Z.
-admit.
+let X Y Z.
+assume HXY: equip X Y.
+assume HYZ: equip Y Z.
+prove equip X Z.
+prove exists h : set -> set, bij X Z h.
+(** Extract bijections f: X -> Y and g: Y -> Z, then compose them **)
+apply HXY.
+let f. assume Hf: bij X Y f.
+apply HYZ.
+let g. assume Hg: bij Y Z g.
+witness (fun x:set => g (f x)).
+exact (bij_comp X Y Z f g Hf Hg).
 Qed.
 
 Theorem equip_0_Empty : forall X, equip X 0 -> X = 0.
