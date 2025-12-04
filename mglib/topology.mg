@@ -8635,7 +8635,54 @@ Theorem topology_generated_by_basis_is_minimal : forall X S T:set,
 let X S T.
 assume HS HT HST.
 prove finer_than T (generated_topology_from_subbasis X S).
-admit. (** generated topology is minimal containing subbasis **)
+(** finer_than T (generated_topology_from_subbasis X S) = generated_topology_from_subbasis X S c= T **)
+prove generated_topology_from_subbasis X S c= T.
+(** generated_topology_from_subbasis X S = generated_topology X (basis_of_subbasis X S) **)
+prove generated_topology X (basis_of_subbasis X S) c= T.
+(** Strategy: show every basis element is in T, then every generated open set is in T **)
+let U. assume HU: U :e generated_topology X (basis_of_subbasis X S).
+prove U :e T.
+(** U :e generated_topology X B means U c= X and forall x :e U, exists b :e B with x :e b, b c= U **)
+claim HU_def: U c= X /\ (forall x :e U, exists b :e basis_of_subbasis X S, x :e b /\ b c= U).
+{ (** generated_topology X B = {U :e Power X | forall x :e U, exists b :e B, x :e b /\ b c= U} **)
+  claim HU_power: U :e Power X.
+  { exact (SepE1 (Power X) (fun U0 => forall x :e U0, exists b :e basis_of_subbasis X S, x :e b /\ b c= U0) U HU). }
+  claim HUsub_X: U c= X.
+  { exact (PowerE X U HU_power). }
+  claim HU_local: forall x :e U, exists b :e basis_of_subbasis X S, x :e b /\ b c= U.
+  { exact (SepE2 (Power X) (fun U0 => forall x :e U0, exists b :e basis_of_subbasis X S, x :e b /\ b c= U0) U HU). }
+  exact (andI (U c= X) (forall x :e U, exists b :e basis_of_subbasis X S, x :e b /\ b c= U) HUsub_X HU_local).
+}
+claim HUsub: U c= X.
+{ exact (andEL (U c= X) (forall x :e U, exists b :e basis_of_subbasis X S, x :e b /\ b c= U) HU_def). }
+claim HUlocal: forall x :e U, exists b :e basis_of_subbasis X S, x :e b /\ b c= U.
+{ exact (andER (U c= X) (forall x :e U, exists b :e basis_of_subbasis X S, x :e b /\ b c= U) HU_def). }
+(** Show: every basis element is in T **)
+claim Hbasis_in_T: forall b :e basis_of_subbasis X S, b :e T.
+{ let b. assume Hb: b :e basis_of_subbasis X S.
+  prove b :e T.
+  (** b is either X itself or a nonempty finite intersection of elements from S **)
+  (** Case 1: if b = X, then X :e T since T is a topology **)
+  (** Case 2: if b is a finite intersection of S elements, use that T is closed under finite intersections **)
+  apply (xm (b = X)).
+  - assume Hb_eq_X: b = X.
+    (** X :e T since T is a topology on X **)
+    claim HX_in_T: X :e T.
+    { (** Extract from topology_on X T **)
+      claim H1: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+      { exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT). }
+      claim H2: (T c= Power X /\ Empty :e T) /\ X :e T.
+      { exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
+      exact (andER (T c= Power X /\ Empty :e T) (X :e T) H2).
+    }
+    rewrite <- Hb_eq_X. exact HX_in_T.
+  - assume Hb_ne_X: b <> X.
+    (** b is a nonempty finite intersection - but actually showing this requires more work **)
+    (** For now, use that finite intersections of T elements are in T **)
+    admit. (** Need to show b is finite intersection of S elements, S c= T, T closed under finite intersections => b :e T **)
+}
+(** Now show U is union of basis elements, hence in T **)
+admit. (** Need to show U equals union of {b :e basis | b c= U}, then use T closed under unions **)
 Qed.
 
 (** from §13 Exercise 1: local openness implies set is open **)
