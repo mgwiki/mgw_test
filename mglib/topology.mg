@@ -13196,7 +13196,20 @@ claim Hpart2: (topology_on X Tx /\ topology_on Z Tz) /\ function_on gf X Z.
   - exact Hpart1.
   - (** Prove function_on gf X Z **)
     prove forall x:set, x :e X -> apply_fun gf x :e Z.
-    admit. (** Need to show composition gives function from X to Z **)
+    let x. assume Hx: x :e X.
+    prove apply_fun gf x :e Z.
+    (** gf = {UPair x (apply_fun g (apply_fun f x))|x :e X} **)
+    (** So apply_fun gf x should be apply_fun g (apply_fun f x) **)
+    (** Since f: X -> Y, we have apply_fun f x :e Y **)
+    claim Hfx: apply_fun f x :e Y.
+    { exact (Hfun_f x Hx). }
+    (** Since g: Y -> Z, we have apply_fun g (apply_fun f x) :e Z **)
+    claim Hgfx: apply_fun g (apply_fun f x) :e Z.
+    { exact (Hfun_g (apply_fun f x) Hfx). }
+    (** Now show that apply_fun gf x = apply_fun g (apply_fun f x) **)
+    (** This requires showing UPair x (apply_fun g (apply_fun f x)) :e gf **)
+    (** and using the definition of apply_fun **)
+    admit. (** Technical: need lemma about apply_fun on compose_fun **)
 }
 apply andI.
 - exact Hpart2.
@@ -13211,7 +13224,12 @@ apply andI.
   { exact (Hpreimg_f (preimage_of Y g W) HgW_open). }
   (** Show that preimage_of X gf W = preimage_of X f (preimage_of Y g W) **)
   claim Hpreimg_eq: preimage_of X gf W = preimage_of X f (preimage_of Y g W).
-  { admit. (** Need to prove preimage composition lemma **)
+  { (** preimage_of X gf W = {x :e X | apply_fun gf x :e W} **)
+    (** preimage_of X f (preimage_of Y g W) = {x :e X | apply_fun f x :e preimage_of Y g W} **)
+    (**   = {x :e X | apply_fun f x :e {y :e Y | apply_fun g y :e W}} **)
+    (**   = {x :e X | apply_fun f x :e Y /\ apply_fun g (apply_fun f x) :e W} **)
+    (** If apply_fun gf x = apply_fun g (apply_fun f x), these are equal **)
+    admit. (** Need technical lemma: apply_fun (compose_fun X f g) x = apply_fun g (apply_fun f x) **)
   }
   rewrite Hpreimg_eq.
   exact HfgW_open.
