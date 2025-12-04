@@ -14499,8 +14499,7 @@ let X Tx A.
 assume HH: Hausdorff_space X Tx.
 assume Hcomp: compact_space A (subspace_topology X Tx A).
 prove closed_in X Tx A.
-admit. (** direct application of compact_subspace_in_Hausdorff_closed
-        aby: conj_myprob_9683_1_20251124_035407 compact_subspace_in_Hausdorff_closed . **)
+exact (compact_subspace_in_Hausdorff_closed X Tx A HH Hcomp).
 Qed.
 
 (** from §29: one-point compactification placeholder **) 
