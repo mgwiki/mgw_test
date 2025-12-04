@@ -9119,8 +9119,8 @@ Definition R2_dictionary_order_topology : set := order_topology (OrderedPair R R
 Theorem dictionary_order_topology_is_topology :
   topology_on (OrderedPair R R) R2_dictionary_order_topology.
 prove topology_on (OrderedPair R R) R2_dictionary_order_topology.
-admit. (** order topology construction preserves topology axioms; dictionary order on R×R is linear order
-        aby: order_topology_is_topology R2_5Fdictionary_5Forder_5Ftopology_def OrderedPair_def conj_myprob_8511_1_20251125_204342 . **)
+(** R2_dictionary_order_topology = order_topology (OrderedPair R R) by definition **)
+exact (order_topology_is_topology (OrderedPair R R)).
 Qed.
 
 (** from §14 Example 2: rectangle subbasis yields product-style topology **) 
