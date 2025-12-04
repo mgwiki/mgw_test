@@ -1957,7 +1957,7 @@ Qed.
 End PigeonHole.
 
 Theorem Union_ordsucc_eq : forall n, nat_p n -> Union (ordsucc n) = n.
-admit.
+admit. (** Requires ordinal/TransSet infrastructure defined later in file **)
 Qed.
 
 Theorem cases_1: forall i :e 1, forall p:set->prop, p 0 -> p i.
