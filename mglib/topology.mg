@@ -1726,11 +1726,40 @@ admit.
 Qed.
 
 Theorem image_monotone : forall f:set -> set, forall U V, U c= V -> {f x|x :e U} c= {f x|x :e V}.
-admit.
+let f U V.
+assume HUV: U c= V.
+prove {f x|x :e U} c= {f x|x :e V}.
+let y. assume Hy: y :e {f x|x :e U}.
+prove y :e {f x|x :e V}.
+apply (ReplE U f y Hy).
+let x. assume Hx: x :e U /\ y = f x.
+claim HxU: x :e U.
+{ exact (andEL (x :e U) (y = f x) Hx). }
+claim Hyfx: y = f x.
+{ exact (andER (x :e U) (y = f x) Hx). }
+claim HxV: x :e V.
+{ exact (HUV x HxU). }
+rewrite Hyfx.
+exact (ReplI V f x HxV).
 Qed.
 
 Theorem setminus_antimonotone : forall A U V, U c= V -> A :\: V c= A :\: U.
-admit.
+let A U V.
+assume HUV: U c= V.
+prove A :\: V c= A :\: U.
+let x. assume Hx: x :e A :\: V.
+prove x :e A :\: U.
+claim HxA: x :e A.
+{ exact (setminusE1 A V x Hx). }
+claim HxnotV: x /:e V.
+{ exact (setminusE2 A V x Hx). }
+claim HxnotU: x /:e U.
+{ assume HxU: x :e U.
+  claim HxV: x :e V.
+  { exact (HUV x HxU). }
+  exact (HxnotV HxV).
+}
+exact (setminusI A U x HxA HxnotU).
 Qed.
 
 Theorem SchroederBernstein: forall A B, forall f g:set -> set, inj A B f -> inj B A g -> equip A B.
