@@ -2227,27 +2227,124 @@ admit.
 Qed.
 
 Theorem equip_Sing_1 : forall x, equip {x} 1.
-admit.
+let x.
+prove equip {x} 1.
+prove exists f : set -> set, bij {x} 1 f.
+(** Define f: {x} -> 1 where f sends x to 0 **)
+witness (fun u:set => 0).
+prove bij {x} 1 (fun u:set => 0).
+prove (forall u :e {x}, 0 :e 1) /\
+      (forall u v :e {x}, 0 = 0 -> u = v) /\
+      (forall w :e 1, exists u :e {x}, 0 = w).
+apply and3I.
+- prove forall u :e {x}, 0 :e 1.
+  let u. assume Hu: u :e {x}.
+  exact In_0_1.
+- prove forall u v :e {x}, 0 = 0 -> u = v.
+  let u. assume Hu: u :e {x}.
+  let v. assume Hv: v :e {x}.
+  assume Heq: 0 = 0.
+  (** u = x and v = x by SingE **)
+  claim Hux: u = x.
+  { exact (SingE x u Hu). }
+  claim Hvx: v = x.
+  { exact (SingE x v Hv). }
+  rewrite Hux. rewrite Hvx. reflexivity.
+- prove forall w :e 1, exists u :e {x}, 0 = w.
+  let w. assume Hw: w :e 1.
+  (** Since 1 = ordsucc 0, either w :e 0 or w = 0 **)
+  claim Hcases: w :e 0 \/ w = 0.
+  { exact (ordsuccE 0 w Hw). }
+  apply Hcases.
+  + assume Hw0: w :e 0.
+    (** Impossible since 0 is empty **)
+    exact (FalseE (EmptyE w Hw0) (exists u :e {x}, 0 = w)).
+  + assume Hw0: w = 0.
+    witness x.
+    apply andI.
+    * exact (SingI x).
+    * symmetry. exact Hw0.
 Qed.
 
 Theorem TransSet_In_ordsucc_Subq : forall x y, TransSet y -> x :e ordsucc y -> x c= y.
-admit.
+let x y.
+assume HTy: TransSet y.
+assume Hx: x :e ordsucc y.
+prove x c= y.
+(** ordsucc y = y :\/: {y}, so x :e y or x = y **)
+claim Hcases: x :e y \/ x = y.
+{ exact (ordsuccE y x Hx). }
+apply Hcases.
+- assume Hxy: x :e y.
+  (** Since TransSet y and x :e y, we have x c= y **)
+  exact (HTy x Hxy).
+- assume Hxeqy: x = y.
+  rewrite Hxeqy.
+  exact (Subq_ref y).
 Qed.
 
 Theorem exandE_i : forall P Q:set -> prop, (exists x, P x /\ Q x) -> forall r:prop, (forall x, P x -> Q x -> r) -> r.
-admit.
+let P Q.
+assume Hex: exists x, P x /\ Q x.
+let r.
+assume Himp: forall x, P x -> Q x -> r.
+prove r.
+(** Extract witness from exists **)
+apply Hex.
+let x. assume Hx: P x /\ Q x.
+claim HPx: P x.
+{ exact (andEL (P x) (Q x) Hx). }
+claim HQx: Q x.
+{ exact (andER (P x) (Q x) Hx). }
+exact (Himp x HPx HQx).
 Qed.
 
 Theorem exandE_ii : forall P Q:(set -> set) -> prop, (exists x:set -> set, P x /\ Q x) -> forall p:prop, (forall x:set -> set, P x -> Q x -> p) -> p.
-admit.
+let P Q.
+assume Hex: exists x:set -> set, P x /\ Q x.
+let p.
+assume Himp: forall x:set -> set, P x -> Q x -> p.
+prove p.
+(** Extract witness from exists **)
+apply Hex.
+let x. assume Hx: P x /\ Q x.
+claim HPx: P x.
+{ exact (andEL (P x) (Q x) Hx). }
+claim HQx: Q x.
+{ exact (andER (P x) (Q x) Hx). }
+exact (Himp x HPx HQx).
 Qed.
 
 Theorem exandE_iii : forall P Q:(set -> set -> set) -> prop, (exists x:set -> set -> set, P x /\ Q x) -> forall p:prop, (forall x:set -> set -> set, P x -> Q x -> p) -> p.
-admit.
+let P Q.
+assume Hex: exists x:set -> set -> set, P x /\ Q x.
+let p.
+assume Himp: forall x:set -> set -> set, P x -> Q x -> p.
+prove p.
+(** Extract witness from exists **)
+apply Hex.
+let x. assume Hx: P x /\ Q x.
+claim HPx: P x.
+{ exact (andEL (P x) (Q x) Hx). }
+claim HQx: Q x.
+{ exact (andER (P x) (Q x) Hx). }
+exact (Himp x HPx HQx).
 Qed.
 
 Theorem exandE_iiii : forall P Q:(set -> set -> set -> set) -> prop, (exists x:set -> set -> set -> set, P x /\ Q x) -> forall p:prop, (forall x:set -> set -> set -> set, P x -> Q x -> p) -> p.
-admit.
+let P Q.
+assume Hex: exists x:set -> set -> set -> set, P x /\ Q x.
+let p.
+assume Himp: forall x:set -> set -> set -> set, P x -> Q x -> p.
+prove p.
+(** Extract witness from exists **)
+apply Hex.
+let x. assume Hx: P x /\ Q x.
+claim HPx: P x.
+{ exact (andEL (P x) (Q x) Hx). }
+claim HQx: Q x.
+{ exact (andER (P x) (Q x) Hx). }
+exact (Himp x HPx HQx).
 Qed.
 
 Section Descr_ii.
