@@ -2075,11 +2075,57 @@ apply andI.
 Qed.
 
 Theorem TransSet_ordsucc : forall X:set, TransSet X -> TransSet (ordsucc X).
-admit.
+let X.
+assume HTX: TransSet X.
+prove TransSet (ordsucc X).
+prove forall y :e ordsucc X, y c= ordsucc X.
+let y. assume Hy: y :e ordsucc X.
+prove y c= ordsucc X.
+(** ordsucc X = X :\/: {X}, so y :e X or y :e {X} **)
+claim Hcases: y :e X \/ y :e {X}.
+{ exact (binunionE X {X} y Hy). }
+apply Hcases.
+- assume HyX: y :e X.
+  (** Since TransSet X, we have y c= X c= ordsucc X **)
+  claim HysubX: y c= X.
+  { exact (HTX y HyX). }
+  claim HXsub: X c= ordsucc X.
+  { exact (binunion_Subq_1 X {X}). }
+  exact (Subq_tra y X (ordsucc X) HysubX HXsub).
+- assume HySing: y :e {X}.
+  (** y = X, so y c= ordsucc X follows from X c= ordsucc X **)
+  claim HyeqX: y = X.
+  { exact (SingE X y HySing). }
+  rewrite HyeqX.
+  exact (binunion_Subq_1 X {X}).
 Qed.
 
 Theorem ordinal_ordsucc : forall alpha:set, ordinal alpha -> ordinal (ordsucc alpha).
-admit.
+let alpha.
+assume Hord: ordinal alpha.
+prove ordinal (ordsucc alpha).
+prove TransSet (ordsucc alpha) /\ (forall beta :e ordsucc alpha, TransSet beta).
+apply andI.
+- prove TransSet (ordsucc alpha).
+  (** Use TransSet_ordsucc since ordinal alpha implies TransSet alpha **)
+  claim HTrans: TransSet alpha.
+  { exact (ordinal_TransSet alpha Hord). }
+  exact (TransSet_ordsucc alpha HTrans).
+- prove forall beta :e ordsucc alpha, TransSet beta.
+  let beta. assume Hbeta: beta :e ordsucc alpha.
+  prove TransSet beta.
+  (** By ordsuccE, beta :e alpha or beta = alpha **)
+  claim Hcases: beta :e alpha \/ beta = alpha.
+  { exact (ordsuccE alpha beta Hbeta). }
+  apply Hcases.
+  + assume HbA: beta :e alpha.
+    (** By ordinal_Hered, ordinal beta, hence TransSet beta **)
+    claim Hordbeta: ordinal beta.
+    { exact (ordinal_Hered alpha Hord beta HbA). }
+    exact (ordinal_TransSet beta Hordbeta).
+  + assume HbeqA: beta = alpha.
+    rewrite HbeqA.
+    exact (ordinal_TransSet alpha Hord).
 Qed.
 
 Theorem nat_p_ordinal : forall n:set, nat_p n -> ordinal n.
@@ -2087,19 +2133,46 @@ admit.
 Qed.
 
 Theorem ordinal_1 : ordinal 1.
-admit.
+prove ordinal 1.
+(** 1 = ordsucc 0 and 0 = Empty is ordinal **)
+exact (ordinal_ordsucc 0 ordinal_Empty).
 Qed.
 
 Theorem ordinal_2 : ordinal 2.
-admit.
+prove ordinal 2.
+(** 2 = ordsucc 1 and 1 is ordinal **)
+exact (ordinal_ordsucc 1 ordinal_1).
 Qed.
 
 Theorem TransSet_ordsucc_In_Subq : forall X:set, TransSet X -> forall x :e X, ordsucc x c= X.
-admit.
+let X.
+assume HTX: TransSet X.
+let x. assume Hx: x :e X.
+prove ordsucc x c= X.
+let y. assume Hy: y :e ordsucc x.
+prove y :e X.
+(** ordsucc x = x :\/: {x}, so y :e x or y = x **)
+claim Hcases: y :e x \/ y = x.
+{ exact (ordsuccE x y Hy). }
+apply Hcases.
+- assume Hyx: y :e x.
+  (** Since x :e X and TransSet X, we have x c= X **)
+  claim HxsubX: x c= X.
+  { exact (HTX x Hx). }
+  exact (HxsubX y Hyx).
+- assume Hyeqx: y = x.
+  rewrite Hyeqx.
+  exact Hx.
 Qed.
 
 Theorem ordinal_ordsucc_In_Subq : forall alpha, ordinal alpha -> forall beta :e alpha, ordsucc beta c= alpha.
-admit.
+let alpha.
+assume Hord: ordinal alpha.
+prove forall beta :e alpha, ordsucc beta c= alpha.
+(** Use TransSet_ordsucc_In_Subq with TransSet alpha **)
+claim HTrans: TransSet alpha.
+{ exact (ordinal_TransSet alpha Hord). }
+exact (TransSet_ordsucc_In_Subq alpha HTrans).
 Qed.
 
 Theorem ordinal_trichotomy_or : forall alpha beta:set, ordinal alpha -> ordinal beta -> alpha :e beta \/ alpha = beta \/ beta :e alpha.
