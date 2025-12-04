@@ -2771,19 +2771,55 @@ Infix * 355 right := mul_nat.
 Infix ^ 342 right := exp_nat.
 
 Theorem Subq_Sing0_1 : {0} c= 1.
-admit.
+prove {0} c= 1.
+(** 1 = 0 :\/: {0}, so {0} c= 0 :\/: {0} by binunion_Subq_2 **)
+prove {0} c= 0 :\/: {0}.
+exact (binunion_Subq_2 0 {0}).
 Qed.
 
 Theorem Subq_1_Sing0 : 1 c= {0}.
-admit.
+prove 1 c= {0}.
+(** 1 = 0 :\/: {0}, and 0 :\/: {0} c= {0} since 0 is empty **)
+prove 0 :\/: {0} c= {0}.
+let x. assume Hx: x :e 0 :\/: {0}.
+prove x :e {0}.
+apply (binunionE 0 {0} x Hx).
+- assume Hx0: x :e 0.
+  (** Impossible since 0 is empty **)
+  exact (FalseE (EmptyE x Hx0) (x :e {0})).
+- assume Hxs: x :e {0}.
+  exact Hxs.
 Qed.
 
 Theorem eq_1_Sing0 : 1 = {0}.
-admit.
+prove 1 = {0}.
+(** 1 = ordsucc 0 = 0 :\/: {0} = {0} since 0 is empty **)
+prove 0 :\/: {0} = {0}.
+exact (binunion_idl {0}).
 Qed.
 
 Theorem Power_0_Sing_0 : Power 0 = {0}.
-admit.
+prove Power 0 = {0}.
+apply set_ext.
+- prove Power 0 c= {0}.
+  let x. assume Hx: x :e Power 0.
+  prove x :e {0}.
+  (** x :e Power 0 means x c= 0 **)
+  claim Hxsub: x c= 0.
+  { exact (PowerE 0 x Hx). }
+  (** x c= 0 implies x = 0 **)
+  claim Hxeq: x = 0.
+  { exact (Empty_Subq_eq x Hxsub). }
+  rewrite Hxeq.
+  exact (SingI 0).
+- prove {0} c= Power 0.
+  let x. assume Hx: x :e {0}.
+  prove x :e Power 0.
+  (** x :e {0} means x = 0 **)
+  claim Hxeq: x = 0.
+  { exact (SingE 0 x Hx). }
+  rewrite Hxeq.
+  exact (Empty_In_Power 0).
 Qed.
 
 Theorem equip_finite_Power: forall n, nat_p n -> forall X,
