@@ -1678,7 +1678,23 @@ admit.
 Qed.
 
 Theorem Subq_atleastp : forall X Y, X c= Y -> atleastp X Y.
-admit.
+let X Y.
+assume HXY: X c= Y.
+prove atleastp X Y.
+prove exists f : set -> set, inj X Y f.
+(** Use identity function as the injection **)
+witness (fun x:set => x).
+prove inj X Y (fun x:set => x).
+prove (forall u :e X, u :e Y) /\ (forall u v :e X, u = v -> u = v).
+apply andI.
+- prove forall u :e X, u :e Y.
+  let u. assume Hu: u :e X.
+  exact (HXY u Hu).
+- prove forall u v :e X, u = v -> u = v.
+  let u. assume Hu: u :e X.
+  let v. assume Hv: v :e X.
+  assume Heq: u = v.
+  exact Heq.
 Qed.
 
 Definition equip : set -> set -> prop
@@ -1689,7 +1705,29 @@ admit.
 Qed.
 
 Theorem equip_ref : forall X, equip X X.
-admit.
+let X.
+prove equip X X.
+prove exists f : set -> set, bij X X f.
+(** Use identity function as the bijection **)
+witness (fun x:set => x).
+prove bij X X (fun x:set => x).
+prove (forall u :e X, u :e X) /\ (forall u v :e X, u = v -> u = v) /\ (forall w :e X, exists u :e X, u = w).
+apply andI.
+- prove (forall u :e X, u :e X) /\ (forall u v :e X, u = v -> u = v).
+  apply andI.
+  + prove forall u :e X, u :e X.
+    let u. assume Hu: u :e X.
+    exact Hu.
+  + prove forall u v :e X, u = v -> u = v.
+    let u. assume Hu: u :e X.
+    let v. assume Hv: v :e X.
+    assume Heq: u = v.
+    exact Heq.
+- prove forall w :e X, exists u :e X, u = w.
+  let w. assume Hw: w :e X.
+  prove exists u :e X, u = w.
+  witness w.
+  exact (andI (w :e X) (w = w) Hw admit).
 Qed.
 
 Theorem equip_sym : forall X Y, equip X Y -> equip Y X.
@@ -1722,7 +1760,27 @@ admit.
 Qed.
 
 Theorem image_In_Power : forall A B, forall f:set -> set, (forall x :e A, f x :e B) -> forall U :e Power A, {f x|x :e U} :e Power B.
-admit.
+let A B f.
+assume Hf: forall x :e A, f x :e B.
+let U. assume HU: U :e Power A.
+prove {f x|x :e U} :e Power B.
+claim HUsub: U c= A.
+{ exact (PowerE A U HU). }
+claim Himage: {f x|x :e U} c= B.
+{ let y. assume Hy: y :e {f x|x :e U}.
+  prove y :e B.
+  apply (ReplE U f y Hy).
+  let x. assume Hx: x :e U /\ y = f x.
+  claim HxU: x :e U.
+  { exact (andEL (x :e U) (y = f x) Hx). }
+  claim Hyfx: y = f x.
+  { exact (andER (x :e U) (y = f x) Hx). }
+  claim HxA: x :e A.
+  { exact (HUsub x HxU). }
+  rewrite Hyfx.
+  exact (Hf x HxA).
+}
+exact (PowerI B {f x|x :e U} Himage).
 Qed.
 
 Theorem image_monotone : forall f:set -> set, forall U V, U c= V -> {f x|x :e U} c= {f x|x :e V}.
