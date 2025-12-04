@@ -8688,7 +8688,7 @@ prove exists U V:set, U :e infinite_complement_family X /\ V :e infinite_complem
 admit. (** construct explicit witness sets with infinite complements **)
 Qed.
 
-(** from §13 Exercise 4(a): intersection of topologies **) 
+(** from §13 Exercise 4(a): intersection of topologies **)
 (** LATEX VERSION: Exercise 4(a): The intersection of any family of topologies on X is a topology. **)
 Theorem ex13_4a_intersection_topology : forall X Fam:set,
   (forall T :e Fam, topology_on X T) ->
@@ -8696,7 +8696,54 @@ Theorem ex13_4a_intersection_topology : forall X Fam:set,
 let X Fam.
 assume HfamTop: forall T :e Fam, topology_on X T.
 prove topology_on X (Intersection_Fam Fam).
-admit. (** verify topology axioms: X, ∅ in all T; unions/intersections in all T hence in intersection **)
+(** Intersection_Fam Fam = {U :e Power (Union Fam) | forall T :e Fam, U :e T} **)
+(** Strategy: Verify all five topology axioms **)
+prove Intersection_Fam Fam c= Power X
+  /\ Empty :e Intersection_Fam Fam
+  /\ X :e Intersection_Fam Fam
+  /\ (forall UFam :e Power (Intersection_Fam Fam), Union UFam :e Intersection_Fam Fam)
+  /\ (forall U :e Intersection_Fam Fam, forall V :e Intersection_Fam Fam, U :/\: V :e Intersection_Fam Fam).
+apply andI.
+- (** Build left-associative conjunction structure **)
+  apply andI.
+  + apply andI.
+    * apply andI.
+      { (** Axiom 1: Intersection_Fam Fam c= Power X **)
+        let U. assume HU: U :e Intersection_Fam Fam.
+        prove U :e Power X.
+        (** U in Intersection_Fam Fam means U :e T for all T :e Fam **)
+        (** Since each T is a topology on X, T c= Power X, so U :e Power X **)
+        claim HUinAllT: forall T:set, T :e Fam -> U :e T.
+        { exact (SepE2 (Power (Union Fam)) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HU). }
+        admit. (** Need: if Fam nonempty, pick any T :e Fam, then U :e T c= Power X. If Fam empty, need different approach **)
+      }
+      { (** Axiom 2: Empty :e Intersection_Fam Fam **)
+        prove Empty :e Intersection_Fam Fam.
+        (** Need: Empty :e Power (Union Fam) and forall T :e Fam, Empty :e T **)
+        claim HEmptyPower: Empty :e Power (Union Fam).
+        { apply PowerI. apply Subq_Empty. }
+        claim HEmptyAllT: forall T:set, T :e Fam -> Empty :e T.
+        { let T. assume HT: T :e Fam.
+          claim HTtop: topology_on X T.
+          { exact (HfamTop T HT). }
+          (** Extract Empty :e T from left-associative conjunction **)
+          (** topology_on X T is: ((((T c= Power X /\ Empty :e T) /\ X :e T) /\ Union axiom) /\ Intersection axiom) **)
+          claim H1: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+          { exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HTtop). }
+          claim H2: (T c= Power X /\ Empty :e T) /\ X :e T.
+          { exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
+          claim H3: T c= Power X /\ Empty :e T.
+          { exact (andEL (T c= Power X /\ Empty :e T) (X :e T) H2). }
+          exact (andER (T c= Power X) (Empty :e T) H3).
+        }
+        exact (SepI (Power (Union Fam)) (fun U => forall T:set, T :e Fam -> U :e T) Empty HEmptyPower HEmptyAllT).
+      }
+    * (** Axiom 3: X :e Intersection_Fam Fam **)
+      admit. (** Similar to Empty case: X in all topologies on X, hence in intersection **)
+  + (** Axiom 4: Unions preserved **)
+    admit. (** Each U in UFam is in all T; UFam c= Intersection_Fam Fam c= all T; need union preservation **)
+- (** Axiom 5: Binary intersections preserved **)
+  admit. (** U, V both in all T; each T closed under intersection; so U∩V in all T; hence in Intersection_Fam Fam **)
 Qed.
 
 (** from §13 Exercise 4(b): smallest/largest topology containing a family **) 
