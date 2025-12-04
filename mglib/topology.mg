@@ -8343,7 +8343,45 @@ Theorem ex13_1_local_open_subset : forall X T A:set,
 let X T A.
 assume HT Hlocal.
 prove open_in X T A.
-admit. (** local openness implies global openness **)
+(** Strategy: show A = Union of family of open sets, then A is open **)
+set Fam : set := {U :e T | U c= A}.
+claim HFam_sub : Fam c= T.
+{ let U. assume HU. exact (SepE1 T (fun U0 => U0 c= A) U HU). }
+claim HUnion_eq : Union Fam = A.
+{ apply set_ext.
+  - (** Union Fam c= A **)
+    let x. assume Hx.
+    apply UnionE_impred Fam x Hx.
+    let U. assume HxU HUFam.
+    claim HUsub : U c= A.
+    { exact (SepE2 T (fun U0 => U0 c= A) U HUFam). }
+    exact (HUsub x HxU).
+  - (** A c= Union Fam **)
+    let x. assume HxA.
+    claim Hex : exists U :e T, x :e U /\ U c= A.
+    { exact (Hlocal x HxA). }
+    apply Hex.
+    let U. assume HU.
+    claim HUT : U :e T.
+    { exact (andEL (U :e T) (x :e U /\ U c= A) HU). }
+    claim Hrest : x :e U /\ U c= A.
+    { exact (andER (U :e T) (x :e U /\ U c= A) HU). }
+    claim HxU : x :e U.
+    { exact (andEL (x :e U) (U c= A) Hrest). }
+    claim HUsub : U c= A.
+    { exact (andER (x :e U) (U c= A) Hrest). }
+    claim HUFam : U :e Fam.
+    { exact (SepI T (fun U0 => U0 c= A) U HUT HUsub). }
+    exact (UnionI Fam x U HxU HUFam).
+}
+claim HUnionT : Union Fam :e T.
+{ exact (topology_union_closed X T Fam HT HFam_sub). }
+claim HAT : A :e T.
+{ rewrite <- HUnion_eq. exact HUnionT. }
+prove topology_on X T /\ A :e T.
+apply andI.
+- exact HT.
+- exact HAT.
 Qed.
 
 (** from §13 Exercise 2: comparison of nine topologies on {a,b,c} **) 
