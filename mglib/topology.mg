@@ -2895,11 +2895,26 @@ admit.
 Qed.
 
 Theorem finite_Empty: finite 0.
-admit.
+prove finite 0.
+prove exists n :e omega, equip 0 n.
+witness 0.
+apply andI.
+- prove 0 :e omega.
+  exact nat_p_omega 0 nat_0.
+- prove equip 0 0.
+  exact (equip_ref 0).
 Qed.
 
 Theorem Sing_finite: forall x, finite {x}.
-admit.
+let x.
+prove finite {x}.
+prove exists n :e omega, equip {x} n.
+witness 1.
+apply andI.
+- prove 1 :e omega.
+  exact nat_p_omega 1 nat_1.
+- prove equip {x} 1.
+  exact (equip_Sing_1 x).
 Qed.
 
 Theorem adjoin_finite: forall X y, finite X -> finite (X :\/: {y}).
