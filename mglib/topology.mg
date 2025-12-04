@@ -9256,8 +9256,8 @@ Definition R2_standard_topology : set := product_topology R R_standard_topology 
 Theorem R2_standard_equals_product :
   R2_standard_topology = product_topology R R_standard_topology R R_standard_topology.
 prove R2_standard_topology = product_topology R R_standard_topology R R_standard_topology.
-admit. (** standard Euclidean topology on R² equals product topology; open rectangles generate both
-        aby: R2_5Fstandard_5Ftopology_def conj_myprob_8626_1_20251125_204344 . **)
+(** R2_standard_topology is defined as product_topology R R_standard_topology R R_standard_topology **)
+reflexivity.
 Qed.
 
 (** from §16 Definition: subspace topology **) 
@@ -14300,8 +14300,10 @@ let X Tx Fam.
 assume Hcomp: compact_space X Tx.
 assume HFam: open_cover_of X Tx Fam.
 prove has_finite_subcover X Tx Fam.
-admit. (** direct application of compactness definition: every open cover has finite subcover
-        aby: open_cover_of�f conj_myprob_9549_1_20251124_034403 has_finite_subcover�f compact_space�f . **)
+(** compact_space X Tx = topology_on X Tx /\ (forall Fam, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) **)
+claim Hsubcover: forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
+{ exact (andER (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+exact (Hsubcover Fam HFam).
 Qed.
 
 (** from §26 Lemma 26.1: covering a subspace by ambient opens **) 
