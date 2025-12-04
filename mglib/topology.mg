@@ -8715,7 +8715,55 @@ apply andI.
         (** Since each T is a topology on X, T c= Power X, so U :e Power X **)
         claim HUinAllT: forall T:set, T :e Fam -> U :e T.
         { exact (SepE2 (Power (Union Fam)) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HU). }
-        admit. (** Need: if Fam nonempty, pick any T :e Fam, then U :e T c= Power X. If Fam empty, need different approach **)
+        (** Case analysis: Fam empty or nonempty **)
+        apply (xm (exists T:set, T :e Fam)).
+        - (** Case: Fam nonempty **)
+          assume HFamNonempty: exists T:set, T :e Fam.
+          apply HFamNonempty.
+          let T0. assume HT0: T0 :e Fam.
+          claim HUT0: U :e T0.
+          { exact (HUinAllT T0 HT0). }
+          claim HT0top: topology_on X T0.
+          { exact (HfamTop T0 HT0). }
+          claim HT0sub: T0 c= Power X.
+          { (** Extract T0 c= Power X from topology_on X T0 **)
+            claim H1: ((T0 c= Power X /\ Empty :e T0) /\ X :e T0) /\ (forall UFam :e Power T0, Union UFam :e T0).
+            { exact (andEL (((T0 c= Power X /\ Empty :e T0) /\ X :e T0) /\ (forall UFam :e Power T0, Union UFam :e T0)) (forall U :e T0, forall V :e T0, U :/\: V :e T0) HT0top). }
+            claim H2: (T0 c= Power X /\ Empty :e T0) /\ X :e T0.
+            { exact (andEL ((T0 c= Power X /\ Empty :e T0) /\ X :e T0) (forall UFam :e Power T0, Union UFam :e T0) H1). }
+            claim H3: T0 c= Power X /\ Empty :e T0.
+            { exact (andEL (T0 c= Power X /\ Empty :e T0) (X :e T0) H2). }
+            exact (andEL (T0 c= Power X) (Empty :e T0) H3).
+          }
+          exact (HT0sub U HUT0).
+        - (** Case: Fam empty **)
+          assume HFamEmpty: ~(exists T:set, T :e Fam).
+          (** If Fam is empty, then Intersection_Fam Fam = {U :e Power (Union Empty) | forall T :e Empty, ...} **)
+          (** Union Empty = Empty, so Power Empty = {Empty}, so any U in Intersection_Fam Empty is Empty or empty... **)
+          (** Actually, U :e Power (Union Fam) = Power (Union Empty) = Power Empty = {Empty} **)
+          claim HUnionEmpty: Union Fam = Empty.
+          { apply Empty_Subq_eq.
+            let x. assume Hx: x :e Union Fam.
+            apply UnionE_impred Fam x Hx.
+            let T. assume HxT: x :e T. assume HT: T :e Fam.
+            apply FalseE.
+            apply HFamEmpty.
+            witness T. exact HT.
+          }
+          claim HUinPower: U :e Power Empty.
+          { rewrite <- HUnionEmpty.
+            exact (SepE1 (Power (Union Fam)) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HU).
+          }
+          (** U c= Empty, so U = Empty or U is empty subset **)
+          (** In any case, U c= X since Empty c= X **)
+          apply PowerI.
+          claim HUsub: U c= Empty.
+          { exact (PowerE Empty U HUinPower). }
+          let x. assume Hx: x :e U.
+          claim HxEmpty: x :e Empty.
+          { exact (HUsub x Hx). }
+          apply FalseE.
+          exact (EmptyE x HxEmpty).
       }
       { (** Axiom 2: Empty :e Intersection_Fam Fam **)
         prove Empty :e Intersection_Fam Fam.
@@ -8739,11 +8787,62 @@ apply andI.
         exact (SepI (Power (Union Fam)) (fun U => forall T:set, T :e Fam -> U :e T) Empty HEmptyPower HEmptyAllT).
       }
     * (** Axiom 3: X :e Intersection_Fam Fam **)
-      admit. (** Similar to Empty case: X in all topologies on X, hence in intersection **)
+      prove X :e Intersection_Fam Fam.
+      claim HXPower: X :e Power (Union Fam).
+      { apply PowerI.
+        let x. assume Hx: x :e X.
+        prove x :e Union Fam.
+        (** Need to show X :e some T in Fam, so x can be in Union Fam **)
+        admit. (** Need: Fam nonempty implies exists T :e Fam, then X :e T, so x :e Union Fam **)
+      }
+      claim HXAllT: forall T:set, T :e Fam -> X :e T.
+      { let T. assume HT: T :e Fam.
+        claim HTtop: topology_on X T.
+        { exact (HfamTop T HT). }
+        (** Extract X :e T from topology_on X T **)
+        claim H1: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+        { exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HTtop). }
+        claim H2: (T c= Power X /\ Empty :e T) /\ X :e T.
+        { exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
+        exact (andER ((T c= Power X /\ Empty :e T)) (X :e T) H2).
+      }
+      exact (SepI (Power (Union Fam)) (fun U => forall T:set, T :e Fam -> U :e T) X HXPower HXAllT).
   + (** Axiom 4: Unions preserved **)
     admit. (** Each U in UFam is in all T; UFam c= Intersection_Fam Fam c= all T; need union preservation **)
 - (** Axiom 5: Binary intersections preserved **)
-  admit. (** U, V both in all T; each T closed under intersection; so U∩V in all T; hence in Intersection_Fam Fam **)
+  let U. assume HU: U :e Intersection_Fam Fam.
+  let V. assume HV: V :e Intersection_Fam Fam.
+  prove U :/\: V :e Intersection_Fam Fam.
+  (** U and V are both in all T :e Fam; each T is closed under :/\:; so U :/\: V in all T **)
+  claim HUinAllT: forall T:set, T :e Fam -> U :e T.
+  { exact (SepE2 (Power (Union Fam)) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HU). }
+  claim HVinAllT: forall T:set, T :e Fam -> V :e T.
+  { exact (SepE2 (Power (Union Fam)) (fun U0 => forall T:set, T :e Fam -> U0 :e T) V HV). }
+  claim HUVPower: U :/\: V :e Power (Union Fam).
+  { apply PowerI.
+    let x. assume Hx: x :e U :/\: V.
+    claim HxU: x :e U.
+    { exact (binintersectE1 U V x Hx). }
+    claim HUinPower: U :e Power (Union Fam).
+    { exact (SepE1 (Power (Union Fam)) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HU). }
+    claim HUsubUnion: U c= Union Fam.
+    { exact (PowerE (Union Fam) U HUinPower). }
+    exact (HUsubUnion x HxU).
+  }
+  claim HUVinAllT: forall T:set, T :e Fam -> U :/\: V :e T.
+  { let T. assume HT: T :e Fam.
+    claim HUT: U :e T.
+    { exact (HUinAllT T HT). }
+    claim HVT: V :e T.
+    { exact (HVinAllT T HT). }
+    (** T is a topology, so closed under binary intersections **)
+    claim HTtop: topology_on X T.
+    { exact (HfamTop T HT). }
+    claim Hbinint: forall U :e T, forall V :e T, U :/\: V :e T.
+    { exact (andER (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HTtop). }
+    exact (Hbinint U HUT V HVT).
+  }
+  exact (SepI (Power (Union Fam)) (fun U0 => forall T:set, T :e Fam -> U0 :e T) (U :/\: V) HUVPower HUVinAllT).
 Qed.
 
 (** from §13 Exercise 4(b): smallest/largest topology containing a family **) 
