@@ -8405,6 +8405,50 @@ apply andI.
     let F2. assume HF2_and_eq2. apply HF2_and_eq2.
     assume HF2: F2 :e finite_subcollections S.
     assume Hb2eq: b2 = intersection_of_family F2.
+    (** F1 and F2 must be nonempty since b1, b2 are nonempty **)
+    claim HF1_ne: exists U:set, U :e F1.
+    { apply (xm (exists U:set, U :e F1)).
+      - assume H: exists U:set, U :e F1. exact H.
+      - assume HF1_empty: ~(exists U:set, U :e F1).
+        (** Then F1 is empty, so intersection_of_family F1 = Empty **)
+        claim Hb1_empty: b1 = Empty.
+        { rewrite Hb1eq.
+          apply Empty_Subq_eq.
+          let x. assume Hx: x :e intersection_of_family F1.
+          claim Hx_union: x :e Union F1.
+          { exact (SepE1 (Union F1) (fun y => forall U:set, U :e F1 -> y :e U) x Hx). }
+          apply UnionE_impred F1 x Hx_union.
+          let U. assume HxU: x :e U. assume HUF1: U :e F1.
+          apply FalseE.
+          apply HF1_empty.
+          witness U. exact HUF1.
+        }
+        claim Hb1_ne: b1 <> Empty.
+        { exact (SepE2 (finite_intersections_of S) (fun b0 => b0 <> Empty) b1 Hb1). }
+        apply FalseE.
+        exact (Hb1_ne Hb1_empty).
+    }
+    claim HF2_ne: exists U:set, U :e F2.
+    { apply (xm (exists U:set, U :e F2)).
+      - assume H: exists U:set, U :e F2. exact H.
+      - assume HF2_empty: ~(exists U:set, U :e F2).
+        claim Hb2_empty: b2 = Empty.
+        { rewrite Hb2eq.
+          apply Empty_Subq_eq.
+          let x. assume Hx: x :e intersection_of_family F2.
+          claim Hx_union: x :e Union F2.
+          { exact (SepE1 (Union F2) (fun y => forall U:set, U :e F2 -> y :e U) x Hx). }
+          apply UnionE_impred F2 x Hx_union.
+          let U. assume HxU: x :e U. assume HUF2: U :e F2.
+          apply FalseE.
+          apply HF2_empty.
+          witness U. exact HUF2.
+        }
+        claim Hb2_ne: b2 <> Empty.
+        { exact (SepE2 (finite_intersections_of S) (fun b0 => b0 <> Empty) b2 Hb2). }
+        apply FalseE.
+        exact (Hb2_ne Hb2_empty).
+    }
     (** Now b3 = b1 :/\: b2 = intersection_of_family (F1 :\/: F2) **)
     set F12 := F1 :\/: F2.
     (** Show F12 :e finite_subcollections S **)
@@ -8501,14 +8545,29 @@ apply andI.
           apply (binunionE F1 F2 U HU).
           - assume HUF1: U :e F1. exact (UnionI F1 z U HzU HUF1).
           - assume HUF2: U :e F2.
-            (** Use that F1 and F2 are nonempty finite collections, or use a different approach **)
-            (** Actually, if F1 is nonempty, pick any V :e F1 and use Hz_all1 V **)
-            admit. (** Need to show Union F1 is inhabited; may need F1 nonempty **)
+            (** Use that F1 is nonempty: pick any V :e F1 and use Hz_all1 V **)
+            apply HF1_ne.
+            let V. assume HVF1: V :e F1.
+            claim HzV: z :e V.
+            { exact (Hz_all1 V HVF1). }
+            exact (UnionI F1 z V HzV HVF1).
         }
         claim Hz_intersect1: z :e intersection_of_family F1.
         { exact (SepI (Union F1) (fun x => forall U:set, U :e F1 -> x :e U) z Hz_union1 Hz_all1). }
         claim Hz_union2: z :e Union F2.
-        { admit. (** Similar to Hz_union1 **)
+        { (** Similar to Hz_union1 **)
+          apply UnionE_impred F12 z Hz_union12.
+          let U. assume HzU: z :e U. assume HU: U :e F12.
+          prove z :e Union F2.
+          apply (binunionE F1 F2 U HU).
+          - assume HUF1: U :e F1.
+            (** Use that F2 is nonempty **)
+            apply HF2_ne.
+            let V. assume HVF2: V :e F2.
+            claim HzV: z :e V.
+            { exact (Hz_all2 V HVF2). }
+            exact (UnionI F2 z V HzV HVF2).
+          - assume HUF2: U :e F2. exact (UnionI F2 z U HzU HUF2).
         }
         claim Hz_intersect2: z :e intersection_of_family F2.
         { exact (SepI (Union F2) (fun x => forall U:set, U :e F2 -> x :e U) z Hz_union2 Hz_all2). }
