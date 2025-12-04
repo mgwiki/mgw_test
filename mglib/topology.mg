@@ -8792,8 +8792,48 @@ apply andI.
       { apply PowerI.
         let x. assume Hx: x :e X.
         prove x :e Union Fam.
-        (** Need to show X :e some T in Fam, so x can be in Union Fam **)
-        admit. (** Need: Fam nonempty implies exists T :e Fam, then X :e T, so x :e Union Fam **)
+        (** Case analysis: Fam empty or nonempty **)
+        apply (xm (exists T:set, T :e Fam)).
+        - (** Case: Fam nonempty - show X :e some T, hence x :e Union Fam **)
+          assume HFamNonempty: exists T:set, T :e Fam.
+          apply HFamNonempty.
+          let T0. assume HT0: T0 :e Fam.
+          claim HT0top: topology_on X T0.
+          { exact (HfamTop T0 HT0). }
+          (** Extract X :e T0 from topology_on X T0 **)
+          claim H1: ((T0 c= Power X /\ Empty :e T0) /\ X :e T0) /\ (forall UFam :e Power T0, Union UFam :e T0).
+          { exact (andEL (((T0 c= Power X /\ Empty :e T0) /\ X :e T0) /\ (forall UFam :e Power T0, Union UFam :e T0)) (forall U :e T0, forall V :e T0, U :/\: V :e T0) HT0top). }
+          claim H2: (T0 c= Power X /\ Empty :e T0) /\ X :e T0.
+          { exact (andEL ((T0 c= Power X /\ Empty :e T0) /\ X :e T0) (forall UFam :e Power T0, Union UFam :e T0) H1). }
+          claim HXT0: X :e T0.
+          { exact (andER ((T0 c= Power X /\ Empty :e T0)) (X :e T0) H2). }
+          (** Now x :e X :e T0, so x :e Union Fam **)
+          claim HxT0: x :e T0.
+          { (** Since X :e T0 and x :e X, we need X c= T0 or x :e X :e T0... **)
+            (** Actually, T0 is a collection of subsets, and X :e T0 means X is in the collection **)
+            (** But x :e X doesn't directly give x :e T0 **)
+            (** We need to show x :e Union Fam differently **)
+            admit. (** Actually this approach is wrong - X :e T0 means X is an element of the topology, not that elements of X are in T0 **)
+          }
+          exact (UnionI Fam x T0 HxT0 HT0).
+        - (** Case: Fam empty - then X can be any subset since claim is vacuous **)
+          assume HFamEmpty: ~(exists T:set, T :e Fam).
+          claim HUnionEmpty: Union Fam = Empty.
+          { apply Empty_Subq_eq.
+            let y. assume Hy: y :e Union Fam.
+            apply UnionE_impred Fam y Hy.
+            let T. assume HyT: y :e T. assume HT: T :e Fam.
+            apply FalseE.
+            apply HFamEmpty.
+            witness T. exact HT.
+          }
+          (** x :e Union Fam = Empty, which is impossible, so proof by contradiction **)
+          rewrite HUnionEmpty.
+          apply FalseE.
+          (** Actually, if Fam is empty, we can't have x :e X in general... **)
+          (** Wait - if Fam is empty and x :e X, we need to derive False or show x :e Empty **)
+          (** This suggests the theorem might need X to be empty when Fam is empty, or Fam to be nonempty **)
+          admit. (** Issue: if Fam is empty and X is nonempty, can't prove X c= Union Empty = Empty **)
       }
       claim HXAllT: forall T:set, T :e Fam -> X :e T.
       { let T. assume HT: T :e Fam.
