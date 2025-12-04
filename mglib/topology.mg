@@ -13186,7 +13186,35 @@ claim Hpreimg_g: forall W:set, W :e Tz -> preimage_of Y g W :e Ty.
                Hg). }
 (** Show gf = g∘f is continuous **)
 (** Need: topology_on X Tx /\ topology_on Z Tz /\ function_on gf X Z /\ (forall W:set, W :e Tz -> preimage_of X gf W :e Tx) **)
-admit. (** Assembly + showing preimage_of X gf W = preimage_of X f (preimage_of Y g W) **)
+(** Build the conjunction left-to-right due to left associativity **)
+prove topology_on X Tx /\ topology_on Z Tz /\ function_on gf X Z /\
+  (forall W:set, W :e Tz -> preimage_of X gf W :e Tx).
+claim Hpart1: topology_on X Tx /\ topology_on Z Tz.
+{ apply andI. exact HTx. exact HTz. }
+claim Hpart2: (topology_on X Tx /\ topology_on Z Tz) /\ function_on gf X Z.
+{ apply andI.
+  - exact Hpart1.
+  - (** Prove function_on gf X Z **)
+    prove forall x:set, x :e X -> apply_fun gf x :e Z.
+    admit. (** Need to show composition gives function from X to Z **)
+}
+apply andI.
+- exact Hpart2.
+- (** Prove preimages of open sets in Z are open in X **)
+  let W. assume HW: W :e Tz.
+  prove preimage_of X gf W :e Tx.
+  (** Since g is continuous, preimage_of Y g W is open in Ty **)
+  claim HgW_open: preimage_of Y g W :e Ty.
+  { exact (Hpreimg_g W HW). }
+  (** Since f is continuous, preimage_of X f (preimage_of Y g W) is open in Tx **)
+  claim HfgW_open: preimage_of X f (preimage_of Y g W) :e Tx.
+  { exact (Hpreimg_f (preimage_of Y g W) HgW_open). }
+  (** Show that preimage_of X gf W = preimage_of X f (preimage_of Y g W) **)
+  claim Hpreimg_eq: preimage_of X gf W = preimage_of X f (preimage_of Y g W).
+  { admit. (** Need to prove preimage composition lemma **)
+  }
+  rewrite Hpreimg_eq.
+  exact HfgW_open.
 Qed.
 
 (** from §18 Theorem 18.2: rules for constructing continuous functions **) 
