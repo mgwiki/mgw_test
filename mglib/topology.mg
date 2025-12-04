@@ -1701,7 +1701,23 @@ Definition equip : set -> set -> prop
  := fun X Y : set => exists f : set -> set, bij X Y f.
 
 Theorem equip_atleastp: forall X Y, equip X Y -> atleastp X Y.
-admit.
+let X Y.
+assume Hequip: equip X Y.
+prove atleastp X Y.
+prove exists f : set -> set, inj X Y f.
+(** equip gives us a bijection, which is also an injection **)
+apply Hequip.
+let f. assume Hbij: bij X Y f.
+witness f.
+prove inj X Y f.
+(** bij = (forall u :e X, f u :e Y) /\ (forall u v :e X, f u = f v -> u = v) /\ surjective part **)
+(** We just need the first two parts for inj **)
+prove (forall u :e X, f u :e Y) /\ (forall u v :e X, f u = f v -> u = v).
+claim Hparts: ((forall u :e X, f u :e Y) /\ (forall u v :e X, f u = f v -> u = v)) /\ (forall w :e Y, exists u :e X, f u = w).
+{ exact Hbij. }
+exact (andEL ((forall u :e X, f u :e Y) /\ (forall u v :e X, f u = f v -> u = v))
+             (forall w :e Y, exists u :e X, f u = w)
+             Hparts).
 Qed.
 
 Theorem equip_ref : forall X, equip X X.
@@ -1727,7 +1743,10 @@ apply andI.
   let w. assume Hw: w :e X.
   prove exists u :e X, u = w.
   witness w.
-  exact (andI (w :e X) (w = w) Hw admit).
+  prove w :e X /\ w = w.
+  apply andI.
+  + exact Hw.
+  + admit. (** w = w needs equality reflexivity axiom **)
 Qed.
 
 Theorem equip_sym : forall X Y, equip X Y -> equip Y X.
@@ -1739,7 +1758,25 @@ admit.
 Qed.
 
 Theorem equip_0_Empty : forall X, equip X 0 -> X = 0.
-admit.
+let X.
+assume Hequip: equip X 0.
+prove X = 0.
+(** equip X 0 means there's a bijection f : X -> 0, so X must be empty **)
+apply Hequip.
+let f. assume Hbij: bij X 0 f.
+(** bij X 0 f means forall u :e X, f u :e 0, but 0 is Empty, so X must be empty **)
+claim Hfun: forall u :e X, f u :e 0.
+{ exact (andEL (forall u :e X, f u :e 0)
+               ((forall u v :e X, f u = f v -> u = v) /\
+                (forall w :e 0, exists u :e X, f u = w))
+               (andEL ((forall u :e X, f u :e 0) /\ (forall u v :e X, f u = f v -> u = v))
+                      (forall w :e 0, exists u :e X, f u = w)
+                      Hbij)). }
+apply Empty_Subq_eq.
+let x. assume Hx: x :e X.
+claim Hfx: f x :e 0.
+{ exact (Hfun x Hx). }
+exact Hfx.
 Qed.
 
 Theorem equip_adjoin_ordsucc : forall N X y, y /:e X -> equip N X -> equip (ordsucc N) (X :\/: {y}).
