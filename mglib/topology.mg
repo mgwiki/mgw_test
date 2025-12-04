@@ -2129,7 +2129,15 @@ apply andI.
 Qed.
 
 Theorem nat_p_ordinal : forall n:set, nat_p n -> ordinal n.
-admit.
+let n.
+assume Hnat: nat_p n.
+prove ordinal n.
+(** Use induction on nat_p n with p = ordinal **)
+apply (Hnat (fun n => ordinal n)).
+- prove ordinal 0.
+  exact ordinal_Empty.
+- prove forall x:set, ordinal x -> ordinal (ordsucc x).
+  exact ordinal_ordsucc.
 Qed.
 
 Theorem ordinal_1 : ordinal 1.
@@ -2200,7 +2208,36 @@ admit.
 Qed.
 
 Theorem ordinal_ordsucc_In : forall alpha, ordinal alpha -> forall beta :e alpha, ordsucc beta :e ordsucc alpha.
-admit.
+let alpha.
+assume Horda: ordinal alpha.
+let beta. assume Hbeta: beta :e alpha.
+prove ordsucc beta :e ordsucc alpha.
+(** ordsucc alpha = alpha :\/: {alpha}, so we need ordsucc beta :e alpha or ordsucc beta = alpha **)
+(** beta :e alpha implies ordinal beta by ordinal_Hered **)
+claim Hordb: ordinal beta.
+{ exact (ordinal_Hered alpha Horda beta Hbeta). }
+(** ordsucc beta is an ordinal **)
+claim Hordsb: ordinal (ordsucc beta).
+{ exact (ordinal_ordsucc beta Hordb). }
+(** By ordinal_In_Or_Subq, either ordsucc beta :e alpha or alpha c= ordsucc beta **)
+claim Hcases: ordsucc beta :e alpha \/ alpha c= ordsucc beta.
+{ exact (ordinal_In_Or_Subq (ordsucc beta) alpha Hordsb Horda). }
+apply Hcases.
+- assume Hsba: ordsucc beta :e alpha.
+  (** ordsucc beta :e alpha implies ordsucc beta :e ordsucc alpha by ordsuccI1 **)
+  exact (ordsuccI1 alpha (ordsucc beta) Hsba).
+- assume Hasb: alpha c= ordsucc beta.
+  (** We also have ordsucc beta c= alpha by ordinal_ordsucc_In_Subq **)
+  claim Hsba: ordsucc beta c= alpha.
+  { exact (ordinal_ordsucc_In_Subq alpha Horda beta Hbeta). }
+  (** So ordsucc beta = alpha by set_ext **)
+  (** set_ext says X c= Y -> Y c= X -> X = Y **)
+  (** We have Hsba: ordsucc beta c= alpha and Hasb: alpha c= ordsucc beta **)
+  claim Heq: ordsucc beta = alpha.
+  { exact (set_ext (ordsucc beta) alpha Hsba Hasb). }
+  (** Therefore ordsucc beta = alpha :e ordsucc alpha **)
+  rewrite Heq.
+  exact (ordsuccI2 alpha).
 Qed.
 
 Theorem ordinal_famunion : forall X, forall F:set -> set, (forall x :e X, ordinal (F x)) -> ordinal (\/_ x :e X, F x).
