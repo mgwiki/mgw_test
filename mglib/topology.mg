@@ -14530,8 +14530,7 @@ let X Tx.
 assume Hlc: locally_compact X Tx.
 assume HH: Hausdorff_space X Tx.
 prove exists Y Ty:set, one_point_compactification X Tx Y Ty.
-admit. (** direct application of one_point_compactification_exists
-        aby: conj_myprob_9705_1_20251124_035516 one_point_compactification_exists . **)
+exact (one_point_compactification_exists X Tx Hlc HH).
 Qed.
 
 (** from exercises after §29: directed sets **) 
