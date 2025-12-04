@@ -12939,7 +12939,50 @@ claim Hpart2: (topology_on X Tx /\ topology_on X Tx) /\ function_on id X X.
     (** For x :e X, we have UPair x x :e id, so apply_fun id x = x by Eps_i.
         Therefore apply_fun id x :e X. This requires showing uniqueness of y in UPair x y :e id. **)
     claim Hid_x: apply_fun id x = x.
-    { admit. (** Technical: UPair x x :e id and uniqueness implies apply_fun id x = x **)
+    { (** apply_fun id x = Eps_i (fun y => UPair x y :e id) **)
+      (** We need to show this equals x **)
+      prove apply_fun id x = x.
+      (** First show UPair x x :e id **)
+      claim Hpair_in: UPair x x :e id.
+      { exact (ReplI X (fun z => UPair z z) x Hx). }
+      (** Now use Eps_i_ax: if P witness holds, then P (Eps_i P) holds **)
+      claim HP_x: UPair x x :e id.
+      { exact Hpair_in. }
+      (** By Eps_i_ax, UPair x (Eps_i (fun y => UPair x y :e id)) :e id **)
+      claim HP_eps: UPair x (Eps_i (fun y => UPair x y :e id)) :e id.
+      { exact (Eps_i_ax (fun y => UPair x y :e id) x HP_x). }
+      (** Since UPair x (Eps_i ...) :e id = {UPair z z|z :e X},
+          by ReplE, UPair x (Eps_i ...) = UPair z z for some z :e X **)
+      apply (ReplE_impred X (fun z => UPair z z) (UPair x (Eps_i (fun y => UPair x y :e id))) HP_eps).
+      let z. assume Hz: z :e X. assume Heq: UPair x (Eps_i (fun y => UPair x y :e id)) = UPair z z.
+      (** From UPair x (Eps_i ...) = UPair z z = {z, z}, we get Eps_i ... = z **)
+      (** Note that x :e {x, Eps_i ...} by UPairI1 **)
+      claim Hx_in_pair: x :e UPair x (Eps_i (fun y => UPair x y :e id)).
+      { exact (UPairI1 x (Eps_i (fun y => UPair x y :e id))). }
+      (** Rewriting with Heq: x :e {z, z} **)
+      claim Hx_in_zz: x :e UPair z z.
+      { rewrite <- Heq. exact Hx_in_pair. }
+      (** By UPairE, x = z **)
+      claim Hxz: x = z.
+      { apply (UPairE x z z Hx_in_zz).
+        - assume H. exact H.
+        - assume H. exact H. }
+      (** Also Eps_i ... :e {x, Eps_i ...} by UPairI2 **)
+      claim Heps_in_pair: Eps_i (fun y => UPair x y :e id) :e UPair x (Eps_i (fun y => UPair x y :e id)).
+      { exact (UPairI2 x (Eps_i (fun y => UPair x y :e id))). }
+      (** Rewriting with Heq: Eps_i ... :e {z, z} **)
+      claim Heps_in_zz: Eps_i (fun y => UPair x y :e id) :e UPair z z.
+      { rewrite <- Heq. exact Heps_in_pair. }
+      (** By UPairE, Eps_i ... = z **)
+      claim Heps_z: Eps_i (fun y => UPair x y :e id) = z.
+      { apply (UPairE (Eps_i (fun y => UPair x y :e id)) z z Heps_in_zz).
+        - assume H. exact H.
+        - assume H. exact H. }
+      (** Therefore Eps_i ... = z = x **)
+      (** We need: Eps_i (fun y => UPair x y :e id) = x **)
+      (** We have: Heps_z: Eps_i ... = z and Hxz: x = z **)
+      rewrite Hxz.
+      exact Heps_z.
     }
     rewrite Hid_x.
     exact Hx. }
@@ -12960,7 +13003,32 @@ apply andI.
       claim Hidx_in_V: apply_fun id x :e V.
       { exact (SepE2 X (fun y => apply_fun id y :e V) x Hx). }
       claim Hidx_eq: apply_fun id x = x.
-      { admit. (** Technical: apply_fun id x = x for x :e X **)
+      { (** Same proof as before **)
+        prove apply_fun id x = x.
+        claim Hpair_in: UPair x x :e id.
+        { exact (ReplI X (fun z => UPair z z) x HxX). }
+        claim HP_eps: UPair x (Eps_i (fun y => UPair x y :e id)) :e id.
+        { exact (Eps_i_ax (fun y => UPair x y :e id) x Hpair_in). }
+        apply (ReplE_impred X (fun z => UPair z z) (UPair x (Eps_i (fun y => UPair x y :e id))) HP_eps).
+        let z. assume Hz: z :e X. assume Heq: UPair x (Eps_i (fun y => UPair x y :e id)) = UPair z z.
+        claim Hx_in_pair: x :e UPair x (Eps_i (fun y => UPair x y :e id)).
+        { exact (UPairI1 x (Eps_i (fun y => UPair x y :e id))). }
+        claim Hx_in_zz: x :e UPair z z.
+        { rewrite <- Heq. exact Hx_in_pair. }
+        claim Hxz: x = z.
+        { apply (UPairE x z z Hx_in_zz).
+          - assume H. exact H.
+          - assume H. exact H. }
+        claim Heps_in_pair: Eps_i (fun y => UPair x y :e id) :e UPair x (Eps_i (fun y => UPair x y :e id)).
+        { exact (UPairI2 x (Eps_i (fun y => UPair x y :e id))). }
+        claim Heps_in_zz: Eps_i (fun y => UPair x y :e id) :e UPair z z.
+        { rewrite <- Heq. exact Heps_in_pair. }
+        claim Heps_z: Eps_i (fun y => UPair x y :e id) = z.
+        { apply (UPairE (Eps_i (fun y => UPair x y :e id)) z z Heps_in_zz).
+          - assume H. exact H.
+          - assume H. exact H. }
+        rewrite Hxz.
+        exact Heps_z.
       }
       rewrite <- Hidx_eq.
       exact Hidx_in_V.
@@ -12973,7 +13041,32 @@ apply andI.
       + exact HxX.
       + prove apply_fun id x :e V.
         claim Hidx_eq: apply_fun id x = x.
-        { admit. (** Technical: apply_fun id x = x for x :e X **)
+        { (** Same proof as before **)
+          prove apply_fun id x = x.
+          claim Hpair_in: UPair x x :e id.
+          { exact (ReplI X (fun z => UPair z z) x HxX). }
+          claim HP_eps: UPair x (Eps_i (fun y => UPair x y :e id)) :e id.
+          { exact (Eps_i_ax (fun y => UPair x y :e id) x Hpair_in). }
+          apply (ReplE_impred X (fun z => UPair z z) (UPair x (Eps_i (fun y => UPair x y :e id))) HP_eps).
+          let z. assume Hz: z :e X. assume Heq: UPair x (Eps_i (fun y => UPair x y :e id)) = UPair z z.
+          claim Hx_in_pair: x :e UPair x (Eps_i (fun y => UPair x y :e id)).
+          { exact (UPairI1 x (Eps_i (fun y => UPair x y :e id))). }
+          claim Hx_in_zz: x :e UPair z z.
+          { rewrite <- Heq. exact Hx_in_pair. }
+          claim Hxz: x = z.
+          { apply (UPairE x z z Hx_in_zz).
+            - assume H. exact H.
+            - assume H. exact H. }
+          claim Heps_in_pair: Eps_i (fun y => UPair x y :e id) :e UPair x (Eps_i (fun y => UPair x y :e id)).
+          { exact (UPairI2 x (Eps_i (fun y => UPair x y :e id))). }
+          claim Heps_in_zz: Eps_i (fun y => UPair x y :e id) :e UPair z z.
+          { rewrite <- Heq. exact Heps_in_pair. }
+          claim Heps_z: Eps_i (fun y => UPair x y :e id) = z.
+          { apply (UPairE (Eps_i (fun y => UPair x y :e id)) z z Heps_in_zz).
+            - assume H. exact H.
+            - assume H. exact H. }
+          rewrite Hxz.
+          exact Heps_z.
         }
         rewrite Hidx_eq.
         exact Hx. }
