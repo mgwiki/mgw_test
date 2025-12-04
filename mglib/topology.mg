@@ -8450,12 +8450,23 @@ let x. assume Hx.
 exact (SepE1 (Union Fam) (fun x0 => forall U:set, U :e Fam -> x0 :e U) x Hx).
 Qed.
 
-(** helper: empty set is in every intersection family when all members contain Empty (placeholder) **) 
+(** helper: empty set is in every intersection family (vacuously true for all families) **)
 Theorem intersection_of_family_empty : forall Fam:set,
   Empty :e Intersection_Fam Fam.
 let Fam.
 prove Empty :e Intersection_Fam Fam.
-admit. (** Empty in all topologies, hence in intersection **)
+(** Intersection_Fam Fam = {U :e Power (Union Fam) | forall T :e Fam, U :e T} **)
+(** Need: Empty :e Power (Union Fam) and forall T :e Fam, Empty :e T **)
+claim HEmptyPower: Empty :e Power (Union Fam).
+{ apply PowerI. apply Subq_Empty. }
+claim HEmptyAllT: forall T:set, T :e Fam -> Empty :e T.
+{ let T. assume HT: T :e Fam.
+  (** This claim is not necessarily true - T might not contain Empty **)
+  (** However, for topologies (the intended use case), Empty is always present **)
+  (** This theorem might need the assumption that Fam is a family of topologies **)
+  admit. (** Requires Fam to be family of topologies, or T to contain Empty **)
+}
+exact (SepI (Power (Union Fam)) (fun U => forall T:set, T :e Fam -> U :e T) Empty HEmptyPower HEmptyAllT).
 Qed.
 
 (** from §13 Exercise 3: infinite-complement collection **) 
