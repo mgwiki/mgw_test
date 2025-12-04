@@ -12290,7 +12290,30 @@ apply set_ext.
     (** Now we need to derive a contradiction. We know V :/\: A <> Empty.
         But we don't immediately know that V :/\: (Y :/\: A) <> Empty.
         This requires that the witness in V :/\: A is also in Y. **)
-    admit. }
+    (** The key issue: we need A c= Y for this direction to work properly.
+        Classical statement requires A c= Y or should be about closure_of Y ... (A :/\: Y).
+        For now, assume this holds or use that any w :e A that matters is in Y. **)
+    (** Alternative: use y :e closure implies y in closure of A :/\: Y **)
+    (** Since we have V :/\: A <> Empty, pick witness w **)
+    claim Hex_w: exists w:set, w :e V :/\: A.
+    { apply (dneg (exists w:set, w :e V :/\: A)).
+      assume Hnot: ~(exists w:set, w :e V :/\: A).
+      claim HVAempty: V :/\: A = Empty.
+      { apply Empty_Subq_eq.
+        let w. assume Hw: w :e V :/\: A.
+        apply FalseE.
+        apply Hnot.
+        witness w. exact Hw.
+      }
+      exact (HVA_ne HVAempty).
+    }
+    apply Hex_w.
+    let w. assume Hw: w :e V :/\: A.
+    (** w :e V and w :e A. If we knew w :e Y, we'd have w :e V :/\: (Y :/\: A), contradicting HVYAempty2. **)
+    (** Without A c= Y assumption, this direction may not hold in full generality. **)
+    (** For standard topology texts, either A c= Y is assumed, or the theorem is about A :/\: Y. **)
+    admit. (** Requires A c= Y or theorem restatement **)
+    }
   exact (SepI Y (fun y0 => forall U:set, U :e subspace_topology X Tx Y -> y0 :e U -> U :/\: A <> Empty) y HyY HySubCond).
 Qed.
 
