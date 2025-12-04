@@ -1897,33 +1897,84 @@ admit.
 Qed.
 
 Theorem neq_0_1 : 0 <> 1.
-admit.
+prove ~(0 = 1).
+assume H1: 0 = 1.
+(** Since 1 = ordsucc 0, we have 0 = ordsucc 0 **)
+(** We know 0 :e ordsucc 0, but if 0 = ordsucc 0, then 0 :e 0, contradiction **)
+claim L1: 0 :e ordsucc 0 -> False.
+{ rewrite <- H1. exact (EmptyE 0). }
+exact (L1 (ordsuccI2 0)).
 Qed.
 
 Theorem neq_1_0 : 1 <> 0.
-admit.
+exact (neq_i_sym 0 1 neq_0_1).
 Qed.
 
 Theorem neq_0_2 : 0 <> 2.
-admit.
+prove ~(0 = 2).
+assume H1: 0 = 2.
+(** Since 2 = ordsucc 1, we have 0 = ordsucc 1 **)
+(** We know 1 :e ordsucc 1, but if 0 = ordsucc 1, then 1 :e 0, contradiction **)
+claim L1: 1 :e ordsucc 1 -> False.
+{ rewrite <- H1. exact (EmptyE 1). }
+exact (L1 (ordsuccI2 1)).
 Qed.
 
 Theorem neq_2_0 : 2 <> 0.
-admit.
+exact (neq_i_sym 0 2 neq_0_2).
 Qed.
 
 Definition ordinal : set->prop := fun (alpha:set) => TransSet alpha /\ forall beta :e alpha, TransSet beta.
 
 Theorem ordinal_TransSet : forall alpha:set, ordinal alpha -> TransSet alpha.
-admit.
+let alpha.
+assume Hord: ordinal alpha.
+prove TransSet alpha.
+(** ordinal alpha = TransSet alpha /\ (forall beta :e alpha, TransSet beta) **)
+exact (andEL (TransSet alpha) (forall beta :e alpha, TransSet beta) Hord).
 Qed.
 
 Theorem ordinal_Empty : ordinal Empty.
-admit.
+prove ordinal Empty.
+prove TransSet Empty /\ (forall beta :e Empty, TransSet beta).
+apply andI.
+- prove TransSet Empty.
+  prove forall x :e Empty, x c= Empty.
+  let x. assume Hx: x :e Empty.
+  (** Vacuously true since Empty has no elements **)
+  exact (FalseE (EmptyE x Hx) (x c= Empty)).
+- prove forall beta :e Empty, TransSet beta.
+  let beta. assume Hbeta: beta :e Empty.
+  (** Vacuously true since Empty has no elements **)
+  exact (FalseE (EmptyE beta Hbeta) (TransSet beta)).
 Qed.
 
 Theorem ordinal_Hered : forall alpha:set, ordinal alpha -> forall beta :e alpha, ordinal beta.
-admit.
+let alpha.
+assume Hord: ordinal alpha.
+prove forall beta :e alpha, ordinal beta.
+(** We need to extract the second part of ordinal alpha and show it implies ordinal beta **)
+claim HTrans: TransSet alpha.
+{ exact (andEL (TransSet alpha) (forall beta :e alpha, TransSet beta) Hord). }
+claim Hbetas: forall beta :e alpha, TransSet beta.
+{ exact (andER (TransSet alpha) (forall beta :e alpha, TransSet beta) Hord). }
+let beta. assume Hbeta: beta :e alpha.
+prove ordinal beta.
+prove TransSet beta /\ (forall gamma :e beta, TransSet gamma).
+apply andI.
+- prove TransSet beta.
+  exact (Hbetas beta Hbeta).
+- prove forall gamma :e beta, TransSet gamma.
+  let gamma. assume Hgamma: gamma :e beta.
+  prove TransSet gamma.
+  (** Since TransSet alpha and beta :e alpha, we have beta c= alpha **)
+  claim Hbetasub: beta c= alpha.
+  { exact (HTrans beta Hbeta). }
+  (** Since gamma :e beta and beta c= alpha, we have gamma :e alpha **)
+  claim Hgalpha: gamma :e alpha.
+  { exact (Hbetasub gamma Hgamma). }
+  (** By Hbetas, TransSet gamma **)
+  exact (Hbetas gamma Hgalpha).
 Qed.
 
 Theorem TransSet_ordsucc : forall X:set, TransSet X -> TransSet (ordsucc X).
