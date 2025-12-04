@@ -8675,7 +8675,9 @@ claim Hbasis_in_T: forall b :e basis_of_subbasis X S, b :e T.
       { exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
       exact (andER (T c= Power X /\ Empty :e T) (X :e T) H2).
     }
-    rewrite <- Hb_eq_X. exact HX_in_T.
+    claim Hb_in_T_case1: b :e T.
+    { rewrite Hb_eq_X. exact HX_in_T. }
+    exact Hb_in_T_case1.
   - assume Hb_ne_X: b <> X.
     (** b is a nonempty finite intersection - but actually showing this requires more work **)
     (** For now, use that finite intersections of T elements are in T **)
