@@ -1674,7 +1674,60 @@ Definition atleastp : set -> set -> prop
  := fun X Y : set => exists f : set -> set, inj X Y f.
 
 Theorem atleastp_tra: forall X Y Z, atleastp X Y -> atleastp Y Z -> atleastp X Z.
-admit.
+let X Y Z.
+assume HXY: atleastp X Y.
+assume HYZ: atleastp Y Z.
+prove atleastp X Z.
+prove exists h : set -> set, inj X Z h.
+(** Extract injections f : X -> Y and g : Y -> Z, then compose them **)
+apply HXY.
+let f. assume Hf: inj X Y f.
+apply HYZ.
+let g. assume Hg: inj Y Z g.
+(** Define h = g o f **)
+witness (fun x:set => g (f x)).
+prove inj X Z (fun x:set => g (f x)).
+prove (forall u :e X, (fun x:set => g (f x)) u :e Z) /\
+      (forall u v :e X, (fun x:set => g (f x)) u = (fun x:set => g (f x)) v -> u = v).
+(** Extract properties of f and g **)
+claim Hfdom: forall u :e X, f u :e Y.
+{ exact (andEL (forall u :e X, f u :e Y)
+               (forall u v :e X, f u = f v -> u = v)
+               Hf). }
+claim Hfinj: forall u v :e X, f u = f v -> u = v.
+{ exact (andER (forall u :e X, f u :e Y)
+               (forall u v :e X, f u = f v -> u = v)
+               Hf). }
+claim Hgdom: forall u :e Y, g u :e Z.
+{ exact (andEL (forall u :e Y, g u :e Z)
+               (forall u v :e Y, g u = g v -> u = v)
+               Hg). }
+claim Hginj: forall u v :e Y, g u = g v -> u = v.
+{ exact (andER (forall u :e Y, g u :e Z)
+               (forall u v :e Y, g u = g v -> u = v)
+               Hg). }
+apply andI.
+- prove forall u :e X, (fun x:set => g (f x)) u :e Z.
+  let u. assume Hu: u :e X.
+  prove (fun x:set => g (f x)) u :e Z.
+  prove g (f u) :e Z.
+  claim Hfu: f u :e Y.
+  { exact (Hfdom u Hu). }
+  exact (Hgdom (f u) Hfu).
+- prove forall u v :e X, (fun x:set => g (f x)) u = (fun x:set => g (f x)) v -> u = v.
+  let u. assume Hu: u :e X.
+  let v. assume Hv: v :e X.
+  assume Heq: (fun x:set => g (f x)) u = (fun x:set => g (f x)) v.
+  prove u = v.
+  claim Heq2: g (f u) = g (f v).
+  { exact Heq. }
+  claim Hfu: f u :e Y.
+  { exact (Hfdom u Hu). }
+  claim Hfv: f v :e Y.
+  { exact (Hfdom v Hv). }
+  claim Hfuv: f u = f v.
+  { exact (Hginj (f u) Hfu (f v) Hfv Heq2). }
+  exact (Hfinj u Hu v Hv Hfuv).
 Qed.
 
 Theorem Subq_atleastp : forall X Y, X c= Y -> atleastp X Y.
@@ -1889,11 +1942,36 @@ admit.
 Qed.
 
 Theorem cases_1: forall i :e 1, forall p:set->prop, p 0 -> p i.
-admit.
+let i. assume Hi: i :e 1.
+let p. assume Hp0: p 0.
+prove p i.
+(** Since 1 = ordsucc 0, we have i :e 0 \/ i = 0 **)
+(** But 0 is empty, so i = 0 **)
+claim Hcases: i :e 0 \/ i = 0.
+{ exact (ordsuccE 0 i Hi). }
+apply Hcases.
+- assume Hi0: i :e 0.
+  (** Impossible since 0 is empty **)
+  exact (FalseE (EmptyE i Hi0) (p i)).
+- assume Hi0: i = 0.
+  rewrite Hi0.
+  exact Hp0.
 Qed.
 
 Theorem cases_2: forall i :e 2, forall p:set->prop, p 0 -> p 1 -> p i.
-admit.
+let i. assume Hi: i :e 2.
+let p. assume Hp0: p 0. assume Hp1: p 1.
+prove p i.
+(** Since 2 = ordsucc 1, we have i :e 1 \/ i = 1 **)
+claim Hcases: i :e 1 \/ i = 1.
+{ exact (ordsuccE 1 i Hi). }
+apply Hcases.
+- assume Hi1: i :e 1.
+  (** By cases_1, if i :e 1 and p 0, then p i **)
+  exact (cases_1 i Hi1 p Hp0).
+- assume Hi1: i = 1.
+  rewrite Hi1.
+  exact Hp1.
 Qed.
 
 Theorem neq_0_1 : 0 <> 1.
