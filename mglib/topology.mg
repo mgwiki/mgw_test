@@ -9904,7 +9904,12 @@ Definition product_subbasis : set -> set -> set -> set -> set :=
 Definition product_topology : set -> set -> set -> set -> set :=
   fun X Tx Y Ty => generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty).
 
-(** from §15: product topology is a topology **) 
+(** Helper: product subbasis satisfies basis axioms **)
+Axiom product_subbasis_is_basis : forall X Tx Y Ty:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  basis_on (OrderedPair X Y) (product_subbasis X Tx Y Ty).
+
+(** from §15: product topology is a topology **)
 (** LATEX VERSION: The product topology determined by Tx and Ty satisfies the topology axioms on X×Y. **)
 Theorem product_topology_is_topology : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
@@ -9913,7 +9918,10 @@ let X Tx Y Ty.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
 prove topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
-admit. (** generated topology from subbasis of rectangles; verify topology axioms **)
+(** product_topology X Tx Y Ty = generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty) **)
+(** Use axiom that product_subbasis forms a basis, then apply lemma_topology_from_basis **)
+exact (lemma_topology_from_basis (OrderedPair X Y) (product_subbasis X Tx Y Ty)
+         (product_subbasis_is_basis X Tx Y Ty HTx HTy)).
 Qed.
 
 (** from §15 Theorem: basis of products of basis elements **) 
