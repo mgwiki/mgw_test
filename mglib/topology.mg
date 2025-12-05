@@ -9543,8 +9543,28 @@ claim HTmin_contains_all: forall T :e Fam, T c= Tmin.
   (** Since U :e T and T :e Fam, we have U :e Union Fam **)
   claim HUinUnionFam: U :e Union Fam.
   { exact (UnionI Fam U T HU HT). }
-  (** U is in the subbasis, so it's a single-element finite intersection, hence in the basis **)
-  admit. (** Show U :e basis_of_subbasis X (Union Fam), then show U :e generated_topology X (basis_of_subbasis X (Union Fam)) **)
+  (** U is in the subbasis, so by subbasis_elem_in_basis, it's in the basis **)
+  apply (xm (U = Empty)).
+  - assume HUempty: U = Empty.
+    (** Empty is in every topology **)
+    claim HEmptyinTmin: Empty :e Tmin.
+    { claim H1: ((Tmin c= Power X /\ Empty :e Tmin) /\ X :e Tmin) /\ (forall UFam :e Power Tmin, Union UFam :e Tmin).
+      { exact (andEL (((Tmin c= Power X /\ Empty :e Tmin) /\ X :e Tmin) /\ (forall UFam :e Power Tmin, Union UFam :e Tmin)) (forall U0 :e Tmin, forall V :e Tmin, U0 :/\: V :e Tmin) HTmin_topology). }
+      claim H2: (Tmin c= Power X /\ Empty :e Tmin) /\ X :e Tmin.
+      { exact (andEL ((Tmin c= Power X /\ Empty :e Tmin) /\ X :e Tmin) (forall UFam :e Power Tmin, Union UFam :e Tmin) H1). }
+      claim H3: Tmin c= Power X /\ Empty :e Tmin.
+      { exact (andEL (Tmin c= Power X /\ Empty :e Tmin) (X :e Tmin) H2). }
+      exact (andER (Tmin c= Power X) (Empty :e Tmin) H3).
+    }
+    rewrite HUempty.
+    exact HEmptyinTmin.
+  - assume HUnonempty: U <> Empty.
+    claim HUinBasis: U :e basis_of_subbasis X (Union Fam).
+    { exact (subbasis_elem_in_basis X (Union Fam) U HUinUnionFam HUnonempty). }
+    (** Now use basis_in_generated **)
+    claim HBasis: basis_on X (basis_of_subbasis X (Union Fam)).
+    { exact (finite_intersections_basis_of_subbasis X (Union Fam) HUnionFam_subbasis). }
+    exact (basis_in_generated X (basis_of_subbasis X (Union Fam)) U HBasis HUinBasis).
 }
 claim HTmin_minimal: forall T', topology_on X T' /\ (forall T :e Fam, T c= T') -> Tmin c= T'.
 { let T'. assume HT'_cond.
