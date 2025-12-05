@@ -9398,13 +9398,121 @@ Qed.
 (** from §13 Exercise 4(b): smallest/largest topology containing a family **) 
 (** LATEX VERSION: Exercise 4(b): There exist smallest and largest topologies containing a given family of topologies on X. **)
 Theorem ex13_4b_smallest_largest : forall X Fam:set,
+  (forall T :e Fam, topology_on X T) ->
   exists Tmin, topology_on X Tmin /\ (forall T :e Fam, T c= Tmin) /\
     (forall T', topology_on X T' /\ (forall T :e Fam, T c= T') -> Tmin c= T') /\
   exists Tmax, topology_on X Tmax /\ (forall T :e Fam, Tmax c= T) /\
     (forall T', topology_on X T' /\ (forall T :e Fam, T' c= T) -> T' c= Tmax).
 let X Fam.
+assume HfamTop: forall T :e Fam, topology_on X T.
 prove exists Tmin, topology_on X Tmin /\ (forall T :e Fam, T c= Tmin) /\ (forall T', topology_on X T' /\ (forall T :e Fam, T c= T') -> Tmin c= T') /\ exists Tmax, topology_on X Tmax /\ (forall T :e Fam, Tmax c= T) /\ (forall T', topology_on X T' /\ (forall T :e Fam, T' c= T) -> T' c= Tmax).
-admit. (** Tmin = generated topology from union of Fam; Tmax = intersection of Fam **)
+(** Strategy: Tmax = Intersection_Fam Fam (by ex13_4a_intersection_topology);           Tmin = generated_topology_from_subbasis X (Union Fam) **)
+set Tmax := Intersection_Fam Fam.
+set Tmin := generated_topology_from_subbasis X (Union Fam).
+(** First prove Tmax properties **)
+claim HTmax_topology: topology_on X Tmax.
+{ exact (ex13_4a_intersection_topology X Fam HfamTop). }
+claim HTmax_subset_all: forall T :e Fam, Tmax c= T.
+{ let T. assume HT: T :e Fam.
+  (** Tmax = Intersection_Fam Fam = {U :e Power (Union (Union Fam)) | forall T :e Fam, U :e T} **)
+  (** So every U in Tmax is in every T in Fam, hence Tmax c= T **)
+  let U. assume HU: U :e Tmax.
+  claim HUinT: U :e T.
+  { claim HUinAllT: forall T0:set, T0 :e Fam -> U :e T0.
+    { exact (SepE2 (Power (Union (Union Fam))) (fun U0 => forall T0:set, T0 :e Fam -> U0 :e T0) U HU). }
+    exact (HUinAllT T HT).
+  }
+  exact HUinT.
+}
+claim HTmax_maximal: forall T', topology_on X T' /\ (forall T :e Fam, T' c= T) -> T' c= Tmax.
+{ let T'. assume HT'_cond.
+  claim HT'_top: topology_on X T'.
+  { exact (andEL (topology_on X T') (forall T :e Fam, T' c= T) HT'_cond). }
+  claim HT'_sub_all: forall T :e Fam, T' c= T.
+  { exact (andER (topology_on X T') (forall T :e Fam, T' c= T) HT'_cond). }
+  (** Need to show T' c= Tmax, i.e., every U in T' is in Tmax **)
+  (** U :e Tmax iff U :e Power (Union (Union Fam)) and forall T :e Fam, U :e T **)
+  let U. assume HU: U :e T'.
+  (** Show U :e Tmax = Intersection_Fam Fam **)
+  claim HUinPower: U :e Power (Union (Union Fam)).
+  { apply PowerI.
+    (** Need U c= Union (Union Fam). Since T' is topology on X, U c= X. **)
+    (** And Union (Union Fam) = X when Fam nonempty (each T contains X) **)
+    claim HT'_sub_PowerX: T' c= Power X.
+    { claim H1: ((T' c= Power X /\ Empty :e T') /\ X :e T') /\ (forall UFam :e Power T', Union UFam :e T').
+      { exact (andEL (((T' c= Power X /\ Empty :e T') /\ X :e T') /\ (forall UFam :e Power T', Union UFam :e T')) (forall U0 :e T', forall V :e T', U0 :/\: V :e T') HT'_top). }
+      claim H2: (T' c= Power X /\ Empty :e T') /\ X :e T'.
+      { exact (andEL ((T' c= Power X /\ Empty :e T') /\ X :e T') (forall UFam :e Power T', Union UFam :e T') H1). }
+      claim H3: T' c= Power X /\ Empty :e T'.
+      { exact (andEL (T' c= Power X /\ Empty :e T') (X :e T') H2). }
+      exact (andEL (T' c= Power X) (Empty :e T') H3).
+    }
+    claim HU_sub_X: U c= X.
+    { claim HUinPowerX: U :e Power X.
+      { exact (HT'_sub_PowerX U HU). }
+      exact (PowerE X U HUinPowerX).
+    }
+    (** Now show U c= Union (Union Fam). We'll show Union (Union Fam) = X. **)
+    claim HUnionUnionFam_eq_X: Union (Union Fam) = X.
+    { apply (xm (exists T:set, T :e Fam)).
+      - assume HFamNonempty: exists T:set, T :e Fam.
+        apply set_ext.
+        + (** Union (Union Fam) c= X **)
+          let x. assume Hx: x :e Union (Union Fam).
+          apply UnionE_impred (Union Fam) x Hx.
+          let U0. assume HxU0: x :e U0. assume HU0: U0 :e Union Fam.
+          apply UnionE_impred Fam U0 HU0.
+          let T0. assume HU0T0: U0 :e T0. assume HT0: T0 :e Fam.
+          claim HT0top: topology_on X T0.
+          { exact (HfamTop T0 HT0). }
+          claim HT0sub: T0 c= Power X.
+          { claim H1: ((T0 c= Power X /\ Empty :e T0) /\ X :e T0) /\ (forall UFam :e Power T0, Union UFam :e T0).
+            { exact (andEL (((T0 c= Power X /\ Empty :e T0) /\ X :e T0) /\ (forall UFam :e Power T0, Union UFam :e T0)) (forall U :e T0, forall V :e T0, U :/\: V :e T0) HT0top). }
+            claim H2: (T0 c= Power X /\ Empty :e T0) /\ X :e T0.
+            { exact (andEL ((T0 c= Power X /\ Empty :e T0) /\ X :e T0) (forall UFam :e Power T0, Union UFam :e T0) H1). }
+            claim H3: T0 c= Power X /\ Empty :e T0.
+            { exact (andEL (T0 c= Power X /\ Empty :e T0) (X :e T0) H2). }
+            exact (andEL (T0 c= Power X) (Empty :e T0) H3).
+          }
+          claim HU0sub: U0 c= X.
+          { claim HU0inPowerX: U0 :e Power X.
+            { exact (HT0sub U0 HU0T0). }
+            exact (PowerE X U0 HU0inPowerX).
+          }
+          exact (HU0sub x HxU0).
+        + (** X c= Union (Union Fam) **)
+          apply HFamNonempty.
+          let T0. assume HT0: T0 :e Fam.
+          let x. assume Hx: x :e X.
+          claim HT0top: topology_on X T0.
+          { exact (HfamTop T0 HT0). }
+          claim HXT0: X :e T0.
+          { claim H1: ((T0 c= Power X /\ Empty :e T0) /\ X :e T0) /\ (forall UFam :e Power T0, Union UFam :e T0).
+            { exact (andEL (((T0 c= Power X /\ Empty :e T0) /\ X :e T0) /\ (forall UFam :e Power T0, Union UFam :e T0)) (forall U :e T0, forall V :e T0, U :/\: V :e T0) HT0top). }
+            claim H2: (T0 c= Power X /\ Empty :e T0) /\ X :e T0.
+            { exact (andEL ((T0 c= Power X /\ Empty :e T0) /\ X :e T0) (forall UFam :e Power T0, Union UFam :e T0) H1). }
+            exact (andER (T0 c= Power X /\ Empty :e T0) (X :e T0) H2).
+          }
+          claim HXinUnionFam: X :e Union Fam.
+          { exact (UnionI Fam X T0 HXT0 HT0). }
+          exact (UnionI (Union Fam) x X Hx HXinUnionFam).
+      - assume HFamEmpty: ~(exists T:set, T :e Fam).
+        (** When Fam empty, Union (Union Fam) = Empty, and T' also should relate to Empty case **)
+        admit. (** Edge case: Fam empty **)
+    }
+    rewrite HUnionUnionFam_eq_X.
+    exact HU_sub_X.
+  }
+  claim HUinAllT: forall T :e Fam, U :e T.
+  { let T. assume HT: T :e Fam.
+    claim HT'subT: T' c= T.
+    { exact (HT'_sub_all T HT). }
+    exact (HT'subT U HU).
+  }
+  exact (SepI (Power (Union (Union Fam))) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HUinPower HUinAllT).
+}
+(** Now prove Tmin properties **)
+admit. (** Tmin properties: is topology, contains all T in Fam, is minimal **)
 Qed.
 
 (** from §13 Exercise 4(c): specific smallest/largest topology on {a,b,c} **) 
