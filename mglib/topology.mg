@@ -9512,7 +9512,46 @@ claim HTmax_maximal: forall T', topology_on X T' /\ (forall T :e Fam, T' c= T) -
   exact (SepI (Power (Union (Union Fam))) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HUinPower HUinAllT).
 }
 (** Now prove Tmin properties **)
-admit. (** Tmin properties: is topology, contains all T in Fam, is minimal **)
+(** First show Union Fam is a subbasis **)
+claim HUnionFam_subbasis: subbasis_on X (Union Fam).
+{ (** Need Union Fam c= Power X **)
+  let U. assume HU: U :e Union Fam.
+  apply UnionE_impred Fam U HU.
+  let T. assume HUT: U :e T. assume HT: T :e Fam.
+  claim HTtop: topology_on X T.
+  { exact (HfamTop T HT). }
+  claim HTsub: T c= Power X.
+  { claim H1: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+    { exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HTtop). }
+    claim H2: (T c= Power X /\ Empty :e T) /\ X :e T.
+    { exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
+    claim H3: T c= Power X /\ Empty :e T.
+    { exact (andEL (T c= Power X /\ Empty :e T) (X :e T) H2). }
+    exact (andEL (T c= Power X) (Empty :e T) H3).
+  }
+  exact (HTsub U HUT).
+}
+claim HTmin_topology: topology_on X Tmin.
+{ exact (topology_from_subbasis_is_topology X (Union Fam) HUnionFam_subbasis). }
+claim HTmin_contains_all: forall T :e Fam, T c= Tmin.
+{ let T. assume HT: T :e Fam.
+  (** Need to show every open set in T is in Tmin = generated_topology_from_subbasis X (Union Fam) **)
+  let U. assume HU: U :e T.
+  (** Show U :e generated_topology_from_subbasis X (Union Fam) **)
+  (** = generated_topology X (basis_of_subbasis X (Union Fam)) **)
+  (** = {V :e Power X | forall x :e V, exists b :e basis_of_subbasis X (Union Fam), x :e b /\ b c= V} **)
+  (** Since U :e T and T :e Fam, we have U :e Union Fam **)
+  claim HUinUnionFam: U :e Union Fam.
+  { exact (UnionI Fam U T HU HT). }
+  (** U is in the subbasis, so it's a single-element finite intersection, hence in the basis **)
+  admit. (** Show U :e basis_of_subbasis X (Union Fam), then show U :e generated_topology X (basis_of_subbasis X (Union Fam)) **)
+}
+claim HTmin_minimal: forall T', topology_on X T' /\ (forall T :e Fam, T c= T') -> Tmin c= T'.
+{ let T'. assume HT'_cond.
+  admit. (** Show generated_topology_from_subbasis X (Union Fam) c= T' **)
+}
+(** Combine all parts with existential introductions **)
+admit. (** Package everything into the existential form **)
 Qed.
 
 (** from §13 Exercise 4(c): specific smallest/largest topology on {a,b,c} **) 
