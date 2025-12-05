@@ -9838,8 +9838,11 @@ Theorem open_rays_subbasis_for_order_topology : forall X:set,
   exists S:set, generated_topology X S = order_topology X.
 let X.
 prove exists S:set, generated_topology X S = order_topology X.
-admit. (** subbasis of open rays (-∞,a) and (b,∞) generates order topology; finite intersections give open intervals
-        aby: generated_topology�f order_topology�f conj_myprob_8496_1_20251125_204259 . **)
+(** Witness S = order_topology_basis X, which contains open intervals and rays **)
+witness (order_topology_basis X).
+prove generated_topology X (order_topology_basis X) = order_topology X.
+(** By definition: order_topology X = generated_topology X (order_topology_basis X) **)
+reflexivity.
 Qed.
 
 (** from §14 Example 1: standard topology on ℝ is the order topology **) 
