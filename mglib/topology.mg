@@ -9621,7 +9621,63 @@ Theorem ex13_5_basis_intersection : forall X A:set,
 let X A.
 assume HA: basis_on X A.
 prove generated_topology X A = Intersection_Fam {T :e Power (Power X)|topology_on X T /\ A c= T}.
-admit. (** generated topology is smallest topology containing basis; equals intersection of all such topologies **)
+set Fam := {T :e Power (Power X)|topology_on X T /\ A c= T}.
+apply set_ext.
+- (** generated_topology X A c= Intersection_Fam Fam **)
+  let U. assume HU: U :e generated_topology X A.
+  (** Show U :e Intersection_Fam Fam, i.e., U :e every T in Fam **)
+  claim HUinPower: U :e Power (Union (Union Fam)).
+  { apply PowerI.
+    claim HUsub: U c= X.
+    { exact (generated_topology_subset X A U HU). }
+    admit. (** Need Union (Union Fam) = X or U c= Union (Union Fam) **)
+  }
+  claim HUinAllT: forall T :e Fam, U :e T.
+  { let T. assume HT: T :e Fam.
+    (** Extract topology_on X T and A c= T from HT **)
+    claim HTinPowerPower: T :e Power (Power X).
+    { exact (SepE1 (Power (Power X)) (fun T0 => topology_on X T0 /\ A c= T0) T HT). }
+    claim HTcond: topology_on X T /\ A c= T.
+    { exact (SepE2 (Power (Power X)) (fun T0 => topology_on X T0 /\ A c= T0) T HT). }
+    claim HTtop: topology_on X T.
+    { exact (andEL (topology_on X T) (A c= T) HTcond). }
+    claim HAinT: A c= T.
+    { exact (andER (topology_on X T) (A c= T) HTcond). }
+    (** Apply generated_topology_finer: if T contains all basis elements, generated_topology X A c= T **)
+    claim HGenSubT: generated_topology X A c= T.
+    { claim HAllAinT: forall a :e A, a :e T.
+      { let a. assume Ha: a :e A.
+        exact (HAinT a Ha).
+      }
+      exact (generated_topology_finer X A T HA HTtop HAllAinT).
+    }
+    exact (HGenSubT U HU).
+  }
+  exact (SepI (Power (Union (Union Fam))) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HUinPower HUinAllT).
+- (** Intersection_Fam Fam c= generated_topology X A **)
+  let U. assume HU: U :e Intersection_Fam Fam.
+  (** U is in every topology containing A, in particular in generated_topology X A **)
+  claim HGenTop: topology_on X (generated_topology X A).
+  { exact (lemma_topology_from_basis X A HA). }
+  claim HAinGen: A c= generated_topology X A.
+  { let a. assume Ha: a :e A.
+    exact (basis_in_generated X A a HA Ha).
+  }
+  claim HGenInFam: generated_topology X A :e Fam.
+  { (** Need to show generated_topology X A :e Power (Power X) and satisfies the condition **)
+    claim HGenInPowerPower: generated_topology X A :e Power (Power X).
+    { apply PowerI.
+      let V. assume HV: V :e generated_topology X A.
+      claim HVsub: V c= X.
+      { exact (generated_topology_subset X A V HV). }
+      exact (PowerI X V HVsub).
+    }
+    exact (SepI (Power (Power X)) (fun T => topology_on X T /\ A c= T) (generated_topology X A) HGenInPowerPower (andI (topology_on X (generated_topology X A)) (A c= generated_topology X A) HGenTop HAinGen)).
+  }
+  (** Now U :e Intersection_Fam Fam means U :e every T in Fam **)
+  claim HUinAllT: forall T :e Fam, U :e T.
+  { exact (SepE2 (Power (Union (Union Fam))) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HU). }
+  exact (HUinAllT (generated_topology X A) HGenInFam).
 Qed.
 
 (** from §13 Exercise 6: incomparability of two real line topologies **) 
