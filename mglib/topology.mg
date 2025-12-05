@@ -9568,10 +9568,39 @@ claim HTmin_contains_all: forall T :e Fam, T c= Tmin.
 }
 claim HTmin_minimal: forall T', topology_on X T' /\ (forall T :e Fam, T c= T') -> Tmin c= T'.
 { let T'. assume HT'_cond.
-  admit. (** Show generated_topology_from_subbasis X (Union Fam) c= T' **)
+  claim HT'_top: topology_on X T'.
+  { exact (andEL (topology_on X T') (forall T :e Fam, T c= T') HT'_cond). }
+  claim HT'_contains_all: forall T :e Fam, T c= T'.
+  { exact (andER (topology_on X T') (forall T :e Fam, T c= T') HT'_cond). }
+  (** Show Union Fam c= T' **)
+  claim HUnionFam_sub_T': Union Fam c= T'.
+  { let U. assume HU: U :e Union Fam.
+    apply UnionE_impred Fam U HU.
+    let T. assume HUT: U :e T. assume HT: T :e Fam.
+    claim HTsubT': T c= T'.
+    { exact (HT'_contains_all T HT). }
+    exact (HTsubT' U HUT).
+  }
+  (** Apply topology_generated_by_basis_is_minimal **)
+  exact (topology_generated_by_basis_is_minimal X (Union Fam) T' HUnionFam_subbasis HT'_top HUnionFam_sub_T').
 }
 (** Combine all parts with existential introductions **)
-admit. (** Package everything into the existential form **)
+witness Tmin.
+apply andI.
+- apply andI.
+  + (** topology_on X Tmin /\ (forall T :e Fam, T c= Tmin) **)
+    apply andI.
+    * exact HTmin_topology.
+    * exact HTmin_contains_all.
+  + exact HTmin_minimal.
+- (** exists Tmax... **)
+  witness Tmax.
+  apply andI.
+  + (** topology_on X Tmax /\ (forall T :e Fam, Tmax c= T) **)
+    apply andI.
+    * exact HTmax_topology.
+    * exact HTmax_subset_all.
+  + exact HTmax_maximal.
 Qed.
 
 (** from §13 Exercise 4(c): specific smallest/largest topology on {a,b,c} **) 
