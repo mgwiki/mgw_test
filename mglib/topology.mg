@@ -9820,7 +9820,13 @@ Theorem order_topology_is_topology : forall X:set,
   topology_on X (order_topology X).
 let X.
 prove topology_on X (order_topology X).
-admit. (** verify topology axioms for order topology basis; unions and finite intersections of open intervals **)
+(** order_topology X = generated_topology X (order_topology_basis X) **)
+(** Strategy: show order_topology_basis X is a basis_on X, then apply lemma_topology_from_basis **)
+claim HBasis: basis_on X (order_topology_basis X).
+{ (** Need to verify three basis axioms: B c= Power X /\ (covering /\ intersection) **)
+  admit. (** Requires: (1) each interval/ray c= X, (2) every point in some basis element, (3) intersection property **)
+}
+exact (lemma_topology_from_basis X (order_topology_basis X) HBasis).
 Qed.
 
 (** from §14: open rays form a subbasis for the order topology **) 
