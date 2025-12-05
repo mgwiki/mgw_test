@@ -9630,7 +9630,40 @@ apply set_ext.
   { apply PowerI.
     claim HUsub: U c= X.
     { exact (generated_topology_subset X A U HU). }
-    admit. (** Need Union (Union Fam) = X or U c= Union (Union Fam) **)
+    (** Show U c= Union (Union Fam). Since U c= X, we show X c= Union (Union Fam). **)
+    (** X is in generated_topology X A, and generated_topology X A :e Fam, so X :e Union Fam **)
+    let x. assume Hx: x :e U.
+    claim HxX: x :e X.
+    { exact (HUsub x Hx). }
+    (** Show x :e Union (Union Fam) **)
+    claim HGenTop: topology_on X (generated_topology X A).
+    { exact (lemma_topology_from_basis X A HA). }
+    claim HXinGen: X :e generated_topology X A.
+    { claim H1: ((generated_topology X A c= Power X /\ Empty :e generated_topology X A) /\ X :e generated_topology X A) /\ (forall UFam0 :e Power (generated_topology X A), Union UFam0 :e generated_topology X A).
+      { exact (andEL (((generated_topology X A c= Power X /\ Empty :e generated_topology X A) /\ X :e generated_topology X A) /\ (forall UFam0 :e Power (generated_topology X A), Union UFam0 :e generated_topology X A)) (forall U0 :e generated_topology X A, forall V :e generated_topology X A, U0 :/\: V :e generated_topology X A) HGenTop). }
+      claim H2: (generated_topology X A c= Power X /\ Empty :e generated_topology X A) /\ X :e generated_topology X A.
+      { exact (andEL ((generated_topology X A c= Power X /\ Empty :e generated_topology X A) /\ X :e generated_topology X A) (forall UFam0 :e Power (generated_topology X A), Union UFam0 :e generated_topology X A) H1). }
+      exact (andER (generated_topology X A c= Power X /\ Empty :e generated_topology X A) (X :e generated_topology X A) H2).
+    }
+    (** Show generated_topology X A :e Fam **)
+    claim HAinGen: A c= generated_topology X A.
+    { let a. assume Ha: a :e A.
+      exact (basis_in_generated X A a HA Ha).
+    }
+    claim HGenInFam: generated_topology X A :e Fam.
+    { claim HGenInPowerPower: generated_topology X A :e Power (Power X).
+      { apply PowerI.
+        let V. assume HV: V :e generated_topology X A.
+        claim HVsub: V c= X.
+        { exact (generated_topology_subset X A V HV). }
+        exact (PowerI X V HVsub).
+      }
+      exact (SepI (Power (Power X)) (fun T => topology_on X T /\ A c= T) (generated_topology X A) HGenInPowerPower (andI (topology_on X (generated_topology X A)) (A c= generated_topology X A) HGenTop HAinGen)).
+    }
+    (** Now show x :e Union (Union Fam) **)
+    claim HXinUnionFam: X :e Union Fam.
+    { exact (UnionI Fam X (generated_topology X A) HXinGen HGenInFam). }
+    exact (UnionI (Union Fam) x X HxX HXinUnionFam).
   }
   claim HUinAllT: forall T :e Fam, U :e T.
   { let T. assume HT: T :e Fam.
