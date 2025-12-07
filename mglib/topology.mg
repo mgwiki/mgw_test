@@ -9924,7 +9924,11 @@ exact (lemma_topology_from_basis (OrderedPair X Y) (product_subbasis X Tx Y Ty)
          (product_subbasis_is_basis X Tx Y Ty HTx HTy)).
 Qed.
 
-(** from §15 Theorem: basis of products of basis elements **) 
+(** Definition: product basis from two bases **)
+Definition product_basis_from : set -> set -> set :=
+  fun Bx By => \/_ U :e Bx, {OrderedPair U V | V :e By}.
+
+(** from §15 Theorem: basis of products of basis elements **)
 (** LATEX VERSION: If Bx, By are bases for Tx, Ty, then the collection {U×V|U∈Bx, V∈By} is a basis generating the product topology. **)
 Theorem product_basis_generates :
   forall X Tx Y Ty Bx By:set,
@@ -9941,7 +9945,26 @@ prove exists B:set,
       basis_on (OrderedPair X Y) B /\
       (forall U :e Bx, forall V :e By, OrderedPair U V :e B) /\
   generated_topology (OrderedPair X Y) B = product_topology X Tx Y Ty.
-admit. (** construct B as rectangles U×V with U∈Bx,V∈By; verify B is basis and generates product topology **)
+(** Witness B = product_basis_from Bx By = {U×V | U∈Bx, V∈By} **)
+witness (product_basis_from Bx By).
+prove basis_on (OrderedPair X Y) (product_basis_from Bx By) /\
+      (forall U :e Bx, forall V :e By, OrderedPair U V :e product_basis_from Bx By) /\
+  generated_topology (OrderedPair X Y) (product_basis_from Bx By) = product_topology X Tx Y Ty.
+apply andI.
+- (** Part 1 & 2: product_basis_from Bx By is a basis and contains all U×V **)
+  apply andI.
+  + (** Prove basis_on (OrderedPair X Y) (product_basis_from Bx By) **)
+    admit. (** Need to verify three basis axioms: subset of Power X×Y, covering, and intersection property **)
+  + (** Prove forall U :e Bx, forall V :e By, OrderedPair U V :e product_basis_from Bx By **)
+    let U. assume HU: U :e Bx.
+    let V. assume HV: V :e By.
+    prove OrderedPair U V :e product_basis_from Bx By.
+    (** product_basis_from Bx By = \/_ U' :e Bx, {OrderedPair U' V' | V' :e By} **)
+    (** OrderedPair U V is in {OrderedPair U V' | V' :e By} which is in the union at U **)
+    (** Use UnionI with U, then show OrderedPair U V :e {OrderedPair U V' | V' :e By} **)
+    admit. (** Need to show {OrderedPair U V' | V' :e By} :e product_basis_from Bx By and OrderedPair U V in that set **)
+- (** Part 3: generated_topology (OrderedPair X Y) (product_basis_from Bx By) = product_topology X Tx Y Ty **)
+  admit. (** Show both topologies contain each other: use that Tx = generated_topology X Bx and Ty = generated_topology Y By **)
 Qed.
 
 (** from §15 Definition: projections on a product **) 
