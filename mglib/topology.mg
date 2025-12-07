@@ -16517,7 +16517,21 @@ let X Tx U.
 assume Hpara: paracompact_space X Tx.
 assume Hcover: open_cover X Tx U.
 prove exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V.
-admit. (** follows directly from definition of paracompact **)
+(** Extract the forall from paracompact definition **)
+claim Hforall: forall U0:set, open_cover X Tx U0 ->
+    exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U0.
+{ exact (andER (topology_on X Tx)
+               (forall U0:set, open_cover X Tx U0 ->
+                  exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U0)
+               Hpara). }
+(** Apply to U and extract V **)
+claim Hexists: exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U.
+{ exact (Hforall U Hcover). }
+apply Hexists.
+let V. assume HV.
+witness V.
+(** Extract just the first two conjuncts, dropping refine_of **)
+exact (andEL (open_cover X Tx V /\ locally_finite_family X Tx V) (refine_of V U) HV).
 Qed.
 
 (** from §41 Theorem: paracompact Hausdorff implies normal **) 
