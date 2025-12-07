@@ -14873,8 +14873,23 @@ assume HTy: topology_on Y Ty.
 prove exists Tprod:set, topology_on (OrderedPair X Y) Tprod /\
     continuous_map (OrderedPair X Y) Tprod X Tx (projection_map X Y) /\
     continuous_map (OrderedPair X Y) Tprod Y Ty (projection_map Y X).
-admit. (** product topology satisfies universal property; projections continuous by construction
-        aby: conj_myprob_9082_1_20251124_002413 product_topology_is_topology projections_are_continuous . **)
+(** Witness the product topology **)
+witness (product_topology X Tx Y Ty).
+(** Goal is: A /\ B /\ C which is left-associative: (A /\ B) /\ C **)
+apply andI.
+- (** First part: topology_on (OrderedPair X Y) (product_topology X Tx Y Ty) /\
+      continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) **)
+  apply andI.
+  + (** product_topology is a topology **)
+    exact (product_topology_is_topology X Tx Y Ty HTx HTy).
+  + (** first projection is continuous **)
+    exact (andEL (continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y))
+                 (continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X))
+                 (projections_are_continuous X Tx Y Ty HTx HTy)).
+- (** second projection is continuous **)
+  exact (andER (continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y))
+               (continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X))
+               (projections_are_continuous X Tx Y Ty HTx HTy)).
 Qed.
 
 (** from §20 Definition: metric and metric topology **) 
