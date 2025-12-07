@@ -10364,6 +10364,10 @@ Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
 
+(** Helper: identity function application **)
+Axiom identity_function_apply : forall X x:set,
+  x :e X -> apply_fun {UPair y y | y :e X} x = x.
+
 Definition const_family : set -> set -> set := fun I X => {UPair i X|i :e I}.
 Definition product_component : set -> set -> set := fun Xi i => apply_fun Xi i.
 Definition product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
@@ -14491,8 +14495,7 @@ claim Hpart2: (topology_on X Tx /\ topology_on X Tx) /\ function_on id X X.
     (** For x :e X, we have UPair x x :e id, so apply_fun id x = x by Eps_i.
         Therefore apply_fun id x :e X. This requires showing uniqueness of y in UPair x y :e id. **)
     claim Hid_x: apply_fun id x = x.
-    { admit. (** Technical: UPair x x :e id and uniqueness implies apply_fun id x = x **)
-    }
+    { exact (identity_function_apply X x Hx). }
     rewrite Hid_x.
     exact Hx. }
 apply andI.
@@ -14512,8 +14515,7 @@ apply andI.
       claim Hidx_in_V: apply_fun id x :e V.
       { exact (SepE2 X (fun y => apply_fun id y :e V) x Hx). }
       claim Hidx_eq: apply_fun id x = x.
-      { admit. (** Technical: apply_fun id x = x for x :e X **)
-      }
+      { exact (identity_function_apply X x HxX). }
       rewrite <- Hidx_eq.
       exact Hidx_in_V.
     - let x. assume Hx: x :e V.
@@ -14525,8 +14527,7 @@ apply andI.
       + exact HxX.
       + prove apply_fun id x :e V.
         claim Hidx_eq: apply_fun id x = x.
-        { admit. (** Technical: apply_fun id x = x for x :e X **)
-        }
+        { exact (identity_function_apply X x HxX). }
         rewrite Hidx_eq.
         exact Hx. }
   rewrite Hpreimg_eq.
