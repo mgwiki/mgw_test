@@ -10049,8 +10049,11 @@ apply andI.
       - (** Axiom 2: covering - every (x,y) is in some U×V **)
         let p. assume Hp: p :e OrderedPair X Y.
         prove exists b :e product_basis_from Bx By, p :e b.
-        (** p is in X×Y, so p = (x,y) for some x :e X, y :e Y **)
-        admit. (** Extract x,y from p; use basis covering to find Ux,Vy; show p :e Ux×Vy **)
+        (** p is in X×Y, so we need to extract the structure of p **)
+        (** For now, add axiom about decomposing elements of cartesian products **)
+        admit. (** Need axiom/theorem: p :e OrderedPair X Y implies exists x :e X, exists y :e Y, p = UPair (UPair x y) ...
+                   Then use covering of Bx, By to find basis elements **)
+
     * (** Axiom 3: intersection property **)
       admit. (** (U₁×V₁) ∩ (U₂×V₂) = (U₁∩U₂)×(V₁∩V₂) is covered by product basis **)
   + (** Prove forall U :e Bx, forall V :e By, OrderedPair U V :e product_basis_from Bx By **)
