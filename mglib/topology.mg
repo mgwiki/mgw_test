@@ -15297,21 +15297,66 @@ apply iffI.
   assume Hconn: connected_space X Tx.
   prove ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
   assume Hclopen: exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A.
+  (** Extract no-separation from connectedness **)
+  claim Hnosep: ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X).
+  { exact (andER (topology_on X Tx)
+                 (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X))
+                 Hconn). }
+  (** Clopen exists, so by axiom we get separation **)
   apply Hclopen.
   let A. assume HA.
-  (** Use axiom to get separation from clopen set **)
-  admit. (** Need to extract A <> Empty, A <> X, open_in, closed_in from HA and apply clopen_gives_separation **)
+  (** Left-associative: (((A <> Empty /\ A <> X) /\ open_in X Tx A) /\ closed_in X Tx A) **)
+  claim HAne: A <> Empty.
+  { exact (andEL (A <> Empty) (A <> X)
+                 (andEL (A <> Empty /\ A <> X) (open_in X Tx A)
+                        (andEL ((A <> Empty /\ A <> X) /\ open_in X Tx A) (closed_in X Tx A) HA))). }
+  claim HAnX: A <> X.
+  { exact (andER (A <> Empty) (A <> X)
+                 (andEL (A <> Empty /\ A <> X) (open_in X Tx A)
+                        (andEL ((A <> Empty /\ A <> X) /\ open_in X Tx A) (closed_in X Tx A) HA))). }
+  claim HAopen: open_in X Tx A.
+  { exact (andER (A <> Empty /\ A <> X) (open_in X Tx A)
+                 (andEL ((A <> Empty /\ A <> X) /\ open_in X Tx A) (closed_in X Tx A) HA)). }
+  claim HAclosed: closed_in X Tx A.
+  { exact (andER ((A <> Empty /\ A <> X) /\ open_in X Tx A) (closed_in X Tx A) HA). }
+  (** Apply axiom to get separation **)
+  claim Hsepexists: exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X.
+  { exact (clopen_gives_separation X Tx A HTx HAne HAnX HAopen HAclosed). }
+  (** Contradiction **)
+  apply Hnosep.
+  exact Hsepexists.
 - (** Backward: no nontrivial clopen implies connected **)
   assume Hno_clopen: ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
   prove connected_space X Tx.
+  prove topology_on X Tx /\ ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X).
   apply andI.
   + exact HTx.
   + prove ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X).
     assume Hsep: exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X.
     apply Hsep.
-    let U. let V. assume HUV.
-    (** Use axiom to get clopen from separation **)
-    admit. (** Need to extract components from HUV and apply separation_gives_clopen **)
+    let U. assume HsepV: exists V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X.
+    apply HsepV.
+    let V. assume HUV.
+    (** Left-associative: (((U :e Tx /\ V :e Tx) /\ separation_of X U V) /\ U :\/: V = X) **)
+    claim HU: U :e Tx.
+    { exact (andEL (U :e Tx) (V :e Tx)
+                   (andEL (U :e Tx /\ V :e Tx) (separation_of X U V)
+                          (andEL ((U :e Tx /\ V :e Tx) /\ separation_of X U V) (U :\/: V = X) HUV))). }
+    claim HV: V :e Tx.
+    { exact (andER (U :e Tx) (V :e Tx)
+                   (andEL (U :e Tx /\ V :e Tx) (separation_of X U V)
+                          (andEL ((U :e Tx /\ V :e Tx) /\ separation_of X U V) (U :\/: V = X) HUV))). }
+    claim Hsepof: separation_of X U V.
+    { exact (andER (U :e Tx /\ V :e Tx) (separation_of X U V)
+                   (andEL ((U :e Tx /\ V :e Tx) /\ separation_of X U V) (U :\/: V = X) HUV)). }
+    claim Hcover: U :\/: V = X.
+    { exact (andER ((U :e Tx /\ V :e Tx) /\ separation_of X U V) (U :\/: V = X) HUV). }
+    (** Apply axiom to get clopen from separation **)
+    claim Hclopenexists: exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A.
+    { exact (separation_gives_clopen X Tx U V HTx HU HV Hsepof Hcover). }
+    (** Contradiction **)
+    apply Hno_clopen.
+    exact Hclopenexists.
 Qed.
 
 (** from §23 Lemma 23.1: separations in subspaces via limit points **) 
