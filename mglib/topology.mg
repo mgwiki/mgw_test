@@ -10074,7 +10074,16 @@ apply andI.
     { exact (ReplI By (fun V' => OrderedPair U V') V HV). }
     exact (famunionI Bx (fun U' => {OrderedPair U' V' | V' :e By}) U (OrderedPair U V) HU HUVinRepl).
 - (** Part 3: generated_topology (OrderedPair X Y) (product_basis_from Bx By) = product_topology X Tx Y Ty **)
-  admit. (** Show both topologies contain each other: use that Tx = generated_topology X Bx and Ty = generated_topology Y By **)
+  (** product_topology X Tx Y Ty = generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty) **)
+  (** product_subbasis X Tx Y Ty uses Tx and Ty, which equal generated_topology X Bx and generated_topology Y By **)
+  (** product_basis_from Bx By = {U×V | U :e Bx, V :e By} **)
+  (** Need to show these generate the same topology **)
+  claim HTx_eq_fwd: generated_topology X Bx = Tx.
+  { exact (andER (basis_on X Bx) (generated_topology X Bx = Tx) HBx). }
+  claim HTy_eq_fwd: generated_topology Y By = Ty.
+  { exact (andER (basis_on Y By) (generated_topology Y By = Ty) HBy). }
+  (** The key is that product_basis_from is a basis for the product topology **)
+  admit. (** Need theorem: if Bx, By are bases for Tx, Ty, then product basis generates product topology **)
 Qed.
 
 (** from §15 Definition: projections on a product **) 
