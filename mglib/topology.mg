@@ -15421,7 +15421,18 @@ admit. (** any separation of A∪{b} separates A or isolates b; contradicts conn
         aby: conj_myprob_9294_1_20251124_010913 separation_subspace_limit_points binunion_idr binunionI2 SingE connected_space�f connected_iff_no_nontrivial_clopen SingI binunion_idl ordsucc�f not_ordinal_Sing1 subspace_topology�f prop_ext_2 . **)
 Qed.
 
-(** from §23: continuous images of connected spaces are connected **) 
+(** Helper axioms for continuous_image_connected **)
+Axiom continuous_map_surjective : forall X Tx Y Ty f:set,
+  continuous_map X Tx Y Ty f ->
+  forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y.
+
+Axiom preimage_preserves_separation : forall X Tx Y Ty f U V:set,
+  continuous_map X Tx Y Ty f ->
+  U :e Ty -> V :e Ty -> separation_of Y U V -> U :\/: V = Y ->
+  separation_of X (preimage_of X f U) (preimage_of X f V) /\
+  (preimage_of X f U) :\/: (preimage_of X f V) = X.
+
+(** from §23: continuous images of connected spaces are connected **)
 Theorem continuous_image_connected : forall X Tx Y Ty f:set,
   connected_space X Tx ->
   continuous_map X Tx Y Ty f ->
@@ -15430,8 +15441,82 @@ let X Tx Y Ty f.
 assume HX: connected_space X Tx.
 assume Hf: continuous_map X Tx Y Ty f.
 prove connected_space Y Ty.
-admit. (** separation of Y pulls back to separation of X via continuity; contradicts connectedness of X
-        aby: binunion�f binunion_idl conj_myprob_9302_1_20251124_020904 prop_ext_2 In_5Fno2cycle binunionI1 Repl_5FEmpty ReplE_27 UPairI1 UPairI2 UnionEq binintersect�f open_in_subspace_iff binintersectE open_set�f ex13_1_local_open_subset ReplEq . **)
+(** Extract topologies from assumptions **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X))
+               HX). }
+claim HTy: topology_on Y Ty.
+{ exact (andER (topology_on X Tx) (topology_on Y Ty)
+          (andEL (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y)
+            (andEL (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
+                   (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                   Hf))). }
+(** Prove Y is connected by contradiction **)
+prove topology_on Y Ty /\ ~(exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V /\ U :\/: V = Y).
+apply andI.
+- exact HTy.
+- prove ~(exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V /\ U :\/: V = Y).
+  assume HsepY: exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V /\ U :\/: V = Y.
+  (** Extract the separation of Y **)
+  apply HsepY.
+  let U. assume HsepY_V: exists V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V /\ U :\/: V = Y.
+  apply HsepY_V.
+  let V. assume HUV.
+  (** Extract components: (((U :e Ty /\ V :e Ty) /\ separation_of Y U V) /\ U :\/: V = Y) **)
+  claim HU: U :e Ty.
+  { exact (andEL (U :e Ty) (V :e Ty)
+                 (andEL (U :e Ty /\ V :e Ty) (separation_of Y U V)
+                        (andEL ((U :e Ty /\ V :e Ty) /\ separation_of Y U V) (U :\/: V = Y) HUV))). }
+  claim HV: V :e Ty.
+  { exact (andER (U :e Ty) (V :e Ty)
+                 (andEL (U :e Ty /\ V :e Ty) (separation_of Y U V)
+                        (andEL ((U :e Ty /\ V :e Ty) /\ separation_of Y U V) (U :\/: V = Y) HUV))). }
+  claim HsepYUV: separation_of Y U V.
+  { exact (andER (U :e Ty /\ V :e Ty) (separation_of Y U V)
+                 (andEL ((U :e Ty /\ V :e Ty) /\ separation_of Y U V) (U :\/: V = Y) HUV)). }
+  claim HcoverY: U :\/: V = Y.
+  { exact (andER ((U :e Ty /\ V :e Ty) /\ separation_of Y U V) (U :\/: V = Y) HUV). }
+  (** Use axiom to pull back separation to X **)
+  claim HsepX: separation_of X (preimage_of X f U) (preimage_of X f V) /\
+               (preimage_of X f U) :\/: (preimage_of X f V) = X.
+  { exact (preimage_preserves_separation X Tx Y Ty f U V Hf HU HV HsepYUV HcoverY). }
+  (** Extract separation components **)
+  claim HsepXUV: separation_of X (preimage_of X f U) (preimage_of X f V).
+  { exact (andEL (separation_of X (preimage_of X f U) (preimage_of X f V))
+                 ((preimage_of X f U) :\/: (preimage_of X f V) = X)
+                 HsepX). }
+  claim HcoverX: (preimage_of X f U) :\/: (preimage_of X f V) = X.
+  { exact (andER (separation_of X (preimage_of X f U) (preimage_of X f V))
+                 ((preimage_of X f U) :\/: (preimage_of X f V) = X)
+                 HsepX). }
+  (** Preimages are open by continuity **)
+  claim HpreimgU: preimage_of X f U :e Tx.
+  { exact (andER (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
+                 (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                 Hf U HU). }
+  claim HpreimgV: preimage_of X f V :e Tx.
+  { exact (andER (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
+                 (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                 Hf V HV). }
+  (** This gives a separation of X **)
+  claim HsepXexists: exists U0 V0:set, U0 :e Tx /\ V0 :e Tx /\ separation_of X U0 V0 /\ U0 :\/: V0 = X.
+  { witness (preimage_of X f U). witness (preimage_of X f V).
+    prove (preimage_of X f U) :e Tx /\ (preimage_of X f V) :e Tx /\ separation_of X (preimage_of X f U) (preimage_of X f V) /\ (preimage_of X f U) :\/: (preimage_of X f V) = X.
+    apply andI.
+    - apply andI.
+      + apply andI.
+        * exact HpreimgU.
+        * exact HpreimgV.
+      + exact HsepXUV.
+    - exact HcoverX. }
+  (** Contradiction with connectedness of X **)
+  claim HnosepX: ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X).
+  { exact (andER (topology_on X Tx)
+                 (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X))
+                 HX). }
+  apply HnosepX.
+  exact HsepXexists.
 Qed.
 
 Theorem interval_connected : connected_space R R_standard_topology.
