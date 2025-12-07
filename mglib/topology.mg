@@ -9958,6 +9958,14 @@ Axiom OrderedPair_elem_decompose : forall X Y p:set,
 (** Helper: singleton subset property **)
 Axiom singleton_subset : forall x U:set, x :e U -> {x} c= U.
 
+(** Helper: coordinates of product elements **)
+Axiom OrderedPair_coords_in : forall x y U V p:set,
+  p :e OrderedPair {x} {y} -> p :e OrderedPair U V -> x :e U /\ y :e V.
+
+(** Helper: intersection of cartesian products **)
+Axiom OrderedPair_intersection : forall U1 V1 U2 V2:set,
+  OrderedPair U1 V1 :/\: OrderedPair U2 V2 = OrderedPair (U1 :/\: U2) (V1 :/\: V2).
+
 Definition product_subbasis : set -> set -> set -> set -> set :=
   fun X Tx Y Ty =>
     \/_ U :e Tx, {rectangle_set U V|V :e Ty}.
@@ -10136,11 +10144,156 @@ apply andI.
       let b2. assume Hb2: b2 :e product_basis_from Bx By.
       let p. assume Hpb1: p :e b1. assume Hpb2: p :e b2.
       prove exists b3 :e product_basis_from Bx By, p :e b3 /\ b3 c= b1 :/\: b2.
-      (** b1 = U1×V1 for some U1 :e Bx, V1 :e By **)
-      (** b2 = U2×V2 for some U2 :e Bx, V2 :e By **)
-      (** (U1×V1) ∩ (U2×V2) = (U1∩U2)×(V1∩V2) **)
-      (** Use basis intersection property to find U3 :e Bx, V3 :e By with appropriate containments **)
-      admit. (** Need to decompose b1, b2, extract coordinates from p, use basis intersection properties **)
+      (** Extract U1, V1 from b1 **)
+      claim Hexists1: exists U1 :e Bx, b1 :e {OrderedPair U1 V' | V' :e By}.
+      { exact (famunionE Bx (fun U' => {OrderedPair U' V' | V' :e By}) b1 Hb1). }
+      apply Hexists1.
+      let U1. assume HU1_conj: U1 :e Bx /\ b1 :e {OrderedPair U1 V' | V' :e By}.
+      claim HU1: U1 :e Bx.
+      { exact (andEL (U1 :e Bx) (b1 :e {OrderedPair U1 V' | V' :e By}) HU1_conj). }
+      claim Hb1Repl: b1 :e {OrderedPair U1 V' | V' :e By}.
+      { exact (andER (U1 :e Bx) (b1 :e {OrderedPair U1 V' | V' :e By}) HU1_conj). }
+      claim Hexists1b: exists V1 :e By, b1 = OrderedPair U1 V1.
+      { exact (ReplE By (fun V' => OrderedPair U1 V') b1 Hb1Repl). }
+      apply Hexists1b.
+      let V1. assume HV1_conj: V1 :e By /\ b1 = OrderedPair U1 V1.
+      claim HV1: V1 :e By.
+      { exact (andEL (V1 :e By) (b1 = OrderedPair U1 V1) HV1_conj). }
+      claim Hb1eq: b1 = OrderedPair U1 V1.
+      { exact (andER (V1 :e By) (b1 = OrderedPair U1 V1) HV1_conj). }
+      (** Extract U2, V2 from b2 **)
+      claim Hexists2: exists U2 :e Bx, b2 :e {OrderedPair U2 V' | V' :e By}.
+      { exact (famunionE Bx (fun U' => {OrderedPair U' V' | V' :e By}) b2 Hb2). }
+      apply Hexists2.
+      let U2. assume HU2_conj: U2 :e Bx /\ b2 :e {OrderedPair U2 V' | V' :e By}.
+      claim HU2: U2 :e Bx.
+      { exact (andEL (U2 :e Bx) (b2 :e {OrderedPair U2 V' | V' :e By}) HU2_conj). }
+      claim Hb2Repl: b2 :e {OrderedPair U2 V' | V' :e By}.
+      { exact (andER (U2 :e Bx) (b2 :e {OrderedPair U2 V' | V' :e By}) HU2_conj). }
+      claim Hexists2b: exists V2 :e By, b2 = OrderedPair U2 V2.
+      { exact (ReplE By (fun V' => OrderedPair U2 V') b2 Hb2Repl). }
+      apply Hexists2b.
+      let V2. assume HV2_conj: V2 :e By /\ b2 = OrderedPair U2 V2.
+      claim HV2: V2 :e By.
+      { exact (andEL (V2 :e By) (b2 = OrderedPair U2 V2) HV2_conj). }
+      claim Hb2eq: b2 = OrderedPair U2 V2.
+      { exact (andER (V2 :e By) (b2 = OrderedPair U2 V2) HV2_conj). }
+      (** Show p :e OrderedPair X Y **)
+      claim Hb1sub: b1 c= OrderedPair X Y.
+      { claim Hb1Power: b1 :e Power (OrderedPair X Y).
+        { (** Use same logic as Axiom 1 **)
+          claim HBx_sub: Bx c= Power X.
+          { exact (andEL (Bx c= Power X) (forall x :e X, exists b :e Bx, x :e b) (andEL (Bx c= Power X /\ (forall x :e X, exists b :e Bx, x :e b)) (forall b1 :e Bx, forall b2 :e Bx, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e Bx, x :e b3 /\ b3 c= b1 :/\: b2) HBx_basis)). }
+          claim HBy_sub: By c= Power Y.
+          { exact (andEL (By c= Power Y) (forall y :e Y, exists b :e By, y :e b) (andEL (By c= Power Y /\ (forall y :e Y, exists b :e By, y :e b)) (forall b1 :e By, forall b2 :e By, forall y:set, y :e b1 -> y :e b2 -> exists b3 :e By, y :e b3 /\ b3 c= b1 :/\: b2) HBy_basis)). }
+          claim HU1subX: U1 c= X.
+          { exact (PowerE X U1 (HBx_sub U1 HU1)). }
+          claim HV1subY: V1 c= Y.
+          { exact (PowerE Y V1 (HBy_sub V1 HV1)). }
+          claim HU1V1sub: OrderedPair U1 V1 c= OrderedPair X Y.
+          { exact (OrderedPair_Subq U1 V1 X Y HU1subX HV1subY). }
+          claim Hb1sub_inner: b1 c= OrderedPair X Y.
+          { rewrite Hb1eq. exact HU1V1sub. }
+          exact (PowerI (OrderedPair X Y) b1 Hb1sub_inner). }
+        exact (PowerE (OrderedPair X Y) b1 Hb1Power). }
+      claim Hp_XY: p :e OrderedPair X Y.
+      { exact (Hb1sub p Hpb1). }
+      (** Extract coordinates x, y from p **)
+      claim Hcoords: exists x :e X, exists y :e Y, p :e OrderedPair {x} {y}.
+      { exact (OrderedPair_elem_decompose X Y p Hp_XY). }
+      apply Hcoords.
+      let x. assume Hx_conj: x :e X /\ exists y :e Y, p :e OrderedPair {x} {y}.
+      claim Hx: x :e X.
+      { exact (andEL (x :e X) (exists y :e Y, p :e OrderedPair {x} {y}) Hx_conj). }
+      claim Hy_exists: exists y :e Y, p :e OrderedPair {x} {y}.
+      { exact (andER (x :e X) (exists y :e Y, p :e OrderedPair {x} {y}) Hx_conj). }
+      apply Hy_exists.
+      let y. assume Hy_conj: y :e Y /\ p :e OrderedPair {x} {y}.
+      claim Hy: y :e Y.
+      { exact (andEL (y :e Y) (p :e OrderedPair {x} {y}) Hy_conj). }
+      claim Hp_sing: p :e OrderedPair {x} {y}.
+      { exact (andER (y :e Y) (p :e OrderedPair {x} {y}) Hy_conj). }
+      (** Show x :e U1 :/\: U2 and y :e V1 :/\: V2 **)
+      claim Hp_b1: p :e OrderedPair U1 V1.
+      { rewrite <- Hb1eq. exact Hpb1. }
+      claim Hp_b2: p :e OrderedPair U2 V2.
+      { rewrite <- Hb2eq. exact Hpb2. }
+      claim Hxy_U1V1: x :e U1 /\ y :e V1.
+      { exact (OrderedPair_coords_in x y U1 V1 p Hp_sing Hp_b1). }
+      claim Hxy_U2V2: x :e U2 /\ y :e V2.
+      { exact (OrderedPair_coords_in x y U2 V2 p Hp_sing Hp_b2). }
+      claim Hx_U1: x :e U1.
+      { exact (andEL (x :e U1) (y :e V1) Hxy_U1V1). }
+      claim Hy_V1: y :e V1.
+      { exact (andER (x :e U1) (y :e V1) Hxy_U1V1). }
+      claim Hx_U2: x :e U2.
+      { exact (andEL (x :e U2) (y :e V2) Hxy_U2V2). }
+      claim Hy_V2: y :e V2.
+      { exact (andER (x :e U2) (y :e V2) Hxy_U2V2). }
+      (** Use basis intersection property for Bx **)
+      claim HBx_intersect: forall b1' :e Bx, forall b2' :e Bx, forall x':set,
+        x' :e b1' -> x' :e b2' -> exists b3' :e Bx, x' :e b3' /\ b3' c= b1' :/\: b2'.
+      { exact (andER (Bx c= Power X /\ (forall x' :e X, exists b :e Bx, x' :e b))
+                     (forall b1' :e Bx, forall b2' :e Bx, forall x':set, x' :e b1' -> x' :e b2' -> exists b3' :e Bx, x' :e b3' /\ b3' c= b1' :/\: b2')
+                     HBx_basis). }
+      claim HU3_exists: exists U3 :e Bx, x :e U3 /\ U3 c= U1 :/\: U2.
+      { exact (HBx_intersect U1 HU1 U2 HU2 x Hx_U1 Hx_U2). }
+      apply HU3_exists.
+      let U3. assume HU3_conj: U3 :e Bx /\ (x :e U3 /\ U3 c= U1 :/\: U2).
+      claim HU3: U3 :e Bx.
+      { exact (andEL (U3 :e Bx) (x :e U3 /\ U3 c= U1 :/\: U2) HU3_conj). }
+      claim Hx_U3_and_sub: x :e U3 /\ U3 c= U1 :/\: U2.
+      { exact (andER (U3 :e Bx) (x :e U3 /\ U3 c= U1 :/\: U2) HU3_conj). }
+      claim Hx_U3: x :e U3.
+      { exact (andEL (x :e U3) (U3 c= U1 :/\: U2) Hx_U3_and_sub). }
+      claim HU3_sub: U3 c= U1 :/\: U2.
+      { exact (andER (x :e U3) (U3 c= U1 :/\: U2) Hx_U3_and_sub). }
+      (** Use basis intersection property for By **)
+      claim HBy_intersect: forall b1' :e By, forall b2' :e By, forall y':set,
+        y' :e b1' -> y' :e b2' -> exists b3' :e By, y' :e b3' /\ b3' c= b1' :/\: b2'.
+      { exact (andER (By c= Power Y /\ (forall y' :e Y, exists b :e By, y' :e b))
+                     (forall b1' :e By, forall b2' :e By, forall y':set, y' :e b1' -> y' :e b2' -> exists b3' :e By, y' :e b3' /\ b3' c= b1' :/\: b2')
+                     HBy_basis). }
+      claim HV3_exists: exists V3 :e By, y :e V3 /\ V3 c= V1 :/\: V2.
+      { exact (HBy_intersect V1 HV1 V2 HV2 y Hy_V1 Hy_V2). }
+      apply HV3_exists.
+      let V3. assume HV3_conj: V3 :e By /\ (y :e V3 /\ V3 c= V1 :/\: V2).
+      claim HV3: V3 :e By.
+      { exact (andEL (V3 :e By) (y :e V3 /\ V3 c= V1 :/\: V2) HV3_conj). }
+      claim Hy_V3_and_sub: y :e V3 /\ V3 c= V1 :/\: V2.
+      { exact (andER (V3 :e By) (y :e V3 /\ V3 c= V1 :/\: V2) HV3_conj). }
+      claim Hy_V3: y :e V3.
+      { exact (andEL (y :e V3) (V3 c= V1 :/\: V2) Hy_V3_and_sub). }
+      claim HV3_sub: V3 c= V1 :/\: V2.
+      { exact (andER (y :e V3) (V3 c= V1 :/\: V2) Hy_V3_and_sub). }
+      (** Show p :e OrderedPair U3 V3 **)
+      claim Hx_sing_sub: {x} c= U3.
+      { exact (singleton_subset x U3 Hx_U3). }
+      claim Hy_sing_sub: {y} c= V3.
+      { exact (singleton_subset y V3 Hy_V3). }
+      claim HU3V3_super: OrderedPair {x} {y} c= OrderedPair U3 V3.
+      { exact (OrderedPair_Subq {x} {y} U3 V3 Hx_sing_sub Hy_sing_sub). }
+      claim Hp_U3V3: p :e OrderedPair U3 V3.
+      { exact (HU3V3_super p Hp_sing). }
+      (** Show OrderedPair U3 V3 c= b1 :/\: b2 **)
+      claim Hb1b2_int: b1 :/\: b2 = OrderedPair U1 V1 :/\: OrderedPair U2 V2.
+      { rewrite Hb1eq. rewrite Hb2eq. reflexivity. }
+      claim Hprod_int: OrderedPair U1 V1 :/\: OrderedPair U2 V2 = OrderedPair (U1 :/\: U2) (V1 :/\: V2).
+      { exact (OrderedPair_intersection U1 V1 U2 V2). }
+      claim HU3V3_sub: OrderedPair U3 V3 c= OrderedPair (U1 :/\: U2) (V1 :/\: V2).
+      { exact (OrderedPair_Subq U3 V3 (U1 :/\: U2) (V1 :/\: V2) HU3_sub HV3_sub). }
+      claim HU3V3_sub_b1b2: OrderedPair U3 V3 c= b1 :/\: b2.
+      { rewrite Hb1b2_int. rewrite Hprod_int. exact HU3V3_sub. }
+      (** Witness OrderedPair U3 V3 **)
+      witness (OrderedPair U3 V3).
+      prove OrderedPair U3 V3 :e product_basis_from Bx By /\ (p :e OrderedPair U3 V3 /\ OrderedPair U3 V3 c= b1 :/\: b2).
+      apply andI.
+      + claim HU3V3inRepl: OrderedPair U3 V3 :e {OrderedPair U3 V' | V' :e By}.
+        { exact (ReplI By (fun V' => OrderedPair U3 V') V3 HV3). }
+        exact (famunionI Bx (fun U' => {OrderedPair U' V' | V' :e By}) U3 (OrderedPair U3 V3) HU3 HU3V3inRepl).
+      + apply andI.
+        - exact Hp_U3V3.
+        - exact HU3V3_sub_b1b2.
   + (** Prove forall U :e Bx, forall V :e By, OrderedPair U V :e product_basis_from Bx By **)
     let U. assume HU: U :e Bx.
     let V. assume HV: V :e By.
