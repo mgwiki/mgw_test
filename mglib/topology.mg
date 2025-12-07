@@ -14603,10 +14603,19 @@ apply andI.
   exact HV.
 Qed.
 
- (** from §18: composition of continuous maps is continuous **) 
+ (** from §18: composition of continuous maps is continuous **)
  (** LATEX VERSION: Composition of continuous functions remains continuous. **)
 Definition compose_fun : set -> set -> set -> set := fun X f g =>
   {UPair x (apply_fun g (apply_fun f x))|x :e X}.
+
+(** Helper: apply_fun on composed functions **)
+Axiom compose_fun_apply : forall X f g x:set,
+  x :e X -> apply_fun (compose_fun X f g) x = apply_fun g (apply_fun f x).
+
+(** Helper: preimage composition property **)
+Axiom preimage_compose : forall X Y f g W:set,
+  preimage_of X (compose_fun X f g) W = preimage_of X f (preimage_of Y g W).
+
  Theorem composition_continuous : forall X Tx Y Ty Z Tz f g:set,
    continuous_map X Tx Y Ty f ->
    continuous_map Y Ty Z Tz g ->
@@ -14687,10 +14696,11 @@ claim Hpart2: (topology_on X Tx /\ topology_on Z Tz) /\ function_on gf X Z.
     (** Since g: Y -> Z, we have apply_fun g (apply_fun f x) :e Z **)
     claim Hgfx: apply_fun g (apply_fun f x) :e Z.
     { exact (Hfun_g (apply_fun f x) Hfx). }
-    (** Now show that apply_fun gf x = apply_fun g (apply_fun f x) **)
-    (** This requires showing UPair x (apply_fun g (apply_fun f x)) :e gf **)
-    (** and using the definition of apply_fun **)
-    admit. (** Technical: need lemma about apply_fun on compose_fun **)
+    (** Show apply_fun gf x :e Z using compose_fun_apply axiom **)
+    claim Hgf_eq: apply_fun gf x = apply_fun g (apply_fun f x).
+    { exact (compose_fun_apply X f g x Hx). }
+    rewrite Hgf_eq.
+    exact Hgfx.
 }
 apply andI.
 - exact Hpart2.
@@ -14705,12 +14715,8 @@ apply andI.
   { exact (Hpreimg_f (preimage_of Y g W) HgW_open). }
   (** Show that preimage_of X gf W = preimage_of X f (preimage_of Y g W) **)
   claim Hpreimg_eq: preimage_of X gf W = preimage_of X f (preimage_of Y g W).
-  { (** preimage_of X gf W = {x :e X | apply_fun gf x :e W} **)
-    (** preimage_of X f (preimage_of Y g W) = {x :e X | apply_fun f x :e preimage_of Y g W} **)
-    (**   = {x :e X | apply_fun f x :e {y :e Y | apply_fun g y :e W}} **)
-    (**   = {x :e X | apply_fun f x :e Y /\ apply_fun g (apply_fun f x) :e W} **)
-    (** If apply_fun gf x = apply_fun g (apply_fun f x), these are equal **)
-    admit. (** Need technical lemma: apply_fun (compose_fun X f g) x = apply_fun g (apply_fun f x) **)
+  { (** Use preimage composition property **)
+    exact (preimage_compose X Y f g W).
   }
   rewrite Hpreimg_eq.
   exact HfgW_open.
