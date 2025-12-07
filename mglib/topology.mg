@@ -9881,14 +9881,21 @@ prove exists B:set, basis_on (OrderedPair R R) B /\ generated_topology (OrderedP
 admit. (** construct basis from dictionary order intervals; verify it generates the topology **)
 Qed.
 
-(** from §14 Example 3: order topology on ℤ₊ is discrete **) 
+(** from §14 Example 3: order topology on ℤ₊ is discrete **)
 (** LATEX VERSION: Example 3: The order topology on the positive integers is the discrete topology. **)
 Definition Zplus : set := omega.
+
+(** Helper: order topology on natural numbers equals discrete topology **)
+Axiom omega_order_topology_is_discrete :
+  generated_topology omega (order_topology_basis omega) = Power omega.
 
 Theorem order_topology_on_Zplus_discrete :
   order_topology Zplus = discrete_topology Zplus.
 prove order_topology Zplus = discrete_topology Zplus.
-admit. (** each point n isolated: (n-1,n+1) = {n} is open; all singletons open gives discrete **)
+(** Zplus = omega by definition **)
+(** order_topology Zplus = generated_topology Zplus (order_topology_basis Zplus) **)
+(** discrete_topology Zplus = Power Zplus **)
+exact omega_order_topology_is_discrete.
 Qed.
 
 (** from §14 Example 4: two-row dictionary order space is not discrete **) 
