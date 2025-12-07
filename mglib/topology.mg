@@ -9960,9 +9960,10 @@ apply andI.
     let V. assume HV: V :e By.
     prove OrderedPair U V :e product_basis_from Bx By.
     (** product_basis_from Bx By = \/_ U' :e Bx, {OrderedPair U' V' | V' :e By} **)
-    (** OrderedPair U V is in {OrderedPair U V' | V' :e By} which is in the union at U **)
-    (** Use UnionI with U, then show OrderedPair U V :e {OrderedPair U V' | V' :e By} **)
-    admit. (** Need to show {OrderedPair U V' | V' :e By} :e product_basis_from Bx By and OrderedPair U V in that set **)
+    (** Use famunionI with U :e Bx and OrderedPair U V :e {OrderedPair U V' | V' :e By} **)
+    claim HUVinRepl: OrderedPair U V :e {OrderedPair U V' | V' :e By}.
+    { exact (ReplI By (fun V' => OrderedPair U V') V HV). }
+    exact (famunionI Bx (fun U' => {OrderedPair U' V' | V' :e By}) U (OrderedPair U V) HU HUVinRepl).
 - (** Part 3: generated_topology (OrderedPair X Y) (product_basis_from Bx By) = product_topology X Tx Y Ty **)
   admit. (** Show both topologies contain each other: use that Tx = generated_topology X Bx and Ty = generated_topology Y By **)
 Qed.
