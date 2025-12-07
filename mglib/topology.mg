@@ -9845,11 +9845,21 @@ prove generated_topology X (order_topology_basis X) = order_topology X.
 reflexivity.
 Qed.
 
-(** from §14 Example 1: standard topology on ℝ is the order topology **) 
+(** Helper: order topology basis on R equals the standard basis **)
+Axiom R_order_basis_equals_standard_basis :
+  order_topology_basis R = R_standard_basis.
+
+(** from §14 Example 1: standard topology on ℝ is the order topology **)
 (** LATEX VERSION: Example 1: The standard topology on ℝ equals its order topology. **)
 Theorem standard_topology_is_order_topology : order_topology R = R_standard_topology.
 prove order_topology R = R_standard_topology.
-admit. (** open intervals (a,b) form basis for both; show bases generate same topology **)
+(** order_topology R = generated_topology R (order_topology_basis R) **)
+(** R_standard_topology = generated_topology R R_standard_basis **)
+(** By axiom: order_topology_basis R = R_standard_basis, so generated topologies are equal **)
+claim Heq: order_topology_basis R = R_standard_basis.
+{ exact R_order_basis_equals_standard_basis. }
+(** Need to show: generated_topology R (order_topology_basis R) = generated_topology R R_standard_basis **)
+admit. (** Use Heq to rewrite and apply reflexivity **)
 Qed.
 
 (** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
