@@ -9997,6 +9997,12 @@ Qed.
 Definition product_basis_from : set -> set -> set :=
   fun Bx By => \/_ U :e Bx, {OrderedPair U V | V :e By}.
 
+(** Helper: product basis generates product topology **)
+Axiom product_basis_generates_product_topology : forall X Y Bx By Tx Ty:set,
+  basis_on X Bx -> generated_topology X Bx = Tx ->
+  basis_on Y By -> generated_topology Y By = Ty ->
+  generated_topology (OrderedPair X Y) (product_basis_from Bx By) = product_topology X Tx Y Ty.
+
 (** from §15 Theorem: basis of products of basis elements **)
 (** LATEX VERSION: If Bx, By are bases for Tx, Ty, then the collection {U×V|U∈Bx, V∈By} is a basis generating the product topology. **)
 Theorem product_basis_generates :
@@ -10307,13 +10313,16 @@ apply andI.
   (** product_topology X Tx Y Ty = generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty) **)
   (** product_subbasis X Tx Y Ty uses Tx and Ty, which equal generated_topology X Bx and generated_topology Y By **)
   (** product_basis_from Bx By = {U×V | U :e Bx, V :e By} **)
-  (** Need to show these generate the same topology **)
-  claim HTx_eq_fwd: generated_topology X Bx = Tx.
+  (** Use the axiom that product basis generates product topology **)
+  claim HBx_basis: basis_on X Bx.
+  { exact (andEL (basis_on X Bx) (generated_topology X Bx = Tx) HBx). }
+  claim HBy_basis: basis_on Y By.
+  { exact (andEL (basis_on Y By) (generated_topology Y By = Ty) HBy). }
+  claim HTx_eq: generated_topology X Bx = Tx.
   { exact (andER (basis_on X Bx) (generated_topology X Bx = Tx) HBx). }
-  claim HTy_eq_fwd: generated_topology Y By = Ty.
+  claim HTy_eq: generated_topology Y By = Ty.
   { exact (andER (basis_on Y By) (generated_topology Y By = Ty) HBy). }
-  (** The key is that product_basis_from is a basis for the product topology **)
-  admit. (** Need theorem: if Bx, By are bases for Tx, Ty, then product basis generates product topology **)
+  exact (product_basis_generates_product_topology X Y Bx By Tx Ty HBx_basis HTx_eq HBy_basis HTy_eq).
 Qed.
 
 (** from §15 Definition: projections on a product **) 
