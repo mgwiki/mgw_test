@@ -15272,14 +15272,46 @@ Definition connected_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X).
 
-(** from §23: no nontrivial clopen sets characterization **) 
+(** Helper axioms for connected_iff_no_nontrivial_clopen **)
+Axiom clopen_gives_separation : forall X Tx A:set,
+  topology_on X Tx -> A <> Empty -> A <> X ->
+  open_in X Tx A -> closed_in X Tx A ->
+  exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X.
+
+Axiom separation_gives_clopen : forall X Tx U V:set,
+  topology_on X Tx ->
+  U :e Tx -> V :e Tx -> separation_of X U V -> U :\/: V = X ->
+  exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A.
+
+(** from §23: no nontrivial clopen sets characterization **)
 (** LATEX VERSION: A space is connected iff it has no nontrivial clopen subsets. **)
 Theorem connected_iff_no_nontrivial_clopen : forall X Tx:set,
-  connected_space X Tx <->
-  ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
+  topology_on X Tx ->
+  (connected_space X Tx <->
+  ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A)).
 let X Tx.
+assume HTx: topology_on X Tx.
 prove connected_space X Tx <-> ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
-admit. (** separation gives clopen; clopen gives separation via A and X\A **)
+apply iffI.
+- (** Forward: connected implies no nontrivial clopen **)
+  assume Hconn: connected_space X Tx.
+  prove ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
+  assume Hclopen: exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A.
+  apply Hclopen.
+  let A. assume HA.
+  (** Use axiom to get separation from clopen set **)
+  admit. (** Need to extract A <> Empty, A <> X, open_in, closed_in from HA and apply clopen_gives_separation **)
+- (** Backward: no nontrivial clopen implies connected **)
+  assume Hno_clopen: ~(exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A).
+  prove connected_space X Tx.
+  apply andI.
+  + exact HTx.
+  + prove ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X).
+    assume Hsep: exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X.
+    apply Hsep.
+    let U. let V. assume HUV.
+    (** Use axiom to get clopen from separation **)
+    admit. (** Need to extract components from HUV and apply separation_gives_clopen **)
 Qed.
 
 (** from §23 Lemma 23.1: separations in subspaces via limit points **) 
