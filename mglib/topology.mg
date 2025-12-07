@@ -9924,8 +9924,17 @@ claim Hsingleton_in_discrete: singleton_1_0 :e discrete_topology two_by_nat.
 { (** discrete_topology two_by_nat = Power two_by_nat, so any subset is open **)
   (** Need to show singleton_1_0 :e Power two_by_nat **)
   (** This requires singleton_1_0 c= two_by_nat **)
-  (** For now, use axiom that singletons are subsets when element is in the set **)
-  admit. (** Need axiom: UPair (UPair 1 0) (UPair 1 0) :e two_by_nat implies {UPair (UPair 1 0) (UPair 1 0)} c= two_by_nat **)
+  claim Helem: UPair (UPair 1 0) (UPair 1 0) :e two_by_nat.
+  { admit. (** Need to show (1,0) :e {1,2}×ℕ, which requires set-theoretic encoding of ordered pairs **) }
+  claim Hsub: singleton_1_0 c= two_by_nat.
+  { (** Show that every element of {x} is in two_by_nat **)
+    let y. assume Hy: y :e singleton_1_0.
+    prove y :e two_by_nat.
+    (** singleton_1_0 = {x,x} where x = UPair (UPair 1 0) (UPair 1 0) **)
+    (** By UPairE, y = x, so y :e two_by_nat follows from Helem **)
+    admit. (** Use UPairE to show y = UPair (UPair 1 0) (UPair 1 0), then apply Helem **)
+  }
+  exact (PowerI two_by_nat singleton_1_0 Hsub).
 }
 claim Hsingleton_in_order: singleton_1_0 :e two_by_nat_order_topology.
 { rewrite Heq. exact Hsingleton_in_discrete. }
