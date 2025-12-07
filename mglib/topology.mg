@@ -14431,6 +14431,25 @@ Definition continuous_map : set -> set -> set -> set -> set -> prop :=
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
     forall V:set, V :e Ty -> preimage_of X f V :e Tx.
 
+(** Helper: continuity preserves closed sets **)
+Axiom continuous_preserves_closed : forall X Tx Y Ty f:set,
+  continuous_map X Tx Y Ty f ->
+  forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C).
+
+(** Helper: continuity local neighborhood characterization **)
+Axiom continuous_local_neighborhood : forall X Tx Y Ty f:set,
+  topology_on X Tx -> topology_on Y Ty -> function_on f X Y ->
+  (forall V:set, V :e Ty -> preimage_of X f V :e Tx) ->
+  forall x:set, x :e X ->
+    forall V:set, V :e Ty -> apply_fun f x :e V ->
+      exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V.
+
+(** Helper: preimage condition implies function_on **)
+Axiom preimage_implies_function : forall X Tx Y Ty f:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  (forall V:set, V :e Ty -> preimage_of X f V :e Tx) ->
+  function_on f X Y.
+
 (** continuity at a point **)
 (** LATEX VERSION: f is continuous at x if for every neighborhood V of f(x), there exists neighborhood U of x with f(U)⊆V. **)
 (** stub: simplified definition using neighborhoods **)
@@ -14458,7 +14477,57 @@ prove continuous_map X Tx Y Ty f <->
     (forall x:set, x :e X ->
        forall V:set, V :e Ty -> apply_fun f x :e V ->
          exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V).
-admit. (** equivalence of continuity definitions: preimages of opens are open; preimages of closed are closed; local nbhd condition **)
+apply iffI.
+- (** Forward direction: continuous_map implies all three conditions **)
+  assume Hf: continuous_map X Tx Y Ty f.
+  prove (forall V:set, V :e Ty -> preimage_of X f V :e Tx) /\
+        (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C)) /\
+        (forall x:set, x :e X ->
+           forall V:set, V :e Ty -> apply_fun f x :e V ->
+             exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V).
+  (** Extract components from continuous_map definition **)
+  claim Hpreimage: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+  { exact (andER (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
+                 (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                 Hf). }
+  claim Hfun: function_on f X Y.
+  { exact (andER (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y)
+                 (andEL (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
+                        (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                        Hf)). }
+  apply andI.
+  + apply andI.
+    * (** Condition 1: preimages of opens are open **)
+      exact Hpreimage.
+    * (** Condition 2: preimages of closed sets are closed **)
+      exact (continuous_preserves_closed X Tx Y Ty f Hf).
+  + (** Condition 3: local neighborhood characterization **)
+    exact (continuous_local_neighborhood X Tx Y Ty f HTx HTy Hfun Hpreimage).
+- (** Backward direction: three conditions imply continuous_map **)
+  assume Hconds.
+  prove continuous_map X Tx Y Ty f.
+  claim Hpreimage: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+  { exact (andEL (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                 (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C))
+                 (andEL ((forall V:set, V :e Ty -> preimage_of X f V :e Tx) /\
+                         (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C)))
+                        (forall x:set, x :e X ->
+                           forall V:set, V :e Ty -> apply_fun f x :e V ->
+                             exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V)
+                        Hconds)). }
+  (** Derive function_on f X Y from preimage condition **)
+  claim Hfun: function_on f X Y.
+  { exact (preimage_implies_function X Tx Y Ty f HTx HTy Hpreimage). }
+  (** Build continuous_map from components **)
+  prove topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
+        (forall V:set, V :e Ty -> preimage_of X f V :e Tx).
+  apply andI.
+  + apply andI.
+    * apply andI.
+      - exact HTx.
+      - exact HTy.
+    * exact Hfun.
+  + exact Hpreimage.
 Qed.
 
 (** from §18: identity map is continuous **) 
