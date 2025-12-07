@@ -15020,8 +15020,8 @@ Theorem metric_topology_generated_by_balls : forall X d:set,
 let X d.
 assume Hd: metric_on X d.
 prove generated_topology X {open_ball X d x|x :e X} = metric_topology X d.
-admit. (** open balls form basis for metric topology; any metric open set is union of balls
-        aby: metric_topology�f open_ball�f generated_topology�f conj_myprob_9123_1_20251124_004004 . **)
+(** By definition, metric_topology X d = generated_topology X {open_ball X d x|x :e X} **)
+reflexivity.
 Qed.
 
 (** from §21: epsilon-delta continuity in metric spaces **) 
