@@ -9862,7 +9862,7 @@ claim Heq: order_topology_basis R = R_standard_basis.
 (** Substitute Heq into the definition of order_topology R **)
 claim Hsubst: generated_topology R (order_topology_basis R) = generated_topology R R_standard_basis.
 { (** Since order_topology_basis R = R_standard_basis, generated_topology R applied to both gives same result **)
-  admit. (** Need equality substitution for function application **)
+  rewrite Heq. reflexivity.
 }
 exact Hsubst.
 Qed.
