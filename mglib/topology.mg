@@ -9954,7 +9954,26 @@ apply andI.
 - (** Part 1 & 2: product_basis_from Bx By is a basis and contains all U×V **)
   apply andI.
   + (** Prove basis_on (OrderedPair X Y) (product_basis_from Bx By) **)
-    admit. (** Need to verify three basis axioms: subset of Power X×Y, covering, and intersection property **)
+    (** Extract properties from assumptions **)
+    claim HBx_basis: basis_on X Bx.
+    { exact (andEL (basis_on X Bx) (generated_topology X Bx = Tx) HBx). }
+    claim HBy_basis: basis_on Y By.
+    { exact (andEL (basis_on Y By) (generated_topology Y By = Ty) HBy). }
+    (** Verify three basis axioms for product_basis_from Bx By **)
+    prove product_basis_from Bx By c= Power (OrderedPair X Y)
+      /\ (forall p :e OrderedPair X Y, exists b :e product_basis_from Bx By, p :e b)
+      /\ (forall b1 :e product_basis_from Bx By, forall b2 :e product_basis_from Bx By, forall p:set,
+            p :e b1 -> p :e b2 -> exists b3 :e product_basis_from Bx By, p :e b3 /\ b3 c= b1 :/\: b2).
+    (** Left-associative structure: (Axiom1 /\ Axiom2) /\ Axiom3 **)
+    apply andI.
+    * (** Prove Axiom1 /\ Axiom2 **)
+      apply andI.
+      - (** Axiom 1: product_basis_from Bx By c= Power (OrderedPair X Y) **)
+        admit. (** Each U×V is a subset of X×Y **)
+      - (** Axiom 2: covering - every (x,y) is in some U×V **)
+        admit. (** Use basis covering for X and Y **)
+    * (** Axiom 3: intersection property **)
+      admit. (** (U₁×V₁) ∩ (U₂×V₂) = (U₁∩U₂)×(V₁∩V₂) is covered by product basis **)
   + (** Prove forall U :e Bx, forall V :e By, OrderedPair U V :e product_basis_from Bx By **)
     let U. assume HU: U :e Bx.
     let V. assume HV: V :e By.
