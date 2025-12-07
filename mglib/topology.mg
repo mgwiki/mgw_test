@@ -9971,7 +9971,10 @@ apply andI.
       - (** Axiom 1: product_basis_from Bx By c= Power (OrderedPair X Y) **)
         admit. (** Each U×V is a subset of X×Y **)
       - (** Axiom 2: covering - every (x,y) is in some U×V **)
-        admit. (** Use basis covering for X and Y **)
+        let p. assume Hp: p :e OrderedPair X Y.
+        prove exists b :e product_basis_from Bx By, p :e b.
+        (** p is in X×Y, so p = (x,y) for some x :e X, y :e Y **)
+        admit. (** Extract x,y from p; use basis covering to find Ux,Vy; show p :e Ux×Vy **)
     * (** Axiom 3: intersection property **)
       admit. (** (U₁×V₁) ∩ (U₂×V₂) = (U₁∩U₂)×(V₁∩V₂) is covered by product basis **)
   + (** Prove forall U :e Bx, forall V :e By, OrderedPair U V :e product_basis_from Bx By **)
