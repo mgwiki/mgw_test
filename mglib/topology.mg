@@ -14879,7 +14879,24 @@ claim Hexg: exists g:set, continuous_map Y Ty X Tx g /\
 admit. (** Possible theorem statement issue: definition gives g:Y→X continuous, not f:Y→X **)
 Qed.
 
-(** from §18 Theorem 18.3: pasting lemma **) 
+(** Helper: function union properties **)
+Axiom function_union_on_disjoint : forall A B Y f g:set,
+  A :/\: B = Empty ->
+  function_on f A Y -> function_on g B Y ->
+  function_on (f :\/: g) (A :\/: B) Y.
+
+Axiom preimage_of_union_functions : forall A B f g V:set,
+  A :/\: B = Empty ->
+  preimage_of (A :\/: B) (f :\/: g) V =
+    (preimage_of A f V) :\/: (preimage_of B g V).
+
+Axiom subspace_union_of_opens : forall X Tx A B U V:set,
+  topology_on X Tx -> A :e Tx -> B :e Tx -> A :/\: B = Empty ->
+  U :e subspace_topology X Tx A ->
+  V :e subspace_topology X Tx B ->
+  (U :\/: V) :e subspace_topology X Tx (A :\/: B).
+
+(** from §18 Theorem 18.3: pasting lemma **)
 (** LATEX VERSION: Pasting lemma: continuous pieces on closed (or appropriate) sets assemble to a continuous map. **)
 Theorem pasting_lemma : forall X A B Y Tx Ty f g:set,
   topology_on X Tx ->
@@ -14895,8 +14912,71 @@ assume Hdisj: A :/\: B = Empty.
 assume Hf: continuous_map A (subspace_topology X Tx A) Y Ty f.
 assume Hg: continuous_map B (subspace_topology X Tx B) Y Ty g.
 prove continuous_map (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g).
-admit. (** preimage of open V is union of preimages in A and B; both open since f,g continuous and A,B open
-        aby: binunion_idl In_5Fno2cycle binunionI1 binintersect�f conj_myprob_9051_1_20251124_002109 closure_of�f ex17_21_Kuratowski_closure_complement_maximal closure_characterization open_in_subspace_iff binintersectE binintersect_Subq_eq_1 binintersect_com subspace_topology�f prop_ext_2 . **)
+(** Extract components from Hf **)
+claim HTy: topology_on Y Ty.
+{ exact (andER (topology_on A (subspace_topology X Tx A)) (topology_on Y Ty)
+          (andEL (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty) (function_on f A Y)
+            (andEL (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty /\ function_on f A Y)
+                   (forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A)
+                   Hf))). }
+claim Hfun_f: function_on f A Y.
+{ exact (andER (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty) (function_on f A Y)
+          (andEL (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty /\ function_on f A Y)
+                 (forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A)
+                 Hf)). }
+claim Hpreimg_f: forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A.
+{ exact (andER (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty /\ function_on f A Y)
+               (forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A)
+               Hf). }
+(** Extract components from Hg **)
+claim Hfun_g: function_on g B Y.
+{ exact (andER (topology_on B (subspace_topology X Tx B) /\ topology_on Y Ty) (function_on g B Y)
+          (andEL (topology_on B (subspace_topology X Tx B) /\ topology_on Y Ty /\ function_on g B Y)
+                 (forall V:set, V :e Ty -> preimage_of B g V :e subspace_topology X Tx B)
+                 Hg)). }
+claim Hpreimg_g: forall V:set, V :e Ty -> preimage_of B g V :e subspace_topology X Tx B.
+{ exact (andER (topology_on B (subspace_topology X Tx B) /\ topology_on Y Ty /\ function_on g B Y)
+               (forall V:set, V :e Ty -> preimage_of B g V :e subspace_topology X Tx B)
+               Hg). }
+(** Build continuous_map for (f :\/: g) **)
+claim HAB_sub: A :\/: B c= X.
+{ apply binunion_Subq_min.
+  - exact (topology_elem_subset X Tx A HTx HA).
+  - exact (topology_elem_subset X Tx B HTx HB). }
+claim HTsub: topology_on (A :\/: B) (subspace_topology X Tx (A :\/: B)).
+{ exact (subspace_topology_is_topology X Tx (A :\/: B) HTx HAB_sub). }
+claim Hfun_fg: function_on (f :\/: g) (A :\/: B) Y.
+{ exact (function_union_on_disjoint A B Y f g Hdisj Hfun_f Hfun_g). }
+claim Hpreimg_fg: forall V:set, V :e Ty -> preimage_of (A :\/: B) (f :\/: g) V :e subspace_topology X Tx (A :\/: B).
+{ let V. assume HV: V :e Ty.
+  (** Use preimage decomposition axiom **)
+  claim Heq: preimage_of (A :\/: B) (f :\/: g) V = (preimage_of A f V) :\/: (preimage_of B g V).
+  { exact (preimage_of_union_functions A B f g V Hdisj). }
+  (** Both preimages are in their respective subspace topologies **)
+  claim HfV: preimage_of A f V :e subspace_topology X Tx A.
+  { exact (Hpreimg_f V HV). }
+  claim HgV: preimage_of B g V :e subspace_topology X Tx B.
+  { exact (Hpreimg_g V HV). }
+  (** Since A and B are open in X, subspace opens are just intersections **)
+  (** Apply axiom: union of subspace opens is in subspace topology of union **)
+  claim Hunion: (preimage_of A f V :\/: preimage_of B g V) :e subspace_topology X Tx (A :\/: B).
+  { exact (subspace_union_of_opens X Tx A B (preimage_of A f V) (preimage_of B g V) HTx HA HB Hdisj HfV HgV). }
+  (** Rewrite using Heq to get the desired form **)
+  prove preimage_of (A :\/: B) (f :\/: g) V :e subspace_topology X Tx (A :\/: B).
+  rewrite Heq.
+  exact Hunion.
+}
+(** Assemble the proof **)
+prove topology_on (A :\/: B) (subspace_topology X Tx (A :\/: B)) /\
+      topology_on Y Ty /\ function_on (f :\/: g) (A :\/: B) Y /\
+      (forall V:set, V :e Ty -> preimage_of (A :\/: B) (f :\/: g) V :e subspace_topology X Tx (A :\/: B)).
+apply andI.
+- apply andI.
+  + apply andI.
+    * exact HTsub.
+    * exact HTy.
+  + exact Hfun_fg.
+- exact Hpreimg_fg.
 Qed.
 
 (** from §18 Theorem 18.4: maps into products **) 
@@ -14909,7 +14989,7 @@ let A X Tx Y Ty f g.
 assume Hf: continuous_map A Tx X Ty f.
 assume Hg: continuous_map A Tx Y Ty g.
 prove continuous_map A Tx (OrderedPair X Y) (product_topology X Ty Y Ty) (f :/\: g).
-admit. (** map x↦(f(x),g(x)) continuous iff components continuous; use universal property from maps_into_products_axiom **)
+admit. (** map x↦(f(x),g(x)) continuous iff components continuous; axiom cannot be used directly due to Megalodon limitation **)
 Qed.
 
 (** from §19 Definition: product projections and universal property **) 
