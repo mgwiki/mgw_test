@@ -10012,7 +10012,16 @@ assume HTy: topology_on Y Ty.
 prove exists S:set,
     S = product_subbasis X Tx Y Ty /\
     generated_topology (OrderedPair X Y) S = product_topology X Tx Y Ty.
-admit. (** projection preimages of opens form subbasis; verify generated topology equals product topology definition **)
+(** Witness S = product_subbasis X Tx Y Ty **)
+witness (product_subbasis X Tx Y Ty).
+prove product_subbasis X Tx Y Ty = product_subbasis X Tx Y Ty /\
+      generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty) = product_topology X Tx Y Ty.
+apply andI.
+- (** S = product_subbasis X Tx Y Ty **)
+  reflexivity.
+- (** generated_topology (OrderedPair X Y) S = product_topology X Tx Y Ty **)
+  (** By definition: product_topology X Tx Y Ty = generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty) **)
+  reflexivity.
 Qed.
 
 (** helper: function evaluation as graph lookup **) 
