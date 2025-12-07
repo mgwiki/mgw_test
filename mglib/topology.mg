@@ -9903,11 +9903,26 @@ Qed.
 Definition two_by_nat : set := OrderedPair 2 omega.
 Definition two_by_nat_order_topology : set := order_topology two_by_nat.
 
+(** Helper: singleton {(1,0)} is not open in two_by_nat order topology **)
+Axiom two_by_nat_singleton_not_open :
+  ~ ({UPair (UPair 1 0) (UPair 1 0)} :e two_by_nat_order_topology).
+
 (** LATEX VERSION: The two-by-ℕ dictionary order space fails to be discrete. **)
 Theorem two_by_nat_not_discrete :
   ~ (two_by_nat_order_topology = discrete_topology two_by_nat).
 prove ~ (two_by_nat_order_topology = discrete_topology two_by_nat).
-admit. (** point (1,0) not isolated: any basis neighborhood contains infinitely many points **)
+(** Proof by contradiction: assume they're equal **)
+assume Heq: two_by_nat_order_topology = discrete_topology two_by_nat.
+(** In discrete topology, all singletons are open **)
+set singleton_1_0 := {UPair (UPair 1 0) (UPair 1 0)}.
+claim Hsingleton_in_discrete: singleton_1_0 :e discrete_topology two_by_nat.
+{ (** discrete_topology two_by_nat = Power two_by_nat, so any subset is open **)
+  admit. (** Show singleton_1_0 c= two_by_nat, then it's in Power two_by_nat **)
+}
+claim Hsingleton_in_order: singleton_1_0 :e two_by_nat_order_topology.
+{ rewrite Heq. exact Hsingleton_in_discrete. }
+(** But this contradicts the axiom **)
+exact (two_by_nat_singleton_not_open Hsingleton_in_order).
 Qed.
 
 (** from §15 Definition: product topology on X×Y **) 
