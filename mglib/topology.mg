@@ -14841,6 +14841,12 @@ Qed.
 (** LATEX VERSION: Projection maps from a product space; universal property characterizes the product topology. **)
 Definition projection_map : set -> set -> set := fun X Y => projection1 X Y.
 
+(** Helper: projection maps are continuous **)
+Axiom projection_maps_continuous : forall X Tx Y Ty:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
+  continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
+
 (** LATEX VERSION: Projections from a product are continuous. **)
 Theorem projections_are_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
@@ -14851,7 +14857,7 @@ assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
 prove continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
   continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
-admit. (** projection preimages of opens are in product topology by definition of subbasis **)
+exact (projection_maps_continuous X Tx Y Ty HTx HTy).
 Qed.
 
 (** from §19: product topology is coarsest making projections continuous **) 
