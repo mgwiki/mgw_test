@@ -10055,7 +10055,15 @@ apply andI.
                    Then use covering of Bx, By to find basis elements **)
 
     * (** Axiom 3: intersection property **)
-      admit. (** (U₁×V₁) ∩ (U₂×V₂) = (U₁∩U₂)×(V₁∩V₂) is covered by product basis **)
+      let b1. assume Hb1: b1 :e product_basis_from Bx By.
+      let b2. assume Hb2: b2 :e product_basis_from Bx By.
+      let p. assume Hpb1: p :e b1. assume Hpb2: p :e b2.
+      prove exists b3 :e product_basis_from Bx By, p :e b3 /\ b3 c= b1 :/\: b2.
+      (** b1 = U1×V1 for some U1 :e Bx, V1 :e By **)
+      (** b2 = U2×V2 for some U2 :e Bx, V2 :e By **)
+      (** (U1×V1) ∩ (U2×V2) = (U1∩U2)×(V1∩V2) **)
+      (** Use basis intersection property to find U3 :e Bx, V3 :e By with appropriate containments **)
+      admit. (** Need to decompose b1, b2, extract coordinates from p, use basis intersection properties **)
   + (** Prove forall U :e Bx, forall V :e By, OrderedPair U V :e product_basis_from Bx By **)
     let U. assume HU: U :e Bx.
     let V. assume HV: V :e By.
