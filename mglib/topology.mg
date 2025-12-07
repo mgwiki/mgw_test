@@ -10006,7 +10006,28 @@ apply andI.
     * (** Prove Axiom1 /\ Axiom2 **)
       apply andI.
       - (** Axiom 1: product_basis_from Bx By c= Power (OrderedPair X Y) **)
-        admit. (** Each U×V is a subset of X×Y **)
+        let b. assume Hb: b :e product_basis_from Bx By.
+        prove b :e Power (OrderedPair X Y).
+        (** b is in the family union, so b = OrderedPair U V for some U :e Bx, V :e By **)
+        claim Hexists: exists U :e Bx, b :e {OrderedPair U V' | V' :e By}.
+        { exact (famunionE Bx (fun U' => {OrderedPair U' V' | V' :e By}) b Hb). }
+        apply Hexists.
+        let U. assume HU_conj: U :e Bx /\ b :e {OrderedPair U V' | V' :e By}.
+        claim HU: U :e Bx.
+        { exact (andEL (U :e Bx) (b :e {OrderedPair U V' | V' :e By}) HU_conj). }
+        claim HbRepl: b :e {OrderedPair U V' | V' :e By}.
+        { exact (andER (U :e Bx) (b :e {OrderedPair U V' | V' :e By}) HU_conj). }
+        (** b :e {OrderedPair U V' | V' :e By}, so b = OrderedPair U V for some V :e By **)
+        claim Hexists2: exists V :e By, b = OrderedPair U V.
+        { exact (ReplE By (fun V' => OrderedPair U V') b HbRepl). }
+        apply Hexists2.
+        let V. assume HV_conj: V :e By /\ b = OrderedPair U V.
+        claim HV: V :e By.
+        { exact (andEL (V :e By) (b = OrderedPair U V) HV_conj). }
+        claim Hbeq: b = OrderedPair U V.
+        { exact (andER (V :e By) (b = OrderedPair U V) HV_conj). }
+        (** Now show OrderedPair U V c= OrderedPair X Y **)
+        admit. (** Need axiom: U c= X, V c= Y implies OrderedPair U V c= OrderedPair X Y **)
       - (** Axiom 2: covering - every (x,y) is in some U×V **)
         let p. assume Hp: p :e OrderedPair X Y.
         prove exists b :e product_basis_from Bx By, p :e b.
