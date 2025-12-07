@@ -9922,7 +9922,10 @@ assume Heq: two_by_nat_order_topology = discrete_topology two_by_nat.
 set singleton_1_0 := {UPair (UPair 1 0) (UPair 1 0)}.
 claim Hsingleton_in_discrete: singleton_1_0 :e discrete_topology two_by_nat.
 { (** discrete_topology two_by_nat = Power two_by_nat, so any subset is open **)
-  admit. (** Show singleton_1_0 c= two_by_nat, then it's in Power two_by_nat **)
+  (** Need to show singleton_1_0 :e Power two_by_nat **)
+  (** This requires singleton_1_0 c= two_by_nat **)
+  (** For now, use axiom that singletons are subsets when element is in the set **)
+  admit. (** Need axiom: UPair (UPair 1 0) (UPair 1 0) :e two_by_nat implies {UPair (UPair 1 0) (UPair 1 0)} c= two_by_nat **)
 }
 claim Hsingleton_in_order: singleton_1_0 :e two_by_nat_order_topology.
 { rewrite Heq. exact Hsingleton_in_discrete. }
