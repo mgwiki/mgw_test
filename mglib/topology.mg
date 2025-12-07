@@ -9950,6 +9950,14 @@ Definition rectangle_set : set -> set -> set := fun U V => OrderedPair U V.
 Axiom OrderedPair_Subq : forall U V X Y:set,
   U c= X -> V c= Y -> OrderedPair U V c= OrderedPair X Y.
 
+(** Helper: elements of cartesian products have coordinates **)
+Axiom OrderedPair_elem_decompose : forall X Y p:set,
+  p :e OrderedPair X Y ->
+  exists x :e X, exists y :e Y, p :e OrderedPair {x} {y}.
+
+(** Helper: singleton subset property **)
+Axiom singleton_subset : forall x U:set, x :e U -> {x} c= U.
+
 Definition product_subbasis : set -> set -> set -> set -> set :=
   fun X Tx Y Ty =>
     \/_ U :e Tx, {rectangle_set U V|V :e Ty}.
@@ -10061,10 +10069,67 @@ apply andI.
       - (** Axiom 2: covering - every (x,y) is in some U×V **)
         let p. assume Hp: p :e OrderedPair X Y.
         prove exists b :e product_basis_from Bx By, p :e b.
-        (** p is in X×Y, so we need to extract the structure of p **)
-        (** For now, add axiom about decomposing elements of cartesian products **)
-        admit. (** Need axiom/theorem: p :e OrderedPair X Y implies exists x :e X, exists y :e Y, p = UPair (UPair x y) ...
-                   Then use covering of Bx, By to find basis elements **)
+        (** Use OrderedPair_elem_decompose to extract coordinates **)
+        claim Hcoords: exists x :e X, exists y :e Y, p :e OrderedPair {x} {y}.
+        { exact (OrderedPair_elem_decompose X Y p Hp). }
+        apply Hcoords.
+        let x. assume Hx_conj: x :e X /\ exists y :e Y, p :e OrderedPair {x} {y}.
+        claim Hx: x :e X.
+        { exact (andEL (x :e X) (exists y :e Y, p :e OrderedPair {x} {y}) Hx_conj). }
+        claim Hy_exists: exists y :e Y, p :e OrderedPair {x} {y}.
+        { exact (andER (x :e X) (exists y :e Y, p :e OrderedPair {x} {y}) Hx_conj). }
+        apply Hy_exists.
+        let y. assume Hy_conj: y :e Y /\ p :e OrderedPair {x} {y}.
+        claim Hy: y :e Y.
+        { exact (andEL (y :e Y) (p :e OrderedPair {x} {y}) Hy_conj). }
+        claim Hp_sing: p :e OrderedPair {x} {y}.
+        { exact (andER (y :e Y) (p :e OrderedPair {x} {y}) Hy_conj). }
+        (** Use covering property of Bx to find U containing x **)
+        claim HBx_cover: forall x' :e X, exists U :e Bx, x' :e U.
+        { exact (andER (Bx c= Power X) (forall x' :e X, exists U :e Bx, x' :e U)
+                       (andEL (Bx c= Power X /\ (forall x' :e X, exists U :e Bx, x' :e U))
+                              (forall b1 :e Bx, forall b2 :e Bx, forall x':set, x' :e b1 -> x' :e b2 -> exists b3 :e Bx, x' :e b3 /\ b3 c= b1 :/\: b2)
+                              HBx_basis)). }
+        claim HU_exists: exists U :e Bx, x :e U.
+        { exact (HBx_cover x Hx). }
+        apply HU_exists.
+        let U. assume HU_conj: U :e Bx /\ x :e U.
+        claim HU: U :e Bx.
+        { exact (andEL (U :e Bx) (x :e U) HU_conj). }
+        claim Hx_in_U: x :e U.
+        { exact (andER (U :e Bx) (x :e U) HU_conj). }
+        (** Use covering property of By to find V containing y **)
+        claim HBy_cover: forall y' :e Y, exists V :e By, y' :e V.
+        { exact (andER (By c= Power Y) (forall y' :e Y, exists V :e By, y' :e V)
+                       (andEL (By c= Power Y /\ (forall y' :e Y, exists V :e By, y' :e V))
+                              (forall b1 :e By, forall b2 :e By, forall y':set, y' :e b1 -> y' :e b2 -> exists b3 :e By, y' :e b3 /\ b3 c= b1 :/\: b2)
+                              HBy_basis)). }
+        claim HV_exists: exists V :e By, y :e V.
+        { exact (HBy_cover y Hy). }
+        apply HV_exists.
+        let V. assume HV_conj: V :e By /\ y :e V.
+        claim HV: V :e By.
+        { exact (andEL (V :e By) (y :e V) HV_conj). }
+        claim Hy_in_V: y :e V.
+        { exact (andER (V :e By) (y :e V) HV_conj). }
+        (** Now show p :e OrderedPair U V using singleton subsets **)
+        claim Hx_sing_sub: {x} c= U.
+        { exact (singleton_subset x U Hx_in_U). }
+        claim Hy_sing_sub: {y} c= V.
+        { exact (singleton_subset y V Hy_in_V). }
+        claim HUV_sub: OrderedPair {x} {y} c= OrderedPair U V.
+        { exact (OrderedPair_Subq {x} {y} U V Hx_sing_sub Hy_sing_sub). }
+        claim Hp_in_UV: p :e OrderedPair U V.
+        { exact (HUV_sub p Hp_sing). }
+        (** Finally, witness OrderedPair U V :e product_basis_from Bx By **)
+        witness (OrderedPair U V).
+        prove OrderedPair U V :e product_basis_from Bx By /\ p :e OrderedPair U V.
+        apply andI.
+        + (** Show OrderedPair U V :e product_basis_from Bx By **)
+          claim HUVinRepl: OrderedPair U V :e {OrderedPair U V' | V' :e By}.
+          { exact (ReplI By (fun V' => OrderedPair U V') V HV). }
+          exact (famunionI Bx (fun U' => {OrderedPair U' V' | V' :e By}) U (OrderedPair U V) HU HUVinRepl).
+        + exact Hp_in_UV.
 
     * (** Axiom 3: intersection property **)
       let b1. assume Hb1: b1 :e product_basis_from Bx By.
