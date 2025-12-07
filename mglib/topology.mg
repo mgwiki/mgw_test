@@ -14834,7 +14834,7 @@ let A X Tx Y Ty f g.
 assume Hf: continuous_map A Tx X Ty f.
 assume Hg: continuous_map A Tx Y Ty g.
 prove continuous_map A Tx (OrderedPair X Y) (product_topology X Ty Y Ty) (f :/\: g).
-admit. (** map x↦(f(x),g(x)) continuous iff components continuous; use universal property of product **)
+admit. (** map x↦(f(x),g(x)) continuous iff components continuous; use universal property from maps_into_products_axiom **)
 Qed.
 
 (** from §19 Definition: product projections and universal property **) 
@@ -14846,6 +14846,12 @@ Axiom projection_maps_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
   continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
+
+(** Helper: universal property of products - maps into products **)
+Axiom maps_into_products_axiom : forall A X Tx Y Ty f g:set,
+  continuous_map A Tx X Ty f ->
+  continuous_map A Tx Y Ty g ->
+  continuous_map A Tx (OrderedPair X Y) (product_topology X Ty Y Ty) (f :/\: g).
 
 (** LATEX VERSION: Projections from a product are continuous. **)
 Theorem projections_are_continuous : forall X Tx Y Ty:set,
