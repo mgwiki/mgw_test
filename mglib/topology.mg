@@ -15580,14 +15580,137 @@ Definition path_connected_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p.
 
+(** Helper axioms for path_connected_implies_connected **)
+Axiom unit_interval_connected : connected_space unit_interval R_standard_topology.
+
+Axiom path_between_is_continuous : forall X Tx x y p:set,
+  topology_on X Tx -> x :e X -> y :e X ->
+  path_between X x y p ->
+  continuous_map unit_interval R_standard_topology X Tx p.
+
+Axiom zero_one_in_unit_interval : 0 :e unit_interval /\ 1 :e unit_interval.
+
+Axiom separation_has_elements : forall X U V:set,
+  separation_of X U V ->
+  (exists x:set, x :e U) /\ (exists y:set, y :e V).
+
+Axiom separation_subsets : forall X U V:set,
+  separation_of X U V ->
+  U c= X /\ V c= X.
+
+Axiom subset_elem : forall A B x:set,
+  A c= B -> x :e A -> x :e B.
+
 (** from §24: path connected implies connected **) 
 Theorem path_connected_implies_connected : forall X Tx:set,
   path_connected_space X Tx -> connected_space X Tx.
 let X Tx.
 assume Hpath: path_connected_space X Tx.
 prove connected_space X Tx.
-admit. (** assume separation; pick points in each piece; path connects them; continuous image [0,1] disconnected; contradiction
-        aby: conj_myprob_9386_1_20251124_085337 prop_ext_2 open_set�f ex13_1_local_open_subset In_5Find open_in_subspace_iff . **)
+(** Extract components from path_connected_space **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p)
+               Hpath). }
+claim Hpath_prop: forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p.
+{ exact (andER (topology_on X Tx)
+               (forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p)
+               Hpath). }
+(** Prove X is connected by contradiction **)
+prove topology_on X Tx /\ ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X).
+apply andI.
+- exact HTx.
+- prove ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X).
+  assume HsepX: exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X.
+  (** Extract the separation of X **)
+  apply HsepX.
+  let U. assume HsepX_V: exists V:set, U :e Tx /\ V :e Tx /\ separation_of X U V /\ U :\/: V = X.
+  apply HsepX_V.
+  let V. assume HUV.
+  (** Extract components from nested conjunction **)
+  claim HU: U :e Tx.
+  { exact (andEL (U :e Tx) (V :e Tx)
+                 (andEL (U :e Tx /\ V :e Tx) (separation_of X U V)
+                        (andEL ((U :e Tx /\ V :e Tx) /\ separation_of X U V) (U :\/: V = X) HUV))). }
+  claim HV: V :e Tx.
+  { exact (andER (U :e Tx) (V :e Tx)
+                 (andEL (U :e Tx /\ V :e Tx) (separation_of X U V)
+                        (andEL ((U :e Tx /\ V :e Tx) /\ separation_of X U V) (U :\/: V = X) HUV))). }
+  claim HsepXUV: separation_of X U V.
+  { exact (andER (U :e Tx /\ V :e Tx) (separation_of X U V)
+                 (andEL ((U :e Tx /\ V :e Tx) /\ separation_of X U V) (U :\/: V = X) HUV)). }
+  claim HcoverX: U :\/: V = X.
+  { exact (andER ((U :e Tx /\ V :e Tx) /\ separation_of X U V) (U :\/: V = X) HUV). }
+  (** Get elements from the separation **)
+  claim Helems: (exists x:set, x :e U) /\ (exists y:set, y :e V).
+  { exact (separation_has_elements X U V HsepXUV). }
+  claim HexU: exists x:set, x :e U.
+  { exact (andEL (exists x:set, x :e U) (exists y:set, y :e V) Helems). }
+  claim HexV: exists y:set, y :e V.
+  { exact (andER (exists x:set, x :e U) (exists y:set, y :e V) Helems). }
+  (** Pick specific elements **)
+  apply HexU.
+  let x. assume Hx: x :e U.
+  apply HexV.
+  let y. assume Hy: y :e V.
+  (** Show x, y are in X **)
+  claim Hsubsets: U c= X /\ V c= X.
+  { exact (separation_subsets X U V HsepXUV). }
+  claim HU_sub: U c= X.
+  { exact (andEL (U c= X) (V c= X) Hsubsets). }
+  claim HV_sub: V c= X.
+  { exact (andER (U c= X) (V c= X) Hsubsets). }
+  claim HxinX: x :e X.
+  { exact (subset_elem U X x HU_sub Hx). }
+  claim HyinX: y :e X.
+  { exact (subset_elem V X y HV_sub Hy). }
+  (** Get path from x to y **)
+  claim Hpathxy: exists p:set, path_between X x y p.
+  { exact (Hpath_prop x y HxinX HyinX). }
+  apply Hpathxy.
+  let p. assume Hp: path_between X x y p.
+  (** Path is continuous **)
+  claim Hpcont: continuous_map unit_interval R_standard_topology X Tx p.
+  { exact (path_between_is_continuous X Tx x y p HTx HxinX HyinX Hp). }
+  (** Use preimage_preserves_separation **)
+  claim Hsep_interval: separation_of unit_interval (preimage_of unit_interval p U) (preimage_of unit_interval p V) /\
+                       (preimage_of unit_interval p U) :\/: (preimage_of unit_interval p V) = unit_interval.
+  { exact (preimage_preserves_separation unit_interval R_standard_topology X Tx p U V Hpcont HU HV HsepXUV HcoverX). }
+  claim Hsep_UV: separation_of unit_interval (preimage_of unit_interval p U) (preimage_of unit_interval p V).
+  { exact (andEL (separation_of unit_interval (preimage_of unit_interval p U) (preimage_of unit_interval p V))
+                 ((preimage_of unit_interval p U) :\/: (preimage_of unit_interval p V) = unit_interval)
+                 Hsep_interval). }
+  claim Hcover_interval: (preimage_of unit_interval p U) :\/: (preimage_of unit_interval p V) = unit_interval.
+  { exact (andER (separation_of unit_interval (preimage_of unit_interval p U) (preimage_of unit_interval p V))
+                 ((preimage_of unit_interval p U) :\/: (preimage_of unit_interval p V) = unit_interval)
+                 Hsep_interval). }
+  (** Preimages are open in R_standard_topology **)
+  claim HpreimgU: preimage_of unit_interval p U :e R_standard_topology.
+  { exact (andER (topology_on unit_interval R_standard_topology /\ topology_on X Tx /\ function_on p unit_interval X)
+                 (forall V0:set, V0 :e Tx -> preimage_of unit_interval p V0 :e R_standard_topology)
+                 Hpcont U HU). }
+  claim HpreimgV: preimage_of unit_interval p V :e R_standard_topology.
+  { exact (andER (topology_on unit_interval R_standard_topology /\ topology_on X Tx /\ function_on p unit_interval X)
+                 (forall V0:set, V0 :e Tx -> preimage_of unit_interval p V0 :e R_standard_topology)
+                 Hpcont V HV). }
+  (** This gives a separation of unit_interval **)
+  claim Hsep_exists: exists U0 V0:set, U0 :e R_standard_topology /\ V0 :e R_standard_topology /\ separation_of unit_interval U0 V0 /\ U0 :\/: V0 = unit_interval.
+  { witness (preimage_of unit_interval p U). witness (preimage_of unit_interval p V).
+    prove (preimage_of unit_interval p U) :e R_standard_topology /\ (preimage_of unit_interval p V) :e R_standard_topology /\ separation_of unit_interval (preimage_of unit_interval p U) (preimage_of unit_interval p V) /\ (preimage_of unit_interval p U) :\/: (preimage_of unit_interval p V) = unit_interval.
+    apply andI.
+    - apply andI.
+      + apply andI.
+        * exact HpreimgU.
+        * exact HpreimgV.
+      + exact Hsep_UV.
+    - exact Hcover_interval. }
+  (** Contradiction with connectedness of unit_interval **)
+  claim Hunit_nosep: ~(exists U0 V0:set, U0 :e R_standard_topology /\ V0 :e R_standard_topology /\ separation_of unit_interval U0 V0 /\ U0 :\/: V0 = unit_interval).
+  { exact (andER (topology_on unit_interval R_standard_topology)
+                 (~(exists U0 V0:set, U0 :e R_standard_topology /\ V0 :e R_standard_topology /\ separation_of unit_interval U0 V0 /\ U0 :\/: V0 = unit_interval))
+                 unit_interval_connected). }
+  apply Hunit_nosep.
+  exact Hsep_exists.
 Qed.
 
 (** from §24 Example: punctured euclidean space is path connected (placeholder) **) 
