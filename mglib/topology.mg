@@ -8194,11 +8194,11 @@ apply set_ext.
               HUprop).
 Qed.
 
-(** helper: Kuratowski ordered pair for cartesian products **)
-(** SUSPICIOUS DEFINITION: UPair x (UPair x y) gives {x, {x,y}}, not standard Kuratowski {{x}, {x,y}}.
-    Correct would be: UPair (UPair x x) (UPair x y) to get {{x}, {x,y}}.
-    Current def breaks ordered pair property: OrderedPair x y may equal OrderedPair x z with y <> z. **)
-Definition OrderedPair : set -> set -> set := fun x y => UPair x (UPair x y).
+(** FIXED: OrderedPair now correctly represents cartesian product X×Y.
+    Despite the name, this is used for cartesian products throughout topology section.
+    Individual ordered pairs use tuple notation (x,y). Cartesian product defined as
+    setprod before line 6495 (line 2717), so we use that. **)
+Definition OrderedPair : set -> set -> set := setprod.
 
 (** ambient real line **) 
 Definition R : set := real.
@@ -8217,7 +8217,7 @@ Definition Rlt : set -> set -> prop := fun a b =>
 
 (** from §13 Example 4: circular vs rectangular region bases **)
 (** LATEX VERSION: Example 4: circular regions and axis-parallel rectangular regions in ℝ² both form bases generating the same topology. **)
-(** SUSPICIOUS DEFINITION: EuclidPlane depends on broken OrderedPair definition above. **)
+(** FIXED: EuclidPlane is now correctly R×R (Cartesian product) since OrderedPair = setprod. **)
 Definition EuclidPlane : set := OrderedPair R R.
 (** SUSPICIOUS DEFINITION: distance_R2 is pure stub - Eps_i (fun r => r :e R) just picks arbitrary r in R.
     Doesn't compute Euclidean distance! Should be sqrt((x1-x2)^2 + (y1-y2)^2) or similar. **)
@@ -8278,35 +8278,35 @@ Qed.
 (** LATEX VERSION: A subbasis S on X is any subcollection of P(X); its generated topology is obtained via finite intersections (basis_of_subbasis) and then generated_topology. **)
 Definition subbasis_on : set -> set -> prop := fun X S => S c= Power X.
 
-(** from §13: finite intersections of subbasis elements (placeholder set of finite intersections) **)
-(** LATEX VERSION: intersection_of_family collects common points of all sets in a family; finite_subcollections picks finite families; finite_intersections_of S takes intersections of finite subfamilies of S. **)
-(** SUSPICIOUS DEFINITION: When Fam is Empty, Union Empty = Empty, so intersection = Empty.
-    Standard math convention: intersection of empty family should be universal set (or X in context).
-    This gives intersection(Empty) = Empty instead of X, breaking standard topology conventions. **)
-Definition intersection_of_family : set -> set :=
-  fun Fam => {x :e Union Fam|forall U:set, U :e Fam -> x :e U}.
+(** from §13: finite intersections of subbasis elements **)
+(** LATEX VERSION: intersection_of_family collects common points of all sets in a family; finite_subcollections picks finite families; finite_intersections_of X S takes intersections of finite subfamilies of S. **)
+(** FIXED: Now takes ambient set X as first parameter. Empty family correctly gives X.
+    For empty Fam: all x in X vacuously satisfy "forall U :e Empty, x :e U", so result is X.
+    For nonempty Fam: standard intersection of all sets in family, within X. **)
+Definition intersection_of_family : set -> set -> set :=
+  fun X Fam => {x :e X|forall U:set, U :e Fam -> x :e U}.
 
 (** helper: intersection of a family stays in the ambient union **) 
 (** LATEX VERSION: Placeholder lemma: each member of an intersection lies in the union of the family (to be proved properly). **)
 Definition finite_subcollections : set -> set :=
   fun S => {F :e Power S|finite F}.
 
-Definition finite_intersections_of : set -> set := fun S =>
-  {intersection_of_family F|F :e finite_subcollections S}.
+(** FIXED: Now takes X to pass to intersection_of_family. **)
+Definition finite_intersections_of : set -> set -> set := fun X S =>
+  {intersection_of_family X F|F :e finite_subcollections S}.
 
 (** from §13: basis obtained from a subbasis by finite intersections **)
 (** LATEX VERSION: basis_of_subbasis X S is the set of nonempty finite intersections of elements of S. **)
-(** SUSPICIOUS DEFINITION: First parameter X is ignored (underscore).
-    Should use X to ensure intersection_of_family(Empty) = X instead of Empty.
-    Current def inherits bug from intersection_of_family - empty intersection gives Empty not X. **)
-Definition basis_of_subbasis : set -> set -> set := fun _ S =>
-  {b :e finite_intersections_of S | b <> Empty}.
+(** FIXED: Now properly uses X parameter. Empty intersection gives X.
+    Filter keeps only nonempty intersections (so X included only if X nonempty). **)
+Definition basis_of_subbasis : set -> set -> set := fun X S =>
+  {b :e finite_intersections_of X S | b <> Empty}.
 
 (** Helper: Finite intersection of a family is in the basis_of_subbasis **)
 Axiom finite_intersection_in_basis : forall X S F:set,
   F :e finite_subcollections S ->
-  intersection_of_family F <> Empty ->
-  intersection_of_family F :e basis_of_subbasis X S.
+  intersection_of_family X F <> Empty ->
+  intersection_of_family X F :e basis_of_subbasis X S.
 
 (** Helper: Elements of subbasis are in the generated basis **)
 Axiom subbasis_elem_in_basis : forall X S s:set,
@@ -8321,7 +8321,7 @@ Axiom finite_intersection_in_topology : forall X T F:set,
   topology_on X T ->
   F :e Power T ->
   finite F ->
-  intersection_of_family F :e T.
+  intersection_of_family X F :e T.
 
 (** from §13: topology generated by a subbasis **) 
 (** LATEX VERSION: generated_topology_from_subbasis X S is the topology generated by the basis arising from S. **)
@@ -8347,43 +8347,27 @@ apply andI.
     let b. assume Hb: b :e basis_of_subbasis X S.
     prove b :e Power X.
     (** b is a nonempty finite intersection of subbasis elements **)
-    (** basis_of_subbasis X S = {b :e finite_intersections_of S | b <> Empty} **)
-    claim Hb_in_finite: b :e finite_intersections_of S.
-    { exact (SepE1 (finite_intersections_of S) (fun b0 => b0 <> Empty) b Hb). }
-    (** finite_intersections_of S = {intersection_of_family F | F :e finite_subcollections S} **)
+    (** basis_of_subbasis X S = {b :e finite_intersections_of X S | b <> Empty} **)
+    claim Hb_in_finite: b :e finite_intersections_of X S.
+    { exact (SepE1 (finite_intersections_of X S) (fun b0 => b0 <> Empty) b Hb). }
+    (** finite_intersections_of X S = {intersection_of_family F | F :e finite_subcollections S} **)
     (** So b = intersection_of_family F for some finite F c= S **)
-    claim Hex: exists F :e finite_subcollections S, b = intersection_of_family F.
-    { exact (ReplE (finite_subcollections S) (fun F => intersection_of_family F) b Hb_in_finite). }
+    claim Hex: exists F :e finite_subcollections S, b = intersection_of_family X F.
+    { exact (ReplE (finite_subcollections S) (fun F => intersection_of_family X F) b Hb_in_finite). }
     apply Hex.
     let F. assume HF_and_eq. apply HF_and_eq.
     assume HF: F :e finite_subcollections S.
-    assume Hbeq: b = intersection_of_family F.
+    assume Hbeq: b = intersection_of_family X F.
     prove b :e Power X.
     apply PowerI.
     (** Need to show b c= X **)
     let x. assume Hx: x :e b.
     prove x :e X.
-    (** x :e intersection_of_family F means x :e U for all U :e F, and x :e Union F **)
-    claim Hx_intersect: x :e intersection_of_family F.
+    (** With new definition: intersection_of_family X F = {x :e X | forall U :e F, x :e U}
+        So x :e intersection_of_family X F directly gives x :e X **)
+    claim Hx_intersect: x :e intersection_of_family X F.
     { rewrite <- Hbeq. exact Hx. }
-    claim Hx_union: x :e Union F.
-    { exact (SepE1 (Union F) (fun x0 => forall U:set, U :e F -> x0 :e U) x Hx_intersect). }
-    (** Union F c= Union S c= Union (Power X) = X since S c= Power X **)
-    claim HF_sub_S: F c= S.
-    { claim HF_in_PowerS: F :e Power S.
-      { exact (SepE1 (Power S) (fun F0 => finite F0) F HF). }
-      exact (PowerE S F HF_in_PowerS).
-    }
-    apply UnionE_impred F x Hx_union.
-    let U. assume HxU: x :e U. assume HUF: U :e F.
-    claim HUS: U :e S.
-    { exact (HF_sub_S U HUF). }
-    (** S c= Power X, so U :e Power X, so U c= X **)
-    claim HUX: U :e Power X.
-    { exact (HS U HUS). }
-    claim HUsub: U c= X.
-    { exact (PowerE X U HUX). }
-    exact (HUsub x HxU).
+    exact (SepE1 X (fun x0 => forall U:set, U :e F -> x0 :e U) x Hx_intersect).
   + (** Axiom 2: covering property - forall x :e X, exists b :e basis_of_subbasis X S, x :e b **)
     let x. assume Hx: x :e X.
     prove exists b :e basis_of_subbasis X S, x :e b.
@@ -8426,68 +8410,27 @@ apply andI.
   + (** b3 :e basis_of_subbasis X S **)
     prove b3 :e basis_of_subbasis X S.
     (** Extract that b1, b2 are finite intersections **)
-    claim Hb1_finite: b1 :e finite_intersections_of S.
-    { exact (SepE1 (finite_intersections_of S) (fun b0 => b0 <> Empty) b1 Hb1). }
-    claim Hb2_finite: b2 :e finite_intersections_of S.
-    { exact (SepE1 (finite_intersections_of S) (fun b0 => b0 <> Empty) b2 Hb2). }
+    claim Hb1_finite: b1 :e finite_intersections_of X S.
+    { exact (SepE1 (finite_intersections_of X S) (fun b0 => b0 <> Empty) b1 Hb1). }
+    claim Hb2_finite: b2 :e finite_intersections_of X S.
+    { exact (SepE1 (finite_intersections_of X S) (fun b0 => b0 <> Empty) b2 Hb2). }
     (** Get witnesses F1, F2 **)
-    claim Hex1: exists F1 :e finite_subcollections S, b1 = intersection_of_family F1.
-    { exact (ReplE (finite_subcollections S) (fun F => intersection_of_family F) b1 Hb1_finite). }
+    claim Hex1: exists F1 :e finite_subcollections S, b1 = intersection_of_family X F1.
+    { exact (ReplE (finite_subcollections S) (fun F => intersection_of_family X F) b1 Hb1_finite). }
     apply Hex1.
     let F1. assume HF1_and_eq1. apply HF1_and_eq1.
     assume HF1: F1 :e finite_subcollections S.
-    assume Hb1eq: b1 = intersection_of_family F1.
-    claim Hex2: exists F2 :e finite_subcollections S, b2 = intersection_of_family F2.
-    { exact (ReplE (finite_subcollections S) (fun F => intersection_of_family F) b2 Hb2_finite). }
+    assume Hb1eq: b1 = intersection_of_family X F1.
+    claim Hex2: exists F2 :e finite_subcollections S, b2 = intersection_of_family X F2.
+    { exact (ReplE (finite_subcollections S) (fun F => intersection_of_family X F) b2 Hb2_finite). }
     apply Hex2.
     let F2. assume HF2_and_eq2. apply HF2_and_eq2.
     assume HF2: F2 :e finite_subcollections S.
-    assume Hb2eq: b2 = intersection_of_family F2.
-    (** F1 and F2 must be nonempty since b1, b2 are nonempty **)
-    claim HF1_ne: exists U:set, U :e F1.
-    { apply (xm (exists U:set, U :e F1)).
-      - assume H: exists U:set, U :e F1. exact H.
-      - assume HF1_empty: ~(exists U:set, U :e F1).
-        (** Then F1 is empty, so intersection_of_family F1 = Empty **)
-        claim Hb1_empty: b1 = Empty.
-        { rewrite Hb1eq.
-          apply Empty_Subq_eq.
-          let x. assume Hx: x :e intersection_of_family F1.
-          claim Hx_union: x :e Union F1.
-          { exact (SepE1 (Union F1) (fun y => forall U:set, U :e F1 -> y :e U) x Hx). }
-          apply UnionE_impred F1 x Hx_union.
-          let U. assume HxU: x :e U. assume HUF1: U :e F1.
-          apply FalseE.
-          apply HF1_empty.
-          witness U. exact HUF1.
-        }
-        claim Hb1_ne: b1 <> Empty.
-        { exact (SepE2 (finite_intersections_of S) (fun b0 => b0 <> Empty) b1 Hb1). }
-        apply FalseE.
-        exact (Hb1_ne Hb1_empty).
-    }
-    claim HF2_ne: exists U:set, U :e F2.
-    { apply (xm (exists U:set, U :e F2)).
-      - assume H: exists U:set, U :e F2. exact H.
-      - assume HF2_empty: ~(exists U:set, U :e F2).
-        claim Hb2_empty: b2 = Empty.
-        { rewrite Hb2eq.
-          apply Empty_Subq_eq.
-          let x. assume Hx: x :e intersection_of_family F2.
-          claim Hx_union: x :e Union F2.
-          { exact (SepE1 (Union F2) (fun y => forall U:set, U :e F2 -> y :e U) x Hx). }
-          apply UnionE_impred F2 x Hx_union.
-          let U. assume HxU: x :e U. assume HUF2: U :e F2.
-          apply FalseE.
-          apply HF2_empty.
-          witness U. exact HUF2.
-        }
-        claim Hb2_ne: b2 <> Empty.
-        { exact (SepE2 (finite_intersections_of S) (fun b0 => b0 <> Empty) b2 Hb2). }
-        apply FalseE.
-        exact (Hb2_ne Hb2_empty).
-    }
-    (** Now b3 = b1 :/\: b2 = intersection_of_family (F1 :\/: F2) **)
+    assume Hb2eq: b2 = intersection_of_family X F2.
+    (** With new definition: intersection_of_family X Empty = X.
+        So F1 and F2 can be empty - if empty, they give X as intersection.
+        No longer need to prove F1, F2 nonempty. **)
+    (** Now b3 = b1 :/\: b2 = intersection_of_family X (F1 :\/: F2) **)
     set F12 := F1 :\/: F2.
     (** Show F12 :e finite_subcollections S **)
     claim HF12_finite: F12 :e finite_subcollections S.
@@ -8517,39 +8460,31 @@ apply andI.
       exact (SepI (Power S) (fun F => finite F) F12 HF12_power HF12_is_finite).
     }
     (** Show b3 = intersection_of_family F12 **)
-    claim Hb3_eq: b3 = intersection_of_family F12.
+    claim Hb3_eq: b3 = intersection_of_family X F12.
     { (** b3 = b1 :/\: b2 = (intersection_of_family F1) :/\: (intersection_of_family F2)                        = intersection_of_family (F1 :\/: F2) = intersection_of_family F12 **)
       apply set_ext.
       - (** b3 c= intersection_of_family F12 **)
         let z. assume Hz: z :e b3.
-        prove z :e intersection_of_family F12.
+        prove z :e intersection_of_family X F12.
         claim Hzb1: z :e b1.
         { exact (binintersectE1 b1 b2 z Hz). }
         claim Hzb2: z :e b2.
         { exact (binintersectE2 b1 b2 z Hz). }
         (** z :e intersection_of_family F1 **)
-        claim Hz_intersect1: z :e intersection_of_family F1.
+        claim Hz_intersect1: z :e intersection_of_family X F1.
         { rewrite <- Hb1eq. exact Hzb1. }
         (** z :e intersection_of_family F2 **)
-        claim Hz_intersect2: z :e intersection_of_family F2.
+        claim Hz_intersect2: z :e intersection_of_family X F2.
         { rewrite <- Hb2eq. exact Hzb2. }
-        (** Show z :e intersection_of_family F12 **)
-        prove z :e intersection_of_family F12.
-        (** intersection_of_family F = {x :e Union F | forall U :e F, x :e U} **)
-        claim Hz_union1: z :e Union F1.
-        { exact (SepE1 (Union F1) (fun x => forall U:set, U :e F1 -> x :e U) z Hz_intersect1). }
+        (** Show z :e intersection_of_family X F12 **)
+        prove z :e intersection_of_family X F12.
+        (** New definition: intersection_of_family X F = {x :e X | forall U :e F, x :e U} **)
+        claim Hz_in_X: z :e X.
+        { exact (SepE1 X (fun x => forall U:set, U :e F1 -> x :e U) z Hz_intersect1). }
         claim Hz_all1: forall U:set, U :e F1 -> z :e U.
-        { exact (SepE2 (Union F1) (fun x => forall U:set, U :e F1 -> x :e U) z Hz_intersect1). }
-        claim Hz_union2: z :e Union F2.
-        { exact (SepE1 (Union F2) (fun x => forall U:set, U :e F2 -> x :e U) z Hz_intersect2). }
+        { exact (SepE2 X (fun x => forall U:set, U :e F1 -> x :e U) z Hz_intersect1). }
         claim Hz_all2: forall U:set, U :e F2 -> z :e U.
-        { exact (SepE2 (Union F2) (fun x => forall U:set, U :e F2 -> x :e U) z Hz_intersect2). }
-        claim Hz_union12: z :e Union F12.
-        { apply UnionE_impred F1 z Hz_union1.
-          let U. assume HzU: z :e U. assume HUF1: U :e F1.
-          apply (UnionI F12 z U HzU).
-          exact (binunionI1 F1 F2 U HUF1).
-        }
+        { exact (SepE2 X (fun x => forall U:set, U :e F2 -> x :e U) z Hz_intersect2). }
         claim Hz_all12: forall U:set, U :e F12 -> z :e U.
         { let U. assume HU: U :e F12.
           prove z :e U.
@@ -8557,14 +8492,15 @@ apply andI.
           - assume HUF1: U :e F1. exact (Hz_all1 U HUF1).
           - assume HUF2: U :e F2. exact (Hz_all2 U HUF2).
         }
-        exact (SepI (Union F12) (fun x => forall U:set, U :e F12 -> x :e U) z Hz_union12 Hz_all12).
-      - (** intersection_of_family F12 c= b3 **)
-        let z. assume Hz: z :e intersection_of_family F12.
+        exact (SepI X (fun x => forall U:set, U :e F12 -> x :e U) z Hz_in_X Hz_all12).
+      - (** intersection_of_family X F12 c= b3 **)
+        let z. assume Hz: z :e intersection_of_family X F12.
         prove z :e b3.
-        claim Hz_union12: z :e Union F12.
-        { exact (SepE1 (Union F12) (fun x => forall U:set, U :e F12 -> x :e U) z Hz). }
+        (** New definition gives us z :e X and forall U :e F12, z :e U **)
+        claim Hz_in_X: z :e X.
+        { exact (SepE1 X (fun x => forall U:set, U :e F12 -> x :e U) z Hz). }
         claim Hz_all12: forall U:set, U :e F12 -> z :e U.
-        { exact (SepE2 (Union F12) (fun x => forall U:set, U :e F12 -> x :e U) z Hz). }
+        { exact (SepE2 X (fun x => forall U:set, U :e F12 -> x :e U) z Hz). }
         claim Hz_all1: forall U:set, U :e F1 -> z :e U.
         { let U. assume HU: U :e F1.
           prove z :e U.
@@ -8575,40 +8511,12 @@ apply andI.
           prove z :e U.
           exact (Hz_all12 U (binunionI2 F1 F2 U HU)).
         }
-        (** Show z :e Union F1 and z :e Union F2 **)
-        claim Hz_union1: z :e Union F1.
-        { apply UnionE_impred F12 z Hz_union12.
-          let U. assume HzU: z :e U. assume HU: U :e F12.
-          prove z :e Union F1.
-          apply (binunionE F1 F2 U HU).
-          - assume HUF1: U :e F1. exact (UnionI F1 z U HzU HUF1).
-          - assume HUF2: U :e F2.
-            (** Use that F1 is nonempty: pick any V :e F1 and use Hz_all1 V **)
-            apply HF1_ne.
-            let V. assume HVF1: V :e F1.
-            claim HzV: z :e V.
-            { exact (Hz_all1 V HVF1). }
-            exact (UnionI F1 z V HzV HVF1).
-        }
-        claim Hz_intersect1: z :e intersection_of_family F1.
-        { exact (SepI (Union F1) (fun x => forall U:set, U :e F1 -> x :e U) z Hz_union1 Hz_all1). }
-        claim Hz_union2: z :e Union F2.
-        { (** Similar to Hz_union1 **)
-          apply UnionE_impred F12 z Hz_union12.
-          let U. assume HzU: z :e U. assume HU: U :e F12.
-          prove z :e Union F2.
-          apply (binunionE F1 F2 U HU).
-          - assume HUF1: U :e F1.
-            (** Use that F2 is nonempty **)
-            apply HF2_ne.
-            let V. assume HVF2: V :e F2.
-            claim HzV: z :e V.
-            { exact (Hz_all2 V HVF2). }
-            exact (UnionI F2 z V HzV HVF2).
-          - assume HUF2: U :e F2. exact (UnionI F2 z U HzU HUF2).
-        }
-        claim Hz_intersect2: z :e intersection_of_family F2.
-        { exact (SepI (Union F2) (fun x => forall U:set, U :e F2 -> x :e U) z Hz_union2 Hz_all2). }
+        (** Use Hz_all1 and Hz_all2 to show z :e b1 and z :e b2 **)
+        (** New definition: intersection_of_family X F = {x :e X | forall U :e F, x :e U} **)
+        claim Hz_intersect1: z :e intersection_of_family X F1.
+        { exact (SepI X (fun x => forall U:set, U :e F1 -> x :e U) z Hz_in_X Hz_all1). }
+        claim Hz_intersect2: z :e intersection_of_family X F2.
+        { exact (SepI X (fun x => forall U:set, U :e F2 -> x :e U) z Hz_in_X Hz_all2). }
         claim Hzb1: z :e b1.
         { rewrite Hb1eq. exact Hz_intersect1. }
         claim Hzb2: z :e b2.
@@ -8616,13 +8524,13 @@ apply andI.
         exact (binintersectI b1 b2 z Hzb1 Hzb2).
     }
     (** Now show b3 :e basis_of_subbasis X S using finite_intersection_in_basis **)
-    claim H_intersect_ne: intersection_of_family F12 <> Empty.
-    { assume Hempty_intersect: intersection_of_family F12 = Empty.
+    claim H_intersect_ne: intersection_of_family X F12 <> Empty.
+    { assume Hempty_intersect: intersection_of_family X F12 = Empty.
       claim Hb3_empty: b3 = Empty.
       { rewrite Hb3_eq. exact Hempty_intersect. }
       exact (Hb3_ne Hb3_empty).
     }
-    claim H_intersect_in_basis: intersection_of_family F12 :e basis_of_subbasis X S.
+    claim H_intersect_in_basis: intersection_of_family X F12 :e basis_of_subbasis X S.
     { exact (finite_intersection_in_basis X S F12 HF12_finite H_intersect_ne). }
     claim Hb3_in_basis: b3 :e basis_of_subbasis X S.
     { rewrite Hb3_eq. exact H_intersect_in_basis. }
@@ -8702,16 +8610,16 @@ claim Hbasis_in_T: forall b :e basis_of_subbasis X S, b :e T.
     exact Hb_in_T_case1.
   - assume Hb_ne_X: b <> X.
     (** b is a nonempty finite intersection of S elements **)
-    (** b :e basis_of_subbasis X S = {b :e finite_intersections_of S | b <> Empty} **)
-    claim Hb_finite_inter: b :e finite_intersections_of S.
-    { exact (SepE1 (finite_intersections_of S) (fun b0 => b0 <> Empty) b Hb). }
-    (** finite_intersections_of S = {intersection_of_family F | F :e finite_subcollections S} **)
-    claim Hex_F: exists F :e finite_subcollections S, b = intersection_of_family F.
-    { exact (ReplE (finite_subcollections S) (fun F => intersection_of_family F) b Hb_finite_inter). }
+    (** b :e basis_of_subbasis X S = {b :e finite_intersections_of X S | b <> Empty} **)
+    claim Hb_finite_inter: b :e finite_intersections_of X S.
+    { exact (SepE1 (finite_intersections_of X S) (fun b0 => b0 <> Empty) b Hb). }
+    (** finite_intersections_of X S = {intersection_of_family F | F :e finite_subcollections S} **)
+    claim Hex_F: exists F :e finite_subcollections S, b = intersection_of_family X F.
+    { exact (ReplE (finite_subcollections S) (fun F => intersection_of_family X F) b Hb_finite_inter). }
     apply Hex_F.
     let F. assume HF_and_eq. apply HF_and_eq.
     assume HF: F :e finite_subcollections S.
-    assume Hb_eq: b = intersection_of_family F.
+    assume Hb_eq: b = intersection_of_family X F.
     (** F is a finite subcollection of S, so F c= S and finite F **)
     claim HF_sub_S: F c= S.
     { claim HF_power: F :e Power S.
@@ -8731,7 +8639,7 @@ claim Hbasis_in_T: forall b :e basis_of_subbasis X S, b :e T.
     claim HF_in_PowerT: F :e Power T.
     { apply PowerI. exact HF_sub_T. }
     (** Apply finite_intersection_in_topology **)
-    claim Hb_inter_in_T: intersection_of_family F :e T.
+    claim Hb_inter_in_T: intersection_of_family X F :e T.
     { exact (finite_intersection_in_topology X T F HT HF_in_PowerT HF_finite). }
     claim Hb_in_T_case2: b :e T.
     { rewrite Hb_eq. exact Hb_inter_in_T. }
@@ -8842,7 +8750,10 @@ Qed.
 Definition a_elt : set := Empty.
 Definition b_elt : set := {Empty}.
 Definition c_elt : set := {{Empty}}.
-Definition abc_set : set := UPair a_elt (UPair b_elt c_elt).
+(** FIXED: Use binunion to create proper 3-element set {a,b,c}.
+    Old: UPair a_elt (UPair b_elt c_elt) gave {a, {b,c}}, a 2-element set.
+    New: UPair a_elt b_elt :\/: {c_elt} gives {a, b} ∪ {c} = {a, b, c}. **)
+Definition abc_set : set := UPair a_elt b_elt :\/: {c_elt}.
 
 Definition top_abc_1 : set := UPair Empty abc_set.
 Definition top_abc_2 : set := Power abc_set.
@@ -8897,12 +8808,12 @@ Qed.
 Definition Intersection_Fam : set -> set :=
   fun Fam => {U :e Power (Union (Union Fam))|forall T:set, T :e Fam -> U :e T}.
 
-(** helper: intersection of a family stays within the union (placeholder) **)
-Theorem intersection_of_family_sub_union : forall Fam:set,
-  intersection_of_family Fam c= Union Fam.
-let Fam.
+(** helper: intersection of a family stays within X (updated for new signature) **)
+Theorem intersection_of_family_sub_X : forall X Fam:set,
+  intersection_of_family X Fam c= X.
+let X Fam.
 let x. assume Hx.
-exact (SepE1 (Union Fam) (fun x0 => forall U:set, U :e Fam -> x0 :e U) x Hx).
+exact (SepE1 X (fun x0 => forall U:set, U :e Fam -> x0 :e U) x Hx).
 Qed.
 
 (** helper: empty set is in every intersection family (vacuously true for all families) **)
@@ -9728,8 +9639,11 @@ apply set_ext.
   exact (HUinAllT (generated_topology X A) HGenInFam).
 Qed.
 
-(** from §13 Exercise 6: incomparability of two real line topologies **) 
+(** from §13 Exercise 6: incomparability of two real line topologies **)
 (** LATEX VERSION: Exercise 6: Compare the standard, lower limit, and K-topologies on ℝ; standard vs lower-limit and standard vs K are incomparable. **)
+(** STUB DEFINITION: rational_numbers should be ℚ, not ω.
+    Proper definition requires quotient construction of integers and division.
+    Currently just uses omega as placeholder. Only used in admitted theorems. **)
 Definition rational_numbers : set := omega.
 
 Definition open_interval : set -> set -> set := fun a b => {x :e R|Rlt a x /\ Rlt x b}.
@@ -9747,6 +9661,9 @@ Definition R_lower_limit_basis : set :=
 Definition R_lower_limit_topology : set :=
   generated_topology R R_lower_limit_basis.
 
+(** STUB DEFINITION: inv_nat should compute 1/n for n∈ω, not just return n.
+    Proper definition requires reciprocal/division on reals.
+    Currently identity function. Only used to define K_set in admitted theorems. **)
 Definition inv_nat : set -> set := fun n => n.
 Axiom inv_nat_real : forall n:set, n :e omega -> inv_nat n :e R.
 
@@ -12429,17 +12346,17 @@ Theorem closed_sets_axioms : forall X T:set,
   topology_on X T ->
   let C := {X :\: U|U :e T} in
     X :e C /\ Empty :e C /\
-    (forall F:set, F :e Power C -> intersection_of_family F :e C) /\
+    (forall F:set, F :e Power C -> intersection_of_family X F :e C) /\
     (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
 let X T.
 assume HT: topology_on X T.
 prove let C := {X :\: U|U :e T} in
     X :e C /\ Empty :e C /\
-    (forall F:set, F :e Power C -> intersection_of_family F :e C) /\
+    (forall F:set, F :e Power C -> intersection_of_family X F :e C) /\
     (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
 set C := {X :\: U|U :e T}.
 prove X :e C /\ Empty :e C /\
-    (forall F:set, F :e Power C -> intersection_of_family F :e C) /\
+    (forall F:set, F :e Power C -> intersection_of_family X F :e C) /\
     (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
 (** Strategy: Use De Morgan laws and topology axioms
     - X = X \ ∅, and ∅ ∈ T
@@ -12489,41 +12406,39 @@ claim Hpart2: X :e C /\ Empty :e C.
         apply FalseE.
         exact (HxnotX HxX).
 }
-claim Hpart3: (X :e C /\ Empty :e C) /\ (forall F:set, F :e Power C -> intersection_of_family F :e C).
+claim Hpart3: (X :e C /\ Empty :e C) /\ (forall F:set, F :e Power C -> intersection_of_family X F :e C).
 { apply andI.
   - exact Hpart2.
   - (** Arbitrary intersections: ∩(X\Uᵢ) = X \ (⋃Uᵢ) **)
     let F. assume HF: F :e Power C.
-    prove intersection_of_family F :e C.
+    prove intersection_of_family X F :e C.
     (** Handle empty case separately **)
     apply (xm (F = Empty)).
     + assume HFempty: F = Empty.
-      (** ∩∅ = ∅ :e C **)
-      (** ∩∅ = ∅ since it's {x :e ⋃∅ | ...} and ⋃∅ = ∅ **)
-      claim Hintersect_empty: intersection_of_family F = Empty.
+      (** With new definition: ∩∅ = X since all x in X vacuously satisfy "forall U :e Empty, x :e U" **)
+      claim Hintersect_empty: intersection_of_family X F = X.
       { rewrite HFempty.
-        (** intersection_of_family ∅ = {x :e ⋃∅ | forall U :e ∅, x :e U} = {x :e ∅ | ...} = ∅ **)
+        (** intersection_of_family X ∅ = {x :e X | forall U :e ∅, x :e U} = X since condition is vacuous **)
         apply set_ext.
-        - let x. assume Hx: x :e intersection_of_family Empty.
-          (** x :e {y :e Union ∅ | ...}, so x :e Union ∅ **)
-          claim HxU: x :e Union Empty.
-          { exact (SepE1 (Union Empty) (fun y => forall U0:set, U0 :e Empty -> y :e U0) x Hx). }
-          (** But Union ∅ = ∅ **)
-          apply (UnionE_impred Empty x HxU).
-          let Z. assume _. assume HZ: Z :e Empty.
-          apply FalseE.
-          exact (EmptyE Z HZ).
-        - let x. assume Hx: x :e Empty.
-          apply FalseE.
-          exact (EmptyE x Hx). }
+        - let x. assume Hx: x :e intersection_of_family X Empty.
+          exact (SepE1 X (fun y => forall U0:set, U0 :e Empty -> y :e U0) x Hx).
+        - let x. assume Hx: x :e X.
+          (** Show x :e intersection_of_family X Empty **)
+          claim Hvacuous: forall U0:set, U0 :e Empty -> x :e U0.
+          { let U0. assume HU: U0 :e Empty.
+            apply FalseE.
+            exact (EmptyE U0 HU).
+          }
+          exact (SepI X (fun y => forall U0:set, U0 :e Empty -> y :e U0) x Hx Hvacuous).
+      }
       rewrite Hintersect_empty.
-      exact (andER (X :e C) (Empty :e C) Hpart2).
+      exact (andEL (X :e C) (Empty :e C) Hpart2).
     + assume HFnonempty: F <> Empty.
       (** Extract the family of open sets: G = {U :e T | X \ U :e F} **)
       set G := {U :e T | X :\: U :e F}.
       (** Show ∩F = X \ ⋃G **)
-      prove intersection_of_family F :e {X :\: U|U :e T}.
-    apply (ReplEq T (fun U => X :\: U) (intersection_of_family F)).
+      prove intersection_of_family X F :e {X :\: U|U :e T}.
+    apply (ReplEq T (fun U => X :\: U) (intersection_of_family X F)).
     assume _ H. apply H.
     witness (Union G).
     apply andI.
@@ -12533,26 +12448,14 @@ claim Hpart3: (X :e C /\ Empty :e C) /\ (forall F:set, F :e Power C -> intersect
         exact (SepE1 T (fun U0 => X :\: U0 :e F) U HU). }
       exact (topology_union_closed X T G HT HGsub).
     * (** ∩F = X \ ⋃G by De Morgan **)
-      prove intersection_of_family F = X :\: Union G.
+      prove intersection_of_family X F = X :\: Union G.
       apply set_ext.
       - (** ∩F ⊆ X \ ⋃G **)
-        let x. assume Hx: x :e intersection_of_family F.
+        let x. assume Hx: x :e intersection_of_family X F.
         prove x :e X :\: Union G.
         apply setminusI.
-        + (** x ∈ X: use that x ∈ Union F and Union F ⊆ X **)
-          claim HxUnion: x :e Union F.
-          { exact (SepE1 (Union F) (fun y => forall U0:set, U0 :e F -> y :e U0) x Hx). }
-          apply (UnionE_impred F x HxUnion).
-          let Y. assume HxY: x :e Y. assume HYF: Y :e F.
-          claim HYC: Y :e C.
-          { exact (PowerE C F HF Y HYF). }
-          (** Y ∈ C means Y = X \ U for some U ∈ T **)
-          apply (ReplE T (fun U => X :\: U) Y HYC).
-          let U. assume H. apply H.
-          assume HU: U :e T. assume HYeq: Y = X :\: U.
-          claim HxXminusU: x :e X :\: U.
-          { rewrite <- HYeq. exact HxY. }
-          exact (setminusE1 X U x HxXminusU).
+        + (** x ∈ X: directly from new definition of intersection_of_family X F **)
+          exact (SepE1 X (fun y => forall U0:set, U0 :e F -> y :e U0) x Hx).
         + (** x ∉ ⋃G **)
           assume Hcontra: x :e Union G.
           apply (UnionE_impred G x Hcontra).
@@ -12560,7 +12463,7 @@ claim Hpart3: (X :e C /\ Empty :e C) /\ (forall F:set, F :e Power C -> intersect
           claim HXminusU_in_F: X :\: U :e F.
           { exact (SepE2 T (fun U0 => X :\: U0 :e F) U HUG). }
           claim Hxall: forall Y :e F, x :e Y.
-          { exact (SepE2 (Union F) (fun y => forall U0:set, U0 :e F -> y :e U0) x Hx). }
+          { exact (SepE2 X (fun y => forall U0:set, U0 :e F -> y :e U0) x Hx). }
           claim Hx_in_XminusU: x :e X :\: U.
           { exact (Hxall (X :\: U) HXminusU_in_F). }
           claim HxnotU: x /:e U.
@@ -12568,54 +12471,16 @@ claim Hpart3: (X :e C /\ Empty :e C) /\ (forall F:set, F :e Power C -> intersect
           exact (HxnotU HxU).
       - (** X \ ⋃G ⊆ ∩F **)
         let x. assume Hx: x :e X :\: Union G.
-        prove x :e intersection_of_family F.
+        prove x :e intersection_of_family X F.
         claim HxX: x :e X.
         { exact (setminusE1 X (Union G) x Hx). }
         claim HxnotUG: x /:e Union G.
         { exact (setminusE2 X (Union G) x Hx). }
-        (** Show x ∈ Union F and forall Y :e F, x :e Y **)
-        prove x :e {y :e Union F|forall U0:set, U0 :e F -> y :e U0}.
+        (** Show x ∈ X and forall Y :e F, x :e Y **)
+        prove x :e {y :e X|forall U0:set, U0 :e F -> y :e U0}.
         apply SepI.
-        + (** x ∈ Union F: We know F ≠ ∅ from outer context **)
-          (** Since F ≠ ∅, by classical logic there exists Y ∈ F **)
-          apply (xm (exists Y:set, Y :e F)).
-          * assume HFhas.
-            apply HFhas.
-            let Y. assume HYF: Y :e F.
-            (** Show x ∈ Y, then x ∈ Union F follows **)
-            claim HYC: Y :e C.
-            { exact (PowerE C F HF Y HYF). }
-            apply (ReplE T (fun U => X :\: U) Y HYC).
-            let U. assume H. apply H.
-            assume HU: U :e T. assume HYeq: Y = X :\: U.
-            claim HUG: U :e G.
-            { apply SepI.
-              - exact HU.
-              - prove X :\: U :e F.
-                rewrite <- HYeq. exact HYF. }
-            claim HxnotU: x /:e U.
-            { assume Hcontra: x :e U.
-              apply HxnotUG.
-              exact (UnionI G x U Hcontra HUG). }
-            claim HxY: x :e Y.
-            { rewrite HYeq.
-              apply setminusI.
-              - exact HxX.
-              - exact HxnotU. }
-            exact (UnionI F x Y HxY HYF).
-          * assume HFno: ~(exists Y:set, Y :e F).
-            (** This contradicts F ≠ ∅ **)
-            apply FalseE.
-            apply HFnonempty.
-            apply set_ext.
-            - let Y. assume HY: Y :e F.
-              apply FalseE.
-              apply HFno.
-              witness Y.
-              exact HY.
-            - let Y. assume HY: Y :e Empty.
-              apply FalseE.
-              exact (EmptyE Y HY).
+        + (** x ∈ X: already have this **)
+          exact HxX.
         + (** forall Y :e F, x :e Y **)
           let Y. assume HYF: Y :e F.
           prove x :e Y.
