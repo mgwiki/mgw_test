@@ -8194,7 +8194,10 @@ apply set_ext.
               HUprop).
 Qed.
 
-(** helper: Kuratowski ordered pair for cartesian products **) 
+(** helper: Kuratowski ordered pair for cartesian products **)
+(** SUSPICIOUS DEFINITION: UPair x (UPair x y) gives {x, {x,y}}, not standard Kuratowski {{x}, {x,y}}.
+    Correct would be: UPair (UPair x x) (UPair x y) to get {{x}, {x,y}}.
+    Current def breaks ordered pair property: OrderedPair x y may equal OrderedPair x z with y <> z. **)
 Definition OrderedPair : set -> set -> set := fun x y => UPair x (UPair x y).
 
 (** ambient real line **) 
@@ -8203,15 +8206,21 @@ Definition R : set := real.
 (** rational numbers as subset of reals **)
 (** LATEX VERSION: The rationals ℚ as a subset of ℝ. **)
 (** stub: proper definition would be quotients of integers **)
+(** SUSPICIOUS DEFINITION: Condition "q :e R" is redundant with "q :e R" in comprehension.
+    Existence of p, n :e omega doesn't constrain q to be rational - no relation between q, p, n!
+    Should have: q = p/n or similar. Current def accepts all reals where any naturals exist. **)
 Definition Q : set := {q :e R | exists p n:set, p :e omega /\ n :e omega /\ q :e R}.
 
 (** ordering relation on the reals **) 
 Definition Rlt : set -> set -> prop := fun a b =>
   a :e R /\ b :e R /\ a < b.
 
-(** from §13 Example 4: circular vs rectangular region bases **) 
+(** from §13 Example 4: circular vs rectangular region bases **)
 (** LATEX VERSION: Example 4: circular regions and axis-parallel rectangular regions in ℝ² both form bases generating the same topology. **)
+(** SUSPICIOUS DEFINITION: EuclidPlane depends on broken OrderedPair definition above. **)
 Definition EuclidPlane : set := OrderedPair R R.
+(** SUSPICIOUS DEFINITION: distance_R2 is pure stub - Eps_i (fun r => r :e R) just picks arbitrary r in R.
+    Doesn't compute Euclidean distance! Should be sqrt((x1-x2)^2 + (y1-y2)^2) or similar. **)
 Definition distance_R2 : set -> set -> set := fun p c => Eps_i (fun r => r :e R).
 Definition circular_regions : set :=
   {U :e Power EuclidPlane |
@@ -8269,8 +8278,11 @@ Qed.
 (** LATEX VERSION: A subbasis S on X is any subcollection of P(X); its generated topology is obtained via finite intersections (basis_of_subbasis) and then generated_topology. **)
 Definition subbasis_on : set -> set -> prop := fun X S => S c= Power X.
 
-(** from §13: finite intersections of subbasis elements (placeholder set of finite intersections) **) 
+(** from §13: finite intersections of subbasis elements (placeholder set of finite intersections) **)
 (** LATEX VERSION: intersection_of_family collects common points of all sets in a family; finite_subcollections picks finite families; finite_intersections_of S takes intersections of finite subfamilies of S. **)
+(** SUSPICIOUS DEFINITION: When Fam is Empty, Union Empty = Empty, so intersection = Empty.
+    Standard math convention: intersection of empty family should be universal set (or X in context).
+    This gives intersection(Empty) = Empty instead of X, breaking standard topology conventions. **)
 Definition intersection_of_family : set -> set :=
   fun Fam => {x :e Union Fam|forall U:set, U :e Fam -> x :e U}.
 
@@ -8284,6 +8296,9 @@ Definition finite_intersections_of : set -> set := fun S =>
 
 (** from §13: basis obtained from a subbasis by finite intersections **)
 (** LATEX VERSION: basis_of_subbasis X S is the set of nonempty finite intersections of elements of S. **)
+(** SUSPICIOUS DEFINITION: First parameter X is ignored (underscore).
+    Should use X to ensure intersection_of_family(Empty) = X instead of Empty.
+    Current def inherits bug from intersection_of_family - empty intersection gives Empty not X. **)
 Definition basis_of_subbasis : set -> set -> set := fun _ S =>
   {b :e finite_intersections_of S | b <> Empty}.
 
