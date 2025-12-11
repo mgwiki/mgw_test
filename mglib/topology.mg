@@ -8205,11 +8205,9 @@ Definition R : set := real.
 
 (** rational numbers as subset of reals **)
 (** LATEX VERSION: The rationals ℚ as a subset of ℝ. **)
-(** stub: proper definition would be quotients of integers **)
-(** SUSPICIOUS DEFINITION: Condition "q :e R" is redundant with "q :e R" in comprehension.
-    Existence of p, n :e omega doesn't constrain q to be rational - no relation between q, p, n!
-    Should have: q = p/n or similar. Current def accepts all reals where any naturals exist. **)
-Definition Q : set := {q :e R | exists p n:set, p :e omega /\ n :e omega /\ q :e R}.
+(** FIXED: Now uses proper rational definition from line 6202.
+    rational = {x :e real | exists m :e int, exists n :e omega\{0}, x = m/n} **)
+Definition Q : set := rational.
 
 (** ordering relation on the reals **) 
 Definition Rlt : set -> set -> prop := fun a b =>
@@ -8219,8 +8217,11 @@ Definition Rlt : set -> set -> prop := fun a b =>
 (** LATEX VERSION: Example 4: circular regions and axis-parallel rectangular regions in ℝ² both form bases generating the same topology. **)
 (** FIXED: EuclidPlane is now correctly R×R (Cartesian product) since OrderedPair = setprod. **)
 Definition EuclidPlane : set := OrderedPair R R.
-(** SUSPICIOUS DEFINITION: distance_R2 is pure stub - Eps_i (fun r => r :e R) just picks arbitrary r in R.
-    Doesn't compute Euclidean distance! Should be sqrt((x1-x2)^2 + (y1-y2)^2) or similar. **)
+(** STUB: distance_R2 should compute Euclidean distance sqrt((x1-x2)^2 + (y1-y2)^2).
+    Available operations: proj0/proj1 (lines 2630-2631), ap (line 2723) for coordinates,
+    add_SNo (line 4171), mul_SNo (line 4609), minus_SNo (line 4080),
+    sqrt_SNo_nonneg (line 6334). Implementation requires coordinate extraction from
+    setprod pairs. Currently just picks arbitrary r∈R. Only used in admitted theorems. **)
 Definition distance_R2 : set -> set -> set := fun p c => Eps_i (fun r => r :e R).
 Definition circular_regions : set :=
   {U :e Power EuclidPlane |
@@ -9661,10 +9662,10 @@ Definition R_lower_limit_basis : set :=
 Definition R_lower_limit_topology : set :=
   generated_topology R R_lower_limit_basis.
 
-(** STUB DEFINITION: inv_nat should compute 1/n for n∈ω, not just return n.
-    Proper definition requires reciprocal/division on reals.
-    Currently identity function. Only used to define K_set in admitted theorems. **)
-Definition inv_nat : set -> set := fun n => n.
+(** FIXED: Now uses proper reciprocal from line 5762.
+    recip_SNo computes 1/x for surreal numbers (which includes naturals).
+    For n∈ω, recip_SNo n computes 1/n. **)
+Definition inv_nat : set -> set := recip_SNo.
 Axiom inv_nat_real : forall n:set, n :e omega -> inv_nat n :e R.
 
 Definition K_set : set := {inv_nat n|n :e omega}.
