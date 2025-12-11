@@ -8232,7 +8232,7 @@ Definition rectangular_regions : set :=
   {U :e Power EuclidPlane |
      exists a b c d:set, a :e R /\ b :e R /\ c :e R /\ d :e R /\
        U = {p :e EuclidPlane|
-              exists x y:set, p = OrderedPair x y /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}}.
+              exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}}.
 
 Theorem circular_regions_basis_plane : basis_on EuclidPlane circular_regions.
 prove basis_on EuclidPlane circular_regions.
@@ -10877,9 +10877,9 @@ Qed.
 (** from §16 Exercise 4: projections are open maps **)
 (** LATEX VERSION: Exercise 4: Projections from a product are open maps. **)
 Definition projection_image1 : set -> set -> set -> set :=
-  fun X Y U => {x :e X | exists y:set, OrderedPair x y :e U}.
+  fun X Y U => {x :e X | exists y:set, (x,y) :e U}.
 Definition projection_image2 : set -> set -> set -> set :=
-  fun X Y U => {y :e Y | exists x:set, OrderedPair x y :e U}.
+  fun X Y U => {y :e Y | exists x:set, (x,y) :e U}.
 
 Theorem ex16_4_projections_open : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
@@ -10968,10 +10968,10 @@ Qed.
 (** LATEX VERSION: Exercise 8: The diagonal line in ℝ×ℝ with the lower limit product topology is homeomorphic to ℝ with lower limit topology. **)
 Theorem ex16_8_lines_in_lower_limit_products :
   exists L:set, L c= OrderedPair R R /\
-    L = {OrderedPair x x|x :e R} /\
+    L = {(x,x)|x :e R} /\
     subspace_topology (OrderedPair R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L =
       R_lower_limit_topology.
-prove exists L:set, L c= OrderedPair R R /\ L = {OrderedPair x x|x :e R} /\ subspace_topology (OrderedPair R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L = R_lower_limit_topology.
+prove exists L:set, L c= OrderedPair R R /\ L = {(x,x)|x :e R} /\ subspace_topology (OrderedPair R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L = R_lower_limit_topology.
 admit. (** construct diagonal L; projection map is homeomorphism; basis elements [a,b)×[a,b) restrict to [a,b) on diagonal **)
 Qed.
 
@@ -14164,10 +14164,10 @@ Qed.
 Theorem ex17_13_diagonal_closed_iff_Hausdorff : forall X Tx:set,
   topology_on X Tx ->
   (Hausdorff_space X Tx <->
-    closed_in (OrderedPair X X) (product_topology X Tx X Tx) {OrderedPair x x|x :e X}).
+    closed_in (OrderedPair X X) (product_topology X Tx X Tx) {(x,x)|x :e X}).
 let X Tx.
 assume Htop: topology_on X Tx.
-prove Hausdorff_space X Tx <-> closed_in (OrderedPair X X) (product_topology X Tx X Tx) {OrderedPair x x|x :e X}.
+prove Hausdorff_space X Tx <-> closed_in (OrderedPair X X) (product_topology X Tx X Tx) {(x,x)|x :e X}.
 admit. (** complement of diagonal = {(x,y)|x≠y}; Hausdorff iff each (x,y) has nbhd in complement **)
 Qed.
 
@@ -14939,14 +14939,14 @@ Qed.
 Definition metric_on : set -> set -> prop := fun X d =>
   function_on d (OrderedPair X X) R /\
   (forall x y:set, x :e X -> y :e X ->
-     apply_fun d (OrderedPair x y) = apply_fun d (OrderedPair y x)) /\
-  (forall x:set, x :e X -> apply_fun d (OrderedPair x x) = 0) /\
+     apply_fun d (x,y) = apply_fun d (y,x)) /\
+  (forall x:set, x :e X -> apply_fun d (x,x) = 0) /\
   (forall x y:set, x :e X -> y :e X ->
-     ~(Rlt (apply_fun d (OrderedPair x y)) 0) /\
-     apply_fun d (OrderedPair x y) = 0 -> x = y) /\
+     ~(Rlt (apply_fun d (x,y)) 0) /\
+     apply_fun d (x,y) = 0 -> x = y) /\
   (forall x y z:set, x :e X -> y :e X -> z :e X ->
-     Rlt (apply_fun d (OrderedPair x z))
-         (apply_fun d (OrderedPair x y) :/\: apply_fun d (OrderedPair y z))).
+     Rlt (apply_fun d (x,z))
+         (apply_fun d (x,y) :/\: apply_fun d (y,z))).
 
 (** from §20 Definition: open ball **) 
 (** LATEX VERSION: Open ball centered at x with radius r in metric d. **)
@@ -14993,8 +14993,8 @@ Theorem metric_epsilon_delta_continuity : forall X dX Y dY f:set,
      forall eps:set, eps :e R /\ Rlt 0 eps ->
        exists delta:set, delta :e R /\ Rlt 0 delta /\
          (forall x:set, x :e X ->
-            Rlt (apply_fun dX (OrderedPair x x0)) delta ->
-            Rlt (apply_fun dY (OrderedPair (apply_fun f x) (apply_fun f x0))) eps))).
+            Rlt (apply_fun dX (x,x0)) delta ->
+            Rlt (apply_fun dY ((apply_fun f x, apply_fun f x0))) eps))).
 let X dX Y dY f.
 assume HdX: metric_on X dX.
 assume HdY: metric_on Y dY.
@@ -15003,8 +15003,8 @@ prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
      forall eps:set, eps :e R /\ Rlt 0 eps ->
        exists delta:set, delta :e R /\ Rlt 0 delta /\
          (forall x:set, x :e X ->
-            Rlt (apply_fun dX (OrderedPair x x0)) delta ->
-            Rlt (apply_fun dY (OrderedPair (apply_fun f x) (apply_fun f x0))) eps)).
+            Rlt (apply_fun dX (x,x0)) delta ->
+            Rlt (apply_fun dY ((apply_fun f x, apply_fun f x0))) eps)).
 admit. (** ε-δ characterization of continuity in metric spaces; preimage of open ball B(f(x₀),ε) contains open ball B(x₀,δ) **)
 Qed.
 
@@ -15027,7 +15027,7 @@ Definition sequence_converges_metric : set -> set -> set -> set -> prop :=
     forall eps:set, eps :e R /\ Rlt 0 eps ->
       exists N:set, N :e omega /\
         forall n:set, n :e omega -> N c= n ->
-          Rlt (apply_fun d (OrderedPair (apply_fun seq n) x)) eps.
+          Rlt (apply_fun d ((apply_fun seq n, x))) eps.
 
 (** from §21: uniqueness of limits in metric spaces **) 
 (** helper: function evaluation as graph lookup **) 
@@ -15057,7 +15057,7 @@ Definition uniform_convergence_functions :
       exists N:set, N :e omega /\
         forall n:set, n :e omega -> N c= n ->
           forall x:set, x :e X ->
-            Rlt (apply_fun dY (OrderedPair (apply_fun (apply_fun f_seq n) x) (apply_fun f x))) eps.
+            Rlt (apply_fun dY ((apply_fun (apply_fun f_seq n) x, apply_fun f x))) eps.
 
 (** from §21: uniform limit theorem placeholder **) 
 (** LATEX VERSION: Uniform limit of continuous functions between metric spaces is continuous. **)
