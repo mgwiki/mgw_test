@@ -17865,16 +17865,20 @@ admit. (** let B be countable basis for Tx; for each B_i select basis element fr
 Qed.
 (** from §30 Exercise 3: uncountable subset has uncountably many limit points **)
 (** LATEX VERSION: If X has countable basis and A is uncountable subset, then uncountably many points of A are limit points. **)
+(** FIXED: limit_point_of parameter order error.
+    Was: limit_point_of x A X Tx (wrong order!)
+    Now: limit_point_of X Tx A x (correct: space, topology, set, point)
+    Definition at line 13115 has signature: X Tx A x. **)
 Theorem ex30_3_uncountably_many_limit_points : forall X Tx A:set,
   second_countable_space X Tx ->
   A c= X ->
   ~ countable A ->
-  ~ countable {x :e A | limit_point_of x A X Tx}.
+  ~ countable {x :e A | limit_point_of X Tx A x}.
 let X Tx A.
 assume H1: second_countable_space X Tx.
 assume H2: A c= X.
 assume H3: ~ countable A.
-prove ~ countable {x :e A | limit_point_of x A X Tx}.
+prove ~ countable {x :e A | limit_point_of X Tx A x}.
 admit. (** if only countably many limit points, then A is union of countable set and isolated points; contradiction **)
 Qed.
 (** from §30 Exercise 4: compact metrizable implies second countable **)
