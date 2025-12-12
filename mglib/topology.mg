@@ -17375,18 +17375,23 @@ Qed.
 
 (** from §50 Theorem 50.5: Menger-Nöbeling embedding theorem **)
 (** LATEX VERSION: Every compact metrizable space X of topological dimension m can be embedded in R^{2m+1}. **)
+(** FIXED: Dimension calculation error.
+    Was: N = m ∪ m ∪ {∅} = m ∪ {∅} = m+1 (successor of m, not 2m+1!)
+    Now: N = add_nat (mul_nat two m) 1 = 2m+1 (correct dimension)
+    The comment says R^{2m+1}, so need to compute 2m+1 using add_nat and mul_nat.
+    Using two from line 17259 and 1 = Sing Empty. **)
 Theorem Menger_Nobeling_embedding_full : forall X Tx m:set,
   compact_space X Tx ->
   metrizable X Tx ->
   covering_dimension X m ->
   m :e omega ->
   exists N:set, exists e:set,
-    N = m :\/: m :\/: (Sing Empty) /\
+    N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 let X Tx m.
 assume Hcomp Hmet Hdim Hm.
 prove exists N:set, exists e:set,
-  N = m :\/: m :\/: (Sing Empty) /\
+  N = add_nat (mul_nat two m) (Sing Empty) /\
   embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 admit. (** Theorem 50.5: Menger-Nöbeling embedding in R^{2m+1} **)
 Qed.
