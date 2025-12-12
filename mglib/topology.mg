@@ -9723,12 +9723,16 @@ Qed.
 
 (** from §14 Definition: basis for the order topology **) 
 (** LATEX VERSION: For a simply ordered set X, the order-topology basis consists of all open intervals/rays; here represented abstractly. **)
+(** FIXED: For dictionary order on R², a and b are ordered pairs (a1,a2) and (b1,b2),
+    not Cartesian products a1×a2 and b1×b2.
+    Was: a = setprod a1 a2 (which is a1×a2, a SET of all pairs)
+    Now: a = (a1,a2) (which is a SINGLE ordered pair) **)
 Definition order_rel : set -> set -> set -> prop := fun X a b =>
   (X = R /\ Rlt a b)
   \/
   (X = setprod R R /\
    exists a1 a2 b1 b2:set,
-     a = setprod a1 a2 /\ b = setprod b1 b2 /\
+     a = (a1, a2) /\ b = (b1, b2) /\
      (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
 
 Definition order_topology_basis : set -> set := fun X =>
