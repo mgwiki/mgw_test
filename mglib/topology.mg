@@ -16988,12 +16988,13 @@ Definition complete_metric_space : set -> set -> prop := fun X d =>
   forall seq:set, sequence_on seq X -> cauchy_sequence X d seq ->
     exists x:set, converges_to X (metric_topology X d) seq x.
 
+(** FIXED: Wrong syntax for ordered pairs in metric definition.
+    Was: p = setprod (setprod x y) 0 (trying to use setprod for tuples - wrong!)
+    Now: Proper ordered pair notation for function representation
+    Discrete metric: d(x,y) = 0 if x=y, 1 if x≠y
+    Using famunion to construct over all pairs **)
 Definition discrete_metric : set -> set := fun X =>
-  {p :e setprod X X |
-     exists x:set, exists y:set,
-       x :e X /\ y :e X /\
-       ((x = y /\ p = setprod (setprod x y) 0) \/
-        (x <> y /\ p = setprod (setprod x y) 1))}.
+  famunion X (fun x => {((x,y), If_i (x = y) 0 1) | y :e X}).
 (** helper: placeholder metric on euclidean_space n **) 
 Definition euclidean_metric : set -> set := fun n => discrete_metric (euclidean_space n).
 
