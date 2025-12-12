@@ -16170,17 +16170,27 @@ prove x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X T
 admit. (** x in closure iff every nbhd meets A; construct net from A; converges to x **)
 Qed.
 
-(** from exercises after §29: continuity via nets **) 
-(** LATEX VERSION: Continuity iff every convergent net’s image converges. **)
+(** from exercises after §29: continuity via nets **)
+(** LATEX VERSION: Continuity iff every convergent net's image converges. **)
+(** FIXED: Net composition and convergence point errors.
+    Was: forall net, net_on net -> ... -> net_converges Y Ty net (Empty)
+    Issues: (1) net : J→X but should be f∘net : J→Y
+            (2) converges to Empty instead of f(x)
+    Now: Make J explicit to use compose_fun J net f, and converge to apply_fun f x
+    The comment confirms: "f continuous iff for all nets x_i→x, have f(x_i)→f(x)" **)
 Theorem continuity_via_nets : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f <->
-    forall net:set, net_on net -> forall x:set, net_converges X Tx net x -> net_converges Y Ty net (Empty)).
+    forall J X0 net:set, directed_set J -> function_on net J X0 ->
+      forall x:set, net_converges X Tx net x ->
+        net_converges Y Ty (compose_fun J net f) (apply_fun f x)).
 let X Tx Y Ty f.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
 prove continuous_map X Tx Y Ty f <->
-    forall net:set, net_on net -> forall x:set, net_converges X Tx net x -> net_converges Y Ty net (Empty).
+    forall J X0 net:set, directed_set J -> function_on net J X0 ->
+      forall x:set, net_converges X Tx net x ->
+        net_converges Y Ty (compose_fun J net f) (apply_fun f x).
 admit. (** f continuous iff for all nets x_i→x, have f(x_i)→f(x); use net characterization of convergence **)
 Qed.
 
