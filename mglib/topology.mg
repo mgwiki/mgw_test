@@ -15046,13 +15046,14 @@ Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => apply
 Definition function_sequence_value : set -> set -> set -> set :=
   fun f_seq n x => apply_fun (apply_fun f_seq n) x.
 
+(** FIXED: Removed extra parentheses around pair argument to d metric. **)
 Definition sequence_converges_metric : set -> set -> set -> set -> prop :=
   fun X d seq x =>
     metric_on X d /\ sequence_on seq X /\ x :e X /\
     forall eps:set, eps :e R /\ Rlt 0 eps ->
       exists N:set, N :e omega /\
         forall n:set, n :e omega -> N c= n ->
-          Rlt (apply_fun d ((apply_fun seq n, x))) eps.
+          Rlt (apply_fun d (apply_fun seq n, x)) eps.
 
 (** from §21: uniqueness of limits in metric spaces **) 
 (** helper: function evaluation as graph lookup **) 
