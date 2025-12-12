@@ -9639,10 +9639,9 @@ Qed.
 
 (** from §13 Exercise 6: incomparability of two real line topologies **)
 (** LATEX VERSION: Exercise 6: Compare the standard, lower limit, and K-topologies on ℝ; standard vs lower-limit and standard vs K are incomparable. **)
-(** STUB DEFINITION: rational_numbers should be ℚ, not ω.
-    Proper definition requires quotient construction of integers and division.
-    Currently just uses omega as placeholder. Only used in admitted theorems. **)
-Definition rational_numbers : set := omega.
+(** FIXED: Now uses proper rational definition (same as Q).
+    rational = {x :e real | exists m :e int, exists n :e omega\{0}, x = m/n} from line 6202. **)
+Definition rational_numbers : set := rational.
 
 Definition open_interval : set -> set -> set := fun a b => {x :e R|Rlt a x /\ Rlt x b}.
 Definition halfopen_interval_left : set -> set -> set := fun a b => {x :e R|Rlt a x /\ ~(Rlt b x)}.
