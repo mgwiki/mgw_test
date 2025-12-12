@@ -15628,11 +15628,15 @@ apply andI.
   exact Hsep_exists.
 Qed.
 
-(** from §24 Example: punctured euclidean space is path connected (placeholder) **) 
+(** from §24 Example: punctured euclidean space is path connected (placeholder) **)
+(** FIXED: Origin is the ordered pair (0,0), not Cartesian product 0×0.
+    Was: {setprod 0 0} = {0 × 0} = {∅} (singleton containing empty set)
+    Now: {(0,0)} (singleton containing origin point)
+    Note: In set theory, 0 = ∅, so setprod 0 0 = ∅ × ∅ = ∅, not the origin! **)
 Theorem punctured_space_path_connected :
-  path_connected_space (EuclidPlane :\: {setprod 0 0})
-    (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {setprod 0 0})).
-prove path_connected_space (EuclidPlane :\: {setprod 0 0}) (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {setprod 0 0})).
+  path_connected_space (EuclidPlane :\: {(0,0)})
+    (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {(0,0)})).
+prove path_connected_space (EuclidPlane :\: {(0,0)}) (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {(0,0)})).
 admit. (** connect any two points via path avoiding origin; use arc around origin if needed **)
 Qed.
 
