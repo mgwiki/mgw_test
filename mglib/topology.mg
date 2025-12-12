@@ -16155,11 +16155,21 @@ Definition subnet_of : set -> set -> prop := fun net sub =>
        exists j:set, j :e J /\ apply_fun phi k = j /\
          apply_fun sub k = apply_fun net j).
 
-(** from exercises after §29: accumulation point of a net **) 
+(** from exercises after §29: accumulation point of a net **)
 (** LATEX VERSION: An accumulation point of a net means every neighborhood contains infinitely many (or cofinal) net points; placeholder formalization. **)
-Definition accumulation_point_of_net : set -> set -> set -> prop := fun X net x =>
-  exists J X0:set, directed_set J /\ function_on net J X0 /\ x :e X /\
-    forall U:set, x :e U -> exists i:set, i :e J /\ apply_fun net i :e U /\ apply_fun net i <> x.
+(** FIXED: Multiple critical errors:
+    1. Missing topology parameter Tx (was 3-ary, now 4-ary)
+    2. Was quantifying over all sets U (x :e U), not just open sets (U :e Tx -> x :e U)
+    3. Was saying "exists one i", not "cofinally many i" (now: forall j0, exists j ≥ j0)
+    Was: fun X net x => ... forall U:set, x :e U -> exists i:set, ...
+    Now: fun X Tx net x => ... forall U:set, U :e Tx -> x :e U ->
+                                  forall j0:set, j0 :e J -> exists j:set, j :e J /\ (j0 :e j \/ j0 = j) /\ ...
+    This captures "cofinally many net points in every neighborhood". **)
+Definition accumulation_point_of_net : set -> set -> set -> set -> prop := fun X Tx net x =>
+  exists J X0:set, topology_on X Tx /\ directed_set J /\ function_on net J X0 /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U ->
+      forall j0:set, j0 :e J ->
+        exists j:set, j :e J /\ (j0 :e j \/ j0 = j) /\ apply_fun net j :e U.
 
 (** from exercises after §29: net convergence **)
 (** LATEX VERSION: A net converges to x if eventually in every neighborhood U of x. **)
@@ -16223,12 +16233,12 @@ prove continuous_map X Tx Y Ty f <->
 admit. (** f continuous iff for all nets x_i→x, have f(x_i)→f(x); use net characterization of convergence **)
 Qed.
 
-(** from exercises after §29: accumulation points and subnets **) 
+(** from exercises after §29: accumulation points and subnets **)
 (** LATEX VERSION: Every accumulation point of a net has a subnet converging to it. **)
 Theorem subnet_converges_to_accumulation : forall X Tx net x:set,
-  accumulation_point_of_net X net x -> exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
+  accumulation_point_of_net X Tx net x -> exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
 let X Tx net x.
-assume Hacc: accumulation_point_of_net X net x.
+assume Hacc: accumulation_point_of_net X Tx net x.
 prove exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
 admit. (** accumulation point: net frequently in every nbhd; construct subnet converging to x **)
 Qed.
