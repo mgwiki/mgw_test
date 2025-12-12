@@ -1798,8 +1798,10 @@ Def product_subbasis_full : TpArr set TpArr set set
  := Lam I set Lam Xi set Ap Ap famunion I Lam i set Ap Ap Prim 5 Ap Ap product_component_topology Xi i Lam x1 set Ap Ap Ap Ap product_cylinder I Xi i x1
 Def product_topology_full : TpArr set TpArr set set
  := Lam I set Lam Xi set Ap Ap generated_topology Ap Ap product_space I Xi Ap Ap product_subbasis_full I Xi
+Def box_basis : TpArr set TpArr set set
+ := Lam I set Lam Xi set Ap Ap Sep Ap Prim 4 Ap Ap product_space I Xi Lam x1 set Ex x2 set Ap Ap and Ap Ap and Ap Ap Ap function_on x2 I Ap Prim 3 Xi All x5 set Imp Ap Ap Prim 1 x5 I Ap Ap Prim 1 Ap Ap product_component_topology x2 x5 Ap Ap product_component_topology Xi x5 Eq set x1 Ap Ap Sep Ap Ap product_space I Xi Lam x3 set All x4 set Imp Ap Ap Prim 1 x4 I Ap Ap Prim 1 Ap Ap product_component_topology x3 x4 Ap Ap product_component_topology x2 x4
 Def box_topology : TpArr set TpArr set set
- := Lam I set Lam Xi set Ap Ap generated_topology Ap Ap product_space I Xi Ap Prim 4 Ap Ap product_space I Xi
+ := Lam I set Lam Xi set Ap Ap generated_topology Ap Ap product_space I Xi Ap Ap box_basis I Xi
 Def countable_product_space : TpArr set TpArr set set
  := Lam I set Lam Xi set Ap Ap product_space I Xi
 Def countable_product_topology : TpArr set TpArr set set
@@ -2103,7 +2105,7 @@ Def component_of : TpArr set TpArr set TpArr set set
 Def locally_connected : TpArr set TpArr set Prop
  := Lam X set Lam Tx set Ap Ap and Ap Ap topological_space X Tx All x1 set Imp Ap Ap Prim 1 x1 X All x2 set Imp Ap Ap Prim 1 x2 Tx Imp Ap Ap Prim 1 x1 x2 Ex x3 set Ap Ap and Ap Ap and Ap Ap and Ap Ap Prim 1 x3 Tx Ap Ap Prim 1 x1 x3 Ap Ap sequence_in x3 x2 Ap Ap connected_space x3 Ap Ap Ap subspace_topology X Tx x3
 Def locally_path_connected : TpArr set TpArr set Prop
- := Lam X set Lam Tx set Ap Ap and Ap Ap topological_space X Tx All x1 set Imp Ap Ap Prim 1 x1 X Ex x2 set Ap Ap and Ap Ap and Ap Ap Prim 1 x2 Tx Ap Ap Prim 1 x1 x2 Ap Ap path_connected_space x2 Ap Ap Ap subspace_topology X Tx x2
+ := Lam X set Lam Tx set Ap Ap and Ap Ap topological_space X Tx All x1 set Imp Ap Ap Prim 1 x1 X All x2 set Imp Ap Ap Prim 1 x2 Tx Imp Ap Ap Prim 1 x1 x2 Ex x3 set Ap Ap and Ap Ap and Ap Ap and Ap Ap Prim 1 x3 Tx Ap Ap Prim 1 x1 x3 Ap Ap sequence_in x3 x2 Ap Ap path_connected_space x3 Ap Ap Ap subspace_topology X Tx x3
 Def pairwise_disjoint : TpArr set Prop
  := Lam Fam set All x1 set All x2 set Imp Ap Ap Prim 1 x1 Fam Imp Ap Ap Prim 1 x2 Fam Imp Imp Eq set x1 x2 All p Prop p Eq set Ap Ap binintersect x1 x2 Prim 2
 Def covers : TpArr set TpArr set Prop
@@ -2307,11 +2309,11 @@ Thm locally_finite_refinement : All x1 set All x2 set All x3 set Imp Ap Ap parac
 Conj paracompact_Hausdorff_normal : All x1 set All x2 set Imp Ap Ap paracompact_space x1 x2 Imp Ap Ap Hausdorff_space x1 x2 Ap Ap normal_space x1 x2
 Conj Smirnov_metrization : All x1 set All x2 set Imp Ap Ap regular_space x1 x2 Imp Ap Ap locally_finite_basis x1 x2 Ap Ap metrizable x1 x2
 Def cauchy_sequence : TpArr set TpArr set TpArr set Prop
- := Lam X set Lam d set Lam seq set Ap Ap and Ap Ap and Ap Ap metric_on X d Ap Ap sequence_on seq X All x1 set Imp Ap Ap Prim 1 x1 R_K Ex x2 set Ap Ap and Ap Ap Prim 1 x2 S_Omega All x3 set All x4 set Imp Ap Ap Prim 1 x3 S_Omega Imp Ap Ap Prim 1 x4 S_Omega Imp Ap Ap sequence_in x2 x3 Imp Ap Ap sequence_in x2 x4 Ap Ap Rlt Ap Ap ap Ap Ap ap d Ap Ap countable_product_component_topology seq x3 Ap Ap countable_product_component_topology seq x4 x1
+ := Lam X set Lam d set Lam seq set Ap Ap and Ap Ap and Ap Ap metric_on X d Ap Ap sequence_on seq X All x1 set Imp Ap Ap and Ap Ap Prim 1 x1 R_K Ap Ap Rlt Prim 2 x1 Ex x2 set Ap Ap and Ap Ap Prim 1 x2 S_Omega All x3 set All x4 set Imp Ap Ap Prim 1 x3 S_Omega Imp Ap Ap Prim 1 x4 S_Omega Imp Ap Ap sequence_in x2 x3 Imp Ap Ap sequence_in x2 x4 Ap Ap Rlt Ap Ap countable_product_component_topology d Ap Ap Sigma Ap ordsucc Ap ordsucc Prim 2 Lam x5 set Ap Ap Ap If_i Eq set x5 Prim 2 Ap Ap countable_product_component_topology seq x3 Ap Ap countable_product_component_topology seq x4 x1
 Def complete_metric_space : TpArr set TpArr set Prop
  := Lam X set Lam d set Ap Ap and Ap Ap metric_on X d All x1 set Imp Ap Ap sequence_on x1 X Imp Ap Ap Ap cauchy_sequence X d x1 Ex x2 set Ap Ap Ap Ap converges_to X Ap Ap metric_topology X d x1 x2
 Def discrete_metric : TpArr set set
- := Lam X set Ap Ap Sep Ap Ap rectangle_set X X Lam x1 set Ex x2 set Ex x3 set Ap Ap and Ap Ap and Ap Ap Prim 1 x2 X Ap Ap Prim 1 x3 X Ap Ap or Ap Ap and Eq set x2 x3 Eq set x1 Ap Ap rectangle_set Ap Ap rectangle_set x2 x3 Prim 2 Ap Ap and Imp Eq set x2 x3 All p Prop p Eq set x1 Ap Ap rectangle_set Ap Ap rectangle_set x2 x3 Ap ordsucc Prim 2
+ := Lam X set Ap Ap famunion X Lam x set Ap Ap Prim 5 X Lam x1 set Ap Ap Sigma Ap ordsucc Ap ordsucc Prim 2 Lam x2 set Ap Ap Ap If_i Eq set x2 Prim 2 Ap Ap Sigma Ap ordsucc Ap ordsucc Prim 2 Lam x3 set Ap Ap Ap If_i Eq set x3 Prim 2 x x1 Ap Ap Ap If_i Eq set x x1 Prim 2 Ap ordsucc Prim 2
 Def euclidean_metric : TpArr set set
  := Lam n set Ap discrete_metric Ap euclidean_space n
 Def bounded_product_metric : TpArr set set
@@ -2407,7 +2409,7 @@ Conj ex50_5_embedding_m1_linear_graph : All x1 set All x2 set Imp Ap Ap covering
 Conj ex50_6_locally_compact_embeds : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 S_Omega Imp Ap Ap locally_compact x1 x2 Imp Ap Ap Hausdorff_space x1 x2 Imp Ap Ap second_countable_space x1 x2 Imp All x6 set Imp Ap Ap sequence_in x6 x1 Imp Ap Ap compact_space x6 Ap Ap Ap subspace_topology x1 x2 x6 Ap Ap covering_dimension x6 x3 Ex x4 set Ex x5 set Ap Ap and Ap Ap and Eq set x4 Ap Ap add_nat Ap Ap mul_nat two x3 Ap Sing Prim 2 Ap Ap Ap Ap Ap embedding_of x1 x2 Ap euclidean_space x4 Ap euclidean_topology x4 x5 Ap Ap Ap closed_in Ap euclidean_space x4 Ap euclidean_topology x4 Ap Ap countable_product_component_topology x5 x1
 Conj ex50_7_manifold_closed_embedding : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 S_Omega Imp Ap Ap m_manifold x1 x2 Ex x4 set Ex x5 set Ap Ap and Ap Ap and Eq set x4 Ap Ap add_nat Ap Ap mul_nat two x3 Ap Sing Prim 2 Ap Ap Ap Ap Ap embedding_of x1 x2 Ap euclidean_space x4 Ap euclidean_topology x4 x5 Ap Ap Ap closed_in Ap euclidean_space x4 Ap euclidean_topology x4 Ap Ap countable_product_component_topology x5 x1
 Def sigma_compact : TpArr set TpArr set Prop
- := Lam X set Lam Tx set Ex x1 set Ap Ap and Ap Ap and Ap countable x1 All x4 set Imp Ap Ap Prim 1 x4 x1 Ap Ap and Ap Ap sequence_in x4 X Ap Ap compact_space x4 Ap Ap Ap subspace_topology X Tx x4 Eq set X Ap Prim 3 Ap Ap Sep x1 Lam x2 set Ex x3 set Ap Ap and Ap Ap Ap open_set X Tx x3 Ap Ap sequence_in x2 x3
+ := Lam X set Lam Tx set Ap Ap and Ap Ap topological_space X Tx Ex x1 set Ap Ap and Ap Ap and Ap countable x1 All x2 set Imp Ap Ap Prim 1 x2 x1 Ap Ap and Ap Ap sequence_in x2 X Ap Ap compact_space x2 Ap Ap Ap subspace_topology X Tx x2 Eq set X Ap Prim 3 x1
 Conj ex50_8_sigma_compact_dimension : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 S_Omega Imp Ap Ap sigma_compact x1 x2 Imp Ap Ap Hausdorff_space x1 x2 Imp All x4 set Imp Ap Ap sequence_in x4 x1 Imp Ap Ap compact_space x4 Ap Ap Ap subspace_topology x1 x2 x4 Ap Ap covering_dimension x4 x3 Ap Ap covering_dimension x1 x3
 Conj ex50_9_manifold_dimension_le_m : All x1 set All x2 set All x3 set Imp Ap Ap Prim 1 x3 S_Omega Imp Ap Ap m_manifold x1 x2 Ap Ap covering_dimension x1 x3
 Conj ex50_10_closed_subspace_RN_dimension : All x1 set All x2 set Imp Ap Ap Prim 1 x2 S_Omega Imp Ap Ap sequence_in x1 Ap euclidean_space x2 Imp Ap Ap Ap closed_in Ap euclidean_space x2 Ap euclidean_topology x2 x1 Ap Ap covering_dimension x1 x2
