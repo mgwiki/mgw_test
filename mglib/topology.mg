@@ -15083,11 +15083,12 @@ Definition uniform_convergence_functions :
     metric_on X dX /\ metric_on Y dY /\
     function_on f_seq omega (function_space X Y) /\ function_on f X Y /\
     (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y) /\
+(** FIXED: Removed extra parentheses around pair argument to dY metric. **)
     forall eps:set, eps :e R /\ Rlt 0 eps ->
       exists N:set, N :e omega /\
         forall n:set, n :e omega -> N c= n ->
           forall x:set, x :e X ->
-            Rlt (apply_fun dY ((apply_fun (apply_fun f_seq n) x, apply_fun f x))) eps.
+            Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eps.
 
 (** from §21: uniform limit theorem placeholder **) 
 (** LATEX VERSION: Uniform limit of continuous functions between metric spaces is continuous. **)
