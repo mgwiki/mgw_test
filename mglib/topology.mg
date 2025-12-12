@@ -17643,11 +17643,18 @@ Qed.
 
 (** from §50 Exercise 8: sigma-compact Hausdorff with compact subspaces of dimension ≤m has dimension ≤m **)
 (** LATEX VERSION: A σ-compact Hausdorff space whose compact subspaces have dimension ≤m has dimension ≤m. **)
+(** FIXED: Union condition was wrong - had nonsensical filtering.
+    Was: X = Union {C :e Fam | exists U:set, open_in X Tx U /\ C c= U}
+         (filters Fam by "C is contained in some open set" - almost always true, nonsensical)
+    Now: X = Union Fam
+         (correctly: X is the union of the compact sets in Fam)
+    Sigma-compact means: countable union of compact subsets. **)
 Definition sigma_compact : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
   exists Fam:set,
     countable Fam /\
     (forall C:set, C :e Fam -> C c= X /\ compact_space C (subspace_topology X Tx C)) /\
-    X = Union {C :e Fam | exists U:set, open_in X Tx U /\ C c= U}.
+    X = Union Fam.
 
 Theorem ex50_8_sigma_compact_dimension : forall X Tx m:set,
   m :e omega ->
