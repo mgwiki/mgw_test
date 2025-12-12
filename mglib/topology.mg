@@ -17781,10 +17781,14 @@ Definition Gdelta_in : set -> set -> set -> prop := fun X Tx A =>
     Intersection_Fam Fam = A.
 
 (** helper: open map - images of open sets are open **)
+(** FIXED: apply_fun f U doesn't make sense - apply_fun is for elements, not sets.
+    Was: apply_fun f U (applying f to set U - wrong!)
+    Now: image_of f U = {f(x) | x ∈ U} (image of set U under f)
+    Using image_of from line 15049. **)
 Definition open_map : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f =>
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
-    forall U:set, U :e Tx -> apply_fun f U :e Ty.
+    forall U:set, U :e Tx -> image_of f U :e Ty.
 
 (** helper: simple topological group structure **)
 Definition topological_group : set -> set -> prop := fun G Tg =>
