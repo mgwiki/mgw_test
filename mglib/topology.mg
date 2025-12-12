@@ -15020,10 +15020,13 @@ assume HdY: metric_on Y dY.
 prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
   (forall x0:set, x0 :e X ->
      forall eps:set, eps :e R /\ Rlt 0 eps ->
+(** FIXED: Removed extra parentheses around pair argument to dY metric.
+    Was: apply_fun dY ((apply_fun f x, apply_fun f x0))
+    Now: apply_fun dY (apply_fun f x, apply_fun f x0) - consistent with dX usage **)
        exists delta:set, delta :e R /\ Rlt 0 delta /\
          (forall x:set, x :e X ->
             Rlt (apply_fun dX (x,x0)) delta ->
-            Rlt (apply_fun dY ((apply_fun f x, apply_fun f x0))) eps)).
+            Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps)).
 admit. (** ε-δ characterization of continuity in metric spaces; preimage of open ball B(f(x₀),ε) contains open ball B(x₀,δ) **)
 Qed.
 
