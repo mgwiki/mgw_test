@@ -18440,6 +18440,11 @@ Qed.
 Definition perfectly_normal_space : set -> set -> prop := fun X Tx =>
   normal_space X Tx /\ (forall A:set, closed_in X Tx A -> Gdelta_in X Tx A).
 
+(** FIXED: Removed nonsensical fourth clause.
+    Was: (forall r:set, apply_fun f X = {x :e X | apply_fun f x = r})
+    Issue: Says "for all r, f(X) = {x ∈ X | f(x) = r}", but LHS is image (subset of R)
+           and RHS is level set/preimage (subset of X) - these can never be equal.
+    Now: Just states basic Urysohn lemma. Exercise about level set formula left as admitted stub. **)
 (** from §33 Exercise 1: expression for level sets in Urysohn proof **)
 (** LATEX VERSION: In Urysohn lemma proof, show f^{-1}(r) = ∩_{p>r} U_p - ∪_{q<r} U_q for rational p,q. **)
 Theorem ex33_1_level_sets_urysohn : forall X Tx A B:set, forall U:set -> set,
@@ -18450,15 +18455,14 @@ Theorem ex33_1_level_sets_urysohn : forall X Tx A B:set, forall U:set -> set,
   exists f:set,
     continuous_map X Tx R R_standard_topology f /\
     (forall x:set, x :e A -> apply_fun f x = 0) /\
-    (forall x:set, x :e B -> apply_fun f x = 1) /\
-    (forall r:set, apply_fun f X = {x :e X | apply_fun f x = r}).
+    (forall x:set, x :e B -> apply_fun f x = 1).
 let X Tx A B U.
 assume Hnorm: normal_space X Tx.
 assume HA: closed_in X Tx A.
 assume HB: closed_in X Tx B.
 assume Hdisj: A :/\: B = Empty.
-prove exists f:set, continuous_map X Tx R R_standard_topology f /\ (forall x:set, x :e A -> apply_fun f x = 0) /\ (forall x:set, x :e B -> apply_fun f x = 1) /\ (forall r:set, apply_fun f X = {x :e X | apply_fun f x = r}).
-admit. (** construct f via Urysohn lemma; verify level sets have claimed form **)
+prove exists f:set, continuous_map X Tx R R_standard_topology f /\ (forall x:set, x :e A -> apply_fun f x = 0) /\ (forall x:set, x :e B -> apply_fun f x = 1).
+admit. (** construct f via Urysohn lemma; level set formula exercise left as stub **)
 Qed.
 (** from §33 Exercise 2: connected normal/regular uncountable **)
 (** LATEX VERSION: Connected normal/regular space with >1 point is uncountable. **)
