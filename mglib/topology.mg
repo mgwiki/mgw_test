@@ -16972,13 +16972,16 @@ Qed.
     Now: sequence_on seq X (function omega → X)
     ALSO FIXED: N c= omega condition is always true, doesn't relate N to m,n.
     Was: N c= omega (always true for N :e omega, doesn't constrain m,n!)
-    Now: N c= m /\ N c= n (means m≥N and n≥N using von Neumann ordering) **)
+    Now: N c= m /\ N c= n (means m≥N and n≥N using von Neumann ordering)
+    ALSO FIXED: Metric application syntax and missing positive epsilon constraint.
+    Was: Rlt (d (apply_fun seq m) (apply_fun seq n)) eps with eps :e R
+    Now: Rlt (apply_fun d (apply_fun seq m, apply_fun seq n)) eps with Rlt 0 eps **)
 Definition cauchy_sequence : set -> set -> set -> prop := fun X d seq =>
   metric_on X d /\ sequence_on seq X /\
-  forall eps:set, eps :e R ->
+  forall eps:set, eps :e R /\ Rlt 0 eps ->
     exists N:set, N :e omega /\
       forall m n:set, m :e omega -> n :e omega -> N c= m -> N c= n ->
-        Rlt (d (apply_fun seq m) (apply_fun seq n)) eps.
+        Rlt (apply_fun d (apply_fun seq m, apply_fun seq n)) eps.
 
 (** from §43 Definition: complete metric space **) 
 (** LATEX VERSION: Completeness: every Cauchy sequence converges. **)
