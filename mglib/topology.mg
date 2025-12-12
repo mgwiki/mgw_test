@@ -16836,8 +16836,11 @@ Qed.
 
 (** helper: Cauchy sequence in a metric space **) 
 (** LATEX VERSION: Cauchy sequence definition (metric). **)
+(** FIXED: Cauchy sequence must be a function (uses apply_fun seq m), not just a subset.
+    Was: seq c= X (any subset)
+    Now: sequence_on seq X (function omega → X) **)
 Definition cauchy_sequence : set -> set -> set -> prop := fun X d seq =>
-  metric_on X d /\ seq c= X /\
+  metric_on X d /\ sequence_on seq X /\
   forall eps:set, eps :e R ->
     exists N:set, N :e omega /\
       forall m n:set, m :e omega -> n :e omega -> N c= omega ->
@@ -16845,9 +16848,11 @@ Definition cauchy_sequence : set -> set -> set -> prop := fun X d seq =>
 
 (** from §43 Definition: complete metric space **) 
 (** LATEX VERSION: Completeness: every Cauchy sequence converges. **)
+(** FIXED: Same issue - seq must be a function, not just a subset.
+    cauchy_sequence now requires sequence_on seq X, so seq c= X is redundant and wrong. **)
 Definition complete_metric_space : set -> set -> prop := fun X d =>
   metric_on X d /\
-  forall seq:set, seq c= X -> cauchy_sequence X d seq ->
+  forall seq:set, sequence_on seq X -> cauchy_sequence X d seq ->
     exists x:set, converges_to X (metric_topology X d) seq x.
 
 Definition discrete_metric : set -> set := fun X =>
