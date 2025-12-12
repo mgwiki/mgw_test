@@ -16780,13 +16780,17 @@ admit. (** Whitney embedding theorem: use local charts and partition of unity to
         aby: conj_myprob_10194_1_20251124_092918 binintersect�f Hausdorff_5Fspace_def m_manifold�f In_5Fno2cycle Hausdorff_5Fseparate_5Fpoint_5Fcompact_5Fset . **)
 Qed.
 
-(** from §37 Theorem: Tychonoff theorem **) 
+(** from §37 Theorem: Tychonoff theorem **)
 (** LATEX VERSION: Arbitrary product of compact spaces is compact (Tychonoff). **)
+(** FIXED: Quantifier scope error - i should be restricted to index set.
+    Was: forall i:set, compact_space ... (i ranges over ALL sets!)
+    Now: forall i:set, i :e I -> compact_space ... (i restricted to index set I)
+    Only need component spaces indexed by I to be compact. **)
 Theorem Tychonoff_theorem : forall I Xi:set,
-  (forall i:set, compact_space (product_component Xi i) (product_component_topology Xi i)) ->
+  (forall i:set, i :e I -> compact_space (product_component Xi i) (product_component_topology Xi i)) ->
   compact_space (product_space I Xi) (product_topology_full I Xi).
 let I Xi.
-assume Hcomp: forall i:set, compact_space (product_component Xi i) (product_component_topology Xi i).
+assume Hcomp: forall i:set, i :e I -> compact_space (product_component Xi i) (product_component_topology Xi i).
 prove compact_space (product_space I Xi) (product_topology_full I Xi).
 admit. (** use Alexander subbasis theorem; canonical projections compact; finite subcover from finitely many coordinates **)
 Qed.
