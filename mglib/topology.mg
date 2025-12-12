@@ -16205,7 +16205,11 @@ Definition countable_index_set : set -> prop := fun I => I c= omega.
 (** LATEX VERSION: Component topology extractor for countable products. **)
 Definition countable_product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
 (** LATEX VERSION: Real sequences and uniform metric/topology on R^ω (setup). **)
-Definition real_sequences : set := Power R.
+(** FIXED: Real sequences are functions omega → R, not subsets of R!
+    Was: Power R (set of all subsets of R)
+    Now: setexp R omega (R^omega, the set of all functions omega → R)
+    Using setexp from line 2804 of TRUSTED_DEFS.txt. **)
+Definition real_sequences : set := setexp R omega.
 Definition uniform_metric_Romega : set := Eps_i (fun d => metric_on real_sequences d).
 Definition uniform_topology : set := metric_topology real_sequences uniform_metric_Romega.
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
