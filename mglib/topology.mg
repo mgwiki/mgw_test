@@ -10256,12 +10256,18 @@ Qed.
 
 (** from §15 Definition: projections on a product **) 
 (** LATEX VERSION: Define coordinate projection relations π₁ and π₂ from X×Y. **)
+(** FIXED: Projections must use ordered pairs for function graphs.
+    proj₁: X×Y → X maps (x,y) ↦ x, graph = {((x,y), x) | x∈X, y∈Y}.
+    proj₂: X×Y → Y maps (x,y) ↦ y, graph = {((x,y), y) | x∈X, y∈Y}.
+    Was using UPair (setprod x y) which is wrong on two counts:
+    (1) UPair is unordered, need ordered pairs (tuple notation)
+    (2) setprod x y is X×Y cartesian product, need (x,y) for single ordered pair **)
 Definition projection1 : set -> set -> set := fun X Y =>
   {p :e Power (setprod (setprod X Y) X) |
-     exists x:set, exists y:set, x :e X /\ y :e Y /\ p = UPair (setprod x y) x}.
+     exists x:set, exists y:set, x :e X /\ y :e Y /\ p = ((x,y), x)}.
 Definition projection2 : set -> set -> set := fun X Y =>
   {p :e Power (setprod (setprod X Y) Y) |
-     exists x:set, exists y:set, x :e X /\ y :e Y /\ p = UPair (setprod x y) y}.
+     exists x:set, exists y:set, x :e X /\ y :e Y /\ p = ((x,y), y)}.
 
 (** from §15 Theorem 15.2: projection preimages form a subbasis **) 
 (** LATEX VERSION: The inverse images of opens under projections give a subbasis for the product topology. **)
@@ -10288,16 +10294,20 @@ apply andI.
   reflexivity.
 Qed.
 
-(** helper: function evaluation as graph lookup **) 
-Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y :e f).
+(** FIXED: Function-related definitions must use ordered pairs, not UPair.
+    Functions are represented as sets of ordered pairs (x,y) where x↦y.
+    apply_fun looks up y such that (x,y) ∈ f.
+    Identity function: {(y,y) | y ∈ X}.
+    Constant family: {(i, X) | i ∈ I}. **)
+Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => (x,y) :e f).
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod X Y)|function_on f X Y}.
 
 (** Helper: identity function application **)
 Axiom identity_function_apply : forall X x:set,
-  x :e X -> apply_fun {UPair y y | y :e X} x = x.
+  x :e X -> apply_fun {(y,y) | y :e X} x = x.
 
-Definition const_family : set -> set -> set := fun I X => {UPair i X|i :e I}.
+Definition const_family : set -> set -> set := fun I X => {(i,X)|i :e I}.
 Definition product_component : set -> set -> set := fun Xi i => apply_fun Xi i.
 Definition product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
 Definition product_space : set -> set -> set := fun I Xi =>
@@ -14411,14 +14421,15 @@ Qed.
 
 (** from §18: identity map is continuous **) 
 (** LATEX VERSION: Identity map on any space is continuous. **)
+(** FIXED: Identity function must use ordered pairs (tuple notation), not UPair. **)
 Theorem identity_continuous : forall X Tx:set,
   topology_on X Tx ->
-  let id := {UPair x x|x :e X} in
+  let id := {(x,x)|x :e X} in
   continuous_map X Tx X Tx id.
 let X Tx.
 assume HTx: topology_on X Tx.
-prove let id := {UPair x x|x :e X} in continuous_map X Tx X Tx id.
-set id := {UPair x x|x :e X}.
+prove let id := {(x,x)|x :e X} in continuous_map X Tx X Tx id.
+set id := {(x,x)|x :e X}.
 prove continuous_map X Tx X Tx id.
 (** Strategy: Unfold continuous_map definition and show:
     1. topology_on X Tx (given)
@@ -14440,8 +14451,8 @@ claim Hpart2: (topology_on X Tx /\ topology_on X Tx) /\ function_on id X X.
     prove forall x:set, x :e X -> apply_fun id x :e X.
     let x. assume Hx: x :e X.
     prove apply_fun id x :e X.
-    (** For x :e X, we have UPair x x :e id, so apply_fun id x = x by Eps_i.
-        Therefore apply_fun id x :e X. This requires showing uniqueness of y in UPair x y :e id. **)
+    (** For x :e X, we have (x,x) :e id, so apply_fun id x = x by Eps_i.
+        Therefore apply_fun id x :e X. This requires showing uniqueness of y in (x,y) :e id. **)
     claim Hid_x: apply_fun id x = x.
     { exact (identity_function_apply X x Hx). }
     rewrite Hid_x.
@@ -14484,8 +14495,9 @@ Qed.
 
  (** from §18: composition of continuous maps is continuous **)
  (** LATEX VERSION: Composition of continuous functions remains continuous. **)
+ (** FIXED: Function composition must use ordered pairs (tuple notation), not UPair. **)
 Definition compose_fun : set -> set -> set -> set := fun X f g =>
-  {UPair x (apply_fun g (apply_fun f x))|x :e X}.
+  {(x, apply_fun g (apply_fun f x))|x :e X}.
 
 (** Helper: apply_fun on composed functions **)
 Axiom compose_fun_apply : forall X f g x:set,
@@ -14567,7 +14579,7 @@ claim Hpart2: (topology_on X Tx /\ topology_on Z Tz) /\ function_on gf X Z.
     prove forall x:set, x :e X -> apply_fun gf x :e Z.
     let x. assume Hx: x :e X.
     prove apply_fun gf x :e Z.
-    (** gf = {UPair x (apply_fun g (apply_fun f x))|x :e X} **)
+    (** gf = {(x, apply_fun g (apply_fun f x))|x :e X} **)
     (** So apply_fun gf x should be apply_fun g (apply_fun f x) **)
     (** Since f: X -> Y, we have apply_fun f x :e Y **)
     claim Hfx: apply_fun f x :e Y.
