@@ -17541,6 +17541,7 @@ Qed.
 
 (** from §50 Exercise 6: locally compact Hausdorff with countable basis embeds in R^{2m+1} **)
 (** LATEX VERSION: A locally compact Hausdorff space with countable basis whose compact subspaces have dimension ≤m is homeomorphic to a closed subspace of R^{2m+1}. **)
+(** FIXED: Dimension error - should be 2m+1, not m+1. **)
 Theorem ex50_6_locally_compact_embeds : forall X Tx m:set,
   m :e omega ->
   locally_compact X Tx ->
@@ -17548,13 +17549,13 @@ Theorem ex50_6_locally_compact_embeds : forall X Tx m:set,
   second_countable_space X Tx ->
   (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C m) ->
   exists N:set, exists e:set,
-    N = m :\/: m :\/: (Sing Empty) /\
+    N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
 let X Tx m.
 assume Hm Hlc HHaus Hsec Hdim.
 prove exists N:set, exists e:set,
-  N = m :\/: m :\/: (Sing Empty) /\
+  N = add_nat (mul_nat two m) (Sing Empty) /\
   embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
   closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
 admit. (** extends Theorem 50.6 to locally compact case **)
@@ -17562,17 +17563,18 @@ Qed.
 
 (** from §50 Exercise 7: every m-manifold embeds in R^{2m+1} as closed subspace **)
 (** LATEX VERSION: Every m-manifold can be embedded in R^{2m+1} as a closed subspace. **)
+(** FIXED: Dimension error - should be 2m+1, not m+1. **)
 Theorem ex50_7_manifold_closed_embedding : forall X Tx m:set,
   m :e omega ->
   m_manifold X Tx ->
   exists N:set, exists e:set,
-    N = m :\/: m :\/: (Sing Empty) /\
+    N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
 let X Tx m.
 assume Hm Hman.
 prove exists N:set, exists e:set,
-  N = m :\/: m :\/: (Sing Empty) /\
+  N = add_nat (mul_nat two m) (Sing Empty) /\
   embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
   closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
 admit. (** every manifold embeds in R^{2m+1} as closed subspace **)
