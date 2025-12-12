@@ -15911,15 +15911,19 @@ prove compact_space Y Ty.
 admit. (** given open cover of Y, pull back to cover of X; extract finite subcover; images cover Y **)
 Qed.
 
-(** from §26: tube lemma used in product compactness **) 
+(** from §26: tube lemma used in product compactness **)
 (** LATEX VERSION: Tube lemma: in X×Y with X compact, a neighborhood of {x0}×Y contains some U×Y. **)
+(** FIXED: Tube lemma should state U×{y} ⊆ N for all y, not U×y ∈ N.
+    Was: setprod U y :e N (Cartesian product U×y as element)
+    Now: setprod U {y} c= N (Cartesian product U×{y} as subset)
+    The tube lemma says U×Y ⊆ N, which is equivalent to ∀y∈Y. U×{y} ⊆ N. **)
 Theorem tube_lemma : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   compact_space X Tx ->
   forall x0:set, x0 :e X ->
   forall N:set, N :e product_topology X Tx Y Ty /\ x0 :e N ->
     exists U:set, U :e Tx /\ x0 :e U /\
-      (forall y:set, y :e Y -> setprod U y :e N).
+      (forall y:set, y :e Y -> setprod U {y} c= N).
 let X Tx Y Ty.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
@@ -15928,7 +15932,7 @@ let x0.
 assume Hx0: x0 :e X.
 let N.
 assume HN: N :e product_topology X Tx Y Ty /\ x0 :e N.
-prove exists U:set, U :e Tx /\ x0 :e U /\ (forall y:set, y :e Y -> setprod U y :e N).
+prove exists U:set, U :e Tx /\ x0 :e U /\ (forall y:set, y :e Y -> setprod U {y} c= N).
 admit. (** for each y, find rectangle containing (x₀,y) in N; cover {x₀}×Y by rectangles; use compactness to get finite subcover; intersect finitely many opens to get U **)
 Qed.
 
