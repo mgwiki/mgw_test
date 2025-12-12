@@ -17008,15 +17008,18 @@ prove exists f:set, continuous_map unit_interval R2_standard_topology unit_squar
 admit. (** construct Peano curve via iterative midpoint subdivision; limit of continuous approximations is continuous **)
 Qed.
 
-(** from §45 Definition: sequential compactness **) 
+(** from §45 Definition: sequential compactness **)
 (** LATEX VERSION: Sequentially compact: every sequence has a convergent subsequence/limit in X. **)
-(** FIXED: Sequential compactness requires seq to be a sequence (function from omega),
-    not just any subset of X. converges_to requires sequence_on seq X, so using seq c= X
-    would be inconsistent - converges_to would always fail for non-function subsets.
-    Was: seq c= X (seq is any subset)
-    Now: sequence_on seq X (seq is a function omega → X) **)
+(** FIXED: Definition was wrong - said "every sequence converges" instead of
+    "every sequence has a convergent subsequence".
+    Was: forall seq, sequence_on seq X -> exists x, converges_to X Tx seq x
+         (every sequence converges - would make X trivial!)
+    Now: forall seq, sequence_on seq X -> exists subseq x, subseq c= seq /\ converges_to X Tx subseq x
+         (every sequence has a convergent subsequence) **)
 Definition sequentially_compact : set -> set -> prop := fun X Tx =>
-  topology_on X Tx /\ forall seq:set, sequence_on seq X -> exists x:set, converges_to X Tx seq x.
+  topology_on X Tx /\
+  forall seq:set, sequence_on seq X ->
+    exists subseq:set, exists x:set, subseq c= seq /\ converges_to X Tx subseq x.
 
 (** from §45 Theorem: compactness in metric spaces equivalences **) 
 (** LATEX VERSION: In metric spaces, compact ⇔ sequentially compact. **)
