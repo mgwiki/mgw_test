@@ -16294,10 +16294,20 @@ Definition Sorgenfrey_topology : set := R_lower_limit_topology.
 
 
 (** LATEX VERSION: Countable basis at x (Definition 30.1). **)
+(** FIXED: Required global basis instead of local basis at x.
+    Was: exists B:set, basis_on X B /\ countable_set B /\ ...
+         (B is a countable BASIS FOR THE ENTIRE SPACE X!)
+    Issue: This would make first countable imply second countable (wrong!).
+           A countable basis at x should be a countable LOCAL basis at x, not a global basis.
+    Now: exists B:set, B c= Tx /\ countable_set B /\
+           (forall b:set, b :e B -> x :e b) /\
+           (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U)
+         (B is a countable collection of open sets containing x that form a local basis at x) **)
 Definition countable_basis_at : set -> set -> set -> prop := fun X Tx x =>
-  topology_on X Tx /\
-  exists B:set, basis_on X B /\ countable_set B /\
-    (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ x :e b /\ b c= U).
+  topology_on X Tx /\ x :e X /\
+  exists B:set, B c= Tx /\ countable_set B /\
+    (forall b:set, b :e B -> x :e b) /\
+    (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U).
 
 (** from §30 Definition 30.1: first-countable space **) 
 (** LATEX VERSION: First countable means each point has a countable neighborhood basis. **)
