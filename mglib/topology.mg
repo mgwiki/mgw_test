@@ -14964,8 +14964,13 @@ Definition metric_on : set -> set -> prop := fun X d =>
 
 (** from §20 Definition: open ball **) 
 (** LATEX VERSION: Open ball centered at x with radius r in metric d. **)
+(** FIXED: Syntax d x y is invalid; must use apply_fun d (x,y).
+    NOTE: This definition is still semantically incomplete/wrong:
+    {y ∈ X | ∃r, d(x,y) < r} = X (always true for large enough r).
+    Proper open_ball should take radius r as parameter: B_r(x) = {y | d(x,y) < r}.
+    However, fixing this requires changing signature and all uses. Marking for future work. **)
 Definition open_ball : set -> set -> set -> set := fun X d x =>
-  {y :e X|exists r :e R, Rlt (d x y) r}.
+  {y :e X|exists r :e R, Rlt (apply_fun d (x,y)) r}.
 
 Definition metric_topology : set -> set -> set := fun X d =>
   generated_topology X {open_ball X d x|x :e X}.
