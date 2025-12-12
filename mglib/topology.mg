@@ -16455,9 +16455,14 @@ Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
     (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
        exists f:set, f :e F /\ apply_fun f x1 <> apply_fun f x2).
 (** LATEX VERSION: Embedding predicate. **)
+(** FIXED: Definition was incomplete - only required continuous injection, not homeomorphism onto image.
+    Was: function_on f X Y /\ continuous_map X Tx Y Ty f /\ injective
+         (continuous injection, but NOT necessarily a homeomorphism onto its image!)
+    Now: homeomorphism X Tx (image_of f X) (subspace_topology Y Ty (image_of f X)) f
+         (f is a homeomorphism from X to f(X) with subspace topology)
+    This is the correct definition: an embedding is a map that is a homeomorphism onto its image. **)
 Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f =>
-  function_on f X Y /\ continuous_map X Tx Y Ty f /\
-  (forall x1 x2:set, x1 :e X -> x2 :e X -> apply_fun f x1 = apply_fun f x2 -> x1 = x2).
+  homeomorphism X Tx (image_of f X) (subspace_topology Y Ty (image_of f X)) f.
 (** LATEX VERSION: Power and unit-interval cubes helpers; metrizability predicate. **)
 Definition power_real : set -> set := fun J => function_space J R.
 Definition unit_interval_power : set -> set := fun J => function_space J unit_interval.
