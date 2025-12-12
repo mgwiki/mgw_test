@@ -16901,16 +16901,19 @@ prove metrizable X Tx.
 admit. (** similar to Nagata-Smirnov; locally finite basis gives σ-locally-finite structure by partitioning **)
 Qed.
 
-(** helper: Cauchy sequence in a metric space **) 
+(** helper: Cauchy sequence in a metric space **)
 (** LATEX VERSION: Cauchy sequence definition (metric). **)
 (** FIXED: Cauchy sequence must be a function (uses apply_fun seq m), not just a subset.
     Was: seq c= X (any subset)
-    Now: sequence_on seq X (function omega → X) **)
+    Now: sequence_on seq X (function omega → X)
+    ALSO FIXED: N c= omega condition is always true, doesn't relate N to m,n.
+    Was: N c= omega (always true for N :e omega, doesn't constrain m,n!)
+    Now: N c= m /\ N c= n (means m≥N and n≥N using von Neumann ordering) **)
 Definition cauchy_sequence : set -> set -> set -> prop := fun X d seq =>
   metric_on X d /\ sequence_on seq X /\
   forall eps:set, eps :e R ->
     exists N:set, N :e omega /\
-      forall m n:set, m :e omega -> n :e omega -> N c= omega ->
+      forall m n:set, m :e omega -> n :e omega -> N c= m -> N c= n ->
         Rlt (d (apply_fun seq m) (apply_fun seq n)) eps.
 
 (** from §43 Definition: complete metric space **) 
