@@ -16526,8 +16526,11 @@ prove ~ normal_space (product_space J (const_family J R)) (product_topology_full
 admit. (** construct disjoint closed sets that cannot be separated by disjoint open sets; use diagonal argument **)
 Qed.
 
-(** from §32 Example 2: SOmega x SbarOmega not normal **) 
+(** from §32 Example 2: SOmega x SbarOmega not normal **)
 (** LATEX VERSION: Product S_Ω×S̄_Ω gives a non-normal example. **)
+(** FIXED: Product of two spaces should use binary product_topology, not general product_space.
+    Was: R^{S_Omega × Sbar_Omega} (product indexed by S_Omega × Sbar_Omega with each factor R)
+    Now: S_Omega × Sbar_Omega (Cartesian product with product topology) **)
 Definition S_Omega : set := omega.
 Definition Sbar_Omega : set := Power omega.
 Definition SOmega_topology : set := discrete_topology S_Omega.
@@ -16535,9 +16538,9 @@ Definition SbarOmega_topology : set := discrete_topology Sbar_Omega.
 
 Theorem SOmega_SbarOmega_not_normal :
   normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
-  ~ normal_space (product_space (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)) (product_topology_full (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)).
+  ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 prove normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
-  ~ normal_space (product_space (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)) (product_topology_full (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)).
+  ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 admit. (** discrete spaces normal; product gives Jones' lemma counterexample **)
 Qed.
 
@@ -16597,13 +16600,16 @@ prove completely_regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenf
 admit. (** product of completely regular spaces is completely regular; not normal by antidiagonal argument **)
 Qed.
 
-(** from §33 Example 1 cont.: SOmega x SbarOmega completely regular not normal **) 
+(** from §33 Example 1 cont.: SOmega x SbarOmega completely regular not normal **)
 (** LATEX VERSION: Another example of completely regular but non-normal product. **)
+(** FIXED: Same issue - topology must match the space S_Omega × Sbar_Omega, not R^{S_Omega × Sbar_Omega}.
+    Was: topology on R^{S_Omega × Sbar_Omega} applied to space S_Omega × Sbar_Omega (mismatch!)
+    Now: product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology **)
 Theorem SOmega_SbarOmega_completely_regular_not_normal :
-  completely_regular_space (setprod S_Omega Sbar_Omega) (product_topology_full (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)) /\
-  ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology_full (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)).
-prove completely_regular_space (setprod S_Omega Sbar_Omega) (product_topology_full (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)) /\
-  ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology_full (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)).
+  completely_regular_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology) /\
+  ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
+prove completely_regular_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology) /\
+  ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 admit. (** product of completely regular spaces is completely regular; not normal by previous theorem **)
 Qed.
 
