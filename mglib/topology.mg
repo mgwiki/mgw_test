@@ -16320,23 +16320,27 @@ prove first_countable_space real_sequences uniform_topology /\ ~ second_countabl
 admit. (** balls at each point form countable basis; but uncountably many separated open sets **)
 Qed.
 
-(** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **) 
+(** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **)
 (** LATEX VERSION: First/second countability are inherited by subspaces and countable products (Theorem 30.2). **)
+(** FIXED: Quantifier scope error in product clauses.
+    Was: forall i:set, first_countable_space Xi ... (i ranges over ALL sets!)
+    Now: forall i:set, i :e I -> first_countable_space Xi ... (i restricted to index set I)
+    The product should only require spaces indexed by i∈I to be first/second countable. **)
 Theorem countability_axioms_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall A:set, A c= X -> first_countable_space X Tx -> first_countable_space A (subspace_topology X Tx A)) /\
   (forall A:set, A c= X -> second_countable_space X Tx -> second_countable_space A (subspace_topology X Tx A)) /\
-  (forall I Xi:set, countable_index_set I -> (forall i:set, first_countable_space Xi (countable_product_component_topology Xi i)) ->
+  (forall I Xi:set, countable_index_set I -> (forall i:set, i :e I -> first_countable_space Xi (countable_product_component_topology Xi i)) ->
     first_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)) /\
-  (forall I Xi:set, countable_index_set I -> (forall i:set, second_countable_space Xi (countable_product_component_topology Xi i)) ->
+  (forall I Xi:set, countable_index_set I -> (forall i:set, i :e I -> second_countable_space Xi (countable_product_component_topology Xi i)) ->
     second_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)).
 let X Tx.
 assume HTx: topology_on X Tx.
 prove (forall A:set, A c= X -> first_countable_space X Tx -> first_countable_space A (subspace_topology X Tx A)) /\
   (forall A:set, A c= X -> second_countable_space X Tx -> second_countable_space A (subspace_topology X Tx A)) /\
-  (forall I Xi:set, countable_index_set I -> (forall i:set, first_countable_space Xi (countable_product_component_topology Xi i)) ->
+  (forall I Xi:set, countable_index_set I -> (forall i:set, i :e I -> first_countable_space Xi (countable_product_component_topology Xi i)) ->
     first_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)) /\
-  (forall I Xi:set, countable_index_set I -> (forall i:set, second_countable_space Xi (countable_product_component_topology Xi i)) ->
+  (forall I Xi:set, countable_index_set I -> (forall i:set, i :e I -> second_countable_space Xi (countable_product_component_topology Xi i)) ->
     second_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)).
 admit. (** subspace: restrict basis; countable product: countable union of countable bases from each coordinate **)
 Qed.
