@@ -16161,11 +16161,21 @@ Definition accumulation_point_of_net : set -> set -> set -> prop := fun X net x 
   exists J X0:set, directed_set J /\ function_on net J X0 /\ x :e X /\
     forall U:set, x :e U -> exists i:set, i :e J /\ apply_fun net i :e U /\ apply_fun net i <> x.
 
-(** from exercises after §29: net convergence **) 
+(** from exercises after §29: net convergence **)
 (** LATEX VERSION: A net converges to x if eventually in every neighborhood U of x. **)
+(** FIXED: Definition was wrong - said "exists i such that net(i) ∈ U" instead of
+    "eventually all net(i) are in U".
+    Was: forall U:set, U :e Tx -> x :e U -> exists i:set, i :e J /\ apply_fun net i :e U
+         (for every open U containing x, there exists ONE point net(i) in U)
+    Now: forall U:set, U :e Tx -> x :e U ->
+           exists i0:set, i0 :e J /\ forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U
+         (for every open U containing x, eventually all net(i) for i ≥ i0 are in U)
+    The ordering i0 ≤ i is von Neumann: (i0 :e i \/ i0 = i). **)
 Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
   exists J X0:set, topology_on X Tx /\ directed_set J /\ function_on net J X0 /\ x :e X /\
-    forall U:set, U :e Tx -> x :e U -> exists i:set, i :e J /\ apply_fun net i :e U.
+    forall U:set, U :e Tx -> x :e U ->
+      exists i0:set, i0 :e J /\
+        forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
 
 (** from exercises after §29: convergence of subnets **) 
 (** LATEX VERSION: Convergent nets have convergent subnets to same limit. **)
