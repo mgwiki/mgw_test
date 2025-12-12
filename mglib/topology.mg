@@ -16111,16 +16111,20 @@ prove directed_set J.
 exact H.
 Qed.
 
-(** from exercises after §29: cofinal subsets of directed sets are directed **) 
+(** from exercises after §29: cofinal subsets of directed sets are directed **)
 (** LATEX VERSION: Cofinal subset of a directed set is directed. **)
+(** FIXED: Cofinality condition was trivially true.
+    Was: exists k, (k :e K /\ i :e K) \/ i :e J (trivially true since i :e J assumed)
+    Now: exists k, k :e K /\ (i :e k \/ i = k) (k in K is upper bound of i)
+    Cofinality means every element of J has an upper bound in K. **)
 Theorem cofinal_subset_directed : forall J K:set,
   directed_set J -> K c= J ->
-  (forall i:set, i :e J -> exists k:set, k :e K /\ i :e K \/ i :e J) ->
+  (forall i:set, i :e J -> exists k:set, k :e K /\ (i :e k \/ i = k)) ->
   directed_set K.
 let J K.
 assume HJ: directed_set J.
 assume HK: K c= J.
-assume Hcofinal: forall i:set, i :e J -> exists k:set, k :e K /\ i :e K \/ i :e J.
+assume Hcofinal: forall i:set, i :e J -> exists k:set, k :e K /\ (i :e k \/ i = k).
 prove directed_set K.
 admit. (** cofinal subset of directed set is directed; upper bounds in J give upper bounds in K via cofinality **)
 Qed.
