@@ -15027,7 +15027,10 @@ Definition converges_to : set -> set -> set -> set -> prop :=
     forall U:set, U :e Tx -> x :e U ->
       exists N:set, N :e omega /\
         forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
-Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => y).
+(** FIXED: Image should apply function f to elements of seq, not return seq unchanged.
+    Was: {y | y ∈ seq} = seq (ignoring f completely!)
+    Now: {apply_fun f y | y ∈ seq} = image of seq under f **)
+Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => apply_fun f y).
 Definition function_sequence_value : set -> set -> set -> set :=
   fun f_seq n x => apply_fun (apply_fun f_seq n) x.
 
