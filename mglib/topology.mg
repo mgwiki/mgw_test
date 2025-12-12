@@ -10636,7 +10636,9 @@ Qed.
 
 (** from §16 Example 3: ordered square versus subspace topology **) 
 (** LATEX VERSION: Example 3: The order topology on the ordered square differs from the subspace topology inherited from the dictionary order on ℝ×ℝ. **)
-Definition unit_interval : set := R.
+(** FIXED: Unit interval [0,1] = {x ∈ R | 0 ≤ x ≤ 1}.
+    Using negated strict inequality: x ≥ 0 means ~(x < 0), x ≤ 1 means ~(1 < x). **)
+Definition unit_interval : set := {x :e R | ~(Rlt x 0) /\ ~(Rlt 1 x)}.
 Definition ordered_square : set := setprod unit_interval unit_interval.
 Definition ordered_square_topology : set := order_topology ordered_square.
 Definition ordered_square_open_strip : set := ordered_square.
