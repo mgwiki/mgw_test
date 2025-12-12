@@ -18021,60 +18021,65 @@ Qed.
 
 (** from §30 Exercise 11a: continuous image of Lindelof is Lindelof **)
 (** LATEX VERSION: If f:X→Y continuous and X Lindelöf, then f(X) is Lindelöf. **)
+(** FIXED: apply_fun f X should be image_of f X (image of set under function).
+    apply_fun is for elements; image_of is for sets. **)
 Theorem ex30_11a_image_Lindelof : forall X Tx Y Ty f:set,
   Lindelof_space X Tx ->
   continuous_map X Tx Y Ty f ->
-  Lindelof_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+  Lindelof_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
 let X Tx Y Ty f.
 assume H1: Lindelof_space X Tx.
 assume H2: continuous_map X Tx Y Ty f.
-prove Lindelof_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+prove Lindelof_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
 admit. (** preimages of cover give countable subcover; apply f to get countable subcover of image **)
 Qed.
 
 (** from §30 Exercise 11b: continuous image of separable is separable **)
 (** LATEX VERSION: If f:X→Y continuous and X has countable dense subset, then f(X) does too. **)
+(** FIXED: apply_fun f X should be image_of f X (same error pattern). **)
 Theorem ex30_11b_image_countable_dense : forall X Tx Y Ty f:set,
   (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
   continuous_map X Tx Y Ty f ->
   exists Df:set,
-    Df c= (apply_fun f X) /\
+    Df c= (image_of f X) /\
     countable Df /\
-    dense_in Df (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+    dense_in Df (image_of f X) (subspace_topology Y Ty (image_of f X)).
 let X Tx Y Ty f.
 assume H1: exists D:set, D c= X /\ countable D /\ dense_in D X Tx.
 assume H2: continuous_map X Tx Y Ty f.
-prove exists Df:set, Df c= (apply_fun f X) /\ countable Df /\ dense_in Df (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+prove exists Df:set, Df c= (image_of f X) /\ countable Df /\ dense_in Df (image_of f X) (subspace_topology Y Ty (image_of f X)).
 admit. (** image f(D) is countable and dense in f(X) **)
 Qed.
 
 (** from §30 Exercise 12a: open continuous map preserves first countability **)
 (** LATEX VERSION: If f:X→Y is continuous open and X first-countable, then f(X) is too. **)
+(** FIXED: apply_fun f X should be image_of f X (same error pattern). **)
 Theorem ex30_12a_open_map_first_countable : forall X Tx Y Ty f:set,
   first_countable_space X Tx ->
   continuous_map X Tx Y Ty f ->
   open_map X Tx Y Ty f ->
-  first_countable_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+  first_countable_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
 let X Tx Y Ty f.
 assume H1: first_countable_space X Tx.
 assume H2: continuous_map X Tx Y Ty f.
 assume H3: open_map X Tx Y Ty f.
-prove first_countable_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+prove first_countable_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
 admit. (** for y in f(X), take preimage x, use countable nbhd basis at x, apply f to get countable nbhd basis at y **)
 Qed.
 
 (** from §30 Exercise 12b: open continuous map preserves second countability **)
 (** LATEX VERSION: If f:X→Y is continuous open and X second-countable, then f(X) is too. **)
+(** FIXED: apply_fun f X should be image_of f X (same error pattern). **)
 Theorem ex30_12b_open_map_second_countable : forall X Tx Y Ty f:set,
   second_countable_space X Tx ->
   continuous_map X Tx Y Ty f ->
   open_map X Tx Y Ty f ->
-  second_countable_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+  second_countable_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
 let X Tx Y Ty f.
 assume H1: second_countable_space X Tx.
 assume H2: continuous_map X Tx Y Ty f.
 assume H3: open_map X Tx Y Ty f.
-prove second_countable_space (apply_fun f X) (subspace_topology Y Ty (apply_fun f X)).
+prove second_countable_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
 admit. (** image of countable basis is countable basis for f(X) **)
 Qed.
 (** from §30 Exercise 13: disjoint open sets countable when dense countable **)
