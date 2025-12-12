@@ -15888,14 +15888,18 @@ admit. (** for x ∉ Y, separate x from each y ∈ Y by Hausdorff; cover Y; fini
         aby: binintersect�f Hausdorff_5Fspace_def conj_myprob_9569_1_20251124_034558 In_5Fno2cycle Sing_5Ffinite prop_ext_2 finite_sets_closed_in_Hausdorff . **)
 Qed.
 
-(** from §26 Lemma 26.4: separating point and compact set in Hausdorff space **) 
+(** from §26 Lemma 26.4: separating point and compact set in Hausdorff space **)
+(** FIXED: Point x should be disjoint from Y, not intersect as sets.
+    Was: x :/\: Y = Empty (treating point x as a set, intersecting with Y)
+    Now: x /:e Y (point x is not an element of set Y)
+    The conclusion x :e U confirms x is a point, so disjointness should be x ∉ Y. **)
 Theorem Hausdorff_separate_point_compact_set : forall X Tx Y x:set,
-  Hausdorff_space X Tx -> compact_space Y (subspace_topology X Tx Y) -> x :/\: Y = Empty ->
+  Hausdorff_space X Tx -> compact_space Y (subspace_topology X Tx Y) -> x /:e Y ->
   exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ Y c= V /\ U :/\: V = Empty.
 let X Tx Y x.
 assume HH: Hausdorff_space X Tx.
 assume Hcomp: compact_space Y (subspace_topology X Tx Y).
-assume Hx: x :/\: Y = Empty.
+assume Hx: x /:e Y.
 prove exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ Y c= V /\ U :/\: V = Empty.
 admit. (** for each y, separate x and y; cover Y by neighborhoods; finite subcover gives disjoint U and V
         aby: binintersect�f conj_myprob_9576_1_20251124_034636 Hausdorff_5Fspace_def In_5Fno2cycle ordsuccI2 In_5Find EmptyAx . **)
