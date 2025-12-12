@@ -16590,20 +16590,28 @@ prove normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_
 admit. (** discrete spaces normal; product gives Jones' lemma counterexample **)
 Qed.
 
-(** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **) 
+(** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **)
 (** LATEX VERSION: Urysohn lemma: In a normal space, disjoint closed sets can be separated by continuous f: X→[a,b]. **)
+(** FIXED: Urysohn lemma was missing separation conditions.
+    Was: exists f continuous from X to [a,b] (trivially true - any constant function works!)
+    Now: exists f continuous with f(A)=a and f(B)=b (actually separates A from B)
+    The comment says "separated by continuous f", so f must map A to a and B to b. **)
 Definition closed_interval : set -> set -> set := fun a b =>
   {x :e R | ~(Rlt x a) /\ ~(Rlt b x)}.
 
 Theorem Urysohn_lemma : forall X Tx A B a b:set,
   normal_space X Tx -> closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
-  exists f:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) f.
+  exists f:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) f /\
+    (forall x:set, x :e A -> apply_fun f x = a) /\
+    (forall x:set, x :e B -> apply_fun f x = b).
 let X Tx A B a b.
 assume Hnorm: normal_space X Tx.
 assume HA: closed_in X Tx A.
 assume HB: closed_in X Tx B.
 assume Hdisj: A :/\: B = Empty.
-prove exists f:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) f.
+prove exists f:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) f /\
+    (forall x:set, x :e A -> apply_fun f x = a) /\
+    (forall x:set, x :e B -> apply_fun f x = b).
 admit. (** construct nested opens indexed by rationals; define f via supremum of rationals; verify continuity
         aby: In_5Fno2cycle order_topology�f order_topology_on_Zplus_discrete binintersect�f conj_myprob_10080_1_20251124_041615 Hausdorff_5Fspace_def ex17_10_order_topology_Hausdorff closed_in�f . **)
 Qed.
