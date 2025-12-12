@@ -16089,10 +16089,17 @@ prove exists Y Ty:set, one_point_compactification X Tx Y Ty.
 exact (one_point_compactification_exists X Tx Hlc HH).
 Qed.
 
-(** from exercises after §29: directed sets **) 
+(** from exercises after §29: directed sets **)
 (** LATEX VERSION: Directed set definition (nonempty, every pair has an upper bound). **)
+(** FIXED: Upper bound condition was missing.
+    Was: exists k:set, k :e J (k not related to i,j at all!)
+    Now: exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k)
+    The comment requires "every pair has an upper bound", so k must satisfy i≤k and j≤k.
+    Using von Neumann ordinal ordering: i≤k means (i :e k \/ i = k). **)
 Definition directed_set : set -> prop := fun J =>
-  J <> Empty /\ forall i j:set, i :e J -> j :e J -> exists k:set, k :e J.
+  J <> Empty /\
+  forall i j:set, i :e J -> j :e J ->
+    exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k).
 
 (** from exercises after §29: examples of directed sets **) 
 (** LATEX VERSION: Simple closure properties/examples of directed sets (placeholder). **)
