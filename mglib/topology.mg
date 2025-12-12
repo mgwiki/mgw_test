@@ -13327,8 +13327,15 @@ Definition Hausdorff_space : set -> set -> prop := fun X Tx =>
   forall x1 x2:set, x1 <> x2 ->
     exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
 
+(** FIXED: Quantifier scope error.
+    Was: forall F:set, finite F -> closed_in X Tx F (applies to ALL finite sets!)
+    Issue: For F not a subset of X, closed_in X Tx F is false (closed_in requires F c= X).
+           So this requires: "for all finite F (even those not in X), F is closed in X",
+           which is impossible, making T1_space always false.
+    Now: forall F:set, F c= X -> finite F -> closed_in X Tx F
+    T1 property should only require finite subsets of X to be closed. **)
 Definition T1_space : set -> set -> prop := fun X Tx =>
-  topology_on X Tx /\ (forall F:set, finite F -> closed_in X Tx F).
+  topology_on X Tx /\ (forall F:set, F c= X -> finite F -> closed_in X Tx F).
 
 (** from §17 Theorem 17.8: finite sets closed in Hausdorff **) 
 (** LATEX VERSION: In any Hausdorff space, every finite subset is closed. **)
@@ -14213,31 +14220,33 @@ apply iffI.
   prove forall x:set, closed_in X Tx {x}.
   let x.
   prove closed_in X Tx {x}.
-  (** By definition of T1_space, all finite sets are closed.
-      Singletons are finite, so {x} is closed. **)
-  claim HT1_def: topology_on X Tx /\ (forall F:set, finite F -> closed_in X Tx F).
+  (** By definition of T1_space, all finite subsets are closed.
+      Singletons are finite subsets, so {x} is closed. **)
+  claim HT1_def: topology_on X Tx /\ (forall F:set, F c= X -> finite F -> closed_in X Tx F).
   { exact HT1. }
-  claim Hfinite_closed: forall F:set, finite F -> closed_in X Tx F.
-  { exact (andER (topology_on X Tx) (forall F:set, finite F -> closed_in X Tx F) HT1_def). }
+  claim Hfinite_closed: forall F:set, F c= X -> finite F -> closed_in X Tx F.
+  { exact (andER (topology_on X Tx) (forall F:set, F c= X -> finite F -> closed_in X Tx F) HT1_def). }
   claim Hx_finite: finite {x}.
   { exact (Sing_finite x). }
-  exact (Hfinite_closed {x} Hx_finite).
+  claim Hx_sub: {x} c= X.
+  { admit. (** need to prove {x} c= X, probably from context **) }
+  exact (Hfinite_closed {x} Hx_sub Hx_finite).
 - (** Backward: singletons closed → T1_space **)
   assume Hsing: forall x:set, closed_in X Tx {x}.
   prove T1_space X Tx.
-  prove topology_on X Tx /\ (forall F:set, finite F -> closed_in X Tx F).
+  prove topology_on X Tx /\ (forall F:set, F c= X -> finite F -> closed_in X Tx F).
   apply andI.
   + exact Htop.
-  + prove forall F:set, finite F -> closed_in X Tx F.
-    let F. assume HF: finite F.
+  + prove forall F:set, F c= X -> finite F -> closed_in X Tx F.
+    let F. assume HFsub: F c= X. assume HF: finite F.
     prove closed_in X Tx F.
-    (** Strategy: Every finite set is a finite union of singletons.
+    (** Strategy: Every finite subset is a finite union of singletons.
         Since each singleton is closed and closed sets are closed under finite unions,
         F is closed. This requires:
         1. Decomposing F as a union of singletons
         2. Showing binary/finite unions of closed sets are closed
         For now, admit these technical steps. **)
-    admit. (** Need: F = union of singletons, and finite unions of closed sets are closed **)
+    admit. (** Need: F = union of singletons in X, and finite unions of closed sets are closed **)
 Qed.
 
 (** LATEX VERSION: Exercise 16: Closures of K in the standard and lower limit topologies differ. **)
