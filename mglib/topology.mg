@@ -16927,8 +16927,13 @@ Qed.
 
 (** from §45 Definition: sequential compactness **) 
 (** LATEX VERSION: Sequentially compact: every sequence has a convergent subsequence/limit in X. **)
+(** FIXED: Sequential compactness requires seq to be a sequence (function from omega),
+    not just any subset of X. converges_to requires sequence_on seq X, so using seq c= X
+    would be inconsistent - converges_to would always fail for non-function subsets.
+    Was: seq c= X (seq is any subset)
+    Now: sequence_on seq X (seq is a function omega → X) **)
 Definition sequentially_compact : set -> set -> prop := fun X Tx =>
-  topology_on X Tx /\ forall seq:set, seq c= X -> exists x:set, converges_to X Tx seq x.
+  topology_on X Tx /\ forall seq:set, sequence_on seq X -> exists x:set, converges_to X Tx seq x.
 
 (** from §45 Theorem: compactness in metric spaces equivalences **) 
 (** LATEX VERSION: In metric spaces, compact ⇔ sequentially compact. **)
