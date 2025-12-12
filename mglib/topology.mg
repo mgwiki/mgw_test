@@ -17110,11 +17110,15 @@ prove Baire_space Tx.
 admit. (** Baire category theorem: compact Hausdorff spaces are Baire **)
 Qed.
 
-(** from §48 Theorem: Baire category theorem general version **) 
+(** from §48 Theorem: Baire category theorem general version **)
 (** LATEX VERSION: General Baire category consequence: nonempty open sets in Baire space. **)
-Theorem Baire_category_theorem : forall X:set,
-  Baire_space X -> forall U:set, open_in X X U -> U <> Empty.
-let X.
+(** FIXED: Type error - X used as both space and topology.
+    Was: Baire_space X and open_in X X U (X used as both space and topology!)
+    Now: Baire_space Tx and open_in X Tx U (X is space, Tx is topology)
+    Baire_space takes a topology as input (per definition at line 17064). **)
+Theorem Baire_category_theorem : forall X Tx:set,
+  Baire_space Tx -> forall U:set, open_in X Tx U -> U <> Empty.
+let X Tx.
 assume HBaire.
 let U.
 assume Hopen.
