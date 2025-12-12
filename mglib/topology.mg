@@ -16142,15 +16142,25 @@ Qed.
 Definition net_on : set -> prop := fun net =>
   exists J X:set, directed_set J /\ function_on net J X.
 
-(** from exercises after §29: subnet definition placeholder **) 
+(** from exercises after §29: subnet definition placeholder **)
 (** LATEX VERSION: Definition of subnet (Exercise, placeholder formalization). **)
+(** FIXED: Lines 16152-16153 had nonsensical condition making phi constant.
+    Was: forall k1 k2:set, k1 :e K -> k2 :e K -> exists k3:set,
+           k3 :e K /\ apply_fun phi k3 = apply_fun phi k1 /\ apply_fun phi k3 = apply_fun phi k2
+         This says phi(k3) = phi(k1) AND phi(k3) = phi(k2), so phi(k1) = phi(k2) for ALL k1, k2,
+         making phi constant!
+    Now: forall j:set, j :e J -> exists k0:set, k0 :e K /\
+           forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+             (j :e apply_fun phi k \/ j = apply_fun phi k)
+         This is the cofinality condition: for every j ∈ J, eventually phi(k) ≥ j. **)
 Definition subnet_of : set -> set -> prop := fun net sub =>
   exists J X K Y phi:set,
     directed_set J /\ function_on net J X /\
     directed_set K /\ function_on sub K Y /\
     function_on phi K J /\
-    (forall k1 k2:set, k1 :e K -> k2 :e K -> exists k3:set,
-        k3 :e K /\ apply_fun phi k3 = apply_fun phi k1 /\ apply_fun phi k3 = apply_fun phi k2) /\
+    (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+      forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+        (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
     (forall k:set, k :e K ->
        exists j:set, j :e J /\ apply_fun phi k = j /\
          apply_fun sub k = apply_fun net j).
