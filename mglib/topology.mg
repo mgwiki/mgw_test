@@ -17083,14 +17083,19 @@ Definition pointwise_convergence_topology : set -> set -> set -> set -> set :=
   fun X Tx Y Ty => generated_topology (function_space X Y) Empty.
 Definition compact_convergence_topology : set -> set -> set -> set -> set :=
   fun X Tx Y Ty => generated_topology (function_space X Y) Empty.
+(** FIXED: Quantifier structure was wrong - required ALL f to map U into V, not just those with f(x) in V.
+    Was: forall V, (exists f0 with f0(x) ∈ V) -> exists U such that (forall f ∈ F, f(U) ⊆ V)
+         This says: if ANY function maps x into V, then ALL functions map U into V (too strong!)
+    Now: forall V, exists U such that (forall f ∈ F, f(x) ∈ V -> f(U) ⊆ V)
+         This is correct equicontinuity: U works uniformly for all f that map x into V. **)
 Definition equicontinuous_family : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty F =>
     topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
     forall x:set, x :e X ->
       forall V:set, V :e Ty ->
-        (exists f0:set, f0 :e F /\ apply_fun f0 x :e V) ->
         exists U:set, U :e Tx /\ x :e U /\
-          forall f:set, f :e F -> forall y:set, y :e U -> apply_fun f y :e V.
+          forall f:set, f :e F -> apply_fun f x :e V ->
+            forall y:set, y :e U -> apply_fun f y :e V.
 Definition relatively_compact_in_compact_convergence : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty F =>
     topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
