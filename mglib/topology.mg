@@ -15119,15 +15119,18 @@ prove sequence_converges_metric X d seq x.
 exact H.
 Qed.
 
-(** from §21: continuity via sequences in metric spaces **) 
+(** from §21: continuity via sequences in metric spaces **)
 (** LATEX VERSION: Continuity between metric spaces is equivalent to preserving limits of convergent sequences. **)
+(** FIXED: Composed sequence f∘seq must be a function (graph of ordered pairs), not Cartesian products.
+    Was: {setprod n (apply_fun f (apply_fun seq n))|n :e omega} = {n × f(seq(n)) | n ∈ ω}
+    Now: {(n, apply_fun f (apply_fun seq n))|n :e omega} = graph of n ↦ f(seq(n)) **)
 Theorem continuity_via_sequences_metric : forall X dX Y dY f:set,
   metric_on X dX -> metric_on Y dY ->
   (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
     forall seq x:set,
       sequence_converges_metric X dX seq x ->
       sequence_converges_metric Y dY
-        ({setprod n (apply_fun f (apply_fun seq n))|n :e omega})
+        ({(n, apply_fun f (apply_fun seq n))|n :e omega})
         (apply_fun f x)).
 let X dX Y dY f.
 assume HdX: metric_on X dX.
@@ -15136,7 +15139,7 @@ prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
     forall seq x:set,
       sequence_converges_metric X dX seq x ->
       sequence_converges_metric Y dY
-        ({setprod n (apply_fun f (apply_fun seq n))|n :e omega})
+        ({(n, apply_fun f (apply_fun seq n))|n :e omega})
         (apply_fun f x).
 admit. (** sequential continuity: f continuous iff seq→x implies f(seq)→f(x); use metric characterization **)
 Qed.
