@@ -17424,17 +17424,20 @@ Qed.
 
 (** from §50 Corollary 50.8: compact m-manifold embeds in R^{2m+1} **)
 (** LATEX VERSION: Every compact m-manifold can be embedded in R^{2m+1}. **)
+(** FIXED: Same dimension error as previous theorem.
+    Was: N = m ∪ m ∪ {∅} = m+1 (not 2m+1!)
+    Now: N = add_nat (mul_nat two m) (Sing Empty) = 2m+1 **)
 Theorem compact_m_manifold_embeds_R2mp1 : forall X Tx m:set,
   m :e omega ->
   compact_space X Tx ->
   m_manifold X Tx ->
   exists N:set, exists e:set,
-    N = m :\/: m :\/: (Sing Empty) /\
+    N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 let X Tx m.
 assume Hm Hcomp Hman.
 prove exists N:set, exists e:set,
-  N = m :\/: m :\/: (Sing Empty) /\
+  N = add_nat (mul_nat two m) (Sing Empty) /\
   embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 admit. (** Corollary 50.8: compact m-manifold embeds in R^{2m+1} **)
 Qed.
