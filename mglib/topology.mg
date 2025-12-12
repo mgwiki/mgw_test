@@ -8194,11 +8194,8 @@ apply set_ext.
               HUprop).
 Qed.
 
-(** FIXED: OrderedPair now correctly represents cartesian product X×Y.
-    Despite the name, this is used for cartesian products throughout topology section.
-    Individual ordered pairs use tuple notation (x,y). Cartesian product defined as
-    setprod before line 6495 (line 2717), so we use that. **)
-Definition OrderedPair : set -> set -> set := setprod.
+(** Misleading "OrderedPair" definition eliminated. Cartesian products use
+    setprod (defined at line 2717). Individual ordered pairs use tuple notation (x,y). **)
 
 (** ambient real line **) 
 Definition R : set := real.
@@ -8215,8 +8212,8 @@ Definition Rlt : set -> set -> prop := fun a b =>
 
 (** from §13 Example 4: circular vs rectangular region bases **)
 (** LATEX VERSION: Example 4: circular regions and axis-parallel rectangular regions in ℝ² both form bases generating the same topology. **)
-(** FIXED: EuclidPlane is now correctly R×R (Cartesian product) since OrderedPair = setprod. **)
-Definition EuclidPlane : set := OrderedPair R R.
+(** FIXED: EuclidPlane is now correctly R×R (Cartesian product) since setprod = setprod. **)
+Definition EuclidPlane : set := setprod R R.
 (** STUB: distance_R2 should compute Euclidean distance sqrt((x1-x2)^2 + (y1-y2)^2).
     Available operations: proj0/proj1 (lines 2630-2631), ap (line 2723) for coordinates,
     add_SNo (line 4171), mul_SNo (line 4609), minus_SNo (line 4080),
@@ -8775,7 +8772,7 @@ Theorem ex13_2_compare_nine_topologies :
   exists finer_pairs:set,
     finer_pairs =
       {p :e Power (Power (Power abc_set))|
-         exists T1 T2:set, p = OrderedPair T1 T2 /\
+         exists T1 T2:set, p = setprod T1 T2 /\
            (T1 = top_abc_1 \/ T1 = top_abc_2 \/ T1 = top_abc_3 \/
             T1 = top_abc_4 \/ T1 = top_abc_5 \/ T1 = top_abc_6 \/
             T1 = top_abc_7 \/ T1 = top_abc_8 \/ T1 = top_abc_9) /\
@@ -8791,7 +8788,7 @@ prove topology_on abc_set top_abc_1 /\ topology_on abc_set top_abc_2 /\
   exists finer_pairs:set,
     finer_pairs =
       {p :e Power (Power (Power abc_set))|
-         exists T1 T2:set, p = OrderedPair T1 T2 /\
+         exists T1 T2:set, p = setprod T1 T2 /\
            (T1 = top_abc_1 \/ T1 = top_abc_2 \/ T1 = top_abc_3 \/
             T1 = top_abc_4 \/ T1 = top_abc_5 \/ T1 = top_abc_6 \/
             T1 = top_abc_7 \/ T1 = top_abc_8 \/ T1 = top_abc_9) /\
@@ -9730,9 +9727,9 @@ Qed.
 Definition order_rel : set -> set -> set -> prop := fun X a b =>
   (X = R /\ Rlt a b)
   \/
-  (X = OrderedPair R R /\
+  (X = setprod R R /\
    exists a1 a2 b1 b2:set,
-     a = OrderedPair a1 a2 /\ b = OrderedPair b1 b2 /\
+     a = setprod a1 a2 /\ b = setprod b1 b2 /\
      (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
 
 Definition order_topology_basis : set -> set := fun X =>
@@ -9802,20 +9799,20 @@ Qed.
 
 (** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
 (** LATEX VERSION: Example 2 defines the dictionary order topology on ℝ×ℝ via the order topology construction. **)
-Definition R2_dictionary_order_topology : set := order_topology (OrderedPair R R).
+Definition R2_dictionary_order_topology : set := order_topology (setprod R R).
 
 Theorem dictionary_order_topology_is_topology :
-  topology_on (OrderedPair R R) R2_dictionary_order_topology.
-prove topology_on (OrderedPair R R) R2_dictionary_order_topology.
-(** R2_dictionary_order_topology = order_topology (OrderedPair R R) by definition **)
-exact (order_topology_is_topology (OrderedPair R R)).
+  topology_on (setprod R R) R2_dictionary_order_topology.
+prove topology_on (setprod R R) R2_dictionary_order_topology.
+(** R2_dictionary_order_topology = order_topology (setprod R R) by definition **)
+exact (order_topology_is_topology (setprod R R)).
 Qed.
 
 (** from §14 Example 2: rectangle subbasis yields product-style topology **) 
 (** LATEX VERSION: Rectangle-type sets give a basis generating the dictionary order topology on ℝ×ℝ. **)
 Theorem rectangles_basis_for_R2 :
-  exists B:set, basis_on (OrderedPair R R) B /\ generated_topology (OrderedPair R R) B = R2_dictionary_order_topology.
-prove exists B:set, basis_on (OrderedPair R R) B /\ generated_topology (OrderedPair R R) B = R2_dictionary_order_topology.
+  exists B:set, basis_on (setprod R R) B /\ generated_topology (setprod R R) B = R2_dictionary_order_topology.
+prove exists B:set, basis_on (setprod R R) B /\ generated_topology (setprod R R) B = R2_dictionary_order_topology.
 admit. (** construct basis from dictionary order intervals; verify it generates the topology **)
 Qed.
 
@@ -9838,7 +9835,7 @@ Qed.
 
 (** from §14 Example 4: two-row dictionary order space is not discrete **) 
 (** LATEX VERSION: Example 4: The dictionary order topology on {1,2}×ℕ is not discrete. **)
-Definition two_by_nat : set := OrderedPair 2 omega.
+Definition two_by_nat : set := setprod 2 omega.
 Definition two_by_nat_order_topology : set := order_topology two_by_nat.
 
 (** Helper: singleton {(1,0)} is not open in two_by_nat order topology **)
@@ -9874,16 +9871,16 @@ Qed.
 
 (** from §15 Definition: product topology on X×Y **) 
 (** LATEX VERSION: The product topology on X×Y is generated by the subbasis of rectangles U×V with U open in X and V open in Y. **)
-Definition rectangle_set : set -> set -> set := fun U V => OrderedPair U V.
+Definition rectangle_set : set -> set -> set := fun U V => setprod U V.
 
 (** Helper: cartesian products preserve subset relation **)
-Axiom OrderedPair_Subq : forall U V X Y:set,
-  U c= X -> V c= Y -> OrderedPair U V c= OrderedPair X Y.
+Axiom setprod_Subq : forall U V X Y:set,
+  U c= X -> V c= Y -> setprod U V c= setprod X Y.
 
 (** Helper: elements of cartesian products have coordinates **)
-Axiom OrderedPair_elem_decompose : forall X Y p:set,
-  p :e OrderedPair X Y ->
-  exists x :e X, exists y :e Y, p :e OrderedPair {x} {y}.
+Axiom setprod_elem_decompose : forall X Y p:set,
+  p :e setprod X Y ->
+  exists x :e X, exists y :e Y, p :e setprod {x} {y}.
 
 (** Helper: singleton subset property **)
 Axiom singleton_subset : forall x U:set, x :e U -> {x} c= U.
@@ -9892,49 +9889,49 @@ Axiom singleton_subset : forall x U:set, x :e U -> {x} c= U.
 Axiom singleton_elem : forall x y:set, x :e {y} -> x = y.
 
 (** Helper: coordinates of product elements **)
-Axiom OrderedPair_coords_in : forall x y U V p:set,
-  p :e OrderedPair {x} {y} -> p :e OrderedPair U V -> x :e U /\ y :e V.
+Axiom setprod_coords_in : forall x y U V p:set,
+  p :e setprod {x} {y} -> p :e setprod U V -> x :e U /\ y :e V.
 
 (** Helper: intersection of cartesian products **)
-Axiom OrderedPair_intersection : forall U1 V1 U2 V2:set,
-  OrderedPair U1 V1 :/\: OrderedPair U2 V2 = OrderedPair (U1 :/\: U2) (V1 :/\: V2).
+Axiom setprod_intersection : forall U1 V1 U2 V2:set,
+  setprod U1 V1 :/\: setprod U2 V2 = setprod (U1 :/\: U2) (V1 :/\: V2).
 
 Definition product_subbasis : set -> set -> set -> set -> set :=
   fun X Tx Y Ty =>
     \/_ U :e Tx, {rectangle_set U V|V :e Ty}.
 
 Definition product_topology : set -> set -> set -> set -> set :=
-  fun X Tx Y Ty => generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty).
+  fun X Tx Y Ty => generated_topology (setprod X Y) (product_subbasis X Tx Y Ty).
 
 (** Helper: product subbasis satisfies basis axioms **)
 Axiom product_subbasis_is_basis : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
-  basis_on (OrderedPair X Y) (product_subbasis X Tx Y Ty).
+  basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
 
 (** from §15: product topology is a topology **)
 (** LATEX VERSION: The product topology determined by Tx and Ty satisfies the topology axioms on X×Y. **)
 Theorem product_topology_is_topology : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
-  topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
+  topology_on (setprod X Y) (product_topology X Tx Y Ty).
 let X Tx Y Ty.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
-prove topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
-(** product_topology X Tx Y Ty = generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty) **)
+prove topology_on (setprod X Y) (product_topology X Tx Y Ty).
+(** product_topology X Tx Y Ty = generated_topology (setprod X Y) (product_subbasis X Tx Y Ty) **)
 (** Use axiom that product_subbasis forms a basis, then apply lemma_topology_from_basis **)
-exact (lemma_topology_from_basis (OrderedPair X Y) (product_subbasis X Tx Y Ty)
+exact (lemma_topology_from_basis (setprod X Y) (product_subbasis X Tx Y Ty)
          (product_subbasis_is_basis X Tx Y Ty HTx HTy)).
 Qed.
 
 (** Definition: product basis from two bases **)
 Definition product_basis_from : set -> set -> set :=
-  fun Bx By => \/_ U :e Bx, {OrderedPair U V | V :e By}.
+  fun Bx By => \/_ U :e Bx, {setprod U V | V :e By}.
 
 (** Helper: product basis generates product topology **)
 Axiom product_basis_generates_product_topology : forall X Y Bx By Tx Ty:set,
   basis_on X Bx -> generated_topology X Bx = Tx ->
   basis_on Y By -> generated_topology Y By = Ty ->
-  generated_topology (OrderedPair X Y) (product_basis_from Bx By) = product_topology X Tx Y Ty.
+  generated_topology (setprod X Y) (product_basis_from Bx By) = product_topology X Tx Y Ty.
 
 (** from §15 Theorem: basis of products of basis elements **)
 (** LATEX VERSION: If Bx, By are bases for Tx, Ty, then the collection {U×V|U∈Bx, V∈By} is a basis generating the product topology. **)
@@ -9943,61 +9940,61 @@ Theorem product_basis_generates :
     basis_on X Bx /\ generated_topology X Bx = Tx ->
     basis_on Y By /\ generated_topology Y By = Ty ->
     exists B:set,
-      basis_on (OrderedPair X Y) B /\
-      (forall U :e Bx, forall V :e By, OrderedPair U V :e B) /\
-  generated_topology (OrderedPair X Y) B = product_topology X Tx Y Ty.
+      basis_on (setprod X Y) B /\
+      (forall U :e Bx, forall V :e By, setprod U V :e B) /\
+  generated_topology (setprod X Y) B = product_topology X Tx Y Ty.
 let X Tx Y Ty Bx By.
 assume HBx: basis_on X Bx /\ generated_topology X Bx = Tx.
 assume HBy: basis_on Y By /\ generated_topology Y By = Ty.
 prove exists B:set,
-      basis_on (OrderedPair X Y) B /\
-      (forall U :e Bx, forall V :e By, OrderedPair U V :e B) /\
-  generated_topology (OrderedPair X Y) B = product_topology X Tx Y Ty.
+      basis_on (setprod X Y) B /\
+      (forall U :e Bx, forall V :e By, setprod U V :e B) /\
+  generated_topology (setprod X Y) B = product_topology X Tx Y Ty.
 (** Witness B = product_basis_from Bx By = {U×V | U∈Bx, V∈By} **)
 witness (product_basis_from Bx By).
-prove basis_on (OrderedPair X Y) (product_basis_from Bx By) /\
-      (forall U :e Bx, forall V :e By, OrderedPair U V :e product_basis_from Bx By) /\
-  generated_topology (OrderedPair X Y) (product_basis_from Bx By) = product_topology X Tx Y Ty.
+prove basis_on (setprod X Y) (product_basis_from Bx By) /\
+      (forall U :e Bx, forall V :e By, setprod U V :e product_basis_from Bx By) /\
+  generated_topology (setprod X Y) (product_basis_from Bx By) = product_topology X Tx Y Ty.
 apply andI.
 - (** Part 1 & 2: product_basis_from Bx By is a basis and contains all U×V **)
   apply andI.
-  + (** Prove basis_on (OrderedPair X Y) (product_basis_from Bx By) **)
+  + (** Prove basis_on (setprod X Y) (product_basis_from Bx By) **)
     (** Extract properties from assumptions **)
     claim HBx_basis: basis_on X Bx.
     { exact (andEL (basis_on X Bx) (generated_topology X Bx = Tx) HBx). }
     claim HBy_basis: basis_on Y By.
     { exact (andEL (basis_on Y By) (generated_topology Y By = Ty) HBy). }
     (** Verify three basis axioms for product_basis_from Bx By **)
-    prove product_basis_from Bx By c= Power (OrderedPair X Y)
-      /\ (forall p :e OrderedPair X Y, exists b :e product_basis_from Bx By, p :e b)
+    prove product_basis_from Bx By c= Power (setprod X Y)
+      /\ (forall p :e setprod X Y, exists b :e product_basis_from Bx By, p :e b)
       /\ (forall b1 :e product_basis_from Bx By, forall b2 :e product_basis_from Bx By, forall p:set,
             p :e b1 -> p :e b2 -> exists b3 :e product_basis_from Bx By, p :e b3 /\ b3 c= b1 :/\: b2).
     (** Left-associative structure: (Axiom1 /\ Axiom2) /\ Axiom3 **)
     apply andI.
     * (** Prove Axiom1 /\ Axiom2 **)
       apply andI.
-      - (** Axiom 1: product_basis_from Bx By c= Power (OrderedPair X Y) **)
+      - (** Axiom 1: product_basis_from Bx By c= Power (setprod X Y) **)
         let b. assume Hb: b :e product_basis_from Bx By.
-        prove b :e Power (OrderedPair X Y).
-        (** b is in the family union, so b = OrderedPair U V for some U :e Bx, V :e By **)
-        claim Hexists: exists U :e Bx, b :e {OrderedPair U V' | V' :e By}.
-        { exact (famunionE Bx (fun U' => {OrderedPair U' V' | V' :e By}) b Hb). }
+        prove b :e Power (setprod X Y).
+        (** b is in the family union, so b = setprod U V for some U :e Bx, V :e By **)
+        claim Hexists: exists U :e Bx, b :e {setprod U V' | V' :e By}.
+        { exact (famunionE Bx (fun U' => {setprod U' V' | V' :e By}) b Hb). }
         apply Hexists.
-        let U. assume HU_conj: U :e Bx /\ b :e {OrderedPair U V' | V' :e By}.
+        let U. assume HU_conj: U :e Bx /\ b :e {setprod U V' | V' :e By}.
         claim HU: U :e Bx.
-        { exact (andEL (U :e Bx) (b :e {OrderedPair U V' | V' :e By}) HU_conj). }
-        claim HbRepl: b :e {OrderedPair U V' | V' :e By}.
-        { exact (andER (U :e Bx) (b :e {OrderedPair U V' | V' :e By}) HU_conj). }
-        (** b :e {OrderedPair U V' | V' :e By}, so b = OrderedPair U V for some V :e By **)
-        claim Hexists2: exists V :e By, b = OrderedPair U V.
-        { exact (ReplE By (fun V' => OrderedPair U V') b HbRepl). }
+        { exact (andEL (U :e Bx) (b :e {setprod U V' | V' :e By}) HU_conj). }
+        claim HbRepl: b :e {setprod U V' | V' :e By}.
+        { exact (andER (U :e Bx) (b :e {setprod U V' | V' :e By}) HU_conj). }
+        (** b :e {setprod U V' | V' :e By}, so b = setprod U V for some V :e By **)
+        claim Hexists2: exists V :e By, b = setprod U V.
+        { exact (ReplE By (fun V' => setprod U V') b HbRepl). }
         apply Hexists2.
-        let V. assume HV_conj: V :e By /\ b = OrderedPair U V.
+        let V. assume HV_conj: V :e By /\ b = setprod U V.
         claim HV: V :e By.
-        { exact (andEL (V :e By) (b = OrderedPair U V) HV_conj). }
-        claim Hbeq: b = OrderedPair U V.
-        { exact (andER (V :e By) (b = OrderedPair U V) HV_conj). }
-        (** Now show OrderedPair U V :e Power (OrderedPair X Y) **)
+        { exact (andEL (V :e By) (b = setprod U V) HV_conj). }
+        claim Hbeq: b = setprod U V.
+        { exact (andER (V :e By) (b = setprod U V) HV_conj). }
+        (** Now show setprod U V :e Power (setprod X Y) **)
         (** Need U c= X and V c= Y **)
         claim HBx_sub: Bx c= Power X.
         { exact (andEL (Bx c= Power X) (forall x :e X, exists b :e Bx, x :e b) (andEL (Bx c= Power X /\ (forall x :e X, exists b :e Bx, x :e b)) (forall b1 :e Bx, forall b2 :e Bx, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e Bx, x :e b3 /\ b3 c= b1 :/\: b2) HBx_basis)). }
@@ -10007,30 +10004,30 @@ apply andI.
         { exact (PowerE X U (HBx_sub U HU)). }
         claim HVsubY: V c= Y.
         { exact (PowerE Y V (HBy_sub V HV)). }
-        claim HUVsub: OrderedPair U V c= OrderedPair X Y.
-        { exact (OrderedPair_Subq U V X Y HUsubX HVsubY). }
-        (** Since b = OrderedPair U V, we have b c= OrderedPair X Y **)
-        claim Hbsub: b c= OrderedPair X Y.
+        claim HUVsub: setprod U V c= setprod X Y.
+        { exact (setprod_Subq U V X Y HUsubX HVsubY). }
+        (** Since b = setprod U V, we have b c= setprod X Y **)
+        claim Hbsub: b c= setprod X Y.
         { rewrite Hbeq. exact HUVsub. }
-        exact (PowerI (OrderedPair X Y) b Hbsub).
+        exact (PowerI (setprod X Y) b Hbsub).
       - (** Axiom 2: covering - every (x,y) is in some U×V **)
-        let p. assume Hp: p :e OrderedPair X Y.
+        let p. assume Hp: p :e setprod X Y.
         prove exists b :e product_basis_from Bx By, p :e b.
-        (** Use OrderedPair_elem_decompose to extract coordinates **)
-        claim Hcoords: exists x :e X, exists y :e Y, p :e OrderedPair {x} {y}.
-        { exact (OrderedPair_elem_decompose X Y p Hp). }
+        (** Use setprod_elem_decompose to extract coordinates **)
+        claim Hcoords: exists x :e X, exists y :e Y, p :e setprod {x} {y}.
+        { exact (setprod_elem_decompose X Y p Hp). }
         apply Hcoords.
-        let x. assume Hx_conj: x :e X /\ exists y :e Y, p :e OrderedPair {x} {y}.
+        let x. assume Hx_conj: x :e X /\ exists y :e Y, p :e setprod {x} {y}.
         claim Hx: x :e X.
-        { exact (andEL (x :e X) (exists y :e Y, p :e OrderedPair {x} {y}) Hx_conj). }
-        claim Hy_exists: exists y :e Y, p :e OrderedPair {x} {y}.
-        { exact (andER (x :e X) (exists y :e Y, p :e OrderedPair {x} {y}) Hx_conj). }
+        { exact (andEL (x :e X) (exists y :e Y, p :e setprod {x} {y}) Hx_conj). }
+        claim Hy_exists: exists y :e Y, p :e setprod {x} {y}.
+        { exact (andER (x :e X) (exists y :e Y, p :e setprod {x} {y}) Hx_conj). }
         apply Hy_exists.
-        let y. assume Hy_conj: y :e Y /\ p :e OrderedPair {x} {y}.
+        let y. assume Hy_conj: y :e Y /\ p :e setprod {x} {y}.
         claim Hy: y :e Y.
-        { exact (andEL (y :e Y) (p :e OrderedPair {x} {y}) Hy_conj). }
-        claim Hp_sing: p :e OrderedPair {x} {y}.
-        { exact (andER (y :e Y) (p :e OrderedPair {x} {y}) Hy_conj). }
+        { exact (andEL (y :e Y) (p :e setprod {x} {y}) Hy_conj). }
+        claim Hp_sing: p :e setprod {x} {y}.
+        { exact (andER (y :e Y) (p :e setprod {x} {y}) Hy_conj). }
         (** Use covering property of Bx to find U containing x **)
         claim HBx_cover: forall x' :e X, exists U :e Bx, x' :e U.
         { exact (andER (Bx c= Power X) (forall x' :e X, exists U :e Bx, x' :e U)
@@ -10059,23 +10056,23 @@ apply andI.
         { exact (andEL (V :e By) (y :e V) HV_conj). }
         claim Hy_in_V: y :e V.
         { exact (andER (V :e By) (y :e V) HV_conj). }
-        (** Now show p :e OrderedPair U V using singleton subsets **)
+        (** Now show p :e setprod U V using singleton subsets **)
         claim Hx_sing_sub: {x} c= U.
         { exact (singleton_subset x U Hx_in_U). }
         claim Hy_sing_sub: {y} c= V.
         { exact (singleton_subset y V Hy_in_V). }
-        claim HUV_sub: OrderedPair {x} {y} c= OrderedPair U V.
-        { exact (OrderedPair_Subq {x} {y} U V Hx_sing_sub Hy_sing_sub). }
-        claim Hp_in_UV: p :e OrderedPair U V.
+        claim HUV_sub: setprod {x} {y} c= setprod U V.
+        { exact (setprod_Subq {x} {y} U V Hx_sing_sub Hy_sing_sub). }
+        claim Hp_in_UV: p :e setprod U V.
         { exact (HUV_sub p Hp_sing). }
-        (** Finally, witness OrderedPair U V :e product_basis_from Bx By **)
-        witness (OrderedPair U V).
-        prove OrderedPair U V :e product_basis_from Bx By /\ p :e OrderedPair U V.
+        (** Finally, witness setprod U V :e product_basis_from Bx By **)
+        witness (setprod U V).
+        prove setprod U V :e product_basis_from Bx By /\ p :e setprod U V.
         apply andI.
-        + (** Show OrderedPair U V :e product_basis_from Bx By **)
-          claim HUVinRepl: OrderedPair U V :e {OrderedPair U V' | V' :e By}.
-          { exact (ReplI By (fun V' => OrderedPair U V') V HV). }
-          exact (famunionI Bx (fun U' => {OrderedPair U' V' | V' :e By}) U (OrderedPair U V) HU HUVinRepl).
+        + (** Show setprod U V :e product_basis_from Bx By **)
+          claim HUVinRepl: setprod U V :e {setprod U V' | V' :e By}.
+          { exact (ReplI By (fun V' => setprod U V') V HV). }
+          exact (famunionI Bx (fun U' => {setprod U' V' | V' :e By}) U (setprod U V) HU HUVinRepl).
         + exact Hp_in_UV.
 
     * (** Axiom 3: intersection property **)
@@ -10084,42 +10081,42 @@ apply andI.
       let p. assume Hpb1: p :e b1. assume Hpb2: p :e b2.
       prove exists b3 :e product_basis_from Bx By, p :e b3 /\ b3 c= b1 :/\: b2.
       (** Extract U1, V1 from b1 **)
-      claim Hexists1: exists U1 :e Bx, b1 :e {OrderedPair U1 V' | V' :e By}.
-      { exact (famunionE Bx (fun U' => {OrderedPair U' V' | V' :e By}) b1 Hb1). }
+      claim Hexists1: exists U1 :e Bx, b1 :e {setprod U1 V' | V' :e By}.
+      { exact (famunionE Bx (fun U' => {setprod U' V' | V' :e By}) b1 Hb1). }
       apply Hexists1.
-      let U1. assume HU1_conj: U1 :e Bx /\ b1 :e {OrderedPair U1 V' | V' :e By}.
+      let U1. assume HU1_conj: U1 :e Bx /\ b1 :e {setprod U1 V' | V' :e By}.
       claim HU1: U1 :e Bx.
-      { exact (andEL (U1 :e Bx) (b1 :e {OrderedPair U1 V' | V' :e By}) HU1_conj). }
-      claim Hb1Repl: b1 :e {OrderedPair U1 V' | V' :e By}.
-      { exact (andER (U1 :e Bx) (b1 :e {OrderedPair U1 V' | V' :e By}) HU1_conj). }
-      claim Hexists1b: exists V1 :e By, b1 = OrderedPair U1 V1.
-      { exact (ReplE By (fun V' => OrderedPair U1 V') b1 Hb1Repl). }
+      { exact (andEL (U1 :e Bx) (b1 :e {setprod U1 V' | V' :e By}) HU1_conj). }
+      claim Hb1Repl: b1 :e {setprod U1 V' | V' :e By}.
+      { exact (andER (U1 :e Bx) (b1 :e {setprod U1 V' | V' :e By}) HU1_conj). }
+      claim Hexists1b: exists V1 :e By, b1 = setprod U1 V1.
+      { exact (ReplE By (fun V' => setprod U1 V') b1 Hb1Repl). }
       apply Hexists1b.
-      let V1. assume HV1_conj: V1 :e By /\ b1 = OrderedPair U1 V1.
+      let V1. assume HV1_conj: V1 :e By /\ b1 = setprod U1 V1.
       claim HV1: V1 :e By.
-      { exact (andEL (V1 :e By) (b1 = OrderedPair U1 V1) HV1_conj). }
-      claim Hb1eq: b1 = OrderedPair U1 V1.
-      { exact (andER (V1 :e By) (b1 = OrderedPair U1 V1) HV1_conj). }
+      { exact (andEL (V1 :e By) (b1 = setprod U1 V1) HV1_conj). }
+      claim Hb1eq: b1 = setprod U1 V1.
+      { exact (andER (V1 :e By) (b1 = setprod U1 V1) HV1_conj). }
       (** Extract U2, V2 from b2 **)
-      claim Hexists2: exists U2 :e Bx, b2 :e {OrderedPair U2 V' | V' :e By}.
-      { exact (famunionE Bx (fun U' => {OrderedPair U' V' | V' :e By}) b2 Hb2). }
+      claim Hexists2: exists U2 :e Bx, b2 :e {setprod U2 V' | V' :e By}.
+      { exact (famunionE Bx (fun U' => {setprod U' V' | V' :e By}) b2 Hb2). }
       apply Hexists2.
-      let U2. assume HU2_conj: U2 :e Bx /\ b2 :e {OrderedPair U2 V' | V' :e By}.
+      let U2. assume HU2_conj: U2 :e Bx /\ b2 :e {setprod U2 V' | V' :e By}.
       claim HU2: U2 :e Bx.
-      { exact (andEL (U2 :e Bx) (b2 :e {OrderedPair U2 V' | V' :e By}) HU2_conj). }
-      claim Hb2Repl: b2 :e {OrderedPair U2 V' | V' :e By}.
-      { exact (andER (U2 :e Bx) (b2 :e {OrderedPair U2 V' | V' :e By}) HU2_conj). }
-      claim Hexists2b: exists V2 :e By, b2 = OrderedPair U2 V2.
-      { exact (ReplE By (fun V' => OrderedPair U2 V') b2 Hb2Repl). }
+      { exact (andEL (U2 :e Bx) (b2 :e {setprod U2 V' | V' :e By}) HU2_conj). }
+      claim Hb2Repl: b2 :e {setprod U2 V' | V' :e By}.
+      { exact (andER (U2 :e Bx) (b2 :e {setprod U2 V' | V' :e By}) HU2_conj). }
+      claim Hexists2b: exists V2 :e By, b2 = setprod U2 V2.
+      { exact (ReplE By (fun V' => setprod U2 V') b2 Hb2Repl). }
       apply Hexists2b.
-      let V2. assume HV2_conj: V2 :e By /\ b2 = OrderedPair U2 V2.
+      let V2. assume HV2_conj: V2 :e By /\ b2 = setprod U2 V2.
       claim HV2: V2 :e By.
-      { exact (andEL (V2 :e By) (b2 = OrderedPair U2 V2) HV2_conj). }
-      claim Hb2eq: b2 = OrderedPair U2 V2.
-      { exact (andER (V2 :e By) (b2 = OrderedPair U2 V2) HV2_conj). }
-      (** Show p :e OrderedPair X Y **)
-      claim Hb1sub: b1 c= OrderedPair X Y.
-      { claim Hb1Power: b1 :e Power (OrderedPair X Y).
+      { exact (andEL (V2 :e By) (b2 = setprod U2 V2) HV2_conj). }
+      claim Hb2eq: b2 = setprod U2 V2.
+      { exact (andER (V2 :e By) (b2 = setprod U2 V2) HV2_conj). }
+      (** Show p :e setprod X Y **)
+      claim Hb1sub: b1 c= setprod X Y.
+      { claim Hb1Power: b1 :e Power (setprod X Y).
         { (** Use same logic as Axiom 1 **)
           claim HBx_sub: Bx c= Power X.
           { exact (andEL (Bx c= Power X) (forall x :e X, exists b :e Bx, x :e b) (andEL (Bx c= Power X /\ (forall x :e X, exists b :e Bx, x :e b)) (forall b1 :e Bx, forall b2 :e Bx, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e Bx, x :e b3 /\ b3 c= b1 :/\: b2) HBx_basis)). }
@@ -10129,38 +10126,38 @@ apply andI.
           { exact (PowerE X U1 (HBx_sub U1 HU1)). }
           claim HV1subY: V1 c= Y.
           { exact (PowerE Y V1 (HBy_sub V1 HV1)). }
-          claim HU1V1sub: OrderedPair U1 V1 c= OrderedPair X Y.
-          { exact (OrderedPair_Subq U1 V1 X Y HU1subX HV1subY). }
-          claim Hb1sub_inner: b1 c= OrderedPair X Y.
+          claim HU1V1sub: setprod U1 V1 c= setprod X Y.
+          { exact (setprod_Subq U1 V1 X Y HU1subX HV1subY). }
+          claim Hb1sub_inner: b1 c= setprod X Y.
           { rewrite Hb1eq. exact HU1V1sub. }
-          exact (PowerI (OrderedPair X Y) b1 Hb1sub_inner). }
-        exact (PowerE (OrderedPair X Y) b1 Hb1Power). }
-      claim Hp_XY: p :e OrderedPair X Y.
+          exact (PowerI (setprod X Y) b1 Hb1sub_inner). }
+        exact (PowerE (setprod X Y) b1 Hb1Power). }
+      claim Hp_XY: p :e setprod X Y.
       { exact (Hb1sub p Hpb1). }
       (** Extract coordinates x, y from p **)
-      claim Hcoords: exists x :e X, exists y :e Y, p :e OrderedPair {x} {y}.
-      { exact (OrderedPair_elem_decompose X Y p Hp_XY). }
+      claim Hcoords: exists x :e X, exists y :e Y, p :e setprod {x} {y}.
+      { exact (setprod_elem_decompose X Y p Hp_XY). }
       apply Hcoords.
-      let x. assume Hx_conj: x :e X /\ exists y :e Y, p :e OrderedPair {x} {y}.
+      let x. assume Hx_conj: x :e X /\ exists y :e Y, p :e setprod {x} {y}.
       claim Hx: x :e X.
-      { exact (andEL (x :e X) (exists y :e Y, p :e OrderedPair {x} {y}) Hx_conj). }
-      claim Hy_exists: exists y :e Y, p :e OrderedPair {x} {y}.
-      { exact (andER (x :e X) (exists y :e Y, p :e OrderedPair {x} {y}) Hx_conj). }
+      { exact (andEL (x :e X) (exists y :e Y, p :e setprod {x} {y}) Hx_conj). }
+      claim Hy_exists: exists y :e Y, p :e setprod {x} {y}.
+      { exact (andER (x :e X) (exists y :e Y, p :e setprod {x} {y}) Hx_conj). }
       apply Hy_exists.
-      let y. assume Hy_conj: y :e Y /\ p :e OrderedPair {x} {y}.
+      let y. assume Hy_conj: y :e Y /\ p :e setprod {x} {y}.
       claim Hy: y :e Y.
-      { exact (andEL (y :e Y) (p :e OrderedPair {x} {y}) Hy_conj). }
-      claim Hp_sing: p :e OrderedPair {x} {y}.
-      { exact (andER (y :e Y) (p :e OrderedPair {x} {y}) Hy_conj). }
+      { exact (andEL (y :e Y) (p :e setprod {x} {y}) Hy_conj). }
+      claim Hp_sing: p :e setprod {x} {y}.
+      { exact (andER (y :e Y) (p :e setprod {x} {y}) Hy_conj). }
       (** Show x :e U1 :/\: U2 and y :e V1 :/\: V2 **)
-      claim Hp_b1: p :e OrderedPair U1 V1.
+      claim Hp_b1: p :e setprod U1 V1.
       { rewrite <- Hb1eq. exact Hpb1. }
-      claim Hp_b2: p :e OrderedPair U2 V2.
+      claim Hp_b2: p :e setprod U2 V2.
       { rewrite <- Hb2eq. exact Hpb2. }
       claim Hxy_U1V1: x :e U1 /\ y :e V1.
-      { exact (OrderedPair_coords_in x y U1 V1 p Hp_sing Hp_b1). }
+      { exact (setprod_coords_in x y U1 V1 p Hp_sing Hp_b1). }
       claim Hxy_U2V2: x :e U2 /\ y :e V2.
-      { exact (OrderedPair_coords_in x y U2 V2 p Hp_sing Hp_b2). }
+      { exact (setprod_coords_in x y U2 V2 p Hp_sing Hp_b2). }
       claim Hx_U1: x :e U1.
       { exact (andEL (x :e U1) (y :e V1) Hxy_U1V1). }
       claim Hy_V1: y :e V1.
@@ -10205,45 +10202,45 @@ apply andI.
       { exact (andEL (y :e V3) (V3 c= V1 :/\: V2) Hy_V3_and_sub). }
       claim HV3_sub: V3 c= V1 :/\: V2.
       { exact (andER (y :e V3) (V3 c= V1 :/\: V2) Hy_V3_and_sub). }
-      (** Show p :e OrderedPair U3 V3 **)
+      (** Show p :e setprod U3 V3 **)
       claim Hx_sing_sub: {x} c= U3.
       { exact (singleton_subset x U3 Hx_U3). }
       claim Hy_sing_sub: {y} c= V3.
       { exact (singleton_subset y V3 Hy_V3). }
-      claim HU3V3_super: OrderedPair {x} {y} c= OrderedPair U3 V3.
-      { exact (OrderedPair_Subq {x} {y} U3 V3 Hx_sing_sub Hy_sing_sub). }
-      claim Hp_U3V3: p :e OrderedPair U3 V3.
+      claim HU3V3_super: setprod {x} {y} c= setprod U3 V3.
+      { exact (setprod_Subq {x} {y} U3 V3 Hx_sing_sub Hy_sing_sub). }
+      claim Hp_U3V3: p :e setprod U3 V3.
       { exact (HU3V3_super p Hp_sing). }
-      (** Show OrderedPair U3 V3 c= b1 :/\: b2 **)
-      claim Hb1b2_int: b1 :/\: b2 = OrderedPair U1 V1 :/\: OrderedPair U2 V2.
+      (** Show setprod U3 V3 c= b1 :/\: b2 **)
+      claim Hb1b2_int: b1 :/\: b2 = setprod U1 V1 :/\: setprod U2 V2.
       { rewrite Hb1eq. rewrite Hb2eq. reflexivity. }
-      claim Hprod_int: OrderedPair U1 V1 :/\: OrderedPair U2 V2 = OrderedPair (U1 :/\: U2) (V1 :/\: V2).
-      { exact (OrderedPair_intersection U1 V1 U2 V2). }
-      claim HU3V3_sub: OrderedPair U3 V3 c= OrderedPair (U1 :/\: U2) (V1 :/\: V2).
-      { exact (OrderedPair_Subq U3 V3 (U1 :/\: U2) (V1 :/\: V2) HU3_sub HV3_sub). }
-      claim HU3V3_sub_b1b2: OrderedPair U3 V3 c= b1 :/\: b2.
+      claim Hprod_int: setprod U1 V1 :/\: setprod U2 V2 = setprod (U1 :/\: U2) (V1 :/\: V2).
+      { exact (setprod_intersection U1 V1 U2 V2). }
+      claim HU3V3_sub: setprod U3 V3 c= setprod (U1 :/\: U2) (V1 :/\: V2).
+      { exact (setprod_Subq U3 V3 (U1 :/\: U2) (V1 :/\: V2) HU3_sub HV3_sub). }
+      claim HU3V3_sub_b1b2: setprod U3 V3 c= b1 :/\: b2.
       { rewrite Hb1b2_int. rewrite Hprod_int. exact HU3V3_sub. }
-      (** Witness OrderedPair U3 V3 **)
-      witness (OrderedPair U3 V3).
-      prove OrderedPair U3 V3 :e product_basis_from Bx By /\ (p :e OrderedPair U3 V3 /\ OrderedPair U3 V3 c= b1 :/\: b2).
+      (** Witness setprod U3 V3 **)
+      witness (setprod U3 V3).
+      prove setprod U3 V3 :e product_basis_from Bx By /\ (p :e setprod U3 V3 /\ setprod U3 V3 c= b1 :/\: b2).
       apply andI.
-      + claim HU3V3inRepl: OrderedPair U3 V3 :e {OrderedPair U3 V' | V' :e By}.
-        { exact (ReplI By (fun V' => OrderedPair U3 V') V3 HV3). }
-        exact (famunionI Bx (fun U' => {OrderedPair U' V' | V' :e By}) U3 (OrderedPair U3 V3) HU3 HU3V3inRepl).
+      + claim HU3V3inRepl: setprod U3 V3 :e {setprod U3 V' | V' :e By}.
+        { exact (ReplI By (fun V' => setprod U3 V') V3 HV3). }
+        exact (famunionI Bx (fun U' => {setprod U' V' | V' :e By}) U3 (setprod U3 V3) HU3 HU3V3inRepl).
       + apply andI.
         - exact Hp_U3V3.
         - exact HU3V3_sub_b1b2.
-  + (** Prove forall U :e Bx, forall V :e By, OrderedPair U V :e product_basis_from Bx By **)
+  + (** Prove forall U :e Bx, forall V :e By, setprod U V :e product_basis_from Bx By **)
     let U. assume HU: U :e Bx.
     let V. assume HV: V :e By.
-    prove OrderedPair U V :e product_basis_from Bx By.
-    (** product_basis_from Bx By = \/_ U' :e Bx, {OrderedPair U' V' | V' :e By} **)
-    (** Use famunionI with U :e Bx and OrderedPair U V :e {OrderedPair U V' | V' :e By} **)
-    claim HUVinRepl: OrderedPair U V :e {OrderedPair U V' | V' :e By}.
-    { exact (ReplI By (fun V' => OrderedPair U V') V HV). }
-    exact (famunionI Bx (fun U' => {OrderedPair U' V' | V' :e By}) U (OrderedPair U V) HU HUVinRepl).
-- (** Part 3: generated_topology (OrderedPair X Y) (product_basis_from Bx By) = product_topology X Tx Y Ty **)
-  (** product_topology X Tx Y Ty = generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty) **)
+    prove setprod U V :e product_basis_from Bx By.
+    (** product_basis_from Bx By = \/_ U' :e Bx, {setprod U' V' | V' :e By} **)
+    (** Use famunionI with U :e Bx and setprod U V :e {setprod U V' | V' :e By} **)
+    claim HUVinRepl: setprod U V :e {setprod U V' | V' :e By}.
+    { exact (ReplI By (fun V' => setprod U V') V HV). }
+    exact (famunionI Bx (fun U' => {setprod U' V' | V' :e By}) U (setprod U V) HU HUVinRepl).
+- (** Part 3: generated_topology (setprod X Y) (product_basis_from Bx By) = product_topology X Tx Y Ty **)
+  (** product_topology X Tx Y Ty = generated_topology (setprod X Y) (product_subbasis X Tx Y Ty) **)
   (** product_subbasis X Tx Y Ty uses Tx and Ty, which equal generated_topology X Bx and generated_topology Y By **)
   (** product_basis_from Bx By = {U×V | U :e Bx, V :e By} **)
   (** Use the axiom that product basis generates product topology **)
@@ -10261,11 +10258,11 @@ Qed.
 (** from §15 Definition: projections on a product **) 
 (** LATEX VERSION: Define coordinate projection relations π₁ and π₂ from X×Y. **)
 Definition projection1 : set -> set -> set := fun X Y =>
-  {p :e Power (OrderedPair (OrderedPair X Y) X) |
-     exists x:set, exists y:set, x :e X /\ y :e Y /\ p = UPair (OrderedPair x y) x}.
+  {p :e Power (setprod (setprod X Y) X) |
+     exists x:set, exists y:set, x :e X /\ y :e Y /\ p = UPair (setprod x y) x}.
 Definition projection2 : set -> set -> set := fun X Y =>
-  {p :e Power (OrderedPair (OrderedPair X Y) Y) |
-     exists x:set, exists y:set, x :e X /\ y :e Y /\ p = UPair (OrderedPair x y) y}.
+  {p :e Power (setprod (setprod X Y) Y) |
+     exists x:set, exists y:set, x :e X /\ y :e Y /\ p = UPair (setprod x y) y}.
 
 (** from §15 Theorem 15.2: projection preimages form a subbasis **) 
 (** LATEX VERSION: The inverse images of opens under projections give a subbasis for the product topology. **)
@@ -10273,29 +10270,29 @@ Theorem product_subbasis_from_projections : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   exists S:set,
     S = product_subbasis X Tx Y Ty /\
-    generated_topology (OrderedPair X Y) S = product_topology X Tx Y Ty.
+    generated_topology (setprod X Y) S = product_topology X Tx Y Ty.
 let X Tx Y Ty.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
 prove exists S:set,
     S = product_subbasis X Tx Y Ty /\
-    generated_topology (OrderedPair X Y) S = product_topology X Tx Y Ty.
+    generated_topology (setprod X Y) S = product_topology X Tx Y Ty.
 (** Witness S = product_subbasis X Tx Y Ty **)
 witness (product_subbasis X Tx Y Ty).
 prove product_subbasis X Tx Y Ty = product_subbasis X Tx Y Ty /\
-      generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty) = product_topology X Tx Y Ty.
+      generated_topology (setprod X Y) (product_subbasis X Tx Y Ty) = product_topology X Tx Y Ty.
 apply andI.
 - (** S = product_subbasis X Tx Y Ty **)
   reflexivity.
-- (** generated_topology (OrderedPair X Y) S = product_topology X Tx Y Ty **)
-  (** By definition: product_topology X Tx Y Ty = generated_topology (OrderedPair X Y) (product_subbasis X Tx Y Ty) **)
+- (** generated_topology (setprod X Y) S = product_topology X Tx Y Ty **)
+  (** By definition: product_topology X Tx Y Ty = generated_topology (setprod X Y) (product_subbasis X Tx Y Ty) **)
   reflexivity.
 Qed.
 
 (** helper: function evaluation as graph lookup **) 
 Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => UPair x y :e f).
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
-Definition function_space : set -> set -> set := fun X Y => {f :e Power (OrderedPair X Y)|function_on f X Y}.
+Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod X Y)|function_on f X Y}.
 
 (** Helper: identity function application **)
 Axiom identity_function_apply : forall X x:set,
@@ -10626,14 +10623,14 @@ Theorem product_subspace_topology : forall X Tx Y Ty A B:set,
   topology_on X Tx -> topology_on Y Ty ->
   A c= X -> B c= Y ->
   product_topology A (subspace_topology X Tx A) B (subspace_topology Y Ty B) =
-  subspace_topology (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
+  subspace_topology (setprod X Y) (product_topology X Tx Y Ty) (setprod A B).
 let X Tx Y Ty A B.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
 assume HA: A c= X.
 assume HB: B c= Y.
 prove product_topology A (subspace_topology X Tx A) B (subspace_topology Y Ty B) =
-  subspace_topology (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
+  subspace_topology (setprod X Y) (product_topology X Tx Y Ty) (setprod A B).
 admit. (** rectangles (U∩A)×(V∩B) in product of subspaces equal (U×V)∩(A×B) in subspace of product; both generate same topology
         aby: Sep_5FEmpty SepE open_set�f ex13_1_local_open_subset In_5Find In_5Fno2cycle binintersect�f open_in_subspace_iff conj_myprob_8549_1_20251123_230603 binintersectE prop_ext_2 . **)
 Qed.
@@ -10641,15 +10638,15 @@ Qed.
 (** from §16 Example 3: ordered square versus subspace topology **) 
 (** LATEX VERSION: Example 3: The order topology on the ordered square differs from the subspace topology inherited from the dictionary order on ℝ×ℝ. **)
 Definition unit_interval : set := R.
-Definition ordered_square : set := OrderedPair unit_interval unit_interval.
+Definition ordered_square : set := setprod unit_interval unit_interval.
 Definition ordered_square_topology : set := order_topology ordered_square.
 Definition ordered_square_open_strip : set := ordered_square.
 Definition ordered_square_subspace_topology : set :=
-  subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
+  subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
 
 Theorem ordered_square_not_subspace_dictionary :
-  ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
-prove ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square.
+  ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
+prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
 admit. (** vertical lines open in dictionary subspace but not in order topology on square **)
 Qed.
 
@@ -10930,16 +10927,16 @@ Qed.
 (** from §16 Exercise 6: rational rectangles form a basis for ℝ² **)
 (** LATEX VERSION: Exercise 6: Rational rectangles form a basis generating the standard topology on ℝ². **)
 Definition rational_rectangle_basis : set :=
-  {r :e Power (OrderedPair R R) |
+  {r :e Power (setprod R R) |
      exists a b c d:set,
        a :e rational_numbers /\ b :e rational_numbers /\
        c :e rational_numbers /\ d :e rational_numbers /\
-       r = OrderedPair (open_interval a b) (open_interval c d)}.
+       r = setprod (open_interval a b) (open_interval c d)}.
 
 Theorem ex16_6_rational_rectangles_basis :
-  basis_on (OrderedPair R R) rational_rectangle_basis /\
-  generated_topology (OrderedPair R R) rational_rectangle_basis = R2_standard_topology.
-prove basis_on (OrderedPair R R) rational_rectangle_basis /\ generated_topology (OrderedPair R R) rational_rectangle_basis = R2_standard_topology.
+  basis_on (setprod R R) rational_rectangle_basis /\
+  generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
+prove basis_on (setprod R R) rational_rectangle_basis /\ generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
 admit. (** every open rectangle contains rational rectangle; every rational rectangle is open; rationals dense in R **)
 Qed.
 
@@ -10967,11 +10964,11 @@ Qed.
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
 (** LATEX VERSION: Exercise 8: The diagonal line in ℝ×ℝ with the lower limit product topology is homeomorphic to ℝ with lower limit topology. **)
 Theorem ex16_8_lines_in_lower_limit_products :
-  exists L:set, L c= OrderedPair R R /\
+  exists L:set, L c= setprod R R /\
     L = {(x,x)|x :e R} /\
-    subspace_topology (OrderedPair R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L =
+    subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L =
       R_lower_limit_topology.
-prove exists L:set, L c= OrderedPair R R /\ L = {(x,x)|x :e R} /\ subspace_topology (OrderedPair R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L = R_lower_limit_topology.
+prove exists L:set, L c= setprod R R /\ L = {(x,x)|x :e R} /\ subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L = R_lower_limit_topology.
 admit. (** construct diagonal L; projection map is homeomorphism; basis elements [a,b)×[a,b) restrict to [a,b) on diagonal **)
 Qed.
 
@@ -10986,10 +10983,10 @@ Qed.
 (** from §16 Exercise 10: compare topologies on I×I **) 
 (** LATEX VERSION: Exercise 10: Compare ordered square topology, dictionary subspace topology, and product topology on I×I. **)
 Theorem ex16_10_compare_topologies_on_square :
-  ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square /\
-  subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square <>
+  ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\
+  subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <>
     product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
-prove ordered_square_topology <> subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square /\ subspace_topology (OrderedPair R R) R2_dictionary_order_topology ordered_square <> product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
+prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\ subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <> product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
 admit. (** check bases at specific points; ordered square has finer neighborhoods than dictionary subspace; dictionary subspace finer than product **)
 Qed.
 
@@ -13550,10 +13547,10 @@ Qed.
 (** LATEX VERSION: Products of Hausdorff spaces are Hausdorff. **)
 Theorem Hausdorff_stability : forall X Tx Y Ty:set,
   Hausdorff_space X Tx /\ Hausdorff_space Y Ty ->
-  Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+  Hausdorff_space (setprod X Y) (product_topology X Tx Y Ty).
 let X Tx Y Ty.
 assume H: Hausdorff_space X Tx /\ Hausdorff_space Y Ty.
-prove Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+prove Hausdorff_space (setprod X Y) (product_topology X Tx Y Ty).
 (** Strategy: Same as ex17_11_product_Hausdorff - use rectangles to separate distinct points **)
 (** Extract components from Hausdorff definitions **)
 claim HX: Hausdorff_space X Tx.
@@ -13577,9 +13574,9 @@ claim HSepY: forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\
                (forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
                HY). }
 (** Build Hausdorff property for product **)
-claim HTProd: topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
+claim HTProd: topology_on (setprod X Y) (product_topology X Tx Y Ty).
 { exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
-prove topology_on (OrderedPair X Y) (product_topology X Tx Y Ty) /\
+prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\
       (forall p1 p2:set, p1 <> p2 ->
        exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
                        p1 :e U /\ p2 :e V /\ U :/\: V = Empty).
@@ -13621,11 +13618,11 @@ Qed.
 (** LATEX VERSION: Exercise 3: Products of closed sets are closed in the product topology. **)
 Theorem ex17_3_product_of_closed_sets_closed : forall X Tx Y Ty A B:set,
   closed_in X Tx A -> closed_in Y Ty B ->
-  closed_in (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
+  closed_in (setprod X Y) (product_topology X Tx Y Ty) (setprod A B).
 let X Tx Y Ty A B.
 assume HA: closed_in X Tx A.
 assume HB: closed_in Y Ty B.
-prove closed_in (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B).
+prove closed_in (setprod X Y) (product_topology X Tx Y Ty) (setprod A B).
 (** Strategy: Show complement of A×B is open in product topology.
     (X×Y) \ (A×B) = (X\A)×Y ∪ X×(Y\B)
     Since A,B closed, X\A,Y\B are open.
@@ -13649,11 +13646,11 @@ claim HexU: exists U :e Tx, A = X :\: U.
 claim HexV: exists V :e Ty, B = Y :\: V.
 { exact (andER (B c= Y) (exists V :e Ty, B = Y :\: V) HBparts). }
 (** Build the closed set property for product **)
-claim HTProd: topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
+claim HTProd: topology_on (setprod X Y) (product_topology X Tx Y Ty).
 { exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
-prove topology_on (OrderedPair X Y) (product_topology X Tx Y Ty) /\
-      (OrderedPair A B c= OrderedPair X Y /\
-       exists W :e product_topology X Tx Y Ty, OrderedPair A B = (OrderedPair X Y) :\: W).
+prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\
+      (setprod A B c= setprod X Y /\
+       exists W :e product_topology X Tx Y Ty, setprod A B = (setprod X Y) :\: W).
 apply andI.
 - exact HTProd.
 - apply andI.
@@ -14068,12 +14065,12 @@ Qed.
 (** LATEX VERSION: Exercise 9: Closure of A×B in product is product of closures. **)
 Theorem ex17_9_closure_of_product_subset : forall X Y Tx Ty A B:set,
   topology_on X Tx -> topology_on Y Ty ->
-  closure_of (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B) =
-    OrderedPair (closure_of X Tx A) (closure_of Y Ty B).
+  closure_of (setprod X Y) (product_topology X Tx Y Ty) (setprod A B) =
+    setprod (closure_of X Tx A) (closure_of Y Ty B).
 let X Y Tx Ty A B.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
-prove closure_of (OrderedPair X Y) (product_topology X Tx Y Ty) (OrderedPair A B) = OrderedPair (closure_of X Tx A) (closure_of Y Ty B).
+prove closure_of (setprod X Y) (product_topology X Tx Y Ty) (setprod A B) = setprod (closure_of X Tx A) (closure_of Y Ty B).
 admit. (** show both inclusions using basis elements U×V; (x,y) in closure iff x in cl(A), y in cl(B) **)
 Qed.
 
@@ -14088,11 +14085,11 @@ Qed.
 (** LATEX VERSION: Exercise 11: Product of Hausdorff spaces is Hausdorff. **)
 Theorem ex17_11_product_Hausdorff : forall X Tx Y Ty:set,
   Hausdorff_space X Tx -> Hausdorff_space Y Ty ->
-  Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+  Hausdorff_space (setprod X Y) (product_topology X Tx Y Ty).
 let X Tx Y Ty.
 assume HX: Hausdorff_space X Tx.
 assume HY: Hausdorff_space Y Ty.
-prove Hausdorff_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+prove Hausdorff_space (setprod X Y) (product_topology X Tx Y Ty).
 (** Strategy: Given distinct (x1,y1) and (x2,y2):
     - If x1≠x2: separate with U1×Y and U2×Y where U1,U2 separate x1,x2 in X
     - If y1≠y2: separate with X×V1 and X×V2 where V1,V2 separate y1,y2 in Y **)
@@ -14114,9 +14111,9 @@ claim HSepY: forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\
                (forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
                HY). }
 (** Build Hausdorff property for product **)
-claim HTProd: topology_on (OrderedPair X Y) (product_topology X Tx Y Ty).
+claim HTProd: topology_on (setprod X Y) (product_topology X Tx Y Ty).
 { exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
-prove topology_on (OrderedPair X Y) (product_topology X Tx Y Ty) /\
+prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\
       (forall p1 p2:set, p1 <> p2 ->
        exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
                        p1 :e U /\ p2 :e V /\ U :/\: V = Empty).
@@ -14164,10 +14161,10 @@ Qed.
 Theorem ex17_13_diagonal_closed_iff_Hausdorff : forall X Tx:set,
   topology_on X Tx ->
   (Hausdorff_space X Tx <->
-    closed_in (OrderedPair X X) (product_topology X Tx X Tx) {(x,x)|x :e X}).
+    closed_in (setprod X X) (product_topology X Tx X Tx) {(x,x)|x :e X}).
 let X Tx.
 assume Htop: topology_on X Tx.
-prove Hausdorff_space X Tx <-> closed_in (OrderedPair X X) (product_topology X Tx X Tx) {(x,x)|x :e X}.
+prove Hausdorff_space X Tx <-> closed_in (setprod X X) (product_topology X Tx X Tx) {(x,x)|x :e X}.
 admit. (** complement of diagonal = {(x,y)|x≠y}; Hausdorff iff each (x,y) has nbhd in complement **)
 Qed.
 
@@ -14272,9 +14269,9 @@ Qed.
 
 (** LATEX VERSION: Exercise 20: Boundary of a strip differs between standard and dictionary topologies on ℝ². **)
 Theorem ex17_20_boundaries_and_interiors_in_R2 :
-  boundary_of (OrderedPair R R) R2_standard_topology ordered_square_open_strip <>
-  boundary_of (OrderedPair R R) R2_dictionary_order_topology ordered_square_open_strip.
-prove boundary_of (OrderedPair R R) R2_standard_topology ordered_square_open_strip <> boundary_of (OrderedPair R R) R2_dictionary_order_topology ordered_square_open_strip.
+  boundary_of (setprod R R) R2_standard_topology ordered_square_open_strip <>
+  boundary_of (setprod R R) R2_dictionary_order_topology ordered_square_open_strip.
+prove boundary_of (setprod R R) R2_standard_topology ordered_square_open_strip <> boundary_of (setprod R R) R2_dictionary_order_topology ordered_square_open_strip.
 admit. (** compute closures of strip in both topologies; boundaries differ on vertical lines **)
 Qed.
 
@@ -14865,11 +14862,11 @@ Qed.
 Theorem maps_into_products : forall A X Tx Y Ty f g:set,
   continuous_map A Tx X Ty f ->
   continuous_map A Tx Y Ty g ->
-  continuous_map A Tx (OrderedPair X Y) (product_topology X Ty Y Ty) (f :/\: g).
+  continuous_map A Tx (setprod X Y) (product_topology X Ty Y Ty) (f :/\: g).
 let A X Tx Y Ty f g.
 assume Hf: continuous_map A Tx X Ty f.
 assume Hg: continuous_map A Tx Y Ty g.
-prove continuous_map A Tx (OrderedPair X Y) (product_topology X Ty Y Ty) (f :/\: g).
+prove continuous_map A Tx (setprod X Y) (product_topology X Ty Y Ty) (f :/\: g).
 admit. (** map x↦(f(x),g(x)) continuous iff components continuous; axiom cannot be used directly due to Megalodon limitation **)
 Qed.
 
@@ -14880,25 +14877,25 @@ Definition projection_map : set -> set -> set := fun X Y => projection1 X Y.
 (** Helper: projection maps are continuous **)
 Axiom projection_maps_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
-  continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
-  continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
 
 (** Helper: universal property of products - maps into products **)
 Axiom maps_into_products_axiom : forall A X Tx Y Ty f g:set,
   continuous_map A Tx X Ty f ->
   continuous_map A Tx Y Ty g ->
-  continuous_map A Tx (OrderedPair X Y) (product_topology X Ty Y Ty) (f :/\: g).
+  continuous_map A Tx (setprod X Y) (product_topology X Ty Y Ty) (f :/\: g).
 
 (** LATEX VERSION: Projections from a product are continuous. **)
 Theorem projections_are_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
-  continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
-  continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
 let X Tx Y Ty.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
-prove continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
-  continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
+prove continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
 exact (projection_maps_continuous X Tx Y Ty HTx HTy).
 Qed.
 
@@ -14906,38 +14903,38 @@ Qed.
 (** LATEX VERSION: The product topology is the coarsest topology on X×Y making the projections continuous. **)
 Theorem product_topology_universal : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
-  exists Tprod:set, topology_on (OrderedPair X Y) Tprod /\
-    continuous_map (OrderedPair X Y) Tprod X Tx (projection_map X Y) /\
-    continuous_map (OrderedPair X Y) Tprod Y Ty (projection_map Y X).
+  exists Tprod:set, topology_on (setprod X Y) Tprod /\
+    continuous_map (setprod X Y) Tprod X Tx (projection_map X Y) /\
+    continuous_map (setprod X Y) Tprod Y Ty (projection_map Y X).
 let X Tx Y Ty.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
-prove exists Tprod:set, topology_on (OrderedPair X Y) Tprod /\
-    continuous_map (OrderedPair X Y) Tprod X Tx (projection_map X Y) /\
-    continuous_map (OrderedPair X Y) Tprod Y Ty (projection_map Y X).
+prove exists Tprod:set, topology_on (setprod X Y) Tprod /\
+    continuous_map (setprod X Y) Tprod X Tx (projection_map X Y) /\
+    continuous_map (setprod X Y) Tprod Y Ty (projection_map Y X).
 (** Witness the product topology **)
 witness (product_topology X Tx Y Ty).
 (** Goal is: A /\ B /\ C which is left-associative: (A /\ B) /\ C **)
 apply andI.
-- (** First part: topology_on (OrderedPair X Y) (product_topology X Tx Y Ty) /\
-      continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) **)
+- (** First part: topology_on (setprod X Y) (product_topology X Tx Y Ty) /\
+      continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) **)
   apply andI.
   + (** product_topology is a topology **)
     exact (product_topology_is_topology X Tx Y Ty HTx HTy).
   + (** first projection is continuous **)
-    exact (andEL (continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y))
-                 (continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X))
+    exact (andEL (continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y))
+                 (continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X))
                  (projections_are_continuous X Tx Y Ty HTx HTy)).
 - (** second projection is continuous **)
-  exact (andER (continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y))
-               (continuous_map (OrderedPair X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X))
+  exact (andER (continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y))
+               (continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X))
                (projections_are_continuous X Tx Y Ty HTx HTy)).
 Qed.
 
 (** from §20 Definition: metric and metric topology **) 
 (** LATEX VERSION: Definition of a metric d on X and the induced metric topology generated by open balls. **)
 Definition metric_on : set -> set -> prop := fun X d =>
-  function_on d (OrderedPair X X) R /\
+  function_on d (setprod X X) R /\
   (forall x y:set, x :e X -> y :e X ->
      apply_fun d (x,y) = apply_fun d (y,x)) /\
   (forall x:set, x :e X -> apply_fun d (x,x) = 0) /\
@@ -15096,7 +15093,7 @@ Theorem continuity_via_sequences_metric : forall X dX Y dY f:set,
     forall seq x:set,
       sequence_converges_metric X dX seq x ->
       sequence_converges_metric Y dY
-        ({OrderedPair n (apply_fun f (apply_fun seq n))|n :e omega})
+        ({setprod n (apply_fun f (apply_fun seq n))|n :e omega})
         (apply_fun f x)).
 let X dX Y dY f.
 assume HdX: metric_on X dX.
@@ -15105,7 +15102,7 @@ prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
     forall seq x:set,
       sequence_converges_metric X dX seq x ->
       sequence_converges_metric Y dY
-        ({OrderedPair n (apply_fun f (apply_fun seq n))|n :e omega})
+        ({setprod n (apply_fun f (apply_fun seq n))|n :e omega})
         (apply_fun f x).
 admit. (** sequential continuity: f continuous iff seq→x implies f(seq)→f(x); use metric characterization **)
 Qed.
@@ -15426,11 +15423,11 @@ Qed.
 (** from §23 Theorem 23.6: finite products of connected spaces are connected **) 
 Theorem finite_product_connected : forall X Tx Y Ty:set,
   connected_space X Tx -> connected_space Y Ty ->
-  connected_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+  connected_space (setprod X Y) (product_topology X Tx Y Ty).
 let X Tx Y Ty.
 assume HX: connected_space X Tx.
 assume HY: connected_space Y Ty.
-prove connected_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+prove connected_space (setprod X Y) (product_topology X Tx Y Ty).
 admit. (** connect any two points via intermediate slices: {x}×Y connected, then X×{y} connected; union argument
         aby: conj_myprob_9363_1_20251124_101338 prop_ext_2 In_5Find open_set�f ex13_1_local_open_subset UnionE open_in_subspace_iff . **)
 Qed.
@@ -15596,9 +15593,9 @@ Qed.
 
 (** from §24 Example: punctured euclidean space is path connected (placeholder) **) 
 Theorem punctured_space_path_connected :
-  path_connected_space (EuclidPlane :\: {OrderedPair 0 0})
-    (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {OrderedPair 0 0})).
-prove path_connected_space (EuclidPlane :\: {OrderedPair 0 0}) (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {OrderedPair 0 0})).
+  path_connected_space (EuclidPlane :\: {setprod 0 0})
+    (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {setprod 0 0})).
+prove path_connected_space (EuclidPlane :\: {setprod 0 0}) (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {setprod 0 0})).
 admit. (** connect any two points via path avoiding origin; use arc around origin if needed **)
 Qed.
 
@@ -15881,7 +15878,7 @@ Theorem tube_lemma : forall X Tx Y Ty:set,
   forall x0:set, x0 :e X ->
   forall N:set, N :e product_topology X Tx Y Ty /\ x0 :e N ->
     exists U:set, U :e Tx /\ x0 :e U /\
-      (forall y:set, y :e Y -> OrderedPair U y :e N).
+      (forall y:set, y :e Y -> setprod U y :e N).
 let X Tx Y Ty.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
@@ -15890,7 +15887,7 @@ let x0.
 assume Hx0: x0 :e X.
 let N.
 assume HN: N :e product_topology X Tx Y Ty /\ x0 :e N.
-prove exists U:set, U :e Tx /\ x0 :e U /\ (forall y:set, y :e Y -> OrderedPair U y :e N).
+prove exists U:set, U :e Tx /\ x0 :e U /\ (forall y:set, y :e Y -> setprod U y :e N).
 admit. (** for each y, find rectangle containing (x₀,y) in N; cover {x₀}×Y by rectangles; use compactness to get finite subcover; intersect finitely many opens to get U **)
 Qed.
 
@@ -15925,11 +15922,11 @@ Definition bounded_subset_of_reals : set -> prop := fun A =>
 (** LATEX VERSION: Finite product of compact spaces is compact. **)
 Theorem finite_product_compact : forall X Tx Y Ty:set,
   compact_space X Tx -> compact_space Y Ty ->
-  compact_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+  compact_space (setprod X Y) (product_topology X Tx Y Ty).
 let X Tx Y Ty.
 assume HX: compact_space X Tx.
 assume HY: compact_space Y Ty.
-prove compact_space (OrderedPair X Y) (product_topology X Tx Y Ty).
+prove compact_space (setprod X Y) (product_topology X Tx Y Ty).
 admit. (** use tube lemma: cover by tubes; finitely many tubes cover; finitely many rectangles cover **)
 Qed.
 
@@ -16349,8 +16346,8 @@ Definition metrizable : set -> set -> prop := fun X Tx =>
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 (** LATEX VERSION: The product of two Lindelöf Sorgenfrey lines (the Sorgenfrey plane) is not Lindelöf. **)
 Theorem Sorgenfrey_plane_not_Lindelof :
-  ~ Lindelof_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-prove ~ Lindelof_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+  ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+prove ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 admit. (** antidiagonal is discrete uncountable closed; cover requires uncountably many opens **)
 Qed.
 
@@ -16433,10 +16430,10 @@ Qed.
 (** from §31 Example 3: Sorgenfrey plane not normal **) 
 (** LATEX VERSION: The Sorgenfrey plane is regular but not normal. **)
 Theorem Sorgenfrey_plane_not_normal :
-  regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
-  ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-prove regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
-  ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+  regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
+  ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+prove regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
+  ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 admit. (** regular by product; antidiagonal H={(x,-x):x∈R} closed, discrete subspace; uncountable discrete closed not normal **)
 Qed.
 
@@ -16501,9 +16498,9 @@ Definition SbarOmega_topology : set := discrete_topology Sbar_Omega.
 
 Theorem SOmega_SbarOmega_not_normal :
   normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
-  ~ normal_space (product_space (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
+  ~ normal_space (product_space (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)) (product_topology_full (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)).
 prove normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
-  ~ normal_space (product_space (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
+  ~ normal_space (product_space (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)) (product_topology_full (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)).
 admit. (** discrete spaces normal; product gives Jones' lemma counterexample **)
 Qed.
 
@@ -16556,20 +16553,20 @@ Qed.
 (** from §33 Example 1: products giving completely regular but not normal spaces **) 
 (** LATEX VERSION: Sorgenfrey plane is completely regular but not normal. **)
 Theorem Sorgenfrey_plane_completely_regular_not_normal :
-  completely_regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
-  ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-prove completely_regular_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
-  ~ normal_space (OrderedPair Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+  completely_regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
+  ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+prove completely_regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
+  ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 admit. (** product of completely regular spaces is completely regular; not normal by antidiagonal argument **)
 Qed.
 
 (** from §33 Example 1 cont.: SOmega x SbarOmega completely regular not normal **) 
 (** LATEX VERSION: Another example of completely regular but non-normal product. **)
 Theorem SOmega_SbarOmega_completely_regular_not_normal :
-  completely_regular_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) /\
-  ~ normal_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
-prove completely_regular_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)) /\
-  ~ normal_space (OrderedPair S_Omega Sbar_Omega) (product_topology_full (OrderedPair S_Omega Sbar_Omega) (const_family (OrderedPair S_Omega Sbar_Omega) R)).
+  completely_regular_space (setprod S_Omega Sbar_Omega) (product_topology_full (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)) /\
+  ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology_full (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)).
+prove completely_regular_space (setprod S_Omega Sbar_Omega) (product_topology_full (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)) /\
+  ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology_full (setprod S_Omega Sbar_Omega) (const_family (setprod S_Omega Sbar_Omega) R)).
 admit. (** product of completely regular spaces is completely regular; not normal by previous theorem **)
 Qed.
 
@@ -16702,7 +16699,7 @@ Qed.
 Definition Stone_Cech_compactification : set -> set -> set := fun X Tx =>
   {p :e Power (Power (Power X)) |
     exists Y Ty e:set,
-      p = OrderedPair (OrderedPair Y Ty) e /\
+      p = setprod (setprod Y Ty) e /\
       compact_space Y Ty /\ Hausdorff_space Y Ty /\ embedding_of X Tx Y Ty e}.
 Theorem Stone_Cech_universal_property : forall X Tx:set,
   Tychonoff_space X Tx ->
@@ -16820,11 +16817,11 @@ Definition complete_metric_space : set -> set -> prop := fun X d =>
     exists x:set, converges_to X (metric_topology X d) seq x.
 
 Definition discrete_metric : set -> set := fun X =>
-  {p :e OrderedPair X X |
+  {p :e setprod X X |
      exists x:set, exists y:set,
        x :e X /\ y :e X /\
-       ((x = y /\ p = OrderedPair (OrderedPair x y) 0) \/
-        (x <> y /\ p = OrderedPair (OrderedPair x y) 1))}.
+       ((x = y /\ p = setprod (setprod x y) 0) \/
+        (x <> y /\ p = setprod (setprod x y) 1))}.
 (** helper: placeholder metric on euclidean_space n **) 
 Definition euclidean_metric : set -> set := fun n => discrete_metric (euclidean_space n).
 
@@ -16887,7 +16884,7 @@ Qed.
 
 (** from §44 Theorem: space-filling curve existence **) 
 (** LATEX VERSION: Existence of a continuous surjection from [0,1] onto the unit square (Peano curve). **)
-Definition unit_square : set := OrderedPair unit_interval unit_interval.
+Definition unit_square : set := setprod unit_interval unit_interval.
 Definition unit_square_topology : set := product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
 Theorem space_filling_curve : exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
 prove exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
@@ -17665,10 +17662,10 @@ Definition open_map : set -> set -> set -> set -> set -> prop :=
 Definition topological_group : set -> set -> prop := fun G Tg =>
   topology_on G Tg /\
   exists mult inv e:set,
-    function_on mult (OrderedPair G G) G /\
+    function_on mult (setprod G G) G /\
     function_on inv G G /\
     e :e G /\
-    continuous_map (OrderedPair G G) (product_topology G Tg G Tg) G Tg mult /\
+    continuous_map (setprod G G) (product_topology G Tg G Tg) G Tg mult /\
     continuous_map G Tg G Tg inv.
 
 (** helper: separated subsets predicate **)
@@ -17873,7 +17870,7 @@ Theorem ex30_10_product_countable_dense : forall Idx:set, forall Fam:set,
   countable Idx ->
   (forall i:set, i :e Idx ->
     exists Xi:set, exists Txi:set, exists Di:set,
-      apply_fun Fam i = OrderedPair Xi Txi /\
+      apply_fun Fam i = setprod Xi Txi /\
       Di c= Xi /\ countable Di /\ dense_in Di Xi Txi) ->
   exists D:set,
     D c= product_space Idx Fam /\
@@ -17881,7 +17878,7 @@ Theorem ex30_10_product_countable_dense : forall Idx:set, forall Fam:set,
     dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
 let Idx Fam.
 assume H1: countable Idx.
-assume H2: forall i:set, i :e Idx -> exists Xi:set, exists Txi:set, exists Di:set, apply_fun Fam i = OrderedPair Xi Txi /\ Di c= Xi /\ countable Di /\ dense_in Di Xi Txi.
+assume H2: forall i:set, i :e Idx -> exists Xi:set, exists Txi:set, exists Di:set, apply_fun Fam i = setprod Xi Txi /\ Di c= Xi /\ countable Di /\ dense_in Di Xi Txi.
 prove exists D:set, D c= product_space Idx Fam /\ countable D /\ dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
 admit. (** countable product of countable sets is countable; finitely-varying sequences form dense subset **)
 Qed.
@@ -18191,16 +18188,16 @@ Qed.
 (** from §32 Exercise 2: factor spaces of products inherit separation **)
 (** LATEX VERSION: If ∏X_α is Hausdorff/regular/normal, then so is each X_α (assuming X_α nonempty). **)
 Theorem ex32_2_factors_inherit_separation : forall Idx Fam:set,
-  (forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ Xi <> Empty) ->
+  (forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Xi <> Empty) ->
   ((Hausdorff_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
-      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ Hausdorff_space Xi Txi) /\
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Hausdorff_space Xi Txi) /\
    (regular_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
-      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ regular_space Xi Txi) /\
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ regular_space Xi Txi) /\
    (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
-      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ normal_space Xi Txi)).
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ normal_space Xi Txi)).
 let Idx Fam.
-assume Hnemp: forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ Xi <> Empty.
-prove (Hausdorff_space (product_space Idx Fam) (product_topology_full Idx Fam) -> forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ Hausdorff_space Xi Txi) /\ (regular_space (product_space Idx Fam) (product_topology_full Idx Fam) -> forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ regular_space Xi Txi) /\ (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) -> forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = OrderedPair Xi Txi /\ normal_space Xi Txi).
+assume Hnemp: forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Xi <> Empty.
+prove (Hausdorff_space (product_space Idx Fam) (product_topology_full Idx Fam) -> forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Hausdorff_space Xi Txi) /\ (regular_space (product_space Idx Fam) (product_topology_full Idx Fam) -> forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ regular_space Xi Txi) /\ (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) -> forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ normal_space Xi Txi).
 admit. (** projection maps preserve separation properties; subspaces of factor spaces inherit properties **)
 Qed.
 (** from §32 Exercise 3: locally compact Hausdorff implies regular **)
@@ -18540,55 +18537,55 @@ Definition surjective_map : set -> set -> set -> prop := fun X Y f =>
 (** from §34 Exercise 1: Hausdorff with countable basis need not be metrizable **) 
 Definition ex34_1_Hausdorff_countable_basis_not_metrizable_example : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\
+    exists X Tx:set, p = setprod X Tx /\
       Hausdorff_space X Tx /\ second_countable_space X Tx /\ ~ metrizable X Tx}.
 (** from §34 Exercise 2: completely normal etc. not metrizable example **) 
 Definition ex34_2_completely_normal_not_metrizable_example : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\ completely_normal_space X Tx /\ ~ metrizable X Tx}.
+    exists X Tx:set, p = setprod X Tx /\ completely_normal_space X Tx /\ ~ metrizable X Tx}.
 (** from §34 Exercise 3: compact Hausdorff metrizable iff countable basis **) 
 Definition ex34_3_compact_Hausdorff_metrizable_iff_second_countable : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\
+    exists X Tx:set, p = setprod X Tx /\
       compact_space X Tx /\ Hausdorff_space X Tx /\
       (metrizable X Tx <-> second_countable_space X Tx)}.
 (** from §34 Exercise 4: locally compact Hausdorff and countable basis vs metrizable **) 
 Definition ex34_4_locally_compact_Hausdorff_metrizable_questions : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\
+    exists X Tx:set, p = setprod X Tx /\
       locally_compact X Tx /\ Hausdorff_space X Tx /\
       (second_countable_space X Tx -> metrizable X Tx)}.
 (** from §34 Exercise 5: one-point compactification metrizable vs base **) 
 Definition ex34_5_one_point_compactification_metrizable_questions : set :=
   {q :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx Y Ty p:set,
-      q = OrderedPair (OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty)) p /\
+      q = setprod (setprod (setprod X Tx) (setprod Y Ty)) p /\
       one_point_compactification X Tx Y Ty /\ p :e Y /\ ~ p :e X /\
       (metrizable X Tx <-> metrizable Y Ty)}.
 (** from §34 Exercise 6: details of imbedding theorem proof **) 
 Definition ex34_6_check_imbedding_proof : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx f:set,
-      p = OrderedPair (OrderedPair X Tx) f /\
+      p = setprod (setprod X Tx) f /\
       completely_regular_space X Tx /\ Hausdorff_space X Tx /\
       embedding_of X Tx (power_real omega) (product_topology_full omega (const_family omega R)) f}.
 (** from §34 Exercise 7: locally metrizable compact Hausdorff implies metrizable **) 
 Definition ex34_7_locally_metrizable_compact_Hausdorff_metrizable : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\
+    exists X Tx:set, p = setprod X Tx /\
       locally_metrizable_space X Tx /\ compact_space X Tx /\ Hausdorff_space X Tx /\
       metrizable X Tx}.
 (** from §34 Exercise 8: regular Lindelof locally metrizable implies metrizable **) 
 Definition ex34_8_regular_Lindelof_locally_metrizable_metrizable : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\
+    exists X Tx:set, p = setprod X Tx /\
       (regular_space X Tx /\ Lindelof_space X Tx /\ locally_metrizable_space X Tx ->
         metrizable X Tx)}.
 (** from §34 Exercise 9: compact Hausdorff union of two metrizable closed sets is metrizable **) 
 Definition ex34_9_compact_union_two_metrizable_closed_metrizable : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx A B:set,
-      p = OrderedPair (OrderedPair X Tx) (OrderedPair A B) /\
+      p = setprod (setprod X Tx) (setprod A B) /\
       compact_space X Tx /\ Hausdorff_space X Tx /\
       closed_in X Tx A /\ closed_in X Tx B /\ Union (UPair A B) = X /\
       metrizable A (subspace_topology X Tx A) /\ metrizable B (subspace_topology X Tx B) /\
@@ -18597,7 +18594,7 @@ Definition ex34_9_compact_union_two_metrizable_closed_metrizable : set :=
 (** from §35 Exercise 1: Tietze implies Urysohn lemma **) 
 Definition ex35_1_Tietze_implies_Urysohn : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\
+    exists X Tx:set, p = setprod X Tx /\
       normal_space X Tx /\
       (forall A B:set, closed_in X Tx A /\ closed_in X Tx B /\ A :/\: B = Empty ->
          exists f:set, continuous_map X Tx R R_standard_topology f /\
@@ -18606,21 +18603,21 @@ Definition ex35_1_Tietze_implies_Urysohn : set :=
 (** from §35 Exercise 2: interval partition parameter in Tietze proof **) 
 Definition ex35_2_interval_partition_parameter : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\ normal_space X Tx}.
+    exists X Tx:set, p = setprod X Tx /\ normal_space X Tx}.
 (** from §35 Exercise 3: boundedness equivalences in metrizable spaces **) 
 Definition ex35_3_boundedness_equivalences_metrizable : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx d:set, p = OrderedPair (OrderedPair X Tx) d /\
+    exists X Tx d:set, p = setprod (setprod X Tx) d /\
       metric_on X d /\ metric_topology X d = Tx}.
 (** from §35 Exercise 4: retract properties **) 
 Definition ex35_4_retract_properties : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx A:set, p = OrderedPair (OrderedPair X Tx) A /\ retraction_of X Tx A}.
+    exists X Tx A:set, p = setprod (setprod X Tx) A /\ retraction_of X Tx A}.
 (** from §35 Exercise 5: universal extension property and retracts **) 
 Definition ex35_5_universal_extension_retracts : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx A:set,
-      p = OrderedPair (OrderedPair X Tx) A /\
+      p = setprod (setprod X Tx) A /\
       normal_space X Tx /\ retraction_of X Tx A /\
       forall Y Ty f:set, continuous_map A (subspace_topology X Tx A) Y Ty f ->
         exists g:set, continuous_map X Tx Y Ty g /\
@@ -18628,69 +18625,69 @@ Definition ex35_5_universal_extension_retracts : set :=
 (** from §35 Exercise 6: absolute retract equivalence **) 
 Definition ex35_6_absolute_retract_universal_extension : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\ absolute_retract X Tx}.
+    exists X Tx:set, p = setprod X Tx /\ absolute_retract X Tx}.
 (** from §35 Exercise 7: retract examples spiral/knotted axis **) 
 Definition ex35_7_retract_examples : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx A:set, p = OrderedPair (OrderedPair X Tx) A /\ retraction_of X Tx A}.
+    exists X Tx A:set, p = setprod (setprod X Tx) A /\ retraction_of X Tx A}.
 (** from §35 Exercise 8: absolute retract iff universal extension **) 
 Definition ex35_8_absolute_retract_equivalence : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx:set, p = OrderedPair X Tx /\ absolute_retract X Tx}.
+    exists X Tx:set, p = setprod X Tx /\ absolute_retract X Tx}.
 (** from §35 Exercise 9: coherent topology preserves normality **) 
 Definition ex35_9_coherent_topology_normal : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx Y Ty:set,
-      p = OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) /\
+      p = setprod (setprod X Tx) (setprod Y Ty) /\
       (topology_on X Tx /\ topology_on Y Ty /\ coherent_topology X Tx Y Ty -> normal_space Y Ty)}.
 
 (** from §36 Exercises: manifolds and partitions of unity (placeholder) **) 
 Definition ex36_manifold_embedding_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists M TM f:set,
-      p = OrderedPair (OrderedPair M TM) f /\
+      p = setprod (setprod M TM) f /\
       m_manifold M TM ->
       exists n:set, embedding_of M TM (euclidean_space n) (euclidean_topology n) f}.
 (** from §37 Exercises: Tychonoff theorem applications (placeholder) **) 
 Definition ex37_tychonoff_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists I Xi:set,
-      p = OrderedPair I Xi /\
+      p = setprod I Xi /\
       compact_spaces_family I Xi /\
       compact_space (product_space I Xi) (product_topology_full I Xi)}.
 (** from §38 Exercises: Stone-Cech compactification (placeholder) **) 
 Definition ex38_stone_cech_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx Y Ty:set,
-      p = OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) /\
+      p = setprod (setprod X Tx) (setprod Y Ty) /\
       completely_regular_space X Tx /\ compact_space Y Ty /\ Hausdorff_space Y Ty /\
       exists e:set, embedding_of X Tx Y Ty e}.
 (** from §39 Exercises: local finiteness (placeholder) **) 
 Definition ex39_local_finiteness_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx U:set, p = OrderedPair (OrderedPair X Tx) U /\ locally_finite_family X Tx U}.
+    exists X Tx U:set, p = setprod (setprod X Tx) U /\ locally_finite_family X Tx U}.
 (** from §40 Exercises: Nagata-Smirnov metrization (placeholder) **) 
 Definition ex40_nagata_smirnov_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx B:set,
-      p = OrderedPair (OrderedPair X Tx) B /\
+      p = setprod (setprod X Tx) B /\
       (regular_space X Tx /\ basis_on X B /\ locally_finite_family X Tx B -> metrizable X Tx)}.
 (** from §41 Exercises: paracompactness (placeholder) **) 
 Definition ex41_paracompactness_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X Tx U:set, p = OrderedPair (OrderedPair X Tx) U /\
+    exists X Tx U:set, p = setprod (setprod X Tx) U /\
       paracompact_space X Tx /\ open_cover X Tx U}.
 (** from §42 Exercises: Smirnov metrization (placeholder) **) 
 Definition ex42_smirnov_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx B:set,
-      p = OrderedPair (OrderedPair X Tx) B /\
+      p = setprod (setprod X Tx) B /\
       (regular_space X Tx /\ basis_on X B /\ locally_finite_family X Tx B -> metrizable X Tx)}.
 (** from §43 Exercises: complete metric spaces (placeholder) **) 
 (** LATEX VERSION: Exercise set for completeness properties. **)
 Definition ex43_complete_metric_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X d Tx:set, p = OrderedPair (OrderedPair X d) Tx /\
+    exists X d Tx:set, p = setprod (setprod X d) Tx /\
       metric_on X d /\ Tx = metric_topology X d /\ complete_metric_space X d}.
 
 (** from §44 Exercises: space-filling curve (placeholder) **) 
@@ -18704,7 +18701,7 @@ Definition ex44_space_filling_exercises : set :=
 (** LATEX VERSION: Exercise set on compactness equivalences in metric spaces. **)
 Definition ex45_compact_metric_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists X d Tx:set, p = OrderedPair (OrderedPair X d) Tx /\
+    exists X d Tx:set, p = setprod (setprod X d) Tx /\
       metric_on X d /\ Tx = metric_topology X d /\ compact_space X Tx}.
 
 (** from §46 Exercises: pointwise/compact convergence (placeholder) **) 
@@ -18712,7 +18709,7 @@ Definition ex45_compact_metric_exercises : set :=
 Definition ex46_convergence_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx Y Ty:set,
-      p = OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) /\
+      p = setprod (setprod X Tx) (setprod Y Ty) /\
       topology_on X Tx /\ topology_on Y Ty /\ True}.
 
 (** from §47 Exercises: Ascoli theorem (placeholder) **) 
@@ -18720,7 +18717,7 @@ Definition ex46_convergence_exercises : set :=
 Definition ex47_ascoli_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx Y Ty:set,
-      p = OrderedPair (OrderedPair X Tx) (OrderedPair Y Ty) /\
+      p = setprod (setprod X Tx) (setprod Y Ty) /\
       compact_space X Tx /\ Hausdorff_space Y Ty}.
 
 (** from §48 Exercise 1: nonempty Baire union has set with nonempty interior closure **)
@@ -18964,4 +18961,4 @@ Qed.
 Definition ex50_dimension_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx n:set,
-      p = OrderedPair (OrderedPair X Tx) n /\ topology_on X Tx /\ ordinal n}.
+      p = setprod (setprod X Tx) n /\ topology_on X Tx /\ ordinal n}.
