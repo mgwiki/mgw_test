@@ -15704,12 +15704,13 @@ Definition locally_connected : set -> set -> prop := fun X Tx =>
     forall U:set, U :e Tx -> x :e U ->
       exists V:set, V :e Tx /\ x :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V).
 
-(** from §25 Definition: locally path connected **) 
+(** from §25 Definition: locally path connected **)
 (** LATEX VERSION: Locally path connected means each point has a neighborhood basis of path-connected sets. **)
 Definition locally_path_connected : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall x:set, x :e X ->
-    exists U:set, U :e Tx /\ x :e U /\ path_connected_space U (subspace_topology X Tx U).
+    forall U:set, U :e Tx -> x :e U ->
+      exists V:set, V :e Tx /\ x :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V).
 
 Definition pairwise_disjoint : set -> prop := fun Fam =>
   forall U V:set, U :e Fam -> V :e Fam -> U <> V -> U :/\: V = Empty.
