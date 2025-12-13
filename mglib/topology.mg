@@ -15492,7 +15492,8 @@ Definition path_between : set -> set -> set -> set -> prop := fun X x y p =>
   apply_fun p 0 = x /\ apply_fun p 1 = y.
 Definition path_connected_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
-  forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p.
+  forall x y:set, x :e X -> y :e X ->
+    exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p.
 
 (** Helper axioms for path_connected_implies_connected **)
 Axiom unit_interval_connected : connected_space unit_interval R_standard_topology.
@@ -15524,11 +15525,11 @@ prove connected_space X Tx.
 (** Extract components from path_connected_space **)
 claim HTx: topology_on X Tx.
 { exact (andEL (topology_on X Tx)
-               (forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p)
+               (forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p)
                Hpath). }
-claim Hpath_prop: forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p.
+claim Hpath_prop: forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p.
 { exact (andER (topology_on X Tx)
-               (forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p)
+               (forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p)
                Hpath). }
 (** Prove X is connected by contradiction **)
 prove topology_on X Tx /\ ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
@@ -15573,14 +15574,16 @@ apply andI.
   { exact (subset_elem U X x HU_sub Hx). }
   claim HyinX: y :e X.
   { exact (subset_elem V X y HV_sub Hy). }
-  (** Get path from x to y **)
-  claim Hpathxy: exists p:set, path_between X x y p.
+  (** Get continuous path from x to y **)
+  claim Hpathxy: exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p.
   { exact (Hpath_prop x y HxinX HyinX). }
   apply Hpathxy.
-  let p. assume Hp: path_between X x y p.
-  (** Path is continuous **)
+  let p. assume Hp_and_cont.
+  (** Extract path_between and continuity **)
+  claim Hp: path_between X x y p.
+  { exact (andEL (path_between X x y p) (continuous_map unit_interval R_standard_topology X Tx p) Hp_and_cont). }
   claim Hpcont: continuous_map unit_interval R_standard_topology X Tx p.
-  { exact (path_between_is_continuous X Tx x y p HTx HxinX HyinX Hp). }
+  { exact (andER (path_between X x y p) (continuous_map unit_interval R_standard_topology X Tx p) Hp_and_cont). }
   (** Use preimage_preserves_separation **)
   claim Hsep_UV: separation_of unit_interval (preimage_of unit_interval p U) (preimage_of unit_interval p V).
   { exact (preimage_preserves_separation unit_interval R_standard_topology X Tx p U V Hpcont HU HV HsepXUV). }
