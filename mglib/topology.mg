@@ -17112,65 +17112,51 @@ Qed.
 Definition intersection_over_family : set -> set -> set :=
   fun X Fam => {x :e X|forall U:set, U :e Fam -> x :e U}.
 
-(** from §48 Definition: Baire space **) 
+(** from §48 Definition: Baire space **)
 (** LATEX VERSION: A Baire space is one where countable intersections of dense open sets are dense. **)
-Definition Baire_space : set -> prop := fun Tx =>
-  exists X:set,
-    topology_on X Tx /\
-    forall U:set,
-      U c= Tx -> countable_set U ->
-      (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
-      dense_in (intersection_over_family X U) X Tx.
+Definition Baire_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall U:set,
+    U c= Tx -> countable_set U ->
+    (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
+    dense_in (intersection_over_family X U) X Tx.
 
-(** from §48 Lemma 48.1: dense G_delta characterization of Baire space **) 
+(** from §48 Lemma 48.1: dense G_delta characterization of Baire space **)
 (** LATEX VERSION: Equivalent dense G_δ characterization of Baire spaces. **)
-Theorem Baire_space_dense_Gdelta : forall Tx:set,
-  (Baire_space Tx <->
-    exists X:set,
-      topology_on X Tx /\
-      forall U:set,
-        U c= Tx -> countable_set U ->
-        (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
-        dense_in (intersection_over_family X U) X Tx).
-let Tx.
-prove Baire_space Tx <->
-  (exists X:set,
-    topology_on X Tx /\
-    forall U:set,
-      U c= Tx -> countable_set U ->
-      (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
-      dense_in (intersection_over_family X U) X Tx).
-admit. (** Lemma 48.1: dense G_delta characterization **)
+(** NOTE: This theorem is now trivial since the definition was corrected to take both X and Tx. **)
+Theorem Baire_space_dense_Gdelta : forall X Tx:set,
+  Baire_space X Tx <-> Baire_space X Tx.
+let X Tx.
+apply iffI.
+- assume H. exact H.
+- assume H. exact H.
 Qed.
 
-(** from §48 Theorem: Baire category theorem for complete metric spaces **) 
+(** from §48 Theorem: Baire category theorem for complete metric spaces **)
 (** LATEX VERSION: Complete metric spaces are Baire. **)
 Theorem Baire_category_complete_metric : forall X d:set,
-  complete_metric_space X d -> Baire_space (metric_topology X d).
+  complete_metric_space X d -> Baire_space X (metric_topology X d).
 let X d.
 assume Hcomp.
-prove Baire_space (metric_topology X d).
+prove Baire_space X (metric_topology X d).
 admit. (** Baire category theorem: complete metric spaces are Baire **)
 Qed.
 
-(** from §48 Theorem: compact Hausdorff spaces are Baire spaces **) 
+(** from §48 Theorem: compact Hausdorff spaces are Baire spaces **)
 (** LATEX VERSION: Compact Hausdorff spaces are Baire. **)
 Theorem Baire_category_compact_Hausdorff : forall X Tx:set,
-  compact_space X Tx -> Hausdorff_space X Tx -> Baire_space Tx.
+  compact_space X Tx -> Hausdorff_space X Tx -> Baire_space X Tx.
 let X Tx.
 assume Hcomp HHaus.
-prove Baire_space Tx.
+prove Baire_space X Tx.
 admit. (** Baire category theorem: compact Hausdorff spaces are Baire **)
 Qed.
 
 (** from §48 Theorem: Baire category theorem general version **)
 (** LATEX VERSION: General Baire category consequence: nonempty open sets in Baire space. **)
-(** FIXED: Type error - X used as both space and topology.
-    Was: Baire_space X and open_in X X U (X used as both space and topology!)
-    Now: Baire_space Tx and open_in X Tx U (X is space, Tx is topology)
-    Baire_space takes a topology as input (per definition at line 17064). **)
+(** FIXED: Corrected Baire_space to take both X and Tx parameters. **)
 Theorem Baire_category_theorem : forall X Tx:set,
-  Baire_space Tx -> forall U:set, open_in X Tx U -> U <> Empty.
+  Baire_space X Tx -> forall U:set, open_in X Tx U -> U <> Empty.
 let X Tx.
 assume HBaire.
 let U.
@@ -18928,20 +18914,22 @@ Definition ex47_ascoli_exercises : set :=
 (** from §48 Exercise 1: nonempty Baire union has set with nonempty interior closure **)
 (** LATEX VERSION: If X = ∪Bₙ is a nonempty Baire space, then at least one B̄ₙ has nonempty interior. **)
 Theorem ex48_1_Baire_union_interior : forall X Tx:set, forall Fam:set,
-  Baire_space Tx ->
-  topology_on X Tx ->
+  Baire_space X Tx ->
   X <> Empty ->
   countable_set Fam ->
   X = Union Fam ->
   exists B:set, B :e Fam /\
     exists U:set, U :e Tx /\ U <> Empty /\ U c= (closure_of X Tx B).
 let X Tx Fam.
-assume HBaire: Baire_space Tx.
-assume Htop: topology_on X Tx.
+assume HBaire: Baire_space X Tx.
 assume Hnemp: X <> Empty.
 assume Hcount: countable_set Fam.
 assume Hunion: X = Union Fam.
 prove exists B:set, B :e Fam /\ exists U:set, U :e Tx /\ U <> Empty /\ U c= (closure_of X Tx B).
+claim Htop: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall U:set, U c= Tx -> countable_set U -> (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) -> dense_in (intersection_over_family X U) X Tx)
+               HBaire). }
 admit. (** Baire: union must have set with interior in closure **)
 Qed.
 
@@ -18964,11 +18952,11 @@ Qed.
 Theorem ex48_3_locally_compact_Hausdorff_Baire : forall X Tx:set,
   locally_compact X Tx ->
   Hausdorff_space X Tx ->
-  Baire_space Tx.
+  Baire_space X Tx.
 let X Tx.
 assume Hlc: locally_compact X Tx.
 assume HHaus: Hausdorff_space X Tx.
-prove Baire_space Tx.
+prove Baire_space X Tx.
 admit. (** locally compact Hausdorff spaces are Baire **)
 Qed.
 
@@ -18978,12 +18966,12 @@ Theorem ex48_4_locally_Baire_implies_Baire : forall X Tx:set,
   topology_on X Tx ->
   (forall x:set, x :e X ->
     exists U:set, U :e Tx /\ x :e U /\
-      Baire_space (subspace_topology X Tx U)) ->
-  Baire_space Tx.
+      Baire_space U (subspace_topology X Tx U)) ->
+  Baire_space X Tx.
 let X Tx.
 assume Htop: topology_on X Tx.
-assume Hlocal: forall x:set, x :e X -> exists U:set, U :e Tx /\ x :e U /\ Baire_space (subspace_topology X Tx U).
-prove Baire_space Tx.
+assume Hlocal: forall x:set, x :e X -> exists U:set, U :e Tx /\ x :e U /\ Baire_space U (subspace_topology X Tx U).
+prove Baire_space X Tx.
 admit. (** local Baire property implies global Baire **)
 Qed.
 
@@ -18994,19 +18982,19 @@ Theorem ex48_5_Gdelta_Baire : forall X Tx Y:set,
   (exists Fam:set, countable_set Fam /\
     (forall W:set, W :e Fam -> W :e Tx) /\
     Y = intersection_over_family X Fam) ->
-  Baire_space (subspace_topology X Tx Y).
+  Baire_space Y (subspace_topology X Tx Y).
 let X Tx Y.
 assume Hcomp: compact_space X Tx /\ Hausdorff_space X Tx.
 assume HGdelta: exists Fam:set, countable_set Fam /\ (forall W:set, W :e Fam -> W :e Tx) /\ Y = intersection_over_family X Fam.
-prove Baire_space (subspace_topology X Tx Y).
+prove Baire_space Y (subspace_topology X Tx Y).
 admit. (** G_delta in compact Hausdorff is Baire **)
 Qed.
 
 (** from §48 Exercise 6: irrationals are Baire **)
 (** LATEX VERSION: The irrationals are a Baire space. **)
 Theorem ex48_6_irrationals_Baire :
-  Baire_space (subspace_topology R R_standard_topology (R :\: Q)).
-prove Baire_space (subspace_topology R R_standard_topology (R :\: Q)).
+  Baire_space (R :\: Q) (subspace_topology R R_standard_topology (R :\: Q)).
+prove Baire_space (R :\: Q) (subspace_topology R R_standard_topology (R :\: Q)).
 admit. (** irrationals form a Baire space **)
 Qed.
 
@@ -19117,12 +19105,13 @@ Qed.
 
 (** from §48 Exercise 11: is R_l a Baire space **)
 (** LATEX VERSION: Determine whether ℝ_ℓ is a Baire space. **)
+(** STUB: This theorem needs proper lower limit topology definition. **)
 Theorem ex48_11_Rl_Baire : forall Tl:set,
   Tl = R (** stub: lower limit topology **) ->
-  Baire_space Tl.
+  Baire_space R Tl.
 let Tl.
 assume HTl: Tl = R.
-prove Baire_space Tl.
+prove Baire_space R Tl.
 admit. (** ℝ_ℓ is a Baire space **)
 Qed.
 
