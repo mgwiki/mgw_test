@@ -15849,15 +15849,17 @@ claim Hsubcover: forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X
 exact (Hsubcover Fam HFam).
 Qed.
 
-(** from §26 Lemma 26.1: covering a subspace by ambient opens **) 
+(** from §26 Lemma 26.1: covering a subspace by ambient opens **)
+(** FIXED: open_cover_of Y Tx Fam included topology_on Y Tx, which is wrong (Tx is topology on X, not Y).
+    Now: directly state the covering condition (Fam c= Tx /\ Y c= Union Fam) without nonsensical topology_on. **)
 Theorem compact_subspace_via_ambient_covers : forall X Tx Y:set,
   topology_on X Tx ->
   (compact_space Y (subspace_topology X Tx Y) <->
-    forall Fam:set, open_cover_of Y Tx Fam -> has_finite_subcover Y Tx Fam).
+    forall Fam:set, (Fam c= Tx /\ Y c= Union Fam) -> has_finite_subcover Y Tx Fam).
 let X Tx Y.
 assume HTx: topology_on X Tx.
 prove compact_space Y (subspace_topology X Tx Y) <->
-    forall Fam:set, open_cover_of Y Tx Fam -> has_finite_subcover Y Tx Fam.
+    forall Fam:set, (Fam c= Tx /\ Y c= Union Fam) -> has_finite_subcover Y Tx Fam.
 admit. (** subspace compactness: cover of Y by opens in X gives cover by subspace opens; extract finite subcover **)
 Qed.
 
