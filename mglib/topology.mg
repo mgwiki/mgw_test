@@ -16460,11 +16460,26 @@ Definition Sorgenfrey_plane_topology : set :=
 (** LATEX VERSION: One-point sets closed predicate (T1-like helper). **)
 Definition one_point_sets_closed : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall x:set, x :e X -> closed_in X Tx {x}.
+
+(** from §31 Definition: regular and normal spaces **)
+(** LATEX VERSION: Regular space: points and closed sets can be separated by disjoint open sets. **)
+Definition regular_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall x:set, x :e X ->
+    forall F:set, closed_in X Tx F -> x /:e F ->
+      exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty.
+
+(** LATEX VERSION: Normal space: disjoint closed sets can be separated by disjoint opens. **)
+Definition normal_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+    exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+
 (** LATEX VERSION: Families of Hausdorff/regular/completely regular spaces (helpers). **)
 Definition Hausdorff_spaces_family : set -> set -> prop := fun I Xi =>
   forall i:set, i :e I -> Hausdorff_space (product_component Xi i) (product_component_topology Xi i).
 Definition regular_spaces_family : set -> set -> prop := fun I Xi =>
-  forall i:set, i :e I -> topology_on (product_component Xi i) (product_component_topology Xi i).
+  forall i:set, i :e I -> regular_space (product_component Xi i) (product_component_topology Xi i).
 (** LATEX VERSION: Uncountable set helper. **)
 Definition uncountable_set : set -> prop := fun X => ~ countable_set X.
 (** LATEX VERSION: Well-ordered set helper. **)
@@ -16510,20 +16525,6 @@ Theorem ordered_square_subspace_not_Lindelof :
 prove Lindelof_space ordered_square ordered_square_topology /\ ~ Lindelof_space ordered_square_open_strip ordered_square_subspace_topology.
 admit. (** ordered square compact hence Lindelöf; but subspace strip contains uncountable discrete closed **)
 Qed.
-
-(** from §31 Definition: regular and normal spaces **) 
-(** LATEX VERSION: Regular space: points and closed sets can be separated by disjoint open sets. **)
-Definition regular_space : set -> set -> prop := fun X Tx =>
-  topology_on X Tx /\
-  forall x:set, x :e X ->
-    forall F:set, closed_in X Tx F -> x /:e F ->
-      exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty.
-
-(** LATEX VERSION: Normal space: disjoint closed sets can be separated by disjoint opens. **)
-Definition normal_space : set -> set -> prop := fun X Tx =>
-  topology_on X Tx /\
-  forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
-    exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
 
 (** from §31 Lemma 31.1: closure-neighborhood reformulations of regular/normal **) 
 (** LATEX VERSION: Lemma 31.1: characterizations of regular/normal via closures and neighborhoods (assuming T1). **)
