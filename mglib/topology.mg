@@ -17033,8 +17033,8 @@ Qed.
 (** LATEX VERSION: Existence of a continuous surjection from [0,1] onto the unit square (Peano curve). **)
 Definition unit_square : set := setprod unit_interval unit_interval.
 Definition unit_square_topology : set := product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
-Theorem space_filling_curve : exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
-prove exists f:set, continuous_map unit_interval R2_standard_topology unit_square unit_square_topology f.
+Theorem space_filling_curve : exists f:set, continuous_map unit_interval R_standard_topology unit_square unit_square_topology f.
+prove exists f:set, continuous_map unit_interval R_standard_topology unit_square unit_square_topology f.
 admit. (** construct Peano curve via iterative midpoint subdivision; limit of continuous approximations is continuous **)
 Qed.
 
