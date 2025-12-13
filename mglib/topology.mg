@@ -19077,14 +19077,14 @@ Qed.
 Theorem ex48_9_Thomae_function : forall g:set, forall f:set,
   (forall n:set, n :e omega -> apply_fun g n :e Q) ->
   function_on f R R ->
-  (forall n:set, n :e omega -> apply_fun f (apply_fun g n) = R) ->
-  (forall x:set, x :e R -> x /:e Q -> apply_fun f x = Empty) ->
+  (forall n:set, n :e omega -> apply_fun f (apply_fun g n) = recip_SNo (ordsucc n)) ->
+  (forall x:set, x :e R -> x /:e Q -> apply_fun f x = 0) ->
   forall x:set, x :e R -> x /:e Q -> continuous_at f x.
 let g f.
 assume Hg: forall n:set, n :e omega -> apply_fun g n :e Q.
 assume Hf: function_on f R R.
-assume Hfg: forall n:set, n :e omega -> apply_fun f (apply_fun g n) = R.
-assume Hfirr: forall x:set, x :e R -> x /:e Q -> apply_fun f x = Empty.
+assume Hfg: forall n:set, n :e omega -> apply_fun f (apply_fun g n) = recip_SNo (ordsucc n).
+assume Hfirr: forall x:set, x :e R -> x /:e Q -> apply_fun f x = 0.
 let x.
 assume Hx: x :e R.
 assume Hirr: x /:e Q.
