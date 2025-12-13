@@ -13350,10 +13350,11 @@ Definition T1_space : set -> set -> prop := fun X Tx =>
 (** from §17 Theorem 17.8: finite sets closed in Hausdorff **) 
 (** LATEX VERSION: In any Hausdorff space, every finite subset is closed. **)
 Theorem finite_sets_closed_in_Hausdorff : forall X Tx:set,
-  Hausdorff_space X Tx -> forall F:set, finite F -> closed_in X Tx F.
+  Hausdorff_space X Tx -> forall F:set, F c= X -> finite F -> closed_in X Tx F.
 let X Tx.
 assume HH: Hausdorff_space X Tx.
 let F.
+assume HFsub: F c= X.
 assume HF: finite F.
 prove closed_in X Tx F.
 (** Strategy: Prove by cases on finite structure:
