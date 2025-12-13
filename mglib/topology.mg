@@ -13334,7 +13334,7 @@ Qed.
 (** LATEX VERSION: Hausdorff (T₂): distinct points have disjoint neighborhoods; T₁: all finite sets closed. **)
 Definition Hausdorff_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
-  forall x1 x2:set, x1 <> x2 ->
+  forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
     exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
 
 (** FIXED: Quantifier scope error.
@@ -13362,9 +13362,9 @@ prove closed_in X Tx F.
     3. Binary unions of closed sets are closed
     Then use induction on finiteness. **)
 claim Htop: topology_on X Tx.
-{ claim HH_def: topology_on X Tx /\ forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+{ claim HH_def: topology_on X Tx /\ forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
   { exact HH. }
-  exact (andEL (topology_on X Tx) (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty) HH_def). }
+  exact (andEL (topology_on X Tx) (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty) HH_def). }
 (** Case 1: F = Empty **)
 apply (xm (F = Empty)).
 - assume HFempty: F = Empty.
@@ -13375,8 +13375,8 @@ apply (xm (F = Empty)).
   (** For a singleton {x}, we show X \ {x} is open by showing it's a union of open sets.
       For each y ∈ X with y ≠ x, Hausdorff gives disjoint opens separating x and y.
       The union of all such opens containing y gives X \ {x}. **)
-  claim HSaph: forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
-  { exact (andER (topology_on X Tx) (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty) HH). }
+  claim HSaph: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+  { exact (andER (topology_on X Tx) (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty) HH). }
   (** General case: Use induction/structural properties of finite sets **)
   (** Key facts needed:
       1. Every singleton {x} is closed (by above argument)
@@ -13402,6 +13402,8 @@ Qed.
 (** LATEX VERSION: In Hausdorff spaces, sequences (or nets) have at most one limit. **)
 Theorem Hausdorff_unique_limits : forall X Tx seq x y:set,
   Hausdorff_space X Tx ->
+  x :e X ->
+  y :e X ->
   x <> y ->
   function_on seq omega X ->
   (forall U:set, U :e Tx -> x :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U) ->
@@ -13409,6 +13411,8 @@ Theorem Hausdorff_unique_limits : forall X Tx seq x y:set,
   False.
 let X Tx seq x y.
 assume HH: Hausdorff_space X Tx.
+assume HxX: x :e X.
+assume HyX: y :e X.
 assume Hneq: x <> y.
 assume Hseq: function_on seq omega X.
 assume Hx: forall U:set, U :e Tx -> x :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
@@ -13421,15 +13425,15 @@ prove False.
 (** Extract topology and separation property **)
 claim HTx: topology_on X Tx.
 { exact (andEL (topology_on X Tx)
-               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
                HH). }
-claim HSep: forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+claim HSep: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
 { exact (andER (topology_on X Tx)
-               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
                HH). }
 (** Apply separation to x and y **)
 claim HexUV: exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty.
-{ exact (HSep x y Hneq). }
+{ exact (HSep x y HxX HyX Hneq). }
 (** Handle nested existentials - need to carefully unpack structure **)
 (** Unpack the existential for U and V **)
 apply HexUV.
@@ -13591,30 +13595,30 @@ claim HY: Hausdorff_space Y Ty.
 { exact (andER (Hausdorff_space X Tx) (Hausdorff_space Y Ty) H). }
 claim HTx: topology_on X Tx.
 { exact (andEL (topology_on X Tx)
-               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
                HX). }
 claim HTy: topology_on Y Ty.
 { exact (andEL (topology_on Y Ty)
-               (forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
+               (forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
                HY). }
-claim HSepX: forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+claim HSepX: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
 { exact (andER (topology_on X Tx)
-               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
                HX). }
-claim HSepY: forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
+claim HSepY: forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
 { exact (andER (topology_on Y Ty)
-               (forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
+               (forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
                HY). }
 (** Build Hausdorff property for product **)
 claim HTProd: topology_on (setprod X Y) (product_topology X Tx Y Ty).
 { exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
 prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\
-      (forall p1 p2:set, p1 <> p2 ->
+      (forall p1 p2:set, p1 :e setprod X Y -> p2 :e setprod X Y -> p1 <> p2 ->
        exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
                        p1 :e U /\ p2 :e V /\ U :/\: V = Empty).
 apply andI.
 - exact HTProd.
-- let p1 p2. assume Hne: p1 <> p2.
+- let p1 p2. assume Hp1: p1 :e setprod X Y. assume Hp2: p2 :e setprod X Y. assume Hne: p1 <> p2.
   prove exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
                         p1 :e U /\ p2 :e V /\ U :/\: V = Empty.
   (** Need to decompose p1 and p2 as ordered pairs and separate by coordinates **)
@@ -14128,30 +14132,30 @@ prove Hausdorff_space (setprod X Y) (product_topology X Tx Y Ty).
 (** Extract components from Hausdorff definitions **)
 claim HTx: topology_on X Tx.
 { exact (andEL (topology_on X Tx)
-               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
                HX). }
 claim HTy: topology_on Y Ty.
 { exact (andEL (topology_on Y Ty)
-               (forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
+               (forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
                HY). }
-claim HSepX: forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+claim HSepX: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
 { exact (andER (topology_on X Tx)
-               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
                HX). }
-claim HSepY: forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
+claim HSepY: forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
 { exact (andER (topology_on Y Ty)
-               (forall y1 y2:set, y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
+               (forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
                HY). }
 (** Build Hausdorff property for product **)
 claim HTProd: topology_on (setprod X Y) (product_topology X Tx Y Ty).
 { exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
 prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\
-      (forall p1 p2:set, p1 <> p2 ->
+      (forall p1 p2:set, p1 :e setprod X Y -> p2 :e setprod X Y -> p1 <> p2 ->
        exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
                        p1 :e U /\ p2 :e V /\ U :/\: V = Empty).
 apply andI.
 - exact HTProd.
-- let p1 p2. assume Hne: p1 <> p2.
+- let p1 p2. assume Hp1: p1 :e setprod X Y. assume Hp2: p2 :e setprod X Y. assume Hne: p1 <> p2.
   prove exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
                         p1 :e U /\ p2 :e V /\ U :/\: V = Empty.
   (** Need to decompose p1 and p2 as ordered pairs and separate by coordinates **)
@@ -14166,19 +14170,19 @@ assume HX: Hausdorff_space X Tx.
 prove Hausdorff_space Y (subspace_topology X Tx Y).
 claim HTx: topology_on X Tx.
 { exact (andEL (topology_on X Tx)
-               (forall x1 x2:set, x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
                HX). }
 claim HYsubX: Y c= X.
 { admit. }
 claim HTy: topology_on Y (subspace_topology X Tx Y).
 { exact (subspace_topology_is_topology X Tx Y HTx HYsubX). }
 prove topology_on Y (subspace_topology X Tx Y) /\
-      (forall y1 y2:set, y1 <> y2 ->
+      (forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 ->
        exists U V:set, U :e subspace_topology X Tx Y /\ V :e subspace_topology X Tx Y /\
                        y1 :e U /\ y2 :e V /\ U :/\: V = Empty).
 apply andI.
 - exact HTy.
-- let y1 y2. assume Hne: y1 <> y2.
+- let y1 y2. assume Hy1: y1 :e Y. assume Hy2: y2 :e Y. assume Hne: y1 <> y2.
   prove exists U V:set, U :e subspace_topology X Tx Y /\ V :e subspace_topology X Tx Y /\
                         y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
   (** Strategy: y1, y2 are distinct points. If both in Y, they're distinct in X.
