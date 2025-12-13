@@ -15044,7 +15044,7 @@ Theorem metric_epsilon_delta_continuity : forall X dX Y dY f:set,
        exists delta:set, delta :e R /\ Rlt 0 delta /\
          (forall x:set, x :e X ->
             Rlt (apply_fun dX (x,x0)) delta ->
-            Rlt (apply_fun dY ((apply_fun f x, apply_fun f x0))) eps))).
+            Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps))).
 let X dX Y dY f.
 assume HdX: metric_on X dX.
 assume HdY: metric_on Y dY.
