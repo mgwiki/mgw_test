@@ -16456,7 +16456,7 @@ Definition well_ordered_set : set -> prop := fun X =>
   exists alpha:set, ordinal alpha /\ equip X alpha.
 (** LATEX VERSION: Completely regular family helper. **)
 Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi =>
-  forall i:set, i :e I -> completely_regular_space (product_component Xi i) (product_component_topology Xi i).
+  forall i:set, i :e I -> topology_on (product_component Xi i) (product_component_topology Xi i).
 (** LATEX VERSION: Separating family of functions (embedding setup). **)
 Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
   fun X Tx F J =>
