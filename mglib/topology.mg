@@ -12926,14 +12926,15 @@ apply andI.
     * exact HAeqFinal.
 Qed.
 
-(** from §17 Theorem 17.4: closure in subspace equals intersection **) 
+(** from §17 Theorem 17.4: closure in subspace equals intersection **)
 (** LATEX VERSION: Closure in a subspace equals the ambient closure intersected with the subspace. **)
 Theorem closure_in_subspace : forall X Tx Y A:set,
-  topology_on X Tx -> Y c= X ->
+  topology_on X Tx -> Y c= X -> A c= Y ->
   closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
 let X Tx Y A.
 assume HTx: topology_on X Tx.
 assume HY: Y c= X.
+assume HA: A c= Y.
 prove closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
 claim HTy: topology_on Y (subspace_topology X Tx Y).
 { exact (subspace_topology_is_topology X Tx Y HTx HY). }
@@ -13071,10 +13072,23 @@ apply set_ext.
     }
     apply Hex_w.
     let w. assume Hw: w :e V :/\: A.
-    (** w :e V and w :e A. If we knew w :e Y, we'd have w :e V :/\: (Y :/\: A), contradicting HVYAempty2. **)
-    (** Without A c= Y assumption, this direction may not hold in full generality. **)
-    (** For standard topology texts, either A c= Y is assumed, or the theorem is about A :/\: Y. **)
-    admit. (** Requires A c= Y or theorem restatement **)
+    (** w :e V and w :e A. Since A c= Y, we have w :e Y, so w :e V :/\: (Y :/\: A), contradicting HVYAempty2. **)
+    claim HwV: w :e V.
+    { exact (binintersectE1 V A w Hw). }
+    claim HwA: w :e A.
+    { exact (binintersectE2 V A w Hw). }
+    claim HwY: w :e Y.
+    { exact (HA w HwA). }
+    claim HwYA: w :e Y :/\: A.
+    { exact (binintersectI Y A w HwY HwA). }
+    claim HwVYA: w :e V :/\: (Y :/\: A).
+    { exact (binintersectI V (Y :/\: A) w HwV HwYA). }
+    claim HVYAnonempty: V :/\: (Y :/\: A) <> Empty.
+    { assume HVYAempty_contra: V :/\: (Y :/\: A) = Empty.
+      claim Hwempty: w :e Empty.
+      { rewrite <- HVYAempty_contra. exact HwVYA. }
+      exact (EmptyE w Hwempty False). }
+    exact (HVYAnonempty HVYAempty2).
     }
   exact (SepI Y (fun y0 => forall U:set, U :e subspace_topology X Tx Y -> y0 :e U -> U :/\: A <> Empty) y HyY HySubCond).
 Qed.
