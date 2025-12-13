@@ -14225,15 +14225,16 @@ Qed.
 (** LATEX VERSION: Exercise 15: A topology is T₁ iff every singleton is closed. **)
 Theorem ex17_15_T1_characterization : forall X Tx:set,
   topology_on X Tx ->
-  (T1_space X Tx <-> (forall x:set, closed_in X Tx {x})).
+  (T1_space X Tx <-> (forall x:set, x :e X -> closed_in X Tx {x})).
 let X Tx.
 assume Htop: topology_on X Tx.
-prove T1_space X Tx <-> (forall x:set, closed_in X Tx {x}).
+prove T1_space X Tx <-> (forall x:set, x :e X -> closed_in X Tx {x}).
 apply iffI.
 - (** Forward: T1_space → singletons closed **)
   assume HT1: T1_space X Tx.
-  prove forall x:set, closed_in X Tx {x}.
+  prove forall x:set, x :e X -> closed_in X Tx {x}.
   let x.
+  assume Hx: x :e X.
   prove closed_in X Tx {x}.
   (** By definition of T1_space, all finite subsets are closed.
       Singletons are finite subsets, so {x} is closed. **)
@@ -14244,10 +14245,13 @@ apply iffI.
   claim Hx_finite: finite {x}.
   { exact (Sing_finite x). }
   claim Hx_sub: {x} c= X.
-  { admit. (** need to prove {x} c= X, probably from context **) }
+  { let y. assume Hy: y :e {x}.
+    claim Hyeq: y = x.
+    { exact (SingE x y Hy). }
+    rewrite Hyeq. exact Hx. }
   exact (Hfinite_closed {x} Hx_sub Hx_finite).
 - (** Backward: singletons closed → T1_space **)
-  assume Hsing: forall x:set, closed_in X Tx {x}.
+  assume Hsing: forall x:set, x :e X -> closed_in X Tx {x}.
   prove T1_space X Tx.
   prove topology_on X Tx /\ (forall F:set, F c= X -> finite F -> closed_in X Tx F).
   apply andI.
