@@ -16181,7 +16181,7 @@ Definition accumulation_point_of_net : set -> set -> set -> set -> prop := fun X
          (for every open U containing x, eventually all net(i) for i ≥ i0 are in U)
     The ordering i0 ≤ i is von Neumann: (i0 :e i \/ i0 = i). **)
 Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
-  exists J X0:set, topology_on X Tx /\ directed_set J /\ function_on net J X0 /\ x :e X /\
+  exists J:set, topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X /\
     forall U:set, U :e Tx -> x :e U ->
       exists i0:set, i0 :e J /\
         forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
