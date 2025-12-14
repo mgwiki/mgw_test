@@ -13096,10 +13096,11 @@ Qed.
 (** from §17 Theorem 17.5: closure via neighborhoods/basis **) 
 (** LATEX VERSION: Characterization of closure: x is in closure of A iff every open neighborhood of x meets A. **)
 Theorem closure_characterization : forall X Tx A x:set,
-  topology_on X Tx ->
+  topology_on X Tx -> x :e X ->
   (x :e closure_of X Tx A <-> (forall U :e Tx, x :e U -> U :/\: A <> Empty)).
 let X Tx A x.
 assume HTx: topology_on X Tx.
+assume HxX: x :e X.
 prove x :e closure_of X Tx A <-> (forall U :e Tx, x :e U -> U :/\: A <> Empty).
 (** Strategy: unfold definition of closure_of using SepE and SepI **)
 apply iffI.
@@ -13109,29 +13110,8 @@ apply iffI.
   exact (SepE2 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx).
 - assume Hcond: forall U :e Tx, x :e U -> U :/\: A <> Empty.
   prove x :e closure_of X Tx A.
-  (** Need to show x :e X and the condition **)
-  (** Strategy: use that X is itself in Tx. If x :e X, then by the condition with U=X,
-      we get X :/\: A <> Empty. If x /:e X, the condition is vacuous but we can derive
-      contradiction by showing x must be in X if the condition holds nontrivially. **)
-  claim HXinTx: X :e Tx.
-  { exact (topology_has_X X Tx HTx). }
-  apply xm (x :e X).
-  + assume HxX: x :e X.
-    exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x HxX Hcond).
-  + assume HxnotX: x /:e X.
-    (** If x /:e X, the condition is vacuous since for any U :e Tx, U c= X,
-        so x :e U would imply x :e X, contradicting x /:e X.
-        Since x /:e X, x is not in the closure (which is defined as {x :e X | ...}).
-        The theorem as stated has a logical gap: when x /:e X, the RHS is vacuously
-        true while the LHS is false, making the iff unprovable.
-
-        The correct statement should require x :e X as a hypothesis, or state:
-        "x :e closure <-> x :e X /\ (forall U :e Tx, x :e U -> U :/\: A <> Empty)"
-
-        For now, we admit this case, which should not occur in typical usage
-        where we only check closure membership for points known to be in X. **)
-    apply FalseE.
-    admit. (** theorem statement gap: needs x :e X as hypothesis for backward direction **)
+  (** Have x :e X as hypothesis; just need to apply SepI with x and the condition **)
+  exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x HxX Hcond).
 Qed.
 
 (** from §17 Corollary 17.7: closed iff contains all limit points **) 
