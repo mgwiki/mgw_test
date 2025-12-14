@@ -13143,10 +13143,11 @@ Definition limit_points_of : set -> set -> set -> set := fun X Tx A => {x :e X|l
 
 (** LATEX VERSION: Corollary 17.7: The closure of A equals A together with all its limit points. **)
 Theorem closure_equals_set_plus_limit_points : forall X Tx A:set,
-  topology_on X Tx ->
+  topology_on X Tx -> A c= X ->
   closure_of X Tx A = A :\/: limit_points_of X Tx A.
 let X Tx A.
 assume HTx: topology_on X Tx.
+assume HA: A c= X.
 prove closure_of X Tx A = A :\/: limit_points_of X Tx A.
 (** Strategy: cl(A) = A ∪ lim(A) by double inclusion.
     - A ⊆ cl(A) already known, and lim(A) ⊆ cl(A) since limit points satisfy closure condition
@@ -13232,10 +13233,11 @@ apply set_ext.
         { rewrite <- Hempty. exact HxUA. }
         exact (EmptyE x HxEmpty).
     * assume HxnotX: x /:e X.
-      (** x ∉ X but x ∈ A. Since cl(A) ⊆ X, we have x ∉ cl(A).
-          This case appears when A ⊈ X. The theorem seems to need A ⊆ X assumption,
-          or should be interpreted as cl(A) = (A ∩ X) ∪ lim(A). **)
-      admit. (** Requires A ⊆ X or reinterpretation of theorem **)
+      (** x ∉ X but x ∈ A. But we have A ⊆ X, so x ∈ A implies x ∈ X, contradiction. **)
+      apply FalseE.
+      claim HxX: x :e X.
+      { exact (HA x HxA). }
+      exact (HxnotX HxX).
   + assume Hxlim: x :e limit_points_of X Tx A.
     (** x is a limit point, so for all U open containing x, exists y ∈ A with y ≠ x in U, thus U ∩ A ≠ ∅ **)
     claim Hlimparts: x :e X /\ limit_point_of X Tx A x.
@@ -13273,13 +13275,14 @@ apply set_ext.
       exact (EmptyE y HyEmpty).
 Qed.
 
-(** from §17: closed sets contain all limit points **) 
+(** from §17: closed sets contain all limit points **)
 (** LATEX VERSION: A set A is closed iff it contains all its limit points. **)
 Theorem closed_iff_contains_limit_points : forall X Tx A:set,
-  topology_on X Tx ->
+  topology_on X Tx -> A c= X ->
   (closed_in X Tx A <-> limit_points_of X Tx A c= A).
 let X Tx A.
 assume HTx: topology_on X Tx.
+assume HA: A c= X.
 prove closed_in X Tx A <-> limit_points_of X Tx A c= A.
 (** Strategy: A closed iff cl(A) = A iff A ∪ lim(A) = A iff lim(A) ⊆ A **)
 apply iffI.
@@ -13293,7 +13296,7 @@ apply iffI.
   { exact (closed_closure_eq X Tx A HTx HAclosed). }
   (** Use closure_equals_set_plus_limit_points: cl(A) = A ∪ lim(A) **)
   claim Heq_union: closure_of X Tx A = A :\/: limit_points_of X Tx A.
-  { exact (closure_equals_set_plus_limit_points X Tx A HTx). }
+  { exact (closure_equals_set_plus_limit_points X Tx A HTx HA). }
   (** From Heq_cl: A = cl(A), and Heq_union: cl(A) = A ∪ lim(A), we get A = A ∪ lim(A) **)
   (** So x ∈ lim(A) implies x ∈ A ∪ lim(A) = A **)
   claim HxclA: x :e closure_of X Tx A.
@@ -13312,7 +13315,7 @@ apply iffI.
       5. cl(A) is closed by closure_is_closed
       6. Since A = cl(A) and cl(A) is closed, A is closed **)
   claim Heq_union: closure_of X Tx A = A :\/: limit_points_of X Tx A.
-  { exact (closure_equals_set_plus_limit_points X Tx A HTx). }
+  { exact (closure_equals_set_plus_limit_points X Tx A HTx HA). }
   (** Show A ∪ lim(A) = A when lim(A) ⊆ A **)
   claim Hunion_eq: A :\/: limit_points_of X Tx A = A.
   { apply set_ext.
@@ -13328,16 +13331,9 @@ apply iffI.
   (** Therefore cl(A) = A **)
   claim HclA_eq: closure_of X Tx A = A.
   { rewrite Heq_union. exact Hunion_eq. }
-  (** cl(A) ⊆ X by definition, so A ⊆ X **)
-  claim HA_sub: A c= X.
-  { let x. assume HxA: x :e A.
-    prove x :e X.
-    claim HxclA: x :e closure_of X Tx A.
-    { rewrite HclA_eq. exact HxA. }
-    exact (closure_in_space X Tx A HTx x HxclA). }
   (** cl(A) is closed by closure_is_closed **)
   claim HclA_closed: closed_in X Tx (closure_of X Tx A).
-  { exact (closure_is_closed X Tx A HTx HA_sub). }
+  { exact (closure_is_closed X Tx A HTx HA). }
   (** Since A = cl(A) and cl(A) is closed, A is closed **)
   prove closed_in X Tx A.
   rewrite <- HclA_eq.
