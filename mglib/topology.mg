@@ -9061,11 +9061,13 @@ admit. (** construct explicit witness sets with infinite complements **)
 Qed.
 
 (** from §13 Exercise 4(a): intersection of topologies **)
-(** LATEX VERSION: Exercise 4(a): The intersection of any family of topologies on X is a topology. **)
+(** LATEX VERSION: Exercise 4(a): The intersection of a nonempty family of topologies on X is a topology. **)
 Theorem ex13_4a_intersection_topology : forall X Fam:set,
+  (exists T:set, T :e Fam) ->
   (forall T :e Fam, topology_on X T) ->
   topology_on X (Intersection_Fam Fam).
 let X Fam.
+assume HFamNonempty: exists T:set, T :e Fam.
 assume HfamTop: forall T :e Fam, topology_on X T.
 prove topology_on X (Intersection_Fam Fam).
 (** Intersection_Fam Fam = {U :e Power (Union Fam) | forall T :e Fam, U :e T} **)
@@ -9171,52 +9173,22 @@ apply andI.
       { apply PowerI.
         let x. assume Hx: x :e X.
         prove x :e Union (Union Fam).
-        (** Case analysis: Fam empty or nonempty **)
-        apply (xm (exists T:set, T :e Fam)).
-        - (** Case: Fam nonempty **)
-          assume HFamNonempty: exists T:set, T :e Fam.
-          apply HFamNonempty.
-          let T0. assume HT0: T0 :e Fam.
-          claim HT0top: topology_on X T0.
-          { exact (HfamTop T0 HT0). }
-          (** Extract X :e T0 from topology_on X T0 **)
-          claim H1: ((T0 c= Power X /\ Empty :e T0) /\ X :e T0) /\ (forall UFam :e Power T0, Union UFam :e T0).
-          { exact (andEL (((T0 c= Power X /\ Empty :e T0) /\ X :e T0) /\ (forall UFam :e Power T0, Union UFam :e T0)) (forall U :e T0, forall V :e T0, U :/\: V :e T0) HT0top). }
-          claim H2: (T0 c= Power X /\ Empty :e T0) /\ X :e T0.
-          { exact (andEL ((T0 c= Power X /\ Empty :e T0) /\ X :e T0) (forall UFam :e Power T0, Union UFam :e T0) H1). }
-          claim HXT0: X :e T0.
-          { exact (andER ((T0 c= Power X /\ Empty :e T0)) (X :e T0) H2). }
-          (** Now x :e X, X :e T0, T0 :e Fam, so x :e Union (Union Fam) by double UnionI **)
-          claim HX_in_UnionFam: X :e Union Fam.
-          { exact (UnionI Fam X T0 HXT0 HT0). }
-          exact (UnionI (Union Fam) x X Hx HX_in_UnionFam).
-        - (** Case: Fam empty **)
-          assume HFamEmpty: ~(exists T:set, T :e Fam).
-          (** When Fam is empty, Union (Union Fam) = Empty, so X c= Empty, hence X = Empty **)
-          (** But we have x :e X, so this is impossible unless X = Empty **)
-          claim HUnionFamEmpty: Union Fam = Empty.
-          { apply Empty_Subq_eq.
-            let U. assume HU: U :e Union Fam.
-            apply UnionE_impred Fam U HU.
-            let T. assume HUT: U :e T. assume HT: T :e Fam.
-            apply FalseE.
-            apply HFamEmpty.
-            witness T. exact HT.
-          }
-          claim HUnionUnionFamEmpty: Union (Union Fam) = Empty.
-          { rewrite HUnionFamEmpty.
-            apply Empty_Subq_eq.
-            let y. assume Hy: y :e Union Empty.
-            apply UnionE_impred Empty y Hy.
-            let U. assume HyU: y :e U. assume HU: U :e Empty.
-            apply FalseE.
-            exact (EmptyE U HU).
-          }
-          rewrite HUnionUnionFamEmpty.
-          (** Need x :e Empty, but we have x :e X - contradiction unless X is empty **)
-          (** This case is vacuous when X is empty, or impossible when X is nonempty **)
-          apply FalseE.
-          admit. (** Theorem requires Fam nonempty when X nonempty **)
+        (** Use HFamNonempty to get a witness T0 :e Fam **)
+        apply HFamNonempty.
+        let T0. assume HT0: T0 :e Fam.
+        claim HT0top: topology_on X T0.
+        { exact (HfamTop T0 HT0). }
+        (** Extract X :e T0 from topology_on X T0 **)
+        claim H1: ((T0 c= Power X /\ Empty :e T0) /\ X :e T0) /\ (forall UFam :e Power T0, Union UFam :e T0).
+        { exact (andEL (((T0 c= Power X /\ Empty :e T0) /\ X :e T0) /\ (forall UFam :e Power T0, Union UFam :e T0)) (forall U :e T0, forall V :e T0, U :/\: V :e T0) HT0top). }
+        claim H2: (T0 c= Power X /\ Empty :e T0) /\ X :e T0.
+        { exact (andEL ((T0 c= Power X /\ Empty :e T0) /\ X :e T0) (forall UFam :e Power T0, Union UFam :e T0) H1). }
+        claim HXT0: X :e T0.
+        { exact (andER ((T0 c= Power X /\ Empty :e T0)) (X :e T0) H2). }
+        (** Now x :e X, X :e T0, T0 :e Fam, so x :e Union (Union Fam) by double UnionI **)
+        claim HX_in_UnionFam: X :e Union Fam.
+        { exact (UnionI Fam X T0 HXT0 HT0). }
+        exact (UnionI (Union Fam) x X Hx HX_in_UnionFam).
       }
       claim HXAllT: forall T:set, T :e Fam -> X :e T.
       { let T. assume HT: T :e Fam.
@@ -9332,7 +9304,14 @@ set Tmax := Intersection_Fam Fam.
 set Tmin := generated_topology_from_subbasis X (Union Fam).
 (** First prove Tmax properties **)
 claim HTmax_topology: topology_on X Tmax.
-{ exact (ex13_4a_intersection_topology X Fam HfamTop). }
+{ apply (xm (exists T:set, T :e Fam)).
+  - assume HFamNonempty: exists T:set, T :e Fam.
+    exact (ex13_4a_intersection_topology X Fam HFamNonempty HfamTop).
+  - assume HFamEmpty: ~(exists T:set, T :e Fam).
+    (** When Fam is empty, Tmax = Intersection_Fam Fam = {Empty} = discrete topology on Empty,
+        which is a topology on X only if X = Empty. For now, admit this edge case. **)
+    admit. (** Edge case: Fam empty **)
+}
 claim HTmax_subset_all: forall T :e Fam, Tmax c= T.
 { let T. assume HT: T :e Fam.
   (** Tmax = Intersection_Fam Fam = {U :e Power (Union (Union Fam)) | forall T :e Fam, U :e T} **)
