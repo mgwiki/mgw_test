@@ -14179,16 +14179,15 @@ Qed.
 
 (** LATEX VERSION: Exercise 12: Subspaces of Hausdorff spaces are Hausdorff. **)
 Theorem ex17_12_subspace_Hausdorff : forall X Tx Y:set,
-  Hausdorff_space X Tx -> Hausdorff_space Y (subspace_topology X Tx Y).
+  Hausdorff_space X Tx -> Y c= X -> Hausdorff_space Y (subspace_topology X Tx Y).
 let X Tx Y.
 assume HX: Hausdorff_space X Tx.
+assume HYsubX: Y c= X.
 prove Hausdorff_space Y (subspace_topology X Tx Y).
 claim HTx: topology_on X Tx.
 { exact (andEL (topology_on X Tx)
                (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
                HX). }
-claim HYsubX: Y c= X.
-{ admit. }
 claim HTy: topology_on Y (subspace_topology X Tx Y).
 { exact (subspace_topology_is_topology X Tx Y HTx HYsubX). }
 prove topology_on Y (subspace_topology X Tx Y) /\
