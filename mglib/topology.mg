@@ -6708,16 +6708,50 @@ Qed.
 Axiom binunion_countable : forall X Y:set, countable X -> countable Y -> countable (X :\/: Y).
 
 (** Helper: Union of a family preserves Power set membership **)
-Axiom Union_Power : forall X Fam:set,
+Theorem Union_Power : forall X Fam:set,
   Fam c= Power X -> Union Fam c= X.
+let X Fam.
+assume HFam: Fam c= Power X.
+prove Union Fam c= X.
+let x. assume Hx: x :e Union Fam.
+prove x :e X.
+apply (UnionE_impred Fam x Hx).
+let U. assume HxU: x :e U. assume HU: U :e Fam.
+claim HUPower: U :e Power X.
+{ exact (HFam U HU). }
+claim HUsub: U c= X.
+{ exact (PowerE X U HUPower). }
+exact (HUsub x HxU).
+Qed.
 
 (** Helper: Binary intersection of Power set members is in Power set **)
-Axiom binintersect_Power : forall X U V:set,
+Theorem binintersect_Power : forall X U V:set,
   U :e Power X -> V :e Power X -> U :/\: V :e Power X.
+let X U V.
+assume HU: U :e Power X.
+assume HV: V :e Power X.
+prove U :/\: V :e Power X.
+apply PowerI.
+let x. assume Hx: x :e U :/\: V.
+prove x :e X.
+claim HxU: x :e U.
+{ exact (binintersectE1 U V x Hx). }
+claim HUsub: U c= X.
+{ exact (PowerE X U HU). }
+exact (HUsub x HxU).
+Qed.
 
 (** Helper: Setminus with subset is in Power set **)
-Axiom setminus_Power : forall X U V:set,
+Theorem setminus_Power : forall X U V:set,
   U :e Power X -> X :\: U :e Power X.
+let X U V.
+assume HU: U :e Power X.
+prove X :\: U :e Power X.
+apply PowerI.
+let x. assume Hx: x :e X :\: U.
+prove x :e X.
+exact (setminusE1 X U x Hx).
+Qed.
 
 (** from §12 Example 4: countable complement topology **)
 (** LATEX VERSION: Example 4 defines T_c = { U ⊂ X | X\\U is countable or U = ∅ }, the countable complement topology. **)
