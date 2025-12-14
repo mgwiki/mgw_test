@@ -6517,20 +6517,71 @@ Axiom topology_elem_subset : forall X T U:set,
   topology_on X T -> U :e T -> U c= X.
 
 (** Helper: Empty is in every topology **)
-Axiom topology_has_empty : forall X T:set,
+Theorem topology_has_empty : forall X T:set,
   topology_on X T -> Empty :e T.
+let X T.
+assume HTx: topology_on X T.
+prove Empty :e T.
+(** topology_on X T = ((((T c= Power X /\ Empty :e T) /\ X :e T) /\ Union axiom) /\ Intersection axiom) **)
+claim H1: (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U :e T, forall V :e T, U :/\: V :e T).
+{ exact HTx. }
+claim H2: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) H1). }
+claim H3: (T c= Power X /\ Empty :e T) /\ X :e T.
+{ exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H2). }
+claim H4: T c= Power X /\ Empty :e T.
+{ exact (andEL (T c= Power X /\ Empty :e T) (X :e T) H3). }
+exact (andER (T c= Power X) (Empty :e T) H4).
+Qed.
 
 (** Helper: X is in every topology on X **)
-Axiom topology_has_X : forall X T:set,
+Theorem topology_has_X : forall X T:set,
   topology_on X T -> X :e T.
+let X T.
+assume HTx: topology_on X T.
+prove X :e T.
+(** topology_on X T = ((((T c= Power X /\ Empty :e T) /\ X :e T) /\ Union axiom) /\ Intersection axiom) **)
+claim H1: (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U :e T, forall V :e T, U :/\: V :e T).
+{ exact HTx. }
+claim H2: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) H1). }
+claim H3: (T c= Power X /\ Empty :e T) /\ X :e T.
+{ exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H2). }
+exact (andER (T c= Power X /\ Empty :e T) (X :e T) H3).
+Qed.
 
 (** Helper: Union of family in topology stays in topology **)
-Axiom topology_union_closed : forall X T UFam:set,
+Theorem topology_union_closed : forall X T UFam:set,
   topology_on X T -> UFam c= T -> Union UFam :e T.
+let X T UFam.
+assume HTx: topology_on X T.
+assume HUFam: UFam c= T.
+prove Union UFam :e T.
+(** Extract union axiom from topology_on **)
+claim H1: (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam0 :e Power T, Union UFam0 :e T)) /\ (forall U :e T, forall V :e T, U :/\: V :e T).
+{ exact HTx. }
+claim H2: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam0 :e Power T, Union UFam0 :e T).
+{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam0 :e Power T, Union UFam0 :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) H1). }
+claim HUnionAxiom: forall UFam0 :e Power T, Union UFam0 :e T.
+{ exact (andER (((T c= Power X /\ Empty :e T) /\ X :e T)) (forall UFam0 :e Power T, Union UFam0 :e T) H2). }
+claim HUFamPower: UFam :e Power T.
+{ exact (PowerI T UFam HUFam). }
+exact (HUnionAxiom UFam HUFamPower).
+Qed.
 
 (** Helper: Binary intersection in topology stays in topology **)
-Axiom topology_binintersect_closed : forall X T U V:set,
+Theorem topology_binintersect_closed : forall X T U V:set,
   topology_on X T -> U :e T -> V :e T -> U :/\: V :e T.
+let X T U V.
+assume HTx: topology_on X T.
+assume HU: U :e T.
+assume HV: V :e T.
+prove U :/\: V :e T.
+(** Extract intersection axiom from topology_on **)
+claim HIntersectAxiom: forall U0 :e T, forall V0 :e T, U0 :/\: V0 :e T.
+{ exact (andER ((((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T))) (forall U0 :e T, forall V0 :e T, U0 :/\: V0 :e T) HTx). }
+exact (HIntersectAxiom U HU V HV).
+Qed.
 
 (** from §12: closed set as complement of open set **)
 (** LATEX VERSION: A set C is closed in X (with topology T) if there exists an open set U∈T whose complement in X equals C. **)
