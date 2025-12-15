@@ -8988,6 +8988,25 @@ Qed.
 Definition Intersection_Fam : set -> set -> set :=
   fun X Fam => {U :e Power X|forall T:set, T :e Fam -> U :e T}.
 
+(** helper: empty family gives discrete topology **)
+Theorem Intersection_Fam_empty_eq : forall X Fam:set,
+  ~(exists T:set, T :e Fam) ->
+  Intersection_Fam X Fam = Power X.
+let X Fam.
+assume HFamEmpty: ~(exists T:set, T :e Fam).
+apply set_ext.
+- let U. assume HU: U :e Intersection_Fam X Fam.
+  exact (SepE1 (Power X) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HU).
+- let U. assume HU: U :e Power X.
+  claim HAllT: forall T:set, T :e Fam -> U :e T.
+  { let T. assume HT: T :e Fam.
+    apply FalseE.
+    apply HFamEmpty.
+    witness T. exact HT.
+  }
+  exact (SepI (Power X) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HU HAllT).
+Qed.
+
 (** helper: intersection of a family stays within X (updated for new signature) **)
 Theorem intersection_of_family_sub_X : forall X Fam:set,
   intersection_of_family X Fam c= X.
@@ -9498,20 +9517,7 @@ claim HTmax_topology: topology_on X Tmax.
     exact (ex13_4a_intersection_topology X Fam HFamNonempty HfamTop).
   - assume HFamEmpty: ~(exists T:set, T :e Fam).
     (** If `Fam` is empty then `Intersection_Fam X Fam = Power X`, i.e. the discrete topology. **)
-    claim HInterEmpty: Intersection_Fam X Fam = Power X.
-    { apply set_ext.
-      - let U. assume HU: U :e Intersection_Fam X Fam.
-        exact (SepE1 (Power X) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HU).
-      - let U. assume HU: U :e Power X.
-        claim HAllT: forall T:set, T :e Fam -> U :e T.
-        { let T. assume HT: T :e Fam.
-          apply FalseE.
-          apply HFamEmpty.
-          witness T. exact HT.
-        }
-        exact (SepI (Power X) (fun U0 => forall T:set, T :e Fam -> U0 :e T) U HU HAllT).
-    }
-    rewrite HInterEmpty.
+    rewrite (Intersection_Fam_empty_eq X Fam HFamEmpty).
     exact (discrete_topology_on X).
 }
 claim HTmax_subset_all: forall T :e Fam, Tmax c= T.
