@@ -8480,6 +8480,24 @@ rewrite <- (tuple_pair x y).
 exact (pair_ap_1 x y).
 Qed.
 
+(** from §13 Example 4: equality of points in R×R is coordinatewise **)
+(** LATEX VERSION: If (x1,y1) = (x2,y2) then x1=x2 and y1=y2. **)
+Theorem tuple_eq_coords_R2 : forall x1 y1 x2 y2:set,
+  (x1,y1) = (x2,y2) -> x1 = x2 /\ y1 = y2.
+let x1 y1 x2 y2. assume Heq.
+apply andI.
+- prove x1 = x2.
+  rewrite <- (R2_xcoord_tuple x1 y1).
+  rewrite <- (R2_xcoord_tuple x2 y2).
+  rewrite Heq.
+  reflexivity.
+- prove y1 = y2.
+  rewrite <- (R2_ycoord_tuple x1 y1).
+  rewrite <- (R2_ycoord_tuple x2 y2).
+  rewrite Heq.
+  reflexivity.
+Qed.
+
 (** Euclidean distance in ℝ²: sqrt((x1-x2)^2 + (y1-y2)^2),
     implemented using pre-topology surreal/real operations. **)
 Definition distance_R2 : set -> set -> set := fun p c =>
