@@ -19578,10 +19578,11 @@ Definition converges_to : set -> set -> set -> set -> prop :=
     forall U:set, U :e Tx -> x :e U ->
       exists N:set, N :e omega /\
         forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
-(** FIXED: Image should apply function f to elements of seq, not return seq unchanged.
-    Was: {y | y ∈ seq} = seq (ignoring f completely!)
-    Now: {apply_fun f y | y ∈ seq} = image of seq under f **)
-Definition image_of : set -> set -> set := fun f seq => Repl seq (fun y => apply_fun f y).
+(** map a sequence seq by a function f, giving the composed sequence n ↦ f(seq(n)) **)
+Definition map_sequence : set -> set -> set := fun f seq => compose_fun omega seq f.
+
+(** image of a set U under a function f **)
+Definition image_of : set -> set -> set := fun f U => Repl U (fun x => apply_fun f x).
 Definition function_sequence_value : set -> set -> set -> set :=
   fun f_seq n x => apply_fun (apply_fun f_seq n) x.
 
@@ -20830,12 +20831,12 @@ Qed.
 Theorem first_countable_sequences_detect_continuity : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f ->
-    forall x seq:set, sequence_on seq X -> converges_to X Tx seq x -> converges_to Y Ty (image_of f seq) (apply_fun f x)).
+    forall x seq:set, sequence_on seq X -> converges_to X Tx seq x -> converges_to Y Ty (map_sequence f seq) (apply_fun f x)).
 let X Tx Y Ty f.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
 prove continuous_map X Tx Y Ty f ->
-    forall x seq:set, sequence_on seq X -> converges_to X Tx seq x -> converges_to Y Ty (image_of f seq) (apply_fun f x).
+    forall x seq:set, sequence_on seq X -> converges_to X Tx seq x -> converges_to Y Ty (map_sequence f seq) (apply_fun f x).
 admit. (** f continuous preserves limits: if x_n→x then f(x_n)→f(x); use first countability and sequential characterization **)
 Qed.
 
