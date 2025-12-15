@@ -6742,9 +6742,9 @@ exact (HUsub x HxU).
 Qed.
 
 (** Helper: Setminus with subset is in Power set **)
-Theorem setminus_Power : forall X U V:set,
+Theorem setminus_Power : forall X U:set,
   U :e Power X -> X :\: U :e Power X.
-let X U V.
+let X U.
 assume HU: U :e Power X.
 prove X :\: U :e Power X.
 apply PowerI.
