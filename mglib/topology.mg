@@ -9859,6 +9859,7 @@ Qed.
 
 (** from §14: open rays form a subbasis for the order topology **) 
 (** LATEX VERSION: The upper and lower open rays form a subbasis generating the order topology. **)
+(** NOTE: Current statement only asserts existence of some `S`; explicit ray subbasis is not yet formalized. **)
 Definition open_ray_upper : set -> set -> set := fun X a => {x :e X | order_rel X a x}.
 Definition open_ray_lower : set -> set -> set := fun X a => {x :e X | order_rel X x a}.
 
