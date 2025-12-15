@@ -18708,9 +18708,126 @@ apply andI.
   (** Strategy: y1, y2 are distinct points. If both in Y, they're distinct in X.
       Get disjoint X-neighborhoods U', V' from Hausdorff property.
       Then U' ∩ Y and V' ∩ Y are disjoint Y-neighborhoods. **)
-  (** However, we need to know y1, y2 are in Y to apply Hausdorff.
-      The statement should probably include y1 :e Y /\ y2 :e Y as hypotheses. **)
-  admit. (** Need: y1 :e Y, y2 :e Y to proceed with separation in X **)
+  claim Hsepax:
+    forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+      exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+  { exact (andER (topology_on X Tx)
+                 (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                   exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+                 HX). }
+  claim Hy1X: y1 :e X.
+  { exact (HYsubX y1 Hy1). }
+  claim Hy2X: y2 :e X.
+  { exact (HYsubX y2 Hy2). }
+  claim HexistsUV:
+    exists U V:set, U :e Tx /\ V :e Tx /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
+  { exact (Hsepax y1 y2 Hy1X Hy2X Hne). }
+  set U0 := Eps_i (fun U:set => exists V:set, U :e Tx /\ V :e Tx /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty).
+  claim HU0ex:
+    exists V:set, U0 :e Tx /\ V :e Tx /\ y1 :e U0 /\ y2 :e V /\ U0 :/\: V = Empty.
+  { exact (Eps_i_ex (fun U:set => exists V:set, U :e Tx /\ V :e Tx /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
+                    HexistsUV). }
+  set V0 := Eps_i (fun V:set => U0 :e Tx /\ V :e Tx /\ y1 :e U0 /\ y2 :e V /\ U0 :/\: V = Empty).
+  claim HV0prop:
+    U0 :e Tx /\ V0 :e Tx /\ y1 :e U0 /\ y2 :e V0 /\ U0 :/\: V0 = Empty.
+  { exact (Eps_i_ex (fun V:set => U0 :e Tx /\ V :e Tx /\ y1 :e U0 /\ y2 :e V /\ U0 :/\: V = Empty)
+                    HU0ex). }
+  claim HU0Tx: U0 :e Tx.
+  { exact (andEL (U0 :e Tx)
+                 (V0 :e Tx)
+                 (andEL (U0 :e Tx /\ V0 :e Tx)
+                        (y1 :e U0)
+                        (andEL ((U0 :e Tx /\ V0 :e Tx) /\ y1 :e U0)
+                               (y2 :e V0)
+                               (andEL (((U0 :e Tx /\ V0 :e Tx) /\ y1 :e U0) /\ y2 :e V0)
+                                      (U0 :/\: V0 = Empty)
+                                      HV0prop)))). }
+  claim HV0Tx: V0 :e Tx.
+  { exact (andER (U0 :e Tx)
+                 (V0 :e Tx)
+                 (andEL (U0 :e Tx /\ V0 :e Tx)
+                        (y1 :e U0)
+                        (andEL ((U0 :e Tx /\ V0 :e Tx) /\ y1 :e U0)
+                               (y2 :e V0)
+                               (andEL (((U0 :e Tx /\ V0 :e Tx) /\ y1 :e U0) /\ y2 :e V0)
+                                      (U0 :/\: V0 = Empty)
+                                      HV0prop)))). }
+  claim Hy1U0: y1 :e U0.
+  { exact (andER (U0 :e Tx /\ V0 :e Tx)
+                 (y1 :e U0)
+                 (andEL ((U0 :e Tx /\ V0 :e Tx) /\ y1 :e U0)
+                        (y2 :e V0)
+                        (andEL (((U0 :e Tx /\ V0 :e Tx) /\ y1 :e U0) /\ y2 :e V0)
+                               (U0 :/\: V0 = Empty)
+                               HV0prop))). }
+  claim Hy2V0: y2 :e V0.
+  { exact (andER ((U0 :e Tx /\ V0 :e Tx) /\ y1 :e U0)
+                 (y2 :e V0)
+                 (andEL (((U0 :e Tx /\ V0 :e Tx) /\ y1 :e U0) /\ y2 :e V0)
+                        (U0 :/\: V0 = Empty)
+                        HV0prop)). }
+  claim Hdisj: U0 :/\: V0 = Empty.
+  { exact (andER (((U0 :e Tx /\ V0 :e Tx) /\ y1 :e U0) /\ y2 :e V0)
+                 (U0 :/\: V0 = Empty)
+                 HV0prop). }
+  set U := U0 :/\: Y.
+  set V := V0 :/\: Y.
+  claim HUinST: U :e subspace_topology X Tx Y.
+  { claim HUPowY: U :e Power Y.
+    { apply PowerI.
+      let z. assume Hz: z :e U.
+      exact (binintersectE2 U0 Y z Hz). }
+    claim HUdef: exists V' :e Tx, U = V' :/\: Y.
+    { witness U0.
+      apply andI.
+      - exact HU0Tx.
+      - reflexivity. }
+    exact (SepI (Power Y) (fun U1:set => exists V' :e Tx, U1 = V' :/\: Y) U HUPowY HUdef).
+  }
+  claim HVinST: V :e subspace_topology X Tx Y.
+  { claim HVPowY: V :e Power Y.
+    { apply PowerI.
+      let z. assume Hz: z :e V.
+      exact (binintersectE2 V0 Y z Hz). }
+    claim HVdef: exists V' :e Tx, V = V' :/\: Y.
+    { witness V0.
+      apply andI.
+      - exact HV0Tx.
+      - reflexivity. }
+    exact (SepI (Power Y) (fun U1:set => exists V' :e Tx, U1 = V' :/\: Y) V HVPowY HVdef).
+  }
+  claim Hy1U: y1 :e U.
+  { exact (binintersectI U0 Y y1 Hy1U0 Hy1). }
+  claim Hy2V: y2 :e V.
+  { exact (binintersectI V0 Y y2 Hy2V0 Hy2). }
+  claim HUVempty: U :/\: V = Empty.
+  { apply Empty_Subq_eq.
+    let z. assume Hz: z :e U :/\: V.
+    prove z :e Empty.
+    claim HzU: z :e U.
+    { exact (binintersectE1 U V z Hz). }
+    claim HzV: z :e V.
+    { exact (binintersectE2 U V z Hz). }
+    claim HzU0: z :e U0.
+    { exact (binintersectE1 U0 Y z HzU). }
+    claim HzV0: z :e V0.
+    { exact (binintersectE1 V0 Y z HzV). }
+    claim HzU0V0: z :e U0 :/\: V0.
+    { exact (binintersectI U0 V0 z HzU0 HzV0). }
+    rewrite <- Hdisj.
+    exact HzU0V0.
+  }
+  witness U.
+  witness V.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * apply andI.
+        { exact HUinST. }
+        { exact HVinST. }
+      * exact Hy1U.
+    + exact Hy2V.
+  - exact HUVempty.
 Qed.
 
 (** LATEX VERSION: Exercise 13: Diagonal is closed in X×X iff X is Hausdorff. **)
