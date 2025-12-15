@@ -12128,9 +12128,9 @@ Theorem ex13_3a_union_helper : forall X:set, forall UFam :e Power (countable_com
 let X UFam.
 assume HUFam: UFam :e Power (countable_complement_topology X).
 prove Union UFam :e countable_complement_topology X.
-(** This follows from ex13_3a_Tc_topology which already proved union closure **)
+(** This follows from countable_complement_topology_on plus the union axiom of topology_on **)
 claim Htop : topology_on X (countable_complement_topology X).
-{ exact (ex13_3a_Tc_topology X). }
+{ exact (countable_complement_topology_on X). }
 claim Hsub : UFam c= countable_complement_topology X.
 { exact (PowerE (countable_complement_topology X) UFam HUFam). }
 exact (topology_union_closed X (countable_complement_topology X) UFam Htop Hsub).
