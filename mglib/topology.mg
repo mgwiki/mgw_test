@@ -8753,14 +8753,12 @@ claim Hsqx :
   mul_SNo (add_SNo xc (minus_SNo xp)) (add_SNo xc (minus_SNo xp))
   = mul_SNo (add_SNo xp (minus_SNo xc)) (add_SNo xp (minus_SNo xc)).
 { rewrite Hswapx.
-  rewrite Hswapx at 2.
   rewrite (mul_SNo_minus_minus (add_SNo xp (minus_SNo xc)) (add_SNo xp (minus_SNo xc)) HdxS HdxS).
   reflexivity. }
 claim Hsqy :
   mul_SNo (add_SNo yc (minus_SNo yp)) (add_SNo yc (minus_SNo yp))
   = mul_SNo (add_SNo yp (minus_SNo yc)) (add_SNo yp (minus_SNo yc)).
 { rewrite Hswapy.
-  rewrite Hswapy at 2.
   rewrite (mul_SNo_minus_minus (add_SNo yp (minus_SNo yc)) (add_SNo yp (minus_SNo yc)) HdyS HdyS).
   reflexivity. }
 
