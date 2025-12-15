@@ -9229,7 +9229,38 @@ Theorem ex13_3b_Tinfty_not_topology : forall X:set,
 let X.
 assume Htop: topology_on X (infinite_complement_family X).
 prove False.
-admit. (** use witness sets from ex13_3b_witness_sets; intersection fails to be in family **)
+claim Hbinint:
+  forall U :e infinite_complement_family X,
+  forall V :e infinite_complement_family X,
+    U :/\: V :e infinite_complement_family X.
+{ exact (andER (((infinite_complement_family X c= Power X /\ Empty :e infinite_complement_family X) /\ X :e infinite_complement_family X) /\
+               (forall UFam :e Power (infinite_complement_family X), Union UFam :e infinite_complement_family X))
+              (forall U :e infinite_complement_family X,
+                 forall V :e infinite_complement_family X,
+                   U :/\: V :e infinite_complement_family X)
+              Htop). }
+(** Use the (admitted) witness sets showing intersection failure **)
+apply (ex13_3b_witness_sets X).
+let U.
+assume HexV.
+apply HexV.
+let V.
+assume HUV.
+claim Hcore: U :e infinite_complement_family X /\ V :e infinite_complement_family X.
+{ exact (andEL (U :e infinite_complement_family X /\ V :e infinite_complement_family X)
+              (~(U :/\: V :e infinite_complement_family X))
+              HUV). }
+claim Hnot: ~(U :/\: V :e infinite_complement_family X).
+{ exact (andER (U :e infinite_complement_family X /\ V :e infinite_complement_family X)
+              (~(U :/\: V :e infinite_complement_family X))
+              HUV). }
+claim HU: U :e infinite_complement_family X.
+{ exact (andEL (U :e infinite_complement_family X) (V :e infinite_complement_family X) Hcore). }
+claim HV: V :e infinite_complement_family X.
+{ exact (andER (U :e infinite_complement_family X) (V :e infinite_complement_family X) Hcore). }
+claim HUVin: U :/\: V :e infinite_complement_family X.
+{ exact (Hbinint U HU V HV). }
+exact (Hnot HUVin).
 Qed.
 
 (** helper: structured witness outline for Tinfty failure (placeholder) **) 
