@@ -9008,13 +9008,21 @@ apply andI.
         - apply andI.
           - apply andI.
             - apply andI.
-              - apply andI.
-                - admit. (** topology_on abc_set top_abc_1 **)
-                - admit. (** topology_on abc_set top_abc_2 **)
-              - admit. (** topology_on abc_set top_abc_3 **)
-            - admit. (** topology_on abc_set top_abc_4 **)
-          - admit. (** topology_on abc_set top_abc_5 **)
-        - admit. (** topology_on abc_set top_abc_6 **)
+	              - apply andI.
+	                - (** topology_on abc_set top_abc_1 **)
+	                  claim Ht1: top_abc_1 = indiscrete_topology abc_set.
+	                  { reflexivity. }
+	                  rewrite Ht1.
+	                  exact (indiscrete_topology_on abc_set).
+	                - (** topology_on abc_set top_abc_2 **)
+	                  claim Ht2: top_abc_2 = discrete_topology abc_set.
+	                  { reflexivity. }
+	                  rewrite Ht2.
+	                  exact (discrete_topology_on abc_set).
+	              - admit. (** topology_on abc_set top_abc_3 **)
+	            - admit. (** topology_on abc_set top_abc_4 **)
+	          - admit. (** topology_on abc_set top_abc_5 **)
+	        - admit. (** topology_on abc_set top_abc_6 **)
       - admit. (** topology_on abc_set top_abc_7 **)
     - admit. (** topology_on abc_set top_abc_8 **)
   - admit. (** topology_on abc_set top_abc_9 **)
