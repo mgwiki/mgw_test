@@ -11837,19 +11837,28 @@ Theorem ex13_3b_witness_outline : forall X:set,
 let X.
 assume HinfX: infinite X.
 prove exists U V:set, U :e infinite_complement_family X /\ V :e infinite_complement_family X.
-apply (ex13_3b_witness_sets X HinfX).
-let U.
-assume HexV.
-apply HexV.
-let V.
-assume HUV.
-claim Hcore: U :e infinite_complement_family X /\ V :e infinite_complement_family X.
-{ exact (andEL (U :e infinite_complement_family X /\ V :e infinite_complement_family X)
-              (~(Union (UPair U V) :e infinite_complement_family X))
-              HUV). }
-witness U.
-witness V.
-exact Hcore.
+witness Empty.
+witness X.
+apply andI.
+- (** Empty is in the family by the defining disjunction **)
+  prove Empty :e infinite_complement_family X.
+  apply (SepI (Power X)
+              (fun U0 : set => infinite (X :\: U0) \/ U0 = Empty \/ U0 = X)
+              Empty
+              (Empty_In_Power X)).
+  prove infinite (X :\: Empty) \/ Empty = Empty \/ Empty = X.
+  apply orIL.
+  apply orIR.
+  reflexivity.
+- (** X is in the family by the defining disjunction **)
+  prove X :e infinite_complement_family X.
+  apply (SepI (Power X)
+              (fun U0 : set => infinite (X :\: U0) \/ U0 = Empty \/ U0 = X)
+              X
+              (Self_In_Power X)).
+  prove infinite (X :\: X) \/ X = Empty \/ X = X.
+  apply orIR.
+  reflexivity.
 Qed.
 
 (** from §13 Exercise 4(a): intersection of topologies **)
