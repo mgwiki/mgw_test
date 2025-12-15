@@ -18845,6 +18845,122 @@ Qed.
 (** For this exercise we represent the sequence by n ↦ 1/(n+1), so it is a function on omega. **)
 Definition seq_one_over_n : set := (fun n :e omega => {inv_nat (ordsucc n)}).
 
+Theorem seq_one_over_n_apply : forall n:set, n :e omega ->
+  apply_fun seq_one_over_n n = inv_nat (ordsucc n).
+let n. assume Hn: n :e omega.
+prove apply_fun seq_one_over_n n = inv_nat (ordsucc n).
+admit.
+Qed.
+
+Theorem inv_nat_ordsucc_inj : forall n m:set,
+  n :e omega -> m :e omega -> inv_nat (ordsucc n) = inv_nat (ordsucc m) -> n = m.
+let n m.
+assume Hn: n :e omega.
+assume Hm: m :e omega.
+assume Heq: inv_nat (ordsucc n) = inv_nat (ordsucc m).
+prove n = m.
+claim Hn_ord: ordinal n.
+{ exact (ordinal_Hered omega omega_ordinal n Hn). }
+claim Hm_ord: ordinal m.
+{ exact (ordinal_Hered omega omega_ordinal m Hm). }
+claim Hposn: 0 < ordsucc n.
+{ exact (ordinal_ordsucc_pos n Hn_ord). }
+claim Hposm: 0 < ordsucc m.
+{ exact (ordinal_ordsucc_pos m Hm_ord). }
+claim Hn1: ordsucc n :e omega.
+{ exact (omega_ordsucc n Hn). }
+claim Hm1: ordsucc m :e omega.
+{ exact (omega_ordsucc m Hm). }
+claim HSn: SNo (ordsucc n).
+{ exact (omega_SNo (ordsucc n) Hn1). }
+claim HSm: SNo (ordsucc m).
+{ exact (omega_SNo (ordsucc m) Hm1). }
+claim Hposcase_n: inv_nat (ordsucc n) = recip_SNo_pos (ordsucc n).
+{ exact (recip_SNo_poscase (ordsucc n) Hposn). }
+claim Hposcase_m: inv_nat (ordsucc m) = recip_SNo_pos (ordsucc m).
+{ exact (recip_SNo_poscase (ordsucc m) Hposm). }
+claim Hpos_eq: recip_SNo_pos (ordsucc n) = recip_SNo_pos (ordsucc m).
+{ prove recip_SNo_pos (ordsucc n) = recip_SNo_pos (ordsucc m).
+  rewrite <- Hposcase_n.
+  rewrite <- Hposcase_m.
+  exact Heq. }
+claim Hinv_eq: recip_SNo_pos (recip_SNo_pos (ordsucc n)) = recip_SNo_pos (recip_SNo_pos (ordsucc m)).
+{ prove recip_SNo_pos (recip_SNo_pos (ordsucc n)) = recip_SNo_pos (recip_SNo_pos (ordsucc m)).
+  rewrite Hpos_eq.
+  reflexivity. }
+claim Hord: ordsucc n = ordsucc m.
+{ prove ordsucc n = ordsucc m.
+  rewrite <- (recip_SNo_pos_invol (ordsucc n) HSn Hposn).
+  rewrite <- (recip_SNo_pos_invol (ordsucc m) HSm Hposm).
+  exact Hinv_eq. }
+exact (ordsucc_inj n m Hord).
+Qed.
+
+Theorem omega_binunion : forall a b:set, a :e omega -> b :e omega -> a :\/: b :e omega.
+let a b.
+assume Ha: a :e omega.
+assume Hb: b :e omega.
+prove a :\/: b :e omega.
+apply (xm (a :e b)).
+- assume Hab: a :e b.
+  claim Hsub: a c= b.
+  { claim Hb_nat: nat_p b.
+    { exact (omega_nat_p b Hb). }
+    claim Hb_ord: ordinal b.
+    { exact (nat_p_ordinal b Hb_nat). }
+    claim Hb_trans: TransSet b.
+    { exact (andEL (TransSet b) (forall beta :e b, TransSet beta) Hb_ord). }
+    exact (Hb_trans a Hab). }
+  claim Heq: a :\/: b = b.
+  { apply set_ext.
+    - exact (binunion_Subq_min a b b Hsub (Subq_ref b)).
+    - exact (binunion_Subq_2 a b). }
+  rewrite Heq.
+  exact Hb.
+- assume Hanb: a /:e b.
+  claim Ha_nat: nat_p a.
+  { exact (omega_nat_p a Ha). }
+  claim Hb_nat: nat_p b.
+  { exact (omega_nat_p b Hb). }
+  claim Ha_ord: ordinal a.
+  { exact (nat_p_ordinal a Ha_nat). }
+  claim Hb_ord: ordinal b.
+  { exact (nat_p_ordinal b Hb_nat). }
+  claim Hcases: a :e b \/ b c= a.
+  { exact (ordinal_In_Or_Subq a b Ha_ord Hb_ord). }
+  claim Hsub: b c= a.
+  { apply (Hcases (b c= a)).
+    - assume Hab: a :e b.
+      apply FalseE.
+      exact (Hanb Hab).
+    - assume H. exact H. }
+  claim Heq: a :\/: b = a.
+  { apply set_ext.
+    - exact (binunion_Subq_min a b a (Subq_ref a) Hsub).
+    - exact (binunion_Subq_1 a b). }
+  rewrite Heq.
+  exact Ha.
+Qed.
+
+Theorem seq_one_over_n_inj : forall n m:set, n :e omega -> m :e omega ->
+  apply_fun seq_one_over_n n = apply_fun seq_one_over_n m -> n = m.
+let n m.
+assume Hn: n :e omega.
+assume Hm: m :e omega.
+assume Heq: apply_fun seq_one_over_n n = apply_fun seq_one_over_n m.
+prove n = m.
+claim HnEq: apply_fun seq_one_over_n n = inv_nat (ordsucc n).
+{ exact (seq_one_over_n_apply n Hn). }
+claim HmEq: apply_fun seq_one_over_n m = inv_nat (ordsucc m).
+{ exact (seq_one_over_n_apply m Hm). }
+claim Heq': inv_nat (ordsucc n) = inv_nat (ordsucc m).
+{ prove inv_nat (ordsucc n) = inv_nat (ordsucc m).
+  rewrite <- HnEq.
+  rewrite <- HmEq.
+  exact Heq. }
+exact (inv_nat_ordsucc_inj n m Hn Hm Heq').
+Qed.
+
 Theorem ex17_14_sequence_in_finite_complement_topology : forall x:set,
   x :e R ->
   forall U:set,
@@ -18858,7 +18974,169 @@ let U.
 assume HU: U :e finite_complement_topology R.
 assume HxU: x :e U.
 prove exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq_one_over_n n :e U.
-admit. (** in the finite complement topology, 1/n converges to every point of R **)
+(** let F = R\\U, which is finite since U is nonempty **)
+claim HUpow: U :e Power R.
+{ exact (SepE1 (Power R) (fun U0:set => finite (R :\: U0) \/ U0 = Empty) U HU). }
+claim Hcases: finite (R :\: U) \/ U = Empty.
+{ exact (SepE2 (Power R) (fun U0:set => finite (R :\: U0) \/ U0 = Empty) U HU). }
+claim HUne: U <> Empty.
+{ assume HUe: U = Empty.
+  claim HxEmpty: x :e Empty.
+  { rewrite <- HUe. exact HxU. }
+  exact (EmptyE x HxEmpty). }
+claim HF: finite (R :\: U).
+{ apply Hcases.
+  - assume Hfin. exact Hfin.
+  - assume HUe.
+    apply FalseE.
+    exact (HUne HUe). }
+set F := R :\: U.
+claim HF_def: F = R :\: U.
+{ reflexivity. }
+claim HF_fin: finite F.
+{ rewrite HF_def. exact HF. }
+(** build a bound N so that for all n>=N, the sequence value is not in F **)
+claim Hbound: exists N:set, N :e omega /\
+  forall n:set, n :e omega -> N c= n -> apply_fun seq_one_over_n n /:e F.
+{ apply (finite_ind (fun A:set => exists N:set, N :e omega /\
+        forall n:set, n :e omega -> N c= n -> apply_fun seq_one_over_n n /:e A)).
+  - (** base **)
+    prove exists N:set, N :e omega /\
+      forall n:set, n :e omega -> N c= n -> apply_fun seq_one_over_n n /:e Empty.
+    witness 0.
+    apply andI.
+    + exact (nat_p_omega 0 nat_0).
+    + let n. assume Hn. assume Hsub.
+      exact (EmptyE (apply_fun seq_one_over_n n)).
+  - (** step **)
+    let A y.
+    assume HAfin: finite A.
+    assume HynA: y /:e A.
+    assume HIA: exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq_one_over_n n /:e A.
+    prove exists N:set, N :e omega /\
+      forall n:set, n :e omega -> N c= n -> apply_fun seq_one_over_n n /:e (A :\/: {y}).
+    apply HIA.
+    let N0. assume HN0.
+    claim HN0o: N0 :e omega.
+    { exact (andEL (N0 :e omega) (forall n:set, n :e omega -> N0 c= n -> apply_fun seq_one_over_n n /:e A) HN0). }
+    claim HN0prop: forall n:set, n :e omega -> N0 c= n -> apply_fun seq_one_over_n n /:e A.
+    { exact (andER (N0 :e omega) (forall n:set, n :e omega -> N0 c= n -> apply_fun seq_one_over_n n /:e A) HN0). }
+    (** case split: y occurs as a sequence value or not **)
+    apply (xm (exists k:set, k :e omega /\ apply_fun seq_one_over_n k = y)).
+    - assume Hexk: exists k:set, k :e omega /\ apply_fun seq_one_over_n k = y.
+      apply Hexk.
+      let k. assume Hkpair.
+      claim Hk: k :e omega.
+      { exact (andEL (k :e omega) (apply_fun seq_one_over_n k = y) Hkpair). }
+      claim Hkeq: apply_fun seq_one_over_n k = y.
+      { exact (andER (k :e omega) (apply_fun seq_one_over_n k = y) Hkpair). }
+      set N := ordsucc (N0 :\/: ordsucc k).
+      witness N.
+      apply andI.
+      + (** N in omega **)
+        claim Hk1: ordsucc k :e omega.
+        { exact (omega_ordsucc k Hk). }
+        claim Hmax: N0 :\/: ordsucc k :e omega.
+        { exact (omega_binunion N0 (ordsucc k) HN0o Hk1). }
+        exact (omega_ordsucc (N0 :\/: ordsucc k) Hmax).
+      + let n. assume Hn: n :e omega. assume HNsub: N c= n.
+        prove apply_fun seq_one_over_n n /:e (A :\/: {y}).
+        (** first, n is beyond N0 so the value is not in A **)
+        claim HN0sub: N0 c= n.
+        { let t. assume Ht: t :e N0.
+          claim HtN: t :e N.
+          { claim Htmax: t :e (N0 :\/: ordsucc k).
+            { exact (binunionI1 N0 (ordsucc k) t Ht). }
+            exact (ordsuccI1 (N0 :\/: ordsucc k) t Htmax). }
+          exact (HNsub t HtN). }
+        claim HnotA: apply_fun seq_one_over_n n /:e A.
+        { exact (HN0prop n Hn HN0sub). }
+        (** also, n is beyond k, so the value is not y by injectivity **)
+        claim HkInN: k :e N.
+        { claim HkInSk: k :e ordsucc k.
+          { exact (ordsuccI2 k). }
+          claim HkInMax: k :e (N0 :\/: ordsucc k).
+          { exact (binunionI2 N0 (ordsucc k) k HkInSk). }
+          exact (ordsuccI1 (N0 :\/: ordsucc k) k HkInMax). }
+        claim HkInNn: k :e n.
+        { exact (HNsub k HkInN). }
+	        claim Hneqnk: n <> k.
+	        { assume Hnk: n = k.
+	          claim Hkin: k :e k.
+	          { rewrite <- Hnk at 2. exact HkInNn. }
+	          exact (In_irref k Hkin). }
+	        claim Hneqval: apply_fun seq_one_over_n n <> y.
+	        { assume Hval: apply_fun seq_one_over_n n = y.
+	          claim HnEqk: n = k.
+	          { claim Hkeq': y = apply_fun seq_one_over_n k.
+	            { prove y = apply_fun seq_one_over_n k.
+	              symmetry.
+	              exact Hkeq. }
+	            claim Heqnk: apply_fun seq_one_over_n n = apply_fun seq_one_over_n k.
+	            { exact (eq_i_tra (apply_fun seq_one_over_n n) y (apply_fun seq_one_over_n k) Hval Hkeq'). }
+	            exact (seq_one_over_n_inj n k Hn Hk Heqnk). }
+	          exact (Hneqnk HnEqk). }
+        (** combine **)
+        assume Hmem: apply_fun seq_one_over_n n :e (A :\/: {y}).
+        apply (binunionE' A {y} (apply_fun seq_one_over_n n) False).
+        - assume HinA. exact (HnotA HinA).
+        - assume HinSing.
+          claim Heqv: apply_fun seq_one_over_n n = y.
+          { exact (SingE y (apply_fun seq_one_over_n n) HinSing). }
+          exact (Hneqval Heqv).
+        - exact Hmem.
+    - assume Hno: ~(exists k:set, k :e omega /\ apply_fun seq_one_over_n k = y).
+      (** N0 already works **)
+      witness N0.
+      apply andI.
+      + exact HN0o.
+      + let n. assume Hn: n :e omega. assume HN0sub: N0 c= n.
+        prove apply_fun seq_one_over_n n /:e (A :\/: {y}).
+        claim HnotA: apply_fun seq_one_over_n n /:e A.
+        { exact (HN0prop n Hn HN0sub). }
+        claim Hnoty: apply_fun seq_one_over_n n /:e {y}.
+        { assume Hin.
+          claim Heqv: apply_fun seq_one_over_n n = y.
+          { exact (SingE y (apply_fun seq_one_over_n n) Hin). }
+          apply Hno.
+          witness n.
+          apply andI.
+          - exact Hn.
+          - exact Heqv. }
+        assume Hmem: apply_fun seq_one_over_n n :e (A :\/: {y}).
+        apply (binunionE' A {y} (apply_fun seq_one_over_n n) False).
+        - assume HinA. exact (HnotA HinA).
+        - assume HinS. exact (Hnoty HinS).
+        - exact Hmem.
+  - (** apply to F **)
+    exact HF_fin.
+}
+apply Hbound.
+let N. assume HNpair.
+claim HN: N :e omega.
+{ exact (andEL (N :e omega) (forall n:set, n :e omega -> N c= n -> apply_fun seq_one_over_n n /:e F) HNpair). }
+claim HNprop: forall n:set, n :e omega -> N c= n -> apply_fun seq_one_over_n n /:e F.
+{ exact (andER (N :e omega) (forall n:set, n :e omega -> N c= n -> apply_fun seq_one_over_n n /:e F) HNpair). }
+witness N.
+apply andI.
+- exact HN.
+- let n. assume Hn: n :e omega. assume HNsub: N c= n.
+  (** show the value lies in U by contradiction: otherwise it would be in F=R\\U **)
+  claim HvalR: apply_fun seq_one_over_n n :e R.
+  { rewrite (seq_one_over_n_apply n Hn).
+    exact (inv_nat_real (ordsucc n) (omega_ordsucc n Hn)). }
+  claim HnotF: apply_fun seq_one_over_n n /:e F.
+  { exact (HNprop n Hn HNsub). }
+  apply (xm (apply_fun seq_one_over_n n :e U)).
+  * assume HvalU. exact HvalU.
+  * assume HnotU: ~(apply_fun seq_one_over_n n :e U).
+    claim HinF: apply_fun seq_one_over_n n :e F.
+    { prove apply_fun seq_one_over_n n :e F.
+      rewrite HF_def.
+      apply setminusI.
+      - exact HvalR.
+      - exact HnotU. }
+    exact (FalseE (HnotF HinF) (apply_fun seq_one_over_n n :e U)).
 Qed.
 
 (** helper: T1_space is equivalent to all singleton subsets being closed **)
