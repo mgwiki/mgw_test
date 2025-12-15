@@ -8816,16 +8816,16 @@ apply andI.
 	  { exact (SepE2 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 c2) r2) x Hx2'). }
 
 	  (** Metric refinement lemma for EuclidPlane balls around x **)
-	  claim Hrefine :
-	    exists r3:set,
-	      Rlt 0 r3
-	      /\ (forall p:set,
-	            p :e EuclidPlane ->
-	            Rlt (distance_R2 p x) r3 ->
-	            Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2).
-	  admit.
-	  apply Hrefine.
-	  let r3. assume Hrefine2.
+		  claim Hrefine :
+		    exists r3:set,
+		      Rlt 0 r3
+		      /\ (forall p:set,
+		            p :e EuclidPlane ->
+		            Rlt (distance_R2 p x) r3 ->
+		            Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2).
+		  admit. (** metric refinement: choose r3 > 0 so ball(x,r3) is included in both given balls, using triangle inequality for distance_R2 **)
+		  apply Hrefine.
+		  let r3. assume Hrefine2.
 	  claim Hr3 : Rlt 0 r3.
 	  { exact (andEL (Rlt 0 r3)
 	                (forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2)
@@ -9837,7 +9837,65 @@ Qed.
 Theorem rectangular_refines_circular_plane :
   forall b :e circular_regions, forall x:set,
     x :e b -> exists r :e rectangular_regions, x :e r /\ r c= b.
-admit.
+let b. assume Hb.
+let x. assume Hxb.
+prove exists r :e rectangular_regions, x :e r /\ r c= b.
+(** Unpack b as a circular region around some center c with radius r0 **)
+claim Hbprop :
+  exists c:set, exists r0:set,
+    c :e EuclidPlane /\ Rlt 0 r0 /\
+    b = {p :e EuclidPlane|Rlt (distance_R2 p c) r0}.
+{ exact (SepE2 (Power EuclidPlane)
+               (fun U0 : set => exists c:set, exists r:set,
+                 c :e EuclidPlane /\ Rlt 0 r /\
+                 U0 = {p :e EuclidPlane|Rlt (distance_R2 p c) r})
+               b
+               Hb). }
+apply Hbprop.
+let c. assume Hbprop2.
+apply Hbprop2.
+let r0. assume Hbcore.
+claim Hcr0 : c :e EuclidPlane /\ Rlt 0 r0.
+{ exact (andEL (c :e EuclidPlane /\ Rlt 0 r0)
+              (b = {p :e EuclidPlane|Rlt (distance_R2 p c) r0})
+              Hbcore). }
+claim Hc : c :e EuclidPlane.
+{ exact (andEL (c :e EuclidPlane) (Rlt 0 r0) Hcr0). }
+claim Hr0 : Rlt 0 r0.
+{ exact (andER (c :e EuclidPlane) (Rlt 0 r0) Hcr0). }
+claim HbEq : b = {p :e EuclidPlane|Rlt (distance_R2 p c) r0}.
+{ exact (andER (c :e EuclidPlane /\ Rlt 0 r0)
+              (b = {p :e EuclidPlane|Rlt (distance_R2 p c) r0})
+              Hbcore). }
+claim Hxb' : x :e {p :e EuclidPlane|Rlt (distance_R2 p c) r0}.
+{ rewrite <- HbEq. exact Hxb. }
+claim HxE : x :e EuclidPlane.
+{ exact (SepE1 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 c) r0) x Hxb'). }
+claim Hxball : Rlt (distance_R2 x c) r0.
+{ exact (SepE2 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 c) r0) x Hxb'). }
+
+(** Core refinement: build a rectangle around x inside the ball around c **)
+claim HrectInBall :
+  exists r :e rectangular_regions, x :e r /\ r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}.
+admit. (** use Euclidean geometry: pick small eps>0 with ball(x,eps) subset ball(c,r0), then choose rectangle using x-coordinates +/- eps **)
+apply HrectInBall.
+let r. assume Hrpair.
+witness r.
+claim Hr : r :e rectangular_regions.
+{ exact (andEL (r :e rectangular_regions) (x :e r /\ r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}) Hrpair). }
+claim Hrprop : x :e r /\ r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}.
+{ exact (andER (r :e rectangular_regions) (x :e r /\ r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}) Hrpair). }
+claim Hxr : x :e r.
+{ exact (andEL (x :e r) (r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}) Hrprop). }
+claim Hrsub : r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}.
+{ exact (andER (x :e r) (r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}) Hrprop). }
+claim Hrsubb : r c= b.
+{ rewrite <- HbEq. exact Hrsub. }
+apply andI.
+- exact Hr.
+- apply andI.
+  + exact Hxr.
+  + exact Hrsubb.
 Qed.
 
 (** from §13 Example 4: circular neighborhoods inside rectangular neighborhoods **)
@@ -9845,7 +9903,58 @@ Qed.
 Theorem circular_refines_rectangular_plane :
   forall b :e rectangular_regions, forall x:set,
     x :e b -> exists u :e circular_regions, x :e u /\ u c= b.
-admit.
+let b. assume Hb.
+let x. assume Hxb.
+prove exists u :e circular_regions, x :e u /\ u c= b.
+(** Unpack b as a rectangle with endpoints a,b0,c,d0 **)
+claim Hbprop :
+  exists a:set, exists b0:set, exists c:set, exists d0:set,
+    a :e R /\ b0 :e R /\ c :e R /\ d0 :e R /\ Rlt a b0 /\ Rlt c d0 /\
+      b = {p :e EuclidPlane|
+             exists x0:set, exists y0:set,
+               p = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0}.
+{ exact (SepE2 (Power EuclidPlane)
+               (fun U0 : set =>
+                 exists a b c d:set, a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d /\
+                   U0 = {p1 :e EuclidPlane|
+                          exists x0:set, exists y0:set,
+                            p1 = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b /\ Rlt c y0 /\ Rlt y0 d})
+               b
+               Hb). }
+apply Hbprop.
+let a. assume Hbprop2.
+apply Hbprop2.
+let b0. assume Hbprop3.
+apply Hbprop3.
+let c. assume Hbprop4.
+apply Hbprop4.
+let d0. assume Hbcore.
+claim HbEq :
+  b = {p :e EuclidPlane|
+         exists x0:set, exists y0:set,
+           p = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0}.
+{ exact (andER (a :e R /\ b0 :e R /\ c :e R /\ d0 :e R /\ Rlt a b0 /\ Rlt c d0)
+              (b = {p :e EuclidPlane|
+                     exists x0:set, exists y0:set,
+                       p = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0})
+              Hbcore). }
+claim Hxb' : x :e {p :e EuclidPlane|
+                    exists x0:set, exists y0:set,
+                      p = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0}.
+{ rewrite <- HbEq. exact Hxb. }
+claim HxE : x :e EuclidPlane.
+{ exact (SepE1 EuclidPlane
+             (fun p1 : set =>
+               exists x0:set, exists y0:set,
+                 p1 = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0)
+             x
+             Hxb'). }
+
+(** Core refinement: build a small circular region around x contained in the rectangle **)
+claim HballInRect :
+  exists u :e circular_regions, x :e u /\ u c= b.
+admit. (** choose radius r3 > 0 less than all four coordinate distances to the sides; use bounds relating distance_R2 to coordinate differences **)
+exact HballInRect.
 Qed.
 
 Theorem circular_rectangular_same_topology_plane :
