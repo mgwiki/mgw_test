@@ -9168,6 +9168,505 @@ Definition top_abc_7 : set := UPair Empty (UPair a_elt c_elt) :\/: {abc_set}.
 Definition top_abc_8 : set := UPair Empty (UPair b_elt c_elt) :\/: {abc_set}.
 Definition top_abc_9 : set := (UPair Empty {a_elt} :\/: {UPair a_elt b_elt}) :\/: {abc_set}.
 
+(** Helper: topology of the form {Empty, A, X} **)
+Theorem topology_three_sets : forall X A:set,
+  A c= X ->
+  topology_on X (UPair Empty A :\/: {X}).
+let X A. assume HA.
+set T := UPair Empty A :\/: {X}.
+claim HTPow: T c= Power X.
+{ let U. assume HU: U :e T.
+  prove U :e Power X.
+  apply (binunionE' (UPair Empty A) {X} U (U :e Power X)).
+  - assume HU0: U :e UPair Empty A.
+    apply (UPairE U Empty A HU0).
+    + assume HUeq: U = Empty. rewrite HUeq. exact (Empty_In_Power X).
+    + assume HUeq: U = A. rewrite HUeq. exact (PowerI X A HA).
+  - assume HU0: U :e {X}.
+    claim HUeq: U = X.
+    { exact (SingE X U HU0). }
+    rewrite HUeq.
+    exact (Self_In_Power X).
+  - exact HU.
+}
+claim HEmptyIn: Empty :e T.
+{ exact (binunionI1 (UPair Empty A) {X} Empty (UPairI1 Empty A)). }
+claim HXIn: X :e T.
+{ exact (binunionI2 (UPair Empty A) {X} X (SingI X)). }
+prove topology_on X T.
+prove (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T))
+  /\ (forall U :e T, forall V :e T, U :/\: V :e T).
+apply andI.
+- apply andI.
+  + apply andI.
+    * apply andI.
+      - exact HTPow.
+      - exact HEmptyIn.
+    * exact HXIn.
+  + let UFam. assume HUFam: UFam :e Power T.
+    prove Union UFam :e T.
+    claim HUFsub: UFam c= T.
+    { exact (PowerE T UFam HUFam). }
+    apply (xm (X :e UFam)).
+    * assume HXUF: X :e UFam.
+      claim HUnionSub: Union UFam c= X.
+      { claim HUFpowX: UFam c= Power X.
+        { let U. assume HU: U :e UFam.
+          exact (HTPow U (HUFsub U HU)).
+        }
+        exact (Union_Power X UFam HUFpowX).
+      }
+      claim HUnionEq: Union UFam = X.
+      { apply set_ext.
+        - exact HUnionSub.
+        - let x. assume HxX: x :e X.
+          exact (UnionI UFam x X HxX HXUF).
+      }
+      rewrite HUnionEq.
+      exact HXIn.
+    * assume HXnot: X /:e UFam.
+      apply (xm (A :e UFam)).
+	      - assume HAUF: A :e UFam.
+         claim HUnionSub: Union UFam c= A.
+         { let x. assume Hx: x :e Union UFam.
+           prove x :e A.
+           apply UnionE_impred UFam x Hx.
+           let U. assume HxU: x :e U. assume HUUF: U :e UFam.
+           claim HUinT: U :e T.
+           { exact (HUFsub U HUUF). }
+           apply (binunionE' (UPair Empty A) {X} U (x :e A)).
+           - assume HU0: U :e UPair Empty A.
+	             apply (UPairE U Empty A HU0).
+	             + assume HUeq: U = Empty.
+	               claim HxEmpty: x :e Empty.
+	               { rewrite <- HUeq. exact HxU. }
+	               exact (EmptyE x HxEmpty (x :e A)).
+	             + assume HUeq: U = A.
+	               rewrite <- HUeq.
+	               exact HxU.
+           - assume HU0: U :e {X}.
+	             claim HUeq: U = X.
+	             { exact (SingE X U HU0). }
+	             apply FalseE.
+	             claim HXUF2: X :e UFam.
+	             { rewrite <- HUeq. exact HUUF. }
+	             exact (HXnot HXUF2).
+           - exact HUinT.
+         }
+         claim HUnionEq: Union UFam = A.
+         { apply set_ext.
+           - exact HUnionSub.
+           - let x. assume HxA: x :e A.
+             exact (UnionI UFam x A HxA HAUF).
+         }
+         rewrite HUnionEq.
+         exact (binunionI1 (UPair Empty A) {X} A (UPairI2 Empty A)).
+	      - assume HAnot: A /:e UFam.
+         claim HUnionEq: Union UFam = Empty.
+         { apply set_ext.
+           - let x. assume Hx: x :e Union UFam.
+             prove x :e Empty.
+             apply UnionE_impred UFam x Hx.
+             let U. assume HxU: x :e U. assume HUUF: U :e UFam.
+             claim HUinT: U :e T.
+             { exact (HUFsub U HUUF). }
+             apply (binunionE' (UPair Empty A) {X} U (x :e Empty)).
+             + assume HU0: U :e UPair Empty A.
+	               apply (UPairE U Empty A HU0).
+	               * assume HUeq: U = Empty.
+	                 rewrite <- HUeq.
+	                 exact HxU.
+	               * assume HUeq: U = A.
+	                 apply FalseE.
+	                 claim HAUF2: A :e UFam.
+	                 { rewrite <- HUeq. exact HUUF. }
+	                 exact (HAnot HAUF2).
+             + assume HU0: U :e {X}.
+	               claim HUeq: U = X.
+	               { exact (SingE X U HU0). }
+	               apply FalseE.
+	               claim HXUF2: X :e UFam.
+	               { rewrite <- HUeq. exact HUUF. }
+	               exact (HXnot HXUF2).
+             + exact HUinT.
+           - let x. assume Hx: x :e Empty.
+             exact (EmptyE x Hx (x :e Union UFam)).
+         }
+         rewrite HUnionEq.
+         exact HEmptyIn.
+- let U. assume HU: U :e T.
+  let V. assume HV: V :e T.
+  prove U :/\: V :e T.
+  apply (binunionE' (UPair Empty A) {X} U (U :/\: V :e T)).
+  - assume HU0: U :e UPair Empty A.
+    apply (UPairE U Empty A HU0).
+    + assume HUeq: U = Empty.
+      rewrite HUeq.
+      claim HcapEq: Empty :/\: V = Empty.
+      { apply set_ext.
+        - let x. assume Hx: x :e Empty :/\: V.
+          exact (binintersectE1 Empty V x Hx).
+        - let x. assume Hx: x :e Empty.
+          exact (binintersectI Empty V x Hx (EmptyE x Hx (x :e V))).
+      }
+      rewrite HcapEq.
+      exact HEmptyIn.
+    + assume HUeq: U = A.
+      rewrite HUeq.
+      apply (binunionE' (UPair Empty A) {X} V (A :/\: V :e T)).
+      * assume HV0: V :e UPair Empty A.
+        apply (UPairE V Empty A HV0).
+        - assume HVeq: V = Empty.
+           rewrite HVeq.
+           claim HcapEq: A :/\: Empty = Empty.
+           { rewrite (binintersect_com A Empty). exact (binintersect_Subq_eq_1 Empty A (Subq_Empty A)). }
+           rewrite HcapEq.
+           exact HEmptyIn.
+        - assume HVeq: V = A.
+           rewrite HVeq.
+           claim HcapEq: A :/\: A = A.
+           { exact (binintersect_Subq_eq_1 A A (Subq_ref A)). }
+           rewrite HcapEq.
+           exact (binunionI1 (UPair Empty A) {X} A (UPairI2 Empty A)).
+      * assume HV0: V :e {X}.
+        claim HVeq: V = X.
+        { exact (SingE X V HV0). }
+        rewrite HVeq.
+        claim HcapEq: A :/\: X = A.
+        { exact (binintersect_Subq_eq_1 A X HA). }
+        rewrite HcapEq.
+        exact (binunionI1 (UPair Empty A) {X} A (UPairI2 Empty A)).
+      * exact HV.
+  - assume HU0: U :e {X}.
+    claim HUeq: U = X.
+    { exact (SingE X U HU0). }
+    rewrite HUeq.
+    claim HVpow: V :e Power X.
+    { exact (HTPow V HV). }
+    claim HVsub: V c= X.
+    { exact (PowerE X V HVpow). }
+    claim HcapEq: X :/\: V = V.
+    { rewrite (binintersect_com X V). exact (binintersect_Subq_eq_1 V X HVsub). }
+    rewrite HcapEq.
+    exact HV.
+  - exact HU.
+Qed.
+
+(** Helper: topology of the form {Empty, A, B, X} with A c= B c= X **)
+Theorem topology_chain_four_sets : forall X A B:set,
+  A c= B ->
+  B c= X ->
+  topology_on X ((UPair Empty A :\/: {B}) :\/: {X}).
+let X A B. assume HAB HBX.
+set T0 := UPair Empty A :\/: {B}.
+set T := T0 :\/: {X}.
+claim HA_X: A c= X.
+{ exact (Subq_tra A B X HAB HBX). }
+claim HTPow: T c= Power X.
+{ let U. assume HU: U :e T.
+  prove U :e Power X.
+  apply (binunionE' T0 {X} U (U :e Power X)).
+  - assume HU0: U :e T0.
+    apply (binunionE' (UPair Empty A) {B} U (U :e Power X)).
+    + assume HU1: U :e UPair Empty A.
+      apply (UPairE U Empty A HU1).
+      * assume HUeq: U = Empty. rewrite HUeq. exact (Empty_In_Power X).
+      * assume HUeq: U = A. rewrite HUeq. exact (PowerI X A HA_X).
+    + assume HU1: U :e {B}.
+      claim HUeq: U = B.
+      { exact (SingE B U HU1). }
+      rewrite HUeq.
+      exact (PowerI X B HBX).
+    + exact HU0.
+  - assume HU0: U :e {X}.
+    claim HUeq: U = X.
+    { exact (SingE X U HU0). }
+    rewrite HUeq.
+    exact (Self_In_Power X).
+  - exact HU.
+}
+claim HEmptyIn: Empty :e T.
+{ exact (binunionI1 T0 {X} Empty (binunionI1 (UPair Empty A) {B} Empty (UPairI1 Empty A))). }
+claim HXIn: X :e T.
+{ exact (binunionI2 T0 {X} X (SingI X)). }
+prove topology_on X T.
+prove (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T))
+  /\ (forall U :e T, forall V :e T, U :/\: V :e T).
+apply andI.
+- apply andI.
+  + apply andI.
+    * apply andI.
+      - exact HTPow.
+      - exact HEmptyIn.
+    * exact HXIn.
+  + let UFam. assume HUFam: UFam :e Power T.
+    prove Union UFam :e T.
+    claim HUFsub: UFam c= T.
+    { exact (PowerE T UFam HUFam). }
+    apply (xm (X :e UFam)).
+    * assume HXUF: X :e UFam.
+      claim HUnionSub: Union UFam c= X.
+      { claim HUFpowX: UFam c= Power X.
+        { let U. assume HU: U :e UFam.
+          exact (HTPow U (HUFsub U HU)).
+        }
+        exact (Union_Power X UFam HUFpowX).
+      }
+      claim HUnionEq: Union UFam = X.
+      { apply set_ext.
+        - exact HUnionSub.
+        - let x. assume HxX: x :e X.
+          exact (UnionI UFam x X HxX HXUF).
+      }
+      rewrite HUnionEq.
+      exact HXIn.
+    * assume HXnot: X /:e UFam.
+      apply (xm (B :e UFam)).
+      - assume HBUF: B :e UFam.
+         claim HUnionSub: Union UFam c= B.
+         { let x. assume Hx: x :e Union UFam.
+           prove x :e B.
+           apply UnionE_impred UFam x Hx.
+           let U. assume HxU: x :e U. assume HUUF: U :e UFam.
+           claim HUinT: U :e T.
+           { exact (HUFsub U HUUF). }
+           apply (binunionE' T0 {X} U (x :e B)).
+           - assume HU0: U :e T0.
+             apply (binunionE' (UPair Empty A) {B} U (x :e B)).
+             + assume HU1: U :e UPair Empty A.
+	               apply (UPairE U Empty A HU1).
+	               * assume HUeq: U = Empty.
+		                 claim HxEmpty: x :e Empty.
+		                 { rewrite <- HUeq. exact HxU. }
+		                 exact (EmptyE x HxEmpty (x :e B)).
+	               * assume HUeq: U = A.
+	                 claim HxA: x :e A.
+	                 { rewrite <- HUeq. exact HxU. }
+	                 exact (HAB x HxA).
+             + assume HU1: U :e {B}.
+	               claim HUeq: U = B.
+	               { exact (SingE B U HU1). }
+	               rewrite <- HUeq.
+	               exact HxU.
+             + exact HU0.
+           - assume HU0: U :e {X}.
+	             claim HUeq: U = X.
+	             { exact (SingE X U HU0). }
+	             apply FalseE.
+	             claim HXUF2: X :e UFam.
+	             { rewrite <- HUeq. exact HUUF. }
+	             exact (HXnot HXUF2).
+           - exact HUinT.
+         }
+         claim HUnionEq: Union UFam = B.
+         { apply set_ext.
+           - exact HUnionSub.
+           - let x. assume HxB: x :e B.
+             exact (UnionI UFam x B HxB HBUF).
+         }
+         rewrite HUnionEq.
+         exact (binunionI1 T0 {X} B (binunionI2 (UPair Empty A) {B} B (SingI B))).
+      - assume HBnot: B /:e UFam.
+         apply (xm (A :e UFam)).
+         - assume HAUF: A :e UFam.
+             claim HUnionSub: Union UFam c= A.
+             { let x. assume Hx: x :e Union UFam.
+               prove x :e A.
+               apply UnionE_impred UFam x Hx.
+               let U. assume HxU: x :e U. assume HUUF: U :e UFam.
+               claim HUinT: U :e T.
+               { exact (HUFsub U HUUF). }
+               apply (binunionE' T0 {X} U (x :e A)).
+               * assume HU0: U :e T0.
+                 apply (binunionE' (UPair Empty A) {B} U (x :e A)).
+                 + assume HU1: U :e UPair Empty A.
+	                   apply (UPairE U Empty A HU1).
+	                   - assume HUeq: U = Empty.
+	                      claim HxEmpty: x :e Empty.
+	                      { rewrite <- HUeq. exact HxU. }
+	                      exact (EmptyE x HxEmpty (x :e A)).
+	                   - assume HUeq: U = A.
+	                      rewrite <- HUeq.
+	                      exact HxU.
+                 + assume HU1: U :e {B}.
+	                   claim HUeq: U = B.
+	                   { exact (SingE B U HU1). }
+	                   apply FalseE.
+	                   claim HBUF2: B :e UFam.
+	                   { rewrite <- HUeq. exact HUUF. }
+	                   exact (HBnot HBUF2).
+                 + exact HU0.
+               * assume HU0: U :e {X}.
+	                 claim HUeq: U = X.
+	                 { exact (SingE X U HU0). }
+	                 apply FalseE.
+	                 claim HXUF2: X :e UFam.
+	                 { rewrite <- HUeq. exact HUUF. }
+	                 exact (HXnot HXUF2).
+               * exact HUinT.
+             }
+             claim HUnionEq: Union UFam = A.
+             { apply set_ext.
+               - exact HUnionSub.
+               - let x. assume HxA: x :e A.
+                 exact (UnionI UFam x A HxA HAUF).
+             }
+             rewrite HUnionEq.
+             exact (binunionI1 T0 {X} A (binunionI1 (UPair Empty A) {B} A (UPairI2 Empty A))).
+         - assume HAnot: A /:e UFam.
+             claim HUnionEq: Union UFam = Empty.
+             { apply set_ext.
+               - let x. assume Hx: x :e Union UFam.
+                 prove x :e Empty.
+                 apply UnionE_impred UFam x Hx.
+                 let U. assume HxU: x :e U. assume HUUF: U :e UFam.
+                 claim HUinT: U :e T.
+                 { exact (HUFsub U HUUF). }
+                 apply (binunionE' T0 {X} U (x :e Empty)).
+                 + assume HU0: U :e T0.
+                   apply (binunionE' (UPair Empty A) {B} U (x :e Empty)).
+                   * assume HU1: U :e UPair Empty A.
+	                     apply (UPairE U Empty A HU1).
+	                     - assume HUeq: U = Empty.
+	                        rewrite <- HUeq.
+	                        exact HxU.
+	                     - assume HUeq: U = A.
+	                        apply FalseE.
+	                        claim HAUF2: A :e UFam.
+	                        { rewrite <- HUeq. exact HUUF. }
+	                        exact (HAnot HAUF2).
+                   * assume HU1: U :e {B}.
+	                     claim HUeq: U = B.
+	                     { exact (SingE B U HU1). }
+	                     apply FalseE.
+	                     claim HBUF2: B :e UFam.
+	                     { rewrite <- HUeq. exact HUUF. }
+	                     exact (HBnot HBUF2).
+                   * exact HU0.
+                 + assume HU0: U :e {X}.
+	                   claim HUeq: U = X.
+	                   { exact (SingE X U HU0). }
+	                   apply FalseE.
+	                   claim HXUF2: X :e UFam.
+	                   { rewrite <- HUeq. exact HUUF. }
+	                   exact (HXnot HXUF2).
+                 + exact HUinT.
+               - let x. assume Hx: x :e Empty.
+                 exact (EmptyE x Hx (x :e Union UFam)).
+             }
+             rewrite HUnionEq.
+             exact HEmptyIn.
+- let U. assume HU: U :e T.
+  let V. assume HV: V :e T.
+  prove U :/\: V :e T.
+  apply (binunionE' T0 {X} U (U :/\: V :e T)).
+  - assume HU0: U :e T0.
+    apply (binunionE' (UPair Empty A) {B} U (U :/\: V :e T)).
+    + assume HU1: U :e UPair Empty A.
+      apply (UPairE U Empty A HU1).
+      * assume HUeq: U = Empty.
+        rewrite HUeq.
+        claim HcapEq: Empty :/\: V = Empty.
+        { apply set_ext.
+          - let x. assume Hx: x :e Empty :/\: V.
+            exact (binintersectE1 Empty V x Hx).
+          - let x. assume Hx: x :e Empty.
+            exact (binintersectI Empty V x Hx (EmptyE x Hx (x :e V))).
+        }
+        rewrite HcapEq.
+        exact HEmptyIn.
+      * assume HUeq: U = A.
+        rewrite HUeq.
+        apply (binunionE' T0 {X} V (A :/\: V :e T)).
+        - assume HV0: V :e T0.
+           apply (binunionE' (UPair Empty A) {B} V (A :/\: V :e T)).
+           - assume HV1: V :e UPair Empty A.
+               apply (UPairE V Empty A HV1).
+               * assume HVeq: V = Empty.
+                 rewrite HVeq.
+                 claim HcapEq: A :/\: Empty = Empty.
+                 { rewrite (binintersect_com A Empty). exact (binintersect_Subq_eq_1 Empty A (Subq_Empty A)). }
+                 rewrite HcapEq.
+                 exact HEmptyIn.
+               * assume HVeq: V = A.
+                 rewrite HVeq.
+                 claim HcapEq: A :/\: A = A.
+                 { exact (binintersect_Subq_eq_1 A A (Subq_ref A)). }
+                 rewrite HcapEq.
+                 exact (binunionI1 T0 {X} A (binunionI1 (UPair Empty A) {B} A (UPairI2 Empty A))).
+           - assume HV1: V :e {B}.
+               claim HVeq: V = B.
+               { exact (SingE B V HV1). }
+               rewrite HVeq.
+               claim HcapEq: A :/\: B = A.
+               { exact (binintersect_Subq_eq_1 A B HAB). }
+               rewrite HcapEq.
+               exact (binunionI1 T0 {X} A (binunionI1 (UPair Empty A) {B} A (UPairI2 Empty A))).
+           - exact HV0.
+        - assume HV0: V :e {X}.
+           claim HVeq: V = X.
+           { exact (SingE X V HV0). }
+           rewrite HVeq.
+           claim HcapEq: A :/\: X = A.
+           { exact (binintersect_Subq_eq_1 A X HA_X). }
+           rewrite HcapEq.
+           exact (binunionI1 T0 {X} A (binunionI1 (UPair Empty A) {B} A (UPairI2 Empty A))).
+        - exact HV.
+    + assume HU1: U :e {B}.
+      claim HUeq: U = B.
+      { exact (SingE B U HU1). }
+      rewrite HUeq.
+      apply (binunionE' T0 {X} V (B :/\: V :e T)).
+      * assume HV0: V :e T0.
+        apply (binunionE' (UPair Empty A) {B} V (B :/\: V :e T)).
+        - assume HV1: V :e UPair Empty A.
+           apply (UPairE V Empty A HV1).
+           - assume HVeq: V = Empty.
+               rewrite HVeq.
+               claim HcapEq: B :/\: Empty = Empty.
+               { rewrite (binintersect_com B Empty). exact (binintersect_Subq_eq_1 Empty B (Subq_Empty B)). }
+               rewrite HcapEq.
+               exact HEmptyIn.
+           - assume HVeq: V = A.
+               rewrite HVeq.
+               claim HcapEq: B :/\: A = A.
+               { rewrite (binintersect_com B A). exact (binintersect_Subq_eq_1 A B HAB). }
+               rewrite HcapEq.
+               exact (binunionI1 T0 {X} A (binunionI1 (UPair Empty A) {B} A (UPairI2 Empty A))).
+        - assume HV1: V :e {B}.
+           claim HVeq: V = B.
+           { exact (SingE B V HV1). }
+           rewrite HVeq.
+           claim HcapEq: B :/\: B = B.
+           { exact (binintersect_Subq_eq_1 B B (Subq_ref B)). }
+           rewrite HcapEq.
+           exact (binunionI1 T0 {X} B (binunionI2 (UPair Empty A) {B} B (SingI B))).
+        - exact HV0.
+      * assume HV0: V :e {X}.
+        claim HVeq: V = X.
+        { exact (SingE X V HV0). }
+        rewrite HVeq.
+        claim HcapEq: B :/\: X = B.
+        { exact (binintersect_Subq_eq_1 B X HBX). }
+        rewrite HcapEq.
+        exact (binunionI1 T0 {X} B (binunionI2 (UPair Empty A) {B} B (SingI B))).
+      * exact HV.
+    + exact HU0.
+  - assume HU0: U :e {X}.
+    claim HUeq: U = X.
+    { exact (SingE X U HU0). }
+    rewrite HUeq.
+    claim HVpow: V :e Power X.
+    { exact (HTPow V HV). }
+    claim HVsub: V c= X.
+    { exact (PowerE X V HVpow). }
+    claim HcapEq: X :/\: V = V.
+    { rewrite (binintersect_com X V). exact (binintersect_Subq_eq_1 V X HVsub). }
+    rewrite HcapEq.
+    exact HV.
+  - exact HU.
+Qed.
+
 Theorem ex13_2_compare_nine_topologies :
   topology_on abc_set top_abc_1 /\ topology_on abc_set top_abc_2 /\
   topology_on abc_set top_abc_3 /\ topology_on abc_set top_abc_4 /\
@@ -9217,17 +9716,94 @@ apply andI.
 	                  rewrite Ht1.
 	                  exact (indiscrete_topology_on abc_set).
 	                - (** topology_on abc_set top_abc_2 **)
-	                  claim Ht2: top_abc_2 = discrete_topology abc_set.
-	                  { reflexivity. }
-	                  rewrite Ht2.
-	                  exact (discrete_topology_on abc_set).
-	              - admit. (** topology_on abc_set top_abc_3 **)
-	            - admit. (** topology_on abc_set top_abc_4 **)
-	          - admit. (** topology_on abc_set top_abc_5 **)
-	        - admit. (** topology_on abc_set top_abc_6 **)
-      - admit. (** topology_on abc_set top_abc_7 **)
-    - admit. (** topology_on abc_set top_abc_8 **)
-  - admit. (** topology_on abc_set top_abc_9 **)
+                  claim Ht2: top_abc_2 = discrete_topology abc_set.
+                  { reflexivity. }
+                  rewrite Ht2.
+                  exact (discrete_topology_on abc_set).
+              - (** topology_on abc_set top_abc_3 **)
+                claim HA: {a_elt} c= abc_set.
+                { let x. assume Hx: x :e {a_elt}.
+                  prove x :e abc_set.
+                  claim Hxeq: x = a_elt.
+                  { exact (SingE a_elt x Hx). }
+                  rewrite Hxeq.
+                  exact (binunionI1 (UPair a_elt b_elt) {c_elt} a_elt (UPairI1 a_elt b_elt)).
+                }
+                exact (topology_three_sets abc_set {a_elt} HA).
+            - (** topology_on abc_set top_abc_4 **)
+              claim HB: {b_elt} c= abc_set.
+              { let x. assume Hx: x :e {b_elt}.
+                prove x :e abc_set.
+                claim Hxeq: x = b_elt.
+                { exact (SingE b_elt x Hx). }
+                rewrite Hxeq.
+                exact (binunionI1 (UPair a_elt b_elt) {c_elt} b_elt (UPairI2 a_elt b_elt)).
+              }
+              exact (topology_three_sets abc_set {b_elt} HB).
+          - (** topology_on abc_set top_abc_5 **)
+            claim HC: {c_elt} c= abc_set.
+            { let x. assume Hx: x :e {c_elt}.
+              prove x :e abc_set.
+              claim Hxeq: x = c_elt.
+              { exact (SingE c_elt x Hx). }
+              rewrite Hxeq.
+              exact (binunionI2 (UPair a_elt b_elt) {c_elt} c_elt (SingI c_elt)).
+            }
+            exact (topology_three_sets abc_set {c_elt} HC).
+        - (** topology_on abc_set top_abc_6 **)
+          claim HAB: (UPair a_elt b_elt) c= abc_set.
+          { let x. assume Hx: x :e UPair a_elt b_elt.
+            prove x :e abc_set.
+            apply (UPairE x a_elt b_elt Hx).
+            - assume Hxeq: x = a_elt.
+              rewrite Hxeq.
+              exact (binunionI1 (UPair a_elt b_elt) {c_elt} a_elt (UPairI1 a_elt b_elt)).
+            - assume Hxeq: x = b_elt.
+              rewrite Hxeq.
+              exact (binunionI1 (UPair a_elt b_elt) {c_elt} b_elt (UPairI2 a_elt b_elt)).
+          }
+          exact (topology_three_sets abc_set (UPair a_elt b_elt) HAB).
+      - (** topology_on abc_set top_abc_7 **)
+        claim HAC: (UPair a_elt c_elt) c= abc_set.
+        { let x. assume Hx: x :e UPair a_elt c_elt.
+          prove x :e abc_set.
+          apply (UPairE x a_elt c_elt Hx).
+          - assume Hxeq: x = a_elt.
+            rewrite Hxeq.
+            exact (binunionI1 (UPair a_elt b_elt) {c_elt} a_elt (UPairI1 a_elt b_elt)).
+          - assume Hxeq: x = c_elt.
+            rewrite Hxeq.
+            exact (binunionI2 (UPair a_elt b_elt) {c_elt} c_elt (SingI c_elt)).
+        }
+        exact (topology_three_sets abc_set (UPair a_elt c_elt) HAC).
+    - (** topology_on abc_set top_abc_8 **)
+      claim HBC: (UPair b_elt c_elt) c= abc_set.
+      { let x. assume Hx: x :e UPair b_elt c_elt.
+        prove x :e abc_set.
+        apply (UPairE x b_elt c_elt Hx).
+        - assume Hxeq: x = b_elt.
+          rewrite Hxeq.
+          exact (binunionI1 (UPair a_elt b_elt) {c_elt} b_elt (UPairI2 a_elt b_elt)).
+        - assume Hxeq: x = c_elt.
+          rewrite Hxeq.
+          exact (binunionI2 (UPair a_elt b_elt) {c_elt} c_elt (SingI c_elt)).
+      }
+      exact (topology_three_sets abc_set (UPair b_elt c_elt) HBC).
+  - (** topology_on abc_set top_abc_9 **)
+    claim HAinAB: {a_elt} c= UPair a_elt b_elt.
+    { let x. assume Hx: x :e {a_elt}.
+      prove x :e UPair a_elt b_elt.
+      claim Hxeq: x = a_elt.
+      { exact (SingE a_elt x Hx). }
+      rewrite Hxeq.
+      exact (UPairI1 a_elt b_elt).
+    }
+    claim HABsubX: UPair a_elt b_elt c= abc_set.
+    { let x. assume Hx: x :e UPair a_elt b_elt.
+      prove x :e abc_set.
+      exact (binunionI1 (UPair a_elt b_elt) {c_elt} x Hx).
+    }
+    exact (topology_chain_four_sets abc_set {a_elt} (UPair a_elt b_elt) HAinAB HABsubX).
 - (** finer_pairs set of refinement pairs **)
   admit. (** enumerate all refinement pairs by subset checking **)
 Qed.
