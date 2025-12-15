@@ -9256,21 +9256,12 @@ apply andI.
 	                exists x0:set, exists y0:set,
 	                  p0 = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b /\ Rlt c y0 /\ Rlt y0 d}.
 	    witness U.
-	    apply andI.
-	    - prove U :e rectangular_regions.
-	      claim HUpow : U :e Power EuclidPlane.
-	      { apply PowerI.
-	        let q. assume HqU : q :e U.
-	        exact (SepE1 EuclidPlane
-	                     (fun p1 : set =>
-	                       exists x0:set, exists y0:set,
-	                         p1 = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b /\ Rlt c y0 /\ Rlt y0 d)
-	                     q
-	                     HqU). }
-	      claim HxS : SNo x.
-	      { exact (real_SNo x HxR). }
-	      claim HyS : SNo y.
-	      { exact (real_SNo y HyR). }
+		    apply andI.
+		    - prove U :e rectangular_regions.
+		      claim HxS : SNo x.
+		      { exact (real_SNo x HxR). }
+		      claim HyS : SNo y.
+		      { exact (real_SNo y HyR). }
 	      claim Hm1R : minus_SNo 1 :e R.
 	      { exact (real_minus_SNo 1 real_1). }
 	      claim Hm1S : SNo (minus_SNo 1).
@@ -9289,45 +9280,17 @@ apply andI.
 	      { exact (add_SNo_Lt2 x (minus_SNo 1) 1 HxS Hm1S SNo_1 Hm1lt1). }
 	      claim Hcdlt : c < d.
 	      { exact (add_SNo_Lt2 y (minus_SNo 1) 1 HyS Hm1S SNo_1 Hm1lt1). }
-	      claim HabRlt : Rlt a b.
-	      { exact (RltI a b HaR HbR Hablt). }
-	      claim HcdRlt : Rlt c d.
-	      { exact (RltI c d HcR HdR Hcdlt). }
-	      claim Hprop :
-	        exists a0:set, exists b0:set, exists c0:set, exists d0:set,
-	          a0 :e R /\ b0 :e R /\ c0 :e R /\ d0 :e R /\ Rlt a0 b0 /\ Rlt c0 d0 /\
-	            U = {p0 :e EuclidPlane|
-	                   exists x0:set, exists y0:set,
-	                     p0 = (x0,y0) /\ Rlt a0 x0 /\ Rlt x0 b0 /\ Rlt c0 y0 /\ Rlt y0 d0}.
-	      { witness a. witness b. witness c. witness d.
-	        claim H12 : a :e R /\ b :e R.
-	        { exact (andI (a :e R) (b :e R) HaR HbR). }
-	        claim H123 : (a :e R /\ b :e R) /\ c :e R.
-	        { exact (andI (a :e R /\ b :e R) (c :e R) H12 HcR). }
-	        claim H1234 : ((a :e R /\ b :e R) /\ c :e R) /\ d :e R.
-	        { exact (andI ((a :e R /\ b :e R) /\ c :e R) (d :e R) H123 HdR). }
-	        claim H12345 :
-	          (((a :e R /\ b :e R) /\ c :e R) /\ d :e R) /\ Rlt a b.
-	        { exact (andI (((a :e R /\ b :e R) /\ c :e R) /\ d :e R) (Rlt a b) H1234 HabRlt). }
-	        claim H123456 :
-	          ((((a :e R /\ b :e R) /\ c :e R) /\ d :e R) /\ Rlt a b) /\ Rlt c d.
-	        { exact (andI ((((a :e R /\ b :e R) /\ c :e R) /\ d :e R) /\ Rlt a b)
-	                      (Rlt c d)
-	                      H12345
-	                      HcdRlt). }
-        apply andI.
-        - exact H123456.
-        - reflexivity. }
-	      exact (SepI (Power EuclidPlane)
-	                  (fun U0 : set =>
-	                    exists a0:set, exists b0:set, exists c0:set, exists d0:set,
-	                      a0 :e R /\ b0 :e R /\ c0 :e R /\ d0 :e R /\ Rlt a0 b0 /\ Rlt c0 d0 /\
-	                        U0 = {p0 :e EuclidPlane|
-	                               exists x0:set, exists y0:set,
-	                                 p0 = (x0,y0) /\ Rlt a0 x0 /\ Rlt x0 b0 /\ Rlt c0 y0 /\ Rlt y0 d0})
-	                  U
-	                  HUpow
-	                  Hprop).
+		      claim HabRlt : Rlt a b.
+		      { exact (RltI a b HaR HbR Hablt). }
+		      claim HcdRlt : Rlt c d.
+		      { exact (RltI c d HcR HdR Hcdlt). }
+		      claim HUdef :
+		        U = {p0 :e EuclidPlane|
+		               exists x0:set, exists y0:set,
+		                 p0 = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b /\ Rlt c y0 /\ Rlt y0 d}.
+		      { reflexivity. }
+		      rewrite HUdef.
+		      exact (rectangular_regionI a b c d HaR HbR HcR HdR HabRlt HcdRlt).
 	    - prove p :e U.
 	      claim Hptup : p = (x,y).
 	      { rewrite Hpeq. exact (tuple_pair x y). }
