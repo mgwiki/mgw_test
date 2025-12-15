@@ -11037,7 +11037,137 @@ prove finer_than R_upper_limit_topology R_standard_topology /\ finer_than R_K_to
 apply andI.
 - apply andI.
   + apply andI.
-    * admit. (** R_upper_limit_topology finer_than R_standard_topology **)
+    * prove finer_than R_upper_limit_topology R_standard_topology.
+      (** finer_than T' T means T c= T' **)
+      prove R_standard_topology c= R_upper_limit_topology.
+      let U. assume HU: U :e R_standard_topology.
+      (** Expand generated_topology membership for the standard topology **)
+      claim HUinPow : U :e Power R.
+      { exact (SepE1 (Power R)
+                     (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+                     U
+                     HU). }
+      claim HUprop : forall x :e U, exists b0 :e R_standard_basis, x :e b0 /\ b0 c= U.
+      { exact (SepE2 (Power R)
+                     (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+                     U
+                     HU). }
+      (** Refine a standard basis neighborhood (a,b) to an upper-limit neighborhood (a,x] around x **)
+      claim HUpropUpper : forall x :e U, exists b0 :e R_upper_limit_basis, x :e b0 /\ b0 c= U.
+      { let x. assume HxU.
+        claim HexStd : exists bStd :e R_standard_basis, x :e bStd /\ bStd c= U.
+        { exact (HUprop x HxU). }
+        apply HexStd.
+        let bStd. assume HbStdPair.
+        claim HbStdIn : bStd :e R_standard_basis.
+        { exact (andEL (bStd :e R_standard_basis) (x :e bStd /\ bStd c= U) HbStdPair). }
+        claim HbStdProp : x :e bStd /\ bStd c= U.
+        { exact (andER (bStd :e R_standard_basis) (x :e bStd /\ bStd c= U) HbStdPair). }
+        claim HxInbStd : x :e bStd.
+        { exact (andEL (x :e bStd) (bStd c= U) HbStdProp). }
+        claim HbStdSubU : bStd c= U.
+        { exact (andER (x :e bStd) (bStd c= U) HbStdProp). }
+        (** Unpack bStd as an open interval open_interval a0 b0 **)
+        claim Hexa0 : exists a0 :e R, bStd :e {open_interval a0 b0|b0 :e R}.
+        { exact (famunionE R (fun a0 : set => {open_interval a0 b0|b0 :e R}) bStd HbStdIn). }
+        apply Hexa0.
+        let a0. assume Ha0Pair.
+        claim Ha0R : a0 :e R.
+        { exact (andEL (a0 :e R) (bStd :e {open_interval a0 b0|b0 :e R}) Ha0Pair). }
+        claim HbStdFam : bStd :e {open_interval a0 b0|b0 :e R}.
+        { exact (andER (a0 :e R) (bStd :e {open_interval a0 b0|b0 :e R}) Ha0Pair). }
+        claim Hexb0 : exists b0 :e R, bStd = open_interval a0 b0.
+        { exact (ReplE R (fun b0 : set => open_interval a0 b0) bStd HbStdFam). }
+        apply Hexb0.
+        let b0. assume Hb0Pair.
+        claim Hb0R : b0 :e R.
+        { exact (andEL (b0 :e R) (bStd = open_interval a0 b0) Hb0Pair). }
+        claim HbStdEq : bStd = open_interval a0 b0.
+        { exact (andER (b0 :e R) (bStd = open_interval a0 b0) Hb0Pair). }
+        (** From x in bStd, extract x in open_interval a0 b0 **)
+        claim HxInI : x :e open_interval a0 b0.
+        { rewrite <- HbStdEq.
+          exact HxInbStd. }
+        claim HxR : x :e R.
+        { exact (SepE1 R (fun x0 : set => Rlt a0 x0 /\ Rlt x0 b0) x HxInI). }
+        claim HxIProp : Rlt a0 x /\ Rlt x b0.
+        { exact (SepE2 R (fun x0 : set => Rlt a0 x0 /\ Rlt x0 b0) x HxInI). }
+        claim Ha0x : Rlt a0 x.
+        { exact (andEL (Rlt a0 x) (Rlt x b0) HxIProp). }
+        claim Hxb0 : Rlt x b0.
+        { exact (andER (Rlt a0 x) (Rlt x b0) HxIProp). }
+        (** Define the upper-limit neighborhood (a0,x] **)
+        set bUpper := halfopen_interval_right a0 x.
+        witness bUpper.
+        apply andI.
+        - (** bUpper is in the upper-limit basis **)
+          claim HbFamUpper : bUpper :e {halfopen_interval_right a0 bb|bb :e R}.
+          { exact (ReplI R (fun bb : set => halfopen_interval_right a0 bb) x HxR). }
+          exact (famunionI R (fun aa : set => {halfopen_interval_right aa bb|bb :e R})
+                           a0
+                           bUpper
+                           Ha0R
+                           HbFamUpper).
+        - apply andI.
+          + (** x is in (a0,x] **)
+            exact (halfopen_interval_right_rightmem a0 x Ha0x).
+          + (** (a0,x] is contained in U **)
+            let y. assume HyUpper : y :e bUpper.
+            prove y :e U.
+            claim HyR : y :e R.
+            { exact (SepE1 R (fun y0 : set => Rlt a0 y0 /\ ~(Rlt x y0)) y HyUpper). }
+            claim HyProp : Rlt a0 y /\ ~(Rlt x y).
+            { exact (SepE2 R (fun y0 : set => Rlt a0 y0 /\ ~(Rlt x y0)) y HyUpper). }
+            claim Ha0y : Rlt a0 y.
+            { exact (andEL (Rlt a0 y) (~(Rlt x y)) HyProp). }
+            claim HnotRltxy : ~(Rlt x y).
+            { exact (andER (Rlt a0 y) (~(Rlt x y)) HyProp). }
+            (** Convert ~(Rlt x y) into ~(x<y) using known realness of x and y **)
+            claim Hnot_xlt_y : ~(x < y).
+            { assume Hxy : x < y.
+              claim HxyRlt : Rlt x y.
+              { exact (RltI x y HxR HyR Hxy). }
+              exact (HnotRltxy HxyRlt). }
+            (** Show y < b0 using trichotomy between y and x, since x < b0 **)
+            claim HyS : SNo y.
+            { exact (real_SNo y HyR). }
+            claim HxS : SNo x.
+            { exact (real_SNo x HxR). }
+            claim Hb0S : SNo b0.
+            { exact (real_SNo b0 Hb0R). }
+            claim Hxltb0 : x < b0.
+            { exact (RltE_lt x b0 Hxb0). }
+            claim Hyltb0 : y < b0.
+            { apply (SNoLt_trichotomy_or_impred y x HyS HxS (y < b0)).
+              - assume Hyltx : y < x.
+                exact (SNoLt_tra y x b0 HyS HxS Hb0S Hyltx Hxltb0).
+              - assume Heyx : y = x.
+                rewrite Heyx.
+                exact Hxltb0.
+              - assume HxltY : x < y.
+                claim HxyFalse : False.
+                { exact (Hnot_xlt_y HxltY). }
+                exact (FalseE HxyFalse (y < b0)). }
+            claim HyRltb0 : Rlt y b0.
+            { exact (RltI y b0 HyR Hb0R Hyltb0). }
+            (** y is in the standard open interval (a0,b0) = bStd **)
+            claim HyConj : Rlt a0 y /\ Rlt y b0.
+            { apply andI.
+              - exact Ha0y.
+              - exact HyRltb0. }
+            claim HyInI : y :e open_interval a0 b0.
+            { exact (SepI R (fun y0 : set => Rlt a0 y0 /\ Rlt y0 b0) y HyR HyConj). }
+            claim HyInbStd : y :e bStd.
+            { rewrite HbStdEq at 1.
+              exact HyInI. }
+            exact (HbStdSubU y HyInbStd).
+      }
+      (** Conclude: U is open in R_upper_limit_topology by definition **)
+      exact (SepI (Power R)
+                  (fun U0 : set => forall x0 :e U0, exists b0 :e R_upper_limit_basis, x0 :e b0 /\ b0 c= U0)
+                  U
+                  HUinPow
+                  HUpropUpper).
     * prove finer_than R_K_topology R_standard_topology.
       (** finer_than T' T means T c= T' **)
       prove R_standard_topology c= R_K_topology.
