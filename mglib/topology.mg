@@ -11187,6 +11187,91 @@ exact (SepI (Power R)
             HUVprop).
 Qed.
 
+(** from §13: complement of a point in R equals union of two open rays **)
+(** LATEX VERSION: R minus {a} is (-infty,a) union (a,infty). **)
+Theorem R_minus_singleton_eq_rays_union : forall a:set, a :e R ->
+  R :\: {a,a} = {x :e R|Rlt x a} :\/: {x :e R|Rlt a x}.
+let a. assume HaR.
+apply set_ext.
+- let x. assume Hx : x :e R :\: {a,a}.
+  prove x :e {x0 :e R|Rlt x0 a} :\/: {x0 :e R|Rlt a x0}.
+  claim Hxpair : x :e R /\ x /:e {a,a}.
+  { exact (setminusE R {a,a} x Hx). }
+  claim HxR : x :e R.
+  { exact (andEL (x :e R) (x /:e {a,a}) Hxpair). }
+  claim HxNot : x /:e {a,a}.
+  { exact (andER (x :e R) (x /:e {a,a}) Hxpair). }
+  claim HxS : SNo x.
+  { exact (real_SNo x HxR). }
+  claim HaS : SNo a.
+  { exact (real_SNo a HaR). }
+  apply (SNoLt_trichotomy_or_impred x a HxS HaS (x :e {x0 :e R|Rlt x0 a} :\/: {x0 :e R|Rlt a x0})).
+  - assume Hxlt : x < a.
+    claim HxRlt : Rlt x a.
+    { exact (RltI x a HxR HaR Hxlt). }
+    claim HxLeft : x :e {x0 :e R|Rlt x0 a}.
+    { exact (SepI R (fun x0 : set => Rlt x0 a) x HxR HxRlt). }
+    exact (binunionI1 {x0 :e R|Rlt x0 a} {x0 :e R|Rlt a x0} x HxLeft).
+  - assume Hxeq : x = a.
+    claim Hxinpair : x :e {a,a}.
+    { rewrite Hxeq.
+      exact (UPairI1 a a). }
+    claim Hfalse : False.
+    { exact (HxNot Hxinpair). }
+    exact (FalseE Hfalse (x :e {x0 :e R|Rlt x0 a} :\/: {x0 :e R|Rlt a x0})).
+  - assume Halt : a < x.
+    claim HxRlt : Rlt a x.
+    { exact (RltI a x HaR HxR Halt). }
+    claim HxRight : x :e {x0 :e R|Rlt a x0}.
+    { exact (SepI R (fun x0 : set => Rlt a x0) x HxR HxRlt). }
+    exact (binunionI2 {x0 :e R|Rlt x0 a} {x0 :e R|Rlt a x0} x HxRight).
+- let x. assume Hx : x :e {x0 :e R|Rlt x0 a} :\/: {x0 :e R|Rlt a x0}.
+  prove x :e R :\: {a,a}.
+  apply (binunionE {x0 :e R|Rlt x0 a} {x0 :e R|Rlt a x0} x Hx).
+  - assume HxLeft : x :e {x0 :e R|Rlt x0 a}.
+    claim HxR : x :e R.
+    { exact (SepE1 R (fun x0 : set => Rlt x0 a) x HxLeft). }
+    claim HxRlt : Rlt x a.
+    { exact (SepE2 R (fun x0 : set => Rlt x0 a) x HxLeft). }
+    claim HxNot : x /:e {a,a}.
+    { assume Hxin : x :e {a,a}.
+      claim Hxeq : x = a.
+      { apply (UPairE x a a Hxin (x = a)).
+        - assume H1. exact H1.
+        - assume H1. exact H1. }
+      claim Haa : Rlt a a.
+      { rewrite <- Hxeq at 1.
+        exact HxRlt. }
+      exact ((not_Rlt_refl a HaR) Haa). }
+    exact (setminusI R {a,a} x HxR HxNot).
+  - assume HxRight : x :e {x0 :e R|Rlt a x0}.
+    claim HxR : x :e R.
+    { exact (SepE1 R (fun x0 : set => Rlt a x0) x HxRight). }
+    claim HxRlt : Rlt a x.
+    { exact (SepE2 R (fun x0 : set => Rlt a x0) x HxRight). }
+    claim HxNot : x /:e {a,a}.
+    { assume Hxin : x :e {a,a}.
+      claim Hxeq : x = a.
+      { apply (UPairE x a a Hxin (x = a)).
+        - assume H1. exact H1.
+        - assume H1. exact H1. }
+      claim Haa : Rlt a a.
+      { rewrite <- Hxeq at 2.
+        exact HxRlt. }
+      exact ((not_Rlt_refl a HaR) Haa). }
+    exact (setminusI R {a,a} x HxR HxNot).
+Qed.
+
+(** from §13: complement of a point is open in the standard topology on R **)
+(** LATEX VERSION: Since (-infty,a) and (a,infty) are open, their union R minus {a} is open. **)
+Theorem R_minus_singleton_in_R_standard_topology : forall a:set, a :e R -> R :\: {a,a} :e R_standard_topology.
+let a. assume HaR.
+rewrite (R_minus_singleton_eq_rays_union a HaR).
+apply (binunion_in_R_standard_topology {x :e R|Rlt x a} {x :e R|Rlt a x}).
+- exact (open_left_ray_in_R_standard_topology a HaR).
+- exact (open_ray_in_R_standard_topology a HaR).
+Qed.
+
 (** LATEX VERSION: Containment statements among the five ℝ topologies in Exercise 7. **)
 Theorem ex13_7_R_topology_containments :
   finer_than R_upper_limit_topology R_standard_topology /\
