@@ -8423,7 +8423,14 @@ prove circular_regions c= Power EuclidPlane
         exists b3 :e circular_regions, x :e b3 /\ b3 c= b1 :/\: b2).
 apply andI.
 - apply andI.
-  + admit. (** circular_regions c= Power EuclidPlane **)
+  + let U. assume HU: U :e circular_regions.
+    prove U :e Power EuclidPlane.
+    exact (SepE1 (Power EuclidPlane)
+                 (fun U0 : set => exists c:set, exists r:set,
+                   c :e EuclidPlane /\ Rlt 0 r /\
+                   U0 = {p :e EuclidPlane|Rlt (distance_R2 p c) r})
+                 U
+                 HU).
   + admit. (** cover of EuclidPlane by circular regions **)
 - admit. (** intersection refinement for circular regions **)
 Qed.
@@ -8437,7 +8444,15 @@ prove rectangular_regions c= Power EuclidPlane
         exists b3 :e rectangular_regions, x :e b3 /\ b3 c= b1 :/\: b2).
 apply andI.
 - apply andI.
-  + admit. (** rectangular_regions c= Power EuclidPlane **)
+  + let U. assume HU: U :e rectangular_regions.
+    prove U :e Power EuclidPlane.
+    exact (SepE1 (Power EuclidPlane)
+                 (fun U0 : set =>
+                   exists a b c d:set, a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d /\
+                     U0 = {p :e EuclidPlane|
+                            exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d})
+                 U
+                 HU).
   + admit. (** cover of EuclidPlane by rectangular regions **)
 - admit. (** intersection refinement for rectangular regions **)
 Qed.
