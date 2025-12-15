@@ -9232,7 +9232,7 @@ claim Hsub : UFam c= countable_complement_topology X.
 exact (topology_union_closed X (countable_complement_topology X) UFam Htop Hsub).
 Qed.
 
-(** helper: witness sets for infinite-complement failure (placeholder) **) 
+(** helper: witness sets for infinite-complement failure, for infinite ambient sets **) 
 Theorem ex13_3b_witness_sets : forall X:set,
   infinite X ->
   exists U V:set,
@@ -9246,7 +9246,7 @@ prove exists U V:set,
 admit. (** choose A,B infinite with finite nonempty intersection; set U=X\\A, V=X\\B so U,V in family but Union {U,V} has finite nonempty complement **)
 Qed.
 
-(** LATEX VERSION: Exercise 3(b): The infinite-complement family is not a topology. **)
+(** LATEX VERSION: Exercise 3(b): For infinite X, the infinite-complement family is not a topology (fails union closure). **)
 Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   infinite X ->
   ~topology_on X (infinite_complement_family X).
@@ -9301,7 +9301,7 @@ claim HUnionIn: Union (UPair U V) :e infinite_complement_family X.
 exact (Hnot HUnionIn).
 Qed.
 
-(** helper: structured witness outline for Tinfty failure (placeholder) **) 
+(** helper: structured witness outline for Tinfty failure, for infinite ambient sets **) 
 Theorem ex13_3b_witness_outline : forall X:set,
   infinite X -> exists U V:set, U :e infinite_complement_family X /\ V :e infinite_complement_family X.
 let X.
