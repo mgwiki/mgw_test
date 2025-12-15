@@ -12408,7 +12408,8 @@ Theorem ex13_4b_smallest_largest : forall X Fam:set,
 let X Fam.
 assume HfamTop: forall T :e Fam, topology_on X T.
 prove exists Tmin, topology_on X Tmin /\ (forall T :e Fam, T c= Tmin) /\ (forall T', topology_on X T' /\ (forall T :e Fam, T c= T') -> Tmin c= T') /\ exists Tmax, topology_on X Tmax /\ (forall T :e Fam, Tmax c= T) /\ (forall T', topology_on X T' /\ (forall T :e Fam, T' c= T) -> T' c= Tmax).
-(** Strategy: Tmax = Intersection_Fam X Fam (by ex13_4a_intersection_topology);           Tmin = generated_topology_from_subbasis X (Union Fam) **)
+	(** Strategy: Tmax = Intersection_Fam X Fam (by ex13_4a_intersection_topology);
+	    Tmin = generated_topology_from_subbasis X (Union Fam :\/: {X}) (add X so subbasis union equals X even if Fam is empty). **)
 set Tmax := Intersection_Fam X Fam.
 set Tmin := generated_topology_from_subbasis X (Union Fam :\/: {X}).
 (** First prove Tmax properties **)
