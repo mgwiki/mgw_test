@@ -9140,13 +9140,13 @@ apply andI.
 
     (** Rewrite the second rectangle inequalities to x1,y1 **)
     claim Ha2x1 : Rlt a2 x1.
-    { rewrite <- Hx1eq. exact Ha2x2. }
+    { rewrite Hx1eq. exact Ha2x2. }
     claim Hx1b2 : Rlt x1 b2x.
-    { rewrite <- Hx1eq at 1. exact Hx2b2. }
+    { rewrite Hx1eq at 1. exact Hx2b2. }
     claim Hc2y1 : Rlt c2 y1.
-    { rewrite <- Hy1eq. exact Hc2y2. }
+    { rewrite Hy1eq. exact Hc2y2. }
     claim Hy1d2 : Rlt y1 d2.
-    { rewrite <- Hy1eq at 1. exact Hy2d2. }
+    { rewrite Hy1eq at 1. exact Hy2d2. }
 
     (** Define endpoints as max/min choices using if-then-else **)
     set a3 := if a1 < a2 then a2 else a1.
