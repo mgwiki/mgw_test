@@ -8701,7 +8701,7 @@ Qed.
 (** from §13 Example 4: squared distance formula **)
 (** LATEX VERSION: d(p,c) squared equals (xp-xc) squared plus (yp-yc) squared. **)
 Theorem distance_R2_sqr : forall p c:set, p :e EuclidPlane -> c :e EuclidPlane ->
-  distance_R2 p c * distance_R2 p c
+  mul_SNo (distance_R2 p c) (distance_R2 p c)
   = add_SNo
       (mul_SNo (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c)))
               (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c))))
