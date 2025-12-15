@@ -8415,6 +8415,12 @@ let a b. assume H.
 exact (andER (a :e R /\ b :e R) (a < b) H).
 Qed.
 
+(** from §13 Example 4: -1 is less than 0 in ℝ **)
+(** LATEX VERSION: We use that -1 < 0. **)
+Theorem minus_1_lt_0 : minus_SNo 1 < 0.
+admit.
+Qed.
+
 (** from §13 Example 4: circular vs rectangular region bases **)
 (** LATEX VERSION: Example 4: circular regions and axis-parallel rectangular regions in ℝ² both form bases generating the same topology. **)
 (** FIXED: EuclidPlane is now correctly R×R (Cartesian product) since setprod = setprod. **)
@@ -10815,7 +10821,25 @@ Qed.
 Definition rational_numbers : set := rational.
 
 Definition open_interval : set -> set -> set := fun a b => {x :e R|Rlt a x /\ Rlt x b}.
-Definition halfopen_interval_left : set -> set -> set := fun a b => {x :e R|Rlt a x /\ ~(Rlt b x)}.
+(** from §13 Exercise 6: lower limit basis element **)
+(** LATEX VERSION: Lower limit topology uses half open intervals [a,b). **)
+Definition halfopen_interval_left : set -> set -> set := fun a b => {x :e R|~(Rlt x a) /\ Rlt x b}.
+
+(** from §13 Exercise 6: open interval is a subset of ℝ **)
+(** LATEX VERSION: (a,b) is a subset of ℝ. **)
+Theorem open_interval_Subq_R : forall a b:set, open_interval a b c= R.
+let a b.
+let x. assume Hx.
+exact (SepE1 R (fun x0 : set => Rlt a x0 /\ Rlt x0 b) x Hx).
+Qed.
+
+(** from §13 Exercise 6: half open interval is a subset of ℝ **)
+(** LATEX VERSION: [a,b) is a subset of ℝ. **)
+Theorem halfopen_interval_left_Subq_R : forall a b:set, halfopen_interval_left a b c= R.
+let a b.
+let x. assume Hx.
+exact (SepE1 R (fun x0 : set => ~(Rlt x0 a) /\ Rlt x0 b) x Hx).
+Qed.
 
 Definition R_standard_basis : set :=
   \/_ a :e R, {open_interval a b|b :e R}.
