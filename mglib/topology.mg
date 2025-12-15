@@ -9066,7 +9066,593 @@ apply andI.
     (** At this point we have x1,y1 and inequalities from both rectangles.
         The remaining task is to pick new endpoints a3,b3,c3,d3 giving a rectangle around (x1,y1)
         that is contained in the intersection. **)
-    admit. (** choose a smaller rectangle around p inside both rectangles **)
+    claim Hx1eq : x1 = x2.
+    { exact (andEL (x1 = x2) (y1 = y2) Hcoords). }
+    claim Hy1eq : y1 = y2.
+    { exact (andER (x1 = x2) (y1 = y2) Hcoords). }
+
+    (** Extract coordinate inequalities for p from Hp1ineq and Hp2ineq **)
+    claim Ha1x1 : Rlt a1 x1.
+    { claim H1 : (((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x) /\ Rlt c1 y1).
+      { exact (andEL (((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x) /\ Rlt c1 y1)
+                    (Rlt y1 d1)
+                    Hp1ineq). }
+      claim H2 : ((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x).
+      { exact (andEL ((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x)
+                    (Rlt c1 y1)
+                    H1). }
+      claim H3 : (p = (x1,y1) /\ Rlt a1 x1).
+      { exact (andEL (p = (x1,y1) /\ Rlt a1 x1)
+                    (Rlt x1 b1x)
+                    H2). }
+      exact (andER (p = (x1,y1)) (Rlt a1 x1) H3). }
+    claim Hx1b1 : Rlt x1 b1x.
+    { claim H1 : (((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x) /\ Rlt c1 y1).
+      { exact (andEL (((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x) /\ Rlt c1 y1)
+                    (Rlt y1 d1)
+                    Hp1ineq). }
+      claim H2 : ((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x).
+      { exact (andEL ((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x)
+                    (Rlt c1 y1)
+                    H1). }
+      exact (andER (p = (x1,y1) /\ Rlt a1 x1) (Rlt x1 b1x) H2). }
+    claim Hc1y1 : Rlt c1 y1.
+    { claim H1 : (((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x) /\ Rlt c1 y1).
+      { exact (andEL (((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x) /\ Rlt c1 y1)
+                    (Rlt y1 d1)
+                    Hp1ineq). }
+      exact (andER ((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x) (Rlt c1 y1) H1). }
+    claim Hy1d1 : Rlt y1 d1.
+    { exact (andER (((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x) /\ Rlt c1 y1) (Rlt y1 d1) Hp1ineq). }
+
+    claim Ha2x2 : Rlt a2 x2.
+    { claim H1 : (((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x) /\ Rlt c2 y2).
+      { exact (andEL (((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x) /\ Rlt c2 y2)
+                    (Rlt y2 d2)
+                    Hp2ineq). }
+      claim H2 : ((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x).
+      { exact (andEL ((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x)
+                    (Rlt c2 y2)
+                    H1). }
+      claim H3 : (p = (x2,y2) /\ Rlt a2 x2).
+      { exact (andEL (p = (x2,y2) /\ Rlt a2 x2)
+                    (Rlt x2 b2x)
+                    H2). }
+      exact (andER (p = (x2,y2)) (Rlt a2 x2) H3). }
+    claim Hx2b2 : Rlt x2 b2x.
+    { claim H1 : (((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x) /\ Rlt c2 y2).
+      { exact (andEL (((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x) /\ Rlt c2 y2)
+                    (Rlt y2 d2)
+                    Hp2ineq). }
+      claim H2 : ((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x).
+      { exact (andEL ((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x)
+                    (Rlt c2 y2)
+                    H1). }
+      exact (andER (p = (x2,y2) /\ Rlt a2 x2) (Rlt x2 b2x) H2). }
+    claim Hc2y2 : Rlt c2 y2.
+    { claim H1 : (((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x) /\ Rlt c2 y2).
+      { exact (andEL (((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x) /\ Rlt c2 y2)
+                    (Rlt y2 d2)
+                    Hp2ineq). }
+      exact (andER ((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x) (Rlt c2 y2) H1). }
+    claim Hy2d2 : Rlt y2 d2.
+    { exact (andER (((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x) /\ Rlt c2 y2) (Rlt y2 d2) Hp2ineq). }
+
+    (** Rewrite the second rectangle inequalities to x1,y1 **)
+    claim Ha2x1 : Rlt a2 x1.
+    { rewrite <- Hx1eq. exact Ha2x2. }
+    claim Hx1b2 : Rlt x1 b2x.
+    { rewrite <- Hx1eq at 1. exact Hx2b2. }
+    claim Hc2y1 : Rlt c2 y1.
+    { rewrite <- Hy1eq. exact Hc2y2. }
+    claim Hy1d2 : Rlt y1 d2.
+    { rewrite <- Hy1eq at 1. exact Hy2d2. }
+
+    (** Define endpoints as max/min choices using if-then-else **)
+    set a3 := if a1 < a2 then a2 else a1.
+    set b3x := if b1x < b2x then b1x else b2x.
+    set c3 := if c1 < c2 then c2 else c1.
+    set d3 := if d1 < d2 then d1 else d2.
+
+    claim Ha3def : a3 = if a1 < a2 then a2 else a1.
+    { reflexivity. }
+    claim Hb3def : b3x = if b1x < b2x then b1x else b2x.
+    { reflexivity. }
+    claim Hc3def : c3 = if c1 < c2 then c2 else c1.
+    { reflexivity. }
+    claim Hd3def : d3 = if d1 < d2 then d1 else d2.
+    { reflexivity. }
+
+    (** Show the chosen endpoints are real numbers **)
+    claim Ha3R : a3 :e R.
+    { rewrite Ha3def.
+      apply (xm (a1 < a2)).
+      - assume Hlt. rewrite (If_i_1 (a1 < a2) a2 a1 Hlt). exact (andEL (a2 :e R) (b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) Hb2core).
+      - assume Hnlt. rewrite (If_i_0 (a1 < a2) a2 a1 Hnlt). exact (andEL (a1 :e R) (b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) Hb1core). }
+    claim Hb3xR : b3x :e R.
+    { rewrite Hb3def.
+      apply (xm (b1x < b2x)).
+      - assume Hlt. rewrite (If_i_1 (b1x < b2x) b1x b2x Hlt). exact (andEL (b1x :e R) (c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) (andER (a1 :e R) (b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) Hb1core)).
+      - assume Hnlt. rewrite (If_i_0 (b1x < b2x) b1x b2x Hnlt). exact (andEL (b2x :e R) (c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) (andER (a2 :e R) (b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) Hb2core)). }
+    claim Hc3R : c3 :e R.
+    { rewrite Hc3def.
+      apply (xm (c1 < c2)).
+      - assume Hlt. rewrite (If_i_1 (c1 < c2) c2 c1 Hlt). exact (andEL (c2 :e R) (d2 :e R /\ Rlt c2 d2) (andER (a2 :e R /\ b2x :e R /\ c2 :e R) (d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) (andEL ((a2 :e R /\ b2x :e R /\ c2 :e R /\ d2 :e R) /\ Rlt a2 b2x) (Rlt c2 d2) Hb2core))).
+      - assume Hnlt. rewrite (If_i_0 (c1 < c2) c2 c1 Hnlt). exact (andEL (c1 :e R) (d1 :e R /\ Rlt c1 d1) (andER (a1 :e R /\ b1x :e R /\ c1 :e R) (d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) (andEL ((a1 :e R /\ b1x :e R /\ c1 :e R /\ d1 :e R) /\ Rlt a1 b1x) (Rlt c1 d1) Hb1core))). }
+    claim Hd3R : d3 :e R.
+    { rewrite Hd3def.
+      apply (xm (d1 < d2)).
+      - assume Hlt. rewrite (If_i_1 (d1 < d2) d1 d2 Hlt). exact (andEL (d1 :e R) (Rlt c1 d1) (andER (a1 :e R /\ b1x :e R /\ c1 :e R) (d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) (andEL ((a1 :e R /\ b1x :e R /\ c1 :e R /\ d1 :e R) /\ Rlt a1 b1x) (Rlt c1 d1) Hb1core))).
+      - assume Hnlt. rewrite (If_i_0 (d1 < d2) d1 d2 Hnlt). exact (andEL (d2 :e R) (Rlt c2 d2) (andER (a2 :e R /\ b2x :e R /\ c2 :e R) (d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) (andEL ((a2 :e R /\ b2x :e R /\ c2 :e R /\ d2 :e R) /\ Rlt a2 b2x) (Rlt c2 d2) Hb2core))). }
+
+    (** Show x1,y1 are between the chosen endpoints **)
+    claim Hax3 : Rlt a3 x1.
+    { rewrite Ha3def.
+      apply (xm (a1 < a2)).
+      - assume Hlt. rewrite (If_i_1 (a1 < a2) a2 a1 Hlt). exact Ha2x1.
+      - assume Hnlt. rewrite (If_i_0 (a1 < a2) a2 a1 Hnlt). exact Ha1x1. }
+    claim Hxb3 : Rlt x1 b3x.
+    { rewrite Hb3def.
+      apply (xm (b1x < b2x)).
+      - assume Hlt. rewrite (If_i_1 (b1x < b2x) b1x b2x Hlt). exact Hx1b1.
+      - assume Hnlt. rewrite (If_i_0 (b1x < b2x) b1x b2x Hnlt). exact Hx1b2. }
+    claim Hcy3 : Rlt c3 y1.
+    { rewrite Hc3def.
+      apply (xm (c1 < c2)).
+      - assume Hlt. rewrite (If_i_1 (c1 < c2) c2 c1 Hlt). exact Hc2y1.
+      - assume Hnlt. rewrite (If_i_0 (c1 < c2) c2 c1 Hnlt). exact Hc1y1. }
+    claim Hyd3 : Rlt y1 d3.
+    { rewrite Hd3def.
+      apply (xm (d1 < d2)).
+      - assume Hlt. rewrite (If_i_1 (d1 < d2) d1 d2 Hlt). exact Hy1d1.
+      - assume Hnlt. rewrite (If_i_0 (d1 < d2) d1 d2 Hnlt). exact Hy1d2. }
+
+    (** Define the rectangle b3rect with these endpoints **)
+    set b3rect := {q :e EuclidPlane|
+                     exists x0:set, exists y0:set,
+                       q = (x0,y0) /\ Rlt a3 x0 /\ Rlt x0 b3x /\ Rlt c3 y0 /\ Rlt y0 d3}.
+
+    witness b3rect.
+    apply andI.
+    - (** b3rect in rectangular_regions **)
+      claim Hb3pow : b3rect :e Power EuclidPlane.
+      { apply PowerI EuclidPlane b3rect.
+        let q. assume Hq : q :e b3rect.
+        exact (SepE1 EuclidPlane
+                     (fun q0 : set =>
+                       exists x0:set, exists y0:set,
+                         q0 = (x0,y0) /\ Rlt a3 x0 /\ Rlt x0 b3x /\ Rlt c3 y0 /\ Rlt y0 d3)
+                     q
+                     Hq). }
+      claim Hab3 : Rlt a3 b3x.
+      { exact (Rlt_tra a3 x1 b3x Hax3 Hxb3). }
+      claim Hcd3 : Rlt c3 d3.
+      { exact (Rlt_tra c3 y1 d3 Hcy3 Hyd3). }
+      claim Hprop :
+        exists a0:set, exists b0:set, exists c0:set, exists d0:set,
+          a0 :e R /\ b0 :e R /\ c0 :e R /\ d0 :e R /\ Rlt a0 b0 /\ Rlt c0 d0 /\
+            b3rect = {p1 :e EuclidPlane|
+                       exists x0:set, exists y0:set,
+                         p1 = (x0,y0) /\ Rlt a0 x0 /\ Rlt x0 b0 /\ Rlt c0 y0 /\ Rlt y0 d0}.
+      { witness a3. witness b3x. witness c3. witness d3.
+        claim H1 : a3 :e R /\ b3x :e R.
+        { apply andI.
+          - exact Ha3R.
+          - exact Hb3xR. }
+        claim H12 : (a3 :e R /\ b3x :e R) /\ c3 :e R.
+        { exact (andI (a3 :e R /\ b3x :e R) (c3 :e R) H1 Hc3R). }
+        claim H123 : ((a3 :e R /\ b3x :e R) /\ c3 :e R) /\ d3 :e R.
+        { exact (andI ((a3 :e R /\ b3x :e R) /\ c3 :e R) (d3 :e R) H12 Hd3R). }
+        claim H1234 : (((a3 :e R /\ b3x :e R) /\ c3 :e R) /\ d3 :e R) /\ Rlt a3 b3x.
+        { exact (andI (((a3 :e R /\ b3x :e R) /\ c3 :e R) /\ d3 :e R) (Rlt a3 b3x) H123 Hab3). }
+        claim H12345 : ((((a3 :e R /\ b3x :e R) /\ c3 :e R) /\ d3 :e R) /\ Rlt a3 b3x) /\ Rlt c3 d3.
+        { exact (andI ((((a3 :e R /\ b3x :e R) /\ c3 :e R) /\ d3 :e R) /\ Rlt a3 b3x) (Rlt c3 d3) H1234 Hcd3). }
+        apply andI.
+        - exact H12345.
+        - reflexivity. }
+      exact (SepI (Power EuclidPlane)
+                  (fun U0 : set =>
+                    exists a b c d:set, a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d /\
+                      U0 = {p1 :e EuclidPlane|
+                             exists x0:set, exists y0:set,
+                               p1 = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b /\ Rlt c y0 /\ Rlt y0 d})
+                  b3rect
+                  Hb3pow
+                  Hprop).
+    - apply andI.
+      + (** p is in b3rect **)
+        claim HpEuclid : p :e EuclidPlane.
+        { exact (SepE1 EuclidPlane
+                     (fun q : set =>
+                       exists x0:set, exists y0:set,
+                         q = (x0,y0) /\ Rlt a1 x0 /\ Rlt x0 b1x /\ Rlt c1 y0 /\ Rlt y0 d1)
+                     p
+                     Hp1'). }
+        claim Hpred :
+          exists x0:set, exists y0:set,
+            p = (x0,y0) /\ Rlt a3 x0 /\ Rlt x0 b3x /\ Rlt c3 y0 /\ Rlt y0 d3.
+        { witness x1. witness y1.
+          claim H1 : p = (x1,y1) /\ Rlt a3 x1.
+          { exact (andI (p = (x1,y1)) (Rlt a3 x1) Hp_tup1 Hax3). }
+          claim H12 : (p = (x1,y1) /\ Rlt a3 x1) /\ Rlt x1 b3x.
+          { exact (andI (p = (x1,y1) /\ Rlt a3 x1) (Rlt x1 b3x) H1 Hxb3). }
+          claim H123 : ((p = (x1,y1) /\ Rlt a3 x1) /\ Rlt x1 b3x) /\ Rlt c3 y1.
+          { exact (andI ((p = (x1,y1) /\ Rlt a3 x1) /\ Rlt x1 b3x) (Rlt c3 y1) H12 Hcy3). }
+          exact (andI (((p = (x1,y1) /\ Rlt a3 x1) /\ Rlt x1 b3x) /\ Rlt c3 y1) (Rlt y1 d3) H123 Hyd3). }
+        exact (SepI EuclidPlane
+                    (fun q : set =>
+                      exists x0:set, exists y0:set,
+                        q = (x0,y0) /\ Rlt a3 x0 /\ Rlt x0 b3x /\ Rlt c3 y0 /\ Rlt y0 d3)
+                    p
+                    HpEuclid
+                    Hpred).
+      + (** b3rect is contained in b1 ∩ b2 **)
+        let q. assume Hq : q :e b3rect.
+        prove q :e b1 :/\: b2.
+        claim HqEuclid : q :e EuclidPlane.
+        { exact (SepE1 EuclidPlane
+                     (fun q0 : set =>
+                       exists x0:set, exists y0:set,
+                         q0 = (x0,y0) /\ Rlt a3 x0 /\ Rlt x0 b3x /\ Rlt c3 y0 /\ Rlt y0 d3)
+                     q
+                     Hq). }
+        claim Hqcoords :
+          exists xq:set, exists yq:set,
+            q = (xq,yq) /\ Rlt a3 xq /\ Rlt xq b3x /\ Rlt c3 yq /\ Rlt yq d3.
+        { exact (SepE2 EuclidPlane
+                       (fun q0 : set =>
+                         exists x0:set, exists y0:set,
+                           q0 = (x0,y0) /\ Rlt a3 x0 /\ Rlt x0 b3x /\ Rlt c3 y0 /\ Rlt y0 d3)
+                       q
+                       Hq). }
+        apply Hqcoords.
+        let xq. assume Hqcoords2.
+        apply Hqcoords2.
+        let yq. assume Hqineq.
+        claim Hqtup : q = (xq,yq).
+        { claim H1 : (((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x) /\ Rlt c3 yq).
+          { exact (andEL (((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x) /\ Rlt c3 yq)
+                        (Rlt yq d3)
+                        Hqineq). }
+          claim H2 : ((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x).
+          { exact (andEL ((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x)
+                        (Rlt c3 yq)
+                        H1). }
+          claim H3 : (q = (xq,yq) /\ Rlt a3 xq).
+          { exact (andEL (q = (xq,yq) /\ Rlt a3 xq)
+                        (Rlt xq b3x)
+                        H2). }
+          exact (andEL (q = (xq,yq)) (Rlt a3 xq) H3). }
+        claim Ha3xq : Rlt a3 xq.
+        { claim H1 : (((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x) /\ Rlt c3 yq).
+          { exact (andEL (((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x) /\ Rlt c3 yq)
+                        (Rlt yq d3)
+                        Hqineq). }
+          claim H2 : ((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x).
+          { exact (andEL ((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x)
+                        (Rlt c3 yq)
+                        H1). }
+          claim H3 : (q = (xq,yq) /\ Rlt a3 xq).
+          { exact (andEL (q = (xq,yq) /\ Rlt a3 xq)
+                        (Rlt xq b3x)
+                        H2). }
+          exact (andER (q = (xq,yq)) (Rlt a3 xq) H3). }
+        claim Hxqb3 : Rlt xq b3x.
+        { claim H1 : (((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x) /\ Rlt c3 yq).
+          { exact (andEL (((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x) /\ Rlt c3 yq)
+                        (Rlt yq d3)
+                        Hqineq). }
+          claim H2 : ((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x).
+          { exact (andEL ((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x)
+                        (Rlt c3 yq)
+                        H1). }
+          exact (andER (q = (xq,yq) /\ Rlt a3 xq) (Rlt xq b3x) H2). }
+        claim Hc3yq : Rlt c3 yq.
+        { claim H1 : (((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x) /\ Rlt c3 yq).
+          { exact (andEL (((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x) /\ Rlt c3 yq)
+                        (Rlt yq d3)
+                        Hqineq). }
+          exact (andER ((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x) (Rlt c3 yq) H1). }
+        claim Hyqd3 : Rlt yq d3.
+        { exact (andER (((q = (xq,yq) /\ Rlt a3 xq) /\ Rlt xq b3x) /\ Rlt c3 yq) (Rlt yq d3) Hqineq). }
+
+        (** Derive inequalities needed for membership in b1 and b2 **)
+        claim Haxq : Rlt a1 xq /\ Rlt a2 xq.
+        { claim Ha1R : a1 :e R.
+          { exact (andEL (a1 :e R) (b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) Hb1core). }
+          claim Ha2R : a2 :e R.
+          { exact (andEL (a2 :e R) (b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) Hb2core). }
+          claim HxqR : xq :e R.
+          { exact (RltE_right a3 xq Ha3xq). }
+          claim Ha1S : SNo a1.
+          { exact (real_SNo a1 Ha1R). }
+          claim Ha2S : SNo a2.
+          { exact (real_SNo a2 Ha2R). }
+          apply (SNoLt_trichotomy_or_impred a1 a2 Ha1S Ha2S (Rlt a1 xq /\ Rlt a2 xq)).
+          - assume Ha1lt : a1 < a2.
+            claim Ha1a2 : Rlt a1 a2.
+            { exact (RltI a1 a2 Ha1R Ha2R Ha1lt). }
+            rewrite Ha3def.
+            rewrite (If_i_1 (a1 < a2) a2 a1 Ha1lt) in Ha3xq.
+            claim Ha2xq : Rlt a2 xq.
+            { exact Ha3xq. }
+            claim Ha1xq : Rlt a1 xq.
+            { exact (Rlt_tra a1 a2 xq Ha1a2 Ha2xq). }
+            apply andI.
+            - exact Ha1xq.
+            - exact Ha2xq.
+          - assume Haeq : a1 = a2.
+            claim Hnlt : ~(a1 < a2).
+            { assume Hlt. rewrite Haeq in Hlt. exact ((SNoLt_irref a1) Hlt). }
+            rewrite Ha3def.
+            rewrite (If_i_0 (a1 < a2) a2 a1 Hnlt) in Ha3xq.
+            claim Ha1xq : Rlt a1 xq.
+            { exact Ha3xq. }
+            claim Ha2xq : Rlt a2 xq.
+            { rewrite <- Haeq. exact Ha1xq. }
+            apply andI.
+            - exact Ha1xq.
+            - exact Ha2xq.
+          - assume Ha2lt : a2 < a1.
+            claim Hnlt : ~(a1 < a2).
+            { assume Hlt.
+              claim Ha2S' : SNo a2.
+              { exact Ha2S. }
+              claim Ha1S' : SNo a1.
+              { exact Ha1S. }
+              claim Ha2lt2 : a2 < a2.
+              { exact (SNoLt_tra a2 a1 a2 Ha2S' Ha1S' Ha2S' Ha2lt Hlt). }
+              exact ((SNoLt_irref a2) Ha2lt2). }
+            claim Ha2a1 : Rlt a2 a1.
+            { exact (RltI a2 a1 Ha2R Ha1R Ha2lt). }
+            rewrite Ha3def.
+            rewrite (If_i_0 (a1 < a2) a2 a1 Hnlt) in Ha3xq.
+            claim Ha1xq : Rlt a1 xq.
+            { exact Ha3xq. }
+            claim Ha2xq : Rlt a2 xq.
+            { exact (Rlt_tra a2 a1 xq Ha2a1 Ha1xq). }
+            apply andI.
+            - exact Ha1xq.
+            - exact Ha2xq. }
+
+        claim Hxbq : Rlt xq b1x /\ Rlt xq b2x.
+        { claim Hb1R : b1x :e R.
+          { exact (andEL (b1x :e R) (c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1)
+                         (andER (a1 :e R) (b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) Hb1core)). }
+          claim Hb2R : b2x :e R.
+          { exact (andEL (b2x :e R) (c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2)
+                         (andER (a2 :e R) (b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) Hb2core)). }
+          claim HxqR : xq :e R.
+          { exact (RltE_left xq b3x Hxqb3). }
+          claim Hb1S : SNo b1x.
+          { exact (real_SNo b1x Hb1R). }
+          claim Hb2S : SNo b2x.
+          { exact (real_SNo b2x Hb2R). }
+          claim HxqS : SNo xq.
+          { exact (real_SNo xq HxqR). }
+          apply (SNoLt_trichotomy_or_impred b1x b2x Hb1S Hb2S (Rlt xq b1x /\ Rlt xq b2x)).
+          - assume Hb1lt : b1x < b2x.
+            claim Hb1b2 : Rlt b1x b2x.
+            { exact (RltI b1x b2x Hb1R Hb2R Hb1lt). }
+            rewrite Hb3def.
+            rewrite (If_i_1 (b1x < b2x) b1x b2x Hb1lt) in Hxqb3.
+            claim Hxqb1 : Rlt xq b1x.
+            { exact Hxqb3. }
+            claim Hxqb2 : Rlt xq b2x.
+            { exact (Rlt_tra xq b1x b2x Hxqb1 Hb1b2). }
+            apply andI.
+            - exact Hxqb1.
+            - exact Hxqb2.
+          - assume Hbeq : b1x = b2x.
+            claim Hnlt : ~(b1x < b2x).
+            { assume Hlt. rewrite Hbeq in Hlt. exact ((SNoLt_irref b1x) Hlt). }
+            rewrite Hb3def.
+            rewrite (If_i_0 (b1x < b2x) b1x b2x Hnlt) in Hxqb3.
+            claim Hxqb2 : Rlt xq b2x.
+            { exact Hxqb3. }
+            claim Hxqb1 : Rlt xq b1x.
+            { rewrite Hbeq. exact Hxqb2. }
+            apply andI.
+            - exact Hxqb1.
+            - exact Hxqb2.
+          - assume Hb2lt : b2x < b1x.
+            claim Hnlt : ~(b1x < b2x).
+            { assume Hlt.
+              claim Hb2lt2 : b2x < b2x.
+              { exact (SNoLt_tra b2x b1x b2x Hb2S Hb1S Hb2S Hb2lt Hlt). }
+              exact ((SNoLt_irref b2x) Hb2lt2). }
+            claim Hb2b1 : Rlt b2x b1x.
+            { exact (RltI b2x b1x Hb2R Hb1R Hb2lt). }
+            rewrite Hb3def.
+            rewrite (If_i_0 (b1x < b2x) b1x b2x Hnlt) in Hxqb3.
+            claim Hxqb2 : Rlt xq b2x.
+            { exact Hxqb3. }
+            claim Hxqb1 : Rlt xq b1x.
+            { exact (Rlt_tra xq b2x b1x Hxqb2 Hb2b1). }
+            apply andI.
+            - exact Hxqb1.
+            - exact Hxqb2. }
+
+        claim Hcyq : Rlt c1 yq /\ Rlt c2 yq.
+        { claim Hc1R : c1 :e R.
+          { exact (andEL (c1 :e R) (d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1)
+                         (andER (a1 :e R /\ b1x :e R) (c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1)
+                                (andEL (a1 :e R /\ b1x :e R /\ c1 :e R) (d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1)
+                                       (andER (a1 :e R) (b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) Hb1core))). }
+          claim Hc2R : c2 :e R.
+          { exact (andEL (c2 :e R) (d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2)
+                         (andER (a2 :e R /\ b2x :e R) (c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2)
+                                (andEL (a2 :e R /\ b2x :e R /\ c2 :e R) (d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2)
+                                       (andER (a2 :e R) (b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) Hb2core))). }
+          claim HyqR : yq :e R.
+          { exact (RltE_right c3 yq Hc3yq). }
+          claim Hc1S : SNo c1.
+          { exact (real_SNo c1 Hc1R). }
+          claim Hc2S : SNo c2.
+          { exact (real_SNo c2 Hc2R). }
+          apply (SNoLt_trichotomy_or_impred c1 c2 Hc1S Hc2S (Rlt c1 yq /\ Rlt c2 yq)).
+          - assume Hc1lt : c1 < c2.
+            claim Hc1c2 : Rlt c1 c2.
+            { exact (RltI c1 c2 Hc1R Hc2R Hc1lt). }
+            rewrite Hc3def.
+            rewrite (If_i_1 (c1 < c2) c2 c1 Hc1lt) in Hc3yq.
+            claim Hc2yq : Rlt c2 yq.
+            { exact Hc3yq. }
+            claim Hc1yq : Rlt c1 yq.
+            { exact (Rlt_tra c1 c2 yq Hc1c2 Hc2yq). }
+            apply andI.
+            - exact Hc1yq.
+            - exact Hc2yq.
+          - assume Hceq : c1 = c2.
+            claim Hnlt : ~(c1 < c2).
+            { assume Hlt. rewrite Hceq in Hlt. exact ((SNoLt_irref c1) Hlt). }
+            rewrite Hc3def.
+            rewrite (If_i_0 (c1 < c2) c2 c1 Hnlt) in Hc3yq.
+            claim Hc1yq : Rlt c1 yq.
+            { exact Hc3yq. }
+            claim Hc2yq : Rlt c2 yq.
+            { rewrite <- Hceq. exact Hc1yq. }
+            apply andI.
+            - exact Hc1yq.
+            - exact Hc2yq.
+          - assume Hc2lt : c2 < c1.
+            claim Hnlt : ~(c1 < c2).
+            { assume Hlt.
+              claim Hc2lt2 : c2 < c2.
+              { exact (SNoLt_tra c2 c1 c2 Hc2S Hc1S Hc2S Hc2lt Hlt). }
+              exact ((SNoLt_irref c2) Hc2lt2). }
+            claim Hc2c1 : Rlt c2 c1.
+            { exact (RltI c2 c1 Hc2R Hc1R Hc2lt). }
+            rewrite Hc3def.
+            rewrite (If_i_0 (c1 < c2) c2 c1 Hnlt) in Hc3yq.
+            claim Hc1yq : Rlt c1 yq.
+            { exact Hc3yq. }
+            claim Hc2yq : Rlt c2 yq.
+            { exact (Rlt_tra c2 c1 yq Hc2c1 Hc1yq). }
+            apply andI.
+            - exact Hc1yq.
+            - exact Hc2yq. }
+
+        claim Hydq : Rlt yq d1 /\ Rlt yq d2.
+        { claim Hd1R : d1 :e R.
+          { exact (andEL (d1 :e R) (Rlt a1 b1x /\ Rlt c1 d1)
+                         (andER (a1 :e R /\ b1x :e R /\ c1 :e R) (d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1)
+                                (andEL ((a1 :e R /\ b1x :e R /\ c1 :e R /\ d1 :e R) /\ Rlt a1 b1x) (Rlt c1 d1) Hb1core))). }
+          claim Hd2R : d2 :e R.
+          { exact (andEL (d2 :e R) (Rlt a2 b2x /\ Rlt c2 d2)
+                         (andER (a2 :e R /\ b2x :e R /\ c2 :e R) (d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2)
+                                (andEL ((a2 :e R /\ b2x :e R /\ c2 :e R /\ d2 :e R) /\ Rlt a2 b2x) (Rlt c2 d2) Hb2core))). }
+          claim HyqR : yq :e R.
+          { exact (RltE_left yq d3 Hyqd3). }
+          claim Hd1S : SNo d1.
+          { exact (real_SNo d1 Hd1R). }
+          claim Hd2S : SNo d2.
+          { exact (real_SNo d2 Hd2R). }
+          claim HyqS : SNo yq.
+          { exact (real_SNo yq HyqR). }
+          apply (SNoLt_trichotomy_or_impred d1 d2 Hd1S Hd2S (Rlt yq d1 /\ Rlt yq d2)).
+          - assume Hd1lt : d1 < d2.
+            claim Hd1d2 : Rlt d1 d2.
+            { exact (RltI d1 d2 Hd1R Hd2R Hd1lt). }
+            rewrite Hd3def.
+            rewrite (If_i_1 (d1 < d2) d1 d2 Hd1lt) in Hyqd3.
+            claim Hyqd1 : Rlt yq d1.
+            { exact Hyqd3. }
+            claim Hyqd2 : Rlt yq d2.
+            { exact (Rlt_tra yq d1 d2 Hyqd1 Hd1d2). }
+            apply andI.
+            - exact Hyqd1.
+            - exact Hyqd2.
+          - assume Hdeq : d1 = d2.
+            claim Hnlt : ~(d1 < d2).
+            { assume Hlt. rewrite Hdeq in Hlt. exact ((SNoLt_irref d1) Hlt). }
+            rewrite Hd3def.
+            rewrite (If_i_0 (d1 < d2) d1 d2 Hnlt) in Hyqd3.
+            claim Hyqd2 : Rlt yq d2.
+            { exact Hyqd3. }
+            claim Hyqd1 : Rlt yq d1.
+            { rewrite Hdeq. exact Hyqd2. }
+            apply andI.
+            - exact Hyqd1.
+            - exact Hyqd2.
+          - assume Hd2lt : d2 < d1.
+            claim Hnlt : ~(d1 < d2).
+            { assume Hlt.
+              claim Hd2lt2 : d2 < d2.
+              { exact (SNoLt_tra d2 d1 d2 Hd2S Hd1S Hd2S Hd2lt Hlt). }
+              exact ((SNoLt_irref d2) Hd2lt2). }
+            claim Hd2d1 : Rlt d2 d1.
+            { exact (RltI d2 d1 Hd2R Hd1R Hd2lt). }
+            rewrite Hd3def.
+            rewrite (If_i_0 (d1 < d2) d1 d2 Hnlt) in Hyqd3.
+            claim Hyqd2 : Rlt yq d2.
+            { exact Hyqd3. }
+            claim Hyqd1 : Rlt yq d1.
+            { exact (Rlt_tra yq d2 d1 Hyqd2 Hd2d1). }
+            apply andI.
+            - exact Hyqd1.
+            - exact Hyqd2. }
+
+        (** Build membership in b1 and b2 using Hb1eq and Hb2eq **)
+        claim Ha1xq : Rlt a1 xq.
+        { exact (andEL (Rlt a1 xq) (Rlt a2 xq) Haxq). }
+        claim Ha2xq : Rlt a2 xq.
+        { exact (andER (Rlt a1 xq) (Rlt a2 xq) Haxq). }
+        claim Hxqb1 : Rlt xq b1x.
+        { exact (andEL (Rlt xq b1x) (Rlt xq b2x) Hxbq). }
+        claim Hxqb2 : Rlt xq b2x.
+        { exact (andER (Rlt xq b1x) (Rlt xq b2x) Hxbq). }
+        claim Hc1yq : Rlt c1 yq.
+        { exact (andEL (Rlt c1 yq) (Rlt c2 yq) Hcyq). }
+        claim Hc2yq : Rlt c2 yq.
+        { exact (andER (Rlt c1 yq) (Rlt c2 yq) Hcyq). }
+        claim Hyqd1 : Rlt yq d1.
+        { exact (andEL (Rlt yq d1) (Rlt yq d2) Hydq). }
+        claim Hyqd2 : Rlt yq d2.
+        { exact (andER (Rlt yq d1) (Rlt yq d2) Hydq). }
+
+        claim Hpred1 :
+          exists x0:set, exists y0:set,
+            q = (x0,y0) /\ Rlt a1 x0 /\ Rlt x0 b1x /\ Rlt c1 y0 /\ Rlt y0 d1.
+        { witness xq. witness yq.
+          claim H1 : q = (xq,yq) /\ Rlt a1 xq.
+          { exact (andI (q = (xq,yq)) (Rlt a1 xq) Hqtup Ha1xq). }
+          claim H12 : (q = (xq,yq) /\ Rlt a1 xq) /\ Rlt xq b1x.
+          { exact (andI (q = (xq,yq) /\ Rlt a1 xq) (Rlt xq b1x) H1 Hxqb1). }
+          claim H123 : ((q = (xq,yq) /\ Rlt a1 xq) /\ Rlt xq b1x) /\ Rlt c1 yq.
+          { exact (andI ((q = (xq,yq) /\ Rlt a1 xq) /\ Rlt xq b1x) (Rlt c1 yq) H12 Hc1yq). }
+          exact (andI (((q = (xq,yq) /\ Rlt a1 xq) /\ Rlt xq b1x) /\ Rlt c1 yq) (Rlt yq d1) H123 Hyqd1). }
+        claim Hpred2 :
+          exists x0:set, exists y0:set,
+            q = (x0,y0) /\ Rlt a2 x0 /\ Rlt x0 b2x /\ Rlt c2 y0 /\ Rlt y0 d2.
+        { witness xq. witness yq.
+          claim H1 : q = (xq,yq) /\ Rlt a2 xq.
+          { exact (andI (q = (xq,yq)) (Rlt a2 xq) Hqtup Ha2xq). }
+          claim H12 : (q = (xq,yq) /\ Rlt a2 xq) /\ Rlt xq b2x.
+          { exact (andI (q = (xq,yq) /\ Rlt a2 xq) (Rlt xq b2x) H1 Hxqb2). }
+          claim H123 : ((q = (xq,yq) /\ Rlt a2 xq) /\ Rlt xq b2x) /\ Rlt c2 yq.
+          { exact (andI ((q = (xq,yq) /\ Rlt a2 xq) /\ Rlt xq b2x) (Rlt c2 yq) H12 Hc2yq). }
+          exact (andI (((q = (xq,yq) /\ Rlt a2 xq) /\ Rlt xq b2x) /\ Rlt c2 yq) (Rlt yq d2) H123 Hyqd2). }
+
+        claim Hqb1 : q :e b1.
+        { rewrite Hb1eq.
+          exact (SepI EuclidPlane
+                      (fun q0 : set =>
+                        exists x0:set, exists y0:set,
+                          q0 = (x0,y0) /\ Rlt a1 x0 /\ Rlt x0 b1x /\ Rlt c1 y0 /\ Rlt y0 d1)
+                      q
+                      HqEuclid
+                      Hpred1). }
+        claim Hqb2 : q :e b2.
+        { rewrite Hb2eq.
+          exact (SepI EuclidPlane
+                      (fun q0 : set =>
+                        exists x0:set, exists y0:set,
+                          q0 = (x0,y0) /\ Rlt a2 x0 /\ Rlt x0 b2x /\ Rlt c2 y0 /\ Rlt y0 d2)
+                      q
+                      HqEuclid
+                      Hpred2). }
+        exact (binintersectI b1 b2 q Hqb1 Hqb2).
 Qed.
 
 (** from §13 Example 4: circular and rectangular bases generate the same topology **)
