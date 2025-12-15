@@ -20824,11 +20824,9 @@ Qed.
 
 (** from §30 Theorem 30.1(b): sequences and continuity in first-countable spaces **)
 (** LATEX VERSION: Sequential criterion for continuity in first-countable spaces. **)
-(** FIXED: Multiple errors in sequence convergence statement.
-    Issues: (1) sequence_in means seq⊆X (subset), but converges_to needs sequence_on (function ω→X)
-            (2) converges to Empty instead of a point x
-            (3) image converges to f (function) instead of f(x) (point)
-    The comment confirms: "if x_n→x then f(x_n)→f(x)" **)
+(** FIXED: Multiple errors in the earlier draft of this theorem.
+    Issues included: wrong convergence target (Empty instead of a point) and wrong image limit (f instead of f(x)).
+    The intended statement is: if x_n→x then f(x_n)→f(x). **)
 Theorem first_countable_sequences_detect_continuity : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f ->
