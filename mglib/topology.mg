@@ -10010,7 +10010,7 @@ Definition two_by_nat_order_topology : set := order_topology two_by_nat.
 
 (** Helper: singleton {(1,0)} is not open in two_by_nat order topology **)
 Axiom two_by_nat_singleton_not_open :
-  ~ ({UPair (UPair 1 0) (UPair 1 0)} :e two_by_nat_order_topology).
+  ~ ({(1,0)} :e two_by_nat_order_topology).
 
 (** LATEX VERSION: The two-by-ℕ dictionary order space fails to be discrete. **)
 Theorem two_by_nat_not_discrete :
@@ -10019,17 +10019,22 @@ prove ~ (two_by_nat_order_topology = discrete_topology two_by_nat).
 (** Proof by contradiction: assume they're equal **)
 assume Heq: two_by_nat_order_topology = discrete_topology two_by_nat.
 (** In discrete topology, all singletons are open **)
-set singleton_1_0 := {UPair (UPair 1 0) (UPair 1 0)}.
+set singleton_1_0 := {(1,0)}.
 claim Hsingleton_in_discrete: singleton_1_0 :e discrete_topology two_by_nat.
 { (** discrete_topology two_by_nat = Power two_by_nat, so any subset is open **)
   (** Need to show singleton_1_0 :e Power two_by_nat **)
   (** This requires singleton_1_0 c= two_by_nat **)
-  claim Helem: UPair (UPair 1 0) (UPair 1 0) :e two_by_nat.
-  { admit. (** Requires axiom about ordered pair encoding and membership **) }
+  claim H0omega: 0 :e omega.
+  { exact (nat_p_omega 0 nat_0). }
+  claim Helem: (1,0) :e two_by_nat.
+  { exact (tuple_2_setprod 2 omega 1 In_1_2 0 H0omega). }
   claim Hsub: singleton_1_0 c= two_by_nat.
   { let y. assume Hy: y :e singleton_1_0.
     prove y :e two_by_nat.
-    admit. (** Requires singleton_elem axiom and Helem **) }
+    claim HyEq: y = (1,0).
+    { exact (SingE (1,0) y Hy). }
+    rewrite HyEq.
+    exact Helem. }
 
   exact (PowerI two_by_nat singleton_1_0 Hsub).
 }
