@@ -8747,7 +8747,138 @@ apply andI.
                   x
                   Hx
                   Hlt).
-- admit. (** intersection refinement for circular regions **)
+	- (** intersection refinement for circular regions **)
+	  let b1. assume Hb1 : b1 :e circular_regions.
+	  let b2. assume Hb2 : b2 :e circular_regions.
+	  let x. assume Hx1 : x :e b1. assume Hx2 : x :e b2.
+	  prove exists b3 :e circular_regions, x :e b3 /\ b3 c= b1 :/\: b2.
+	  claim Hb1prop :
+	    exists c1:set, exists r1:set,
+	      c1 :e EuclidPlane /\ Rlt 0 r1 /\
+	      b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1}.
+	  { exact (SepE2 (Power EuclidPlane)
+	                 (fun U0 : set => exists c:set, exists r:set,
+	                   c :e EuclidPlane /\ Rlt 0 r /\
+	                   U0 = {p :e EuclidPlane|Rlt (distance_R2 p c) r})
+	                 b1
+	                 Hb1). }
+	  claim Hb2prop :
+	    exists c2:set, exists r2:set,
+	      c2 :e EuclidPlane /\ Rlt 0 r2 /\
+	      b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2}.
+	  { exact (SepE2 (Power EuclidPlane)
+	                 (fun U0 : set => exists c:set, exists r:set,
+	                   c :e EuclidPlane /\ Rlt 0 r /\
+	                   U0 = {p :e EuclidPlane|Rlt (distance_R2 p c) r})
+	                 b2
+	                 Hb2). }
+	  apply Hb1prop.
+	  let c1. assume Hb1prop2.
+	  apply Hb1prop2.
+	  let r1. assume Hb1core.
+	  apply Hb2prop.
+	  let c2. assume Hb2prop2.
+	  apply Hb2prop2.
+	  let r2. assume Hb2core.
+	  claim Hc1 : c1 :e EuclidPlane.
+	  { exact (andEL (c1 :e EuclidPlane) (Rlt 0 r1 /\ b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1}) Hb1core). }
+	  claim Hr1 : Rlt 0 r1.
+	  { exact (andEL (Rlt 0 r1) (b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1})
+	                (andER (c1 :e EuclidPlane) (Rlt 0 r1 /\ b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1}) Hb1core)). }
+	  claim Hb1eq : b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1}.
+	  { exact (andER (Rlt 0 r1) (b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1})
+	                (andER (c1 :e EuclidPlane) (Rlt 0 r1 /\ b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1}) Hb1core)). }
+	  claim Hc2 : c2 :e EuclidPlane.
+	  { exact (andEL (c2 :e EuclidPlane) (Rlt 0 r2 /\ b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2}) Hb2core). }
+	  claim Hr2 : Rlt 0 r2.
+	  { exact (andEL (Rlt 0 r2) (b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2})
+	                (andER (c2 :e EuclidPlane) (Rlt 0 r2 /\ b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2}) Hb2core)). }
+	  claim Hb2eq : b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2}.
+	  { exact (andER (Rlt 0 r2) (b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2})
+	                (andER (c2 :e EuclidPlane) (Rlt 0 r2 /\ b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2}) Hb2core)). }
+	  claim Hx1' : x :e {p :e EuclidPlane|Rlt (distance_R2 p c1) r1}.
+	  { rewrite <- Hb1eq. exact Hx1. }
+	  claim Hx2' : x :e {p :e EuclidPlane|Rlt (distance_R2 p c2) r2}.
+	  { rewrite <- Hb2eq. exact Hx2. }
+	  claim HxEuclid : x :e EuclidPlane.
+	  { exact (SepE1 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 c1) r1) x Hx1'). }
+	  claim Hxball1 : Rlt (distance_R2 x c1) r1.
+	  { exact (SepE2 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 c1) r1) x Hx1'). }
+	  claim Hxball2 : Rlt (distance_R2 x c2) r2.
+	  { exact (SepE2 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 c2) r2) x Hx2'). }
+
+	  (** Metric refinement lemma for EuclidPlane balls around x **)
+	  claim Hrefine :
+	    exists r3:set,
+	      Rlt 0 r3
+	      /\ (forall p:set,
+	            p :e EuclidPlane ->
+	            Rlt (distance_R2 p x) r3 ->
+	            Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2).
+	  admit.
+	  apply Hrefine.
+	  let r3. assume Hrefine2.
+	  claim Hr3 : Rlt 0 r3.
+	  { exact (andEL (Rlt 0 r3)
+	                (forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2)
+	                Hrefine2). }
+	  claim HrefineP :
+	    forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2.
+	  { exact (andER (Rlt 0 r3)
+	                (forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2)
+	                Hrefine2). }
+
+	  set b3 := {p :e EuclidPlane|Rlt (distance_R2 p x) r3}.
+	  witness b3.
+	  apply andI.
+	  - prove b3 :e circular_regions.
+	    claim Hb3pow : b3 :e Power EuclidPlane.
+	    { apply PowerI EuclidPlane b3.
+	      let p. assume Hp.
+	      exact (SepE1 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) r3) p Hp). }
+	    claim Hb3prop :
+	      exists c:set, exists r:set,
+	        c :e EuclidPlane /\ Rlt 0 r /\
+	        b3 = {p :e EuclidPlane|Rlt (distance_R2 p c) r}.
+	    { witness x. witness r3.
+	      apply andI.
+	      - apply andI.
+	        + exact HxEuclid.
+	        + exact Hr3.
+	      - reflexivity. }
+	    exact (SepI (Power EuclidPlane)
+	                (fun U0 : set => exists c:set, exists r:set,
+	                  c :e EuclidPlane /\ Rlt 0 r /\
+	                  U0 = {p :e EuclidPlane|Rlt (distance_R2 p c) r})
+	                b3
+	                Hb3pow
+	                Hb3prop).
+	  - apply andI.
+	    + prove x :e b3.
+	      claim Hdx : Rlt (distance_R2 x x) r3.
+	      { rewrite (distance_R2_refl_0 x HxEuclid).
+	        exact Hr3. }
+	      exact (SepI EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) r3) x HxEuclid Hdx).
+	    + prove b3 c= b1 :/\: b2.
+	      let p. assume Hp3 : p :e b3.
+	      prove p :e b1 :/\: b2.
+	      claim HpE : p :e EuclidPlane.
+	      { exact (SepE1 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) r3) p Hp3). }
+	      claim Hpball : Rlt (distance_R2 p x) r3.
+	      { exact (SepE2 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) r3) p Hp3). }
+	      claim Hboth : Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2.
+	      { exact (HrefineP p HpE Hpball). }
+	      claim Hpball1 : Rlt (distance_R2 p c1) r1.
+	      { exact (andEL (Rlt (distance_R2 p c1) r1) (Rlt (distance_R2 p c2) r2) Hboth). }
+	      claim Hpball2 : Rlt (distance_R2 p c2) r2.
+	      { exact (andER (Rlt (distance_R2 p c1) r1) (Rlt (distance_R2 p c2) r2) Hboth). }
+	      claim Hpb1 : p :e b1.
+	      { rewrite Hb1eq.
+	        exact (SepI EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 c1) r1) p HpE Hpball1). }
+	      claim Hpb2 : p :e b2.
+	      { rewrite Hb2eq.
+	        exact (SepI EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 c2) r2) p HpE Hpball2). }
+	      exact (binintersectI b1 b2 p Hpb1 Hpb2).
 Qed.
 
 (** from §13 Example 4: rectangular regions form a basis on EuclidPlane **)
