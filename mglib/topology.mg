@@ -11038,7 +11038,47 @@ apply andI.
 - apply andI.
   + apply andI.
     * admit. (** R_upper_limit_topology finer_than R_standard_topology **)
-    * admit. (** R_K_topology finer_than R_standard_topology **)
+    * prove finer_than R_K_topology R_standard_topology.
+      (** finer_than T' T means T c= T' **)
+      prove R_standard_topology c= R_K_topology.
+      let U. assume HU: U :e R_standard_topology.
+      (** Expand generated_topology membership for the standard topology **)
+      claim HUinPow : U :e Power R.
+      { exact (SepE1 (Power R)
+                     (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+                     U
+                     HU). }
+      claim HUprop : forall x :e U, exists b0 :e R_standard_basis, x :e b0 /\ b0 c= U.
+      { exact (SepE2 (Power R)
+                     (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+                     U
+                     HU). }
+      (** Show U satisfies the defining property for generated_topology R (R_standard_basis :\/: R_K_basis) **)
+      claim HUpropK : forall x :e U, exists b0 :e (R_standard_basis :\/: R_K_basis), x :e b0 /\ b0 c= U.
+      { let x. assume HxU.
+        claim Hexb : exists b0 :e R_standard_basis, x :e b0 /\ b0 c= U.
+        { exact (HUprop x HxU). }
+        apply Hexb.
+        let b0. assume Hb0pair.
+        claim Hb0Std : b0 :e R_standard_basis.
+        { exact (andEL (b0 :e R_standard_basis) (x :e b0 /\ b0 c= U) Hb0pair). }
+        claim Hb0prop : x :e b0 /\ b0 c= U.
+        { exact (andER (b0 :e R_standard_basis) (x :e b0 /\ b0 c= U) Hb0pair). }
+        claim Hxb0 : x :e b0.
+        { exact (andEL (x :e b0) (b0 c= U) Hb0prop). }
+        claim Hb0subU : b0 c= U.
+        { exact (andER (x :e b0) (b0 c= U) Hb0prop). }
+        witness b0.
+        apply andI.
+        - exact (binunionI1 R_standard_basis R_K_basis b0 Hb0Std).
+        - apply andI.
+          + exact Hxb0.
+          + exact Hb0subU. }
+      exact (SepI (Power R)
+                  (fun U0 : set => forall x0 :e U0, exists b0 :e (R_standard_basis :\/: R_K_basis), x0 :e b0 /\ b0 c= U0)
+                  U
+                  HUinPow
+                  HUpropK).
   + admit. (** R_standard_topology finer_than R_finite_complement_topology **)
 - prove finer_than R_standard_topology R_ray_topology.
   let U. assume HU: U :e R_ray_topology.
