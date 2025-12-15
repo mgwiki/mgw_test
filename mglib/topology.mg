@@ -18878,11 +18878,11 @@ Axiom preimage_implies_function : forall X Tx Y Ty f:set,
 
 (** continuity at a point **)
 (** LATEX VERSION: f is continuous at x if for every neighborhood V of f(x), there exists neighborhood U of x with f(U)⊆V. **)
-(** stub: simplified definition using neighborhoods **)
+(** FIXED: Formalized using open-set neighborhood criterion in the standard topology on R. **)
 Definition continuous_at : set -> set -> prop := fun f x =>
   function_on f R R /\ x :e R /\
-  forall eps:set, eps :e R ->
-    exists delta:set, delta :e R /\ True.
+  forall V:set, V :e R_standard_topology -> apply_fun f x :e V ->
+    exists U:set, U :e R_standard_topology /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V.
 
 (** from §18 Theorem 18.1: equivalent formulations of continuity **) 
 (** LATEX VERSION: Equivalent characterizations of continuity: open-preimage, closed-preimage, neighborhood criterion. **)
