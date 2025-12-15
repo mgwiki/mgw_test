@@ -8901,7 +8901,147 @@ apply andI.
 	                  p
 	                  Hp
 	                  Hpred).
-  - admit. (** intersection refinement for rectangular regions **)
+  - let b1. assume Hb1 : b1 :e rectangular_regions.
+    let b2. assume Hb2 : b2 :e rectangular_regions.
+    let p. assume Hp1 : p :e b1. assume Hp2 : p :e b2.
+    prove exists b3 :e rectangular_regions, p :e b3 /\ b3 c= b1 :/\: b2.
+    (** Unpack b1 as a rectangle with parameters a1,b1x,c1,d1 **)
+    claim Hb1prop :
+      exists a1:set, exists b1x:set, exists c1:set, exists d1:set,
+        a1 :e R /\ b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1 /\
+          b1 = {q :e EuclidPlane|
+                  exists x0:set, exists y0:set,
+                    q = (x0,y0) /\ Rlt a1 x0 /\ Rlt x0 b1x /\ Rlt c1 y0 /\ Rlt y0 d1}.
+    { exact (SepE2 (Power EuclidPlane)
+                   (fun U0 : set =>
+                     exists a b c d:set, a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d /\
+                       U0 = {p1 :e EuclidPlane|
+                              exists x0:set, exists y0:set,
+                                p1 = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b /\ Rlt c y0 /\ Rlt y0 d})
+                   b1
+                   Hb1). }
+    apply Hb1prop.
+    let a1. assume Hb1prop2.
+    apply Hb1prop2.
+    let b1x. assume Hb1prop3.
+    apply Hb1prop3.
+    let c1. assume Hb1prop4.
+    apply Hb1prop4.
+    let d1. assume Hb1core.
+    (** Unpack b2 similarly **)
+    claim Hb2prop :
+      exists a2:set, exists b2x:set, exists c2:set, exists d2:set,
+        a2 :e R /\ b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2 /\
+          b2 = {q :e EuclidPlane|
+                  exists x0:set, exists y0:set,
+                    q = (x0,y0) /\ Rlt a2 x0 /\ Rlt x0 b2x /\ Rlt c2 y0 /\ Rlt y0 d2}.
+    { exact (SepE2 (Power EuclidPlane)
+                   (fun U0 : set =>
+                     exists a b c d:set, a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d /\
+                       U0 = {p1 :e EuclidPlane|
+                              exists x0:set, exists y0:set,
+                                p1 = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b /\ Rlt c y0 /\ Rlt y0 d})
+                   b2
+                   Hb2). }
+    apply Hb2prop.
+    let a2. assume Hb2prop2.
+    apply Hb2prop2.
+    let b2x. assume Hb2prop3.
+    apply Hb2prop3.
+    let c2. assume Hb2prop4.
+    apply Hb2prop4.
+    let d2. assume Hb2core.
+    (** Extract equations and point coordinates from membership hypotheses Hp1 and Hp2 **)
+    claim Hb1eq :
+      b1 = {q :e EuclidPlane|
+              exists x0:set, exists y0:set,
+                q = (x0,y0) /\ Rlt a1 x0 /\ Rlt x0 b1x /\ Rlt c1 y0 /\ Rlt y0 d1}.
+    { exact (andER (a1 :e R /\ b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1)
+                  (b1 = {q :e EuclidPlane|
+                          exists x0:set, exists y0:set,
+                            q = (x0,y0) /\ Rlt a1 x0 /\ Rlt x0 b1x /\ Rlt c1 y0 /\ Rlt y0 d1})
+                  Hb1core). }
+    claim Hb2eq :
+      b2 = {q :e EuclidPlane|
+              exists x0:set, exists y0:set,
+                q = (x0,y0) /\ Rlt a2 x0 /\ Rlt x0 b2x /\ Rlt c2 y0 /\ Rlt y0 d2}.
+    { exact (andER (a2 :e R /\ b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2)
+                  (b2 = {q :e EuclidPlane|
+                          exists x0:set, exists y0:set,
+                            q = (x0,y0) /\ Rlt a2 x0 /\ Rlt x0 b2x /\ Rlt c2 y0 /\ Rlt y0 d2})
+                  Hb2core). }
+    claim Hp1' : p :e {q :e EuclidPlane|
+                        exists x0:set, exists y0:set,
+                          q = (x0,y0) /\ Rlt a1 x0 /\ Rlt x0 b1x /\ Rlt c1 y0 /\ Rlt y0 d1}.
+    { rewrite <- Hb1eq. exact Hp1. }
+    claim Hp2' : p :e {q :e EuclidPlane|
+                        exists x0:set, exists y0:set,
+                          q = (x0,y0) /\ Rlt a2 x0 /\ Rlt x0 b2x /\ Rlt c2 y0 /\ Rlt y0 d2}.
+    { rewrite <- Hb2eq. exact Hp2. }
+    claim Hp1coords :
+      exists x1:set, exists y1:set,
+        p = (x1,y1) /\ Rlt a1 x1 /\ Rlt x1 b1x /\ Rlt c1 y1 /\ Rlt y1 d1.
+    { exact (SepE2 EuclidPlane
+                   (fun q : set =>
+                     exists x0:set, exists y0:set,
+                       q = (x0,y0) /\ Rlt a1 x0 /\ Rlt x0 b1x /\ Rlt c1 y0 /\ Rlt y0 d1)
+                   p
+                   Hp1'). }
+    claim Hp2coords :
+      exists x2:set, exists y2:set,
+        p = (x2,y2) /\ Rlt a2 x2 /\ Rlt x2 b2x /\ Rlt c2 y2 /\ Rlt y2 d2.
+    { exact (SepE2 EuclidPlane
+                   (fun q : set =>
+                     exists x0:set, exists y0:set,
+                       q = (x0,y0) /\ Rlt a2 x0 /\ Rlt x0 b2x /\ Rlt c2 y0 /\ Rlt y0 d2)
+                   p
+                   Hp2'). }
+    (** Reduce to the usual coordinate inequalities at p **)
+    apply Hp1coords.
+    let x1. assume Hp1coords2.
+    apply Hp1coords2.
+    let y1. assume Hp1ineq.
+    apply Hp2coords.
+    let x2. assume Hp2coords2.
+    apply Hp2coords2.
+    let y2. assume Hp2ineq.
+    (** Identify x1=x2 and y1=y2 via tuple equality **)
+    claim Hp_tup1 : p = (x1,y1).
+    { claim H1 : (((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x) /\ Rlt c1 y1).
+      { exact (andEL (((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x) /\ Rlt c1 y1)
+                    (Rlt y1 d1)
+                    Hp1ineq). }
+      claim H2 : ((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x).
+      { exact (andEL ((p = (x1,y1) /\ Rlt a1 x1) /\ Rlt x1 b1x)
+                    (Rlt c1 y1)
+                    H1). }
+      claim H3 : (p = (x1,y1) /\ Rlt a1 x1).
+      { exact (andEL (p = (x1,y1) /\ Rlt a1 x1)
+                    (Rlt x1 b1x)
+                    H2). }
+      exact (andEL (p = (x1,y1)) (Rlt a1 x1) H3). }
+    claim Hp_tup2 : p = (x2,y2).
+    { claim H1 : (((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x) /\ Rlt c2 y2).
+      { exact (andEL (((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x) /\ Rlt c2 y2)
+                    (Rlt y2 d2)
+                    Hp2ineq). }
+      claim H2 : ((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x).
+      { exact (andEL ((p = (x2,y2) /\ Rlt a2 x2) /\ Rlt x2 b2x)
+                    (Rlt c2 y2)
+                    H1). }
+      claim H3 : (p = (x2,y2) /\ Rlt a2 x2).
+      { exact (andEL (p = (x2,y2) /\ Rlt a2 x2)
+                    (Rlt x2 b2x)
+                    H2). }
+      exact (andEL (p = (x2,y2)) (Rlt a2 x2) H3). }
+    claim Heq12 : (x1,y1) = (x2,y2).
+    { rewrite <- Hp_tup1. rewrite <- Hp_tup2. reflexivity. }
+    claim Hcoords : x1 = x2 /\ y1 = y2.
+    { exact (tuple_eq_coords_R2 x1 y1 x2 y2 Heq12). }
+    (** At this point we have x1,y1 and inequalities from both rectangles.
+        The remaining task is to pick new endpoints a3,b3,c3,d3 giving a rectangle around (x1,y1)
+        that is contained in the intersection. **)
+    admit. (** choose a smaller rectangle around p inside both rectangles **)
 Qed.
 
 (** from §13 Example 4: circular and rectangular bases generate the same topology **)
