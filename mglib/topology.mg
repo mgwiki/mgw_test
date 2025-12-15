@@ -10835,6 +10835,10 @@ Definition open_interval : set -> set -> set := fun a b => {x :e R|Rlt a x /\ Rl
 (** LATEX VERSION: Lower limit topology uses half open intervals [a,b). **)
 Definition halfopen_interval_left : set -> set -> set := fun a b => {x :e R|~(Rlt x a) /\ Rlt x b}.
 
+(** from §13 Exercise 7: upper limit basis element **)
+(** LATEX VERSION: Upper limit topology uses half open intervals (a,b]. **)
+Definition halfopen_interval_right : set -> set -> set := fun a b => {x :e R|Rlt a x /\ ~(Rlt b x)}.
+
 (** from §13 Exercise 6: open interval is a subset of ℝ **)
 (** LATEX VERSION: (a,b) is a subset of ℝ. **)
 Theorem open_interval_Subq_R : forall a b:set, open_interval a b c= R.
@@ -10876,6 +10880,12 @@ Definition R_lower_limit_basis : set :=
 Definition R_lower_limit_topology : set :=
   generated_topology R R_lower_limit_basis.
 
+Definition R_upper_limit_basis : set :=
+  \/_ a :e R, {halfopen_interval_right a b|b :e R}.
+
+Definition R_upper_limit_topology : set :=
+  generated_topology R R_upper_limit_basis.
+
 (** FIXED: Now uses proper reciprocal from line 5762.
     recip_SNo computes 1/x for surreal numbers (which includes naturals).
     For n∈ω, recip_SNo n computes 1/n. **)
@@ -10908,7 +10918,6 @@ Qed.
 (** from §13 Exercise 7: containment relations among five ℝ topologies **) 
 (** LATEX VERSION: Exercise 7 lists several standard ℝ topologies and records which contain which (upper limit finer than standard, etc.). **)
 Definition R_finite_complement_topology : set := finite_complement_topology R.
-Definition R_upper_limit_topology : set := R_lower_limit_topology.
 Definition R_ray_topology : set :=
   {U :e Power R|U = Empty \/ U = R \/ (exists a :e R, U = {x :e R|Rlt a x})}.
 
