@@ -8714,7 +8714,7 @@ claim Hswapx : add_SNo xc (minus_SNo xp) = minus_SNo (add_SNo xp (minus_SNo xc))
   claim Hinv : minus_SNo (minus_SNo xc) = xc.
   { exact (minus_SNo_invol xc HxcS). }
   claim Hneg2 : minus_SNo (add_SNo xp (minus_SNo xc)) = add_SNo (minus_SNo xp) xc.
-  { rewrite <- Hinv.
+  { rewrite <- Hinv at 2.
     exact Hneg. }
   claim Hcom : add_SNo (minus_SNo xp) xc = add_SNo xc (minus_SNo xp).
   { exact (add_SNo_com (minus_SNo xp) xc HmxpS HxcS). }
@@ -8729,7 +8729,7 @@ claim Hswapy : add_SNo yc (minus_SNo yp) = minus_SNo (add_SNo yp (minus_SNo yc))
   claim Hinv : minus_SNo (minus_SNo yc) = yc.
   { exact (minus_SNo_invol yc HycS). }
   claim Hneg2 : minus_SNo (add_SNo yp (minus_SNo yc)) = add_SNo (minus_SNo yp) yc.
-  { rewrite <- Hinv.
+  { rewrite <- Hinv at 2.
     exact Hneg. }
   claim Hcom : add_SNo (minus_SNo yp) yc = add_SNo yc (minus_SNo yp).
   { exact (add_SNo_com (minus_SNo yp) yc HmypS HycS). }
