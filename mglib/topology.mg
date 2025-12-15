@@ -9053,6 +9053,52 @@ exact (SepI (Power EuclidPlane)
             HPred).
 Qed.
 
+(** helper for §13 Example 4: two-ball refinement around a point **)
+(** LATEX VERSION: If x lies in two open balls B(c1,r1) and B(c2,r2), then there is a smaller ball B(x,r3) contained in their intersection. **)
+Theorem ball_refine_two_balls :
+  forall x c1 c2 r1 r2:set,
+    x :e EuclidPlane ->
+    c1 :e EuclidPlane ->
+    c2 :e EuclidPlane ->
+    Rlt 0 r1 ->
+    Rlt 0 r2 ->
+    Rlt (distance_R2 x c1) r1 ->
+    Rlt (distance_R2 x c2) r2 ->
+    exists r3:set,
+      Rlt 0 r3 /\
+      (forall p:set,
+        p :e EuclidPlane ->
+        Rlt (distance_R2 p x) r3 ->
+        Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2).
+admit.
+Qed.
+
+(** helper for §13 Example 4: rectangle inside a ball around a center **)
+(** LATEX VERSION: Every point x in a ball B(c,r0) has a rectangular neighborhood contained in B(c,r0). **)
+Theorem rectangle_inside_ball :
+  forall x c r0:set,
+    x :e EuclidPlane ->
+    c :e EuclidPlane ->
+    Rlt 0 r0 ->
+    Rlt (distance_R2 x c) r0 ->
+    exists r :e rectangular_regions,
+      x :e r /\ r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}.
+admit.
+Qed.
+
+(** helper for §13 Example 4: ball inside a rectangle around a point **)
+(** LATEX VERSION: Every point x in a rectangle has a circular neighborhood contained in it. **)
+Theorem ball_inside_rectangle :
+  forall b x:set,
+    b :e rectangular_regions ->
+    x :e EuclidPlane ->
+    x :e b ->
+    exists r3:set,
+      Rlt 0 r3 /\
+      (forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> p :e b).
+admit.
+Qed.
+
 (** from §13 Example 4: circular regions form a basis on EuclidPlane **)
 (** LATEX VERSION: The family of circular regions is a basis for a topology on R^2. **)
 Theorem circular_regions_basis_plane : basis_on EuclidPlane circular_regions.
@@ -9161,17 +9207,9 @@ apply andI.
 	  claim Hxball2 : Rlt (distance_R2 x c2) r2.
 	  { exact (SepE2 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 c2) r2) x Hx2'). }
 
-	  (** Metric refinement lemma for EuclidPlane balls around x **)
-		  claim Hrefine :
-		    exists r3:set,
-		      Rlt 0 r3
-		      /\ (forall p:set,
-		            p :e EuclidPlane ->
-		            Rlt (distance_R2 p x) r3 ->
-		            Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2).
-		  admit. (** metric refinement: choose r3 > 0 so ball(x,r3) is included in both given balls, using triangle inequality for distance_R2 **)
-		  apply Hrefine.
-		  let r3. assume Hrefine2.
+		  (** Metric refinement lemma for EuclidPlane balls around x **)
+			  apply (ball_refine_two_balls x c1 c2 r1 r2 HxEuclid Hc1 Hc2 Hr1 Hr2 Hxball1 Hxball2).
+			  let r3. assume Hrefine2.
 	  claim Hr3 : Rlt 0 r3.
 	  { exact (andEL (Rlt 0 r3)
 	                (forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2)
@@ -10167,10 +10205,7 @@ claim Hxball : Rlt (distance_R2 x c) r0.
 { exact (SepE2 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 c) r0) x Hxb'). }
 
 (** Core refinement: build a rectangle around x inside the ball around c **)
-claim HrectInBall :
-  exists r :e rectangular_regions, x :e r /\ r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}.
-admit. (** use Euclidean geometry: pick small eps>0 with ball(x,eps) subset ball(c,r0), then choose rectangle using x-coordinates +/- eps **)
-apply HrectInBall.
+apply (rectangle_inside_ball x c r0 HxE Hc Hr0 Hxball).
 let r. assume Hrpair.
 witness r.
 claim Hr : r :e rectangular_regions.
@@ -10243,12 +10278,7 @@ claim HxE : x :e EuclidPlane.
              Hxb'). }
 
 (** Core refinement: build a small circular region around x contained in the rectangle **)
-claim Hrad :
-  exists r3:set,
-    Rlt 0 r3
-    /\ (forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> p :e b).
-admit. (** choose r3 > 0 less than all four coordinate distances to the sides; then any p with d(p,x)<r3 stays inside rectangle b **)
-apply Hrad.
+apply (ball_inside_rectangle b x Hb HxE Hxb).
 let r3. assume Hrad2.
 claim Hr3 : Rlt 0 r3.
 { exact (andEL (Rlt 0 r3)
