@@ -18861,8 +18861,8 @@ prove exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fu
 admit. (** in the finite complement topology, 1/n converges to every point of R **)
 Qed.
 
-(** LATEX VERSION: Exercise 15: A topology is T₁ iff every singleton is closed. **)
-Theorem ex17_15_T1_characterization : forall X Tx:set,
+(** helper: T1_space is equivalent to all singleton subsets being closed **)
+Theorem lemma_T1_singletons_closed : forall X Tx:set,
   topology_on X Tx ->
   (T1_space X Tx <-> (forall x:set, x :e X -> closed_in X Tx {x})).
 let X Tx.
@@ -19044,6 +19044,248 @@ apply iffI.
 	    claim Hspec: F c= X -> closed_in X Tx F.
 	    { exact (Hall F HF). }
 	    exact (Hspec HFsub).
+Qed.
+
+(** LATEX VERSION: Exercise 15: Show the T1 axiom is equivalent to the condition that for each pair of points of X, each has a neighborhood not containing the other. **)
+Theorem ex17_15_T1_characterization : forall X Tx:set,
+  topology_on X Tx ->
+  (T1_space X Tx <->
+    forall x y:set, x :e X -> y :e X -> x <> y ->
+      (exists U:set, U :e Tx /\ x :e U /\ y /:e U) /\
+      (exists V:set, V :e Tx /\ y :e V /\ x /:e V)).
+let X Tx.
+assume Htop: topology_on X Tx.
+prove T1_space X Tx <->
+    forall x y:set, x :e X -> y :e X -> x <> y ->
+      (exists U:set, U :e Tx /\ x :e U /\ y /:e U) /\
+      (exists V:set, V :e Tx /\ y :e V /\ x /:e V).
+apply iffI.
+- assume HT1: T1_space X Tx.
+  prove forall x y:set, x :e X -> y :e X -> x <> y ->
+      (exists U:set, U :e Tx /\ x :e U /\ y /:e U) /\
+      (exists V:set, V :e Tx /\ y :e V /\ x /:e V).
+	  claim Hsing_closed: forall z:set, z :e X -> closed_in X Tx {z}.
+	  { exact (iffEL (T1_space X Tx) (forall z:set, z :e X -> closed_in X Tx {z})
+	                 (lemma_T1_singletons_closed X Tx Htop) HT1). }
+  let x y.
+  assume HxX: x :e X.
+  assume HyX: y :e X.
+  assume Hne: x <> y.
+  prove (exists U:set, U :e Tx /\ x :e U /\ y /:e U) /\ (exists V:set, V :e Tx /\ y :e V /\ x /:e V).
+  apply andI.
+  - (** neighborhood of x missing y from closedness of {y} **)
+    claim Hcy: closed_in X Tx {y}.
+    { exact (Hsing_closed y HyX). }
+    claim Hcy2: {y} c= X /\ exists U :e Tx, {y} = X :\: U.
+    { exact (andER (topology_on X Tx) ({y} c= X /\ exists U :e Tx, {y} = X :\: U) Hcy). }
+    claim HexU: exists U:set, U :e Tx /\ {y} = X :\: U.
+    { exact (andER ({y} c= X) (exists U :e Tx, {y} = X :\: U) Hcy2). }
+    set U := Eps_i (fun U0:set => U0 :e Tx /\ {y} = X :\: U0).
+    claim HUprop: U :e Tx /\ {y} = X :\: U.
+    { exact (Eps_i_ex (fun U0:set => U0 :e Tx /\ {y} = X :\: U0) HexU). }
+    claim HUopen: U :e Tx.
+    { exact (andEL (U :e Tx) ({y} = X :\: U) HUprop). }
+    claim Heq: {y} = X :\: U.
+    { exact (andER (U :e Tx) ({y} = X :\: U) HUprop). }
+    witness U.
+    apply andI.
+    - apply andI.
+      + exact HUopen.
+      + (** x is in U since x≠y and {y}=X\\U **)
+        claim Hxnoty: x /:e {y}.
+        { assume Hxy: x :e {y}.
+          claim Hxyeq: x = y.
+          { exact (SingE y x Hxy). }
+          exact (Hne Hxyeq). }
+        claim Hxnot: x /:e (X :\: U).
+        { rewrite <- Heq. exact Hxnoty. }
+        apply (xm (x :e U)).
+        * assume HxU: x :e U. exact HxU.
+        * assume HxnotU: ~(x :e U).
+          claim HxXU: x :e X :\: U.
+          { exact (setminusI X U x HxX HxnotU). }
+          exact (FalseE (Hxnot HxXU) (x :e U)).
+    - (** y not in U since y ∈ X\\U = {y} **)
+      assume HyU: y :e U.
+      claim HySing: y :e {y}.
+      { exact (SingI y). }
+      claim HyXU: y :e X :\: U.
+      { prove y :e X :\: U.
+        rewrite <- Heq.
+        exact HySing. }
+      exact ((setminusE2 X U y HyXU) HyU).
+  - (** neighborhood of y missing x from closedness of {x} **)
+    claim Hcx: closed_in X Tx {x}.
+    { exact (Hsing_closed x HxX). }
+    claim Hcx2: {x} c= X /\ exists V :e Tx, {x} = X :\: V.
+    { exact (andER (topology_on X Tx) ({x} c= X /\ exists V :e Tx, {x} = X :\: V) Hcx). }
+    claim HexV: exists V:set, V :e Tx /\ {x} = X :\: V.
+    { exact (andER ({x} c= X) (exists V :e Tx, {x} = X :\: V) Hcx2). }
+    set V := Eps_i (fun V0:set => V0 :e Tx /\ {x} = X :\: V0).
+    claim HVprop: V :e Tx /\ {x} = X :\: V.
+    { exact (Eps_i_ex (fun V0:set => V0 :e Tx /\ {x} = X :\: V0) HexV). }
+    claim HVopen: V :e Tx.
+    { exact (andEL (V :e Tx) ({x} = X :\: V) HVprop). }
+    claim Heq: {x} = X :\: V.
+    { exact (andER (V :e Tx) ({x} = X :\: V) HVprop). }
+    witness V.
+    apply andI.
+    - apply andI.
+      + exact HVopen.
+      + (** y in V since y≠x and {x}=X\\V **)
+	        claim Hynotx: y /:e {x}.
+	        { assume Hyx: y :e {x}.
+	          claim Hyxeq: y = x.
+	          { exact (SingE x y Hyx). }
+	          claim Hxyeq: x = y.
+	          { rewrite Hyxeq. reflexivity. }
+	          exact (Hne Hxyeq). }
+        claim Hynot: y /:e (X :\: V).
+        { rewrite <- Heq. exact Hynotx. }
+        apply (xm (y :e V)).
+        * assume HyV: y :e V. exact HyV.
+        * assume HynotV: ~(y :e V).
+          claim HyXV: y :e X :\: V.
+          { exact (setminusI X V y HyX HynotV). }
+          exact (FalseE (Hynot HyXV) (y :e V)).
+    - (** x not in V since x ∈ X\\V = {x} **)
+      assume HxV: x :e V.
+      claim HxSing: x :e {x}.
+      { exact (SingI x). }
+      claim HxXV: x :e X :\: V.
+      { prove x :e X :\: V.
+        rewrite <- Heq.
+        exact HxSing. }
+      exact ((setminusE2 X V x HxXV) HxV).
+- assume Hsep:
+    forall x y:set, x :e X -> y :e X -> x <> y ->
+      (exists U:set, U :e Tx /\ x :e U /\ y /:e U) /\
+      (exists V:set, V :e Tx /\ y :e V /\ x /:e V).
+  prove T1_space X Tx.
+  (** it suffices to prove all singletons are closed **)
+  apply (iffER (T1_space X Tx) (forall z:set, z :e X -> closed_in X Tx {z})
+               (lemma_T1_singletons_closed X Tx Htop)).
+  prove forall z:set, z :e X -> closed_in X Tx {z}.
+  let x. assume HxX: x :e X.
+  prove closed_in X Tx {x}.
+  (** show X\\{x} is open as union of all open sets not containing x **)
+  set UFam := {U :e Tx|x /:e U}.
+  claim HUnionOpen: Union UFam :e Tx.
+  { claim HUFamSub: UFam c= Tx.
+    { let U. assume HU: U :e UFam.
+      exact (SepE1 Tx (fun U0:set => x /:e U0) U HU). }
+    exact (topology_union_closed X Tx UFam Htop HUFamSub). }
+  claim HUnionEq: Union UFam = X :\: {x}.
+	  { apply set_ext.
+	    - let y. assume HyU: y :e Union UFam.
+	      prove y :e X :\: {x}.
+	      claim HyUex: exists W:set, y :e W /\ W :e UFam.
+	      { exact (UnionE UFam y HyU). }
+	      set U := Eps_i (fun U0:set => y :e U0 /\ U0 :e UFam).
+	      claim HUprop: y :e U /\ U :e UFam.
+	      { exact (Eps_i_ex (fun U0:set => y :e U0 /\ U0 :e UFam) HyUex). }
+      claim HyU0: y :e U.
+      { exact (andEL (y :e U) (U :e UFam) HUprop). }
+      claim HUin: U :e UFam.
+      { exact (andER (y :e U) (U :e UFam) HUprop). }
+      claim HUinTx: U :e Tx.
+      { exact (SepE1 Tx (fun U0:set => x /:e U0) U HUin). }
+      claim HUSubX: U c= X.
+      { exact (topology_elem_subset X Tx U Htop HUinTx). }
+      claim HyX: y :e X.
+      { exact (HUSubX y HyU0). }
+      claim Hynotx: y /:e {x}.
+      { assume Hyx: y :e {x}.
+	        claim Hyxeq: y = x.
+	        { exact (SingE x y Hyx). }
+		        claim HxnotU: x /:e U.
+		        { exact (SepE2 Tx (fun U0:set => x /:e U0) U HUin). }
+			        claim HynotU: y /:e U.
+			        { assume HyU1: y :e U.
+			          claim Hxy: x = y.
+			          { prove x = y.
+			            symmetry.
+			            exact Hyxeq. }
+				          claim HxU1: x :e U.
+				          { prove x :e U.
+				            rewrite Hxy at 1.
+				            exact HyU1. }
+				          exact (HxnotU HxU1). }
+		        exact (HynotU HyU0). }
+	      exact (setminusI X {x} y HyX Hynotx).
+    - let y. assume HyXx: y :e X :\: {x}.
+      prove y :e Union UFam.
+      claim HyX: y :e X.
+      { exact (setminusE1 X {x} y HyXx). }
+	      claim Hynot: y /:e {x}.
+	      { exact (setminusE2 X {x} y HyXx). }
+	      claim Hyne: y <> x.
+	      { assume Heq.
+	        claim Hyx: y :e {x}.
+	        { prove y :e {x}.
+	          rewrite Heq.
+	          exact (SingI x). }
+	        exact (Hynot Hyx). }
+	      claim Hsep_yx: exists V:set, V :e Tx /\ y :e V /\ x /:e V.
+	      { exact (andEL (exists V:set, V :e Tx /\ y :e V /\ x /:e V)
+	                     (exists U:set, U :e Tx /\ x :e U /\ y /:e U)
+	                     (Hsep y x HyX HxX Hyne)). }
+      set V := Eps_i (fun V0:set => V0 :e Tx /\ y :e V0 /\ x /:e V0).
+	      claim HVprop: V :e Tx /\ y :e V /\ x /:e V.
+	      { exact (Eps_i_ex (fun V0:set => V0 :e Tx /\ y :e V0 /\ x /:e V0) Hsep_yx). }
+	      claim HVleft: V :e Tx /\ y :e V.
+	      { exact (andEL (V :e Tx /\ y :e V) (x /:e V) HVprop). }
+	      claim HVinTx: V :e Tx.
+	      { exact (andEL (V :e Tx) (y :e V) HVleft). }
+	      claim HyV: y :e V.
+	      { exact (andER (V :e Tx) (y :e V) HVleft). }
+	      claim HxnotV: x /:e V.
+	      { exact (andER (V :e Tx /\ y :e V) (x /:e V) HVprop). }
+      claim HVinFam: V :e UFam.
+      { exact (SepI Tx (fun U0:set => x /:e U0) V HVinTx HxnotV). }
+      exact (UnionI UFam y V HyV HVinFam).
+  }
+  (** {x} is closed as complement of the open set X\\{x} **)
+  prove topology_on X Tx /\ ({x} c= X /\ exists U :e Tx, {x} = X :\: U).
+  apply andI.
+  - exact Htop.
+  - apply andI.
+    + let z. assume Hz: z :e {x}.
+      claim Hzeq: z = x.
+      { exact (SingE x z Hz). }
+      rewrite Hzeq.
+      exact HxX.
+	    + witness (Union UFam).
+		      apply andI.
+		      * exact HUnionOpen.
+      * apply set_ext.
+        { let z. assume Hz: z :e {x}.
+          prove z :e X :\: Union UFam.
+          claim Hzeq: z = x.
+          { exact (SingE x z Hz). }
+          rewrite Hzeq.
+          apply setminusI.
+          - exact HxX.
+          - assume Hxin: x :e Union UFam.
+            claim Hxin': x :e X :\: {x}.
+            { prove x :e X :\: {x}.
+              rewrite <- HUnionEq.
+              exact Hxin. }
+            exact ((setminusE2 X {x} x Hxin') (SingI x)).
+        }
+        { let z. assume Hz: z :e X :\: Union UFam.
+          prove z :e {x}.
+          (** use setminus_setminus_eq with U = Union UFam = X\\{x} **)
+          claim HsingSub: {x} c= X.
+          { let t. assume Ht: t :e {x}.
+            claim Hteq: t = x.
+            { exact (SingE x t Ht). }
+            rewrite Hteq.
+            exact HxX. }
+          rewrite <- (setminus_setminus_eq X {x} HsingSub).
+          rewrite <- HUnionEq.
+          exact Hz.
+        }
 Qed.
 
 (** LATEX VERSION: Exercise 16: Closures of K in the standard and lower limit topologies differ. **)
