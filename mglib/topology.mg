@@ -8665,6 +8665,125 @@ rewrite sqrt_SNo_nonneg_0.
 reflexivity.
 Qed.
 
+(** from §13 Example 4: symmetry of Euclidean distance in R^2 **)
+(** LATEX VERSION: The distance function satisfies d(p,c)=d(c,p). **)
+Theorem distance_R2_sym : forall p c:set, p :e EuclidPlane -> c :e EuclidPlane -> distance_R2 p c = distance_R2 c p.
+let p c. assume Hp Hc.
+(** Coordinate realness and SNo-ness **)
+set xp := R2_xcoord p.
+set yp := R2_ycoord p.
+set xc := R2_xcoord c.
+set yc := R2_ycoord c.
+claim HxpR : xp :e R.
+{ exact (EuclidPlane_xcoord_in_R p Hp). }
+claim HypR : yp :e R.
+{ exact (EuclidPlane_ycoord_in_R p Hp). }
+claim HxcR : xc :e R.
+{ exact (EuclidPlane_xcoord_in_R c Hc). }
+claim HycR : yc :e R.
+{ exact (EuclidPlane_ycoord_in_R c Hc). }
+claim HxpS : SNo xp.
+{ exact (real_SNo xp HxpR). }
+claim HypS : SNo yp.
+{ exact (real_SNo yp HypR). }
+claim HxcS : SNo xc.
+{ exact (real_SNo xc HxcR). }
+claim HycS : SNo yc.
+{ exact (real_SNo yc HycR). }
+claim HmxpR : minus_SNo xp :e R.
+{ exact (real_minus_SNo xp HxpR). }
+claim HmypR : minus_SNo yp :e R.
+{ exact (real_minus_SNo yp HypR). }
+claim HmxcR : minus_SNo xc :e R.
+{ exact (real_minus_SNo xc HxcR). }
+claim HmycR : minus_SNo yc :e R.
+{ exact (real_minus_SNo yc HycR). }
+claim HmxpS : SNo (minus_SNo xp).
+{ exact (real_SNo (minus_SNo xp) HmxpR). }
+claim HmypS : SNo (minus_SNo yp).
+{ exact (real_SNo (minus_SNo yp) HmypR). }
+claim HmxcS : SNo (minus_SNo xc).
+{ exact (real_SNo (minus_SNo xc) HmxcR). }
+claim HmycS : SNo (minus_SNo yc).
+{ exact (real_SNo (minus_SNo yc) HmycR). }
+
+(** Show the swapped coordinate differences are negatives of the original ones **)
+claim Hswapx : add_SNo xc (minus_SNo xp) = minus_SNo (add_SNo xp (minus_SNo xc)).
+{ claim Hneg : minus_SNo (add_SNo xp (minus_SNo xc)) = add_SNo (minus_SNo xp) (minus_SNo (minus_SNo xc)).
+  { exact (minus_add_SNo_distr xp (minus_SNo xc) HxpS HmxcS). }
+  claim Hneg2 : minus_SNo (add_SNo xp (minus_SNo xc)) = add_SNo (minus_SNo xp) xc.
+  { rewrite (minus_SNo_invol xc HxcS) at 2.
+    exact Hneg. }
+  claim Hcom : add_SNo (minus_SNo xp) xc = add_SNo xc (minus_SNo xp).
+  { exact (add_SNo_com (minus_SNo xp) xc HmxpS HxcS). }
+  prove add_SNo xc (minus_SNo xp) = minus_SNo (add_SNo xp (minus_SNo xc)).
+  rewrite <- Hcom.
+  rewrite <- Hneg2.
+  reflexivity. }
+
+claim Hswapy : add_SNo yc (minus_SNo yp) = minus_SNo (add_SNo yp (minus_SNo yc)).
+{ claim Hneg : minus_SNo (add_SNo yp (minus_SNo yc)) = add_SNo (minus_SNo yp) (minus_SNo (minus_SNo yc)).
+  { exact (minus_add_SNo_distr yp (minus_SNo yc) HypS HmycS). }
+  claim Hneg2 : minus_SNo (add_SNo yp (minus_SNo yc)) = add_SNo (minus_SNo yp) yc.
+  { rewrite (minus_SNo_invol yc HycS) at 2.
+    exact Hneg. }
+  claim Hcom : add_SNo (minus_SNo yp) yc = add_SNo yc (minus_SNo yp).
+  { exact (add_SNo_com (minus_SNo yp) yc HmypS HycS). }
+  prove add_SNo yc (minus_SNo yp) = minus_SNo (add_SNo yp (minus_SNo yc)).
+  rewrite <- Hcom.
+  rewrite <- Hneg2.
+  reflexivity. }
+
+(** SNo-ness of the original differences **)
+claim HdxR : add_SNo xp (minus_SNo xc) :e R.
+{ exact (real_add_SNo xp HxpR (minus_SNo xc) HmxcR). }
+claim HdyR : add_SNo yp (minus_SNo yc) :e R.
+{ exact (real_add_SNo yp HypR (minus_SNo yc) HmycR). }
+claim HdxS : SNo (add_SNo xp (minus_SNo xc)).
+{ exact (real_SNo (add_SNo xp (minus_SNo xc)) HdxR). }
+claim HdyS : SNo (add_SNo yp (minus_SNo yc)).
+{ exact (real_SNo (add_SNo yp (minus_SNo yc)) HdyR). }
+
+(** Square terms are equal after swapping p and c **)
+claim Hsqx :
+  mul_SNo (add_SNo xc (minus_SNo xp)) (add_SNo xc (minus_SNo xp))
+  = mul_SNo (add_SNo xp (minus_SNo xc)) (add_SNo xp (minus_SNo xc)).
+{ rewrite Hswapx.
+  rewrite Hswapx at 2.
+  rewrite (mul_SNo_minus_minus (add_SNo xp (minus_SNo xc)) (add_SNo xp (minus_SNo xc)) HdxS HdxS).
+  reflexivity. }
+claim Hsqy :
+  mul_SNo (add_SNo yc (minus_SNo yp)) (add_SNo yc (minus_SNo yp))
+  = mul_SNo (add_SNo yp (minus_SNo yc)) (add_SNo yp (minus_SNo yc)).
+{ rewrite Hswapy.
+  rewrite Hswapy at 2.
+  rewrite (mul_SNo_minus_minus (add_SNo yp (minus_SNo yc)) (add_SNo yp (minus_SNo yc)) HdyS HdyS).
+  reflexivity. }
+
+(** Expand both sides to the same sqrt expression **)
+claim Hdefpc : distance_R2 p c =
+  sqrt_SNo_nonneg
+    (add_SNo
+      (mul_SNo (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c)))
+              (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c))))
+      (mul_SNo (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord c)))
+              (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord c))))).
+{ reflexivity. }
+claim Hdefcp : distance_R2 c p =
+  sqrt_SNo_nonneg
+    (add_SNo
+      (mul_SNo (add_SNo (R2_xcoord c) (minus_SNo (R2_xcoord p)))
+              (add_SNo (R2_xcoord c) (minus_SNo (R2_xcoord p))))
+      (mul_SNo (add_SNo (R2_ycoord c) (minus_SNo (R2_ycoord p)))
+              (add_SNo (R2_ycoord c) (minus_SNo (R2_ycoord p))))).
+{ reflexivity. }
+rewrite Hdefpc.
+rewrite Hdefcp.
+rewrite Hsqx.
+rewrite Hsqy.
+reflexivity.
+Qed.
+
 (** from §13 Example 4: circular region basis elements in EuclidPlane **)
 (** LATEX VERSION: Circular regions: sets of the form {p in R^2 | d(p,c) < r} with c in R^2 and 0<r. **)
 Definition circular_regions : set :=
