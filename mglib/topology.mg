@@ -10912,6 +10912,73 @@ Definition R_upper_limit_topology : set := R_lower_limit_topology.
 Definition R_ray_topology : set :=
   {U :e Power R|U = Empty \/ U = R \/ (exists a :e R, U = {x :e R|Rlt a x})}.
 
+(** from §13 Exercise 7: open rays are open in the standard topology **)
+(** LATEX VERSION: The ray (a,∞) is open in the standard topology on ℝ. **)
+Theorem open_ray_in_R_standard_topology : forall a:set, a :e R -> {x :e R|Rlt a x} :e R_standard_topology.
+let a. assume HaR.
+set U := {x :e R|Rlt a x}.
+prove U :e R_standard_topology.
+claim HUinPow : U :e Power R.
+{ apply PowerI.
+  let x. assume Hx.
+  exact (SepE1 R (fun x0 : set => Rlt a x0) x Hx). }
+claim HUprop : forall x :e U, exists b :e R_standard_basis, x :e b /\ b c= U.
+{ let x. assume HxU.
+  claim HxR : x :e R.
+  { exact (SepE1 R (fun x0 : set => Rlt a x0) x HxU). }
+  claim Hax : Rlt a x.
+  { exact (SepE2 R (fun x0 : set => Rlt a x0) x HxU). }
+  claim H0omega : 0 :e omega.
+  { exact (nat_p_omega 0 nat_0). }
+  set e0 := eps_ 0.
+  claim He0SNoS : e0 :e SNoS_ omega.
+  { exact (SNo_eps_SNoS_omega 0 H0omega). }
+  claim He0R : e0 :e R.
+  { exact (SNoS_omega_real e0 He0SNoS). }
+  claim HbR : add_SNo x e0 :e R.
+  { exact (real_add_SNo x HxR e0 He0R). }
+  set b := open_interval a (add_SNo x e0).
+  claim HbStd : b :e R_standard_basis.
+  { claim HbFam : b :e {open_interval a b0|b0 :e R}.
+    { exact (ReplI R (fun b0 : set => open_interval a b0) (add_SNo x e0) HbR). }
+    exact (famunionI R
+                      (fun a0 : set => {open_interval a0 b0|b0 :e R})
+                      a
+                      b
+                      HaR
+                      HbFam). }
+  claim Hxinb : x :e b.
+  { claim Hxlt : x < add_SNo x e0.
+    { exact (add_SNo_eps_Lt x (real_SNo x HxR) 0 H0omega). }
+    claim Hxxe0 : Rlt x (add_SNo x e0).
+    { exact (RltI x (add_SNo x e0) HxR HbR Hxlt). }
+    claim Hpropb : Rlt a x /\ Rlt x (add_SNo x e0).
+    { apply andI.
+      - exact Hax.
+      - exact Hxxe0. }
+    exact (SepI R (fun x0 : set => Rlt a x0 /\ Rlt x0 (add_SNo x e0)) x HxR Hpropb). }
+  claim HbSubU : b c= U.
+  { let y. assume Hyb.
+    claim HyR : y :e R.
+    { exact (SepE1 R (fun x0 : set => Rlt a x0 /\ Rlt x0 (add_SNo x e0)) y Hyb). }
+    claim Hyprop : Rlt a y /\ Rlt y (add_SNo x e0).
+    { exact (SepE2 R (fun x0 : set => Rlt a x0 /\ Rlt x0 (add_SNo x e0)) y Hyb). }
+    claim Hay : Rlt a y.
+    { exact (andEL (Rlt a y) (Rlt y (add_SNo x e0)) Hyprop). }
+    exact (SepI R (fun x0 : set => Rlt a x0) y HyR Hay). }
+  witness b.
+  apply andI.
+  - exact HbStd.
+  - apply andI.
+    + exact Hxinb.
+    + exact HbSubU. }
+exact (SepI (Power R)
+            (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+            U
+            HUinPow
+            HUprop).
+Qed.
+
 (** LATEX VERSION: Containment statements among the five ℝ topologies in Exercise 7. **)
 Theorem ex13_7_R_topology_containments :
   finer_than R_upper_limit_topology R_standard_topology /\
@@ -10925,7 +10992,97 @@ apply andI.
     * admit. (** R_upper_limit_topology finer_than R_standard_topology **)
     * admit. (** R_K_topology finer_than R_standard_topology **)
   + admit. (** R_standard_topology finer_than R_finite_complement_topology **)
-- admit. (** R_standard_topology finer_than R_ray_topology **)
+- prove finer_than R_standard_topology R_ray_topology.
+  let U. assume HU: U :e R_ray_topology.
+  claim HUcases : U = Empty \/ U = R \/ exists a :e R, U = {x :e R|Rlt a x}.
+  { exact (SepE2 (Power R) (fun U0 : set => U0 = Empty \/ U0 = R \/ exists a0 :e R, U0 = {x :e R|Rlt a0 x}) U HU). }
+  claim Hempty : Empty :e R_standard_topology.
+  { exact (SepI (Power R)
+                (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+                Empty
+                (Empty_In_Power R)
+                (fun x0 Hx0 => EmptyE x0 Hx0 (exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= Empty))). }
+  claim Hall : R :e R_standard_topology.
+  { claim HRpow : R :e Power R.
+    { apply PowerI.
+      exact (Subq_ref R). }
+    claim HRprop : forall x :e R, exists b0 :e R_standard_basis, x :e b0 /\ b0 c= R.
+    { let x. assume HxR.
+      set a0 := add_SNo x (minus_SNo 1).
+      set b0 := add_SNo x 1.
+      set I := open_interval a0 b0.
+      claim Hm1R : minus_SNo 1 :e R.
+      { exact (real_minus_SNo 1 real_1). }
+      claim Ha0R : a0 :e R.
+      { exact (real_add_SNo x HxR (minus_SNo 1) Hm1R). }
+      claim Hb0R : b0 :e R.
+      { exact (real_add_SNo x HxR 1 real_1). }
+      claim HxS : SNo x.
+      { exact (real_SNo x HxR). }
+      claim Hm1S : SNo (minus_SNo 1).
+      { exact (real_SNo (minus_SNo 1) Hm1R). }
+      claim Ha0lt : a0 < x.
+      { claim Hlt : a0 < add_SNo x 0.
+        { exact (add_SNo_Lt2 x (minus_SNo 1) 0 HxS Hm1S SNo_0 minus_1_lt_0). }
+        rewrite <- (add_SNo_0R x HxS) at 2.
+        exact Hlt. }
+      claim Hxb0 : x < b0.
+      { claim Hlt : add_SNo x 0 < b0.
+        { exact (add_SNo_Lt2 x 0 1 HxS SNo_0 (real_SNo 1 real_1) SNoLt_0_1). }
+        rewrite <- (add_SNo_0R x HxS) at 1.
+        exact Hlt. }
+      claim HxInI : x :e I.
+      { claim Hax : Rlt a0 x.
+        { exact (RltI a0 x Ha0R HxR Ha0lt). }
+        claim Hxb : Rlt x b0.
+        { exact (RltI x b0 HxR Hb0R Hxb0). }
+        claim Hconj : Rlt a0 x /\ Rlt x b0.
+        { apply andI.
+          - exact Hax.
+          - exact Hxb. }
+        exact (SepI R (fun x0 : set => Rlt a0 x0 /\ Rlt x0 b0) x HxR Hconj). }
+      claim HIStd : I :e R_standard_basis.
+      { claim HIa : I :e {open_interval a0 bb|bb :e R}.
+        { exact (ReplI R (fun bb : set => open_interval a0 bb) b0 Hb0R). }
+        exact (famunionI R
+                         (fun aa : set => {open_interval aa bb|bb :e R})
+                         a0
+                         I
+                         Ha0R
+                         HIa). }
+      witness I.
+      apply andI.
+      - exact HIStd.
+      - apply andI.
+        + exact HxInI.
+        + exact (open_interval_Subq_R a0 b0). }
+    exact (SepI (Power R)
+                (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+                R
+                HRpow
+                HRprop). }
+  claim Hcase1 : U = Empty -> U :e R_standard_topology.
+  { assume Heq. rewrite Heq. exact Hempty. }
+  claim Hcase2 : U = R -> U :e R_standard_topology.
+  { assume Heq. rewrite Heq. exact Hall. }
+  claim Hcase3 : (exists a0 :e R, U = {x :e R|Rlt a0 x}) -> U :e R_standard_topology.
+  { assume Hex.
+    apply Hex.
+    let a0.
+    assume Ha0pair : a0 :e R /\ U = {x :e R|Rlt a0 x}.
+    claim Ha0R : a0 :e R.
+    { exact (andEL (a0 :e R) (U = {x :e R|Rlt a0 x}) Ha0pair). }
+    claim Heq : U = {x :e R|Rlt a0 x}.
+    { exact (andER (a0 :e R) (U = {x :e R|Rlt a0 x}) Ha0pair). }
+    rewrite Heq.
+    exact (open_ray_in_R_standard_topology a0 Ha0R). }
+  prove U :e R_standard_topology.
+  apply (HUcases (U :e R_standard_topology)).
+  - assume HUR : U = Empty \/ U = R.
+    apply (HUR (U :e R_standard_topology)).
+    + exact Hcase1.
+    + exact Hcase2.
+  - exact Hcase3.
 Qed.
 
 (** from §13 Exercise 8(a): rational open intervals generate standard topology on ℝ **) 
