@@ -10455,8 +10455,9 @@ prove generated_topology X B c= generated_topology X B'.
 Qed.
 
 (** from §13 Definition: subbasis and its generated topology **) 
-(** LATEX VERSION: A subbasis S on X is any subcollection of P(X); its generated topology is obtained via finite intersections (basis_of_subbasis) and then generated_topology. **)
-Definition subbasis_on : set -> set -> prop := fun X S => S c= Power X.
+(** LATEX VERSION: A subbasis S for a topology on X is a collection of subsets of X whose union equals X. **)
+Definition subbasis_on : set -> set -> prop := fun X S =>
+  S c= Power X /\ Union S = X.
 
 (** from §13: finite intersections of subbasis elements **)
 (** LATEX VERSION: intersection_of_family collects common points of all sets in a family; finite_subcollections picks finite families; finite_intersections_of X S takes intersections of finite subfamilies of S. **)
@@ -10546,7 +10547,7 @@ Theorem subbasis_elem_in_basis : forall X S s:set,
 let X S s. assume HSsub HsS HsNonempty.
 prove s :e basis_of_subbasis X S.
 claim HS: S c= Power X.
-{ exact HSsub. }
+{ exact (andEL (S c= Power X) (Union S = X) HSsub). }
 claim HsPow: s :e Power X.
 { exact (HS s HsS). }
 claim HsSubX: s c= X.
@@ -12460,21 +12461,50 @@ claim HTmax_maximal: forall T', topology_on X T' /\ (forall T :e Fam, T' c= T) -
 (** Now prove Tmin properties **)
 (** First show Union Fam is a subbasis **)
 claim HUnionFam_subbasis: subbasis_on X (Union Fam).
-{ (** subbasis_on X S := S c= Power X **)
-  let U. assume HU: U :e Union Fam.
-  apply UnionE_impred Fam U HU.
-  let T. assume HUT: U :e T. assume HT: T :e Fam.
-  claim HTtop: topology_on X T.
-  { exact (HfamTop T HT). }
-  claim H1: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
-  { exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U0 :e T, forall V :e T, U0 :/\: V :e T) HTtop). }
-  claim H2: (T c= Power X /\ Empty :e T) /\ X :e T.
-  { exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
-  claim H3: T c= Power X /\ Empty :e T.
-  { exact (andEL (T c= Power X /\ Empty :e T) (X :e T) H2). }
-  claim HTsub: T c= Power X.
-  { exact (andEL (T c= Power X) (Empty :e T) H3). }
-  exact (HTsub U HUT).
+{ (** subbasis_on X S := (S c= Power X) /\ Union S = X **)
+  apply andI.
+  - (** Union Fam c= Power X **)
+    let U. assume HU: U :e Union Fam.
+    apply UnionE_impred Fam U HU.
+    let T. assume HUT: U :e T. assume HT: T :e Fam.
+    claim HTtop: topology_on X T.
+    { exact (HfamTop T HT). }
+    claim H1: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+    { exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U0 :e T, forall V :e T, U0 :/\: V :e T) HTtop). }
+    claim H2: (T c= Power X /\ Empty :e T) /\ X :e T.
+    { exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
+    claim H3: T c= Power X /\ Empty :e T.
+    { exact (andEL (T c= Power X /\ Empty :e T) (X :e T) H2). }
+    claim HTsub: T c= Power X.
+    { exact (andEL (T c= Power X) (Empty :e T) H3). }
+    exact (HTsub U HUT).
+  - (** Union (Union Fam) = X **)
+    apply set_ext.
+    + (** Union (Union Fam) c= X **)
+      let x. assume Hx: x :e Union (Union Fam).
+      prove x :e X.
+      apply UnionE_impred (Union Fam) x Hx.
+      let U. assume HxU: x :e U. assume HU: U :e Union Fam.
+      apply UnionE_impred Fam U HU.
+      let T. assume HUT: U :e T. assume HT: T :e Fam.
+      claim HTtop: topology_on X T.
+      { exact (HfamTop T HT). }
+      claim HTsubX: U c= X.
+      { exact (topology_elem_subset X T U HTtop HUT). }
+      exact (HTsubX x HxU).
+    + (** X c= Union (Union Fam) **)
+      let x. assume HxX: x :e X.
+      prove x :e Union (Union Fam).
+      (** Pick any topology from Fam (Fam is nonempty by HfamNonempty) and use that X :e T **)
+      apply HfamNonempty.
+      let T. assume HT: T :e Fam.
+      claim HTtop: topology_on X T.
+      { exact (HfamTop T HT). }
+      claim HX_in_T: X :e T.
+      { exact (topology_has_X X T HTtop). }
+      claim HX_in_UnionFam: X :e Union Fam.
+      { exact (UnionI Fam X T HX_in_T HT). }
+      exact (UnionI (Union Fam) x X HxX HX_in_UnionFam).
 }
 claim HTmin_topology: topology_on X Tmin.
 { exact (topology_from_subbasis_is_topology X (Union Fam) HUnionFam_subbasis). }
