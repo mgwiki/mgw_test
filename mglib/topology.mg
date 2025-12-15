@@ -21681,6 +21681,7 @@ Definition differentiable_at : set -> set -> prop := fun f x =>
       exists delta:set, delta :e R /\ Rlt 0 delta /\
         forall h:set, h :e R ->
           ~(h = 0) ->
+          Rlt 0 (Abs h) ->
           Rlt (Abs h) delta ->
           (add_SNo x h) :e unit_interval ->
           Rlt (Abs (add_SNo
