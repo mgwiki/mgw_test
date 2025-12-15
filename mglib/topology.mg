@@ -10972,6 +10972,21 @@ Qed.
 Axiom R_order_basis_equals_standard_basis :
   order_topology_basis R = R_standard_basis.
 
+(** from §14 Example 1: standard basis is a basis on ℝ **)
+(** LATEX VERSION: The standard open-interval basis on ℝ satisfies the basis axioms. **)
+Theorem R_standard_basis_is_basis : basis_on R R_standard_basis.
+prove basis_on R R_standard_basis.
+rewrite <- R_order_basis_equals_standard_basis.
+exact (order_topology_basis_is_basis R).
+Qed.
+
+(** from §14 Example 1: standard topology is a topology **)
+(** LATEX VERSION: The standard topology on ℝ satisfies the topology axioms. **)
+Theorem R_standard_topology_is_topology : topology_on R R_standard_topology.
+prove topology_on R R_standard_topology.
+exact (lemma_topology_from_basis R R_standard_basis (R_standard_basis_is_basis)).
+Qed.
+
 (** from §14 Example 1: standard topology on ℝ is the order topology **)
 (** LATEX VERSION: Example 1: The standard topology on ℝ equals its order topology. **)
 Theorem standard_topology_is_order_topology : order_topology R = R_standard_topology.
