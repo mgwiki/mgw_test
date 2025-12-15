@@ -11027,6 +11027,84 @@ exact (SepI (Power R)
             HUprop).
 Qed.
 
+(** from §13: left open ray is open in the standard topology on R **)
+(** LATEX VERSION: The ray (-infty,b) is open in the standard topology on R. **)
+Theorem open_left_ray_in_R_standard_topology : forall b:set, b :e R -> {x :e R|Rlt x b} :e R_standard_topology.
+let b. assume HbR.
+set U := {x :e R|Rlt x b}.
+prove U :e R_standard_topology.
+claim HUinPow : U :e Power R.
+{ apply PowerI.
+  let x. assume Hx.
+  exact (SepE1 R (fun x0 : set => Rlt x0 b) x Hx). }
+claim HUprop : forall x :e U, exists bb :e R_standard_basis, x :e bb /\ bb c= U.
+{ let x. assume HxU.
+  claim HxR : x :e R.
+  { exact (SepE1 R (fun x0 : set => Rlt x0 b) x HxU). }
+  claim Hxb : Rlt x b.
+  { exact (SepE2 R (fun x0 : set => Rlt x0 b) x HxU). }
+  claim H0omega : 0 :e omega.
+  { exact (nat_p_omega 0 nat_0). }
+  set e0 := eps_ 0.
+  claim He0SNoS : e0 :e SNoS_ omega.
+  { exact (SNo_eps_SNoS_omega 0 H0omega). }
+  claim He0R : e0 :e R.
+  { exact (SNoS_omega_real e0 He0SNoS). }
+  claim He0S : SNo e0.
+  { exact (real_SNo e0 He0R). }
+  claim HxS : SNo x.
+  { exact (real_SNo x HxR). }
+  claim HmE0R : minus_SNo e0 :e R.
+  { exact (real_minus_SNo e0 He0R). }
+  claim HmE0S : SNo (minus_SNo e0).
+  { exact (real_SNo (minus_SNo e0) HmE0R). }
+  claim HaR : add_SNo x (minus_SNo e0) :e R.
+  { exact (real_add_SNo x HxR (minus_SNo e0) HmE0R). }
+  set a0 := add_SNo x (minus_SNo e0).
+  set I := open_interval a0 b.
+  claim HIStd : I :e R_standard_basis.
+  { claim HIa : I :e {open_interval a0 bb|bb :e R}.
+    { exact (ReplI R (fun bb : set => open_interval a0 bb) b HbR). }
+    exact (famunionI R
+                     (fun aa : set => {open_interval aa bb|bb :e R})
+                     a0
+                     I
+                     HaR
+                     HIa). }
+  claim HxInI : x :e I.
+  { claim Hxlt : x < add_SNo x e0.
+    { exact (add_SNo_eps_Lt x HxS 0 H0omega). }
+    claim Hxme0ltx : a0 < x.
+    { exact (add_SNo_minus_Lt1b x e0 x HxS He0S HxS Hxlt). }
+    claim Hax : Rlt a0 x.
+    { exact (RltI a0 x HaR HxR Hxme0ltx). }
+    claim HpropI : Rlt a0 x /\ Rlt x b.
+    { apply andI.
+      - exact Hax.
+      - exact Hxb. }
+    exact (SepI R (fun x0 : set => Rlt a0 x0 /\ Rlt x0 b) x HxR HpropI). }
+  claim HISubU : I c= U.
+  { let y. assume HyI.
+    claim HyR : y :e R.
+    { exact (SepE1 R (fun y0 : set => Rlt a0 y0 /\ Rlt y0 b) y HyI). }
+    claim HyProp : Rlt a0 y /\ Rlt y b.
+    { exact (SepE2 R (fun y0 : set => Rlt a0 y0 /\ Rlt y0 b) y HyI). }
+    claim Hyb : Rlt y b.
+    { exact (andER (Rlt a0 y) (Rlt y b) HyProp). }
+    exact (SepI R (fun y0 : set => Rlt y0 b) y HyR Hyb). }
+  witness I.
+  apply andI.
+  - exact HIStd.
+  - apply andI.
+    + exact HxInI.
+    + exact HISubU. }
+exact (SepI (Power R)
+            (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+            U
+            HUinPow
+            HUprop).
+Qed.
+
 (** LATEX VERSION: Containment statements among the five ℝ topologies in Exercise 7. **)
 Theorem ex13_7_R_topology_containments :
   finer_than R_upper_limit_topology R_standard_topology /\
