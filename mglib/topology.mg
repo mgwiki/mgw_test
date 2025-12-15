@@ -18841,21 +18841,24 @@ prove Hausdorff_space X Tx <-> closed_in (setprod X X) (product_topology X Tx X 
 admit. (** complement of diagonal = {(x,y)|x≠y}; Hausdorff iff each (x,y) has nbhd in complement **)
 Qed.
 
-(** LATEX VERSION: Exercise 14: In the finite-complement topology, every sequence eventually lies in any given open set. **)
-Theorem ex17_14_sequence_in_finite_complement_topology : forall X seq:set,
-  function_on seq omega X ->
-  forall x:set, x :e X ->
-    forall U:set, U :e finite_complement_topology X -> x :e U ->
-      exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
-let X seq.
-assume Hseq: function_on seq omega X.
+(** LATEX VERSION: In the finite complement topology on R, to what point or points does the sequence x_n = 1/n converge? **)
+(** For this exercise we represent the sequence by n ↦ 1/(n+1), so it is a function on omega. **)
+Definition seq_one_over_n : set := (fun n :e omega => {inv_nat (ordsucc n)}).
+
+Theorem ex17_14_sequence_in_finite_complement_topology : forall x:set,
+  x :e R ->
+  forall U:set,
+    U :e finite_complement_topology R ->
+    x :e U ->
+    exists N:set, N :e omega /\
+      forall n:set, n :e omega -> N c= n -> apply_fun seq_one_over_n n :e U.
 let x.
-assume Hx: x :e X.
+assume HxR: x :e R.
 let U.
-assume HU: U :e finite_complement_topology X.
+assume HU: U :e finite_complement_topology R.
 assume HxU: x :e U.
-prove exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
-admit. (** X\U finite; sequence hits at most finitely many points outside U; eventually stays in U **)
+prove exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq_one_over_n n :e U.
+admit. (** in the finite complement topology, 1/n converges to every point of R **)
 Qed.
 
 (** LATEX VERSION: Exercise 15: A topology is T₁ iff every singleton is closed. **)
