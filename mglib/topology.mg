@@ -9424,24 +9424,20 @@ apply andI.
 
         (** Derive inequalities needed for membership in b1 and b2 **)
         claim Haxq : Rlt a1 xq /\ Rlt a2 xq.
-        { claim Ha1R : a1 :e R.
-          { exact (andEL (a1 :e R) (b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) Hb1core). }
-          claim Ha2R : a2 :e R.
-          { exact (andEL (a2 :e R) (b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) Hb2core). }
-          claim HxqR : xq :e R.
+        { claim HxqR : xq :e R.
           { exact (RltE_right a3 xq Ha3xq). }
           claim Ha1S : SNo a1.
           { exact (real_SNo a1 Ha1R). }
           claim Ha2S : SNo a2.
           { exact (real_SNo a2 Ha2R). }
+          claim Ha3xq_if : Rlt (if a1 < a2 then a2 else a1) xq.
+          { rewrite <- Ha3def. exact Ha3xq. }
           apply (SNoLt_trichotomy_or_impred a1 a2 Ha1S Ha2S (Rlt a1 xq /\ Rlt a2 xq)).
           - assume Ha1lt : a1 < a2.
             claim Ha1a2 : Rlt a1 a2.
             { exact (RltI a1 a2 Ha1R Ha2R Ha1lt). }
-            rewrite Ha3def.
-            rewrite (If_i_1 (a1 < a2) a2 a1 Ha1lt) in Ha3xq.
             claim Ha2xq : Rlt a2 xq.
-            { exact Ha3xq. }
+            { rewrite <- (If_i_1 (a1 < a2) a2 a1 Ha1lt). exact Ha3xq_if. }
             claim Ha1xq : Rlt a1 xq.
             { exact (Rlt_tra a1 a2 xq Ha1a2 Ha2xq). }
             apply andI.
@@ -9450,10 +9446,8 @@ apply andI.
           - assume Haeq : a1 = a2.
             claim Hnlt : ~(a1 < a2).
             { assume Hlt. rewrite Haeq in Hlt. exact ((SNoLt_irref a1) Hlt). }
-            rewrite Ha3def.
-            rewrite (If_i_0 (a1 < a2) a2 a1 Hnlt) in Ha3xq.
             claim Ha1xq : Rlt a1 xq.
-            { exact Ha3xq. }
+            { rewrite <- (If_i_0 (a1 < a2) a2 a1 Hnlt). exact Ha3xq_if. }
             claim Ha2xq : Rlt a2 xq.
             { rewrite <- Haeq. exact Ha1xq. }
             apply andI.
@@ -9471,10 +9465,8 @@ apply andI.
               exact ((SNoLt_irref a2) Ha2lt2). }
             claim Ha2a1 : Rlt a2 a1.
             { exact (RltI a2 a1 Ha2R Ha1R Ha2lt). }
-            rewrite Ha3def.
-            rewrite (If_i_0 (a1 < a2) a2 a1 Hnlt) in Ha3xq.
             claim Ha1xq : Rlt a1 xq.
-            { exact Ha3xq. }
+            { rewrite <- (If_i_0 (a1 < a2) a2 a1 Hnlt). exact Ha3xq_if. }
             claim Ha2xq : Rlt a2 xq.
             { exact (Rlt_tra a2 a1 xq Ha2a1 Ha1xq). }
             apply andI.
@@ -9482,28 +9474,22 @@ apply andI.
             - exact Ha2xq. }
 
         claim Hxbq : Rlt xq b1x /\ Rlt xq b2x.
-        { claim Hb1R : b1x :e R.
-          { exact (andEL (b1x :e R) (c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1)
-                         (andER (a1 :e R) (b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) Hb1core)). }
-          claim Hb2R : b2x :e R.
-          { exact (andEL (b2x :e R) (c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2)
-                         (andER (a2 :e R) (b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) Hb2core)). }
-          claim HxqR : xq :e R.
+        { claim HxqR : xq :e R.
           { exact (RltE_left xq b3x Hxqb3). }
           claim Hb1S : SNo b1x.
-          { exact (real_SNo b1x Hb1R). }
+          { exact (real_SNo b1x Hb1xR). }
           claim Hb2S : SNo b2x.
-          { exact (real_SNo b2x Hb2R). }
+          { exact (real_SNo b2x Hb2xR). }
           claim HxqS : SNo xq.
           { exact (real_SNo xq HxqR). }
+          claim Hxqb3_if : Rlt xq (if b1x < b2x then b1x else b2x).
+          { rewrite <- Hb3def. exact Hxqb3. }
           apply (SNoLt_trichotomy_or_impred b1x b2x Hb1S Hb2S (Rlt xq b1x /\ Rlt xq b2x)).
           - assume Hb1lt : b1x < b2x.
             claim Hb1b2 : Rlt b1x b2x.
-            { exact (RltI b1x b2x Hb1R Hb2R Hb1lt). }
-            rewrite Hb3def.
-            rewrite (If_i_1 (b1x < b2x) b1x b2x Hb1lt) in Hxqb3.
+            { exact (RltI b1x b2x Hb1xR Hb2xR Hb1lt). }
             claim Hxqb1 : Rlt xq b1x.
-            { exact Hxqb3. }
+            { rewrite <- (If_i_1 (b1x < b2x) b1x b2x Hb1lt). exact Hxqb3_if. }
             claim Hxqb2 : Rlt xq b2x.
             { exact (Rlt_tra xq b1x b2x Hxqb1 Hb1b2). }
             apply andI.
@@ -9512,10 +9498,8 @@ apply andI.
           - assume Hbeq : b1x = b2x.
             claim Hnlt : ~(b1x < b2x).
             { assume Hlt. rewrite Hbeq in Hlt. exact ((SNoLt_irref b1x) Hlt). }
-            rewrite Hb3def.
-            rewrite (If_i_0 (b1x < b2x) b1x b2x Hnlt) in Hxqb3.
             claim Hxqb2 : Rlt xq b2x.
-            { exact Hxqb3. }
+            { rewrite <- (If_i_0 (b1x < b2x) b1x b2x Hnlt). exact Hxqb3_if. }
             claim Hxqb1 : Rlt xq b1x.
             { rewrite Hbeq. exact Hxqb2. }
             apply andI.
@@ -9528,11 +9512,9 @@ apply andI.
               { exact (SNoLt_tra b2x b1x b2x Hb2S Hb1S Hb2S Hb2lt Hlt). }
               exact ((SNoLt_irref b2x) Hb2lt2). }
             claim Hb2b1 : Rlt b2x b1x.
-            { exact (RltI b2x b1x Hb2R Hb1R Hb2lt). }
-            rewrite Hb3def.
-            rewrite (If_i_0 (b1x < b2x) b1x b2x Hnlt) in Hxqb3.
+            { exact (RltI b2x b1x Hb2xR Hb1xR Hb2lt). }
             claim Hxqb2 : Rlt xq b2x.
-            { exact Hxqb3. }
+            { rewrite <- (If_i_0 (b1x < b2x) b1x b2x Hnlt). exact Hxqb3_if. }
             claim Hxqb1 : Rlt xq b1x.
             { exact (Rlt_tra xq b2x b1x Hxqb2 Hb2b1). }
             apply andI.
@@ -9540,30 +9522,20 @@ apply andI.
             - exact Hxqb2. }
 
         claim Hcyq : Rlt c1 yq /\ Rlt c2 yq.
-        { claim Hc1R : c1 :e R.
-          { exact (andEL (c1 :e R) (d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1)
-                         (andER (a1 :e R /\ b1x :e R) (c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1)
-                                (andEL (a1 :e R /\ b1x :e R /\ c1 :e R) (d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1)
-                                       (andER (a1 :e R) (b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) Hb1core))). }
-          claim Hc2R : c2 :e R.
-          { exact (andEL (c2 :e R) (d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2)
-                         (andER (a2 :e R /\ b2x :e R) (c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2)
-                                (andEL (a2 :e R /\ b2x :e R /\ c2 :e R) (d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2)
-                                       (andER (a2 :e R) (b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) Hb2core))). }
-          claim HyqR : yq :e R.
+        { claim HyqR : yq :e R.
           { exact (RltE_right c3 yq Hc3yq). }
           claim Hc1S : SNo c1.
           { exact (real_SNo c1 Hc1R). }
           claim Hc2S : SNo c2.
           { exact (real_SNo c2 Hc2R). }
+          claim Hc3yq_if : Rlt (if c1 < c2 then c2 else c1) yq.
+          { rewrite <- Hc3def. exact Hc3yq. }
           apply (SNoLt_trichotomy_or_impred c1 c2 Hc1S Hc2S (Rlt c1 yq /\ Rlt c2 yq)).
           - assume Hc1lt : c1 < c2.
             claim Hc1c2 : Rlt c1 c2.
             { exact (RltI c1 c2 Hc1R Hc2R Hc1lt). }
-            rewrite Hc3def.
-            rewrite (If_i_1 (c1 < c2) c2 c1 Hc1lt) in Hc3yq.
             claim Hc2yq : Rlt c2 yq.
-            { exact Hc3yq. }
+            { rewrite <- (If_i_1 (c1 < c2) c2 c1 Hc1lt). exact Hc3yq_if. }
             claim Hc1yq : Rlt c1 yq.
             { exact (Rlt_tra c1 c2 yq Hc1c2 Hc2yq). }
             apply andI.
@@ -9572,10 +9544,8 @@ apply andI.
           - assume Hceq : c1 = c2.
             claim Hnlt : ~(c1 < c2).
             { assume Hlt. rewrite Hceq in Hlt. exact ((SNoLt_irref c1) Hlt). }
-            rewrite Hc3def.
-            rewrite (If_i_0 (c1 < c2) c2 c1 Hnlt) in Hc3yq.
             claim Hc1yq : Rlt c1 yq.
-            { exact Hc3yq. }
+            { rewrite <- (If_i_0 (c1 < c2) c2 c1 Hnlt). exact Hc3yq_if. }
             claim Hc2yq : Rlt c2 yq.
             { rewrite <- Hceq. exact Hc1yq. }
             apply andI.
@@ -9589,10 +9559,8 @@ apply andI.
               exact ((SNoLt_irref c2) Hc2lt2). }
             claim Hc2c1 : Rlt c2 c1.
             { exact (RltI c2 c1 Hc2R Hc1R Hc2lt). }
-            rewrite Hc3def.
-            rewrite (If_i_0 (c1 < c2) c2 c1 Hnlt) in Hc3yq.
             claim Hc1yq : Rlt c1 yq.
-            { exact Hc3yq. }
+            { rewrite <- (If_i_0 (c1 < c2) c2 c1 Hnlt). exact Hc3yq_if. }
             claim Hc2yq : Rlt c2 yq.
             { exact (Rlt_tra c2 c1 yq Hc2c1 Hc1yq). }
             apply andI.
@@ -9600,15 +9568,7 @@ apply andI.
             - exact Hc2yq. }
 
         claim Hydq : Rlt yq d1 /\ Rlt yq d2.
-        { claim Hd1R : d1 :e R.
-          { exact (andEL (d1 :e R) (Rlt a1 b1x /\ Rlt c1 d1)
-                         (andER (a1 :e R /\ b1x :e R /\ c1 :e R) (d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1)
-                                (andEL ((a1 :e R /\ b1x :e R /\ c1 :e R /\ d1 :e R) /\ Rlt a1 b1x) (Rlt c1 d1) Hb1core))). }
-          claim Hd2R : d2 :e R.
-          { exact (andEL (d2 :e R) (Rlt a2 b2x /\ Rlt c2 d2)
-                         (andER (a2 :e R /\ b2x :e R /\ c2 :e R) (d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2)
-                                (andEL ((a2 :e R /\ b2x :e R /\ c2 :e R /\ d2 :e R) /\ Rlt a2 b2x) (Rlt c2 d2) Hb2core))). }
-          claim HyqR : yq :e R.
+        { claim HyqR : yq :e R.
           { exact (RltE_left yq d3 Hyqd3). }
           claim Hd1S : SNo d1.
           { exact (real_SNo d1 Hd1R). }
@@ -9616,14 +9576,14 @@ apply andI.
           { exact (real_SNo d2 Hd2R). }
           claim HyqS : SNo yq.
           { exact (real_SNo yq HyqR). }
+          claim Hyqd3_if : Rlt yq (if d1 < d2 then d1 else d2).
+          { rewrite <- Hd3def. exact Hyqd3. }
           apply (SNoLt_trichotomy_or_impred d1 d2 Hd1S Hd2S (Rlt yq d1 /\ Rlt yq d2)).
           - assume Hd1lt : d1 < d2.
             claim Hd1d2 : Rlt d1 d2.
             { exact (RltI d1 d2 Hd1R Hd2R Hd1lt). }
-            rewrite Hd3def.
-            rewrite (If_i_1 (d1 < d2) d1 d2 Hd1lt) in Hyqd3.
             claim Hyqd1 : Rlt yq d1.
-            { exact Hyqd3. }
+            { rewrite <- (If_i_1 (d1 < d2) d1 d2 Hd1lt). exact Hyqd3_if. }
             claim Hyqd2 : Rlt yq d2.
             { exact (Rlt_tra yq d1 d2 Hyqd1 Hd1d2). }
             apply andI.
@@ -9632,10 +9592,8 @@ apply andI.
           - assume Hdeq : d1 = d2.
             claim Hnlt : ~(d1 < d2).
             { assume Hlt. rewrite Hdeq in Hlt. exact ((SNoLt_irref d1) Hlt). }
-            rewrite Hd3def.
-            rewrite (If_i_0 (d1 < d2) d1 d2 Hnlt) in Hyqd3.
             claim Hyqd2 : Rlt yq d2.
-            { exact Hyqd3. }
+            { rewrite <- (If_i_0 (d1 < d2) d1 d2 Hnlt). exact Hyqd3_if. }
             claim Hyqd1 : Rlt yq d1.
             { rewrite Hdeq. exact Hyqd2. }
             apply andI.
@@ -9649,10 +9607,8 @@ apply andI.
               exact ((SNoLt_irref d2) Hd2lt2). }
             claim Hd2d1 : Rlt d2 d1.
             { exact (RltI d2 d1 Hd2R Hd1R Hd2lt). }
-            rewrite Hd3def.
-            rewrite (If_i_0 (d1 < d2) d1 d2 Hnlt) in Hyqd3.
             claim Hyqd2 : Rlt yq d2.
-            { exact Hyqd3. }
+            { rewrite <- (If_i_0 (d1 < d2) d1 d2 Hnlt). exact Hyqd3_if. }
             claim Hyqd1 : Rlt yq d1.
             { exact (Rlt_tra yq d2 d1 Hyqd2 Hd2d1). }
             apply andI.
