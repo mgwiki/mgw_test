@@ -8778,24 +8778,32 @@ apply andI.
 	  let r1. assume Hb1core.
 	  apply Hb2prop.
 	  let c2. assume Hb2prop2.
-	  apply Hb2prop2.
-	  let r2. assume Hb2core.
-	  claim Hc1 : c1 :e EuclidPlane.
-	  { exact (andEL (c1 :e EuclidPlane) (Rlt 0 r1 /\ b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1}) Hb1core). }
-	  claim Hr1 : Rlt 0 r1.
-	  { exact (andEL (Rlt 0 r1) (b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1})
-	                (andER (c1 :e EuclidPlane) (Rlt 0 r1 /\ b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1}) Hb1core)). }
-	  claim Hb1eq : b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1}.
-	  { exact (andER (Rlt 0 r1) (b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1})
-	                (andER (c1 :e EuclidPlane) (Rlt 0 r1 /\ b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1}) Hb1core)). }
-	  claim Hc2 : c2 :e EuclidPlane.
-	  { exact (andEL (c2 :e EuclidPlane) (Rlt 0 r2 /\ b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2}) Hb2core). }
-	  claim Hr2 : Rlt 0 r2.
-	  { exact (andEL (Rlt 0 r2) (b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2})
-	                (andER (c2 :e EuclidPlane) (Rlt 0 r2 /\ b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2}) Hb2core)). }
-	  claim Hb2eq : b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2}.
-	  { exact (andER (Rlt 0 r2) (b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2})
-	                (andER (c2 :e EuclidPlane) (Rlt 0 r2 /\ b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2}) Hb2core)). }
+		  apply Hb2prop2.
+		  let r2. assume Hb2core.
+		  claim Hc1r1 : c1 :e EuclidPlane /\ Rlt 0 r1.
+		  { exact (andEL (c1 :e EuclidPlane /\ Rlt 0 r1)
+		                (b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1})
+		                Hb1core). }
+		  claim Hc1 : c1 :e EuclidPlane.
+		  { exact (andEL (c1 :e EuclidPlane) (Rlt 0 r1) Hc1r1). }
+		  claim Hr1 : Rlt 0 r1.
+		  { exact (andER (c1 :e EuclidPlane) (Rlt 0 r1) Hc1r1). }
+		  claim Hb1eq : b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1}.
+		  { exact (andER (c1 :e EuclidPlane /\ Rlt 0 r1)
+		                (b1 = {p :e EuclidPlane|Rlt (distance_R2 p c1) r1})
+		                Hb1core). }
+		  claim Hc2r2 : c2 :e EuclidPlane /\ Rlt 0 r2.
+		  { exact (andEL (c2 :e EuclidPlane /\ Rlt 0 r2)
+		                (b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2})
+		                Hb2core). }
+		  claim Hc2 : c2 :e EuclidPlane.
+		  { exact (andEL (c2 :e EuclidPlane) (Rlt 0 r2) Hc2r2). }
+		  claim Hr2 : Rlt 0 r2.
+		  { exact (andER (c2 :e EuclidPlane) (Rlt 0 r2) Hc2r2). }
+		  claim Hb2eq : b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2}.
+		  { exact (andER (c2 :e EuclidPlane /\ Rlt 0 r2)
+		                (b2 = {p :e EuclidPlane|Rlt (distance_R2 p c2) r2})
+		                Hb2core). }
 	  claim Hx1' : x :e {p :e EuclidPlane|Rlt (distance_R2 p c1) r1}.
 	  { rewrite <- Hb1eq. exact Hx1. }
 	  claim Hx2' : x :e {p :e EuclidPlane|Rlt (distance_R2 p c2) r2}.
