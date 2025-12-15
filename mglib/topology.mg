@@ -9250,7 +9250,7 @@ let X Fam.
 assume HFamNonempty: exists T:set, T :e Fam.
 assume HfamTop: forall T :e Fam, topology_on X T.
 prove topology_on X (Intersection_Fam X Fam).
-(** Intersection_Fam X Fam = {U :e Power (Union Fam) | forall T :e Fam, U :e T} **)
+(** Intersection_Fam X Fam = {U :e Power X | forall T :e Fam, U :e T} **)
 (** Strategy: Verify all five topology axioms **)
 prove Intersection_Fam X Fam c= Power X
   /\ Empty :e Intersection_Fam X Fam
