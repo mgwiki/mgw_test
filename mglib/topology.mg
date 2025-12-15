@@ -8450,6 +8450,12 @@ claim Hlt : a < a.
 exact ((SNoLt_irref a) Hlt).
 Qed.
 
+(** helper for §13 Example 4: 0 < 1 in Rlt form **)
+(** LATEX VERSION: We use 0<1 in the usual order on R. **)
+Theorem Rlt_0_1 : Rlt 0 1.
+exact (RltI 0 1 real_0 real_1 SNoLt_0_1).
+Qed.
+
 (** from §13 Example 4: -1 is less than 0 in ℝ **)
 (** LATEX VERSION: We use that -1 < 0. **)
 Theorem minus_1_lt_0 : minus_SNo 1 < 0.
@@ -9072,33 +9078,7 @@ apply andI.
     witness {p :e EuclidPlane|Rlt (distance_R2 p x) 1}.
     apply andI.
     * prove {p :e EuclidPlane|Rlt (distance_R2 p x) 1} :e circular_regions.
-      claim Hpow : {p :e EuclidPlane|Rlt (distance_R2 p x) 1} :e Power EuclidPlane.
-      { apply PowerI.
-        let p. assume Hp.
-        exact (SepE1 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) 1) p Hp). }
-      claim Hprop : exists c:set, exists r:set,
-        c :e EuclidPlane /\ Rlt 0 r /\
-        {p :e EuclidPlane|Rlt (distance_R2 p x) 1} = {p :e EuclidPlane|Rlt (distance_R2 p c) r}.
-      { witness x.
-        witness 1.
-        apply andI.
-        - apply andI.
-          + exact Hx.
-          + claim HR : 0 :e R /\ 1 :e R /\ 0 < 1.
-            { apply andI.
-              - apply andI.
-                + exact real_0.
-                + exact real_1.
-              - exact SNoLt_0_1. }
-            exact HR.
-        - reflexivity. }
-      exact (SepI (Power EuclidPlane)
-                  (fun U0 : set => exists c:set, exists r:set,
-                    c :e EuclidPlane /\ Rlt 0 r /\
-                    U0 = {p :e EuclidPlane|Rlt (distance_R2 p c) r})
-                  {p :e EuclidPlane|Rlt (distance_R2 p x) 1}
-                  Hpow
-                  Hprop).
+      exact (circular_regionI x 1 Hx Rlt_0_1).
     * claim Hlt : Rlt (distance_R2 x x) 1.
       { rewrite (distance_R2_refl_0 x Hx).
         claim HR : 0 :e R /\ 1 :e R /\ 0 < 1.
