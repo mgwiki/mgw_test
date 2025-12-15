@@ -21674,7 +21674,18 @@ Qed.
 
 (** from §49 Definition: differentiability placeholder and nowhere-differentiable function **) 
 (** LATEX VERSION: Placeholder differentiability notions; nowhere differentiable means no point of differentiability. **)
-Definition differentiable_at : set -> set -> prop := fun f x => False.
+Definition differentiable_at : set -> set -> prop := fun f x =>
+  function_on f unit_interval R /\ x :e unit_interval /\
+  exists L:set, L :e R /\
+    forall eps:set, eps :e R -> Rlt 0 eps ->
+      exists delta:set, delta :e R /\ Rlt 0 delta /\
+        forall h:set, h :e R ->
+          ~(h = 0) ->
+          Rlt (Abs h) delta ->
+          (add_SNo x h) :e unit_interval ->
+          Rlt (Abs (add_SNo
+                      (div_SNo (add_SNo (apply_fun f (add_SNo x h)) (minus_SNo (apply_fun f x))) h)
+                      (minus_SNo L))) eps.
 Definition nowhere_differentiable : set -> prop := fun f =>
   function_on f R R /\ forall x:set, x :e R -> ~ differentiable_at f x.
 
