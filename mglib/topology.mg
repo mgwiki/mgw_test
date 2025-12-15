@@ -8415,6 +8415,16 @@ let a b. assume H.
 exact (andER (a :e R /\ b :e R) (a < b) H).
 Qed.
 
+(** from §13 Example 4: Rlt is irreflexive **)
+(** LATEX VERSION: We use that a<a is impossible. **)
+Theorem not_Rlt_refl : forall a:set, a :e R -> ~(Rlt a a).
+let a. assume Ha.
+assume Haa.
+claim Hlt : a < a.
+{ exact (RltE_lt a a Haa). }
+exact ((SNoLt_irref a) Hlt).
+Qed.
+
 (** from §13 Example 4: -1 is less than 0 in ℝ **)
 (** LATEX VERSION: We use that -1 < 0. **)
 Theorem minus_1_lt_0 : minus_SNo 1 < 0.
@@ -10839,6 +10849,19 @@ Theorem halfopen_interval_left_Subq_R : forall a b:set, halfopen_interval_left a
 let a b.
 let x. assume Hx.
 exact (SepE1 R (fun x0 : set => ~(Rlt x0 a) /\ Rlt x0 b) x Hx).
+Qed.
+
+(** from §13 Exercise 6: left endpoint belongs to [a,b) when a<b **)
+(** LATEX VERSION: If a<b then a∈[a,b). **)
+Theorem halfopen_interval_left_leftmem : forall a b:set, Rlt a b -> a :e halfopen_interval_left a b.
+let a b. assume Hab.
+claim HaR : a :e R.
+{ exact (RltE_left a b Hab). }
+claim Hb : ~(Rlt a a) /\ Rlt a b.
+{ apply andI.
+  - exact (not_Rlt_refl a HaR).
+  - exact Hab. }
+exact (SepI R (fun x0 : set => ~(Rlt x0 a) /\ Rlt x0 b) a HaR Hb).
 Qed.
 
 Definition R_standard_basis : set :=
