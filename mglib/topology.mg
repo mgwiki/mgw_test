@@ -10847,6 +10847,19 @@ Qed.
     rational = {x :e real | exists m :e int, exists n :e omega\{0}, x = m/n} from line 6202. **)
 Definition rational_numbers : set := rational.
 
+(** from §13: rationals are reals **)
+(** LATEX VERSION: Q is a subset of R. **)
+Theorem rational_numbers_Subq_R : rational_numbers c= R.
+exact (Subq_rational_real).
+Qed.
+
+(** from §13: elements of Q are in R **)
+(** LATEX VERSION: If q is rational then q is real. **)
+Theorem rational_numbers_in_R : forall q :e rational_numbers, q :e R.
+let q. assume Hq.
+exact (rational_numbers_Subq_R q Hq).
+Qed.
+
 Definition open_interval : set -> set -> set := fun a b => {x :e R|Rlt a x /\ Rlt x b}.
 (** from §13 Exercise 6: lower limit basis element **)
 (** LATEX VERSION: Lower limit topology uses half open intervals [a,b). **)
