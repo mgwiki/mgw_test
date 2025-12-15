@@ -10910,7 +10910,7 @@ Qed.
 Definition R_finite_complement_topology : set := finite_complement_topology R.
 Definition R_upper_limit_topology : set := R_lower_limit_topology.
 Definition R_ray_topology : set :=
-  {U :e Power R|U = Empty \/ U = R \/ (exists a :e R, {x :e R|Rlt a x} c= U)}.
+  {U :e Power R|U = Empty \/ U = R \/ (exists a :e R, U = {x :e R|Rlt a x})}.
 
 (** LATEX VERSION: Containment statements among the five ℝ topologies in Exercise 7. **)
 Theorem ex13_7_R_topology_containments :
