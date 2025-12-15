@@ -8428,7 +8428,12 @@ Qed.
 (** from §13 Example 4: -1 is less than 0 in ℝ **)
 (** LATEX VERSION: We use that -1 < 0. **)
 Theorem minus_1_lt_0 : minus_SNo 1 < 0.
-admit.
+claim H01 : 0 < 1.
+{ exact SNoLt_0_1. }
+claim Hm1ltm0 : minus_SNo 1 < minus_SNo 0.
+{ exact (minus_SNo_Lt_contra 0 1 SNo_0 SNo_1 H01). }
+rewrite <- (minus_SNo_0) at 2.
+exact Hm1ltm0.
 Qed.
 
 (** from §13 Example 4: circular vs rectangular region bases **)
