@@ -11842,23 +11842,25 @@ witness X.
 apply andI.
 - (** Empty is in the family by the defining disjunction **)
   prove Empty :e infinite_complement_family X.
-  apply (SepI (Power X)
+  claim Hdisj : infinite (X :\: Empty) \/ Empty = Empty \/ Empty = X.
+  { apply orIL.
+    apply orIR.
+    reflexivity. }
+  exact (SepI (Power X)
               (fun U0 : set => infinite (X :\: U0) \/ U0 = Empty \/ U0 = X)
               Empty
-              (Empty_In_Power X)).
-  prove infinite (X :\: Empty) \/ Empty = Empty \/ Empty = X.
-  apply orIL.
-  apply orIR.
-  reflexivity.
+              (Empty_In_Power X)
+              Hdisj).
 - (** X is in the family by the defining disjunction **)
   prove X :e infinite_complement_family X.
-  apply (SepI (Power X)
+  claim Hdisj : infinite (X :\: X) \/ X = Empty \/ X = X.
+  { apply orIR.
+    reflexivity. }
+  exact (SepI (Power X)
               (fun U0 : set => infinite (X :\: U0) \/ U0 = Empty \/ U0 = X)
               X
-              (Self_In_Power X)).
-  prove infinite (X :\: X) \/ X = Empty \/ X = X.
-  apply orIR.
-  reflexivity.
+              (Self_In_Power X)
+              Hdisj).
 Qed.
 
 (** from §13 Exercise 4(a): intersection of topologies **)
