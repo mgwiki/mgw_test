@@ -9771,7 +9771,15 @@ Theorem ex13_6_Rl_RK_not_comparable :
   ~finer_than R_lower_limit_topology R_K_topology /\
   ~finer_than R_K_topology R_lower_limit_topology.
 prove ~finer_than R_lower_limit_topology R_K_topology /\ ~finer_than R_K_topology R_lower_limit_topology.
-admit. (** find open sets in each topology not in the other; [a,b) not in K-topology; (a,b)\K not in lower-limit **)
+apply andI.
+- (** not finer_than R_lower_limit_topology R_K_topology **)
+  assume Hf: finer_than R_lower_limit_topology R_K_topology.
+  prove False.
+  admit. (** find a K-open set not lower-limit open, e.g. (a,b)\\K style **)
+- (** not finer_than R_K_topology R_lower_limit_topology **)
+  assume Hf: finer_than R_K_topology R_lower_limit_topology.
+  prove False.
+  admit. (** find a lower-limit open set not K-open, e.g. [a,b) around 0 with K-accumulation **)
 Qed.
 
 (** from §13 Exercise 7: containment relations among five ℝ topologies **) 
@@ -9788,7 +9796,13 @@ Theorem ex13_7_R_topology_containments :
   finer_than R_standard_topology R_finite_complement_topology /\
   finer_than R_standard_topology R_ray_topology.
 prove finer_than R_upper_limit_topology R_standard_topology /\ finer_than R_K_topology R_standard_topology /\ finer_than R_standard_topology R_finite_complement_topology /\ finer_than R_standard_topology R_ray_topology.
-admit. (** verify containments: every standard open is finite-complement and ray; every upper-limit/K basis generates standard **)
+apply andI.
+- apply andI.
+  + apply andI.
+    * admit. (** R_upper_limit_topology finer_than R_standard_topology **)
+    * admit. (** R_K_topology finer_than R_standard_topology **)
+  + admit. (** R_standard_topology finer_than R_finite_complement_topology **)
+- admit. (** R_standard_topology finer_than R_ray_topology **)
 Qed.
 
 (** from §13 Exercise 8(a): rational open intervals generate standard topology on ℝ **) 
@@ -9800,7 +9814,9 @@ Theorem ex13_8a_rational_intervals_basis_standard :
   basis_on R rational_open_intervals_basis /\
   generated_topology R rational_open_intervals_basis = R_standard_topology.
 prove basis_on R rational_open_intervals_basis /\ generated_topology R rational_open_intervals_basis = R_standard_topology.
-admit. (** rational intervals dense in R; every real interval contains rational interval; generates same topology **)
+apply andI.
+- admit. (** rational open intervals satisfy basis_on R **)
+- admit. (** generated_topology R rational_open_intervals_basis equals R_standard_topology **)
 Qed.
 
 (** from §13 Exercise 8(b): half-open rational intervals generate a different topology **) 
@@ -9813,7 +9829,9 @@ Theorem ex13_8b_halfopen_rational_basis_topology :
   basis_on R rational_halfopen_intervals_basis /\
   generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology.
 prove basis_on R rational_halfopen_intervals_basis /\ generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology.
-admit. (** rational half-open intervals form basis; but irrational endpoints give different topology than lower-limit **)
+apply andI.
+- admit. (** rational half-open intervals satisfy basis_on R **)
+- admit. (** generated topology differs from R_lower_limit_topology **)
 Qed.
 
 (** from §14 Definition: basis for the order topology **) 
