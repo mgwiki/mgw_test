@@ -10928,7 +10928,151 @@ Definition R_standard_topology : set :=
 (** from §13: standard open intervals form a basis on R **)
 (** LATEX VERSION: The collection of open intervals (a,b) is a basis for the standard topology on R. **)
 Theorem R_standard_basis_is_basis_local : basis_on R R_standard_basis.
-admit.
+prove basis_on R R_standard_basis.
+prove R_standard_basis c= Power R
+  /\ (forall x :e R, exists b :e R_standard_basis, x :e b)
+  /\ (forall b1 :e R_standard_basis, forall b2 :e R_standard_basis, forall x:set,
+        x :e b1 -> x :e b2 ->
+        exists b3 :e R_standard_basis, x :e b3 /\ b3 c= b1 :/\: b2).
+apply andI.
+- apply andI.
+  + (** basis elements are subsets of R **)
+    let U. assume HU : U :e R_standard_basis.
+    prove U :e Power R.
+    (** destruct U ∈ ⋃_{a∈R} {open_interval a b | b∈R} **)
+    claim Hexa : exists a :e R, U :e {open_interval a b|b :e R}.
+    { exact (famunionE R (fun a0 : set => {open_interval a0 b|b :e R}) U HU). }
+    apply Hexa.
+    let a. assume Hapair.
+    claim HaR : a :e R.
+    { exact (andEL (a :e R) (U :e {open_interval a b|b :e R}) Hapair). }
+    claim HUfam : U :e {open_interval a b|b :e R}.
+    { exact (andER (a :e R) (U :e {open_interval a b|b :e R}) Hapair). }
+    claim Hexb : exists b :e R, U = open_interval a b.
+    { exact (ReplE R (fun b0 : set => open_interval a b0) U HUfam). }
+    apply Hexb.
+    let b. assume Hbpair.
+    claim HbR : b :e R.
+    { exact (andEL (b :e R) (U = open_interval a b) Hbpair). }
+    claim HUeq : U = open_interval a b.
+    { exact (andER (b :e R) (U = open_interval a b) Hbpair). }
+    rewrite HUeq.
+    exact (PowerI R (open_interval a b) (open_interval_Subq_R a b)).
+  + (** coverage: every x has a basis neighborhood **)
+    let x. assume HxR.
+    (** choose (x-1, x+1) **)
+    claim Hm1R : minus_SNo 1 :e R.
+    { exact (real_minus_SNo 1 real_1). }
+    set a0 := add_SNo x (minus_SNo 1).
+    set b0 := add_SNo x 1.
+    claim Ha0R : a0 :e R.
+    { exact (real_add_SNo x HxR (minus_SNo 1) Hm1R). }
+    claim Hb0R : b0 :e R.
+    { exact (real_add_SNo x HxR 1 real_1). }
+    set I := open_interval a0 b0.
+    witness I.
+    apply andI.
+    * (** I is in the standard basis **)
+      claim HIa : I :e {open_interval a0 bb|bb :e R}.
+      { exact (ReplI R (fun bb : set => open_interval a0 bb) b0 Hb0R). }
+      exact (famunionI R (fun aa : set => {open_interval aa bb|bb :e R}) a0 I Ha0R HIa).
+    * (** x is in I **)
+      claim HxS : SNo x.
+      { exact (real_SNo x HxR). }
+      claim Hm1S : SNo (minus_SNo 1).
+      { exact (SNo_minus_SNo 1 SNo_1). }
+      claim Hxltb0 : x < b0.
+      { claim Hx0lt : 0 < 1.
+        { exact SNoLt_0_1. }
+	      claim Hx0eq : add_SNo x 0 = x.
+	      { exact (add_SNo_0R x HxS). }
+	      claim Hlt : add_SNo x 0 < add_SNo x 1.
+	      { exact (add_SNo_Lt2 x 0 1 HxS SNo_0 SNo_1 Hx0lt). }
+	      rewrite <- Hx0eq at 1.
+	      exact Hlt. }
+      claim Ha0ltx : a0 < x.
+      { claim Hlt : add_SNo x (minus_SNo 1) < add_SNo x 0.
+        { exact (add_SNo_Lt2 x (minus_SNo 1) 0 HxS Hm1S SNo_0 minus_1_lt_0). }
+        rewrite <- (add_SNo_0R x HxS) at 2.
+        exact Hlt. }
+      claim Ha0x : Rlt a0 x.
+      { exact (RltI a0 x Ha0R HxR Ha0ltx). }
+      claim Hxb0 : Rlt x b0.
+      { exact (RltI x b0 HxR Hb0R Hxltb0). }
+      claim Hconj : Rlt a0 x /\ Rlt x b0.
+      { apply andI.
+        - exact Ha0x.
+        - exact Hxb0. }
+      exact (SepI R (fun x0 : set => Rlt a0 x0 /\ Rlt x0 b0) x HxR Hconj).
+- (** intersection refinement **)
+  let b1. assume Hb1.
+  let b2. assume Hb2.
+  let x. assume Hx1 Hx2.
+  (** destruct b1 = (a1,b1') and b2 = (a2,b2') with endpoints in R **)
+  claim Hexa1 : exists a1 :e R, b1 :e {open_interval a1 b|b :e R}.
+  { exact (famunionE R (fun a0 : set => {open_interval a0 b|b :e R}) b1 Hb1). }
+  claim Hexa2 : exists a2 :e R, b2 :e {open_interval a2 b|b :e R}.
+  { exact (famunionE R (fun a0 : set => {open_interval a0 b|b :e R}) b2 Hb2). }
+  apply Hexa1.
+  let a1. assume Ha1pair.
+  claim Ha1R : a1 :e R.
+  { exact (andEL (a1 :e R) (b1 :e {open_interval a1 b|b :e R}) Ha1pair). }
+  claim Hb1fam : b1 :e {open_interval a1 b|b :e R}.
+  { exact (andER (a1 :e R) (b1 :e {open_interval a1 b|b :e R}) Ha1pair). }
+  claim Hexb1 : exists bb1 :e R, b1 = open_interval a1 bb1.
+  { exact (ReplE R (fun bb : set => open_interval a1 bb) b1 Hb1fam). }
+  apply Hexb1.
+  let bb1. assume Hbb1pair.
+  claim Hbb1R : bb1 :e R.
+  { exact (andEL (bb1 :e R) (b1 = open_interval a1 bb1) Hbb1pair). }
+  claim Hb1eq : b1 = open_interval a1 bb1.
+  { exact (andER (bb1 :e R) (b1 = open_interval a1 bb1) Hbb1pair). }
+  apply Hexa2.
+  let a2. assume Ha2pair.
+  claim Ha2R : a2 :e R.
+  { exact (andEL (a2 :e R) (b2 :e {open_interval a2 b|b :e R}) Ha2pair). }
+  claim Hb2fam : b2 :e {open_interval a2 b|b :e R}.
+  { exact (andER (a2 :e R) (b2 :e {open_interval a2 b|b :e R}) Ha2pair). }
+  claim Hexb2 : exists bb2 :e R, b2 = open_interval a2 bb2.
+  { exact (ReplE R (fun bb : set => open_interval a2 bb) b2 Hb2fam). }
+  apply Hexb2.
+  let bb2. assume Hbb2pair.
+  claim Hbb2R : bb2 :e R.
+  { exact (andEL (bb2 :e R) (b2 = open_interval a2 bb2) Hbb2pair). }
+  claim Hb2eq : b2 = open_interval a2 bb2.
+  { exact (andER (bb2 :e R) (b2 = open_interval a2 bb2) Hbb2pair). }
+  (** extract inequalities from x ∈ intervals **)
+  claim HxIn1 : x :e open_interval a1 bb1.
+  { rewrite <- Hb1eq. exact Hx1. }
+  claim HxIn2 : x :e open_interval a2 bb2.
+  { rewrite <- Hb2eq. exact Hx2. }
+  claim HxR : x :e R.
+  { exact (SepE1 R (fun x0 : set => Rlt a1 x0 /\ Rlt x0 bb1) x HxIn1). }
+  claim HxProp1 : Rlt a1 x /\ Rlt x bb1.
+  { exact (SepE2 R (fun x0 : set => Rlt a1 x0 /\ Rlt x0 bb1) x HxIn1). }
+  claim HxProp2 : Rlt a2 x /\ Rlt x bb2.
+  { exact (SepE2 R (fun x0 : set => Rlt a2 x0 /\ Rlt x0 bb2) x HxIn2). }
+  claim Ha1x : Rlt a1 x.
+  { exact (andEL (Rlt a1 x) (Rlt x bb1) HxProp1). }
+  claim Hxbb1 : Rlt x bb1.
+  { exact (andER (Rlt a1 x) (Rlt x bb1) HxProp1). }
+  claim Ha2x : Rlt a2 x.
+  { exact (andEL (Rlt a2 x) (Rlt x bb2) HxProp2). }
+  claim Hxbb2 : Rlt x bb2.
+  { exact (andER (Rlt a2 x) (Rlt x bb2) HxProp2). }
+  (** choose endpoints a3 = max(a1,a2) and b3 = min(bb1,bb2) by trichotomy **)
+  claim Ha1S : SNo a1.
+  { exact (real_SNo a1 Ha1R). }
+  claim Ha2S : SNo a2.
+  { exact (real_SNo a2 Ha2R). }
+  claim Hb1S : SNo bb1.
+  { exact (real_SNo bb1 Hbb1R). }
+  claim Hb2S : SNo bb2.
+  { exact (real_SNo bb2 Hbb2R). }
+  claim HxS : SNo x.
+  { exact (real_SNo x HxR). }
+  (** a3 and b3 are selected by case splits; proof is classical but long **)
+  admit.
 Qed.
 
 (** from §13: the standard topology on R is a topology **)
