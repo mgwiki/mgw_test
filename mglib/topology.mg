@@ -21672,8 +21672,8 @@ prove U <> Empty.
 admit. (** Baire category theorem: dense G_delta sets are nonempty **)
 Qed.
 
-(** from §49 Definition: differentiability placeholder and nowhere-differentiable function **) 
-(** LATEX VERSION: Placeholder differentiability notions; nowhere differentiable means no point of differentiability. **)
+(** from §49 Definition: differentiability and nowhere-differentiable function **) 
+(** LATEX VERSION: A function is differentiable at x if the difference quotient (f(x+h)-f(x))/h tends to a limit as h→0 (with x+h in the domain); nowhere differentiable means differentiable at no point. **)
 Definition differentiable_at : set -> set -> prop := fun f x =>
   function_on f unit_interval R /\ x :e unit_interval /\
   exists L:set, L :e R /\
