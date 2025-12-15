@@ -10160,10 +10160,22 @@ Axiom setprod_elem_decompose : forall X Y p:set,
   exists x :e X, exists y :e Y, p :e setprod {x} {y}.
 
 (** Helper: singleton subset property **)
-Axiom singleton_subset : forall x U:set, x :e U -> {x} c= U.
+Theorem singleton_subset : forall x U:set, x :e U -> {x} c= U.
+let x U. assume HxU.
+prove {x} c= U.
+let y. assume Hy: y :e {x}.
+prove y :e U.
+claim HyEq: y = x.
+{ exact (SingE x y Hy). }
+rewrite HyEq.
+exact HxU.
+Qed.
 
 (** Helper: singleton element equality **)
-Axiom singleton_elem : forall x y:set, x :e {y} -> x = y.
+Theorem singleton_elem : forall x y:set, x :e {y} -> x = y.
+let x y. assume H.
+exact (SingE y x H).
+Qed.
 
 (** Helper: coordinates of product elements **)
 Axiom setprod_coords_in : forall x y U V p:set,
