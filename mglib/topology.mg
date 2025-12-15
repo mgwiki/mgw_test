@@ -8955,6 +8955,38 @@ Definition circular_regions : set :=
        c :e EuclidPlane /\ Rlt 0 r /\
        U = {p :e EuclidPlane|Rlt (distance_R2 p c) r}}.
 
+(** helper for §13 Example 4: introduce a circular region from center and radius **)
+(** LATEX VERSION: If c∈R^2 and 0<r then {p∈R^2|d(p,c)<r} is a circular region. **)
+Theorem circular_regionI : forall c r:set,
+  c :e EuclidPlane ->
+  Rlt 0 r ->
+  {p :e EuclidPlane|Rlt (distance_R2 p c) r} :e circular_regions.
+let c r. assume Hc Hr.
+prove {p :e EuclidPlane|Rlt (distance_R2 p c) r} :e circular_regions.
+claim HPow : {p :e EuclidPlane|Rlt (distance_R2 p c) r} :e Power EuclidPlane.
+{ apply PowerI EuclidPlane {p :e EuclidPlane|Rlt (distance_R2 p c) r}.
+  let p. assume Hp.
+  exact (SepE1 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 c) r) p Hp). }
+claim HPred :
+  exists c0:set, exists r0:set,
+    c0 :e EuclidPlane /\ Rlt 0 r0 /\
+    {p :e EuclidPlane|Rlt (distance_R2 p c) r} = {p :e EuclidPlane|Rlt (distance_R2 p c0) r0}.
+{ witness c. witness r.
+  apply andI.
+  - apply andI.
+    + exact Hc.
+    + exact Hr.
+  - reflexivity. }
+exact (SepI (Power EuclidPlane)
+            (fun U0 : set =>
+              exists c0:set, exists r0:set,
+                c0 :e EuclidPlane /\ Rlt 0 r0 /\
+                U0 = {p :e EuclidPlane|Rlt (distance_R2 p c0) r0})
+            {p :e EuclidPlane|Rlt (distance_R2 p c) r}
+            HPow
+            HPred).
+Qed.
+
 (** from §13 Example 4: rectangular region basis elements in EuclidPlane **)
 (** LATEX VERSION: Rectangular regions: axis-parallel rectangles (a,b)x(c,d) in R^2 described by inequalities on coordinates. **)
 Definition rectangular_regions : set :=
@@ -8962,6 +8994,58 @@ Definition rectangular_regions : set :=
      exists a b c d:set, a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d /\
        U = {p :e EuclidPlane|
               exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}}.
+
+(** helper for §13 Example 4: introduce a rectangular region from endpoints **)
+(** LATEX VERSION: If a<b and c<d then {(x,y)∈R^2|a<x<b and c<y<d} is a rectangular region. **)
+Theorem rectangular_regionI : forall a b c d:set,
+  a :e R -> b :e R -> c :e R -> d :e R ->
+  Rlt a b -> Rlt c d ->
+  {p :e EuclidPlane|exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}
+    :e rectangular_regions.
+let a b c d. assume Ha Hb Hc Hd Hab Hcd.
+prove {p :e EuclidPlane|exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d} :e rectangular_regions.
+claim HPow :
+  {p :e EuclidPlane|exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}
+    :e Power EuclidPlane.
+{ apply PowerI EuclidPlane {p :e EuclidPlane|exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}.
+  let p. assume Hp.
+  exact (SepE1 EuclidPlane
+              (fun p0 : set => exists x y:set, p0 = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d)
+              p
+              Hp). }
+claim HPred :
+  exists a0 b0 c0 d0:set,
+    a0 :e R /\ b0 :e R /\ c0 :e R /\ d0 :e R /\ Rlt a0 b0 /\ Rlt c0 d0 /\
+      {p :e EuclidPlane|exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}
+        = {p :e EuclidPlane|exists x y:set, p = (x,y) /\ Rlt a0 x /\ Rlt x b0 /\ Rlt c0 y /\ Rlt y d0}.
+{ witness a. witness b. witness c. witness d.
+  apply andI.
+  - (** a:eR /\ b:eR /\ c:eR /\ d:eR /\ Rlt a b /\ Rlt c d **)
+    apply andI.
+    + (** a:eR /\ b:eR /\ c:eR /\ d:eR /\ Rlt a b **)
+      apply andI.
+      * (** a:eR /\ b:eR /\ c:eR /\ d:eR **)
+        apply andI.
+        { (** a:eR /\ b:eR /\ c:eR **)
+          apply andI.
+          - (** a:eR /\ b:eR **)
+            apply andI.
+            + exact Ha.
+            + exact Hb.
+          - exact Hc.
+        }
+        { exact Hd. }
+      * exact Hab.
+    + exact Hcd.
+  - reflexivity. }
+exact (SepI (Power EuclidPlane)
+            (fun U0 : set =>
+              exists a0 b0 c0 d0:set, a0 :e R /\ b0 :e R /\ c0 :e R /\ d0 :e R /\ Rlt a0 b0 /\ Rlt c0 d0 /\
+                U0 = {p :e EuclidPlane|exists x y:set, p = (x,y) /\ Rlt a0 x /\ Rlt x b0 /\ Rlt c0 y /\ Rlt y d0})
+            {p :e EuclidPlane|exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}
+            HPow
+            HPred).
+Qed.
 
 (** from §13 Example 4: circular regions form a basis on EuclidPlane **)
 (** LATEX VERSION: The family of circular regions is a basis for a topology on R^2. **)
