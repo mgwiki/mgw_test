@@ -8999,7 +8999,27 @@ prove topology_on abc_set top_abc_1 /\ topology_on abc_set top_abc_2 /\
             T2 = top_abc_4 \/ T2 = top_abc_5 \/ T2 = top_abc_6 \/
            T2 = top_abc_7 \/ T2 = top_abc_8 \/ T2 = top_abc_9) /\
            T1 c= T2}.
-admit. (** verify each is topology by checking axioms; enumerate all refinement pairs by subset checking **)
+apply andI.
+- (** nine topology axioms **)
+  apply andI.
+  - apply andI.
+    - apply andI.
+      - apply andI.
+        - apply andI.
+          - apply andI.
+            - apply andI.
+              - apply andI.
+                - admit. (** topology_on abc_set top_abc_1 **)
+                - admit. (** topology_on abc_set top_abc_2 **)
+              - admit. (** topology_on abc_set top_abc_3 **)
+            - admit. (** topology_on abc_set top_abc_4 **)
+          - admit. (** topology_on abc_set top_abc_5 **)
+        - admit. (** topology_on abc_set top_abc_6 **)
+      - admit. (** topology_on abc_set top_abc_7 **)
+    - admit. (** topology_on abc_set top_abc_8 **)
+  - admit. (** topology_on abc_set top_abc_9 **)
+- (** finer_pairs set of refinement pairs **)
+  admit. (** enumerate all refinement pairs by subset checking **)
 Qed.
 
 (** helper for §13 exercises: intersection of a family of topologies (placeholder) **)
