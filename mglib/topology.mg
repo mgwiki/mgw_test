@@ -10882,7 +10882,7 @@ Definition R_lower_limit_topology : set :=
 Definition inv_nat : set -> set := recip_SNo.
 Axiom inv_nat_real : forall n:set, n :e omega -> inv_nat n :e R.
 
-Definition K_set : set := {inv_nat n|n :e omega}.
+Definition K_set : set := {inv_nat n|n :e omega :\: {0}}.
 Definition R_K_basis : set :=
   \/_ a :e R, {open_interval a b :\: K_set|b :e R}.
 
