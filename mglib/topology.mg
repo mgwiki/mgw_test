@@ -9911,7 +9911,10 @@ Qed.
 Theorem rectangles_basis_for_R2 :
   exists B:set, basis_on (setprod R R) B /\ generated_topology (setprod R R) B = R2_dictionary_order_topology.
 prove exists B:set, basis_on (setprod R R) B /\ generated_topology (setprod R R) B = R2_dictionary_order_topology.
-admit. (** construct basis from dictionary order intervals; verify it generates the topology **)
+witness (order_topology_basis (setprod R R)).
+apply andI.
+- exact (order_topology_basis_is_basis (setprod R R)).
+- reflexivity.
 Qed.
 
 (** from §14 Example 3: order topology on ℤ₊ is discrete **)
