@@ -9202,32 +9202,15 @@ apply andI.
 	                (forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2)
 	                Hrefine2). }
 
-	  set b3 := {p :e EuclidPlane|Rlt (distance_R2 p x) r3}.
-	  witness b3.
-	  apply andI.
-	  - prove b3 :e circular_regions.
-	    claim Hb3pow : b3 :e Power EuclidPlane.
-	    { apply PowerI EuclidPlane b3.
-	      let p. assume Hp.
-	      exact (SepE1 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) r3) p Hp). }
-	    claim Hb3prop :
-	      exists c:set, exists r:set,
-	        c :e EuclidPlane /\ Rlt 0 r /\
-	        b3 = {p :e EuclidPlane|Rlt (distance_R2 p c) r}.
-	    { witness x. witness r3.
-	      apply andI.
-	      - apply andI.
-	        + exact HxEuclid.
-	        + exact Hr3.
-	      - reflexivity. }
-	    exact (SepI (Power EuclidPlane)
-	                (fun U0 : set => exists c:set, exists r:set,
-	                  c :e EuclidPlane /\ Rlt 0 r /\
-	                  U0 = {p :e EuclidPlane|Rlt (distance_R2 p c) r})
-	                b3
-	                Hb3pow
-	                Hb3prop).
-	  - apply andI.
+		  set b3 := {p :e EuclidPlane|Rlt (distance_R2 p x) r3}.
+		  witness b3.
+		  apply andI.
+		  - prove b3 :e circular_regions.
+		    claim Hb3def : b3 = {p :e EuclidPlane|Rlt (distance_R2 p x) r3}.
+		    { reflexivity. }
+		    rewrite Hb3def.
+		    exact (circular_regionI x r3 HxEuclid Hr3).
+		  - apply andI.
 	    + prove x :e b3.
 	      claim Hdx : Rlt (distance_R2 x x) r3.
 	      { rewrite (distance_R2_refl_0 x HxEuclid).
