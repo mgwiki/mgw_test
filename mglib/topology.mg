@@ -8415,18 +8415,39 @@ Definition rectangular_regions : set :=
 
 Theorem circular_regions_basis_plane : basis_on EuclidPlane circular_regions.
 prove basis_on EuclidPlane circular_regions.
-admit. (** circular regions form basis for plane topology **)
+(** basis_on has three clauses: subset, cover, intersection refinement **)
+prove circular_regions c= Power EuclidPlane
+  /\ (forall x :e EuclidPlane, exists b :e circular_regions, x :e b)
+  /\ (forall b1 :e circular_regions, forall b2 :e circular_regions, forall x:set,
+        x :e b1 -> x :e b2 ->
+        exists b3 :e circular_regions, x :e b3 /\ b3 c= b1 :/\: b2).
+apply andI.
+- apply andI.
+  + admit. (** circular_regions c= Power EuclidPlane **)
+  + admit. (** cover of EuclidPlane by circular regions **)
+- admit. (** intersection refinement for circular regions **)
 Qed.
 
 Theorem rectangular_regions_basis_plane : basis_on EuclidPlane rectangular_regions.
 prove basis_on EuclidPlane rectangular_regions.
-admit. (** rectangular regions form basis for plane topology **)
+prove rectangular_regions c= Power EuclidPlane
+  /\ (forall x :e EuclidPlane, exists b :e rectangular_regions, x :e b)
+  /\ (forall b1 :e rectangular_regions, forall b2 :e rectangular_regions, forall x:set,
+        x :e b1 -> x :e b2 ->
+        exists b3 :e rectangular_regions, x :e b3 /\ b3 c= b1 :/\: b2).
+apply andI.
+- apply andI.
+  + admit. (** rectangular_regions c= Power EuclidPlane **)
+  + admit. (** cover of EuclidPlane by rectangular regions **)
+- admit. (** intersection refinement for rectangular regions **)
 Qed.
 
 Theorem circular_rectangular_same_topology_plane :
   generated_topology EuclidPlane circular_regions = generated_topology EuclidPlane rectangular_regions.
 prove generated_topology EuclidPlane circular_regions = generated_topology EuclidPlane rectangular_regions.
-admit. (** circular and rectangular bases generate same topology **)
+apply set_ext.
+- admit. (** inclusion: generated_topology EuclidPlane circular_regions c= generated_topology EuclidPlane rectangular_regions **)
+- admit. (** inclusion: generated_topology EuclidPlane rectangular_regions c= generated_topology EuclidPlane circular_regions **)
 Qed.
 
 (** from §13: refinement of basis yields finer topology **) 
