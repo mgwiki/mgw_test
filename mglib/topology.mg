@@ -10738,22 +10738,27 @@ apply andI.
   + (** Axiom 2: covering property - forall x :e X, exists b :e basis_of_subbasis X S, x :e b **)
     let x. assume Hx: x :e X.
     prove exists b :e basis_of_subbasis X S, x :e b.
-    (** Strategy: Use X itself as the covering basis element **)
-    (** First show X <> Empty since x :e X **)
-    claim HX_ne: X <> Empty.
-    { assume HX_empty: X = Empty.
-      claim Hx_in_empty: x :e Empty.
-      { rewrite <- HX_empty. exact Hx. }
-      exact (EmptyE x Hx_in_empty).
+    (** Use Union S = X from subbasis_on: pick s :e S with x :e s, then s is a nonempty finite intersection **)
+    claim HSsub: S c= Power X.
+    { exact (andEL (S c= Power X) (Union S = X) HS). }
+    claim HUnionS: Union S = X.
+    { exact (andER (S c= Power X) (Union S = X) HS). }
+    claim HxUnionS: x :e Union S.
+    { rewrite HUnionS. exact Hx. }
+    apply (UnionE_impred S x HxUnionS).
+    let s. assume Hxs: x :e s. assume HsS: s :e S.
+    claim HsNe: s <> Empty.
+    { assume Hseq: s = Empty.
+      claim HxEmpty: x :e Empty.
+      { rewrite <- Hseq. exact Hxs. }
+      exact (EmptyE x HxEmpty).
     }
-    (** Now X :e basis_of_subbasis X S by axiom **)
-    claim HX_in_basis: X :e basis_of_subbasis X S.
-    { exact (X_in_basis_of_subbasis X S HX_ne). }
-    (** And clearly x :e X **)
-    witness X.
+    claim HsInBasis: s :e basis_of_subbasis X S.
+    { exact (subbasis_elem_in_basis X S s HS HsS HsNe). }
+    witness s.
     apply andI.
-    * exact HX_in_basis.
-    * exact Hx.
+    * exact HsInBasis.
+    * exact Hxs.
 - (** Axiom 3: intersection property **)
   let b1. assume Hb1: b1 :e basis_of_subbasis X S.
   let b2. assume Hb2: b2 :e basis_of_subbasis X S.
