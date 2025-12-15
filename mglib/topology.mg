@@ -8382,6 +8382,39 @@ Definition Q : set := rational.
 Definition Rlt : set -> set -> prop := fun a b =>
   a :e R /\ b :e R /\ a < b.
 
+(** from §13 Example 4: helper introduction rule for Rlt **)
+(** LATEX VERSION: We use the usual convention a<b implies a and b are reals and a<b. **)
+Theorem RltI : forall a b:set, a :e R -> b :e R -> a < b -> Rlt a b.
+let a b. assume Ha Hb Hab.
+prove a :e R /\ b :e R /\ a < b.
+apply andI.
+- apply andI.
+  + exact Ha.
+  + exact Hb.
+- exact Hab.
+Qed.
+
+(** from §13 Example 4: helper elimination rules for Rlt **)
+(** LATEX VERSION: If Rlt a b then a and b are reals and a<b. **)
+Theorem RltE_left : forall a b:set, Rlt a b -> a :e R.
+let a b. assume H.
+exact (andEL (a :e R) (b :e R) (andEL (a :e R /\ b :e R) (a < b) H)).
+Qed.
+
+(** from §13 Example 4: helper elimination rules for Rlt **)
+(** LATEX VERSION: If Rlt a b then a and b are reals and a<b. **)
+Theorem RltE_right : forall a b:set, Rlt a b -> b :e R.
+let a b. assume H.
+exact (andER (a :e R) (b :e R) (andEL (a :e R /\ b :e R) (a < b) H)).
+Qed.
+
+(** from §13 Example 4: helper elimination rules for Rlt **)
+(** LATEX VERSION: If Rlt a b then a and b are reals and a<b. **)
+Theorem RltE_lt : forall a b:set, Rlt a b -> a < b.
+let a b. assume H.
+exact (andER (a :e R /\ b :e R) (a < b) H).
+Qed.
+
 (** from §13 Example 4: circular vs rectangular region bases **)
 (** LATEX VERSION: Example 4: circular regions and axis-parallel rectangular regions in ℝ² both form bases generating the same topology. **)
 (** FIXED: EuclidPlane is now correctly R×R (Cartesian product) since setprod = setprod. **)
