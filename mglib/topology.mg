@@ -8504,18 +8504,120 @@ Definition basis_of_subbasis : set -> set -> set := fun X S =>
   {b :e finite_intersections_of X S | b <> Empty}.
 
 (** Helper: Finite intersection of a family is in the basis_of_subbasis **)
-Axiom finite_intersection_in_basis : forall X S F:set,
+Theorem finite_intersection_in_basis : forall X S F:set,
   F :e finite_subcollections S ->
   intersection_of_family X F <> Empty ->
   intersection_of_family X F :e basis_of_subbasis X S.
+let X S F. assume HF Hnon.
+prove intersection_of_family X F :e basis_of_subbasis X S.
+(** basis_of_subbasis X S = {b :e finite_intersections_of X S | b <> Empty} **)
+exact (SepI (finite_intersections_of X S) (fun b:set => b <> Empty) (intersection_of_family X F)
+            (ReplI (finite_subcollections S) (fun F0 : set => intersection_of_family X F0) F HF)
+            Hnon).
+ 
+Qed.
+
+(** Helper: empty family intersection equals X **)
+Theorem intersection_of_family_empty_eq : forall X:set,
+  intersection_of_family X Empty = X.
+let X.
+apply set_ext.
+- let x. assume Hx: x :e intersection_of_family X Empty.
+  prove x :e X.
+  exact (SepE1 X (fun x0 : set => forall U:set, U :e Empty -> x0 :e U) x Hx).
+- let x. assume HxX: x :e X.
+  prove x :e intersection_of_family X Empty.
+  exact (SepI X (fun x0 : set => forall U:set, U :e Empty -> x0 :e U) x
+              HxX
+              (fun U HU => EmptyE U HU (x :e U))).
+Qed.
+
+(** Helper: singleton family intersection equals the set when it is a subset of X **)
+Theorem intersection_of_family_singleton_eq : forall X s:set,
+  s c= X ->
+  intersection_of_family X {s} = s.
+let X s. assume HsSubX.
+apply set_ext.
+- let x. assume Hx: x :e intersection_of_family X {s}.
+  prove x :e s.
+  claim Hall: forall U:set, U :e {s} -> x :e U.
+  { exact (SepE2 X (fun x0 : set => forall U:set, U :e {s} -> x0 :e U) x Hx). }
+  exact (Hall s (SingI s)).
+- let x. assume Hx: x :e s.
+  prove x :e intersection_of_family X {s}.
+  claim HxX: x :e X.
+  { exact (HsSubX x Hx). }
+  claim Hprop: forall U:set, U :e {s} -> x :e U.
+  { let U. assume HU: U :e {s}.
+    prove x :e U.
+    claim HUeq: U = s.
+    { exact (SingE s U HU). }
+    rewrite HUeq.
+    exact Hx.
+  }
+  exact (SepI X (fun x0 : set => forall U:set, U :e {s} -> x0 :e U) x HxX Hprop).
+Qed.
 
 (** Helper: Elements of subbasis are in the generated basis **)
-Axiom subbasis_elem_in_basis : forall X S s:set,
-  s :e S -> s <> Empty -> s :e basis_of_subbasis X S.
+Theorem subbasis_elem_in_basis : forall X S s:set,
+  subbasis_on X S ->
+  s :e S ->
+  s <> Empty ->
+  s :e basis_of_subbasis X S.
+let X S s. assume HSsub HsS HsNonempty.
+prove s :e basis_of_subbasis X S.
+claim HS: S c= Power X.
+{ exact HSsub. }
+claim HsPow: s :e Power X.
+{ exact (HS s HsS). }
+claim HsSubX: s c= X.
+{ exact (PowerE X s HsPow). }
+set F := {s}.
+claim HFPower: F :e Power S.
+{ apply PowerI S F.
+  let t. assume Ht: t :e F.
+  prove t :e S.
+  claim HtEq: t = s.
+  { exact (SingE s t Ht). }
+  rewrite HtEq.
+  exact HsS.
+}
+claim HFinF: finite F.
+{ exact (Sing_finite s). }
+claim HFsubcol: F :e finite_subcollections S.
+{ exact (SepI (Power S) (fun F0 : set => finite F0) F HFPower HFinF). }
+claim HinterEq: intersection_of_family X F = s.
+{ exact (intersection_of_family_singleton_eq X s HsSubX). }
+claim HinterNonempty: intersection_of_family X F <> Empty.
+{ rewrite HinterEq. exact HsNonempty. }
+claim HinterInBasis: intersection_of_family X F :e basis_of_subbasis X S.
+{ exact (finite_intersection_in_basis X S F HFsubcol HinterNonempty). }
+rewrite <- HinterEq at 1.
+exact HinterInBasis.
+Qed.
 
 (** Helper: X itself (empty intersection) is in the basis when nonempty **)
-Axiom X_in_basis_of_subbasis : forall X S:set,
-  X <> Empty -> X :e basis_of_subbasis X S.
+Theorem X_in_basis_of_subbasis : forall X S:set,
+  X <> Empty ->
+  X :e basis_of_subbasis X S.
+let X S. assume HXnonempty.
+prove X :e basis_of_subbasis X S.
+set F := Empty.
+claim HFPower: F :e Power S.
+{ exact (Empty_In_Power S). }
+claim HFinF: finite F.
+{ exact finite_Empty. }
+claim HFsubcol: F :e finite_subcollections S.
+{ exact (SepI (Power S) (fun F0 : set => finite F0) F HFPower HFinF). }
+claim HinterEq: intersection_of_family X F = X.
+{ exact (intersection_of_family_empty_eq X). }
+claim HinterNonempty: intersection_of_family X F <> Empty.
+{ rewrite HinterEq. exact HXnonempty. }
+claim HinterInBasis: intersection_of_family X F :e basis_of_subbasis X S.
+{ exact (finite_intersection_in_basis X S F HFsubcol HinterNonempty). }
+rewrite <- HinterEq at 1.
+exact HinterInBasis.
+Qed.
 
 (** Helper: Finite intersection of topology elements is in the topology **)
 Axiom finite_intersection_in_topology : forall X T F:set,
@@ -9659,7 +9761,7 @@ claim HTmin_contains_all: forall T :e Fam, T c= Tmin.
     exact HEmptyinTmin.
   - assume HUnonempty: U <> Empty.
     claim HUinBasis: U :e basis_of_subbasis X (Union Fam).
-    { exact (subbasis_elem_in_basis X (Union Fam) U HUinUnionFam HUnonempty). }
+    { exact (subbasis_elem_in_basis X (Union Fam) U HUnionFam_subbasis HUinUnionFam HUnonempty). }
     (** Now use basis_in_generated **)
     claim HBasis: basis_on X (basis_of_subbasis X (Union Fam)).
     { exact (finite_intersections_basis_of_subbasis X (Union Fam) HUnionFam_subbasis). }
