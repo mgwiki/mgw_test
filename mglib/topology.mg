@@ -9805,7 +9805,17 @@ apply andI.
     }
     exact (topology_chain_four_sets abc_set {a_elt} (UPair a_elt b_elt) HAinAB HABsubX).
 - (** finer_pairs set of refinement pairs **)
-  admit. (** enumerate all refinement pairs by subset checking **)
+  witness
+    {p :e Power (Power (Power abc_set))|
+       exists T1 T2:set, p = setprod T1 T2 /\
+         (T1 = top_abc_1 \/ T1 = top_abc_2 \/ T1 = top_abc_3 \/
+          T1 = top_abc_4 \/ T1 = top_abc_5 \/ T1 = top_abc_6 \/
+          T1 = top_abc_7 \/ T1 = top_abc_8 \/ T1 = top_abc_9) /\
+         (T2 = top_abc_1 \/ T2 = top_abc_2 \/ T2 = top_abc_3 \/
+          T2 = top_abc_4 \/ T2 = top_abc_5 \/ T2 = top_abc_6 \/
+          T2 = top_abc_7 \/ T2 = top_abc_8 \/ T2 = top_abc_9) /\
+         T1 c= T2}.
+  reflexivity.
 Qed.
 
 (** from §13 Exercise 2: some basic fineness relations between the nine examples **)
