@@ -8386,12 +8386,9 @@ Definition Rlt : set -> set -> prop := fun a b =>
 (** LATEX VERSION: Example 4: circular regions and axis-parallel rectangular regions in ℝ² both form bases generating the same topology. **)
 (** FIXED: EuclidPlane is now correctly R×R (Cartesian product) since setprod = setprod. **)
 Definition EuclidPlane : set := setprod R R.
-(** Coordinate selectors for points p :e setprod R R (cartesian product).
-    These use choice (Eps_i) but become canonical whenever the representation is fixed. **)
-Definition R2_xcoord : set -> set :=
-  fun p => Eps_i (fun x => x :e R /\ exists y :e R, p = (x,y)).
-Definition R2_ycoord : set -> set :=
-  fun p => Eps_i (fun y => y :e R /\ exists x :e R, p = (x,y)).
+(** Coordinate selectors for points in EuclidPlane. **)
+Definition R2_xcoord : set -> set := fun p => p 0.
+Definition R2_ycoord : set -> set := fun p => p 1.
 
 (** Euclidean distance in ℝ²: sqrt((x1-x2)^2 + (y1-y2)^2),
     implemented using pre-topology surreal/real operations. **)
