@@ -8448,23 +8448,34 @@ claim Hp0S : SNo (R2_xcoord p).
 { exact (real_SNo (R2_xcoord p) Hp0R). }
 claim Hp1S : SNo (R2_ycoord p).
 { exact (real_SNo (R2_ycoord p) Hp1R). }
-claim Hdx : (R2_xcoord p) + - (R2_xcoord p) = 0.
+claim Hdx : add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord p)) = 0.
 { exact (add_SNo_minus_SNo_rinv (R2_xcoord p) Hp0S). }
-claim Hdy : (R2_ycoord p) + - (R2_ycoord p) = 0.
+claim Hdy : add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord p)) = 0.
 { exact (add_SNo_minus_SNo_rinv (R2_ycoord p) Hp1S). }
-claim Hdx2 : ((R2_xcoord p) + - (R2_xcoord p)) * ((R2_xcoord p) + - (R2_xcoord p)) = 0.
+claim Hdx2 : mul_SNo (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord p)))
+                     (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord p))) = 0.
 { rewrite Hdx.
-  rewrite Hdx.
   exact (mul_SNo_zeroR 0 SNo_0). }
-claim Hdy2 : ((R2_ycoord p) + - (R2_ycoord p)) * ((R2_ycoord p) + - (R2_ycoord p)) = 0.
+claim Hdy2 : mul_SNo (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord p)))
+                     (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord p))) = 0.
 { rewrite Hdy.
-  rewrite Hdy.
   exact (mul_SNo_zeroR 0 SNo_0). }
-claim Hsum : (((R2_xcoord p) + - (R2_xcoord p)) * ((R2_xcoord p) + - (R2_xcoord p)))
-              + (((R2_ycoord p) + - (R2_ycoord p)) * ((R2_ycoord p) + - (R2_ycoord p))) = 0.
+claim Hsum : add_SNo (mul_SNo (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord p)))
+                              (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord p))))
+                     (mul_SNo (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord p)))
+                              (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord p)))) = 0.
 { rewrite Hdx2.
   rewrite Hdy2.
   exact (add_SNo_0L 0 SNo_0). }
+claim Hdef : distance_R2 p p =
+  sqrt_SNo_nonneg
+    (add_SNo
+      (mul_SNo (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord p)))
+              (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord p))))
+      (mul_SNo (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord p)))
+              (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord p))))).
+{ reflexivity. }
+rewrite Hdef.
 rewrite Hsum.
 rewrite sqrt_SNo_nonneg_0.
 reflexivity.
@@ -8503,32 +8514,47 @@ apply andI.
     witness {p :e EuclidPlane|Rlt (distance_R2 p x) 1}.
     apply andI.
     * prove {p :e EuclidPlane|Rlt (distance_R2 p x) 1} :e circular_regions.
-      apply SepI.
-      -- prove {p :e EuclidPlane|Rlt (distance_R2 p x) 1} :e Power EuclidPlane.
-         apply PowerI.
-         let p. assume Hp.
-         exact (SepE1 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) 1) p Hp).
-      -- witness x.
-         witness 1.
-         apply andI.
-         { exact Hx. }
-         apply andI.
-         { prove Rlt 0 1.
-           apply andI.
-           - exact real_0.
-           - apply andI.
-             + exact real_1.
-             + exact SNoLt_0_1. }
-         { reflexivity. }
-    * apply SepI.
-      -- exact Hx.
-      -- prove Rlt (distance_R2 x x) 1.
-         rewrite (distance_R2_refl_0 x Hx).
-         apply andI.
-         { exact real_0. }
-         apply andI.
-         { exact real_1. }
-         { exact SNoLt_0_1. }
+      claim Hpow : {p :e EuclidPlane|Rlt (distance_R2 p x) 1} :e Power EuclidPlane.
+      { apply PowerI.
+        let p. assume Hp.
+        exact (SepE1 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) 1) p Hp). }
+      claim Hprop : exists c:set, exists r:set,
+        c :e EuclidPlane /\ Rlt 0 r /\
+        {p :e EuclidPlane|Rlt (distance_R2 p x) 1} = {p :e EuclidPlane|Rlt (distance_R2 p c) r}.
+      { witness x.
+        witness 1.
+        apply andI.
+        - apply andI.
+          + exact Hx.
+          + claim HR : 0 :e R /\ 1 :e R /\ 0 < 1.
+            { apply andI.
+              - apply andI.
+                + exact real_0.
+                + exact real_1.
+              - exact SNoLt_0_1. }
+            exact HR.
+        - reflexivity. }
+      exact (SepI (Power EuclidPlane)
+                  (fun U0 : set => exists c:set, exists r:set,
+                    c :e EuclidPlane /\ Rlt 0 r /\
+                    U0 = {p :e EuclidPlane|Rlt (distance_R2 p c) r})
+                  {p :e EuclidPlane|Rlt (distance_R2 p x) 1}
+                  Hpow
+                  Hprop).
+    * claim Hlt : Rlt (distance_R2 x x) 1.
+      { rewrite (distance_R2_refl_0 x Hx).
+        claim HR : 0 :e R /\ 1 :e R /\ 0 < 1.
+        { apply andI.
+          - apply andI.
+            + exact real_0.
+            + exact real_1.
+          - exact SNoLt_0_1. }
+        exact HR. }
+      exact (SepI EuclidPlane
+                  (fun p0 : set => Rlt (distance_R2 p0 x) 1)
+                  x
+                  Hx
+                  Hlt).
 - admit. (** intersection refinement for circular regions **)
 Qed.
 
