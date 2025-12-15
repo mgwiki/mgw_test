@@ -10319,27 +10319,10 @@ set u := {p :e EuclidPlane|Rlt (distance_R2 p x) r3}.
 witness u.
 apply andI.
 - prove u :e circular_regions.
-  claim HuPow : u :e Power EuclidPlane.
-  { apply PowerI EuclidPlane u.
-    let p. assume Hp.
-    exact (SepE1 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) r3) p Hp). }
-  claim HuPred :
-    exists c0:set, exists r0:set,
-      c0 :e EuclidPlane /\ Rlt 0 r0 /\
-      u = {p :e EuclidPlane|Rlt (distance_R2 p c0) r0}.
-  { witness x. witness r3.
-    apply andI.
-    - apply andI.
-      + exact HxE.
-      + exact Hr3.
-    - reflexivity. }
-  exact (SepI (Power EuclidPlane)
-              (fun U0 : set => exists c0:set, exists r0:set,
-                c0 :e EuclidPlane /\ Rlt 0 r0 /\
-                U0 = {p :e EuclidPlane|Rlt (distance_R2 p c0) r0})
-              u
-              HuPow
-              HuPred).
+  claim HuDef : u = {p :e EuclidPlane|Rlt (distance_R2 p x) r3}.
+  { reflexivity. }
+  rewrite HuDef.
+  exact (circular_regionI x r3 HxE Hr3).
 - apply andI.
   + prove x :e u.
     claim HxBall : Rlt (distance_R2 x x) r3.
