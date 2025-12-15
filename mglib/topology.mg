@@ -9163,27 +9163,93 @@ apply andI.
     claim Hd3def : d3 = if d1 < d2 then d1 else d2.
     { reflexivity. }
 
+    (** Extract endpoint realness once from Hb1core and Hb2core **)
+    claim Hb1params :
+      a1 :e R /\ b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1.
+    { exact (andEL (a1 :e R /\ b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1)
+                  (b1 = {q :e EuclidPlane|
+                          exists x0:set, exists y0:set,
+                            q = (x0,y0) /\ Rlt a1 x0 /\ Rlt x0 b1x /\ Rlt c1 y0 /\ Rlt y0 d1})
+                  Hb1core). }
+    claim Hb2params :
+      a2 :e R /\ b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2.
+    { exact (andEL (a2 :e R /\ b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2)
+                  (b2 = {q :e EuclidPlane|
+                          exists x0:set, exists y0:set,
+                            q = (x0,y0) /\ Rlt a2 x0 /\ Rlt x0 b2x /\ Rlt c2 y0 /\ Rlt y0 d2})
+                  Hb2core). }
+
+    claim Hb1left : ((((a1 :e R /\ b1x :e R) /\ c1 :e R) /\ d1 :e R) /\ Rlt a1 b1x).
+    { exact (andEL ((((a1 :e R /\ b1x :e R) /\ c1 :e R) /\ d1 :e R) /\ Rlt a1 b1x)
+                  (Rlt c1 d1)
+                  Hb1params). }
+    claim Hb2left : ((((a2 :e R /\ b2x :e R) /\ c2 :e R) /\ d2 :e R) /\ Rlt a2 b2x).
+    { exact (andEL ((((a2 :e R /\ b2x :e R) /\ c2 :e R) /\ d2 :e R) /\ Rlt a2 b2x)
+                  (Rlt c2 d2)
+                  Hb2params). }
+
+    claim Ha1b1x_c1_d1 : (((a1 :e R /\ b1x :e R) /\ c1 :e R) /\ d1 :e R).
+    { exact (andEL (((a1 :e R /\ b1x :e R) /\ c1 :e R) /\ d1 :e R)
+                  (Rlt a1 b1x)
+                  Hb1left). }
+    claim Ha2b2x_c2_d2 : (((a2 :e R /\ b2x :e R) /\ c2 :e R) /\ d2 :e R).
+    { exact (andEL (((a2 :e R /\ b2x :e R) /\ c2 :e R) /\ d2 :e R)
+                  (Rlt a2 b2x)
+                  Hb2left). }
+
+    claim Ha1b1x_c1 : ((a1 :e R /\ b1x :e R) /\ c1 :e R).
+    { exact (andEL ((a1 :e R /\ b1x :e R) /\ c1 :e R)
+                  (d1 :e R)
+                  Ha1b1x_c1_d1). }
+    claim Ha2b2x_c2 : ((a2 :e R /\ b2x :e R) /\ c2 :e R).
+    { exact (andEL ((a2 :e R /\ b2x :e R) /\ c2 :e R)
+                  (d2 :e R)
+                  Ha2b2x_c2_d2). }
+
+    claim Ha1b1x : a1 :e R /\ b1x :e R.
+    { exact (andEL (a1 :e R /\ b1x :e R) (c1 :e R) Ha1b1x_c1). }
+    claim Ha2b2x : a2 :e R /\ b2x :e R.
+    { exact (andEL (a2 :e R /\ b2x :e R) (c2 :e R) Ha2b2x_c2). }
+
+    claim Ha1R : a1 :e R.
+    { exact (andEL (a1 :e R) (b1x :e R) Ha1b1x). }
+    claim Hb1xR : b1x :e R.
+    { exact (andER (a1 :e R) (b1x :e R) Ha1b1x). }
+    claim Hc1R : c1 :e R.
+    { exact (andER (a1 :e R /\ b1x :e R) (c1 :e R) Ha1b1x_c1). }
+    claim Hd1R : d1 :e R.
+    { exact (andER ((a1 :e R /\ b1x :e R) /\ c1 :e R) (d1 :e R) Ha1b1x_c1_d1). }
+
+    claim Ha2R : a2 :e R.
+    { exact (andEL (a2 :e R) (b2x :e R) Ha2b2x). }
+    claim Hb2xR : b2x :e R.
+    { exact (andER (a2 :e R) (b2x :e R) Ha2b2x). }
+    claim Hc2R : c2 :e R.
+    { exact (andER (a2 :e R /\ b2x :e R) (c2 :e R) Ha2b2x_c2). }
+    claim Hd2R : d2 :e R.
+    { exact (andER ((a2 :e R /\ b2x :e R) /\ c2 :e R) (d2 :e R) Ha2b2x_c2_d2). }
+
     (** Show the chosen endpoints are real numbers **)
     claim Ha3R : a3 :e R.
     { rewrite Ha3def.
       apply (xm (a1 < a2)).
-      - assume Hlt. rewrite (If_i_1 (a1 < a2) a2 a1 Hlt). exact (andEL (a2 :e R) (b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) Hb2core).
-      - assume Hnlt. rewrite (If_i_0 (a1 < a2) a2 a1 Hnlt). exact (andEL (a1 :e R) (b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) Hb1core). }
+      - assume Hlt. rewrite (If_i_1 (a1 < a2) a2 a1 Hlt). exact Ha2R.
+      - assume Hnlt. rewrite (If_i_0 (a1 < a2) a2 a1 Hnlt). exact Ha1R. }
     claim Hb3xR : b3x :e R.
     { rewrite Hb3def.
       apply (xm (b1x < b2x)).
-      - assume Hlt. rewrite (If_i_1 (b1x < b2x) b1x b2x Hlt). exact (andEL (b1x :e R) (c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) (andER (a1 :e R) (b1x :e R /\ c1 :e R /\ d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) Hb1core)).
-      - assume Hnlt. rewrite (If_i_0 (b1x < b2x) b1x b2x Hnlt). exact (andEL (b2x :e R) (c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) (andER (a2 :e R) (b2x :e R /\ c2 :e R /\ d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) Hb2core)). }
+      - assume Hlt. rewrite (If_i_1 (b1x < b2x) b1x b2x Hlt). exact Hb1xR.
+      - assume Hnlt. rewrite (If_i_0 (b1x < b2x) b1x b2x Hnlt). exact Hb2xR. }
     claim Hc3R : c3 :e R.
     { rewrite Hc3def.
       apply (xm (c1 < c2)).
-      - assume Hlt. rewrite (If_i_1 (c1 < c2) c2 c1 Hlt). exact (andEL (c2 :e R) (d2 :e R /\ Rlt c2 d2) (andER (a2 :e R /\ b2x :e R /\ c2 :e R) (d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) (andEL ((a2 :e R /\ b2x :e R /\ c2 :e R /\ d2 :e R) /\ Rlt a2 b2x) (Rlt c2 d2) Hb2core))).
-      - assume Hnlt. rewrite (If_i_0 (c1 < c2) c2 c1 Hnlt). exact (andEL (c1 :e R) (d1 :e R /\ Rlt c1 d1) (andER (a1 :e R /\ b1x :e R /\ c1 :e R) (d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) (andEL ((a1 :e R /\ b1x :e R /\ c1 :e R /\ d1 :e R) /\ Rlt a1 b1x) (Rlt c1 d1) Hb1core))). }
+      - assume Hlt. rewrite (If_i_1 (c1 < c2) c2 c1 Hlt). exact Hc2R.
+      - assume Hnlt. rewrite (If_i_0 (c1 < c2) c2 c1 Hnlt). exact Hc1R. }
     claim Hd3R : d3 :e R.
     { rewrite Hd3def.
       apply (xm (d1 < d2)).
-      - assume Hlt. rewrite (If_i_1 (d1 < d2) d1 d2 Hlt). exact (andEL (d1 :e R) (Rlt c1 d1) (andER (a1 :e R /\ b1x :e R /\ c1 :e R) (d1 :e R /\ Rlt a1 b1x /\ Rlt c1 d1) (andEL ((a1 :e R /\ b1x :e R /\ c1 :e R /\ d1 :e R) /\ Rlt a1 b1x) (Rlt c1 d1) Hb1core))).
-      - assume Hnlt. rewrite (If_i_0 (d1 < d2) d1 d2 Hnlt). exact (andEL (d2 :e R) (Rlt c2 d2) (andER (a2 :e R /\ b2x :e R /\ c2 :e R) (d2 :e R /\ Rlt a2 b2x /\ Rlt c2 d2) (andEL ((a2 :e R /\ b2x :e R /\ c2 :e R /\ d2 :e R) /\ Rlt a2 b2x) (Rlt c2 d2) Hb2core))). }
+      - assume Hlt. rewrite (If_i_1 (d1 < d2) d1 d2 Hlt). exact Hd1R.
+      - assume Hnlt. rewrite (If_i_0 (d1 < d2) d1 d2 Hnlt). exact Hd2R. }
 
     (** Show x1,y1 are between the chosen endpoints **)
     claim Hax3 : Rlt a3 x1.
