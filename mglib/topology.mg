@@ -9268,7 +9268,19 @@ Theorem ex13_3b_witness_outline : forall X:set,
   exists U V:set, U :e infinite_complement_family X /\ V :e infinite_complement_family X.
 let X.
 prove exists U V:set, U :e infinite_complement_family X /\ V :e infinite_complement_family X.
-admit. (** construct explicit witness sets with infinite complements **)
+apply (ex13_3b_witness_sets X).
+let U.
+assume HexV.
+apply HexV.
+let V.
+assume HUV.
+claim Hcore: U :e infinite_complement_family X /\ V :e infinite_complement_family X.
+{ exact (andEL (U :e infinite_complement_family X /\ V :e infinite_complement_family X)
+              (~(U :/\: V :e infinite_complement_family X))
+              HUV). }
+witness U.
+witness V.
+exact Hcore.
 Qed.
 
 (** from §13 Exercise 4(a): intersection of topologies **)
