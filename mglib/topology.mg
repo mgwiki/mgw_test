@@ -10907,7 +10907,7 @@ Qed.
 
 (** from §13 Exercise 7: containment relations among five ℝ topologies **) 
 (** LATEX VERSION: Exercise 7 lists several standard ℝ topologies and records which contain which (upper limit finer than standard, etc.). **)
-Definition R_finite_complement_topology : set := countable_complement_topology R.
+Definition R_finite_complement_topology : set := finite_complement_topology R.
 Definition R_upper_limit_topology : set := R_lower_limit_topology.
 Definition R_ray_topology : set :=
   {U :e Power R|U = Empty \/ U = R \/ (exists a :e R, {x :e R|Rlt a x} c= U)}.
