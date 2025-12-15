@@ -9808,6 +9808,89 @@ apply andI.
   admit. (** enumerate all refinement pairs by subset checking **)
 Qed.
 
+(** from §13 Exercise 2: some basic fineness relations between the nine examples **)
+(** LATEX VERSION: Exercise 2 asks to compare the nine topologies by inclusion (finer/coarser). **)
+Theorem top_abc_3_finer_than_top_abc_1 : finer_than top_abc_3 top_abc_1.
+let U. assume HU: U :e top_abc_1.
+prove U :e top_abc_3.
+apply (UPairE U Empty abc_set HU).
+- assume HUeq: U = Empty.
+  rewrite HUeq.
+  exact (binunionI1 (UPair Empty {a_elt}) {abc_set} Empty (UPairI1 Empty {a_elt})).
+- assume HUeq: U = abc_set.
+  rewrite HUeq.
+  exact (binunionI2 (UPair Empty {a_elt}) {abc_set} abc_set (SingI abc_set)).
+Qed.
+
+Theorem top_abc_2_finer_than_top_abc_3 : finer_than top_abc_2 top_abc_3.
+let U. assume HU: U :e top_abc_3.
+prove U :e top_abc_2.
+(** top_abc_2 = Power abc_set; show U c= abc_set **)
+claim Ht2: top_abc_2 = Power abc_set.
+{ reflexivity. }
+rewrite Ht2.
+apply PowerI.
+let x. assume Hx: x :e U.
+prove x :e abc_set.
+apply (binunionE' (UPair Empty {a_elt}) {abc_set} U (x :e abc_set)).
+- assume HU0: U :e UPair Empty {a_elt}.
+  apply (UPairE U Empty {a_elt} HU0).
+  + assume HUeq: U = Empty.
+    claim HxEmpty: x :e Empty.
+    { rewrite <- HUeq. exact Hx. }
+    exact (EmptyE x HxEmpty (x :e abc_set)).
+  + assume HUeq: U = {a_elt}.
+    claim HxSing: x :e {a_elt}.
+    { rewrite <- HUeq. exact Hx. }
+    claim Hxeq: x = a_elt.
+    { exact (SingE a_elt x HxSing). }
+    rewrite Hxeq.
+    exact (binunionI1 (UPair a_elt b_elt) {c_elt} a_elt (UPairI1 a_elt b_elt)).
+- assume HU0: U :e {abc_set}.
+  claim HUeq: U = abc_set.
+  { exact (SingE abc_set U HU0). }
+  rewrite <- HUeq.
+  exact Hx.
+- exact HU.
+Qed.
+
+Theorem top_abc_9_finer_than_top_abc_3 : finer_than top_abc_9 top_abc_3.
+let U. assume HU: U :e top_abc_3.
+prove U :e top_abc_9.
+apply (binunionE' (UPair Empty {a_elt}) {abc_set} U (U :e top_abc_9)).
+- assume HU0: U :e UPair Empty {a_elt}.
+  exact (binunionI1 (UPair Empty {a_elt} :\/: {UPair a_elt b_elt}) {abc_set} U
+          (binunionI1 (UPair Empty {a_elt}) {UPair a_elt b_elt} U HU0)).
+- assume HU0: U :e {abc_set}.
+  claim HUeq: U = abc_set.
+  { exact (SingE abc_set U HU0). }
+  rewrite HUeq.
+  exact (binunionI2 (UPair Empty {a_elt} :\/: {UPair a_elt b_elt}) {abc_set} abc_set (SingI abc_set)).
+- exact HU.
+Qed.
+
+Theorem top_abc_9_finer_than_top_abc_6 : finer_than top_abc_9 top_abc_6.
+let U. assume HU: U :e top_abc_6.
+prove U :e top_abc_9.
+apply (binunionE' (UPair Empty (UPair a_elt b_elt)) {abc_set} U (U :e top_abc_9)).
+- assume HU0: U :e UPair Empty (UPair a_elt b_elt).
+  apply (UPairE U Empty (UPair a_elt b_elt) HU0).
+  + assume HUeq: U = Empty.
+    rewrite HUeq.
+    exact (binunionI1 (UPair Empty {a_elt} :\/: {UPair a_elt b_elt}) {abc_set} Empty
+            (binunionI1 (UPair Empty {a_elt}) {UPair a_elt b_elt} Empty (UPairI1 Empty {a_elt}))).
+  + assume HUeq: U = UPair a_elt b_elt.
+    rewrite HUeq.
+    exact (binunionI1 (UPair Empty {a_elt} :\/: {UPair a_elt b_elt}) {abc_set} (UPair a_elt b_elt)
+            (binunionI2 (UPair Empty {a_elt}) {UPair a_elt b_elt} (UPair a_elt b_elt) (SingI (UPair a_elt b_elt)))).
+- assume HU0: U :e {abc_set}.
+  claim HUeq: U = abc_set.
+  { exact (SingE abc_set U HU0). }
+  rewrite HUeq.
+  exact (binunionI2 (UPair Empty {a_elt} :\/: {UPair a_elt b_elt}) {abc_set} abc_set (SingI abc_set)).
+- exact HU.
+Qed.
+
 (** helper for §13 exercises: intersection of a family of topologies (placeholder) **)
 (** LATEX VERSION: Intersection_Fam X Fam denotes the intersection (common opens) of all topologies in Fam. **)
 (** FIXED: `Intersection_Fam X Fam` is the collection of common open sets, as subsets of the given ambient set `X`.
