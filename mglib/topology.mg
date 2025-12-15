@@ -8728,7 +8728,7 @@ apply andI.
                  U
                  HU).
   + admit. (** cover of EuclidPlane by rectangular regions **)
-- admit. (** intersection refinement for rectangular regions **)
+  - admit. (** intersection refinement for rectangular regions **)
 Qed.
 
 (** from §13 Example 4: circular and rectangular bases generate the same topology **)
