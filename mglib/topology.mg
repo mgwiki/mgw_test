@@ -10233,10 +10233,59 @@ claim HxE : x :e EuclidPlane.
              Hxb'). }
 
 (** Core refinement: build a small circular region around x contained in the rectangle **)
-claim HballInRect :
-  exists u :e circular_regions, x :e u /\ u c= b.
-admit. (** choose radius r3 > 0 less than all four coordinate distances to the sides; use bounds relating distance_R2 to coordinate differences **)
-exact HballInRect.
+claim Hrad :
+  exists r3:set,
+    Rlt 0 r3
+    /\ (forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> p :e b).
+admit. (** choose r3 > 0 less than all four coordinate distances to the sides; then any p with d(p,x)<r3 stays inside rectangle b **)
+apply Hrad.
+let r3. assume Hrad2.
+claim Hr3 : Rlt 0 r3.
+{ exact (andEL (Rlt 0 r3)
+              (forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> p :e b)
+              Hrad2). }
+claim HradP : forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> p :e b.
+{ exact (andER (Rlt 0 r3)
+              (forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> p :e b)
+              Hrad2). }
+set u := {p :e EuclidPlane|Rlt (distance_R2 p x) r3}.
+witness u.
+apply andI.
+- prove u :e circular_regions.
+  claim HuPow : u :e Power EuclidPlane.
+  { apply PowerI EuclidPlane u.
+    let p. assume Hp.
+    exact (SepE1 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) r3) p Hp). }
+  claim HuPred :
+    exists c0:set, exists r0:set,
+      c0 :e EuclidPlane /\ Rlt 0 r0 /\
+      u = {p :e EuclidPlane|Rlt (distance_R2 p c0) r0}.
+  { witness x. witness r3.
+    apply andI.
+    - apply andI.
+      + exact HxE.
+      + exact Hr3.
+    - reflexivity. }
+  exact (SepI (Power EuclidPlane)
+              (fun U0 : set => exists c0:set, exists r0:set,
+                c0 :e EuclidPlane /\ Rlt 0 r0 /\
+                U0 = {p :e EuclidPlane|Rlt (distance_R2 p c0) r0})
+              u
+              HuPow
+              HuPred).
+- apply andI.
+  + prove x :e u.
+    claim HxBall : Rlt (distance_R2 x x) r3.
+    { rewrite (distance_R2_refl_0 x HxE).
+      exact Hr3. }
+    exact (SepI EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) r3) x HxE HxBall).
+  + prove u c= b.
+    let p. assume Hp : p :e u.
+    claim HpE : p :e EuclidPlane.
+    { exact (SepE1 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) r3) p Hp). }
+    claim HpBall : Rlt (distance_R2 p x) r3.
+    { exact (SepE2 EuclidPlane (fun p0 : set => Rlt (distance_R2 p0 x) r3) p Hp). }
+    exact (HradP p HpE HpBall).
 Qed.
 
 Theorem circular_rectangular_same_topology_plane :
