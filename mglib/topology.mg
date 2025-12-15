@@ -19570,7 +19570,7 @@ admit. (** ε-δ characterization of continuity in metric spaces; preimage of op
 Qed.
 
 (** sequences as functions from omega **) 
-Definition sequence_in : set -> set -> prop := fun seq A => seq c= A.
+Definition sequence_in : set -> set -> prop := fun seq A => function_on seq omega A.
 Definition sequence_on : set -> set -> prop := fun seq A => function_on seq omega A.
 Definition converges_to : set -> set -> set -> set -> prop :=
   fun X Tx seq x =>
