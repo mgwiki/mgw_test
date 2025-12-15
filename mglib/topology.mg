@@ -8415,6 +8415,31 @@ let a b. assume H.
 exact (andER (a :e R /\ b :e R) (a < b) H).
 Qed.
 
+(** helper: transitivity of Rlt **)
+(** LATEX VERSION: If a<b and b<c then a<c. **)
+Theorem Rlt_tra : forall a b c:set, Rlt a b -> Rlt b c -> Rlt a c.
+let a b c. assume Hab Hbc.
+claim HaR : a :e R.
+{ exact (RltE_left a b Hab). }
+claim HbR : b :e R.
+{ exact (RltE_right a b Hab). }
+claim HcR : c :e R.
+{ exact (RltE_right b c Hbc). }
+claim Hablt : a < b.
+{ exact (RltE_lt a b Hab). }
+claim Hbclt : b < c.
+{ exact (RltE_lt b c Hbc). }
+claim HaS : SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS : SNo b.
+{ exact (real_SNo b HbR). }
+claim HcS : SNo c.
+{ exact (real_SNo c HcR). }
+claim Haclt : a < c.
+{ exact (SNoLt_tra a b c HaS HbS HcS Hablt Hbclt). }
+exact (RltI a c HaR HcR Haclt).
+Qed.
+
 (** from §13 Example 4: Rlt is irreflexive **)
 (** LATEX VERSION: We use that a<a is impossible. **)
 Theorem not_Rlt_refl : forall a:set, a :e R -> ~(Rlt a a).
