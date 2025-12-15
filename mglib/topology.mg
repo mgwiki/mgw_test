@@ -9445,7 +9445,10 @@ apply andI.
             - exact Ha2xq.
           - assume Haeq : a1 = a2.
             claim Hnlt : ~(a1 < a2).
-            { assume Hlt. rewrite Haeq in Hlt. exact ((SNoLt_irref a1) Hlt). }
+            { assume Hlt.
+              claim Hlt' : a1 < a1.
+              { rewrite Haeq at 2. exact Hlt. }
+              exact ((SNoLt_irref a1) Hlt'). }
             claim Ha1xq : Rlt a1 xq.
             { rewrite <- (If_i_0 (a1 < a2) a2 a1 Hnlt). exact Ha3xq_if. }
             claim Ha2xq : Rlt a2 xq.
@@ -9497,7 +9500,10 @@ apply andI.
             - exact Hxqb2.
           - assume Hbeq : b1x = b2x.
             claim Hnlt : ~(b1x < b2x).
-            { assume Hlt. rewrite Hbeq in Hlt. exact ((SNoLt_irref b1x) Hlt). }
+            { assume Hlt.
+              claim Hlt' : b1x < b1x.
+              { rewrite Hbeq at 2. exact Hlt. }
+              exact ((SNoLt_irref b1x) Hlt'). }
             claim Hxqb2 : Rlt xq b2x.
             { rewrite <- (If_i_0 (b1x < b2x) b1x b2x Hnlt). exact Hxqb3_if. }
             claim Hxqb1 : Rlt xq b1x.
@@ -9543,7 +9549,10 @@ apply andI.
             - exact Hc2yq.
           - assume Hceq : c1 = c2.
             claim Hnlt : ~(c1 < c2).
-            { assume Hlt. rewrite Hceq in Hlt. exact ((SNoLt_irref c1) Hlt). }
+            { assume Hlt.
+              claim Hlt' : c1 < c1.
+              { rewrite Hceq at 2. exact Hlt. }
+              exact ((SNoLt_irref c1) Hlt'). }
             claim Hc1yq : Rlt c1 yq.
             { rewrite <- (If_i_0 (c1 < c2) c2 c1 Hnlt). exact Hc3yq_if. }
             claim Hc2yq : Rlt c2 yq.
@@ -9591,7 +9600,10 @@ apply andI.
             - exact Hyqd2.
           - assume Hdeq : d1 = d2.
             claim Hnlt : ~(d1 < d2).
-            { assume Hlt. rewrite Hdeq in Hlt. exact ((SNoLt_irref d1) Hlt). }
+            { assume Hlt.
+              claim Hlt' : d1 < d1.
+              { rewrite Hdeq at 2. exact Hlt. }
+              exact ((SNoLt_irref d1) Hlt'). }
             claim Hyqd2 : Rlt yq d2.
             { rewrite <- (If_i_0 (d1 < d2) d1 d2 Hnlt). exact Hyqd3_if. }
             claim Hyqd1 : Rlt yq d1.
