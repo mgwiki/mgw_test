@@ -9890,7 +9890,7 @@ claim Hxr : x :e r.
 claim Hrsub : r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}.
 { exact (andER (x :e r) (r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}) Hrprop). }
 claim Hrsubb : r c= b.
-{ rewrite <- HbEq. exact Hrsub. }
+{ rewrite HbEq. exact Hrsub. }
 apply andI.
 - exact Hr.
 - apply andI.
