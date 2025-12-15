@@ -11105,6 +11105,88 @@ exact (SepI (Power R)
             HUprop).
 Qed.
 
+(** from §13: unions of standard open sets are standard open **)
+(** LATEX VERSION: Arbitrary unions of open sets are open; in particular, unions of two open sets are open. **)
+Theorem binunion_in_R_standard_topology : forall U V:set,
+  U :e R_standard_topology ->
+  V :e R_standard_topology ->
+  U :\/: V :e R_standard_topology.
+let U V. assume HU HV.
+prove U :\/: V :e R_standard_topology.
+claim HUpow : U :e Power R.
+{ exact (SepE1 (Power R)
+               (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+               U
+               HU). }
+claim HVpow : V :e Power R.
+{ exact (SepE1 (Power R)
+               (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+               V
+               HV). }
+claim HUprop : forall x :e U, exists b0 :e R_standard_basis, x :e b0 /\ b0 c= U.
+{ exact (SepE2 (Power R)
+               (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+               U
+               HU). }
+claim HVprop : forall x :e V, exists b0 :e R_standard_basis, x :e b0 /\ b0 c= V.
+{ exact (SepE2 (Power R)
+               (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+               V
+               HV). }
+claim HUVpow : U :\/: V :e Power R.
+{ apply PowerI.
+  let x. assume HxUV : x :e U :\/: V.
+  apply (binunionE U V x HxUV).
+  - assume HxU : x :e U.
+    exact (PowerE R U HUpow x HxU).
+  - assume HxV : x :e V.
+    exact (PowerE R V HVpow x HxV). }
+claim HUVprop : forall x :e U :\/: V, exists b0 :e R_standard_basis, x :e b0 /\ b0 c= U :\/: V.
+{ let x. assume HxUV : x :e U :\/: V.
+  apply (binunionE U V x HxUV).
+  - assume HxU : x :e U.
+    claim Hexb : exists b0 :e R_standard_basis, x :e b0 /\ b0 c= U.
+    { exact (HUprop x HxU). }
+    apply Hexb.
+    let b0. assume Hb0pair.
+    witness b0.
+    apply andI.
+    + exact (andEL (b0 :e R_standard_basis) (x :e b0 /\ b0 c= U) Hb0pair).
+    + claim Hb0prop : x :e b0 /\ b0 c= U.
+      { exact (andER (b0 :e R_standard_basis) (x :e b0 /\ b0 c= U) Hb0pair). }
+      apply andI.
+      - exact (andEL (x :e b0) (b0 c= U) Hb0prop).
+      - claim Hb0subU : b0 c= U.
+        { exact (andER (x :e b0) (b0 c= U) Hb0prop). }
+        let y. assume Hyb0.
+        claim HyU : y :e U.
+        { exact (Hb0subU y Hyb0). }
+        exact (binunionI1 U V y HyU).
+  - assume HxV : x :e V.
+    claim Hexb : exists b0 :e R_standard_basis, x :e b0 /\ b0 c= V.
+    { exact (HVprop x HxV). }
+    apply Hexb.
+    let b0. assume Hb0pair.
+    witness b0.
+    apply andI.
+    + exact (andEL (b0 :e R_standard_basis) (x :e b0 /\ b0 c= V) Hb0pair).
+    + claim Hb0prop : x :e b0 /\ b0 c= V.
+      { exact (andER (b0 :e R_standard_basis) (x :e b0 /\ b0 c= V) Hb0pair). }
+      apply andI.
+      - exact (andEL (x :e b0) (b0 c= V) Hb0prop).
+      - claim Hb0subV : b0 c= V.
+        { exact (andER (x :e b0) (b0 c= V) Hb0prop). }
+        let y. assume Hyb0.
+        claim HyV : y :e V.
+        { exact (Hb0subV y Hyb0). }
+        exact (binunionI2 U V y HyV). }
+exact (SepI (Power R)
+            (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+            (U :\/: V)
+            HUVpow
+            HUVprop).
+Qed.
+
 (** LATEX VERSION: Containment statements among the five ℝ topologies in Exercise 7. **)
 Theorem ex13_7_R_topology_containments :
   finer_than R_upper_limit_topology R_standard_topology /\
