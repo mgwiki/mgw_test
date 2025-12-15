@@ -8620,6 +8620,167 @@ rewrite Hdef.
 exact (sqrt_SNo_nonneg_real sum HsumR HsumNonneg).
 Qed.
 
+(** from §13 Example 4: distance is nonnegative **)
+(** LATEX VERSION: The distance function takes nonnegative values. **)
+Theorem distance_R2_nonneg : forall p c:set, p :e EuclidPlane -> c :e EuclidPlane -> 0 <= distance_R2 p c.
+let p c. assume Hp Hc.
+(** coordinates are real **)
+claim Hp0R : R2_xcoord p :e R.
+{ exact (EuclidPlane_xcoord_in_R p Hp). }
+claim Hp1R : R2_ycoord p :e R.
+{ exact (EuclidPlane_ycoord_in_R p Hp). }
+claim Hc0R : R2_xcoord c :e R.
+{ exact (EuclidPlane_xcoord_in_R c Hc). }
+claim Hc1R : R2_ycoord c :e R.
+{ exact (EuclidPlane_ycoord_in_R c Hc). }
+(** differences **)
+set dx := add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c)).
+set dy := add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord c)).
+claim Hmx : minus_SNo (R2_xcoord c) :e R.
+{ exact (real_minus_SNo (R2_xcoord c) Hc0R). }
+claim Hmy : minus_SNo (R2_ycoord c) :e R.
+{ exact (real_minus_SNo (R2_ycoord c) Hc1R). }
+claim HdxR : dx :e R.
+{ exact (real_add_SNo (R2_xcoord p) Hp0R (minus_SNo (R2_xcoord c)) Hmx). }
+claim HdyR : dy :e R.
+{ exact (real_add_SNo (R2_ycoord p) Hp1R (minus_SNo (R2_ycoord c)) Hmy). }
+(** squares and sum **)
+set dx2 := mul_SNo dx dx.
+set dy2 := mul_SNo dy dy.
+claim Hdx2R : dx2 :e R.
+{ exact (real_mul_SNo dx HdxR dx HdxR). }
+claim Hdy2R : dy2 :e R.
+{ exact (real_mul_SNo dy HdyR dy HdyR). }
+set sum := add_SNo dx2 dy2.
+claim HsumR : sum :e R.
+{ exact (real_add_SNo dx2 Hdx2R dy2 Hdy2R). }
+claim HdxS : SNo dx.
+{ exact (real_SNo dx HdxR). }
+claim HdyS : SNo dy.
+{ exact (real_SNo dy HdyR). }
+claim Hdx2S : SNo dx2.
+{ exact (real_SNo dx2 Hdx2R). }
+claim Hdy2S : SNo dy2.
+{ exact (real_SNo dy2 Hdy2R). }
+claim HsumS : SNo sum.
+{ exact (real_SNo sum HsumR). }
+(** nonnegativity of squares and of the sum **)
+claim Hdx2nonneg : 0 <= dx2.
+{ claim H0or : dx = 0 \/ 0 < (mul_SNo dx dx).
+  { exact (SNo_zero_or_sqr_pos dx HdxS). }
+  apply H0or.
+  - assume Hdx0 : dx = 0.
+    rewrite Hdx0.
+    rewrite (mul_SNo_zeroL 0 SNo_0).
+    exact (SNoLe_ref 0).
+  - assume Hpos : 0 < (mul_SNo dx dx).
+    exact (SNoLtLe 0 (mul_SNo dx dx) Hpos).
+}
+claim Hdy2nonneg : 0 <= dy2.
+{ claim H0or : dy = 0 \/ 0 < (mul_SNo dy dy).
+  { exact (SNo_zero_or_sqr_pos dy HdyS). }
+  apply H0or.
+  - assume Hdy0 : dy = 0.
+    rewrite Hdy0.
+    rewrite (mul_SNo_zeroL 0 SNo_0).
+    exact (SNoLe_ref 0).
+  - assume Hpos : 0 < (mul_SNo dy dy).
+    exact (SNoLtLe 0 (mul_SNo dy dy) Hpos).
+}
+claim HsumNonneg : 0 <= sum.
+{ rewrite <- (add_SNo_0L 0 SNo_0) at 1.
+  exact (add_SNo_Le3 0 0 dx2 dy2 SNo_0 SNo_0 Hdx2S Hdy2S Hdx2nonneg Hdy2nonneg).
+}
+(** conclude using sqrt nonnegativity **)
+claim Hdef : distance_R2 p c = sqrt_SNo_nonneg sum.
+{ reflexivity. }
+rewrite Hdef.
+exact (sqrt_SNo_nonneg_nonneg sum HsumS HsumNonneg).
+Qed.
+
+(** from §13 Example 4: squared distance formula **)
+(** LATEX VERSION: d(p,c) squared equals (xp-xc) squared plus (yp-yc) squared. **)
+Theorem distance_R2_sqr : forall p c:set, p :e EuclidPlane -> c :e EuclidPlane ->
+  distance_R2 p c * distance_R2 p c
+  = add_SNo
+      (mul_SNo (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c)))
+              (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c))))
+      (mul_SNo (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord c)))
+              (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord c)))).
+let p c. assume Hp Hc.
+(** establish that the sum under the square root is surreal and nonnegative **)
+claim Hp0R : R2_xcoord p :e R.
+{ exact (EuclidPlane_xcoord_in_R p Hp). }
+claim Hp1R : R2_ycoord p :e R.
+{ exact (EuclidPlane_ycoord_in_R p Hp). }
+claim Hc0R : R2_xcoord c :e R.
+{ exact (EuclidPlane_xcoord_in_R c Hc). }
+claim Hc1R : R2_ycoord c :e R.
+{ exact (EuclidPlane_ycoord_in_R c Hc). }
+set dx := add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c)).
+set dy := add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord c)).
+claim Hmx : minus_SNo (R2_xcoord c) :e R.
+{ exact (real_minus_SNo (R2_xcoord c) Hc0R). }
+claim Hmy : minus_SNo (R2_ycoord c) :e R.
+{ exact (real_minus_SNo (R2_ycoord c) Hc1R). }
+claim HdxR : dx :e R.
+{ exact (real_add_SNo (R2_xcoord p) Hp0R (minus_SNo (R2_xcoord c)) Hmx). }
+claim HdyR : dy :e R.
+{ exact (real_add_SNo (R2_ycoord p) Hp1R (minus_SNo (R2_ycoord c)) Hmy). }
+set dx2 := mul_SNo dx dx.
+set dy2 := mul_SNo dy dy.
+claim Hdx2R : dx2 :e R.
+{ exact (real_mul_SNo dx HdxR dx HdxR). }
+claim Hdy2R : dy2 :e R.
+{ exact (real_mul_SNo dy HdyR dy HdyR). }
+set sum := add_SNo dx2 dy2.
+claim HsumR : sum :e R.
+{ exact (real_add_SNo dx2 Hdx2R dy2 Hdy2R). }
+claim HsumS : SNo sum.
+{ exact (real_SNo sum HsumR). }
+claim HdxS : SNo dx.
+{ exact (real_SNo dx HdxR). }
+claim HdyS : SNo dy.
+{ exact (real_SNo dy HdyR). }
+claim Hdx2S : SNo dx2.
+{ exact (real_SNo dx2 Hdx2R). }
+claim Hdy2S : SNo dy2.
+{ exact (real_SNo dy2 Hdy2R). }
+claim Hdx2nonneg : 0 <= dx2.
+{ claim H0or : dx = 0 \/ 0 < (mul_SNo dx dx).
+  { exact (SNo_zero_or_sqr_pos dx HdxS). }
+  apply H0or.
+  - assume Hdx0 : dx = 0.
+    rewrite Hdx0.
+    rewrite (mul_SNo_zeroL 0 SNo_0).
+    exact (SNoLe_ref 0).
+  - assume Hpos : 0 < (mul_SNo dx dx).
+    exact (SNoLtLe 0 (mul_SNo dx dx) Hpos).
+}
+claim Hdy2nonneg : 0 <= dy2.
+{ claim H0or : dy = 0 \/ 0 < (mul_SNo dy dy).
+  { exact (SNo_zero_or_sqr_pos dy HdyS). }
+  apply H0or.
+  - assume Hdy0 : dy = 0.
+    rewrite Hdy0.
+    rewrite (mul_SNo_zeroL 0 SNo_0).
+    exact (SNoLe_ref 0).
+  - assume Hpos : 0 < (mul_SNo dy dy).
+    exact (SNoLtLe 0 (mul_SNo dy dy) Hpos).
+}
+claim HsumNonneg : 0 <= sum.
+{ rewrite <- (add_SNo_0L 0 SNo_0) at 1.
+  exact (add_SNo_Le3 0 0 dx2 dy2 SNo_0 SNo_0 Hdx2S Hdy2S Hdx2nonneg Hdy2nonneg).
+}
+(** unfold distance_R2 and use the square root squaring lemma **)
+claim Hdef : distance_R2 p c = sqrt_SNo_nonneg sum.
+{ reflexivity. }
+rewrite Hdef.
+rewrite (sqrt_SNo_nonneg_sqr sum HsumS HsumNonneg).
+(** unfold sum, dx2, dy2 **)
+reflexivity.
+Qed.
+
 (** from §13 Example 4: distance from a point to itself is 0 **)
 (** LATEX VERSION: d(p,p) = 0. **)
 Theorem distance_R2_refl_0 : forall p:set, p :e EuclidPlane -> distance_R2 p p = 0.
