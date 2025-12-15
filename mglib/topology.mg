@@ -21687,12 +21687,17 @@ Definition differentiable_at : set -> set -> prop := fun f x =>
                       (div_SNo (add_SNo (apply_fun f (add_SNo x h)) (minus_SNo (apply_fun f x))) h)
                       (minus_SNo L))) eps.
 Definition nowhere_differentiable : set -> prop := fun f =>
-  function_on f R R /\ forall x:set, x :e R -> ~ differentiable_at f x.
+  function_on f unit_interval R /\ forall x:set, x :e unit_interval -> ~ differentiable_at f x.
 
 (** from §49 Existence: nowhere-differentiable function **) 
 (** LATEX VERSION: Existence of a continuous nowhere-differentiable function. **)
-Theorem nowhere_differentiable_function_exists : exists f:set, continuous_map R R_standard_topology R R_standard_topology f /\ nowhere_differentiable f.
-prove exists f:set, continuous_map R R_standard_topology R R_standard_topology f /\ nowhere_differentiable f.
+Theorem nowhere_differentiable_function_exists :
+  exists f:set,
+    continuous_map unit_interval (subspace_topology R R_standard_topology unit_interval) R R_standard_topology f /\
+    nowhere_differentiable f.
+prove exists f:set,
+    continuous_map unit_interval (subspace_topology R R_standard_topology unit_interval) R R_standard_topology f /\
+    nowhere_differentiable f.
 admit. (** §49: existence of continuous nowhere-differentiable function **)
 Qed.
 
