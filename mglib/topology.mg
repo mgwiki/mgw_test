@@ -13424,7 +13424,7 @@ Qed.
 (** LATEX VERSION: Exercise 7 lists several standard ℝ topologies and records which contain which (upper limit finer than standard, etc.). **)
 Definition R_finite_complement_topology : set := finite_complement_topology R.
 Definition R_ray_topology : set :=
-  {U :e Power R|U = Empty \/ U = R \/ (exists a :e R, U = {x :e R|Rlt a x})}.
+  {U :e Power R|U = Empty \/ U = R \/ (exists a :e R, U = {x :e R|Rlt x a})}.
 
 (** from §13 Exercise 7: open rays are open in the standard topology **)
 (** LATEX VERSION: The ray (a,∞) is open in the standard topology on ℝ. **)
@@ -14094,8 +14094,8 @@ apply andI.
       exact (topology_has_empty R R_standard_topology (R_standard_topology_is_topology_local)).
 - prove finer_than R_standard_topology R_ray_topology.
   let U. assume HU: U :e R_ray_topology.
-  claim HUcases : U = Empty \/ U = R \/ exists a :e R, U = {x :e R|Rlt a x}.
-  { exact (SepE2 (Power R) (fun U0 : set => U0 = Empty \/ U0 = R \/ exists a0 :e R, U0 = {x :e R|Rlt a0 x}) U HU). }
+  claim HUcases : U = Empty \/ U = R \/ exists a :e R, U = {x :e R|Rlt x a}.
+  { exact (SepE2 (Power R) (fun U0 : set => U0 = Empty \/ U0 = R \/ exists a0 :e R, U0 = {x :e R|Rlt x a0}) U HU). }
   claim Hempty : Empty :e R_standard_topology.
   { exact (SepI (Power R)
                 (fun U0 : set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
@@ -14165,17 +14165,17 @@ apply andI.
   { assume Heq. rewrite Heq. exact Hempty. }
   claim Hcase2 : U = R -> U :e R_standard_topology.
   { assume Heq. rewrite Heq. exact Hall. }
-  claim Hcase3 : (exists a0 :e R, U = {x :e R|Rlt a0 x}) -> U :e R_standard_topology.
+  claim Hcase3 : (exists a0 :e R, U = {x :e R|Rlt x a0}) -> U :e R_standard_topology.
   { assume Hex.
     apply Hex.
     let a0.
-    assume Ha0pair : a0 :e R /\ U = {x :e R|Rlt a0 x}.
+    assume Ha0pair : a0 :e R /\ U = {x :e R|Rlt x a0}.
     claim Ha0R : a0 :e R.
-    { exact (andEL (a0 :e R) (U = {x :e R|Rlt a0 x}) Ha0pair). }
-    claim Heq : U = {x :e R|Rlt a0 x}.
-    { exact (andER (a0 :e R) (U = {x :e R|Rlt a0 x}) Ha0pair). }
+    { exact (andEL (a0 :e R) (U = {x :e R|Rlt x a0}) Ha0pair). }
+    claim Heq : U = {x :e R|Rlt x a0}.
+    { exact (andER (a0 :e R) (U = {x :e R|Rlt x a0}) Ha0pair). }
     rewrite Heq.
-    exact (open_ray_in_R_standard_topology a0 Ha0R). }
+    exact (open_left_ray_in_R_standard_topology a0 Ha0R). }
   prove U :e R_standard_topology.
   apply (HUcases (U :e R_standard_topology)).
   - assume HUR : U = Empty \/ U = R.
