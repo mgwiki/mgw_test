@@ -6649,6 +6649,49 @@ apply andI.
 - exact (topology_has_X X T HTx).
 Qed.
 
+(** Helper: Union of open sets is open **)
+Theorem union_open : forall X T UFam:set,
+  topology_on X T ->
+  (forall U :e UFam, open_in X T U) ->
+  open_in X T (Union UFam).
+let X T UFam.
+assume HTx: topology_on X T.
+assume HUFam: forall U :e UFam, open_in X T U.
+prove open_in X T (Union UFam).
+prove topology_on X T /\ Union UFam :e T.
+apply andI.
+- exact HTx.
+- prove Union UFam :e T.
+  claim HUFamsub: UFam c= T.
+  { let U. assume HUin: U :e UFam.
+    claim HUopen: open_in X T U.
+    { exact (HUFam U HUin). }
+    exact (andER (topology_on X T) (U :e T) HUopen).
+  }
+  exact (topology_union_closed X T UFam HTx HUFamsub).
+Qed.
+
+(** Helper: Binary intersection of open sets is open **)
+Theorem binintersect_open : forall X T U V:set,
+  open_in X T U ->
+  open_in X T V ->
+  open_in X T (U :/\: V).
+let X T U V.
+assume HU: open_in X T U.
+assume HV: open_in X T V.
+prove open_in X T (U :/\: V).
+claim HTx: topology_on X T.
+{ exact (andEL (topology_on X T) (U :e T) HU). }
+claim HUinT: U :e T.
+{ exact (andER (topology_on X T) (U :e T) HU). }
+claim HVinT: V :e T.
+{ exact (andER (topology_on X T) (V :e T) HV). }
+prove topology_on X T /\ U :/\: V :e T.
+apply andI.
+- exact HTx.
+- exact (topology_binintersect_closed X T U V HTx HUinT HVinT).
+Qed.
+
 (** from §12: closed set as complement of open set **)
 (** LATEX VERSION: A set C is closed in X (with topology T) if there exists an open set U∈T whose complement in X equals C. **)
 Definition closed_in : set -> set -> set -> prop := fun X T C =>
