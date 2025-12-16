@@ -6625,6 +6625,30 @@ claim HIntersectAxiom: forall U0 :e T, forall V0 :e T, U0 :/\: V0 :e T.
 exact (HIntersectAxiom U HU V HV).
 Qed.
 
+(** Helper: Empty set is open in any topology **)
+Theorem Empty_is_open : forall X T:set,
+  topology_on X T -> open_in X T Empty.
+let X T.
+assume HTx: topology_on X T.
+prove open_in X T Empty.
+prove topology_on X T /\ Empty :e T.
+apply andI.
+- exact HTx.
+- exact (topology_has_empty X T HTx).
+Qed.
+
+(** Helper: X is open in its own topology **)
+Theorem X_is_open : forall X T:set,
+  topology_on X T -> open_in X T X.
+let X T.
+assume HTx: topology_on X T.
+prove open_in X T X.
+prove topology_on X T /\ X :e T.
+apply andI.
+- exact HTx.
+- exact (topology_has_X X T HTx).
+Qed.
+
 (** from §12: closed set as complement of open set **)
 (** LATEX VERSION: A set C is closed in X (with topology T) if there exists an open set U∈T whose complement in X equals C. **)
 Definition closed_in : set -> set -> set -> prop := fun X T C =>
