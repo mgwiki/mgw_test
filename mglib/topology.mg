@@ -13393,7 +13393,18 @@ Definition R_upper_limit_topology : set :=
     recip_SNo computes 1/x for surreal numbers (which includes naturals).
     For n∈ω, recip_SNo n computes 1/n. **)
 Definition inv_nat : set -> set := recip_SNo.
-Axiom inv_nat_real : forall n:set, n :e omega -> inv_nat n :e R.
+
+(** helper: 1/n is real for n in omega **)
+Theorem inv_nat_real : forall n:set, n :e omega -> inv_nat n :e R.
+let n. assume Hn: n :e omega.
+prove inv_nat n :e R.
+(** omega is included in SNoS_ omega, and SNoS_ omega is included in real **)
+claim HnSNoS: n :e SNoS_ omega.
+{ exact (omega_SNoS_omega n Hn). }
+claim HnR: n :e real.
+{ exact (SNoS_omega_real n HnSNoS). }
+exact (real_recip_SNo n HnR).
+Qed.
 
 (** from §13 Exercise 6: the set K={1/n | n in omega and n not 0} used in the K-topology **)
 (** LATEX VERSION: Let K={1/n : n in N} as a subset of R (excluding n=0). **)
