@@ -19583,6 +19583,184 @@ prove closure_of R R_standard_topology K_set = K_set :\/: {0} /\
 admit.
 Qed.
 
+(** helper: in the left ray topology, any open set containing 1 contains 0 **)
+Theorem ray_topology_contains_0_if_contains_1 : forall U:set,
+  U :e R_ray_topology -> 1 :e U -> 0 :e U.
+let U.
+assume HU: U :e R_ray_topology.
+assume H1U: 1 :e U.
+prove 0 :e U.
+claim HUcases: U = Empty \/ U = R \/ exists a :e R, U = {x :e R|Rlt x a}.
+{ exact (SepE2 (Power R) (fun U0 : set => U0 = Empty \/ U0 = R \/ exists a0 :e R, U0 = {x :e R|Rlt x a0}) U HU). }
+apply (HUcases (0 :e U)).
+- assume HUR: U = Empty \/ U = R.
+  apply (HUR (0 :e U)).
+  + assume HUe: U = Empty.
+    apply FalseE.
+    claim H1Empty: 1 :e Empty.
+    prove 1 :e Empty.
+    rewrite <- HUe at 2.
+    exact H1U.
+    exact ((EmptyE 1) H1Empty).
+  + assume HUeqR: U = R.
+    rewrite HUeqR.
+    exact real_0.
+- assume Hex: exists a :e R, U = {x :e R|Rlt x a}.
+  apply Hex.
+  let a.
+  assume Hapair: a :e R /\ U = {x :e R|Rlt x a}.
+  claim HaR: a :e R.
+  { exact (andEL (a :e R) (U = {x :e R|Rlt x a}) Hapair). }
+  claim HUeq: U = {x :e R|Rlt x a}.
+  { exact (andER (a :e R) (U = {x :e R|Rlt x a}) Hapair). }
+  rewrite HUeq.
+  prove 0 :e {x :e R|Rlt x a}.
+  claim H1in: 1 :e {x :e R|Rlt x a}.
+  { rewrite <- HUeq.
+    exact H1U. }
+  claim H1lt: Rlt 1 a.
+  { exact (SepE2 R (fun x0:set => Rlt x0 a) 1 H1in). }
+  claim H0lt1: Rlt 0 1.
+  { exact (RltI 0 1 real_0 real_1 SNoLt_0_1). }
+  claim H0lta: Rlt 0 a.
+  { exact (Rlt_tra 0 1 a H0lt1 H1lt). }
+  exact (SepI R (fun x0:set => Rlt x0 a) 0 real_0 H0lta).
+Qed.
+
+(** helper: the left ray topology on R is not Hausdorff **)
+Theorem ray_topology_not_Hausdorff : ~Hausdorff_space R R_ray_topology.
+assume HH: Hausdorff_space R R_ray_topology.
+prove False.
+claim Hsep: forall x1 x2:set, x1 :e R -> x2 :e R -> x1 <> x2 ->
+  exists U V:set, U :e R_ray_topology /\ V :e R_ray_topology /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+{ exact (andER (topology_on R R_ray_topology)
+               (forall x1 x2:set, x1 :e R -> x2 :e R -> x1 <> x2 ->
+                 exists U V:set, U :e R_ray_topology /\ V :e R_ray_topology /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+claim H01ne: 0 <> 1.
+{ assume H01eq: 0 = 1.
+  claim H00lt: 0 < 0.
+  { rewrite H01eq at 2.
+    exact SNoLt_0_1. }
+  exact ((SNoLt_irref 0) H00lt). }
+claim HUVex: exists U V:set, U :e R_ray_topology /\ V :e R_ray_topology /\ 0 :e U /\ 1 :e V /\ U :/\: V = Empty.
+{ exact (Hsep 0 1 real_0 real_1 H01ne). }
+apply HUVex.
+let U.
+assume HVex: exists V:set, U :e R_ray_topology /\ V :e R_ray_topology /\ 0 :e U /\ 1 :e V /\ U :/\: V = Empty.
+apply HVex.
+let V.
+assume HUV.
+claim HUVleft: (((U :e R_ray_topology /\ V :e R_ray_topology) /\ 0 :e U) /\ 1 :e V).
+{ exact (andEL (((U :e R_ray_topology /\ V :e R_ray_topology) /\ 0 :e U) /\ 1 :e V)
+               (U :/\: V = Empty)
+               HUV). }
+claim HUVempty: U :/\: V = Empty.
+{ exact (andER (((U :e R_ray_topology /\ V :e R_ray_topology) /\ 0 :e U) /\ 1 :e V)
+               (U :/\: V = Empty)
+               HUV). }
+claim HUVleft2: ((U :e R_ray_topology /\ V :e R_ray_topology) /\ 0 :e U).
+{ exact (andEL ((U :e R_ray_topology /\ V :e R_ray_topology) /\ 0 :e U)
+               (1 :e V)
+               HUVleft). }
+claim H1V: 1 :e V.
+{ exact (andER ((U :e R_ray_topology /\ V :e R_ray_topology) /\ 0 :e U)
+               (1 :e V)
+               HUVleft). }
+claim HUVleft3: (U :e R_ray_topology /\ V :e R_ray_topology).
+{ exact (andEL (U :e R_ray_topology /\ V :e R_ray_topology)
+               (0 :e U)
+               HUVleft2). }
+claim H0U: 0 :e U.
+{ exact (andER (U :e R_ray_topology /\ V :e R_ray_topology)
+               (0 :e U)
+               HUVleft2). }
+claim HU: U :e R_ray_topology.
+{ exact (andEL (U :e R_ray_topology)
+               (V :e R_ray_topology)
+               HUVleft3). }
+claim HV: V :e R_ray_topology.
+{ exact (andER (U :e R_ray_topology)
+               (V :e R_ray_topology)
+               HUVleft3). }
+claim H0V: 0 :e V.
+{ exact (ray_topology_contains_0_if_contains_1 V HV H1V). }
+claim H0UV: 0 :e U :/\: V.
+{ exact (binintersectI U V 0 H0U H0V). }
+claim H0Empty: 0 :e Empty.
+prove 0 :e Empty.
+rewrite <- HUVempty at 2.
+exact H0UV.
+exact (EmptyE 0 H0Empty).
+Qed.
+
+(** helper: the left ray topology on R is not T1 **)
+Theorem ray_topology_not_T1 : ~T1_space R R_ray_topology.
+assume HT1: T1_space R R_ray_topology.
+prove False.
+claim Hfinite_closed: forall F:set, F c= R -> finite F -> closed_in R R_ray_topology F.
+{ exact (andER (topology_on R R_ray_topology)
+               (forall F:set, F c= R -> finite F -> closed_in R R_ray_topology F)
+               HT1). }
+claim Hsub0: {0} c= R.
+{ let x. assume Hx0: x :e {0}.
+  claim Hxeq: x = 0.
+  { exact (SingE 0 x Hx0). }
+  rewrite Hxeq.
+  exact real_0. }
+claim Hfin0: finite {0}.
+{ exact (Sing_finite 0). }
+claim Hclosed0: closed_in R R_ray_topology {0}.
+{ exact (Hfinite_closed {0} Hsub0 Hfin0). }
+claim Hclosed0core: {0} c= R /\ exists U :e R_ray_topology, {0} = R :\: U.
+{ exact (andER (topology_on R R_ray_topology)
+               ({0} c= R /\ exists U :e R_ray_topology, {0} = R :\: U)
+               Hclosed0). }
+claim HexUtyped: exists U :e R_ray_topology, {0} = R :\: U.
+{ exact (andER ({0} c= R) (exists U :e R_ray_topology, {0} = R :\: U) Hclosed0core). }
+apply HexUtyped.
+let U.
+assume HUrep: U :e R_ray_topology /\ {0} = R :\: U.
+claim HU: U :e R_ray_topology.
+{ exact (andEL (U :e R_ray_topology) ({0} = R :\: U) HUrep). }
+claim Heq: {0} = R :\: U.
+{ exact (andER (U :e R_ray_topology) ({0} = R :\: U) HUrep). }
+claim H1in: 1 :e U.
+{ claim H1not0: 1 /:e {0}.
+  { assume H10: 1 :e {0}.
+    claim H10eq: 1 = 0.
+    { exact (SingE 0 1 H10). }
+    claim H00lt: 0 < 0.
+    { rewrite <- H10eq at 2.
+      exact SNoLt_0_1. }
+    exact ((SNoLt_irref 0) H00lt). }
+  prove 1 :e U.
+  apply (xm (1 :e U)).
+  - assume H. exact H.
+  - assume HnU: ~(1 :e U).
+    claim H1incomp: 1 :e R :\: U.
+    { exact (setminusI R U 1 real_1 HnU). }
+    claim H1in0: 1 :e {0}.
+    { claim Hsubst: forall S T:set, S = T -> 1 :e T -> 1 :e S.
+      { let S T.
+        assume HeqST: S = T.
+        assume H1inT: 1 :e T.
+        prove 1 :e S.
+        rewrite HeqST.
+        exact H1inT. }
+      exact (Hsubst {0} (R :\: U) Heq H1incomp). }
+    apply FalseE.
+    exact (H1not0 H1in0). }
+claim H0in: 0 :e U.
+{ exact (ray_topology_contains_0_if_contains_1 U HU H1in). }
+claim H0incomp: 0 :e R :\: U.
+{ rewrite <- Heq.
+  exact (SingI 0). }
+claim H0not: 0 /:e U.
+{ exact (setminusE2 R U 0 H0incomp). }
+exact (H0not H0in).
+Qed.
+
 (** LATEX VERSION: Exercise 16(b): For the same five R topologies, determine which satisfy the Hausdorff and the T1 axioms. **)
 Theorem ex17_16b_Hausdorff_and_T1_for_five_topologies :
   (Hausdorff_space R R_standard_topology /\ T1_space R R_standard_topology) /\
