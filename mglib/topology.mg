@@ -6766,6 +6766,81 @@ apply andI.
       }
 Qed.
 
+(** Helper: Complement of closed set is open **)
+Theorem open_of_closed_complement : forall X T C:set,
+  closed_in X T C -> open_in X T (X :\: C).
+let X T C.
+assume HC: closed_in X T C.
+prove open_in X T (X :\: C).
+prove topology_on X T /\ X :\: C :e T.
+claim HTx: topology_on X T.
+{ exact (andEL (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U) HC). }
+claim HCsub: C c= X.
+{ exact (andEL (C c= X) (exists U :e T, C = X :\: U) (andER (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U) HC)). }
+claim HCex: exists U :e T, C = X :\: U.
+{ exact (andER (C c= X) (exists U :e T, C = X :\: U) (andER (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U) HC)). }
+apply andI.
+- exact HTx.
+- prove X :\: C :e T.
+  apply HCex.
+  let U. assume HU: U :e T /\ C = X :\: U.
+  claim HUinT: U :e T.
+  { exact (andEL (U :e T) (C = X :\: U) HU). }
+  claim HCeq: C = X :\: U.
+  { exact (andER (U :e T) (C = X :\: U) HU). }
+  claim HXCeq: X :\: C = X :\: (X :\: U).
+  { rewrite <- HCeq. reflexivity. }
+  rewrite HXCeq.
+  (** Now prove X :\: (X :\: U) = U for U c= X **)
+  claim HUsub: U c= X.
+  { claim H1: (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U0 :e T, forall V :e T, U0 :/\: V :e T).
+    { exact HTx. }
+    claim H2: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+    { exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U0 :e T, forall V :e T, U0 :/\: V :e T) H1). }
+    claim H3: (T c= Power X /\ Empty :e T) /\ X :e T.
+    { exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H2). }
+    claim H4: T c= Power X /\ Empty :e T.
+    { exact (andEL (T c= Power X /\ Empty :e T) (X :e T) H3). }
+    claim HTsubPower: T c= Power X.
+    { exact (andEL (T c= Power X) (Empty :e T) H4). }
+    claim HUPower: U :e Power X.
+    { exact (HTsubPower U HUinT). }
+    exact (PowerE X U HUPower).
+  }
+  claim Heq: X :\: (X :\: U) = U.
+  { apply set_ext.
+    - let x. assume Hx: x :e X :\: (X :\: U).
+      prove x :e U.
+      claim HxX: x :e X.
+      { exact (setminusE1 X (X :\: U) x Hx). }
+      claim HxnotXU: x /:e X :\: U.
+      { exact (setminusE2 X (X :\: U) x Hx). }
+      apply (xm (x :e U)).
+      + assume HxU: x :e U.
+        exact HxU.
+      + assume HxnotU: x /:e U.
+        claim HxXU: x :e X :\: U.
+        { apply setminusI.
+          - exact HxX.
+          - exact HxnotU.
+        }
+        apply FalseE.
+        exact (HxnotXU HxXU).
+    - let x. assume Hx: x :e U.
+      prove x :e X :\: (X :\: U).
+      claim HxX: x :e X.
+      { exact (HUsub x Hx). }
+      apply setminusI.
+      + exact HxX.
+      + assume HxXU: x :e X :\: U.
+        claim HxnotU: x /:e U.
+        { exact (setminusE2 X U x HxXU). }
+        exact (HxnotU Hx).
+  }
+  rewrite Heq.
+  exact HUinT.
+Qed.
+
 (** from §12: "finer than" / "coarser than" topologies **)
 (** LATEX VERSION: Given topologies T and T' on X, T' is finer than T if T' ⊃ T; T is coarser than T'; the topologies are comparable if one contains the other. **)
 Definition finer_than : set -> set -> prop := fun T' T => T c= T'.
