@@ -16353,7 +16353,15 @@ Qed.
 
 (** from §16 Theorem 16.4: convex subspaces share the order topology **) 
 (** LATEX VERSION: Theorem 16.4: A convex subset Y of an ordered set X inherits the order topology as a subspace topology. **)
+Definition order_interval : set -> set -> set -> set := fun X a b =>
+  {x :e X | order_rel X a x /\ order_rel X x b}.
+
+Definition convex_in : set -> set -> prop := fun X Y =>
+  Y c= X /\
+  forall a b:set, a :e Y -> b :e Y -> order_interval X a b c= Y.
+
 Theorem convex_subspace_order_topology : forall X Y:set,
+  convex_in X Y ->
   order_topology Y = subspace_topology X (order_topology X) Y.
 let X Y.
 prove order_topology Y = subspace_topology X (order_topology X) Y.
@@ -16674,11 +16682,12 @@ admit. (** construct diagonal L; projection map is homeomorphism; basis elements
 Qed.
 
 (** from §16 Exercise 9: dictionary order topology on ℝ×ℝ equals ℝ_d × ℝ **) 
-(** LATEX VERSION: Exercise 9: The dictionary order topology on ℝ×ℝ differs from the product topology ℝ_d×ℝ. **)
+(** LATEX VERSION: Exercise 9: The dictionary order topology on ℝ×ℝ is the same as the product topology ℝ_d×ℝ; compare it with the standard topology. **)
 Theorem ex16_9_dictionary_equals_product :
-  R2_dictionary_order_topology <> product_topology R R_standard_topology R R_standard_topology.
-prove R2_dictionary_order_topology <> product_topology R R_standard_topology R R_standard_topology.
-admit. (** show basis element containing (0,0) in dictionary order has no product rectangle inside it **)
+  R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology
+  /\ R2_dictionary_order_topology <> R2_standard_topology.
+prove R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology /\ R2_dictionary_order_topology <> R2_standard_topology.
+admit. (** identify dictionary order opens with cylinders for discrete first coordinate; show strictly finer than standard **)
 Qed.
 
 (** from §16 Exercise 10: compare topologies on I×I **) 
