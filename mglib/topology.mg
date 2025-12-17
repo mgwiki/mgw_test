@@ -16555,11 +16555,14 @@ Qed.
 
 (** from §16 Exercise 3: openness of specific sets in subspace [-1,1] **)
 (** LATEX VERSION: Exercise 3: Determine openness in subspace [-1,1]; formalized as existence of ambient open V with U=V∩Y. **)
-Definition interval_A : set := open_interval Empty (Power Empty).
-Definition interval_B : set := open_interval (Power Empty) (Power (Power Empty)).
-Definition interval_C : set := open_interval Empty Empty.
-Definition interval_D : set := open_interval (Power Empty) (Power Empty).
-Definition interval_E : set := open_interval (Power (Power Empty)) (Power (Power Empty)).
+(** LATEX VERSION: A={x|1/2<|x|<1}, B={x|1/2<|x|<=1}, C={x|1/2<=|x|<1}, D={x|1/2<=|x|<=1},
+    E={x|0<|x|<1 and 1/x not in Zplus}. **)
+Definition one_half : set := inv_nat 2.
+Definition interval_A : set := {x :e R | one_half < abs_SNo x /\ abs_SNo x < 1}.
+Definition interval_B : set := {x :e R | one_half < abs_SNo x /\ ~(1 < abs_SNo x)}.
+Definition interval_C : set := {x :e R | ~(abs_SNo x < one_half) /\ abs_SNo x < 1}.
+Definition interval_D : set := {x :e R | ~(abs_SNo x < one_half) /\ ~(1 < abs_SNo x)}.
+Definition interval_E : set := {x :e R | 0 < abs_SNo x /\ abs_SNo x < 1 /\ ~ (div_SNo 1 x :e Zplus)}.
 
 Theorem ex16_3_open_sets_subspace : forall X Tx Y:set,
   topology_on X Tx -> Y c= X ->
