@@ -23529,13 +23529,13 @@ Qed.
 
 (** from §30 Definition 30.1: countable basis at a point / first countable **) 
 (** LATEX VERSION: Countable sets and related notions from §30 (countability axioms). **)
-Definition countable_set : set -> prop := fun A => A c= omega.
+Definition countable_set : set -> prop := fun A => countable A.
 
 (** LATEX VERSION: Countable subcollection V of U. **)
 Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ countable_set V.
 
-(** LATEX VERSION: Countable index set (subset of ω). **)
-Definition countable_index_set : set -> prop := fun I => I c= omega.
+(** LATEX VERSION: Countable index set. **)
+Definition countable_index_set : set -> prop := fun I => countable_set I.
 (** LATEX VERSION: Component topology extractor for countable products. **)
 Definition countable_product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
 (** LATEX VERSION: Real sequences and uniform metric/topology on R^ω (setup). **)
