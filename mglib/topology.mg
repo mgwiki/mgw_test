@@ -16274,16 +16274,16 @@ apply iffI.
 Qed.
 
 (** from §16 Lemma 16.1: basis for the subspace topology **) 
-(** LATEX VERSION: Lemma 16.1: If B is a basis for Tx, then {b∈B | b⊂Y} is a basis for the subspace topology on Y. **)
+(** LATEX VERSION: Lemma 16.1: If B is a basis for Tx, then {b∩Y | b∈B} is a basis for the subspace topology on Y. **)
 Theorem subspace_basis : forall X Tx Y B:set,
   topology_on X Tx ->
   basis_on X B /\ generated_topology X B = Tx ->
-  basis_on Y {b :e B|b c= Y} /\
-  generated_topology Y {b :e B|b c= Y} = subspace_topology X Tx Y.
+  basis_on Y {b :/\: Y | b :e B} /\
+  generated_topology Y {b :/\: Y | b :e B} = subspace_topology X Tx Y.
 let X Tx Y B.
 assume HTx: topology_on X Tx.
 assume HB: basis_on X B /\ generated_topology X B = Tx.
-prove basis_on Y {b :e B|b c= Y} /\ generated_topology Y {b :e B|b c= Y} = subspace_topology X Tx Y.
+prove basis_on Y {b :/\: Y | b :e B} /\ generated_topology Y {b :/\: Y | b :e B} = subspace_topology X Tx Y.
 admit. (** basis elements contained in Y form basis for subspace; any subspace open is union of such basis elements
         aby: EmptyAx conj_myprob_8530_1_20251123_230448 open_set�f ex13_1_local_open_subset open_sets_as_unions_of_basis open_in_subspace_iff basis_generates_open_sets In_5Fno2cycle prop_ext_2 . **)
 Qed.
