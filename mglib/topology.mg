@@ -21491,11 +21491,6 @@ rewrite <- add_SNo_1_1_2.
 exact (real_add_SNo 1 real_1 1 real_1).
 Qed.
 
-Theorem sqrt2_in_R : sqrt2 :e R.
-prove sqrt2 :e R.
-exact (sqrt_SNo_nonneg_real 2 real_2 (SNoLtLe 0 2 SNoLt_0_2)).
-Qed.
-
 Theorem ordsucc_2_eq_3 : ordsucc 2 = 3.
 reflexivity.
 Qed.
@@ -21515,6 +21510,12 @@ exact (real_add_SNo 2 real_2 1 real_1).
 Qed.
 
 Definition sqrt2 : set := sqrt_SNo_nonneg 2.
+
+Theorem sqrt2_in_R : sqrt2 :e R.
+prove sqrt2 :e R.
+exact (sqrt_SNo_nonneg_real 2 real_2 (SNoLtLe 0 2 SNoLt_0_2)).
+Qed.
+
 Definition R_C_topology : set := generated_topology R rational_halfopen_intervals_basis.
 Definition ex17_17_interval_A : set := open_interval 0 sqrt2.
 Definition ex17_17_interval_B : set := open_interval sqrt2 3.
