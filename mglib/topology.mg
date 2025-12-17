@@ -20124,6 +20124,32 @@ claim HfinR: finite R.
 exact (infinite_R HfinR).
 Qed.
 
+(** helper: the standard topology on R is T1 **)
+Theorem R_standard_topology_T1 : T1_space R R_standard_topology.
+claim Htop: topology_on R R_standard_topology.
+{ exact R_standard_topology_is_topology_local. }
+apply (iffER (T1_space R R_standard_topology)
+             (forall z:set, z :e R -> closed_in R R_standard_topology {z})
+             (lemma_T1_singletons_closed R R_standard_topology Htop)).
+prove forall z:set, z :e R -> closed_in R R_standard_topology {z}.
+let z. assume HzR: z :e R.
+prove closed_in R R_standard_topology {z}.
+claim HzSub: {z} c= R.
+{ let y. assume Hy: y :e {z}.
+  claim Heq: y = z.
+  { exact (SingE z y Hy). }
+  rewrite Heq. exact HzR. }
+claim HUopen: R :\: {z} :e R_standard_topology.
+{ rewrite (Sing_eq_UPair z).
+  exact (R_minus_singleton_in_R_standard_topology z HzR). }
+claim Hclosed: closed_in R R_standard_topology (R :\: (R :\: {z})).
+{ exact (closed_of_open_complement R R_standard_topology (R :\: {z}) Htop HUopen). }
+claim Heq: R :\: (R :\: {z}) = {z}.
+{ exact (setminus_setminus_eq R {z} HzSub). }
+rewrite <- Heq.
+exact Hclosed.
+Qed.
+
 (** LATEX VERSION: Exercise 16(b): For the same five R topologies, determine which satisfy the Hausdorff and the T1 axioms. **)
 Theorem ex17_16b_Hausdorff_and_T1_for_five_topologies :
   (Hausdorff_space R R_standard_topology /\ T1_space R R_standard_topology) /\
@@ -20138,7 +20164,21 @@ prove (Hausdorff_space R R_standard_topology /\ T1_space R R_standard_topology) 
   (~Hausdorff_space R R_ray_topology /\ ~T1_space R R_ray_topology).
 apply andI.
 - apply andI.
-  * admit.
+  * prove (Hausdorff_space R R_standard_topology /\ T1_space R R_standard_topology) /\
+          (Hausdorff_space R R_upper_limit_topology /\ T1_space R R_upper_limit_topology) /\
+          (Hausdorff_space R R_K_topology /\ T1_space R R_K_topology).
+	    apply andI.
+	    { apply andI.
+	      - prove Hausdorff_space R R_standard_topology /\ T1_space R R_standard_topology.
+	        apply andI.
+	        + admit.
+	        + exact R_standard_topology_T1.
+	      - admit.
+	    }
+	    { apply andI.
+	      - admit.
+	      - admit.
+	    }
   * prove ~Hausdorff_space R R_finite_complement_topology /\ T1_space R R_finite_complement_topology.
     apply andI.
     { exact R_finite_complement_not_Hausdorff. }
