@@ -16343,7 +16343,9 @@ Qed.
 Definition unit_interval : set := {x :e R | ~(Rlt x 0) /\ ~(Rlt 1 x)}.
 Definition ordered_square : set := setprod unit_interval unit_interval.
 Definition ordered_square_topology : set := order_topology ordered_square.
-Definition ordered_square_open_strip : set := ordered_square.
+(** LATEX VERSION: The vertical strip {1/2}×(1/2,1] inside I×I. **)
+Definition ordered_square_open_strip : set :=
+  {p :e ordered_square|exists y:set, p = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y)}.
 Definition ordered_square_subspace_topology : set :=
   subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
 
