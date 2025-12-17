@@ -15369,6 +15369,8 @@ Qed.
 Definition order_rel : set -> set -> set -> prop := fun X a b =>
   (X = R /\ Rlt a b)
   \/
+  (X = rational_numbers /\ Rlt a b)
+  \/
   (X = setprod R R /\
    exists a1 a2 b1 b2:set,
      a = (a1, a2) /\ b = (b1, b2) /\
