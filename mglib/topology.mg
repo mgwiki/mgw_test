@@ -16364,6 +16364,7 @@ Theorem convex_subspace_order_topology : forall X Y:set,
   convex_in X Y ->
   order_topology Y = subspace_topology X (order_topology X) Y.
 let X Y.
+assume Hconv: convex_in X Y.
 prove order_topology Y = subspace_topology X (order_topology X) Y.
 admit. (** convex Y: intervals in Y = ambient intervals intersected with Y; bases generate same topology **)
 Qed.
