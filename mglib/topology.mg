@@ -19967,6 +19967,163 @@ claim H0not: 0 /:e U.
 exact (H0not H0in).
 Qed.
 
+(** helper: X minus Empty equals X **)
+Theorem setminus_Empty_eq : forall X:set, X :\: Empty = X.
+let X.
+apply set_ext.
+- let x. assume Hx: x :e X :\: Empty.
+  exact (setminusE1 X Empty x Hx).
+- let x. assume HxX: x :e X.
+  exact (setminusI X Empty x HxX (EmptyE x)).
+Qed.
+
+(** helper: R is infinite **)
+Theorem infinite_R : infinite R.
+(** from pre-topology: real is uncountable, so in particular infinite **)
+claim Hunc: atleastp omega real /\ ~equip real omega.
+{ exact form100_22_real_uncountable. }
+claim Hatleast: atleastp omega real.
+{ exact (andEL (atleastp omega real) (~equip real omega) Hunc). }
+prove infinite R.
+exact (atleastp_omega_infinite real Hatleast).
+Qed.
+
+(** helper: finite complement topology is T1 **)
+Theorem finite_complement_topology_T1 : forall X:set, T1_space X (finite_complement_topology X).
+let X.
+claim Htop: topology_on X (finite_complement_topology X).
+{ exact (finite_complement_topology_on X). }
+prove topology_on X (finite_complement_topology X) /\ (forall F:set, F c= X -> finite F -> closed_in X (finite_complement_topology X) F).
+apply andI.
+- exact Htop.
+- let F. assume HFsub: F c= X. assume HFfin: finite F.
+  prove closed_in X (finite_complement_topology X) F.
+  prove topology_on X (finite_complement_topology X) /\ (F c= X /\ exists U :e finite_complement_topology X, F = X :\: U).
+  apply andI.
+  + exact Htop.
+  + apply andI.
+    * exact HFsub.
+    * witness (X :\: F).
+      apply andI.
+      - (** X\\F is open in the finite complement topology **)
+        claim HUpow: (X :\: F) :e Power X.
+        { exact (setminus_In_Power X F). }
+        claim Hfin: finite (X :\: (X :\: F)).
+        { rewrite (setminus_setminus_eq X F HFsub).
+          exact HFfin. }
+        exact (SepI (Power X) (fun U0:set => finite (X :\: U0) \/ U0 = Empty)
+                    (X :\: F)
+                    HUpow
+                    (orIL (finite (X :\: (X :\: F))) ((X :\: F) = Empty) Hfin)).
+      - (** F = X\\(X\\F) **)
+        rewrite (setminus_setminus_eq X F HFsub).
+        reflexivity.
+Qed.
+
+(** helper: the finite complement topology on R is not Hausdorff **)
+Theorem R_finite_complement_not_Hausdorff : ~Hausdorff_space R R_finite_complement_topology.
+assume HH: Hausdorff_space R R_finite_complement_topology.
+prove False.
+claim Hsep: forall x1 x2:set, x1 :e R -> x2 :e R -> x1 <> x2 ->
+  exists U V:set, U :e R_finite_complement_topology /\ V :e R_finite_complement_topology /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+{ exact (andER (topology_on R R_finite_complement_topology)
+               (forall x1 x2:set, x1 :e R -> x2 :e R -> x1 <> x2 ->
+                 exists U V:set, U :e R_finite_complement_topology /\ V :e R_finite_complement_topology /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+claim H01ne: 0 <> 1.
+{ assume H01eq: 0 = 1.
+  claim H00lt: 0 < 0.
+  { rewrite H01eq at 2.
+    exact SNoLt_0_1. }
+  exact ((SNoLt_irref 0) H00lt). }
+claim HUVex: exists U V:set, U :e R_finite_complement_topology /\ V :e R_finite_complement_topology /\ 0 :e U /\ 1 :e V /\ U :/\: V = Empty.
+{ exact (Hsep 0 1 real_0 real_1 H01ne). }
+apply HUVex.
+let U.
+assume HVex: exists V:set, U :e R_finite_complement_topology /\ V :e R_finite_complement_topology /\ 0 :e U /\ 1 :e V /\ U :/\: V = Empty.
+apply HVex.
+let V.
+assume HUV: U :e R_finite_complement_topology /\ V :e R_finite_complement_topology /\ 0 :e U /\ 1 :e V /\ U :/\: V = Empty.
+claim Hleft: (((U :e R_finite_complement_topology /\ V :e R_finite_complement_topology) /\ 0 :e U) /\ 1 :e V).
+{ exact (andEL (((U :e R_finite_complement_topology /\ V :e R_finite_complement_topology) /\ 0 :e U) /\ 1 :e V)
+               (U :/\: V = Empty)
+               HUV). }
+claim HUVempty: U :/\: V = Empty.
+{ exact (andER (((U :e R_finite_complement_topology /\ V :e R_finite_complement_topology) /\ 0 :e U) /\ 1 :e V)
+               (U :/\: V = Empty)
+               HUV). }
+claim Hleft2: ((U :e R_finite_complement_topology /\ V :e R_finite_complement_topology) /\ 0 :e U).
+{ exact (andEL ((U :e R_finite_complement_topology /\ V :e R_finite_complement_topology) /\ 0 :e U) (1 :e V) Hleft). }
+claim H1V: 1 :e V.
+{ exact (andER ((U :e R_finite_complement_topology /\ V :e R_finite_complement_topology) /\ 0 :e U) (1 :e V) Hleft). }
+claim Hpair: (U :e R_finite_complement_topology /\ V :e R_finite_complement_topology).
+{ exact (andEL (U :e R_finite_complement_topology /\ V :e R_finite_complement_topology) (0 :e U) Hleft2). }
+claim H0U: 0 :e U.
+{ exact (andER (U :e R_finite_complement_topology /\ V :e R_finite_complement_topology) (0 :e U) Hleft2). }
+claim HU: U :e R_finite_complement_topology.
+{ exact (andEL (U :e R_finite_complement_topology) (V :e R_finite_complement_topology) Hpair). }
+claim HV: V :e R_finite_complement_topology.
+{ exact (andER (U :e R_finite_complement_topology) (V :e R_finite_complement_topology) Hpair). }
+
+(** from HU and H0U, derive finite (R\\U); similarly for V **)
+claim HUcases: finite (R :\: U) \/ U = Empty.
+{ exact (SepE2 (Power R) (fun U0:set => finite (R :\: U0) \/ U0 = Empty) U HU). }
+claim HUfin: finite (R :\: U).
+{ apply (HUcases (finite (R :\: U))).
+  - assume Hfin. exact Hfin.
+  - assume HUe: U = Empty.
+    apply FalseE.
+    claim H0Empty: 0 :e Empty.
+    { rewrite <- HUe at 2.
+      exact H0U. }
+    exact (EmptyE 0 H0Empty). }
+claim HVcases: finite (R :\: V) \/ V = Empty.
+{ exact (SepE2 (Power R) (fun U0:set => finite (R :\: U0) \/ U0 = Empty) V HV). }
+claim HVfin: finite (R :\: V).
+{ apply (HVcases (finite (R :\: V))).
+  - assume Hfin. exact Hfin.
+  - assume HVe: V = Empty.
+    apply FalseE.
+    claim H1Empty: 1 :e Empty.
+    { rewrite <- HVe at 2.
+      exact H1V. }
+    exact (EmptyE 1 H1Empty). }
+
+(** then (R\\U) ∪ (R\\V) is finite, and so is R\\(U∩V) by subset **)
+claim HfinUnion: finite ((R :\: U) :\/: (R :\: V)).
+{ exact (binunion_finite (R :\: U) HUfin (R :\: V) HVfin). }
+claim Hsub: R :\: (U :/\: V) c= (R :\: U) :\/: (R :\: V).
+{ let x. assume Hx: x :e R :\: (U :/\: V).
+  claim HxR: x :e R.
+  { exact (setminusE1 R (U :/\: V) x Hx). }
+  claim HxNotUV: x /:e (U :/\: V).
+  { exact (setminusE2 R (U :/\: V) x Hx). }
+  apply (xm (x :e U)).
+  - assume HxU: x :e U.
+    claim HxNotV: x /:e V.
+    { assume HxV: x :e V.
+      claim HxUV: x :e U :/\: V.
+      { exact (binintersectI U V x HxU HxV). }
+      exact (HxNotUV HxUV). }
+    claim HxRV: x :e R :\: V.
+    { exact (setminusI R V x HxR HxNotV). }
+    exact (binunionI2 (R :\: U) (R :\: V) x HxRV).
+  - assume HxNotU: ~(x :e U).
+    claim HxRU: x :e R :\: U.
+    { exact (setminusI R U x HxR HxNotU). }
+    exact (binunionI1 (R :\: U) (R :\: V) x HxRU). }
+claim HfinDiff: finite (R :\: (U :/\: V)).
+{ exact (Subq_finite ((R :\: U) :\/: (R :\: V)) HfinUnion (R :\: (U :/\: V)) Hsub). }
+claim HfinR: finite R.
+{ claim HeqR: R :\: (U :/\: V) = R.
+  { rewrite HUVempty.
+    rewrite (setminus_Empty_eq R).
+    reflexivity. }
+  rewrite <- HeqR.
+  exact HfinDiff. }
+exact (infinite_R HfinR).
+Qed.
+
 (** LATEX VERSION: Exercise 16(b): For the same five R topologies, determine which satisfy the Hausdorff and the T1 axioms. **)
 Theorem ex17_16b_Hausdorff_and_T1_for_five_topologies :
   (Hausdorff_space R R_standard_topology /\ T1_space R R_standard_topology) /\
@@ -19980,7 +20137,12 @@ prove (Hausdorff_space R R_standard_topology /\ T1_space R R_standard_topology) 
   (~Hausdorff_space R R_finite_complement_topology /\ T1_space R R_finite_complement_topology) /\
   (~Hausdorff_space R R_ray_topology /\ ~T1_space R R_ray_topology).
 apply andI.
-- admit.
+- apply andI.
+  * admit.
+  * prove ~Hausdorff_space R R_finite_complement_topology /\ T1_space R R_finite_complement_topology.
+    apply andI.
+    { exact R_finite_complement_not_Hausdorff. }
+    { exact (finite_complement_topology_T1 R). }
 - prove ~Hausdorff_space R R_ray_topology /\ ~T1_space R R_ray_topology.
   apply andI.
   + exact ray_topology_not_Hausdorff.
