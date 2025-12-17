@@ -16669,25 +16669,22 @@ prove basis_on (setprod R R) rational_rectangle_basis /\ generated_topology (set
 admit. (** every open rectangle contains rational rectangle; every rational rectangle is open; rationals dense in R **)
 Qed.
 
-(** helper: convex subset placeholder **) 
-(** LATEX VERSION: Exercise 7: a convex subset A⊂ℝ contains with any x,y∈A the interval between them. **)
-Definition convex_subset : set -> prop := fun A =>
-  A c= R /\
-  forall x y:set, x :e A -> y :e A ->
-    open_interval x y c= A.
-
 (** from §16 Exercise 7: convex subset implies interval or ray? **) 
-(** LATEX VERSION: Exercise 7: A convex subset of ℝ is either empty, all of ℝ, an open interval, or an open ray. **)
-Theorem ex16_7_convex_interval_or_ray : forall A:set,
-  convex_subset A ->
-    (A = Empty \/ A = R \/
-     exists a b:set, A = open_interval a b \/
-       A = {x :e R|Rlt a x} \/
-       A = {x :e R|Rlt x b}).
-let A.
-assume HA: convex_subset A.
-prove A = Empty \/ A = R \/ exists a b:set, A = open_interval a b \/ A = {x :e R|Rlt a x} \/ A = {x :e R|Rlt x b}.
-admit. (** if nonempty, let a = inf A, b = sup A; convexity forces (a,b) ⊆ A; show A is one of stated forms **)
+(** LATEX VERSION: Exercise 7: Let X be an ordered set. If Y is a proper subset of X that is convex in X, does it follow that Y is an interval or a ray in X. **)
+Definition interval_or_ray_in : set -> set -> prop := fun X Y =>
+  exists a b:set,
+    a :e X /\ b :e X /\
+    (Y = order_interval X a b \/ Y = open_ray_upper X a \/ Y = open_ray_lower X b).
+
+(** Counterexample pattern inside Q: points with q^2 < 2 form a convex set with no endpoint in Q. **)
+Definition Q_sqrt2_cut : set := {q :e rational_numbers | mul_SNo q q < 2}.
+
+Theorem ex16_7_convex_interval_or_ray :
+  exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
+prove exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
+witness rational_numbers.
+witness Q_sqrt2_cut.
+admit. (** show Q_sqrt2_cut is convex in Q but cannot be represented by an interval or ray with endpoints in Q **)
 Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
