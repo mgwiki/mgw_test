@@ -13644,7 +13644,473 @@ apply andI.
         - exact Hnx. }
       exact (SepI R (fun x0 : set => Rlt a0 x0 /\ ~(Rlt x x0)) x HxR Hconj).
 - (** intersection refinement **)
-  admit.
+  let b1. assume Hb1.
+  let b2. assume Hb2.
+  let x. assume Hx1 Hx2.
+  (** destruct b1 and b2 as halfopen intervals (a,bb] **)
+  claim Hexa1 : exists a1 :e R, b1 :e {halfopen_interval_right a1 b|b :e R}.
+  { exact (famunionE R (fun a0 : set => {halfopen_interval_right a0 b|b :e R}) b1 Hb1). }
+  claim Hexa2 : exists a2 :e R, b2 :e {halfopen_interval_right a2 b|b :e R}.
+  { exact (famunionE R (fun a0 : set => {halfopen_interval_right a0 b|b :e R}) b2 Hb2). }
+  apply Hexa1.
+  let a1. assume Ha1pair.
+  claim Ha1R : a1 :e R.
+  { exact (andEL (a1 :e R) (b1 :e {halfopen_interval_right a1 b|b :e R}) Ha1pair). }
+  claim Hb1fam : b1 :e {halfopen_interval_right a1 b|b :e R}.
+  { exact (andER (a1 :e R) (b1 :e {halfopen_interval_right a1 b|b :e R}) Ha1pair). }
+  claim Hexb1 : exists bb1 :e R, b1 = halfopen_interval_right a1 bb1.
+  { exact (ReplE R (fun bb : set => halfopen_interval_right a1 bb) b1 Hb1fam). }
+  apply Hexb1.
+  let bb1. assume Hbb1pair.
+  claim Hbb1R : bb1 :e R.
+  { exact (andEL (bb1 :e R) (b1 = halfopen_interval_right a1 bb1) Hbb1pair). }
+  claim Hb1eq : b1 = halfopen_interval_right a1 bb1.
+  { exact (andER (bb1 :e R) (b1 = halfopen_interval_right a1 bb1) Hbb1pair). }
+  apply Hexa2.
+  let a2. assume Ha2pair.
+  claim Ha2R : a2 :e R.
+  { exact (andEL (a2 :e R) (b2 :e {halfopen_interval_right a2 b|b :e R}) Ha2pair). }
+  claim Hb2fam : b2 :e {halfopen_interval_right a2 b|b :e R}.
+  { exact (andER (a2 :e R) (b2 :e {halfopen_interval_right a2 b|b :e R}) Ha2pair). }
+  claim Hexb2 : exists bb2 :e R, b2 = halfopen_interval_right a2 bb2.
+  { exact (ReplE R (fun bb : set => halfopen_interval_right a2 bb) b2 Hb2fam). }
+  apply Hexb2.
+  let bb2. assume Hbb2pair.
+  claim Hbb2R : bb2 :e R.
+  { exact (andEL (bb2 :e R) (b2 = halfopen_interval_right a2 bb2) Hbb2pair). }
+  claim Hb2eq : b2 = halfopen_interval_right a2 bb2.
+  { exact (andER (bb2 :e R) (b2 = halfopen_interval_right a2 bb2) Hbb2pair). }
+  (** extract constraints from x membership **)
+  claim HxIn1 : x :e halfopen_interval_right a1 bb1.
+  { rewrite <- Hb1eq. exact Hx1. }
+  claim HxIn2 : x :e halfopen_interval_right a2 bb2.
+  { rewrite <- Hb2eq. exact Hx2. }
+  claim HxR : x :e R.
+  { exact (SepE1 R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) x HxIn1). }
+  claim HxProp1 : Rlt a1 x /\ ~(Rlt bb1 x).
+  { exact (SepE2 R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) x HxIn1). }
+  claim HxProp2 : Rlt a2 x /\ ~(Rlt bb2 x).
+  { exact (SepE2 R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb2 x0)) x HxIn2). }
+  claim Ha1x : Rlt a1 x.
+  { exact (andEL (Rlt a1 x) (~(Rlt bb1 x)) HxProp1). }
+  claim Hnbb1x : ~(Rlt bb1 x).
+  { exact (andER (Rlt a1 x) (~(Rlt bb1 x)) HxProp1). }
+  claim Ha2x : Rlt a2 x.
+  { exact (andEL (Rlt a2 x) (~(Rlt bb2 x)) HxProp2). }
+  claim Hnbb2x : ~(Rlt bb2 x).
+  { exact (andER (Rlt a2 x) (~(Rlt bb2 x)) HxProp2). }
+  claim Ha1S : SNo a1.
+  { exact (real_SNo a1 Ha1R). }
+  claim Ha2S : SNo a2.
+  { exact (real_SNo a2 Ha2R). }
+  claim Hb1S : SNo bb1.
+  { exact (real_SNo bb1 Hbb1R). }
+  claim Hb2S : SNo bb2.
+  { exact (real_SNo bb2 Hbb2R). }
+  (** choose max left endpoint and min right endpoint by trichotomy **)
+  apply (SNoLt_trichotomy_or_impred a1 a2 Ha1S Ha2S
+           (exists b3 :e R_upper_limit_basis, x :e b3 /\ b3 c= b1 :/\: b2)).
+  - assume Ha1lt : a1 < a2.
+    claim Ha1a2 : Rlt a1 a2.
+    { exact (RltI a1 a2 Ha1R Ha2R Ha1lt). }
+    apply (SNoLt_trichotomy_or_impred bb1 bb2 Hb1S Hb2S
+             (exists b3 :e R_upper_limit_basis, x :e b3 /\ b3 c= b1 :/\: b2)).
+    + assume Hb1lt : bb1 < bb2.
+      claim Hbb1bb2 : Rlt bb1 bb2.
+      { exact (RltI bb1 bb2 Hbb1R Hbb2R Hb1lt). }
+      set I3 := halfopen_interval_right a2 bb1.
+      witness I3.
+      apply andI.
+      * (** I3 is in the basis **)
+        claim HI3fam : I3 :e {halfopen_interval_right a2 bb|bb :e R}.
+        { exact (ReplI R (fun bb : set => halfopen_interval_right a2 bb) bb1 Hbb1R). }
+        exact (famunionI R (fun aa : set => {halfopen_interval_right aa bb|bb :e R}) a2 I3 Ha2R HI3fam).
+      * apply andI.
+        { (** x in I3 **)
+          claim Hconj : Rlt a2 x /\ ~(Rlt bb1 x).
+          { apply andI.
+            - exact Ha2x.
+            - exact Hnbb1x. }
+          exact (SepI R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb1 x0)) x HxR Hconj). }
+        { (** I3 subset b1 ∩ b2 **)
+          let y. assume Hy: y :e I3.
+          prove y :e b1 :/\: b2.
+          claim HyR : y :e R.
+          { exact (SepE1 R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb1 x0)) y Hy). }
+          claim HyProp : Rlt a2 y /\ ~(Rlt bb1 y).
+          { exact (SepE2 R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb1 x0)) y Hy). }
+          claim Ha2y : Rlt a2 y.
+          { exact (andEL (Rlt a2 y) (~(Rlt bb1 y)) HyProp). }
+          claim Hnbb1y : ~(Rlt bb1 y).
+          { exact (andER (Rlt a2 y) (~(Rlt bb1 y)) HyProp). }
+          claim Ha1y : Rlt a1 y.
+          { exact (Rlt_tra a1 a2 y Ha1a2 Ha2y). }
+          claim Hnbb2y : ~(Rlt bb2 y).
+          { assume Hbb2y : Rlt bb2 y.
+            claim Hbb1y : Rlt bb1 y.
+            { exact (Rlt_tra bb1 bb2 y Hbb1bb2 Hbb2y). }
+            exact (Hnbb1y Hbb1y). }
+          claim Hyb1 : y :e b1.
+          { rewrite Hb1eq.
+            claim Hc1 : Rlt a1 y /\ ~(Rlt bb1 y).
+            { apply andI.
+              - exact Ha1y.
+              - exact Hnbb1y. }
+            exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y HyR Hc1). }
+          claim Hyb2 : y :e b2.
+          { rewrite Hb2eq.
+            claim Hc2 : Rlt a2 y /\ ~(Rlt bb2 y).
+            { apply andI.
+              - exact Ha2y.
+              - exact Hnbb2y. }
+            exact (SepI R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb2 x0)) y HyR Hc2). }
+          exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+    + assume Hbeq : bb1 = bb2.
+      set I3 := halfopen_interval_right a2 bb1.
+      witness I3.
+      apply andI.
+      * claim HI3fam : I3 :e {halfopen_interval_right a2 bb|bb :e R}.
+        { exact (ReplI R (fun bb : set => halfopen_interval_right a2 bb) bb1 Hbb1R). }
+        exact (famunionI R (fun aa : set => {halfopen_interval_right aa bb|bb :e R}) a2 I3 Ha2R HI3fam).
+      * apply andI.
+        { claim Hconj : Rlt a2 x /\ ~(Rlt bb1 x).
+          { apply andI.
+            - exact Ha2x.
+            - exact Hnbb1x. }
+          exact (SepI R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb1 x0)) x HxR Hconj). }
+        { let y. assume Hy: y :e I3.
+          prove y :e b1 :/\: b2.
+          claim HyR : y :e R.
+          { exact (SepE1 R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb1 x0)) y Hy). }
+          claim HyProp : Rlt a2 y /\ ~(Rlt bb1 y).
+          { exact (SepE2 R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb1 x0)) y Hy). }
+          claim Ha2y : Rlt a2 y.
+          { exact (andEL (Rlt a2 y) (~(Rlt bb1 y)) HyProp). }
+          claim Hnbb1y : ~(Rlt bb1 y).
+          { exact (andER (Rlt a2 y) (~(Rlt bb1 y)) HyProp). }
+          claim Ha1y : Rlt a1 y.
+          { exact (Rlt_tra a1 a2 y Ha1a2 Ha2y). }
+          claim Hyb1 : y :e b1.
+          { rewrite Hb1eq.
+            claim Hc1 : Rlt a1 y /\ ~(Rlt bb1 y).
+            { apply andI.
+              - exact Ha1y.
+              - exact Hnbb1y. }
+            exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y HyR Hc1). }
+          claim Hyb2 : y :e b2.
+          { rewrite Hb2eq.
+            rewrite <- Hbeq.
+            claim Hc2 : Rlt a2 y /\ ~(Rlt bb1 y).
+            { apply andI.
+              - exact Ha2y.
+              - exact Hnbb1y. }
+            exact (SepI R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb1 x0)) y HyR Hc2). }
+          exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+    + assume Hb2lt : bb2 < bb1.
+      claim Hbb2bb1 : Rlt bb2 bb1.
+      { exact (RltI bb2 bb1 Hbb2R Hbb1R Hb2lt). }
+      set I3 := halfopen_interval_right a2 bb2.
+      witness I3.
+      apply andI.
+      * claim HI3fam : I3 :e {halfopen_interval_right a2 bb|bb :e R}.
+        { exact (ReplI R (fun bb : set => halfopen_interval_right a2 bb) bb2 Hbb2R). }
+        exact (famunionI R (fun aa : set => {halfopen_interval_right aa bb|bb :e R}) a2 I3 Ha2R HI3fam).
+      * apply andI.
+        { claim Hconj : Rlt a2 x /\ ~(Rlt bb2 x).
+          { apply andI.
+            - exact Ha2x.
+            - exact Hnbb2x. }
+          exact (SepI R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb2 x0)) x HxR Hconj). }
+        { let y. assume Hy: y :e I3.
+          prove y :e b1 :/\: b2.
+          claim HyR : y :e R.
+          { exact (SepE1 R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb2 x0)) y Hy). }
+          claim HyProp : Rlt a2 y /\ ~(Rlt bb2 y).
+          { exact (SepE2 R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb2 x0)) y Hy). }
+          claim Ha2y : Rlt a2 y.
+          { exact (andEL (Rlt a2 y) (~(Rlt bb2 y)) HyProp). }
+          claim Hnbb2y : ~(Rlt bb2 y).
+          { exact (andER (Rlt a2 y) (~(Rlt bb2 y)) HyProp). }
+          claim Ha1y : Rlt a1 y.
+          { exact (Rlt_tra a1 a2 y Ha1a2 Ha2y). }
+          claim Hnbb1y : ~(Rlt bb1 y).
+          { assume Hbb1y : Rlt bb1 y.
+            claim Hbb2y : Rlt bb2 y.
+            { exact (Rlt_tra bb2 bb1 y Hbb2bb1 Hbb1y). }
+            exact (Hnbb2y Hbb2y). }
+          claim Hyb1 : y :e b1.
+          { rewrite Hb1eq.
+            claim Hc1 : Rlt a1 y /\ ~(Rlt bb1 y).
+            { apply andI.
+              - exact Ha1y.
+              - exact Hnbb1y. }
+            exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y HyR Hc1). }
+          claim Hyb2 : y :e b2.
+          { rewrite Hb2eq.
+            claim Hc2 : Rlt a2 y /\ ~(Rlt bb2 y).
+            { apply andI.
+              - exact Ha2y.
+              - exact Hnbb2y. }
+            exact (SepI R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb2 x0)) y HyR Hc2). }
+          exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+  - assume Haeq : a1 = a2.
+    apply (SNoLt_trichotomy_or_impred bb1 bb2 Hb1S Hb2S
+             (exists b3 :e R_upper_limit_basis, x :e b3 /\ b3 c= b1 :/\: b2)).
+    + assume Hb1lt : bb1 < bb2.
+      claim Hbb1bb2 : Rlt bb1 bb2.
+      { exact (RltI bb1 bb2 Hbb1R Hbb2R Hb1lt). }
+      set I3 := halfopen_interval_right a1 bb1.
+      witness I3.
+      apply andI.
+      * claim HI3fam : I3 :e {halfopen_interval_right a1 bb|bb :e R}.
+        { exact (ReplI R (fun bb : set => halfopen_interval_right a1 bb) bb1 Hbb1R). }
+        exact (famunionI R (fun aa : set => {halfopen_interval_right aa bb|bb :e R}) a1 I3 Ha1R HI3fam).
+      * apply andI.
+        { claim Hconj : Rlt a1 x /\ ~(Rlt bb1 x).
+          { apply andI.
+            - exact Ha1x.
+            - exact Hnbb1x. }
+          exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) x HxR Hconj). }
+        { let y. assume Hy: y :e I3.
+          prove y :e b1 :/\: b2.
+          claim HyR : y :e R.
+          { exact (SepE1 R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y Hy). }
+          claim HyProp : Rlt a1 y /\ ~(Rlt bb1 y).
+          { exact (SepE2 R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y Hy). }
+          claim Ha1y : Rlt a1 y.
+          { exact (andEL (Rlt a1 y) (~(Rlt bb1 y)) HyProp). }
+          claim Hnbb1y : ~(Rlt bb1 y).
+          { exact (andER (Rlt a1 y) (~(Rlt bb1 y)) HyProp). }
+          claim Hnbb2y : ~(Rlt bb2 y).
+          { assume Hbb2y : Rlt bb2 y.
+            claim Hbb1y : Rlt bb1 y.
+            { exact (Rlt_tra bb1 bb2 y Hbb1bb2 Hbb2y). }
+            exact (Hnbb1y Hbb1y). }
+          claim Hyb1 : y :e b1.
+          { rewrite Hb1eq.
+            claim Hc1 : Rlt a1 y /\ ~(Rlt bb1 y).
+            { apply andI.
+              - exact Ha1y.
+              - exact Hnbb1y. }
+            exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y HyR Hc1). }
+          claim Hyb2 : y :e b2.
+          { rewrite Hb2eq.
+            rewrite <- Haeq.
+            claim Hc2 : Rlt a1 y /\ ~(Rlt bb2 y).
+            { apply andI.
+              - exact Ha1y.
+              - exact Hnbb2y. }
+            exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb2 x0)) y HyR Hc2). }
+          exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+    + assume Hbeq : bb1 = bb2.
+      set I3 := halfopen_interval_right a1 bb1.
+      witness I3.
+      apply andI.
+      * claim HI3fam : I3 :e {halfopen_interval_right a1 bb|bb :e R}.
+        { exact (ReplI R (fun bb : set => halfopen_interval_right a1 bb) bb1 Hbb1R). }
+        exact (famunionI R (fun aa : set => {halfopen_interval_right aa bb|bb :e R}) a1 I3 Ha1R HI3fam).
+      * apply andI.
+        { claim Hconj : Rlt a1 x /\ ~(Rlt bb1 x).
+          { apply andI.
+            - exact Ha1x.
+            - exact Hnbb1x. }
+          exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) x HxR Hconj). }
+        { let y. assume Hy: y :e I3.
+          prove y :e b1 :/\: b2.
+          claim Hyb1 : y :e b1.
+          { rewrite Hb1eq. exact Hy. }
+          claim Hyb2 : y :e b2.
+          { rewrite Hb2eq.
+            rewrite <- Haeq.
+            rewrite <- Hbeq.
+            exact Hy. }
+          exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+    + assume Hb2lt : bb2 < bb1.
+      claim Hbb2bb1 : Rlt bb2 bb1.
+      { exact (RltI bb2 bb1 Hbb2R Hbb1R Hb2lt). }
+      set I3 := halfopen_interval_right a1 bb2.
+      witness I3.
+      apply andI.
+      * claim HI3fam : I3 :e {halfopen_interval_right a1 bb|bb :e R}.
+        { exact (ReplI R (fun bb : set => halfopen_interval_right a1 bb) bb2 Hbb2R). }
+        exact (famunionI R (fun aa : set => {halfopen_interval_right aa bb|bb :e R}) a1 I3 Ha1R HI3fam).
+      * apply andI.
+        { claim Hconj : Rlt a1 x /\ ~(Rlt bb2 x).
+          { apply andI.
+            - exact Ha1x.
+            - exact Hnbb2x. }
+          exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb2 x0)) x HxR Hconj). }
+        { let y. assume Hy: y :e I3.
+          prove y :e b1 :/\: b2.
+          claim HyR : y :e R.
+          { exact (SepE1 R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb2 x0)) y Hy). }
+          claim HyProp : Rlt a1 y /\ ~(Rlt bb2 y).
+          { exact (SepE2 R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb2 x0)) y Hy). }
+          claim Ha1y : Rlt a1 y.
+          { exact (andEL (Rlt a1 y) (~(Rlt bb2 y)) HyProp). }
+          claim Hnbb2y : ~(Rlt bb2 y).
+          { exact (andER (Rlt a1 y) (~(Rlt bb2 y)) HyProp). }
+          claim Hnbb1y : ~(Rlt bb1 y).
+          { assume Hbb1y : Rlt bb1 y.
+            claim Hbb2y : Rlt bb2 y.
+            { exact (Rlt_tra bb2 bb1 y Hbb2bb1 Hbb1y). }
+            exact (Hnbb2y Hbb2y). }
+          claim Hyb1 : y :e b1.
+          { rewrite Hb1eq.
+            claim Hc1 : Rlt a1 y /\ ~(Rlt bb1 y).
+            { apply andI.
+              - exact Ha1y.
+              - exact Hnbb1y. }
+            exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y HyR Hc1). }
+          claim Hyb2 : y :e b2.
+          { rewrite Hb2eq.
+            rewrite <- Haeq.
+            claim Hc2 : Rlt a1 y /\ ~(Rlt bb2 y).
+            { apply andI.
+              - exact Ha1y.
+              - exact Hnbb2y. }
+            exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb2 x0)) y HyR Hc2). }
+          exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+  - assume Ha2lt : a2 < a1.
+    claim Ha2a1 : Rlt a2 a1.
+    { exact (RltI a2 a1 Ha2R Ha1R Ha2lt). }
+    apply (SNoLt_trichotomy_or_impred bb1 bb2 Hb1S Hb2S
+             (exists b3 :e R_upper_limit_basis, x :e b3 /\ b3 c= b1 :/\: b2)).
+    + assume Hb1lt : bb1 < bb2.
+      claim Hbb1bb2 : Rlt bb1 bb2.
+      { exact (RltI bb1 bb2 Hbb1R Hbb2R Hb1lt). }
+      set I3 := halfopen_interval_right a1 bb1.
+      witness I3.
+      apply andI.
+      * claim HI3fam : I3 :e {halfopen_interval_right a1 bb|bb :e R}.
+        { exact (ReplI R (fun bb : set => halfopen_interval_right a1 bb) bb1 Hbb1R). }
+        exact (famunionI R (fun aa : set => {halfopen_interval_right aa bb|bb :e R}) a1 I3 Ha1R HI3fam).
+      * apply andI.
+        { claim Hconj : Rlt a1 x /\ ~(Rlt bb1 x).
+          { apply andI.
+            - exact Ha1x.
+            - exact Hnbb1x. }
+          exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) x HxR Hconj). }
+        { let y. assume Hy: y :e I3.
+          prove y :e b1 :/\: b2.
+          claim HyR : y :e R.
+          { exact (SepE1 R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y Hy). }
+          claim HyProp : Rlt a1 y /\ ~(Rlt bb1 y).
+          { exact (SepE2 R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y Hy). }
+          claim Ha1y : Rlt a1 y.
+          { exact (andEL (Rlt a1 y) (~(Rlt bb1 y)) HyProp). }
+          claim Hnbb1y : ~(Rlt bb1 y).
+          { exact (andER (Rlt a1 y) (~(Rlt bb1 y)) HyProp). }
+          claim Ha2y : Rlt a2 y.
+          { exact (Rlt_tra a2 a1 y Ha2a1 Ha1y). }
+          claim Hnbb2y : ~(Rlt bb2 y).
+          { assume Hbb2y : Rlt bb2 y.
+            claim Hbb1y : Rlt bb1 y.
+            { exact (Rlt_tra bb1 bb2 y Hbb1bb2 Hbb2y). }
+            exact (Hnbb1y Hbb1y). }
+          claim Hyb1 : y :e b1.
+          { rewrite Hb1eq.
+            claim Hc1 : Rlt a1 y /\ ~(Rlt bb1 y).
+            { apply andI.
+              - exact Ha1y.
+              - exact Hnbb1y. }
+            exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y HyR Hc1). }
+          claim Hyb2 : y :e b2.
+          { rewrite Hb2eq.
+            claim Hc2 : Rlt a2 y /\ ~(Rlt bb2 y).
+            { apply andI.
+              - exact Ha2y.
+              - exact Hnbb2y. }
+            exact (SepI R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb2 x0)) y HyR Hc2). }
+          exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+    + assume Hbeq : bb1 = bb2.
+      set I3 := halfopen_interval_right a1 bb1.
+      witness I3.
+      apply andI.
+      * claim HI3fam : I3 :e {halfopen_interval_right a1 bb|bb :e R}.
+        { exact (ReplI R (fun bb : set => halfopen_interval_right a1 bb) bb1 Hbb1R). }
+        exact (famunionI R (fun aa : set => {halfopen_interval_right aa bb|bb :e R}) a1 I3 Ha1R HI3fam).
+      * apply andI.
+        { claim Hconj : Rlt a1 x /\ ~(Rlt bb1 x).
+          { apply andI.
+            - exact Ha1x.
+            - exact Hnbb1x. }
+          exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) x HxR Hconj). }
+        { let y. assume Hy: y :e I3.
+          prove y :e b1 :/\: b2.
+          claim HyR : y :e R.
+          { exact (SepE1 R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y Hy). }
+          claim HyProp : Rlt a1 y /\ ~(Rlt bb1 y).
+          { exact (SepE2 R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y Hy). }
+          claim Ha1y : Rlt a1 y.
+          { exact (andEL (Rlt a1 y) (~(Rlt bb1 y)) HyProp). }
+          claim Hnbb1y : ~(Rlt bb1 y).
+          { exact (andER (Rlt a1 y) (~(Rlt bb1 y)) HyProp). }
+          claim Ha2y : Rlt a2 y.
+          { exact (Rlt_tra a2 a1 y Ha2a1 Ha1y). }
+          claim Hyb1 : y :e b1.
+          { rewrite Hb1eq. exact Hy. }
+          claim Hyb2 : y :e b2.
+          { rewrite Hb2eq.
+            claim Hnbb2y : ~(Rlt bb2 y).
+              { assume Hbb2y : Rlt bb2 y.
+                claim Hbb1y : Rlt bb1 y.
+              { rewrite Hbeq at 1.
+                exact Hbb2y. }
+                exact (Hnbb1y Hbb1y). }
+            claim Hc2 : Rlt a2 y /\ ~(Rlt bb2 y).
+            { apply andI.
+              - exact Ha2y.
+              - exact Hnbb2y. }
+            exact (SepI R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb2 x0)) y HyR Hc2). }
+          exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+    + assume Hb2lt : bb2 < bb1.
+      claim Hbb2bb1 : Rlt bb2 bb1.
+      { exact (RltI bb2 bb1 Hbb2R Hbb1R Hb2lt). }
+      set I3 := halfopen_interval_right a1 bb2.
+      witness I3.
+      apply andI.
+      * claim HI3fam : I3 :e {halfopen_interval_right a1 bb|bb :e R}.
+        { exact (ReplI R (fun bb : set => halfopen_interval_right a1 bb) bb2 Hbb2R). }
+        exact (famunionI R (fun aa : set => {halfopen_interval_right aa bb|bb :e R}) a1 I3 Ha1R HI3fam).
+      * apply andI.
+        { claim Hconj : Rlt a1 x /\ ~(Rlt bb2 x).
+          { apply andI.
+            - exact Ha1x.
+            - exact Hnbb2x. }
+          exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb2 x0)) x HxR Hconj). }
+        { let y. assume Hy: y :e I3.
+          prove y :e b1 :/\: b2.
+          claim HyR : y :e R.
+          { exact (SepE1 R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb2 x0)) y Hy). }
+          claim HyProp : Rlt a1 y /\ ~(Rlt bb2 y).
+          { exact (SepE2 R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb2 x0)) y Hy). }
+          claim Ha1y : Rlt a1 y.
+          { exact (andEL (Rlt a1 y) (~(Rlt bb2 y)) HyProp). }
+          claim Hnbb2y : ~(Rlt bb2 y).
+          { exact (andER (Rlt a1 y) (~(Rlt bb2 y)) HyProp). }
+          claim Ha2y : Rlt a2 y.
+          { exact (Rlt_tra a2 a1 y Ha2a1 Ha1y). }
+          claim Hnbb1y : ~(Rlt bb1 y).
+          { assume Hbb1y : Rlt bb1 y.
+            claim Hbb2y : Rlt bb2 y.
+            { exact (Rlt_tra bb2 bb1 y Hbb2bb1 Hbb1y). }
+            exact (Hnbb2y Hbb2y). }
+          claim Hyb1 : y :e b1.
+          { rewrite Hb1eq.
+            claim Hc1 : Rlt a1 y /\ ~(Rlt bb1 y).
+            { apply andI.
+              - exact Ha1y.
+              - exact Hnbb1y. }
+            exact (SepI R (fun x0 : set => Rlt a1 x0 /\ ~(Rlt bb1 x0)) y HyR Hc1). }
+          claim Hyb2 : y :e b2.
+          { rewrite Hb2eq.
+            claim Hc2 : Rlt a2 y /\ ~(Rlt bb2 y).
+            { apply andI.
+              - exact Ha2y.
+              - exact Hnbb2y. }
+            exact (SepI R (fun x0 : set => Rlt a2 x0 /\ ~(Rlt bb2 x0)) y HyR Hc2). }
+          exact (binintersectI b1 b2 y Hyb1 Hyb2). }
 Qed.
 
 (** from §13 Exercise 7: upper limit topology on R **)
