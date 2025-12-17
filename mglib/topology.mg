@@ -21495,7 +21495,7 @@ Theorem ordsucc_2_eq_3 : ordsucc 2 = 3.
 reflexivity.
 Qed.
 
-Theorem add_SNo_2_1_eq_3 : 2 + 1 = 3.
+Theorem add_SNo_2_1_eq_3 : add_SNo 2 1 = 3.
 claim H2omega : 2 :e omega.
 { exact (nat_p_omega 2 nat_2). }
 rewrite (add_SNo_1_ordsucc 2 H2omega).
