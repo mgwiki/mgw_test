@@ -15371,6 +15371,16 @@ Definition order_rel : set -> set -> set -> prop := fun X a b =>
   \/
   (X = rational_numbers /\ Rlt a b)
   \/
+  (X = omega /\ a :e b)
+  \/
+  (X = Zplus /\ a :e b)
+  \/
+  (X = two_by_nat /\
+   exists i m j n:set,
+     i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+     a = (i, m) /\ b = (j, n) /\
+     (i :e j \/ (i = j /\ m :e n)))
+  \/
   (X = setprod R R /\
    exists a1 a2 b1 b2:set,
      a = (a1, a2) /\ b = (b1, b2) /\
