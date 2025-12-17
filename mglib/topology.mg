@@ -20124,7 +20124,13 @@ claim HfinR: finite R.
 exact (infinite_R HfinR).
 Qed.
 
-(** helper: the standard topology on R is T1 **)
+(** helper: the standard topology on R is Hausdorff and T1 **)
+Theorem R_standard_topology_Hausdorff : Hausdorff_space R R_standard_topology.
+prove Hausdorff_space R R_standard_topology.
+rewrite <- (standard_topology_is_order_topology).
+exact (ex17_10_order_topology_Hausdorff R).
+Qed.
+
 Theorem R_standard_topology_T1 : T1_space R R_standard_topology.
 claim Htop: topology_on R R_standard_topology.
 { exact R_standard_topology_is_topology_local. }
@@ -20171,7 +20177,7 @@ apply andI.
 	    { apply andI.
 	      - prove Hausdorff_space R R_standard_topology /\ T1_space R R_standard_topology.
 	        apply andI.
-	        + admit.
+	        + exact R_standard_topology_Hausdorff.
 	        + exact R_standard_topology_T1.
 	      - admit.
 	    }
