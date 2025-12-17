@@ -14212,7 +14212,337 @@ apply andI.
     * exact (binunionI1 R_standard_basis R_K_basis b (andEL (b :e R_standard_basis) (x :e b) Hbpair)).
     * exact (andER (b :e R_standard_basis) (x :e b) Hbpair).
 - (** intersection refinement **)
-  admit.
+  let b1. assume Hb1.
+  let b2. assume Hb2.
+  let x. assume Hx1 Hx2.
+  prove exists b3 :e (R_standard_basis :\/: R_K_basis), x :e b3 /\ b3 c= b1 :/\: b2.
+  claim HstdInt:
+    forall u1 :e R_standard_basis, forall u2 :e R_standard_basis, forall x0:set,
+      x0 :e u1 -> x0 :e u2 ->
+      exists u3 :e R_standard_basis, x0 :e u3 /\ u3 c= u1 :/\: u2.
+  { exact (andER (R_standard_basis c= Power R /\ (forall x0 :e R, exists b :e R_standard_basis, x0 :e b))
+                 (forall u1 :e R_standard_basis, forall u2 :e R_standard_basis, forall x0:set,
+                   x0 :e u1 -> x0 :e u2 ->
+                   exists u3 :e R_standard_basis, x0 :e u3 /\ u3 c= u1 :/\: u2)
+                 R_standard_basis_is_basis_local). }
+  apply (binunionE' R_standard_basis R_K_basis b1 (exists b3 :e (R_standard_basis :\/: R_K_basis), x :e b3 /\ b3 c= b1 :/\: b2)).
+  - assume Hb1Std: b1 :e R_standard_basis.
+    apply (binunionE' R_standard_basis R_K_basis b2 (exists b3 :e (R_standard_basis :\/: R_K_basis), x :e b3 /\ b3 c= b1 :/\: b2)).
+    + assume Hb2Std: b2 :e R_standard_basis.
+      apply (HstdInt b1 Hb1Std b2 Hb2Std x Hx1 Hx2).
+      let b3std. assume Hb3pair.
+      witness b3std.
+      apply andI.
+      * exact (binunionI1 R_standard_basis R_K_basis b3std (andEL (b3std :e R_standard_basis) (x :e b3std /\ b3std c= b1 :/\: b2) Hb3pair)).
+      * exact (andER (b3std :e R_standard_basis) (x :e b3std /\ b3std c= b1 :/\: b2) Hb3pair).
+    + assume Hb2K: b2 :e R_K_basis.
+      (** destruct b2 = open_interval a2 bb2 \\ K_set **)
+      claim Hexa2 : exists a2 :e R, b2 :e {open_interval a2 b :\: K_set|b :e R}.
+      { exact (famunionE R (fun a0 : set => {open_interval a0 b :\: K_set|b :e R}) b2 Hb2K). }
+      apply Hexa2.
+      let a2. assume Ha2pair.
+      claim Ha2R : a2 :e R.
+      { exact (andEL (a2 :e R) (b2 :e {open_interval a2 b :\: K_set|b :e R}) Ha2pair). }
+      claim Hb2fam : b2 :e {open_interval a2 b :\: K_set|b :e R}.
+      { exact (andER (a2 :e R) (b2 :e {open_interval a2 b :\: K_set|b :e R}) Ha2pair). }
+      claim Hexb2 : exists bb2 :e R, b2 = open_interval a2 bb2 :\: K_set.
+      { exact (ReplE R (fun bb : set => open_interval a2 bb :\: K_set) b2 Hb2fam). }
+      apply Hexb2.
+      let bb2. assume Hbb2pair.
+      claim Hbb2R : bb2 :e R.
+      { exact (andEL (bb2 :e R) (b2 = open_interval a2 bb2 :\: K_set) Hbb2pair). }
+      claim Hb2eq : b2 = open_interval a2 bb2 :\: K_set.
+      { exact (andER (bb2 :e R) (b2 = open_interval a2 bb2 :\: K_set) Hbb2pair). }
+      set I2 := open_interval a2 bb2.
+      claim HI2Std: I2 :e R_standard_basis.
+      { claim HI2fam : I2 :e {open_interval a2 b|b :e R}.
+        { exact (ReplI R (fun b0 : set => open_interval a2 b0) bb2 Hbb2R). }
+        exact (famunionI R (fun a0 : set => {open_interval a0 b|b :e R}) a2 I2 Ha2R HI2fam). }
+      claim HxInB2: x :e I2 :\: K_set.
+      { rewrite <- Hb2eq.
+        exact Hx2. }
+      claim HxInI2: x :e I2.
+      { exact (setminusE1 I2 K_set x HxInB2). }
+      claim HxNotK: x /:e K_set.
+      { exact (setminusE2 I2 K_set x HxInB2). }
+      apply (HstdInt b1 Hb1Std I2 HI2Std x Hx1 HxInI2).
+      let I0. assume HI0pair.
+      claim HI0Std: I0 :e R_standard_basis.
+      { exact (andEL (I0 :e R_standard_basis) (x :e I0 /\ I0 c= b1 :/\: I2) HI0pair). }
+      claim HI0rest: x :e I0 /\ I0 c= b1 :/\: I2.
+      { exact (andER (I0 :e R_standard_basis) (x :e I0 /\ I0 c= b1 :/\: I2) HI0pair). }
+      claim HxI0: x :e I0.
+      { exact (andEL (x :e I0) (I0 c= b1 :/\: I2) HI0rest). }
+      claim HI0sub: I0 c= b1 :/\: I2.
+      { exact (andER (x :e I0) (I0 c= b1 :/\: I2) HI0rest). }
+      (** destruct I0 = open_interval c d **)
+      claim Hexc : exists c :e R, I0 :e {open_interval c b|b :e R}.
+      { exact (famunionE R (fun c0 : set => {open_interval c0 b|b :e R}) I0 HI0Std). }
+      apply Hexc.
+      let c. assume Hcpair.
+      claim HcR: c :e R.
+      { exact (andEL (c :e R) (I0 :e {open_interval c b|b :e R}) Hcpair). }
+      claim HI0fam: I0 :e {open_interval c b|b :e R}.
+      { exact (andER (c :e R) (I0 :e {open_interval c b|b :e R}) Hcpair). }
+      claim Hexd : exists d :e R, I0 = open_interval c d.
+      { exact (ReplE R (fun d0 : set => open_interval c d0) I0 HI0fam). }
+      apply Hexd.
+      let d. assume Hdpair.
+      claim HdR: d :e R.
+      { exact (andEL (d :e R) (I0 = open_interval c d) Hdpair). }
+      claim HI0eq: I0 = open_interval c d.
+      { exact (andER (d :e R) (I0 = open_interval c d) Hdpair). }
+      set Kint := open_interval c d :\: K_set.
+      witness Kint.
+      apply andI.
+      * (** Kint is in the union basis via the K basis **)
+        claim HKfam : Kint :e {open_interval c b :\: K_set|b :e R}.
+        { exact (ReplI R (fun b0 : set => open_interval c b0 :\: K_set) d HdR). }
+        claim HKinK : Kint :e R_K_basis.
+        { exact (famunionI R (fun a0 : set => {open_interval a0 b :\: K_set|b :e R}) c Kint HcR HKfam). }
+        exact (binunionI2 R_standard_basis R_K_basis Kint HKinK).
+      * apply andI.
+        { (** x in Kint **)
+          prove x :e open_interval c d :\: K_set.
+          apply setminusI.
+          - prove x :e open_interval c d.
+            rewrite <- HI0eq.
+            exact HxI0.
+          - exact HxNotK. }
+        { (** subset property **)
+          let y. assume Hy: y :e Kint.
+          prove y :e b1 :/\: b2.
+          claim HyOpen: y :e open_interval c d.
+          { exact (setminusE1 (open_interval c d) K_set y Hy). }
+          claim HyI0: y :e I0.
+          { rewrite HI0eq.
+            exact HyOpen. }
+          claim HyNotK: y /:e K_set.
+          { exact (setminusE2 (open_interval c d) K_set y Hy). }
+          claim Hyb1I2: y :e b1 :/\: I2.
+          { exact (HI0sub y HyI0). }
+          claim Hyb1: y :e b1.
+          { exact (binintersectE1 b1 I2 y Hyb1I2). }
+          claim HyI2: y :e I2.
+          { exact (binintersectE2 b1 I2 y Hyb1I2). }
+          claim Hyb2: y :e b2.
+          { rewrite Hb2eq.
+            exact (setminusI I2 K_set y HyI2 HyNotK). }
+          exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+    + exact Hb2.
+  - assume Hb1K: b1 :e R_K_basis.
+    apply (binunionE' R_standard_basis R_K_basis b2 (exists b3 :e (R_standard_basis :\/: R_K_basis), x :e b3 /\ b3 c= b1 :/\: b2)).
+    + assume Hb2Std: b2 :e R_standard_basis.
+      (** symmetric to the previous mixed case **)
+      claim Hexa1 : exists a1 :e R, b1 :e {open_interval a1 b :\: K_set|b :e R}.
+      { exact (famunionE R (fun a0 : set => {open_interval a0 b :\: K_set|b :e R}) b1 Hb1K). }
+      apply Hexa1.
+      let a1. assume Ha1pair.
+      claim Ha1R : a1 :e R.
+      { exact (andEL (a1 :e R) (b1 :e {open_interval a1 b :\: K_set|b :e R}) Ha1pair). }
+      claim Hb1fam : b1 :e {open_interval a1 b :\: K_set|b :e R}.
+      { exact (andER (a1 :e R) (b1 :e {open_interval a1 b :\: K_set|b :e R}) Ha1pair). }
+      claim Hexb1 : exists bb1 :e R, b1 = open_interval a1 bb1 :\: K_set.
+      { exact (ReplE R (fun bb : set => open_interval a1 bb :\: K_set) b1 Hb1fam). }
+      apply Hexb1.
+      let bb1. assume Hbb1pair.
+      claim Hbb1R : bb1 :e R.
+      { exact (andEL (bb1 :e R) (b1 = open_interval a1 bb1 :\: K_set) Hbb1pair). }
+      claim Hb1eq : b1 = open_interval a1 bb1 :\: K_set.
+      { exact (andER (bb1 :e R) (b1 = open_interval a1 bb1 :\: K_set) Hbb1pair). }
+      set I1 := open_interval a1 bb1.
+      claim HI1Std: I1 :e R_standard_basis.
+      { claim HI1fam : I1 :e {open_interval a1 b|b :e R}.
+        { exact (ReplI R (fun b0 : set => open_interval a1 b0) bb1 Hbb1R). }
+        exact (famunionI R (fun a0 : set => {open_interval a0 b|b :e R}) a1 I1 Ha1R HI1fam). }
+      claim HxInB1: x :e I1 :\: K_set.
+      { rewrite <- Hb1eq.
+        exact Hx1. }
+      claim HxInI1: x :e I1.
+      { exact (setminusE1 I1 K_set x HxInB1). }
+      claim HxNotK: x /:e K_set.
+      { exact (setminusE2 I1 K_set x HxInB1). }
+      apply (HstdInt I1 HI1Std b2 Hb2Std x HxInI1 Hx2).
+      let I0. assume HI0pair.
+      claim HI0Std: I0 :e R_standard_basis.
+      { exact (andEL (I0 :e R_standard_basis) (x :e I0 /\ I0 c= I1 :/\: b2) HI0pair). }
+      claim HI0rest: x :e I0 /\ I0 c= I1 :/\: b2.
+      { exact (andER (I0 :e R_standard_basis) (x :e I0 /\ I0 c= I1 :/\: b2) HI0pair). }
+      claim HxI0: x :e I0.
+      { exact (andEL (x :e I0) (I0 c= I1 :/\: b2) HI0rest). }
+      claim HI0sub: I0 c= I1 :/\: b2.
+      { exact (andER (x :e I0) (I0 c= I1 :/\: b2) HI0rest). }
+      claim Hexc : exists c :e R, I0 :e {open_interval c b|b :e R}.
+      { exact (famunionE R (fun c0 : set => {open_interval c0 b|b :e R}) I0 HI0Std). }
+      apply Hexc.
+      let c. assume Hcpair.
+      claim HcR: c :e R.
+      { exact (andEL (c :e R) (I0 :e {open_interval c b|b :e R}) Hcpair). }
+      claim HI0fam: I0 :e {open_interval c b|b :e R}.
+      { exact (andER (c :e R) (I0 :e {open_interval c b|b :e R}) Hcpair). }
+      claim Hexd : exists d :e R, I0 = open_interval c d.
+      { exact (ReplE R (fun d0 : set => open_interval c d0) I0 HI0fam). }
+      apply Hexd.
+      let d. assume Hdpair.
+      claim HdR: d :e R.
+      { exact (andEL (d :e R) (I0 = open_interval c d) Hdpair). }
+      claim HI0eq: I0 = open_interval c d.
+      { exact (andER (d :e R) (I0 = open_interval c d) Hdpair). }
+      set Kint := open_interval c d :\: K_set.
+      witness Kint.
+      apply andI.
+      * claim HKfam : Kint :e {open_interval c b :\: K_set|b :e R}.
+        { exact (ReplI R (fun b0 : set => open_interval c b0 :\: K_set) d HdR). }
+        claim HKinK : Kint :e R_K_basis.
+        { exact (famunionI R (fun a0 : set => {open_interval a0 b :\: K_set|b :e R}) c Kint HcR HKfam). }
+        exact (binunionI2 R_standard_basis R_K_basis Kint HKinK).
+      * apply andI.
+        { prove x :e open_interval c d :\: K_set.
+          apply setminusI.
+          - prove x :e open_interval c d.
+            rewrite <- HI0eq.
+            exact HxI0.
+          - exact HxNotK. }
+        { let y. assume Hy: y :e Kint.
+          prove y :e b1 :/\: b2.
+          claim HyOpen: y :e open_interval c d.
+          { exact (setminusE1 (open_interval c d) K_set y Hy). }
+          claim HyI0: y :e I0.
+          { rewrite HI0eq.
+            exact HyOpen. }
+          claim HyNotK: y /:e K_set.
+          { exact (setminusE2 (open_interval c d) K_set y Hy). }
+          claim HyI1b2: y :e I1 :/\: b2.
+          { exact (HI0sub y HyI0). }
+          claim HyI1: y :e I1.
+          { exact (binintersectE1 I1 b2 y HyI1b2). }
+          claim Hyb2: y :e b2.
+          { exact (binintersectE2 I1 b2 y HyI1b2). }
+          claim Hyb1: y :e b1.
+          { rewrite Hb1eq.
+            exact (setminusI I1 K_set y HyI1 HyNotK). }
+          exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+    + assume Hb2K: b2 :e R_K_basis.
+      (** both K basis elements; refine using their open-interval parts **)
+      claim Hexa1 : exists a1 :e R, b1 :e {open_interval a1 b :\: K_set|b :e R}.
+      { exact (famunionE R (fun a0 : set => {open_interval a0 b :\: K_set|b :e R}) b1 Hb1K). }
+      claim Hexa2 : exists a2 :e R, b2 :e {open_interval a2 b :\: K_set|b :e R}.
+      { exact (famunionE R (fun a0 : set => {open_interval a0 b :\: K_set|b :e R}) b2 Hb2K). }
+      apply Hexa1.
+      let a1. assume Ha1pair.
+      claim Ha1R : a1 :e R.
+      { exact (andEL (a1 :e R) (b1 :e {open_interval a1 b :\: K_set|b :e R}) Ha1pair). }
+      claim Hb1fam : b1 :e {open_interval a1 b :\: K_set|b :e R}.
+      { exact (andER (a1 :e R) (b1 :e {open_interval a1 b :\: K_set|b :e R}) Ha1pair). }
+      claim Hexb1 : exists bb1 :e R, b1 = open_interval a1 bb1 :\: K_set.
+      { exact (ReplE R (fun bb : set => open_interval a1 bb :\: K_set) b1 Hb1fam). }
+      apply Hexb1.
+      let bb1. assume Hbb1pair.
+      claim Hbb1R : bb1 :e R.
+      { exact (andEL (bb1 :e R) (b1 = open_interval a1 bb1 :\: K_set) Hbb1pair). }
+      claim Hb1eq : b1 = open_interval a1 bb1 :\: K_set.
+      { exact (andER (bb1 :e R) (b1 = open_interval a1 bb1 :\: K_set) Hbb1pair). }
+      apply Hexa2.
+      let a2. assume Ha2pair.
+      claim Ha2R : a2 :e R.
+      { exact (andEL (a2 :e R) (b2 :e {open_interval a2 b :\: K_set|b :e R}) Ha2pair). }
+      claim Hb2fam : b2 :e {open_interval a2 b :\: K_set|b :e R}.
+      { exact (andER (a2 :e R) (b2 :e {open_interval a2 b :\: K_set|b :e R}) Ha2pair). }
+      claim Hexb2 : exists bb2 :e R, b2 = open_interval a2 bb2 :\: K_set.
+      { exact (ReplE R (fun bb : set => open_interval a2 bb :\: K_set) b2 Hb2fam). }
+      apply Hexb2.
+      let bb2. assume Hbb2pair.
+      claim Hbb2R : bb2 :e R.
+      { exact (andEL (bb2 :e R) (b2 = open_interval a2 bb2 :\: K_set) Hbb2pair). }
+      claim Hb2eq : b2 = open_interval a2 bb2 :\: K_set.
+      { exact (andER (bb2 :e R) (b2 = open_interval a2 bb2 :\: K_set) Hbb2pair). }
+      set I1 := open_interval a1 bb1.
+      set I2 := open_interval a2 bb2.
+      claim HI1Std: I1 :e R_standard_basis.
+      { claim HI1fam : I1 :e {open_interval a1 b|b :e R}.
+        { exact (ReplI R (fun b0 : set => open_interval a1 b0) bb1 Hbb1R). }
+        exact (famunionI R (fun a0 : set => {open_interval a0 b|b :e R}) a1 I1 Ha1R HI1fam). }
+      claim HI2Std: I2 :e R_standard_basis.
+      { claim HI2fam : I2 :e {open_interval a2 b|b :e R}.
+        { exact (ReplI R (fun b0 : set => open_interval a2 b0) bb2 Hbb2R). }
+        exact (famunionI R (fun a0 : set => {open_interval a0 b|b :e R}) a2 I2 Ha2R HI2fam). }
+      claim HxInB1: x :e I1 :\: K_set.
+      { rewrite <- Hb1eq.
+        exact Hx1. }
+      claim HxInB2: x :e I2 :\: K_set.
+      { rewrite <- Hb2eq.
+        exact Hx2. }
+      claim HxInI1: x :e I1.
+      { exact (setminusE1 I1 K_set x HxInB1). }
+      claim HxInI2: x :e I2.
+      { exact (setminusE1 I2 K_set x HxInB2). }
+      claim HxNotK: x /:e K_set.
+      { exact (setminusE2 I1 K_set x HxInB1). }
+      apply (HstdInt I1 HI1Std I2 HI2Std x HxInI1 HxInI2).
+      let I0. assume HI0pair.
+      claim HI0Std: I0 :e R_standard_basis.
+      { exact (andEL (I0 :e R_standard_basis) (x :e I0 /\ I0 c= I1 :/\: I2) HI0pair). }
+      claim HI0rest: x :e I0 /\ I0 c= I1 :/\: I2.
+      { exact (andER (I0 :e R_standard_basis) (x :e I0 /\ I0 c= I1 :/\: I2) HI0pair). }
+      claim HxI0: x :e I0.
+      { exact (andEL (x :e I0) (I0 c= I1 :/\: I2) HI0rest). }
+      claim HI0sub: I0 c= I1 :/\: I2.
+      { exact (andER (x :e I0) (I0 c= I1 :/\: I2) HI0rest). }
+      claim Hexc : exists c :e R, I0 :e {open_interval c b|b :e R}.
+      { exact (famunionE R (fun c0 : set => {open_interval c0 b|b :e R}) I0 HI0Std). }
+      apply Hexc.
+      let c. assume Hcpair.
+      claim HcR: c :e R.
+      { exact (andEL (c :e R) (I0 :e {open_interval c b|b :e R}) Hcpair). }
+      claim HI0fam: I0 :e {open_interval c b|b :e R}.
+      { exact (andER (c :e R) (I0 :e {open_interval c b|b :e R}) Hcpair). }
+      claim Hexd : exists d :e R, I0 = open_interval c d.
+      { exact (ReplE R (fun d0 : set => open_interval c d0) I0 HI0fam). }
+      apply Hexd.
+      let d. assume Hdpair.
+      claim HdR: d :e R.
+      { exact (andEL (d :e R) (I0 = open_interval c d) Hdpair). }
+      claim HI0eq: I0 = open_interval c d.
+      { exact (andER (d :e R) (I0 = open_interval c d) Hdpair). }
+      set Kint := open_interval c d :\: K_set.
+      witness Kint.
+      apply andI.
+      * claim HKfam : Kint :e {open_interval c b :\: K_set|b :e R}.
+        { exact (ReplI R (fun b0 : set => open_interval c b0 :\: K_set) d HdR). }
+        claim HKinK : Kint :e R_K_basis.
+        { exact (famunionI R (fun a0 : set => {open_interval a0 b :\: K_set|b :e R}) c Kint HcR HKfam). }
+        exact (binunionI2 R_standard_basis R_K_basis Kint HKinK).
+      * apply andI.
+        { prove x :e open_interval c d :\: K_set.
+          apply setminusI.
+          - prove x :e open_interval c d.
+            rewrite <- HI0eq.
+            exact HxI0.
+          - exact HxNotK. }
+        { let y. assume Hy: y :e Kint.
+          prove y :e b1 :/\: b2.
+          claim HyOpen: y :e open_interval c d.
+          { exact (setminusE1 (open_interval c d) K_set y Hy). }
+          claim HyI0: y :e I0.
+          { rewrite HI0eq.
+            exact HyOpen. }
+          claim HyNotK: y /:e K_set.
+          { exact (setminusE2 (open_interval c d) K_set y Hy). }
+          claim HyI1I2: y :e I1 :/\: I2.
+          { exact (HI0sub y HyI0). }
+          claim HyI1: y :e I1.
+          { exact (binintersectE1 I1 I2 y HyI1I2). }
+          claim HyI2: y :e I2.
+          { exact (binintersectE2 I1 I2 y HyI1I2). }
+          claim Hyb1: y :e b1.
+          { rewrite Hb1eq.
+            exact (setminusI I1 K_set y HyI1 HyNotK). }
+          claim Hyb2: y :e b2.
+          { rewrite Hb2eq.
+            exact (setminusI I2 K_set y HyI2 HyNotK). }
+          exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+    + exact Hb2.
+  - exact Hb1.
 Qed.
 
 (** helper: the K topology on R is a topology **)
