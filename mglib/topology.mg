@@ -13683,6 +13683,77 @@ Definition R_K_basis : set :=
 Definition R_K_topology : set :=
   generated_topology R (R_standard_basis :\/: R_K_basis).
 
+(** helper: the K topology basis is a basis on R **)
+Theorem R_standard_plus_K_basis_is_basis_local : basis_on R (R_standard_basis :\/: R_K_basis).
+prove basis_on R (R_standard_basis :\/: R_K_basis).
+prove (R_standard_basis :\/: R_K_basis) c= Power R
+  /\ (forall x :e R, exists b :e (R_standard_basis :\/: R_K_basis), x :e b)
+  /\ (forall b1 :e (R_standard_basis :\/: R_K_basis), forall b2 :e (R_standard_basis :\/: R_K_basis), forall x:set,
+        x :e b1 -> x :e b2 ->
+        exists b3 :e (R_standard_basis :\/: R_K_basis), x :e b3 /\ b3 c= b1 :/\: b2).
+apply andI.
+- apply andI.
+  + (** basis elements are subsets of R **)
+    let U. assume HU: U :e (R_standard_basis :\/: R_K_basis).
+    apply (binunionE' R_standard_basis R_K_basis U (U :e Power R)).
+    - (** U from standard basis **)
+      assume HUstd: U :e R_standard_basis.
+      claim HUsubR: U c= R.
+      { exact (basis_elem_subset R R_standard_basis U R_standard_basis_is_basis_local HUstd). }
+      exact (PowerI R U HUsubR).
+    - (** U from K basis **)
+      assume HUk: U :e R_K_basis.
+      claim Hexa : exists a :e R, U :e {open_interval a b :\: K_set|b :e R}.
+      { exact (famunionE R (fun a0 : set => {open_interval a0 b :\: K_set|b :e R}) U HUk). }
+      apply Hexa.
+      let a. assume Hapair.
+      claim HaR: a :e R.
+      { exact (andEL (a :e R) (U :e {open_interval a b :\: K_set|b :e R}) Hapair). }
+      claim HUfam: U :e {open_interval a b :\: K_set|b :e R}.
+      { exact (andER (a :e R) (U :e {open_interval a b :\: K_set|b :e R}) Hapair). }
+      claim Hexb: exists b :e R, U = open_interval a b :\: K_set.
+      { exact (ReplE R (fun b0 : set => open_interval a b0 :\: K_set) U HUfam). }
+      apply Hexb.
+      let b. assume Hbpair.
+      claim HbR: b :e R.
+      { exact (andEL (b :e R) (U = open_interval a b :\: K_set) Hbpair). }
+      claim HUeq: U = open_interval a b :\: K_set.
+      { exact (andER (b :e R) (U = open_interval a b :\: K_set) Hbpair). }
+      rewrite HUeq.
+      claim Hsub1: (open_interval a b :\: K_set) c= open_interval a b.
+      { exact (setminus_Subq (open_interval a b) K_set). }
+      claim Hsub2: open_interval a b c= R.
+      { exact (open_interval_Subq_R a b). }
+      exact (PowerI R (open_interval a b :\: K_set) (Subq_tra (open_interval a b :\: K_set) (open_interval a b) R Hsub1 Hsub2)).
+    - exact HU.
+  + (** coverage: inherit from standard basis **)
+    let x. assume HxR: x :e R.
+    claim Hcov: forall x0 :e R, exists b :e R_standard_basis, x0 :e b.
+    { exact (andER (R_standard_basis c= Power R)
+                   (forall x0 :e R, exists b :e R_standard_basis, x0 :e b)
+                   (andEL (R_standard_basis c= Power R /\
+                           (forall x0 :e R, exists b :e R_standard_basis, x0 :e b))
+                          (forall b1 :e R_standard_basis, forall b2 :e R_standard_basis, forall x0:set,
+                            x0 :e b1 -> x0 :e b2 ->
+                            exists b3 :e R_standard_basis, x0 :e b3 /\ b3 c= b1 :/\: b2)
+                          R_standard_basis_is_basis_local)). }
+    claim Hex: exists b :e R_standard_basis, x :e b.
+    { exact (Hcov x HxR). }
+    apply Hex.
+    let b. assume Hbpair.
+    witness b.
+    apply andI.
+    * exact (binunionI1 R_standard_basis R_K_basis b (andEL (b :e R_standard_basis) (x :e b) Hbpair)).
+    * exact (andER (b :e R_standard_basis) (x :e b) Hbpair).
+- (** intersection refinement **)
+  admit.
+Qed.
+
+(** helper: the K topology on R is a topology **)
+Theorem R_K_topology_is_topology_local : topology_on R R_K_topology.
+exact (lemma_topology_from_basis R (R_standard_basis :\/: R_K_basis) R_standard_plus_K_basis_is_basis_local).
+Qed.
+
 (** LATEX VERSION: Exercise 6: The lower-limit topology and the K-topology on ℝ are incomparable. **)
 Theorem ex13_6_Rl_RK_not_comparable :
   ~finer_than R_lower_limit_topology R_K_topology /\
@@ -20432,6 +20503,138 @@ apply andI.
 	  - exact Hnotx.
 Qed.
 
+(** helper: the K topology on R is Hausdorff and T1 **)
+Theorem R_K_topology_Hausdorff : Hausdorff_space R R_K_topology.
+claim HcontAll: finer_than R_upper_limit_topology R_standard_topology /\
+                finer_than R_K_topology R_standard_topology /\
+                finer_than R_standard_topology R_finite_complement_topology /\
+                finer_than R_standard_topology R_ray_topology.
+{ exact ex13_7_R_topology_containments. }
+claim Hleft1: (finer_than R_upper_limit_topology R_standard_topology /\
+               finer_than R_K_topology R_standard_topology) /\
+              finer_than R_standard_topology R_finite_complement_topology.
+{ exact (andEL ((finer_than R_upper_limit_topology R_standard_topology /\
+                 finer_than R_K_topology R_standard_topology) /\
+                finer_than R_standard_topology R_finite_complement_topology)
+               (finer_than R_standard_topology R_ray_topology)
+               HcontAll). }
+claim Hleft2: finer_than R_upper_limit_topology R_standard_topology /\
+              finer_than R_K_topology R_standard_topology.
+{ exact (andEL (finer_than R_upper_limit_topology R_standard_topology /\
+                finer_than R_K_topology R_standard_topology)
+               (finer_than R_standard_topology R_finite_complement_topology)
+               Hleft1). }
+claim Hsub: R_standard_topology c= R_K_topology.
+{ exact (andER (finer_than R_upper_limit_topology R_standard_topology)
+               (finer_than R_K_topology R_standard_topology)
+               Hleft2). }
+exact (finer_preserves_Hausdorff R R_standard_topology R_K_topology
+       R_standard_topology_Hausdorff
+       R_K_topology_is_topology_local
+       Hsub).
+Qed.
+
+Theorem R_K_topology_T1 : T1_space R R_K_topology.
+claim HtopStd: topology_on R R_standard_topology.
+{ exact R_standard_topology_is_topology_local. }
+claim HtopK: topology_on R R_K_topology.
+{ exact R_K_topology_is_topology_local. }
+claim HcontAll: finer_than R_upper_limit_topology R_standard_topology /\
+                finer_than R_K_topology R_standard_topology /\
+                finer_than R_standard_topology R_finite_complement_topology /\
+                finer_than R_standard_topology R_ray_topology.
+{ exact ex13_7_R_topology_containments. }
+claim Hleft1: (finer_than R_upper_limit_topology R_standard_topology /\
+               finer_than R_K_topology R_standard_topology) /\
+              finer_than R_standard_topology R_finite_complement_topology.
+{ exact (andEL ((finer_than R_upper_limit_topology R_standard_topology /\
+                 finer_than R_K_topology R_standard_topology) /\
+                finer_than R_standard_topology R_finite_complement_topology)
+               (finer_than R_standard_topology R_ray_topology)
+               HcontAll). }
+claim Hleft2: finer_than R_upper_limit_topology R_standard_topology /\
+              finer_than R_K_topology R_standard_topology.
+{ exact (andEL (finer_than R_upper_limit_topology R_standard_topology /\
+                finer_than R_K_topology R_standard_topology)
+               (finer_than R_standard_topology R_finite_complement_topology)
+               Hleft1). }
+claim Hsub: R_standard_topology c= R_K_topology.
+{ exact (andER (finer_than R_upper_limit_topology R_standard_topology)
+               (finer_than R_K_topology R_standard_topology)
+               Hleft2). }
+claim HpropStd:
+  forall x y:set, x :e R -> y :e R -> x <> y ->
+    (exists U:set, U :e R_standard_topology /\ x :e U /\ y /:e U) /\
+    (exists V:set, V :e R_standard_topology /\ y :e V /\ x /:e V).
+{ exact (iffEL (T1_space R R_standard_topology)
+               (forall x y:set, x :e R -> y :e R -> x <> y ->
+                 (exists U:set, U :e R_standard_topology /\ x :e U /\ y /:e U) /\
+                 (exists V:set, V :e R_standard_topology /\ y :e V /\ x /:e V))
+               (ex17_15_T1_characterization R R_standard_topology HtopStd)
+               R_standard_topology_T1). }
+apply (iffER (T1_space R R_K_topology)
+             (forall x y:set, x :e R -> y :e R -> x <> y ->
+               (exists U:set, U :e R_K_topology /\ x :e U /\ y /:e U) /\
+               (exists V:set, V :e R_K_topology /\ y :e V /\ x /:e V))
+             (ex17_15_T1_characterization R R_K_topology HtopK)).
+let x y.
+assume HxR: x :e R.
+assume HyR: y :e R.
+assume Hne: x <> y.
+claim Hprop: (exists U:set, U :e R_standard_topology /\ x :e U /\ y /:e U) /\
+             (exists V:set, V :e R_standard_topology /\ y :e V /\ x /:e V).
+{ exact (HpropStd x y HxR HyR Hne). }
+apply andI.
+- claim HexU: exists U:set, U :e R_standard_topology /\ x :e U /\ y /:e U.
+  { exact (andEL (exists U:set, U :e R_standard_topology /\ x :e U /\ y /:e U)
+                 (exists V:set, V :e R_standard_topology /\ y :e V /\ x /:e V)
+                 Hprop). }
+  apply HexU.
+  let U. assume HU.
+  witness U.
+  claim Hpre: U :e R_standard_topology /\ x :e U.
+  { exact (andEL (U :e R_standard_topology /\ x :e U) (y /:e U) HU). }
+  claim HUinStd: U :e R_standard_topology.
+  { exact (andEL (U :e R_standard_topology) (x :e U) Hpre). }
+  claim HxU: x :e U.
+  { exact (andER (U :e R_standard_topology) (x :e U) Hpre). }
+  claim Hnoty: y /:e U.
+  { exact (andER (U :e R_standard_topology /\ x :e U) (y /:e U) HU). }
+  claim HUinK: U :e R_K_topology.
+  { exact (Hsub U HUinStd). }
+  prove U :e R_K_topology /\ x :e U /\ y /:e U.
+  apply andI.
+  - prove U :e R_K_topology /\ x :e U.
+    apply andI.
+    + exact HUinK.
+    + exact HxU.
+  - exact Hnoty.
+- claim HexV: exists V:set, V :e R_standard_topology /\ y :e V /\ x /:e V.
+  { exact (andER (exists U:set, U :e R_standard_topology /\ x :e U /\ y /:e U)
+                 (exists V:set, V :e R_standard_topology /\ y :e V /\ x /:e V)
+                 Hprop). }
+  apply HexV.
+  let V. assume HV.
+  witness V.
+  claim Hpre: V :e R_standard_topology /\ y :e V.
+  { exact (andEL (V :e R_standard_topology /\ y :e V) (x /:e V) HV). }
+  claim HVinStd: V :e R_standard_topology.
+  { exact (andEL (V :e R_standard_topology) (y :e V) Hpre). }
+  claim HyV: y :e V.
+  { exact (andER (V :e R_standard_topology) (y :e V) Hpre). }
+  claim Hnotx: x /:e V.
+  { exact (andER (V :e R_standard_topology /\ y :e V) (x /:e V) HV). }
+  claim HVinK: V :e R_K_topology.
+  { exact (Hsub V HVinStd). }
+  prove V :e R_K_topology /\ y :e V /\ x /:e V.
+  apply andI.
+  - prove V :e R_K_topology /\ y :e V.
+    apply andI.
+    + exact HVinK.
+    + exact HyV.
+  - exact Hnotx.
+Qed.
+
 (** LATEX VERSION: Exercise 16(b): For the same five R topologies, determine which satisfy the Hausdorff and the T1 axioms. **)
 Theorem ex17_16b_Hausdorff_and_T1_for_five_topologies :
   (Hausdorff_space R R_standard_topology /\ T1_space R R_standard_topology) /\
@@ -20460,14 +20663,15 @@ apply andI.
 		        + exact R_upper_limit_topology_Hausdorff.
 		        + exact R_upper_limit_topology_T1.
 		    }
-	    { apply andI.
-	      - admit.
-	      - admit.
-	    }
-  * prove ~Hausdorff_space R R_finite_complement_topology /\ T1_space R R_finite_complement_topology.
-    apply andI.
-    { exact R_finite_complement_not_Hausdorff. }
-    { exact (finite_complement_topology_T1 R). }
+		    { prove Hausdorff_space R R_K_topology /\ T1_space R R_K_topology.
+		      apply andI.
+		      - exact R_K_topology_Hausdorff.
+		      - exact R_K_topology_T1.
+		    }
+	  * prove ~Hausdorff_space R R_finite_complement_topology /\ T1_space R R_finite_complement_topology.
+	    apply andI.
+	    { exact R_finite_complement_not_Hausdorff. }
+	    { exact (finite_complement_topology_T1 R). }
 - prove ~Hausdorff_space R R_ray_topology /\ ~T1_space R R_ray_topology.
   apply andI.
   + exact ray_topology_not_Hausdorff.
