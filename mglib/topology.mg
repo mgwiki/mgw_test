@@ -6592,6 +6592,21 @@ claim H3: (T c= Power X /\ Empty :e T) /\ X :e T.
 exact (andER (T c= Power X /\ Empty :e T) (X :e T) H3).
 Qed.
 
+(** Helper: topology is a family of subsets **)
+Theorem topology_subset_axiom : forall X T:set,
+  topology_on X T -> T c= Power X.
+let X T.
+assume HTx: topology_on X T.
+prove T c= Power X.
+claim H0: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HTx). }
+claim H1: (T c= Power X /\ Empty :e T) /\ X :e T.
+{ exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H0). }
+claim H2: T c= Power X /\ Empty :e T.
+{ exact (andEL (T c= Power X /\ Empty :e T) (X :e T) H1). }
+exact (andEL (T c= Power X) (Empty :e T) H2).
+Qed.
+
 (** Helper: Union of family in topology stays in topology **)
 Theorem topology_union_closed : forall X T UFam:set,
   topology_on X T -> UFam c= T -> Union UFam :e T.
