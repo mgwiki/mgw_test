@@ -17025,6 +17025,18 @@ apply (xm (exists y:set, y :e V)).
   exact (Hne HVEmpty).
 Qed.
 
+(** helper: set with an element is nonempty **)
+Theorem elem_implies_nonempty : forall V y:set, y :e V -> V <> Empty.
+let V y.
+assume Hy: y :e V.
+prove V <> Empty.
+assume HV: V = Empty.
+claim HyE: y :e Empty.
+{ rewrite <- HV.
+  exact Hy. }
+exact (EmptyE y HyE).
+Qed.
+
 (** helper: projection of a rectangle to the first coordinate **)
 Theorem projection_image1_rectangle_nonempty : forall X Y U V:set,
   U c= X ->
@@ -21177,7 +21189,258 @@ let X Y Tx Ty A B.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
 prove closure_of (setprod X Y) (product_topology X Tx Y Ty) (setprod A B) = setprod (closure_of X Tx A) (closure_of Y Ty B).
-admit. (** show both inclusions using basis elements U×V; (x,y) in closure iff x in cl(A), y in cl(B) **)
+set Xprod := setprod X Y.
+set Tprod := product_topology X Tx Y Ty.
+set P := setprod A B.
+set clA := closure_of X Tx A.
+set clB := closure_of Y Ty B.
+apply set_ext.
+- let p. assume Hp: p :e closure_of Xprod Tprod P.
+  prove p :e setprod clA clB.
+  claim HpXprod: p :e Xprod.
+  { exact (SepE1 Xprod (fun p0 => forall W:set, W :e Tprod -> p0 :e W -> W :/\: P <> Empty) p Hp). }
+  claim Hpcl: forall W:set, W :e Tprod -> p :e W -> W :/\: P <> Empty.
+  { exact (SepE2 Xprod (fun p0 => forall W:set, W :e Tprod -> p0 :e W -> W :/\: P <> Empty) p Hp). }
+  apply (setprod_elem_decompose X Y p HpXprod).
+  let x. assume Hxconj.
+  claim HxX: x :e X.
+  { exact (andEL (x :e X) (exists y :e Y, p :e setprod {x} {y}) Hxconj). }
+  apply (andER (x :e X) (exists y :e Y, p :e setprod {x} {y}) Hxconj).
+  let y. assume Hyconj.
+  claim HyY: y :e Y.
+  { exact (andEL (y :e Y) (p :e setprod {x} {y}) Hyconj). }
+  claim HpXYsing: p :e setprod {x} {y}.
+  { exact (andER (y :e Y) (p :e setprod {x} {y}) Hyconj). }
+  (** show x :e clA **)
+  claim HxclA: x :e clA.
+  { prove x :e closure_of X Tx A.
+    claim Hxcond: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+    { let U. assume HU: U :e Tx. assume HxU: x :e U.
+      (** apply closure condition in product to the open rectangle U×Y **)
+      set WY := rectangle_set U Y.
+      claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+      { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+      claim HYopen: Y :e Ty.
+      { exact (topology_has_X Y Ty HTy). }
+      claim HWYsub: WY :e product_subbasis X Tx Y Ty.
+      { prove WY :e product_subbasis X Tx Y Ty.
+        claim HWYV: rectangle_set U Y :e {rectangle_set U V|V :e Ty}.
+        { exact (ReplI Ty (fun V1:set => rectangle_set U V1) Y HYopen). }
+        exact (famunionI Tx (fun U1:set => {rectangle_set U1 V|V :e Ty}) U (rectangle_set U Y) HU HWYV). }
+      claim HWYopen: WY :e Tprod.
+      { exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty)
+                HBasis WY HWYsub). }
+      claim HpWY: p :e WY.
+      { (** {x}×{y} ⊆ U×Y, hence p ∈ U×Y **)
+        claim Hsx: {x} c= U.
+        { exact (singleton_subset x U HxU). }
+        claim Hsy: {y} c= Y.
+        { exact (singleton_subset y Y HyY). }
+        claim Hsub: setprod {x} {y} c= setprod U Y.
+        { exact (setprod_Subq {x} {y} U Y Hsx Hsy). }
+        exact (Hsub p HpXYsing). }
+      claim Hnonemp: WY :/\: P <> Empty.
+      { exact (Hpcl WY HWYopen HpWY). }
+      apply (nonempty_has_element (WY :/\: P) Hnonemp).
+      let q. assume HqInt.
+      (** from q ∈ (U×Y) ∩ (A×B), get a ∈ U∩A **)
+      claim HqWY: q :e WY.
+      { exact (binintersectE1 WY P q HqInt). }
+      claim HqP: q :e P.
+      { exact (binintersectE2 WY P q HqInt). }
+      apply (setprod_elem_decompose A B q HqP).
+      let a. assume Haconj.
+      claim HaA: a :e A.
+      { exact (andEL (a :e A) (exists b :e B, q :e setprod {a} {b}) Haconj). }
+      apply (andER (a :e A) (exists b :e B, q :e setprod {a} {b}) Haconj).
+      let b. assume Hbconj.
+      claim HbB: b :e B.
+      { exact (andEL (b :e B) (q :e setprod {a} {b}) Hbconj). }
+      claim Hqabsing: q :e setprod {a} {b}.
+      { exact (andER (b :e B) (q :e setprod {a} {b}) Hbconj). }
+      claim Hcoords: a :e U /\ b :e Y.
+      { exact (setprod_coords_in a b U Y q Hqabsing HqWY). }
+      claim HaU: a :e U.
+      { exact (andEL (a :e U) (b :e Y) Hcoords). }
+      claim HaUA: a :e U :/\: A.
+      { exact (binintersectI U A a HaU HaA). }
+      prove U :/\: A <> Empty.
+      assume Hempty: U :/\: A = Empty.
+      claim HaE: a :e Empty.
+      { rewrite <- Hempty. exact HaUA. }
+      exact (EmptyE a HaE). }
+    exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x HxX Hxcond). }
+  (** show y :e clB **)
+  claim HyclB: y :e clB.
+  { prove y :e closure_of Y Ty B.
+    claim Hycond: forall V:set, V :e Ty -> y :e V -> V :/\: B <> Empty.
+    { let V. assume HV: V :e Ty. assume HyV: y :e V.
+      set WX := rectangle_set X V.
+      claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+      { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+      claim HXopen: X :e Tx.
+      { exact (topology_has_X X Tx HTx). }
+      claim HWXsub: WX :e product_subbasis X Tx Y Ty.
+      { prove WX :e product_subbasis X Tx Y Ty.
+        claim HWXV: rectangle_set X V :e {rectangle_set X V0|V0 :e Ty}.
+        { exact (ReplI Ty (fun V1:set => rectangle_set X V1) V HV). }
+        exact (famunionI Tx (fun U1:set => {rectangle_set U1 V0|V0 :e Ty}) X (rectangle_set X V) HXopen HWXV). }
+      claim HWXopen: WX :e Tprod.
+      { exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty)
+                HBasis WX HWXsub). }
+      claim HpWX: p :e WX.
+      { claim Hsx: {x} c= X.
+        { exact (singleton_subset x X HxX). }
+        claim Hsy: {y} c= V.
+        { exact (singleton_subset y V HyV). }
+        claim Hsub: setprod {x} {y} c= setprod X V.
+        { exact (setprod_Subq {x} {y} X V Hsx Hsy). }
+        exact (Hsub p HpXYsing). }
+      claim Hnonemp: WX :/\: P <> Empty.
+      { exact (Hpcl WX HWXopen HpWX). }
+      apply (nonempty_has_element (WX :/\: P) Hnonemp).
+      let q. assume HqInt.
+      claim HqWX: q :e WX.
+      { exact (binintersectE1 WX P q HqInt). }
+      claim HqP: q :e P.
+      { exact (binintersectE2 WX P q HqInt). }
+      apply (setprod_elem_decompose A B q HqP).
+      let a. assume Haconj.
+      claim HaA: a :e A.
+      { exact (andEL (a :e A) (exists b :e B, q :e setprod {a} {b}) Haconj). }
+      apply (andER (a :e A) (exists b :e B, q :e setprod {a} {b}) Haconj).
+      let b. assume Hbconj.
+      claim HbB: b :e B.
+      { exact (andEL (b :e B) (q :e setprod {a} {b}) Hbconj). }
+      claim Hqabsing: q :e setprod {a} {b}.
+      { exact (andER (b :e B) (q :e setprod {a} {b}) Hbconj). }
+      claim Hcoords: a :e X /\ b :e V.
+      { exact (setprod_coords_in a b X V q Hqabsing HqWX). }
+      claim HbV: b :e V.
+      { exact (andER (a :e X) (b :e V) Hcoords). }
+      claim HbVB: b :e V :/\: B.
+      { exact (binintersectI V B b HbV HbB). }
+      prove V :/\: B <> Empty.
+      assume Hempty: V :/\: B = Empty.
+      claim HbE: b :e Empty.
+      { rewrite <- Hempty. exact HbVB. }
+      exact (EmptyE b HbE). }
+    exact (SepI Y (fun y0 => forall V:set, V :e Ty -> y0 :e V -> V :/\: B <> Empty) y HyY Hycond). }
+  (** conclude p ∈ clA×clB using {x}×{y} ⊆ clA×clB **)
+  claim Hsx: {x} c= clA.
+  { exact (singleton_subset x clA HxclA). }
+  claim Hsy: {y} c= clB.
+  { exact (singleton_subset y clB HyclB). }
+  claim Hsub: setprod {x} {y} c= setprod clA clB.
+  { exact (setprod_Subq {x} {y} clA clB Hsx Hsy). }
+  exact (Hsub p HpXYsing).
+- let p. assume Hp: p :e setprod clA clB.
+  prove p :e closure_of Xprod Tprod P.
+  claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+  { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+  claim HTprod: topology_on (setprod X Y) Tprod.
+  { exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
+  (** decompose p into x∈clA, y∈clB and p∈{x}×{y} **)
+  apply (setprod_elem_decompose clA clB p Hp).
+  let x. assume Hxconj.
+  claim HxclA: x :e clA.
+  { exact (andEL (x :e clA) (exists y :e clB, p :e setprod {x} {y}) Hxconj). }
+  apply (andER (x :e clA) (exists y :e clB, p :e setprod {x} {y}) Hxconj).
+  let y. assume Hyconj.
+  claim HyclB: y :e clB.
+  { exact (andEL (y :e clB) (p :e setprod {x} {y}) Hyconj). }
+  claim HpXYsing: p :e setprod {x} {y}.
+  { exact (andER (y :e clB) (p :e setprod {x} {y}) Hyconj). }
+  (** show p ∈ X×Y to satisfy closure_of's carrier condition **)
+  claim HclAsubX: clA c= X.
+  { exact (closure_in_space X Tx A HTx). }
+  claim HclBsubY: clB c= Y.
+  { exact (closure_in_space Y Ty B HTy). }
+  claim HpXprod: p :e Xprod.
+  { claim Hsub: setprod clA clB c= setprod X Y.
+    { exact (setprod_Subq clA clB X Y HclAsubX HclBsubY). }
+    exact (Hsub p Hp). }
+  (** main closure condition for p **)
+  claim Hpcond: forall W:set, W :e Tprod -> p :e W -> W :/\: P <> Empty.
+  { let W. assume HW: W :e Tprod. assume HpW: p :e W.
+    (** from openness of W, extract rectangle basis element b containing p, b ⊆ W **)
+    claim HWgen: W :e generated_topology (setprod X Y) (product_subbasis X Tx Y Ty).
+    { exact HW. }
+    claim HWprop: forall p0 :e W, exists b :e product_subbasis X Tx Y Ty, p0 :e b /\ b c= W.
+    { exact (SepE2 (Power (setprod X Y))
+                   (fun U0:set => forall p0 :e U0, exists b :e product_subbasis X Tx Y Ty, p0 :e b /\ b c= U0)
+                   W HWgen). }
+    claim Hexb: exists b :e product_subbasis X Tx Y Ty, p :e b /\ b c= W.
+    { exact (HWprop p HpW). }
+    apply Hexb.
+    let b. assume Hbconj.
+    claim HbSub: b :e product_subbasis X Tx Y Ty.
+    { exact (andEL (b :e product_subbasis X Tx Y Ty) (p :e b /\ b c= W) Hbconj). }
+    claim Hpb: p :e b.
+    { exact (andEL (p :e b) (b c= W) (andER (b :e product_subbasis X Tx Y Ty) (p :e b /\ b c= W) Hbconj)). }
+    claim HbW: b c= W.
+    { exact (andER (p :e b) (b c= W) (andER (b :e product_subbasis X Tx Y Ty) (p :e b /\ b c= W) Hbconj)). }
+    (** decode b as rectangle_set U0 V0 **)
+    apply (famunionE Tx (fun U1:set => {rectangle_set U1 V|V :e Ty}) b HbSub).
+    let U0. assume HU0conj.
+    claim HU0Tx: U0 :e Tx.
+    { exact (andEL (U0 :e Tx) (b :e {rectangle_set U0 V|V :e Ty}) HU0conj). }
+    claim HbInRepl: b :e {rectangle_set U0 V|V :e Ty}.
+    { exact (andER (U0 :e Tx) (b :e {rectangle_set U0 V|V :e Ty}) HU0conj). }
+    apply (ReplE Ty (fun V:set => rectangle_set U0 V) b HbInRepl).
+    let V0. assume HV0conj.
+    claim HV0Ty: V0 :e Ty.
+    { exact (andEL (V0 :e Ty) (b = rectangle_set U0 V0) HV0conj). }
+    claim Hbeq: b = rectangle_set U0 V0.
+    { exact (andER (V0 :e Ty) (b = rectangle_set U0 V0) HV0conj). }
+    claim HpbRect: p :e rectangle_set U0 V0.
+    { rewrite <- Hbeq.
+      exact Hpb. }
+    (** from p ∈ {x}×{y} and p ∈ U0×V0, get x∈U0 and y∈V0 **)
+    claim Hcoords: x :e U0 /\ y :e V0.
+    { exact (setprod_coords_in x y U0 V0 p HpXYsing HpbRect). }
+    claim HxU0: x :e U0.
+    { exact (andEL (x :e U0) (y :e V0) Hcoords). }
+    claim HyV0: y :e V0.
+    { exact (andER (x :e U0) (y :e V0) Hcoords). }
+    (** use x ∈ clA to get U0∩A nonempty **)
+    claim HxclAprop: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+    { exact (SepE2 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x HxclA). }
+    claim HU0Ane: U0 :/\: A <> Empty.
+    { exact (HxclAprop U0 HU0Tx HxU0). }
+    apply (nonempty_has_element (U0 :/\: A) HU0Ane).
+    let a. assume HaUA.
+    claim HaU0: a :e U0.
+    { exact (binintersectE1 U0 A a HaUA). }
+    claim HaA: a :e A.
+    { exact (binintersectE2 U0 A a HaUA). }
+    (** use y ∈ clB to get V0∩B nonempty **)
+    claim HyclBprop: forall V:set, V :e Ty -> y :e V -> V :/\: B <> Empty.
+    { exact (SepE2 Y (fun y0 => forall V:set, V :e Ty -> y0 :e V -> V :/\: B <> Empty) y HyclB). }
+    claim HV0Bne: V0 :/\: B <> Empty.
+    { exact (HyclBprop V0 HV0Ty HyV0). }
+    apply (nonempty_has_element (V0 :/\: B) HV0Bne).
+    let b0. assume HbVB.
+    claim HbV0: b0 :e V0.
+    { exact (binintersectE1 V0 B b0 HbVB). }
+    claim HbB: b0 :e B.
+    { exact (binintersectE2 V0 B b0 HbVB). }
+    (** now (a,b0) ∈ (U0×V0) ⊆ W and (a,b0) ∈ A×B **)
+    set q := (a,b0).
+    claim HqRect: q :e rectangle_set U0 V0.
+    { exact (tuple_2_setprod U0 V0 a HaU0 b0 HbV0). }
+    claim Hqb: q :e b.
+    { rewrite Hbeq.
+      exact HqRect. }
+    claim HqW: q :e W.
+    { exact (HbW q Hqb). }
+    claim HqP: q :e P.
+    { exact (tuple_2_setprod A B a HaA b0 HbB). }
+    set I := W :/\: P.
+    claim HqInt: q :e W :/\: P.
+    { exact (binintersectI W P q HqW HqP). }
+    exact (elem_implies_nonempty (W :/\: P) q HqInt). }
+  exact (SepI Xprod (fun p0 => forall W:set, W :e Tprod -> p0 :e W -> W :/\: P <> Empty) p HpXprod Hpcond).
 Qed.
 
 (** LATEX VERSION: Exercise 10: Order topology is Hausdorff. **)
