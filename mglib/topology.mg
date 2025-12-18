@@ -15998,8 +15998,8 @@ Axiom identity_function_apply : forall X x:set,
   x :e X -> apply_fun {(y,y) | y :e X} x = x.
 
 Definition const_family : set -> set -> set := fun I X => {(i,X)|i :e I}.
-Definition product_component : set -> set -> set := fun Xi i => apply_fun Xi i.
-Definition product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
+Definition product_component : set -> set -> set := fun Xi i => (apply_fun Xi i) 0.
+Definition product_component_topology : set -> set -> set := fun Xi i => (apply_fun Xi i) 1.
 
 (** family of spaces as a family of pairs (X_i, T_i) **) 
 Definition const_space_family : set -> set -> set -> set := fun I X Tx =>
@@ -22793,19 +22793,19 @@ Qed.
 
 (** from §23 Example: product topology on R^ω is connected **) 
 Theorem R_omega_product_connected :
-  connected_space (product_space omega (const_family omega R))
-    (product_topology_full omega (const_family omega R)).
-prove connected_space (product_space omega (const_family omega R))
-    (product_topology_full omega (const_family omega R)).
+  connected_space (product_space omega (const_space_family omega R R_standard_topology))
+    (product_topology_full omega (const_space_family omega R R_standard_topology)).
+prove connected_space (product_space omega (const_space_family omega R R_standard_topology))
+    (product_topology_full omega (const_space_family omega R R_standard_topology)).
 admit. (** countable product of connected spaces connected; cylinder opens have connected fibers; iterative union argument
         aby: open_in_subspace_iff UnionEq Repl_5FEmpty ReplEq ReplE UPairI1 const_family�f conj_myprob_9365_1_20251124_033235 prop_ext_2 In_5Find open_set�f ex13_1_local_open_subset . **)
 Qed.
 
 (** from §23 Example: box topology on R^ω is disconnected **) 
 Theorem R_omega_box_not_connected :
-  ~ connected_space (product_space omega (const_family omega R))
-    (box_topology omega (const_family omega R)).
-prove ~ connected_space (product_space omega (const_family omega R)) (box_topology omega (const_family omega R)).
+  ~ connected_space (product_space omega (const_space_family omega R R_standard_topology))
+    (box_topology omega (const_space_family omega R R_standard_topology)).
+prove ~ connected_space (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)).
 admit. (** separate via {f | f(0) > 0} and {f | f(0) < 0}; both open in box topology **)
 Qed.
 
@@ -23100,11 +23100,11 @@ Qed.
 
 (** from §23 Exercise: components of ℝ^ω in product/uniform/box topologies **) 
 Theorem ex23_Romega_components :
-  component_of (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R)) (const_family omega 0) =
-    product_space omega (const_family omega R) /\
-  component_of (product_space omega (const_family omega R)) (box_topology omega (const_family omega R)) (const_family omega 0) =
-    {f :e product_space omega (const_family omega R) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
-prove component_of (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R)) (const_family omega 0) = product_space omega (const_family omega R) /\ component_of (product_space omega (const_family omega R)) (box_topology omega (const_family omega R)) (const_family omega 0) = {f :e product_space omega (const_family omega R) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
+  component_of (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) (const_family omega 0) =
+    product_space omega (const_space_family omega R R_standard_topology) /\
+  component_of (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)) (const_family omega 0) =
+    {f :e product_space omega (const_space_family omega R R_standard_topology) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
+prove component_of (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) (const_family omega 0) = product_space omega (const_space_family omega R R_standard_topology) /\ component_of (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)) (const_family omega 0) = {f :e product_space omega (const_space_family omega R R_standard_topology) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
 admit. (** product topology: entire space connected; box topology: component consists of functions finite-different from 0 **)
 Qed.
 
@@ -23578,7 +23578,7 @@ Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ 
 (** LATEX VERSION: Countable index set. **)
 Definition countable_index_set : set -> prop := fun I => countable_set I.
 (** LATEX VERSION: Component topology extractor for countable products. **)
-Definition countable_product_component_topology : set -> set -> set := fun Xi i => apply_fun Xi i.
+Definition countable_product_component_topology : set -> set -> set := fun Xi i => (apply_fun Xi i) 1.
 (** LATEX VERSION: Real sequences and uniform metric/topology on R^ω (setup). **)
 (** FIXED: Real sequences are functions omega → R, not subsets of R!
     Was: Power R (set of all subsets of R)
@@ -23921,10 +23921,10 @@ Qed.
 (** from §32 Example 1: uncountable product of R not normal **) 
 (** LATEX VERSION: An uncountable product of ℝ with product topology need not be normal. **)
 Theorem uncountable_product_R_not_normal : forall J:set,
-  uncountable_set J -> ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
+  uncountable_set J -> ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
 let J.
 assume HJ: uncountable_set J.
-prove ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
+prove ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
 admit. (** construct disjoint closed sets that cannot be separated by disjoint open sets; use diagonal argument **)
 Qed.
 
@@ -24039,13 +24039,13 @@ Qed.
 Theorem embedding_via_functions : forall X Tx:set,
   topology_on X Tx -> one_point_sets_closed X Tx ->
   forall F J:set, separating_family_of_functions X Tx F J ->
-    exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_family J R)) Fmap.
+    exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_space_family J R R_standard_topology)) Fmap.
 let X Tx.
 assume HTx: topology_on X Tx.
 assume Hclosed: one_point_sets_closed X Tx.
 let F J.
 assume Hsep: separating_family_of_functions X Tx F J.
-prove exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_family J R)) Fmap.
+prove exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_space_family J R R_standard_topology)) Fmap.
 admit. (** evaluation map Fmap(x) = (f_j(x))_j∈J separates points; gives embedding into product
         aby: conj_myprob_10141_1_20251124_102528 separation_subspace_limit_points ReplSepE . **)
 Qed.
@@ -24054,10 +24054,10 @@ Qed.
 (** LATEX VERSION: Completely regular iff embeds into a Tychonoff cube [0,1]^J. **)
 Theorem completely_regular_iff_embeds_in_cube : forall X Tx:set,
   (completely_regular_space X Tx <->
-    exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_family J unit_interval)) Fmap).
+    exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_space_family J unit_interval (subspace_topology R R_standard_topology unit_interval))) Fmap).
 let X Tx.
 prove (completely_regular_space X Tx <->
-    exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_family J unit_interval)) Fmap).
+    exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_space_family J unit_interval (subspace_topology R R_standard_topology unit_interval))) Fmap).
 admit. (** forward: use separating family to build embedding; reverse: subspace of product inherits complete regularity **)
 Qed.
 
@@ -24324,21 +24324,21 @@ Qed.
 (** from §43 Lemma 43.3: product convergence via projections **) 
 (** LATEX VERSION: Convergence in a product metric topology iff coordinatewise convergence. **)
 Theorem product_sequence_convergence_iff_coordinates : forall X J:set,
-  X = product_space J (const_family J R) ->
+  X = product_space J (const_space_family J R R_standard_topology) ->
   forall seq x:set,
-    converges_to X (product_topology_full J (const_family J R)) seq x <->
+    converges_to X (product_topology_full J (const_space_family J R R_standard_topology)) seq x <->
     (forall j:set, j :e J ->
-    converges_to (product_component (const_family J R) j)
-                   (product_component_topology (const_family J R) j)
+    converges_to (product_component (const_space_family J R R_standard_topology) j)
+                   (product_component_topology (const_space_family J R R_standard_topology) j)
                    (Repl seq (fun s => apply_fun s j))
                    (apply_fun x j)).
 let X J.
-assume HX: X = product_space J (const_family J R).
+assume HX: X = product_space J (const_space_family J R R_standard_topology).
 let seq x.
-prove converges_to X (product_topology_full J (const_family J R)) seq x <->
+prove converges_to X (product_topology_full J (const_space_family J R R_standard_topology)) seq x <->
     (forall j:set, j :e J ->
-    converges_to (product_component (const_family J R) j)
-                   (product_component_topology (const_family J R) j)
+    converges_to (product_component (const_space_family J R R_standard_topology) j)
+                   (product_component_topology (const_space_family J R R_standard_topology) j)
                    (Repl seq (fun s => apply_fun s j))
                    (apply_fun x j)).
 admit. (** convergence in product topology iff projection π_j(seq) → π_j(x) for all j; use subbasis characterization **)
@@ -25746,11 +25746,11 @@ Qed.
 (** from §32 Exercise 5: normality questions for Romega product topologies **)
 (** LATEX VERSION: Is ℝ^ω normal in product topology? In uniform topology? **)
 Theorem ex32_5_Romega_normality_questions :
-  (normal_space (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R)) \/
-   ~ normal_space (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R))) /\
+  (normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) \/
+   ~ normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology))) /\
   (exists Romega Tunif:set,
     (normal_space Romega Tunif \/ ~ normal_space Romega Tunif)).
-prove (normal_space (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R)) \/ ~ normal_space (product_space omega (const_family omega R)) (product_topology_full omega (const_family omega R))) /\ (exists Romega Tunif:set, (normal_space Romega Tunif \/ ~ normal_space Romega Tunif)).
+prove (normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) \/ ~ normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology))) /\ (exists Romega Tunif:set, (normal_space Romega Tunif \/ ~ normal_space Romega Tunif)).
 admit. (** R^omega normal in product topology; uniform topology also normal via metrizability **)
 Qed.
 (** from §32 Exercise 6: completely normal characterization via separated sets **)
@@ -25807,10 +25807,10 @@ Qed.
 (** LATEX VERSION: If J is uncountable, then ℝ^J is not normal. **)
 Theorem ex32_9_uncountable_product_not_normal : forall J:set,
   ~ countable J ->
-  ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
+  ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
 let J.
 assume Huncnt: ~ countable J.
-prove ~ normal_space (product_space J (const_family J R)) (product_topology_full J (const_family J R)).
+prove ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
 admit. (** construct disjoint closed sets that cannot be separated by Jones lemma **)
 Qed.
 
@@ -26000,9 +26000,9 @@ Qed.
 (** from §33 Exercise 9: Romega box topology completely regular **)
 (** LATEX VERSION: ℝ^ω in box topology is completely regular. **)
 Theorem ex33_9_Romega_box_completely_regular :
-  completely_regular_space (product_space omega (const_family omega R))
-                           (box_topology omega (const_family omega R)).
-prove completely_regular_space (product_space omega (const_family omega R)) (box_topology omega (const_family omega R)).
+  completely_regular_space (product_space omega (const_space_family omega R R_standard_topology))
+                           (box_topology omega (const_space_family omega R R_standard_topology)).
+prove completely_regular_space (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)).
 admit. (** each coordinate function continuous; construct separating function by combining coordinate functions **)
 Qed.
 (** from §33 Exercise 10: topological group completely regular **)
@@ -26091,7 +26091,7 @@ Definition ex34_6_check_imbedding_proof : set :=
     exists X Tx f:set,
       p = setprod (setprod X Tx) f /\
       completely_regular_space X Tx /\ Hausdorff_space X Tx /\
-      embedding_of X Tx (power_real omega) (product_topology_full omega (const_family omega R)) f}.
+      embedding_of X Tx (power_real omega) (product_topology_full omega (const_space_family omega R R_standard_topology)) f}.
 (** from §34 Exercise 7: locally metrizable compact Hausdorff implies metrizable **) 
 Definition ex34_7_locally_metrizable_compact_Hausdorff_metrizable : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
