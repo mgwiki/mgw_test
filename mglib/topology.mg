@@ -22305,8 +22305,8 @@ Definition metric_on : set -> set -> prop := fun X d =>
      apply_fun d (x,y) = apply_fun d (y,x)) /\
   (forall x:set, x :e X -> apply_fun d (x,x) = 0) /\
   (forall x y:set, x :e X -> y :e X ->
-     ~(Rlt (apply_fun d (x,y)) 0) /\
-     apply_fun d (x,y) = 0 -> x = y) /\
+     ~(Rlt (apply_fun d (x,y)) 0)
+     /\ (apply_fun d (x,y) = 0 -> x = y)) /\
   (forall x y z:set, x :e X -> y :e X -> z :e X ->
      ~(Rlt (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z)))
            (apply_fun d (x,z)))).
