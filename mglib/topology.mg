@@ -14116,6 +14116,58 @@ Qed.
 (** from §13 Exercise 6: the set K={1/n | n in omega and n not 0} used in the K-topology **)
 (** LATEX VERSION: Let K={1/n : n in N} as a subset of R (excluding n=0). **)
 Definition K_set : set := {inv_nat n|n :e omega :\: {0}}.
+
+(** helper: 0 is not in K_set **)
+Theorem zero_not_in_K_set : 0 /:e K_set.
+assume H0K: 0 :e K_set.
+apply (ReplE (omega :\: {0}) (fun n:set => inv_nat n) 0 H0K).
+let n. assume Hnconj.
+claim HnIn: n :e omega :\: {0}.
+{ exact (andEL (n :e omega :\: {0}) (0 = inv_nat n) Hnconj). }
+claim H0eq: 0 = inv_nat n.
+{ exact (andER (n :e omega :\: {0}) (0 = inv_nat n) Hnconj). }
+claim HnO: n :e omega.
+{ exact (setminusE1 omega {0} n HnIn). }
+claim Hnnot0: n /:e {0}.
+{ exact (setminusE2 omega {0} n HnIn). }
+claim HnNat: nat_p n.
+{ exact (omega_nat_p n HnO). }
+claim HnCase: n = 0 \/ exists k:set, nat_p k /\ n = ordsucc k.
+{ exact (nat_inv n HnNat). }
+claim Hexk: exists k:set, nat_p k /\ n = ordsucc k.
+{ apply (HnCase (exists k:set, nat_p k /\ n = ordsucc k)).
+  - assume Hn0: n = 0.
+    apply FalseE.
+    claim Hnin0: n :e {0}.
+    { rewrite Hn0. exact (SingI 0). }
+    exact (Hnnot0 Hnin0).
+  - assume H. exact H. }
+apply Hexk.
+let k. assume Hkconj.
+claim Hkeq: n = ordsucc k.
+{ exact (andER (nat_p k) (n = ordsucc k) Hkconj). }
+claim HkNat: nat_p k.
+{ exact (andEL (nat_p k) (n = ordsucc k) Hkconj). }
+claim HkOrd: ordinal k.
+{ exact (nat_p_ordinal k HkNat). }
+claim Hpos: 0 < n.
+{ rewrite Hkeq.
+  exact (ordinal_ordsucc_pos k HkOrd). }
+claim HSn: SNo n.
+{ exact (omega_SNo n HnO). }
+claim Hposcase: inv_nat n = recip_SNo_pos n.
+{ exact (recip_SNo_poscase n Hpos). }
+claim HrecipPos: 0 < recip_SNo_pos n.
+{ exact (recip_SNo_pos_is_pos n HSn Hpos). }
+claim HinvPos: 0 < inv_nat n.
+{ rewrite Hposcase.
+  exact HrecipPos. }
+claim H0lt0: 0 < 0.
+{ rewrite H0eq at 2.
+  exact HinvPos. }
+exact ((SNoLt_irref 0) H0lt0).
+Qed.
+
 Definition R_K_basis : set :=
   \/_ a :e R, {open_interval a b :\: K_set|b :e R}.
 
