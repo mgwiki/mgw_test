@@ -21196,40 +21196,10 @@ let X Tx Y Ty.
 assume HX: Hausdorff_space X Tx.
 assume HY: Hausdorff_space Y Ty.
 prove Hausdorff_space (setprod X Y) (product_topology X Tx Y Ty).
-(** Strategy: Given distinct (x1,y1) and (x2,y2):
-    - If x1≠x2: separate with U1×Y and U2×Y where U1,U2 separate x1,x2 in X
-    - If y1≠y2: separate with X×V1 and X×V2 where V1,V2 separate y1,y2 in Y **)
-(** Extract components from Hausdorff definitions **)
-claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
-               HX). }
-claim HTy: topology_on Y Ty.
-{ exact (andEL (topology_on Y Ty)
-               (forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
-               HY). }
-claim HSepX: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
-{ exact (andER (topology_on X Tx)
-               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
-               HX). }
-claim HSepY: forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
-{ exact (andER (topology_on Y Ty)
-               (forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
-               HY). }
-(** Build Hausdorff property for product **)
-claim HTProd: topology_on (setprod X Y) (product_topology X Tx Y Ty).
-{ exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
-prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\
-      (forall p1 p2:set, p1 :e setprod X Y -> p2 :e setprod X Y -> p1 <> p2 ->
-       exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
-                       p1 :e U /\ p2 :e V /\ U :/\: V = Empty).
+apply (Hausdorff_stability X Tx Y Ty).
 apply andI.
-- exact HTProd.
-- let p1 p2. assume Hp1: p1 :e setprod X Y. assume Hp2: p2 :e setprod X Y. assume Hne: p1 <> p2.
-  prove exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
-                        p1 :e U /\ p2 :e V /\ U :/\: V = Empty.
-  (** Need to decompose p1 and p2 as ordered pairs and separate by coordinates **)
-  admit. (** Need: decompose p1=(x1,y1), p2=(x2,y2); case analysis on which coordinate differs; use rectangles **)
+- exact HX.
+- exact HY.
 Qed.
 
 (** LATEX VERSION: Exercise 12: Subspaces of Hausdorff spaces are Hausdorff. **)
