@@ -20425,13 +20425,161 @@ claim HTProd: topology_on (setprod X Y) (product_topology X Tx Y Ty).
 prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\
       (setprod A B c= setprod X Y /\
        exists W :e product_topology X Tx Y Ty, setprod A B = (setprod X Y) :\: W).
-apply andI.
-- exact HTProd.
-- apply andI.
-  + (** A×B ⊆ X×Y **)
-    admit. (** Need: subset property for products **)
-  + (** exists open W such that A×B = (X×Y) \ W **)
-    admit. (** Need: construct W = (X\A)×Y ∪ X×(Y\B), show it's open, show complement equals A×B **)
+	apply andI.
+	- exact HTProd.
+	- apply andI.
+	  + (** A×B ⊆ X×Y **)
+	    exact (setprod_Subq A B X Y HAsub HBsub).
+	  + (** exists open W such that A×B = (X×Y) \ W **)
+	    apply HexU.
+	    let U. assume HU_conj.
+	    claim HUinTx: U :e Tx.
+	    { exact (andEL (U :e Tx) (A = X :\: U) HU_conj). }
+	    claim HAeq: A = X :\: U.
+	    { exact (andER (U :e Tx) (A = X :\: U) HU_conj). }
+	    apply HexV.
+	    let V. assume HV_conj.
+	    claim HVinTy: V :e Ty.
+	    { exact (andEL (V :e Ty) (B = Y :\: V) HV_conj). }
+	    claim HBeq: B = Y :\: V.
+	    { exact (andER (V :e Ty) (B = Y :\: V) HV_conj). }
+	    claim HUsubX: U c= X.
+	    { exact (topology_elem_subset X Tx U HTx HUinTx). }
+	    claim HVsubY: V c= Y.
+	    { exact (topology_elem_subset Y Ty V HTy HVinTy). }
+	    claim HXminusA: X :\: A = U.
+	    { rewrite HAeq at 1.
+	      exact (setminus_setminus_eq X U HUsubX). }
+	    claim HYminusB: Y :\: B = V.
+	    { rewrite HBeq at 1.
+	      exact (setminus_setminus_eq Y V HVsubY). }
+	    set W1 := setprod (X :\: A) Y.
+	    set W2 := setprod X (Y :\: B).
+	    set W := W1 :\/: W2.
+	    witness W.
+	    apply andI.
+	    - (** W is open in product topology **)
+	      claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+	      { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+	      claim HW1sub: W1 :e product_subbasis X Tx Y Ty.
+	      { prove W1 :e product_subbasis X Tx Y Ty.
+	        rewrite HXminusA.
+	        claim HYTy: Y :e Ty.
+	        { exact (topology_has_X Y Ty HTy). }
+	        claim HW1fam: rectangle_set U Y :e {rectangle_set U V0|V0 :e Ty}.
+	        { exact (ReplI Ty (fun V0:set => rectangle_set U V0) Y HYTy). }
+	        exact (famunionI Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) U (rectangle_set U Y) HUinTx HW1fam). }
+	      claim HW2sub: W2 :e product_subbasis X Tx Y Ty.
+	      { prove W2 :e product_subbasis X Tx Y Ty.
+	        rewrite HYminusB.
+	        claim HXTx: X :e Tx.
+	        { exact (topology_has_X X Tx HTx). }
+	        claim HW2fam: rectangle_set X V :e {rectangle_set X V0|V0 :e Ty}.
+	        { exact (ReplI Ty (fun V0:set => rectangle_set X V0) V HVinTy). }
+	        exact (famunionI Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) X (rectangle_set X V) HXTx HW2fam). }
+	      claim HW1open: W1 :e product_topology X Tx Y Ty.
+	      { exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis W1 HW1sub). }
+	      claim HW2open: W2 :e product_topology X Tx Y Ty.
+	      { exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis W2 HW2sub). }
+	      exact (lemma_union_two_open (setprod X Y) (product_topology X Tx Y Ty) W1 W2 HTProd HW1open HW2open).
+	    - (** A×B is complement of W **)
+	      prove setprod A B = setprod X Y :\: W.
+	      apply set_ext.
+	      + let p. assume Hp: p :e setprod A B.
+	        prove p :e setprod X Y :\: W.
+	        claim HpXY: p :e setprod X Y.
+	        { exact ((setprod_Subq A B X Y HAsub HBsub) p Hp). }
+	        claim Hexab: exists x :e A, exists y :e B, p :e setprod {x} {y}.
+	        { exact (setprod_elem_decompose A B p Hp). }
+		        claim HpNotW: p /:e W.
+		        { apply Hexab.
+		          let x. assume Hx_conj.
+		          claim HxA': x :e A.
+		          { exact (andEL (x :e A) (exists y0 :e B, p :e setprod {x} {y0}) Hx_conj). }
+		          claim Hexy: exists y0 :e B, p :e setprod {x} {y0}.
+		          { exact (andER (x :e A) (exists y0 :e B, p :e setprod {x} {y0}) Hx_conj). }
+		          apply Hexy.
+		          let y. assume Hy_conj.
+		          claim HyB: y :e B.
+		          { exact (andEL (y :e B) (p :e setprod {x} {y}) Hy_conj). }
+		          claim Hpsing: p :e setprod {x} {y}.
+		          { exact (andER (y :e B) (p :e setprod {x} {y}) Hy_conj). }
+		          assume HpW: p :e W.
+		          apply (binunionE W1 W2 p HpW).
+		          - assume HpW1: p :e W1.
+		            claim Hxy: x :e (X :\: A) /\ y :e Y.
+		            { exact (setprod_coords_in x y (X :\: A) Y p Hpsing HpW1). }
+		            claim HxXA: x :e X :\: A.
+		            { exact (andEL (x :e X :\: A) (y :e Y) Hxy). }
+		            exact ((setminusE2 X A x HxXA) HxA').
+	          - assume HpW2: p :e W2.
+	            claim Hxy: x :e X /\ y :e (Y :\: B).
+	            { exact (setprod_coords_in x y X (Y :\: B) p Hpsing HpW2). }
+	            claim HyYB: y :e Y :\: B.
+	            { exact (andER (x :e X) (y :e Y :\: B) Hxy). }
+		            exact ((setminusE2 Y B y HyYB) HyB). }
+		        exact (setminusI (setprod X Y) W p HpXY HpNotW).
+	      + let p. assume Hp: p :e setprod X Y :\: W.
+	        prove p :e setprod A B.
+	        claim HpXY: p :e setprod X Y.
+	        { exact (setminusE1 (setprod X Y) W p Hp). }
+	        claim HpNotW: p /:e W.
+	        { exact (setminusE2 (setprod X Y) W p Hp). }
+		        claim Hexxy: exists x :e X, exists y :e Y, p :e setprod {x} {y}.
+		        { exact (setprod_elem_decompose X Y p HpXY). }
+		        apply Hexxy.
+		        let x. assume Hx_conj.
+		        claim HxX: x :e X.
+		        { exact (andEL (x :e X) (exists y0 :e Y, p :e setprod {x} {y0}) Hx_conj). }
+		        claim Hexy: exists y0 :e Y, p :e setprod {x} {y0}.
+		        { exact (andER (x :e X) (exists y0 :e Y, p :e setprod {x} {y0}) Hx_conj). }
+		        apply Hexy.
+		        let y. assume Hy_conj.
+		        claim HyY: y :e Y.
+		        { exact (andEL (y :e Y) (p :e setprod {x} {y}) Hy_conj). }
+		        claim Hpsing: p :e setprod {x} {y}.
+		        { exact (andER (y :e Y) (p :e setprod {x} {y}) Hy_conj). }
+		        claim HxA: x :e A.
+	        { apply (xm (x :e A)).
+	          - assume H. exact H.
+	          - assume HxNotA: ~(x :e A).
+	            claim HxXA: x :e X :\: A.
+	            { exact (setminusI X A x HxX HxNotA). }
+	            claim HxSingSub: {x} c= X :\: A.
+	            { exact (singleton_subset x (X :\: A) HxXA). }
+	            claim HySingSub: {y} c= Y.
+	            { exact (singleton_subset y Y HyY). }
+	            claim HpW1: p :e W1.
+	            { claim Hsub: setprod {x} {y} c= W1.
+	              { exact (setprod_Subq {x} {y} (X :\: A) Y HxSingSub HySingSub). }
+	              exact (Hsub p Hpsing). }
+	            apply FalseE.
+	            exact (HpNotW (binunionI1 W1 W2 p HpW1)). }
+	        claim HyB: y :e B.
+	        { apply (xm (y :e B)).
+	          - assume H. exact H.
+	          - assume HyNotB: ~(y :e B).
+	            claim HyYB: y :e Y :\: B.
+	            { exact (setminusI Y B y HyY HyNotB). }
+	            claim HySingSub: {y} c= Y :\: B.
+	            { exact (singleton_subset y (Y :\: B) HyYB). }
+	            claim HxSingSub: {x} c= X.
+	            { exact (singleton_subset x X HxX). }
+	            claim HpW2: p :e W2.
+	            { claim Hsub: setprod {x} {y} c= W2.
+	              { exact (setprod_Subq {x} {y} X (Y :\: B) HxSingSub HySingSub). }
+	              exact (Hsub p Hpsing). }
+	            apply FalseE.
+	            exact (HpNotW (binunionI2 W1 W2 p HpW2)). }
+	        claim HxSingSubA: {x} c= A.
+	        { exact (singleton_subset x A HxA). }
+	        claim HySingSubB: {y} c= B.
+	        { exact (singleton_subset y B HyB). }
+	        claim HpAB: p :e setprod A B.
+	        { claim Hsub: setprod {x} {y} c= setprod A B.
+	          { exact (setprod_Subq {x} {y} A B HxSingSubA HySingSubB). }
+	          exact (Hsub p Hpsing). }
+	        exact HpAB.
 Qed.
 
 (** LATEX VERSION: Exercise 4: For open U and closed A, U\\A is open and A\\U is closed. **)
