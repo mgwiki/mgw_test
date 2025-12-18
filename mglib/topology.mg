@@ -6626,6 +6626,18 @@ claim HUFamPower: UFam :e Power T.
 exact (HUnionAxiom UFam HUFamPower).
 Qed.
 
+(** Helper: Union axiom using Power membership **)
+Theorem topology_union_closed_pow : forall X T UFam:set,
+  topology_on X T -> UFam :e Power T -> Union UFam :e T.
+let X T UFam.
+assume HTx: topology_on X T.
+assume HUFamPow: UFam :e Power T.
+prove Union UFam :e T.
+claim HUFamSub: UFam c= T.
+{ exact (PowerE T UFam HUFamPow). }
+exact (topology_union_closed X T UFam HTx HUFamSub).
+Qed.
+
 (** Helper: Binary intersection in topology stays in topology **)
 Theorem topology_binintersect_closed : forall X T U V:set,
   topology_on X T -> U :e T -> V :e T -> U :/\: V :e T.
