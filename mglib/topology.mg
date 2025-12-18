@@ -17565,7 +17565,11 @@ Theorem ex16_6_rational_rectangles_basis :
   basis_on (setprod R R) rational_rectangle_basis /\
   generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
 prove basis_on (setprod R R) rational_rectangle_basis /\ generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
-admit. (** every open rectangle contains rational rectangle; every rational rectangle is open; rationals dense in R **)
+apply andI.
+- prove basis_on (setprod R R) rational_rectangle_basis.
+  admit. (** every open rectangle contains rational rectangle; every rational rectangle is open; rationals dense in R **)
+- prove generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
+  admit. (** equality by mutual fineness using generated_topology_finer and R2_standard_basis **)
 Qed.
 
 (** from §16 Exercise 7: convex subset implies interval or ray? **) 
