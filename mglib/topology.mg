@@ -7840,9 +7840,7 @@ Theorem lemma_intersection_two_open : forall X T U V:set,
   U :e T -> V :e T ->
   U :/\: V :e T.
 let X T U V. assume HT HU HV.
-claim Hax_inter : forall U' :e T, forall V' :e T, U' :/\: V' :e T.
-{ exact (andER ((T c= Power X /\ Empty :e T /\ X :e T /\ (forall UFam :e Power T, Union UFam :e T))) (forall U' :e T, forall V' :e T, U' :/\: V' :e T) HT). }
-exact (Hax_inter U HU V HV).
+exact (topology_binintersect_closed X T U V HT HU HV).
 Qed.
 
 (** from §12: alternative naming for topological space **)
