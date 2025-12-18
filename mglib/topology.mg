@@ -6652,6 +6652,18 @@ claim HIntersectAxiom: forall U0 :e T, forall V0 :e T, U0 :/\: V0 :e T.
 exact (HIntersectAxiom U HU V HV).
 Qed.
 
+(** Helper: intersection axiom extracted **)
+Theorem topology_binintersect_axiom : forall X T:set,
+  topology_on X T ->
+  forall U :e T, forall V :e T, U :/\: V :e T.
+let X T.
+assume HTx: topology_on X T.
+prove forall U :e T, forall V :e T, U :/\: V :e T.
+exact (andER ((((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)))
+             (forall U :e T, forall V :e T, U :/\: V :e T)
+             HTx).
+Qed.
+
 (** Helper: Empty set is open in any topology **)
 Theorem Empty_is_open : forall X T:set,
   topology_on X T -> open_in X T Empty.
