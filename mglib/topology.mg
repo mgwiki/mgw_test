@@ -17711,60 +17711,18 @@ apply andI.
         - assume HW0eqU: W0 = U. rewrite HW0eqU. exact HU.
         - assume HW0eqV: W0 = V. rewrite HW0eqV. exact HV. }
       exact (topology_union_closed X Tx (UPair U V) Htop HUPairSub). }
-    witness W.
-    apply andI.
-    * exact HW_open.
-    * (** Prove C ∩ D = X \ W by De Morgan: (X\U) ∩ (X\V) = X \ (U ∪ V) **)
-      prove C :/\: D = X :\: W.
-      apply set_ext.
-      - (** C ∩ D ⊆ X \ W **)
-        let x. assume Hx: x :e C :/\: D.
-        prove x :e X :\: W.
-        claim HxC: x :e C.
-        { exact (binintersectE1 C D x Hx). }
-        claim HxD: x :e D.
-        { exact (binintersectE2 C D x Hx). }
-        claim HxXU: x :e X :\: U.
-        { rewrite <- HCeq. exact HxC. }
-        claim HxXV: x :e X :\: V.
-        { rewrite <- HDeq. exact HxD. }
-        claim HxX: x :e X.
-        { exact (setminusE1 X U x HxXU). }
-        claim HxnotU: x /:e U.
-        { exact (setminusE2 X U x HxXU). }
-        claim HxnotV: x /:e V.
-        { exact (setminusE2 X V x HxXV). }
-        apply setminusI.
-        + exact HxX.
-        + assume HxW: x :e W.
-          apply (binunionE U V x HxW).
-          * assume HxU: x :e U. exact (HxnotU HxU).
-          * assume HxV: x :e V. exact (HxnotV HxV).
-      - (** X \ W ⊆ C ∩ D **)
-        let x. assume Hx: x :e X :\: W.
-        prove x :e C :/\: D.
-        claim HxX: x :e X.
-        { exact (setminusE1 X W x Hx). }
-        claim HxnotW: x /:e W.
-        { exact (setminusE2 X W x Hx). }
-        (** x ∉ U ∪ V means x ∉ U and x ∉ V **)
-        claim HxnotU: x /:e U.
-        { assume HxU: x :e U.
-          apply HxnotW.
-          exact (binunionI1 U V x HxU). }
-        claim HxnotV: x /:e V.
-        { assume HxV: x :e V.
-          apply HxnotW.
-          exact (binunionI2 U V x HxV). }
-        claim HxC: x :e C.
-        { claim HxXU: x :e X :\: U.
-          { apply setminusI. exact HxX. exact HxnotU. }
-          rewrite HCeq. exact HxXU. }
-        claim HxD: x :e D.
-        { claim HxXV: x :e X :\: V.
-          { apply setminusI. exact HxX. exact HxnotV. }
-          rewrite HDeq. exact HxXV. }
-        exact (binintersectI C D x HxC HxD).
+	    witness W.
+	    apply andI.
+	    * exact HW_open.
+	    * (** Prove C ∩ D = X \ W using De Morgan lemma **)
+	      prove C :/\: D = X :\: W.
+	      rewrite HCeq.
+	      rewrite HDeq.
+	      claim HWdef: W = U :\/: V.
+	      { reflexivity. }
+	      rewrite HWdef.
+	      rewrite <- (setminus_binunion_eq_binintersect X U V).
+	      reflexivity.
 Qed.
 
 Theorem closed_closure_eq : forall X Tx C:set,
