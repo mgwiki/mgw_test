@@ -17006,6 +17006,145 @@ Definition projection_image1 : set -> set -> set -> set :=
 Definition projection_image2 : set -> set -> set -> set :=
   fun X Y U => {y :e Y | exists x:set, (x,y) :e U}.
 
+(** helper: nonempty set has an element **)
+Theorem nonempty_has_element : forall V:set, V <> Empty -> exists y:set, y :e V.
+let V. assume Hne: V <> Empty.
+apply (xm (exists y:set, y :e V)).
+- assume Hex. exact Hex.
+- assume Hno: ~(exists y:set, y :e V).
+  claim HVsub: V c= Empty.
+  { let y. assume Hy: y :e V.
+    prove y :e Empty.
+    apply FalseE.
+    claim Hexy: exists z:set, z :e V.
+    { witness y. exact Hy. }
+    exact (Hno Hexy). }
+  claim HVEmpty: V = Empty.
+  { exact (Empty_Subq_eq V HVsub). }
+  apply FalseE.
+  exact (Hne HVEmpty).
+Qed.
+
+(** helper: projection of a rectangle to the first coordinate **)
+Theorem projection_image1_rectangle_nonempty : forall X Y U V:set,
+  U c= X ->
+  V c= Y ->
+  V <> Empty ->
+  projection_image1 X Y (setprod U V) = U.
+let X Y U V.
+assume HUsub: U c= X.
+assume HVsub: V c= Y.
+assume HVne: V <> Empty.
+set y0 := Eps_i (fun y:set => y :e V).
+claim Hexy: exists y:set, y :e V.
+{ exact (nonempty_has_element V HVne). }
+claim Hy0: y0 :e V.
+{ exact (Eps_i_ex (fun y:set => y :e V) Hexy). }
+apply set_ext.
+- let x. assume Hx: x :e projection_image1 X Y (setprod U V).
+  prove x :e U.
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => exists y:set, (x0,y) :e setprod U V) x Hx). }
+  claim Hex: exists y:set, (x,y) :e setprod U V.
+  { exact (SepE2 X (fun x0:set => exists y:set, (x0,y) :e setprod U V) x Hx). }
+  apply Hex.
+  let y. assume Hxy: (x,y) :e setprod U V.
+  claim Hx0: ((x,y) 0) :e U.
+  { exact (ap0_Sigma U (fun _:set => V) (x,y) Hxy). }
+  rewrite <- (tuple_2_0_eq x y).
+  exact Hx0.
+- let x. assume HxU: x :e U.
+  prove x :e projection_image1 X Y (setprod U V).
+  claim HxX: x :e X.
+  { exact (HUsub x HxU). }
+  claim Hpred: exists y:set, (x,y) :e setprod U V.
+  { witness y0.
+    exact (lamI2 U (fun _:set => V) x HxU y0 Hy0). }
+  exact (SepI X (fun x0:set => exists y:set, (x0,y) :e setprod U V) x HxX Hpred).
+Qed.
+
+Theorem projection_image1_rectangle_empty : forall X Y U:set,
+  projection_image1 X Y (setprod U Empty) = Empty.
+let X Y U.
+apply set_ext.
+- let x. assume Hx: x :e projection_image1 X Y (setprod U Empty).
+  prove x :e Empty.
+  claim Hex: exists y:set, (x,y) :e setprod U Empty.
+  { exact (SepE2 X (fun x0:set => exists y:set, (x0,y) :e setprod U Empty) x Hx). }
+  apply Hex.
+  let y. assume Hxy: (x,y) :e setprod U Empty.
+  claim HyEmpty: ((x,y) 1) :e Empty.
+  { exact (ap1_Sigma U (fun _:set => Empty) (x,y) Hxy). }
+  claim HyE: y :e Empty.
+  { prove y :e Empty.
+    rewrite <- (tuple_2_1_eq x y).
+    exact HyEmpty. }
+  apply FalseE.
+  exact (EmptyE y HyE).
+- let x. assume Hx: x :e Empty.
+  apply (EmptyE x Hx).
+Qed.
+
+(** helper: projection of a rectangle to the second coordinate **)
+Theorem projection_image2_rectangle_nonempty : forall X Y U V:set,
+  U c= X ->
+  V c= Y ->
+  U <> Empty ->
+  projection_image2 X Y (setprod U V) = V.
+let X Y U V.
+assume HUsub: U c= X.
+assume HVsub: V c= Y.
+assume HUne: U <> Empty.
+set x0 := Eps_i (fun x:set => x :e U).
+claim Hexx: exists x:set, x :e U.
+{ exact (nonempty_has_element U HUne). }
+claim Hx0: x0 :e U.
+{ exact (Eps_i_ex (fun x:set => x :e U) Hexx). }
+apply set_ext.
+- let y. assume Hy: y :e projection_image2 X Y (setprod U V).
+  prove y :e V.
+  claim HyY: y :e Y.
+  { exact (SepE1 Y (fun y0:set => exists x:set, (x,y0) :e setprod U V) y Hy). }
+  claim Hex: exists x:set, (x,y) :e setprod U V.
+  { exact (SepE2 Y (fun y0:set => exists x:set, (x,y0) :e setprod U V) y Hy). }
+  apply Hex.
+  let x. assume Hxy: (x,y) :e setprod U V.
+  claim Hy1: ((x,y) 1) :e V.
+  { exact (ap1_Sigma U (fun _:set => V) (x,y) Hxy). }
+  rewrite <- (tuple_2_1_eq x y).
+  exact Hy1.
+- let y. assume HyV: y :e V.
+  prove y :e projection_image2 X Y (setprod U V).
+  claim HyY: y :e Y.
+  { exact (HVsub y HyV). }
+  claim Hpred: exists x:set, (x,y) :e setprod U V.
+  { witness x0.
+    exact (lamI2 U (fun _:set => V) x0 Hx0 y HyV). }
+  exact (SepI Y (fun y0:set => exists x:set, (x,y0) :e setprod U V) y HyY Hpred).
+Qed.
+
+Theorem projection_image2_rectangle_empty : forall X Y V:set,
+  projection_image2 X Y (setprod Empty V) = Empty.
+let X Y V.
+apply set_ext.
+- let y. assume Hy: y :e projection_image2 X Y (setprod Empty V).
+  prove y :e Empty.
+  claim Hex: exists x:set, (x,y) :e setprod Empty V.
+  { exact (SepE2 Y (fun y0:set => exists x:set, (x,y0) :e setprod Empty V) y Hy). }
+  apply Hex.
+  let x. assume Hxy: (x,y) :e setprod Empty V.
+  claim HxEmpty: ((x,y) 0) :e Empty.
+  { exact (ap0_Sigma Empty (fun _:set => V) (x,y) Hxy). }
+  claim HxE: x :e Empty.
+  { prove x :e Empty.
+    rewrite <- (tuple_2_0_eq x y).
+    exact HxEmpty. }
+  apply FalseE.
+  exact (EmptyE x HxE).
+- let y. assume Hy: y :e Empty.
+  apply (EmptyE y Hy).
+Qed.
+
 Theorem ex16_4_projections_open : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   forall U:set, U :e product_topology X Tx Y Ty ->
@@ -17016,7 +17155,266 @@ assume HTy: topology_on Y Ty.
 let U.
 assume HU: U :e product_topology X Tx Y Ty.
 prove open_in X Tx (projection_image1 X Y U) /\ open_in Y Ty (projection_image2 X Y U).
-admit. (** projection images of open rectangles are open; unions of open sets are open; π₁(⋃Uᵢ)=⋃π₁(Uᵢ) **)
+apply andI.
+- prove open_in X Tx (projection_image1 X Y U).
+  prove topology_on X Tx /\ projection_image1 X Y U :e Tx.
+  apply andI.
+  + exact HTx.
+  + (** represent U as a union of product subbasis elements **)
+    claim HtopProd: topology_on (setprod X Y) (product_topology X Tx Y Ty).
+    { exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
+    claim HUopen: open_in (setprod X Y) (product_topology X Tx Y Ty) U.
+    { exact (andI (topology_on (setprod X Y) (product_topology X Tx Y Ty)) (U :e product_topology X Tx Y Ty) HtopProd HU). }
+    claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+    { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+    claim HexFam: exists Fam :e Power (product_subbasis X Tx Y Ty), Union Fam = U.
+    { exact (open_sets_as_unions_of_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis U HUopen). }
+    apply HexFam.
+    let Fam. assume HFampair.
+    claim HFamPow: Fam :e Power (product_subbasis X Tx Y Ty).
+    { exact (andEL (Fam :e Power (product_subbasis X Tx Y Ty)) (Union Fam = U) HFampair). }
+    claim HUnionEq: Union Fam = U.
+    { exact (andER (Fam :e Power (product_subbasis X Tx Y Ty)) (Union Fam = U) HFampair). }
+    set P1Fam := {projection_image1 X Y b|b :e Fam}.
+    claim HP1open: open_in X Tx (Union P1Fam).
+    { apply (union_open X Tx P1Fam HTx).
+      let W. assume HW: W :e P1Fam.
+      prove open_in X Tx W.
+      claim Hexb: exists b :e Fam, W = projection_image1 X Y b.
+      { exact (ReplE Fam (fun b0:set => projection_image1 X Y b0) W HW). }
+      apply Hexb.
+      let b. assume Hbpair.
+      claim HbFam: b :e Fam.
+      { exact (andEL (b :e Fam) (W = projection_image1 X Y b) Hbpair). }
+      claim HWeq: W = projection_image1 X Y b.
+      { exact (andER (b :e Fam) (W = projection_image1 X Y b) Hbpair). }
+      claim HbSub: b :e product_subbasis X Tx Y Ty.
+      { exact (PowerE (product_subbasis X Tx Y Ty) Fam HFamPow b HbFam). }
+      claim HexU0: exists U0 :e Tx, b :e {rectangle_set U0 V|V :e Ty}.
+      { exact (famunionE Tx (fun U0:set => {rectangle_set U0 V|V :e Ty}) b HbSub). }
+      apply HexU0.
+      let U0. assume HU0conj.
+      claim HU0Tx: U0 :e Tx.
+      { exact (andEL (U0 :e Tx) (b :e {rectangle_set U0 V|V :e Ty}) HU0conj). }
+      claim HbRepl: b :e {rectangle_set U0 V|V :e Ty}.
+      { exact (andER (U0 :e Tx) (b :e {rectangle_set U0 V|V :e Ty}) HU0conj). }
+      claim HexV0: exists V0 :e Ty, b = rectangle_set U0 V0.
+      { exact (ReplE Ty (fun V0:set => rectangle_set U0 V0) b HbRepl). }
+      apply HexV0.
+      let V0. assume HV0conj.
+      claim HV0Ty: V0 :e Ty.
+      { exact (andEL (V0 :e Ty) (b = rectangle_set U0 V0) HV0conj). }
+      claim Hbeq: b = rectangle_set U0 V0.
+      { exact (andER (V0 :e Ty) (b = rectangle_set U0 V0) HV0conj). }
+      claim HU0subX: U0 c= X.
+      { exact (topology_elem_subset X Tx U0 HTx HU0Tx). }
+      claim HV0subY: V0 c= Y.
+      { exact (topology_elem_subset Y Ty V0 HTy HV0Ty). }
+      apply (xm (V0 = Empty)).
+      - assume HV0E: V0 = Empty.
+        claim HWEmpty: W = Empty.
+        { prove W = Empty.
+          rewrite HWeq.
+          rewrite Hbeq.
+          rewrite HV0E.
+          exact (projection_image1_rectangle_empty X Y U0). }
+        rewrite HWEmpty.
+        exact (andI (topology_on X Tx) (Empty :e Tx) HTx (topology_has_empty X Tx HTx)).
+      - assume HV0NE: ~(V0 = Empty).
+        claim HV0ne: V0 <> Empty.
+        { exact HV0NE. }
+        claim HWU0: W = U0.
+        { prove W = U0.
+          rewrite HWeq.
+          rewrite Hbeq.
+          exact (projection_image1_rectangle_nonempty X Y U0 V0 HU0subX HV0subY HV0ne). }
+        rewrite HWU0.
+        exact (andI (topology_on X Tx) (U0 :e Tx) HTx HU0Tx). }
+    claim HP1inTx: Union P1Fam :e Tx.
+    { exact (andER (topology_on X Tx) (Union P1Fam :e Tx) HP1open). }
+    claim HUnionP1: Union P1Fam = projection_image1 X Y (Union Fam).
+    { apply set_ext.
+      - let x. assume Hx: x :e Union P1Fam.
+        claim HexW: exists W:set, x :e W /\ W :e P1Fam.
+        { exact (UnionE P1Fam x Hx). }
+        apply HexW.
+        let W. assume HWconj.
+        claim HxW: x :e W.
+        { exact (andEL (x :e W) (W :e P1Fam) HWconj). }
+        claim HWPF: W :e P1Fam.
+        { exact (andER (x :e W) (W :e P1Fam) HWconj). }
+        claim Hexb: exists b :e Fam, W = projection_image1 X Y b.
+        { exact (ReplE Fam (fun b0:set => projection_image1 X Y b0) W HWPF). }
+        apply Hexb.
+        let b. assume Hbpair.
+        claim HbFam: b :e Fam.
+        { exact (andEL (b :e Fam) (W = projection_image1 X Y b) Hbpair). }
+        claim HWeq: W = projection_image1 X Y b.
+        { exact (andER (b :e Fam) (W = projection_image1 X Y b) Hbpair). }
+        claim HxP1b: x :e projection_image1 X Y b.
+        { rewrite <- HWeq. exact HxW. }
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun x0:set => exists y:set, (x0,y) :e b) x HxP1b). }
+        claim Hexy: exists y:set, (x,y) :e b.
+        { exact (SepE2 X (fun x0:set => exists y:set, (x0,y) :e b) x HxP1b). }
+        claim Hpred: exists y:set, (x,y) :e Union Fam.
+        { apply Hexy.
+          let y. assume Hxy: (x,y) :e b.
+          claim HbInUnion: (x,y) :e Union Fam.
+          { exact (UnionI Fam (x,y) b Hxy HbFam). }
+          witness y.
+          exact HbInUnion. }
+        exact (SepI X (fun x0:set => exists y:set, (x0,y) :e Union Fam) x HxX Hpred).
+      - let x. assume Hx: x :e projection_image1 X Y (Union Fam).
+        prove x :e Union P1Fam.
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun x0:set => exists y:set, (x0,y) :e Union Fam) x Hx). }
+        claim Hexy: exists y:set, (x,y) :e Union Fam.
+        { exact (SepE2 X (fun x0:set => exists y:set, (x0,y) :e Union Fam) x Hx). }
+        apply Hexy.
+        let y. assume HxyUnion: (x,y) :e Union Fam.
+        apply UnionE_impred Fam (x,y) HxyUnion.
+        let b. assume Hxyb HbFam.
+        claim HbPF: projection_image1 X Y b :e P1Fam.
+        { exact (ReplI Fam (fun b0:set => projection_image1 X Y b0) b HbFam). }
+        claim HxP1b: x :e projection_image1 X Y b.
+        { claim Hpred: exists y0:set, (x,y0) :e b.
+          { witness y.
+            exact Hxyb. }
+          exact (SepI X (fun x0:set => exists y0:set, (x0,y0) :e b) x HxX Hpred). }
+        exact (UnionI P1Fam x (projection_image1 X Y b) HxP1b HbPF). }
+    rewrite <- HUnionEq.
+    rewrite <- HUnionP1.
+    exact HP1inTx.
+- prove open_in Y Ty (projection_image2 X Y U).
+  prove topology_on Y Ty /\ projection_image2 X Y U :e Ty.
+  apply andI.
+  + exact HTy.
+  + claim HtopProd: topology_on (setprod X Y) (product_topology X Tx Y Ty).
+    { exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
+    claim HUopen: open_in (setprod X Y) (product_topology X Tx Y Ty) U.
+    { exact (andI (topology_on (setprod X Y) (product_topology X Tx Y Ty)) (U :e product_topology X Tx Y Ty) HtopProd HU). }
+    claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+    { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+    claim HexFam: exists Fam :e Power (product_subbasis X Tx Y Ty), Union Fam = U.
+    { exact (open_sets_as_unions_of_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis U HUopen). }
+    apply HexFam.
+    let Fam. assume HFampair.
+    claim HFamPow: Fam :e Power (product_subbasis X Tx Y Ty).
+    { exact (andEL (Fam :e Power (product_subbasis X Tx Y Ty)) (Union Fam = U) HFampair). }
+    claim HUnionEq: Union Fam = U.
+    { exact (andER (Fam :e Power (product_subbasis X Tx Y Ty)) (Union Fam = U) HFampair). }
+    set P2Fam := {projection_image2 X Y b|b :e Fam}.
+    claim HP2open: open_in Y Ty (Union P2Fam).
+    { apply (union_open Y Ty P2Fam HTy).
+      let W. assume HW: W :e P2Fam.
+      prove open_in Y Ty W.
+      claim Hexb: exists b :e Fam, W = projection_image2 X Y b.
+      { exact (ReplE Fam (fun b0:set => projection_image2 X Y b0) W HW). }
+      apply Hexb.
+      let b. assume Hbpair.
+      claim HbFam: b :e Fam.
+      { exact (andEL (b :e Fam) (W = projection_image2 X Y b) Hbpair). }
+      claim HWeq: W = projection_image2 X Y b.
+      { exact (andER (b :e Fam) (W = projection_image2 X Y b) Hbpair). }
+      claim HbSub: b :e product_subbasis X Tx Y Ty.
+      { exact (PowerE (product_subbasis X Tx Y Ty) Fam HFamPow b HbFam). }
+      claim HexU0: exists U0 :e Tx, b :e {rectangle_set U0 V|V :e Ty}.
+      { exact (famunionE Tx (fun U0:set => {rectangle_set U0 V|V :e Ty}) b HbSub). }
+      apply HexU0.
+      let U0. assume HU0conj.
+      claim HU0Tx: U0 :e Tx.
+      { exact (andEL (U0 :e Tx) (b :e {rectangle_set U0 V|V :e Ty}) HU0conj). }
+      claim HbRepl: b :e {rectangle_set U0 V|V :e Ty}.
+      { exact (andER (U0 :e Tx) (b :e {rectangle_set U0 V|V :e Ty}) HU0conj). }
+      claim HexV0: exists V0 :e Ty, b = rectangle_set U0 V0.
+      { exact (ReplE Ty (fun V0:set => rectangle_set U0 V0) b HbRepl). }
+      apply HexV0.
+      let V0. assume HV0conj.
+      claim HV0Ty: V0 :e Ty.
+      { exact (andEL (V0 :e Ty) (b = rectangle_set U0 V0) HV0conj). }
+      claim Hbeq: b = rectangle_set U0 V0.
+      { exact (andER (V0 :e Ty) (b = rectangle_set U0 V0) HV0conj). }
+      claim HU0subX: U0 c= X.
+      { exact (topology_elem_subset X Tx U0 HTx HU0Tx). }
+      claim HV0subY: V0 c= Y.
+      { exact (topology_elem_subset Y Ty V0 HTy HV0Ty). }
+      apply (xm (U0 = Empty)).
+      - assume HU0E: U0 = Empty.
+        claim HWEmpty: W = Empty.
+        { prove W = Empty.
+          rewrite HWeq.
+          rewrite Hbeq.
+          rewrite HU0E.
+          exact (projection_image2_rectangle_empty X Y V0). }
+        rewrite HWEmpty.
+        exact (andI (topology_on Y Ty) (Empty :e Ty) HTy (topology_has_empty Y Ty HTy)).
+      - assume HU0NE: ~(U0 = Empty).
+        claim HUne: U0 <> Empty.
+        { exact HU0NE. }
+        claim HWV0: W = V0.
+        { prove W = V0.
+          rewrite HWeq.
+          rewrite Hbeq.
+          exact (projection_image2_rectangle_nonempty X Y U0 V0 HU0subX HV0subY HUne). }
+        rewrite HWV0.
+        exact (andI (topology_on Y Ty) (V0 :e Ty) HTy HV0Ty). }
+    claim HP2inTy: Union P2Fam :e Ty.
+    { exact (andER (topology_on Y Ty) (Union P2Fam :e Ty) HP2open). }
+    claim HUnionP2: Union P2Fam = projection_image2 X Y (Union Fam).
+    { apply set_ext.
+      - let y. assume Hy: y :e Union P2Fam.
+        claim HexW: exists W:set, y :e W /\ W :e P2Fam.
+        { exact (UnionE P2Fam y Hy). }
+        apply HexW.
+        let W. assume HWconj.
+        claim HyW: y :e W.
+        { exact (andEL (y :e W) (W :e P2Fam) HWconj). }
+        claim HWPF: W :e P2Fam.
+        { exact (andER (y :e W) (W :e P2Fam) HWconj). }
+        claim Hexb: exists b :e Fam, W = projection_image2 X Y b.
+        { exact (ReplE Fam (fun b0:set => projection_image2 X Y b0) W HWPF). }
+        apply Hexb.
+        let b. assume Hbpair.
+        claim HbFam: b :e Fam.
+        { exact (andEL (b :e Fam) (W = projection_image2 X Y b) Hbpair). }
+        claim HWeq: W = projection_image2 X Y b.
+        { exact (andER (b :e Fam) (W = projection_image2 X Y b) Hbpair). }
+        claim HyP2b: y :e projection_image2 X Y b.
+        { rewrite <- HWeq. exact HyW. }
+        claim HyY: y :e Y.
+        { exact (SepE1 Y (fun y0:set => exists x:set, (x,y0) :e b) y HyP2b). }
+        claim Hexx: exists x:set, (x,y) :e b.
+        { exact (SepE2 Y (fun y0:set => exists x:set, (x,y0) :e b) y HyP2b). }
+        claim Hpred: exists x:set, (x,y) :e Union Fam.
+        { apply Hexx.
+          let x. assume Hxy: (x,y) :e b.
+          claim HbInUnion: (x,y) :e Union Fam.
+          { exact (UnionI Fam (x,y) b Hxy HbFam). }
+          witness x.
+          exact HbInUnion. }
+        exact (SepI Y (fun y0:set => exists x:set, (x,y0) :e Union Fam) y HyY Hpred).
+      - let y. assume Hy: y :e projection_image2 X Y (Union Fam).
+        prove y :e Union P2Fam.
+        claim HyY: y :e Y.
+        { exact (SepE1 Y (fun y0:set => exists x:set, (x,y0) :e Union Fam) y Hy). }
+        claim Hexx: exists x:set, (x,y) :e Union Fam.
+        { exact (SepE2 Y (fun y0:set => exists x:set, (x,y0) :e Union Fam) y Hy). }
+        apply Hexx.
+        let x. assume HxyUnion: (x,y) :e Union Fam.
+        apply UnionE_impred Fam (x,y) HxyUnion.
+        let b. assume Hxyb HbFam.
+        claim HbPF: projection_image2 X Y b :e P2Fam.
+        { exact (ReplI Fam (fun b0:set => projection_image2 X Y b0) b HbFam). }
+        claim HyP2b: y :e projection_image2 X Y b.
+        { claim Hpred: exists x0:set, (x0,y) :e b.
+          { witness x.
+            exact Hxyb. }
+          exact (SepI Y (fun y0:set => exists x0:set, (x0,y0) :e b) y HyY Hpred). }
+        exact (UnionI P2Fam y (projection_image2 X Y b) HyP2b HbPF). }
+    rewrite <- HUnionEq.
+    rewrite <- HUnionP2.
+    exact HP2inTy.
 Qed.
 
 (** from §16 Exercise 5(a): product topology monotonicity **)
