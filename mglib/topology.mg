@@ -14168,6 +14168,17 @@ claim H0lt0: 0 < 0.
 exact ((SNoLt_irref 0) H0lt0).
 Qed.
 
+(** helper: K_set is a subset of R **)
+Theorem K_set_Subq_R : K_set c= R.
+let x. assume Hx: x :e K_set.
+apply (ReplE_impred (omega :\: {0}) (fun n:set => inv_nat n) x Hx (x :e R)).
+let n. assume HnIn: n :e omega :\: {0}. assume Heq: x = inv_nat n.
+claim HnO: n :e omega.
+{ exact (setminusE1 omega {0} n HnIn). }
+rewrite Heq.
+exact (inv_nat_real n HnO).
+Qed.
+
 Definition R_K_basis : set :=
   \/_ a :e R, {open_interval a b :\: K_set|b :e R}.
 
