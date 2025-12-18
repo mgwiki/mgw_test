@@ -16329,8 +16329,103 @@ assume HTx: topology_on X Tx.
 assume HYsub: Y c= X.
 assume HB: basis_on X B /\ generated_topology X B = Tx.
 prove basis_on Y {b :/\: Y | b :e B} /\ generated_topology Y {b :/\: Y | b :e B} = subspace_topology X Tx Y.
-admit. (** basis elements b∩Y form basis for subspace; any subspace open is union of such basis elements
-	        aby: EmptyAx conj_myprob_8530_1_20251123_230448 open_set�f ex13_1_local_open_subset open_sets_as_unions_of_basis open_in_subspace_iff basis_generates_open_sets In_5Fno2cycle prop_ext_2 . **)
+(** Use basis_refines_topology with C = {b∩Y | b∈B} on the subspace topology. **)
+claim HBasis: basis_on X B.
+{ exact (andEL (basis_on X B) (generated_topology X B = Tx) HB). }
+claim HgenEq: generated_topology X B = Tx.
+{ exact (andER (basis_on X B) (generated_topology X B = Tx) HB). }
+claim HtopSub: topology_on Y (subspace_topology X Tx Y).
+{ exact (subspace_topology_is_topology X Tx Y HTx HYsub). }
+claim HCsub: forall c :e {b :/\: Y | b :e B}, c :e subspace_topology X Tx Y.
+{ let c. assume HcC.
+  claim Hexb: exists b :e B, c = b :/\: Y.
+  { exact (ReplE B (fun b0:set => b0 :/\: Y) c HcC). }
+  apply Hexb.
+  let b. assume Hbpair.
+  claim HbB: b :e B.
+  { exact (andEL (b :e B) (c = b :/\: Y) Hbpair). }
+  claim Hceq: c = b :/\: Y.
+  { exact (andER (b :e B) (c = b :/\: Y) Hbpair). }
+  claim HbGen: b :e generated_topology X B.
+  { exact (generated_topology_contains_basis X B HBasis b HbB). }
+  claim HbTx: b :e Tx.
+  { prove b :e Tx.
+    rewrite <- HgenEq.
+    exact HbGen. }
+  claim HcPowY: c :e Power Y.
+  { apply PowerI Y c.
+    let y. assume Hyc: y :e c.
+    claim HycBY: y :e b :/\: Y.
+    { prove y :e b :/\: Y.
+      rewrite <- Hceq.
+      exact Hyc. }
+    exact (binintersectE2 b Y y HycBY). }
+  claim HcProp: exists V :e Tx, c = V :/\: Y.
+  { witness b.
+    apply andI.
+    - exact HbTx.
+    - exact Hceq. }
+  exact (SepI (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) c HcPowY HcProp). }
+claim Href: forall U :e subspace_topology X Tx Y, forall x :e U,
+  exists Cx :e {b :/\: Y | b :e B}, x :e Cx /\ Cx c= U.
+{ let U. assume HU: U :e subspace_topology X Tx Y.
+  let x. assume HxU: x :e U.
+  claim HUprop: exists V :e Tx, U = V :/\: Y.
+  { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HU). }
+  apply HUprop.
+  let V. assume HVpair.
+  claim HVTx: V :e Tx.
+  { exact (andEL (V :e Tx) (U = V :/\: Y) HVpair). }
+  claim HUeq: U = V :/\: Y.
+  { exact (andER (V :e Tx) (U = V :/\: Y) HVpair). }
+  claim HxVY: x :e V :/\: Y.
+  { rewrite <- HUeq. exact HxU. }
+  claim HxV: x :e V.
+  { exact (binintersectE1 V Y x HxVY). }
+  claim HxY: x :e Y.
+  { exact (binintersectE2 V Y x HxVY). }
+  claim HVGen: V :e generated_topology X B.
+  { prove V :e generated_topology X B.
+    rewrite HgenEq.
+    exact HVTx. }
+  claim HVref: forall z :e V, exists b :e B, z :e b /\ b c= V.
+  { exact (SepE2 (Power X)
+                 (fun U0 : set => forall z0 :e U0, exists b0 :e B, z0 :e b0 /\ b0 c= U0)
+                 V
+                 HVGen). }
+  claim Hexb: exists b :e B, x :e b /\ b c= V.
+  { exact (HVref x HxV). }
+  apply Hexb.
+  let b. assume Hbpair2.
+  claim HbB: b :e B.
+  { exact (andEL (b :e B) (x :e b /\ b c= V) Hbpair2). }
+  claim Hbprop: x :e b /\ b c= V.
+  { exact (andER (b :e B) (x :e b /\ b c= V) Hbpair2). }
+  claim Hxb: x :e b.
+  { exact (andEL (x :e b) (b c= V) Hbprop). }
+  claim HbsubV: b c= V.
+  { exact (andER (x :e b) (b c= V) Hbprop). }
+  set Cx := b :/\: Y.
+  witness Cx.
+  apply andI.
+  - prove Cx :e {b0 :/\: Y | b0 :e B}.
+    exact (ReplI B (fun b0:set => b0 :/\: Y) b HbB).
+  - apply andI.
+    + prove x :e Cx.
+      exact (binintersectI b Y x Hxb HxY).
+    + prove Cx c= U.
+      let y. assume HyCx: y :e Cx.
+      claim Hyb: y :e b.
+      { exact (binintersectE1 b Y y HyCx). }
+      claim HyY: y :e Y.
+      { exact (binintersectE2 b Y y HyCx). }
+      claim HyV: y :e V.
+      { exact (HbsubV y Hyb). }
+      claim HyVY: y :e V :/\: Y.
+      { exact (binintersectI V Y y HyV HyY). }
+      rewrite HUeq.
+      exact HyVY. }
+exact (basis_refines_topology Y (subspace_topology X Tx Y) {b :/\: Y | b :e B} HtopSub HCsub Href).
 Qed.
 
 (** from §16 Lemma 16.2: openness inherited when subspace is open **) 
