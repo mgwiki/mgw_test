@@ -18538,40 +18538,14 @@ claim HDeM: (X :\: U) :/\: (X :\: V) = X :\: (U :\/: V).
         { exact (binunionI2 U V x HxV). }
         exact (HxninUV HxUV). }
 (** So A = X \ (U∪V), and since U,V ∈ Tx, we have U∪V ∈ Tx **)
-claim HUV: U :\/: V :e Tx.
-{ (** U ∪ V = ⋃{U, V}, and {U, V} ⊆ Tx, so by topology_union_closed, Union {U,V} ∈ Tx **)
-  claim HUV_eq: U :\/: V = Union (UPair U V).
-  { apply set_ext.
-    - let x.
-      assume Hx: x :e U :\/: V.
-      prove x :e Union (UPair U V).
-      apply (binunionE U V x Hx).
-      + assume HxU: x :e U.
-        apply (UnionI (UPair U V) x U HxU).
-        exact (UPairI1 U V).
-      + assume HxV: x :e V.
-        apply (UnionI (UPair U V) x V HxV).
-        exact (UPairI2 U V).
-    - let x.
-      assume Hx: x :e Union (UPair U V).
-      prove x :e U :\/: V.
-      apply (UnionE_impred (UPair U V) x Hx (x :e U :\/: V)).
-      let W.
-      assume HxW: x :e W.
-      assume HWin: W :e UPair U V.
-      apply (UPairE W U V HWin).
-      * assume HWeqU: W = U.
-        claim HxU: x :e U.
-        { rewrite <- HWeqU. exact HxW. }
-        exact (binunionI1 U V x HxU).
-      * assume HWeqV: W = V.
-        claim HxV: x :e V.
-        { rewrite <- HWeqV. exact HxW. }
-        exact (binunionI2 U V x HxV). }
-  rewrite HUV_eq.
-  claim HUPairSub: UPair U V c= Tx.
-  { let W.
-    assume HW: W :e UPair U V.
+  claim HUV: U :\/: V :e Tx.
+  { (** U ∪ V = ⋃{U, V}, and {U, V} ⊆ Tx, so by topology_union_closed, Union {U,V} ∈ Tx **)
+    claim HUV_eq: U :\/: V = Union (UPair U V).
+    { exact (binunion_eq_Union_UPair U V). }
+    rewrite HUV_eq.
+    claim HUPairSub: UPair U V c= Tx.
+    { let W.
+      assume HW: W :e UPair U V.
     prove W :e Tx.
     apply (UPairE W U V HW).
     * assume HWeqU: W = U.
