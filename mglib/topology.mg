@@ -6645,9 +6645,8 @@ Theorem topology_union_axiom : forall X T:set,
 let X T.
 assume HTx: topology_on X T.
 prove forall UFam :e Power T, Union UFam :e T.
-claim H0: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
-{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HTx). }
-exact (andER (((T c= Power X /\ Empty :e T) /\ X :e T)) (forall UFam :e Power T, Union UFam :e T) H0).
+let UFam. assume HUFamPow: UFam :e Power T.
+exact (topology_union_closed_pow X T UFam HTx HUFamPow).
 Qed.
 
 (** Helper: Binary intersection in topology stays in topology **)
