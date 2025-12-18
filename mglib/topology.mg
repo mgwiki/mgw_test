@@ -14902,6 +14902,53 @@ apply set_ext.
   exact (setminusI X (A :\/: B) x HxX HxNotAB).
 Qed.
 
+(** from §13: complement of an intersection is union of complements **)
+(** LATEX VERSION: X minus (A intersect B) equals (X minus A) union (X minus B). **)
+Theorem setminus_binintersect_eq_binunion : forall X A B:set,
+  X :\: (A :/\: B) = (X :\: A) :\/: (X :\: B).
+let X A B.
+apply set_ext.
+- let x. assume Hx : x :e X :\: (A :/\: B).
+  prove x :e (X :\: A) :\/: (X :\: B).
+  claim Hxpair : x :e X /\ x /:e (A :/\: B).
+  { exact (setminusE X (A :/\: B) x Hx). }
+  claim HxX : x :e X.
+  { exact (andEL (x :e X) (x /:e (A :/\: B)) Hxpair). }
+  claim HxNotAB : x /:e (A :/\: B).
+  { exact (andER (x :e X) (x /:e (A :/\: B)) Hxpair). }
+  apply (xm (x :e A)).
+  + assume HxA : x :e A.
+    claim HxNotB : x /:e B.
+    { assume HxB : x :e B.
+      claim HxAB : x :e A :/\: B.
+      { exact (binintersectI A B x HxA HxB). }
+      exact (HxNotAB HxAB). }
+    exact (binunionI2 (X :\: A) (X :\: B) x (setminusI X B x HxX HxNotB)).
+  + assume HxNotA : ~(x :e A).
+    exact (binunionI1 (X :\: A) (X :\: B) x (setminusI X A x HxX HxNotA)).
+- let x. assume Hx : x :e (X :\: A) :\/: (X :\: B).
+  prove x :e X :\: (A :/\: B).
+  apply (binunionE (X :\: A) (X :\: B) x Hx).
+  + assume HxXA : x :e X :\: A.
+    claim HxX : x :e X.
+    { exact (setminusE1 X A x HxXA). }
+    claim HxNotAB : x /:e A :/\: B.
+    { assume HxAB : x :e A :/\: B.
+      claim HxA : x :e A.
+      { exact (binintersectE1 A B x HxAB). }
+      exact ((setminusE2 X A x HxXA) HxA). }
+    exact (setminusI X (A :/\: B) x HxX HxNotAB).
+  + assume HxXB : x :e X :\: B.
+    claim HxX : x :e X.
+    { exact (setminusE1 X B x HxXB). }
+    claim HxNotAB : x /:e A :/\: B.
+    { assume HxAB : x :e A :/\: B.
+      claim HxB : x :e B.
+      { exact (binintersectE2 A B x HxAB). }
+      exact ((setminusE2 X B x HxXB) HxB). }
+    exact (setminusI X (A :/\: B) x HxX HxNotAB).
+Qed.
+
 (** from §13: double complement inside X **)
 (** LATEX VERSION: If U is a subset of X then X minus (X minus U) equals U. **)
 Theorem setminus_setminus_eq : forall X U:set,
