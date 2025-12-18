@@ -16671,10 +16671,36 @@ Qed.
 
 (** from §16 Exercise 7: convex subset implies interval or ray? **) 
 (** LATEX VERSION: Exercise 7: Let X be an ordered set. If Y is a proper subset of X that is convex in X, does it follow that Y is an interval or a ray in X. **)
+Definition closed_interval_in : set -> set -> set -> set := fun X a b =>
+  {x :e X | (x = a \/ order_rel X a x) /\ (x = b \/ order_rel X x b)}.
+
+Definition halfopen_interval_left_in : set -> set -> set -> set := fun X a b =>
+  {x :e X | (x = a \/ order_rel X a x) /\ order_rel X x b}.
+
+Definition halfopen_interval_right_in : set -> set -> set -> set := fun X a b =>
+  {x :e X | order_rel X a x /\ (x = b \/ order_rel X x b)}.
+
+Definition closed_ray_upper : set -> set -> set := fun X a =>
+  {x :e X | x = a \/ order_rel X a x}.
+
+Definition closed_ray_lower : set -> set -> set := fun X a =>
+  {x :e X | x = a \/ order_rel X x a}.
+
+Definition interval_in : set -> set -> set -> set -> prop := fun X a b Y =>
+  Y = order_interval X a b
+  \/ Y = halfopen_interval_left_in X a b
+  \/ Y = halfopen_interval_right_in X a b
+  \/ Y = closed_interval_in X a b.
+
+Definition ray_in : set -> set -> set -> prop := fun X a Y =>
+  Y = open_ray_upper X a
+  \/ Y = closed_ray_upper X a
+  \/ Y = open_ray_lower X a
+  \/ Y = closed_ray_lower X a.
+
 Definition interval_or_ray_in : set -> set -> prop := fun X Y =>
-  exists a b:set,
-    a :e X /\ b :e X /\
-    (Y = order_interval X a b \/ Y = open_ray_upper X a \/ Y = open_ray_lower X b).
+  (exists a b:set, a :e X /\ b :e X /\ interval_in X a b Y)
+  \/ (exists a:set, a :e X /\ ray_in X a Y).
 
 (** Counterexample pattern inside Q: points with q^2 < 2 form a convex set with no endpoint in Q. **)
 Definition Q_sqrt2_cut : set := {q :e rational_numbers | mul_SNo q q < 2}.
