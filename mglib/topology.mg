@@ -18985,6 +18985,170 @@ Definition Hausdorff_space : set -> set -> prop := fun X Tx =>
 Definition T1_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ (forall F:set, F c= X -> finite F -> closed_in X Tx F).
 
+(** helper: in a Hausdorff space, the complement of a singleton is open **)
+Theorem Hausdorff_singleton_complement_open : forall X Tx x:set,
+  Hausdorff_space X Tx -> x :e X -> X :\: {x} :e Tx.
+let X Tx x.
+assume HH: Hausdorff_space X Tx.
+assume HxX: x :e X.
+prove X :\: {x} :e Tx.
+claim Htop: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+claim HSep: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+  exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+{ exact (andER (topology_on X Tx)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+(** family of open sets missing x, indexed by points y in X with y<>x **)
+set UFam := {V :e Power X |
+  exists y:set,
+    y :e X /\ y <> x /\ V :e Tx /\ y :e V /\ x /:e V}.
+claim HUFam_sub: UFam c= Tx.
+{ let V. assume HV: V :e UFam.
+  claim HVpred: exists y:set, y :e X /\ y <> x /\ V :e Tx /\ y :e V /\ x /:e V.
+  { exact (SepE2 (Power X)
+                 (fun V0 : set =>
+                   exists y:set, y :e X /\ y <> x /\ V0 :e Tx /\ y :e V0 /\ x /:e V0)
+                 V
+                 HV). }
+  apply HVpred.
+  let y. assume Hy_conj: y :e X /\ y <> x /\ V :e Tx /\ y :e V /\ x /:e V.
+  claim H0: ((y :e X /\ y <> x) /\ V :e Tx) /\ y :e V.
+  { exact (andEL (((y :e X /\ y <> x) /\ V :e Tx) /\ y :e V) (x /:e V) Hy_conj). }
+  claim H1: (y :e X /\ y <> x) /\ V :e Tx.
+  { exact (andEL ((y :e X /\ y <> x) /\ V :e Tx) (y :e V) H0). }
+  exact (andER (y :e X /\ y <> x) (V :e Tx) H1). }
+claim HUnionOpen: Union UFam :e Tx.
+{ exact (topology_union_closed X Tx UFam Htop HUFam_sub). }
+claim HUnionEq: Union UFam = X :\: {x}.
+{ apply set_ext.
+  - let z. assume Hz: z :e Union UFam.
+    prove z :e X :\: {x}.
+    apply (UnionE_impred UFam z Hz (z :e X :\: {x})).
+    let V. assume HzV: z :e V. assume HV: V :e UFam.
+    claim HVpow: V :e Power X.
+    { exact (SepE1 (Power X)
+                   (fun V0 : set =>
+                     exists y:set, y :e X /\ y <> x /\ V0 :e Tx /\ y :e V0 /\ x /:e V0)
+                   V
+                   HV). }
+    claim HVsubX: V c= X.
+    { exact (PowerE X V HVpow). }
+    claim HzX: z :e X.
+    { exact (HVsubX z HzV). }
+    claim HVpred: exists y:set, y :e X /\ y <> x /\ V :e Tx /\ y :e V /\ x /:e V.
+    { exact (SepE2 (Power X)
+                   (fun V0 : set =>
+                     exists y:set, y :e X /\ y <> x /\ V0 :e Tx /\ y :e V0 /\ x /:e V0)
+                   V
+                   HV). }
+	    apply HVpred.
+	    let y. assume Hy_conj: y :e X /\ y <> x /\ V :e Tx /\ y :e V /\ x /:e V.
+	    claim HxNotV: x /:e V.
+	    { exact (andER (((y :e X /\ y <> x) /\ V :e Tx) /\ y :e V) (x /:e V) Hy_conj). }
+	    claim HznotSing: z /:e {x}.
+	    { assume HzSing: z :e {x}.
+	      claim Hzeq: z = x.
+      { exact (SingE x z HzSing). }
+      claim HxV: x :e V.
+      { rewrite <- Hzeq. exact HzV. }
+      exact (HxNotV HxV). }
+    exact (setminusI X {x} z HzX HznotSing).
+  - let z. assume Hz: z :e X :\: {x}.
+    prove z :e Union UFam.
+    claim HzX: z :e X.
+    { exact (setminusE1 X {x} z Hz). }
+    claim HznotSing: z /:e {x}.
+    { exact (setminusE2 X {x} z Hz). }
+    claim Hzneq: z <> x.
+    { assume Hzeq: z = x.
+      claim HzSing: z :e {x}.
+      { rewrite Hzeq. exact (SingI x). }
+      exact (HznotSing HzSing). }
+    claim HexUV: exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ z :e V /\ U :/\: V = Empty.
+    { exact (HSep x z HxX HzX (neq_i_sym z x Hzneq)). }
+    apply HexUV.
+    let U. assume HexV: exists V:set, U :e Tx /\ V :e Tx /\ x :e U /\ z :e V /\ U :/\: V = Empty.
+    apply HexV.
+    let V. assume Hconj: U :e Tx /\ V :e Tx /\ x :e U /\ z :e V /\ U :/\: V = Empty.
+    claim Hconj1: ((U :e Tx /\ V :e Tx) /\ x :e U) /\ z :e V.
+    { exact (andEL (((U :e Tx /\ V :e Tx) /\ x :e U) /\ z :e V) (U :/\: V = Empty) Hconj). }
+    claim HUVempty: U :/\: V = Empty.
+    { exact (andER (((U :e Tx /\ V :e Tx) /\ x :e U) /\ z :e V) (U :/\: V = Empty) Hconj). }
+    claim Hconj2: (U :e Tx /\ V :e Tx) /\ x :e U.
+    { exact (andEL ((U :e Tx /\ V :e Tx) /\ x :e U) (z :e V) Hconj1). }
+    claim HUV1: U :e Tx /\ V :e Tx.
+    { exact (andEL (U :e Tx /\ V :e Tx) (x :e U) Hconj2). }
+    claim HxU: x :e U.
+    { exact (andER (U :e Tx /\ V :e Tx) (x :e U) Hconj2). }
+    claim HVTx: V :e Tx.
+    { exact (andER (U :e Tx) (V :e Tx) HUV1). }
+    claim HzV: z :e V.
+    { exact (andER ((U :e Tx /\ V :e Tx) /\ x :e U) (z :e V) Hconj1). }
+    claim HxNotV: x /:e V.
+    { assume HxV: x :e V.
+      claim HxUV: x :e U :/\: V.
+      { exact (binintersectI U V x HxU HxV). }
+      claim HxEmp: x :e Empty.
+      { rewrite <- HUVempty. exact HxUV. }
+      exact (EmptyE x HxEmp False). }
+    claim HVpow: V :e Power X.
+    { claim HTsub: Tx c= Power X.
+      { exact (topology_subset_axiom X Tx Htop). }
+      exact (HTsub V HVTx). }
+    claim HVin: V :e UFam.
+    { apply (SepI (Power X)
+                  (fun V0 : set =>
+                    exists y:set, y :e X /\ y <> x /\ V0 :e Tx /\ y :e V0 /\ x /:e V0)
+                  V
+                  HVpow).
+      witness z.
+      apply andI.
+      { apply andI.
+        { apply andI.
+          { apply andI.
+            exact HzX.
+            exact Hzneq. }
+          exact HVTx. }
+        exact HzV. }
+      { exact HxNotV. } }
+    exact (UnionI UFam z V HzV HVin).
+}
+rewrite <- HUnionEq.
+exact HUnionOpen.
+Qed.
+
+(** helper: in a Hausdorff space, singletons are closed **)
+Theorem Hausdorff_singletons_closed : forall X Tx x:set,
+  Hausdorff_space X Tx -> x :e X -> closed_in X Tx {x}.
+let X Tx x.
+assume HH: Hausdorff_space X Tx.
+assume HxX: x :e X.
+prove closed_in X Tx {x}.
+claim Htop: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+claim HxSub: {x} c= X.
+{ let y. assume Hy: y :e {x}.
+  claim Hyeq: y = x.
+  { exact (SingE x y Hy). }
+  rewrite Hyeq. exact HxX. }
+claim HUopen: X :\: {x} :e Tx.
+{ exact (Hausdorff_singleton_complement_open X Tx x HH HxX). }
+claim Hclosed: closed_in X Tx (X :\: (X :\: {x})).
+{ exact (closed_of_open_complement X Tx (X :\: {x}) Htop HUopen). }
+claim Heq: X :\: (X :\: {x}) = {x}.
+{ exact (setminus_setminus_eq X {x} HxSub). }
+rewrite <- Heq.
+exact Hclosed.
+Qed.
+
 (** from §17 Theorem 17.8: finite sets closed in Hausdorff **) 
 (** LATEX VERSION: In any Hausdorff space, every finite subset is closed. **)
 Theorem finite_sets_closed_in_Hausdorff : forall X Tx:set,
@@ -18995,34 +19159,26 @@ let F.
 assume HFsub: F c= X.
 assume HF: finite F.
 prove closed_in X Tx F.
-(** Strategy: Prove by cases on finite structure:
-    1. Empty is closed (by empty_is_closed)
-    2. Singletons are closed (by Hausdorff property)
-    3. Binary unions of closed sets are closed
-    Then use induction on finiteness. **)
 claim Htop: topology_on X Tx.
-{ claim HH_def: topology_on X Tx /\ forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
-  { exact HH. }
-  exact (andEL (topology_on X Tx) (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty) HH_def). }
-(** Case 1: F = Empty **)
-apply (xm (F = Empty)).
-- assume HFempty: F = Empty.
-  rewrite HFempty.
-  exact (empty_is_closed X Tx Htop).
-- assume HFnonempty: F <> Empty.
-  (** Case 2: Singleton case **)
-  (** For a singleton {x}, we show X \ {x} is open by showing it's a union of open sets.
-      For each y ∈ X with y ≠ x, Hausdorff gives disjoint opens separating x and y.
-      The union of all such opens containing y gives X \ {x}. **)
-  claim HSaph: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
-  { exact (andER (topology_on X Tx) (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty) HH). }
-  (** General case: Use induction/structural properties of finite sets **)
-  (** Key facts needed:
-      1. Every singleton {x} is closed (by above argument)
-      2. Binary union of closed sets is closed (from closure_union_of_closed pattern)
-      3. Every finite set is a finite union of singletons
-      4. By induction, finite unions of closed sets are closed **)
-  admit. (** Need structural induction on finite sets + union of closed sets lemma **)
+{ exact (andEL (topology_on X Tx)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+claim Hclosed_empty: closed_in X Tx Empty.
+{ exact (empty_is_closed X Tx Htop). }
+claim Hall: forall F0:set, finite F0 -> (F0 c= X -> closed_in X Tx F0).
+{ exact (finite_ind
+           (fun F0:set => F0 c= X -> closed_in X Tx F0)
+           (fun _ => Hclosed_empty)
+           (fun F0 y:set =>
+              fun HFin0 HyNotin IH =>
+                fun HsubUnion =>
+                  union_of_closed_is_closed X Tx F0 {y} Htop
+                    (IH (fun z Hz => HsubUnion z (binunionI1 F0 {y} z Hz)))
+                    (Hausdorff_singletons_closed X Tx y HH
+                      (HsubUnion y (binunionI2 F0 {y} y (SingI y)))))
+         ). }
+exact ((Hall F HF) HFsub).
 Qed.
 
 (** from §17 Theorem 17.9: limit points in T1 spaces have infinite neighborhoods **) 
