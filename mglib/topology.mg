@@ -21357,7 +21357,282 @@ Theorem ex17_13_diagonal_closed_iff_Hausdorff : forall X Tx:set,
 let X Tx.
 assume Htop: topology_on X Tx.
 prove Hausdorff_space X Tx <-> closed_in (setprod X X) (product_topology X Tx X Tx) {(x,x)|x :e X}.
-admit. (** complement of diagonal = {(x,y)|x≠y}; Hausdorff iff each (x,y) has nbhd in complement **)
+apply iffI.
+- assume HH: Hausdorff_space X Tx.
+  prove closed_in (setprod X X) (product_topology X Tx X Tx) {(x,x)|x :e X}.
+  claim HTx: topology_on X Tx.
+  { exact (andEL (topology_on X Tx)
+                 (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                   exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+                 HH). }
+  claim HSep: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+    exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+  { exact (andER (topology_on X Tx)
+                 (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                   exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+                 HH). }
+  set D := {(t,t)|t :e X}.
+  set U := setprod X X :\: D.
+  claim HTprod: topology_on (setprod X X) (product_topology X Tx X Tx).
+  { exact (product_topology_is_topology X Tx X Tx HTx HTx). }
+  claim HDsub: D c= setprod X X.
+  { let p. assume HpD: p :e D.
+	    apply (ReplE X (fun t:set => (t,t)) p HpD).
+	    let x. assume Hxpair.
+	    claim HxX: x :e X.
+	    { exact (andEL (x :e X) (p = (x,x)) Hxpair). }
+	    claim Hpeq: p = (x,x).
+	    { exact (andER (x :e X) (p = (x,x)) Hxpair). }
+	    rewrite Hpeq.
+	    exact (tuple_2_setprod X X x HxX x HxX). }
+  claim HUinProd: U :e product_topology X Tx X Tx.
+  { prove U :e product_topology X Tx X Tx.
+    prove U :e generated_topology (setprod X X) (product_subbasis X Tx X Tx).
+    claim HUPow: U :e Power (setprod X X).
+    { apply PowerI (setprod X X) U.
+      exact (setminus_Subq (setprod X X) D). }
+    claim Hprop: forall p :e U, exists b :e product_subbasis X Tx X Tx, p :e b /\ b c= U.
+    { let p. assume HpU: p :e U.
+      claim HpXY: p :e setprod X X.
+      { exact (setminusE1 (setprod X X) D p HpU). }
+      claim HpnotD: p /:e D.
+      { exact (setminusE2 (setprod X X) D p HpU). }
+      apply (Sigma_E X (fun _ : set => X) p HpXY).
+      let x. assume Hxpair.
+      apply Hxpair.
+      assume HxX Hexy.
+      apply Hexy.
+      let y. assume Hypair.
+      apply Hypair.
+      assume HyX Hpeq.
+      claim Hxy: x <> y.
+      { assume HxyEq: x = y.
+        claim HpInD: p :e D.
+	        { claim Hex: exists t :e X, p = (t,t).
+	          { witness x.
+	            apply andI.
+	            - exact HxX.
+	            - rewrite Hpeq.
+	              rewrite <- HxyEq.
+	              exact (tuple_pair x x). }
+	          exact (iffER (p :e D) (exists t :e X, p = (t,t)) (ReplEq X (fun t:set => (t,t)) p) Hex). }
+        exact (HpnotD HpInD). }
+      claim HexUV: exists U0 V0:set, U0 :e Tx /\ V0 :e Tx /\ x :e U0 /\ y :e V0 /\ U0 :/\: V0 = Empty.
+      { exact (HSep x y HxX HyX Hxy). }
+      apply HexUV.
+      let U0. assume HexV0.
+      apply HexV0.
+      let V0. assume HUV_conj.
+      apply HUV_conj.
+      assume Hleft HUVempty.
+      apply Hleft.
+      assume Hleft2 HyV0.
+      apply Hleft2.
+      assume Hleft3 HxU0.
+      apply Hleft3.
+      assume HU0 HV0.
+      set b := rectangle_set U0 V0.
+      witness b.
+      apply andI.
+      - (** b in product_subbasis **)
+        prove b :e product_subbasis X Tx X Tx.
+        claim HbV: rectangle_set U0 V0 :e {rectangle_set U0 V|V :e Tx}.
+        { exact (ReplI Tx (fun V:set => rectangle_set U0 V) V0 HV0). }
+        exact (famunionI Tx (fun U1:set => {rectangle_set U1 V|V :e Tx}) U0 (rectangle_set U0 V0) HU0 HbV).
+      - apply andI.
+        + (** p in b **)
+          rewrite Hpeq.
+          exact (pair_Sigma U0 (fun _ : set => V0) x HxU0 y HyV0).
+        + (** b subset U **)
+          prove b c= U.
+          let q. assume Hqb: q :e b.
+          prove q :e U.
+          apply setminusI.
+          * (** q in X×X **)
+            claim HU0subX: U0 c= X.
+            { exact (topology_elem_subset X Tx U0 HTx HU0). }
+            claim HV0subX: V0 c= X.
+            { exact (topology_elem_subset X Tx V0 HTx HV0). }
+            exact (setprod_Subq U0 V0 X X HU0subX HV0subX q Hqb).
+          * (** q not in D **)
+            assume HqD: q :e D.
+            apply (ReplE X (fun t:set => (t,t)) q HqD).
+            let z. assume Hzconj.
+            claim HzX: z :e X.
+            { exact (andEL (z :e X) (q = (z,z)) Hzconj). }
+            claim Hqeq: q = (z,z).
+            { exact (andER (z :e X) (q = (z,z)) Hzconj). }
+            claim Hsing: q :e setprod {z} {z}.
+            { rewrite Hqeq.
+              exact (tuple_2_setprod {z} {z} z (SingI z) z (SingI z)). }
+            claim HzUV: z :e U0 /\ z :e V0.
+            { exact (setprod_coords_in z z U0 V0 q Hsing Hqb). }
+            claim HzU0: z :e U0.
+            { exact (andEL (z :e U0) (z :e V0) HzUV). }
+            claim HzV0: z :e V0.
+            { exact (andER (z :e U0) (z :e V0) HzUV). }
+            claim HzInt: z :e U0 :/\: V0.
+            { exact (binintersectI U0 V0 z HzU0 HzV0). }
+            claim HzE: z :e Empty.
+            { rewrite <- HUVempty. exact HzInt. }
+            exact (EmptyE z HzE).
+    }
+    exact (SepI (Power (setprod X X)) (fun U0:set => forall p0 :e U0, exists b :e product_subbasis X Tx X Tx, p0 :e b /\ b c= U0) U HUPow Hprop). }
+  prove topology_on (setprod X X) (product_topology X Tx X Tx) /\ (D c= setprod X X /\ exists W :e product_topology X Tx X Tx, D = setprod X X :\: W).
+  apply andI.
+  - exact HTprod.
+  - apply andI.
+    + exact HDsub.
+    + witness U.
+      apply andI.
+      * exact HUinProd.
+      * (** D = (X×X) \\ U **)
+        prove D = setprod X X :\: U.
+        rewrite (setminus_setminus_eq (setprod X X) D HDsub).
+        reflexivity.
+- assume Hclosed: closed_in (setprod X X) (product_topology X Tx X Tx) {(x,x)|x :e X}.
+  prove Hausdorff_space X Tx.
+  set D := {(t,t)|t :e X}.
+  claim HDsub: D c= setprod X X.
+  { exact (andEL (D c= setprod X X) (exists U :e product_topology X Tx X Tx, D = setprod X X :\: U)
+                 (andER (topology_on (setprod X X) (product_topology X Tx X Tx))
+                        (D c= setprod X X /\ exists U :e product_topology X Tx X Tx, D = setprod X X :\: U)
+                        Hclosed)). }
+  claim HexU: exists U :e product_topology X Tx X Tx, D = setprod X X :\: U.
+  { exact (andER (D c= setprod X X) (exists U :e product_topology X Tx X Tx, D = setprod X X :\: U)
+                 (andER (topology_on (setprod X X) (product_topology X Tx X Tx))
+                        (D c= setprod X X /\ exists U :e product_topology X Tx X Tx, D = setprod X X :\: U)
+                        Hclosed)). }
+  apply HexU.
+  let U. assume HUconj.
+  claim HUopen: U :e product_topology X Tx X Tx.
+  { exact (andEL (U :e product_topology X Tx X Tx) (D = setprod X X :\: U) HUconj). }
+  claim HDeq: D = setprod X X :\: U.
+  { exact (andER (U :e product_topology X Tx X Tx) (D = setprod X X :\: U) HUconj). }
+  claim HUsubXY: U c= setprod X X.
+  { exact (generated_topology_subset (setprod X X) (product_subbasis X Tx X Tx) U HUopen). }
+  claim HcompEq: setprod X X :\: D = U.
+  { rewrite HDeq.
+    exact (setminus_setminus_eq (setprod X X) U HUsubXY). }
+  prove topology_on X Tx /\
+        forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+          exists U0 V0:set, U0 :e Tx /\ V0 :e Tx /\ x1 :e U0 /\ x2 :e V0 /\ U0 :/\: V0 = Empty.
+  apply andI.
+  - exact Htop.
+  - let x1 x2. assume Hx1X: x1 :e X. assume Hx2X: x2 :e X. assume Hx12: x1 <> x2.
+    prove exists U0 V0:set, U0 :e Tx /\ V0 :e Tx /\ x1 :e U0 /\ x2 :e V0 /\ U0 :/\: V0 = Empty.
+	    set p := (x1,x2).
+    claim HpNotD: p /:e D.
+    { assume HpD: p :e D.
+	      apply (ReplE X (fun t:set => (t,t)) p HpD).
+	      let z. assume Hzconj.
+	      claim Hpeq: p = (z,z).
+	      { exact (andER (z :e X) (p = (z,z)) Hzconj). }
+      claim HpSing: p :e setprod {x1} {x2}.
+      { exact (tuple_2_setprod {x1} {x2} x1 (SingI x1) x2 (SingI x2)). }
+      claim HzzIn: (z,z) :e setprod {x1} {x2}.
+      { rewrite <- Hpeq.
+        exact HpSing. }
+      claim HzzSing: (z,z) :e setprod {z} {z}.
+      { exact (tuple_2_setprod {z} {z} z (SingI z) z (SingI z)). }
+      claim HzIn: z :e {x1} /\ z :e {x2}.
+      { exact (setprod_coords_in z z {x1} {x2} (z,z) HzzSing HzzIn). }
+      claim Hzx1: z :e {x1}.
+      { exact (andEL (z :e {x1}) (z :e {x2}) HzIn). }
+      claim Hzx2: z :e {x2}.
+      { exact (andER (z :e {x1}) (z :e {x2}) HzIn). }
+      claim HzEqx1: z = x1.
+      { exact (SingE x1 z Hzx1). }
+      claim HzEqx2: z = x2.
+      { exact (SingE x2 z Hzx2). }
+      claim Hx12eq: x1 = x2.
+      { rewrite <- HzEqx1.
+        rewrite HzEqx2.
+        reflexivity. }
+      exact (Hx12 Hx12eq). }
+	    claim HpInU: p :e U.
+	    { rewrite <- HcompEq.
+	      exact (setminusI (setprod X X) D p
+	              (tuple_2_setprod X X x1 Hx1X x2 Hx2X)
+	              HpNotD). }
+	    claim HUprop: forall z :e U, exists b :e product_subbasis X Tx X Tx, z :e b /\ b c= U.
+	    { exact (SepE2 (Power (setprod X X))
+                   (fun U0:set => forall p0 :e U0, exists b :e product_subbasis X Tx X Tx, p0 :e b /\ b c= U0)
+                   U HUopen). }
+    claim Hexb: exists b :e product_subbasis X Tx X Tx, p :e b /\ b c= U.
+    { exact (HUprop p HpInU). }
+    apply Hexb.
+    let b. assume Hbconj.
+    claim HbSub: b :e product_subbasis X Tx X Tx.
+    { exact (andEL (b :e product_subbasis X Tx X Tx) (p :e b /\ b c= U) Hbconj). }
+    claim Hpb: p :e b.
+    { exact (andEL (p :e b) (b c= U) (andER (b :e product_subbasis X Tx X Tx) (p :e b /\ b c= U) Hbconj)). }
+    claim HbU: b c= U.
+    { exact (andER (p :e b) (b c= U) (andER (b :e product_subbasis X Tx X Tx) (p :e b /\ b c= U) Hbconj)). }
+    (** Decode b as a rectangle U0×V0 **)
+    apply (famunionE Tx (fun U1:set => {rectangle_set U1 V|V :e Tx}) b HbSub).
+    let U0. assume HU0conj.
+    claim HU0Tx: U0 :e Tx.
+    { exact (andEL (U0 :e Tx) (b :e {rectangle_set U0 V|V :e Tx}) HU0conj). }
+    claim HbInRepl: b :e {rectangle_set U0 V|V :e Tx}.
+    { exact (andER (U0 :e Tx) (b :e {rectangle_set U0 V|V :e Tx}) HU0conj). }
+    apply (ReplE Tx (fun V:set => rectangle_set U0 V) b HbInRepl).
+    let V0. assume HV0conj.
+    claim HV0Tx: V0 :e Tx.
+    { exact (andEL (V0 :e Tx) (b = rectangle_set U0 V0) HV0conj). }
+    claim Hbeq: b = rectangle_set U0 V0.
+    { exact (andER (V0 :e Tx) (b = rectangle_set U0 V0) HV0conj). }
+    claim HpbRect: p :e rectangle_set U0 V0.
+    { rewrite <- Hbeq.
+      exact Hpb. }
+    claim HpSing: p :e setprod {x1} {x2}.
+    { exact (tuple_2_setprod {x1} {x2} x1 (SingI x1) x2 (SingI x2)). }
+    claim Hcoords: x1 :e U0 /\ x2 :e V0.
+    { exact (setprod_coords_in x1 x2 U0 V0 p HpSing HpbRect). }
+    claim Hx1U0: x1 :e U0.
+    { exact (andEL (x1 :e U0) (x2 :e V0) Hcoords). }
+    claim Hx2V0: x2 :e V0.
+    { exact (andER (x1 :e U0) (x2 :e V0) Hcoords). }
+    (** Show U0 ∩ V0 = ∅, otherwise diagonal meets b ⊆ U = complement of D **)
+    claim HUVempty: U0 :/\: V0 = Empty.
+    { apply set_ext.
+      - let z. assume Hz: z :e U0 :/\: V0.
+        prove z :e Empty.
+        apply FalseE.
+        claim HzU0: z :e U0.
+        { exact (binintersectE1 U0 V0 z Hz). }
+        claim HzV0: z :e V0.
+        { exact (binintersectE2 U0 V0 z Hz). }
+        claim HzX: z :e X.
+        { exact (topology_elem_subset X Tx U0 Htop HU0Tx z HzU0). }
+	        set q := (z,z).
+        claim HqInb: q :e rectangle_set U0 V0.
+        { exact (tuple_2_setprod U0 V0 z HzU0 z HzV0). }
+        claim HqInb0: q :e b.
+        { rewrite Hbeq.
+          exact HqInb. }
+        claim HqInU: q :e U.
+        { exact (HbU q HqInb0). }
+        claim HqInD: q :e D.
+	        { exact (ReplI X (fun t:set => (t,t)) z HzX). }
+        claim HqNotU: q /:e U.
+        { claim HqXYU: q :e setprod X X :\: U.
+          { rewrite <- HDeq.
+            exact HqInD. }
+          exact (setminusE2 (setprod X X) U q HqXYU). }
+        exact (HqNotU HqInU).
+      - exact (Subq_Empty (U0 :/\: V0)). }
+    witness U0.
+    witness V0.
+    apply andI.
+    - apply andI.
+      + apply andI.
+        * apply andI.
+          { exact HU0Tx. }
+          { exact HV0Tx. }
+        * exact Hx1U0.
+      + exact Hx2V0.
+    - exact HUVempty.
 Qed.
 
 (** LATEX VERSION: In the finite complement topology on R, to what point or points does the sequence x_n = 1/n converge? **)
