@@ -21286,7 +21286,195 @@ Theorem ex17_7_counterexample_union_closure :
     topology_on X Tx /\
     (forall A:set, A :e Fam -> A c= X) /\
     ~ (closure_of X Tx (Union Fam) c= Union {closure_of X Tx A|A :e Fam}).
-admit.
+claim HXomega: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
+witness omega.
+witness (finite_complement_topology omega).
+set X := omega.
+set Tx := finite_complement_topology omega.
+set Fam := {{n}|n :e X :\: {0}}.
+witness Fam.
+prove topology_on X Tx /\ (forall A:set, A :e Fam -> A c= X) /\ ~ (closure_of X Tx (Union Fam) c= Union {closure_of X Tx A|A :e Fam}).
+apply andI.
+- (** topology and subset property **)
+  apply andI.
+  + exact (finite_complement_topology_on X).
+  + (** every member of Fam is a subset of X **)
+    let A. assume HA: A :e Fam.
+    prove A c= X.
+    apply (ReplE (X :\: {0}) (fun n:set => {n}) A HA).
+    let n. assume Hnconj.
+    claim HninX0: n :e X :\: {0}.
+    { exact (andEL (n :e X :\: {0}) (A = {n}) Hnconj). }
+    claim HAeq: A = {n}.
+    { exact (andER (n :e X :\: {0}) (A = {n}) Hnconj). }
+    rewrite HAeq.
+    let x. assume Hx: x :e {n}.
+    claim HxEq: x = n.
+    { exact (SingE n x Hx). }
+    rewrite HxEq.
+    exact (setminusE1 X {0} n HninX0).
+- (** counterexample element: 0 **)
+  prove ~ (closure_of X Tx (Union Fam) c= Union {closure_of X Tx A|A :e Fam}).
+  assume Hsub: closure_of X Tx (Union Fam) c= Union {closure_of X Tx A|A :e Fam}.
+    set ClFam := {closure_of X Tx A|A :e Fam}.
+    claim Htop: topology_on X Tx.
+    { exact (finite_complement_topology_on X). }
+    (** Union Fam = X\\{0} **)
+    claim HUnionEq: Union Fam = X :\: {0}.
+    { apply set_ext.
+      - let x. assume Hx: x :e Union Fam.
+        prove x :e X :\: {0}.
+        apply (UnionE_impred Fam x Hx).
+        let A. assume HxA. assume HAFam.
+        apply (ReplE (X :\: {0}) (fun n:set => {n}) A HAFam).
+        let n. assume Hnconj.
+        claim HninX0: n :e X :\: {0}.
+        { exact (andEL (n :e X :\: {0}) (A = {n}) Hnconj). }
+        claim HAeq: A = {n}.
+        { exact (andER (n :e X :\: {0}) (A = {n}) Hnconj). }
+        claim HxEq: x = n.
+        { claim HxSing: x :e {n}.
+          { rewrite <- HAeq. exact HxA. }
+          exact (SingE n x HxSing). }
+        rewrite HxEq.
+        exact HninX0.
+      - let x. assume Hx: x :e X :\: {0}.
+        prove x :e Union Fam.
+        claim HSingFam: {x} :e Fam.
+        { exact (ReplI (X :\: {0}) (fun n:set => {n}) x Hx). }
+        exact (UnionI Fam x {x} (SingI x) HSingFam).
+    }
+    (** X\\{0} is infinite, so Union Fam is infinite **)
+    claim HsubXX: X c= X.
+    { let x. assume Hx: x :e X. exact Hx. }
+    claim Hatleast: atleastp omega X.
+    { exact (Subq_atleastp omega X HsubXX). }
+    claim HinfX: infinite X.
+    { exact (atleastp_omega_infinite X Hatleast). }
+    claim HinfUnion: infinite (Union Fam).
+    { rewrite HUnionEq.
+      exact (infinite_remove1 X HinfX 0). }
+    (** 0 is in closure(Union Fam) **)
+    claim H0in_closure: 0 :e closure_of X Tx (Union Fam).
+    { apply (iffER (0 :e closure_of X Tx (Union Fam))
+                   (forall U :e Tx, 0 :e U -> U :/\: (Union Fam) <> Empty)
+                   (closure_characterization X Tx (Union Fam) 0 Htop HXomega)).
+      let U. assume HU: U :e Tx. assume H0U: 0 :e U.
+      prove U :/\: (Union Fam) <> Empty.
+      claim HUdata: finite (X :\: U) \/ U = Empty.
+      { exact (SepE2 (Power X) (fun U0:set => finite (X :\: U0) \/ U0 = Empty) U HU). }
+      apply HUdata (U :/\: (Union Fam) <> Empty).
+      - assume HUfin: finite (X :\: U).
+        prove U :/\: (Union Fam) <> Empty.
+        assume Hinter: U :/\: (Union Fam) = Empty.
+        (** show Union Fam ⊆ X\\U, hence finite, contradiction **)
+        claim Hsub: Union Fam c= X :\: U.
+        { let x. assume HxUFam: x :e Union Fam.
+          prove x :e X :\: U.
+          claim HxX: x :e X.
+          { apply (UnionE_impred Fam x HxUFam).
+            let A. assume HxA. assume HAFam.
+            apply (ReplE (X :\: {0}) (fun n:set => {n}) A HAFam).
+            let n. assume Hnconj.
+            claim HninX0: n :e X :\: {0}.
+            { exact (andEL (n :e X :\: {0}) (A = {n}) Hnconj). }
+            claim HAeq: A = {n}.
+            { exact (andER (n :e X :\: {0}) (A = {n}) Hnconj). }
+            claim HxEq: x = n.
+            { claim HxSing: x :e {n}.
+              { rewrite <- HAeq. exact HxA. }
+              exact (SingE n x HxSing). }
+            rewrite HxEq.
+            exact (setminusE1 X {0} n HninX0). }
+          claim HxnotU: x /:e U.
+          { assume HxU: x :e U.
+            claim HxInter: x :e U :/\: (Union Fam).
+            { apply binintersectI.
+              - exact HxU.
+              - exact HxUFam. }
+            claim HxEmpty: x :e Empty.
+            { rewrite <- Hinter. exact HxInter. }
+            exact (EmptyE x HxEmpty). }
+          exact (setminusI X U x HxX HxnotU). }
+        claim HfinUFam: finite (Union Fam).
+        { exact (Subq_finite (X :\: U) HUfin (Union Fam) Hsub). }
+        apply HinfUnion.
+        exact HfinUFam.
+      - assume HUempty: U = Empty.
+        prove U :/\: (Union Fam) <> Empty.
+        assume Hinter: U :/\: (Union Fam) = Empty.
+        claim HUne: U <> Empty.
+        { exact (elem_implies_nonempty U 0 H0U). }
+        apply FalseE.
+        exact (HUne HUempty). }
+    (** 0 is not in the union of the closures **)
+    claim H0not_union_closures: 0 /:e Union ClFam.
+    { assume H0in: 0 :e Union ClFam.
+      apply (UnionE_impred ClFam 0 H0in).
+      let W. assume H0W: 0 :e W. assume HWCl: W :e ClFam.
+      apply (ReplE Fam (fun A:set => closure_of X Tx A) W HWCl).
+      let A. assume HAconj.
+      claim HAFam: A :e Fam.
+      { exact (andEL (A :e Fam) (W = closure_of X Tx A) HAconj). }
+      claim HWeq: W = closure_of X Tx A.
+      { exact (andER (A :e Fam) (W = closure_of X Tx A) HAconj). }
+      claim H0clA: 0 :e closure_of X Tx A.
+      { rewrite <- HWeq. exact H0W. }
+      apply (ReplE (X :\: {0}) (fun n:set => {n}) A HAFam).
+      let n. assume Hnconj.
+      claim HninX0: n :e X :\: {0}.
+      { exact (andEL (n :e X :\: {0}) (A = {n}) Hnconj). }
+      claim HAeq: A = {n}.
+      { exact (andER (n :e X :\: {0}) (A = {n}) Hnconj). }
+      claim HninX: n :e X.
+      { exact (setminusE1 X {0} n HninX0). }
+      claim HSingSub: {n} c= X.
+      { let x. assume Hx: x :e {n}.
+        claim HxEq: x = n.
+        { exact (SingE n x Hx). }
+        rewrite HxEq.
+        exact HninX. }
+      claim Hclosed: closed_in X Tx {n}.
+      { prove topology_on X Tx /\ ({n} c= X /\ exists U :e Tx, {n} = X :\: U).
+        apply andI.
+        - exact Htop.
+        - apply andI.
+          + exact HSingSub.
+          + witness (X :\: {n}).
+            apply andI.
+            * (** X\\{n} is open in the finite complement topology **)
+              claim HUpow: (X :\: {n}) :e Power X.
+              { exact (setminus_In_Power X {n}). }
+              claim HfinComp: finite (X :\: (X :\: {n})).
+              { rewrite (setminus_setminus_eq X {n} HSingSub).
+                exact (Sing_finite n). }
+              exact (SepI (Power X) (fun U0:set => finite (X :\: U0) \/ U0 = Empty)
+                          (X :\: {n})
+                          HUpow
+                          (orIL (finite (X :\: (X :\: {n}))) ((X :\: {n}) = Empty) HfinComp)).
+            * (** {n} = X\\(X\\{n}) **)
+              rewrite (setminus_setminus_eq X {n} HSingSub).
+              reflexivity. }
+      claim Heq_cl: closure_of X Tx {n} = {n}.
+      { exact (closed_closure_eq X Tx {n} Htop Hclosed). }
+      claim H0clSing: 0 :e closure_of X Tx {n}.
+      { rewrite <- HAeq. exact H0clA. }
+      claim H0inSing: 0 :e {n}.
+      { rewrite <- Heq_cl. exact H0clSing. }
+      claim H0eqn: 0 = n.
+      { exact (SingE n 0 H0inSing). }
+      claim Hn0: n = 0.
+      { rewrite <- H0eqn. reflexivity. }
+      claim Hnnot0: n /:e {0}.
+      { exact (setminusE2 X {0} n HninX0). }
+      claim Hnin0: n :e {0}.
+      { rewrite Hn0. exact (SingI 0). }
+      exact (Hnnot0 Hnin0). }
+    (** contradict the assumed subset **)
+    claim H0in_right: 0 :e Union ClFam.
+    { exact (Hsub 0 H0in_closure). }
+    exact (H0not_union_closures H0in_right).
 Qed.
 
 (** from §17 Exercise 8(a): closure of intersection is contained in intersection of closures **)
