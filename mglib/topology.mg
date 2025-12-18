@@ -20293,143 +20293,22 @@ apply iffI.
   + exact Htop.
   + prove forall F:set, F c= X -> finite F -> closed_in X Tx F.
     let F. assume HFsub: F c= X. assume HF: finite F.
-    prove closed_in X Tx F.
-	    (** Strategy: Every finite subset is a finite union of singletons.
-	        Since each singleton is closed and closed sets are closed under finite unions,
-	        F is closed. This requires:
-	        1. Decomposing F as a union of singletons
-	        2. Showing binary/finite unions of closed sets are closed
-	        We prove this by finite induction on F, using closure under binary unions. **)
-	    claim Hclosed_empty: closed_in X Tx Empty.
-	    { prove topology_on X Tx /\ (Empty c= X /\ exists U :e Tx, Empty = X :\: U).
-	      apply andI.
-	      - exact Htop.
-	      - apply andI.
-	        + exact (Subq_Empty X).
-	        + witness X.
-	          apply andI.
-	          * exact (topology_has_X X Tx Htop).
-	          * claim Hdiff_empty : X :\: X = Empty.
-	            { apply Empty_Subq_eq.
-	              let x. assume Hx.
-	              claim Hxin : x :e X.
-	              { exact (setminusE1 X X x Hx). }
-	              claim Hxnot : x /:e X.
-	              { exact (setminusE2 X X x Hx). }
-	              apply FalseE.
-	              exact (Hxnot Hxin).
-	            }
-	            rewrite <- Hdiff_empty.
-	            reflexivity.
-	    }
-	    claim Hclosed_union: forall A B:set, closed_in X Tx A -> closed_in X Tx B -> closed_in X Tx (A :\/: B).
-	    { let A B.
-	      assume HA: closed_in X Tx A.
-	      assume HB: closed_in X Tx B.
-	      prove closed_in X Tx (A :\/: B).
-	      claim HA2: A c= X /\ exists U :e Tx, A = X :\: U.
-	      { exact (andER (topology_on X Tx) (A c= X /\ exists U :e Tx, A = X :\: U) HA). }
-	      claim HB2: B c= X /\ exists V :e Tx, B = X :\: V.
-	      { exact (andER (topology_on X Tx) (B c= X /\ exists V :e Tx, B = X :\: V) HB). }
-	      claim HexU: exists U:set, U :e Tx /\ A = X :\: U.
-	      { exact (andER (A c= X) (exists U :e Tx, A = X :\: U) HA2). }
-	      claim HexV: exists V:set, V :e Tx /\ B = X :\: V.
-	      { exact (andER (B c= X) (exists V :e Tx, B = X :\: V) HB2). }
-	      set U := Eps_i (fun U0:set => U0 :e Tx /\ A = X :\: U0).
-	      set V := Eps_i (fun V0:set => V0 :e Tx /\ B = X :\: V0).
-	      claim HUprop: U :e Tx /\ A = X :\: U.
-	      { exact (Eps_i_ex (fun U0:set => U0 :e Tx /\ A = X :\: U0) HexU). }
-	      claim HVprop: V :e Tx /\ B = X :\: V.
-	      { exact (Eps_i_ex (fun V0:set => V0 :e Tx /\ B = X :\: V0) HexV). }
-	      claim HUopen: U :e Tx.
-	      { exact (andEL (U :e Tx) (A = X :\: U) HUprop). }
-	      claim HVopen: V :e Tx.
-	      { exact (andEL (V :e Tx) (B = X :\: V) HVprop). }
-	      claim HeqA: A = X :\: U.
-	      { exact (andER (U :e Tx) (A = X :\: U) HUprop). }
-	      claim HeqB: B = X :\: V.
-	      { exact (andER (V :e Tx) (B = X :\: V) HVprop). }
-	      claim HWopen: U :/\: V :e Tx.
-	      { exact (topology_binintersect_closed X Tx U V Htop HUopen HVopen). }
-	      prove topology_on X Tx /\ ((A :\/: B) c= X /\ exists W :e Tx, A :\/: B = X :\: W).
-	      apply andI.
-	      - exact Htop.
-	      - apply andI.
-	        + let x. assume Hx: x :e A :\/: B.
-		          prove x :e X.
-		          apply (binunionE A B x Hx).
-		          * assume HxA: x :e A.
-		            claim HxA': x :e X :\: U.
-		            { prove x :e X :\: U.
-		              rewrite <- HeqA.
-		              exact HxA. }
-		            exact (setminusE1 X U x HxA').
-		          * assume HxB: x :e B.
-		            claim HxB': x :e X :\: V.
-		            { prove x :e X :\: V.
-		              rewrite <- HeqB.
-		              exact HxB. }
-		            exact (setminusE1 X V x HxB').
-	        + witness (U :/\: V).
-	          apply andI.
-	          * exact HWopen.
-	          * apply set_ext.
-	            { let x. assume Hx: x :e A :\/: B.
-		              prove x :e X :\: (U :/\: V).
-		              apply (binunionE A B x Hx).
-		              - assume HxA: x :e A.
-		                claim HxA': x :e X :\: U.
-		                { prove x :e X :\: U.
-		                  rewrite <- HeqA.
-		                  exact HxA. }
-		                claim HxX: x :e X.
-		                { exact (setminusE1 X U x HxA'). }
-		                claim HxNotU: x /:e U.
-		                { exact (setminusE2 X U x HxA'). }
-		                claim HxNotUV: x /:e (U :/\: V).
-		                { assume HxUV: x :e U :/\: V.
-		                  exact (HxNotU (binintersectE1 U V x HxUV)). }
-		                exact (setminusI X (U :/\: V) x HxX HxNotUV).
-		              - assume HxB: x :e B.
-		                claim HxB': x :e X :\: V.
-		                { prove x :e X :\: V.
-		                  rewrite <- HeqB.
-		                  exact HxB. }
-		                claim HxX: x :e X.
-		                { exact (setminusE1 X V x HxB'). }
-		                claim HxNotV: x /:e V.
-		                { exact (setminusE2 X V x HxB'). }
-	                claim HxNotUV: x /:e (U :/\: V).
-	                { assume HxUV: x :e U :/\: V.
-	                  exact (HxNotV (binintersectE2 U V x HxUV)). }
-	                exact (setminusI X (U :/\: V) x HxX HxNotUV).
-	            }
-	            { let x. assume Hx: x :e X :\: (U :/\: V).
-	              prove x :e A :\/: B.
-	              claim HxX: x :e X.
-	              { exact (setminusE1 X (U :/\: V) x Hx). }
-	              claim HxNotUV: x /:e (U :/\: V).
-	              { exact (setminusE2 X (U :/\: V) x Hx). }
-	              apply (xm (x :e U)).
-	              - assume HxU: x :e U.
-	                claim HxNotV: x /:e V.
-	                { assume HxV: x :e V.
-	                  claim HxUV: x :e U :/\: V.
-	                  { exact (binintersectI U V x HxU HxV). }
-	                  exact (HxNotUV HxUV). }
-	                apply binunionI2.
-	                rewrite HeqB.
-	                exact (setminusI X V x HxX HxNotV).
-	              - assume HxNotU: ~(x :e U).
-	                apply binunionI1.
-	                rewrite HeqA.
-	                exact (setminusI X U x HxX HxNotU).
-	            }
-	    }
-	    claim Hall: forall F0:set, finite F0 -> (F0 c= X -> closed_in X Tx F0).
-	    { exact (finite_ind
-	               (fun F0:set => F0 c= X -> closed_in X Tx F0)
-	               (fun _ => Hclosed_empty)
+	    prove closed_in X Tx F.
+		    (** Strategy: Every finite subset is a finite union of singletons.
+		        Since each singleton is closed and closed sets are closed under finite unions,
+		        F is closed. This requires:
+		        1. Decomposing F as a union of singletons
+		        2. Showing binary/finite unions of closed sets are closed
+		        We prove this by finite induction on F, using closure under binary unions. **)
+		    claim Hclosed_empty: closed_in X Tx Empty.
+		    { exact (empty_is_closed X Tx Htop). }
+		    claim Hclosed_union: forall A B:set, closed_in X Tx A -> closed_in X Tx B -> closed_in X Tx (A :\/: B).
+		    { let A B. assume HA. assume HB.
+		      exact (union_of_closed_is_closed X Tx A B Htop HA HB). }
+		    claim Hall: forall F0:set, finite F0 -> (F0 c= X -> closed_in X Tx F0).
+		    { exact (finite_ind
+		               (fun F0:set => F0 c= X -> closed_in X Tx F0)
+		               (fun _ => Hclosed_empty)
 	               (fun F0 y:set =>
 	                  fun HFin0 HyNotin IH =>
                     fun HsubUnion =>
