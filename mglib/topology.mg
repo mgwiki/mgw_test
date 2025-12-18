@@ -20906,12 +20906,37 @@ apply andI.
   exact (andI (topology_on X Tx) (A :\: U c= X /\ (exists W :e Tx, A :\: U = X :\: W)) Htop (andI (A :\: U c= X) (exists W :e Tx, A :\: U = X :\: W) HAminusU_sub HPred)).
 Qed.
 
-(** LATEX VERSION: Exercise 5: Closure of (0,1) in order topology on X equals (0,1). **)
-Theorem ex17_5_closure_of_interval_in_order_topology : forall X:set,
-  closure_of X (order_topology X) (open_interval 0 1) = open_interval 0 1.
-let X.
-prove closure_of X (order_topology X) (open_interval 0 1) = open_interval 0 1.
-admit. (** (0,1) is already open in order topology; open sets are their own closures if they equal X **)
+(** LATEX VERSION: Exercise 5: Let X be an ordered set in the order topology. Show that cl((a,b)) c= [a,b]. Under what conditions does equality hold **)
+Theorem ex17_5_closure_of_interval_in_order_topology : forall X a b:set,
+  closure_of X (order_topology X) (order_interval X a b) c= closed_interval_in X a b.
+let X a b.
+prove closure_of X (order_topology X) (order_interval X a b) c= closed_interval_in X a b.
+admit.
+Qed.
+
+(** Helper definition for Exercise 5: no immediate successor and predecessor endpoints **)
+Definition no_immediate_successor : set -> set -> prop := fun X a =>
+  forall c:set, c :e X -> order_rel X a c ->
+    exists x:set, x :e X /\ order_rel X a x /\ order_rel X x c.
+
+Definition no_immediate_predecessor : set -> set -> prop := fun X b =>
+  forall c:set, c :e X -> order_rel X c b ->
+    exists x:set, x :e X /\ order_rel X c x /\ order_rel X x b.
+
+(** LATEX VERSION: Exercise 5: Equality holds when the endpoints are limit points of (a,b) from within X, e.g. in a dense order without gaps **)
+Theorem ex17_5_closure_of_interval_eq_conditions : forall X a b:set,
+  a :e X -> b :e X -> order_rel X a b ->
+  no_immediate_successor X a ->
+  no_immediate_predecessor X b ->
+  closure_of X (order_topology X) (order_interval X a b) = closed_interval_in X a b.
+let X a b.
+assume Ha: a :e X.
+assume Hb: b :e X.
+assume Hab: order_rel X a b.
+assume Hsucc: no_immediate_successor X a.
+assume Hpred: no_immediate_predecessor X b.
+prove closure_of X (order_topology X) (order_interval X a b) = closed_interval_in X a b.
+admit.
 Qed.
 
 (** LATEX VERSION: Exercise 6: Closure is idempotent and closed; closure(A) is closed. **)
