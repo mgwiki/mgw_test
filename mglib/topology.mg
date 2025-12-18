@@ -6638,6 +6638,18 @@ claim HUFamSub: UFam c= T.
 exact (topology_union_closed X T UFam HTx HUFamSub).
 Qed.
 
+(** Helper: union axiom extracted **)
+Theorem topology_union_axiom : forall X T:set,
+  topology_on X T ->
+  forall UFam :e Power T, Union UFam :e T.
+let X T.
+assume HTx: topology_on X T.
+prove forall UFam :e Power T, Union UFam :e T.
+claim H0: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HTx). }
+exact (andER (((T c= Power X /\ Empty :e T) /\ X :e T)) (forall UFam :e Power T, Union UFam :e T) H0).
+Qed.
+
 (** Helper: Binary intersection in topology stays in topology **)
 Theorem topology_binintersect_closed : forall X T U V:set,
   topology_on X T -> U :e T -> V :e T -> U :/\: V :e T.
