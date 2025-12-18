@@ -20939,8 +20939,9 @@ prove closure_of X (order_topology X) (order_interval X a b) = closed_interval_i
 admit.
 Qed.
 
-(** LATEX VERSION: Exercise 6: Closure is idempotent and closed; closure(A) is closed. **)
-Theorem ex17_6_closure_properties : forall X Tx A:set,
+(** Helper: closure is idempotent and closed **)
+(** LATEX VERSION: Closure is closed and idempotent: cl(cl(A)) = cl(A), and cl(A) is closed **)
+Theorem closure_idempotent_and_closed : forall X Tx A:set,
   topology_on X Tx ->
   closure_of X Tx (closure_of X Tx A) = closure_of X Tx A /\
   closed_in X Tx (closure_of X Tx A).
@@ -21124,20 +21125,80 @@ apply andI.
   exact (closure_is_closed X Tx (A :/\: X) Htop HAX_sub).
 Qed.
 
-(** LATEX VERSION: Exercise 7: Show union being closed does not imply each set is closed. **)
-Theorem ex17_7_counterexample_union_closure : forall X Tx A B:set,
-  topology_on X Tx ->
-  closed_in X Tx (A :\/: B) ->
-  ~ (closed_in X Tx A /\ closed_in X Tx B).
+(** from §17 Exercise 6(a): monotonicity of closure **)
+(** LATEX VERSION: If A c= B then cl(A) c= cl(B). **)
+Theorem ex17_6a_closure_monotone : forall X Tx A B:set,
+  topology_on X Tx -> A c= B -> B c= X -> closure_of X Tx A c= closure_of X Tx B.
 let X Tx A B.
 assume Htop: topology_on X Tx.
-assume HAB: closed_in X Tx (A :\/: B).
-prove ~ (closed_in X Tx A /\ closed_in X Tx B).
-admit. (** counterexample: A = (-∞,0], B = [0,∞) in R\{0}; union is R\{0}, neither part closed **)
+assume HAB: A c= B.
+assume HB: B c= X.
+prove closure_of X Tx A c= closure_of X Tx B.
+exact (closure_monotone X Tx A B Htop HAB HB).
 Qed.
 
-(** LATEX VERSION: Exercise 8: Relation between closure of intersections and intersection of closures. **)
-Theorem ex17_8_closure_intersection_questions : forall X Tx A B:set,
+(** from §17 Exercise 6(b): closure of a union **)
+(** LATEX VERSION: cl(A :\/: B) = cl(A) :\/: cl(B). **)
+Theorem ex17_6b_closure_binunion : forall X Tx A B:set,
+  topology_on X Tx -> A c= X -> B c= X ->
+  closure_of X Tx (A :\/: B) = closure_of X Tx A :\/: closure_of X Tx B.
+let X Tx A B.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+assume HB: B c= X.
+prove closure_of X Tx (A :\/: B) = closure_of X Tx A :\/: closure_of X Tx B.
+admit.
+Qed.
+
+(** from §17 Exercise 6(c): closure of an arbitrary union contains union of closures **)
+(** LATEX VERSION: cl(Union A_alpha) c=?; always have cl(Union A_alpha) c>= Union cl(A_alpha). **)
+Theorem ex17_6c_closure_Union_contains_Union_closures : forall X Tx Fam:set,
+  topology_on X Tx ->
+  (forall A:set, A :e Fam -> A c= X) ->
+  Union {closure_of X Tx A|A :e Fam} c= closure_of X Tx (Union Fam).
+let X Tx Fam.
+assume Htop: topology_on X Tx.
+assume HFsub: forall A:set, A :e Fam -> A c= X.
+prove Union {closure_of X Tx A|A :e Fam} c= closure_of X Tx (Union Fam).
+set ClFam := {closure_of X Tx A|A :e Fam}.
+claim HUnionSubX: Union Fam c= X.
+{ let x. assume Hx: x :e Union Fam.
+  apply (UnionE_impred Fam x Hx).
+  let A. assume HxA. assume HAFam.
+  exact ((HFsub A HAFam) x HxA). }
+let x. assume Hx: x :e Union ClFam.
+prove x :e closure_of X Tx (Union Fam).
+apply (UnionE_impred ClFam x Hx).
+let W. assume HxW. assume HWClFam.
+apply (ReplE Fam (fun A:set => closure_of X Tx A) W HWClFam).
+let A. assume HAconj.
+claim HAFam: A :e Fam.
+{ exact (andEL (A :e Fam) (W = closure_of X Tx A) HAconj). }
+claim HWeq: W = closure_of X Tx A.
+{ exact (andER (A :e Fam) (W = closure_of X Tx A) HAconj). }
+claim HxclA: x :e closure_of X Tx A.
+{ rewrite <- HWeq. exact HxW. }
+claim HASubUnion: A c= Union Fam.
+{ let y. assume Hy: y :e A.
+  exact (UnionI Fam y A Hy HAFam). }
+claim HxclUnion: x :e closure_of X Tx (Union Fam).
+{ exact (closure_monotone X Tx A (Union Fam) Htop HASubUnion HUnionSubX x HxclA). }
+exact HxclUnion.
+Qed.
+
+(** from §17 Exercise 7: critique the attempted proof about closures of unions **)
+(** LATEX VERSION: Criticize the proof that cl(Union A_alpha) c= Union cl(A_alpha). **)
+Theorem ex17_7_counterexample_union_closure :
+  exists X Tx Fam:set,
+    topology_on X Tx /\
+    (forall A:set, A :e Fam -> A c= X) /\
+    ~ (closure_of X Tx (Union Fam) c= Union {closure_of X Tx A|A :e Fam}).
+admit.
+Qed.
+
+(** from §17 Exercise 8(a): closure of intersection is contained in intersection of closures **)
+(** LATEX VERSION: Determine whether cl(A :/\\: B) = cl(A) :/\\: cl(B); always have inclusion c= . **)
+Theorem ex17_8a_closure_intersection_Subq_intersection_closures : forall X Tx A B:set,
   topology_on X Tx ->
   closure_of X Tx (A :/\: B) c= closure_of X Tx A :/\: closure_of X Tx B.
 let X Tx A B.
