@@ -17420,34 +17420,136 @@ Qed.
 (** from §16 Exercise 5(a): product topology monotonicity **)
 (** LATEX VERSION: Exercise 5(a): If T⊂T' and U⊂U', then the product topology from T,U is contained in that from T',U'. **)
 Theorem ex16_5a_product_monotone : forall X T T' Y U U':set,
+  X <> Empty -> Y <> Empty ->
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
   T c= T' /\ U c= U' ->
   product_topology X T Y U c= product_topology X T' Y U'.
-let X T T' Y U U'.
-assume HTx: topology_on X T.
-assume HTx': topology_on X T'.
-assume HTy: topology_on Y U.
-assume HTy': topology_on Y U'.
-assume Hfiner: T c= T' /\ U c= U'.
-prove product_topology X T Y U c= product_topology X T' Y U'.
-admit. (** finer topologies give finer products; subbasis {V₁×Y, X×V₂:V₁∈T,V₂∈U} ⊆ subbasis from T',U' **)
+	let X T T' Y U U'.
+	assume HXne: X <> Empty.
+	assume HYne: Y <> Empty.
+	assume HTx: topology_on X T.
+	assume HTx': topology_on X T'.
+	assume HTy: topology_on Y U.
+	assume HTy': topology_on Y U'.
+	assume Hfiner: T c= T' /\ U c= U'.
+	prove product_topology X T Y U c= product_topology X T' Y U'.
+	claim HBasis: basis_on (setprod X Y) (product_subbasis X T Y U).
+	{ exact (product_subbasis_is_basis X T Y U HTx HTy). }
+	claim HTprod': topology_on (setprod X Y) (product_topology X T' Y U').
+	{ exact (product_topology_is_topology X T' Y U' HTx' HTy'). }
+	apply (generated_topology_finer (setprod X Y) (product_subbasis X T Y U) (product_topology X T' Y U') HBasis HTprod').
+	let b. assume Hb: b :e product_subbasis X T Y U.
+	prove b :e product_topology X T' Y U'.
+	claim HexU0: exists U0 :e T, b :e {rectangle_set U0 V|V :e U}.
+	{ exact (famunionE T (fun U0:set => {rectangle_set U0 V|V :e U}) b Hb). }
+	apply HexU0.
+	let U0. assume HU0conj.
+	claim HU0T: U0 :e T.
+	{ exact (andEL (U0 :e T) (b :e {rectangle_set U0 V|V :e U}) HU0conj). }
+	claim HbRepl: b :e {rectangle_set U0 V|V :e U}.
+	{ exact (andER (U0 :e T) (b :e {rectangle_set U0 V|V :e U}) HU0conj). }
+	claim HexV0: exists V0 :e U, b = rectangle_set U0 V0.
+	{ exact (ReplE U (fun V0:set => rectangle_set U0 V0) b HbRepl). }
+	apply HexV0.
+	let V0. assume HV0conj.
+	claim HV0U: V0 :e U.
+	{ exact (andEL (V0 :e U) (b = rectangle_set U0 V0) HV0conj). }
+	claim Hbeq: b = rectangle_set U0 V0.
+	{ exact (andER (V0 :e U) (b = rectangle_set U0 V0) HV0conj). }
+	claim HU0sub: U0 :e T'.
+	{ claim HTsub: T c= T'.
+	  { exact (andEL (T c= T') (U c= U') Hfiner). }
+	  exact (HTsub U0 HU0T). }
+	claim HV0sub: V0 :e U'.
+	{ claim HUsub: U c= U'.
+	  { exact (andER (T c= T') (U c= U') Hfiner). }
+	  exact (HUsub V0 HV0U). }
+	claim HBasis': basis_on (setprod X Y) (product_subbasis X T' Y U').
+	{ exact (product_subbasis_is_basis X T' Y U' HTx' HTy'). }
+	claim HbSub': b :e product_subbasis X T' Y U'.
+	{ prove b :e product_subbasis X T' Y U'.
+	  claim HbV: rectangle_set U0 V0 :e {rectangle_set U0 V|V :e U'}.
+	  { exact (ReplI U' (fun V1:set => rectangle_set U0 V1) V0 HV0sub). }
+	  rewrite Hbeq.
+	  exact (famunionI T' (fun U1:set => {rectangle_set U1 V|V :e U'}) U0 (rectangle_set U0 V0) HU0sub HbV). }
+	exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X T' Y U') HBasis' b HbSub').
 Qed.
 
 (** from §16 Exercise 5(b): converse question about product fineness **)
 (** LATEX VERSION: Exercise 5(b): If product topology from T,U is contained in that from T',U', then T⊂T' and U⊂U'. **)
 Theorem ex16_5b_product_converse : forall X T T' Y U U':set,
+  X <> Empty -> Y <> Empty ->
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
   product_topology X T Y U c= product_topology X T' Y U' ->
   T c= T' /\ U c= U'.
-let X T T' Y U U'.
-assume HTx: topology_on X T.
-assume HTx': topology_on X T'.
-assume HTy: topology_on Y U.
-assume HTy': topology_on Y U'.
-assume Hprod: product_topology X T Y U c= product_topology X T' Y U'.
-prove T c= T' /\ U c= U'.
-admit. (** projection preimages of opens in T,U are in product; must be in coarser product; implies T⊆T' and U⊆U'
-        aby: In_5Find open_in_subspace_iff conj_myprob_8633_1_20251123_231034 prop_ext_2 . **)
+	let X T T' Y U U'.
+	assume HXne: X <> Empty.
+	assume HYne: Y <> Empty.
+	assume HTx: topology_on X T.
+	assume HTx': topology_on X T'.
+	assume HTy: topology_on Y U.
+	assume HTy': topology_on Y U'.
+	assume Hprod: product_topology X T Y U c= product_topology X T' Y U'.
+	prove T c= T' /\ U c= U'.
+	apply andI.
+	- (** show T c= T' using openness of projection_image1 **)
+	  let V. assume HV: V :e T.
+	  prove V :e T'.
+	  claim HVsubX: V c= X.
+	  { exact (topology_elem_subset X T V HTx HV). }
+	  claim HYsubY: Y c= Y.
+	  { let y. assume Hy: y :e Y. exact Hy. }
+	  claim HYU: Y :e U.
+	  { exact (topology_has_X Y U HTy). }
+	  claim HbSub: rectangle_set V Y :e product_subbasis X T Y U.
+	  { prove rectangle_set V Y :e product_subbasis X T Y U.
+	    claim HbV: rectangle_set V Y :e {rectangle_set V W|W :e U}.
+	    { exact (ReplI U (fun W1:set => rectangle_set V W1) Y HYU). }
+	    exact (famunionI T (fun U0:set => {rectangle_set U0 W|W :e U}) V (rectangle_set V Y) HV HbV). }
+	  claim HBasis: basis_on (setprod X Y) (product_subbasis X T Y U).
+	  { exact (product_subbasis_is_basis X T Y U HTx HTy). }
+	  claim HbOpen: rectangle_set V Y :e product_topology X T Y U.
+	  { exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X T Y U) HBasis (rectangle_set V Y) HbSub). }
+	  claim HbOpen': rectangle_set V Y :e product_topology X T' Y U'.
+	  { exact (Hprod (rectangle_set V Y) HbOpen). }
+	  claim HprojOpen: open_in X T' (projection_image1 X Y (rectangle_set V Y)).
+	  { exact (andEL (open_in X T' (projection_image1 X Y (rectangle_set V Y))) (open_in Y U' (projection_image2 X Y (rectangle_set V Y)))
+	                 (ex16_4_projections_open X T' Y U' HTx' HTy' (rectangle_set V Y) HbOpen')). }
+	  claim HVeqProj: projection_image1 X Y (rectangle_set V Y) = V.
+	  { exact (projection_image1_rectangle_nonempty X Y V Y HVsubX HYsubY HYne). }
+	  claim HVinT': projection_image1 X Y (rectangle_set V Y) :e T'.
+	  { exact (andER (topology_on X T') (projection_image1 X Y (rectangle_set V Y) :e T') HprojOpen). }
+	  rewrite <- HVeqProj.
+	  exact HVinT'.
+	- (** show U c= U' using openness of projection_image2 **)
+	  let W. assume HW: W :e U.
+	  prove W :e U'.
+	  claim HWsubY: W c= Y.
+	  { exact (topology_elem_subset Y U W HTy HW). }
+	  claim HXsubX: X c= X.
+	  { let x. assume Hx: x :e X. exact Hx. }
+	  claim HX_T: X :e T.
+	  { exact (topology_has_X X T HTx). }
+	  claim HbSub: rectangle_set X W :e product_subbasis X T Y U.
+	  { prove rectangle_set X W :e product_subbasis X T Y U.
+	    claim HbW: rectangle_set X W :e {rectangle_set X V|V :e U}.
+	    { exact (ReplI U (fun V1:set => rectangle_set X V1) W HW). }
+	    exact (famunionI T (fun U0:set => {rectangle_set U0 V|V :e U}) X (rectangle_set X W) HX_T HbW). }
+	  claim HBasis: basis_on (setprod X Y) (product_subbasis X T Y U).
+	  { exact (product_subbasis_is_basis X T Y U HTx HTy). }
+	  claim HbOpen: rectangle_set X W :e product_topology X T Y U.
+	  { exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X T Y U) HBasis (rectangle_set X W) HbSub). }
+	  claim HbOpen': rectangle_set X W :e product_topology X T' Y U'.
+	  { exact (Hprod (rectangle_set X W) HbOpen). }
+	  claim HprojOpen: open_in Y U' (projection_image2 X Y (rectangle_set X W)).
+	  { exact (andER (open_in X T' (projection_image1 X Y (rectangle_set X W))) (open_in Y U' (projection_image2 X Y (rectangle_set X W)))
+	                 (ex16_4_projections_open X T' Y U' HTx' HTy' (rectangle_set X W) HbOpen')). }
+	  claim HWeqProj: projection_image2 X Y (rectangle_set X W) = W.
+	  { exact (projection_image2_rectangle_nonempty X Y X W HXsubX HWsubY HXne). }
+	  claim HWinU': projection_image2 X Y (rectangle_set X W) :e U'.
+	  { exact (andER (topology_on Y U') (projection_image2 X Y (rectangle_set X W) :e U') HprojOpen). }
+	  rewrite <- HWeqProj.
+	  exact HWinU'.
 Qed.
 
 (** from §16 Exercise 6: rational rectangles form a basis for ℝ² **)
