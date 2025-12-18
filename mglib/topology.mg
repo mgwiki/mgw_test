@@ -17635,6 +17635,32 @@ apply andI.
         exact (setminusE1 X Empty x Hx).
 Qed.
 
+(** Helper: binary union as union of pair family **)
+Theorem binunion_eq_Union_UPair : forall U V:set, U :\/: V = Union (UPair U V).
+let U V.
+apply set_ext.
+- let x. assume Hx: x :e U :\/: V.
+  apply (binunionE U V x Hx).
+  + assume HxU: x :e U.
+    apply (UnionI (UPair U V) x U HxU).
+    exact (UPairI1 U V).
+  + assume HxV: x :e V.
+    apply (UnionI (UPair U V) x V HxV).
+    exact (UPairI2 U V).
+- let x. assume Hx: x :e Union (UPair U V).
+  apply (UnionE_impred (UPair U V) x Hx (x :e U :\/: V)).
+  let Z. assume HxZ: x :e Z. assume HZin: Z :e UPair U V.
+  apply (UPairE Z U V HZin).
+  + assume HZeqU: Z = U.
+    claim HxU: x :e U.
+    { rewrite <- HZeqU. exact HxZ. }
+    exact (binunionI1 U V x HxU).
+  + assume HZeqV: Z = V.
+    claim HxV: x :e V.
+    { rewrite <- HZeqV. exact HxZ. }
+    exact (binunionI2 U V x HxV).
+Qed.
+
 (** Helper: intersection of two closed sets is closed **)
 Theorem intersection_of_closed_is_closed : forall X Tx C D:set,
   topology_on X Tx -> closed_in X Tx C -> closed_in X Tx D ->
@@ -17679,35 +17705,15 @@ apply andI.
     claim HDeq: D = X :\: V.
     { exact (andER (V :e Tx) (D = X :\: V) HV_conj). }
     (** Set W = U ∪ V, which is open **)
-    set W := U :\/: V.
-    claim HW_open: W :e Tx.
-    { (** U ∪ V = ⋃{U, V} is open **)
-      claim HUV_eq: U :\/: V = Union (UPair U V).
-      { apply set_ext.
-        - let x. assume Hx: x :e U :\/: V.
-          apply (binunionE U V x Hx).
-          + assume HxU: x :e U.
-            apply (UnionI (UPair U V) x U HxU).
-            exact (UPairI1 U V).
-          + assume HxV: x :e V.
-            apply (UnionI (UPair U V) x V HxV).
-            exact (UPairI2 U V).
-        - let x. assume Hx: x :e Union (UPair U V).
-          apply (UnionE_impred (UPair U V) x Hx (x :e U :\/: V)).
-          let Z. assume HxZ: x :e Z. assume HZin: Z :e UPair U V.
-          apply (UPairE Z U V HZin).
-          + assume HZeqU: Z = U.
-            claim HxU: x :e U.
-            { rewrite <- HZeqU. exact HxZ. }
-            exact (binunionI1 U V x HxU).
-          + assume HZeqV: Z = V.
-            claim HxV: x :e V.
-            { rewrite <- HZeqV. exact HxZ. }
-            exact (binunionI2 U V x HxV). }
-      rewrite HUV_eq.
-      claim HUPairSub: UPair U V c= Tx.
-      { let W0. assume HW0: W0 :e UPair U V.
-        apply (UPairE W0 U V HW0).
+	    set W := U :\/: V.
+	    claim HW_open: W :e Tx.
+	    { (** U ∪ V = ⋃{U, V} is open **)
+	      claim HUV_eq: U :\/: V = Union (UPair U V).
+	      { exact (binunion_eq_Union_UPair U V). }
+	      rewrite HUV_eq.
+	      claim HUPairSub: UPair U V c= Tx.
+	      { let W0. assume HW0: W0 :e UPair U V.
+	        apply (UPairE W0 U V HW0).
         - assume HW0eqU: W0 = U. rewrite HW0eqU. exact HU.
         - assume HW0eqV: W0 = V. rewrite HW0eqV. exact HV. }
       exact (topology_union_closed X Tx (UPair U V) Htop HUPairSub). }
