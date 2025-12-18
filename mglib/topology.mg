@@ -21266,6 +21266,76 @@ apply binintersectI.
   exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: B <> Empty) x HxX (andER (x :e X) (forall U:set, U :e Tx -> x :e U -> U :/\: B <> Empty) HxB)).
 Qed.
 
+(** from §17 Exercise 8(b): closure of an arbitrary intersection and intersection of closures **)
+(** LATEX VERSION: Determine whether cl(Intersection A_alpha) = Intersection cl(A_alpha); always have inclusion c= . **)
+Theorem ex17_8b_closure_intersection_family_Subq_intersection_closures : forall X Tx Fam:set,
+  topology_on X Tx ->
+  (forall A:set, A :e Fam -> A c= X) ->
+  closure_of X Tx (intersection_of_family X Fam) c=
+    intersection_of_family X {closure_of X Tx A|A :e Fam}.
+let X Tx Fam.
+assume Htop: topology_on X Tx.
+assume HFsub: forall A:set, A :e Fam -> A c= X.
+prove closure_of X Tx (intersection_of_family X Fam) c= intersection_of_family X {closure_of X Tx A|A :e Fam}.
+set Aint := intersection_of_family X Fam.
+set ClFam := {closure_of X Tx A|A :e Fam}.
+claim HAintSubX: Aint c= X.
+{ let x. assume Hx: x :e Aint.
+  exact (SepE1 X (fun x0 => forall U:set, U :e Fam -> x0 :e U) x Hx). }
+let x. assume Hx: x :e closure_of X Tx Aint.
+prove x :e intersection_of_family X ClFam.
+claim HxX: x :e X.
+{ exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: Aint <> Empty) x Hx). }
+claim Hdef: intersection_of_family X ClFam = {x0 :e X|forall U:set, U :e ClFam -> x0 :e U}.
+{ reflexivity. }
+rewrite Hdef.
+apply SepI.
+- exact HxX.
+- let W. assume HW: W :e ClFam.
+  prove x :e W.
+  apply (ReplE Fam (fun A:set => closure_of X Tx A) W HW).
+  let A. assume HAconj.
+  claim HAFam: A :e Fam.
+  { exact (andEL (A :e Fam) (W = closure_of X Tx A) HAconj). }
+  claim HWeq: W = closure_of X Tx A.
+  { exact (andER (A :e Fam) (W = closure_of X Tx A) HAconj). }
+  claim HAintSubA: Aint c= A.
+  { let y. assume Hy: y :e Aint.
+    claim Hcond: forall U:set, U :e Fam -> y :e U.
+    { exact (SepE2 X (fun x0 => forall U:set, U :e Fam -> x0 :e U) y Hy). }
+    exact (Hcond A HAFam). }
+  claim HxclA: x :e closure_of X Tx A.
+  { exact (closure_monotone X Tx Aint A Htop HAintSubA (HFsub A HAFam) x Hx). }
+  rewrite HWeq.
+  exact HxclA.
+Qed.
+
+(** from §17 Exercise 8(c): closure of set difference **)
+(** LATEX VERSION: Determine whether cl(A-B) = cl(A) - cl(B); at least cl(A-B) c= cl(A). **)
+Theorem ex17_8c_closure_setminus_Subq_closure_left : forall X Tx A B:set,
+  topology_on X Tx -> A c= X -> B c= X ->
+  closure_of X Tx (A :\: B) c= closure_of X Tx A.
+let X Tx A B.
+assume Htop: topology_on X Tx.
+assume HA: A c= X.
+assume HB: B c= X.
+prove closure_of X Tx (A :\: B) c= closure_of X Tx A.
+claim Hsub: A :\: B c= A.
+{ let x. assume Hx: x :e A :\: B.
+  exact (setminusE1 A B x Hx). }
+exact (closure_monotone X Tx (A :\: B) A Htop Hsub HA).
+Qed.
+
+(** from §17 Exercise 8(c): counterexample to equality cl(A-B) = cl(A) - cl(B) **)
+(** LATEX VERSION: Give an example where the equality fails. **)
+Theorem ex17_8c_counterexample_equality_fails :
+  exists X Tx A B:set,
+    topology_on X Tx /\
+    A c= X /\ B c= X /\
+    closure_of X Tx (A :\: B) <> (closure_of X Tx A :\: closure_of X Tx B).
+admit.
+Qed.
+
 (** LATEX VERSION: Exercise 9: Closure of A×B in product is product of closures. **)
 Theorem ex17_9_closure_of_product_subset : forall X Y Tx Ty A B:set,
   topology_on X Tx -> topology_on Y Ty ->
