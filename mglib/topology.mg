@@ -17661,6 +17661,13 @@ apply set_ext.
     exact (binunionI2 U V x HxV).
 Qed.
 
+(** Helper: union of a pair family equals binary union **)
+Theorem Union_UPair_eq_binunion : forall U V:set, Union (UPair U V) = U :\/: V.
+let U V.
+rewrite (binunion_eq_Union_UPair U V).
+reflexivity.
+Qed.
+
 (** Helper: intersection of two closed sets is closed **)
 Theorem intersection_of_closed_is_closed : forall X Tx C D:set,
   topology_on X Tx -> closed_in X Tx C -> closed_in X Tx D ->
@@ -19453,36 +19460,21 @@ apply andI.
     exact (HAsub x HxA). }
   claim HVU: V :\/: U :e Tx.
   { set UFam := UPair V U.
-    claim HUFamsub: UFam c= Tx.
-    { let W. assume HW: W :e UFam.
-      apply (UPairE W V U HW).
-      - assume HWeqV. rewrite HWeqV. exact HV.
-      - assume HWeqU. rewrite HWeqU. exact HUtop. }
-    claim HUnionVU: Union UFam = V :\/: U.
-    { apply set_ext.
-      - let x. assume Hx: x :e Union UFam.
-        apply UnionE_impred UFam x Hx.
-        let W. assume HxW: x :e W. assume HW: W :e UFam.
-        apply (UPairE W V U HW).
-        + assume HWeqV.
-          claim HxV: x :e V.
-          { rewrite <- HWeqV. exact HxW. }
-          exact (binunionI1 V U x HxV).
-        + assume HWeqU.
-          claim HxU: x :e U.
-          { rewrite <- HWeqU. exact HxW. }
-          exact (binunionI2 V U x HxU).
-      - let x. assume Hx: x :e V :\/: U.
-        apply (binunionE V U x Hx).
-        + assume HxV.
-          exact (UnionI UFam x V HxV (UPairI1 V U)).
-        + assume HxU.
-          exact (UnionI UFam x U HxU (UPairI2 V U)). }
-    rewrite <- HUnionVU.
-    exact (topology_union_closed X Tx UFam Htop HUFamsub). }
-  claim HAminusU_eq_XminusVU: A :\: U = X :\: (V :\/: U).
-  { rewrite HAeq.
-    apply set_ext.
+	    claim HUFamsub: UFam c= Tx.
+	    { let W. assume HW: W :e UFam.
+	      apply (UPairE W V U HW).
+	      - assume HWeqV. rewrite HWeqV. exact HV.
+	      - assume HWeqU. rewrite HWeqU. exact HUtop. }
+	    claim HUnionVU: Union UFam = V :\/: U.
+	    { claim HUFamdef: UFam = UPair V U.
+	      { reflexivity. }
+	      rewrite HUFamdef.
+	      exact (Union_UPair_eq_binunion V U). }
+	    rewrite <- HUnionVU.
+	    exact (topology_union_closed X Tx UFam Htop HUFamsub). }
+	  claim HAminusU_eq_XminusVU: A :\: U = X :\: (V :\/: U).
+	  { rewrite HAeq.
+	    apply set_ext.
     + let x. assume Hx: x :e (X :\: V) :\: U.
       claim HxXV: x :e X :\: V.
       { exact (setminusE1 (X :\: V) U x Hx). }
