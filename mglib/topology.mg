@@ -20359,8 +20359,219 @@ apply andI.
 - let p1 p2. assume Hp1: p1 :e setprod X Y. assume Hp2: p2 :e setprod X Y. assume Hne: p1 <> p2.
   prove exists U V:set, U :e product_topology X Tx Y Ty /\ V :e product_topology X Tx Y Ty /\
                         p1 :e U /\ p2 :e V /\ U :/\: V = Empty.
-  (** Need to decompose p1 and p2 as ordered pairs and separate by coordinates **)
-  admit. (** Need: decompose p1=(x1,y1), p2=(x2,y2); case analysis on which coordinate differs; use rectangles **)
+  (** Decompose p1 = (x1,y1), p2 = (x2,y2) **)
+  apply (Sigma_E X (fun _ : set => Y) p1 Hp1).
+  let x1. assume Hx1_pair.
+  apply Hx1_pair.
+  assume Hx1X Hexy1.
+  apply Hexy1.
+  let y1. assume Hy1_pair.
+  apply Hy1_pair.
+  assume Hy1Y Hp1eq.
+  apply (Sigma_E X (fun _ : set => Y) p2 Hp2).
+  let x2. assume Hx2_pair.
+  apply Hx2_pair.
+  assume Hx2X Hexy2.
+  apply Hexy2.
+  let y2. assume Hy2_pair.
+  apply Hy2_pair.
+  assume Hy2Y Hp2eq.
+  (** Split by whether x-coordinates coincide **)
+  apply (xm (x1 = x2)).
+  - assume Hx12: x1 = x2.
+    claim Hy12: y1 <> y2.
+    { assume HyEq: y1 = y2.
+      claim HpEq: p1 = p2.
+      { rewrite Hp1eq.
+        rewrite Hp2eq.
+        rewrite Hx12.
+        rewrite HyEq.
+        reflexivity. }
+      exact (Hne HpEq). }
+    (** Separate by y-coordinate using opens in Ty **)
+    apply (HSepY y1 y2 Hy1Y Hy2Y Hy12).
+    let U. assume HexV.
+    apply HexV.
+    let V. assume HUV_conj.
+    apply HUV_conj.
+    assume Hcore HUVempty.
+    apply Hcore.
+    assume Hcore2 Hy2V.
+    apply Hcore2.
+    assume Hcore3 Hy1U.
+    apply Hcore3.
+    assume HU HV.
+    set R1 := rectangle_set X U.
+    set R2 := rectangle_set X V.
+    witness R1.
+    witness R2.
+    prove R1 :e product_topology X Tx Y Ty /\ R2 :e product_topology X Tx Y Ty /\ p1 :e R1 /\ p2 :e R2 /\ R1 :/\: R2 = Empty.
+    apply andI.
+    + apply andI.
+      * apply andI.
+        { apply andI.
+          (** R1 open in product topology **)
+          - claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+            { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+            claim HXTx: X :e Tx.
+            { exact (topology_has_X X Tx HTx). }
+            claim HR1sub: R1 :e product_subbasis X Tx Y Ty.
+            { prove R1 :e product_subbasis X Tx Y Ty.
+              claim HR1fam: rectangle_set X U :e {rectangle_set X V0|V0 :e Ty}.
+              { exact (ReplI Ty (fun V0:set => rectangle_set X V0) U HU). }
+              exact (famunionI Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) X (rectangle_set X U) HXTx HR1fam). }
+            exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis R1 HR1sub).
+          (** R2 open in product topology **)
+          - claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+            { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+            claim HXTx: X :e Tx.
+            { exact (topology_has_X X Tx HTx). }
+            claim HR2sub: R2 :e product_subbasis X Tx Y Ty.
+            { prove R2 :e product_subbasis X Tx Y Ty.
+              claim HR2fam: rectangle_set X V :e {rectangle_set X V0|V0 :e Ty}.
+              { exact (ReplI Ty (fun V0:set => rectangle_set X V0) V HV). }
+              exact (famunionI Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) X (rectangle_set X V) HXTx HR2fam). }
+            exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis R2 HR2sub). }
+        (** p1 in R1 **)
+        { rewrite Hp1eq.
+          exact (pair_Sigma X (fun _ : set => U) x1 Hx1X y1 Hy1U). }
+      (** p2 in R2 **)
+      * rewrite Hp2eq.
+        rewrite <- Hx12 at 1.
+        exact (pair_Sigma X (fun _ : set => V) x1 Hx1X y2 Hy2V).
+    (** disjointness of rectangles **)
+    + prove R1 :/\: R2 = Empty.
+      apply set_ext.
+      { let p. assume Hp: p :e R1 :/\: R2.
+        prove p :e Empty.
+        apply FalseE.
+        claim HpR1: p :e R1.
+        { exact (binintersectE1 R1 R2 p Hp). }
+        claim HpR2: p :e R2.
+        { exact (binintersectE2 R1 R2 p Hp). }
+        claim Hcoords1: exists x :e X, exists y :e U, p :e setprod {x} {y}.
+        { exact (setprod_elem_decompose X U p HpR1). }
+        apply Hcoords1.
+        let x. assume Hx_pair.
+        claim HxX': x :e X.
+        { exact (andEL (x :e X) (exists y0 :e U, p :e setprod {x} {y0}) Hx_pair). }
+        claim Hexy: exists y0 :e U, p :e setprod {x} {y0}.
+        { exact (andER (x :e X) (exists y0 :e U, p :e setprod {x} {y0}) Hx_pair). }
+        apply Hexy.
+        let y. assume Hy_pair.
+        claim HyU': y :e U.
+        { exact (andEL (y :e U) (p :e setprod {x} {y}) Hy_pair). }
+        claim Hpsing1: p :e setprod {x} {y}.
+        { exact (andER (y :e U) (p :e setprod {x} {y}) Hy_pair). }
+        claim Hcoords2: exists x0 :e X, exists y0 :e V, p :e setprod {x0} {y0}.
+        { exact (setprod_elem_decompose X V p HpR2). }
+        apply Hcoords2.
+        let x0. assume Hx0_pair.
+        claim Hexy0: exists y0 :e V, p :e setprod {x0} {y0}.
+        { exact (andER (x0 :e X) (exists y0 :e V, p :e setprod {x0} {y0}) Hx0_pair). }
+        apply Hexy0.
+        let y0. assume Hy0_pair.
+        claim Hpsing2: p :e setprod {x0} {y0}.
+        { exact (andER (y0 :e V) (p :e setprod {x0} {y0}) Hy0_pair). }
+        claim HyV': y :e V.
+        { exact (andER (x :e X) (y :e V) (setprod_coords_in x y X V p Hpsing1 HpR2)). }
+        claim HyUV: y :e U :/\: V.
+        { exact (binintersectI U V y HyU' HyV'). }
+        claim HyE: y :e Empty.
+        { rewrite <- HUVempty. exact HyUV. }
+        exact (EmptyE y HyE False). }
+      { exact (Subq_Empty (R1 :/\: R2)). }
+  - assume Hx12n: x1 <> x2.
+    (** Separate by x-coordinate using opens in Tx **)
+    apply (HSepX x1 x2 Hx1X Hx2X Hx12n).
+    let U. assume HexV.
+    apply HexV.
+    let V. assume HUV_conj.
+    apply HUV_conj.
+    assume Hcore HUVempty.
+    apply Hcore.
+    assume Hcore2 Hx2V.
+    apply Hcore2.
+    assume Hcore3 Hx1U.
+    apply Hcore3.
+    assume HU HV.
+    set R1 := rectangle_set U Y.
+    set R2 := rectangle_set V Y.
+    witness R1.
+    witness R2.
+    prove R1 :e product_topology X Tx Y Ty /\ R2 :e product_topology X Tx Y Ty /\ p1 :e R1 /\ p2 :e R2 /\ R1 :/\: R2 = Empty.
+    apply andI.
+    + apply andI.
+      * apply andI.
+        { apply andI.
+          (** R1 open in product topology **)
+          - claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+            { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+            claim HYTy: Y :e Ty.
+            { exact (topology_has_X Y Ty HTy). }
+            claim HR1sub: R1 :e product_subbasis X Tx Y Ty.
+            { prove R1 :e product_subbasis X Tx Y Ty.
+              claim HR1fam: rectangle_set U Y :e {rectangle_set U V0|V0 :e Ty}.
+              { exact (ReplI Ty (fun V0:set => rectangle_set U V0) Y HYTy). }
+              exact (famunionI Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) U (rectangle_set U Y) HU HR1fam). }
+            exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis R1 HR1sub).
+          (** R2 open in product topology **)
+          - claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+            { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+            claim HYTy: Y :e Ty.
+            { exact (topology_has_X Y Ty HTy). }
+            claim HR2sub: R2 :e product_subbasis X Tx Y Ty.
+            { prove R2 :e product_subbasis X Tx Y Ty.
+              claim HR2fam: rectangle_set V Y :e {rectangle_set V V0|V0 :e Ty}.
+              { exact (ReplI Ty (fun V0:set => rectangle_set V V0) Y HYTy). }
+              exact (famunionI Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) V (rectangle_set V Y) HV HR2fam). }
+            exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis R2 HR2sub). }
+        (** p1 in R1 **)
+        { rewrite Hp1eq.
+          exact (pair_Sigma U (fun _ : set => Y) x1 Hx1U y1 Hy1Y). }
+      (** p2 in R2 **)
+      * rewrite Hp2eq.
+        exact (pair_Sigma V (fun _ : set => Y) x2 Hx2V y2 Hy2Y).
+    (** disjointness of rectangles **)
+    + prove R1 :/\: R2 = Empty.
+      apply set_ext.
+      { let p. assume Hp: p :e R1 :/\: R2.
+        prove p :e Empty.
+        apply FalseE.
+        claim HpR1: p :e R1.
+        { exact (binintersectE1 R1 R2 p Hp). }
+        claim HpR2: p :e R2.
+        { exact (binintersectE2 R1 R2 p Hp). }
+        claim Hcoords1: exists x :e U, exists y :e Y, p :e setprod {x} {y}.
+        { exact (setprod_elem_decompose U Y p HpR1). }
+        apply Hcoords1.
+        let x. assume Hx_pair.
+        claim HxU': x :e U.
+        { exact (andEL (x :e U) (exists y0 :e Y, p :e setprod {x} {y0}) Hx_pair). }
+        claim Hexy: exists y0 :e Y, p :e setprod {x} {y0}.
+        { exact (andER (x :e U) (exists y0 :e Y, p :e setprod {x} {y0}) Hx_pair). }
+        apply Hexy.
+        let y. assume Hy_pair.
+        claim Hpsing1: p :e setprod {x} {y}.
+        { exact (andER (y :e Y) (p :e setprod {x} {y}) Hy_pair). }
+        claim Hcoords2: exists x0 :e V, exists y0 :e Y, p :e setprod {x0} {y0}.
+        { exact (setprod_elem_decompose V Y p HpR2). }
+        apply Hcoords2.
+        let x0. assume Hx0_pair.
+        claim Hexy0: exists y0 :e Y, p :e setprod {x0} {y0}.
+        { exact (andER (x0 :e V) (exists y0 :e Y, p :e setprod {x0} {y0}) Hx0_pair). }
+        apply Hexy0.
+        let y0. assume Hy0_pair.
+        claim Hpsing2: p :e setprod {x0} {y0}.
+        { exact (andER (y0 :e Y) (p :e setprod {x0} {y0}) Hy0_pair). }
+        claim HxV': x :e V.
+        { exact (andEL (x :e V) (y :e Y) (setprod_coords_in x y V Y p Hpsing1 HpR2)). }
+        claim HxUV: x :e U :/\: V.
+        { exact (binintersectI U V x HxU' HxV'). }
+        claim HxE: x :e Empty.
+        { rewrite <- HUVempty. exact HxUV. }
+        exact (EmptyE x HxE False). }
+      { exact (Subq_Empty (R1 :/\: R2)). }
 Qed.
 
 (** from §17 Exercises 1–20: closures, boundaries, Hausdorff properties **) 
