@@ -24283,12 +24283,12 @@ prove Q c= Power Y
   /\ (forall U :e Q, forall V :e Q, U :/\: V :e Q).
 apply andI.
 - apply andI.
-  + apply andI.
-    * apply andI.
-      { (** Q subset Power Y **)
+  - apply andI.
+    - apply andI.
+      - (** Q subset Power Y **)
         let V. assume HV: V :e Q.
-        exact (SepE1 (Power Y) (fun V0:set => pre V0 :e Tx) V HV). }
-      { (** Empty in Q **)
+        exact (SepE1 (Power Y) (fun V0:set => pre V0 :e Tx) V HV).
+      - (** Empty in Q **)
         prove Empty :e Q.
         claim HpreE: pre Empty :e Tx.
         { set Epre := pre Empty.
@@ -24297,18 +24297,20 @@ apply andI.
             prove x :e Empty.
             claim Hxprop: apply_fun f x :e Empty.
             { exact (SepE2 X (fun x0 => apply_fun f x0 :e Empty) x Hx). }
-            exact (EmptyE (apply_fun f x) Hxprop). }
+            exact (EmptyE (apply_fun f x) Hxprop (x :e Empty)). }
           claim HEeq: Epre = Empty.
           { exact (Empty_Subq_eq Epre HEsub). }
           rewrite HEeq.
           exact (topology_has_empty X Tx HTx). }
         claim Hpow: Empty :e Power Y.
         { exact (Empty_In_Power Y). }
-        exact (SepI (Power Y) (fun V0:set => pre V0 :e Tx) Empty Hpow HpreE). }
-    * (** Y in Q **)
+        exact (SepI (Power Y) (fun V0:set => pre V0 :e Tx) Empty Hpow HpreE).
+    - (** Y in Q **)
       prove Y :e Q.
       claim Hf_on: function_on f X Y.
-      { exact (andEL (topology_on X Tx) (function_on f X Y /\ (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y)) Hf). }
+      { exact (andER (topology_on X Tx) (function_on f X Y)
+          (andEL (topology_on X Tx /\ function_on f X Y)
+            (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y) Hf)). }
       claim HpreY: pre Y :e Tx.
       { set Ypre := pre Y.
         claim HYsub: Ypre c= X.
@@ -24317,9 +24319,9 @@ apply andI.
         claim HXsub: X c= Ypre.
         { let x. assume Hx: x :e X.
           prove x :e Ypre.
-          claim HfxY: apply_fun f x :e Y.
-          { exact (function_onE f X Y Hf_on x Hx). }
-          exact (SepI X (fun x0 => apply_fun f x0 :e Y) x Hx HfxY). }
+	          claim HfxY: apply_fun f x :e Y.
+	          { exact (Hf_on x Hx). }
+	          exact (SepI X (fun x0 => apply_fun f x0 :e Y) x Hx HfxY). }
         claim HYeq: Ypre = X.
         { apply set_ext.
           - exact HYsub.
@@ -24328,9 +24330,9 @@ apply andI.
         exact (topology_has_X X Tx HTx). }
       claim Hpow: Y :e Power Y.
       { apply PowerI.
-        exact (Subq_refl Y). }
-      exact (SepI (Power Y) (fun V0:set => pre V0 :e Tx) Y Hpow HpreY). }
-  + (** Union closure **)
+        exact (fun x Hx => Hx). }
+      exact (SepI (Power Y) (fun V0:set => pre V0 :e Tx) Y Hpow HpreY).
+  - (** Union closure **)
     let UFam. assume HUFam: UFam :e Power Q.
     prove Union UFam :e Q.
     claim HUFamSub: UFam c= Q.
@@ -24340,13 +24342,13 @@ apply andI.
     { apply PowerI.
       let y. assume Hy: y :e Union UFam.
       prove y :e Y.
-      apply (UnionE UFam y Hy).
-      let V. assume HV.
+      apply (UnionE_impred UFam y Hy).
+      let V. assume HyV. assume HVUF.
       claim HVQ: V :e Q.
-      { exact (HUFamSub V HV). }
+      { exact (HUFamSub V HVUF). }
       claim HVPow: V :e Power Y.
       { exact (SepE1 (Power Y) (fun V0:set => pre V0 :e Tx) V HVQ). }
-      exact (PowerE Y V HVPow y (andER (V :e UFam) (y :e V) HV)). }
+      exact (PowerE Y V HVPow y HyV). }
     (** show preimage of Union UFam is open in Tx **)
     claim HpreU: pre (Union UFam) :e Tx.
     { set PUFam := {pre V|V :e UFam}.
@@ -24373,31 +24375,23 @@ apply andI.
           prove x :e Union PUFam.
           claim HxX: x :e X.
           { exact (SepE1 X (fun x0 => apply_fun f x0 :e Union UFam) x Hx). }
-          claim HxU: apply_fun f x :e Union UFam.
-          { exact (SepE2 X (fun x0 => apply_fun f x0 :e Union UFam) x Hx). }
-          apply (UnionE UFam (apply_fun f x) HxU).
-          let V. assume HV.
-          claim HVUF: V :e UFam.
-          { exact (andEL (V :e UFam) (apply_fun f x :e V) HV). }
-          claim HfxV: apply_fun f x :e V.
-          { exact (andER (V :e UFam) (apply_fun f x :e V) HV). }
-          claim HxpreV: x :e pre V.
-          { exact (SepI X (fun x0 => apply_fun f x0 :e V) x HxX HfxV). }
-          claim HpreVin: pre V :e PUFam.
-          { exact (ReplI UFam (fun V0:set => pre V0) V HVUF). }
-          exact (UnionI PUFam x (pre V) HpreVin HxpreV).
-        - let x. assume Hx: x :e Union PUFam.
-          prove x :e pre (Union UFam).
-          apply (UnionE PUFam x Hx).
-          let W. assume HW.
-          claim HWPU: W :e PUFam.
-          { exact (andEL (W :e PUFam) (x :e W) HW). }
-          claim HxW: x :e W.
-          { exact (andER (W :e PUFam) (x :e W) HW). }
-          apply (ReplE UFam (fun V:set => pre V) W HWPU).
-          let V. assume HVconj.
-          claim HVUF: V :e UFam.
-          { exact (andEL (V :e UFam) (W = pre V) HVconj). }
+	          claim HxU: apply_fun f x :e Union UFam.
+	          { exact (SepE2 X (fun x0 => apply_fun f x0 :e Union UFam) x Hx). }
+	          apply (UnionE_impred UFam (apply_fun f x) HxU).
+	          let V. assume HfxV. assume HVUF.
+	          claim HxpreV: x :e pre V.
+	          { exact (SepI X (fun x0 => apply_fun f x0 :e V) x HxX HfxV). }
+	          claim HpreVin: pre V :e PUFam.
+	          { exact (ReplI UFam (fun V0:set => pre V0) V HVUF). }
+	          exact (UnionI PUFam x (pre V) HxpreV HpreVin).
+	        - let x. assume Hx: x :e Union PUFam.
+	          prove x :e pre (Union UFam).
+	          apply (UnionE_impred PUFam x Hx).
+	          let W. assume HxW. assume HWPU.
+	          apply (ReplE UFam (fun V:set => pre V) W HWPU).
+	          let V. assume HVconj.
+	          claim HVUF: V :e UFam.
+	          { exact (andEL (V :e UFam) (W = pre V) HVconj). }
           claim HWeq: W = pre V.
           { exact (andER (V :e UFam) (W = pre V) HVconj). }
           claim HxpreV: x :e pre V.
@@ -24405,8 +24399,8 @@ apply andI.
             exact HxW. }
           claim HfxV: apply_fun f x :e V.
           { exact (SepE2 X (fun x0 => apply_fun f x0 :e V) x HxpreV). }
-          claim HfxU: apply_fun f x :e Union UFam.
-          { exact (UnionI UFam (apply_fun f x) V HVUF HfxV). }
+	          claim HfxU: apply_fun f x :e Union UFam.
+	          { exact (UnionI UFam (apply_fun f x) V HfxV HVUF). }
           claim HxX: x :e X.
           { exact (SepE1 X (fun x0 => apply_fun f x0 :e V) x HxpreV). }
           exact (SepI X (fun x0 => apply_fun f x0 :e Union UFam) x HxX HfxU). }
@@ -24480,19 +24474,24 @@ assume HTy: topology_on Y Ty.
 assume Hsub: Ty c= quotient_topology X Tx Y f.
 prove continuous_map X Tx Y Ty f.
 prove topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\ forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+claim Htopfun : topology_on X Tx /\ function_on f X Y.
+{ exact (andEL (topology_on X Tx /\ function_on f X Y)
+        (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y) Hf). }
+claim HTx : topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (function_on f X Y) Htopfun). }
+claim Hf_on : function_on f X Y.
+{ exact (andER (topology_on X Tx) (function_on f X Y) Htopfun). }
 apply andI.
-- prove topology_on X Tx /\ topology_on Y Ty.
-  apply andI.
-  + exact (andEL (topology_on X Tx) (function_on f X Y /\ (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y)) Hf).
-  + exact HTy.
 - apply andI.
-  + exact (andEL (function_on f X Y) (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y)
-                 (andER (topology_on X Tx) (function_on f X Y /\ (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y)) Hf)).
-  + let V. assume HV: V :e Ty.
-    prove preimage_of X f V :e Tx.
-    claim HVQ: V :e quotient_topology X Tx Y f.
-    { exact (Hsub V HV). }
-    exact (SepE2 (Power Y) (fun V0:set => preimage_of X f V0 :e Tx) V HVQ).
+  - apply andI.
+    + exact HTx.
+    + exact HTy.
+  - exact Hf_on.
+- let V. assume HV: V :e Ty.
+  prove preimage_of X f V :e Tx.
+  claim HVQ: V :e quotient_topology X Tx Y f.
+  { exact (Hsub V HV). }
+  exact (SepE2 (Power Y) (fun V0:set => preimage_of X f V0 :e Tx) V HVQ).
 Qed.
 
 (** from §23 Definition: separation of a space **) 
