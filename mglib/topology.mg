@@ -21426,7 +21426,87 @@ Theorem ex17_8c_counterexample_equality_fails :
     topology_on X Tx /\
     A c= X /\ B c= X /\
     closure_of X Tx (A :\: B) <> (closure_of X Tx A :\: closure_of X Tx B).
-admit.
+set X0 := {0} :\/: {1}.
+set Tx0 := indiscrete_topology X0.
+set A0 := X0.
+set B0 := {0}.
+witness X0.
+witness Tx0.
+witness A0.
+witness B0.
+prove topology_on X0 Tx0 /\ A0 c= X0 /\ B0 c= X0 /\ closure_of X0 Tx0 (A0 :\: B0) <> (closure_of X0 Tx0 A0 :\: closure_of X0 Tx0 B0).
+apply andI.
+- apply andI.
+  - apply andI.
+    + exact (indiscrete_topology_on X0).
+    + exact (Subq_ref X0).
+  - (** B0 c= X0 **)
+    let x. assume Hx: x :e B0.
+    prove x :e X0.
+    claim Hxeq: x = 0.
+    { exact (SingE 0 x Hx). }
+    rewrite Hxeq.
+    exact (binunionI1 {0} {1} 0 (SingI 0)).
+- (** inequality **)
+  assume Heq: closure_of X0 Tx0 (A0 :\: B0) = (closure_of X0 Tx0 A0 :\: closure_of X0 Tx0 B0).
+  (** show 0 in left **)
+  claim H0X0: 0 :e X0.
+  { exact (binunionI1 {0} {1} 0 (SingI 0)). }
+  claim H0in_left: 0 :e closure_of X0 Tx0 (A0 :\: B0).
+  { apply (iffER (0 :e closure_of X0 Tx0 (A0 :\: B0))
+                 (forall U :e Tx0, 0 :e U -> U :/\: (A0 :\: B0) <> Empty)
+                 (closure_characterization X0 Tx0 (A0 :\: B0) 0 (indiscrete_topology_on X0) H0X0)).
+    let U. assume HU: U :e Tx0.
+    assume H0U: 0 :e U.
+    prove U :/\: (A0 :\: B0) <> Empty.
+    (** In the indiscrete topology, U is either Empty or X0; since 0 in U, we must have U = X0 **)
+    claim HUcases: U = Empty \/ U = X0.
+    { claim HU': U :e indiscrete_topology X0.
+      { exact HU. }
+      exact (iffEL (U :e indiscrete_topology X0) (U = Empty \/ U = X0) (indiscrete_open_iff X0 U) HU'). }
+	    apply HUcases.
+	    - assume HUe: U = Empty.
+	      apply FalseE.
+	      claim H0notU: 0 /:e U.
+	      { rewrite HUe.
+	        exact (EmptyE 0). }
+	      exact (H0notU H0U).
+	    - assume HUX: U = X0.
+	      rewrite HUX.
+      (** witness 1 in X0 \\ {0} **)
+      claim H1X0: 1 :e X0.
+      { exact (binunionI2 {0} {1} 1 (SingI 1)). }
+      claim H1notB0: 1 /:e B0.
+      { assume H1B0: 1 :e B0.
+        claim H10: 1 = 0.
+        { exact (SingE 0 1 H1B0). }
+        exact (neq_1_0 H10). }
+      claim H1in: 1 :e A0 :\: B0.
+      { apply setminusI.
+        - exact H1X0.
+        - exact H1notB0. }
+      claim H1in_inter: 1 :e X0 :/\: (A0 :\: B0).
+      { exact (binintersectI X0 (A0 :\: B0) 1 H1X0 H1in). }
+      exact (elem_implies_nonempty (X0 :/\: (A0 :\: B0)) 1 H1in_inter). }
+  (** show 0 not in right **)
+  claim H0in_clB: 0 :e closure_of X0 Tx0 B0.
+  { claim HB0sub: B0 c= X0.
+    { let x. assume Hx: x :e B0.
+      prove x :e X0.
+      claim Hxeq: x = 0.
+      { exact (SingE 0 x Hx). }
+      rewrite Hxeq.
+      exact (binunionI1 {0} {1} 0 (SingI 0)). }
+    exact (subset_of_closure X0 Tx0 B0 (indiscrete_topology_on X0) HB0sub 0 (SingI 0)). }
+  claim H0not_right: 0 /:e (closure_of X0 Tx0 A0 :\: closure_of X0 Tx0 B0).
+  { assume H0R: 0 :e (closure_of X0 Tx0 A0 :\: closure_of X0 Tx0 B0).
+    claim H0not_clB: 0 /:e closure_of X0 Tx0 B0.
+    { exact (setminusE2 (closure_of X0 Tx0 A0) (closure_of X0 Tx0 B0) 0 H0R). }
+    exact (H0not_clB H0in_clB). }
+  (** contradiction via equality **)
+  apply H0not_right.
+  rewrite <- Heq.
+  exact H0in_left.
 Qed.
 
 (** LATEX VERSION: Exercise 9: Closure of A×B in product is product of closures. **)
