@@ -19996,7 +19996,46 @@ Theorem seq_one_over_n_apply : forall n:set, n :e omega ->
   apply_fun seq_one_over_n n = inv_nat (ordsucc n).
 let n. assume Hn: n :e omega.
 prove apply_fun seq_one_over_n n = inv_nat (ordsucc n).
-admit.
+set f := seq_one_over_n.
+claim HinvIn: inv_nat (ordsucc n) :e {inv_nat (ordsucc n)}.
+{ exact (SingI (inv_nat (ordsucc n))). }
+claim HpairIn: (n, inv_nat (ordsucc n)) :e f.
+{ exact (lamI2 omega (fun k : set => {inv_nat (ordsucc k)}) n Hn (inv_nat (ordsucc n)) HinvIn). }
+claim Happair: (n, apply_fun f n) :e f.
+{ exact (Eps_i_ax (fun y:set => (n,y) :e f) (inv_nat (ordsucc n)) HpairIn). }
+apply (lamE omega (fun k : set => {inv_nat (ordsucc k)}) (n, apply_fun f n) Happair).
+let x0. assume Hx0_conj.
+apply Hx0_conj.
+assume Hx0 Hexy0.
+apply Hexy0.
+let y0. assume Hy0_conj.
+apply Hy0_conj.
+assume Hy0 Heq.
+claim HeqT: (n, apply_fun f n) = (x0, y0).
+{ rewrite <- (tuple_pair x0 y0).
+  exact Heq. }
+claim H0eq: (n, apply_fun f n) 0 = (x0, y0) 0.
+{ rewrite HeqT. reflexivity. }
+claim H1eq: (n, apply_fun f n) 1 = (x0, y0) 1.
+{ rewrite HeqT. reflexivity. }
+claim Hnx0: n = x0.
+{ prove n = x0.
+  rewrite <- (tuple_2_0_eq n (apply_fun f n)).
+  rewrite <- (tuple_2_0_eq x0 y0).
+  exact H0eq. }
+claim Happ: apply_fun f n = y0.
+{ prove apply_fun f n = y0.
+  rewrite <- (tuple_2_1_eq n (apply_fun f n)).
+  rewrite <- (tuple_2_1_eq x0 y0).
+  exact H1eq. }
+claim Hy0eq: y0 = inv_nat (ordsucc x0).
+{ exact (SingE (inv_nat (ordsucc x0)) y0 Hy0). }
+claim Hx0n: x0 = n.
+{ rewrite Hnx0. reflexivity. }
+rewrite Happ.
+rewrite Hy0eq.
+rewrite Hx0n.
+reflexivity.
 Qed.
 
 Theorem inv_nat_ordsucc_inj : forall n m:set,
