@@ -18329,6 +18329,66 @@ prove x :e X.
 exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx).
 Qed.
 
+(** Helper: closure is contained in any closed superset **)
+Theorem closure_subset_of_closed_superset : forall X Tx A C:set,
+  topology_on X Tx ->
+  A c= C ->
+  closed_in X Tx C ->
+  closure_of X Tx A c= C.
+let X Tx A C.
+assume Htop: topology_on X Tx.
+assume HAC: A c= C.
+assume HC: closed_in X Tx C.
+prove closure_of X Tx A c= C.
+let x. assume Hx: x :e closure_of X Tx A.
+prove x :e C.
+apply (xm (x :e C)).
+- assume HxC: x :e C. exact HxC.
+- assume HxnotC: x /:e C.
+  claim HCparts: C c= X /\ exists U :e Tx, C = X :\: U.
+  { exact (andER (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HC). }
+  claim HxX: x :e X.
+  { exact (closure_in_space X Tx A Htop x Hx). }
+  claim HcondA: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+  { exact (SepE2 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+  apply (andER (C c= X) (exists U :e Tx, C = X :\: U) HCparts).
+  let U. assume HUconj: U :e Tx /\ C = X :\: U.
+  claim HU: U :e Tx.
+  { exact (andEL (U :e Tx) (C = X :\: U) HUconj). }
+  claim HCeq: C = X :\: U.
+  { exact (andER (U :e Tx) (C = X :\: U) HUconj). }
+  claim HxU: x :e U.
+  { apply (xm (x :e U)).
+    - assume H. exact H.
+    - assume HxnotU: x /:e U.
+      apply FalseE.
+      apply HxnotC.
+      claim HxXU: x :e X :\: U.
+      { exact (setminusI X U x HxX HxnotU). }
+      rewrite HCeq.
+      exact HxXU. }
+  claim HUAne: U :/\: A <> Empty.
+  { exact (HcondA U HU HxU). }
+  claim HUAempty: U :/\: A = Empty.
+  { apply Empty_Subq_eq.
+    let y. assume Hy: y :e U :/\: A.
+    prove y :e Empty.
+    claim HyU: y :e U.
+    { exact (binintersectE1 U A y Hy). }
+    claim HyA: y :e A.
+    { exact (binintersectE2 U A y Hy). }
+    claim HyC: y :e C.
+    { exact (HAC y HyA). }
+    claim HyXU: y :e X :\: U.
+    { rewrite <- HCeq. exact HyC. }
+    claim HynotU: y /:e U.
+    { exact (setminusE2 X U y HyXU). }
+    apply FalseE.
+    exact (HynotU HyU). }
+  apply FalseE.
+  exact (HUAne HUAempty).
+Qed.
+
 (** Helper: closure of union contains union of closures **)
 Theorem closure_union_contains_union_closures : forall X Tx A B:set,
   topology_on X Tx -> A c= X -> B c= X ->
@@ -21147,7 +21207,40 @@ assume Htop: topology_on X Tx.
 assume HA: A c= X.
 assume HB: B c= X.
 prove closure_of X Tx (A :\/: B) = closure_of X Tx A :\/: closure_of X Tx B.
-admit.
+set clA := closure_of X Tx A.
+set clB := closure_of X Tx B.
+apply set_ext.
+- (** closure(A∪B) c= cl(A) ∪ cl(B) **)
+  claim Hsup: closure_of X Tx (A :\/: B) c= clA :\/: clB.
+  { (** clA ∪ clB is closed and contains A ∪ B **)
+    claim HclA_closed: closed_in X Tx clA.
+    { claim Hc: closure_of X Tx (closure_of X Tx A) = closure_of X Tx A /\ closed_in X Tx (closure_of X Tx A).
+      { exact (closure_idempotent_and_closed X Tx A Htop). }
+      exact (andER (closure_of X Tx (closure_of X Tx A) = closure_of X Tx A) (closed_in X Tx (closure_of X Tx A)) Hc). }
+    claim HclB_closed: closed_in X Tx clB.
+    { claim Hc: closure_of X Tx (closure_of X Tx B) = closure_of X Tx B /\ closed_in X Tx (closure_of X Tx B).
+      { exact (closure_idempotent_and_closed X Tx B Htop). }
+      exact (andER (closure_of X Tx (closure_of X Tx B) = closure_of X Tx B) (closed_in X Tx (closure_of X Tx B)) Hc). }
+    claim HclUnionClosed: closed_in X Tx (clA :\/: clB).
+    { exact (union_of_closed_is_closed X Tx clA clB Htop HclA_closed HclB_closed). }
+    claim HABsub: A :\/: B c= clA :\/: clB.
+    { let y. assume Hy: y :e A :\/: B.
+      apply (binunionE A B y Hy).
+      - assume HyA: y :e A.
+        claim HyclA: y :e clA.
+        { exact (subset_of_closure X Tx A Htop HA y HyA). }
+        exact (binunionI1 clA clB y HyclA).
+      - assume HyB: y :e B.
+        claim HyclB: y :e clB.
+        { exact (subset_of_closure X Tx B Htop HB y HyB). }
+        exact (binunionI2 clA clB y HyclB). }
+    exact (closure_subset_of_closed_superset X Tx (A :\/: B) (clA :\/: clB) Htop HABsub HclUnionClosed). }
+  let x. assume Hx: x :e closure_of X Tx (A :\/: B).
+  exact (Hsup x Hx).
+- (** cl(A) ∪ cl(B) c= closure(A∪B) **)
+  claim Hsub: clA :\/: clB c= closure_of X Tx (A :\/: B).
+  { exact (closure_union_contains_union_closures X Tx A B Htop HA HB). }
+  exact Hsub.
 Qed.
 
 (** from §17 Exercise 6(c): closure of an arbitrary union contains union of closures **)
