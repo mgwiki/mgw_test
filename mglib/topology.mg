@@ -19955,12 +19955,185 @@ Qed.
 (** LATEX VERSION: In T₁ spaces, x is a limit point of A iff every neighborhood of x meets A in infinitely many points. **)
 Theorem limit_points_infinite_neighborhoods : forall X Tx A x:set,
   T1_space X Tx ->
+  x :e X ->
   (limit_point_of X Tx A x <->
   (forall U :e Tx, x :e U -> infinite (U :/\: A))).
 let X Tx A x.
 assume HT1: T1_space X Tx.
+assume HxX: x :e X.
 prove limit_point_of X Tx A x <-> (forall U :e Tx, x :e U -> infinite (U :/\: A)).
-admit. (** in T1 space, singletons closed; limit point means every open nbhd meets A infinitely **)
+claim Htop: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (forall F:set, F c= X -> finite F -> closed_in X Tx F) HT1). }
+claim Hfinite_closed: forall F:set, F c= X -> finite F -> closed_in X Tx F.
+{ exact (andER (topology_on X Tx) (forall F:set, F c= X -> finite F -> closed_in X Tx F) HT1). }
+apply iffI.
+- (** limit point gives infinite intersections **)
+  assume Hlim: limit_point_of X Tx A x.
+  prove forall U :e Tx, x :e U -> infinite (U :/\: A).
+  let U. assume HU: U :e Tx. assume HxU: x :e U.
+  prove infinite (U :/\: A).
+  prove ~finite (U :/\: A).
+  assume Hfin: finite (U :/\: A).
+  claim Hnbr: forall W:set, W :e Tx -> x :e W -> exists y:set, y :e A /\ y <> x /\ y :e W.
+  { exact (andER (topology_on X Tx /\ x :e X) (forall W:set, W :e Tx -> x :e W -> exists y:set, y :e A /\ y <> x /\ y :e W)
+           Hlim). }
+  apply (xm (x :e A)).
+  + (** case x in A: remove all other A-points from U **)
+    assume HxA: x :e A.
+    set F := (U :/\: A) :\: {x}.
+    claim HFsub: F c= U :/\: A.
+    { exact (setminus_Subq (U :/\: A) {x}). }
+    claim HFfin: finite F.
+    { exact (Subq_finite (U :/\: A) Hfin F HFsub). }
+    claim HFsubX: F c= X.
+    { let z. assume HzF: z :e F.
+      claim HzUA: z :e U :/\: A.
+      { exact (setminusE1 (U :/\: A) {x} z HzF). }
+      claim HzU: z :e U.
+      { exact (binintersectE1 U A z HzUA). }
+      claim HUsubX: U c= X.
+      { exact (topology_elem_subset X Tx U Htop HU). }
+      exact (HUsubX z HzU). }
+    claim HFclosed: closed_in X Tx F.
+    { exact (Hfinite_closed F HFsubX HFfin). }
+    claim HXFopen: open_in X Tx (X :\: F).
+    { exact (open_of_closed_complement X Tx F HFclosed). }
+    claim HXF: X :\: F :e Tx.
+    { exact (andER (topology_on X Tx) (X :\: F :e Tx) HXFopen). }
+    set V := U :/\: (X :\: F).
+    claim HV: V :e Tx.
+    { exact (topology_binintersect_closed X Tx U (X :\: F) Htop HU HXF). }
+    claim HxnotF: x /:e F.
+    { assume HxF: x :e F.
+      claim HxnotSing: x /:e {x}.
+      { exact (setminusE2 (U :/\: A) {x} x HxF). }
+      exact (HxnotSing (SingI x)). }
+    claim HxXF: x :e X :\: F.
+    { exact (setminusI X F x HxX HxnotF). }
+    claim HxV: x :e V.
+    { exact (binintersectI U (X :\: F) x HxU HxXF). }
+	    apply (Hnbr V HV HxV).
+	    let y. assume Hyconj: y :e A /\ y <> x /\ y :e V.
+	    claim HyAneq: y :e A /\ y <> x.
+	    { exact (andEL (y :e A /\ y <> x) (y :e V) Hyconj). }
+	    claim HyA: y :e A.
+	    { exact (andEL (y :e A) (y <> x) HyAneq). }
+	    claim Hyneq: y <> x.
+	    { exact (andER (y :e A) (y <> x) HyAneq). }
+	    claim HyV: y :e V.
+	    { exact (andER (y :e A /\ y <> x) (y :e V) Hyconj). }
+    claim HyU: y :e U.
+    { exact (binintersectE1 U (X :\: F) y HyV). }
+    claim HyXF: y :e X :\: F.
+    { exact (binintersectE2 U (X :\: F) y HyV). }
+    claim HyNotF: y /:e F.
+    { exact (setminusE2 X F y HyXF). }
+    claim HyUA: y :e U :/\: A.
+    { exact (binintersectI U A y HyU HyA). }
+    claim HyNotSing: y /:e {x}.
+    { assume HySing: y :e {x}.
+      claim Hyeq: y = x.
+      { exact (SingE x y HySing). }
+      exact (Hyneq Hyeq). }
+    claim HyF: y :e F.
+    { exact (setminusI (U :/\: A) {x} y HyUA HyNotSing). }
+    exact (HyNotF HyF).
+  + (** case x not in A: remove all A-points from U **)
+    assume HxnotA: x /:e A.
+    set F := U :/\: A.
+    claim HFsubX: F c= X.
+    { let z. assume HzF: z :e F.
+      claim HzU: z :e U.
+      { exact (binintersectE1 U A z HzF). }
+      claim HUsubX: U c= X.
+      { exact (topology_elem_subset X Tx U Htop HU). }
+      exact (HUsubX z HzU). }
+    claim HFclosed: closed_in X Tx F.
+    { exact (Hfinite_closed F HFsubX Hfin). }
+    claim HXFopen: open_in X Tx (X :\: F).
+    { exact (open_of_closed_complement X Tx F HFclosed). }
+    claim HXF: X :\: F :e Tx.
+    { exact (andER (topology_on X Tx) (X :\: F :e Tx) HXFopen). }
+    set V := U :/\: (X :\: F).
+    claim HV: V :e Tx.
+    { exact (topology_binintersect_closed X Tx U (X :\: F) Htop HU HXF). }
+    claim HxnotF: x /:e F.
+    { assume HxF: x :e F.
+      claim HxA': x :e A.
+      { exact (binintersectE2 U A x HxF). }
+      exact (HxnotA HxA'). }
+    claim HxXF: x :e X :\: F.
+    { exact (setminusI X F x HxX HxnotF). }
+    claim HxV: x :e V.
+    { exact (binintersectI U (X :\: F) x HxU HxXF). }
+	    apply (Hnbr V HV HxV).
+	    let y. assume Hyconj: y :e A /\ y <> x /\ y :e V.
+	    claim HyAneq: y :e A /\ y <> x.
+	    { exact (andEL (y :e A /\ y <> x) (y :e V) Hyconj). }
+	    claim HyA: y :e A.
+	    { exact (andEL (y :e A) (y <> x) HyAneq). }
+	    claim Hyneq: y <> x.
+	    { exact (andER (y :e A) (y <> x) HyAneq). }
+	    claim HyV: y :e V.
+	    { exact (andER (y :e A /\ y <> x) (y :e V) Hyconj). }
+    claim HyU: y :e U.
+    { exact (binintersectE1 U (X :\: F) y HyV). }
+    claim HyXF: y :e X :\: F.
+    { exact (binintersectE2 U (X :\: F) y HyV). }
+    claim HyNotF: y /:e F.
+    { exact (setminusE2 X F y HyXF). }
+    claim HyF: y :e F.
+    { exact (binintersectI U A y HyU HyA). }
+    exact (HyNotF HyF).
+- (** infinite intersections give limit point **)
+  assume Hinf: forall U :e Tx, x :e U -> infinite (U :/\: A).
+  prove limit_point_of X Tx A x.
+  prove topology_on X Tx /\ x :e X /\ forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+  apply andI.
+  - apply andI.
+    + exact Htop.
+    + exact HxX.
+  - let U. assume HU: U :e Tx. assume HxU: x :e U.
+    claim HinfUA: infinite (U :/\: A).
+    { exact (Hinf U HU HxU). }
+    claim Hnotfin: ~finite (U :/\: A).
+    { exact HinfUA. }
+    apply (xm (exists y:set, y :e U :/\: A /\ y <> x)).
+    + assume Hex. apply Hex.
+      let y. assume Hypair.
+      witness y.
+      claim HyUA: y :e U :/\: A.
+      { exact (andEL (y :e U :/\: A) (y <> x) Hypair). }
+      claim Hyneq: y <> x.
+      { exact (andER (y :e U :/\: A) (y <> x) Hypair). }
+      claim HyU: y :e U.
+      { exact (binintersectE1 U A y HyUA). }
+      claim HyA: y :e A.
+      { exact (binintersectE2 U A y HyUA). }
+      apply andI.
+      - apply andI.
+        + exact HyA.
+        + exact Hyneq.
+      - exact HyU.
+    + assume Hno: ~(exists y:set, y :e U :/\: A /\ y <> x).
+      claim HsubSing: U :/\: A c= {x}.
+      { let y. assume HyUA: y :e U :/\: A.
+        apply (xm (y = x)).
+        - assume Heq: y = x.
+          rewrite Heq.
+          exact (SingI x).
+        - assume Hneq: ~(y = x).
+          apply FalseE.
+          apply Hno.
+          witness y.
+          apply andI.
+          - exact HyUA.
+          - assume Heq: y = x.
+            exact (Hneq Heq). }
+	      claim HfinUA: finite (U :/\: A).
+	      { exact (Subq_finite {x} (Sing_finite x) (U :/\: A) HsubSing). }
+	      apply FalseE.
+	      exact (Hnotfin HfinUA).
 Qed.
 
 (** from §17 Theorem 17.10: uniqueness of limits in Hausdorff spaces **) 
