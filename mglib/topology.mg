@@ -6740,7 +6740,7 @@ prove topology_on X T /\ U :/\: V :e T.
 apply andI.
 - exact HTx.
 - exact (topology_binintersect_closed X T U V HTx HUinT HVinT).
-Qed.
+  Qed.
 
 (** from §12: closed set as complement of open set **)
 (** LATEX VERSION: A set C is closed in X (with topology T) if there exists an open set U∈T whose complement in X equals C. **)
@@ -17668,6 +17668,25 @@ rewrite (binunion_eq_Union_UPair U V).
 reflexivity.
 Qed.
 
+(** Helper: Binary union of open sets is open **)
+Theorem lemma_union_two_open : forall X T U V:set,
+  topology_on X T -> U :e T -> V :e T -> U :\/: V :e T.
+let X T U V.
+assume HT: topology_on X T.
+assume HU: U :e T.
+assume HV: V :e T.
+prove U :\/: V :e T.
+claim HUFamSub: UPair U V c= T.
+{ let W. assume HW: W :e UPair U V.
+  apply (UPairE W U V HW).
+  - assume HWeqU. rewrite HWeqU. exact HU.
+  - assume HWeqV. rewrite HWeqV. exact HV. }
+claim HUnion: Union (UPair U V) :e T.
+{ exact (topology_union_closed X T (UPair U V) HT HUFamSub). }
+rewrite <- (Union_UPair_eq_binunion U V).
+exact HUnion.
+Qed.
+
 (** Helper: intersection of two closed sets is closed **)
 Theorem intersection_of_closed_is_closed : forall X Tx C D:set,
   topology_on X Tx -> closed_in X Tx C -> closed_in X Tx D ->
@@ -17709,26 +17728,17 @@ apply andI.
     let V. assume HV_conj: V :e Tx /\ D = X :\: V.
     claim HV: V :e Tx.
     { exact (andEL (V :e Tx) (D = X :\: V) HV_conj). }
-    claim HDeq: D = X :\: V.
-    { exact (andER (V :e Tx) (D = X :\: V) HV_conj). }
-    (** Set W = U ∪ V, which is open **)
-	    set W := U :\/: V.
-	    claim HW_open: W :e Tx.
-	    { (** U ∪ V = ⋃{U, V} is open **)
-	      claim HUV_eq: U :\/: V = Union (UPair U V).
-	      { exact (binunion_eq_Union_UPair U V). }
-	      rewrite HUV_eq.
-	      claim HUPairSub: UPair U V c= Tx.
-	      { let W0. assume HW0: W0 :e UPair U V.
-	        apply (UPairE W0 U V HW0).
-        - assume HW0eqU: W0 = U. rewrite HW0eqU. exact HU.
-        - assume HW0eqV: W0 = V. rewrite HW0eqV. exact HV. }
-      exact (topology_union_closed X Tx (UPair U V) Htop HUPairSub). }
-	    witness W.
-	    apply andI.
-	    * exact HW_open.
-	    * (** Prove C ∩ D = X \ W using De Morgan lemma **)
-	      prove C :/\: D = X :\: W.
+      claim HDeq: D = X :\: V.
+      { exact (andER (V :e Tx) (D = X :\: V) HV_conj). }
+      (** Set W = U ∪ V, which is open **)
+      set W := U :\/: V.
+      claim HW_open: W :e Tx.
+      { exact (lemma_union_two_open X Tx U V Htop HU HV). }
+      witness W.
+      apply andI.
+      * exact HW_open.
+      * (** Prove C ∩ D = X \ W using De Morgan lemma **)
+        prove C :/\: D = X :\: W.
 	      rewrite HCeq.
 	      rewrite HDeq.
 	      claim HWdef: W = U :\/: V.
@@ -18444,26 +18454,11 @@ claim HDeM: (X :\: U) :/\: (X :\: V) = X :\: (U :\/: V).
         exact (HxninUV HxUV). }
 (** So A = X \ (U∪V), and since U,V ∈ Tx, we have U∪V ∈ Tx **)
   claim HUV: U :\/: V :e Tx.
-  { (** U ∪ V = ⋃{U, V}, and {U, V} ⊆ Tx, so by topology_union_closed, Union {U,V} ∈ Tx **)
-    claim HUV_eq: U :\/: V = Union (UPair U V).
-    { exact (binunion_eq_Union_UPair U V). }
-    rewrite HUV_eq.
-    claim HUPairSub: UPair U V c= Tx.
-    { let W.
-      assume HW: W :e UPair U V.
-    prove W :e Tx.
-    apply (UPairE W U V HW).
-    * assume HWeqU: W = U.
-      rewrite HWeqU.
-      exact HUinTx.
-    * assume HWeqV: W = V.
-      rewrite HWeqV.
-      exact HVinTx. }
-  exact (topology_union_closed X Tx (UPair U V) HTx HUPairSub). }
-(** Now A = X \ (U∪V) where U∪V ∈ Tx **)
-claim HAeqFinal: A = X :\: (U :\/: V).
-{ rewrite HAeqSetminus.
-  exact HDeM. }
+  { exact (lemma_union_two_open X Tx U V HTx HUinTx HVinTx). }
+  (** Now A = X \ (U∪V) where U∪V ∈ Tx **)
+  claim HAeqFinal: A = X :\: (U :\/: V).
+  { rewrite HAeqSetminus.
+    exact HDeM. }
 (** Therefore A is closed in X **)
 prove topology_on X Tx /\ (A c= X /\ exists U0 :e Tx, A = X :\: U0).
 apply andI.
@@ -19459,22 +19454,10 @@ apply andI.
   { let x. assume Hx. claim HxA: x :e A. { exact (setminusE1 A U x Hx). }
     exact (HAsub x HxA). }
   claim HVU: V :\/: U :e Tx.
-  { set UFam := UPair V U.
-	    claim HUFamsub: UFam c= Tx.
-	    { let W. assume HW: W :e UFam.
-	      apply (UPairE W V U HW).
-	      - assume HWeqV. rewrite HWeqV. exact HV.
-	      - assume HWeqU. rewrite HWeqU. exact HUtop. }
-	    claim HUnionVU: Union UFam = V :\/: U.
-	    { claim HUFamdef: UFam = UPair V U.
-	      { reflexivity. }
-	      rewrite HUFamdef.
-	      exact (Union_UPair_eq_binunion V U). }
-	    rewrite <- HUnionVU.
-	    exact (topology_union_closed X Tx UFam Htop HUFamsub). }
-	  claim HAminusU_eq_XminusVU: A :\: U = X :\: (V :\/: U).
-	  { rewrite HAeq.
-	    apply set_ext.
+  { exact (lemma_union_two_open X Tx V U Htop HV HUtop). }
+  claim HAminusU_eq_XminusVU: A :\: U = X :\: (V :\/: U).
+  { rewrite HAeq.
+    apply set_ext.
     + let x. assume Hx: x :e (X :\: V) :\: U.
       claim HxXV: x :e X :\: V.
       { exact (setminusE1 (X :\: V) U x Hx). }
