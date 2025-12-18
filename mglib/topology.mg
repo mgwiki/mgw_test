@@ -12375,9 +12375,7 @@ prove Union UFam :e countable_complement_topology X.
 (** This follows from countable_complement_topology_on plus the union axiom of topology_on **)
 claim Htop : topology_on X (countable_complement_topology X).
 { exact (countable_complement_topology_on X). }
-claim Hsub : UFam c= countable_complement_topology X.
-{ exact (PowerE (countable_complement_topology X) UFam HUFam). }
-exact (topology_union_closed X (countable_complement_topology X) UFam Htop Hsub).
+exact (topology_union_axiom X (countable_complement_topology X) Htop UFam HUFam).
 Qed.
 
 (** helper: witness sets for infinite-complement failure, for infinite ambient sets **) 
