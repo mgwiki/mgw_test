@@ -15955,11 +15955,9 @@ Qed.
     (1) UPair is unordered, need ordered pairs (tuple notation)
     (2) setprod x y is X×Y cartesian product, need (x,y) for single ordered pair **)
 Definition projection1 : set -> set -> set := fun X Y =>
-  {p :e Power (setprod (setprod X Y) X) |
-     exists x:set, exists y:set, x :e X /\ y :e Y /\ p = ((x,y), x)}.
+  {(p, p 0) | p :e setprod X Y}.
 Definition projection2 : set -> set -> set := fun X Y =>
-  {p :e Power (setprod (setprod X Y) Y) |
-     exists x:set, exists y:set, x :e X /\ y :e Y /\ p = ((x,y), y)}.
+  {(p, p 1) | p :e setprod X Y}.
 
 (** from §15 Theorem 15.2: projection preimages form a subbasis **) 
 (** LATEX VERSION: The inverse images of opens under projections give a subbasis for the product topology. **)
@@ -22206,43 +22204,47 @@ Qed.
 
 (** from §18 Theorem 18.4: maps into products **) 
 (** LATEX VERSION: A map into a product is continuous iff its coordinate functions are continuous. **)
+Definition pair_map : set -> set -> set -> set := fun A f g =>
+  {(a, (apply_fun f a, apply_fun g a)) | a :e A}.
+
 Theorem maps_into_products : forall A X Tx Y Ty f g:set,
-  continuous_map A Tx X Ty f ->
+  continuous_map A Tx X Tx f ->
   continuous_map A Tx Y Ty g ->
-  continuous_map A Tx (setprod X Y) (product_topology X Ty Y Ty) (f :/\: g).
+  continuous_map A Tx (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
 let A X Tx Y Ty f g.
-assume Hf: continuous_map A Tx X Ty f.
+assume Hf: continuous_map A Tx X Tx f.
 assume Hg: continuous_map A Tx Y Ty g.
-prove continuous_map A Tx (setprod X Y) (product_topology X Ty Y Ty) (f :/\: g).
-admit. (** map x↦(f(x),g(x)) continuous iff components continuous; axiom cannot be used directly due to Megalodon limitation **)
+prove continuous_map A Tx (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
+admit. (** build the pairing graph and check preimages of basic opens in the product are open **)
 Qed.
 
 (** from §19 Definition: product projections and universal property **) 
 (** LATEX VERSION: Projection maps from a product space; universal property characterizes the product topology. **)
-Definition projection_map : set -> set -> set := fun X Y => projection1 X Y.
+Definition projection_map1 : set -> set -> set := fun X Y => projection1 X Y.
+Definition projection_map2 : set -> set -> set := fun X Y => projection2 X Y.
 
 (** Helper: projection maps are continuous **)
 Axiom projection_maps_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
-  continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
-  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y) /\
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y).
 
 (** Helper: universal property of products - maps into products **)
 Axiom maps_into_products_axiom : forall A X Tx Y Ty f g:set,
-  continuous_map A Tx X Ty f ->
+  continuous_map A Tx X Tx f ->
   continuous_map A Tx Y Ty g ->
-  continuous_map A Tx (setprod X Y) (product_topology X Ty Y Ty) (f :/\: g).
+  continuous_map A Tx (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
 
 (** LATEX VERSION: Projections from a product are continuous. **)
 Theorem projections_are_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
-  continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
-  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y) /\
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y).
 let X Tx Y Ty.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
-prove continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) /\
-  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X).
+prove continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y) /\
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y).
 exact (projection_maps_continuous X Tx Y Ty HTx HTy).
 Qed.
 
@@ -22251,30 +22253,30 @@ Qed.
 Theorem product_topology_universal : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   exists Tprod:set, topology_on (setprod X Y) Tprod /\
-    continuous_map (setprod X Y) Tprod X Tx (projection_map X Y) /\
-    continuous_map (setprod X Y) Tprod Y Ty (projection_map Y X).
+    continuous_map (setprod X Y) Tprod X Tx (projection_map1 X Y) /\
+    continuous_map (setprod X Y) Tprod Y Ty (projection_map2 X Y).
 let X Tx Y Ty.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
 prove exists Tprod:set, topology_on (setprod X Y) Tprod /\
-    continuous_map (setprod X Y) Tprod X Tx (projection_map X Y) /\
-    continuous_map (setprod X Y) Tprod Y Ty (projection_map Y X).
+    continuous_map (setprod X Y) Tprod X Tx (projection_map1 X Y) /\
+    continuous_map (setprod X Y) Tprod Y Ty (projection_map2 X Y).
 (** Witness the product topology **)
 witness (product_topology X Tx Y Ty).
 (** Goal is: A /\ B /\ C which is left-associative: (A /\ B) /\ C **)
 apply andI.
 - (** First part: topology_on (setprod X Y) (product_topology X Tx Y Ty) /\
-      continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y) **)
+      continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y) **)
   apply andI.
   + (** product_topology is a topology **)
     exact (product_topology_is_topology X Tx Y Ty HTx HTy).
   + (** first projection is continuous **)
-    exact (andEL (continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y))
-                 (continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X))
+    exact (andEL (continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y))
+                 (continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y))
                  (projections_are_continuous X Tx Y Ty HTx HTy)).
 - (** second projection is continuous **)
-  exact (andER (continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map X Y))
-               (continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map Y X))
+  exact (andER (continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y))
+               (continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y))
                (projections_are_continuous X Tx Y Ty HTx HTy)).
 Qed.
 
