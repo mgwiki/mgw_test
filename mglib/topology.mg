@@ -14179,6 +14179,50 @@ rewrite Heq.
 exact (inv_nat_real n HnO).
 Qed.
 
+(** helper: elements of K_set are positive reals **)
+Theorem inv_nat_pos : forall n:set, n :e omega :\: {0} -> Rlt 0 (inv_nat n).
+let n. assume HnIn: n :e omega :\: {0}.
+claim HnO: n :e omega.
+{ exact (setminusE1 omega {0} n HnIn). }
+claim Hnnot0: n /:e {0}.
+{ exact (setminusE2 omega {0} n HnIn). }
+claim HnNat: nat_p n.
+{ exact (omega_nat_p n HnO). }
+claim HnCase: n = 0 \/ exists k:set, nat_p k /\ n = ordsucc k.
+{ exact (nat_inv n HnNat). }
+claim Hexk: exists k:set, nat_p k /\ n = ordsucc k.
+{ apply (HnCase (exists k:set, nat_p k /\ n = ordsucc k)).
+  - assume Hn0: n = 0.
+    apply FalseE.
+    claim Hnin0: n :e {0}.
+    { rewrite Hn0. exact (SingI 0). }
+    exact (Hnnot0 Hnin0).
+  - assume H. exact H. }
+apply Hexk.
+let k. assume Hkconj.
+claim Hkeq: n = ordsucc k.
+{ exact (andER (nat_p k) (n = ordsucc k) Hkconj). }
+claim HkNat: nat_p k.
+{ exact (andEL (nat_p k) (n = ordsucc k) Hkconj). }
+claim HkOrd: ordinal k.
+{ exact (nat_p_ordinal k HkNat). }
+claim Hpos: 0 < n.
+{ rewrite Hkeq.
+  exact (ordinal_ordsucc_pos k HkOrd). }
+claim HSn: SNo n.
+{ exact (omega_SNo n HnO). }
+claim Hposcase: inv_nat n = recip_SNo_pos n.
+{ exact (recip_SNo_poscase n Hpos). }
+claim HrecipPos: 0 < recip_SNo_pos n.
+{ exact (recip_SNo_pos_is_pos n HSn Hpos). }
+claim HinvPos: 0 < inv_nat n.
+{ rewrite Hposcase.
+  exact HrecipPos. }
+claim HinvR: inv_nat n :e R.
+{ exact (inv_nat_real n HnO). }
+exact (RltI 0 (inv_nat n) real_0 HinvR HinvPos).
+Qed.
+
 Definition R_K_basis : set :=
   \/_ a :e R, {open_interval a b :\: K_set|b :e R}.
 
