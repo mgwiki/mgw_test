@@ -6670,9 +6670,9 @@ Theorem topology_binintersect_axiom : forall X T:set,
 let X T.
 assume HTx: topology_on X T.
 prove forall U :e T, forall V :e T, U :/\: V :e T.
-exact (andER ((((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)))
-             (forall U :e T, forall V :e T, U :/\: V :e T)
-             HTx).
+let U. assume HU: U :e T.
+let V. assume HV: V :e T.
+exact (topology_binintersect_closed X T U V HTx HU HV).
 Qed.
 
 (** Helper: Empty set is open in any topology **)
