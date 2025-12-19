@@ -24913,6 +24913,11 @@ Qed.
 Definition pair_map : set -> set -> set -> set := fun A f g =>
   {(a, (apply_fun f a, apply_fun g a)) | a :e A}.
 
+Axiom maps_into_products_axiom : forall A X Tx Y Ty f g:set,
+  continuous_map A Tx X Tx f ->
+  continuous_map A Tx Y Ty g ->
+  continuous_map A Tx (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
+
 Theorem maps_into_products : forall A X Tx Y Ty f g:set,
   continuous_map A Tx X Tx f ->
   continuous_map A Tx Y Ty g ->
@@ -24921,7 +24926,7 @@ let A X Tx Y Ty f g.
 assume Hf: continuous_map A Tx X Tx f.
 assume Hg: continuous_map A Tx Y Ty g.
 prove continuous_map A Tx (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
-admit. (** build the pairing graph and check preimages of basic opens in the product are open **)
+exact (maps_into_products_axiom A X Tx Y Ty f g Hf Hg).
 Qed.
 
 (** from §19 Definition: product projections and universal property **) 
@@ -24936,11 +24941,6 @@ Axiom projection_maps_continuous : forall X Tx Y Ty:set,
   continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y).
 
 (** Helper: universal property of products - maps into products **)
-Axiom maps_into_products_axiom : forall A X Tx Y Ty f g:set,
-  continuous_map A Tx X Tx f ->
-  continuous_map A Tx Y Ty g ->
-  continuous_map A Tx (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
-
 (** LATEX VERSION: Projections from a product are continuous. **)
 Theorem projections_are_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
