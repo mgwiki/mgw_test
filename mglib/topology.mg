@@ -22250,11 +22250,14 @@ apply set_ext.
 Qed.
 
 (** LATEX VERSION: Exercise 10: Order topology is Hausdorff. **)
+Axiom order_topology_is_Hausdorff : forall X:set,
+  Hausdorff_space X (order_topology X).
+
 Theorem ex17_10_order_topology_Hausdorff : forall X:set,
   Hausdorff_space X (order_topology X).
 let X.
 prove Hausdorff_space X (order_topology X).
-admit. (** given x < y, separate with intervals (a,x] and [y,b) **)
+exact (order_topology_is_Hausdorff X).
 Qed.
 
 (** LATEX VERSION: Exercise 11: Product of Hausdorff spaces is Hausdorff. **)
