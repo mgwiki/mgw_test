@@ -6891,6 +6891,40 @@ apply andI.
   exact HUinT.
 Qed.
 
+(** Helper: binary union is union of a pair **)
+Theorem binunion_eq_Union_pair : forall X Y:set, X :\/: Y = Union {X,Y}.
+let X Y.
+apply set_ext.
+- let z. assume Hz: z :e X :\/: Y.
+  prove z :e Union {X,Y}.
+  apply (binunionE X Y z Hz).
+  - assume HzX: z :e X.
+    apply (UnionI {X,Y} z X).
+    + exact HzX.
+    + exact (UPairI1 X Y).
+  - assume HzY: z :e Y.
+    apply (UnionI {X,Y} z Y).
+    + exact HzY.
+    + exact (UPairI2 X Y).
+- let z. assume Hz: z :e Union {X,Y}.
+  prove z :e X :\/: Y.
+  apply (UnionE_impred {X,Y} z Hz).
+  let Z.
+  assume HzZ: z :e Z.
+  assume HZ: Z :e {X,Y}.
+  claim Hor: Z = X \/ Z = Y.
+  { exact (UPairE Z X Y HZ). }
+  apply Hor.
+  - assume HZX: Z = X.
+    claim HzX: z :e X.
+    { rewrite <- HZX. exact HzZ. }
+    exact (binunionI1 X Y z HzX).
+  - assume HZY: Z = Y.
+    claim HzY: z :e Y.
+    { rewrite <- HZY. exact HzZ. }
+    exact (binunionI2 X Y z HzY).
+Qed.
+
 (** from §12: "finer than" / "coarser than" topologies **)
 (** LATEX VERSION: Given topologies T and T' on X, T' is finer than T if T' ⊃ T; T is coarser than T'; the topologies are comparable if one contains the other. **)
 Definition finer_than : set -> set -> prop := fun T' T => T c= T'.
@@ -15085,6 +15119,107 @@ apply set_ext.
   { assume HxXU : x :e X :\: U.
     exact ((setminusE2 X U x HxXU) HxU). }
   exact (setminusI X (X :\: U) x HxX HxNot).
+Qed.
+
+(** from §12: finite intersections of closed sets are closed **)
+(** LATEX VERSION: Finite intersections of closed sets are closed because their complements are finite unions of open sets. **)
+Theorem binintersect_closed : forall X T C D:set,
+  closed_in X T C ->
+  closed_in X T D ->
+  closed_in X T (C :/\: D).
+let X T C D.
+assume HC: closed_in X T C.
+assume HD: closed_in X T D.
+prove closed_in X T (C :/\: D).
+claim HTx: topology_on X T.
+{ exact (andEL (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U) HC). }
+claim HCsubX: C c= X.
+{ exact (andEL (C c= X) (exists U :e T, C = X :\: U)
+        (andER (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U) HC)). }
+claim HDsubX: D c= X.
+{ exact (andEL (D c= X) (exists U :e T, D = X :\: U)
+        (andER (topology_on X T) (D c= X /\ exists U :e T, D = X :\: U) HD)). }
+claim HopenC: open_in X T (X :\: C).
+{ exact (open_of_closed_complement X T C HC). }
+claim HopenD: open_in X T (X :\: D).
+{ exact (open_of_closed_complement X T D HD). }
+claim HXCdT: X :\: C :e T.
+{ exact (andER (topology_on X T) (X :\: C :e T) HopenC). }
+claim HXDdT: X :\: D :e T.
+{ exact (andER (topology_on X T) (X :\: D :e T) HopenD). }
+claim Hunion_compl_in_T: (X :\: C) :\/: (X :\: D) :e T.
+{ claim Hpairsub: {X :\: C, X :\: D} c= T.
+  { let U. assume HU: U :e {X :\: C, X :\: D}.
+    claim Hor: U = X :\: C \/ U = X :\: D.
+    { exact (UPairE U (X :\: C) (X :\: D) HU). }
+    apply Hor.
+    - assume HUeq: U = X :\: C.
+      rewrite HUeq. exact HXCdT.
+    - assume HUeq: U = X :\: D.
+      rewrite HUeq. exact HXDdT.
+  }
+  claim HUnionPair: Union {X :\: C, X :\: D} :e T.
+  { exact (topology_union_closed X T {X :\: C, X :\: D} HTx Hpairsub). }
+  rewrite (binunion_eq_Union_pair (X :\: C) (X :\: D)).
+  exact HUnionPair.
+}
+prove topology_on X T /\ (C :/\: D c= X /\ exists U :e T, C :/\: D = X :\: U).
+apply andI.
+- exact HTx.
+- apply andI.
+  + exact (Subq_tra (C :/\: D) C X (binintersect_Subq_1 C D) HCsubX).
+  + witness ((X :\: C) :\/: (X :\: D)).
+    apply andI.
+    * exact Hunion_compl_in_T.
+    * prove C :/\: D = X :\: ((X :\: C) :\/: (X :\: D)).
+      rewrite (setminus_binunion_eq_binintersect X (X :\: C) (X :\: D)).
+      rewrite (setminus_setminus_eq X C HCsubX).
+      rewrite (setminus_setminus_eq X D HDsubX).
+      reflexivity.
+Qed.
+
+(** from §12: finite unions of closed sets are closed **)
+(** LATEX VERSION: Finite unions of closed sets are closed because their complements are finite intersections of open sets. **)
+Theorem binunion_closed : forall X T C D:set,
+  closed_in X T C ->
+  closed_in X T D ->
+  closed_in X T (C :\/: D).
+let X T C D.
+assume HC: closed_in X T C.
+assume HD: closed_in X T D.
+prove closed_in X T (C :\/: D).
+claim HTx: topology_on X T.
+{ exact (andEL (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U) HC). }
+claim HCsubX: C c= X.
+{ exact (andEL (C c= X) (exists U :e T, C = X :\: U)
+        (andER (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U) HC)). }
+claim HDsubX: D c= X.
+{ exact (andEL (D c= X) (exists U :e T, D = X :\: U)
+        (andER (topology_on X T) (D c= X /\ exists U :e T, D = X :\: U) HD)). }
+claim HopenC: open_in X T (X :\: C).
+{ exact (open_of_closed_complement X T C HC). }
+claim HopenD: open_in X T (X :\: D).
+{ exact (open_of_closed_complement X T D HD). }
+claim Hinter_compl_in_T: (X :\: C) :/\: (X :\: D) :e T.
+{ claim HXCdT: X :\: C :e T.
+  { exact (andER (topology_on X T) (X :\: C :e T) HopenC). }
+  claim HXDdT: X :\: D :e T.
+  { exact (andER (topology_on X T) (X :\: D :e T) HopenD). }
+  exact (topology_binintersect_closed X T (X :\: C) (X :\: D) HTx HXCdT HXDdT).
+}
+prove topology_on X T /\ (C :\/: D c= X /\ exists U :e T, C :\/: D = X :\: U).
+apply andI.
+- exact HTx.
+- apply andI.
+  + exact (binunion_Subq_min C D X HCsubX HDsubX).
+  + witness ((X :\: C) :/\: (X :\: D)).
+    apply andI.
+    * exact Hinter_compl_in_T.
+    * prove C :\/: D = X :\: ((X :\: C) :/\: (X :\: D)).
+      rewrite (setminus_binintersect_eq_binunion X (X :\: C) (X :\: D)).
+      rewrite (setminus_setminus_eq X C HCsubX).
+      rewrite (setminus_setminus_eq X D HDsubX).
+      reflexivity.
 Qed.
 
 (** from §13: complements of finite sets are open in the standard topology on R **)
