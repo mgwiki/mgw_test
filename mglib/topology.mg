@@ -25550,19 +25550,19 @@ Qed.
 (** LATEX VERSION: If Y is a subspace of X, a separation of Y is a pair of disjoint nonempty sets A,B whose union is Y, neither containing a limit point of the other. **)
 Theorem separation_subspace_limit_points : forall X Tx Y A B:set,
   topology_on X Tx -> Y c= X ->
-  ((A :e subspace_topology X Tx Y /\ B :e subspace_topology X Tx Y) /\ separation_of Y A B)
+  (((A :e subspace_topology X Tx Y /\ B :e subspace_topology X Tx Y) /\ separation_of Y A B)
   <->
   (separation_of Y A B
     /\ ~(exists b:set, b :e B /\ limit_point_of X Tx A b)
-    /\ ~(exists a:set, a :e A /\ limit_point_of X Tx B a)).
+    /\ ~(exists a:set, a :e A /\ limit_point_of X Tx B a))).
 let X Tx Y A B.
 assume HTx: topology_on X Tx.
 assume HY: Y c= X.
-prove ((A :e subspace_topology X Tx Y /\ B :e subspace_topology X Tx Y) /\ separation_of Y A B)
+prove (((A :e subspace_topology X Tx Y /\ B :e subspace_topology X Tx Y) /\ separation_of Y A B)
   <->
   (separation_of Y A B
     /\ ~(exists b:set, b :e B /\ limit_point_of X Tx A b)
-    /\ ~(exists a:set, a :e A /\ limit_point_of X Tx B a)).
+    /\ ~(exists a:set, a :e A /\ limit_point_of X Tx B a))).
 admit. (** requires closure in subspace and limit-point characterization **)
 Qed.
 
