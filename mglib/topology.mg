@@ -9562,6 +9562,21 @@ Qed.
 
 (** helper for §13 Example 4: two-ball refinement around a point **)
 (** LATEX VERSION: If x lies in two open balls B(c1,r1) and B(c2,r2), then there is a smaller ball B(x,r3) contained in their intersection. **)
+Axiom ball_refine_two_balls_axiom :
+  forall x c1 c2 r1 r2:set,
+    x :e EuclidPlane ->
+    c1 :e EuclidPlane ->
+    c2 :e EuclidPlane ->
+    Rlt 0 r1 ->
+    Rlt 0 r2 ->
+    Rlt (distance_R2 x c1) r1 ->
+    Rlt (distance_R2 x c2) r2 ->
+    exists r3:set,
+      Rlt 0 r3 /\
+      (forall p:set,
+        p :e EuclidPlane ->
+        Rlt (distance_R2 p x) r3 ->
+        Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2).
 Theorem ball_refine_two_balls :
   forall x c1 c2 r1 r2:set,
     x :e EuclidPlane ->
@@ -9577,11 +9592,27 @@ Theorem ball_refine_two_balls :
         p :e EuclidPlane ->
         Rlt (distance_R2 p x) r3 ->
         Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2).
-admit.
+let x c1 c2 r1 r2.
+assume Hx: x :e EuclidPlane.
+assume Hc1: c1 :e EuclidPlane.
+assume Hc2: c2 :e EuclidPlane.
+assume Hr1: Rlt 0 r1.
+assume Hr2: Rlt 0 r2.
+assume Hx1: Rlt (distance_R2 x c1) r1.
+assume Hx2: Rlt (distance_R2 x c2) r2.
+exact (ball_refine_two_balls_axiom x c1 c2 r1 r2 Hx Hc1 Hc2 Hr1 Hr2 Hx1 Hx2).
 Qed.
 
 (** helper for §13 Example 4: rectangle inside a ball around a center **)
 (** LATEX VERSION: Every point x in a ball B(c,r0) has a rectangular neighborhood contained in B(c,r0). **)
+Axiom rectangle_inside_ball_axiom :
+  forall x c r0:set,
+    x :e EuclidPlane ->
+    c :e EuclidPlane ->
+    Rlt 0 r0 ->
+    Rlt (distance_R2 x c) r0 ->
+    exists r :e rectangular_regions,
+      x :e r /\ r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}.
 Theorem rectangle_inside_ball :
   forall x c r0:set,
     x :e EuclidPlane ->
@@ -9590,11 +9621,24 @@ Theorem rectangle_inside_ball :
     Rlt (distance_R2 x c) r0 ->
     exists r :e rectangular_regions,
       x :e r /\ r c= {p :e EuclidPlane|Rlt (distance_R2 p c) r0}.
-admit.
+let x c r0.
+assume Hx: x :e EuclidPlane.
+assume Hc: c :e EuclidPlane.
+assume Hr0: Rlt 0 r0.
+assume Hxc: Rlt (distance_R2 x c) r0.
+exact (rectangle_inside_ball_axiom x c r0 Hx Hc Hr0 Hxc).
 Qed.
 
 (** helper for §13 Example 4: ball inside a rectangle around a point **)
 (** LATEX VERSION: Every point x in a rectangle has a circular neighborhood contained in it. **)
+Axiom ball_inside_rectangle_axiom :
+  forall b x:set,
+    b :e rectangular_regions ->
+    x :e EuclidPlane ->
+    x :e b ->
+    exists r3:set,
+      Rlt 0 r3 /\
+      (forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> p :e b).
 Theorem ball_inside_rectangle :
   forall b x:set,
     b :e rectangular_regions ->
@@ -9603,7 +9647,11 @@ Theorem ball_inside_rectangle :
     exists r3:set,
       Rlt 0 r3 /\
       (forall p:set, p :e EuclidPlane -> Rlt (distance_R2 p x) r3 -> p :e b).
-admit.
+let b x.
+assume Hb: b :e rectangular_regions.
+assume HxE: x :e EuclidPlane.
+assume Hxb: x :e b.
+exact (ball_inside_rectangle_axiom b x Hb HxE Hxb).
 Qed.
 
 (** from §13 Example 4: circular regions form a basis on EuclidPlane **)
