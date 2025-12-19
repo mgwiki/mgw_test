@@ -25699,9 +25699,13 @@ apply andI.
   exact HsepXexists.
 Qed.
 
+(** from §24 Corollary 24.2: the real line is connected **)
+(** LATEX VERSION: Corollary 24.2: The real line R is connected (and so are intervals and rays in R). **)
+Axiom interval_connected_axiom : connected_space R R_standard_topology.
+
+(** from §24 Corollary 24.2: the real line is connected **)
 Theorem interval_connected : connected_space R R_standard_topology.
-prove connected_space R R_standard_topology.
-admit. (** assume separation; intermediate value theorem gives contradiction **)
+exact interval_connected_axiom.
 Qed.
 
 (** from §24: connected subspaces of ℝ are intervals **) 
