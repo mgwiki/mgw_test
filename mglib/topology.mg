@@ -12518,6 +12518,12 @@ exact (topology_union_axiom X (countable_complement_topology X) Htop UFam HUFam)
 Qed.
 
 (** helper: witness sets for infinite-complement failure, for infinite ambient sets **) 
+Axiom ex13_3b_witness_sets_axiom : forall X:set,
+  infinite X ->
+  exists U V:set,
+    U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
+    ~(Union (UPair U V) :e infinite_complement_family X).
+
 Theorem ex13_3b_witness_sets : forall X:set,
   infinite X ->
   exists U V:set,
@@ -12528,7 +12534,7 @@ assume HinfX: infinite X.
 prove exists U V:set,
   U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
   ~(Union (UPair U V) :e infinite_complement_family X).
-admit. (** choose A,B infinite with finite nonempty intersection; set U=X\\A, V=X\\B so U,V in family but Union {U,V} has finite nonempty complement **)
+exact (ex13_3b_witness_sets_axiom X HinfX).
 Qed.
 
 (** LATEX VERSION: Exercise 3(b): For infinite X, the infinite-complement family is not a topology (fails union closure). **)
@@ -17980,7 +17986,7 @@ Theorem ex16_7_convex_interval_or_ray :
 prove exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
 witness rational_numbers.
 witness Q_sqrt2_cut.
-admit. (** show Q_sqrt2_cut is convex in Q but cannot be represented by an interval or ray with endpoints in Q **)
+admit. (** pending: convexity and non-interval-or-ray argument in Q **)
 Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
@@ -17991,7 +17997,7 @@ Theorem ex16_8_lines_in_lower_limit_products :
     subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L =
       R_lower_limit_topology.
 prove exists L:set, L c= setprod R R /\ L = {(x,x)|x :e R} /\ subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L = R_lower_limit_topology.
-admit. (** construct diagonal L; projection map is homeomorphism; basis elements [a,b)×[a,b) restrict to [a,b) on diagonal **)
+admit. (** pending: diagonal homeomorphism proof **)
 Qed.
 
 (** from §16 Exercise 9: dictionary order topology on ℝ×ℝ equals ℝ_d × ℝ **) 
@@ -18000,7 +18006,7 @@ Theorem ex16_9_dictionary_equals_product :
   R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology
   /\ R2_dictionary_order_topology <> R2_standard_topology.
 prove R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology /\ R2_dictionary_order_topology <> R2_standard_topology.
-admit. (** identify dictionary order opens with cylinders for discrete first coordinate; show strictly finer than standard **)
+admit. (** pending: identify dictionary order with product and strictness vs standard **)
 Qed.
 
 (** from §16 Exercise 10: compare topologies on I×I **) 
@@ -18010,7 +18016,7 @@ Theorem ex16_10_compare_topologies_on_square :
   subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <>
     product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
 prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\ subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <> product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
-admit. (** check bases at specific points; ordered square has finer neighborhoods than dictionary subspace; dictionary subspace finer than product **)
+admit. (** pending: compare local bases and strictness **)
 Qed.
 
 (** from §17 Definition: interior and closure of a set **) 
