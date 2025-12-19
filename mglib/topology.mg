@@ -6925,6 +6925,31 @@ apply set_ext.
     exact (binunionI2 X Y z HzY).
 Qed.
 
+(** Helper: binary union of members of a topology is in the topology **)
+(** LATEX VERSION: Since U ∪ V is the union of the pair {U,V}, any topology is closed under binary unions. **)
+Theorem topology_binunion_closed : forall X T U V:set,
+  topology_on X T -> U :e T -> V :e T -> U :\/: V :e T.
+let X T U V.
+assume HTx: topology_on X T.
+assume HU: U :e T.
+assume HV: V :e T.
+prove U :\/: V :e T.
+claim Hpairsub: {U,V} c= T.
+{ let W. assume HW: W :e {U,V}.
+  claim Hor: W = U \/ W = V.
+  { exact (UPairE W U V HW). }
+  apply Hor.
+  - assume HWU: W = U.
+    rewrite HWU. exact HU.
+  - assume HWV: W = V.
+    rewrite HWV. exact HV.
+}
+claim HUnionPair: Union {U,V} :e T.
+{ exact (topology_union_closed X T {U,V} HTx Hpairsub). }
+rewrite (binunion_eq_Union_pair U V).
+exact HUnionPair.
+Qed.
+
 (** from §12: "finer than" / "coarser than" topologies **)
 (** LATEX VERSION: Given topologies T and T' on X, T' is finer than T if T' ⊃ T; T is coarser than T'; the topologies are comparable if one contains the other. **)
 Definition finer_than : set -> set -> prop := fun T' T => T c= T'.
