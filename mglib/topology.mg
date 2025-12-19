@@ -25546,47 +25546,55 @@ apply iffI.
     exact Hclopenexists.
 Qed.
 
-(** from §23 Lemma 23.1: separations in subspaces via limit points **) 
+(** from §23 Lemma 23.1: separations in subspaces via limit points **)
+(** LATEX VERSION: If Y is a subspace of X, a separation of Y is a pair of disjoint nonempty sets A,B whose union is Y, neither containing a limit point of the other. **)
 Theorem separation_subspace_limit_points : forall X Tx Y A B:set,
-  topology_on X Tx ->
-  A :/\: B = Empty -> A :\/: B = Y -> open_in X Tx A -> open_in X Tx B ->
-  exists a b:set, limit_point_of X Tx A a /\ limit_point_of X Tx B b /\ a :e Y /\ b :e Y.
+  topology_on X Tx -> Y c= X ->
+  ((A :e subspace_topology X Tx Y /\ B :e subspace_topology X Tx Y) /\ separation_of Y A B)
+  <->
+  (separation_of Y A B
+    /\ ~(exists b:set, b :e B /\ limit_point_of X Tx A b)
+    /\ ~(exists a:set, a :e A /\ limit_point_of X Tx B a)).
 let X Tx Y A B.
 assume HTx: topology_on X Tx.
-assume Hdisj: A :/\: B = Empty.
-assume Hunion: A :\/: B = Y.
-assume HA: open_in X Tx A.
-assume HB: open_in X Tx B.
-prove exists a b:set, limit_point_of X Tx A a /\ limit_point_of X Tx B b /\ a :e Y /\ b :e Y.
-admit. (** if Y separated by A,B; closure contains limit points; closures disjoint means separation fails **)
+assume HY: Y c= X.
+prove ((A :e subspace_topology X Tx Y /\ B :e subspace_topology X Tx Y) /\ separation_of Y A B)
+  <->
+  (separation_of Y A B
+    /\ ~(exists b:set, b :e B /\ limit_point_of X Tx A b)
+    /\ ~(exists a:set, a :e A /\ limit_point_of X Tx B a)).
+admit. (** requires closure in subspace and limit-point characterization **)
 Qed.
 
-(** from §23 Lemma 23.2: connected subspace lies in one side of a separation **) 
+(** from §23 Lemma 23.2: connected subspace lies in one side of a separation **)
+(** LATEX VERSION: If C and D form a separation of X and Y is a connected subspace of X, then Y lies entirely within either C or D. **)
 Theorem connected_subset_in_separation_side : forall X Tx C D Y:set,
-  topology_on X Tx ->
-  connected_space Y Tx ->
-  C :/\: D = Empty -> C :\/: D = X -> open_in X Tx C -> open_in X Tx D ->
+  topology_on X Tx -> Y c= X ->
+  connected_space Y (subspace_topology X Tx Y) ->
+  C :e Tx -> D :e Tx -> separation_of X C D ->
   Y c= C \/ Y c= D.
 let X Tx C D Y.
 assume HTx: topology_on X Tx.
-assume HY: connected_space Y Tx.
-assume Hdisj: C :/\: D = Empty.
-assume Hunion: C :\/: D = X.
-assume HC: open_in X Tx C.
-assume HD: open_in X Tx D.
+assume HYX: Y c= X.
+assume HY: connected_space Y (subspace_topology X Tx Y).
+assume HC: C :e Tx.
+assume HD: D :e Tx.
+assume Hsep: separation_of X C D.
 prove Y c= C \/ Y c= D.
-admit. (** if Y intersects both C and D, then Y∩C and Y∩D separate Y; contradicts connectedness of Y
-        aby: open_in_subspace_iff conj_myprob_9276_1_20251124_010744 prop_ext_2 EmptyAx discrete_open_all In_5Fno2cycle . **)
+admit. (** use that C:/\:Y and D:/\:Y separate Y in the subspace topology if Y meets both **)
 Qed.
 
-(** from §23 Theorem 23.3: union of connected sets with common point is connected **) 
+(** from §23 Theorem 23.3: union of connected sets with common point is connected **)
+(** LATEX VERSION: If each Aα is connected and the Aα have a point in common, then their union is connected. **)
 Theorem union_connected_common_point : forall X Tx F:set,
   topology_on X Tx ->
+  (forall C:set, C :e F -> C c= X) ->
   (forall C:set, C :e F -> connected_space C (subspace_topology X Tx C)) ->
   (exists x:set, forall C:set, C :e F -> x :e C) ->
   connected_space (Union F) (subspace_topology X Tx (Union F)).
 let X Tx F.
 assume HTx: topology_on X Tx.
+assume HFsub: forall C:set, C :e F -> C c= X.
 assume HF: forall C:set, C :e F -> connected_space C (subspace_topology X Tx C).
 assume Hcommon: exists x:set, forall C:set, C :e F -> x :e C.
 prove connected_space (Union F) (subspace_topology X Tx (Union F)).
