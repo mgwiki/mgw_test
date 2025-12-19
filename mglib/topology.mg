@@ -6747,6 +6747,17 @@ apply andI.
 Definition closed_in : set -> set -> set -> prop := fun X T C =>
   topology_on X T /\ (C c= X /\ exists U :e T, C = X :\: U).
 
+(** Helper: Closed set is a subset of X **)
+Theorem closed_in_subset : forall X T C:set,
+  closed_in X T C -> C c= X.
+let X T C.
+assume HC: closed_in X T C.
+prove C c= X.
+claim HCparts: C c= X /\ exists U :e T, C = X :\: U.
+{ exact (andER (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U) HC). }
+exact (andEL (C c= X) (exists U :e T, C = X :\: U) HCparts).
+Qed.
+
 (** from §12: complement of open set is closed **)
 (** LATEX VERSION: If U is open in topology T on X, then X\\U is closed in that topology. **)
 Theorem closed_of_open_complement : forall X T U:set, topology_on X T -> U :e T -> closed_in X T (X :\: U).
