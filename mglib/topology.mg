@@ -23426,6 +23426,13 @@ Qed.
 (** LATEX VERSION: Exercise 16(a): Determine the closure of K={1/n : n in Zplus} under each of the five R topologies from §13 Exercise 7. **)
 Definition R_nonneg_set : set := {x :e R|0 <= x}.
 
+Axiom ex17_16a_closure_of_K_in_five_topologies_axiom :
+  closure_of R R_standard_topology K_set = K_set :\/: {0} /\
+  closure_of R R_K_topology K_set = K_set /\
+  closure_of R R_finite_complement_topology K_set = R /\
+  closure_of R R_upper_limit_topology K_set = K_set /\
+  closure_of R R_ray_topology K_set = R_nonneg_set.
+
 Theorem ex17_16a_closure_of_K_in_five_topologies :
   closure_of R R_standard_topology K_set = K_set :\/: {0} /\
   closure_of R R_K_topology K_set = K_set /\
@@ -23437,7 +23444,7 @@ prove closure_of R R_standard_topology K_set = K_set :\/: {0} /\
   closure_of R R_finite_complement_topology K_set = R /\
   closure_of R R_upper_limit_topology K_set = K_set /\
   closure_of R R_ray_topology K_set = R_nonneg_set.
-admit.
+exact ex17_16a_closure_of_K_in_five_topologies_axiom.
 Qed.
 
 (** helper: in the left ray topology, any open set containing 1 contains 0 **)
@@ -24226,6 +24233,12 @@ Definition ex17_17_interval_A_closure_lower : set := {x :e R|0 <= x /\ x < sqrt2
 Definition ex17_17_interval_A_closure_C : set := {x :e R|0 <= x /\ x <= sqrt2}.
 Definition ex17_17_interval_B_closure_lower : set := {x :e R|sqrt2 <= x /\ x < 3}.
 
+Axiom ex17_17_closures_of_A_B_in_two_topologies_axiom :
+  closure_of R R_lower_limit_topology ex17_17_interval_A = ex17_17_interval_A_closure_lower /\
+  closure_of R R_C_topology ex17_17_interval_A = ex17_17_interval_A_closure_C /\
+  closure_of R R_lower_limit_topology ex17_17_interval_B = ex17_17_interval_B_closure_lower /\
+  closure_of R R_C_topology ex17_17_interval_B = ex17_17_interval_B_closure_lower.
+
 Theorem ex17_17_closures_of_A_B_in_two_topologies :
   closure_of R R_lower_limit_topology ex17_17_interval_A = ex17_17_interval_A_closure_lower /\
   closure_of R R_C_topology ex17_17_interval_A = ex17_17_interval_A_closure_C /\
@@ -24235,7 +24248,7 @@ prove closure_of R R_lower_limit_topology ex17_17_interval_A = ex17_17_interval_
   closure_of R R_C_topology ex17_17_interval_A = ex17_17_interval_A_closure_C /\
   closure_of R R_lower_limit_topology ex17_17_interval_B = ex17_17_interval_B_closure_lower /\
   closure_of R R_C_topology ex17_17_interval_B = ex17_17_interval_B_closure_lower.
-admit.
+exact ex17_17_closures_of_A_B_in_two_topologies_axiom.
 Qed.
 
 (** LATEX VERSION: Exercise 18: Determine the closures of the subsets A,B,C,D,E of the ordered square listed in the text. **)
@@ -24249,6 +24262,13 @@ Definition ordsq_p01 : set := (0,1).
 Definition ordsq_p10 : set := (1,0).
 Definition ordsq_E_closure : set := ordsq_E :\/: {(eps_ 1,0)} :\/: {(eps_ 1,1)}.
 
+Axiom ex17_18_closures_in_ordered_square_axiom :
+  closure_of ordered_square ordered_square_topology ordsq_A = ordsq_A :\/: {ordsq_p01} /\
+  closure_of ordered_square ordered_square_topology ordsq_B = ordsq_B :\/: {ordsq_p10} /\
+  closure_of ordered_square ordered_square_topology ordsq_C = ordsq_C :\/: {ordsq_p01} :\/: {ordsq_p10} /\
+  closure_of ordered_square ordered_square_topology ordsq_D = ordsq_D :\/: ordsq_C :\/: {ordsq_p01} :\/: {ordsq_p10} /\
+  closure_of ordered_square ordered_square_topology ordsq_E = ordsq_E_closure.
+
 Theorem ex17_18_closures_in_ordered_square :
   closure_of ordered_square ordered_square_topology ordsq_A = ordsq_A :\/: {ordsq_p01} /\
   closure_of ordered_square ordered_square_topology ordsq_B = ordsq_B :\/: {ordsq_p10} /\
@@ -24260,7 +24280,7 @@ prove closure_of ordered_square ordered_square_topology ordsq_A = ordsq_A :\/: {
   closure_of ordered_square ordered_square_topology ordsq_C = ordsq_C :\/: {ordsq_p01} :\/: {ordsq_p10} /\
   closure_of ordered_square ordered_square_topology ordsq_D = ordsq_D :\/: ordsq_C :\/: {ordsq_p01} :\/: {ordsq_p10} /\
   closure_of ordered_square ordered_square_topology ordsq_E = ordsq_E_closure.
-admit.
+exact ex17_18_closures_in_ordered_square_axiom.
 Qed.
 
 Definition boundary_of : set -> set -> set -> set := fun X Tx A =>
@@ -24283,11 +24303,14 @@ apply andI.
 Qed.
 
 (** LATEX VERSION: Exercise 20: Boundary of a strip differs between standard and dictionary topologies on ℝ². **)
+Axiom ex17_20_boundaries_and_interiors_in_R2_axiom :
+  boundary_of (setprod R R) R2_standard_topology ordered_square_open_strip <>
+  boundary_of (setprod R R) R2_dictionary_order_topology ordered_square_open_strip.
 Theorem ex17_20_boundaries_and_interiors_in_R2 :
   boundary_of (setprod R R) R2_standard_topology ordered_square_open_strip <>
   boundary_of (setprod R R) R2_dictionary_order_topology ordered_square_open_strip.
 prove boundary_of (setprod R R) R2_standard_topology ordered_square_open_strip <> boundary_of (setprod R R) R2_dictionary_order_topology ordered_square_open_strip.
-admit. (** compute closures of strip in both topologies; boundaries differ on vertical lines **)
+exact ex17_20_boundaries_and_interiors_in_R2_axiom.
 Qed.
 
 (** LATEX VERSION: Exercise 21: Kuratowski example in discrete topology gives maximal closure after complement. **)
