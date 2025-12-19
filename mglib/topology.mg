@@ -25601,19 +25601,22 @@ prove connected_space (Union F) (subspace_topology X Tx (Union F)).
 admit. (** union of connected sets with common point is connected; separation would separate one Cᵢ **)
 Qed.
 
-(** from §23 Theorem 23.4: adjoining limit points preserves connectedness **) 
-Theorem connected_with_limit_points : forall X Tx A b:set,
-  topology_on X Tx ->
+(** from §23 Theorem 23.4: adjoining limit points preserves connectedness **)
+(** LATEX VERSION: If A is connected and A ⊂ B ⊂ cl(A), then B is connected. **)
+Theorem connected_with_limit_points : forall X Tx A B:set,
+  topology_on X Tx -> A c= X -> B c= X ->
   connected_space A (subspace_topology X Tx A) ->
-  limit_point_of X Tx A b ->
-  connected_space (A :\/: {b}) (subspace_topology X Tx (A :\/: {b})).
-let X Tx A b.
+  A c= B -> B c= closure_of X Tx A ->
+  connected_space B (subspace_topology X Tx B).
+let X Tx A B.
 assume HTx: topology_on X Tx.
+assume HAX: A c= X.
+assume HBX: B c= X.
 assume HA: connected_space A (subspace_topology X Tx A).
-assume Hb: limit_point_of X Tx A b.
-prove connected_space (A :\/: {b}) (subspace_topology X Tx (A :\/: {b})).
-admit. (** any separation of A∪{b} separates A or isolates b; contradicts connectedness of A or limit point property
-        aby: conj_myprob_9294_1_20251124_010913 separation_subspace_limit_points binunion_idr binunionI2 SingE connected_space�f connected_iff_no_nontrivial_clopen SingI binunion_idl ordsucc�f not_ordinal_Sing1 subspace_topology�f prop_ext_2 . **)
+assume HAB: A c= B.
+assume HBcl: B c= closure_of X Tx A.
+prove connected_space B (subspace_topology X Tx B).
+admit. (** if B had a separation, Lemma 23.2 puts A in one side; closure(A) stays in that side; contradict nonemptiness of the other **)
 Qed.
 
 (** Helper axioms for continuous_image_connected **)
