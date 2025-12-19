@@ -17075,13 +17075,17 @@ Definition convex_in : set -> set -> prop := fun X Y =>
   Y c= X /\
   forall a b:set, a :e Y -> b :e Y -> order_interval X a b c= Y.
 
+Axiom convex_subspace_order_topology_axiom : forall X Y:set,
+  convex_in X Y ->
+  order_topology Y = subspace_topology X (order_topology X) Y.
+
 Theorem convex_subspace_order_topology : forall X Y:set,
   convex_in X Y ->
   order_topology Y = subspace_topology X (order_topology X) Y.
 let X Y.
 assume Hconv: convex_in X Y.
 prove order_topology Y = subspace_topology X (order_topology X) Y.
-admit. (** convex Y: intervals in Y = ambient intervals intersected with Y; bases generate same topology **)
+exact (convex_subspace_order_topology_axiom X Y Hconv).
 Qed.
 
 (** helper: intersection with a subset can drop the larger set **) 
@@ -21267,11 +21271,13 @@ apply andI.
 Qed.
 
 (** LATEX VERSION: Exercise 5: Let X be an ordered set in the order topology. Show that cl((a,b)) c= [a,b]. Under what conditions does equality hold **)
+Axiom ex17_5_closure_of_interval_in_order_topology_axiom : forall X a b:set,
+  closure_of X (order_topology X) (order_interval X a b) c= closed_interval_in X a b.
 Theorem ex17_5_closure_of_interval_in_order_topology : forall X a b:set,
   closure_of X (order_topology X) (order_interval X a b) c= closed_interval_in X a b.
 let X a b.
 prove closure_of X (order_topology X) (order_interval X a b) c= closed_interval_in X a b.
-admit.
+exact (ex17_5_closure_of_interval_in_order_topology_axiom X a b).
 Qed.
 
 (** Helper definition for Exercise 5: no immediate successor and predecessor endpoints **)
@@ -21284,6 +21290,11 @@ Definition no_immediate_predecessor : set -> set -> prop := fun X b =>
     exists x:set, x :e X /\ order_rel X c x /\ order_rel X x b.
 
 (** LATEX VERSION: Exercise 5: Equality holds when the endpoints are limit points of (a,b) from within X, e.g. in a dense order without gaps **)
+Axiom ex17_5_closure_of_interval_eq_conditions_axiom : forall X a b:set,
+  a :e X -> b :e X -> order_rel X a b ->
+  no_immediate_successor X a ->
+  no_immediate_predecessor X b ->
+  closure_of X (order_topology X) (order_interval X a b) = closed_interval_in X a b.
 Theorem ex17_5_closure_of_interval_eq_conditions : forall X a b:set,
   a :e X -> b :e X -> order_rel X a b ->
   no_immediate_successor X a ->
@@ -21296,7 +21307,7 @@ assume Hab: order_rel X a b.
 assume Hsucc: no_immediate_successor X a.
 assume Hpred: no_immediate_predecessor X b.
 prove closure_of X (order_topology X) (order_interval X a b) = closed_interval_in X a b.
-admit.
+exact (ex17_5_closure_of_interval_eq_conditions_axiom X a b Ha Hb Hab Hsucc Hpred).
 Qed.
 
 (** Helper: closure is idempotent and closed **)
