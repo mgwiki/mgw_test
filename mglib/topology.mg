@@ -6950,6 +6950,28 @@ rewrite (binunion_eq_Union_pair U V).
 exact HUnionPair.
 Qed.
 
+(** Helper: binary union of open sets is open **)
+(** LATEX VERSION: The union of two open sets is open. **)
+Theorem binunion_open : forall X T U V:set,
+  open_in X T U ->
+  open_in X T V ->
+  open_in X T (U :\/: V).
+let X T U V.
+assume HU: open_in X T U.
+assume HV: open_in X T V.
+prove open_in X T (U :\/: V).
+claim HTx: topology_on X T.
+{ exact (andEL (topology_on X T) (U :e T) HU). }
+claim HUinT: U :e T.
+{ exact (andER (topology_on X T) (U :e T) HU). }
+claim HVinT: V :e T.
+{ exact (andER (topology_on X T) (V :e T) HV). }
+prove topology_on X T /\ (U :\/: V) :e T.
+apply andI.
+- exact HTx.
+- exact (topology_binunion_closed X T U V HTx HUinT HVinT).
+Qed.
+
 (** from §12: "finer than" / "coarser than" topologies **)
 (** LATEX VERSION: Given topologies T and T' on X, T' is finer than T if T' ⊃ T; T is coarser than T'; the topologies are comparable if one contains the other. **)
 Definition finer_than : set -> set -> prop := fun T' T => T c= T'.
