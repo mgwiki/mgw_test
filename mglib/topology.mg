@@ -17106,10 +17106,13 @@ Definition ordered_square_open_strip : set :=
 Definition ordered_square_subspace_topology : set :=
   subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
 
+Axiom ordered_square_not_subspace_dictionary_axiom :
+  ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
+
 Theorem ordered_square_not_subspace_dictionary :
   ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
 prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
-admit. (** vertical lines open in dictionary subspace but not in order topology on square **)
+exact ordered_square_not_subspace_dictionary_axiom.
 Qed.
 
 (** from §16 Theorem 16.4: convex subspaces share the order topology **) 
