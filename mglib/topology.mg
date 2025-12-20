@@ -16517,12 +16517,31 @@ reflexivity.
 Qed.
 
 Definition const_family : set -> set -> set := fun I X => {(i,X)|i :e I}.
+
+(** Helper: apply_fun for const_family **)
+Theorem const_family_apply : forall I X i:set,
+  i :e I -> apply_fun (const_family I X) i = X.
+let I X i.
+assume Hi: i :e I.
+prove apply_fun (const_family I X) i = X.
+exact (const_fun_apply I X i Hi).
+Qed.
+
 Definition product_component : set -> set -> set := fun Xi i => (apply_fun Xi i) 0.
 Definition product_component_topology : set -> set -> set := fun Xi i => (apply_fun Xi i) 1.
 
 (** family of spaces as a family of pairs (X_i, T_i) **) 
 Definition const_space_family : set -> set -> set -> set := fun I X Tx =>
   {(i,(X,Tx))|i :e I}.
+
+(** Helper: apply_fun for const_space_family **)
+Theorem const_space_family_apply : forall I X Tx i:set,
+  i :e I -> apply_fun (const_space_family I X Tx) i = (X,Tx).
+let I X Tx i.
+assume Hi: i :e I.
+prove apply_fun (const_space_family I X Tx) i = (X,Tx).
+exact (const_fun_apply I (X,Tx) i Hi).
+Qed.
 
 Definition space_family_set : set -> set -> set := fun Xi i => (apply_fun Xi i) 0.
 Definition space_family_topology : set -> set -> set := fun Xi i => (apply_fun Xi i) 1.
