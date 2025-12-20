@@ -26018,16 +26018,49 @@ Axiom path_between_is_continuous : forall X Tx x y p:set,
 
 Axiom zero_one_in_unit_interval : 0 :e unit_interval /\ 1 :e unit_interval.
 
-Axiom separation_has_elements : forall X U V:set,
+Theorem separation_has_elements : forall X U V:set,
   separation_of X U V ->
   (exists x:set, x :e U) /\ (exists y:set, y :e V).
+let X U V. assume Hsep.
+claim H1: (((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty.
+{ exact (andEL ((((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+               (U :\/: V = X) Hsep). }
+claim H2: ((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty.
+{ exact (andEL (((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty)
+               (V <> Empty) H1). }
+claim HUne: U <> Empty.
+{ exact (andER (((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty)) (U <> Empty) H2). }
+claim HVne: V <> Empty.
+{ exact (andER ((((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty)) (V <> Empty) H1). }
+apply andI.
+- exact (nonempty_has_element U HUne).
+- exact (nonempty_has_element V HVne).
+Qed.
 
-Axiom separation_subsets : forall X U V:set,
+Theorem separation_subsets : forall X U V:set,
   separation_of X U V ->
   U c= X /\ V c= X.
+let X U V. assume Hsep.
+claim H1: (((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty.
+{ exact (andEL ((((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+               (U :\/: V = X) Hsep). }
+claim H2: ((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty.
+{ exact (andEL (((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty)
+               (V <> Empty) H1). }
+claim H3: (U :e Power X /\ V :e Power X) /\ U :/\: V = Empty.
+{ exact (andEL ((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty)
+               (U <> Empty) H2). }
+claim Hleft: U :e Power X /\ V :e Power X.
+{ exact (andEL (U :e Power X /\ V :e Power X) (U :/\: V = Empty) H3). }
+apply andI.
+- exact (PowerE X U (andEL (U :e Power X) (V :e Power X) Hleft)).
+- exact (PowerE X V (andER (U :e Power X) (V :e Power X) Hleft)).
+Qed.
 
-Axiom subset_elem : forall A B x:set,
+Theorem subset_elem : forall A B x:set,
   A c= B -> x :e A -> x :e B.
+let A B x. assume HAB Hx. exact (HAB x Hx).
+Qed.
 
 (** from §24: path connected implies connected **) 
 Theorem path_connected_implies_connected : forall X Tx:set,
