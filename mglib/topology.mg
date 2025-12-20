@@ -16553,6 +16553,48 @@ Qed.
 Definition subspace_topology : set -> set -> set -> set :=
   fun X Tx Y => {U :e Power Y | exists V :e Tx, U = V :/\: Y}.
 
+(** helper: subspace topology on whole space equals original topology **)
+Theorem subspace_topology_whole : forall X Tx:set,
+  topology_on X Tx ->
+  subspace_topology X Tx X = Tx.
+let X Tx.
+assume HTx: topology_on X Tx.
+prove subspace_topology X Tx X = Tx.
+apply set_ext.
+- let U. assume HU: U :e subspace_topology X Tx X.
+  prove U :e Tx.
+  claim Hex: exists V :e Tx, U = V :/\: X.
+  { exact (SepE2 (Power X) (fun U0:set => exists V :e Tx, U0 = V :/\: X) U HU). }
+  apply Hex.
+  let V. assume HVpair.
+  claim HV: V :e Tx.
+  { exact (andEL (V :e Tx) (U = V :/\: X) HVpair). }
+  claim HUeq: U = V :/\: X.
+  { exact (andER (V :e Tx) (U = V :/\: X) HVpair). }
+  claim HVsub: V c= X.
+  { exact (topology_elem_subset X Tx V HTx HV). }
+  claim HVeql: V :/\: X = V.
+  { exact (binintersect_Subq_eq_1 V X HVsub). }
+  claim HUeqV: U = V.
+  { rewrite HUeq. exact HVeql. }
+  rewrite HUeqV.
+  exact HV.
+- let U. assume HU: U :e Tx.
+  prove U :e subspace_topology X Tx X.
+  claim HUsub: U c= X.
+  { exact (topology_elem_subset X Tx U HTx HU). }
+  claim HUpow: U :e Power X.
+  { exact (PowerI X U HUsub). }
+  claim Hex: exists V :e Tx, U = V :/\: X.
+  { witness U.
+    apply andI.
+    - exact HU.
+    - prove U = U :/\: X.
+      rewrite (binintersect_Subq_eq_1 U X HUsub).
+      reflexivity. }
+  exact (SepI (Power X) (fun U0:set => exists V :e Tx, U0 = V :/\: X) U HUpow Hex).
+Qed.
+
 (** from §16: subspace topology is a topology **) 
 (** LATEX VERSION: The subspace topology on Y inherits the topology axioms. **)
 Theorem subspace_topology_is_topology : forall X Tx Y:set,
