@@ -15979,12 +15979,82 @@ exact (SingE y x H).
 Qed.
 
 (** Helper: coordinates of product elements **)
-Axiom setprod_coords_in : forall x y U V p:set,
+Theorem setprod_coords_in : forall x y U V p:set,
   p :e setprod {x} {y} -> p :e setprod U V -> x :e U /\ y :e V.
+let x y U V p.
+assume Hpxy: p :e setprod {x} {y}.
+assume HpUV: p :e setprod U V.
+prove x :e U /\ y :e V.
+claim Hp0x: p 0 :e {x}.
+{ exact (ap0_Sigma {x} (fun u => {y}) p Hpxy). }
+claim Hp1y: p 1 :e {y}.
+{ exact (ap1_Sigma {x} (fun u => {y}) p Hpxy). }
+claim Hp0_eq_x: p 0 = x.
+{ exact (singleton_elem (p 0) x Hp0x). }
+claim Hp1_eq_y: p 1 = y.
+{ exact (singleton_elem (p 1) y Hp1y). }
+claim Hp0U: p 0 :e U.
+{ exact (ap0_Sigma U (fun u => V) p HpUV). }
+claim Hp1V: p 1 :e V.
+{ exact (ap1_Sigma U (fun u => V) p HpUV). }
+apply andI.
+- prove x :e U.
+  rewrite <- Hp0_eq_x.
+  exact Hp0U.
+- prove y :e V.
+  rewrite <- Hp1_eq_y.
+  exact Hp1V.
+Qed.
 
 (** Helper: intersection of cartesian products **)
-Axiom setprod_intersection : forall U1 V1 U2 V2:set,
+Theorem setprod_intersection : forall U1 V1 U2 V2:set,
   setprod U1 V1 :/\: setprod U2 V2 = setprod (U1 :/\: U2) (V1 :/\: V2).
+let U1 V1 U2 V2.
+prove setprod U1 V1 :/\: setprod U2 V2 = setprod (U1 :/\: U2) (V1 :/\: V2).
+apply set_ext.
+- let p. assume Hp: p :e setprod U1 V1 :/\: setprod U2 V2.
+  prove p :e setprod (U1 :/\: U2) (V1 :/\: V2).
+  claim HpU1V1: p :e setprod U1 V1.
+  { exact (binintersectE1 (setprod U1 V1) (setprod U2 V2) p Hp). }
+  claim HpU2V2: p :e setprod U2 V2.
+  { exact (binintersectE2 (setprod U1 V1) (setprod U2 V2) p Hp). }
+  claim Hp0U1: p 0 :e U1.
+  { exact (ap0_Sigma U1 (fun u => V1) p HpU1V1). }
+  claim Hp1V1: p 1 :e V1.
+  { exact (ap1_Sigma U1 (fun u => V1) p HpU1V1). }
+  claim Hp0U2: p 0 :e U2.
+  { exact (ap0_Sigma U2 (fun u => V2) p HpU2V2). }
+  claim Hp1V2: p 1 :e V2.
+  { exact (ap1_Sigma U2 (fun u => V2) p HpU2V2). }
+  claim Hp0: p 0 :e U1 :/\: U2.
+  { exact (binintersectI U1 U2 (p 0) Hp0U1 Hp0U2). }
+  claim Hp1: p 1 :e V1 :/\: V2.
+  { exact (binintersectI V1 V2 (p 1) Hp1V1 Hp1V2). }
+  claim Heta: p = (p 0, p 1).
+  { exact (setprod_eta U1 V1 p HpU1V1). }
+  rewrite Heta.
+  exact (tuple_2_setprod (U1 :/\: U2) (V1 :/\: V2) (p 0) Hp0 (p 1) Hp1).
+- let p. assume Hp: p :e setprod (U1 :/\: U2) (V1 :/\: V2).
+  prove p :e setprod U1 V1 :/\: setprod U2 V2.
+  claim Hp0: p 0 :e U1 :/\: U2.
+  { exact (ap0_Sigma (U1 :/\: U2) (fun u => V1 :/\: V2) p Hp). }
+  claim Hp1: p 1 :e V1 :/\: V2.
+  { exact (ap1_Sigma (U1 :/\: U2) (fun u => V1 :/\: V2) p Hp). }
+  claim Hp0U1: p 0 :e U1.
+  { exact (binintersectE1 U1 U2 (p 0) Hp0). }
+  claim Hp0U2: p 0 :e U2.
+  { exact (binintersectE2 U1 U2 (p 0) Hp0). }
+  claim Hp1V1: p 1 :e V1.
+  { exact (binintersectE1 V1 V2 (p 1) Hp1). }
+  claim Hp1V2: p 1 :e V2.
+  { exact (binintersectE2 V1 V2 (p 1) Hp1). }
+  claim Heta: p = (p 0, p 1).
+  { exact (setprod_eta (U1 :/\: U2) (V1 :/\: V2) p Hp). }
+  rewrite Heta.
+  apply binintersectI.
+  + exact (tuple_2_setprod U1 V1 (p 0) Hp0U1 (p 1) Hp1V1).
+  + exact (tuple_2_setprod U2 V2 (p 0) Hp0U2 (p 1) Hp1V2).
+Qed.
 
 Definition product_subbasis : set -> set -> set -> set -> set :=
   fun X Tx Y Ty =>
