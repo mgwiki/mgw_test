@@ -26320,7 +26320,190 @@ assume HFsub: forall C:set, C :e F -> C c= X.
 assume HF: forall C:set, C :e F -> connected_space C (subspace_topology X Tx C).
 assume Hcommon: exists x:set, forall C:set, C :e F -> x :e C.
 prove connected_space (Union F) (subspace_topology X Tx (Union F)).
-admit. (** union of connected sets with common point is connected; separation would separate one Cᵢ **)
+prove topology_on (Union F) (subspace_topology X Tx (Union F)) /\
+  ~(exists U V:set, U :e subspace_topology X Tx (Union F) /\ V :e subspace_topology X Tx (Union F) /\ separation_of (Union F) U V).
+(** Precompute Union(F) ⊆ X so we can use subspace topology lemmas. **)
+claim HFpow: F c= Power X.
+{ let C. assume HC: C :e F.
+  prove C :e Power X.
+  exact (PowerI X C (HFsub C HC)). }
+claim HUnionSubX: Union F c= X.
+{ exact (Union_Power X F HFpow). }
+claim HtopUnion: topology_on (Union F) (subspace_topology X Tx (Union F)).
+{ exact (subspace_topology_is_topology X Tx (Union F) HTx HUnionSubX). }
+apply andI.
+- exact HtopUnion.
+- prove ~(exists U V:set, U :e subspace_topology X Tx (Union F) /\ V :e subspace_topology X Tx (Union F) /\ separation_of (Union F) U V).
+  assume HsepExists: exists U V:set, U :e subspace_topology X Tx (Union F) /\ V :e subspace_topology X Tx (Union F) /\ separation_of (Union F) U V.
+  prove False.
+  (** Choose the common point x0. **)
+  apply Hcommon.
+  let x0. assume Hx0All: forall C:set, C :e F -> x0 :e C.
+  (** Unpack the supposed separation. **)
+  apply HsepExists.
+  let U. assume HexV: exists V:set, U :e subspace_topology X Tx (Union F) /\ V :e subspace_topology X Tx (Union F) /\ separation_of (Union F) U V.
+  apply HexV.
+  let V. assume HUVsep.
+  claim HUVopen: U :e subspace_topology X Tx (Union F) /\ V :e subspace_topology X Tx (Union F).
+  { exact (andEL (U :e subspace_topology X Tx (Union F) /\ V :e subspace_topology X Tx (Union F))
+                 (separation_of (Union F) U V) HUVsep). }
+  claim HUopen: U :e subspace_topology X Tx (Union F).
+  { exact (andEL (U :e subspace_topology X Tx (Union F)) (V :e subspace_topology X Tx (Union F)) HUVopen). }
+  claim HVopen: V :e subspace_topology X Tx (Union F).
+  { exact (andER (U :e subspace_topology X Tx (Union F)) (V :e subspace_topology X Tx (Union F)) HUVopen). }
+  claim Hsep: separation_of (Union F) U V.
+  { exact (andER (U :e subspace_topology X Tx (Union F) /\ V :e subspace_topology X Tx (Union F))
+                 (separation_of (Union F) U V) HUVsep). }
+  (** Extract useful facts from separation_of. **)
+  claim Hpart1: ((((U :e Power (Union F) /\ V :e Power (Union F)) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
+  { exact (andEL ((((U :e Power (Union F) /\ V :e Power (Union F)) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                 (U :\/: V = Union F) Hsep). }
+  claim Hunion: U :\/: V = Union F.
+  { exact (andER ((((U :e Power (Union F) /\ V :e Power (Union F)) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                 (U :\/: V = Union F) Hsep). }
+  claim HAux: (((U :e Power (Union F) /\ V :e Power (Union F)) /\ U :/\: V = Empty) /\ U <> Empty).
+  { exact (andEL (((U :e Power (Union F) /\ V :e Power (Union F)) /\ U :/\: V = Empty) /\ U <> Empty)
+                 (V <> Empty) Hpart1). }
+  claim HVne: V <> Empty.
+  { exact (andER (((U :e Power (Union F) /\ V :e Power (Union F)) /\ U :/\: V = Empty) /\ U <> Empty)
+                 (V <> Empty) Hpart1). }
+  claim Hpowdisj: (U :e Power (Union F) /\ V :e Power (Union F)) /\ U :/\: V = Empty.
+  { exact (andEL ((U :e Power (Union F) /\ V :e Power (Union F)) /\ U :/\: V = Empty)
+                 (U <> Empty) HAux). }
+  claim HUne: U <> Empty.
+  { exact (andER ((U :e Power (Union F) /\ V :e Power (Union F)) /\ U :/\: V = Empty)
+                 (U <> Empty) HAux). }
+  claim Hpow: U :e Power (Union F) /\ V :e Power (Union F).
+  { exact (andEL (U :e Power (Union F) /\ V :e Power (Union F)) (U :/\: V = Empty) Hpowdisj). }
+  claim Hdisj: U :/\: V = Empty.
+  { exact (andER (U :e Power (Union F) /\ V :e Power (Union F)) (U :/\: V = Empty) Hpowdisj). }
+  claim HUpow: U :e Power (Union F).
+  { exact (andEL (U :e Power (Union F)) (V :e Power (Union F)) Hpow). }
+  claim HVpow: V :e Power (Union F).
+  { exact (andER (U :e Power (Union F)) (V :e Power (Union F)) Hpow). }
+  claim HUsub: U c= Union F.
+  { exact (PowerE (Union F) U HUpow). }
+  claim HVsub: V c= Union F.
+  { exact (PowerE (Union F) V HVpow). }
+  (** Get some point v0 in V, hence in Union(F), hence in some member C0 of F. **)
+  claim Hexv0: exists v0:set, v0 :e V.
+  { exact (nonempty_has_element V HVne). }
+  apply Hexv0.
+  let v0. assume Hv0V: v0 :e V.
+  claim Hv0Union: v0 :e Union F.
+  { exact (HVsub v0 Hv0V). }
+  apply (UnionE_impred F v0 Hv0Union).
+  let C0. assume Hv0C0: v0 :e C0. assume HC0F: C0 :e F.
+  claim Hx0C0: x0 :e C0.
+  { exact (Hx0All C0 HC0F). }
+  claim Hx0Union: x0 :e Union F.
+  { exact (UnionI F x0 C0 Hx0C0 HC0F). }
+  (** Now x0 is in U or V, by U ∪ V = Union(F). **)
+  claim Hx0UV: x0 :e U :\/: V.
+  { rewrite Hunion. exact Hx0Union. }
+  apply (binunionE U V x0 Hx0UV).
+  - (** Case: x0 ∈ U **)
+    assume Hx0U: x0 :e U.
+    (** Show Union(F) ⊆ U by showing each C ∈ F is contained in U. **)
+    claim HUnionSubU: Union F c= U.
+    { let y. assume HyUnion: y :e Union F.
+      prove y :e U.
+      apply (UnionE_impred F y HyUnion (y :e U)).
+      let C. assume HyC: y :e C. assume HC: C :e F.
+      (** C ⊆ Union(F) **)
+      claim HCsubUnion: C c= Union F.
+      { let z. assume Hz: z :e C.
+        exact (UnionI F z C Hz HC). }
+      (** Connectedness of C as a subspace of Union(F) **)
+      claim HeqTop: subspace_topology (Union F) (subspace_topology X Tx (Union F)) C =
+                    subspace_topology X Tx C.
+      { exact (ex16_1_subspace_transitive X Tx (Union F) C HTx HUnionSubX HCsubUnion). }
+      claim HCconn: connected_space C (subspace_topology (Union F) (subspace_topology X Tx (Union F)) C).
+      { rewrite HeqTop. exact (HF C HC). }
+      claim HCside: C c= U \/ C c= V.
+      { exact (connected_subset_in_separation_side (Union F) (subspace_topology X Tx (Union F)) U V C
+                HtopUnion HCsubUnion HCconn HUopen HVopen Hsep). }
+      apply HCside.
+      + assume HCsubU: C c= U.
+        exact (HCsubU y HyC).
+      + assume HCsubV: C c= V.
+        (** Contradiction with disjointness, since x0 ∈ C and x0 ∈ U. **)
+        claim Hx0C: x0 :e C.
+        { exact (Hx0All C HC). }
+        claim Hx0V: x0 :e V.
+        { exact (HCsubV x0 Hx0C). }
+        claim Hx0UV2: x0 :e U :/\: V.
+        { exact (binintersectI U V x0 Hx0U Hx0V). }
+        claim Hx0E: x0 :e Empty.
+        { rewrite <- Hdisj. exact Hx0UV2. }
+        apply FalseE.
+        exact (EmptyE x0 Hx0E). }
+    (** If Union(F) ⊆ U, then V ⊆ U; but U∩V=∅, so V=∅, contradicting V≠∅. **)
+    claim HVsubU: V c= U.
+    { let y. assume HyV: y :e V.
+      exact (HUnionSubU y (HVsub y HyV)). }
+    claim HVsubEmpty: V c= Empty.
+    { let y. assume HyV: y :e V.
+      prove y :e Empty.
+      claim HyU: y :e U.
+      { exact (HVsubU y HyV). }
+      claim HyUV: y :e U :/\: V.
+      { exact (binintersectI U V y HyU HyV). }
+      rewrite <- Hdisj.
+      exact HyUV. }
+    claim HVEmpty: V = Empty.
+    { exact (Empty_Subq_eq V HVsubEmpty). }
+    exact (HVne HVEmpty).
+  - (** Case: x0 ∈ V (symmetric) **)
+    assume Hx0V: x0 :e V.
+    claim HUnionSubV: Union F c= V.
+    { let y. assume HyUnion: y :e Union F.
+      prove y :e V.
+      apply (UnionE_impred F y HyUnion (y :e V)).
+      let C. assume HyC: y :e C. assume HC: C :e F.
+      claim HCsubUnion: C c= Union F.
+      { let z. assume Hz: z :e C.
+        exact (UnionI F z C Hz HC). }
+      claim HeqTop: subspace_topology (Union F) (subspace_topology X Tx (Union F)) C =
+                    subspace_topology X Tx C.
+      { exact (ex16_1_subspace_transitive X Tx (Union F) C HTx HUnionSubX HCsubUnion). }
+      claim HCconn: connected_space C (subspace_topology (Union F) (subspace_topology X Tx (Union F)) C).
+      { rewrite HeqTop. exact (HF C HC). }
+      claim HCside: C c= U \/ C c= V.
+      { exact (connected_subset_in_separation_side (Union F) (subspace_topology X Tx (Union F)) U V C
+                HtopUnion HCsubUnion HCconn HUopen HVopen Hsep). }
+      apply HCside.
+      + assume HCsubU: C c= U.
+        claim Hx0C: x0 :e C.
+        { exact (Hx0All C HC). }
+        claim Hx0U: x0 :e U.
+        { exact (HCsubU x0 Hx0C). }
+        claim Hx0UV2: x0 :e U :/\: V.
+        { exact (binintersectI U V x0 Hx0U Hx0V). }
+        claim Hx0E: x0 :e Empty.
+        { rewrite <- Hdisj. exact Hx0UV2. }
+        apply FalseE.
+        exact (EmptyE x0 Hx0E).
+      + assume HCsubV: C c= V.
+        exact (HCsubV y HyC). }
+    claim HUne: U <> Empty.
+    { exact HUne. }
+    claim HUsubV: U c= V.
+    { let y. assume HyU: y :e U.
+      (** U ⊆ Union(F) by HUsub, and Union(F) ⊆ V by HUnionSubV **)
+      exact (HUnionSubV y (HUsub y HyU)). }
+    claim HUsubEmpty: U c= Empty.
+    { let y. assume HyU: y :e U.
+      prove y :e Empty.
+      claim HyV: y :e V.
+      { exact (HUsubV y HyU). }
+      claim HyUV: y :e U :/\: V.
+      { exact (binintersectI U V y HyU HyV). }
+      rewrite <- Hdisj.
+      exact HyUV. }
+    claim HUEmpty: U = Empty.
+    { exact (Empty_Subq_eq U HUsubEmpty). }
+    exact (HUne HUEmpty).
 Qed.
 
 (** from §23 Theorem 23.4: adjoining limit points preserves connectedness **)
