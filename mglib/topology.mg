@@ -26139,6 +26139,40 @@ Theorem interval_connected : connected_space R R_standard_topology.
 exact interval_connected_axiom.
 Qed.
 
+(** from §24 Theorem 24.3: intermediate value theorem (order topology) **)
+(** LATEX VERSION: If f:X→Y is continuous, X is connected, and r lies between f(a) and f(b), then ∃c∈X with f(c)=r. **)
+Definition between_in_order : set -> set -> set -> set -> prop := fun Y u r v =>
+  (order_rel Y u r /\ order_rel Y r v)
+  \/ (order_rel Y v r /\ order_rel Y r u)
+  \/ r = u
+  \/ r = v.
+
+(** from §24 Theorem 24.3: intermediate value theorem (order topology) **)
+Axiom intermediate_value_theorem_axiom : forall X Tx Y f a b r:set,
+  connected_space X Tx ->
+  continuous_map X Tx Y (order_topology Y) f ->
+  a :e X -> b :e X -> r :e Y ->
+  between_in_order Y (apply_fun f a) r (apply_fun f b) ->
+  exists c:set, c :e X /\ apply_fun f c = r.
+
+(** from §24 Theorem 24.3: intermediate value theorem (order topology) **)
+Theorem intermediate_value_theorem : forall X Tx Y f a b r:set,
+  connected_space X Tx ->
+  continuous_map X Tx Y (order_topology Y) f ->
+  a :e X -> b :e X -> r :e Y ->
+  between_in_order Y (apply_fun f a) r (apply_fun f b) ->
+  exists c:set, c :e X /\ apply_fun f c = r.
+let X Tx Y f a b r.
+assume Hconn: connected_space X Tx.
+assume Hcont: continuous_map X Tx Y (order_topology Y) f.
+assume Ha: a :e X.
+assume Hb: b :e X.
+assume Hr: r :e Y.
+assume Hbetw: between_in_order Y (apply_fun f a) r (apply_fun f b).
+prove exists c:set, c :e X /\ apply_fun f c = r.
+exact (intermediate_value_theorem_axiom X Tx Y f a b r Hconn Hcont Ha Hb Hr Hbetw).
+Qed.
+
 (** from §24: connected subspaces of ℝ are intervals **) 
 Theorem connected_subsets_real_are_intervals : forall A:set,
   A c= R ->
