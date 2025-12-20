@@ -24490,17 +24490,114 @@ Definition continuous_map : set -> set -> set -> set -> set -> prop :=
     forall V:set, V :e Ty -> preimage_of X f V :e Tx.
 
 (** Helper: continuity preserves closed sets **)
-Axiom continuous_preserves_closed : forall X Tx Y Ty f:set,
+Theorem continuous_preserves_closed : forall X Tx Y Ty f:set,
   continuous_map X Tx Y Ty f ->
   forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C).
+let X Tx Y Ty f.
+assume Hcont: continuous_map X Tx Y Ty f.
+claim Hpreimg: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+{ exact (andER ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx) Hcont). }
+claim Hleft: (topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y.
+{ exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx) Hcont). }
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (topology_on Y Ty)
+               (andEL (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y) Hleft)). }
+claim HTy: topology_on Y Ty.
+{ exact (andER (topology_on X Tx) (topology_on Y Ty)
+               (andEL (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y) Hleft)). }
+claim Hf: function_on f X Y.
+{ exact (andER (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y) Hleft). }
+let C. assume HC: closed_in Y Ty C.
+claim Hright: C c= Y /\ exists U :e Ty, C = Y :\: U.
+{ exact (andER (topology_on Y Ty) (C c= Y /\ exists U :e Ty, C = Y :\: U) HC). }
+claim HCsub: C c= Y.
+{ exact (andEL (C c= Y) (exists U :e Ty, C = Y :\: U) Hright). }
+claim HU: exists U :e Ty, C = Y :\: U.
+{ exact (andER (C c= Y) (exists U :e Ty, C = Y :\: U) Hright). }
+apply HU.
+let U. assume HU.
+apply HU.
+assume HUTy: U :e Ty.
+assume HCeq: C = Y :\: U.
+prove closed_in X Tx (preimage_of X f C).
+prove topology_on X Tx /\ (preimage_of X f C c= X /\ exists V :e Tx, preimage_of X f C = X :\: V).
+apply andI.
+- exact HTx.
+- prove preimage_of X f C c= X /\ exists V :e Tx, preimage_of X f C = X :\: V.
+  apply andI.
+  + prove preimage_of X f C c= X.
+    let x. assume Hx: x :e preimage_of X f C.
+    prove x :e X.
+    exact (SepE1 X (fun x => apply_fun f x :e C) x Hx).
+  + prove exists V :e Tx, preimage_of X f C = X :\: V.
+    witness (preimage_of X f U).
+    apply andI.
+  + exact (Hpreimg U HUTy).
+  + prove preimage_of X f C = X :\: preimage_of X f U.
+    rewrite HCeq.
+    prove preimage_of X f (Y :\: U) = X :\: preimage_of X f U.
+    apply set_ext.
+    * let x. assume Hx: x :e preimage_of X f (Y :\: U).
+      prove x :e X :\: preimage_of X f U.
+      apply (SepE X (fun x => apply_fun f x :e Y :\: U) x Hx).
+      assume HxX: x :e X.
+      assume Hfx: apply_fun f x :e Y :\: U.
+      apply (setminusE Y U (apply_fun f x) Hfx).
+      assume HfxY: apply_fun f x :e Y.
+      assume HfxU: apply_fun f x /:e U.
+      apply setminusI.
+      { exact HxX. }
+      { prove x /:e preimage_of X f U.
+        assume Hxpre: x :e preimage_of X f U.
+        apply (SepE X (fun x => apply_fun f x :e U) x Hxpre).
+        assume _. assume HfxU2: apply_fun f x :e U.
+        exact (HfxU HfxU2). }
+    * let x. assume Hx: x :e X :\: preimage_of X f U.
+      prove x :e preimage_of X f (Y :\: U).
+      apply (setminusE X (preimage_of X f U) x Hx).
+      assume HxX: x :e X.
+      assume Hxpre: x /:e preimage_of X f U.
+      prove x :e {x :e X | apply_fun f x :e Y :\: U}.
+      apply SepI.
+      { exact HxX. }
+      { prove apply_fun f x :e Y :\: U.
+        apply setminusI.
+        { exact (Hf x HxX). }
+        { prove apply_fun f x /:e U.
+          assume HfxU: apply_fun f x :e U.
+          claim Hxpre2: x :e preimage_of X f U.
+          { exact (SepI X (fun x => apply_fun f x :e U) x HxX HfxU). }
+          exact (Hxpre Hxpre2). } }
+Qed.
 
 (** Helper: continuity local neighborhood characterization **)
-Axiom continuous_local_neighborhood : forall X Tx Y Ty f:set,
+Theorem continuous_local_neighborhood : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty -> function_on f X Y ->
   (forall V:set, V :e Ty -> preimage_of X f V :e Tx) ->
   forall x:set, x :e X ->
     forall V:set, V :e Ty -> apply_fun f x :e V ->
       exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V.
+let X Tx Y Ty f.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+assume Hf: function_on f X Y.
+assume Hcont: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+let x. assume Hx: x :e X.
+let V. assume HV: V :e Ty.
+assume Hfx: apply_fun f x :e V.
+witness (preimage_of X f V).
+apply and3I.
+- exact (Hcont V HV).
+- prove x :e preimage_of X f V.
+  prove x :e {x :e X | apply_fun f x :e V}.
+  exact (SepI X (fun x => apply_fun f x :e V) x Hx Hfx).
+- let u. assume Hu: u :e preimage_of X f V.
+  prove apply_fun f u :e V.
+  apply (SepE X (fun x => apply_fun f x :e V) u Hu).
+  assume _. assume H. exact H.
+Qed.
 
 (** Helper: preimage condition implies function_on **)
 Axiom preimage_implies_function : forall X Tx Y Ty f:set,
