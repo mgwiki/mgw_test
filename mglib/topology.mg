@@ -16462,6 +16462,31 @@ Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => (x,y) :e 
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod X Y)|function_on f X Y}.
 
+(** Helper: constant function as a graph **)
+Definition const_fun : set -> set -> set := fun A x => {(a,x) | a :e A}.
+
+(** Helper: apply_fun for const_fun **)
+Theorem const_fun_apply : forall A x a:set,
+  a :e A ->
+  apply_fun (const_fun A x) a = x.
+let A x a.
+assume Ha: a :e A.
+prove apply_fun (const_fun A x) a = x.
+prove Eps_i (fun y => (a,y) :e const_fun A x) = x.
+claim H1: (a,x) :e const_fun A x.
+{ exact (ReplI A (fun a0:set => (a0,x)) a Ha). }
+claim H2: (a, Eps_i (fun y => (a,y) :e const_fun A x)) :e const_fun A x.
+{ exact (Eps_i_ax (fun y => (a,y) :e const_fun A x) x H1). }
+apply (ReplE_impred A (fun a0:set => (a0,x)) (a, Eps_i (fun y => (a,y) :e const_fun A x)) H2).
+let a0.
+assume Ha0: a0 :e A.
+assume Heq: (a, Eps_i (fun y => (a,y) :e const_fun A x)) = (a0,x).
+	rewrite <- (tuple_2_1_eq a (Eps_i (fun y => (a,y) :e const_fun A x))) at 1.
+	rewrite <- (tuple_2_1_eq a0 x) at 2.
+	rewrite Heq.
+	reflexivity.
+	Qed.
+
 (** Helper: identity function application **)
 Theorem identity_function_apply : forall X x:set,
   x :e X -> apply_fun {(y,y) | y :e X} x = x.
@@ -25292,6 +25317,38 @@ assume Hg: continuous_map A Tx Y Ty g.
 prove continuous_map A Tx (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
 exact (maps_into_products_axiom A X Tx Y Ty f g Hf Hg).
 Qed.
+
+(** Helper: apply_fun for pair_map **)
+Theorem pair_map_apply : forall A X Y f g a:set,
+  a :e A ->
+  apply_fun (pair_map A f g) a = (apply_fun f a, apply_fun g a).
+let A X Y f g a.
+assume Ha: a :e A.
+prove apply_fun (pair_map A f g) a = (apply_fun f a, apply_fun g a).
+prove Eps_i (fun z => (a,z) :e pair_map A f g) = (apply_fun f a, apply_fun g a).
+claim H1: (a, (apply_fun f a, apply_fun g a)) :e pair_map A f g.
+{ exact (ReplI A (fun a0:set => (a0, (apply_fun f a0, apply_fun g a0))) a Ha). }
+claim H2: (a, Eps_i (fun z => (a,z) :e pair_map A f g)) :e pair_map A f g.
+{ exact (Eps_i_ax (fun z => (a,z) :e pair_map A f g) (apply_fun f a, apply_fun g a) H1). }
+apply (ReplE_impred A (fun a0:set => (a0, (apply_fun f a0, apply_fun g a0)))
+                     (a, Eps_i (fun z => (a,z) :e pair_map A f g)) H2).
+	let a0.
+	assume Ha0: a0 :e A.
+	assume Heq: (a, Eps_i (fun z => (a,z) :e pair_map A f g)) = (a0, (apply_fun f a0, apply_fun g a0)).
+	claim Ha_eq: a = a0.
+	{ rewrite <- (tuple_2_0_eq a (Eps_i (fun z => (a,z) :e pair_map A f g))).
+	  rewrite <- (tuple_2_0_eq a0 (apply_fun f a0, apply_fun g a0)).
+	  rewrite Heq.
+	  reflexivity. }
+	claim Hz_eq: Eps_i (fun z => (a,z) :e pair_map A f g) = (apply_fun f a0, apply_fun g a0).
+	{ rewrite <- (tuple_2_1_eq a (Eps_i (fun z => (a,z) :e pair_map A f g))) at 1.
+	  rewrite <- (tuple_2_1_eq a0 (apply_fun f a0, apply_fun g a0)) at 1.
+	  rewrite Heq.
+	  reflexivity. }
+	rewrite Hz_eq.
+	rewrite Ha_eq.
+	reflexivity.
+	Qed.
 
 (** from §19 Definition: product projections and universal property **) 
 (** LATEX VERSION: Projection maps from a product space; universal property characterizes the product topology. **)
