@@ -27643,6 +27643,37 @@ apply set_ext.
   exact (ReplI X (fun a:set => apply_fun f a) (p 0) Hp0X).
 Qed.
 
+(** Helper: slice X times {y0} is connected when X is connected **)
+Theorem slice_X_connected : forall X Tx Y Ty y0:set,
+  connected_space X Tx -> topology_on Y Ty -> y0 :e Y ->
+  connected_space (setprod X {y0})
+    (subspace_topology (setprod X Y) (product_topology X Tx Y Ty) (setprod X {y0})).
+let X Tx Y Ty y0.
+assume HX: connected_space X Tx.
+assume HTy: topology_on Y Ty.
+assume Hy0: y0 :e Y.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+              (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V))
+              HX). }
+set idX := {(x,x)|x :e X}.
+set c := const_fun X y0.
+set f := pair_map X idX c.
+claim Hid: continuous_map X Tx X Tx idX.
+{ exact (identity_continuous X Tx HTx). }
+claim Hc: continuous_map X Tx Y Ty c.
+{ exact (const_fun_continuous X Tx Y Ty y0 HTx HTy Hy0). }
+claim Hf: continuous_map X Tx (setprod X Y) (product_topology X Tx Y Ty) f.
+{ exact (maps_into_products X X Tx Y Ty idX c Hid Hc). }
+claim Himg: connected_space (image_of f X)
+  (subspace_topology (setprod X Y) (product_topology X Tx Y Ty) (image_of f X)).
+{ exact (continuous_image_connected X Tx (setprod X Y) (product_topology X Tx Y Ty) f HX Hf). }
+prove connected_space (setprod X {y0})
+    (subspace_topology (setprod X Y) (product_topology X Tx Y Ty) (setprod X {y0})).
+rewrite <- (image_of_id_const_is_slice X y0).
+exact Himg.
+Qed.
+
 (** from §23 Theorem 23.6: finite products of connected spaces are connected **) 
 Theorem finite_product_connected : forall X Tx Y Ty:set,
   connected_space X Tx -> connected_space Y Ty ->
