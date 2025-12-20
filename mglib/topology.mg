@@ -26055,7 +26055,424 @@ prove (((A :e subspace_topology X Tx Y /\ B :e subspace_topology X Tx Y) /\ sepa
   (separation_of Y A B
     /\ ~(exists b:set, b :e B /\ limit_point_of X Tx A b)
     /\ ~(exists a:set, a :e A /\ limit_point_of X Tx B a))).
-admit. (** requires closure in subspace and limit-point characterization **)
+apply iffI.
+- (** -> direction: openness in subspace implies no cross-limit-points **)
+  assume Hleft.
+  claim HABsub: A :e subspace_topology X Tx Y /\ B :e subspace_topology X Tx Y.
+  { exact (andEL (A :e subspace_topology X Tx Y /\ B :e subspace_topology X Tx Y) (separation_of Y A B) Hleft). }
+  claim HAinTy: A :e subspace_topology X Tx Y.
+  { exact (andEL (A :e subspace_topology X Tx Y) (B :e subspace_topology X Tx Y) HABsub). }
+  claim HBinTy: B :e subspace_topology X Tx Y.
+  { exact (andER (A :e subspace_topology X Tx Y) (B :e subspace_topology X Tx Y) HABsub). }
+  claim Hsep: separation_of Y A B.
+  { exact (andER (A :e subspace_topology X Tx Y /\ B :e subspace_topology X Tx Y) (separation_of Y A B) Hleft). }
+  prove separation_of Y A B
+    /\ ~(exists b:set, b :e B /\ limit_point_of X Tx A b)
+    /\ ~(exists a:set, a :e A /\ limit_point_of X Tx B a).
+  apply andI.
+  + apply andI.
+    - exact Hsep.
+    - (** no b in B is a limit point of A **)
+      prove ~(exists b:set, b :e B /\ limit_point_of X Tx A b).
+      assume Hex: exists b:set, b :e B /\ limit_point_of X Tx A b.
+      prove False.
+      apply Hex.
+      let b. assume Hbconj.
+      claim HbB: b :e B.
+      { exact (andEL (b :e B) (limit_point_of X Tx A b) Hbconj). }
+      claim HLP: limit_point_of X Tx A b.
+      { exact (andER (b :e B) (limit_point_of X Tx A b) Hbconj). }
+      (** Extract B = V ∩ Y for some V open in X **)
+      claim HexV: exists V :e Tx, B = V :/\: Y.
+      { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) B HBinTy). }
+      apply HexV.
+      let V. assume HVpair.
+      claim HVTx: V :e Tx.
+      { exact (andEL (V :e Tx) (B = V :/\: Y) HVpair). }
+      claim HBeq: B = V :/\: Y.
+      { exact (andER (V :e Tx) (B = V :/\: Y) HVpair). }
+      (** Use separation_of to get A,B ⊆ Y and A∩B=∅ **)
+      claim Hpart1: ((((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty) /\ B <> Empty).
+      { exact (andEL ((((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty) /\ B <> Empty)
+                     (A :\/: B = Y) Hsep). }
+      claim HAux: (((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty).
+      { exact (andEL (((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty)
+                     (B <> Empty) Hpart1). }
+      claim Hpowdisj: (A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty.
+      { exact (andEL ((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) (A <> Empty) HAux). }
+      claim Hpow: A :e Power Y /\ B :e Power Y.
+      { exact (andEL (A :e Power Y /\ B :e Power Y) (A :/\: B = Empty) Hpowdisj). }
+      claim Hdisj: A :/\: B = Empty.
+      { exact (andER (A :e Power Y /\ B :e Power Y) (A :/\: B = Empty) Hpowdisj). }
+      claim HApowY: A :e Power Y.
+      { exact (andEL (A :e Power Y) (B :e Power Y) Hpow). }
+      claim HBpowY: B :e Power Y.
+      { exact (andER (A :e Power Y) (B :e Power Y) Hpow). }
+      claim HAsubY: A c= Y.
+      { exact (PowerE Y A HApowY). }
+      claim HBsubY: B c= Y.
+      { exact (PowerE Y B HBpowY). }
+      (** b ∈ V **)
+      claim HbVY: b :e V :/\: Y.
+      { rewrite <- HBeq. exact HbB. }
+      claim HbV: b :e V.
+      { exact (binintersectE1 V Y b HbVY). }
+      (** Apply limit point condition to neighborhood V **)
+      claim HLPp: topology_on X Tx /\ b :e X.
+      { exact (andEL (topology_on X Tx /\ b :e X) (forall U:set, U :e Tx -> b :e U -> exists y:set, y :e A /\ y <> b /\ y :e U) HLP). }
+      claim HLPcond: forall U:set, U :e Tx -> b :e U -> exists y:set, y :e A /\ y <> b /\ y :e U.
+      { exact (andER (topology_on X Tx /\ b :e X) (forall U:set, U :e Tx -> b :e U -> exists y:set, y :e A /\ y <> b /\ y :e U) HLP). }
+      claim Hexy: exists y:set, y :e A /\ y <> b /\ y :e V.
+      { exact (HLPcond V HVTx HbV). }
+      apply Hexy.
+      let y. assume Hyconj.
+      claim HyAB: y :e A /\ y <> b.
+      { exact (andEL (y :e A /\ y <> b) (y :e V) Hyconj). }
+      claim HyA: y :e A.
+      { exact (andEL (y :e A) (y <> b) HyAB). }
+      claim HyV: y :e V.
+      { exact (andER (y :e A /\ y <> b) (y :e V) Hyconj). }
+      claim HyY: y :e Y.
+      { exact (HAsubY y HyA). }
+      claim HyB: y :e B.
+      { rewrite HBeq. exact (binintersectI V Y y HyV HyY). }
+      claim HyAB2: y :e A :/\: B.
+      { exact (binintersectI A B y HyA HyB). }
+      claim HyE: y :e Empty.
+      { rewrite <- Hdisj. exact HyAB2. }
+      exact (EmptyE y HyE).
+  + (** no a in A is a limit point of B (symmetric) **)
+    prove ~(exists a:set, a :e A /\ limit_point_of X Tx B a).
+    assume Hex: exists a:set, a :e A /\ limit_point_of X Tx B a.
+    prove False.
+    apply Hex.
+    let a. assume Haconj.
+    claim HaA: a :e A.
+    { exact (andEL (a :e A) (limit_point_of X Tx B a) Haconj). }
+    claim HLP: limit_point_of X Tx B a.
+    { exact (andER (a :e A) (limit_point_of X Tx B a) Haconj). }
+      (** Extract A = U ∩ Y for some U open in X **)
+      claim HexU: exists U :e Tx, A = U :/\: Y.
+      { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) A HAinTy). }
+      apply HexU.
+      let U. assume HUpair.
+      claim HUTx: U :e Tx.
+      { exact (andEL (U :e Tx) (A = U :/\: Y) HUpair). }
+      claim HAeq: A = U :/\: Y.
+      { exact (andER (U :e Tx) (A = U :/\: Y) HUpair). }
+      (** Use separation_of to get A,B ⊆ Y and A∩B=∅ **)
+      claim Hpart1: ((((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty) /\ B <> Empty).
+      { exact (andEL ((((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty) /\ B <> Empty)
+                     (A :\/: B = Y) Hsep). }
+      claim HAux: (((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty).
+      { exact (andEL (((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty)
+                     (B <> Empty) Hpart1). }
+      claim Hpowdisj: (A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty.
+      { exact (andEL ((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) (A <> Empty) HAux). }
+      claim Hpow: A :e Power Y /\ B :e Power Y.
+      { exact (andEL (A :e Power Y /\ B :e Power Y) (A :/\: B = Empty) Hpowdisj). }
+      claim Hdisj: A :/\: B = Empty.
+      { exact (andER (A :e Power Y /\ B :e Power Y) (A :/\: B = Empty) Hpowdisj). }
+      claim HApowY: A :e Power Y.
+      { exact (andEL (A :e Power Y) (B :e Power Y) Hpow). }
+      claim HBpowY: B :e Power Y.
+      { exact (andER (A :e Power Y) (B :e Power Y) Hpow). }
+      claim HAsubY: A c= Y.
+      { exact (PowerE Y A HApowY). }
+      claim HBsubY: B c= Y.
+      { exact (PowerE Y B HBpowY). }
+      (** a ∈ U **)
+      claim HaUY: a :e U :/\: Y.
+      { rewrite <- HAeq. exact HaA. }
+      claim HaU: a :e U.
+      { exact (binintersectE1 U Y a HaUY). }
+      (** Apply limit point condition to neighborhood U **)
+      claim HLPcond: forall V0:set, V0 :e Tx -> a :e V0 -> exists y:set, y :e B /\ y <> a /\ y :e V0.
+      { exact (andER (topology_on X Tx /\ a :e X) (forall V0:set, V0 :e Tx -> a :e V0 -> exists y:set, y :e B /\ y <> a /\ y :e V0) HLP). }
+      claim Hexy: exists y:set, y :e B /\ y <> a /\ y :e U.
+      { exact (HLPcond U HUTx HaU). }
+      apply Hexy.
+      let y. assume Hyconj.
+      claim HyBA: y :e B /\ y <> a.
+      { exact (andEL (y :e B /\ y <> a) (y :e U) Hyconj). }
+      claim HyB: y :e B.
+      { exact (andEL (y :e B) (y <> a) HyBA). }
+      claim HyU: y :e U.
+      { exact (andER (y :e B /\ y <> a) (y :e U) Hyconj). }
+      claim HyY: y :e Y.
+      { exact (HBsubY y HyB). }
+      claim HyA2: y :e A.
+      { rewrite HAeq. exact (binintersectI U Y y HyU HyY). }
+      claim HyAB2: y :e A :/\: B.
+      { exact (binintersectI A B y HyA2 HyB). }
+      claim HyE: y :e Empty.
+      { rewrite <- Hdisj. exact HyAB2. }
+      exact (EmptyE y HyE).
+- (** <- direction: no cross-limit-points implies openness in subspace **)
+  assume Hright.
+  claim Htmp: separation_of Y A B /\ ~(exists b:set, b :e B /\ limit_point_of X Tx A b).
+  { exact (andEL (separation_of Y A B /\ ~(exists b:set, b :e B /\ limit_point_of X Tx A b))
+                 (~(exists a:set, a :e A /\ limit_point_of X Tx B a)) Hright). }
+  claim Hsep: separation_of Y A B.
+  { exact (andEL (separation_of Y A B) (~(exists b:set, b :e B /\ limit_point_of X Tx A b)) Htmp). }
+  claim HnoB: ~(exists b:set, b :e B /\ limit_point_of X Tx A b).
+  { exact (andER (separation_of Y A B) (~(exists b:set, b :e B /\ limit_point_of X Tx A b)) Htmp). }
+  claim HnoA: ~(exists a:set, a :e A /\ limit_point_of X Tx B a).
+  { exact (andER (separation_of Y A B /\ ~(exists b:set, b :e B /\ limit_point_of X Tx A b))
+                 (~(exists a:set, a :e A /\ limit_point_of X Tx B a)) Hright). }
+  (** Extract basic separation facts **)
+  claim Hpart1: ((((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty) /\ B <> Empty).
+  { exact (andEL ((((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty) /\ B <> Empty)
+                 (A :\/: B = Y) Hsep). }
+  claim Hunion: A :\/: B = Y.
+  { exact (andER ((((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty) /\ B <> Empty)
+                 (A :\/: B = Y) Hsep). }
+  claim HAux: (((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty).
+  { exact (andEL (((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty)
+                 (B <> Empty) Hpart1). }
+  claim Hpowdisj: (A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty.
+  { exact (andEL ((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) (A <> Empty) HAux). }
+  claim Hpow: A :e Power Y /\ B :e Power Y.
+  { exact (andEL (A :e Power Y /\ B :e Power Y) (A :/\: B = Empty) Hpowdisj). }
+  claim Hdisj: A :/\: B = Empty.
+  { exact (andER (A :e Power Y /\ B :e Power Y) (A :/\: B = Empty) Hpowdisj). }
+  claim HApowY: A :e Power Y.
+  { exact (andEL (A :e Power Y) (B :e Power Y) Hpow). }
+  claim HBpowY: B :e Power Y.
+  { exact (andER (A :e Power Y) (B :e Power Y) Hpow). }
+  claim HAsubY: A c= Y.
+  { exact (PowerE Y A HApowY). }
+  claim HBsubY: B c= Y.
+  { exact (PowerE Y B HBpowY). }
+  (** Topology on Y **)
+  claim HtopY: topology_on Y (subspace_topology X Tx Y).
+  { exact (subspace_topology_is_topology X Tx Y HTx HY). }
+  (** Prove A and B are open in the subspace by local openness (ex13_1). **)
+  claim HAopen_in: open_in Y (subspace_topology X Tx Y) A.
+  { apply (ex13_1_local_open_subset Y (subspace_topology X Tx Y) A HtopY).
+    let x. assume HxA: x :e A.
+    prove exists U :e subspace_topology X Tx Y, x :e U /\ U c= A.
+    (** x is not a limit point of B (otherwise contradict HnoA) **)
+    claim HnotLP: ~(limit_point_of X Tx B x).
+    { assume HLP.
+      apply HnoA.
+      witness x.
+      apply andI.
+      - exact HxA.
+      - exact HLP. }
+    claim HxY: x :e Y.
+    { exact (HAsubY x HxA). }
+    claim HxX: x :e X.
+    { exact (HY x HxY). }
+    (** Not being a limit point yields an open neighborhood W with no B-point in it. **)
+    claim HnotForall: ~(forall W:set, W :e Tx -> x :e W -> exists y:set, y :e B /\ y <> x /\ y :e W).
+    { assume Hforall.
+      apply HnotLP.
+      prove topology_on X Tx /\ x :e X /\ forall U:set, U :e Tx -> x :e U -> exists y:set, y :e B /\ y <> x /\ y :e U.
+      apply andI.
+      - apply andI.
+        + exact HTx.
+        + exact HxX.
+      - exact Hforall. }
+    claim HexW: exists W:set, ~(W :e Tx -> x :e W -> exists y:set, y :e B /\ y <> x /\ y :e W).
+    { exact (not_all_ex_demorgan_i (fun W:set => W :e Tx -> x :e W -> exists y:set, y :e B /\ y <> x /\ y :e W) HnotForall). }
+    apply HexW.
+    let W. assume HnImp.
+    (** Derive W ∈ Tx **)
+    claim HWTx: W :e Tx.
+    { apply (xm (W :e Tx)).
+      - assume HW. exact HW.
+      - assume HnotW.
+        apply FalseE.
+        apply HnImp.
+        assume HW0: W :e Tx.
+        assume HxW0: x :e W.
+        apply FalseE.
+        exact (HnotW HW0). }
+    (** Derive x ∈ W **)
+    claim HxW: x :e W.
+    { apply (xm (x :e W)).
+      - assume Hx. exact Hx.
+      - assume Hnotx.
+        apply FalseE.
+        apply HnImp.
+        assume HW0: W :e Tx.
+        assume HxW0: x :e W.
+        apply FalseE.
+        exact (Hnotx HxW0). }
+    (** Hence no y ∈ B with y ≠ x in W. **)
+    claim HnoY: ~(exists y:set, y :e B /\ y <> x /\ y :e W).
+    { assume Hexy.
+      apply HnImp.
+      assume HW0: W :e Tx.
+      assume HxW0: x :e W.
+      exact Hexy. }
+    (** Neighborhood in subspace: U = W ∩ Y **)
+    set U := W :/\: Y.
+    witness U.
+    (** Bounded-exists goal is U∈Ty ∧ (x∈U ∧ U⊆A) **)
+    apply andI.
+    - (** U ∈ subspace topology with witness W **)
+      prove U :e subspace_topology X Tx Y.
+      claim HUpowY: U :e Power Y.
+      { apply PowerI.
+        let t. assume Ht: t :e U.
+        exact (binintersectE2 W Y t Ht). }
+      claim HexWU: exists V :e Tx, U = V :/\: Y.
+      { witness W.
+        apply andI.
+        - exact HWTx.
+        - reflexivity. }
+      exact (SepI (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUpowY HexWU).
+    - (** x ∈ U ∧ U ⊆ A **)
+      apply andI.
+      + exact (binintersectI W Y x HxW HxY).
+      + (** U ⊆ A since U ⊆ Y and disjoint from B, and A ∪ B = Y **)
+        prove U c= A.
+        let t. assume Ht: t :e U.
+        prove t :e A.
+        claim HtY: t :e Y.
+        { exact (binintersectE2 W Y t Ht). }
+        (** show t ∉ B using HnoY **)
+        claim HtnotB: t /:e B.
+        { assume HtB: t :e B.
+          apply HnoY.
+          witness t.
+          prove (t :e B /\ t <> x) /\ t :e W.
+          apply andI.
+          - apply andI.
+            + exact HtB.
+            + (** t <> x since x ∈ A and A ∩ B = ∅ **)
+              assume Heq: t = x.
+              claim HxB: x :e B.
+              { rewrite <- Heq. exact HtB. }
+              claim HxAB: x :e A :/\: B.
+              { exact (binintersectI A B x HxA HxB). }
+              claim HxE: x :e Empty.
+              { rewrite <- Hdisj. exact HxAB. }
+              exact (EmptyE x HxE).
+          - (** t ∈ W **)
+            exact (binintersectE1 W Y t Ht). }
+        (** From t ∈ Y, get t ∈ A ∪ B, then eliminate the B case. **)
+        claim HtAB: t :e A :\/: B.
+        { rewrite Hunion. exact HtY. }
+        apply (binunionE A B t HtAB).
+        * assume HtA. exact HtA.
+        * assume HtB.
+          apply FalseE.
+          exact (HtnotB HtB). }
+  claim HATy: A :e subspace_topology X Tx Y.
+  { exact (andER (topology_on Y (subspace_topology X Tx Y)) (A :e subspace_topology X Tx Y) HAopen_in). }
+  claim HBopen_in: open_in Y (subspace_topology X Tx Y) B.
+  { apply (ex13_1_local_open_subset Y (subspace_topology X Tx Y) B HtopY).
+    let x. assume HxB: x :e B.
+    prove exists U :e subspace_topology X Tx Y, x :e U /\ U c= B.
+    claim HnotLP: ~(limit_point_of X Tx A x).
+    { assume HLP.
+      apply HnoB.
+      witness x.
+      apply andI.
+      - exact HxB.
+      - exact HLP. }
+    claim HxY: x :e Y.
+    { exact (HBsubY x HxB). }
+    claim HxX: x :e X.
+    { exact (HY x HxY). }
+    claim HnotForall: ~(forall W:set, W :e Tx -> x :e W -> exists y:set, y :e A /\ y <> x /\ y :e W).
+    { assume Hforall.
+      apply HnotLP.
+      prove topology_on X Tx /\ x :e X /\ forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+      apply andI.
+      - apply andI.
+        + exact HTx.
+        + exact HxX.
+      - exact Hforall. }
+    claim HexW: exists W:set, ~(W :e Tx -> x :e W -> exists y:set, y :e A /\ y <> x /\ y :e W).
+    { exact (not_all_ex_demorgan_i (fun W:set => W :e Tx -> x :e W -> exists y:set, y :e A /\ y <> x /\ y :e W) HnotForall). }
+    apply HexW.
+    let W. assume HnImp.
+    claim HWTx: W :e Tx.
+    { apply (xm (W :e Tx)).
+      - assume HW. exact HW.
+      - assume HnotW.
+        apply FalseE.
+        apply HnImp.
+        assume HW0: W :e Tx.
+        assume HxW0: x :e W.
+        apply FalseE.
+        exact (HnotW HW0). }
+    claim HxW: x :e W.
+    { apply (xm (x :e W)).
+      - assume Hx. exact Hx.
+      - assume Hnotx.
+        apply FalseE.
+        apply HnImp.
+        assume HW0: W :e Tx.
+        assume HxW0: x :e W.
+        apply FalseE.
+        exact (Hnotx HxW0). }
+    claim HnoY: ~(exists y:set, y :e A /\ y <> x /\ y :e W).
+    { assume Hexy.
+      apply HnImp.
+      assume HW0: W :e Tx.
+      assume HxW0: x :e W.
+      exact Hexy. }
+    set U := W :/\: Y.
+    witness U.
+    (** Bounded-exists goal is U∈Ty ∧ (x∈U ∧ U⊆B) **)
+    apply andI.
+    - (** U ∈ subspace topology **)
+      prove U :e subspace_topology X Tx Y.
+      claim HUpowY: U :e Power Y.
+      { apply PowerI.
+        let t. assume Ht: t :e U.
+        exact (binintersectE2 W Y t Ht). }
+      claim HexWU: exists V :e Tx, U = V :/\: Y.
+      { witness W.
+        apply andI.
+        - exact HWTx.
+        - reflexivity. }
+      exact (SepI (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUpowY HexWU).
+    - (** x ∈ U ∧ U ⊆ B **)
+      apply andI.
+      + exact (binintersectI W Y x HxW HxY).
+      + prove U c= B.
+        let t. assume Ht: t :e U.
+        prove t :e B.
+        claim HtY: t :e Y.
+        { exact (binintersectE2 W Y t Ht). }
+        claim HtnotA: t /:e A.
+        { assume HtA: t :e A.
+          apply HnoY.
+          witness t.
+          prove (t :e A /\ t <> x) /\ t :e W.
+          apply andI.
+          - apply andI.
+            + exact HtA.
+            + assume Heq: t = x.
+              claim HxA: x :e A.
+              { rewrite <- Heq. exact HtA. }
+              claim HxAB: x :e A :/\: B.
+              { exact (binintersectI A B x HxA HxB). }
+              claim HxE: x :e Empty.
+              { rewrite <- Hdisj. exact HxAB. }
+              exact (EmptyE x HxE).
+          - exact (binintersectE1 W Y t Ht). }
+        claim HtAB: t :e A :\/: B.
+        { rewrite Hunion. exact HtY. }
+        apply (binunionE A B t HtAB).
+        * assume HtA.
+          apply FalseE.
+          exact (HtnotA HtA).
+        * assume HtB. exact HtB. }
+  claim HBTy: B :e subspace_topology X Tx Y.
+  { exact (andER (topology_on Y (subspace_topology X Tx Y)) (B :e subspace_topology X Tx Y) HBopen_in). }
+  prove (A :e subspace_topology X Tx Y /\ B :e subspace_topology X Tx Y) /\ separation_of Y A B.
+  apply andI.
+  + apply andI.
+    * exact HATy.
+    * exact HBTy.
+  + exact Hsep.
 Qed.
 
 (** from §23 Lemma 23.2: connected subspace lies in one side of a separation **)
