@@ -27168,7 +27168,230 @@ assume Hy: y :e A.
 assume Hz: z :e R.
 assume Hbetw: Rlt x z /\ Rlt z y \/ Rlt y z /\ Rlt z x.
 prove z :e A.
-admit. (** if z ∉ A, separate A into A∩(-∞,z) and A∩(z,∞); contradicts connectedness **)
+apply (xm (z :e A)).
+- assume HzA: z :e A.
+  exact HzA.
+- assume HznotA: z /:e A.
+  (** If z ∉ A, define U = A∩(-∞,z) and V = A∩(z,∞), show they separate A. **)
+  set U := {t :e A|Rlt t z}.
+  set V := {t :e A|Rlt z t}.
+  (** Extract “no separations” from connectedness of A. **)
+  claim Hnosep: ~(exists U0 V0:set,
+      U0 :e subspace_topology R R_standard_topology A /\
+      V0 :e subspace_topology R R_standard_topology A /\
+      separation_of A U0 V0).
+  { exact (andER (topology_on A (subspace_topology R R_standard_topology A))
+                 (~(exists U0 V0:set, U0 :e subspace_topology R R_standard_topology A /\
+                                   V0 :e subspace_topology R R_standard_topology A /\
+                                   separation_of A U0 V0))
+                 Hconn). }
+  (** Show U and V are in the subspace topology on A. **)
+  claim HUinTy: U :e subspace_topology R R_standard_topology A.
+  { (** witness the open left ray in R **)
+    set L := {t :e R|Rlt t z}.
+    claim HLopen: L :e R_standard_topology.
+    { exact (open_left_ray_in_R_standard_topology z Hz). }
+    claim HUeq: U = L :/\: A.
+    { apply set_ext.
+      - let t. assume Ht: t :e U.
+        prove t :e L :/\: A.
+        claim HtA: t :e A.
+        { exact (SepE1 A (fun t0:set => Rlt t0 z) t Ht). }
+        claim HtR: t :e R.
+        { exact (HA t HtA). }
+        claim Htlt: Rlt t z.
+        { exact (SepE2 A (fun t0:set => Rlt t0 z) t Ht). }
+        claim HtL: t :e L.
+        { exact (SepI R (fun t0:set => Rlt t0 z) t HtR Htlt). }
+        exact (binintersectI L A t HtL HtA).
+      - let t. assume Ht: t :e L :/\: A.
+        prove t :e U.
+        claim HtL: t :e L.
+        { exact (binintersectE1 L A t Ht). }
+        claim HtA: t :e A.
+        { exact (binintersectE2 L A t Ht). }
+        claim Htlt: Rlt t z.
+        { exact (SepE2 R (fun t0:set => Rlt t0 z) t HtL). }
+        exact (SepI A (fun t0:set => Rlt t0 z) t HtA Htlt). }
+    (** Now package membership in the subspace topology. **)
+    claim HUpow: U :e Power A.
+    { apply PowerI.
+      let t. assume Ht: t :e U.
+      exact (SepE1 A (fun t0:set => Rlt t0 z) t Ht). }
+    claim Hex: exists W :e R_standard_topology, U = W :/\: A.
+    { witness L.
+      apply andI.
+      - exact HLopen.
+      - exact HUeq. }
+    exact (SepI (Power A) (fun U0:set => exists W :e R_standard_topology, U0 = W :/\: A) U HUpow Hex). }
+  claim HVinTy: V :e subspace_topology R R_standard_topology A.
+  { set Rray := {t :e R|Rlt z t}.
+    claim HRopen: Rray :e R_standard_topology.
+    { exact (open_ray_in_R_standard_topology z Hz). }
+    claim HVeql: V = Rray :/\: A.
+    { apply set_ext.
+      - let t. assume Ht: t :e V.
+        prove t :e Rray :/\: A.
+        claim HtA: t :e A.
+        { exact (SepE1 A (fun t0:set => Rlt z t0) t Ht). }
+        claim HtR: t :e R.
+        { exact (HA t HtA). }
+        claim Htlt: Rlt z t.
+        { exact (SepE2 A (fun t0:set => Rlt z t0) t Ht). }
+        claim HtRray: t :e Rray.
+        { exact (SepI R (fun t0:set => Rlt z t0) t HtR Htlt). }
+        exact (binintersectI Rray A t HtRray HtA).
+      - let t. assume Ht: t :e Rray :/\: A.
+        prove t :e V.
+        claim HtRray: t :e Rray.
+        { exact (binintersectE1 Rray A t Ht). }
+        claim HtA: t :e A.
+        { exact (binintersectE2 Rray A t Ht). }
+        claim Htlt: Rlt z t.
+        { exact (SepE2 R (fun t0:set => Rlt z t0) t HtRray). }
+        exact (SepI A (fun t0:set => Rlt z t0) t HtA Htlt). }
+    claim HVpow: V :e Power A.
+    { apply PowerI.
+      let t. assume Ht: t :e V.
+      exact (SepE1 A (fun t0:set => Rlt z t0) t Ht). }
+    claim Hex: exists W :e R_standard_topology, V = W :/\: A.
+    { witness Rray.
+      apply andI.
+      - exact HRopen.
+      - exact HVeql. }
+    exact (SepI (Power A) (fun U0:set => exists W :e R_standard_topology, U0 = W :/\: A) V HVpow Hex). }
+  (** Build a separation_of A U V. **)
+  claim HsepUV: separation_of A U V.
+  { (** U,V ⊆ A **)
+    claim HUsubA: U c= A.
+    { let t. assume Ht: t :e U.
+      exact (SepE1 A (fun t0:set => Rlt t0 z) t Ht). }
+    claim HVsubA: V c= A.
+    { let t. assume Ht: t :e V.
+      exact (SepE1 A (fun t0:set => Rlt z t0) t Ht). }
+    claim HUpowA: U :e Power A.
+    { exact (PowerI A U HUsubA). }
+    claim HVpowA: V :e Power A.
+    { exact (PowerI A V HVsubA). }
+    (** disjointness **)
+    claim Hdisj: U :/\: V = Empty.
+    { apply Empty_eq.
+      let t. assume Ht: t :e U :/\: V.
+      apply (binintersectE U V t Ht).
+      assume HtU: t :e U.
+      assume HtV: t :e V.
+      claim HtA: t :e A.
+      { exact (SepE1 A (fun t0:set => Rlt t0 z) t HtU). }
+      claim HtR: t :e R.
+      { exact (HA t HtA). }
+      claim Hlt1: Rlt t z.
+      { exact (SepE2 A (fun t0:set => Rlt t0 z) t HtU). }
+      claim Hlt2: Rlt z t.
+      { exact (SepE2 A (fun t0:set => Rlt z t0) t HtV). }
+      claim Htt: Rlt t t.
+      { exact (Rlt_tra t z t Hlt1 Hlt2). }
+      apply FalseE.
+      exact ((not_Rlt_refl t HtR) Htt). }
+    (** Nonemptiness of U and V using x,y around z **)
+    claim HUne: U <> Empty.
+    { apply (xm (Rlt x z /\ Rlt z y)).
+      - assume Hxzzy: Rlt x z /\ Rlt z y.
+        claim Hxz: Rlt x z.
+        { exact (andEL (Rlt x z) (Rlt z y) Hxzzy). }
+        claim HxU: x :e U.
+        { exact (SepI A (fun t0:set => Rlt t0 z) x Hx Hxz). }
+        exact (elem_implies_nonempty U x HxU).
+      - assume Hnot.
+        (** then use the other disjunct from Hbetw **)
+        claim Hyz: Rlt y z.
+        { apply Hbetw.
+          assume Hxzzy: Rlt x z /\ Rlt z y.
+          apply FalseE.
+          exact (Hnot Hxzzy).
+          assume Hyzzx: Rlt y z /\ Rlt z x.
+          exact (andEL (Rlt y z) (Rlt z x) Hyzzx). }
+        claim HyU: y :e U.
+        { exact (SepI A (fun t0:set => Rlt t0 z) y Hy Hyz). }
+        exact (elem_implies_nonempty U y HyU). }
+    claim HVne: V <> Empty.
+    { apply (xm (Rlt x z /\ Rlt z y)).
+      - assume Hxzzy: Rlt x z /\ Rlt z y.
+        claim Hzy: Rlt z y.
+        { exact (andER (Rlt x z) (Rlt z y) Hxzzy). }
+        claim HyV: y :e V.
+        { exact (SepI A (fun t0:set => Rlt z t0) y Hy Hzy). }
+        exact (elem_implies_nonempty V y HyV).
+      - assume Hnot.
+        claim Hzx: Rlt z x.
+        { apply Hbetw.
+          assume Hxzzy: Rlt x z /\ Rlt z y.
+          apply FalseE.
+          exact (Hnot Hxzzy).
+          assume Hyzzx: Rlt y z /\ Rlt z x.
+          exact (andER (Rlt y z) (Rlt z x) Hyzzx). }
+        claim HxV: x :e V.
+        { exact (SepI A (fun t0:set => Rlt z t0) x Hx Hzx). }
+        exact (elem_implies_nonempty V x HxV). }
+    (** Union is all of A since z ∉ A and order is trichotomous. **)
+    claim Hunion: U :\/: V = A.
+    { apply set_ext.
+      - let t. assume Ht: t :e U :\/: V.
+        prove t :e A.
+        apply (binunionE U V t Ht).
+        + assume HtU. exact (SepE1 A (fun t0:set => Rlt t0 z) t HtU).
+        + assume HtV. exact (SepE1 A (fun t0:set => Rlt z t0) t HtV).
+      - let t. assume HtA: t :e A.
+        prove t :e U :\/: V.
+        claim HtR: t :e R.
+        { exact (HA t HtA). }
+        claim HtS: SNo t.
+        { exact (real_SNo t HtR). }
+        claim HzS: SNo z.
+        { exact (real_SNo z Hz). }
+        apply (SNoLt_trichotomy_or_impred t z HtS HzS (t :e U :\/: V)).
+        + (** t < z -> t in U **)
+          assume Hlt: t < z.
+          claim Htlt: Rlt t z.
+          { exact (RltI t z HtR Hz Hlt). }
+          exact (binunionI1 U V t (SepI A (fun t0:set => Rlt t0 z) t HtA Htlt)).
+        + (** t = z -> contradiction since z ∉ A **)
+          assume Heq: t = z.
+          claim HzA: z :e A.
+          { rewrite <- Heq. exact HtA. }
+          apply FalseE.
+          exact (HznotA HzA).
+        + (** z < t -> t in V **)
+          assume Hlt: z < t.
+          claim Hzt: Rlt z t.
+          { exact (RltI z t Hz HtR Hlt). }
+          exact (binunionI2 U V t (SepI A (fun t0:set => Rlt z t0) t HtA Hzt)). }
+    (** Package separation_of A U V **)
+    prove (((((U :e Power A /\ V :e Power A) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty) /\ U :\/: V = A).
+    apply andI.
+    - prove ((((U :e Power A /\ V :e Power A) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
+      apply andI.
+      + prove (((U :e Power A /\ V :e Power A) /\ U :/\: V = Empty) /\ U <> Empty).
+        apply andI.
+        * prove (U :e Power A /\ V :e Power A) /\ U :/\: V = Empty.
+          apply andI.
+          { apply andI.
+            - exact HUpowA.
+            - exact HVpowA. }
+          { exact Hdisj. }
+        * exact HUne.
+      + exact HVne.
+    - exact Hunion. }
+  (** Contradict connectedness **)
+  apply FalseE.
+  apply Hnosep.
+  witness U.
+  witness V.
+  (** goal is (U∈Ty ∧ V∈Ty) ∧ separation_of A U V **)
+  apply andI.
+  - apply andI.
+    + exact HUinTy.
+    + exact HVinTy.
+  - exact HsepUV.
 Qed.
 
 (** from §23 Theorem 23.6: finite products of connected spaces are connected **) 
