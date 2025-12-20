@@ -26073,7 +26073,237 @@ assume HC: C :e Tx.
 assume HD: D :e Tx.
 assume Hsep: separation_of X C D.
 prove Y c= C \/ Y c= D.
-admit. (** use that C:/\:Y and D:/\:Y separate Y in the subspace topology if Y meets both **)
+(** Proof by contradiction: if Y meets both C and D, then (C∩Y) and (D∩Y) separate Y. **)
+apply (xm (Y c= C)).
+- assume HYC: Y c= C.
+  apply orIL.
+  exact HYC.
+- assume HnotYcC: ~(Y c= C).
+  apply (xm (Y c= D)).
+  + assume HYD: Y c= D.
+    apply orIR.
+    exact HYD.
+  + assume HnotYcD: ~(Y c= D).
+    (** Get yD in Y∩D from not(Y⊆C) and C∪D=X **)
+    claim HexYnotC: exists y:set, y :e Y /\ y /:e C.
+    { claim Hex: exists y:set, ~(y :e Y -> y :e C).
+      { exact (not_all_ex_demorgan_i (fun y:set => y :e Y -> y :e C) HnotYcC). }
+      apply Hex.
+      let y. assume Hnotimp.
+      (** From ~(P -> Q), derive P and ~Q by contradiction. **)
+      claim HyY: y :e Y.
+      { apply (xm (y :e Y)).
+        - assume HyY. exact HyY.
+        - assume HyNotY.
+          apply FalseE.
+          apply Hnotimp.
+          assume HyY: y :e Y.
+          apply FalseE.
+          exact (HyNotY HyY). }
+      claim HyNotC: y /:e C.
+      { assume HyC: y :e C.
+        apply Hnotimp.
+        assume _: y :e Y.
+        exact HyC. }
+      witness y.
+      apply andI.
+      - exact HyY.
+      - exact HyNotC. }
+    apply HexYnotC.
+    let yD. assume HyDpair.
+    claim HyDY: yD :e Y.
+    { exact (andEL (yD :e Y) (yD /:e C) HyDpair). }
+    claim HyDnotC: yD /:e C.
+    { exact (andER (yD :e Y) (yD /:e C) HyDpair). }
+    (** Extract union C∪D=X and C,D subset X from separation_of **)
+    claim Hsep_left: ((((C :e Power X /\ D :e Power X) /\ C :/\: D = Empty) /\ C <> Empty) /\ D <> Empty).
+    { exact (andEL ((((C :e Power X /\ D :e Power X) /\ C :/\: D = Empty) /\ C <> Empty) /\ D <> Empty)
+                   (C :\/: D = X) Hsep). }
+    claim Hsep_pow_disj: (C :e Power X /\ D :e Power X) /\ C :/\: D = Empty.
+    { exact (andEL ((C :e Power X /\ D :e Power X) /\ C :/\: D = Empty)
+                   (C <> Empty)
+                   (andEL (((C :e Power X /\ D :e Power X) /\ C :/\: D = Empty) /\ C <> Empty)
+                          (D <> Empty) Hsep_left)). }
+    claim HCpow: C :e Power X.
+    { exact (andEL (C :e Power X) (D :e Power X)
+                   (andEL (C :e Power X /\ D :e Power X) (C :/\: D = Empty) Hsep_pow_disj)). }
+    claim HDpow: D :e Power X.
+    { exact (andER (C :e Power X) (D :e Power X)
+                   (andEL (C :e Power X /\ D :e Power X) (C :/\: D = Empty) Hsep_pow_disj)). }
+    claim HCsubX: C c= X.
+    { exact (PowerE X C HCpow). }
+    claim HDsubX: D c= X.
+    { exact (PowerE X D HDpow). }
+    claim HunionCD: C :\/: D = X.
+    { exact (andER ((((C :e Power X /\ D :e Power X) /\ C :/\: D = Empty) /\ C <> Empty) /\ D <> Empty)
+                   (C :\/: D = X) Hsep). }
+    claim HyDX: yD :e X.
+    { exact (HYX yD HyDY). }
+    claim HyDinCD: yD :e C :\/: D.
+    { rewrite HunionCD. exact HyDX. }
+    claim HyDinD: yD :e D.
+    { apply (binunionE C D yD HyDinCD).
+      - assume HyDC: yD :e C.
+        apply FalseE.
+        exact (HyDnotC HyDC).
+      - assume HyDD: yD :e D.
+        exact HyDD. }
+
+    (** Get yC in Y∩C from not(Y⊆D) and C∪D=X **)
+    claim HexYnotD: exists y:set, y :e Y /\ y /:e D.
+    { claim Hex: exists y:set, ~(y :e Y -> y :e D).
+      { exact (not_all_ex_demorgan_i (fun y:set => y :e Y -> y :e D) HnotYcD). }
+      apply Hex.
+      let y. assume Hnotimp.
+      claim HyY: y :e Y.
+      { apply (xm (y :e Y)).
+        - assume HyY. exact HyY.
+        - assume HyNotY.
+          apply FalseE.
+          apply Hnotimp.
+          assume HyY: y :e Y.
+          apply FalseE.
+          exact (HyNotY HyY). }
+      claim HyNotD: y /:e D.
+      { assume HyD: y :e D.
+        apply Hnotimp.
+        assume _: y :e Y.
+        exact HyD. }
+      witness y.
+      apply andI.
+      - exact HyY.
+      - exact HyNotD. }
+    apply HexYnotD.
+    let yC. assume HyCpair.
+    claim HyCY: yC :e Y.
+    { exact (andEL (yC :e Y) (yC /:e D) HyCpair). }
+    claim HyCnotD: yC /:e D.
+    { exact (andER (yC :e Y) (yC /:e D) HyCpair). }
+    claim HyCX: yC :e X.
+    { exact (HYX yC HyCY). }
+    claim HyCinCD: yC :e C :\/: D.
+    { rewrite HunionCD. exact HyCX. }
+    claim HyCinC: yC :e C.
+    { apply (binunionE C D yC HyCinCD).
+      - assume HyCC: yC :e C.
+        exact HyCC.
+      - assume HyCD: yC :e D.
+        apply FalseE.
+        exact (HyCnotD HyCD). }
+
+    (** Define A = C∩Y and B = D∩Y; show they are open in the subspace topology and form a separation of Y **)
+    set A := C :/\: Y.
+    set B := D :/\: Y.
+    claim HAYsub: A c= Y.
+    { exact (binintersect_Subq_2 C Y). }
+    claim HBYsub: B c= Y.
+    { exact (binintersect_Subq_2 D Y). }
+    claim HAopenY: open_in Y (subspace_topology X Tx Y) A.
+    { apply (iffER (open_in Y (subspace_topology X Tx Y) A)
+                   (exists V :e Tx, A = V :/\: Y)
+                   (open_in_subspace_iff X Tx Y A HTx HYX HAYsub)).
+      witness C.
+      apply andI.
+      - exact HC.
+      - prove A = C :/\: Y.
+        reflexivity. }
+    claim HBopenY: open_in Y (subspace_topology X Tx Y) B.
+    { apply (iffER (open_in Y (subspace_topology X Tx Y) B)
+                   (exists V :e Tx, B = V :/\: Y)
+                   (open_in_subspace_iff X Tx Y B HTx HYX HBYsub)).
+      witness D.
+      apply andI.
+      - exact HD.
+      - prove B = D :/\: Y.
+        reflexivity. }
+    claim HAinSub: A :e subspace_topology X Tx Y.
+    { exact (andER (topology_on Y (subspace_topology X Tx Y)) (A :e subspace_topology X Tx Y) HAopenY). }
+    claim HBinSub: B :e subspace_topology X Tx Y.
+    { exact (andER (topology_on Y (subspace_topology X Tx Y)) (B :e subspace_topology X Tx Y) HBopenY). }
+    (** separation_of Y A B **)
+    claim HsepAB: separation_of Y A B.
+    { prove A :e Power Y /\ B :e Power Y /\ A :/\: B = Empty /\ A <> Empty /\ B <> Empty /\ A :\/: B = Y.
+      apply andI.
+      - prove ((((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty) /\ B <> Empty).
+        apply andI.
+        + prove (((A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty) /\ A <> Empty).
+          apply andI.
+          - prove (A :e Power Y /\ B :e Power Y) /\ A :/\: B = Empty.
+            apply andI.
+            + prove A :e Power Y /\ B :e Power Y.
+              apply andI.
+              - exact (PowerI Y A HAYsub).
+              - exact (PowerI Y B HBYsub).
+            + prove A :/\: B = Empty.
+              apply Empty_eq.
+              let t. assume Ht: t :e A :/\: B.
+              apply (binintersectE A B t Ht).
+              assume HtA: t :e A.
+              assume HtB: t :e B.
+              (** t in C and D, so t in C∩D, contradiction **)
+              claim HtC: t :e C.
+              { exact (binintersectE1 C Y t HtA). }
+              claim HtD: t :e D.
+              { exact (binintersectE1 D Y t HtB). }
+              claim HtCD: t :e C :/\: D.
+              { exact (binintersectI C D t HtC HtD). }
+              claim HCDdisj: C :/\: D = Empty.
+              { exact (andER (C :e Power X /\ D :e Power X) (C :/\: D = Empty) Hsep_pow_disj). }
+              claim Hfalse: t :e Empty.
+              { rewrite <- HCDdisj. exact HtCD. }
+              exact (EmptyE t Hfalse).
+          - (** A <> Empty using yC **)
+            assume Heq: A = Empty.
+            claim HyCA: yC :e A.
+            { exact (binintersectI C Y yC HyCinC HyCY). }
+            claim HyCEmpty: yC :e Empty.
+            { rewrite <- Heq. exact HyCA. }
+            exact (EmptyE yC HyCEmpty).
+        + (** B <> Empty using yD **)
+          assume Heq: B = Empty.
+          claim HyDB: yD :e B.
+          { exact (binintersectI D Y yD HyDinD HyDY). }
+          claim HyDEmpty: yD :e Empty.
+          { rewrite <- Heq. exact HyDB. }
+          exact (EmptyE yD HyDEmpty).
+      - prove A :\/: B = Y.
+        apply set_ext.
+        + let t. assume Ht: t :e A :\/: B.
+          prove t :e Y.
+          apply (binunionE A B t Ht).
+          - assume HtA: t :e A.
+            exact (binintersectE2 C Y t HtA).
+          - assume HtB: t :e B.
+            exact (binintersectE2 D Y t HtB).
+        + let t. assume HtY: t :e Y.
+          prove t :e A :\/: B.
+          claim HtX: t :e X.
+          { exact (HYX t HtY). }
+          claim HtCD: t :e C :\/: D.
+          { rewrite HunionCD. exact HtX. }
+          apply (binunionE C D t HtCD).
+          - assume HtC: t :e C.
+            apply binunionI1.
+            exact (binintersectI C Y t HtC HtY).
+          - assume HtD: t :e D.
+            apply binunionI2.
+            exact (binintersectI D Y t HtD HtY). }
+    (** Contradiction with connectedness of Y **)
+    claim HnosepY: ~(exists U V:set,
+      U :e subspace_topology X Tx Y /\ V :e subspace_topology X Tx Y /\ separation_of Y U V).
+    { exact (andER (topology_on Y (subspace_topology X Tx Y))
+                   (~(exists U V:set, U :e subspace_topology X Tx Y /\ V :e subspace_topology X Tx Y /\ separation_of Y U V))
+                   HY). }
+    apply FalseE.
+    apply HnosepY.
+    witness A.
+    witness B.
+    prove A :e subspace_topology X Tx Y /\ B :e subspace_topology X Tx Y /\ separation_of Y A B.
+    apply andI.
+    - apply andI.
+      + exact HAinSub.
+      + exact HBinSub.
+    - exact HsepAB.
 Qed.
 
 (** from §23 Theorem 23.3: union of connected sets with common point is connected **)
