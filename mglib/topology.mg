@@ -16487,10 +16487,10 @@ assume Heq: (a, Eps_i (fun y => (a,y) :e const_fun A x)) = (a0,x).
 	reflexivity.
 	Qed.
 
-(** Helper: identity function application **)
-Theorem identity_function_apply : forall X x:set,
-  x :e X -> apply_fun {(y,y) | y :e X} x = x.
-let X x. assume Hx: x :e X.
+	(** Helper: identity function application **)
+	Theorem identity_function_apply : forall X x:set,
+	  x :e X -> apply_fun {(y,y) | y :e X} x = x.
+	let X x. assume Hx: x :e X.
 prove apply_fun {(y,y) | y :e X} x = x.
 prove Eps_i (fun z => (x,z) :e {(y,y) | y :e X}) = x.
 claim H1: (x,x) :e {(y,y) | y :e X}.
@@ -24555,6 +24555,77 @@ Definition continuous_map : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f =>
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
     forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+
+(** Helper: constant maps are continuous **)
+Theorem const_fun_continuous : forall X Tx Y Ty x:set,
+  topology_on X Tx -> topology_on Y Ty -> x :e Y ->
+  continuous_map X Tx Y Ty (const_fun X x).
+let X Tx Y Ty x.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+assume HxY: x :e Y.
+prove continuous_map X Tx Y Ty (const_fun X x).
+prove topology_on X Tx /\ topology_on Y Ty /\ function_on (const_fun X x) X Y /\
+      forall V:set, V :e Ty -> preimage_of X (const_fun X x) V :e Tx.
+apply andI.
+- (** left: (topology_on X Tx /\ topology_on Y Ty) /\ function_on ... **)
+  apply andI.
+  + apply andI.
+    * exact HTx.
+    * exact HTy.
+  + (** function_on **)
+    let a. assume HaX: a :e X.
+    prove apply_fun (const_fun X x) a :e Y.
+    claim Happ: apply_fun (const_fun X x) a = x.
+    { exact (const_fun_apply X x a HaX). }
+    rewrite Happ.
+    exact HxY.
+- (** preimage condition **)
+  let V. assume HV: V :e Ty.
+  claim Hcases: x :e V \/ x /:e V.
+  { exact (xm (x :e V)). }
+  apply (Hcases (preimage_of X (const_fun X x) V :e Tx)).
+  + (** case x ∈ V: preimage = X **)
+    assume HxV: x :e V.
+    claim Heq: preimage_of X (const_fun X x) V = X.
+    { apply set_ext.
+      - let a. assume Ha: a :e preimage_of X (const_fun X x) V.
+        prove a :e X.
+        apply (SepE X (fun u => apply_fun (const_fun X x) u :e V) a Ha).
+        assume HaX. assume _. exact HaX.
+      - let a. assume HaX: a :e X.
+        prove a :e preimage_of X (const_fun X x) V.
+        prove a :e {u :e X | apply_fun (const_fun X x) u :e V}.
+        apply (SepI X (fun u => apply_fun (const_fun X x) u :e V) a HaX).
+        claim Happ: apply_fun (const_fun X x) a = x.
+        { exact (const_fun_apply X x a HaX). }
+        rewrite Happ.
+        exact HxV.
+    }
+    rewrite Heq.
+    exact (topology_has_X X Tx HTx).
+  + (** case x ∉ V: preimage = Empty **)
+    assume HxVn: x /:e V.
+    claim Heq: preimage_of X (const_fun X x) V = Empty.
+    { apply set_ext.
+      - let a. assume Ha: a :e preimage_of X (const_fun X x) V.
+        prove a :e Empty.
+        apply FalseE.
+        apply (SepE X (fun u => apply_fun (const_fun X x) u :e V) a Ha).
+        assume HaX. assume Hav.
+        claim Happ: apply_fun (const_fun X x) a = x.
+        { exact (const_fun_apply X x a HaX). }
+        claim HxV: x :e V.
+        { rewrite <- Happ. exact Hav. }
+        exact (HxVn HxV).
+      - let a. assume HaE: a :e Empty.
+        prove a :e preimage_of X (const_fun X x) V.
+        apply FalseE.
+        exact (EmptyE a HaE).
+    }
+    rewrite Heq.
+    exact (topology_has_empty X Tx HTx).
+Qed.
 
 (** Helper: continuity preserves closed sets **)
 Theorem continuous_preserves_closed : forall X Tx Y Ty f:set,
