@@ -26521,7 +26521,157 @@ assume HA: connected_space A (subspace_topology X Tx A).
 assume HAB: A c= B.
 assume HBcl: B c= closure_of X Tx A.
 prove connected_space B (subspace_topology X Tx B).
-admit. (** if B had a separation, Lemma 23.2 puts A in one side; closure(A) stays in that side; contradict nonemptiness of the other **)
+prove topology_on B (subspace_topology X Tx B) /\
+  ~(exists U V:set, U :e subspace_topology X Tx B /\ V :e subspace_topology X Tx B /\ separation_of B U V).
+claim HtopB: topology_on B (subspace_topology X Tx B).
+{ exact (subspace_topology_is_topology X Tx B HTx HBX). }
+apply andI.
+- exact HtopB.
+- prove ~(exists U V:set, U :e subspace_topology X Tx B /\ V :e subspace_topology X Tx B /\ separation_of B U V).
+  assume HsepExists: exists U V:set, U :e subspace_topology X Tx B /\ V :e subspace_topology X Tx B /\ separation_of B U V.
+  prove False.
+  apply HsepExists.
+  let U. assume HexV: exists V:set, U :e subspace_topology X Tx B /\ V :e subspace_topology X Tx B /\ separation_of B U V.
+  apply HexV.
+  let V. assume HUVsep.
+  claim HUVopen: U :e subspace_topology X Tx B /\ V :e subspace_topology X Tx B.
+  { exact (andEL (U :e subspace_topology X Tx B /\ V :e subspace_topology X Tx B) (separation_of B U V) HUVsep). }
+  claim HUopen: U :e subspace_topology X Tx B.
+  { exact (andEL (U :e subspace_topology X Tx B) (V :e subspace_topology X Tx B) HUVopen). }
+  claim HVopen: V :e subspace_topology X Tx B.
+  { exact (andER (U :e subspace_topology X Tx B) (V :e subspace_topology X Tx B) HUVopen). }
+  claim Hsep: separation_of B U V.
+  { exact (andER (U :e subspace_topology X Tx B /\ V :e subspace_topology X Tx B) (separation_of B U V) HUVsep). }
+  (** Parts of the separation **)
+  claim Hpart1: ((((U :e Power B /\ V :e Power B) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
+  { exact (andEL ((((U :e Power B /\ V :e Power B) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                 (U :\/: V = B) Hsep). }
+  claim HAux: (((U :e Power B /\ V :e Power B) /\ U :/\: V = Empty) /\ U <> Empty).
+  { exact (andEL (((U :e Power B /\ V :e Power B) /\ U :/\: V = Empty) /\ U <> Empty)
+                 (V <> Empty) Hpart1). }
+  claim HVne: V <> Empty.
+  { exact (andER (((U :e Power B /\ V :e Power B) /\ U :/\: V = Empty) /\ U <> Empty)
+                 (V <> Empty) Hpart1). }
+  claim HUne: U <> Empty.
+  { exact (andER ((U :e Power B /\ V :e Power B) /\ U :/\: V = Empty) (U <> Empty) HAux). }
+  claim Hpowdisj: (U :e Power B /\ V :e Power B) /\ U :/\: V = Empty.
+  { exact (andEL ((U :e Power B /\ V :e Power B) /\ U :/\: V = Empty) (U <> Empty) HAux). }
+  claim Hpow: U :e Power B /\ V :e Power B.
+  { exact (andEL (U :e Power B /\ V :e Power B) (U :/\: V = Empty) Hpowdisj). }
+  claim Hdisj: U :/\: V = Empty.
+  { exact (andER (U :e Power B /\ V :e Power B) (U :/\: V = Empty) Hpowdisj). }
+  claim HUpow: U :e Power B.
+  { exact (andEL (U :e Power B) (V :e Power B) Hpow). }
+  claim HVpow: V :e Power B.
+  { exact (andER (U :e Power B) (V :e Power B) Hpow). }
+  claim HUsubB: U c= B.
+  { exact (PowerE B U HUpow). }
+  claim HVsubB: V c= B.
+  { exact (PowerE B V HVpow). }
+  (** Connectedness of A as a subspace of B (rewrite via subspace transitivity). **)
+  claim HeqTopA: subspace_topology B (subspace_topology X Tx B) A = subspace_topology X Tx A.
+  { exact (ex16_1_subspace_transitive X Tx B A HTx HBX HAB). }
+  claim HAconnB: connected_space A (subspace_topology B (subspace_topology X Tx B) A).
+  { rewrite HeqTopA. exact HA. }
+  (** Apply Lemma 23.2 inside the space B. **)
+  claim HA_side: A c= U \/ A c= V.
+  { exact (connected_subset_in_separation_side B (subspace_topology X Tx B) U V A
+            HtopB HAB HAconnB HUopen HVopen Hsep). }
+  apply HA_side.
+  - (** Case A ⊆ U: then V must be empty using B ⊆ cl(A). **)
+    assume HAU: A c= U.
+    (** Pick v ∈ V. **)
+    claim Hexv: exists v:set, v :e V.
+    { exact (nonempty_has_element V HVne). }
+    apply Hexv.
+    let v. assume HvV: v :e V.
+    claim HvB: v :e B.
+    { exact (HVsubB v HvV). }
+    claim Hvcl: v :e closure_of X Tx A.
+    { exact (HBcl v HvB). }
+    (** V open in the subspace, so V = W ∩ B for some W open in X. **)
+    claim HexW: exists W :e Tx, V = W :/\: B.
+    { exact (SepE2 (Power B) (fun V0:set => exists W :e Tx, V0 = W :/\: B) V HVopen). }
+    apply HexW.
+    let W. assume HWpair.
+    claim HWopen: W :e Tx.
+    { exact (andEL (W :e Tx) (V = W :/\: B) HWpair). }
+    claim HVeql: V = W :/\: B.
+    { exact (andER (W :e Tx) (V = W :/\: B) HWpair). }
+    claim HvWB: v :e W :/\: B.
+    { rewrite <- HVeql. exact HvV. }
+    claim HvW: v :e W.
+    { exact (binintersectE1 W B v HvWB). }
+    (** Use closure definition: W ∩ A ≠ ∅ **)
+    claim Hclcond: forall U0:set, U0 :e Tx -> v :e U0 -> U0 :/\: A <> Empty.
+    { exact (SepE2 X (fun x0 => forall U0:set, U0 :e Tx -> x0 :e U0 -> U0 :/\: A <> Empty) v Hvcl). }
+    claim HWAnE: W :/\: A <> Empty.
+    { exact (Hclcond W HWopen HvW). }
+    (** Choose a ∈ W ∩ A. **)
+    apply (nonempty_has_element (W :/\: A) HWAnE).
+    let a. assume HaWA: a :e W :/\: A.
+    claim HaW: a :e W.
+    { exact (binintersectE1 W A a HaWA). }
+    claim HaA: a :e A.
+    { exact (binintersectE2 W A a HaWA). }
+    claim HaB: a :e B.
+    { exact (HAB a HaA). }
+    claim HaWB: a :e W :/\: B.
+    { exact (binintersectI W B a HaW HaB). }
+    claim HaV: a :e V.
+    { rewrite HVeql. exact HaWB. }
+    claim HaU: a :e U.
+    { exact (HAU a HaA). }
+    claim HaUV: a :e U :/\: V.
+    { exact (binintersectI U V a HaU HaV). }
+    claim HaE: a :e Empty.
+    { rewrite <- Hdisj. exact HaUV. }
+    exact (EmptyE a HaE).
+  - (** Case A ⊆ V: symmetric, U must be empty. **)
+    assume HAV: A c= V.
+    claim Hexu: exists u:set, u :e U.
+    { exact (nonempty_has_element U HUne). }
+    apply Hexu.
+    let u. assume HuU: u :e U.
+    claim HuB: u :e B.
+    { exact (HUsubB u HuU). }
+    claim Hucl: u :e closure_of X Tx A.
+    { exact (HBcl u HuB). }
+    claim HexW: exists W :e Tx, U = W :/\: B.
+    { exact (SepE2 (Power B) (fun U0:set => exists W :e Tx, U0 = W :/\: B) U HUopen). }
+    apply HexW.
+    let W. assume HWpair.
+    claim HWopen: W :e Tx.
+    { exact (andEL (W :e Tx) (U = W :/\: B) HWpair). }
+    claim HUeql: U = W :/\: B.
+    { exact (andER (W :e Tx) (U = W :/\: B) HWpair). }
+    claim HuWB: u :e W :/\: B.
+    { rewrite <- HUeql. exact HuU. }
+    claim HuW: u :e W.
+    { exact (binintersectE1 W B u HuWB). }
+    claim Hclcond: forall U0:set, U0 :e Tx -> u :e U0 -> U0 :/\: A <> Empty.
+    { exact (SepE2 X (fun x0 => forall U0:set, U0 :e Tx -> x0 :e U0 -> U0 :/\: A <> Empty) u Hucl). }
+    claim HWAnE: W :/\: A <> Empty.
+    { exact (Hclcond W HWopen HuW). }
+    apply (nonempty_has_element (W :/\: A) HWAnE).
+    let a. assume HaWA: a :e W :/\: A.
+    claim HaW: a :e W.
+    { exact (binintersectE1 W A a HaWA). }
+    claim HaA: a :e A.
+    { exact (binintersectE2 W A a HaWA). }
+    claim HaB: a :e B.
+    { exact (HAB a HaA). }
+    claim HaWB: a :e W :/\: B.
+    { exact (binintersectI W B a HaW HaB). }
+    claim HaU: a :e U.
+    { rewrite HUeql. exact HaWB. }
+    claim HaV: a :e V.
+    { exact (HAV a HaA). }
+    claim HaUV: a :e U :/\: V.
+    { exact (binintersectI U V a HaU HaV). }
+    claim HaE: a :e Empty.
+    { rewrite <- Hdisj. exact HaUV. }
+    exact (EmptyE a HaE).
 Qed.
 
 (** from §23 Theorem 23.5: image of a connected space is connected **)
