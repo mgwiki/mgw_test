@@ -26016,7 +26016,30 @@ Axiom path_between_is_continuous : forall X Tx x y p:set,
   path_between X x y p ->
   continuous_map unit_interval R_standard_topology X Tx p.
 
-Axiom zero_one_in_unit_interval : 0 :e unit_interval /\ 1 :e unit_interval.
+Theorem zero_one_in_unit_interval : 0 :e unit_interval /\ 1 :e unit_interval.
+claim H0R: 0 :e R.
+{ exact real_0. }
+claim H1R: 1 :e R.
+{ exact real_1. }
+claim Hnot_Rlt_1_0: ~(Rlt 1 0).
+{ assume HRlt10: Rlt 1 0.
+  claim Hlt10: 1 < 0.
+  { exact (RltE_lt 1 0 HRlt10). }
+  claim Hlt01: 0 < 1.
+  { exact (RltE_lt 0 1 Rlt_0_1). }
+  claim Hlt11: 1 < 1.
+  { exact (SNoLt_tra 1 0 1 SNo_1 SNo_0 SNo_1 Hlt10 Hlt01). }
+  exact (SNoLt_irref 1 Hlt11). }
+apply andI.
+- prove 0 :e unit_interval.
+  prove 0 :e {x :e R | ~(Rlt x 0) /\ ~(Rlt 1 x)}.
+  exact (SepI R (fun x => ~(Rlt x 0) /\ ~(Rlt 1 x)) 0 H0R
+         (andI (~(Rlt 0 0)) (~(Rlt 1 0)) (not_Rlt_refl 0 H0R) Hnot_Rlt_1_0)).
+- prove 1 :e unit_interval.
+  prove 1 :e {x :e R | ~(Rlt x 0) /\ ~(Rlt 1 x)}.
+  exact (SepI R (fun x => ~(Rlt x 0) /\ ~(Rlt 1 x)) 1 H1R
+         (andI (~(Rlt 1 0)) (~(Rlt 1 1)) Hnot_Rlt_1_0 (not_Rlt_refl 1 H1R))).
+Qed.
 
 Theorem separation_has_elements : forall X U V:set,
   separation_of X U V ->
