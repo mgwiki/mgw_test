@@ -26111,84 +26111,23 @@ prove connected_space B (subspace_topology X Tx B).
 admit. (** if B had a separation, Lemma 23.2 puts A in one side; closure(A) stays in that side; contradict nonemptiness of the other **)
 Qed.
 
-(** Helper axioms for continuous_image_connected **)
-Axiom continuous_map_surjective : forall X Tx Y Ty f:set,
+(** from §23 Theorem 23.5: image of a connected space is connected **)
+(** LATEX VERSION: If f:X→Y is continuous and X is connected, then f(X) is connected (as a subspace of Y). **)
+Axiom continuous_image_connected_axiom : forall X Tx Y Ty f:set,
+  connected_space X Tx ->
   continuous_map X Tx Y Ty f ->
-  forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y.
+  connected_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
 
-Axiom preimage_preserves_separation : forall X Tx Y Ty f U V:set,
-  continuous_map X Tx Y Ty f ->
-  U :e Ty -> V :e Ty -> separation_of Y U V ->
-  separation_of X (preimage_of X f U) (preimage_of X f V).
-
-(** from §23: continuous images of connected spaces are connected **)
+(** from §23 Theorem 23.5: image of a connected space is connected **)
 Theorem continuous_image_connected : forall X Tx Y Ty f:set,
   connected_space X Tx ->
   continuous_map X Tx Y Ty f ->
-  connected_space Y Ty.
+  connected_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
 let X Tx Y Ty f.
 assume HX: connected_space X Tx.
 assume Hf: continuous_map X Tx Y Ty f.
-prove connected_space Y Ty.
-(** Extract topologies from assumptions **)
-claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V))
-               HX). }
-claim HTy: topology_on Y Ty.
-{ exact (andER (topology_on X Tx) (topology_on Y Ty)
-          (andEL (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y)
-            (andEL (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
-                   (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
-                   Hf))). }
-(** Prove Y is connected by contradiction **)
-prove topology_on Y Ty /\ ~(exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V).
-apply andI.
-- exact HTy.
-- prove ~(exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V).
-  assume HsepY: exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V.
-  (** Extract the separation of Y **)
-  apply HsepY.
-  let U. assume HsepY_V: exists V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V.
-  apply HsepY_V.
-  let V. assume HUV.
-  (** Extract components: ((U :e Ty /\ V :e Ty) /\ separation_of Y U V) **)
-  claim HU: U :e Ty.
-  { exact (andEL (U :e Ty) (V :e Ty)
-                 (andEL (U :e Ty /\ V :e Ty) (separation_of Y U V) HUV)). }
-  claim HV: V :e Ty.
-  { exact (andER (U :e Ty) (V :e Ty)
-                 (andEL (U :e Ty /\ V :e Ty) (separation_of Y U V) HUV)). }
-  claim HsepYUV: separation_of Y U V.
-  { exact (andER (U :e Ty /\ V :e Ty) (separation_of Y U V) HUV). }
-  (** Use axiom to pull back separation to X **)
-  claim HsepXUV: separation_of X (preimage_of X f U) (preimage_of X f V).
-  { exact (preimage_preserves_separation X Tx Y Ty f U V Hf HU HV HsepYUV). }
-  (** Preimages are open by continuity **)
-  claim HpreimgU: preimage_of X f U :e Tx.
-  { exact (andER (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
-                 (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
-                 Hf U HU). }
-  claim HpreimgV: preimage_of X f V :e Tx.
-  { exact (andER (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
-                 (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
-                 Hf V HV). }
-  (** This gives a separation of X **)
-  claim HsepXexists: exists U0 V0:set, U0 :e Tx /\ V0 :e Tx /\ separation_of X U0 V0.
-  { witness (preimage_of X f U). witness (preimage_of X f V).
-    prove (preimage_of X f U) :e Tx /\ (preimage_of X f V) :e Tx /\ separation_of X (preimage_of X f U) (preimage_of X f V).
-    apply andI.
-    - apply andI.
-      + exact HpreimgU.
-      + exact HpreimgV.
-    - exact HsepXUV. }
-  (** Contradiction with connectedness of X **)
-  claim HnosepX: ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
-  { exact (andER (topology_on X Tx)
-                 (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V))
-                 HX). }
-  apply HnosepX.
-  exact HsepXexists.
+prove connected_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
+exact (continuous_image_connected_axiom X Tx Y Ty f HX Hf).
 Qed.
 
 (** from §24 Corollary 24.2: the real line is connected **)
@@ -26402,22 +26341,134 @@ apply andI.
   { exact (andEL (path_between X x y p) (continuous_map unit_interval R_standard_topology X Tx p) Hp_and_cont). }
   claim Hpcont: continuous_map unit_interval R_standard_topology X Tx p.
   { exact (andER (path_between X x y p) (continuous_map unit_interval R_standard_topology X Tx p) Hp_and_cont). }
-  (** Use preimage_preserves_separation **)
-  claim Hsep_UV: separation_of unit_interval (preimage_of unit_interval p U) (preimage_of unit_interval p V).
-  { exact (preimage_preserves_separation unit_interval R_standard_topology X Tx p U V Hpcont HU HV HsepXUV). }
+  (** Extract function and endpoints from Hp (left-associative /\) **)
+  claim Hp_pair0: function_on p unit_interval X /\ apply_fun p 0 = x.
+  { exact (andEL (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = y) Hp). }
+  claim Hpfunc: function_on p unit_interval X.
+  { exact (andEL (function_on p unit_interval X) (apply_fun p 0 = x) Hp_pair0). }
+  claim Hp0eq: apply_fun p 0 = x.
+  { exact (andER (function_on p unit_interval X) (apply_fun p 0 = x) Hp_pair0). }
+  claim Hp1eq: apply_fun p 1 = y.
+  { exact (andER (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = y) Hp). }
+
+  (** Extract disjointness and union from separation_of X U V **)
+  claim Hsep_left: ((((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
+  { exact (andEL ((((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                 (U :\/: V = X) HsepXUV). }
+  claim Hsep_mid: ((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty.
+  { exact (andEL (((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty)
+                 (V <> Empty) Hsep_left). }
+  claim Hsep_pow_disj: (U :e Power X /\ V :e Power X) /\ U :/\: V = Empty.
+  { exact (andEL ((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty)
+                 (U <> Empty) Hsep_mid). }
+  claim HdisjUV: U :/\: V = Empty.
+  { exact (andER (U :e Power X /\ V :e Power X) (U :/\: V = Empty) Hsep_pow_disj). }
+  claim HunionUV: U :\/: V = X.
+  { exact (andER ((((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                 (U :\/: V = X) HsepXUV). }
+
+  (** Show preimages form a separation of the unit interval **)
+  set preU := preimage_of unit_interval p U.
+  set preV := preimage_of unit_interval p V.
+  claim Hsep_UV: separation_of unit_interval preU preV.
+  { prove preU :e Power unit_interval /\ preV :e Power unit_interval /\ preU :/\: preV = Empty /\ preU <> Empty /\ preV <> Empty /\ preU :\/: preV = unit_interval.
+    apply andI.
+    - prove ((((preU :e Power unit_interval /\ preV :e Power unit_interval) /\ preU :/\: preV = Empty) /\ preU <> Empty) /\ preV <> Empty).
+      apply andI.
+      + prove (((preU :e Power unit_interval /\ preV :e Power unit_interval) /\ preU :/\: preV = Empty) /\ preU <> Empty).
+        apply andI.
+        - prove ((preU :e Power unit_interval /\ preV :e Power unit_interval) /\ preU :/\: preV = Empty).
+          apply andI.
+          + prove preU :e Power unit_interval /\ preV :e Power unit_interval.
+            apply andI.
+            - prove preU :e Power unit_interval.
+              apply PowerI.
+              let t. assume Ht: t :e preU.
+              exact (SepE1 unit_interval (fun t0:set => apply_fun p t0 :e U) t Ht).
+            - prove preV :e Power unit_interval.
+              apply PowerI.
+              let t. assume Ht: t :e preV.
+              exact (SepE1 unit_interval (fun t0:set => apply_fun p t0 :e V) t Ht).
+          + prove preU :/\: preV = Empty.
+            apply Empty_eq.
+            let t. assume Ht: t :e preU :/\: preV.
+            apply (binintersectE preU preV t Ht).
+            assume HtU: t :e preU.
+            assume HtV: t :e preV.
+            claim HpU: apply_fun p t :e U.
+            { exact (SepE2 unit_interval (fun t0:set => apply_fun p t0 :e U) t HtU). }
+            claim HpV: apply_fun p t :e V.
+            { exact (SepE2 unit_interval (fun t0:set => apply_fun p t0 :e V) t HtV). }
+            claim HpUV: apply_fun p t :e U :/\: V.
+            { exact (binintersectI U V (apply_fun p t) HpU HpV). }
+            claim Hfalse: apply_fun p t :e Empty.
+            { rewrite <- HdisjUV. exact HpUV. }
+            exact (EmptyE (apply_fun p t) Hfalse).
+        - (** preU <> Empty **)
+          assume Heq: preU = Empty.
+          claim H01: 0 :e unit_interval /\ 1 :e unit_interval.
+          { exact zero_one_in_unit_interval. }
+          claim H0I: 0 :e unit_interval.
+          { exact (andEL (0 :e unit_interval) (1 :e unit_interval) H01). }
+          claim HxU: apply_fun p 0 :e U.
+          { rewrite Hp0eq. exact Hx. }
+          claim H0pre: 0 :e preU.
+          { exact (SepI unit_interval (fun t0:set => apply_fun p t0 :e U) 0 H0I HxU). }
+          claim Hsub: preU c= Empty.
+          { rewrite Heq. exact (Subq_ref Empty). }
+          claim H0Empty: 0 :e Empty.
+          { exact (Hsub 0 H0pre). }
+          exact (EmptyE 0 H0Empty).
+      + (** preV <> Empty **)
+        assume Heq: preV = Empty.
+        claim H01: 0 :e unit_interval /\ 1 :e unit_interval.
+        { exact zero_one_in_unit_interval. }
+        claim H1I: 1 :e unit_interval.
+        { exact (andER (0 :e unit_interval) (1 :e unit_interval) H01). }
+        claim HyV: apply_fun p 1 :e V.
+        { rewrite Hp1eq. exact Hy. }
+        claim H1pre: 1 :e preV.
+        { exact (SepI unit_interval (fun t0:set => apply_fun p t0 :e V) 1 H1I HyV). }
+        claim Hsub: preV c= Empty.
+        { rewrite Heq. exact (Subq_ref Empty). }
+        claim H1Empty: 1 :e Empty.
+        { exact (Hsub 1 H1pre). }
+        exact (EmptyE 1 H1Empty).
+    - prove preU :\/: preV = unit_interval.
+      apply set_ext.
+      + let t. assume Ht: t :e preU :\/: preV.
+        prove t :e unit_interval.
+        apply (binunionE preU preV t Ht).
+        - assume HtU: t :e preU.
+          exact (SepE1 unit_interval (fun t0:set => apply_fun p t0 :e U) t HtU).
+        - assume HtV: t :e preV.
+          exact (SepE1 unit_interval (fun t0:set => apply_fun p t0 :e V) t HtV).
+      + let t. assume HtI: t :e unit_interval.
+        prove t :e preU :\/: preV.
+        claim HptX: apply_fun p t :e X.
+        { exact (Hpfunc t HtI). }
+        claim HptUV: apply_fun p t :e U :\/: V.
+        { rewrite HunionUV. exact HptX. }
+        apply (binunionE U V (apply_fun p t) HptUV).
+        - assume HptU: apply_fun p t :e U.
+          apply binunionI1.
+          exact (SepI unit_interval (fun t0:set => apply_fun p t0 :e U) t HtI HptU).
+        - assume HptV: apply_fun p t :e V.
+          apply binunionI2.
+          exact (SepI unit_interval (fun t0:set => apply_fun p t0 :e V) t HtI HptV). }
   (** Preimages are open in R_standard_topology **)
-  claim HpreimgU: preimage_of unit_interval p U :e R_standard_topology.
+  claim HpreimgU: preU :e R_standard_topology.
   { exact (andER (topology_on unit_interval R_standard_topology /\ topology_on X Tx /\ function_on p unit_interval X)
                  (forall V0:set, V0 :e Tx -> preimage_of unit_interval p V0 :e R_standard_topology)
                  Hpcont U HU). }
-  claim HpreimgV: preimage_of unit_interval p V :e R_standard_topology.
+  claim HpreimgV: preV :e R_standard_topology.
   { exact (andER (topology_on unit_interval R_standard_topology /\ topology_on X Tx /\ function_on p unit_interval X)
                  (forall V0:set, V0 :e Tx -> preimage_of unit_interval p V0 :e R_standard_topology)
                  Hpcont V HV). }
   (** This gives a separation of unit_interval **)
   claim Hsep_exists: exists U0 V0:set, U0 :e R_standard_topology /\ V0 :e R_standard_topology /\ separation_of unit_interval U0 V0.
-  { witness (preimage_of unit_interval p U). witness (preimage_of unit_interval p V).
-    prove (preimage_of unit_interval p U) :e R_standard_topology /\ (preimage_of unit_interval p V) :e R_standard_topology /\ separation_of unit_interval (preimage_of unit_interval p U) (preimage_of unit_interval p V).
+  { witness preU. witness preV.
+    prove preU :e R_standard_topology /\ preV :e R_standard_topology /\ separation_of unit_interval preU preV.
     apply andI.
     - apply andI.
       + exact HpreimgU.
