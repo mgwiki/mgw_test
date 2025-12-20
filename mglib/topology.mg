@@ -25062,11 +25062,90 @@ Axiom preimage_of_union_functions : forall A B f g V:set,
   preimage_of (A :\/: B) (f :\/: g) V =
     (preimage_of A f V) :\/: (preimage_of B g V).
 
-Axiom subspace_union_of_opens : forall X Tx A B U V:set,
+(** Helper: unions of open subsets of disjoint open subspaces are open in the union subspace **)
+Theorem subspace_union_of_opens : forall X Tx A B U V:set,
   topology_on X Tx -> A :e Tx -> B :e Tx -> A :/\: B = Empty ->
   U :e subspace_topology X Tx A ->
   V :e subspace_topology X Tx B ->
   (U :\/: V) :e subspace_topology X Tx (A :\/: B).
+let X Tx A B U V.
+assume HTx: topology_on X Tx.
+assume HA: A :e Tx.
+assume HB: B :e Tx.
+assume Hdisj: A :/\: B = Empty.
+assume HU: U :e subspace_topology X Tx A.
+assume HV: V :e subspace_topology X Tx B.
+prove (U :\/: V) :e subspace_topology X Tx (A :\/: B).
+(** Unpack U open in subspace A **)
+claim HUpowA: U :e Power A.
+{ exact (SepE1 (Power A) (fun U0:set => exists W :e Tx, U0 = W :/\: A) U HU). }
+claim HUsubA: U c= A.
+{ exact (PowerE A U HUpowA). }
+claim HexWU: exists W :e Tx, U = W :/\: A.
+{ exact (SepE2 (Power A) (fun U0:set => exists W :e Tx, U0 = W :/\: A) U HU). }
+apply HexWU.
+let WU. assume HWUpair.
+claim HWUinTx: WU :e Tx.
+{ exact (andEL (WU :e Tx) (U = WU :/\: A) HWUpair). }
+claim HUeq: U = WU :/\: A.
+{ exact (andER (WU :e Tx) (U = WU :/\: A) HWUpair). }
+claim HUAinTx: WU :/\: A :e Tx.
+{ exact (topology_binintersect_closed X Tx WU A HTx HWUinTx HA). }
+claim HUinTx: U :e Tx.
+{ rewrite HUeq. exact HUAinTx. }
+
+(** Unpack V open in subspace B **)
+claim HVpowB: V :e Power B.
+{ exact (SepE1 (Power B) (fun V0:set => exists W :e Tx, V0 = W :/\: B) V HV). }
+claim HVsubB: V c= B.
+{ exact (PowerE B V HVpowB). }
+claim HexWV: exists W :e Tx, V = W :/\: B.
+{ exact (SepE2 (Power B) (fun V0:set => exists W :e Tx, V0 = W :/\: B) V HV). }
+apply HexWV.
+let WV. assume HWVpair.
+claim HWVinTx: WV :e Tx.
+{ exact (andEL (WV :e Tx) (V = WV :/\: B) HWVpair). }
+claim HVeql: V = WV :/\: B.
+{ exact (andER (WV :e Tx) (V = WV :/\: B) HWVpair). }
+claim HVBinTx: WV :/\: B :e Tx.
+{ exact (topology_binintersect_closed X Tx WV B HTx HWVinTx HB). }
+claim HVinTx: V :e Tx.
+{ rewrite HVeql. exact HVBinTx. }
+
+(** Hence U∪V is open in X, and it lies in A∪B **)
+claim HUVinTx: (U :\/: V) :e Tx.
+{ exact (topology_binunion_closed X Tx U V HTx HUinTx HVinTx). }
+claim HAsubAB: A c= A :\/: B.
+{ exact (binunion_Subq_1 A B). }
+claim HBsubAB: B c= A :\/: B.
+{ exact (binunion_Subq_2 A B). }
+claim HUsubAB: U c= A :\/: B.
+{ let x. assume Hx: x :e U.
+  prove x :e A :\/: B.
+  exact (HAsubAB x (HUsubA x Hx)). }
+claim HVsubAB: V c= A :\/: B.
+{ let x. assume Hx: x :e V.
+  prove x :e A :\/: B.
+  exact (HBsubAB x (HVsubB x Hx)). }
+claim HUVsubAB: (U :\/: V) c= A :\/: B.
+{ exact (binunion_Subq_min U V (A :\/: B) HUsubAB HVsubAB). }
+claim HUVpowAB: (U :\/: V) :e Power (A :\/: B).
+{ exact (PowerI (A :\/: B) (U :\/: V) HUVsubAB). }
+
+(** Apply subspace_topology definition on A∪B, using witness W = U∪V **)
+claim HPred: exists W :e Tx, (U :\/: V) = W :/\: (A :\/: B).
+{ witness (U :\/: V).
+  apply andI.
+  + exact HUVinTx.
+  + prove (U :\/: V) = (U :\/: V) :/\: (A :\/: B).
+    claim Heq: (U :\/: V) :/\: (A :\/: B) = (U :\/: V).
+    { exact (binintersect_Subq_eq_1 (U :\/: V) (A :\/: B) HUVsubAB). }
+    rewrite Heq.
+    reflexivity. }
+exact (SepI (Power (A :\/: B))
+            (fun U0:set => exists W :e Tx, U0 = W :/\: (A :\/: B))
+            (U :\/: V) HUVpowAB HPred).
+Qed.
 
 (** from §18 Theorem 18.3: pasting lemma **)
 (** LATEX VERSION: Pasting lemma: continuous pieces on closed (or appropriate) sets assemble to a continuous map. **)
