@@ -24669,8 +24669,34 @@ Definition compose_fun : set -> set -> set -> set := fun X f g =>
   {(x, apply_fun g (apply_fun f x))|x :e X}.
 
 (** Helper: apply_fun on composed functions **)
-Axiom compose_fun_apply : forall X f g x:set,
+Theorem compose_fun_apply : forall X f g x:set,
   x :e X -> apply_fun (compose_fun X f g) x = apply_fun g (apply_fun f x).
+let X f g x. assume Hx.
+prove apply_fun (compose_fun X f g) x = apply_fun g (apply_fun f x).
+prove apply_fun {(y, apply_fun g (apply_fun f y)) | y :e X} x = apply_fun g (apply_fun f x).
+prove Eps_i (fun z => (x, z) :e {(y, apply_fun g (apply_fun f y)) | y :e X}) = apply_fun g (apply_fun f x).
+claim H1: (x, apply_fun g (apply_fun f x)) :e {(y, apply_fun g (apply_fun f y)) | y :e X}.
+{ exact (ReplI X (fun y => (y, apply_fun g (apply_fun f y))) x Hx). }
+claim H2: (x, Eps_i (fun z => (x, z) :e {(y, apply_fun g (apply_fun f y)) | y :e X})) :e {(y, apply_fun g (apply_fun f y)) | y :e X}.
+{ exact (Eps_i_ax (fun z => (x, z) :e {(y, apply_fun g (apply_fun f y)) | y :e X}) (apply_fun g (apply_fun f x)) H1). }
+apply (ReplE_impred X (fun y => (y, apply_fun g (apply_fun f y))) (x, Eps_i (fun z => (x, z) :e {(y, apply_fun g (apply_fun f y)) | y :e X})) H2).
+let y.
+assume Hy: y :e X.
+assume Heq: (x, Eps_i (fun z => (x, z) :e {(y0, apply_fun g (apply_fun f y0)) | y0 :e X})) = (y, apply_fun g (apply_fun f y)).
+claim Hx_eq: x = y.
+{ rewrite <- (tuple_2_0_eq x (Eps_i (fun z => (x, z) :e {(y0, apply_fun g (apply_fun f y0)) | y0 :e X}))).
+  rewrite <- (tuple_2_0_eq y (apply_fun g (apply_fun f y))).
+  rewrite Heq.
+  reflexivity. }
+claim Hz_eq: Eps_i (fun z => (x, z) :e {(y0, apply_fun g (apply_fun f y0)) | y0 :e X}) = apply_fun g (apply_fun f y).
+{ rewrite <- (tuple_2_1_eq x (Eps_i (fun z => (x, z) :e {(y0, apply_fun g (apply_fun f y0)) | y0 :e X}))).
+  rewrite <- (tuple_2_1_eq y (apply_fun g (apply_fun f y))).
+  rewrite Heq.
+  reflexivity. }
+rewrite Hz_eq.
+rewrite <- Hx_eq.
+reflexivity.
+Qed.
 
 (** Helper: preimage composition property **)
 Axiom preimage_compose : forall X Y f g W:set,
