@@ -27583,6 +27583,66 @@ apply (xm (z :e A)).
   - exact HsepUV.
 Qed.
 
+(** Helper: image of x mapped to (x,y0) is setprod X {y0} **)
+Theorem image_of_id_const_is_slice : forall X y0:set,
+  image_of (pair_map X {(x,x)|x :e X} (const_fun X y0)) X = setprod X {y0}.
+let X y0.
+prove image_of (pair_map X {(x,x)|x :e X} (const_fun X y0)) X = setprod X {y0}.
+apply set_ext.
+- let p. assume Hp: p :e image_of (pair_map X {(x,x)|x :e X} (const_fun X y0)) X.
+  prove p :e setprod X {y0}.
+  (** unfold image_of **)
+  set f := pair_map X {(x,x)|x :e X} (const_fun X y0).
+  claim HpRepl: p :e Repl X (fun a => apply_fun f a).
+  { exact Hp. }
+  apply (ReplE_impred X (fun a:set => apply_fun f a) p HpRepl).
+  let a. assume HaX: a :e X.
+  assume Heq: p = apply_fun f a.
+  rewrite Heq.
+  claim Hfa: apply_fun f a = (apply_fun {(x,x)|x :e X} a, apply_fun (const_fun X y0) a).
+  { exact (pair_map_apply X X {y0} {(x,x)|x :e X} (const_fun X y0) a HaX). }
+  claim Hid: apply_fun {(x,x)|x :e X} a = a.
+  { exact (identity_function_apply X a HaX). }
+  claim Hc: apply_fun (const_fun X y0) a = y0.
+  { exact (const_fun_apply X y0 a HaX). }
+  rewrite Hfa.
+  rewrite Hid.
+  rewrite Hc.
+  exact (tuple_2_setprod X {y0} a HaX y0 (SingI y0)).
+- let p. assume Hp: p :e setprod X {y0}.
+  prove p :e image_of (pair_map X {(x,x)|x :e X} (const_fun X y0)) X.
+  set f := pair_map X {(x,x)|x :e X} (const_fun X y0).
+  (** extract coordinates **)
+  claim Hp0X: (p 0) :e X.
+  { exact (ap0_Sigma X (fun _:set => {y0}) p Hp). }
+  claim Hp1Sing: (p 1) :e {y0}.
+  { exact (ap1_Sigma X (fun _:set => {y0}) p Hp). }
+  claim Hp1eq: (p 1) = y0.
+  { exact (singleton_elem (p 1) y0 Hp1Sing). }
+  claim Heta: p = (p 0, p 1).
+  { exact (setprod_eta X {y0} p Hp). }
+  (** show p is in the image by choosing a = p0 **)
+  prove p :e Repl X (fun a => apply_fun f a).
+  claim Hfp0: apply_fun f (p 0) = (apply_fun {(x,x)|x :e X} (p 0), apply_fun (const_fun X y0) (p 0)).
+  { exact (pair_map_apply X X {y0} {(x,x)|x :e X} (const_fun X y0) (p 0) Hp0X). }
+  claim Hid0: apply_fun {(x,x)|x :e X} (p 0) = (p 0).
+  { exact (identity_function_apply X (p 0) Hp0X). }
+  claim Hc0: apply_fun (const_fun X y0) (p 0) = y0.
+  { exact (const_fun_apply X y0 (p 0) Hp0X). }
+	  claim Hfp0eq: apply_fun f (p 0) = (p 0, p 1).
+	  { rewrite Hfp0.
+	    rewrite Hid0.
+	    rewrite Hc0.
+	    rewrite Hp1eq.
+	    reflexivity. }
+  claim Hp_as_image: p = apply_fun f (p 0).
+  { rewrite Heta at 1.
+    rewrite Hfp0eq.
+    reflexivity. }
+  rewrite Hp_as_image.
+  exact (ReplI X (fun a:set => apply_fun f a) (p 0) Hp0X).
+Qed.
+
 (** from §23 Theorem 23.6: finite products of connected spaces are connected **) 
 Theorem finite_product_connected : forall X Tx Y Ty:set,
   connected_space X Tx -> connected_space Y Ty ->
