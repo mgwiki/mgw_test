@@ -25708,10 +25708,86 @@ Definition connected_space : set -> set -> prop := fun X Tx =>
   ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
 
 (** Helper axioms for connected_iff_no_nontrivial_clopen **)
-Axiom clopen_gives_separation : forall X Tx A:set,
+Theorem clopen_gives_separation : forall X Tx A:set,
   topology_on X Tx -> A <> Empty -> A <> X ->
   open_in X Tx A -> closed_in X Tx A ->
   exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V.
+let X Tx A.
+assume HTx: topology_on X Tx.
+assume HAne: A <> Empty.
+assume HAneX: A <> X.
+assume HAopen: open_in X Tx A.
+assume HAclosed: closed_in X Tx A.
+claim HATx: A :e Tx.
+{ exact (andER (topology_on X Tx) (A :e Tx) HAopen). }
+claim HcompOpen: open_in X Tx (X :\: A).
+{ exact (open_of_closed_complement X Tx A HAclosed). }
+claim HcompTx: X :\: A :e Tx.
+{ exact (andER (topology_on X Tx) ((X :\: A) :e Tx) HcompOpen). }
+witness A.
+witness (X :\: A).
+apply andI.
+- apply andI.
+  + exact HATx.
+  + exact HcompTx.
+- prove separation_of X A (X :\: A).
+    prove A :e Power X /\ (X :\: A) :e Power X /\ A :/\: (X :\: A) = Empty /\ A <> Empty /\ (X :\: A) <> Empty /\ A :\/: (X :\: A) = X.
+    claim HAsubX: A c= X.
+    { exact (open_in_subset X Tx A HAopen). }
+    claim HApower: A :e Power X.
+    { exact (PowerI X A HAsubX). }
+    claim HcompSubX: X :\: A c= X.
+    { exact (setminus_Subq X A). }
+    claim HcompPower: (X :\: A) :e Power X.
+    { exact (PowerI X (X :\: A) HcompSubX). }
+    claim Hdisjoint: A :/\: (X :\: A) = Empty.
+    { apply Empty_eq.
+      let x. assume Hx: x :e A :/\: (X :\: A).
+      apply (binintersectE A (X :\: A) x Hx).
+      assume HxA: x :e A.
+      assume HxComp: x :e X :\: A.
+      apply (setminusE X A x HxComp).
+      assume _. assume HxNotA: x /:e A.
+      exact (HxNotA HxA). }
+    claim HcompNe: (X :\: A) <> Empty.
+    { assume Heq: X :\: A = Empty.
+      claim HAeqX: A = X.
+      { apply set_ext.
+        - exact HAsubX.
+        - let x. assume HxX: x :e X.
+          apply (xm (x :e A)).
+          + assume HxA. exact HxA.
+          + assume HxNotA.
+            claim Hxcomp: x :e X :\: A.
+            { exact (setminusI X A x HxX HxNotA). }
+            claim HxEmpty: x :e Empty.
+            { rewrite <- Heq. exact Hxcomp. }
+            prove x :e A.
+            exact (FalseE (EmptyE x HxEmpty) (x :e A)). }
+      exact (HAneX HAeqX). }
+    claim Hunion: A :\/: (X :\: A) = X.
+    { apply set_ext.
+      - let x. assume Hx: x :e A :\/: (X :\: A).
+        apply (binunionE A (X :\: A) x Hx).
+        + assume HxA. exact (HAsubX x HxA).
+        + assume HxComp. exact (setminusE1 X A x HxComp).
+      - let x. assume HxX: x :e X.
+        apply (xm (x :e A)).
+        + assume HxA. exact (binunionI1 A (X :\: A) x HxA).
+        + assume HxNotA. exact (binunionI2 A (X :\: A) x (setminusI X A x HxX HxNotA)). }
+    prove (((((A :e Power X /\ (X :\: A) :e Power X) /\ A :/\: (X :\: A) = Empty) /\ A <> Empty) /\ (X :\: A) <> Empty) /\ A :\/: (X :\: A) = X).
+    apply andI.
+    * apply andI.
+      { apply andI.
+        - apply andI.
+          + apply andI.
+            { exact HApower. }
+            { exact HcompPower. }
+          + exact Hdisjoint.
+        - exact HAne. }
+      { exact HcompNe. }
+    * exact Hunion.
+Qed.
 
 Axiom separation_gives_clopen : forall X Tx U V:set,
   topology_on X Tx ->
