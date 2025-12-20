@@ -25789,10 +25789,104 @@ apply andI.
     * exact Hunion.
 Qed.
 
-Axiom separation_gives_clopen : forall X Tx U V:set,
+Theorem separation_gives_clopen : forall X Tx U V:set,
   topology_on X Tx ->
   U :e Tx -> V :e Tx -> separation_of X U V ->
   exists A:set, A <> Empty /\ A <> X /\ open_in X Tx A /\ closed_in X Tx A.
+let X Tx U V.
+assume HTx: topology_on X Tx.
+assume HU: U :e Tx.
+assume HV: V :e Tx.
+assume Hsep: separation_of X U V.
+witness U.
+prove U <> Empty /\ U <> X /\ open_in X Tx U /\ closed_in X Tx U.
+claim H1: (((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty.
+{ exact (andEL ((((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+               (U :\/: V = X) Hsep). }
+claim H2: ((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty.
+{ exact (andEL (((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty)
+               (V <> Empty) H1). }
+claim HUne: U <> Empty.
+{ exact (andER (((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty)) (U <> Empty) H2). }
+claim Hunion: U :\/: V = X.
+{ exact (andER ((((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+               (U :\/: V = X) Hsep). }
+claim HUneX: U <> X.
+{ assume Heq: U = X.
+  claim HVempty: V = Empty.
+  { apply Empty_eq.
+    let x. assume Hx: x :e V.
+    claim HxX: x :e X.
+    { rewrite <- Hunion. exact (binunionI2 U V x Hx). }
+    claim HxU: x :e U.
+    { rewrite Heq. exact HxX. }
+    claim Hxdisj: x :e U :/\: V.
+    { exact (binintersectI U V x HxU Hx). }
+    claim Hdisj: U :/\: V = Empty.
+    { exact (andER (U :e Power X /\ V :e Power X) (U :/\: V = Empty)
+                   (andEL ((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty)
+                          (U <> Empty) H2)). }
+    claim Hfalse: x :e Empty.
+    { rewrite <- Hdisj. exact Hxdisj. }
+    exact (EmptyE x Hfalse). }
+  claim HVne: V <> Empty.
+  { exact (andER ((((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty)) (V <> Empty) H1). }
+  exact (HVne HVempty). }
+claim HUopen: open_in X Tx U.
+{ exact (andI (topology_on X Tx) (U :e Tx) HTx HU). }
+claim Hdisj: U :/\: V = Empty.
+{ exact (andER (U :e Power X /\ V :e Power X) (U :/\: V = Empty)
+               (andEL ((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty)
+                      (U <> Empty) H2)). }
+claim HUpower: U :e Power X.
+{ exact (andEL (U :e Power X) (V :e Power X)
+               (andEL (U :e Power X /\ V :e Power X) (U :/\: V = Empty)
+                      (andEL ((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) (U <> Empty) H2))). }
+claim HUsubX: U c= X.
+{ exact (PowerE X U HUpower). }
+claim Heq_comp: U = X :\: V.
+{ apply set_ext.
+  - let x. assume Hx: x :e U.
+    prove x :e X :\: V.
+    claim HxX: x :e X.
+    { exact (HUsubX x Hx). }
+    claim HxnotV: x /:e V.
+    { assume HxV: x :e V.
+      claim Hxdisj: x :e U :/\: V.
+      { exact (binintersectI U V x Hx HxV). }
+      claim Hfalse: x :e Empty.
+      { rewrite <- Hdisj. exact Hxdisj. }
+      exact (EmptyE x Hfalse). }
+    exact (setminusI X V x HxX HxnotV).
+  - let x. assume Hx: x :e X :\: V.
+    prove x :e U.
+    claim HxX: x :e X.
+    { exact (setminusE1 X V x Hx). }
+    claim HxnotV: x /:e V.
+    { exact (setminusE2 X V x Hx). }
+    claim HxUnion: x :e U :\/: V.
+    { rewrite Hunion. exact HxX. }
+    apply (binunionE U V x HxUnion).
+    + assume HxU. exact HxU.
+    + assume HxV. exact (FalseE (HxnotV HxV) (x :e U)). }
+claim HUclosed: closed_in X Tx U.
+{ prove topology_on X Tx /\ (U c= X /\ exists W :e Tx, U = X :\: W).
+  apply andI.
+  - exact HTx.
+  - apply andI.
+    + exact HUsubX.
+    + witness V.
+      apply andI.
+      * exact HV.
+      * exact Heq_comp. }
+apply andI.
+- apply andI.
+  + apply andI.
+    * exact HUne.
+    * exact HUneX.
+  + exact HUopen.
+- exact HUclosed.
+Qed.
 
 (** from §23: no nontrivial clopen sets characterization **)
 (** LATEX VERSION: A space is connected iff it has no nontrivial clopen subsets. **)
