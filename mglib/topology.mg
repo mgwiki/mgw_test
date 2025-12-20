@@ -16368,8 +16368,33 @@ Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set,
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod X Y)|function_on f X Y}.
 
 (** Helper: identity function application **)
-Axiom identity_function_apply : forall X x:set,
+Theorem identity_function_apply : forall X x:set,
   x :e X -> apply_fun {(y,y) | y :e X} x = x.
+let X x. assume Hx: x :e X.
+prove apply_fun {(y,y) | y :e X} x = x.
+prove Eps_i (fun z => (x,z) :e {(y,y) | y :e X}) = x.
+claim H1: (x,x) :e {(y,y) | y :e X}.
+{ exact (ReplI X (fun y => (y,y)) x Hx). }
+claim H2: (x, Eps_i (fun z => (x,z) :e {(y,y) | y :e X})) :e {(y,y) | y :e X}.
+{ exact (Eps_i_ax (fun z => (x,z) :e {(y,y) | y :e X}) x H1). }
+apply (ReplE_impred X (fun y => (y,y)) (x, Eps_i (fun z => (x,z) :e {(y,y) | y :e X})) H2).
+let y.
+assume Hy: y :e X.
+assume Heq: (x, Eps_i (fun z => (x,z) :e {(y,y) | y :e X})) = (y,y).
+claim Hx_eq: x = y.
+{ rewrite <- (tuple_2_0_eq x (Eps_i (fun z => (x,z) :e {(y,y) | y :e X}))).
+  rewrite <- (tuple_2_0_eq y y).
+  rewrite Heq.
+  reflexivity. }
+claim Hz_eq: Eps_i (fun z => (x,z) :e {(y,y) | y :e X}) = y.
+{ rewrite <- (tuple_2_1_eq x (Eps_i (fun z => (x,z) :e {(y,y) | y :e X}))).
+  rewrite <- (tuple_2_1_eq y y).
+  rewrite Heq.
+  reflexivity. }
+rewrite Hz_eq.
+rewrite <- Hx_eq.
+reflexivity.
+Qed.
 
 Definition const_family : set -> set -> set := fun I X => {(i,X)|i :e I}.
 Definition product_component : set -> set -> set := fun Xi i => (apply_fun Xi i) 0.
