@@ -32039,6 +32039,32 @@ Definition directed_set : set -> prop := fun J =>
   forall i j:set, i :e J -> j :e J ->
     exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k).
 
+(** helper: every element in a directed set has an upper bound in the set **)
+(** LATEX VERSION: In a directed set J, for each i in J there exists k in J with i ≤ k. **)
+Theorem directed_set_upper_bound : forall J i:set,
+  directed_set J -> i :e J -> exists k:set, k :e J /\ (i :e k \/ i = k).
+let J i.
+assume HJ: directed_set J.
+assume HiJ: i :e J.
+prove exists k:set, k :e J /\ (i :e k \/ i = k).
+claim Hdir: forall a b:set, a :e J -> b :e J ->
+  exists k:set, k :e J /\ (a :e k \/ a = k) /\ (b :e k \/ b = k).
+{ exact (andER (J <> Empty)
+               (forall i j:set, i :e J -> j :e J ->
+                  exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k))
+               HJ). }
+claim Hexk: exists k:set, k :e J /\ (i :e k \/ i = k) /\ (i :e k \/ i = k).
+{ exact (Hdir i i HiJ HiJ). }
+apply Hexk.
+let k.
+assume Hk: k :e J /\ (i :e k \/ i = k) /\ (i :e k \/ i = k).
+witness k.
+prove k :e J /\ (i :e k \/ i = k).
+claim Hk1: k :e J /\ (i :e k \/ i = k).
+{ exact (andEL (k :e J /\ (i :e k \/ i = k)) (i :e k \/ i = k) Hk). }
+exact Hk1.
+Qed.
+
 (** from exercises after §29: examples of directed sets **) 
 (** LATEX VERSION: Simple closure properties/examples of directed sets (placeholder). **)
 Theorem examples_of_directed_sets : forall J:set,
