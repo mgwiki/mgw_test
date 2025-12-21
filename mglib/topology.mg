@@ -30790,7 +30790,45 @@ apply andI.
         claim HexTube: exists U:set,
           U :e Tx /\ x :e U /\
           exists H:set, H c= Fam /\ finite H /\ setprod U Y c= Union H.
-        { admit. (** obtain a finite cover of {x}×Y from Fam using compactness of Y, form an open neighborhood N of {x}×Y, apply tube_lemma to get U, and take H witnessing U×Y ⊆ Union H **) }
+        { (** Reduce to producing a finite subfamily H of Fam that covers {x}×Y, then apply tube_lemma to N = Union H. **)
+          claim HFamOpen: forall U0:set, U0 :e Fam -> U0 :e product_topology X Tx Y Ty.
+          { exact (andER ((topology_on (setprod X Y) (product_topology X Tx Y Ty) /\ Fam c= Power (setprod X Y)) /\ setprod X Y c= Union Fam)
+                         (forall U0:set, U0 :e Fam -> U0 :e product_topology X Tx Y Ty)
+                         HFam). }
+          claim HexSlice: exists H:set, H c= Fam /\ finite H /\ setprod {x} Y c= Union H.
+          { admit. (** derive from compactness of Y and the open cover Fam of X×Y, using basis refinement to get rectangles around (x,y) **)
+          }
+          apply HexSlice.
+          let H. assume HH: H c= Fam /\ finite H /\ setprod {x} Y c= Union H.
+          claim HHsub: H c= Fam.
+          { exact (andEL (H c= Fam) (finite H) (andEL (H c= Fam /\ finite H) (setprod {x} Y c= Union H) HH)). }
+          claim HHfin: finite H.
+          { exact (andER (H c= Fam) (finite H) (andEL (H c= Fam /\ finite H) (setprod {x} Y c= Union H) HH)). }
+          claim HHcov: setprod {x} Y c= Union H.
+          { exact (andER (H c= Fam /\ finite H) (setprod {x} Y c= Union H) HH). }
+          claim HHsubTop: H c= product_topology X Tx Y Ty.
+          { let N0. assume HN0: N0 :e H.
+            claim HN0Fam: N0 :e Fam.
+            { exact (HHsub N0 HN0). }
+            exact (HFamOpen N0 HN0Fam). }
+          claim HtopProd: topology_on (setprod X Y) (product_topology X Tx Y Ty).
+          { exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
+          claim HNtop: Union H :e product_topology X Tx Y Ty.
+          { exact (topology_union_closed (setprod X Y) (product_topology X Tx Y Ty) H HtopProd HHsubTop). }
+          claim Htube: exists U:set, U :e Tx /\ x :e U /\ setprod U Y c= Union H.
+          { exact (tube_lemma X Tx Y Ty HTx HTy HY x Hx (Union H)
+                 (andI ((Union H) :e product_topology X Tx Y Ty) (setprod {x} Y c= Union H) HNtop HHcov)). }
+          apply Htube.
+          let U. assume HU: U :e Tx /\ x :e U /\ setprod U Y c= Union H.
+          claim HUAB0: U :e Tx /\ x :e U.
+          { exact (andEL (U :e Tx /\ x :e U) (setprod U Y c= Union H) HU). }
+          witness U.
+          apply andI.
+          - exact HUAB0.
+          - witness H.
+            exact (andI (H c= Fam /\ finite H) (setprod U Y c= Union H)
+                        (andI (H c= Fam) (finite H) HHsub HHfin)
+                        (andER (U :e Tx /\ x :e U) (setprod U Y c= Union H) HU)). }
         apply HexTube.
         let U. assume HU: U :e Tx /\ x :e U /\ exists H:set, H c= Fam /\ finite H /\ setprod U Y c= Union H.
         claim HUAB: U :e Tx /\ x :e U.
