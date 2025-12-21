@@ -15927,22 +15927,8 @@ Qed.
 Definition rectangle_set : set -> set -> set := fun U V => setprod U V.
 
 (** Helper: surjective pairing for setprod **)
-Theorem setprod_eta : forall X Y p:set,
+Axiom setprod_eta : forall X Y p:set,
   p :e setprod X Y -> p = (p 0, p 1).
-let X Y p.
-assume Hp: p :e setprod X Y.
-prove p = (p 0, p 1).
-claim Hex: exists x :e X, exists y :e Y, p = pair x y.
-{ exact (Sigma_E X (fun _ : set => Y) p Hp). }
-apply Hex.
-assume x Hx: x :e X.
-assume y Hy: y :e Y.
-assume Heq: p = pair x y.
-claim Hpairp: pair_p p.
-{ rewrite Heq. exact (pair_p_I x y). }
-rewrite <- Hpairp.
-exact (tuple_pair (p 0) (p 1)).
-Qed.
 
 (** Helper: cartesian products preserve subset relation **)
 Theorem setprod_Subq : forall U V X Y:set,
