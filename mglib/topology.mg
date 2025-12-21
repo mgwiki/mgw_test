@@ -30847,7 +30847,67 @@ apply andI.
       claim HsubFam: pickH U0 c= Fam.
       { exact (andEL (pickH U0 c= Fam) (finite (pickH U0)) HpropAB). }
       exact (HsubFam N HNin).
-    + admit. (** finite of famunion over finite K of finite pickH U, can be shown by finite_ind and binunion_finite **)
+    + prove finite G.
+      claim HpEmpty: Empty c= UFam -> finite (\/_ U :e Empty, pickH U).
+      { assume _.
+        rewrite (famunion_Empty (fun U:set => pickH U)).
+        exact finite_Empty. }
+      claim HpStep: forall K0 y:set,
+        finite K0 -> y /:e K0 ->
+        (K0 c= UFam -> finite (\/_ U :e K0, pickH U)) ->
+        ((K0 :\/: {y}) c= UFam -> finite (\/_ U :e (K0 :\/: {y}), pickH U)).
+      { let K0 y.
+        assume HK0fin HyNotin IH.
+        assume Hsub: (K0 :\/: {y}) c= UFam.
+        claim HK0sub: K0 c= UFam.
+        { let U. assume HU: U :e K0.
+          exact (Hsub U (binunionI1 K0 {y} U HU)). }
+        claim HyUFam: y :e UFam.
+        { exact (Hsub y (binunionI2 K0 {y} y (SingI y))). }
+        claim Hfin0: finite (\/_ U :e K0, pickH U).
+        { exact (IH HK0sub). }
+        claim HpropY: pickH y c= Fam /\ finite (pickH y) /\ setprod y Y c= Union (pickH y).
+        { exact (HpickH y HyUFam). }
+        claim HpropYAB: pickH y c= Fam /\ finite (pickH y).
+        { exact (andEL (pickH y c= Fam /\ finite (pickH y)) (setprod y Y c= Union (pickH y)) HpropY). }
+        claim HfinY: finite (pickH y).
+        { exact (andER (pickH y c= Fam) (finite (pickH y)) HpropYAB). }
+        claim Heq: (\/_ U :e (K0 :\/: {y}), pickH U) = (\/_ U :e K0, pickH U) :\/: pickH y.
+        { apply set_ext.
+          - let N. assume HN: N :e (\/_ U :e (K0 :\/: {y}), pickH U).
+            prove N :e (\/_ U :e K0, pickH U) :\/: pickH y.
+            apply (famunionE_impred (K0 :\/: {y}) (fun U1:set => pickH U1) N HN).
+            let U1. assume HU1: U1 :e K0 :\/: {y}.
+            assume HNin: N :e pickH U1.
+            apply (binunionE' K0 {y} U1 (N :e (\/_ U :e K0, pickH U) :\/: pickH y)).
+            + assume HU1K0: U1 :e K0.
+              apply binunionI1.
+              exact (famunionI K0 (fun U2:set => pickH U2) U1 N HU1K0 HNin).
+            + assume HU1y: U1 :e {y}.
+              claim HU1eq: U1 = y.
+              { exact (SingE y U1 HU1y). }
+              claim HNy: N :e pickH y.
+              { prove N :e pickH y.
+                rewrite <- HU1eq at 1.
+                exact HNin. }
+              exact (binunionI2 (\/_ U :e K0, pickH U) (pickH y) N HNy).
+            + exact HU1.
+          - let N. assume HN: N :e (\/_ U :e K0, pickH U) :\/: pickH y.
+            prove N :e (\/_ U :e (K0 :\/: {y}), pickH U).
+            apply (binunionE' (\/_ U :e K0, pickH U) (pickH y) N (N :e (\/_ U :e (K0 :\/: {y}), pickH U))).
+            + assume HN0: N :e (\/_ U :e K0, pickH U).
+              apply (famunionE_impred K0 (fun U1:set => pickH U1) N HN0).
+              let U1. assume HU1K0: U1 :e K0.
+              assume HN1: N :e pickH U1.
+              exact (famunionI (K0 :\/: {y}) (fun U2:set => pickH U2) U1 N (binunionI1 K0 {y} U1 HU1K0) HN1).
+            + assume HNy: N :e pickH y.
+              exact (famunionI (K0 :\/: {y}) (fun U2:set => pickH U2) y N (binunionI2 K0 {y} y (SingI y)) HNy).
+            + exact HN. }
+        rewrite Heq.
+        exact (binunion_finite (\/_ U :e K0, pickH U) Hfin0 (pickH y) HfinY). }
+      claim Hall: K c= UFam -> finite (\/_ U :e K, pickH U).
+      { exact (finite_ind (fun K0:set => K0 c= UFam -> finite (\/_ U :e K0, pickH U)) HpEmpty HpStep K HKfin). }
+      exact (Hall HKsub).
   - let p. assume Hp: p :e setprod X Y.
     prove p :e Union G.
     claim Hp0X: p 0 :e X.
