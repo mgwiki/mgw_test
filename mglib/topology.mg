@@ -14821,7 +14821,7 @@ apply andI.
     - exact zero_not_in_K_set. }
   claim HUcond: forall x :e U, exists b :e R_lower_limit_basis, x :e b /\ b c= U.
   { exact (SepE2 (Power R)
-            (fun U0:set => forall x0 :e U0, exists b:set, b :e R_lower_limit_basis /\ x0 :e b /\ b c= U0)
+            (fun U0:set => forall x0 :e U0, exists b0 :e R_lower_limit_basis, x0 :e b0 /\ b0 c= U0)
             U HUinLower). }
   claim Hexb0: exists b0:set, b0 :e R_lower_limit_basis /\ 0 :e b0 /\ b0 c= U.
   { exact (HUcond 0 H0inU). }
