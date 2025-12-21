@@ -14784,7 +14784,105 @@ Theorem K_set_meets_lower_limit_neighborhood_0 :
     ~(Rlt 0 a) ->
     Rlt 0 b ->
     exists y:set, y :e halfopen_interval_left a b /\ y :e K_set.
-admit.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume Hnot0a: ~(Rlt 0 a).
+assume H0b: Rlt 0 b.
+set r := recip_SNo b.
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+claim H0ltb: 0 < b.
+{ exact (RltE_lt 0 b H0b). }
+claim Hbne0: b <> 0.
+{ assume Hb0: b = 0.
+  claim H00: 0 < 0.
+  { rewrite <- Hb0 at 2.
+    exact H0ltb. }
+  exact ((SNoLt_irref 0) H00). }
+claim HrS: SNo r.
+{ exact (SNo_recip_SNo b HbS). }
+claim HrR: r :e R.
+{ exact (real_recip_SNo b HbR). }
+claim Hrpos: 0 < r.
+{ exact (recip_SNo_of_pos_is_pos b HbS H0ltb). }
+claim Hrnonneg: 0 <= r.
+{ exact (SNoLtLe 0 r Hrpos). }
+claim Hexn: exists n :e omega, n <= r /\ r < ordsucc n.
+{ exact (nonneg_real_nat_interval r HrR Hrnonneg). }
+apply Hexn.
+let n.
+assume Hnpair: n :e omega /\ (n <= r /\ r < ordsucc n).
+claim HnOmega: n :e omega.
+{ exact (andEL (n :e omega) (n <= r /\ r < ordsucc n) Hnpair). }
+claim Hnrest: n <= r /\ r < ordsucc n.
+{ exact (andER (n :e omega) (n <= r /\ r < ordsucc n) Hnpair). }
+claim HrltN: r < ordsucc n.
+{ exact (andER (n <= r) (r < ordsucc n) Hnrest). }
+set N := ordsucc n.
+claim HNOmega: N :e omega.
+{ exact (omega_ordsucc n HnOmega). }
+claim HnNat: nat_p n.
+{ exact (omega_nat_p n HnOmega). }
+claim HnOrd: ordinal n.
+{ exact (nat_p_ordinal n HnNat). }
+claim H0ltN: 0 < N.
+{ exact (ordinal_ordsucc_pos n HnOrd). }
+claim HNS: SNo N.
+{ exact (omega_SNo N HNOmega). }
+claim Hineq: mul_SNo b r < mul_SNo b N.
+{ exact (pos_mul_SNo_Lt b r N HbS H0ltb HrS HNS HrltN). }
+claim Hbr1: mul_SNo b r = 1.
+{ exact (recip_SNo_invR b HbS Hbne0). }
+claim H1ltbN: 1 < mul_SNo b N.
+{ rewrite <- Hbr1.
+  exact Hineq. }
+claim HinvLt: div_SNo 1 N < b.
+{ exact (div_SNo_pos_LtL 1 N b SNo_1 HNS (real_SNo b HbR) H0ltN H1ltbN). }
+claim HinvEq: div_SNo 1 N = inv_nat N.
+{ prove div_SNo 1 N = inv_nat N.
+  claim Hdivdef: div_SNo 1 N = mul_SNo 1 (recip_SNo N).
+  { reflexivity. }
+  claim Hinvdef: inv_nat N = recip_SNo N.
+  { reflexivity. }
+  rewrite Hdivdef.
+  rewrite Hinvdef at 2.
+  rewrite (mul_SNo_oneL (recip_SNo N) (SNo_recip_SNo N HNS)).
+  reflexivity. }
+claim Hyltb: inv_nat N < b.
+{ rewrite <- HinvEq.
+  exact HinvLt. }
+claim HyR: inv_nat N :e R.
+{ exact (inv_nat_real N HNOmega). }
+claim HyRltb: Rlt (inv_nat N) b.
+{ exact (RltI (inv_nat N) b HyR HbR Hyltb). }
+claim HNnot0: N /:e {0}.
+{ assume HNin: N :e {0}.
+  claim HNeq0: N = 0.
+  { exact (SingE 0 N HNin). }
+  claim H00: 0 < 0.
+  { rewrite <- HNeq0 at 2.
+    exact H0ltN. }
+  exact ((SNoLt_irref 0) H00). }
+claim HNinSetminus: N :e omega :\: {0}.
+{ apply setminusI.
+  - exact HNOmega.
+  - exact HNnot0. }
+claim HyK: inv_nat N :e K_set.
+{ exact (ReplI (omega :\: {0}) (fun m:set => inv_nat m) N HNinSetminus). }
+claim Hypos: Rlt 0 (inv_nat N).
+{ exact (inv_nat_pos N HNinSetminus). }
+claim HnotHyLta: ~(Rlt (inv_nat N) a).
+{ assume Hylta: Rlt (inv_nat N) a.
+  claim H0lta: Rlt 0 a.
+  { exact (Rlt_tra 0 (inv_nat N) a Hypos Hylta). }
+  exact (Hnot0a H0lta). }
+witness (inv_nat N).
+apply andI.
+- prove inv_nat N :e halfopen_interval_left a b.
+  exact (SepI R (fun x0:set => ~(Rlt x0 a) /\ Rlt x0 b) (inv_nat N) HyR
+          (andI (~(Rlt (inv_nat N) a)) (Rlt (inv_nat N) b) HnotHyLta HyRltb)).
+- exact HyK.
 Qed.
 
 (** LATEX VERSION: Exercise 6: The lower-limit topology and the K-topology on ℝ are incomparable. **)
