@@ -29310,9 +29310,10 @@ Qed.
 
 (** from §26 Theorem 26.3: compact subspaces of Hausdorff spaces are closed **) 
 Theorem compact_subspace_in_Hausdorff_closed : forall X Tx Y:set,
-  Hausdorff_space X Tx -> compact_space Y (subspace_topology X Tx Y) -> closed_in X Tx Y.
+  Hausdorff_space X Tx -> Y c= X -> compact_space Y (subspace_topology X Tx Y) -> closed_in X Tx Y.
 let X Tx Y.
 assume HH: Hausdorff_space X Tx.
+assume HYsub: Y c= X.
 assume Hcomp: compact_space Y (subspace_topology X Tx Y).
 prove closed_in X Tx Y.
 admit. (** for x ∉ Y, separate x from each y ∈ Y by Hausdorff; cover Y; finite subcover gives neighborhood of x disjoint from Y
@@ -29325,10 +29326,11 @@ Qed.
     Now: x /:e Y (point x is not an element of set Y)
     The conclusion x :e U confirms x is a point, so disjointness should be x ∉ Y. **)
 Theorem Hausdorff_separate_point_compact_set : forall X Tx Y x:set,
-  Hausdorff_space X Tx -> compact_space Y (subspace_topology X Tx Y) -> x /:e Y ->
+  Hausdorff_space X Tx -> Y c= X -> compact_space Y (subspace_topology X Tx Y) -> x /:e Y ->
   exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ Y c= V /\ U :/\: V = Empty.
 let X Tx Y x.
 assume HH: Hausdorff_space X Tx.
+assume HYsub: Y c= X.
 assume Hcomp: compact_space Y (subspace_topology X Tx Y).
 assume Hx: x /:e Y.
 prove exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ Y c= V /\ U :/\: V = Empty.
@@ -29480,13 +29482,15 @@ Definition locally_compact : set -> set -> prop := fun X Tx =>
 (** LATEX VERSION: In Hausdorff spaces, compact subsets are closed. **)
 Theorem Hausdorff_compact_sets_closed : forall X Tx A:set,
   Hausdorff_space X Tx ->
+  A c= X ->
   compact_space A (subspace_topology X Tx A) ->
   closed_in X Tx A.
 let X Tx A.
 assume HH: Hausdorff_space X Tx.
+assume HA: A c= X.
 assume Hcomp: compact_space A (subspace_topology X Tx A).
 prove closed_in X Tx A.
-exact (compact_subspace_in_Hausdorff_closed X Tx A HH Hcomp).
+exact (compact_subspace_in_Hausdorff_closed X Tx A HH HA Hcomp).
 Qed.
 
 (** from §29: one-point compactification placeholder **) 
