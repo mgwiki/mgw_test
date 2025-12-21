@@ -28781,14 +28781,328 @@ Qed.
 (** FIXED: open_cover_of Y Tx Fam included topology_on Y Tx, which is wrong (Tx is topology on X, not Y).
     Now: directly state the covering condition (Fam c= Tx /\ Y c= Union Fam) without nonsensical topology_on. **)
 Theorem compact_subspace_via_ambient_covers : forall X Tx Y:set,
-  topology_on X Tx ->
+  topology_on X Tx -> Y c= X ->
   (compact_space Y (subspace_topology X Tx Y) <->
     forall Fam:set, (Fam c= Tx /\ Y c= Union Fam) -> has_finite_subcover Y Tx Fam).
 let X Tx Y.
 assume HTx: topology_on X Tx.
+assume HY: Y c= X.
 prove compact_space Y (subspace_topology X Tx Y) <->
     forall Fam:set, (Fam c= Tx /\ Y c= Union Fam) -> has_finite_subcover Y Tx Fam.
-admit. (** subspace compactness: cover of Y by opens in X gives cover by subspace opens; extract finite subcover **)
+set Ty := subspace_topology X Tx Y.
+apply iffI.
+- (** -> **)
+  assume Hcomp: compact_space Y Ty.
+  prove forall Fam:set, (Fam c= Tx /\ Y c= Union Fam) -> has_finite_subcover Y Tx Fam.
+  let Fam. assume Hcov: Fam c= Tx /\ Y c= Union Fam.
+  claim HFamSub: Fam c= Tx.
+  { exact (andEL (Fam c= Tx) (Y c= Union Fam) Hcov). }
+  claim HYcov: Y c= Union Fam.
+  { exact (andER (Fam c= Tx) (Y c= Union Fam) Hcov). }
+  (** Turn the ambient cover into a subspace open cover by intersecting with Y. **)
+  set FamY := {U :/\: Y|U :e Fam}.
+  claim HtopY: topology_on Y Ty.
+  { exact (andEL (topology_on Y Ty)
+                 (forall Fam:set, open_cover_of Y Ty Fam -> has_finite_subcover Y Ty Fam)
+                 Hcomp). }
+  claim HcoverFamY: open_cover_of Y Ty FamY.
+  { prove topology_on Y Ty /\ FamY c= Power Y /\ Y c= Union FamY /\ (forall U:set, U :e FamY -> U :e Ty).
+    (** conjunction is left-associative: (((A /\ B) /\ C) /\ D) **)
+    apply andI.
+    - (** (A /\ B) /\ C **)
+      apply andI.
+      + (** A /\ B **)
+        apply andI.
+        * exact HtopY.
+        * (** FamY c= Power Y **)
+          let W. assume HW: W :e FamY.
+          prove W :e Power Y.
+          apply (ReplE_impred Fam (fun U:set => U :/\: Y) W HW).
+          let U. assume HUfam: U :e Fam.
+          assume HWeq: W = U :/\: Y.
+          rewrite HWeq.
+          apply PowerI.
+          exact (binintersect_Subq_2 U Y).
+      + (** Y c= Union FamY **)
+        let y. assume HyY: y :e Y.
+        prove y :e Union FamY.
+        claim HyUnionFam: y :e Union Fam.
+        { exact (HYcov y HyY). }
+        apply (UnionE_impred Fam y HyUnionFam).
+        let U. assume HyU: y :e U.
+        assume HUfam: U :e Fam.
+        prove y :e Union FamY.
+        apply (UnionI FamY y (U :/\: Y)).
+        - prove y :e U :/\: Y.
+          exact (binintersectI U Y y HyU HyY).
+        - prove (U :/\: Y) :e FamY.
+          exact (ReplI Fam (fun V:set => V :/\: Y) U HUfam).
+    - (** each cover element is open in the subspace topology **)
+      let W. assume HW: W :e FamY.
+      prove W :e Ty.
+      apply (ReplE_impred Fam (fun U:set => U :/\: Y) W HW).
+      let U. assume HUfam: U :e Fam.
+      assume HWeq: W = U :/\: Y.
+      rewrite HWeq.
+      prove (U :/\: Y) :e subspace_topology X Tx Y.
+      prove (U :/\: Y) :e {U0 :e Power Y | exists V :e Tx, U0 = V :/\: Y}.
+      apply SepI.
+      + apply PowerI.
+        exact (binintersect_Subq_2 U Y).
+      + prove exists V :e Tx, U :/\: Y = V :/\: Y.
+        witness U.
+        apply andI.
+        * exact (HFamSub U HUfam).
+        * reflexivity. }
+  (** Apply compactness of Y in the subspace topology. **)
+  claim Hsubcover: forall Fam0:set, open_cover_of Y Ty Fam0 -> has_finite_subcover Y Ty Fam0.
+  { exact (andER (topology_on Y Ty)
+                 (forall Fam0:set, open_cover_of Y Ty Fam0 -> has_finite_subcover Y Ty Fam0)
+                 Hcomp). }
+  claim HfinY: has_finite_subcover Y Ty FamY.
+  { exact (Hsubcover FamY HcoverFamY). }
+  apply HfinY.
+  let GY. assume HGY: GY c= FamY /\ finite GY /\ Y c= Union GY.
+  (** conjunction is left-associative: (A /\ B) /\ C **)
+  claim HGYleft: GY c= FamY /\ finite GY.
+  { exact (andEL (GY c= FamY /\ finite GY) (Y c= Union GY) HGY). }
+  claim HGYsub: GY c= FamY.
+  { exact (andEL (GY c= FamY) (finite GY) HGYleft). }
+  claim HGYfin: finite GY.
+  { exact (andER (GY c= FamY) (finite GY) HGYleft). }
+  claim HGYcov: Y c= Union GY.
+  { exact (andER (GY c= FamY /\ finite GY) (Y c= Union GY) HGY). }
+	  (** Choose, for each W in GY, an ambient set U in Fam with W = U /\ Y. **)
+	  set pickU := fun W:set => Eps_i (fun U:set => U :e Fam /\ W = U :/\: Y).
+	  set G := {pickU W|W :e GY}.
+		  prove exists G1:set, G1 c= Fam /\ finite G1 /\ Y c= Union G1.
+		  witness G.
+		  prove G c= Fam /\ finite G /\ Y c= Union G.
+	  apply andI.
+  - apply andI.
+    + (** G c= Fam **)
+      let U. assume HU: U :e G.
+      prove U :e Fam.
+      apply (ReplE_impred GY (fun W:set => pickU W) U HU).
+      let W. assume HWGY: W :e GY.
+      assume HeqU: U = pickU W.
+      rewrite HeqU.
+      (** show pickU W is in Fam using epsilon **)
+      claim HWFamY: W :e FamY.
+      { exact (HGYsub W HWGY). }
+      claim HexU: exists U0:set, U0 :e Fam /\ W = U0 :/\: Y.
+      { apply (ReplE_impred Fam (fun U1:set => U1 :/\: Y) W HWFamY).
+        let U0. assume HU0fam: U0 :e Fam.
+        assume HW0: W = U0 :/\: Y.
+        witness U0.
+        apply andI.
+        - exact HU0fam.
+        - exact HW0. }
+      (** apply epsilon to obtain membership in Fam **)
+      apply HexU.
+      let U0. assume HU0pair: U0 :e Fam /\ W = U0 :/\: Y.
+      claim HU0: U0 :e Fam.
+      { exact (andEL (U0 :e Fam) (W = U0 :/\: Y) HU0pair). }
+      exact (andEL (pickU W :e Fam) (W = pickU W :/\: Y)
+                   (Eps_i_ax (fun U1:set => U1 :e Fam /\ W = U1 :/\: Y) U0 HU0pair)).
+    + (** finite G **)
+      exact (Repl_finite (fun W:set => pickU W) GY HGYfin).
+  - (** Y c= Union G **)
+    let y. assume HyY: y :e Y.
+    prove y :e Union G.
+    claim HyUGY: y :e Union GY.
+    { exact (HGYcov y HyY). }
+    apply (UnionE_impred GY y HyUGY).
+    let W. assume HyW: y :e W.
+    assume HWGY: W :e GY.
+    prove y :e Union G.
+    (** show y in pickU W **)
+    claim HWFamY: W :e FamY.
+    { exact (HGYsub W HWGY). }
+    claim HexU: exists U0:set, U0 :e Fam /\ W = U0 :/\: Y.
+    { apply (ReplE_impred Fam (fun U1:set => U1 :/\: Y) W HWFamY).
+      let U0. assume HU0fam: U0 :e Fam.
+      assume HW0: W = U0 :/\: Y.
+      witness U0.
+      apply andI.
+      - exact HU0fam.
+      - exact HW0. }
+    claim Hpick: W = pickU W :/\: Y.
+    { apply HexU.
+      let U0. assume HU0pair: U0 :e Fam /\ W = U0 :/\: Y.
+      exact (andER (pickU W :e Fam) (W = pickU W :/\: Y)
+                   (Eps_i_ax (fun U1:set => U1 :e Fam /\ W = U1 :/\: Y) U0 HU0pair)). }
+	  claim HyInPick: y :e pickU W.
+	  { claim HyWY: y :e pickU W :/\: Y.
+	    { rewrite <- Hpick at 1.
+	      exact HyW. }
+	    exact (binintersectE1 (pickU W) Y y HyWY). }
+	    exact (UnionI G y (pickU W) HyInPick
+	                  (ReplI GY (fun W0:set => pickU W0) W HWGY)).
+
+- (** <- **)
+  assume Hprop: forall Fam:set, (Fam c= Tx /\ Y c= Union Fam) -> has_finite_subcover Y Tx Fam.
+  prove compact_space Y Ty.
+  prove topology_on Y Ty /\ forall Fam:set, open_cover_of Y Ty Fam -> has_finite_subcover Y Ty Fam.
+  apply andI.
+  - exact (subspace_topology_is_topology X Tx Y HTx HY).
+	  - let Fam0. assume Hcov0: open_cover_of Y Ty Fam0.
+	    prove has_finite_subcover Y Ty Fam0.
+	    (** Extract cover facts **)
+	    (** open_cover_of Y Ty Fam0 is left-associative: (((A /\ B) /\ C) /\ D) **)
+	    claim Hcov0_ABC: (topology_on Y Ty /\ Fam0 c= Power Y) /\ Y c= Union Fam0.
+	    { exact (andEL ((topology_on Y Ty /\ Fam0 c= Power Y) /\ Y c= Union Fam0)
+	                   (forall U:set, U :e Fam0 -> U :e Ty) Hcov0). }
+	    claim Hcov0_AB: topology_on Y Ty /\ Fam0 c= Power Y.
+	    { exact (andEL (topology_on Y Ty /\ Fam0 c= Power Y) (Y c= Union Fam0) Hcov0_ABC). }
+	    claim HF0subPow: Fam0 c= Power Y.
+	    { exact (andER (topology_on Y Ty) (Fam0 c= Power Y) Hcov0_AB). }
+	    claim HYcov0: Y c= Union Fam0.
+	    { exact (andER (topology_on Y Ty /\ Fam0 c= Power Y) (Y c= Union Fam0) Hcov0_ABC). }
+	    claim HF0open: forall U:set, U :e Fam0 -> U :e Ty.
+	    { exact (andER ((topology_on Y Ty /\ Fam0 c= Power Y) /\ Y c= Union Fam0)
+	                   (forall U:set, U :e Fam0 -> U :e Ty) Hcov0). }
+
+    (** For each W in Fam0 choose an ambient open V in Tx with W = V /\ Y. **)
+    set Vof := fun W:set => Eps_i (fun V:set => V :e Tx /\ W = V :/\: Y).
+    set Fam := {Vof W|W :e Fam0}.
+    claim HFamSub: Fam c= Tx.
+    { let V. assume HV: V :e Fam.
+      prove V :e Tx.
+      apply (ReplE_impred Fam0 (fun W:set => Vof W) V HV).
+      let W. assume HW: W :e Fam0.
+      assume HVeq: V = Vof W.
+      rewrite HVeq.
+      (** epsilon yields Vof W in Tx **)
+      claim HexV: exists V0:set, V0 :e Tx /\ W = V0 :/\: Y.
+      { claim HWty: W :e Ty.
+        { exact (HF0open W HW). }
+        exact (SepE2 (Power Y) (fun U0:set => exists V0 :e Tx, U0 = V0 :/\: Y) W HWty). }
+      apply HexV.
+      let V0. assume HV0pair: V0 :e Tx /\ W = V0 :/\: Y.
+      exact (andEL (Vof W :e Tx) (W = Vof W :/\: Y)
+                   (Eps_i_ax (fun V1:set => V1 :e Tx /\ W = V1 :/\: Y) V0 HV0pair)). }
+
+    claim HYcovFam: Y c= Union Fam.
+    { let y. assume HyY: y :e Y.
+      prove y :e Union Fam.
+      claim HyUF0: y :e Union Fam0.
+      { exact (HYcov0 y HyY). }
+      apply (UnionE_impred Fam0 y HyUF0).
+      let W. assume HyW: y :e W.
+      assume HW: W :e Fam0.
+      prove y :e Union Fam.
+      claim HyV: y :e Vof W.
+      { (** y in Vof W **)
+        claim HexV: exists V0:set, V0 :e Tx /\ W = V0 :/\: Y.
+        { claim HWty: W :e Ty.
+          { exact (HF0open W HW). }
+          exact (SepE2 (Power Y) (fun U0:set => exists V0 :e Tx, U0 = V0 :/\: Y) W HWty). }
+        claim Hpick: W = Vof W :/\: Y.
+        { apply HexV.
+          let V0. assume HV0pair: V0 :e Tx /\ W = V0 :/\: Y.
+          exact (andER (Vof W :e Tx) (W = Vof W :/\: Y)
+                       (Eps_i_ax (fun V1:set => V1 :e Tx /\ W = V1 :/\: Y) V0 HV0pair)). }
+        claim HyWY: y :e Vof W :/\: Y.
+        { rewrite <- Hpick at 1.
+          exact HyW. }
+        exact (binintersectE1 (Vof W) Y y HyWY). }
+      claim HVFam: (Vof W) :e Fam.
+      { exact (ReplI Fam0 (fun W0:set => Vof W0) W HW). }
+      exact (UnionI Fam y (Vof W) HyV HVFam). }
+
+    (** Apply the ambient-cover property to get finite subcover G of Fam **)
+    claim Hfin: has_finite_subcover Y Tx Fam.
+    { exact (Hprop Fam (andI (Fam c= Tx) (Y c= Union Fam) HFamSub HYcovFam)). }
+	    apply Hfin.
+	    let G. assume HG: G c= Fam /\ finite G /\ Y c= Union G.
+	    (** conjunction is left-associative: (A /\ B) /\ C **)
+	    claim HGleft: G c= Fam /\ finite G.
+	    { exact (andEL (G c= Fam /\ finite G) (Y c= Union G) HG). }
+	    claim HGsub: G c= Fam.
+	    { exact (andEL (G c= Fam) (finite G) HGleft). }
+	    claim HGfin: finite G.
+	    { exact (andER (G c= Fam) (finite G) HGleft). }
+	    claim HGcov: Y c= Union G.
+	    { exact (andER (G c= Fam /\ finite G) (Y c= Union G) HG). }
+
+	    (** Convert G back to a finite subfamily of Fam0. **)
+	    set Wof := fun V:set => Eps_i (fun W:set => W :e Fam0 /\ V = Vof W).
+	    set G0 := {Wof V|V :e G}.
+	    prove exists G1:set, G1 c= Fam0 /\ finite G1 /\ Y c= Union G1.
+	    witness G0.
+	    prove G0 c= Fam0 /\ finite G0 /\ Y c= Union G0.
+    apply andI.
+    - apply andI.
+      + (** G0 c= Fam0 **)
+        let W. assume HW: W :e G0.
+        prove W :e Fam0.
+        apply (ReplE_impred G (fun V:set => Wof V) W HW).
+        let V. assume HVG: V :e G.
+        assume HWof: W = Wof V.
+        rewrite HWof.
+        (** epsilon picks W in Fam0 **)
+        claim HVFam: V :e Fam.
+        { exact (HGsub V HVG). }
+        claim HexW: exists W0:set, W0 :e Fam0 /\ V = Vof W0.
+        { apply (ReplE_impred Fam0 (fun W0:set => Vof W0) V HVFam).
+          let W0. assume HW0: W0 :e Fam0.
+          assume HVeq: V = Vof W0.
+          witness W0.
+          apply andI.
+          - exact HW0.
+          - exact HVeq. }
+        apply HexW.
+        let W0. assume HW0pair: W0 :e Fam0 /\ V = Vof W0.
+        exact (andEL (Wof V :e Fam0) (V = Vof (Wof V))
+                     (Eps_i_ax (fun W1:set => W1 :e Fam0 /\ V = Vof W1) W0 HW0pair)).
+      + (** finite G0 **)
+        exact (Repl_finite (fun V:set => Wof V) G HGfin).
+    - (** Y c= Union G0 **)
+      let y. assume HyY: y :e Y.
+      prove y :e Union G0.
+      claim HyUG: y :e Union G.
+      { exact (HGcov y HyY). }
+      apply (UnionE_impred G y HyUG).
+      let V. assume HyV: y :e V.
+      assume HVG: V :e G.
+      prove y :e Union G0.
+      (** show y in Wof V, using that V = Vof (Wof V) and Wof V = (Vof (Wof V)) /\ Y **)
+      claim HVFam: V :e Fam.
+      { exact (HGsub V HVG). }
+      claim HexW: exists W0:set, W0 :e Fam0 /\ V = Vof W0.
+      { apply (ReplE_impred Fam0 (fun W0:set => Vof W0) V HVFam).
+        let W0. assume HW0: W0 :e Fam0.
+        assume HVeq: V = Vof W0.
+        witness W0.
+        apply andI.
+        - exact HW0.
+        - exact HVeq. }
+      claim HVeq: V = Vof (Wof V).
+      { apply HexW.
+        let W0. assume HW0pair: W0 :e Fam0 /\ V = Vof W0.
+        exact (andER (Wof V :e Fam0) (V = Vof (Wof V))
+                     (Eps_i_ax (fun W1:set => W1 :e Fam0 /\ V = Vof W1) W0 HW0pair)). }
+      claim HWty: (Wof V) :e Ty.
+      { claim HWinFam0: (Wof V) :e Fam0.
+        { apply HexW.
+          let W0. assume HW0pair: W0 :e Fam0 /\ V = Vof W0.
+          exact (andEL (Wof V :e Fam0) (V = Vof (Wof V))
+                       (Eps_i_ax (fun W1:set => W1 :e Fam0 /\ V = Vof W1) W0 HW0pair)). }
+        exact (HF0open (Wof V) HWinFam0). }
+      claim HexV: exists V0:set, V0 :e Tx /\ (Wof V) = V0 :/\: Y.
+      { exact (SepE2 (Power Y) (fun U0:set => exists V0 :e Tx, U0 = V0 :/\: Y) (Wof V) HWty). }
+      claim HWrepr: (Wof V) = (Vof (Wof V)) :/\: Y.
+      { apply HexV.
+        let V0. assume HV0pair: V0 :e Tx /\ (Wof V) = V0 :/\: Y.
+        exact (andER (Vof (Wof V) :e Tx) ((Wof V) = (Vof (Wof V)) :/\: Y)
+                     (Eps_i_ax (fun V1:set => V1 :e Tx /\ (Wof V) = V1 :/\: Y) V0 HV0pair)). }
+      claim HyInWof: y :e (Wof V).
+      { rewrite HWrepr at 1.
+        rewrite <- HVeq at 1.
+        exact (binintersectI V Y y HyV HyY). }
+      exact (UnionI G0 y (Wof V) HyInWof
+                    (ReplI G (fun V0:set => Wof V0) V HVG)).
 Qed.
 
 (** from §26 Theorem 26.2: closed subspaces of compact spaces are compact **) 
