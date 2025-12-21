@@ -15927,8 +15927,22 @@ Qed.
 Definition rectangle_set : set -> set -> set := fun U V => setprod U V.
 
 (** Helper: surjective pairing for setprod **)
-Axiom setprod_eta : forall X Y p:set,
+Theorem setprod_eta : forall X Y p:set,
   p :e setprod X Y -> p = (p 0, p 1).
+let X Y p.
+assume Hp: p :e setprod X Y.
+prove p = (p 0, p 1).
+claim Hex: exists x :e X, exists y :e Y, p = pair x y.
+{ exact (Sigma_E X (fun _ : set => Y) p Hp). }
+apply Hex.
+assume x Hx: x :e X.
+assume y Hy: y :e Y.
+assume Heq: p = pair x y.
+claim Hpairp: pair_p p.
+{ rewrite Heq. exact (pair_p_I x y). }
+rewrite <- Hpairp.
+exact (tuple_pair (p 0) (p 1)).
+Qed.
 
 (** Helper: cartesian products preserve subset relation **)
 Theorem setprod_Subq : forall U V X Y:set,
@@ -27771,8 +27785,7 @@ let X Tx Y Ty.
 assume HX: connected_space X Tx.
 assume HY: connected_space Y Ty.
 prove connected_space (setprod X Y) (product_topology X Tx Y Ty).
-admit. (** connect any two points via intermediate slices: {x}×Y connected, then X×{y} connected; union argument
-        aby: conj_myprob_9363_1_20251124_101338 prop_ext_2 In_5Find open_set�f ex13_1_local_open_subset UnionE open_in_subspace_iff . **)
+admit. (** pending: union proof using slice_X_connected and slice_Y_connected, with careful handling of empty cases and without rewriting inside hypotheses **)
 Qed.
 
 (** from §23 Example: product topology on R^ω is connected **) 
