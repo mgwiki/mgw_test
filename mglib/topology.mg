@@ -31698,7 +31698,199 @@ Theorem compact_implies_limit_point_compact : forall X Tx:set,
 let X Tx.
 assume Hcomp: compact_space X Tx.
 prove limit_point_compact X Tx.
-admit. (** if A infinite has no limit point, each x has nbhd meeting A finitely; contradiction to compactness **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+prove topology_on X Tx /\
+  forall A:set, A c= X -> infinite A -> exists x:set, limit_point_of X Tx A x.
+apply andI.
+- exact HTx.
+- let A.
+  assume HA: A c= X.
+  assume HinfA: infinite A.
+  prove exists x:set, limit_point_of X Tx A x.
+  apply (xm (exists x:set, limit_point_of X Tx A x)).
+  + assume Hex: exists x:set, limit_point_of X Tx A x.
+    exact Hex.
+  + assume Hnone: ~(exists x:set, limit_point_of X Tx A x).
+    prove exists x:set, limit_point_of X Tx A x.
+    apply FalseE.
+    prove False.
+
+    set Fam := {U :e Tx | exists x:set, x :e X /\ x :e U /\ ~(exists y:set, y :e A /\ y <> x /\ y :e U)}.
+
+    claim HFam_in_Tx: forall U:set, U :e Fam -> U :e Tx.
+    { let U. assume HU: U :e Fam.
+      exact (SepE1 Tx (fun U0:set => exists x:set, x :e X /\ x :e U0 /\ ~(exists y:set, y :e A /\ y <> x /\ y :e U0)) U HU). }
+
+    claim HFam_sub_PowX: Fam c= Power X.
+    { let U. assume HU: U :e Fam.
+      prove U :e Power X.
+      claim HUinTx: U :e Tx.
+      { exact (HFam_in_Tx U HU). }
+      claim HUsubX: U c= X.
+      { exact (topology_elem_subset X Tx U HTx HUinTx). }
+      exact (PowerI X U HUsubX). }
+
+    claim HX_sub_UnionFam: X c= Union Fam.
+    { let x. assume HxX: x :e X.
+      prove x :e Union Fam.
+      claim HnotLp: ~ limit_point_of X Tx A x.
+      { assume Hlp: limit_point_of X Tx A x.
+        apply Hnone.
+        witness x.
+        exact Hlp. }
+
+      claim HnotForall: ~(forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U).
+      { assume Hall: forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+        apply HnotLp.
+        prove topology_on X Tx /\ x :e X /\ forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+        apply andI.
+        - apply andI.
+          + exact HTx.
+          + exact HxX.
+        - exact Hall. }
+
+      claim HexU: exists U:set, ~(U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U).
+      { exact (not_all_ex_demorgan_i (fun U:set => U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U) HnotForall). }
+      apply HexU.
+      let U.
+      assume HnotImp: ~(U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U).
+
+      claim HUinTx: U :e Tx.
+      { apply (xm (U :e Tx)).
+        - assume HU: U :e Tx.
+          exact HU.
+        - assume HUn: U /:e Tx.
+          prove U :e Tx.
+          apply FalseE.
+          prove False.
+          claim Himp: U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+          { assume HU0: U :e Tx.
+            assume _.
+            apply FalseE.
+            exact (HUn HU0). }
+          exact (HnotImp Himp). }
+
+      claim HxU: x :e U.
+      { apply (xm (x :e U)).
+        - assume Hxu: x :e U.
+          exact Hxu.
+        - assume HxUn: x /:e U.
+          prove x :e U.
+          apply FalseE.
+          prove False.
+          claim Himp: U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+          { assume _.
+            assume Hxu: x :e U.
+            apply FalseE.
+            exact (HxUn Hxu). }
+          exact (HnotImp Himp). }
+
+      claim HnoY: ~(exists y:set, y :e A /\ y <> x /\ y :e U).
+      { assume Hexy: exists y:set, y :e A /\ y <> x /\ y :e U.
+        prove False.
+        claim Himp: U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+        { assume _. assume _. exact Hexy. }
+        exact (HnotImp Himp). }
+
+      claim HUinFam: U :e Fam.
+      { apply (SepI Tx
+                    (fun U0:set => exists x0:set, x0 :e X /\ x0 :e U0 /\ ~(exists y:set, y :e A /\ y <> x0 /\ y :e U0))
+                    U HUinTx).
+        witness x.
+        apply andI.
+        - apply andI.
+          + exact HxX.
+          + exact HxU.
+        - exact HnoY. }
+
+      exact (UnionI Fam x U HxU HUinFam). }
+
+    claim HFam_cover: open_cover_of X Tx Fam.
+    { prove topology_on X Tx /\ Fam c= Power X /\ X c= Union Fam /\ (forall U:set, U :e Fam -> U :e Tx).
+      apply andI.
+      - prove (topology_on X Tx /\ Fam c= Power X) /\ X c= Union Fam.
+        apply andI.
+        + prove topology_on X Tx /\ Fam c= Power X.
+          apply andI.
+          * exact HTx.
+          * exact HFam_sub_PowX.
+        + exact HX_sub_UnionFam.
+      - exact HFam_in_Tx. }
+
+    claim Hsub: has_finite_subcover X Tx Fam.
+    { exact (Heine_Borel_subcover X Tx Fam Hcomp HFam_cover). }
+    apply Hsub.
+    let G.
+    assume HG: G c= Fam /\ finite G /\ X c= Union G.
+
+    claim HG1: G c= Fam /\ finite G.
+    { exact (andEL (G c= Fam /\ finite G) (X c= Union G) HG). }
+    claim HGsub: G c= Fam.
+    { exact (andEL (G c= Fam) (finite G) HG1). }
+    claim HGfin: finite G.
+    { exact (andER (G c= Fam) (finite G) HG1). }
+    claim HXcovG: X c= Union G.
+    { exact (andER (G c= Fam /\ finite G) (X c= Union G) HG). }
+
+    set pickX := fun U:set => Eps_i (fun x:set => x :e X /\ x :e U /\ ~(exists y:set, y :e A /\ y <> x /\ y :e U)).
+    set Ximg := {pickX U|U :e G}.
+
+    claim HXimgFin: finite Ximg.
+    { exact (Repl_finite (fun U:set => pickX U) G HGfin). }
+
+    claim HAsubXimg: A c= Ximg.
+    { let a. assume HaA: a :e A.
+      prove a :e Ximg.
+      claim HaX: a :e X.
+      { exact (HA a HaA). }
+      claim HaUnionG: a :e Union G.
+      { exact (HXcovG a HaX). }
+      apply (UnionE_impred G a HaUnionG).
+      let U.
+      assume HaU: a :e U.
+      assume HUinG: U :e G.
+
+      claim HUinFam: U :e Fam.
+      { exact (HGsub U HUinG). }
+      claim HexxU: exists x:set, x :e X /\ x :e U /\ ~(exists y:set, y :e A /\ y <> x /\ y :e U).
+      { exact (SepE2 Tx
+                    (fun U0:set => exists x:set, x :e X /\ x :e U0 /\ ~(exists y:set, y :e A /\ y <> x /\ y :e U0))
+                    U HUinFam). }
+      claim HpickProp: pickX U :e X /\ pickX U :e U /\ ~(exists y:set, y :e A /\ y <> pickX U /\ y :e U).
+      { apply HexxU.
+        let x0.
+        assume Hx0: x0 :e X /\ x0 :e U /\ ~(exists y:set, y :e A /\ y <> x0 /\ y :e U).
+        exact (Eps_i_ax (fun x:set => x :e X /\ x :e U /\ ~(exists y:set, y :e A /\ y <> x /\ y :e U)) x0 Hx0). }
+
+      claim HnoOther: ~(exists y:set, y :e A /\ y <> pickX U /\ y :e U).
+      { exact (andER (pickX U :e X /\ pickX U :e U) (~(exists y:set, y :e A /\ y <> pickX U /\ y :e U)) HpickProp). }
+
+      claim HaEq: a = pickX U.
+      { apply (xm (a = pickX U)).
+        - assume Heq: a = pickX U.
+          exact Heq.
+        - assume Hneq: a <> pickX U.
+          prove a = pickX U.
+          apply FalseE.
+          prove False.
+          claim Hexy: exists y:set, y :e A /\ y <> pickX U /\ y :e U.
+          { witness a.
+            apply andI.
+            - apply andI.
+              + exact HaA.
+              + exact Hneq.
+            - exact HaU. }
+          exact (HnoOther Hexy). }
+
+      claim HpickInImg: pickX U :e Ximg.
+      { exact (ReplI G (fun U0:set => pickX U0) U HUinG). }
+      rewrite HaEq.
+      exact HpickInImg. }
+
+    claim HfinA: finite A.
+    { exact (Subq_finite Ximg HXimgFin A HAsubXimg). }
+    exact (HinfA HfinA).
 Qed.
 
 (** from §28: limit point compactness vs compactness **) 
