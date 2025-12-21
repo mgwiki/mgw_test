@@ -28585,7 +28585,17 @@ prove (forall x:set, x :e X -> x :e path_component_of X Tx x) /\
   (forall x y z:set, x :e X -> y :e X -> z :e X ->
      y :e path_component_of X Tx x -> z :e path_component_of X Tx y ->
      z :e path_component_of X Tx x).
-admit. (** reflexive: constant path; symmetric: reverse path; transitive: concatenate paths **)
+(** Conjunction is left-associative: (P1 /\ P2) /\ P3 **)
+apply andI.
+- (** P1 /\ P2 **)
+  apply andI.
+  * (** reflexive **)
+    let x. assume HxX: x :e X.
+    exact (path_component_reflexive X Tx x HTx HxX).
+  * (** symmetric: reverse path **)
+    admit.
+- (** transitive: concatenate paths **)
+  admit.
 Qed.
 
 (** from §25 Definition: components and local connectedness **) 
