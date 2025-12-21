@@ -32468,7 +32468,174 @@ let X Tx net sub x.
 assume Hnet: net_converges X Tx net x.
 assume Hsub: subnet_of net sub.
 prove net_converges X Tx sub x.
-admit. (** subnet eventually in any neighborhood containing net tail **)
+(** We prove the subnet convergence once convergence and subnet data share the same index set J.
+    With the current encoding, a net does not store its index set, so Hnet and Hsub may
+    produce unrelated J-witnesses; the missing bridge is isolated below. **)
+apply Hsub.
+let J.
+assume HKXphi: exists K X0 phi:set,
+  directed_set J /\ directed_set K /\
+  function_on net J X0 /\ function_on sub K X0 /\
+  function_on phi K J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+apply HKXphi.
+let K.
+assume HXphi: exists X0 phi:set,
+  directed_set J /\ directed_set K /\
+  function_on net J X0 /\ function_on sub K X0 /\
+  function_on phi K J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+apply HXphi.
+let X0.
+assume Hphi: exists phi:set,
+  directed_set J /\ directed_set K /\
+  function_on net J X0 /\ function_on sub K X0 /\
+  function_on phi K J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+apply Hphi.
+let phi.
+assume Hsubdata:
+  directed_set J /\ directed_set K /\
+  function_on net J X0 /\ function_on sub K X0 /\
+  function_on phi K J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+
+(** Missing bridge:
+    derive a convergence witness on the J coming from the subnet data. **)
+admit.
+Qed.
+
+(** helper: subnet preserves convergence for fixed index set witnesses **)
+(** LATEX VERSION: If net converges along J and sub is obtained by a cofinal map phi:K→J, then sub converges. **)
+Theorem subnet_preserves_convergence_witnessed :
+  forall X Tx net sub x J K phi:set,
+    topology_on X Tx ->
+    directed_set J ->
+    directed_set K ->
+    function_on net J X ->
+    function_on phi K J ->
+    (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+      forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+        (j :e apply_fun phi k \/ j = apply_fun phi k)) ->
+    (forall k:set, k :e K ->
+      apply_fun sub k = apply_fun net (apply_fun phi k)) ->
+    x :e X ->
+    (forall U:set, U :e Tx -> x :e U ->
+      exists j0:set, j0 :e J /\
+        forall j:set, j :e J -> (j0 :e j \/ j0 = j) ->
+          apply_fun net j :e U) ->
+    net_converges X Tx sub x.
+let X Tx net sub x J K phi.
+assume HTx: topology_on X Tx.
+assume HdirJ: directed_set J.
+assume HdirK: directed_set K.
+assume Hnetfun: function_on net J X.
+assume Hphi: function_on phi K J.
+assume Hcofinal:
+  forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k).
+assume Hsubeq:
+  forall k:set, k :e K -> apply_fun sub k = apply_fun net (apply_fun phi k).
+assume HxX: x :e X.
+assume Htail:
+  forall U:set, U :e Tx -> x :e U ->
+    exists j0:set, j0 :e J /\
+      forall j:set, j :e J -> (j0 :e j \/ j0 = j) ->
+        apply_fun net j :e U.
+prove net_converges X Tx sub x.
+prove exists J0:set, topology_on X Tx /\ directed_set J0 /\ function_on sub J0 X /\ x :e X /\
+  forall U:set, U :e Tx -> x :e U ->
+    exists i0:set, i0 :e J0 /\
+      forall i:set, i :e J0 -> (i0 :e i \/ i0 = i) -> apply_fun sub i :e U.
+witness K.
+apply andI.
+- apply andI.
+  * apply andI.
+    { apply andI.
+      - exact HTx.
+      - exact HdirK. }
+    { (** function_on sub K X **)
+      let k. assume HkK: k :e K.
+      prove apply_fun sub k :e X.
+      claim Hsubk: apply_fun sub k = apply_fun net (apply_fun phi k).
+      { exact (Hsubeq k HkK). }
+      rewrite Hsubk.
+      claim HphikJ: apply_fun phi k :e J.
+      { exact (Hphi k HkK). }
+      exact (Hnetfun (apply_fun phi k) HphikJ). }
+  * exact HxX.
+- let U.
+  assume HU: U :e Tx.
+  assume HxU: x :e U.
+  prove exists i0:set, i0 :e K /\
+    forall i:set, i :e K -> (i0 :e i \/ i0 = i) -> apply_fun sub i :e U.
+  claim Hexj0:
+    exists j0:set, j0 :e J /\
+      forall j:set, j :e J -> (j0 :e j \/ j0 = j) -> apply_fun net j :e U.
+  { exact (Htail U HU HxU). }
+  apply Hexj0.
+  let j0. assume Hj0pair.
+  claim Hj0J: j0 :e J.
+  { exact (andEL (j0 :e J)
+                 (forall j:set, j :e J -> (j0 :e j \/ j0 = j) -> apply_fun net j :e U)
+                 Hj0pair). }
+  claim Hj0tail:
+    forall j:set, j :e J -> (j0 :e j \/ j0 = j) -> apply_fun net j :e U.
+  { exact (andER (j0 :e J)
+                 (forall j:set, j :e J -> (j0 :e j \/ j0 = j) -> apply_fun net j :e U)
+                 Hj0pair). }
+  claim Hexk0:
+    exists k0:set, k0 :e K /\
+      forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+        (j0 :e apply_fun phi k \/ j0 = apply_fun phi k).
+  { exact (Hcofinal j0 Hj0J). }
+  apply Hexk0.
+  let k0. assume Hk0pair.
+  claim Hk0K: k0 :e K.
+  { exact (andEL (k0 :e K)
+                 (forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+                    (j0 :e apply_fun phi k \/ j0 = apply_fun phi k))
+                 Hk0pair). }
+  claim Hk0prop:
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j0 :e apply_fun phi k \/ j0 = apply_fun phi k).
+  { exact (andER (k0 :e K)
+                 (forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+                    (j0 :e apply_fun phi k \/ j0 = apply_fun phi k))
+                 Hk0pair). }
+  witness k0.
+  apply andI.
+  - exact Hk0K.
+  - let k. assume HkK: k :e K.
+    assume Hk0k: k0 :e k \/ k0 = k.
+    prove apply_fun sub k :e U.
+    claim Hj0phik: j0 :e apply_fun phi k \/ j0 = apply_fun phi k.
+    { exact (Hk0prop k HkK Hk0k). }
+    claim HphikJ: apply_fun phi k :e J.
+    { exact (Hphi k HkK). }
+    claim HnetU: apply_fun net (apply_fun phi k) :e U.
+    { exact (Hj0tail (apply_fun phi k) HphikJ Hj0phik). }
+    claim Hsubk: apply_fun sub k = apply_fun net (apply_fun phi k).
+    { exact (Hsubeq k HkK). }
+    rewrite Hsubk.
+    exact HnetU.
 Qed.
 
 (** from exercises after §29: closure via nets **) 
