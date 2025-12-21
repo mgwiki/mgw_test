@@ -28095,11 +28095,6 @@ Definition path_connected_space : set -> set -> prop := fun X Tx =>
 (** Helper axioms for path_connected_implies_connected **)
 Axiom unit_interval_connected : connected_space unit_interval R_standard_topology.
 
-Axiom path_between_is_continuous : forall X Tx x y p:set,
-  topology_on X Tx -> x :e X -> y :e X ->
-  path_between X x y p ->
-  continuous_map unit_interval R_standard_topology X Tx p.
-
 Theorem zero_one_in_unit_interval : 0 :e unit_interval /\ 1 :e unit_interval.
 claim H0R: 0 :e R.
 { exact real_0. }
