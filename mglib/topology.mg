@@ -32260,9 +32260,56 @@ Qed.
     The comment requires "every pair has an upper bound", so k must satisfy i≤k and j≤k.
     Using von Neumann ordinal ordering: i≤k means (i :e k \/ i = k). **)
 Definition directed_set : set -> prop := fun J =>
-  J <> Empty /\
+  (J <> Empty /\ forall i:set, i :e J -> ordinal i)
+  /\ forall i j:set, i :e J -> j :e J ->
+    exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k).
+
+(** helper: directed sets are nonempty **)
+Theorem directed_set_nonempty : forall J:set, directed_set J -> J <> Empty.
+let J. assume HJ: directed_set J.
+prove J <> Empty.
+claim Hleft: J <> Empty /\ forall i:set, i :e J -> ordinal i.
+{ exact (andEL (J <> Empty /\ forall i:set, i :e J -> ordinal i)
+               (forall i j:set, i :e J -> j :e J ->
+                 exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k))
+               HJ). }
+exact (andEL (J <> Empty) (forall i:set, i :e J -> ordinal i) Hleft).
+Qed.
+
+(** helper: elements of a directed set are ordinals **)
+Theorem directed_set_ordinals : forall J:set,
+  directed_set J -> forall i:set, i :e J -> ordinal i.
+let J. assume HJ: directed_set J.
+prove forall i:set, i :e J -> ordinal i.
+let i. assume HiJ: i :e J.
+claim Hleft: J <> Empty /\ forall i0:set, i0 :e J -> ordinal i0.
+{ exact (andEL (J <> Empty /\ forall i0:set, i0 :e J -> ordinal i0)
+               (forall i j:set, i :e J -> j :e J ->
+                 exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k))
+               HJ). }
+claim Hord: forall i0:set, i0 :e J -> ordinal i0.
+{ exact (andER (J <> Empty) (forall i0:set, i0 :e J -> ordinal i0) Hleft). }
+exact (Hord i HiJ).
+Qed.
+
+(** helper: upper bound property of a directed set **)
+Theorem directed_set_upper_bound_property : forall J:set,
+  directed_set J ->
   forall i j:set, i :e J -> j :e J ->
     exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k).
+let J. assume HJ: directed_set J.
+prove forall i j:set, i :e J -> j :e J ->
+  exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k).
+let i j. assume HiJ: i :e J. assume HjJ: j :e J.
+claim Hright:
+  forall i0 j0:set, i0 :e J -> j0 :e J ->
+    exists k:set, k :e J /\ (i0 :e k \/ i0 = k) /\ (j0 :e k \/ j0 = k).
+{ exact (andER (J <> Empty /\ forall t:set, t :e J -> ordinal t)
+               (forall i0 j0:set, i0 :e J -> j0 :e J ->
+                 exists k:set, k :e J /\ (i0 :e k \/ i0 = k) /\ (j0 :e k \/ j0 = k))
+               HJ). }
+exact (Hright i j HiJ HjJ).
+Qed.
 
 (** helper: every element in a directed set has an upper bound in the set **)
 (** LATEX VERSION: In a directed set J, for each i in J there exists k in J with i ≤ k. **)
@@ -32274,10 +32321,7 @@ assume HiJ: i :e J.
 prove exists k:set, k :e J /\ (i :e k \/ i = k).
 claim Hdir: forall a b:set, a :e J -> b :e J ->
   exists k:set, k :e J /\ (a :e k \/ a = k) /\ (b :e k \/ b = k).
-{ exact (andER (J <> Empty)
-               (forall i j:set, i :e J -> j :e J ->
-                  exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k))
-               HJ). }
+{ exact (directed_set_upper_bound_property J HJ). }
 claim Hexk: exists k:set, k :e J /\ (i :e k \/ i = k) /\ (i :e k \/ i = k).
 { exact (Hdir i i HiJ HiJ). }
 apply Hexk.
@@ -32302,10 +32346,7 @@ assume HjJ: j :e J.
 prove exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k).
 claim Hdir: forall a b:set, a :e J -> b :e J ->
   exists k:set, k :e J /\ (a :e k \/ a = k) /\ (b :e k \/ b = k).
-{ exact (andER (J <> Empty)
-               (forall i j:set, i :e J -> j :e J ->
-                  exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k))
-               HJ). }
+{ exact (directed_set_upper_bound_property J HJ). }
 exact (Hdir i j HiJ HjJ).
 Qed.
 
@@ -32334,34 +32375,129 @@ assume HJ: directed_set J.
 assume HK: K c= J.
 assume Hcofinal: forall i:set, i :e J -> exists k:set, k :e K /\ (i :e k \/ i = k).
 prove directed_set K.
-prove K <> Empty /\
-  forall i j:set, i :e K -> j :e K ->
+prove (K <> Empty /\ forall i:set, i :e K -> ordinal i)
+  /\ forall i j:set, i :e K -> j :e K ->
     exists k:set, k :e K /\ (i :e k \/ i = k) /\ (j :e k \/ j = k).
 apply andI.
-- (** K is nonempty **)
-  assume HK0: K = Empty.
-  prove False.
-  claim HJ0: J <> Empty.
-  { exact (andEL (J <> Empty) (forall i j:set, i :e J -> j :e J -> exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k)) HJ). }
-  claim Hexj: exists j0:set, j0 :e J.
-  { exact (nonempty_has_element J HJ0). }
-  apply Hexj.
-  let j0. assume Hj0: j0 :e J.
-  claim Hexk: exists k:set, k :e K /\ (j0 :e k \/ j0 = k).
-  { exact (Hcofinal j0 Hj0). }
-  apply Hexk.
-  let k. assume Hk: k :e K /\ (j0 :e k \/ j0 = k).
-  claim HkK: k :e K.
-  { exact (andEL (k :e K) (j0 :e k \/ j0 = k) Hk). }
-  claim HkE: k :e Empty.
-  { rewrite <- HK0. exact HkK. }
-  exact (EmptyE k HkE).
-- (** upper bound part left open for now **)
+- (** K is nonempty and all its elements are ordinals **)
+  prove K <> Empty /\ forall i:set, i :e K -> ordinal i.
+  apply andI.
+  + (** nonempty **)
+    assume HK0: K = Empty.
+    prove False.
+    claim HJ0: J <> Empty.
+    { exact (directed_set_nonempty J HJ). }
+    claim Hexj: exists j0:set, j0 :e J.
+    { exact (nonempty_has_element J HJ0). }
+    apply Hexj.
+    let j0. assume Hj0: j0 :e J.
+    claim Hexk: exists k:set, k :e K /\ (j0 :e k \/ j0 = k).
+    { exact (Hcofinal j0 Hj0). }
+    apply Hexk.
+    let k. assume Hkpair.
+    claim HkK: k :e K.
+    { exact (andEL (k :e K) (j0 :e k \/ j0 = k) Hkpair). }
+    claim HkE: k :e Empty.
+    { rewrite <- HK0. exact HkK. }
+    exact (EmptyE k HkE).
+  + (** ordinals **)
+    let i. assume HiK: i :e K.
+    claim HiJ: i :e J.
+    { exact (HK i HiK). }
+    exact (directed_set_ordinals J HJ i HiJ).
+- (** upper bound in K from directedness in J and cofinality **)
   let i j.
   assume HiK: i :e K.
   assume HjK: j :e K.
   prove exists k:set, k :e K /\ (i :e k \/ i = k) /\ (j :e k \/ j = k).
-  admit. (** needs transitivity of the underlying order; will be revisited **)
+  claim HiJ: i :e J.
+  { exact (HK i HiK). }
+  claim HjJ: j :e J.
+  { exact (HK j HjK). }
+  claim Hexm: exists m:set, m :e J /\ (i :e m \/ i = m) /\ (j :e m \/ j = m).
+  { exact (directed_set_upper_bound_property J HJ i j HiJ HjJ). }
+  apply Hexm.
+  let m. assume Hmpair.
+  claim Hmleft: (m :e J /\ (i :e m \/ i = m)).
+  { exact (andEL (m :e J /\ (i :e m \/ i = m))
+                 (j :e m \/ j = m)
+                 Hmpair). }
+  claim HmJ: m :e J.
+  { exact (andEL (m :e J) (i :e m \/ i = m) Hmleft). }
+  claim Him: i :e m \/ i = m.
+  { exact (andER (m :e J) (i :e m \/ i = m) Hmleft). }
+  claim Hjm: j :e m \/ j = m.
+  { exact (andER (m :e J /\ (i :e m \/ i = m))
+                 (j :e m \/ j = m)
+                 Hmpair). }
+  claim Hexk0: exists k0:set, k0 :e K /\ (m :e k0 \/ m = k0).
+  { exact (Hcofinal m HmJ). }
+  apply Hexk0.
+  let k0. assume Hk0pair.
+  claim Hk0K: k0 :e K.
+  { exact (andEL (k0 :e K) (m :e k0 \/ m = k0) Hk0pair). }
+  claim Hmk0: m :e k0 \/ m = k0.
+  { exact (andER (k0 :e K) (m :e k0 \/ m = k0) Hk0pair). }
+  witness k0.
+  prove k0 :e K /\ (i :e k0 \/ i = k0) /\ (j :e k0 \/ j = k0).
+  apply andI.
+  - (** k0 in K and i ≤ k0 **)
+    apply andI.
+    + exact Hk0K.
+    + (** i ≤ k0 **)
+      apply (Him (i :e k0 \/ i = k0)).
+      * (** case i :e m **)
+        assume Himem: i :e m.
+        apply (Hmk0 (i :e k0 \/ i = k0)).
+        { assume Hmink0: m :e k0.
+          claim Hk0J: k0 :e J.
+          { exact (HK k0 Hk0K). }
+          claim Hordk0: ordinal k0.
+          { exact (directed_set_ordinals J HJ k0 Hk0J). }
+          claim Htransk0: TransSet k0.
+          { exact (ordinal_TransSet k0 Hordk0). }
+          claim HmSub: m c= k0.
+          { exact (Htransk0 m Hmink0). }
+          exact (orIL (i :e k0) (i = k0) (HmSub i Himem)). }
+        { assume Hmeq: m = k0.
+          rewrite <- Hmeq.
+          exact (orIL (i :e m) (i = m) Himem). }
+      * (** case i = m **)
+        assume Hieq: i = m.
+        apply (Hmk0 (i :e k0 \/ i = k0)).
+        { assume Hmink0: m :e k0.
+          rewrite Hieq.
+          exact (orIL (m :e k0) (m = k0) Hmink0). }
+        { assume Hmeq: m = k0.
+          rewrite Hieq.
+          exact (orIR (m :e k0) (m = k0) Hmeq). }
+  - (** j ≤ k0 **)
+    apply (Hjm (j :e k0 \/ j = k0)).
+      * (** case j :e m **)
+        assume Hjmem: j :e m.
+        apply (Hmk0 (j :e k0 \/ j = k0)).
+        { assume Hmink0: m :e k0.
+          claim Hk0J: k0 :e J.
+          { exact (HK k0 Hk0K). }
+          claim Hordk0: ordinal k0.
+          { exact (directed_set_ordinals J HJ k0 Hk0J). }
+          claim Htransk0: TransSet k0.
+          { exact (ordinal_TransSet k0 Hordk0). }
+          claim HmSub: m c= k0.
+          { exact (Htransk0 m Hmink0). }
+          exact (orIL (j :e k0) (j = k0) (HmSub j Hjmem)). }
+        { assume Hmeq: m = k0.
+          rewrite <- Hmeq.
+          exact (orIL (j :e m) (j = m) Hjmem). }
+      * (** case j = m **)
+        assume Hjeq: j = m.
+        apply (Hmk0 (j :e k0 \/ j = k0)).
+        { assume Hmink0: m :e k0.
+          rewrite Hjeq.
+          exact (orIL (m :e k0) (m = k0) Hmink0). }
+        { assume Hmeq: m = k0.
+          rewrite Hjeq.
+          exact (orIR (m :e k0) (m = k0) Hmeq). }
 Qed.
 
 (** from exercises after §29: nets as functions from directed sets **) 
