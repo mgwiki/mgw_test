@@ -28391,14 +28391,119 @@ prove path_connected_space (EuclidPlane :\: {(0,0)}) (subspace_topology EuclidPl
 admit. (** connect any two points via path avoiding origin; use arc around origin if needed **)
 Qed.
 
-(** from §24: continuous image of path connected set is path connected **) 
+(** from §24: continuous surjective image of a path connected space is path connected **) 
+(** LATEX VERSION: If f:X→Y is continuous and surjective and X is path connected, then Y is path connected. **)
 Theorem continuous_image_path_connected : forall X Tx Y Ty f:set,
-  path_connected_space X Tx -> continuous_map X Tx Y Ty f -> path_connected_space Y Ty.
+  path_connected_space X Tx ->
+  continuous_map X Tx Y Ty f ->
+  (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y) ->
+  path_connected_space Y Ty.
 let X Tx Y Ty f.
 assume Hpath: path_connected_space X Tx.
 assume Hf: continuous_map X Tx Y Ty f.
+assume Hsurj: forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y.
 prove path_connected_space Y Ty.
-admit. (** given y1,y2 in Y, find x1,x2 in X with f(x1)=y1, f(x2)=y2; path p from x1 to x2; f∘p connects y1,y2 **)
+(** Extract topology on Y from continuity hypothesis **)
+claim Hf_left: (topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y.
+{ exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
+              (forall V:set, V :e Ty -> preimage_of X f V :e Tx) Hf). }
+claim HTy: topology_on Y Ty.
+{ exact (andER (topology_on X Tx) (topology_on Y Ty)
+              (andEL (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y) Hf_left)). }
+claim Hpath_prop: forall x y:set, x :e X -> y :e X ->
+  exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p.
+{ exact (andER (topology_on X Tx)
+              (forall x y:set, x :e X -> y :e X ->
+                exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p)
+              Hpath). }
+
+prove topology_on Y Ty /\
+  forall y1 y2:set, y1 :e Y -> y2 :e Y ->
+    exists p:set, path_between Y y1 y2 p /\ continuous_map unit_interval R_standard_topology Y Ty p.
+apply andI.
+- exact HTy.
+- let y1 y2.
+  assume Hy1: y1 :e Y.
+  assume Hy2: y2 :e Y.
+  prove exists p:set, path_between Y y1 y2 p /\ continuous_map unit_interval R_standard_topology Y Ty p.
+  (** Choose preimages x1,x2 in X with f(xi)=yi **)
+  apply (Hsurj y1 Hy1).
+  let x1. assume Hx1pair: x1 :e X /\ apply_fun f x1 = y1.
+  apply (Hsurj y2 Hy2).
+  let x2. assume Hx2pair: x2 :e X /\ apply_fun f x2 = y2.
+  claim Hx1X: x1 :e X.
+  { exact (andEL (x1 :e X) (apply_fun f x1 = y1) Hx1pair). }
+  claim Hfx1: apply_fun f x1 = y1.
+  { exact (andER (x1 :e X) (apply_fun f x1 = y1) Hx1pair). }
+  claim Hx2X: x2 :e X.
+  { exact (andEL (x2 :e X) (apply_fun f x2 = y2) Hx2pair). }
+  claim Hfx2: apply_fun f x2 = y2.
+  { exact (andER (x2 :e X) (apply_fun f x2 = y2) Hx2pair). }
+
+  (** Get a path p in X from x1 to x2 **)
+  apply (Hpath_prop x1 x2 Hx1X Hx2X).
+  let p. assume Hp_pair: path_between X x1 x2 p /\ continuous_map unit_interval R_standard_topology X Tx p.
+  claim Hp_between: path_between X x1 x2 p.
+  { exact (andEL (path_between X x1 x2 p)
+                 (continuous_map unit_interval R_standard_topology X Tx p) Hp_pair). }
+  claim Hp_cont: continuous_map unit_interval R_standard_topology X Tx p.
+  { exact (andER (path_between X x1 x2 p)
+                 (continuous_map unit_interval R_standard_topology X Tx p) Hp_pair). }
+
+  (** Define the composed path q = f ∘ p **)
+  set q := compose_fun unit_interval p f.
+  claim Hq_cont: continuous_map unit_interval R_standard_topology Y Ty q.
+  { exact (composition_continuous unit_interval R_standard_topology X Tx Y Ty p f Hp_cont Hf). }
+  claim Hq_left: (topology_on unit_interval R_standard_topology /\ topology_on Y Ty) /\ function_on q unit_interval Y.
+  { exact (andEL ((topology_on unit_interval R_standard_topology /\ topology_on Y Ty) /\ function_on q unit_interval Y)
+                (forall V:set, V :e Ty -> preimage_of unit_interval q V :e R_standard_topology) Hq_cont). }
+  claim Hq_fun: function_on q unit_interval Y.
+  { exact (andER (topology_on unit_interval R_standard_topology /\ topology_on Y Ty)
+                (function_on q unit_interval Y) Hq_left). }
+
+  (** Endpoints of q **)
+  claim H01: 0 :e unit_interval /\ 1 :e unit_interval.
+  { exact zero_one_in_unit_interval. }
+  claim H0: 0 :e unit_interval.
+  { exact (andEL (0 :e unit_interval) (1 :e unit_interval) H01). }
+  claim H1: 1 :e unit_interval.
+  { exact (andER (0 :e unit_interval) (1 :e unit_interval) H01). }
+
+  claim Hp_left: function_on p unit_interval X /\ apply_fun p 0 = x1.
+  { exact (andEL (function_on p unit_interval X /\ apply_fun p 0 = x1)
+                 (apply_fun p 1 = x2) Hp_between). }
+  claim Hp0: apply_fun p 0 = x1.
+  { exact (andER (function_on p unit_interval X) (apply_fun p 0 = x1) Hp_left). }
+  claim Hp1: apply_fun p 1 = x2.
+  { exact (andER (function_on p unit_interval X /\ apply_fun p 0 = x1)
+                 (apply_fun p 1 = x2) Hp_between). }
+
+  claim Hq0: apply_fun q 0 = y1.
+  { claim Hq0a: apply_fun q 0 = apply_fun f (apply_fun p 0).
+    { exact (compose_fun_apply unit_interval p f 0 H0). }
+    rewrite Hq0a.
+    rewrite Hp0.
+    rewrite Hfx1.
+    reflexivity. }
+  claim Hq1: apply_fun q 1 = y2.
+  { claim Hq1a: apply_fun q 1 = apply_fun f (apply_fun p 1).
+    { exact (compose_fun_apply unit_interval p f 1 H1). }
+    rewrite Hq1a.
+    rewrite Hp1.
+    rewrite Hfx2.
+    reflexivity. }
+
+  witness q.
+  prove path_between Y y1 y2 q /\ continuous_map unit_interval R_standard_topology Y Ty q.
+  apply andI.
+  - (** path_between **)
+    prove function_on q unit_interval Y /\ apply_fun q 0 = y1 /\ apply_fun q 1 = y2.
+    apply andI.
+    + apply andI.
+      * exact Hq_fun.
+      * exact Hq0.
+    + exact Hq1.
+  - exact Hq_cont.
 Qed.
 
 (** from §24 Definition: path components equivalence relation **) 
