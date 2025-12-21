@@ -30754,7 +30754,26 @@ let X Tx Y Ty.
 assume HX: compact_space X Tx.
 assume HY: compact_space Y Ty.
 prove compact_space (setprod X Y) (product_topology X Tx Y Ty).
-admit. (** use tube lemma: cover by tubes; finitely many tubes cover; finitely many rectangles cover **)
+prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\
+      forall Fam:set,
+        open_cover_of (setprod X Y) (product_topology X Tx Y Ty) Fam ->
+        has_finite_subcover (setprod X Y) (product_topology X Tx Y Ty) Fam.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) HX). }
+claim HTy: topology_on Y Ty.
+{ exact (andEL (topology_on Y Ty) (forall Fam:set, open_cover_of Y Ty Fam -> has_finite_subcover Y Ty Fam) HY). }
+apply andI.
+- exact (product_topology_is_topology X Tx Y Ty HTx HTy).
+- let Fam. assume HFam: open_cover_of (setprod X Y) (product_topology X Tx Y Ty) Fam.
+  prove has_finite_subcover (setprod X Y) (product_topology X Tx Y Ty) Fam.
+  set UFam := {U :e Tx|exists H:set, H c= Fam /\ finite H /\ setprod U Y c= Union H}.
+  claim HcovUFam: open_cover_of X Tx UFam.
+  { admit. (** build for each x:eX a tube U with U×Y covered by finitely many members of Fam, using tube_lemma and compactness of Y **) }
+  claim HfinUFam: has_finite_subcover X Tx UFam.
+  { exact (Heine_Borel_subcover X Tx UFam HX HcovUFam). }
+  apply HfinUFam.
+  let K. assume HK: K c= UFam /\ finite K /\ X c= Union K.
+  admit. (** choose for each U:eK a finite H_U ⊆ Fam covering U×Y, then combine to a finite subcover of X×Y **)
 Qed.
 
 (** from §26 Exercises: compactness examples and properties **) 
