@@ -28719,95 +28719,9 @@ prove (forall x:set, x :e X -> x :e path_component_of X Tx x) /\
       let x. assume HxX: x :e X.
       exact (path_component_reflexive X Tx x HTx HxX).
     * (** symmetric: reverse path **)
-      let x y.
-      assume HxX: x :e X.
-      assume HyX: y :e X.
-      assume _: y :e path_component_of X Tx x.
-      prove x :e path_component_of X Tx y.
-      prove x :e {z :e X | exists p:set,
-         function_on p unit_interval X /\
-         continuous_map unit_interval R_standard_topology X Tx p /\
-         apply_fun p 0 = y /\ apply_fun p 1 = z}.
-      apply SepI.
-      - exact HxX.
-      - claim Hex: exists p:set, path_between X y x p.
-        { exact (path_between_exists X y x HyX HxX). }
-        apply Hex.
-        let p.
-        assume Hpb: path_between X y x p.
-        claim Hcont: continuous_map unit_interval R_standard_topology X Tx p.
-        { exact (path_between_is_continuous X Tx y x p HTx HyX HxX Hpb). }
-        prove exists q:set, function_on q unit_interval X /\
-          continuous_map unit_interval R_standard_topology X Tx q /\
-          apply_fun q 0 = y /\ apply_fun q 1 = x.
-        witness p.
-        prove function_on p unit_interval X /\
-          continuous_map unit_interval R_standard_topology X Tx p /\
-          apply_fun p 0 = y /\ apply_fun p 1 = x.
-        claim Hpb1: (function_on p unit_interval X /\ apply_fun p 0 = y) /\ apply_fun p 1 = x.
-        { exact Hpb. }
-        claim HpbL: function_on p unit_interval X /\ apply_fun p 0 = y.
-        { exact (andEL (function_on p unit_interval X /\ apply_fun p 0 = y) (apply_fun p 1 = x) Hpb1). }
-        claim Hp1: apply_fun p 1 = x.
-        { exact (andER (function_on p unit_interval X /\ apply_fun p 0 = y) (apply_fun p 1 = x) Hpb1). }
-        claim Hp0: apply_fun p 0 = y.
-        { exact (andER (function_on p unit_interval X) (apply_fun p 0 = y) HpbL). }
-        claim Hfun: function_on p unit_interval X.
-        { exact (andEL (function_on p unit_interval X) (apply_fun p 0 = y) HpbL). }
-        apply andI.
-        - (** (function_on /\ continuous_map) /\ apply_fun p 0 = y **)
-          apply andI.
-          + (** function_on /\ continuous_map **)
-            apply andI.
-            * exact Hfun.
-            * exact Hcont.
-          + exact Hp0.
-        - exact Hp1.
+      admit. (** reverse a continuous path; requires reparametrization/continuity infrastructure **)
   - (** transitive: concatenate paths **)
-  let x y z.
-  assume HxX: x :e X.
-  assume HyX: y :e X.
-  assume HzX: z :e X.
-  assume _: y :e path_component_of X Tx x.
-  assume _: z :e path_component_of X Tx y.
-  prove z :e path_component_of X Tx x.
-  prove z :e {w :e X | exists p:set,
-     function_on p unit_interval X /\
-     continuous_map unit_interval R_standard_topology X Tx p /\
-     apply_fun p 0 = x /\ apply_fun p 1 = w}.
-  apply SepI.
-  - exact HzX.
-  - claim Hex: exists p:set, path_between X x z p.
-    { exact (path_between_exists X x z HxX HzX). }
-    apply Hex.
-    let p.
-    assume Hpb: path_between X x z p.
-    claim Hcont: continuous_map unit_interval R_standard_topology X Tx p.
-    { exact (path_between_is_continuous X Tx x z p HTx HxX HzX Hpb). }
-    prove exists q:set, function_on q unit_interval X /\
-      continuous_map unit_interval R_standard_topology X Tx q /\
-      apply_fun q 0 = x /\ apply_fun q 1 = z.
-    witness p.
-    prove function_on p unit_interval X /\
-      continuous_map unit_interval R_standard_topology X Tx p /\
-      apply_fun p 0 = x /\ apply_fun p 1 = z.
-    claim Hpb1: (function_on p unit_interval X /\ apply_fun p 0 = x) /\ apply_fun p 1 = z.
-    { exact Hpb. }
-    claim HpbL: function_on p unit_interval X /\ apply_fun p 0 = x.
-    { exact (andEL (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = z) Hpb1). }
-    claim Hp1: apply_fun p 1 = z.
-    { exact (andER (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = z) Hpb1). }
-    claim Hp0: apply_fun p 0 = x.
-    { exact (andER (function_on p unit_interval X) (apply_fun p 0 = x) HpbL). }
-    claim Hfun: function_on p unit_interval X.
-    { exact (andEL (function_on p unit_interval X) (apply_fun p 0 = x) HpbL). }
-    apply andI.
-    - apply andI.
-      + apply andI.
-        * exact Hfun.
-        * exact Hcont.
-      + exact Hp0.
-    - exact Hp1.
+  admit. (** concatenate two continuous paths; needs piecewise and reparametrization lemmas **)
 Qed.
 
 (** from §25 Definition: components and local connectedness **) 
@@ -28828,14 +28742,16 @@ Definition locally_path_connected : set -> set -> prop := fun X Tx =>
     forall U:set, U :e Tx -> x :e U ->
       exists V:set, V :e Tx /\ x :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V).
 
-(** helper: under the current path axioms, every component is the whole space **)
-(** LATEX VERSION: In a connected space, the component of any point is the whole space. **)
+(** helper: in a connected space, the component of any point is the whole space **)
+(** LATEX VERSION: If X is connected then the component of any point is X. **)
 Theorem component_of_whole : forall X Tx x:set,
-  topology_on X Tx -> x :e X -> component_of X Tx x = X.
+  connected_space X Tx -> x :e X -> component_of X Tx x = X.
 let X Tx x.
-assume HTx: topology_on X Tx.
+assume Hconn: connected_space X Tx.
 assume HxX: x :e X.
 prove component_of X Tx x = X.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V)) Hconn). }
 apply set_ext.
 - let y. assume Hy: y :e component_of X Tx x.
   prove y :e X.
@@ -28845,29 +28761,7 @@ apply set_ext.
   prove y :e {y0 :e X | exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y0 :e C}.
   apply SepI.
   - exact HyX.
-  - claim Hpath: path_connected_space X Tx.
-    { prove topology_on X Tx /\
-        forall a b:set, a :e X -> b :e X ->
-          exists p:set, path_between X a b p /\ continuous_map unit_interval R_standard_topology X Tx p.
-      apply andI.
-      - exact HTx.
-      - let a b.
-        assume HaX: a :e X.
-        assume HbX: b :e X.
-        claim Hex: exists p:set, path_between X a b p.
-        { exact (path_between_exists X a b HaX HbX). }
-        apply Hex.
-        let p.
-        assume Hpb: path_between X a b p.
-        claim Hcont: continuous_map unit_interval R_standard_topology X Tx p.
-        { exact (path_between_is_continuous X Tx a b p HTx HaX HbX Hpb). }
-        prove exists q:set, path_between X a b q /\ continuous_map unit_interval R_standard_topology X Tx q.
-        witness p.
-        prove path_between X a b p /\ continuous_map unit_interval R_standard_topology X Tx p.
-        exact (andI (path_between X a b p) (continuous_map unit_interval R_standard_topology X Tx p) Hpb Hcont). }
-    claim Hconn: connected_space X Tx.
-    { exact (path_connected_implies_connected X Tx Hpath). }
-    claim Hsubeq: subspace_topology X Tx X = Tx.
+  - claim Hsubeq: subspace_topology X Tx X = Tx.
     { exact (subspace_topology_whole X Tx HTx). }
     claim HconnSub: connected_space X (subspace_topology X Tx X).
     { rewrite Hsubeq.
@@ -28881,14 +28775,25 @@ apply set_ext.
     - exact HyX.
 Qed.
 
-(** helper: under the current path axioms, every path component is the whole space **)
-(** LATEX VERSION: In a path connected space, the path component of any point is the whole space. **)
+(** helper: in a path connected space, the path component of any point is the whole space **)
+(** LATEX VERSION: If X is path connected then the path component of any point is X. **)
 Theorem path_component_of_whole : forall X Tx x:set,
-  topology_on X Tx -> x :e X -> path_component_of X Tx x = X.
+  path_connected_space X Tx -> x :e X -> path_component_of X Tx x = X.
 let X Tx x.
-assume HTx: topology_on X Tx.
+assume Hpath: path_connected_space X Tx.
 assume HxX: x :e X.
 prove path_component_of X Tx x = X.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x y:set, x :e X -> y :e X ->
+                 exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p)
+               Hpath). }
+claim Hpathprop: forall x0 y0:set, x0 :e X -> y0 :e X ->
+  exists p:set, path_between X x0 y0 p /\ continuous_map unit_interval R_standard_topology X Tx p.
+{ exact (andER (topology_on X Tx)
+               (forall x y:set, x :e X -> y :e X ->
+                 exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p)
+               Hpath). }
 apply set_ext.
 - (** path_component_of subset X **)
   let y. assume Hy: y :e path_component_of X Tx x.
@@ -28906,13 +28811,15 @@ apply set_ext.
      apply_fun p 0 = x /\ apply_fun p 1 = y0}.
   apply SepI.
   - exact HyX.
-  - claim Hex: exists p:set, path_between X x y p.
-    { exact (path_between_exists X x y HxX HyX). }
+  - claim Hex: exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p.
+    { exact (Hpathprop x y HxX HyX). }
     apply Hex.
     let p.
-    assume Hpb: path_between X x y p.
+    assume Hp: path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p.
+    claim Hpb: path_between X x y p.
+    { exact (andEL (path_between X x y p) (continuous_map unit_interval R_standard_topology X Tx p) Hp). }
     claim Hcont: continuous_map unit_interval R_standard_topology X Tx p.
-    { exact (path_between_is_continuous X Tx x y p HTx HxX HyX Hpb). }
+    { exact (andER (path_between X x y p) (continuous_map unit_interval R_standard_topology X Tx p) Hp). }
     prove exists q:set, function_on q unit_interval X /\
       continuous_map unit_interval R_standard_topology X Tx q /\
       apply_fun q 0 = x /\ apply_fun q 1 = y.
@@ -28955,16 +28862,8 @@ assume Hlpc: locally_path_connected X Tx.
 let x.
 assume Hx: x :e X.
 prove open_in X Tx (path_component_of X Tx x).
-claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x0:set, x0 :e X -> forall U:set, U :e Tx -> x0 :e U ->
-                  exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V))
-               Hlpc). }
-prove topology_on X Tx /\ path_component_of X Tx x :e Tx.
-apply andI.
-- exact HTx.
-- rewrite (path_component_of_whole X Tx x HTx Hx).
-  exact (topology_has_X X Tx HTx).
+admit. (** each point in path component has path connected neighborhood; union of these neighborhoods is path component and is open
+        aby: In_5Find locally_path_connected�f conj_myprob_9449_1_20251124_033641 separation_subspace_limit_points prop_ext_2 . **)
 Qed.
 
 (** from §25: components equal path components when locally path connected **) 
@@ -28978,15 +28877,7 @@ assume Hlpc: locally_path_connected X Tx.
 let x.
 assume Hx: x :e X.
 prove path_component_of X Tx x = component_of X Tx x.
-claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x0:set, x0 :e X ->
-                  forall U:set, U :e Tx -> x0 :e U ->
-                    exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V))
-               Hlpc). }
-rewrite (path_component_of_whole X Tx x HTx Hx).
-rewrite (component_of_whole X Tx x HTx Hx).
-reflexivity.
+admit. (** path component is connected and open; component is maximal connected; local path connectivity ensures equality **)
 Qed.
 
 Theorem components_are_closed : forall X Tx:set,
@@ -28997,8 +28888,7 @@ assume HTx: topology_on X Tx.
 let x.
 assume Hx: x :e X.
 prove closed_in X Tx (component_of X Tx x).
-rewrite (component_of_whole X Tx x HTx Hx).
-exact (X_is_closed X Tx HTx).
+admit. (** component is union of all connected sets containing x; closure is connected; component = closure **)
 Qed.
 
 (** from §25: components partition the space **) 
@@ -29010,42 +28900,7 @@ Theorem components_partition_space : forall X Tx:set,
 let X Tx.
 assume HTx: topology_on X Tx.
 prove covers X {component_of X Tx x | x :e X} /\ pairwise_disjoint {component_of X Tx x | x :e X}.
-apply andI.
-- (** cover **)
-  prove covers X {component_of X Tx x | x :e X}.
-  let x. assume HxX: x :e X.
-  prove exists u:set, u :e {component_of X Tx x0 | x0 :e X} /\ x :e u.
-  witness (component_of X Tx x).
-  apply andI.
-  * exact (ReplI X (fun x0:set => component_of X Tx x0) x HxX).
-  * rewrite (component_of_whole X Tx x HTx HxX).
-    exact HxX.
-- (** pairwise disjoint **)
-  prove pairwise_disjoint {component_of X Tx x | x :e X}.
-  let U V.
-  assume HU: U :e {component_of X Tx x | x :e X}.
-  assume HV: V :e {component_of X Tx x | x :e X}.
-  assume HUV: U <> V.
-  prove U :/\: V = Empty.
-  claim HUeqX: U = X.
-  { apply (ReplE_impred X (fun x0:set => component_of X Tx x0) U HU (U = X)).
-    let x0. assume Hx0X: x0 :e X.
-    assume HUeq: U = component_of X Tx x0.
-    rewrite HUeq.
-    exact (component_of_whole X Tx x0 HTx Hx0X). }
-  claim HVeQX: V = X.
-  { apply (ReplE_impred X (fun x0:set => component_of X Tx x0) V HV (V = X)).
-    let x0. assume Hx0X: x0 :e X.
-    assume HVeQ: V = component_of X Tx x0.
-    rewrite HVeQ.
-    exact (component_of_whole X Tx x0 HTx Hx0X). }
-  claim HeqUV: U = V.
-  { rewrite HUeqX.
-    rewrite HVeQX.
-    reflexivity. }
-  apply FalseE.
-  prove False.
-  exact (HUV HeqUV).
+admit. (** every point in its component; distinct components either equal or disjoint by connectedness **)
 Qed.
 
 (** from §25: quotient of locally connected space is locally connected **) 
