@@ -30784,7 +30784,27 @@ apply andI.
       + apply andI.
         * exact HTx.
         * exact HUFamPow.
-      + admit. (** for each x:eX, build U:eUFam with x:eU using tube_lemma and compactness of Y **)
+      + prove X c= Union UFam.
+        let x. assume Hx: x :e X.
+        prove x :e Union UFam.
+        claim HexTube: exists U:set,
+          U :e Tx /\ x :e U /\
+          exists H:set, H c= Fam /\ finite H /\ setprod U Y c= Union H.
+        { admit. (** obtain a finite cover of {x}×Y from Fam using compactness of Y, form an open neighborhood N of {x}×Y, apply tube_lemma to get U, and take H witnessing U×Y ⊆ Union H **) }
+        apply HexTube.
+        let U. assume HU: U :e Tx /\ x :e U /\ exists H:set, H c= Fam /\ finite H /\ setprod U Y c= Union H.
+        claim HUAB: U :e Tx /\ x :e U.
+        { exact (andEL (U :e Tx /\ x :e U) (exists H:set, H c= Fam /\ finite H /\ setprod U Y c= Union H) HU). }
+        claim HUtx: U :e Tx.
+        { exact (andEL (U :e Tx) (x :e U) HUAB). }
+        claim HxU: x :e U.
+        { exact (andER (U :e Tx) (x :e U) HUAB). }
+        claim HexH: exists H:set, H c= Fam /\ finite H /\ setprod U Y c= Union H.
+        { exact (andER (U :e Tx /\ x :e U) (exists H:set, H c= Fam /\ finite H /\ setprod U Y c= Union H) HU). }
+        claim HUinUFam: U :e UFam.
+        { apply (SepI Tx (fun U0:set => exists H:set, H c= Fam /\ finite H /\ setprod U0 Y c= Union H) U HUtx).
+          exact HexH. }
+        exact (UnionI UFam x U HxU HUinUFam).
     - let U. assume HU: U :e UFam.
       exact (HUFamSubTx U HU). }
   claim HfinUFam: has_finite_subcover X Tx UFam.
