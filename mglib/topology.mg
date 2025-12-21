@@ -28759,6 +28759,17 @@ Definition open_cover_of : set -> set -> set -> prop := fun X Tx Fam =>
 Definition has_finite_subcover : set -> set -> set -> prop := fun X Tx Fam =>
   exists G:set, G c= Fam /\ finite G /\ X c= Union G.
 
+(** Helper: introduce `has_finite_subcover` with an explicit witness. **)
+Theorem has_finite_subcoverI : forall X Tx Fam G:set,
+  G c= Fam /\ finite G /\ X c= Union G -> has_finite_subcover X Tx Fam.
+let X Tx Fam G.
+assume HG: G c= Fam /\ finite G /\ X c= Union G.
+prove has_finite_subcover X Tx Fam.
+prove exists G1:set, G1 c= Fam /\ finite G1 /\ X c= Union G1.
+witness G.
+exact HG.
+Qed.
+
 Definition compact_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
 
