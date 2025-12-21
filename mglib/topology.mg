@@ -27674,6 +27674,72 @@ rewrite <- (image_of_id_const_is_slice X y0).
 exact Himg.
 Qed.
 
+(** Helper: image of y mapped to (x0,y) is setprod {x0} Y **)
+Theorem image_of_const_id_is_slice : forall Y x0:set,
+  image_of (pair_map Y (const_fun Y x0) {(y,y)|y :e Y}) Y = setprod {x0} Y.
+let Y x0.
+set idY := {(y,y)|y :e Y}.
+prove image_of (pair_map Y (const_fun Y x0) idY) Y = setprod {x0} Y.
+apply set_ext.
+- let p. assume Hp: p :e image_of (pair_map Y (const_fun Y x0) idY) Y.
+  prove p :e setprod {x0} Y.
+  set f := pair_map Y (const_fun Y x0) idY.
+  claim HpRepl: p :e Repl Y (fun a => apply_fun f a).
+  { exact Hp. }
+  apply (ReplE_impred Y (fun a:set => apply_fun f a) p HpRepl).
+  let a. assume HaY: a :e Y.
+  assume Heq: p = apply_fun f a.
+  rewrite Heq.
+  claim Hfa: apply_fun f a = (apply_fun (const_fun Y x0) a, apply_fun idY a).
+  { exact (pair_map_apply Y {x0} Y (const_fun Y x0) idY a HaY). }
+  claim Hc: apply_fun (const_fun Y x0) a = x0.
+  { exact (const_fun_apply Y x0 a HaY). }
+  claim Hid: apply_fun idY a = a.
+  { exact (identity_function_apply Y a HaY). }
+  rewrite Hfa.
+  rewrite Hc.
+  rewrite Hid.
+  exact (tuple_2_setprod {x0} Y x0 (SingI x0) a HaY).
+- let p. assume Hp: p :e setprod {x0} Y.
+  prove p :e image_of (pair_map Y (const_fun Y x0) idY) Y.
+  set f := pair_map Y (const_fun Y x0) idY.
+  claim Hp0Sing: (p 0) :e {x0}.
+  { exact (ap0_Sigma {x0} (fun _:set => Y) p Hp). }
+  claim Hp1Y: (p 1) :e Y.
+  { exact (ap1_Sigma {x0} (fun _:set => Y) p Hp). }
+  claim Hp0eq: (p 0) = x0.
+  { exact (singleton_elem (p 0) x0 Hp0Sing). }
+  claim Heta: p = (p 0, p 1).
+  { exact (setprod_eta {x0} Y p Hp). }
+  prove p :e Repl Y (fun a => apply_fun f a).
+  claim Hfp1: apply_fun f (p 1) = (apply_fun (const_fun Y x0) (p 1), apply_fun idY (p 1)).
+  { exact (pair_map_apply Y {x0} Y (const_fun Y x0) idY (p 1) Hp1Y). }
+  claim Hc1: apply_fun (const_fun Y x0) (p 1) = x0.
+  { exact (const_fun_apply Y x0 (p 1) Hp1Y). }
+  claim Hid1: apply_fun idY (p 1) = (p 1).
+  { exact (identity_function_apply Y (p 1) Hp1Y). }
+  claim Hfp1eq: apply_fun f (p 1) = (p 0, p 1).
+  { rewrite Hfp1.
+    rewrite Hc1.
+    rewrite Hid1.
+    rewrite <- Hp0eq at 1.
+    reflexivity. }
+  claim Hp_as_image: p = apply_fun f (p 1).
+  { rewrite Heta at 1.
+    rewrite <- Hfp1eq.
+    reflexivity. }
+  rewrite Hp_as_image.
+  exact (ReplI Y (fun a:set => apply_fun f a) (p 1) Hp1Y).
+Qed.
+
+(** Helper: slice {x0} times Y is connected when Y is connected **)
+Theorem slice_Y_connected : forall X Tx Y Ty x0:set,
+  connected_space Y Ty -> topology_on X Tx -> x0 :e X ->
+  connected_space (setprod {x0} Y)
+    (subspace_topology (setprod X Y) (product_topology X Tx Y Ty) (setprod {x0} Y)).
+admit. (** needs continuity of y mapped to (x0,y) into the product topology; current maps_into_products lemma is specialized to same-domain topology **)
+Qed.
+
 (** from §23 Theorem 23.6: finite products of connected spaces are connected **) 
 Theorem finite_product_connected : forall X Tx Y Ty:set,
   connected_space X Tx -> connected_space Y Ty ->
