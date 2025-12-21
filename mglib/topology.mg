@@ -28513,6 +28513,62 @@ Definition path_component_of : set -> set -> set -> set := fun X Tx x =>
      continuous_map unit_interval R_standard_topology X Tx p /\
      apply_fun p 0 = x /\ apply_fun p 1 = y}.
 
+(** Helper: path component is reflexive **)
+(** LATEX VERSION: Any point is path connectible to itself via the constant path. **)
+Theorem path_component_reflexive : forall X Tx x:set,
+  topology_on X Tx -> x :e X -> x :e path_component_of X Tx x.
+let X Tx x.
+assume HTx: topology_on X Tx.
+assume HxX: x :e X.
+prove x :e path_component_of X Tx x.
+prove x :e {y :e X | exists p:set,
+     function_on p unit_interval X /\
+     continuous_map unit_interval R_standard_topology X Tx p /\
+     apply_fun p 0 = x /\ apply_fun p 1 = y}.
+apply SepI.
+- exact HxX.
+- (** constant path p(t)=x **)
+  prove exists p:set, function_on p unit_interval X /\
+    continuous_map unit_interval R_standard_topology X Tx p /\
+    apply_fun p 0 = x /\ apply_fun p 1 = x.
+  set p := const_fun unit_interval x.
+  witness p.
+  prove function_on p unit_interval X /\
+    continuous_map unit_interval R_standard_topology X Tx p /\
+    apply_fun p 0 = x /\ apply_fun p 1 = x.
+  (** Conjunction is left-associative: (((A /\ B) /\ C) /\ D) **)
+  apply andI.
+  - (** (function_on /\ continuous_map) /\ (apply_fun p 0 = x) **)
+    apply andI.
+    + (** function_on /\ continuous_map **)
+      apply andI.
+      * (** function_on **)
+        let t. assume HtI: t :e unit_interval.
+        prove apply_fun p t :e X.
+        claim Hpt: apply_fun p t = x.
+        { exact (const_fun_apply unit_interval x t HtI). }
+        rewrite Hpt.
+        exact HxX.
+      * (** continuous_map **)
+        claim HtopI: topology_on unit_interval R_standard_topology.
+        { exact (andEL (topology_on unit_interval R_standard_topology)
+                       (~(exists U V:set, U :e R_standard_topology /\ V :e R_standard_topology /\ separation_of unit_interval U V))
+                       unit_interval_connected). }
+        exact (const_fun_continuous unit_interval R_standard_topology X Tx x HtopI HTx HxX).
+    + (** apply_fun p 0 = x **)
+      claim H01: 0 :e unit_interval /\ 1 :e unit_interval.
+      { exact zero_one_in_unit_interval. }
+      claim H0: 0 :e unit_interval.
+      { exact (andEL (0 :e unit_interval) (1 :e unit_interval) H01). }
+      exact (const_fun_apply unit_interval x 0 H0).
+  - (** apply_fun p 1 = x **)
+    claim H01: 0 :e unit_interval /\ 1 :e unit_interval.
+    { exact zero_one_in_unit_interval. }
+    claim H1: 1 :e unit_interval.
+    { exact (andER (0 :e unit_interval) (1 :e unit_interval) H01). }
+    exact (const_fun_apply unit_interval x 1 H1).
+Qed.
+
 (** from §24: path components form equivalence classes **) 
 (** LATEX VERSION: Path components are equivalence classes under path-connectibility. **)
 Theorem path_components_equivalence_relation : forall X Tx:set,
