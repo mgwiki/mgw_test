@@ -29010,7 +29010,42 @@ Theorem components_partition_space : forall X Tx:set,
 let X Tx.
 assume HTx: topology_on X Tx.
 prove covers X {component_of X Tx x | x :e X} /\ pairwise_disjoint {component_of X Tx x | x :e X}.
-admit. (** every point in its component; distinct components either equal or disjoint by connectedness **)
+apply andI.
+- (** cover **)
+  prove covers X {component_of X Tx x | x :e X}.
+  let x. assume HxX: x :e X.
+  prove exists u:set, u :e {component_of X Tx x0 | x0 :e X} /\ x :e u.
+  witness (component_of X Tx x).
+  apply andI.
+  * exact (ReplI X (fun x0:set => component_of X Tx x0) x HxX).
+  * rewrite (component_of_whole X Tx x HTx HxX).
+    exact HxX.
+- (** pairwise disjoint **)
+  prove pairwise_disjoint {component_of X Tx x | x :e X}.
+  let U V.
+  assume HU: U :e {component_of X Tx x | x :e X}.
+  assume HV: V :e {component_of X Tx x | x :e X}.
+  assume HUV: U <> V.
+  prove U :/\: V = Empty.
+  claim HUeqX: U = X.
+  { apply (ReplE_impred X (fun x0:set => component_of X Tx x0) U HU (U = X)).
+    let x0. assume Hx0X: x0 :e X.
+    assume HUeq: U = component_of X Tx x0.
+    rewrite HUeq.
+    exact (component_of_whole X Tx x0 HTx Hx0X). }
+  claim HVeQX: V = X.
+  { apply (ReplE_impred X (fun x0:set => component_of X Tx x0) V HV (V = X)).
+    let x0. assume Hx0X: x0 :e X.
+    assume HVeQ: V = component_of X Tx x0.
+    rewrite HVeQ.
+    exact (component_of_whole X Tx x0 HTx Hx0X). }
+  claim HeqUV: U = V.
+  { rewrite HUeqX.
+    rewrite HVeQX.
+    reflexivity. }
+  apply FalseE.
+  prove False.
+  exact (HUV HeqUV).
 Qed.
 
 (** from §25: quotient of locally connected space is locally connected **) 
