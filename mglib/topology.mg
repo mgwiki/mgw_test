@@ -27771,7 +27771,154 @@ let X Tx Y Ty.
 assume HX: connected_space X Tx.
 assume HY: connected_space Y Ty.
 prove connected_space (setprod X Y) (product_topology X Tx Y Ty).
-admit. (** pending: union proof using slice_X_connected and slice_Y_connected, with careful handling of empty cases and without rewriting inside hypotheses **)
+(** Helper: product with empty set is empty (left) **)
+claim Hsetprod_empty_left: forall Y0:set, setprod Empty Y0 = Empty.
+{ let Y0.
+  apply set_ext.
+  - let p. assume Hp: p :e setprod Empty Y0.
+    prove p :e Empty.
+    apply FalseE.
+    claim Hp0: (p 0) :e Empty.
+    { exact (ap0_Sigma Empty (fun _:set => Y0) p Hp). }
+    exact (EmptyE (p 0) Hp0).
+  - let p. assume Hp: p :e Empty.
+    prove p :e setprod Empty Y0.
+    apply FalseE.
+    exact (EmptyE p Hp). }
+(** Helper: product with empty set is empty (right) **)
+claim Hsetprod_empty_right: forall X0:set, setprod X0 Empty = Empty.
+{ let X0.
+  apply set_ext.
+  - let p. assume Hp: p :e setprod X0 Empty.
+    prove p :e Empty.
+    apply FalseE.
+    claim Hp1: (p 1) :e Empty.
+    { exact (ap1_Sigma X0 (fun _:set => Empty) p Hp). }
+    exact (EmptyE (p 1) Hp1).
+  - let p. assume Hp: p :e Empty.
+    prove p :e setprod X0 Empty.
+    apply FalseE.
+    exact (EmptyE p Hp). }
+
+(** Extract the topology parts **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+              (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V))
+              HX). }
+claim HTy: topology_on Y Ty.
+{ exact (andEL (topology_on Y Ty)
+              (~(exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V))
+              HY). }
+
+(** Case split on emptiness of X and Y **)
+apply xm (X = Empty).
+- assume HXEmpty: X = Empty.
+  rewrite HXEmpty.
+  rewrite (Hsetprod_empty_left Y).
+  prove topology_on Empty (product_topology Empty Tx Y Ty) /\
+    ~(exists U V:set,
+      U :e product_topology Empty Tx Y Ty /\
+      V :e product_topology Empty Tx Y Ty /\
+      separation_of Empty U V).
+  apply andI.
+  - (** topology_on Empty (...) **)
+    claim HTx0: topology_on Empty Tx.
+    { rewrite <- HXEmpty. exact HTx. }
+    prove topology_on Empty (product_topology Empty Tx Y Ty).
+    rewrite <- (Hsetprod_empty_left Y) at 1.
+    exact (product_topology_is_topology Empty Tx Y Ty HTx0 HTy).
+  - (** no separation of Empty **)
+    prove ~(exists U V:set,
+      U :e product_topology Empty Tx Y Ty /\
+      V :e product_topology Empty Tx Y Ty /\
+      separation_of Empty U V).
+    assume Hsep: exists U V:set,
+      U :e product_topology Empty Tx Y Ty /\
+      V :e product_topology Empty Tx Y Ty /\
+      separation_of Empty U V.
+    apply Hsep.
+    let U. assume HexV: exists V:set,
+      U :e product_topology Empty Tx Y Ty /\
+      V :e product_topology Empty Tx Y Ty /\
+      separation_of Empty U V.
+    apply HexV.
+    let V. assume HUVsep.
+    claim HsepUV: separation_of Empty U V.
+    { exact (andER (U :e product_topology Empty Tx Y Ty /\ V :e product_topology Empty Tx Y Ty)
+                   (separation_of Empty U V) HUVsep). }
+    claim Hpart1: ((((U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
+    { exact (andEL ((((U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                   (U :\/: V = Empty) HsepUV). }
+    claim Hpart2: ((U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty) /\ U <> Empty.
+    { exact (andEL (((U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty) /\ U <> Empty)
+                   (V <> Empty) Hpart1). }
+    claim HUne: U <> Empty.
+    { exact (andER ((U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty) (U <> Empty) Hpart2). }
+    claim Hpow: (U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty.
+    { exact (andEL ((U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty) (U <> Empty) Hpart2). }
+    claim HpowUV: U :e Power Empty /\ V :e Power Empty.
+    { exact (andEL (U :e Power Empty /\ V :e Power Empty) (U :/\: V = Empty) Hpow). }
+    claim HUsub: U c= Empty.
+    { exact (PowerE Empty U (andEL (U :e Power Empty) (V :e Power Empty) HpowUV)). }
+    claim HUeq: U = Empty.
+    { exact (Empty_Subq_eq U HUsub). }
+    exact (HUne HUeq).
+- assume HXNonEmpty: X <> Empty.
+  apply xm (Y = Empty).
+  + assume HYEmpty: Y = Empty.
+    rewrite HYEmpty.
+    rewrite (Hsetprod_empty_right X).
+    prove topology_on Empty (product_topology X Tx Empty Ty) /\
+      ~(exists U V:set,
+        U :e product_topology X Tx Empty Ty /\
+        V :e product_topology X Tx Empty Ty /\
+        separation_of Empty U V).
+    apply andI.
+    - (** topology_on Empty (...) **)
+      claim HTy0: topology_on Empty Ty.
+      { rewrite <- HYEmpty. exact HTy. }
+      prove topology_on Empty (product_topology X Tx Empty Ty).
+      rewrite <- (Hsetprod_empty_right X) at 1.
+      exact (product_topology_is_topology X Tx Empty Ty HTx HTy0).
+    - (** no separation of Empty **)
+      prove ~(exists U V:set,
+        U :e product_topology X Tx Empty Ty /\
+        V :e product_topology X Tx Empty Ty /\
+        separation_of Empty U V).
+      assume Hsep: exists U V:set,
+        U :e product_topology X Tx Empty Ty /\
+        V :e product_topology X Tx Empty Ty /\
+        separation_of Empty U V.
+      apply Hsep.
+      let U. assume HexV: exists V:set,
+        U :e product_topology X Tx Empty Ty /\
+        V :e product_topology X Tx Empty Ty /\
+        separation_of Empty U V.
+      apply HexV.
+      let V. assume HUVsep.
+      claim HsepUV: separation_of Empty U V.
+      { exact (andER (U :e product_topology X Tx Empty Ty /\ V :e product_topology X Tx Empty Ty)
+                     (separation_of Empty U V) HUVsep). }
+      claim Hpart1: ((((U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
+      { exact (andEL ((((U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                     (U :\/: V = Empty) HsepUV). }
+      claim Hpart2: ((U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty) /\ U <> Empty.
+      { exact (andEL (((U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty) /\ U <> Empty)
+                     (V <> Empty) Hpart1). }
+      claim HUne: U <> Empty.
+      { exact (andER ((U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty) (U <> Empty) Hpart2). }
+      claim Hpow: (U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty.
+      { exact (andEL ((U :e Power Empty /\ V :e Power Empty) /\ U :/\: V = Empty) (U <> Empty) Hpart2). }
+      claim HpowUV: U :e Power Empty /\ V :e Power Empty.
+      { exact (andEL (U :e Power Empty /\ V :e Power Empty) (U :/\: V = Empty) Hpow). }
+      claim HUsub: U c= Empty.
+      { exact (PowerE Empty U (andEL (U :e Power Empty) (V :e Power Empty) HpowUV)). }
+      claim HUeq: U = Empty.
+      { exact (Empty_Subq_eq U HUsub). }
+      exact (HUne HUeq).
+  + assume HYNonEmpty: Y <> Empty.
+    (** Nonempty X and Y: pending main connectedness argument via slices and union lemma **)
+    admit. (** pending: union proof using slice_X_connected and slice_Y_connected, with explicit emptiness cases handled above **)
 Qed.
 
 (** from §23 Example: product topology on R^ω is connected **) 
