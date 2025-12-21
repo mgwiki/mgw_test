@@ -31654,7 +31654,36 @@ Theorem compact_real_closed_bounded : forall A:set,
 let A.
 assume Hcomp: compact_space A (subspace_topology R R_standard_topology A).
 prove closed_in R R_standard_topology A /\ bounded_subset_of_reals A.
-admit. (** Hausdorff implies closed; cover by (-n,n) gives bounded **)
+claim HtopA: topology_on A (subspace_topology R R_standard_topology A).
+{ exact (andEL (topology_on A (subspace_topology R R_standard_topology A))
+               (forall Fam:set, open_cover_of A (subspace_topology R R_standard_topology A) Fam ->
+                  has_finite_subcover A (subspace_topology R R_standard_topology A) Fam)
+               Hcomp). }
+claim HAin: A :e subspace_topology R R_standard_topology A.
+{ exact (topology_has_X A (subspace_topology R R_standard_topology A) HtopA). }
+claim HexV: exists V :e R_standard_topology, A = V :/\: A.
+{ exact (SepE2 (Power A)
+               (fun U0:set => exists V :e R_standard_topology, U0 = V :/\: A)
+               A HAin). }
+apply HexV.
+let V. assume HVpair.
+claim HV: V :e R_standard_topology.
+{ exact (andEL (V :e R_standard_topology) (A = V :/\: A) HVpair). }
+claim HAeq: A = V :/\: A.
+{ exact (andER (V :e R_standard_topology) (A = V :/\: A) HVpair). }
+claim HT: topology_on R R_standard_topology.
+{ exact R_standard_topology_is_topology_local. }
+claim HVsubR: V c= R.
+{ exact (topology_elem_subset R R_standard_topology V HT HV). }
+claim HA: A c= R.
+{ let x. assume HxA: x :e A.
+  claim HxVA: x :e V :/\: A.
+  { rewrite <- HAeq.
+    exact HxA. }
+  claim HxV: x :e V.
+  { exact (binintersectE1 V A x HxVA). }
+  exact (HVsubR x HxV). }
+exact (Heine_Borel_closed_bounded A HA Hcomp).
 Qed.
 
 (** from §28 Definition: limit point compactness **) 
