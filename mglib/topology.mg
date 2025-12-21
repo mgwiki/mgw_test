@@ -30193,6 +30193,95 @@ Definition bijection : set -> set -> set -> prop := fun X Y f =>
   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y /\
      (forall x':set, x' :e X -> apply_fun f x' = y -> x' = x)).
 
+Definition inv_fun_graph : set -> set -> set -> set := fun X f Y =>
+  {(y, inv X (fun x:set => apply_fun f x) y)|y :e Y}.
+
+Theorem inv_fun_graph_apply : forall X Y f y:set,
+  y :e Y -> apply_fun (inv_fun_graph X f Y) y = inv X (fun x:set => apply_fun f x) y.
+let X Y f y.
+assume Hy: y :e Y.
+prove apply_fun (inv_fun_graph X f Y) y = inv X (fun x:set => apply_fun f x) y.
+prove apply_fun {(y0, inv X (fun x:set => apply_fun f x) y0) | y0 :e Y} y = inv X (fun x:set => apply_fun f x) y.
+prove Eps_i (fun z => (y,z) :e {(y0, inv X (fun x:set => apply_fun f x) y0) | y0 :e Y}) =
+      inv X (fun x:set => apply_fun f x) y.
+claim H1: (y, inv X (fun x:set => apply_fun f x) y) :e {(y0, inv X (fun x:set => apply_fun f x) y0) | y0 :e Y}.
+{ exact (ReplI Y (fun y0:set => (y0, inv X (fun x:set => apply_fun f x) y0)) y Hy). }
+claim H2: (y, Eps_i (fun z => (y,z) :e {(y0, inv X (fun x:set => apply_fun f x) y0) | y0 :e Y})) :e
+          {(y0, inv X (fun x:set => apply_fun f x) y0) | y0 :e Y}.
+{ exact (Eps_i_ax (fun z => (y,z) :e {(y0, inv X (fun x:set => apply_fun f x) y0) | y0 :e Y})
+                  (inv X (fun x:set => apply_fun f x) y) H1). }
+apply (ReplE_impred Y (fun y0:set => (y0, inv X (fun x:set => apply_fun f x) y0))
+                    (y, Eps_i (fun z => (y,z) :e {(y0, inv X (fun x:set => apply_fun f x) y0) | y0 :e Y})) H2).
+let y0.
+assume Hy0: y0 :e Y.
+assume Heq: (y, Eps_i (fun z => (y,z) :e {(y1, inv X (fun x:set => apply_fun f x) y1) | y1 :e Y})) =
+            (y0, inv X (fun x:set => apply_fun f x) y0).
+claim Hy_eq: y = y0.
+{ rewrite <- (tuple_2_0_eq y (Eps_i (fun z => (y,z) :e {(y1, inv X (fun x:set => apply_fun f x) y1) | y1 :e Y}))).
+  rewrite <- (tuple_2_0_eq y0 (inv X (fun x:set => apply_fun f x) y0)).
+  rewrite Heq.
+  reflexivity. }
+claim Hz_eq: Eps_i (fun z => (y,z) :e {(y1, inv X (fun x:set => apply_fun f x) y1) | y1 :e Y}) =
+             inv X (fun x:set => apply_fun f x) y0.
+{ rewrite <- (tuple_2_1_eq y (Eps_i (fun z => (y,z) :e {(y1, inv X (fun x:set => apply_fun f x) y1) | y1 :e Y}))).
+  rewrite <- (tuple_2_1_eq y0 (inv X (fun x:set => apply_fun f x) y0)).
+  rewrite Heq.
+  reflexivity. }
+rewrite Hz_eq.
+rewrite <- Hy_eq.
+reflexivity.
+Qed.
+
+Theorem bijection_surj : forall X Y f y:set,
+  bijection X Y f -> y :e Y -> exists x:set, x :e X /\ apply_fun f x = y.
+let X Y f y.
+assume Hbij: bijection X Y f.
+assume Hy: y :e Y.
+apply Hbij.
+assume Hfun: function_on f X Y.
+assume Huniq.
+apply (Huniq y Hy).
+let x.
+assume Hx: x :e X /\ apply_fun f x = y /\ (forall x':set, x' :e X -> apply_fun f x' = y -> x' = x).
+witness x.
+claim Hx0: x :e X /\ apply_fun f x = y.
+{ exact (andEL (x :e X /\ apply_fun f x = y)
+               (forall x':set, x' :e X -> apply_fun f x' = y -> x' = x) Hx). }
+exact Hx0.
+Qed.
+
+Theorem bijection_inj : forall X Y f u v:set,
+  bijection X Y f -> u :e X -> v :e X -> apply_fun f u = apply_fun f v -> u = v.
+let X Y f u v.
+assume Hbij: bijection X Y f.
+assume HuX: u :e X.
+assume HvX: v :e X.
+assume Heq: apply_fun f u = apply_fun f v.
+apply Hbij.
+assume Hfun: function_on f X Y.
+assume Huniq.
+claim HyY: apply_fun f u :e Y.
+{ exact (Hfun u HuX). }
+apply (Huniq (apply_fun f u) HyY).
+let x.
+assume Hx: x :e X /\ apply_fun f x = apply_fun f u /\
+           (forall x':set, x' :e X -> apply_fun f x' = apply_fun f u -> x' = x).
+claim Hxuniq: forall x':set, x' :e X -> apply_fun f x' = apply_fun f u -> x' = x.
+{ exact (andER (x :e X /\ apply_fun f x = apply_fun f u)
+               (forall x':set, x' :e X -> apply_fun f x' = apply_fun f u -> x' = x)
+               Hx). }
+claim Hu: u = x.
+{ apply (Hxuniq u HuX).
+  reflexivity. }
+claim Hv: v = x.
+{ apply (Hxuniq v HvX).
+  symmetry.
+  exact Heq. }
+rewrite Hu.
+rewrite Hv.
+reflexivity.
+Qed.
+
 Definition Abs : set -> set := abs_SNo.
 
 Theorem compact_to_Hausdorff_bijection_homeomorphism : forall X Tx Y Ty f:set,
@@ -30205,8 +30294,50 @@ assume HH: Hausdorff_space Y Ty.
 assume Hcont: continuous_map X Tx Y Ty f.
 assume Hbij: bijection X Y f.
 prove homeomorphism X Tx Y Ty f.
-admit. (** continuous bijection compact→Hausdorff; show f maps closed to closed; image of compact closed is compact; use bijection for inverse
-        aby: In_5Fno2cycle binintersect�f Hausdorff_5Fspace_def conj_myprob_9610_1_20251124_034838 ReplI UPairI2 . **)
+prove continuous_map X Tx Y Ty f /\
+      exists g:set, continuous_map Y Ty X Tx g /\
+        (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+        (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y).
+apply andI.
+- exact Hcont.
+- set g := inv_fun_graph X f Y.
+  witness g.
+  apply andI.
+  + apply andI.
+    * admit.
+    * let x. assume Hx: x :e X.
+      prove apply_fun g (apply_fun f x) = x.
+      claim Hfun: function_on f X Y.
+      { exact (andEL (function_on f X Y)
+                     (forall y:set, y :e Y -> exists x0:set, x0 :e X /\ apply_fun f x0 = y /\ (forall x':set, x' :e X -> apply_fun f x' = y -> x' = x0))
+                     Hbij). }
+      claim HyY: apply_fun f x :e Y.
+      { exact (Hfun x Hx). }
+      claim Hginv: apply_fun g (apply_fun f x) = inv X (fun u:set => apply_fun f u) (apply_fun f x).
+      { exact (inv_fun_graph_apply X Y f (apply_fun f x) HyY). }
+      rewrite Hginv.
+      claim Hinj: forall u v :e X, apply_fun f u = apply_fun f v -> u = v.
+      { let u. assume Hu: u :e X.
+        let v. assume Hv: v :e X.
+        assume Heq.
+        exact (bijection_inj X Y f u v Hbij Hu Hv Heq). }
+      exact (inj_linv X (fun u:set => apply_fun f u) Hinj x Hx).
+  + let y. assume Hy: y :e Y.
+    prove apply_fun f (apply_fun g y) = y.
+    claim Hginv: apply_fun g y = inv X (fun u:set => apply_fun f u) y.
+    { exact (inv_fun_graph_apply X Y f y Hy). }
+    rewrite Hginv.
+    claim Hsurj: forall w :e Y, exists u :e X, apply_fun f u = w.
+    { let w. assume Hw: w :e Y.
+      claim Hex: exists u:set, u :e X /\ apply_fun f u = w.
+      { exact (bijection_surj X Y f w Hbij Hw). }
+      exact Hex. }
+    claim Hpair: inv X (fun u:set => apply_fun f u) y :e X /\
+                 apply_fun f (inv X (fun u:set => apply_fun f u) y) = y.
+    { exact (surj_rinv X Y (fun u:set => apply_fun f u) Hsurj y Hy). }
+    exact (andER (inv X (fun u:set => apply_fun f u) y :e X)
+                 (apply_fun f (inv X (fun u:set => apply_fun f u) y) = y)
+                 Hpair).
 Qed.
 
 (** LATEX VERSION: A subset A⊂ℝ is bounded if |x|≤M for some real M. **)
