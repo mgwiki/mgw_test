@@ -30282,6 +30282,98 @@ rewrite Hv.
 reflexivity.
 Qed.
 
+Theorem inv_fun_graph_right_inverse : forall X Y f y:set,
+  bijection X Y f -> y :e Y -> apply_fun f (apply_fun (inv_fun_graph X f Y) y) = y.
+let X Y f y.
+assume Hbij: bijection X Y f.
+assume Hy: y :e Y.
+prove apply_fun f (apply_fun (inv_fun_graph X f Y) y) = y.
+claim Hginv: apply_fun (inv_fun_graph X f Y) y = inv X (fun u:set => apply_fun f u) y.
+{ exact (inv_fun_graph_apply X Y f y Hy). }
+rewrite Hginv.
+claim Hsurj: forall w :e Y, exists u :e X, apply_fun f u = w.
+{ let w. assume Hw: w :e Y.
+  claim Hex: exists u:set, u :e X /\ apply_fun f u = w.
+  { exact (bijection_surj X Y f w Hbij Hw). }
+  exact Hex. }
+claim Hpair: inv X (fun u:set => apply_fun f u) y :e X /\
+             apply_fun f (inv X (fun u:set => apply_fun f u) y) = y.
+{ exact (surj_rinv X Y (fun u:set => apply_fun f u) Hsurj y Hy). }
+exact (andER (inv X (fun u:set => apply_fun f u) y :e X)
+             (apply_fun f (inv X (fun u:set => apply_fun f u) y) = y)
+             Hpair).
+Qed.
+
+Theorem inv_fun_graph_left_inverse : forall X Y f x:set,
+  bijection X Y f -> x :e X -> apply_fun (inv_fun_graph X f Y) (apply_fun f x) = x.
+let X Y f x.
+assume Hbij: bijection X Y f.
+assume Hx: x :e X.
+prove apply_fun (inv_fun_graph X f Y) (apply_fun f x) = x.
+claim Hfun: function_on f X Y.
+{ exact (andEL (function_on f X Y)
+               (forall y:set, y :e Y -> exists x0:set, x0 :e X /\ apply_fun f x0 = y /\ (forall x':set, x' :e X -> apply_fun f x' = y -> x' = x0))
+               Hbij). }
+claim HyY: apply_fun f x :e Y.
+{ exact (Hfun x Hx). }
+claim Hginv: apply_fun (inv_fun_graph X f Y) (apply_fun f x) =
+             inv X (fun u:set => apply_fun f u) (apply_fun f x).
+{ exact (inv_fun_graph_apply X Y f (apply_fun f x) HyY). }
+rewrite Hginv.
+claim Hinj: forall u v :e X, apply_fun f u = apply_fun f v -> u = v.
+{ let u. assume Hu: u :e X.
+  let v. assume Hv: v :e X.
+  assume Heq.
+  exact (bijection_inj X Y f u v Hbij Hu Hv Heq). }
+exact (inj_linv X (fun u:set => apply_fun f u) Hinj x Hx).
+Qed.
+
+Theorem inv_fun_graph_preimage_eq_image : forall X Y f A:set,
+  bijection X Y f -> A c= X ->
+  preimage_of Y (inv_fun_graph X f Y) A = image_of_fun f A.
+let X Y f A.
+assume Hbij: bijection X Y f.
+assume HA: A c= X.
+set g := inv_fun_graph X f Y.
+apply set_ext.
+- let y. assume Hy: y :e preimage_of Y g A.
+  prove y :e image_of_fun f A.
+  claim HyY: y :e Y.
+  { exact (SepE1 Y (fun u:set => apply_fun g u :e A) y Hy). }
+  claim HgyA: apply_fun g y :e A.
+  { exact (SepE2 Y (fun u:set => apply_fun g u :e A) y Hy). }
+  claim Heq: apply_fun f (apply_fun g y) = y.
+  { exact (inv_fun_graph_right_inverse X Y f y Hbij HyY). }
+  claim HyImg: apply_fun f (apply_fun g y) :e image_of_fun f A.
+  { exact (ReplI A (fun x0:set => apply_fun f x0) (apply_fun g y) HgyA). }
+  rewrite <- Heq.
+  exact HyImg.
+- let y. assume Hy: y :e image_of_fun f A.
+  prove y :e preimage_of Y g A.
+  apply (ReplE_impred A (fun x0:set => apply_fun f x0) y Hy).
+  let x.
+  assume HxA: x :e A.
+  assume Heq: y = apply_fun f x.
+  prove y :e {u :e Y | apply_fun g u :e A}.
+  apply SepI.
+  + claim HxX: x :e X.
+    { exact (HA x HxA). }
+    claim Hfun: function_on f X Y.
+    { exact (andEL (function_on f X Y)
+                   (forall y0:set, y0 :e Y -> exists x0:set, x0 :e X /\ apply_fun f x0 = y0 /\ (forall x':set, x' :e X -> apply_fun f x' = y0 -> x' = x0))
+                   Hbij). }
+    rewrite Heq.
+    exact (Hfun x HxX).
+  + prove apply_fun g y :e A.
+    rewrite Heq.
+    claim HxX: x :e X.
+    { exact (HA x HxA). }
+    claim Hinv: apply_fun g (apply_fun f x) = x.
+    { exact (inv_fun_graph_left_inverse X Y f x Hbij HxX). }
+    rewrite Hinv.
+    exact HxA.
+Qed.
+
 Definition Abs : set -> set := abs_SNo.
 
 Theorem compact_to_Hausdorff_bijection_homeomorphism : forall X Tx Y Ty f:set,
