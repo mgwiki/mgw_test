@@ -31176,7 +31176,9 @@ let A.
 assume HA: A c= R.
 assume Hcomp: compact_space A (subspace_topology R R_standard_topology A).
 prove closed_in R R_standard_topology A /\ bounded_subset_of_reals A.
-admit. (** Heine-Borel: compact in R is closed in Hausdorff space; bounded by finite cover of bounded intervals **)
+apply andI.
+- exact (compact_subspace_in_Hausdorff_closed R R_standard_topology A R_standard_topology_Hausdorff HA Hcomp).
+- admit. (** boundedness: cover A by the open family {x:eR | Abs x < n} and use compactness to pick a uniform bound **)
 Qed.
 
 (** from §27: compact subspaces of ℝ are closed and bounded **) 
