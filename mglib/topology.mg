@@ -14776,6 +14776,17 @@ Theorem R_K_topology_is_topology_local : topology_on R R_K_topology.
 exact (lemma_topology_from_basis R (R_standard_basis :\/: R_K_basis) R_standard_plus_K_basis_is_basis_local).
 Qed.
 
+(** helper: K_set meets any lower limit neighborhood of 0 **)
+(** LATEX VERSION: In the lower limit topology, every basic neighborhood [a,b) of 0 contains some element of K={1/n}. **)
+Theorem K_set_meets_lower_limit_neighborhood_0 :
+  forall a b:set,
+    a :e R -> b :e R ->
+    ~(Rlt 0 a) ->
+    Rlt 0 b ->
+    exists y:set, y :e halfopen_interval_left a b /\ y :e K_set.
+admit.
+Qed.
+
 (** LATEX VERSION: Exercise 6: The lower-limit topology and the K-topology on ℝ are incomparable. **)
 Theorem ex13_6_Rl_RK_not_comparable :
   ~finer_than R_lower_limit_topology R_K_topology /\
@@ -14860,8 +14871,16 @@ apply andI.
   claim H0ltb1: Rlt 0 b1.
   { exact (andER (~(Rlt 0 a0)) (Rlt 0 b1) H0prop). }
   claim Hexy: exists y:set, y :e b0 /\ y :e K_set.
-  { admit. (** K_set meets every lower limit neighborhood of 0 **)
-  }
+  { claim Hexy2: exists y:set, y :e halfopen_interval_left a0 b1 /\ y :e K_set.
+    { exact (K_set_meets_lower_limit_neighborhood_0 a0 b1 Ha0R Hb1R Hnot0lta0 H0ltb1). }
+    apply Hexy2.
+    let y. assume Hyconj2: y :e halfopen_interval_left a0 b1 /\ y :e K_set.
+    witness y.
+    apply andI.
+    - prove y :e b0.
+      rewrite Hb0eq.
+      exact (andEL (y :e halfopen_interval_left a0 b1) (y :e K_set) Hyconj2).
+    - exact (andER (y :e halfopen_interval_left a0 b1) (y :e K_set) Hyconj2). }
   apply Hexy.
   let y. assume Hyconj: y :e b0 /\ y :e K_set.
   claim Hyb0: y :e b0.
