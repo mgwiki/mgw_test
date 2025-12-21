@@ -31263,7 +31263,80 @@ Theorem ex26_compactness_exercises :
 let X Tx.
 assume HX: compact_space X Tx.
 prove closed_in R R_standard_topology unit_interval /\ compact_space unit_interval R_standard_topology.
-admit. (** unit interval [0,1] is complement of (-∞,0)∪(1,∞); compact by Heine-Borel **)
+apply andI.
+- (** unit interval is closed in R **)
+  prove closed_in R R_standard_topology unit_interval.
+  claim HT: topology_on R R_standard_topology.
+  { exact R_standard_topology_is_topology_local. }
+  prove topology_on R R_standard_topology /\ (unit_interval c= R /\ exists U :e R_standard_topology, unit_interval = R :\: U).
+  apply andI.
+  - exact HT.
+  - apply andI.
+    + (** unit_interval c= R **)
+      let x. assume Hx: x :e unit_interval.
+      prove x :e R.
+      exact (SepE1 R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) x Hx).
+    + (** witness the open complement **)
+      set L0 := {x :e R|Rlt x 0}.
+      set R1 := {x :e R|Rlt 1 x}.
+      set U := L0 :\/: R1.
+      witness U.
+      apply andI.
+      * (** U is open in R_standard_topology **)
+        claim HL0: L0 :e R_standard_topology.
+        { exact (open_left_ray_in_R_standard_topology 0 real_0). }
+        claim HR1: R1 :e R_standard_topology.
+        { exact (open_ray_in_R_standard_topology 1 real_1). }
+        exact (topology_binunion_closed R R_standard_topology L0 R1 HT HL0 HR1).
+      * (** unit_interval = R \\ U **)
+        apply set_ext.
+        { let x. assume Hx: x :e unit_interval.
+          prove x :e R :\: U.
+          claim HxR: x :e R.
+          { exact (SepE1 R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) x Hx). }
+          claim Hxprop: ~(Rlt x 0) /\ ~(Rlt 1 x).
+          { exact (SepE2 R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) x Hx). }
+          claim Hnx0: ~(Rlt x 0).
+          { exact (andEL (~(Rlt x 0)) (~(Rlt 1 x)) Hxprop). }
+          claim Hn1x: ~(Rlt 1 x).
+          { exact (andER (~(Rlt x 0)) (~(Rlt 1 x)) Hxprop). }
+          apply (setminusI R U x HxR).
+          assume Hxu: x :e U.
+          apply (binunionE L0 R1 x Hxu).
+          - assume HxL: x :e L0.
+            claim Hlt: Rlt x 0.
+            { exact (SepE2 R (fun x0:set => Rlt x0 0) x HxL). }
+            exact (Hnx0 Hlt).
+          - assume HxR1: x :e R1.
+            claim Hlt: Rlt 1 x.
+            { exact (SepE2 R (fun x0:set => Rlt 1 x0) x HxR1). }
+            exact (Hn1x Hlt). }
+        { let x. assume Hx: x :e R :\: U.
+          prove x :e unit_interval.
+          claim HxR: x :e R.
+          { exact (setminusE1 R U x Hx). }
+          claim HxnotU: x /:e U.
+          { exact (setminusE2 R U x Hx). }
+          apply (SepI R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) x HxR).
+          apply andI.
+          - (** ~(x < 0) **)
+            assume Hlt: Rlt x 0.
+            prove False.
+            claim HxL0: x :e L0.
+            { exact (SepI R (fun x0:set => Rlt x0 0) x HxR Hlt). }
+            claim HxU: x :e U.
+            { exact (binunionI1 L0 R1 x HxL0). }
+            exact (HxnotU HxU).
+          - (** ~(1 < x) **)
+            assume Hlt: Rlt 1 x.
+            prove False.
+            claim HxR1: x :e R1.
+            { exact (SepI R (fun x0:set => Rlt 1 x0) x HxR Hlt). }
+            claim HxU: x :e U.
+            { exact (binunionI2 L0 R1 x HxR1). }
+            exact (HxnotU HxU). }
+- (** compactness part remains open **)
+  admit. (** unit interval compactness proof to be supplied later **)
 Qed.
 
 (** from §26/§27: Heine-Borel on ℝ (closed and bounded sets) **) 
