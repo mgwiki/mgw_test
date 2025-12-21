@@ -29123,8 +29123,189 @@ let X Tx Y.
 assume Hcomp: compact_space X Tx.
 assume HY: closed_in X Tx Y.
 prove compact_space Y (subspace_topology X Tx Y).
-admit. (** cover Y by subspace opens; extend to cover X using X\Y; extract finite subcover; restrict back to Y
-        aby: prop_ext_2 has_finite_subcover�f open_cover_of�f compact_space�f conj_myprob_9563_1_20251124_034521 Subq_def Subq_5Fbinunion_5Feq ex17_7_counterexample_union_closure . **)
+set Ty := subspace_topology X Tx Y.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+claim HsubcoverX: forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
+{ exact (andER (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+claim HYsub: Y c= X.
+{ exact (closed_in_subset X Tx Y HY). }
+(** Choose an open complement U of Y in X. **)
+claim HexU: exists U :e Tx, Y = X :\: U.
+{ claim HYparts: Y c= X /\ exists U :e Tx, Y = X :\: U.
+  { exact (andER (topology_on X Tx) (Y c= X /\ exists U :e Tx, Y = X :\: U) HY). }
+  exact (andER (Y c= X) (exists U :e Tx, Y = X :\: U) HYparts). }
+apply HexU.
+let U.
+assume HUpair: U :e Tx /\ Y = X :\: U.
+claim HUu: U :e Tx.
+{ exact (andEL (U :e Tx) (Y = X :\: U) HUpair). }
+claim HYeq: Y = X :\: U.
+{ exact (andER (U :e Tx) (Y = X :\: U) HUpair). }
+
+(** Use the characterization via ambient open covers. **)
+claim Hequiv:
+  (compact_space Y Ty <->
+    forall Fam:set, (Fam c= Tx /\ Y c= Union Fam) -> has_finite_subcover Y Tx Fam).
+{ exact (compact_subspace_via_ambient_covers X Tx Y HTx HYsub). }
+apply (iffER (compact_space Y Ty)
+             (forall Fam:set, (Fam c= Tx /\ Y c= Union Fam) -> has_finite_subcover Y Tx Fam)
+             Hequiv).
+
+let Fam. assume HFamcov: Fam c= Tx /\ Y c= Union Fam.
+claim HFamSub: Fam c= Tx.
+{ exact (andEL (Fam c= Tx) (Y c= Union Fam) HFamcov). }
+claim HYcovFam: Y c= Union Fam.
+{ exact (andER (Fam c= Tx) (Y c= Union Fam) HFamcov). }
+
+(** Extend the cover of Y by adding U; this covers X. **)
+set CoverX := Fam :\/: {U}.
+claim HcoverX: open_cover_of X Tx CoverX.
+{ prove topology_on X Tx /\ CoverX c= Power X /\ X c= Union CoverX /\ (forall V:set, V :e CoverX -> V :e Tx).
+  apply andI.
+  - (** (CoverX c= Power X) /\ X c= Union CoverX **)
+    apply andI.
+    + (** topology_on X Tx /\ CoverX c= Power X **)
+      apply andI.
+      * exact HTx.
+      * (** CoverX c= Power X **)
+	        let V. assume HV: V :e CoverX.
+	        prove V :e Power X.
+	        apply (binunionE Fam {U} V HV).
+	        - assume HVF: V :e Fam.
+	           claim HVTx: V :e Tx.
+	           { exact (HFamSub V HVF). }
+	           claim HVsub: V c= X.
+	           { exact (topology_elem_subset X Tx V HTx HVTx). }
+	           exact (PowerI X V HVsub).
+	        - assume HVU: V :e {U}.
+	           claim HVe: V = U.
+	           { exact (SingE U V HVU). }
+	           rewrite HVe.
+	           claim HUsub: U c= X.
+	           { exact (topology_elem_subset X Tx U HTx HUu). }
+	           exact (PowerI X U HUsub).
+    + (** X c= Union CoverX **)
+      let x. assume HxX: x :e X.
+      prove x :e Union CoverX.
+      apply (xm (x :e U)).
+      * assume HxU: x :e U.
+        exact (UnionI CoverX x U HxU (binunionI2 Fam {U} U (SingI U))).
+      * assume HxnotU: ~ x :e U.
+        claim HxY: x :e Y.
+        { rewrite HYeq.
+          exact (setminusI X U x HxX HxnotU). }
+        claim HxUFam: x :e Union Fam.
+        { exact (HYcovFam x HxY). }
+        apply (UnionE_impred Fam x HxUFam).
+        let V. assume HxV: x :e V.
+        assume HVF: V :e Fam.
+        prove x :e Union CoverX.
+        exact (UnionI CoverX x V HxV (binunionI1 Fam {U} V HVF)).
+  - (** each element of CoverX is open in Tx **)
+    let V. assume HV: V :e CoverX.
+    prove V :e Tx.
+    apply (binunionE Fam {U} V HV).
+    + assume HVF: V :e Fam.
+      exact (HFamSub V HVF).
+    + assume HVU: V :e {U}.
+      claim HVe: V = U.
+      { exact (SingE U V HVU). }
+      rewrite HVe.
+      exact HUu. }
+
+(** Compactness of X gives a finite subcover of CoverX. **)
+claim HfinCoverX: has_finite_subcover X Tx CoverX.
+{ exact (HsubcoverX CoverX HcoverX). }
+apply HfinCoverX.
+let G. assume HG: G c= CoverX /\ finite G /\ X c= Union G.
+claim HGleft: G c= CoverX /\ finite G.
+{ exact (andEL (G c= CoverX /\ finite G) (X c= Union G) HG). }
+claim HGsub: G c= CoverX.
+{ exact (andEL (G c= CoverX) (finite G) HGleft). }
+claim HGfin: finite G.
+{ exact (andER (G c= CoverX) (finite G) HGleft). }
+claim HGcovX: X c= Union G.
+{ exact (andER (G c= CoverX /\ finite G) (X c= Union G) HG). }
+
+(** Remove U from G to obtain a finite subcover drawn from Fam. **)
+set G1 := G :\: {U}.
+claim HG1subG: G1 c= G.
+{ exact (setminus_Subq G {U}). }
+claim HG1fin: finite G1.
+{ exact (Subq_finite G HGfin G1 HG1subG). }
+claim HG1subFam: G1 c= Fam.
+{ let V. assume HVG1: V :e G1.
+  prove V :e Fam.
+  claim HVG: V :e G.
+  { exact (setminusE1 G {U} V HVG1). }
+  claim HVnotU: V /:e {U}.
+  { exact (setminusE2 G {U} V HVG1). }
+  claim HVinCover: V :e CoverX.
+  { exact (HGsub V HVG). }
+  apply (binunionE Fam {U} V HVinCover).
+  - assume HVF: V :e Fam.
+    exact HVF.
+  - assume HVU: V :e {U}.
+    prove V :e Fam.
+    prove False.
+    apply HVnotU.
+    exact HVU. }
+claim HYcovG1: Y c= Union G1.
+{ let y. assume HyY: y :e Y.
+  prove y :e Union G1.
+  claim HyX: y :e X.
+  { exact (HYsub y HyY). }
+  claim HyUG: y :e Union G.
+  { exact (HGcovX y HyX). }
+  apply (UnionE_impred G y HyUG).
+  let V. assume HyV: y :e V.
+  assume HVG: V :e G.
+  prove y :e Union G1.
+  claim HVinCover: V :e CoverX.
+  { exact (HGsub V HVG). }
+  claim HVnotU: V /:e {U}.
+  { apply (binunionE Fam {U} V HVinCover).
+    - assume HVF: V :e Fam.
+      prove V /:e {U}.
+      assume HVU: V :e {U}.
+      claim HVe: V = U.
+      { exact (SingE U V HVU). }
+	      (** y in Y implies y not in U **)
+	      claim HyNotU: y /:e U.
+	      { claim HyYU: y :e X :\: U.
+	        { rewrite <- HYeq at 1.
+	          exact HyY. }
+	        exact (setminusE2 X U y HyYU). }
+	      apply HyNotU.
+	      rewrite <- HVe.
+	      exact HyV.
+	    - assume HVU: V :e {U}.
+	      prove V /:e {U}.
+	      assume HVU2: V :e {U}.
+	      claim HVe: V = U.
+	      { exact (SingE U V HVU2). }
+	      claim HyNotU: y /:e U.
+	      { claim HyYU: y :e X :\: U.
+	        { rewrite <- HYeq at 1.
+	          exact HyY. }
+	        exact (setminusE2 X U y HyYU). }
+	      apply HyNotU.
+	      rewrite <- HVe.
+	      exact HyV. }
+  claim HVG1: V :e G1.
+  { exact (setminusI G {U} V HVG HVnotU). }
+  exact (UnionI G1 y V HyV HVG1). }
+
+claim HG1left: G1 c= Fam /\ finite G1.
+{ apply andI.
+  - exact HG1subFam.
+  - exact HG1fin. }
+claim HG1triple: G1 c= Fam /\ finite G1 /\ Y c= Union G1.
+{ apply andI.
+  - exact HG1left.
+  - exact HYcovG1. }
+exact (has_finite_subcoverI Y Tx Fam G1 HG1triple).
 Qed.
 
 (** from §26 Theorem 26.3: compact subspaces of Hausdorff spaces are closed **) 
