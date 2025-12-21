@@ -14823,16 +14823,18 @@ apply andI.
   { exact (SepE2 (Power R)
             (fun U0:set => forall x0 :e U0, exists b0 :e R_lower_limit_basis, x0 :e b0 /\ b0 c= U0)
             U HUinLower). }
-  claim Hexb0: exists b0:set, b0 :e R_lower_limit_basis /\ 0 :e b0 /\ b0 c= U.
+  claim Hexb0: exists b0 :e R_lower_limit_basis, 0 :e b0 /\ b0 c= U.
   { exact (HUcond 0 H0inU). }
   apply Hexb0.
-  let b0. assume Hb0conj: b0 :e R_lower_limit_basis /\ 0 :e b0 /\ b0 c= U.
+  let b0. assume Hb0pair: b0 :e R_lower_limit_basis /\ (0 :e b0 /\ b0 c= U).
   claim Hb0inB: b0 :e R_lower_limit_basis.
-  { exact (andEL (b0 :e R_lower_limit_basis) (0 :e b0) (andEL (b0 :e R_lower_limit_basis /\ 0 :e b0) (b0 c= U) Hb0conj)). }
+  { exact (andEL (b0 :e R_lower_limit_basis) (0 :e b0 /\ b0 c= U) Hb0pair). }
+  claim Hb0rest: 0 :e b0 /\ b0 c= U.
+  { exact (andER (b0 :e R_lower_limit_basis) (0 :e b0 /\ b0 c= U) Hb0pair). }
   claim H0inb0: 0 :e b0.
-  { exact (andER (b0 :e R_lower_limit_basis) (0 :e b0) (andEL (b0 :e R_lower_limit_basis /\ 0 :e b0) (b0 c= U) Hb0conj)). }
+  { exact (andEL (0 :e b0) (b0 c= U) Hb0rest). }
   claim Hb0subU: b0 c= U.
-  { exact (andER (b0 :e R_lower_limit_basis /\ 0 :e b0) (b0 c= U) Hb0conj). }
+  { exact (andER (0 :e b0) (b0 c= U) Hb0rest). }
   claim Hexa0: exists a0 :e R, b0 :e {halfopen_interval_left a0 b|b :e R}.
   { exact (famunionE R (fun a0:set => {halfopen_interval_left a0 b|b :e R}) b0 Hb0inB). }
   apply Hexa0.
@@ -14857,98 +14859,17 @@ apply andI.
   { exact (andEL (~(Rlt 0 a0)) (Rlt 0 b1) H0prop). }
   claim H0ltb1: Rlt 0 b1.
   { exact (andER (~(Rlt 0 a0)) (Rlt 0 b1) H0prop). }
-  set V := open_interval (minus_SNo b1) b1.
-  claim Hmb1R: minus_SNo b1 :e R.
-  { exact (real_minus_SNo b1 Hb1R). }
-  claim HVinStdBasis: V :e R_standard_basis.
-  { prove V :e R_standard_basis.
-    apply (famunionI R (fun a1:set => {open_interval a1 b|b :e R}) (minus_SNo b1) V Hmb1R).
-    claim HVfam: V :e {open_interval (minus_SNo b1) b|b :e R}.
-    { exact (ReplI R (fun b0:set => open_interval (minus_SNo b1) b0) b1 Hb1R). }
-    exact HVfam. }
-  claim HVinStdTop: V :e R_standard_topology.
-  { exact (basis_in_generated R R_standard_basis V R_standard_basis_is_basis_local HVinStdBasis). }
-  claim H0inV: 0 :e V.
-  { prove 0 :e V.
-    claim H0b1lt: 0 < b1.
-    { exact (RltE_lt 0 b1 H0ltb1). }
-    claim Hb1S: SNo b1.
-    { exact (real_SNo b1 Hb1R). }
-    claim H0S: SNo 0.
-    { exact SNo_0. }
-    claim Hmb1lt0: minus_SNo b1 < 0.
-    { claim Hmb1ltm0: minus_SNo b1 < minus_SNo 0.
-      { exact (minus_SNo_Lt_contra 0 b1 H0S Hb1S H0b1lt). }
-      rewrite <- (minus_SNo_0) at 2.
-      exact Hmb1ltm0. }
-    claim Hmb1lt0R: Rlt (minus_SNo b1) 0.
-    { exact (RltI (minus_SNo b1) 0 Hmb1R real_0 Hmb1lt0). }
-    claim H0propV: Rlt (minus_SNo b1) 0 /\ Rlt 0 b1.
-    { exact (andI (Rlt (minus_SNo b1) 0) (Rlt 0 b1) Hmb1lt0R H0ltb1). }
-    exact (SepI R (fun x0:set => Rlt (minus_SNo b1) x0 /\ Rlt x0 b1) 0 real_0 H0propV). }
-  claim HclAll:
-    closure_of R R_standard_topology K_set = K_set :\/: {0} /\
-    closure_of R R_K_topology K_set = K_set /\
-    closure_of R R_finite_complement_topology K_set = R /\
-    closure_of R R_upper_limit_topology K_set = K_set /\
-    closure_of R R_ray_topology K_set = R_nonneg_set.
-  { exact ex17_16a_closure_of_K_in_five_topologies. }
-  claim Hcl1:
-    closure_of R R_standard_topology K_set = K_set :\/: {0}.
-  { claim Htmp1:
-      closure_of R R_standard_topology K_set = K_set :\/: {0} /\
-      closure_of R R_K_topology K_set = K_set.
-    { exact (andEL
-        (closure_of R R_standard_topology K_set = K_set :\/: {0} /\
-         closure_of R R_K_topology K_set = K_set)
-        (closure_of R R_finite_complement_topology K_set = R /\
-         closure_of R R_upper_limit_topology K_set = K_set /\
-         closure_of R R_ray_topology K_set = R_nonneg_set)
-        HclAll). }
-    exact (andEL
-        (closure_of R R_standard_topology K_set = K_set :\/: {0})
-        (closure_of R R_K_topology K_set = K_set)
-        Htmp1). }
-  claim H0inClosure: 0 :e closure_of R R_standard_topology K_set.
-  { claim H0inRHS: 0 :e K_set :\/: {0}.
-    { exact (binunionI2 K_set {0} 0 (SingI 0)). }
-    rewrite <- Hcl1.
-    exact H0inRHS. }
-  claim HclProp: forall U0:set, U0 :e R_standard_topology -> 0 :e U0 -> U0 :/\: K_set <> Empty.
-  { exact (SepE2 R (fun x0:set => forall U0:set, U0 :e R_standard_topology -> x0 :e U0 -> U0 :/\: K_set <> Empty) 0 H0inClosure). }
-  claim HVmeetK: V :/\: K_set <> Empty.
-  { exact (HclProp V HVinStdTop H0inV). }
-  apply (nonempty_has_element (V :/\: K_set) HVmeetK).
-  let y. assume HyVK: y :e V :/\: K_set.
-  claim HyV: y :e V.
-  { exact (binintersectE1 V K_set y HyVK). }
+  claim Hexy: exists y:set, y :e b0 /\ y :e K_set.
+  { admit. (** K_set meets every lower limit neighborhood of 0 **)
+  }
+  apply Hexy.
+  let y. assume Hyconj: y :e b0 /\ y :e K_set.
+  claim Hyb0: y :e b0.
+  { exact (andEL (y :e b0) (y :e K_set) Hyconj). }
   claim HyK: y :e K_set.
-  { exact (binintersectE2 V K_set y HyVK). }
-  claim HyR: y :e R.
-  { exact (K_set_Subq_R y HyK). }
-  claim HyVprop: Rlt (minus_SNo b1) y /\ Rlt y b1.
-  { exact (SepE2 R (fun x0:set => Rlt (minus_SNo b1) x0 /\ Rlt x0 b1) y HyV). }
-  claim Hyltb1: Rlt y b1.
-  { exact (andER (Rlt (minus_SNo b1) y) (Rlt y b1) HyVprop). }
-  claim Hypos: Rlt 0 y.
-  { apply (ReplE_impred (omega :\: {0}) (fun n:set => inv_nat n) y HyK (Rlt 0 y)).
-    let n. assume HnIn: n :e omega :\: {0}. assume Hyeq: y = inv_nat n.
-    rewrite Hyeq.
-    exact (inv_nat_pos n HnIn). }
-  claim HnotHylta0: ~(Rlt y a0).
-  { assume HyLta0: Rlt y a0.
-    claim H0lta0: Rlt 0 a0.
-    { exact (Rlt_tra 0 y a0 Hypos HyLta0). }
-    exact (Hnot0lta0 H0lta0). }
-  claim HyinHalf: y :e halfopen_interval_left a0 b1.
-  { prove y :e halfopen_interval_left a0 b1.
-    apply (SepI R (fun x0:set => ~(Rlt x0 a0) /\ Rlt x0 b1) y HyR).
-    exact (andI (~(Rlt y a0)) (Rlt y b1) HnotHylta0 Hyltb1). }
-  claim Hyinb0: y :e b0.
-  { rewrite Hb0eq.
-    exact HyinHalf. }
+  { exact (andER (y :e b0) (y :e K_set) Hyconj). }
   claim HyinU: y :e U.
-  { exact (Hb0subU y Hyinb0). }
+  { exact (Hb0subU y Hyb0). }
   claim HynotK: y /:e K_set.
   { exact (setminusE2 (open_interval (minus_SNo 1) 1) K_set y HyinU). }
   exact (HynotK HyK).
