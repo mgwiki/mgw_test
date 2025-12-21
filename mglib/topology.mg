@@ -27917,8 +27917,152 @@ apply xm (X = Empty).
       { exact (Empty_Subq_eq U HUsub). }
       exact (HUne HUeq).
   + assume HYNonEmpty: Y <> Empty.
-    (** Nonempty X and Y: pending main connectedness argument via slices and union lemma **)
-    admit. (** pending: union proof using slice_X_connected and slice_Y_connected, with explicit emptiness cases handled above **)
+    (** Nonempty X and Y: union of connected slices with a common point **)
+    apply (nonempty_has_element X HXNonEmpty).
+    let x0. assume Hx0X: x0 :e X.
+    apply (nonempty_has_element Y HYNonEmpty).
+    let y0. assume Hy0Y: y0 :e Y.
+    set Top := product_topology X Tx Y Ty.
+    set Hhor := setprod X {y0}.
+    set F := {setprod {x} Y :\/: Hhor|x :e X}.
+
+    claim HTprod: topology_on (setprod X Y) Top.
+    { exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
+
+    (** Each member of F is a subset of X×Y **)
+    claim HFsub: forall C:set, C :e F -> C c= setprod X Y.
+    { let C. assume HC: C :e F.
+      apply (ReplE_impred X (fun x:set => setprod {x} Y :\/: Hhor) C HC).
+      let x. assume HxX: x :e X.
+      assume HCeq: C = setprod {x} Y :\/: Hhor.
+      rewrite HCeq.
+      prove (setprod {x} Y :\/: Hhor) c= setprod X Y.
+      let p. assume Hp: p :e setprod {x} Y :\/: Hhor.
+      prove p :e setprod X Y.
+      apply (binunionE' (setprod {x} Y) Hhor p (p :e setprod X Y)).
+      - assume HpA: p :e setprod {x} Y.
+        claim Hxsub: {x} c= X.
+        { exact (singleton_subset x X HxX). }
+        claim HYsub: Y c= Y.
+        { exact (Subq_ref Y). }
+        exact (setprod_Subq {x} Y X Y Hxsub HYsub p HpA).
+      - assume HpB: p :e Hhor.
+        claim HXsub: X c= X.
+        { exact (Subq_ref X). }
+        claim Hy0sub: {y0} c= Y.
+        { exact (singleton_subset y0 Y Hy0Y). }
+        exact (setprod_Subq X {y0} X Y HXsub Hy0sub p HpB).
+      - exact Hp. }
+
+    (** Each member of F is connected **)
+    claim HFconn: forall C:set, C :e F ->
+      connected_space C (subspace_topology (setprod X Y) Top C).
+    { let C. assume HC: C :e F.
+      apply (ReplE_impred X (fun x:set => setprod {x} Y :\/: Hhor) C HC).
+      let x. assume HxX: x :e X.
+      assume HCeq: C = setprod {x} Y :\/: Hhor.
+      rewrite HCeq.
+      set A := setprod {x} Y.
+      set B := Hhor.
+      claim HAconn: connected_space A (subspace_topology (setprod X Y) Top A).
+      { exact (slice_Y_connected X Tx Y Ty x HY HTx HxX). }
+      claim HBconn: connected_space B (subspace_topology (setprod X Y) Top B).
+      { exact (slice_X_connected X Tx Y Ty y0 HX HTy Hy0Y). }
+      claim HABsub: forall D:set, D :e {A,B} -> D c= setprod X Y.
+      { let D. assume HD: D :e {A,B}.
+        apply (UPairE D A B HD (D c= setprod X Y)).
+        - assume HDa: D = A. rewrite HDa.
+          claim Hxsub: {x} c= X.
+          { exact (singleton_subset x X HxX). }
+          claim HYsub: Y c= Y.
+          { exact (Subq_ref Y). }
+          exact (setprod_Subq {x} Y X Y Hxsub HYsub).
+        - assume HDb: D = B. rewrite HDb.
+          claim HXsub: X c= X.
+          { exact (Subq_ref X). }
+          claim Hy0sub: {y0} c= Y.
+          { exact (singleton_subset y0 Y Hy0Y). }
+          exact (setprod_Subq X {y0} X Y HXsub Hy0sub). }
+
+      (** Use union_connected_common_point on {A,B} with common point (x,y0) **)
+      claim HunionAB: connected_space (Union {A,B})
+        (subspace_topology (setprod X Y) Top (Union {A,B})).
+      { apply (union_connected_common_point (setprod X Y) Top {A,B} HTprod).
+        - exact HABsub.
+        - let D. assume HD: D :e {A,B}.
+          apply (UPairE D A B HD (connected_space D (subspace_topology (setprod X Y) Top D))).
+          + assume HDa: D = A. rewrite HDa. exact HAconn.
+          + assume HDb: D = B. rewrite HDb. exact HBconn.
+        - witness (x,y0).
+          let D. assume HD: D :e {A,B}.
+          apply (UPairE D A B HD ((x,y0) :e D)).
+          + assume HDa: D = A.
+            rewrite HDa.
+            exact (tuple_2_setprod {x} Y x (SingI x) y0 Hy0Y).
+          + assume HDb: D = B.
+            rewrite HDb.
+            exact (tuple_2_setprod X {y0} x HxX y0 (SingI y0)). }
+
+      (** Rewrite Union {A,B} into A :\/: B **)
+      rewrite (binunion_eq_Union_pair A B).
+      exact HunionAB. }
+
+    (** Common point for all members of F: (x0,y0) lies in the horizontal slice **)
+    claim Hcommon: exists p:set, forall C:set, C :e F -> p :e C.
+    { witness (x0,y0).
+      let C. assume HC: C :e F.
+      apply (ReplE_impred X (fun x:set => setprod {x} Y :\/: Hhor) C HC).
+      let x. assume HxX: x :e X.
+      assume HCeq: C = setprod {x} Y :\/: Hhor.
+      rewrite HCeq.
+      prove (x0,y0) :e setprod {x} Y :\/: Hhor.
+      apply binunionI2.
+      exact (tuple_2_setprod X {y0} x0 Hx0X y0 (SingI y0)). }
+
+    (** Connectedness of the union Union F **)
+    claim HconnUnion: connected_space (Union F)
+      (subspace_topology (setprod X Y) Top (Union F)).
+    { exact (union_connected_common_point (setprod X Y) Top F HTprod HFsub HFconn Hcommon). }
+
+    (** Union F is all of X×Y **)
+    claim HFpow: F c= Power (setprod X Y).
+    { let C. assume HC: C :e F.
+      prove C :e Power (setprod X Y).
+      exact (PowerI (setprod X Y) C (HFsub C HC)). }
+    claim HUnionSub: Union F c= setprod X Y.
+    { exact (Union_Power (setprod X Y) F HFpow). }
+    claim HSubUnion: setprod X Y c= Union F.
+    { let p. assume Hp: p :e setprod X Y.
+      claim Hp0X: (p 0) :e X.
+      { exact (ap0_Sigma X (fun _:set => Y) p Hp). }
+      claim Hp1Y: (p 1) :e Y.
+      { exact (ap1_Sigma X (fun _:set => Y) p Hp). }
+      set C0 := setprod {p 0} Y :\/: Hhor.
+      claim HC0F: C0 :e F.
+      { exact (ReplI X (fun x:set => setprod {x} Y :\/: Hhor) (p 0) Hp0X). }
+      prove p :e Union F.
+      apply (UnionI F p C0).
+      - prove p :e C0.
+        apply binunionI1.
+      claim Heta: p = (p 0, p 1).
+      { exact (setprod_eta X Y p Hp). }
+      rewrite Heta at 1.
+      exact (tuple_2_setprod {p 0} Y (p 0) (SingI (p 0)) (p 1) Hp1Y).
+      - exact HC0F. }
+    claim HUnionEq: Union F = setprod X Y.
+    { apply set_ext.
+      - exact HUnionSub.
+      - exact HSubUnion. }
+
+    (** Transfer connectedness from the union to X×Y, then collapse subspace topology **)
+    claim HconnAmbientSub: connected_space (setprod X Y)
+      (subspace_topology (setprod X Y) Top (setprod X Y)).
+    { rewrite <- HUnionEq.
+      exact HconnUnion. }
+    claim Hsubeq: subspace_topology (setprod X Y) Top (setprod X Y) = Top.
+    { exact (subspace_topology_whole (setprod X Y) Top HTprod). }
+    rewrite <- Hsubeq.
+    exact HconnAmbientSub.
 Qed.
 
 (** from §23 Example: product topology on R^ω is connected **) 
