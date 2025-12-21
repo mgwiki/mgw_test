@@ -32154,7 +32154,9 @@ Definition net_on : set -> prop := fun net =>
     Now: forall j:set, j :e J -> exists k0:set, k0 :e K /\
            forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
              (j :e apply_fun phi k \/ j = apply_fun phi k)
-         This is the cofinality condition: for every j ∈ J, eventually phi(k) ≥ j. **)
+         This is the cofinality condition: for every j ∈ J, eventually phi(k) ≥ j.
+    Also: subnet values are forced to land in the same space X as the original net:
+      apply_fun sub k = apply_fun net (apply_fun phi k). **)
 Definition subnet_of : set -> set -> prop := fun net sub =>
   exists J K X phi:set,
     directed_set J /\ directed_set K /\
@@ -32175,7 +32177,8 @@ Definition subnet_of : set -> set -> prop := fun net sub =>
     Was: fun X net x => ... forall U:set, x :e U -> exists i:set, ...
     Now: fun X Tx net x => ... forall U:set, U :e Tx -> x :e U ->
                                   forall j0:set, j0 :e J -> exists j:set, j :e J /\ (j0 :e j \/ j0 = j) /\ ...
-    This captures "cofinally many net points in every neighborhood". **)
+    This captures "cofinally many net points in every neighborhood".
+    Also: the net is treated as a function into the ambient space X (no extra codomain parameter). **)
 Definition accumulation_point_of_net : set -> set -> set -> set -> prop := fun X Tx net x =>
   exists J:set, topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X /\
     forall U:set, U :e Tx -> x :e U ->
