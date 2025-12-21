@@ -29308,6 +29308,276 @@ claim HG1triple: G1 c= Fam /\ finite G1 /\ Y c= Union G1.
 exact (has_finite_subcoverI Y Tx Fam G1 HG1triple).
 Qed.
 
+(** helper: separating point and compact set in Hausdorff space **)
+(** This duplicates the proof of §26 Lemma 26.4, placed here so §26 Theorem 26.3 can use it without forward references. **)
+Theorem Hausdorff_separate_point_compact_set_aux : forall X Tx Y x:set,
+  Hausdorff_space X Tx -> Y c= X -> compact_space Y (subspace_topology X Tx Y) -> x :e X -> x /:e Y ->
+  exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ Y c= V /\ U :/\: V = Empty.
+let X Tx Y x.
+assume HH: Hausdorff_space X Tx.
+assume HYsub: Y c= X.
+assume Hcomp: compact_space Y (subspace_topology X Tx Y).
+assume HxX: x :e X.
+assume Hx: x /:e Y.
+prove exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ Y c= V /\ U :/\: V = Empty.
+set Ty := subspace_topology X Tx Y.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+claim Hsep: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+  exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+{ exact (andER (topology_on X Tx)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+
+(** Choose V_y and U_y for each y in Y. **)
+set Vof := fun y:set =>
+  Eps_i (fun V:set => exists U:set, U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty).
+set Uof := fun y:set =>
+  Eps_i (fun U:set => U :e Tx /\ x :e U /\ U :/\: (Vof y) = Empty).
+
+claim Vof_exists: forall y:set, y :e Y ->
+  exists U:set, U :e Tx /\ (Vof y) :e Tx /\ x :e U /\ y :e (Vof y) /\ U :/\: (Vof y) = Empty.
+{ let y. assume HyY: y :e Y.
+  claim HyX: y :e X.
+  { exact (HYsub y HyY). }
+  claim Hneq: x <> y.
+  { assume Heq: x = y.
+    apply Hx.
+    rewrite Heq.
+    exact HyY. }
+  claim Hex: exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty.
+  { exact (Hsep x y HxX HyX Hneq). }
+  apply Hex.
+  let U0. assume HexV0: exists V0:set, U0 :e Tx /\ V0 :e Tx /\ x :e U0 /\ y :e V0 /\ U0 :/\: V0 = Empty.
+  apply HexV0.
+  let V0. assume HUV0: U0 :e Tx /\ V0 :e Tx /\ x :e U0 /\ y :e V0 /\ U0 :/\: V0 = Empty.
+  claim HpV0: exists U:set, U :e Tx /\ V0 :e Tx /\ x :e U /\ y :e V0 /\ U :/\: V0 = Empty.
+  { witness U0.
+    exact HUV0. }
+  exact (Eps_i_ax (fun V:set => exists U:set, U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty) V0 HpV0). }
+
+claim Vof_in_Tx: forall y:set, y :e Y -> (Vof y) :e Tx.
+{ let y. assume HyY: y :e Y.
+  apply (Vof_exists y HyY).
+  let U0. assume HU0: U0 :e Tx /\ (Vof y) :e Tx /\ x :e U0 /\ y :e (Vof y) /\ U0 :/\: (Vof y) = Empty.
+  (** conjunction is left-associative **)
+  claim HU0A: ((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y).
+  { exact (andEL (((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y))
+                 (U0 :/\: (Vof y) = Empty) HU0). }
+  claim HU0A1: (U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0.
+  { exact (andEL ((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) (y :e (Vof y)) HU0A). }
+  claim HU0AB: U0 :e Tx /\ (Vof y) :e Tx.
+  { exact (andEL (U0 :e Tx /\ (Vof y) :e Tx) (x :e U0) HU0A1). }
+  exact (andER (U0 :e Tx) ((Vof y) :e Tx) HU0AB). }
+
+claim y_in_Vof: forall y:set, y :e Y -> y :e (Vof y).
+{ let y. assume HyY: y :e Y.
+  apply (Vof_exists y HyY).
+  let U0. assume HU0: U0 :e Tx /\ (Vof y) :e Tx /\ x :e U0 /\ y :e (Vof y) /\ U0 :/\: (Vof y) = Empty.
+  claim HU0A: ((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y).
+  { exact (andEL (((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y))
+                 (U0 :/\: (Vof y) = Empty) HU0). }
+  exact (andER ((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) (y :e (Vof y)) HU0A). }
+
+claim Uof_props: forall y:set, y :e Y ->
+  (Uof y) :e Tx /\ x :e (Uof y) /\ (Uof y) :/\: (Vof y) = Empty.
+{ let y. assume HyY: y :e Y.
+  claim HexU: exists U0:set, U0 :e Tx /\ x :e U0 /\ U0 :/\: (Vof y) = Empty.
+  { apply (Vof_exists y HyY).
+    let U0. assume HU0: U0 :e Tx /\ (Vof y) :e Tx /\ x :e U0 /\ y :e (Vof y) /\ U0 :/\: (Vof y) = Empty.
+    witness U0.
+    claim HU0A: ((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y).
+    { exact (andEL (((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y))
+                   (U0 :/\: (Vof y) = Empty) HU0). }
+    claim HU0A1: (U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0.
+    { exact (andEL ((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) (y :e (Vof y)) HU0A). }
+    claim HU0AB: U0 :e Tx /\ (Vof y) :e Tx.
+    { exact (andEL (U0 :e Tx /\ (Vof y) :e Tx) (x :e U0) HU0A1). }
+    claim HU0Tx: U0 :e Tx.
+    { exact (andEL (U0 :e Tx) ((Vof y) :e Tx) HU0AB). }
+    claim HxU0: x :e U0.
+    { exact (andER (U0 :e Tx /\ (Vof y) :e Tx) (x :e U0) HU0A1). }
+    claim HU0disj: U0 :/\: (Vof y) = Empty.
+    { exact (andER (((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y))
+                   (U0 :/\: (Vof y) = Empty) HU0). }
+    claim HU0pair: U0 :e Tx /\ x :e U0.
+    { apply andI.
+      - exact HU0Tx.
+      - exact HxU0. }
+    exact (andI (U0 :e Tx /\ x :e U0) (U0 :/\: (Vof y) = Empty) HU0pair HU0disj). }
+  apply HexU.
+  let U0. assume HU0: U0 :e Tx /\ x :e U0 /\ U0 :/\: (Vof y) = Empty.
+  exact (Eps_i_ax (fun U:set => U :e Tx /\ x :e U /\ U :/\: (Vof y) = Empty) U0 HU0). }
+
+(** Finite open cover of Y by the ambient opens Vof y. **)
+set VFam := {Vof y|y :e Y}.
+claim HVFamSub: VFam c= Tx.
+{ let V. assume HV: V :e VFam.
+  apply (ReplE_impred Y (fun y0:set => Vof y0) V HV).
+  let y. assume HyY: y :e Y.
+  assume HVe: V = Vof y.
+  rewrite HVe.
+  exact (Vof_in_Tx y HyY). }
+claim HYcovVFam: Y c= Union VFam.
+{ let y. assume HyY: y :e Y.
+  prove y :e Union VFam.
+  exact (UnionI VFam y (Vof y) (y_in_Vof y HyY) (ReplI Y (fun y0:set => Vof y0) y HyY)). }
+
+(** Use compactness of Y in the subspace topology to obtain a finite subcover from VFam. **)
+claim Hcovprop: forall Fam:set, (Fam c= Tx /\ Y c= Union Fam) -> has_finite_subcover Y Tx Fam.
+{ exact (iffEL (compact_space Y Ty)
+               (forall Fam:set, (Fam c= Tx /\ Y c= Union Fam) -> has_finite_subcover Y Tx Fam)
+               (compact_subspace_via_ambient_covers X Tx Y HTx HYsub) Hcomp). }
+claim Hfin: has_finite_subcover Y Tx VFam.
+{ exact (Hcovprop VFam (andI (VFam c= Tx) (Y c= Union VFam) HVFamSub HYcovVFam)). }
+apply Hfin.
+let G. assume HG: G c= VFam /\ finite G /\ Y c= Union G.
+claim HGleft: G c= VFam /\ finite G.
+{ exact (andEL (G c= VFam /\ finite G) (Y c= Union G) HG). }
+claim HGsub: G c= VFam.
+{ exact (andEL (G c= VFam) (finite G) HGleft). }
+claim HGfin: finite G.
+{ exact (andER (G c= VFam) (finite G) HGleft). }
+claim HGcov: Y c= Union G.
+{ exact (andER (G c= VFam /\ finite G) (Y c= Union G) HG). }
+
+(** Build the separating open sets U and V from the finite subcover G. **)
+set V := Union G.
+claim HGTX: G c= Tx.
+{ let W. assume HW: W :e G.
+  claim HWVFam: W :e VFam.
+  { exact (HGsub W HW). }
+  exact (HVFamSub W HWVFam). }
+claim HVopen: V :e Tx.
+{ exact (topology_union_closed X Tx G HTx HGTX). }
+claim HYsubV: Y c= V.
+{ exact HGcov. }
+
+set pickY := fun V0:set => Eps_i (fun y0:set => y0 :e Y /\ V0 = Vof y0).
+set UFam := {Uof (pickY V0)|V0 :e G}.
+set U := intersection_of_family X UFam.
+
+claim HUFamSub: UFam c= Tx.
+{ let U0. assume HU0: U0 :e UFam.
+  apply (ReplE_impred G (fun V0:set => Uof (pickY V0)) U0 HU0).
+  let V0. assume HV0G: V0 :e G.
+  assume HU0eq: U0 = Uof (pickY V0).
+  rewrite HU0eq.
+  claim Hpick: pickY V0 :e Y.
+  { claim HV0VFam: V0 :e VFam.
+    { exact (HGsub V0 HV0G). }
+    apply (ReplE_impred Y (fun y0:set => Vof y0) V0 HV0VFam).
+    let y0. assume Hy0Y: y0 :e Y.
+    assume HV0eq: V0 = Vof y0.
+    claim Hp: (y0 :e Y /\ V0 = Vof y0).
+    { exact (andI (y0 :e Y) (V0 = Vof y0) Hy0Y HV0eq). }
+    exact (andEL (pickY V0 :e Y) (V0 = Vof (pickY V0))
+                 (Eps_i_ax (fun y:set => y :e Y /\ V0 = Vof y) y0 Hp)). }
+  claim HUof: (Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)) /\ (Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty.
+  { exact (Uof_props (pickY V0) Hpick). }
+  claim HUof1: (Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)).
+  { exact (andEL ((Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)))
+                 ((Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty) HUof). }
+  exact (andEL ((Uof (pickY V0)) :e Tx) (x :e (Uof (pickY V0))) HUof1). }
+
+claim HUFamFin: finite UFam.
+{ exact (Repl_finite (fun V0:set => Uof (pickY V0)) G HGfin). }
+claim HUFamPow: UFam :e Power Tx.
+{ exact (PowerI Tx UFam HUFamSub). }
+claim HUopen: U :e Tx.
+{ exact (finite_intersection_in_topology X Tx UFam HTx HUFamPow HUFamFin). }
+
+claim HxU: x :e U.
+{ prove x :e intersection_of_family X UFam.
+  prove x :e {z :e X | forall T:set, T :e UFam -> z :e T}.
+  apply SepI.
+  - exact HxX.
+  - let W. assume HW: W :e UFam.
+    apply (ReplE_impred G (fun V0:set => Uof (pickY V0)) W HW).
+    let V0. assume HV0G: V0 :e G.
+    assume HWeq: W = Uof (pickY V0).
+    rewrite HWeq.
+    claim Hpick: pickY V0 :e Y.
+    { claim HV0VFam: V0 :e VFam.
+      { exact (HGsub V0 HV0G). }
+      apply (ReplE_impred Y (fun y0:set => Vof y0) V0 HV0VFam).
+      let y0. assume Hy0Y: y0 :e Y.
+      assume HV0eq: V0 = Vof y0.
+      claim Hp: (y0 :e Y /\ V0 = Vof y0).
+      { exact (andI (y0 :e Y) (V0 = Vof y0) Hy0Y HV0eq). }
+      exact (andEL (pickY V0 :e Y) (V0 = Vof (pickY V0))
+                   (Eps_i_ax (fun y:set => y :e Y /\ V0 = Vof y) y0 Hp)). }
+    claim HUof: (Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)) /\ (Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty.
+    { exact (Uof_props (pickY V0) Hpick). }
+    claim HUof1: (Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)).
+    { exact (andEL ((Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)))
+                   ((Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty) HUof). }
+    exact (andER ((Uof (pickY V0)) :e Tx) (x :e (Uof (pickY V0))) HUof1). }
+
+claim HUVdisj: U :/\: V = Empty.
+{ apply Empty_Subq_eq.
+  let z. assume Hz: z :e U :/\: V.
+  prove False.
+  claim HzU: z :e U.
+  { exact (binintersectE1 U V z Hz). }
+  claim HzV: z :e V.
+  { exact (binintersectE2 U V z Hz). }
+  claim HzUG: z :e Union G.
+  { exact HzV. }
+  apply (UnionE_impred G z HzUG).
+  let V0. assume HzV0: z :e V0.
+  assume HV0G: V0 :e G.
+  claim HV0VFam: V0 :e VFam.
+  { exact (HGsub V0 HV0G). }
+  apply (ReplE_impred Y (fun y0:set => Vof y0) V0 HV0VFam).
+  let y0. assume Hy0Y: y0 :e Y.
+  assume HV0eq: V0 = Vof y0.
+  claim Hp: y0 :e Y /\ V0 = Vof y0.
+  { exact (andI (y0 :e Y) (V0 = Vof y0) Hy0Y HV0eq). }
+  claim HpickY: pickY V0 :e Y /\ V0 = Vof (pickY V0).
+  { exact (Eps_i_ax (fun y:set => y :e Y /\ V0 = Vof y) y0 Hp). }
+  claim Hpick: pickY V0 :e Y.
+  { exact (andEL (pickY V0 :e Y) (V0 = Vof (pickY V0)) HpickY). }
+  claim HV0rep: V0 = Vof (pickY V0).
+  { exact (andER (pickY V0 :e Y) (V0 = Vof (pickY V0)) HpickY). }
+  claim HUof: (Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)) /\ (Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty.
+  { exact (Uof_props (pickY V0) Hpick). }
+  claim HUofdisj: (Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty.
+  { exact (andER ((Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)))
+                 ((Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty) HUof). }
+  claim HzUof: z :e (Uof (pickY V0)).
+  { claim Hall: forall T:set, T :e UFam -> z :e T.
+    { exact (SepE2 X (fun z0:set => forall T:set, T :e UFam -> z0 :e T) z HzU). }
+    apply Hall.
+    exact (ReplI G (fun V1:set => Uof (pickY V1)) V0 HV0G). }
+  claim HzVof: z :e (Vof (pickY V0)).
+  { rewrite <- HV0rep at 1.
+    exact HzV0. }
+  claim HzInt: z :e (Uof (pickY V0)) :/\: (Vof (pickY V0)).
+  { exact (binintersectI (Uof (pickY V0)) (Vof (pickY V0)) z HzUof HzVof). }
+  claim HzEmpty: z :e Empty.
+  { rewrite <- HUofdisj at 1.
+    exact HzInt. }
+  exact (EmptyE z HzEmpty False). }
+
+witness U.
+witness V.
+prove U :e Tx /\ V :e Tx /\ x :e U /\ Y c= V /\ U :/\: V = Empty.
+apply andI.
+- apply andI.
+  + apply andI.
+    * apply andI.
+      - exact HUopen.
+      - exact HVopen.
+    * exact HxU.
+  + exact HYsubV.
+- exact HUVdisj.
+Qed.
+
 (** from §26 Theorem 26.3: compact subspaces of Hausdorff spaces are closed **) 
 Theorem compact_subspace_in_Hausdorff_closed : forall X Tx Y:set,
   Hausdorff_space X Tx -> Y c= X -> compact_space Y (subspace_topology X Tx Y) -> closed_in X Tx Y.
@@ -29316,8 +29586,120 @@ assume HH: Hausdorff_space X Tx.
 assume HYsub: Y c= X.
 assume Hcomp: compact_space Y (subspace_topology X Tx Y).
 prove closed_in X Tx Y.
-admit. (** for x ∉ Y, separate x from each y ∈ Y by Hausdorff; cover Y; finite subcover gives neighborhood of x disjoint from Y
-        aby: binintersect�f Hausdorff_5Fspace_def conj_myprob_9569_1_20251124_034558 In_5Fno2cycle Sing_5Ffinite prop_ext_2 finite_sets_closed_in_Hausdorff . **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+prove topology_on X Tx /\ (Y c= X /\ exists U :e Tx, Y = X :\: U).
+apply andI.
+- exact HTx.
+- prove Y c= X /\ exists U :e Tx, Y = X :\: U.
+  apply andI.
+  + exact HYsub.
+  + (** show X \\ Y is open and use double complement **)
+    witness (X :\: Y).
+    apply andI.
+    * (** X\\Y :e Tx **)
+      set UFam := {U :e Tx | exists x0:set, x0 :e X :\: Y /\ x0 :e U /\ U :/\: Y = Empty}.
+      claim HUFamSub: UFam c= Tx.
+      { let U. assume HU: U :e UFam.
+        exact (SepE1 Tx (fun U0:set => exists x0:set, x0 :e X :\: Y /\ x0 :e U0 /\ U0 :/\: Y = Empty) U HU). }
+      claim HUnionEq: Union UFam = X :\: Y.
+      { apply set_ext.
+        - let z. assume Hz: z :e Union UFam.
+          prove z :e X :\: Y.
+          apply (UnionE_impred UFam z Hz).
+          let U. assume HzU: z :e U.
+          assume HU: U :e UFam.
+          claim HUtx: U :e Tx.
+          { exact (SepE1 Tx (fun U0:set => exists x0:set, x0 :e X :\: Y /\ x0 :e U0 /\ U0 :/\: Y = Empty) U HU). }
+          claim HUsubX: U c= X.
+          { exact (topology_elem_subset X Tx U HTx HUtx). }
+          claim HzX: z :e X.
+          { exact (HUsubX z HzU). }
+          claim Hpred: exists x0:set, x0 :e X :\: Y /\ x0 :e U /\ U :/\: Y = Empty.
+          { exact (SepE2 Tx (fun U0:set => exists x0:set, x0 :e X :\: Y /\ x0 :e U0 /\ U0 :/\: Y = Empty) U HU). }
+          apply Hpred.
+          let x0. assume Hx0: x0 :e X :\: Y /\ x0 :e U /\ U :/\: Y = Empty.
+          claim HUYempty: U :/\: Y = Empty.
+          { exact (andER (x0 :e X :\: Y /\ x0 :e U) (U :/\: Y = Empty) Hx0). }
+          claim HzNotY: z /:e Y.
+          { assume HzY: z :e Y.
+            claim HzInt: z :e U :/\: Y.
+            { exact (binintersectI U Y z HzU HzY). }
+	            claim HzEmpty: z :e Empty.
+	            { rewrite <- HUYempty at 1.
+	              exact HzInt. }
+	            exact (EmptyE z HzEmpty False). }
+	          exact (setminusI X Y z HzX HzNotY).
+        - let z. assume Hz: z :e X :\: Y.
+          prove z :e Union UFam.
+          claim HzX: z :e X.
+          { exact (setminusE1 X Y z Hz). }
+          claim HzNotY: z /:e Y.
+          { exact (setminusE2 X Y z Hz). }
+          claim HexUV: exists U V:set, U :e Tx /\ V :e Tx /\ z :e U /\ Y c= V /\ U :/\: V = Empty.
+          { exact (Hausdorff_separate_point_compact_set_aux X Tx Y z HH HYsub Hcomp HzX HzNotY). }
+          apply HexUV.
+          let U. assume HexV: exists V:set, U :e Tx /\ V :e Tx /\ z :e U /\ Y c= V /\ U :/\: V = Empty.
+          apply HexV.
+          let V. assume Hconj: U :e Tx /\ V :e Tx /\ z :e U /\ Y c= V /\ U :/\: V = Empty.
+          claim HconjA: ((U :e Tx /\ V :e Tx) /\ z :e U) /\ Y c= V.
+          { exact (andEL (((U :e Tx /\ V :e Tx) /\ z :e U) /\ Y c= V) (U :/\: V = Empty) Hconj). }
+          claim HUVempty: U :/\: V = Empty.
+          { exact (andER (((U :e Tx /\ V :e Tx) /\ z :e U) /\ Y c= V) (U :/\: V = Empty) Hconj). }
+          claim HUVz: (U :e Tx /\ V :e Tx) /\ z :e U.
+          { exact (andEL ((U :e Tx /\ V :e Tx) /\ z :e U) (Y c= V) HconjA). }
+          claim HUtx: U :e Tx.
+          { exact (andEL (U :e Tx) (V :e Tx)
+                         (andEL (U :e Tx /\ V :e Tx) (z :e U) HUVz)). }
+          claim HzU: z :e U.
+          { exact (andER (U :e Tx /\ V :e Tx) (z :e U) HUVz). }
+          claim HYsubV: Y c= V.
+          { exact (andER ((U :e Tx /\ V :e Tx) /\ z :e U) (Y c= V) HconjA). }
+          (** show U /\\ Y = Empty using Y c= V and U /\\ V = Empty **)
+          claim HUYsub: U :/\: Y c= U :/\: V.
+          { let t. assume Ht: t :e U :/\: Y.
+            prove t :e U :/\: V.
+            claim HtU: t :e U.
+            { exact (binintersectE1 U Y t Ht). }
+            claim HtY: t :e Y.
+            { exact (binintersectE2 U Y t Ht). }
+            claim HtV: t :e V.
+            { exact (HYsubV t HtY). }
+            exact (binintersectI U V t HtU HtV). }
+          claim HUYempty: U :/\: Y = Empty.
+          { apply Empty_Subq_eq.
+            let t. assume Ht: t :e U :/\: Y.
+            prove False.
+            claim HtUV: t :e U :/\: V.
+            { exact (HUYsub t Ht). }
+            claim HtEmpty: t :e Empty.
+            { rewrite <- HUVempty at 1.
+              exact HtUV. }
+            exact (EmptyE t HtEmpty False). }
+          claim HzXY: z :e X :\: Y.
+          { exact (setminusI X Y z HzX HzNotY). }
+          claim HUinUFam: U :e UFam.
+          { apply (SepI Tx
+                        (fun U0:set => exists x0:set, x0 :e X :\: Y /\ x0 :e U0 /\ U0 :/\: Y = Empty)
+                        U
+                        HUtx).
+            witness z.
+            (** conjunction is left-associative **)
+            apply andI.
+            + apply andI.
+              * exact HzXY.
+              * exact HzU.
+            + exact HUYempty. }
+          exact (UnionI UFam z U HzU HUinUFam). }
+      (** Union UFam is open, hence X\\Y is open **)
+      rewrite <- HUnionEq at 1.
+      exact (topology_union_closed X Tx UFam HTx HUFamSub).
+	    * (** Y = X \\ (X \\ Y) **)
+	      symmetry.
+	      exact (setminus_setminus_eq X Y HYsub).
 Qed.
 
 (** from §26 Lemma 26.4: separating point and compact set in Hausdorff space **)
@@ -29326,16 +29708,271 @@ Qed.
     Now: x /:e Y (point x is not an element of set Y)
     The conclusion x :e U confirms x is a point, so disjointness should be x ∉ Y. **)
 Theorem Hausdorff_separate_point_compact_set : forall X Tx Y x:set,
-  Hausdorff_space X Tx -> Y c= X -> compact_space Y (subspace_topology X Tx Y) -> x /:e Y ->
+  Hausdorff_space X Tx -> Y c= X -> compact_space Y (subspace_topology X Tx Y) -> x :e X -> x /:e Y ->
   exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ Y c= V /\ U :/\: V = Empty.
 let X Tx Y x.
 assume HH: Hausdorff_space X Tx.
 assume HYsub: Y c= X.
 assume Hcomp: compact_space Y (subspace_topology X Tx Y).
+assume HxX: x :e X.
 assume Hx: x /:e Y.
 prove exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ Y c= V /\ U :/\: V = Empty.
-admit. (** for each y, separate x and y; cover Y by neighborhoods; finite subcover gives disjoint U and V
-        aby: binintersect�f conj_myprob_9576_1_20251124_034636 Hausdorff_5Fspace_def In_5Fno2cycle ordsuccI2 In_5Find EmptyAx . **)
+set Ty := subspace_topology X Tx Y.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+claim Hsep: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+  exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+{ exact (andER (topology_on X Tx)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+
+(** Choose V_y and U_y for each y in Y. **)
+set Vof := fun y:set =>
+  Eps_i (fun V:set => exists U:set, U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty).
+set Uof := fun y:set =>
+  Eps_i (fun U:set => U :e Tx /\ x :e U /\ U :/\: (Vof y) = Empty).
+
+claim Vof_exists: forall y:set, y :e Y ->
+  exists U:set, U :e Tx /\ (Vof y) :e Tx /\ x :e U /\ y :e (Vof y) /\ U :/\: (Vof y) = Empty.
+{ let y. assume HyY: y :e Y.
+  claim HyX: y :e X.
+  { exact (HYsub y HyY). }
+  claim Hneq: x <> y.
+  { assume Heq: x = y.
+    apply Hx.
+    rewrite Heq.
+    exact HyY. }
+  claim Hex: exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty.
+  { exact (Hsep x y HxX HyX Hneq). }
+  apply Hex.
+  let U0. assume HexV0: exists V0:set, U0 :e Tx /\ V0 :e Tx /\ x :e U0 /\ y :e V0 /\ U0 :/\: V0 = Empty.
+  apply HexV0.
+  let V0. assume HUV0: U0 :e Tx /\ V0 :e Tx /\ x :e U0 /\ y :e V0 /\ U0 :/\: V0 = Empty.
+  claim HpV0: exists U:set, U :e Tx /\ V0 :e Tx /\ x :e U /\ y :e V0 /\ U :/\: V0 = Empty.
+  { witness U0.
+    exact HUV0. }
+  exact (Eps_i_ax (fun V:set => exists U:set, U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty) V0 HpV0). }
+
+claim Vof_in_Tx: forall y:set, y :e Y -> (Vof y) :e Tx.
+{ let y. assume HyY: y :e Y.
+  apply (Vof_exists y HyY).
+  let U0. assume HU0: U0 :e Tx /\ (Vof y) :e Tx /\ x :e U0 /\ y :e (Vof y) /\ U0 :/\: (Vof y) = Empty.
+  (** conjunction is left-associative **)
+  claim HU0A: ((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y).
+  { exact (andEL (((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y))
+                 (U0 :/\: (Vof y) = Empty) HU0). }
+  claim HU0A1: (U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0.
+  { exact (andEL ((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) (y :e (Vof y)) HU0A). }
+  claim HU0AB: U0 :e Tx /\ (Vof y) :e Tx.
+  { exact (andEL (U0 :e Tx /\ (Vof y) :e Tx) (x :e U0) HU0A1). }
+  exact (andER (U0 :e Tx) ((Vof y) :e Tx) HU0AB). }
+
+claim y_in_Vof: forall y:set, y :e Y -> y :e (Vof y).
+{ let y. assume HyY: y :e Y.
+  apply (Vof_exists y HyY).
+  let U0. assume HU0: U0 :e Tx /\ (Vof y) :e Tx /\ x :e U0 /\ y :e (Vof y) /\ U0 :/\: (Vof y) = Empty.
+  claim HU0A: ((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y).
+  { exact (andEL (((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y))
+                 (U0 :/\: (Vof y) = Empty) HU0). }
+  exact (andER ((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) (y :e (Vof y)) HU0A). }
+
+claim Uof_props: forall y:set, y :e Y ->
+  (Uof y) :e Tx /\ x :e (Uof y) /\ (Uof y) :/\: (Vof y) = Empty.
+{ let y. assume HyY: y :e Y.
+  claim HexU: exists U0:set, U0 :e Tx /\ x :e U0 /\ U0 :/\: (Vof y) = Empty.
+  { apply (Vof_exists y HyY).
+	    let U0. assume HU0: U0 :e Tx /\ (Vof y) :e Tx /\ x :e U0 /\ y :e (Vof y) /\ U0 :/\: (Vof y) = Empty.
+	    witness U0.
+	    claim HU0A: ((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y).
+	    { exact (andEL (((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y))
+	                   (U0 :/\: (Vof y) = Empty) HU0). }
+	    claim HU0A1: (U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0.
+	    { exact (andEL ((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) (y :e (Vof y)) HU0A). }
+	    claim HU0AB: U0 :e Tx /\ (Vof y) :e Tx.
+	    { exact (andEL (U0 :e Tx /\ (Vof y) :e Tx) (x :e U0) HU0A1). }
+	    claim HU0Tx: U0 :e Tx.
+	    { exact (andEL (U0 :e Tx) ((Vof y) :e Tx) HU0AB). }
+	    claim HxU0: x :e U0.
+	    { exact (andER (U0 :e Tx /\ (Vof y) :e Tx) (x :e U0) HU0A1). }
+		    claim HU0disj: U0 :/\: (Vof y) = Empty.
+		    { exact (andER (((U0 :e Tx /\ (Vof y) :e Tx) /\ x :e U0) /\ y :e (Vof y))
+		                   (U0 :/\: (Vof y) = Empty) HU0). }
+		    claim HU0pair: U0 :e Tx /\ x :e U0.
+		    { apply andI.
+		      - exact HU0Tx.
+		      - exact HxU0. }
+		    exact (andI (U0 :e Tx /\ x :e U0) (U0 :/\: (Vof y) = Empty) HU0pair HU0disj). }
+  apply HexU.
+  let U0. assume HU0: U0 :e Tx /\ x :e U0 /\ U0 :/\: (Vof y) = Empty.
+  exact (Eps_i_ax (fun U:set => U :e Tx /\ x :e U /\ U :/\: (Vof y) = Empty) U0 HU0). }
+
+(** Finite open cover of Y by the ambient opens Vof y. **)
+set VFam := {Vof y|y :e Y}.
+claim HVFamSub: VFam c= Tx.
+{ let V. assume HV: V :e VFam.
+  apply (ReplE_impred Y (fun y0:set => Vof y0) V HV).
+  let y. assume HyY: y :e Y.
+  assume HVe: V = Vof y.
+  rewrite HVe.
+  exact (Vof_in_Tx y HyY). }
+claim HYcovVFam: Y c= Union VFam.
+{ let y. assume HyY: y :e Y.
+  prove y :e Union VFam.
+  exact (UnionI VFam y (Vof y) (y_in_Vof y HyY) (ReplI Y (fun y0:set => Vof y0) y HyY)). }
+
+(** Use compactness of Y in the subspace topology to obtain a finite subcover from VFam. **)
+claim Hcovprop: forall Fam:set, (Fam c= Tx /\ Y c= Union Fam) -> has_finite_subcover Y Tx Fam.
+{ exact (iffEL (compact_space Y Ty)
+               (forall Fam:set, (Fam c= Tx /\ Y c= Union Fam) -> has_finite_subcover Y Tx Fam)
+               (compact_subspace_via_ambient_covers X Tx Y HTx HYsub) Hcomp). }
+claim Hfin: has_finite_subcover Y Tx VFam.
+{ exact (Hcovprop VFam (andI (VFam c= Tx) (Y c= Union VFam) HVFamSub HYcovVFam)). }
+apply Hfin.
+let G. assume HG: G c= VFam /\ finite G /\ Y c= Union G.
+claim HGleft: G c= VFam /\ finite G.
+{ exact (andEL (G c= VFam /\ finite G) (Y c= Union G) HG). }
+claim HGsub: G c= VFam.
+{ exact (andEL (G c= VFam) (finite G) HGleft). }
+claim HGfin: finite G.
+{ exact (andER (G c= VFam) (finite G) HGleft). }
+claim HGcov: Y c= Union G.
+{ exact (andER (G c= VFam /\ finite G) (Y c= Union G) HG). }
+
+(** Build the separating open sets U and V from the finite subcover G. **)
+set V := Union G.
+claim HGTX: G c= Tx.
+{ let W. assume HW: W :e G.
+  claim HWVFam: W :e VFam.
+  { exact (HGsub W HW). }
+  exact (HVFamSub W HWVFam). }
+claim HVopen: V :e Tx.
+{ exact (topology_union_closed X Tx G HTx HGTX). }
+claim HYsubV: Y c= V.
+{ exact HGcov. }
+
+set pickY := fun V0:set => Eps_i (fun y0:set => y0 :e Y /\ V0 = Vof y0).
+set UFam := {Uof (pickY V0)|V0 :e G}.
+set U := intersection_of_family X UFam.
+
+claim HUFamSub: UFam c= Tx.
+{ let U0. assume HU0: U0 :e UFam.
+  apply (ReplE_impred G (fun V0:set => Uof (pickY V0)) U0 HU0).
+  let V0. assume HV0G: V0 :e G.
+  assume HU0eq: U0 = Uof (pickY V0).
+  rewrite HU0eq.
+  claim Hpick: pickY V0 :e Y.
+  { claim HV0VFam: V0 :e VFam.
+    { exact (HGsub V0 HV0G). }
+    apply (ReplE_impred Y (fun y0:set => Vof y0) V0 HV0VFam).
+    let y0. assume Hy0Y: y0 :e Y.
+    assume HV0eq: V0 = Vof y0.
+    claim Hp: (y0 :e Y /\ V0 = Vof y0).
+    { exact (andI (y0 :e Y) (V0 = Vof y0) Hy0Y HV0eq). }
+    exact (andEL (pickY V0 :e Y) (V0 = Vof (pickY V0))
+                 (Eps_i_ax (fun y:set => y :e Y /\ V0 = Vof y) y0 Hp)). }
+  claim HUof: (Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)) /\ (Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty.
+  { exact (Uof_props (pickY V0) Hpick). }
+  claim HUof1: (Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)).
+  { exact (andEL ((Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)))
+                 ((Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty) HUof). }
+  exact (andEL ((Uof (pickY V0)) :e Tx) (x :e (Uof (pickY V0))) HUof1). }
+
+claim HUFamFin: finite UFam.
+{ exact (Repl_finite (fun V0:set => Uof (pickY V0)) G HGfin). }
+claim HUFamPow: UFam :e Power Tx.
+{ exact (PowerI Tx UFam HUFamSub). }
+claim HUopen: U :e Tx.
+{ exact (finite_intersection_in_topology X Tx UFam HTx HUFamPow HUFamFin). }
+
+claim HxU: x :e U.
+{ prove x :e intersection_of_family X UFam.
+  prove x :e {z :e X | forall T:set, T :e UFam -> z :e T}.
+  apply SepI.
+  - exact HxX.
+  - let W. assume HW: W :e UFam.
+    apply (ReplE_impred G (fun V0:set => Uof (pickY V0)) W HW).
+    let V0. assume HV0G: V0 :e G.
+    assume HWeq: W = Uof (pickY V0).
+    rewrite HWeq.
+    claim Hpick: pickY V0 :e Y.
+    { claim HV0VFam: V0 :e VFam.
+      { exact (HGsub V0 HV0G). }
+      apply (ReplE_impred Y (fun y0:set => Vof y0) V0 HV0VFam).
+      let y0. assume Hy0Y: y0 :e Y.
+      assume HV0eq: V0 = Vof y0.
+      claim Hp: (y0 :e Y /\ V0 = Vof y0).
+      { exact (andI (y0 :e Y) (V0 = Vof y0) Hy0Y HV0eq). }
+      exact (andEL (pickY V0 :e Y) (V0 = Vof (pickY V0))
+                   (Eps_i_ax (fun y:set => y :e Y /\ V0 = Vof y) y0 Hp)). }
+    claim HUof: (Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)) /\ (Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty.
+    { exact (Uof_props (pickY V0) Hpick). }
+    claim HUof1: (Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)).
+    { exact (andEL ((Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)))
+                   ((Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty) HUof). }
+    exact (andER ((Uof (pickY V0)) :e Tx) (x :e (Uof (pickY V0))) HUof1). }
+
+claim HUVdisj: U :/\: V = Empty.
+{ apply Empty_Subq_eq.
+  let z. assume Hz: z :e U :/\: V.
+  prove False.
+  claim HzU: z :e U.
+  { exact (binintersectE1 U V z Hz). }
+  claim HzV: z :e V.
+  { exact (binintersectE2 U V z Hz). }
+  claim HzUG: z :e Union G.
+  { exact HzV. }
+  apply (UnionE_impred G z HzUG).
+  let V0. assume HzV0: z :e V0.
+  assume HV0G: V0 :e G.
+  claim HV0VFam: V0 :e VFam.
+  { exact (HGsub V0 HV0G). }
+  apply (ReplE_impred Y (fun y0:set => Vof y0) V0 HV0VFam).
+  let y0. assume Hy0Y: y0 :e Y.
+  assume HV0eq: V0 = Vof y0.
+  claim Hp: y0 :e Y /\ V0 = Vof y0.
+  { exact (andI (y0 :e Y) (V0 = Vof y0) Hy0Y HV0eq). }
+  claim HpickY: pickY V0 :e Y /\ V0 = Vof (pickY V0).
+  { exact (Eps_i_ax (fun y:set => y :e Y /\ V0 = Vof y) y0 Hp). }
+  claim Hpick: pickY V0 :e Y.
+  { exact (andEL (pickY V0 :e Y) (V0 = Vof (pickY V0)) HpickY). }
+  claim HV0rep: V0 = Vof (pickY V0).
+  { exact (andER (pickY V0 :e Y) (V0 = Vof (pickY V0)) HpickY). }
+  claim HUof: (Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)) /\ (Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty.
+  { exact (Uof_props (pickY V0) Hpick). }
+  claim HUofdisj: (Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty.
+  { exact (andER ((Uof (pickY V0)) :e Tx /\ x :e (Uof (pickY V0)))
+                 ((Uof (pickY V0)) :/\: (Vof (pickY V0)) = Empty) HUof). }
+  claim HzUof: z :e (Uof (pickY V0)).
+  { claim Hall: forall T:set, T :e UFam -> z :e T.
+    { exact (SepE2 X (fun z0:set => forall T:set, T :e UFam -> z0 :e T) z HzU). }
+    apply Hall.
+    exact (ReplI G (fun V1:set => Uof (pickY V1)) V0 HV0G). }
+  claim HzVof: z :e (Vof (pickY V0)).
+  { rewrite <- HV0rep at 1.
+    exact HzV0. }
+  claim HzInt: z :e (Uof (pickY V0)) :/\: (Vof (pickY V0)).
+  { exact (binintersectI (Uof (pickY V0)) (Vof (pickY V0)) z HzUof HzVof). }
+  claim HzEmpty: z :e Empty.
+  { rewrite <- HUofdisj at 1.
+    exact HzInt. }
+  exact (EmptyE z HzEmpty False). }
+
+witness U.
+witness V.
+prove U :e Tx /\ V :e Tx /\ x :e U /\ Y c= V /\ U :/\: V = Empty.
+apply andI.
+- apply andI.
+  + apply andI.
+    * apply andI.
+      - exact HUopen.
+      - exact HVopen.
+    * exact HxU.
+  + exact HYsubV.
+- exact HUVdisj.
 Qed.
 
 (** from §26 Theorem 26.5: compactness preserved under continuous maps **) 
