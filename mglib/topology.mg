@@ -25392,20 +25392,20 @@ Qed.
 Definition pair_map : set -> set -> set -> set := fun A f g =>
   {(a, (apply_fun f a, apply_fun g a)) | a :e A}.
 
-Axiom maps_into_products_axiom : forall A X Tx Y Ty f g:set,
-  continuous_map A Tx X Tx f ->
-  continuous_map A Tx Y Ty g ->
-  continuous_map A Tx (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
+Axiom maps_into_products_axiom : forall A Ta X Tx Y Ty f g:set,
+  continuous_map A Ta X Tx f ->
+  continuous_map A Ta Y Ty g ->
+  continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
 
-Theorem maps_into_products : forall A X Tx Y Ty f g:set,
-  continuous_map A Tx X Tx f ->
-  continuous_map A Tx Y Ty g ->
-  continuous_map A Tx (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
-let A X Tx Y Ty f g.
-assume Hf: continuous_map A Tx X Tx f.
-assume Hg: continuous_map A Tx Y Ty g.
-prove continuous_map A Tx (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
-exact (maps_into_products_axiom A X Tx Y Ty f g Hf Hg).
+Theorem maps_into_products : forall A Ta X Tx Y Ty f g:set,
+  continuous_map A Ta X Tx f ->
+  continuous_map A Ta Y Ty g ->
+  continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
+let A Ta X Tx Y Ty f g.
+assume Hf: continuous_map A Ta X Tx f.
+assume Hg: continuous_map A Ta Y Ty g.
+prove continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
+exact (maps_into_products_axiom A Ta X Tx Y Ty f g Hf Hg).
 Qed.
 
 (** Helper: apply_fun for pair_map **)
@@ -27664,7 +27664,7 @@ claim Hid: continuous_map X Tx X Tx idX.
 claim Hc: continuous_map X Tx Y Ty c.
 { exact (const_fun_continuous X Tx Y Ty y0 HTx HTy Hy0). }
 claim Hf: continuous_map X Tx (setprod X Y) (product_topology X Tx Y Ty) f.
-{ exact (maps_into_products X X Tx Y Ty idX c Hid Hc). }
+{ exact (maps_into_products X Tx X Tx Y Ty idX c Hid Hc). }
 claim Himg: connected_space (image_of f X)
   (subspace_topology (setprod X Y) (product_topology X Tx Y Ty) (image_of f X)).
 { exact (continuous_image_connected X Tx (setprod X Y) (product_topology X Tx Y Ty) f HX Hf). }
@@ -27737,7 +27737,30 @@ Theorem slice_Y_connected : forall X Tx Y Ty x0:set,
   connected_space Y Ty -> topology_on X Tx -> x0 :e X ->
   connected_space (setprod {x0} Y)
     (subspace_topology (setprod X Y) (product_topology X Tx Y Ty) (setprod {x0} Y)).
-admit. (** needs continuity of y mapped to (x0,y) into the product topology; current maps_into_products lemma is specialized to same-domain topology **)
+let X Tx Y Ty x0.
+assume HY: connected_space Y Ty.
+assume HTx: topology_on X Tx.
+assume Hx0: x0 :e X.
+claim HTy: topology_on Y Ty.
+{ exact (andEL (topology_on Y Ty)
+              (~(exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V))
+              HY). }
+set idY := {(y,y)|y :e Y}.
+set c := const_fun Y x0.
+set f := pair_map Y c idY.
+claim Hc: continuous_map Y Ty X Tx c.
+{ exact (const_fun_continuous Y Ty X Tx x0 HTy HTx Hx0). }
+claim Hid: continuous_map Y Ty Y Ty idY.
+{ exact (identity_continuous Y Ty HTy). }
+claim Hf: continuous_map Y Ty (setprod X Y) (product_topology X Tx Y Ty) f.
+{ exact (maps_into_products Y Ty X Tx Y Ty c idY Hc Hid). }
+claim Himg: connected_space (image_of f Y)
+  (subspace_topology (setprod X Y) (product_topology X Tx Y Ty) (image_of f Y)).
+{ exact (continuous_image_connected Y Ty (setprod X Y) (product_topology X Tx Y Ty) f HY Hf). }
+prove connected_space (setprod {x0} Y)
+    (subspace_topology (setprod X Y) (product_topology X Tx Y Ty) (setprod {x0} Y)).
+rewrite <- (image_of_const_id_is_slice Y x0).
+exact Himg.
 Qed.
 
 (** from §23 Theorem 23.6: finite products of connected spaces are connected **) 
