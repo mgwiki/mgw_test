@@ -30768,7 +30768,25 @@ apply andI.
   prove has_finite_subcover (setprod X Y) (product_topology X Tx Y Ty) Fam.
   set UFam := {U :e Tx|exists H:set, H c= Fam /\ finite H /\ setprod U Y c= Union H}.
   claim HcovUFam: open_cover_of X Tx UFam.
-  { admit. (** build for each x:eX a tube U with U×Y covered by finitely many members of Fam, using tube_lemma and compactness of Y **) }
+  { prove topology_on X Tx /\ UFam c= Power X /\ X c= Union UFam /\ (forall U:set, U :e UFam -> U :e Tx).
+    claim HUFamSubTx: UFam c= Tx.
+    { let U. assume HU: U :e UFam.
+      exact (SepE1 Tx (fun U0:set => exists H:set, H c= Fam /\ finite H /\ setprod U0 Y c= Union H) U HU). }
+    claim HTxPow: Tx c= Power X.
+    { exact (topology_subset_axiom X Tx HTx). }
+    claim HUFamPow: UFam c= Power X.
+    { let U. assume HU: U :e UFam.
+      claim HUTx: U :e Tx.
+      { exact (HUFamSubTx U HU). }
+      exact (HTxPow U HUTx). }
+    apply andI.
+    - apply andI.
+      + apply andI.
+        * exact HTx.
+        * exact HUFamPow.
+      + admit. (** for each x:eX, build U:eUFam with x:eU using tube_lemma and compactness of Y **)
+    - let U. assume HU: U :e UFam.
+      exact (HUFamSubTx U HU). }
   claim HfinUFam: has_finite_subcover X Tx UFam.
   { exact (Heine_Borel_subcover X Tx UFam HX HcovUFam). }
   apply HfinUFam.
