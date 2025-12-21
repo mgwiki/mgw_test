@@ -29976,13 +29976,16 @@ apply andI.
 Qed.
 
 (** from §26 Theorem 26.5: compactness preserved under continuous maps **) 
+Definition image_of_fun : set -> set -> set := fun f X => {apply_fun f x|x :e X}.
+
 Theorem continuous_image_compact : forall X Tx Y Ty f:set,
-  compact_space X Tx -> continuous_map X Tx Y Ty f -> compact_space Y Ty.
+  compact_space X Tx -> continuous_map X Tx Y Ty f ->
+  compact_space (image_of_fun f X) (subspace_topology Y Ty (image_of_fun f X)).
 let X Tx Y Ty f.
 assume Hcomp: compact_space X Tx.
 assume Hf: continuous_map X Tx Y Ty f.
-prove compact_space Y Ty.
-admit. (** given open cover of Y, pull back to cover of X; extract finite subcover; images cover Y **)
+prove compact_space (image_of_fun f X) (subspace_topology Y Ty (image_of_fun f X)).
+admit. (** given open cover of f(X), pull back to cover of X; extract finite subcover; images cover f(X) **)
 Qed.
 
 (** from §26: tube lemma used in product compactness **)
