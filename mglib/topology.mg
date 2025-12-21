@@ -32697,6 +32697,113 @@ Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
       exists i0:set, i0 :e J /\
         forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
 
+(** helper: convergent nets have accumulation points at the limit **)
+(** LATEX VERSION: If a net converges to x, then x is an accumulation point of the net. **)
+Theorem net_converges_implies_accumulation_point : forall X Tx net x:set,
+  net_converges X Tx net x -> accumulation_point_of_net X Tx net x.
+let X Tx net x.
+assume Hconv: net_converges X Tx net x.
+prove accumulation_point_of_net X Tx net x.
+apply Hconv.
+let J.
+assume HJ:
+  topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U ->
+      exists i0:set, i0 :e J /\
+        forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
+prove accumulation_point_of_net X Tx net x.
+prove exists J0:set, topology_on X Tx /\ directed_set J0 /\ function_on net J0 X /\ x :e X /\
+  forall U:set, U :e Tx -> x :e U ->
+    forall j0:set, j0 :e J0 ->
+      exists j:set, j :e J0 /\ (j0 :e j \/ j0 = j) /\ apply_fun net j :e U.
+witness J.
+claim Hcore:
+  topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X.
+{ exact (andEL (topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X)
+               (forall U:set, U :e Tx -> x :e U ->
+                 exists i0:set, i0 :e J /\
+                   forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U)
+               HJ). }
+claim Htail:
+  forall U:set, U :e Tx -> x :e U ->
+    exists i0:set, i0 :e J /\
+      forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
+{ exact (andER (topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X)
+               (forall U:set, U :e Tx -> x :e U ->
+                 exists i0:set, i0 :e J /\
+                   forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U)
+               HJ). }
+claim Htopdirfun:
+  topology_on X Tx /\ directed_set J /\ function_on net J X.
+{ exact (andEL (topology_on X Tx /\ directed_set J /\ function_on net J X)
+               (x :e X)
+               Hcore). }
+claim HTd: topology_on X Tx /\ directed_set J.
+{ exact (andEL (topology_on X Tx /\ directed_set J)
+               (function_on net J X)
+               Htopdirfun). }
+claim HdirJ: directed_set J.
+{ exact (andER (topology_on X Tx) (directed_set J) HTd). }
+claim HfunJ: function_on net J X.
+{ exact (andER (topology_on X Tx /\ directed_set J)
+               (function_on net J X)
+               Htopdirfun). }
+claim HxX: x :e X.
+{ exact (andER (topology_on X Tx /\ directed_set J /\ function_on net J X)
+               (x :e X)
+               Hcore). }
+prove topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X /\
+  forall U:set, U :e Tx -> x :e U ->
+    forall j0:set, j0 :e J ->
+      exists j:set, j :e J /\ (j0 :e j \/ j0 = j) /\ apply_fun net j :e U.
+apply andI.
+- exact Hcore.
+- let U.
+  assume HU: U :e Tx.
+  assume HxU: x :e U.
+  prove forall j0:set, j0 :e J ->
+    exists j:set, j :e J /\ (j0 :e j \/ j0 = j) /\ apply_fun net j :e U.
+  let j0. assume Hj0: j0 :e J.
+  claim Hexi0:
+    exists i0:set, i0 :e J /\
+      forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
+  { exact (Htail U HU HxU). }
+  apply Hexi0.
+  let i0. assume Hi0pair.
+  claim Hi0J: i0 :e J.
+  { exact (andEL (i0 :e J)
+                 (forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U)
+                 Hi0pair). }
+  claim Hi0tail:
+    forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
+  { exact (andER (i0 :e J)
+                 (forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U)
+                 Hi0pair). }
+  claim Hexk: exists k:set, k :e J /\ (i0 :e k \/ i0 = k) /\ (j0 :e k \/ j0 = k).
+  { exact (directed_set_pair_upper_bound J i0 j0 HdirJ Hi0J Hj0). }
+  apply Hexk.
+  let k. assume Hkpair.
+  claim Hkleft: k :e J /\ (i0 :e k \/ i0 = k).
+  { exact (andEL (k :e J /\ (i0 :e k \/ i0 = k))
+                 (j0 :e k \/ j0 = k)
+                 Hkpair). }
+  claim HkJ: k :e J.
+  { exact (andEL (k :e J) (i0 :e k \/ i0 = k) Hkleft). }
+  claim Hi0k: i0 :e k \/ i0 = k.
+  { exact (andER (k :e J) (i0 :e k \/ i0 = k) Hkleft). }
+  claim Hj0k: j0 :e k \/ j0 = k.
+  { exact (andER (k :e J /\ (i0 :e k \/ i0 = k))
+                 (j0 :e k \/ j0 = k)
+                 Hkpair). }
+  witness k.
+  prove (k :e J /\ (j0 :e k \/ j0 = k)) /\ apply_fun net k :e U.
+  apply andI.
+  - apply andI.
+    + exact HkJ.
+    + exact Hj0k.
+  - exact (Hi0tail k HkJ Hi0k).
+Qed.
+
 (** helper: any convergent net is a net_on **)
 (** LATEX VERSION: If a net converges, then it is a net (it has some directed index set). **)
 Theorem net_converges_implies_net_on : forall X Tx net x:set,
