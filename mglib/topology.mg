@@ -28828,6 +28828,59 @@ Definition locally_path_connected : set -> set -> prop := fun X Tx =>
     forall U:set, U :e Tx -> x :e U ->
       exists V:set, V :e Tx /\ x :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V).
 
+(** helper: under the current path axioms, every component is the whole space **)
+(** LATEX VERSION: In a connected space, the component of any point is the whole space. **)
+Theorem component_of_whole : forall X Tx x:set,
+  topology_on X Tx -> x :e X -> component_of X Tx x = X.
+let X Tx x.
+assume HTx: topology_on X Tx.
+assume HxX: x :e X.
+prove component_of X Tx x = X.
+apply set_ext.
+- let y. assume Hy: y :e component_of X Tx x.
+  prove y :e X.
+  exact (SepE1 X (fun y0:set => exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y0 :e C) y Hy).
+- let y. assume HyX: y :e X.
+  prove y :e component_of X Tx x.
+  prove y :e {y0 :e X | exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y0 :e C}.
+  apply SepI.
+  - exact HyX.
+  - claim Hpath: path_connected_space X Tx.
+    { prove topology_on X Tx /\
+        forall a b:set, a :e X -> b :e X ->
+          exists p:set, path_between X a b p /\ continuous_map unit_interval R_standard_topology X Tx p.
+      apply andI.
+      - exact HTx.
+      - let a b.
+        assume HaX: a :e X.
+        assume HbX: b :e X.
+        claim Hex: exists p:set, path_between X a b p.
+        { exact (path_between_exists X a b HaX HbX). }
+        apply Hex.
+        let p.
+        assume Hpb: path_between X a b p.
+        claim Hcont: continuous_map unit_interval R_standard_topology X Tx p.
+        { exact (path_between_is_continuous X Tx a b p HTx HaX HbX Hpb). }
+        prove exists q:set, path_between X a b q /\ continuous_map unit_interval R_standard_topology X Tx q.
+        witness p.
+        prove path_between X a b p /\ continuous_map unit_interval R_standard_topology X Tx p.
+        exact (andI (path_between X a b p) (continuous_map unit_interval R_standard_topology X Tx p) Hpb Hcont). }
+    claim Hconn: connected_space X Tx.
+    { exact (path_connected_implies_connected X Tx Hpath). }
+    claim Hsubeq: subspace_topology X Tx X = Tx.
+    { exact (subspace_topology_whole X Tx HTx). }
+    claim HconnSub: connected_space X (subspace_topology X Tx X).
+    { rewrite Hsubeq.
+      exact Hconn. }
+    prove exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y :e C.
+    witness X.
+    apply andI.
+    - apply andI.
+      + exact HconnSub.
+      + exact HxX.
+    - exact HyX.
+Qed.
+
 (** helper: under the current path axioms, every path component is the whole space **)
 (** LATEX VERSION: In a path connected space, the path component of any point is the whole space. **)
 Theorem path_component_of_whole : forall X Tx x:set,
@@ -28925,7 +28978,15 @@ assume Hlpc: locally_path_connected X Tx.
 let x.
 assume Hx: x :e X.
 prove path_component_of X Tx x = component_of X Tx x.
-admit. (** path component is connected and open; component is maximal connected; local path connectivity ensures equality **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x0:set, x0 :e X ->
+                  forall U:set, U :e Tx -> x0 :e U ->
+                    exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V))
+               Hlpc). }
+rewrite (path_component_of_whole X Tx x HTx Hx).
+rewrite (component_of_whole X Tx x HTx Hx).
+reflexivity.
 Qed.
 
 Theorem components_are_closed : forall X Tx:set,
