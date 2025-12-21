@@ -30796,9 +30796,185 @@ apply andI.
                          (forall U0:set, U0 :e Fam -> U0 :e product_topology X Tx Y Ty)
                          HFam). }
           claim HexSlice: exists H:set, H c= Fam /\ finite H /\ setprod {x} Y c= Union H.
-          { admit. (** derive from compactness of Y and the open cover Fam of X×Y, using basis refinement to get rectangles around (x,y) **)
-          }
-          apply HexSlice.
+          { (** Build an open cover of Y by second-coordinate slices coming from rectangles inside members of Fam. **)
+            claim HFamABC: (topology_on (setprod X Y) (product_topology X Tx Y Ty) /\ Fam c= Power (setprod X Y)) /\ setprod X Y c= Union Fam.
+            { exact (andEL ((topology_on (setprod X Y) (product_topology X Tx Y Ty) /\ Fam c= Power (setprod X Y)) /\ setprod X Y c= Union Fam)
+                           (forall U0:set, U0 :e Fam -> U0 :e product_topology X Tx Y Ty)
+                           HFam). }
+            claim HcovXY: setprod X Y c= Union Fam.
+            { exact (andER (topology_on (setprod X Y) (product_topology X Tx Y Ty) /\ Fam c= Power (setprod X Y))
+                           (setprod X Y c= Union Fam)
+                           HFamABC). }
+            set B := product_subbasis X Tx Y Ty.
+            claim HBasis: basis_on (setprod X Y) B.
+            { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+            set VFam := {V :e Ty|exists U0:set, U0 :e Tx /\ x :e U0 /\ exists N0:set, N0 :e Fam /\ setprod U0 V c= N0}.
+            claim HVFamSubTy: VFam c= Ty.
+            { let V. assume HV: V :e VFam.
+              exact (SepE1 Ty (fun V0:set => exists U0:set, U0 :e Tx /\ x :e U0 /\ exists N0:set, N0 :e Fam /\ setprod U0 V0 c= N0) V HV). }
+            claim HTyPow: Ty c= Power Y.
+            { exact (topology_subset_axiom Y Ty HTy). }
+            claim HVFamPow: VFam c= Power Y.
+            { let V. assume HV: V :e VFam.
+              claim HVTy: V :e Ty.
+              { exact (HVFamSubTy V HV). }
+              exact (HTyPow V HVTy). }
+            claim HYcovV: Y c= Union VFam.
+            { let y. assume Hy: y :e Y.
+              prove y :e Union VFam.
+              set p := (x,y).
+              claim HpXY: p :e setprod X Y.
+              { exact (tuple_2_setprod X Y x Hx y Hy). }
+              claim HpInUnion: p :e Union Fam.
+              { exact (HcovXY p HpXY). }
+              apply (UnionE_impred Fam p HpInUnion).
+              let N0. assume HpN0: p :e N0.
+              assume HN0Fam: N0 :e Fam.
+              claim HN0Top: N0 :e generated_topology (setprod X Y) B.
+              { exact (HFamOpen N0 HN0Fam). }
+              claim HN0refine: forall q :e N0, exists b :e B, q :e b /\ b c= N0.
+              { exact (SepE2 (Power (setprod X Y))
+                             (fun U0:set => forall q :e U0, exists b :e B, q :e b /\ b c= U0)
+                             N0 HN0Top). }
+              claim Hexb: exists b :e B, p :e b /\ b c= N0.
+              { exact (HN0refine p HpN0). }
+              apply Hexb.
+              let b. assume Hbpair.
+              claim HbB: b :e B.
+              { exact (andEL (b :e B) (p :e b /\ b c= N0) Hbpair). }
+              claim Hbprop: p :e b /\ b c= N0.
+              { exact (andER (b :e B) (p :e b /\ b c= N0) Hbpair). }
+              claim Hpb: p :e b.
+              { exact (andEL (p :e b) (b c= N0) Hbprop). }
+              claim HbsubN0: b c= N0.
+              { exact (andER (p :e b) (b c= N0) Hbprop). }
+              apply (famunionE_impred Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) b HbB).
+              let U0. assume HU0Tx: U0 :e Tx.
+              assume HbIn: b :e {rectangle_set U0 V0|V0 :e Ty}.
+              apply (ReplE_impred Ty (fun V0:set => rectangle_set U0 V0) b HbIn).
+              let V0. assume HV0Ty: V0 :e Ty.
+              assume HbEq: b = rectangle_set U0 V0.
+              claim HpUV: p :e setprod U0 V0.
+              { prove p :e rectangle_set U0 V0.
+                rewrite <- HbEq at 1.
+                exact Hpb. }
+              claim HpXY0: p :e setprod {x} {y}.
+              { exact (tuple_2_setprod {x} {y} x (SingI x) y (SingI y)). }
+              claim Hcoords: x :e U0 /\ y :e V0.
+              { exact (setprod_coords_in x y U0 V0 p HpXY0 HpUV). }
+              claim HxU0: x :e U0.
+              { exact (andEL (x :e U0) (y :e V0) Hcoords). }
+              claim HyV0: y :e V0.
+              { exact (andER (x :e U0) (y :e V0) Hcoords). }
+              claim HrectSub: setprod U0 V0 c= N0.
+              { rewrite <- HbEq at 1.
+                exact HbsubN0. }
+              claim HV0Fam: V0 :e VFam.
+              { apply (SepI Ty (fun V1:set => exists U1:set, U1 :e Tx /\ x :e U1 /\ exists N1:set, N1 :e Fam /\ setprod U1 V1 c= N1) V0 HV0Ty).
+                witness U0.
+                prove U0 :e Tx /\ x :e U0 /\ exists N1:set, N1 :e Fam /\ setprod U0 V0 c= N1.
+                apply andI.
+                - exact (andI (U0 :e Tx) (x :e U0) HU0Tx HxU0).
+                - witness N0.
+                  exact (andI (N0 :e Fam) (setprod U0 V0 c= N0) HN0Fam HrectSub). }
+              exact (UnionI VFam y V0 HyV0 HV0Fam). }
+            claim HVFamCover: open_cover_of Y Ty VFam.
+            { prove topology_on Y Ty /\ VFam c= Power Y /\ Y c= Union VFam /\ (forall U0:set, U0 :e VFam -> U0 :e Ty).
+              apply andI.
+              - apply andI.
+                + apply andI.
+                  * exact HTy.
+                  * exact HVFamPow.
+                + exact HYcovV.
+              - let V. assume HV: V :e VFam.
+                exact (HVFamSubTy V HV). }
+            claim HfinV: has_finite_subcover Y Ty VFam.
+            { exact (Heine_Borel_subcover Y Ty VFam HY HVFamCover). }
+            apply HfinV.
+            let G. assume HG: G c= VFam /\ finite G /\ Y c= Union G.
+            claim HGsub: G c= VFam.
+            { exact (andEL (G c= VFam) (finite G) (andEL (G c= VFam /\ finite G) (Y c= Union G) HG)). }
+            claim HGfin: finite G.
+            { exact (andER (G c= VFam) (finite G) (andEL (G c= VFam /\ finite G) (Y c= Union G) HG)). }
+            claim HYcovG: Y c= Union G.
+            { exact (andER (G c= VFam /\ finite G) (Y c= Union G) HG). }
+            set pickU := fun V:set => Eps_i (fun U0:set => U0 :e Tx /\ x :e U0 /\ exists N0:set, N0 :e Fam /\ setprod U0 V c= N0).
+            claim HpickU: forall V:set, V :e VFam -> pickU V :e Tx /\ x :e pickU V /\ exists N0:set, N0 :e Fam /\ setprod (pickU V) V c= N0.
+            { let V. assume HV: V :e VFam.
+              claim Hex: exists U0:set, U0 :e Tx /\ x :e U0 /\ exists N0:set, N0 :e Fam /\ setprod U0 V c= N0.
+              { exact (SepE2 Ty (fun V0:set => exists U0:set, U0 :e Tx /\ x :e U0 /\ exists N0:set, N0 :e Fam /\ setprod U0 V0 c= N0) V HV). }
+              apply Hex.
+              let U0. assume HU0: U0 :e Tx /\ x :e U0 /\ exists N0:set, N0 :e Fam /\ setprod U0 V c= N0.
+              exact (Eps_i_ax (fun U1:set => U1 :e Tx /\ x :e U1 /\ exists N0:set, N0 :e Fam /\ setprod U1 V c= N0) U0 HU0). }
+            set pickN := fun V:set => Eps_i (fun N0:set => N0 :e Fam /\ setprod (pickU V) V c= N0).
+            claim HpickN: forall V:set, V :e VFam -> pickN V :e Fam /\ setprod (pickU V) V c= pickN V.
+            { let V. assume HV: V :e VFam.
+              claim Hprop: pickU V :e Tx /\ x :e pickU V /\ exists N0:set, N0 :e Fam /\ setprod (pickU V) V c= N0.
+              { exact (HpickU V HV). }
+              claim HpropAB: pickU V :e Tx /\ x :e pickU V.
+              { exact (andEL (pickU V :e Tx /\ x :e pickU V) (exists N0:set, N0 :e Fam /\ setprod (pickU V) V c= N0) Hprop). }
+              claim HexN: exists N0:set, N0 :e Fam /\ setprod (pickU V) V c= N0.
+              { exact (andER (pickU V :e Tx /\ x :e pickU V) (exists N0:set, N0 :e Fam /\ setprod (pickU V) V c= N0) Hprop). }
+              apply HexN.
+              let N0. assume HN0: N0 :e Fam /\ setprod (pickU V) V c= N0.
+              exact (Eps_i_ax (fun N1:set => N1 :e Fam /\ setprod (pickU V) V c= N1) N0 HN0). }
+            set H := {pickN V|V :e G}.
+            witness H.
+            apply andI.
+            - apply andI.
+              + prove H c= Fam.
+                let N0. assume HN0: N0 :e H.
+                apply (ReplE_impred G (fun V0:set => pickN V0) N0 HN0).
+                let V0. assume HV0G: V0 :e G.
+                assume HN0Eq: N0 = pickN V0.
+                claim HV0Fam: V0 :e VFam.
+                { exact (HGsub V0 HV0G). }
+                claim HNprop: pickN V0 :e Fam /\ setprod (pickU V0) V0 c= pickN V0.
+                { exact (HpickN V0 HV0Fam). }
+                claim HN0Fam: pickN V0 :e Fam.
+                { exact (andEL (pickN V0 :e Fam) (setprod (pickU V0) V0 c= pickN V0) HNprop). }
+                rewrite HN0Eq.
+                exact HN0Fam.
+              + exact (Repl_finite (fun V0:set => pickN V0) G HGfin).
+            - prove setprod {x} Y c= Union H.
+              let p. assume Hp: p :e setprod {x} Y.
+              prove p :e Union H.
+                  claim Hp0: p 0 :e {x}.
+                  { exact (ap0_Sigma {x} (fun _:set => Y) p Hp). }
+                  claim Hp1: p 1 :e Y.
+                  { exact (ap1_Sigma {x} (fun _:set => Y) p Hp). }
+                  claim Hp0eq: p 0 = x.
+                  { exact (SingE x (p 0) Hp0). }
+                  claim HpEta: p = (p 0, p 1).
+                  { exact (setprod_eta {x} Y p Hp). }
+                  claim Hp1InUnion: p 1 :e Union G.
+                  { exact (HYcovG (p 1) Hp1). }
+                  apply (UnionE_impred G (p 1) Hp1InUnion).
+                  let V0. assume Hp1V0: p 1 :e V0.
+                  assume HV0G: V0 :e G.
+                  claim HV0Fam: V0 :e VFam.
+                  { exact (HGsub V0 HV0G). }
+                  claim HUN: pickU V0 :e Tx /\ x :e pickU V0 /\ exists N0:set, N0 :e Fam /\ setprod (pickU V0) V0 c= N0.
+                  { exact (HpickU V0 HV0Fam). }
+                  claim HUNAB: pickU V0 :e Tx /\ x :e pickU V0.
+                  { exact (andEL (pickU V0 :e Tx /\ x :e pickU V0) (exists N0:set, N0 :e Fam /\ setprod (pickU V0) V0 c= N0) HUN). }
+                  claim HxPick: x :e pickU V0.
+                  { exact (andER (pickU V0 :e Tx) (x :e pickU V0) HUNAB). }
+                  claim HNprop: pickN V0 :e Fam /\ setprod (pickU V0) V0 c= pickN V0.
+                  { exact (HpickN V0 HV0Fam). }
+                  claim HrectSub: setprod (pickU V0) V0 c= pickN V0.
+                  { exact (andER (pickN V0 :e Fam) (setprod (pickU V0) V0 c= pickN V0) HNprop). }
+                  claim HpInRect: (x, p 1) :e setprod (pickU V0) V0.
+                  { exact (tuple_2_setprod (pickU V0) V0 x HxPick (p 1) Hp1V0). }
+                  claim HpInN: (x, p 1) :e pickN V0.
+                  { exact (HrectSub (x, p 1) HpInRect). }
+                  claim HNinH: pickN V0 :e H.
+                  { exact (ReplI G (fun V1:set => pickN V1) V0 HV0G). }
+                  rewrite HpEta.
+                  rewrite Hp0eq at 1.
+	                  exact (UnionI H (x, p 1) (pickN V0) HpInN HNinH).
+	          }
+	          apply HexSlice.
           let H. assume HH: H c= Fam /\ finite H /\ setprod {x} Y c= Union H.
           claim HHsub: H c= Fam.
           { exact (andEL (H c= Fam) (finite H) (andEL (H c= Fam /\ finite H) (setprod {x} Y c= Union H) HH)). }
