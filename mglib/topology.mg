@@ -31971,7 +31971,7 @@ Qed.
 Theorem limit_point_compact_not_necessarily_compact :
   exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
 prove exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
-admit. (** countable discrete space is limit point compact but not compact **)
+admit. (** standard example: the first uncountable ordinal with the order topology is limit point compact but not compact **)
 Qed.
 
 (** from §29 Definition: local compactness **) 
