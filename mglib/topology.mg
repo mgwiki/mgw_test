@@ -32137,16 +32137,15 @@ Definition net_on : set -> prop := fun net =>
              (j :e apply_fun phi k \/ j = apply_fun phi k)
          This is the cofinality condition: for every j ∈ J, eventually phi(k) ≥ j. **)
 Definition subnet_of : set -> set -> prop := fun net sub =>
-  exists J X K Y phi:set,
-    directed_set J /\ function_on net J X /\
-    directed_set K /\ function_on sub K Y /\
+  exists J K X phi:set,
+    directed_set J /\ directed_set K /\
+    function_on net J X /\ function_on sub K X /\
     function_on phi K J /\
     (forall j:set, j :e J -> exists k0:set, k0 :e K /\
       forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
         (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
     (forall k:set, k :e K ->
-       exists j:set, j :e J /\ apply_fun phi k = j /\
-         apply_fun sub k = apply_fun net j).
+      apply_fun sub k = apply_fun net (apply_fun phi k)).
 
 (** from exercises after §29: accumulation point of a net **)
 (** LATEX VERSION: An accumulation point of a net means every neighborhood contains infinitely many (or cofinal) net points; placeholder formalization. **)
@@ -32159,7 +32158,7 @@ Definition subnet_of : set -> set -> prop := fun net sub =>
                                   forall j0:set, j0 :e J -> exists j:set, j :e J /\ (j0 :e j \/ j0 = j) /\ ...
     This captures "cofinally many net points in every neighborhood". **)
 Definition accumulation_point_of_net : set -> set -> set -> set -> prop := fun X Tx net x =>
-  exists J X0:set, topology_on X Tx /\ directed_set J /\ function_on net J X0 /\ x :e X /\
+  exists J:set, topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X /\
     forall U:set, U :e Tx -> x :e U ->
       forall j0:set, j0 :e J ->
         exists j:set, j :e J /\ (j0 :e j \/ j0 = j) /\ apply_fun net j :e U.
