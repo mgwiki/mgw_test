@@ -32664,6 +32664,95 @@ apply andI.
 - exact Hnetfun.
 Qed.
 
+(** helper: a net is a subnet of itself **)
+(** LATEX VERSION: Every net is a subnet of itself via the identity index map. **)
+Theorem subnet_of_refl_witnessed : forall J X net:set,
+  directed_set J -> function_on net J X -> subnet_of net net.
+let J X net.
+assume HdirJ: directed_set J.
+assume Hnetfun: function_on net J X.
+prove subnet_of net net.
+prove exists J0 K0 X0 phi:set,
+  directed_set J0 /\ directed_set K0 /\
+  function_on net J0 X0 /\ function_on net K0 X0 /\
+  function_on phi K0 J0 /\
+  (forall j:set, j :e J0 -> exists k0:set, k0 :e K0 /\
+    forall k:set, k :e K0 -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K0 ->
+    apply_fun net k = apply_fun net (apply_fun phi k)).
+witness J.
+witness J.
+witness X.
+set phi := {(y,y) | y :e J}.
+witness phi.
+prove directed_set J /\ directed_set J /\
+  function_on net J X /\ function_on net J X /\
+  function_on phi J J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e J /\
+    forall k:set, k :e J -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e J ->
+    apply_fun net k = apply_fun net (apply_fun phi k)).
+apply andI.
+- (** P: ((((directed_set /\ directed_set) /\ fun /\ fun) /\ phi_on) /\ cofinal) **)
+  apply andI.
+  + (** R: (((directed_set /\ directed_set) /\ fun /\ fun) /\ phi_on) **)
+    apply andI.
+    * (** S: ((directed_set /\ directed_set) /\ fun) /\ fun **)
+      apply andI.
+      { (** T: (directed_set /\ directed_set) /\ fun **)
+        apply andI.
+        - (** U: directed_set /\ directed_set **)
+          apply andI.
+          + exact HdirJ.
+          + exact HdirJ.
+        - exact Hnetfun. }
+      { exact Hnetfun. }
+    * (** function_on phi J J **)
+      let k. assume HkJ: k :e J.
+      prove apply_fun phi k :e J.
+      claim Hphi: apply_fun phi k = k.
+      { exact (identity_function_apply J k HkJ). }
+      rewrite Hphi.
+      exact HkJ.
+  + (** cofinality via identity **)
+    let j. assume HjJ: j :e J.
+    witness j.
+    prove j :e J /\
+      forall k:set, k :e J -> (j :e k \/ j = k) ->
+        (j :e apply_fun phi k \/ j = apply_fun phi k).
+    apply andI.
+    - exact HjJ.
+    - let k. assume HkJ: k :e J. assume Hjle: j :e k \/ j = k.
+      claim Hphi: apply_fun phi k = k.
+      { exact (identity_function_apply J k HkJ). }
+      rewrite Hphi.
+      exact Hjle.
+- (** pointwise equality net = net o phi **)
+  let k. assume HkJ: k :e J.
+  claim Hphi: apply_fun phi k = k.
+  { exact (identity_function_apply J k HkJ). }
+  rewrite Hphi.
+  reflexivity.
+Qed.
+
+(** helper: if net_on net then subnet_of net net **)
+(** LATEX VERSION: Every net admits the trivial subnet given by itself. **)
+Theorem subnet_of_refl : forall net:set, net_on net -> subnet_of net net.
+let net. assume Hnet: net_on net.
+prove subnet_of net net.
+apply Hnet.
+let J. assume Hrest: exists X:set, directed_set J /\ function_on net J X.
+apply Hrest.
+let X. assume HJX: directed_set J /\ function_on net J X.
+claim HdirJ: directed_set J.
+{ exact (andEL (directed_set J) (function_on net J X) HJX). }
+claim Hfun: function_on net J X.
+{ exact (andER (directed_set J) (function_on net J X) HJX). }
+exact (subnet_of_refl_witnessed J X net HdirJ Hfun).
+Qed.
+
 (** from exercises after §29: accumulation point of a net **)
 (** LATEX VERSION: An accumulation point of a net means every neighborhood contains infinitely many (or cofinal) net points; placeholder formalization. **)
 (** FIXED: Multiple critical errors:
