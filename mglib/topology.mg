@@ -32064,7 +32064,34 @@ assume HJ: directed_set J.
 assume HK: K c= J.
 assume Hcofinal: forall i:set, i :e J -> exists k:set, k :e K /\ (i :e k \/ i = k).
 prove directed_set K.
-admit. (** cofinal subset of directed set is directed; upper bounds in J give upper bounds in K via cofinality **)
+prove K <> Empty /\
+  forall i j:set, i :e K -> j :e K ->
+    exists k:set, k :e K /\ (i :e k \/ i = k) /\ (j :e k \/ j = k).
+apply andI.
+- (** K is nonempty **)
+  assume HK0: K = Empty.
+  prove False.
+  claim HJ0: J <> Empty.
+  { exact (andEL (J <> Empty) (forall i j:set, i :e J -> j :e J -> exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k)) HJ). }
+  claim Hexj: exists j0:set, j0 :e J.
+  { exact (nonempty_has_element J HJ0). }
+  apply Hexj.
+  let j0. assume Hj0: j0 :e J.
+  claim Hexk: exists k:set, k :e K /\ (j0 :e k \/ j0 = k).
+  { exact (Hcofinal j0 Hj0). }
+  apply Hexk.
+  let k. assume Hk: k :e K /\ (j0 :e k \/ j0 = k).
+  claim HkK: k :e K.
+  { exact (andEL (k :e K) (j0 :e k \/ j0 = k) Hk). }
+  claim HkE: k :e Empty.
+  { rewrite <- HK0. exact HkK. }
+  exact (EmptyE k HkE).
+- (** upper bound part left open for now **)
+  let i j.
+  assume HiK: i :e K.
+  assume HjK: j :e K.
+  prove exists k:set, k :e K /\ (i :e k \/ i = k) /\ (j :e k \/ j = k).
+  admit. (** needs transitivity of the underlying order; will be revisited **)
 Qed.
 
 (** from exercises after §29: nets as functions from directed sets **) 
