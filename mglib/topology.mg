@@ -30745,6 +30745,106 @@ Qed.
 Definition bounded_subset_of_reals : set -> prop := fun A =>
   exists M:set, M :e R /\ forall x:set, x :e A -> ~(Rlt M (Abs x)).
 
+(** helper: elements of omega are reals **)
+Theorem omega_in_R : forall n:set, n :e omega -> n :e R.
+let n. assume Hn: n :e omega.
+claim HnSNoS: n :e SNoS_ omega.
+{ exact (omega_SNoS_omega n Hn). }
+exact (SNoS_omega_real n HnSNoS).
+Qed.
+
+(** helper: successors of naturals are reals **)
+Theorem ordsucc_in_R : forall n:set, n :e omega -> ordsucc n :e R.
+let n. assume Hn: n :e omega.
+exact (omega_in_R (ordsucc n) (omega_ordsucc n Hn)).
+Qed.
+
+(** helper: an interval around 0 bounds Abs **)
+Theorem interval_bounds_Abs : forall M x:set,
+  M :e R -> x :e R ->
+  Rlt (minus_SNo M) x -> Rlt x M ->
+  ~(Rlt M (Abs x)).
+let M x.
+assume HM: M :e R.
+assume HxR: x :e R.
+assume Hlx: Rlt (minus_SNo M) x.
+assume HxM: Rlt x M.
+assume HMAbs: Rlt M (Abs x).
+claim HAbsR: Abs x :e R.
+{ exact (RltE_right M (Abs x) HMAbs). }
+claim HxS: SNo x.
+{ exact (real_SNo x HxR). }
+apply (SNoLt_trichotomy_or_impred x 0 HxS SNo_0 False).
+- assume Hxlt0: x < 0.
+  claim Habseq: Abs x = minus_SNo x.
+  { exact (neg_abs_SNo x HxS Hxlt0). }
+  claim HMltAbs: M < Abs x.
+  { exact (RltE_lt M (Abs x) HMAbs). }
+  claim HMltnegx: M < minus_SNo x.
+  { rewrite <- Habseq.
+    exact HMltAbs. }
+  claim Hlxs: minus_SNo M < x.
+  { exact (RltE_lt (minus_SNo M) x Hlx). }
+  claim HmR: minus_SNo M :e R.
+  { exact (real_minus_SNo M HM). }
+  claim HmS: SNo (minus_SNo M).
+  { exact (real_SNo (minus_SNo M) HmR). }
+  claim Hnegxlt: minus_SNo x < minus_SNo (minus_SNo M).
+  { exact (minus_SNo_Lt_contra (minus_SNo M) x HmS HxS Hlxs). }
+  claim Hminv: minus_SNo (minus_SNo M) = M.
+  { exact (minus_SNo_invol M (real_SNo M HM)). }
+  claim HnegxltM: minus_SNo x < M.
+  { rewrite <- Hminv.
+    exact Hnegxlt. }
+  claim HAbsltM: Abs x < M.
+  { rewrite Habseq at 1.
+    exact HnegxltM. }
+  claim HRltAbsM: Rlt (Abs x) M.
+  { exact (RltI (Abs x) M HAbsR HM HAbsltM). }
+  claim HMM: Rlt M M.
+  { exact (Rlt_tra M (Abs x) M HMAbs HRltAbsM). }
+  exact ((not_Rlt_refl M HM) HMM).
+- assume Hxeq0: x = 0.
+  claim H0le0: 0 <= 0.
+  { apply (SNoLtLe_or 0 0 SNo_0 SNo_0 (0 <= 0)).
+    - assume H00: 0 < 0.
+      exact (SNoLtLe 0 0 H00).
+    - assume H. exact H. }
+  claim Habseq: Abs 0 = 0.
+  { exact (nonneg_abs_SNo 0 H0le0). }
+  claim Hx0M: Rlt 0 M.
+  { rewrite <- Hxeq0.
+    exact HxM. }
+  claim HMlt0: Rlt M 0.
+  { claim HAbsx0: Abs x = 0.
+    { rewrite Hxeq0 at 1.
+      exact Habseq. }
+    rewrite <- HAbsx0.
+    exact HMAbs. }
+  claim HMM: Rlt M M.
+  { exact (Rlt_tra M 0 M HMlt0 Hx0M). }
+  exact ((not_Rlt_refl M HM) HMM).
+- assume H0ltx: 0 < x.
+  claim H0lex: 0 <= x.
+  { exact (SNoLtLe 0 x H0ltx). }
+  claim Habseq: Abs x = x.
+  { exact (nonneg_abs_SNo x H0lex). }
+  claim HMltAbs: M < Abs x.
+  { exact (RltE_lt M (Abs x) HMAbs). }
+  claim HMltx: M < x.
+  { rewrite <- Habseq.
+    exact HMltAbs. }
+  claim HxltM: x < M.
+  { exact (RltE_lt x M HxM). }
+  claim HRltMx: Rlt M x.
+  { exact (RltI M x HM HxR HMltx). }
+  claim HRltxM: Rlt x M.
+  { exact HxM. }
+  claim HMM: Rlt M M.
+  { exact (Rlt_tra M x M HRltMx HRltxM). }
+  exact ((not_Rlt_refl M HM) HMM).
+Qed.
+
 (** from §26 Theorem 26.7: finite products of compact spaces are compact **) 
 (** LATEX VERSION: Finite product of compact spaces is compact. **)
 Theorem finite_product_compact : forall X Tx Y Ty:set,
@@ -31178,7 +31278,372 @@ assume Hcomp: compact_space A (subspace_topology R R_standard_topology A).
 prove closed_in R R_standard_topology A /\ bounded_subset_of_reals A.
 apply andI.
 - exact (compact_subspace_in_Hausdorff_closed R R_standard_topology A R_standard_topology_Hausdorff HA Hcomp).
-- admit. (** boundedness: cover A by the open family {x:eR | Abs x < n} and use compactness to pick a uniform bound **)
+- (** boundedness **)
+	  apply (xm (A = Empty)).
+	  + assume HA0: A = Empty.
+	    prove exists M:set, M :e R /\ forall x:set, x :e A -> ~(Rlt M (Abs x)).
+	    witness 0.
+	    apply andI.
+	    * exact real_0.
+	    * let x. assume HxA: x :e A.
+	      prove ~(Rlt 0 (Abs x)).
+	      assume H.
+	      claim HxE: x :e Empty.
+	      { rewrite <- HA0.
+	        exact HxA. }
+	      exact (EmptyE x HxE).
+	  + assume HAne: ~(A = Empty).
+	    prove exists M:set, M :e R /\ forall x:set, x :e A -> ~(Rlt M (Abs x)).
+	    claim HTtop: topology_on R R_standard_topology.
+	    { exact R_standard_topology_is_topology_local. }
+    claim Hiff:
+      compact_space A (subspace_topology R R_standard_topology A) <->
+        forall Fam:set, (Fam c= R_standard_topology /\ A c= Union Fam) ->
+          has_finite_subcover A R_standard_topology Fam.
+    { exact (compact_subspace_via_ambient_covers R R_standard_topology A HTtop HA). }
+    claim Hcovprop:
+      forall Fam:set, (Fam c= R_standard_topology /\ A c= Union Fam) ->
+        has_finite_subcover A R_standard_topology Fam.
+    { exact (iffEL (compact_space A (subspace_topology R R_standard_topology A))
+                   (forall Fam:set, (Fam c= R_standard_topology /\ A c= Union Fam) ->
+                      has_finite_subcover A R_standard_topology Fam)
+                   Hiff Hcomp). }
+    set f := fun n:set => open_interval (minus_SNo (ordsucc n)) (ordsucc n).
+    set Fam0 := {f n|n :e omega}.
+    claim HFam0sub: Fam0 c= R_standard_topology.
+    { let U. assume HU: U :e Fam0.
+      apply (ReplE_impred omega (fun n0:set => f n0) U HU (U :e R_standard_topology)).
+      let n0. assume Hn0: n0 :e omega.
+      assume Heq: U = f n0.
+      rewrite Heq.
+      prove f n0 :e R_standard_topology.
+      claim Hbasis: basis_on R R_standard_basis.
+      { exact R_standard_basis_is_basis_local. }
+      claim Hn0s: ordsucc n0 :e R.
+      { exact (ordsucc_in_R n0 Hn0). }
+      claim Hmn0R: minus_SNo (ordsucc n0) :e R.
+      { exact (real_minus_SNo (ordsucc n0) Hn0s). }
+      claim HfInBasis: f n0 :e R_standard_basis.
+      { set a := minus_SNo (ordsucc n0).
+        set b := ordsucc n0.
+        claim HaR: a :e R.
+        { exact Hmn0R. }
+        claim HbR: b :e R.
+        { exact Hn0s. }
+        claim Hinner: open_interval a b :e {open_interval a bb|bb :e R}.
+        { exact (ReplI R (fun bb:set => open_interval a bb) b HbR). }
+        exact (famunionI R (fun aa:set => {open_interval aa bb|bb :e R}) a (open_interval a b) HaR Hinner). }
+      exact (basis_in_generated R R_standard_basis (f n0) Hbasis HfInBasis). }
+    claim HAcover: A c= Union Fam0.
+    { let x. assume HxA: x :e A.
+      prove x :e Union Fam0.
+      claim HxR: x :e R.
+      { exact (HA x HxA). }
+      (** Find an index n with x in f n. **)
+      claim Hup: exists N:set, N :e omega /\ x < N.
+      { apply (real_E x HxR (exists N:set, N :e omega /\ x < N)).
+        assume HxS: SNo x.
+        assume Hlev: SNoLev x :e ordsucc omega.
+        assume HxSNoS: x :e SNoS_ (ordsucc omega).
+        assume HmOmLt: minus_SNo omega < x.
+        assume HxLtOm: x < omega.
+        assume Huniq.
+        assume Happrox.
+        exact (SNoS_ordsucc_omega_bdd_above x HxSNoS HxLtOm). }
+      claim Hlow: exists N:set, N :e omega /\ minus_SNo N < x.
+      { apply (real_E x HxR (exists N:set, N :e omega /\ minus_SNo N < x)).
+        assume HxS: SNo x.
+        assume Hlev: SNoLev x :e ordsucc omega.
+        assume HxSNoS: x :e SNoS_ (ordsucc omega).
+        assume HmOmLt: minus_SNo omega < x.
+        assume HxLtOm: x < omega.
+        assume Huniq.
+        assume Happrox.
+        exact (SNoS_ordsucc_omega_bdd_below x HxSNoS HmOmLt). }
+      apply Hup.
+      let Nup. assume Hupconj.
+      claim HNup: Nup :e omega.
+      { exact (andEL (Nup :e omega) (x < Nup) Hupconj). }
+      claim HxNup: x < Nup.
+      { exact (andER (Nup :e omega) (x < Nup) Hupconj). }
+      apply Hlow.
+      let Nlow. assume Hlowconj.
+      claim HNlow: Nlow :e omega.
+      { exact (andEL (Nlow :e omega) (minus_SNo Nlow < x) Hlowconj). }
+      claim HNlowx: minus_SNo Nlow < x.
+      { exact (andER (Nlow :e omega) (minus_SNo Nlow < x) Hlowconj). }
+      set n := Nup :\/: Nlow.
+      claim HnO: n :e omega.
+      { exact (omega_binunion Nup Nlow HNup HNlow). }
+      claim Hordomega: ordinal omega.
+      { exact omega_ordinal. }
+      claim HordNup: ordinal Nup.
+      { exact (ordinal_Hered omega Hordomega Nup HNup). }
+      claim HordNlow: ordinal Nlow.
+      { exact (ordinal_Hered omega Hordomega Nlow HNlow). }
+      claim Hordn: ordinal n.
+      { exact (ordinal_Hered omega Hordomega n HnO). }
+      claim HNupSub: Nup c= n.
+      { let t. assume Ht: t :e Nup.
+        exact (binunionI1 Nup Nlow t Ht). }
+      claim HNlowSub: Nlow c= n.
+      { let t. assume Ht: t :e Nlow.
+        exact (binunionI2 Nup Nlow t Ht). }
+      claim HNupLe: Nup <= n.
+      { exact (ordinal_Subq_SNoLe Nup n HordNup Hordn HNupSub). }
+      claim HNlowLe: Nlow <= n.
+      { exact (ordinal_Subq_SNoLe Nlow n HordNlow Hordn HNlowSub). }
+      claim HxS: SNo x.
+      { exact (real_SNo x HxR). }
+      claim HNupS: SNo Nup.
+      { exact (omega_SNo Nup HNup). }
+      claim HnS: SNo n.
+      { exact (omega_SNo n HnO). }
+      claim Hxlt_n: x < n.
+      { exact (SNoLtLe_tra x Nup n HxS HNupS HnS HxNup HNupLe). }
+      claim Hn_in_ordsucc: n :e ordsucc n.
+      { exact (ordsuccI2 n). }
+      claim Hord_ordsucc: ordinal (ordsucc n).
+      { exact (ordinal_ordsucc n Hordn). }
+      claim Hnlt_ordsucc: n < ordsucc n.
+      { exact (ordinal_In_SNoLt (ordsucc n) Hord_ordsucc n Hn_in_ordsucc). }
+      claim HordS: SNo (ordsucc n).
+      { exact (omega_SNo (ordsucc n) (omega_ordsucc n HnO)). }
+      claim Hxlt_ordsucc: x < ordsucc n.
+      { exact (SNoLt_tra x n (ordsucc n) HxS HnS HordS Hxlt_n Hnlt_ordsucc). }
+      (** Lower bound: - ordsucc n < x. **)
+      claim HNlowS: SNo Nlow.
+      { exact (omega_SNo Nlow HNlow). }
+      claim Hneg_nS: SNo (minus_SNo n).
+      { exact (SNo_minus_SNo n HnS). }
+      claim Hneg_NlowS: SNo (minus_SNo Nlow).
+      { exact (SNo_minus_SNo Nlow HNlowS). }
+      claim Hle_neg: minus_SNo n <= minus_SNo Nlow.
+      { exact (minus_SNo_Le_contra Nlow n HNlowS HnS HNlowLe). }
+      claim Hneglow_lt_x: minus_SNo Nlow < x.
+      { exact HNlowx. }
+      claim Hneg_n_lt_x: minus_SNo n < x.
+      { exact (SNoLeLt_tra (minus_SNo n) (minus_SNo Nlow) x Hneg_nS Hneg_NlowS HxS Hle_neg Hneglow_lt_x). }
+      claim Hnlt_ordsucc_neg: minus_SNo (ordsucc n) < minus_SNo n.
+      { exact (minus_SNo_Lt_contra n (ordsucc n) HnS HordS Hnlt_ordsucc). }
+      claim Hneg_ordsucc_lt_x: minus_SNo (ordsucc n) < x.
+      { exact (SNoLt_tra (minus_SNo (ordsucc n)) (minus_SNo n) x
+                         (SNo_minus_SNo (ordsucc n) HordS)
+                         Hneg_nS
+                         HxS
+                         Hnlt_ordsucc_neg
+                         Hneg_n_lt_x). }
+      (** Now x is in the open interval. **)
+      claim HordsuccR: ordsucc n :e R.
+      { exact (ordsucc_in_R n HnO). }
+      claim HnegordsuccR: minus_SNo (ordsucc n) :e R.
+      { exact (real_minus_SNo (ordsucc n) HordsuccR). }
+      claim HRltL: Rlt (minus_SNo (ordsucc n)) x.
+      { exact (RltI (minus_SNo (ordsucc n)) x HnegordsuccR HxR Hneg_ordsucc_lt_x). }
+      claim HRltR: Rlt x (ordsucc n).
+      { exact (RltI x (ordsucc n) HxR HordsuccR Hxlt_ordsucc). }
+      claim HxIn: x :e f n.
+      { exact (SepI R (fun x0:set => Rlt (minus_SNo (ordsucc n)) x0 /\ Rlt x0 (ordsucc n))
+                   x HxR (andI (Rlt (minus_SNo (ordsucc n)) x) (Rlt x (ordsucc n)) HRltL HRltR)). }
+      claim HfnFam: f n :e Fam0.
+      { exact (ReplI omega (fun n0:set => f n0) n HnO). }
+      exact (UnionI Fam0 x (f n) HxIn HfnFam). }
+    claim Hfincover: has_finite_subcover A R_standard_topology Fam0.
+    { exact (Hcovprop Fam0 (andI (Fam0 c= R_standard_topology) (A c= Union Fam0) HFam0sub HAcover)). }
+    apply Hfincover.
+    let G. assume HGtriple.
+    claim HGsub: G c= Fam0.
+    { exact (andEL (G c= Fam0) (finite G) (andEL (G c= Fam0 /\ finite G) (A c= Union G) HGtriple)). }
+    claim HGfin: finite G.
+    { exact (andER (G c= Fam0) (finite G) (andEL (G c= Fam0 /\ finite G) (A c= Union G) HGtriple)). }
+    claim HAcovG: A c= Union G.
+    { exact (andER (G c= Fam0 /\ finite G) (A c= Union G) HGtriple). }
+    set pickN := fun U:set => Eps_i (fun n0:set => n0 :e omega /\ U = f n0).
+    set Nset := {pickN U|U :e G}.
+    claim HNsetFin: finite Nset.
+    { exact (Repl_finite (fun U0:set => pickN U0) G HGfin). }
+    claim HexA: exists x:set, x :e A.
+    { exact (nonempty_has_element A HAne). }
+    apply HexA.
+    let x0. assume Hx0A: x0 :e A.
+    claim Hx0UG: x0 :e Union G.
+    { exact (HAcovG x0 Hx0A). }
+    claim HexU0: exists U0:set, x0 :e U0 /\ U0 :e G.
+    { exact (iffEL (x0 :e Union G)
+                   (exists Y:set, x0 :e Y /\ Y :e G)
+                   (UnionEq G x0) Hx0UG). }
+    apply HexU0.
+    let U0. assume HU0conj.
+    claim HU0G: U0 :e G.
+    { exact (andER (x0 :e U0) (U0 :e G) HU0conj). }
+    claim HU0Fam0: U0 :e Fam0.
+    { exact (HGsub U0 HU0G). }
+    claim Hexn0: exists n0:set, n0 :e omega /\ U0 = f n0.
+    { exact (ReplE omega (fun n0:set => f n0) U0 HU0Fam0). }
+    claim HpickU0: pickN U0 :e omega /\ U0 = f (pickN U0).
+    { exact (Eps_i_ex (fun n0:set => n0 :e omega /\ U0 = f n0) Hexn0). }
+    claim HpickU0O: pickN U0 :e omega.
+    { exact (andEL (pickN U0 :e omega) (U0 = f (pickN U0)) HpickU0). }
+    claim HNsetNe: Nset <> Empty.
+    { apply (elem_implies_nonempty Nset (pickN U0)).
+      exact (ReplI G (fun U:set => pickN U) U0 HU0G). }
+    claim HAllSNo: forall y :e Nset, SNo y.
+    { let y. assume Hy: y :e Nset.
+      apply (ReplE_impred G (fun U:set => pickN U) y Hy (SNo y)).
+      let U. assume HU: U :e G.
+      assume Hey: y = pickN U.
+      rewrite Hey.
+      claim HUfam: U :e Fam0.
+      { exact (HGsub U HU). }
+      claim Hexn: exists n0:set, n0 :e omega /\ U = f n0.
+      { exact (ReplE omega (fun n0:set => f n0) U HUfam). }
+      claim Hpick: pickN U :e omega /\ U = f (pickN U).
+      { exact (Eps_i_ex (fun n0:set => n0 :e omega /\ U = f n0) Hexn). }
+      claim HpickO: pickN U :e omega.
+      { exact (andEL (pickN U :e omega) (U = f (pickN U)) Hpick). }
+      exact (omega_SNo (pickN U) HpickO). }
+    claim Hexmax: exists nmax:set, SNo_max_of Nset nmax.
+    { exact (finite_max_exists Nset (fun y Hy => HAllSNo y Hy) HNsetFin HNsetNe). }
+    apply Hexmax.
+    let nmax. assume Hmax.
+    claim HnmaxIn: nmax :e Nset.
+    { exact (andEL (nmax :e Nset) (SNo nmax) (andEL (nmax :e Nset /\ SNo nmax) (forall y :e Nset, SNo y -> y <= nmax) Hmax)). }
+    claim HnmaxS: SNo nmax.
+    { exact (andER (nmax :e Nset) (SNo nmax) (andEL (nmax :e Nset /\ SNo nmax) (forall y :e Nset, SNo y -> y <= nmax) Hmax)). }
+    claim Hmaxprop: forall y :e Nset, SNo y -> y <= nmax.
+    { exact (andER (nmax :e Nset /\ SNo nmax) (forall y :e Nset, SNo y -> y <= nmax) Hmax). }
+    (** The bound is M = ordsucc nmax. **)
+    set M := ordsucc nmax.
+    witness M.
+    apply andI.
+    * claim HnmaxO: nmax :e omega.
+      { apply (ReplE_impred G (fun U:set => pickN U) nmax HnmaxIn (nmax :e omega)).
+        let U. assume HU: U :e G.
+        assume Heq: nmax = pickN U.
+        rewrite Heq.
+        claim HUfam: U :e Fam0.
+        { exact (HGsub U HU). }
+        claim Hexn: exists n0:set, n0 :e omega /\ U = f n0.
+        { exact (ReplE omega (fun n0:set => f n0) U HUfam). }
+        claim Hpick: pickN U :e omega /\ U = f (pickN U).
+        { exact (Eps_i_ex (fun n0:set => n0 :e omega /\ U = f n0) Hexn). }
+        exact (andEL (pickN U :e omega) (U = f (pickN U)) Hpick). }
+      exact (ordsucc_in_R nmax HnmaxO).
+    * let x. assume HxA: x :e A.
+      prove ~(Rlt M (Abs x)).
+      claim HxUG: x :e Union G.
+      { exact (HAcovG x HxA). }
+      (** Use UnionEq via iff to extract a witness. **)
+      claim HexU: exists U:set, x :e U /\ U :e G.
+      { exact (iffEL (x :e Union G) (exists Y:set, x :e Y /\ Y :e G) (UnionEq G x) HxUG). }
+      apply HexU.
+      let U. assume HUconj.
+      claim HUinG: U :e G.
+      { exact (andER (x :e U) (U :e G) HUconj). }
+      claim HxU: x :e U.
+      { exact (andEL (x :e U) (U :e G) HUconj). }
+      claim HUfam: U :e Fam0.
+      { exact (HGsub U HUinG). }
+      claim Hexn: exists n0:set, n0 :e omega /\ U = f n0.
+      { exact (ReplE omega (fun n0:set => f n0) U HUfam). }
+      claim Hpick: pickN U :e omega /\ U = f (pickN U).
+      { exact (Eps_i_ex (fun n0:set => n0 :e omega /\ U = f n0) Hexn). }
+      claim HnU: pickN U :e omega.
+      { exact (andEL (pickN U :e omega) (U = f (pickN U)) Hpick). }
+      claim HUeq: U = f (pickN U).
+      { exact (andER (pickN U :e omega) (U = f (pickN U)) Hpick). }
+      claim HNin: pickN U :e Nset.
+      { exact (ReplI G (fun U0:set => pickN U0) U HUinG). }
+      claim HNle: pickN U <= nmax.
+      { exact (Hmaxprop (pickN U) HNin (omega_SNo (pickN U) HnU)). }
+      claim HordsuccLe: ordsucc (pickN U) <= M.
+      { (** use n<=nmax implies n+1 <= nmax+1 **)
+        claim HnU_S: SNo (pickN U).
+        { exact (omega_SNo (pickN U) HnU). }
+        claim HnmaxO: nmax :e omega.
+        { apply (ReplE_impred G (fun U0:set => pickN U0) nmax HnmaxIn (nmax :e omega)).
+          let U1. assume HU1: U1 :e G.
+          assume Heq: nmax = pickN U1.
+          rewrite Heq.
+          claim HU1fam: U1 :e Fam0.
+          { exact (HGsub U1 HU1). }
+          claim Hexn1: exists n0:set, n0 :e omega /\ U1 = f n0.
+          { exact (ReplE omega (fun n0:set => f n0) U1 HU1fam). }
+          claim Hpick1: pickN U1 :e omega /\ U1 = f (pickN U1).
+          { exact (Eps_i_ex (fun n0:set => n0 :e omega /\ U1 = f n0) Hexn1). }
+          exact (andEL (pickN U1 :e omega) (U1 = f (pickN U1)) Hpick1). }
+        claim Hnmax_S: SNo nmax.
+        { exact (omega_SNo nmax HnmaxO). }
+        claim H1S: SNo 1.
+        { exact SNo_1. }
+        claim Hadd: add_SNo (pickN U) 1 <= add_SNo nmax 1.
+        { exact (add_SNo_Le1 (pickN U) 1 nmax HnU_S H1S Hnmax_S HNle). }
+        claim Hm1: add_SNo (pickN U) 1 = ordsucc (pickN U).
+        { exact (add_SNo_1_ordsucc (pickN U) HnU). }
+        claim Hm2: add_SNo nmax 1 = ordsucc nmax.
+        { exact (add_SNo_1_ordsucc nmax HnmaxO). }
+        rewrite <- Hm1.
+        rewrite <- Hm2.
+        exact Hadd. }
+      claim HxUfn: x :e f (pickN U).
+      { rewrite <- HUeq.
+        exact HxU. }
+      claim HxR: x :e R.
+      { exact (HA x HxA). }
+      claim Hxconj: Rlt (minus_SNo (ordsucc (pickN U))) x /\ Rlt x (ordsucc (pickN U)).
+      { exact (SepE2 R (fun x0:set => Rlt (minus_SNo (ordsucc (pickN U))) x0 /\ Rlt x0 (ordsucc (pickN U))) x HxUfn). }
+      claim HxL: Rlt (minus_SNo (ordsucc (pickN U))) x.
+      { exact (andEL (Rlt (minus_SNo (ordsucc (pickN U))) x) (Rlt x (ordsucc (pickN U))) Hxconj). }
+      claim HxRgt: Rlt x (ordsucc (pickN U)).
+      { exact (andER (Rlt (minus_SNo (ordsucc (pickN U))) x) (Rlt x (ordsucc (pickN U))) Hxconj). }
+      (** Strengthen bounds to M. **)
+      (** Use interval_bounds_Abs with endpoints -M and M. **)
+      claim HNsetSubOmega: Nset c= omega.
+      { let y. assume Hy: y :e Nset.
+        apply (ReplE_impred G (fun U0:set => pickN U0) y Hy (y :e omega)).
+        let U0. assume HU0: U0 :e G.
+        assume Hey: y = pickN U0.
+        rewrite Hey.
+        claim HU0fam: U0 :e Fam0.
+        { exact (HGsub U0 HU0). }
+        claim Hexn0: exists n0:set, n0 :e omega /\ U0 = f n0.
+        { exact (ReplE omega (fun n0:set => f n0) U0 HU0fam). }
+        claim Hpick0: pickN U0 :e omega /\ U0 = f (pickN U0).
+        { exact (Eps_i_ex (fun n0:set => n0 :e omega /\ U0 = f n0) Hexn0). }
+        exact (andEL (pickN U0 :e omega) (U0 = f (pickN U0)) Hpick0). }
+      claim HnmaxO: nmax :e omega.
+      { exact (HNsetSubOmega nmax HnmaxIn). }
+      claim HM: M :e R.
+      { exact (ordsucc_in_R nmax HnmaxO). }
+      claim HxS: SNo x.
+      { exact (real_SNo x HxR). }
+      claim HM_S: SNo M.
+      { exact (real_SNo M HM). }
+      claim HmU: ordsucc (pickN U) :e R.
+      { exact (ordsucc_in_R (pickN U) HnU). }
+      claim HmU_S: SNo (ordsucc (pickN U)).
+      { exact (omega_SNo (ordsucc (pickN U)) (omega_ordsucc (pickN U) HnU)). }
+      claim HxltmU: x < ordsucc (pickN U).
+      { exact (RltE_lt x (ordsucc (pickN U)) HxRgt). }
+      claim HxltM: x < M.
+      { exact (SNoLtLe_tra x (ordsucc (pickN U)) M HxS HmU_S HM_S HxltmU HordsuccLe). }
+      claim HRltxM: Rlt x M.
+      { exact (RltI x M HxR HM HxltM). }
+      claim HnegM_R: minus_SNo M :e R.
+      { exact (real_minus_SNo M HM). }
+      claim HnegM_S: SNo (minus_SNo M).
+      { exact (SNo_minus_SNo M HM_S). }
+      claim HnegmU_S: SNo (minus_SNo (ordsucc (pickN U))).
+      { exact (SNo_minus_SNo (ordsucc (pickN U)) HmU_S). }
+      claim Hxgt_negmU: minus_SNo (ordsucc (pickN U)) < x.
+      { exact (RltE_lt (minus_SNo (ordsucc (pickN U))) x HxL). }
+      claim Hle_neg: minus_SNo M <= minus_SNo (ordsucc (pickN U)).
+      { exact (minus_SNo_Le_contra (ordsucc (pickN U)) M HmU_S HM_S HordsuccLe). }
+      claim HnegM_lt_x: minus_SNo M < x.
+      { exact (SNoLeLt_tra (minus_SNo M) (minus_SNo (ordsucc (pickN U))) x HnegM_S HnegmU_S HxS Hle_neg Hxgt_negmU). }
+      claim HRltnegMx: Rlt (minus_SNo M) x.
+      { exact (RltI (minus_SNo M) x HnegM_R HxR HnegM_lt_x). }
+      exact (interval_bounds_Abs M x HM HxR HRltnegMx HRltxM).
 Qed.
 
 (** from §27: compact subspaces of ℝ are closed and bounded **) 
