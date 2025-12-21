@@ -30169,20 +30169,20 @@ Qed.
     The tube lemma says U×Y ⊆ N, which is equivalent to ∀y∈Y. U×{y} ⊆ N. **)
 Theorem tube_lemma : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
-  compact_space X Tx ->
+  compact_space Y Ty ->
   forall x0:set, x0 :e X ->
-  forall N:set, N :e product_topology X Tx Y Ty /\ x0 :e N ->
+  forall N:set, N :e product_topology X Tx Y Ty /\ setprod {x0} Y c= N ->
     exists U:set, U :e Tx /\ x0 :e U /\
-      (forall y:set, y :e Y -> setprod U {y} c= N).
+      setprod U Y c= N.
 let X Tx Y Ty.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
-assume Hcomp: compact_space X Tx.
+assume Hcomp: compact_space Y Ty.
 let x0.
 assume Hx0: x0 :e X.
 let N.
-assume HN: N :e product_topology X Tx Y Ty /\ x0 :e N.
-prove exists U:set, U :e Tx /\ x0 :e U /\ (forall y:set, y :e Y -> setprod U {y} c= N).
+assume HN: N :e product_topology X Tx Y Ty /\ setprod {x0} Y c= N.
+prove exists U:set, U :e Tx /\ x0 :e U /\ setprod U Y c= N.
 admit. (** for each y, find rectangle containing (x₀,y) in N; cover {x₀}×Y by rectangles; use compactness to get finite subcover; intersect finitely many opens to get U **)
 Qed.
 
