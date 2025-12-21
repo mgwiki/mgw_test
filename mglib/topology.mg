@@ -32201,6 +32201,40 @@ Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
       exists i0:set, i0 :e J /\
         forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
 
+(** helper: any convergent net is a net_on **)
+(** LATEX VERSION: If a net converges, then it is a net (it has some directed index set). **)
+Theorem net_converges_implies_net_on : forall X Tx net x:set,
+  net_converges X Tx net x -> net_on net.
+let X Tx net x.
+assume H: net_converges X Tx net x.
+prove net_on net.
+apply H.
+let J.
+assume HJ: topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X /\
+  forall U:set, U :e Tx -> x :e U ->
+    exists i0:set, i0 :e J /\
+      forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
+prove net_on net.
+prove exists J0 X0:set, directed_set J0 /\ function_on net J0 X0.
+witness J.
+witness X.
+claim HJJ: topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X.
+{ exact (andEL (topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X)
+               (forall U:set, U :e Tx -> x :e U ->
+                 exists i0:set, i0 :e J /\
+                   forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U)
+               HJ). }
+claim HJdirfun: topology_on X Tx /\ directed_set J /\ function_on net J X.
+{ exact (andEL (topology_on X Tx /\ directed_set J /\ function_on net J X) (x :e X) HJJ). }
+claim HJdir: topology_on X Tx /\ directed_set J.
+{ exact (andEL (topology_on X Tx /\ directed_set J) (function_on net J X) HJdirfun). }
+claim HdirJ: directed_set J.
+{ exact (andER (topology_on X Tx) (directed_set J) HJdir). }
+claim HfunJ: function_on net J X.
+{ exact (andER (topology_on X Tx /\ directed_set J) (function_on net J X) HJdirfun). }
+exact (andI (directed_set J) (function_on net J X) HdirJ HfunJ).
+Qed.
+
 (** from exercises after §29: convergence of subnets **) 
 (** LATEX VERSION: Convergent nets have convergent subnets to same limit. **)
 Theorem subnet_preserves_convergence : forall X Tx net sub x:set,
