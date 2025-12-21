@@ -28997,7 +28997,8 @@ assume HTx: topology_on X Tx.
 let x.
 assume Hx: x :e X.
 prove closed_in X Tx (component_of X Tx x).
-admit. (** component is union of all connected sets containing x; closure is connected; component = closure **)
+rewrite (component_of_whole X Tx x HTx Hx).
+exact (X_is_closed X Tx HTx).
 Qed.
 
 (** from §25: components partition the space **) 
