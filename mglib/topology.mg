@@ -30376,6 +30376,132 @@ Qed.
 
 Definition Abs : set -> set := abs_SNo.
 
+Theorem compact_to_Hausdorff_inverse_continuous : forall X Tx Y Ty f:set,
+  compact_space X Tx -> Hausdorff_space Y Ty ->
+  continuous_map X Tx Y Ty f -> bijection X Y f ->
+  continuous_map Y Ty X Tx (inv_fun_graph X f Y).
+let X Tx Y Ty f.
+assume Hcomp: compact_space X Tx.
+assume HH: Hausdorff_space Y Ty.
+assume Hcont: continuous_map X Tx Y Ty f.
+assume Hbij: bijection X Y f.
+set g := inv_fun_graph X f Y.
+prove continuous_map Y Ty X Tx g.
+prove topology_on Y Ty /\ topology_on X Tx /\ function_on g Y X /\
+      forall V:set, V :e Tx -> preimage_of Y g V :e Ty.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+claim HTy: topology_on Y Ty.
+{ exact (andEL (topology_on Y Ty)
+               (forall x1 x2:set, x1 :e Y -> x2 :e Y -> x1 <> x2 ->
+                 exists U V:set, U :e Ty /\ V :e Ty /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+claim Hfun: function_on f X Y.
+{ exact (andEL (function_on f X Y)
+               (forall y:set, y :e Y -> exists x0:set, x0 :e X /\ apply_fun f x0 = y /\ (forall x':set, x' :e X -> apply_fun f x' = y -> x' = x0))
+               Hbij). }
+claim Hgfun: function_on g Y X.
+{ let y. assume Hy: y :e Y.
+  prove apply_fun g y :e X.
+  claim Hginv: apply_fun g y = inv X (fun u:set => apply_fun f u) y.
+  { exact (inv_fun_graph_apply X Y f y Hy). }
+  rewrite Hginv.
+  claim Hsurj: forall w :e Y, exists u :e X, apply_fun f u = w.
+  { let w. assume Hw: w :e Y.
+    claim Hex: exists u:set, u :e X /\ apply_fun f u = w.
+    { exact (bijection_surj X Y f w Hbij Hw). }
+    exact Hex. }
+  claim Hpair: inv X (fun u:set => apply_fun f u) y :e X /\
+               apply_fun f (inv X (fun u:set => apply_fun f u) y) = y.
+  { exact (surj_rinv X Y (fun u:set => apply_fun f u) Hsurj y Hy). }
+  exact (andEL (inv X (fun u:set => apply_fun f u) y :e X)
+               (apply_fun f (inv X (fun u:set => apply_fun f u) y) = y)
+               Hpair). }
+
+apply andI.
+- apply andI.
+  + apply andI.
+    * exact HTy.
+    * exact HTx.
+  + exact Hgfun.
+- let V. assume HV: V :e Tx.
+  prove preimage_of Y g V :e Ty.
+  set C := X :\: V.
+  claim HCclosed: closed_in X Tx C.
+  { exact (closed_of_open_complement X Tx V HTx HV). }
+  claim HCsub: C c= X.
+  { exact (closed_in_subset X Tx C HCclosed). }
+  claim HpreCeq: preimage_of Y g C = image_of_fun f C.
+  { exact (inv_fun_graph_preimage_eq_image X Y f C Hbij HCsub). }
+  claim HimgSubY: image_of_fun f C c= Y.
+  { let y. assume Hy: y :e image_of_fun f C.
+    apply (ReplE_impred C (fun x0:set => apply_fun f x0) y Hy).
+    let x0. assume Hx0C: x0 :e C.
+    assume Heq: y = apply_fun f x0.
+    claim Hx0X: x0 :e X.
+    { exact (HCsub x0 Hx0C). }
+    rewrite Heq.
+    exact (Hfun x0 Hx0X). }
+  claim HcompC: compact_space C (subspace_topology X Tx C).
+  { exact (closed_subspace_compact X Tx C Hcomp HCclosed). }
+  claim HcontC: continuous_map C (subspace_topology X Tx C) Y Ty f.
+  { exact (continuous_on_subspace X Tx Y Ty f C HTx HCsub Hcont). }
+  claim HimgComp: compact_space (image_of_fun f C) (subspace_topology Y Ty (image_of_fun f C)).
+  { exact (continuous_image_compact C (subspace_topology X Tx C) Y Ty f HcompC HcontC). }
+  claim HimgClosed: closed_in Y Ty (image_of_fun f C).
+  { exact (compact_subspace_in_Hausdorff_closed Y Ty (image_of_fun f C) HH HimgSubY HimgComp). }
+  claim HpreClosed: closed_in Y Ty (preimage_of Y g C).
+  { rewrite HpreCeq at 1.
+    exact HimgClosed. }
+  claim Hop: open_in Y Ty (Y :\: preimage_of Y g C).
+  { exact (open_of_closed_complement Y Ty (preimage_of Y g C) HpreClosed). }
+  claim HopTy: (Y :\: preimage_of Y g C) :e Ty.
+  { exact (andER (topology_on Y Ty) ((Y :\: preimage_of Y g C) :e Ty) Hop). }
+  claim HpreEq: preimage_of Y g V = Y :\: preimage_of Y g C.
+  { apply set_ext.
+    - let y. assume Hy: y :e preimage_of Y g V.
+      prove y :e Y :\: preimage_of Y g C.
+      claim HyY: y :e Y.
+      { exact (SepE1 Y (fun u:set => apply_fun g u :e V) y Hy). }
+      claim HgyV: apply_fun g y :e V.
+      { exact (SepE2 Y (fun u:set => apply_fun g u :e V) y Hy). }
+      apply setminusI.
+      + exact HyY.
+      + assume HyC: y :e preimage_of Y g C.
+        claim HgyC: apply_fun g y :e C.
+        { exact (SepE2 Y (fun u:set => apply_fun g u :e C) y HyC). }
+        apply (setminusE X V (apply_fun g y) HgyC).
+        assume _. assume HnotV.
+        exact (HnotV HgyV).
+    - let y. assume Hy: y :e Y :\: preimage_of Y g C.
+      prove y :e preimage_of Y g V.
+      apply (setminusE Y (preimage_of Y g C) y Hy).
+      assume HyY: y :e Y.
+      assume HyNot: y /:e preimage_of Y g C.
+      prove y :e {u :e Y | apply_fun g u :e V}.
+      apply SepI.
+      + exact HyY.
+      + prove apply_fun g y :e V.
+        claim HgyX: apply_fun g y :e X.
+        { exact (Hgfun y HyY). }
+        apply (xm (apply_fun g y :e V)).
+        - assume HVin. exact HVin.
+        - assume HnotV: ~(apply_fun g y :e V).
+          claim HnotVin: apply_fun g y /:e V.
+          { assume H0. exact (HnotV H0). }
+          claim HgyC: apply_fun g y :e C.
+          { exact (setminusI X V (apply_fun g y) HgyX HnotVin). }
+          claim HyC: y :e preimage_of Y g C.
+          { prove y :e {u :e Y | apply_fun g u :e C}.
+            apply SepI.
+            - exact HyY.
+            - exact HgyC. }
+          apply FalseE.
+          exact (HyNot HyC). }
+  rewrite HpreEq.
+  exact HopTy.
+Qed.
+
 Theorem compact_to_Hausdorff_bijection_homeomorphism : forall X Tx Y Ty f:set,
   compact_space X Tx -> Hausdorff_space Y Ty ->
   continuous_map X Tx Y Ty f -> bijection X Y f ->
@@ -30396,7 +30522,7 @@ apply andI.
   witness g.
   apply andI.
   + apply andI.
-    * admit.
+    * exact (compact_to_Hausdorff_inverse_continuous X Tx Y Ty f Hcomp HH Hcont Hbij).
     * let x. assume Hx: x :e X.
       prove apply_fun g (apply_fun f x) = x.
       claim Hfun: function_on f X Y.
