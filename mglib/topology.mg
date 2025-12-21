@@ -32529,6 +32529,141 @@ Definition subnet_of : set -> set -> prop := fun net sub =>
     (forall k:set, k :e K ->
       apply_fun sub k = apply_fun net (apply_fun phi k)).
 
+(** helper: a subnet is a net **)
+(** LATEX VERSION: Any subnet is itself a net on some directed set. **)
+Theorem subnet_implies_net_on : forall net sub:set, subnet_of net sub -> net_on sub.
+let net sub.
+assume Hsub: subnet_of net sub.
+prove net_on sub.
+apply Hsub.
+let J. assume Hrest: exists K X phi:set,
+  directed_set J /\ directed_set K /\
+  function_on net J X /\ function_on sub K X /\
+  function_on phi K J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+apply Hrest.
+let K. assume Hrest2: exists X phi:set,
+  directed_set J /\ directed_set K /\
+  function_on net J X /\ function_on sub K X /\
+  function_on phi K J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+apply Hrest2.
+let X. assume Hrest3: exists phi:set,
+  directed_set J /\ directed_set K /\
+  function_on net J X /\ function_on sub K X /\
+  function_on phi K J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+apply Hrest3.
+let phi. assume Hdata:
+  directed_set J /\ directed_set K /\
+  function_on net J X /\ function_on sub K X /\
+  function_on phi K J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+prove exists J0 X0:set, directed_set J0 /\ function_on sub J0 X0.
+witness K.
+witness X.
+prove directed_set K /\ function_on sub K X.
+(** destruct subnet_of data by repeated conjunction elimination **)
+apply Hdata.
+assume Hcore Heq.
+apply Hcore.
+assume Hcore2 Hcofinal.
+apply Hcore2.
+assume Hcore3 Hphi_on.
+apply Hcore3.
+assume Hcore4 Hsubfun.
+apply Hcore4.
+assume HJK Hnetfun.
+apply HJK.
+assume HdirJ HdirK.
+apply andI.
+- exact HdirK.
+- exact Hsubfun.
+Qed.
+
+(** helper: if sub is a subnet, net is a net **)
+(** LATEX VERSION: The original function in a subnet pair is also a net. **)
+Theorem subnet_implies_net_on_source : forall net sub:set, subnet_of net sub -> net_on net.
+let net sub.
+assume Hsub: subnet_of net sub.
+prove net_on net.
+apply Hsub.
+let J. assume Hrest: exists K X phi:set,
+  directed_set J /\ directed_set K /\
+  function_on net J X /\ function_on sub K X /\
+  function_on phi K J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+apply Hrest.
+let K. assume Hrest2: exists X phi:set,
+  directed_set J /\ directed_set K /\
+  function_on net J X /\ function_on sub K X /\
+  function_on phi K J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+apply Hrest2.
+let X. assume Hrest3: exists phi:set,
+  directed_set J /\ directed_set K /\
+  function_on net J X /\ function_on sub K X /\
+  function_on phi K J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+apply Hrest3.
+let phi. assume Hdata:
+  directed_set J /\ directed_set K /\
+  function_on net J X /\ function_on sub K X /\
+  function_on phi K J /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+prove exists J0 X0:set, directed_set J0 /\ function_on net J0 X0.
+witness J.
+witness X.
+prove directed_set J /\ function_on net J X.
+apply Hdata.
+assume Hcore Heq.
+apply Hcore.
+assume Hcore2 Hcofinal.
+apply Hcore2.
+assume Hcore3 Hphi_on.
+apply Hcore3.
+assume Hcore4 Hsubfun.
+apply Hcore4.
+assume HJK Hnetfun.
+apply HJK.
+assume HdirJ HdirK.
+apply andI.
+- exact HdirJ.
+- exact Hnetfun.
+Qed.
+
 (** from exercises after §29: accumulation point of a net **)
 (** LATEX VERSION: An accumulation point of a net means every neighborhood contains infinitely many (or cofinal) net points; placeholder formalization. **)
 (** FIXED: Multiple critical errors:
