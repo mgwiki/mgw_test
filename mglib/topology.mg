@@ -32065,6 +32065,25 @@ claim Hk1: k :e J /\ (i :e k \/ i = k).
 exact Hk1.
 Qed.
 
+(** helper: upper bound for two elements in a directed set **)
+(** LATEX VERSION: In a directed set J, for i,j in J there exists k in J with i ≤ k and j ≤ k. **)
+Theorem directed_set_pair_upper_bound : forall J i j:set,
+  directed_set J -> i :e J -> j :e J ->
+  exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k).
+let J i j.
+assume HJ: directed_set J.
+assume HiJ: i :e J.
+assume HjJ: j :e J.
+prove exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k).
+claim Hdir: forall a b:set, a :e J -> b :e J ->
+  exists k:set, k :e J /\ (a :e k \/ a = k) /\ (b :e k \/ b = k).
+{ exact (andER (J <> Empty)
+               (forall i j:set, i :e J -> j :e J ->
+                  exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k))
+               HJ). }
+exact (Hdir i j HiJ HjJ).
+Qed.
+
 (** from exercises after §29: examples of directed sets **) 
 (** LATEX VERSION: Simple closure properties/examples of directed sets (placeholder). **)
 Theorem examples_of_directed_sets : forall J:set,
