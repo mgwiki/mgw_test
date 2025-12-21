@@ -29985,7 +29985,180 @@ let X Tx Y Ty f.
 assume Hcomp: compact_space X Tx.
 assume Hf: continuous_map X Tx Y Ty f.
 prove compact_space (image_of_fun f X) (subspace_topology Y Ty (image_of_fun f X)).
-admit. (** given open cover of f(X), pull back to cover of X; extract finite subcover; images cover f(X) **)
+set Img := image_of_fun f X.
+set Timg := subspace_topology Y Ty Img.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+claim HsubcoverX: forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
+{ exact (andER (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+
+claim Hf_left: ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y) /\ (forall V:set, V :e Ty -> preimage_of X f V :e Tx).
+{ exact Hf. }
+claim Hf_mid: (topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y.
+{ exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+               Hf_left). }
+claim Hf_pre: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+{ exact (andER ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+               Hf_left). }
+claim HtopXY: topology_on X Tx /\ topology_on Y Ty.
+{ exact (andEL (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y) Hf_mid). }
+claim HTy: topology_on Y Ty.
+{ exact (andER (topology_on X Tx) (topology_on Y Ty) HtopXY). }
+claim Hfun: function_on f X Y.
+{ exact (andER (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y) Hf_mid). }
+
+claim HImgSubY: Img c= Y.
+{ let y. assume Hy: y :e Img.
+  apply (ReplE_impred X (fun x0:set => apply_fun f x0) y Hy).
+  let x0. assume Hx0X: x0 :e X.
+  assume Heq: y = apply_fun f x0.
+  rewrite Heq.
+  exact (Hfun x0 Hx0X). }
+
+claim Hprop: forall Fam:set, (Fam c= Ty /\ Img c= Union Fam) -> has_finite_subcover Img Ty Fam.
+{ let Fam. assume Hcov: Fam c= Ty /\ Img c= Union Fam.
+  claim HFamSub: Fam c= Ty.
+  { exact (andEL (Fam c= Ty) (Img c= Union Fam) Hcov). }
+  claim HImgCov: Img c= Union Fam.
+  { exact (andER (Fam c= Ty) (Img c= Union Fam) Hcov). }
+
+  set PreFam := {preimage_of X f V|V :e Fam}.
+
+  claim HPrePow: PreFam c= Power X.
+  { let W. assume HW: W :e PreFam.
+    apply (ReplE_impred Fam (fun V0:set => preimage_of X f V0) W HW).
+    let V0. assume HV0: V0 :e Fam.
+    assume HWeq: W = preimage_of X f V0.
+    rewrite HWeq.
+    prove preimage_of X f V0 :e Power X.
+    apply PowerI.
+    let x0. assume Hx0: x0 :e preimage_of X f V0.
+    apply (SepE X (fun u:set => apply_fun f u :e V0) x0 Hx0).
+    assume Hx0X. assume _. exact Hx0X. }
+
+  claim HPreOpen: forall W:set, W :e PreFam -> W :e Tx.
+  { let W. assume HW: W :e PreFam.
+    apply (ReplE_impred Fam (fun V0:set => preimage_of X f V0) W HW).
+    let V0. assume HV0: V0 :e Fam.
+    assume HWeq: W = preimage_of X f V0.
+    claim HV0Ty: V0 :e Ty.
+    { exact (HFamSub V0 HV0). }
+    rewrite HWeq.
+    exact (Hf_pre V0 HV0Ty). }
+
+  claim HXcov: X c= Union PreFam.
+  { let x0. assume Hx0X: x0 :e X.
+    prove x0 :e Union PreFam.
+    claim HyImg: apply_fun f x0 :e Img.
+    { exact (ReplI X (fun x1:set => apply_fun f x1) x0 Hx0X). }
+    claim HyUnion: apply_fun f x0 :e Union Fam.
+    { exact (HImgCov (apply_fun f x0) HyImg). }
+    apply (UnionE_impred Fam (apply_fun f x0) HyUnion).
+    let V0. assume HyV0: apply_fun f x0 :e V0.
+    assume HV0: V0 :e Fam.
+    claim Hx0Pre: x0 :e preimage_of X f V0.
+    { prove x0 :e {u :e X | apply_fun f u :e V0}.
+      apply SepI.
+      - exact Hx0X.
+      - exact HyV0. }
+    exact (UnionI PreFam x0 (preimage_of X f V0) Hx0Pre
+                 (ReplI Fam (fun V1:set => preimage_of X f V1) V0 HV0)). }
+
+  claim HopenCov: open_cover_of X Tx PreFam.
+  { prove topology_on X Tx /\ PreFam c= Power X /\ X c= Union PreFam /\ (forall U:set, U :e PreFam -> U :e Tx).
+    apply andI.
+    - (** left-associative: ((A /\ B) /\ C) **)
+      apply andI.
+      + apply andI.
+        * exact HTx.
+        * exact HPrePow.
+      + exact HXcov.
+    - exact HPreOpen. }
+
+  claim HfinPre: has_finite_subcover X Tx PreFam.
+  { exact (HsubcoverX PreFam HopenCov). }
+
+  apply HfinPre.
+  let Gpre. assume HGpre: Gpre c= PreFam /\ finite Gpre /\ X c= Union Gpre.
+  claim HGpreLeft: Gpre c= PreFam /\ finite Gpre.
+  { exact (andEL (Gpre c= PreFam /\ finite Gpre) (X c= Union Gpre) HGpre). }
+  claim HGpreSub: Gpre c= PreFam.
+  { exact (andEL (Gpre c= PreFam) (finite Gpre) HGpreLeft). }
+  claim HGpreFin: finite Gpre.
+  { exact (andER (Gpre c= PreFam) (finite Gpre) HGpreLeft). }
+  claim HXcovGpre: X c= Union Gpre.
+  { exact (andER (Gpre c= PreFam /\ finite Gpre) (X c= Union Gpre) HGpre). }
+
+  set pickV := fun W:set => Eps_i (fun V0:set => V0 :e Fam /\ W = preimage_of X f V0).
+  set G := {pickV W|W :e Gpre}.
+
+  claim HGsubFam: G c= Fam.
+  { let V0. assume HV0: V0 :e G.
+    apply (ReplE_impred Gpre (fun W0:set => pickV W0) V0 HV0).
+    let W0. assume HW0G: W0 :e Gpre.
+    assume HV0eq: V0 = pickV W0.
+    claim HW0Pre: W0 :e PreFam.
+    { exact (HGpreSub W0 HW0G). }
+    claim Hex: exists V1:set, V1 :e Fam /\ W0 = preimage_of X f V1.
+    { apply (ReplE_impred Fam (fun V2:set => preimage_of X f V2) W0 HW0Pre).
+      let V2. assume HV2: V2 :e Fam.
+      assume HW0eq2: W0 = preimage_of X f V2.
+      witness V2.
+      exact (andI (V2 :e Fam) (W0 = preimage_of X f V2) HV2 HW0eq2). }
+    apply Hex.
+    let V1. assume HV1: V1 :e Fam /\ W0 = preimage_of X f V1.
+    claim Hpick: pickV W0 :e Fam /\ W0 = preimage_of X f (pickV W0).
+    { exact (Eps_i_ax (fun V:set => V :e Fam /\ W0 = preimage_of X f V) V1 HV1). }
+    rewrite HV0eq.
+    exact (andEL (pickV W0 :e Fam) (W0 = preimage_of X f (pickV W0)) Hpick). }
+
+  claim HGfin: finite G.
+  { exact (Repl_finite (fun W0:set => pickV W0) Gpre HGpreFin). }
+
+  claim HImgCovG: Img c= Union G.
+  { let y. assume Hy: y :e Img.
+    prove y :e Union G.
+    apply (ReplE_impred X (fun x0:set => apply_fun f x0) y Hy).
+    let x0. assume Hx0X: x0 :e X.
+    assume Heq: y = apply_fun f x0.
+    claim Hx0UG: x0 :e Union Gpre.
+    { exact (HXcovGpre x0 Hx0X). }
+    apply (UnionE_impred Gpre x0 Hx0UG).
+    let W0. assume Hx0W0: x0 :e W0.
+    assume HW0G: W0 :e Gpre.
+    claim HW0Pre: W0 :e PreFam.
+    { exact (HGpreSub W0 HW0G). }
+    claim Hex: exists V1:set, V1 :e Fam /\ W0 = preimage_of X f V1.
+    { apply (ReplE_impred Fam (fun V2:set => preimage_of X f V2) W0 HW0Pre).
+      let V2. assume HV2: V2 :e Fam.
+      assume HW0eq2: W0 = preimage_of X f V2.
+      witness V2.
+      exact (andI (V2 :e Fam) (W0 = preimage_of X f V2) HV2 HW0eq2). }
+    apply Hex.
+    let V1. assume HV1: V1 :e Fam /\ W0 = preimage_of X f V1.
+    claim Hpick: pickV W0 :e Fam /\ W0 = preimage_of X f (pickV W0).
+    { exact (Eps_i_ax (fun V:set => V :e Fam /\ W0 = preimage_of X f V) V1 HV1). }
+    claim HW0eq: W0 = preimage_of X f (pickV W0).
+    { exact (andER (pickV W0 :e Fam) (W0 = preimage_of X f (pickV W0)) Hpick). }
+    claim Hx0Pre: x0 :e preimage_of X f (pickV W0).
+    { rewrite <- HW0eq at 1.
+      exact Hx0W0. }
+    claim HyV: apply_fun f x0 :e pickV W0.
+    { apply (SepE X (fun u:set => apply_fun f u :e pickV W0) x0 Hx0Pre).
+      assume _. assume Hy0. exact Hy0. }
+    rewrite Heq.
+    exact (UnionI G (apply_fun f x0) (pickV W0) HyV (ReplI Gpre (fun W1:set => pickV W1) W0 HW0G)). }
+
+  exact (has_finite_subcoverI Img Ty Fam G (andI (G c= Fam /\ finite G) (Img c= Union G)
+                                                 (andI (G c= Fam) (finite G) HGsubFam HGfin)
+                                                 HImgCovG)). }
+
+exact (iffER (compact_space Img Timg)
+             (forall Fam:set, (Fam c= Ty /\ Img c= Union Fam) -> has_finite_subcover Img Ty Fam)
+             (compact_subspace_via_ambient_covers Y Ty Img HTy HImgSubY)
+             Hprop).
 Qed.
 
 (** from §26: tube lemma used in product compactness **)
