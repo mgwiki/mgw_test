@@ -30811,7 +30811,73 @@ apply andI.
   { exact (Heine_Borel_subcover X Tx UFam HX HcovUFam). }
   apply HfinUFam.
   let K. assume HK: K c= UFam /\ finite K /\ X c= Union K.
-  admit. (** choose for each U:eK a finite H_U ⊆ Fam covering U×Y, then combine to a finite subcover of X×Y **)
+  claim HKsub: K c= UFam.
+  { exact (andEL (K c= UFam) (finite K) (andEL (K c= UFam /\ finite K) (X c= Union K) HK)). }
+  claim HKfin: finite K.
+  { exact (andER (K c= UFam) (finite K) (andEL (K c= UFam /\ finite K) (X c= Union K) HK)). }
+  claim HXcovK: X c= Union K.
+  { exact (andER (K c= UFam /\ finite K) (X c= Union K) HK). }
+  set pickH := fun U:set => Eps_i (fun H:set => H c= Fam /\ finite H /\ setprod U Y c= Union H).
+  claim HpickH: forall U:set, U :e UFam -> pickH U c= Fam /\ finite (pickH U) /\ setprod U Y c= Union (pickH U).
+  { let U. assume HU: U :e UFam.
+    claim Hex: exists H:set, H c= Fam /\ finite H /\ setprod U Y c= Union H.
+    { exact (SepE2 Tx (fun U0:set => exists H:set, H c= Fam /\ finite H /\ setprod U0 Y c= Union H) U HU). }
+    apply Hex.
+    let H0. assume HH0: H0 c= Fam /\ finite H0 /\ setprod U Y c= Union H0.
+    exact (Eps_i_ax (fun H:set => H c= Fam /\ finite H /\ setprod U Y c= Union H) H0 HH0). }
+  set G := \/_ U :e K, pickH U.
+  prove has_finite_subcover (setprod X Y) (product_topology X Tx Y Ty) Fam.
+  prove exists G0:set, G0 c= Fam /\ finite G0 /\ setprod X Y c= Union G0.
+  witness G.
+  apply andI.
+  - prove G c= Fam /\ finite G.
+    apply andI.
+    + prove G c= Fam.
+      let N. assume HN: N :e G.
+      prove N :e Fam.
+      apply (famunionE_impred K (fun U0:set => pickH U0) N HN).
+      let U0. assume HU0K: U0 :e K.
+      assume HNin: N :e pickH U0.
+      claim HU0UFam: U0 :e UFam.
+      { exact (HKsub U0 HU0K). }
+      claim Hprop: pickH U0 c= Fam /\ finite (pickH U0) /\ setprod U0 Y c= Union (pickH U0).
+      { exact (HpickH U0 HU0UFam). }
+      claim HpropAB: pickH U0 c= Fam /\ finite (pickH U0).
+      { exact (andEL (pickH U0 c= Fam /\ finite (pickH U0)) (setprod U0 Y c= Union (pickH U0)) Hprop). }
+      claim HsubFam: pickH U0 c= Fam.
+      { exact (andEL (pickH U0 c= Fam) (finite (pickH U0)) HpropAB). }
+      exact (HsubFam N HNin).
+    + admit. (** finite of famunion over finite K of finite pickH U, can be shown by finite_ind and binunion_finite **)
+  - let p. assume Hp: p :e setprod X Y.
+    prove p :e Union G.
+    claim Hp0X: p 0 :e X.
+    { exact (ap0_Sigma X (fun _:set => Y) p Hp). }
+    claim Hp1Y: p 1 :e Y.
+    { exact (ap1_Sigma X (fun _:set => Y) p Hp). }
+    claim HpEta: p = (p 0, p 1).
+    { exact (setprod_eta X Y p Hp). }
+    claim Hp0InUnion: p 0 :e Union K.
+    { exact (HXcovK (p 0) Hp0X). }
+    apply (UnionE_impred K (p 0) Hp0InUnion).
+    let U0. assume Hp0U0: p 0 :e U0.
+    assume HU0K: U0 :e K.
+    claim HU0UFam: U0 :e UFam.
+    { exact (HKsub U0 HU0K). }
+    claim Hprop: pickH U0 c= Fam /\ finite (pickH U0) /\ setprod U0 Y c= Union (pickH U0).
+    { exact (HpickH U0 HU0UFam). }
+    claim HcovU0: setprod U0 Y c= Union (pickH U0).
+    { exact (andER (pickH U0 c= Fam /\ finite (pickH U0)) (setprod U0 Y c= Union (pickH U0)) Hprop). }
+    claim HpInU0Y: (p 0, p 1) :e setprod U0 Y.
+    { exact (tuple_2_setprod U0 Y (p 0) Hp0U0 (p 1) Hp1Y). }
+    claim HpInUnionPick: (p 0, p 1) :e Union (pickH U0).
+    { exact (HcovU0 (p 0, p 1) HpInU0Y). }
+    apply (UnionE_impred (pickH U0) (p 0, p 1) HpInUnionPick).
+    let N. assume HpN: (p 0, p 1) :e N.
+    assume HNpick: N :e pickH U0.
+    claim HNinG: N :e G.
+    { exact (famunionI K (fun U1:set => pickH U1) U0 N HU0K HNpick). }
+    rewrite HpEta.
+    exact (UnionI G (p 0, p 1) N HpN HNinG).
 Qed.
 
 (** from §26 Exercises: compactness examples and properties **) 
