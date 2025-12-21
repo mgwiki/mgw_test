@@ -28125,6 +28125,132 @@ apply andI.
          (andI (~(Rlt 1 0)) (~(Rlt 1 1)) Hnot_Rlt_1_0 (not_Rlt_refl 1 H1R))).
 Qed.
 
+(** helper: for any two points in X there exists a path_between witness **)
+(** LATEX VERSION: For any x,y in X there is a path (as a function) from x to y. **)
+Theorem path_between_exists : forall X x y:set,
+  x :e X -> y :e X -> exists p:set, path_between X x y p.
+let X x y.
+assume HxX: x :e X.
+assume HyX: y :e X.
+prove exists p:set, path_between X x y p.
+set p := {(t, If_i (t = 0) x y)|t :e unit_interval}.
+witness p.
+prove path_between X x y p.
+prove function_on p unit_interval X /\ apply_fun p 0 = x /\ apply_fun p 1 = y.
+apply andI.
+- (** function_on p unit_interval X /\ apply_fun p 0 = x **)
+  apply andI.
+  + (** function_on **)
+    let t. assume HtI: t :e unit_interval.
+    prove apply_fun p t :e X.
+    claim Happ: apply_fun p t = If_i (t = 0) x y.
+    { prove apply_fun p t = If_i (t = 0) x y.
+      prove Eps_i (fun u:set => (t,u) :e p) = If_i (t = 0) x y.
+      claim Hpair: (t, If_i (t = 0) x y) :e p.
+      { exact (ReplI unit_interval (fun t0:set => (t0, If_i (t0 = 0) x y)) t HtI). }
+      claim Heps: (t, Eps_i (fun u:set => (t,u) :e p)) :e p.
+      { exact (Eps_i_ax (fun u:set => (t,u) :e p) (If_i (t = 0) x y) Hpair). }
+      apply (ReplE_impred unit_interval (fun t0:set => (t0, If_i (t0 = 0) x y))
+              (t, Eps_i (fun u:set => (t,u) :e p)) Heps
+              (Eps_i (fun u:set => (t,u) :e p) = If_i (t = 0) x y)).
+      let t0. assume Ht0: t0 :e unit_interval.
+      assume Heq: (t, Eps_i (fun u:set => (t,u) :e p)) = (t0, If_i (t0 = 0) x y).
+      claim Ht_eq: t = t0.
+      { rewrite <- (tuple_2_0_eq t (Eps_i (fun u:set => (t,u) :e p))).
+        rewrite <- (tuple_2_0_eq t0 (If_i (t0 = 0) x y)).
+        rewrite Heq.
+        reflexivity. }
+      claim Hu_eq: Eps_i (fun u:set => (t,u) :e p) = If_i (t0 = 0) x y.
+      { rewrite <- (tuple_2_1_eq t (Eps_i (fun u:set => (t,u) :e p))).
+        rewrite <- (tuple_2_1_eq t0 (If_i (t0 = 0) x y)).
+        rewrite Heq.
+        reflexivity. }
+      rewrite Hu_eq.
+      rewrite <- Ht_eq.
+      reflexivity. }
+    rewrite Happ.
+    apply (xm (t = 0)).
+    - assume Ht0: t = 0.
+      rewrite (If_i_1 (t = 0) x y Ht0).
+      exact HxX.
+    - assume Hnt0: ~(t = 0).
+      rewrite (If_i_0 (t = 0) x y Hnt0).
+      exact HyX.
+  + (** apply_fun p 0 = x **)
+    claim H01: 0 :e unit_interval /\ 1 :e unit_interval.
+    { exact zero_one_in_unit_interval. }
+    claim H0I: 0 :e unit_interval.
+    { exact (andEL (0 :e unit_interval) (1 :e unit_interval) H01). }
+    claim Happ0: apply_fun p 0 = If_i (0 = 0) x y.
+    { prove apply_fun p 0 = If_i (0 = 0) x y.
+      prove Eps_i (fun u:set => (0,u) :e p) = If_i (0 = 0) x y.
+      claim Hpair: (0, If_i (0 = 0) x y) :e p.
+      { exact (ReplI unit_interval (fun t0:set => (t0, If_i (t0 = 0) x y)) 0 H0I). }
+      claim Heps: (0, Eps_i (fun u:set => (0,u) :e p)) :e p.
+      { exact (Eps_i_ax (fun u:set => (0,u) :e p) (If_i (0 = 0) x y) Hpair). }
+      apply (ReplE_impred unit_interval (fun t0:set => (t0, If_i (t0 = 0) x y))
+              (0, Eps_i (fun u:set => (0,u) :e p)) Heps
+              (Eps_i (fun u:set => (0,u) :e p) = If_i (0 = 0) x y)).
+      let t0. assume Ht0: t0 :e unit_interval.
+      assume Heq: (0, Eps_i (fun u:set => (0,u) :e p)) = (t0, If_i (t0 = 0) x y).
+      claim Ht_eq: 0 = t0.
+      { rewrite <- (tuple_2_0_eq 0 (Eps_i (fun u:set => (0,u) :e p))).
+        rewrite <- (tuple_2_0_eq t0 (If_i (t0 = 0) x y)).
+        rewrite Heq.
+        reflexivity. }
+      claim Hu_eq: Eps_i (fun u:set => (0,u) :e p) = If_i (t0 = 0) x y.
+      { rewrite <- (tuple_2_1_eq 0 (Eps_i (fun u:set => (0,u) :e p))).
+        rewrite <- (tuple_2_1_eq t0 (If_i (t0 = 0) x y)).
+        rewrite Heq.
+        reflexivity. }
+      rewrite Hu_eq.
+      rewrite <- Ht_eq.
+      reflexivity. }
+    rewrite Happ0.
+    claim H00: 0 = 0.
+    { reflexivity. }
+    rewrite (If_i_1 (0 = 0) x y H00).
+    reflexivity.
+- (** apply_fun p 1 = y **)
+  claim H01: 0 :e unit_interval /\ 1 :e unit_interval.
+  { exact zero_one_in_unit_interval. }
+  claim H1I: 1 :e unit_interval.
+  { exact (andER (0 :e unit_interval) (1 :e unit_interval) H01). }
+  claim Happ1: apply_fun p 1 = If_i (1 = 0) x y.
+  { prove apply_fun p 1 = If_i (1 = 0) x y.
+    prove Eps_i (fun u:set => (1,u) :e p) = If_i (1 = 0) x y.
+    claim Hpair: (1, If_i (1 = 0) x y) :e p.
+    { exact (ReplI unit_interval (fun t0:set => (t0, If_i (t0 = 0) x y)) 1 H1I). }
+    claim Heps: (1, Eps_i (fun u:set => (1,u) :e p)) :e p.
+    { exact (Eps_i_ax (fun u:set => (1,u) :e p) (If_i (1 = 0) x y) Hpair). }
+    apply (ReplE_impred unit_interval (fun t0:set => (t0, If_i (t0 = 0) x y))
+            (1, Eps_i (fun u:set => (1,u) :e p)) Heps
+            (Eps_i (fun u:set => (1,u) :e p) = If_i (1 = 0) x y)).
+    let t0. assume Ht0: t0 :e unit_interval.
+    assume Heq: (1, Eps_i (fun u:set => (1,u) :e p)) = (t0, If_i (t0 = 0) x y).
+    claim Ht_eq: 1 = t0.
+    { rewrite <- (tuple_2_0_eq 1 (Eps_i (fun u:set => (1,u) :e p))).
+      rewrite <- (tuple_2_0_eq t0 (If_i (t0 = 0) x y)).
+      rewrite Heq.
+      reflexivity. }
+    claim Hu_eq: Eps_i (fun u:set => (1,u) :e p) = If_i (t0 = 0) x y.
+    { rewrite <- (tuple_2_1_eq 1 (Eps_i (fun u:set => (1,u) :e p))).
+      rewrite <- (tuple_2_1_eq t0 (If_i (t0 = 0) x y)).
+      rewrite Heq.
+      reflexivity. }
+    rewrite Hu_eq.
+    rewrite <- Ht_eq.
+    reflexivity. }
+  rewrite Happ1.
+  claim Hneq: ~(1 = 0).
+  { assume H10: 1 = 0.
+    apply neq_0_1.
+    rewrite H10.
+    reflexivity. }
+  rewrite (If_i_0 (1 = 0) x y Hneq).
+  reflexivity.
+Qed.
+
 Theorem separation_has_elements : forall X U V:set,
   separation_of X U V ->
   (exists x:set, x :e U) /\ (exists y:set, y :e V).
@@ -28586,16 +28712,102 @@ prove (forall x:set, x :e X -> x :e path_component_of X Tx x) /\
      y :e path_component_of X Tx x -> z :e path_component_of X Tx y ->
      z :e path_component_of X Tx x).
 (** Conjunction is left-associative: (P1 /\ P2) /\ P3 **)
-apply andI.
-- (** P1 /\ P2 **)
   apply andI.
-  * (** reflexive **)
-    let x. assume HxX: x :e X.
-    exact (path_component_reflexive X Tx x HTx HxX).
-  * (** symmetric: reverse path **)
-    admit.
-- (** transitive: concatenate paths **)
-  admit.
+  - (** P1 /\ P2 **)
+    apply andI.
+    * (** reflexive **)
+      let x. assume HxX: x :e X.
+      exact (path_component_reflexive X Tx x HTx HxX).
+    * (** symmetric: reverse path **)
+      let x y.
+      assume HxX: x :e X.
+      assume HyX: y :e X.
+      assume _: y :e path_component_of X Tx x.
+      prove x :e path_component_of X Tx y.
+      prove x :e {z :e X | exists p:set,
+         function_on p unit_interval X /\
+         continuous_map unit_interval R_standard_topology X Tx p /\
+         apply_fun p 0 = y /\ apply_fun p 1 = z}.
+      apply SepI.
+      - exact HxX.
+      - claim Hex: exists p:set, path_between X y x p.
+        { exact (path_between_exists X y x HyX HxX). }
+        apply Hex.
+        let p.
+        assume Hpb: path_between X y x p.
+        claim Hcont: continuous_map unit_interval R_standard_topology X Tx p.
+        { exact (path_between_is_continuous X Tx y x p HTx HyX HxX Hpb). }
+        prove exists q:set, function_on q unit_interval X /\
+          continuous_map unit_interval R_standard_topology X Tx q /\
+          apply_fun q 0 = y /\ apply_fun q 1 = x.
+        witness p.
+        prove function_on p unit_interval X /\
+          continuous_map unit_interval R_standard_topology X Tx p /\
+          apply_fun p 0 = y /\ apply_fun p 1 = x.
+        claim Hpb1: (function_on p unit_interval X /\ apply_fun p 0 = y) /\ apply_fun p 1 = x.
+        { exact Hpb. }
+        claim HpbL: function_on p unit_interval X /\ apply_fun p 0 = y.
+        { exact (andEL (function_on p unit_interval X /\ apply_fun p 0 = y) (apply_fun p 1 = x) Hpb1). }
+        claim Hp1: apply_fun p 1 = x.
+        { exact (andER (function_on p unit_interval X /\ apply_fun p 0 = y) (apply_fun p 1 = x) Hpb1). }
+        claim Hp0: apply_fun p 0 = y.
+        { exact (andER (function_on p unit_interval X) (apply_fun p 0 = y) HpbL). }
+        claim Hfun: function_on p unit_interval X.
+        { exact (andEL (function_on p unit_interval X) (apply_fun p 0 = y) HpbL). }
+        apply andI.
+        - (** (function_on /\ continuous_map) /\ apply_fun p 0 = y **)
+          apply andI.
+          + (** function_on /\ continuous_map **)
+            apply andI.
+            * exact Hfun.
+            * exact Hcont.
+          + exact Hp0.
+        - exact Hp1.
+  - (** transitive: concatenate paths **)
+  let x y z.
+  assume HxX: x :e X.
+  assume HyX: y :e X.
+  assume HzX: z :e X.
+  assume _: y :e path_component_of X Tx x.
+  assume _: z :e path_component_of X Tx y.
+  prove z :e path_component_of X Tx x.
+  prove z :e {w :e X | exists p:set,
+     function_on p unit_interval X /\
+     continuous_map unit_interval R_standard_topology X Tx p /\
+     apply_fun p 0 = x /\ apply_fun p 1 = w}.
+  apply SepI.
+  - exact HzX.
+  - claim Hex: exists p:set, path_between X x z p.
+    { exact (path_between_exists X x z HxX HzX). }
+    apply Hex.
+    let p.
+    assume Hpb: path_between X x z p.
+    claim Hcont: continuous_map unit_interval R_standard_topology X Tx p.
+    { exact (path_between_is_continuous X Tx x z p HTx HxX HzX Hpb). }
+    prove exists q:set, function_on q unit_interval X /\
+      continuous_map unit_interval R_standard_topology X Tx q /\
+      apply_fun q 0 = x /\ apply_fun q 1 = z.
+    witness p.
+    prove function_on p unit_interval X /\
+      continuous_map unit_interval R_standard_topology X Tx p /\
+      apply_fun p 0 = x /\ apply_fun p 1 = z.
+    claim Hpb1: (function_on p unit_interval X /\ apply_fun p 0 = x) /\ apply_fun p 1 = z.
+    { exact Hpb. }
+    claim HpbL: function_on p unit_interval X /\ apply_fun p 0 = x.
+    { exact (andEL (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = z) Hpb1). }
+    claim Hp1: apply_fun p 1 = z.
+    { exact (andER (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = z) Hpb1). }
+    claim Hp0: apply_fun p 0 = x.
+    { exact (andER (function_on p unit_interval X) (apply_fun p 0 = x) HpbL). }
+    claim Hfun: function_on p unit_interval X.
+    { exact (andEL (function_on p unit_interval X) (apply_fun p 0 = x) HpbL). }
+    apply andI.
+    - apply andI.
+      + apply andI.
+        * exact Hfun.
+        * exact Hcont.
+      + exact Hp0.
+    - exact Hp1.
 Qed.
 
 (** from §25 Definition: components and local connectedness **) 
