@@ -16575,6 +16575,145 @@ Definition order_rel : set -> set -> set -> prop := fun X a b =>
      a = (a1, a2) /\ b = (b1, b2) /\
      (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
 
+(** Helper: strict order on ℝ implies order_rel on ℝ **)
+(** LATEX VERSION: If a<b in ℝ then order_rel(ℝ,a,b) holds (first disjunct in the definition). **)
+Theorem Rlt_implies_order_rel_R : forall a b:set, Rlt a b -> order_rel R a b.
+let a b. assume Hab.
+prove order_rel R a b.
+(** Unfold `order_rel` at X = R. **)
+prove (R = R /\ Rlt a b)
+  \/
+  (R = rational_numbers /\ Rlt a b)
+  \/
+  (R = omega /\ a :e b)
+  \/
+  (R = omega :\: {0} /\ a :e b)
+  \/
+  (R = setprod 2 omega /\
+   exists i m j n:set,
+     i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+     a = (i, m) /\ b = (j, n) /\
+     (i :e j \/ (i = j /\ m :e n)))
+  \/
+  (R = setprod R R /\
+   exists a1 a2 b1 b2:set,
+     a = (a1, a2) /\ b = (b1, b2) /\
+     (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
+(** `\/` is left-associative; inject into the leftmost disjunct repeatedly. **)
+apply orIL.
+apply orIL.
+apply orIL.
+apply orIL.
+apply orIL.
+prove R = R /\ Rlt a b.
+apply andI.
+- reflexivity.
+- exact Hab.
+Qed.
+
+(** Helper: strict order on ℚ implies order_rel on ℚ **)
+(** LATEX VERSION: If a<b in ℝ then order_rel(ℚ,a,b) holds (second disjunct in the definition). **)
+Theorem Rlt_implies_order_rel_Q : forall a b:set, Rlt a b -> order_rel rational_numbers a b.
+let a b. assume Hab.
+prove order_rel rational_numbers a b.
+(** Unfold `order_rel` at X = rational_numbers. **)
+prove (rational_numbers = R /\ Rlt a b)
+  \/
+  (rational_numbers = rational_numbers /\ Rlt a b)
+  \/
+  (rational_numbers = omega /\ a :e b)
+  \/
+  (rational_numbers = omega :\: {0} /\ a :e b)
+  \/
+  (rational_numbers = setprod 2 omega /\
+   exists i m j n:set,
+     i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+     a = (i, m) /\ b = (j, n) /\
+     (i :e j \/ (i = j /\ m :e n)))
+  \/
+  (rational_numbers = setprod R R /\
+   exists a1 a2 b1 b2:set,
+     a = (a1, a2) /\ b = (b1, b2) /\
+     (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
+(** Reach the inner disjunction (A \/ B), then choose B. **)
+apply orIL.
+apply orIL.
+apply orIL.
+apply orIL.
+apply orIR.
+prove rational_numbers = rational_numbers /\ Rlt a b.
+apply andI.
+- reflexivity.
+- exact Hab.
+Qed.
+
+(** Helper: membership order on ω implies order_rel on ω **)
+(** LATEX VERSION: For ω, the strict order is membership: if a∈b then order_rel(ω,a,b). **)
+Theorem mem_implies_order_rel_omega : forall a b:set, a :e b -> order_rel omega a b.
+let a b. assume Hab.
+prove order_rel omega a b.
+(** Unfold `order_rel` at X = omega and inject into the 3rd disjunct. **)
+prove (omega = R /\ Rlt a b)
+  \/
+  (omega = rational_numbers /\ Rlt a b)
+  \/
+  (omega = omega /\ a :e b)
+  \/
+  (omega = omega :\: {0} /\ a :e b)
+  \/
+  (omega = setprod 2 omega /\
+   exists i m j n:set,
+     i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+     a = (i, m) /\ b = (j, n) /\
+     (i :e j \/ (i = j /\ m :e n)))
+  \/
+  (omega = setprod R R /\
+   exists a1 a2 b1 b2:set,
+     a = (a1, a2) /\ b = (b1, b2) /\
+     (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
+apply orIL.
+apply orIL.
+apply orIL.
+apply orIR.
+prove omega = omega /\ a :e b.
+apply andI.
+- reflexivity.
+- exact Hab.
+Qed.
+
+(** Helper: membership order on ω\\{0} implies order_rel on ω\\{0} **)
+(** LATEX VERSION: For ω\\{0}, we still use membership as the strict order. **)
+Theorem mem_implies_order_rel_omega_nonzero : forall a b:set, a :e b -> order_rel (omega :\: {0}) a b.
+let a b. assume Hab.
+prove order_rel (omega :\: {0}) a b.
+(** Unfold and inject into the 4th disjunct. **)
+prove (omega :\: {0} = R /\ Rlt a b)
+  \/
+  (omega :\: {0} = rational_numbers /\ Rlt a b)
+  \/
+  (omega :\: {0} = omega /\ a :e b)
+  \/
+  (omega :\: {0} = omega :\: {0} /\ a :e b)
+  \/
+  (omega :\: {0} = setprod 2 omega /\
+   exists i m j n:set,
+     i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+     a = (i, m) /\ b = (j, n) /\
+     (i :e j \/ (i = j /\ m :e n)))
+  \/
+  (omega :\: {0} = setprod R R /\
+   exists a1 a2 b1 b2:set,
+     a = (a1, a2) /\ b = (b1, b2) /\
+     (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
+apply orIL.
+apply orIL.
+apply orIR.
+prove omega :\: {0} = omega :\: {0} /\ a :e b.
+apply andI.
+- reflexivity.
+- exact Hab.
+Qed.
+
 Definition order_topology_basis : set -> set := fun X =>
   ({I :e Power X | exists a :e X, exists b :e X,
         I = {x :e X | order_rel X a x /\ order_rel X x b}}
@@ -26084,12 +26223,6 @@ apply and3I.
   assume _. assume H. exact H.
 Qed.
 
-(** Helper: preimage condition implies function_on **)
-Axiom preimage_implies_function : forall X Tx Y Ty f:set,
-  topology_on X Tx -> topology_on Y Ty ->
-  (forall V:set, V :e Ty -> preimage_of X f V :e Tx) ->
-  function_on f X Y.
-
 (** continuity at a point **)
 (** LATEX VERSION: f is continuous at x if for every neighborhood V of f(x), there exists neighborhood U of x with f(U)⊆V. **)
 (** FIXED: Formalized using open-set neighborhood criterion in the standard topology on R. **)
@@ -26103,6 +26236,7 @@ Definition continuous_at : set -> set -> prop := fun f x =>
 Theorem continuity_equiv_forms : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f <->
+    function_on f X Y /\
     (forall V:set, V :e Ty -> preimage_of X f V :e Tx) /\
     (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C)) /\
     (forall x:set, x :e X ->
@@ -26112,6 +26246,7 @@ let X Tx Y Ty f.
 assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
 prove continuous_map X Tx Y Ty f <->
+    function_on f X Y /\
     (forall V:set, V :e Ty -> preimage_of X f V :e Tx) /\
     (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C)) /\
     (forall x:set, x :e X ->
@@ -26120,7 +26255,8 @@ prove continuous_map X Tx Y Ty f <->
 apply iffI.
 - (** Forward direction: continuous_map implies all three conditions **)
   assume Hf: continuous_map X Tx Y Ty f.
-  prove (forall V:set, V :e Ty -> preimage_of X f V :e Tx) /\
+  prove function_on f X Y /\
+        (forall V:set, V :e Ty -> preimage_of X f V :e Tx) /\
         (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C)) /\
         (forall x:set, x :e X ->
            forall V:set, V :e Ty -> apply_fun f x :e V ->
@@ -26135,29 +26271,41 @@ apply iffI.
                  (andEL (topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y)
                         (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
                         Hf)). }
+  (** Build (((Hfun /\ Hpreimage) /\ closed-preimage) /\ neighborhood) **)
   apply andI.
-  + apply andI.
-    * (** Condition 1: preimages of opens are open **)
-      exact Hpreimage.
-    * (** Condition 2: preimages of closed sets are closed **)
-      exact (continuous_preserves_closed X Tx Y Ty f Hf).
-  + (** Condition 3: local neighborhood characterization **)
-    exact (continuous_local_neighborhood X Tx Y Ty f HTx HTy Hfun Hpreimage).
+  - apply andI.
+    + apply andI.
+      * exact Hfun.
+      * exact Hpreimage.
+    + exact (continuous_preserves_closed X Tx Y Ty f Hf).
+  - exact (continuous_local_neighborhood X Tx Y Ty f HTx HTy Hfun Hpreimage).
 - (** Backward direction: three conditions imply continuous_map **)
   assume Hconds.
   prove continuous_map X Tx Y Ty f.
-  claim Hpreimage: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
-  { exact (andEL (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+  (** Extract function_on and preimage condition from the left-associative conjunction:
+      Hconds : (((A /\ B) /\ C) /\ D) where
+      A = function_on f X Y
+      B = forall V, V :e Ty -> preimage_of X f V :e Tx
+      C = forall C, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C)
+      D = forall x, ... neighborhood condition **)
+  claim Habc:
+    (function_on f X Y /\ (forall V:set, V :e Ty -> preimage_of X f V :e Tx)) /\
+    (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C)).
+  { exact (andEL (((function_on f X Y /\ (forall V:set, V :e Ty -> preimage_of X f V :e Tx)) /\
+                   (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C))))
+                 (forall x:set, x :e X ->
+                    forall V:set, V :e Ty -> apply_fun f x :e V ->
+                      exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V)
+                 Hconds). }
+  claim Hab:
+    function_on f X Y /\ (forall V:set, V :e Ty -> preimage_of X f V :e Tx).
+  { exact (andEL (function_on f X Y /\ (forall V:set, V :e Ty -> preimage_of X f V :e Tx))
                  (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C))
-                 (andEL ((forall V:set, V :e Ty -> preimage_of X f V :e Tx) /\
-                         (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C)))
-                        (forall x:set, x :e X ->
-                           forall V:set, V :e Ty -> apply_fun f x :e V ->
-                             exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V)
-                        Hconds)). }
-  (** Derive function_on f X Y from preimage condition **)
+                 Habc). }
   claim Hfun: function_on f X Y.
-  { exact (preimage_implies_function X Tx Y Ty f HTx HTy Hpreimage). }
+  { exact (andEL (function_on f X Y) (forall V:set, V :e Ty -> preimage_of X f V :e Tx) Hab). }
+  claim Hpreimage: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+  { exact (andER (function_on f X Y) (forall V:set, V :e Ty -> preimage_of X f V :e Tx) Hab). }
   (** Build continuous_map from components **)
   prove topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
         (forall V:set, V :e Ty -> preimage_of X f V :e Tx).
