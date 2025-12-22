@@ -24689,6 +24689,118 @@ apply iffI.
 	    exact (Hspec HFsub).
 Qed.
 
+(** helper: in a T1 space, the complement of a singleton is open **)
+(** LATEX VERSION: In a T1 space, X\\{x} is open for every x∈X. **)
+Theorem T1_singleton_complement_open : forall X Tx x:set,
+  T1_space X Tx -> x :e X -> X :\: {x} :e Tx.
+let X Tx x.
+assume HT1: T1_space X Tx.
+assume HxX: x :e X.
+prove X :\: {x} :e Tx.
+claim Htop: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall F:set, F c= X -> finite F -> closed_in X Tx F)
+               HT1). }
+claim Hsing: closed_in X Tx {x}.
+{ exact ((iffEL (T1_space X Tx)
+                (forall z:set, z :e X -> closed_in X Tx {z})
+                (lemma_T1_singletons_closed X Tx Htop) HT1) x HxX). }
+claim Hdef: topology_on X Tx /\ ({x} c= X /\ exists U :e Tx, {x} = X :\: U).
+{ exact Hsing. }
+claim Hsubex: {x} c= X /\ exists U :e Tx, {x} = X :\: U.
+{ exact (andER (topology_on X Tx) ({x} c= X /\ exists U :e Tx, {x} = X :\: U) Hdef). }
+claim HexU: exists U :e Tx, {x} = X :\: U.
+{ exact (andER ({x} c= X) (exists U :e Tx, {x} = X :\: U) Hsubex). }
+apply HexU.
+let U. assume HUeq.
+claim HUinTx: U :e Tx.
+{ exact (andEL (U :e Tx) ({x} = X :\: U) HUeq). }
+claim Hxeq: {x} = X :\: U.
+{ exact (andER (U :e Tx) ({x} = X :\: U) HUeq). }
+claim HxnotU: x /:e U.
+{ claim HxIn: x :e X :\: U.
+  { rewrite <- Hxeq. exact (SingI x). }
+  exact (setminusE2 X U x HxIn). }
+claim HeqU: U = X :\: {x}.
+{ apply set_ext.
+  - let z. assume HzU: z :e U.
+    prove z :e X :\: {x}.
+    claim HzX: z :e X.
+    { claim HTsub: Tx c= Power X.
+      { exact (topology_subset_axiom X Tx Htop). }
+      claim HUPow: U :e Power X.
+      { exact (HTsub U HUinTx). }
+      claim HUsub: U c= X.
+      { exact (PowerE X U HUPow). }
+      exact (HUsub z HzU). }
+    apply setminusI.
+    + exact HzX.
+    + assume HzSing: z :e {x}.
+      claim Hzeq: z = x.
+      { exact (SingE x z HzSing). }
+      claim HxU: x :e U.
+      { prove x :e U.
+        rewrite <- Hzeq.
+        exact HzU. }
+      exact (HxnotU HxU).
+  - let z. assume Hz: z :e X :\: {x}.
+    prove z :e U.
+    apply (xm (z :e U)).
+    + assume HzU: z :e U.
+      exact HzU.
+    + assume HznotU: z /:e U.
+      claim HzIn: z :e X :\: U.
+      { exact (setminusI X U z (setminusE1 X {x} z Hz) HznotU). }
+      claim HzSing: z :e {x}.
+      { rewrite Hxeq. exact HzIn. }
+      claim Hfalse: False.
+      { exact ((setminusE2 X {x} z Hz) HzSing). }
+      apply FalseE.
+      exact Hfalse.
+	}
+rewrite <- HeqU.
+exact HUinTx.
+Qed.
+
+(** helper: subspaces of T1 spaces are T1 **)
+(** LATEX VERSION: If X is T1, then every subspace Y⊂X is T1 in the subspace topology. **)
+Theorem subspace_T1 : forall X Tx Y:set,
+  topology_on X Tx -> Y c= X -> T1_space X Tx -> T1_space Y (subspace_topology X Tx Y).
+let X Tx Y.
+assume HTx: topology_on X Tx.
+assume HY: Y c= X.
+assume HT1: T1_space X Tx.
+prove T1_space Y (subspace_topology X Tx Y).
+claim HTy: topology_on Y (subspace_topology X Tx Y).
+{ exact (subspace_topology_is_topology X Tx Y HTx HY). }
+apply (iffER (T1_space Y (subspace_topology X Tx Y))
+             (forall y:set, y :e Y -> closed_in Y (subspace_topology X Tx Y) {y})
+             (lemma_T1_singletons_closed Y (subspace_topology X Tx Y) HTy)).
+prove forall y:set, y :e Y -> closed_in Y (subspace_topology X Tx Y) {y}.
+let y. assume HyY: y :e Y.
+prove closed_in Y (subspace_topology X Tx Y) {y}.
+apply (iffER (closed_in Y (subspace_topology X Tx Y) {y})
+             (exists C:set, closed_in X Tx C /\ {y} = C :/\: Y)
+             (closed_in_subspace_iff_intersection X Tx Y {y} HTx HY)).
+witness {y}.
+apply andI.
+- (** singleton closed in X by T1 **)
+  exact ((iffEL (T1_space X Tx)
+                (forall z:set, z :e X -> closed_in X Tx {z})
+                (lemma_T1_singletons_closed X Tx HTx) HT1) y (HY y HyY)).
+- (** {y} = {y} ∩ Y since y∈Y **)
+  apply set_ext.
+  * let z. assume Hz: z :e {y}.
+    prove z :e {y} :/\: Y.
+    claim Hzeq: z = y.
+    { exact (SingE y z Hz). }
+    rewrite Hzeq.
+    exact (binintersectI {y} Y y (SingI y) HyY).
+  * let z. assume Hz: z :e {y} :/\: Y.
+    prove z :e {y}.
+    exact (binintersectE1 {y} Y z Hz).
+Qed.
+
 (** LATEX VERSION: Exercise 15: Show the T1 axiom is equivalent to the condition that for each pair of points of X, each has a neighborhood not containing the other. **)
 Theorem ex17_15_T1_characterization : forall X Tx:set,
   topology_on X Tx ->
@@ -26657,6 +26769,42 @@ claim Hab: topology_on X Tx /\ topology_on Y Ty.
                (function_on f X Y)
                Habc). }
 exact (andER (topology_on X Tx) (topology_on Y Ty) Hab).
+Qed.
+
+(** helper: homeomorphisms are injective **)
+(** LATEX VERSION: A homeomorphism is injective (as it has a two-sided inverse). **)
+Theorem homeomorphism_injective : forall X Tx Y Ty f:set,
+  homeomorphism X Tx Y Ty f ->
+  forall x1 x2:set, x1 :e X -> x2 :e X -> apply_fun f x1 = apply_fun f x2 -> x1 = x2.
+let X Tx Y Ty f.
+assume Hhom: homeomorphism X Tx Y Ty f.
+let x1 x2.
+assume Hx1X: x1 :e X.
+assume Hx2X: x2 :e X.
+assume Heq: apply_fun f x1 = apply_fun f x2.
+prove x1 = x2.
+claim Hexg:
+  exists g:set, continuous_map Y Ty X Tx g /\
+    (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+    (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y).
+{ exact (andER (continuous_map X Tx Y Ty f)
+               (exists g:set, continuous_map Y Ty X Tx g /\
+                 (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+                 (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
+               Hhom). }
+apply Hexg.
+let g. assume Hgprop.
+claim Hginv: forall x:set, x :e X -> apply_fun g (apply_fun f x) = x.
+{ exact (andER (continuous_map Y Ty X Tx g)
+               (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x)
+               (andEL (continuous_map Y Ty X Tx g /\
+                      (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x))
+                     (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y)
+                     Hgprop)). }
+rewrite <- (Hginv x1 Hx1X).
+rewrite <- (Hginv x2 Hx2X).
+rewrite Heq.
+reflexivity.
 Qed.
 
 (** from §18: continuous maps on subspaces **) 
