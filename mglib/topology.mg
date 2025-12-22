@@ -7280,7 +7280,136 @@ Qed.
 (** Helper: product of two countable sets is countable **)
 (** LATEX VERSION: If X and Y are countable then X×Y is countable via nat-pairing of injections. **)
 Theorem setprod_countable : forall X Y:set, countable X -> countable Y -> countable (X :*: Y).
-admit.
+let X Y.
+assume HX: countable X.
+assume HY: countable Y.
+prove countable (X :*: Y).
+prove exists h : set -> set, inj (X :*: Y) omega h.
+apply HX.
+let f : set -> set.
+assume Hf: inj X omega f.
+apply HY.
+let g : set -> set.
+assume Hg: inj Y omega g.
+set Yc : set -> set := fun _ => Y.
+set h : set -> set := fun z => nat_pair (f (proj0 z)) (g (proj1 z)).
+witness h.
+apply (injI (X :*: Y) omega h).
+- let z. assume Hz: z :e X :*: Y.
+  prove h z :e omega.
+  claim Hz0: proj0 z :e X.
+  { exact (proj0_Sigma X Yc z Hz). }
+  claim Hz1: proj1 z :e Y.
+  { exact (proj1_Sigma X Yc z Hz). }
+  claim Hfmap: forall a :e X, f a :e omega.
+  { exact (andEL (forall a :e X, f a :e omega)
+                 (forall a b :e X, f a = f b -> a = b)
+                 Hf). }
+  claim Hgmap: forall b :e Y, g b :e omega.
+  { exact (andEL (forall b :e Y, g b :e omega)
+                 (forall b1 b2 :e Y, g b1 = g b2 -> b1 = b2)
+                 Hg). }
+  claim Hfz: f (proj0 z) :e omega.
+  { exact (Hfmap (proj0 z) Hz0). }
+  claim Hgz: g (proj1 z) :e omega.
+  { exact (Hgmap (proj1 z) Hz1). }
+  claim Hhdef: h z = nat_pair (f (proj0 z)) (g (proj1 z)).
+  { reflexivity. }
+  rewrite Hhdef.
+  exact (nat_pair_In_omega (f (proj0 z)) Hfz (g (proj1 z)) Hgz).
+- let z1. assume Hz1: z1 :e X :*: Y.
+  let z2. assume Hz2: z2 :e X :*: Y.
+  assume Hhz: h z1 = h z2.
+  prove z1 = z2.
+  apply (Sigma_E X Yc z1 Hz1).
+  let x1. assume Hx1pair.
+  apply Hx1pair.
+  assume Hx1X Hexy1.
+  apply Hexy1.
+  let y1. assume Hy1pair.
+  apply Hy1pair.
+  assume Hy1Y Hz1eq.
+  apply (Sigma_E X Yc z2 Hz2).
+  let x2. assume Hx2pair.
+  apply Hx2pair.
+  assume Hx2X Hexy2.
+  apply Hexy2.
+  let y2. assume Hy2pair.
+  apply Hy2pair.
+  assume Hy2Y Hz2eq.
+  claim Hfmap: forall a :e X, f a :e omega.
+  { exact (andEL (forall a :e X, f a :e omega)
+                 (forall a b :e X, f a = f b -> a = b)
+                 Hf). }
+  claim Hgmap: forall b :e Y, g b :e omega.
+  { exact (andEL (forall b :e Y, g b :e omega)
+                 (forall b1 b2 :e Y, g b1 = g b2 -> b1 = b2)
+                 Hg). }
+  claim Hfinj: forall a b :e X, f a = f b -> a = b.
+  { exact (andER (forall a :e X, f a :e omega)
+                 (forall a b :e X, f a = f b -> a = b)
+                 Hf). }
+  claim Hginj: forall b1 b2 :e Y, g b1 = g b2 -> b1 = b2.
+  { exact (andER (forall b :e Y, g b :e omega)
+                 (forall b1 b2 :e Y, g b1 = g b2 -> b1 = b2)
+                 Hg). }
+	  claim Hproj01: proj0 z1 = x1.
+	  { rewrite (proj0_ap_0 z1).
+	    rewrite Hz1eq.
+	    exact (pair_ap_0 x1 y1). }
+	  claim Hproj11: proj1 z1 = y1.
+	  { rewrite (proj1_ap_1 z1).
+	    rewrite Hz1eq.
+	    exact (pair_ap_1 x1 y1). }
+	  claim Hproj02: proj0 z2 = x2.
+	  { rewrite (proj0_ap_0 z2).
+	    rewrite Hz2eq.
+	    exact (pair_ap_0 x2 y2). }
+	  claim Hproj12: proj1 z2 = y2.
+	  { rewrite (proj1_ap_1 z2).
+	    rewrite Hz2eq.
+	    exact (pair_ap_1 x2 y2). }
+  claim Hh1: h z1 = nat_pair (f x1) (g y1).
+  { claim Hhdef: h z1 = nat_pair (f (proj0 z1)) (g (proj1 z1)).
+    { reflexivity. }
+    rewrite Hhdef.
+    rewrite Hproj01.
+    rewrite Hproj11.
+    reflexivity. }
+  claim Hh2: h z2 = nat_pair (f x2) (g y2).
+  { claim Hhdef: h z2 = nat_pair (f (proj0 z2)) (g (proj1 z2)).
+    { reflexivity. }
+    rewrite Hhdef.
+    rewrite Hproj02.
+    rewrite Hproj12.
+    reflexivity. }
+  claim Hpair: nat_pair (f x1) (g y1) = nat_pair (f x2) (g y2).
+  { rewrite <- Hh1. rewrite <- Hh2. exact Hhz. }
+  claim Hf1: f x1 :e omega.
+  { exact (Hfmap x1 Hx1X). }
+  claim Hf2: f x2 :e omega.
+  { exact (Hfmap x2 Hx2X). }
+  claim Hg1: g y1 :e omega.
+  { exact (Hgmap y1 Hy1Y). }
+  claim Hg2: g y2 :e omega.
+  { exact (Hgmap y2 Hy2Y). }
+  claim Heqf: f x1 = f x2.
+  { exact (nat_pair_0 (f x1) Hf1 (g y1) Hg1
+                      (f x2) Hf2 (g y2) Hg2
+                      Hpair). }
+  claim Heqx: x1 = x2.
+  { exact (Hfinj x1 Hx1X x2 Hx2X Heqf). }
+  claim Heqg: g y1 = g y2.
+  { exact (nat_pair_1 (f x1) Hf1 (g y1) Hg1
+                      (f x2) Hf2 (g y2) Hg2
+                      Hpair). }
+	  claim Heqy: y1 = y2.
+	  { exact (Hginj y1 Hy1Y y2 Hy2Y Heqg). }
+  rewrite Hz1eq.
+  rewrite Hz2eq.
+  rewrite Heqx.
+  rewrite Heqy.
+  reflexivity.
 Qed.
 
 (** Helper: Union of a family preserves Power set membership **)
