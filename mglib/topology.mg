@@ -16446,7 +16446,9 @@ prove basis_on R rational_open_intervals_basis /\ generated_topology R rational_
 (** NOTE: This needs a density lemma for `rational_numbers` in `R`:
     for any `a b :e R` with `Rlt a b` and any `x :e open_interval a b`,
     there exist rationals `q1 q2` with `Rlt a q1`, `Rlt q1 x`, `Rlt x q2`, `Rlt q2 b`.
-    We currently do not have a usable pre-topology theorem of this form in this file. **)
+    A promising route is to use `real_E` (pre-topology, trusted) to approximate reals by elements of `SNoS_ omega`,
+    then use `Subq_SNoS_omega_rational` to view those approximants as rationals. The missing piece is a clean
+    inequality bridge showing that sufficiently small `eps_ k` yields a strict point between `a` and `b`. **)
 apply andI.
 - admit. (** rational open intervals satisfy basis_on R **)
 - admit. (** generated_topology R rational_open_intervals_basis equals R_standard_topology **)
@@ -16464,7 +16466,8 @@ Theorem ex13_8b_halfopen_rational_basis_topology :
 prove basis_on R rational_halfopen_intervals_basis /\ generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology.
 (** NOTE: This similarly needs density of rationals plus a separation argument showing
     the generated topology from halfopen rational intervals does not coincide with
-    the lower limit topology on `R`. **)
+    the lower limit topology on `R`. As in (a), `real_E` plus `Subq_SNoS_omega_rational` should supply many rational
+    endpoints once the relevant order/epsilon inequalities are available. **)
 apply andI.
 - admit. (** rational half-open intervals satisfy basis_on R **)
 - admit. (** generated topology differs from R_lower_limit_topology **)
