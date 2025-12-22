@@ -7277,6 +7277,12 @@ Theorem Sigma_countable : forall X:set, countable X ->
 admit.
 Qed.
 
+(** Helper: product of two countable sets is countable **)
+(** LATEX VERSION: If X and Y are countable then X×Y is countable via nat-pairing of injections. **)
+Theorem setprod_countable : forall X Y:set, countable X -> countable Y -> countable (X :*: Y).
+admit.
+Qed.
+
 (** Helper: Union of a family preserves Power set membership **)
 Theorem Union_Power : forall X Fam:set,
   Fam c= Power X -> Union Fam c= X.
