@@ -27098,26 +27098,20 @@ assume Hx: x :e X.
 assume Hy: y :e X.
 assume Hz: z :e X.
 claim Hfun: function_on d (setprod X X) R.
-{ exact (andEL (function_on d (setprod X X) R)
-               ((forall x0 y0:set, x0 :e X -> y0 :e X -> apply_fun d (x0,y0) = apply_fun d (y0,x0)) /\
-                (forall x0:set, x0 :e X -> apply_fun d (x0,x0) = 0) /\
-                (forall x0 y0:set, x0 :e X -> y0 :e X ->
-                   ~(Rlt (apply_fun d (x0,y0)) 0) /\ (apply_fun d (x0,y0) = 0 -> x0 = y0)) /\
-                (forall x0 y0 z0:set, x0 :e X -> y0 :e X -> z0 :e X ->
-                   ~(Rlt (add_SNo (apply_fun d (x0,y0)) (apply_fun d (y0,z0)))
-                         (apply_fun d (x0,z0)))))
-               Hm). }
+{ apply Hm.
+  assume Hcore Htri.
+  apply Hcore.
+  assume Hcore2 Hposdef.
+  apply Hcore2.
+  assume Hab Hrefl.
+  apply Hab.
+  assume Hf Hsym.
+  exact Hf. }
 claim Htri: forall x0 y0 z0:set, x0 :e X -> y0 :e X -> z0 :e X ->
   ~(Rlt (add_SNo (apply_fun d (x0,y0)) (apply_fun d (y0,z0))) (apply_fun d (x0,z0))).
-{ exact (andER (function_on d (setprod X X) R)
-               ((forall x0 y0:set, x0 :e X -> y0 :e X -> apply_fun d (x0,y0) = apply_fun d (y0,x0)) /\
-                (forall x0:set, x0 :e X -> apply_fun d (x0,x0) = 0) /\
-                (forall x0 y0:set, x0 :e X -> y0 :e X ->
-                   ~(Rlt (apply_fun d (x0,y0)) 0) /\ (apply_fun d (x0,y0) = 0 -> x0 = y0)) /\
-                (forall x0 y0 z0:set, x0 :e X -> y0 :e X -> z0 :e X ->
-                   ~(Rlt (add_SNo (apply_fun d (x0,y0)) (apply_fun d (y0,z0)))
-                         (apply_fun d (x0,z0)))))
-               Hm). }
+{ apply Hm.
+  assume Hcore Htri.
+  exact Htri. }
 
 claim HxyIn: (x,y) :e setprod X X.
 { exact (tuple_2_setprod X X x Hx y Hy). }
