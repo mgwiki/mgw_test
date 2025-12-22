@@ -41374,7 +41374,91 @@ Theorem separation_axioms_subspace_product : forall X Tx:set,
 	        exact (HynotF HyF). }
 		      claim HexUV: exists U V:set, U :e Tx /\ V :e Tx /\ y :e U /\ C0 c= V /\ U :/\: V = Empty.
 		      { exact (HsepX y HyX C0 HC0cl HynotC0). }
-		      admit. (** finish: from HexUV pick U,V in Tx; set U'=U∩Y,V'=V∩Y and show the required separation in the subspace **)
+		      set Ux := Eps_i (fun U:set =>
+		        exists V:set, U :e Tx /\ V :e Tx /\ y :e U /\ C0 c= V /\ U :/\: V = Empty).
+		      claim HUxprop: exists V:set, Ux :e Tx /\ V :e Tx /\ y :e Ux /\ C0 c= V /\ Ux :/\: V = Empty.
+		      { exact (Eps_i_ex (fun U:set =>
+		               exists V:set, U :e Tx /\ V :e Tx /\ y :e U /\ C0 c= V /\ U :/\: V = Empty) HexUV). }
+		      set Vx := Eps_i (fun V:set => Ux :e Tx /\ V :e Tx /\ y :e Ux /\ C0 c= V /\ Ux :/\: V = Empty).
+		      claim HVxprop: Ux :e Tx /\ Vx :e Tx /\ y :e Ux /\ C0 c= Vx /\ Ux :/\: Vx = Empty.
+		      { exact (Eps_i_ex (fun V:set => Ux :e Tx /\ V :e Tx /\ y :e Ux /\ C0 c= V /\ Ux :/\: V = Empty) HUxprop). }
+		      claim H1234: ((Ux :e Tx /\ Vx :e Tx) /\ y :e Ux) /\ C0 c= Vx.
+		      { exact (andEL (((Ux :e Tx /\ Vx :e Tx) /\ y :e Ux) /\ C0 c= Vx)
+		                     (Ux :/\: Vx = Empty)
+		                     HVxprop). }
+		      claim HdisjUV: Ux :/\: Vx = Empty.
+		      { exact (andER (((Ux :e Tx /\ Vx :e Tx) /\ y :e Ux) /\ C0 c= Vx)
+		                     (Ux :/\: Vx = Empty)
+		                     HVxprop). }
+		      claim H123: (Ux :e Tx /\ Vx :e Tx) /\ y :e Ux.
+		      { exact (andEL ((Ux :e Tx /\ Vx :e Tx) /\ y :e Ux) (C0 c= Vx) H1234). }
+		      claim HC0subVx: C0 c= Vx.
+		      { exact (andER ((Ux :e Tx /\ Vx :e Tx) /\ y :e Ux) (C0 c= Vx) H1234). }
+		      claim H12: Ux :e Tx /\ Vx :e Tx.
+		      { exact (andEL (Ux :e Tx /\ Vx :e Tx) (y :e Ux) H123). }
+		      claim HyUx: y :e Ux.
+		      { exact (andER (Ux :e Tx /\ Vx :e Tx) (y :e Ux) H123). }
+		      claim HUxTx: Ux :e Tx.
+		      { exact (andEL (Ux :e Tx) (Vx :e Tx) H12). }
+		      claim HVxTx: Vx :e Tx.
+		      { exact (andER (Ux :e Tx) (Vx :e Tx) H12). }
+		      set U0 := Ux :/\: Y.
+		      set V0 := Vx :/\: Y.
+		      witness U0.
+		      witness V0.
+		      apply andI.
+		      - apply andI.
+		        + apply andI.
+		          - apply andI.
+		            + prove U0 :e subspace_topology X Tx Y.
+		              claim HU0subY: U0 c= Y.
+		              { exact (binintersect_Subq_2 Ux Y). }
+		              claim HU0pow: U0 :e Power Y.
+		              { exact (PowerI Y U0 HU0subY). }
+		              claim HU0ex: exists V :e Tx, U0 = V :/\: Y.
+		              { witness Ux.
+		                apply andI.
+		                - exact HUxTx.
+		                - reflexivity. }
+		              exact (SepI (Power Y) (fun U:set => exists V :e Tx, U = V :/\: Y) U0 HU0pow HU0ex).
+		            + prove V0 :e subspace_topology X Tx Y.
+		              claim HV0subY: V0 c= Y.
+		              { exact (binintersect_Subq_2 Vx Y). }
+		              claim HV0pow: V0 :e Power Y.
+		              { exact (PowerI Y V0 HV0subY). }
+		              claim HV0ex: exists V :e Tx, V0 = V :/\: Y.
+		              { witness Vx.
+		                apply andI.
+		                - exact HVxTx.
+		                - reflexivity. }
+		              exact (SepI (Power Y) (fun U:set => exists V :e Tx, U = V :/\: Y) V0 HV0pow HV0ex).
+		          - exact (binintersectI Ux Y y HyUx HyY).
+		        + let z. assume HzF: z :e F.
+		          prove z :e V0.
+		          claim HzCY: z :e C0 :/\: Y.
+		          { rewrite <- HFeq. exact HzF. }
+		          claim HzC0: z :e C0.
+		          { exact (binintersectE1 C0 Y z HzCY). }
+		          claim HzY: z :e Y.
+		          { exact (binintersectE2 C0 Y z HzCY). }
+		          claim HzVx: z :e Vx.
+		          { exact (HC0subVx z HzC0). }
+		          exact (binintersectI Vx Y z HzVx HzY).
+		      - apply Empty_Subq_eq.
+		        let z. assume Hz: z :e U0 :/\: V0.
+		        prove z :e Empty.
+		        claim HzU0: z :e U0.
+		        { exact (binintersectE1 U0 V0 z Hz). }
+		        claim HzV0: z :e V0.
+		        { exact (binintersectE2 U0 V0 z Hz). }
+		        claim HzUx: z :e Ux.
+		        { exact (binintersectE1 Ux Y z HzU0). }
+		        claim HzVx: z :e Vx.
+		        { exact (binintersectE1 Vx Y z HzV0). }
+		        claim HzUV: z :e Ux :/\: Vx.
+		        { exact (binintersectI Ux Vx z HzUx HzVx). }
+		        rewrite <- HdisjUV.
+		        exact HzUV.
 	- admit. (** product_topology_full regular: pending; coordinatewise separation using regularity of factors **)
 Qed.
 
