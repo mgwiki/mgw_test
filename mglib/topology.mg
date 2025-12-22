@@ -36534,7 +36534,17 @@ Theorem supp_ex_locally_euclidean_2_iii_implies_iv : forall X Tx:set,
 let X Tx.
 assume Hmet.
 prove normal_space X Tx.
-admit. (** metrizable spaces are normal by standard theorem **)
+(** Unpack metrizability: Tx = metric_topology X d for some metric d. **)
+apply Hmet.
+let d. assume HdPair.
+claim Hd: metric_on X d.
+{ exact (andEL (metric_on X d) (metric_topology X d = Tx) HdPair). }
+claim Heq: metric_topology X d = Tx.
+{ exact (andER (metric_on X d) (metric_topology X d = Tx) HdPair). }
+claim Hnorm: normal_space X (metric_topology X d).
+{ exact (metrizable_spaces_normal X d Hd). }
+rewrite <- Heq.
+exact Hnorm.
 Qed.
 
 Theorem supp_ex_locally_euclidean_2_iv_implies_v : forall X Tx:set,
