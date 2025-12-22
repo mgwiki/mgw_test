@@ -37459,8 +37459,47 @@ let X Tx A x.
 assume HTx: topology_on X Tx.
 assume Hseq: exists seq:set, sequence_in seq A /\ converges_to X Tx seq x.
 prove x :e closure_of X Tx A.
-admit. (** if x not in closure, exists open U with x∈U and U∩A=∅; but seq→x means seq eventually in U; contradicts seq in A
-        aby: conj_myprob_9840_1_20251124_040112 ex17_6_closure_properties not_ex_all_demorgan_i closure_characterization In_5Fno2cycle binintersect_Subq_2 binunion_Subq_2 Subq_5Fbinunion_5Feq ex17_7_counterexample_union_closure prop_ext_2 . **)
+apply Hseq.
+let seq. assume Hseqpair.
+claim Hseqin: sequence_in seq A.
+{ exact (andEL (sequence_in seq A) (converges_to X Tx seq x) Hseqpair). }
+claim Hconv: converges_to X Tx seq x.
+{ exact (andER (sequence_in seq A) (converges_to X Tx seq x) Hseqpair). }
+claim HxX: x :e X.
+{ claim Hleft: (topology_on X Tx /\ sequence_on seq X) /\ x :e X.
+  { exact (andEL ((topology_on X Tx /\ sequence_on seq X) /\ x :e X)
+                 (forall U:set, U :e Tx -> x :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U)
+                 Hconv). }
+  exact (andER (topology_on X Tx /\ sequence_on seq X) (x :e X) Hleft). }
+claim Hcliff: x :e closure_of X Tx A <-> (forall U :e Tx, x :e U -> U :/\: A <> Empty).
+{ exact (closure_characterization X Tx A x HTx HxX). }
+apply (iffER (x :e closure_of X Tx A) (forall U :e Tx, x :e U -> U :/\: A <> Empty) Hcliff).
+prove forall U :e Tx, x :e U -> U :/\: A <> Empty.
+let U. assume HU: U :e Tx. assume HxU: x :e U.
+claim Hevent: exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
+{ claim Htail0: forall V:set, V :e Tx -> x :e V ->
+    exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e V.
+  { exact (andER ((topology_on X Tx /\ sequence_on seq X) /\ x :e X)
+                 (forall V:set, V :e Tx -> x :e V -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e V)
+                 Hconv). }
+  exact (Htail0 U HU HxU). }
+apply Hevent.
+let N. assume HNpair.
+claim HNomega: N :e omega.
+{ exact (andEL (N :e omega) (forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U) HNpair). }
+claim Htail: forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
+{ exact (andER (N :e omega) (forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U) HNpair). }
+claim HyU: apply_fun seq N :e U.
+{ exact (Htail N HNomega (Subq_ref N)). }
+claim HyA: apply_fun seq N :e A.
+{ exact (Hseqin N HNomega). }
+prove U :/\: A <> Empty.
+assume HUAEq: U :/\: A = Empty.
+claim HyUA: apply_fun seq N :e U :/\: A.
+{ exact (binintersectI U A (apply_fun seq N) HyU HyA). }
+claim HyEmp: apply_fun seq N :e Empty.
+{ rewrite <- HUAEq. exact HyUA. }
+exact (EmptyE (apply_fun seq N) HyEmp False).
 Qed.
 
 (** from §30 Theorem 30.1(b): sequences and continuity in first-countable spaces **)
