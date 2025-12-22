@@ -41535,8 +41535,297 @@ let X Tx.
 assume Hcomp: compact_space X Tx.
 assume HH: Hausdorff_space X Tx.
 prove normal_space X Tx.
-admit. (** compact in Hausdorff implies closed; separate closed sets via point-compact separation iterated
-        aby: conj_myprob_10049_1_20251124_041428 Hausdorff_5Fspace_def In_5Fno2cycle not_all_ex_demorgan_i In_5Find Hausdorff_5Fseparate_5Fpoint_5Fcompact_5Fset ex26_compactness_exercises . **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+claim HT1: one_point_sets_closed X Tx.
+{ prove topology_on X Tx /\ forall x:set, x :e X -> closed_in X Tx {x}.
+  apply andI.
+  - exact HTx.
+  - let x. assume HxX: x :e X.
+    exact (Hausdorff_singletons_closed X Tx x HH HxX). }
+prove one_point_sets_closed X Tx /\
+  forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+    exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+apply andI.
+- exact HT1.
+- let A B.
+  assume HAcl: closed_in X Tx A.
+  assume HBcl: closed_in X Tx B.
+  assume Hdisj: A :/\: B = Empty.
+  prove exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+  claim HAsubX: A c= X.
+  { exact (closed_in_subset X Tx A HAcl). }
+  claim HBsubX: B c= X.
+  { exact (closed_in_subset X Tx B HBcl). }
+  claim HcompA: compact_space A (subspace_topology X Tx A).
+  { exact (closed_subspace_compact X Tx A Hcomp HAcl). }
+  claim HcompB: compact_space B (subspace_topology X Tx B).
+  { exact (closed_subspace_compact X Tx B Hcomp HBcl). }
+
+  (** For each a∈A, separate a from compact B. **)
+  set Uof := fun a:set =>
+    Eps_i (fun U:set => exists V:set, U :e Tx /\ V :e Tx /\ a :e U /\ B c= V /\ U :/\: V = Empty).
+  set Vof := fun a:set =>
+    Eps_i (fun V:set => Uof a :e Tx /\ V :e Tx /\ a :e Uof a /\ B c= V /\ Uof a :/\: V = Empty).
+
+  claim UVprop: forall a:set, a :e A ->
+    Uof a :e Tx /\ (Vof a :e Tx /\ (a :e Uof a /\ (B c= Vof a /\ Uof a :/\: Vof a = Empty))).
+  { let a. assume HaA: a :e A.
+    claim HaX: a :e X.
+    { exact (HAsubX a HaA). }
+    claim HanotB: a /:e B.
+    { assume HaB: a :e B.
+      claim HaAB: a :e A :/\: B.
+      { exact (binintersectI A B a HaA HaB). }
+      claim HaE: a :e Empty.
+      { rewrite <- Hdisj. exact HaAB. }
+      apply FalseE.
+      exact (EmptyE a HaE False). }
+    claim HexUV: exists U V:set, U :e Tx /\ V :e Tx /\ a :e U /\ B c= V /\ U :/\: V = Empty.
+    { exact (Hausdorff_separate_point_compact_set X Tx B a HH HBsubX HcompB HaX HanotB). }
+    claim HUof: exists V:set, Uof a :e Tx /\ V :e Tx /\ a :e Uof a /\ B c= V /\ Uof a :/\: V = Empty.
+    { exact (Eps_i_ex (fun U:set => exists V:set, U :e Tx /\ V :e Tx /\ a :e U /\ B c= V /\ U :/\: V = Empty) HexUV). }
+    claim HVof: Uof a :e Tx /\ Vof a :e Tx /\ a :e Uof a /\ B c= Vof a /\ Uof a :/\: Vof a = Empty.
+    { exact (Eps_i_ex (fun V:set => Uof a :e Tx /\ V :e Tx /\ a :e Uof a /\ B c= V /\ Uof a :/\: V = Empty) HUof). }
+    (** Repackage the left-associated 5-way conjunction into a right-associated form. **)
+    claim H1234: ((Uof a :e Tx /\ Vof a :e Tx) /\ a :e Uof a) /\ B c= Vof a.
+    { exact (andEL (((Uof a :e Tx /\ Vof a :e Tx) /\ a :e Uof a) /\ B c= Vof a)
+                   (Uof a :/\: Vof a = Empty)
+                   HVof). }
+    claim H5: Uof a :/\: Vof a = Empty.
+    { exact (andER (((Uof a :e Tx /\ Vof a :e Tx) /\ a :e Uof a) /\ B c= Vof a)
+                   (Uof a :/\: Vof a = Empty)
+                   HVof). }
+    claim H123: (Uof a :e Tx /\ Vof a :e Tx) /\ a :e Uof a.
+    { exact (andEL ((Uof a :e Tx /\ Vof a :e Tx) /\ a :e Uof a)
+                   (B c= Vof a)
+                   H1234). }
+    claim H4: B c= Vof a.
+    { exact (andER ((Uof a :e Tx /\ Vof a :e Tx) /\ a :e Uof a)
+                   (B c= Vof a)
+                   H1234). }
+    claim H12: Uof a :e Tx /\ Vof a :e Tx.
+    { exact (andEL (Uof a :e Tx /\ Vof a :e Tx)
+                   (a :e Uof a)
+                   H123). }
+    claim H3: a :e Uof a.
+    { exact (andER (Uof a :e Tx /\ Vof a :e Tx)
+                   (a :e Uof a)
+                   H123). }
+    claim HUofTx: Uof a :e Tx.
+    { exact (andEL (Uof a :e Tx) (Vof a :e Tx) H12). }
+    claim HVofTx: Vof a :e Tx.
+    { exact (andER (Uof a :e Tx) (Vof a :e Tx) H12). }
+    apply andI.
+    - exact HUofTx.
+	    - apply andI.
+	      + exact HVofTx.
+	      + apply andI.
+	        * exact H3.
+	        * apply andI.
+	          - exact H4.
+	          - exact H5. }
+
+  (** Cover A by opens Uof a. **)
+  set Fam := {Uof a|a :e A}.
+  claim HFamSub: Fam c= Tx.
+  { let U. assume HU: U :e Fam.
+    apply (ReplE_impred A (fun a:set => Uof a) U HU (U :e Tx)).
+    let a. assume HaA: a :e A.
+    assume HUeq: U = Uof a.
+    claim HUofTx: Uof a :e Tx.
+    { exact (andEL (Uof a :e Tx)
+                   (Vof a :e Tx /\ (a :e Uof a /\ (B c= Vof a /\ Uof a :/\: Vof a = Empty)))
+                   (UVprop a HaA)). }
+    rewrite HUeq.
+    exact HUofTx. }
+  claim HAcov: A c= Union Fam.
+  { let a. assume HaA: a :e A.
+    prove a :e Union Fam.
+    claim HaU: a :e Uof a.
+    { exact (andEL (a :e Uof a)
+                   (B c= Vof a /\ Uof a :/\: Vof a = Empty)
+                   (andER (Vof a :e Tx)
+                          (a :e Uof a /\ (B c= Vof a /\ Uof a :/\: Vof a = Empty))
+                          (andER (Uof a :e Tx)
+                                 (Vof a :e Tx /\ (a :e Uof a /\ (B c= Vof a /\ Uof a :/\: Vof a = Empty)))
+                                 (UVprop a HaA)))). }
+    claim HUinFam: Uof a :e Fam.
+    { exact (ReplI A (fun a0:set => Uof a0) a HaA). }
+    exact (UnionI Fam a (Uof a) HaU HUinFam). }
+
+  (** Use compactness of A to extract a finite subcover from Fam. **)
+  claim HcoverProp: forall Fam0:set, (Fam0 c= Tx /\ A c= Union Fam0) -> has_finite_subcover A Tx Fam0.
+  { claim Hequiv:
+      (compact_space A (subspace_topology X Tx A) <->
+        forall Fam0:set, (Fam0 c= Tx /\ A c= Union Fam0) -> has_finite_subcover A Tx Fam0).
+    { exact (compact_subspace_via_ambient_covers X Tx A HTx HAsubX). }
+    exact (iffEL (compact_space A (subspace_topology X Tx A))
+                 (forall Fam0:set, (Fam0 c= Tx /\ A c= Union Fam0) -> has_finite_subcover A Tx Fam0)
+                 Hequiv HcompA). }
+
+  claim Hfin: has_finite_subcover A Tx Fam.
+  { exact (HcoverProp Fam (andI (Fam c= Tx) (A c= Union Fam) HFamSub HAcov)). }
+  apply Hfin.
+  let G. assume HG: G c= Fam /\ finite G /\ A c= Union G.
+  claim HGleft: G c= Fam /\ finite G.
+  { exact (andEL (G c= Fam /\ finite G) (A c= Union G) HG). }
+  claim HGsubFam: G c= Fam.
+  { exact (andEL (G c= Fam) (finite G) HGleft). }
+  claim HGfin: finite G.
+  { exact (andER (G c= Fam) (finite G) HGleft). }
+  claim HAcovG: A c= Union G.
+  { exact (andER (G c= Fam /\ finite G) (A c= Union G) HG). }
+  claim HGsubTx: G c= Tx.
+  { let U. assume HU: U :e G.
+    prove U :e Tx.
+    claim HUfam: U :e Fam.
+    { exact (HGsubFam U HU). }
+    exact (HFamSub U HUfam). }
+
+  (** Define U = union of the finite subcover G. **)
+  set U := Union G.
+  claim HUtx: U :e Tx.
+  { exact (topology_union_closed X Tx G HTx HGsubTx). }
+
+  (** Pick an index a(U) for each U∈G with U = Uof a(U). **)
+  set Wof := fun U0:set => Eps_i (fun a:set => a :e A /\ U0 = Uof a).
+  claim Wof_spec: forall U0:set, U0 :e G -> Wof U0 :e A /\ U0 = Uof (Wof U0).
+  { let U0. assume HU0G: U0 :e G.
+    claim HU0Fam: U0 :e Fam.
+    { exact (HGsubFam U0 HU0G). }
+    claim Hexa: exists a:set, a :e A /\ U0 = Uof a.
+    { apply (ReplE_impred A (fun a0:set => Uof a0) U0 HU0Fam (exists a:set, a :e A /\ U0 = Uof a)).
+      let a. assume HaA: a :e A.
+      assume HU0eq: U0 = Uof a.
+      witness a.
+      apply andI.
+      - exact HaA.
+      - exact HU0eq. }
+    apply Hexa.
+    let a. assume HaPair: a :e A /\ U0 = Uof a.
+    exact (Eps_i_ax (fun a0:set => a0 :e A /\ U0 = Uof a0) a HaPair). }
+
+  (** Define the corresponding family of V's and take their finite intersection. **)
+  set GV := {Vof (Wof U0)|U0 :e G}.
+  claim HGVfin: finite GV.
+  { exact (Repl_finite (fun U0:set => Vof (Wof U0)) G HGfin). }
+  claim HGVsubTx: GV c= Tx.
+  { let V. assume HV: V :e GV.
+    apply (ReplE_impred G (fun U0:set => Vof (Wof U0)) V HV (V :e Tx)).
+    let U0. assume HU0G: U0 :e G.
+    assume HVe: V = Vof (Wof U0).
+    claim HWofA: Wof U0 :e A.
+    { exact (andEL (Wof U0 :e A) (U0 = Uof (Wof U0)) (Wof_spec U0 HU0G)). }
+    claim HVofTx: Vof (Wof U0) :e Tx.
+    { exact (andEL (Vof (Wof U0) :e Tx)
+                   (Wof U0 :e Uof (Wof U0) /\ (B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty))
+                   (andER (Uof (Wof U0) :e Tx)
+                          (Vof (Wof U0) :e Tx /\ (Wof U0 :e Uof (Wof U0) /\ (B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty)))
+                          (UVprop (Wof U0) HWofA))). }
+    rewrite HVe.
+    exact HVofTx. }
+
+  set V := intersection_of_family X GV.
+  claim HVtx: V :e Tx.
+  { claim HGVpow: GV :e Power Tx.
+    { apply PowerI.
+      exact HGVsubTx. }
+    exact (finite_intersection_in_topology X Tx GV HTx HGVpow HGVfin). }
+
+  (** B is contained in V since each Vof a contains B. **)
+  claim HBsubV: B c= V.
+  { let b. assume HbB: b :e B.
+    prove b :e V.
+    claim HbPred: forall U1:set, U1 :e GV -> b :e U1.
+    { let W. assume HW: W :e GV.
+      prove b :e W.
+      apply (ReplE_impred G (fun U0:set => Vof (Wof U0)) W HW (b :e W)).
+      let U0. assume HU0G: U0 :e G.
+      assume HWeq: W = Vof (Wof U0).
+      claim HWofA: Wof U0 :e A.
+      { exact (andEL (Wof U0 :e A) (U0 = Uof (Wof U0)) (Wof_spec U0 HU0G)). }
+      claim HUV1:
+        Vof (Wof U0) :e Tx /\
+        (Wof U0 :e Uof (Wof U0) /\ (B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty)).
+      { exact (andER (Uof (Wof U0) :e Tx)
+                     (Vof (Wof U0) :e Tx /\ (Wof U0 :e Uof (Wof U0) /\ (B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty)))
+                     (UVprop (Wof U0) HWofA)). }
+      claim HUV2:
+        Wof U0 :e Uof (Wof U0) /\ (B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty).
+      { exact (andER (Vof (Wof U0) :e Tx)
+                     (Wof U0 :e Uof (Wof U0) /\ (B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty))
+                     HUV1). }
+      claim HUV3: B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty.
+      { exact (andER (Wof U0 :e Uof (Wof U0))
+                     (B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty)
+                     HUV2). }
+      claim HBsubVof: B c= Vof (Wof U0).
+      { exact (andEL (B c= Vof (Wof U0))
+                     (Uof (Wof U0) :/\: Vof (Wof U0) = Empty)
+                     HUV3). }
+      rewrite HWeq.
+      exact (HBsubVof b HbB). }
+    exact (SepI X (fun x:set => forall U1:set, U1 :e GV -> x :e U1) b (HBsubX b HbB) HbPred). }
+
+  (** U and V are disjoint. **)
+  claim HUVdisj: U :/\: V = Empty.
+  { apply Empty_Subq_eq.
+    let z. assume Hz: z :e U :/\: V.
+    prove z :e Empty.
+    claim HzU: z :e U.
+    { exact (binintersectE1 U V z Hz). }
+    claim HzV: z :e V.
+    { exact (binintersectE2 U V z Hz). }
+    apply (UnionE_impred G z HzU (z :e Empty)).
+    let U0. assume HzU0: z :e U0.
+    assume HU0G: U0 :e G.
+    claim HWofA: Wof U0 :e A.
+    { exact (andEL (Wof U0 :e A) (U0 = Uof (Wof U0)) (Wof_spec U0 HU0G)). }
+    claim HU0eq: U0 = Uof (Wof U0).
+    { exact (andER (Wof U0 :e A) (U0 = Uof (Wof U0)) (Wof_spec U0 HU0G)). }
+    claim HVinGV: Vof (Wof U0) :e GV.
+    { exact (ReplI G (fun U1:set => Vof (Wof U1)) U0 HU0G). }
+    claim HzVof: z :e Vof (Wof U0).
+    { exact (SepE2 X (fun x:set => forall U1:set, U1 :e GV -> x :e U1) z HzV (Vof (Wof U0)) HVinGV). }
+    claim HzUof: z :e Uof (Wof U0).
+    { rewrite <- HU0eq. exact HzU0. }
+    claim Hdisj0: Uof (Wof U0) :/\: Vof (Wof U0) = Empty.
+    { claim HUV1:
+        Vof (Wof U0) :e Tx /\
+        (Wof U0 :e Uof (Wof U0) /\ (B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty)).
+      { exact (andER (Uof (Wof U0) :e Tx)
+                     (Vof (Wof U0) :e Tx /\ (Wof U0 :e Uof (Wof U0) /\ (B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty)))
+                     (UVprop (Wof U0) HWofA)). }
+      claim HUV2:
+        Wof U0 :e Uof (Wof U0) /\ (B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty).
+      { exact (andER (Vof (Wof U0) :e Tx)
+                     (Wof U0 :e Uof (Wof U0) /\ (B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty))
+                     HUV1). }
+      claim HUV3: B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty.
+      { exact (andER (Wof U0 :e Uof (Wof U0))
+                     (B c= Vof (Wof U0) /\ Uof (Wof U0) :/\: Vof (Wof U0) = Empty)
+                     HUV2). }
+      exact (andER (B c= Vof (Wof U0))
+                   (Uof (Wof U0) :/\: Vof (Wof U0) = Empty)
+                   HUV3). }
+    claim HzUV0: z :e Uof (Wof U0) :/\: Vof (Wof U0).
+    { exact (binintersectI (Uof (Wof U0)) (Vof (Wof U0)) z HzUof HzVof). }
+    rewrite <- Hdisj0.
+    exact HzUV0. }
+
+  (** Build the final neighborhoods. **)
+  witness U.
+  witness V.
+  apply andI.
+  - apply andI.
+    - apply andI.
+      - apply andI.
+        - exact HUtx.
+        - exact HVtx.
+      - exact HAcovG.
+    - exact HBsubV.
+  - exact HUVdisj.
 Qed.
 
 (** from §32 Example 1: uncountable product of R not normal **) 
