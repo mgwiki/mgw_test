@@ -37414,6 +37414,136 @@ Definition countable_index_set : set -> prop := fun I => countable_set I.
 Definition countable_product_topology_subbasis : set -> set -> set := fun I Xi =>
   generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi).
 
+(** Helper: cylinder family is a subbasis on nonempty products. **)
+Theorem product_subbasis_full_subbasis_on : forall I Xi:set,
+  I <> Empty ->
+  (forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i)) ->
+  subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+let I Xi.
+assume HIne: I <> Empty.
+assume HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+prove subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+prove product_subbasis_full I Xi c= Power (product_space I Xi) /\ Union (product_subbasis_full I Xi) = product_space I Xi.
+apply andI.
+- (** product_subbasis_full I Xi c= Power (product_space I Xi) **)
+  let s. assume Hs: s :e product_subbasis_full I Xi.
+  prove s :e Power (product_space I Xi).
+  apply PowerI.
+  let f. assume Hf: f :e s.
+  prove f :e product_space I Xi.
+  set F := (fun i:set => {product_cylinder I Xi i U|U :e space_family_topology Xi i}).
+  claim HsF: s :e (\/_ i :e I, F i).
+  { exact Hs. }
+  apply (famunionE_impred I F s HsF (f :e product_space I Xi)).
+  let i.
+  assume HiI: i :e I.
+  assume HsFi: s :e F i.
+  claim HexU: exists U :e space_family_topology Xi i, s = product_cylinder I Xi i U.
+  { exact (ReplE (space_family_topology Xi i) (fun U0:set => product_cylinder I Xi i U0) s HsFi). }
+  apply HexU.
+  let U.
+  assume HUand: U :e space_family_topology Xi i /\ s = product_cylinder I Xi i U.
+  claim Hseq: s = product_cylinder I Xi i U.
+  { exact (andER (U :e space_family_topology Xi i) (s = product_cylinder I Xi i U) HUand). }
+  claim HfCyl: f :e product_cylinder I Xi i U.
+  { rewrite <- Hseq. exact Hf. }
+  exact (SepE1 (product_space I Xi)
+               (fun f0:set => i :e I /\ U :e space_family_topology Xi i /\ apply_fun f0 i :e U)
+               f HfCyl).
+- (** Union (product_subbasis_full I Xi) = product_space I Xi **)
+  apply set_ext.
+  + let f. assume HfU: f :e Union (product_subbasis_full I Xi).
+    prove f :e product_space I Xi.
+    apply (UnionE_impred (product_subbasis_full I Xi) f HfU (f :e product_space I Xi)).
+    let s. assume Hfs: f :e s. assume Hs: s :e product_subbasis_full I Xi.
+    claim HsPow: s :e Power (product_space I Xi).
+    { apply PowerI.
+      let g. assume Hg: g :e s.
+      prove g :e product_space I Xi.
+      set F := (fun i:set => {product_cylinder I Xi i U|U :e space_family_topology Xi i}).
+      claim HsF: s :e (\/_ i :e I, F i).
+      { exact Hs. }
+      apply (famunionE_impred I F s HsF (g :e product_space I Xi)).
+      let i.
+      assume HiI: i :e I.
+      assume HsFi: s :e F i.
+      claim HexU: exists U :e space_family_topology Xi i, s = product_cylinder I Xi i U.
+      { exact (ReplE (space_family_topology Xi i) (fun U0:set => product_cylinder I Xi i U0) s HsFi). }
+      apply HexU.
+      let U.
+      assume HUand: U :e space_family_topology Xi i /\ s = product_cylinder I Xi i U.
+      claim Hseq: s = product_cylinder I Xi i U.
+      { exact (andER (U :e space_family_topology Xi i) (s = product_cylinder I Xi i U) HUand). }
+      claim HgCyl: g :e product_cylinder I Xi i U.
+      { rewrite <- Hseq. exact Hg. }
+      exact (SepE1 (product_space I Xi)
+                   (fun f0:set => i :e I /\ U :e space_family_topology Xi i /\ apply_fun f0 i :e U)
+                   g HgCyl).
+    }
+    exact (PowerE (product_space I Xi) s HsPow f Hfs).
+  + let f. assume HfX: f :e product_space I Xi.
+    prove f :e Union (product_subbasis_full I Xi).
+    apply (xm (exists i:set, i :e I)).
+    * assume Hexi: exists i:set, i :e I.
+      apply Hexi.
+      let i. assume HiI: i :e I.
+      claim Htopi: topology_on (space_family_set Xi i) (space_family_topology Xi i).
+      { exact (HcompTop i HiI). }
+      claim Ht1: (((space_family_topology Xi i c= Power (space_family_set Xi i) /\ Empty :e space_family_topology Xi i) /\ space_family_set Xi i :e space_family_topology Xi i) /\ (forall UFam :e Power (space_family_topology Xi i), Union UFam :e space_family_topology Xi i)) /\ (forall U :e space_family_topology Xi i, forall V :e space_family_topology Xi i, U :/\: V :e space_family_topology Xi i).
+      { exact Htopi. }
+      claim Ht2: ((space_family_topology Xi i c= Power (space_family_set Xi i) /\ Empty :e space_family_topology Xi i) /\ space_family_set Xi i :e space_family_topology Xi i) /\ (forall UFam :e Power (space_family_topology Xi i), Union UFam :e space_family_topology Xi i).
+      { exact (andEL (((space_family_topology Xi i c= Power (space_family_set Xi i) /\ Empty :e space_family_topology Xi i) /\ space_family_set Xi i :e space_family_topology Xi i) /\ (forall UFam :e Power (space_family_topology Xi i), Union UFam :e space_family_topology Xi i))
+                     (forall U :e space_family_topology Xi i, forall V :e space_family_topology Xi i, U :/\: V :e space_family_topology Xi i)
+                     Ht1). }
+      claim Ht3: (space_family_topology Xi i c= Power (space_family_set Xi i) /\ Empty :e space_family_topology Xi i) /\ space_family_set Xi i :e space_family_topology Xi i.
+      { exact (andEL ((space_family_topology Xi i c= Power (space_family_set Xi i) /\ Empty :e space_family_topology Xi i) /\ space_family_set Xi i :e space_family_topology Xi i)
+                     (forall UFam :e Power (space_family_topology Xi i), Union UFam :e space_family_topology Xi i)
+                     Ht2). }
+      claim HUopen: space_family_set Xi i :e space_family_topology Xi i.
+      { exact (andER (space_family_topology Xi i c= Power (space_family_set Xi i) /\ Empty :e space_family_topology Xi i)
+                     (space_family_set Xi i :e space_family_topology Xi i)
+                     Ht3). }
+      set s := product_cylinder I Xi i (space_family_set Xi i).
+      claim HsRepl: s :e {product_cylinder I Xi i U|U :e space_family_topology Xi i}.
+      { exact (ReplI (space_family_topology Xi i) (fun U0:set => product_cylinder I Xi i U0)
+                     (space_family_set Xi i) HUopen). }
+      claim HsSub: s :e product_subbasis_full I Xi.
+      { exact (famunionI I (fun i0:set => {product_cylinder I Xi i0 U|U :e space_family_topology Xi i0})
+                       i s HiI HsRepl). }
+      claim HfProp: function_on f I (space_family_union I Xi) /\ forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j.
+      { exact (SepE2 (Power (setprod I (space_family_union I Xi)))
+                     (fun f0:set => function_on f0 I (space_family_union I Xi) /\ forall j:set, j :e I -> apply_fun f0 j :e space_family_set Xi j)
+                     f HfX). }
+      claim HfCoord: forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j.
+      { exact (andER (function_on f I (space_family_union I Xi))
+                     (forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j)
+                     HfProp). }
+      claim Hfi: apply_fun f i :e space_family_set Xi i.
+      { exact (HfCoord i HiI). }
+      claim HfInS: f :e s.
+      { exact (SepI (product_space I Xi)
+                    (fun f0:set => i :e I /\ space_family_set Xi i :e space_family_topology Xi i /\ apply_fun f0 i :e space_family_set Xi i)
+                    f HfX
+                    (andI (i :e I /\ space_family_set Xi i :e space_family_topology Xi i)
+                          (apply_fun f i :e space_family_set Xi i)
+                          (andI (i :e I) (space_family_set Xi i :e space_family_topology Xi i) HiI HUopen)
+                          Hfi)). }
+      exact (UnionI (product_subbasis_full I Xi) f s HfInS HsSub).
+    * assume Hnex: ~(exists i:set, i :e I).
+      prove f :e Union (product_subbasis_full I Xi).
+      claim Hall: forall i:set, i /:e I.
+      { let i. assume HiI: i :e I.
+        prove False.
+        apply Hnex.
+        witness i.
+        exact HiI. }
+      claim HIeq: I = Empty.
+      { exact (Empty_eq I Hall). }
+      claim Hfalse: False.
+      { apply HIne. exact HIeq. }
+      exact (FalseE Hfalse (f :e Union (product_subbasis_full I Xi))).
+Qed.
+
 (** helper: image of countable set is countable **)
 Theorem countable_image : forall X:set, countable_set X ->
   forall F:set->set, countable_set {F x|x :e X}.
