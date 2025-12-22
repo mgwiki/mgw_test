@@ -35936,7 +35936,7 @@ Definition collection_has_order_at_most_m_plus_one : set -> set -> set -> prop :
       cardinality_at_most {U :e A|x :e U} (ordsucc m).
 
 (** from §50 Definition: covering dimension and finite dimensionality **)
-(** LATEX VERSION: A space X has covering dimension ≤n if for every open cover A there exists a refinement of order ≤n+1. **)
+(** LATEX VERSION: For a topological space (X,Tx), we write dim(X) ≤ n if for every open cover A of X\n+   there exists an open cover B refining A that has order at most n+1. **)
 (** Helper: refinement of covers (as families of subsets) **)
 (** LATEX VERSION: B refines A if every element of B is contained in some element of A. **)
 Definition refines_cover : set -> set -> prop := fun B A =>
