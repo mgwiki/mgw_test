@@ -43385,13 +43385,13 @@ Qed.
 Theorem ex31_6_closed_map_preserves_normal : forall X Tx Y Ty p:set,
   normal_space X Tx ->
   continuous_map X Tx Y Ty p ->
-  (forall A:set, closed_in X Tx A -> closed_in Y Ty (apply_fun p A)) ->
+  (forall A:set, closed_in X Tx A -> closed_in Y Ty (image_of p A)) ->
   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) ->
   normal_space Y Ty.
 let X Tx Y Ty p.
 assume Hnorm: normal_space X Tx.
 assume Hcont: continuous_map X Tx Y Ty p.
-assume Hclosed: forall A:set, closed_in X Tx A -> closed_in Y Ty (apply_fun p A).
+assume Hclosed: forall A:set, closed_in X Tx A -> closed_in Y Ty (image_of p A).
 assume Hsurj: forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y.
 prove normal_space Y Ty.
 admit. (** for disjoint closed A B in Y, preimages disjoint closed in X, separate, images separate A B **)
@@ -43400,7 +43400,7 @@ Qed.
 (** LATEX VERSION: Perfect map (closed continuous surjective with compact fibers) preserves Hausdorff, regular, locally compact, second-countable. **)
 Theorem ex31_7_perfect_map_properties : forall X Tx Y Ty p:set,
   continuous_map X Tx Y Ty p ->
-  (forall A:set, closed_in X Tx A -> closed_in Y Ty (apply_fun p A)) ->
+  (forall A:set, closed_in X Tx A -> closed_in Y Ty (image_of p A)) ->
   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) ->
   (forall y:set, y :e Y -> compact_space {x :e X | apply_fun p x = y} (subspace_topology X Tx {x :e X | apply_fun p x = y})) ->
   (Hausdorff_space X Tx -> Hausdorff_space Y Ty) /\
@@ -43409,7 +43409,7 @@ Theorem ex31_7_perfect_map_properties : forall X Tx Y Ty p:set,
   (second_countable_space X Tx -> second_countable_space Y Ty).
 let X Tx Y Ty p.
 assume Hcont: continuous_map X Tx Y Ty p.
-assume Hclosed: forall A:set, closed_in X Tx A -> closed_in Y Ty (apply_fun p A).
+assume Hclosed: forall A:set, closed_in X Tx A -> closed_in Y Ty (image_of p A).
 assume Hsurj: forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y.
 assume Hcompact: forall y:set, y :e Y -> compact_space {x :e X | apply_fun p x = y} (subspace_topology X Tx {x :e X | apply_fun p x = y}).
 prove (Hausdorff_space X Tx -> Hausdorff_space Y Ty) /\ (regular_space X Tx -> regular_space Y Ty) /\ (locally_compact X Tx -> locally_compact Y Ty) /\ (second_countable_space X Tx -> second_countable_space Y Ty).
