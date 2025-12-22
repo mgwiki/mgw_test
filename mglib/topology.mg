@@ -40614,14 +40614,14 @@ Definition one_point_sets_closed : set -> set -> prop := fun X Tx =>
 (** from §31 Definition: regular and normal spaces **)
 (** LATEX VERSION: Regular space: points and closed sets can be separated by disjoint open sets. **)
 Definition regular_space : set -> set -> prop := fun X Tx =>
-  topology_on X Tx /\
+  one_point_sets_closed X Tx /\
   forall x:set, x :e X ->
     forall F:set, closed_in X Tx F -> x /:e F ->
       exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty.
 
 (** LATEX VERSION: Normal space: disjoint closed sets can be separated by disjoint opens. **)
 Definition normal_space : set -> set -> prop := fun X Tx =>
-  topology_on X Tx /\
+  one_point_sets_closed X Tx /\
   forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
     exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
 
@@ -43039,18 +43039,18 @@ Qed.
 (** LATEX VERSION: Let X have two topologies T and T', with T' ⊃ T. Compare separation properties. **)
 Theorem ex31_4_comparison_topologies_separation : forall X Tx Tx':set,
   Tx c= Tx' ->
-  ((Hausdorff_space X Tx' -> Hausdorff_space X Tx) /\
-   (regular_space X Tx -> regular_space X Tx') /\
-   (normal_space X Tx -> normal_space X Tx')).
+  ((Hausdorff_space X Tx -> Hausdorff_space X Tx') /\
+   (regular_space X Tx -> Hausdorff_space X Tx') /\
+   (normal_space X Tx -> Hausdorff_space X Tx')).
 let X Tx Tx'.
 assume Hfiner: Tx c= Tx'.
 apply and3I.
-- prove Hausdorff_space X Tx' -> Hausdorff_space X Tx.
-  admit. (** finer topology has more open sets, easier to be Hausdorff **)
-- prove regular_space X Tx -> regular_space X Tx'.
-  admit. (** finer topology can separate points from closed sets better **)
-- prove normal_space X Tx -> normal_space X Tx'.
-  admit. (** finer topology can separate closed sets better **)
+- prove Hausdorff_space X Tx -> Hausdorff_space X Tx'.
+  admit. (** if the coarser topology is Hausdorff, any finer topology is Hausdorff **)
+- prove regular_space X Tx -> Hausdorff_space X Tx'.
+  admit. (** regular implies Hausdorff; then use the previous implication to pass to the finer topology **)
+- prove normal_space X Tx -> Hausdorff_space X Tx'.
+  admit. (** normal implies regular implies Hausdorff; then use the previous implication to pass to the finer topology **)
 Qed.
 (** from §31 Exercise 5: equalizer of continuous maps into Hausdorff is closed **)
 (** LATEX VERSION: Let f,g: X → Y be continuous, Y Hausdorff. Then {x | f(x) = g(x)} is closed in X. **)
