@@ -38424,8 +38424,37 @@ apply andI.
 			          { exact (basis_of_subbasis_empty_eq (product_space Empty Xi) HX0ne). }
 			          rewrite HB0eq.
 			          reflexivity.
-			    + assume HIn0: ~(I = Empty).
-			      admit.
+				    + assume HIn0: ~(I = Empty).
+				      witness (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)).
+				      apply andI.
+				      - (** basis_on and countable_set **)
+				        apply andI.
+				        + claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+				          { let i. assume HiI: i :e I.
+				            exact (andEL (topology_on (space_family_set Xi i) (space_family_topology Xi i))
+				                         (exists B0:set, basis_on (space_family_set Xi i) B0 /\ countable_set B0 /\ basis_generates (space_family_set Xi i) B0 (space_family_topology Xi i))
+				                         (Hcomp i HiI)). }
+				          claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+				          { exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop). }
+				          exact (finite_intersections_basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi) HS).
+				        + admit.
+				      - (** basis_generates **)
+				        prove basis_on (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)) /\
+				          generated_topology (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)) = countable_product_topology_subbasis I Xi.
+				        apply andI.
+				        + claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+				          { let i. assume HiI: i :e I.
+				            exact (andEL (topology_on (space_family_set Xi i) (space_family_topology Xi i))
+				                         (exists B0:set, basis_on (space_family_set Xi i) B0 /\ countable_set B0 /\ basis_generates (space_family_set Xi i) B0 (space_family_topology Xi i))
+				                         (Hcomp i HiI)). }
+				          claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+				          { exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop). }
+				          exact (finite_intersections_basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi) HS).
+				        + claim HTdef: countable_product_topology_subbasis I Xi =
+				          generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi).
+				          { reflexivity. }
+				          rewrite HTdef.
+				          reflexivity.
 Qed.
 
 (** from §30 Definition: dense subset **) 
