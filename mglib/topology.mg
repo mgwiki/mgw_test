@@ -7042,7 +7042,231 @@ Qed.
 
 (** Helper: Union of two countable sets is countable **)
 (** NOTE: This requires some form of choice or construction **)
-Axiom binunion_countable : forall X Y:set, countable X -> countable Y -> countable (X :\/: Y).
+Theorem binunion_countable : forall X Y:set, countable X -> countable Y -> countable (X :\/: Y).
+let X Y.
+assume HcountX: countable X.
+assume HcountY: countable Y.
+prove countable (X :\/: Y).
+prove exists h : set -> set, inj (X :\/: Y) omega h.
+apply HcountX.
+let f : set -> set.
+assume Hf: inj X omega f.
+apply HcountY.
+let g : set -> set.
+assume Hg: inj Y omega g.
+set h : set -> set := (fun u:set => if u :e X then nat_pair 0 (f u) else nat_pair 1 (g u)).
+witness h.
+prove inj (X :\/: Y) omega h.
+apply (injI (X :\/: Y) omega h).
+- (** h maps union into omega **)
+  let u. assume Hu: u :e X :\/: Y.
+  prove h u :e omega.
+  claim HuXY: u :e X \/ u :e Y.
+  { exact (binunionE X Y u Hu). }
+  apply (xm (u :e X)).
+  * assume HuX: u :e X.
+    claim Hfmap: forall a :e X, f a :e omega.
+    { exact (andEL (forall a :e X, f a :e omega)
+                   (forall a b :e X, f a = f b -> a = b)
+                   Hf). }
+    claim Hu0: 0 :e omega.
+    { exact (nat_p_omega 0 nat_0). }
+    claim Hfu: f u :e omega.
+    { exact (Hfmap u HuX). }
+    claim Hp: nat_pair 0 (f u) :e omega.
+    { exact (nat_pair_In_omega 0 Hu0 (f u) Hfu). }
+	    claim Hhu_def: h u = if u :e X then nat_pair 0 (f u) else nat_pair 1 (g u).
+	    { reflexivity. }
+	    rewrite Hhu_def.
+	    rewrite (If_i_1 (u :e X) (nat_pair 0 (f u)) (nat_pair 1 (g u)) HuX).
+	    exact Hp.
+  * assume HnotuX: ~(u :e X).
+    claim Hug: u :e Y.
+    { apply (HuXY (u :e Y)).
+      - assume HuX: u :e X.
+        apply FalseE.
+        exact (HnotuX HuX).
+      - assume HuY: u :e Y.
+        exact HuY. }
+    claim Hgmap: forall a :e Y, g a :e omega.
+    { exact (andEL (forall a :e Y, g a :e omega)
+                   (forall a b :e Y, g a = g b -> a = b)
+                   Hg). }
+    claim Hu1: 1 :e omega.
+    { exact (nat_p_omega 1 nat_1). }
+    claim Hgu: g u :e omega.
+    { exact (Hgmap u Hug). }
+    claim Hp: nat_pair 1 (g u) :e omega.
+    { exact (nat_pair_In_omega 1 Hu1 (g u) Hgu). }
+	    claim Hhu_def: h u = if u :e X then nat_pair 0 (f u) else nat_pair 1 (g u).
+	    { reflexivity. }
+	    rewrite Hhu_def.
+	    rewrite (If_i_0 (u :e X) (nat_pair 0 (f u)) (nat_pair 1 (g u)) HnotuX).
+	    exact Hp.
+- (** h is injective on union **)
+  let u. assume Hu: u :e X :\/: Y.
+  let v. assume Hv: v :e X :\/: Y.
+  assume Heq: h u = h v.
+  prove u = v.
+  claim HuXY: u :e X \/ u :e Y.
+  { exact (binunionE X Y u Hu). }
+  claim HvXY: v :e X \/ v :e Y.
+  { exact (binunionE X Y v Hv). }
+  claim Hfmap: forall a :e X, f a :e omega.
+  { exact (andEL (forall a :e X, f a :e omega)
+                 (forall a b :e X, f a = f b -> a = b)
+                 Hf). }
+  claim Hfinj: forall a b :e X, f a = f b -> a = b.
+  { exact (andER (forall a :e X, f a :e omega)
+                 (forall a b :e X, f a = f b -> a = b)
+                 Hf). }
+  claim Hgmap: forall a :e Y, g a :e omega.
+  { exact (andEL (forall a :e Y, g a :e omega)
+                 (forall a b :e Y, g a = g b -> a = b)
+                 Hg). }
+  claim Hginj: forall a b :e Y, g a = g b -> a = b.
+  { exact (andER (forall a :e Y, g a :e omega)
+                 (forall a b :e Y, g a = g b -> a = b)
+                 Hg). }
+  apply (xm (u :e X)).
+  * assume HuX: u :e X.
+    apply (xm (v :e X)).
+    + assume HvX: v :e X.
+      claim Hu0: 0 :e omega.
+      { exact (nat_p_omega 0 nat_0). }
+      claim Hfu: f u :e omega.
+      { exact (Hfmap u HuX). }
+      claim Hfv: f v :e omega.
+      { exact (Hfmap v HvX). }
+      claim Hhueq: h u = nat_pair 0 (f u).
+      { claim Hhu_def: h u = if u :e X then nat_pair 0 (f u) else nat_pair 1 (g u).
+        { reflexivity. }
+        rewrite Hhu_def.
+        rewrite (If_i_1 (u :e X) (nat_pair 0 (f u)) (nat_pair 1 (g u)) HuX).
+        reflexivity. }
+      claim Hhveq: h v = nat_pair 0 (f v).
+      { claim Hhv_def: h v = if v :e X then nat_pair 0 (f v) else nat_pair 1 (g v).
+        { reflexivity. }
+        rewrite Hhv_def.
+        rewrite (If_i_1 (v :e X) (nat_pair 0 (f v)) (nat_pair 1 (g v)) HvX).
+        reflexivity. }
+      claim Hpair: nat_pair 0 (f u) = nat_pair 0 (f v).
+      { rewrite <- Hhueq.
+        rewrite <- Hhveq.
+        exact Heq. }
+      claim HfuEq: f u = f v.
+      { exact (nat_pair_1 0 Hu0 (f u) Hfu 0 Hu0 (f v) Hfv Hpair). }
+      exact (Hfinj u HuX v HvX HfuEq).
+    + assume HnotvX: ~(v :e X).
+      claim HvY: v :e Y.
+      { apply (HvXY (v :e Y)).
+        - assume HvX: v :e X.
+          apply FalseE.
+          exact (HnotvX HvX).
+        - assume HvY: v :e Y.
+          exact HvY. }
+      claim Hu0: 0 :e omega.
+      { exact (nat_p_omega 0 nat_0). }
+      claim Hu1: 1 :e omega.
+      { exact (nat_p_omega 1 nat_1). }
+      claim Hfu: f u :e omega.
+      { exact (Hfmap u HuX). }
+      claim Hgv: g v :e omega.
+      { exact (Hgmap v HvY). }
+      claim Hhueq: h u = nat_pair 0 (f u).
+      { claim Hhu_def: h u = if u :e X then nat_pair 0 (f u) else nat_pair 1 (g u).
+        { reflexivity. }
+        rewrite Hhu_def.
+        rewrite (If_i_1 (u :e X) (nat_pair 0 (f u)) (nat_pair 1 (g u)) HuX).
+        reflexivity. }
+      claim Hhveq: h v = nat_pair 1 (g v).
+      { claim Hhv_def: h v = if v :e X then nat_pair 0 (f v) else nat_pair 1 (g v).
+        { reflexivity. }
+        rewrite Hhv_def.
+        rewrite (If_i_0 (v :e X) (nat_pair 0 (f v)) (nat_pair 1 (g v)) HnotvX).
+        reflexivity. }
+      claim Hpair: nat_pair 0 (f u) = nat_pair 1 (g v).
+      { rewrite <- Hhueq.
+        rewrite <- Hhveq.
+        exact Heq. }
+      claim H01: 0 = 1.
+      { exact (nat_pair_0 0 Hu0 (f u) Hfu 1 Hu1 (g v) Hgv Hpair). }
+      apply FalseE.
+      exact (neq_0_1 H01).
+  * assume HnotuX: ~(u :e X).
+    claim HuY: u :e Y.
+    { apply (HuXY (u :e Y)).
+      - assume HuX: u :e X.
+        apply FalseE.
+        exact (HnotuX HuX).
+      - assume HuY: u :e Y.
+        exact HuY. }
+    apply (xm (v :e X)).
+    + assume HvX: v :e X.
+      claim Hu0: 0 :e omega.
+      { exact (nat_p_omega 0 nat_0). }
+      claim Hu1: 1 :e omega.
+      { exact (nat_p_omega 1 nat_1). }
+      claim Hfv: f v :e omega.
+      { exact (Hfmap v HvX). }
+      claim Hgu: g u :e omega.
+      { exact (Hgmap u HuY). }
+      claim Hhueq: h u = nat_pair 1 (g u).
+      { claim Hhu_def: h u = if u :e X then nat_pair 0 (f u) else nat_pair 1 (g u).
+        { reflexivity. }
+        rewrite Hhu_def.
+        rewrite (If_i_0 (u :e X) (nat_pair 0 (f u)) (nat_pair 1 (g u)) HnotuX).
+        reflexivity. }
+      claim Hhveq: h v = nat_pair 0 (f v).
+      { claim Hhv_def: h v = if v :e X then nat_pair 0 (f v) else nat_pair 1 (g v).
+        { reflexivity. }
+        rewrite Hhv_def.
+        rewrite (If_i_1 (v :e X) (nat_pair 0 (f v)) (nat_pair 1 (g v)) HvX).
+        reflexivity. }
+      claim Hpair: nat_pair 1 (g u) = nat_pair 0 (f v).
+      { rewrite <- Hhueq.
+        rewrite <- Hhveq.
+        exact Heq. }
+      claim H10: 1 = 0.
+      { exact (nat_pair_0 1 Hu1 (g u) Hgu 0 Hu0 (f v) Hfv Hpair). }
+      claim H01: 0 = 1.
+      { symmetry. exact H10. }
+      apply FalseE.
+      exact (neq_0_1 H01).
+    + assume HnotvX: ~(v :e X).
+      claim HvY: v :e Y.
+      { apply (HvXY (v :e Y)).
+        - assume HvX: v :e X.
+          apply FalseE.
+          exact (HnotvX HvX).
+        - assume HvY: v :e Y.
+          exact HvY. }
+      claim Hu1: 1 :e omega.
+      { exact (nat_p_omega 1 nat_1). }
+      claim Hgu: g u :e omega.
+      { exact (Hgmap u HuY). }
+      claim Hgv: g v :e omega.
+      { exact (Hgmap v HvY). }
+      claim Hhueq: h u = nat_pair 1 (g u).
+      { claim Hhu_def: h u = if u :e X then nat_pair 0 (f u) else nat_pair 1 (g u).
+        { reflexivity. }
+        rewrite Hhu_def.
+        rewrite (If_i_0 (u :e X) (nat_pair 0 (f u)) (nat_pair 1 (g u)) HnotuX).
+        reflexivity. }
+      claim Hhveq: h v = nat_pair 1 (g v).
+      { claim Hhv_def: h v = if v :e X then nat_pair 0 (f v) else nat_pair 1 (g v).
+        { reflexivity. }
+        rewrite Hhv_def.
+        rewrite (If_i_0 (v :e X) (nat_pair 0 (f v)) (nat_pair 1 (g v)) HnotvX).
+        reflexivity. }
+      claim Hpair: nat_pair 1 (g u) = nat_pair 1 (g v).
+      { rewrite <- Hhueq.
+        rewrite <- Hhveq.
+        exact Heq. }
+      claim HguEq: g u = g v.
+      { exact (nat_pair_1 1 Hu1 (g u) Hgu 1 Hu1 (g v) Hgv Hpair). }
+      exact (Hginj u HuY v HvY HguEq).
+Qed.
 
 (** Helper: Union of a family preserves Power set membership **)
 Theorem Union_Power : forall X Fam:set,
