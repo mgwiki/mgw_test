@@ -37962,6 +37962,12 @@ apply (injI {F x|x :e X} omega g).
   reflexivity.
 Qed.
 
+(** Helper: finite subsets of omega are countable as a family **)
+(** LATEX VERSION: The collection of all finite subsets of omega is countable. **)
+Theorem finite_subcollections_omega_countable : countable (finite_subcollections omega).
+admit.
+Qed.
+
 (** Helper: finite subcollections of a countable set are countable **)
 (** LATEX VERSION: The set of all finite subcollections of a countable set is countable. **)
 Theorem finite_subcollections_countable : forall S:set,
@@ -37975,7 +37981,7 @@ let f : set -> set.
 assume Hf: inj S omega f.
 (** It is standard that the family of finite subsets of omega is countable. **)
 claim HFinOmega: countable (finite_subcollections omega).
-{ admit. }
+{ exact finite_subcollections_omega_countable. }
 apply HFinOmega.
 let code : set -> set.
 assume Hcode: inj (finite_subcollections omega) omega code.
