@@ -37841,7 +37841,87 @@ let X Tx.
 assume HTx: topology_on X Tx.
 assume Hscc: second_countable_space X Tx.
 prove exists D:set, countable_set D /\ dense_in D X Tx.
-admit. (** pick one point from each nonempty basis element; countable union of singletons is countable and dense **)
+claim HexB: exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
+{ exact (andER (topology_on X Tx) (exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx) Hscc). }
+apply HexB.
+let B. assume HBpair.
+claim HBmid: (basis_on X B /\ countable_set B) /\ basis_generates X B Tx.
+{ exact HBpair. }
+claim HBasisCount: basis_on X B /\ countable_set B.
+{ exact (andEL (basis_on X B /\ countable_set B) (basis_generates X B Tx) HBmid). }
+claim HBgener: basis_generates X B Tx.
+{ exact (andER (basis_on X B /\ countable_set B) (basis_generates X B Tx) HBmid). }
+claim HBasis: basis_on X B.
+{ exact (andEL (basis_on X B) (countable_set B) HBasisCount). }
+claim HBcount: countable_set B.
+{ exact (andER (basis_on X B) (countable_set B) HBasisCount). }
+claim HgenEq: generated_topology X B = Tx.
+{ exact (andER (basis_on X B) (generated_topology X B = Tx) HBgener). }
+(** pick one point from each nonempty basis element **)
+set B1 := {b :e B | b <> Empty}.
+set pick : set->set := fun b => Eps_i (fun x => x :e b).
+set D := {pick b|b :e B1}.
+witness D.
+apply andI.
+- (** D is countable **)
+  prove countable_set D.
+  claim HB1sub: B1 c= B.
+  { let b. assume Hb1: b :e B1.
+    exact (SepE1 B (fun b0:set => b0 <> Empty) b Hb1). }
+  claim HB1count: countable_set B1.
+  { exact (Subq_countable B1 B HBcount HB1sub). }
+  exact (countable_image B1 HB1count pick).
+- (** D is dense: closure_of X Tx D = X **)
+  prove dense_in D X Tx.
+  prove closure_of X Tx D = X.
+  apply set_ext.
+  + (** closure ⊆ X **)
+    exact (closure_in_space X Tx D HTx).
+  + (** X ⊆ closure **)
+    let x. assume HxX: x :e X.
+    prove x :e closure_of X Tx D.
+    claim Hcliff: x :e closure_of X Tx D <-> (forall U :e Tx, x :e U -> U :/\: D <> Empty).
+    { exact (closure_characterization X Tx D x HTx HxX). }
+    claim Hneigh: forall U :e Tx, x :e U -> U :/\: D <> Empty.
+    { let U. assume HU: U :e Tx. assume HxU: x :e U.
+    claim HUgen: U :e generated_topology X B.
+    { rewrite HgenEq. exact HU. }
+    claim Href: forall z :e U, exists b :e B, z :e b /\ b c= U.
+    { exact (SepE2 (Power X) (fun U0:set => forall z :e U0, exists b :e B, z :e b /\ b c= U0) U HUgen). }
+    claim Hexb: exists b :e B, x :e b /\ b c= U.
+    { exact (Href x HxU). }
+    apply Hexb.
+    let b. assume Hbpair.
+    claim HbB: b :e B.
+    { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
+    claim Hbprop: x :e b /\ b c= U.
+    { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
+    claim Hxb: x :e b.
+    { exact (andEL (x :e b) (b c= U) Hbprop). }
+    claim HbsubU: b c= U.
+    { exact (andER (x :e b) (b c= U) Hbprop). }
+    claim Hbne: b <> Empty.
+    { assume HbE: b = Empty.
+      claim HxEmp: x :e Empty.
+      { rewrite <- HbE. exact Hxb. }
+      exact (EmptyE x HxEmp False). }
+    claim Hb1: b :e B1.
+    { exact (SepI B (fun b0:set => b0 <> Empty) b HbB Hbne). }
+    claim Hpickb: pick b :e b.
+    { exact (Eps_i_ax (fun x0 => x0 :e b) x Hxb). }
+    claim HpickU: pick b :e U.
+    { exact (HbsubU (pick b) Hpickb). }
+    claim HpickD: pick b :e D.
+    { exact (ReplI B1 pick b Hb1). }
+    prove U :/\: D <> Empty.
+    assume HUD: U :/\: D = Empty.
+    claim Hwd: pick b :e U :/\: D.
+    { exact (binintersectI U D (pick b) HpickU HpickD). }
+    claim HwdE: pick b :e Empty.
+    { rewrite <- HUD. exact Hwd. }
+    exact (EmptyE (pick b) HwdE False).
+    }
+    exact (iffER (x :e closure_of X Tx D) (forall U :e Tx, x :e U -> U :/\: D <> Empty) Hcliff Hneigh).
 Qed.
 
 (** from §30 Example 3: Sorgenfrey line countability properties **) 
