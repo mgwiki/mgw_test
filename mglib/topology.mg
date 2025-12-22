@@ -19195,10 +19195,66 @@ exact (setminusI omega {0} (ordsucc n) HsuccOmega HsuccNot0).
 Qed.
 
 (** Helper: singleton sets are basic opens in the order topology basis on Zplus **)
+Theorem nat_nonzero_in_Zplus : forall n:set, nat_p n -> n <> 0 -> n :e Zplus.
+let n. assume HnNat HnNeq.
+prove n :e omega :\: {0}.
+claim HnOmega: n :e omega.
+{ exact (nat_p_omega n HnNat). }
+claim Hnnot0: n /:e {0}.
+{ assume Hn0: n :e {0}.
+  prove False.
+  claim Heq: n = 0.
+  { exact (SingE 0 n Hn0). }
+  exact (HnNeq Heq). }
+exact (setminusI omega {0} n HnOmega Hnnot0).
+Qed.
+
+(** Helper: singleton {1} is in the order topology basis on Zplus **)
+Theorem singleton_ordsucc0_in_order_topology_basis_Zplus :
+  {ordsucc 0} :e order_topology_basis Zplus.
+admit.
+Qed.
+
+(** Helper: singleton of a successor is in the order topology basis on Zplus **)
+Theorem singleton_ordsucc_in_order_topology_basis_Zplus : forall m:set,
+  m :e Zplus -> {ordsucc m} :e order_topology_basis Zplus.
+let m. assume Hm.
+admit.
+Qed.
+
 Theorem singleton_in_order_topology_basis_Zplus : forall n:set,
   n :e Zplus -> {n} :e order_topology_basis Zplus.
-let n. assume Hn.
-admit.
+let n. assume HnZ.
+claim HnOmega: n :e omega.
+{ exact (Zplus_mem_omega n HnZ). }
+claim HnNat: nat_p n.
+{ exact (omega_nat_p n HnOmega). }
+claim HnNeq0: n <> 0.
+{ exact (Zplus_mem_nonzero n HnZ). }
+claim Hcase: n = 0 \/ exists m:set, nat_p m /\ n = ordsucc m.
+{ exact (nat_inv n HnNat). }
+apply (Hcase ({n} :e order_topology_basis Zplus)).
+- assume Hn0: n = 0.
+  prove {n} :e order_topology_basis Zplus.
+  apply FalseE.
+  exact (HnNeq0 Hn0).
+- assume Hex: exists m:set, nat_p m /\ n = ordsucc m.
+  apply Hex.
+  let m. assume Hmpair.
+  apply Hmpair.
+  assume HmNat HnEq.
+  apply (xm (m = 0)).
+  + assume Hm0: m = 0.
+    prove {n} :e order_topology_basis Zplus.
+    rewrite HnEq.
+    rewrite Hm0.
+    exact singleton_ordsucc0_in_order_topology_basis_Zplus.
+  + assume HmNe0: m <> 0.
+    prove {n} :e order_topology_basis Zplus.
+    claim HmZ: m :e Zplus.
+    { exact (nat_nonzero_in_Zplus m HmNat HmNe0). }
+    rewrite HnEq.
+    exact (singleton_ordsucc_in_order_topology_basis_Zplus m HmZ).
 Qed.
 
 (** Helper: order topology on Zplus is discrete **)
