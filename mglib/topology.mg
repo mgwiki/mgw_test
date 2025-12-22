@@ -7274,7 +7274,317 @@ Qed.
 Theorem Sigma_countable : forall X:set, countable X ->
   forall Y:set->set, (forall x:set, x :e X -> countable (Y x)) ->
   countable (Sigma_ x :e X, Y x).
-admit.
+let X.
+assume HX: countable X.
+let Y.
+assume HY: forall x:set, x :e X -> countable (Y x).
+prove countable (Sigma_ x :e X, Y x).
+prove exists h : set -> set, inj (Sigma_ x :e X, Y x) omega h.
+apply HX.
+let f : set -> set.
+assume Hf: inj X omega f.
+set graph : set -> (set -> set) -> set := fun A g => {(a, g a) | a :e A}.
+set app : set -> set -> set := fun g a => Eps_i (fun n => (a,n) :e g).
+set G : set -> set := fun x =>
+  Eps_i (fun g => exists hx : set->set, inj (Y x) omega hx /\ g = graph (Y x) hx).
+set h : set -> set := fun z =>
+  nat_pair (f (proj0 z)) (app (G (proj0 z)) (proj1 z)).
+witness h.
+
+(** Helper: evaluating a graph built by Repl gives the original value **)
+claim graph_app : forall A:set, forall g:set->set, forall a:set,
+  a :e A -> app (graph A g) a = g a.
+{ let A g a.
+  assume Ha: a :e A.
+  prove app (graph A g) a = g a.
+  prove Eps_i (fun n => (a,n) :e graph A g) = g a.
+  claim H1: (a, g a) :e graph A g.
+  { exact (ReplI A (fun a0:set => (a0, g a0)) a Ha). }
+  claim H2: (a, Eps_i (fun n => (a,n) :e graph A g)) :e graph A g.
+  { exact (Eps_i_ax (fun n => (a,n) :e graph A g) (g a) H1). }
+  apply (ReplE_impred A (fun a0:set => (a0, g a0)) (a, Eps_i (fun n => (a,n) :e graph A g)) H2).
+  let a0.
+  assume Ha0: a0 :e A.
+  assume Heq: (a, Eps_i (fun n => (a,n) :e graph A g)) = (a0, g a0).
+  claim Ha_eq: a = a0.
+  { rewrite <- (tuple_2_0_eq a (Eps_i (fun n => (a,n) :e graph A g))).
+    rewrite <- (tuple_2_0_eq a0 (g a0)).
+    rewrite Heq.
+    reflexivity. }
+  claim Hn_eq: Eps_i (fun n => (a,n) :e graph A g) = g a0.
+  { rewrite <- (tuple_2_1_eq a (Eps_i (fun n => (a,n) :e graph A g))) at 1.
+    rewrite <- (tuple_2_1_eq a0 (g a0)) at 1.
+    rewrite Heq.
+    reflexivity. }
+  rewrite Hn_eq.
+  rewrite <- Ha_eq.
+  reflexivity. }
+
+(** Helper: graph evaluation under set equality **)
+claim graph_app_eq : forall A:set, forall g:set->set, forall G0 a:set,
+  a :e A -> G0 = graph A g -> app G0 a = g a.
+{ let A g G0 a.
+  assume Ha: a :e A.
+  assume Heq: G0 = graph A g.
+  prove app G0 a = g a.
+  prove Eps_i (fun n => (a,n) :e G0) = g a.
+  claim H1: (a, g a) :e G0.
+  { rewrite Heq.
+    exact (ReplI A (fun a0:set => (a0, g a0)) a Ha). }
+  claim H2: (a, Eps_i (fun n => (a,n) :e G0)) :e G0.
+  { exact (Eps_i_ax (fun n => (a,n) :e G0) (g a) H1). }
+  claim H2g: (a, Eps_i (fun n => (a,n) :e G0)) :e graph A g.
+  { rewrite <- Heq.
+    exact H2. }
+  apply (ReplE_impred A (fun a0:set => (a0, g a0)) (a, Eps_i (fun n => (a,n) :e G0)) H2g).
+  let a0.
+  assume Ha0: a0 :e A.
+  assume Heq2: (a, Eps_i (fun n => (a,n) :e G0)) = (a0, g a0).
+  claim Ha_eq: a = a0.
+  { rewrite <- (tuple_2_0_eq a (Eps_i (fun n => (a,n) :e G0))).
+    rewrite <- (tuple_2_0_eq a0 (g a0)).
+    rewrite Heq2.
+    reflexivity. }
+  claim Hn_eq: Eps_i (fun n => (a,n) :e G0) = g a0.
+  { rewrite <- (tuple_2_1_eq a (Eps_i (fun n => (a,n) :e G0))) at 1.
+    rewrite <- (tuple_2_1_eq a0 (g a0)) at 1.
+    rewrite Heq2.
+    reflexivity. }
+  rewrite Hn_eq.
+  rewrite <- Ha_eq.
+  reflexivity. }
+
+apply (injI (Sigma_ x :e X, Y x) omega h).
+- let z.
+  assume Hz: z :e Sigma_ x :e X, Y x.
+  prove h z :e omega.
+  claim Hz0: proj0 z :e X.
+  { exact (proj0_Sigma X Y z Hz). }
+  claim Hz1: proj1 z :e Y (proj0 z).
+  { exact (proj1_Sigma X Y z Hz). }
+  claim Hfmap: forall a :e X, f a :e omega.
+  { exact (andEL (forall a :e X, f a :e omega)
+                 (forall a b :e X, f a = f b -> a = b)
+                 Hf). }
+  claim Hfz: f (proj0 z) :e omega.
+  { exact (Hfmap (proj0 z) Hz0). }
+  set x0 := proj0 z.
+  claim HcountY: countable (Y x0).
+  { exact (HY x0 Hz0). }
+  apply HcountY.
+  let hx : set->set.
+  assume Hhx: inj (Y x0) omega hx.
+  claim HPw: exists hx0 : set->set, inj (Y x0) omega hx0 /\ graph (Y x0) hx = graph (Y x0) hx0.
+  { witness hx.
+    apply andI.
+    - exact Hhx.
+    - reflexivity. }
+  claim HGdef: G x0 = Eps_i (fun g => exists hx0 : set->set, inj (Y x0) omega hx0 /\ g = graph (Y x0) hx0).
+  { reflexivity. }
+  claim HQG: exists hx0 : set->set, inj (Y x0) omega hx0 /\ G x0 = graph (Y x0) hx0.
+  { rewrite HGdef.
+    exact (Eps_i_ax (fun g => exists hx0 : set->set, inj (Y x0) omega hx0 /\ g = graph (Y x0) hx0)
+                    (graph (Y x0) hx)
+                    HPw). }
+  apply HQG.
+  let hx0 : set->set.
+  assume Hhx0pair.
+  apply Hhx0pair.
+  assume Hhx0 HGeq.
+  claim Hhx0map: forall u :e Y x0, hx0 u :e omega.
+  { exact (andEL (forall u :e Y x0, hx0 u :e omega)
+                 (forall u v :e Y x0, hx0 u = hx0 v -> u = v)
+                 Hhx0). }
+  claim Hhy: hx0 (proj1 z) :e omega.
+  { exact (Hhx0map (proj1 z) Hz1). }
+  claim Happ: app (G x0) (proj1 z) = hx0 (proj1 z).
+  { exact (graph_app_eq (Y x0) hx0 (G x0) (proj1 z) Hz1 HGeq). }
+  claim Hhdef: h z = nat_pair (f (proj0 z)) (app (G (proj0 z)) (proj1 z)).
+  { reflexivity. }
+  rewrite Hhdef.
+  rewrite Happ.
+  exact (nat_pair_In_omega (f (proj0 z)) Hfz (hx0 (proj1 z)) Hhy).
+- let z1.
+  assume Hz1: z1 :e Sigma_ x :e X, Y x.
+  let z2.
+  assume Hz2: z2 :e Sigma_ x :e X, Y x.
+  assume Heq: h z1 = h z2.
+  prove z1 = z2.
+  claim Hz10: proj0 z1 :e X.
+  { exact (proj0_Sigma X Y z1 Hz1). }
+  claim Hz20: proj0 z2 :e X.
+  { exact (proj0_Sigma X Y z2 Hz2). }
+  claim Hz11: proj1 z1 :e Y (proj0 z1).
+  { exact (proj1_Sigma X Y z1 Hz1). }
+  claim Hz21: proj1 z2 :e Y (proj0 z2).
+  { exact (proj1_Sigma X Y z2 Hz2). }
+  claim Hfmap: forall a :e X, f a :e omega.
+  { exact (andEL (forall a :e X, f a :e omega)
+                 (forall a b :e X, f a = f b -> a = b)
+                 Hf). }
+  claim Hfinj: forall a b :e X, f a = f b -> a = b.
+  { exact (andER (forall a :e X, f a :e omega)
+                 (forall a b :e X, f a = f b -> a = b)
+                 Hf). }
+  claim Hfz1: f (proj0 z1) :e omega.
+  { exact (Hfmap (proj0 z1) Hz10). }
+  claim Hfz2: f (proj0 z2) :e omega.
+  { exact (Hfmap (proj0 z2) Hz20). }
+  claim Hhy1: app (G (proj0 z1)) (proj1 z1) :e omega.
+  { set x1 := proj0 z1.
+    claim HcountY: countable (Y x1).
+    { exact (HY x1 Hz10). }
+    apply HcountY.
+    let hx : set->set.
+    assume Hhx: inj (Y x1) omega hx.
+    claim HPw: exists hx0 : set->set, inj (Y x1) omega hx0 /\ graph (Y x1) hx = graph (Y x1) hx0.
+    { witness hx.
+      apply andI.
+      - exact Hhx.
+      - reflexivity. }
+    claim HGdef: G x1 = Eps_i (fun g => exists hx0 : set->set, inj (Y x1) omega hx0 /\ g = graph (Y x1) hx0).
+    { reflexivity. }
+    claim HQG: exists hx0 : set->set, inj (Y x1) omega hx0 /\ G x1 = graph (Y x1) hx0.
+	    { rewrite HGdef.
+	      exact (Eps_i_ax (fun g => exists hx0 : set->set, inj (Y x1) omega hx0 /\ g = graph (Y x1) hx0)
+	                      (graph (Y x1) hx)
+	                      HPw). }
+	    apply HQG.
+	    let hx0 : set->set.
+	    assume Hhx0pair.
+	    apply Hhx0pair.
+	    assume Hhx0 HGeq.
+	    claim Hhx0map: forall u :e Y x1, hx0 u :e omega.
+	    { exact (andEL (forall u :e Y x1, hx0 u :e omega)
+	                   (forall u v :e Y x1, hx0 u = hx0 v -> u = v)
+	                   Hhx0). }
+	    claim Hhy: hx0 (proj1 z1) :e omega.
+	    { exact (Hhx0map (proj1 z1) Hz11). }
+	    claim Happ: app (G x1) (proj1 z1) = hx0 (proj1 z1).
+	    { exact (graph_app_eq (Y x1) hx0 (G x1) (proj1 z1) Hz11 HGeq). }
+	    rewrite Happ.
+	    exact Hhy. }
+  claim Hhy2: app (G (proj0 z2)) (proj1 z2) :e omega.
+  { set x2 := proj0 z2.
+    claim HcountY: countable (Y x2).
+    { exact (HY x2 Hz20). }
+	    apply HcountY.
+	    let hx : set->set.
+	    assume Hhx: inj (Y x2) omega hx.
+	    claim HPw: exists hx0 : set->set, inj (Y x2) omega hx0 /\ graph (Y x2) hx = graph (Y x2) hx0.
+	    { witness hx.
+	      apply andI.
+	      - exact Hhx.
+	      - reflexivity. }
+	    claim HGdef: G x2 = Eps_i (fun g => exists hx0 : set->set, inj (Y x2) omega hx0 /\ g = graph (Y x2) hx0).
+	    { reflexivity. }
+	    claim HQG: exists hx0 : set->set, inj (Y x2) omega hx0 /\ G x2 = graph (Y x2) hx0.
+		    { rewrite HGdef.
+		      exact (Eps_i_ax (fun g => exists hx0 : set->set, inj (Y x2) omega hx0 /\ g = graph (Y x2) hx0)
+		                      (graph (Y x2) hx)
+		                      HPw). }
+		    apply HQG.
+		    let hx0 : set->set.
+		    assume Hhx0pair.
+		    apply Hhx0pair.
+		    assume Hhx0 HGeq.
+	    claim Hhx0map: forall u :e Y x2, hx0 u :e omega.
+	    { exact (andEL (forall u :e Y x2, hx0 u :e omega)
+	                   (forall u v :e Y x2, hx0 u = hx0 v -> u = v)
+	                   Hhx0). }
+	    claim Hhy: hx0 (proj1 z2) :e omega.
+	    { exact (Hhx0map (proj1 z2) Hz21). }
+	    claim Happ: app (G x2) (proj1 z2) = hx0 (proj1 z2).
+	    { exact (graph_app_eq (Y x2) hx0 (G x2) (proj1 z2) Hz21 HGeq). }
+	    rewrite Happ.
+	    exact Hhy. }
+  claim Hhdef1: h z1 = nat_pair (f (proj0 z1)) (app (G (proj0 z1)) (proj1 z1)).
+  { reflexivity. }
+  claim Hhdef2: h z2 = nat_pair (f (proj0 z2)) (app (G (proj0 z2)) (proj1 z2)).
+  { reflexivity. }
+  claim Hpair: nat_pair (f (proj0 z1)) (app (G (proj0 z1)) (proj1 z1))
+              = nat_pair (f (proj0 z2)) (app (G (proj0 z2)) (proj1 z2)).
+  { rewrite <- Hhdef1.
+    rewrite <- Hhdef2.
+    exact Heq. }
+  claim Hxeq: proj0 z1 = proj0 z2.
+  { claim Hf0: f (proj0 z1) = f (proj0 z2).
+    { exact (nat_pair_0 (f (proj0 z1)) Hfz1 (app (G (proj0 z1)) (proj1 z1)) Hhy1
+                        (f (proj0 z2)) Hfz2 (app (G (proj0 z2)) (proj1 z2)) Hhy2
+                        Hpair). }
+    exact (Hfinj (proj0 z1) Hz10 (proj0 z2) Hz20 Hf0). }
+  set x := proj0 z1.
+  claim HxX: x :e X.
+  { exact Hz10. }
+  claim Hz2x: proj0 z2 = x.
+  { symmetry. exact Hxeq. }
+  claim Hy21': proj1 z2 :e Y x.
+  { rewrite <- Hz2x.
+    exact Hz21. }
+  claim Hy11': proj1 z1 :e Y x.
+  { claim Hxdef: x = proj0 z1.
+    { reflexivity. }
+    rewrite Hxdef.
+    exact Hz11. }
+  claim HcountY: countable (Y x).
+  { exact (HY x HxX). }
+  apply HcountY.
+  let hx : set->set.
+  assume Hhx: inj (Y x) omega hx.
+  claim HPw: exists hx0 : set->set, inj (Y x) omega hx0 /\ graph (Y x) hx = graph (Y x) hx0.
+  { witness hx.
+    apply andI.
+    - exact Hhx.
+    - reflexivity. }
+  claim HGdef: G x = Eps_i (fun g => exists hx0 : set->set, inj (Y x) omega hx0 /\ g = graph (Y x) hx0).
+  { reflexivity. }
+  claim HQG: exists hx0 : set->set, inj (Y x) omega hx0 /\ G x = graph (Y x) hx0.
+  { rewrite HGdef.
+    exact (Eps_i_ax (fun g => exists hx0 : set->set, inj (Y x) omega hx0 /\ g = graph (Y x) hx0)
+                    (graph (Y x) hx)
+                    HPw). }
+  apply HQG.
+  let hx0 : set->set.
+  assume Hhx0pair.
+  apply Hhx0pair.
+  assume Hhx0 HGeq.
+  claim Hhx0inj: forall u v :e Y x, hx0 u = hx0 v -> u = v.
+  { exact (andER (forall u :e Y x, hx0 u :e omega)
+                 (forall u v :e Y x, hx0 u = hx0 v -> u = v)
+                 Hhx0). }
+  claim Happ1: app (G x) (proj1 z1) = hx0 (proj1 z1).
+  { exact (graph_app_eq (Y x) hx0 (G x) (proj1 z1) Hy11' HGeq). }
+  claim Happ2: app (G x) (proj1 z2) = hx0 (proj1 z2).
+  { exact (graph_app_eq (Y x) hx0 (G x) (proj1 z2) Hy21' HGeq). }
+  claim Hn_eq: app (G x) (proj1 z1) = app (G x) (proj1 z2).
+  { claim Hn0: app (G (proj0 z1)) (proj1 z1) = app (G (proj0 z2)) (proj1 z2).
+    { exact (nat_pair_1 (f (proj0 z1)) Hfz1 (app (G (proj0 z1)) (proj1 z1)) Hhy1
+                        (f (proj0 z2)) Hfz2 (app (G (proj0 z2)) (proj1 z2)) Hhy2
+                        Hpair). }
+    claim Hxdef: x = proj0 z1.
+    { reflexivity. }
+    rewrite Hxdef.
+    rewrite Hxeq at 2.
+    exact Hn0. }
+  claim Hhx0eq: hx0 (proj1 z1) = hx0 (proj1 z2).
+  { rewrite <- Happ1.
+    rewrite <- Happ2.
+    exact Hn_eq. }
+  claim Hyeq: proj1 z1 = proj1 z2.
+  { exact (Hhx0inj (proj1 z1) Hy11' (proj1 z2) Hy21' Hhx0eq). }
+  apply (Sigma_eta_proj0_proj1 X Y z1 Hz1).
+  assume Heta1core Heta1Y.
+  apply Heta1core.
+  assume Heta1 Heta1X.
+  apply (Sigma_eta_proj0_proj1 X Y z2 Hz2).
+  assume Heta2core Heta2Y.
+  apply Heta2core.
+  assume Heta2 Heta2X.
+  rewrite <- Heta1.
+  rewrite <- Heta2.
+  rewrite Hxeq.
+  rewrite Hyeq.
+  reflexivity.
 Qed.
 
 (** Helper: product of two countable sets is countable **)
