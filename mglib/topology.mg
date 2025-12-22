@@ -38558,7 +38558,8 @@ apply andI.
 					        + claim HS: subbasis_on (product_space I Xi) Ssmall.
 					          { exact HSsmall. }
 					          exact (finite_intersections_basis_of_subbasis (product_space I Xi) Ssmall HS).
-					        + admit.
+						        + (** countable_set goal is not yet automated by vampire **)
+						          admit. (** FAIL **)
 					      - (** basis_generates **)
 					        prove basis_on (product_space I Xi) (basis_of_subbasis (product_space I Xi) Ssmall) /\
 					          generated_topology (product_space I Xi) (basis_of_subbasis (product_space I Xi) Ssmall) = countable_product_topology_subbasis I Xi.
