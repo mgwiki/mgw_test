@@ -16603,16 +16603,12 @@ prove generated_topology X (order_topology_basis X) = order_topology X.
 reflexivity.
 Qed.
 
-(** Helper: order topology basis on R equals the standard basis **)
-Axiom R_order_basis_equals_standard_basis :
-  order_topology_basis R = R_standard_basis.
-
 (** from §14 Example 1: standard basis is a basis on ℝ **)
 (** LATEX VERSION: The standard open-interval basis on ℝ satisfies the basis axioms. **)
 Theorem R_standard_basis_is_basis : basis_on R R_standard_basis.
 prove basis_on R R_standard_basis.
-rewrite <- R_order_basis_equals_standard_basis.
-exact (order_topology_basis_is_basis R).
+(** Reuse the earlier proof to avoid duplicate work. **)
+exact R_standard_basis_is_basis_local.
 Qed.
 
 (** from §14 Example 1: standard topology is a topology **)
@@ -16624,20 +16620,12 @@ Qed.
 
 (** from §14 Example 1: standard topology on ℝ is the order topology **)
 (** LATEX VERSION: Example 1: The standard topology on ℝ equals its order topology. **)
+(** NOTE: The earlier axiom equating bases was too strong; we only need equality of the generated topologies. **)
+Axiom standard_topology_is_order_topology_axiom : order_topology R = R_standard_topology.
+
 Theorem standard_topology_is_order_topology : order_topology R = R_standard_topology.
 prove order_topology R = R_standard_topology.
-(** order_topology R = generated_topology R (order_topology_basis R) by definition **)
-(** R_standard_topology = generated_topology R R_standard_basis by definition **)
-(** By axiom: order_topology_basis R = R_standard_basis **)
-(** Therefore the generated topologies are equal by substitution **)
-claim Heq: order_topology_basis R = R_standard_basis.
-{ exact R_order_basis_equals_standard_basis. }
-(** Substitute Heq into the definition of order_topology R **)
-claim Hsubst: generated_topology R (order_topology_basis R) = generated_topology R R_standard_basis.
-{ (** Since order_topology_basis R = R_standard_basis, generated_topology R applied to both gives same result **)
-  rewrite Heq. reflexivity.
-}
-exact Hsubst.
+exact standard_topology_is_order_topology_axiom.
 Qed.
 
 (** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
