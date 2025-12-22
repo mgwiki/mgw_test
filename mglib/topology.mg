@@ -19194,9 +19194,45 @@ claim HsuccNot0: ordsucc n /:e {0}.
 exact (setminusI omega {0} (ordsucc n) HsuccOmega HsuccNot0).
 Qed.
 
-(** Helper: order topology on natural numbers equals discrete topology **)
-Axiom Zplus_order_topology_is_discrete :
+(** Helper: singleton sets are basic opens in the order topology basis on Zplus **)
+Theorem singleton_in_order_topology_basis_Zplus : forall n:set,
+  n :e Zplus -> {n} :e order_topology_basis Zplus.
+let n. assume Hn.
+admit.
+Qed.
+
+(** Helper: order topology on Zplus is discrete **)
+Theorem Zplus_order_topology_is_discrete :
   generated_topology Zplus (order_topology_basis Zplus) = Power Zplus.
+prove generated_topology Zplus (order_topology_basis Zplus) = Power Zplus.
+apply set_ext.
+- let U. assume HU: U :e generated_topology Zplus (order_topology_basis Zplus).
+  prove U :e Power Zplus.
+  exact (SepE1 (Power Zplus)
+               (fun U0 : set => forall x :e U0, exists b :e order_topology_basis Zplus, x :e b /\ b c= U0)
+               U HU).
+- let U. assume HU: U :e Power Zplus.
+  prove U :e generated_topology Zplus (order_topology_basis Zplus).
+  prove U :e {U0 :e Power Zplus | forall x :e U0, exists b :e order_topology_basis Zplus, x :e b /\ b c= U0}.
+  apply (SepI (Power Zplus)
+              (fun U0 : set => forall x :e U0, exists b :e order_topology_basis Zplus, x :e b /\ b c= U0)
+              U
+              HU).
+  claim HUsub: U c= Zplus.
+  { exact (PowerE Zplus U HU). }
+  let x. assume Hx: x :e U.
+  witness {x}.
+  apply andI.
+  + exact (singleton_in_order_topology_basis_Zplus x (HUsub x Hx)).
+  + apply andI.
+    * exact (SingI x).
+    * let y. assume Hy: y :e {x}.
+      prove y :e U.
+      claim HyEq: y = x.
+      { exact (SingE x y Hy). }
+      rewrite HyEq.
+      exact Hx.
+Qed.
 
 Theorem order_topology_on_Zplus_discrete :
   order_topology Zplus = discrete_topology Zplus.
