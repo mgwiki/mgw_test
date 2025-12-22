@@ -35948,7 +35948,13 @@ Definition covering_dimension : set -> set -> prop := fun X n =>
         refines_cover B A /\
         collection_has_order_at_m_plus_one X B n.
 Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
-  topology_on X Tx /\ exists m:set, covering_dimension X m.
+  topology_on X Tx /\
+  exists m:set, m :e omega /\
+    forall A:set, open_cover_of X Tx A ->
+      exists B:set,
+        open_cover_of X Tx B /\
+        refines_cover B A /\
+        collection_has_order_at_m_plus_one X B m.
 
 (** from §50 Theorem: basic properties of covering dimension **)
 (** LATEX VERSION: Basic existence placeholder for covering dimension. **)
