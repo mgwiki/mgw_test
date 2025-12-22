@@ -30410,6 +30410,22 @@ Definition metric_on : set -> set -> prop := fun X d =>
      ~(Rlt (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z)))
            (apply_fun d (x,z)))).
 
+(** Helper: metric_on plus totality of the graph on X×X **)
+Definition metric_on_total : set -> set -> prop := fun X d =>
+  metric_on X d /\ total_function_on d (setprod X X) R.
+
+Theorem metric_on_total_imp_metric_on : forall X d:set,
+  metric_on_total X d -> metric_on X d.
+let X d. assume H.
+exact (andEL (metric_on X d) (total_function_on d (setprod X X) R) H).
+Qed.
+
+Theorem metric_on_total_total_function : forall X d:set,
+  metric_on_total X d -> total_function_on d (setprod X X) R.
+let X d. assume H.
+exact (andER (metric_on X d) (total_function_on d (setprod X X) R) H).
+Qed.
+
 (** helper: triangle inequality in Rle form **)
 Theorem metric_triangle_Rle : forall X d x y z:set,
   metric_on X d -> x :e X -> y :e X -> z :e X ->
