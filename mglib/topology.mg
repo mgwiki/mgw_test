@@ -29744,6 +29744,44 @@ Axiom function_union_on_disjoint : forall A B Y f g:set,
   function_on f A Y -> function_on g B Y ->
   function_on (f :\/: g) (A :\/: B) Y.
 
+(** Helper: total_function_on union properties **)
+(** Uses `function_union_on_disjoint` for the function_on part, and proves totality directly by cases on x∈A∪B. **)
+Theorem total_function_union_on_disjoint : forall A B Y f g:set,
+  A :/\: B = Empty ->
+  total_function_on f A Y -> total_function_on g B Y ->
+  total_function_on (f :\/: g) (A :\/: B) Y.
+let A B Y f g.
+assume Hdisj: A :/\: B = Empty.
+assume Hf: total_function_on f A Y.
+assume Hg: total_function_on g B Y.
+prove total_function_on (f :\/: g) (A :\/: B) Y.
+apply andI.
+- (** function_on part **)
+  claim Hf_on: function_on f A Y.
+  { exact (total_function_on_function_on f A Y Hf). }
+  claim Hg_on: function_on g B Y.
+  { exact (total_function_on_function_on g B Y Hg). }
+  exact (function_union_on_disjoint A B Y f g Hdisj Hf_on Hg_on).
+- (** totality part **)
+  let x. assume Hx: x :e (A :\/: B).
+  prove exists y:set, y :e Y /\ (x,y) :e (f :\/: g).
+  apply (binunionE A B x Hx).
+  + assume HxA: x :e A.
+    apply (total_function_on_totality f A Y Hf x HxA).
+    let y. assume Hy: y :e Y /\ (x,y) :e f.
+    witness y.
+    apply andI.
+    * exact (andEL (y :e Y) ((x,y) :e f) Hy).
+    * exact (binunionI1 f g (x,y) (andER (y :e Y) ((x,y) :e f) Hy)).
+  + assume HxB: x :e B.
+    apply (total_function_on_totality g B Y Hg x HxB).
+    let y. assume Hy: y :e Y /\ (x,y) :e g.
+    witness y.
+    apply andI.
+    * exact (andEL (y :e Y) ((x,y) :e g) Hy).
+    * exact (binunionI2 f g (x,y) (andER (y :e Y) ((x,y) :e g) Hy)).
+Qed.
+
 Axiom preimage_of_union_functions : forall A B f g V:set,
   A :/\: B = Empty ->
   preimage_of (A :\/: B) (f :\/: g) V =
