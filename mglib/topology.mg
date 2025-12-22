@@ -37966,7 +37966,137 @@ Qed.
 (** LATEX VERSION: The set of all finite subcollections of a countable set is countable. **)
 Theorem finite_subcollections_countable : forall S:set,
   countable_set S -> countable_set (finite_subcollections S).
-admit.
+let S. assume HS: countable_set S.
+prove countable_set (finite_subcollections S).
+prove countable (finite_subcollections S).
+prove exists h : set -> set, inj (finite_subcollections S) omega h.
+apply HS.
+let f : set -> set.
+assume Hf: inj S omega f.
+(** It is standard that the family of finite subsets of omega is countable. **)
+claim HFinOmega: countable (finite_subcollections omega).
+{ admit. }
+apply HFinOmega.
+let code : set -> set.
+assume Hcode: inj (finite_subcollections omega) omega code.
+set ImgF : set -> set := fun F => {f x|x :e F}.
+set h : set -> set := fun F => code (ImgF F).
+witness h.
+apply (injI (finite_subcollections S) omega h).
+- let F. assume HF: F :e finite_subcollections S.
+  prove h F :e omega.
+  claim HFpow: F :e Power S.
+  { exact (SepE1 (Power S) (fun F0:set => finite F0) F HF). }
+  claim HFfin: finite F.
+  { exact (SepE2 (Power S) (fun F0:set => finite F0) F HF). }
+  claim Hfmap: forall a :e S, f a :e omega.
+  { exact (andEL (forall a :e S, f a :e omega)
+                 (forall a b :e S, f a = f b -> a = b)
+                 Hf). }
+  claim HImgPow: ImgF F :e Power omega.
+  { exact (image_In_Power S omega f Hfmap F HFpow). }
+  claim HImgFin: finite (ImgF F).
+  { exact (Repl_finite f F HFfin). }
+  claim HImg: ImgF F :e finite_subcollections omega.
+  { exact (SepI (Power omega) (fun F0:set => finite F0) (ImgF F) HImgPow HImgFin). }
+  claim Hcodemap: forall u :e finite_subcollections omega, code u :e omega.
+  { exact (andEL (forall u :e finite_subcollections omega, code u :e omega)
+                 (forall u v :e finite_subcollections omega, code u = code v -> u = v)
+                 Hcode). }
+  claim Hhdef: h F = code (ImgF F).
+  { reflexivity. }
+  rewrite Hhdef.
+  exact (Hcodemap (ImgF F) HImg).
+- let F1. assume HF1: F1 :e finite_subcollections S.
+  let F2. assume HF2: F2 :e finite_subcollections S.
+  assume Heq: h F1 = h F2.
+  prove F1 = F2.
+  claim HF1pow: F1 :e Power S.
+  { exact (SepE1 (Power S) (fun F0:set => finite F0) F1 HF1). }
+  claim HF2pow: F2 :e Power S.
+  { exact (SepE1 (Power S) (fun F0:set => finite F0) F2 HF2). }
+  claim HF1sub: F1 c= S.
+  { exact (PowerE S F1 HF1pow). }
+  claim HF2sub: F2 c= S.
+  { exact (PowerE S F2 HF2pow). }
+  claim Hf_inj: forall a b :e S, f a = f b -> a = b.
+  { exact (andER (forall a :e S, f a :e omega)
+                 (forall a b :e S, f a = f b -> a = b)
+                 Hf). }
+  claim Hfmap: forall a :e S, f a :e omega.
+  { exact (andEL (forall a :e S, f a :e omega)
+                 (forall a b :e S, f a = f b -> a = b)
+                 Hf). }
+  claim HImg1: ImgF F1 :e finite_subcollections omega.
+  { claim HF1fin: finite F1.
+    { exact (SepE2 (Power S) (fun F0:set => finite F0) F1 HF1). }
+    claim HImgPow: ImgF F1 :e Power omega.
+    { exact (image_In_Power S omega f Hfmap F1 HF1pow). }
+    claim HImgFin: finite (ImgF F1).
+    { exact (Repl_finite f F1 HF1fin). }
+    exact (SepI (Power omega) (fun F0:set => finite F0) (ImgF F1) HImgPow HImgFin). }
+  claim HImg2: ImgF F2 :e finite_subcollections omega.
+  { claim HF2fin: finite F2.
+    { exact (SepE2 (Power S) (fun F0:set => finite F0) F2 HF2). }
+    claim HImgPow: ImgF F2 :e Power omega.
+    { exact (image_In_Power S omega f Hfmap F2 HF2pow). }
+    claim HImgFin: finite (ImgF F2).
+    { exact (Repl_finite f F2 HF2fin). }
+    exact (SepI (Power omega) (fun F0:set => finite F0) (ImgF F2) HImgPow HImgFin). }
+  claim Hcodeinj: forall u v :e finite_subcollections omega, code u = code v -> u = v.
+  { exact (andER (forall u :e finite_subcollections omega, code u :e omega)
+                 (forall u v :e finite_subcollections omega, code u = code v -> u = v)
+                 Hcode). }
+  claim Hhdef1: h F1 = code (ImgF F1).
+  { reflexivity. }
+  claim Hhdef2: h F2 = code (ImgF F2).
+  { reflexivity. }
+  claim HeqImg: ImgF F1 = ImgF F2.
+  { apply (Hcodeinj (ImgF F1) HImg1 (ImgF F2) HImg2).
+    claim Hcodeeq: code (ImgF F1) = code (ImgF F2).
+    { claim Hc1: code (ImgF F1) = h F1.
+      { symmetry. exact Hhdef1. }
+      claim Hc2: h F2 = code (ImgF F2).
+      { exact Hhdef2. }
+      claim Hmid: code (ImgF F1) = h F2.
+      { exact (eq_i_tra (code (ImgF F1)) (h F1) (h F2) Hc1 Heq). }
+      exact (eq_i_tra (code (ImgF F1)) (h F2) (code (ImgF F2)) Hmid Hc2). }
+    exact Hcodeeq. }
+  apply set_ext.
+  + let x. assume Hx1: x :e F1.
+    prove x :e F2.
+    claim HxS: x :e S.
+    { exact (HF1sub x Hx1). }
+    claim Hfx1: f x :e ImgF F1.
+    { exact (ReplI F1 f x Hx1). }
+    claim Hfx2: f x :e ImgF F2.
+    { rewrite <- HeqImg. exact Hfx1. }
+    apply (ReplE_impred F2 f (f x) Hfx2).
+    let y. assume Hy2: y :e F2.
+    assume Hfxy: f x = f y.
+    claim HyS: y :e S.
+    { exact (HF2sub y Hy2). }
+    claim Heqxy: x = y.
+    { exact (Hf_inj x HxS y HyS Hfxy). }
+    rewrite Heqxy.
+    exact Hy2.
+  + let x. assume Hx2: x :e F2.
+    prove x :e F1.
+    claim HxS: x :e S.
+    { exact (HF2sub x Hx2). }
+    claim Hfx2: f x :e ImgF F2.
+    { exact (ReplI F2 f x Hx2). }
+    claim Hfx1: f x :e ImgF F1.
+    { rewrite HeqImg. exact Hfx2. }
+    apply (ReplE_impred F1 f (f x) Hfx1).
+    let y. assume Hy1: y :e F1.
+    assume Hfxy: f x = f y.
+    claim HyS: y :e S.
+    { exact (HF1sub y Hy1). }
+    claim Heqxy: x = y.
+    { exact (Hf_inj x HxS y HyS Hfxy). }
+    rewrite Heqxy.
+    exact Hy1.
 Qed.
 
 (** Helper: finite intersections of a countable family form a countable family **)
