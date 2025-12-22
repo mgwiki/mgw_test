@@ -19046,6 +19046,36 @@ claim H0not: 0 /:e {0}.
 exact (H0not (SingI 0)).
 Qed.
 
+(** Helper: 1 is in Zplus **)
+(** Uses the definition Zplus = omega :\: {0}. **)
+Theorem one_in_Zplus : 1 :e Zplus.
+prove 1 :e omega :\: {0}.
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim H1not0: 1 /:e {0}.
+{ assume H1: 1 :e {0}.
+  prove False.
+  claim Heq: 1 = 0.
+  { exact (SingE 0 1 H1). }
+  exact (neq_1_0 Heq). }
+exact (setminusI omega {0} 1 H1omega H1not0).
+Qed.
+
+(** Helper: 2 is in Zplus **)
+(** Uses the definition Zplus = omega :\: {0}. **)
+Theorem two_in_Zplus : 2 :e Zplus.
+prove 2 :e omega :\: {0}.
+claim H2omega: 2 :e omega.
+{ exact (nat_p_omega 2 nat_2). }
+claim H2not0: 2 /:e {0}.
+{ assume H2: 2 :e {0}.
+  prove False.
+  claim Heq: 2 = 0.
+  { exact (SingE 0 2 H2). }
+  exact (neq_2_0 Heq). }
+exact (setminusI omega {0} 2 H2omega H2not0).
+Qed.
+
 (** Helper: 0 is in rational_numbers **)
 (** Uses the definition rational = {x :e real | exists m :e int, exists n :e omega :\: {0}, x = m :/: n}. **)
 Theorem zero_in_rational_numbers : 0 :e rational_numbers.
@@ -19171,7 +19201,7 @@ Axiom Zplus_order_topology_is_discrete :
 Theorem order_topology_on_Zplus_discrete :
   order_topology Zplus = discrete_topology Zplus.
 prove order_topology Zplus = discrete_topology Zplus.
-(** Zplus = omega by definition **)
+(** Zplus = omega :\: {0} by definition **)
 (** order_topology Zplus = generated_topology Zplus (order_topology_basis Zplus) **)
 (** discrete_topology Zplus = Power Zplus **)
 exact Zplus_order_topology_is_discrete.
