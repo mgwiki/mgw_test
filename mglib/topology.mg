@@ -36095,7 +36095,7 @@ Theorem linear_graph_dimension_1 : forall G Tg:set,
   linear_graph G Tg -> covering_dimension G (Sing Empty).
 let G Tg.
 assume Hlin.
-admit. (** stub definition makes proof trivial but not meaningful **)
+admit. (** Example 6: linear graphs have topological dimension 1 (placeholder) **)
 Qed.
 
 (** from §50 Example 7: general position in R^3 (preliminary) **)
@@ -36272,7 +36272,7 @@ Theorem ex50_1_discrete_dimension_0 : forall X Tx:set,
   covering_dimension X Empty.
 let X Tx.
 assume HTxdisc HTxtop.
-admit. (** stub definition makes this trivial but not useful **)
+admit. (** Exercise 1: discrete spaces have dimension 0 (placeholder) **)
 Qed.
 
 (** from §50 Exercise 2: connected T1 space with >1 point has dimension ≥1 **)
