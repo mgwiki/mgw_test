@@ -25701,6 +25701,49 @@ Qed.
 Axiom preimage_compose : forall X Y f g W:set,
   preimage_of X (compose_fun X f g) W = preimage_of X f (preimage_of Y g W).
 
+(** Helper: preimage composition under function_on assumption **)
+Theorem preimage_compose_fun : forall X Y f g W:set,
+  function_on f X Y ->
+  preimage_of X (compose_fun X f g) W = preimage_of X f (preimage_of Y g W).
+let X Y f g W.
+assume Hfun: function_on f X Y.
+apply set_ext.
+- let x. assume HxL: x :e preimage_of X (compose_fun X f g) W.
+  prove x :e preimage_of X f (preimage_of Y g W).
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => apply_fun (compose_fun X f g) x0 :e W) x HxL). }
+  claim HxW: apply_fun (compose_fun X f g) x :e W.
+  { exact (SepE2 X (fun x0:set => apply_fun (compose_fun X f g) x0 :e W) x HxL). }
+  claim Hcomp: apply_fun (compose_fun X f g) x = apply_fun g (apply_fun f x).
+  { exact (compose_fun_apply X f g x HxX). }
+  claim HfxY: apply_fun f x :e Y.
+  { exact (Hfun x HxX). }
+  prove x :e {x0 :e X | apply_fun f x0 :e preimage_of Y g W}.
+  claim HfxInPre: apply_fun f x :e preimage_of Y g W.
+  { prove apply_fun f x :e {y :e Y | apply_fun g y :e W}.
+    claim HgfxW: apply_fun g (apply_fun f x) :e W.
+    { rewrite <- Hcomp.
+      exact HxW. }
+    exact (SepI Y (fun y0:set => apply_fun g y0 :e W) (apply_fun f x) HfxY HgfxW). }
+  exact (SepI X (fun x0:set => apply_fun f x0 :e preimage_of Y g W) x HxX HfxInPre).
+- let x. assume HxR: x :e preimage_of X f (preimage_of Y g W).
+  prove x :e preimage_of X (compose_fun X f g) W.
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => apply_fun f x0 :e preimage_of Y g W) x HxR). }
+  claim HfxPre: apply_fun f x :e preimage_of Y g W.
+  { exact (SepE2 X (fun x0:set => apply_fun f x0 :e preimage_of Y g W) x HxR). }
+  claim HfxY: apply_fun f x :e Y.
+  { exact (SepE1 Y (fun y0:set => apply_fun g y0 :e W) (apply_fun f x) HfxPre). }
+  claim HgW: apply_fun g (apply_fun f x) :e W.
+  { exact (SepE2 Y (fun y0:set => apply_fun g y0 :e W) (apply_fun f x) HfxPre). }
+  claim Hcomp: apply_fun (compose_fun X f g) x = apply_fun g (apply_fun f x).
+  { exact (compose_fun_apply X f g x HxX). }
+  claim HcompW: apply_fun (compose_fun X f g) x :e W.
+  { rewrite Hcomp.
+    exact HgW. }
+  exact (SepI X (fun x0:set => apply_fun (compose_fun X f g) x0 :e W) x HxX HcompW).
+Qed.
+
  Theorem composition_continuous : forall X Tx Y Ty Z Tz f g:set,
    continuous_map X Tx Y Ty f ->
    continuous_map Y Ty Z Tz g ->
@@ -25798,11 +25841,11 @@ apply andI.
   (** Since f is continuous, preimage_of X f (preimage_of Y g W) is open in Tx **)
   claim HfgW_open: preimage_of X f (preimage_of Y g W) :e Tx.
   { exact (Hpreimg_f (preimage_of Y g W) HgW_open). }
-  (** Show that preimage_of X gf W = preimage_of X f (preimage_of Y g W) **)
-  claim Hpreimg_eq: preimage_of X gf W = preimage_of X f (preimage_of Y g W).
-  { (** Use preimage composition property **)
-    exact (preimage_compose X Y f g W).
-  }
+	  (** Show that preimage_of X gf W = preimage_of X f (preimage_of Y g W) **)
+	  claim Hpreimg_eq: preimage_of X gf W = preimage_of X f (preimage_of Y g W).
+	  { (** Use preimage composition property **)
+	    exact (preimage_compose_fun X Y f g W Hfun_f).
+	  }
   rewrite Hpreimg_eq.
   exact HfgW_open.
 Qed.
