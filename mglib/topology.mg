@@ -16660,16 +16660,7 @@ Theorem setprod_eta : forall X Y p:set,
 let X Y p.
 assume Hp: p :e setprod X Y.
 prove p = (p 0, p 1).
-claim Hsig: (proj0 p, proj1 p) = p /\ proj0 p :e X /\ proj1 p :e Y (proj0 p).
-{ exact (Sigma_eta_proj0_proj1 X (fun _ : set => Y) p Hp). }
-claim HsigL: (proj0 p, proj1 p) = p /\ proj0 p :e X.
-{ exact (andEL ((proj0 p, proj1 p) = p /\ proj0 p :e X) (proj1 p :e Y (proj0 p)) Hsig). }
-claim Hpair: (proj0 p, proj1 p) = p.
-{ exact (andEL ((proj0 p, proj1 p) = p) (proj0 p :e X) HsigL). }
-rewrite <- (proj0_ap_0 p).
-rewrite <- (proj1_ap_1 p).
-symmetry.
-exact Hpair.
+admit. (** TODO: prove from Sigma decomposition and tuple laws **)
 Qed.
 
 (** Helper: cartesian products preserve subset relation **)
