@@ -16514,6 +16514,24 @@ Qed.
 Definition rational_open_intervals_basis : set :=
   \/_ q1 :e rational_numbers, {open_interval q1 q2|q2 :e rational_numbers}.
 
+(** from §13 Exercise 8(a): density of rationals in reals (in order sense) **)
+(** LATEX VERSION: Between any two real numbers a<b there exists a rational q with a<q<b. **)
+Theorem rational_dense_between_reals : forall a b:set,
+  a :e R -> b :e R -> Rlt a b ->
+  exists q :e rational_numbers, Rlt a q /\ Rlt q b.
+admit.
+Qed.
+
+(** from §13 Exercise 8(a): rational endpoints around a point in a real open interval **)
+(** LATEX VERSION: If x is in (a,b) then there are rationals q1,q2 with q1<x<q2 and (q1,q2) contained in (a,b). **)
+Theorem rational_interval_refines_real_interval : forall a b x:set,
+  a :e R -> b :e R -> x :e R ->
+  x :e open_interval a b ->
+  exists q1 :e rational_numbers, exists q2 :e rational_numbers,
+    x :e open_interval q1 q2 /\ open_interval q1 q2 c= open_interval a b.
+admit.
+Qed.
+
 Theorem ex13_8a_rational_intervals_basis_standard :
   basis_on R rational_open_intervals_basis /\
   generated_topology R rational_open_intervals_basis = R_standard_topology.
