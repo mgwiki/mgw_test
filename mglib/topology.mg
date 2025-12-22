@@ -27088,6 +27088,55 @@ Definition metric_on : set -> set -> prop := fun X d =>
      ~(Rlt (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z)))
            (apply_fun d (x,z)))).
 
+(** helper: triangle inequality in Rle form **)
+Theorem metric_triangle_Rle : forall X d x y z:set,
+  metric_on X d -> x :e X -> y :e X -> z :e X ->
+  Rle (apply_fun d (x,z)) (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z))).
+let X d x y z.
+assume Hm: metric_on X d.
+assume Hx: x :e X.
+assume Hy: y :e X.
+assume Hz: z :e X.
+claim Hfun: function_on d (setprod X X) R.
+{ exact (andEL (function_on d (setprod X X) R)
+               ((forall x0 y0:set, x0 :e X -> y0 :e X -> apply_fun d (x0,y0) = apply_fun d (y0,x0)) /\
+                (forall x0:set, x0 :e X -> apply_fun d (x0,x0) = 0) /\
+                (forall x0 y0:set, x0 :e X -> y0 :e X ->
+                   ~(Rlt (apply_fun d (x0,y0)) 0) /\ (apply_fun d (x0,y0) = 0 -> x0 = y0)) /\
+                (forall x0 y0 z0:set, x0 :e X -> y0 :e X -> z0 :e X ->
+                   ~(Rlt (add_SNo (apply_fun d (x0,y0)) (apply_fun d (y0,z0)))
+                         (apply_fun d (x0,z0)))))
+               Hm). }
+claim Htri: forall x0 y0 z0:set, x0 :e X -> y0 :e X -> z0 :e X ->
+  ~(Rlt (add_SNo (apply_fun d (x0,y0)) (apply_fun d (y0,z0))) (apply_fun d (x0,z0))).
+{ exact (andER (function_on d (setprod X X) R)
+               ((forall x0 y0:set, x0 :e X -> y0 :e X -> apply_fun d (x0,y0) = apply_fun d (y0,x0)) /\
+                (forall x0:set, x0 :e X -> apply_fun d (x0,x0) = 0) /\
+                (forall x0 y0:set, x0 :e X -> y0 :e X ->
+                   ~(Rlt (apply_fun d (x0,y0)) 0) /\ (apply_fun d (x0,y0) = 0 -> x0 = y0)) /\
+                (forall x0 y0 z0:set, x0 :e X -> y0 :e X -> z0 :e X ->
+                   ~(Rlt (add_SNo (apply_fun d (x0,y0)) (apply_fun d (y0,z0)))
+                         (apply_fun d (x0,z0)))))
+               Hm). }
+
+claim HxyIn: (x,y) :e setprod X X.
+{ exact (tuple_2_setprod X X x Hx y Hy). }
+claim HyzIn: (y,z) :e setprod X X.
+{ exact (tuple_2_setprod X X y Hy z Hz). }
+claim HxzIn: (x,z) :e setprod X X.
+{ exact (tuple_2_setprod X X x Hx z Hz). }
+
+claim HdxyR: apply_fun d (x,y) :e R.
+{ exact (Hfun (x,y) HxyIn). }
+claim HdyzR: apply_fun d (y,z) :e R.
+{ exact (Hfun (y,z) HyzIn). }
+claim HdxzR: apply_fun d (x,z) :e R.
+{ exact (Hfun (x,z) HxzIn). }
+claim HsumR: add_SNo (apply_fun d (x,y)) (apply_fun d (y,z)) :e R.
+{ exact (real_add_SNo (apply_fun d (x,y)) HdxyR (apply_fun d (y,z)) HdyzR). }
+exact (RleI (apply_fun d (x,z)) (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z))) HdxzR HsumR (Htri x y z Hx Hy Hz)).
+Qed.
+
 (** from §20 Definition: open ball **)
 (** LATEX VERSION: Open ball centered at x with radius r in metric d. **)
 (** FIXED: Previous definition was semantically wrong:
