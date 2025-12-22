@@ -28458,6 +28458,42 @@ Definition continuous_map : set -> set -> set -> set -> set -> prop :=
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
     forall V:set, V :e Ty -> preimage_of X f V :e Tx.
 
+(** Helper: continuous_map variant with totality of the graph **)
+Definition continuous_map_total : set -> set -> set -> set -> set -> prop :=
+  fun X Tx Y Ty f =>
+    topology_on X Tx /\ topology_on Y Ty /\ total_function_on f X Y /\
+    forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+
+(** Helper: continuous_map_total implies continuous_map **)
+Theorem continuous_map_total_imp : forall X Tx Y Ty f:set,
+  continuous_map_total X Tx Y Ty f -> continuous_map X Tx Y Ty f.
+let X Tx Y Ty f.
+assume H: continuous_map_total X Tx Y Ty f.
+prove continuous_map X Tx Y Ty f.
+prove ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y) /\
+  (forall V:set, V :e Ty -> preimage_of X f V :e Tx).
+claim Hcore: ((topology_on X Tx /\ topology_on Y Ty) /\ total_function_on f X Y) /\
+  (forall V:set, V :e Ty -> preimage_of X f V :e Tx).
+{ exact H. }
+claim Hleft: (topology_on X Tx /\ topology_on Y Ty) /\ total_function_on f X Y.
+{ exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ total_function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx) Hcore). }
+claim Hright: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+{ exact (andER ((topology_on X Tx /\ topology_on Y Ty) /\ total_function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx) Hcore). }
+claim Htops: topology_on X Tx /\ topology_on Y Ty.
+{ exact (andEL (topology_on X Tx /\ topology_on Y Ty) (total_function_on f X Y) Hleft). }
+claim Htot: total_function_on f X Y.
+{ exact (andER (topology_on X Tx /\ topology_on Y Ty) (total_function_on f X Y) Hleft). }
+claim Hfun: function_on f X Y.
+{ exact (total_function_on_function_on f X Y Htot). }
+apply andI.
+- apply andI.
+  + exact Htops.
+  + exact Hfun.
+- exact Hright.
+Qed.
+
 (** Helper: constant maps are continuous **)
 Theorem const_fun_continuous : forall X Tx Y Ty x:set,
   topology_on X Tx -> topology_on Y Ty -> x :e Y ->
@@ -28527,6 +28563,30 @@ apply andI.
     }
     rewrite Heq.
     exact (topology_has_empty X Tx HTx).
+Qed.
+
+(** Helper: constant maps are continuous (total variant) **)
+Theorem const_fun_continuous_total : forall X Tx Y Ty x:set,
+  topology_on X Tx -> topology_on Y Ty -> x :e Y ->
+  continuous_map_total X Tx Y Ty (const_fun X x).
+let X Tx Y Ty x.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+assume HxY: x :e Y.
+prove continuous_map_total X Tx Y Ty (const_fun X x).
+prove ((topology_on X Tx /\ topology_on Y Ty) /\ total_function_on (const_fun X x) X Y) /\
+  forall V:set, V :e Ty -> preimage_of X (const_fun X x) V :e Tx.
+apply andI.
+- apply andI.
+  + apply andI.
+    * exact HTx.
+    * exact HTy.
+  + exact (const_fun_total_function_on X Y x HxY).
+- claim Hc: continuous_map X Tx Y Ty (const_fun X x).
+  { exact (const_fun_continuous X Tx Y Ty x HTx HTy HxY). }
+  exact (andER ((topology_on X Tx /\ topology_on Y Ty) /\ function_on (const_fun X x) X Y)
+               (forall V:set, V :e Ty -> preimage_of X (const_fun X x) V :e Tx)
+               Hc).
 Qed.
 
 (** Helper: continuity preserves closed sets **)
