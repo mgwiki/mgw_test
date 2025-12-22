@@ -16588,7 +16588,151 @@ Qed.
 Theorem rational_dense_between_reals : forall a b:set,
   a :e R -> b :e R -> Rlt a b ->
   exists q :e rational_numbers, Rlt a q /\ Rlt q b.
-admit.
+let a b.
+assume HaR HbR Hab.
+prove exists q :e rational_numbers, Rlt a q /\ Rlt q b.
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+claim Hablt: a < b.
+{ exact (RltE_lt a b Hab). }
+claim HmaR: minus_SNo a :e R.
+{ exact (real_minus_SNo a HaR). }
+claim HmaS: SNo (minus_SNo a).
+{ exact (real_SNo (minus_SNo a) HmaR). }
+set d := add_SNo b (minus_SNo a).
+claim HdDef: d = add_SNo b (minus_SNo a).
+{ reflexivity. }
+claim HdR: d :e R.
+{ rewrite HdDef.
+  exact (real_add_SNo b HbR (minus_SNo a) HmaR). }
+claim HdS: SNo d.
+{ exact (real_SNo d HdR). }
+claim H0ltd: 0 < d.
+{ rewrite HdDef.
+  claim Hlt: add_SNo a (minus_SNo a) < add_SNo b (minus_SNo a).
+  { exact (add_SNo_Lt1 a (minus_SNo a) b HaS HmaS HbS Hablt). }
+  claim H0eq: add_SNo a (minus_SNo a) = 0.
+  { exact (add_SNo_minus_SNo_rinv a HaS). }
+  rewrite <- H0eq.
+  exact Hlt. }
+(** choose N with eps_N < d using invd = 1/d and a bounded eps product **)
+set invd := recip_SNo_pos d.
+claim HinvdDef: invd = recip_SNo_pos d.
+{ reflexivity. }
+claim HinvdR: invd :e R.
+{ rewrite HinvdDef.
+  exact (real_recip_SNo_pos d HdR H0ltd). }
+claim HinvdS: SNo invd.
+{ exact (real_SNo invd HinvdR). }
+claim Hinvdpos: 0 < invd.
+{ exact (recip_SNo_pos_is_pos d HdS H0ltd). }
+claim HexN: exists N :e omega, eps_ N < d.
+{ apply (real_E invd HinvdR (exists N :e omega, eps_ N < d)).
+  assume HinvS: SNo invd.
+  assume Hlev.
+  assume HinS.
+  assume Hlow.
+  assume Hup.
+  assume Huniq.
+  assume Happrox.
+  claim HexNlt: exists N :e omega, mul_SNo (eps_ N) invd < 1.
+  { exact (SNoS_ordsucc_omega_bdd_eps_pos invd HinS Hinvdpos Hup). }
+  apply HexNlt.
+  let N. assume HNpair.
+  claim HNomega: N :e omega.
+  { exact (andEL (N :e omega) (mul_SNo (eps_ N) invd < 1) HNpair). }
+  claim HmulLt: mul_SNo (eps_ N) invd < 1.
+  { exact (andER (N :e omega) (mul_SNo (eps_ N) invd < 1) HNpair). }
+  witness N.
+  apply andI.
+  - exact HNomega.
+  - claim HepsS: SNo (eps_ N).
+    { exact (SNo_eps_ N HNomega). }
+    (** eps_N < 1/:/invd, then 1/:/invd = d **)
+    claim HepsLtDiv: eps_ N < div_SNo 1 invd.
+    { exact (div_SNo_pos_LtR 1 invd (eps_ N) SNo_1 HinvS HepsS Hinvdpos HmulLt). }
+    claim HdivEq: div_SNo 1 invd = d.
+    { claim Hposcase: recip_SNo invd = recip_SNo_pos invd.
+      { exact (recip_SNo_poscase invd Hinvdpos). }
+      claim HrecipInv: recip_SNo_pos invd = d.
+      { rewrite HinvdDef.
+        exact (recip_SNo_pos_invol d HdS H0ltd). }
+      claim HdivDef: div_SNo 1 invd = mul_SNo 1 (recip_SNo invd).
+      { reflexivity. }
+      rewrite HdivDef.
+      rewrite Hposcase.
+      rewrite HrecipInv.
+      exact (mul_SNo_oneL d HdS). }
+    rewrite <- HdivEq.
+    exact HepsLtDiv.
+}
+apply HexN.
+let N. assume HNpair.
+claim HNomega: N :e omega.
+{ exact (andEL (N :e omega) (eps_ N < d) HNpair). }
+claim HepsNlt: eps_ N < d.
+{ exact (andER (N :e omega) (eps_ N < d) HNpair). }
+(** approximate b from below within eps_N using real_E, then show the approximant lies above a **)
+claim Hexq: exists q :e SNoS_ omega, q < b /\ b < add_SNo q (eps_ N).
+{ apply (real_E b HbR (exists q :e SNoS_ omega, q < b /\ b < add_SNo q (eps_ N))).
+  assume HbS': SNo b.
+  assume Hlev.
+  assume HbInS.
+  assume Hlow.
+  assume Hup.
+  assume Huniq.
+  assume Happrox.
+  exact (Happrox N HNomega). }
+apply Hexq.
+let q. assume Hqpair. apply Hqpair.
+assume HqInS: q :e SNoS_ omega.
+assume Hqprop: q < b /\ b < add_SNo q (eps_ N).
+claim Hqltb: q < b.
+{ exact (andEL (q < b) (b < add_SNo q (eps_ N)) Hqprop). }
+claim Hbltqeps: b < add_SNo q (eps_ N).
+{ exact (andER (q < b) (b < add_SNo q (eps_ N)) Hqprop). }
+claim HqRat: q :e rational_numbers.
+{ exact (Subq_SNoS_omega_rational q HqInS). }
+claim HqR: q :e R.
+{ exact (rational_numbers_in_R q HqRat). }
+claim HqS: SNo q.
+{ exact (real_SNo q HqR). }
+claim HepsR: eps_ N :e R.
+{ exact (rational_numbers_in_R (eps_ N) (Subq_SNoS_omega_rational (eps_ N) (SNo_eps_SNoS_omega N HNomega))). }
+claim HepsS: SNo (eps_ N).
+{ exact (real_SNo (eps_ N) HepsR). }
+claim Hbmepsltq: add_SNo b (minus_SNo (eps_ N)) < q.
+{ exact (add_SNo_minus_Lt1b b (eps_ N) q HbS HepsS HqS Hbltqeps). }
+claim Haepsltb: add_SNo a (eps_ N) < b.
+{ prove add_SNo a (eps_ N) < b.
+  claim Hlt1: add_SNo (eps_ N) a < add_SNo d a.
+  { exact (add_SNo_Lt1 (eps_ N) a d HepsS HaS HdS HepsNlt). }
+  claim Hdplus: add_SNo d a = b.
+  { rewrite HdDef.
+    exact (add_SNo_minus_R2' b a HbS HaS). }
+  claim Hcom: add_SNo (eps_ N) a = add_SNo a (eps_ N).
+  { exact (add_SNo_com (eps_ N) a HepsS HaS). }
+  rewrite <- Hcom.
+  rewrite <- Hdplus.
+  exact Hlt1. }
+claim Haltbmeps: a < add_SNo b (minus_SNo (eps_ N)).
+{ exact (add_SNo_minus_Lt2b b (eps_ N) a HbS HepsS HaS Haepsltb). }
+claim HbmepsS: SNo (add_SNo b (minus_SNo (eps_ N))).
+{ exact (SNo_add_SNo b (minus_SNo (eps_ N)) HbS (SNo_minus_SNo (eps_ N) HepsS)). }
+claim Hqlt: a < q.
+{ exact (SNoLt_tra a (add_SNo b (minus_SNo (eps_ N))) q HaS HbmepsS HqS Haltbmeps Hbmepsltq). }
+claim Haq: Rlt a q.
+{ exact (RltI a q HaR HqR Hqlt). }
+claim Hqb: Rlt q b.
+{ exact (RltI q b HqR HbR Hqltb). }
+witness q.
+apply andI.
+- exact HqRat.
+- apply andI.
+  - exact Haq.
+  - exact Hqb.
 Qed.
 
 (** from §13 Exercise 8(a): rational endpoints around a point in a real open interval **)
