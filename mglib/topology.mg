@@ -43382,36 +43382,41 @@ exact Hpre_closed.
 Qed.
 (** from §31 Exercise 6: closed continuous surjection preserves normal **)
 (** LATEX VERSION: Let p: X → Y be closed continuous surjective map. If X is normal, then so is Y. **)
+Definition closed_map : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty p =>
+  function_on p X Y /\ forall A:set, closed_in X Tx A -> closed_in Y Ty (image_of p A).
+
 Theorem ex31_6_closed_map_preserves_normal : forall X Tx Y Ty p:set,
   normal_space X Tx ->
   continuous_map X Tx Y Ty p ->
-  (forall A:set, closed_in X Tx A -> closed_in Y Ty (image_of p A)) ->
+  closed_map X Tx Y Ty p ->
   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) ->
   normal_space Y Ty.
 let X Tx Y Ty p.
 assume Hnorm: normal_space X Tx.
 assume Hcont: continuous_map X Tx Y Ty p.
-assume Hclosed: forall A:set, closed_in X Tx A -> closed_in Y Ty (image_of p A).
+assume Hclosed: closed_map X Tx Y Ty p.
 assume Hsurj: forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y.
 prove normal_space Y Ty.
 admit. (** for disjoint closed A B in Y, preimages disjoint closed in X, separate, images separate A B **)
 Qed.
 (** from §31 Exercise 7: perfect map preserves separation/countability/local compactness **)
 (** LATEX VERSION: Perfect map (closed continuous surjective with compact fibers) preserves Hausdorff, regular, locally compact, second-countable. **)
+Definition perfect_map : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty p =>
+  continuous_map X Tx Y Ty p /\
+  closed_map X Tx Y Ty p /\
+  (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) /\
+  (forall y:set, y :e Y ->
+    compact_space {x :e X | apply_fun p x = y}
+                 (subspace_topology X Tx {x :e X | apply_fun p x = y})).
+
 Theorem ex31_7_perfect_map_properties : forall X Tx Y Ty p:set,
-  continuous_map X Tx Y Ty p ->
-  (forall A:set, closed_in X Tx A -> closed_in Y Ty (image_of p A)) ->
-  (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) ->
-  (forall y:set, y :e Y -> compact_space {x :e X | apply_fun p x = y} (subspace_topology X Tx {x :e X | apply_fun p x = y})) ->
+  perfect_map X Tx Y Ty p ->
   (Hausdorff_space X Tx -> Hausdorff_space Y Ty) /\
   (regular_space X Tx -> regular_space Y Ty) /\
   (locally_compact X Tx -> locally_compact Y Ty) /\
   (second_countable_space X Tx -> second_countable_space Y Ty).
 let X Tx Y Ty p.
-assume Hcont: continuous_map X Tx Y Ty p.
-assume Hclosed: forall A:set, closed_in X Tx A -> closed_in Y Ty (image_of p A).
-assume Hsurj: forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y.
-assume Hcompact: forall y:set, y :e Y -> compact_space {x :e X | apply_fun p x = y} (subspace_topology X Tx {x :e X | apply_fun p x = y}).
+assume Hperf: perfect_map X Tx Y Ty p.
 prove (Hausdorff_space X Tx -> Hausdorff_space Y Ty) /\ (regular_space X Tx -> regular_space Y Ty) /\ (locally_compact X Tx -> locally_compact Y Ty) /\ (second_countable_space X Tx -> second_countable_space Y Ty).
 admit. (** perfect maps preserve all these properties using compact fibers and closedness **)
 Qed.
