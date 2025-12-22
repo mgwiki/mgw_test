@@ -16442,6 +16442,10 @@ Theorem ex13_8a_rational_intervals_basis_standard :
   basis_on R rational_open_intervals_basis /\
   generated_topology R rational_open_intervals_basis = R_standard_topology.
 prove basis_on R rational_open_intervals_basis /\ generated_topology R rational_open_intervals_basis = R_standard_topology.
+(** NOTE: This needs a density lemma for `rational_numbers` in `R`:
+    for any `a b :e R` with `Rlt a b` and any `x :e open_interval a b`,
+    there exist rationals `q1 q2` with `Rlt a q1`, `Rlt q1 x`, `Rlt x q2`, `Rlt q2 b`.
+    We currently do not have a usable pre-topology theorem of this form in this file. **)
 apply andI.
 - admit. (** rational open intervals satisfy basis_on R **)
 - admit. (** generated_topology R rational_open_intervals_basis equals R_standard_topology **)
@@ -16457,6 +16461,9 @@ Theorem ex13_8b_halfopen_rational_basis_topology :
   basis_on R rational_halfopen_intervals_basis /\
   generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology.
 prove basis_on R rational_halfopen_intervals_basis /\ generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology.
+(** NOTE: This similarly needs density of rationals plus a separation argument showing
+    the generated topology from halfopen rational intervals does not coincide with
+    the lower limit topology on `R`. **)
 apply andI.
 - admit. (** rational half-open intervals satisfy basis_on R **)
 - admit. (** generated topology differs from R_lower_limit_topology **)
