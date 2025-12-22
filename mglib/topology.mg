@@ -37857,6 +37857,23 @@ Definition countable_basis_at : set -> set -> set -> prop := fun X Tx x =>
 Definition first_countable_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall x:set, x :e X -> countable_basis_at X Tx x.
 
+(** helper: countable local basis at a point in a nonempty countable product of first-countable spaces **)
+(** LATEX VERSION: The usual product argument produces a countable neighborhood basis at a point. **)
+Theorem product_countable_basis_at_point_if_components_first_countable : forall I Xi f:set,
+  countable_index_set I ->
+  I <> Empty ->
+  (forall i:set, i :e I -> first_countable_space (space_family_set Xi i) (space_family_topology Xi i)) ->
+  f :e product_space I Xi ->
+  countable_basis_at (product_space I Xi) (countable_product_topology_subbasis I Xi) f.
+let I Xi f.
+assume HIcount.
+assume HIn0.
+assume Hcomp.
+assume Hf.
+prove countable_basis_at (product_space I Xi) (countable_product_topology_subbasis I Xi) f.
+admit.
+Qed.
+
 (** from §30 Theorem 30.1(a): sequences and closure in first-countable spaces **) 
 (** LATEX VERSION: In first-countable spaces, sequential closure detects topological closure. **)
 Theorem first_countable_sequences_detect_closure : forall X Tx A x:set,
@@ -38373,11 +38390,17 @@ apply andI.
 			          exists B:set, B c= countable_product_topology_subbasis I Xi /\ countable_set B /\
 			            (forall b:set, b :e B -> f :e b) /\
 			            (forall U:set, U :e countable_product_topology_subbasis I Xi -> f :e U -> exists b:set, b :e B /\ b c= U).
-			        apply andI.
-			        - apply andI.
-			          + exact HTprod.
-			          + exact Hf.
-			        - admit.
+				        apply andI.
+				        - apply andI.
+				          + exact HTprod.
+				          + exact Hf.
+				        - claim Hcb: countable_basis_at (product_space I Xi) (countable_product_topology_subbasis I Xi) f.
+				          { exact (product_countable_basis_at_point_if_components_first_countable I Xi f HIcount HIn0 Hcomp Hf). }
+				          exact (andER (topology_on (product_space I Xi) (countable_product_topology_subbasis I Xi) /\ f :e product_space I Xi)
+				                       (exists B:set, B c= countable_product_topology_subbasis I Xi /\ countable_set B /\
+				                         (forall b:set, b :e B -> f :e b) /\
+				                         (forall U:set, U :e countable_product_topology_subbasis I Xi -> f :e U -> exists b:set, b :e B /\ b c= U))
+				                       Hcb).
 		- (** second countable for countable products **)
 		  let I Xi.
 		  assume HIcount: countable_index_set I.
