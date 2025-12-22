@@ -17340,8 +17340,8 @@ apply andI.
   apply andI.
   - prove rational_halfopen_intervals_basis c= Power R /\ (forall x :e R, exists b :e rational_halfopen_intervals_basis, x :e b).
     apply andI.
-    + (** every rational half-open interval is a subset of R **)
-      prove rational_halfopen_intervals_basis c= Power R.
+	    + (** every rational half-open interval is a subset of R **)
+	      prove rational_halfopen_intervals_basis c= Power R.
       let b. assume Hb: b :e rational_halfopen_intervals_basis.
       prove b :e Power R.
       apply (famunionE_impred rational_numbers
@@ -17356,13 +17356,80 @@ apply andI.
                Hbq1
                (b :e Power R)).
       let q2. assume Hq2 Heq.
-      rewrite Heq.
-      exact (PowerI R (halfopen_interval_left q1 q2) (halfopen_interval_left_Subq_R q1 q2)).
-    + admit. (** density/coverage of R by rational half-open intervals **)
-	  - (** intersection refinement using rational endpoints **)
-	    let b1. assume Hb1.
-	    let b2. assume Hb2.
-	    let x. assume Hx1 Hx2.
+	      rewrite Heq.
+	      exact (PowerI R (halfopen_interval_left q1 q2) (halfopen_interval_left_Subq_R q1 q2)).
+	    + (** coverage of R by rational half-open intervals **)
+	      prove forall x :e R, exists b :e rational_halfopen_intervals_basis, x :e b.
+	      let x. assume HxR.
+	      set a0 := add_SNo x (minus_SNo 1).
+	      set b0 := add_SNo x 1.
+	      claim Hm1R : minus_SNo 1 :e R.
+	      { exact (real_minus_SNo 1 real_1). }
+	      claim Ha0R : a0 :e R.
+	      { exact (real_add_SNo x HxR (minus_SNo 1) Hm1R). }
+	      claim Hb0R : b0 :e R.
+	      { exact (real_add_SNo x HxR 1 real_1). }
+	      claim HxInab : x :e open_interval a0 b0.
+	      { exact (real_in_open_interval_minus1_plus1 x HxR). }
+	      claim HexRat: exists q1 :e rational_numbers, exists q2 :e rational_numbers,
+	        x :e open_interval q1 q2 /\ open_interval q1 q2 c= open_interval a0 b0.
+	      { exact (rational_interval_refines_real_interval a0 b0 x Ha0R Hb0R HxR HxInab). }
+	      apply HexRat.
+	      let q1. assume Hq1pair. apply Hq1pair.
+	      assume Hq1Q: q1 :e rational_numbers.
+	      assume Hexq2: exists q2 :e rational_numbers,
+	        x :e open_interval q1 q2 /\ open_interval q1 q2 c= open_interval a0 b0.
+	      apply Hexq2.
+	      let q2. assume Hq2pair. apply Hq2pair.
+	      assume Hq2Q: q2 :e rational_numbers.
+	      assume Hxpair: x :e open_interval q1 q2 /\ open_interval q1 q2 c= open_interval a0 b0.
+	      claim HxInQ : x :e open_interval q1 q2.
+	      { exact (andEL (x :e open_interval q1 q2) (open_interval q1 q2 c= open_interval a0 b0) Hxpair). }
+	      claim HxInQprop : Rlt q1 x /\ Rlt x q2.
+	      { exact (SepE2 R (fun z : set => Rlt q1 z /\ Rlt z q2) x HxInQ). }
+	      claim Hq1x : Rlt q1 x.
+	      { exact (andEL (Rlt q1 x) (Rlt x q2) HxInQprop). }
+	      claim Hxq2 : Rlt x q2.
+	      { exact (andER (Rlt q1 x) (Rlt x q2) HxInQprop). }
+	      set I := halfopen_interval_left q1 q2.
+	      claim HIinFam : I :e {halfopen_interval_left q1 qq|qq :e rational_numbers}.
+	      { exact (ReplI rational_numbers (fun qq : set => halfopen_interval_left q1 qq) q2 Hq2Q). }
+	      claim HIinB : I :e rational_halfopen_intervals_basis.
+	      { exact (famunionI rational_numbers
+	               (fun aa : set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+	               q1
+	               I
+	               Hq1Q
+	               HIinFam). }
+	      claim Hnxq1 : ~(Rlt x q1).
+	      { assume Hxq1 : Rlt x q1.
+	        claim HxS : SNo x.
+	        { exact (real_SNo x HxR). }
+	        claim Hq1R : q1 :e R.
+	        { exact (rational_numbers_in_R q1 Hq1Q). }
+	        claim Hq1S : SNo q1.
+	        { exact (real_SNo q1 Hq1R). }
+	        claim Hxq1lt : x < q1.
+	        { exact (RltE_lt x q1 Hxq1). }
+	        claim Hq1xlt : q1 < x.
+	        { exact (RltE_lt q1 x Hq1x). }
+	        claim Hxxlt : x < x.
+	        { exact (SNoLt_tra x q1 x HxS Hq1S HxS Hxq1lt Hq1xlt). }
+	        exact ((SNoLt_irref x) Hxxlt). }
+	      claim HxInI : x :e I.
+	      { claim Hconj : ~(Rlt x q1) /\ Rlt x q2.
+	        { apply andI.
+	          - exact Hnxq1.
+	          - exact Hxq2. }
+	        exact (SepI R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) x HxR Hconj). }
+	      witness I.
+	      apply andI.
+	      * exact HIinB.
+	      * exact HxInI.
+		  - (** intersection refinement using rational endpoints **)
+		    let b1. assume Hb1.
+		    let b2. assume Hb2.
+		    let x. assume Hx1 Hx2.
 	    prove exists b3 :e rational_halfopen_intervals_basis, x :e b3 /\ b3 c= b1 :/\: b2.
 	    (** destruct b1 = halfopen_interval_left q1 q2 with q1,q2 rationals **)
 	    claim Hexq1 : exists q1 :e rational_numbers, b1 :e {halfopen_interval_left q1 q2|q2 :e rational_numbers}.
