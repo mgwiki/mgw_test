@@ -37408,6 +37408,79 @@ Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ 
 
 (** LATEX VERSION: Countable index set. **)
 Definition countable_index_set : set -> prop := fun I => countable_set I.
+
+(** helper: image of countable set is countable **)
+Theorem countable_image : forall X:set, countable_set X ->
+  forall F:set->set, countable_set {F x|x :e X}.
+let X.
+assume HX: countable_set X.
+let F.
+prove countable_set {F x|x :e X}.
+prove countable {F x|x :e X}.
+prove atleastp {F x|x :e X} omega.
+prove exists g : set->set, inj {F x|x :e X} omega g.
+apply HX.
+let h : set->set.
+assume Hh: inj X omega h.
+set pre : set->set := fun y => Eps_i (fun x => x :e X /\ y = F x).
+set g : set->set := fun y => h (pre y).
+witness g.
+apply (injI {F x|x :e X} omega g).
+- let y. assume Hy: y :e {F x|x :e X}.
+  prove g y :e omega.
+  apply (ReplE_impred X F y Hy).
+  let x.
+  assume HxX: x :e X.
+  assume HyFx: y = F x.
+  claim Hpreprop: pre y :e X /\ y = F (pre y).
+  { exact (Eps_i_ax (fun x0 => x0 :e X /\ y = F x0) x (andI (x :e X) (y = F x) HxX HyFx)). }
+  claim HpreX: pre y :e X.
+  { exact (andEL (pre y :e X) (y = F (pre y)) Hpreprop). }
+  claim Hhmap: forall u :e X, h u :e omega.
+  { exact (andEL (forall u :e X, h u :e omega) (forall u v :e X, h u = h v -> u = v) Hh). }
+  claim Hgy: g y = h (pre y).
+  { reflexivity. }
+  rewrite Hgy.
+  exact (Hhmap (pre y) HpreX).
+- let y1. assume Hy1: y1 :e {F x|x :e X}.
+  let y2. assume Hy2: y2 :e {F x|x :e X}.
+  assume Hg: g y1 = g y2.
+  prove y1 = y2.
+  claim Hhinj: forall u v :e X, h u = h v -> u = v.
+  { exact (andER (forall u :e X, h u :e omega) (forall u v :e X, h u = h v -> u = v) Hh). }
+  apply (ReplE_impred X F y1 Hy1).
+  let x1.
+  assume Hx1X: x1 :e X.
+  assume Hy1Fx1: y1 = F x1.
+  apply (ReplE_impred X F y2 Hy2).
+  let x2.
+  assume Hx2X: x2 :e X.
+  assume Hy2Fx2: y2 = F x2.
+  claim Hpre1: pre y1 :e X /\ y1 = F (pre y1).
+  { exact (Eps_i_ax (fun x0 => x0 :e X /\ y1 = F x0) x1 (andI (x1 :e X) (y1 = F x1) Hx1X Hy1Fx1)). }
+  claim Hpre2: pre y2 :e X /\ y2 = F (pre y2).
+  { exact (Eps_i_ax (fun x0 => x0 :e X /\ y2 = F x0) x2 (andI (x2 :e X) (y2 = F x2) Hx2X Hy2Fx2)). }
+  claim Hpre1X: pre y1 :e X.
+  { exact (andEL (pre y1 :e X) (y1 = F (pre y1)) Hpre1). }
+  claim Hpre2X: pre y2 :e X.
+  { exact (andEL (pre y2 :e X) (y2 = F (pre y2)) Hpre2). }
+  claim Hg1: g y1 = h (pre y1).
+  { reflexivity. }
+  claim Hg2: g y2 = h (pre y2).
+  { reflexivity. }
+  claim Heqh: h (pre y1) = h (pre y2).
+  { rewrite <- Hg1. rewrite <- Hg2. exact Hg. }
+  claim Heqpre: pre y1 = pre y2.
+  { exact (Hhinj (pre y1) Hpre1X (pre y2) Hpre2X Heqh). }
+  claim Hy1pre: y1 = F (pre y1).
+  { exact (andER (pre y1 :e X) (y1 = F (pre y1)) Hpre1). }
+  claim Hy2pre: y2 = F (pre y2).
+  { exact (andER (pre y2 :e X) (y2 = F (pre y2)) Hpre2). }
+  rewrite Hy1pre.
+  rewrite Hy2pre.
+  rewrite Heqpre.
+  reflexivity.
+Qed.
 (** LATEX VERSION: Component topology extractor for countable products. **)
 Definition countable_product_component_topology : set -> set -> set := fun Xi i => (apply_fun Xi i) 1.
 (** LATEX VERSION: Real sequences and uniform metric/topology on R^ω (setup). **)
