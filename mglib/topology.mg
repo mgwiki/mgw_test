@@ -26815,12 +26815,81 @@ apply andI.
         let f. let g. assume Hf. assume Hg.
         exact (composition_continuous X Tx Y Ty Z Tz f g Hf Hg).
       }
-    * (** (d) restricting the domain **)
-      let f. let A. assume HA. assume Hf.
-      admit.
-  + (** (e) restricting or expanding the range **)
-    let f. let Z0. assume Hf. assume HZ0. assume Himg.
-    admit.
+	    * (** (d) restricting the domain **)
+	      let f. let A. assume HA. assume Hf.
+	      prove continuous_map A (subspace_topology X Tx A) Y Ty f.
+	      claim HTA: topology_on A (subspace_topology X Tx A).
+	      { exact (subspace_topology_is_topology X Tx A HTx HA). }
+	      claim HpreX: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+	      { exact (andER (((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y))
+	                     (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+	                     Hf). }
+	      claim Htmp: (topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y.
+	      { exact (andEL (((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y))
+	                     (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+	                     Hf). }
+	      claim HfunXY: function_on f X Y.
+	      { exact (andER (topology_on X Tx /\ topology_on Y Ty)
+	                     (function_on f X Y)
+	                     Htmp). }
+	      prove (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty /\ function_on f A Y)
+	            /\ forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A.
+	      apply andI.
+	      - (** topology_on A /\ topology_on Y /\ function_on f A Y **)
+	        apply andI.
+	        + (** topology_on A /\ topology_on Y **)
+	          apply andI.
+	          * exact HTA.
+	          * exact HTy.
+	        + (** function_on f A Y **)
+	          let a. assume HaA: a :e A.
+	          prove apply_fun f a :e Y.
+	          claim HaX: a :e X.
+	          { exact (HA a HaA). }
+	          exact (HfunXY a HaX).
+	      - (** preimage condition in the subspace topology **)
+	        let V. assume HV: V :e Ty.
+	        prove preimage_of A f V :e subspace_topology X Tx A.
+	        claim HWTx: preimage_of X f V :e Tx.
+	        { exact (HpreX V HV). }
+	        claim Heq: preimage_of A f V = (preimage_of X f V) :/\: A.
+	        { apply set_ext.
+	          - let a. assume Ha: a :e preimage_of A f V.
+	            prove a :e (preimage_of X f V) :/\: A.
+	            claim HaA: a :e A.
+	            { exact (SepE1 A (fun u:set => apply_fun f u :e V) a Ha). }
+	            claim HaX: a :e X.
+	            { exact (HA a HaA). }
+	            claim HafV: apply_fun f a :e V.
+	            { exact (SepE2 A (fun u:set => apply_fun f u :e V) a Ha). }
+		            claim HaPreX: a :e preimage_of X f V.
+		            { exact (SepI X (fun u:set => apply_fun f u :e V) a HaX HafV). }
+	            exact (binintersectI (preimage_of X f V) A a HaPreX HaA).
+	          - let a. assume Ha: a :e (preimage_of X f V) :/\: A.
+	            prove a :e preimage_of A f V.
+	            claim HaPreX: a :e preimage_of X f V.
+	            { exact (binintersectE1 (preimage_of X f V) A a Ha). }
+	            claim HaA: a :e A.
+	            { exact (binintersectE2 (preimage_of X f V) A a Ha). }
+	            claim HafV: apply_fun f a :e V.
+	            { exact (SepE2 X (fun u:set => apply_fun f u :e V) a HaPreX). }
+		            exact (SepI A (fun u:set => apply_fun f u :e V) a HaA HafV).
+	        }
+	        rewrite Heq.
+	        claim Hpow: ((preimage_of X f V) :/\: A) :e Power A.
+	        { apply PowerI.
+	          let a. assume Ha: a :e (preimage_of X f V) :/\: A.
+	          exact (binintersectE2 (preimage_of X f V) A a Ha). }
+	        claim HexW: exists W :e Tx, (preimage_of X f V) :/\: A = W :/\: A.
+	        { witness (preimage_of X f V).
+	          apply andI.
+	          - exact HWTx.
+	          - reflexivity. }
+	        exact (SepI (Power A) (fun U0:set => exists W :e Tx, U0 = W :/\: A)
+	                   ((preimage_of X f V) :/\: A) Hpow HexW).
+      + (** (e) restricting or expanding the range **)
+	    let f. let Z0. assume Hf. assume HZ0. assume Himg.
+	    admit.
 - (** (f) local formulation **)
   let f. assume Hloc.
   admit.
