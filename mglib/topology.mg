@@ -25340,6 +25340,166 @@ Qed.
 Definition preimage_of : set -> set -> set -> set := fun X f V =>
   {x :e X | apply_fun f x :e V}.
 
+(** Helper: apply_fun for projections **)
+(** LATEX VERSION: For p in X×Y, proj1(p)=p0 and proj2(p)=p1. **)
+Theorem projection1_apply : forall X Y p:set,
+  p :e setprod X Y -> apply_fun (projection1 X Y) p = p 0.
+let X Y p.
+assume Hp: p :e setprod X Y.
+prove apply_fun (projection1 X Y) p = p 0.
+prove Eps_i (fun z => (p,z) :e projection1 X Y) = p 0.
+claim H1: (p, p 0) :e projection1 X Y.
+{ exact (ReplI (setprod X Y) (fun q:set => (q, q 0)) p Hp). }
+claim H2: (p, Eps_i (fun z => (p,z) :e projection1 X Y)) :e projection1 X Y.
+{ exact (Eps_i_ax (fun z => (p,z) :e projection1 X Y) (p 0) H1). }
+apply (ReplE_impred (setprod X Y) (fun q:set => (q, q 0))
+                     (p, Eps_i (fun z => (p,z) :e projection1 X Y)) H2).
+let q.
+assume Hq: q :e setprod X Y.
+assume Heq: (p, Eps_i (fun z => (p,z) :e projection1 X Y)) = (q, q 0).
+claim Hpq: p = q.
+{ rewrite <- (tuple_2_0_eq p (Eps_i (fun z => (p,z) :e projection1 X Y))).
+  rewrite <- (tuple_2_0_eq q (q 0)).
+  rewrite Heq.
+  reflexivity. }
+claim Hzq0: Eps_i (fun z => (p,z) :e projection1 X Y) = q 0.
+{ rewrite <- (tuple_2_1_eq p (Eps_i (fun z => (p,z) :e projection1 X Y))).
+  rewrite <- (tuple_2_1_eq q (q 0)).
+  rewrite Heq.
+  reflexivity. }
+claim Hq0p0: q 0 = p 0.
+{ rewrite <- Hpq.
+  reflexivity. }
+rewrite Hzq0.
+exact Hq0p0.
+Qed.
+
+Theorem projection2_apply : forall X Y p:set,
+  p :e setprod X Y -> apply_fun (projection2 X Y) p = p 1.
+let X Y p.
+assume Hp: p :e setprod X Y.
+prove apply_fun (projection2 X Y) p = p 1.
+prove Eps_i (fun z => (p,z) :e projection2 X Y) = p 1.
+claim H1: (p, p 1) :e projection2 X Y.
+{ exact (ReplI (setprod X Y) (fun q:set => (q, q 1)) p Hp). }
+claim H2: (p, Eps_i (fun z => (p,z) :e projection2 X Y)) :e projection2 X Y.
+{ exact (Eps_i_ax (fun z => (p,z) :e projection2 X Y) (p 1) H1). }
+apply (ReplE_impred (setprod X Y) (fun q:set => (q, q 1))
+                     (p, Eps_i (fun z => (p,z) :e projection2 X Y)) H2).
+let q.
+assume Hq: q :e setprod X Y.
+assume Heq: (p, Eps_i (fun z => (p,z) :e projection2 X Y)) = (q, q 1).
+claim Hpq: p = q.
+{ rewrite <- (tuple_2_0_eq p (Eps_i (fun z => (p,z) :e projection2 X Y))).
+  rewrite <- (tuple_2_0_eq q (q 1)).
+  rewrite Heq.
+  reflexivity. }
+claim Hzq1: Eps_i (fun z => (p,z) :e projection2 X Y) = q 1.
+{ rewrite <- (tuple_2_1_eq p (Eps_i (fun z => (p,z) :e projection2 X Y))).
+  rewrite <- (tuple_2_1_eq q (q 1)).
+  rewrite Heq.
+  reflexivity. }
+claim Hq1p1: q 1 = p 1.
+{ rewrite <- Hpq.
+  reflexivity. }
+rewrite Hzq1.
+exact Hq1p1.
+Qed.
+
+(** Helper: preimages of opens under projections are rectangles **)
+(** LATEX VERSION: proj1^{-1}(U)=U×Y and proj2^{-1}(V)=X×V. **)
+Theorem preimage_projection1_rectangle : forall X Y U:set,
+  U c= X ->
+  preimage_of (setprod X Y) (projection1 X Y) U = rectangle_set U Y.
+let X Y U.
+assume HUsub: U c= X.
+apply set_ext.
+- let p. assume Hp: p :e preimage_of (setprod X Y) (projection1 X Y) U.
+  prove p :e rectangle_set U Y.
+  claim HpXY: p :e setprod X Y.
+  { exact (SepE1 (setprod X Y) (fun q => apply_fun (projection1 X Y) q :e U) p Hp). }
+  claim HprojU: apply_fun (projection1 X Y) p :e U.
+  { exact (SepE2 (setprod X Y) (fun q => apply_fun (projection1 X Y) q :e U) p Hp). }
+  claim Happ: apply_fun (projection1 X Y) p = p 0.
+  { exact (projection1_apply X Y p HpXY). }
+  claim Hp0U: p 0 :e U.
+  { rewrite <- Happ.
+    exact HprojU. }
+  claim Hp1Y: p 1 :e Y.
+  { exact (ap1_Sigma X (fun _ : set => Y) p HpXY). }
+  claim Heta: p = (p 0, p 1).
+  { exact (setprod_eta X Y p HpXY). }
+  rewrite Heta.
+  exact (tuple_2_setprod U Y (p 0) Hp0U (p 1) Hp1Y).
+- let p. assume Hp: p :e rectangle_set U Y.
+  prove p :e preimage_of (setprod X Y) (projection1 X Y) U.
+  claim HpUY: p :e setprod U Y.
+  { exact Hp. }
+  claim Hp0U: p 0 :e U.
+  { exact (ap0_Sigma U (fun _ : set => Y) p HpUY). }
+  claim Hp1Y: p 1 :e Y.
+  { exact (ap1_Sigma U (fun _ : set => Y) p HpUY). }
+  claim Hp0X: p 0 :e X.
+  { exact (HUsub (p 0) Hp0U). }
+  claim HpXY: p :e setprod X Y.
+  { claim Heta: p = (p 0, p 1).
+    { exact (setprod_eta U Y p HpUY). }
+    rewrite Heta.
+    exact (tuple_2_setprod X Y (p 0) Hp0X (p 1) Hp1Y). }
+  claim Hprop: apply_fun (projection1 X Y) p :e U.
+  { claim Happ: apply_fun (projection1 X Y) p = p 0.
+    { exact (projection1_apply X Y p HpXY). }
+    rewrite Happ.
+    exact Hp0U. }
+  exact (SepI (setprod X Y) (fun q => apply_fun (projection1 X Y) q :e U) p HpXY Hprop).
+Qed.
+
+Theorem preimage_projection2_rectangle : forall X Y V:set,
+  V c= Y ->
+  preimage_of (setprod X Y) (projection2 X Y) V = rectangle_set X V.
+let X Y V.
+assume HVsub: V c= Y.
+apply set_ext.
+- let p. assume Hp: p :e preimage_of (setprod X Y) (projection2 X Y) V.
+  prove p :e rectangle_set X V.
+  claim HpXY: p :e setprod X Y.
+  { exact (SepE1 (setprod X Y) (fun q => apply_fun (projection2 X Y) q :e V) p Hp). }
+  claim HprojV: apply_fun (projection2 X Y) p :e V.
+  { exact (SepE2 (setprod X Y) (fun q => apply_fun (projection2 X Y) q :e V) p Hp). }
+  claim Happ: apply_fun (projection2 X Y) p = p 1.
+  { exact (projection2_apply X Y p HpXY). }
+  claim Hp1V: p 1 :e V.
+  { rewrite <- Happ.
+    exact HprojV. }
+  claim Hp0X: p 0 :e X.
+  { exact (ap0_Sigma X (fun _ : set => Y) p HpXY). }
+  claim Heta: p = (p 0, p 1).
+  { exact (setprod_eta X Y p HpXY). }
+  rewrite Heta.
+  exact (tuple_2_setprod X V (p 0) Hp0X (p 1) Hp1V).
+- let p. assume Hp: p :e rectangle_set X V.
+  prove p :e preimage_of (setprod X Y) (projection2 X Y) V.
+  claim HpXV: p :e setprod X V.
+  { exact Hp. }
+  claim Hp0X: p 0 :e X.
+  { exact (ap0_Sigma X (fun _ : set => V) p HpXV). }
+  claim Hp1V: p 1 :e V.
+  { exact (ap1_Sigma X (fun _ : set => V) p HpXV). }
+  claim Hp1Y: p 1 :e Y.
+  { exact (HVsub (p 1) Hp1V). }
+  claim HpXY: p :e setprod X Y.
+  { claim Heta: p = (p 0, p 1).
+    { exact (setprod_eta X V p HpXV). }
+    rewrite Heta.
+    exact (tuple_2_setprod X Y (p 0) Hp0X (p 1) Hp1Y). }
+  claim Hprop: apply_fun (projection2 X Y) p :e V.
+  { claim Happ: apply_fun (projection2 X Y) p = p 1.
+    { exact (projection2_apply X Y p HpXY). }
+    rewrite Happ.
+    exact Hp1V. }
+  exact (SepI (setprod X Y) (fun q => apply_fun (projection2 X Y) q :e V) p HpXY Hprop).
+Qed.
+
 Definition continuous_map : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f =>
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
@@ -26255,10 +26415,83 @@ Definition projection_map1 : set -> set -> set := fun X Y => projection1 X Y.
 Definition projection_map2 : set -> set -> set := fun X Y => projection2 X Y.
 
 (** Helper: projection maps are continuous **)
-Axiom projection_maps_continuous : forall X Tx Y Ty:set,
+Theorem projection_maps_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y) /\
   continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y).
+let X Tx Y Ty.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+prove continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y) /\
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y).
+apply andI.
+- (** projection_map1 **)
+  prove continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y).
+  prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\ topology_on X Tx /\
+    function_on (projection_map1 X Y) (setprod X Y) X /\
+    forall V:set, V :e Tx -> preimage_of (setprod X Y) (projection_map1 X Y) V :e product_topology X Tx Y Ty.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact (product_topology_is_topology X Tx Y Ty HTx HTy).
+      * exact HTx.
+    + (** function_on **)
+      let p. assume Hp: p :e setprod X Y.
+      prove apply_fun (projection_map1 X Y) p :e X.
+      claim Happ: apply_fun (projection_map1 X Y) p = p 0.
+      { exact (projection1_apply X Y p Hp). }
+      rewrite Happ.
+      exact (ap0_Sigma X (fun _ : set => Y) p Hp).
+  - let V. assume HV: V :e Tx.
+    prove preimage_of (setprod X Y) (projection_map1 X Y) V :e product_topology X Tx Y Ty.
+    claim HVsub: V c= X.
+    { exact (topology_elem_subset X Tx V HTx HV). }
+    claim HpreEq: preimage_of (setprod X Y) (projection_map1 X Y) V = rectangle_set V Y.
+    { exact (preimage_projection1_rectangle X Y V HVsub). }
+    rewrite HpreEq.
+    claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+    { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+    claim HYTy: Y :e Ty.
+    { exact (topology_has_X Y Ty HTy). }
+    claim HRsub: rectangle_set V Y :e product_subbasis X Tx Y Ty.
+    { claim HRfam: rectangle_set V Y :e {rectangle_set V V0|V0 :e Ty}.
+      { exact (ReplI Ty (fun V0:set => rectangle_set V V0) Y HYTy). }
+      exact (famunionI Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) V (rectangle_set V Y) HV HRfam). }
+    exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis (rectangle_set V Y) HRsub).
+- (** projection_map2 **)
+  prove continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y).
+  prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\ topology_on Y Ty /\
+    function_on (projection_map2 X Y) (setprod X Y) Y /\
+    forall V:set, V :e Ty -> preimage_of (setprod X Y) (projection_map2 X Y) V :e product_topology X Tx Y Ty.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact (product_topology_is_topology X Tx Y Ty HTx HTy).
+      * exact HTy.
+    + (** function_on **)
+      let p. assume Hp: p :e setprod X Y.
+      prove apply_fun (projection_map2 X Y) p :e Y.
+      claim Happ: apply_fun (projection_map2 X Y) p = p 1.
+      { exact (projection2_apply X Y p Hp). }
+      rewrite Happ.
+      exact (ap1_Sigma X (fun _ : set => Y) p Hp).
+  - let V. assume HV: V :e Ty.
+    prove preimage_of (setprod X Y) (projection_map2 X Y) V :e product_topology X Tx Y Ty.
+    claim HVsub: V c= Y.
+    { exact (topology_elem_subset Y Ty V HTy HV). }
+    claim HpreEq: preimage_of (setprod X Y) (projection_map2 X Y) V = rectangle_set X V.
+    { exact (preimage_projection2_rectangle X Y V HVsub). }
+    rewrite HpreEq.
+    claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+    { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+    claim HXTx: X :e Tx.
+    { exact (topology_has_X X Tx HTx). }
+    claim HRsub: rectangle_set X V :e product_subbasis X Tx Y Ty.
+    { claim HRfam: rectangle_set X V :e {rectangle_set X V0|V0 :e Ty}.
+      { exact (ReplI Ty (fun V0:set => rectangle_set X V0) V HV). }
+      exact (famunionI Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) X (rectangle_set X V) HXTx HRfam). }
+    exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis (rectangle_set X V) HRsub).
+Qed.
 
 (** Helper: universal property of products - maps into products **)
 (** LATEX VERSION: Projections from a product are continuous. **)
