@@ -35927,6 +35927,14 @@ Definition collection_has_order_at_m_plus_one : set -> set -> set -> prop :=
     forall x:set, x :e X ->
       cardinality_at_most {U :e A|x :e U} (ordsucc m).
 
+(** from §50 Definition (derived): order at most m+1 **) 
+(** LATEX VERSION: A collection A has order at most m+1 if no point lies in more than m+1 elements of A. **)
+Definition collection_has_order_at_most_m_plus_one : set -> set -> set -> prop :=
+  fun X A m =>
+    ordinal m /\
+    forall x:set, x :e X ->
+      cardinality_at_most {U :e A|x :e U} (ordsucc m).
+
 (** from §50 Definition: covering dimension and finite dimensionality **)
 (** LATEX VERSION: A space X has covering dimension ≤n if for every open cover A there exists a refinement of order ≤n+1. **)
 (** Helper: refinement of covers (as families of subsets) **)
@@ -35946,7 +35954,7 @@ Definition covering_dimension : set -> set -> prop := fun X n =>
       exists B:set,
         open_cover_of X Tx B /\
         refines_cover B A /\
-        collection_has_order_at_m_plus_one X B n.
+        collection_has_order_at_most_m_plus_one X B n.
 Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   exists m:set, m :e omega /\
@@ -35954,7 +35962,7 @@ Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
       exists B:set,
         open_cover_of X Tx B /\
         refines_cover B A /\
-        collection_has_order_at_m_plus_one X B m.
+        collection_has_order_at_most_m_plus_one X B m.
 
 (** from §50 Theorem: basic properties of covering dimension **)
 (** LATEX VERSION: Basic existence placeholder for covering dimension. **)
