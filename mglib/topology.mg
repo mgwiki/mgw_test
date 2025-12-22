@@ -37713,7 +37713,209 @@ prove (forall A:set, A c= X -> first_countable_space X Tx -> first_countable_spa
     first_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)) /\
   (forall I Xi:set, countable_index_set I -> (forall i:set, i :e I -> second_countable_space Xi (countable_product_component_topology Xi i)) ->
     second_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)).
-admit. (** subspace: restrict basis; countable product: countable union of countable bases from each coordinate **)
+apply andI.
+- (** first three clauses **)
+  apply andI.
+  + (** first two clauses **)
+    apply andI.
+    * (** first countable preserved by subspaces **)
+      let A. assume HA: A c= X.
+      assume Hfc: first_countable_space X Tx.
+      prove first_countable_space A (subspace_topology X Tx A).
+      claim HtopSub: topology_on A (subspace_topology X Tx A).
+      { exact (subspace_topology_is_topology X Tx A HTx HA). }
+      claim HfcTop: topology_on X Tx.
+      { exact (andEL (topology_on X Tx) (forall x:set, x :e X -> countable_basis_at X Tx x) Hfc). }
+      claim HfcAt: forall x:set, x :e X -> countable_basis_at X Tx x.
+      { exact (andER (topology_on X Tx) (forall x:set, x :e X -> countable_basis_at X Tx x) Hfc). }
+      prove topology_on A (subspace_topology X Tx A) /\
+           forall x:set, x :e A -> countable_basis_at A (subspace_topology X Tx A) x.
+      apply andI.
+      { exact HtopSub. }
+      { let x. assume HxA: x :e A.
+        prove countable_basis_at A (subspace_topology X Tx A) x.
+        claim HxX: x :e X.
+        { exact (HA x HxA). }
+        claim Hcbx: countable_basis_at X Tx x.
+        { exact (HfcAt x HxX). }
+        claim Hcbx_left: (topology_on X Tx /\ x :e X) /\ exists Bx:set,
+          Bx c= Tx /\ countable_set Bx /\ (forall b:set, b :e Bx -> x :e b) /\
+          (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e Bx /\ b c= U).
+        { exact Hcbx. }
+        claim HexBx: exists Bx:set,
+          Bx c= Tx /\ countable_set Bx /\ (forall b:set, b :e Bx -> x :e b) /\
+          (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e Bx /\ b c= U).
+        { exact (andER (topology_on X Tx /\ x :e X)
+                       (exists Bx:set, Bx c= Tx /\ countable_set Bx /\ (forall b:set, b :e Bx -> x :e b) /\
+                                        (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e Bx /\ b c= U))
+                       Hcbx_left). }
+        prove topology_on A (subspace_topology X Tx A) /\ x :e A /\
+          exists BxA:set,
+            BxA c= subspace_topology X Tx A /\ countable_set BxA /\
+              (forall b:set, b :e BxA -> x :e b) /\
+              (forall U0:set, U0 :e subspace_topology X Tx A -> x :e U0 -> exists b:set, b :e BxA /\ b c= U0).
+        apply andI.
+        - apply andI.
+          + exact HtopSub.
+          + exact HxA.
+        - apply HexBx.
+            let Bx. assume HBxpair.
+            claim Htmp1: (Bx c= Tx /\ countable_set Bx) /\ (forall b:set, b :e Bx -> x :e b).
+            { exact (andEL ((Bx c= Tx /\ countable_set Bx) /\ (forall b:set, b :e Bx -> x :e b))
+                           (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e Bx /\ b c= U)
+                           HBxpair). }
+            claim HBxref: forall U:set, U :e Tx -> x :e U -> exists b:set, b :e Bx /\ b c= U.
+            { exact (andER ((Bx c= Tx /\ countable_set Bx) /\ (forall b:set, b :e Bx -> x :e b))
+                           (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e Bx /\ b c= U)
+                           HBxpair). }
+            claim Htmp2: Bx c= Tx /\ countable_set Bx.
+            { exact (andEL (Bx c= Tx /\ countable_set Bx)
+                           (forall b:set, b :e Bx -> x :e b)
+                           Htmp1). }
+            claim HBxmem: forall b:set, b :e Bx -> x :e b.
+            { exact (andER (Bx c= Tx /\ countable_set Bx)
+                           (forall b:set, b :e Bx -> x :e b)
+                           Htmp1). }
+            claim HBxsub: Bx c= Tx.
+            { exact (andEL (Bx c= Tx) (countable_set Bx) Htmp2). }
+            claim HBxcount: countable_set Bx.
+            { exact (andER (Bx c= Tx) (countable_set Bx) Htmp2). }
+            set BxA := {b :/\: A | b :e Bx}.
+            witness BxA.
+            apply andI.
+            - (** left: (subset and countable) and neighborhood membership **)
+              apply andI.
+              + (** subset and countable_set **)
+                apply andI.
+                * prove BxA c= subspace_topology X Tx A.
+                  let c. assume Hc: c :e BxA.
+                  prove c :e subspace_topology X Tx A.
+                  apply (ReplE_impred Bx (fun b0:set => b0 :/\: A) c Hc).
+                  let b. assume HbBx: b :e Bx. assume Hceq: c = b :/\: A.
+                  claim HbTx: b :e Tx.
+                  { exact (HBxsub b HbBx). }
+                  claim HcPowA: c :e Power A.
+                  { apply PowerI A c.
+                    let y. assume Hyc: y :e c.
+                    claim HybA: y :e b :/\: A.
+                    { rewrite <- Hceq. exact Hyc. }
+                    exact (binintersectE2 b A y HybA). }
+                  claim HcProp: exists V :e Tx, c = V :/\: A.
+                  { witness b.
+                    apply andI.
+                    - exact HbTx.
+                    - exact Hceq. }
+                  exact (SepI (Power A) (fun U0:set => exists V :e Tx, U0 = V :/\: A) c HcPowA HcProp).
+                * exact (countable_image Bx HBxcount (fun b0:set => b0 :/\: A)).
+              + (** each element contains x **)
+                let c. assume Hc: c :e BxA.
+                prove x :e c.
+                apply (ReplE_impred Bx (fun b0:set => b0 :/\: A) c Hc).
+                let b. assume HbBx: b :e Bx. assume Hceq: c = b :/\: A.
+                claim Hxb: x :e b.
+                { exact (HBxmem b HbBx). }
+                claim HxBA: x :e b :/\: A.
+                { exact (binintersectI b A x Hxb HxA). }
+                rewrite Hceq.
+                exact HxBA.
+            - (** refinement for subspace neighborhoods **)
+              let U0.
+              assume HU0: U0 :e subspace_topology X Tx A.
+              assume HxU0: x :e U0.
+              claim HU0prop: exists V :e Tx, U0 = V :/\: A.
+              { exact (SepE2 (Power A) (fun U1:set => exists V :e Tx, U1 = V :/\: A) U0 HU0). }
+              apply HU0prop.
+              let V. assume HVpair.
+              claim HVTx: V :e Tx.
+              { exact (andEL (V :e Tx) (U0 = V :/\: A) HVpair). }
+              claim HU0eq: U0 = V :/\: A.
+              { exact (andER (V :e Tx) (U0 = V :/\: A) HVpair). }
+              claim HxVA: x :e V :/\: A.
+              { rewrite <- HU0eq. exact HxU0. }
+              claim HxV: x :e V.
+              { exact (binintersectE1 V A x HxVA). }
+              claim Hexb: exists b:set, b :e Bx /\ b c= V.
+              { exact (HBxref V HVTx HxV). }
+              apply Hexb.
+              let b. assume Hbpair3.
+              claim HbBx: b :e Bx.
+              { exact (andEL (b :e Bx) (b c= V) Hbpair3). }
+              claim HbsubV: b c= V.
+              { exact (andER (b :e Bx) (b c= V) Hbpair3). }
+              set c := b :/\: A.
+              witness c.
+              apply andI.
+              - prove c :e BxA.
+                exact (ReplI Bx (fun b0:set => b0 :/\: A) b HbBx).
+              - prove c c= U0.
+                let y. assume Hyc: y :e c.
+                claim Hyb: y :e b.
+                { exact (binintersectE1 b A y Hyc). }
+                claim HyA: y :e A.
+                { exact (binintersectE2 b A y Hyc). }
+                claim HyV: y :e V.
+                { exact (HbsubV y Hyb). }
+                claim HyVA: y :e V :/\: A.
+                { exact (binintersectI V A y HyV HyA). }
+                rewrite HU0eq.
+                exact HyVA.
+      }
+    * (** second countable preserved by subspaces **)
+      let A. assume HA: A c= X.
+      assume Hsc: second_countable_space X Tx.
+      prove second_countable_space A (subspace_topology X Tx A).
+      claim HtopSub: topology_on A (subspace_topology X Tx A).
+      { exact (subspace_topology_is_topology X Tx A HTx HA). }
+      claim HexB: exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
+      { exact (andER (topology_on X Tx) (exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx) Hsc). }
+      apply HexB.
+      let B. assume HBpair.
+      claim HBmid: (basis_on X B /\ countable_set B) /\ basis_generates X B Tx.
+      { exact HBpair. }
+      claim HBasisCount: basis_on X B /\ countable_set B.
+      { exact (andEL (basis_on X B /\ countable_set B) (basis_generates X B Tx) HBmid). }
+      claim HBgener: basis_generates X B Tx.
+      { exact (andER (basis_on X B /\ countable_set B) (basis_generates X B Tx) HBmid). }
+      claim HBasis: basis_on X B.
+      { exact (andEL (basis_on X B) (countable_set B) HBasisCount). }
+      claim HBcount: countable_set B.
+      { exact (andER (basis_on X B) (countable_set B) HBasisCount). }
+      claim HgenEq: generated_topology X B = Tx.
+      { exact (andER (basis_on X B) (generated_topology X B = Tx) HBgener). }
+      claim HBgen: basis_on X B /\ generated_topology X B = Tx.
+      { apply andI.
+        - exact HBasis.
+        - exact HgenEq. }
+      claim HsubB: basis_on A {b :/\: A | b :e B} /\ generated_topology A {b :/\: A | b :e B} = subspace_topology X Tx A.
+      { exact (subspace_basis X Tx A B HTx HA HBgen). }
+      claim HBsubA: basis_on A {b :/\: A | b :e B}.
+      { exact (andEL (basis_on A {b :/\: A | b :e B})
+                     (generated_topology A {b :/\: A | b :e B} = subspace_topology X Tx A)
+                     HsubB). }
+      claim HgenSubEq: generated_topology A {b :/\: A | b :e B} = subspace_topology X Tx A.
+      { exact (andER (basis_on A {b :/\: A | b :e B})
+                     (generated_topology A {b :/\: A | b :e B} = subspace_topology X Tx A)
+                     HsubB). }
+      prove topology_on A (subspace_topology X Tx A) /\
+           exists B0:set, basis_on A B0 /\ countable_set B0 /\ basis_generates A B0 (subspace_topology X Tx A).
+      apply andI.
+      { exact HtopSub. }
+      { witness {b :/\: A | b :e B}.
+        apply andI.
+        - (** basis_on and countable_set **)
+          apply andI.
+          + exact HBsubA.
+          + exact (countable_image B HBcount (fun b0:set => b0 :/\: A)).
+        - (** basis_generates **)
+          prove basis_on A {b :/\: A | b :e B} /\
+                generated_topology A {b :/\: A | b :e B} = subspace_topology X Tx A.
+          apply andI.
+          + exact HBsubA.
+          + exact HgenSubEq. }
+  + (** first countable for countable products **)
+    admit.
+- (** second countable for countable products **)
+  admit.
 Qed.
 
 (** from §30 Definition: dense subset **) 
