@@ -36569,9 +36569,17 @@ Qed.
 
 (** from Supplementary Exercises Exercise 1: locally m-euclidean implies locally compact and locally metrizable **)
 (** LATEX VERSION: If X is locally m-euclidean, then X is locally compact and locally metrizable. **)
+(** helper: local metrizability **)
+(** LATEX VERSION: A space is locally metrizable if each point has a neighborhood whose subspace topology is induced by some metric. **)
+Definition locally_metrizable_space : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall x:set, x :e X ->
+    exists N:set, N :e Tx /\ x :e N /\
+      exists d:set, metric_on N d /\ subspace_topology X Tx N = metric_topology N d.
+
 Theorem supp_ex_locally_euclidean_1 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
-  locally_compact X Tx /\ True. (** stub: locally_metrizable not defined **)
+  locally_compact X Tx /\ locally_metrizable_space X Tx.
 let X Tx m.
 assume Hloc.
 admit. (** each point has nbhd homeomorphic to open in R^m, which is locally compact **)
@@ -37701,13 +37709,6 @@ Theorem ex33_11_regular_not_completely_regular :
 prove exists X Tx:set, regular_space X Tx /\ ~ completely_regular_space X Tx.
 admit. (** deleted sequence space or similar counterexample: regular but lacks continuous separating functions **)
 Qed.
-
-(** helper: local metrizability **) 
-Definition locally_metrizable_space : set -> set -> prop := fun X Tx =>
-  topology_on X Tx /\
-  forall x:set, x :e X ->
-    exists N:set, N :e Tx /\ x :e N /\
-      exists d:set, metric_on N d /\ subspace_topology X Tx N = metric_topology N d.
 
 (** helper: retraction data **) 
 Definition retraction_of : set -> set -> set -> prop := fun X Tx A =>
