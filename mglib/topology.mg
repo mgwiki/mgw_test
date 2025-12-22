@@ -40625,6 +40625,69 @@ Definition normal_space : set -> set -> prop := fun X Tx =>
   forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
     exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
 
+(** Helper: discrete topology is normal **)
+Theorem discrete_normal_space : forall X:set,
+  normal_space X (discrete_topology X).
+let X.
+prove normal_space X (discrete_topology X).
+claim HTx: topology_on X (discrete_topology X).
+{ exact (discrete_topology_on X). }
+prove one_point_sets_closed X (discrete_topology X) /\
+  forall A B:set, closed_in X (discrete_topology X) A -> closed_in X (discrete_topology X) B -> A :/\: B = Empty ->
+    exists U V:set, U :e discrete_topology X /\ V :e discrete_topology X /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+apply andI.
+- (** one_point_sets_closed **)
+  prove topology_on X (discrete_topology X) /\ forall x:set, x :e X -> closed_in X (discrete_topology X) {x}.
+  apply andI.
+  - exact HTx.
+  - let x. assume HxX: x :e X.
+    prove closed_in X (discrete_topology X) {x}.
+    set U := X :\: {x}.
+    claim HUsub: U c= X.
+    { apply setminus_Subq. }
+    claim HUopen: U :e discrete_topology X.
+    { exact (discrete_open_all X U HUsub). }
+    claim HclosedComp: closed_in X (discrete_topology X) (X :\: U).
+    { exact (closed_of_open_complement X (discrete_topology X) U HTx HUopen). }
+    claim HsingSub: {x} c= X.
+    { exact (singleton_subset x X HxX). }
+    claim Heq: X :\: U = {x}.
+    { claim HUdef: U = X :\: {x}.
+      { reflexivity. }
+      rewrite HUdef.
+      exact (setminus_setminus_eq X {x} HsingSub). }
+    rewrite <- Heq.
+    exact HclosedComp.
+- (** separation of disjoint closed sets **)
+  let A B.
+  assume HA: closed_in X (discrete_topology X) A.
+  assume HB: closed_in X (discrete_topology X) B.
+  assume Hdisj: A :/\: B = Empty.
+  prove exists U V:set,
+    U :e discrete_topology X /\ V :e discrete_topology X /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+  witness A.
+  witness B.
+  claim HAsub: A c= X.
+  { exact (closed_in_subset X (discrete_topology X) A HA). }
+  claim HBsub: B c= X.
+  { exact (closed_in_subset X (discrete_topology X) B HB). }
+  claim HAopen: A :e discrete_topology X.
+  { exact (discrete_open_all X A HAsub). }
+  claim HBopen: B :e discrete_topology X.
+  { exact (discrete_open_all X B HBsub). }
+  apply andI.
+  - prove ((A :e discrete_topology X /\ B :e discrete_topology X) /\ A c= A) /\ B c= B.
+    apply andI.
+    + prove (A :e discrete_topology X /\ B :e discrete_topology X) /\ A c= A.
+      apply andI.
+      * apply andI.
+        - exact HAopen.
+        - exact HBopen.
+      * exact (Subq_ref A).
+    + exact (Subq_ref B).
+  - exact Hdisj.
+Qed.
+
 (** from §31: regular implies Hausdorff, normal implies regular **)
 (** LATEX VERSION: It is clear that a regular space is Hausdorff, and that a normal space is regular. **)
 Theorem regular_space_implies_Hausdorff : forall X Tx:set,
@@ -41853,7 +41916,18 @@ Theorem SOmega_SbarOmega_not_normal :
   ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 prove normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
   ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
-admit. (** discrete spaces normal; product gives Jones' lemma counterexample **)
+apply andI.
+- prove normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology.
+  apply andI.
+  * claim HSO: SOmega_topology = discrete_topology S_Omega.
+    { reflexivity. }
+    rewrite HSO.
+    exact (discrete_normal_space S_Omega).
+  * claim HSb: SbarOmega_topology = discrete_topology Sbar_Omega.
+    { reflexivity. }
+    rewrite HSb.
+    exact (discrete_normal_space Sbar_Omega).
+- admit. (** product gives a non-normal example **)
 Qed.
 
 (** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **)
