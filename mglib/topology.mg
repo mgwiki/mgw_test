@@ -42154,6 +42154,60 @@ apply andI.
   * exact HfF1.
 Qed.
 
+(** Helper: discrete topology is Hausdorff **)
+Theorem discrete_Hausdorff_space : forall X:set,
+  Hausdorff_space X (discrete_topology X).
+let X.
+prove Hausdorff_space X (discrete_topology X).
+claim HTx: topology_on X (discrete_topology X).
+{ exact (discrete_topology_on X). }
+prove topology_on X (discrete_topology X) /\
+  forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+    exists U V:set, U :e discrete_topology X /\ V :e discrete_topology X /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+apply andI.
+- exact HTx.
+- let x1 x2.
+  assume Hx1X: x1 :e X.
+  assume Hx2X: x2 :e X.
+  assume Hneq: x1 <> x2.
+  prove exists U V:set,
+    U :e discrete_topology X /\ V :e discrete_topology X /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+  witness {x1}.
+  witness {x2}.
+  claim HUopen: {x1} :e discrete_topology X.
+  { claim Hsx1: {x1} c= X.
+    { exact (singleton_subset x1 X Hx1X). }
+    exact (discrete_open_all X {x1} Hsx1). }
+  claim HVopen: {x2} :e discrete_topology X.
+  { claim Hsx2: {x2} c= X.
+    { exact (singleton_subset x2 X Hx2X). }
+    exact (discrete_open_all X {x2} Hsx2). }
+  claim Hdisj: {x1} :/\: {x2} = Empty.
+  { apply Empty_Subq_eq.
+    let z. assume Hz: z :e {x1} :/\: {x2}.
+    prove z :e Empty.
+    claim Hz1: z :e {x1}.
+    { exact (binintersectE1 {x1} {x2} z Hz). }
+    claim Hz2: z :e {x2}.
+    { exact (binintersectE2 {x1} {x2} z Hz). }
+    claim Hzx1: z = x1.
+    { exact (SingE x1 z Hz1). }
+    claim Hzx2: z = x2.
+    { exact (SingE x2 z Hz2). }
+    claim Hx1x2: x1 = x2.
+    { rewrite <- Hzx1.
+      rewrite <- Hzx2.
+      reflexivity. }
+    apply FalseE.
+    exact (Hneq Hx1x2). }
+  apply and5I.
+  - exact HUopen.
+  - exact HVopen.
+  - exact (SingI x1).
+  - exact (SingI x2).
+  - exact Hdisj.
+Qed.
+
 (** from §33 Definition: Tychonoff space **) 
 (** LATEX VERSION: Tychonoff = completely regular and Hausdorff. **)
 Definition Tychonoff_space : set -> set -> prop := fun X Tx =>
