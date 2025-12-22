@@ -37481,8 +37481,6 @@ apply (injI {F x|x :e X} omega g).
   rewrite Heqpre.
   reflexivity.
 Qed.
-(** LATEX VERSION: Component topology extractor for countable products. **)
-Definition countable_product_component_topology : set -> set -> set := fun Xi i => (apply_fun Xi i) 1.
 (** LATEX VERSION: Real sequences and uniform metric/topology on R^ω (setup). **)
 (** FIXED: Real sequences are functions omega → R, not subsets of R!
     Was: Power R (set of all subsets of R)
@@ -37701,17 +37699,21 @@ Theorem countability_axioms_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall A:set, A c= X -> first_countable_space X Tx -> first_countable_space A (subspace_topology X Tx A)) /\
   (forall A:set, A c= X -> second_countable_space X Tx -> second_countable_space A (subspace_topology X Tx A)) /\
-  (forall I Xi:set, countable_index_set I -> (forall i:set, i :e I -> first_countable_space Xi (countable_product_component_topology Xi i)) ->
+  (forall I Xi:set, countable_index_set I ->
+    (forall i:set, i :e I -> first_countable_space (space_family_set Xi i) (space_family_topology Xi i)) ->
     first_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)) /\
-  (forall I Xi:set, countable_index_set I -> (forall i:set, i :e I -> second_countable_space Xi (countable_product_component_topology Xi i)) ->
+  (forall I Xi:set, countable_index_set I ->
+    (forall i:set, i :e I -> second_countable_space (space_family_set Xi i) (space_family_topology Xi i)) ->
     second_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)).
 let X Tx.
 assume HTx: topology_on X Tx.
 prove (forall A:set, A c= X -> first_countable_space X Tx -> first_countable_space A (subspace_topology X Tx A)) /\
   (forall A:set, A c= X -> second_countable_space X Tx -> second_countable_space A (subspace_topology X Tx A)) /\
-  (forall I Xi:set, countable_index_set I -> (forall i:set, i :e I -> first_countable_space Xi (countable_product_component_topology Xi i)) ->
+  (forall I Xi:set, countable_index_set I ->
+    (forall i:set, i :e I -> first_countable_space (space_family_set Xi i) (space_family_topology Xi i)) ->
     first_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)) /\
-  (forall I Xi:set, countable_index_set I -> (forall i:set, i :e I -> second_countable_space Xi (countable_product_component_topology Xi i)) ->
+  (forall I Xi:set, countable_index_set I ->
+    (forall i:set, i :e I -> second_countable_space (space_family_set Xi i) (space_family_topology Xi i)) ->
     second_countable_space (countable_product_space I Xi) (countable_product_topology I Xi)).
 apply andI.
 - (** first three clauses **)
@@ -37913,8 +37915,16 @@ apply andI.
           + exact HBsubA.
           + exact HgenSubEq. }
   + (** first countable for countable products **)
+    let I Xi.
+    assume HIcount: countable_index_set I.
+    assume Hcomp: forall i:set, i :e I -> first_countable_space (space_family_set Xi i) (space_family_topology Xi i).
+    prove first_countable_space (countable_product_space I Xi) (countable_product_topology I Xi).
     admit.
 - (** second countable for countable products **)
+  let I Xi.
+  assume HIcount: countable_index_set I.
+  assume Hcomp: forall i:set, i :e I -> second_countable_space (space_family_set Xi i) (space_family_topology Xi i).
+  prove second_countable_space (countable_product_space I Xi) (countable_product_topology I Xi).
   admit.
 Qed.
 
