@@ -19943,7 +19943,7 @@ Qed.
     apply_fun looks up y such that (x,y) ∈ f.
     Identity function: {(y,y) | y ∈ X}.
     Constant family: {(i, X) | i ∈ I}. **)
-(** SUSPICIOUS DEFINITION: `apply_fun` is based on `Eps_i`, so `function_on` only constrains the chosen values, not that `f` is a genuine functional graph; later results about unions/preimages may require extra axioms. **)
+(** SUSPICIOUS DEFINITION: `apply_fun` is based on `Eps_i`, so `function_on` only constrains the chosen values, not that `f` is a genuine functional graph; later results about unions/preimages may require extra axioms. Use `total_function_on` when totality is required. **)
 Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => (x,y) :e f).
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod X Y)|function_on f X Y}.
@@ -19951,6 +19951,27 @@ Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod
 (** Helper: total function graph on X into Y (in addition to function_on) **)
 Definition total_function_on : set -> set -> set -> prop := fun f X Y =>
   function_on f X Y /\ forall x:set, x :e X -> exists y:set, y :e Y /\ (x,y) :e f.
+
+(** Helper: total_function_on implies function_on **)
+Theorem total_function_on_function_on : forall f X Y:set,
+  total_function_on f X Y -> function_on f X Y.
+let f X Y.
+assume H: total_function_on f X Y.
+exact (andEL (function_on f X Y)
+             (forall x:set, x :e X -> exists y:set, y :e Y /\ (x,y) :e f)
+             H).
+Qed.
+
+(** Helper: total_function_on gives a graph witness for each x **)
+Theorem total_function_on_totality : forall f X Y:set,
+  total_function_on f X Y ->
+  forall x:set, x :e X -> exists y:set, y :e Y /\ (x,y) :e f.
+let f X Y.
+assume H: total_function_on f X Y.
+exact (andER (function_on f X Y)
+             (forall x:set, x :e X -> exists y:set, y :e Y /\ (x,y) :e f)
+             H).
+Qed.
 
 (** Helper: constant function as a graph **)
 Definition const_fun : set -> set -> set := fun A x => {(a,x) | a :e A}.
