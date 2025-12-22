@@ -16555,6 +16555,34 @@ Qed.
 Definition rational_open_intervals_basis : set :=
   \/_ q1 :e rational_numbers, {open_interval q1 q2|q2 :e rational_numbers}.
 
+(** from §13 Exercise 8(a): rational open intervals are standard open intervals **)
+(** LATEX VERSION: Any rational open interval (q1,q2) is a standard basis element since q1,q2 are real. **)
+Theorem rational_open_intervals_basis_Subq_R_standard_basis :
+  rational_open_intervals_basis c= R_standard_basis.
+prove rational_open_intervals_basis c= R_standard_basis.
+let I. assume HI: I :e rational_open_intervals_basis.
+apply (famunionE_impred rational_numbers
+         (fun q1 : set => {open_interval q1 q2|q2 :e rational_numbers})
+         I
+         HI
+         (I :e R_standard_basis)).
+let q1. assume Hq1Q HIq1.
+apply (ReplE_impred rational_numbers
+         (fun q2 : set => open_interval q1 q2)
+         I
+         HIq1
+         (I :e R_standard_basis)).
+let q2. assume Hq2Q Heq.
+rewrite Heq.
+claim Hq1R : q1 :e R.
+{ exact (rational_numbers_in_R q1 Hq1Q). }
+claim Hq2R : q2 :e R.
+{ exact (rational_numbers_in_R q2 Hq2Q). }
+claim HIq2 : open_interval q1 q2 :e {open_interval q1 b|b :e R}.
+{ exact (ReplI R (fun b : set => open_interval q1 b) q2 Hq2R). }
+exact (famunionI R (fun a : set => {open_interval a b|b :e R}) q1 (open_interval q1 q2) Hq1R HIq2).
+Qed.
+
 (** from §13 Exercise 8(a): density of rationals in reals (in order sense) **)
 (** LATEX VERSION: Between any two real numbers a<b there exists a rational q with a<q<b. **)
 Theorem rational_dense_between_reals : forall a b:set,
@@ -17148,15 +17176,144 @@ apply andI.
 	            (** y in b2 since r1<q1 and y<r2 **)
 	            claim Hr1ylt : r1 < y.
 	            { exact (SNoLt_tra r1 q1 y Hr1S Hq1S HyS Hr1lt Hq1ylt). }
-	            claim Hr1y : Rlt r1 y.
-	            { exact (RltI r1 y Hr1R HyR Hr1ylt). }
-	            claim HyIn2 : y :e open_interval r1 r2.
-	            { exact (SepI R (fun z : set => Rlt r1 z /\ Rlt z r2) y HyR
-	                         (andI (Rlt r1 y) (Rlt y r2) Hr1y Hyr2)). }
-	            claim Hyb2 : y :e b2.
-	            { rewrite Hb2eq. exact HyIn2. }
-	            exact (binintersectI b1 b2 y Hyb1 Hyb2). }
-	- admit. (** generated_topology R rational_open_intervals_basis equals R_standard_topology **)
+		    claim Hr1y : Rlt r1 y.
+		    { exact (RltI r1 y Hr1R HyR Hr1ylt). }
+		    claim HyIn2 : y :e open_interval r1 r2.
+		    { exact (SepI R (fun z : set => Rlt r1 z /\ Rlt z r2) y HyR
+		                         (andI (Rlt r1 y) (Rlt y r2) Hr1y Hyr2)). }
+		    claim Hyb2 : y :e b2.
+		    { rewrite Hb2eq. exact HyIn2. }
+		    exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+	- (** generated_topology R rational_open_intervals_basis equals R_standard_topology **)
+	  prove generated_topology R rational_open_intervals_basis = R_standard_topology.
+	  (** R_standard_topology = generated_topology R R_standard_basis **)
+	  apply set_ext.
+	  + let U. assume HU: U :e generated_topology R rational_open_intervals_basis.
+	    prove U :e R_standard_topology.
+	    (** Unpack U membership in generated_topology R rational_open_intervals_basis **)
+	    claim HUpow: U :e Power R.
+	    { exact (SepE1 (Power R)
+	             (fun U0 : set => forall x0 :e U0, exists b :e rational_open_intervals_basis, x0 :e b /\ b c= U0)
+	             U
+	             HU). }
+	    claim HUprop: forall x0 :e U, exists b :e rational_open_intervals_basis, x0 :e b /\ b c= U.
+	    { exact (SepE2 (Power R)
+	             (fun U0 : set => forall x0 :e U0, exists b :e rational_open_intervals_basis, x0 :e b /\ b c= U0)
+	             U
+	             HU). }
+	    (** Show U satisfies the standard-basis neighborhood property **)
+	    prove U :e generated_topology R R_standard_basis.
+	    prove U :e {U0 :e Power R | forall x0 :e U0, exists b :e R_standard_basis, x0 :e b /\ b c= U0}.
+	    claim HUstdprop: forall x0 :e U, exists b :e R_standard_basis, x0 :e b /\ b c= U.
+	    { let x. assume HxU: x :e U.
+	      apply (HUprop x HxU).
+	      let b. assume Hbpair.
+	      claim HbB: b :e rational_open_intervals_basis.
+	      { exact (andEL (b :e rational_open_intervals_basis) (x :e b /\ b c= U) Hbpair). }
+	      claim Hbprop: x :e b /\ b c= U.
+	      { exact (andER (b :e rational_open_intervals_basis) (x :e b /\ b c= U) Hbpair). }
+	      claim Hxb: x :e b.
+	      { exact (andEL (x :e b) (b c= U) Hbprop). }
+	      claim HbsubU: b c= U.
+	      { exact (andER (x :e b) (b c= U) Hbprop). }
+	      claim HbStd: b :e R_standard_basis.
+	      { exact (rational_open_intervals_basis_Subq_R_standard_basis b HbB). }
+	      witness b.
+	      apply andI.
+	      - exact HbStd.
+	      - apply andI.
+	        + exact Hxb.
+	        + exact HbsubU.
+	    }
+	    exact (SepI (Power R)
+	            (fun U0 : set => forall x0 :e U0, exists b :e R_standard_basis, x0 :e b /\ b c= U0)
+	            U
+	            HUpow
+	            HUstdprop).
+	  + let U. assume HU: U :e R_standard_topology.
+	    prove U :e generated_topology R rational_open_intervals_basis.
+	    (** Unpack U membership in R_standard_topology = generated_topology R R_standard_basis **)
+	    claim HUpow: U :e Power R.
+	    { exact (SepE1 (Power R)
+	             (fun U0 : set => forall x0 :e U0, exists b :e R_standard_basis, x0 :e b /\ b c= U0)
+	             U
+	             HU). }
+	    claim HUprop: forall x0 :e U, exists b :e R_standard_basis, x0 :e b /\ b c= U.
+	    { exact (SepE2 (Power R)
+	             (fun U0 : set => forall x0 :e U0, exists b :e R_standard_basis, x0 :e b /\ b c= U0)
+	             U
+	             HU). }
+	    claim HUsubR: U c= R.
+	    { exact (PowerE R U HUpow). }
+	    prove U :e {U0 :e Power R | forall x0 :e U0, exists b :e rational_open_intervals_basis, x0 :e b /\ b c= U0}.
+	    apply SepI.
+	    - exact HUpow.
+	    - let x. assume HxU: x :e U.
+	      claim HxR: x :e R.
+	      { exact (HUsubR x HxU). }
+	      apply (HUprop x HxU).
+	      let I. assume HIpair.
+	      claim HIStd: I :e R_standard_basis.
+	      { exact (andEL (I :e R_standard_basis) (x :e I /\ I c= U) HIpair). }
+	      claim HIprop: x :e I /\ I c= U.
+	      { exact (andER (I :e R_standard_basis) (x :e I /\ I c= U) HIpair). }
+	      claim HxI: x :e I.
+	      { exact (andEL (x :e I) (I c= U) HIprop). }
+	      claim HIsubU: I c= U.
+	      { exact (andER (x :e I) (I c= U) HIprop). }
+	      (** Destruct I as an open_interval a b with a,b in R **)
+	      claim Hexa: exists a :e R, I :e {open_interval a b|b :e R}.
+	      { exact (famunionE R (fun a0 : set => {open_interval a0 b|b :e R}) I HIStd). }
+	      apply Hexa.
+	      let a. assume Hapair. apply Hapair.
+	      assume HaR: a :e R.
+	      assume HIfam: I :e {open_interval a b|b :e R}.
+	      claim Hexb: exists b :e R, I = open_interval a b.
+	      { exact (ReplE R (fun b0 : set => open_interval a b0) I HIfam). }
+	      apply Hexb.
+	      let b. assume Hbpair. apply Hbpair.
+	      assume HbR: b :e R.
+	      assume HIeq: I = open_interval a b.
+	      claim HxInab: x :e open_interval a b.
+	      { rewrite <- HIeq. exact HxI. }
+	      (** refine the real interval (a,b) to a rational interval around x **)
+	      claim HexRat: exists q1 :e rational_numbers, exists q2 :e rational_numbers,
+	        x :e open_interval q1 q2 /\ open_interval q1 q2 c= open_interval a b.
+	      { exact (rational_interval_refines_real_interval a b x HaR HbR HxR HxInab). }
+	      apply HexRat.
+	      let q1. assume Hq1pair. apply Hq1pair.
+	      assume Hq1Q: q1 :e rational_numbers.
+	      assume Hexq2: exists q2 :e rational_numbers,
+	        x :e open_interval q1 q2 /\ open_interval q1 q2 c= open_interval a b.
+	      apply Hexq2.
+	      let q2. assume Hq2pair. apply Hq2pair.
+	      assume Hq2Q: q2 :e rational_numbers.
+	      assume HxInQ: x :e open_interval q1 q2 /\ open_interval q1 q2 c= open_interval a b.
+	      claim HxInQint: x :e open_interval q1 q2.
+	      { exact (andEL (x :e open_interval q1 q2) (open_interval q1 q2 c= open_interval a b) HxInQ). }
+	      claim HQsub: open_interval q1 q2 c= open_interval a b.
+	      { exact (andER (x :e open_interval q1 q2) (open_interval q1 q2 c= open_interval a b) HxInQ). }
+	      claim HabsubU: open_interval a b c= U.
+	      { rewrite <- HIeq.
+	        exact HIsubU. }
+	      claim HQsubU: open_interval q1 q2 c= U.
+	      { exact (Subq_tra (open_interval q1 q2) (open_interval a b) U HQsub HabsubU). }
+	      (** show open_interval q1 q2 is in rational_open_intervals_basis **)
+	      claim Hq2fam : open_interval q1 q2 :e {open_interval q1 q2'|q2' :e rational_numbers}.
+	      { exact (ReplI rational_numbers (fun q2' : set => open_interval q1 q2') q2 Hq2Q). }
+	      claim HbInB: open_interval q1 q2 :e rational_open_intervals_basis.
+	      { exact (famunionI rational_numbers
+	               (fun q1' : set => {open_interval q1' q2'|q2' :e rational_numbers})
+	               q1
+	               (open_interval q1 q2)
+	               Hq1Q
+	               Hq2fam). }
+	      witness (open_interval q1 q2).
+	      apply andI.
+	      * exact HbInB.
+	      * apply andI.
+	        { exact HxInQint. }
+	        { exact HQsubU. }
 Qed.
 
 (** from §13 Exercise 8(b): half-open rational intervals generate a different topology **) 
