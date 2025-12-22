@@ -18964,19 +18964,19 @@ Qed.
 
 (** from §14: open rays form a subbasis for the order topology **) 
 (** LATEX VERSION: The upper and lower open rays form a subbasis generating the order topology. **)
-(** NOTE: Current statement only asserts existence of some `S`; explicit ray subbasis is not yet formalized. **)
 Definition open_ray_upper : set -> set -> set := fun X a => {x :e X | order_rel X a x}.
 Definition open_ray_lower : set -> set -> set := fun X a => {x :e X | order_rel X x a}.
 
+Definition open_rays_subbasis : set -> set := fun X =>
+  ({I :e Power X | exists a :e X, I = open_ray_upper X a}
+   :\/:
+   {I :e Power X | exists b :e X, I = open_ray_lower X b}).
+
 Theorem open_rays_subbasis_for_order_topology : forall X:set,
-  exists S:set, generated_topology X S = order_topology X.
+  generated_topology_from_subbasis X (open_rays_subbasis X) = order_topology X.
 let X.
-prove exists S:set, generated_topology X S = order_topology X.
-(** Witness S = order_topology_basis X, which contains open intervals and rays **)
-witness (order_topology_basis X).
-prove generated_topology X (order_topology_basis X) = order_topology X.
-(** By definition: order_topology X = generated_topology X (order_topology_basis X) **)
-reflexivity.
+prove generated_topology_from_subbasis X (open_rays_subbasis X) = order_topology X.
+admit.
 Qed.
 
 (** from §14 Example 1: standard basis is a basis on ℝ **)
