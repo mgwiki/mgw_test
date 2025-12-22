@@ -19149,6 +19149,218 @@ claim H0Z: 0 :e Zplus.
 exact (zero_not_in_Zplus H0Z).
 Qed.
 
+(** Helper: Inj1 0 equals 1 **)
+Theorem Inj1_0_eq_1 : Inj1 0 = 1.
+apply set_ext.
+- let y. assume Hy: y :e Inj1 0.
+  prove y :e 1.
+  claim Hcase: y = 0 \/ exists x :e 0, y = Inj1 x.
+  { exact (Inj1E 0 y Hy). }
+  apply (Hcase (y :e 1)).
+  * assume Hy0: y = 0.
+    rewrite Hy0.
+    exact In_0_1.
+  * assume Hex: exists x :e 0, y = Inj1 x.
+    apply Hex.
+    let x. assume Hxp.
+    apply Hxp.
+    assume Hx0 HyEq.
+    apply FalseE.
+    exact (EmptyE x Hx0).
+- let y. assume Hy: y :e 1.
+  prove y :e Inj1 0.
+  claim HySing: y :e {0}.
+  { prove y :e {0}.
+    rewrite <- eq_1_Sing0.
+    exact Hy. }
+  claim Hy0: y = 0.
+  { exact (SingE 0 y HySing). }
+  rewrite Hy0.
+  exact (Inj1I1 0).
+Qed.
+
+(** Helper: {1} is not transitive **)
+Theorem not_TransSet_singleton_1 : ~ TransSet {1}.
+assume H: TransSet {1}.
+prove False.
+claim H1in: 1 :e {1}.
+{ exact (SingI 1). }
+claim Hsub: 1 c= {1}.
+{ exact (H 1 H1in). }
+claim H0in1: 0 :e 1.
+{ exact In_0_1. }
+claim H0inSing1: 0 :e {1}.
+{ exact (Hsub 0 H0in1). }
+claim Heq: 0 = 1.
+{ exact (SingE 1 0 H0inSing1). }
+exact (neq_0_1 Heq).
+Qed.
+
+(** Helper: {1} is not in omega **)
+Theorem Sing1_not_in_omega : {1} /:e omega.
+assume H: {1} :e omega.
+prove False.
+claim Hnat: nat_p {1}.
+{ exact (omega_nat_p {1} H). }
+claim Hord: ordinal {1}.
+{ exact (nat_p_ordinal {1} Hnat). }
+claim Htr: TransSet {1}.
+{ exact (ordinal_TransSet {1} Hord). }
+exact (not_TransSet_singleton_1 Htr).
+Qed.
+
+(** Helper: tuple (0,1) equals {1} **)
+Theorem tuple_0_1_eq_Sing1 : (0,1) = {1}.
+prove (0,1) = {1}.
+apply set_ext.
+- let z. assume Hz: z :e (0,1).
+  prove z :e {1}.
+  claim Hzsum: z :e 0 :+: 1.
+  { prove z :e 0 :+: 1.
+    rewrite (tuple_pair 0 1).
+    exact Hz. }
+  claim Hcases: (exists x :e 0, z = Inj0 x) \/ (exists y :e 1, z = Inj1 y).
+  { exact (setsum_Inj_inv 0 1 z Hzsum). }
+  apply (Hcases (z :e {1})).
+  * assume Hex: exists x :e 0, z = Inj0 x.
+    apply Hex.
+    let x. assume Hxp.
+    apply Hxp.
+    assume Hx0 HzEq.
+    apply FalseE.
+    exact (EmptyE x Hx0).
+  * assume Hex: exists y :e 1, z = Inj1 y.
+    apply Hex.
+    let y. assume Hyp.
+    apply Hyp.
+    assume Hy1 HzEq.
+    claim HySing: y :e {0}.
+    { prove y :e {0}.
+      rewrite <- eq_1_Sing0.
+      exact Hy1. }
+    claim Hy0: y = 0.
+    { exact (SingE 0 y HySing). }
+    claim HzInj10: z = Inj1 0.
+    { prove z = Inj1 0.
+      rewrite <- Hy0.
+      exact HzEq. }
+    claim Hz1: z = 1.
+    { rewrite HzInj10.
+      rewrite Inj1_0_eq_1.
+      reflexivity. }
+    rewrite Hz1.
+    exact (SingI 1).
+- let z. assume Hz: z :e {1}.
+  prove z :e (0,1).
+  rewrite <- (tuple_pair 0 1).
+  claim Hz1: z = 1.
+  { exact (SingE 1 z Hz). }
+  rewrite Hz1.
+  rewrite <- Inj1_0_eq_1 at 1.
+  exact (Inj1_setsum 0 1 0 In_0_1).
+Qed.
+
+(** Helper: Zplus is not setprod 2 omega **)
+Theorem Zplus_neq_setprod_2_omega : Zplus <> setprod 2 omega.
+assume Heq: Zplus = setprod 2 omega.
+prove False.
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim Hp: (0,1) :e setprod 2 omega.
+{ exact (tuple_2_setprod 2 omega 0 In_0_2 1 H1omega). }
+claim HpZ: (0,1) :e Zplus.
+{ rewrite Heq. exact Hp. }
+claim Hcore: (0,1) :e omega /\ (0,1) /:e {0}.
+{ exact (setminusE omega {0} (0,1) HpZ). }
+claim HpOmega: (0,1) :e omega.
+{ exact (andEL ((0,1) :e omega) ((0,1) /:e {0}) Hcore). }
+claim HSingOmega: {1} :e omega.
+{ prove {1} :e omega.
+  rewrite <- tuple_0_1_eq_Sing1.
+  exact HpOmega. }
+exact (Sing1_not_in_omega HSingOmega).
+Qed.
+
+(** Helper: Zplus is not setprod R R **)
+Theorem Zplus_neq_setprod_R_R : Zplus <> setprod R R.
+assume Heq: Zplus = setprod R R.
+prove False.
+claim Hp: (0,1) :e setprod R R.
+{ exact (tuple_2_setprod R R 0 real_0 1 real_1). }
+claim HpZ: (0,1) :e Zplus.
+{ rewrite Heq. exact Hp. }
+claim Hcore: (0,1) :e omega /\ (0,1) /:e {0}.
+{ exact (setminusE omega {0} (0,1) HpZ). }
+claim HpOmega: (0,1) :e omega.
+{ exact (andEL ((0,1) :e omega) ((0,1) /:e {0}) Hcore). }
+claim HSingOmega: {1} :e omega.
+{ prove {1} :e omega.
+  rewrite <- tuple_0_1_eq_Sing1.
+  exact HpOmega. }
+exact (Sing1_not_in_omega HSingOmega).
+Qed.
+
+(** Helper: on Zplus, order_rel is membership order **)
+Theorem order_rel_Zplus_iff_mem : forall a b:set,
+  a :e Zplus -> b :e Zplus -> (order_rel Zplus a b <-> a :e b).
+let a b. assume HaZ HbZ.
+apply iffI.
+- assume Hrel: order_rel Zplus a b.
+  prove a :e b.
+  (** eliminate disjunctions in order_rel using Zplus inequalities **)
+  apply (Hrel (a :e b)).
+  - assume Hleft.
+    apply (Hleft (a :e b)).
+    - assume Hmid.
+      apply (Hmid (a :e b)).
+      + assume Hm2.
+        apply (Hm2 (a :e b)).
+        - assume Hm3.
+          apply (Hm3 (a :e b)).
+          - assume Hc1.
+             apply FalseE.
+             claim Heq: Zplus = R.
+             { exact (andEL (Zplus = R) (Rlt a b) Hc1). }
+             exact (Zplus_neq_R Heq).
+          - assume Hc2.
+             apply FalseE.
+             claim Heq: Zplus = rational_numbers.
+             { exact (andEL (Zplus = rational_numbers) (Rlt a b) Hc2). }
+             exact (Zplus_neq_rational_numbers Heq).
+        - assume Hc3.
+          apply FalseE.
+          claim Heq: Zplus = omega.
+          { exact (andEL (Zplus = omega) (a :e b) Hc3). }
+          exact (Zplus_neq_omega Heq).
+      + assume Hc4.
+        exact (andER (Zplus = omega :\: {0}) (a :e b) Hc4).
+    - assume Hc5.
+      apply FalseE.
+      claim Heq: Zplus = setprod 2 omega.
+      { exact (andEL (Zplus = setprod 2 omega)
+                    (exists i m j n:set,
+                      i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+                      a = (i, m) /\ b = (j, n) /\
+                      (i :e j \/ (i = j /\ m :e n)))
+                    Hc5). }
+      exact (Zplus_neq_setprod_2_omega Heq).
+  - assume Hc6.
+    apply FalseE.
+    claim Heq: Zplus = setprod R R.
+    { exact (andEL (Zplus = setprod R R)
+                  (exists a1 a2 b1 b2:set,
+                    a = (a1, a2) /\ b = (b1, b2) /\
+                    (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2)))
+                  Hc6). }
+    exact (Zplus_neq_setprod_R_R Heq).
+- assume Hab: a :e b.
+  prove order_rel Zplus a b.
+  claim Heq: Zplus = omega :\: {0}.
+  { reflexivity. }
+  rewrite Heq.
+  exact (mem_implies_order_rel_omega_nonzero a b Hab).
+Qed.
+
 (** Helper: membership in Zplus implies membership in omega **)
 Theorem Zplus_mem_omega : forall n:set, n :e Zplus -> n :e omega.
 let n. assume Hn: n :e Zplus.
@@ -19212,14 +19424,202 @@ Qed.
 (** Helper: singleton {1} is in the order topology basis on Zplus **)
 Theorem singleton_ordsucc0_in_order_topology_basis_Zplus :
   {ordsucc 0} :e order_topology_basis Zplus.
-admit.
+prove {ordsucc 0} :e order_topology_basis Zplus.
+(** expand order_topology_basis **)
+claim Hdef: order_topology_basis Zplus =
+  ({I :e Power Zplus | exists a :e Zplus, exists b :e Zplus,
+        I = {x :e Zplus | order_rel Zplus a x /\ order_rel Zplus x b}}
+   :\/:
+   {I :e Power Zplus | exists b :e Zplus, I = {x :e Zplus | order_rel Zplus x b}}
+   :\/:
+   {I :e Power Zplus | exists a :e Zplus, I = {x :e Zplus | order_rel Zplus a x}}).
+{ reflexivity. }
+rewrite Hdef.
+(** order_topology_basis Zplus is a union of three families; use lower ray family **)
+apply binunionI1.
+apply binunionI2.
+apply (SepI (Power Zplus)
+            (fun I : set => exists b0 :e Zplus, I = {x :e Zplus | order_rel Zplus x b0})
+            {ordsucc 0}).
+- apply PowerI.
+  let x. assume Hx: x :e {ordsucc 0}.
+  prove x :e Zplus.
+  claim HxEq: x = ordsucc 0.
+  { exact (SingE (ordsucc 0) x Hx). }
+  rewrite HxEq.
+  exact one_in_Zplus.
+- witness (ordsucc (ordsucc 0)).
+  apply andI.
+  - exact two_in_Zplus.
+  - prove {ordsucc 0} = {x :e Zplus | order_rel Zplus x (ordsucc (ordsucc 0))}.
+    apply set_ext.
+    - let x. assume Hx: x :e {ordsucc 0}.
+       prove x :e {x :e Zplus | order_rel Zplus x (ordsucc (ordsucc 0))}.
+       claim HxEq: x = ordsucc 0.
+       { exact (SingE (ordsucc 0) x Hx). }
+       apply (SepI Zplus
+                   (fun t : set => order_rel Zplus t (ordsucc (ordsucc 0)))
+                   x).
+       - rewrite HxEq.
+         exact one_in_Zplus.
+       - rewrite HxEq.
+         claim Hmem: ordsucc 0 :e ordsucc (ordsucc 0).
+         { exact (ordsuccI2 (ordsucc 0)). }
+         exact (iffER (order_rel Zplus (ordsucc 0) (ordsucc (ordsucc 0)))
+                      (ordsucc 0 :e ordsucc (ordsucc 0))
+                      (order_rel_Zplus_iff_mem (ordsucc 0) (ordsucc (ordsucc 0)) one_in_Zplus two_in_Zplus)
+                      Hmem).
+    - let x. assume Hx: x :e {x :e Zplus | order_rel Zplus x (ordsucc (ordsucc 0))}.
+       prove x :e {ordsucc 0}.
+       claim HxZ: x :e Zplus.
+       { exact (SepE1 Zplus (fun t : set => order_rel Zplus t (ordsucc (ordsucc 0))) x Hx). }
+       claim Hrel: order_rel Zplus x (ordsucc (ordsucc 0)).
+       { exact (SepE2 Zplus (fun t : set => order_rel Zplus t (ordsucc (ordsucc 0))) x Hx). }
+       claim Hmem: x :e ordsucc (ordsucc 0).
+       { exact (iffEL (order_rel Zplus x (ordsucc (ordsucc 0)))
+                      (x :e ordsucc (ordsucc 0))
+                      (order_rel_Zplus_iff_mem x (ordsucc (ordsucc 0)) HxZ two_in_Zplus)
+                      Hrel). }
+       claim HxNe0: x <> 0.
+       { exact (Zplus_mem_nonzero x HxZ). }
+       claim Hcase: x :e ordsucc 0 \/ x = ordsucc 0.
+       { exact (ordsuccE (ordsucc 0) x Hmem). }
+       claim HxEq1: x = ordsucc 0.
+       { apply (Hcase (x = ordsucc 0)).
+         - assume HxIn1: x :e ordsucc 0.
+           apply FalseE.
+           claim Hcase0: x :e 0 \/ x = 0.
+           { exact (ordsuccE 0 x HxIn1). }
+           claim Hx0: x = 0.
+           { apply (Hcase0 (x = 0)).
+             + assume HxIn0: x :e 0.
+               apply FalseE.
+               exact (EmptyE x HxIn0).
+             + assume Hx0. exact Hx0. }
+           exact (HxNe0 Hx0).
+         - assume HxEq. exact HxEq. }
+       rewrite HxEq1.
+       exact (SingI (ordsucc 0)).
 Qed.
 
 (** Helper: singleton of a successor is in the order topology basis on Zplus **)
 Theorem singleton_ordsucc_in_order_topology_basis_Zplus : forall m:set,
   m :e Zplus -> {ordsucc m} :e order_topology_basis Zplus.
 let m. assume Hm.
-admit.
+prove {ordsucc m} :e order_topology_basis Zplus.
+(** expand order_topology_basis **)
+claim Hdef: order_topology_basis Zplus =
+  ({I :e Power Zplus | exists a :e Zplus, exists b :e Zplus,
+        I = {x :e Zplus | order_rel Zplus a x /\ order_rel Zplus x b}}
+   :\/:
+   {I :e Power Zplus | exists b :e Zplus, I = {x :e Zplus | order_rel Zplus x b}}
+   :\/:
+   {I :e Power Zplus | exists a :e Zplus, I = {x :e Zplus | order_rel Zplus a x}}).
+{ reflexivity. }
+rewrite Hdef.
+(** use open interval (m, ordsucc (ordsucc m)) in the interval family **)
+apply binunionI1.
+apply binunionI1.
+apply (SepI (Power Zplus)
+            (fun I : set =>
+               exists a :e Zplus, exists b :e Zplus,
+                 I = {x :e Zplus | order_rel Zplus a x /\ order_rel Zplus x b})
+            {ordsucc m}).
+- apply PowerI.
+  let x. assume Hx: x :e {ordsucc m}.
+  prove x :e Zplus.
+  claim HxEq: x = ordsucc m.
+  { exact (SingE (ordsucc m) x Hx). }
+  rewrite HxEq.
+  exact (Zplus_ordsucc_closed m Hm).
+- witness m.
+  apply andI.
+  - exact Hm.
+  - witness (ordsucc (ordsucc m)).
+    apply andI.
+    - exact (Zplus_ordsucc_closed (ordsucc m) (Zplus_ordsucc_closed m Hm)).
+    - prove {ordsucc m} =
+        {x :e Zplus | order_rel Zplus m x /\ order_rel Zplus x (ordsucc (ordsucc m))}.
+       apply set_ext.
+       - let x. assume Hx: x :e {ordsucc m}.
+          prove x :e {x :e Zplus | order_rel Zplus m x /\ order_rel Zplus x (ordsucc (ordsucc m))}.
+          claim HxEq: x = ordsucc m.
+          { exact (SingE (ordsucc m) x Hx). }
+          apply (SepI Zplus
+                      (fun t : set => order_rel Zplus m t /\ order_rel Zplus t (ordsucc (ordsucc m)))
+                      x).
+          - rewrite HxEq.
+            exact (Zplus_ordsucc_closed m Hm).
+          - rewrite HxEq.
+            apply andI.
+            * claim Hmem1: m :e ordsucc m.
+              { exact (ordsuccI2 m). }
+              exact (iffER (order_rel Zplus m (ordsucc m))
+                           (m :e ordsucc m)
+                           (order_rel_Zplus_iff_mem m (ordsucc m) Hm (Zplus_ordsucc_closed m Hm))
+                           Hmem1).
+            * claim Hmem2: ordsucc m :e ordsucc (ordsucc m).
+              { exact (ordsuccI2 (ordsucc m)). }
+              exact (iffER (order_rel Zplus (ordsucc m) (ordsucc (ordsucc m)))
+                           (ordsucc m :e ordsucc (ordsucc m))
+                           (order_rel_Zplus_iff_mem (ordsucc m) (ordsucc (ordsucc m))
+                                                    (Zplus_ordsucc_closed m Hm)
+                                                    (Zplus_ordsucc_closed (ordsucc m) (Zplus_ordsucc_closed m Hm)))
+                           Hmem2).
+       - let x. assume Hx: x :e {x :e Zplus | order_rel Zplus m x /\ order_rel Zplus x (ordsucc (ordsucc m))}.
+          prove x :e {ordsucc m}.
+          claim HxZ: x :e Zplus.
+          { exact (SepE1 Zplus
+                        (fun t : set => order_rel Zplus m t /\ order_rel Zplus t (ordsucc (ordsucc m)))
+                        x
+                        Hx). }
+          claim Hconj: order_rel Zplus m x /\ order_rel Zplus x (ordsucc (ordsucc m)).
+          { exact (SepE2 Zplus
+                        (fun t : set => order_rel Zplus m t /\ order_rel Zplus t (ordsucc (ordsucc m)))
+                        x
+                        Hx). }
+          claim Hrel1: order_rel Zplus m x.
+          { exact (andEL (order_rel Zplus m x)
+                         (order_rel Zplus x (ordsucc (ordsucc m)))
+                         Hconj). }
+          claim Hrel2: order_rel Zplus x (ordsucc (ordsucc m)).
+          { exact (andER (order_rel Zplus m x)
+                         (order_rel Zplus x (ordsucc (ordsucc m)))
+                         Hconj). }
+          claim Hmemb: m :e x.
+          { exact (iffEL (order_rel Zplus m x)
+                         (m :e x)
+                         (order_rel_Zplus_iff_mem m x Hm HxZ)
+                         Hrel1). }
+          claim HbZ: ordsucc (ordsucc m) :e Zplus.
+          { exact (Zplus_ordsucc_closed (ordsucc m) (Zplus_ordsucc_closed m Hm)). }
+          claim HxInb: x :e ordsucc (ordsucc m).
+          { exact (iffEL (order_rel Zplus x (ordsucc (ordsucc m)))
+                         (x :e ordsucc (ordsucc m))
+                         (order_rel_Zplus_iff_mem x (ordsucc (ordsucc m)) HxZ HbZ)
+                         Hrel2). }
+          claim Hcase: x :e ordsucc m \/ x = ordsucc m.
+          { exact (ordsuccE (ordsucc m) x HxInb). }
+          claim HxEq: x = ordsucc m.
+          { apply (Hcase (x = ordsucc m)).
+            - assume HxIn1: x :e ordsucc m.
+              apply FalseE.
+              claim Hcase2: x :e m \/ x = m.
+              { exact (ordsuccE m x HxIn1). }
+              claim HxInm: x :e m.
+              { apply (Hcase2 (x :e m)).
+                + assume Hxm. exact Hxm.
+                + assume Hxeq.
+                  apply FalseE.
+                  claim Hmm: m :e m.
+                  { prove m :e m.
+                    rewrite <- Hxeq at 2.
+                    exact Hmemb. }
+                  exact (In_irref m Hmm). }
+              exact (In_no2cycle m x Hmemb HxInm).
+            - assume Hxeq. exact Hxeq. }
+          rewrite HxEq.
+          exact (SingI (ordsucc m)).
 Qed.
 
 Theorem singleton_in_order_topology_basis_Zplus : forall n:set,
