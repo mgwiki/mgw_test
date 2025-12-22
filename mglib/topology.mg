@@ -16684,9 +16684,26 @@ exact (tuple_2_setprod X Y (p 0) Hp0X (p 1) Hp1Y).
 Qed.
 
 (** Helper: elements of cartesian products have coordinates **)
-Axiom setprod_elem_decompose : forall X Y p:set,
+Theorem setprod_elem_decompose : forall X Y p:set,
   p :e setprod X Y ->
   exists x :e X, exists y :e Y, p :e setprod {x} {y}.
+let X Y p.
+assume Hp: p :e setprod X Y.
+claim Hp0X: p 0 :e X.
+{ exact (ap0_Sigma X (fun _ : set => Y) p Hp). }
+claim Hp1Y: p 1 :e Y.
+{ exact (ap1_Sigma X (fun _ : set => Y) p Hp). }
+witness (p 0).
+apply andI.
+- exact Hp0X.
+- witness (p 1).
+  apply andI.
+  * exact Hp1Y.
+  * claim Heta: p = (p 0, p 1).
+    { exact (setprod_eta X Y p Hp). }
+    rewrite Heta at 1.
+    exact (tuple_2_setprod {p 0} {p 1} (p 0) (SingI (p 0)) (p 1) (SingI (p 1))).
+Qed.
 
 (** Helper: singleton subset property **)
 Theorem singleton_subset : forall x U:set, x :e U -> {x} c= U.
