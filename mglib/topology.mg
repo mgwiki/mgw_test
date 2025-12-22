@@ -34509,7 +34509,7 @@ assume Hsubdata:
 
 (** Missing bridge:
     derive a convergence witness on the J coming from the subnet data. **)
-admit.
+admit. (** ADMITTED: witness index mismatch between net_converges and subnet_of **)
 Qed.
 
 (** helper: subnet preserves convergence for fixed index set witnesses **)
