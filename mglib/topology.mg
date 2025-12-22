@@ -38340,8 +38340,29 @@ apply andI.
 			              rewrite Hy0.
 			              rewrite <- Hf0eq.
 			              exact HfU.
-		      + assume HIn0: ~(I = Empty).
-		        admit.
+			      + assume HIn0: ~(I = Empty).
+			        prove countable_basis_at (countable_product_space I Xi) (countable_product_topology_subbasis I Xi) f.
+			        (** Expand the definition; only the existence of a countable local base is postponed. **)
+			        claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+			        { let i. assume HiI: i :e I.
+			          exact (andEL (topology_on (space_family_set Xi i) (space_family_topology Xi i))
+			                       (forall x:set, x :e space_family_set Xi i -> countable_basis_at (space_family_set Xi i) (space_family_topology Xi i) x)
+			                       (Hcomp i HiI)). }
+			        claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+			        { exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop). }
+			        claim HB: basis_on (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)).
+			        { exact (finite_intersections_basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi) HS). }
+			        claim HTprod: topology_on (product_space I Xi) (countable_product_topology_subbasis I Xi).
+			        { exact (lemma_topology_from_basis (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)) HB). }
+			        prove topology_on (product_space I Xi) (countable_product_topology_subbasis I Xi) /\ f :e product_space I Xi /\
+			          exists B:set, B c= countable_product_topology_subbasis I Xi /\ countable_set B /\
+			            (forall b:set, b :e B -> f :e b) /\
+			            (forall U:set, U :e countable_product_topology_subbasis I Xi -> f :e U -> exists b:set, b :e B /\ b c= U).
+			        apply andI.
+			        - apply andI.
+			          + exact HTprod.
+			          + exact Hf.
+			        - admit.
 		- (** second countable for countable products **)
 		  let I Xi.
 		  assume HIcount: countable_index_set I.
