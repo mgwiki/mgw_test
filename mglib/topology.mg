@@ -41470,7 +41470,14 @@ Definition R_K : set := R.
 Theorem RK_Hausdorff_not_regular :
   Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
 prove Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
-admit. (** K-topology Hausdorff; but K and 0 cannot be separated by disjoint open nbhds **)
+apply andI.
+- (** Hausdorff part follows from earlier theorem about R_K_topology **)
+  claim HRKeq: R_K = R.
+  { reflexivity. }
+  rewrite HRKeq.
+  exact R_K_topology_Hausdorff.
+- (** Not regular: standard counterexample at 0 using closed set K_set; pending full formal proof. **)
+  admit.
 Qed.
 
 (** from §31 Example 2: Sorgenfrey line normal **) 
