@@ -37961,6 +37961,41 @@ apply (injI {F x|x :e X} omega g).
   rewrite Heqpre.
   reflexivity.
 Qed.
+
+(** Helper: finite subcollections of a countable set are countable **)
+(** LATEX VERSION: The set of all finite subcollections of a countable set is countable. **)
+Theorem finite_subcollections_countable : forall S:set,
+  countable_set S -> countable_set (finite_subcollections S).
+admit.
+Qed.
+
+(** Helper: finite intersections of a countable family form a countable family **)
+(** LATEX VERSION: The family of finite intersections of members of a countable family is countable. **)
+Theorem finite_intersections_of_countable : forall X S:set,
+  countable_set S -> countable_set (finite_intersections_of X S).
+let X S. assume HS: countable_set S.
+prove countable_set (finite_intersections_of X S).
+set FS := finite_subcollections S.
+claim HFS: countable_set FS.
+{ exact (finite_subcollections_countable S HS). }
+exact (countable_image FS HFS (fun F0:set => intersection_of_family X F0)).
+Qed.
+
+(** Helper: the basis from a countable subbasis is countable **)
+(** LATEX VERSION: If a subbasis is countable, then the associated basis of nonempty finite intersections is countable. **)
+Theorem basis_of_subbasis_countable : forall X S:set,
+  countable_set S -> countable_set (basis_of_subbasis X S).
+let X S. assume HS: countable_set S.
+prove countable_set (basis_of_subbasis X S).
+claim Hfin: countable_set (finite_intersections_of X S).
+{ exact (finite_intersections_of_countable X S HS). }
+prove countable (basis_of_subbasis X S).
+apply (Subq_countable (basis_of_subbasis X S) (finite_intersections_of X S)).
+- exact Hfin.
+- let b. assume Hb: b :e basis_of_subbasis X S.
+  prove b :e finite_intersections_of X S.
+  exact (SepE1 (finite_intersections_of X S) (fun b0:set => b0 <> Empty) b Hb).
+Qed.
 (** LATEX VERSION: Real sequences and uniform metric/topology on R^ω (setup). **)
 (** FIXED: Real sequences are functions omega → R, not subsets of R!
     Was: Power R (set of all subsets of R)
@@ -38702,7 +38737,50 @@ apply andI.
 					          { exact HSsmall. }
 					          exact (finite_intersections_basis_of_subbasis (product_space I Xi) Ssmall HS).
 						        + (** countable_set goal is not yet automated by vampire **)
-						          admit. (** FAIL **)
+						          claim HSsmall_count: countable_set Ssmall.
+						          { (** show Ssmall is an image of a countable dependent sum **)
+						            claim HIc: countable I.
+						            { exact HIcount. }
+						            claim HBsel_count: forall i:set, i :e I -> countable (Bsel i).
+						            { let i. assume HiI: i :e I.
+						              claim HBi: basis_on (space_family_set Xi i) (Bsel i) /\ countable_set (Bsel i).
+						              { exact (andEL (basis_on (space_family_set Xi i) (Bsel i) /\ countable_set (Bsel i))
+						                             (basis_generates (space_family_set Xi i) (Bsel i) (space_family_topology Xi i))
+						                             (HBsel i HiI)). }
+						              exact (andER (basis_on (space_family_set Xi i) (Bsel i))
+						                           (countable_set (Bsel i))
+						                           HBi). }
+						            claim HSig: countable (Sigma_ i :e I, Bsel i).
+						            { exact (Sigma_countable I HIc Bsel HBsel_count). }
+						            claim HSig_set: countable_set (Sigma_ i :e I, Bsel i).
+						            { exact HSig. }
+						            set F : set -> set := fun p => product_cylinder I Xi (p 0) (p 1).
+						            set Img := {F p|p :e Sigma_ i :e I, Bsel i}.
+						            claim HImg_count: countable_set Img.
+						            { exact (countable_image (Sigma_ i :e I, Bsel i) HSig_set F). }
+						            apply (Subq_countable Ssmall Img).
+						            - exact HImg_count.
+						            - let s. assume Hs: s :e Ssmall.
+						              prove s :e Img.
+						              apply (famunionE_impred I (fun i0:set => {product_cylinder I Xi i0 U|U :e Bsel i0}) s Hs).
+						              let i0. assume Hi0I: i0 :e I.
+						              assume HsFi0: s :e {product_cylinder I Xi i0 U|U :e Bsel i0}.
+						              apply (ReplE_impred (Bsel i0) (fun U0:set => product_cylinder I Xi i0 U0) s HsFi0).
+						              let U0. assume HU0B: U0 :e Bsel i0.
+						              assume HsEq: s = product_cylinder I Xi i0 U0.
+							              claim HpSig: (i0,U0) :e Sigma_ i :e I, Bsel i.
+							              { exact (tuple_2_Sigma I Bsel i0 Hi0I U0 HU0B). }
+							              claim HFp: F (i0,U0) = product_cylinder I Xi i0 U0.
+							              { claim HFdef: F (i0,U0) = product_cylinder I Xi ((i0,U0) 0) ((i0,U0) 1).
+							                { reflexivity. }
+							                rewrite HFdef.
+							                rewrite (tuple_2_0_eq i0 U0).
+							                rewrite (tuple_2_1_eq i0 U0).
+							                reflexivity. }
+							              rewrite HsEq.
+							              rewrite <- HFp.
+							              exact (ReplI (Sigma_ i :e I, Bsel i) F (i0,U0) HpSig). }
+						          exact (basis_of_subbasis_countable (product_space I Xi) Ssmall HSsmall_count).
 					      - (** basis_generates **)
 					        prove basis_on (product_space I Xi) (basis_of_subbasis (product_space I Xi) Ssmall) /\
 					          generated_topology (product_space I Xi) (basis_of_subbasis (product_space I Xi) Ssmall) = countable_product_topology_subbasis I Xi.
