@@ -25879,6 +25879,9 @@ apply set_ext.
   exact (SepI (setprod X Y) (fun q => apply_fun (projection2 X Y) q :e V) p HpXY Hprop).
 Qed.
 
+(** SUSPICIOUS DEFINITION: `continuous_map` relies on `function_on` (which is defined via `apply_fun`/`Eps_i`);
+    thus continuity is formulated purely via preimages of opens, but “f being a genuine functional graph” is not enforced
+    without additional axioms. **)
 Definition continuous_map : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f =>
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
@@ -33888,6 +33891,9 @@ Qed.
     Now: exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k)
     The comment requires "every pair has an upper bound", so k must satisfy i≤k and j≤k.
     Using von Neumann ordinal ordering: i≤k means (i :e k \/ i = k). **)
+(** SUSPICIOUS DEFINITION: This encodes the preorder on indices using membership `i :e k \/ i = k`;
+    this is natural for ordinal-indexed nets, but directed sets in general topology are usually abstract posets,
+    so later results may need witness translations when indices are not literal ordinals. **)
 Definition directed_set : set -> prop := fun J =>
   (J <> Empty /\ forall i:set, i :e J -> ordinal i)
   /\ forall i j:set, i :e J -> j :e J ->
