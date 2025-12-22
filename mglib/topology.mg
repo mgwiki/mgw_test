@@ -36382,6 +36382,27 @@ claim Hfam: Hausdorff_spaces_family m (const_space_family m R R_standard_topolog
 exact (Hprod m (const_space_family m R R_standard_topology) Hfam).
 Qed.
 
+(** helper: Euclidean spaces are T1 **)
+(** LATEX VERSION: Euclidean spaces satisfy the T1 axiom (finite sets are closed). **)
+Theorem euclidean_space_T1 : forall m:set,
+  T1_space (euclidean_space m) (euclidean_topology m).
+let m.
+prove T1_space (euclidean_space m) (euclidean_topology m).
+claim HH: Hausdorff_space (euclidean_space m) (euclidean_topology m).
+{ exact (euclidean_space_Hausdorff m). }
+claim Htop: topology_on (euclidean_space m) (euclidean_topology m).
+{ exact (andEL (topology_on (euclidean_space m) (euclidean_topology m))
+               (forall x1 x2:set, x1 :e euclidean_space m -> x2 :e euclidean_space m -> x1 <> x2 ->
+                 exists U V:set, U :e euclidean_topology m /\ V :e euclidean_topology m /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               HH). }
+prove topology_on (euclidean_space m) (euclidean_topology m) /\
+      forall F:set, F c= euclidean_space m -> finite F -> closed_in (euclidean_space m) (euclidean_topology m) F.
+apply andI.
+- exact Htop.
+- let F. assume HFsub: F c= euclidean_space m. assume HFfin: finite F.
+  exact (finite_sets_closed_in_Hausdorff (euclidean_space m) (euclidean_topology m) HH F HFsub HFfin).
+Qed.
+
 Theorem locally_m_euclidean_implies_T1 : forall X Tx m:set,
   locally_m_euclidean X Tx m -> T1_space X Tx.
 let X Tx m.
