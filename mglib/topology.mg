@@ -16834,9 +16834,142 @@ Definition product_topology : set -> set -> set -> set -> set :=
   fun X Tx Y Ty => generated_topology (setprod X Y) (product_subbasis X Tx Y Ty).
 
 (** Helper: product subbasis satisfies basis axioms **)
-Axiom product_subbasis_is_basis : forall X Tx Y Ty:set,
+Theorem product_subbasis_is_basis : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+let X Tx Y Ty.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+prove basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+prove product_subbasis X Tx Y Ty c= Power (setprod X Y)
+  /\ (forall p :e setprod X Y, exists b :e product_subbasis X Tx Y Ty, p :e b)
+  /\ (forall b1 :e product_subbasis X Tx Y Ty,
+        forall b2 :e product_subbasis X Tx Y Ty,
+          forall p:set, p :e b1 -> p :e b2 ->
+            exists b3 :e product_subbasis X Tx Y Ty, p :e b3 /\ b3 c= b1 :/\: b2).
+apply andI.
+- apply andI.
+  + (** subset axiom: every rectangle is a subset of X×Y **)
+    let b. assume Hb: b :e product_subbasis X Tx Y Ty.
+    prove b :e Power (setprod X Y).
+    claim HTxSub: Tx c= Power X.
+    { exact (topology_subset_axiom X Tx HTx). }
+    claim HTySub: Ty c= Power Y.
+    { exact (topology_subset_axiom Y Ty HTy). }
+    claim HexU: exists U :e Tx, b :e {rectangle_set U V|V :e Ty}.
+    { exact (famunionE Tx (fun U0:set => {rectangle_set U0 V|V :e Ty}) b Hb). }
+    apply HexU.
+    let U. assume HUconj: U :e Tx /\ b :e {rectangle_set U V|V :e Ty}.
+    claim HU: U :e Tx.
+    { exact (andEL (U :e Tx) (b :e {rectangle_set U V|V :e Ty}) HUconj). }
+    claim HbRepl: b :e {rectangle_set U V|V :e Ty}.
+    { exact (andER (U :e Tx) (b :e {rectangle_set U V|V :e Ty}) HUconj). }
+    claim HexV: exists V :e Ty, b = rectangle_set U V.
+    { exact (ReplE Ty (fun V0:set => rectangle_set U V0) b HbRepl). }
+    apply HexV.
+    let V. assume HVconj: V :e Ty /\ b = rectangle_set U V.
+    claim HV: V :e Ty.
+    { exact (andEL (V :e Ty) (b = rectangle_set U V) HVconj). }
+    claim Hbeq: b = rectangle_set U V.
+    { exact (andER (V :e Ty) (b = rectangle_set U V) HVconj). }
+    claim HUpow: U :e Power X.
+    { exact (HTxSub U HU). }
+    claim HVpow: V :e Power Y.
+    { exact (HTySub V HV). }
+    claim HUsubX: U c= X.
+    { exact (PowerE X U HUpow). }
+    claim HVsubY: V c= Y.
+    { exact (PowerE Y V HVpow). }
+    claim HrectSub: rectangle_set U V c= setprod X Y.
+    { exact (setprod_Subq U V X Y HUsubX HVsubY). }
+    rewrite Hbeq.
+    exact (PowerI (setprod X Y) (rectangle_set U V) HrectSub).
+  + (** cover axiom: every p in X×Y lies in some rectangle in the subbasis **)
+    let p. assume Hp: p :e setprod X Y.
+    witness (rectangle_set X Y).
+    apply andI.
+    * prove rectangle_set X Y :e product_subbasis X Tx Y Ty.
+      claim HXTx: X :e Tx.
+      { exact (topology_has_X X Tx HTx). }
+      claim HYTy: Y :e Ty.
+      { exact (topology_has_X Y Ty HTy). }
+      claim HRfam: rectangle_set X Y :e {rectangle_set X V|V :e Ty}.
+      { exact (ReplI Ty (fun V0:set => rectangle_set X V0) Y HYTy). }
+      exact (famunionI Tx (fun U0:set => {rectangle_set U0 V|V :e Ty}) X (rectangle_set X Y) HXTx HRfam).
+    * (** p is in X×Y **)
+      exact Hp.
+- (** refinement axiom: intersection of two rectangles refines to a rectangle **)
+  let b1. assume Hb1: b1 :e product_subbasis X Tx Y Ty.
+  let b2. assume Hb2: b2 :e product_subbasis X Tx Y Ty.
+  let p. assume Hp1: p :e b1.
+  assume Hp2: p :e b2.
+  claim HexU1: exists U1 :e Tx, b1 :e {rectangle_set U1 V|V :e Ty}.
+  { exact (famunionE Tx (fun U0:set => {rectangle_set U0 V|V :e Ty}) b1 Hb1). }
+  apply HexU1.
+  let U1. assume HU1conj: U1 :e Tx /\ b1 :e {rectangle_set U1 V|V :e Ty}.
+  claim HU1: U1 :e Tx.
+  { exact (andEL (U1 :e Tx) (b1 :e {rectangle_set U1 V|V :e Ty}) HU1conj). }
+  claim Hb1Repl: b1 :e {rectangle_set U1 V|V :e Ty}.
+  { exact (andER (U1 :e Tx) (b1 :e {rectangle_set U1 V|V :e Ty}) HU1conj). }
+  claim HexV1: exists V1 :e Ty, b1 = rectangle_set U1 V1.
+  { exact (ReplE Ty (fun V0:set => rectangle_set U1 V0) b1 Hb1Repl). }
+  apply HexV1.
+  let V1. assume HV1conj: V1 :e Ty /\ b1 = rectangle_set U1 V1.
+  claim HV1: V1 :e Ty.
+  { exact (andEL (V1 :e Ty) (b1 = rectangle_set U1 V1) HV1conj). }
+  claim Hb1eq: b1 = rectangle_set U1 V1.
+  { exact (andER (V1 :e Ty) (b1 = rectangle_set U1 V1) HV1conj). }
+
+  claim HexU2: exists U2 :e Tx, b2 :e {rectangle_set U2 V|V :e Ty}.
+  { exact (famunionE Tx (fun U0:set => {rectangle_set U0 V|V :e Ty}) b2 Hb2). }
+  apply HexU2.
+  let U2. assume HU2conj: U2 :e Tx /\ b2 :e {rectangle_set U2 V|V :e Ty}.
+  claim HU2: U2 :e Tx.
+  { exact (andEL (U2 :e Tx) (b2 :e {rectangle_set U2 V|V :e Ty}) HU2conj). }
+  claim Hb2Repl: b2 :e {rectangle_set U2 V|V :e Ty}.
+  { exact (andER (U2 :e Tx) (b2 :e {rectangle_set U2 V|V :e Ty}) HU2conj). }
+  claim HexV2: exists V2 :e Ty, b2 = rectangle_set U2 V2.
+  { exact (ReplE Ty (fun V0:set => rectangle_set U2 V0) b2 Hb2Repl). }
+  apply HexV2.
+  let V2. assume HV2conj: V2 :e Ty /\ b2 = rectangle_set U2 V2.
+  claim HV2: V2 :e Ty.
+  { exact (andEL (V2 :e Ty) (b2 = rectangle_set U2 V2) HV2conj). }
+  claim Hb2eq: b2 = rectangle_set U2 V2.
+  { exact (andER (V2 :e Ty) (b2 = rectangle_set U2 V2) HV2conj). }
+
+  set b3 := rectangle_set (U1 :/\: U2) (V1 :/\: V2).
+  witness b3.
+  apply andI.
+  + (** b3 in the product subbasis **)
+    claim HU12: (U1 :/\: U2) :e Tx.
+    { exact (topology_binintersect_closed X Tx U1 U2 HTx HU1 HU2). }
+    claim HV12: (V1 :/\: V2) :e Ty.
+    { exact (topology_binintersect_closed Y Ty V1 V2 HTy HV1 HV2). }
+    claim Hb3fam: rectangle_set (U1 :/\: U2) (V1 :/\: V2) :e {rectangle_set (U1 :/\: U2) V|V :e Ty}.
+    { exact (ReplI Ty (fun V0:set => rectangle_set (U1 :/\: U2) V0) (V1 :/\: V2) HV12). }
+    exact (famunionI Tx (fun U0:set => {rectangle_set U0 V|V :e Ty}) (U1 :/\: U2) b3 HU12 Hb3fam).
+  + (** p in b3 and b3 subset of b1∩b2 **)
+    apply andI.
+    * (** membership **)
+      claim HpU1V1: p :e rectangle_set U1 V1.
+      { rewrite <- Hb1eq.
+        exact Hp1. }
+      claim HpU2V2: p :e rectangle_set U2 V2.
+      { rewrite <- Hb2eq.
+        exact Hp2. }
+      claim HpInt: p :e (rectangle_set U1 V1) :/\: (rectangle_set U2 V2).
+      { exact (binintersectI (rectangle_set U1 V1) (rectangle_set U2 V2) p HpU1V1 HpU2V2). }
+      rewrite <- (setprod_intersection U1 V1 U2 V2).
+      exact HpInt.
+    * (** subset **)
+      claim HintEq: b1 :/\: b2 = b3.
+      { prove b1 :/\: b2 = b3.
+        rewrite Hb1eq.
+        rewrite Hb2eq.
+        exact (setprod_intersection U1 V1 U2 V2). }
+      rewrite HintEq.
+      exact (Subq_ref b3).
+Qed.
 
 (** from §15: product topology is a topology **)
 (** LATEX VERSION: The product topology determined by Tx and Ty satisfies the topology axioms on X×Y. **)
