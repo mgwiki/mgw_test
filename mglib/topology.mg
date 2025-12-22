@@ -16525,7 +16525,35 @@ prove basis_on R rational_open_intervals_basis /\ generated_topology R rational_
     then use `Subq_SNoS_omega_rational` to view those approximants as rationals. The missing piece is a clean
     inequality bridge showing that sufficiently small `eps_ k` yields a strict point between `a` and `b`. **)
 apply andI.
-- admit. (** rational open intervals satisfy basis_on R **)
+- (** rational open intervals satisfy basis_on R (partial: subset property) **)
+  prove rational_open_intervals_basis c= Power R
+    /\ (forall x :e R, exists b :e rational_open_intervals_basis, x :e b)
+    /\ (forall b1 :e rational_open_intervals_basis, forall b2 :e rational_open_intervals_basis, forall x:set,
+          x :e b1 -> x :e b2 ->
+          exists b3 :e rational_open_intervals_basis, x :e b3 /\ b3 c= b1 :/\: b2).
+  apply andI.
+  - prove rational_open_intervals_basis c= Power R /\ (forall x :e R, exists b :e rational_open_intervals_basis, x :e b).
+    apply andI.
+    + (** every rational open interval is a subset of R **)
+      prove rational_open_intervals_basis c= Power R.
+      let b. assume Hb: b :e rational_open_intervals_basis.
+      prove b :e Power R.
+      apply (famunionE_impred rational_numbers
+               (fun q1 : set => {open_interval q1 q2|q2 :e rational_numbers})
+               b
+               Hb
+               (b :e Power R)).
+      let q1. assume Hq1 Hbq1.
+      apply (ReplE_impred rational_numbers
+               (fun q2 : set => open_interval q1 q2)
+               b
+               Hbq1
+               (b :e Power R)).
+      let q2. assume Hq2 Heq.
+      rewrite Heq.
+      exact (PowerI R (open_interval q1 q2) (open_interval_Subq_R q1 q2)).
+    + admit. (** density/coverage of R by rational open intervals **)
+  - admit. (** intersection refinement using rational endpoints **)
 - admit. (** generated_topology R rational_open_intervals_basis equals R_standard_topology **)
 Qed.
 
@@ -16544,7 +16572,35 @@ prove basis_on R rational_halfopen_intervals_basis /\ generated_topology R ratio
     the lower limit topology on `R`. As in (a), `real_E` plus `Subq_SNoS_omega_rational` should supply many rational
     endpoints once the relevant order/epsilon inequalities are available. **)
 apply andI.
-- admit. (** rational half-open intervals satisfy basis_on R **)
+- (** rational half-open intervals satisfy basis_on R (partial: subset property) **)
+  prove rational_halfopen_intervals_basis c= Power R
+    /\ (forall x :e R, exists b :e rational_halfopen_intervals_basis, x :e b)
+    /\ (forall b1 :e rational_halfopen_intervals_basis, forall b2 :e rational_halfopen_intervals_basis, forall x:set,
+          x :e b1 -> x :e b2 ->
+          exists b3 :e rational_halfopen_intervals_basis, x :e b3 /\ b3 c= b1 :/\: b2).
+  apply andI.
+  - prove rational_halfopen_intervals_basis c= Power R /\ (forall x :e R, exists b :e rational_halfopen_intervals_basis, x :e b).
+    apply andI.
+    + (** every rational half-open interval is a subset of R **)
+      prove rational_halfopen_intervals_basis c= Power R.
+      let b. assume Hb: b :e rational_halfopen_intervals_basis.
+      prove b :e Power R.
+      apply (famunionE_impred rational_numbers
+               (fun q1 : set => {halfopen_interval_left q1 q2|q2 :e rational_numbers})
+               b
+               Hb
+               (b :e Power R)).
+      let q1. assume Hq1 Hbq1.
+      apply (ReplE_impred rational_numbers
+               (fun q2 : set => halfopen_interval_left q1 q2)
+               b
+               Hbq1
+               (b :e Power R)).
+      let q2. assume Hq2 Heq.
+      rewrite Heq.
+      exact (PowerI R (halfopen_interval_left q1 q2) (halfopen_interval_left_Subq_R q1 q2)).
+    + admit. (** density/coverage of R by rational half-open intervals **)
+  - admit. (** intersection refinement using rational endpoints **)
 - admit. (** generated topology differs from R_lower_limit_topology **)
 Qed.
 
