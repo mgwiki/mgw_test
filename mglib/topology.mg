@@ -38010,6 +38010,21 @@ Qed.
 Definition second_countable_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
 
+(** helper: countability of the full product basis when components are second countable **)
+(** LATEX VERSION: For a countable product of second-countable spaces, the standard basic opens are countable. **)
+Theorem product_full_basis_countable_if_components_second_countable : forall I Xi:set,
+  countable_index_set I ->
+  (forall i:set, i :e I -> second_countable_space (space_family_set Xi i) (space_family_topology Xi i)) ->
+  I <> Empty ->
+  countable_set (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)).
+let I Xi.
+assume HIcount.
+assume Hcomp.
+assume HIn0.
+prove countable_set (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)).
+admit.
+Qed.
+
 (** from §30 Example 1: R^n has countable basis **) 
 Theorem euclidean_spaces_second_countable : forall n:set,
   second_countable_space (euclidean_space n) (euclidean_topology n).
@@ -38434,10 +38449,10 @@ apply andI.
 				            exact (andEL (topology_on (space_family_set Xi i) (space_family_topology Xi i))
 				                         (exists B0:set, basis_on (space_family_set Xi i) B0 /\ countable_set B0 /\ basis_generates (space_family_set Xi i) B0 (space_family_topology Xi i))
 				                         (Hcomp i HiI)). }
-				          claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
-				          { exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop). }
-				          exact (finite_intersections_basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi) HS).
-				        + admit.
+					          claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+					          { exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop). }
+					          exact (finite_intersections_basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi) HS).
+					        + exact (product_full_basis_countable_if_components_second_countable I Xi HIcount Hcomp HIn0).
 				      - (** basis_generates **)
 				        prove basis_on (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)) /\
 				          generated_topology (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)) = countable_product_topology_subbasis I Xi.
