@@ -42872,6 +42872,50 @@ Definition cauchy_sequence : set -> set -> set -> prop := fun X d seq =>
       forall m n:set, m :e omega -> n :e omega -> N c= m -> N c= n ->
         Rlt (apply_fun d (apply_fun seq m, apply_fun seq n)) eps.
 
+(** Helper: cauchy_sequence plus totality of the metric graph on X×X **)
+Definition cauchy_sequence_total : set -> set -> set -> prop := fun X d seq =>
+  metric_on_total X d /\ sequence_on seq X /\
+  forall eps:set, eps :e R /\ Rlt 0 eps ->
+    exists N:set, N :e omega /\
+      forall m n:set, m :e omega -> n :e omega -> N c= m -> N c= n ->
+        Rlt (apply_fun d (apply_fun seq m, apply_fun seq n)) eps.
+
+Theorem cauchy_sequence_total_imp : forall X d seq:set,
+  cauchy_sequence_total X d seq -> cauchy_sequence X d seq.
+let X d seq. assume H.
+claim Hleft: metric_on_total X d /\ sequence_on seq X.
+{ exact (andEL (metric_on_total X d /\ sequence_on seq X)
+               (forall eps:set, eps :e R /\ Rlt 0 eps ->
+                 exists N:set, N :e omega /\
+                   forall m n:set, m :e omega -> n :e omega -> N c= m -> N c= n ->
+                     Rlt (apply_fun d (apply_fun seq m, apply_fun seq n)) eps)
+               H). }
+claim Hmt: metric_on_total X d.
+{ exact (andEL (metric_on_total X d) (sequence_on seq X) Hleft). }
+claim Hseq: sequence_on seq X.
+{ exact (andER (metric_on_total X d) (sequence_on seq X) Hleft). }
+claim Htail: forall eps:set, eps :e R /\ Rlt 0 eps ->
+  exists N:set, N :e omega /\
+    forall m n:set, m :e omega -> n :e omega -> N c= m -> N c= n ->
+      Rlt (apply_fun d (apply_fun seq m, apply_fun seq n)) eps.
+{ exact (andER (metric_on_total X d /\ sequence_on seq X)
+               (forall eps:set, eps :e R /\ Rlt 0 eps ->
+                 exists N:set, N :e omega /\
+                   forall m n:set, m :e omega -> n :e omega -> N c= m -> N c= n ->
+                     Rlt (apply_fun d (apply_fun seq m, apply_fun seq n)) eps)
+               H). }
+prove metric_on X d /\ sequence_on seq X /\
+  forall eps:set, eps :e R /\ Rlt 0 eps ->
+    exists N:set, N :e omega /\
+      forall m n:set, m :e omega -> n :e omega -> N c= m -> N c= n ->
+        Rlt (apply_fun d (apply_fun seq m, apply_fun seq n)) eps.
+apply andI.
+- apply andI.
+  + exact (metric_on_total_imp_metric_on X d Hmt).
+  + exact Hseq.
+- exact Htail.
+Qed.
+
 (** from §43 Definition: complete metric space **) 
 (** LATEX VERSION: Completeness: every Cauchy sequence converges. **)
 (** FIXED: Same issue - seq must be a function, not just a subset.
@@ -42881,6 +42925,11 @@ Definition complete_metric_space : set -> set -> prop := fun X d =>
   forall seq:set, sequence_on seq X -> cauchy_sequence X d seq ->
     exists x:set, converges_to X (metric_topology X d) seq x.
 
+(** Helper: complete_metric_space plus totality of the metric graph on X×X **)
+Definition complete_metric_space_total : set -> set -> prop := fun X d =>
+  metric_on_total X d /\
+  forall seq:set, sequence_on seq X -> cauchy_sequence_total X d seq ->
+    exists x:set, converges_to X (metric_topology X d) seq x.
 (** FIXED: Wrong syntax for ordered pairs in metric definition.
     Was: p = setprod (setprod x y) 0 (trying to use setprod for tuples - wrong!)
     Now: Proper ordered pair notation for function representation
