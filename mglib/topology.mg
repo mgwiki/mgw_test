@@ -16660,7 +16660,27 @@ Theorem setprod_eta : forall X Y p:set,
 let X Y p.
 assume Hp: p :e setprod X Y.
 prove p = (p 0, p 1).
-admit. (** TODO: prove from Sigma decomposition and tuple laws **)
+apply (Sigma_E X (fun _ : set => Y) p Hp).
+let x.
+assume Hx_pair.
+apply Hx_pair.
+assume HxX Hexy.
+apply Hexy.
+let y.
+assume Hy_pair.
+apply Hy_pair.
+assume HyY Hpeq.
+claim HeqT: p = (x,y).
+{ prove p = (x,y).
+  rewrite <- (tuple_pair x y).
+  exact Hpeq. }
+claim Hp0: p 0 = x.
+{ rewrite HeqT. exact (tuple_2_0_eq x y). }
+claim Hp1: p 1 = y.
+{ rewrite HeqT. exact (tuple_2_1_eq x y). }
+rewrite Hp0.
+rewrite Hp1.
+exact HeqT.
 Qed.
 
 (** Helper: cartesian products preserve subset relation **)
