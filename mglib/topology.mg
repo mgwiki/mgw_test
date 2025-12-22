@@ -35949,6 +35949,7 @@ Definition covering_dimension : set -> set -> set -> prop := fun X Tx n =>
         open_cover_of X Tx B /\
         refines_cover B A /\
         collection_has_order_at_most_m_plus_one X B n.
+(** LATEX VERSION: X is finite dimensional if dim(X) ≤ m for some m. **)
 Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   exists m:set, m :e omega /\
