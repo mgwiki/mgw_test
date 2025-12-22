@@ -42113,7 +42113,13 @@ Theorem Sorgenfrey_plane_completely_regular_not_normal :
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove completely_regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit. (** product of completely regular spaces is completely regular; not normal by antidiagonal argument **)
+apply andI.
+- admit. (** product of completely regular spaces is completely regular **)
+- claim Hnot: ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+  { exact (andER (regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology)
+                 (~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology)
+                 (Sorgenfrey_plane_not_normal)). }
+  exact Hnot.
 Qed.
 
 (** from §33 Example 1 cont.: SOmega x SbarOmega completely regular not normal **)
@@ -42126,7 +42132,14 @@ Theorem SOmega_SbarOmega_completely_regular_not_normal :
   ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 prove completely_regular_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology) /\
   ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
-admit. (** product of completely regular spaces is completely regular; not normal by previous theorem **)
+apply andI.
+- admit. (** product of completely regular spaces is completely regular **)
+- claim Hnot:
+    ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
+  { exact (andER (normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology)
+                 (~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology))
+                 (SOmega_SbarOmega_not_normal)). }
+  exact Hnot.
 Qed.
 
 (** from §34 Theorem 34.1: Urysohn metrization theorem **) 
