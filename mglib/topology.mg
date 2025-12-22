@@ -37731,7 +37731,104 @@ assume Hscc: second_countable_space X Tx.
 let U.
 assume HU: open_cover X Tx U.
 prove exists V:set, countable_subcollection V U /\ covers X V.
-admit. (** for each basis element, pick one cover element containing it; countable basis gives countable subcover **)
+claim HUopen: forall u:set, u :e U -> u :e Tx.
+{ exact (andEL (forall u:set, u :e U -> u :e Tx) (covers X U) HU). }
+claim HUcov: covers X U.
+{ exact (andER (forall u:set, u :e U -> u :e Tx) (covers X U) HU). }
+claim HexB: exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
+{ exact (andER (topology_on X Tx) (exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx) Hscc). }
+apply HexB.
+let B. assume HBpair.
+claim HBmid: (basis_on X B /\ countable_set B) /\ basis_generates X B Tx.
+{ exact HBpair. }
+claim HBasisCount: basis_on X B /\ countable_set B.
+{ exact (andEL (basis_on X B /\ countable_set B) (basis_generates X B Tx) HBmid). }
+claim HBgener: basis_generates X B Tx.
+{ exact (andER (basis_on X B /\ countable_set B) (basis_generates X B Tx) HBmid). }
+claim HBasis: basis_on X B.
+{ exact (andEL (basis_on X B) (countable_set B) HBasisCount). }
+claim HBcount: countable_set B.
+{ exact (andER (basis_on X B) (countable_set B) HBasisCount). }
+claim HgenEq: generated_topology X B = Tx.
+{ exact (andER (basis_on X B) (generated_topology X B = Tx) HBgener). }
+(** basis elements that refine the cover **)
+set B0 := {b :e B | exists u:set, u :e U /\ b c= u}.
+set choose : set->set := fun b => Eps_i (fun u => u :e U /\ b c= u).
+set V := {choose b|b :e B0}.
+witness V.
+apply andI.
+- (** V is a countable subcollection of U **)
+  prove countable_subcollection V U.
+  prove V c= U /\ countable_set V.
+  apply andI.
+  + (** V c= U **)
+    let v. assume Hv: v :e V.
+    prove v :e U.
+    apply (ReplE_impred B0 choose v Hv).
+    let b.
+    assume Hb0: b :e B0.
+    assume HvEq: v = choose b.
+    claim Hb0prop: exists u:set, u :e U /\ b c= u.
+    { exact (SepE2 B (fun b0:set => exists u:set, u :e U /\ b0 c= u) b Hb0). }
+    apply Hb0prop.
+    let u.
+    assume Hupair: u :e U /\ b c= u.
+    claim Hchooseprop: choose b :e U /\ b c= choose b.
+    { exact (Eps_i_ax (fun u0 => u0 :e U /\ b c= u0) u Hupair). }
+    claim HchooseU: choose b :e U.
+    { exact (andEL (choose b :e U) (b c= choose b) Hchooseprop). }
+    rewrite HvEq.
+    exact HchooseU.
+  + (** countable_set V **)
+    claim HB0sub: B0 c= B.
+    { let b. assume Hb0: b :e B0.
+      exact (SepE1 B (fun b0:set => exists u:set, u :e U /\ b0 c= u) b Hb0). }
+    claim HB0count: countable_set B0.
+    { exact (Subq_countable B0 B HBcount HB0sub). }
+    exact (countable_image B0 HB0count choose).
+- (** V covers X **)
+  prove covers X V.
+  let x. assume HxX: x :e X.
+  apply (HUcov x HxX).
+  let u. assume Hupair.
+  claim HuU: u :e U.
+  { exact (andEL (u :e U) (x :e u) Hupair). }
+  claim Hxu: x :e u.
+  { exact (andER (u :e U) (x :e u) Hupair). }
+  claim HuTx: u :e Tx.
+  { exact (HUopen u HuU). }
+  claim HuGen: u :e generated_topology X B.
+  { rewrite HgenEq. exact HuTx. }
+  claim Href: forall z :e u, exists b :e B, z :e b /\ b c= u.
+  { exact (SepE2 (Power X) (fun U0:set => forall z :e U0, exists b :e B, z :e b /\ b c= U0) u HuGen). }
+  claim Hexb: exists b :e B, x :e b /\ b c= u.
+  { exact (Href x Hxu). }
+  apply Hexb.
+  let b. assume Hbpair.
+  claim HbB: b :e B.
+  { exact (andEL (b :e B) (x :e b /\ b c= u) Hbpair). }
+  claim Hbprop: x :e b /\ b c= u.
+  { exact (andER (b :e B) (x :e b /\ b c= u) Hbpair). }
+  claim Hxb: x :e b.
+  { exact (andEL (x :e b) (b c= u) Hbprop). }
+  claim Hbsubu: b c= u.
+  { exact (andER (x :e b) (b c= u) Hbprop). }
+  claim Hb0: b :e B0.
+  { apply (SepI B (fun b0:set => exists u0:set, u0 :e U /\ b0 c= u0) b HbB).
+    witness u.
+    apply andI.
+    - exact HuU.
+    - exact Hbsubu. }
+  claim Hchooseprop: choose b :e U /\ b c= choose b.
+  { exact (Eps_i_ax (fun u0 => u0 :e U /\ b c= u0) u (andI (u :e U) (b c= u) HuU Hbsubu)). }
+  claim Hbsubchoose: b c= choose b.
+  { exact (andER (choose b :e U) (b c= choose b) Hchooseprop). }
+  claim Hxchoose: x :e choose b.
+  { exact (Hbsubchoose x Hxb). }
+  witness choose b.
+  apply andI.
+  + exact (ReplI B0 choose b Hb0).
+  + exact Hxchoose.
 Qed.
 
 (** from §30 Theorem 30.3(b): countable basis yields countable dense subset **) 
