@@ -16598,7 +16598,87 @@ Theorem rational_interval_refines_real_interval : forall a b x:set,
   x :e open_interval a b ->
   exists q1 :e rational_numbers, exists q2 :e rational_numbers,
     x :e open_interval q1 q2 /\ open_interval q1 q2 c= open_interval a b.
-admit.
+let a b x.
+assume HaR HbR HxR HxInab.
+claim HxabProp: Rlt a x /\ Rlt x b.
+{ exact (SepE2 R (fun z : set => Rlt a z /\ Rlt z b) x HxInab). }
+claim Hax: Rlt a x.
+{ exact (andEL (Rlt a x) (Rlt x b) HxabProp). }
+claim Hxb: Rlt x b.
+{ exact (andER (Rlt a x) (Rlt x b) HxabProp). }
+(** choose q1 rational with a<q1<x **)
+apply (rational_dense_between_reals a x HaR HxR Hax).
+let q1. assume Hq1pair. apply Hq1pair.
+assume Hq1Q: q1 :e rational_numbers.
+assume Hq1Prop: Rlt a q1 /\ Rlt q1 x.
+claim Hq1R: q1 :e R.
+{ exact (rational_numbers_in_R q1 Hq1Q). }
+claim Haq1: Rlt a q1.
+{ exact (andEL (Rlt a q1) (Rlt q1 x) Hq1Prop). }
+claim Hq1x: Rlt q1 x.
+{ exact (andER (Rlt a q1) (Rlt q1 x) Hq1Prop). }
+(** choose q2 rational with x<q2<b **)
+apply (rational_dense_between_reals x b HxR HbR Hxb).
+let q2. assume Hq2pair. apply Hq2pair.
+assume Hq2Q: q2 :e rational_numbers.
+assume Hq2Prop: Rlt x q2 /\ Rlt q2 b.
+claim Hq2R: q2 :e R.
+{ exact (rational_numbers_in_R q2 Hq2Q). }
+claim Hxq2: Rlt x q2.
+{ exact (andEL (Rlt x q2) (Rlt q2 b) Hq2Prop). }
+claim Hq2b: Rlt q2 b.
+{ exact (andER (Rlt x q2) (Rlt q2 b) Hq2Prop). }
+(** witness the rational interval (q1,q2) around x **)
+witness q1.
+apply andI.
+- exact Hq1Q.
+- witness q2.
+  apply andI.
+  * exact Hq2Q.
+  * apply andI.
+    { exact (SepI R (fun z : set => Rlt q1 z /\ Rlt z q2) x HxR
+                   (andI (Rlt q1 x) (Rlt x q2) Hq1x Hxq2)). }
+    { let y. assume Hy: y :e open_interval q1 q2.
+      prove y :e open_interval a b.
+      claim HyR: y :e R.
+      { exact (SepE1 R (fun z : set => Rlt q1 z /\ Rlt z q2) y Hy). }
+      claim HyProp: Rlt q1 y /\ Rlt y q2.
+      { exact (SepE2 R (fun z : set => Rlt q1 z /\ Rlt z q2) y Hy). }
+      claim Hq1y: Rlt q1 y.
+      { exact (andEL (Rlt q1 y) (Rlt y q2) HyProp). }
+      claim Hyq2: Rlt y q2.
+      { exact (andER (Rlt q1 y) (Rlt y q2) HyProp). }
+      claim HaS: SNo a.
+      { exact (real_SNo a HaR). }
+      claim Hq1S: SNo q1.
+      { exact (real_SNo q1 Hq1R). }
+      claim HyS: SNo y.
+      { exact (real_SNo y HyR). }
+      claim HbS: SNo b.
+      { exact (real_SNo b HbR). }
+      claim Hq2S: SNo q2.
+      { exact (real_SNo q2 Hq2R). }
+      claim Haq1lt: a < q1.
+      { exact (RltE_lt a q1 Haq1). }
+      claim Hq1ylt: q1 < y.
+      { exact (RltE_lt q1 y Hq1y). }
+      claim Hyq2lt: y < q2.
+      { exact (RltE_lt y q2 Hyq2). }
+      claim Hq2blt: q2 < b.
+      { exact (RltE_lt q2 b Hq2b). }
+      claim Haylt: a < y.
+      { exact (SNoLt_tra a q1 y HaS Hq1S HyS Haq1lt Hq1ylt). }
+      claim Hyblt: y < b.
+      { exact (SNoLt_tra y q2 b HyS Hq2S HbS Hyq2lt Hq2blt). }
+      claim Hay: Rlt a y.
+      { exact (RltI a y HaR HyR Haylt). }
+      claim Hyb: Rlt y b.
+      { exact (RltI y b HyR HbR Hyblt). }
+      claim Hconj: Rlt a y /\ Rlt y b.
+      { apply andI.
+        - exact Hay.
+        - exact Hyb. }
+      exact (SepI R (fun z : set => Rlt a z /\ Rlt z b) y HyR Hconj). }
 Qed.
 
 Theorem ex13_8a_rational_intervals_basis_standard :
