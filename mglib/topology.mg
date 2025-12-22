@@ -37516,7 +37516,85 @@ assume HTx: topology_on X Tx.
 assume HTy: topology_on Y Ty.
 prove continuous_map X Tx Y Ty f ->
     forall x seq:set, sequence_on seq X -> converges_to X Tx seq x -> converges_to Y Ty (map_sequence f seq) (apply_fun f x).
-admit. (** f continuous preserves limits: if x_n→x then f(x_n)→f(x); use first countability and sequential characterization **)
+assume Hcont: continuous_map X Tx Y Ty f.
+let x seq.
+assume Hseqon: sequence_on seq X.
+assume Hconv: converges_to X Tx seq x.
+prove converges_to Y Ty (map_sequence f seq) (apply_fun f x).
+claim Hcont_left: (topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y.
+{ exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+               Hcont). }
+claim Hfun: function_on f X Y.
+{ exact (andER (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y) Hcont_left). }
+claim Hpre: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+{ exact (andER ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+               Hcont). }
+claim Hconv_left: (topology_on X Tx /\ sequence_on seq X) /\ x :e X.
+{ exact (andEL ((topology_on X Tx /\ sequence_on seq X) /\ x :e X)
+               (forall U:set, U :e Tx -> x :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U)
+               Hconv). }
+claim HxX: x :e X.
+{ exact (andER (topology_on X Tx /\ sequence_on seq X) (x :e X) Hconv_left). }
+claim HfxY: apply_fun f x :e Y.
+{ exact (Hfun x HxX). }
+prove topology_on Y Ty /\ sequence_on (map_sequence f seq) Y /\ apply_fun f x :e Y /\
+      forall V:set, V :e Ty -> apply_fun f x :e V ->
+        exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun (map_sequence f seq) n :e V.
+apply andI.
+- (** left: (topology_on Y Ty /\ sequence_on ...) /\ apply_fun f x :e Y **)
+  apply andI.
+  + (** topology_on Y Ty /\ sequence_on (map_sequence f seq) Y **)
+    apply andI.
+    * exact HTy.
+    * prove sequence_on (map_sequence f seq) Y.
+      let n. assume Hn: n :e omega.
+      prove apply_fun (map_sequence f seq) n :e Y.
+      claim HseqnX: apply_fun seq n :e X.
+      { exact (Hseqon n Hn). }
+      claim Hcomp: apply_fun (map_sequence f seq) n = apply_fun f (apply_fun seq n).
+      { exact (compose_fun_apply omega seq f n Hn). }
+      rewrite Hcomp.
+      exact (Hfun (apply_fun seq n) HseqnX).
+  + exact HfxY.
+- (** right: neighborhood condition **)
+  let V. assume HV: V :e Ty. assume HfxV: apply_fun f x :e V.
+  set U := preimage_of X f V.
+  claim HUDef: U = preimage_of X f V.
+  { reflexivity. }
+  claim HUopen: U :e Tx.
+  { rewrite HUDef. exact (Hpre V HV). }
+  claim HxU: x :e U.
+  { rewrite HUDef.
+    exact (SepI X (fun x0:set => apply_fun f x0 :e V) x HxX HfxV). }
+  claim Htail0: forall W:set, W :e Tx -> x :e W ->
+    exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e W.
+  { exact (andER ((topology_on X Tx /\ sequence_on seq X) /\ x :e X)
+                 (forall W:set, W :e Tx -> x :e W -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e W)
+                 Hconv). }
+  claim Hevent: exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
+  { exact (Htail0 U HUopen HxU). }
+  apply Hevent.
+  let N. assume HNpair.
+  claim HNomega: N :e omega.
+  { exact (andEL (N :e omega) (forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U) HNpair). }
+  claim Htail: forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
+  { exact (andER (N :e omega) (forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U) HNpair). }
+  witness N.
+  apply andI.
+  + exact HNomega.
+  + let n. assume Hn: n :e omega. assume HNsub: N c= n.
+    claim HseqnU: apply_fun seq n :e U.
+    { exact (Htail n Hn HNsub). }
+    claim HseqnU0: apply_fun seq n :e preimage_of X f V.
+    { rewrite <- HUDef. exact HseqnU. }
+    claim HfnV: apply_fun f (apply_fun seq n) :e V.
+    { exact (SepE2 X (fun x0:set => apply_fun f x0 :e V) (apply_fun seq n) HseqnU0). }
+    claim Hcomp: apply_fun (map_sequence f seq) n = apply_fun f (apply_fun seq n).
+    { exact (compose_fun_apply omega seq f n Hn). }
+    rewrite Hcomp.
+    exact HfnV.
 Qed.
 
 (** from §30 Definition: second-countable space **) 
