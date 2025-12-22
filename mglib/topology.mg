@@ -41283,14 +41283,99 @@ Theorem separation_axioms_subspace_product : forall X Tx:set,
   (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi)) /\
   (forall Y:set, Y c= X -> regular_space X Tx -> regular_space Y (subspace_topology X Tx Y)) /\
   (forall I Xi:set, regular_spaces_family I Xi -> regular_space (product_space I Xi) (product_topology_full I Xi)).
-let X Tx.
-assume HTx: topology_on X Tx.
-prove (forall Y:set, Y c= X -> Hausdorff_space X Tx -> Hausdorff_space Y (subspace_topology X Tx Y)) /\
-  (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi)) /\
-  (forall Y:set, Y c= X -> regular_space X Tx -> regular_space Y (subspace_topology X Tx Y)) /\
-  (forall I Xi:set, regular_spaces_family I Xi -> regular_space (product_space I Xi) (product_topology_full I Xi)).
-admit. (** subspaces/products preserve Hausdorff and regularity; separate in subspace using ambient separation; separate in product coordinatewise
-        aby: In_5Find not_all_ex_demorgan_i conj_myprob_9998_1_20251124_092003 subspace_topology�f union_connected_common_point R_5Fomega_5Fbox_5Fnot_5Fconnected Hausdorff_5Fspace_def ex17_10_order_topology_Hausdorff In_5Fno2cycle . **) 
+	let X Tx.
+	assume HTx: topology_on X Tx.
+	prove (forall Y:set, Y c= X -> Hausdorff_space X Tx -> Hausdorff_space Y (subspace_topology X Tx Y)) /\
+	  (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi)) /\
+	  (forall Y:set, Y c= X -> regular_space X Tx -> regular_space Y (subspace_topology X Tx Y)) /\
+	  (forall I Xi:set, regular_spaces_family I Xi -> regular_space (product_space I Xi) (product_topology_full I Xi)).
+	apply andI.
+	- apply andI.
+	  + apply andI.
+	    - let Y. assume HYsub: Y c= X.
+	      assume HH: Hausdorff_space X Tx.
+	      prove Hausdorff_space Y (subspace_topology X Tx Y).
+	      exact (ex17_12_subspace_Hausdorff X Tx Y HH HYsub).
+	    - admit. (** product_topology_full Hausdorff: pending; use cylinder neighborhoods and pointwise separation **)
+		  + let Y. assume HYsub: Y c= X.
+		    assume Hreg: regular_space X Tx.
+		    prove one_point_sets_closed Y (subspace_topology X Tx Y) /\
+		      forall y0:set, y0 :e Y ->
+		        forall F0:set, closed_in Y (subspace_topology X Tx Y) F0 -> y0 /:e F0 ->
+		          exists U V:set, U :e subspace_topology X Tx Y /\ V :e subspace_topology X Tx Y /\ y0 :e U /\ F0 c= V /\ U :/\: V = Empty.
+		    claim HTy: topology_on Y (subspace_topology X Tx Y).
+		    { exact (subspace_topology_is_topology X Tx Y HTx HYsub). }
+	    claim HT1X: one_point_sets_closed X Tx.
+	    { exact (andEL (one_point_sets_closed X Tx)
+	                   (forall x:set, x :e X ->
+	                     forall F:set, closed_in X Tx F -> x /:e F ->
+	                       exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty)
+	                   Hreg). }
+	    claim HsingX: forall x:set, x :e X -> closed_in X Tx {x}.
+	    { exact (andER (topology_on X Tx) (forall x:set, x :e X -> closed_in X Tx {x}) HT1X). }
+	    claim HsepX:
+	      forall x:set, x :e X ->
+	        forall F:set, closed_in X Tx F -> x /:e F ->
+	          exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty.
+	    { exact (andER (one_point_sets_closed X Tx)
+	                   (forall x:set, x :e X ->
+	                     forall F:set, closed_in X Tx F -> x /:e F ->
+	                       exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty)
+	                   Hreg). }
+		    apply andI.
+			    - prove topology_on Y (subspace_topology X Tx Y) /\
+			        forall y:set, y :e Y -> closed_in Y (subspace_topology X Tx Y) {y}.
+			      apply andI.
+			      + exact HTy.
+			      + let y. assume HyY: y :e Y.
+			        prove closed_in Y (subspace_topology X Tx Y) {y}.
+		        claim HyX: y :e X.
+		        { exact (HYsub y HyY). }
+	        apply (iffER (closed_in Y (subspace_topology X Tx Y) {y})
+	                     (exists C:set, closed_in X Tx C /\ {y} = C :/\: Y)
+	                     (closed_in_subspace_iff_intersection X Tx Y {y} HTx HYsub)).
+	        witness {y}.
+	        apply andI.
+	        - exact (HsingX y HyX).
+	        - apply set_ext.
+	          + let z. assume Hz: z :e {y}.
+	            prove z :e {y} :/\: Y.
+	            claim Hzeq: z = y.
+	            { exact (SingE y z Hz). }
+	            rewrite Hzeq.
+	            exact (binintersectI {y} Y y (SingI y) HyY).
+	          + let z. assume Hz: z :e {y} :/\: Y.
+	            prove z :e {y}.
+	            exact (binintersectE1 {y} Y z Hz).
+		    - let y. assume HyY: y :e Y.
+		      let F. assume HFcl: closed_in Y (subspace_topology X Tx Y) F.
+		      assume HynotF: y /:e F.
+		      prove exists U V:set, U :e subspace_topology X Tx Y /\ V :e subspace_topology X Tx Y /\ y :e U /\ F c= V /\ U :/\: V = Empty.
+		      claim HyX: y :e X.
+		      { exact (HYsub y HyY). }
+	      claim HexC: exists C:set, closed_in X Tx C /\ F = C :/\: Y.
+	      { exact (iffEL (closed_in Y (subspace_topology X Tx Y) F)
+	                     (exists C:set, closed_in X Tx C /\ F = C :/\: Y)
+	                     (closed_in_subspace_iff_intersection X Tx Y F HTx HYsub)
+	                     HFcl). }
+		      set C0 := Eps_i (fun C:set => closed_in X Tx C /\ F = C :/\: Y).
+		      claim HC0prop: closed_in X Tx C0 /\ F = C0 :/\: Y.
+		      { exact (Eps_i_ex (fun C:set => closed_in X Tx C /\ F = C :/\: Y) HexC). }
+	      claim HC0cl: closed_in X Tx C0.
+	      { exact (andEL (closed_in X Tx C0) (F = C0 :/\: Y) HC0prop). }
+	      claim HFeq: F = C0 :/\: Y.
+	      { exact (andER (closed_in X Tx C0) (F = C0 :/\: Y) HC0prop). }
+	      claim HynotC0: y /:e C0.
+	      { assume HyC0: y :e C0.
+	        prove False.
+	        claim HyF: y :e F.
+	        { rewrite HFeq.
+	          exact (binintersectI C0 Y y HyC0 HyY). }
+	        exact (HynotF HyF). }
+		      claim HexUV: exists U V:set, U :e Tx /\ V :e Tx /\ y :e U /\ C0 c= V /\ U :/\: V = Empty.
+		      { exact (HsepX y HyX C0 HC0cl HynotC0). }
+		      admit. (** finish: from HexUV pick U,V in Tx; set U'=U∩Y,V'=V∩Y and show the required separation in the subspace **)
+	- admit. (** product_topology_full regular: pending; coordinatewise separation using regularity of factors **)
 Qed.
 
 (** from §31 Example 1 setup: R_K space **) 
