@@ -43042,15 +43042,78 @@ Qed.
 (** from §31 Exercise 4: comparing finer/coarser separation axioms **)
 (** LATEX VERSION: Let X have two topologies T and T', with T' ⊃ T. Compare separation properties. **)
 Theorem ex31_4_comparison_topologies_separation : forall X Tx Tx':set,
+  topology_on X Tx ->
+  topology_on X Tx' ->
   Tx c= Tx' ->
   ((Hausdorff_space X Tx -> Hausdorff_space X Tx') /\
    (regular_space X Tx -> Hausdorff_space X Tx') /\
    (normal_space X Tx -> Hausdorff_space X Tx')).
 let X Tx Tx'.
+assume HTx: topology_on X Tx.
+assume HTx': topology_on X Tx'.
 assume Hfiner: Tx c= Tx'.
 apply and3I.
 - prove Hausdorff_space X Tx -> Hausdorff_space X Tx'.
-  admit. (** if the coarser topology is Hausdorff, any finer topology is Hausdorff **)
+  assume HH: Hausdorff_space X Tx.
+  prove Hausdorff_space X Tx'.
+  prove topology_on X Tx' /\
+        forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+          exists U V:set, U :e Tx' /\ V :e Tx' /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+  apply andI.
+  - exact HTx'.
+  - let x1 x2.
+    assume Hx1X: x1 :e X.
+    assume Hx2X: x2 :e X.
+    assume Hneq: x1 <> x2.
+    prove exists U V:set, U :e Tx' /\ V :e Tx' /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+    claim Hsep:
+      exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+    { exact ((andER (topology_on X Tx)
+                    (forall a b:set, a :e X -> b :e X -> a <> b ->
+                      exists U V:set, U :e Tx /\ V :e Tx /\ a :e U /\ b :e V /\ U :/\: V = Empty)
+                    HH) x1 x2 Hx1X Hx2X Hneq). }
+    set U0 := Eps_i (fun U:set => exists V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty).
+    claim HU0ex: exists V:set, U0 :e Tx /\ V :e Tx /\ x1 :e U0 /\ x2 :e V /\ U0 :/\: V = Empty.
+    { exact (Eps_i_ex (fun U:set => exists V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty) Hsep). }
+    set V0 := Eps_i (fun V:set => U0 :e Tx /\ V :e Tx /\ x1 :e U0 /\ x2 :e V /\ U0 :/\: V = Empty).
+    claim HV0prop: U0 :e Tx /\ V0 :e Tx /\ x1 :e U0 /\ x2 :e V0 /\ U0 :/\: V0 = Empty.
+    { exact (Eps_i_ex (fun V:set => U0 :e Tx /\ V :e Tx /\ x1 :e U0 /\ x2 :e V /\ U0 :/\: V = Empty) HU0ex). }
+    claim H1234: (((U0 :e Tx /\ V0 :e Tx) /\ x1 :e U0) /\ x2 :e V0).
+    { exact (andEL ((((U0 :e Tx /\ V0 :e Tx) /\ x1 :e U0) /\ x2 :e V0))
+                   (U0 :/\: V0 = Empty)
+                   HV0prop). }
+    claim HdisjUV: U0 :/\: V0 = Empty.
+    { exact (andER ((((U0 :e Tx /\ V0 :e Tx) /\ x1 :e U0) /\ x2 :e V0))
+                   (U0 :/\: V0 = Empty)
+                   HV0prop). }
+    claim H123: ((U0 :e Tx /\ V0 :e Tx) /\ x1 :e U0).
+    { exact (andEL ((U0 :e Tx /\ V0 :e Tx) /\ x1 :e U0)
+                   (x2 :e V0)
+                   H1234). }
+    claim H12: (U0 :e Tx /\ V0 :e Tx).
+    { exact (andEL (U0 :e Tx /\ V0 :e Tx)
+                   (x1 :e U0)
+                   H123). }
+    claim HUx1: x1 :e U0.
+    { exact (andER (U0 :e Tx /\ V0 :e Tx)
+                   (x1 :e U0)
+                   H123). }
+    claim HVx2: x2 :e V0.
+    { exact (andER ((U0 :e Tx /\ V0 :e Tx) /\ x1 :e U0)
+                   (x2 :e V0)
+                   H1234). }
+    claim HU0Tx': U0 :e Tx'.
+    { apply Hfiner. exact (andEL (U0 :e Tx) (V0 :e Tx) H12). }
+    claim HV0Tx': V0 :e Tx'.
+    { apply Hfiner. exact (andER (U0 :e Tx) (V0 :e Tx) H12). }
+    witness U0.
+    witness V0.
+    apply and5I.
+    - exact HU0Tx'.
+    - exact HV0Tx'.
+    - exact HUx1.
+    - exact HVx2.
+    - exact HdisjUV.
 - prove regular_space X Tx -> Hausdorff_space X Tx'.
   admit. (** regular implies Hausdorff; then use the previous implication to pass to the finer topology **)
 - prove normal_space X Tx -> Hausdorff_space X Tx'.
