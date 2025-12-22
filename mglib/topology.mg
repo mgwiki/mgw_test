@@ -40868,8 +40868,412 @@ prove (one_point_sets_closed X Tx -> (regular_space X Tx <->
      forall x U:set, x :e X -> U :e Tx -> x :e U -> exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U)) /\
   (one_point_sets_closed X Tx -> (normal_space X Tx <->
      forall A U:set, closed_in X Tx A -> U :e Tx -> A c= U -> exists V:set, V :e Tx /\ A c= V /\ closure_of X Tx V c= U)).
-admit. (** Lemma 31.1: regular/normal equivalence via closures; separate point/closed from complement by nested open nbhds **)
-Qed.
+apply andI.
+- (** Regular part **)
+  assume HT1: one_point_sets_closed X Tx.
+  prove regular_space X Tx <->
+       forall x U:set, x :e X -> U :e Tx -> x :e U ->
+         exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U.
+  apply iffI.
+  * assume Hreg: regular_space X Tx.
+    prove forall x U:set, x :e X -> U :e Tx -> x :e U ->
+         exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U.
+    claim HSepReg:
+      forall x:set, x :e X ->
+        forall F:set, closed_in X Tx F -> x /:e F ->
+          exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty.
+    { exact (andER (one_point_sets_closed X Tx)
+                   (forall x:set, x :e X ->
+                     forall F:set, closed_in X Tx F -> x /:e F ->
+                       exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty)
+                   Hreg). }
+    let x U.
+    assume HxX: x :e X.
+    assume HU: U :e Tx.
+    assume HxU: x :e U.
+    set B := X :\: U.
+    claim HBcl: closed_in X Tx B.
+    { exact (closed_of_open_complement X Tx U HTx HU). }
+    claim HxnotB: x /:e B.
+    { assume HxB: x :e B.
+      claim HxnotU: x /:e U.
+      { exact (setminusE2 X U x HxB). }
+      exact (HxnotU HxU). }
+    claim Hex: exists V W:set, V :e Tx /\ W :e Tx /\ x :e V /\ B c= W /\ V :/\: W = Empty.
+    { exact (HSepReg x HxX B HBcl HxnotB). }
+    set V0 := Eps_i (fun V:set => exists W:set, V :e Tx /\ W :e Tx /\ x :e V /\ B c= W /\ V :/\: W = Empty).
+    claim HV0ex: exists W:set, V0 :e Tx /\ W :e Tx /\ x :e V0 /\ B c= W /\ V0 :/\: W = Empty.
+    { exact (Eps_i_ex (fun V:set => exists W:set, V :e Tx /\ W :e Tx /\ x :e V /\ B c= W /\ V :/\: W = Empty) Hex). }
+    set W0 := Eps_i (fun W:set => V0 :e Tx /\ W :e Tx /\ x :e V0 /\ B c= W /\ V0 :/\: W = Empty).
+    claim HW0prop: V0 :e Tx /\ W0 :e Tx /\ x :e V0 /\ B c= W0 /\ V0 :/\: W0 = Empty.
+    { exact (Eps_i_ex (fun W:set => V0 :e Tx /\ W :e Tx /\ x :e V0 /\ B c= W /\ V0 :/\: W = Empty)
+                      HV0ex). }
+    claim H1234: (((V0 :e Tx /\ W0 :e Tx) /\ x :e V0) /\ B c= W0).
+    { exact (andEL ((((V0 :e Tx /\ W0 :e Tx) /\ x :e V0) /\ B c= W0))
+                   (V0 :/\: W0 = Empty)
+                   HW0prop). }
+    claim HdisjVW: V0 :/\: W0 = Empty.
+    { exact (andER ((((V0 :e Tx /\ W0 :e Tx) /\ x :e V0) /\ B c= W0))
+                   (V0 :/\: W0 = Empty)
+                   HW0prop). }
+    claim H123: ((V0 :e Tx /\ W0 :e Tx) /\ x :e V0).
+    { exact (andEL ((V0 :e Tx /\ W0 :e Tx) /\ x :e V0) (B c= W0) H1234). }
+    claim H12: (V0 :e Tx /\ W0 :e Tx).
+    { exact (andEL (V0 :e Tx /\ W0 :e Tx) (x :e V0) H123). }
+    claim HV0Tx: V0 :e Tx.
+    { exact (andEL (V0 :e Tx) (W0 :e Tx) H12). }
+    claim HW0Tx: W0 :e Tx.
+    { exact (andER (V0 :e Tx) (W0 :e Tx) H12). }
+    claim HxV0: x :e V0.
+    { exact (andER (V0 :e Tx /\ W0 :e Tx) (x :e V0) H123). }
+    claim HBsubW0: B c= W0.
+    { exact (andER ((V0 :e Tx /\ W0 :e Tx) /\ x :e V0) (B c= W0) H1234). }
+    claim HdisjWV: W0 :/\: V0 = Empty.
+    { apply Empty_Subq_eq.
+      let z. assume Hz: z :e W0 :/\: V0.
+      prove z :e Empty.
+      claim HzW: z :e W0.
+      { exact (binintersectE1 W0 V0 z Hz). }
+      claim HzV: z :e V0.
+      { exact (binintersectE2 W0 V0 z Hz). }
+      claim HzVW: z :e V0 :/\: W0.
+      { exact (binintersectI V0 W0 z HzV HzW). }
+      claim HzE: z :e Empty.
+      { rewrite <- HdisjVW. exact HzVW. }
+      exact HzE. }
+	    claim HclV0subU: closure_of X Tx V0 c= U.
+	    { let z. assume Hzcl: z :e closure_of X Tx V0.
+	      prove z :e U.
+	      claim HzX: z :e X.
+	      { exact (SepE1 X (fun z0:set => forall N:set, N :e Tx -> z0 :e N -> N :/\: V0 <> Empty) z Hzcl). }
+	      apply xm (z :e U).
+	      - assume HzU: z :e U.
+	        exact HzU.
+	      - assume HznotU: z /:e U.
+	        claim HzB: z :e B.
+	        { exact (setminusI X U z HzX HznotU). }
+	        claim HzW0: z :e W0.
+	        { exact (HBsubW0 z HzB). }
+	        claim Hcliff: z :e closure_of X Tx V0 <-> (forall N :e Tx, z :e N -> N :/\: V0 <> Empty).
+	        { exact (closure_characterization X Tx V0 z HTx HzX). }
+	        claim Hneigh: forall N :e Tx, z :e N -> N :/\: V0 <> Empty.
+	        { exact (iffEL (z :e closure_of X Tx V0)
+	                       (forall N :e Tx, z :e N -> N :/\: V0 <> Empty)
+	                       Hcliff Hzcl). }
+	        claim Hcontr: W0 :/\: V0 <> Empty.
+	        { exact (Hneigh W0 HW0Tx HzW0). }
+	        apply FalseE.
+	        exact (Hcontr HdisjWV). }
+	    witness V0.
+	    apply andI.
+	    - apply andI.
+	      + exact HV0Tx.
+      + exact HxV0.
+    - exact HclV0subU.
+  * assume Hcrit:
+      forall x U:set, x :e X -> U :e Tx -> x :e U ->
+        exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U.
+    prove regular_space X Tx.
+    prove one_point_sets_closed X Tx /\
+         forall x:set, x :e X ->
+           forall F:set, closed_in X Tx F -> x /:e F ->
+             exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty.
+    apply andI.
+    - exact HT1.
+    - let x. assume HxX: x :e X.
+      let F. assume HFcl: closed_in X Tx F.
+      assume HxnotF: x /:e F.
+      prove exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty.
+      set U0 := X :\: F.
+      claim Hop0: open_in X Tx U0.
+      { exact (open_of_closed_complement X Tx F HFcl). }
+      claim HU0Tx: U0 :e Tx.
+      { exact (andER (topology_on X Tx) (U0 :e Tx) Hop0). }
+      claim HxU0: x :e U0.
+      { exact (setminusI X F x HxX HxnotF). }
+      claim HexV: exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U0.
+      { exact (Hcrit x U0 HxX HU0Tx HxU0). }
+      set V0 := Eps_i (fun V:set => V :e Tx /\ x :e V /\ closure_of X Tx V c= U0).
+	      claim HV0prop: V0 :e Tx /\ x :e V0 /\ closure_of X Tx V0 c= U0.
+	      { exact (Eps_i_ex (fun V:set => V :e Tx /\ x :e V /\ closure_of X Tx V c= U0) HexV). }
+	      claim HV0TxHx: V0 :e Tx /\ x :e V0.
+	      { exact (andEL (V0 :e Tx /\ x :e V0) (closure_of X Tx V0 c= U0) HV0prop). }
+	      claim HV0Tx: V0 :e Tx.
+	      { exact (andEL (V0 :e Tx) (x :e V0) HV0TxHx). }
+	      claim HxV0: x :e V0.
+	      { exact (andER (V0 :e Tx) (x :e V0) HV0TxHx). }
+	      claim Hclsub: closure_of X Tx V0 c= U0.
+	      { exact (andER (V0 :e Tx /\ x :e V0) (closure_of X Tx V0 c= U0) HV0prop). }
+      claim HTsub: Tx c= Power X.
+      { exact (topology_subset_axiom X Tx HTx). }
+      claim HV0subX: V0 c= X.
+      { exact (PowerE X V0 (HTsub V0 HV0Tx)). }
+      claim HclV0cl: closed_in X Tx (closure_of X Tx V0).
+      { exact (closure_is_closed X Tx V0 HTx HV0subX). }
+      set W0 := X :\: closure_of X Tx V0.
+      claim HopW: open_in X Tx W0.
+      { exact (open_of_closed_complement X Tx (closure_of X Tx V0) HclV0cl). }
+      claim HW0Tx: W0 :e Tx.
+      { exact (andER (topology_on X Tx) (W0 :e Tx) HopW). }
+	      claim HFsubW0: F c= W0.
+	      { let z. assume HzF: z :e F.
+	        prove z :e W0.
+	        claim HFsubX: F c= X.
+	        { exact (closed_in_subset X Tx F HFcl). }
+	        claim HzX: z :e X.
+	        { exact (HFsubX z HzF). }
+	        apply xm (z :e closure_of X Tx V0).
+	        - assume Hzcl: z :e closure_of X Tx V0.
+	          claim HzU0: z :e U0.
+	          { exact (Hclsub z Hzcl). }
+	          claim HznotF2: z /:e F.
+	          { exact (setminusE2 X F z HzU0). }
+	          apply FalseE.
+	          exact (HznotF2 HzF).
+	        - assume Hznotcl: z /:e closure_of X Tx V0.
+	          exact (setminusI X (closure_of X Tx V0) z HzX Hznotcl).
+	        }
+      claim HVsubcl: V0 c= closure_of X Tx V0.
+      { exact (subset_of_closure X Tx V0 HTx HV0subX). }
+      claim Hdisj: V0 :/\: W0 = Empty.
+      { apply Empty_Subq_eq.
+        let z. assume Hz: z :e V0 :/\: W0.
+        prove z :e Empty.
+        claim HzV: z :e V0.
+        { exact (binintersectE1 V0 W0 z Hz). }
+        claim HzW: z :e W0.
+        { exact (binintersectE2 V0 W0 z Hz). }
+        claim Hzcl: z :e closure_of X Tx V0.
+        { exact (HVsubcl z HzV). }
+        claim Hznotcl: z /:e closure_of X Tx V0.
+        { exact (setminusE2 X (closure_of X Tx V0) z HzW). }
+        apply FalseE.
+        exact (Hznotcl Hzcl). }
+      witness V0.
+      witness W0.
+      apply andI.
+      - apply andI.
+        + apply andI.
+          * apply andI.
+            { exact HV0Tx. }
+            { exact HW0Tx. }
+          * exact HxV0.
+        + exact HFsubW0.
+      - exact Hdisj.
+
+- (** Normal part **)
+  assume HT1: one_point_sets_closed X Tx.
+  prove normal_space X Tx <->
+       forall A U:set, closed_in X Tx A -> U :e Tx -> A c= U ->
+         exists V:set, V :e Tx /\ A c= V /\ closure_of X Tx V c= U.
+  apply iffI.
+  * assume Hnorm: normal_space X Tx.
+    prove forall A U:set, closed_in X Tx A -> U :e Tx -> A c= U ->
+         exists V:set, V :e Tx /\ A c= V /\ closure_of X Tx V c= U.
+    claim HSepNorm:
+      forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+        exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+    { exact (andER (one_point_sets_closed X Tx)
+                   (forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+                     exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty)
+                   Hnorm). }
+    let A U.
+    assume HAcl: closed_in X Tx A.
+    assume HU: U :e Tx.
+    assume HAsubU: A c= U.
+    set B := X :\: U.
+    claim HBcl: closed_in X Tx B.
+    { exact (closed_of_open_complement X Tx U HTx HU). }
+    claim HABdisj: A :/\: B = Empty.
+    { apply Empty_Subq_eq.
+      let z. assume Hz: z :e A :/\: B.
+      prove z :e Empty.
+      claim HzA: z :e A.
+      { exact (binintersectE1 A B z Hz). }
+      claim HzB: z :e B.
+      { exact (binintersectE2 A B z Hz). }
+      claim HzU: z :e U.
+      { exact (HAsubU z HzA). }
+      claim HznotU: z /:e U.
+      { exact (setminusE2 X U z HzB). }
+      apply FalseE.
+      exact (HznotU HzU). }
+    claim Hex: exists V W:set, V :e Tx /\ W :e Tx /\ A c= V /\ B c= W /\ V :/\: W = Empty.
+    { exact (HSepNorm A B HAcl HBcl HABdisj). }
+    set V0 := Eps_i (fun V:set => exists W:set, V :e Tx /\ W :e Tx /\ A c= V /\ B c= W /\ V :/\: W = Empty).
+    claim HV0ex: exists W:set, V0 :e Tx /\ W :e Tx /\ A c= V0 /\ B c= W /\ V0 :/\: W = Empty.
+    { exact (Eps_i_ex (fun V:set => exists W:set, V :e Tx /\ W :e Tx /\ A c= V /\ B c= W /\ V :/\: W = Empty) Hex). }
+    set W0 := Eps_i (fun W:set => V0 :e Tx /\ W :e Tx /\ A c= V0 /\ B c= W /\ V0 :/\: W = Empty).
+    claim HW0prop: V0 :e Tx /\ W0 :e Tx /\ A c= V0 /\ B c= W0 /\ V0 :/\: W0 = Empty.
+    { exact (Eps_i_ex (fun W:set => V0 :e Tx /\ W :e Tx /\ A c= V0 /\ B c= W /\ V0 :/\: W = Empty)
+                      HV0ex). }
+    claim H1234: (((V0 :e Tx /\ W0 :e Tx) /\ A c= V0) /\ B c= W0).
+    { exact (andEL ((((V0 :e Tx /\ W0 :e Tx) /\ A c= V0) /\ B c= W0))
+                   (V0 :/\: W0 = Empty)
+                   HW0prop). }
+    claim HdisjVW: V0 :/\: W0 = Empty.
+    { exact (andER ((((V0 :e Tx /\ W0 :e Tx) /\ A c= V0) /\ B c= W0))
+                   (V0 :/\: W0 = Empty)
+                   HW0prop). }
+    claim H123: ((V0 :e Tx /\ W0 :e Tx) /\ A c= V0).
+    { exact (andEL ((V0 :e Tx /\ W0 :e Tx) /\ A c= V0) (B c= W0) H1234). }
+    claim H12: (V0 :e Tx /\ W0 :e Tx).
+    { exact (andEL (V0 :e Tx /\ W0 :e Tx) (A c= V0) H123). }
+    claim HV0Tx: V0 :e Tx.
+    { exact (andEL (V0 :e Tx) (W0 :e Tx) H12). }
+    claim HW0Tx: W0 :e Tx.
+    { exact (andER (V0 :e Tx) (W0 :e Tx) H12). }
+    claim HAsubV0: A c= V0.
+    { exact (andER (V0 :e Tx /\ W0 :e Tx) (A c= V0) H123). }
+    claim HBsubW0: B c= W0.
+    { exact (andER ((V0 :e Tx /\ W0 :e Tx) /\ A c= V0) (B c= W0) H1234). }
+    claim HdisjWV: W0 :/\: V0 = Empty.
+    { apply Empty_Subq_eq.
+      let z. assume Hz: z :e W0 :/\: V0.
+      prove z :e Empty.
+      claim HzW: z :e W0.
+      { exact (binintersectE1 W0 V0 z Hz). }
+      claim HzV: z :e V0.
+      { exact (binintersectE2 W0 V0 z Hz). }
+      claim HzVW: z :e V0 :/\: W0.
+      { exact (binintersectI V0 W0 z HzV HzW). }
+      claim HzE: z :e Empty.
+      { rewrite <- HdisjVW. exact HzVW. }
+      exact HzE. }
+	    claim HclV0subU: closure_of X Tx V0 c= U.
+	    { let z. assume Hzcl: z :e closure_of X Tx V0.
+	      prove z :e U.
+	      claim HzX: z :e X.
+	      { exact (SepE1 X (fun z0:set => forall N:set, N :e Tx -> z0 :e N -> N :/\: V0 <> Empty) z Hzcl). }
+	      apply xm (z :e U).
+	      - assume HzU: z :e U.
+	        exact HzU.
+	      - assume HznotU: z /:e U.
+	        claim HzB: z :e B.
+	        { exact (setminusI X U z HzX HznotU). }
+	        claim HzW0: z :e W0.
+	        { exact (HBsubW0 z HzB). }
+	        claim Hcliff: z :e closure_of X Tx V0 <-> (forall N :e Tx, z :e N -> N :/\: V0 <> Empty).
+	        { exact (closure_characterization X Tx V0 z HTx HzX). }
+	        claim Hneigh: forall N :e Tx, z :e N -> N :/\: V0 <> Empty.
+	        { exact (iffEL (z :e closure_of X Tx V0)
+	                       (forall N :e Tx, z :e N -> N :/\: V0 <> Empty)
+	                       Hcliff Hzcl). }
+	        claim Hcontr: W0 :/\: V0 <> Empty.
+	        { exact (Hneigh W0 HW0Tx HzW0). }
+	        apply FalseE.
+	        exact (Hcontr HdisjWV). }
+	    witness V0.
+	    apply andI.
+	    - apply andI.
+      + exact HV0Tx.
+      + exact HAsubV0.
+    - exact HclV0subU.
+  * assume Hcrit:
+      forall A U:set, closed_in X Tx A -> U :e Tx -> A c= U ->
+        exists V:set, V :e Tx /\ A c= V /\ closure_of X Tx V c= U.
+    prove normal_space X Tx.
+    prove one_point_sets_closed X Tx /\
+         forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+           exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+    apply andI.
+    - exact HT1.
+    - let A. let B.
+      assume HAcl: closed_in X Tx A.
+      assume HBcl: closed_in X Tx B.
+      assume Hdisj: A :/\: B = Empty.
+      prove exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+      set U0 := X :\: B.
+      claim Hop0: open_in X Tx U0.
+      { exact (open_of_closed_complement X Tx B HBcl). }
+      claim HU0Tx: U0 :e Tx.
+      { exact (andER (topology_on X Tx) (U0 :e Tx) Hop0). }
+	      claim HAsubU0: A c= U0.
+	      { let z. assume HzA: z :e A.
+	        prove z :e U0.
+	        claim HAsubX: A c= X.
+	        { exact (closed_in_subset X Tx A HAcl). }
+	        claim HzX: z :e X.
+	        { exact (HAsubX z HzA). }
+	        apply xm (z :e B).
+	        - assume HzB: z :e B.
+	          claim HzAB: z :e A :/\: B.
+	          { exact (binintersectI A B z HzA HzB). }
+	          claim HzE: z :e Empty.
+	          { rewrite <- Hdisj. exact HzAB. }
+	          apply FalseE.
+	          exact (EmptyE z HzE False).
+	        - assume HznotB: z /:e B.
+	          exact (setminusI X B z HzX HznotB). }
+      claim HexV: exists V:set, V :e Tx /\ A c= V /\ closure_of X Tx V c= U0.
+      { exact (Hcrit A U0 HAcl HU0Tx HAsubU0). }
+	      set V0 := Eps_i (fun V:set => V :e Tx /\ A c= V /\ closure_of X Tx V c= U0).
+	      claim HV0prop: V0 :e Tx /\ A c= V0 /\ closure_of X Tx V0 c= U0.
+	      { exact (Eps_i_ex (fun V:set => V :e Tx /\ A c= V /\ closure_of X Tx V c= U0) HexV). }
+	      claim HV0TxHA: V0 :e Tx /\ A c= V0.
+	      { exact (andEL (V0 :e Tx /\ A c= V0) (closure_of X Tx V0 c= U0) HV0prop). }
+	      claim HV0Tx: V0 :e Tx.
+	      { exact (andEL (V0 :e Tx) (A c= V0) HV0TxHA). }
+	      claim HAsubV0: A c= V0.
+	      { exact (andER (V0 :e Tx) (A c= V0) HV0TxHA). }
+	      claim Hclsub: closure_of X Tx V0 c= U0.
+	      { exact (andER (V0 :e Tx /\ A c= V0) (closure_of X Tx V0 c= U0) HV0prop). }
+      claim HTsub: Tx c= Power X.
+      { exact (topology_subset_axiom X Tx HTx). }
+      claim HV0subX: V0 c= X.
+      { exact (PowerE X V0 (HTsub V0 HV0Tx)). }
+      claim HclV0cl: closed_in X Tx (closure_of X Tx V0).
+      { exact (closure_is_closed X Tx V0 HTx HV0subX). }
+      set W0 := X :\: closure_of X Tx V0.
+      claim HopW: open_in X Tx W0.
+      { exact (open_of_closed_complement X Tx (closure_of X Tx V0) HclV0cl). }
+      claim HW0Tx: W0 :e Tx.
+      { exact (andER (topology_on X Tx) (W0 :e Tx) HopW). }
+	      claim HBsubW0: B c= W0.
+	      { let z. assume HzB: z :e B.
+	        prove z :e W0.
+	        claim HBsubX: B c= X.
+	        { exact (closed_in_subset X Tx B HBcl). }
+	        claim HzX: z :e X.
+	        { exact (HBsubX z HzB). }
+	        apply xm (z :e closure_of X Tx V0).
+	        - assume Hzcl: z :e closure_of X Tx V0.
+	          claim HzU0: z :e U0.
+	          { exact (Hclsub z Hzcl). }
+	          claim HznotB: z /:e B.
+	          { exact (setminusE2 X B z HzU0). }
+	          apply FalseE.
+	          exact (HznotB HzB).
+	        - assume Hznotcl: z /:e closure_of X Tx V0.
+	          exact (setminusI X (closure_of X Tx V0) z HzX Hznotcl). }
+      claim HVsubcl: V0 c= closure_of X Tx V0.
+      { exact (subset_of_closure X Tx V0 HTx HV0subX). }
+      claim HdisjVW: V0 :/\: W0 = Empty.
+      { apply Empty_Subq_eq.
+        let z. assume Hz: z :e V0 :/\: W0.
+        prove z :e Empty.
+        claim HzV: z :e V0.
+        { exact (binintersectE1 V0 W0 z Hz). }
+        claim HzW: z :e W0.
+        { exact (binintersectE2 V0 W0 z Hz). }
+        claim Hzcl: z :e closure_of X Tx V0.
+        { exact (HVsubcl z HzV). }
+        claim Hznotcl: z /:e closure_of X Tx V0.
+        { exact (setminusE2 X (closure_of X Tx V0) z HzW). }
+        apply FalseE.
+        exact (Hznotcl Hzcl). }
+		      witness V0.
+		      witness W0.
+		      apply andI.
+		      - apply andI.
+		        + apply andI.
+		          - apply andI.
+		            + exact HV0Tx.
+		            + exact HW0Tx.
+		          - exact HAsubV0.
+		        + exact HBsubW0.
+		      - exact HdisjVW.
+		Qed.
 
 (** from §31 Theorem 31.2: subspaces/products preserve Hausdorff and regular **) 
 (** LATEX VERSION: Hausdorff/regular properties preserved under subspaces and products (with factorwise assumptions). **)
