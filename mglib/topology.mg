@@ -27771,7 +27771,7 @@ Definition connected_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
 
-(** Helper axioms for connected_iff_no_nontrivial_clopen **)
+(** Helper theorems for connected_iff_no_nontrivial_clopen **)
 Theorem clopen_gives_separation : forall X Tx A:set,
   topology_on X Tx -> A <> Empty -> A <> X ->
   open_in X Tx A -> closed_in X Tx A ->
