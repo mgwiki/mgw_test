@@ -42382,17 +42382,21 @@ Qed.
 Theorem normal_T1_implies_Hausdorff : forall X Tx:set,
   normal_space X Tx -> T1_space X Tx -> Hausdorff_space X Tx.
 let X Tx.
-assume Hnorm: normal_space X Tx.
-assume HT1: T1_space X Tx.
-prove Hausdorff_space X Tx.
-claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
-                 exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty)
-               Hnorm). }
-claim Hsing:
+  assume Hnorm: normal_space X Tx.
+  assume HT1: T1_space X Tx.
+  prove Hausdorff_space X Tx.
+  claim HT1part: one_point_sets_closed X Tx.
+  { exact (andEL (one_point_sets_closed X Tx)
+                 (forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+                   exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty)
+                 Hnorm). }
+  claim HTx: topology_on X Tx.
+  { exact (andEL (topology_on X Tx)
+                 (forall x:set, x :e X -> closed_in X Tx {x})
+                 HT1part). }
+  claim Hsing:
   forall x:set, x :e X -> closed_in X Tx {x}.
-{ exact (iffEL (T1_space X Tx)
+  { exact (iffEL (T1_space X Tx)
                (forall x:set, x :e X -> closed_in X Tx {x})
                (lemma_T1_singletons_closed X Tx HTx) HT1). }
 prove topology_on X Tx /\
