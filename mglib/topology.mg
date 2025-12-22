@@ -38741,7 +38741,551 @@ assume HIn0.
 assume Hcomp.
 assume Hf.
 prove countable_basis_at (product_space I Xi) (countable_product_topology_subbasis I Xi) f.
-admit.
+set X := product_space I Xi.
+set Tx := countable_product_topology_subbasis I Xi.
+set Sfull := product_subbasis_full I Xi.
+claim Hfprop: function_on f I (space_family_union I Xi) /\ forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i.
+{ exact (SepE2 (Power (setprod I (space_family_union I Xi)))
+               (fun f0:set => function_on f0 I (space_family_union I Xi) /\
+                 forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i)
+               f
+               Hf). }
+claim Hcompf: forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i.
+{ exact (andER (function_on f I (space_family_union I Xi))
+               (forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i)
+               Hfprop). }
+claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+{ let i. assume HiI: i :e I.
+  exact (andEL (topology_on (space_family_set Xi i) (space_family_topology Xi i))
+               (forall x:set, x :e space_family_set Xi i -> countable_basis_at (space_family_set Xi i) (space_family_topology Xi i) x)
+               (Hcomp i HiI)). }
+claim HSfull: subbasis_on X Sfull.
+{ exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop). }
+claim HBasisFull: basis_on X (basis_of_subbasis X Sfull).
+{ exact (finite_intersections_basis_of_subbasis X Sfull HSfull). }
+claim HTprod: topology_on X Tx.
+{ claim HTdef: Tx = generated_topology_from_subbasis X Sfull.
+  { reflexivity. }
+  rewrite HTdef.
+  exact (topology_from_subbasis_is_topology X Sfull HSfull). }
+
+set Bsel : set -> set := fun i =>
+  Eps_i (fun B0:set =>
+    B0 c= space_family_topology Xi i /\ countable_set B0 /\
+      (forall b:set, b :e B0 -> apply_fun f i :e b) /\
+      (forall U:set, U :e space_family_topology Xi i -> apply_fun f i :e U -> exists b:set, b :e B0 /\ b c= U)).
+
+claim HBsel: forall i:set, i :e I ->
+  (Bsel i) c= space_family_topology Xi i /\ countable_set (Bsel i) /\
+    (forall b:set, b :e (Bsel i) -> apply_fun f i :e b) /\
+    (forall U:set, U :e space_family_topology Xi i -> apply_fun f i :e U -> exists b:set, b :e (Bsel i) /\ b c= U).
+{ let i. assume HiI: i :e I.
+  claim Hfc_i: first_countable_space (space_family_set Xi i) (space_family_topology Xi i).
+  { exact (Hcomp i HiI). }
+  claim Hcb_all: forall x:set, x :e space_family_set Xi i ->
+    countable_basis_at (space_family_set Xi i) (space_family_topology Xi i) x.
+  { exact (andER (topology_on (space_family_set Xi i) (space_family_topology Xi i))
+                 (forall x:set, x :e space_family_set Xi i -> countable_basis_at (space_family_set Xi i) (space_family_topology Xi i) x)
+                 Hfc_i). }
+  claim Hfi: apply_fun f i :e space_family_set Xi i.
+  { exact (Hcompf i HiI). }
+  claim Hcbi: countable_basis_at (space_family_set Xi i) (space_family_topology Xi i) (apply_fun f i).
+  { exact (Hcb_all (apply_fun f i) Hfi). }
+  claim HexB0: exists B0:set,
+    B0 c= space_family_topology Xi i /\ countable_set B0 /\
+      (forall b:set, b :e B0 -> apply_fun f i :e b) /\
+      (forall U:set, U :e space_family_topology Xi i -> apply_fun f i :e U -> exists b:set, b :e B0 /\ b c= U).
+  { exact (andER (topology_on (space_family_set Xi i) (space_family_topology Xi i) /\ apply_fun f i :e space_family_set Xi i)
+                 (exists B0:set,
+                   B0 c= space_family_topology Xi i /\ countable_set B0 /\
+                     (forall b:set, b :e B0 -> apply_fun f i :e b) /\
+                     (forall U:set, U :e space_family_topology Xi i -> apply_fun f i :e U -> exists b:set, b :e B0 /\ b c= U))
+                 Hcbi). }
+  apply HexB0.
+  let B0. assume HB0.
+  exact (Eps_i_ax (fun B1:set =>
+      B1 c= space_family_topology Xi i /\ countable_set B1 /\
+        (forall b:set, b :e B1 -> apply_fun f i :e b) /\
+        (forall U:set, U :e space_family_topology Xi i -> apply_fun f i :e U -> exists b:set, b :e B1 /\ b c= U))
+    B0 HB0). }
+
+set Ssmall : set := \/_ i :e I, {product_cylinder I Xi i U|U :e Bsel i}.
+set FSsmall := finite_subcollections Ssmall.
+set B : set := {intersection_of_family X F0|F0 :e FSsmall}.
+
+claim HSsmall_count: countable_set Ssmall.
+{ claim HIc: countable I.
+  { exact HIcount. }
+  claim HBsel_count: forall i:set, i :e I -> countable (Bsel i).
+  { let i. assume HiI: i :e I.
+    claim HBi: (Bsel i) c= space_family_topology Xi i /\ countable_set (Bsel i) /\
+      (forall b:set, b :e (Bsel i) -> apply_fun f i :e b) /\
+      (forall U:set, U :e space_family_topology Xi i -> apply_fun f i :e U -> exists b:set, b :e (Bsel i) /\ b c= U).
+    { exact (HBsel i HiI). }
+    claim Hcore: ((Bsel i) c= space_family_topology Xi i /\ countable_set (Bsel i)) /\
+      (forall b:set, b :e (Bsel i) -> apply_fun f i :e b).
+    { exact (andEL (((Bsel i) c= space_family_topology Xi i /\ countable_set (Bsel i)) /\
+                    (forall b:set, b :e (Bsel i) -> apply_fun f i :e b))
+                   (forall U:set, U :e space_family_topology Xi i -> apply_fun f i :e U -> exists b:set, b :e (Bsel i) /\ b c= U)
+                   HBi). }
+    claim Hpair: (Bsel i) c= space_family_topology Xi i /\ countable_set (Bsel i).
+    { exact (andEL ((Bsel i) c= space_family_topology Xi i /\ countable_set (Bsel i))
+                   (forall b:set, b :e (Bsel i) -> apply_fun f i :e b)
+                   Hcore). }
+    exact (andER ((Bsel i) c= space_family_topology Xi i) (countable_set (Bsel i)) Hpair). }
+  claim HSig: countable (Sigma_ i :e I, Bsel i).
+  { exact (Sigma_countable I HIc Bsel HBsel_count). }
+  claim HSig_set: countable_set (Sigma_ i :e I, Bsel i).
+  { exact HSig. }
+  set F : set -> set := fun p => product_cylinder I Xi (p 0) (p 1).
+  set Img := {F p|p :e Sigma_ i :e I, Bsel i}.
+  claim HImg_count: countable_set Img.
+  { exact (countable_image (Sigma_ i :e I, Bsel i) HSig_set F). }
+  apply (Subq_countable Ssmall Img).
+  - exact HImg_count.
+  - let s. assume Hs: s :e Ssmall.
+    prove s :e Img.
+    apply (famunionE_impred I (fun i0:set => {product_cylinder I Xi i0 U|U :e Bsel i0}) s Hs).
+    let i0. assume Hi0I: i0 :e I.
+    assume HsFi0: s :e {product_cylinder I Xi i0 U|U :e Bsel i0}.
+    apply (ReplE_impred (Bsel i0) (fun U0:set => product_cylinder I Xi i0 U0) s HsFi0).
+    let U0. assume HU0B: U0 :e Bsel i0.
+    assume HsEq: s = product_cylinder I Xi i0 U0.
+    claim HpSig: (i0,U0) :e Sigma_ i :e I, Bsel i.
+    { exact (tuple_2_Sigma I Bsel i0 Hi0I U0 HU0B). }
+    claim HFp: F (i0,U0) = product_cylinder I Xi i0 U0.
+    { claim HFdef: F (i0,U0) = product_cylinder I Xi ((i0,U0) 0) ((i0,U0) 1).
+      { reflexivity. }
+      rewrite HFdef.
+      rewrite (tuple_2_0_eq i0 U0).
+      rewrite (tuple_2_1_eq i0 U0).
+      reflexivity. }
+    rewrite HsEq.
+    rewrite <- HFp.
+    exact (ReplI (Sigma_ i :e I, Bsel i) F (i0,U0) HpSig). }
+
+claim HFSsmall: countable_set FSsmall.
+{ exact (finite_subcollections_countable Ssmall HSsmall_count). }
+claim HBcount: countable_set B.
+{ exact (countable_image FSsmall HFSsmall (fun F0:set => intersection_of_family X F0)). }
+
+claim HSsmall_in_Tx: forall s:set, s :e Ssmall -> s :e Tx.
+{ let s. assume Hs: s :e Ssmall.
+  apply (famunionE_impred I (fun i0:set => {product_cylinder I Xi i0 U|U :e Bsel i0}) s Hs).
+  let i0. assume Hi0I: i0 :e I.
+  assume HsFi0: s :e {product_cylinder I Xi i0 U|U :e Bsel i0}.
+  apply (ReplE_impred (Bsel i0) (fun U0:set => product_cylinder I Xi i0 U0) s HsFi0).
+  let U0. assume HU0B: U0 :e Bsel i0.
+  assume HsEq: s = product_cylinder I Xi i0 U0.
+  claim HBU0: (Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0) /\
+    (forall b:set, b :e (Bsel i0) -> apply_fun f i0 :e b) /\
+    (forall V:set, V :e space_family_topology Xi i0 -> apply_fun f i0 :e V -> exists b:set, b :e (Bsel i0) /\ b c= V).
+  { exact (HBsel i0 Hi0I). }
+  claim Hcore: ((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0)) /\
+    (forall b:set, b :e (Bsel i0) -> apply_fun f i0 :e b).
+  { exact (andEL (((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0)) /\
+                  (forall b:set, b :e (Bsel i0) -> apply_fun f i0 :e b))
+                 (forall V:set, V :e space_family_topology Xi i0 -> apply_fun f i0 :e V -> exists b:set, b :e (Bsel i0) /\ b c= V)
+                 HBU0). }
+  claim HsubTop: (Bsel i0) c= space_family_topology Xi i0.
+  { exact (andEL ((Bsel i0) c= space_family_topology Xi i0)
+                 (countable_set (Bsel i0))
+                 (andEL ((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0))
+                        (forall b:set, b :e (Bsel i0) -> apply_fun f i0 :e b)
+                        Hcore)). }
+  claim HU0Top: U0 :e space_family_topology Xi i0.
+  { exact (HsubTop U0 HU0B). }
+  set cyl := product_cylinder I Xi i0 U0.
+  claim HcylSfull: cyl :e Sfull.
+  { exact (famunionI I (fun i1:set => {product_cylinder I Xi i1 U|U :e space_family_topology Xi i1})
+                   i0 cyl Hi0I (ReplI (space_family_topology Xi i0) (fun U:set => product_cylinder I Xi i0 U) U0 HU0Top)). }
+  claim HfiU0: apply_fun f i0 :e U0.
+  { exact (andEL (apply_fun f i0 :e U0) (U0 c= space_family_topology Xi i0)
+                 (andI (apply_fun f i0 :e U0) (U0 c= space_family_topology Xi i0)
+                       ((andER ((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0))
+                               (forall b:set, b :e (Bsel i0) -> apply_fun f i0 :e b)
+                               Hcore) U0 HU0B)
+                       (Subq_ref (space_family_topology Xi i0)))). }
+  claim HfCyl: f :e cyl.
+  { exact (SepI X (fun f0:set => i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun f0 i0 :e U0)
+               f Hf (andI (i0 :e I /\ U0 :e space_family_topology Xi i0) (apply_fun f i0 :e U0)
+                        (andI (i0 :e I) (U0 :e space_family_topology Xi i0) Hi0I HU0Top) HfiU0)). }
+  claim HcylNe: cyl <> Empty.
+  { assume HCeq: cyl = Empty.
+    claim HfEmp: f :e Empty.
+    { rewrite <- HCeq. exact HfCyl. }
+    exact (EmptyE f HfEmp False). }
+  claim HcylInBasis: cyl :e basis_of_subbasis X Sfull.
+  { exact (subbasis_elem_in_basis X Sfull cyl HSfull HcylSfull HcylNe). }
+  claim HcylOpen: cyl :e generated_topology X (basis_of_subbasis X Sfull).
+  { exact (generated_topology_contains_basis X (basis_of_subbasis X Sfull) HBasisFull cyl HcylInBasis). }
+  claim HTdef: Tx = generated_topology X (basis_of_subbasis X Sfull).
+  { reflexivity. }
+  rewrite HTdef.
+  rewrite <- HsEq.
+  exact HcylOpen. }
+
+prove topology_on X Tx /\ f :e X /\
+  exists B0:set, B0 c= Tx /\ countable_set B0 /\
+    (forall b:set, b :e B0 -> f :e b) /\
+    (forall U:set, U :e Tx -> f :e U -> exists b:set, b :e B0 /\ b c= U).
+apply andI.
+- exact HTprod.
+- apply andI.
+  + exact Hf.
+  + witness B.
+    prove B c= Tx /\ countable_set B /\
+      (forall b:set, b :e B -> f :e b) /\
+      (forall U:set, U :e Tx -> f :e U -> exists b:set, b :e B /\ b c= U).
+    apply andI.
+    - apply andI.
+      + (** B c= Tx and countable_set B **)
+        apply andI.
+        * let b. assume Hb: b :e B.
+          prove b :e Tx.
+          apply (ReplE_impred FSsmall (fun F0:set => intersection_of_family X F0) b Hb).
+          let F0. assume HF0: F0 :e FSsmall.
+          assume HbEq: b = intersection_of_family X F0.
+          claim HF0pow: F0 :e Power Ssmall.
+          { exact (SepE1 (Power Ssmall) (fun F1:set => finite F1) F0 HF0). }
+          claim HF0subS: F0 c= Ssmall.
+          { exact (PowerE Ssmall F0 HF0pow). }
+          claim HF0fin: finite F0.
+          { exact (SepE2 (Power Ssmall) (fun F1:set => finite F1) F0 HF0). }
+          claim HF0subT: F0 c= Tx.
+          { let s. assume HsF0: s :e F0.
+            claim HsS: s :e Ssmall.
+            { exact (HF0subS s HsF0). }
+            exact (HSsmall_in_Tx s HsS). }
+          claim HF0PowT: F0 :e Power Tx.
+          { apply PowerI. exact HF0subT. }
+          claim Hinter: intersection_of_family X F0 :e Tx.
+          { exact (finite_intersection_in_topology X Tx F0 HTprod HF0PowT HF0fin). }
+          rewrite HbEq.
+          exact Hinter.
+        * exact HBcount.
+      + (** every b in B contains f **)
+        let b. assume Hb: b :e B.
+        prove f :e b.
+        apply (ReplE_impred FSsmall (fun F0:set => intersection_of_family X F0) b Hb).
+        let F0. assume HF0: F0 :e FSsmall.
+        assume HbEq: b = intersection_of_family X F0.
+        claim HF0pow: F0 :e Power Ssmall.
+        { exact (SepE1 (Power Ssmall) (fun F1:set => finite F1) F0 HF0). }
+        claim HF0subS: F0 c= Ssmall.
+        { exact (PowerE Ssmall F0 HF0pow). }
+        prove f :e intersection_of_family X F0.
+        apply (SepI X (fun x0:set => forall U:set, U :e F0 -> x0 :e U) f Hf).
+        let s. assume HsF0: s :e F0.
+        claim HsS: s :e Ssmall.
+        { exact (HF0subS s HsF0). }
+        apply (famunionE_impred I (fun i0:set => {product_cylinder I Xi i0 U|U :e Bsel i0}) s HsS).
+        let i0. assume Hi0I: i0 :e I.
+        assume HsFi0: s :e {product_cylinder I Xi i0 U|U :e Bsel i0}.
+        apply (ReplE_impred (Bsel i0) (fun U0:set => product_cylinder I Xi i0 U0) s HsFi0).
+        let U0. assume HU0B: U0 :e Bsel i0.
+        assume HsEq: s = product_cylinder I Xi i0 U0.
+        claim HBU0: (Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0) /\
+          (forall b0:set, b0 :e (Bsel i0) -> apply_fun f i0 :e b0) /\
+          (forall V:set, V :e space_family_topology Xi i0 -> apply_fun f i0 :e V -> exists b0:set, b0 :e (Bsel i0) /\ b0 c= V).
+        { exact (HBsel i0 Hi0I). }
+        claim Hcore: ((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0)) /\
+          (forall b0:set, b0 :e (Bsel i0) -> apply_fun f i0 :e b0).
+        { exact (andEL (((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0)) /\
+                        (forall b0:set, b0 :e (Bsel i0) -> apply_fun f i0 :e b0))
+                       (forall V:set, V :e space_family_topology Xi i0 -> apply_fun f i0 :e V -> exists b0:set, b0 :e (Bsel i0) /\ b0 c= V)
+                       HBU0). }
+        claim HfiU0: apply_fun f i0 :e U0.
+        { exact ((andER ((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0))
+                        (forall b0:set, b0 :e (Bsel i0) -> apply_fun f i0 :e b0)
+                        Hcore) U0 HU0B). }
+        rewrite HbEq.
+        rewrite HsEq.
+        exact (SepI X (fun f0:set => i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun f0 i0 :e U0)
+                 f Hf (andI (i0 :e I /\ U0 :e space_family_topology Xi i0) (apply_fun f i0 :e U0)
+                          (andI (i0 :e I) (U0 :e space_family_topology Xi i0) Hi0I
+                                ((andEL ((Bsel i0) c= space_family_topology Xi i0) (countable_set (Bsel i0))
+                                        (andEL ((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0))
+                                               (forall b0:set, b0 :e (Bsel i0) -> apply_fun f i0 :e b0)
+                                               Hcore)) U0 HU0B))
+                          HfiU0)).
+    - (** neighborhood refinement **)
+      let U. assume HU: U :e Tx.
+      assume HfU: f :e U.
+      prove exists b:set, b :e B /\ b c= U.
+      claim HTdef: Tx = generated_topology X (basis_of_subbasis X Sfull).
+      { reflexivity. }
+      claim HUgen: U :e generated_topology X (basis_of_subbasis X Sfull).
+      { rewrite <- HTdef at 2. exact HU. }
+      claim HUlocal: forall x :e U, exists b0 :e basis_of_subbasis X Sfull, x :e b0 /\ b0 c= U.
+      { exact (SepE2 (Power X)
+                     (fun U0:set => forall x0 :e U0, exists b0 :e basis_of_subbasis X Sfull, x0 :e b0 /\ b0 c= U0)
+                     U HUgen). }
+      claim Hexb0: exists b0 :e basis_of_subbasis X Sfull, f :e b0 /\ b0 c= U.
+      { exact (HUlocal f HfU). }
+      apply Hexb0.
+      let b0. assume Hb0pair.
+      claim Hb0B: b0 :e basis_of_subbasis X Sfull.
+      { exact (andEL (b0 :e basis_of_subbasis X Sfull) (f :e b0 /\ b0 c= U) Hb0pair). }
+      claim Hb0prop: f :e b0 /\ b0 c= U.
+      { exact (andER (b0 :e basis_of_subbasis X Sfull) (f :e b0 /\ b0 c= U) Hb0pair). }
+      claim Hfb0: f :e b0.
+      { exact (andEL (f :e b0) (b0 c= U) Hb0prop). }
+      claim Hb0subU: b0 c= U.
+      { exact (andER (f :e b0) (b0 c= U) Hb0prop). }
+      claim Hb0fin: b0 :e finite_intersections_of X Sfull.
+      { exact (SepE1 (finite_intersections_of X Sfull) (fun b1:set => b1 <> Empty) b0 Hb0B). }
+      claim HexF0: exists F0 :e finite_subcollections Sfull, b0 = intersection_of_family X F0.
+      { exact (ReplE (finite_subcollections Sfull) (fun F0:set => intersection_of_family X F0) b0 Hb0fin). }
+      apply HexF0.
+      let F0. assume HF0pair.
+      claim HF0: F0 :e finite_subcollections Sfull.
+      { exact (andEL (F0 :e finite_subcollections Sfull) (b0 = intersection_of_family X F0) HF0pair). }
+      claim Hb0eq: b0 = intersection_of_family X F0.
+      { exact (andER (F0 :e finite_subcollections Sfull) (b0 = intersection_of_family X F0) HF0pair). }
+      claim HF0pow: F0 :e Power Sfull.
+      { exact (SepE1 (Power Sfull) (fun F1:set => finite F1) F0 HF0). }
+      claim HF0sub: F0 c= Sfull.
+      { exact (PowerE Sfull F0 HF0pow). }
+      claim HF0fin: finite F0.
+      { exact (SepE2 (Power Sfull) (fun F1:set => finite F1) F0 HF0). }
+      claim HfIntF0: f :e intersection_of_family X F0.
+      { rewrite <- Hb0eq. exact Hfb0. }
+
+      set p : set -> prop := fun F:set =>
+        F c= Sfull -> f :e intersection_of_family X F ->
+          exists G:set, G :e finite_subcollections Ssmall /\
+            f :e intersection_of_family X G /\ intersection_of_family X G c= intersection_of_family X F.
+
+      claim HpEmpty: p Empty.
+      { prove Empty c= Sfull -> f :e intersection_of_family X Empty ->
+          exists G:set, G :e finite_subcollections Ssmall /\
+            f :e intersection_of_family X G /\ intersection_of_family X G c= intersection_of_family X Empty.
+        assume Hsub0. assume Hf0.
+        witness Empty.
+        apply andI.
+        - apply andI.
+          + apply (SepI (Power Ssmall) (fun F1:set => finite F1) Empty).
+            * apply PowerI. exact (Empty_sub Ssmall).
+            * exact finite_Empty.
+          + apply andI.
+            * exact Hf0.
+            * rewrite (intersection_of_family_empty_eq X).
+              rewrite (intersection_of_family_empty_eq X) at 2.
+              exact (Subq_ref X). }
+
+      claim HpStep: forall F y:set, finite F -> y /:e F -> p F -> p (F :\/: {y}).
+      { let F y. assume HFfin: finite F. assume HyNot: y /:e F. assume HpF: p F.
+        prove p (F :\/: {y}).
+        assume HsubFY: (F :\/: {y}) c= Sfull.
+        assume HfIntFY: f :e intersection_of_family X (F :\/: {y}).
+        claim HsubF: F c= Sfull.
+        { let s. assume HsF: s :e F.
+          exact (HsubFY s (binunionI1 F {y} s HsF)). }
+        claim HySfull: y :e Sfull.
+        { exact (HsubFY y (binunionI2 F {y} y (SingI y))). }
+        claim HfInY: f :e y.
+        { claim Hall: forall U0:set, U0 :e (F :\/: {y}) -> f :e U0.
+          { exact (SepE2 X (fun x0:set => forall U0:set, U0 :e (F :\/: {y}) -> x0 :e U0) f HfIntFY). }
+          exact (Hall y (binunionI2 F {y} y (SingI y))). }
+        claim HfIntF: f :e intersection_of_family X F.
+        { apply (SepI X (fun x0:set => forall U0:set, U0 :e F -> x0 :e U0) f Hf).
+          let s. assume HsF: s :e F.
+          claim HsFY: s :e (F :\/: {y}).
+          { exact (binunionI1 F {y} s HsF). }
+          exact ((SepE2 X (fun x0:set => forall U0:set, U0 :e (F :\/: {y}) -> x0 :e U0) f HfIntFY) s HsFY). }
+        claim HexG0: exists G0:set, G0 :e finite_subcollections Ssmall /\
+          f :e intersection_of_family X G0 /\ intersection_of_family X G0 c= intersection_of_family X F.
+        { exact (HpF HsubF HfIntF). }
+        apply HexG0.
+        let G0. assume HG0pair.
+        claim HG0: G0 :e finite_subcollections Ssmall.
+        { exact (andEL (G0 :e finite_subcollections Ssmall)
+                       (f :e intersection_of_family X G0 /\ intersection_of_family X G0 c= intersection_of_family X F)
+                       HG0pair). }
+        claim HG0prop: f :e intersection_of_family X G0 /\ intersection_of_family X G0 c= intersection_of_family X F.
+        { exact (andER (G0 :e finite_subcollections Ssmall)
+                       (f :e intersection_of_family X G0 /\ intersection_of_family X G0 c= intersection_of_family X F)
+                       HG0pair). }
+        claim HfIntG0: f :e intersection_of_family X G0.
+        { exact (andEL (f :e intersection_of_family X G0) (intersection_of_family X G0 c= intersection_of_family X F) HG0prop). }
+        claim HG0sub: intersection_of_family X G0 c= intersection_of_family X F.
+        { exact (andER (f :e intersection_of_family X G0) (intersection_of_family X G0 c= intersection_of_family X F) HG0prop). }
+
+        claim HexRef: exists y0:set, y0 :e Ssmall /\ y0 c= y /\ f :e y0.
+        { apply (famunionE_impred I (fun i0:set => {product_cylinder I Xi i0 U|U :e space_family_topology Xi i0}) y HySfull).
+          let i0. assume Hi0I: i0 :e I.
+          assume HyFi0: y :e {product_cylinder I Xi i0 U|U :e space_family_topology Xi i0}.
+          apply (ReplE_impred (space_family_topology Xi i0) (fun U0:set => product_cylinder I Xi i0 U0) y HyFi0).
+          let V0. assume HV0Top: V0 :e space_family_topology Xi i0.
+          assume HyEq: y = product_cylinder I Xi i0 V0.
+          claim HfCyl: f :e product_cylinder I Xi i0 V0.
+          { rewrite <- HyEq. exact HfInY. }
+          claim HfiV0: apply_fun f i0 :e V0.
+          { exact (andER (i0 :e I /\ V0 :e space_family_topology Xi i0)
+                         (apply_fun f i0 :e V0)
+                         (SepE2 X (fun f0:set => i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun f0 i0 :e V0) f HfCyl)). }
+          claim HBi0: (Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0) /\
+            (forall b0:set, b0 :e (Bsel i0) -> apply_fun f i0 :e b0) /\
+            (forall U0:set, U0 :e space_family_topology Xi i0 -> apply_fun f i0 :e U0 -> exists b0:set, b0 :e (Bsel i0) /\ b0 c= U0).
+          { exact (HBsel i0 Hi0I). }
+          claim Href_i0: forall U0:set, U0 :e space_family_topology Xi i0 -> apply_fun f i0 :e U0 -> exists b0:set, b0 :e (Bsel i0) /\ b0 c= U0.
+          { exact (andER (((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0)) /\
+                          (forall b0:set, b0 :e (Bsel i0) -> apply_fun f i0 :e b0))
+                         (forall U0:set, U0 :e space_family_topology Xi i0 -> apply_fun f i0 :e U0 -> exists b0:set, b0 :e (Bsel i0) /\ b0 c= U0)
+                         HBi0). }
+          claim Hexb0: exists b0:set, b0 :e (Bsel i0) /\ b0 c= V0.
+          { exact (Href_i0 V0 HV0Top HfiV0). }
+          apply Hexb0.
+          let b0. assume Hb0pair.
+          claim Hb0B: b0 :e (Bsel i0).
+          { exact (andEL (b0 :e (Bsel i0)) (b0 c= V0) Hb0pair). }
+          claim Hb0sub: b0 c= V0.
+          { exact (andER (b0 :e (Bsel i0)) (b0 c= V0) Hb0pair). }
+          set y0 := product_cylinder I Xi i0 b0.
+          witness y0.
+          apply andI.
+          - apply andI.
+            + exact (famunionI I (fun i1:set => {product_cylinder I Xi i1 U|U :e Bsel i1})
+                         i0 y0 Hi0I (ReplI (Bsel i0) (fun U0:set => product_cylinder I Xi i0 U0) b0 Hb0B)).
+            + apply andI.
+              * let g. assume Hg: g :e y0.
+                prove g :e y.
+                claim HgCyl: g :e product_cylinder I Xi i0 b0.
+                { exact Hg. }
+                claim Hgprop: i0 :e I /\ b0 :e space_family_topology Xi i0 /\ apply_fun g i0 :e b0.
+                { exact (SepE2 X (fun g0:set => i0 :e I /\ b0 :e space_family_topology Xi i0 /\ apply_fun g0 i0 :e b0) g HgCyl). }
+                claim Hgi0: apply_fun g i0 :e b0.
+                { exact (andER (i0 :e I /\ b0 :e space_family_topology Xi i0) (apply_fun g i0 :e b0) Hgprop). }
+                claim Hgi0V0: apply_fun g i0 :e V0.
+                { exact (Hb0sub (apply_fun g i0) Hgi0). }
+                rewrite HyEq.
+                exact (SepI X (fun g0:set => i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun g0 i0 :e V0)
+                         g (SepE1 X (fun g0:set => i0 :e I /\ b0 :e space_family_topology Xi i0 /\ apply_fun g0 i0 :e b0) g HgCyl)
+                         (andI (i0 :e I /\ V0 :e space_family_topology Xi i0) (apply_fun g i0 :e V0)
+                              (andI (i0 :e I) (V0 :e space_family_topology Xi i0) Hi0I HV0Top) Hgi0V0)).
+              * claim Hfb0: apply_fun f i0 :e b0.
+                { exact (andEL ((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0))
+                               (forall b1:set, b1 :e (Bsel i0) -> apply_fun f i0 :e b1)
+                               (andEL (((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0)) /\
+                                       (forall b1:set, b1 :e (Bsel i0) -> apply_fun f i0 :e b1))
+                                      (forall U0:set, U0 :e space_family_topology Xi i0 -> apply_fun f i0 :e U0 -> exists b1:set, b1 :e (Bsel i0) /\ b1 c= U0)
+                                      HBi0)) b0 Hb0B). }
+                exact (SepI X (fun f0:set => i0 :e I /\ b0 :e space_family_topology Xi i0 /\ apply_fun f0 i0 :e b0)
+                         f Hf (andI (i0 :e I /\ b0 :e space_family_topology Xi i0) (apply_fun f i0 :e b0)
+                              (andI (i0 :e I) (b0 :e space_family_topology Xi i0) Hi0I
+                                    ((andEL ((Bsel i0) c= space_family_topology Xi i0) (countable_set (Bsel i0))
+                                            (andEL ((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0))
+                                                   (forall b1:set, b1 :e (Bsel i0) -> apply_fun f i0 :e b1)
+                                                   (andEL (((Bsel i0) c= space_family_topology Xi i0 /\ countable_set (Bsel i0)) /\
+                                                           (forall b1:set, b1 :e (Bsel i0) -> apply_fun f i0 :e b1))
+                                                          (forall U0:set, U0 :e space_family_topology Xi i0 -> apply_fun f i0 :e U0 -> exists b1:set, b1 :e (Bsel i0) /\ b1 c= U0)
+                                                          HBi0))) b0 Hb0B))
+                              Hfb0)). }
+          }
+        }
+
+        apply HexRef.
+        let y0. assume Hy0pair.
+        claim Hy0S: y0 :e Ssmall.
+        { exact (andEL (y0 :e Ssmall) (y0 c= y /\ f :e y0) Hy0pair). }
+        claim Hy0prop: y0 c= y /\ f :e y0.
+        { exact (andER (y0 :e Ssmall) (y0 c= y /\ f :e y0) Hy0pair). }
+        claim Hy0suby: y0 c= y.
+        { exact (andEL (y0 c= y) (f :e y0) Hy0prop). }
+        claim Hfy0: f :e y0.
+        { exact (andER (y0 c= y) (f :e y0) Hy0prop). }
+
+        set G := G0 :\/: {y0}.
+        witness G.
+        apply andI.
+        - apply andI.
+          + (** G in finite_subcollections Ssmall **)
+            claim HG0pow: G0 :e Power Ssmall.
+            { exact (SepE1 (Power Ssmall) (fun F1:set => finite F1) G0 HG0). }
+            claim HG0subS: G0 c= Ssmall.
+            { exact (PowerE Ssmall G0 HG0pow). }
+            claim HG0fin: finite G0.
+            { exact (SepE2 (Power Ssmall) (fun F1:set => finite F1) G0 HG0). }
+            claim HGsub: G c= Ssmall.
+            { let s. assume HsG: s :e G.
+              apply (binunionE' G0 {y0} s (s :e Ssmall)).
+              - assume HsG0: s :e G0.
+                exact (HG0subS s HsG0).
+              - assume Hsy0: s :e {y0}.
+                rewrite (SingE y0 s Hsy0).
+                exact Hy0S.
+              - exact HsG. }
+            claim HGpow: G :e Power Ssmall.
+            { apply PowerI. exact HGsub. }
+            claim HGfin: finite G.
+            { exact (adjoin_finite G0 y0 HG0fin). }
+            exact (SepI (Power Ssmall) (fun F1:set => finite F1) G HGpow HGfin).
+          + apply andI.
+            * (** f in intersection_of_family X G **)
+              apply (SepI X (fun x0:set => forall U0:set, U0 :e G -> x0 :e U0) f Hf).
+              let s. assume HsG: s :e G.
+              apply (binunionE' G0 {y0} s (f :e s)).
+              - assume HsG0: s :e G0.
+                exact ((SepE2 X (fun x0:set => forall U0:set, U0 :e G0 -> x0 :e U0) f HfIntG0) s HsG0).
+              - assume Hsy0: s :e {y0}.
+                rewrite (SingE y0 s Hsy0).
+                exact Hfy0.
+              - exact HsG.
+            * (** inclusion: intersection_of_family X G c= intersection_of_family X (F :\/: {y}) **)
+              let z. assume Hz: z :e intersection_of_family X G.
+              prove z :e intersection_of_family X (F :\/: {y}).
+              claim HzX: z :e X.
+              { exact (SepE1 X (fun x0:set => forall U0:set, U0 :e G -> x0 :e U0) z Hz). }
+              claim HzG: forall U0:set, U0 :e G -> z :e U0.
+              { exact (SepE2 X (fun x0:set => forall U0:set, U0 :e G -> x0 :e U0) z Hz). }
+              claim HzG0: z :e intersection_of_family X G0.
+              { apply (SepI X (fun x0:set => forall U0:set, U0 :e G0 -> x0 :e U0) z HzX).
+                let s. assume HsG0: s :e G0.
+                exact (HzG s (binunionI1 G0 {y0} s HsG0)). }
+              claim HzF: z :e intersection_of_family X F.
+              { exact (HG0sub z HzG0). }
+              claim Hzy0: z :e y0.
+              { exact (HzG y0 (binunionI2 G0 {y0} y0 (SingI y0))). }
+              claim Hzy: z :e y.
+              { exact (Hy0suby z Hzy0). }
+              apply (SepI X (fun x0:set => forall U0:set, U0 :e (F :\/: {y}) -> x0 :e U0) z HzX).
+              let s. assume HsFY: s :e (F :\/: {y}).
+              apply (binunionE' F {y} s (z :e s)).
+              - assume HsF: s :e F.
+                exact ((SepE2 X (fun x0:set => forall U0:set, U0 :e F -> x0 :e U0) z HzF) s HsF).
+              - assume Hsy: s :e {y}.
+                rewrite (SingE y s Hsy).
+                exact Hzy.
+              - exact HsFY. } }
+
+      claim Hpref: p F0.
+      { exact (finite_ind p HpEmpty HpStep F0 HF0fin). }
+      claim HexG: exists G:set, G :e finite_subcollections Ssmall /\
+        f :e intersection_of_family X G /\ intersection_of_family X G c= intersection_of_family X F0.
+      { exact (Hpref HF0sub HfIntF0). }
+      apply HexG.
+      let G. assume HGpair.
+      claim HG: G :e finite_subcollections Ssmall.
+      { exact (andEL (G :e finite_subcollections Ssmall)
+                     (f :e intersection_of_family X G /\ intersection_of_family X G c= intersection_of_family X F0)
+                     HGpair). }
+      claim HGprop: f :e intersection_of_family X G /\ intersection_of_family X G c= intersection_of_family X F0.
+      { exact (andER (G :e finite_subcollections Ssmall)
+                     (f :e intersection_of_family X G /\ intersection_of_family X G c= intersection_of_family X F0)
+                     HGpair). }
+      claim HGsub: intersection_of_family X G c= intersection_of_family X F0.
+      { exact (andER (f :e intersection_of_family X G) (intersection_of_family X G c= intersection_of_family X F0) HGprop). }
+      set b := intersection_of_family X G.
+      witness b.
+      apply andI.
+      - exact (ReplI FSsmall (fun F1:set => intersection_of_family X F1) G HG).
+      - let z. assume Hz: z :e b.
+        prove z :e U.
+        claim HzF0: z :e intersection_of_family X F0.
+        { exact (HGsub z Hz). }
+        rewrite <- Hb0eq at 2.
+        exact (Hb0subU z HzF0). }
 Qed.
 
 (** from §30 Theorem 30.1(a): sequences and closure in first-countable spaces **) 
