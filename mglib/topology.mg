@@ -20023,9 +20023,9 @@ apply andI.
 Qed.
 
 		(** Helper: identity function application **)
-		Theorem identity_function_apply : forall X x:set,
-		  x :e X -> apply_fun {(y,y) | y :e X} x = x.
-	let X x. assume Hx: x :e X.
+Theorem identity_function_apply : forall X x:set,
+  x :e X -> apply_fun {(y,y) | y :e X} x = x.
+let X x. assume Hx: x :e X.
 prove apply_fun {(y,y) | y :e X} x = x.
 prove Eps_i (fun z => (x,z) :e {(y,y) | y :e X}) = x.
 claim H1: (x,x) :e {(y,y) | y :e X}.
@@ -20049,6 +20049,25 @@ claim Hz_eq: Eps_i (fun z => (x,z) :e {(y,y) | y :e X}) = y.
 rewrite Hz_eq.
 rewrite <- Hx_eq.
 reflexivity.
+Qed.
+
+(** Helper: identity graph is total_function_on **)
+Theorem identity_total_function_on : forall X:set,
+  total_function_on {(y,y) | y :e X} X X.
+let X.
+prove function_on {(y,y) | y :e X} X X /\
+  forall x:set, x :e X -> exists y:set, y :e X /\ (x,y) :e {(y,y) | y :e X}.
+apply andI.
+- let x. assume HxX: x :e X.
+  prove apply_fun {(y,y) | y :e X} x :e X.
+  rewrite (identity_function_apply X x HxX).
+  exact HxX.
+- let x. assume HxX: x :e X.
+  prove exists y:set, y :e X /\ (x,y) :e {(y,y) | y :e X}.
+  witness x.
+  apply andI.
+  + exact HxX.
+  + exact (ReplI X (fun y0:set => (y0,y0)) x HxX).
 Qed.
 
 Definition const_family : set -> set -> set := fun I X => {(i,X)|i :e I}.
@@ -28432,8 +28451,8 @@ apply set_ext.
 Qed.
 
 (** SUSPICIOUS DEFINITION: `continuous_map` relies on `function_on` (which is defined via `apply_fun`/`Eps_i`);
-    thus continuity is formulated purely via preimages of opens, but “f being a genuine functional graph” is not enforced
-    without additional axioms. **)
+    thus continuity is formulated purely via preimages of opens, and totality of the graph (existence of some y with (x,y) :e f)
+    is not available unless it is assumed separately. Use `total_function_on` when totality is needed. **)
 Definition continuous_map : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f =>
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
