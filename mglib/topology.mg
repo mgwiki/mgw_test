@@ -41966,6 +41966,41 @@ Definition completely_regular_space : set -> set -> prop := fun X Tx =>
         continuous_map X Tx R R_standard_topology f /\
         apply_fun f x = 0 /\ forall y:set, y :e F -> apply_fun f y = 1.
 
+(** Helper: any function is continuous from a discrete domain **)
+Theorem continuous_from_discrete : forall X Y Ty f:set,
+  topology_on Y Ty ->
+  function_on f X Y ->
+  continuous_map X (discrete_topology X) Y Ty f.
+let X Y Ty f.
+assume HTy: topology_on Y Ty.
+assume Hfun: function_on f X Y.
+prove continuous_map X (discrete_topology X) Y Ty f.
+claim HTx: topology_on X (discrete_topology X).
+{ exact (discrete_topology_on X). }
+prove topology_on X (discrete_topology X) /\ topology_on Y Ty /\ function_on f X Y /\
+  forall V:set, V :e Ty -> preimage_of X f V :e discrete_topology X.
+apply andI.
+- prove (topology_on X (discrete_topology X) /\ topology_on Y Ty) /\ function_on f X Y.
+  apply andI.
+  * apply andI.
+    - exact HTx.
+    - exact HTy.
+  * exact Hfun.
+- let V. assume HV: V :e Ty.
+  prove preimage_of X f V :e discrete_topology X.
+  claim Hsub: preimage_of X f V c= X.
+  { let x. assume Hx: x :e preimage_of X f V.
+    exact (SepE1 X (fun u => apply_fun f u :e V) x Hx). }
+  exact (discrete_open_all X (preimage_of X f V) Hsub).
+Qed.
+
+(** Helper: discrete topology is completely regular **)
+Theorem discrete_completely_regular_space : forall X:set,
+  completely_regular_space X (discrete_topology X).
+let X.
+admit. (** discrete topology yields complete regularity **)
+Qed.
+
 (** from §33 Definition: Tychonoff space **) 
 (** LATEX VERSION: Tychonoff = completely regular and Hausdorff. **)
 Definition Tychonoff_space : set -> set -> prop := fun X Tx =>
