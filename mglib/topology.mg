@@ -43052,10 +43052,15 @@ let X Tx Tx'.
 assume HTx: topology_on X Tx.
 assume HTx': topology_on X Tx'.
 assume Hfiner: Tx c= Tx'.
-apply and3I.
-- prove Hausdorff_space X Tx -> Hausdorff_space X Tx'.
-  assume HH: Hausdorff_space X Tx.
+claim Hhaus_finer: Hausdorff_space X Tx -> Hausdorff_space X Tx'.
+{ assume HH: Hausdorff_space X Tx.
   prove Hausdorff_space X Tx'.
+  claim HSep: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+    exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+  { exact (andER (topology_on X Tx)
+                 (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                   exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+                 HH). }
   prove topology_on X Tx' /\
         forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
           exists U V:set, U :e Tx' /\ V :e Tx' /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
@@ -43066,15 +43071,11 @@ apply and3I.
     assume Hx2X: x2 :e X.
     assume Hneq: x1 <> x2.
     prove exists U V:set, U :e Tx' /\ V :e Tx' /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
-    claim Hsep:
-      exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
-    { exact ((andER (topology_on X Tx)
-                    (forall a b:set, a :e X -> b :e X -> a <> b ->
-                      exists U V:set, U :e Tx /\ V :e Tx /\ a :e U /\ b :e V /\ U :/\: V = Empty)
-                    HH) x1 x2 Hx1X Hx2X Hneq). }
+    claim Hex: exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+    { exact (HSep x1 x2 Hx1X Hx2X Hneq). }
     set U0 := Eps_i (fun U:set => exists V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty).
     claim HU0ex: exists V:set, U0 :e Tx /\ V :e Tx /\ x1 :e U0 /\ x2 :e V /\ U0 :/\: V = Empty.
-    { exact (Eps_i_ex (fun U:set => exists V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty) Hsep). }
+    { exact (Eps_i_ex (fun U:set => exists V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty) Hex). }
     set V0 := Eps_i (fun V:set => U0 :e Tx /\ V :e Tx /\ x1 :e U0 /\ x2 :e V /\ U0 :/\: V = Empty).
     claim HV0prop: U0 :e Tx /\ V0 :e Tx /\ x1 :e U0 /\ x2 :e V0 /\ U0 :/\: V0 = Empty.
     { exact (Eps_i_ex (fun V:set => U0 :e Tx /\ V :e Tx /\ x1 :e U0 /\ x2 :e V /\ U0 :/\: V = Empty) HU0ex). }
@@ -43113,11 +43114,178 @@ apply and3I.
     - exact HV0Tx'.
     - exact HUx1.
     - exact HVx2.
-    - exact HdisjUV.
+    - exact HdisjUV. }
+apply and3I.
+- exact Hhaus_finer.
 - prove regular_space X Tx -> Hausdorff_space X Tx'.
-  admit. (** regular implies Hausdorff; then use the previous implication to pass to the finer topology **)
+  assume Hreg: regular_space X Tx.
+  claim HT1: one_point_sets_closed X Tx.
+  { exact (andEL (one_point_sets_closed X Tx)
+                 (forall x:set, x :e X ->
+                   forall F:set, closed_in X Tx F -> x /:e F ->
+                     exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty)
+                 Hreg). }
+  claim Hsing: forall x:set, x :e X -> closed_in X Tx {x}.
+  { exact (andER (topology_on X Tx) (forall x:set, x :e X -> closed_in X Tx {x}) HT1). }
+  claim HSepReg:
+    forall x:set, x :e X ->
+      forall F:set, closed_in X Tx F -> x /:e F ->
+        exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty.
+  { exact (andER (one_point_sets_closed X Tx)
+                 (forall x:set, x :e X ->
+                   forall F:set, closed_in X Tx F -> x /:e F ->
+                     exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty)
+                 Hreg). }
+  claim HHcoarse: Hausdorff_space X Tx.
+  { prove topology_on X Tx /\
+          forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+            exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+    apply andI.
+    - exact (andEL (topology_on X Tx) (forall x:set, x :e X -> closed_in X Tx {x}) HT1).
+    - let x1 x2.
+      assume Hx1X: x1 :e X.
+      assume Hx2X: x2 :e X.
+      assume Hneq: x1 <> x2.
+      prove exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+      claim Hcl: closed_in X Tx {x2}.
+      { exact (Hsing x2 Hx2X). }
+      claim Hx1not: x1 /:e {x2}.
+      { assume Hx1in: x1 :e {x2}.
+        claim Heq: x1 = x2.
+        { exact (SingE x2 x1 Hx1in). }
+        exact (Hneq Heq). }
+      claim Hex: exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ {x2} c= V /\ U :/\: V = Empty.
+      { exact (HSepReg x1 Hx1X {x2} Hcl Hx1not). }
+      set U0 := Eps_i (fun U:set => exists V:set,
+        U :e Tx /\ V :e Tx /\ x1 :e U /\ {x2} c= V /\ U :/\: V = Empty).
+      claim HU0ex: exists V:set,
+        U0 :e Tx /\ V :e Tx /\ x1 :e U0 /\ {x2} c= V /\ U0 :/\: V = Empty.
+      { exact (Eps_i_ex (fun U:set => exists V:set,
+          U :e Tx /\ V :e Tx /\ x1 :e U /\ {x2} c= V /\ U :/\: V = Empty) Hex). }
+      set V0 := Eps_i (fun V:set => U0 :e Tx /\ V :e Tx /\ x1 :e U0 /\ {x2} c= V /\ U0 :/\: V = Empty).
+      claim HV0prop: U0 :e Tx /\ V0 :e Tx /\ x1 :e U0 /\ {x2} c= V0 /\ U0 :/\: V0 = Empty.
+      { exact (Eps_i_ex (fun V:set => U0 :e Tx /\ V :e Tx /\ x1 :e U0 /\ {x2} c= V /\ U0 :/\: V = Empty)
+                        HU0ex). }
+      claim H1234: (((U0 :e Tx /\ V0 :e Tx) /\ x1 :e U0) /\ {x2} c= V0).
+      { exact (andEL ((((U0 :e Tx /\ V0 :e Tx) /\ x1 :e U0) /\ {x2} c= V0))
+                     (U0 :/\: V0 = Empty)
+                     HV0prop). }
+      claim HdisjUV: U0 :/\: V0 = Empty.
+      { exact (andER ((((U0 :e Tx /\ V0 :e Tx) /\ x1 :e U0) /\ {x2} c= V0))
+                     (U0 :/\: V0 = Empty)
+                     HV0prop). }
+      claim H123: ((U0 :e Tx /\ V0 :e Tx) /\ x1 :e U0).
+      { exact (andEL ((U0 :e Tx /\ V0 :e Tx) /\ x1 :e U0)
+                     ({x2} c= V0)
+                     H1234). }
+      claim H12: (U0 :e Tx /\ V0 :e Tx).
+      { exact (andEL (U0 :e Tx /\ V0 :e Tx) (x1 :e U0) H123). }
+      claim HUx1: x1 :e U0.
+      { exact (andER (U0 :e Tx /\ V0 :e Tx) (x1 :e U0) H123). }
+      claim HVsub: {x2} c= V0.
+      { exact (andER ((U0 :e Tx /\ V0 :e Tx) /\ x1 :e U0) ({x2} c= V0) H1234). }
+      claim Hx2V0: x2 :e V0.
+      { apply HVsub. exact (SingI x2). }
+      witness U0.
+      witness V0.
+      apply and5I.
+      - exact (andEL (U0 :e Tx) (V0 :e Tx) H12).
+      - exact (andER (U0 :e Tx) (V0 :e Tx) H12).
+      - exact HUx1.
+      - exact Hx2V0.
+      - exact HdisjUV. }
+  exact (Hhaus_finer HHcoarse).
 - prove normal_space X Tx -> Hausdorff_space X Tx'.
-  admit. (** normal implies regular implies Hausdorff; then use the previous implication to pass to the finer topology **)
+  assume Hnorm: normal_space X Tx.
+  claim HT1: one_point_sets_closed X Tx.
+  { exact (andEL (one_point_sets_closed X Tx)
+                 (forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+                   exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty)
+                 Hnorm). }
+  claim Hsing: forall x:set, x :e X -> closed_in X Tx {x}.
+  { exact (andER (topology_on X Tx) (forall x:set, x :e X -> closed_in X Tx {x}) HT1). }
+  claim HSepNorm:
+    forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+      exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+  { exact (andER (one_point_sets_closed X Tx)
+                 (forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+                   exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty)
+                 Hnorm). }
+  claim HHcoarse: Hausdorff_space X Tx.
+  { prove topology_on X Tx /\
+          forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+            exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+    apply andI.
+    - exact (andEL (topology_on X Tx) (forall x:set, x :e X -> closed_in X Tx {x}) HT1).
+    - let x1 x2.
+      assume Hx1X: x1 :e X.
+      assume Hx2X: x2 :e X.
+      assume Hneq: x1 <> x2.
+      prove exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+      claim Hcl1: closed_in X Tx {x1}.
+      { exact (Hsing x1 Hx1X). }
+      claim Hcl2: closed_in X Tx {x2}.
+      { exact (Hsing x2 Hx2X). }
+      claim Hdisj: {x1} :/\: {x2} = Empty.
+      { apply Empty_Subq_eq.
+        let z. assume Hz: z :e {x1} :/\: {x2}.
+        prove z :e Empty.
+        claim Hz1: z :e {x1}.
+        { exact (binintersectE1 {x1} {x2} z Hz). }
+        claim Hz2: z :e {x2}.
+        { exact (binintersectE2 {x1} {x2} z Hz). }
+        claim Hzx1: z = x1.
+        { exact (SingE x1 z Hz1). }
+        claim Hzx2: z = x2.
+        { exact (SingE x2 z Hz2). }
+        claim Hx1x2: x1 = x2.
+        { rewrite <- Hzx1. rewrite Hzx2. reflexivity. }
+        apply FalseE.
+        exact (Hneq Hx1x2). }
+      claim Hex: exists U V:set,
+        U :e Tx /\ V :e Tx /\ {x1} c= U /\ {x2} c= V /\ U :/\: V = Empty.
+      { exact (HSepNorm {x1} {x2} Hcl1 Hcl2 Hdisj). }
+      set U0 := Eps_i (fun U:set => exists V:set,
+        U :e Tx /\ V :e Tx /\ {x1} c= U /\ {x2} c= V /\ U :/\: V = Empty).
+      claim HU0ex: exists V:set,
+        U0 :e Tx /\ V :e Tx /\ {x1} c= U0 /\ {x2} c= V /\ U0 :/\: V = Empty.
+      { exact (Eps_i_ex (fun U:set => exists V:set,
+          U :e Tx /\ V :e Tx /\ {x1} c= U /\ {x2} c= V /\ U :/\: V = Empty) Hex). }
+      set V0 := Eps_i (fun V:set => U0 :e Tx /\ V :e Tx /\ {x1} c= U0 /\ {x2} c= V /\ U0 :/\: V = Empty).
+      claim HV0prop: U0 :e Tx /\ V0 :e Tx /\ {x1} c= U0 /\ {x2} c= V0 /\ U0 :/\: V0 = Empty.
+      { exact (Eps_i_ex (fun V:set => U0 :e Tx /\ V :e Tx /\ {x1} c= U0 /\ {x2} c= V /\ U0 :/\: V = Empty)
+                        HU0ex). }
+      claim H1234: (((U0 :e Tx /\ V0 :e Tx) /\ {x1} c= U0) /\ {x2} c= V0).
+      { exact (andEL ((((U0 :e Tx /\ V0 :e Tx) /\ {x1} c= U0) /\ {x2} c= V0))
+                     (U0 :/\: V0 = Empty)
+                     HV0prop). }
+      claim HdisjUV: U0 :/\: V0 = Empty.
+      { exact (andER ((((U0 :e Tx /\ V0 :e Tx) /\ {x1} c= U0) /\ {x2} c= V0))
+                     (U0 :/\: V0 = Empty)
+                     HV0prop). }
+      claim H123: ((U0 :e Tx /\ V0 :e Tx) /\ {x1} c= U0).
+      { exact (andEL ((U0 :e Tx /\ V0 :e Tx) /\ {x1} c= U0)
+                     ({x2} c= V0)
+                     H1234). }
+      claim H12: (U0 :e Tx /\ V0 :e Tx).
+      { exact (andEL (U0 :e Tx /\ V0 :e Tx) ({x1} c= U0) H123). }
+      claim Hsub1: {x1} c= U0.
+      { exact (andER (U0 :e Tx /\ V0 :e Tx) ({x1} c= U0) H123). }
+      claim Hsub2: {x2} c= V0.
+      { exact (andER ((U0 :e Tx /\ V0 :e Tx) /\ {x1} c= U0) ({x2} c= V0) H1234). }
+      claim Hx1U0: x1 :e U0.
+      { apply Hsub1. exact (SingI x1). }
+      claim Hx2V0: x2 :e V0.
+      { apply Hsub2. exact (SingI x2). }
+      witness U0.
+      witness V0.
+      apply and5I.
+      - exact (andEL (U0 :e Tx) (V0 :e Tx) H12).
+      - exact (andER (U0 :e Tx) (V0 :e Tx) H12).
+      - exact Hx1U0.
+      - exact Hx2V0.
+      - exact HdisjUV. }
+  exact (Hhaus_finer HHcoarse).
 Qed.
 (** from §31 Exercise 5: equalizer of continuous maps into Hausdorff is closed **)
 (** LATEX VERSION: Let f,g: X → Y be continuous, Y Hausdorff. Then {x | f(x) = g(x)} is closed in X. **)
@@ -43131,7 +43299,86 @@ assume Hf: continuous_map X Tx Y Ty f.
 assume Hg: continuous_map X Tx Y Ty g.
 assume HHaus: Hausdorff_space Y Ty.
 prove closed_in X Tx {x :e X | apply_fun f x = apply_fun g x}.
-admit. (** complement is open: for f(x) <> g(x), separate in Y, pull back to get open neighborhood **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (topology_on Y Ty)
+               (andEL (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y)
+                      (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
+                             (forall V:set, V :e Ty -> preimage_of X f V :e Tx) Hf))). }
+claim HTy: topology_on Y Ty.
+{ exact (andEL (topology_on Y Ty)
+               (forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 ->
+                 exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
+               HHaus). }
+set h := pair_map X f g.
+claim Hhcont: continuous_map X Tx (setprod Y Y) (product_topology Y Ty Y Ty) h.
+{ exact (maps_into_products_axiom X Tx Y Ty Y Ty f g Hf Hg). }
+set D := {(y,y)|y :e Y}.
+claim HclosedD: closed_in (setprod Y Y) (product_topology Y Ty Y Ty) D.
+{ exact (iffEL (Hausdorff_space Y Ty)
+               (closed_in (setprod Y Y) (product_topology Y Ty Y Ty) {(y,y)|y :e Y})
+               (ex17_13_diagonal_closed_iff_Hausdorff Y Ty HTy) HHaus). }
+claim Hpre_closed: closed_in X Tx (preimage_of X h D).
+{ exact (continuous_preserves_closed X Tx (setprod Y Y) (product_topology Y Ty Y Ty) h Hhcont D HclosedD). }
+claim Heq:
+  preimage_of X h D = {x :e X | apply_fun f x = apply_fun g x}.
+{ apply set_ext.
+  - let x. assume Hx: x :e preimage_of X h D.
+    prove x :e {x :e X | apply_fun f x = apply_fun g x}.
+    claim HxX: x :e X.
+    { exact (SepE1 X (fun x0:set => apply_fun h x0 :e D) x Hx). }
+    claim HhDx: apply_fun h x :e D.
+    { exact (SepE2 X (fun x0:set => apply_fun h x0 :e D) x Hx). }
+    apply (ReplE Y (fun y:set => (y,y)) (apply_fun h x) HhDx).
+    let y. assume HyPair.
+    claim HyY: y :e Y.
+    { exact (andEL (y :e Y) (apply_fun h x = (y,y)) HyPair). }
+    claim HeqPair: apply_fun h x = (y,y).
+    { exact (andER (y :e Y) (apply_fun h x = (y,y)) HyPair). }
+    claim Happ: apply_fun h x = (apply_fun f x, apply_fun g x).
+    { exact (pair_map_apply X Y Y f g x HxX). }
+    claim HfgEq: (apply_fun f x, apply_fun g x) = (y,y).
+    { rewrite <- Happ. exact HeqPair. }
+    claim H0: (apply_fun f x, apply_fun g x) 0 = apply_fun f x.
+    { exact (tuple_2_0_eq (apply_fun f x) (apply_fun g x)). }
+    claim H1: (apply_fun f x, apply_fun g x) 1 = apply_fun g x.
+    { exact (tuple_2_1_eq (apply_fun f x) (apply_fun g x)). }
+    claim H0eq: (y,y) 0 = apply_fun f x.
+    { rewrite <- HfgEq.
+      exact H0. }
+    claim H1eq: (y,y) 1 = apply_fun g x.
+    { rewrite <- HfgEq.
+      exact H1. }
+    claim Hyfx: y = apply_fun f x.
+    { rewrite <- (tuple_2_0_eq y y).
+      exact H0eq. }
+    claim Hygx: y = apply_fun g x.
+    { rewrite <- (tuple_2_1_eq y y).
+      exact H1eq. }
+    apply (SepI X (fun x0:set => apply_fun f x0 = apply_fun g x0) x HxX).
+    rewrite <- Hyfx.
+    rewrite <- Hygx.
+    reflexivity.
+  - let x. assume Hx: x :e {x :e X | apply_fun f x = apply_fun g x}.
+    prove x :e preimage_of X h D.
+    claim HxX: x :e X.
+    { exact (SepE1 X (fun x0:set => apply_fun f x0 = apply_fun g x0) x Hx). }
+    claim Hfg: apply_fun f x = apply_fun g x.
+    { exact (SepE2 X (fun x0:set => apply_fun f x0 = apply_fun g x0) x Hx). }
+    claim Hf_fun: function_on f X Y.
+    { exact (andER (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y)
+                   (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
+                          (forall V:set, V :e Ty -> preimage_of X f V :e Tx) Hf)). }
+    claim HfxY: apply_fun f x :e Y.
+    { exact (Hf_fun x HxX). }
+    claim Happ: apply_fun h x = (apply_fun f x, apply_fun g x).
+    { exact (pair_map_apply X Y Y f g x HxX). }
+    claim Himg: apply_fun h x :e D.
+    { rewrite Happ.
+      rewrite <- Hfg.
+      exact (ReplI Y (fun y:set => (y,y)) (apply_fun f x) HfxY). }
+    exact (SepI X (fun x0:set => apply_fun h x0 :e D) x HxX Himg). }
+rewrite <- Heq.
+exact Hpre_closed.
 Qed.
 (** from §31 Exercise 6: closed continuous surjection preserves normal **)
 (** LATEX VERSION: Let p: X → Y be closed continuous surjective map. If X is normal, then so is Y. **)
