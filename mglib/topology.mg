@@ -36065,7 +36065,21 @@ assume Harc.
 apply Harc.
 let f.
 assume Hhom.
-admit. (** need to extract topology_on from homeomorphism **)
+claim Hcont: continuous_map unit_interval R_standard_topology X Tx f.
+{ exact (andEL (continuous_map unit_interval R_standard_topology X Tx f)
+               (exists g:set, continuous_map X Tx unit_interval R_standard_topology g /\
+                 (forall x:set, x :e unit_interval -> apply_fun g (apply_fun f x) = x) /\
+                 (forall y:set, y :e X -> apply_fun f (apply_fun g y) = y))
+               Hhom). }
+claim Habc: (topology_on unit_interval R_standard_topology /\ topology_on X Tx) /\ function_on f unit_interval X.
+{ exact (andEL ((topology_on unit_interval R_standard_topology /\ topology_on X Tx) /\ function_on f unit_interval X)
+               (forall V:set, V :e Tx -> preimage_of unit_interval f V :e R_standard_topology)
+               Hcont). }
+claim Hab: topology_on unit_interval R_standard_topology /\ topology_on X Tx.
+{ exact (andEL (topology_on unit_interval R_standard_topology /\ topology_on X Tx)
+               (function_on f unit_interval X)
+               Habc). }
+exact (andER (topology_on unit_interval R_standard_topology) (topology_on X Tx) Hab).
 Qed.
 
 Definition end_points_of_arc : set -> set -> set -> set -> prop := fun X Tx p q =>
