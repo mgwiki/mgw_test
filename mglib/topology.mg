@@ -25473,6 +25473,45 @@ Qed.
 Definition preimage_of : set -> set -> set -> set := fun X f V =>
   {x :e X | apply_fun f x :e V}.
 
+(** Helper: preimage of union of a family **)
+(** LATEX VERSION: f^{-1}(Union Fam) equals Union of the preimages f^{-1}(V) for V in Fam. **)
+Theorem preimage_of_Union : forall X f Fam:set,
+  preimage_of X f (Union Fam) = Union {preimage_of X f V|V :e Fam}.
+let X f Fam.
+apply set_ext.
+- let x. assume Hx: x :e preimage_of X f (Union Fam).
+  prove x :e Union {preimage_of X f V|V :e Fam}.
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => apply_fun f x0 :e Union Fam) x Hx). }
+  claim HfxU: apply_fun f x :e Union Fam.
+  { exact (SepE2 X (fun x0:set => apply_fun f x0 :e Union Fam) x Hx). }
+  apply (UnionE_impred Fam (apply_fun f x) HfxU).
+  let V. assume HfxV: apply_fun f x :e V.
+  assume HVFam: V :e Fam.
+  claim HxPre: x :e preimage_of X f V.
+  { exact (SepI X (fun x0:set => apply_fun f x0 :e V) x HxX HfxV). }
+  exact (UnionI {preimage_of X f V0|V0 :e Fam} x (preimage_of X f V) HxPre
+               (ReplI Fam (fun V0:set => preimage_of X f V0) V HVFam)).
+- let x. assume Hx: x :e Union {preimage_of X f V|V :e Fam}.
+  prove x :e preimage_of X f (Union Fam).
+  apply (UnionE_impred {preimage_of X f V|V :e Fam} x Hx).
+  let W. assume HxW: x :e W.
+  assume HW: W :e {preimage_of X f V|V :e Fam}.
+  apply (ReplE_impred Fam (fun V0:set => preimage_of X f V0) W HW).
+  let V. assume HVFam: V :e Fam.
+  assume HWV: W = preimage_of X f V.
+  claim HxPre: x :e preimage_of X f V.
+  { rewrite <- HWV.
+    exact HxW. }
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => apply_fun f x0 :e V) x HxPre). }
+  claim HfxV: apply_fun f x :e V.
+  { exact (SepE2 X (fun x0:set => apply_fun f x0 :e V) x HxPre). }
+  claim HfxU: apply_fun f x :e Union Fam.
+  { exact (UnionI Fam (apply_fun f x) V HfxV HVFam). }
+  exact (SepI X (fun x0:set => apply_fun f x0 :e Union Fam) x HxX HfxU).
+Qed.
+
 (** Helper: apply_fun for projections **)
 (** LATEX VERSION: For p in X×Y, proj1(p)=p0 and proj2(p)=p1. **)
 Theorem projection1_apply : forall X Y p:set,
@@ -26494,22 +26533,6 @@ Qed.
 Definition pair_map : set -> set -> set -> set := fun A f g =>
   {(a, (apply_fun f a, apply_fun g a)) | a :e A}.
 
-Axiom maps_into_products_axiom : forall A Ta X Tx Y Ty f g:set,
-  continuous_map A Ta X Tx f ->
-  continuous_map A Ta Y Ty g ->
-  continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
-
-Theorem maps_into_products : forall A Ta X Tx Y Ty f g:set,
-  continuous_map A Ta X Tx f ->
-  continuous_map A Ta Y Ty g ->
-  continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
-let A Ta X Tx Y Ty f g.
-assume Hf: continuous_map A Ta X Tx f.
-assume Hg: continuous_map A Ta Y Ty g.
-prove continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
-exact (maps_into_products_axiom A Ta X Tx Y Ty f g Hf Hg).
-Qed.
-
 (** Helper: apply_fun for pair_map **)
 Theorem pair_map_apply : forall A X Y f g a:set,
   a :e A ->
@@ -26524,23 +26547,202 @@ claim H2: (a, Eps_i (fun z => (a,z) :e pair_map A f g)) :e pair_map A f g.
 { exact (Eps_i_ax (fun z => (a,z) :e pair_map A f g) (apply_fun f a, apply_fun g a) H1). }
 apply (ReplE_impred A (fun a0:set => (a0, (apply_fun f a0, apply_fun g a0)))
                      (a, Eps_i (fun z => (a,z) :e pair_map A f g)) H2).
-	let a0.
-	assume Ha0: a0 :e A.
-	assume Heq: (a, Eps_i (fun z => (a,z) :e pair_map A f g)) = (a0, (apply_fun f a0, apply_fun g a0)).
-	claim Ha_eq: a = a0.
-	{ rewrite <- (tuple_2_0_eq a (Eps_i (fun z => (a,z) :e pair_map A f g))).
-	  rewrite <- (tuple_2_0_eq a0 (apply_fun f a0, apply_fun g a0)).
-	  rewrite Heq.
-	  reflexivity. }
-	claim Hz_eq: Eps_i (fun z => (a,z) :e pair_map A f g) = (apply_fun f a0, apply_fun g a0).
-	{ rewrite <- (tuple_2_1_eq a (Eps_i (fun z => (a,z) :e pair_map A f g))) at 1.
-	  rewrite <- (tuple_2_1_eq a0 (apply_fun f a0, apply_fun g a0)) at 1.
-	  rewrite Heq.
-	  reflexivity. }
-	rewrite Hz_eq.
-	rewrite Ha_eq.
-	reflexivity.
-	Qed.
+let a0.
+assume Ha0: a0 :e A.
+assume Heq: (a, Eps_i (fun z => (a,z) :e pair_map A f g)) = (a0, (apply_fun f a0, apply_fun g a0)).
+claim Ha_eq: a = a0.
+{ rewrite <- (tuple_2_0_eq a (Eps_i (fun z => (a,z) :e pair_map A f g))).
+  rewrite <- (tuple_2_0_eq a0 (apply_fun f a0, apply_fun g a0)).
+  rewrite Heq.
+  reflexivity. }
+claim Hz_eq: Eps_i (fun z => (a,z) :e pair_map A f g) = (apply_fun f a0, apply_fun g a0).
+{ rewrite <- (tuple_2_1_eq a (Eps_i (fun z => (a,z) :e pair_map A f g))) at 1.
+  rewrite <- (tuple_2_1_eq a0 (apply_fun f a0, apply_fun g a0)) at 1.
+  rewrite Heq.
+  reflexivity. }
+rewrite Hz_eq.
+rewrite Ha_eq.
+reflexivity.
+Qed.
+
+Theorem preimage_pair_map_rectangle : forall A X Y f g U V:set,
+  preimage_of A (pair_map A f g) (rectangle_set U V) =
+    (preimage_of A f U) :/\: (preimage_of A g V).
+let A X Y f g U V.
+apply set_ext.
+- let a. assume Ha: a :e preimage_of A (pair_map A f g) (rectangle_set U V).
+  prove a :e (preimage_of A f U) :/\: (preimage_of A g V).
+  claim HaA: a :e A.
+  { exact (SepE1 A (fun a0:set => apply_fun (pair_map A f g) a0 :e rectangle_set U V) a Ha). }
+  claim Himg: apply_fun (pair_map A f g) a :e rectangle_set U V.
+  { exact (SepE2 A (fun a0:set => apply_fun (pair_map A f g) a0 :e rectangle_set U V) a Ha). }
+  claim Happ: apply_fun (pair_map A f g) a = (apply_fun f a, apply_fun g a).
+  { exact (pair_map_apply A X Y f g a HaA). }
+  claim HpairIn: (apply_fun f a, apply_fun g a) :e rectangle_set U V.
+  { rewrite <- Happ.
+    exact Himg. }
+  claim Hfst: (apply_fun f a, apply_fun g a) 0 :e U.
+  { exact (ap0_Sigma U (fun _ : set => V) (apply_fun f a, apply_fun g a) HpairIn). }
+  claim Hsnd: (apply_fun f a, apply_fun g a) 1 :e V.
+  { exact (ap1_Sigma U (fun _ : set => V) (apply_fun f a, apply_fun g a) HpairIn). }
+  claim HfaU: apply_fun f a :e U.
+  { rewrite <- (tuple_2_0_eq (apply_fun f a) (apply_fun g a)).
+    exact Hfst. }
+  claim HgaV: apply_fun g a :e V.
+  { rewrite <- (tuple_2_1_eq (apply_fun f a) (apply_fun g a)).
+    exact Hsnd. }
+  apply binintersectI.
+  + exact (SepI A (fun a0:set => apply_fun f a0 :e U) a HaA HfaU).
+  + exact (SepI A (fun a0:set => apply_fun g a0 :e V) a HaA HgaV).
+- let a. assume Ha: a :e (preimage_of A f U) :/\: (preimage_of A g V).
+  prove a :e preimage_of A (pair_map A f g) (rectangle_set U V).
+  claim Haf: a :e preimage_of A f U.
+  { exact (binintersectE1 (preimage_of A f U) (preimage_of A g V) a Ha). }
+  claim Hag: a :e preimage_of A g V.
+  { exact (binintersectE2 (preimage_of A f U) (preimage_of A g V) a Ha). }
+  claim HaA: a :e A.
+  { exact (SepE1 A (fun a0:set => apply_fun f a0 :e U) a Haf). }
+  claim HfaU: apply_fun f a :e U.
+  { exact (SepE2 A (fun a0:set => apply_fun f a0 :e U) a Haf). }
+  claim HgaV: apply_fun g a :e V.
+  { exact (SepE2 A (fun a0:set => apply_fun g a0 :e V) a Hag). }
+  claim HpairIn: (apply_fun f a, apply_fun g a) :e rectangle_set U V.
+  { exact (tuple_2_setprod U V (apply_fun f a) HfaU (apply_fun g a) HgaV). }
+  claim Happ: apply_fun (pair_map A f g) a = (apply_fun f a, apply_fun g a).
+  { exact (pair_map_apply A X Y f g a HaA). }
+  claim Himg: apply_fun (pair_map A f g) a :e rectangle_set U V.
+  { rewrite Happ.
+    exact HpairIn. }
+  exact (SepI A (fun a0:set => apply_fun (pair_map A f g) a0 :e rectangle_set U V) a HaA Himg).
+Qed.
+
+Theorem maps_into_products_axiom : forall A Ta X Tx Y Ty f g:set,
+  continuous_map A Ta X Tx f ->
+  continuous_map A Ta Y Ty g ->
+  continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
+let A Ta X Tx Y Ty f g.
+assume Hf: continuous_map A Ta X Tx f.
+assume Hg: continuous_map A Ta Y Ty g.
+claim Hf_mid: (topology_on A Ta /\ topology_on X Tx) /\ function_on f A X.
+{ exact (andEL ((topology_on A Ta /\ topology_on X Tx) /\ function_on f A X)
+               (forall V:set, V :e Tx -> preimage_of A f V :e Ta)
+               Hf). }
+claim Hfun_f: function_on f A X.
+{ exact (andER (topology_on A Ta /\ topology_on X Tx) (function_on f A X) Hf_mid). }
+claim HtopAX: topology_on A Ta /\ topology_on X Tx.
+{ exact (andEL (topology_on A Ta /\ topology_on X Tx) (function_on f A X) Hf_mid). }
+claim HTa: topology_on A Ta.
+{ exact (andEL (topology_on A Ta) (topology_on X Tx) HtopAX). }
+claim HTx: topology_on X Tx.
+{ exact (andER (topology_on A Ta) (topology_on X Tx) HtopAX). }
+claim Hf_pre: forall U:set, U :e Tx -> preimage_of A f U :e Ta.
+{ exact (andER ((topology_on A Ta /\ topology_on X Tx) /\ function_on f A X)
+               (forall V:set, V :e Tx -> preimage_of A f V :e Ta)
+               Hf). }
+
+claim Hg_mid: (topology_on A Ta /\ topology_on Y Ty) /\ function_on g A Y.
+{ exact (andEL ((topology_on A Ta /\ topology_on Y Ty) /\ function_on g A Y)
+               (forall V:set, V :e Ty -> preimage_of A g V :e Ta)
+               Hg). }
+claim Hfun_g: function_on g A Y.
+{ exact (andER (topology_on A Ta /\ topology_on Y Ty) (function_on g A Y) Hg_mid). }
+claim HtopAY: topology_on A Ta /\ topology_on Y Ty.
+{ exact (andEL (topology_on A Ta /\ topology_on Y Ty) (function_on g A Y) Hg_mid). }
+claim HTy: topology_on Y Ty.
+{ exact (andER (topology_on A Ta) (topology_on Y Ty) HtopAY). }
+claim Hg_pre: forall V:set, V :e Ty -> preimage_of A g V :e Ta.
+{ exact (andER ((topology_on A Ta /\ topology_on Y Ty) /\ function_on g A Y)
+               (forall V:set, V :e Ty -> preimage_of A g V :e Ta)
+               Hg). }
+
+claim HTprod: topology_on (setprod X Y) (product_topology X Tx Y Ty).
+{ exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
+claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+{ exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+
+prove continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
+prove topology_on A Ta /\ topology_on (setprod X Y) (product_topology X Tx Y Ty) /\
+  function_on (pair_map A f g) A (setprod X Y) /\
+  forall W:set, W :e product_topology X Tx Y Ty -> preimage_of A (pair_map A f g) W :e Ta.
+apply andI.
+- apply andI.
+  + apply andI.
+    * exact HTa.
+    * exact HTprod.
+  + (** function_on **)
+    let a. assume HaA: a :e A.
+    prove apply_fun (pair_map A f g) a :e setprod X Y.
+    claim Happ: apply_fun (pair_map A f g) a = (apply_fun f a, apply_fun g a).
+    { exact (pair_map_apply A X Y f g a HaA). }
+    rewrite Happ.
+    exact (tuple_2_setprod X Y (apply_fun f a) (Hfun_f a HaA) (apply_fun g a) (Hfun_g a HaA)).
+- let W. assume HW: W :e product_topology X Tx Y Ty.
+  prove preimage_of A (pair_map A f g) W :e Ta.
+  claim HWopen: open_in (setprod X Y) (product_topology X Tx Y Ty) W.
+  { exact (andI (topology_on (setprod X Y) (product_topology X Tx Y Ty)) (W :e product_topology X Tx Y Ty) HTprod HW). }
+  apply (open_sets_as_unions_of_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis W HWopen).
+  let Fam. assume HFamPair.
+  claim HFamPow: Fam :e Power (product_subbasis X Tx Y Ty).
+  { exact (andEL (Fam :e Power (product_subbasis X Tx Y Ty)) (Union Fam = W) HFamPair). }
+  claim HUnionEq: Union Fam = W.
+  { exact (andER (Fam :e Power (product_subbasis X Tx Y Ty)) (Union Fam = W) HFamPair). }
+  claim HFamSub: Fam c= product_subbasis X Tx Y Ty.
+  { exact (PowerE (product_subbasis X Tx Y Ty) Fam HFamPow). }
+  set PreFam := {preimage_of A (pair_map A f g) b|b :e Fam}.
+  claim HpreEq1: preimage_of A (pair_map A f g) W = preimage_of A (pair_map A f g) (Union Fam).
+  { rewrite <- HUnionEq.
+    reflexivity. }
+  claim HpreEq2: preimage_of A (pair_map A f g) (Union Fam) = Union PreFam.
+  { rewrite (preimage_of_Union A (pair_map A f g) Fam).
+    reflexivity. }
+  rewrite HpreEq1.
+  rewrite HpreEq2.
+  claim HPreFamSub: PreFam c= Ta.
+  { let P. assume HP: P :e PreFam.
+    apply (ReplE_impred Fam (fun b:set => preimage_of A (pair_map A f g) b) P HP).
+    let b. assume HbFam: b :e Fam.
+    assume HPeq: P = preimage_of A (pair_map A f g) b.
+    claim HbSub: b :e product_subbasis X Tx Y Ty.
+    { exact (HFamSub b HbFam). }
+    claim HexU: exists U :e Tx, b :e {rectangle_set U V|V :e Ty}.
+    { exact (famunionE Tx (fun U0:set => {rectangle_set U0 V|V :e Ty}) b HbSub). }
+    apply HexU.
+    let U. assume HUconj: U :e Tx /\ b :e {rectangle_set U V|V :e Ty}.
+    claim HU: U :e Tx.
+    { exact (andEL (U :e Tx) (b :e {rectangle_set U V|V :e Ty}) HUconj). }
+    claim HbRepl: b :e {rectangle_set U V|V :e Ty}.
+    { exact (andER (U :e Tx) (b :e {rectangle_set U V|V :e Ty}) HUconj). }
+    claim HexV: exists V :e Ty, b = rectangle_set U V.
+    { exact (ReplE Ty (fun V0:set => rectangle_set U V0) b HbRepl). }
+    apply HexV.
+    let V. assume HVconj: V :e Ty /\ b = rectangle_set U V.
+    claim HV: V :e Ty.
+    { exact (andEL (V :e Ty) (b = rectangle_set U V) HVconj). }
+    claim Hbeq: b = rectangle_set U V.
+    { exact (andER (V :e Ty) (b = rectangle_set U V) HVconj). }
+    claim HpreRect: preimage_of A (pair_map A f g) b =
+      (preimage_of A f U) :/\: (preimage_of A g V).
+    { rewrite Hbeq.
+      exact (preimage_pair_map_rectangle A X Y f g U V). }
+    rewrite HPeq.
+    rewrite HpreRect.
+    exact (topology_binintersect_closed A Ta (preimage_of A f U) (preimage_of A g V) HTa (Hf_pre U HU) (Hg_pre V HV)). }
+  claim HPreFamPow: PreFam :e Power Ta.
+  { apply PowerI.
+    exact HPreFamSub. }
+  exact (topology_union_axiom A Ta HTa PreFam HPreFamPow).
+Qed.
+
+Theorem maps_into_products : forall A Ta X Tx Y Ty f g:set,
+  continuous_map A Ta X Tx f ->
+  continuous_map A Ta Y Ty g ->
+  continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
+let A Ta X Tx Y Ty f g.
+assume Hf: continuous_map A Ta X Tx f.
+assume Hg: continuous_map A Ta Y Ty g.
+prove continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) (pair_map A f g).
+exact (maps_into_products_axiom A Ta X Tx Y Ty f g Hf Hg).
+Qed.
 
 (** from §19 Definition: product projections and universal property **) 
 (** LATEX VERSION: Projection maps from a product space; universal property characterizes the product topology. **)
