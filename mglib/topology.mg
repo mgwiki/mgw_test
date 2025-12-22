@@ -7269,6 +7269,14 @@ apply (injI (X :\/: Y) omega h).
       exact (Hginj u HuY v HvY HguEq).
 Qed.
 
+(** Helper: dependent sum of countables is countable **)
+(** LATEX VERSION: A countable union of countable sets is countable, encoded as a dependent sum with nat-pairing. **)
+Theorem Sigma_countable : forall X:set, countable X ->
+  forall Y:set->set, (forall x:set, x :e X -> countable (Y x)) ->
+  countable (Sigma_ x :e X, Y x).
+admit.
+Qed.
+
 (** Helper: Union of a family preserves Power set membership **)
 Theorem Union_Power : forall X Fam:set,
   Fam c= Power X -> Union Fam c= X.
