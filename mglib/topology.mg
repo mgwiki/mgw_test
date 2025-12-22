@@ -26889,10 +26889,214 @@ apply andI.
 	                   ((preimage_of X f V) :/\: A) Hpow HexW).
       + (** (e) restricting or expanding the range **)
 	    let f. let Z0. assume Hf. assume HZ0. assume Himg.
-	    admit.
+	    prove continuous_map X Tx Z0 (subspace_topology Y Ty Z0) f.
+	    (** Extract preimage axiom for f: X -> Y **)
+	    claim HpreY: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+	    { exact (andER (((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y))
+	                   (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+	                   Hf). }
+	    (** Z0 with the subspace topology is a topological space **)
+	    claim HTz0: topology_on Z0 (subspace_topology Y Ty Z0).
+	    { exact (subspace_topology_is_topology Y Ty Z0 HTy HZ0). }
+	    (** function_on f X Z0 **)
+	    claim HfunXZ0: function_on f X Z0.
+	    { let x. assume HxX: x :e X.
+	      exact (Himg x HxX). }
+	    (** prove the continuity conjunction **)
+	    prove (topology_on X Tx /\ topology_on Z0 (subspace_topology Y Ty Z0) /\ function_on f X Z0)
+	          /\ forall B:set, B :e subspace_topology Y Ty Z0 -> preimage_of X f B :e Tx.
+	    apply andI.
+	    - (** topologies and function_on **)
+	      apply andI.
+	      + apply andI.
+	        * exact HTx.
+	        * exact HTz0.
+	      + exact HfunXZ0.
+	    - let B. assume HB: B :e subspace_topology Y Ty Z0.
+	      (** B is of the form V ∩ Z0 for some V open in Y **)
+	      claim Hex: exists V :e Ty, B = V :/\: Z0.
+	      { exact (SepE2 (Power Z0) (fun U0:set => exists V :e Ty, U0 = V :/\: Z0) B HB). }
+	      apply Hex.
+	      let V. assume HVpair.
+	      claim HV: V :e Ty.
+	      { exact (andEL (V :e Ty) (B = V :/\: Z0) HVpair). }
+	      claim HB_eq: B = V :/\: Z0.
+	      { exact (andER (V :e Ty) (B = V :/\: Z0) HVpair). }
+	      claim HeqPre: preimage_of X f B = preimage_of X f V.
+	      { apply set_ext.
+	        - let x. assume Hx: x :e preimage_of X f B.
+	          prove x :e preimage_of X f V.
+	          claim HxX: x :e X.
+	          { exact (SepE1 X (fun u:set => apply_fun f u :e B) x Hx). }
+	          claim HfxB: apply_fun f x :e B.
+	          { exact (SepE2 X (fun u:set => apply_fun f u :e B) x Hx). }
+		          claim HfxVz0: apply_fun f x :e V :/\: Z0.
+		          { rewrite <- HB_eq. exact HfxB. }
+	          claim HfxV: apply_fun f x :e V.
+	          { exact (binintersectE1 V Z0 (apply_fun f x) HfxVz0). }
+	          exact (SepI X (fun u:set => apply_fun f u :e V) x HxX HfxV).
+	        - let x. assume Hx: x :e preimage_of X f V.
+	          prove x :e preimage_of X f B.
+	          claim HxX: x :e X.
+	          { exact (SepE1 X (fun u:set => apply_fun f u :e V) x Hx). }
+	          claim HfxV: apply_fun f x :e V.
+	          { exact (SepE2 X (fun u:set => apply_fun f u :e V) x Hx). }
+	          claim HfxZ0: apply_fun f x :e Z0.
+	          { exact (HfunXZ0 x HxX). }
+	          claim HfxB: apply_fun f x :e B.
+	          { rewrite HB_eq.
+	            exact (binintersectI V Z0 (apply_fun f x) HfxV HfxZ0). }
+	          exact (SepI X (fun u:set => apply_fun f u :e B) x HxX HfxB).
+	      }
+	      rewrite HeqPre.
+	      exact (HpreY V HV).
 - (** (f) local formulation **)
   let f. assume Hloc.
-  admit.
+  prove continuous_map X Tx Y Ty f.
+	  apply Hloc.
+	  let UFam. assume HUFconj.
+	  claim HUFpair: (UFam c= Tx /\ Union UFam = X) /\ (forall U:set, U :e UFam -> continuous_map U (subspace_topology X Tx U) Y Ty f).
+	  { exact HUFconj. }
+	  claim HUFsub_union: UFam c= Tx /\ Union UFam = X.
+	  { exact (andEL (UFam c= Tx /\ Union UFam = X)
+	                 (forall U:set, U :e UFam -> continuous_map U (subspace_topology X Tx U) Y Ty f)
+	                 HUFpair). }
+	  claim HcontU: forall U:set, U :e UFam -> continuous_map U (subspace_topology X Tx U) Y Ty f.
+	  { exact (andER (UFam c= Tx /\ Union UFam = X)
+	                 (forall U:set, U :e UFam -> continuous_map U (subspace_topology X Tx U) Y Ty f)
+	                 HUFpair). }
+	  claim HUFsub: UFam c= Tx.
+	  { exact (andEL (UFam c= Tx) (Union UFam = X) HUFsub_union). }
+	  claim HUnionEq: Union UFam = X.
+	  { exact (andER (UFam c= Tx) (Union UFam = X) HUFsub_union). }
+  (** derive function_on f X Y from the local continuity hypotheses **)
+  claim HfunXY: function_on f X Y.
+  { let x. assume HxX: x :e X.
+	    claim HxUnion: x :e Union UFam.
+	    { rewrite HUnionEq. exact HxX. }
+    apply (UnionE UFam x HxUnion).
+    let U. assume HxUconj.
+    claim HxU: x :e U.
+    { exact (andEL (x :e U) (U :e UFam) HxUconj). }
+    claim HUUF: U :e UFam.
+    { exact (andER (x :e U) (U :e UFam) HxUconj). }
+    claim HcU: continuous_map U (subspace_topology X Tx U) Y Ty f.
+    { exact (HcontU U HUUF). }
+    claim Htmp: (topology_on U (subspace_topology X Tx U) /\ topology_on Y Ty) /\ function_on f U Y.
+    { exact (andEL ((topology_on U (subspace_topology X Tx U) /\ topology_on Y Ty) /\ function_on f U Y)
+                   (forall V:set, V :e Ty -> preimage_of U f V :e subspace_topology X Tx U)
+                   HcU). }
+    claim HfunUY: function_on f U Y.
+    { exact (andER (topology_on U (subspace_topology X Tx U) /\ topology_on Y Ty)
+                   (function_on f U Y)
+                   Htmp). }
+    exact (HfunUY x HxU). }
+  (** now prove continuity of f by the preimage definition **)
+  prove topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
+        forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact HTx.
+      * exact HTy.
+    + exact HfunXY.
+  - let V. assume HV: V :e Ty.
+    set S := preimage_of X f V.
+    (** define Fam = {W open in X | W ⊆ S} **)
+    set Fam := {W :e Power X | W :e Tx /\ W c= S}.
+    claim HFamSubTx: Fam c= Tx.
+    { let W. assume HW: W :e Fam.
+      claim HWpred: W :e Tx /\ W c= S.
+      { exact (SepE2 (Power X) (fun W0:set => W0 :e Tx /\ W0 c= S) W HW). }
+      exact (andEL (W :e Tx) (W c= S) HWpred). }
+    claim HUnionFamEq: Union Fam = S.
+    { apply set_ext.
+      - let x. assume Hx: x :e Union Fam.
+        prove x :e S.
+        apply (UnionE Fam x Hx).
+        let W. assume HxWconj.
+        claim HxW: x :e W.
+        { exact (andEL (x :e W) (W :e Fam) HxWconj). }
+        claim HWFam: W :e Fam.
+        { exact (andER (x :e W) (W :e Fam) HxWconj). }
+        claim HWpred: W :e Tx /\ W c= S.
+        { exact (SepE2 (Power X) (fun W0:set => W0 :e Tx /\ W0 c= S) W HWFam). }
+        claim HWsubS: W c= S.
+        { exact (andER (W :e Tx) (W c= S) HWpred). }
+        exact (HWsubS x HxW).
+      - let x. assume Hx: x :e S.
+        prove x :e Union Fam.
+        (** choose a cover element U with x ∈ U **)
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun u:set => apply_fun f u :e V) x Hx). }
+	        claim HxUnion: x :e Union UFam.
+	        { rewrite HUnionEq. exact HxX. }
+        apply (UnionE UFam x HxUnion).
+        let U. assume HxUconj.
+        claim HxU: x :e U.
+        { exact (andEL (x :e U) (U :e UFam) HxUconj). }
+        claim HUUF: U :e UFam.
+        { exact (andER (x :e U) (U :e UFam) HxUconj). }
+        claim HUTx: U :e Tx.
+        { exact (HUFsub U HUUF). }
+        claim HUSubX: U c= X.
+        { exact (topology_elem_subset X Tx U HTx HUTx). }
+        claim HcU: continuous_map U (subspace_topology X Tx U) Y Ty f.
+        { exact (HcontU U HUUF). }
+        (** from continuity on U: preimage_of U f V is open in the subspace topology **)
+        claim HpreU: preimage_of U f V :e subspace_topology X Tx U.
+        { exact (andER (((topology_on U (subspace_topology X Tx U) /\ topology_on Y Ty) /\ function_on f U Y))
+                       (forall V0:set, V0 :e Ty -> preimage_of U f V0 :e subspace_topology X Tx U)
+                       HcU
+                       V
+                       HV). }
+        claim HexW0: exists W0 :e Tx, preimage_of U f V = W0 :/\: U.
+        { exact (SepE2 (Power U) (fun U0:set => exists W0 :e Tx, U0 = W0 :/\: U) (preimage_of U f V) HpreU). }
+        apply HexW0.
+        let W0. assume HW0pair.
+        claim HW0Tx: W0 :e Tx.
+        { exact (andEL (W0 :e Tx) (preimage_of U f V = W0 :/\: U) HW0pair). }
+        claim HeqPreU: preimage_of U f V = W0 :/\: U.
+        { exact (andER (W0 :e Tx) (preimage_of U f V = W0 :/\: U) HW0pair). }
+        set W := W0 :/\: U.
+        (** show x ∈ W **)
+        claim HfxV: apply_fun f x :e V.
+        { exact (SepE2 X (fun u:set => apply_fun f u :e V) x Hx). }
+        claim HxPreU: x :e preimage_of U f V.
+        { prove x :e {u :e U | apply_fun f u :e V}.
+          apply (SepI U (fun u:set => apply_fun f u :e V) x HxU).
+          exact HfxV. }
+        claim HxW: x :e W.
+        { rewrite <- HeqPreU. exact HxPreU. }
+        (** show W ∈ Fam and then x ∈ Union Fam by UnionI **)
+        claim HWsubS: W c= S.
+        { let z. assume Hz: z :e W.
+          prove z :e S.
+          claim HzU: z :e U.
+          { exact (binintersectE2 W0 U z Hz). }
+          claim HzX: z :e X.
+          { exact (HUSubX z HzU). }
+	          claim HzPreU: z :e preimage_of U f V.
+	          { rewrite HeqPreU.
+	            exact Hz. }
+          claim HfzV: apply_fun f z :e V.
+          { exact (SepE2 U (fun u:set => apply_fun f u :e V) z HzPreU). }
+          exact (SepI X (fun u:set => apply_fun f u :e V) z HzX HfzV). }
+        claim HWpow: W :e Power X.
+        { apply PowerI.
+          let z. assume Hz: z :e W.
+          claim HzU: z :e U.
+          { exact (binintersectE2 W0 U z Hz). }
+          exact (HUSubX z HzU). }
+        claim HWFam: W :e Fam.
+        { exact (SepI (Power X) (fun W1:set => W1 :e Tx /\ W1 c= S) W HWpow
+                 (andI (W :e Tx) (W c= S)
+                   (topology_binintersect_closed X Tx W0 U HTx HW0Tx HUTx)
+                   HWsubS)). }
+        exact (UnionI Fam x W HxW HWFam).
+    }
+    rewrite <- HUnionFamEq.
+    exact (topology_union_closed X Tx Fam HTx HFamSubTx).
 Qed.
 
 (** from §18 Definition: homeomorphism **) 
