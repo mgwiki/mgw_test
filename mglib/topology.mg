@@ -19031,6 +19031,94 @@ Qed.
 (** LATEX VERSION: Example 3: The order topology on the positive integers is the discrete topology. **)
 Definition Zplus : set := omega :\: {0}.
 
+(** Helper: 0 is not in Zplus **)
+(** Uses the definition Zplus = omega :\: {0}. **)
+Theorem zero_not_in_Zplus : 0 /:e Zplus.
+prove ~(0 :e Zplus).
+assume H0: 0 :e Zplus.
+prove False.
+claim H0m: 0 :e omega :\: {0}.
+{ exact H0. }
+claim Hcore: 0 :e omega /\ 0 /:e {0}.
+{ exact (setminusE omega {0} 0 H0m). }
+claim H0not: 0 /:e {0}.
+{ exact (andER (0 :e omega) (0 /:e {0}) Hcore). }
+exact (H0not (SingI 0)).
+Qed.
+
+(** Helper: 0 is in rational_numbers **)
+(** Uses the definition rational = {x :e real | exists m :e int, exists n :e omega :\: {0}, x = m :/: n}. **)
+Theorem zero_in_rational_numbers : 0 :e rational_numbers.
+prove 0 :e rational.
+claim H0real: 0 :e real.
+{ exact real_0. }
+claim H0omega: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
+claim H0int: 0 :e int.
+{ exact (Subq_omega_int 0 H0omega). }
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim H1not0: 1 /:e {0}.
+{ assume H1: 1 :e {0}.
+  prove False.
+  claim Heq: 1 = 0.
+  { exact (SingE 0 1 H1). }
+  exact (neq_1_0 Heq). }
+claim H1nonzero: 1 :e omega :\: {0}.
+{ exact (setminusI omega {0} 1 H1omega H1not0). }
+claim Heq0: 0 = div_SNo 0 1.
+{ claim Hdiv: div_SNo 0 1 = 0.
+  { exact (div_SNo_0_num 1 SNo_1). }
+  rewrite <- Hdiv at 1.
+  reflexivity. }
+claim Hex: exists m :e int, exists n :e omega :\: {0}, 0 = div_SNo m n.
+{ witness 0.
+  apply andI.
+  - exact H0int.
+  - witness 1.
+    apply andI.
+    + exact H1nonzero.
+    + exact Heq0. }
+exact (SepI real
+            (fun x:set => exists m :e int, exists n :e omega :\: {0}, x = div_SNo m n)
+            0
+            H0real
+            Hex).
+Qed.
+
+(** Helper: Zplus is not omega **)
+Theorem Zplus_neq_omega : Zplus <> omega.
+assume Heq: Zplus = omega.
+prove False.
+claim H0omega: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
+claim H0Z: 0 :e Zplus.
+{ rewrite Heq. exact H0omega. }
+exact (zero_not_in_Zplus H0Z).
+Qed.
+
+(** Helper: Zplus is not R **)
+Theorem Zplus_neq_R : Zplus <> R.
+assume Heq: Zplus = R.
+prove False.
+claim H0R: 0 :e R.
+{ exact real_0. }
+claim H0Z: 0 :e Zplus.
+{ rewrite Heq. exact H0R. }
+exact (zero_not_in_Zplus H0Z).
+Qed.
+
+(** Helper: Zplus is not rational_numbers **)
+Theorem Zplus_neq_rational_numbers : Zplus <> rational_numbers.
+assume Heq: Zplus = rational_numbers.
+prove False.
+claim H0Q: 0 :e rational_numbers.
+{ exact zero_in_rational_numbers. }
+claim H0Z: 0 :e Zplus.
+{ rewrite Heq. exact H0Q. }
+exact (zero_not_in_Zplus H0Z).
+Qed.
+
 (** Helper: order topology on natural numbers equals discrete topology **)
 Axiom Zplus_order_topology_is_discrete :
   generated_topology Zplus (order_topology_basis Zplus) = Power Zplus.
