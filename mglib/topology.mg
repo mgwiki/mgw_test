@@ -41994,11 +41994,164 @@ apply andI.
   exact (discrete_open_all X (preimage_of X f V) Hsub).
 Qed.
 
+(** Helper: congruence for tuple coordinates **)
+Theorem tuple_2_0_congr : forall a b c d:set, (a,b) = (c,d) -> a = c.
+let a b c d.
+assume Heq: (a,b) = (c,d).
+prove a = c.
+rewrite <- (tuple_2_0_eq a b) at 1.
+rewrite <- (tuple_2_0_eq c d).
+rewrite Heq.
+reflexivity.
+Qed.
+
+Theorem tuple_2_1_congr : forall a b c d:set, (a,b) = (c,d) -> b = d.
+let a b c d.
+assume Heq: (a,b) = (c,d).
+prove b = d.
+rewrite <- (tuple_2_1_eq a b) at 1.
+rewrite <- (tuple_2_1_eq c d).
+rewrite Heq.
+reflexivity.
+Qed.
+
+(** Helper: projections from membership in const_fun graphs **)
+Theorem const_fun_pair_first : forall A x a y:set, (a,y) :e const_fun A x -> a :e A.
+let A x a y.
+assume H: (a,y) :e const_fun A x.
+prove a :e A.
+apply (ReplE_impred A (fun a0:set => (a0,x)) (a,y) H (a :e A)).
+let a0. assume Ha0: a0 :e A.
+assume Heq: (a,y) = (a0,x).
+claim Ha: a = a0.
+{ exact (tuple_2_0_congr a y a0 x Heq). }
+rewrite Ha.
+exact Ha0.
+Qed.
+
+Theorem const_fun_pair_second : forall A x a y:set, (a,y) :e const_fun A x -> y = x.
+let A x a y.
+assume H: (a,y) :e const_fun A x.
+prove y = x.
+apply (ReplE_impred A (fun a0:set => (a0,x)) (a,y) H (y = x)).
+let a0. assume _: a0 :e A.
+assume Heq: (a,y) = (a0,x).
+exact (tuple_2_1_congr a y a0 x Heq).
+Qed.
+
 (** Helper: discrete topology is completely regular **)
 Theorem discrete_completely_regular_space : forall X:set,
   completely_regular_space X (discrete_topology X).
 let X.
-admit. (** discrete topology yields complete regularity **)
+prove completely_regular_space X (discrete_topology X).
+claim HTx: topology_on X (discrete_topology X).
+{ exact (discrete_topology_on X). }
+prove topology_on X (discrete_topology X) /\
+  forall x:set, x :e X ->
+    forall F:set, closed_in X (discrete_topology X) F -> x /:e F ->
+      exists f:set,
+        continuous_map X (discrete_topology X) R R_standard_topology f /\
+        apply_fun f x = 0 /\ forall y:set, y :e F -> apply_fun f y = 1.
+apply andI.
+- exact HTx.
+- let x. assume HxX: x :e X.
+  let F. assume HFcl: closed_in X (discrete_topology X) F.
+  assume HxnotF: x /:e F.
+  prove exists f:set,
+    continuous_map X (discrete_topology X) R R_standard_topology f /\
+    apply_fun f x = 0 /\ forall y:set, y :e F -> apply_fun f y = 1.
+  claim HFsubX: F c= X.
+  { exact (closed_in_subset X (discrete_topology X) F HFcl). }
+  set A0 := X :\: F.
+  claim HA0def: A0 = X :\: F.
+  { reflexivity. }
+  set f := (const_fun A0 0) :\/: (const_fun F 1).
+  witness f.
+  claim HRtop: topology_on R R_standard_topology.
+  { exact R_standard_topology_is_topology. }
+  claim H0R: 0 :e R.
+  { exact real_0. }
+  claim H1R: 1 :e R.
+  { exact real_1. }
+
+  claim Happ0: forall z:set, z :e X -> z /:e F -> apply_fun f z = 0.
+  { let z. assume HzX: z :e X.
+    assume HznotF: z /:e F.
+    prove apply_fun f z = 0.
+    claim HzA0: z :e A0.
+    { rewrite HA0def.
+      exact (setminusI X F z HzX HznotF). }
+    claim Hpair0: (z,0) :e f.
+    { apply binunionI1.
+      exact (ReplI A0 (fun a0:set => (a0,0)) z HzA0). }
+    claim Hzgraph: (z, apply_fun f z) :e f.
+    { exact (Eps_i_ax (fun y:set => (z,y) :e f) 0 Hpair0). }
+    apply (binunionE' (const_fun A0 0) (const_fun F 1) (z, apply_fun f z) (apply_fun f z = 0)).
+    - assume Hleft: (z, apply_fun f z) :e const_fun A0 0.
+      exact (const_fun_pair_second A0 0 z (apply_fun f z) Hleft).
+    - assume Hright: (z, apply_fun f z) :e const_fun F 1.
+      claim HzF: z :e F.
+      { exact (const_fun_pair_first F 1 z (apply_fun f z) Hright). }
+      apply FalseE.
+      exact (HznotF HzF).
+    - exact Hzgraph. }
+
+  claim Happ1: forall z:set, z :e X -> z :e F -> apply_fun f z = 1.
+  { let z. assume HzX: z :e X.
+    assume HzF: z :e F.
+    prove apply_fun f z = 1.
+    claim Hpair1: (z,1) :e f.
+    { apply binunionI2.
+      exact (ReplI F (fun a0:set => (a0,1)) z HzF). }
+    claim Hzgraph: (z, apply_fun f z) :e f.
+    { exact (Eps_i_ax (fun y:set => (z,y) :e f) 1 Hpair1). }
+    apply (binunionE' (const_fun A0 0) (const_fun F 1) (z, apply_fun f z) (apply_fun f z = 1)).
+    - assume Hleft: (z, apply_fun f z) :e const_fun A0 0.
+      claim HzA0: z :e A0.
+      { exact (const_fun_pair_first A0 0 z (apply_fun f z) Hleft). }
+      claim HznotF: z /:e F.
+      { claim HzXF: z :e X :\: F.
+        { rewrite <- HA0def.
+          exact HzA0. }
+        exact (setminusE2 X F z HzXF). }
+      apply FalseE.
+      exact (HznotF HzF).
+    - assume Hright: (z, apply_fun f z) :e const_fun F 1.
+      exact (const_fun_pair_second F 1 z (apply_fun f z) Hright).
+    - exact Hzgraph. }
+
+  claim Hfun: function_on f X R.
+  { let z. assume HzX: z :e X.
+    prove apply_fun f z :e R.
+    apply (xm (z :e F)).
+    - assume HzF: z :e F.
+      claim Hz1: apply_fun f z = 1.
+      { exact (Happ1 z HzX HzF). }
+      rewrite Hz1.
+      exact H1R.
+    - assume HznotF: z /:e F.
+      claim Hz0: apply_fun f z = 0.
+      { exact (Happ0 z HzX HznotF). }
+      rewrite Hz0.
+      exact H0R. }
+
+  claim Hcont: continuous_map X (discrete_topology X) R R_standard_topology f.
+  { exact (continuous_from_discrete X R R_standard_topology f HRtop Hfun). }
+
+  claim Hfx0: apply_fun f x = 0.
+  { exact (Happ0 x HxX HxnotF). }
+  claim HfF1: forall y:set, y :e F -> apply_fun f y = 1.
+  { let y. assume HyF: y :e F.
+    claim HyX: y :e X.
+    { exact (HFsubX y HyF). }
+    exact (Happ1 y HyX HyF). }
+
+  apply andI.
+  * prove continuous_map X (discrete_topology X) R R_standard_topology f /\ apply_fun f x = 0.
+    apply andI.
+    - exact Hcont.
+    - exact Hfx0.
+  * exact HfF1.
 Qed.
 
 (** from §33 Definition: Tychonoff space **) 
