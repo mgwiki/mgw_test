@@ -19119,6 +19119,51 @@ claim H0Z: 0 :e Zplus.
 exact (zero_not_in_Zplus H0Z).
 Qed.
 
+(** Helper: membership in Zplus implies membership in omega **)
+Theorem Zplus_mem_omega : forall n:set, n :e Zplus -> n :e omega.
+let n. assume Hn: n :e Zplus.
+claim Hcore: n :e omega /\ n /:e {0}.
+{ exact (setminusE omega {0} n Hn). }
+exact (andEL (n :e omega) (n /:e {0}) Hcore).
+Qed.
+
+(** Helper: membership in Zplus implies n<>0 **)
+Theorem Zplus_mem_nonzero : forall n:set, n :e Zplus -> n <> 0.
+let n. assume Hn: n :e Zplus.
+assume Heq: n = 0.
+prove False.
+claim Hcore: n :e omega /\ n /:e {0}.
+{ exact (setminusE omega {0} n Hn). }
+claim Hnnot0: n /:e {0}.
+{ exact (andER (n :e omega) (n /:e {0}) Hcore). }
+claim HnIn: n :e {0}.
+{ rewrite Heq.
+  exact (SingI 0). }
+exact (Hnnot0 HnIn).
+Qed.
+
+(** Helper: Zplus is a subset of omega **)
+Theorem Zplus_Subq_omega : Zplus c= omega.
+let n. assume Hn: n :e Zplus.
+exact (Zplus_mem_omega n Hn).
+Qed.
+
+(** Helper: successor of a Zplus element is again in Zplus **)
+Theorem Zplus_ordsucc_closed : forall n:set, n :e Zplus -> ordsucc n :e Zplus.
+let n. assume Hn: n :e Zplus.
+claim HnOmega: n :e omega.
+{ exact (Zplus_mem_omega n Hn). }
+claim HsuccOmega: ordsucc n :e omega.
+{ exact (omega_ordsucc n HnOmega). }
+claim HsuccNot0: ordsucc n /:e {0}.
+{ assume H0: ordsucc n :e {0}.
+  prove False.
+  claim Heq0: ordsucc n = 0.
+  { exact (SingE 0 (ordsucc n) H0). }
+  exact (neq_ordsucc_0 n Heq0). }
+exact (setminusI omega {0} (ordsucc n) HsuccOmega HsuccNot0).
+Qed.
+
 (** Helper: order topology on natural numbers equals discrete topology **)
 Axiom Zplus_order_topology_is_discrete :
   generated_topology Zplus (order_topology_basis Zplus) = Power Zplus.
