@@ -35928,19 +35928,33 @@ Definition collection_has_order_at_m_plus_one : set -> set -> set -> prop :=
 
 (** from §50 Definition: covering dimension and finite dimensionality **)
 (** LATEX VERSION: A space X has covering dimension ≤n if for every open cover A there exists a refinement of order ≤n+1. **)
-(** stub: this is a placeholder; proper definition requires refinement and order of coverings **)
+(** Helper: refinement of covers (as families of subsets) **)
+(** LATEX VERSION: B refines A if every element of B is contained in some element of A. **)
+Definition refines_cover : set -> set -> prop := fun B A =>
+  forall U:set, U :e B -> exists V:set, V :e A /\ U c= V.
+
+(** NOTE: Since our `covering_dimension` does not take the topology as an argument,
+    we encode “X has dim ≤ n” as “there exists some topology on X witnessing it”.
+    This matches the intended content for the later dimension-theory chapter while
+    keeping earlier statements unchanged. **)
 Definition covering_dimension : set -> set -> prop := fun X n =>
-  n :e omega /\ exists Tx:set, topology_on X Tx.
+  n :e omega /\
+  exists Tx:set,
+    topology_on X Tx /\
+    forall A:set, open_cover_of X Tx A ->
+      exists B:set,
+        open_cover_of X Tx B /\
+        refines_cover B A /\
+        collection_has_order_at_m_plus_one X B (ordsucc n).
 Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ exists m:set, covering_dimension X m.
 
 (** from §50 Theorem: basic properties of covering dimension **)
 (** LATEX VERSION: Basic existence placeholder for covering dimension. **)
-(** With stub definition, every space has some dimension **)
 Theorem covering_dimension_properties : forall X:set, exists n:set, covering_dimension X n.
 let X.
 witness Empty.
-admit. (** stub definition makes this trivial **)
+admit. (** placeholder for dimension theory **)
 Qed.
 
 (** from §50 Theorem: compact subspace of R^n has dimension at most n **) 
