@@ -9216,6 +9216,23 @@ claim Hlt : a < a.
 exact ((SNoLt_irref a) Hlt).
 Qed.
 
+(** helper: asymmetry of Rlt **)
+(** LATEX VERSION: If a<b then not(b<a). **)
+Theorem not_Rlt_sym : forall a b:set, Rlt a b -> ~(Rlt b a).
+let a b. assume Hab.
+assume Hba.
+claim Haa: Rlt a a.
+{ exact (Rlt_tra a b a Hab Hba). }
+exact (not_Rlt_refl a (RltE_left a b Hab) Haa).
+Qed.
+
+(** helper: strict order implies non-strict order **)
+Theorem Rlt_implies_Rle : forall a b:set, Rlt a b -> Rle a b.
+let a b. assume Hab.
+apply (RleI a b (RltE_left a b Hab) (RltE_right a b Hab)).
+exact (not_Rlt_sym a b Hab).
+Qed.
+
 (** helper for §13 Example 4: 0 < 1 in Rlt form **)
 (** LATEX VERSION: We use 0<1 in the usual order on R. **)
 Theorem Rlt_0_1 : Rlt 0 1.
