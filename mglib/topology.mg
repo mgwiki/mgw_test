@@ -26705,18 +26705,125 @@ apply andI.
 Qed.
 
 (** from §18 Theorem 18.2: rules for constructing continuous functions **) 
-(** LATEX VERSION: Theorem 18.2 provides construction rules preserving continuity. **)
-Theorem continuous_construction_rules : forall X Tx Y Ty Z Tz f g:set,
-  continuous_map X Tx Y Ty f ->
-  continuous_map X Tx Y Ty g ->
-  continuous_map X Tx Y Ty f /\
-  continuous_map X Tx Y Ty g /\
-  continuous_map X Tx Y Ty g.
-let X Tx Y Ty Z Tz f g.
-assume Hf: continuous_map X Tx Y Ty f.
-assume Hg: continuous_map X Tx Y Ty g.
-prove continuous_map X Tx Y Ty f /\ continuous_map X Tx Y Ty g /\ continuous_map X Tx Y Ty g.
-exact (andI (continuous_map X Tx Y Ty f /\ continuous_map X Tx Y Ty g) (continuous_map X Tx Y Ty g) (andI (continuous_map X Tx Y Ty f) (continuous_map X Tx Y Ty g) Hf Hg) Hg).
+(** LATEX VERSION: Theorem 18.2: Constant maps, inclusions, composites, domain restriction, range restriction/expansion, and local continuity formulation. **)
+Theorem continuous_construction_rules : forall X Tx Y Ty Z Tz:set,
+  topology_on X Tx -> topology_on Y Ty -> topology_on Z Tz ->
+  (forall y0:set, y0 :e Y -> continuous_map X Tx Y Ty (const_fun X y0))
+  /\
+  (forall A:set, A c= X -> continuous_map A (subspace_topology X Tx A) X Tx {(y,y) | y :e A})
+  /\
+  (forall f g:set, continuous_map X Tx Y Ty f -> continuous_map Y Ty Z Tz g ->
+    continuous_map X Tx Z Tz (compose_fun X f g))
+  /\
+  (forall f A:set, A c= X -> continuous_map X Tx Y Ty f ->
+    continuous_map A (subspace_topology X Tx A) Y Ty f)
+  /\
+  (forall f Z0:set, continuous_map X Tx Y Ty f -> Z0 c= Y ->
+    (forall x:set, x :e X -> apply_fun f x :e Z0) ->
+    continuous_map X Tx Z0 (subspace_topology Y Ty Z0) f)
+  /\
+  (forall f:set,
+    (exists UFam:set, UFam c= Tx /\ Union UFam = X /\
+      (forall U:set, U :e UFam -> continuous_map U (subspace_topology X Tx U) Y Ty f))
+    -> continuous_map X Tx Y Ty f).
+let X Tx Y Ty Z Tz.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+assume HTz: topology_on Z Tz.
+prove (forall y0:set, y0 :e Y -> continuous_map X Tx Y Ty (const_fun X y0))
+  /\ (forall A:set, A c= X -> continuous_map A (subspace_topology X Tx A) X Tx {(y,y) | y :e A})
+  /\ (forall f g:set, continuous_map X Tx Y Ty f -> continuous_map Y Ty Z Tz g ->
+       continuous_map X Tx Z Tz (compose_fun X f g))
+  /\ (forall f A:set, A c= X -> continuous_map X Tx Y Ty f ->
+       continuous_map A (subspace_topology X Tx A) Y Ty f)
+  /\ (forall f Z0:set, continuous_map X Tx Y Ty f -> Z0 c= Y ->
+       (forall x:set, x :e X -> apply_fun f x :e Z0) ->
+       continuous_map X Tx Z0 (subspace_topology Y Ty Z0) f)
+  /\ (forall f:set,
+       (exists UFam:set, UFam c= Tx /\ Union UFam = X /\
+         (forall U:set, U :e UFam -> continuous_map U (subspace_topology X Tx U) Y Ty f))
+       -> continuous_map X Tx Y Ty f).
+apply andI.
+- (** left: (a) through (e) **)
+  apply andI.
+  + (** left: (a) through (d) **)
+    apply andI.
+    * (** left: (a) through (c) **)
+      apply andI.
+      { (** left: (a) and (b) **)
+        apply andI.
+        - (** (a) constant functions **)
+          let y0. assume Hy0: y0 :e Y.
+          exact (const_fun_continuous X Tx Y Ty y0 HTx HTy Hy0).
+        - (** (b) inclusion of a subspace is continuous **)
+          let A. assume HA: A c= X.
+          set j := {(y,y) | y :e A}.
+          prove continuous_map A (subspace_topology X Tx A) X Tx j.
+          prove topology_on A (subspace_topology X Tx A) /\ topology_on X Tx /\ function_on j A X /\
+                forall V:set, V :e Tx -> preimage_of A j V :e subspace_topology X Tx A.
+          apply andI.
+          - apply andI.
+            + apply andI.
+              * exact (subspace_topology_is_topology X Tx A HTx HA).
+              * exact HTx.
+            + let a. assume HaA: a :e A.
+              prove apply_fun j a :e X.
+              claim Haj: apply_fun j a = a.
+              { exact (identity_function_apply A a HaA). }
+              rewrite Haj.
+              exact (HA a HaA).
+          - let V. assume HV: V :e Tx.
+            prove preimage_of A j V :e subspace_topology X Tx A.
+            claim Heq: preimage_of A j V = V :/\: A.
+            { apply set_ext.
+              - let a. assume Ha: a :e preimage_of A j V.
+                prove a :e V :/\: A.
+                claim HaA: a :e A.
+                { exact (SepE1 A (fun u:set => apply_fun j u :e V) a Ha). }
+                claim Haj: apply_fun j a = a.
+                { exact (identity_function_apply A a HaA). }
+                claim HaV: a :e V.
+                { rewrite <- Haj.
+                  exact (SepE2 A (fun u:set => apply_fun j u :e V) a Ha). }
+                exact (binintersectI V A a HaV HaA).
+              - let a. assume Ha: a :e V :/\: A.
+                prove a :e preimage_of A j V.
+                claim HaV: a :e V.
+                { exact (binintersectE1 V A a Ha). }
+                claim HaA: a :e A.
+                { exact (binintersectE2 V A a Ha). }
+                prove a :e {u :e A | apply_fun j u :e V}.
+                apply (SepI A (fun u:set => apply_fun j u :e V) a HaA).
+                claim Haj: apply_fun j a = a.
+                { exact (identity_function_apply A a HaA). }
+                rewrite Haj.
+                exact HaV.
+            }
+            rewrite Heq.
+	            claim HVpow: (V :/\: A) :e Power A.
+	            { apply PowerI.
+	              let a. assume Ha: a :e V :/\: A.
+	              exact (binintersectE2 V A a Ha). }
+	            claim HexW: exists W :e Tx, V :/\: A = W :/\: A.
+	            { witness V.
+	              apply andI.
+	              - exact HV.
+	              - reflexivity. }
+	            exact (SepI (Power A) (fun U0:set => exists W :e Tx, U0 = W :/\: A) (V :/\: A) HVpow HexW).
+	      }
+      { (** (c) composites **)
+        let f. let g. assume Hf. assume Hg.
+        exact (composition_continuous X Tx Y Ty Z Tz f g Hf Hg).
+      }
+    * (** (d) restricting the domain **)
+      let f. let A. assume HA. assume Hf.
+      admit.
+  + (** (e) restricting or expanding the range **)
+    let f. let Z0. assume Hf. assume HZ0. assume Himg.
+    admit.
+- (** (f) local formulation **)
+  let f. assume Hloc.
+  admit.
 Qed.
 
 (** from §18 Definition: homeomorphism **) 
