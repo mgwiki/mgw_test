@@ -35942,14 +35942,8 @@ Definition collection_has_order_at_most_m_plus_one : set -> set -> set -> prop :
 Definition refines_cover : set -> set -> prop := fun B A =>
   forall U:set, U :e B -> exists V:set, V :e A /\ U c= V.
 
-(** NOTE: Since our `covering_dimension` does not take the topology as an argument,
-    we encode “X has dim ≤ n” as “there exists some topology on X witnessing it”.
-    This matches the intended content for the later dimension-theory chapter while
-    keeping earlier statements unchanged. **)
-Definition covering_dimension : set -> set -> prop := fun X n =>
-  n :e omega /\
-  exists Tx:set,
-    topology_on X Tx /\
+Definition covering_dimension : set -> set -> set -> prop := fun X Tx n =>
+  topology_on X Tx /\ n :e omega /\
     forall A:set, open_cover_of X Tx A ->
       exists B:set,
         open_cover_of X Tx B /\
@@ -35964,38 +35958,33 @@ Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
         refines_cover B A /\
         collection_has_order_at_most_m_plus_one X B m.
 
-(** from §50 Theorem: basic properties of covering dimension **)
-(** LATEX VERSION: Basic existence placeholder for covering dimension. **)
-Theorem covering_dimension_properties : forall X:set, exists n:set, covering_dimension X n.
-let X.
-witness Empty.
-admit. (** placeholder for dimension theory **)
-Qed.
-
 (** from §50 Theorem: compact subspace of R^n has dimension at most n **) 
 (** LATEX VERSION: Compact subspace of ℝ^n has covering dimension ≤ n. **)
-Theorem compact_subspace_Rn_dimension_le : forall X n:set,
-  compact_space X (euclidean_topology n) -> covering_dimension X n.
-let X n.
+Theorem compact_subspace_Rn_dimension_le : forall N X:set,
+  X c= (euclidean_space N) ->
+  compact_space X (subspace_topology (euclidean_space N) (euclidean_topology N) X) ->
+  covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
+let N X.
+assume HXsub.
 assume Hcomp.
-prove covering_dimension X n.
+prove covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
 admit. (** compact subspace of R^n has dimension ≤ n **)
 Qed.
 
 (** from §50 Theorem: compact m-manifold has dimension at most m **) 
 (** LATEX VERSION: Compact m-manifold has covering dimension ≤ m. **)
 Theorem compact_manifold_dimension_le : forall X Tx m:set,
-  m_manifold X Tx -> compact_space X Tx -> covering_dimension X m.
+  m_manifold X Tx -> compact_space X Tx -> covering_dimension X Tx m.
 let X Tx m.
 assume Hman Hcomp.
-prove covering_dimension X m.
+prove covering_dimension X Tx m.
 admit. (** compact m-manifold has dimension ≤ m **)
 Qed.
 
 (** from §50 Theorem (Menger-Nöbeling): compact metrizable space of dimension m embeds in R^{2m+1} **) 
 (** LATEX VERSION: Menger–Nöbeling embedding theorem (placeholder). **)
 Theorem Menger_Nobeling_embedding : forall X Tx m:set,
-  compact_space X Tx -> metrizable X Tx -> covering_dimension X m ->
+  compact_space X Tx -> metrizable X Tx -> covering_dimension X Tx m ->
   exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 let X Tx m.
@@ -36008,39 +35997,46 @@ Qed.
 (** from §50 Theorem 50.1: dimension of closed subspace bounded by ambient **) 
 (** LATEX VERSION: Dimension of a closed subspace does not exceed that of the ambient space. **)
 Theorem dimension_closed_subspace_le : forall X Tx Y n:set,
-  covering_dimension X n -> closed_in X Tx Y -> covering_dimension Y n.
+  covering_dimension X Tx n -> closed_in X Tx Y ->
+  covering_dimension Y (subspace_topology X Tx Y) n.
 let X Tx Y n.
 assume HX HY.
-prove covering_dimension Y n.
+prove covering_dimension Y (subspace_topology X Tx Y) n.
 admit. (** Theorem 50.1: closed subspace dimension ≤ ambient dimension **)
 Qed.
 
 (** from §50 Theorem 50.2: dimension of union of closed sets is max **)
-(** LATEX VERSION: Dimension of union of two closed sets is at most the max of their dimensions. **)
-Theorem dimension_union_closed_max : forall X Y Z n:set,
-  covering_dimension Y n -> covering_dimension Z n ->
-  covering_dimension (Y :\/: Z) n.
-let X Y Z n.
-assume HY HZ.
-prove covering_dimension (Y :\/: Z) n.
+(** LATEX VERSION: If X = Y ∪ Z where Y,Z are closed in X, then dim(X) ≤ max(dim(Y),dim(Z)) (and in fact equality holds for finite-dimensional spaces). **)
+Theorem dimension_union_closed_max : forall X Tx Y Z n:set,
+  topology_on X Tx ->
+  Y c= X -> Z c= X ->
+  closed_in X Tx Y -> closed_in X Tx Z ->
+  covering_dimension Y (subspace_topology X Tx Y) n ->
+  covering_dimension Z (subspace_topology X Tx Z) n ->
+  covering_dimension (Y :\/: Z) (subspace_topology X Tx (Y :\/: Z)) n.
+let X Tx Y Z n.
+assume HTx HYsub HZsub HYcl HZcl HYdim HZdim.
+prove covering_dimension (Y :\/: Z) (subspace_topology X Tx (Y :\/: Z)) n.
 admit. (** Theorem 50.2: union dimension bound (placeholder) **)
 Qed.
 
 (** from §50 Corollary 50.3: finite union of closed finite-dimensional sets **)
-Theorem dimension_finite_union_closed_max : forall X Fam n:set,
+(** LATEX VERSION: If X is a finite union of closed subspaces each of dimension ≤ n, then X has dimension ≤ n. **)
+Theorem dimension_finite_union_closed_max : forall X Tx Fam n:set,
+  topology_on X Tx ->
   finite Fam ->
-  (forall Y:set, Y :e Fam -> covering_dimension Y n) ->
-  covering_dimension (Union Fam) n.
-let X Fam n.
-assume Hfin Hall.
-prove covering_dimension (Union Fam) n.
-admit. (** requires induction on finite sets **)
+  (forall Y:set, Y :e Fam -> Y c= X /\ closed_in X Tx Y /\ covering_dimension Y (subspace_topology X Tx Y) n) ->
+  covering_dimension (Union Fam) (subspace_topology X Tx (Union Fam)) n.
+let X Tx Fam n.
+assume HTx Hfin Hall.
+prove covering_dimension (Union Fam) (subspace_topology X Tx (Union Fam)) n.
+admit. (** Corollary 50.3: finite union bound (placeholder) **)
 Qed.
 
 (** from §50 Example 4: compact 1-manifold has dimension 1 **)
 (** LATEX VERSION: Every compact 1-manifold X has topological dimension 1. **)
 Theorem compact_1_manifold_dimension_1 : forall X Tx:set,
-  compact_space X Tx -> m_manifold X Tx -> covering_dimension X (Sing Empty).
+  compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx (Sing Empty).
 let X Tx.
 assume Hcomp Hman.
 admit. (** requires full 1-manifold theory and dimension computation **)
@@ -36050,7 +36046,7 @@ Qed.
 (** LATEX VERSION: Every compact 2-manifold X has topological dimension at most 2. **)
 Definition two : set := Sing (Sing Empty).
 Theorem compact_2_manifold_dimension_le_2 : forall X Tx:set,
-  compact_space X Tx -> m_manifold X Tx -> covering_dimension X two.
+  compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx two.
 let X Tx.
 assume Hcomp Hman.
 admit. (** requires proper dimension theory **)
@@ -36092,7 +36088,7 @@ Definition linear_graph : set -> set -> prop := fun G Tg =>
 (** from §50 Example 6: linear graphs have dimension 1 **)
 (** LATEX VERSION: A linear graph G has topological dimension 1. **)
 Theorem linear_graph_dimension_1 : forall G Tg:set,
-  linear_graph G Tg -> covering_dimension G (Sing Empty).
+  linear_graph G Tg -> covering_dimension G Tg (Sing Empty).
 let G Tg.
 assume Hlin.
 admit. (** Example 6: linear graphs have topological dimension 1 (placeholder) **)
@@ -36175,7 +36171,7 @@ Qed.
 Theorem Menger_Nobeling_embedding_full : forall X Tx m:set,
   compact_space X Tx ->
   metrizable X Tx ->
-  covering_dimension X m ->
+  covering_dimension X Tx m ->
   m :e omega ->
   exists N:set, exists e:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
@@ -36192,12 +36188,12 @@ Qed.
 (** LATEX VERSION: Every compact subspace of R^N has topological dimension at most N. **)
 Theorem compact_subspace_RN_dimension_le_N : forall X N:set,
   N :e omega ->
-  compact_space X (euclidean_topology N) ->
   X c= (euclidean_space N) ->
-  covering_dimension X N.
+  compact_space X (subspace_topology (euclidean_space N) (euclidean_topology N) X) ->
+  covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
 let X N.
-assume HN Hcomp Hsub.
-prove covering_dimension X N.
+assume HN Hsub Hcomp.
+prove covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
 admit. (** Theorem 50.6: compact subspace of R^N has dimension ≤ N **)
 Qed.
 
@@ -36207,10 +36203,10 @@ Theorem compact_m_manifold_dimension_le_m : forall X Tx m:set,
   m :e omega ->
   compact_space X Tx ->
   m_manifold X Tx ->
-  covering_dimension X m.
+  covering_dimension X Tx m.
 let X Tx m.
 assume Hm Hcomp Hman.
-prove covering_dimension X m.
+prove covering_dimension X Tx m.
 admit. (** Corollary 50.7: compact m-manifold has dimension ≤ m **)
 Qed.
 
@@ -36269,7 +36265,7 @@ Definition locally_m_euclidean : set -> set -> set -> prop := fun X Tx m =>
 Theorem ex50_1_discrete_dimension_0 : forall X Tx:set,
   Tx = discrete_topology X ->
   topology_on X Tx ->
-  covering_dimension X Empty.
+  covering_dimension X Tx Empty.
 let X Tx.
 assume HTxdisc HTxtop.
 admit. (** Exercise 1: discrete spaces have dimension 0 (placeholder) **)
@@ -36281,7 +36277,7 @@ Theorem ex50_2_connected_T1_dimension_ge_1 : forall X Tx:set,
   connected_space X Tx ->
   T1_space X Tx ->
   (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
-  covering_dimension X Empty -> False.
+  covering_dimension X Tx Empty -> False.
 let X Tx.
 assume Hconn HT1 Hdist Hdim0.
 prove False.
@@ -36292,10 +36288,10 @@ Qed.
 (** LATEX VERSION: The topologist's sine curve has topological dimension 1. **)
 Theorem ex50_3_sine_curve_dimension_1 : forall X Tx:set,
   X = R (** stub: actual definition of topologist's sine curve needed **) ->
-  covering_dimension X (Sing Empty).
+  covering_dimension X Tx (Sing Empty).
 let X Tx.
 assume HX.
-prove covering_dimension X (Sing Empty).
+prove covering_dimension X Tx (Sing Empty).
 admit. (** topologist's sine curve has dimension 1 **)
 Qed.
 
@@ -36317,7 +36313,7 @@ Qed.
 (** from §50 Exercise 5: embedding theorem for m=1 maps to linear graph **)
 (** LATEX VERSION: For m=1, the map g in the embedding theorem proof maps X onto a linear graph in R³. **)
 Theorem ex50_5_embedding_m1_linear_graph : forall X Tx:set,
-  covering_dimension X (Sing Empty) ->
+  covering_dimension X Tx (Sing Empty) ->
   compact_space X Tx ->
   metrizable X Tx ->
   exists g:set,
@@ -36339,7 +36335,7 @@ Theorem ex50_6_locally_compact_embeds : forall X Tx m:set,
   locally_compact X Tx ->
   Hausdorff_space X Tx ->
   second_countable_space X Tx ->
-  (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C m) ->
+  (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C (subspace_topology X Tx C) m) ->
   exists N:set, exists e:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
@@ -36391,11 +36387,11 @@ Theorem ex50_8_sigma_compact_dimension : forall X Tx m:set,
   m :e omega ->
   sigma_compact X Tx ->
   Hausdorff_space X Tx ->
-  (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C m) ->
-  covering_dimension X m.
+  (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C (subspace_topology X Tx C) m) ->
+  covering_dimension X Tx m.
 let X Tx m.
 assume Hm Hsig HHaus Hdim.
-prove covering_dimension X m.
+prove covering_dimension X Tx m.
 admit. (** sigma-compact: dimension equals sup of compact subspace dimensions **)
 Qed.
 
@@ -36404,7 +36400,7 @@ Qed.
 Theorem ex50_9_manifold_dimension_le_m : forall X Tx m:set,
   m :e omega ->
   m_manifold X Tx ->
-  covering_dimension X m.
+  covering_dimension X Tx m.
 let X Tx m.
 assume Hm Hman.
 admit. (** requires full manifold dimension theory **)
@@ -36416,7 +36412,7 @@ Theorem ex50_10_closed_subspace_RN_dimension : forall X N:set,
   N :e omega ->
   X c= (euclidean_space N) ->
   closed_in (euclidean_space N) (euclidean_topology N) X ->
-  covering_dimension X N.
+  covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
 let X N.
 assume HN Hsub Hclosed.
 admit. (** follows from Theorem 50.6 generalized **)
