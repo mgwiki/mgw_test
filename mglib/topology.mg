@@ -9114,6 +9114,40 @@ Definition Q : set := rational.
 Definition Rlt : set -> set -> prop := fun a b =>
   a :e R /\ b :e R /\ a < b.
 
+(** helper: non-strict order on the reals by negating strict order **)
+(** LATEX VERSION: Write a ≤ b for not(b < a) in the ambient strict order on ℝ. **)
+Definition Rle : set -> set -> prop := fun a b =>
+  a :e R /\ b :e R /\ ~(Rlt b a).
+
+(** helper introduction rule for Rle **)
+Theorem RleI : forall a b:set, a :e R -> b :e R -> ~(Rlt b a) -> Rle a b.
+let a b. assume Ha Hb Hnlt.
+prove a :e R /\ b :e R /\ ~(Rlt b a).
+apply andI.
+- apply andI.
+  + exact Ha.
+  + exact Hb.
+- exact Hnlt.
+Qed.
+
+(** helper elimination rules for Rle **)
+Theorem RleE_left : forall a b:set, Rle a b -> a :e R.
+let a b. assume H.
+exact (andEL (a :e R) (b :e R) (andEL (a :e R /\ b :e R) (~(Rlt b a)) H)).
+Qed.
+
+(** helper elimination rules for Rle **)
+Theorem RleE_right : forall a b:set, Rle a b -> b :e R.
+let a b. assume H.
+exact (andER (a :e R) (b :e R) (andEL (a :e R /\ b :e R) (~(Rlt b a)) H)).
+Qed.
+
+(** helper elimination rules for Rle **)
+Theorem RleE_nlt : forall a b:set, Rle a b -> ~(Rlt b a).
+let a b. assume H.
+exact (andER (a :e R /\ b :e R) (~(Rlt b a)) H).
+Qed.
+
 (** from §13 Example 4: helper introduction rule for Rlt **)
 (** LATEX VERSION: We use the usual convention a<b implies a and b are reals and a<b. **)
 Theorem RltI : forall a b:set, a :e R -> b :e R -> a < b -> Rlt a b.
