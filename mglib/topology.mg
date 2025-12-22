@@ -17359,7 +17359,521 @@ apply andI.
       rewrite Heq.
       exact (PowerI R (halfopen_interval_left q1 q2) (halfopen_interval_left_Subq_R q1 q2)).
     + admit. (** density/coverage of R by rational half-open intervals **)
-  - admit. (** intersection refinement using rational endpoints **)
+	  - (** intersection refinement using rational endpoints **)
+	    let b1. assume Hb1.
+	    let b2. assume Hb2.
+	    let x. assume Hx1 Hx2.
+	    prove exists b3 :e rational_halfopen_intervals_basis, x :e b3 /\ b3 c= b1 :/\: b2.
+	    (** destruct b1 = halfopen_interval_left q1 q2 with q1,q2 rationals **)
+	    claim Hexq1 : exists q1 :e rational_numbers, b1 :e {halfopen_interval_left q1 q2|q2 :e rational_numbers}.
+	    { exact (famunionE rational_numbers (fun q1 : set => {halfopen_interval_left q1 q2|q2 :e rational_numbers}) b1 Hb1). }
+	    apply Hexq1.
+	    let q1. assume Hq1pair. apply Hq1pair.
+	    assume Hq1Q : q1 :e rational_numbers.
+	    assume Hb1fam : b1 :e {halfopen_interval_left q1 q2|q2 :e rational_numbers}.
+	    claim Hexq2 : exists q2 :e rational_numbers, b1 = halfopen_interval_left q1 q2.
+	    { exact (ReplE rational_numbers (fun q2 : set => halfopen_interval_left q1 q2) b1 Hb1fam). }
+	    apply Hexq2.
+	    let q2. assume Hq2pair. apply Hq2pair.
+	    assume Hq2Q : q2 :e rational_numbers.
+	    assume Hb1eq : b1 = halfopen_interval_left q1 q2.
+	    (** destruct b2 = halfopen_interval_left r1 r2 with r1,r2 rationals **)
+	    claim Hexr1 : exists r1 :e rational_numbers, b2 :e {halfopen_interval_left r1 r2|r2 :e rational_numbers}.
+	    { exact (famunionE rational_numbers (fun r1 : set => {halfopen_interval_left r1 r2|r2 :e rational_numbers}) b2 Hb2). }
+	    apply Hexr1.
+	    let r1. assume Hr1pair. apply Hr1pair.
+	    assume Hr1Q : r1 :e rational_numbers.
+	    assume Hb2fam : b2 :e {halfopen_interval_left r1 r2|r2 :e rational_numbers}.
+	    claim Hexr2 : exists r2 :e rational_numbers, b2 = halfopen_interval_left r1 r2.
+	    { exact (ReplE rational_numbers (fun r2 : set => halfopen_interval_left r1 r2) b2 Hb2fam). }
+	    apply Hexr2.
+	    let r2. assume Hr2pair. apply Hr2pair.
+	    assume Hr2Q : r2 :e rational_numbers.
+	    assume Hb2eq : b2 = halfopen_interval_left r1 r2.
+	    (** x in the two half-open intervals **)
+	    claim HxIn1 : x :e halfopen_interval_left q1 q2.
+	    { rewrite <- Hb1eq. exact Hx1. }
+	    claim HxIn2 : x :e halfopen_interval_left r1 r2.
+	    { rewrite <- Hb2eq. exact Hx2. }
+	    claim HxR : x :e R.
+	    { exact (SepE1 R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) x HxIn1). }
+	    claim HxProp1 : ~(Rlt x q1) /\ Rlt x q2.
+	    { exact (SepE2 R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) x HxIn1). }
+	    claim HxProp2 : ~(Rlt x r1) /\ Rlt x r2.
+	    { exact (SepE2 R (fun z : set => ~(Rlt z r1) /\ Rlt z r2) x HxIn2). }
+	    claim Hnxq1 : ~(Rlt x q1).
+	    { exact (andEL (~(Rlt x q1)) (Rlt x q2) HxProp1). }
+	    claim Hxq2 : Rlt x q2.
+	    { exact (andER (~(Rlt x q1)) (Rlt x q2) HxProp1). }
+	    claim Hnxr1 : ~(Rlt x r1).
+	    { exact (andEL (~(Rlt x r1)) (Rlt x r2) HxProp2). }
+	    claim Hxr2 : Rlt x r2.
+	    { exact (andER (~(Rlt x r1)) (Rlt x r2) HxProp2). }
+	    (** endpoint types **)
+	    claim Hq1R : q1 :e R.
+	    { exact (rational_numbers_in_R q1 Hq1Q). }
+	    claim Hq2R : q2 :e R.
+	    { exact (rational_numbers_in_R q2 Hq2Q). }
+	    claim Hr1R : r1 :e R.
+	    { exact (rational_numbers_in_R r1 Hr1Q). }
+	    claim Hr2R : r2 :e R.
+	    { exact (rational_numbers_in_R r2 Hr2Q). }
+	    claim Hq1S : SNo q1.
+	    { exact (real_SNo q1 Hq1R). }
+	    claim Hq2S : SNo q2.
+	    { exact (real_SNo q2 Hq2R). }
+	    claim Hr1S : SNo r1.
+	    { exact (real_SNo r1 Hr1R). }
+	    claim Hr2S : SNo r2.
+	    { exact (real_SNo r2 Hr2R). }
+	    claim HxS : SNo x.
+	    { exact (real_SNo x HxR). }
+	    claim Hxq2lt : x < q2.
+	    { exact (RltE_lt x q2 Hxq2). }
+	    claim Hxr2lt : x < r2.
+	    { exact (RltE_lt x r2 Hxr2). }
+	    (** choose max left endpoint and min right endpoint by trichotomy **)
+	    apply (SNoLt_trichotomy_or_impred q1 r1 Hq1S Hr1S
+	             (exists b3 :e rational_halfopen_intervals_basis, x :e b3 /\ b3 c= b1 :/\: b2)).
+	    - assume Hq1lt : q1 < r1.
+	      (** left endpoint r1 **)
+	      apply (SNoLt_trichotomy_or_impred q2 r2 Hq2S Hr2S
+	               (exists b3 :e rational_halfopen_intervals_basis, x :e b3 /\ b3 c= b1 :/\: b2)).
+	      + assume Hq2lt : q2 < r2.
+	        (** right endpoint q2 **)
+	        set I3 := halfopen_interval_left r1 q2.
+	        witness I3.
+	        apply andI.
+	        * (** I3 in basis **)
+	          claim HI3fam : I3 :e {halfopen_interval_left r1 qq|qq :e rational_numbers}.
+	          { exact (ReplI rational_numbers (fun qq : set => halfopen_interval_left r1 qq) q2 Hq2Q). }
+	          exact (famunionI rational_numbers
+	                   (fun aa : set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+	                   r1
+	                   I3
+	                   Hr1Q
+	                   HI3fam).
+	        * apply andI.
+	          { (** x in I3 **)
+	            claim Hconj : ~(Rlt x r1) /\ Rlt x q2.
+	            { apply andI.
+	              - exact Hnxr1.
+	              - exact Hxq2. }
+	            exact (SepI R (fun z : set => ~(Rlt z r1) /\ Rlt z q2) x HxR Hconj). }
+	          { (** I3 subset b1 ∩ b2 **)
+	            let y. assume HyI3 : y :e I3.
+	            prove y :e b1 :/\: b2.
+	            claim HyR : y :e R.
+	            { exact (SepE1 R (fun z : set => ~(Rlt z r1) /\ Rlt z q2) y HyI3). }
+	            claim HyProp : ~(Rlt y r1) /\ Rlt y q2.
+	            { exact (SepE2 R (fun z : set => ~(Rlt z r1) /\ Rlt z q2) y HyI3). }
+	            claim Hnyr1 : ~(Rlt y r1).
+	            { exact (andEL (~(Rlt y r1)) (Rlt y q2) HyProp). }
+	            claim Hyq2 : Rlt y q2.
+	            { exact (andER (~(Rlt y r1)) (Rlt y q2) HyProp). }
+	            claim HyS : SNo y.
+	            { exact (real_SNo y HyR). }
+	            claim Hyq2lt : y < q2.
+	            { exact (RltE_lt y q2 Hyq2). }
+	            (** y in b2: y < r2 since y<q2 and q2<r2 **)
+	            claim Hyr2lt : y < r2.
+	            { exact (SNoLt_tra y q2 r2 HyS Hq2S Hr2S Hyq2lt Hq2lt). }
+	            claim Hyr2 : Rlt y r2.
+	            { exact (RltI y r2 HyR Hr2R Hyr2lt). }
+	            claim HyIn2 : y :e halfopen_interval_left r1 r2.
+	            { exact (SepI R (fun z : set => ~(Rlt z r1) /\ Rlt z r2) y HyR
+	                         (andI (~(Rlt y r1)) (Rlt y r2) Hnyr1 Hyr2)). }
+	            claim Hyb2 : y :e b2.
+	            { rewrite Hb2eq. exact HyIn2. }
+	            (** y in b1: need ~(Rlt y q1) and Rlt y q2 (already) **)
+	            claim Hnyq1 : ~(Rlt y q1).
+	            { assume Hyq1 : Rlt y q1.
+	              claim Hyq1lt : y < q1.
+	              { exact (RltE_lt y q1 Hyq1). }
+	              claim Hyr1lt : y < r1.
+	              { exact (SNoLt_tra y q1 r1 HyS Hq1S Hr1S Hyq1lt Hq1lt). }
+	              claim Hyr1 : Rlt y r1.
+	              { exact (RltI y r1 HyR Hr1R Hyr1lt). }
+	              exact (Hnyr1 Hyr1). }
+	            claim HyIn1 : y :e halfopen_interval_left q1 q2.
+	            { exact (SepI R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) y HyR
+	                         (andI (~(Rlt y q1)) (Rlt y q2) Hnyq1 Hyq2)). }
+	            claim Hyb1 : y :e b1.
+	            { rewrite Hb1eq. exact HyIn1. }
+	            exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+	      + assume Hq2eq : q2 = r2.
+	        set I3 := halfopen_interval_left r1 q2.
+	        witness I3.
+	        apply andI.
+	        * claim HI3fam : I3 :e {halfopen_interval_left r1 qq|qq :e rational_numbers}.
+	          { exact (ReplI rational_numbers (fun qq : set => halfopen_interval_left r1 qq) q2 Hq2Q). }
+	          exact (famunionI rational_numbers
+	                   (fun aa : set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+	                   r1
+	                   I3
+	                   Hr1Q
+	                   HI3fam).
+	        * apply andI.
+	          { exact (SepI R (fun z : set => ~(Rlt z r1) /\ Rlt z q2) x HxR
+	                         (andI (~(Rlt x r1)) (Rlt x q2) Hnxr1 Hxq2)). }
+	          { let y. assume HyI3 : y :e I3.
+	            prove y :e b1 :/\: b2.
+	            claim HyR : y :e R.
+	            { exact (SepE1 R (fun z : set => ~(Rlt z r1) /\ Rlt z q2) y HyI3). }
+	            claim HyProp : ~(Rlt y r1) /\ Rlt y q2.
+	            { exact (SepE2 R (fun z : set => ~(Rlt z r1) /\ Rlt z q2) y HyI3). }
+	            claim Hnyr1 : ~(Rlt y r1).
+	            { exact (andEL (~(Rlt y r1)) (Rlt y q2) HyProp). }
+	            claim Hyq2 : Rlt y q2.
+	            { exact (andER (~(Rlt y r1)) (Rlt y q2) HyProp). }
+	            claim Hyr2 : Rlt y r2.
+	            { rewrite <- Hq2eq. exact Hyq2. }
+	            claim HyIn2 : y :e halfopen_interval_left r1 r2.
+	            { exact (SepI R (fun z : set => ~(Rlt z r1) /\ Rlt z r2) y HyR
+	                         (andI (~(Rlt y r1)) (Rlt y r2) Hnyr1 Hyr2)). }
+	            claim Hyb2 : y :e b2.
+	            { rewrite Hb2eq. exact HyIn2. }
+	            claim Hnyq1 : ~(Rlt y q1).
+	            { assume Hyq1 : Rlt y q1.
+	              claim HyS : SNo y.
+	              { exact (real_SNo y HyR). }
+	              claim Hyq1lt : y < q1.
+	              { exact (RltE_lt y q1 Hyq1). }
+	              claim Hyr1lt : y < r1.
+	              { exact (SNoLt_tra y q1 r1 HyS Hq1S Hr1S Hyq1lt Hq1lt). }
+	              claim Hyr1 : Rlt y r1.
+	              { exact (RltI y r1 HyR Hr1R Hyr1lt). }
+	              exact (Hnyr1 Hyr1). }
+	            claim HyIn1 : y :e halfopen_interval_left q1 q2.
+	            { exact (SepI R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) y HyR
+	                         (andI (~(Rlt y q1)) (Rlt y q2) Hnyq1 Hyq2)). }
+	            claim Hyb1 : y :e b1.
+	            { rewrite Hb1eq. exact HyIn1. }
+	            exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+	      + assume Hr2lt : r2 < q2.
+	        (** right endpoint r2 **)
+	        set I3 := halfopen_interval_left r1 r2.
+	        witness I3.
+	        apply andI.
+	        * claim HI3fam : I3 :e {halfopen_interval_left r1 rr|rr :e rational_numbers}.
+	          { exact (ReplI rational_numbers (fun rr : set => halfopen_interval_left r1 rr) r2 Hr2Q). }
+	          exact (famunionI rational_numbers
+	                   (fun aa : set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+	                   r1
+	                   I3
+	                   Hr1Q
+	                   HI3fam).
+	        * apply andI.
+	          { (** x in I3 **)
+	            claim Hconj : ~(Rlt x r1) /\ Rlt x r2.
+	            { apply andI.
+	              - exact Hnxr1.
+	              - exact Hxr2. }
+	            exact (SepI R (fun z : set => ~(Rlt z r1) /\ Rlt z r2) x HxR Hconj). }
+	          { let y. assume HyI3 : y :e I3.
+	            prove y :e b1 :/\: b2.
+	            claim HyR : y :e R.
+	            { exact (SepE1 R (fun z : set => ~(Rlt z r1) /\ Rlt z r2) y HyI3). }
+	            claim HyProp : ~(Rlt y r1) /\ Rlt y r2.
+	            { exact (SepE2 R (fun z : set => ~(Rlt z r1) /\ Rlt z r2) y HyI3). }
+	            claim Hnyr1 : ~(Rlt y r1).
+	            { exact (andEL (~(Rlt y r1)) (Rlt y r2) HyProp). }
+	            claim Hyr2 : Rlt y r2.
+	            { exact (andER (~(Rlt y r1)) (Rlt y r2) HyProp). }
+	            claim Hyb2 : y :e b2.
+	            { rewrite Hb2eq. exact HyI3. }
+	            (** y in b1: need Rlt y q2 since r2<q2 **)
+	            claim HyS : SNo y.
+	            { exact (real_SNo y HyR). }
+	            claim Hyr2lt : y < r2.
+	            { exact (RltE_lt y r2 Hyr2). }
+	            claim Hyq2lt : y < q2.
+	            { exact (SNoLt_tra y r2 q2 HyS Hr2S Hq2S Hyr2lt Hr2lt). }
+	            claim Hyq2 : Rlt y q2.
+	            { exact (RltI y q2 HyR Hq2R Hyq2lt). }
+	            claim Hnyq1 : ~(Rlt y q1).
+	            { assume Hyq1 : Rlt y q1.
+	              claim Hyq1lt : y < q1.
+	              { exact (RltE_lt y q1 Hyq1). }
+	              claim Hyr1lt : y < r1.
+	              { exact (SNoLt_tra y q1 r1 HyS Hq1S Hr1S Hyq1lt Hq1lt). }
+	              claim Hyr1 : Rlt y r1.
+	              { exact (RltI y r1 HyR Hr1R Hyr1lt). }
+	              exact (Hnyr1 Hyr1). }
+	            claim HyIn1 : y :e halfopen_interval_left q1 q2.
+	            { exact (SepI R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) y HyR
+	                         (andI (~(Rlt y q1)) (Rlt y q2) Hnyq1 Hyq2)). }
+	            claim Hyb1 : y :e b1.
+	            { rewrite Hb1eq. exact HyIn1. }
+	            exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+	    - assume Hq1eq : q1 = r1.
+	      (** left endpoint q1 **)
+	      apply (SNoLt_trichotomy_or_impred q2 r2 Hq2S Hr2S
+	               (exists b3 :e rational_halfopen_intervals_basis, x :e b3 /\ b3 c= b1 :/\: b2)).
+	      + assume Hq2lt : q2 < r2.
+	        set I3 := halfopen_interval_left q1 q2.
+	        witness I3.
+	        apply andI.
+	        * claim HI3fam : I3 :e {halfopen_interval_left q1 qq|qq :e rational_numbers}.
+	          { exact (ReplI rational_numbers (fun qq : set => halfopen_interval_left q1 qq) q2 Hq2Q). }
+	          exact (famunionI rational_numbers
+	                   (fun aa : set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+	                   q1
+	                   I3
+	                   Hq1Q
+	                   HI3fam).
+		        * apply andI.
+		          { exact HxIn1. }
+		          { let y. assume HyI3 : y :e I3.
+		            prove y :e b1 :/\: b2.
+	            claim Hyb1 : y :e b1.
+	            { rewrite Hb1eq. exact HyI3. }
+	            claim HyR : y :e R.
+	            { exact (SepE1 R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) y HyI3). }
+	            claim HyProp : ~(Rlt y q1) /\ Rlt y q2.
+	            { exact (SepE2 R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) y HyI3). }
+	            claim Hnyq1 : ~(Rlt y q1).
+	            { exact (andEL (~(Rlt y q1)) (Rlt y q2) HyProp). }
+	            claim Hyq2 : Rlt y q2.
+	            { exact (andER (~(Rlt y q1)) (Rlt y q2) HyProp). }
+	            claim HyS : SNo y.
+	            { exact (real_SNo y HyR). }
+	            claim Hyq2lt : y < q2.
+	            { exact (RltE_lt y q2 Hyq2). }
+	            claim Hyr2lt : y < r2.
+	            { exact (SNoLt_tra y q2 r2 HyS Hq2S Hr2S Hyq2lt Hq2lt). }
+	            claim Hyr2 : Rlt y r2.
+	            { exact (RltI y r2 HyR Hr2R Hyr2lt). }
+	            claim HyIn2 : y :e halfopen_interval_left r1 r2.
+	            { rewrite <- Hq1eq at 1.
+	              exact (SepI R (fun z : set => ~(Rlt z q1) /\ Rlt z r2) y HyR
+	                           (andI (~(Rlt y q1)) (Rlt y r2) Hnyq1 Hyr2)). }
+	            claim Hyb2 : y :e b2.
+	            { rewrite Hb2eq. exact HyIn2. }
+	            exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+	      + assume Hq2eq : q2 = r2.
+	        set I3 := halfopen_interval_left q1 q2.
+	        witness I3.
+	        apply andI.
+	        * claim HI3fam : I3 :e {halfopen_interval_left q1 qq|qq :e rational_numbers}.
+	          { exact (ReplI rational_numbers (fun qq : set => halfopen_interval_left q1 qq) q2 Hq2Q). }
+	          exact (famunionI rational_numbers
+	                   (fun aa : set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+	                   q1
+	                   I3
+	                   Hq1Q
+	                   HI3fam).
+		        * apply andI.
+		          { exact HxIn1. }
+		          { let y. assume HyI3 : y :e I3.
+		            prove y :e b1 :/\: b2.
+	            claim Hyb1 : y :e b1.
+	            { rewrite Hb1eq. exact HyI3. }
+	            claim Hyb2 : y :e b2.
+	            { rewrite Hb2eq. rewrite <- Hq1eq. rewrite <- Hq2eq. exact HyI3. }
+	            exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+	      + assume Hr2lt : r2 < q2.
+	        set I3 := halfopen_interval_left q1 r2.
+	        witness I3.
+	        apply andI.
+	        * claim HI3fam : I3 :e {halfopen_interval_left q1 rr|rr :e rational_numbers}.
+	          { exact (ReplI rational_numbers (fun rr : set => halfopen_interval_left q1 rr) r2 Hr2Q). }
+	          exact (famunionI rational_numbers
+	                   (fun aa : set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+	                   q1
+	                   I3
+	                   Hq1Q
+	                   HI3fam).
+		        * apply andI.
+		          { claim Hconj : ~(Rlt x q1) /\ Rlt x r2.
+		            { apply andI.
+		              - exact Hnxq1.
+		              - exact Hxr2. }
+		            exact (SepI R (fun z : set => ~(Rlt z q1) /\ Rlt z r2) x HxR Hconj). }
+	          { let y. assume HyI3 : y :e I3.
+	            prove y :e b1 :/\: b2.
+	            claim HyR : y :e R.
+	            { exact (SepE1 R (fun z : set => ~(Rlt z q1) /\ Rlt z r2) y HyI3). }
+	            claim HyProp : ~(Rlt y q1) /\ Rlt y r2.
+	            { exact (SepE2 R (fun z : set => ~(Rlt z q1) /\ Rlt z r2) y HyI3). }
+	            claim Hnyq1 : ~(Rlt y q1).
+	            { exact (andEL (~(Rlt y q1)) (Rlt y r2) HyProp). }
+	            claim Hyr2 : Rlt y r2.
+	            { exact (andER (~(Rlt y q1)) (Rlt y r2) HyProp). }
+	            claim HyS : SNo y.
+	            { exact (real_SNo y HyR). }
+	            claim Hyr2lt : y < r2.
+	            { exact (RltE_lt y r2 Hyr2). }
+	            claim Hyq2lt : y < q2.
+	            { exact (SNoLt_tra y r2 q2 HyS Hr2S Hq2S Hyr2lt Hr2lt). }
+	            claim Hyq2 : Rlt y q2.
+	            { exact (RltI y q2 HyR Hq2R Hyq2lt). }
+	            claim HyIn1 : y :e halfopen_interval_left q1 q2.
+	            { exact (SepI R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) y HyR
+	                         (andI (~(Rlt y q1)) (Rlt y q2) Hnyq1 Hyq2)). }
+	            claim Hyb1 : y :e b1.
+	            { rewrite Hb1eq. exact HyIn1. }
+	            claim HyIn2 : y :e halfopen_interval_left r1 r2.
+	            { rewrite <- Hq1eq at 1.
+	              exact (SepI R (fun z : set => ~(Rlt z q1) /\ Rlt z r2) y HyR
+	                           (andI (~(Rlt y q1)) (Rlt y r2) Hnyq1 Hyr2)). }
+	            claim Hyb2 : y :e b2.
+	            { rewrite Hb2eq. exact HyIn2. }
+	            exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+	    - assume Hr1lt : r1 < q1.
+	      (** left endpoint q1 **)
+	      apply (SNoLt_trichotomy_or_impred q2 r2 Hq2S Hr2S
+	               (exists b3 :e rational_halfopen_intervals_basis, x :e b3 /\ b3 c= b1 :/\: b2)).
+	      + assume Hq2lt : q2 < r2.
+	        set I3 := halfopen_interval_left q1 q2.
+	        witness I3.
+	        apply andI.
+	        * claim HI3fam : I3 :e {halfopen_interval_left q1 qq|qq :e rational_numbers}.
+	          { exact (ReplI rational_numbers (fun qq : set => halfopen_interval_left q1 qq) q2 Hq2Q). }
+	          exact (famunionI rational_numbers
+	                   (fun aa : set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+	                   q1
+	                   I3
+	                   Hq1Q
+	                   HI3fam).
+	        * apply andI.
+	          { exact HxIn1. }
+	          { let y. assume HyI3 : y :e I3.
+	            prove y :e b1 :/\: b2.
+	            claim Hyb1 : y :e b1.
+	            { rewrite Hb1eq. exact HyI3. }
+	            claim HyR : y :e R.
+	            { exact (SepE1 R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) y HyI3). }
+	            claim HyProp : ~(Rlt y q1) /\ Rlt y q2.
+	            { exact (SepE2 R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) y HyI3). }
+	            claim Hnyq1 : ~(Rlt y q1).
+	            { exact (andEL (~(Rlt y q1)) (Rlt y q2) HyProp). }
+	            claim Hyq2 : Rlt y q2.
+	            { exact (andER (~(Rlt y q1)) (Rlt y q2) HyProp). }
+	            claim HyS : SNo y.
+	            { exact (real_SNo y HyR). }
+	            claim Hyq2lt : y < q2.
+	            { exact (RltE_lt y q2 Hyq2). }
+	            claim Hyr2lt : y < r2.
+	            { exact (SNoLt_tra y q2 r2 HyS Hq2S Hr2S Hyq2lt Hq2lt). }
+	            claim Hyr2 : Rlt y r2.
+	            { exact (RltI y r2 HyR Hr2R Hyr2lt). }
+	            claim Hnyr1 : ~(Rlt y r1).
+	            { assume Hyr1 : Rlt y r1.
+	              claim Hyr1lt : y < r1.
+	              { exact (RltE_lt y r1 Hyr1). }
+	              claim Hyq1lt : y < q1.
+	              { exact (SNoLt_tra y r1 q1 HyS Hr1S Hq1S Hyr1lt Hr1lt). }
+	              claim Hyq1 : Rlt y q1.
+	              { exact (RltI y q1 HyR Hq1R Hyq1lt). }
+	              exact (Hnyq1 Hyq1). }
+	            claim HyIn2 : y :e halfopen_interval_left r1 r2.
+	            { exact (SepI R (fun z : set => ~(Rlt z r1) /\ Rlt z r2) y HyR
+	                         (andI (~(Rlt y r1)) (Rlt y r2) Hnyr1 Hyr2)). }
+	            claim Hyb2 : y :e b2.
+	            { rewrite Hb2eq. exact HyIn2. }
+	            exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+	      + assume Hq2eq : q2 = r2.
+	        set I3 := halfopen_interval_left q1 q2.
+	        witness I3.
+	        apply andI.
+	        * claim HI3fam : I3 :e {halfopen_interval_left q1 qq|qq :e rational_numbers}.
+	          { exact (ReplI rational_numbers (fun qq : set => halfopen_interval_left q1 qq) q2 Hq2Q). }
+	          exact (famunionI rational_numbers
+	                   (fun aa : set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+	                   q1
+	                   I3
+	                   Hq1Q
+	                   HI3fam).
+	        * apply andI.
+	          { exact HxIn1. }
+	          { let y. assume HyI3 : y :e I3.
+	            prove y :e b1 :/\: b2.
+	            claim Hyb1 : y :e b1.
+	            { rewrite Hb1eq. exact HyI3. }
+	            claim HyR : y :e R.
+	            { exact (SepE1 R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) y HyI3). }
+	            claim HyProp : ~(Rlt y q1) /\ Rlt y q2.
+	            { exact (SepE2 R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) y HyI3). }
+	            claim Hnyq1 : ~(Rlt y q1).
+	            { exact (andEL (~(Rlt y q1)) (Rlt y q2) HyProp). }
+	            claim Hyq2 : Rlt y q2.
+	            { exact (andER (~(Rlt y q1)) (Rlt y q2) HyProp). }
+	            claim Hyr2 : Rlt y r2.
+	            { rewrite <- Hq2eq. exact Hyq2. }
+	            claim Hnyr1 : ~(Rlt y r1).
+	            { assume Hyr1 : Rlt y r1.
+	              claim HyS : SNo y.
+	              { exact (real_SNo y HyR). }
+	              claim Hyr1lt : y < r1.
+	              { exact (RltE_lt y r1 Hyr1). }
+	              claim Hyq1lt : y < q1.
+	              { exact (SNoLt_tra y r1 q1 HyS Hr1S Hq1S Hyr1lt Hr1lt). }
+	              claim Hyq1 : Rlt y q1.
+	              { exact (RltI y q1 HyR Hq1R Hyq1lt). }
+	              exact (Hnyq1 Hyq1). }
+	            claim HyIn2 : y :e halfopen_interval_left r1 r2.
+	            { exact (SepI R (fun z : set => ~(Rlt z r1) /\ Rlt z r2) y HyR
+	                         (andI (~(Rlt y r1)) (Rlt y r2) Hnyr1 Hyr2)). }
+	            claim Hyb2 : y :e b2.
+	            { rewrite Hb2eq. exact HyIn2. }
+	            exact (binintersectI b1 b2 y Hyb1 Hyb2). }
+	      + assume Hr2lt : r2 < q2.
+	        set I3 := halfopen_interval_left q1 r2.
+	        witness I3.
+	        apply andI.
+	        * claim HI3fam : I3 :e {halfopen_interval_left q1 rr|rr :e rational_numbers}.
+	          { exact (ReplI rational_numbers (fun rr : set => halfopen_interval_left q1 rr) r2 Hr2Q). }
+	          exact (famunionI rational_numbers
+	                   (fun aa : set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+	                   q1
+	                   I3
+	                   Hq1Q
+	                   HI3fam).
+	        * apply andI.
+	          { claim Hconj : ~(Rlt x q1) /\ Rlt x r2.
+	            { apply andI.
+	              - exact Hnxq1.
+	              - exact Hxr2. }
+	            exact (SepI R (fun z : set => ~(Rlt z q1) /\ Rlt z r2) x HxR Hconj). }
+	          { let y. assume HyI3 : y :e I3.
+	            prove y :e b1 :/\: b2.
+	            claim HyR : y :e R.
+	            { exact (SepE1 R (fun z : set => ~(Rlt z q1) /\ Rlt z r2) y HyI3). }
+	            claim HyProp : ~(Rlt y q1) /\ Rlt y r2.
+	            { exact (SepE2 R (fun z : set => ~(Rlt z q1) /\ Rlt z r2) y HyI3). }
+	            claim Hnyq1 : ~(Rlt y q1).
+	            { exact (andEL (~(Rlt y q1)) (Rlt y r2) HyProp). }
+	            claim Hyr2 : Rlt y r2.
+	            { exact (andER (~(Rlt y q1)) (Rlt y r2) HyProp). }
+	            claim HyS : SNo y.
+	            { exact (real_SNo y HyR). }
+	            claim Hyr2lt : y < r2.
+	            { exact (RltE_lt y r2 Hyr2). }
+	            claim Hyq2lt : y < q2.
+	            { exact (SNoLt_tra y r2 q2 HyS Hr2S Hq2S Hyr2lt Hr2lt). }
+	            claim Hyq2 : Rlt y q2.
+	            { exact (RltI y q2 HyR Hq2R Hyq2lt). }
+	            claim HyIn1 : y :e halfopen_interval_left q1 q2.
+	            { exact (SepI R (fun z : set => ~(Rlt z q1) /\ Rlt z q2) y HyR
+	                         (andI (~(Rlt y q1)) (Rlt y q2) Hnyq1 Hyq2)). }
+	            claim Hyb1 : y :e b1.
+	            { rewrite Hb1eq. exact HyIn1. }
+	            claim Hnyr1 : ~(Rlt y r1).
+	            { assume Hyr1 : Rlt y r1.
+	              claim Hyr1lt : y < r1.
+	              { exact (RltE_lt y r1 Hyr1). }
+	              claim Hyq1lt : y < q1.
+	              { exact (SNoLt_tra y r1 q1 HyS Hr1S Hq1S Hyr1lt Hr1lt). }
+	              claim Hyq1 : Rlt y q1.
+	              { exact (RltI y q1 HyR Hq1R Hyq1lt). }
+	              exact (Hnyq1 Hyq1). }
+	            claim HyIn2 : y :e halfopen_interval_left r1 r2.
+	            { exact (SepI R (fun z : set => ~(Rlt z r1) /\ Rlt z r2) y HyR
+	                         (andI (~(Rlt y r1)) (Rlt y r2) Hnyr1 Hyr2)). }
+	            claim Hyb2 : y :e b2.
+	            { rewrite Hb2eq. exact HyIn2. }
+	            exact (binintersectI b1 b2 y Hyb1 Hyb2). }
 - admit. (** generated topology differs from R_lower_limit_topology **)
 Qed.
 
