@@ -13353,6 +13353,47 @@ let x. assume Hx.
 exact (SepE1 R (fun x0 : set => Rlt a x0 /\ Rlt x0 b) x Hx).
 Qed.
 
+(** from §13: every real lies in some standard open interval **)
+(** LATEX VERSION: For any x in R, x is contained in (x-1,x+1). **)
+Theorem real_in_open_interval_minus1_plus1 : forall x:set,
+  x :e R ->
+  x :e open_interval (add_SNo x (minus_SNo 1)) (add_SNo x 1).
+let x. assume HxR.
+set a0 := add_SNo x (minus_SNo 1).
+set b0 := add_SNo x 1.
+claim Hm1R : minus_SNo 1 :e R.
+{ exact (real_minus_SNo 1 real_1). }
+claim Ha0R : a0 :e R.
+{ exact (real_add_SNo x HxR (minus_SNo 1) Hm1R). }
+claim Hb0R : b0 :e R.
+{ exact (real_add_SNo x HxR 1 real_1). }
+claim HxS : SNo x.
+{ exact (real_SNo x HxR). }
+claim Hm1S : SNo (minus_SNo 1).
+{ exact (real_SNo (minus_SNo 1) Hm1R). }
+claim H1S : SNo 1.
+{ exact (real_SNo 1 real_1). }
+claim Ha0ltx : a0 < x.
+{ claim Hlt : a0 < add_SNo x 0.
+  { exact (add_SNo_Lt2 x (minus_SNo 1) 0 HxS Hm1S SNo_0 minus_1_lt_0). }
+  rewrite <- (add_SNo_0R x HxS) at 2.
+  exact Hlt. }
+claim Hxltb0 : x < b0.
+{ claim Hlt : add_SNo x 0 < b0.
+  { exact (add_SNo_Lt2 x 0 1 HxS SNo_0 H1S SNoLt_0_1). }
+  rewrite <- (add_SNo_0R x HxS) at 1.
+  exact Hlt. }
+claim Ha0x : Rlt a0 x.
+{ exact (RltI a0 x Ha0R HxR Ha0ltx). }
+claim Hxb0 : Rlt x b0.
+{ exact (RltI x b0 HxR Hb0R Hxltb0). }
+claim Hconj : Rlt a0 x /\ Rlt x b0.
+{ apply andI.
+  - exact Ha0x.
+  - exact Hxb0. }
+exact (SepI R (fun x0 : set => Rlt a0 x0 /\ Rlt x0 b0) x HxR Hconj).
+Qed.
+
 (** from §13 Exercise 6: half open interval is a subset of ℝ **)
 (** LATEX VERSION: [a,b) is a subset of ℝ. **)
 Theorem halfopen_interval_left_Subq_R : forall a b:set, halfopen_interval_left a b c= R.
@@ -16567,12 +16608,49 @@ apply andI.
                b
                Hbq1
                (b :e Power R)).
-      let q2. assume Hq2 Heq.
-      rewrite Heq.
-      exact (PowerI R (open_interval q1 q2) (open_interval_Subq_R q1 q2)).
-    + admit. (** density/coverage of R by rational open intervals **)
-  - admit. (** intersection refinement using rational endpoints **)
-- admit. (** generated_topology R rational_open_intervals_basis equals R_standard_topology **)
+	      let q2. assume Hq2 Heq.
+	      rewrite Heq.
+	      exact (PowerI R (open_interval q1 q2) (open_interval_Subq_R q1 q2)).
+	    + (** coverage of R by rational open intervals **)
+	      let x. assume HxR.
+	      set a0 := add_SNo x (minus_SNo 1).
+	      set b0 := add_SNo x 1.
+	      claim Hm1R : minus_SNo 1 :e R.
+	      { exact (real_minus_SNo 1 real_1). }
+	      claim Ha0R : a0 :e R.
+	      { exact (real_add_SNo x HxR (minus_SNo 1) Hm1R). }
+	      claim Hb0R : b0 :e R.
+	      { exact (real_add_SNo x HxR 1 real_1). }
+	      claim HxInI : x :e open_interval a0 b0.
+	      { exact (real_in_open_interval_minus1_plus1 x HxR). }
+	      claim HexRat : exists q1 :e rational_numbers, exists q2 :e rational_numbers,
+	        x :e open_interval q1 q2 /\ open_interval q1 q2 c= open_interval a0 b0.
+	      { exact (rational_interval_refines_real_interval a0 b0 x Ha0R Hb0R HxR HxInI). }
+	      apply HexRat.
+	      let q1. assume Hq1pair. apply Hq1pair.
+	      assume Hq1: q1 :e rational_numbers.
+	      assume Hexq2: exists q2 :e rational_numbers,
+	        x :e open_interval q1 q2 /\ open_interval q1 q2 c= open_interval a0 b0.
+	      apply Hexq2.
+	      let q2. assume Hq2pair. apply Hq2pair.
+	      assume Hq2: q2 :e rational_numbers.
+	      assume HxInQ : x :e open_interval q1 q2 /\ open_interval q1 q2 c= open_interval a0 b0.
+	      claim HxInQint : x :e open_interval q1 q2.
+	      { exact (andEL (x :e open_interval q1 q2) (open_interval q1 q2 c= open_interval a0 b0) HxInQ). }
+	      witness (open_interval q1 q2).
+	      apply andI.
+	      * (** open_interval q1 q2 is in the rational-open-interval basis **)
+	        claim Hq2fam : open_interval q1 q2 :e {open_interval q1 q2'|q2' :e rational_numbers}.
+	        { exact (ReplI rational_numbers (fun q2' : set => open_interval q1 q2') q2 Hq2). }
+	        exact (famunionI rational_numbers
+	                 (fun q1' : set => {open_interval q1' q2'|q2' :e rational_numbers})
+	                 q1
+	                 (open_interval q1 q2)
+	                 Hq1
+	                 Hq2fam).
+	      * exact HxInQint.
+	  - admit. (** intersection refinement using rational endpoints **)
+	- admit. (** generated_topology R rational_open_intervals_basis equals R_standard_topology **)
 Qed.
 
 (** from §13 Exercise 8(b): half-open rational intervals generate a different topology **) 
