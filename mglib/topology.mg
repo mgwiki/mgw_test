@@ -38651,7 +38651,258 @@ apply andI.
 					            { exact (topology_from_subbasis_is_topology (product_space I Xi) Ssmall HSsmall). }
 					            claim HSfull_sub_Tsmall: product_subbasis_full I Xi c=
 					              generated_topology_from_subbasis (product_space I Xi) Ssmall.
-					            { admit. }
+					            { let s. assume HsSfull: s :e product_subbasis_full I Xi.
+					              prove s :e generated_topology_from_subbasis (product_space I Xi) Ssmall.
+					              set Bsm := basis_of_subbasis (product_space I Xi) Ssmall.
+					              claim HBsmBasis: basis_on (product_space I Xi) Bsm.
+					              { exact (finite_intersections_basis_of_subbasis (product_space I Xi) Ssmall HSsmall). }
+					              claim HGTS: generated_topology_from_subbasis (product_space I Xi) Ssmall =
+					                generated_topology (product_space I Xi) Bsm.
+					              { reflexivity. }
+					              rewrite HGTS.
+					              (** Destructure s as a cylinder at some coordinate **)
+					              apply (famunionE_impred I (fun i0:set => {product_cylinder I Xi i0 U0|U0 :e space_family_topology Xi i0}) s HsSfull).
+					              let i0. assume Hi0I. assume HsFi0: s :e {product_cylinder I Xi i0 U0|U0 :e space_family_topology Xi i0}.
+					              apply (ReplE_impred (space_family_topology Xi i0) (fun U0:set => product_cylinder I Xi i0 U0) s HsFi0).
+					              let U0. assume HU0Top: U0 :e space_family_topology Xi i0.
+					              assume HsEq: s = product_cylinder I Xi i0 U0.
+					              (** Represent U0 as union of basis elements from Bsel i0 **)
+					              claim HBsel_i0c: basis_on (space_family_set Xi i0) (Bsel i0) /\ countable_set (Bsel i0).
+					              { exact (andEL (basis_on (space_family_set Xi i0) (Bsel i0) /\ countable_set (Bsel i0))
+					                             (basis_generates (space_family_set Xi i0) (Bsel i0) (space_family_topology Xi i0))
+					                             (HBsel i0 Hi0I)). }
+					              claim HBsel_i0: basis_on (space_family_set Xi i0) (Bsel i0).
+					              { exact (andEL (basis_on (space_family_set Xi i0) (Bsel i0))
+					                             (countable_set (Bsel i0))
+					                             HBsel_i0c). }
+					              claim HBgen_i0: basis_generates (space_family_set Xi i0) (Bsel i0) (space_family_topology Xi i0).
+					              { exact (andER (basis_on (space_family_set Xi i0) (Bsel i0) /\ countable_set (Bsel i0))
+					                             (basis_generates (space_family_set Xi i0) (Bsel i0) (space_family_topology Xi i0))
+					                             (HBsel i0 Hi0I)). }
+					              claim HTeq_i0: generated_topology (space_family_set Xi i0) (Bsel i0) = space_family_topology Xi i0.
+					              { exact (andER (basis_on (space_family_set Xi i0) (Bsel i0))
+					                             (generated_topology (space_family_set Xi i0) (Bsel i0) = space_family_topology Xi i0)
+					                             HBgen_i0). }
+					              claim HU0Gen: U0 :e generated_topology (space_family_set Xi i0) (Bsel i0).
+					              { rewrite HTeq_i0. exact HU0Top. }
+					              claim HTgen: topology_on (space_family_set Xi i0) (generated_topology (space_family_set Xi i0) (Bsel i0)).
+					              { exact (lemma_topology_from_basis (space_family_set Xi i0) (Bsel i0) HBsel_i0). }
+					              claim HU0open: open_in (space_family_set Xi i0) (generated_topology (space_family_set Xi i0) (Bsel i0)) U0.
+					              { exact (andI (topology_on (space_family_set Xi i0) (generated_topology (space_family_set Xi i0) (Bsel i0)))
+					                           (U0 :e generated_topology (space_family_set Xi i0) (Bsel i0))
+					                           HTgen HU0Gen). }
+					              claim HexFam: exists Fam :e Power (Bsel i0), Union Fam = U0.
+					              { exact (open_sets_as_unions_of_basis (space_family_set Xi i0) (Bsel i0) HBsel_i0 U0 HU0open). }
+					              apply HexFam.
+					              let Fam. assume HFampair.
+					              claim HFamPow: Fam :e Power (Bsel i0).
+					              { exact (andEL (Fam :e Power (Bsel i0)) (Union Fam = U0) HFampair). }
+					              claim HUnionFam: Union Fam = U0.
+					              { exact (andER (Fam :e Power (Bsel i0)) (Union Fam = U0) HFampair). }
+					              claim HFamSub: Fam c= Bsel i0.
+					              { exact (PowerE (Bsel i0) Fam HFamPow). }
+					              set FamCyl := {product_cylinder I Xi i0 V|V :e Fam}.
+					              claim HUnionCyl: Union FamCyl = product_cylinder I Xi i0 U0.
+					              { apply set_ext.
+					                - let f. assume HfU: f :e Union FamCyl.
+					                  prove f :e product_cylinder I Xi i0 U0.
+					                  apply (UnionE_impred FamCyl f HfU).
+					                  let c. assume Hfc: f :e c. assume Hc: c :e FamCyl.
+					                  apply (ReplE_impred Fam (fun V0:set => product_cylinder I Xi i0 V0) c Hc).
+					                  let V0. assume HV0Fam: V0 :e Fam.
+					                  assume HcEq: c = product_cylinder I Xi i0 V0.
+					                  claim HV0B: V0 :e Bsel i0.
+					                  { exact (HFamSub V0 HV0Fam). }
+					                  claim HV0subU0: V0 c= U0.
+					                  { let x. assume HxV0: x :e V0.
+					                    claim HxUF: x :e Union Fam.
+					                    { exact (UnionI Fam x V0 HxV0 HV0Fam). }
+						                    rewrite <- HUnionFam.
+						                    exact HxUF. }
+					                  claim HfCylV0: f :e product_cylinder I Xi i0 V0.
+					                  { rewrite <- HcEq. exact Hfc. }
+					                  claim HfX: f :e product_space I Xi.
+					                  { exact (SepE1 (product_space I Xi) (fun f1:set => i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun f1 i0 :e V0) f HfCylV0). }
+					                  claim Hfcond: (i0 :e I /\ V0 :e space_family_topology Xi i0) /\ apply_fun f i0 :e V0.
+					                  { exact (SepE2 (product_space I Xi) (fun f1:set => i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun f1 i0 :e V0) f HfCylV0). }
+					                  claim Hfi0V0: apply_fun f i0 :e V0.
+					                  { exact (andER (i0 :e I /\ V0 :e space_family_topology Xi i0) (apply_fun f i0 :e V0) Hfcond). }
+						                  claim Hfi0U0: apply_fun f i0 :e U0.
+						                  { exact (HV0subU0 (apply_fun f i0) Hfi0V0). }
+						                  claim HpredU0: (i0 :e I /\ U0 :e space_family_topology Xi i0) /\ apply_fun f i0 :e U0.
+						                  { apply andI.
+						                    - apply andI.
+						                      + exact Hi0I.
+						                      + exact HU0Top.
+						                    - exact Hfi0U0. }
+						                  exact (SepI (product_space I Xi) (fun f1:set => i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun f1 i0 :e U0)
+						                             f HfX HpredU0).
+					                - let f. assume HfC: f :e product_cylinder I Xi i0 U0.
+					                  prove f :e Union FamCyl.
+					                  claim Hfcond: (i0 :e I /\ U0 :e space_family_topology Xi i0) /\ apply_fun f i0 :e U0.
+					                  { exact (SepE2 (product_space I Xi) (fun f1:set => i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun f1 i0 :e U0) f HfC). }
+					                  claim Hfi0U0: apply_fun f i0 :e U0.
+					                  { exact (andER (i0 :e I /\ U0 :e space_family_topology Xi i0) (apply_fun f i0 :e U0) Hfcond). }
+					                  claim Hfi0UF: apply_fun f i0 :e Union Fam.
+					                  { rewrite HUnionFam. exact Hfi0U0. }
+					                  apply (UnionE_impred Fam (apply_fun f i0) Hfi0UF).
+					                  let V0. assume Hfi0V0: apply_fun f i0 :e V0. assume HV0Fam: V0 :e Fam.
+					                  set C0 := product_cylinder I Xi i0 V0.
+					                  claim HC0Fam: C0 :e FamCyl.
+					                  { exact (ReplI Fam (fun V1:set => product_cylinder I Xi i0 V1) V0 HV0Fam). }
+						                  claim HfC0: f :e C0.
+						                  { claim HfX: f :e product_space I Xi.
+						                    { exact (SepE1 (product_space I Xi) (fun f1:set => i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun f1 i0 :e U0) f HfC). }
+						                    claim HV0B: V0 :e Bsel i0.
+						                    { exact (HFamSub V0 HV0Fam). }
+						                    claim HBgen_i0T: basis_generates (space_family_set Xi i0) (Bsel i0) (space_family_topology Xi i0).
+						                    { exact (andER (basis_on (space_family_set Xi i0) (Bsel i0) /\ countable_set (Bsel i0))
+						                                   (basis_generates (space_family_set Xi i0) (Bsel i0) (space_family_topology Xi i0))
+						                                   (HBsel i0 Hi0I)). }
+						                    claim HTeq2: generated_topology (space_family_set Xi i0) (Bsel i0) = space_family_topology Xi i0.
+						                    { exact (andER (basis_on (space_family_set Xi i0) (Bsel i0))
+						                                   (generated_topology (space_family_set Xi i0) (Bsel i0) = space_family_topology Xi i0)
+						                                   HBgen_i0T). }
+						                    claim HV0Gen: V0 :e generated_topology (space_family_set Xi i0) (Bsel i0).
+						                    { exact (generated_topology_contains_basis (space_family_set Xi i0) (Bsel i0) HBsel_i0 V0 HV0B). }
+						                    claim HV0Top: V0 :e space_family_topology Xi i0.
+						                    { rewrite <- HTeq2. exact HV0Gen. }
+						                    claim HpredV0: (i0 :e I /\ V0 :e space_family_topology Xi i0) /\ apply_fun f i0 :e V0.
+						                    { apply andI.
+						                      - apply andI.
+						                        + exact Hi0I.
+						                        + exact HV0Top.
+						                      - exact Hfi0V0. }
+						                    exact (SepI (product_space I Xi) (fun f1:set => i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun f1 i0 :e V0)
+						                               f HfX HpredV0). }
+					                  exact (UnionI FamCyl f C0 HfC0 HC0Fam). }
+						              (** Restrict to nonempty cylinders to get a family of basis elements **)
+						              set FamCylN := {c :e FamCyl|c <> Empty}.
+						              claim HFamCylNPow: FamCylN :e Power Bsm.
+						              { claim HFamCylNsub: FamCylN c= Bsm.
+						                { let c. assume HcN: c :e FamCylN.
+						                  prove c :e Bsm.
+						                  claim HcFam: c :e FamCyl.
+						                  { exact (SepE1 FamCyl (fun c0:set => c0 <> Empty) c HcN). }
+						                  claim HcNe: c <> Empty.
+						                  { exact (SepE2 FamCyl (fun c0:set => c0 <> Empty) c HcN). }
+						                  apply (ReplE_impred Fam (fun V0:set => product_cylinder I Xi i0 V0) c HcFam).
+						                  let V0. assume HV0Fam: V0 :e Fam.
+						                  assume HcEq: c = product_cylinder I Xi i0 V0.
+						                  claim HV0B: V0 :e Bsel i0.
+						                  { exact (HFamSub V0 HV0Fam). }
+						                  claim HC0in: product_cylinder I Xi i0 V0 :e Ssmall.
+						                  { exact (famunionI I (fun i1:set => {product_cylinder I Xi i1 U|U :e Bsel i1})
+						                           i0 (product_cylinder I Xi i0 V0) Hi0I
+						                           (ReplI (Bsel i0) (fun U:set => product_cylinder I Xi i0 U) V0 HV0B)). }
+						                  claim HC0S: c :e Ssmall.
+						                  { rewrite HcEq. exact HC0in. }
+						                  exact (subbasis_elem_in_basis (product_space I Xi) Ssmall c HSsmall HC0S HcNe). }
+						                exact (PowerI Bsm FamCylN HFamCylNsub). }
+					              claim HUnionN: Union FamCylN = Union FamCyl.
+					              { apply set_ext.
+					                - let f. assume HfUN: f :e Union FamCylN.
+					                  prove f :e Union FamCyl.
+					                  apply (UnionE_impred FamCylN f HfUN).
+					                  let c. assume Hfc: f :e c. assume HcN: c :e FamCylN.
+					                  claim HcFam: c :e FamCyl.
+					                  { exact (SepE1 FamCyl (fun c0:set => c0 <> Empty) c HcN). }
+					                  exact (UnionI FamCyl f c Hfc HcFam).
+					                - let f. assume HfU: f :e Union FamCyl.
+					                  prove f :e Union FamCylN.
+					                  apply (UnionE_impred FamCyl f HfU).
+					                  let c. assume Hfc: f :e c. assume HcFam: c :e FamCyl.
+						                  claim HcNe: c <> Empty.
+						                  { assume HcE: c = Empty.
+						                    claim Hbad: f :e Empty.
+						                    { rewrite <- HcE. exact Hfc. }
+						                    exact (EmptyE f Hbad False). }
+					                  claim HcN: c :e FamCylN.
+					                  { exact (SepI FamCyl (fun c0:set => c0 <> Empty) c HcFam HcNe). }
+					                  exact (UnionI FamCylN f c Hfc HcN). }
+							              claim HopenS: open_in (product_space I Xi) (generated_topology (product_space I Xi) Bsm) s.
+							              { apply (basis_generates_open_sets (product_space I Xi) Bsm HBsmBasis s).
+							                witness FamCylN.
+							                apply andI.
+							                - exact HFamCylNPow.
+							                - apply set_ext.
+							                  + let f. assume HfU: f :e Union FamCylN.
+							                    prove f :e s.
+							                    apply (UnionE_impred FamCylN f HfU).
+							                    let c. assume Hfc: f :e c. assume HcN: c :e FamCylN.
+							                    claim HcFam: c :e FamCyl.
+							                    { exact (SepE1 FamCyl (fun c0:set => c0 <> Empty) c HcN). }
+							                    apply (ReplE_impred Fam (fun V0:set => product_cylinder I Xi i0 V0) c HcFam).
+							                    let V0. assume HV0Fam: V0 :e Fam.
+							                    assume HcEq: c = product_cylinder I Xi i0 V0.
+							                    claim HV0subU0: V0 c= U0.
+							                    { let x. assume HxV0: x :e V0.
+							                      claim HxUF: x :e Union Fam.
+							                      { exact (UnionI Fam x V0 HxV0 HV0Fam). }
+							                      rewrite <- HUnionFam.
+							                      exact HxUF. }
+							                    claim HfCylV0: f :e product_cylinder I Xi i0 V0.
+							                    { rewrite <- HcEq. exact Hfc. }
+							                    claim HfX: f :e product_space I Xi.
+							                    { exact (SepE1 (product_space I Xi) (fun f1:set => i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun f1 i0 :e V0) f HfCylV0). }
+							                    claim Hfcond: (i0 :e I /\ V0 :e space_family_topology Xi i0) /\ apply_fun f i0 :e V0.
+							                    { exact (SepE2 (product_space I Xi) (fun f1:set => i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun f1 i0 :e V0) f HfCylV0). }
+							                    claim Hfi0V0: apply_fun f i0 :e V0.
+							                    { exact (andER (i0 :e I /\ V0 :e space_family_topology Xi i0) (apply_fun f i0 :e V0) Hfcond). }
+							                    claim Hfi0U0: apply_fun f i0 :e U0.
+							                    { exact (HV0subU0 (apply_fun f i0) Hfi0V0). }
+							                    claim HpredU0: (i0 :e I /\ U0 :e space_family_topology Xi i0) /\ apply_fun f i0 :e U0.
+							                    { apply andI.
+							                      - apply andI.
+							                        + exact Hi0I.
+							                        + exact HU0Top.
+							                      - exact Hfi0U0. }
+							                    rewrite HsEq.
+							                    exact (SepI (product_space I Xi) (fun f1:set => i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun f1 i0 :e U0)
+							                               f HfX HpredU0).
+							                  + let f. assume HfS: f :e s.
+							                    prove f :e Union FamCylN.
+							                    claim HfCylU0: f :e product_cylinder I Xi i0 U0.
+							                    { rewrite <- HsEq. exact HfS. }
+							                    claim Hfcond: (i0 :e I /\ U0 :e space_family_topology Xi i0) /\ apply_fun f i0 :e U0.
+							                    { exact (SepE2 (product_space I Xi) (fun f1:set => i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun f1 i0 :e U0) f HfCylU0). }
+							                    claim Hfi0U0: apply_fun f i0 :e U0.
+							                    { exact (andER (i0 :e I /\ U0 :e space_family_topology Xi i0) (apply_fun f i0 :e U0) Hfcond). }
+							                    claim Hfi0UF: apply_fun f i0 :e Union Fam.
+							                    { rewrite HUnionFam. exact Hfi0U0. }
+							                    apply (UnionE_impred Fam (apply_fun f i0) Hfi0UF).
+							                    let V0. assume Hfi0V0: apply_fun f i0 :e V0. assume HV0Fam: V0 :e Fam.
+							                    set C0 := product_cylinder I Xi i0 V0.
+							                    claim HC0Fam: C0 :e FamCyl.
+							                    { exact (ReplI Fam (fun V1:set => product_cylinder I Xi i0 V1) V0 HV0Fam). }
+							                    claim HfC0: f :e C0.
+							                    { claim HfX: f :e product_space I Xi.
+							                      { exact (SepE1 (product_space I Xi) (fun f1:set => i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun f1 i0 :e U0) f HfCylU0). }
+								                      claim HpredV0: (i0 :e I /\ V0 :e space_family_topology Xi i0) /\ apply_fun f i0 :e V0.
+								                      { apply andI.
+								                        - apply andI.
+								                          + exact Hi0I.
+								                          + claim HV0B: V0 :e Bsel i0.
+								                            { exact (HFamSub V0 HV0Fam). }
+								                            claim HV0Gen: V0 :e generated_topology (space_family_set Xi i0) (Bsel i0).
+								                            { exact (generated_topology_contains_basis (space_family_set Xi i0) (Bsel i0) HBsel_i0 V0 HV0B). }
+								                            claim HV0Top: V0 :e space_family_topology Xi i0.
+								                            { rewrite <- HTeq_i0. exact HV0Gen. }
+								                            exact HV0Top.
+								                        - exact Hfi0V0. }
+							                      exact (SepI (product_space I Xi) (fun f1:set => i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun f1 i0 :e V0)
+							                                 f HfX HpredV0). }
+							                    claim HC0ne: C0 <> Empty.
+							                    { assume HC0E: C0 = Empty.
+							                      claim Hbad: f :e Empty.
+							                      { rewrite <- HC0E. exact HfC0. }
+							                      exact (EmptyE f Hbad False). }
+							                    claim HC0N: C0 :e FamCylN.
+							                    { exact (SepI FamCyl (fun c0:set => c0 <> Empty) C0 HC0Fam HC0ne). }
+							                    exact (UnionI FamCylN f C0 HfC0 HC0N). }
+					              exact (andER (topology_on (product_space I Xi) (generated_topology (product_space I Xi) Bsm))
+					                           (s :e generated_topology (product_space I Xi) Bsm)
+					                           HopenS). }
 					            claim Hinc: generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi) c=
 					              generated_topology_from_subbasis (product_space I Xi) Ssmall.
 					            { exact (topology_generated_by_basis_is_minimal (product_space I Xi) (product_subbasis_full I Xi)
