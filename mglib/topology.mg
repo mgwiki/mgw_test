@@ -17795,6 +17795,21 @@ Qed.
 Definition product_component : set -> set -> set := fun Xi i => (apply_fun Xi i) 0.
 Definition product_component_topology : set -> set -> set := fun Xi i => (apply_fun Xi i) 1.
 
+(** Helper: unfold product_component and product_component_topology **)
+Theorem product_component_def : forall Xi i:set,
+  product_component Xi i = (apply_fun Xi i) 0.
+let Xi i.
+prove product_component Xi i = (apply_fun Xi i) 0.
+reflexivity.
+Qed.
+
+Theorem product_component_topology_def : forall Xi i:set,
+  product_component_topology Xi i = (apply_fun Xi i) 1.
+let Xi i.
+prove product_component_topology Xi i = (apply_fun Xi i) 1.
+reflexivity.
+Qed.
+
 (** family of spaces as a family of pairs (X_i, T_i) **) 
 Definition const_space_family : set -> set -> set -> set := fun I X Tx =>
   {(i,(X,Tx))|i :e I}.
@@ -36320,12 +36335,59 @@ Definition locally_m_euclidean : set -> set -> set -> prop := fun X Tx m =>
 
 (** from Supplementary Exercises: Locally Euclidean Spaces: locally m-euclidean implies T1 **)
 (** LATEX VERSION: Such a space X automatically satisfies the T1 axiom. **)
+Theorem euclidean_space_Hausdorff : forall m:set,
+  Hausdorff_space (euclidean_space m) (euclidean_topology m).
+let m.
+prove Hausdorff_space (euclidean_space m) (euclidean_topology m).
+(** Obtain Hausdorffness of product_topology_full from §31 Theorem 31.2 (currently admitted). **)
+claim HRtop: topology_on R R_standard_topology.
+{ exact R_standard_topology_is_topology_local. }
+claim Hall:
+  (forall Y:set, Y c= R -> Hausdorff_space R R_standard_topology -> Hausdorff_space Y (subspace_topology R R_standard_topology Y)) /\
+  (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi)) /\
+  (forall Y:set, Y c= R -> regular_space R R_standard_topology -> regular_space Y (subspace_topology R R_standard_topology Y)) /\
+  (forall I Xi:set, regular_spaces_family I Xi -> regular_space (product_space I Xi) (product_topology_full I Xi)).
+{ exact (separation_axioms_subspace_product R R_standard_topology HRtop). }
+claim H123: ((forall Y:set, Y c= R -> Hausdorff_space R R_standard_topology -> Hausdorff_space Y (subspace_topology R R_standard_topology Y)) /\
+             (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi))) /\
+            (forall Y:set, Y c= R -> regular_space R R_standard_topology -> regular_space Y (subspace_topology R R_standard_topology Y)).
+{ exact (andEL (((forall Y:set, Y c= R -> Hausdorff_space R R_standard_topology -> Hausdorff_space Y (subspace_topology R R_standard_topology Y)) /\
+                 (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi))) /\
+                (forall Y:set, Y c= R -> regular_space R R_standard_topology -> regular_space Y (subspace_topology R R_standard_topology Y)))
+               (forall I Xi:set, regular_spaces_family I Xi -> regular_space (product_space I Xi) (product_topology_full I Xi))
+               Hall). }
+claim H12:
+  (forall Y:set, Y c= R -> Hausdorff_space R R_standard_topology -> Hausdorff_space Y (subspace_topology R R_standard_topology Y)) /\
+  (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi)).
+{ exact (andEL ((forall Y:set, Y c= R -> Hausdorff_space R R_standard_topology -> Hausdorff_space Y (subspace_topology R R_standard_topology Y)) /\
+                (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi)))
+               (forall Y:set, Y c= R -> regular_space R R_standard_topology -> regular_space Y (subspace_topology R R_standard_topology Y))
+               H123). }
+claim Hprod:
+  forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi).
+{ exact (andER (forall Y:set, Y c= R -> Hausdorff_space R R_standard_topology -> Hausdorff_space Y (subspace_topology R R_standard_topology Y))
+               (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi))
+               H12). }
+claim Hfam: Hausdorff_spaces_family m (const_space_family m R R_standard_topology).
+{ let i. assume Hi: i :e m.
+  prove Hausdorff_space (product_component (const_space_family m R R_standard_topology) i)
+                       (product_component_topology (const_space_family m R R_standard_topology) i).
+  rewrite (product_component_def (const_space_family m R R_standard_topology) i).
+  rewrite (product_component_topology_def (const_space_family m R R_standard_topology) i).
+  rewrite (const_space_family_apply m R R_standard_topology i Hi).
+  (** reduce the components of the tuple (R, R_standard_topology) **)
+  rewrite (tuple_2_0_eq R R_standard_topology).
+  rewrite (tuple_2_1_eq R R_standard_topology).
+  exact R_standard_topology_Hausdorff. }
+exact (Hprod m (const_space_family m R R_standard_topology) Hfam).
+Qed.
+
 Theorem locally_m_euclidean_implies_T1 : forall X Tx m:set,
   locally_m_euclidean X Tx m -> T1_space X Tx.
 let X Tx m.
 assume Hloc: locally_m_euclidean X Tx m.
 prove T1_space X Tx.
-admit. (** use local chart at each point to separate it from any other point; then apply lemma_T1_singletons_closed **)
+admit. (** use local chart neighborhoods to build open complements of singletons; then apply lemma_T1_singletons_closed **)
 Qed.
 
 (** from §50 Exercise 1: discrete space has dimension 0 **)
