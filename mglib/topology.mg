@@ -25722,10 +25722,6 @@ rewrite <- Hx_eq.
 reflexivity.
 Qed.
 
-(** Helper: preimage composition property **)
-Axiom preimage_compose : forall X Y f g W:set,
-  preimage_of X (compose_fun X f g) W = preimage_of X f (preimage_of Y g W).
-
 (** Helper: preimage composition under function_on assumption **)
 Theorem preimage_compose_fun : forall X Y f g W:set,
   function_on f X Y ->
