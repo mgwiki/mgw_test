@@ -35915,16 +35915,17 @@ Definition cardinality_at_most : set -> set -> prop := fun S n =>
   ordinal n /\ exists k:set, ordinal k /\ k c= n /\ equip S k.
 
 (** from §50 Definition: order of a collection of subsets **) 
-(** LATEX VERSION: Order m+1: every point lies in at most m members and some point meets m members. **)
+(** LATEX VERSION: A collection A has order m+1 if some point lies in m+1 elements of A,
+   and no point lies in more than m+1 elements of A. **)
 Definition collection_has_order_at_m_plus_one : set -> set -> set -> prop :=
   fun X A m =>
     ordinal m /\
     (exists x:set, x :e X /\
       exists Fam:set, Fam c= A /\ finite Fam /\
-        cardinality_exact Fam m /\
+        cardinality_exact Fam (ordsucc m) /\
         forall U:set, U :e Fam -> x :e U) /\
     forall x:set, x :e X ->
-      cardinality_at_most {U :e A|x :e U} m.
+      cardinality_at_most {U :e A|x :e U} (ordsucc m).
 
 (** from §50 Definition: covering dimension and finite dimensionality **)
 (** LATEX VERSION: A space X has covering dimension ≤n if for every open cover A there exists a refinement of order ≤n+1. **)
@@ -35945,7 +35946,7 @@ Definition covering_dimension : set -> set -> prop := fun X n =>
       exists B:set,
         open_cover_of X Tx B /\
         refines_cover B A /\
-        collection_has_order_at_m_plus_one X B (ordsucc n).
+        collection_has_order_at_m_plus_one X B n.
 Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ exists m:set, covering_dimension X m.
 
