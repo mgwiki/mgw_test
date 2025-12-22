@@ -29754,7 +29754,8 @@ let A B Y f g.
 assume Hdisj: A :/\: B = Empty.
 assume Hf: total_function_on f A Y.
 assume Hg: total_function_on g B Y.
-prove total_function_on (f :\/: g) (A :\/: B) Y.
+prove function_on (f :\/: g) (A :\/: B) Y /\
+  forall x:set, x :e (A :\/: B) -> exists y:set, y :e Y /\ (x,y) :e (f :\/: g).
 apply andI.
 - (** function_on part **)
   claim Hf_on: function_on f A Y.
