@@ -38202,7 +38202,11 @@ Qed.
 (** Helper: power set of a natural has finite size **)
 (** LATEX VERSION: For n in omega, Power n is equipotent to 2^n. **)
 Theorem equip_Power_nat : forall n:set, nat_p n -> equip (Power n) (exp_nat 2 n).
-admit.
+let n.
+assume Hn: nat_p n.
+claim Hnn: equip n n.
+{ exact (equip_ref n). }
+exact (equip_finite_Power n Hn n Hnn).
 Qed.
 
 (** helper: image of countable set is countable **)
