@@ -38736,7 +38736,7 @@ apply andI.
 					        + claim HS: subbasis_on (product_space I Xi) Ssmall.
 					          { exact HSsmall. }
 					          exact (finite_intersections_basis_of_subbasis (product_space I Xi) Ssmall HS).
-						        + (** countable_set goal is not yet automated by vampire **)
+						        + (** countable_set of basis_of_subbasis from a countable subbasis **)
 						          claim HSsmall_count: countable_set Ssmall.
 						          { (** show Ssmall is an image of a countable dependent sum **)
 						            claim HIc: countable I.
