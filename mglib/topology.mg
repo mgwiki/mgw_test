@@ -36556,7 +36556,329 @@ Theorem locally_m_euclidean_implies_T1 : forall X Tx m:set,
 let X Tx m.
 assume Hloc: locally_m_euclidean X Tx m.
 prove T1_space X Tx.
-admit. (** use local chart neighborhoods to build open complements of singletons; then apply lemma_T1_singletons_closed **)
+(** Use lemma_T1_singletons_closed, reducing to showing that each singleton is closed. **)
+claim Hloc_parts: (m :e omega /\ topology_on X Tx) /\ (forall x0:set, x0 :e X ->
+  exists U0:set, exists V0:set, exists f0:set,
+    open_in X Tx U0 /\ x0 :e U0 /\ V0 c= (euclidean_space m) /\
+    open_in (euclidean_space m) (euclidean_topology m) V0 /\
+    homeomorphism U0 (subspace_topology X Tx U0) V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0).
+{ exact Hloc. }
+claim Htop: topology_on X Tx.
+{ claim HmTop: m :e omega /\ topology_on X Tx.
+  { exact (andEL (m :e omega /\ topology_on X Tx)
+                 (forall x0:set, x0 :e X ->
+                   exists U0:set, exists V0:set, exists f0:set,
+                     open_in X Tx U0 /\ x0 :e U0 /\ V0 c= (euclidean_space m) /\
+                     open_in (euclidean_space m) (euclidean_topology m) V0 /\
+                     homeomorphism U0 (subspace_topology X Tx U0) V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0)
+                 Hloc_parts). }
+  exact (andER (m :e omega) (topology_on X Tx) HmTop). }
+claim Hcharts: forall x0:set, x0 :e X ->
+  exists U0:set, exists V0:set, exists f0:set,
+    open_in X Tx U0 /\ x0 :e U0 /\ V0 c= (euclidean_space m) /\
+    open_in (euclidean_space m) (euclidean_topology m) V0 /\
+    homeomorphism U0 (subspace_topology X Tx U0) V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0.
+{ exact (andER (m :e omega /\ topology_on X Tx)
+               (forall x0:set, x0 :e X ->
+                 exists U0:set, exists V0:set, exists f0:set,
+                   open_in X Tx U0 /\ x0 :e U0 /\ V0 c= (euclidean_space m) /\
+                   open_in (euclidean_space m) (euclidean_topology m) V0 /\
+                   homeomorphism U0 (subspace_topology X Tx U0) V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0)
+               Hloc_parts). }
+apply (iffER (T1_space X Tx)
+             (forall x0:set, x0 :e X -> closed_in X Tx {x0})
+             (lemma_T1_singletons_closed X Tx Htop)).
+prove forall x0:set, x0 :e X -> closed_in X Tx {x0}.
+let x0. assume Hx0X: x0 :e X.
+prove closed_in X Tx {x0}.
+(** It is enough to show X\\{x0} is open, and then {x0} = X\\(X\\{x0}). **)
+claim HsingSub: {x0} c= X.
+{ let y. assume Hy: y :e {x0}.
+  claim Hyeq: y = x0.
+  { exact (SingE x0 y Hy). }
+  rewrite Hyeq. exact Hx0X. }
+claim Hsep_x0: forall y:set, y :e X -> y <> x0 -> exists W:set, W :e Tx /\ y :e W /\ x0 /:e W.
+{ let y. assume HyX: y :e X. assume Hyneq: y <> x0.
+  apply (Hcharts y HyX).
+  let U. assume HexVf.
+  apply HexVf.
+  let V. assume Hexf.
+  apply Hexf.
+  let f. assume Hprops.
+  (** split the chart properties **)
+  claim Hleft: (((open_in X Tx U /\ y :e U) /\ V c= (euclidean_space m)) /\
+               open_in (euclidean_space m) (euclidean_topology m) V).
+  { exact (andEL ((((open_in X Tx U /\ y :e U) /\ V c= (euclidean_space m)) /\
+                 open_in (euclidean_space m) (euclidean_topology m) V))
+                (homeomorphism U (subspace_topology X Tx U) V
+                  (subspace_topology (euclidean_space m) (euclidean_topology m) V) f)
+                Hprops). }
+  claim Hhomeo: homeomorphism U (subspace_topology X Tx U) V
+    (subspace_topology (euclidean_space m) (euclidean_topology m) V) f.
+  { exact (andER ((((open_in X Tx U /\ y :e U) /\ V c= (euclidean_space m)) /\
+                 open_in (euclidean_space m) (euclidean_topology m) V))
+                (homeomorphism U (subspace_topology X Tx U) V
+                  (subspace_topology (euclidean_space m) (euclidean_topology m) V) f)
+                Hprops). }
+  claim Hmid: ((open_in X Tx U /\ y :e U) /\ V c= (euclidean_space m)).
+  { exact (andEL ((open_in X Tx U /\ y :e U) /\ V c= (euclidean_space m))
+                 (open_in (euclidean_space m) (euclidean_topology m) V)
+                 Hleft). }
+  claim HVopen: open_in (euclidean_space m) (euclidean_topology m) V.
+  { exact (andER ((open_in X Tx U /\ y :e U) /\ V c= (euclidean_space m))
+                 (open_in (euclidean_space m) (euclidean_topology m) V)
+                 Hleft). }
+  claim Hpair: open_in X Tx U /\ y :e U.
+  { exact (andEL (open_in X Tx U /\ y :e U) (V c= (euclidean_space m)) Hmid). }
+  claim HVsub: V c= (euclidean_space m).
+  { exact (andER (open_in X Tx U /\ y :e U) (V c= (euclidean_space m)) Hmid). }
+  claim HUopen: open_in X Tx U.
+  { exact (andEL (open_in X Tx U) (y :e U) Hpair). }
+  claim HyU: y :e U.
+  { exact (andER (open_in X Tx U) (y :e U) Hpair). }
+  (** If x0 not in U, take W=U. Otherwise refine inside U via the chart. **)
+  apply (xm (x0 :e U)).
+  - assume Hx0U: x0 :e U.
+    (** Extract that U is open in X and belongs to Tx. **)
+    claim HUinTx: U :e Tx.
+    { exact (andER (topology_on X Tx) (U :e Tx) HUopen). }
+    (** Subspace topology on U is a topology. **)
+    claim HUsubX: U c= X.
+    { exact (open_in_subset X Tx U HUopen). }
+    claim HTU: topology_on U (subspace_topology X Tx U).
+    { exact (subspace_topology_is_topology X Tx U Htop HUsubX). }
+    (** f is continuous and hence a function on U -> V. **)
+    claim Hcontf: continuous_map U (subspace_topology X Tx U) V
+      (subspace_topology (euclidean_space m) (euclidean_topology m) V) f.
+    { exact (andEL (continuous_map U (subspace_topology X Tx U) V
+                    (subspace_topology (euclidean_space m) (euclidean_topology m) V) f)
+                   (exists g:set,
+                     continuous_map V (subspace_topology (euclidean_space m) (euclidean_topology m) V) U
+                       (subspace_topology X Tx U) g /\
+                     (forall u:set, u :e U -> apply_fun g (apply_fun f u) = u) /\
+                     (forall v:set, v :e V -> apply_fun f (apply_fun g v) = v))
+                   Hhomeo). }
+    claim Hfunf: function_on f U V.
+    { claim Htmp: (topology_on U (subspace_topology X Tx U) /\ topology_on V (subspace_topology (euclidean_space m) (euclidean_topology m) V)) /\ function_on f U V.
+      { exact (andEL ((topology_on U (subspace_topology X Tx U) /\ topology_on V (subspace_topology (euclidean_space m) (euclidean_topology m) V)) /\ function_on f U V)
+                     (forall V1:set, V1 :e subspace_topology (euclidean_space m) (euclidean_topology m) V ->
+                       preimage_of U f V1 :e subspace_topology X Tx U)
+                     Hcontf). }
+      exact (andER (topology_on U (subspace_topology X Tx U) /\ topology_on V (subspace_topology (euclidean_space m) (euclidean_topology m) V))
+                   (function_on f U V)
+                   Htmp). }
+    claim Hfx0V: apply_fun f x0 :e V.
+    { exact (Hfunf x0 Hx0U). }
+    claim HfyV: apply_fun f y :e V.
+    { exact (Hfunf y HyU). }
+    (** V is T1 (as an open subspace of Euclidean space). **)
+    claim HT1E: T1_space (euclidean_space m) (euclidean_topology m).
+    { exact (euclidean_space_T1 m). }
+    claim HT1V: T1_space V (subspace_topology (euclidean_space m) (euclidean_topology m) V).
+    { claim HtopE: topology_on (euclidean_space m) (euclidean_topology m).
+      { exact (andEL (topology_on (euclidean_space m) (euclidean_topology m))
+                     (forall F:set, F c= euclidean_space m -> finite F -> closed_in (euclidean_space m) (euclidean_topology m) F)
+                     HT1E). }
+      exact (subspace_T1 (euclidean_space m) (euclidean_topology m) V HtopE HVsub HT1E). }
+    (** Use V \\ {f(x0)} as an open neighborhood of f(y) when f(y) != f(x0). **)
+    claim Hinj: forall u1 u2:set, u1 :e U -> u2 :e U -> apply_fun f u1 = apply_fun f u2 -> u1 = u2.
+    { let u1 u2. assume Hu1U: u1 :e U. assume Hu2U: u2 :e U. assume Heq: apply_fun f u1 = apply_fun f u2.
+      exact (homeomorphism_injective U (subspace_topology X Tx U) V
+               (subspace_topology (euclidean_space m) (euclidean_topology m) V) f
+               Hhomeo u1 u2 Hu1U Hu2U Heq). }
+	    claim Hneqf: apply_fun f y <> apply_fun f x0.
+	    { assume Heqf: apply_fun f y = apply_fun f x0.
+	      claim Hyx0: y = x0.
+	      { exact (Hinj y x0 HyU Hx0U Heqf). }
+	      exact (Hyneq Hyx0). }
+    set O := V :\: {apply_fun f x0}.
+    claim HOopen: O :e subspace_topology (euclidean_space m) (euclidean_topology m) V.
+    { exact (T1_singleton_complement_open V
+              (subspace_topology (euclidean_space m) (euclidean_topology m) V)
+              (apply_fun f x0)
+              HT1V Hfx0V). }
+    claim HfyO: apply_fun f y :e O.
+    { apply setminusI.
+      - exact HfyV.
+      - assume Hsing: apply_fun f y :e {apply_fun f x0}.
+        claim Heqf: apply_fun f y = apply_fun f x0.
+        { exact (SingE (apply_fun f x0) (apply_fun f y) Hsing). }
+        exact (Hneqf Heqf). }
+    (** Preimage of O is open in the subspace topology on U. **)
+    claim Hpreimg_open: preimage_of U f O :e subspace_topology X Tx U.
+    { claim Hpreimg_axiom: forall V1:set,
+        V1 :e subspace_topology (euclidean_space m) (euclidean_topology m) V ->
+        preimage_of U f V1 :e subspace_topology X Tx U.
+      { exact (andER ((topology_on U (subspace_topology X Tx U) /\
+                       topology_on V (subspace_topology (euclidean_space m) (euclidean_topology m) V)) /\
+                      function_on f U V)
+                     (forall V1:set, V1 :e subspace_topology (euclidean_space m) (euclidean_topology m) V ->
+                       preimage_of U f V1 :e subspace_topology X Tx U)
+                     Hcontf). }
+      exact (Hpreimg_axiom O HOopen). }
+    (** Turn this into an open set in X using open_in_subspace_iff and closure under intersections. **)
+    claim Hpreimg_sub: preimage_of U f O c= U.
+    { let z. assume Hz: z :e preimage_of U f O.
+      exact (SepE1 U (fun u:set => apply_fun f u :e O) z Hz). }
+    claim Hpreimg_open_in: open_in U (subspace_topology X Tx U) (preimage_of U f O).
+    { prove topology_on U (subspace_topology X Tx U) /\ preimage_of U f O :e subspace_topology X Tx U.
+      apply andI.
+      - exact HTU.
+      - exact Hpreimg_open. }
+    (** Use open_in_subspace_iff to obtain a V0∈Tx with preimage = V0∩U. **)
+    claim HexV0: exists V0 :e Tx, preimage_of U f O = V0 :/\: U.
+    { exact (iffEL (open_in U (subspace_topology X Tx U) (preimage_of U f O))
+                   (exists V0 :e Tx, preimage_of U f O = V0 :/\: U)
+                   (open_in_subspace_iff X Tx U (preimage_of U f O) Htop HUsubX Hpreimg_sub)
+                   Hpreimg_open_in). }
+    apply HexV0.
+    let V0. assume HV0conj: V0 :e Tx /\ preimage_of U f O = V0 :/\: U.
+    claim HV0Tx: V0 :e Tx.
+    { exact (andEL (V0 :e Tx) (preimage_of U f O = V0 :/\: U) HV0conj). }
+    claim HeqW: preimage_of U f O = V0 :/\: U.
+    { exact (andER (V0 :e Tx) (preimage_of U f O = V0 :/\: U) HV0conj). }
+    (** V0 ∩ U is open in X and separates y from x0. **)
+    witness (V0 :/\: U).
+    apply andI.
+	    - (** (V0 ∩ U) ∈ Tx and y ∈ (V0 ∩ U) **)
+	      apply andI.
+	      + (** (V0 ∩ U) ∈ Tx by closure under intersections **)
+	        exact (topology_binintersect_closed X Tx V0 U Htop HV0Tx HUinTx).
+	      + (** y ∈ (V0 ∩ U) **)
+	        rewrite <- HeqW.
+	        prove y :e preimage_of U f O.
+	        prove y :e {u :e U | apply_fun f u :e O}.
+	        apply (SepI U (fun u:set => apply_fun f u :e O) y HyU).
+	        exact HfyO.
+	    - (** x0 ∉ (V0 ∩ U) **)
+	      assume Hx0W: x0 :e (V0 :/\: U).
+	      claim Hx0Pre: x0 :e preimage_of U f O.
+	      { rewrite HeqW. exact Hx0W. }
+	      claim Hfx0O: apply_fun f x0 :e O.
+	      { exact (SepE2 U (fun u:set => apply_fun f u :e O) x0 Hx0Pre). }
+	      claim HnotSing: apply_fun f x0 /:e {apply_fun f x0}.
+	      { exact (setminusE2 V {apply_fun f x0} (apply_fun f x0) Hfx0O). }
+	      exact (HnotSing (SingI (apply_fun f x0))).
+	  - assume Hx0notU: ~(x0 :e U).
+	    witness U.
+	    apply andI.
+	    - apply andI.
+	      + exact (andER (topology_on X Tx) (U :e Tx) HUopen).
+	      + exact HyU.
+	    - exact Hx0notU.
+}
+claim Hcomp_open: X :\: {x0} :e Tx.
+{ set UFam := {W :e Power X |
+    exists y:set, y :e X /\ y <> x0 /\ W :e Tx /\ y :e W /\ x0 /:e W}.
+  claim HUFamSub: UFam c= Tx.
+  { let W. assume HW: W :e UFam.
+    claim HWpred: exists y:set, y :e X /\ y <> x0 /\ W :e Tx /\ y :e W /\ x0 /:e W.
+    { exact (SepE2 (Power X)
+                   (fun W0:set => exists y:set, y :e X /\ y <> x0 /\ W0 :e Tx /\ y :e W0 /\ x0 /:e W0)
+                   W
+                   HW). }
+    apply HWpred.
+    let y. assume Hy_conj: y :e X /\ y <> x0 /\ W :e Tx /\ y :e W /\ x0 /:e W.
+    claim H0: (((y :e X /\ y <> x0) /\ W :e Tx) /\ y :e W).
+    { exact (andEL ((((y :e X /\ y <> x0) /\ W :e Tx) /\ y :e W)) (x0 /:e W) Hy_conj). }
+    claim H1: (y :e X /\ y <> x0) /\ W :e Tx.
+    { exact (andEL ((y :e X /\ y <> x0) /\ W :e Tx) (y :e W) H0). }
+    exact (andER (y :e X /\ y <> x0) (W :e Tx) H1). }
+  claim HUnionOpen: Union UFam :e Tx.
+  { exact (topology_union_closed X Tx UFam Htop HUFamSub). }
+  claim HUnionEq: Union UFam = X :\: {x0}.
+  { apply set_ext.
+    - let z. assume Hz: z :e Union UFam.
+      prove z :e X :\: {x0}.
+      apply (UnionE_impred UFam z Hz (z :e X :\: {x0})).
+      let W. assume HzW: z :e W. assume HW: W :e UFam.
+      claim HWpow: W :e Power X.
+      { exact (SepE1 (Power X)
+                     (fun W0:set => exists y:set, y :e X /\ y <> x0 /\ W0 :e Tx /\ y :e W0 /\ x0 /:e W0)
+                     W
+                     HW). }
+      claim HWsubX: W c= X.
+      { exact (PowerE X W HWpow). }
+      claim HzX: z :e X.
+      { exact (HWsubX z HzW). }
+      claim HWpred: exists y:set, y :e X /\ y <> x0 /\ W :e Tx /\ y :e W /\ x0 /:e W.
+      { exact (SepE2 (Power X)
+                     (fun W0:set => exists y:set, y :e X /\ y <> x0 /\ W0 :e Tx /\ y :e W0 /\ x0 /:e W0)
+                     W
+                     HW). }
+      apply HWpred.
+      let y. assume Hy_conj: y :e X /\ y <> x0 /\ W :e Tx /\ y :e W /\ x0 /:e W.
+      claim Hx0NotW: x0 /:e W.
+      { exact (andER ((((y :e X /\ y <> x0) /\ W :e Tx) /\ y :e W)) (x0 /:e W) Hy_conj). }
+      claim HznotSing: z /:e {x0}.
+      { assume HzSing: z :e {x0}.
+        claim Hzeq: z = x0.
+        { exact (SingE x0 z HzSing). }
+        claim Hx0W: x0 :e W.
+        { rewrite <- Hzeq. exact HzW. }
+        exact (Hx0NotW Hx0W). }
+      exact (setminusI X {x0} z HzX HznotSing).
+    - let z. assume Hz: z :e X :\: {x0}.
+      prove z :e Union UFam.
+      claim HzX: z :e X.
+      { exact (setminusE1 X {x0} z Hz). }
+      claim HznotSing: z /:e {x0}.
+      { exact (setminusE2 X {x0} z Hz). }
+      claim Hzneq: z <> x0.
+      { assume Hzeq: z = x0.
+        claim HzSing: z :e {x0}.
+        { rewrite Hzeq. exact (SingI x0). }
+        exact (HznotSing HzSing). }
+      claim HexW: exists W:set, W :e Tx /\ z :e W /\ x0 /:e W.
+      { exact (Hsep_x0 z HzX Hzneq). }
+      apply HexW.
+      let W. assume HWconj: W :e Tx /\ z :e W /\ x0 /:e W.
+      claim HW0: W :e Tx /\ z :e W.
+      { exact (andEL (W :e Tx /\ z :e W) (x0 /:e W) HWconj). }
+      claim HWTx: W :e Tx.
+      { exact (andEL (W :e Tx) (z :e W) HW0). }
+      claim HzW: z :e W.
+      { exact (andER (W :e Tx) (z :e W) HW0). }
+      claim Hx0notW: x0 /:e W.
+      { exact (andER (W :e Tx /\ z :e W) (x0 /:e W) HWconj). }
+      claim HTsub: Tx c= Power X.
+      { exact (topology_subset_axiom X Tx Htop). }
+      claim HWpow: W :e Power X.
+      { exact (HTsub W HWTx). }
+      claim HWUFam: W :e UFam.
+      { apply (SepI (Power X)
+                    (fun W0:set => exists y:set, y :e X /\ y <> x0 /\ W0 :e Tx /\ y :e W0 /\ x0 /:e W0)
+                    W
+                    HWpow).
+	        witness z.
+	        (** show z witnesses the predicate **)
+	        apply andI.
+	        - (** (((z :e X /\ z <> x0) /\ W :e Tx) /\ z :e W) **)
+	          apply andI.
+	          + (** (z :e X /\ z <> x0) /\ W :e Tx **)
+	            apply andI.
+	            * (** z :e X /\ z <> x0 **)
+	              apply andI.
+	              - exact HzX.
+	              - exact Hzneq.
+	            * exact HWTx.
+	          + exact HzW.
+	        - exact Hx0notW.
+	      }
+      exact (UnionI UFam z W HzW HWUFam).
+  }
+  rewrite <- HUnionEq.
+  exact HUnionOpen. }
+prove topology_on X Tx /\ ({x0} c= X /\ exists U :e Tx, {x0} = X :\: U).
+apply andI.
+- exact Htop.
+- apply andI.
+  + exact HsingSub.
+  + witness (X :\: {x0}).
+	    apply andI.
+	    * exact Hcomp_open.
+	    * rewrite (setminus_setminus_eq X {x0} HsingSub).
+	      reflexivity.
 Qed.
 
 (** from §50 Exercise 1: discrete space has dimension 0 **)
