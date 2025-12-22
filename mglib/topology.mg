@@ -38566,7 +38566,98 @@ apply andI.
 					        + claim HS: subbasis_on (product_space I Xi) Ssmall.
 					          { exact HSsmall. }
 					          exact (finite_intersections_basis_of_subbasis (product_space I Xi) Ssmall HS).
-					        + admit.
+					        + (** generated_topology equality with cylinder subbasis **)
+					          claim HGTSsmall: generated_topology_from_subbasis (product_space I Xi) Ssmall =
+					            generated_topology (product_space I Xi) (basis_of_subbasis (product_space I Xi) Ssmall).
+					          { reflexivity. }
+					          rewrite <- HGTSsmall.
+					          claim HcompTop2: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+					          { let i. assume HiI: i :e I.
+					            exact (andEL (topology_on (space_family_set Xi i) (space_family_topology Xi i))
+					                         (exists B0:set, basis_on (space_family_set Xi i) B0 /\ countable_set B0 /\ basis_generates (space_family_set Xi i) B0 (space_family_topology Xi i))
+					                         (Hcomp i HiI)). }
+					          claim HSfull: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+					          { exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop2). }
+					          claim HTdef: countable_product_topology_subbasis I Xi =
+					            generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi).
+					          { reflexivity. }
+					          rewrite HTdef.
+					          (** Compare generated topologies from the two subbases Ssmall and product_subbasis_full **)
+					          apply set_ext.
+					          + let U. assume HU: U :e generated_topology_from_subbasis (product_space I Xi) Ssmall.
+					            prove U :e generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi).
+					            claim HTfull: topology_on (product_space I Xi)
+					              (generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi)).
+					            { exact (topology_from_subbasis_is_topology (product_space I Xi) (product_subbasis_full I Xi) HSfull). }
+					            claim HBfull: basis_on (product_space I Xi)
+					              (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)).
+					            { exact (finite_intersections_basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi) HSfull). }
+					            claim HSsmall_sub_Tfull: Ssmall c=
+					              generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi).
+					            { let s. assume Hs: s :e Ssmall.
+					              prove s :e generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi).
+					              apply (famunionE_impred I (fun i0:set => {product_cylinder I Xi i0 U0|U0 :e Bsel i0}) s Hs).
+					              let i0. assume Hi0I. assume HsFi0: s :e {product_cylinder I Xi i0 U0|U0 :e Bsel i0}.
+					              apply (ReplE_impred (Bsel i0) (fun U0:set => product_cylinder I Xi i0 U0) s HsFi0).
+					              let U0. assume HU0B: U0 :e Bsel i0.
+					              assume HsEq: s = product_cylinder I Xi i0 U0.
+					              claim HBsel_i0c: basis_on (space_family_set Xi i0) (Bsel i0) /\ countable_set (Bsel i0).
+					              { exact (andEL (basis_on (space_family_set Xi i0) (Bsel i0) /\ countable_set (Bsel i0))
+					                             (basis_generates (space_family_set Xi i0) (Bsel i0) (space_family_topology Xi i0))
+					                             (HBsel i0 Hi0I)). }
+					              claim HBsel_i0: basis_on (space_family_set Xi i0) (Bsel i0).
+					              { exact (andEL (basis_on (space_family_set Xi i0) (Bsel i0))
+					                             (countable_set (Bsel i0))
+					                             HBsel_i0c). }
+					              claim HBgen_i0: basis_generates (space_family_set Xi i0) (Bsel i0) (space_family_topology Xi i0).
+					              { exact (andER (basis_on (space_family_set Xi i0) (Bsel i0) /\ countable_set (Bsel i0))
+					                             (basis_generates (space_family_set Xi i0) (Bsel i0) (space_family_topology Xi i0))
+					                             (HBsel i0 Hi0I)). }
+					              claim HTeq_i0: generated_topology (space_family_set Xi i0) (Bsel i0) = space_family_topology Xi i0.
+					              { exact (andER (basis_on (space_family_set Xi i0) (Bsel i0))
+					                             (generated_topology (space_family_set Xi i0) (Bsel i0) = space_family_topology Xi i0)
+					                             HBgen_i0). }
+					              claim HU0Gen: U0 :e generated_topology (space_family_set Xi i0) (Bsel i0).
+					              { exact (generated_topology_contains_basis (space_family_set Xi i0) (Bsel i0) HBsel_i0 U0 HU0B). }
+					              claim HU0Top: U0 :e space_family_topology Xi i0.
+					              { rewrite <- HTeq_i0. exact HU0Gen. }
+					              claim HsSfull: s :e product_subbasis_full I Xi.
+					              { rewrite HsEq.
+					                exact (famunionI I (fun i1:set => {product_cylinder I Xi i1 U|U :e space_family_topology Xi i1})
+					                         i0 (product_cylinder I Xi i0 U0) Hi0I
+					                         (ReplI (space_family_topology Xi i0) (fun U:set => product_cylinder I Xi i0 U) U0 HU0Top)). }
+					              apply (xm (s = Empty)).
+					              - assume HsE: s = Empty.
+					                rewrite HsE.
+					                exact (topology_has_empty (product_space I Xi)
+					                      (generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi)) HTfull).
+					              - assume HsNE: ~(s = Empty).
+					                claim HsBasis: s :e basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi).
+					                { exact (subbasis_elem_in_basis (product_space I Xi) (product_subbasis_full I Xi) s HSfull HsSfull HsNE). }
+					                exact (basis_in_generated (product_space I Xi)
+					                      (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi))
+					                      s HBfull HsBasis).
+					            }
+					            claim Hinc: generated_topology_from_subbasis (product_space I Xi) Ssmall c=
+					              generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi).
+					            { exact (topology_generated_by_basis_is_minimal (product_space I Xi) Ssmall
+					                      (generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi))
+					                      HSsmall HTfull HSsmall_sub_Tfull). }
+					            exact (Hinc U HU).
+					          + let U. assume HU: U :e generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi).
+					            prove U :e generated_topology_from_subbasis (product_space I Xi) Ssmall.
+					            claim HTsmall: topology_on (product_space I Xi)
+					              (generated_topology_from_subbasis (product_space I Xi) Ssmall).
+					            { exact (topology_from_subbasis_is_topology (product_space I Xi) Ssmall HSsmall). }
+					            claim HSfull_sub_Tsmall: product_subbasis_full I Xi c=
+					              generated_topology_from_subbasis (product_space I Xi) Ssmall.
+					            { admit. }
+					            claim Hinc: generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi) c=
+					              generated_topology_from_subbasis (product_space I Xi) Ssmall.
+					            { exact (topology_generated_by_basis_is_minimal (product_space I Xi) (product_subbasis_full I Xi)
+					                      (generated_topology_from_subbasis (product_space I Xi) Ssmall)
+					                      HSfull HTsmall HSfull_sub_Tsmall). }
+					            exact (Hinc U HU).
 Qed.
 
 (** from §30 Definition: dense subset **) 
