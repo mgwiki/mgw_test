@@ -41981,7 +41981,94 @@ let X Tx.
 assume HTx: topology_on X Tx.
 prove (forall Y:set, Y c= X -> completely_regular_space X Tx -> completely_regular_space Y (subspace_topology X Tx Y)) /\
   (forall I Xi:set, completely_regular_spaces_family I Xi -> completely_regular_space (product_space I Xi) (product_topology_full I Xi)).
-admit. (** subspace: restrict separating function to Y; product: use component functions **)
+apply andI.
+- (** subspaces **)
+  let Y. assume HYsub: Y c= X.
+  assume HcrX: completely_regular_space X Tx.
+  prove completely_regular_space Y (subspace_topology X Tx Y).
+  claim HsepX:
+    forall x:set, x :e X ->
+      forall F:set, closed_in X Tx F -> x /:e F ->
+        exists f:set, continuous_map X Tx R R_standard_topology f /\
+          apply_fun f x = 0 /\ forall y:set, y :e F -> apply_fun f y = 1.
+  { exact (andER (topology_on X Tx)
+                 (forall x:set, x :e X ->
+                   forall F:set, closed_in X Tx F -> x /:e F ->
+                     exists f:set,
+                       continuous_map X Tx R R_standard_topology f /\
+                       apply_fun f x = 0 /\ forall y:set, y :e F -> apply_fun f y = 1)
+                 HcrX). }
+  claim HTsub: topology_on Y (subspace_topology X Tx Y).
+  { exact (subspace_topology_is_topology X Tx Y HTx HYsub). }
+  prove topology_on Y (subspace_topology X Tx Y) /\
+    forall y:set, y :e Y ->
+      forall F:set, closed_in Y (subspace_topology X Tx Y) F -> y /:e F ->
+        exists f:set,
+          continuous_map Y (subspace_topology X Tx Y) R R_standard_topology f /\
+          apply_fun f y = 0 /\ forall z:set, z :e F -> apply_fun f z = 1.
+  apply andI.
+  * exact HTsub.
+  * let y. assume HyY: y :e Y.
+    let F. assume HFcl: closed_in Y (subspace_topology X Tx Y) F.
+    assume HynotF: y /:e F.
+    prove exists f:set,
+      continuous_map Y (subspace_topology X Tx Y) R R_standard_topology f /\
+      apply_fun f y = 0 /\ forall z:set, z :e F -> apply_fun f z = 1.
+    claim HexC: exists C:set, closed_in X Tx C /\ F = C :/\: Y.
+    { exact (iffEL (closed_in Y (subspace_topology X Tx Y) F)
+                   (exists C:set, closed_in X Tx C /\ F = C :/\: Y)
+                   (closed_in_subspace_iff_intersection X Tx Y F HTx HYsub)
+                   HFcl). }
+    apply HexC.
+    let C. assume HCpair.
+    claim HCcl: closed_in X Tx C.
+    { exact (andEL (closed_in X Tx C) (F = C :/\: Y) HCpair). }
+    claim HFeq: F = C :/\: Y.
+    { exact (andER (closed_in X Tx C) (F = C :/\: Y) HCpair). }
+    claim HyX: y :e X.
+    { exact (HYsub y HyY). }
+    claim HyNotC: y /:e C.
+    { assume HyC: y :e C.
+      claim HyCY: y :e C :/\: Y.
+      { exact (binintersectI C Y y HyC HyY). }
+      claim HyF: y :e F.
+      { rewrite HFeq.
+        exact HyCY. }
+      exact (HynotF HyF). }
+    claim Hexf: exists f:set,
+      continuous_map X Tx R R_standard_topology f /\
+      apply_fun f y = 0 /\ forall z:set, z :e C -> apply_fun f z = 1.
+    { exact (HsepX y HyX C HCcl HyNotC). }
+    apply Hexf.
+    let f. assume Hfprop.
+    witness f.
+    claim Hfleft: continuous_map X Tx R R_standard_topology f /\ apply_fun f y = 0.
+    { exact (andEL (continuous_map X Tx R R_standard_topology f /\ apply_fun f y = 0)
+                   (forall z:set, z :e C -> apply_fun f z = 1)
+                   Hfprop). }
+    claim Hfcont: continuous_map X Tx R R_standard_topology f.
+    { exact (andEL (continuous_map X Tx R R_standard_topology f) (apply_fun f y = 0) Hfleft). }
+    claim Hfy0: apply_fun f y = 0.
+    { exact (andER (continuous_map X Tx R R_standard_topology f) (apply_fun f y = 0) Hfleft). }
+    claim HfC: forall z:set, z :e C -> apply_fun f z = 1.
+    { exact (andER (continuous_map X Tx R R_standard_topology f /\ apply_fun f y = 0)
+                   (forall z:set, z :e C -> apply_fun f z = 1)
+                   Hfprop). }
+    apply andI.
+    + prove continuous_map Y (subspace_topology X Tx Y) R R_standard_topology f /\ apply_fun f y = 0.
+      apply andI.
+      - exact (continuous_on_subspace X Tx R R_standard_topology f Y HTx HYsub Hfcont).
+      - exact Hfy0.
+    + let z. assume HzF: z :e F.
+      prove apply_fun f z = 1.
+      claim HzCY: z :e C :/\: Y.
+      { rewrite <- HFeq.
+        exact HzF. }
+      claim HzC: z :e C.
+      { exact (binintersectE1 C Y z HzCY). }
+      exact (HfC z HzC).
+- (** products **)
+  admit. (** use component functions and product topology **)
 Qed.
 
 (** from §33 Example 1: products giving completely regular but not normal spaces **) 
