@@ -16479,6 +16479,7 @@ Qed.
     not Cartesian products a1×a2 and b1×b2.
     Was: a = setprod a1 a2 (which is a1×a2, a SET of all pairs)
     Now: a = (a1,a2) (which is a SINGLE ordered pair) **)
+(** SUSPICIOUS DEFINITION: `order_rel` is implemented as a case split over a small list of carrier sets used later; this is not a general interface for simply ordered sets and may force later axioms. **)
 Definition order_rel : set -> set -> set -> prop := fun X a b =>
   (X = R /\ Rlt a b)
   \/
@@ -27039,6 +27040,8 @@ Qed.
     Was: d(x,z) < d(x,y) ∩ d(y,z) - completely wrong! ∩ is set intersection.
     Now: d(x,z) ≤ d(x,y) + d(y,z) using add_SNo from line 4171.
     Also using ≤ (negated >), not strict < for triangle inequality. **)
+(** SUSPICIOUS DEFINITION: Triangle inequality is encoded by `~ Rlt (d(x,y)+d(y,z)) d(x,z)`;
+    this relies on `Rlt` being a strict total order on `R` and on the intended equivalence between `~ Rlt` and `<=`. **)
 Definition metric_on : set -> set -> prop := fun X d =>
   function_on d (setprod X X) R /\
   (forall x y:set, x :e X -> y :e X ->
@@ -34054,6 +34057,8 @@ Definition net_on : set -> prop := fun net =>
          This is the cofinality condition: for every j ∈ J, eventually phi(k) ≥ j.
     Also: subnet values are forced to land in the same space X as the original net:
       apply_fun sub k = apply_fun net (apply_fun phi k). **)
+(** SUSPICIOUS DEFINITION: `subnet_of` packages a shared codomain and a cofinal map;
+    since `net_converges` existentially quantifies the index set, connecting convergence and subnet data can require a witness-alignment lemma. **)
 Definition subnet_of : set -> set -> prop := fun net sub =>
   exists J K X phi:set,
     directed_set J /\ directed_set K /\
@@ -34300,6 +34305,8 @@ Qed.
                                   forall j0:set, j0 :e J -> exists j:set, j :e J /\ (j0 :e j \/ j0 = j) /\ ...
     This captures "cofinally many net points in every neighborhood".
     Also: the net is treated as a function into the ambient space X (no extra codomain parameter). **)
+(** SUSPICIOUS DEFINITION: The order on directed sets is represented using membership `j0 :e j \/ j0 = j`;
+    this is convenient for ordinal index sets, but can make later subnet arguments need witness alignment lemmas. **)
 Definition accumulation_point_of_net : set -> set -> set -> set -> prop := fun X Tx net x =>
   exists J:set, topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X /\
     forall U:set, U :e Tx -> x :e U ->
@@ -34316,6 +34323,7 @@ Definition accumulation_point_of_net : set -> set -> set -> set -> prop := fun X
            exists i0:set, i0 :e J /\ forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U
          (for every open U containing x, eventually all net(i) for i ≥ i0 are in U)
     The ordering i0 ≤ i is von Neumann: (i0 :e i \/ i0 = i). **)
+(** SUSPICIOUS DEFINITION: As above, this uses membership-based comparison on the index set; it is adequate for ordinal-indexed nets but may require extra axioms for arbitrary directed sets. **)
 Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
   exists J:set, topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X /\
     forall U:set, U :e Tx -> x :e U ->
