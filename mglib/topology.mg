@@ -36318,6 +36318,16 @@ Definition locally_m_euclidean : set -> set -> set -> prop := fun X Tx m =>
       open_in (euclidean_space m) (euclidean_topology m) V /\
       homeomorphism U (subspace_topology X Tx U) V (subspace_topology (euclidean_space m) (euclidean_topology m) V) f.
 
+(** from Supplementary Exercises: Locally Euclidean Spaces: locally m-euclidean implies T1 **)
+(** LATEX VERSION: Such a space X automatically satisfies the T1 axiom. **)
+Theorem locally_m_euclidean_implies_T1 : forall X Tx m:set,
+  locally_m_euclidean X Tx m -> T1_space X Tx.
+let X Tx m.
+assume Hloc: locally_m_euclidean X Tx m.
+prove T1_space X Tx.
+admit. (** use local chart at each point to separate it from any other point; then apply lemma_T1_singletons_closed **)
+Qed.
+
 (** from §50 Exercise 1: discrete space has dimension 0 **)
 (** LATEX VERSION: Every discrete space has topological dimension 0. **)
 Theorem ex50_1_discrete_dimension_0 : forall X Tx:set,
@@ -36547,13 +36557,133 @@ rewrite <- Heq.
 exact Hnorm.
 Qed.
 
-Theorem supp_ex_locally_euclidean_2_iv_implies_v : forall X Tx:set,
+(** helper: normal + T1 implies Hausdorff **)
+Theorem normal_T1_implies_Hausdorff : forall X Tx:set,
+  normal_space X Tx -> T1_space X Tx -> Hausdorff_space X Tx.
+let X Tx.
+assume Hnorm: normal_space X Tx.
+assume HT1: T1_space X Tx.
+prove Hausdorff_space X Tx.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+                 exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty)
+               Hnorm). }
+claim Hsing:
+  forall x:set, x :e X -> closed_in X Tx {x}.
+{ exact (iffEL (T1_space X Tx)
+               (forall x:set, x :e X -> closed_in X Tx {x})
+               (lemma_T1_singletons_closed X Tx HTx) HT1). }
+prove topology_on X Tx /\
+      forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+        exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+apply andI.
+- exact HTx.
+- let x1 x2.
+  assume Hx1X: x1 :e X.
+  assume Hx2X: x2 :e X.
+  assume Hneq: x1 <> x2.
+  prove exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+  claim Hcl1: closed_in X Tx {x1}.
+  { exact (Hsing x1 Hx1X). }
+  claim Hcl2: closed_in X Tx {x2}.
+  { exact (Hsing x2 Hx2X). }
+  claim Hdisj: {x1} :/\: {x2} = Empty.
+  { apply Empty_Subq_eq.
+    let z. assume Hz: z :e {x1} :/\: {x2}.
+    prove z :e Empty.
+    claim Hz1: z :e {x1}.
+    { exact (binintersectE1 {x1} {x2} z Hz). }
+    claim Hz2: z :e {x2}.
+    { exact (binintersectE2 {x1} {x2} z Hz). }
+    claim Hzx1: z = x1.
+    { exact (SingE x1 z Hz1). }
+    claim Hzx2: z = x2.
+    { exact (SingE x2 z Hz2). }
+    claim Hx1x2: x1 = x2.
+    { rewrite <- Hzx1. rewrite Hzx2. reflexivity. }
+    apply FalseE.
+    exact (Hneq Hx1x2). }
+  claim Hsep:
+    forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+      exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+  { exact (andER (topology_on X Tx)
+                 (forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+                   exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty)
+                 Hnorm). }
+  claim HexUV:
+    exists U V:set, U :e Tx /\ V :e Tx /\ {x1} c= U /\ {x2} c= V /\ U :/\: V = Empty.
+  { exact (Hsep {x1} {x2} Hcl1 Hcl2 Hdisj). }
+  set U0 := Eps_i (fun U:set => exists V:set,
+    U :e Tx /\ V :e Tx /\ {x1} c= U /\ {x2} c= V /\ U :/\: V = Empty).
+  claim HU0ex: exists V:set,
+    U0 :e Tx /\ V :e Tx /\ {x1} c= U0 /\ {x2} c= V /\ U0 :/\: V = Empty.
+  { exact (Eps_i_ex (fun U:set => exists V:set,
+      U :e Tx /\ V :e Tx /\ {x1} c= U /\ {x2} c= V /\ U :/\: V = Empty)
+      HexUV). }
+  set V0 := Eps_i (fun V:set => U0 :e Tx /\ V :e Tx /\ {x1} c= U0 /\ {x2} c= V /\ U0 :/\: V = Empty).
+  claim HV0prop: U0 :e Tx /\ V0 :e Tx /\ {x1} c= U0 /\ {x2} c= V0 /\ U0 :/\: V0 = Empty.
+  { exact (Eps_i_ex (fun V:set => U0 :e Tx /\ V :e Tx /\ {x1} c= U0 /\ {x2} c= V /\ U0 :/\: V = Empty)
+      HU0ex). }
+  (** Unpack the left-associative 5-way conjunction HV0prop into its components. **)
+  claim H1234: (((U0 :e Tx /\ V0 :e Tx) /\ {x1} c= U0) /\ {x2} c= V0).
+  { exact (andEL ((((U0 :e Tx /\ V0 :e Tx) /\ {x1} c= U0) /\ {x2} c= V0))
+                 (U0 :/\: V0 = Empty)
+                 HV0prop). }
+  claim HdisjUV: U0 :/\: V0 = Empty.
+  { exact (andER ((((U0 :e Tx /\ V0 :e Tx) /\ {x1} c= U0) /\ {x2} c= V0))
+                 (U0 :/\: V0 = Empty)
+                 HV0prop). }
+  claim H123: ((U0 :e Tx /\ V0 :e Tx) /\ {x1} c= U0).
+  { exact (andEL ((U0 :e Tx /\ V0 :e Tx) /\ {x1} c= U0)
+                 ({x2} c= V0)
+                 H1234). }
+  claim Hs2: {x2} c= V0.
+  { exact (andER ((U0 :e Tx /\ V0 :e Tx) /\ {x1} c= U0)
+                 ({x2} c= V0)
+                 H1234). }
+  claim Hab: U0 :e Tx /\ V0 :e Tx.
+  { exact (andEL (U0 :e Tx /\ V0 :e Tx)
+                 ({x1} c= U0)
+                 H123). }
+  claim HU0Tx: U0 :e Tx.
+  { exact (andEL (U0 :e Tx) (V0 :e Tx) Hab). }
+  claim HV0Tx: V0 :e Tx.
+  { exact (andER (U0 :e Tx) (V0 :e Tx) Hab). }
+  claim Hs1: {x1} c= U0.
+  { exact (andER (U0 :e Tx /\ V0 :e Tx)
+                 ({x1} c= U0)
+                 H123). }
+  claim Hx1U0: x1 :e U0.
+  { exact (Hs1 x1 (SingI x1)). }
+  claim Hx2V0: x2 :e V0.
+  { exact (Hs2 x2 (SingI x2)). }
+  witness U0.
+  witness V0.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * apply andI.
+        { exact HU0Tx. }
+        { exact HV0Tx. }
+      * exact Hx1U0.
+    + exact Hx2V0.
+  - exact HdisjUV.
+Qed.
+
+(** from Supplementary Exercises Exercise 2: (iv) normal ⇒ (v) Hausdorff, for locally m-euclidean X **)
+(** LATEX VERSION: For locally m-euclidean X, normality implies Hausdorff. **)
+Theorem supp_ex_locally_euclidean_2_iv_implies_v : forall X Tx m:set,
+  locally_m_euclidean X Tx m ->
   normal_space X Tx ->
   Hausdorff_space X Tx.
-let X Tx.
-assume Hnorm.
+let X Tx m.
+assume Hloc: locally_m_euclidean X Tx m.
+assume Hnorm: normal_space X Tx.
 prove Hausdorff_space X Tx.
-admit. (** normal spaces are Hausdorff: use definition of normal **)
+claim HT1: T1_space X Tx.
+{ exact (locally_m_euclidean_implies_T1 X Tx m Hloc). }
+exact (normal_T1_implies_Hausdorff X Tx Hnorm HT1).
 Qed.
 
 (** from Supplementary Exercises Exercise 3: R is locally 1-euclidean satisfies (ii) not (i) **)
