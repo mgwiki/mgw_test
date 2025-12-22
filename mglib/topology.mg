@@ -38199,6 +38199,12 @@ claim HB0: basis_on (product_space Empty Xi) (basis_of_subbasis (product_space E
 exact (lemma_topology_from_basis (product_space Empty Xi) (basis_of_subbasis (product_space Empty Xi) Empty) HB0).
 Qed.
 
+(** Helper: power set of a natural has finite size **)
+(** LATEX VERSION: For n in omega, Power n is equipotent to 2^n. **)
+Theorem equip_Power_nat : forall n:set, nat_p n -> equip (Power n) (exp_nat 2 n).
+admit.
+Qed.
+
 (** helper: image of countable set is countable **)
 Theorem countable_image : forall X:set, countable_set X ->
   forall F:set->set, countable_set {F x|x :e X}.
@@ -38275,7 +38281,243 @@ Qed.
 (** Helper: finite subsets of omega are countable as a family **)
 (** LATEX VERSION: The collection of all finite subsets of omega is countable. **)
 Theorem finite_subcollections_omega_countable : countable (finite_subcollections omega).
-admit.
+prove exists code : set -> set, inj (finite_subcollections omega) omega code.
+
+(** Step 1: countability of Sigma_ n :e omega, Power n **)
+set S := Sigma_ n :e omega, Power n.
+
+claim Homega_countable: countable omega.
+{ prove exists f : set -> set, inj omega omega f.
+	  witness (fun n => n).
+	  apply (injI omega omega (fun n => n)).
+	  - let n. assume Hn: n :e omega.
+	    prove (fun n0:set => n0) n :e omega.
+	    exact Hn.
+	  - let a. assume Ha: a :e omega.
+	    let b. assume Hb: b :e omega.
+	    assume Heq: (fun n0:set => n0) a = (fun n0:set => n0) b.
+	    prove a = b.
+	    exact Heq. }
+
+claim Hpow_countable: forall n:set, n :e omega -> countable (Power n).
+{ let n.
+  assume Hn: n :e omega.
+  prove countable (Power n).
+  apply (finite_countable (Power n)).
+  prove finite (Power n).
+  prove exists m :e omega, equip (Power n) m.
+  claim Hn_nat: nat_p n.
+  { exact (omega_nat_p n Hn). }
+  claim HequipPow: equip (Power n) (exp_nat 2 n).
+  { exact (equip_Power_nat n Hn_nat). }
+  claim Hpow_nat: nat_p (exp_nat 2 n).
+  { exact (exp_nat_p 2 nat_2 n Hn_nat). }
+  claim Hpow_omega: (exp_nat 2 n) :e omega.
+  { exact (nat_p_omega (exp_nat 2 n) Hpow_nat). }
+  witness (exp_nat 2 n).
+  apply andI.
+  - exact Hpow_omega.
+  - exact HequipPow. }
+
+claim HS_countable: countable S.
+{ exact (Sigma_countable omega Homega_countable (fun n:set => Power n) Hpow_countable). }
+
+(** Step 2: boundedness of finite subsets of omega **)
+claim finite_sub_omega_bounded:
+  forall F:set, F c= omega -> finite F -> exists n :e omega, forall m :e F, m :e n.
+{ let F.
+  assume HFsub: F c= omega.
+  assume HFfin: finite F.
+  claim Hp0: (Empty c= omega -> exists n :e omega, forall m :e Empty, m :e n).
+  { assume Hsub0: Empty c= omega.
+    prove exists n :e omega, forall m :e Empty, m :e n.
+    witness 0.
+    apply andI.
+    - exact (nat_p_omega 0 nat_0).
+    - let m. assume Hm: m :e Empty.
+      apply FalseE.
+      exact (EmptyE m Hm). }
+  claim Hpstep: forall A y, finite A -> y /:e A ->
+    (A c= omega -> exists n :e omega, forall m :e A, m :e n) ->
+    (A :\/: {y} c= omega -> exists n0 :e omega, forall m:set, m :e A :\/: {y} -> m :e n0).
+  { let A y.
+    assume HAfin: finite A.
+    assume HyA: y /:e A.
+    assume HpA: (A c= omega -> exists n :e omega, forall m :e A, m :e n).
+    assume HsubAy: A :\/: {y} c= omega.
+    claim HsubA: A c= omega.
+    { exact (Subq_tra A (A :\/: {y}) omega (binunion_Subq_1 A {y}) HsubAy). }
+    claim Hexn: exists n :e omega, forall m :e A, m :e n.
+    { exact (HpA HsubA). }
+    apply Hexn.
+    let n.
+    assume Hnand.
+    claim Hn: n :e omega.
+    { exact (andEL (n :e omega) (forall m :e A, m :e n) Hnand). }
+    claim Hnprop: forall m :e A, m :e n.
+    { exact (andER (n :e omega) (forall m :e A, m :e n) Hnand). }
+    prove exists n0 :e omega, forall m:set, m :e A :\/: {y} -> m :e n0.
+    claim Hy_in_union: y :e A :\/: {y}.
+    { apply binunionI2. exact (SingI y). }
+    claim Hy_omega: y :e omega.
+    { exact (HsubAy y Hy_in_union). }
+    claim Hysucc_omega: ordsucc y :e omega.
+    { exact (omega_ordsucc y Hy_omega). }
+    claim Hn_union_omega: n :\/: ordsucc y :e omega.
+    { exact (omega_binunion n (ordsucc y) Hn Hysucc_omega). }
+    set n0 := ordsucc (n :\/: ordsucc y).
+    claim Hn0_omega: n0 :e omega.
+    { exact (omega_ordsucc (n :\/: ordsucc y) Hn_union_omega). }
+    witness n0.
+    apply andI.
+    - exact Hn0_omega.
+    - let m. assume Hm: m :e A :\/: {y}.
+      prove m :e n0.
+      apply (binunionE A {y} m Hm).
+      + assume HmA: m :e A.
+        claim Hmn: m :e n.
+        { exact (Hnprop m HmA). }
+        claim HmnU: m :e n :\/: ordsucc y.
+        { exact (binunionI1 n (ordsucc y) m Hmn). }
+        exact (ordsuccI1 (n :\/: ordsucc y) m HmnU).
+      + assume HmY: m :e {y}.
+        claim Hmy: m = y.
+        { exact (SingE y m HmY). }
+        rewrite Hmy.
+        claim Hy_in_succ: y :e ordsucc y.
+        { exact (ordsuccI2 y). }
+        claim Hy_in_U: y :e n :\/: ordsucc y.
+        { exact (binunionI2 n (ordsucc y) y Hy_in_succ). }
+        exact (ordsuccI1 (n :\/: ordsucc y) y Hy_in_U). }
+  claim HpF: (F c= omega -> exists n :e omega, forall m :e F, m :e n).
+  { exact (finite_ind (fun A => A c= omega -> exists n :e omega, forall m :e A, m :e n)
+                      Hp0 Hpstep F HFfin). }
+  apply HpF.
+  exact HFsub. }
+
+(** Step 3: build an injection into S and compose with the countable injection of S **)
+apply HS_countable.
+let codeS : set -> set.
+assume HcodeS: inj S omega codeS.
+set bound : set -> set := fun F =>
+  Eps_i (fun n => n :e omega /\ forall m:set, m :e F -> m :e n).
+set emb : set -> set := fun F => (bound F, F).
+set code : set -> set := fun F => codeS (emb F).
+witness code.
+
+apply (injI (finite_subcollections omega) omega code).
+- let F.
+  assume HF: F :e finite_subcollections omega.
+  prove code F :e omega.
+  claim HFpow: F :e Power omega.
+  { exact (SepE1 (Power omega) (fun F0:set => finite F0) F HF). }
+  claim HFsub: F c= omega.
+  { exact (PowerE omega F HFpow). }
+  claim HFfin: finite F.
+  { exact (SepE2 (Power omega) (fun F0:set => finite F0) F HF). }
+  claim Hexb: exists n :e omega, forall m :e F, m :e n.
+  { exact (finite_sub_omega_bounded F HFsub HFfin). }
+  claim Hboundprop: bound F :e omega /\ forall m:set, m :e F -> m :e bound F.
+  { exact (Eps_i_ex (fun n => n :e omega /\ forall m:set, m :e F -> m :e n) Hexb). }
+  claim Hbound_omega: bound F :e omega.
+  { exact (andEL (bound F :e omega) (forall m:set, m :e F -> m :e bound F) Hboundprop). }
+  claim Hbound_sub: forall m:set, m :e F -> m :e bound F.
+  { exact (andER (bound F :e omega) (forall m:set, m :e F -> m :e bound F) Hboundprop). }
+  claim HFpowB: F :e Power (bound F).
+  { claim Hsub: F c= bound F.
+    { let m. assume Hm: m :e F.
+      exact (Hbound_sub m Hm). }
+    exact (PowerI (bound F) F Hsub). }
+  claim HembS: emb F :e S.
+  { exact (tuple_2_Sigma omega (fun n:set => Power n) (bound F) Hbound_omega F HFpowB). }
+  claim Hmap: forall u :e S, codeS u :e omega.
+  { exact (andEL (forall u :e S, codeS u :e omega)
+                 (forall u v :e S, codeS u = codeS v -> u = v)
+                 HcodeS). }
+  claim Hdef: code F = codeS (emb F).
+  { reflexivity. }
+  rewrite Hdef.
+  exact (Hmap (emb F) HembS).
+- let F1.
+  assume HF1: F1 :e finite_subcollections omega.
+  let F2.
+  assume HF2: F2 :e finite_subcollections omega.
+  assume Heq: code F1 = code F2.
+  prove F1 = F2.
+  claim HF1pow: F1 :e Power omega.
+  { exact (SepE1 (Power omega) (fun F0:set => finite F0) F1 HF1). }
+  claim HF2pow: F2 :e Power omega.
+  { exact (SepE1 (Power omega) (fun F0:set => finite F0) F2 HF2). }
+  claim HF1sub: F1 c= omega.
+  { exact (PowerE omega F1 HF1pow). }
+  claim HF2sub: F2 c= omega.
+  { exact (PowerE omega F2 HF2pow). }
+  claim HF1fin: finite F1.
+  { exact (SepE2 (Power omega) (fun F0:set => finite F0) F1 HF1). }
+  claim HF2fin: finite F2.
+  { exact (SepE2 (Power omega) (fun F0:set => finite F0) F2 HF2). }
+  claim Hexb1: exists n :e omega, forall m :e F1, m :e n.
+  { exact (finite_sub_omega_bounded F1 HF1sub HF1fin). }
+  claim Hexb2: exists n :e omega, forall m :e F2, m :e n.
+  { exact (finite_sub_omega_bounded F2 HF2sub HF2fin). }
+  claim Hb1: bound F1 :e omega /\ forall m:set, m :e F1 -> m :e bound F1.
+  { exact (Eps_i_ex (fun n => n :e omega /\ forall m:set, m :e F1 -> m :e n) Hexb1). }
+  claim Hb2: bound F2 :e omega /\ forall m:set, m :e F2 -> m :e bound F2.
+  { exact (Eps_i_ex (fun n => n :e omega /\ forall m:set, m :e F2 -> m :e n) Hexb2). }
+  claim Hbound1: bound F1 :e omega.
+  { exact (andEL (bound F1 :e omega) (forall m:set, m :e F1 -> m :e bound F1) Hb1). }
+  claim Hbound2: bound F2 :e omega.
+  { exact (andEL (bound F2 :e omega) (forall m:set, m :e F2 -> m :e bound F2) Hb2). }
+  claim HF1powB: F1 :e Power (bound F1).
+  { claim Hsub: F1 c= bound F1.
+    { let m. assume Hm: m :e F1.
+      claim Hsubm: forall m0:set, m0 :e F1 -> m0 :e bound F1.
+      { exact (andER (bound F1 :e omega) (forall m0:set, m0 :e F1 -> m0 :e bound F1) Hb1). }
+      exact (Hsubm m Hm). }
+    exact (PowerI (bound F1) F1 Hsub). }
+  claim HF2powB: F2 :e Power (bound F2).
+  { claim Hsub: F2 c= bound F2.
+    { let m. assume Hm: m :e F2.
+      claim Hsubm: forall m0:set, m0 :e F2 -> m0 :e bound F2.
+      { exact (andER (bound F2 :e omega) (forall m0:set, m0 :e F2 -> m0 :e bound F2) Hb2). }
+      exact (Hsubm m Hm). }
+    exact (PowerI (bound F2) F2 Hsub). }
+  claim Hemb1: emb F1 :e S.
+  { exact (tuple_2_Sigma omega (fun n:set => Power n) (bound F1) Hbound1 F1 HF1powB). }
+  claim Hemb2: emb F2 :e S.
+  { exact (tuple_2_Sigma omega (fun n:set => Power n) (bound F2) Hbound2 F2 HF2powB). }
+  claim Hcodeinj: forall u v :e S, codeS u = codeS v -> u = v.
+  { exact (andER (forall u :e S, codeS u :e omega)
+                 (forall u v :e S, codeS u = codeS v -> u = v)
+                 HcodeS). }
+  claim Hdef1: code F1 = codeS (emb F1).
+  { reflexivity. }
+  claim Hdef2: code F2 = codeS (emb F2).
+  { reflexivity. }
+  claim HeqS: codeS (emb F1) = codeS (emb F2).
+  { rewrite <- Hdef1.
+    rewrite <- Hdef2.
+    exact Heq. }
+  claim HembEq: emb F1 = emb F2.
+  { exact (Hcodeinj (emb F1) Hemb1 (emb F2) Hemb2 HeqS). }
+  claim HF1Eq: F1 = F2.
+  { claim Hemb1def: emb F1 = (bound F1, F1).
+    { reflexivity. }
+    claim Hemb2def: emb F2 = (bound F2, F2).
+    { reflexivity. }
+    claim Hproj1: (emb F1) 1 = F1.
+    { rewrite Hemb1def.
+      exact (tuple_2_1_eq (bound F1) F1). }
+    claim Hproj2: (emb F2) 1 = F2.
+    { rewrite Hemb2def.
+      exact (tuple_2_1_eq (bound F2) F2). }
+    claim HapEq: (emb F1) 1 = (emb F2) 1.
+    { rewrite HembEq.
+      reflexivity. }
+    rewrite <- Hproj1.
+    rewrite <- Hproj2.
+    exact HapEq. }
+  exact HF1Eq.
 Qed.
 
 (** Helper: finite subcollections of a countable set are countable **)
