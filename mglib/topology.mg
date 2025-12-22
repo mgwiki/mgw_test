@@ -7006,6 +7006,7 @@ Definition finite_complement_topology : set -> set :=
 
 (** helper: countable set: admits an injection into omega (at most countable) **)
 (** LATEX VERSION: A set is countable if it admits an injection into ω (at most countable). **)
+(** NOTE: `atleastp X omega` is used here in the sense “there exists an injection from X into omega” (cardinality at most omega). **)
 Definition countable : set -> prop := fun X => atleastp X omega.
 
 (** LATEX VERSION: Every finite set is countable. **)
@@ -17515,6 +17516,7 @@ Qed.
     apply_fun looks up y such that (x,y) ∈ f.
     Identity function: {(y,y) | y ∈ X}.
     Constant family: {(i, X) | i ∈ I}. **)
+(** SUSPICIOUS DEFINITION: `apply_fun` is based on `Eps_i`, so `function_on` only constrains the chosen values, not that `f` is a genuine functional graph; later results about unions/preimages may require extra axioms. **)
 Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => (x,y) :e f).
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod X Y)|function_on f X Y}.
