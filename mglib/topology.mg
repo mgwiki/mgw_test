@@ -37544,6 +37544,208 @@ apply andI.
       exact (FalseE Hfalse (f :e Union (product_subbasis_full I Xi))).
 Qed.
 
+(** Helper: cartesian product with Empty is Empty. **)
+Theorem setprod_Empty_left : forall Y:set, setprod Empty Y = Empty.
+let Y.
+apply set_ext.
+- let p. assume Hp: p :e setprod Empty Y.
+  prove p :e Empty.
+  claim Hp0: (p 0) :e Empty.
+  { exact (ap0_Sigma Empty (fun _:set => Y) p Hp). }
+  exact (EmptyE (p 0) Hp0 (p :e Empty)).
+- let p. assume Hp: p :e Empty.
+  prove p :e setprod Empty Y.
+  exact (EmptyE p Hp (p :e setprod Empty Y)).
+Qed.
+
+(** Helper: basis on X from the singleton {X}. **)
+Theorem basis_on_singleton : forall X:set, basis_on X {X}.
+let X.
+prove {X} c= Power X
+  /\ (forall x :e X, exists b :e {X}, x :e b)
+  /\ (forall b1 :e {X}, forall b2 :e {X}, forall x:set,
+        x :e b1 -> x :e b2 ->
+        exists b3 :e {X}, x :e b3 /\ b3 c= b1 :/\: b2).
+apply andI.
+- apply andI.
+  + (** {X} c= Power X **)
+    let b. assume Hb: b :e {X}.
+    prove b :e Power X.
+    claim HbX: b = X.
+    { exact (SingE X b Hb). }
+    rewrite HbX.
+    exact (Self_In_Power X).
+  + (** covering property **)
+    let x. assume HxX: x :e X.
+    prove exists b :e {X}, x :e b.
+    witness X.
+    apply andI.
+    * exact (SingI X).
+    * exact HxX.
+- (** intersection property **)
+  let b1. assume Hb1: b1 :e {X}.
+  let b2. assume Hb2: b2 :e {X}.
+  let x. assume Hxb1: x :e b1. assume Hxb2: x :e b2.
+  prove exists b3 :e {X}, x :e b3 /\ b3 c= b1 :/\: b2.
+  claim Hb1X: b1 = X.
+  { exact (SingE X b1 Hb1). }
+  claim Hb2X: b2 = X.
+  { exact (SingE X b2 Hb2). }
+  witness X.
+  apply andI.
+  + exact (SingI X).
+	  + prove x :e X /\ X c= b1 :/\: b2.
+	    apply andI.
+	    * rewrite <- Hb1X. exact Hxb1.
+	    * let y. assume HyX: y :e X.
+      prove y :e b1 :/\: b2.
+      claim Hyb1: y :e b1.
+      { rewrite Hb1X. exact HyX. }
+      claim Hyb2: y :e b2.
+      { rewrite Hb2X. exact HyX. }
+      exact (binintersectI b1 b2 y Hyb1 Hyb2).
+Qed.
+
+(** Helper: the product space indexed by Empty has exactly the empty function. **)
+Theorem product_space_empty_index : forall Xi:set, product_space Empty Xi = {Empty}.
+let Xi.
+apply set_ext.
+- let f. assume Hf: f :e product_space Empty Xi.
+  prove f :e {Empty}.
+  claim HfPow: f :e Power (setprod Empty (space_family_union Empty Xi)).
+  { exact (SepE1 (Power (setprod Empty (space_family_union Empty Xi)))
+                 (fun f0:set => function_on f0 Empty (space_family_union Empty Xi) /\
+                   forall i:set, i :e Empty -> apply_fun f0 i :e space_family_set Xi i)
+                 f Hf). }
+  claim Heqprod: setprod Empty (space_family_union Empty Xi) = Empty.
+  { exact (setprod_Empty_left (space_family_union Empty Xi)). }
+	  claim HfPowE: f :e Power Empty.
+	  { rewrite <- Heqprod. exact HfPow. }
+  claim Hsub: f c= Empty.
+  { exact (PowerE Empty f HfPowE). }
+  claim Hall: forall x:set, x /:e f.
+  { let x. assume Hx: x :e f.
+    prove False.
+    claim HxE: x :e Empty.
+    { exact (Hsub x Hx). }
+    exact (EmptyE x HxE False). }
+  claim HfEq: f = Empty.
+  { exact (Empty_eq f Hall). }
+  rewrite HfEq.
+  exact (SingI Empty).
+- let f. assume Hf: f :e {Empty}.
+  prove f :e product_space Empty Xi.
+  claim Hfeq: f = Empty.
+  { exact (SingE Empty f Hf). }
+  rewrite Hfeq.
+  claim Hpow: Empty :e Power (setprod Empty (space_family_union Empty Xi)).
+  { claim Heqprod: setprod Empty (space_family_union Empty Xi) = Empty.
+    { exact (setprod_Empty_left (space_family_union Empty Xi)). }
+    rewrite Heqprod.
+    exact (Empty_In_Power Empty). }
+  claim Hpred: function_on Empty Empty (space_family_union Empty Xi) /\
+    forall i:set, i :e Empty -> apply_fun Empty i :e space_family_set Xi i.
+  { apply andI.
+    - let x. assume Hx: x :e Empty.
+      prove apply_fun Empty x :e space_family_union Empty Xi.
+      exact (EmptyE x Hx (apply_fun Empty x :e space_family_union Empty Xi)).
+    - let i. assume Hi: i :e Empty.
+      prove apply_fun Empty i :e space_family_set Xi i.
+      exact (EmptyE i Hi (apply_fun Empty i :e space_family_set Xi i)). }
+  exact (SepI (Power (setprod Empty (space_family_union Empty Xi)))
+              (fun f0:set => function_on f0 Empty (space_family_union Empty Xi) /\
+                forall i:set, i :e Empty -> apply_fun f0 i :e space_family_set Xi i)
+              Empty Hpow Hpred).
+Qed.
+
+(** Helper: nonempty empty-subbasis gives singleton basis {X}. **)
+Theorem basis_of_subbasis_empty_eq : forall X:set,
+  X <> Empty ->
+  basis_of_subbasis X Empty = {X}.
+let X.
+assume HXne: X <> Empty.
+apply set_ext.
+- let b. assume Hb: b :e basis_of_subbasis X Empty.
+  prove b :e {X}.
+  claim Hbfin: b :e finite_intersections_of X Empty.
+  { exact (SepE1 (finite_intersections_of X Empty) (fun b0:set => b0 <> Empty) b Hb). }
+  claim HexF: exists F :e finite_subcollections Empty, b = intersection_of_family X F.
+  { exact (ReplE (finite_subcollections Empty) (fun F0:set => intersection_of_family X F0) b Hbfin). }
+  apply HexF.
+  let F. assume HFpair. apply HFpair.
+  assume HF: F :e finite_subcollections Empty.
+  assume Hbeq: b = intersection_of_family X F.
+  claim HFpow: F :e Power Empty.
+  { exact (SepE1 (Power Empty) (fun F0:set => finite F0) F HF). }
+  claim HFsub: F c= Empty.
+  { exact (PowerE Empty F HFpow). }
+  claim Hall: forall x:set, x /:e F.
+  { let x. assume Hx: x :e F.
+    prove False.
+    claim HxE: x :e Empty.
+    { exact (HFsub x Hx). }
+    exact (EmptyE x HxE False). }
+  claim HFeq: F = Empty.
+  { exact (Empty_eq F Hall). }
+  claim HbX: b = X.
+  { rewrite Hbeq.
+    rewrite HFeq.
+    exact (intersection_of_family_empty_eq X). }
+  rewrite HbX.
+  exact (SingI X).
+- let b. assume Hb: b :e {X}.
+  prove b :e basis_of_subbasis X Empty.
+  claim HbX: b = X.
+  { exact (SingE X b Hb). }
+  rewrite HbX.
+  claim HF: Empty :e finite_subcollections Empty.
+  { exact (SepI (Power Empty) (fun F0:set => finite F0)
+                Empty (Empty_In_Power Empty) finite_Empty). }
+  claim Hfin: intersection_of_family X Empty :e finite_intersections_of X Empty.
+  { exact (ReplI (finite_subcollections Empty) (fun F0:set => intersection_of_family X F0) Empty HF). }
+  claim HXfin: X :e finite_intersections_of X Empty.
+	{ claim Heq: X = intersection_of_family X Empty.
+	  { rewrite (intersection_of_family_empty_eq X).
+	    reflexivity. }
+	  rewrite Heq at 1.
+	  exact Hfin. }
+  exact (SepI (finite_intersections_of X Empty) (fun b0:set => b0 <> Empty)
+              X HXfin HXne).
+Qed.
+
+(** Helper for §30 Theorem 30.2: empty-index product topology is a topology. **)
+(** LATEX VERSION: The empty product carries the topology generated by the empty cylinder family, which is a topology. **)
+Theorem countable_product_topology_subbasis_empty_is_topology : forall Xi:set,
+  topology_on (product_space Empty Xi) (countable_product_topology_subbasis Empty Xi).
+let Xi.
+prove topology_on (product_space Empty Xi) (countable_product_topology_subbasis Empty Xi).
+claim HTdef: countable_product_topology_subbasis Empty Xi =
+  generated_topology_from_subbasis (product_space Empty Xi) (product_subbasis_full Empty Xi).
+{ reflexivity. }
+rewrite HTdef.
+				          claim HS0: product_subbasis_full Empty Xi = Empty.
+				          { exact (famunion_Empty (fun i:set => {product_cylinder Empty Xi i U|U :e space_family_topology Xi i})). }
+				          rewrite HS0.
+				          claim HGTS0: generated_topology_from_subbasis (product_space Empty Xi) Empty =
+				            generated_topology (product_space Empty Xi) (basis_of_subbasis (product_space Empty Xi) Empty).
+				          { reflexivity. }
+				          rewrite HGTS0.
+				          claim HX0ne: product_space Empty Xi <> Empty.
+				          { assume HX0E: product_space Empty Xi = Empty.
+				            claim Hem: Empty :e product_space Empty Xi.
+				            { rewrite (product_space_empty_index Xi).
+    exact (SingI Empty). }
+	  claim HemE: Empty :e Empty.
+	  { rewrite <- HX0E at 2. exact Hem. }
+	  exact (EmptyE Empty HemE False). }
+claim HB0eq: basis_of_subbasis (product_space Empty Xi) Empty = {product_space Empty Xi}.
+{ exact (basis_of_subbasis_empty_eq (product_space Empty Xi) HX0ne). }
+claim HB0: basis_on (product_space Empty Xi) (basis_of_subbasis (product_space Empty Xi) Empty).
+{ rewrite HB0eq.
+  exact (basis_on_singleton (product_space Empty Xi)). }
+exact (lemma_topology_from_basis (product_space Empty Xi) (basis_of_subbasis (product_space Empty Xi) Empty) HB0).
+Qed.
+
 (** helper: image of countable set is countable **)
 Theorem countable_image : forall X:set, countable_set X ->
   forall F:set->set, countable_set {F x|x :e X}.
@@ -38057,50 +38259,152 @@ apply andI.
 	    prove topology_on (countable_product_space I Xi) (countable_product_topology_subbasis I Xi) /\
 	         forall f:set, f :e countable_product_space I Xi -> countable_basis_at (countable_product_space I Xi) (countable_product_topology_subbasis I Xi) f.
 	    apply andI.
-	    - (** topology_on for product **)
-	      apply (xm (I = Empty)).
-	      + assume HI0: I = Empty.
-	        admit.
-	      + assume HIn0: ~(I = Empty).
-	        claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
-	        { let i. assume HiI: i :e I.
-	          exact (andEL (topology_on (space_family_set Xi i) (space_family_topology Xi i))
-	                       (forall x:set, x :e space_family_set Xi i -> countable_basis_at (space_family_set Xi i) (space_family_topology Xi i) x)
-	                       (Hcomp i HiI)). }
-	        claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
-	        { exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop). }
-	        claim HB: basis_on (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)).
-	        { exact (finite_intersections_basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi) HS). }
-	        exact (lemma_topology_from_basis (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)) HB).
-	    - (** local countable basis at points **)
-	      let f. assume Hf: f :e countable_product_space I Xi.
-	      prove countable_basis_at (countable_product_space I Xi) (countable_product_topology_subbasis I Xi) f.
-	      admit.
-	- (** second countable for countable products **)
-	  let I Xi.
-	  assume HIcount: countable_index_set I.
-	  assume Hcomp: forall i:set, i :e I -> second_countable_space (space_family_set Xi i) (space_family_topology Xi i).
-	  prove second_countable_space (countable_product_space I Xi) (countable_product_topology_subbasis I Xi).
+		    - (** topology_on for product **)
+		      apply (xm (I = Empty)).
+		      + assume HI0: I = Empty.
+		        rewrite HI0.
+		        exact (countable_product_topology_subbasis_empty_is_topology Xi).
+		      + assume HIn0: ~(I = Empty).
+		        claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+		        { let i. assume HiI: i :e I.
+		          exact (andEL (topology_on (space_family_set Xi i) (space_family_topology Xi i))
+		                       (forall x:set, x :e space_family_set Xi i -> countable_basis_at (space_family_set Xi i) (space_family_topology Xi i) x)
+		                       (Hcomp i HiI)). }
+		        claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+		        { exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop). }
+		        claim HB: basis_on (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)).
+		        { exact (finite_intersections_basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi) HS). }
+		        exact (lemma_topology_from_basis (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)) HB).
+		    - (** local countable basis at points **)
+		      let f. assume Hf: f :e countable_product_space I Xi.
+		      prove countable_basis_at (countable_product_space I Xi) (countable_product_topology_subbasis I Xi) f.
+		      apply (xm (I = Empty)).
+		      + assume HI0: I = Empty.
+		        claim Hf0: f :e product_space Empty Xi.
+		        { rewrite <- HI0. exact Hf. }
+		        rewrite HI0.
+		        prove countable_basis_at (product_space Empty Xi) (countable_product_topology_subbasis Empty Xi) f.
+		        claim HT0: topology_on (product_space Empty Xi) (countable_product_topology_subbasis Empty Xi).
+		        { exact (countable_product_topology_subbasis_empty_is_topology Xi). }
+			        prove topology_on (product_space Empty Xi) (countable_product_topology_subbasis Empty Xi) /\ f :e product_space Empty Xi /\
+			          exists B:set, B c= countable_product_topology_subbasis Empty Xi /\ countable_set B /\
+			            (forall b:set, b :e B -> f :e b) /\
+			            (forall U:set, U :e countable_product_topology_subbasis Empty Xi -> f :e U -> exists b:set, b :e B /\ b c= U).
+			        apply andI.
+			        - apply andI.
+			          + exact HT0.
+			          + exact Hf0.
+			        - witness (Sing (product_space Empty Xi)).
+			          prove ((Sing (product_space Empty Xi) c= countable_product_topology_subbasis Empty Xi /\ countable_set (Sing (product_space Empty Xi))) /\
+			            (forall b:set, b :e Sing (product_space Empty Xi) -> f :e b)) /\
+			              (forall U:set, U :e countable_product_topology_subbasis Empty Xi -> f :e U -> exists b:set, b :e Sing (product_space Empty Xi) /\ b c= U).
+			          apply andI.
+			          - apply andI.
+			            + (** B c= Tx and countable_set **)
+			              apply andI.
+			              - (** B c= Tx **)
+			                let b. assume Hb: b :e Sing (product_space Empty Xi).
+			                prove b :e countable_product_topology_subbasis Empty Xi.
+			                claim HbX0: b = product_space Empty Xi.
+			                { exact (SingE (product_space Empty Xi) b Hb). }
+			                rewrite HbX0.
+			                exact (topology_has_X (product_space Empty Xi) (countable_product_topology_subbasis Empty Xi) HT0).
+			              - (** countable_set B **)
+			                exact (finite_countable (Sing (product_space Empty Xi)) (Sing_finite (product_space Empty Xi))).
+			            + (** every b in B contains f **)
+			              let b. assume Hb: b :e Sing (product_space Empty Xi).
+			              prove f :e b.
+			              claim HbX0: b = product_space Empty Xi.
+			              { exact (SingE (product_space Empty Xi) b Hb). }
+			              rewrite HbX0.
+			              exact Hf0.
+			          - (** neighborhood refinement **)
+			            let U. assume HU: U :e countable_product_topology_subbasis Empty Xi.
+			            assume HfU: f :e U.
+			            prove exists b:set, b :e Sing (product_space Empty Xi) /\ b c= U.
+			            witness (product_space Empty Xi).
+			            apply andI.
+			            + exact (SingI (product_space Empty Xi)).
+			            + claim HX0eq: product_space Empty Xi = {Empty}.
+			              { exact (product_space_empty_index Xi). }
+			              claim Hf0eq: f = Empty.
+			              { apply (SingE Empty f).
+			                rewrite <- HX0eq.
+			                exact Hf0. }
+			              let y. assume HyX0: y :e product_space Empty Xi.
+			              prove y :e U.
+			              claim Hy0: y = Empty.
+			              { apply (SingE Empty y).
+			                rewrite <- HX0eq.
+			                exact HyX0. }
+			              rewrite Hy0.
+			              rewrite <- Hf0eq.
+			              exact HfU.
+		      + assume HIn0: ~(I = Empty).
+		        admit.
+		- (** second countable for countable products **)
+		  let I Xi.
+		  assume HIcount: countable_index_set I.
+		  assume Hcomp: forall i:set, i :e I -> second_countable_space (space_family_set Xi i) (space_family_topology Xi i).
+		  prove second_countable_space (countable_product_space I Xi) (countable_product_topology_subbasis I Xi).
 	  prove topology_on (countable_product_space I Xi) (countable_product_topology_subbasis I Xi) /\
 	       exists B:set, basis_on (countable_product_space I Xi) B /\ countable_set B /\ basis_generates (countable_product_space I Xi) B (countable_product_topology_subbasis I Xi).
 	  apply andI.
-	  - (** topology_on for product **)
-	    apply (xm (I = Empty)).
-	    + assume HI0: I = Empty.
-	      admit.
-	    + assume HIn0: ~(I = Empty).
-	      claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
-	      { let i. assume HiI: i :e I.
-	        exact (andEL (topology_on (space_family_set Xi i) (space_family_topology Xi i))
-	                     (exists B0:set, basis_on (space_family_set Xi i) B0 /\ countable_set B0 /\ basis_generates (space_family_set Xi i) B0 (space_family_topology Xi i))
-	                     (Hcomp i HiI)). }
-	      claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
-	      { exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop). }
-	      claim HB: basis_on (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)).
-	      { exact (finite_intersections_basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi) HS). }
-	      exact (lemma_topology_from_basis (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)) HB).
-	  - (** existence of countable basis **)
-	    admit.
+		  - (** topology_on for product **)
+		    apply (xm (I = Empty)).
+		    + assume HI0: I = Empty.
+		      rewrite HI0.
+		      exact (countable_product_topology_subbasis_empty_is_topology Xi).
+		    + assume HIn0: ~(I = Empty).
+		      claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+		      { let i. assume HiI: i :e I.
+		        exact (andEL (topology_on (space_family_set Xi i) (space_family_topology Xi i))
+		                     (exists B0:set, basis_on (space_family_set Xi i) B0 /\ countable_set B0 /\ basis_generates (space_family_set Xi i) B0 (space_family_topology Xi i))
+		                     (Hcomp i HiI)). }
+		      claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+		      { exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop). }
+		      claim HB: basis_on (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)).
+		      { exact (finite_intersections_basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi) HS). }
+		      exact (lemma_topology_from_basis (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)) HB).
+		  - (** existence of countable basis **)
+			    apply (xm (I = Empty)).
+			    + assume HI0: I = Empty.
+			      rewrite HI0.
+			      witness (Sing (product_space Empty Xi)).
+			      apply andI.
+			      - apply andI.
+			        + exact (basis_on_singleton (product_space Empty Xi)).
+			        + exact (finite_countable (Sing (product_space Empty Xi)) (Sing_finite (product_space Empty Xi))).
+			      - (** basis_generates **)
+			        prove basis_on (product_space Empty Xi) {product_space Empty Xi} /\
+			          generated_topology (product_space Empty Xi) {product_space Empty Xi} = countable_product_topology_subbasis Empty Xi.
+			        apply andI.
+			        + exact (basis_on_singleton (product_space Empty Xi)).
+			        + claim HTdef: countable_product_topology_subbasis Empty Xi =
+			            generated_topology_from_subbasis (product_space Empty Xi) (product_subbasis_full Empty Xi).
+			          { reflexivity. }
+			          rewrite HTdef.
+				          claim HS0: product_subbasis_full Empty Xi = Empty.
+				          { exact (famunion_Empty (fun i:set => {product_cylinder Empty Xi i U|U :e space_family_topology Xi i})). }
+				          rewrite HS0.
+				          claim HGTS0: generated_topology_from_subbasis (product_space Empty Xi) Empty =
+				            generated_topology (product_space Empty Xi) (basis_of_subbasis (product_space Empty Xi) Empty).
+				          { reflexivity. }
+				          rewrite HGTS0.
+				          claim HX0ne: product_space Empty Xi <> Empty.
+				          { assume HX0E: product_space Empty Xi = Empty.
+				            claim Hem: Empty :e product_space Empty Xi.
+			            { rewrite (product_space_empty_index Xi).
+			              exact (SingI Empty). }
+			            claim HemE: Empty :e Empty.
+			            { rewrite <- HX0E at 2. exact Hem. }
+			            exact (EmptyE Empty HemE False). }
+			          claim HB0eq: basis_of_subbasis (product_space Empty Xi) Empty = {product_space Empty Xi}.
+			          { exact (basis_of_subbasis_empty_eq (product_space Empty Xi) HX0ne). }
+			          rewrite HB0eq.
+			          reflexivity.
+			    + assume HIn0: ~(I = Empty).
+			      admit.
 Qed.
 
 (** from §30 Definition: dense subset **) 
