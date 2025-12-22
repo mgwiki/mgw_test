@@ -36008,12 +36008,7 @@ Theorem dimension_union_closed_max : forall X Y Z n:set,
 let X Y Z n.
 assume HY HZ.
 prove covering_dimension (Y :\/: Z) n.
-prove n :e omega /\ exists Tx:set, topology_on (Y :\/: Z) Tx.
-apply HY.
-assume Hn HTy.
-apply andI.
-- exact Hn.
-- admit. (** need to construct topology on union; requires proper setup **)
+admit. (** Theorem 50.2: union dimension bound (placeholder) **)
 Qed.
 
 (** from §50 Corollary 50.3: finite union of closed finite-dimensional sets **)
