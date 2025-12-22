@@ -43382,6 +43382,8 @@ exact Hpre_closed.
 Qed.
 (** from §31 Exercise 6: closed continuous surjection preserves normal **)
 (** LATEX VERSION: Let p: X → Y be closed continuous surjective map. If X is normal, then so is Y. **)
+(** from §31 Exercise 6: definition of closed map **)
+(** LATEX VERSION: A closed map takes closed sets to closed sets (by image). **)
 Definition closed_map : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty p =>
   function_on p X Y /\ forall A:set, closed_in X Tx A -> closed_in Y Ty (image_of p A).
 
@@ -43401,6 +43403,8 @@ admit. (** for disjoint closed A B in Y, preimages disjoint closed in X, separat
 Qed.
 (** from §31 Exercise 7: perfect map preserves separation/countability/local compactness **)
 (** LATEX VERSION: Perfect map (closed continuous surjective with compact fibers) preserves Hausdorff, regular, locally compact, second-countable. **)
+(** from §31 Exercise 7: definition of perfect map **)
+(** LATEX VERSION: Such a map is called a perfect map. **)
 Definition perfect_map : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty p =>
   continuous_map X Tx Y Ty p /\
   closed_map X Tx Y Ty p /\
