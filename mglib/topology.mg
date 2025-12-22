@@ -19945,9 +19945,7 @@ Qed.
     Constant family: {(i, X) | i ∈ I}. **)
 (** SUSPICIOUS DEFINITION: `apply_fun` is based on `Eps_i`, so `function_on` only constrains the chosen values, not that `f` is a genuine functional graph; later results about unions/preimages may require extra axioms. **)
 Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => (x,y) :e f).
-Definition function_on : set -> set -> set -> prop := fun f X Y =>
-  forall x:set, x :e X ->
-    (exists y:set, y :e Y /\ (x,y) :e f) /\ apply_fun f x :e Y.
+Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod X Y)|function_on f X Y}.
 
 (** Helper: constant function as a graph **)
@@ -28411,13 +28409,7 @@ apply andI.
     * exact HTy.
   + (** function_on **)
     let a. assume HaX: a :e X.
-    prove (exists y:set, y :e Y /\ (a,y) :e const_fun X x) /\ apply_fun (const_fun X x) a :e Y.
-    apply andI.
-    * witness x.
-      apply andI.
-      { exact HxY. }
-      { exact (ReplI X (fun a0:set => (a0,x)) a HaX). }
-    * 
+    prove apply_fun (const_fun X x) a :e Y.
     claim Happ: apply_fun (const_fun X x) a = x.
     { exact (const_fun_apply X x a HaX). }
     rewrite Happ.
@@ -28544,7 +28536,7 @@ apply andI.
       { exact HxX. }
       { prove apply_fun f x :e Y :\: U.
         apply setminusI.
-        { exact (andER (exists y:set, y :e Y /\ (x,y) :e f) (apply_fun f x :e Y) (Hf x HxX)). }
+        { exact (Hf x HxX). }
         { prove apply_fun f x /:e U.
           assume HfxU: apply_fun f x :e U.
           claim Hxpre2: x :e preimage_of X f U.
@@ -28703,18 +28695,15 @@ claim Hpart2: (topology_on X Tx /\ topology_on X Tx) /\ function_on id X X.
   - exact Hpart1.
   - (** function_on id X X **)
     prove function_on id X X.
+    prove forall x:set, x :e X -> apply_fun id x :e X.
     let x. assume Hx: x :e X.
-    prove (exists y:set, y :e X /\ (x,y) :e id) /\ apply_fun id x :e X.
-    apply andI.
-    - witness x.
-      apply andI.
-      + exact Hx.
-      + exact (ReplI X (fun x0:set => (x0,x0)) x Hx).
-    - (** For x :e X, we have apply_fun id x = x, hence apply_fun id x :e X. **)
-      claim Hid_x: apply_fun id x = x.
-      { exact (identity_function_apply X x Hx). }
-      rewrite Hid_x.
-      exact Hx. }
+    prove apply_fun id x :e X.
+    (** For x :e X, we have (x,x) :e id, so apply_fun id x = x by Eps_i.
+        Therefore apply_fun id x :e X. This requires showing uniqueness of y in (x,y) :e id. **)
+    claim Hid_x: apply_fun id x = x.
+    { exact (identity_function_apply X x Hx). }
+    rewrite Hid_x.
+    exact Hx. }
 apply andI.
 - exact Hpart2.
 - (** forall V:set, V :e Tx -> preimage_of X id V :e Tx **)
@@ -28803,7 +28792,7 @@ apply set_ext.
   claim Hcomp: apply_fun (compose_fun X f g) x = apply_fun g (apply_fun f x).
   { exact (compose_fun_apply X f g x HxX). }
   claim HfxY: apply_fun f x :e Y.
-  { exact (andER (exists y:set, y :e Y /\ (x,y) :e f) (apply_fun f x :e Y) (Hfun x HxX)). }
+  { exact (Hfun x HxX). }
   prove x :e {x0 :e X | apply_fun f x0 :e preimage_of Y g W}.
   claim HfxInPre: apply_fun f x :e preimage_of Y g W.
   { prove apply_fun f x :e {y :e Y | apply_fun g y :e W}.
@@ -28895,32 +28884,27 @@ prove topology_on X Tx /\ topology_on Z Tz /\ function_on gf X Z /\
   (forall W:set, W :e Tz -> preimage_of X gf W :e Tx).
 claim Hpart1: topology_on X Tx /\ topology_on Z Tz.
 { apply andI. exact HTx. exact HTz. }
-  claim Hpart2: (topology_on X Tx /\ topology_on Z Tz) /\ function_on gf X Z.
-  { apply andI.
+claim Hpart2: (topology_on X Tx /\ topology_on Z Tz) /\ function_on gf X Z.
+{ apply andI.
   - exact Hpart1.
   - (** Prove function_on gf X Z **)
-    prove function_on gf X Z.
+    prove forall x:set, x :e X -> apply_fun gf x :e Z.
     let x. assume Hx: x :e X.
-    prove (exists y:set, y :e Z /\ (x,y) :e gf) /\ apply_fun gf x :e Z.
-    (** Since f: X -> Y, we have apply_fun f x :e Y. **)
+    prove apply_fun gf x :e Z.
+    (** gf = {(x, apply_fun g (apply_fun f x))|x :e X} **)
+    (** So apply_fun gf x should be apply_fun g (apply_fun f x) **)
+    (** Since f: X -> Y, we have apply_fun f x :e Y **)
     claim Hfx: apply_fun f x :e Y.
-    { exact (andER (exists y:set, y :e Y /\ (x,y) :e f) (apply_fun f x :e Y) (Hfun_f x Hx)). }
-    (** Since g: Y -> Z, we have apply_fun g (apply_fun f x) :e Z. **)
+    { exact (Hfun_f x Hx). }
+    (** Since g: Y -> Z, we have apply_fun g (apply_fun f x) :e Z **)
     claim Hgfx: apply_fun g (apply_fun f x) :e Z.
-    { exact (andER (exists y:set, y :e Z /\ (apply_fun f x,y) :e g) (apply_fun g (apply_fun f x) :e Z)
-                   (Hfun_g (apply_fun f x) Hfx)). }
-    apply andI.
-    - (** existence of a graph value for gf at x **)
-      witness (apply_fun g (apply_fun f x)).
-      apply andI.
-      + exact Hgfx.
-      + exact (ReplI X (fun x0:set => (x0, apply_fun g (apply_fun f x0))) x Hx).
-    - (** chosen value lies in Z **)
-      claim Hgf_eq: apply_fun gf x = apply_fun g (apply_fun f x).
-      { exact (compose_fun_apply X f g x Hx). }
-      rewrite Hgf_eq.
-      exact Hgfx.
-  }
+    { exact (Hfun_g (apply_fun f x) Hfx). }
+    (** Show apply_fun gf x :e Z using compose_fun_apply axiom **)
+    claim Hgf_eq: apply_fun gf x = apply_fun g (apply_fun f x).
+    { exact (compose_fun_apply X f g x Hx). }
+    rewrite Hgf_eq.
+    exact Hgfx.
+}
 apply andI.
 - exact Hpart2.
 - (** Prove preimages of open sets in Z are open in X **)
@@ -29012,16 +28996,11 @@ apply andI.
               * exact (subspace_topology_is_topology X Tx A HTx HA).
               * exact HTx.
             + let a. assume HaA: a :e A.
-              prove (exists y:set, y :e X /\ (a,y) :e j) /\ apply_fun j a :e X.
-              apply andI.
-              * witness a.
-                apply andI.
-                { exact (HA a HaA). }
-                { exact (ReplI A (fun y:set => (y,y)) a HaA). }
-              * claim Haj: apply_fun j a = a.
-                { exact (identity_function_apply A a HaA). }
-                rewrite Haj.
-                exact (HA a HaA).
+              prove apply_fun j a :e X.
+              claim Haj: apply_fun j a = a.
+              { exact (identity_function_apply A a HaA). }
+              rewrite Haj.
+              exact (HA a HaA).
           - let V. assume HV: V :e Tx.
             prove preimage_of A j V :e subspace_topology X Tx A.
             claim Heq: preimage_of A j V = V :/\: A.
@@ -29091,12 +29070,12 @@ apply andI.
 	          apply andI.
 	          * exact HTA.
 	          * exact HTy.
-		        + (** function_on f A Y **)
-		          let a. assume HaA: a :e A.
-		          prove (exists y:set, y :e Y /\ (a,y) :e f) /\ apply_fun f a :e Y.
-		          claim HaX: a :e X.
-		          { exact (HA a HaA). }
-		          exact (HfunXY a HaX).
+	        + (** function_on f A Y **)
+	          let a. assume HaA: a :e A.
+	          prove apply_fun f a :e Y.
+	          claim HaX: a :e X.
+	          { exact (HA a HaA). }
+	          exact (HfunXY a HaX).
 	      - (** preimage condition in the subspace topology **)
 	        let V. assume HV: V :e Ty.
 	        prove preimage_of A f V :e subspace_topology X Tx A.
@@ -29142,36 +29121,18 @@ apply andI.
 	    - (** (e) restricting the range to a subspace Z0⊂Y containing f(X) **)
 	      let f. let Z0. assume Hf. assume HZ0. assume Himg.
 	      prove continuous_map X Tx Z0 (subspace_topology Y Ty Z0) f.
-		      (** Extract preimage axiom for f: X -> Y **)
-		      claim Htmp: (topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y.
-		      { exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
-		                     (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
-		                     Hf). }
-		      claim HfunXY: function_on f X Y.
-		      { exact (andER (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y) Htmp). }
-		      claim HpreY: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
-		      { exact (andER (((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y))
-		                     (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
-		                     Hf). }
+	      (** Extract preimage axiom for f: X -> Y **)
+	      claim HpreY: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+	      { exact (andER (((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y))
+	                     (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+	                     Hf). }
 	      (** Z0 with the subspace topology is a topological space **)
 	      claim HTz0: topology_on Z0 (subspace_topology Y Ty Z0).
 	      { exact (subspace_topology_is_topology Y Ty Z0 HTy HZ0). }
-		      (** function_on f X Z0 **)
-		      claim HfunXZ0: function_on f X Z0.
-		      { let x. assume HxX: x :e X.
-		        prove (exists y:set, y :e Z0 /\ (x,y) :e f) /\ apply_fun f x :e Z0.
-		        apply andI.
-		        - witness (apply_fun f x).
-		          apply andI.
-		          + exact (Himg x HxX).
-		          + claim HexY: exists y:set, y :e Y /\ (x,y) :e f.
-		            { exact (andEL (exists y:set, y :e Y /\ (x,y) :e f) (apply_fun f x :e Y) (HfunXY x HxX)). }
-		            apply HexY.
-		            let y. assume HyPair.
-		            claim Hxyf: (x,y) :e f.
-		            { exact (andER (y :e Y) ((x,y) :e f) HyPair). }
-		            exact (Eps_i_ax (fun z:set => (x,z) :e f) y Hxyf).
-		        - exact (Himg x HxX). }
+	      (** function_on f X Z0 **)
+	      claim HfunXZ0: function_on f X Z0.
+	      { let x. assume HxX: x :e X.
+	        exact (Himg x HxX). }
 	      (** prove the continuity conjunction **)
 	      prove (topology_on X Tx /\ topology_on Z0 (subspace_topology Y Ty Z0) /\ function_on f X Z0)
 	            /\ forall B:set, B :e subspace_topology Y Ty Z0 -> preimage_of X f B :e Tx.
@@ -29211,8 +29172,8 @@ apply andI.
 	            { exact (SepE1 X (fun u:set => apply_fun f u :e V) x Hx). }
 	            claim HfxV: apply_fun f x :e V.
 	            { exact (SepE2 X (fun u:set => apply_fun f u :e V) x Hx). }
-            claim HfxZ0: apply_fun f x :e Z0.
-            { exact (andER (exists y:set, y :e Z0 /\ (x,y) :e f) (apply_fun f x :e Z0) (HfunXZ0 x HxX)). }
+	            claim HfxZ0: apply_fun f x :e Z0.
+	            { exact (HfunXZ0 x HxX). }
 	            claim HfxB: apply_fun f x :e B.
 	            { rewrite HB_eq.
 	              exact (binintersectI V Z0 (apply_fun f x) HfxV HfxZ0). }
@@ -29239,27 +29200,9 @@ apply andI.
 	      { exact (andER (topology_on X Tx /\ topology_on Y Ty)
 	                     (function_on f X Y)
 	                     Htmp). }
-      claim HfunXZ0: function_on f X Z0.
-      { let x. assume HxX: x :e X.
-        prove (exists y:set, y :e Z0 /\ (x,y) :e f) /\ apply_fun f x :e Z0.
-        claim Hfunx: (exists y:set, y :e Y /\ (x,y) :e f) /\ apply_fun f x :e Y.
-        { exact (HfunXY x HxX). }
-        claim HexY: exists y:set, y :e Y /\ (x,y) :e f.
-        { exact (andEL (exists y:set, y :e Y /\ (x,y) :e f) (apply_fun f x :e Y) Hfunx). }
-        claim HfxY: apply_fun f x :e Y.
-        { exact (andER (exists y:set, y :e Y /\ (x,y) :e f) (apply_fun f x :e Y) Hfunx). }
-        claim HfxZ0: apply_fun f x :e Z0.
-        { exact (HYZ0 (apply_fun f x) HfxY). }
-        apply andI.
-        - witness (apply_fun f x).
-          apply andI.
-          + exact HfxZ0.
-          + apply HexY.
-            let y. assume HyPair.
-            claim Hxyf: (x,y) :e f.
-            { exact (andER (y :e Y) ((x,y) :e f) HyPair). }
-            exact (Eps_i_ax (fun z:set => (x,z) :e f) y Hxyf).
-        - exact HfxZ0. }
+	      claim HfunXZ0: function_on f X Z0.
+	      { let x. assume HxX: x :e X.
+	        exact (HYZ0 (apply_fun f x) (HfunXY x HxX)). }
 	      prove (topology_on X Tx /\ topology_on Z0 Tz0 /\ function_on f X Z0) /\
 	            forall W:set, W :e Tz0 -> preimage_of X f W :e Tx.
 	      apply andI.
@@ -29291,8 +29234,8 @@ apply andI.
 	            { exact (SepE1 X (fun u:set => apply_fun f u :e W) x Hx). }
 	            claim HfxW: apply_fun f x :e W.
 	            { exact (SepE2 X (fun u:set => apply_fun f u :e W) x Hx). }
-            claim HfxY: apply_fun f x :e Y.
-            { exact (andER (exists y:set, y :e Y /\ (x,y) :e f) (apply_fun f x :e Y) (HfunXY x HxX)). }
+	            claim HfxY: apply_fun f x :e Y.
+	            { exact (HfunXY x HxX). }
 	            claim HfxB: apply_fun f x :e B.
 	            { exact (binintersectI W Y (apply_fun f x) HfxW HfxY). }
 	            exact (SepI X (fun u:set => apply_fun f u :e B) x HxX HfxB).
@@ -29581,7 +29524,8 @@ claim Hf_preimg: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
 claim HTsubspace: topology_on A (subspace_topology X Tx A).
 { exact (subspace_topology_is_topology X Tx A HTx HA). }
 claim Hfun_A: function_on f A Y.
-{ let x. assume HxA: x :e A.
+{ prove forall x:set, x :e A -> apply_fun f x :e Y.
+  let x. assume HxA: x :e A.
   claim HxX: x :e X.
   { exact (HA x HxA). }
   exact (Hfun x HxX). }
@@ -29988,20 +29932,11 @@ apply andI.
     * exact HTprod.
   + (** function_on **)
     let a. assume HaA: a :e A.
-    prove (exists y:set, y :e setprod X Y /\ (a,y) :e pair_map A f g) /\ apply_fun (pair_map A f g) a :e setprod X Y.
-    claim HfaX: apply_fun f a :e X.
-    { exact (andER (exists y:set, y :e X /\ (a,y) :e f) (apply_fun f a :e X) (Hfun_f a HaA)). }
-    claim HgaY: apply_fun g a :e Y.
-    { exact (andER (exists y:set, y :e Y /\ (a,y) :e g) (apply_fun g a :e Y) (Hfun_g a HaA)). }
-    apply andI.
-    * witness (apply_fun f a, apply_fun g a).
-      apply andI.
-      { exact (tuple_2_setprod X Y (apply_fun f a) HfaX (apply_fun g a) HgaY). }
-      { exact (ReplI A (fun a0:set => (a0, (apply_fun f a0, apply_fun g a0))) a HaA). }
-    * claim Happ: apply_fun (pair_map A f g) a = (apply_fun f a, apply_fun g a).
-      { exact (pair_map_apply A X Y f g a HaA). }
-      rewrite Happ.
-      exact (tuple_2_setprod X Y (apply_fun f a) HfaX (apply_fun g a) HgaY).
+    prove apply_fun (pair_map A f g) a :e setprod X Y.
+    claim Happ: apply_fun (pair_map A f g) a = (apply_fun f a, apply_fun g a).
+    { exact (pair_map_apply A X Y f g a HaA). }
+    rewrite Happ.
+    exact (tuple_2_setprod X Y (apply_fun f a) (Hfun_f a HaA) (apply_fun g a) (Hfun_g a HaA)).
 - let W. assume HW: W :e product_topology X Tx Y Ty.
   prove preimage_of A (pair_map A f g) W :e Ta.
   claim HWopen: open_in (setprod X Y) (product_topology X Tx Y Ty) W.
@@ -30098,16 +30033,11 @@ apply andI.
       * exact HTx.
     + (** function_on **)
       let p. assume Hp: p :e setprod X Y.
-      prove (exists y:set, y :e X /\ (p,y) :e projection_map1 X Y) /\ apply_fun (projection_map1 X Y) p :e X.
-      apply andI.
-      * witness (p 0).
-        apply andI.
-        { exact (ap0_Sigma X (fun _ : set => Y) p Hp). }
-        { exact (ReplI (setprod X Y) (fun q:set => (q, q 0)) p Hp). }
-      * claim Happ: apply_fun (projection_map1 X Y) p = p 0.
-        { exact (projection1_apply X Y p Hp). }
-        rewrite Happ.
-        exact (ap0_Sigma X (fun _ : set => Y) p Hp).
+      prove apply_fun (projection_map1 X Y) p :e X.
+      claim Happ: apply_fun (projection_map1 X Y) p = p 0.
+      { exact (projection1_apply X Y p Hp). }
+      rewrite Happ.
+      exact (ap0_Sigma X (fun _ : set => Y) p Hp).
   - let V. assume HV: V :e Tx.
     prove preimage_of (setprod X Y) (projection_map1 X Y) V :e product_topology X Tx Y Ty.
     claim HVsub: V c= X.
@@ -30136,16 +30066,11 @@ apply andI.
       * exact HTy.
     + (** function_on **)
       let p. assume Hp: p :e setprod X Y.
-      prove (exists y:set, y :e Y /\ (p,y) :e projection_map2 X Y) /\ apply_fun (projection_map2 X Y) p :e Y.
-      apply andI.
-      * witness (p 1).
-        apply andI.
-        { exact (ap1_Sigma X (fun _ : set => Y) p Hp). }
-        { exact (ReplI (setprod X Y) (fun q:set => (q, q 1)) p Hp). }
-      * claim Happ: apply_fun (projection_map2 X Y) p = p 1.
-        { exact (projection2_apply X Y p Hp). }
-        rewrite Happ.
-        exact (ap1_Sigma X (fun _ : set => Y) p Hp).
+      prove apply_fun (projection_map2 X Y) p :e Y.
+      claim Happ: apply_fun (projection_map2 X Y) p = p 1.
+      { exact (projection2_apply X Y p Hp). }
+      rewrite Happ.
+      exact (ap1_Sigma X (fun _ : set => Y) p Hp).
   - let V. assume HV: V :e Ty.
     prove preimage_of (setprod X Y) (projection_map2 X Y) V :e product_topology X Tx Y Ty.
     claim HVsub: V c= Y.
@@ -30263,11 +30188,11 @@ claim HxzIn: (x,z) :e setprod X X.
 { exact (tuple_2_setprod X X x Hx z Hz). }
 
 claim HdxyR: apply_fun d (x,y) :e R.
-{ exact (andER (exists y0:set, y0 :e R /\ ((x,y),y0) :e d) (apply_fun d (x,y) :e R) (Hfun (x,y) HxyIn)). }
+{ exact (Hfun (x,y) HxyIn). }
 claim HdyzR: apply_fun d (y,z) :e R.
-{ exact (andER (exists y0:set, y0 :e R /\ ((y,z),y0) :e d) (apply_fun d (y,z) :e R) (Hfun (y,z) HyzIn)). }
+{ exact (Hfun (y,z) HyzIn). }
 claim HdxzR: apply_fun d (x,z) :e R.
-{ exact (andER (exists y0:set, y0 :e R /\ ((x,z),y0) :e d) (apply_fun d (x,z) :e R) (Hfun (x,z) HxzIn)). }
+{ exact (Hfun (x,z) HxzIn). }
 claim HsumR: add_SNo (apply_fun d (x,y)) (apply_fun d (y,z)) :e R.
 { exact (real_add_SNo (apply_fun d (x,y)) HdxyR (apply_fun d (y,z)) HdyzR). }
 exact (RleI (apply_fun d (x,z)) (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z))) HdxzR HsumR (Htri x y z Hx Hy Hz)).
@@ -30548,7 +30473,7 @@ apply andI.
         { let x. assume Hx: x :e X.
           prove x :e Ypre.
 	          claim HfxY: apply_fun f x :e Y.
-	          { exact (andER (exists y:set, y :e Y /\ (x,y) :e f) (apply_fun f x :e Y) (Hf_on x Hx)). }
+	          { exact (Hf_on x Hx). }
 	          exact (SepI X (fun x0 => apply_fun f x0 :e Y) x Hx HfxY). }
         claim HYeq: Ypre = X.
         { apply set_ext.
@@ -42197,37 +42122,18 @@ apply andI.
 
   claim Hfun: function_on f X R.
   { let z. assume HzX: z :e X.
-    prove (exists y:set, y :e R /\ (z,y) :e f) /\ apply_fun f z :e R.
-    apply andI.
-    - (** existence of some graph value in R **)
-      apply (xm (z :e F)).
-      * assume HzF: z :e F.
-        witness 1.
-        apply andI.
-        { exact H1R. }
-        { apply binunionI2.
-          exact (ReplI F (fun a0:set => (a0,1)) z HzF). }
-      * assume HznotF: z /:e F.
-        witness 0.
-        apply andI.
-        { exact H0R. }
-        { claim HzA0: z :e A0.
-          { rewrite HA0def.
-            exact (setminusI X F z HzX HznotF). }
-          apply binunionI1.
-          exact (ReplI A0 (fun a0:set => (a0,0)) z HzA0). }
-    - (** chosen value is in R **)
-      apply (xm (z :e F)).
-      * assume HzF: z :e F.
-        claim Hz1: apply_fun f z = 1.
-        { exact (Happ1 z HzX HzF). }
-        rewrite Hz1.
-        exact H1R.
-      * assume HznotF: z /:e F.
-        claim Hz0: apply_fun f z = 0.
-        { exact (Happ0 z HzX HznotF). }
-        rewrite Hz0.
-        exact H0R. }
+    prove apply_fun f z :e R.
+    apply (xm (z :e F)).
+    - assume HzF: z :e F.
+      claim Hz1: apply_fun f z = 1.
+      { exact (Happ1 z HzX HzF). }
+      rewrite Hz1.
+      exact H1R.
+    - assume HznotF: z /:e F.
+      claim Hz0: apply_fun f z = 0.
+      { exact (Happ0 z HzX HznotF). }
+      rewrite Hz0.
+      exact H0R. }
 
   claim Hcont: continuous_map X (discrete_topology X) R R_standard_topology f.
   { exact (continuous_from_discrete X R R_standard_topology f HRtop Hfun). }
