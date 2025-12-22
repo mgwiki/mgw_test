@@ -19948,6 +19948,10 @@ Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => (x,y) :e 
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod X Y)|function_on f X Y}.
 
+(** Helper: total function graph on X into Y (in addition to function_on) **)
+Definition total_function_on : set -> set -> set -> prop := fun f X Y =>
+  function_on f X Y /\ forall x:set, x :e X -> exists y:set, y :e Y /\ (x,y) :e f.
+
 (** Helper: constant function as a graph **)
 Definition const_fun : set -> set -> set := fun A x => {(a,x) | a :e A}.
 
@@ -19973,9 +19977,33 @@ assume Heq: (a, Eps_i (fun y => (a,y) :e const_fun A x)) = (a0,x).
 	reflexivity.
 	Qed.
 
-	(** Helper: identity function application **)
-	Theorem identity_function_apply : forall X x:set,
-	  x :e X -> apply_fun {(y,y) | y :e X} x = x.
+(** Helper: const_fun is total_function_on **)
+Theorem const_fun_total_function_on : forall A Y x:set,
+  x :e Y -> total_function_on (const_fun A x) A Y.
+let A Y x.
+assume HxY: x :e Y.
+prove function_on (const_fun A x) A Y /\
+  forall a:set, a :e A -> exists y:set, y :e Y /\ (a,y) :e const_fun A x.
+apply andI.
+- (** function_on **)
+  let a. assume HaA: a :e A.
+  prove apply_fun (const_fun A x) a :e Y.
+  claim Happ: apply_fun (const_fun A x) a = x.
+  { exact (const_fun_apply A x a HaA). }
+  rewrite Happ.
+  exact HxY.
+- (** totality **)
+  let a. assume HaA: a :e A.
+  prove exists y:set, y :e Y /\ (a,y) :e const_fun A x.
+  witness x.
+  apply andI.
+  + exact HxY.
+  + exact (ReplI A (fun a0:set => (a0,x)) a HaA).
+Qed.
+
+		(** Helper: identity function application **)
+		Theorem identity_function_apply : forall X x:set,
+		  x :e X -> apply_fun {(y,y) | y :e X} x = x.
 	let X x. assume Hx: x :e X.
 prove apply_fun {(y,y) | y :e X} x = x.
 prove Eps_i (fun z => (x,z) :e {(y,y) | y :e X}) = x.
