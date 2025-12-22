@@ -38049,18 +38049,58 @@ apply andI.
           apply andI.
           + exact HBsubA.
           + exact HgenSubEq. }
-  + (** first countable for countable products **)
-    let I Xi.
-    assume HIcount: countable_index_set I.
-    assume Hcomp: forall i:set, i :e I -> first_countable_space (space_family_set Xi i) (space_family_topology Xi i).
-    prove first_countable_space (countable_product_space I Xi) (countable_product_topology_subbasis I Xi).
-    admit.
-- (** second countable for countable products **)
-  let I Xi.
-  assume HIcount: countable_index_set I.
-  assume Hcomp: forall i:set, i :e I -> second_countable_space (space_family_set Xi i) (space_family_topology Xi i).
-  prove second_countable_space (countable_product_space I Xi) (countable_product_topology_subbasis I Xi).
-  admit.
+	  + (** first countable for countable products **)
+	    let I Xi.
+	    assume HIcount: countable_index_set I.
+	    assume Hcomp: forall i:set, i :e I -> first_countable_space (space_family_set Xi i) (space_family_topology Xi i).
+	    prove first_countable_space (countable_product_space I Xi) (countable_product_topology_subbasis I Xi).
+	    prove topology_on (countable_product_space I Xi) (countable_product_topology_subbasis I Xi) /\
+	         forall f:set, f :e countable_product_space I Xi -> countable_basis_at (countable_product_space I Xi) (countable_product_topology_subbasis I Xi) f.
+	    apply andI.
+	    - (** topology_on for product **)
+	      apply (xm (I = Empty)).
+	      + assume HI0: I = Empty.
+	        admit.
+	      + assume HIn0: ~(I = Empty).
+	        claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+	        { let i. assume HiI: i :e I.
+	          exact (andEL (topology_on (space_family_set Xi i) (space_family_topology Xi i))
+	                       (forall x:set, x :e space_family_set Xi i -> countable_basis_at (space_family_set Xi i) (space_family_topology Xi i) x)
+	                       (Hcomp i HiI)). }
+	        claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+	        { exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop). }
+	        claim HB: basis_on (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)).
+	        { exact (finite_intersections_basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi) HS). }
+	        exact (lemma_topology_from_basis (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)) HB).
+	    - (** local countable basis at points **)
+	      let f. assume Hf: f :e countable_product_space I Xi.
+	      prove countable_basis_at (countable_product_space I Xi) (countable_product_topology_subbasis I Xi) f.
+	      admit.
+	- (** second countable for countable products **)
+	  let I Xi.
+	  assume HIcount: countable_index_set I.
+	  assume Hcomp: forall i:set, i :e I -> second_countable_space (space_family_set Xi i) (space_family_topology Xi i).
+	  prove second_countable_space (countable_product_space I Xi) (countable_product_topology_subbasis I Xi).
+	  prove topology_on (countable_product_space I Xi) (countable_product_topology_subbasis I Xi) /\
+	       exists B:set, basis_on (countable_product_space I Xi) B /\ countable_set B /\ basis_generates (countable_product_space I Xi) B (countable_product_topology_subbasis I Xi).
+	  apply andI.
+	  - (** topology_on for product **)
+	    apply (xm (I = Empty)).
+	    + assume HI0: I = Empty.
+	      admit.
+	    + assume HIn0: ~(I = Empty).
+	      claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+	      { let i. assume HiI: i :e I.
+	        exact (andEL (topology_on (space_family_set Xi i) (space_family_topology Xi i))
+	                     (exists B0:set, basis_on (space_family_set Xi i) B0 /\ countable_set B0 /\ basis_generates (space_family_set Xi i) B0 (space_family_topology Xi i))
+	                     (Hcomp i HiI)). }
+	      claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+	      { exact (product_subbasis_full_subbasis_on I Xi HIn0 HcompTop). }
+	      claim HB: basis_on (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)).
+	      { exact (finite_intersections_basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi) HS). }
+	      exact (lemma_topology_from_basis (product_space I Xi) (basis_of_subbasis (product_space I Xi) (product_subbasis_full I Xi)) HB).
+	  - (** existence of countable basis **)
+	    admit.
 Qed.
 
 (** from §30 Definition: dense subset **) 
