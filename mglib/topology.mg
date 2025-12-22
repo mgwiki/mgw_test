@@ -9233,6 +9233,14 @@ apply (RleI a b (RltE_left a b Hab) (RltE_right a b Hab)).
 exact (not_Rlt_sym a b Hab).
 Qed.
 
+(** helper: reflexivity of Rle **)
+(** LATEX VERSION: a ≤ a. **)
+Theorem Rle_refl : forall a:set, a :e R -> Rle a a.
+let a. assume Ha.
+apply (RleI a a Ha Ha).
+exact (not_Rlt_refl a Ha).
+Qed.
+
 (** helper for §13 Example 4: 0 < 1 in Rlt form **)
 (** LATEX VERSION: We use 0<1 in the usual order on R. **)
 Theorem Rlt_0_1 : Rlt 0 1.
