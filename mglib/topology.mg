@@ -42432,7 +42432,7 @@ apply andI.
   claim Hsep:
     forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
       exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
-  { exact (andER (topology_on X Tx)
+  { exact (andER (one_point_sets_closed X Tx)
                  (forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
                    exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty)
                  Hnorm). }
