@@ -35220,7 +35220,128 @@ Qed.
 
 (** from §23 Example 7: product topology on R^omega is a topology **)
 Theorem Romega_product_topology_is_topology : topology_on R_omega_space R_omega_product_topology.
-admit.
+prove topology_on R_omega_space R_omega_product_topology.
+set Xi := const_space_family omega R R_standard_topology.
+set X := product_space omega Xi.
+set S := product_subbasis_full omega Xi.
+set Tx := generated_topology_from_subbasis X S.
+
+claim H0omega: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
+
+claim HcompTop: forall i:set, i :e omega -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+{ let i. assume Hi: i :e omega.
+  prove topology_on (space_family_set Xi i) (space_family_topology Xi i).
+  claim HXi: apply_fun Xi i = (R, R_standard_topology).
+  { exact (const_space_family_apply omega R R_standard_topology i Hi). }
+  claim Hset: space_family_set Xi i = R.
+  { claim Hdef: space_family_set Xi i = (apply_fun Xi i) 0.
+    { reflexivity. }
+    rewrite Hdef.
+    rewrite HXi.
+    exact (tuple_2_0_eq R R_standard_topology). }
+  claim HTi: space_family_topology Xi i = R_standard_topology.
+  { claim Hdef: space_family_topology Xi i = (apply_fun Xi i) 1.
+    { reflexivity. }
+    rewrite Hdef.
+    rewrite HXi.
+    exact (tuple_2_1_eq R R_standard_topology). }
+  rewrite Hset.
+  rewrite HTi.
+  exact R_standard_topology_is_topology_local. }
+
+claim HSsub: S c= Power X.
+{ let s. assume Hs: s :e S.
+  prove s :e Power X.
+  apply PowerI.
+  let f. assume Hf: f :e s.
+  prove f :e X.
+  set F := (fun i:set => {product_cylinder omega Xi i U|U :e space_family_topology Xi i}).
+  claim HsF: s :e (\/_ i :e omega, F i).
+  { exact Hs. }
+  apply (famunionE_impred omega F s HsF).
+  let i. assume Hi: i :e omega. assume HsFi: s :e F i.
+  apply (ReplE_impred (space_family_topology Xi i) (fun U0:set => product_cylinder omega Xi i U0) s HsFi (f :e X)).
+  let U0. assume HU0: U0 :e space_family_topology Xi i.
+  assume Hseq: s = product_cylinder omega Xi i U0.
+  claim HfCyl: f :e product_cylinder omega Xi i U0.
+  { rewrite <- Hseq.
+    exact Hf. }
+  exact (SepE1 X
+              (fun g0:set => i :e omega /\ U0 :e space_family_topology Xi i /\ apply_fun g0 i :e U0)
+              f
+              HfCyl). }
+
+claim HUnionS: Union S = X.
+{ apply set_ext.
+  - let f. assume Hf: f :e Union S.
+    prove f :e X.
+    apply UnionE_impred S f Hf.
+    let s. assume Hfs: f :e s. assume HsS: s :e S.
+    claim HsPow: s :e Power X.
+    { exact (HSsub s HsS). }
+    exact (PowerE X s HsPow f Hfs).
+  - let f. assume Hf: f :e X.
+    prove f :e Union S.
+    set i0 := 0.
+    set U0 := space_family_set Xi i0.
+    set s0 := product_cylinder omega Xi i0 U0.
+    claim Hi0: i0 :e omega.
+    { exact H0omega. }
+    claim HTi0: topology_on (space_family_set Xi i0) (space_family_topology Xi i0).
+    { exact (HcompTop i0 Hi0). }
+    claim HU0top: U0 :e space_family_topology Xi i0.
+    { exact (topology_has_X (space_family_set Xi i0) (space_family_topology Xi i0) HTi0). }
+    claim Hs0S: s0 :e S.
+    { set F := (fun i:set => {product_cylinder omega Xi i U|U :e space_family_topology Xi i}).
+      claim Hs0Fi0: s0 :e F i0.
+      { exact (ReplI (space_family_topology Xi i0)
+                     (fun U:set => product_cylinder omega Xi i0 U)
+                     U0
+                     HU0top). }
+      exact (famunionI omega F i0 s0 Hi0 Hs0Fi0). }
+    prove f :e Union S.
+    apply (UnionI S f s0).
+    - prove f :e s0.
+      prove f :e {g :e X | i0 :e omega /\ U0 :e space_family_topology Xi i0 /\ apply_fun g i0 :e U0}.
+      apply (SepI X
+               (fun g0:set => i0 :e omega /\ U0 :e space_family_topology Xi i0 /\ apply_fun g0 i0 :e U0)
+               f
+               Hf).
+      prove i0 :e omega /\ U0 :e space_family_topology Xi i0 /\ apply_fun f i0 :e U0.
+      apply andI.
+      + prove i0 :e omega /\ U0 :e space_family_topology Xi i0.
+        apply andI.
+        - exact Hi0.
+        - exact HU0top.
+      + claim Hfprop: function_on f omega (space_family_union omega Xi) /\
+            forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i.
+          { exact (SepE2 (Power (setprod omega (space_family_union omega Xi)))
+                         (fun f0:set => function_on f0 omega (space_family_union omega Xi) /\
+                           forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i)
+                         f
+                         Hf). }
+          claim Hcoords: forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i.
+          { exact (andER (function_on f omega (space_family_union omega Xi))
+                         (forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
+                         Hfprop). }
+          exact (Hcoords i0 Hi0).
+    - exact Hs0S. }
+
+claim HS: subbasis_on X S.
+{ prove S c= Power X /\ Union S = X.
+  apply andI.
+  - exact HSsub.
+  - exact HUnionS. }
+claim HTx: topology_on X Tx.
+{ exact (topology_from_subbasis_is_topology X S HS). }
+claim HXe: X = R_omega_space.
+{ reflexivity. }
+claim HTXe: Tx = R_omega_product_topology.
+{ reflexivity. }
+rewrite <- HXe.
+rewrite <- HTXe.
+exact HTx.
 Qed.
 
 (** from §23: dense set meets every nonempty open set **)
