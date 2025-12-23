@@ -48476,12 +48476,16 @@ Qed.
 
 (** from §50 Exercise 3: topologist's sine curve has dimension 1 **)
 (** LATEX VERSION: The topologist's sine curve has topological dimension 1. **)
-Axiom ex50_3_sine_curve_dimension_1_axiom : forall X Tx:set,
-  X = R (** stub: actual definition of topologist's sine curve needed **) ->
-  covering_dimension X Tx (Sing Empty).
-Theorem ex50_3_sine_curve_dimension_1 : forall X Tx:set,
-  X = R (** stub: actual definition of topologist's sine curve needed **) ->
-  covering_dimension X Tx (Sing Empty).
+(** from §50 Exercise 3: the topologist sine curve **)
+(** LATEX VERSION: The topologist sine curve is a specific subspace of R2; we name it abstractly here. **)
+(** stub: the actual geometric definition is not expanded in this file **)
+Definition topologists_sine_curve : set := Eps_i (fun S:set => True).
+Definition topologists_sine_curve_topology : set :=
+  Eps_i (fun Tx:set => topology_on topologists_sine_curve Tx).
+Axiom ex50_3_sine_curve_dimension_1_axiom :
+  covering_dimension topologists_sine_curve topologists_sine_curve_topology (Sing Empty).
+Theorem ex50_3_sine_curve_dimension_1 :
+  covering_dimension topologists_sine_curve topologists_sine_curve_topology (Sing Empty).
 exact ex50_3_sine_curve_dimension_1_axiom.
 Qed.
 
