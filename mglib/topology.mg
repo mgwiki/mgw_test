@@ -35716,11 +35716,78 @@ claim HpF: (F c= omega -> exists n :e omega, forall m :e F, m :e n).
 exact (HpF HFsub).
 Qed.
 
+(** Helper: basis neighborhoods in the product topology meet Romega_infty **)
+Theorem Romega_infty_meets_product_basis : forall b x:set,
+  b :e basis_of_subbasis R_omega_space (product_subbasis_full omega (const_space_family omega R R_standard_topology)) ->
+  x :e b ->
+  b :/\: Romega_infty <> Empty.
+admit.
+Qed.
+
 (** from §23 Example 7: Romega_infty is dense in the product topology **) 
 (** LATEX VERSION: Every basic open set in the product topology meets R^infty by modifying only finitely many coordinates. **)
 Theorem Romega_infty_dense :
   closure_of R_omega_space R_omega_product_topology Romega_infty = R_omega_space.
-admit.
+prove closure_of R_omega_space R_omega_product_topology Romega_infty = R_omega_space.
+apply set_ext.
+- exact (closure_in_space R_omega_space R_omega_product_topology Romega_infty Romega_product_topology_is_topology).
+- let x. assume Hx: x :e R_omega_space.
+  prove x :e closure_of R_omega_space R_omega_product_topology Romega_infty.
+  (** Use the defining Sep condition for closure_of. **)
+  claim Hcond: forall U:set, U :e R_omega_product_topology -> x :e U -> U :/\: Romega_infty <> Empty.
+  { let U. assume HU: U :e R_omega_product_topology.
+    assume HxU: x :e U.
+    prove U :/\: Romega_infty <> Empty.
+    (** Reduce to a basis element b inside U containing x. **)
+    set S := product_subbasis_full omega (const_space_family omega R R_standard_topology).
+    set B := basis_of_subbasis R_omega_space S.
+    claim HUpow: U :e Power R_omega_space.
+    { exact (SepE1 (Power R_omega_space)
+                  (fun U0:set => forall y :e U0, exists b0 :e B, y :e b0 /\ b0 c= U0)
+                  U
+                  HU). }
+    claim HUl: forall y :e U, exists b0 :e B, y :e b0 /\ b0 c= U.
+    { exact (SepE2 (Power R_omega_space)
+                  (fun U0:set => forall y :e U0, exists b0 :e B, y :e b0 /\ b0 c= U0)
+                  U
+                  HU). }
+    apply (HUl x HxU).
+    let b0. assume Hb0pair.
+    claim Hb0B: b0 :e B.
+    { exact (andEL (b0 :e B) (x :e b0 /\ b0 c= U) Hb0pair). }
+    claim Hb0xu: x :e b0 /\ b0 c= U.
+    { exact (andER (b0 :e B) (x :e b0 /\ b0 c= U) Hb0pair). }
+    claim Hxb0: x :e b0.
+    { exact (andEL (x :e b0) (b0 c= U) Hb0xu). }
+    claim Hb0subU: b0 c= U.
+    { exact (andER (x :e b0) (b0 c= U) Hb0xu). }
+    claim Hb0neA: b0 :/\: Romega_infty <> Empty.
+    { exact (Romega_infty_meets_product_basis b0 x Hb0B Hxb0). }
+    (** If b0 ∩ A is nonempty and b0 ⊆ U then U ∩ A is nonempty. **)
+    assume HUAempty: U :/\: Romega_infty = Empty.
+    claim Hb0A_sub: b0 :/\: Romega_infty c= U :/\: Romega_infty.
+    { let y. assume Hy: y :e b0 :/\: Romega_infty.
+      claim Hyb0: y :e b0.
+      { exact (binintersectE1 b0 Romega_infty y Hy). }
+      claim HyA: y :e Romega_infty.
+      { exact (binintersectE2 b0 Romega_infty y Hy). }
+      claim HyU: y :e U.
+      { exact (Hb0subU y Hyb0). }
+      exact (binintersectI U Romega_infty y HyU HyA). }
+    claim Hb0A_empty: b0 :/\: Romega_infty = Empty.
+    { apply Empty_Subq_eq.
+      claim HUAE: U :/\: Romega_infty c= Empty.
+      { let y. assume Hy: y :e U :/\: Romega_infty.
+        prove y :e Empty.
+        rewrite <- HUAempty.
+        exact Hy. }
+      exact (Subq_tra (b0 :/\: Romega_infty) (U :/\: Romega_infty) Empty Hb0A_sub HUAE). }
+    exact (Hb0neA Hb0A_empty). }
+exact (SepI R_omega_space
+            (fun x0 => forall U:set, U :e R_omega_product_topology -> x0 :e U -> U :/\: Romega_infty <> Empty)
+            x
+            Hx
+            Hcond).
 Qed.
 
 Theorem R_omega_product_connected :
