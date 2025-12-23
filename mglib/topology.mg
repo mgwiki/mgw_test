@@ -48858,16 +48858,14 @@ Qed.
 
 (** from Supplementary Exercises Exercise 4: R×R dictionary order is locally 1-euclidean satisfies (iii) not (ii) **)
 (** LATEX VERSION: R×R in dictionary order topology is locally 1-euclidean and satisfies (iii) but not (ii). **)
-Axiom supp_ex_locally_euclidean_4_axiom : forall Tdict:set,
-  Tdict = R (** stub: dictionary order topology on R×R **) ->
-  locally_m_euclidean R Tdict (Sing Empty) /\
-  metrizable R Tdict /\
-  ~ m_manifold R Tdict.
-Theorem supp_ex_locally_euclidean_4 : forall Tdict:set,
-  Tdict = R (** stub: dictionary order topology on R×R **) ->
-  locally_m_euclidean R Tdict (Sing Empty) /\
-  metrizable R Tdict /\
-  ~ m_manifold R Tdict.
+Axiom supp_ex_locally_euclidean_4_axiom :
+  locally_m_euclidean EuclidPlane (order_topology EuclidPlane) (Sing Empty) /\
+  metrizable EuclidPlane (order_topology EuclidPlane) /\
+  ~ m_manifold EuclidPlane (order_topology EuclidPlane).
+Theorem supp_ex_locally_euclidean_4 :
+  locally_m_euclidean EuclidPlane (order_topology EuclidPlane) (Sing Empty) /\
+  metrizable EuclidPlane (order_topology EuclidPlane) /\
+  ~ m_manifold EuclidPlane (order_topology EuclidPlane).
 exact supp_ex_locally_euclidean_4_axiom.
 Qed.
 
