@@ -33438,6 +33438,72 @@ Definition sequence_converges_metric : set -> set -> set -> set -> prop :=
         forall n:set, n :e omega -> N c= n ->
           Rlt (apply_fun d (apply_fun seq n, x)) eps.
 
+(** Helper: extract metric_on from sequence_converges_metric **)
+Theorem sequence_converges_metric_metric_on : forall X d seq x:set,
+  sequence_converges_metric X d seq x -> metric_on X d.
+let X d seq x.
+assume H: sequence_converges_metric X d seq x.
+claim H123: (metric_on X d /\ sequence_on seq X) /\ x :e X.
+{ exact (andEL ((metric_on X d /\ sequence_on seq X) /\ x :e X)
+               (forall eps:set, eps :e R /\ Rlt 0 eps ->
+                 exists N:set, N :e omega /\
+                   forall n:set, n :e omega -> N c= n ->
+                     Rlt (apply_fun d (apply_fun seq n, x)) eps)
+               H). }
+claim H12: metric_on X d /\ sequence_on seq X.
+{ exact (andEL (metric_on X d /\ sequence_on seq X) (x :e X) H123). }
+exact (andEL (metric_on X d) (sequence_on seq X) H12).
+Qed.
+
+(** Helper: extract sequence_on from sequence_converges_metric **)
+Theorem sequence_converges_metric_sequence_on : forall X d seq x:set,
+  sequence_converges_metric X d seq x -> sequence_on seq X.
+let X d seq x.
+assume H: sequence_converges_metric X d seq x.
+claim H123: (metric_on X d /\ sequence_on seq X) /\ x :e X.
+{ exact (andEL ((metric_on X d /\ sequence_on seq X) /\ x :e X)
+               (forall eps:set, eps :e R /\ Rlt 0 eps ->
+                 exists N:set, N :e omega /\
+                   forall n:set, n :e omega -> N c= n ->
+                     Rlt (apply_fun d (apply_fun seq n, x)) eps)
+               H). }
+claim H12: metric_on X d /\ sequence_on seq X.
+{ exact (andEL (metric_on X d /\ sequence_on seq X) (x :e X) H123). }
+exact (andER (metric_on X d) (sequence_on seq X) H12).
+Qed.
+
+(** Helper: extract x in X from sequence_converges_metric **)
+Theorem sequence_converges_metric_point_in_X : forall X d seq x:set,
+  sequence_converges_metric X d seq x -> x :e X.
+let X d seq x.
+assume H: sequence_converges_metric X d seq x.
+claim H123: (metric_on X d /\ sequence_on seq X) /\ x :e X.
+{ exact (andEL ((metric_on X d /\ sequence_on seq X) /\ x :e X)
+               (forall eps:set, eps :e R /\ Rlt 0 eps ->
+                 exists N:set, N :e omega /\
+                   forall n:set, n :e omega -> N c= n ->
+                     Rlt (apply_fun d (apply_fun seq n, x)) eps)
+               H). }
+exact (andER (metric_on X d /\ sequence_on seq X) (x :e X) H123).
+Qed.
+
+(** Helper: extract the eps condition from sequence_converges_metric **)
+Theorem sequence_converges_metric_eps : forall X d seq x:set,
+  sequence_converges_metric X d seq x ->
+  forall eps:set, eps :e R /\ Rlt 0 eps ->
+    exists N:set, N :e omega /\
+      forall n:set, n :e omega -> N c= n ->
+        Rlt (apply_fun d (apply_fun seq n, x)) eps.
+let X d seq x.
+assume H: sequence_converges_metric X d seq x.
+exact (andER ((metric_on X d /\ sequence_on seq X) /\ x :e X)
+             (forall eps:set, eps :e R /\ Rlt 0 eps ->
+               exists N:set, N :e omega /\
+                 forall n:set, n :e omega -> N c= n ->
+                   Rlt (apply_fun d (apply_fun seq n, x)) eps)
+             H).
+Qed.
+
 (** from §21: uniqueness of limits in metric spaces **) 
 (** LATEX VERSION: In a metric space, a convergent sequence has at most one limit. **)
 (** helper: function evaluation as graph lookup **) 
