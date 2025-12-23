@@ -35721,7 +35721,221 @@ Theorem Romega_infty_meets_product_basis : forall b x:set,
   b :e basis_of_subbasis R_omega_space (product_subbasis_full omega (const_space_family omega R R_standard_topology)) ->
   x :e b ->
   b :/\: Romega_infty <> Empty.
-admit.
+let b x.
+assume Hb: b :e basis_of_subbasis R_omega_space (product_subbasis_full omega (const_space_family omega R R_standard_topology)).
+assume Hxb: x :e b.
+prove b :/\: Romega_infty <> Empty.
+set X := R_omega_space.
+set Xi := const_space_family omega R R_standard_topology.
+set S := product_subbasis_full omega Xi.
+set B := basis_of_subbasis X S.
+claim HbB: b :e B.
+{ exact Hb. }
+(** Unpack basis_of_subbasis membership. **)
+claim Hbfin: b :e finite_intersections_of X S.
+{ exact (SepE1 (finite_intersections_of X S) (fun b0:set => b0 <> Empty) b HbB). }
+claim Hbne: b <> Empty.
+{ exact (SepE2 (finite_intersections_of X S) (fun b0:set => b0 <> Empty) b HbB). }
+(** Choose finite subcollection F of S with b = intersection_of_family X F. **)
+apply (ReplE_impred (finite_subcollections S) (fun F0:set => intersection_of_family X F0) b Hbfin (b :/\: Romega_infty <> Empty)).
+let F.
+assume HF: F :e finite_subcollections S.
+assume Hbeq: b = intersection_of_family X F.
+rewrite Hbeq at 1.
+(** Extract basic properties of F. **)
+claim HFpow: F :e Power S.
+{ exact (SepE1 (Power S) (fun F0:set => finite F0) F HF). }
+claim HFsubS: F c= S.
+{ exact (PowerE S F HFpow). }
+claim HFfin: finite F.
+{ exact (SepE2 (Power S) (fun F0:set => finite F0) F HF). }
+(** x lies in the intersection, hence in X and in every s in F. **)
+claim HxInt: x :e intersection_of_family X F.
+{ rewrite <- Hbeq.
+  exact Hxb. }
+claim HxX: x :e X.
+{ exact (SepE1 X (fun x0:set => forall U:set, U :e F -> x0 :e U) x HxInt). }
+claim HxAll: forall s:set, s :e F -> x :e s.
+{ exact (SepE2 X (fun x0:set => forall U:set, U :e F -> x0 :e U) x HxInt). }
+
+(** Pick for each s :e F a coordinate index in omega witnessing s :e S. **)
+set CylFam := fun i:set => {product_cylinder omega Xi i U|U :e space_family_topology Xi i}.
+set pick_i := fun s:set => Eps_i (fun i:set => i :e omega /\ s :e CylFam i).
+
+claim Hpick_omega: forall s:set, s :e F -> pick_i s :e omega.
+{ let s. assume HsF: s :e F.
+  prove pick_i s :e omega.
+  claim HsS: s :e S.
+  { exact (HFsubS s HsF). }
+  claim Hex: exists i:set, i :e omega /\ s :e CylFam i.
+  { exact (famunionE omega (fun i:set => CylFam i) s HsS). }
+  claim Hpick: pick_i s :e omega /\ s :e CylFam (pick_i s).
+  { exact (Eps_i_ex (fun i:set => i :e omega /\ s :e CylFam i) Hex). }
+  exact (andEL (pick_i s :e omega) (s :e CylFam (pick_i s)) Hpick). }
+
+claim Hpick_in: forall s:set, s :e F -> s :e CylFam (pick_i s).
+{ let s. assume HsF: s :e F.
+  prove s :e CylFam (pick_i s).
+  claim HsS: s :e S.
+  { exact (HFsubS s HsF). }
+  claim Hex: exists i:set, i :e omega /\ s :e CylFam i.
+  { exact (famunionE omega (fun i:set => CylFam i) s HsS). }
+  claim Hpick: pick_i s :e omega /\ s :e CylFam (pick_i s).
+  { exact (Eps_i_ex (fun i:set => i :e omega /\ s :e CylFam i) Hex). }
+  exact (andER (pick_i s :e omega) (s :e CylFam (pick_i s)) Hpick). }
+
+(** The set of picked indices is finite and contained in omega. **)
+set J := {pick_i s|s :e F}.
+claim HJfin: finite J.
+{ exact (Repl_finite (fun s:set => pick_i s) F HFfin). }
+claim HJsub: J c= omega.
+{ let j. assume Hj: j :e J.
+  prove j :e omega.
+  apply (ReplE_impred F (fun s:set => pick_i s) j Hj (j :e omega)).
+  let s. assume HsF: s :e F.
+  assume Hjeq: j = pick_i s.
+  rewrite Hjeq.
+  exact (Hpick_omega s HsF). }
+
+(** Choose n bounding all picked indices. **)
+claim Hexn: exists n :e omega, forall m :e J, m :e n.
+{ exact (finite_subset_of_omega_bounded J HJsub HJfin). }
+apply Hexn.
+let n.
+assume Hnand.
+claim HnO: n :e omega.
+{ exact (andEL (n :e omega) (forall m :e J, m :e n) Hnand). }
+claim Hnprop: forall m :e J, m :e n.
+{ exact (andER (n :e omega) (forall m :e J, m :e n) Hnand). }
+
+(** Define a truncation of x: keep x on indices in n, and 0 beyond n. **)
+set h := fun i:set => If_i (n :e i) 0 (apply_fun x i).
+set f := graph omega h.
+
+claim HhR: forall i:set, i :e omega -> h i :e R.
+{ let i. assume Hi: i :e omega.
+  prove h i :e R.
+  claim Hhdef: h i = If_i (n :e i) 0 (apply_fun x i).
+  { reflexivity. }
+  apply (xm (n :e i)).
+  - assume Hni: n :e i.
+    rewrite Hhdef.
+    rewrite (If_i_1 (n :e i) 0 (apply_fun x i) Hni).
+    exact real_0.
+  - assume Hnni: ~(n :e i).
+    rewrite Hhdef.
+    rewrite (If_i_0 (n :e i) 0 (apply_fun x i) Hnni).
+    exact (Romega_coord_in_R x i HxX Hi). }
+
+claim HfX: f :e X.
+{ exact (graph_omega_in_Romega_space h HhR). }
+
+(** f is eventually zero from index n onward, hence lies in Romega_infty. **)
+claim Hftilde: f :e Romega_tilde n.
+{ prove f :e Romega_tilde n.
+  prove f :e {f0 :e X | forall i:set, i :e omega -> n :e i -> apply_fun f0 i = 0}.
+  apply (SepI X (fun f0:set => forall i:set, i :e omega -> n :e i -> apply_fun f0 i = 0) f HfX).
+  let i. assume Hi: i :e omega. assume Hni: n :e i.
+  prove apply_fun f i = 0.
+  claim Happ: apply_fun f i = h i.
+  { exact (apply_fun_graph omega h i Hi). }
+  rewrite Happ.
+  claim Hhdef: h i = If_i (n :e i) 0 (apply_fun x i).
+  { reflexivity. }
+  rewrite Hhdef.
+  rewrite (If_i_1 (n :e i) 0 (apply_fun x i) Hni).
+  reflexivity. }
+claim HfA: f :e Romega_infty.
+{ prove f :e Romega_infty.
+  set Y := Romega_tilde n.
+  claim HYn: Y :e {Romega_tilde k|k :e omega}.
+  { exact (ReplI omega (fun k:set => Romega_tilde k) n HnO). }
+  exact (UnionI {Romega_tilde k|k :e omega} f Y Hftilde HYn). }
+
+(** Show f lies in the intersection_of_family X F, hence in b. **)
+claim HfInt: f :e intersection_of_family X F.
+{ prove f :e intersection_of_family X F.
+  prove f :e {x0 :e X|forall U:set, U :e F -> x0 :e U}.
+  apply (SepI X (fun x0:set => forall U:set, U :e F -> x0 :e U) f HfX).
+  let s. assume HsF: s :e F.
+  prove f :e s.
+  (** Expand s as a product_cylinder at coordinate pick_i s. **)
+  claim HsCyl: s :e CylFam (pick_i s).
+  { exact (Hpick_in s HsF). }
+  apply (ReplE_impred (space_family_topology Xi (pick_i s))
+          (fun U:set => product_cylinder omega Xi (pick_i s) U)
+          s
+          HsCyl
+          (f :e s)).
+  let U.
+  assume HU: U :e space_family_topology Xi (pick_i s).
+  assume Hseq: s = product_cylinder omega Xi (pick_i s) U.
+  rewrite Hseq.
+  (** Extract that x satisfies this cylinder, hence x(pick_i s) :e U. **)
+  claim Hxs: x :e s.
+  { exact (HxAll s HsF). }
+  claim HxCyl: x :e product_cylinder omega Xi (pick_i s) U.
+  { rewrite <- Hseq.
+    exact Hxs. }
+  claim Hxcylprop: (pick_i s :e omega /\ U :e space_family_topology Xi (pick_i s)) /\ apply_fun x (pick_i s) :e U.
+  { exact (SepE2 (product_space omega Xi)
+                 (fun f0:set => (pick_i s :e omega /\ U :e space_family_topology Xi (pick_i s)) /\ apply_fun f0 (pick_i s) :e U)
+                 x
+                 HxCyl). }
+  claim HxUi: apply_fun x (pick_i s) :e U.
+  { exact (andER (pick_i s :e omega /\ U :e space_family_topology Xi (pick_i s))
+                 (apply_fun x (pick_i s) :e U)
+                 Hxcylprop). }
+  (** Show apply_fun f (pick_i s) equals apply_fun x (pick_i s). **)
+  claim Hidx: pick_i s :e omega.
+  { exact (Hpick_omega s HsF). }
+  claim HidxJ: pick_i s :e J.
+  { exact (ReplI F (fun s0:set => pick_i s0) s HsF). }
+  claim Hidxn: pick_i s :e n.
+  { exact (Hnprop (pick_i s) HidxJ). }
+  claim Hnot_nin: ~(n :e pick_i s).
+  { assume Hnin: n :e pick_i s.
+    exact (In_no2cycle (pick_i s) n Hidxn Hnin). }
+  (** Conclude f is in the cylinder by the defining Sep predicate. **)
+  prove f :e product_cylinder omega Xi (pick_i s) U.
+  prove f :e {f0 :e product_space omega Xi | pick_i s :e omega /\ U :e space_family_topology Xi (pick_i s) /\ apply_fun f0 (pick_i s) :e U}.
+  claim HfProd: f :e product_space omega Xi.
+  { exact HfX. }
+  claim Hpropf: pick_i s :e omega /\ U :e space_family_topology Xi (pick_i s) /\ apply_fun f (pick_i s) :e U.
+  { apply andI.
+    - apply andI.
+      + exact Hidx.
+      + exact HU.
+    - prove apply_fun f (pick_i s) :e U.
+      claim Happf: apply_fun f (pick_i s) = h (pick_i s).
+      { exact (apply_fun_graph omega h (pick_i s) Hidx). }
+      rewrite Happf.
+      claim Hhdef: h (pick_i s) = If_i (n :e pick_i s) 0 (apply_fun x (pick_i s)).
+      { reflexivity. }
+      rewrite Hhdef.
+      claim Hif: If_i (n :e pick_i s) 0 (apply_fun x (pick_i s)) = apply_fun x (pick_i s).
+      { exact (If_i_0 (n :e pick_i s) 0 (apply_fun x (pick_i s)) Hnot_nin). }
+      rewrite Hif.
+      exact HxUi. }
+  exact (SepI (product_space omega Xi)
+        (fun f0:set => pick_i s :e omega /\ U :e space_family_topology Xi (pick_i s) /\ apply_fun f0 (pick_i s) :e U)
+        f
+        HfProd
+        Hpropf). }
+
+(** Conclude the intersection b meets Romega_infty by exhibiting f. **)
+assume Hempty: (intersection_of_family X F) :/\: Romega_infty = Empty.
+prove False.
+claim HfB: f :e intersection_of_family X F.
+{ exact HfInt. }
+claim HfBA: f :e (intersection_of_family X F) :/\: Romega_infty.
+{ exact (binintersectI (intersection_of_family X F) Romega_infty f HfB HfA). }
+claim HfE: f :e Empty.
+{ claim HsubE: (intersection_of_family X F) :/\: Romega_infty c= Empty.
+  { rewrite Hempty.
+    exact (Subq_ref Empty). }
+  exact (HsubE f HfBA). }
+exact (EmptyE f HfE).
 Qed.
 
 (** from §23 Example 7: Romega_infty is dense in the product topology **) 
