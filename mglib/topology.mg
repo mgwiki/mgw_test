@@ -33069,6 +33069,49 @@ Qed.
 Definition open_ball : set -> set -> set -> set -> set := fun X d x r =>
   {y :e X|Rlt (apply_fun d (x,y)) r}.
 
+(** Helper: open balls are subsets of X **)
+Theorem open_ball_subset_X : forall X d x r:set, open_ball X d x r c= X.
+let X d x r.
+let y. assume Hy: y :e open_ball X d x r.
+exact (SepE1 X (fun y0:set => Rlt (apply_fun d (x,y0)) r) y Hy).
+Qed.
+
+(** Helper: open balls are elements of Power X **)
+Theorem open_ball_in_Power : forall X d x r:set, open_ball X d x r :e Power X.
+let X d x r.
+apply PowerI.
+exact (open_ball_subset_X X d x r).
+Qed.
+
+(** Helper: the center belongs to any open ball with positive radius **)
+Theorem center_in_open_ball : forall X d x r:set,
+  metric_on X d -> x :e X -> Rlt 0 r -> x :e open_ball X d x r.
+let X d x r.
+assume Hm: metric_on X d.
+assume Hx: x :e X.
+assume Hr: Rlt 0 r.
+claim Hdxx0: apply_fun d (x,x) = 0.
+{ exact (metric_on_diag_zero X d x Hm Hx). }
+claim Hpred: Rlt (apply_fun d (x,x)) r.
+{ rewrite Hdxx0. exact Hr. }
+exact (SepI X (fun y0:set => Rlt (apply_fun d (x,y0)) r) x Hx Hpred).
+Qed.
+
+(** Helper: any open ball with positive radius is nonempty **)
+Theorem open_ball_nonempty : forall X d x r:set,
+  metric_on X d -> x :e X -> Rlt 0 r -> open_ball X d x r <> Empty.
+let X d x r.
+assume Hm: metric_on X d.
+assume Hx: x :e X.
+assume Hr: Rlt 0 r.
+assume Hempty: open_ball X d x r = Empty.
+claim Hxin: x :e open_ball X d x r.
+{ exact (center_in_open_ball X d x r Hm Hx Hr). }
+claim HxinEmpty: x :e Empty.
+{ rewrite <- Hempty. exact Hxin. }
+exact (EmptyE x HxinEmpty).
+Qed.
+
 Definition metric_topology : set -> set -> set := fun X d =>
   generated_topology X (famunion X (fun x => {open_ball X d x r|r :e R, Rlt 0 r})).
 
@@ -33104,6 +33147,33 @@ assume Hd: metric_on X d.
 prove generated_topology X (famunion X (fun x => {open_ball X d x r|r :e R, Rlt 0 r})) = metric_topology X d.
 (** By definition, metric_topology X d = generated_topology X (famunion X (fun x => {open_ball X d x r|r :e R, Rlt 0 r})) **)
 reflexivity.
+Qed.
+
+(** Helper: open balls are open in the metric topology **)
+Theorem open_ball_open_in_metric_topology : forall X d x r:set,
+  metric_on X d -> x :e X -> Rlt 0 r ->
+  open_in X (metric_topology X d) (open_ball X d x r).
+let X d x r.
+assume Hm: metric_on X d.
+assume Hx: x :e X.
+assume Hr: Rlt 0 r.
+set B := famunion X (fun x0 => {open_ball X d x0 rr|rr :e R, Rlt 0 rr}).
+claim HBasis: basis_on X B.
+{ exact (open_balls_form_basis X d Hm). }
+claim Hball_in_rfam: open_ball X d x r :e {open_ball X d x rr|rr :e R, Rlt 0 rr}.
+{ claim HrR: r :e R.
+  { exact (RltE_right 0 r Hr). }
+  exact (ReplSepI R (fun rr:set => Rlt 0 rr) (fun rr:set => open_ball X d x rr) r HrR Hr). }
+claim Hball_in_B: open_ball X d x r :e B.
+{ exact (famunionI X (fun x0 => {open_ball X d x0 rr|rr :e R, Rlt 0 rr}) x (open_ball X d x r) Hx Hball_in_rfam). }
+claim HT: topology_on X (metric_topology X d).
+{ exact (metric_topology_is_topology X d Hm). }
+prove topology_on X (metric_topology X d) /\ open_ball X d x r :e metric_topology X d.
+apply andI.
+- exact HT.
+- prove open_ball X d x r :e metric_topology X d.
+  prove open_ball X d x r :e generated_topology X B.
+  exact (generated_topology_contains_basis X B HBasis (open_ball X d x r) Hball_in_B).
 Qed.
 
 (** from §21: epsilon-delta continuity in metric spaces **) 
