@@ -18982,8 +18982,10 @@ Definition order_topology_basis : set -> set := fun X =>
 Definition order_topology : set -> set := fun X => generated_topology X (order_topology_basis X).
 
 (** Helper: order topology basis satisfies basis axioms **)
-Axiom order_topology_basis_is_basis : forall X:set,
+Theorem order_topology_basis_is_basis : forall X:set,
   basis_on X (order_topology_basis X).
+admit.
+Qed.
 
 (** from §14: order topology is a topology **) 
 (** LATEX VERSION: The order topology satisfies the topology axioms. **)
