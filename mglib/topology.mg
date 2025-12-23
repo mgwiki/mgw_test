@@ -21050,6 +21050,33 @@ Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => (x,y) :e 
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod X Y)|function_on f X Y}.
 
+(** Helper: a functional graph is single valued **)
+Definition functional_graph : set -> prop :=
+  fun f => forall x y1 y2:set, (x,y1) :e f -> (x,y2) :e f -> y1 = y2.
+
+(** Helper: if a value exists in the graph, apply_fun yields a value in the graph **)
+Theorem apply_fun_in_graph_of_ex : forall f x:set,
+  (exists y:set, (x,y) :e f) ->
+  (x, apply_fun f x) :e f.
+let f x.
+assume Hex: exists y:set, (x,y) :e f.
+prove (x, apply_fun f x) :e f.
+exact (Eps_i_ex (fun y:set => (x,y) :e f) Hex).
+Qed.
+
+(** Helper: for a functional graph, apply_fun equals any value in the graph **)
+Theorem functional_graph_apply_fun_eq : forall f x y:set,
+  functional_graph f ->
+  (x,y) :e f ->
+  apply_fun f x = y.
+let f x y.
+assume Hfun: functional_graph f.
+assume Hxy: (x,y) :e f.
+claim Happ: (x, apply_fun f x) :e f.
+{ exact (Eps_i_ax (fun y0:set => (x,y0) :e f) y Hxy). }
+exact (Hfun x (apply_fun f x) y Happ Hxy).
+Qed.
+
 (** Helper: graph of a meta level function as a set of ordered pairs **)
 Definition graph : set -> (set -> set) -> set := fun A g => {(a, g a) | a :e A}.
 
