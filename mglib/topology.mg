@@ -38367,6 +38367,7 @@ exact ex23_Romega_components_axiom.
 Qed.
 
 (** from §23 Exercise: ordered square locally connected but not locally path connected **) 
+(** LATEX VERSION: The ordered square is locally connected but not locally path connected. **)
 Axiom ex23_ordered_square_locally_conn_not_pathconn_axiom :
   locally_connected ordered_square ordered_square_topology /\
   ~ locally_path_connected ordered_square ordered_square_topology.
@@ -38378,6 +38379,7 @@ exact ex23_ordered_square_locally_conn_not_pathconn_axiom.
 Qed.
 
 (** from §23 Exercise: connected open subsets of locally path connected spaces are path connected **) 
+(** LATEX VERSION: In a locally path connected space, every open connected subset is path connected. **)
 Axiom ex23_connected_open_sets_path_connected_axiom : forall X Tx U:set,
   locally_path_connected X Tx ->
   open_in X Tx U ->
@@ -38410,6 +38412,7 @@ exact ex23_path_connected_not_locally_connected_examples_axiom.
 Qed.
 
 (** from §26 Definition: compact space **) 
+(** LATEX VERSION: A space is compact if every open cover has a finite subcover. **)
 Definition open_cover_of : set -> set -> set -> prop := fun X Tx Fam =>
   topology_on X Tx /\ Fam c= Power X /\ X c= Union Fam /\ (forall U:set, U :e Fam -> U :e Tx).
 
@@ -39638,6 +39641,7 @@ apply andI.
 Qed.
 
 (** from §26 Theorem 26.5: compactness preserved under continuous maps **) 
+(** LATEX VERSION: The continuous image of a compact space is compact (in the subspace topology on the image). **)
 Definition image_of_fun : set -> set -> set := fun f X => {apply_fun f x|x :e X}.
 
 Theorem continuous_image_compact : forall X Tx Y Ty f:set,
@@ -44177,6 +44181,7 @@ Definition second_countable_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
 
 (** from §30 Example 1: R^n has countable basis **) 
+(** LATEX VERSION: Euclidean spaces have a countable basis, hence are second countable. **)
 Axiom euclidean_spaces_second_countable_axiom : forall n:set,
   second_countable_space (euclidean_space n) (euclidean_topology n).
 Theorem euclidean_spaces_second_countable : forall n:set,
@@ -44187,6 +44192,7 @@ exact (euclidean_spaces_second_countable_axiom n).
 Qed.
 
 (** from §30 Example 2: uniform topology on R^omega not second countable **) 
+(** LATEX VERSION: The uniform topology on the space of real sequences is first countable but not second countable. **)
 Axiom Romega_uniform_first_not_second_countable_axiom :
   first_countable_space real_sequences uniform_topology /\
   ~ second_countable_space real_sequences uniform_topology.
@@ -45110,6 +45116,7 @@ apply andI.
 Qed.
 
 (** from §30 Definition: dense subset **) 
+(** LATEX VERSION: A is dense in X if its closure equals X. **)
 Definition dense_in : set -> set -> set -> prop := fun A X Tx => closure_of X Tx A = X.
 
 (** from §30 Theorem 30.3(a): countable basis implies Lindelöf **) 
@@ -46273,6 +46280,7 @@ Theorem separation_axioms_subspace_product : forall X Tx:set,
 Qed.
 
 (** from §31 Example 1 setup: R_K space **) 
+(** LATEX VERSION: Let R_K denote the real line equipped later with the K-topology. **)
 Definition R_K : set := R.
 
 (** from §31 Example 1: R_K Hausdorff but not regular **) 
@@ -51001,27 +51009,32 @@ Definition surjective_map : set -> set -> set -> prop := fun X Y f =>
   function_on f X Y /\ forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y.
 
 (** from §34 Exercise 1: Hausdorff with countable basis need not be metrizable **) 
+(** LATEX VERSION: Find an example of a Hausdorff second countable space that is not metrizable. **)
 Definition ex34_1_Hausdorff_countable_basis_not_metrizable_example : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx:set, p = setprod X Tx /\
       Hausdorff_space X Tx /\ second_countable_space X Tx /\ ~ metrizable X Tx}.
 (** from §34 Exercise 2: completely normal etc. not metrizable example **) 
+(** LATEX VERSION: Find an example of a completely normal space that is not metrizable. **)
 Definition ex34_2_completely_normal_not_metrizable_example : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx:set, p = setprod X Tx /\ completely_normal_space X Tx /\ ~ metrizable X Tx}.
 (** from §34 Exercise 3: compact Hausdorff metrizable iff countable basis **) 
+(** LATEX VERSION: Prove that for compact Hausdorff spaces, metrizability is equivalent to second countability. **)
 Definition ex34_3_compact_Hausdorff_metrizable_iff_second_countable : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx:set, p = setprod X Tx /\
       compact_space X Tx /\ Hausdorff_space X Tx /\
       (metrizable X Tx <-> second_countable_space X Tx)}.
 (** from §34 Exercise 4: locally compact Hausdorff and countable basis vs metrizable **) 
+(** LATEX VERSION: Study metrizability questions for locally compact Hausdorff spaces under second countability. **)
 Definition ex34_4_locally_compact_Hausdorff_metrizable_questions : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx:set, p = setprod X Tx /\
       locally_compact X Tx /\ Hausdorff_space X Tx /\
       (second_countable_space X Tx -> metrizable X Tx)}.
 (** from §34 Exercise 5: one-point compactification metrizable vs base **) 
+(** LATEX VERSION: Relate metrizability of a space and its one-point compactification. **)
 Definition ex34_5_one_point_compactification_metrizable_questions : set :=
   {q :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx Y Ty p:set,
@@ -51029,6 +51042,7 @@ Definition ex34_5_one_point_compactification_metrizable_questions : set :=
       one_point_compactification X Tx Y Ty /\ p :e Y /\ ~ p :e X /\
       (metrizable X Tx <-> metrizable Y Ty)}.
 (** from §34 Exercise 6: details of imbedding theorem proof **) 
+(** LATEX VERSION: Check details in the embedding theorem proof for completely regular Hausdorff spaces. **)
 Definition ex34_6_check_imbedding_proof : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx f:set,
@@ -51036,18 +51050,21 @@ Definition ex34_6_check_imbedding_proof : set :=
       completely_regular_space X Tx /\ Hausdorff_space X Tx /\
       embedding_of X Tx (power_real omega) (product_topology_full omega (const_space_family omega R R_standard_topology)) f}.
 (** from §34 Exercise 7: locally metrizable compact Hausdorff implies metrizable **) 
+(** LATEX VERSION: Show that a locally metrizable compact Hausdorff space is metrizable. **)
 Definition ex34_7_locally_metrizable_compact_Hausdorff_metrizable : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx:set, p = setprod X Tx /\
       locally_metrizable_space X Tx /\ compact_space X Tx /\ Hausdorff_space X Tx /\
       metrizable X Tx}.
 (** from §34 Exercise 8: regular Lindelof locally metrizable implies metrizable **) 
+(** LATEX VERSION: Show that regular Lindelof and locally metrizable implies metrizable. **)
 Definition ex34_8_regular_Lindelof_locally_metrizable_metrizable : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx:set, p = setprod X Tx /\
       (regular_space X Tx /\ Lindelof_space X Tx /\ locally_metrizable_space X Tx ->
         metrizable X Tx)}.
 (** from §34 Exercise 9: compact Hausdorff union of two metrizable closed sets is metrizable **) 
+(** LATEX VERSION: If X is compact Hausdorff and is the union of two metrizable closed subsets, then X is metrizable. **)
 Definition ex34_9_compact_union_two_metrizable_closed_metrizable : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx A B:set,
@@ -51058,6 +51075,7 @@ Definition ex34_9_compact_union_two_metrizable_closed_metrizable : set :=
       metrizable X Tx}.
 
 (** from §35 Exercise 1: Tietze implies Urysohn lemma **) 
+(** LATEX VERSION: Use the Tietze extension theorem to derive Urysohn's lemma in a normal space. **)
 Definition ex35_1_Tietze_implies_Urysohn : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx:set, p = setprod X Tx /\
@@ -51067,19 +51085,23 @@ Definition ex35_1_Tietze_implies_Urysohn : set :=
            (forall x:set, x :e A -> apply_fun f x = 0) /\
            (forall x:set, x :e B -> apply_fun f x = 1))}.
 (** from §35 Exercise 2: interval partition parameter in Tietze proof **) 
+(** LATEX VERSION: Choose an interval partition parameter used in a proof of the Tietze extension theorem. **)
 Definition ex35_2_interval_partition_parameter : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx:set, p = setprod X Tx /\ normal_space X Tx}.
 (** from §35 Exercise 3: boundedness equivalences in metrizable spaces **) 
+(** LATEX VERSION: Establish equivalences relating boundedness notions in metrizable spaces. **)
 Definition ex35_3_boundedness_equivalences_metrizable : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx d:set, p = setprod (setprod X Tx) d /\
       metric_on X d /\ metric_topology X d = Tx}.
 (** from §35 Exercise 4: retract properties **) 
+(** LATEX VERSION: Prove basic properties of retracts and retractions. **)
 Definition ex35_4_retract_properties : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx A:set, p = setprod (setprod X Tx) A /\ retraction_of X Tx A}.
 (** from §35 Exercise 5: universal extension property and retracts **) 
+(** LATEX VERSION: Show that retracts in a normal space satisfy an appropriate universal extension property. **)
 Definition ex35_5_universal_extension_retracts : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx A:set,
@@ -51089,18 +51111,22 @@ Definition ex35_5_universal_extension_retracts : set :=
         exists g:set, continuous_map X Tx Y Ty g /\
           forall x:set, x :e A -> apply_fun g x = apply_fun f x}.
 (** from §35 Exercise 6: absolute retract equivalence **) 
+(** LATEX VERSION: Prove a characterization of absolute retracts via a universal extension property. **)
 Definition ex35_6_absolute_retract_universal_extension : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx:set, p = setprod X Tx /\ absolute_retract X Tx}.
 (** from §35 Exercise 7: retract examples spiral/knotted axis **) 
+(** LATEX VERSION: Give examples of retracts, such as spiral and knotted axis subsets. **)
 Definition ex35_7_retract_examples : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx A:set, p = setprod (setprod X Tx) A /\ retraction_of X Tx A}.
 (** from §35 Exercise 8: absolute retract iff universal extension **) 
+(** LATEX VERSION: Prove an equivalence for absolute retracts (as stated in the exercises). **)
 Definition ex35_8_absolute_retract_equivalence : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx:set, p = setprod X Tx /\ absolute_retract X Tx}.
 (** from §35 Exercise 9: coherent topology preserves normality **) 
+(** LATEX VERSION: Show that under the coherent topology hypotheses, normality of Y follows from the stated assumptions. **)
 Definition ex35_9_coherent_topology_normal : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx Y Ty:set,
@@ -51108,6 +51134,7 @@ Definition ex35_9_coherent_topology_normal : set :=
       (topology_on X Tx /\ topology_on Y Ty /\ coherent_topology X Tx Y Ty -> normal_space Y Ty)}.
 
 (** from §36 Exercises: manifolds and partitions of unity (placeholder) **) 
+(** LATEX VERSION: Exercises on manifolds and partitions of unity. **)
 Definition ex36_manifold_embedding_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists M TM f:set,
@@ -51115,6 +51142,7 @@ Definition ex36_manifold_embedding_exercises : set :=
       m_manifold M TM ->
       exists n:set, embedding_of M TM (euclidean_space n) (euclidean_topology n) f}.
 (** from §37 Exercises: Tychonoff theorem applications (placeholder) **) 
+(** LATEX VERSION: Exercises applying the Tychonoff theorem to products of compact spaces. **)
 Definition ex37_tychonoff_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists I Xi:set,
@@ -51122,6 +51150,7 @@ Definition ex37_tychonoff_exercises : set :=
       compact_spaces_family I Xi /\
       compact_space (product_space I Xi) (product_topology_full I Xi)}.
 (** from §38 Exercises: Stone-Cech compactification (placeholder) **) 
+(** LATEX VERSION: Exercises about Stone-Cech compactification and related embeddings. **)
 Definition ex38_stone_cech_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx Y Ty:set,
@@ -51129,21 +51158,25 @@ Definition ex38_stone_cech_exercises : set :=
       completely_regular_space X Tx /\ compact_space Y Ty /\ Hausdorff_space Y Ty /\
       exists e:set, embedding_of X Tx Y Ty e}.
 (** from §39 Exercises: local finiteness (placeholder) **) 
+(** LATEX VERSION: Exercises on locally finite families. **)
 Definition ex39_local_finiteness_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx U:set, p = setprod (setprod X Tx) U /\ locally_finite_family X Tx U}.
 (** from §40 Exercises: Nagata-Smirnov metrization (placeholder) **) 
+(** LATEX VERSION: Exercises on Nagata-Smirnov metrization type criteria. **)
 Definition ex40_nagata_smirnov_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx B:set,
       p = setprod (setprod X Tx) B /\
       (regular_space X Tx /\ basis_on X B /\ locally_finite_family X Tx B -> metrizable X Tx)}.
 (** from §41 Exercises: paracompactness (placeholder) **) 
+(** LATEX VERSION: Exercises on paracompactness and open covers. **)
 Definition ex41_paracompactness_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx U:set, p = setprod (setprod X Tx) U /\
       paracompact_space X Tx /\ open_cover X Tx U}.
 (** from §42 Exercises: Smirnov metrization (placeholder) **) 
+(** LATEX VERSION: Exercises on Smirnov metrization type criteria. **)
 Definition ex42_smirnov_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx B:set,
