@@ -6827,15 +6827,14 @@ Qed.
 Theorem closed_of_open_complement : forall X T U:set, topology_on X T -> U :e T -> closed_in X T (X :\: U).
 let X. let T. let U.
 assume Htop HU.
-prove topology_on X T /\ (X :\: U c= X /\ exists V :e T, X :\: U = X :\: V).
-apply andI.
+prove closed_in X T (X :\: U).
+apply (closed_inI X T (X :\: U)).
 - exact Htop.
-- apply andI.
-  + apply setminus_Subq.
-  + witness U.
-    apply andI.
-    * exact HU.
-    * reflexivity.
+- exact (setminus_Subq X U).
+- witness U.
+  apply andI.
+  * exact HU.
+  * reflexivity.
 Qed.
 
 (** Helper: X is closed in any topology **)
@@ -6843,26 +6842,25 @@ Theorem X_is_closed : forall X T:set,
   topology_on X T -> closed_in X T X.
 let X T.
 assume HTx: topology_on X T.
-prove topology_on X T /\ (X c= X /\ exists U :e T, X = X :\: U).
-apply andI.
+prove closed_in X T X.
+apply (closed_inI X T X).
 - exact HTx.
-- apply andI.
-  + exact (Subq_ref X).
-  + witness Empty.
-    apply andI.
-    * exact (topology_has_empty X T HTx).
-    * prove X = X :\: Empty.
-      apply set_ext.
-      { let x. assume Hx: x :e X.
-        prove x :e X :\: Empty.
-        apply setminusI.
-        - exact Hx.
-        - assume H: x :e Empty.
-          apply (EmptyE x H).
-      }
-      { let x. assume Hx: x :e X :\: Empty.
-        exact (setminusE1 X Empty x Hx).
-      }
+- exact (Subq_ref X).
+- witness Empty.
+  apply andI.
+  * exact (topology_has_empty X T HTx).
+  * prove X = X :\: Empty.
+    apply set_ext.
+    { let x. assume Hx: x :e X.
+      prove x :e X :\: Empty.
+      apply setminusI.
+      - exact Hx.
+      - assume H: x :e Empty.
+        exact (EmptyE x H).
+    }
+    { let x. assume Hx: x :e X :\: Empty.
+      exact (setminusE1 X Empty x Hx).
+    }
 Qed.
 
 (** Helper: Empty is closed in any topology **)
@@ -6870,25 +6868,24 @@ Theorem Empty_is_closed : forall X T:set,
   topology_on X T -> closed_in X T Empty.
 let X T.
 assume HTx: topology_on X T.
-prove topology_on X T /\ (Empty c= X /\ exists U :e T, Empty = X :\: U).
-apply andI.
+prove closed_in X T Empty.
+apply (closed_inI X T Empty).
 - exact HTx.
-- apply andI.
-  + exact (Subq_Empty X).
-  + witness X.
-    apply andI.
-    * exact (topology_has_X X T HTx).
-    * prove Empty = X :\: X.
-      apply set_ext.
-      { exact (Subq_Empty (X :\: X)). }
-      { let x. assume Hx: x :e X :\: X.
-        claim HxX: x :e X.
-        { exact (setminusE1 X X x Hx). }
-        claim HxnotX: x /:e X.
-        { exact (setminusE2 X X x Hx). }
-        apply FalseE.
-        exact (HxnotX HxX).
-      }
+- exact (Subq_Empty X).
+- witness X.
+  apply andI.
+  * exact (topology_has_X X T HTx).
+  * prove Empty = X :\: X.
+    apply set_ext.
+    { exact (Subq_Empty (X :\: X)). }
+    { let x. assume Hx: x :e X :\: X.
+      claim HxX: x :e X.
+      { exact (setminusE1 X X x Hx). }
+      claim HxnotX: x /:e X.
+      { exact (setminusE2 X X x Hx). }
+      apply FalseE.
+      exact (HxnotX HxX).
+    }
 Qed.
 
 (** Helper: Complement of closed set is open **)
