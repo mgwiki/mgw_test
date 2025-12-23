@@ -33069,11 +33069,34 @@ Qed.
 Definition open_ball : set -> set -> set -> set -> set := fun X d x r =>
   {y :e X|Rlt (apply_fun d (x,y)) r}.
 
+(** Helper: elimination and introduction rules for open_ball **)
+Theorem open_ballE1 : forall X d x r y:set,
+  y :e open_ball X d x r -> y :e X.
+let X d x r y.
+assume Hy: y :e open_ball X d x r.
+exact (SepE1 X (fun y0:set => Rlt (apply_fun d (x,y0)) r) y Hy).
+Qed.
+
+Theorem open_ballE2 : forall X d x r y:set,
+  y :e open_ball X d x r -> Rlt (apply_fun d (x,y)) r.
+let X d x r y.
+assume Hy: y :e open_ball X d x r.
+exact (SepE2 X (fun y0:set => Rlt (apply_fun d (x,y0)) r) y Hy).
+Qed.
+
+Theorem open_ballI : forall X d x r y:set,
+  y :e X -> Rlt (apply_fun d (x,y)) r -> y :e open_ball X d x r.
+let X d x r y.
+assume HyX: y :e X.
+assume Hlt: Rlt (apply_fun d (x,y)) r.
+exact (SepI X (fun y0:set => Rlt (apply_fun d (x,y0)) r) y HyX Hlt).
+Qed.
+
 (** Helper: open balls are subsets of X **)
 Theorem open_ball_subset_X : forall X d x r:set, open_ball X d x r c= X.
 let X d x r.
 let y. assume Hy: y :e open_ball X d x r.
-exact (SepE1 X (fun y0:set => Rlt (apply_fun d (x,y0)) r) y Hy).
+exact (open_ballE1 X d x r y Hy).
 Qed.
 
 (** Helper: open balls are elements of Power X **)
