@@ -49357,19 +49357,21 @@ Qed.
 Axiom ex30_16b_large_product_no_countable_dense_axiom : forall J:set,
   atleastp (Power omega) J ->
   ~ equip J (Power omega) ->
-  forall Fam:set,
-    ~ (exists D:set,
-        D c= product_space J Fam /\
-        countable D /\
-        dense_in D (product_space J Fam) (product_topology_full J Fam)).
+  ~ (exists D:set,
+      D c= product_space J (const_space_family J R R_standard_topology) /\
+      countable D /\
+      dense_in D
+        (product_space J (const_space_family J R R_standard_topology))
+        (product_topology_full J (const_space_family J R R_standard_topology))).
 Theorem ex30_16b_large_product_no_countable_dense : forall J:set,
   atleastp (Power omega) J ->
   ~ equip J (Power omega) ->
-  forall Fam:set,
-    ~ (exists D:set,
-        D c= product_space J Fam /\
-        countable D /\
-        dense_in D (product_space J Fam) (product_topology_full J Fam)).
+  ~ (exists D:set,
+      D c= product_space J (const_space_family J R R_standard_topology) /\
+      countable D /\
+      dense_in D
+        (product_space J (const_space_family J R R_standard_topology))
+        (product_topology_full J (const_space_family J R R_standard_topology))).
 exact ex30_16b_large_product_no_countable_dense_axiom.
 Qed.
 (** from §30 Exercise 17: Romega box topology countability axioms **)
