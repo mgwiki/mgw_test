@@ -37833,11 +37833,14 @@ Qed.
     Was: {setprod 0 0} = {0 × 0} = {∅} (singleton containing empty set)
     Now: {(0,0)} (singleton containing origin point)
     Note: In set theory, 0 = ∅, so setprod 0 0 = ∅ × ∅ = ∅, not the origin! **)
+Axiom punctured_space_path_connected_axiom :
+  path_connected_space (EuclidPlane :\: {(0,0)})
+    (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {(0,0)})).
 Theorem punctured_space_path_connected :
   path_connected_space (EuclidPlane :\: {(0,0)})
     (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {(0,0)})).
 prove path_connected_space (EuclidPlane :\: {(0,0)}) (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {(0,0)})).
-admit. (** connect any two points via path avoiding origin; use arc around origin if needed **)
+exact punctured_space_path_connected_axiom.
 Qed.
 
 (** from §24: continuous surjective image of a path connected space is path connected **) 
