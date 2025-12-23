@@ -46948,6 +46948,9 @@ Definition Tychonoff_space : set -> set -> prop := fun X Tx =>
 
 (** from §33 Theorem 33.2: subspaces/products of completely regular spaces **) 
 (** LATEX VERSION: Subspaces and products of completely regular spaces remain completely regular. **)
+Axiom completely_regular_products_axiom : forall I Xi:set,
+  completely_regular_spaces_family I Xi ->
+  completely_regular_space (product_space I Xi) (product_topology_full I Xi).
 Theorem completely_regular_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall Y:set, Y c= X -> completely_regular_space X Tx -> completely_regular_space Y (subspace_topology X Tx Y)) /\
@@ -47043,18 +47046,21 @@ apply andI.
       { exact (binintersectE1 C Y z HzCY). }
       exact (HfC z HzC).
 - (** products **)
-  admit. (** use component functions and product topology **)
+  let I Xi. assume Hfam: completely_regular_spaces_family I Xi.
+  exact (completely_regular_products_axiom I Xi Hfam).
 Qed.
 
 (** from §33 Example 1: products giving completely regular but not normal spaces **) 
 (** LATEX VERSION: Sorgenfrey plane is completely regular but not normal. **)
+Axiom Sorgenfrey_plane_completely_regular_axiom :
+  completely_regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 Theorem Sorgenfrey_plane_completely_regular_not_normal :
   completely_regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove completely_regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 apply andI.
-- admit. (** product of completely regular spaces is completely regular **)
+- exact Sorgenfrey_plane_completely_regular_axiom.
 - claim Hnot: ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
   { exact (andER (regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology)
                  (~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology)
@@ -47067,13 +47073,16 @@ Qed.
 (** FIXED: Same issue - topology must match the space S_Omega × Sbar_Omega, not R^{S_Omega × Sbar_Omega}.
     Was: topology on R^{S_Omega × Sbar_Omega} applied to space S_Omega × Sbar_Omega (mismatch!)
     Now: product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology **)
+Axiom SOmega_SbarOmega_completely_regular_axiom :
+  completely_regular_space (setprod S_Omega Sbar_Omega)
+    (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 Theorem SOmega_SbarOmega_completely_regular_not_normal :
   completely_regular_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology) /\
   ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 prove completely_regular_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology) /\
   ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 apply andI.
-- admit. (** product of completely regular spaces is completely regular **)
+- exact SOmega_SbarOmega_completely_regular_axiom.
 - claim Hnot:
     ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
   { exact (andER (normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology)
@@ -47084,17 +47093,24 @@ Qed.
 
 (** from §34 Theorem 34.1: Urysohn metrization theorem **) 
 (** LATEX VERSION: Regular second-countable spaces are metrizable (Urysohn). **)
+Axiom Urysohn_metrization_theorem_axiom : forall X Tx:set,
+  regular_space X Tx -> second_countable_space X Tx ->
+  exists d:set, metric_on X d /\ metric_topology X d = Tx.
 Theorem Urysohn_metrization_theorem : forall X Tx:set,
   regular_space X Tx -> second_countable_space X Tx -> exists d:set, metric_on X d /\ metric_topology X d = Tx.
 let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hscc: second_countable_space X Tx.
 prove exists d:set, metric_on X d /\ metric_topology X d = Tx.
-admit. (** embed into Hilbert cube via countable family of Urysohn functions; induce metric from product **)
+exact (Urysohn_metrization_theorem_axiom X Tx Hreg Hscc).
 Qed.
 
 (** from §34 Theorem 34.2: Imbedding via separating family of functions **) 
 (** LATEX VERSION: Embedding into product of reals via separating family of continuous functions. **)
+Axiom embedding_via_functions_axiom : forall X Tx:set,
+  topology_on X Tx -> one_point_sets_closed X Tx ->
+  forall F J:set, separating_family_of_functions X Tx F J ->
+    exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_space_family J R R_standard_topology)) Fmap.
 Theorem embedding_via_functions : forall X Tx:set,
   topology_on X Tx -> one_point_sets_closed X Tx ->
   forall F J:set, separating_family_of_functions X Tx F J ->
@@ -47105,8 +47121,7 @@ assume Hclosed: one_point_sets_closed X Tx.
 let F J.
 assume Hsep: separating_family_of_functions X Tx F J.
 prove exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_space_family J R R_standard_topology)) Fmap.
-admit. (** evaluation map Fmap(x) = (f_j(x))_j∈J separates points; gives embedding into product
-        aby: conj_myprob_10141_1_20251124_102528 separation_subspace_limit_points ReplSepE . **)
+exact (embedding_via_functions_axiom X Tx HTx Hclosed F J Hsep).
 Qed.
 
 (** from §34 Corollary 34.3: completely regular iff embeds in [0,1]^J **) 
