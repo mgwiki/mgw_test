@@ -45981,25 +45981,20 @@ Definition second_countable_space : set -> set -> prop := fun X Tx =>
 
 (** from §30 Example 1: R^n has countable basis **) 
 (** LATEX VERSION: Euclidean spaces have a countable basis, hence are second countable. **)
-Axiom euclidean_spaces_second_countable_axiom : forall n:set,
-  second_countable_space (euclidean_space n) (euclidean_topology n).
 Theorem euclidean_spaces_second_countable : forall n:set,
   second_countable_space (euclidean_space n) (euclidean_topology n).
 let n.
 prove second_countable_space (euclidean_space n) (euclidean_topology n).
-exact (euclidean_spaces_second_countable_axiom n).
+admit.
 Qed.
 
 (** from §30 Example 2: uniform topology on R^omega not second countable **) 
 (** LATEX VERSION: The uniform topology on the space of real sequences is first countable but not second countable. **)
-Axiom Romega_uniform_first_not_second_countable_axiom :
-  first_countable_space real_sequences uniform_topology /\
-  ~ second_countable_space real_sequences uniform_topology.
 Theorem Romega_uniform_first_not_second_countable :
   first_countable_space real_sequences uniform_topology /\
   ~ second_countable_space real_sequences uniform_topology.
 prove first_countable_space real_sequences uniform_topology /\ ~ second_countable_space real_sequences uniform_topology.
-exact Romega_uniform_first_not_second_countable_axiom.
+admit.
 Qed.
 
 (** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **)
@@ -47125,11 +47120,6 @@ Qed.
 
 (** from §30 Example 3: Sorgenfrey line countability properties **) 
 (** LATEX VERSION: Sorgenfrey line is first countable, separable, Lindelöf, but not second countable. **)
-Axiom Sorgenfrey_line_countability_axiom :
-  first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
-  dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
-  Lindelof_space Sorgenfrey_line Sorgenfrey_topology /\
-  ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
 Theorem Sorgenfrey_line_countability :
   first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
@@ -47139,7 +47129,7 @@ prove first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
   Lindelof_space Sorgenfrey_line Sorgenfrey_topology /\
   ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
-exact Sorgenfrey_line_countability_axiom.
+admit.
 Qed.
 
 (** placeholders for later refinement of product/separation constructions **) 
