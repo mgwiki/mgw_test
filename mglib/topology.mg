@@ -19480,11 +19480,9 @@ Qed.
 (** from §14 Example 1: standard topology on ℝ is the order topology **)
 (** LATEX VERSION: Example 1: The standard topology on ℝ equals its order topology. **)
 (** NOTE: The earlier axiom equating bases was too strong; we only need equality of the generated topologies. **)
-Axiom standard_topology_is_order_topology_axiom : order_topology R = R_standard_topology.
-
 Theorem standard_topology_is_order_topology : order_topology R = R_standard_topology.
 prove order_topology R = R_standard_topology.
-exact standard_topology_is_order_topology_axiom.
+admit.
 Qed.
 
 (** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
