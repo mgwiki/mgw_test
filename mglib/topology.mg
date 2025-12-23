@@ -51019,21 +51019,23 @@ Qed.
 
 (** from §48 Exercise 8: pointwise limit continuous uncountably many points **)
 (** LATEX VERSION: If fₙ:ℝ→ℝ continuous with fₙ(x)→f(x) for all x, then f is continuous at uncountably many points. **)
+Definition pointwise_limit_of_sequence_of_functions : set -> set -> prop := fun fn f =>
+  forall x:set, x :e R ->
+    forall eps:set, eps :e R -> Rlt 0 eps ->
+      exists N:set, N :e omega /\
+        forall n:set, n :e omega -> N c= n ->
+          Rlt (Abs (add_SNo (apply_fun (apply_fun fn n) x) (minus_SNo (apply_fun f x)))) eps.
 Axiom ex48_8_pointwise_limit_continuity_axiom : forall fn:set, forall f:set,
   (forall n:set, n :e omega ->
     continuous_map R R_standard_topology R R_standard_topology (apply_fun fn n)) ->
   function_on f R R ->
-  (forall x:set, x :e R ->
-    exists limval:set, limval :e R /\
-      forall eps:set, eps :e R -> True) ->
+  pointwise_limit_of_sequence_of_functions fn f ->
   ~ countable_set {x :e R | continuous_at f x}.
 Theorem ex48_8_pointwise_limit_continuity : forall fn:set, forall f:set,
   (forall n:set, n :e omega ->
     continuous_map R R_standard_topology R R_standard_topology (apply_fun fn n)) ->
   function_on f R R ->
-  (forall x:set, x :e R ->
-    exists limval:set, limval :e R /\
-      forall eps:set, eps :e R -> True) ->
+  pointwise_limit_of_sequence_of_functions fn f ->
   ~ countable_set {x :e R | continuous_at f x}.
 exact ex48_8_pointwise_limit_continuity_axiom.
 Qed.
