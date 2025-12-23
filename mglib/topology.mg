@@ -35705,6 +35705,32 @@ apply (SepI R_omega_space (fun f0:set => forall i:set, i :e omega -> 0 :e i -> a
   reflexivity.
 Qed.
 
+(** Helper: map r in R to the singleton sequence **)
+Definition Romega_singleton_map : set := graph R Romega_singleton_seq.
+
+(** Helper: apply_fun for Romega_singleton_map **)
+Theorem Romega_singleton_map_apply : forall r:set,
+  r :e R -> apply_fun Romega_singleton_map r = Romega_singleton_seq r.
+let r. assume Hr: r :e R.
+prove apply_fun Romega_singleton_map r = Romega_singleton_seq r.
+claim Hdef: Romega_singleton_map = graph R Romega_singleton_seq.
+{ reflexivity. }
+rewrite Hdef.
+exact (apply_fun_graph R Romega_singleton_seq r Hr).
+Qed.
+
+(** Helper: image of the singleton map lies in Romega_tilde 0 **)
+Theorem image_of_Romega_singleton_map_sub_Romega_tilde0 :
+  image_of Romega_singleton_map R c= Romega_tilde 0.
+let f. assume Hf: f :e image_of Romega_singleton_map R.
+prove f :e Romega_tilde 0.
+apply (ReplE_impred R (fun r0:set => apply_fun Romega_singleton_map r0) f Hf (f :e Romega_tilde 0)).
+let r. assume Hr: r :e R. assume Hfeq: f = apply_fun Romega_singleton_map r.
+rewrite Hfeq.
+rewrite (Romega_singleton_map_apply r Hr).
+exact (Romega_singleton_seq_in_Romega_tilde0 r Hr).
+Qed.
+
 (** Helper: every finite subset of omega is bounded by some n in omega **)
 Theorem finite_subset_of_omega_bounded : forall F:set,
   F c= omega -> finite F -> exists n :e omega, forall m :e F, m :e n.
