@@ -49285,14 +49285,14 @@ exact ex30_13_disjoint_open_sets_countable_axiom.
 Qed.
 (** from §30 Exercise 14: product of Lindelof with compact is Lindelof **)
 (** LATEX VERSION: If X is Lindelöf and Y is compact, then X × Y is Lindelöf. **)
-Axiom ex30_14_product_Lindelof_compact_axiom : forall X Tx Y Ty Idx Fam:set,
+Axiom ex30_14_product_Lindelof_compact_axiom : forall X Tx Y Ty:set,
   Lindelof_space X Tx ->
   compact_space Y Ty ->
-  Lindelof_space (product_space Idx Fam) (product_topology_full Idx Fam).
-Theorem ex30_14_product_Lindelof_compact : forall X Tx Y Ty Idx Fam:set,
+  Lindelof_space (setprod X Y) (product_topology X Tx Y Ty).
+Theorem ex30_14_product_Lindelof_compact : forall X Tx Y Ty:set,
   Lindelof_space X Tx ->
   compact_space Y Ty ->
-  Lindelof_space (product_space Idx Fam) (product_topology_full Idx Fam).
+  Lindelof_space (setprod X Y) (product_topology X Tx Y Ty).
 exact ex30_14_product_Lindelof_compact_axiom.
 Qed.
 (** from §30 Exercise 15: C(I,R) uniform topology countable dense subset **)
@@ -49310,15 +49310,19 @@ Qed.
 (** from §30 Exercise 16a: product R^I where I=[0,1] has countable dense subset **)
 (** LATEX VERSION: The product space ℝ^I, where I=[0,1], has a countable dense subset. **)
 Axiom ex30_16a_product_RI_countable_dense_axiom :
-  exists Idx:set, exists Fam:set, exists D:set,
-    D c= product_space Idx Fam /\
+  exists D:set,
+    D c= product_space unit_interval (const_space_family unit_interval R R_standard_topology) /\
     countable D /\
-    dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
+    dense_in D
+      (product_space unit_interval (const_space_family unit_interval R R_standard_topology))
+      (product_topology_full unit_interval (const_space_family unit_interval R R_standard_topology)).
 Theorem ex30_16a_product_RI_countable_dense :
-  exists Idx:set, exists Fam:set, exists D:set,
-    D c= product_space Idx Fam /\
+  exists D:set,
+    D c= product_space unit_interval (const_space_family unit_interval R R_standard_topology) /\
     countable D /\
-    dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
+    dense_in D
+      (product_space unit_interval (const_space_family unit_interval R R_standard_topology))
+      (product_topology_full unit_interval (const_space_family unit_interval R R_standard_topology)).
 exact ex30_16a_product_RI_countable_dense_axiom.
 Qed.
 
