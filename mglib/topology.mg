@@ -33542,6 +33542,174 @@ Definition uniform_convergence_functions :
           forall x:set, x :e X ->
             Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eps.
 
+(** Helper: extract metric_on X dX from uniform_convergence_functions **)
+Theorem uniform_convergence_functions_metric_on_X : forall X dX Y dY f_seq f:set,
+  uniform_convergence_functions X dX Y dY f_seq f -> metric_on X dX.
+let X dX Y dY f_seq f.
+assume H: uniform_convergence_functions X dX Y dY f_seq f.
+claim HABCDE: ((((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                function_on f X Y) /\
+               (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y)).
+{ exact (andEL ((((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                  function_on f X Y) /\
+                 (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y))
+               (forall eps:set, eps :e R /\ Rlt 0 eps ->
+                 exists N:set, N :e omega /\
+                   forall n:set, n :e omega -> N c= n ->
+                     forall x:set, x :e X ->
+                       Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eps)
+               H). }
+claim HABCD: (((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+              function_on f X Y).
+{ exact (andEL (((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                function_on f X Y)
+               (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y)
+               HABCDE). }
+claim HAB: metric_on X dX /\ metric_on Y dY.
+{ exact (andEL (metric_on X dX /\ metric_on Y dY)
+               (function_on f_seq omega (function_space X Y))
+               (andEL (metric_on X dX /\ metric_on Y dY /\ function_on f_seq omega (function_space X Y))
+                      (function_on f X Y)
+                      HABCD)). }
+exact (andEL (metric_on X dX) (metric_on Y dY) HAB).
+Qed.
+
+(** Helper: extract metric_on Y dY from uniform_convergence_functions **)
+Theorem uniform_convergence_functions_metric_on_Y : forall X dX Y dY f_seq f:set,
+  uniform_convergence_functions X dX Y dY f_seq f -> metric_on Y dY.
+let X dX Y dY f_seq f.
+assume H: uniform_convergence_functions X dX Y dY f_seq f.
+claim HABCDE: ((((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                function_on f X Y) /\
+               (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y)).
+{ exact (andEL ((((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                  function_on f X Y) /\
+                 (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y))
+               (forall eps:set, eps :e R /\ Rlt 0 eps ->
+                 exists N:set, N :e omega /\
+                   forall n:set, n :e omega -> N c= n ->
+                     forall x:set, x :e X ->
+                       Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eps)
+               H). }
+claim HABCD: (((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+              function_on f X Y).
+{ exact (andEL (((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                function_on f X Y)
+               (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y)
+               HABCDE). }
+claim HAB: metric_on X dX /\ metric_on Y dY.
+{ exact (andEL (metric_on X dX /\ metric_on Y dY)
+               (function_on f_seq omega (function_space X Y))
+               (andEL (metric_on X dX /\ metric_on Y dY /\ function_on f_seq omega (function_space X Y))
+                      (function_on f X Y)
+                      HABCD)). }
+exact (andER (metric_on X dX) (metric_on Y dY) HAB).
+Qed.
+
+(** Helper: extract function_on f_seq omega (function_space X Y) from uniform_convergence_functions **)
+Theorem uniform_convergence_functions_fseq : forall X dX Y dY f_seq f:set,
+  uniform_convergence_functions X dX Y dY f_seq f ->
+  function_on f_seq omega (function_space X Y).
+let X dX Y dY f_seq f.
+assume H: uniform_convergence_functions X dX Y dY f_seq f.
+claim HABCDE: ((((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                function_on f X Y) /\
+               (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y)).
+{ exact (andEL ((((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                  function_on f X Y) /\
+                 (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y))
+               (forall eps:set, eps :e R /\ Rlt 0 eps ->
+                 exists N:set, N :e omega /\
+                   forall n:set, n :e omega -> N c= n ->
+                     forall x:set, x :e X ->
+                       Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eps)
+               H). }
+claim HABCD: (((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+              function_on f X Y).
+{ exact (andEL (((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                function_on f X Y)
+               (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y)
+               HABCDE). }
+exact (andER (metric_on X dX /\ metric_on Y dY)
+             (function_on f_seq omega (function_space X Y))
+             (andEL (metric_on X dX /\ metric_on Y dY /\ function_on f_seq omega (function_space X Y))
+                    (function_on f X Y)
+                    HABCD)).
+Qed.
+
+(** Helper: extract function_on f X Y from uniform_convergence_functions **)
+Theorem uniform_convergence_functions_f : forall X dX Y dY f_seq f:set,
+  uniform_convergence_functions X dX Y dY f_seq f -> function_on f X Y.
+let X dX Y dY f_seq f.
+assume H: uniform_convergence_functions X dX Y dY f_seq f.
+claim HABCDE: ((((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                function_on f X Y) /\
+               (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y)).
+{ exact (andEL ((((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                  function_on f X Y) /\
+                 (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y))
+               (forall eps:set, eps :e R /\ Rlt 0 eps ->
+                 exists N:set, N :e omega /\
+                   forall n:set, n :e omega -> N c= n ->
+                     forall x:set, x :e X ->
+                       Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eps)
+               H). }
+claim HABCD: (((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+              function_on f X Y).
+{ exact (andEL (((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                function_on f X Y)
+               (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y)
+               HABCDE). }
+exact (andER ((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y))
+             (function_on f X Y)
+             HABCD).
+Qed.
+
+(** Helper: extract pointwise function_on for f_seq n from uniform_convergence_functions **)
+Theorem uniform_convergence_functions_pointwise : forall X dX Y dY f_seq f:set,
+  uniform_convergence_functions X dX Y dY f_seq f ->
+  forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y.
+let X dX Y dY f_seq f.
+assume H: uniform_convergence_functions X dX Y dY f_seq f.
+claim HABCDE: ((((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                function_on f X Y) /\
+               (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y)).
+{ exact (andEL ((((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+                  function_on f X Y) /\
+                 (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y))
+               (forall eps:set, eps :e R /\ Rlt 0 eps ->
+                 exists N:set, N :e omega /\
+                   forall n:set, n :e omega -> N c= n ->
+                     forall x:set, x :e X ->
+                       Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eps)
+               H). }
+exact (andER (((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+              function_on f X Y)
+             (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y)
+             HABCDE).
+Qed.
+
+(** Helper: extract the eps condition from uniform_convergence_functions **)
+Theorem uniform_convergence_functions_eps : forall X dX Y dY f_seq f:set,
+  uniform_convergence_functions X dX Y dY f_seq f ->
+  forall eps:set, eps :e R /\ Rlt 0 eps ->
+    exists N:set, N :e omega /\
+      forall n:set, n :e omega -> N c= n ->
+        forall x:set, x :e X ->
+          Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eps.
+let X dX Y dY f_seq f.
+assume H: uniform_convergence_functions X dX Y dY f_seq f.
+exact (andER ((((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (function_space X Y)) /\
+               function_on f X Y) /\
+              (forall n:set, n :e omega -> function_on (apply_fun f_seq n) X Y))
+             (forall eps:set, eps :e R /\ Rlt 0 eps ->
+               exists N:set, N :e omega /\
+                 forall n:set, n :e omega -> N c= n ->
+                   forall x:set, x :e X ->
+                     Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eps)
+             H).
+Qed.
+
 (** from §21: uniform limit theorem placeholder **) 
 (** LATEX VERSION: Uniform limit of continuous functions between metric spaces is continuous. **)
 Axiom uniform_limit_of_continuous_is_continuous_axiom :
