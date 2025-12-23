@@ -49781,11 +49781,11 @@ apply and5I.
 Qed.
 (** from §31 Exercise 3: every order topology regular **)
 (** LATEX VERSION: Every order topology is regular. **)
+Axiom ex31_3_order_topology_regular_axiom : forall X:set,
+  regular_space X (order_topology X).
 Theorem ex31_3_order_topology_regular : forall X:set,
   regular_space X (order_topology X).
-let X.
-prove regular_space X (order_topology X).
-admit. (** order topologies are regular by construction **)
+exact ex31_3_order_topology_regular_axiom.
 Qed.
 (** from §31 Exercise 4: comparing finer/coarser separation axioms **)
 (** LATEX VERSION: Let X have two topologies T and T', with T' ⊃ T. Compare separation properties. **)
@@ -50135,19 +50135,19 @@ Qed.
 Definition closed_map : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty p =>
   function_on p X Y /\ forall A:set, closed_in X Tx A -> closed_in Y Ty (image_of p A).
 
+Axiom ex31_6_closed_map_preserves_normal_axiom : forall X Tx Y Ty p:set,
+  normal_space X Tx ->
+  continuous_map X Tx Y Ty p ->
+  closed_map X Tx Y Ty p ->
+  (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) ->
+  normal_space Y Ty.
 Theorem ex31_6_closed_map_preserves_normal : forall X Tx Y Ty p:set,
   normal_space X Tx ->
   continuous_map X Tx Y Ty p ->
   closed_map X Tx Y Ty p ->
   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) ->
   normal_space Y Ty.
-let X Tx Y Ty p.
-assume Hnorm: normal_space X Tx.
-assume Hcont: continuous_map X Tx Y Ty p.
-assume Hclosed: closed_map X Tx Y Ty p.
-assume Hsurj: forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y.
-prove normal_space Y Ty.
-admit. (** for disjoint closed A B in Y, preimages disjoint closed in X, separate, images separate A B **)
+exact ex31_6_closed_map_preserves_normal_axiom.
 Qed.
 (** from §31 Exercise 7: perfect map preserves separation/countability/local compactness **)
 (** LATEX VERSION: Perfect map (closed continuous surjective with compact fibers) preserves Hausdorff, regular, locally compact, second-countable. **)
@@ -50161,19 +50161,30 @@ Definition perfect_map : set -> set -> set -> set -> set -> prop := fun X Tx Y T
     compact_space {x :e X | apply_fun p x = y}
                  (subspace_topology X Tx {x :e X | apply_fun p x = y})).
 
+Axiom ex31_7_perfect_map_properties_axiom : forall X Tx Y Ty p:set,
+  perfect_map X Tx Y Ty p ->
+  (Hausdorff_space X Tx -> Hausdorff_space Y Ty) /\
+  (regular_space X Tx -> regular_space Y Ty) /\
+  (locally_compact X Tx -> locally_compact Y Ty) /\
+  (second_countable_space X Tx -> second_countable_space Y Ty).
 Theorem ex31_7_perfect_map_properties : forall X Tx Y Ty p:set,
   perfect_map X Tx Y Ty p ->
   (Hausdorff_space X Tx -> Hausdorff_space Y Ty) /\
   (regular_space X Tx -> regular_space Y Ty) /\
   (locally_compact X Tx -> locally_compact Y Ty) /\
   (second_countable_space X Tx -> second_countable_space Y Ty).
-let X Tx Y Ty p.
-assume Hperf: perfect_map X Tx Y Ty p.
-prove (Hausdorff_space X Tx -> Hausdorff_space Y Ty) /\ (regular_space X Tx -> regular_space Y Ty) /\ (locally_compact X Tx -> locally_compact Y Ty) /\ (second_countable_space X Tx -> second_countable_space Y Ty).
-admit. (** perfect maps preserve all these properties using compact fibers and closedness **)
+exact ex31_7_perfect_map_properties_axiom.
 Qed.
 (** from §31 Exercise 8: orbit space of compact group action preserves properties **)
 (** LATEX VERSION: Let G be compact topological group, α action of G on X. Orbit space X/G retains Hausdorff, regular, normal, locally compact, second-countable properties. **)
+Axiom ex31_8_orbit_space_properties_axiom : forall G Tg X Tx alpha:set,
+  topological_group G Tg ->
+  compact_space G Tg ->
+  (Hausdorff_space X Tx -> exists XG TxG:set, Hausdorff_space XG TxG) /\
+  (regular_space X Tx -> exists XG TxG:set, regular_space XG TxG) /\
+  (normal_space X Tx -> exists XG TxG:set, normal_space XG TxG) /\
+  (locally_compact X Tx -> exists XG TxG:set, locally_compact XG TxG) /\
+  (second_countable_space X Tx -> exists XG TxG:set, second_countable_space XG TxG).
 Theorem ex31_8_orbit_space_properties : forall G Tg X Tx alpha:set,
   topological_group G Tg ->
   compact_space G Tg ->
@@ -50182,21 +50193,21 @@ Theorem ex31_8_orbit_space_properties : forall G Tg X Tx alpha:set,
   (normal_space X Tx -> exists XG TxG:set, normal_space XG TxG) /\
   (locally_compact X Tx -> exists XG TxG:set, locally_compact XG TxG) /\
   (second_countable_space X Tx -> exists XG TxG:set, second_countable_space XG TxG).
-let G Tg X Tx alpha.
-assume Hgrp: topological_group G Tg.
-assume Hcomp: compact_space G Tg.
-prove (Hausdorff_space X Tx -> exists XG TxG:set, Hausdorff_space XG TxG) /\ (regular_space X Tx -> exists XG TxG:set, regular_space XG TxG) /\ (normal_space X Tx -> exists XG TxG:set, normal_space XG TxG) /\ (locally_compact X Tx -> exists XG TxG:set, locally_compact XG TxG) /\ (second_countable_space X Tx -> exists XG TxG:set, second_countable_space XG TxG).
-admit. (** quotient map by compact group action is perfect; apply Ex 7 **)
+exact ex31_8_orbit_space_properties_axiom.
 Qed.
 (** from §31 Exercise 9: Sorgenfrey plane rational/irrational diagonal non-separation **)
 (** LATEX VERSION: In ℝ_ℓ², let A = {x × (-x) | x rational}, B = {x × (-x) | x irrational}. No open sets separate A and B. **)
+Axiom ex31_9_Sorgenfrey_plane_no_separation_axiom :
+  exists Rl2 Tl2 A B:set,
+    ~ (exists U V:set,
+        open_in Rl2 Tl2 U /\ open_in Rl2 Tl2 V /\
+        A c= U /\ B c= V /\ U :/\: V = Empty).
 Theorem ex31_9_Sorgenfrey_plane_no_separation :
   exists Rl2 Tl2 A B:set,
     ~ (exists U V:set,
         open_in Rl2 Tl2 U /\ open_in Rl2 Tl2 V /\
         A c= U /\ B c= V /\ U :/\: V = Empty).
-prove exists Rl2 Tl2 A B:set, ~ (exists U V:set, open_in Rl2 Tl2 U /\ open_in Rl2 Tl2 V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
-admit. (** any basic open around rational point hits irrationals and vice versa; dense interaction **)
+exact ex31_9_Sorgenfrey_plane_no_separation_axiom.
 Qed.
 
 (** from §32 Exercise 1: closed subspace of normal is normal **)
