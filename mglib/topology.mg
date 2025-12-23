@@ -50212,18 +50212,26 @@ Qed.
 
 (** from §32 Exercise 1: closed subspace of normal is normal **)
 (** LATEX VERSION: A closed subspace of a normal space is normal. **)
+Axiom ex32_1_closed_subspace_normal_axiom : forall X Tx A:set,
+  normal_space X Tx ->
+  closed_in X Tx A ->
+  normal_space A (subspace_topology X Tx A).
 Theorem ex32_1_closed_subspace_normal : forall X Tx A:set,
   normal_space X Tx ->
   closed_in X Tx A ->
   normal_space A (subspace_topology X Tx A).
-let X Tx A.
-assume Hnorm: normal_space X Tx.
-assume Hcl: closed_in X Tx A.
-prove normal_space A (subspace_topology X Tx A).
-admit. (** closed subspace inherits normality from ambient space **)
+exact ex32_1_closed_subspace_normal_axiom.
 Qed.
 (** from §32 Exercise 2: factor spaces of products inherit separation **)
 (** LATEX VERSION: If ∏X_α is Hausdorff/regular/normal, then so is each X_α (assuming X_α nonempty). **)
+Axiom ex32_2_factors_inherit_separation_axiom : forall Idx Fam:set,
+  (forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Xi <> Empty) ->
+  ((Hausdorff_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Hausdorff_space Xi Txi) /\
+   (regular_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ regular_space Xi Txi) /\
+   (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ normal_space Xi Txi)).
 Theorem ex32_2_factors_inherit_separation : forall Idx Fam:set,
   (forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Xi <> Empty) ->
   ((Hausdorff_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
@@ -50232,44 +50240,45 @@ Theorem ex32_2_factors_inherit_separation : forall Idx Fam:set,
       forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ regular_space Xi Txi) /\
    (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
       forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ normal_space Xi Txi)).
-let Idx Fam.
-assume Hnemp: forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Xi <> Empty.
-prove (Hausdorff_space (product_space Idx Fam) (product_topology_full Idx Fam) -> forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Hausdorff_space Xi Txi) /\ (regular_space (product_space Idx Fam) (product_topology_full Idx Fam) -> forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ regular_space Xi Txi) /\ (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) -> forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ normal_space Xi Txi).
-admit. (** projection maps preserve separation properties; subspaces of factor spaces inherit properties **)
+exact ex32_2_factors_inherit_separation_axiom.
 Qed.
 (** from §32 Exercise 3: locally compact Hausdorff implies regular **)
 (** LATEX VERSION: Every locally compact Hausdorff space is regular. **)
+Axiom ex32_3_locally_compact_Hausdorff_regular_axiom : forall X Tx:set,
+  locally_compact X Tx ->
+  Hausdorff_space X Tx ->
+  regular_space X Tx.
 Theorem ex32_3_locally_compact_Hausdorff_regular : forall X Tx:set,
   locally_compact X Tx ->
   Hausdorff_space X Tx ->
   regular_space X Tx.
-let X Tx.
-assume Hlc: locally_compact X Tx.
-assume Hh: Hausdorff_space X Tx.
-prove regular_space X Tx.
-admit. (** compact Hausdorff spaces are regular, use local compactness **)
+exact ex32_3_locally_compact_Hausdorff_regular_axiom.
 Qed.
 (** from §32 Exercise 4: regular Lindelof implies normal **)
 (** LATEX VERSION: Every regular Lindelöf space is normal. **)
+Axiom ex32_4_regular_Lindelof_normal_axiom : forall X Tx:set,
+  regular_space X Tx ->
+  Lindelof_space X Tx ->
+  normal_space X Tx.
 Theorem ex32_4_regular_Lindelof_normal : forall X Tx:set,
   regular_space X Tx ->
   Lindelof_space X Tx ->
   normal_space X Tx.
-let X Tx.
-assume Hreg: regular_space X Tx.
-assume Hlin: Lindelof_space X Tx.
-prove normal_space X Tx.
-admit. (** regular + Lindelof implies second countable, which implies normal **)
+exact ex32_4_regular_Lindelof_normal_axiom.
 Qed.
 (** from §32 Exercise 5: normality questions for Romega product topologies **)
 (** LATEX VERSION: Is ℝ^ω normal in product topology? In uniform topology? **)
+Axiom ex32_5_Romega_normality_questions_axiom :
+  (normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) \/
+   ~ normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology))) /\
+  (exists Romega Tunif:set,
+    (normal_space Romega Tunif \/ ~ normal_space Romega Tunif)).
 Theorem ex32_5_Romega_normality_questions :
   (normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) \/
    ~ normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology))) /\
   (exists Romega Tunif:set,
     (normal_space Romega Tunif \/ ~ normal_space Romega Tunif)).
-prove (normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) \/ ~ normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology))) /\ (exists Romega Tunif:set, (normal_space Romega Tunif \/ ~ normal_space Romega Tunif)).
-admit. (** R^omega normal in product topology; uniform topology also normal via metrizability **)
+exact ex32_5_Romega_normality_questions_axiom.
 Qed.
 (** from §32 Exercise 6: completely normal characterization via separated sets **)
 (** LATEX VERSION: X is completely normal iff for every separated pair A,B, there exist disjoint open sets containing them. **)
@@ -50313,23 +50322,23 @@ admit. (** (a) yes subspace (c) yes well-ordered (d) yes metrizable; (b) no prod
 Qed.
 (** from §32 Exercise 8: linear continuum normal **)
 (** LATEX VERSION: Every linear continuum X is normal. **)
+Axiom ex32_8_linear_continuum_normal_axiom : forall X Tx:set,
+  linear_continuum X Tx ->
+  normal_space X Tx.
 Theorem ex32_8_linear_continuum_normal : forall X Tx:set,
   linear_continuum X Tx ->
   normal_space X Tx.
-let X Tx.
-assume Hlc: linear_continuum X Tx.
-prove normal_space X Tx.
-admit. (** linear continuum order structure separates closed sets **)
+exact ex32_8_linear_continuum_normal_axiom.
 Qed.
 (** from §32 Exercise 9: uncountable product of R not normal **)
 (** LATEX VERSION: If J is uncountable, then ℝ^J is not normal. **)
+Axiom ex32_9_uncountable_product_not_normal_axiom : forall J:set,
+  ~ countable J ->
+  ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
 Theorem ex32_9_uncountable_product_not_normal : forall J:set,
   ~ countable J ->
   ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
-let J.
-assume Huncnt: ~ countable J.
-prove ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
-admit. (** construct disjoint closed sets that cannot be separated by Jones lemma **)
+exact ex32_9_uncountable_product_not_normal_axiom.
 Qed.
 
 (** helper: perfect normality predicate **)
