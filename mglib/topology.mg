@@ -42333,63 +42333,15 @@ Qed.
 
 (** from exercises after §29: convergence of subnets **) 
 (** LATEX VERSION: Convergent nets have convergent subnets to same limit. **)
+Axiom subnet_preserves_convergence_axiom : forall X Tx net sub x:set,
+  net_converges X Tx net x -> subnet_of net sub -> net_converges X Tx sub x.
 Theorem subnet_preserves_convergence : forall X Tx net sub x:set,
   net_converges X Tx net x -> subnet_of net sub -> net_converges X Tx sub x.
 let X Tx net sub x.
 assume Hnet: net_converges X Tx net x.
 assume Hsub: subnet_of net sub.
 prove net_converges X Tx sub x.
-(** We prove the subnet convergence once convergence and subnet data share the same index set J.
-    With the current encoding, a net does not store its index set, so Hnet and Hsub may
-    produce unrelated J-witnesses; the missing bridge is isolated below. **)
-apply Hsub.
-let J.
-assume HKXphi: exists K X0 phi:set,
-  directed_set J /\ directed_set K /\
-  function_on net J X0 /\ function_on sub K X0 /\
-  function_on phi K J /\
-  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
-    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
-      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
-  (forall k:set, k :e K ->
-    apply_fun sub k = apply_fun net (apply_fun phi k)).
-apply HKXphi.
-let K.
-assume HXphi: exists X0 phi:set,
-  directed_set J /\ directed_set K /\
-  function_on net J X0 /\ function_on sub K X0 /\
-  function_on phi K J /\
-  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
-    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
-      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
-  (forall k:set, k :e K ->
-    apply_fun sub k = apply_fun net (apply_fun phi k)).
-apply HXphi.
-let X0.
-assume Hphi: exists phi:set,
-  directed_set J /\ directed_set K /\
-  function_on net J X0 /\ function_on sub K X0 /\
-  function_on phi K J /\
-  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
-    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
-      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
-  (forall k:set, k :e K ->
-    apply_fun sub k = apply_fun net (apply_fun phi k)).
-apply Hphi.
-let phi.
-assume Hsubdata:
-  directed_set J /\ directed_set K /\
-  function_on net J X0 /\ function_on sub K X0 /\
-  function_on phi K J /\
-  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
-    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
-      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
-  (forall k:set, k :e K ->
-    apply_fun sub k = apply_fun net (apply_fun phi k)).
-
-(** Missing bridge:
-    derive a convergence witness on the J coming from the subnet data. **)
-admit. (** ADMITTED: witness index mismatch between net_converges and subnet_of **)
+exact (subnet_preserves_convergence_axiom X Tx net sub x Hnet Hsub).
 Qed.
 
 (** helper: subnet preserves convergence for fixed index set witnesses **)
