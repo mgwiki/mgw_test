@@ -29514,6 +29514,24 @@ apply set_ext.
   exact (SepI X (fun x0:set => apply_fun f x0 :e U :/\: V) x HxX HfxUV).
 Qed.
 
+(** Helper: preimage is monotone under inclusion **)
+(** LATEX VERSION: If V subset W then f^{-1}(V) subset f^{-1}(W). **)
+Theorem preimage_of_mono : forall X f V W:set,
+  V c= W ->
+  preimage_of X f V c= preimage_of X f W.
+let X f V W.
+assume HVW: V c= W.
+let x. assume Hx: x :e preimage_of X f V.
+prove x :e preimage_of X f W.
+claim HxX: x :e X.
+{ exact (SepE1 X (fun x0:set => apply_fun f x0 :e V) x Hx). }
+claim HfxV: apply_fun f x :e V.
+{ exact (SepE2 X (fun x0:set => apply_fun f x0 :e V) x Hx). }
+claim HfxW: apply_fun f x :e W.
+{ exact (HVW (apply_fun f x) HfxV). }
+exact (SepI X (fun x0:set => apply_fun f x0 :e W) x HxX HfxW).
+Qed.
+
 (** Helper: preimage of binary union **)
 (** LATEX VERSION: f^{-1}(U∪V) = f^{-1}(U) ∪ f^{-1}(V). **)
 Theorem preimage_of_binunion : forall X f U V:set,
@@ -29630,6 +29648,18 @@ apply set_ext.
 - let x. assume HxX: x :e X.
   prove x :e preimage_of X f Y.
   exact (SepI X (fun x0:set => apply_fun f x0 :e Y) x HxX (Hfun x HxX)).
+Qed.
+
+(** Helper: preimage of complement (relative to codomain) **)
+(** LATEX VERSION: f^{-1}(Y\\V) = X\\f^{-1}(V) when f maps X to Y. **)
+Theorem preimage_of_complement : forall X Y f V:set,
+  function_on f X Y ->
+  preimage_of X f (Y :\: V) = X :\: preimage_of X f V.
+let X Y f V.
+assume Hfun: function_on f X Y.
+rewrite (preimage_of_setminus X f Y V).
+rewrite (preimage_of_whole X Y f Hfun).
+reflexivity.
 Qed.
 
 (** Helper: apply_fun for projections **)
