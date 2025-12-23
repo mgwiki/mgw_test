@@ -35476,6 +35476,64 @@ apply andI.
     exact HUAEq.
 Qed.
 
+(** from §23 Example 7: each Romega_tilde n is connected in the product topology **) 
+(** LATEX VERSION: Each R^n is connected, hence the subspace of sequences supported on {0,...,n} is connected. **)
+Theorem Romega_tilde_connected : forall n:set,
+  n :e omega ->
+  connected_space (Romega_tilde n)
+    (subspace_topology R_omega_space R_omega_product_topology (Romega_tilde n)).
+admit.
+Qed.
+
+(** from §23 Example 7: Romega_infty is connected as a union of connected sets with a common point **) 
+(** LATEX VERSION: R^infty is the union of the connected subspaces R^n and they share the zero sequence. **)
+Theorem Romega_infty_connected :
+  connected_space Romega_infty
+    (subspace_topology R_omega_space R_omega_product_topology Romega_infty).
+prove connected_space Romega_infty (subspace_topology R_omega_space R_omega_product_topology Romega_infty).
+set X := R_omega_space.
+set Tx := R_omega_product_topology.
+set F := {Romega_tilde n|n :e omega}.
+claim HTx: topology_on X Tx.
+{ exact Romega_product_topology_is_topology. }
+claim HFsub: forall C:set, C :e F -> C c= X.
+{ let C. assume HC: C :e F.
+  prove C c= X.
+  apply (ReplE_impred omega (fun n:set => Romega_tilde n) C HC (C c= X)).
+  let n. assume Hn: n :e omega. assume HCeq: C = Romega_tilde n.
+  rewrite HCeq.
+  exact (Romega_tilde_sub_Romega n). }
+claim HFconn: forall C:set, C :e F -> connected_space C (subspace_topology X Tx C).
+{ let C. assume HC: C :e F.
+  prove connected_space C (subspace_topology X Tx C).
+  apply (ReplE_impred omega (fun n:set => Romega_tilde n) C HC (connected_space C (subspace_topology X Tx C))).
+  let n. assume Hn: n :e omega. assume HCeq: C = Romega_tilde n.
+  rewrite HCeq.
+  exact (Romega_tilde_connected n Hn). }
+claim Hcommon: exists x:set, forall C:set, C :e F -> x :e C.
+{ witness Romega_zero.
+  let C. assume HC: C :e F.
+  prove Romega_zero :e C.
+  apply (ReplE_impred omega (fun n:set => Romega_tilde n) C HC (Romega_zero :e C)).
+  let n. assume Hn: n :e omega. assume HCeq: C = Romega_tilde n.
+  rewrite HCeq.
+  exact (Romega_zero_in_Romega_tilde n Hn). }
+claim HconnUnion: connected_space (Union F) (subspace_topology X Tx (Union F)).
+{ exact (union_connected_common_point X Tx F HTx HFsub HFconn Hcommon). }
+claim HUnionEq: Union F = Romega_infty.
+{ reflexivity. }
+rewrite HUnionEq.
+rewrite HUnionEq at 1.
+exact HconnUnion.
+Qed.
+
+(** from §23 Example 7: Romega_infty is dense in the product topology **) 
+(** LATEX VERSION: Every basic open set in the product topology meets R^infty by modifying only finitely many coordinates. **)
+Theorem Romega_infty_dense :
+  closure_of R_omega_space R_omega_product_topology Romega_infty = R_omega_space.
+admit.
+Qed.
+
 Theorem R_omega_product_connected :
   connected_space (product_space omega (const_space_family omega R R_standard_topology))
     (product_topology_full omega (const_space_family omega R R_standard_topology)).
@@ -35490,9 +35548,9 @@ claim HTx: topology_on X Tx.
 claim HAsub: A c= X.
 { exact Romega_infty_sub_Romega. }
 claim HAconn: connected_space A (subspace_topology X Tx A).
-admit.
+{ exact Romega_infty_connected. }
 claim Hdense: closure_of X Tx A = X.
-admit.
+{ exact Romega_infty_dense. }
 exact (connected_space_if_dense_connected_subset X Tx A HTx HAsub HAconn Hdense).
 Qed.
 
