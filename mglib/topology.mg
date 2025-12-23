@@ -13295,13 +13295,6 @@ claim Htop : topology_on X (countable_complement_topology X).
 exact (topology_union_axiom X (countable_complement_topology X) Htop UFam HUFam).
 Qed.
 
-(** helper: witness sets for infinite-complement failure, for infinite ambient sets **) 
-Axiom ex13_3b_witness_sets_axiom : forall X:set,
-  infinite X ->
-  exists U V:set,
-    U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
-    ~(Union (UPair U V) :e infinite_complement_family X).
-
 Theorem ex13_3b_witness_sets : forall X:set,
   infinite X ->
   exists U V:set,
@@ -13312,7 +13305,7 @@ assume HinfX: infinite X.
 prove exists U V:set,
   U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
   ~(Union (UPair U V) :e infinite_complement_family X).
-exact (ex13_3b_witness_sets_axiom X HinfX).
+admit.
 Qed.
 
 (** LATEX VERSION: Exercise 3(b): For infinite X, the infinite-complement family is not a topology (fails union closure). **)
