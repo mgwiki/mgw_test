@@ -38543,7 +38543,7 @@ exact (Romega_extend_seq_in_Romega_tilde_succ k p HkO Hp).
 Qed.
 
 (** Helper: extension identifies Romega_tilde (ordsucc k) with a product **)
-Axiom Romega_tilde_succ_homeomorphism : forall k:set,
+Theorem Romega_tilde_succ_homeomorphism : forall k:set,
   k :e omega ->
   homeomorphism
     (setprod (Romega_tilde k) R)
@@ -38552,6 +38552,8 @@ Axiom Romega_tilde_succ_homeomorphism : forall k:set,
     (Romega_tilde (ordsucc k))
     (subspace_topology R_omega_space R_omega_product_topology (Romega_tilde (ordsucc k)))
     (Romega_extend_map k).
+admit.
+Qed.
 
 (** Helper: every finite subset of omega is bounded by some n in omega **)
 Theorem finite_subset_of_omega_bounded : forall F:set,
@@ -42739,7 +42741,9 @@ Qed.
 
 (** from §26 Exercises: compactness examples and properties **) 
 (** LATEX VERSION: Exercises: unit interval closed in ℝ, unit interval compact, etc. **)
-Axiom unit_interval_compact_axiom : compact_space unit_interval unit_interval_topology.
+Theorem unit_interval_compact_axiom : compact_space unit_interval unit_interval_topology.
+admit.
+Qed.
 Theorem ex26_compactness_exercises :
   (closed_in R R_standard_topology unit_interval) /\
   (compact_space unit_interval unit_interval_topology).
@@ -43449,12 +43453,10 @@ Qed.
 
 (** from §28: limit point compactness vs compactness **) 
 (** LATEX VERSION: Limit point compact need not imply compact; provides counterexample placeholder. **)
-Axiom limit_point_compact_not_necessarily_compact_axiom :
-  exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
 Theorem limit_point_compact_not_necessarily_compact :
   exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
 prove exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
-exact limit_point_compact_not_necessarily_compact_axiom.
+admit.
 Qed.
 
 (** from §29 Definition: local compactness **) 
@@ -43487,9 +43489,6 @@ Definition one_point_compactification : set -> set -> set -> set -> prop := fun 
     subspace_topology Y Ty X = Tx /\
     (forall y:set, y :e Y -> y :e X \/ y = p).
 
-Axiom one_point_compactification_exists_axiom : forall X Tx:set,
-  locally_compact X Tx -> Hausdorff_space X Tx ->
-  exists Y Ty:set, one_point_compactification X Tx Y Ty.
 Theorem one_point_compactification_exists : forall X Tx:set,
   locally_compact X Tx -> Hausdorff_space X Tx ->
   exists Y Ty:set, one_point_compactification X Tx Y Ty.
@@ -43497,7 +43496,7 @@ let X Tx.
 assume Hlc: locally_compact X Tx.
 assume HH: Hausdorff_space X Tx.
 prove exists Y Ty:set, one_point_compactification X Tx Y Ty.
-exact (one_point_compactification_exists_axiom X Tx Hlc HH).
+admit.
 Qed.
 
 (** from §29 Exercises: local compactness and compactification **) 
@@ -44197,15 +44196,13 @@ Qed.
 
 (** from exercises after §29: convergence of subnets **) 
 (** LATEX VERSION: Convergent nets have convergent subnets to same limit. **)
-Axiom subnet_preserves_convergence_axiom : forall X Tx net sub x:set,
-  net_converges X Tx net x -> subnet_of net sub -> net_converges X Tx sub x.
 Theorem subnet_preserves_convergence : forall X Tx net sub x:set,
   net_converges X Tx net x -> subnet_of net sub -> net_converges X Tx sub x.
 let X Tx net sub x.
 assume Hnet: net_converges X Tx net x.
 assume Hsub: subnet_of net sub.
 prove net_converges X Tx sub x.
-exact (subnet_preserves_convergence_axiom X Tx net sub x Hnet Hsub).
+admit.
 Qed.
 
 (** helper: subnet preserves convergence for fixed index set witnesses **)
@@ -44327,16 +44324,13 @@ Qed.
 
 (** from exercises after §29: closure via nets **) 
 (** LATEX VERSION: Closure characterized by existence of a convergent net. **)
-Axiom closure_via_nets_axiom : forall X Tx A x:set,
-  topology_on X Tx ->
-  (x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x).
 Theorem closure_via_nets : forall X Tx A x:set,
   topology_on X Tx ->
   (x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x).
 let X Tx A x.
 assume HTx: topology_on X Tx.
 prove x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x.
-exact (closure_via_nets_axiom X Tx A x HTx).
+admit.
 Qed.
 
 (** from exercises after §29: continuity via nets **)
@@ -44347,12 +44341,6 @@ Qed.
             (2) converges to Empty instead of f(x)
     Now: Make J explicit to use compose_fun J net f, and converge to apply_fun f x
     The comment confirms: "f continuous iff for all nets x_i→x, have f(x_i)→f(x)" **)
-Axiom continuity_via_nets_axiom : forall X Tx Y Ty f:set,
-  topology_on X Tx -> topology_on Y Ty ->
-  (continuous_map X Tx Y Ty f <->
-    forall J X0 net:set, directed_set J -> function_on net J X0 ->
-      forall x:set, net_converges X Tx net x ->
-        net_converges Y Ty (compose_fun J net f) (apply_fun f x)).
 Theorem continuity_via_nets : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f <->
@@ -44366,34 +44354,28 @@ prove continuous_map X Tx Y Ty f <->
     forall J X0 net:set, directed_set J -> function_on net J X0 ->
       forall x:set, net_converges X Tx net x ->
         net_converges Y Ty (compose_fun J net f) (apply_fun f x).
-exact (continuity_via_nets_axiom X Tx Y Ty f HTx HTy).
+admit.
 Qed.
 
 (** from exercises after §29: accumulation points and subnets **)
 (** LATEX VERSION: Every accumulation point of a net has a subnet converging to it. **)
-Axiom subnet_converges_to_accumulation_axiom : forall X Tx net x:set,
-  accumulation_point_of_net X Tx net x ->
-  exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
 Theorem subnet_converges_to_accumulation : forall X Tx net x:set,
   accumulation_point_of_net X Tx net x -> exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
 let X Tx net x.
 assume Hacc: accumulation_point_of_net X Tx net x.
 prove exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
-exact (subnet_converges_to_accumulation_axiom X Tx net x Hacc).
+admit.
 Qed.
 
 (** from exercises after §29: compactness via nets **) 
 (** LATEX VERSION: Compactness characterized by every net having a convergent subnet. **)
-Axiom compact_iff_every_net_has_convergent_subnet_axiom : forall X Tx:set,
-  topology_on X Tx ->
-  (compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
 Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
   topology_on X Tx ->
   (compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
 let X Tx.
 assume HTx: topology_on X Tx.
 prove compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x.
-exact (compact_iff_every_net_has_convergent_subnet_axiom X Tx HTx).
+admit.
 Qed.
 
 (** from §30 Definition 30.1: countable basis at a point / first countable **) 
