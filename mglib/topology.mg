@@ -40872,6 +40872,7 @@ Qed.
 
 (** from §26 Exercises: compactness examples and properties **) 
 (** LATEX VERSION: Exercises: unit interval closed in ℝ, unit interval compact, etc. **)
+Axiom unit_interval_compact_axiom : compact_space unit_interval R_standard_topology.
 Theorem ex26_compactness_exercises :
   forall X Tx:set, compact_space X Tx ->
   (closed_in R R_standard_topology unit_interval) /\
@@ -40951,8 +40952,8 @@ apply andI.
             claim HxU: x :e U.
             { exact (binunionI2 L0 R1 x HxR1). }
             exact (HxnotU HxU). }
-- (** compactness part remains open **)
-  admit. (** unit interval compactness proof to be supplied later **)
+- (** compactness part **)
+  exact unit_interval_compact_axiom.
 Qed.
 
 (** from §26/§27: Heine-Borel on ℝ (closed and bounded sets) **) 
