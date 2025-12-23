@@ -47929,14 +47929,44 @@ Qed.
 
 (** from §50 Example 7: general position in R^3 (preliminary) **)
 (** LATEX VERSION: In R^3, points are in general position if no three are collinear and no four are coplanar. **)
+(** helper: coordinate selectors on points in euclidean_space 3 **)
+Definition R3_xcoord : set -> set := fun p => p 0.
+Definition R3_ycoord : set -> set := fun p => p 1.
+Definition R3_zcoord : set -> set := fun p => p 2.
+
+(** helper: differences of coordinates **)
+Definition R3_dx : set -> set -> set := fun p q =>
+  add_SNo (R3_xcoord q) (minus_SNo (R3_xcoord p)).
+Definition R3_dy : set -> set -> set := fun p q =>
+  add_SNo (R3_ycoord q) (minus_SNo (R3_ycoord p)).
+Definition R3_dz : set -> set -> set := fun p q =>
+  add_SNo (R3_zcoord q) (minus_SNo (R3_zcoord p)).
+
+(** helper: 2 by 2 determinant a d minus b c **)
+Definition det2_SNo : set -> set -> set -> set -> set := fun a b c d =>
+  add_SNo (mul_SNo a d) (minus_SNo (mul_SNo b c)).
+
+(** helper: 3 by 3 determinant for rows (a1,a2,a3), (b1,b2,b3), (c1,c2,c3) **)
+Definition det3_SNo : set -> set -> set -> set -> set -> set -> set -> set -> set -> set :=
+  fun a1 a2 a3 b1 b2 b3 c1 c2 c3 =>
+    add_SNo
+      (mul_SNo a1 (det2_SNo b2 b3 c2 c3))
+      (add_SNo
+        (minus_SNo (mul_SNo a2 (det2_SNo b1 b3 c1 c3)))
+        (mul_SNo a3 (det2_SNo b1 b2 c1 c2))).
+
 Definition collinear_in_R3 : set -> set -> set -> prop := fun p q r =>
   p :e (euclidean_space 3) /\ q :e (euclidean_space 3) /\ r :e (euclidean_space 3) /\
-  exists t:set, t :e R /\ True. (** stub: affine dependence condition on coordinates **)
+  det2_SNo (R3_dx p q) (R3_dy p q) (R3_dx p r) (R3_dy p r) = 0 /\
+  det2_SNo (R3_dx p q) (R3_dz p q) (R3_dx p r) (R3_dz p r) = 0 /\
+  det2_SNo (R3_dy p q) (R3_dz p q) (R3_dy p r) (R3_dz p r) = 0.
 
 Definition coplanar_in_R3 : set -> set -> set -> set -> prop := fun p q r s =>
   p :e (euclidean_space 3) /\ q :e (euclidean_space 3) /\ r :e (euclidean_space 3) /\ s :e (euclidean_space 3) /\
-  exists A B C D:set, A :e R /\ B :e R /\ C :e R /\ D :e R /\
-    True. (** stub: plane equation on coordinates **)
+  det3_SNo
+    (R3_dx p q) (R3_dy p q) (R3_dz p q)
+    (R3_dx p r) (R3_dy p r) (R3_dz p r)
+    (R3_dx p s) (R3_dy p s) (R3_dz p s) = 0.
 
 (** from §50: geometrically independent (affinely independent) points in R^N **)
 (** LATEX VERSION: Points {x₀,...,xₖ} in R^N are geometrically independent if Σaᵢxᵢ=0 and Σaᵢ=0 imply all aᵢ=0. **)
@@ -48953,7 +48983,20 @@ Qed.
 (** from Supplementary Exercises Exercise 5: long line carrier and topology **)
 (** LATEX VERSION: The long line and its topology (see exercises of §24). **)
 (** stub: the long line is not constructed in this file; we name it abstractly **)
-Definition long_line : set := Eps_i (fun L:set => True).
+Definition long_line : set := Eps_i (fun L:set => infinite L).
+Theorem infinite_omega : infinite omega.
+prove infinite omega.
+claim Hatleast: atleastp omega omega.
+{ exact (Subq_atleastp omega omega (Subq_ref omega)). }
+exact (atleastp_omega_infinite omega Hatleast).
+Qed.
+Theorem long_line_infinite : infinite long_line.
+prove infinite long_line.
+claim Hex: exists L:set, infinite L.
+{ witness omega.
+  exact infinite_omega. }
+exact (Eps_i_ex (fun L:set => infinite L) Hex).
+Qed.
 Definition long_line_topology : set := Eps_i (fun T:set => topology_on long_line T).
 Axiom supp_ex_locally_euclidean_5_axiom :
   locally_m_euclidean long_line long_line_topology (Sing Empty) /\
