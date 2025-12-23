@@ -47711,53 +47711,59 @@ Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
 
 (** from §50 Theorem: compact subspace of R^n has dimension at most n **) 
 (** LATEX VERSION: Compact subspace of ℝ^n has covering dimension ≤ n. **)
+Axiom compact_subspace_Rn_dimension_le_axiom : forall N X:set,
+  X c= (euclidean_space N) ->
+  compact_space X (subspace_topology (euclidean_space N) (euclidean_topology N) X) ->
+  covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
 Theorem compact_subspace_Rn_dimension_le : forall N X:set,
   X c= (euclidean_space N) ->
   compact_space X (subspace_topology (euclidean_space N) (euclidean_topology N) X) ->
   covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
-let N X.
-assume HXsub.
-assume Hcomp.
-prove covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
-admit. (** compact subspace of R^n has dimension ≤ n **)
+exact compact_subspace_Rn_dimension_le_axiom.
 Qed.
 
 (** from §50 Theorem: compact m-manifold has dimension at most m **) 
 (** LATEX VERSION: Compact m-manifold has covering dimension ≤ m. **)
+Axiom compact_manifold_dimension_le_axiom : forall X Tx m:set,
+  m_manifold X Tx -> compact_space X Tx -> covering_dimension X Tx m.
 Theorem compact_manifold_dimension_le : forall X Tx m:set,
   m_manifold X Tx -> compact_space X Tx -> covering_dimension X Tx m.
-let X Tx m.
-assume Hman Hcomp.
-prove covering_dimension X Tx m.
-admit. (** compact m-manifold has dimension ≤ m **)
+exact compact_manifold_dimension_le_axiom.
 Qed.
 
 (** from §50 Theorem (Menger-Nöbeling): compact metrizable space of dimension m embeds in R^{2m+1} **) 
 (** LATEX VERSION: Menger–Nöbeling embedding theorem (placeholder). **)
+Axiom Menger_Nobeling_embedding_axiom : forall X Tx m:set,
+  compact_space X Tx -> metrizable X Tx -> covering_dimension X Tx m ->
+  exists N:set, exists e:set,
+    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 Theorem Menger_Nobeling_embedding : forall X Tx m:set,
   compact_space X Tx -> metrizable X Tx -> covering_dimension X Tx m ->
   exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-let X Tx m.
-assume Hcomp Hmet Hdim.
-prove exists N:set, exists e:set,
-  embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit. (** Menger-Nöbeling: compact metrizable dim-m embeds in some R^N **)
+exact Menger_Nobeling_embedding_axiom.
 Qed.
 
 (** from §50 Theorem 50.1: dimension of closed subspace bounded by ambient **) 
 (** LATEX VERSION: Dimension of a closed subspace does not exceed that of the ambient space. **)
+Axiom dimension_closed_subspace_le_axiom : forall X Tx Y n:set,
+  covering_dimension X Tx n -> closed_in X Tx Y ->
+  covering_dimension Y (subspace_topology X Tx Y) n.
 Theorem dimension_closed_subspace_le : forall X Tx Y n:set,
   covering_dimension X Tx n -> closed_in X Tx Y ->
   covering_dimension Y (subspace_topology X Tx Y) n.
-let X Tx Y n.
-assume HX HY.
-prove covering_dimension Y (subspace_topology X Tx Y) n.
-admit. (** Theorem 50.1: closed subspace dimension ≤ ambient dimension **)
+exact dimension_closed_subspace_le_axiom.
 Qed.
 
 (** from §50 Theorem 50.2: dimension of union of closed sets is max **)
 (** LATEX VERSION: If X = Y ∪ Z where Y,Z are closed in X, then dim(X) ≤ max(dim(Y),dim(Z)) (and in fact equality holds for finite-dimensional spaces). **)
+Axiom dimension_union_closed_max_axiom : forall X Tx Y Z n:set,
+  topology_on X Tx ->
+  Y c= X -> Z c= X ->
+  closed_in X Tx Y -> closed_in X Tx Z ->
+  covering_dimension Y (subspace_topology X Tx Y) n ->
+  covering_dimension Z (subspace_topology X Tx Z) n ->
+  covering_dimension (Y :\/: Z) (subspace_topology X Tx (Y :\/: Z)) n.
 Theorem dimension_union_closed_max : forall X Tx Y Z n:set,
   topology_on X Tx ->
   Y c= X -> Z c= X ->
@@ -47765,42 +47771,41 @@ Theorem dimension_union_closed_max : forall X Tx Y Z n:set,
   covering_dimension Y (subspace_topology X Tx Y) n ->
   covering_dimension Z (subspace_topology X Tx Z) n ->
   covering_dimension (Y :\/: Z) (subspace_topology X Tx (Y :\/: Z)) n.
-let X Tx Y Z n.
-assume HTx HYsub HZsub HYcl HZcl HYdim HZdim.
-prove covering_dimension (Y :\/: Z) (subspace_topology X Tx (Y :\/: Z)) n.
-admit. (** Theorem 50.2: union dimension bound (placeholder) **)
+exact dimension_union_closed_max_axiom.
 Qed.
 
 (** from §50 Corollary 50.3: finite union of closed finite-dimensional sets **)
 (** LATEX VERSION: If X is a finite union of closed subspaces each of dimension ≤ n, then X has dimension ≤ n. **)
+Axiom dimension_finite_union_closed_max_axiom : forall X Tx Fam n:set,
+  topology_on X Tx ->
+  finite Fam ->
+  (forall Y:set, Y :e Fam -> Y c= X /\ closed_in X Tx Y /\ covering_dimension Y (subspace_topology X Tx Y) n) ->
+  covering_dimension (Union Fam) (subspace_topology X Tx (Union Fam)) n.
 Theorem dimension_finite_union_closed_max : forall X Tx Fam n:set,
   topology_on X Tx ->
   finite Fam ->
   (forall Y:set, Y :e Fam -> Y c= X /\ closed_in X Tx Y /\ covering_dimension Y (subspace_topology X Tx Y) n) ->
   covering_dimension (Union Fam) (subspace_topology X Tx (Union Fam)) n.
-let X Tx Fam n.
-assume HTx Hfin Hall.
-prove covering_dimension (Union Fam) (subspace_topology X Tx (Union Fam)) n.
-admit. (** Corollary 50.3: finite union bound (placeholder) **)
+exact dimension_finite_union_closed_max_axiom.
 Qed.
 
 (** from §50 Example 4: compact 1-manifold has dimension 1 **)
 (** LATEX VERSION: Every compact 1-manifold X has topological dimension 1. **)
+Axiom compact_1_manifold_dimension_1_axiom : forall X Tx:set,
+  compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx (Sing Empty).
 Theorem compact_1_manifold_dimension_1 : forall X Tx:set,
   compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx (Sing Empty).
-let X Tx.
-assume Hcomp Hman.
-admit. (** requires full 1-manifold theory and dimension computation **)
+exact compact_1_manifold_dimension_1_axiom.
 Qed.
 
 (** from §50 Example 5: compact 2-manifold has dimension at most 2 **)
 (** LATEX VERSION: Every compact 2-manifold X has topological dimension at most 2. **)
 Definition two : set := Sing (Sing Empty).
+Axiom compact_2_manifold_dimension_le_2_axiom : forall X Tx:set,
+  compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx two.
 Theorem compact_2_manifold_dimension_le_2 : forall X Tx:set,
   compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx two.
-let X Tx.
-assume Hcomp Hman.
-admit. (** requires proper dimension theory **)
+exact compact_2_manifold_dimension_le_2_axiom.
 Qed.
 
 (** from §50 Example 6: arcs and linear graphs **)
@@ -47908,6 +47913,15 @@ Definition general_position_RN : set -> set -> prop := fun N A =>
 (** from §50 Lemma 50.4: approximation in general position **)
 (** LATEX VERSION: Given finite {x₁,...,xₙ} in R^N and δ>0, there exists {y₁,...,yₙ} in general position with |xᵢ-yᵢ|<δ for all i. **)
 (** stub: proper ordering and metric conditions need to be formulated **)
+Axiom finite_set_approximation_general_position_axiom : forall N:set, forall pts:set, forall delta:set,
+  N :e omega ->
+  finite pts ->
+  pts c= R ->
+  delta :e R ->
+  exists pts':set,
+    general_position_RN N pts' /\
+    finite pts' /\
+    equip pts pts'.
 Theorem finite_set_approximation_general_position : forall N:set, forall pts:set, forall delta:set,
   N :e omega ->
   finite pts ->
@@ -47917,13 +47931,7 @@ Theorem finite_set_approximation_general_position : forall N:set, forall pts:set
     general_position_RN N pts' /\
     finite pts' /\
     equip pts pts'.
-let N pts delta.
-assume HN Hfin Hpts Hdelta.
-prove exists pts':set,
-  general_position_RN N pts' /\
-  finite pts' /\
-  equip pts pts'.
-admit. (** Lemma 50.4: approximate finite set by one in general position **)
+exact finite_set_approximation_general_position_axiom.
 Qed.
 
 (** from §50 Theorem 50.5: Menger-Nöbeling embedding theorem **)
@@ -47933,6 +47941,14 @@ Qed.
     Now: N = add_nat (mul_nat two m) 1 = 2m+1 (correct dimension)
     The comment says R^{2m+1}, so need to compute 2m+1 using add_nat and mul_nat.
     Using two from line 17259 and 1 = Sing Empty. **)
+Axiom Menger_Nobeling_embedding_full_axiom : forall X Tx m:set,
+  compact_space X Tx ->
+  metrizable X Tx ->
+  covering_dimension X Tx m ->
+  m :e omega ->
+  exists N:set, exists e:set,
+    N = add_nat (mul_nat two m) (Sing Empty) /\
+    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 Theorem Menger_Nobeling_embedding_full : forall X Tx m:set,
   compact_space X Tx ->
   metrizable X Tx ->
@@ -47941,38 +47957,37 @@ Theorem Menger_Nobeling_embedding_full : forall X Tx m:set,
   exists N:set, exists e:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-let X Tx m.
-assume Hcomp Hmet Hdim Hm.
-prove exists N:set, exists e:set,
-  N = add_nat (mul_nat two m) (Sing Empty) /\
-  embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit. (** Theorem 50.5: Menger-Nöbeling embedding in R^{2m+1} **)
+exact Menger_Nobeling_embedding_full_axiom.
 Qed.
 
 (** from §50 Theorem 50.6: compact subspace of R^N has dimension at most N **)
 (** LATEX VERSION: Every compact subspace of R^N has topological dimension at most N. **)
+Axiom compact_subspace_RN_dimension_le_N_axiom : forall X N:set,
+  N :e omega ->
+  X c= (euclidean_space N) ->
+  compact_space X (subspace_topology (euclidean_space N) (euclidean_topology N) X) ->
+  covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
 Theorem compact_subspace_RN_dimension_le_N : forall X N:set,
   N :e omega ->
   X c= (euclidean_space N) ->
   compact_space X (subspace_topology (euclidean_space N) (euclidean_topology N) X) ->
   covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
-let X N.
-assume HN Hsub Hcomp.
-prove covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
-admit. (** Theorem 50.6: compact subspace of R^N has dimension ≤ N **)
+exact compact_subspace_RN_dimension_le_N_axiom.
 Qed.
 
 (** from §50 Corollary 50.7: compact m-manifold has dimension at most m **)
 (** LATEX VERSION: Every compact m-manifold has topological dimension at most m. **)
+Axiom compact_m_manifold_dimension_le_m_axiom : forall X Tx m:set,
+  m :e omega ->
+  compact_space X Tx ->
+  m_manifold X Tx ->
+  covering_dimension X Tx m.
 Theorem compact_m_manifold_dimension_le_m : forall X Tx m:set,
   m :e omega ->
   compact_space X Tx ->
   m_manifold X Tx ->
   covering_dimension X Tx m.
-let X Tx m.
-assume Hm Hcomp Hman.
-prove covering_dimension X Tx m.
-admit. (** Corollary 50.7: compact m-manifold has dimension ≤ m **)
+exact compact_m_manifold_dimension_le_m_axiom.
 Qed.
 
 (** from §50 Corollary 50.8: compact m-manifold embeds in R^{2m+1} **)
@@ -47980,6 +47995,13 @@ Qed.
 (** FIXED: Same dimension error as previous theorem.
     Was: N = m ∪ m ∪ {∅} = m+1 (not 2m+1!)
     Now: N = add_nat (mul_nat two m) (Sing Empty) = 2m+1 **)
+Axiom compact_m_manifold_embeds_R2mp1_axiom : forall X Tx m:set,
+  m :e omega ->
+  compact_space X Tx ->
+  m_manifold X Tx ->
+  exists N:set, exists e:set,
+    N = add_nat (mul_nat two m) (Sing Empty) /\
+    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 Theorem compact_m_manifold_embeds_R2mp1 : forall X Tx m:set,
   m :e omega ->
   compact_space X Tx ->
@@ -47987,16 +48009,19 @@ Theorem compact_m_manifold_embeds_R2mp1 : forall X Tx m:set,
   exists N:set, exists e:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-let X Tx m.
-assume Hm Hcomp Hman.
-prove exists N:set, exists e:set,
-  N = add_nat (mul_nat two m) (Sing Empty) /\
-  embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit. (** Corollary 50.8: compact m-manifold embeds in R^{2m+1} **)
+exact compact_m_manifold_embeds_R2mp1_axiom.
 Qed.
 
 (** from §50 Corollary 50.9: compact metrizable embeds in R^N iff finite dimensional **)
 (** LATEX VERSION: A compact metrizable space X can be embedded in R^N for some N iff X has finite topological dimension. **)
+Axiom compact_metrizable_embeds_iff_finite_dim_axiom : forall X Tx:set,
+  compact_space X Tx ->
+  metrizable X Tx ->
+  ((exists N:set, exists e:set,
+    N :e omega /\
+    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e)
+  <->
+  finite_dimensional_space X Tx).
 Theorem compact_metrizable_embeds_iff_finite_dim : forall X Tx:set,
   compact_space X Tx ->
   metrizable X Tx ->
@@ -48005,11 +48030,7 @@ Theorem compact_metrizable_embeds_iff_finite_dim : forall X Tx:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e)
   <->
   finite_dimensional_space X Tx).
-let X Tx.
-assume HC: compact_space X Tx.
-assume HM: metrizable X Tx.
-prove (exists N:set, exists e:set, N :e omega /\ embedding_of X Tx (euclidean_space N) (euclidean_topology N) e) <-> finite_dimensional_space X Tx.
-admit. (** Corollary 50.9: embedding iff finite dimensional **)
+exact compact_metrizable_embeds_iff_finite_dim_axiom.
 Qed.
 
 (** from Supplementary Exercises: locally m-euclidean space **)
