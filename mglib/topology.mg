@@ -32718,6 +32718,34 @@ apply andI.
   exact HUnionPre.
 Qed.
 
+(** Helper: maps into products iff coordinates are continuous **)
+(** LATEX VERSION: A map h : A -> X×Y is continuous iff each projection composed with h is continuous. **)
+Theorem maps_into_products_iff_coords : forall A Ta X Tx Y Ty h:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  function_on h A (setprod X Y) ->
+  (continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) h <->
+   (continuous_map A Ta X Tx (compose_fun A h (projection_map1 X Y)) /\
+    continuous_map A Ta Y Ty (compose_fun A h (projection_map2 X Y)))).
+let A Ta X Tx Y Ty h.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+assume Hfunh: function_on h A (setprod X Y).
+apply iffI.
+- assume Hh: continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) h.
+  exact (maps_into_products_converse A Ta X Tx Y Ty h HTx HTy Hh).
+- assume Hcoords: continuous_map A Ta X Tx (compose_fun A h (projection_map1 X Y)) /\
+                  continuous_map A Ta Y Ty (compose_fun A h (projection_map2 X Y)).
+  claim Hc1: continuous_map A Ta X Tx (compose_fun A h (projection_map1 X Y)).
+  { exact (andEL (continuous_map A Ta X Tx (compose_fun A h (projection_map1 X Y)))
+                 (continuous_map A Ta Y Ty (compose_fun A h (projection_map2 X Y)))
+                 Hcoords). }
+  claim Hc2: continuous_map A Ta Y Ty (compose_fun A h (projection_map2 X Y)).
+  { exact (andER (continuous_map A Ta X Tx (compose_fun A h (projection_map1 X Y)))
+                 (continuous_map A Ta Y Ty (compose_fun A h (projection_map2 X Y)))
+                 Hcoords). }
+  exact (maps_into_products_coords_imp A Ta X Tx Y Ty h HTx HTy Hfunh Hc1 Hc2).
+Qed.
+
 (** Helper: universal property of products - maps into products **)
 (** LATEX VERSION: Projections from a product are continuous. **)
 Theorem projections_are_continuous : forall X Tx Y Ty:set,
