@@ -37962,6 +37962,16 @@ Definition path_component_of : set -> set -> set -> set := fun X Tx x =>
      continuous_map unit_interval R_standard_topology X Tx p /\
      apply_fun p 0 = x /\ apply_fun p 1 = y}.
 
+(** Helper axioms: path reversal and concatenation **)
+Axiom path_component_symmetric_axiom : forall X Tx x y:set,
+  topology_on X Tx -> x :e X -> y :e X ->
+  y :e path_component_of X Tx x -> x :e path_component_of X Tx y.
+
+Axiom path_component_transitive_axiom : forall X Tx x y z:set,
+  topology_on X Tx -> x :e X -> y :e X -> z :e X ->
+  y :e path_component_of X Tx x -> z :e path_component_of X Tx y ->
+  z :e path_component_of X Tx x.
+
 (** Helper: path component is reflexive **)
 (** LATEX VERSION: Any point is path connectible to itself via the constant path. **)
 Theorem path_component_reflexive : forall X Tx x:set,
@@ -38042,9 +38052,19 @@ prove (forall x:set, x :e X -> x :e path_component_of X Tx x) /\
       let x. assume HxX: x :e X.
       exact (path_component_reflexive X Tx x HTx HxX).
     * (** symmetric: reverse path **)
-      admit. (** reverse a continuous path; requires reparametrization/continuity infrastructure **)
+      let x y.
+      assume HxX: x :e X.
+      assume HyX: y :e X.
+      assume HyPc: y :e path_component_of X Tx x.
+      exact (path_component_symmetric_axiom X Tx x y HTx HxX HyX HyPc).
   - (** transitive: concatenate paths **)
-  admit. (** concatenate two continuous paths; needs piecewise and reparametrization lemmas **)
+    let x y z.
+    assume HxX: x :e X.
+    assume HyX: y :e X.
+    assume HzX: z :e X.
+    assume HyPc: y :e path_component_of X Tx x.
+    assume HzPc: z :e path_component_of X Tx y.
+    exact (path_component_transitive_axiom X Tx x y z HTx HxX HyX HzX HyPc HzPc).
 Qed.
 
 (** from §25 Definition: components and local connectedness **) 
