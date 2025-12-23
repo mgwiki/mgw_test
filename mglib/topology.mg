@@ -21232,7 +21232,7 @@ Definition product_cylinder : set -> set -> set -> set -> set :=
 Definition product_subbasis_full : set -> set -> set :=
   fun I Xi => \/_ i :e I, {product_cylinder I Xi i U|U :e space_family_topology Xi i}.
 Definition product_topology_full : set -> set -> set := fun I Xi =>
-  generated_topology (product_space I Xi) (product_subbasis_full I Xi).
+  generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi).
 (** FIXED: Was using Power set which generates discrete topology, not box topology!
     Was: generated_topology (product_space I Xi) (Power (product_space I Xi))
          (Power set as subbasis generates discrete topology - all sets open!)
