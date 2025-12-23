@@ -31529,31 +31529,46 @@ Definition homeomorphism : set -> set -> set -> set -> set -> prop :=
       (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
       (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y).
 
+(** Helper: extract continuous_map from homeomorphism **)
+Theorem homeomorphism_continuous : forall X Tx Y Ty f:set,
+  homeomorphism X Tx Y Ty f -> continuous_map X Tx Y Ty f.
+let X Tx Y Ty f.
+assume H: homeomorphism X Tx Y Ty f.
+exact (andEL (continuous_map X Tx Y Ty f)
+             (exists g:set, continuous_map Y Ty X Tx g /\
+               (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+               (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
+             H).
+Qed.
+
+(** Helper: extract existence of inverse package from homeomorphism **)
+Theorem homeomorphism_inverse_package : forall X Tx Y Ty f:set,
+  homeomorphism X Tx Y Ty f ->
+  exists g:set, continuous_map Y Ty X Tx g /\
+    (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+    (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y).
+let X Tx Y Ty f.
+assume H: homeomorphism X Tx Y Ty f.
+exact (andER (continuous_map X Tx Y Ty f)
+             (exists g:set, continuous_map Y Ty X Tx g /\
+               (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+               (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
+             H).
+Qed.
+
 (** helper: homeomorphism implies both are topological spaces **)
 Theorem homeomorphism_topology_left : forall X Tx Y Ty f:set,
   homeomorphism X Tx Y Ty f -> topology_on X Tx.
 let X Tx Y Ty f.
 assume Hhom: homeomorphism X Tx Y Ty f.
-claim Hcont: continuous_map X Tx Y Ty f.
-{ exact (andEL (continuous_map X Tx Y Ty f)
-               (exists g:set, continuous_map Y Ty X Tx g /\
-                 (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
-                 (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
-               Hhom). }
-exact (continuous_map_topology_dom X Tx Y Ty f Hcont).
+exact (continuous_map_topology_dom X Tx Y Ty f (homeomorphism_continuous X Tx Y Ty f Hhom)).
 Qed.
 
 Theorem homeomorphism_topology_right : forall X Tx Y Ty f:set,
   homeomorphism X Tx Y Ty f -> topology_on Y Ty.
 let X Tx Y Ty f.
 assume Hhom: homeomorphism X Tx Y Ty f.
-claim Hcont: continuous_map X Tx Y Ty f.
-{ exact (andEL (continuous_map X Tx Y Ty f)
-               (exists g:set, continuous_map Y Ty X Tx g /\
-                 (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
-                 (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
-               Hhom). }
-exact (continuous_map_topology_cod X Tx Y Ty f Hcont).
+exact (continuous_map_topology_cod X Tx Y Ty f (homeomorphism_continuous X Tx Y Ty f Hhom)).
 Qed.
 
 (** helper: homeomorphisms are injective **)
