@@ -31168,6 +31168,7 @@ exact (andER (continuous_map X Tx Y Ty f)
 Qed.
 
 (** Helper: function union properties **)
+(** LATEX VERSION: If A and B are disjoint and f,g map A,B into Y, then the pasted graph f∪g maps A∪B into Y. **)
 Axiom function_union_on_disjoint : forall A B Y f g:set,
   A :/\: B = Empty ->
   function_on f A Y -> function_on g B Y ->
