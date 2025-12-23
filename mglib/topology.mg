@@ -37102,7 +37102,92 @@ claim HfImg: f :e image_of Romega_singleton_map R.
   exact (ReplI R (fun a:set => apply_fun Romega_singleton_map a) r HrR). }
 (** Show f :e intersection_of_family X F by showing f is in every s in F. **)
 claim HfInt: f :e intersection_of_family X F.
-{ admit. }
+{ prove f :e intersection_of_family X F.
+  prove f :e {x0 :e X|forall U:set, U :e F -> x0 :e U}.
+  apply (SepI X (fun x0:set => forall U:set, U :e F -> x0 :e U) f HfX).
+  let s. assume HsF: s :e F.
+  prove f :e s.
+  claim HsS: s :e S.
+  { exact (HFsubS s HsF). }
+  set CylFam := (fun i:set => {product_cylinder omega Xi i U|U :e space_family_topology Xi i}).
+  claim HsCyl: s :e (\/_ i :e omega, CylFam i).
+  { exact HsS. }
+  apply (famunionE_impred omega CylFam s HsCyl (f :e s)).
+  let i. assume Hi: i :e omega.
+  assume HsFi: s :e CylFam i.
+  apply (ReplE_impred (space_family_topology Xi i) (fun U0:set => product_cylinder omega Xi i U0) s HsFi (f :e s)).
+  let U.
+  assume HU: U :e space_family_topology Xi i.
+  assume Hseq: s = product_cylinder omega Xi i U.
+  rewrite Hseq.
+  prove f :e product_cylinder omega Xi i U.
+  prove f :e {f0 :e product_space omega Xi | i :e omega /\ U :e space_family_topology Xi i /\ apply_fun f0 i :e U}.
+  claim HfProd: f :e product_space omega Xi.
+  { exact HfX. }
+  claim Hpropf: i :e omega /\ U :e space_family_topology Xi i /\ apply_fun f i :e U.
+  { apply andI.
+    - apply andI.
+      + exact Hi.
+      + exact HU.
+    - prove apply_fun f i :e U.
+      (** Use that x is in this cylinder, and x :e Romega_tilde 0, to show the singleton sequence matches x at i. **)
+      claim Hxs: x :e s.
+      { exact (HxAll s HsF). }
+      claim HxCyl: x :e product_cylinder omega Xi i U.
+      { rewrite <- Hseq.
+        exact Hxs. }
+      claim Hxcylprop: (i :e omega /\ U :e space_family_topology Xi i) /\ apply_fun x i :e U.
+      { exact (SepE2 (product_space omega Xi)
+                     (fun f0:set => (i :e omega /\ U :e space_family_topology Xi i) /\ apply_fun f0 i :e U)
+                     x
+                     HxCyl). }
+      claim HxUi: apply_fun x i :e U.
+      { exact (andER (i :e omega /\ U :e space_family_topology Xi i)
+                     (apply_fun x i :e U)
+                     Hxcylprop). }
+      (** Rewrite apply_fun f i using the singleton map. **)
+      rewrite (Romega_singleton_map_apply r HrR).
+      rewrite (Romega_singleton_seq_apply r i HrR Hi).
+      claim Hnat: nat_p i.
+      { exact (omega_nat_p i Hi). }
+      (** Case split on i = 0 or i = ordsucc k. **)
+      apply (nat_inv i Hnat).
+      - assume Hieq0: i = 0.
+        rewrite Hieq0.
+        claim Hnot0in0: ~(0 :e 0).
+        { assume H0in0: 0 :e 0.
+          prove False.
+          exact (EmptyE 0 H0in0). }
+        rewrite (If_i_0 (0 :e 0) 0 r Hnot0in0).
+        claim HxUi0: apply_fun x 0 :e U.
+        { rewrite <- Hieq0.
+          exact HxUi. }
+        claim Hreq: r = apply_fun x 0.
+        { reflexivity. }
+        rewrite Hreq.
+        exact HxUi0.
+      - assume Hexk: exists k:set, nat_p k /\ i = ordsucc k.
+        apply Hexk.
+        let k. assume Hkconj: nat_p k /\ i = ordsucc k.
+        claim HkNat: nat_p k.
+        { exact (andEL (nat_p k) (i = ordsucc k) Hkconj). }
+        claim Hieq: i = ordsucc k.
+        { exact (andER (nat_p k) (i = ordsucc k) Hkconj). }
+        claim H0in: 0 :e i.
+        { rewrite Hieq.
+          exact (nat_0_in_ordsucc k HkNat). }
+        rewrite (If_i_1 (0 :e i) 0 r H0in).
+        claim Hxcoord0: apply_fun x i = 0.
+        { exact (Hx0prop i Hi H0in). }
+        rewrite <- Hxcoord0.
+        exact HxUi.
+  }
+  exact (SepI (product_space omega Xi)
+              (fun f0:set => i :e omega /\ U :e space_family_topology Xi i /\ apply_fun f0 i :e U)
+              f
+              HfProd
+              Hpropf).
+}
 (** Conclude the intersection is nonempty by exhibiting f. **)
 assume Hempty: (intersection_of_family X F) :/\: image_of Romega_singleton_map R = Empty.
 prove False.
