@@ -36110,10 +36110,188 @@ claim Hpre: forall s:set, s :e S -> preimage_of R Romega_singleton_map s :e R_st
     exact (PowerE R U HUpow). }
   apply (xm (0 :e i)).
   + assume H0i: 0 :e i.
-    admit.
+    apply (xm (0 :e U)).
+    - assume H0U: 0 :e U.
+      claim Heq: preimage_of R Romega_singleton_map (product_cylinder omega Xi i U) = R.
+      { apply set_ext.
+        - let r. assume Hrpre: r :e preimage_of R Romega_singleton_map (product_cylinder omega Xi i U).
+          prove r :e R.
+          claim Hrpre2: r :e {x0 :e R | apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U}.
+          { claim Hpre_def: preimage_of R Romega_singleton_map (product_cylinder omega Xi i U) =
+              {x0 :e R | apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U}.
+            { reflexivity. }
+            rewrite <- Hpre_def.
+            exact Hrpre. }
+          exact (SepE1 R (fun x0:set => apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U) r Hrpre2).
+        - let r. assume HrR: r :e R.
+          prove r :e preimage_of R Romega_singleton_map (product_cylinder omega Xi i U).
+          claim Hpre_def: preimage_of R Romega_singleton_map (product_cylinder omega Xi i U) =
+            {x0 :e R | apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U}.
+          { reflexivity. }
+          rewrite Hpre_def.
+          apply (SepI R (fun x0:set => apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U) r HrR).
+          prove apply_fun Romega_singleton_map r :e product_cylinder omega Xi i U.
+          claim Happmap: apply_fun Romega_singleton_map r = Romega_singleton_seq r.
+          { exact (Romega_singleton_map_apply r HrR). }
+          rewrite Happmap.
+          claim HXdef: R_omega_space = product_space omega Xi.
+          { reflexivity. }
+          claim Hrseq: Romega_singleton_seq r :e product_space omega Xi.
+          { rewrite <- HXdef.
+            exact (Romega_singleton_seq_in_Romega_space r HrR). }
+          claim Hcyl_def: product_cylinder omega Xi i U =
+            {g :e product_space omega Xi | i :e omega /\ U :e space_family_topology Xi i /\ apply_fun g i :e U}.
+          { reflexivity. }
+          rewrite Hcyl_def.
+          apply (SepI (product_space omega Xi)
+                      (fun g:set => i :e omega /\ U :e space_family_topology Xi i /\ apply_fun g i :e U)
+                      (Romega_singleton_seq r)
+                      Hrseq).
+          apply andI.
+          + apply andI.
+            * exact Hi.
+            * exact HUtop.
+          + claim Happi: apply_fun (Romega_singleton_seq r) i = If_i (0 :e i) 0 r.
+            { exact (Romega_singleton_seq_apply r i HrR Hi). }
+            rewrite Happi.
+            rewrite (If_i_1 (0 :e i) 0 r H0i).
+            exact H0U. }
+      rewrite Heq.
+      exact (topology_has_X R R_standard_topology R_standard_topology_is_topology).
+    - assume Hn0U: ~(0 :e U).
+      claim Heq: preimage_of R Romega_singleton_map (product_cylinder omega Xi i U) = Empty.
+      { apply set_ext.
+        - let r. assume Hrpre: r :e preimage_of R Romega_singleton_map (product_cylinder omega Xi i U).
+          prove r :e Empty.
+          apply FalseE.
+          claim Hrpre2: r :e {x0 :e R | apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U}.
+          { claim Hpre_def: preimage_of R Romega_singleton_map (product_cylinder omega Xi i U) =
+              {x0 :e R | apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U}.
+            { reflexivity. }
+            rewrite <- Hpre_def.
+            exact Hrpre. }
+          claim HrR: r :e R.
+          { exact (SepE1 R (fun x0:set => apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U) r Hrpre2). }
+          claim Hcond: apply_fun Romega_singleton_map r :e product_cylinder omega Xi i U.
+          { exact (SepE2 R (fun x0:set => apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U) r Hrpre2). }
+          claim Happmap: apply_fun Romega_singleton_map r = Romega_singleton_seq r.
+          { exact (Romega_singleton_map_apply r HrR). }
+          claim Hcond2: Romega_singleton_seq r :e product_cylinder omega Xi i U.
+          { rewrite <- Happmap.
+            exact Hcond. }
+          claim Hcyl_def: product_cylinder omega Xi i U =
+            {g :e product_space omega Xi | i :e omega /\ U :e space_family_topology Xi i /\ apply_fun g i :e U}.
+          { reflexivity. }
+          claim Hcond3: Romega_singleton_seq r :e
+            {g :e product_space omega Xi | i :e omega /\ U :e space_family_topology Xi i /\ apply_fun g i :e U}.
+          { rewrite <- Hcyl_def.
+            exact Hcond2. }
+          claim Hprop: i :e omega /\ U :e space_family_topology Xi i /\ apply_fun (Romega_singleton_seq r) i :e U.
+          { exact (SepE2 (product_space omega Xi)
+                         (fun g:set => i :e omega /\ U :e space_family_topology Xi i /\ apply_fun g i :e U)
+                         (Romega_singleton_seq r)
+                         Hcond3). }
+          claim Hri: apply_fun (Romega_singleton_seq r) i :e U.
+          { exact (andER (i :e omega /\ U :e space_family_topology Xi i)
+                         (apply_fun (Romega_singleton_seq r) i :e U)
+                         Hprop). }
+          claim Happi: apply_fun (Romega_singleton_seq r) i = If_i (0 :e i) 0 r.
+          { exact (Romega_singleton_seq_apply r i HrR Hi). }
+          claim HriIf: If_i (0 :e i) 0 r :e U.
+          { rewrite <- Happi.
+            exact Hri. }
+          claim Hif1: If_i (0 :e i) 0 r = 0.
+          { exact (If_i_1 (0 :e i) 0 r H0i). }
+          claim H0U: 0 :e U.
+          { rewrite <- Hif1.
+            exact HriIf. }
+          exact (Hn0U H0U).
+        - let r. assume HrE: r :e Empty.
+          prove r :e preimage_of R Romega_singleton_map (product_cylinder omega Xi i U).
+          apply FalseE.
+          exact (EmptyE r HrE). }
+      rewrite Heq.
+      exact (topology_has_empty R R_standard_topology R_standard_topology_is_topology).
   + assume Hn0i: ~(0 :e i).
     claim Heq: preimage_of R Romega_singleton_map (product_cylinder omega Xi i U) = U.
-    { admit. }
+    { apply set_ext.
+      - let r. assume Hrpre: r :e preimage_of R Romega_singleton_map (product_cylinder omega Xi i U).
+        prove r :e U.
+        claim Hrpre2: r :e {x0 :e R | apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U}.
+        { claim Hpre_def: preimage_of R Romega_singleton_map (product_cylinder omega Xi i U) =
+            {x0 :e R | apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U}.
+          { reflexivity. }
+          rewrite <- Hpre_def.
+          exact Hrpre. }
+        claim HrR: r :e R.
+        { exact (SepE1 R (fun x0:set => apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U) r Hrpre2). }
+        claim Hcond: apply_fun Romega_singleton_map r :e product_cylinder omega Xi i U.
+        { exact (SepE2 R (fun x0:set => apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U) r Hrpre2). }
+        claim Happmap: apply_fun Romega_singleton_map r = Romega_singleton_seq r.
+        { exact (Romega_singleton_map_apply r HrR). }
+        claim Hcond2: Romega_singleton_seq r :e product_cylinder omega Xi i U.
+        { rewrite <- Happmap.
+          exact Hcond. }
+        claim Hcyl_def: product_cylinder omega Xi i U =
+          {g :e product_space omega Xi | i :e omega /\ U :e space_family_topology Xi i /\ apply_fun g i :e U}.
+        { reflexivity. }
+        claim Hcond3: Romega_singleton_seq r :e
+          {g :e product_space omega Xi | i :e omega /\ U :e space_family_topology Xi i /\ apply_fun g i :e U}.
+        { rewrite <- Hcyl_def.
+          exact Hcond2. }
+        claim Hprop: i :e omega /\ U :e space_family_topology Xi i /\ apply_fun (Romega_singleton_seq r) i :e U.
+        { exact (SepE2 (product_space omega Xi)
+                       (fun g:set => i :e omega /\ U :e space_family_topology Xi i /\ apply_fun g i :e U)
+                       (Romega_singleton_seq r)
+                       Hcond3). }
+        claim Hri: apply_fun (Romega_singleton_seq r) i :e U.
+        { exact (andER (i :e omega /\ U :e space_family_topology Xi i)
+                       (apply_fun (Romega_singleton_seq r) i :e U)
+                       Hprop). }
+        claim Happi: apply_fun (Romega_singleton_seq r) i = If_i (0 :e i) 0 r.
+        { exact (Romega_singleton_seq_apply r i HrR Hi). }
+        claim HriIf: If_i (0 :e i) 0 r :e U.
+        { rewrite <- Happi.
+          exact Hri. }
+        claim Hif0: If_i (0 :e i) 0 r = r.
+        { exact (If_i_0 (0 :e i) 0 r Hn0i). }
+        rewrite <- Hif0.
+        exact HriIf.
+      - let r. assume HrU: r :e U.
+        prove r :e preimage_of R Romega_singleton_map (product_cylinder omega Xi i U).
+        claim HrR: r :e R.
+        { exact (HUsubR r HrU). }
+        claim Hpre_def: preimage_of R Romega_singleton_map (product_cylinder omega Xi i U) =
+          {x0 :e R | apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U}.
+        { reflexivity. }
+        rewrite Hpre_def.
+        apply (SepI R (fun x0:set => apply_fun Romega_singleton_map x0 :e product_cylinder omega Xi i U) r HrR).
+        prove apply_fun Romega_singleton_map r :e product_cylinder omega Xi i U.
+        claim Happmap: apply_fun Romega_singleton_map r = Romega_singleton_seq r.
+        { exact (Romega_singleton_map_apply r HrR). }
+        rewrite Happmap.
+        claim HXdef: R_omega_space = product_space omega Xi.
+        { reflexivity. }
+        claim Hrseq: Romega_singleton_seq r :e product_space omega Xi.
+        { rewrite <- HXdef.
+          exact (Romega_singleton_seq_in_Romega_space r HrR). }
+        claim Hcyl_def: product_cylinder omega Xi i U =
+          {g :e product_space omega Xi | i :e omega /\ U :e space_family_topology Xi i /\ apply_fun g i :e U}.
+        { reflexivity. }
+        rewrite Hcyl_def.
+        apply (SepI (product_space omega Xi)
+                    (fun g:set => i :e omega /\ U :e space_family_topology Xi i /\ apply_fun g i :e U)
+                    (Romega_singleton_seq r)
+                    Hrseq).
+        apply andI.
+        + apply andI.
+          * exact Hi.
+          * exact HUtop.
+        + claim Happi: apply_fun (Romega_singleton_seq r) i = If_i (0 :e i) 0 r.
+          { exact (Romega_singleton_seq_apply r i HrR Hi). }
+          rewrite Happi.
+          rewrite (If_i_0 (0 :e i) 0 r Hn0i).
+          exact HrU. }
     rewrite Heq.
     exact HUstd. }
 claim HdefTy: R_omega_product_topology = generated_topology_from_subbasis R_omega_space S.
