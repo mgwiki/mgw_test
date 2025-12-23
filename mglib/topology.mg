@@ -50313,15 +50313,15 @@ Qed.
 (** from §32 Exercise 5: normality questions for Romega product topologies **)
 (** LATEX VERSION: Is ℝ^ω normal in product topology? In uniform topology? **)
 Axiom ex32_5_Romega_normality_questions_axiom :
-  (normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) \/
-   ~ normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology))) /\
-  (exists Romega Tunif:set,
-    (normal_space Romega Tunif \/ ~ normal_space Romega Tunif)).
+  (normal_space R_omega_space R_omega_product_topology \/
+   ~ normal_space R_omega_space R_omega_product_topology) /\
+  (normal_space real_sequences uniform_topology \/
+   ~ normal_space real_sequences uniform_topology).
 Theorem ex32_5_Romega_normality_questions :
-  (normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) \/
-   ~ normal_space (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology))) /\
-  (exists Romega Tunif:set,
-    (normal_space Romega Tunif \/ ~ normal_space Romega Tunif)).
+  (normal_space R_omega_space R_omega_product_topology \/
+   ~ normal_space R_omega_space R_omega_product_topology) /\
+  (normal_space real_sequences uniform_topology \/
+   ~ normal_space real_sequences uniform_topology).
 exact ex32_5_Romega_normality_questions_axiom.
 Qed.
 (** from §32 Exercise 6: completely normal characterization via separated sets **)
