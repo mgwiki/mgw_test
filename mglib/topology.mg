@@ -30991,225 +30991,6 @@ claim Hab: topology_on X Tx /\ topology_on Y Ty.
 exact (andER (topology_on X Tx) (topology_on Y Ty) Hab).
 Qed.
 
-(** Helper: homeomorphisms preserve connectedness **)
-Theorem homeomorphism_preserves_connected : forall X Tx Y Ty f:set,
-  homeomorphism X Tx Y Ty f ->
-  connected_space X Tx ->
-  connected_space Y Ty.
-let X Tx Y Ty f.
-assume Hhom: homeomorphism X Tx Y Ty f.
-assume HX: connected_space X Tx.
-prove connected_space Y Ty.
-claim HTy: topology_on Y Ty.
-{ exact (homeomorphism_topology_right X Tx Y Ty f Hhom). }
-claim Hcontf: continuous_map X Tx Y Ty f.
-{ exact (andEL (continuous_map X Tx Y Ty f)
-               (exists g:set, continuous_map Y Ty X Tx g /\
-                 (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
-                 (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
-               Hhom). }
-claim Hexg:
-  exists g:set, continuous_map Y Ty X Tx g /\
-    (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
-    (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y).
-{ exact (andER (continuous_map X Tx Y Ty f)
-               (exists g:set, continuous_map Y Ty X Tx g /\
-                 (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
-                 (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
-               Hhom). }
-claim HnoSepX:
-  ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
-{ exact (andER (topology_on X Tx)
-               (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V))
-               HX). }
-claim Hfunf: function_on f X Y.
-{ claim Habc: (topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y.
-  { exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
-                 (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
-                 Hcontf). }
-  exact (andER (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y) Habc). }
-claim Hpreimg: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
-{ exact (andER ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
-               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
-               Hcontf). }
-
-apply andI.
-- exact HTy.
-- prove ~(exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V).
-  assume HsepY: exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V.
-  prove False.
-  apply HnoSepX.
-  (** Build a separation of X from the preimages of a separation of Y. **)
-  apply HsepY.
-  let U. assume HUex.
-  apply HUex.
-  let V. assume HVex.
-  apply HVex.
-  assume HUVsep.
-  claim HUVin: U :e Ty /\ V :e Ty.
-  { exact (andEL (U :e Ty /\ V :e Ty) (separation_of Y U V) HUVsep). }
-  claim Hsep: separation_of Y U V.
-  { exact (andER (U :e Ty /\ V :e Ty) (separation_of Y U V) HUVsep). }
-  claim HU: U :e Ty.
-  { exact (andEL (U :e Ty) (V :e Ty) HUVin). }
-  claim HV: V :e Ty.
-  { exact (andER (U :e Ty) (V :e Ty) HUVin). }
-  set U0 := preimage_of X f U.
-  set V0 := preimage_of X f V.
-  witness U0.
-  witness V0.
-  prove U0 :e Tx /\ V0 :e Tx /\ separation_of X U0 V0.
-  apply andI.
-  - apply andI.
-    + exact (Hpreimg U HU).
-    + exact (Hpreimg V HV).
-  - (** separation_of X U0 V0 **)
-    (** Extract disjointness, nonemptiness, and cover from separation_of Y U V **)
-    claim HsepL:
-      ((((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
-    { exact (andEL ((((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
-                   (U :\/: V = Y)
-                   Hsep). }
-    claim HunionY: U :\/: V = Y.
-    { exact (andER ((((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
-                   (U :\/: V = Y)
-                   Hsep). }
-    claim HsepL2: (((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty) /\ U <> Empty).
-    { exact (andEL (((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty) /\ U <> Empty)
-                   (V <> Empty)
-                   HsepL). }
-    claim HVneY: V <> Empty.
-    { exact (andER (((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty) /\ U <> Empty)
-                   (V <> Empty)
-                   HsepL). }
-    claim HsepL3: ((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty).
-    { exact (andEL ((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty)
-                   (U <> Empty)
-                   HsepL2). }
-    claim HUneY: U <> Empty.
-    { exact (andER ((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty)
-                   (U <> Empty)
-                   HsepL2). }
-    claim HdisjY: U :/\: V = Empty.
-    { exact (andER (U :e Power Y /\ V :e Power Y)
-                   (U :/\: V = Empty)
-                   HsepL3). }
-
-    (** Power X facts for U0 and V0 **)
-    claim HU0subX: U0 c= X.
-    { let x. assume Hx: x :e U0.
-      exact (SepE1 X (fun x0:set => apply_fun f x0 :e U) x Hx). }
-    claim HV0subX: V0 c= X.
-    { let x. assume Hx: x :e V0.
-      exact (SepE1 X (fun x0:set => apply_fun f x0 :e V) x Hx). }
-    claim HU0pow: U0 :e Power X.
-    { exact (PowerI X U0 HU0subX). }
-    claim HV0pow: V0 :e Power X.
-    { exact (PowerI X V0 HV0subX). }
-
-    (** Disjointness of U0 and V0 **)
-    claim HdisjPre: (preimage_of X f U) :/\: (preimage_of X f V) = Empty.
-    { rewrite <- (preimage_of_binintersect X f U V).
-      rewrite HdisjY.
-      exact (preimage_of_Empty X f). }
-    claim HdisjX: U0 :/\: V0 = Empty.
-    { rewrite <- HdisjPre.
-      reflexivity. }
-
-    (** Nonemptiness of U0 and V0 using the inverse g **)
-    apply Hexg.
-    let g. assume HgAnd.
-    claim Hgcont: continuous_map Y Ty X Tx g.
-    { exact (andEL (continuous_map Y Ty X Tx g)
-                   ((forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
-                    (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
-                   HgAnd). }
-    claim HgfAnd:
-      (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
-      (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y).
-    { exact (andER (continuous_map Y Ty X Tx g)
-                   ((forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
-                    (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
-                   HgAnd). }
-    claim Hfg: forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y.
-    { exact (andER (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x)
-                   (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y)
-                   HgfAnd). }
-    claim Hfung: function_on g Y X.
-    { claim Habcg: (topology_on Y Ty /\ topology_on X Tx) /\ function_on g Y X.
-      { exact (andEL ((topology_on Y Ty /\ topology_on X Tx) /\ function_on g Y X)
-                     (forall V0:set, V0 :e Tx -> preimage_of Y g V0 :e Ty)
-                     Hgcont). }
-      exact (andER (topology_on Y Ty /\ topology_on X Tx) (function_on g Y X) Habcg). }
-
-    claim HU0ne: U0 <> Empty.
-    { apply (nonempty_has_element U HUneY).
-      let y. assume HyU.
-      prove U0 <> Empty.
-      set x := apply_fun g y.
-      claim HyY: y :e Y.
-      { apply (PowerE Y U).
-        - exact (andEL (U :e Power Y) (V :e Power Y)
-                       (andEL (U :e Power Y /\ V :e Power Y) (U :/\: V = Empty) HsepL3)).
-        - exact HyU. }
-      claim HxX: x :e X.
-      { exact (Hfung y HyY). }
-      claim Hfx: apply_fun f x = y.
-      { rewrite <- (Hfg y HyY).
-        reflexivity. }
-      claim HxU0: x :e U0.
-      { prove x :e {x0 :e X | apply_fun f x0 :e U}.
-        apply (SepI X (fun x0:set => apply_fun f x0 :e U) x HxX).
-        rewrite Hfx.
-        exact HyU. }
-      exact (elem_implies_nonempty U0 x HxU0). }
-    claim HV0ne: V0 <> Empty.
-    { apply (nonempty_has_element V HVneY).
-      let y. assume HyV.
-      prove V0 <> Empty.
-      set x := apply_fun g y.
-      claim HyY: y :e Y.
-      { apply (PowerE Y V).
-        - exact (andER (U :e Power Y) (V :e Power Y)
-                       (andEL (U :e Power Y /\ V :e Power Y) (U :/\: V = Empty) HsepL3)).
-        - exact HyV. }
-      claim HxX: x :e X.
-      { exact (Hfung y HyY). }
-      claim Hfx: apply_fun f x = y.
-      { rewrite <- (Hfg y HyY).
-        reflexivity. }
-      claim HxV0: x :e V0.
-      { prove x :e {x0 :e X | apply_fun f x0 :e V}.
-        apply (SepI X (fun x0:set => apply_fun f x0 :e V) x HxX).
-        rewrite Hfx.
-        exact HyV. }
-      exact (elem_implies_nonempty V0 x HxV0). }
-
-    (** Covering: U0 ∪ V0 = X **)
-    claim HunionPre: (preimage_of X f U) :\/: (preimage_of X f V) = X.
-    { rewrite <- (preimage_of_binunion X f U V).
-      rewrite HunionY.
-      exact (preimage_of_whole X Y f Hfunf). }
-    claim HunionX: U0 :\/: V0 = X.
-    { rewrite <- HunionPre.
-      reflexivity. }
-
-    (** Assemble separation_of X U0 V0 **)
-    prove U0 :e Power X /\ V0 :e Power X /\ U0 :/\: V0 = Empty /\ U0 <> Empty /\ V0 <> Empty /\ U0 :\/: V0 = X.
-    apply andI.
-    - apply andI.
-      + apply andI.
-        * apply andI.
-          - apply andI.
-            + apply andI.
-              { exact HU0pow. }
-              { exact HV0pow. }
-            + exact HdisjX.
-          - exact HU0ne.
-        * exact HV0ne.
-      + exact HunionX.
-Qed.
-
 (** helper: homeomorphisms are injective **)
 (** LATEX VERSION: A homeomorphism is injective (as it has a two-sided inverse). **)
 Theorem homeomorphism_injective : forall X Tx Y Ty f:set,
@@ -32470,6 +32251,17 @@ Definition separation_of : set -> set -> set -> prop := fun X U V =>
 Definition connected_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
+
+(** Helper: homeomorphisms preserve connectedness **)
+Theorem homeomorphism_preserves_connected : forall X Tx Y Ty f:set,
+  homeomorphism X Tx Y Ty f ->
+  connected_space X Tx ->
+  connected_space Y Ty.
+let X Tx Y Ty f.
+assume Hhom: homeomorphism X Tx Y Ty f.
+assume HX: connected_space X Tx.
+admit.
+Qed.
 
 (** Helper theorems for connected_iff_no_nontrivial_clopen **)
 Theorem clopen_gives_separation : forall X Tx A:set,
