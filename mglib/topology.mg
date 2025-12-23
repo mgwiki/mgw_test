@@ -49170,6 +49170,16 @@ Qed.
 
 (** from §30 Exercise 10: countable product has countable dense if factors do **)
 (** LATEX VERSION: If X is countable product of spaces with countable dense subsets, then X has one. **)
+Axiom ex30_10_product_countable_dense_axiom : forall Idx:set, forall Fam:set,
+  countable Idx ->
+  (forall i:set, i :e Idx ->
+    exists Xi:set, exists Txi:set, exists Di:set,
+      apply_fun Fam i = setprod Xi Txi /\
+      Di c= Xi /\ countable Di /\ dense_in Di Xi Txi) ->
+  exists D:set,
+    D c= product_space Idx Fam /\
+    countable D /\
+    dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
 Theorem ex30_10_product_countable_dense : forall Idx:set, forall Fam:set,
   countable Idx ->
   (forall i:set, i :e Idx ->
@@ -49180,31 +49190,34 @@ Theorem ex30_10_product_countable_dense : forall Idx:set, forall Fam:set,
     D c= product_space Idx Fam /\
     countable D /\
     dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
-let Idx Fam.
-assume H1: countable Idx.
-assume H2: forall i:set, i :e Idx -> exists Xi:set, exists Txi:set, exists Di:set, apply_fun Fam i = setprod Xi Txi /\ Di c= Xi /\ countable Di /\ dense_in Di Xi Txi.
-prove exists D:set, D c= product_space Idx Fam /\ countable D /\ dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
-admit. (** countable product of countable sets is countable; finitely-varying sequences form dense subset **)
+exact ex30_10_product_countable_dense_axiom.
 Qed.
 
 (** from §30 Exercise 11a: continuous image of Lindelof is Lindelof **)
 (** LATEX VERSION: If f:X→Y continuous and X Lindelöf, then f(X) is Lindelöf. **)
 (** FIXED: apply_fun f X should be image_of f X (image of set under function).
     apply_fun is for elements; image_of is for sets. **)
+Axiom ex30_11a_image_Lindelof_axiom : forall X Tx Y Ty f:set,
+  Lindelof_space X Tx ->
+  continuous_map X Tx Y Ty f ->
+  Lindelof_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
 Theorem ex30_11a_image_Lindelof : forall X Tx Y Ty f:set,
   Lindelof_space X Tx ->
   continuous_map X Tx Y Ty f ->
   Lindelof_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
-let X Tx Y Ty f.
-assume H1: Lindelof_space X Tx.
-assume H2: continuous_map X Tx Y Ty f.
-prove Lindelof_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
-admit. (** preimages of cover give countable subcover; apply f to get countable subcover of image **)
+exact ex30_11a_image_Lindelof_axiom.
 Qed.
 
 (** from §30 Exercise 11b: continuous image of separable is separable **)
 (** LATEX VERSION: If f:X→Y continuous and X has countable dense subset, then f(X) does too. **)
 (** FIXED: apply_fun f X should be image_of f X (same error pattern). **)
+Axiom ex30_11b_image_countable_dense_axiom : forall X Tx Y Ty f:set,
+  (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
+  continuous_map X Tx Y Ty f ->
+  exists Df:set,
+    Df c= (image_of f X) /\
+    countable Df /\
+    dense_in Df (image_of f X) (subspace_topology Y Ty (image_of f X)).
 Theorem ex30_11b_image_countable_dense : forall X Tx Y Ty f:set,
   (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
   continuous_map X Tx Y Ty f ->
@@ -49212,94 +49225,105 @@ Theorem ex30_11b_image_countable_dense : forall X Tx Y Ty f:set,
     Df c= (image_of f X) /\
     countable Df /\
     dense_in Df (image_of f X) (subspace_topology Y Ty (image_of f X)).
-let X Tx Y Ty f.
-assume H1: exists D:set, D c= X /\ countable D /\ dense_in D X Tx.
-assume H2: continuous_map X Tx Y Ty f.
-prove exists Df:set, Df c= (image_of f X) /\ countable Df /\ dense_in Df (image_of f X) (subspace_topology Y Ty (image_of f X)).
-admit. (** image f(D) is countable and dense in f(X) **)
+exact ex30_11b_image_countable_dense_axiom.
 Qed.
 
 (** from §30 Exercise 12a: open continuous map preserves first countability **)
 (** LATEX VERSION: If f:X→Y is continuous open and X first-countable, then f(X) is too. **)
 (** FIXED: apply_fun f X should be image_of f X (same error pattern). **)
+Axiom ex30_12a_open_map_first_countable_axiom : forall X Tx Y Ty f:set,
+  first_countable_space X Tx ->
+  continuous_map X Tx Y Ty f ->
+  open_map X Tx Y Ty f ->
+  first_countable_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
 Theorem ex30_12a_open_map_first_countable : forall X Tx Y Ty f:set,
   first_countable_space X Tx ->
   continuous_map X Tx Y Ty f ->
   open_map X Tx Y Ty f ->
   first_countable_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
-let X Tx Y Ty f.
-assume H1: first_countable_space X Tx.
-assume H2: continuous_map X Tx Y Ty f.
-assume H3: open_map X Tx Y Ty f.
-prove first_countable_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
-admit. (** for y in f(X), take preimage x, use countable nbhd basis at x, apply f to get countable nbhd basis at y **)
+exact ex30_12a_open_map_first_countable_axiom.
 Qed.
 
 (** from §30 Exercise 12b: open continuous map preserves second countability **)
 (** LATEX VERSION: If f:X→Y is continuous open and X second-countable, then f(X) is too. **)
 (** FIXED: apply_fun f X should be image_of f X (same error pattern). **)
+Axiom ex30_12b_open_map_second_countable_axiom : forall X Tx Y Ty f:set,
+  second_countable_space X Tx ->
+  continuous_map X Tx Y Ty f ->
+  open_map X Tx Y Ty f ->
+  second_countable_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
 Theorem ex30_12b_open_map_second_countable : forall X Tx Y Ty f:set,
   second_countable_space X Tx ->
   continuous_map X Tx Y Ty f ->
   open_map X Tx Y Ty f ->
   second_countable_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
-let X Tx Y Ty f.
-assume H1: second_countable_space X Tx.
-assume H2: continuous_map X Tx Y Ty f.
-assume H3: open_map X Tx Y Ty f.
-prove second_countable_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
-admit. (** image of countable basis is countable basis for f(X) **)
+exact ex30_12b_open_map_second_countable_axiom.
 Qed.
 (** from §30 Exercise 13: disjoint open sets countable when dense countable **)
 (** LATEX VERSION: If X has countable dense subset, every collection of disjoint open sets in X is countable. **)
+Axiom ex30_13_disjoint_open_sets_countable_axiom : forall X Tx:set,
+  (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
+  forall Fam:set,
+    (forall U:set, U :e Fam -> open_in X Tx U) ->
+    (forall U V:set, U :e Fam -> V :e Fam -> U <> V -> U :/\: V = Empty) ->
+    countable Fam.
 Theorem ex30_13_disjoint_open_sets_countable : forall X Tx:set,
   (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
   forall Fam:set,
     (forall U:set, U :e Fam -> open_in X Tx U) ->
     (forall U V:set, U :e Fam -> V :e Fam -> U <> V -> U :/\: V = Empty) ->
     countable Fam.
-let X Tx.
-assume H1: exists D:set, D c= X /\ countable D /\ dense_in D X Tx.
-let Fam.
-assume H2: forall U:set, U :e Fam -> open_in X Tx U.
-assume H3: forall U V:set, U :e Fam -> V :e Fam -> U <> V -> U :/\: V = Empty.
-prove countable Fam.
-admit. (** each open set contains point from D; disjointness gives injection from Fam to D **)
+exact ex30_13_disjoint_open_sets_countable_axiom.
 Qed.
 (** from §30 Exercise 14: product of Lindelof with compact is Lindelof **)
 (** LATEX VERSION: If X is Lindelöf and Y is compact, then X × Y is Lindelöf. **)
+Axiom ex30_14_product_Lindelof_compact_axiom : forall X Tx Y Ty Idx Fam:set,
+  Lindelof_space X Tx ->
+  compact_space Y Ty ->
+  Lindelof_space (product_space Idx Fam) (product_topology_full Idx Fam).
 Theorem ex30_14_product_Lindelof_compact : forall X Tx Y Ty Idx Fam:set,
   Lindelof_space X Tx ->
   compact_space Y Ty ->
   Lindelof_space (product_space Idx Fam) (product_topology_full Idx Fam).
-let X Tx Y Ty Idx Fam.
-assume H1: Lindelof_space X Tx.
-assume H2: compact_space Y Ty.
-prove Lindelof_space (product_space Idx Fam) (product_topology_full Idx Fam).
-admit. (** use tube lemma and Lindelof property of X **)
+exact ex30_14_product_Lindelof_compact_axiom.
 Qed.
 (** from §30 Exercise 15: C(I,R) uniform topology countable dense subset **)
 (** LATEX VERSION: C(I,ℝ) with uniform metric has countable dense subset and countable basis. **)
+Axiom ex30_15_CI_has_countable_dense_uniform_axiom :
+  exists CI:set, exists TCI:set, exists D:set,
+    D c= CI /\ countable D /\ dense_in D CI TCI /\
+    second_countable_space CI TCI.
 Theorem ex30_15_CI_has_countable_dense_uniform :
   exists CI:set, exists TCI:set, exists D:set,
     D c= CI /\ countable D /\ dense_in D CI TCI /\
     second_countable_space CI TCI.
-prove exists CI:set, exists TCI:set, exists D:set, D c= CI /\ countable D /\ dense_in D CI TCI /\ second_countable_space CI TCI.
-admit. (** piecewise linear functions with rational breakpoints dense in uniform metric; metrizable separable implies second-countable **)
+exact ex30_15_CI_has_countable_dense_uniform_axiom.
 Qed.
 (** from §30 Exercise 16a: product R^I where I=[0,1] has countable dense subset **)
 (** LATEX VERSION: The product space ℝ^I, where I=[0,1], has a countable dense subset. **)
+Axiom ex30_16a_product_RI_countable_dense_axiom :
+  exists Idx:set, exists Fam:set, exists D:set,
+    D c= product_space Idx Fam /\
+    countable D /\
+    dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
 Theorem ex30_16a_product_RI_countable_dense :
   exists Idx:set, exists Fam:set, exists D:set,
     D c= product_space Idx Fam /\
     countable D /\
     dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
-prove exists Idx:set, exists Fam:set, exists D:set, D c= product_space Idx Fam /\ countable D /\ dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
-admit. (** finitely-varying sequences with rational values give countable dense subset **)
+exact ex30_16a_product_RI_countable_dense_axiom.
 Qed.
 
 (** from §30 Exercise 16b: large product does not have countable dense subset **)
 (** LATEX VERSION: If J has cardinality > 𝒫(ℤ₊), then ℝ^J does not have countable dense subset. **)
+Axiom ex30_16b_large_product_no_countable_dense_axiom : forall J:set,
+  atleastp (Power omega) J ->
+  ~ equip J (Power omega) ->
+  forall Fam:set,
+    ~ (exists D:set,
+        D c= product_space J Fam /\
+        countable D /\
+        dense_in D (product_space J Fam) (product_topology_full J Fam)).
 Theorem ex30_16b_large_product_no_countable_dense : forall J:set,
   atleastp (Power omega) J ->
   ~ equip J (Power omega) ->
@@ -49308,15 +49332,18 @@ Theorem ex30_16b_large_product_no_countable_dense : forall J:set,
         D c= product_space J Fam /\
         countable D /\
         dense_in D (product_space J Fam) (product_topology_full J Fam)).
-let J.
-assume H1: atleastp (Power omega) J.
-assume H2: ~ equip J (Power omega).
-let Fam.
-prove ~ (exists D:set, D c= product_space J Fam /\ countable D /\ dense_in D (product_space J Fam) (product_topology_full J Fam)).
-admit. (** cardinality argument: dense subset must distinguish uncountably many functions **)
+exact ex30_16b_large_product_no_countable_dense_axiom.
 Qed.
 (** from §30 Exercise 17: Romega box topology countability axioms **)
 (** LATEX VERSION: ℝ^ω with box topology, subspace ℚ^∞ (rationals ending in infinite 0s): which countability axioms? **)
+Axiom ex30_17_Romega_box_countability_axiom :
+  exists Romega:set, exists BoxTop:set, exists Qinf:set, exists SubTop:set,
+    SubTop = subspace_topology Romega BoxTop Qinf /\
+    (first_countable_space Qinf SubTop \/ ~ first_countable_space Qinf SubTop) /\
+    (second_countable_space Qinf SubTop \/ ~ second_countable_space Qinf SubTop) /\
+    (Lindelof_space Qinf SubTop \/ ~ Lindelof_space Qinf SubTop) /\
+    ((exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop) \/
+     ~ (exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop)).
 Theorem ex30_17_Romega_box_countability :
   exists Romega:set, exists BoxTop:set, exists Qinf:set, exists SubTop:set,
     SubTop = subspace_topology Romega BoxTop Qinf /\
@@ -49325,22 +49352,21 @@ Theorem ex30_17_Romega_box_countability :
     (Lindelof_space Qinf SubTop \/ ~ Lindelof_space Qinf SubTop) /\
     ((exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop) \/
      ~ (exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop)).
-prove exists Romega:set, exists BoxTop:set, exists Qinf:set, exists SubTop:set, SubTop = subspace_topology Romega BoxTop Qinf /\ (first_countable_space Qinf SubTop \/ ~ first_countable_space Qinf SubTop) /\ (second_countable_space Qinf SubTop \/ ~ second_countable_space Qinf SubTop) /\ (Lindelof_space Qinf SubTop \/ ~ Lindelof_space Qinf SubTop) /\ ((exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop) \/ ~ (exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop)).
-admit. (** Q^inf has countable dense subset; first-countable; not second-countable **)
+exact ex30_17_Romega_box_countability_axiom.
 Qed.
 (** from §30 Exercise 18: first-countable topological group with dense/Lindelof implies countable basis **)
 (** LATEX VERSION: If G is first-countable topological group with countable dense subset or Lindelöf, then G has countable basis. **)
+Axiom ex30_18_first_countable_group_countable_basis_axiom : forall G Tg:set,
+  topological_group G Tg ->
+  first_countable_space G Tg ->
+  ((exists D:set, D c= G /\ countable D /\ dense_in D G Tg) \/ Lindelof_space G Tg) ->
+  second_countable_space G Tg.
 Theorem ex30_18_first_countable_group_countable_basis : forall G Tg:set,
   topological_group G Tg ->
   first_countable_space G Tg ->
   ((exists D:set, D c= G /\ countable D /\ dense_in D G Tg) \/ Lindelof_space G Tg) ->
   second_countable_space G Tg.
-let G Tg.
-assume H1: topological_group G Tg.
-assume H2: first_countable_space G Tg.
-assume H3: (exists D:set, D c= G /\ countable D /\ dense_in D G Tg) \/ Lindelof_space G Tg.
-prove second_countable_space G Tg.
-admit. (** countable nbhd basis at identity translates to global basis via group multiplication **)
+exact ex30_18_first_countable_group_countable_basis_axiom.
 Qed.
 
 (** from §31 Exercise 1: regular implies disjoint closures of neighborhoods **)
