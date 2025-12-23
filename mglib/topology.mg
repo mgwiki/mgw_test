@@ -32475,6 +32475,37 @@ apply andI.
     exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis (rectangle_set X V) HRsub).
 Qed.
 
+(** Helper: maps into products, converse direction using projections **)
+(** LATEX VERSION: If h : A -> X×Y is continuous, then each coordinate projection composed with h is continuous. **)
+Theorem maps_into_products_converse : forall A Ta X Tx Y Ty h:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) h ->
+  continuous_map A Ta X Tx (compose_fun A h (projection_map1 X Y)) /\
+  continuous_map A Ta Y Ty (compose_fun A h (projection_map2 X Y)).
+let A Ta X Tx Y Ty h.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+assume Hh: continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) h.
+prove continuous_map A Ta X Tx (compose_fun A h (projection_map1 X Y)) /\
+  continuous_map A Ta Y Ty (compose_fun A h (projection_map2 X Y)).
+claim Hproj: continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y) /\
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y).
+{ exact (projection_maps_continuous X Tx Y Ty HTx HTy). }
+apply andI.
+- claim Hpr1: continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y).
+  { exact (andEL (continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y))
+                 (continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y))
+                 Hproj). }
+  exact (composition_continuous A Ta (setprod X Y) (product_topology X Tx Y Ty) X Tx h (projection_map1 X Y)
+         Hh Hpr1).
+- claim Hpr2: continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y).
+  { exact (andER (continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y))
+                 (continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y))
+                 Hproj). }
+  exact (composition_continuous A Ta (setprod X Y) (product_topology X Tx Y Ty) Y Ty h (projection_map2 X Y)
+         Hh Hpr2).
+Qed.
+
 (** Helper: universal property of products - maps into products **)
 (** LATEX VERSION: Projections from a product are continuous. **)
 Theorem projections_are_continuous : forall X Tx Y Ty:set,
