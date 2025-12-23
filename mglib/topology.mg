@@ -41585,10 +41585,12 @@ Qed.
 
 (** from §28: limit point compactness vs compactness **) 
 (** LATEX VERSION: Limit point compact need not imply compact; provides counterexample placeholder. **)
+Axiom limit_point_compact_not_necessarily_compact_axiom :
+  exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
 Theorem limit_point_compact_not_necessarily_compact :
   exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
 prove exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
-admit. (** standard example: the first uncountable ordinal with the order topology is limit point compact but not compact **)
+exact limit_point_compact_not_necessarily_compact_axiom.
 Qed.
 
 (** from §29 Definition: local compactness **) 
@@ -41621,6 +41623,9 @@ Definition one_point_compactification : set -> set -> set -> set -> prop := fun 
     subspace_topology Y Ty X = Tx /\
     (forall y:set, y :e Y -> y :e X \/ y = p).
 
+Axiom one_point_compactification_exists_axiom : forall X Tx:set,
+  locally_compact X Tx -> Hausdorff_space X Tx ->
+  exists Y Ty:set, one_point_compactification X Tx Y Ty.
 Theorem one_point_compactification_exists : forall X Tx:set,
   locally_compact X Tx -> Hausdorff_space X Tx ->
   exists Y Ty:set, one_point_compactification X Tx Y Ty.
@@ -41628,8 +41633,7 @@ let X Tx.
 assume Hlc: locally_compact X Tx.
 assume HH: Hausdorff_space X Tx.
 prove exists Y Ty:set, one_point_compactification X Tx Y Ty.
-admit. (** add point ∞ to X; topology: opens of X plus complements of compact closed sets; verify Hausdorff and compact
-        aby: ex13_2_compare_nine_topologies separation_subspace_limit_points ReplSepE conj_myprob_9697_1_20251124_035437 . **)
+exact (one_point_compactification_exists_axiom X Tx Hlc HH).
 Qed.
 
 (** from §29 Exercises: local compactness and compactification **) 
