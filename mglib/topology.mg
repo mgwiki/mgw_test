@@ -32082,6 +32082,52 @@ apply set_ext.
   exact (ReplI (Union Fam) (fun x0:set => apply_fun f x0) x (UnionI Fam x U HxU HUFam)).
 Qed.
 
+(** Helper: image of a set under composition **)
+(** LATEX VERSION: If U subset X then (g o f)(U) equals g(f(U)). **)
+Theorem image_of_compose_fun : forall X f g U:set,
+  U c= X ->
+  image_of (compose_fun X f g) U = image_of g (image_of f U).
+let X f g U.
+assume HUX: U c= X.
+apply set_ext.
+- let y. assume Hy: y :e image_of (compose_fun X f g) U.
+  prove y :e image_of g (image_of f U).
+  apply (ReplE_impred U (fun x:set => apply_fun (compose_fun X f g) x) y Hy).
+  let x. assume HxU: x :e U.
+  assume Hyx: y = apply_fun (compose_fun X f g) x.
+  claim HxX: x :e X.
+  { exact (HUX x HxU). }
+  claim Hcomp: apply_fun (compose_fun X f g) x = apply_fun g (apply_fun f x).
+  { exact (compose_fun_apply X f g x HxX). }
+  claim Hycomp: y = apply_fun g (apply_fun f x).
+  { rewrite Hyx.
+    rewrite Hcomp.
+    reflexivity. }
+  claim HfxIm: apply_fun f x :e image_of f U.
+  { exact (ReplI U (fun x0:set => apply_fun f x0) x HxU). }
+  rewrite Hycomp.
+  exact (ReplI (image_of f U) (fun u:set => apply_fun g u) (apply_fun f x) HfxIm).
+- let y. assume Hy: y :e image_of g (image_of f U).
+  prove y :e image_of (compose_fun X f g) U.
+  apply (ReplE_impred (image_of f U) (fun u:set => apply_fun g u) y Hy).
+  let u. assume Hu: u :e image_of f U.
+  assume Hyu: y = apply_fun g u.
+  apply (ReplE_impred U (fun x:set => apply_fun f x) u Hu).
+  let x. assume HxU: x :e U.
+  assume Hux: u = apply_fun f x.
+  claim HxX: x :e X.
+  { exact (HUX x HxU). }
+  claim Hcomp: apply_fun (compose_fun X f g) x = apply_fun g (apply_fun f x).
+  { exact (compose_fun_apply X f g x HxX). }
+  claim Hycomp: y = apply_fun (compose_fun X f g) x.
+  { rewrite Hyu.
+    rewrite Hux.
+    rewrite <- Hcomp.
+    reflexivity. }
+  rewrite Hycomp.
+  exact (ReplI U (fun x0:set => apply_fun (compose_fun X f g) x0) x HxU).
+Qed.
+
 (** FIXED: Removed extra parentheses around pair argument to d metric. **)
 Definition sequence_converges_metric : set -> set -> set -> set -> prop :=
   fun X d seq x =>
