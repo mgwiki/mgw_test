@@ -35756,6 +35756,7 @@ exact (EmptyE Romega_zero H0E).
 Qed.
 
 (** from §23 Example 7: product topology on R^omega is a topology **)
+(** LATEX VERSION: The product topology on R to the omega is a topology on the product space R to the omega. **)
 Theorem Romega_product_topology_is_topology : topology_on R_omega_space R_omega_product_topology.
 prove topology_on R_omega_space R_omega_product_topology.
 set Xi := const_space_family omega R R_standard_topology.
@@ -35882,6 +35883,7 @@ exact HTx.
 Qed.
 
 (** from §23: dense set meets every nonempty open set **)
+(** LATEX VERSION: If A is dense in X and U is nonempty open, then U intersect A is nonempty. **)
 Theorem dense_in_meets_nonempty_open : forall A X Tx U:set,
   topology_on X Tx ->
   closure_of X Tx A = X ->
@@ -35914,6 +35916,7 @@ exact (Hneigh U HU HxU).
 Qed.
 
 (** from §23: dense connected subset implies connected space **)
+(** LATEX VERSION: If A is dense in X and A is connected in the subspace topology, then X is connected. **)
 Theorem connected_space_if_dense_connected_subset : forall X Tx A:set,
   topology_on X Tx ->
   A c= X ->
@@ -37441,6 +37444,7 @@ exact (connected_space_if_dense_connected_subset X Tx A HTx HAsub HAconn Hdense)
 Qed.
 
 (** from §24 Definition: path and path connectedness **) 
+(** LATEX VERSION: A path from x to y is a map p:[0,1] to X with p(0)=x and p(1)=y; X is path connected if every two points can be joined by a path. **)
 Definition path_between : set -> set -> set -> set -> prop := fun X x y p =>
   function_on p unit_interval X /\
   apply_fun p 0 = x /\ apply_fun p 1 = y.
@@ -37648,6 +37652,7 @@ let A B x. assume HAB Hx. exact (HAB x Hx).
 Qed.
 
 (** from §24: path connected implies connected **) 
+(** LATEX VERSION: Every path connected space is connected. **)
 Theorem path_connected_implies_connected : forall X Tx:set,
   path_connected_space X Tx -> connected_space X Tx.
 let X Tx.
@@ -37858,6 +37863,7 @@ apply andI.
 Qed.
 
 (** from §24 Example: punctured euclidean space is path connected (placeholder) **)
+(** LATEX VERSION: The plane with the origin removed is path connected. **)
 (** FIXED: Origin is the ordered pair (0,0), not Cartesian product 0×0.
     Was: {setprod 0 0} = {0 × 0} = {∅} (singleton containing empty set)
     Now: {(0,0)} (singleton containing origin point)
@@ -37988,6 +37994,7 @@ apply andI.
 Qed.
 
 (** from §24 Definition: path components equivalence relation **) 
+(** LATEX VERSION: The path component of x is the set of points y that can be joined to x by a path in X. **)
 Definition path_component_of : set -> set -> set -> set := fun X Tx x =>
   {y :e X | exists p:set,
      function_on p unit_interval X /\
@@ -38310,10 +38317,12 @@ exact (quotient_preserves_local_connectedness_axiom X Tx Y f Hquot Hloc).
 Qed.
 
 (** from §25 Definition: quasicomponent equivalence relation **) 
+(** LATEX VERSION: The quasicomponent of x consists of points that cannot be separated from x by a clopen set. **)
 Definition quasicomponent_of : set -> set -> set -> set := fun X Tx x =>
   {y :e X | forall U:set, open_in X Tx U -> closed_in X Tx U -> x :e U -> y :e U}.
 
 (** from §25: components vs quasicomponents **) 
+(** LATEX VERSION: Components are contained in quasicomponents; in locally connected spaces they are equal. **)
 Axiom components_vs_quasicomponents_axiom : forall X Tx:set,
   topology_on X Tx ->
   (forall x:set, component_of X Tx x c= quasicomponent_of X Tx x) /\
@@ -38330,6 +38339,7 @@ exact (components_vs_quasicomponents_axiom X Tx HTx).
 Qed.
 
 (** from §23 Exercise: components and path components of ℝℓ **) 
+(** LATEX VERSION: In the lower limit topology on R, every component is a singleton. **)
 Axiom ex23_Rl_components_axiom :
   component_of R R_lower_limit_topology 0 = {0} /\
   (forall x:set, x :e R -> component_of R R_lower_limit_topology x = {x}).
@@ -38341,6 +38351,7 @@ exact ex23_Rl_components_axiom.
 Qed.
 
 (** from §23 Exercise: components of ℝ^ω in product/uniform/box topologies **) 
+(** LATEX VERSION: For R to the omega, compare components in product and box type topologies. **)
 Axiom ex23_Romega_components_axiom :
   component_of (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) (const_family omega 0) =
     product_space omega (const_space_family omega R R_standard_topology) /\
@@ -38383,6 +38394,7 @@ exact (ex23_connected_open_sets_path_connected_axiom X Tx U Hlpc HU Hconn).
 Qed.
 
 (** from §23 Exercise: examples of path connected but not locally connected subsets of ℝ^2 **) 
+(** LATEX VERSION: There exists a subset of the plane that is path connected but not locally connected. **)
 Axiom ex23_path_connected_not_locally_connected_examples_axiom :
   exists A:set,
     A c= EuclidPlane /\ path_connected_space A (subspace_topology EuclidPlane R2_standard_topology A) /\
@@ -38419,6 +38431,7 @@ Definition compact_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
 
 (** from §26: open cover characterization **) 
+(** LATEX VERSION: In a compact space, every open cover has a finite subcover. **)
 Theorem Heine_Borel_subcover : forall X Tx Fam:set,
   compact_space X Tx ->
   open_cover_of X Tx Fam ->
@@ -38434,6 +38447,7 @@ exact (Hsubcover Fam HFam).
 Qed.
 
 (** from §26 Lemma 26.1: covering a subspace by ambient opens **)
+(** LATEX VERSION: A subspace Y is compact iff every cover of Y by open sets of X has a finite subcover. **)
 (** FIXED: open_cover_of Y Tx Fam included topology_on Y Tx, which is wrong (Tx is topology on X, not Y).
     Now: directly state the covering condition (Fam c= Tx /\ Y c= Union Fam) without nonsensical topology_on. **)
 Theorem compact_subspace_via_ambient_covers : forall X Tx Y:set,
@@ -38762,6 +38776,7 @@ apply iffI.
 Qed.
 
 (** from §26 Theorem 26.2: closed subspaces of compact spaces are compact **) 
+(** LATEX VERSION: If X is compact and Y is closed in X, then Y is compact in the subspace topology. **)
 Theorem closed_subspace_compact : forall X Tx Y:set,
   compact_space X Tx -> closed_in X Tx Y -> compact_space Y (subspace_topology X Tx Y).
 let X Tx Y.
@@ -39224,6 +39239,7 @@ apply andI.
 Qed.
 
 (** from §26 Theorem 26.3: compact subspaces of Hausdorff spaces are closed **) 
+(** LATEX VERSION: In a Hausdorff space, every compact subspace is closed. **)
 Theorem compact_subspace_in_Hausdorff_closed : forall X Tx Y:set,
   Hausdorff_space X Tx -> Y c= X -> compact_space Y (subspace_topology X Tx Y) -> closed_in X Tx Y.
 let X Tx Y.
@@ -39348,6 +39364,7 @@ apply andI.
 Qed.
 
 (** from §26 Lemma 26.4: separating point and compact set in Hausdorff space **)
+(** LATEX VERSION: In a Hausdorff space, a point not in a compact set can be separated from that compact set by disjoint open sets. **)
 (** FIXED: Point x should be disjoint from Y, not intersect as sets.
     Was: x :/\: Y = Empty (treating point x as a set, intersecting with Y)
     Now: x /:e Y (point x is not an element of set Y)
