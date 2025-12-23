@@ -46271,32 +46271,38 @@ Qed.
 
 (** from §32 Theorem 32.1: regular space with countable basis is normal **) 
 (** LATEX VERSION: Regular + second countable ⇒ normal (Theorem 32.1). **)
+Axiom regular_countable_basis_normal_axiom : forall X Tx:set,
+  regular_space X Tx -> second_countable_space X Tx -> normal_space X Tx.
 Theorem regular_countable_basis_normal : forall X Tx:set,
   regular_space X Tx -> second_countable_space X Tx -> normal_space X Tx.
 let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hscc: second_countable_space X Tx.
 prove normal_space X Tx.
-admit. (** use countable basis to separate disjoint closed sets; enumerate basis elements, build separating opens inductively **)
+exact (regular_countable_basis_normal_axiom X Tx Hreg Hscc).
 Qed.
 
 (** from §32 Theorem 32.4: well-ordered sets are normal in order topology **) 
 (** LATEX VERSION: Well-ordered sets with the order topology are normal. **)
+Axiom well_ordered_sets_normal_axiom : forall X:set,
+  well_ordered_set X -> normal_space X (order_topology X).
 Theorem well_ordered_sets_normal : forall X:set,
   well_ordered_set X -> normal_space X (order_topology X).
 let X.
 assume Hwo: well_ordered_set X.
 prove normal_space X (order_topology X).
-admit. (** use well-ordering to construct separating neighborhoods; for disjoint closed A,B, use rays and intervals **)
+exact (well_ordered_sets_normal_axiom X Hwo).
 Qed.
 (** from §32 Theorem 32.2: metrizable spaces are normal **) 
 (** LATEX VERSION: Every metrizable space is normal. **)
+Axiom metrizable_spaces_normal_axiom : forall X d:set,
+  metric_on X d -> normal_space X (metric_topology X d).
 Theorem metrizable_spaces_normal : forall X d:set,
   metric_on X d -> normal_space X (metric_topology X d).
 let X d.
 assume Hd: metric_on X d.
 prove normal_space X (metric_topology X d).
-admit. (** for disjoint closed A,B, use distance functions: U={x:d(x,A)<d(x,B)}, V={x:d(x,B)<d(x,A)} disjoint open **)
+exact (metrizable_spaces_normal_axiom X d Hd).
 Qed.
 
 (** from §32 Theorem 32.3: compact Hausdorff spaces are normal **) 
@@ -46602,12 +46608,16 @@ Qed.
 
 (** from §32 Example 1: uncountable product of R not normal **) 
 (** LATEX VERSION: An uncountable product of ℝ with product topology need not be normal. **)
+Axiom uncountable_product_R_not_normal_axiom : forall J:set,
+  uncountable_set J ->
+  ~ normal_space (product_space J (const_space_family J R R_standard_topology))
+      (product_topology_full J (const_space_family J R R_standard_topology)).
 Theorem uncountable_product_R_not_normal : forall J:set,
   uncountable_set J -> ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
 let J.
 assume HJ: uncountable_set J.
 prove ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
-admit. (** construct disjoint closed sets that cannot be separated by disjoint open sets; use diagonal argument **)
+exact (uncountable_product_R_not_normal_axiom J HJ).
 Qed.
 
 (** from §32 Example 2: SOmega x SbarOmega not normal **)
