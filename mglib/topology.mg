@@ -18968,9 +18968,11 @@ Definition open_ray_upper : set -> set -> set := fun X a => {x :e X | order_rel 
 Definition open_ray_lower : set -> set -> set := fun X a => {x :e X | order_rel X x a}.
 
 Definition open_rays_subbasis : set -> set := fun X =>
-  ({I :e Power X | exists a :e X, I = open_ray_upper X a}
+  (({I :e Power X | exists a :e X, I = open_ray_upper X a}
+    :\/:
+    {I :e Power X | exists b :e X, I = open_ray_lower X b})
    :\/:
-   {I :e Power X | exists b :e X, I = open_ray_lower X b}).
+   {X}).
 
 (** Helper: open rays subbasis is a subset of Power X **)
 Theorem open_rays_subbasis_sub_Power : forall X:set,
@@ -18979,15 +18981,187 @@ let X.
 prove open_rays_subbasis X c= Power X.
 let I. assume HI: I :e open_rays_subbasis X.
 prove I :e Power X.
-apply (binunionE' {I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}
-                  {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b}
+apply (binunionE' ({I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}
+                   :\/:
+                   {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b})
+                  {X}
                   I
                   (I :e Power X)).
-- assume HI1: I :e {I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}.
-  exact (SepE1 (Power X) (fun I0 : set => exists a :e X, I0 = open_ray_upper X a) I HI1).
-- assume HI2: I :e {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b}.
-  exact (SepE1 (Power X) (fun I0 : set => exists b :e X, I0 = open_ray_lower X b) I HI2).
+- assume HI0: I :e ({I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}
+                    :\/:
+                    {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b}).
+  apply (binunionE' {I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}
+                    {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b}
+                    I
+                    (I :e Power X)).
+  + assume HI1: I :e {I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}.
+    exact (SepE1 (Power X) (fun I0 : set => exists a :e X, I0 = open_ray_upper X a) I HI1).
+  + assume HI2: I :e {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b}.
+    exact (SepE1 (Power X) (fun I0 : set => exists b :e X, I0 = open_ray_lower X b) I HI2).
+  + exact HI0.
+- assume HIX: I :e {X}.
+  claim HIEq: I = X.
+  { exact (SingE X I HIX). }
+  rewrite HIEq.
+  exact (Self_In_Power X).
 - exact HI.
+Qed.
+
+(** Helper: open rays subbasis covers X and lies in Power X **)
+Theorem open_rays_subbasis_is_subbasis : forall X:set,
+  subbasis_on X (open_rays_subbasis X).
+let X.
+prove subbasis_on X (open_rays_subbasis X).
+prove (open_rays_subbasis X c= Power X) /\ Union (open_rays_subbasis X) = X.
+apply andI.
+- exact (open_rays_subbasis_sub_Power X).
+- apply set_ext.
+  + let x. assume HxU: x :e Union (open_rays_subbasis X).
+    prove x :e X.
+    apply (UnionE_impred (open_rays_subbasis X) x HxU).
+    let U.
+    assume HxUin: x :e U.
+    assume HU: U :e open_rays_subbasis X.
+    claim HUpow: U :e Power X.
+    { exact (open_rays_subbasis_sub_Power X U HU). }
+    claim HUsub: U c= X.
+    { exact (PowerE X U HUpow). }
+    exact (HUsub x HxUin).
+  + let x. assume HxX: x :e X.
+    prove x :e Union (open_rays_subbasis X).
+    claim HXInS: X :e open_rays_subbasis X.
+    { exact (binunionI2 ({I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}
+                         :\/:
+                         {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b})
+                        {X}
+                        X
+                        (SingI X)). }
+    exact (UnionI (open_rays_subbasis X) x X HxX HXInS).
+Qed.
+
+(** Helper: an upper ray is a basis element for the order topology **)
+Theorem open_ray_upper_in_order_topology_basis : forall X a:set,
+  a :e X -> open_ray_upper X a :e order_topology_basis X.
+let X a. assume HaX.
+prove open_ray_upper X a :e order_topology_basis X.
+set U := open_ray_upper X a.
+claim HUpow: U :e Power X.
+{ apply PowerI.
+  let x. assume HxU: x :e U.
+  exact (SepE1 X (fun x0 : set => order_rel X a x0) x HxU). }
+claim HUex: exists a0 :e X, U = {x :e X | order_rel X a0 x}.
+{ witness a.
+  prove a :e X /\ U = {x :e X | order_rel X a x}.
+  apply andI.
+  - exact HaX.
+  - reflexivity.
+}
+claim HUfam: U :e {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}.
+{ exact (SepI (Power X)
+              (fun I0 : set => exists a0 :e X, I0 = {x :e X | order_rel X a0 x})
+              U
+              HUpow
+              HUex). }
+exact (binunionI2 ({I :e Power X | exists a0 :e X, exists b0 :e X,
+                      I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}
+                   :\/:
+                   {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}})
+                  {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}
+                  U
+                  HUfam).
+Qed.
+
+(** Helper: a lower ray is a basis element for the order topology **)
+Theorem open_ray_lower_in_order_topology_basis : forall X b:set,
+  b :e X -> open_ray_lower X b :e order_topology_basis X.
+let X b. assume HbX.
+prove open_ray_lower X b :e order_topology_basis X.
+set U := open_ray_lower X b.
+claim HUpow: U :e Power X.
+{ apply PowerI.
+  let x. assume HxU: x :e U.
+  exact (SepE1 X (fun x0 : set => order_rel X x0 b) x HxU). }
+claim HUex: exists b0 :e X, U = {x :e X | order_rel X x b0}.
+{ witness b.
+  prove b :e X /\ U = {x :e X | order_rel X x b}.
+  apply andI.
+  - exact HbX.
+  - reflexivity.
+}
+claim HUfam: U :e {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}.
+{ exact (SepI (Power X)
+              (fun I0 : set => exists b0 :e X, I0 = {x :e X | order_rel X x b0})
+              U
+              HUpow
+              HUex). }
+exact (binunionI1 ({I :e Power X | exists a0 :e X, exists b0 :e X,
+                      I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}
+                   :\/:
+                   {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}})
+                  {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}
+                  U
+                  (binunionI2 {I :e Power X | exists a0 :e X, exists b0 :e X,
+                                I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}
+                              {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}
+                              U
+                              HUfam)).
+Qed.
+
+(** Helper: open rays subbasis elements are open in the order topology **)
+Theorem open_rays_subbasis_sub_order_topology : forall X:set,
+  open_rays_subbasis X c= order_topology X.
+let X.
+prove open_rays_subbasis X c= order_topology X.
+let U. assume HU: U :e open_rays_subbasis X.
+prove U :e order_topology X.
+apply (binunionE' ({I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}
+                   :\/:
+                   {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b})
+                  {X}
+                  U
+                  (U :e order_topology X)).
+- assume HU0: U :e ({I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}
+                    :\/:
+                    {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b}).
+  apply (binunionE' {I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}
+                    {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b}
+                    U
+                    (U :e order_topology X)).
+  + assume HU1: U :e {I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}.
+    claim Hex: exists a :e X, U = open_ray_upper X a.
+    { exact (SepE2 (Power X) (fun I0 : set => exists a :e X, I0 = open_ray_upper X a) U HU1). }
+    apply Hex.
+    let a.
+    assume Hcore: a :e X /\ U = open_ray_upper X a.
+    apply Hcore.
+    assume HaX: a :e X.
+    assume HUeq: U = open_ray_upper X a.
+    rewrite HUeq.
+    claim HUinB: open_ray_upper X a :e order_topology_basis X.
+    { exact (open_ray_upper_in_order_topology_basis X a HaX). }
+    exact (generated_topology_contains_basis X (order_topology_basis X) (order_topology_basis_is_basis X)
+            (open_ray_upper X a) HUinB).
+  + assume HU2: U :e {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b}.
+    claim Hex: exists b :e X, U = open_ray_lower X b.
+    { exact (SepE2 (Power X) (fun I0 : set => exists b :e X, I0 = open_ray_lower X b) U HU2). }
+    apply Hex.
+    let b.
+    assume Hcore: b :e X /\ U = open_ray_lower X b.
+    apply Hcore.
+    assume HbX: b :e X.
+    assume HUeq: U = open_ray_lower X b.
+    rewrite HUeq.
+    claim HUinB: open_ray_lower X b :e order_topology_basis X.
+    { exact (open_ray_lower_in_order_topology_basis X b HbX). }
+    exact (generated_topology_contains_basis X (order_topology_basis X) (order_topology_basis_is_basis X)
+            (open_ray_lower X b) HUinB).
+  + exact HU0.
+- assume HUX: U :e {X}.
+  claim HUeq: U = X.
+  { exact (SingE X U HUX). }
+  rewrite HUeq.
+  exact (topology_has_X X (order_topology X) (order_topology_is_topology X)).
+- exact HU.
 Qed.
 
 Theorem open_rays_subbasis_for_order_topology : forall X:set,
@@ -18997,7 +19171,15 @@ prove generated_topology_from_subbasis X (open_rays_subbasis X) = order_topology
 apply set_ext.
 - let U. assume HU : U :e generated_topology_from_subbasis X (open_rays_subbasis X).
   prove U :e order_topology X.
-  admit.
+  claim HS: subbasis_on X (open_rays_subbasis X).
+  { exact (open_rays_subbasis_is_subbasis X). }
+  claim HT: topology_on X (order_topology X).
+  { exact (order_topology_is_topology X). }
+  claim HSsub: open_rays_subbasis X c= order_topology X.
+  { exact (open_rays_subbasis_sub_order_topology X). }
+  claim Hmin: finer_than (order_topology X) (generated_topology_from_subbasis X (open_rays_subbasis X)).
+  { exact (topology_generated_by_basis_is_minimal X (open_rays_subbasis X) (order_topology X) HS HT HSsub). }
+  exact (Hmin U HU).
 - let U. assume HU : U :e order_topology X.
   prove U :e generated_topology_from_subbasis X (open_rays_subbasis X).
   admit.
