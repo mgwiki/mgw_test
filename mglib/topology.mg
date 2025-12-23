@@ -49320,14 +49320,17 @@ exact ex30_14_product_Lindelof_compact_axiom.
 Qed.
 (** from §30 Exercise 15: C(I,R) uniform topology countable dense subset **)
 (** LATEX VERSION: C(I,ℝ) with uniform metric has countable dense subset and countable basis. **)
+(** stub: this metric is meant to be the sup metric on C(I,R) **)
+Definition uniform_metric_C_I_R : set := Eps_i (fun d:set => metric_on C_I_R d).
+Definition uniform_topology_C_I_R : set := metric_topology C_I_R uniform_metric_C_I_R.
 Axiom ex30_15_CI_has_countable_dense_uniform_axiom :
-  exists CI:set, exists TCI:set, exists D:set,
-    D c= CI /\ countable D /\ dense_in D CI TCI /\
-    second_countable_space CI TCI.
+  exists D:set,
+    D c= C_I_R /\ countable D /\ dense_in D C_I_R uniform_topology_C_I_R /\
+    second_countable_space C_I_R uniform_topology_C_I_R.
 Theorem ex30_15_CI_has_countable_dense_uniform :
-  exists CI:set, exists TCI:set, exists D:set,
-    D c= CI /\ countable D /\ dense_in D CI TCI /\
-    second_countable_space CI TCI.
+  exists D:set,
+    D c= C_I_R /\ countable D /\ dense_in D C_I_R uniform_topology_C_I_R /\
+    second_countable_space C_I_R uniform_topology_C_I_R.
 exact ex30_15_CI_has_countable_dense_uniform_axiom.
 Qed.
 (** from §30 Exercise 16a: product R^I where I=[0,1] has countable dense subset **)
