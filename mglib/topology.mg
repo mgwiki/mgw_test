@@ -34460,7 +34460,174 @@ exact (EmptyE f0 Hf0E).
 Qed.
 
 Theorem unbounded_sequences_Romega_nonempty : unbounded_sequences_Romega <> Empty.
-admit. (** n-sequence or similar unbounded witness **)
+prove unbounded_sequences_Romega <> Empty.
+assume Heq: unbounded_sequences_Romega = Empty.
+prove False.
+set Xi := const_space_family omega R R_standard_topology.
+set U := space_family_union omega Xi.
+set fid := {(i,i)|i :e omega}.
+
+(** show fid :e R_omega_space **)
+claim Hfid: fid :e R_omega_space.
+{ prove fid :e product_space omega Xi.
+  prove fid :e {f :e Power (setprod omega (space_family_union omega Xi))|
+     function_on f omega (space_family_union omega Xi) /\
+     forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i}.
+  claim H0omega: 0 :e omega.
+  { exact (nat_p_omega 0 nat_0). }
+  claim HX0: apply_fun Xi 0 = (R, R_standard_topology).
+  { exact (const_space_family_apply omega R R_standard_topology 0 H0omega). }
+  claim Hset0: space_family_set Xi 0 = R.
+  { claim Hdef: space_family_set Xi 0 = (apply_fun Xi 0) 0.
+    { reflexivity. }
+    rewrite Hdef.
+    rewrite HX0.
+    exact (tuple_2_0_eq R R_standard_topology). }
+  claim HRfam: R :e {space_family_set Xi i|i :e omega}.
+  { apply ReplEq omega (fun i:set => space_family_set Xi i) R.
+    assume _ H2. apply H2.
+    prove exists i :e omega, R = space_family_set Xi i.
+    witness 0.
+    apply andI.
+    - exact H0omega.
+    - symmetry.
+      exact Hset0. }
+	  claim HomegaU: forall i:set, i :e omega -> i :e U.
+	  { let i. assume Hi: i :e omega.
+	    prove i :e U.
+	    claim HiR: i :e R.
+	    { claim HiSNoS: i :e SNoS_ omega.
+	      { exact (omega_SNoS_omega i Hi). }
+	      exact (SNoS_omega_real i HiSNoS). }
+	    exact (UnionI {space_family_set Xi i0|i0 :e omega} i R HiR HRfam). }
+
+  claim Hsub: fid c= setprod omega U.
+  { let p. assume Hp: p :e fid.
+    prove p :e setprod omega U.
+    apply (ReplE_impred omega (fun i:set => (i,i)) p Hp (p :e setprod omega U)).
+    let i. assume Hi: i :e omega. assume Hpeq: p = (i,i).
+    rewrite Hpeq.
+    exact (tuple_2_setprod omega U i Hi i (HomegaU i Hi)). }
+  claim Hpow: fid :e Power (setprod omega U).
+  { exact (PowerI (setprod omega U) fid Hsub). }
+
+  claim Hfun: function_on fid omega U.
+  { let i. assume Hi: i :e omega.
+    prove apply_fun fid i :e U.
+    claim Happ: apply_fun fid i = i.
+    { exact (identity_function_apply omega i Hi). }
+    rewrite Happ.
+    exact (HomegaU i Hi). }
+  claim Hcoords: forall i:set, i :e omega -> apply_fun fid i :e space_family_set Xi i.
+  { let i. assume Hi: i :e omega.
+    prove apply_fun fid i :e space_family_set Xi i.
+    claim Happ: apply_fun fid i = i.
+    { exact (identity_function_apply omega i Hi). }
+    rewrite Happ.
+    claim Hset: space_family_set Xi i = R.
+    { claim HXi: apply_fun Xi i = (R, R_standard_topology).
+      { exact (const_space_family_apply omega R R_standard_topology i Hi). }
+      claim Hdef: space_family_set Xi i = (apply_fun Xi i) 0.
+      { reflexivity. }
+      rewrite Hdef.
+      rewrite HXi.
+      exact (tuple_2_0_eq R R_standard_topology). }
+	    rewrite Hset.
+	    claim HiSNoS: i :e SNoS_ omega.
+	    { exact (omega_SNoS_omega i Hi). }
+	    exact (SNoS_omega_real i HiSNoS). }
+
+  claim Hprop: function_on fid omega U /\ forall i:set, i :e omega -> apply_fun fid i :e space_family_set Xi i.
+  { apply andI.
+    - exact Hfun.
+    - exact Hcoords. }
+  exact (SepI (Power (setprod omega U))
+              (fun f:set => function_on f omega U /\ forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
+              fid
+              Hpow
+              Hprop). }
+
+(** show unbounded_sequence_Romega fid **)
+claim Huseq: unbounded_sequence_Romega fid.
+{ let M. assume HM: M :e R.
+  claim HMS: SNo M.
+  { exact (real_SNo M HM). }
+  claim Hor: M < 0 \/ 0 <= M.
+  { exact (SNoLtLe_or M 0 HMS SNo_0). }
+  claim Hcase1: M < 0 ->
+    exists n:set, n :e omega /\ ~(apply_fun fid n :e open_interval (minus_SNo M) M).
+  { assume HMlt0: M < 0.
+    witness 0.
+    apply andI.
+    - exact (nat_p_omega 0 nat_0).
+    - prove ~(apply_fun fid 0 :e open_interval (minus_SNo M) M).
+      assume Hin: apply_fun fid 0 :e open_interval (minus_SNo M) M.
+      claim Happ: apply_fun fid 0 = 0.
+      { exact (identity_function_apply omega 0 (nat_p_omega 0 nat_0)). }
+      claim Hprop: Rlt (minus_SNo M) (apply_fun fid 0) /\ Rlt (apply_fun fid 0) M.
+      { exact (SepE2 R (fun x0:set => Rlt (minus_SNo M) x0 /\ Rlt x0 M) (apply_fun fid 0) Hin). }
+      claim HRlt0M: Rlt 0 M.
+      { rewrite <- Happ.
+        exact (andER (Rlt (minus_SNo M) (apply_fun fid 0)) (Rlt (apply_fun fid 0) M) Hprop). }
+      claim HRltM0: Rlt M 0.
+      { exact (RltI M 0 HM real_0 HMlt0). }
+      claim Hnot: ~(Rlt 0 M).
+      { exact (not_Rlt_sym M 0 HRltM0). }
+      exact (Hnot HRlt0M). }
+  claim Hcase2: 0 <= M ->
+    exists n:set, n :e omega /\ ~(apply_fun fid n :e open_interval (minus_SNo M) M).
+  { assume HMnonneg: 0 <= M.
+    claim Hexn0: exists n :e omega, n <= M /\ M < ordsucc n.
+    { exact (nonneg_real_nat_interval M HM HMnonneg). }
+    apply Hexn0.
+    let n0. assume Hn0conj.
+    claim Hn0: n0 :e omega.
+    { exact (andEL (n0 :e omega) (n0 <= M /\ M < ordsucc n0) Hn0conj). }
+    claim Hn0prop: n0 <= M /\ M < ordsucc n0.
+    { exact (andER (n0 :e omega) (n0 <= M /\ M < ordsucc n0) Hn0conj). }
+    claim HMltS: M < ordsucc n0.
+    { exact (andER (n0 <= M) (M < ordsucc n0) Hn0prop). }
+    set n := ordsucc n0.
+    witness n.
+    apply andI.
+    - exact (omega_ordsucc n0 Hn0).
+    - prove ~(apply_fun fid n :e open_interval (minus_SNo M) M).
+      assume Hin: apply_fun fid n :e open_interval (minus_SNo M) M.
+      claim Happ: apply_fun fid n = n.
+      { exact (identity_function_apply omega n (omega_ordsucc n0 Hn0)). }
+      claim HnR: n :e R.
+      { claim HnO: n :e omega.
+        { exact (omega_ordsucc n0 Hn0). }
+        claim HnSNoS: n :e SNoS_ omega.
+        { exact (omega_SNoS_omega n HnO). }
+        exact (SNoS_omega_real n HnSNoS). }
+      claim HRltMn: Rlt M n.
+      { exact (RltI M n HM HnR HMltS). }
+      claim HnotnM: ~(Rlt n M).
+      { exact (not_Rlt_sym M n HRltMn). }
+      claim Hprop: Rlt (minus_SNo M) (apply_fun fid n) /\ Rlt (apply_fun fid n) M.
+      { exact (SepE2 R (fun x0:set => Rlt (minus_SNo M) x0 /\ Rlt x0 M) (apply_fun fid n) Hin). }
+      claim HRltnM: Rlt n M.
+      { rewrite <- Happ.
+        exact (andER (Rlt (minus_SNo M) (apply_fun fid n)) (Rlt (apply_fun fid n) M) Hprop). }
+      exact (HnotnM HRltnM). }
+  exact (Hor (exists n:set, n :e omega /\ ~(apply_fun fid n :e open_interval (minus_SNo M) M)) Hcase1 Hcase2).
+}
+
+claim HfidU: fid :e unbounded_sequences_Romega.
+{ exact (SepI R_omega_space (fun f:set => unbounded_sequence_Romega f) fid Hfid Huseq). }
+claim HeqE: Empty = unbounded_sequences_Romega.
+{ symmetry. exact Heq. }
+claim Hsubst: forall S T:set, S = T -> fid :e T -> fid :e S.
+{ let S T.
+  assume HeqST: S = T.
+  assume HfidT: fid :e T.
+  prove fid :e S.
+  rewrite HeqST.
+  exact HfidT. }
+claim HfidE: fid :e Empty.
+{ exact (Hsubst Empty unbounded_sequences_Romega HeqE HfidU). }
+exact (EmptyE fid HfidE).
 Qed.
 
 Theorem R_omega_box_not_connected :
