@@ -35712,13 +35712,6 @@ Qed.
 
 (** from §23 Theorem 23.5: image of a connected space is connected **)
 (** LATEX VERSION: If f:X→Y is continuous and X is connected, then f(X) is connected (as a subspace of Y). **)
-Axiom continuous_image_connected_axiom : forall X Tx Y Ty f:set,
-  connected_space X Tx ->
-  continuous_map X Tx Y Ty f ->
-  connected_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
-
-(** from §23 Theorem 23.5: image of a connected space is connected **)
-(** LATEX VERSION: If f:X→Y is continuous and X is connected, then f(X) is connected in the subspace topology. **)
 Theorem continuous_image_connected : forall X Tx Y Ty f:set,
   connected_space X Tx ->
   continuous_map X Tx Y Ty f ->
@@ -35727,17 +35720,15 @@ let X Tx Y Ty f.
 assume HX: connected_space X Tx.
 assume Hf: continuous_map X Tx Y Ty f.
 prove connected_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
-exact (continuous_image_connected_axiom X Tx Y Ty f HX Hf).
+admit.
 Qed.
 
 (** from §24 Corollary 24.2: the real line is connected **)
 (** LATEX VERSION: Corollary 24.2: The real line R is connected (and so are intervals and rays in R). **)
-Axiom interval_connected_axiom : connected_space R R_standard_topology.
-
 (** from §24 Corollary 24.2: the real line is connected **)
 (** LATEX VERSION: The real line with the standard topology is connected. **)
 Theorem interval_connected : connected_space R R_standard_topology.
-exact interval_connected_axiom.
+admit.
 Qed.
 
 (** from §24 Theorem 24.3: intermediate value theorem (order topology) **)
@@ -35750,13 +35741,6 @@ Definition between_in_order : set -> set -> set -> set -> prop := fun Y u r v =>
 
 (** from §24 Theorem 24.3: intermediate value theorem (order topology) **)
 (** LATEX VERSION: If f is continuous and X is connected, every value between f(a) and f(b) is attained. **)
-Axiom intermediate_value_theorem_axiom : forall X Tx Y f a b r:set,
-  connected_space X Tx ->
-  continuous_map X Tx Y (order_topology Y) f ->
-  a :e X -> b :e X -> r :e Y ->
-  between_in_order Y (apply_fun f a) r (apply_fun f b) ->
-  exists c:set, c :e X /\ apply_fun f c = r.
-
 (** from §24 Theorem 24.3: intermediate value theorem (order topology) **)
 (** LATEX VERSION: Intermediate value theorem, stated as a derived theorem wrapper. **)
 Theorem intermediate_value_theorem : forall X Tx Y f a b r:set,
@@ -35773,7 +35757,7 @@ assume Hb: b :e X.
 assume Hr: r :e Y.
 assume Hbetw: between_in_order Y (apply_fun f a) r (apply_fun f b).
 prove exists c:set, c :e X /\ apply_fun f c = r.
-exact (intermediate_value_theorem_axiom X Tx Y f a b r Hconn Hcont Ha Hb Hr Hbetw).
+admit.
 Qed.
 
 (** from §24: connected subspaces of ℝ are intervals **) 
