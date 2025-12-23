@@ -32041,6 +32041,35 @@ apply andI.
 - exact Hpreimg_fg.
 Qed.
 
+(** Helper: pasting lemma variant gives continuity in the weaker sense **)
+Theorem pasting_lemma_total_functional_imp : forall X A B Y Tx Ty f g:set,
+  topology_on X Tx ->
+  A :e Tx -> B :e Tx -> A :/\: B = Empty ->
+  graph_domain_subset f A ->
+  graph_domain_subset g B ->
+  functional_graph f ->
+  functional_graph g ->
+  continuous_map_total A (subspace_topology X Tx A) Y Ty f ->
+  continuous_map_total B (subspace_topology X Tx B) Y Ty g ->
+  continuous_map (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g).
+let X A B Y Tx Ty f g.
+assume HTx: topology_on X Tx.
+assume HA: A :e Tx.
+assume HB: B :e Tx.
+assume Hdisj: A :/\: B = Empty.
+assume Hdomf: graph_domain_subset f A.
+assume Hdomg: graph_domain_subset g B.
+assume Hfunf: functional_graph f.
+assume Hfung: functional_graph g.
+assume Hf: continuous_map_total A (subspace_topology X Tx A) Y Ty f.
+assume Hg: continuous_map_total B (subspace_topology X Tx B) Y Ty g.
+prove continuous_map (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g).
+claim Htot: continuous_map_total (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g).
+{ exact (pasting_lemma_total_functional X A B Y Tx Ty f g
+         HTx HA HB Hdisj Hdomf Hdomg Hfunf Hfung Hf Hg). }
+exact (continuous_map_total_imp (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g) Htot).
+Qed.
+
 (** from §18 Theorem 18.3: pasting lemma **)
 (** LATEX VERSION: Pasting lemma: continuous pieces on closed (or appropriate) sets assemble to a continuous map. **)
 Theorem pasting_lemma : forall X A B Y Tx Ty f g:set,
