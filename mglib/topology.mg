@@ -35870,6 +35870,22 @@ apply (xm (0 :e i)).
   exact Hr.
 Qed.
 
+(** Helper: coordinate evaluation of the singleton sequence **)
+(** LATEX VERSION: For the singleton sequence r ↦ (r,0,0,...), the i-th coordinate is If(0 in i) then 0 else r. **)
+Theorem Romega_singleton_seq_apply : forall r i:set,
+  r :e R ->
+  i :e omega ->
+  apply_fun (Romega_singleton_seq r) i = If_i (0 :e i) 0 r.
+let r i.
+assume Hr: r :e R.
+assume Hi: i :e omega.
+prove apply_fun (Romega_singleton_seq r) i = If_i (0 :e i) 0 r.
+claim Hdef: Romega_singleton_seq r = graph omega (fun j:set => If_i (0 :e j) 0 r).
+{ reflexivity. }
+rewrite Hdef.
+exact (apply_fun_graph omega (fun j:set => If_i (0 :e j) 0 r) i Hi).
+Qed.
+
 (** Helper: singleton sequence is in Romega_tilde 0 **)
 Theorem Romega_singleton_seq_in_Romega_tilde0 : forall r:set,
   r :e R -> Romega_singleton_seq r :e Romega_tilde 0.
@@ -36064,7 +36080,42 @@ claim HS: subbasis_on R_omega_space S.
 }
 claim Hpre: forall s:set, s :e S -> preimage_of R Romega_singleton_map s :e R_standard_topology.
 { let s. assume Hs: s :e S.
-  admit. }
+  set F := (fun i:set => {product_cylinder omega Xi i U|U :e space_family_topology Xi i}).
+  claim HsF: s :e (\/_ i :e omega, F i).
+  { exact Hs. }
+  apply (famunionE_impred omega F s HsF (preimage_of R Romega_singleton_map s :e R_standard_topology)).
+  let i. assume Hi: i :e omega.
+  assume HsFi: s :e F i.
+  apply (ReplE_impred (space_family_topology Xi i) (fun U0:set => product_cylinder omega Xi i U0) s HsFi
+                      (preimage_of R Romega_singleton_map s :e R_standard_topology)).
+  let U. assume HUtop: U :e space_family_topology Xi i.
+  assume Hseq: s = product_cylinder omega Xi i U.
+  rewrite Hseq.
+  claim HXi: apply_fun Xi i = (R, R_standard_topology).
+  { exact (const_space_family_apply omega R R_standard_topology i Hi). }
+  claim Htopi: space_family_topology Xi i = R_standard_topology.
+  { claim Hdef: space_family_topology Xi i = (apply_fun Xi i) 1.
+    { reflexivity. }
+    rewrite Hdef.
+    rewrite HXi.
+    exact (tuple_2_1_eq R R_standard_topology). }
+  claim HUstd: U :e R_standard_topology.
+  { rewrite <- Htopi.
+    exact HUtop. }
+  claim HUsubR: U c= R.
+  { claim HtopSub: R_standard_topology c= Power R.
+    { exact (topology_subset_axiom R R_standard_topology R_standard_topology_is_topology). }
+    claim HUpow: U :e Power R.
+    { exact (HtopSub U HUstd). }
+    exact (PowerE R U HUpow). }
+  apply (xm (0 :e i)).
+  + assume H0i: 0 :e i.
+    admit.
+  + assume Hn0i: ~(0 :e i).
+    claim Heq: preimage_of R Romega_singleton_map (product_cylinder omega Xi i U) = U.
+    { admit. }
+    rewrite Heq.
+    exact HUstd. }
 claim HdefTy: R_omega_product_topology = generated_topology_from_subbasis R_omega_space S.
 { reflexivity. }
 rewrite HdefTy.
