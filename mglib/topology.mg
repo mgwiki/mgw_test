@@ -31973,6 +31973,115 @@ Definition image_of : set -> set -> set := fun f U => Repl U (fun x => apply_fun
 Definition function_sequence_value : set -> set -> set -> set :=
   fun f_seq n x => apply_fun (apply_fun f_seq n) x.
 
+(** Helper: image is monotone under inclusion **)
+(** LATEX VERSION: If U subset V then f(U) subset f(V). **)
+Theorem image_of_mono : forall f U V:set,
+  U c= V ->
+  image_of f U c= image_of f V.
+let f U V.
+assume HUV: U c= V.
+let y. assume Hy: y :e image_of f U.
+prove y :e image_of f V.
+apply (ReplE_impred U (fun x:set => apply_fun f x) y Hy).
+let x. assume HxU: x :e U.
+assume Hyx: y = apply_fun f x.
+claim HxV: x :e V.
+{ exact (HUV x HxU). }
+rewrite Hyx.
+exact (ReplI V (fun x0:set => apply_fun f x0) x HxV).
+Qed.
+
+(** Helper: image of Empty **)
+(** LATEX VERSION: f(Empty) = Empty. **)
+Theorem image_of_Empty : forall f:set,
+  image_of f Empty = Empty.
+let f.
+apply set_ext.
+- let y. assume Hy: y :e image_of f Empty.
+  apply (ReplE_impred Empty (fun x:set => apply_fun f x) y Hy).
+  let x. assume HxE: x :e Empty.
+  assume Hyx: y = apply_fun f x.
+  apply FalseE.
+  exact ((EmptyE x) HxE).
+- let y. assume Hy: y :e Empty.
+  apply FalseE.
+  exact ((EmptyE y) Hy).
+Qed.
+
+(** Helper: image of binary union **)
+(** LATEX VERSION: f(U union V) = f(U) union f(V). **)
+Theorem image_of_binunion : forall f U V:set,
+  image_of f (U :\/: V) = (image_of f U) :\/: (image_of f V).
+let f U V.
+apply set_ext.
+- let y. assume Hy: y :e image_of f (U :\/: V).
+  prove y :e (image_of f U) :\/: (image_of f V).
+  apply (ReplE_impred (U :\/: V) (fun x:set => apply_fun f x) y Hy).
+  let x. assume HxUV: x :e U :\/: V.
+  assume Hyx: y = apply_fun f x.
+  apply (binunionE U V x HxUV).
+  * assume HxU: x :e U.
+    rewrite Hyx.
+    apply binunionI1.
+    exact (ReplI U (fun x0:set => apply_fun f x0) x HxU).
+  * assume HxV: x :e V.
+    rewrite Hyx.
+    apply binunionI2.
+    exact (ReplI V (fun x0:set => apply_fun f x0) x HxV).
+- let y. assume Hy: y :e (image_of f U) :\/: (image_of f V).
+  prove y :e image_of f (U :\/: V).
+  apply (binunionE (image_of f U) (image_of f V) y Hy).
+	  * assume HyU: y :e image_of f U.
+	    apply (ReplE_impred U (fun x:set => apply_fun f x) y HyU).
+	    let x. assume HxU: x :e U.
+	    assume Hyx: y = apply_fun f x.
+	    rewrite Hyx.
+	    exact (ReplI (U :\/: V) (fun x0:set => apply_fun f x0) x (binunionI1 U V x HxU)).
+	  * assume HyV: y :e image_of f V.
+	    apply (ReplE_impred V (fun x:set => apply_fun f x) y HyV).
+	    let x. assume HxV: x :e V.
+	    assume Hyx: y = apply_fun f x.
+	    rewrite Hyx.
+	    exact (ReplI (U :\/: V) (fun x0:set => apply_fun f x0) x (binunionI2 U V x HxV)).
+Qed.
+
+(** Helper: image of union of a family **)
+(** LATEX VERSION: f(Union Fam) equals Union of images f(U) for U in Fam. **)
+Theorem image_of_Union : forall f Fam:set,
+  image_of f (Union Fam) = Union {image_of f U|U :e Fam}.
+let f Fam.
+apply set_ext.
+- let y. assume Hy: y :e image_of f (Union Fam).
+  prove y :e Union {image_of f U|U :e Fam}.
+  apply (ReplE_impred (Union Fam) (fun x:set => apply_fun f x) y Hy).
+  let x. assume HxU: x :e Union Fam.
+  assume Hyx: y = apply_fun f x.
+  apply (UnionE_impred Fam x HxU).
+  let U. assume HxUin: x :e U.
+  assume HUFam: U :e Fam.
+  claim HyImU: y :e image_of f U.
+  { rewrite Hyx.
+    exact (ReplI U (fun x0:set => apply_fun f x0) x HxUin). }
+  exact (UnionI {image_of f U0|U0 :e Fam} y (image_of f U) HyImU
+                (ReplI Fam (fun U0:set => image_of f U0) U HUFam)).
+- let y. assume Hy: y :e Union {image_of f U|U :e Fam}.
+  prove y :e image_of f (Union Fam).
+  apply (UnionE_impred {image_of f U|U :e Fam} y Hy).
+  let W. assume HyW: y :e W.
+  assume HW: W :e {image_of f U|U :e Fam}.
+  apply (ReplE_impred Fam (fun U0:set => image_of f U0) W HW).
+  let U. assume HUFam: U :e Fam.
+  assume HWU: W = image_of f U.
+  claim HyImU: y :e image_of f U.
+  { rewrite <- HWU.
+    exact HyW. }
+  apply (ReplE_impred U (fun x:set => apply_fun f x) y HyImU).
+  let x. assume HxU: x :e U.
+  assume Hyx: y = apply_fun f x.
+  rewrite Hyx.
+  exact (ReplI (Union Fam) (fun x0:set => apply_fun f x0) x (UnionI Fam x U HxU HUFam)).
+Qed.
+
 (** FIXED: Removed extra parentheses around pair argument to d metric. **)
 Definition sequence_converges_metric : set -> set -> set -> set -> prop :=
   fun X d seq x =>
