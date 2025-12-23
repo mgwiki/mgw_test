@@ -21054,6 +21054,52 @@ Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod
 Definition functional_graph : set -> prop :=
   fun f => forall x y1 y2:set, (x,y1) :e f -> (x,y2) :e f -> y1 = y2.
 
+(** Helper: graph domain restriction **)
+Definition graph_domain_subset : set -> set -> prop :=
+  fun f X => forall x y:set, (x,y) :e f -> x :e X.
+
+(** Helper: graph range restriction **)
+Definition graph_range_subset : set -> set -> prop :=
+  fun f Y => forall x y:set, (x,y) :e f -> y :e Y.
+
+(** Helper: a graph comprehension has domain subset of its index set **)
+Theorem graph_domain_subset_graph : forall A:set, forall g:set->set,
+  graph_domain_subset {(a, g a)|a :e A} A.
+let A g.
+let x y.
+assume Hxy: (x,y) :e {(a, g a)|a :e A}.
+prove x :e A.
+apply (ReplE_impred A (fun a0:set => (a0, g a0)) (x,y) Hxy (x :e A)).
+let a. assume Ha: a :e A.
+assume Heq: (x,y) = (a, g a).
+claim Hxa: x = a.
+{ rewrite <- (tuple_2_0_eq x y).
+  rewrite <- (tuple_2_0_eq a (g a)).
+  rewrite Heq.
+  reflexivity. }
+rewrite Hxa.
+exact Ha.
+Qed.
+
+(** Helper: a constant graph comprehension has domain subset of its index set **)
+Theorem graph_domain_subset_const_fun : forall A c:set,
+  graph_domain_subset {(a,c)|a :e A} A.
+let A c.
+let x y.
+assume Hxy: (x,y) :e {(a,c)|a :e A}.
+prove x :e A.
+apply (ReplE_impred A (fun a0:set => (a0,c)) (x,y) Hxy (x :e A)).
+let a. assume Ha: a :e A.
+assume Heq: (x,y) = (a,c).
+claim Hxa: x = a.
+{ rewrite <- (tuple_2_0_eq x y).
+  rewrite <- (tuple_2_0_eq a c).
+  rewrite Heq.
+  reflexivity. }
+rewrite Hxa.
+exact Ha.
+Qed.
+
 (** Helper: if a value exists in the graph, apply_fun yields a value in the graph **)
 Theorem apply_fun_in_graph_of_ex : forall f x:set,
   (exists y:set, (x,y) :e f) ->
