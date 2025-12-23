@@ -29426,6 +29426,76 @@ apply set_ext.
   exact (SepI X (fun x0:set => apply_fun f x0 :e Union Fam) x HxX HfxU).
 Qed.
 
+(** Helper: preimage of binary intersection **)
+(** LATEX VERSION: f^{-1}(U∩V) = f^{-1}(U) ∩ f^{-1}(V). **)
+Theorem preimage_of_binintersect : forall X f U V:set,
+  preimage_of X f (U :/\: V) = (preimage_of X f U) :/\: (preimage_of X f V).
+let X f U V.
+apply set_ext.
+- let x. assume Hx: x :e preimage_of X f (U :/\: V).
+  prove x :e (preimage_of X f U) :/\: (preimage_of X f V).
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => apply_fun f x0 :e U :/\: V) x Hx). }
+  claim HfxUV: apply_fun f x :e U :/\: V.
+  { exact (SepE2 X (fun x0:set => apply_fun f x0 :e U :/\: V) x Hx). }
+  claim HfxU: apply_fun f x :e U.
+  { exact (binintersectE1 U V (apply_fun f x) HfxUV). }
+  claim HfxV: apply_fun f x :e V.
+  { exact (binintersectE2 U V (apply_fun f x) HfxUV). }
+  claim HxPreU: x :e preimage_of X f U.
+  { exact (SepI X (fun x0:set => apply_fun f x0 :e U) x HxX HfxU). }
+  claim HxPreV: x :e preimage_of X f V.
+  { exact (SepI X (fun x0:set => apply_fun f x0 :e V) x HxX HfxV). }
+  exact (binintersectI (preimage_of X f U) (preimage_of X f V) x HxPreU HxPreV).
+- let x. assume Hx: x :e (preimage_of X f U) :/\: (preimage_of X f V).
+  prove x :e preimage_of X f (U :/\: V).
+  claim HxPreU: x :e preimage_of X f U.
+  { exact (binintersectE1 (preimage_of X f U) (preimage_of X f V) x Hx). }
+  claim HxPreV: x :e preimage_of X f V.
+  { exact (binintersectE2 (preimage_of X f U) (preimage_of X f V) x Hx). }
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => apply_fun f x0 :e U) x HxPreU). }
+  claim HfxU: apply_fun f x :e U.
+  { exact (SepE2 X (fun x0:set => apply_fun f x0 :e U) x HxPreU). }
+  claim HfxV: apply_fun f x :e V.
+  { exact (SepE2 X (fun x0:set => apply_fun f x0 :e V) x HxPreV). }
+  claim HfxUV: apply_fun f x :e U :/\: V.
+  { exact (binintersectI U V (apply_fun f x) HfxU HfxV). }
+  exact (SepI X (fun x0:set => apply_fun f x0 :e U :/\: V) x HxX HfxUV).
+Qed.
+
+(** Helper: preimage of Empty **)
+(** LATEX VERSION: f^{-1}(∅) = ∅. **)
+Theorem preimage_of_Empty : forall X f:set,
+  preimage_of X f Empty = Empty.
+let X f.
+apply set_ext.
+- let x. assume Hx: x :e preimage_of X f Empty.
+  prove x :e Empty.
+  claim HfxE: apply_fun f x :e Empty.
+  { exact (SepE2 X (fun x0:set => apply_fun f x0 :e Empty) x Hx). }
+  exact (FalseE ((EmptyE (apply_fun f x)) HfxE) (x :e Empty)).
+- let x. assume Hx: x :e Empty.
+  prove x :e preimage_of X f Empty.
+  apply FalseE.
+  exact ((EmptyE x) Hx).
+Qed.
+
+(** Helper: preimage of whole codomain under a function_on map **)
+(** LATEX VERSION: If f maps X into Y then f^{-1}(Y)=X. **)
+Theorem preimage_of_whole : forall X Y f:set,
+  function_on f X Y ->
+  preimage_of X f Y = X.
+let X Y f.
+assume Hfun: function_on f X Y.
+apply set_ext.
+- let x. assume Hx: x :e preimage_of X f Y.
+  exact (SepE1 X (fun x0:set => apply_fun f x0 :e Y) x Hx).
+- let x. assume HxX: x :e X.
+  prove x :e preimage_of X f Y.
+  exact (SepI X (fun x0:set => apply_fun f x0 :e Y) x HxX (Hfun x HxX)).
+Qed.
+
 (** Helper: apply_fun for projections **)
 (** LATEX VERSION: For p in X×Y, proj1(p)=p0 and proj2(p)=p1. **)
 Theorem projection1_apply : forall X Y p:set,
