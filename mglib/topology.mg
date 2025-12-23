@@ -35657,6 +35657,54 @@ exact (SepI (Power (setprod omega U0))
             Hprop).
 Qed.
 
+(** Helper: a sequence supported at coordinate 0 **)
+Definition Romega_singleton_seq : set -> set := fun r =>
+  graph omega (fun i:set => If_i (0 :e i) 0 r).
+
+(** Helper: singleton sequence is in the ambient product space **)
+Theorem Romega_singleton_seq_in_Romega_space : forall r:set,
+  r :e R -> Romega_singleton_seq r :e R_omega_space.
+let r. assume Hr: r :e R.
+prove Romega_singleton_seq r :e R_omega_space.
+claim Hdef: Romega_singleton_seq r = graph omega (fun i:set => If_i (0 :e i) 0 r).
+{ reflexivity. }
+rewrite Hdef.
+apply (graph_omega_in_Romega_space (fun i:set => If_i (0 :e i) 0 r)).
+let i. assume Hi: i :e omega.
+prove If_i (0 :e i) 0 r :e R.
+apply (xm (0 :e i)).
+- assume H0i: 0 :e i.
+  rewrite (If_i_1 (0 :e i) 0 r H0i).
+  exact real_0.
+- assume Hn0i: ~(0 :e i).
+  rewrite (If_i_0 (0 :e i) 0 r Hn0i).
+  exact Hr.
+Qed.
+
+(** Helper: singleton sequence is in Romega_tilde 0 **)
+Theorem Romega_singleton_seq_in_Romega_tilde0 : forall r:set,
+  r :e R -> Romega_singleton_seq r :e Romega_tilde 0.
+let r. assume Hr: r :e R.
+prove Romega_singleton_seq r :e Romega_tilde 0.
+claim HdefT: Romega_tilde 0 =
+  {f :e R_omega_space | forall i:set, i :e omega -> 0 :e i -> apply_fun f i = 0}.
+{ reflexivity. }
+rewrite HdefT.
+apply (SepI R_omega_space (fun f0:set => forall i:set, i :e omega -> 0 :e i -> apply_fun f0 i = 0)).
+- exact (Romega_singleton_seq_in_Romega_space r Hr).
+- let i. assume Hi: i :e omega.
+  assume H0i: 0 :e i.
+  prove apply_fun (Romega_singleton_seq r) i = 0.
+  claim Happ: apply_fun (Romega_singleton_seq r) i = If_i (0 :e i) 0 r.
+  { claim Hdef: Romega_singleton_seq r = graph omega (fun j:set => If_i (0 :e j) 0 r).
+    { reflexivity. }
+    rewrite Hdef.
+    exact (apply_fun_graph omega (fun j:set => If_i (0 :e j) 0 r) i Hi). }
+  rewrite Happ.
+  rewrite (If_i_1 (0 :e i) 0 r H0i).
+  reflexivity.
+Qed.
+
 (** Helper: every finite subset of omega is bounded by some n in omega **)
 Theorem finite_subset_of_omega_bounded : forall F:set,
   F c= omega -> finite F -> exists n :e omega, forall m :e F, m :e n.
