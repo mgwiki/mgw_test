@@ -35722,6 +35722,11 @@ apply (nat_ind (fun k:set => connected_space (Romega_tilde k) (subspace_topology
   claim HT0: topology_on (Romega_tilde 0) (subspace_topology X Tx (Romega_tilde 0)).
   { exact (subspace_topology_is_topology X Tx (Romega_tilde 0) HTx Hsub0). }
   (** Connectedness proof is postponed. **)
+  prove topology_on (Romega_tilde 0) (subspace_topology X Tx (Romega_tilde 0)) /\
+    ~(exists U V:set,
+        U :e subspace_topology X Tx (Romega_tilde 0) /\
+        V :e subspace_topology X Tx (Romega_tilde 0) /\
+        separation_of (Romega_tilde 0) U V).
   apply andI.
   - exact HT0.
   - admit.
@@ -35735,6 +35740,11 @@ apply (nat_ind (fun k:set => connected_space (Romega_tilde k) (subspace_topology
   claim HTS: topology_on (Romega_tilde (ordsucc k)) (subspace_topology X Tx (Romega_tilde (ordsucc k))).
   { exact (subspace_topology_is_topology X Tx (Romega_tilde (ordsucc k)) HTx HsubS). }
   (** Connectedness step is postponed. **)
+  prove topology_on (Romega_tilde (ordsucc k)) (subspace_topology X Tx (Romega_tilde (ordsucc k))) /\
+    ~(exists U V:set,
+        U :e subspace_topology X Tx (Romega_tilde (ordsucc k)) /\
+        V :e subspace_topology X Tx (Romega_tilde (ordsucc k)) /\
+        separation_of (Romega_tilde (ordsucc k)) U V).
   apply andI.
   - exact HTS.
   - admit.
