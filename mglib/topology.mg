@@ -47644,6 +47644,27 @@ Definition differentiable_at : set -> set -> prop := fun f x =>
 Definition nowhere_differentiable : set -> prop := fun f =>
   function_on f unit_interval R /\ forall x:set, x :e unit_interval -> ~ differentiable_at f x.
 
+(** from §49 Definition: the function space C(I,R) and the sets U_n **)
+(** LATEX VERSION: Let C be the space of continuous maps f:I→R. For n≥2, define U_n as the set of f such that for some 0<h≤1/n one has Δ_h f > n. **)
+(** stub: we formalize only the basic shape needed later; the analytic content is not completed **)
+Definition I_topology : set := subspace_topology R R_standard_topology unit_interval.
+Definition continuous_real_on_I : set -> prop := fun f =>
+  continuous_map unit_interval I_topology R R_standard_topology f.
+Definition C_I_R : set := {f :e function_space unit_interval R | continuous_real_on_I f}.
+
+Definition diffquot_forward_abs : set -> set -> set -> set := fun f x h =>
+  Abs (div_SNo (add_SNo (apply_fun f (add_SNo x h)) (minus_SNo (apply_fun f x))) h).
+Definition diffquot_backward_abs : set -> set -> set -> set := fun f x h =>
+  Abs (div_SNo (add_SNo (apply_fun f (add_SNo x (minus_SNo h))) (minus_SNo (apply_fun f x))) (minus_SNo h)).
+
+Definition Delta_gt : set -> set -> set -> set -> prop := fun f x h n =>
+  (add_SNo x h :e unit_interval /\ Rlt n (diffquot_forward_abs f x h))
+  \/
+  (add_SNo x (minus_SNo h) :e unit_interval /\ Rlt n (diffquot_backward_abs f x h)).
+
+Definition U_n : set -> set := fun n =>
+  {f :e C_I_R | exists h:set, h :e R /\ Rlt 0 h /\ forall x:set, x :e unit_interval -> Delta_gt f x h n}.
+
 (** from §49 Existence: nowhere-differentiable function **) 
 (** LATEX VERSION: Existence of a continuous nowhere-differentiable function. **)
 Axiom nowhere_differentiable_function_exists_axiom :
@@ -51003,21 +51024,21 @@ Qed.
 
 (** from §49 Exercise 2: construct continuous function in U_n with bounded values **)
 (** LATEX VERSION: Given n and ε, define continuous f:I→ℝ such that f∈Uₙ and |f(x)|≤ε for all x. **)
-(** stub: U_n not defined (related to nowhere-differentiable construction) **)
+(** stub: the analytic inequalities are not expanded here **)
 Axiom ex49_2_construct_bounded_function_axiom : forall n:set, forall eps:set,
   n :e omega ->
   eps :e R ->
   exists f:set,
     continuous_map unit_interval R_standard_topology R R_standard_topology f /\
     (forall x:set, x :e unit_interval -> apply_fun f x :e R) /\
-    True.
+    f :e U_n n.
 Theorem ex49_2_construct_bounded_function : forall n:set, forall eps:set,
   n :e omega ->
   eps :e R ->
   exists f:set,
     continuous_map unit_interval R_standard_topology R R_standard_topology f /\
     (forall x:set, x :e unit_interval -> apply_fun f x :e R) /\
-    True. (** stub: need U_n membership and bound condition **)
+    f :e U_n n. (** stub: need the bound |f(x)|≤eps and correct topology on I **)
 exact ex49_2_construct_bounded_function_axiom.
 Qed.
 
