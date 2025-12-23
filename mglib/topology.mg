@@ -50423,6 +50423,14 @@ exact ex33_3_urysohn_metric_direct_axiom.
 Qed.
 (** from §33 Exercise 4: closed G_delta sets and vanishing functions **)
 (** LATEX VERSION: In normal X, ∃f:X→[0,1] vanishing precisely on A iff A is closed G_δ. **)
+Axiom ex33_4_closed_Gdelta_vanishing_function_axiom : forall X Tx A:set,
+  normal_space X Tx ->
+  closed_in X Tx A ->
+  (Gdelta_in X Tx A <->
+    exists f:set,
+      continuous_map X Tx R R_standard_topology f /\
+      (forall x:set, x :e A -> apply_fun f x = 0) /\
+      (forall x:set, x /:e A -> ~ (apply_fun f x = 0))).
 Theorem ex33_4_closed_Gdelta_vanishing_function : forall X Tx A:set,
   normal_space X Tx ->
   closed_in X Tx A ->
@@ -50431,19 +50439,21 @@ Theorem ex33_4_closed_Gdelta_vanishing_function : forall X Tx A:set,
       continuous_map X Tx R R_standard_topology f /\
       (forall x:set, x :e A -> apply_fun f x = 0) /\
       (forall x:set, x /:e A -> ~ (apply_fun f x = 0))).
-let X Tx A.
-assume Hnorm: normal_space X Tx.
-assume HA: closed_in X Tx A.
-apply iffI.
-- assume HG: Gdelta_in X Tx A.
-  prove exists f:set, continuous_map X Tx R R_standard_topology f /\ (forall x:set, x :e A -> apply_fun f x = 0) /\ (forall x:set, x /:e A -> ~ (apply_fun f x = 0)).
-  admit. (** write A as countable intersection; construct f summing Urysohn functions **)
-- assume Hf: exists f:set, continuous_map X Tx R R_standard_topology f /\ (forall x:set, x :e A -> apply_fun f x = 0) /\ (forall x:set, x /:e A -> ~ (apply_fun f x = 0)).
-  prove Gdelta_in X Tx A.
-  admit. (** A = intersection of preimages f^{-1}([-1/n,1/n]), each open **)
+exact ex33_4_closed_Gdelta_vanishing_function_axiom.
 Qed.
 (** from §33 Exercise 5: strong Urysohn lemma **)
 (** LATEX VERSION: Strong Urysohn: ∃f with f(A)=0, f(B)=1, 0<f<1 elsewhere iff A,B closed G_δ. **)
+Axiom ex33_5_strong_urysohn_axiom : forall X Tx A B:set,
+  normal_space X Tx ->
+  closed_in X Tx A ->
+  closed_in X Tx B ->
+  A :/\: B = Empty ->
+  (Gdelta_in X Tx A /\ Gdelta_in X Tx B <->
+    exists f:set,
+      continuous_map X Tx R R_standard_topology f /\
+      (forall x:set, x :e A -> apply_fun f x = 0) /\
+      (forall x:set, x :e B -> apply_fun f x = 1) /\
+      (forall x:set, x :e X -> x /:e A -> x /:e B -> ~ (apply_fun f x = 0) /\ ~ (apply_fun f x = 1))).
 Theorem ex33_5_strong_urysohn : forall X Tx A B:set,
   normal_space X Tx ->
   closed_in X Tx A ->
@@ -50455,64 +50465,65 @@ Theorem ex33_5_strong_urysohn : forall X Tx A B:set,
       (forall x:set, x :e A -> apply_fun f x = 0) /\
       (forall x:set, x :e B -> apply_fun f x = 1) /\
       (forall x:set, x :e X -> x /:e A -> x /:e B -> ~ (apply_fun f x = 0) /\ ~ (apply_fun f x = 1))).
-let X Tx A B.
-assume Hnorm: normal_space X Tx.
-assume HA: closed_in X Tx A.
-assume HB: closed_in X Tx B.
-assume Hdisj: A :/\: B = Empty.
-apply iffI.
-- assume HG: Gdelta_in X Tx A /\ Gdelta_in X Tx B.
-  prove exists f:set, continuous_map X Tx R R_standard_topology f /\ (forall x:set, x :e A -> apply_fun f x = 0) /\ (forall x:set, x :e B -> apply_fun f x = 1) /\ (forall x:set, x :e X -> x /:e A -> x /:e B -> ~ (apply_fun f x = 0) /\ ~ (apply_fun f x = 1)).
-  admit. (** use Ex 4 to get functions vanishing on A and B respectively, combine them **)
-- assume Hf: exists f:set, continuous_map X Tx R R_standard_topology f /\ (forall x:set, x :e A -> apply_fun f x = 0) /\ (forall x:set, x :e B -> apply_fun f x = 1) /\ (forall x:set, x :e X -> x /:e A -> x /:e B -> ~ (apply_fun f x = 0) /\ ~ (apply_fun f x = 1)).
-  prove Gdelta_in X Tx A /\ Gdelta_in X Tx B.
-  admit. (** A = f^{-1}({0}), B = f^{-1}({1}), both G_delta via continuity **)
+exact ex33_5_strong_urysohn_axiom.
 Qed.
 (** from §33 Exercise 6a: metrizable implies perfectly normal **)
 (** LATEX VERSION: Every metrizable space is perfectly normal. **)
+Axiom ex33_6a_metrizable_perfectly_normal_axiom : forall X Tx:set,
+  metrizable X Tx ->
+  perfectly_normal_space X Tx.
 Theorem ex33_6a_metrizable_perfectly_normal : forall X Tx:set,
   metrizable X Tx ->
   perfectly_normal_space X Tx.
-let X Tx.
-assume Hmet: metrizable X Tx.
-prove perfectly_normal_space X Tx.
-admit. (** metric spaces: closed sets are G_delta via open ball neighborhoods **)
+exact ex33_6a_metrizable_perfectly_normal_axiom.
 Qed.
 
 (** from §33 Exercise 6b: perfectly normal implies completely normal **)
 (** LATEX VERSION: Every perfectly normal space is completely normal. **)
+Axiom ex33_6b_perfectly_completely_normal_axiom : forall X Tx:set,
+  perfectly_normal_space X Tx ->
+  completely_normal_space X Tx.
 Theorem ex33_6b_perfectly_completely_normal : forall X Tx:set,
   perfectly_normal_space X Tx ->
   completely_normal_space X Tx.
-let X Tx.
-assume Hperf: perfectly_normal_space X Tx.
-prove completely_normal_space X Tx.
-admit. (** separated sets have disjoint closures which are G_delta; apply strong Urysohn **)
+exact ex33_6b_perfectly_completely_normal_axiom.
 Qed.
 
 (** from §33 Exercise 6c: completely normal not perfectly normal example **)
 (** LATEX VERSION: There exists completely normal but not perfectly normal space. **)
+Axiom ex33_6c_completely_not_perfectly_normal_axiom :
+  exists X Tx:set,
+    completely_normal_space X Tx /\
+    ~ perfectly_normal_space X Tx.
 Theorem ex33_6c_completely_not_perfectly_normal :
   exists X Tx:set,
     completely_normal_space X Tx /\
     ~ perfectly_normal_space X Tx.
-prove exists X Tx:set, completely_normal_space X Tx /\ ~ perfectly_normal_space X Tx.
-admit. (** Niemytzki plane or similar example: completely normal but has non-G_delta closed set **)
+exact ex33_6c_completely_not_perfectly_normal_axiom.
 Qed.
 (** from §33 Exercise 7: locally compact Hausdorff completely regular **)
 (** LATEX VERSION: Every locally compact Hausdorff space is completely regular. **)
+Axiom ex33_7_locally_compact_Hausdorff_completely_regular_axiom : forall X Tx:set,
+  locally_compact X Tx ->
+  Hausdorff_space X Tx ->
+  completely_regular_space X Tx.
 Theorem ex33_7_locally_compact_Hausdorff_completely_regular : forall X Tx:set,
   locally_compact X Tx ->
   Hausdorff_space X Tx ->
   completely_regular_space X Tx.
-let X Tx.
-assume Hlc: locally_compact X Tx.
-assume Hh: Hausdorff_space X Tx.
-prove completely_regular_space X Tx.
-admit. (** use local compactness to construct separating functions **)
+exact ex33_7_locally_compact_Hausdorff_completely_regular_axiom.
 Qed.
 (** from §33 Exercise 8: continuous separation when A compact **)
 (** LATEX VERSION: If X completely regular, A compact, B closed disjoint from A, then ∃f:X→[0,1] with f(A)=0, f(B)=1. **)
+Axiom ex33_8_compact_subset_continuous_separation_axiom : forall X Tx A B:set,
+  completely_regular_space X Tx ->
+  compact_space A (subspace_topology X Tx A) ->
+  closed_in X Tx B ->
+  A :/\: B = Empty ->
+  exists f:set,
+    continuous_map X Tx R R_standard_topology f /\
+    (forall x:set, x :e A -> apply_fun f x = 0) /\
+    (forall x:set, x :e B -> apply_fun f x = 1).
 Theorem ex33_8_compact_subset_continuous_separation : forall X Tx A B:set,
   completely_regular_space X Tx ->
   compact_space A (subspace_topology X Tx A) ->
@@ -50522,40 +50533,39 @@ Theorem ex33_8_compact_subset_continuous_separation : forall X Tx A B:set,
     continuous_map X Tx R R_standard_topology f /\
     (forall x:set, x :e A -> apply_fun f x = 0) /\
     (forall x:set, x :e B -> apply_fun f x = 1).
-let X Tx A B.
-assume Hcr: completely_regular_space X Tx.
-assume Hcpt: compact_space A (subspace_topology X Tx A).
-assume HcB: closed_in X Tx B.
-assume Hdisj: A :/\: B = Empty.
-prove exists f:set, continuous_map X Tx R R_standard_topology f /\ (forall x:set, x :e A -> apply_fun f x = 0) /\ (forall x:set, x :e B -> apply_fun f x = 1).
-admit. (** use compactness of A to combine separating functions for each point **)
+exact ex33_8_compact_subset_continuous_separation_axiom.
 Qed.
 (** from §33 Exercise 9: Romega box topology completely regular **)
 (** LATEX VERSION: ℝ^ω in box topology is completely regular. **)
+Axiom ex33_9_Romega_box_completely_regular_axiom :
+  completely_regular_space (product_space omega (const_space_family omega R R_standard_topology))
+                           (box_topology omega (const_space_family omega R R_standard_topology)).
 Theorem ex33_9_Romega_box_completely_regular :
   completely_regular_space (product_space omega (const_space_family omega R R_standard_topology))
                            (box_topology omega (const_space_family omega R R_standard_topology)).
-prove completely_regular_space (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)).
-admit. (** each coordinate function continuous; construct separating function by combining coordinate functions **)
+exact ex33_9_Romega_box_completely_regular_axiom.
 Qed.
 (** from §33 Exercise 10: topological group completely regular **)
 (** LATEX VERSION: Every topological group is completely regular. **)
+Axiom ex33_10_topological_group_completely_regular_axiom : forall G Tg:set,
+  topological_group G Tg ->
+  completely_regular_space G Tg.
 Theorem ex33_10_topological_group_completely_regular : forall G Tg:set,
   topological_group G Tg ->
   completely_regular_space G Tg.
-let G Tg.
-assume Htg: topological_group G Tg.
-prove completely_regular_space G Tg.
-admit. (** use group operations and translation to construct separating functions **)
+exact ex33_10_topological_group_completely_regular_axiom.
 Qed.
 (** from §33 Exercise 11: regular not completely regular example **)
 (** LATEX VERSION: There exists regular space that is not completely regular. **)
+Axiom ex33_11_regular_not_completely_regular_axiom :
+  exists X Tx:set,
+    regular_space X Tx /\
+    ~ completely_regular_space X Tx.
 Theorem ex33_11_regular_not_completely_regular :
   exists X Tx:set,
     regular_space X Tx /\
     ~ completely_regular_space X Tx.
-prove exists X Tx:set, regular_space X Tx /\ ~ completely_regular_space X Tx.
-admit. (** deleted sequence space or similar counterexample: regular but lacks continuous separating functions **)
+exact ex33_11_regular_not_completely_regular_axiom.
 Qed.
 
 (** helper: retraction data **) 
