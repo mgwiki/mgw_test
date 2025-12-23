@@ -21050,6 +21050,40 @@ Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => (x,y) :e 
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod X Y)|function_on f X Y}.
 
+(** Helper: graph of a meta level function as a set of ordered pairs **)
+Definition graph : set -> (set -> set) -> set := fun A g => {(a, g a) | a :e A}.
+
+(** Helper: evaluating apply_fun on a graph built by Repl **)
+Theorem apply_fun_graph : forall A:set, forall g:set->set, forall a:set,
+  a :e A -> apply_fun (graph A g) a = g a.
+let A g a.
+assume Ha: a :e A.
+prove apply_fun (graph A g) a = g a.
+prove Eps_i (fun y => (a,y) :e graph A g) = g a.
+claim H1: (a, g a) :e graph A g.
+{ exact (ReplI A (fun a0:set => (a0, g a0)) a Ha). }
+claim H2: (a, Eps_i (fun y => (a,y) :e graph A g)) :e graph A g.
+{ exact (Eps_i_ax (fun y => (a,y) :e graph A g) (g a) H1). }
+apply (ReplE_impred A (fun a0:set => (a0, g a0))
+        (a, Eps_i (fun y => (a,y) :e graph A g)) H2
+        (Eps_i (fun y => (a,y) :e graph A g) = g a)).
+let a0. assume Ha0: a0 :e A.
+assume Heq: (a, Eps_i (fun y => (a,y) :e graph A g)) = (a0, g a0).
+claim Ha_eq: a = a0.
+{ rewrite <- (tuple_2_0_eq a (Eps_i (fun y => (a,y) :e graph A g))).
+  rewrite <- (tuple_2_0_eq a0 (g a0)).
+  rewrite Heq.
+  reflexivity. }
+claim Hy_eq: Eps_i (fun y => (a,y) :e graph A g) = g a0.
+{ rewrite <- (tuple_2_1_eq a (Eps_i (fun y => (a,y) :e graph A g))).
+  rewrite <- (tuple_2_1_eq a0 (g a0)).
+  rewrite Heq.
+  reflexivity. }
+rewrite Hy_eq.
+rewrite <- Ha_eq.
+reflexivity.
+Qed.
+
 (** Helper: total function graph on X into Y (in addition to function_on) **)
 Definition total_function_on : set -> set -> set -> prop := fun f X Y =>
   function_on f X Y /\ forall x:set, x :e X -> exists y:set, y :e Y /\ (x,y) :e f.
