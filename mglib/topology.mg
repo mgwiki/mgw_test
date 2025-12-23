@@ -35642,6 +35642,80 @@ exact (SepI (Power (setprod omega U0))
             Hprop).
 Qed.
 
+(** Helper: every finite subset of omega is bounded by some n in omega **)
+Theorem finite_subset_of_omega_bounded : forall F:set,
+  F c= omega -> finite F -> exists n :e omega, forall m :e F, m :e n.
+let F.
+assume HFsub: F c= omega.
+assume HFfin: finite F.
+prove exists n :e omega, forall m :e F, m :e n.
+claim Hp0: (Empty c= omega -> exists n :e omega, forall m :e Empty, m :e n).
+{ assume Hsub0: Empty c= omega.
+  prove exists n :e omega, forall m :e Empty, m :e n.
+  witness 0.
+  apply andI.
+  - exact (nat_p_omega 0 nat_0).
+  - let m. assume Hm: m :e Empty.
+    apply FalseE.
+    exact (EmptyE m Hm). }
+claim Hpstep: forall A y, finite A -> y /:e A ->
+  (A c= omega -> exists n :e omega, forall m :e A, m :e n) ->
+  (A :\/: {y} c= omega -> exists n0 :e omega, forall m:set, m :e A :\/: {y} -> m :e n0).
+{ let A y.
+  assume HAfin: finite A.
+  assume HyA: y /:e A.
+  assume HpA: (A c= omega -> exists n :e omega, forall m :e A, m :e n).
+  assume HsubAy: A :\/: {y} c= omega.
+  claim HsubA: A c= omega.
+  { exact (Subq_tra A (A :\/: {y}) omega (binunion_Subq_1 A {y}) HsubAy). }
+  claim Hexn: exists n :e omega, forall m :e A, m :e n.
+  { exact (HpA HsubA). }
+  apply Hexn.
+  let n.
+  assume Hnand.
+  claim Hn: n :e omega.
+  { exact (andEL (n :e omega) (forall m :e A, m :e n) Hnand). }
+  claim Hnprop: forall m :e A, m :e n.
+  { exact (andER (n :e omega) (forall m :e A, m :e n) Hnand). }
+  prove exists n0 :e omega, forall m:set, m :e A :\/: {y} -> m :e n0.
+  claim Hy_in_union: y :e A :\/: {y}.
+  { apply binunionI2. exact (SingI y). }
+  claim Hy_omega: y :e omega.
+  { exact (HsubAy y Hy_in_union). }
+  claim Hysucc_omega: ordsucc y :e omega.
+  { exact (omega_ordsucc y Hy_omega). }
+  claim Hn_union_omega: n :\/: ordsucc y :e omega.
+  { exact (omega_binunion n (ordsucc y) Hn Hysucc_omega). }
+  set n0 := ordsucc (n :\/: ordsucc y).
+  claim Hn0_omega: n0 :e omega.
+  { exact (omega_ordsucc (n :\/: ordsucc y) Hn_union_omega). }
+  witness n0.
+  apply andI.
+  - exact Hn0_omega.
+  - let m. assume Hm: m :e A :\/: {y}.
+    prove m :e n0.
+    apply (binunionE A {y} m Hm).
+    + assume HmA: m :e A.
+      claim Hmn: m :e n.
+      { exact (Hnprop m HmA). }
+      claim HmnU: m :e n :\/: ordsucc y.
+      { exact (binunionI1 n (ordsucc y) m Hmn). }
+      exact (ordsuccI1 (n :\/: ordsucc y) m HmnU).
+    + assume HmY: m :e {y}.
+      claim Hmy: m = y.
+      { exact (SingE y m HmY). }
+      rewrite Hmy.
+      claim Hy_in_succ: y :e ordsucc y.
+      { exact (ordsuccI2 y). }
+      claim Hy_in_U: y :e n :\/: ordsucc y.
+      { exact (binunionI2 n (ordsucc y) y Hy_in_succ). }
+      exact (ordsuccI1 (n :\/: ordsucc y) y Hy_in_U). }
+claim HpF: (F c= omega -> exists n :e omega, forall m :e F, m :e n).
+{ exact (finite_ind (fun A => A c= omega -> exists n :e omega, forall m :e A, m :e n)
+                    Hp0 Hpstep F HFfin). }
+exact (HpF HFsub).
+Qed.
+
 (** from §23 Example 7: Romega_infty is dense in the product topology **) 
 (** LATEX VERSION: Every basic open set in the product topology meets R^infty by modifying only finitely many coordinates. **)
 Theorem Romega_infty_dense :
