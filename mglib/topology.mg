@@ -47430,24 +47430,19 @@ Definition metrizable : set -> set -> prop := fun X Tx =>
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 (** LATEX VERSION: The product of two Lindelöf Sorgenfrey lines (the Sorgenfrey plane) is not Lindelöf. **)
-Axiom Sorgenfrey_plane_not_Lindelof_axiom :
-  ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 Theorem Sorgenfrey_plane_not_Lindelof :
   ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-exact Sorgenfrey_plane_not_Lindelof_axiom.
+admit.
 Qed.
 
 (** from §30 Example 5: subspace of Lindelöf space need not be Lindelöf **) 
 (** LATEX VERSION: A subspace of a Lindelöf space can fail to be Lindelöf (ordered square strip example). **)
-Axiom ordered_square_subspace_not_Lindelof_axiom :
-  Lindelof_space ordered_square ordered_square_topology /\
-  ~ Lindelof_space ordered_square_open_strip ordered_square_subspace_topology.
 Theorem ordered_square_subspace_not_Lindelof :
   Lindelof_space ordered_square ordered_square_topology /\
   ~ Lindelof_space ordered_square_open_strip ordered_square_subspace_topology.
 prove Lindelof_space ordered_square ordered_square_topology /\ ~ Lindelof_space ordered_square_open_strip ordered_square_subspace_topology.
-exact ordered_square_subspace_not_Lindelof_axiom.
+admit.
 Qed.
 
 (** from §31 Lemma 31.1: closure-neighborhood reformulations of regular/normal **) 
