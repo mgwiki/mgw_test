@@ -22015,6 +22015,13 @@ Qed.
 (** FIXED: Unit interval [0,1] = {x ∈ R | 0 ≤ x ≤ 1}.
     Using negated strict inequality: x ≥ 0 means ~(x < 0), x ≤ 1 means ~(1 < x). **)
 Definition unit_interval : set := {x :e R | ~(Rlt x 0) /\ ~(Rlt 1 x)}.
+
+(** helper: unit_interval is a subset of R **)
+(** LATEX VERSION: The unit interval [0,1] is a subset of the real line. **)
+Theorem unit_interval_sub_R : unit_interval c= R.
+let x. assume Hx: x :e unit_interval.
+exact (SepE1 R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) x Hx).
+Qed.
 Definition ordered_square : set := setprod unit_interval unit_interval.
 Definition ordered_square_topology : set := order_topology ordered_square.
 (** LATEX VERSION: The vertical strip {1/2}×(1/2,1] inside I×I. **)
@@ -47665,6 +47672,12 @@ Definition nowhere_differentiable : set -> prop := fun f =>
 (** LATEX VERSION: Let C be the space of continuous maps f:I→R. For n≥2, define U_n as the set of f such that for some 0<h≤1/n one has Δ_h f > n. **)
 (** stub: we formalize only the basic shape needed later; the analytic content is not completed **)
 Definition I_topology : set := subspace_topology R R_standard_topology unit_interval.
+Theorem I_topology_on : topology_on unit_interval I_topology.
+prove topology_on unit_interval I_topology.
+exact (subspace_topology_is_topology R R_standard_topology unit_interval
+         R_standard_topology_is_topology
+         unit_interval_sub_R).
+Qed.
 Definition continuous_real_on_I : set -> prop := fun f =>
   continuous_map unit_interval I_topology R R_standard_topology f.
 Definition C_I_R : set := {f :e function_space unit_interval R | continuous_real_on_I f}.
@@ -51149,15 +51162,75 @@ Qed.
 Definition ex49_example1_f : set := Eps_i (fun f:set => f :e C_I_R).
 Definition ex49_example1_g : set := Eps_i (fun g:set => g :e C_I_R).
 Definition ex49_example1_k : set := Eps_i (fun k:set => k :e C_I_R).
-Axiom ex49_1_verify_example_functions_axiom :
-  continuous_map unit_interval I_topology R R_standard_topology ex49_example1_f /\
-  continuous_map unit_interval I_topology R R_standard_topology ex49_example1_g /\
-  continuous_map unit_interval I_topology R R_standard_topology ex49_example1_k.
+
+(** helper: C(I,R) is nonempty **)
+(** LATEX VERSION: Constant functions are continuous, so C(I,R) is nonempty. **)
+Theorem C_I_R_nonempty : exists f:set, f :e C_I_R.
+set f0 := const_fun unit_interval 0.
+witness f0.
+prove f0 :e C_I_R.
+apply (SepI (function_space unit_interval R) (fun f1:set => continuous_real_on_I f1) f0).
+- prove f0 :e function_space unit_interval R.
+  claim Hpow: f0 :e Power (setprod unit_interval R).
+  { prove f0 :e Power (setprod unit_interval R).
+    apply (PowerI (setprod unit_interval R) f0).
+    let p. assume Hp: p :e f0.
+    prove p :e setprod unit_interval R.
+    apply (ReplE_impred unit_interval (fun a:set => (a,0)) p Hp (p :e setprod unit_interval R)).
+    let a. assume Ha: a :e unit_interval. assume Heq: p = (a,0).
+    rewrite Heq.
+    exact (tuple_2_setprod unit_interval R a Ha 0 real_0). }
+  claim Hfun: function_on f0 unit_interval R.
+  { let x. assume Hx: x :e unit_interval.
+    prove apply_fun f0 x :e R.
+    rewrite (const_fun_apply unit_interval 0 x Hx).
+    exact real_0. }
+  exact (SepI (Power (setprod unit_interval R))
+              (fun f:set => function_on f unit_interval R)
+              f0
+              Hpow
+              Hfun).
+- prove continuous_real_on_I f0.
+  exact (const_fun_continuous unit_interval I_topology R R_standard_topology 0
+           I_topology_on R_standard_topology_is_topology real_0).
+Qed.
+
+Theorem ex49_example1_f_in_C_I_R : ex49_example1_f :e C_I_R.
+exact (Eps_i_ex (fun f:set => f :e C_I_R) C_I_R_nonempty).
+Qed.
+Theorem ex49_example1_g_in_C_I_R : ex49_example1_g :e C_I_R.
+exact (Eps_i_ex (fun g:set => g :e C_I_R) C_I_R_nonempty).
+Qed.
+Theorem ex49_example1_k_in_C_I_R : ex49_example1_k :e C_I_R.
+exact (Eps_i_ex (fun k:set => k :e C_I_R) C_I_R_nonempty).
+Qed.
+
 Theorem ex49_1_verify_example_functions :
   continuous_map unit_interval I_topology R R_standard_topology ex49_example1_f /\
   continuous_map unit_interval I_topology R R_standard_topology ex49_example1_g /\
   continuous_map unit_interval I_topology R R_standard_topology ex49_example1_k.
-exact ex49_1_verify_example_functions_axiom.
+claim Hf: continuous_real_on_I ex49_example1_f.
+{ exact (SepE2 (function_space unit_interval R) (fun f0:set => continuous_real_on_I f0)
+               ex49_example1_f
+               ex49_example1_f_in_C_I_R). }
+claim Hg: continuous_real_on_I ex49_example1_g.
+{ exact (SepE2 (function_space unit_interval R) (fun g0:set => continuous_real_on_I g0)
+               ex49_example1_g
+               ex49_example1_g_in_C_I_R). }
+claim Hk: continuous_real_on_I ex49_example1_k.
+{ exact (SepE2 (function_space unit_interval R) (fun k0:set => continuous_real_on_I k0)
+               ex49_example1_k
+               ex49_example1_k_in_C_I_R). }
+prove (continuous_map unit_interval I_topology R R_standard_topology ex49_example1_f /\
+       continuous_map unit_interval I_topology R R_standard_topology ex49_example1_g)
+      /\ continuous_map unit_interval I_topology R R_standard_topology ex49_example1_k.
+apply andI.
+- prove continuous_map unit_interval I_topology R R_standard_topology ex49_example1_f /\
+         continuous_map unit_interval I_topology R R_standard_topology ex49_example1_g.
+  apply andI.
+  + exact Hf.
+  + exact Hg.
+- exact Hk.
 Qed.
 
 (** from §49 Exercise 2: construct continuous function in U_n with bounded values **)
