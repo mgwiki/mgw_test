@@ -35681,7 +35681,6 @@ Definition between_in_order : set -> set -> set -> set -> prop := fun Y u r v =>
 
 (** from §24 Theorem 24.3: intermediate value theorem (order topology) **)
 (** LATEX VERSION: If f is continuous and X is connected, every value between f(a) and f(b) is attained. **)
-(** from §24 Theorem 24.3: intermediate value theorem (order topology) **)
 (** LATEX VERSION: Intermediate value theorem, stated as a derived theorem wrapper. **)
 Theorem intermediate_value_theorem : forall X Tx Y f a b r:set,
   connected_space X Tx ->
