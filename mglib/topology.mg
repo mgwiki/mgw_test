@@ -21109,6 +21109,38 @@ exact (andER (function_on f X Y)
              H).
 Qed.
 
+(** Helper: total_function_on gives membership of the chosen value in the graph **)
+Theorem total_function_on_apply_fun_in_graph : forall f X Y x:set,
+  total_function_on f X Y ->
+  x :e X ->
+  (x, apply_fun f x) :e f.
+let f X Y x.
+assume Htot: total_function_on f X Y.
+assume HxX: x :e X.
+prove (x, apply_fun f x) :e f.
+claim Hex: exists y:set, y :e Y /\ (x,y) :e f.
+{ exact (total_function_on_totality f X Y Htot x HxX). }
+set y0 := Eps_i (fun y:set => y :e Y /\ (x,y) :e f).
+claim Hy0: y0 :e Y /\ (x,y0) :e f.
+{ exact (Eps_i_ex (fun y:set => y :e Y /\ (x,y) :e f) Hex). }
+claim Hxy0: (x,y0) :e f.
+{ exact (andER (y0 :e Y) ((x,y0) :e f) Hy0). }
+exact (Eps_i_ax (fun y:set => (x,y) :e f) y0 Hxy0).
+Qed.
+
+(** Helper: total_function_on implies apply_fun lands in Y **)
+Theorem total_function_on_apply_fun_in_Y : forall f X Y x:set,
+  total_function_on f X Y ->
+  x :e X ->
+  apply_fun f x :e Y.
+let f X Y x.
+assume Htot: total_function_on f X Y.
+assume HxX: x :e X.
+claim Hfun: function_on f X Y.
+{ exact (total_function_on_function_on f X Y Htot). }
+exact (Hfun x HxX).
+Qed.
+
 (** Helper: constant function as a graph **)
 Definition const_fun : set -> set -> set := fun A x => {(a,x) | a :e A}.
 
