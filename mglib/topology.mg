@@ -48704,26 +48704,50 @@ Qed.
 Theorem graph3_in_euclidean_space3 : forall g:set->set,
   (forall i:set, g i :e R) ->
   graph 3 g :e euclidean_space 3.
-let g.
-assume HgR: forall i:set, g i :e R.
-set Xi := const_space_family 3 R R_standard_topology.
-set U := space_family_union 3 Xi.
-prove graph 3 g :e {f :e Power (setprod 3 U)|
-                     function_on f 3 U /\ (forall i:set, i :e 3 -> apply_fun f i :e space_family_set Xi i)}.
-apply SepI.
-- (** graph 3 g :e Power (setprod 3 U) **)
-  apply PowerI.
-  let p. assume Hp: p :e graph 3 g.
-  prove p :e setprod 3 U.
-  apply (ReplE_impred 3 (fun i:set => (i, g i)) p Hp).
-  let i. assume Hi3: i :e 3.
-  assume HpEq: p = (i, g i).
-  rewrite HpEq.
-  claim HgiU: g i :e U.
-  { exact (real_in_space_family_union_R3 (g i) (HgR i)). }
- exact (tuple_2_setprod 3 U i Hi3 (g i) HgiU).
-- (** function_on and component condition **)
-  admit.
+ let g.
+ assume HgR: forall i:set, g i :e R.
+ set Xi := const_space_family 3 R R_standard_topology.
+ set U := space_family_union 3 Xi.
+ prove graph 3 g :e {f :e Power (setprod 3 U)|
+                      function_on f 3 U /\ (forall i:set, i :e 3 -> apply_fun f i :e space_family_set Xi i)}.
+ claim Hsub: graph 3 g c= setprod 3 U.
+ { let p. assume Hp: p :e graph 3 g.
+   prove p :e setprod 3 U.
+   apply (ReplE_impred 3 (fun i:set => (i, g i)) p Hp (p :e setprod 3 U)).
+   let i. assume Hi3: i :e 3.
+   assume HpEq: p = (i, g i).
+   rewrite HpEq.
+   claim HgiU: g i :e U.
+   { exact (real_in_space_family_union_R3 (g i) (HgR i)). }
+   exact (tuple_2_setprod 3 U i Hi3 (g i) HgiU). }
+ claim Hpow: graph 3 g :e Power (setprod 3 U).
+ { exact (PowerI (setprod 3 U) (graph 3 g) Hsub). }
+ claim Hfun: function_on (graph 3 g) 3 U.
+ { let i. assume Hi3: i :e 3.
+   prove apply_fun (graph 3 g) i :e U.
+   claim Happ: apply_fun (graph 3 g) i = g i.
+   { exact (apply_fun_graph 3 g i Hi3). }
+   rewrite Happ.
+   exact (real_in_space_family_union_R3 (g i) (HgR i)). }
+ claim Hcoords: forall i:set, i :e 3 -> apply_fun (graph 3 g) i :e space_family_set Xi i.
+ { let i. assume Hi3: i :e 3.
+   prove apply_fun (graph 3 g) i :e space_family_set Xi i.
+   claim Happ: apply_fun (graph 3 g) i = g i.
+   { exact (apply_fun_graph 3 g i Hi3). }
+   rewrite Happ.
+   claim HSf: space_family_set Xi i = R.
+   { exact (space_family_set_const_R3 i Hi3). }
+   rewrite HSf.
+   exact (HgR i). }
+ claim Hprop: function_on (graph 3 g) 3 U /\ (forall i:set, i :e 3 -> apply_fun (graph 3 g) i :e space_family_set Xi i).
+ { apply andI.
+   - exact Hfun.
+   - exact Hcoords. }
+ exact (SepI (Power (setprod 3 U))
+            (fun f0:set => function_on f0 3 U /\ (forall i:set, i :e 3 -> apply_fun f0 i :e space_family_set Xi i))
+            (graph 3 g)
+            Hpow
+            Hprop).
 Qed.
 
 (** explicit points in R³ as coordinate functions **)
@@ -48749,15 +48773,72 @@ exact real_1.
 Qed.
 
 Theorem ex50_R3_e1_in : ex50_R3_e1 :e euclidean_space 3.
-admit.
+prove ex50_R3_e1 :e euclidean_space 3.
+claim Hdef: ex50_R3_e1 = graph 3 (fun i:set => if i = 0 then 1 else 0).
+{ reflexivity. }
+rewrite Hdef.
+apply (graph3_in_euclidean_space3 (fun i:set => if i = 0 then 1 else 0)).
+let i.
+claim Happ: (fun i0:set => if i0 = 0 then 1 else 0) i = (if i = 0 then 1 else 0).
+{ reflexivity. }
+rewrite Happ.
+apply (xm (i = 0)).
+- assume Hi0: i = 0.
+  claim Hif: (if i = 0 then 1 else 0) = 1.
+  { exact (If_i_1 (i = 0) 1 0 Hi0). }
+  rewrite Hif.
+  exact real_1.
+- assume Hni0: ~(i = 0).
+  claim Hif: (if i = 0 then 1 else 0) = 0.
+  { exact (If_i_0 (i = 0) 1 0 Hni0). }
+  rewrite Hif.
+  exact real_0.
 Qed.
 
 Theorem ex50_R3_e2_in : ex50_R3_e2 :e euclidean_space 3.
-admit.
+prove ex50_R3_e2 :e euclidean_space 3.
+claim Hdef: ex50_R3_e2 = graph 3 (fun i:set => if i = 1 then 1 else 0).
+{ reflexivity. }
+rewrite Hdef.
+apply (graph3_in_euclidean_space3 (fun i:set => if i = 1 then 1 else 0)).
+let i.
+claim Happ: (fun i0:set => if i0 = 1 then 1 else 0) i = (if i = 1 then 1 else 0).
+{ reflexivity. }
+rewrite Happ.
+apply (xm (i = 1)).
+- assume Hi1: i = 1.
+  claim Hif: (if i = 1 then 1 else 0) = 1.
+  { exact (If_i_1 (i = 1) 1 0 Hi1). }
+  rewrite Hif.
+  exact real_1.
+- assume Hni1: ~(i = 1).
+  claim Hif: (if i = 1 then 1 else 0) = 0.
+  { exact (If_i_0 (i = 1) 1 0 Hni1). }
+  rewrite Hif.
+  exact real_0.
 Qed.
 
 Theorem ex50_R3_e3_in : ex50_R3_e3 :e euclidean_space 3.
-admit.
+prove ex50_R3_e3 :e euclidean_space 3.
+claim Hdef: ex50_R3_e3 = graph 3 (fun i:set => if i = 2 then 1 else 0).
+{ reflexivity. }
+rewrite Hdef.
+apply (graph3_in_euclidean_space3 (fun i:set => if i = 2 then 1 else 0)).
+let i.
+claim Happ: (fun i0:set => if i0 = 2 then 1 else 0) i = (if i = 2 then 1 else 0).
+{ reflexivity. }
+rewrite Happ.
+apply (xm (i = 2)).
+- assume Hi2: i = 2.
+  claim Hif: (if i = 2 then 1 else 0) = 1.
+  { exact (If_i_1 (i = 2) 1 0 Hi2). }
+  rewrite Hif.
+  exact real_1.
+- assume Hni2: ~(i = 2).
+  claim Hif: (if i = 2 then 1 else 0) = 0.
+  { exact (If_i_0 (i = 2) 1 0 Hni2). }
+  rewrite Hif.
+  exact real_0.
 Qed.
 Axiom ex50_4_points_general_position_R3_axiom :
   general_position_RN 3 {ex50_R3_zero, ex50_R3_e1, ex50_R3_e2, ex50_R3_e3, ex50_R3_ones}.
