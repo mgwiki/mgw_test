@@ -50986,13 +50986,9 @@ Qed.
 
 (** from §48 Exercise 11: is R_l a Baire space **)
 (** LATEX VERSION: Determine whether ℝ_ℓ is a Baire space. **)
-(** STUB: This theorem needs proper lower limit topology definition. **)
-Axiom ex48_11_Rl_Baire_axiom : forall Tl:set,
-  Tl = R (** stub: lower limit topology **) ->
-  Baire_space R Tl.
-Theorem ex48_11_Rl_Baire : forall Tl:set,
-  Tl = R (** stub: lower limit topology **) ->
-  Baire_space R Tl.
+(** FIXED: Use the existing lower limit topology constant R_lower_limit_topology. **)
+Axiom ex48_11_Rl_Baire_axiom : Baire_space R R_lower_limit_topology.
+Theorem ex48_11_Rl_Baire : Baire_space R R_lower_limit_topology.
 exact ex48_11_Rl_Baire_axiom.
 Qed.
 
