@@ -47652,6 +47652,29 @@ Definition continuous_real_on_I : set -> prop := fun f =>
   continuous_map unit_interval I_topology R R_standard_topology f.
 Definition C_I_R : set := {f :e function_space unit_interval R | continuous_real_on_I f}.
 
+(** from §49 Theorem 49.1: approximation by nowhere-differentiable functions **)
+(** LATEX VERSION: Given continuous h and epsilon>0, there exists continuous g with |h(x)-g(x)|<epsilon for all x, such that g is nowhere differentiable. **)
+Axiom theorem_49_1_nowhere_differentiable_approx_axiom : forall h eps:set,
+  continuous_map unit_interval I_topology R R_standard_topology h ->
+  eps :e R ->
+  Rlt 0 eps ->
+  exists g:set,
+    continuous_map unit_interval I_topology R R_standard_topology g /\
+    nowhere_differentiable g /\
+    forall x:set, x :e unit_interval ->
+      Rlt (Abs (add_SNo (apply_fun h x) (minus_SNo (apply_fun g x)))) eps.
+Theorem theorem_49_1_nowhere_differentiable_approx : forall h eps:set,
+  continuous_map unit_interval I_topology R R_standard_topology h ->
+  eps :e R ->
+  Rlt 0 eps ->
+  exists g:set,
+    continuous_map unit_interval I_topology R R_standard_topology g /\
+    nowhere_differentiable g /\
+    forall x:set, x :e unit_interval ->
+      Rlt (Abs (add_SNo (apply_fun h x) (minus_SNo (apply_fun g x)))) eps.
+exact theorem_49_1_nowhere_differentiable_approx_axiom.
+Qed.
+
 Definition diffquot_forward_abs : set -> set -> set -> set := fun f x h =>
   Abs (div_SNo (add_SNo (apply_fun f (add_SNo x h)) (minus_SNo (apply_fun f x))) h).
 Definition diffquot_backward_abs : set -> set -> set -> set := fun f x h =>
