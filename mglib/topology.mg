@@ -31469,15 +31469,7 @@ claim Hcont: continuous_map X Tx Y Ty f.
                  (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
                  (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
                Hhom). }
-claim Habc: (topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y.
-{ exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
-               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
-               Hcont). }
-claim Hab: topology_on X Tx /\ topology_on Y Ty.
-{ exact (andEL (topology_on X Tx /\ topology_on Y Ty)
-               (function_on f X Y)
-               Habc). }
-exact (andEL (topology_on X Tx) (topology_on Y Ty) Hab).
+exact (continuous_map_topology_dom X Tx Y Ty f Hcont).
 Qed.
 
 Theorem homeomorphism_topology_right : forall X Tx Y Ty f:set,
@@ -31490,15 +31482,7 @@ claim Hcont: continuous_map X Tx Y Ty f.
                  (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
                  (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
                Hhom). }
-claim Habc: (topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y.
-{ exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
-               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
-               Hcont). }
-claim Hab: topology_on X Tx /\ topology_on Y Ty.
-{ exact (andEL (topology_on X Tx /\ topology_on Y Ty)
-               (function_on f X Y)
-               Habc). }
-exact (andER (topology_on X Tx) (topology_on Y Ty) Hab).
+exact (continuous_map_topology_cod X Tx Y Ty f Hcont).
 Qed.
 
 (** helper: homeomorphisms are injective **)
