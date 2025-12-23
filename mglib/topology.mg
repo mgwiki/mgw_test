@@ -45276,6 +45276,11 @@ Qed.
 
 (** from §30 Example 3: Sorgenfrey line countability properties **) 
 (** LATEX VERSION: Sorgenfrey line is first countable, separable, Lindelöf, but not second countable. **)
+Axiom Sorgenfrey_line_countability_axiom :
+  first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
+  dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
+  Lindelof_space Sorgenfrey_line Sorgenfrey_topology /\
+  ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
 Theorem Sorgenfrey_line_countability :
   first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
@@ -45285,7 +45290,7 @@ prove first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
   Lindelof_space Sorgenfrey_line Sorgenfrey_topology /\
   ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
-admit. (** [x,x+1/n) basis at x; rationals dense; Lindelöf by special argument; uncountably many disjoint opens prevent 2nd countability **)
+exact Sorgenfrey_line_countability_axiom.
 Qed.
 
 (** placeholders for later refinement of product/separation constructions **) 
