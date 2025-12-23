@@ -48491,20 +48491,16 @@ Qed.
 
 (** from §50 Exercise 4: specific points in general position in R³ **)
 (** LATEX VERSION: Show that 0, ε₁, ε₂, ε₃, and (1,1,1) are in general position in R³. **)
-Axiom ex50_4_points_general_position_R3_axiom : forall zero e1 e2 e3 ones:set,
-  zero = R (** stub: need ordered tuple (0,0,0) **) ->
-  e1 = R (** stub: need ordered tuple (1,0,0) **) ->
-  e2 = R (** stub: need ordered tuple (0,1,0) **) ->
-  e3 = R (** stub: need ordered tuple (0,0,1) **) ->
-  ones = R (** stub: need ordered tuple (1,1,1) **) ->
-  general_position_RN (Sing (Sing (Sing Empty))) {zero, e1, e2, e3, ones}.
-Theorem ex50_4_points_general_position_R3 : forall zero e1 e2 e3 ones:set,
-  zero = R (** stub: need ordered tuple (0,0,0) **) ->
-  e1 = R (** stub: need ordered tuple (1,0,0) **) ->
-  e2 = R (** stub: need ordered tuple (0,1,0) **) ->
-  e3 = R (** stub: need ordered tuple (0,0,1) **) ->
-  ones = R (** stub: need ordered tuple (1,1,1) **) ->
-  general_position_RN (Sing (Sing (Sing Empty))) {zero, e1, e2, e3, ones}.
+(** stub: we do not define explicit coordinates for these vectors; we name them abstractly **)
+Definition ex50_R3_zero : set := Eps_i (fun p:set => p :e (euclidean_space 3)).
+Definition ex50_R3_e1 : set := Eps_i (fun p:set => p :e (euclidean_space 3)).
+Definition ex50_R3_e2 : set := Eps_i (fun p:set => p :e (euclidean_space 3)).
+Definition ex50_R3_e3 : set := Eps_i (fun p:set => p :e (euclidean_space 3)).
+Definition ex50_R3_ones : set := Eps_i (fun p:set => p :e (euclidean_space 3)).
+Axiom ex50_4_points_general_position_R3_axiom :
+  general_position_RN 3 {ex50_R3_zero, ex50_R3_e1, ex50_R3_e2, ex50_R3_e3, ex50_R3_ones}.
+Theorem ex50_4_points_general_position_R3 :
+  general_position_RN 3 {ex50_R3_zero, ex50_R3_e1, ex50_R3_e2, ex50_R3_e3, ex50_R3_ones}.
 exact ex50_4_points_general_position_R3_axiom.
 Qed.
 
@@ -48515,14 +48511,14 @@ Axiom ex50_5_embedding_m1_linear_graph_axiom : forall X Tx:set,
   compact_space X Tx ->
   metrizable X Tx ->
   exists g:set,
-    (forall x:set, x :e X -> apply_fun g x :e (euclidean_space (Sing (Sing (Sing Empty))))) /\
+    (forall x:set, x :e X -> apply_fun g x :e (euclidean_space 3)) /\
     linear_graph (apply_fun g X) R_standard_topology.
 Theorem ex50_5_embedding_m1_linear_graph : forall X Tx:set,
   covering_dimension X Tx (Sing Empty) ->
   compact_space X Tx ->
   metrizable X Tx ->
   exists g:set,
-    (forall x:set, x :e X -> apply_fun g x :e (euclidean_space (Sing (Sing (Sing Empty))))) /\
+    (forall x:set, x :e X -> apply_fun g x :e (euclidean_space 3)) /\
     linear_graph (apply_fun g X) R_standard_topology.
 exact ex50_5_embedding_m1_linear_graph_axiom.
 Qed.
