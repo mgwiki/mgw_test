@@ -31213,6 +31213,7 @@ apply andI.
     * exact (binunionI2 f g (x,y) (andER (y :e Y) ((x,y) :e g) Hy)).
 Qed.
 
+(** LATEX VERSION: For disjoint domains A,B, the preimage of V under the pasted map f∪g is the union of the separate preimages. **)
 Axiom preimage_of_union_functions : forall A B f g V:set,
   A :/\: B = Empty ->
   preimage_of (A :\/: B) (f :\/: g) V =
@@ -39642,7 +39643,7 @@ Qed.
 
 (** from §26 Theorem 26.5: compactness preserved under continuous maps **) 
 (** LATEX VERSION: The continuous image of a compact space is compact (in the subspace topology on the image). **)
-Definition image_of_fun : set -> set -> set := fun f X => {apply_fun f x|x :e X}.
+Definition image_of_fun : set -> set -> set := fun f X => image_of f X.
 
 Theorem continuous_image_compact : forall X Tx Y Ty f:set,
   compact_space X Tx -> continuous_map X Tx Y Ty f ->
