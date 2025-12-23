@@ -51029,14 +51029,14 @@ Axiom ex49_2_construct_bounded_function_axiom : forall n:set, forall eps:set,
   n :e omega ->
   eps :e R ->
   exists f:set,
-    continuous_map unit_interval R_standard_topology R R_standard_topology f /\
+    continuous_map unit_interval I_topology R R_standard_topology f /\
     (forall x:set, x :e unit_interval -> apply_fun f x :e R) /\
     f :e U_n n.
 Theorem ex49_2_construct_bounded_function : forall n:set, forall eps:set,
   n :e omega ->
   eps :e R ->
   exists f:set,
-    continuous_map unit_interval R_standard_topology R R_standard_topology f /\
+    continuous_map unit_interval I_topology R R_standard_topology f /\
     (forall x:set, x :e unit_interval -> apply_fun f x :e R) /\
     f :e U_n n. (** stub: need the bound |f(x)|≤eps and correct topology on I **)
 exact ex49_2_construct_bounded_function_axiom.
