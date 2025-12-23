@@ -32396,6 +32396,96 @@ Qed.
 Definition projection_map1 : set -> set -> set := fun X Y => projection1 X Y.
 Definition projection_map2 : set -> set -> set := fun X Y => projection2 X Y.
 
+(** Helper: preimage of a rectangle via projection compositions **)
+Theorem preimage_of_rectangle_via_projections : forall A X Y h U V:set,
+  function_on h A (setprod X Y) ->
+  U c= X -> V c= Y ->
+  preimage_of A h (rectangle_set U V) =
+    (preimage_of A (compose_fun A h (projection_map1 X Y)) U) :/\:
+    (preimage_of A (compose_fun A h (projection_map2 X Y)) V).
+let A X Y h U V.
+assume Hh: function_on h A (setprod X Y).
+assume HU: U c= X.
+assume HV: V c= Y.
+apply set_ext.
+- let a. assume Ha: a :e preimage_of A h (rectangle_set U V).
+  prove a :e (preimage_of A (compose_fun A h (projection_map1 X Y)) U) :/\:
+            (preimage_of A (compose_fun A h (projection_map2 X Y)) V).
+  claim HaA: a :e A.
+  { exact (SepE1 A (fun a0:set => apply_fun h a0 :e rectangle_set U V) a Ha). }
+  claim Himg: apply_fun h a :e rectangle_set U V.
+  { exact (SepE2 A (fun a0:set => apply_fun h a0 :e rectangle_set U V) a Ha). }
+  claim HpXY: apply_fun h a :e setprod X Y.
+  { exact (Hh a HaA). }
+  claim Hp0U: (apply_fun h a) 0 :e U.
+  { exact (ap0_Sigma U (fun _ : set => V) (apply_fun h a) Himg). }
+  claim Hp1V: (apply_fun h a) 1 :e V.
+  { exact (ap1_Sigma U (fun _ : set => V) (apply_fun h a) Himg). }
+  claim Happ1: apply_fun (projection_map1 X Y) (apply_fun h a) = (apply_fun h a) 0.
+  { exact (projection1_apply X Y (apply_fun h a) HpXY). }
+  claim Happ2: apply_fun (projection_map2 X Y) (apply_fun h a) = (apply_fun h a) 1.
+  { exact (projection2_apply X Y (apply_fun h a) HpXY). }
+  claim Hc1: apply_fun (compose_fun A h (projection_map1 X Y)) a :e U.
+  { claim Hcomp: apply_fun (compose_fun A h (projection_map1 X Y)) a =
+      apply_fun (projection_map1 X Y) (apply_fun h a).
+    { exact (compose_fun_apply A h (projection_map1 X Y) a HaA). }
+    rewrite Hcomp.
+    rewrite Happ1.
+    exact Hp0U. }
+  claim Hc2: apply_fun (compose_fun A h (projection_map2 X Y)) a :e V.
+  { claim Hcomp: apply_fun (compose_fun A h (projection_map2 X Y)) a =
+      apply_fun (projection_map2 X Y) (apply_fun h a).
+    { exact (compose_fun_apply A h (projection_map2 X Y) a HaA). }
+    rewrite Hcomp.
+    rewrite Happ2.
+    exact Hp1V. }
+  apply binintersectI.
+  * exact (SepI A (fun a0:set => apply_fun (compose_fun A h (projection_map1 X Y)) a0 :e U) a HaA Hc1).
+  * exact (SepI A (fun a0:set => apply_fun (compose_fun A h (projection_map2 X Y)) a0 :e V) a HaA Hc2).
+- let a. assume Ha: a :e (preimage_of A (compose_fun A h (projection_map1 X Y)) U) :/\:
+                     (preimage_of A (compose_fun A h (projection_map2 X Y)) V).
+  prove a :e preimage_of A h (rectangle_set U V).
+  claim Ha1: a :e preimage_of A (compose_fun A h (projection_map1 X Y)) U.
+  { exact (binintersectE1 (preimage_of A (compose_fun A h (projection_map1 X Y)) U)
+                          (preimage_of A (compose_fun A h (projection_map2 X Y)) V) a Ha). }
+  claim Ha2: a :e preimage_of A (compose_fun A h (projection_map2 X Y)) V.
+  { exact (binintersectE2 (preimage_of A (compose_fun A h (projection_map1 X Y)) U)
+                          (preimage_of A (compose_fun A h (projection_map2 X Y)) V) a Ha). }
+  claim HaA: a :e A.
+  { exact (SepE1 A (fun a0:set => apply_fun (compose_fun A h (projection_map1 X Y)) a0 :e U) a Ha1). }
+  claim HpXY: apply_fun h a :e setprod X Y.
+  { exact (Hh a HaA). }
+  claim Hc1: apply_fun (compose_fun A h (projection_map1 X Y)) a :e U.
+  { exact (SepE2 A (fun a0:set => apply_fun (compose_fun A h (projection_map1 X Y)) a0 :e U) a Ha1). }
+  claim Hc2: apply_fun (compose_fun A h (projection_map2 X Y)) a :e V.
+  { exact (SepE2 A (fun a0:set => apply_fun (compose_fun A h (projection_map2 X Y)) a0 :e V) a Ha2). }
+  claim Hcomp1: apply_fun (compose_fun A h (projection_map1 X Y)) a =
+      apply_fun (projection_map1 X Y) (apply_fun h a).
+  { exact (compose_fun_apply A h (projection_map1 X Y) a HaA). }
+  claim Hcomp2: apply_fun (compose_fun A h (projection_map2 X Y)) a =
+      apply_fun (projection_map2 X Y) (apply_fun h a).
+  { exact (compose_fun_apply A h (projection_map2 X Y) a HaA). }
+  claim Happ1: apply_fun (projection_map1 X Y) (apply_fun h a) = (apply_fun h a) 0.
+  { exact (projection1_apply X Y (apply_fun h a) HpXY). }
+  claim Happ2: apply_fun (projection_map2 X Y) (apply_fun h a) = (apply_fun h a) 1.
+  { exact (projection2_apply X Y (apply_fun h a) HpXY). }
+  claim Hp0U: (apply_fun h a) 0 :e U.
+  { rewrite <- Happ1.
+    rewrite <- Hcomp1.
+    exact Hc1. }
+  claim Hp1V: (apply_fun h a) 1 :e V.
+  { rewrite <- Happ2.
+    rewrite <- Hcomp2.
+    exact Hc2. }
+  claim Heta: apply_fun h a = ((apply_fun h a) 0, (apply_fun h a) 1).
+  { exact (setprod_eta X Y (apply_fun h a) HpXY). }
+  claim HpUV: apply_fun h a :e setprod U V.
+  { rewrite Heta.
+    exact (tuple_2_setprod U V ((apply_fun h a) 0) Hp0U ((apply_fun h a) 1) Hp1V). }
+  prove a :e preimage_of A h (rectangle_set U V).
+  exact (SepI A (fun a0:set => apply_fun h a0 :e rectangle_set U V) a HaA HpUV).
+Qed.
+
 (** Helper: projection maps are continuous **)
 Theorem projection_maps_continuous : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
