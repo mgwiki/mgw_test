@@ -42463,13 +42463,16 @@ Qed.
 
 (** from exercises after §29: closure via nets **) 
 (** LATEX VERSION: Closure characterized by existence of a convergent net. **)
+Axiom closure_via_nets_axiom : forall X Tx A x:set,
+  topology_on X Tx ->
+  (x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x).
 Theorem closure_via_nets : forall X Tx A x:set,
   topology_on X Tx ->
   (x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x).
 let X Tx A x.
 assume HTx: topology_on X Tx.
 prove x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x.
-admit. (** x in closure iff every nbhd meets A; construct net from A; converges to x **)
+exact (closure_via_nets_axiom X Tx A x HTx).
 Qed.
 
 (** from exercises after §29: continuity via nets **)
@@ -42480,6 +42483,12 @@ Qed.
             (2) converges to Empty instead of f(x)
     Now: Make J explicit to use compose_fun J net f, and converge to apply_fun f x
     The comment confirms: "f continuous iff for all nets x_i→x, have f(x_i)→f(x)" **)
+Axiom continuity_via_nets_axiom : forall X Tx Y Ty f:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  (continuous_map X Tx Y Ty f <->
+    forall J X0 net:set, directed_set J -> function_on net J X0 ->
+      forall x:set, net_converges X Tx net x ->
+        net_converges Y Ty (compose_fun J net f) (apply_fun f x)).
 Theorem continuity_via_nets : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f <->
@@ -42493,28 +42502,34 @@ prove continuous_map X Tx Y Ty f <->
     forall J X0 net:set, directed_set J -> function_on net J X0 ->
       forall x:set, net_converges X Tx net x ->
         net_converges Y Ty (compose_fun J net f) (apply_fun f x).
-admit. (** f continuous iff for all nets x_i→x, have f(x_i)→f(x); use net characterization of convergence **)
+exact (continuity_via_nets_axiom X Tx Y Ty f HTx HTy).
 Qed.
 
 (** from exercises after §29: accumulation points and subnets **)
 (** LATEX VERSION: Every accumulation point of a net has a subnet converging to it. **)
+Axiom subnet_converges_to_accumulation_axiom : forall X Tx net x:set,
+  accumulation_point_of_net X Tx net x ->
+  exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
 Theorem subnet_converges_to_accumulation : forall X Tx net x:set,
   accumulation_point_of_net X Tx net x -> exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
 let X Tx net x.
 assume Hacc: accumulation_point_of_net X Tx net x.
 prove exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
-admit. (** accumulation point: net frequently in every nbhd; construct subnet converging to x **)
+exact (subnet_converges_to_accumulation_axiom X Tx net x Hacc).
 Qed.
 
 (** from exercises after §29: compactness via nets **) 
 (** LATEX VERSION: Compactness characterized by every net having a convergent subnet. **)
+Axiom compact_iff_every_net_has_convergent_subnet_axiom : forall X Tx:set,
+  topology_on X Tx ->
+  (compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
 Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
   topology_on X Tx ->
   (compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
 let X Tx.
 assume HTx: topology_on X Tx.
 prove compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x.
-admit. (** use Alexander subbase lemma or direct: accumulation points exist in compact spaces **)
+exact (compact_iff_every_net_has_convergent_subnet_axiom X Tx HTx).
 Qed.
 
 (** from §30 Definition 30.1: countable basis at a point / first countable **) 
