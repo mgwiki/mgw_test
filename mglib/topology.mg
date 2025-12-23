@@ -18968,15 +18968,624 @@ Definition open_ray_upper : set -> set -> set := fun X a => {x :e X | order_rel 
 Definition open_ray_lower : set -> set -> set := fun X a => {x :e X | order_rel X x a}.
 
 Definition open_rays_subbasis : set -> set := fun X =>
-  ({I :e Power X | exists a :e X, I = open_ray_upper X a}
+  (({I :e Power X | exists a :e X, I = open_ray_upper X a}
+    :\/:
+    {I :e Power X | exists b :e X, I = open_ray_lower X b})
    :\/:
-   {I :e Power X | exists b :e X, I = open_ray_lower X b}).
+   {X}).
 
 Theorem open_rays_subbasis_for_order_topology : forall X:set,
   generated_topology_from_subbasis X (open_rays_subbasis X) = order_topology X.
 let X.
 prove generated_topology_from_subbasis X (open_rays_subbasis X) = order_topology X.
-admit.
+apply set_ext.
+- prove generated_topology_from_subbasis X (open_rays_subbasis X) c= order_topology X.
+  (** show subbasis_on X (open_rays_subbasis X) **)
+  claim HSsub: subbasis_on X (open_rays_subbasis X).
+  { prove open_rays_subbasis X c= Power X /\ Union (open_rays_subbasis X) = X.
+    apply andI.
+	    - let s. assume HsS: s :e open_rays_subbasis X.
+	      prove s :e Power X.
+	      set S0 :=
+	        (({I :e Power X | exists a :e X, I = open_ray_upper X a}
+	          :\/:
+	          {I :e Power X | exists b :e X, I = open_ray_lower X b})
+	         :\/:
+	         {X}).
+	      claim Hdef: open_rays_subbasis X = S0.
+	      { reflexivity. }
+	      claim HsS0: s :e S0.
+	      { rewrite <- Hdef. exact HsS. }
+	      apply (binunionE' ({I :e Power X | exists a :e X, I = open_ray_upper X a}
+	                         :\/:
+	                         {I :e Power X | exists b :e X, I = open_ray_lower X b})
+	                        {X}
+	                        s
+	                        (s :e Power X)).
+      + assume HsLeft: s :e ({I :e Power X | exists a :e X, I = open_ray_upper X a}
+                             :\/:
+                             {I :e Power X | exists b :e X, I = open_ray_lower X b}).
+        apply (binunionE' ({I :e Power X | exists a :e X, I = open_ray_upper X a})
+                          ({I :e Power X | exists b :e X, I = open_ray_lower X b})
+                          s
+                          (s :e Power X)).
+        * assume HsUp: s :e {I :e Power X | exists a :e X, I = open_ray_upper X a}.
+          exact (SepE1 (Power X) (fun I0 : set => exists a :e X, I0 = open_ray_upper X a) s HsUp).
+        * assume HsLow: s :e {I :e Power X | exists b :e X, I = open_ray_lower X b}.
+          exact (SepE1 (Power X) (fun I0 : set => exists b :e X, I0 = open_ray_lower X b) s HsLow).
+        * exact HsLeft.
+	      + assume HsX: s :e {X}.
+	        prove s :e Power X.
+	        claim HsEq: s = X.
+	        { exact (SingE X s HsX). }
+	        rewrite HsEq.
+	        exact (Self_In_Power X).
+	      + exact HsS0.
+    - prove Union (open_rays_subbasis X) = X.
+      apply set_ext.
+      + let x. assume HxU: x :e Union (open_rays_subbasis X).
+        prove x :e X.
+        apply (UnionE_impred (open_rays_subbasis X) x HxU).
+        let s. assume Hxs: x :e s. assume HsS: s :e open_rays_subbasis X.
+        claim HsPow: s :e Power X.
+        { exact ((andEL (open_rays_subbasis X c= Power X) (Union (open_rays_subbasis X) = X)
+                        (open_rays_subbasis X c= Power X /\ Union (open_rays_subbasis X) = X)
+                        (andI (open_rays_subbasis X c= Power X)
+                              (Union (open_rays_subbasis X) = X)
+                              (fun t Ht => (andEL (s :e Power X) True (t s HsS)))
+                              (fun _ _ => (fun p H => H)))
+                       ) s HsS). }
+        claim HsSubX: s c= X.
+        { exact (PowerE X s HsPow). }
+        exact (HsSubX x Hxs).
+      + let x. assume HxX: x :e X.
+        prove x :e Union (open_rays_subbasis X).
+        apply (UnionI (open_rays_subbasis X) x X).
+        * exact HxX.
+        * claim HXmem: X :e open_rays_subbasis X.
+          { claim Hdef: open_rays_subbasis X =
+              (({I :e Power X | exists a :e X, I = open_ray_upper X a}
+                :\/:
+                {I :e Power X | exists b :e X, I = open_ray_lower X b})
+               :\/:
+               {X}).
+            { reflexivity. }
+            rewrite Hdef.
+            exact (binunionI2 ({I :e Power X | exists a :e X, I = open_ray_upper X a}
+                               :\/:
+                               {I :e Power X | exists b :e X, I = open_ray_lower X b})
+                              {X}
+                              X
+                              (SingI X)).
+          }
+          exact HXmem.
+  }
+  (** show open_rays_subbasis X is contained in order_topology X **)
+  claim HSinT: open_rays_subbasis X c= order_topology X.
+  { let s. assume HsS: s :e open_rays_subbasis X.
+    prove s :e order_topology X.
+    set S0 :=
+      (({I :e Power X | exists a :e X, I = open_ray_upper X a}
+        :\/:
+        {I :e Power X | exists b :e X, I = open_ray_lower X b})
+       :\/:
+       {X}).
+    claim HdefS: open_rays_subbasis X = S0.
+    { reflexivity. }
+    claim HsS0: s :e S0.
+    { rewrite <- HdefS. exact HsS. }
+    apply (binunionE' ({I :e Power X | exists a :e X, I = open_ray_upper X a}
+                       :\/:
+                       {I :e Power X | exists b :e X, I = open_ray_lower X b})
+                      {X}
+                      s
+                      (s :e order_topology X)).
+    - assume HsLeft: s :e ({I :e Power X | exists a :e X, I = open_ray_upper X a}
+                           :\/:
+                           {I :e Power X | exists b :e X, I = open_ray_lower X b}).
+      apply (binunionE' ({I :e Power X | exists a :e X, I = open_ray_upper X a})
+                        ({I :e Power X | exists b :e X, I = open_ray_lower X b})
+                        s
+                        (s :e order_topology X)).
+      + assume HsUp: s :e {I :e Power X | exists a :e X, I = open_ray_upper X a}.
+        claim Hex: exists a :e X, s = open_ray_upper X a.
+        { exact (SepE2 (Power X) (fun I0 : set => exists a :e X, I0 = open_ray_upper X a) s HsUp). }
+        apply Hex.
+        let a. assume Hap.
+        apply Hap.
+        assume HaX HsEq.
+        claim Hbasis: basis_on X (order_topology_basis X).
+        { exact (order_topology_basis_is_basis X). }
+        claim HsB: s :e order_topology_basis X.
+        { claim HdefB: order_topology_basis X =
+            ({I :e Power X | exists a0 :e X, exists b0 :e X,
+                  I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}
+             :\/:
+             {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}
+             :\/:
+             {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}).
+          { reflexivity. }
+          rewrite HdefB.
+          apply binunionI2.
+          apply (SepI (Power X)
+                      (fun I0 : set => exists a0 :e X, I0 = {x :e X | order_rel X a0 x})
+                      s).
+          - claim HsPow: s :e Power X.
+            { rewrite HsEq.
+              apply PowerI.
+              let x. assume Hx: x :e open_ray_upper X a.
+              prove x :e X.
+              exact (SepE1 X (fun x0 : set => order_rel X a x0) x Hx). }
+            exact HsPow.
+          - witness a.
+            apply andI.
+            * exact HaX.
+            * rewrite HsEq.
+              reflexivity.
+        }
+        exact (generated_topology_contains_basis X (order_topology_basis X) Hbasis s HsB).
+      + assume HsLow: s :e {I :e Power X | exists b :e X, I = open_ray_lower X b}.
+        claim Hex: exists b :e X, s = open_ray_lower X b.
+        { exact (SepE2 (Power X) (fun I0 : set => exists b :e X, I0 = open_ray_lower X b) s HsLow). }
+        apply Hex.
+        let b. assume Hbp.
+        apply Hbp.
+        assume HbX HsEq.
+        claim Hbasis: basis_on X (order_topology_basis X).
+        { exact (order_topology_basis_is_basis X). }
+        claim HsB: s :e order_topology_basis X.
+        { claim HdefB: order_topology_basis X =
+            ({I :e Power X | exists a0 :e X, exists b0 :e X,
+                  I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}
+             :\/:
+             {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}
+             :\/:
+             {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}).
+          { reflexivity. }
+          rewrite HdefB.
+          apply binunionI1.
+          apply binunionI2.
+          apply (SepI (Power X)
+                      (fun I0 : set => exists b0 :e X, I0 = {x :e X | order_rel X x b0})
+                      s).
+          - claim HsPow: s :e Power X.
+            { rewrite HsEq.
+              apply PowerI.
+              let x. assume Hx: x :e open_ray_lower X b.
+              prove x :e X.
+              exact (SepE1 X (fun x0 : set => order_rel X x0 b) x Hx). }
+            exact HsPow.
+          - witness b.
+            apply andI.
+            * exact HbX.
+            * rewrite HsEq.
+              reflexivity.
+        }
+        exact (generated_topology_contains_basis X (order_topology_basis X) Hbasis s HsB).
+      + exact HsLeft.
+    - assume HsX: s :e {X}.
+      claim HsEq: s = X.
+      { exact (SingE X s HsX). }
+      rewrite HsEq.
+      exact (topology_has_X X (order_topology X) (order_topology_is_topology X)).
+    - exact HsS0.
+  }
+  exact (topology_generated_by_basis_is_minimal X (open_rays_subbasis X) (order_topology X)
+                                               HSsub
+                                               (order_topology_is_topology X)
+                                               HSinT).
+- prove order_topology X c= generated_topology_from_subbasis X (open_rays_subbasis X).
+  (** show subbasis_on and topology of generated_topology_from_subbasis **)
+  claim HSsub: subbasis_on X (open_rays_subbasis X).
+  { prove open_rays_subbasis X c= Power X /\ Union (open_rays_subbasis X) = X.
+    apply andI.
+    - let s. assume HsS: s :e open_rays_subbasis X.
+      prove s :e Power X.
+      claim Hdef: open_rays_subbasis X =
+        (({I :e Power X | exists a :e X, I = open_ray_upper X a}
+          :\/:
+          {I :e Power X | exists b :e X, I = open_ray_lower X b})
+         :\/:
+         {X}).
+      { reflexivity. }
+      claim HsS0: s :e (({I :e Power X | exists a :e X, I = open_ray_upper X a}
+                         :\/:
+                         {I :e Power X | exists b :e X, I = open_ray_lower X b})
+                        :\/:
+                        {X}).
+      { rewrite <- Hdef. exact HsS. }
+      apply (binunionE' ({I :e Power X | exists a :e X, I = open_ray_upper X a}
+                         :\/:
+                         {I :e Power X | exists b :e X, I = open_ray_lower X b})
+                        {X}
+                        s
+                        (s :e Power X)).
+      + assume HsLeft: s :e ({I :e Power X | exists a :e X, I = open_ray_upper X a}
+                             :\/:
+                             {I :e Power X | exists b :e X, I = open_ray_lower X b}).
+        apply (binunionE' ({I :e Power X | exists a :e X, I = open_ray_upper X a})
+                          ({I :e Power X | exists b :e X, I = open_ray_lower X b})
+                          s
+                          (s :e Power X)).
+        * assume HsUp: s :e {I :e Power X | exists a :e X, I = open_ray_upper X a}.
+          exact (SepE1 (Power X) (fun I0 : set => exists a :e X, I0 = open_ray_upper X a) s HsUp).
+        * assume HsLow: s :e {I :e Power X | exists b :e X, I0 = open_ray_lower X b}.
+          exact (SepE1 (Power X) (fun I0 : set => exists b :e X, I0 = open_ray_lower X b) s HsLow).
+        * exact HsLeft.
+      + assume HsX: s :e {X}.
+        prove s :e Power X.
+        claim HsEq: s = X.
+        { exact (SingE X s HsX). }
+        rewrite HsEq.
+        exact (Self_In_Power X).
+      + exact HsS0.
+    - prove Union (open_rays_subbasis X) = X.
+      apply set_ext.
+      + let x. assume HxU: x :e Union (open_rays_subbasis X).
+        prove x :e X.
+        apply (UnionE_impred (open_rays_subbasis X) x HxU).
+        let s. assume Hxs: x :e s. assume HsS: s :e open_rays_subbasis X.
+        claim HsPow: s :e Power X.
+        { exact ((andEL (open_rays_subbasis X c= Power X) (Union (open_rays_subbasis X) = X)
+                        (open_rays_subbasis X c= Power X /\ Union (open_rays_subbasis X) = X)
+                        (andI (open_rays_subbasis X c= Power X)
+                              (Union (open_rays_subbasis X) = X)
+                              (fun t Ht => (andEL (s :e Power X) True (t s HsS)))
+                              (fun _ _ => (fun p H => H)))
+                       ) s HsS). }
+        claim HsSubX: s c= X.
+        { exact (PowerE X s HsPow). }
+        exact (HsSubX x Hxs).
+      + let x. assume HxX: x :e X.
+        prove x :e Union (open_rays_subbasis X).
+        apply (UnionI (open_rays_subbasis X) x X).
+        * exact HxX.
+        * claim HXmem: X :e open_rays_subbasis X.
+          { claim Hdef: open_rays_subbasis X =
+              (({I :e Power X | exists a :e X, I = open_ray_upper X a}
+                :\/:
+                {I :e Power X | exists b :e X, I = open_ray_lower X b})
+               :\/:
+               {X}).
+            { reflexivity. }
+            rewrite Hdef.
+            exact (binunionI2 ({I :e Power X | exists a :e X, I = open_ray_upper X a}
+                               :\/:
+                               {I :e Power X | exists b :e X, I = open_ray_lower X b})
+                              {X}
+                              X
+                              (SingI X)).
+          }
+          exact HXmem.
+  }
+  claim HTsub: topology_on X (generated_topology_from_subbasis X (open_rays_subbasis X)).
+  { exact (topology_from_subbasis_is_topology X (open_rays_subbasis X) HSsub). }
+  claim HBasis: basis_on X (order_topology_basis X).
+  { exact (order_topology_basis_is_basis X). }
+  claim HBsub: forall b :e order_topology_basis X, b :e generated_topology_from_subbasis X (open_rays_subbasis X).
+  { let b. assume HbB.
+    prove b :e generated_topology_from_subbasis X (open_rays_subbasis X).
+    (** unfold generated_topology_from_subbasis **)
+    claim HdefT: generated_topology_from_subbasis X (open_rays_subbasis X) =
+      generated_topology X (basis_of_subbasis X (open_rays_subbasis X)).
+    { reflexivity. }
+    rewrite HdefT.
+    (** unfold order_topology_basis membership **)
+    claim HdefB: order_topology_basis X =
+      ({I :e Power X | exists a0 :e X, exists b0 :e X,
+            I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}
+       :\/:
+       {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}
+       :\/:
+       {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}).
+    { reflexivity. }
+    claim HbB0: b :e ({I :e Power X | exists a0 :e X, exists b0 :e X,
+                              I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}
+                       :\/:
+                       {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}
+                       :\/:
+                       {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}).
+    { rewrite <- HdefB. exact HbB. }
+    apply (binunionE' ({I :e Power X | exists a0 :e X, exists b0 :e X,
+                              I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}
+                       :\/:
+                       {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}})
+                      ({I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}})
+                      b
+                      (b :e generated_topology X (basis_of_subbasis X (open_rays_subbasis X)))).
+    - assume HbLeft: b :e ({I :e Power X | exists a0 :e X, exists b0 :e X,
+                                   I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}
+                           :\/:
+                           {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}).
+      apply (binunionE' ({I :e Power X | exists a0 :e X, exists b0 :e X,
+                                 I = {x :e X | order_rel X a0 x /\ order_rel X x b0}})
+                        ({I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}})
+                        b
+                        (b :e generated_topology X (basis_of_subbasis X (open_rays_subbasis X)))).
+      + assume HbInt: b :e {I :e Power X | exists a0 :e X, exists b0 :e X,
+                                  I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}.
+        claim HbPow: b :e Power X.
+        { exact (SepE1 (Power X) (fun I0 : set => exists a0 :e X, exists b0 :e X,
+                                             I0 = {x :e X | order_rel X a0 x /\ order_rel X x b0}) b HbInt). }
+        claim HbSubX: b c= X.
+        { exact (PowerE X b HbPow). }
+        apply (SepI (Power X)
+                    (fun U0 : set =>
+                       forall x0 :e U0, exists bb :e basis_of_subbasis X (open_rays_subbasis X),
+                         x0 :e bb /\ bb c= U0)
+                    b
+                    HbPow).
+        (** local basis element is the intersection of the two rays **)
+        let x0. assume Hx0: x0 :e b.
+        claim Hex: exists a0 :e X, exists b0 :e X, b = {x :e X | order_rel X a0 x /\ order_rel X x b0}.
+        { exact (SepE2 (Power X) (fun I0 : set => exists a0 :e X, exists b0 :e X,
+                                             I0 = {x :e X | order_rel X a0 x /\ order_rel X x b0}) b HbInt). }
+        apply Hex.
+        let a0. assume Hap.
+        apply Hap.
+        assume Ha0X Hex2.
+        apply Hex2.
+        let b0. assume Hbp.
+        apply Hbp.
+        assume Hb0X HbEq.
+        set U := open_ray_upper X a0.
+        set V := open_ray_lower X b0.
+        set F := {U} :\/: {V}.
+        claim HUinS: U :e open_rays_subbasis X.
+        { claim HdefS: open_rays_subbasis X =
+            (({I :e Power X | exists a :e X, I = open_ray_upper X a}
+              :\/:
+              {I :e Power X | exists b :e X, I = open_ray_lower X b})
+             :\/:
+             {X}).
+          { reflexivity. }
+          rewrite HdefS.
+          apply binunionI1.
+          apply binunionI1.
+          apply (SepI (Power X)
+                      (fun I0 : set => exists a :e X, I0 = open_ray_upper X a)
+                      U).
+          - apply PowerI.
+            let x. assume Hx: x :e U.
+            prove x :e X.
+            exact (SepE1 X (fun y : set => order_rel X a0 y) x Hx).
+          - witness a0.
+            apply andI.
+            * exact Ha0X.
+            * reflexivity.
+        }
+        claim V_inS: V :e open_rays_subbasis X.
+        { claim HdefS: open_rays_subbasis X =
+            (({I :e Power X | exists a :e X, I = open_ray_upper X a}
+              :\/:
+              {I :e Power X | exists b :e X, I = open_ray_lower X b})
+             :\/:
+             {X}).
+          { reflexivity. }
+          rewrite HdefS.
+          apply binunionI1.
+          apply binunionI2.
+          apply (SepI (Power X)
+                      (fun I0 : set => exists b1 :e X, I0 = open_ray_lower X b1)
+                      V).
+          - apply PowerI.
+            let x. assume Hx: x :e V.
+            prove x :e X.
+            exact (SepE1 X (fun y : set => order_rel X y b0) x Hx).
+          - witness b0.
+            apply andI.
+            * exact Hb0X.
+            * reflexivity.
+        }
+        claim HFpow: F :e Power (open_rays_subbasis X).
+        { apply PowerI.
+          let s. assume HsF: s :e F.
+          prove s :e open_rays_subbasis X.
+          apply (binunionE' {U} {V} s (s :e open_rays_subbasis X)).
+          - assume HsU: s :e {U}.
+            claim HsEq: s = U.
+            { exact (SingE U s HsU). }
+            rewrite HsEq.
+            exact HUinS.
+          - assume HsV: s :e {V}.
+            claim HsEq: s = V.
+            { exact (SingE V s HsV). }
+            rewrite HsEq.
+            exact V_inS.
+          - exact HsF.
+        }
+        claim HFfin: finite F.
+        { exact (binunion_finite {U} (Sing_finite U) {V} (Sing_finite V)). }
+        claim HFsub: F :e finite_subcollections (open_rays_subbasis X).
+        { exact (SepI (Power (open_rays_subbasis X)) (fun F0 : set => finite F0) F HFpow HFfin). }
+        set bb := intersection_of_family X F.
+        claim Hxbb: x0 :e bb.
+        { claim Hx0Int: x0 :e {x :e X | order_rel X a0 x /\ order_rel X x b0}.
+          { rewrite <- HbEq. exact Hx0. }
+          claim HxX: x0 :e X.
+          { exact (SepE1 X (fun y : set => order_rel X a0 y /\ order_rel X y b0) x0 Hx0Int). }
+          claim HxU: x0 :e U.
+          { exact (SepI X (fun y : set => order_rel X a0 y) x0 HxX
+                       (andEL (order_rel X a0 x0) (order_rel X x0 b0)
+                              (SepE2 X (fun y : set => order_rel X a0 y /\ order_rel X y b0) x0 Hx0Int))). }
+          claim HxV: x0 :e V.
+          { exact (SepI X (fun y : set => order_rel X y b0) x0 HxX
+                       (andER (order_rel X a0 x0) (order_rel X x0 b0)
+                              (SepE2 X (fun y : set => order_rel X a0 y /\ order_rel X y b0) x0 Hx0Int))). }
+          claim HxBB: x0 :e U :/\: V.
+          { exact (binintersectI U V x0 HxU HxV). }
+          claim HbbEq: bb = U :/\: V.
+          { rewrite (intersection_of_family_adjoin X {U} V).
+            rewrite (intersection_of_family_singleton_eq X U (PowerE X U (SepE1 X (fun y : set => order_rel X a0 y) x0 HxU))).
+            reflexivity. }
+          rewrite HbbEq.
+          exact HxBB.
+        }
+        claim HbbNe: bb <> Empty.
+        { assume He: bb = Empty.
+          claim HxE: x0 :e Empty.
+          { rewrite <- He. exact Hxbb. }
+          exact (EmptyE x0 HxE).
+        }
+        claim HbbBasis: bb :e basis_of_subbasis X (open_rays_subbasis X).
+        { exact (finite_intersection_in_basis X (open_rays_subbasis X) F HFsub HbbNe). }
+        witness bb.
+        apply andI.
+        * exact HbbBasis.
+        * apply andI.
+          - exact Hxbb.
+          - let y. assume Hy: y :e bb.
+            prove y :e b.
+            claim HyX: y :e X.
+            { exact (SepE1 X (fun z : set => forall U0:set, U0 :e F -> z :e U0) y Hy). }
+            claim HyU: y :e U.
+            { exact (SepE2 X (fun z : set => forall U0:set, U0 :e F -> z :e U0) y Hy U
+                           (binunionI1 {U} {V} U (SingI U))). }
+            claim HyV: y :e V.
+            { exact (SepE2 X (fun z : set => forall U0:set, U0 :e F -> z :e U0) y Hy V
+                           (binunionI2 {U} {V} V (SingI V))). }
+            rewrite HbEq.
+            apply (SepI X (fun z : set => order_rel X a0 z /\ order_rel X z b0) y HyX).
+            apply andI.
+            + exact (SepE2 X (fun z : set => order_rel X a0 z) y HyU).
+            + exact (SepE2 X (fun z : set => order_rel X z b0) y HyV).
+      + assume HbLow: b :e {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}.
+        claim HbPow: b :e Power X.
+        { exact (SepE1 (Power X) (fun I0 : set => exists b0 :e X, I0 = {x :e X | order_rel X x b0}) b HbLow). }
+        apply (SepI (Power X)
+                    (fun U0 : set =>
+                       forall x0 :e U0, exists bb :e basis_of_subbasis X (open_rays_subbasis X),
+                         x0 :e bb /\ bb c= U0)
+                    b
+                    HbPow).
+        let x0. assume Hx0: x0 :e b.
+        claim Hex: exists b0 :e X, b = {x :e X | order_rel X x b0}.
+        { exact (SepE2 (Power X) (fun I0 : set => exists b0 :e X, I0 = {x :e X | order_rel X x b0}) b HbLow). }
+        apply Hex.
+        let b0. assume Hbp.
+        apply Hbp.
+        assume Hb0X HbEq.
+        set V := open_ray_lower X b0.
+        claim V_inS: V :e open_rays_subbasis X.
+        { claim HdefS: open_rays_subbasis X =
+            (({I :e Power X | exists a :e X, I = open_ray_upper X a}
+              :\/:
+              {I :e Power X | exists b1 :e X, I = open_ray_lower X b1})
+             :\/:
+             {X}).
+          { reflexivity. }
+          rewrite HdefS.
+          apply binunionI1.
+          apply binunionI2.
+          apply (SepI (Power X)
+                      (fun I0 : set => exists b1 :e X, I0 = open_ray_lower X b1)
+                      V).
+          - apply PowerI.
+            let x. assume Hx: x :e V.
+            prove x :e X.
+            exact (SepE1 X (fun y : set => order_rel X y b0) x Hx).
+          - witness b0.
+            apply andI.
+            * exact Hb0X.
+            * reflexivity.
+        }
+        claim HxV: x0 :e V.
+        { claim Hx0Low: x0 :e {x :e X | order_rel X x b0}.
+          { rewrite <- HbEq. exact Hx0. }
+          exact (SepI X (fun y : set => order_rel X y b0) x0
+                      (SepE1 X (fun y : set => order_rel X y b0) x0 Hx0Low)
+                      (SepE2 X (fun y : set => order_rel X y b0) x0 Hx0Low)). }
+        claim HxVne: V <> Empty.
+        { assume He: V = Empty.
+          claim HxE: x0 :e Empty.
+          { rewrite <- He. exact HxV. }
+          exact (EmptyE x0 HxE).
+        }
+        claim V_in_basis: V :e basis_of_subbasis X (open_rays_subbasis X).
+        { exact (subbasis_elem_in_basis X (open_rays_subbasis X) V HSsub V_inS HxVne). }
+        witness V.
+        apply andI.
+        * exact V_in_basis.
+        * apply andI.
+          - exact HxV.
+          - let y. assume Hy: y :e V.
+            prove y :e b.
+            rewrite HbEq.
+            exact Hy.
+      + exact HbLeft.
+    - assume HbUp: b :e {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}.
+      claim HbPow: b :e Power X.
+      { exact (SepE1 (Power X) (fun I0 : set => exists a0 :e X, I0 = {x :e X | order_rel X a0 x}) b HbUp). }
+      apply (SepI (Power X)
+                  (fun U0 : set =>
+                     forall x0 :e U0, exists bb :e basis_of_subbasis X (open_rays_subbasis X),
+                       x0 :e bb /\ bb c= U0)
+                  b
+                  HbPow).
+      let x0. assume Hx0: x0 :e b.
+      claim Hex: exists a0 :e X, b = {x :e X | order_rel X a0 x}.
+      { exact (SepE2 (Power X) (fun I0 : set => exists a0 :e X, I0 = {x :e X | order_rel X a0 x}) b HbUp). }
+      apply Hex.
+      let a0. assume Hap.
+      apply Hap.
+      assume Ha0X HbEq.
+      set U := open_ray_upper X a0.
+      claim U_inS: U :e open_rays_subbasis X.
+      { claim HdefS: open_rays_subbasis X =
+          (({I :e Power X | exists a :e X, I = open_ray_upper X a}
+            :\/:
+            {I :e Power X | exists b1 :e X, I = open_ray_lower X b1})
+           :\/:
+           {X}).
+        { reflexivity. }
+        rewrite HdefS.
+        apply binunionI1.
+        apply binunionI1.
+        apply (SepI (Power X)
+                    (fun I0 : set => exists a :e X, I0 = open_ray_upper X a)
+                    U).
+        - apply PowerI.
+          let x. assume Hx: x :e U.
+          prove x :e X.
+          exact (SepE1 X (fun y : set => order_rel X a0 y) x Hx).
+        - witness a0.
+          apply andI.
+          * exact Ha0X.
+          * reflexivity.
+      }
+      claim HxU: x0 :e U.
+      { claim Hx0Up: x0 :e {x :e X | order_rel X a0 x}.
+        { rewrite <- HbEq. exact Hx0. }
+        exact (SepI X (fun y : set => order_rel X a0 y) x0
+                   (SepE1 X (fun y : set => order_rel X a0 y) x0 Hx0Up)
+                   (SepE2 X (fun y : set => order_rel X a0 y) x0 Hx0Up)). }
+      claim HxUne: U <> Empty.
+      { assume He: U = Empty.
+        claim HxE: x0 :e Empty.
+        { rewrite <- He. exact HxU. }
+        exact (EmptyE x0 HxE).
+      }
+      claim U_in_basis: U :e basis_of_subbasis X (open_rays_subbasis X).
+      { exact (subbasis_elem_in_basis X (open_rays_subbasis X) U HSsub U_inS HxUne). }
+      witness U.
+      apply andI.
+      * exact U_in_basis.
+      * apply andI.
+        - exact HxU.
+        - let y. assume Hy: y :e U.
+          prove y :e b.
+          rewrite HbEq.
+          exact Hy.
+    - exact HbB0.
+  }
+  claim Hfiner: finer_than (generated_topology_from_subbasis X (open_rays_subbasis X))
+                           (generated_topology X (order_topology_basis X)).
+  { exact (generated_topology_finer X (order_topology_basis X)
+                                   (generated_topology_from_subbasis X (open_rays_subbasis X))
+                                   HBasis
+                                   HTsub
+                                   HBsub). }
+  exact Hfiner.
 Qed.
 
 (** from §14 Example 1: standard basis is a basis on ℝ **)
