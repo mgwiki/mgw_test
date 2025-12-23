@@ -31991,6 +31991,28 @@ rewrite Hyx.
 exact (ReplI V (fun x0:set => apply_fun f x0) x HxV).
 Qed.
 
+(** Helper: image under a function_on map stays in the codomain **)
+(** LATEX VERSION: If f maps X to Y and U subset X then f(U) subset Y. **)
+Theorem image_of_sub_codomain : forall f X Y U:set,
+  function_on f X Y ->
+  U c= X ->
+  image_of f U c= Y.
+let f X Y U.
+assume Hfun: function_on f X Y.
+assume HUX: U c= X.
+let y. assume Hy: y :e image_of f U.
+prove y :e Y.
+apply (ReplE_impred U (fun x:set => apply_fun f x) y Hy).
+let x. assume HxU: x :e U.
+assume Hyx: y = apply_fun f x.
+claim HxX: x :e X.
+{ exact (HUX x HxU). }
+claim HfxY: apply_fun f x :e Y.
+{ exact (Hfun x HxX). }
+rewrite Hyx.
+exact HfxY.
+Qed.
+
 (** Helper: image of Empty **)
 (** LATEX VERSION: f(Empty) = Empty. **)
 Theorem image_of_Empty : forall f:set,
