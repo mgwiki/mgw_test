@@ -37201,6 +37201,121 @@ claim HfE: f :e Empty.
 exact (EmptyE f HfE).
 Qed.
 
+(** Helper: singleton sequences are dense in Romega_tilde 0 (in the product topology) **)
+(** LATEX VERSION: Any basic neighborhood of a point in R^0~ meets the set of singleton sequences. **)
+Theorem Romega_tilde0_singletons_dense_in_subspace :
+  closure_of (Romega_tilde 0)
+    (subspace_topology R_omega_space R_omega_product_topology (Romega_tilde 0))
+    (image_of Romega_singleton_map R) =
+  Romega_tilde 0.
+prove closure_of (Romega_tilde 0)
+    (subspace_topology R_omega_space R_omega_product_topology (Romega_tilde 0))
+    (image_of Romega_singleton_map R) =
+  Romega_tilde 0.
+set X := R_omega_space.
+set Tx := R_omega_product_topology.
+set Y := Romega_tilde 0.
+set A := image_of Romega_singleton_map R.
+claim HTx: topology_on X Tx.
+{ exact Romega_product_topology_is_topology. }
+claim HYsub: Y c= X.
+{ exact (Romega_tilde_sub_Romega 0). }
+claim HAsubY: A c= Y.
+{ exact image_of_Romega_singleton_map_sub_Romega_tilde0. }
+(** closure in subspace = ambient closure intersect subspace **)
+claim HclEq: closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
+{ exact (closure_in_subspace X Tx Y A HTx HYsub HAsubY). }
+rewrite HclEq.
+apply set_ext.
+- let z. assume Hz: z :e (closure_of X Tx A) :/\: Y.
+  exact (binintersectE2 (closure_of X Tx A) Y z Hz).
+- let y. assume Hy: y :e Y.
+  prove y :e (closure_of X Tx A) :/\: Y.
+  apply binintersectI.
+  + (** Show y :e closure_of X Tx A by the neighborhood characterization using a product basis element **)
+    prove y :e closure_of X Tx A.
+    (** Use defining Sep condition for closure_of X Tx A **)
+    claim HyCond: forall U:set, U :e Tx -> y :e U -> U :/\: A <> Empty.
+    { let U. assume HU: U :e Tx.
+      assume HyU: y :e U.
+      prove U :/\: A <> Empty.
+      set S := product_subbasis_full omega (const_space_family omega R R_standard_topology).
+      set B := basis_of_subbasis X S.
+      claim HUl: forall z :e U, exists b0 :e B, z :e b0 /\ b0 c= U.
+      { exact (SepE2 (Power X)
+                    (fun U0:set => forall z :e U0, exists b0 :e B, z :e b0 /\ b0 c= U0)
+                    U
+                    HU). }
+      apply (HUl y HyU).
+      let b0. assume Hb0pair.
+      claim Hb0B: b0 :e B.
+      { exact (andEL (b0 :e B) (y :e b0 /\ b0 c= U) Hb0pair). }
+      claim Hyb0sub: y :e b0 /\ b0 c= U.
+      { exact (andER (b0 :e B) (y :e b0 /\ b0 c= U) Hb0pair). }
+      claim Hyb0: y :e b0.
+      { exact (andEL (y :e b0) (b0 c= U) Hyb0sub). }
+      claim Hb0subU: b0 c= U.
+      { exact (andER (y :e b0) (b0 c= U) Hyb0sub). }
+      claim Hb0neA: b0 :/\: A <> Empty.
+      { exact (Romega_tilde0_meets_product_basis b0 y Hb0B Hy Hyb0). }
+      (** If b0 ∩ A is nonempty and b0 ⊆ U then U ∩ A is nonempty. **)
+      assume HUAempty: U :/\: A = Empty.
+      claim Hb0A_sub: b0 :/\: A c= U :/\: A.
+      { let z. assume Hz: z :e b0 :/\: A.
+        claim Hzb0: z :e b0.
+        { exact (binintersectE1 b0 A z Hz). }
+        claim HzA: z :e A.
+        { exact (binintersectE2 b0 A z Hz). }
+        claim HzU0: z :e U.
+        { exact (Hb0subU z Hzb0). }
+        exact (binintersectI U A z HzU0 HzA). }
+      claim Hb0A_empty: b0 :/\: A = Empty.
+      { apply Empty_Subq_eq.
+        claim HUAE: U :/\: A c= Empty.
+        { rewrite HUAempty.
+          exact (Subq_ref Empty). }
+        exact (Subq_tra (b0 :/\: A) (U :/\: A) Empty Hb0A_sub HUAE). }
+      exact (Hb0neA Hb0A_empty). }
+    exact (SepI X (fun x0:set => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) y (HYsub y Hy) HyCond).
+  + exact Hy.
+Qed.
+
+(** Helper: Romega_tilde 0 is connected as closure of a connected subset **)
+(** LATEX VERSION: The image of R under the singleton map is connected and dense in R^0~, so R^0~ is connected. **)
+Theorem Romega_tilde0_connected :
+  connected_space (Romega_tilde 0)
+    (subspace_topology R_omega_space R_omega_product_topology (Romega_tilde 0)).
+prove connected_space (Romega_tilde 0)
+    (subspace_topology R_omega_space R_omega_product_topology (Romega_tilde 0)).
+set X := R_omega_space.
+set Tx := R_omega_product_topology.
+set Y := Romega_tilde 0.
+set Ty := subspace_topology X Tx Y.
+set A := image_of Romega_singleton_map R.
+claim HTx: topology_on X Tx.
+{ exact Romega_product_topology_is_topology. }
+claim HYsub: Y c= X.
+{ exact (Romega_tilde_sub_Romega 0). }
+claim HTy: topology_on Y Ty.
+{ exact (subspace_topology_is_topology X Tx Y HTx HYsub). }
+claim HAsubY: A c= Y.
+{ exact image_of_Romega_singleton_map_sub_Romega_tilde0. }
+claim HAconnX: connected_space A (subspace_topology X Tx A).
+{ claim HRconn: connected_space R R_standard_topology.
+  { exact interval_connected. }
+  claim Hcont: continuous_map R R_standard_topology X Tx Romega_singleton_map.
+  { exact Romega_singleton_map_continuous_prod. }
+  exact (continuous_image_connected R R_standard_topology X Tx Romega_singleton_map HRconn Hcont). }
+claim HsubEq: subspace_topology Y Ty A = subspace_topology X Tx A.
+{ exact (ex16_1_subspace_transitive X Tx Y A HTx HYsub HAsubY). }
+claim HAconn: connected_space A (subspace_topology Y Ty A).
+{ rewrite HsubEq.
+  exact HAconnX. }
+claim Hdense: closure_of Y Ty A = Y.
+{ exact Romega_tilde0_singletons_dense_in_subspace. }
+exact (connected_space_if_dense_connected_subset Y Ty A HTy HAsubY HAconn Hdense).
+Qed.
+
 (** from §23 Example 7: Romega_infty is dense in the product topology **) 
 (** LATEX VERSION: Every basic open set in the product topology meets R^infty by modifying only finitely many coordinates. **)
 Theorem Romega_infty_dense :
