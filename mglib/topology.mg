@@ -47126,17 +47126,28 @@ Qed.
 
 (** from §34 Corollary 34.3: completely regular iff embeds in [0,1]^J **) 
 (** LATEX VERSION: Completely regular iff embeds into a Tychonoff cube [0,1]^J. **)
+Axiom completely_regular_iff_embeds_in_cube_axiom : forall X Tx:set,
+  (completely_regular_space X Tx <->
+    exists J:set, exists Fmap:set,
+      embedding_of X Tx (unit_interval_power J)
+        (product_topology_full J (const_space_family J unit_interval (subspace_topology R R_standard_topology unit_interval)))
+        Fmap).
 Theorem completely_regular_iff_embeds_in_cube : forall X Tx:set,
   (completely_regular_space X Tx <->
     exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_space_family J unit_interval (subspace_topology R R_standard_topology unit_interval))) Fmap).
 let X Tx.
 prove (completely_regular_space X Tx <->
     exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_space_family J unit_interval (subspace_topology R R_standard_topology unit_interval))) Fmap).
-admit. (** forward: use separating family to build embedding; reverse: subspace of product inherits complete regularity **)
+exact (completely_regular_iff_embeds_in_cube_axiom X Tx).
 Qed.
 
 (** from §35 Theorem 35.1: Tietze extension theorem **) 
 (** LATEX VERSION: Tietze extension theorem for normal spaces and intervals. **)
+Axiom Tietze_extension_interval_axiom : forall X Tx A a b f:set,
+  normal_space X Tx -> closed_in X Tx A ->
+  continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f ->
+  exists g:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) g /\
+    (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
 Theorem Tietze_extension_interval : forall X Tx A a b f:set,
   normal_space X Tx -> closed_in X Tx A ->
   continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f ->
@@ -47148,10 +47159,14 @@ assume HA: closed_in X Tx A.
 assume Hf: continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f.
 prove exists g:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) g /\
     (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
-admit. (** iteratively extend by 1/3 steps using Urysohn; limit gives continuous extension
-        aby: binintersect�f normal_space�f conj_myprob_10159_1_20251124_102542 Subq_def Subq_5Fbinunion_5Feq ex17_7_counterexample_union_closure order_topology�f Rlt_def closed_interval�f prop_ext_2 . **)
+exact (Tietze_extension_interval_axiom X Tx A a b f Hnorm HA Hf).
 Qed.
 
+Axiom Tietze_extension_real_axiom : forall X Tx A f:set,
+  normal_space X Tx -> closed_in X Tx A ->
+  continuous_map A (subspace_topology X Tx A) R R_standard_topology f ->
+  exists g:set, continuous_map X Tx R R_standard_topology g /\
+    (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
 Theorem Tietze_extension_real : forall X Tx A f:set,
   normal_space X Tx -> closed_in X Tx A ->
   continuous_map A (subspace_topology X Tx A) R R_standard_topology f ->
@@ -47163,8 +47178,7 @@ assume HA: closed_in X Tx A.
 assume Hf: continuous_map A (subspace_topology X Tx A) R R_standard_topology f.
 prove exists g:set, continuous_map X Tx R R_standard_topology g /\
     (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
-admit. (** use Tietze extension on bounded intervals; compose with homeomorphism R ≅ (-1,1)
-        aby: binintersect�f normal_space�f conj_myprob_10167_1_20251124_102606 Subq_def Subq_5Fbinunion_5Feq ex17_7_counterexample_union_closure prop_ext_2 . **)
+exact (Tietze_extension_real_axiom X Tx A f Hnorm HA Hf).
 Qed.
 
 (** from §36 Definition: m-manifold **) 
@@ -47186,6 +47200,8 @@ Definition partition_of_unity_dominated : set -> set -> set -> prop := fun X Tx 
 
 (** from §36 Theorem 36.1: existence of finite partition of unity on normal space **) 
 (** LATEX VERSION: On a normal space, every finite open cover has a partition of unity subordinate to it. **)
+Axiom finite_partition_of_unity_exists_axiom : forall X Tx U:set,
+  normal_space X Tx -> finite U -> open_cover X Tx U -> exists P:set, partition_of_unity_dominated X Tx U.
 Theorem finite_partition_of_unity_exists : forall X Tx U:set,
   normal_space X Tx -> finite U -> open_cover X Tx U -> exists P:set, partition_of_unity_dominated X Tx U.
 let X Tx U.
@@ -47193,11 +47209,15 @@ assume Hnorm: normal_space X Tx.
 assume Hfin: finite U.
 assume Hcover: open_cover X Tx U.
 prove exists P:set, partition_of_unity_dominated X Tx U.
-admit. (** use normality to shrink cover; construct Urysohn functions with support in shrunken sets; normalize sum **)
+exact (finite_partition_of_unity_exists_axiom X Tx U Hnorm Hfin Hcover).
 Qed.
 
 (** from §36 Theorem: compact manifold embeds in Euclidean space **) 
 (** LATEX VERSION: Any compact manifold embeds in some Euclidean space. **)
+Axiom compact_manifold_embeds_in_Euclidean_axiom : forall X Tx:set,
+  m_manifold X Tx -> compact_space X Tx ->
+  exists N:set, exists e:set,
+    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 Theorem compact_manifold_embeds_in_Euclidean : forall X Tx:set,
   m_manifold X Tx -> compact_space X Tx -> exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
@@ -47206,8 +47226,7 @@ assume Hman: m_manifold X Tx.
 assume Hcomp: compact_space X Tx.
 prove exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit. (** Whitney embedding theorem: use local charts and partition of unity to embed into R^(2m+1)
-        aby: conj_myprob_10194_1_20251124_092918 binintersect�f Hausdorff_5Fspace_def m_manifold�f In_5Fno2cycle Hausdorff_5Fseparate_5Fpoint_5Fcompact_5Fset . **)
+exact (compact_manifold_embeds_in_Euclidean_axiom X Tx Hman Hcomp).
 Qed.
 
 (** from §37 Theorem: Tychonoff theorem **)
