@@ -34049,7 +34049,7 @@ Definition bounded_sequences_Romega : set :=
   {f :e R_omega_space | bounded_sequence_Romega f}.
 
 Definition unbounded_sequence_Romega : set -> prop := fun f =>
-  forall M:set, M :e R -> exists n :e omega, ~(apply_fun f n :e open_interval (minus_SNo M) M).
+  forall M:set, M :e R -> exists n:set, n :e omega /\ ~(apply_fun f n :e open_interval (minus_SNo M) M).
 
 Definition unbounded_sequences_Romega : set :=
   {f :e R_omega_space | unbounded_sequence_Romega f}.
@@ -34119,17 +34119,200 @@ Qed.
 
 Theorem bounded_unbounded_disjoint_Romega :
   bounded_sequences_Romega :/\: unbounded_sequences_Romega = Empty.
-admit. (** contradiction between exists M bounding all coordinates and forall M exists coordinate outside (-M,M) **)
+prove bounded_sequences_Romega :/\: unbounded_sequences_Romega = Empty.
+apply set_ext.
+- let f. assume Hf: f :e bounded_sequences_Romega :/\: unbounded_sequences_Romega.
+  prove f :e Empty.
+  claim Hb: f :e bounded_sequences_Romega.
+  { exact (binintersectE1 bounded_sequences_Romega unbounded_sequences_Romega f Hf). }
+  claim Hu: f :e unbounded_sequences_Romega.
+  { exact (binintersectE2 bounded_sequences_Romega unbounded_sequences_Romega f Hf). }
+  claim Hbprop: bounded_sequence_Romega f.
+  { exact (SepE2 R_omega_space (fun f0:set => bounded_sequence_Romega f0) f Hb). }
+  claim Huprop: unbounded_sequence_Romega f.
+  { exact (SepE2 R_omega_space (fun f0:set => unbounded_sequence_Romega f0) f Hu). }
+  apply Hbprop.
+  let M. assume HMconj.
+  claim HMR: M :e R.
+  { exact (andEL (M :e R) (forall n:set, n :e omega -> apply_fun f n :e open_interval (minus_SNo M) M) HMconj). }
+  claim Hbnd: forall n:set, n :e omega -> apply_fun f n :e open_interval (minus_SNo M) M.
+  { exact (andER (M :e R) (forall n:set, n :e omega -> apply_fun f n :e open_interval (minus_SNo M) M) HMconj). }
+  claim Hexn: exists n :e omega, ~(apply_fun f n :e open_interval (minus_SNo M) M).
+  { exact (Huprop M HMR). }
+  apply Hexn.
+  let n. assume Hnconj.
+  claim HnO: n :e omega.
+  { exact (andEL (n :e omega) (~(apply_fun f n :e open_interval (minus_SNo M) M)) Hnconj). }
+  claim Hnnot: ~(apply_fun f n :e open_interval (minus_SNo M) M).
+  { exact (andER (n :e omega) (~(apply_fun f n :e open_interval (minus_SNo M) M)) Hnconj). }
+  claim Hfalse: False.
+  { exact (Hnnot (Hbnd n HnO)). }
+  exact (FalseE Hfalse (f :e Empty)).
+- exact (Subq_Empty (bounded_sequences_Romega :/\: unbounded_sequences_Romega)).
 Qed.
 
 Theorem bounded_union_unbounded_Romega :
   bounded_sequences_Romega :\/: unbounded_sequences_Romega = R_omega_space.
-admit. (** classical: each sequence is either bounded or unbounded **)
+prove bounded_sequences_Romega :\/: unbounded_sequences_Romega = R_omega_space.
+apply set_ext.
+- let f. assume Hf: f :e bounded_sequences_Romega :\/: unbounded_sequences_Romega.
+  prove f :e R_omega_space.
+  apply (binunionE bounded_sequences_Romega unbounded_sequences_Romega f Hf).
+  - assume Hb: f :e bounded_sequences_Romega.
+    exact (SepE1 R_omega_space (fun f0:set => bounded_sequence_Romega f0) f Hb).
+  - assume Hu: f :e unbounded_sequences_Romega.
+    exact (SepE1 R_omega_space (fun f0:set => unbounded_sequence_Romega f0) f Hu).
+- let f. assume Hf: f :e R_omega_space.
+  prove f :e bounded_sequences_Romega :\/: unbounded_sequences_Romega.
+  apply (xm (bounded_sequence_Romega f) (f :e bounded_sequences_Romega :\/: unbounded_sequences_Romega)).
+  - assume Hbseq: bounded_sequence_Romega f.
+    prove f :e bounded_sequences_Romega :\/: unbounded_sequences_Romega.
+    apply binunionI1.
+    exact (SepI R_omega_space (fun f0:set => bounded_sequence_Romega f0) f Hf Hbseq).
+  - assume HnotBound: ~(bounded_sequence_Romega f).
+    prove f :e bounded_sequences_Romega :\/: unbounded_sequences_Romega.
+    apply binunionI2.
+    prove f :e unbounded_sequences_Romega.
+    apply (SepI R_omega_space (fun f0:set => unbounded_sequence_Romega f0) f Hf).
+    prove unbounded_sequence_Romega f.
+    let M. assume HM: M :e R.
+    apply (xm (exists n:set, n :e omega /\ ~(apply_fun f n :e open_interval (minus_SNo M) M))).
+    - assume Hex. exact Hex.
+    - assume Hnone: ~(exists n:set, n :e omega /\ ~(apply_fun f n :e open_interval (minus_SNo M) M)).
+      prove exists n:set, n :e omega /\ ~(apply_fun f n :e open_interval (minus_SNo M) M).
+      apply FalseE.
+      prove False.
+      apply HnotBound.
+      prove bounded_sequence_Romega f.
+      claim HbndM: forall n:set, n :e omega -> apply_fun f n :e open_interval (minus_SNo M) M.
+      { let n. assume HnO: n :e omega.
+        prove apply_fun f n :e open_interval (minus_SNo M) M.
+        apply dneg.
+        assume Hnnot: ~(apply_fun f n :e open_interval (minus_SNo M) M).
+        prove False.
+        apply Hnone.
+        witness n.
+        apply andI.
+        - exact HnO.
+        - exact Hnnot. }
+      exact (fun P Hp => Hp M (andI (M :e R)
+                                    (forall n:set, n :e omega -> apply_fun f n :e open_interval (minus_SNo M) M)
+                                    HM
+                                    HbndM)).
 Qed.
 
 (** Helper: both halves of the separation are nonempty **)
 Theorem bounded_sequences_Romega_nonempty : bounded_sequences_Romega <> Empty.
-admit. (** 0-sequence is bounded **)
+prove bounded_sequences_Romega <> Empty.
+assume Heq: bounded_sequences_Romega = Empty.
+prove False.
+set Xi := const_space_family omega R R_standard_topology.
+set U := space_family_union omega Xi.
+set f0 := const_fun omega 0.
+claim H0omega: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
+claim HR0: 0 :e R.
+{ exact real_0. }
+claim HX0: apply_fun Xi 0 = (R, R_standard_topology).
+{ exact (const_space_family_apply omega R R_standard_topology 0 H0omega). }
+claim Hset0: space_family_set Xi 0 = R.
+{ claim Hdef: space_family_set Xi 0 = (apply_fun Xi 0) 0.
+  { reflexivity. }
+  rewrite Hdef.
+  rewrite HX0.
+  exact (tuple_2_0_eq R R_standard_topology). }
+claim HRfam: R :e {space_family_set Xi i|i :e omega}.
+{ apply ReplEq omega (fun i:set => space_family_set Xi i) R.
+  assume _ H2. apply H2.
+  prove exists i :e omega, R = space_family_set Xi i.
+  witness 0.
+  apply andI.
+  - exact H0omega.
+  - prove R = space_family_set Xi 0.
+    symmetry.
+    exact Hset0. }
+claim H0U: 0 :e U.
+{ exact (UnionI {space_family_set Xi i|i :e omega} 0 R HR0 HRfam). }
+
+(** show f0 :e R_omega_space **)
+claim Hf0: f0 :e R_omega_space.
+{ prove f0 :e product_space omega Xi.
+  prove f0 :e {f :e Power (setprod omega (space_family_union omega Xi))|
+     function_on f omega (space_family_union omega Xi) /\
+     forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i}.
+  set U0 := space_family_union omega Xi.
+  claim Hsub: f0 c= setprod omega U0.
+  { let p. assume Hp: p :e f0.
+    prove p :e setprod omega U0.
+    apply (ReplE_impred omega (fun a:set => (a,0)) p Hp (p :e setprod omega U0)).
+    let a. assume HaO: a :e omega. assume Hpeq: p = (a,0).
+    rewrite Hpeq.
+    exact (tuple_2_setprod omega U0 a HaO 0 H0U). }
+  claim Hpow: f0 :e Power (setprod omega U0).
+  { exact (PowerI (setprod omega U0) f0 Hsub). }
+  claim Hfun: function_on f0 omega U0.
+  { let i. assume Hi: i :e omega.
+    prove apply_fun f0 i :e U0.
+    claim Happ: apply_fun f0 i = 0.
+    { exact (const_fun_apply omega 0 i Hi). }
+    rewrite Happ.
+    exact H0U. }
+  claim Hcoords: forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i.
+  { let i. assume Hi: i :e omega.
+    prove apply_fun f0 i :e space_family_set Xi i.
+    claim Happ: apply_fun f0 i = 0.
+    { exact (const_fun_apply omega 0 i Hi). }
+    rewrite Happ.
+    claim HX: apply_fun Xi i = (R, R_standard_topology).
+    { exact (const_space_family_apply omega R R_standard_topology i Hi). }
+    claim Hset: space_family_set Xi i = R.
+    { claim Hdef: space_family_set Xi i = (apply_fun Xi i) 0.
+      { reflexivity. }
+      rewrite Hdef.
+      rewrite HX.
+      exact (tuple_2_0_eq R R_standard_topology). }
+    rewrite Hset.
+    exact real_0. }
+  claim Hprop: function_on f0 omega U0 /\ forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i.
+  { apply andI.
+    - exact Hfun.
+    - exact Hcoords. }
+  exact (SepI (Power (setprod omega U0))
+              (fun f:set => function_on f omega U0 /\ forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
+              f0
+              Hpow
+              Hprop). }
+
+(** show bounded_sequence_Romega f0 by the bound 1 **)
+claim Hbseq: bounded_sequence_Romega f0.
+{ claim Hbnd1: forall n:set, n :e omega -> apply_fun f0 n :e open_interval (minus_SNo 1) 1.
+  { let n. assume HnO: n :e omega.
+    prove apply_fun f0 n :e open_interval (minus_SNo 1) 1.
+    claim Happ: apply_fun f0 n = 0.
+    { exact (const_fun_apply omega 0 n HnO). }
+    rewrite Happ.
+    claim Hm1R: minus_SNo 1 :e R.
+    { exact (real_minus_SNo 1 real_1). }
+    claim Hm1lt0: Rlt (minus_SNo 1) 0.
+    { exact (RltI (minus_SNo 1) 0 Hm1R real_0 minus_1_lt_0). }
+    claim H0lt1: Rlt 0 1.
+    { exact Rlt_0_1. }
+    claim Hconj: Rlt (minus_SNo 1) 0 /\ Rlt 0 1.
+    { apply andI.
+      - exact Hm1lt0.
+      - exact H0lt1. }
+    exact (SepI R (fun x0:set => Rlt (minus_SNo 1) x0 /\ Rlt x0 1) 0 real_0 Hconj). }
+  exact (fun P Hp => Hp 1 (andI (1 :e R)
+                                (forall n:set, n :e omega -> apply_fun f0 n :e open_interval (minus_SNo 1) 1)
+                                real_1
+                                Hbnd1)). }
+
+claim Hf0B: f0 :e bounded_sequences_Romega.
+{ exact (SepI R_omega_space (fun f:set => bounded_sequence_Romega f) f0 Hf0 Hbseq). }
+claim Hf0E: f0 :e Empty.
+{ rewrite <- Heq at 2.
+  exact Hf0B. }
+exact (EmptyE f0 Hf0E).
 Qed.
 
 Theorem unbounded_sequences_Romega_nonempty : unbounded_sequences_Romega <> Empty.
