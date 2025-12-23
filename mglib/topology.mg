@@ -34054,11 +34054,131 @@ Definition unbounded_sequence_Romega : set -> prop := fun f =>
 Definition unbounded_sequences_Romega : set :=
   {f :e R_omega_space | unbounded_sequence_Romega f}.
 
+(** Helper: coordinates of a point in R_omega_space are real numbers **)
+Theorem Romega_coord_in_R : forall f i:set,
+  f :e R_omega_space ->
+  i :e omega ->
+  apply_fun f i :e R.
+let f i.
+assume Hf: f :e R_omega_space.
+assume Hi: i :e omega.
+prove apply_fun f i :e R.
+set Xi := const_space_family omega R R_standard_topology.
+claim Hfprop: function_on f omega (space_family_union omega Xi) /\
+              forall j:set, j :e omega -> apply_fun f j :e space_family_set Xi j.
+{ exact (SepE2 (Power (setprod omega (space_family_union omega Xi)))
+               (fun f0:set => function_on f0 omega (space_family_union omega Xi) /\
+                 forall j:set, j :e omega -> apply_fun f0 j :e space_family_set Xi j)
+               f
+               Hf). }
+claim Hcoords: forall j:set, j :e omega -> apply_fun f j :e space_family_set Xi j.
+{ exact (andER (function_on f omega (space_family_union omega Xi))
+               (forall j:set, j :e omega -> apply_fun f j :e space_family_set Xi j)
+               Hfprop). }
+claim Hfi: apply_fun f i :e space_family_set Xi i.
+{ exact (Hcoords i Hi). }
+claim HXi: apply_fun Xi i = (R, R_standard_topology).
+{ exact (const_space_family_apply omega R R_standard_topology i Hi). }
+claim Hset: space_family_set Xi i = R.
+{ claim Hdef: space_family_set Xi i = (apply_fun Xi i) 0.
+  { reflexivity. }
+  rewrite Hdef.
+  rewrite HXi.
+  exact (tuple_2_0_eq R R_standard_topology). }
+ rewrite <- Hset.
+ exact Hfi.
+Qed.
+
+(** Helper: bounded and unbounded sequence collections lie in Power R_omega_space **)
+Theorem bounded_sequences_Romega_in_Power : bounded_sequences_Romega :e Power R_omega_space.
+prove bounded_sequences_Romega :e Power R_omega_space.
+apply PowerI.
+let f. assume Hf: f :e bounded_sequences_Romega.
+prove f :e R_omega_space.
+exact (SepE1 R_omega_space (fun f0:set => bounded_sequence_Romega f0) f Hf).
+Qed.
+
+Theorem unbounded_sequences_Romega_in_Power : unbounded_sequences_Romega :e Power R_omega_space.
+prove unbounded_sequences_Romega :e Power R_omega_space.
+apply PowerI.
+let f. assume Hf: f :e unbounded_sequences_Romega.
+prove f :e R_omega_space.
+exact (SepE1 R_omega_space (fun f0:set => unbounded_sequence_Romega f0) f Hf).
+Qed.
+
+(** Helper: bounded/unbounded sets are intended to form a separation in the box topology **)
+Theorem bounded_sequences_in_Romega_box_topology :
+  bounded_sequences_Romega :e R_omega_box_topology.
+admit. (** show neighborhood of a bounded sequence given by box product of intervals (a_i-1,a_i+1) lies in bounded_sequences_Romega **)
+Qed.
+
+Theorem unbounded_sequences_in_Romega_box_topology :
+  unbounded_sequences_Romega :e R_omega_box_topology.
+admit. (** show neighborhood of an unbounded sequence given by box product of intervals (a_i-1,a_i+1) lies in unbounded_sequences_Romega **)
+Qed.
+
+Theorem bounded_unbounded_disjoint_Romega :
+  bounded_sequences_Romega :/\: unbounded_sequences_Romega = Empty.
+admit. (** contradiction between exists M bounding all coordinates and forall M exists coordinate outside (-M,M) **)
+Qed.
+
+Theorem bounded_union_unbounded_Romega :
+  bounded_sequences_Romega :\/: unbounded_sequences_Romega = R_omega_space.
+admit. (** classical: each sequence is either bounded or unbounded **)
+Qed.
+
+(** Helper: both halves of the separation are nonempty **)
+Theorem bounded_sequences_Romega_nonempty : bounded_sequences_Romega <> Empty.
+admit. (** 0-sequence is bounded **)
+Qed.
+
+Theorem unbounded_sequences_Romega_nonempty : unbounded_sequences_Romega <> Empty.
+admit. (** n-sequence or similar unbounded witness **)
+Qed.
+
 Theorem R_omega_box_not_connected :
   ~ connected_space (product_space omega (const_space_family omega R R_standard_topology))
     (box_topology omega (const_space_family omega R R_standard_topology)).
-prove ~ connected_space (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)).
-admit. (** separate into bounded and unbounded sequences; each is open in box topology by the box neighborhood ∏(a_i-1,a_i+1) **)
+prove ~ connected_space (product_space omega (const_space_family omega R R_standard_topology))
+  (box_topology omega (const_space_family omega R R_standard_topology)).
+assume Hconn: connected_space R_omega_space R_omega_box_topology.
+prove False.
+claim Hnosep: ~(exists U V:set, U :e R_omega_box_topology /\ V :e R_omega_box_topology /\ separation_of R_omega_space U V).
+{ exact (andER (topology_on R_omega_space R_omega_box_topology)
+               (~(exists U V:set, U :e R_omega_box_topology /\ V :e R_omega_box_topology /\ separation_of R_omega_space U V))
+               Hconn). }
+claim Hsep: exists U V:set, U :e R_omega_box_topology /\ V :e R_omega_box_topology /\ separation_of R_omega_space U V.
+{ witness bounded_sequences_Romega.
+  witness unbounded_sequences_Romega.
+  apply andI.
+  - apply andI.
+    + exact bounded_sequences_in_Romega_box_topology.
+    + exact unbounded_sequences_in_Romega_box_topology.
+  - prove separation_of R_omega_space bounded_sequences_Romega unbounded_sequences_Romega.
+    prove bounded_sequences_Romega :e Power R_omega_space /\
+          unbounded_sequences_Romega :e Power R_omega_space /\
+          bounded_sequences_Romega :/\: unbounded_sequences_Romega = Empty /\
+          bounded_sequences_Romega <> Empty /\
+          unbounded_sequences_Romega <> Empty /\
+          bounded_sequences_Romega :\/: unbounded_sequences_Romega = R_omega_space.
+    (** Conjunction is left-associative: (((((A /\ B) /\ C) /\ D) /\ E) /\ F) **)
+    apply andI.
+    - (** ((((A /\ B) /\ C) /\ D) /\ E) **)
+      apply andI.
+      + (** (((A /\ B) /\ C) /\ D) **)
+        apply andI.
+        * (** ((A /\ B) /\ C) **)
+          apply andI.
+          - (** (A /\ B) **)
+            apply andI.
+            + exact bounded_sequences_Romega_in_Power.
+            + exact unbounded_sequences_Romega_in_Power.
+          - exact bounded_unbounded_disjoint_Romega.
+        * exact bounded_sequences_Romega_nonempty.
+      + exact unbounded_sequences_Romega_nonempty.
+    - exact bounded_union_unbounded_Romega.
+}
+exact (Hnosep Hsep).
 Qed.
 
 (** from §23 Example 7: R^ω in the product topology is connected **) 
