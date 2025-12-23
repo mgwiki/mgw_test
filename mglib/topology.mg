@@ -49376,22 +49376,26 @@ exact ex30_16b_large_product_no_countable_dense_axiom.
 Qed.
 (** from §30 Exercise 17: Romega box topology countability axioms **)
 (** LATEX VERSION: ℝ^ω with box topology, subspace ℚ^∞ (rationals ending in infinite 0s): which countability axioms? **)
+(** Define Q_infty as rational sequences eventually equal to 0. **)
+Definition Q_infty : set :=
+  {f :e R_omega_space |
+    (forall n:set, n :e omega -> apply_fun f n :e rational_numbers) /\
+    (exists n0:set, n0 :e omega /\
+      forall m:set, m :e omega -> ~(m :e n0) -> apply_fun f m = 0)}.
+Definition Q_infty_topology : set :=
+  subspace_topology R_omega_space R_omega_box_topology Q_infty.
 Axiom ex30_17_Romega_box_countability_axiom :
-  exists Romega:set, exists BoxTop:set, exists Qinf:set, exists SubTop:set,
-    SubTop = subspace_topology Romega BoxTop Qinf /\
-    (first_countable_space Qinf SubTop \/ ~ first_countable_space Qinf SubTop) /\
-    (second_countable_space Qinf SubTop \/ ~ second_countable_space Qinf SubTop) /\
-    (Lindelof_space Qinf SubTop \/ ~ Lindelof_space Qinf SubTop) /\
-    ((exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop) \/
-     ~ (exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop)).
+  (first_countable_space Q_infty Q_infty_topology \/ ~ first_countable_space Q_infty Q_infty_topology) /\
+  (second_countable_space Q_infty Q_infty_topology \/ ~ second_countable_space Q_infty Q_infty_topology) /\
+  (Lindelof_space Q_infty Q_infty_topology \/ ~ Lindelof_space Q_infty Q_infty_topology) /\
+  ((exists D:set, D c= Q_infty /\ countable D /\ dense_in D Q_infty Q_infty_topology) \/
+   ~ (exists D:set, D c= Q_infty /\ countable D /\ dense_in D Q_infty Q_infty_topology)).
 Theorem ex30_17_Romega_box_countability :
-  exists Romega:set, exists BoxTop:set, exists Qinf:set, exists SubTop:set,
-    SubTop = subspace_topology Romega BoxTop Qinf /\
-    (first_countable_space Qinf SubTop \/ ~ first_countable_space Qinf SubTop) /\
-    (second_countable_space Qinf SubTop \/ ~ second_countable_space Qinf SubTop) /\
-    (Lindelof_space Qinf SubTop \/ ~ Lindelof_space Qinf SubTop) /\
-    ((exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop) \/
-     ~ (exists D:set, D c= Qinf /\ countable D /\ dense_in D Qinf SubTop)).
+  (first_countable_space Q_infty Q_infty_topology \/ ~ first_countable_space Q_infty Q_infty_topology) /\
+  (second_countable_space Q_infty Q_infty_topology \/ ~ second_countable_space Q_infty Q_infty_topology) /\
+  (Lindelof_space Q_infty Q_infty_topology \/ ~ Lindelof_space Q_infty Q_infty_topology) /\
+  ((exists D:set, D c= Q_infty /\ countable D /\ dense_in D Q_infty Q_infty_topology) \/
+   ~ (exists D:set, D c= Q_infty /\ countable D /\ dense_in D Q_infty Q_infty_topology)).
 exact ex30_17_Romega_box_countability_axiom.
 Qed.
 (** from §30 Exercise 18: first-countable topological group with dense/Lindelof implies countable basis **)
