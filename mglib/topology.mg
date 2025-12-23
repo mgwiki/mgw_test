@@ -35561,6 +35561,87 @@ rewrite HUnionEq at 1.
 exact HconnUnion.
 Qed.
 
+(** Helper: any omega indexed real map gives an element of R_omega_space **)
+Theorem graph_omega_in_Romega_space : forall h:set->set,
+  (forall i:set, i :e omega -> h i :e R) ->
+  graph omega h :e R_omega_space.
+let h.
+assume HhR: forall i:set, i :e omega -> h i :e R.
+prove graph omega h :e R_omega_space.
+set Xi := const_space_family omega R R_standard_topology.
+set U0 := space_family_union omega Xi.
+claim H0omega: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
+claim HXi0: apply_fun Xi 0 = (R, R_standard_topology).
+{ exact (const_space_family_apply omega R R_standard_topology 0 H0omega). }
+claim Hset0: space_family_set Xi 0 = R.
+{ claim Hdef: space_family_set Xi 0 = (apply_fun Xi 0) 0.
+  { reflexivity. }
+  rewrite Hdef.
+  rewrite HXi0.
+  exact (tuple_2_0_eq R R_standard_topology). }
+claim HRfam: R :e {space_family_set Xi i|i :e omega}.
+{ apply ReplEq omega (fun i:set => space_family_set Xi i) R.
+  assume _ H2. apply H2.
+  prove exists i :e omega, R = space_family_set Xi i.
+  witness 0.
+  apply andI.
+  - exact H0omega.
+  - prove R = space_family_set Xi 0.
+    symmetry.
+    exact Hset0. }
+claim HRinU0: forall r:set, r :e R -> r :e U0.
+{ let r. assume Hr: r :e R.
+  exact (UnionI {space_family_set Xi i|i :e omega} r R Hr HRfam). }
+claim Hsub: graph omega h c= setprod omega U0.
+{ let p. assume Hp: p :e graph omega h.
+  prove p :e setprod omega U0.
+  apply (ReplE_impred omega (fun i:set => (i, h i)) p Hp (p :e setprod omega U0)).
+  let i. assume Hi: i :e omega. assume Heq: p = (i, h i).
+  rewrite Heq.
+  claim HhiR: h i :e R.
+  { exact (HhR i Hi). }
+  claim HhiU0: h i :e U0.
+  { exact (HRinU0 (h i) HhiR). }
+  exact (tuple_2_setprod omega U0 i Hi (h i) HhiU0). }
+claim Hpow: graph omega h :e Power (setprod omega U0).
+{ exact (PowerI (setprod omega U0) (graph omega h) Hsub). }
+claim Hfun: function_on (graph omega h) omega U0.
+{ let i. assume Hi: i :e omega.
+  prove apply_fun (graph omega h) i :e U0.
+  claim Happ: apply_fun (graph omega h) i = h i.
+  { exact (apply_fun_graph omega h i Hi). }
+  rewrite Happ.
+  exact (HRinU0 (h i) (HhR i Hi)). }
+claim Hcoords: forall i:set, i :e omega -> apply_fun (graph omega h) i :e space_family_set Xi i.
+{ let i. assume Hi: i :e omega.
+  prove apply_fun (graph omega h) i :e space_family_set Xi i.
+  claim Happ: apply_fun (graph omega h) i = h i.
+  { exact (apply_fun_graph omega h i Hi). }
+  rewrite Happ.
+  claim HXi: apply_fun Xi i = (R, R_standard_topology).
+  { exact (const_space_family_apply omega R R_standard_topology i Hi). }
+  claim Hset: space_family_set Xi i = R.
+  { claim Hdef: space_family_set Xi i = (apply_fun Xi i) 0.
+    { reflexivity. }
+    rewrite Hdef.
+    rewrite HXi.
+    exact (tuple_2_0_eq R R_standard_topology). }
+  rewrite Hset.
+  exact (HhR i Hi). }
+claim Hprop: function_on (graph omega h) omega U0 /\
+  forall i:set, i :e omega -> apply_fun (graph omega h) i :e space_family_set Xi i.
+{ apply andI.
+  - exact Hfun.
+  - exact Hcoords. }
+exact (SepI (Power (setprod omega U0))
+            (fun f0:set => function_on f0 omega U0 /\
+              forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i)
+            (graph omega h)
+            Hpow
+            Hprop).
+Qed.
+
 (** from §23 Example 7: Romega_infty is dense in the product topology **) 
 (** LATEX VERSION: Every basic open set in the product topology meets R^infty by modifying only finitely many coordinates. **)
 Theorem Romega_infty_dense :
