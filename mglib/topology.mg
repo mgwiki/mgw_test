@@ -49088,12 +49088,10 @@ Qed.
 
 (** from §30 Exercise 6b: ordered square not metrizable **)
 (** LATEX VERSION: The ordered square is not metrizable. **)
-Axiom ex30_6b_ordered_square_not_metrizable_axiom : forall Tx:set,
-  Tx = R (** stub: order topology on ordered square **) ->
-  ~ metrizable ordered_square Tx.
-Theorem ex30_6b_ordered_square_not_metrizable : forall Tx:set,
-  Tx = R (** stub: order topology on ordered square **) ->
-  ~ metrizable ordered_square Tx.
+Axiom ex30_6b_ordered_square_not_metrizable_axiom :
+  ~ metrizable ordered_square ordered_square_topology.
+Theorem ex30_6b_ordered_square_not_metrizable :
+  ~ metrizable ordered_square ordered_square_topology.
 exact ex30_6b_ordered_square_not_metrizable_axiom.
 Qed.
 (** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **)
