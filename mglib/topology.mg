@@ -51093,6 +51093,7 @@ Qed.
 (** stub: the analytic inequalities are not expanded here **)
 Axiom ex49_2_construct_bounded_function_axiom : forall n:set, forall eps:set,
   n :e omega ->
+  2 c= n ->
   eps :e R ->
   exists f:set,
     continuous_map unit_interval I_topology R R_standard_topology f /\
@@ -51101,6 +51102,7 @@ Axiom ex49_2_construct_bounded_function_axiom : forall n:set, forall eps:set,
     (forall x:set, x :e unit_interval -> Rle (Abs (apply_fun f x)) eps).
 Theorem ex49_2_construct_bounded_function : forall n:set, forall eps:set,
   n :e omega ->
+  2 c= n ->
   eps :e R ->
   exists f:set,
     continuous_map unit_interval I_topology R R_standard_topology f /\
