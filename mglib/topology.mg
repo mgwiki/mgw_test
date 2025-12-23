@@ -33277,14 +33277,12 @@ Definition metric_topology : set -> set -> set := fun X d =>
 
 (** from §20: open balls form a basis **)
 (** LATEX VERSION: In a metric space, open balls form a basis for the metric topology. **)
-Axiom open_balls_form_basis_axiom : forall X d:set,
-  metric_on X d -> basis_on X (famunion X (fun x => {open_ball X d x r|r :e R, Rlt 0 r})).
 Theorem open_balls_form_basis : forall X d:set,
   metric_on X d -> basis_on X (famunion X (fun x => {open_ball X d x r|r :e R, Rlt 0 r})).
 let X d.
 assume Hd: metric_on X d.
 prove basis_on X (famunion X (fun x => {open_ball X d x r|r :e R, Rlt 0 r})).
-exact (open_balls_form_basis_axiom X d Hd).
+admit.
 Qed.
 
 Theorem metric_topology_is_topology : forall X d:set,
@@ -33350,15 +33348,6 @@ Qed.
 
 (** from §21: epsilon-delta continuity in metric spaces **) 
 (** LATEX VERSION: A map between metric spaces is continuous exactly when it satisfies the epsilon-delta condition. **)
-Axiom metric_epsilon_delta_continuity_axiom : forall X dX Y dY f:set,
-  metric_on X dX -> metric_on Y dY ->
-  (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
-  (forall x0:set, x0 :e X ->
-     forall eps:set, eps :e R /\ Rlt 0 eps ->
-       exists delta:set, delta :e R /\ Rlt 0 delta /\
-         (forall x:set, x :e X ->
-            Rlt (apply_fun dX (x,x0)) delta ->
-            Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps))).
 Theorem metric_epsilon_delta_continuity : forall X dX Y dY f:set,
   metric_on X dX -> metric_on Y dY ->
   (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
@@ -33377,11 +33366,11 @@ prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
 (** FIXED: Removed extra parentheses around pair argument to dY metric.
     Was: apply_fun dY ((apply_fun f x, apply_fun f x0))
     Now: apply_fun dY (apply_fun f x, apply_fun f x0) - consistent with dX usage **)
-       exists delta:set, delta :e R /\ Rlt 0 delta /\
-	         (forall x:set, x :e X ->
-	            Rlt (apply_fun dX (x,x0)) delta ->
-	            Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps)).
-exact (metric_epsilon_delta_continuity_axiom X dX Y dY f HdX HdY).
+	       exists delta:set, delta :e R /\ Rlt 0 delta /\
+		         (forall x:set, x :e X ->
+		            Rlt (apply_fun dX (x,x0)) delta ->
+		            Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps)).
+admit.
 Qed.
 
 (** sequences as functions from omega **) 
@@ -33717,12 +33706,6 @@ Qed.
 (** from §21: uniqueness of limits in metric spaces **) 
 (** LATEX VERSION: In a metric space, a convergent sequence has at most one limit. **)
 (** helper: function evaluation as graph lookup **) 
-Axiom metric_limits_unique_axiom : forall X d seq x y:set,
-  metric_on X d ->
-  sequence_on seq X ->
-  sequence_converges_metric X d seq x ->
-  sequence_converges_metric X d seq y ->
-  x = y.
 Theorem metric_limits_unique : forall X d seq x y:set,
   metric_on X d ->
   sequence_on seq X ->
@@ -33735,7 +33718,7 @@ assume Hseq: sequence_on seq X.
 assume Hx: sequence_converges_metric X d seq x.
 assume Hy: sequence_converges_metric X d seq y.
 prove x = y.
-exact (metric_limits_unique_axiom X d seq x y Hd Hseq Hx Hy).
+admit.
 Qed.
 
 (** uniform convergence of function sequences between metric spaces **) 
@@ -33922,13 +33905,6 @@ Qed.
 
 (** from §21: uniform limit theorem placeholder **) 
 (** LATEX VERSION: Uniform limit of continuous functions between metric spaces is continuous. **)
-Axiom uniform_limit_of_continuous_is_continuous_axiom :
-  forall X dX Y dY f_seq f:set,
-    metric_on X dX -> metric_on Y dY ->
-    function_on f_seq omega (function_space X Y) ->
-    (forall n:set, n :e omega -> continuous_map X (metric_topology X dX) Y (metric_topology Y dY) (apply_fun f_seq n)) ->
-    uniform_convergence_functions X dX Y dY f_seq f ->
-    continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
 Theorem uniform_limit_of_continuous_is_continuous :
   forall X dX Y dY f_seq f:set,
     metric_on X dX -> metric_on Y dY ->
@@ -33943,7 +33919,7 @@ assume Hfseq: function_on f_seq omega (function_space X Y).
 assume Hcont: forall n:set, n :e omega -> continuous_map X (metric_topology X dX) Y (metric_topology Y dY) (apply_fun f_seq n).
 assume Hunif: uniform_convergence_functions X dX Y dY f_seq f.
 prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
-exact (uniform_limit_of_continuous_is_continuous_axiom X dX Y dY f_seq f HdX HdY Hfseq Hcont Hunif).
+admit.
 Qed.
 
 (** from §21: convergence of sequences in metric spaces **) 
@@ -33961,14 +33937,6 @@ Qed.
 (** FIXED: Composed sequence f∘seq must be a function (graph of ordered pairs), not Cartesian products.
     Was: {setprod n (apply_fun f (apply_fun seq n))|n :e omega} = {n × f(seq(n)) | n ∈ ω}
     Now: {(n, apply_fun f (apply_fun seq n))|n :e omega} = graph of n ↦ f(seq(n)) **)
-Axiom continuity_via_sequences_metric_axiom : forall X dX Y dY f:set,
-  metric_on X dX -> metric_on Y dY ->
-  (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
-    forall seq x:set,
-      sequence_converges_metric X dX seq x ->
-      sequence_converges_metric Y dY
-        ({(n, apply_fun f (apply_fun seq n))|n :e omega})
-        (apply_fun f x)).
 Theorem continuity_via_sequences_metric : forall X dX Y dY f:set,
   metric_on X dX -> metric_on Y dY ->
   (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
@@ -33986,7 +33954,7 @@ prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
       sequence_converges_metric Y dY
         ({(n, apply_fun f (apply_fun seq n))|n :e omega})
         (apply_fun f x).
-exact (continuity_via_sequences_metric_axiom X dX Y dY f HdX HdY).
+admit.
 Qed.
 
 (** from §22 Definition: quotient map and quotient topology **) 
