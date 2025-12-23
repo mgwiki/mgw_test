@@ -30274,6 +30274,57 @@ Definition continuous_map_total : set -> set -> set -> set -> set -> prop :=
     topology_on X Tx /\ topology_on Y Ty /\ total_function_on f X Y /\
     forall V:set, V :e Ty -> preimage_of X f V :e Tx.
 
+(** Helper: extract topology_on X Tx from continuous_map_total **)
+Theorem continuous_map_total_topology_dom : forall X Tx Y Ty f:set,
+  continuous_map_total X Tx Y Ty f -> topology_on X Tx.
+let X Tx Y Ty f.
+assume H: continuous_map_total X Tx Y Ty f.
+claim Hleft: (topology_on X Tx /\ topology_on Y Ty) /\ total_function_on f X Y.
+{ exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ total_function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+               H). }
+claim Htops: topology_on X Tx /\ topology_on Y Ty.
+{ exact (andEL (topology_on X Tx /\ topology_on Y Ty) (total_function_on f X Y) Hleft). }
+exact (andEL (topology_on X Tx) (topology_on Y Ty) Htops).
+Qed.
+
+(** Helper: extract topology_on Y Ty from continuous_map_total **)
+Theorem continuous_map_total_topology_cod : forall X Tx Y Ty f:set,
+  continuous_map_total X Tx Y Ty f -> topology_on Y Ty.
+let X Tx Y Ty f.
+assume H: continuous_map_total X Tx Y Ty f.
+claim Hleft: (topology_on X Tx /\ topology_on Y Ty) /\ total_function_on f X Y.
+{ exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ total_function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+               H). }
+claim Htops: topology_on X Tx /\ topology_on Y Ty.
+{ exact (andEL (topology_on X Tx /\ topology_on Y Ty) (total_function_on f X Y) Hleft). }
+exact (andER (topology_on X Tx) (topology_on Y Ty) Htops).
+Qed.
+
+(** Helper: extract total_function_on f X Y from continuous_map_total **)
+Theorem continuous_map_total_total_function_on : forall X Tx Y Ty f:set,
+  continuous_map_total X Tx Y Ty f -> total_function_on f X Y.
+let X Tx Y Ty f.
+assume H: continuous_map_total X Tx Y Ty f.
+claim Hleft: (topology_on X Tx /\ topology_on Y Ty) /\ total_function_on f X Y.
+{ exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ total_function_on f X Y)
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+               H). }
+exact (andER (topology_on X Tx /\ topology_on Y Ty) (total_function_on f X Y) Hleft).
+Qed.
+
+(** Helper: extract the preimage condition from continuous_map_total **)
+Theorem continuous_map_total_preimage : forall X Tx Y Ty f:set,
+  continuous_map_total X Tx Y Ty f ->
+  forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+let X Tx Y Ty f.
+assume H: continuous_map_total X Tx Y Ty f.
+exact (andER ((topology_on X Tx /\ topology_on Y Ty) /\ total_function_on f X Y)
+             (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+             H).
+Qed.
+
 (** Helper: continuous_map_total implies continuous_map **)
 Theorem continuous_map_total_imp : forall X Tx Y Ty f:set,
   continuous_map_total X Tx Y Ty f -> continuous_map X Tx Y Ty f.
