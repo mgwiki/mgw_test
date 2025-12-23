@@ -39311,7 +39311,9 @@ Definition path_connected_space : set -> set -> prop := fun X Tx =>
     exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
 
 (** Helper axioms for path_connected_implies_connected **)
-Axiom unit_interval_connected : connected_space unit_interval unit_interval_topology.
+Theorem unit_interval_connected : connected_space unit_interval unit_interval_topology.
+admit.
+Qed.
 
 Theorem zero_one_in_unit_interval : 0 :e unit_interval /\ 1 :e unit_interval.
 claim H0R: 0 :e R.
@@ -39725,14 +39727,11 @@ Qed.
     Was: {setprod 0 0} = {0 × 0} = {∅} (singleton containing empty set)
     Now: {(0,0)} (singleton containing origin point)
     Note: In set theory, 0 = ∅, so setprod 0 0 = ∅ × ∅ = ∅, not the origin! **)
-Axiom punctured_space_path_connected_axiom :
-  path_connected_space (EuclidPlane :\: {(0,0)})
-    (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {(0,0)})).
 Theorem punctured_space_path_connected :
   path_connected_space (EuclidPlane :\: {(0,0)})
     (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {(0,0)})).
 prove path_connected_space (EuclidPlane :\: {(0,0)}) (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {(0,0)})).
-exact punctured_space_path_connected_axiom.
+admit.
 Qed.
 
 (** from §24: continuous surjective image of a path connected space is path connected **) 
@@ -39859,14 +39858,18 @@ Definition path_component_of : set -> set -> set -> set := fun X Tx x =>
      apply_fun p 0 = x /\ apply_fun p 1 = y}.
 
 (** Helper axioms: path reversal and concatenation **)
-Axiom path_component_symmetric_axiom : forall X Tx x y:set,
+Theorem path_component_symmetric_axiom : forall X Tx x y:set,
   topology_on X Tx -> x :e X -> y :e X ->
   y :e path_component_of X Tx x -> x :e path_component_of X Tx y.
-
-Axiom path_component_transitive_axiom : forall X Tx x y z:set,
+admit.
+Qed.
+ 
+Theorem path_component_transitive_axiom : forall X Tx x y z:set,
   topology_on X Tx -> x :e X -> y :e X -> z :e X ->
   y :e path_component_of X Tx x -> z :e path_component_of X Tx y ->
   z :e path_component_of X Tx x.
+admit.
+Qed.
 
 (** Helper: path component is reflexive **)
 (** LATEX VERSION: Any point is path connectible to itself via the constant path. **)
@@ -40092,10 +40095,6 @@ Definition covers : set -> set -> prop :=
 
 (** from §25: path components open in locally path connected spaces **) 
 (** LATEX VERSION: In a locally path connected space, every path component is open. **)
-Axiom path_components_open_axiom : forall X Tx:set,
-  locally_path_connected X Tx ->
-  forall x:set, x :e X ->
-    open_in X Tx (path_component_of X Tx x).
 Theorem path_components_open : forall X Tx:set,
   locally_path_connected X Tx ->
   forall x:set, x :e X ->
@@ -40105,15 +40104,11 @@ assume Hlpc: locally_path_connected X Tx.
 let x.
 assume Hx: x :e X.
 prove open_in X Tx (path_component_of X Tx x).
-exact (path_components_open_axiom X Tx Hlpc x Hx).
+admit.
 Qed.
 
 (** from §25: components equal path components when locally path connected **) 
 (** LATEX VERSION: In a locally path connected space, components coincide with path components. **)
-Axiom components_equal_path_components_axiom : forall X Tx:set,
-  locally_path_connected X Tx ->
-  forall x:set, x :e X ->
-    path_component_of X Tx x = component_of X Tx x.
 Theorem components_equal_path_components : forall X Tx:set,
   locally_path_connected X Tx ->
   forall x:set, x :e X ->
@@ -40123,12 +40118,9 @@ assume Hlpc: locally_path_connected X Tx.
 let x.
 assume Hx: x :e X.
 prove path_component_of X Tx x = component_of X Tx x.
-exact (components_equal_path_components_axiom X Tx Hlpc x Hx).
+admit.
 Qed.
 
-Axiom components_are_closed_axiom : forall X Tx:set,
-  topology_on X Tx ->
-  forall x:set, x :e X -> closed_in X Tx (component_of X Tx x).
 Theorem components_are_closed : forall X Tx:set,
   topology_on X Tx ->
   forall x:set, x :e X -> closed_in X Tx (component_of X Tx x).
@@ -40137,15 +40129,11 @@ assume HTx: topology_on X Tx.
 let x.
 assume Hx: x :e X.
 prove closed_in X Tx (component_of X Tx x).
-exact (components_are_closed_axiom X Tx HTx x Hx).
+admit.
 Qed.
 
 (** from §25: components partition the space **) 
 (** LATEX VERSION: Components cover X and are pairwise disjoint. **)
-Axiom components_partition_space_axiom : forall X Tx:set,
-  topology_on X Tx ->
-  covers X {component_of X Tx x | x :e X} /\
-  pairwise_disjoint {component_of X Tx x | x :e X}.
 Theorem components_partition_space : forall X Tx:set,
   topology_on X Tx ->
   covers X {component_of X Tx x | x :e X} /\
@@ -40153,15 +40141,11 @@ Theorem components_partition_space : forall X Tx:set,
 let X Tx.
 assume HTx: topology_on X Tx.
 prove covers X {component_of X Tx x | x :e X} /\ pairwise_disjoint {component_of X Tx x | x :e X}.
-exact (components_partition_space_axiom X Tx HTx).
+admit.
 Qed.
 
 (** from §25: quotient of locally connected space is locally connected **) 
 (** LATEX VERSION: Quotients of locally connected spaces remain locally connected. **)
-Axiom quotient_preserves_local_connectedness_axiom : forall X Tx Y f:set,
-  quotient_map X Tx Y f ->
-  locally_connected X Tx ->
-  locally_connected Y (quotient_topology X Tx Y f).
 Theorem quotient_preserves_local_connectedness : forall X Tx Y f:set,
   quotient_map X Tx Y f ->
   locally_connected X Tx ->
@@ -40170,7 +40154,7 @@ let X Tx Y f.
 assume Hquot: quotient_map X Tx Y f.
 assume Hloc: locally_connected X Tx.
 prove locally_connected Y (quotient_topology X Tx Y f).
-exact (quotient_preserves_local_connectedness_axiom X Tx Y f Hquot Hloc).
+admit.
 Qed.
 
 (** from §25 Definition: quasicomponent equivalence relation **) 
@@ -40180,10 +40164,6 @@ Definition quasicomponent_of : set -> set -> set -> set := fun X Tx x =>
 
 (** from §25: components vs quasicomponents **) 
 (** LATEX VERSION: Components are contained in quasicomponents; in locally connected spaces they are equal. **)
-Axiom components_vs_quasicomponents_axiom : forall X Tx:set,
-  topology_on X Tx ->
-  (forall x:set, component_of X Tx x c= quasicomponent_of X Tx x) /\
-  (locally_connected X Tx -> forall x:set, component_of X Tx x = quasicomponent_of X Tx x).
 Theorem components_vs_quasicomponents : forall X Tx:set,
   topology_on X Tx ->
   (forall x:set, component_of X Tx x c= quasicomponent_of X Tx x) /\
@@ -40192,56 +40172,40 @@ let X Tx.
 assume HTx: topology_on X Tx.
 prove (forall x:set, component_of X Tx x c= quasicomponent_of X Tx x) /\
   (locally_connected X Tx -> forall x:set, component_of X Tx x = quasicomponent_of X Tx x).
-exact (components_vs_quasicomponents_axiom X Tx HTx).
+admit.
 Qed.
 
 (** from §23 Exercise: components and path components of ℝℓ **) 
 (** LATEX VERSION: In the lower limit topology on R, every component is a singleton. **)
-Axiom ex23_Rl_components_axiom :
-  component_of R R_lower_limit_topology 0 = {0} /\
-  (forall x:set, x :e R -> component_of R R_lower_limit_topology x = {x}).
 Theorem ex23_Rl_components :
   component_of R R_lower_limit_topology 0 = {0} /\
   (forall x:set, x :e R -> component_of R R_lower_limit_topology x = {x}).
 prove component_of R R_lower_limit_topology 0 = {0} /\ (forall x:set, x :e R -> component_of R R_lower_limit_topology x = {x}).
-exact ex23_Rl_components_axiom.
+admit.
 Qed.
 
 (** from §23 Exercise: components of ℝ^ω in product/uniform/box topologies **) 
 (** LATEX VERSION: For R to the omega, compare components in product and box type topologies. **)
-Axiom ex23_Romega_components_axiom :
-  component_of (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) (const_family omega 0) =
-    product_space omega (const_space_family omega R R_standard_topology) /\
-  component_of (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)) (const_family omega 0) =
-    {f :e product_space omega (const_space_family omega R R_standard_topology) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
 Theorem ex23_Romega_components :
   component_of (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) (const_family omega 0) =
     product_space omega (const_space_family omega R R_standard_topology) /\
   component_of (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)) (const_family omega 0) =
     {f :e product_space omega (const_space_family omega R R_standard_topology) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
 prove component_of (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) (const_family omega 0) = product_space omega (const_space_family omega R R_standard_topology) /\ component_of (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)) (const_family omega 0) = {f :e product_space omega (const_space_family omega R R_standard_topology) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
-exact ex23_Romega_components_axiom.
+admit.
 Qed.
 
 (** from §23 Exercise: ordered square locally connected but not locally path connected **) 
 (** LATEX VERSION: The ordered square is locally connected but not locally path connected. **)
-Axiom ex23_ordered_square_locally_conn_not_pathconn_axiom :
-  locally_connected ordered_square ordered_square_topology /\
-  ~ locally_path_connected ordered_square ordered_square_topology.
 Theorem ex23_ordered_square_locally_conn_not_pathconn :
   locally_connected ordered_square ordered_square_topology /\
   ~ locally_path_connected ordered_square ordered_square_topology.
 prove locally_connected ordered_square ordered_square_topology /\ ~ locally_path_connected ordered_square ordered_square_topology.
-exact ex23_ordered_square_locally_conn_not_pathconn_axiom.
+admit.
 Qed.
 
 (** from §23 Exercise: connected open subsets of locally path connected spaces are path connected **) 
 (** LATEX VERSION: In a locally path connected space, every open connected subset is path connected. **)
-Axiom ex23_connected_open_sets_path_connected_axiom : forall X Tx U:set,
-  locally_path_connected X Tx ->
-  open_in X Tx U ->
-  connected_space U (subspace_topology X Tx U) ->
-  path_connected_space U (subspace_topology X Tx U).
 Theorem ex23_connected_open_sets_path_connected : forall X Tx U:set,
   locally_path_connected X Tx -> open_in X Tx U -> connected_space U (subspace_topology X Tx U) -> path_connected_space U (subspace_topology X Tx U).
 let X Tx U.
@@ -40249,15 +40213,11 @@ assume Hlpc: locally_path_connected X Tx.
 assume HU: open_in X Tx U.
 assume Hconn: connected_space U (subspace_topology X Tx U).
 prove path_connected_space U (subspace_topology X Tx U).
-exact (ex23_connected_open_sets_path_connected_axiom X Tx U Hlpc HU Hconn).
+admit.
 Qed.
 
 (** from §23 Exercise: examples of path connected but not locally connected subsets of ℝ^2 **) 
 (** LATEX VERSION: There exists a subset of the plane that is path connected but not locally connected. **)
-Axiom ex23_path_connected_not_locally_connected_examples_axiom :
-  exists A:set,
-    A c= EuclidPlane /\ path_connected_space A (subspace_topology EuclidPlane R2_standard_topology A) /\
-    ~ locally_connected A (subspace_topology EuclidPlane R2_standard_topology A).
 Theorem ex23_path_connected_not_locally_connected_examples :
   exists A:set,
     A c= EuclidPlane /\ path_connected_space A (subspace_topology EuclidPlane R2_standard_topology A) /\
@@ -40265,7 +40225,7 @@ Theorem ex23_path_connected_not_locally_connected_examples :
 prove exists A:set,
     A c= EuclidPlane /\ path_connected_space A (subspace_topology EuclidPlane R2_standard_topology A) /\
     ~ locally_connected A (subspace_topology EuclidPlane R2_standard_topology A).
-exact ex23_path_connected_not_locally_connected_examples_axiom.
+admit.
 Qed.
 
 (** from §26 Definition: compact space **) 
