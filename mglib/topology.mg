@@ -35516,7 +35516,22 @@ Theorem Romega_tilde_connected : forall n:set,
   n :e omega ->
   connected_space (Romega_tilde n)
     (subspace_topology R_omega_space R_omega_product_topology (Romega_tilde n)).
-admit.
+let n. assume HnO: n :e omega.
+set X := R_omega_space.
+set Tx := R_omega_product_topology.
+prove connected_space (Romega_tilde n) (subspace_topology X Tx (Romega_tilde n)).
+claim HnNat: nat_p n.
+{ exact (omega_nat_p n HnO). }
+(** Induction on n. Romega_tilde n corresponds to sequences supported on {0,...,n}. **)
+apply (nat_ind (fun k:set => connected_space (Romega_tilde k) (subspace_topology X Tx (Romega_tilde k)))).
+- (** Base: k = 0. This should be homeomorphic to R. **)
+  admit.
+- (** Step: k -> ordsucc k. This should be homeomorphic to (Romega_tilde k) times R. **)
+  let k. assume HkNat: nat_p k.
+  assume IHk: connected_space (Romega_tilde k) (subspace_topology X Tx (Romega_tilde k)).
+  prove connected_space (Romega_tilde (ordsucc k)) (subspace_topology X Tx (Romega_tilde (ordsucc k))).
+  admit.
+- exact HnNat.
 Qed.
 
 (** from §23 Example 7: Romega_infty is connected as a union of connected sets with a common point **) 
