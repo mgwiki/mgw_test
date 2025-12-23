@@ -36653,6 +36653,17 @@ rewrite (Romega_extend_map_apply k p HkO Hp).
 exact (Romega_extend_seq_in_Romega_tilde_succ k p HkO Hp).
 Qed.
 
+(** Helper: extension identifies Romega_tilde (ordsucc k) with a product **)
+Axiom Romega_tilde_succ_homeomorphism : forall k:set,
+  k :e omega ->
+  homeomorphism
+    (setprod (Romega_tilde k) R)
+    (product_topology (Romega_tilde k) (subspace_topology R_omega_space R_omega_product_topology (Romega_tilde k))
+                      R R_standard_topology)
+    (Romega_tilde (ordsucc k))
+    (subspace_topology R_omega_space R_omega_product_topology (Romega_tilde (ordsucc k)))
+    (Romega_extend_map k).
+
 (** Helper: every finite subset of omega is bounded by some n in omega **)
 Theorem finite_subset_of_omega_bounded : forall F:set,
   F c= omega -> finite F -> exists n :e omega, forall m :e F, m :e n.
@@ -37244,20 +37255,31 @@ apply (nat_ind (fun k:set => connected_space (Romega_tilde k) (subspace_topology
   let k. assume HkNat: nat_p k.
   assume IHk: connected_space (Romega_tilde k) (subspace_topology X Tx (Romega_tilde k)).
   prove connected_space (Romega_tilde (ordsucc k)) (subspace_topology X Tx (Romega_tilde (ordsucc k))).
-  claim HTx: topology_on X Tx.
-  { exact Romega_product_topology_is_topology. }
-  claim HsubS: Romega_tilde (ordsucc k) c= X.
-  { exact (Romega_tilde_sub_Romega (ordsucc k)). }
-  claim HTS: topology_on (Romega_tilde (ordsucc k)) (subspace_topology X Tx (Romega_tilde (ordsucc k))).
-  { exact (subspace_topology_is_topology X Tx (Romega_tilde (ordsucc k)) HTx HsubS). }
-  prove topology_on (Romega_tilde (ordsucc k)) (subspace_topology X Tx (Romega_tilde (ordsucc k))) /\
-    ~(exists U V:set,
-        U :e subspace_topology X Tx (Romega_tilde (ordsucc k)) /\
-        V :e subspace_topology X Tx (Romega_tilde (ordsucc k)) /\
-        separation_of (Romega_tilde (ordsucc k)) U V).
-  apply andI.
-  - exact HTS.
-  - admit.
+  claim HkO: k :e omega.
+  { exact (nat_p_omega k HkNat). }
+  claim HRconn: connected_space R R_standard_topology.
+  { exact interval_connected. }
+  claim Hprod:
+    connected_space (setprod (Romega_tilde k) R)
+      (product_topology (Romega_tilde k) (subspace_topology X Tx (Romega_tilde k)) R R_standard_topology).
+  { exact (finite_product_connected (Romega_tilde k) (subspace_topology X Tx (Romega_tilde k))
+                                   R R_standard_topology IHk HRconn). }
+  claim Hhom:
+    homeomorphism
+      (setprod (Romega_tilde k) R)
+      (product_topology (Romega_tilde k) (subspace_topology X Tx (Romega_tilde k)) R R_standard_topology)
+      (Romega_tilde (ordsucc k))
+      (subspace_topology X Tx (Romega_tilde (ordsucc k)))
+      (Romega_extend_map k).
+  { exact (Romega_tilde_succ_homeomorphism k HkO). }
+  exact (homeomorphism_preserves_connected
+          (setprod (Romega_tilde k) R)
+          (product_topology (Romega_tilde k) (subspace_topology X Tx (Romega_tilde k)) R R_standard_topology)
+          (Romega_tilde (ordsucc k))
+          (subspace_topology X Tx (Romega_tilde (ordsucc k)))
+          (Romega_extend_map k)
+          Hhom
+          Hprod).
 - exact HnNat.
 Qed.
 
