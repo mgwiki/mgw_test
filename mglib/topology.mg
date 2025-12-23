@@ -40892,13 +40892,10 @@ Qed.
 (** LATEX VERSION: Exercises: unit interval closed in ℝ, unit interval compact, etc. **)
 Axiom unit_interval_compact_axiom : compact_space unit_interval unit_interval_topology.
 Theorem ex26_compactness_exercises :
-  forall X Tx:set, compact_space X Tx ->
   (closed_in R R_standard_topology unit_interval) /\
   (compact_space unit_interval unit_interval_topology).
-let X Tx.
-assume HX: compact_space X Tx.
-prove closed_in R R_standard_topology unit_interval /\ compact_space unit_interval unit_interval_topology.
-apply andI.
+ prove closed_in R R_standard_topology unit_interval /\ compact_space unit_interval unit_interval_topology.
+ apply andI.
 - (** unit interval is closed in R **)
   prove closed_in R R_standard_topology unit_interval.
   claim HT: topology_on R R_standard_topology.
