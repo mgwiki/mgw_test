@@ -34068,7 +34068,7 @@ Theorem R_omega_product_connected :
     (product_topology_full omega (const_space_family omega R R_standard_topology)).
 prove connected_space (product_space omega (const_space_family omega R R_standard_topology))
     (product_topology_full omega (const_space_family omega R R_standard_topology)).
-admit. (** countable product of connected spaces connected; cylinder opens have connected fibers; iterative union argument **)
+admit. (** follow Example 7: define R^∞ as sequences eventually 0; show it is connected as union of R^n; show its closure is all of R^ω in the product topology **)
 Qed.
 
 (** from §24 Definition: path and path connectedness **) 
