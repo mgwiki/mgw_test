@@ -21236,6 +21236,28 @@ claim Happ: (x, apply_fun f x) :e f.
 exact (Hfun x (apply_fun f x) y Happ Hxy).
 Qed.
 
+(** Helper: domain subset preserved under binary union **)
+Theorem graph_domain_subset_binunion : forall A B f g:set,
+  graph_domain_subset f A ->
+  graph_domain_subset g B ->
+  graph_domain_subset (f :\/: g) (A :\/: B).
+let A B f g.
+assume Hdf: graph_domain_subset f A.
+assume Hdg: graph_domain_subset g B.
+let x y.
+assume Hxy: (x,y) :e (f :\/: g).
+prove x :e (A :\/: B).
+apply (binunionE f g (x,y) Hxy).
+- assume Hxyf: (x,y) :e f.
+  claim HxA: x :e A.
+  { exact (Hdf x y Hxyf). }
+  exact (binunionI1 A B x HxA).
+- assume Hxyg: (x,y) :e g.
+  claim HxB: x :e B.
+  { exact (Hdg x y Hxyg). }
+  exact (binunionI2 A B x HxB).
+Qed.
+
 (** Helper: range subset preserved under binary union **)
 Theorem graph_range_subset_binunion : forall f g Y:set,
   graph_range_subset f Y ->
