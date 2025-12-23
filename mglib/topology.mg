@@ -47271,16 +47271,19 @@ Definition Stone_Cech_compactification : set -> set -> set := fun X Tx =>
       compact_space Y Ty /\ Hausdorff_space Y Ty /\ embedding_of X Tx Y Ty e}.
 Axiom Stone_Cech_universal_property_axiom : forall X Tx:set,
   Tychonoff_space X Tx ->
-  compact_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx) /\
-  Hausdorff_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx).
+  exists Ty:set,
+    compact_space (Stone_Cech_compactification X Tx) Ty /\
+    Hausdorff_space (Stone_Cech_compactification X Tx) Ty.
 Theorem Stone_Cech_universal_property : forall X Tx:set,
   Tychonoff_space X Tx ->
-  compact_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx) /\
-  Hausdorff_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx).
+  exists Ty:set,
+    compact_space (Stone_Cech_compactification X Tx) Ty /\
+    Hausdorff_space (Stone_Cech_compactification X Tx) Ty.
 let X Tx.
 assume HT: Tychonoff_space X Tx.
-prove compact_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx) /\
-  Hausdorff_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx).
+prove exists Ty:set,
+  compact_space (Stone_Cech_compactification X Tx) Ty /\
+  Hausdorff_space (Stone_Cech_compactification X Tx) Ty.
 exact (Stone_Cech_universal_property_axiom X Tx HT).
 Qed.
 
