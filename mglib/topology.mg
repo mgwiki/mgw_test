@@ -48871,18 +48871,19 @@ Qed.
 
 (** from Supplementary Exercises Exercise 5: long line is locally 1-euclidean satisfies (iv) not (iii) **)
 (** LATEX VERSION: The long line is locally 1-euclidean and satisfies (iv) but not (iii). **)
-Axiom supp_ex_locally_euclidean_5_axiom : forall L TL:set,
-  L = R (** stub: long line **) ->
-  TL = R (** stub: long line topology **) ->
-  locally_m_euclidean L TL (Sing Empty) /\
-  normal_space L TL /\
-  ~ metrizable L TL.
-Theorem supp_ex_locally_euclidean_5 : forall L TL:set,
-  L = R (** stub: long line **) ->
-  TL = R (** stub: long line topology **) ->
-  locally_m_euclidean L TL (Sing Empty) /\
-  normal_space L TL /\
-  ~ metrizable L TL.
+(** from Supplementary Exercises Exercise 5: long line carrier and topology **)
+(** LATEX VERSION: The long line and its topology (see exercises of §24). **)
+(** stub: the long line is not constructed in this file; we name it abstractly **)
+Definition long_line : set := Eps_i (fun L:set => True).
+Definition long_line_topology : set := Eps_i (fun T:set => topology_on long_line T).
+Axiom supp_ex_locally_euclidean_5_axiom :
+  locally_m_euclidean long_line long_line_topology (Sing Empty) /\
+  normal_space long_line long_line_topology /\
+  ~ metrizable long_line long_line_topology.
+Theorem supp_ex_locally_euclidean_5 :
+  locally_m_euclidean long_line long_line_topology (Sing Empty) /\
+  normal_space long_line long_line_topology /\
+  ~ metrizable long_line long_line_topology.
 exact supp_ex_locally_euclidean_5_axiom.
 Qed.
 
