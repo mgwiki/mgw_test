@@ -6503,6 +6503,28 @@ Definition topology_on : set -> set -> prop := fun X T =>
 /\ (forall UFam :e Power T, Union UFam :e T)
 /\ (forall U :e T, forall V :e T, U :/\: V :e T).
 
+(** Helper: extract T c= Power X from topology_on **)
+Theorem topology_sub_Power : forall X T:set,
+  topology_on X T -> T c= Power X.
+let X T.
+assume HTx: topology_on X T.
+prove T c= Power X.
+(** topology_on X T = ((((T c= Power X /\ Empty :e T) /\ X :e T) /\ Union axiom) /\ Intersection axiom) **)
+claim H1: (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U :e T, forall V :e T, U :/\: V :e T).
+{ exact HTx. }
+claim H2: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
+{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T))
+               (forall U :e T, forall V :e T, U :/\: V :e T)
+               H1). }
+claim H3: (T c= Power X /\ Empty :e T) /\ X :e T.
+{ exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T)
+               (forall UFam :e Power T, Union UFam :e T)
+               H2). }
+claim H4: T c= Power X /\ Empty :e T.
+{ exact (andEL (T c= Power X /\ Empty :e T) (X :e T) H3). }
+exact (andEL (T c= Power X) (Empty :e T) H4).
+Qed.
+
 (** from §12: definition of open sets in a topology **)
 (** LATEX VERSION: If X has topology T, a subset U of X is open exactly when U is an element of T. **)
 Definition open_in : set -> set -> set -> prop := fun X T U =>
@@ -6539,24 +6561,12 @@ Theorem open_in_subset : forall X T U:set,
 let X T U.
 assume HU: open_in X T U.
 prove U c= X.
-(** open_in X T U = topology_on X T /\ U :e T **)
 claim HTx: topology_on X T.
-{ exact (andEL (topology_on X T) (U :e T) HU). }
+{ exact (open_in_topology X T U HU). }
 claim HUT: U :e T.
-{ exact (andER (topology_on X T) (U :e T) HU). }
-(** Extract T c= Power X from topology_on and apply PowerE **)
-claim H1: (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U0 :e T, forall V :e T, U0 :/\: V :e T).
-{ exact HTx. }
-claim H2: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
-{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U0 :e T, forall V :e T, U0 :/\: V :e T) H1). }
-claim H3: (T c= Power X /\ Empty :e T) /\ X :e T.
-{ exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H2). }
-claim H4: T c= Power X /\ Empty :e T.
-{ exact (andEL (T c= Power X /\ Empty :e T) (X :e T) H3). }
-claim HTsub: T c= Power X.
-{ exact (andEL (T c= Power X) (Empty :e T) H4). }
+{ exact (open_in_elem X T U HU). }
 claim HUPower: U :e Power X.
-{ exact (HTsub U HUT). }
+{ exact ((topology_sub_Power X T HTx) U HUT). }
 exact (PowerE X U HUPower).
 Qed.
 
@@ -6567,19 +6577,8 @@ let X T U.
 assume HTx: topology_on X T.
 assume HU: U :e T.
 prove U c= X.
-(** Extract T c= Power X from topology_on **)
-claim H1: (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) /\ (forall U0 :e T, forall V :e T, U0 :/\: V :e T).
-{ exact HTx. }
-claim H2: ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
-{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U0 :e T, forall V :e T, U0 :/\: V :e T) H1). }
-claim H3: (T c= Power X /\ Empty :e T) /\ X :e T.
-{ exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H2). }
-claim H4: T c= Power X /\ Empty :e T.
-{ exact (andEL (T c= Power X /\ Empty :e T) (X :e T) H3). }
-claim HTsub: T c= Power X.
-{ exact (andEL (T c= Power X) (Empty :e T) H4). }
 claim HUPower: U :e Power X.
-{ exact (HTsub U HU). }
+{ exact ((topology_sub_Power X T HTx) U HU). }
 exact (PowerE X U HUPower).
 Qed.
 
@@ -8437,15 +8436,7 @@ Qed.
 Theorem discrete_topology_finest : forall X T:set,
   topology_on X T -> finer_than (discrete_topology X) T.
 let X T. assume HT.
-claim H1 : ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
-{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT). }
-claim H2 : (T c= Power X /\ Empty :e T) /\ X :e T.
-{ exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) H1). }
-claim H3 : T c= Power X /\ Empty :e T.
-{ exact (andEL (T c= Power X /\ Empty :e T) (X :e T) H2). }
-claim HTsub : T c= Power X.
-{ exact (andEL (T c= Power X) (Empty :e T) H3). }
-exact HTsub.
+exact (topology_sub_Power X T HT).
 Qed.
 
 (** from §12: indiscrete topology is the coarsest **)
