@@ -37042,6 +37042,80 @@ claim HfE: f :e Empty.
 exact (EmptyE f HfE).
 Qed.
 
+(** Helper: basis neighborhoods in the product topology meet Romega_tilde 0 via singleton sequences **)
+(** LATEX VERSION: Any basic open neighborhood of a point with all nonzero coordinates 0 contains a singleton sequence (r,0,0,...). **)
+Theorem Romega_tilde0_meets_product_basis : forall b x:set,
+  b :e basis_of_subbasis R_omega_space (product_subbasis_full omega (const_space_family omega R R_standard_topology)) ->
+  x :e Romega_tilde 0 ->
+  x :e b ->
+  b :/\: image_of Romega_singleton_map R <> Empty.
+let b x.
+assume Hb: b :e basis_of_subbasis R_omega_space (product_subbasis_full omega (const_space_family omega R R_standard_topology)).
+assume Hx0: x :e Romega_tilde 0.
+assume Hxb: x :e b.
+prove b :/\: image_of Romega_singleton_map R <> Empty.
+set X := R_omega_space.
+set Xi := const_space_family omega R R_standard_topology.
+set S := product_subbasis_full omega Xi.
+set B := basis_of_subbasis X S.
+claim HbB: b :e B.
+{ exact Hb. }
+(** Unpack basis_of_subbasis membership. **)
+claim Hbfin: b :e finite_intersections_of X S.
+{ exact (SepE1 (finite_intersections_of X S) (fun b0:set => b0 <> Empty) b HbB). }
+apply (ReplE_impred (finite_subcollections S) (fun F0:set => intersection_of_family X F0) b Hbfin
+        (b :/\: image_of Romega_singleton_map R <> Empty)).
+let F.
+assume HF: F :e finite_subcollections S.
+assume Hbeq: b = intersection_of_family X F.
+rewrite Hbeq at 1.
+(** Extract basic properties of F. **)
+claim HFpow: F :e Power S.
+{ exact (SepE1 (Power S) (fun F0:set => finite F0) F HF). }
+claim HFsubS: F c= S.
+{ exact (PowerE S F HFpow). }
+(** x lies in the intersection, hence in X and in every s in F. **)
+claim HxInt: x :e intersection_of_family X F.
+{ rewrite <- Hbeq.
+  exact Hxb. }
+claim HxX: x :e X.
+{ exact (SepE1 X (fun x0 : set => forall U:set, U :e F -> x0 :e U) x HxInt). }
+claim HxAll: forall s:set, s :e F -> x :e s.
+{ exact (SepE2 X (fun x0 : set => forall U:set, U :e F -> x0 :e U) x HxInt). }
+(** Extract the defining property of x :e Romega_tilde 0. **)
+claim Hx0prop: forall i:set, i :e omega -> 0 :e i -> apply_fun x i = 0.
+{ exact (SepE2 X (fun f0:set => forall i:set, i :e omega -> 0 :e i -> apply_fun f0 i = 0) x Hx0). }
+(** Define r to be the 0th coordinate of x. **)
+set r := apply_fun x 0.
+claim H0o: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
+claim HrR: r :e R.
+{ exact (Romega_coord_in_R x 0 HxX H0o). }
+set f := apply_fun Romega_singleton_map r.
+claim HfX: f :e X.
+{ rewrite (Romega_singleton_map_apply r HrR).
+  exact (Romega_singleton_seq_in_Romega_space r HrR). }
+claim HfImg: f :e image_of Romega_singleton_map R.
+{ claim Hfeq: f = apply_fun Romega_singleton_map r.
+  { reflexivity. }
+  rewrite Hfeq.
+  exact (ReplI R (fun a:set => apply_fun Romega_singleton_map a) r HrR). }
+(** Show f :e intersection_of_family X F by showing f is in every s in F. **)
+claim HfInt: f :e intersection_of_family X F.
+{ admit. }
+(** Conclude the intersection is nonempty by exhibiting f. **)
+assume Hempty: (intersection_of_family X F) :/\: image_of Romega_singleton_map R = Empty.
+prove False.
+claim HfBA: f :e (intersection_of_family X F) :/\: image_of Romega_singleton_map R.
+{ exact (binintersectI (intersection_of_family X F) (image_of Romega_singleton_map R) f HfInt HfImg). }
+claim HfE: f :e Empty.
+{ claim HsubE: (intersection_of_family X F) :/\: image_of Romega_singleton_map R c= Empty.
+  { rewrite Hempty.
+    exact (Subq_ref Empty). }
+  exact (HsubE f HfBA). }
+exact (EmptyE f HfE).
+Qed.
+
 (** from §23 Example 7: Romega_infty is dense in the product topology **) 
 (** LATEX VERSION: Every basic open set in the product topology meets R^infty by modifying only finitely many coordinates. **)
 Theorem Romega_infty_dense :
