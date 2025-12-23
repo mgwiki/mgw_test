@@ -29506,6 +29506,50 @@ apply set_ext.
     exact (SepI X (fun x0:set => apply_fun f x0 :e U :\/: V) x HxX HfxUV).
 Qed.
 
+(** Helper: preimage of set difference **)
+(** LATEX VERSION: f^{-1}(U\\V) = f^{-1}(U)\\f^{-1}(V). **)
+Theorem preimage_of_setminus : forall X f U V:set,
+  preimage_of X f (U :\: V) = (preimage_of X f U) :\: (preimage_of X f V).
+let X f U V.
+apply set_ext.
+- let x. assume Hx: x :e preimage_of X f (U :\: V).
+  prove x :e (preimage_of X f U) :\: (preimage_of X f V).
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => apply_fun f x0 :e U :\: V) x Hx). }
+  claim HfxUV: apply_fun f x :e U :\: V.
+  { exact (SepE2 X (fun x0:set => apply_fun f x0 :e U :\: V) x Hx). }
+  claim HfxU: apply_fun f x :e U.
+  { exact (setminusE1 U V (apply_fun f x) HfxUV). }
+  claim HfxnotV: apply_fun f x /:e V.
+  { exact (setminusE2 U V (apply_fun f x) HfxUV). }
+  claim HxPreU: x :e preimage_of X f U.
+  { exact (SepI X (fun x0:set => apply_fun f x0 :e U) x HxX HfxU). }
+  claim HxnotPreV: x /:e preimage_of X f V.
+  { assume HxPreV: x :e preimage_of X f V.
+    claim HfxV: apply_fun f x :e V.
+    { exact (SepE2 X (fun x0:set => apply_fun f x0 :e V) x HxPreV). }
+    exact (HfxnotV HfxV). }
+  exact (setminusI (preimage_of X f U) (preimage_of X f V) x HxPreU HxnotPreV).
+- let x. assume Hx: x :e (preimage_of X f U) :\: (preimage_of X f V).
+  prove x :e preimage_of X f (U :\: V).
+  claim HxPreU: x :e preimage_of X f U.
+  { exact (setminusE1 (preimage_of X f U) (preimage_of X f V) x Hx). }
+  claim HxnotPreV: x /:e preimage_of X f V.
+  { exact (setminusE2 (preimage_of X f U) (preimage_of X f V) x Hx). }
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => apply_fun f x0 :e U) x HxPreU). }
+  claim HfxU: apply_fun f x :e U.
+  { exact (SepE2 X (fun x0:set => apply_fun f x0 :e U) x HxPreU). }
+  claim HfxnotV: apply_fun f x /:e V.
+  { assume HfxV: apply_fun f x :e V.
+    claim HxPreV: x :e preimage_of X f V.
+    { exact (SepI X (fun x0:set => apply_fun f x0 :e V) x HxX HfxV). }
+    exact (HxnotPreV HxPreV). }
+  claim HfxUV: apply_fun f x :e U :\: V.
+  { exact (setminusI U V (apply_fun f x) HfxU HfxnotV). }
+  exact (SepI X (fun x0:set => apply_fun f x0 :e U :\: V) x HxX HfxUV).
+Qed.
+
 (** Helper: preimage of Empty **)
 (** LATEX VERSION: f^{-1}(∅) = ∅. **)
 Theorem preimage_of_Empty : forall X f:set,
