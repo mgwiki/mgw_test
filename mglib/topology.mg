@@ -21100,6 +21100,119 @@ rewrite Hxa.
 exact Ha.
 Qed.
 
+(** Helper: a graph comprehension has range subset under a pointwise condition **)
+Theorem graph_range_subset_graph : forall A Y:set, forall g:set->set,
+  (forall a:set, a :e A -> g a :e Y) ->
+  graph_range_subset {(a, g a)|a :e A} Y.
+let A Y g.
+assume HgY: forall a:set, a :e A -> g a :e Y.
+let x y.
+assume Hxy: (x,y) :e {(a, g a)|a :e A}.
+prove y :e Y.
+apply (ReplE_impred A (fun a0:set => (a0, g a0)) (x,y) Hxy (y :e Y)).
+let a. assume Ha: a :e A.
+assume Heq: (x,y) = (a, g a).
+claim Hyg: y = g a.
+{ rewrite <- (tuple_2_1_eq x y).
+  rewrite <- (tuple_2_1_eq a (g a)).
+  rewrite Heq.
+  reflexivity. }
+rewrite Hyg.
+exact (HgY a Ha).
+Qed.
+
+(** Helper: a constant graph comprehension has range subset **)
+Theorem graph_range_subset_const_fun : forall A Y c:set,
+  c :e Y ->
+  graph_range_subset {(a,c)|a :e A} Y.
+let A Y c.
+assume HcY: c :e Y.
+let x y.
+assume Hxy: (x,y) :e {(a,c)|a :e A}.
+prove y :e Y.
+apply (ReplE_impred A (fun a0:set => (a0,c)) (x,y) Hxy (y :e Y)).
+let a. assume Ha: a :e A.
+assume Heq: (x,y) = (a,c).
+claim Hyc: y = c.
+{ rewrite <- (tuple_2_1_eq x y).
+  rewrite <- (tuple_2_1_eq a c).
+  rewrite Heq.
+  reflexivity. }
+rewrite Hyc.
+exact HcY.
+Qed.
+
+(** Helper: a graph comprehension is functional **)
+Theorem functional_graph_graph : forall A:set, forall g:set->set,
+  functional_graph {(a, g a)|a :e A}.
+let A g.
+let x y1 y2.
+assume H1: (x,y1) :e {(a, g a)|a :e A}.
+assume H2: (x,y2) :e {(a, g a)|a :e A}.
+apply (ReplE_impred A (fun a0:set => (a0, g a0)) (x,y1) H1 (y1 = y2)).
+let a1. assume Ha1: a1 :e A.
+assume Heq1: (x,y1) = (a1, g a1).
+apply (ReplE_impred A (fun a0:set => (a0, g a0)) (x,y2) H2 (y1 = y2)).
+let a2. assume Ha2: a2 :e A.
+assume Heq2: (x,y2) = (a2, g a2).
+claim Hx1: x = a1.
+{ rewrite <- (tuple_2_0_eq x y1).
+  rewrite <- (tuple_2_0_eq a1 (g a1)).
+  rewrite Heq1.
+  reflexivity. }
+claim Hx2: x = a2.
+{ rewrite <- (tuple_2_0_eq x y2).
+  rewrite <- (tuple_2_0_eq a2 (g a2)).
+  rewrite Heq2.
+  reflexivity. }
+claim Ha12: a1 = a2.
+{ rewrite <- Hx1.
+  rewrite Hx2.
+  reflexivity. }
+claim Hy1: y1 = g a1.
+{ rewrite <- (tuple_2_1_eq x y1).
+  rewrite <- (tuple_2_1_eq a1 (g a1)).
+  rewrite Heq1.
+  reflexivity. }
+claim Hy2: y2 = g a2.
+{ rewrite <- (tuple_2_1_eq x y2).
+  rewrite <- (tuple_2_1_eq a2 (g a2)).
+  rewrite Heq2.
+  reflexivity. }
+rewrite Hy1.
+rewrite Hy2.
+rewrite <- Ha12.
+reflexivity.
+Qed.
+
+(** Helper: a constant graph comprehension is functional **)
+Theorem functional_graph_const_fun : forall A c:set,
+  functional_graph {(a,c)|a :e A}.
+let A c.
+let x y1 y2.
+assume H1: (x,y1) :e {(a,c)|a :e A}.
+assume H2: (x,y2) :e {(a,c)|a :e A}.
+apply (ReplE_impred A (fun a0:set => (a0,c)) (x,y1) H1 (y1 = y2)).
+let a1. assume Ha1: a1 :e A.
+assume Heq1: (x,y1) = (a1,c).
+apply (ReplE_impred A (fun a0:set => (a0,c)) (x,y2) H2 (y1 = y2)).
+let a2. assume Ha2: a2 :e A.
+assume Heq2: (x,y2) = (a2,c).
+claim Hy1: y1 = c.
+{ rewrite <- (tuple_2_1_eq x y1).
+  rewrite <- (tuple_2_1_eq a1 c).
+  rewrite Heq1.
+  reflexivity. }
+claim Hy2: y2 = c.
+{ rewrite <- (tuple_2_1_eq x y2).
+  rewrite <- (tuple_2_1_eq a2 c).
+  rewrite Heq2.
+  reflexivity. }
+rewrite Hy1.
+rewrite Hy2.
+reflexivity.
+Qed.
+
 (** Helper: if a value exists in the graph, apply_fun yields a value in the graph **)
 Theorem apply_fun_in_graph_of_ex : forall f x:set,
   (exists y:set, (x,y) :e f) ->
