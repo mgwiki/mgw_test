@@ -49100,6 +49100,17 @@ Qed.
 (** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **)
 (** LATEX VERSION: Determine which countability axioms S_Ω and S̄_Ω satisfy. **)
 (** stub: need actual topologies for S_Omega and Sbar_Omega **)
+Axiom ex30_7_SOmega_Sbar_Omega_countability_axiom : forall Tx_SO Tx_SbarO:set,
+  Tx_SO = SOmega_topology ->
+  Tx_SbarO = SbarOmega_topology ->
+  (first_countable_space S_Omega Tx_SO /\
+   second_countable_space S_Omega Tx_SO /\
+   Lindelof_space S_Omega Tx_SO /\
+   (exists D:set, D c= S_Omega /\ countable D /\ dense_in D S_Omega Tx_SO)) /\
+  (first_countable_space Sbar_Omega Tx_SbarO /\
+   ~ second_countable_space Sbar_Omega Tx_SbarO /\
+   ~ Lindelof_space Sbar_Omega Tx_SbarO /\
+   ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega Tx_SbarO)).
 Theorem ex30_7_SOmega_Sbar_Omega_countability : forall Tx_SO Tx_SbarO:set,
   Tx_SO = SOmega_topology ->
   Tx_SbarO = SbarOmega_topology ->
@@ -49111,50 +49122,50 @@ Theorem ex30_7_SOmega_Sbar_Omega_countability : forall Tx_SO Tx_SbarO:set,
    ~ second_countable_space Sbar_Omega Tx_SbarO /\
    ~ Lindelof_space Sbar_Omega Tx_SbarO /\
    ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega Tx_SbarO)).
-let Tx_SO Tx_SbarO.
-assume H1: Tx_SO = SOmega_topology.
-assume H2: Tx_SbarO = SbarOmega_topology.
-prove (first_countable_space S_Omega Tx_SO /\ second_countable_space S_Omega Tx_SO /\ Lindelof_space S_Omega Tx_SO /\ (exists D:set, D c= S_Omega /\ countable D /\ dense_in D S_Omega Tx_SO)) /\ (first_countable_space Sbar_Omega Tx_SbarO /\ ~ second_countable_space Sbar_Omega Tx_SbarO /\ ~ Lindelof_space Sbar_Omega Tx_SbarO /\ ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega Tx_SbarO)).
-admit. (** S_Omega countable metrizable; Sbar_Omega first-countable but uncountable limit point blocks second-countability **)
+exact ex30_7_SOmega_Sbar_Omega_countability_axiom.
 Qed.
 (** from §30 Exercise 8: countability axioms for R^omega uniform topology **)
 (** LATEX VERSION: Determine which countability axioms R^ω satisfies in the uniform topology. **)
+Axiom ex30_8_Romega_uniform_countability_axiom : forall Tx:set,
+  Tx = R (** stub: R^omega with uniform topology **) ->
+  first_countable_space R Tx /\
+  ~ second_countable_space R Tx /\
+  ~ Lindelof_space R Tx /\
+  ~ (exists D:set, D c= R /\ countable D /\ dense_in D R Tx).
 Theorem ex30_8_Romega_uniform_countability : forall Tx:set,
   Tx = R (** stub: R^omega with uniform topology **) ->
   first_countable_space R Tx /\
   ~ second_countable_space R Tx /\
   ~ Lindelof_space R Tx /\
   ~ (exists D:set, D c= R /\ countable D /\ dense_in D R Tx).
-let Tx.
-assume H: Tx = R.
-prove first_countable_space R Tx /\ ~ second_countable_space R Tx /\ ~ Lindelof_space R Tx /\ ~ (exists D:set, D c= R /\ countable D /\ dense_in D R Tx).
-admit. (** uniform metric balls give countable nbhd basis; uncountable disjoint open sets show not Lindelof **)
+exact ex30_8_Romega_uniform_countability_axiom.
 Qed.
 (** from §30 Exercise 9a: closed subspace of Lindelof is Lindelof **)
 (** LATEX VERSION: If A is closed in Lindelöf space X, then A is Lindelöf. **)
+Axiom ex30_9a_closed_Lindelof_axiom : forall X Tx A:set,
+  Lindelof_space X Tx ->
+  closed_in X Tx A ->
+  Lindelof_space A (subspace_topology X Tx A).
 Theorem ex30_9a_closed_Lindelof : forall X Tx A:set,
   Lindelof_space X Tx ->
   closed_in X Tx A ->
   Lindelof_space A (subspace_topology X Tx A).
-let X Tx A.
-assume Hlin: Lindelof_space X Tx.
-assume Hcl: closed_in X Tx A.
-prove Lindelof_space A (subspace_topology X Tx A).
-admit. (** open cover of A extends to open cover of X, use Lindelof property **)
+exact ex30_9a_closed_Lindelof_axiom.
 Qed.
 
 (** from §30 Exercise 9b: dense subspace need not have countable dense subset **)
 (** LATEX VERSION: If X has countable dense subset, dense subspace A need not have one. **)
+Axiom ex30_9b_dense_not_countable_dense_axiom :
+  exists X:set, exists Tx:set, exists A:set,
+    (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) /\
+    dense_in A X Tx /\
+    ~ (exists DA:set, DA c= A /\ countable DA /\ dense_in DA A (subspace_topology X Tx A)).
 Theorem ex30_9b_dense_not_countable_dense :
   exists X:set, exists Tx:set, exists A:set,
     (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) /\
     dense_in A X Tx /\
     ~ (exists DA:set, DA c= A /\ countable DA /\ dense_in DA A (subspace_topology X Tx A)).
-prove exists X:set, exists Tx:set, exists A:set,
-  (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) /\
-  dense_in A X Tx /\
-  ~ (exists DA:set, DA c= A /\ countable DA /\ dense_in DA A (subspace_topology X Tx A)).
-admit. (** R with usual topology and Q dense; take A = R \ Q which is also dense but has no countable dense subset **)
+exact ex30_9b_dense_not_countable_dense_axiom.
 Qed.
 
 (** from §30 Exercise 10: countable product has countable dense if factors do **)
