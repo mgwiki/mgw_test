@@ -35918,6 +35918,52 @@ rewrite (Romega_singleton_map_apply r Hr).
 exact (Romega_singleton_seq_in_Romega_space r Hr).
 Qed.
 
+(** Helper: singleton map is continuous into the product topology on R_omega_space **)
+(** LATEX VERSION: The coordinate-inclusion map r ↦ (r,0,0,...) is continuous in the product topology. **)
+Theorem Romega_singleton_map_continuous_prod :
+  continuous_map R R_standard_topology R_omega_space R_omega_product_topology Romega_singleton_map.
+prove continuous_map R R_standard_topology R_omega_space R_omega_product_topology Romega_singleton_map.
+set Xi := const_space_family omega R R_standard_topology.
+set S := product_subbasis_full omega Xi.
+claim HtopR: topology_on R R_standard_topology.
+{ exact R_standard_topology_is_topology. }
+claim Hfun: function_on Romega_singleton_map R R_omega_space.
+{ exact Romega_singleton_map_function_on. }
+claim Hone: omega <> Empty.
+{ claim H0o: 0 :e omega.
+  { exact (nat_p_omega 0 nat_0). }
+  exact (elem_implies_nonempty omega 0 H0o). }
+claim Hcomp: forall i:set, i :e omega -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+{ let i. assume Hi: i :e omega.
+  claim HXi: apply_fun Xi i = (R, R_standard_topology).
+  { exact (const_space_family_apply omega R R_standard_topology i Hi). }
+  claim Hset: space_family_set Xi i = R.
+  { claim Hdef: space_family_set Xi i = (apply_fun Xi i) 0.
+    { reflexivity. }
+    rewrite Hdef.
+    rewrite HXi.
+    exact (tuple_2_0_eq R R_standard_topology). }
+  claim Htop: space_family_topology Xi i = R_standard_topology.
+  { claim Hdef: space_family_topology Xi i = (apply_fun Xi i) 1.
+    { reflexivity. }
+    rewrite Hdef.
+    rewrite HXi.
+    exact (tuple_2_1_eq R R_standard_topology). }
+  rewrite Hset.
+  rewrite Htop.
+  exact R_standard_topology_is_topology. }
+claim HS: subbasis_on R_omega_space S.
+{ admit. }
+claim Hpre: forall s:set, s :e S -> preimage_of R Romega_singleton_map s :e R_standard_topology.
+{ let s. assume Hs: s :e S.
+  admit. }
+claim HdefTy: R_omega_product_topology = generated_topology_from_subbasis R_omega_space S.
+{ reflexivity. }
+rewrite HdefTy.
+exact (continuous_map_from_subbasis R R_standard_topology R_omega_space S Romega_singleton_map
+        HtopR Hfun HS Hpre).
+Qed.
+
 (** Helper: image of the singleton map lies in Romega_tilde 0 **)
 Theorem image_of_Romega_singleton_map_sub_Romega_tilde0 :
   image_of Romega_singleton_map R c= Romega_tilde 0.
