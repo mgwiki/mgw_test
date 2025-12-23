@@ -33346,6 +33346,67 @@ Definition converges_to : set -> set -> set -> set -> prop :=
     forall U:set, U :e Tx -> x :e U ->
       exists N:set, N :e omega /\
         forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
+
+(** Helper: extract topology_on from converges_to **)
+Theorem converges_to_topology : forall X Tx seq x:set,
+  converges_to X Tx seq x -> topology_on X Tx.
+let X Tx seq x.
+assume H: converges_to X Tx seq x.
+claim H123: (topology_on X Tx /\ sequence_on seq X) /\ x :e X.
+{ exact (andEL ((topology_on X Tx /\ sequence_on seq X) /\ x :e X)
+               (forall U:set, U :e Tx -> x :e U ->
+                 exists N:set, N :e omega /\
+                   forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U)
+               H). }
+claim H12: topology_on X Tx /\ sequence_on seq X.
+{ exact (andEL (topology_on X Tx /\ sequence_on seq X) (x :e X) H123). }
+exact (andEL (topology_on X Tx) (sequence_on seq X) H12).
+Qed.
+
+(** Helper: extract sequence_on from converges_to **)
+Theorem converges_to_sequence_on : forall X Tx seq x:set,
+  converges_to X Tx seq x -> sequence_on seq X.
+let X Tx seq x.
+assume H: converges_to X Tx seq x.
+claim H123: (topology_on X Tx /\ sequence_on seq X) /\ x :e X.
+{ exact (andEL ((topology_on X Tx /\ sequence_on seq X) /\ x :e X)
+               (forall U:set, U :e Tx -> x :e U ->
+                 exists N:set, N :e omega /\
+                   forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U)
+               H). }
+claim H12: topology_on X Tx /\ sequence_on seq X.
+{ exact (andEL (topology_on X Tx /\ sequence_on seq X) (x :e X) H123). }
+exact (andER (topology_on X Tx) (sequence_on seq X) H12).
+Qed.
+
+(** Helper: extract x in X from converges_to **)
+Theorem converges_to_point_in_X : forall X Tx seq x:set,
+  converges_to X Tx seq x -> x :e X.
+let X Tx seq x.
+assume H: converges_to X Tx seq x.
+claim H123: (topology_on X Tx /\ sequence_on seq X) /\ x :e X.
+{ exact (andEL ((topology_on X Tx /\ sequence_on seq X) /\ x :e X)
+               (forall U:set, U :e Tx -> x :e U ->
+                 exists N:set, N :e omega /\
+                   forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U)
+               H). }
+exact (andER (topology_on X Tx /\ sequence_on seq X) (x :e X) H123).
+Qed.
+
+(** Helper: extract neighborhood condition from converges_to **)
+Theorem converges_to_neighborhoods : forall X Tx seq x:set,
+  converges_to X Tx seq x ->
+  forall U:set, U :e Tx -> x :e U ->
+    exists N:set, N :e omega /\
+      forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
+let X Tx seq x.
+assume H: converges_to X Tx seq x.
+exact (andER ((topology_on X Tx /\ sequence_on seq X) /\ x :e X)
+             (forall U:set, U :e Tx -> x :e U ->
+               exists N:set, N :e omega /\
+                 forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U)
+             H).
+Qed.
 (** map a sequence seq by a function f, giving the composed sequence n ↦ f(seq(n)) **)
 Definition map_sequence : set -> set -> set := fun f seq => compose_fun omega seq f.
 
