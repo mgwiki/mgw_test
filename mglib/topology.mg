@@ -47589,13 +47589,30 @@ Definition Baire_space : set -> set -> prop := fun X Tx =>
 
 (** from §48 Lemma 48.1: dense G_delta characterization of Baire space **)
 (** LATEX VERSION: Equivalent dense G_δ characterization of Baire spaces. **)
-(** NOTE: This theorem is now trivial since the definition was corrected to take both X and Tx. **)
 Theorem Baire_space_dense_Gdelta : forall X Tx:set,
-  Baire_space X Tx <-> Baire_space X Tx.
+  Baire_space X Tx ->
+  forall U:set,
+    U c= Tx -> countable_set U ->
+    (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
+    dense_in (intersection_over_family X U) X Tx.
 let X Tx.
-apply iffI.
-- assume H. exact H.
-- assume H. exact H.
+assume HB: Baire_space X Tx.
+let U.
+assume HUsub: U c= Tx.
+assume HUcount: countable_set U.
+assume HUdense: forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx.
+prove dense_in (intersection_over_family X U) X Tx.
+claim Hprop: forall U0:set,
+  U0 c= Tx -> countable_set U0 ->
+  (forall u:set, u :e U0 -> u :e Tx /\ dense_in u X Tx) ->
+  dense_in (intersection_over_family X U0) X Tx.
+{ exact (andER (topology_on X Tx)
+               (forall U0:set,
+                 U0 c= Tx -> countable_set U0 ->
+                 (forall u:set, u :e U0 -> u :e Tx /\ dense_in u X Tx) ->
+                 dense_in (intersection_over_family X U0) X Tx)
+               HB). }
+exact (Hprop U HUsub HUcount HUdense).
 Qed.
 
 (** from §48 Theorem: Baire category theorem for complete metric spaces **)
