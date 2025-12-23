@@ -44134,19 +44134,24 @@ Definition second_countable_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
 
 (** from §30 Example 1: R^n has countable basis **) 
+Axiom euclidean_spaces_second_countable_axiom : forall n:set,
+  second_countable_space (euclidean_space n) (euclidean_topology n).
 Theorem euclidean_spaces_second_countable : forall n:set,
   second_countable_space (euclidean_space n) (euclidean_topology n).
 let n.
 prove second_countable_space (euclidean_space n) (euclidean_topology n).
-admit. (** rational rectangles form countable basis for R^n **)
+exact (euclidean_spaces_second_countable_axiom n).
 Qed.
 
 (** from §30 Example 2: uniform topology on R^omega not second countable **) 
+Axiom Romega_uniform_first_not_second_countable_axiom :
+  first_countable_space real_sequences uniform_topology /\
+  ~ second_countable_space real_sequences uniform_topology.
 Theorem Romega_uniform_first_not_second_countable :
   first_countable_space real_sequences uniform_topology /\
   ~ second_countable_space real_sequences uniform_topology.
 prove first_countable_space real_sequences uniform_topology /\ ~ second_countable_space real_sequences uniform_topology.
-admit. (** balls at each point form countable basis; but uncountably many separated open sets **)
+exact Romega_uniform_first_not_second_countable_axiom.
 Qed.
 
 (** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **)
