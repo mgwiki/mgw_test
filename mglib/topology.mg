@@ -47942,14 +47942,14 @@ Definition coplanar_in_R3 : set -> set -> set -> set -> prop := fun p q r s =>
 (** LATEX VERSION: Points {x₀,...,xₖ} in R^N are geometrically independent if Σaᵢxᵢ=0 and Σaᵢ=0 imply all aᵢ=0. **)
 (** stub: actual condition needs vector space operations on R^N; we only record that S lies in some euclidean_space N **)
 Definition geometrically_independent : set -> prop := fun S =>
-  exists N:set, N :e omega /\ S c= euclidean_space N /\ True.
+  exists N:set, N :e omega /\ S c= euclidean_space N.
 
 (** from §50: plane determined by geometrically independent points **)
 (** LATEX VERSION: The plane P determined by geometrically independent points {x₀,...,xₖ} is the set of all x = Σtᵢxᵢ where Σtᵢ=1. **)
 (** stub: needs proper formulation of affine combination in euclidean_space N **)
 Definition affine_plane : set -> set := fun S =>
   Eps_i (fun P:set =>
-    exists N:set, N :e omega /\ S c= euclidean_space N /\ P c= euclidean_space N /\ True).
+    exists N:set, N :e omega /\ S c= euclidean_space N /\ P c= euclidean_space N).
 
 (** from §50: k-plane in R^N **)
 (** LATEX VERSION: A k-plane in R^N is the affine plane determined by k+1 geometrically independent points. **)
