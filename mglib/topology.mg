@@ -50241,16 +50241,25 @@ exact ex31_8_orbit_space_properties_axiom.
 Qed.
 (** from §31 Exercise 9: Sorgenfrey plane rational/irrational diagonal non-separation **)
 (** LATEX VERSION: In ℝ_ℓ², let A = {x × (-x) | x rational}, B = {x × (-x) | x irrational}. No open sets separate A and B. **)
+(** Diagonal sets in the Sorgenfrey plane used in this exercise. **)
+Definition Sorgenfrey_plane_diag_rational : set :=
+  {(x, minus_SNo x) | x :e rational_numbers}.
+Definition Sorgenfrey_plane_diag_irrational : set :=
+  {(x, minus_SNo x) | x :e (Sorgenfrey_line :\: rational_numbers)}.
 Axiom ex31_9_Sorgenfrey_plane_no_separation_axiom :
-  exists Rl2 Tl2 A B:set,
-    ~ (exists U V:set,
-        open_in Rl2 Tl2 U /\ open_in Rl2 Tl2 V /\
-        A c= U /\ B c= V /\ U :/\: V = Empty).
+  ~ (exists U V:set,
+      open_in (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology U /\
+      open_in (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology V /\
+      Sorgenfrey_plane_diag_rational c= U /\
+      Sorgenfrey_plane_diag_irrational c= V /\
+      U :/\: V = Empty).
 Theorem ex31_9_Sorgenfrey_plane_no_separation :
-  exists Rl2 Tl2 A B:set,
-    ~ (exists U V:set,
-        open_in Rl2 Tl2 U /\ open_in Rl2 Tl2 V /\
-        A c= U /\ B c= V /\ U :/\: V = Empty).
+  ~ (exists U V:set,
+      open_in (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology U /\
+      open_in (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology V /\
+      Sorgenfrey_plane_diag_rational c= U /\
+      Sorgenfrey_plane_diag_irrational c= V /\
+      U :/\: V = Empty).
 exact ex31_9_Sorgenfrey_plane_no_separation_axiom.
 Qed.
 
