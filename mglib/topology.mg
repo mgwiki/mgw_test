@@ -34033,22 +34033,42 @@ apply xm (X = Empty).
     exact HconnAmbientSub.
 Qed.
 
-(** from §23 Example: product topology on R^ω is connected **) 
+(** from §23 Example 6: R^ω in the box topology is not connected **) 
+(** LATEX VERSION: Partition R^ω into bounded and unbounded sequences; each is open in the box topology using ∏(a_i-1,a_i+1). **)
+Definition R_omega_space : set :=
+  product_space omega (const_space_family omega R R_standard_topology).
+Definition R_omega_box_topology : set :=
+  box_topology omega (const_space_family omega R R_standard_topology).
+Definition R_omega_product_topology : set :=
+  product_topology_full omega (const_space_family omega R R_standard_topology).
+
+Definition bounded_sequence_Romega : set -> prop := fun f =>
+  exists M:set, M :e R /\ forall n:set, n :e omega -> apply_fun f n :e open_interval (minus_SNo M) M.
+
+Definition bounded_sequences_Romega : set :=
+  {f :e R_omega_space | bounded_sequence_Romega f}.
+
+Definition unbounded_sequence_Romega : set -> prop := fun f =>
+  forall M:set, M :e R -> exists n :e omega, ~(apply_fun f n :e open_interval (minus_SNo M) M).
+
+Definition unbounded_sequences_Romega : set :=
+  {f :e R_omega_space | unbounded_sequence_Romega f}.
+
+Theorem R_omega_box_not_connected :
+  ~ connected_space (product_space omega (const_space_family omega R R_standard_topology))
+    (box_topology omega (const_space_family omega R R_standard_topology)).
+prove ~ connected_space (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)).
+admit. (** separate into bounded and unbounded sequences; each is open in box topology by the box neighborhood ∏(a_i-1,a_i+1) **)
+Qed.
+
+(** from §23 Example 7: R^ω in the product topology is connected **) 
+(** LATEX VERSION: Let R^∞ be sequences eventually 0; it is connected as union of R^n; its closure is all of R^ω in product topology. **)
 Theorem R_omega_product_connected :
   connected_space (product_space omega (const_space_family omega R R_standard_topology))
     (product_topology_full omega (const_space_family omega R R_standard_topology)).
 prove connected_space (product_space omega (const_space_family omega R R_standard_topology))
     (product_topology_full omega (const_space_family omega R R_standard_topology)).
-admit. (** countable product of connected spaces connected; cylinder opens have connected fibers; iterative union argument
-        aby: open_in_subspace_iff UnionEq Repl_5FEmpty ReplEq ReplE UPairI1 const_family�f conj_myprob_9365_1_20251124_033235 prop_ext_2 In_5Find open_set�f ex13_1_local_open_subset . **)
-Qed.
-
-(** from §23 Example: box topology on R^ω is disconnected **) 
-Theorem R_omega_box_not_connected :
-  ~ connected_space (product_space omega (const_space_family omega R R_standard_topology))
-    (box_topology omega (const_space_family omega R R_standard_topology)).
-prove ~ connected_space (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)).
-admit. (** separate via {f | f(0) > 0} and {f | f(0) < 0}; both open in box topology **)
+admit. (** countable product of connected spaces connected; cylinder opens have connected fibers; iterative union argument **)
 Qed.
 
 (** from §24 Definition: path and path connectedness **) 
