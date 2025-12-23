@@ -35731,6 +35731,76 @@ rewrite (Romega_singleton_map_apply r Hr).
 exact (Romega_singleton_seq_in_Romega_tilde0 r Hr).
 Qed.
 
+(** Helper: extend an element of Romega_tilde k with one more real coordinate at ordsucc k **)
+Definition Romega_extend_seq : set -> set -> set := fun k p =>
+  graph omega (fun i:set =>
+    If_i (ordsucc k :e i) 0
+      (If_i (i = ordsucc k) (p 1) (apply_fun (p 0) i))).
+
+(** Helper: extension lands in Romega_tilde (ordsucc k) **)
+Theorem Romega_extend_seq_in_Romega_tilde_succ : forall k p:set,
+  k :e omega ->
+  p :e setprod (Romega_tilde k) R ->
+  Romega_extend_seq k p :e Romega_tilde (ordsucc k).
+let k p.
+assume HkO: k :e omega.
+assume Hp: p :e setprod (Romega_tilde k) R.
+prove Romega_extend_seq k p :e Romega_tilde (ordsucc k).
+set h := (fun i:set =>
+    If_i (ordsucc k :e i) 0
+      (If_i (i = ordsucc k) (p 1) (apply_fun (p 0) i))).
+claim Hdef: Romega_extend_seq k p = graph omega h.
+{ reflexivity. }
+rewrite Hdef.
+claim HdefT: Romega_tilde (ordsucc k) =
+  {f :e R_omega_space | forall i:set, i :e omega -> ordsucc k :e i -> apply_fun f i = 0}.
+{ reflexivity. }
+rewrite HdefT.
+apply (SepI R_omega_space (fun f0:set => forall i:set, i :e omega -> ordsucc k :e i -> apply_fun f0 i = 0)).
+- (** graph omega h is in the ambient product space **)
+  apply (graph_omega_in_Romega_space h).
+  let i. assume Hi: i :e omega.
+  prove h i :e R.
+  claim Hhi: h i = If_i (ordsucc k :e i) 0 (If_i (i = ordsucc k) (p 1) (apply_fun (p 0) i)).
+  { reflexivity. }
+  rewrite Hhi.
+  apply (xm (ordsucc k :e i)).
+  + assume Hki: ordsucc k :e i.
+    rewrite (If_i_1 (ordsucc k :e i) 0 (If_i (i = ordsucc k) (p 1) (apply_fun (p 0) i)) Hki).
+    exact real_0.
+  + assume Hnki: ~(ordsucc k :e i).
+    rewrite (If_i_0 (ordsucc k :e i) 0 (If_i (i = ordsucc k) (p 1) (apply_fun (p 0) i)) Hnki).
+    apply (xm (i = ordsucc k)).
+    * assume Hieq.
+      rewrite (If_i_1 (i = ordsucc k) (p 1) (apply_fun (p 0) i) Hieq).
+      (** second coordinate of p lies in R **)
+      claim Hp1: p 1 :e R.
+      { claim Hp1raw: p 1 :e (fun _ : set => R) (p 0).
+        { exact (ap1_Sigma (Romega_tilde k) (fun _ : set => R) p Hp). }
+        exact Hp1raw. }
+      exact Hp1.
+    * assume Hineq.
+      rewrite (If_i_0 (i = ordsucc k) (p 1) (apply_fun (p 0) i) Hineq).
+      (** first coordinate of p lies in Romega_tilde k, hence in R_omega_space **)
+      claim Hp0: p 0 :e Romega_tilde k.
+      { exact (ap0_Sigma (Romega_tilde k) (fun _ : set => R) p Hp). }
+      claim Hp0X: p 0 :e R_omega_space.
+      { exact (Romega_tilde_sub_Romega k (p 0) Hp0). }
+      exact (Romega_coord_in_R (p 0) i Hp0X Hi).
+- (** verify the defining property of Romega_tilde (ordsucc k) **)
+  let i. assume Hi: i :e omega.
+  assume Hki: ordsucc k :e i.
+  prove apply_fun (graph omega h) i = 0.
+  claim Happ: apply_fun (graph omega h) i = h i.
+  { exact (apply_fun_graph omega h i Hi). }
+  rewrite Happ.
+  claim Hhi: h i = If_i (ordsucc k :e i) 0 (If_i (i = ordsucc k) (p 1) (apply_fun (p 0) i)).
+  { reflexivity. }
+  rewrite Hhi.
+  rewrite (If_i_1 (ordsucc k :e i) 0 (If_i (i = ordsucc k) (p 1) (apply_fun (p 0) i)) Hki).
+  reflexivity.
+Qed.
+
 (** Helper: every finite subset of omega is bounded by some n in omega **)
 Theorem finite_subset_of_omega_bounded : forall F:set,
   F c= omega -> finite F -> exists n :e omega, forall m :e F, m :e n.
