@@ -49097,28 +49097,24 @@ Qed.
 (** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **)
 (** LATEX VERSION: Determine which countability axioms S_Ω and S̄_Ω satisfy. **)
 (** stub: need actual topologies for S_Omega and Sbar_Omega **)
-Axiom ex30_7_SOmega_Sbar_Omega_countability_axiom : forall Tx_SO Tx_SbarO:set,
-  Tx_SO = SOmega_topology ->
-  Tx_SbarO = SbarOmega_topology ->
-  (first_countable_space S_Omega Tx_SO /\
-   second_countable_space S_Omega Tx_SO /\
-   Lindelof_space S_Omega Tx_SO /\
-   (exists D:set, D c= S_Omega /\ countable D /\ dense_in D S_Omega Tx_SO)) /\
-  (first_countable_space Sbar_Omega Tx_SbarO /\
-   ~ second_countable_space Sbar_Omega Tx_SbarO /\
-   ~ Lindelof_space Sbar_Omega Tx_SbarO /\
-   ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega Tx_SbarO)).
-Theorem ex30_7_SOmega_Sbar_Omega_countability : forall Tx_SO Tx_SbarO:set,
-  Tx_SO = SOmega_topology ->
-  Tx_SbarO = SbarOmega_topology ->
-  (first_countable_space S_Omega Tx_SO /\
-   second_countable_space S_Omega Tx_SO /\
-   Lindelof_space S_Omega Tx_SO /\
-   (exists D:set, D c= S_Omega /\ countable D /\ dense_in D S_Omega Tx_SO)) /\
-  (first_countable_space Sbar_Omega Tx_SbarO /\
-   ~ second_countable_space Sbar_Omega Tx_SbarO /\
-   ~ Lindelof_space Sbar_Omega Tx_SbarO /\
-   ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega Tx_SbarO)).
+Axiom ex30_7_SOmega_Sbar_Omega_countability_axiom :
+  (first_countable_space S_Omega SOmega_topology /\
+   second_countable_space S_Omega SOmega_topology /\
+   Lindelof_space S_Omega SOmega_topology /\
+   (exists D:set, D c= S_Omega /\ countable D /\ dense_in D S_Omega SOmega_topology)) /\
+  (first_countable_space Sbar_Omega SbarOmega_topology /\
+   ~ second_countable_space Sbar_Omega SbarOmega_topology /\
+   ~ Lindelof_space Sbar_Omega SbarOmega_topology /\
+   ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega SbarOmega_topology)).
+Theorem ex30_7_SOmega_Sbar_Omega_countability :
+  (first_countable_space S_Omega SOmega_topology /\
+   second_countable_space S_Omega SOmega_topology /\
+   Lindelof_space S_Omega SOmega_topology /\
+   (exists D:set, D c= S_Omega /\ countable D /\ dense_in D S_Omega SOmega_topology)) /\
+  (first_countable_space Sbar_Omega SbarOmega_topology /\
+   ~ second_countable_space Sbar_Omega SbarOmega_topology /\
+   ~ Lindelof_space Sbar_Omega SbarOmega_topology /\
+   ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega SbarOmega_topology)).
 exact ex30_7_SOmega_Sbar_Omega_countability_axiom.
 Qed.
 (** from §30 Exercise 8: countability axioms for R^omega uniform topology **)
