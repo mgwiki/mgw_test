@@ -8444,16 +8444,10 @@ Qed.
 Theorem indiscrete_topology_coarsest : forall X T:set,
   topology_on X T -> coarser_than (indiscrete_topology X) T.
 let X T. assume HT.
-claim Hchunk1 : ((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T).
-{ exact (andEL (((T c= Power X /\ Empty :e T) /\ X :e T) /\ (forall UFam :e Power T, Union UFam :e T)) (forall U :e T, forall V :e T, U :/\: V :e T) HT). }
-claim Hchunk2 : (T c= Power X /\ Empty :e T) /\ X :e T.
-{ exact (andEL ((T c= Power X /\ Empty :e T) /\ X :e T) (forall UFam :e Power T, Union UFam :e T) Hchunk1). }
-claim Hchunk3 : T c= Power X /\ Empty :e T.
-{ exact (andEL (T c= Power X /\ Empty :e T) (X :e T) Hchunk2). }
 claim Hempty : Empty :e T.
-{ exact (andER (T c= Power X) (Empty :e T) Hchunk3). }
+{ exact (topology_has_empty X T HT). }
 claim HX : X :e T.
-{ exact (andER ((T c= Power X) /\ Empty :e T) (X :e T) Hchunk2). }
+{ exact (topology_has_X X T HT). }
 let U. assume HU : U :e indiscrete_topology X.
 apply UPairE U Empty X HU.
 - assume HUempty : U = Empty. rewrite HUempty. exact Hempty.
