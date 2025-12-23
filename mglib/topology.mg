@@ -31458,7 +31458,193 @@ apply andI.
     witness y.
     apply andI.
     * exact (andEL (y :e Y) ((x,y) :e g) Hy).
-    * exact (binunionI2 f g (x,y) (andER (y :e Y) ((x,y) :e g) Hy)).
+	    * exact (binunionI2 f g (x,y) (andER (y :e Y) ((x,y) :e g) Hy)).
+Qed.
+
+(** Helper: union of functional graphs with disjoint domains is functional **)
+Theorem functional_graph_union_disjoint_domains : forall A B f g:set,
+  A :/\: B = Empty ->
+  graph_domain_subset f A ->
+  graph_domain_subset g B ->
+  functional_graph f ->
+  functional_graph g ->
+  functional_graph (f :\/: g).
+let A B f g.
+assume Hdisj: A :/\: B = Empty.
+assume Hdomf: graph_domain_subset f A.
+assume Hdomg: graph_domain_subset g B.
+assume Hfunf: functional_graph f.
+assume Hfung: functional_graph g.
+let x y1 y2.
+assume H1: (x,y1) :e (f :\/: g).
+assume H2: (x,y2) :e (f :\/: g).
+apply (binunionE f g (x,y1) H1).
+- assume H1f: (x,y1) :e f.
+  apply (binunionE f g (x,y2) H2).
+  + assume H2f: (x,y2) :e f.
+    exact (Hfunf x y1 y2 H1f H2f).
+  + assume H2g: (x,y2) :e g.
+    claim HxA: x :e A.
+    { exact (Hdomf x y1 H1f). }
+    claim HxB: x :e B.
+    { exact (Hdomg x y2 H2g). }
+    claim HxAB: x :e A :/\: B.
+    { exact (binintersectI A B x HxA HxB). }
+    claim HxE: x :e Empty.
+    { rewrite <- Hdisj.
+      exact HxAB. }
+    apply FalseE.
+    exact ((EmptyE x) HxE).
+- assume H1g: (x,y1) :e g.
+  apply (binunionE f g (x,y2) H2).
+  + assume H2f: (x,y2) :e f.
+    claim HxB: x :e B.
+    { exact (Hdomg x y1 H1g). }
+    claim HxA: x :e A.
+    { exact (Hdomf x y2 H2f). }
+    claim HxAB: x :e A :/\: B.
+    { exact (binintersectI A B x HxA HxB). }
+    claim HxE: x :e Empty.
+    { rewrite <- Hdisj.
+      exact HxAB. }
+    apply FalseE.
+    exact ((EmptyE x) HxE).
+  + assume H2g: (x,y2) :e g.
+    exact (Hfung x y1 y2 H1g H2g).
+Qed.
+
+(** Helper: apply_fun on a pasted total functional map, left side **)
+Theorem apply_fun_union_left : forall A B Y f g x:set,
+  A :/\: B = Empty ->
+  graph_domain_subset f A ->
+  graph_domain_subset g B ->
+  total_function_on f A Y ->
+  total_function_on g B Y ->
+  functional_graph f ->
+  functional_graph g ->
+  x :e A ->
+  apply_fun (f :\/: g) x = apply_fun f x.
+let A B Y f g x.
+assume Hdisj: A :/\: B = Empty.
+assume Hdomf: graph_domain_subset f A.
+assume Hdomg: graph_domain_subset g B.
+assume Htotf: total_function_on f A Y.
+assume Htotg: total_function_on g B Y.
+assume Hfunf: functional_graph f.
+assume Hfung: functional_graph g.
+assume HxA: x :e A.
+claim Hpairf: (x, apply_fun f x) :e f.
+{ exact (total_function_on_apply_fun_in_graph f A Y x Htotf HxA). }
+claim HpairU: (x, apply_fun f x) :e (f :\/: g).
+{ exact (binunionI1 f g (x, apply_fun f x) Hpairf). }
+claim HfunU: functional_graph (f :\/: g).
+{ exact (functional_graph_union_disjoint_domains A B f g Hdisj Hdomf Hdomg Hfunf Hfung). }
+exact (functional_graph_apply_fun_eq (f :\/: g) x (apply_fun f x) HfunU HpairU).
+Qed.
+
+(** Helper: apply_fun on a pasted total functional map, right side **)
+Theorem apply_fun_union_right : forall A B Y f g x:set,
+  A :/\: B = Empty ->
+  graph_domain_subset f A ->
+  graph_domain_subset g B ->
+  total_function_on f A Y ->
+  total_function_on g B Y ->
+  functional_graph f ->
+  functional_graph g ->
+  x :e B ->
+  apply_fun (f :\/: g) x = apply_fun g x.
+let A B Y f g x.
+assume Hdisj: A :/\: B = Empty.
+assume Hdomf: graph_domain_subset f A.
+assume Hdomg: graph_domain_subset g B.
+assume Htotf: total_function_on f A Y.
+assume Htotg: total_function_on g B Y.
+assume Hfunf: functional_graph f.
+assume Hfung: functional_graph g.
+assume HxB: x :e B.
+claim Hpairg: (x, apply_fun g x) :e g.
+{ exact (total_function_on_apply_fun_in_graph g B Y x Htotg HxB). }
+claim HpairU: (x, apply_fun g x) :e (f :\/: g).
+{ exact (binunionI2 f g (x, apply_fun g x) Hpairg). }
+claim HfunU: functional_graph (f :\/: g).
+{ exact (functional_graph_union_disjoint_domains A B f g Hdisj Hdomf Hdomg Hfunf Hfung). }
+exact (functional_graph_apply_fun_eq (f :\/: g) x (apply_fun g x) HfunU HpairU).
+Qed.
+
+(** Helper: preimage decomposition for pasted total functional maps **)
+Theorem preimage_of_union_functions_total : forall A B Y f g V:set,
+  A :/\: B = Empty ->
+  graph_domain_subset f A ->
+  graph_domain_subset g B ->
+  total_function_on f A Y ->
+  total_function_on g B Y ->
+  functional_graph f ->
+  functional_graph g ->
+  preimage_of (A :\/: B) (f :\/: g) V =
+    (preimage_of A f V) :\/: (preimage_of B g V).
+let A B Y f g V.
+assume Hdisj: A :/\: B = Empty.
+assume Hdomf: graph_domain_subset f A.
+assume Hdomg: graph_domain_subset g B.
+assume Htotf: total_function_on f A Y.
+assume Htotg: total_function_on g B Y.
+assume Hfunf: functional_graph f.
+assume Hfung: functional_graph g.
+apply set_ext.
+- let x. assume Hx: x :e preimage_of (A :\/: B) (f :\/: g) V.
+  prove x :e (preimage_of A f V) :\/: (preimage_of B g V).
+  claim HxAB: x :e (A :\/: B).
+  { exact (SepE1 (A :\/: B) (fun x0:set => apply_fun (f :\/: g) x0 :e V) x Hx). }
+  claim HfxV: apply_fun (f :\/: g) x :e V.
+  { exact (SepE2 (A :\/: B) (fun x0:set => apply_fun (f :\/: g) x0 :e V) x Hx). }
+  apply (binunionE A B x HxAB).
+  * assume HxA: x :e A.
+    claim Happ: apply_fun (f :\/: g) x = apply_fun f x.
+    { exact (apply_fun_union_left A B Y f g x Hdisj Hdomf Hdomg Htotf Htotg Hfunf Hfung HxA). }
+    claim Hfx: apply_fun f x :e V.
+    { rewrite <- Happ.
+      exact HfxV. }
+    claim HxPre: x :e preimage_of A f V.
+    { exact (SepI A (fun x0:set => apply_fun f x0 :e V) x HxA Hfx). }
+    exact (binunionI1 (preimage_of A f V) (preimage_of B g V) x HxPre).
+  * assume HxB: x :e B.
+    claim Happ: apply_fun (f :\/: g) x = apply_fun g x.
+    { exact (apply_fun_union_right A B Y f g x Hdisj Hdomf Hdomg Htotf Htotg Hfunf Hfung HxB). }
+    claim Hgx: apply_fun g x :e V.
+    { rewrite <- Happ.
+      exact HfxV. }
+    claim HxPre: x :e preimage_of B g V.
+    { exact (SepI B (fun x0:set => apply_fun g x0 :e V) x HxB Hgx). }
+    exact (binunionI2 (preimage_of A f V) (preimage_of B g V) x HxPre).
+- let x. assume Hx: x :e (preimage_of A f V) :\/: (preimage_of B g V).
+  prove x :e preimage_of (A :\/: B) (f :\/: g) V.
+  apply (binunionE (preimage_of A f V) (preimage_of B g V) x Hx).
+  * assume HxPreA: x :e preimage_of A f V.
+    claim HxA: x :e A.
+    { exact (SepE1 A (fun x0:set => apply_fun f x0 :e V) x HxPreA). }
+    claim HfxV: apply_fun f x :e V.
+    { exact (SepE2 A (fun x0:set => apply_fun f x0 :e V) x HxPreA). }
+    claim HxAB: x :e A :\/: B.
+    { exact (binunionI1 A B x HxA). }
+    claim Happ: apply_fun (f :\/: g) x = apply_fun f x.
+    { exact (apply_fun_union_left A B Y f g x Hdisj Hdomf Hdomg Htotf Htotg Hfunf Hfung HxA). }
+    claim HfgV: apply_fun (f :\/: g) x :e V.
+    { rewrite Happ.
+      exact HfxV. }
+    exact (SepI (A :\/: B) (fun x0:set => apply_fun (f :\/: g) x0 :e V) x HxAB HfgV).
+  * assume HxPreB: x :e preimage_of B g V.
+    claim HxB: x :e B.
+    { exact (SepE1 B (fun x0:set => apply_fun g x0 :e V) x HxPreB). }
+    claim HgxV: apply_fun g x :e V.
+    { exact (SepE2 B (fun x0:set => apply_fun g x0 :e V) x HxPreB). }
+    claim HxAB: x :e A :\/: B.
+    { exact (binunionI2 A B x HxB). }
+    claim Happ: apply_fun (f :\/: g) x = apply_fun g x.
+    { exact (apply_fun_union_right A B Y f g x Hdisj Hdomf Hdomg Htotf Htotg Hfunf Hfung HxB). }
+    claim HfgV: apply_fun (f :\/: g) x :e V.
+    { rewrite Happ.
+      exact HgxV. }
+    exact (SepI (A :\/: B) (fun x0:set => apply_fun (f :\/: g) x0 :e V) x HxAB HfgV).
 Qed.
 
 (** LATEX VERSION: For disjoint domains A,B, the preimage of V under the pasted map f∪g is the union of the separate preimages. **)
