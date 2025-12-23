@@ -22022,6 +22022,17 @@ Theorem unit_interval_sub_R : unit_interval c= R.
 let x. assume Hx: x :e unit_interval.
 exact (SepE1 R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) x Hx).
 Qed.
+
+(** helper: standard topology on the unit interval as a subspace of R **)
+(** LATEX VERSION: Equip [0,1] with the subspace topology inherited from the standard topology on R. **)
+Definition unit_interval_topology : set :=
+  subspace_topology R R_standard_topology unit_interval.
+Theorem unit_interval_topology_on : topology_on unit_interval unit_interval_topology.
+prove topology_on unit_interval unit_interval_topology.
+exact (subspace_topology_is_topology R R_standard_topology unit_interval
+         R_standard_topology_is_topology
+         unit_interval_sub_R).
+Qed.
 Definition ordered_square : set := setprod unit_interval unit_interval.
 Definition ordered_square_topology : set := order_topology ordered_square.
 (** LATEX VERSION: The vertical strip {1/2}×(1/2,1] inside I×I. **)
@@ -22943,13 +22954,13 @@ Qed.
 Axiom ex16_10_compare_topologies_on_square_axiom :
   ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\
   subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <>
-    product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
+    product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
 
 Theorem ex16_10_compare_topologies_on_square :
   ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\
   subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <>
-    product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
-prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\ subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <> product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
+    product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
+prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\ subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <> product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
 exact ex16_10_compare_topologies_on_square_axiom.
 Qed.
 
@@ -37425,10 +37436,10 @@ Definition path_between : set -> set -> set -> set -> prop := fun X x y p =>
 Definition path_connected_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall x y:set, x :e X -> y :e X ->
-    exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p.
+    exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
 
 (** Helper axioms for path_connected_implies_connected **)
-Axiom unit_interval_connected : connected_space unit_interval R_standard_topology.
+Axiom unit_interval_connected : connected_space unit_interval unit_interval_topology.
 
 Theorem zero_one_in_unit_interval : 0 :e unit_interval /\ 1 :e unit_interval.
 claim H0R: 0 :e R.
@@ -37634,11 +37645,11 @@ prove connected_space X Tx.
 (** Extract components from path_connected_space **)
 claim HTx: topology_on X Tx.
 { exact (andEL (topology_on X Tx)
-               (forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p)
+               (forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p)
                Hpath). }
-claim Hpath_prop: forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p.
+claim Hpath_prop: forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
 { exact (andER (topology_on X Tx)
-               (forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p)
+               (forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p)
                Hpath). }
 (** Prove X is connected by contradiction **)
 prove topology_on X Tx /\ ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
@@ -37684,15 +37695,15 @@ apply andI.
   claim HyinX: y :e X.
   { exact (subset_elem V X y HV_sub Hy). }
   (** Get continuous path from x to y **)
-  claim Hpathxy: exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p.
+  claim Hpathxy: exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
   { exact (Hpath_prop x y HxinX HyinX). }
   apply Hpathxy.
   let p. assume Hp_and_cont.
   (** Extract path_between and continuity **)
   claim Hp: path_between X x y p.
-  { exact (andEL (path_between X x y p) (continuous_map unit_interval R_standard_topology X Tx p) Hp_and_cont). }
-  claim Hpcont: continuous_map unit_interval R_standard_topology X Tx p.
-  { exact (andER (path_between X x y p) (continuous_map unit_interval R_standard_topology X Tx p) Hp_and_cont). }
+  { exact (andEL (path_between X x y p) (continuous_map unit_interval unit_interval_topology X Tx p) Hp_and_cont). }
+  claim Hpcont: continuous_map unit_interval unit_interval_topology X Tx p.
+  { exact (andER (path_between X x y p) (continuous_map unit_interval unit_interval_topology X Tx p) Hp_and_cont). }
   (** Extract function and endpoints from Hp (left-associative /\) **)
   claim Hp_pair0: function_on p unit_interval X /\ apply_fun p 0 = x.
   { exact (andEL (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = y) Hp). }
@@ -37808,28 +37819,28 @@ apply andI.
         - assume HptV: apply_fun p t :e V.
           apply binunionI2.
           exact (SepI unit_interval (fun t0:set => apply_fun p t0 :e V) t HtI HptV). }
-  (** Preimages are open in R_standard_topology **)
-  claim HpreimgU: preU :e R_standard_topology.
-  { exact (andER (topology_on unit_interval R_standard_topology /\ topology_on X Tx /\ function_on p unit_interval X)
-                 (forall V0:set, V0 :e Tx -> preimage_of unit_interval p V0 :e R_standard_topology)
+  (** Preimages are open in unit_interval_topology **)
+  claim HpreimgU: preU :e unit_interval_topology.
+  { exact (andER (topology_on unit_interval unit_interval_topology /\ topology_on X Tx /\ function_on p unit_interval X)
+                 (forall V0:set, V0 :e Tx -> preimage_of unit_interval p V0 :e unit_interval_topology)
                  Hpcont U HU). }
-  claim HpreimgV: preV :e R_standard_topology.
-  { exact (andER (topology_on unit_interval R_standard_topology /\ topology_on X Tx /\ function_on p unit_interval X)
-                 (forall V0:set, V0 :e Tx -> preimage_of unit_interval p V0 :e R_standard_topology)
+  claim HpreimgV: preV :e unit_interval_topology.
+  { exact (andER (topology_on unit_interval unit_interval_topology /\ topology_on X Tx /\ function_on p unit_interval X)
+                 (forall V0:set, V0 :e Tx -> preimage_of unit_interval p V0 :e unit_interval_topology)
                  Hpcont V HV). }
   (** This gives a separation of unit_interval **)
-  claim Hsep_exists: exists U0 V0:set, U0 :e R_standard_topology /\ V0 :e R_standard_topology /\ separation_of unit_interval U0 V0.
+  claim Hsep_exists: exists U0 V0:set, U0 :e unit_interval_topology /\ V0 :e unit_interval_topology /\ separation_of unit_interval U0 V0.
   { witness preU. witness preV.
-    prove preU :e R_standard_topology /\ preV :e R_standard_topology /\ separation_of unit_interval preU preV.
+    prove preU :e unit_interval_topology /\ preV :e unit_interval_topology /\ separation_of unit_interval preU preV.
     apply andI.
     - apply andI.
       + exact HpreimgU.
       + exact HpreimgV.
     - exact Hsep_UV. }
   (** Contradiction with connectedness of unit_interval **)
-  claim Hunit_nosep: ~(exists U0 V0:set, U0 :e R_standard_topology /\ V0 :e R_standard_topology /\ separation_of unit_interval U0 V0).
-  { exact (andER (topology_on unit_interval R_standard_topology)
-                 (~(exists U0 V0:set, U0 :e R_standard_topology /\ V0 :e R_standard_topology /\ separation_of unit_interval U0 V0))
+  claim Hunit_nosep: ~(exists U0 V0:set, U0 :e unit_interval_topology /\ V0 :e unit_interval_topology /\ separation_of unit_interval U0 V0).
+  { exact (andER (topology_on unit_interval unit_interval_topology)
+                 (~(exists U0 V0:set, U0 :e unit_interval_topology /\ V0 :e unit_interval_topology /\ separation_of unit_interval U0 V0))
                  unit_interval_connected). }
   apply Hunit_nosep.
   exact Hsep_exists.
@@ -37870,21 +37881,21 @@ claim HTy: topology_on Y Ty.
 { exact (andER (topology_on X Tx) (topology_on Y Ty)
               (andEL (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y) Hf_left)). }
 claim Hpath_prop: forall x y:set, x :e X -> y :e X ->
-  exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p.
+  exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
 { exact (andER (topology_on X Tx)
               (forall x y:set, x :e X -> y :e X ->
-                exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p)
+                exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p)
               Hpath). }
 
 prove topology_on Y Ty /\
   forall y1 y2:set, y1 :e Y -> y2 :e Y ->
-    exists p:set, path_between Y y1 y2 p /\ continuous_map unit_interval R_standard_topology Y Ty p.
+    exists p:set, path_between Y y1 y2 p /\ continuous_map unit_interval unit_interval_topology Y Ty p.
 apply andI.
 - exact HTy.
 - let y1 y2.
   assume Hy1: y1 :e Y.
   assume Hy2: y2 :e Y.
-  prove exists p:set, path_between Y y1 y2 p /\ continuous_map unit_interval R_standard_topology Y Ty p.
+  prove exists p:set, path_between Y y1 y2 p /\ continuous_map unit_interval unit_interval_topology Y Ty p.
   (** Choose preimages x1,x2 in X with f(xi)=yi **)
   apply (Hsurj y1 Hy1).
   let x1. assume Hx1pair: x1 :e X /\ apply_fun f x1 = y1.
@@ -37901,23 +37912,23 @@ apply andI.
 
   (** Get a path p in X from x1 to x2 **)
   apply (Hpath_prop x1 x2 Hx1X Hx2X).
-  let p. assume Hp_pair: path_between X x1 x2 p /\ continuous_map unit_interval R_standard_topology X Tx p.
+  let p. assume Hp_pair: path_between X x1 x2 p /\ continuous_map unit_interval unit_interval_topology X Tx p.
   claim Hp_between: path_between X x1 x2 p.
   { exact (andEL (path_between X x1 x2 p)
-                 (continuous_map unit_interval R_standard_topology X Tx p) Hp_pair). }
-  claim Hp_cont: continuous_map unit_interval R_standard_topology X Tx p.
+                 (continuous_map unit_interval unit_interval_topology X Tx p) Hp_pair). }
+  claim Hp_cont: continuous_map unit_interval unit_interval_topology X Tx p.
   { exact (andER (path_between X x1 x2 p)
-                 (continuous_map unit_interval R_standard_topology X Tx p) Hp_pair). }
+                 (continuous_map unit_interval unit_interval_topology X Tx p) Hp_pair). }
 
   (** Define the composed path q = f ∘ p **)
   set q := compose_fun unit_interval p f.
-  claim Hq_cont: continuous_map unit_interval R_standard_topology Y Ty q.
-  { exact (composition_continuous unit_interval R_standard_topology X Tx Y Ty p f Hp_cont Hf). }
-  claim Hq_left: (topology_on unit_interval R_standard_topology /\ topology_on Y Ty) /\ function_on q unit_interval Y.
-  { exact (andEL ((topology_on unit_interval R_standard_topology /\ topology_on Y Ty) /\ function_on q unit_interval Y)
-                (forall V:set, V :e Ty -> preimage_of unit_interval q V :e R_standard_topology) Hq_cont). }
+  claim Hq_cont: continuous_map unit_interval unit_interval_topology Y Ty q.
+  { exact (composition_continuous unit_interval unit_interval_topology X Tx Y Ty p f Hp_cont Hf). }
+  claim Hq_left: (topology_on unit_interval unit_interval_topology /\ topology_on Y Ty) /\ function_on q unit_interval Y.
+  { exact (andEL ((topology_on unit_interval unit_interval_topology /\ topology_on Y Ty) /\ function_on q unit_interval Y)
+                (forall V:set, V :e Ty -> preimage_of unit_interval q V :e unit_interval_topology) Hq_cont). }
   claim Hq_fun: function_on q unit_interval Y.
-  { exact (andER (topology_on unit_interval R_standard_topology /\ topology_on Y Ty)
+  { exact (andER (topology_on unit_interval unit_interval_topology /\ topology_on Y Ty)
                 (function_on q unit_interval Y) Hq_left). }
 
   (** Endpoints of q **)
@@ -37953,7 +37964,7 @@ apply andI.
     reflexivity. }
 
   witness q.
-  prove path_between Y y1 y2 q /\ continuous_map unit_interval R_standard_topology Y Ty q.
+  prove path_between Y y1 y2 q /\ continuous_map unit_interval unit_interval_topology Y Ty q.
   apply andI.
   - (** path_between **)
     prove function_on q unit_interval Y /\ apply_fun q 0 = y1 /\ apply_fun q 1 = y2.
@@ -37969,7 +37980,7 @@ Qed.
 Definition path_component_of : set -> set -> set -> set := fun X Tx x =>
   {y :e X | exists p:set,
      function_on p unit_interval X /\
-     continuous_map unit_interval R_standard_topology X Tx p /\
+     continuous_map unit_interval unit_interval_topology X Tx p /\
      apply_fun p 0 = x /\ apply_fun p 1 = y}.
 
 (** Helper axioms: path reversal and concatenation **)
@@ -37992,18 +38003,18 @@ assume HxX: x :e X.
 prove x :e path_component_of X Tx x.
 prove x :e {y :e X | exists p:set,
      function_on p unit_interval X /\
-     continuous_map unit_interval R_standard_topology X Tx p /\
+     continuous_map unit_interval unit_interval_topology X Tx p /\
      apply_fun p 0 = x /\ apply_fun p 1 = y}.
 apply SepI.
 - exact HxX.
 - (** constant path p(t)=x **)
   prove exists p:set, function_on p unit_interval X /\
-    continuous_map unit_interval R_standard_topology X Tx p /\
+    continuous_map unit_interval unit_interval_topology X Tx p /\
     apply_fun p 0 = x /\ apply_fun p 1 = x.
   set p := const_fun unit_interval x.
   witness p.
   prove function_on p unit_interval X /\
-    continuous_map unit_interval R_standard_topology X Tx p /\
+    continuous_map unit_interval unit_interval_topology X Tx p /\
     apply_fun p 0 = x /\ apply_fun p 1 = x.
   (** Conjunction is left-associative: (((A /\ B) /\ C) /\ D) **)
   apply andI.
@@ -38019,11 +38030,11 @@ apply SepI.
         rewrite Hpt.
         exact HxX.
       * (** continuous_map **)
-        claim HtopI: topology_on unit_interval R_standard_topology.
-        { exact (andEL (topology_on unit_interval R_standard_topology)
-                       (~(exists U V:set, U :e R_standard_topology /\ V :e R_standard_topology /\ separation_of unit_interval U V))
+        claim HtopI: topology_on unit_interval unit_interval_topology.
+        { exact (andEL (topology_on unit_interval unit_interval_topology)
+                       (~(exists U V:set, U :e unit_interval_topology /\ V :e unit_interval_topology /\ separation_of unit_interval U V))
                        unit_interval_connected). }
-        exact (const_fun_continuous unit_interval R_standard_topology X Tx x HtopI HTx HxX).
+        exact (const_fun_continuous unit_interval unit_interval_topology X Tx x HtopI HTx HxX).
     + (** apply_fun p 0 = x **)
       claim H01: 0 :e unit_interval /\ 1 :e unit_interval.
       { exact zero_one_in_unit_interval. }
@@ -38139,13 +38150,13 @@ prove path_component_of X Tx x = X.
 claim HTx: topology_on X Tx.
 { exact (andEL (topology_on X Tx)
                (forall x y:set, x :e X -> y :e X ->
-                 exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p)
+                 exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p)
                Hpath). }
 claim Hpathprop: forall x0 y0:set, x0 :e X -> y0 :e X ->
-  exists p:set, path_between X x0 y0 p /\ continuous_map unit_interval R_standard_topology X Tx p.
+  exists p:set, path_between X x0 y0 p /\ continuous_map unit_interval unit_interval_topology X Tx p.
 { exact (andER (topology_on X Tx)
                (forall x y:set, x :e X -> y :e X ->
-                 exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p)
+                 exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p)
                Hpath). }
 apply set_ext.
 - (** path_component_of subset X **)
@@ -38153,32 +38164,32 @@ apply set_ext.
   prove y :e X.
   exact (SepE1 X (fun y0:set => exists p:set,
                     function_on p unit_interval X /\
-                    continuous_map unit_interval R_standard_topology X Tx p /\
+                    continuous_map unit_interval unit_interval_topology X Tx p /\
                     apply_fun p 0 = x /\ apply_fun p 1 = y0) y Hy).
 - (** X subset path_component_of **)
   let y. assume HyX: y :e X.
   prove y :e path_component_of X Tx x.
   prove y :e {y0 :e X | exists p:set,
      function_on p unit_interval X /\
-     continuous_map unit_interval R_standard_topology X Tx p /\
+     continuous_map unit_interval unit_interval_topology X Tx p /\
      apply_fun p 0 = x /\ apply_fun p 1 = y0}.
   apply SepI.
   - exact HyX.
-  - claim Hex: exists p:set, path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p.
+  - claim Hex: exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
     { exact (Hpathprop x y HxX HyX). }
     apply Hex.
     let p.
-    assume Hp: path_between X x y p /\ continuous_map unit_interval R_standard_topology X Tx p.
+    assume Hp: path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
     claim Hpb: path_between X x y p.
-    { exact (andEL (path_between X x y p) (continuous_map unit_interval R_standard_topology X Tx p) Hp). }
-    claim Hcont: continuous_map unit_interval R_standard_topology X Tx p.
-    { exact (andER (path_between X x y p) (continuous_map unit_interval R_standard_topology X Tx p) Hp). }
+    { exact (andEL (path_between X x y p) (continuous_map unit_interval unit_interval_topology X Tx p) Hp). }
+    claim Hcont: continuous_map unit_interval unit_interval_topology X Tx p.
+    { exact (andER (path_between X x y p) (continuous_map unit_interval unit_interval_topology X Tx p) Hp). }
     prove exists q:set, function_on q unit_interval X /\
-      continuous_map unit_interval R_standard_topology X Tx q /\
+      continuous_map unit_interval unit_interval_topology X Tx q /\
       apply_fun q 0 = x /\ apply_fun q 1 = y.
     witness p.
     prove function_on p unit_interval X /\
-      continuous_map unit_interval R_standard_topology X Tx p /\
+      continuous_map unit_interval unit_interval_topology X Tx p /\
       apply_fun p 0 = x /\ apply_fun p 1 = y.
     claim Hpb1: (function_on p unit_interval X /\ apply_fun p 0 = x) /\ apply_fun p 1 = y.
     { exact Hpb. }
@@ -47514,10 +47525,11 @@ Qed.
 (** from §44 Theorem: space-filling curve existence **) 
 (** LATEX VERSION: Existence of a continuous surjection from [0,1] onto the unit square (Peano curve). **)
 Definition unit_square : set := setprod unit_interval unit_interval.
-Definition unit_square_topology : set := product_topology unit_interval R_standard_topology unit_interval R_standard_topology.
+Definition unit_square_topology : set :=
+  product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
 Axiom space_filling_curve_axiom :
-  exists f:set, continuous_map unit_interval R_standard_topology unit_square unit_square_topology f.
-Theorem space_filling_curve : exists f:set, continuous_map unit_interval R_standard_topology unit_square unit_square_topology f.
+  exists f:set, continuous_map unit_interval unit_interval_topology unit_square unit_square_topology f.
+Theorem space_filling_curve : exists f:set, continuous_map unit_interval unit_interval_topology unit_square unit_square_topology f.
 exact space_filling_curve_axiom.
 Qed.
 
@@ -47671,12 +47683,10 @@ Definition nowhere_differentiable : set -> prop := fun f =>
 (** from §49 Definition: the function space C(I,R) and the sets U_n **)
 (** LATEX VERSION: Let C be the space of continuous maps f:I→R. For n≥2, define U_n as the set of f such that for some 0<h≤1/n one has Δ_h f > n. **)
 (** note: the pointwise difference-quotient predicate is formalized, but deeper analytic facts are still handled via later axioms/theorems **)
-Definition I_topology : set := subspace_topology R R_standard_topology unit_interval.
+Definition I_topology : set := unit_interval_topology.
 Theorem I_topology_on : topology_on unit_interval I_topology.
 prove topology_on unit_interval I_topology.
-exact (subspace_topology_is_topology R R_standard_topology unit_interval
-         R_standard_topology_is_topology
-         unit_interval_sub_R).
+exact unit_interval_topology_on.
 Qed.
 Definition continuous_real_on_I : set -> prop := fun f =>
   continuous_map unit_interval I_topology R R_standard_topology f.
@@ -47914,7 +47924,7 @@ Qed.
 (** from §50 Example 6: arcs and linear graphs **)
 (** LATEX VERSION: An arc is a space homeomorphic to [0,1]; a linear graph is a finite union of arcs meeting at most at common endpoints. **)
 Definition arc : set -> set -> prop := fun X Tx =>
-  exists f:set, homeomorphism unit_interval R_standard_topology X Tx f.
+  exists f:set, homeomorphism unit_interval unit_interval_topology X Tx f.
 
 (** Helper: arc is a topological space **)
 Theorem arc_is_topological_space : forall X Tx:set,
@@ -47924,21 +47934,21 @@ assume Harc.
 apply Harc.
 let f.
 assume Hhom.
-claim Hcont: continuous_map unit_interval R_standard_topology X Tx f.
-{ exact (andEL (continuous_map unit_interval R_standard_topology X Tx f)
-               (exists g:set, continuous_map X Tx unit_interval R_standard_topology g /\
+claim Hcont: continuous_map unit_interval unit_interval_topology X Tx f.
+{ exact (andEL (continuous_map unit_interval unit_interval_topology X Tx f)
+               (exists g:set, continuous_map X Tx unit_interval unit_interval_topology g /\
                  (forall x:set, x :e unit_interval -> apply_fun g (apply_fun f x) = x) /\
                  (forall y:set, y :e X -> apply_fun f (apply_fun g y) = y))
                Hhom). }
-claim Habc: (topology_on unit_interval R_standard_topology /\ topology_on X Tx) /\ function_on f unit_interval X.
-{ exact (andEL ((topology_on unit_interval R_standard_topology /\ topology_on X Tx) /\ function_on f unit_interval X)
-               (forall V:set, V :e Tx -> preimage_of unit_interval f V :e R_standard_topology)
+claim Habc: (topology_on unit_interval unit_interval_topology /\ topology_on X Tx) /\ function_on f unit_interval X.
+{ exact (andEL ((topology_on unit_interval unit_interval_topology /\ topology_on X Tx) /\ function_on f unit_interval X)
+               (forall V:set, V :e Tx -> preimage_of unit_interval f V :e unit_interval_topology)
                Hcont). }
-claim Hab: topology_on unit_interval R_standard_topology /\ topology_on X Tx.
-{ exact (andEL (topology_on unit_interval R_standard_topology /\ topology_on X Tx)
+claim Hab: topology_on unit_interval unit_interval_topology /\ topology_on X Tx.
+{ exact (andEL (topology_on unit_interval unit_interval_topology /\ topology_on X Tx)
                (function_on f unit_interval X)
                Habc). }
-exact (andER (topology_on unit_interval R_standard_topology) (topology_on X Tx) Hab).
+exact (andER (topology_on unit_interval unit_interval_topology) (topology_on X Tx) Hab).
 Qed.
 
 Definition end_points_of_arc : set -> set -> set -> set -> prop := fun X Tx p q =>
