@@ -32908,6 +32908,100 @@ Definition metric_on : set -> set -> prop := fun X d =>
 Definition metric_on_total : set -> set -> prop := fun X d =>
   metric_on X d /\ total_function_on d (setprod X X) R.
 
+(** Helper: extract function_on from metric_on **)
+Theorem metric_on_function_on : forall X d:set,
+  metric_on X d -> function_on d (setprod X X) R.
+let X d.
+assume Hm: metric_on X d.
+apply Hm.
+assume Hcore Htri.
+apply Hcore.
+assume Hcore2 Hposdef.
+apply Hcore2.
+assume Hab Hrefl.
+apply Hab.
+assume Hf Hsym.
+exact Hf.
+Qed.
+
+(** Helper: symmetry of a metric **)
+Theorem metric_on_symmetric : forall X d x y:set,
+  metric_on X d -> x :e X -> y :e X ->
+  apply_fun d (x,y) = apply_fun d (y,x).
+let X d x y.
+assume Hm: metric_on X d.
+assume Hx: x :e X.
+assume Hy: y :e X.
+claim Hsym: forall x0 y0:set, x0 :e X -> y0 :e X ->
+  apply_fun d (x0,y0) = apply_fun d (y0,x0).
+{ apply Hm.
+  assume Hcore Htri.
+  apply Hcore.
+  assume Hcore2 Hposdef.
+  apply Hcore2.
+  assume Hab Hrefl.
+  apply Hab.
+  assume Hf Hsym.
+  exact Hsym. }
+exact (Hsym x y Hx Hy).
+Qed.
+
+(** Helper: reflexive axiom for a metric **)
+Theorem metric_on_diag_zero : forall X d x:set,
+  metric_on X d -> x :e X -> apply_fun d (x,x) = 0.
+let X d x.
+assume Hm: metric_on X d.
+assume Hx: x :e X.
+claim Hrefl: forall x0:set, x0 :e X -> apply_fun d (x0,x0) = 0.
+{ apply Hm.
+  assume Hcore Htri.
+  apply Hcore.
+  assume Hcore2 Hposdef.
+  apply Hcore2.
+  assume Hab Hrefl.
+  exact Hrefl. }
+exact (Hrefl x Hx).
+Qed.
+
+(** Helper: nonnegativity of a metric **)
+Theorem metric_on_nonneg : forall X d x y:set,
+  metric_on X d -> x :e X -> y :e X ->
+  ~(Rlt (apply_fun d (x,y)) 0).
+let X d x y.
+assume Hm: metric_on X d.
+assume Hx: x :e X.
+assume Hy: y :e X.
+claim Hpos: forall x0 y0:set, x0 :e X -> y0 :e X ->
+  ~(Rlt (apply_fun d (x0,y0)) 0) /\ (apply_fun d (x0,y0) = 0 -> x0 = y0).
+{ apply Hm.
+  assume Hcore Htri.
+  apply Hcore.
+  assume Hcore2 Hposdef.
+  exact Hposdef. }
+exact (andEL (~(Rlt (apply_fun d (x,y)) 0)) (apply_fun d (x,y) = 0 -> x = y) (Hpos x y Hx Hy)).
+Qed.
+
+(** Helper: zero distance implies equality **)
+Theorem metric_on_zero_eq : forall X d x y:set,
+  metric_on X d -> x :e X -> y :e X ->
+  apply_fun d (x,y) = 0 -> x = y.
+let X d x y.
+assume Hm: metric_on X d.
+assume Hx: x :e X.
+assume Hy: y :e X.
+assume H0: apply_fun d (x,y) = 0.
+claim Hpos: forall x0 y0:set, x0 :e X -> y0 :e X ->
+  ~(Rlt (apply_fun d (x0,y0)) 0) /\ (apply_fun d (x0,y0) = 0 -> x0 = y0).
+{ apply Hm.
+  assume Hcore Htri.
+  apply Hcore.
+  assume Hcore2 Hposdef.
+  exact Hposdef. }
+claim Himp: apply_fun d (x,y) = 0 -> x = y.
+{ exact (andER (~(Rlt (apply_fun d (x,y)) 0)) (apply_fun d (x,y) = 0 -> x = y) (Hpos x y Hx Hy)). }
+exact (Himp H0).
+Qed.
+
 Theorem metric_on_total_imp_metric_on : forall X d:set,
   metric_on_total X d -> metric_on X d.
 let X d. assume H.
