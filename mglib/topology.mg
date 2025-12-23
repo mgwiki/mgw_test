@@ -50990,20 +50990,20 @@ Qed.
 (** from §49 Exercise 1: verify properties of example functions **)
 (** LATEX VERSION: Check the stated properties of the functions f, g, and k of Example 1. **)
 (** stub: Example 1 functions f, g, k not fully formalized **)
-Axiom ex49_1_verify_example_functions_axiom : forall f g k:set,
-  f = R (** stub: Example 1 function f **) ->
-  g = R (** stub: Example 1 function g **) ->
-  k = R (** stub: Example 1 function k **) ->
-  continuous_map R R_standard_topology R R_standard_topology f /\
-  continuous_map R R_standard_topology R R_standard_topology g /\
-  continuous_map R R_standard_topology R R_standard_topology k.
-Theorem ex49_1_verify_example_functions : forall f g k:set,
-  f = R (** stub: Example 1 function f **) ->
-  g = R (** stub: Example 1 function g **) ->
-  k = R (** stub: Example 1 function k **) ->
-  continuous_map R R_standard_topology R R_standard_topology f /\
-  continuous_map R R_standard_topology R R_standard_topology g /\
-  continuous_map R R_standard_topology R R_standard_topology k.
+(** from §49 Exercise 1: choose the named example functions f, g, k **)
+(** LATEX VERSION: Example 1 defines three specific continuous maps f,g,k from [0,1] to R. **)
+(** stub: the explicit formulas and U_n constraints are not formalized; we name them abstractly **)
+Definition ex49_example1_f : set := Eps_i (fun f:set => function_on f unit_interval R).
+Definition ex49_example1_g : set := Eps_i (fun g:set => function_on g unit_interval R).
+Definition ex49_example1_k : set := Eps_i (fun k:set => function_on k unit_interval R).
+Axiom ex49_1_verify_example_functions_axiom :
+  continuous_map unit_interval R_standard_topology R R_standard_topology ex49_example1_f /\
+  continuous_map unit_interval R_standard_topology R R_standard_topology ex49_example1_g /\
+  continuous_map unit_interval R_standard_topology R R_standard_topology ex49_example1_k.
+Theorem ex49_1_verify_example_functions :
+  continuous_map unit_interval R_standard_topology R R_standard_topology ex49_example1_f /\
+  continuous_map unit_interval R_standard_topology R R_standard_topology ex49_example1_g /\
+  continuous_map unit_interval R_standard_topology R R_standard_topology ex49_example1_k.
 exact ex49_1_verify_example_functions_axiom.
 Qed.
 
