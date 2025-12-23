@@ -49123,18 +49123,16 @@ exact ex30_7_SOmega_Sbar_Omega_countability_axiom.
 Qed.
 (** from §30 Exercise 8: countability axioms for R^omega uniform topology **)
 (** LATEX VERSION: Determine which countability axioms R^ω satisfies in the uniform topology. **)
-Axiom ex30_8_Romega_uniform_countability_axiom : forall Tx:set,
-  Tx = R (** stub: R^omega with uniform topology **) ->
-  first_countable_space R Tx /\
-  ~ second_countable_space R Tx /\
-  ~ Lindelof_space R Tx /\
-  ~ (exists D:set, D c= R /\ countable D /\ dense_in D R Tx).
-Theorem ex30_8_Romega_uniform_countability : forall Tx:set,
-  Tx = R (** stub: R^omega with uniform topology **) ->
-  first_countable_space R Tx /\
-  ~ second_countable_space R Tx /\
-  ~ Lindelof_space R Tx /\
-  ~ (exists D:set, D c= R /\ countable D /\ dense_in D R Tx).
+Axiom ex30_8_Romega_uniform_countability_axiom :
+  first_countable_space real_sequences uniform_topology /\
+  ~ second_countable_space real_sequences uniform_topology /\
+  ~ Lindelof_space real_sequences uniform_topology /\
+  ~ (exists D:set, D c= real_sequences /\ countable D /\ dense_in D real_sequences uniform_topology).
+Theorem ex30_8_Romega_uniform_countability :
+  first_countable_space real_sequences uniform_topology /\
+  ~ second_countable_space real_sequences uniform_topology /\
+  ~ Lindelof_space real_sequences uniform_topology /\
+  ~ (exists D:set, D c= real_sequences /\ countable D /\ dense_in D real_sequences uniform_topology).
 exact ex30_8_Romega_uniform_countability_axiom.
 Qed.
 (** from §30 Exercise 9a: closed subspace of Lindelof is Lindelof **)
