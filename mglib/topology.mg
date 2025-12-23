@@ -48912,17 +48912,16 @@ Qed.
 
 (** from Supplementary Exercises Exercise 9: metrizable implies components are m-manifolds **)
 (** LATEX VERSION: If locally m-euclidean X is metrizable, then each component of X is an m-manifold. **)
-(** stub: need proper definition of component **)
 Axiom supp_ex_locally_euclidean_9_axiom : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   metrizable X Tx ->
-  forall C:set, C c= X ->
-    m_manifold C (subspace_topology X Tx C).
+  forall x:set, x :e X ->
+    m_manifold (component_of X Tx x) (subspace_topology X Tx (component_of X Tx x)).
 Theorem supp_ex_locally_euclidean_9 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   metrizable X Tx ->
-  forall C:set, C c= X ->
-    m_manifold C (subspace_topology X Tx C).
+  forall x:set, x :e X ->
+    m_manifold (component_of X Tx x) (subspace_topology X Tx (component_of X Tx x)).
 exact supp_ex_locally_euclidean_9_axiom.
 Qed.
 
