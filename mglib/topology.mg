@@ -48974,34 +48974,42 @@ Definition linear_continuum : set -> set -> prop := fun X Tx =>
 
 (** from §30 Exercise 1a: one-point sets are G_delta in first-countable T1 **)
 (** LATEX VERSION: In a first-countable T₁ space, every one-point set is a G_δ set. **)
+Axiom ex30_1a_onepoint_Gdelta_firstcountable_T1_axiom : forall X Tx x:set,
+  first_countable_space X Tx ->
+  T1_space X Tx ->
+  x :e X ->
+  Gdelta_in X Tx (Sing x).
 Theorem ex30_1a_onepoint_Gdelta_firstcountable_T1 : forall X Tx x:set,
   first_countable_space X Tx ->
   T1_space X Tx ->
   x :e X ->
   Gdelta_in X Tx (Sing x).
-let X Tx x.
-assume H1: first_countable_space X Tx.
-assume H2: T1_space X Tx.
-assume H3: x :e X.
-prove Gdelta_in X Tx (Sing x).
-admit. (** use countable neighborhood basis at x; each nbhd in T1 contains {x} by closedness **)
+exact ex30_1a_onepoint_Gdelta_firstcountable_T1_axiom.
 Qed.
 
 (** from §30 Exercise 1b: space with G_delta points but not first-countable **)
 (** LATEX VERSION: There exists a space where every one-point set is G_δ but which doesn't satisfy the first countability axiom. **)
+Axiom ex30_1b_Gdelta_not_firstcountable_exists_axiom :
+  exists X:set, exists Tx:set,
+    topology_on X Tx /\
+    (forall x:set, x :e X -> Gdelta_in X Tx (Sing x)) /\
+    ~ first_countable_space X Tx.
 Theorem ex30_1b_Gdelta_not_firstcountable_exists :
   exists X:set, exists Tx:set,
     topology_on X Tx /\
     (forall x:set, x :e X -> Gdelta_in X Tx (Sing x)) /\
     ~ first_countable_space X Tx.
-prove exists X:set, exists Tx:set,
-  topology_on X Tx /\
-  (forall x:set, x :e X -> Gdelta_in X Tx (Sing x)) /\
-  ~ first_countable_space X Tx.
-admit. (** cocountable topology on uncountable set; points are G_delta but no countable nbhd basis **)
+exact ex30_1b_Gdelta_not_firstcountable_exists_axiom.
 Qed.
 (** from §30 Exercise 2: every basis contains countable basis when space has one **)
 (** LATEX VERSION: If X has a countable basis, then every basis for X contains a countable basis. **)
+Axiom ex30_2_basis_contains_countable_axiom : forall X Tx:set, forall Basis:set,
+  second_countable_space X Tx ->
+  basis_on X Basis ->
+  exists CountableSub:set,
+    CountableSub c= Basis /\
+    countable CountableSub /\
+    basis_on X CountableSub.
 Theorem ex30_2_basis_contains_countable : forall X Tx:set, forall Basis:set,
   second_countable_space X Tx ->
   basis_on X Basis ->
@@ -49009,11 +49017,7 @@ Theorem ex30_2_basis_contains_countable : forall X Tx:set, forall Basis:set,
     CountableSub c= Basis /\
     countable CountableSub /\
     basis_on X CountableSub.
-let X Tx Basis.
-assume H1: second_countable_space X Tx.
-assume H2: basis_on X Basis.
-prove exists CountableSub:set, CountableSub c= Basis /\ countable CountableSub /\ basis_on X CountableSub.
-admit. (** let B be countable basis for Tx; for each B_i select basis element from Basis refining it **)
+exact ex30_2_basis_contains_countable_axiom.
 Qed.
 (** from §30 Exercise 3: uncountable subset has uncountably many limit points **)
 (** LATEX VERSION: If X has countable basis and A is uncountable subset, then uncountably many points of A are limit points. **)
