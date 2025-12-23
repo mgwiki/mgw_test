@@ -48650,12 +48650,115 @@ Qed.
 
 (** from §50 Exercise 4: specific points in general position in R³ **)
 (** LATEX VERSION: Show that 0, ε₁, ε₂, ε₃, and (1,1,1) are in general position in R³. **)
-(** stub: we do not define explicit coordinates for these vectors; we name them abstractly **)
-Definition ex50_R3_zero : set := Eps_i (fun p:set => p :e (euclidean_space 3)).
-Definition ex50_R3_e1 : set := Eps_i (fun p:set => p :e (euclidean_space 3)).
-Definition ex50_R3_e2 : set := Eps_i (fun p:set => p :e (euclidean_space 3)).
-Definition ex50_R3_e3 : set := Eps_i (fun p:set => p :e (euclidean_space 3)).
-Definition ex50_R3_ones : set := Eps_i (fun p:set => p :e (euclidean_space 3)).
+(** FIXED: Use explicit coordinate functions in the product description of euclidean_space 3. **)
+
+(** helper: 2 is an element of 3 **)
+Theorem In_2_3 : 2 :e 3.
+prove 2 :e 3.
+rewrite <- ordsucc_2_eq_3.
+exact (ordsuccI2 2).
+Qed.
+
+(** helper: all reals lie in the space-family union for R³ **)
+Theorem real_in_space_family_union_R3 : forall y:set,
+  y :e R ->
+  y :e space_family_union 3 (const_space_family 3 R R_standard_topology).
+let y.
+assume HyR: y :e R.
+prove y :e space_family_union 3 (const_space_family 3 R R_standard_topology).
+set Xi := const_space_family 3 R R_standard_topology.
+set S := {space_family_set Xi i|i :e 3}.
+prove y :e Union S.
+claim H2in3: 2 :e 3.
+{ exact In_2_3. }
+claim HXi2: apply_fun Xi 2 = (R, R_standard_topology).
+{ exact (const_space_family_apply 3 R R_standard_topology 2 H2in3). }
+claim HSf2: space_family_set Xi 2 = R.
+{ prove (apply_fun Xi 2) 0 = R.
+  rewrite HXi2.
+  exact (tuple_2_0_eq R R_standard_topology). }
+ claim Helt: space_family_set Xi 2 :e S.
+ { exact (ReplI 3 (fun i:set => space_family_set Xi i) 2 H2in3). }
+ claim HySf2: y :e space_family_set Xi 2.
+ { rewrite HSf2.
+   exact HyR. }
+ exact (UnionI S y (space_family_set Xi 2) HySf2 Helt).
+Qed.
+
+(** helper: each component set in the constant family is R **)
+Theorem space_family_set_const_R3 : forall i:set,
+  i :e 3 ->
+  space_family_set (const_space_family 3 R R_standard_topology) i = R.
+let i.
+assume Hi3: i :e 3.
+prove space_family_set (const_space_family 3 R R_standard_topology) i = R.
+set Xi := const_space_family 3 R R_standard_topology.
+claim HXi: apply_fun Xi i = (R, R_standard_topology).
+{ exact (const_space_family_apply 3 R R_standard_topology i Hi3). }
+prove (apply_fun Xi i) 0 = R.
+rewrite HXi.
+exact (tuple_2_0_eq R R_standard_topology).
+Qed.
+
+(** helper: a coordinate function into R yields a point of euclidean_space 3 **)
+Theorem graph3_in_euclidean_space3 : forall g:set->set,
+  (forall i:set, g i :e R) ->
+  graph 3 g :e euclidean_space 3.
+let g.
+assume HgR: forall i:set, g i :e R.
+set Xi := const_space_family 3 R R_standard_topology.
+set U := space_family_union 3 Xi.
+prove graph 3 g :e {f :e Power (setprod 3 U)|
+                     function_on f 3 U /\ (forall i:set, i :e 3 -> apply_fun f i :e space_family_set Xi i)}.
+apply SepI.
+- (** graph 3 g :e Power (setprod 3 U) **)
+  apply PowerI.
+  let p. assume Hp: p :e graph 3 g.
+  prove p :e setprod 3 U.
+  apply (ReplE_impred 3 (fun i:set => (i, g i)) p Hp).
+  let i. assume Hi3: i :e 3.
+  assume HpEq: p = (i, g i).
+  rewrite HpEq.
+  claim HgiU: g i :e U.
+  { exact (real_in_space_family_union_R3 (g i) (HgR i)). }
+ exact (tuple_2_setprod 3 U i Hi3 (g i) HgiU).
+- (** function_on and component condition **)
+  admit.
+Qed.
+
+(** explicit points in R³ as coordinate functions **)
+Definition ex50_R3_zero : set := graph 3 (fun _ : set => 0).
+Definition ex50_R3_ones : set := graph 3 (fun _ : set => 1).
+Definition ex50_R3_e1 : set := graph 3 (fun i:set => if i = 0 then 1 else 0).
+Definition ex50_R3_e2 : set := graph 3 (fun i:set => if i = 1 then 1 else 0).
+Definition ex50_R3_e3 : set := graph 3 (fun i:set => if i = 2 then 1 else 0).
+
+(** membership facts for these points **)
+Theorem ex50_R3_zero_in : ex50_R3_zero :e euclidean_space 3.
+prove ex50_R3_zero :e euclidean_space 3.
+apply (graph3_in_euclidean_space3 (fun _ : set => 0)).
+let i.
+exact real_0.
+Qed.
+
+Theorem ex50_R3_ones_in : ex50_R3_ones :e euclidean_space 3.
+prove ex50_R3_ones :e euclidean_space 3.
+apply (graph3_in_euclidean_space3 (fun _ : set => 1)).
+let i.
+exact real_1.
+Qed.
+
+Theorem ex50_R3_e1_in : ex50_R3_e1 :e euclidean_space 3.
+admit.
+Qed.
+
+Theorem ex50_R3_e2_in : ex50_R3_e2 :e euclidean_space 3.
+admit.
+Qed.
+
+Theorem ex50_R3_e3_in : ex50_R3_e3 :e euclidean_space 3.
+admit.
+Qed.
 Axiom ex50_4_points_general_position_R3_axiom :
   general_position_RN 3 {ex50_R3_zero, ex50_R3_e1, ex50_R3_e2, ex50_R3_e3, ex50_R3_ones}.
 Theorem ex50_4_points_general_position_R3 :
