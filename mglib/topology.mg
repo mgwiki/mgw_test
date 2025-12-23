@@ -30611,6 +30611,66 @@ Qed.
 Definition compose_fun : set -> set -> set -> set := fun X f g =>
   {(x, apply_fun g (apply_fun f x))|x :e X}.
 
+(** Helper: compose_fun has domain subset X **)
+Theorem graph_domain_subset_compose_fun : forall X f g:set,
+  graph_domain_subset (compose_fun X f g) X.
+let X f g.
+exact (graph_domain_subset_graph X (fun x0:set => apply_fun g (apply_fun f x0))).
+Qed.
+
+(** Helper: compose_fun is functional **)
+Theorem functional_graph_compose_fun : forall X f g:set,
+  functional_graph (compose_fun X f g).
+let X f g.
+exact (functional_graph_graph X (fun x0:set => apply_fun g (apply_fun f x0))).
+Qed.
+
+(** Helper: compose_fun maps X into Z if f maps X into Y and g maps Y into Z **)
+Theorem function_on_compose_fun : forall X Y Z f g:set,
+  function_on f X Y ->
+  function_on g Y Z ->
+  function_on (compose_fun X f g) X Z.
+let X Y Z f g.
+assume Hf: function_on f X Y.
+assume Hg: function_on g Y Z.
+let x. assume HxX: x :e X.
+prove apply_fun (compose_fun X f g) x :e Z.
+claim HfxY: apply_fun f x :e Y.
+{ exact (Hf x HxX). }
+claim HgfxZ: apply_fun g (apply_fun f x) :e Z.
+{ exact (Hg (apply_fun f x) HfxY). }
+claim Hpair: (x, apply_fun g (apply_fun f x)) :e compose_fun X f g.
+{ exact (ReplI X (fun x0:set => (x0, apply_fun g (apply_fun f x0))) x HxX). }
+claim Hfuncomp: functional_graph (compose_fun X f g).
+{ exact (functional_graph_compose_fun X f g). }
+claim Happ: apply_fun (compose_fun X f g) x = apply_fun g (apply_fun f x).
+{ exact (functional_graph_apply_fun_eq (compose_fun X f g) x (apply_fun g (apply_fun f x)) Hfuncomp Hpair). }
+rewrite Happ.
+exact HgfxZ.
+Qed.
+
+(** Helper: compose_fun is total_function_on under function_on assumptions **)
+Theorem total_function_on_compose_fun : forall X Y Z f g:set,
+  function_on f X Y ->
+  function_on g Y Z ->
+  total_function_on (compose_fun X f g) X Z.
+let X Y Z f g.
+assume Hf: function_on f X Y.
+assume Hg: function_on g Y Z.
+prove function_on (compose_fun X f g) X Z /\
+  forall x:set, x :e X -> exists y:set, y :e Z /\ (x,y) :e compose_fun X f g.
+apply andI.
+- exact (function_on_compose_fun X Y Z f g Hf Hg).
+- let x. assume HxX: x :e X.
+  prove exists y:set, y :e Z /\ (x,y) :e compose_fun X f g.
+  witness (apply_fun g (apply_fun f x)).
+  apply andI.
+  * claim HfxY: apply_fun f x :e Y.
+    { exact (Hf x HxX). }
+    exact (Hg (apply_fun f x) HfxY).
+  * exact (ReplI X (fun x0:set => (x0, apply_fun g (apply_fun f x0))) x HxX).
+Qed.
+
 (** Helper: apply_fun on composed functions **)
 Theorem compose_fun_apply : forall X f g x:set,
   x :e X -> apply_fun (compose_fun X f g) x = apply_fun g (apply_fun f x).
