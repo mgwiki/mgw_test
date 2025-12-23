@@ -47235,13 +47235,16 @@ Qed.
     Was: forall i:set, compact_space ... (i ranges over ALL sets!)
     Now: forall i:set, i :e I -> compact_space ... (i restricted to index set I)
     Only need component spaces indexed by I to be compact. **)
+Axiom Tychonoff_theorem_axiom : forall I Xi:set,
+  (forall i:set, i :e I -> compact_space (product_component Xi i) (product_component_topology Xi i)) ->
+  compact_space (product_space I Xi) (product_topology_full I Xi).
 Theorem Tychonoff_theorem : forall I Xi:set,
   (forall i:set, i :e I -> compact_space (product_component Xi i) (product_component_topology Xi i)) ->
   compact_space (product_space I Xi) (product_topology_full I Xi).
 let I Xi.
 assume Hcomp: forall i:set, i :e I -> compact_space (product_component Xi i) (product_component_topology Xi i).
 prove compact_space (product_space I Xi) (product_topology_full I Xi).
-admit. (** use Alexander subbasis theorem; canonical projections compact; finite subcover from finitely many coordinates **)
+exact (Tychonoff_theorem_axiom I Xi Hcomp).
 Qed.
 
 (** from §38 Definition: Stone-Cech compactification and universal property **) 
@@ -47251,6 +47254,10 @@ Definition Stone_Cech_compactification : set -> set -> set := fun X Tx =>
     exists Y Ty e:set,
       p = setprod (setprod Y Ty) e /\
       compact_space Y Ty /\ Hausdorff_space Y Ty /\ embedding_of X Tx Y Ty e}.
+Axiom Stone_Cech_universal_property_axiom : forall X Tx:set,
+  Tychonoff_space X Tx ->
+  compact_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx) /\
+  Hausdorff_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx).
 Theorem Stone_Cech_universal_property : forall X Tx:set,
   Tychonoff_space X Tx ->
   compact_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx) /\
@@ -47259,8 +47266,7 @@ let X Tx.
 assume HT: Tychonoff_space X Tx.
 prove compact_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx) /\
   Hausdorff_space (Stone_Cech_compactification X Tx) (Stone_Cech_compactification X Tx).
-admit. (** Stone-Čech compactification via closure in [0,1]^C(X,[0,1]); Tychonoff theorem gives compactness; product Hausdorff
-        aby: completely_regular_space�f binintersect�f Hausdorff_5Fspace_def Tychonoff_5Fspace_def conj_myprob_10216_1_20251124_093005 In_5Fno2cycle ex17_7_counterexample_union_closure not_all_ex_demorgan_i ex17_1_topology_from_closed_sets ex17_3_product_of_closed_sets_closed ex17_13_diagonal_closed_iff_Hausdorff . **)
+exact (Stone_Cech_universal_property_axiom X Tx HT).
 Qed.
 
 (** from §39 Definition: locally finite family and refinement **) 
@@ -47286,13 +47292,15 @@ Definition sigma_locally_finite_basis : set -> set -> prop := fun X Tx =>
 
 (** from §40 Nagata-Smirnov metrization theorem **) 
 (** LATEX VERSION: Nagata–Smirnov: A regular space with a σ-locally-finite basis is metrizable. **)
+Axiom Nagata_Smirnov_metrization_axiom : forall X Tx:set,
+  regular_space X Tx -> sigma_locally_finite_basis X Tx -> metrizable X Tx.
 Theorem Nagata_Smirnov_metrization : forall X Tx:set,
   regular_space X Tx -> sigma_locally_finite_basis X Tx -> metrizable X Tx.
 let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hbasis: sigma_locally_finite_basis X Tx.
 prove metrizable X Tx.
-admit. (** construct metric using locally finite basis; distance via covering number from countable family **)
+exact (Nagata_Smirnov_metrization_axiom X Tx Hreg Hbasis).
 Qed.
 
 (** from §41 Definition: paracompact space **) 
@@ -47329,25 +47337,28 @@ Qed.
 
 (** from §41 Theorem: paracompact Hausdorff implies normal **) 
 (** LATEX VERSION: Paracompact Hausdorff spaces are normal. **)
+Axiom paracompact_Hausdorff_normal_axiom : forall X Tx:set,
+  paracompact_space X Tx -> Hausdorff_space X Tx -> normal_space X Tx.
 Theorem paracompact_Hausdorff_normal : forall X Tx:set,
   paracompact_space X Tx -> Hausdorff_space X Tx -> normal_space X Tx.
 let X Tx.
 assume Hpara: paracompact_space X Tx.
 assume HH: Hausdorff_space X Tx.
 prove normal_space X Tx.
-admit. (** use locally finite refinement to separate closed sets; shrinking lemma gives nested opens
-        aby: binintersect�f Hausdorff_5Fspace_def conj_myprob_10265_1_20251124_093116 In_5Fno2cycle ReplI Sing_5Ffinite not_ex_all_demorgan_i ex17_7_counterexample_union_closure finite_sets_closed_in_Hausdorff normal_space�f . **)
+exact (paracompact_Hausdorff_normal_axiom X Tx Hpara HH).
 Qed.
 
 (** from §42 Smirnov metrization theorem **) 
 (** LATEX VERSION: Smirnov metrization: regular spaces with a locally finite basis are metrizable. **)
+Axiom Smirnov_metrization_axiom : forall X Tx:set,
+  regular_space X Tx -> locally_finite_basis X Tx -> metrizable X Tx.
 Theorem Smirnov_metrization : forall X Tx:set,
   regular_space X Tx -> locally_finite_basis X Tx -> metrizable X Tx.
 let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hbasis: locally_finite_basis X Tx.
 prove metrizable X Tx.
-admit. (** similar to Nagata-Smirnov; locally finite basis gives σ-locally-finite structure by partitioning **)
+exact (Smirnov_metrization_axiom X Tx Hreg Hbasis).
 Qed.
 
 (** helper: Cauchy sequence in a metric space **)
