@@ -50576,7 +50576,7 @@ Definition retraction_of : set -> set -> set -> prop := fun X Tx A =>
     (forall x:set, x :e A -> apply_fun r x = x).
 
 Definition image_of_map : set -> set -> set -> set -> set -> set :=
-  fun X Tx Y Ty f => {apply_fun f x|x :e X}.
+  fun X Tx Y Ty f => image_of f X.
 
 Definition absolute_retract : set -> set -> prop := fun X Tx =>
   Hausdorff_space X Tx /\
