@@ -6508,6 +6508,31 @@ Definition topology_on : set -> set -> prop := fun X T =>
 Definition open_in : set -> set -> set -> prop := fun X T U =>
   topology_on X T /\ U :e T.
 
+(** Helper: extract topology_on from open_in **)
+Theorem open_in_topology : forall X T U:set,
+  open_in X T U -> topology_on X T.
+let X T U.
+assume H: open_in X T U.
+exact (andEL (topology_on X T) (U :e T) H).
+Qed.
+
+(** Helper: extract membership from open_in **)
+Theorem open_in_elem : forall X T U:set,
+  open_in X T U -> U :e T.
+let X T U.
+assume H: open_in X T U.
+exact (andER (topology_on X T) (U :e T) H).
+Qed.
+
+(** Helper: introduction rule for open_in **)
+Theorem open_inI : forall X T U:set,
+  topology_on X T -> U :e T -> open_in X T U.
+let X T U.
+assume HT: topology_on X T.
+assume HU: U :e T.
+exact (andI (topology_on X T) (U :e T) HT HU).
+Qed.
+
 (** Helper: Open set is a subset of X **)
 Theorem open_in_subset : forall X T U:set,
   open_in X T U -> U c= X.
@@ -33283,6 +33308,18 @@ apply andI.
 - prove open_ball X d x r :e metric_topology X d.
   prove open_ball X d x r :e generated_topology X B.
   exact (generated_topology_contains_basis X B HBasis (open_ball X d x r) Hball_in_B).
+Qed.
+
+(** Helper: open balls are elements of the metric topology **)
+Theorem open_ball_in_metric_topology : forall X d x r:set,
+  metric_on X d -> x :e X -> Rlt 0 r ->
+  open_ball X d x r :e metric_topology X d.
+let X d x r.
+assume Hm: metric_on X d.
+assume Hx: x :e X.
+assume Hr: Rlt 0 r.
+exact (open_in_elem X (metric_topology X d) (open_ball X d x r)
+        (open_ball_open_in_metric_topology X d x r Hm Hx Hr)).
 Qed.
 
 (** from §21: epsilon-delta continuity in metric spaces **) 
