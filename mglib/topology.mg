@@ -39829,7 +39829,7 @@ exact (iffER (compact_space Img Timg)
 Qed.
 
 (** from §26: tube lemma used in product compactness **)
-(** LATEX VERSION: Tube lemma: in X×Y with X compact, a neighborhood of {x0}×Y contains some U×Y. **)
+(** LATEX VERSION: Tube lemma: in X×Y with Y compact, a neighborhood of {x0}×Y contains some U×Y. **)
 (** FIXED: Tube lemma should state U×{y} ⊆ N for all y, not U×y ∈ N.
     Was: setprod U y :e N (Cartesian product U×y as element)
     Now: setprod U {y} c= N (Cartesian product U×{y} as subset)
