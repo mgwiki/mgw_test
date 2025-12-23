@@ -48998,6 +48998,13 @@ claim Hex: exists L:set, infinite L.
 exact (Eps_i_ex (fun L:set => infinite L) Hex).
 Qed.
 Definition long_line_topology : set := Eps_i (fun T:set => topology_on long_line T).
+Theorem long_line_topology_on : topology_on long_line long_line_topology.
+prove topology_on long_line long_line_topology.
+claim Hex: exists T:set, topology_on long_line T.
+{ witness (discrete_topology long_line).
+  exact (discrete_topology_on long_line). }
+exact (Eps_i_ex (fun T:set => topology_on long_line T) Hex).
+Qed.
 Axiom supp_ex_locally_euclidean_5_axiom :
   locally_m_euclidean long_line long_line_topology (Sing Empty) /\
   normal_space long_line long_line_topology /\
