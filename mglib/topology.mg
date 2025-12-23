@@ -29464,6 +29464,48 @@ apply set_ext.
   exact (SepI X (fun x0:set => apply_fun f x0 :e U :/\: V) x HxX HfxUV).
 Qed.
 
+(** Helper: preimage of binary union **)
+(** LATEX VERSION: f^{-1}(U∪V) = f^{-1}(U) ∪ f^{-1}(V). **)
+Theorem preimage_of_binunion : forall X f U V:set,
+  preimage_of X f (U :\/: V) = (preimage_of X f U) :\/: (preimage_of X f V).
+let X f U V.
+apply set_ext.
+- let x. assume Hx: x :e preimage_of X f (U :\/: V).
+  prove x :e (preimage_of X f U) :\/: (preimage_of X f V).
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => apply_fun f x0 :e U :\/: V) x Hx). }
+  claim HfxUV: apply_fun f x :e U :\/: V.
+  { exact (SepE2 X (fun x0:set => apply_fun f x0 :e U :\/: V) x Hx). }
+  apply (binunionE U V (apply_fun f x) HfxUV).
+  * assume HfxU: apply_fun f x :e U.
+    claim HxPreU: x :e preimage_of X f U.
+    { exact (SepI X (fun x0:set => apply_fun f x0 :e U) x HxX HfxU). }
+    exact (binunionI1 (preimage_of X f U) (preimage_of X f V) x HxPreU).
+  * assume HfxV: apply_fun f x :e V.
+    claim HxPreV: x :e preimage_of X f V.
+    { exact (SepI X (fun x0:set => apply_fun f x0 :e V) x HxX HfxV). }
+    exact (binunionI2 (preimage_of X f U) (preimage_of X f V) x HxPreV).
+- let x. assume Hx: x :e (preimage_of X f U) :\/: (preimage_of X f V).
+  prove x :e preimage_of X f (U :\/: V).
+  apply (binunionE (preimage_of X f U) (preimage_of X f V) x Hx).
+  * assume HxPreU: x :e preimage_of X f U.
+    claim HxX: x :e X.
+    { exact (SepE1 X (fun x0:set => apply_fun f x0 :e U) x HxPreU). }
+    claim HfxU: apply_fun f x :e U.
+    { exact (SepE2 X (fun x0:set => apply_fun f x0 :e U) x HxPreU). }
+    claim HfxUV: apply_fun f x :e U :\/: V.
+    { exact (binunionI1 U V (apply_fun f x) HfxU). }
+    exact (SepI X (fun x0:set => apply_fun f x0 :e U :\/: V) x HxX HfxUV).
+  * assume HxPreV: x :e preimage_of X f V.
+    claim HxX: x :e X.
+    { exact (SepE1 X (fun x0:set => apply_fun f x0 :e V) x HxPreV). }
+    claim HfxV: apply_fun f x :e V.
+    { exact (SepE2 X (fun x0:set => apply_fun f x0 :e V) x HxPreV). }
+    claim HfxUV: apply_fun f x :e U :\/: V.
+    { exact (binunionI2 U V (apply_fun f x) HfxV). }
+    exact (SepI X (fun x0:set => apply_fun f x0 :e U :\/: V) x HxX HfxUV).
+Qed.
+
 (** Helper: preimage of Empty **)
 (** LATEX VERSION: f^{-1}(∅) = ∅. **)
 Theorem preimage_of_Empty : forall X f:set,
