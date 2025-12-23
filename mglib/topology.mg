@@ -34141,6 +34141,71 @@ Qed.
 Definition separation_of : set -> set -> set -> prop := fun X U V =>
   U :e Power X /\ V :e Power X /\ U :/\: V = Empty /\ U <> Empty /\ V <> Empty /\ U :\/: V = X.
 
+(** Helper: a proper nonempty subset yields a separation by its complement **)
+Theorem separation_of_complement : forall X U:set,
+  U c= X -> U <> Empty -> U <> X ->
+  separation_of X U (X :\: U).
+let X U.
+assume HUsub: U c= X.
+assume HUne: U <> Empty.
+assume HUnX: U <> X.
+prove separation_of X U (X :\: U).
+claim HUpow: U :e Power X.
+{ exact (PowerI X U HUsub). }
+claim HcompSubX: X :\: U c= X.
+{ exact (setminus_Subq X U). }
+claim HcompPower: (X :\: U) :e Power X.
+{ exact (PowerI X (X :\: U) HcompSubX). }
+claim Hdisjoint: U :/\: (X :\: U) = Empty.
+{ apply Empty_eq.
+  let x. assume Hx: x :e U :/\: (X :\: U).
+  apply (binintersectE U (X :\: U) x Hx).
+  assume HxU: x :e U.
+  assume HxComp: x :e X :\: U.
+  apply (setminusE X U x HxComp).
+  assume _. assume HxNotU: x /:e U.
+  exact (HxNotU HxU). }
+claim HcompNe: (X :\: U) <> Empty.
+{ assume Heq: X :\: U = Empty.
+  claim HUeqX: U = X.
+  { apply set_ext.
+    - exact HUsub.
+    - let x. assume HxX: x :e X.
+      apply (xm (x :e U)).
+      + assume HxU. exact HxU.
+      + assume HxNotU.
+        claim Hxcomp: x :e X :\: U.
+        { exact (setminusI X U x HxX HxNotU). }
+        claim HxEmpty: x :e Empty.
+        { rewrite <- Heq. exact Hxcomp. }
+        prove x :e U.
+        exact (FalseE (EmptyE x HxEmpty) (x :e U)). }
+  exact (HUnX HUeqX). }
+claim Hunion: U :\/: (X :\: U) = X.
+{ apply set_ext.
+  - let x. assume Hx: x :e U :\/: (X :\: U).
+    apply (binunionE U (X :\: U) x Hx).
+    + assume HxU. exact (HUsub x HxU).
+    + assume HxComp. exact (setminusE1 X U x HxComp).
+  - let x. assume HxX: x :e X.
+    apply (xm (x :e U)).
+    + assume HxU. exact (binunionI1 U (X :\: U) x HxU).
+    + assume HxNotU. exact (binunionI2 U (X :\: U) x (setminusI X U x HxX HxNotU)). }
+prove U :e Power X /\ (X :\: U) :e Power X /\ U :/\: (X :\: U) = Empty /\ U <> Empty /\ (X :\: U) <> Empty /\ U :\/: (X :\: U) = X.
+(** `separation_of` is left-associative; build the conjunction tree explicitly. **)
+apply andI.
+- apply andI.
+  + apply andI.
+    * apply andI.
+      { apply andI.
+        - exact HUpow.
+        - exact HcompPower. }
+      { exact Hdisjoint. }
+    * exact HUne.
+  + exact HcompNe.
+- exact Hunion.
+Qed.
+
 (** from §23 Definition: connected space **) 
 (** LATEX VERSION: X with topology Tx is connected if it admits no separation. **)
 Definition connected_space : set -> set -> prop := fun X Tx =>
@@ -40496,7 +40561,68 @@ let X Tx.
 assume HTx: topology_on X Tx.
 prove (forall x:set, component_of X Tx x c= quasicomponent_of X Tx x) /\
   (locally_connected X Tx -> forall x:set, component_of X Tx x = quasicomponent_of X Tx x).
-admit.
+apply andI.
+- (** components are contained in quasicomponents **)
+  let x.
+  prove component_of X Tx x c= quasicomponent_of X Tx x.
+  let y. assume Hy: y :e component_of X Tx x.
+  prove y :e quasicomponent_of X Tx x.
+  prove y :e {y0 :e X | forall U:set, open_in X Tx U -> closed_in X Tx U -> x :e U -> y0 :e U}.
+  apply SepI.
+  - exact (SepE1 X (fun y0:set => exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y0 :e C) y Hy).
+  - let U.
+    assume HUopen: open_in X Tx U.
+    assume HUclosed: closed_in X Tx U.
+    assume HxU: x :e U.
+    prove y :e U.
+    apply (xm (U = X)).
+    + assume HUeqX: U = X.
+      rewrite HUeqX.
+      exact (SepE1 X (fun y0:set => exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y0 :e C) y Hy).
+    + assume HUnX: U <> X.
+      claim HUsubX: U c= X.
+      { exact (open_in_subset X Tx U HUopen). }
+      claim HUne: U <> Empty.
+      { exact (elem_implies_nonempty U x HxU). }
+      claim HsepUX: separation_of X U (X :\: U).
+      { exact (separation_of_complement X U HUsubX HUne HUnX). }
+      claim HUinTx: U :e Tx.
+      { exact (andER (topology_on X Tx) (U :e Tx) HUopen). }
+      claim HcompOpen: open_in X Tx (X :\: U).
+      { exact (open_of_closed_complement X Tx U HUclosed). }
+      claim HcompinTx: (X :\: U) :e Tx.
+      { exact (andER (topology_on X Tx) ((X :\: U) :e Tx) HcompOpen). }
+      (** unpack the component witness C containing x and y **)
+      claim HexC: exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y :e C.
+      { exact (SepE2 X (fun y0:set => exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y0 :e C) y Hy). }
+      apply HexC.
+      let C. assume HC.
+      claim HCconn: connected_space C (subspace_topology X Tx C).
+      { exact (andEL (connected_space C (subspace_topology X Tx C))
+                     (x :e C) (andEL (connected_space C (subspace_topology X Tx C) /\ x :e C) (y :e C) HC)). }
+      claim HxC: x :e C.
+      { exact (andER (connected_space C (subspace_topology X Tx C)) (x :e C)
+                     (andEL (connected_space C (subspace_topology X Tx C) /\ x :e C) (y :e C) HC)). }
+      claim HyC: y :e C.
+      { exact (andER (connected_space C (subspace_topology X Tx C) /\ x :e C) (y :e C) HC). }
+      claim HCsubX: C c= X.
+      { exact (connected_subspace_subset X Tx C HTx HCconn). }
+      (** connected subspace C must lie in one side of the separation (U, X\\U) **)
+      claim Hside: C c= U \/ C c= (X :\: U).
+      { exact (connected_subset_in_separation_side X Tx U (X :\: U) C HTx HCsubX HCconn HUinTx HcompinTx HsepUX). }
+      apply (Hside (y :e U)).
+      - assume HCsubU: C c= U.
+        exact (HCsubU y HyC).
+      - assume HCsubComp: C c= (X :\: U).
+        (** x is in U, so x cannot be in X\\U; contradiction **)
+        claim HxComp: x :e X :\: U.
+        { exact (HCsubComp x HxC). }
+        claim HxNotU: x /:e U.
+        { exact (setminusE2 X U x HxComp). }
+        apply FalseE.
+        exact (HxNotU HxU).
+- (** locally connected implies equality (left as placeholder) **)
+  admit.
 Qed.
 
 (** from §23 Exercise: components and path components of ℝℓ **) 
