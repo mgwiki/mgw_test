@@ -21236,6 +21236,43 @@ claim Happ: (x, apply_fun f x) :e f.
 exact (Hfun x (apply_fun f x) y Happ Hxy).
 Qed.
 
+(** Helper: range subset preserved under binary union **)
+Theorem graph_range_subset_binunion : forall f g Y:set,
+  graph_range_subset f Y ->
+  graph_range_subset g Y ->
+  graph_range_subset (f :\/: g) Y.
+let f g Y.
+assume Hrf: graph_range_subset f Y.
+assume Hrg: graph_range_subset g Y.
+let x y.
+assume Hxy: (x,y) :e (f :\/: g).
+apply (binunionE f g (x,y) Hxy).
+- assume Hxyf: (x,y) :e f.
+  exact (Hrf x y Hxyf).
+- assume Hxyg: (x,y) :e g.
+  exact (Hrg x y Hxyg).
+Qed.
+
+(** Helper: build function_on from pointwise totality and range subset **)
+Theorem function_on_from_totality_and_range : forall X Y f:set,
+  (forall x:set, x :e X -> exists y:set, y :e Y /\ (x,y) :e f) ->
+  graph_range_subset f Y ->
+  function_on f X Y.
+let X Y f.
+assume Htot: forall x:set, x :e X -> exists y:set, y :e Y /\ (x,y) :e f.
+assume Hrange: graph_range_subset f Y.
+let x. assume HxX: x :e X.
+prove apply_fun f x :e Y.
+claim Hex: exists y:set, (x,y) :e f.
+{ apply (Htot x HxX).
+  let y. assume Hy: y :e Y /\ (x,y) :e f.
+  witness y.
+  exact (andER (y :e Y) ((x,y) :e f) Hy). }
+claim Hpair: (x, apply_fun f x) :e f.
+{ exact (apply_fun_in_graph_of_ex f x Hex). }
+exact (Hrange x (apply_fun f x) Hpair).
+Qed.
+
 (** Helper: graph of a meta level function as a set of ordered pairs **)
 Definition graph : set -> (set -> set) -> set := fun A g => {(a, g a) | a :e A}.
 
@@ -21325,6 +21362,29 @@ assume HxX: x :e X.
 claim Hfun: function_on f X Y.
 { exact (total_function_on_function_on f X Y Htot). }
 exact (Hfun x HxX).
+Qed.
+
+(** Helper: range subset from totality and functionality **)
+Theorem graph_range_subset_from_total_functional : forall A Y f:set,
+  graph_domain_subset f A ->
+  total_function_on f A Y ->
+  functional_graph f ->
+  graph_range_subset f Y.
+let A Y f.
+assume Hdom: graph_domain_subset f A.
+assume Htot: total_function_on f A Y.
+assume Hfun: functional_graph f.
+let x y.
+assume Hxy: (x,y) :e f.
+prove y :e Y.
+claim HxA: x :e A.
+{ exact (Hdom x y Hxy). }
+claim HappY: apply_fun f x :e Y.
+{ exact (total_function_on_apply_fun_in_Y f A Y x Htot HxA). }
+claim HappEq: apply_fun f x = y.
+{ exact (functional_graph_apply_fun_eq f x y Hfun Hxy). }
+rewrite <- HappEq.
+exact HappY.
 Qed.
 
 (** Helper: constant function as a graph **)
@@ -31421,6 +31481,50 @@ Axiom function_union_on_disjoint : forall A B Y f g:set,
   A :/\: B = Empty ->
   function_on f A Y -> function_on g B Y ->
   function_on (f :\/: g) (A :\/: B) Y.
+
+(** Helper: function_on for a pasted total functional map **)
+Theorem function_union_on_disjoint_total_functional : forall A B Y f g:set,
+  A :/\: B = Empty ->
+  graph_domain_subset f A ->
+  graph_domain_subset g B ->
+  total_function_on f A Y ->
+  total_function_on g B Y ->
+  functional_graph f ->
+  functional_graph g ->
+  function_on (f :\/: g) (A :\/: B) Y.
+let A B Y f g.
+assume Hdisj: A :/\: B = Empty.
+assume Hdomf: graph_domain_subset f A.
+assume Hdomg: graph_domain_subset g B.
+assume Htotf: total_function_on f A Y.
+assume Htotg: total_function_on g B Y.
+assume Hfunf: functional_graph f.
+assume Hfung: functional_graph g.
+claim Hrf: graph_range_subset f Y.
+{ exact (graph_range_subset_from_total_functional A Y f Hdomf Htotf Hfunf). }
+claim Hrg: graph_range_subset g Y.
+{ exact (graph_range_subset_from_total_functional B Y g Hdomg Htotg Hfung). }
+claim Hrfg: graph_range_subset (f :\/: g) Y.
+{ exact (graph_range_subset_binunion f g Y Hrf Hrg). }
+claim Htotfg: forall x:set, x :e (A :\/: B) -> exists y:set, y :e Y /\ (x,y) :e (f :\/: g).
+{ let x. assume Hx: x :e (A :\/: B).
+  apply (binunionE A B x Hx).
+  - assume HxA: x :e A.
+    apply (total_function_on_totality f A Y Htotf x HxA).
+    let y. assume Hy: y :e Y /\ (x,y) :e f.
+    witness y.
+    apply andI.
+    + exact (andEL (y :e Y) ((x,y) :e f) Hy).
+    + exact (binunionI1 f g (x,y) (andER (y :e Y) ((x,y) :e f) Hy)).
+  - assume HxB: x :e B.
+    apply (total_function_on_totality g B Y Htotg x HxB).
+    let y. assume Hy: y :e Y /\ (x,y) :e g.
+    witness y.
+    apply andI.
+    + exact (andEL (y :e Y) ((x,y) :e g) Hy).
+    + exact (binunionI2 f g (x,y) (andER (y :e Y) ((x,y) :e g) Hy)). }
+exact (function_on_from_totality_and_range (A :\/: B) Y (f :\/: g) Htotfg Hrfg).
+Qed.
 
 (** Helper: total_function_on union properties **)
 (** Uses `function_union_on_disjoint` for the function_on part, and proves totality directly by cases on x∈A∪B. **)
