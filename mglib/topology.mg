@@ -35717,6 +35717,7 @@ exact (HpF HFsub).
 Qed.
 
 (** Helper: basis neighborhoods in the product topology meet Romega_infty **)
+(** LATEX VERSION: Any basic open neighborhood in the product topology contains a point of R^infty by truncating outside finitely many constrained coordinates. **)
 Theorem Romega_infty_meets_product_basis : forall b x:set,
   b :e basis_of_subbasis R_omega_space (product_subbasis_full omega (const_space_family omega R R_standard_topology)) ->
   x :e b ->
