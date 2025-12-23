@@ -47898,17 +47898,16 @@ Definition coplanar_in_R3 : set -> set -> set -> set -> prop := fun p q r s =>
 
 (** from §50: geometrically independent (affinely independent) points in R^N **)
 (** LATEX VERSION: Points {x₀,...,xₖ} in R^N are geometrically independent if Σaᵢxᵢ=0 and Σaᵢ=0 imply all aᵢ=0. **)
-(** stub: actual condition needs vector space operations **)
+(** stub: actual condition needs vector space operations on R^N; we only record that S lies in some euclidean_space N **)
 Definition geometrically_independent : set -> prop := fun S =>
-  S c= R.
+  exists N:set, N :e omega /\ S c= euclidean_space N /\ True.
 
 (** from §50: plane determined by geometrically independent points **)
 (** LATEX VERSION: The plane P determined by geometrically independent points {x₀,...,xₖ} is the set of all x = Σtᵢxᵢ where Σtᵢ=1. **)
-(** stub: needs proper formulation of affine combination **)
+(** stub: needs proper formulation of affine combination in euclidean_space N **)
 Definition affine_plane : set -> set := fun S =>
-  {x :e R | exists tcoeffs:set,
-    (forall s:set, s :e S -> exists t:set, t :e R /\ (s,t) :e tcoeffs) /\
-    True}.
+  Eps_i (fun P:set =>
+    exists N:set, N :e omega /\ S c= euclidean_space N /\ P c= euclidean_space N /\ True).
 
 (** from §50: k-plane in R^N **)
 (** LATEX VERSION: A k-plane in R^N is the affine plane determined by k+1 geometrically independent points. **)
@@ -47924,7 +47923,7 @@ Definition k_plane : set -> set -> prop := fun k P =>
 (** LATEX VERSION: A set A in R^N is in general position if every subset with ≤N+1 points is geometrically independent. **)
 Definition general_position_RN : set -> set -> prop := fun N A =>
   N :e omega /\
-  A c= R /\
+  A c= euclidean_space N /\
   forall S:set, S c= A ->
     (forall Np1:set, Np1 = N :\/: (Sing N) ->
       (exists f:set -> set, inj S Np1 f) -> geometrically_independent S).
@@ -47935,7 +47934,7 @@ Definition general_position_RN : set -> set -> prop := fun N A =>
 Axiom finite_set_approximation_general_position_axiom : forall N:set, forall pts:set, forall delta:set,
   N :e omega ->
   finite pts ->
-  pts c= R ->
+  pts c= euclidean_space N ->
   delta :e R ->
   exists pts':set,
     general_position_RN N pts' /\
@@ -47944,7 +47943,7 @@ Axiom finite_set_approximation_general_position_axiom : forall N:set, forall pts
 Theorem finite_set_approximation_general_position : forall N:set, forall pts:set, forall delta:set,
   N :e omega ->
   finite pts ->
-  pts c= R ->
+  pts c= euclidean_space N ->
   delta :e R ->
   exists pts':set,
     general_position_RN N pts' /\
