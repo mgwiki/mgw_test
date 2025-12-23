@@ -32260,7 +32260,195 @@ Theorem homeomorphism_preserves_connected : forall X Tx Y Ty f:set,
 let X Tx Y Ty f.
 assume Hhom: homeomorphism X Tx Y Ty f.
 assume HX: connected_space X Tx.
-admit.
+prove connected_space Y Ty.
+prove topology_on Y Ty /\ ~(exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V).
+apply andI.
+- exact (homeomorphism_topology_right X Tx Y Ty f Hhom).
+- assume HsepY: exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V.
+  prove False.
+  claim HnoSepX: ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
+  { exact (andER (topology_on X Tx)
+                 (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V))
+                 HX). }
+  claim Hcontf: continuous_map X Tx Y Ty f.
+  { exact (andEL (continuous_map X Tx Y Ty f)
+                 (exists g:set, continuous_map Y Ty X Tx g /\
+                   (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+                   (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
+                 Hhom). }
+  claim Habc: (topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y.
+  { exact (andEL ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
+                 (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                 Hcontf). }
+  claim Hfunf: function_on f X Y.
+  { exact (andER (topology_on X Tx /\ topology_on Y Ty)
+                 (function_on f X Y)
+                 Habc). }
+  claim Hpreimg: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+  { exact (andER ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y)
+                 (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+                 Hcontf). }
+  claim Hexg:
+    exists g:set, continuous_map Y Ty X Tx g /\
+      (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+      (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y).
+  { exact (andER (continuous_map X Tx Y Ty f)
+                 (exists g:set, continuous_map Y Ty X Tx g /\
+                   (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x) /\
+                   (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y))
+                 Hhom). }
+  apply Hexg.
+  let g. assume Hgprop.
+  claim Hfg: forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y.
+  { exact (andER (continuous_map Y Ty X Tx g /\
+                   (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x))
+                 (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y)
+                 Hgprop). }
+  claim Habg:
+    continuous_map Y Ty X Tx g /\
+      (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x).
+  { exact (andEL (continuous_map Y Ty X Tx g /\
+                   (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x))
+                 (forall y:set, y :e Y -> apply_fun f (apply_fun g y) = y)
+                 Hgprop). }
+  claim Hcontg: continuous_map Y Ty X Tx g.
+  { exact (andEL (continuous_map Y Ty X Tx g)
+                 (forall x:set, x :e X -> apply_fun g (apply_fun f x) = x)
+                 Habg). }
+  claim Habcg: (topology_on Y Ty /\ topology_on X Tx) /\ function_on g Y X.
+  { exact (andEL ((topology_on Y Ty /\ topology_on X Tx) /\ function_on g Y X)
+                 (forall V:set, V :e Tx -> preimage_of Y g V :e Ty)
+                 Hcontg). }
+  claim Hfung: function_on g Y X.
+  { exact (andER (topology_on Y Ty /\ topology_on X Tx)
+                 (function_on g Y X)
+                 Habcg). }
+  apply HsepY.
+  let U. assume HexV: exists V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V.
+  apply HexV.
+  let V. assume HUV: U :e Ty /\ V :e Ty /\ separation_of Y U V.
+  set U0 := preimage_of X f U.
+  set V0 := preimage_of X f V.
+  claim HUVop: U :e Ty /\ V :e Ty.
+  { exact (andEL (U :e Ty /\ V :e Ty) (separation_of Y U V) HUV). }
+  claim HU_Ty: U :e Ty.
+  { exact (andEL (U :e Ty) (V :e Ty) HUVop). }
+  claim HV_Ty: V :e Ty.
+  { exact (andER (U :e Ty) (V :e Ty) HUVop). }
+  claim HsepYUV: separation_of Y U V.
+  { exact (andER (U :e Ty /\ V :e Ty) (separation_of Y U V) HUV). }
+  claim HU0Tx: U0 :e Tx.
+  { exact (Hpreimg U HU_Ty). }
+  claim HV0Tx: V0 :e Tx.
+  { exact (Hpreimg V HV_Ty). }
+  claim HsepXUV: separation_of X U0 V0.
+  { prove U0 :e Power X /\ V0 :e Power X /\ U0 :/\: V0 = Empty /\ U0 <> Empty /\ V0 <> Empty /\ U0 :\/: V0 = X.
+    claim HsepY0:
+      (((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty.
+    { exact (andEL ((((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                   (U :\/: V = Y)
+                   HsepYUV). }
+    claim HcoverY: U :\/: V = Y.
+    { exact (andER ((((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                   (U :\/: V = Y)
+                   HsepYUV). }
+    claim HsepY1: ((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty) /\ U <> Empty.
+    { exact (andEL (((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty) /\ U <> Empty)
+                   (V <> Empty)
+                   HsepY0). }
+    claim HVne: V <> Empty.
+    { exact (andER (((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty) /\ U <> Empty)
+                   (V <> Empty)
+                   HsepY0). }
+    claim HsepY2: (U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty.
+    { exact (andEL ((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty)
+                   (U <> Empty)
+                   HsepY1). }
+    claim HUne: U <> Empty.
+    { exact (andER ((U :e Power Y /\ V :e Power Y) /\ U :/\: V = Empty)
+                   (U <> Empty)
+                   HsepY1). }
+    claim HUVpow: U :e Power Y /\ V :e Power Y.
+    { exact (andEL (U :e Power Y /\ V :e Power Y)
+                   (U :/\: V = Empty)
+                   HsepY2). }
+    claim HdisjY: U :/\: V = Empty.
+    { exact (andER (U :e Power Y /\ V :e Power Y)
+                   (U :/\: V = Empty)
+                   HsepY2). }
+    claim HUpow: U :e Power Y.
+    { exact (andEL (U :e Power Y) (V :e Power Y) HUVpow). }
+    claim HVpow: V :e Power Y.
+    { exact (andER (U :e Power Y) (V :e Power Y) HUVpow). }
+    claim HU0subX: U0 c= X.
+    { let x. assume Hx: x :e U0.
+      exact (SepE1 X (fun x0:set => apply_fun f x0 :e U) x Hx). }
+    claim HV0subX: V0 c= X.
+    { let x. assume Hx: x :e V0.
+      exact (SepE1 X (fun x0:set => apply_fun f x0 :e V) x Hx). }
+    claim HU0Pow: U0 :e Power X.
+    { exact (PowerI X U0 HU0subX). }
+    claim HV0Pow: V0 :e Power X.
+    { exact (PowerI X V0 HV0subX). }
+    claim Hdisj: U0 :/\: V0 = Empty.
+    { rewrite <- (preimage_of_binintersect X f U V).
+      rewrite HdisjY.
+      exact (preimage_of_Empty X f). }
+    claim HU0ne: U0 <> Empty.
+    { apply (nonempty_has_element U HUne).
+      let y. assume HyU: y :e U.
+      claim HUsubY: U c= Y.
+      { exact (PowerE Y U HUpow). }
+      claim HyY: y :e Y.
+      { exact (HUsubY y HyU). }
+      claim HgyX: apply_fun g y :e X.
+      { exact (Hfung y HyY). }
+      claim HfgyU: apply_fun f (apply_fun g y) :e U.
+      { rewrite (Hfg y HyY).
+        exact HyU. }
+      claim HgyPreU: apply_fun g y :e U0.
+      { exact (SepI X (fun x0:set => apply_fun f x0 :e U) (apply_fun g y) HgyX HfgyU). }
+      exact (elem_implies_nonempty U0 (apply_fun g y) HgyPreU). }
+    claim HV0ne: V0 <> Empty.
+    { apply (nonempty_has_element V HVne).
+      let y. assume HyV: y :e V.
+      claim HVsubY: V c= Y.
+      { exact (PowerE Y V HVpow). }
+      claim HyY: y :e Y.
+      { exact (HVsubY y HyV). }
+      claim HgyX: apply_fun g y :e X.
+      { exact (Hfung y HyY). }
+      claim HfgyV: apply_fun f (apply_fun g y) :e V.
+      { rewrite (Hfg y HyY).
+        exact HyV. }
+      claim HgyPreV: apply_fun g y :e V0.
+      { exact (SepI X (fun x0:set => apply_fun f x0 :e V) (apply_fun g y) HgyX HfgyV). }
+      exact (elem_implies_nonempty V0 (apply_fun g y) HgyPreV). }
+    claim Hunion: U0 :\/: V0 = X.
+    { rewrite <- (preimage_of_binunion X f U V).
+      rewrite HcoverY.
+      exact (preimage_of_whole X Y f Hfunf). }
+    prove (((((U0 :e Power X /\ V0 :e Power X) /\ U0 :/\: V0 = Empty) /\ U0 <> Empty) /\ V0 <> Empty) /\ U0 :\/: V0 = X).
+    apply andI.
+    * apply andI.
+      { apply andI.
+        - apply andI.
+          + apply andI.
+            { exact HU0Pow. }
+            { exact HV0Pow. }
+          + exact Hdisj.
+        - exact HU0ne. }
+      { exact HV0ne. }
+    * exact Hunion. }
+  apply HnoSepX.
+  witness U0.
+  witness V0.
+  prove U0 :e Tx /\ V0 :e Tx /\ separation_of X U0 V0.
+  apply andI.
+  - apply andI.
+    + exact HU0Tx.
+    + exact HV0Tx.
+  - exact HsepXUV.
 Qed.
 
 (** Helper theorems for connected_iff_no_nontrivial_clopen **)
