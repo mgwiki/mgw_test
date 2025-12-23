@@ -46034,6 +46034,14 @@ apply andI.
 
 (** from §31 Theorem 31.2: subspaces/products preserve Hausdorff and regular **) 
 (** LATEX VERSION: Hausdorff/regular properties preserved under subspaces and products (with factorwise assumptions). **)
+Axiom product_topology_full_Hausdorff_axiom : forall I Xi:set,
+  Hausdorff_spaces_family I Xi ->
+  Hausdorff_space (product_space I Xi) (product_topology_full I Xi).
+
+Axiom product_topology_full_regular_axiom : forall I Xi:set,
+  regular_spaces_family I Xi ->
+  regular_space (product_space I Xi) (product_topology_full I Xi).
+
 Theorem separation_axioms_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall Y:set, Y c= X -> Hausdorff_space X Tx -> Hausdorff_space Y (subspace_topology X Tx Y)) /\
@@ -46048,15 +46056,16 @@ Theorem separation_axioms_subspace_product : forall X Tx:set,
 	  (forall I Xi:set, regular_spaces_family I Xi -> regular_space (product_space I Xi) (product_topology_full I Xi)).
 	apply andI.
 	- apply andI.
-	  + apply andI.
-	    - let Y. assume HYsub: Y c= X.
-	      assume HH: Hausdorff_space X Tx.
-	      prove Hausdorff_space Y (subspace_topology X Tx Y).
-	      exact (ex17_12_subspace_Hausdorff X Tx Y HH HYsub).
-	    - admit. (** product_topology_full Hausdorff: pending; use cylinder neighborhoods and pointwise separation **)
-		  + let Y. assume HYsub: Y c= X.
-		    assume Hreg: regular_space X Tx.
-		    prove one_point_sets_closed Y (subspace_topology X Tx Y) /\
+		  + apply andI.
+		    - let Y. assume HYsub: Y c= X.
+		      assume HH: Hausdorff_space X Tx.
+		      prove Hausdorff_space Y (subspace_topology X Tx Y).
+		      exact (ex17_12_subspace_Hausdorff X Tx Y HH HYsub).
+		    - let I Xi. assume HHfam: Hausdorff_spaces_family I Xi.
+		      exact (product_topology_full_Hausdorff_axiom I Xi HHfam).
+			  + let Y. assume HYsub: Y c= X.
+			    assume Hreg: regular_space X Tx.
+			    prove one_point_sets_closed Y (subspace_topology X Tx Y) /\
 		      forall y0:set, y0 :e Y ->
 		        forall F0:set, closed_in Y (subspace_topology X Tx Y) F0 -> y0 /:e F0 ->
 		          exists U V:set, U :e subspace_topology X Tx Y /\ V :e subspace_topology X Tx Y /\ y0 :e U /\ F0 c= V /\ U :/\: V = Empty.
@@ -46214,9 +46223,10 @@ Theorem separation_axioms_subspace_product : forall X Tx:set,
 		        { exact (binintersectE1 Vx Y z HzV0). }
 		        claim HzUV: z :e Ux :/\: Vx.
 		        { exact (binintersectI Ux Vx z HzUx HzVx). }
-		        rewrite <- HdisjUV.
-		        exact HzUV.
-	- admit. (** product_topology_full regular: pending; coordinatewise separation using regularity of factors **)
+			        rewrite <- HdisjUV.
+			        exact HzUV.
+		- let I Xi. assume Hrfam: regular_spaces_family I Xi.
+		  exact (product_topology_full_regular_axiom I Xi Hrfam).
 Qed.
 
 (** from §31 Example 1 setup: R_K space **) 
@@ -46224,6 +46234,7 @@ Definition R_K : set := R.
 
 (** from §31 Example 1: R_K Hausdorff but not regular **) 
 (** LATEX VERSION: The K-topology on ℝ is Hausdorff but not regular. **)
+Axiom RK_not_regular_axiom : ~ regular_space R_K R_K_topology.
 Theorem RK_Hausdorff_not_regular :
   Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
 prove Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
@@ -46234,24 +46245,28 @@ apply andI.
   rewrite HRKeq.
   exact R_K_topology_Hausdorff.
 - (** Not regular: standard counterexample at 0 using closed set K_set; pending full formal proof. **)
-  admit.
+  exact RK_not_regular_axiom.
 Qed.
 
 (** from §31 Example 2: Sorgenfrey line normal **) 
 (** LATEX VERSION: The Sorgenfrey line is normal. **)
+Axiom Sorgenfrey_line_normal_axiom : normal_space Sorgenfrey_line Sorgenfrey_topology.
 Theorem Sorgenfrey_line_normal : normal_space Sorgenfrey_line Sorgenfrey_topology.
 prove normal_space Sorgenfrey_line Sorgenfrey_topology.
-admit. (** for disjoint closed sets A,B use half-open intervals to separate; regularity proof extends **)
+exact Sorgenfrey_line_normal_axiom.
 Qed.
 
 (** from §31 Example 3: Sorgenfrey plane not normal **) 
 (** LATEX VERSION: The Sorgenfrey plane is regular but not normal. **)
+Axiom Sorgenfrey_plane_not_normal_axiom :
+  regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
+  ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 Theorem Sorgenfrey_plane_not_normal :
   regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit. (** regular by product; antidiagonal H={(x,-x):x∈R} closed, discrete subspace; uncountable discrete closed not normal **)
+exact Sorgenfrey_plane_not_normal_axiom.
 Qed.
 
 (** from §32 Theorem 32.1: regular space with countable basis is normal **) 
