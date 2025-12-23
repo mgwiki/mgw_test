@@ -35908,6 +35908,16 @@ rewrite Hdef.
 exact (apply_fun_graph R Romega_singleton_seq r Hr).
 Qed.
 
+(** Helper: singleton map is a function into the ambient product space **)
+Theorem Romega_singleton_map_function_on :
+  function_on Romega_singleton_map R R_omega_space.
+prove function_on Romega_singleton_map R R_omega_space.
+let r. assume Hr: r :e R.
+prove apply_fun Romega_singleton_map r :e R_omega_space.
+rewrite (Romega_singleton_map_apply r Hr).
+exact (Romega_singleton_seq_in_Romega_space r Hr).
+Qed.
+
 (** Helper: image of the singleton map lies in Romega_tilde 0 **)
 Theorem image_of_Romega_singleton_map_sub_Romega_tilde0 :
   image_of Romega_singleton_map R c= Romega_tilde 0.
@@ -35988,6 +35998,55 @@ apply (SepI R_omega_space (fun f0:set => forall i:set, i :e omega -> ordsucc k :
   rewrite Hhi.
   rewrite (If_i_1 (ordsucc k :e i) 0 (If_i (i = ordsucc k) (p 1) (apply_fun (p 0) i)) Hki).
   reflexivity.
+Qed.
+
+(** Helper: map extending Romega_tilde k by one coordinate **)
+Definition Romega_extend_map : set -> set := fun k =>
+  graph (setprod (Romega_tilde k) R) (fun p:set => Romega_extend_seq k p).
+
+(** Helper: apply_fun for Romega_extend_map **)
+Theorem Romega_extend_map_apply : forall k p:set,
+  k :e omega ->
+  p :e setprod (Romega_tilde k) R ->
+  apply_fun (Romega_extend_map k) p = Romega_extend_seq k p.
+let k p.
+assume HkO: k :e omega.
+assume Hp: p :e setprod (Romega_tilde k) R.
+prove apply_fun (Romega_extend_map k) p = Romega_extend_seq k p.
+claim Hdef: Romega_extend_map k = graph (setprod (Romega_tilde k) R) (fun q:set => Romega_extend_seq k q).
+{ reflexivity. }
+rewrite Hdef.
+exact (apply_fun_graph (setprod (Romega_tilde k) R) (fun q:set => Romega_extend_seq k q) p Hp).
+Qed.
+
+(** Helper: extension map is a function into the ambient product space **)
+Theorem Romega_extend_map_function_on : forall k:set,
+  k :e omega ->
+  function_on (Romega_extend_map k) (setprod (Romega_tilde k) R) R_omega_space.
+let k. assume HkO: k :e omega.
+prove function_on (Romega_extend_map k) (setprod (Romega_tilde k) R) R_omega_space.
+let p. assume Hp: p :e setprod (Romega_tilde k) R.
+prove apply_fun (Romega_extend_map k) p :e R_omega_space.
+rewrite (Romega_extend_map_apply k p HkO Hp).
+claim Htilde: Romega_extend_seq k p :e Romega_tilde (ordsucc k).
+{ exact (Romega_extend_seq_in_Romega_tilde_succ k p HkO Hp). }
+exact (Romega_tilde_sub_Romega (ordsucc k) (Romega_extend_seq k p) Htilde).
+Qed.
+
+(** Helper: image of the extension map lies in Romega_tilde (ordsucc k) **)
+Theorem image_of_Romega_extend_map_sub_Romega_tilde_succ : forall k:set,
+  k :e omega ->
+  image_of (Romega_extend_map k) (setprod (Romega_tilde k) R) c= Romega_tilde (ordsucc k).
+let k. assume HkO: k :e omega.
+let f. assume Hf: f :e image_of (Romega_extend_map k) (setprod (Romega_tilde k) R).
+prove f :e Romega_tilde (ordsucc k).
+apply (ReplE_impred (setprod (Romega_tilde k) R) (fun p0:set => apply_fun (Romega_extend_map k) p0) f Hf
+       (f :e Romega_tilde (ordsucc k))).
+let p. assume Hp: p :e setprod (Romega_tilde k) R.
+assume Hfeq: f = apply_fun (Romega_extend_map k) p.
+rewrite Hfeq.
+rewrite (Romega_extend_map_apply k p HkO Hp).
+exact (Romega_extend_seq_in_Romega_tilde_succ k p HkO Hp).
 Qed.
 
 (** Helper: every finite subset of omega is bounded by some n in omega **)
