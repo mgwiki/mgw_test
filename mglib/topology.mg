@@ -49205,7 +49205,7 @@ Axiom ex30_10_product_countable_dense_axiom : forall Idx:set, forall Fam:set,
   countable Idx ->
   (forall i:set, i :e Idx ->
     exists Xi:set, exists Txi:set, exists Di:set,
-      apply_fun Fam i = setprod Xi Txi /\
+      apply_fun Fam i = (Xi, Txi) /\
       Di c= Xi /\ countable Di /\ dense_in Di Xi Txi) ->
   exists D:set,
     D c= product_space Idx Fam /\
@@ -49215,7 +49215,7 @@ Theorem ex30_10_product_countable_dense : forall Idx:set, forall Fam:set,
   countable Idx ->
   (forall i:set, i :e Idx ->
     exists Xi:set, exists Txi:set, exists Di:set,
-      apply_fun Fam i = setprod Xi Txi /\
+      apply_fun Fam i = (Xi, Txi) /\
       Di c= Xi /\ countable Di /\ dense_in Di Xi Txi) ->
   exists D:set,
     D c= product_space Idx Fam /\
@@ -50265,21 +50265,21 @@ Qed.
 (** from §32 Exercise 2: factor spaces of products inherit separation **)
 (** LATEX VERSION: If ∏X_α is Hausdorff/regular/normal, then so is each X_α (assuming X_α nonempty). **)
 Axiom ex32_2_factors_inherit_separation_axiom : forall Idx Fam:set,
-  (forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Xi <> Empty) ->
+  (forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ Xi <> Empty) ->
   ((Hausdorff_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
-      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Hausdorff_space Xi Txi) /\
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ Hausdorff_space Xi Txi) /\
    (regular_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
-      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ regular_space Xi Txi) /\
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ regular_space Xi Txi) /\
    (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
-      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ normal_space Xi Txi)).
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ normal_space Xi Txi)).
 Theorem ex32_2_factors_inherit_separation : forall Idx Fam:set,
-  (forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Xi <> Empty) ->
+  (forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ Xi <> Empty) ->
   ((Hausdorff_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
-      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ Hausdorff_space Xi Txi) /\
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ Hausdorff_space Xi Txi) /\
    (regular_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
-      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ regular_space Xi Txi) /\
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ regular_space Xi Txi) /\
    (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
-      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = setprod Xi Txi /\ normal_space Xi Txi)).
+      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ normal_space Xi Txi)).
 exact ex32_2_factors_inherit_separation_axiom.
 Qed.
 (** from §32 Exercise 3: locally compact Hausdorff implies regular **)
