@@ -34109,7 +34109,151 @@ Qed.
 (** Helper: bounded/unbounded sets are intended to form a separation in the box topology **)
 Theorem bounded_sequences_in_Romega_box_topology :
   bounded_sequences_Romega :e R_omega_box_topology.
-admit. (** show neighborhood of a bounded sequence given by box product of intervals (a_i-1,a_i+1) lies in bounded_sequences_Romega **)
+prove bounded_sequences_Romega :e R_omega_box_topology.
+set Xi := const_space_family omega R R_standard_topology.
+set X := product_space omega Xi.
+set B := box_basis omega Xi.
+set TU := topology_family_union omega Xi.
+prove bounded_sequences_Romega :e generated_topology X B.
+claim Hpow: bounded_sequences_Romega :e Power X.
+{ exact bounded_sequences_Romega_in_Power. }
+claim Hcond: forall f :e bounded_sequences_Romega, exists b :e B, f :e b /\ b c= bounded_sequences_Romega.
+{ let f. assume Hf: f :e bounded_sequences_Romega.
+  claim HfX: f :e X.
+  { exact (SepE1 R_omega_space (fun f0:set => bounded_sequence_Romega f0) f Hf). }
+  claim Hb: bounded_sequence_Romega f.
+  { exact (SepE2 R_omega_space (fun f0:set => bounded_sequence_Romega f0) f Hf). }
+  apply Hb.
+  let M. assume HMconj.
+  claim HMR: M :e R.
+  { exact (andEL (M :e R) (forall n:set, n :e omega -> apply_fun f n :e open_interval (minus_SNo M) M) HMconj). }
+  claim Hbnd: forall n:set, n :e omega -> apply_fun f n :e open_interval (minus_SNo M) M.
+  { exact (andER (M :e R) (forall n:set, n :e omega -> apply_fun f n :e open_interval (minus_SNo M) M) HMconj). }
+
+  claim H0omega: 0 :e omega.
+  { exact (nat_p_omega 0 nat_0). }
+  claim Hf0In: apply_fun f 0 :e open_interval (minus_SNo M) M.
+  { exact (Hbnd 0 H0omega). }
+  claim Hf0prop: Rlt (minus_SNo M) (apply_fun f 0) /\ Rlt (apply_fun f 0) M.
+  { exact (SepE2 R (fun x0:set => Rlt (minus_SNo M) x0 /\ Rlt x0 M) (apply_fun f 0) Hf0In). }
+  claim Hm0: Rlt (minus_SNo M) (apply_fun f 0).
+  { exact (andEL (Rlt (minus_SNo M) (apply_fun f 0)) (Rlt (apply_fun f 0) M) Hf0prop). }
+  claim H0m: Rlt (apply_fun f 0) M.
+  { exact (andER (Rlt (minus_SNo M) (apply_fun f 0)) (Rlt (apply_fun f 0) M) Hf0prop). }
+  claim HMlt: Rlt (minus_SNo M) M.
+  { exact (Rlt_tra (minus_SNo M) (apply_fun f 0) M Hm0 H0m). }
+  claim HopenI: open_interval (minus_SNo M) M :e R_standard_topology.
+  { exact (open_interval_in_R_standard_topology (minus_SNo M) M HMlt). }
+
+  claim HX0: apply_fun Xi 0 = (R, R_standard_topology).
+  { exact (const_space_family_apply omega R R_standard_topology 0 H0omega). }
+  claim HT0: space_family_topology Xi 0 = R_standard_topology.
+  { claim Hdef: space_family_topology Xi 0 = (apply_fun Xi 0) 1.
+    { reflexivity. }
+    rewrite Hdef.
+    rewrite HX0.
+    exact (tuple_2_1_eq R R_standard_topology). }
+  claim HTfam: R_standard_topology :e {space_family_topology Xi i|i :e omega}.
+  { apply ReplEq omega (fun i:set => space_family_topology Xi i) R_standard_topology.
+    assume _ H2. apply H2.
+    prove exists i :e omega, R_standard_topology = space_family_topology Xi i.
+    witness 0.
+    apply andI.
+    - exact H0omega.
+    - symmetry.
+      exact HT0. }
+  claim HintervalTU: open_interval (minus_SNo M) M :e TU.
+  { exact (UnionI {space_family_topology Xi i|i :e omega}
+                 (open_interval (minus_SNo M) M)
+                 R_standard_topology
+                 HopenI
+                 HTfam). }
+
+  set Um := const_fun omega (open_interval (minus_SNo M) M).
+  set bM := {g :e X | forall i:set, i :e omega -> apply_fun g i :e apply_fun Um i}.
+
+  witness bM.
+  apply andI.
+  - (** bM :e box_basis omega Xi **)
+    prove bM :e B.
+    claim HbMsub: bM c= X.
+    { let g. assume Hg: g :e bM.
+      prove g :e X.
+      exact (SepE1 X (fun g0:set => forall i:set, i :e omega -> apply_fun g0 i :e apply_fun Um i) g Hg). }
+    claim HbMpow: bM :e Power X.
+    { exact (PowerI X bM HbMsub). }
+    claim HUmfun: function_on Um omega TU.
+    { claim Htot: total_function_on Um omega TU.
+      { exact (const_fun_total_function_on omega TU (open_interval (minus_SNo M) M) HintervalTU). }
+      exact (total_function_on_function_on Um omega TU Htot). }
+    claim HUmcoords: forall i:set, i :e omega -> apply_fun Um i :e space_family_topology Xi i.
+    { let i. assume Hi: i :e omega.
+      prove apply_fun Um i :e space_family_topology Xi i.
+      claim Happ: apply_fun Um i = open_interval (minus_SNo M) M.
+      { exact (const_fun_apply omega (open_interval (minus_SNo M) M) i Hi). }
+      rewrite Happ.
+      claim HXi: apply_fun Xi i = (R, R_standard_topology).
+      { exact (const_space_family_apply omega R R_standard_topology i Hi). }
+      claim HTi: space_family_topology Xi i = R_standard_topology.
+      { claim Hdef: space_family_topology Xi i = (apply_fun Xi i) 1.
+        { reflexivity. }
+        rewrite Hdef.
+        rewrite HXi.
+        exact (tuple_2_1_eq R R_standard_topology). }
+      rewrite HTi.
+      exact HopenI. }
+    claim HexU: exists U:set, function_on U omega TU /\
+      (forall i:set, i :e omega -> apply_fun U i :e space_family_topology Xi i) /\
+      bM = {f :e X | forall i:set, i :e omega -> apply_fun f i :e apply_fun U i}.
+    { witness Um.
+      apply andI.
+      - apply andI.
+        + exact HUmfun.
+        + exact HUmcoords.
+      - reflexivity. }
+    exact (SepI (Power X)
+                (fun B0:set => exists U:set, function_on U omega TU /\
+                  (forall i:set, i :e omega -> apply_fun U i :e space_family_topology Xi i) /\
+                  B0 = {f :e X | forall i:set, i :e omega -> apply_fun f i :e apply_fun U i})
+                bM
+                HbMpow
+                HexU).
+  - apply andI.
+    + (** f :e bM **)
+      prove f :e bM.
+      apply (SepI X (fun g0:set => forall i:set, i :e omega -> apply_fun g0 i :e apply_fun Um i) f HfX).
+      let i. assume Hi: i :e omega.
+      prove apply_fun f i :e apply_fun Um i.
+      claim Happ: apply_fun Um i = open_interval (minus_SNo M) M.
+      { exact (const_fun_apply omega (open_interval (minus_SNo M) M) i Hi). }
+      rewrite Happ.
+      exact (Hbnd i Hi).
+    + (** bM c= bounded_sequences_Romega **)
+      let g. assume Hg: g :e bM.
+      prove g :e bounded_sequences_Romega.
+      claim HgX: g :e X.
+      { exact (SepE1 X (fun g0:set => forall i:set, i :e omega -> apply_fun g0 i :e apply_fun Um i) g Hg). }
+      claim Hgprop: forall i:set, i :e omega -> apply_fun g i :e apply_fun Um i.
+      { exact (SepE2 X (fun g0:set => forall i:set, i :e omega -> apply_fun g0 i :e apply_fun Um i) g Hg). }
+      claim Hbseqg: bounded_sequence_Romega g.
+      { claim Hbndg: forall n:set, n :e omega -> apply_fun g n :e open_interval (minus_SNo M) M.
+        { let n. assume HnO: n :e omega.
+          claim Hgn: apply_fun g n :e apply_fun Um n.
+          { exact (Hgprop n HnO). }
+          claim Happ: apply_fun Um n = open_interval (minus_SNo M) M.
+          { exact (const_fun_apply omega (open_interval (minus_SNo M) M) n HnO). }
+          rewrite <- Happ.
+          exact Hgn. }
+        exact (fun P Hp => Hp M (andI (M :e R)
+                                      (forall n:set, n :e omega -> apply_fun g n :e open_interval (minus_SNo M) M)
+                                      HMR
+                                      Hbndg)). }
+      exact (SepI R_omega_space (fun h:set => bounded_sequence_Romega h) g HgX Hbseqg). }
+exact (SepI (Power X)
+            (fun U0:set => forall x :e U0, exists b :e B, x :e b /\ b c= U0)
+            bounded_sequences_Romega
+            Hpow
+            Hcond).
 Qed.
 
 Theorem unbounded_sequences_in_Romega_box_topology :
