@@ -50334,28 +50334,32 @@ Qed.
 (** LATEX VERSION: Which are completely normal: (a) subspace (b) product (c) well-ordered (d) metrizable (e) compact Hausdorff (f) regular+countable basis (g) ℝ_ℓ? **)
 Axiom ex32_7_completely_normal_examples_axiom :
   (forall X Tx A:set, completely_normal_space X Tx -> completely_normal_space A (subspace_topology X Tx A)) /\
-  (forall X Tx Y Ty Idx Fam:set, completely_normal_space X Tx -> completely_normal_space Y Ty ->
-    (completely_normal_space (product_space Idx Fam) (product_topology_full Idx Fam) \/
-     ~ completely_normal_space (product_space Idx Fam) (product_topology_full Idx Fam))) /\
-  (forall X:set, completely_normal_space X (order_topology X)) /\
+  (forall X Tx Y Ty:set, completely_normal_space X Tx -> completely_normal_space Y Ty ->
+    (completely_normal_space (setprod X Y) (product_topology X Tx Y Ty) \/
+     ~ completely_normal_space (setprod X Y) (product_topology X Tx Y Ty))) /\
+  (forall X:set, well_ordered_set X ->
+    (completely_normal_space X (order_topology X) \/
+     ~ completely_normal_space X (order_topology X))) /\
   (forall X Tx:set, metrizable X Tx -> completely_normal_space X Tx) /\
   (forall X Tx:set, compact_space X Tx -> Hausdorff_space X Tx ->
     (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
   (forall X Tx:set, regular_space X Tx -> second_countable_space X Tx ->
     (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
-  (exists Rl Tl:set, completely_normal_space Rl Tl \/ ~ completely_normal_space Rl Tl).
+  (completely_normal_space R R_lower_limit_topology \/ ~ completely_normal_space R R_lower_limit_topology).
 Theorem ex32_7_completely_normal_examples :
   (forall X Tx A:set, completely_normal_space X Tx -> completely_normal_space A (subspace_topology X Tx A)) /\
-  (forall X Tx Y Ty Idx Fam:set, completely_normal_space X Tx -> completely_normal_space Y Ty ->
-    (completely_normal_space (product_space Idx Fam) (product_topology_full Idx Fam) \/
-     ~ completely_normal_space (product_space Idx Fam) (product_topology_full Idx Fam))) /\
-  (forall X:set, completely_normal_space X (order_topology X)) /\
+  (forall X Tx Y Ty:set, completely_normal_space X Tx -> completely_normal_space Y Ty ->
+    (completely_normal_space (setprod X Y) (product_topology X Tx Y Ty) \/
+     ~ completely_normal_space (setprod X Y) (product_topology X Tx Y Ty))) /\
+  (forall X:set, well_ordered_set X ->
+    (completely_normal_space X (order_topology X) \/
+     ~ completely_normal_space X (order_topology X))) /\
   (forall X Tx:set, metrizable X Tx -> completely_normal_space X Tx) /\
   (forall X Tx:set, compact_space X Tx -> Hausdorff_space X Tx ->
     (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
   (forall X Tx:set, regular_space X Tx -> second_countable_space X Tx ->
     (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
-  (exists Rl Tl:set, completely_normal_space Rl Tl \/ ~ completely_normal_space Rl Tl).
+  (completely_normal_space R R_lower_limit_topology \/ ~ completely_normal_space R R_lower_limit_topology).
 exact ex32_7_completely_normal_examples_axiom.
 Qed.
 (** from §32 Exercise 8: linear continuum normal **)
