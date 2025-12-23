@@ -39984,6 +39984,82 @@ Definition locally_path_connected : set -> set -> prop := fun X Tx =>
     forall U:set, U :e Tx -> x :e U ->
       exists V:set, V :e Tx /\ x :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V).
 
+(** Helper: singleton subspace is connected **)
+Theorem singleton_subspace_connected : forall X Tx x:set,
+  topology_on X Tx -> x :e X ->
+  connected_space {x} (subspace_topology X Tx {x}).
+let X Tx x.
+assume HTx: topology_on X Tx.
+assume HxX: x :e X.
+prove connected_space {x} (subspace_topology X Tx {x}).
+prove topology_on {x} (subspace_topology X Tx {x}) /\
+  ~(exists U V:set, U :e subspace_topology X Tx {x} /\ V :e subspace_topology X Tx {x} /\ separation_of {x} U V).
+apply andI.
+- (** topology_on {x} (subspace_topology X Tx {x}) **)
+  claim Hsub: {x} c= X.
+  { let y. assume Hy: y :e {x}.
+    prove y :e X.
+    claim HyEq: y = x.
+    { exact (SingE x y Hy). }
+    rewrite HyEq.
+    exact HxX. }
+  exact (subspace_topology_is_topology X Tx {x} HTx Hsub).
+- (** no separation exists **)
+  assume Hsep: exists U V:set, U :e subspace_topology X Tx {x} /\ V :e subspace_topology X Tx {x} /\ separation_of {x} U V.
+  apply Hsep.
+  let U. assume HexV: exists V:set, U :e subspace_topology X Tx {x} /\ V :e subspace_topology X Tx {x} /\ separation_of {x} U V.
+  apply HexV.
+  let V. assume HUV.
+  claim HopenUV: (U :e subspace_topology X Tx {x} /\ V :e subspace_topology X Tx {x}) /\ separation_of {x} U V.
+  { exact HUV. }
+  claim Hsepof: separation_of {x} U V.
+  { exact (andER (U :e subspace_topology X Tx {x} /\ V :e subspace_topology X Tx {x})
+                 (separation_of {x} U V) HopenUV). }
+  (** Extract U<>Empty, V<>Empty, and U∩V=Empty and Power-membership from separation_of **)
+  claim Hpre: ((((U :e Power {x} /\ V :e Power {x}) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
+  { exact (andEL ((((U :e Power {x} /\ V :e Power {x}) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                 (U :\/: V = {x}) Hsepof). }
+  claim Hpre2: (((U :e Power {x} /\ V :e Power {x}) /\ U :/\: V = Empty) /\ U <> Empty).
+  { exact (andEL (((U :e Power {x} /\ V :e Power {x}) /\ U :/\: V = Empty) /\ U <> Empty)
+                 (V <> Empty) Hpre). }
+  claim HUneq: U <> Empty.
+  { exact (andER ((U :e Power {x} /\ V :e Power {x}) /\ U :/\: V = Empty) (U <> Empty) Hpre2). }
+  claim HVneq: V <> Empty.
+  { exact (andER ((((U :e Power {x} /\ V :e Power {x}) /\ U :/\: V = Empty) /\ U <> Empty)) (V <> Empty) Hpre). }
+  claim HpowDisj: (U :e Power {x} /\ V :e Power {x}) /\ U :/\: V = Empty.
+  { exact (andEL ((U :e Power {x} /\ V :e Power {x}) /\ U :/\: V = Empty) (U <> Empty) Hpre2). }
+  claim HpowUV: U :e Power {x} /\ V :e Power {x}.
+  { exact (andEL (U :e Power {x} /\ V :e Power {x}) (U :/\: V = Empty) HpowDisj). }
+  claim HUpow: U :e Power {x}.
+  { exact (andEL (U :e Power {x}) (V :e Power {x}) HpowUV). }
+  claim HVpow: V :e Power {x}.
+  { exact (andER (U :e Power {x}) (V :e Power {x}) HpowUV). }
+  claim Hdisj: U :/\: V = Empty.
+  { exact (andER (U :e Power {x} /\ V :e Power {x}) (U :/\: V = Empty) HpowDisj). }
+  (** Pick u∈U and v∈V; both must equal x, contradiction with disjointness **)
+  apply (nonempty_has_element U HUneq).
+  let u. assume Hu: u :e U.
+  apply (nonempty_has_element V HVneq).
+  let v. assume Hv: v :e V.
+  claim HUsub: U c= {x}.
+  { exact (PowerE {x} U HUpow). }
+  claim HVsub: V c= {x}.
+  { exact (PowerE {x} V HVpow). }
+  claim Hux: u = x.
+  { exact (SingE x u (HUsub u Hu)). }
+  claim Hvx: v = x.
+  { exact (SingE x v (HVsub v Hv)). }
+  claim HxU: x :e U.
+  { rewrite <- Hux. exact Hu. }
+  claim HxV: x :e V.
+  { rewrite <- Hvx. exact Hv. }
+  claim HxUV: x :e U :/\: V.
+  { exact (binintersectI U V x HxU HxV). }
+  claim HxE: x :e Empty.
+  { rewrite <- Hdisj. exact HxUV. }
+  exact (EmptyE x HxE).
+Qed.
+
 (** helper: in a connected space, the component of any point is the whole space **)
 (** LATEX VERSION: If X is connected then the component of any point is X. **)
 Theorem component_of_whole : forall X Tx x:set,
@@ -40141,7 +40217,28 @@ Theorem components_partition_space : forall X Tx:set,
 let X Tx.
 assume HTx: topology_on X Tx.
 prove covers X {component_of X Tx x | x :e X} /\ pairwise_disjoint {component_of X Tx x | x :e X}.
-admit.
+apply andI.
+- (** covers X by components **)
+  let x. assume HxX: x :e X.
+  witness (component_of X Tx x).
+  prove component_of X Tx x :e {component_of X Tx x0|x0 :e X} /\ x :e component_of X Tx x.
+  apply andI.
+  - exact (ReplI X (fun x0:set => component_of X Tx x0) x HxX).
+ - (** x lies in its own component (use singleton {x} as connected subspace) **)
+    prove x :e component_of X Tx x.
+    prove x :e {y :e X | exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y :e C}.
+    apply SepI.
+    - exact HxX.
+    - prove exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ x :e C.
+      witness {x}.
+      prove connected_space {x} (subspace_topology X Tx {x}) /\ x :e {x} /\ x :e {x}.
+      apply andI.
+      + apply andI.
+        * exact (singleton_subspace_connected X Tx x HTx HxX).
+        * exact (SingI x).
+      + exact (SingI x).
+- (** pairwise disjointness of distinct components **)
+  admit.
 Qed.
 
 (** from §25: quotient of locally connected space is locally connected **) 
