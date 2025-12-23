@@ -35709,17 +35709,35 @@ let n. assume HnO: n :e omega.
 set X := R_omega_space.
 set Tx := R_omega_product_topology.
 prove connected_space (Romega_tilde n) (subspace_topology X Tx (Romega_tilde n)).
+claim HTx: topology_on X Tx.
+{ exact Romega_product_topology_is_topology. }
 claim HnNat: nat_p n.
 { exact (omega_nat_p n HnO). }
 (** Induction on n. Romega_tilde n corresponds to sequences supported on {0,...,n}. **)
 apply (nat_ind (fun k:set => connected_space (Romega_tilde k) (subspace_topology X Tx (Romega_tilde k)))).
 - (** Base: k = 0. This should be homeomorphic to R. **)
-  admit.
+  (** First prove the subspace topology is a topology. **)
+  claim Hsub0: Romega_tilde 0 c= X.
+  { exact (Romega_tilde_sub_Romega 0). }
+  claim HT0: topology_on (Romega_tilde 0) (subspace_topology X Tx (Romega_tilde 0)).
+  { exact (subspace_topology_is_topology X Tx (Romega_tilde 0) HTx Hsub0). }
+  (** Connectedness proof is postponed. **)
+  apply andI.
+  - exact HT0.
+  - admit.
 - (** Step: k -> ordsucc k. This should be homeomorphic to (Romega_tilde k) times R. **)
   let k. assume HkNat: nat_p k.
   assume IHk: connected_space (Romega_tilde k) (subspace_topology X Tx (Romega_tilde k)).
   prove connected_space (Romega_tilde (ordsucc k)) (subspace_topology X Tx (Romega_tilde (ordsucc k))).
-  admit.
+  (** First prove the subspace topology is a topology. **)
+  claim HsubS: Romega_tilde (ordsucc k) c= X.
+  { exact (Romega_tilde_sub_Romega (ordsucc k)). }
+  claim HTS: topology_on (Romega_tilde (ordsucc k)) (subspace_topology X Tx (Romega_tilde (ordsucc k))).
+  { exact (subspace_topology_is_topology X Tx (Romega_tilde (ordsucc k)) HTx HsubS). }
+  (** Connectedness step is postponed. **)
+  apply andI.
+  - exact HTS.
+  - admit.
 - exact HnNat.
 Qed.
 
