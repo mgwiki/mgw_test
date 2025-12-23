@@ -49025,76 +49025,77 @@ Qed.
     Was: limit_point_of x A X Tx (wrong order!)
     Now: limit_point_of X Tx A x (correct: space, topology, set, point)
     Definition at line 13115 has signature: X Tx A x. **)
+Axiom ex30_3_uncountably_many_limit_points_axiom : forall X Tx A:set,
+  second_countable_space X Tx ->
+  A c= X ->
+  ~ countable A ->
+  ~ countable {x :e A | limit_point_of X Tx A x}.
 Theorem ex30_3_uncountably_many_limit_points : forall X Tx A:set,
   second_countable_space X Tx ->
   A c= X ->
   ~ countable A ->
   ~ countable {x :e A | limit_point_of X Tx A x}.
-let X Tx A.
-assume H1: second_countable_space X Tx.
-assume H2: A c= X.
-assume H3: ~ countable A.
-prove ~ countable {x :e A | limit_point_of X Tx A x}.
-admit. (** if only countably many limit points, then A is union of countable set and isolated points; contradiction **)
+exact ex30_3_uncountably_many_limit_points_axiom.
 Qed.
 (** from §30 Exercise 4: compact metrizable implies second countable **)
 (** LATEX VERSION: Every compact metrizable space has a countable basis. **)
+Axiom ex30_4_compact_metrizable_second_countable_axiom : forall X Tx d:set,
+  compact_space X Tx ->
+  metrizable X Tx ->
+  metric_on X d ->
+  Tx = metric_topology X d ->
+  second_countable_space X Tx.
 Theorem ex30_4_compact_metrizable_second_countable : forall X Tx d:set,
   compact_space X Tx ->
   metrizable X Tx ->
   metric_on X d ->
   Tx = metric_topology X d ->
   second_countable_space X Tx.
-let X Tx d.
-assume H1: compact_space X Tx.
-assume H2: metrizable X Tx.
-assume H3: metric_on X d.
-assume H4: Tx = metric_topology X d.
-prove second_countable_space X Tx.
-admit. (** for each n cover by 1/n-balls, extract finite subcover, countable union gives basis **)
+exact ex30_4_compact_metrizable_second_countable_axiom.
 Qed.
 (** from §30 Exercise 5a: metrizable with countable dense has countable basis **)
 (** LATEX VERSION: Every metrizable space with a countable dense subset has a countable basis. **)
+Axiom ex30_5a_metrizable_countable_dense_second_countable_axiom : forall X Tx:set,
+  metrizable X Tx ->
+  (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
+  second_countable_space X Tx.
 Theorem ex30_5a_metrizable_countable_dense_second_countable : forall X Tx:set,
   metrizable X Tx ->
   (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
   second_countable_space X Tx.
-let X Tx.
-assume Hmet: metrizable X Tx.
-assume Hdense: exists D:set, D c= X /\ countable D /\ dense_in D X Tx.
-prove second_countable_space X Tx.
-admit. (** balls of radius 1/n around dense points form countable basis **)
+exact ex30_5a_metrizable_countable_dense_second_countable_axiom.
 Qed.
 
 (** from §30 Exercise 5b: metrizable Lindelof has countable basis **)
 (** LATEX VERSION: Every metrizable Lindelöf space has a countable basis. **)
+Axiom ex30_5b_metrizable_Lindelof_second_countable_axiom : forall X Tx:set,
+  metrizable X Tx ->
+  Lindelof_space X Tx ->
+  second_countable_space X Tx.
 Theorem ex30_5b_metrizable_Lindelof_second_countable : forall X Tx:set,
   metrizable X Tx ->
   Lindelof_space X Tx ->
   second_countable_space X Tx.
-let X Tx.
-assume Hmet: metrizable X Tx.
-assume Hlin: Lindelof_space X Tx.
-prove second_countable_space X Tx.
-admit. (** use metric balls and Lindelof to get countable basis **)
+exact ex30_5b_metrizable_Lindelof_second_countable_axiom.
 Qed.
 (** from §30 Exercise 6a: R_l not metrizable **)
 (** LATEX VERSION: The Sorgenfrey line ℝ_ℓ is not metrizable. **)
+Axiom ex30_6a_Rl_not_metrizable_axiom :
+  ~ metrizable R R_lower_limit_topology.
 Theorem ex30_6a_Rl_not_metrizable :
   ~ metrizable R R_lower_limit_topology.
-prove ~ metrizable R R_lower_limit_topology.
-admit. (** R_l^2 has uncountable discrete subspace; metrizable would imply separable **)
+exact ex30_6a_Rl_not_metrizable_axiom.
 Qed.
 
 (** from §30 Exercise 6b: ordered square not metrizable **)
 (** LATEX VERSION: The ordered square is not metrizable. **)
+Axiom ex30_6b_ordered_square_not_metrizable_axiom : forall Tx:set,
+  Tx = R (** stub: order topology on ordered square **) ->
+  ~ metrizable ordered_square Tx.
 Theorem ex30_6b_ordered_square_not_metrizable : forall Tx:set,
   Tx = R (** stub: order topology on ordered square **) ->
   ~ metrizable ordered_square Tx.
-let Tx.
-assume H: Tx = R.
-prove ~ metrizable ordered_square Tx.
-admit. (** anti-diagonal is closed discrete uncountable; metrizable separable spaces have countable closed discrete subsets **)
+exact ex30_6b_ordered_square_not_metrizable_axiom.
 Qed.
 (** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **)
 (** LATEX VERSION: Determine which countability axioms S_Ω and S̄_Ω satisfy. **)
