@@ -35666,7 +35666,6 @@ Qed.
 
 (** from §24 Corollary 24.2: the real line is connected **)
 (** LATEX VERSION: Corollary 24.2: The real line R is connected (and so are intervals and rays in R). **)
-(** from §24 Corollary 24.2: the real line is connected **)
 (** LATEX VERSION: The real line with the standard topology is connected. **)
 Theorem interval_connected : connected_space R R_standard_topology.
 admit.
@@ -48439,16 +48438,12 @@ Qed.
 
 (** from §32 Example 1: uncountable product of R not normal **) 
 (** LATEX VERSION: An uncountable product of ℝ with product topology need not be normal. **)
-Axiom uncountable_product_R_not_normal_axiom : forall J:set,
-  uncountable_set J ->
-  ~ normal_space (product_space J (const_space_family J R R_standard_topology))
-      (product_topology_full J (const_space_family J R R_standard_topology)).
 Theorem uncountable_product_R_not_normal : forall J:set,
   uncountable_set J -> ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
 let J.
 assume HJ: uncountable_set J.
 prove ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
-exact (uncountable_product_R_not_normal_axiom J HJ).
+admit.
 Qed.
 
 (** from §32 Example 2: SOmega x SbarOmega not normal **)
@@ -48460,10 +48455,6 @@ Definition S_Omega : set := omega.
 Definition Sbar_Omega : set := Power omega.
 Definition SOmega_topology : set := discrete_topology S_Omega.
 Definition SbarOmega_topology : set := discrete_topology Sbar_Omega.
-
-Axiom SOmega_SbarOmega_product_not_normal_axiom :
-  ~ normal_space (setprod S_Omega Sbar_Omega)
-      (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 
 Theorem SOmega_SbarOmega_not_normal :
   normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
@@ -48481,7 +48472,7 @@ apply andI.
     { reflexivity. }
 	    rewrite HSb.
 	    exact (discrete_normal_space Sbar_Omega).
-- exact SOmega_SbarOmega_product_not_normal_axiom.
+	- admit.
 Qed.
 
 (** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **)
@@ -48492,12 +48483,6 @@ Qed.
     The comment says "separated by continuous f", so f must map A to a and B to b. **)
 Definition closed_interval : set -> set -> set := fun a b =>
   {x :e R | ~(Rlt x a) /\ ~(Rlt b x)}.
-
-Axiom Urysohn_lemma_axiom : forall X Tx A B a b:set,
-  normal_space X Tx -> closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
-  exists f:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) f /\
-    (forall x:set, x :e A -> apply_fun f x = a) /\
-    (forall x:set, x :e B -> apply_fun f x = b).
 
 Theorem Urysohn_lemma : forall X Tx A B a b:set,
   normal_space X Tx -> closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
@@ -48512,7 +48497,7 @@ assume Hdisj: A :/\: B = Empty.
 prove exists f:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) f /\
     (forall x:set, x :e A -> apply_fun f x = a) /\
     (forall x:set, x :e B -> apply_fun f x = b).
-exact (Urysohn_lemma_axiom X Tx A B a b Hnorm HA HB Hdisj).
+admit.
 Qed.
 
 (** from §33 Definition: completely regular space **) 
