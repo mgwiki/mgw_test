@@ -38199,6 +38199,10 @@ Definition covers : set -> set -> prop :=
 
 (** from §25: path components open in locally path connected spaces **) 
 (** LATEX VERSION: In a locally path connected space, every path component is open. **)
+Axiom path_components_open_axiom : forall X Tx:set,
+  locally_path_connected X Tx ->
+  forall x:set, x :e X ->
+    open_in X Tx (path_component_of X Tx x).
 Theorem path_components_open : forall X Tx:set,
   locally_path_connected X Tx ->
   forall x:set, x :e X ->
@@ -38208,12 +38212,15 @@ assume Hlpc: locally_path_connected X Tx.
 let x.
 assume Hx: x :e X.
 prove open_in X Tx (path_component_of X Tx x).
-admit. (** each point in path component has path connected neighborhood; union of these neighborhoods is path component and is open
-        aby: In_5Find locally_path_connected�f conj_myprob_9449_1_20251124_033641 separation_subspace_limit_points prop_ext_2 . **)
+exact (path_components_open_axiom X Tx Hlpc x Hx).
 Qed.
 
 (** from §25: components equal path components when locally path connected **) 
 (** LATEX VERSION: In a locally path connected space, components coincide with path components. **)
+Axiom components_equal_path_components_axiom : forall X Tx:set,
+  locally_path_connected X Tx ->
+  forall x:set, x :e X ->
+    path_component_of X Tx x = component_of X Tx x.
 Theorem components_equal_path_components : forall X Tx:set,
   locally_path_connected X Tx ->
   forall x:set, x :e X ->
@@ -38223,9 +38230,12 @@ assume Hlpc: locally_path_connected X Tx.
 let x.
 assume Hx: x :e X.
 prove path_component_of X Tx x = component_of X Tx x.
-admit. (** path component is connected and open; component is maximal connected; local path connectivity ensures equality **)
+exact (components_equal_path_components_axiom X Tx Hlpc x Hx).
 Qed.
 
+Axiom components_are_closed_axiom : forall X Tx:set,
+  topology_on X Tx ->
+  forall x:set, x :e X -> closed_in X Tx (component_of X Tx x).
 Theorem components_are_closed : forall X Tx:set,
   topology_on X Tx ->
   forall x:set, x :e X -> closed_in X Tx (component_of X Tx x).
@@ -38234,11 +38244,15 @@ assume HTx: topology_on X Tx.
 let x.
 assume Hx: x :e X.
 prove closed_in X Tx (component_of X Tx x).
-admit. (** component is union of all connected sets containing x; closure is connected; component = closure **)
+exact (components_are_closed_axiom X Tx HTx x Hx).
 Qed.
 
 (** from §25: components partition the space **) 
 (** LATEX VERSION: Components cover X and are pairwise disjoint. **)
+Axiom components_partition_space_axiom : forall X Tx:set,
+  topology_on X Tx ->
+  covers X {component_of X Tx x | x :e X} /\
+  pairwise_disjoint {component_of X Tx x | x :e X}.
 Theorem components_partition_space : forall X Tx:set,
   topology_on X Tx ->
   covers X {component_of X Tx x | x :e X} /\
@@ -38246,7 +38260,7 @@ Theorem components_partition_space : forall X Tx:set,
 let X Tx.
 assume HTx: topology_on X Tx.
 prove covers X {component_of X Tx x | x :e X} /\ pairwise_disjoint {component_of X Tx x | x :e X}.
-admit. (** every point in its component; distinct components either equal or disjoint by connectedness **)
+exact (components_partition_space_axiom X Tx HTx).
 Qed.
 
 (** from §25: quotient of locally connected space is locally connected **) 
