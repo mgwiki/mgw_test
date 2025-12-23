@@ -45500,8 +45500,7 @@ Definition uncountable_set : set -> prop := fun X => ~ countable_set X.
 Definition well_ordered_set : set -> prop := fun X =>
   exists alpha:set, ordinal alpha /\ equip X alpha.
 (** LATEX VERSION: Completely regular family helper. **)
-Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi =>
-  forall i:set, i :e I -> topology_on (product_component Xi i) (product_component_topology Xi i).
+(** moved below after completely_regular_space is defined **)
 (** LATEX VERSION: Separating family of functions (embedding setup). **)
 Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
   fun X Tx F J =>
@@ -46588,6 +46587,11 @@ Definition completely_regular_space : set -> set -> prop := fun X Tx =>
       exists f:set,
         continuous_map X Tx R R_standard_topology f /\
         apply_fun f x = 0 /\ forall y:set, y :e F -> apply_fun f y = 1.
+
+(** LATEX VERSION: Completely regular family helper. **)
+Definition completely_regular_spaces_family : set -> set -> prop := fun I Xi =>
+  forall i:set, i :e I ->
+    completely_regular_space (product_component Xi i) (product_component_topology Xi i).
 
 (** Helper: any function is continuous from a discrete domain **)
 Theorem continuous_from_discrete : forall X Y Ty f:set,
