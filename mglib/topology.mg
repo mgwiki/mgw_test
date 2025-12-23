@@ -47703,7 +47703,8 @@ Definition Delta_gt : set -> set -> set -> set -> prop := fun f x h n =>
   (add_SNo x (minus_SNo h) :e unit_interval /\ Rlt n (diffquot_backward_abs f x h)).
 
 Definition U_n : set -> set := fun n =>
-  {f :e C_I_R | exists h:set, h :e R /\ Rlt 0 h /\ forall x:set, x :e unit_interval -> Delta_gt f x h n}.
+  {f :e C_I_R | exists h:set, h :e R /\ Rlt 0 h /\ Rle h (div_SNo 1 n) /\
+    forall x:set, x :e unit_interval -> Delta_gt f x h n}.
 
 (** from §49 Existence: nowhere-differentiable function **) 
 (** LATEX VERSION: Existence of a continuous nowhere-differentiable function. **)
