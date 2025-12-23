@@ -18972,6 +18972,24 @@ Definition open_rays_subbasis : set -> set := fun X =>
    :\/:
    {I :e Power X | exists b :e X, I = open_ray_lower X b}).
 
+(** Helper: open rays subbasis is a subset of Power X **)
+Theorem open_rays_subbasis_sub_Power : forall X:set,
+  open_rays_subbasis X c= Power X.
+let X.
+prove open_rays_subbasis X c= Power X.
+let I. assume HI: I :e open_rays_subbasis X.
+prove I :e Power X.
+apply (binunionE' {I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}
+                  {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b}
+                  I
+                  (I :e Power X)).
+- assume HI1: I :e {I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}.
+  exact (SepE1 (Power X) (fun I0 : set => exists a :e X, I0 = open_ray_upper X a) I HI1).
+- assume HI2: I :e {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b}.
+  exact (SepE1 (Power X) (fun I0 : set => exists b :e X, I0 = open_ray_lower X b) I HI2).
+- exact HI.
+Qed.
+
 Theorem open_rays_subbasis_for_order_topology : forall X:set,
   generated_topology_from_subbasis X (open_rays_subbasis X) = order_topology X.
 let X.
