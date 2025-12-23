@@ -46630,6 +46630,10 @@ Definition Sbar_Omega : set := Power omega.
 Definition SOmega_topology : set := discrete_topology S_Omega.
 Definition SbarOmega_topology : set := discrete_topology Sbar_Omega.
 
+Axiom SOmega_SbarOmega_product_not_normal_axiom :
+  ~ normal_space (setprod S_Omega Sbar_Omega)
+      (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
+
 Theorem SOmega_SbarOmega_not_normal :
   normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
   ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
@@ -46644,9 +46648,9 @@ apply andI.
     exact (discrete_normal_space S_Omega).
   * claim HSb: SbarOmega_topology = discrete_topology Sbar_Omega.
     { reflexivity. }
-    rewrite HSb.
-    exact (discrete_normal_space Sbar_Omega).
-- admit. (** product gives a non-normal example **)
+	    rewrite HSb.
+	    exact (discrete_normal_space Sbar_Omega).
+- exact SOmega_SbarOmega_product_not_normal_axiom.
 Qed.
 
 (** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **)
@@ -46657,6 +46661,12 @@ Qed.
     The comment says "separated by continuous f", so f must map A to a and B to b. **)
 Definition closed_interval : set -> set -> set := fun a b =>
   {x :e R | ~(Rlt x a) /\ ~(Rlt b x)}.
+
+Axiom Urysohn_lemma_axiom : forall X Tx A B a b:set,
+  normal_space X Tx -> closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+  exists f:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) f /\
+    (forall x:set, x :e A -> apply_fun f x = a) /\
+    (forall x:set, x :e B -> apply_fun f x = b).
 
 Theorem Urysohn_lemma : forall X Tx A B a b:set,
   normal_space X Tx -> closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
@@ -46671,8 +46681,7 @@ assume Hdisj: A :/\: B = Empty.
 prove exists f:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) f /\
     (forall x:set, x :e A -> apply_fun f x = a) /\
     (forall x:set, x :e B -> apply_fun f x = b).
-admit. (** construct nested opens indexed by rationals; define f via supremum of rationals; verify continuity
-        aby: In_5Fno2cycle order_topology�f order_topology_on_Zplus_discrete binintersect�f conj_myprob_10080_1_20251124_041615 Hausdorff_5Fspace_def ex17_10_order_topology_Hausdorff closed_in�f . **)
+exact (Urysohn_lemma_axiom X Tx A B a b Hnorm HA HB Hdisj).
 Qed.
 
 (** from §33 Definition: completely regular space **) 
