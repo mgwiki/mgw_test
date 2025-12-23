@@ -35110,12 +35110,269 @@ claim HfY2: f :e Romega_tilde n.
 exact (Romega_tilde_sub_Romega n f HfY2).
 Qed.
 
+(** from §23 Example 7: the constant zero sequence in R^omega **)
+Definition Romega_zero : set := const_fun omega 0.
+
+Theorem Romega_zero_in_Romega_space : Romega_zero :e R_omega_space.
+prove Romega_zero :e R_omega_space.
+set Xi := const_space_family omega R R_standard_topology.
+set U0 := space_family_union omega Xi.
+claim H0omega: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
+claim HR0: 0 :e R.
+{ exact real_0. }
+claim HX0: apply_fun Xi 0 = (R, R_standard_topology).
+{ exact (const_space_family_apply omega R R_standard_topology 0 H0omega). }
+claim Hset0: space_family_set Xi 0 = R.
+{ claim Hdef: space_family_set Xi 0 = (apply_fun Xi 0) 0.
+  { reflexivity. }
+  rewrite Hdef.
+  rewrite HX0.
+  exact (tuple_2_0_eq R R_standard_topology). }
+claim HRfam: R :e {space_family_set Xi i|i :e omega}.
+{ apply ReplEq omega (fun i:set => space_family_set Xi i) R.
+  assume _ H2. apply H2.
+  prove exists i :e omega, R = space_family_set Xi i.
+  witness 0.
+  apply andI.
+  - exact H0omega.
+  - prove R = space_family_set Xi 0.
+    symmetry.
+    exact Hset0. }
+claim H0U0: 0 :e U0.
+{ exact (UnionI {space_family_set Xi i|i :e omega} 0 R HR0 HRfam). }
+
+prove Romega_zero :e product_space omega Xi.
+prove Romega_zero :e {f :e Power (setprod omega (space_family_union omega Xi))|
+   function_on f omega (space_family_union omega Xi) /\
+   forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i}.
+claim Hsub: Romega_zero c= setprod omega U0.
+{ let p. assume Hp: p :e Romega_zero.
+  prove p :e setprod omega U0.
+  apply (ReplE_impred omega (fun a:set => (a,0)) p Hp (p :e setprod omega U0)).
+  let a. assume HaO: a :e omega. assume Hpeq: p = (a,0).
+  rewrite Hpeq.
+  exact (tuple_2_setprod omega U0 a HaO 0 H0U0). }
+claim Hpow: Romega_zero :e Power (setprod omega U0).
+{ exact (PowerI (setprod omega U0) Romega_zero Hsub). }
+claim Htot: total_function_on Romega_zero omega U0.
+{ exact (const_fun_total_function_on omega U0 0 H0U0). }
+claim Hfun: function_on Romega_zero omega U0.
+{ exact (total_function_on_function_on Romega_zero omega U0 Htot). }
+claim Hcoords: forall i:set, i :e omega -> apply_fun Romega_zero i :e space_family_set Xi i.
+{ let i. assume Hi: i :e omega.
+  prove apply_fun Romega_zero i :e space_family_set Xi i.
+  claim Happ: apply_fun Romega_zero i = 0.
+  { exact (const_fun_apply omega 0 i Hi). }
+  rewrite Happ.
+  claim HX: apply_fun Xi i = (R, R_standard_topology).
+  { exact (const_space_family_apply omega R R_standard_topology i Hi). }
+  claim Hset: space_family_set Xi i = R.
+  { claim Hdef: space_family_set Xi i = (apply_fun Xi i) 0.
+    { reflexivity. }
+    rewrite Hdef.
+    rewrite HX.
+    exact (tuple_2_0_eq R R_standard_topology). }
+  rewrite Hset.
+  exact real_0. }
+claim Hprop: function_on Romega_zero omega U0 /\ forall i:set, i :e omega -> apply_fun Romega_zero i :e space_family_set Xi i.
+{ apply andI.
+  - exact Hfun.
+  - exact Hcoords. }
+exact (SepI (Power (setprod omega U0))
+            (fun f:set => function_on f omega U0 /\ forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
+            Romega_zero
+            Hpow
+            Hprop).
+Qed.
+
+Theorem Romega_zero_in_Romega_tilde : forall n:set,
+  n :e omega -> Romega_zero :e Romega_tilde n.
+let n. assume HnO: n :e omega.
+prove Romega_zero :e Romega_tilde n.
+claim Hbase: Romega_zero :e R_omega_space.
+{ exact Romega_zero_in_Romega_space. }
+claim Hprop: forall i:set, i :e omega -> n :e i -> apply_fun Romega_zero i = 0.
+{ let i. assume Hi: i :e omega.
+  assume Hni: n :e i.
+  prove apply_fun Romega_zero i = 0.
+  exact (const_fun_apply omega 0 i Hi). }
+exact (SepI R_omega_space
+           (fun f0:set => forall i:set, i :e omega -> n :e i -> apply_fun f0 i = 0)
+           Romega_zero
+           Hbase
+           Hprop).
+Qed.
+
+Theorem Romega_tilde_nonempty : forall n:set,
+  n :e omega -> Romega_tilde n <> Empty.
+let n. assume HnO: n :e omega.
+prove Romega_tilde n <> Empty.
+assume HEmpty: Romega_tilde n = Empty.
+prove False.
+claim H0in: Romega_zero :e Romega_tilde n.
+{ exact (Romega_zero_in_Romega_tilde n HnO). }
+claim H0E: Romega_zero :e Empty.
+{ rewrite <- HEmpty.
+  exact H0in. }
+exact (EmptyE Romega_zero H0E).
+Qed.
+
+(** from §23 Example 7: product topology on R^omega is a topology **)
+Theorem Romega_product_topology_is_topology : topology_on R_omega_space R_omega_product_topology.
+admit.
+Qed.
+
+(** from §23: dense set meets every nonempty open set **)
+Theorem dense_in_meets_nonempty_open : forall A X Tx U:set,
+  topology_on X Tx ->
+  closure_of X Tx A = X ->
+  U :e Tx ->
+  U <> Empty ->
+  U :/\: A <> Empty.
+let A X Tx U.
+assume HTx: topology_on X Tx.
+assume Hdense: closure_of X Tx A = X.
+assume HU: U :e Tx.
+assume HUne: U <> Empty.
+claim Hexx: exists x:set, x :e U.
+{ exact (nonempty_has_element U HUne). }
+apply Hexx.
+let x. assume HxU: x :e U.
+claim HTsub: Tx c= Power X.
+{ exact (topology_subset_axiom X Tx HTx). }
+claim HUpow: U :e Power X.
+{ exact (HTsub U HU). }
+claim HxX: x :e X.
+{ exact (PowerE X U HUpow x HxU). }
+claim Hcl: x :e closure_of X Tx A.
+{ rewrite Hdense.
+  exact HxX. }
+claim Hcliff: x :e closure_of X Tx A <-> (forall V :e Tx, x :e V -> V :/\: A <> Empty).
+{ exact (closure_characterization X Tx A x HTx HxX). }
+claim Hneigh: forall V :e Tx, x :e V -> V :/\: A <> Empty.
+{ exact (iffEL (x :e closure_of X Tx A) (forall V :e Tx, x :e V -> V :/\: A <> Empty) Hcliff Hcl). }
+exact (Hneigh U HU HxU).
+Qed.
+
+(** from §23: dense connected subset implies connected space **)
+Theorem connected_space_if_dense_connected_subset : forall X Tx A:set,
+  topology_on X Tx ->
+  A c= X ->
+  connected_space A (subspace_topology X Tx A) ->
+  closure_of X Tx A = X ->
+  connected_space X Tx.
+let X Tx A.
+assume HTx: topology_on X Tx.
+assume HAsub: A c= X.
+assume HAconn: connected_space A (subspace_topology X Tx A).
+assume Hdense: closure_of X Tx A = X.
+prove connected_space X Tx.
+prove topology_on X Tx /\ ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
+apply andI.
+- exact HTx.
+- prove ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
+  assume Hsep: exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V.
+  apply Hsep.
+  let U. assume HexV: exists V:set, U :e Tx /\ V :e Tx /\ separation_of X U V.
+  apply HexV.
+  let V. assume HUVsep.
+  claim HUV12: U :e Tx /\ V :e Tx.
+  { exact (andEL (U :e Tx /\ V :e Tx) (separation_of X U V) HUVsep). }
+  claim HU: U :e Tx.
+  { exact (andEL (U :e Tx) (V :e Tx) HUV12). }
+  claim HV: V :e Tx.
+  { exact (andER (U :e Tx) (V :e Tx) HUV12). }
+  claim HsepUV: separation_of X U V.
+  { exact (andER (U :e Tx /\ V :e Tx) (separation_of X U V) HUVsep). }
+  claim HsepL: ((((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
+  { exact (andEL ((((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                 (U :\/: V = X)
+                 HsepUV). }
+  claim HUVdisj: (U :e Power X /\ V :e Power X) /\ U :/\: V = Empty.
+  { exact (andEL ((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty)
+                 (U <> Empty)
+                 (andEL (((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty)
+                        (V <> Empty)
+                        HsepL)). }
+  claim HUVempty: U :/\: V = Empty.
+  { exact (andER (U :e Power X /\ V :e Power X) (U :/\: V = Empty) HUVdisj). }
+  claim HU0: U <> Empty.
+  { exact (andER ((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) (U <> Empty)
+                 (andEL (((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty)
+                        (V <> Empty)
+                        HsepL)). }
+  claim HV0: V <> Empty.
+  { exact (andER (((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty)
+                 (V <> Empty)
+                 HsepL). }
+  claim Hside: A c= U \/ A c= V.
+  { exact (connected_subset_in_separation_side X Tx U V A HTx HAsub HAconn HU HV HsepUV). }
+  apply Hside.
+  - assume HAU: A c= U.
+    claim HVneA: V :/\: A <> Empty.
+    { exact (dense_in_meets_nonempty_open A X Tx V HTx Hdense HV HV0). }
+    claim HVAsubEmpty: V :/\: A c= Empty.
+    { let x. assume Hx: x :e V :/\: A.
+      prove x :e Empty.
+      claim HxV: x :e V.
+      { exact (binintersectE1 V A x Hx). }
+      claim HxA: x :e A.
+      { exact (binintersectE2 V A x Hx). }
+      claim HxU: x :e U.
+      { exact (HAU x HxA). }
+      claim HxUV: x :e U :/\: V.
+      { exact (binintersectI U V x HxU HxV). }
+      claim HxE: x :e Empty.
+      { rewrite <- HUVempty.
+        exact HxUV. }
+      exact HxE. }
+    claim HVAEq: V :/\: A = Empty.
+    { exact (Empty_Subq_eq (V :/\: A) HVAsubEmpty). }
+    apply HVneA.
+    exact HVAEq.
+  - assume HAV: A c= V.
+    claim HUneA: U :/\: A <> Empty.
+    { exact (dense_in_meets_nonempty_open A X Tx U HTx Hdense HU HU0). }
+    claim HUAsubEmpty: U :/\: A c= Empty.
+    { let x. assume Hx: x :e U :/\: A.
+      prove x :e Empty.
+      claim HxU: x :e U.
+      { exact (binintersectE1 U A x Hx). }
+      claim HxA: x :e A.
+      { exact (binintersectE2 U A x Hx). }
+      claim HxV: x :e V.
+      { exact (HAV x HxA). }
+      claim HxUV: x :e U :/\: V.
+      { exact (binintersectI U V x HxU HxV). }
+      claim HxE: x :e Empty.
+      { rewrite <- HUVempty.
+        exact HxUV. }
+      exact HxE. }
+    claim HUAEq: U :/\: A = Empty.
+    { exact (Empty_Subq_eq (U :/\: A) HUAsubEmpty). }
+    apply HUneA.
+    exact HUAEq.
+Qed.
+
 Theorem R_omega_product_connected :
   connected_space (product_space omega (const_space_family omega R R_standard_topology))
     (product_topology_full omega (const_space_family omega R R_standard_topology)).
 prove connected_space (product_space omega (const_space_family omega R R_standard_topology))
     (product_topology_full omega (const_space_family omega R R_standard_topology)).
-admit. (** follow Example 7: define R^∞ as sequences eventually 0; show it is connected as union of R^n; show its closure is all of R^ω in the product topology **)
+set Xi := const_space_family omega R R_standard_topology.
+set X := product_space omega Xi.
+set Tx := product_topology_full omega Xi.
+set A := Romega_infty.
+claim HTx: topology_on X Tx.
+{ exact Romega_product_topology_is_topology. }
+claim HAsub: A c= X.
+{ exact Romega_infty_sub_Romega. }
+claim HAconn: connected_space A (subspace_topology X Tx A).
+admit.
+claim Hdense: closure_of X Tx A = X.
+admit.
+exact (connected_space_if_dense_connected_subset X Tx A HTx HAsub HAconn Hdense).
 Qed.
 
 (** from §24 Definition: path and path connectedness **) 
