@@ -22377,13 +22377,10 @@ Definition ordered_square_open_strip : set :=
 Definition ordered_square_subspace_topology : set :=
   subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
 
-Axiom ordered_square_not_subspace_dictionary_axiom :
-  ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
-
 Theorem ordered_square_not_subspace_dictionary :
   ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
 prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
-exact ordered_square_not_subspace_dictionary_axiom.
+admit.
 Qed.
 
 (** from §16 Theorem 16.4: convex subspaces share the order topology **) 
@@ -22397,17 +22394,13 @@ Definition convex_in : set -> set -> prop := fun X Y =>
   Y c= X /\
   forall a b:set, a :e Y -> b :e Y -> order_interval X a b c= Y.
 
-Axiom convex_subspace_order_topology_axiom : forall X Y:set,
-  convex_in X Y ->
-  order_topology Y = subspace_topology X (order_topology X) Y.
-
 Theorem convex_subspace_order_topology : forall X Y:set,
   convex_in X Y ->
   order_topology Y = subspace_topology X (order_topology X) Y.
 let X Y.
 assume Hconv: convex_in X Y.
 prove order_topology Y = subspace_topology X (order_topology X) Y.
-exact (convex_subspace_order_topology_axiom X Y Hconv).
+admit.
 Qed.
 
 (** helper: intersection with a subset can drop the larger set **) 
@@ -23199,15 +23192,11 @@ Definition rational_rectangle_basis : set :=
        c :e rational_numbers /\ d :e rational_numbers /\
        r = setprod (open_interval a b) (open_interval c d)}.
 
-Axiom ex16_6_rational_rectangles_basis_axiom :
-  basis_on (setprod R R) rational_rectangle_basis /\
-  generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
-
 Theorem ex16_6_rational_rectangles_basis :
   basis_on (setprod R R) rational_rectangle_basis /\
   generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
 prove basis_on (setprod R R) rational_rectangle_basis /\ generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
-exact ex16_6_rational_rectangles_basis_axiom.
+admit.
 Qed.
 
 (** from §16 Exercise 7: convex subset implies interval or ray? **) 
@@ -23246,58 +23235,40 @@ Definition interval_or_ray_in : set -> set -> prop := fun X Y =>
 (** Counterexample pattern inside Q: points with q^2 < 2 form a convex set with no endpoint in Q. **)
 Definition Q_sqrt2_cut : set := {q :e rational_numbers | mul_SNo q q < 2}.
 
-Axiom ex16_7_convex_interval_or_ray_axiom :
-  exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
-
 Theorem ex16_7_convex_interval_or_ray :
   exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
 prove exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
-exact ex16_7_convex_interval_or_ray_axiom.
+admit.
 Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
 (** LATEX VERSION: Exercise 8: The diagonal line in ℝ×ℝ with the lower limit product topology is homeomorphic to ℝ with lower limit topology. **)
-Axiom ex16_8_lines_in_lower_limit_products_axiom :
-  exists L:set, L c= setprod R R /\
-    L = {(x,x)|x :e R} /\
-    subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L =
-      R_lower_limit_topology.
-
 Theorem ex16_8_lines_in_lower_limit_products :
   exists L:set, L c= setprod R R /\
     L = {(x,x)|x :e R} /\
     subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L =
       R_lower_limit_topology.
 prove exists L:set, L c= setprod R R /\ L = {(x,x)|x :e R} /\ subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L = R_lower_limit_topology.
-exact ex16_8_lines_in_lower_limit_products_axiom.
+admit.
 Qed.
 
 (** from §16 Exercise 9: dictionary order topology on ℝ×ℝ equals ℝ_d × ℝ **) 
 (** LATEX VERSION: Exercise 9: The dictionary order topology on ℝ×ℝ is the same as the product topology ℝ_d×ℝ; compare it with the standard topology. **)
-Axiom ex16_9_dictionary_equals_product_axiom :
-  R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology
-  /\ R2_dictionary_order_topology <> R2_standard_topology.
-
 Theorem ex16_9_dictionary_equals_product :
   R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology
   /\ R2_dictionary_order_topology <> R2_standard_topology.
 prove R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology /\ R2_dictionary_order_topology <> R2_standard_topology.
-exact ex16_9_dictionary_equals_product_axiom.
+admit.
 Qed.
 
 (** from §16 Exercise 10: compare topologies on I×I **) 
 (** LATEX VERSION: Exercise 10: Compare ordered square topology, dictionary subspace topology, and product topology on I×I. **)
-Axiom ex16_10_compare_topologies_on_square_axiom :
-  ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\
-  subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <>
-    product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
-
 Theorem ex16_10_compare_topologies_on_square :
   ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\
   subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <>
     product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
 prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\ subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <> product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
-exact ex16_10_compare_topologies_on_square_axiom.
+admit.
 Qed.
 
 (** from §17 Definition: interior and closure of a set **) 
