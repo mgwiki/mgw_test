@@ -32596,6 +32596,128 @@ apply andI.
          Hh Hpr2).
 Qed.
 
+(** Helper: maps into products from continuity of coordinates **)
+(** LATEX VERSION: If h maps A into X×Y and the coordinate compositions are continuous, then h is continuous. **)
+Theorem maps_into_products_coords_imp : forall A Ta X Tx Y Ty h:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  function_on h A (setprod X Y) ->
+  continuous_map A Ta X Tx (compose_fun A h (projection_map1 X Y)) ->
+  continuous_map A Ta Y Ty (compose_fun A h (projection_map2 X Y)) ->
+  continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) h.
+let A Ta X Tx Y Ty h.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+assume Hfunh: function_on h A (setprod X Y).
+assume Hc1: continuous_map A Ta X Tx (compose_fun A h (projection_map1 X Y)).
+assume Hc2: continuous_map A Ta Y Ty (compose_fun A h (projection_map2 X Y)).
+prove continuous_map A Ta (setprod X Y) (product_topology X Tx Y Ty) h.
+
+set h1 := compose_fun A h (projection_map1 X Y).
+set h2 := compose_fun A h (projection_map2 X Y).
+
+(** Extract topology on A and preimage properties from Hc1 and Hc2 **)
+claim Hc1_left: (topology_on A Ta /\ topology_on X Tx) /\ function_on h1 A X.
+{ exact (andEL ((topology_on A Ta /\ topology_on X Tx) /\ function_on h1 A X)
+               (forall U:set, U :e Tx -> preimage_of A h1 U :e Ta) Hc1). }
+claim HTaX: topology_on A Ta /\ topology_on X Tx.
+{ exact (andEL (topology_on A Ta /\ topology_on X Tx) (function_on h1 A X) Hc1_left). }
+claim HTa: topology_on A Ta.
+{ exact (andEL (topology_on A Ta) (topology_on X Tx) HTaX). }
+claim Hpre1: forall U:set, U :e Tx -> preimage_of A h1 U :e Ta.
+{ exact (andER ((topology_on A Ta /\ topology_on X Tx) /\ function_on h1 A X)
+               (forall U:set, U :e Tx -> preimage_of A h1 U :e Ta) Hc1). }
+
+claim Hc2_left: (topology_on A Ta /\ topology_on Y Ty) /\ function_on h2 A Y.
+{ exact (andEL ((topology_on A Ta /\ topology_on Y Ty) /\ function_on h2 A Y)
+               (forall V:set, V :e Ty -> preimage_of A h2 V :e Ta) Hc2). }
+claim Hpre2: forall V:set, V :e Ty -> preimage_of A h2 V :e Ta.
+{ exact (andER ((topology_on A Ta /\ topology_on Y Ty) /\ function_on h2 A Y)
+               (forall V:set, V :e Ty -> preimage_of A h2 V :e Ta) Hc2). }
+
+(** Topology on the product **)
+claim HTprod: topology_on (setprod X Y) (product_topology X Tx Y Ty).
+{ exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
+
+prove ((topology_on A Ta /\ topology_on (setprod X Y) (product_topology X Tx Y Ty)) /\ function_on h A (setprod X Y)) /\
+  (forall W:set, W :e product_topology X Tx Y Ty -> preimage_of A h W :e Ta).
+apply andI.
+- apply andI.
+  * apply andI.
+    { exact HTa. }
+    { exact HTprod. }
+  * exact Hfunh.
+- let W. assume HW: W :e product_topology X Tx Y Ty.
+  prove preimage_of A h W :e Ta.
+  claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+  { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+  claim HWopen: open_in (setprod X Y) (product_topology X Tx Y Ty) W.
+  { exact (andI (topology_on (setprod X Y) (product_topology X Tx Y Ty))
+                (W :e product_topology X Tx Y Ty) HTprod HW). }
+  apply (open_sets_as_unions_of_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis W HWopen).
+  let Fam. assume HFamPair.
+  claim HFamPow: Fam :e Power (product_subbasis X Tx Y Ty).
+  { exact (andEL (Fam :e Power (product_subbasis X Tx Y Ty)) (Union Fam = W) HFamPair). }
+  claim HUnionEq: Union Fam = W.
+  { exact (andER (Fam :e Power (product_subbasis X Tx Y Ty)) (Union Fam = W) HFamPair). }
+  claim HFamSub: Fam c= product_subbasis X Tx Y Ty.
+  { exact (PowerE (product_subbasis X Tx Y Ty) Fam HFamPow). }
+  set PreFam := {preimage_of A h b|b :e Fam}.
+  claim HpreEq1: preimage_of A h W = preimage_of A h (Union Fam).
+  { rewrite <- HUnionEq.
+    reflexivity. }
+  claim HpreEq2: preimage_of A h (Union Fam) = Union PreFam.
+  { rewrite (preimage_of_Union A h Fam).
+    reflexivity. }
+  claim HPreFamSub: PreFam c= Ta.
+  { let P. assume HP: P :e PreFam.
+    apply (ReplE_impred Fam (fun b:set => preimage_of A h b) P HP (P :e Ta)).
+    let b. assume HbFam: b :e Fam.
+    assume HPeq: P = preimage_of A h b.
+    claim HbB: b :e product_subbasis X Tx Y Ty.
+    { exact (HFamSub b HbFam). }
+    apply (famunionE Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) b HbB).
+    let U. assume HUconj: U :e Tx /\ b :e {rectangle_set U V0|V0 :e Ty}.
+    claim HUinTx: U :e Tx.
+    { exact (andEL (U :e Tx) (b :e {rectangle_set U V0|V0 :e Ty}) HUconj). }
+    claim HbRepl: b :e {rectangle_set U V0|V0 :e Ty}.
+    { exact (andER (U :e Tx) (b :e {rectangle_set U V0|V0 :e Ty}) HUconj). }
+    claim HexV: exists V :e Ty, b = rectangle_set U V.
+    { exact (ReplE Ty (fun V0:set => rectangle_set U V0) b HbRepl). }
+    apply HexV.
+    let V. assume HVconj: V :e Ty /\ b = rectangle_set U V.
+    claim HVinTy: V :e Ty.
+    { exact (andEL (V :e Ty) (b = rectangle_set U V) HVconj). }
+    claim Hbeq: b = rectangle_set U V.
+    { exact (andER (V :e Ty) (b = rectangle_set U V) HVconj). }
+    claim HUsubX: U c= X.
+    { exact (topology_elem_subset X Tx U HTx HUinTx). }
+    claim HVsubY: V c= Y.
+    { exact (topology_elem_subset Y Ty V HTy HVinTy). }
+    claim HpreRect: preimage_of A h (rectangle_set U V) =
+      (preimage_of A h1 U) :/\: (preimage_of A h2 V).
+    { exact (preimage_of_rectangle_via_projections A X Y h U V Hfunh HUsubX HVsubY). }
+    claim HpreU: preimage_of A h1 U :e Ta.
+    { exact (Hpre1 U HUinTx). }
+    claim HpreV: preimage_of A h2 V :e Ta.
+    { exact (Hpre2 V HVinTy). }
+    claim Hcap: (preimage_of A h1 U) :/\: (preimage_of A h2 V) :e Ta.
+    { exact (topology_binintersect_closed A Ta (preimage_of A h1 U) (preimage_of A h2 V) HTa HpreU HpreV). }
+    claim HpreB: preimage_of A h b :e Ta.
+    { rewrite Hbeq.
+      rewrite HpreRect.
+      exact Hcap. }
+    rewrite HPeq.
+    exact HpreB. }
+  claim HPreFamPow: PreFam :e Power Ta.
+  { apply PowerI.
+    exact HPreFamSub. }
+  claim HUnionPre: Union PreFam :e Ta.
+  { exact (topology_union_axiom A Ta HTa PreFam HPreFamPow). }
+  rewrite HpreEq1.
+  rewrite HpreEq2.
+  exact HUnionPre.
+Qed.
+
 (** Helper: universal property of products - maps into products **)
 (** LATEX VERSION: Projections from a product are continuous. **)
 Theorem projections_are_continuous : forall X Tx Y Ty:set,
