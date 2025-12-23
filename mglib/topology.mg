@@ -48539,9 +48539,28 @@ Qed.
 (** from §50 Exercise 3: the topologist sine curve **)
 (** LATEX VERSION: The topologist sine curve is a specific subspace of R2; we name it abstractly here. **)
 (** stub: the actual geometric definition is not expanded in this file **)
-Definition topologists_sine_curve : set := Eps_i (fun S:set => True).
+Definition topologists_sine_curve : set := Eps_i (fun S:set => S c= EuclidPlane).
+Theorem topologists_sine_curve_subset_EuclidPlane : topologists_sine_curve c= EuclidPlane.
+prove topologists_sine_curve c= EuclidPlane.
+claim Hex: exists S:set, S c= EuclidPlane.
+{ witness Empty.
+  exact (Subq_Empty EuclidPlane). }
+exact (Eps_i_ex (fun S:set => S c= EuclidPlane) Hex).
+Qed.
 Definition topologists_sine_curve_topology : set :=
-  Eps_i (fun Tx:set => topology_on topologists_sine_curve Tx).
+  subspace_topology EuclidPlane R2_standard_topology topologists_sine_curve.
+Theorem EuclidPlane_R2_standard_topology_on : topology_on EuclidPlane R2_standard_topology.
+prove topology_on EuclidPlane R2_standard_topology.
+exact (product_topology_is_topology R R_standard_topology R R_standard_topology
+         R_standard_topology_is_topology R_standard_topology_is_topology).
+Qed.
+Theorem topologists_sine_curve_topology_on :
+  topology_on topologists_sine_curve topologists_sine_curve_topology.
+prove topology_on topologists_sine_curve topologists_sine_curve_topology.
+exact (subspace_topology_is_topology EuclidPlane R2_standard_topology topologists_sine_curve
+         EuclidPlane_R2_standard_topology_on
+         topologists_sine_curve_subset_EuclidPlane).
+Qed.
 Axiom ex50_3_sine_curve_dimension_1_axiom :
   covering_dimension topologists_sine_curve topologists_sine_curve_topology (Sing Empty).
 Theorem ex50_3_sine_curve_dimension_1 :
@@ -50845,7 +50864,7 @@ Definition ex46_convergence_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
     exists X Tx Y Ty:set,
       p = setprod (setprod X Tx) (setprod Y Ty) /\
-      topology_on X Tx /\ topology_on Y Ty /\ True}.
+      topology_on X Tx /\ topology_on Y Ty}.
 
 (** from §47 Exercises: Ascoli theorem (placeholder) **) 
 (** LATEX VERSION: Exercises related to the Ascoli–Arzelà theorem. **)
