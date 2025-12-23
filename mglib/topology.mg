@@ -31625,6 +31625,48 @@ apply andI.
 	    * exact (binunionI2 f g (x,y) (andER (y :e Y) ((x,y) :e g) Hy)).
 Qed.
 
+(** Helper: total_function_on for a pasted total functional map **)
+Theorem total_function_union_on_disjoint_total_functional : forall A B Y f g:set,
+  A :/\: B = Empty ->
+  graph_domain_subset f A ->
+  graph_domain_subset g B ->
+  total_function_on f A Y ->
+  total_function_on g B Y ->
+  functional_graph f ->
+  functional_graph g ->
+  total_function_on (f :\/: g) (A :\/: B) Y.
+let A B Y f g.
+assume Hdisj: A :/\: B = Empty.
+assume Hdomf: graph_domain_subset f A.
+assume Hdomg: graph_domain_subset g B.
+assume Htotf: total_function_on f A Y.
+assume Htotg: total_function_on g B Y.
+assume Hfunf: functional_graph f.
+assume Hfung: functional_graph g.
+prove function_on (f :\/: g) (A :\/: B) Y /\
+  forall x:set, x :e (A :\/: B) -> exists y:set, y :e Y /\ (x,y) :e (f :\/: g).
+apply andI.
+- exact (function_union_on_disjoint_total_functional A B Y f g
+           Hdisj Hdomf Hdomg Htotf Htotg Hfunf Hfung).
+- let x. assume Hx: x :e (A :\/: B).
+  prove exists y:set, y :e Y /\ (x,y) :e (f :\/: g).
+  apply (binunionE A B x Hx).
+  * assume HxA: x :e A.
+    apply (total_function_on_totality f A Y Htotf x HxA).
+    let y. assume Hy: y :e Y /\ (x,y) :e f.
+    witness y.
+    apply andI.
+    { exact (andEL (y :e Y) ((x,y) :e f) Hy). }
+    { exact (binunionI1 f g (x,y) (andER (y :e Y) ((x,y) :e f) Hy)). }
+  * assume HxB: x :e B.
+    apply (total_function_on_totality g B Y Htotg x HxB).
+    let y. assume Hy: y :e Y /\ (x,y) :e g.
+    witness y.
+    apply andI.
+    { exact (andEL (y :e Y) ((x,y) :e g) Hy). }
+    { exact (binunionI2 f g (x,y) (andER (y :e Y) ((x,y) :e g) Hy)). }
+Qed.
+
 (** Helper: union of functional graphs with disjoint domains is functional **)
 Theorem functional_graph_union_disjoint_domains : forall A B f g:set,
   A :/\: B = Empty ->
