@@ -47722,15 +47722,42 @@ Definition U_n : set -> set := fun n =>
 
 (** from §49 Existence: nowhere-differentiable function **) 
 (** LATEX VERSION: Existence of a continuous nowhere-differentiable function. **)
-Axiom nowhere_differentiable_function_exists_axiom :
-  exists f:set,
-    continuous_map unit_interval (subspace_topology R R_standard_topology unit_interval) R R_standard_topology f /\
-    nowhere_differentiable f.
 Theorem nowhere_differentiable_function_exists :
   exists f:set,
-    continuous_map unit_interval (subspace_topology R R_standard_topology unit_interval) R R_standard_topology f /\
+    continuous_map unit_interval I_topology R R_standard_topology f /\
     nowhere_differentiable f.
-exact nowhere_differentiable_function_exists_axiom.
+set h := const_fun unit_interval 0.
+claim Hh: continuous_map unit_interval I_topology R R_standard_topology h.
+{ exact (const_fun_continuous unit_interval I_topology R R_standard_topology 0
+         I_topology_on R_standard_topology_is_topology real_0). }
+claim Hex: exists g:set,
+  continuous_map unit_interval I_topology R R_standard_topology g /\
+  nowhere_differentiable g /\
+  forall x:set, x :e unit_interval ->
+    Rlt (Abs (add_SNo (apply_fun h x) (minus_SNo (apply_fun g x)))) 1.
+{ exact (theorem_49_1_nowhere_differentiable_approx h 1 Hh real_1 Rlt_0_1). }
+set g := Eps_i (fun g0:set =>
+  continuous_map unit_interval I_topology R R_standard_topology g0 /\
+  nowhere_differentiable g0 /\
+  forall x:set, x :e unit_interval ->
+    Rlt (Abs (add_SNo (apply_fun h x) (minus_SNo (apply_fun g0 x)))) 1).
+claim HgP:
+  continuous_map unit_interval I_topology R R_standard_topology g /\
+  nowhere_differentiable g /\
+  forall x:set, x :e unit_interval ->
+    Rlt (Abs (add_SNo (apply_fun h x) (minus_SNo (apply_fun g x)))) 1.
+{ exact (Eps_i_ex (fun g0:set =>
+    continuous_map unit_interval I_topology R R_standard_topology g0 /\
+    nowhere_differentiable g0 /\
+    forall x:set, x :e unit_interval ->
+      Rlt (Abs (add_SNo (apply_fun h x) (minus_SNo (apply_fun g0 x)))) 1) Hex). }
+claim HgCN: continuous_map unit_interval I_topology R R_standard_topology g /\ nowhere_differentiable g.
+{ exact (andEL (continuous_map unit_interval I_topology R R_standard_topology g /\ nowhere_differentiable g)
+               (forall x:set, x :e unit_interval ->
+                 Rlt (Abs (add_SNo (apply_fun h x) (minus_SNo (apply_fun g x)))) 1)
+               HgP). }
+witness g.
+exact HgCN.
 Qed.
 
 (** helper: finite cardinality via equip to an ordinal **) 
