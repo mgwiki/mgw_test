@@ -35953,7 +35953,115 @@ claim Hcomp: forall i:set, i :e omega -> topology_on (space_family_set Xi i) (sp
   rewrite Htop.
   exact R_standard_topology_is_topology. }
 claim HS: subbasis_on R_omega_space S.
-{ admit. }
+{ prove S c= Power R_omega_space /\ Union S = R_omega_space.
+  apply andI.
+  - let s. assume Hs: s :e S.
+    prove s :e Power R_omega_space.
+    apply PowerI.
+    let f. assume Hf: f :e s.
+    prove f :e R_omega_space.
+    set F := (fun i:set => {product_cylinder omega Xi i U|U :e space_family_topology Xi i}).
+    claim HsF: s :e (\/_ i :e omega, F i).
+    { exact Hs. }
+    apply (famunionE_impred omega F s HsF (f :e R_omega_space)).
+    let i. assume Hi: i :e omega.
+    assume HsFi: s :e F i.
+    apply (ReplE_impred (space_family_topology Xi i) (fun U0:set => product_cylinder omega Xi i U0) s HsFi
+                        (f :e R_omega_space)).
+    let U.
+    assume HU: U :e space_family_topology Xi i.
+    assume Hseq: s = product_cylinder omega Xi i U.
+    claim HfCyl: f :e product_cylinder omega Xi i U.
+    { rewrite <- Hseq.
+      exact Hf. }
+    claim Hfprod: f :e product_space omega Xi.
+    { exact (SepE1 (product_space omega Xi)
+                   (fun g:set => i :e omega /\ U :e space_family_topology Xi i /\ apply_fun g i :e U)
+                   f
+                   HfCyl). }
+    exact Hfprod.
+  - (** Union S = R_omega_space **)
+    apply set_ext.
+    - let f. assume Hf: f :e Union S.
+      prove f :e R_omega_space.
+      claim HSsubPow: S c= Power R_omega_space.
+      { let s. assume Hs: s :e S.
+        prove s :e Power R_omega_space.
+        apply PowerI.
+        let g. assume Hg: g :e s.
+        prove g :e R_omega_space.
+        set F := (fun i:set => {product_cylinder omega Xi i U|U :e space_family_topology Xi i}).
+        claim HsF: s :e (\/_ i :e omega, F i).
+        { exact Hs. }
+        apply (famunionE_impred omega F s HsF (g :e R_omega_space)).
+        let i. assume Hi: i :e omega.
+        assume HsFi: s :e F i.
+        apply (ReplE_impred (space_family_topology Xi i) (fun U0:set => product_cylinder omega Xi i U0) s HsFi
+                            (g :e R_omega_space)).
+        let U.
+        assume HU: U :e space_family_topology Xi i.
+        assume Hseq: s = product_cylinder omega Xi i U.
+        claim HgCyl: g :e product_cylinder omega Xi i U.
+        { rewrite <- Hseq.
+          exact Hg. }
+        exact (SepE1 (product_space omega Xi)
+                     (fun h:set => i :e omega /\ U :e space_family_topology Xi i /\ apply_fun h i :e U)
+                     g
+                     HgCyl). }
+      apply (UnionE_impred S f Hf).
+      let s. assume Hfs: f :e s. assume Hs: s :e S.
+      claim HsPow: s :e Power R_omega_space.
+      { exact (HSsubPow s Hs). }
+      claim HsSub: s c= R_omega_space.
+      { exact (PowerE R_omega_space s HsPow). }
+      exact (HsSub f Hfs).
+    - let f. assume Hf: f :e R_omega_space.
+      prove f :e Union S.
+      claim H0o: 0 :e omega.
+      { exact (nat_p_omega 0 nat_0). }
+      claim HXi0: apply_fun Xi 0 = (R, R_standard_topology).
+      { exact (const_space_family_apply omega R R_standard_topology 0 H0o). }
+      claim Htop0: space_family_topology Xi 0 = R_standard_topology.
+      { claim Hdef: space_family_topology Xi 0 = (apply_fun Xi 0) 1.
+        { reflexivity. }
+        rewrite Hdef.
+        rewrite HXi0.
+        exact (tuple_2_1_eq R R_standard_topology). }
+      claim HRin: R :e space_family_topology Xi 0.
+      { rewrite Htop0.
+        exact (topology_has_X R R_standard_topology R_standard_topology_is_topology). }
+      set s0 := product_cylinder omega Xi 0 R.
+      claim Hs0S: s0 :e S.
+      { set F := (fun i:set => {product_cylinder omega Xi i U|U :e space_family_topology Xi i}).
+        claim Hs0F0: s0 :e F 0.
+        { exact (ReplI (space_family_topology Xi 0) (fun U0:set => product_cylinder omega Xi 0 U0) R HRin). }
+        exact (famunionI omega F 0 s0 H0o Hs0F0). }
+      claim Hf0R: apply_fun f 0 :e R.
+      { exact (Romega_coord_in_R f 0 Hf H0o). }
+      claim HXdef: R_omega_space = product_space omega Xi.
+      { reflexivity. }
+      claim Hfprod: f :e product_space omega Xi.
+      { rewrite <- HXdef.
+        exact Hf. }
+      claim Hfs0: f :e s0.
+      { claim Hs0def: s0 = product_cylinder omega Xi 0 R.
+        { reflexivity. }
+        rewrite Hs0def.
+        claim Hcyl_def: product_cylinder omega Xi 0 R =
+          {g :e product_space omega Xi | 0 :e omega /\ R :e space_family_topology Xi 0 /\ apply_fun g 0 :e R}.
+        { reflexivity. }
+        rewrite Hcyl_def.
+        apply (SepI (product_space omega Xi)
+                    (fun g:set => 0 :e omega /\ R :e space_family_topology Xi 0 /\ apply_fun g 0 :e R)
+                    f
+                    Hfprod).
+        apply andI.
+        - apply andI.
+          + exact H0o.
+          + exact HRin.
+        - exact Hf0R. }
+      exact (UnionI S f s0 Hfs0 Hs0S).
+}
 claim Hpre: forall s:set, s :e S -> preimage_of R Romega_singleton_map s :e R_standard_topology.
 { let s. assume Hs: s :e S.
   admit. }
