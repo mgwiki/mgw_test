@@ -6772,15 +6772,54 @@ apply andI.
 Definition closed_in : set -> set -> set -> prop := fun X T C =>
   topology_on X T /\ (C c= X /\ exists U :e T, C = X :\: U).
 
+(** Helper: extract topology_on from closed_in **)
+Theorem closed_in_topology : forall X T C:set,
+  closed_in X T C -> topology_on X T.
+let X T C.
+assume H: closed_in X T C.
+exact (andEL (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U) H).
+Qed.
+
+(** Helper: extract the complement-witness package from closed_in **)
+Theorem closed_in_package : forall X T C:set,
+  closed_in X T C -> C c= X /\ exists U :e T, C = X :\: U.
+let X T C.
+assume H: closed_in X T C.
+exact (andER (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U) H).
+Qed.
+
+(** Helper: introduction rule for closed_in **)
+Theorem closed_inI : forall X T C:set,
+  topology_on X T ->
+  C c= X ->
+  (exists U :e T, C = X :\: U) ->
+  closed_in X T C.
+let X T C.
+assume HT: topology_on X T.
+assume HCsub: C c= X.
+assume Hex: exists U :e T, C = X :\: U.
+exact (andI (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U)
+            HT
+            (andI (C c= X) (exists U :e T, C = X :\: U) HCsub Hex)).
+Qed.
+
+(** Helper: extract existence of open complement witness from closed_in **)
+Theorem closed_in_exists_open_complement : forall X T C:set,
+  closed_in X T C -> exists U :e T, C = X :\: U.
+let X T C.
+assume H: closed_in X T C.
+claim Hpack: C c= X /\ exists U :e T, C = X :\: U.
+{ exact (closed_in_package X T C H). }
+exact (andER (C c= X) (exists U :e T, C = X :\: U) Hpack).
+Qed.
+
 (** Helper: Closed set is a subset of X **)
 Theorem closed_in_subset : forall X T C:set,
   closed_in X T C -> C c= X.
 let X T C.
 assume HC: closed_in X T C.
 prove C c= X.
-claim HCparts: C c= X /\ exists U :e T, C = X :\: U.
-{ exact (andER (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U) HC). }
-exact (andEL (C c= X) (exists U :e T, C = X :\: U) HCparts).
+exact (andEL (C c= X) (exists U :e T, C = X :\: U) (closed_in_package X T C HC)).
 Qed.
 
 (** from §12: complement of open set is closed **)
