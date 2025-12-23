@@ -31944,6 +31944,103 @@ exact (SepI (Power (A :\/: B))
             (U :\/: V) HUVpowAB HPred).
 Qed.
 
+(** Helper: pasting lemma variant for total functional maps **)
+Theorem pasting_lemma_total_functional : forall X A B Y Tx Ty f g:set,
+  topology_on X Tx ->
+  A :e Tx -> B :e Tx -> A :/\: B = Empty ->
+  graph_domain_subset f A ->
+  graph_domain_subset g B ->
+  functional_graph f ->
+  functional_graph g ->
+  continuous_map_total A (subspace_topology X Tx A) Y Ty f ->
+  continuous_map_total B (subspace_topology X Tx B) Y Ty g ->
+  continuous_map_total (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g).
+let X A B Y Tx Ty f g.
+assume HTx: topology_on X Tx.
+assume HA: A :e Tx.
+assume HB: B :e Tx.
+assume Hdisj: A :/\: B = Empty.
+assume Hdomf: graph_domain_subset f A.
+assume Hdomg: graph_domain_subset g B.
+assume Hfunf: functional_graph f.
+assume Hfung: functional_graph g.
+assume Hf: continuous_map_total A (subspace_topology X Tx A) Y Ty f.
+assume Hg: continuous_map_total B (subspace_topology X Tx B) Y Ty g.
+prove continuous_map_total (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g).
+
+(** Extract components from Hf **)
+claim Hf_left: (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty) /\ total_function_on f A Y.
+{ exact (andEL ((topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty) /\ total_function_on f A Y)
+               (forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A) Hf). }
+claim Hpreimg_f: forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A.
+{ exact (andER ((topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty) /\ total_function_on f A Y)
+               (forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A) Hf). }
+claim Hf_tops: topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty.
+{ exact (andEL (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty)
+               (total_function_on f A Y) Hf_left). }
+claim HTy: topology_on Y Ty.
+{ exact (andER (topology_on A (subspace_topology X Tx A)) (topology_on Y Ty) Hf_tops). }
+claim Htotf: total_function_on f A Y.
+{ exact (andER (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty)
+               (total_function_on f A Y) Hf_left). }
+
+(** Extract components from Hg **)
+claim Hg_left: (topology_on B (subspace_topology X Tx B) /\ topology_on Y Ty) /\ total_function_on g B Y.
+{ exact (andEL ((topology_on B (subspace_topology X Tx B) /\ topology_on Y Ty) /\ total_function_on g B Y)
+               (forall V:set, V :e Ty -> preimage_of B g V :e subspace_topology X Tx B) Hg). }
+claim Hpreimg_g: forall V:set, V :e Ty -> preimage_of B g V :e subspace_topology X Tx B.
+{ exact (andER ((topology_on B (subspace_topology X Tx B) /\ topology_on Y Ty) /\ total_function_on g B Y)
+               (forall V:set, V :e Ty -> preimage_of B g V :e subspace_topology X Tx B) Hg). }
+claim Htotg: total_function_on g B Y.
+{ exact (andER (topology_on B (subspace_topology X Tx B) /\ topology_on Y Ty)
+               (total_function_on g B Y) Hg_left). }
+
+(** Build the topology on A ∪ B **)
+claim HAB_sub: A :\/: B c= X.
+{ apply binunion_Subq_min.
+  - exact (topology_elem_subset X Tx A HTx HA).
+  - exact (topology_elem_subset X Tx B HTx HB). }
+claim HTsub: topology_on (A :\/: B) (subspace_topology X Tx (A :\/: B)).
+{ exact (subspace_topology_is_topology X Tx (A :\/: B) HTx HAB_sub). }
+
+(** Totality of the pasted map **)
+claim Htotfg: total_function_on (f :\/: g) (A :\/: B) Y.
+{ exact (total_function_union_on_disjoint_total_functional A B Y f g
+           Hdisj Hdomf Hdomg Htotf Htotg Hfunf Hfung). }
+
+(** Preimage openness for the pasted map **)
+claim Hpreimg_fg: forall V:set, V :e Ty ->
+  preimage_of (A :\/: B) (f :\/: g) V :e subspace_topology X Tx (A :\/: B).
+{ let V. assume HV: V :e Ty.
+  claim Heq: preimage_of (A :\/: B) (f :\/: g) V =
+    (preimage_of A f V) :\/: (preimage_of B g V).
+  { exact (preimage_of_union_functions_total A B Y f g V
+           Hdisj Hdomf Hdomg Htotf Htotg Hfunf Hfung). }
+  claim HfV: preimage_of A f V :e subspace_topology X Tx A.
+  { exact (Hpreimg_f V HV). }
+  claim HgV: preimage_of B g V :e subspace_topology X Tx B.
+  { exact (Hpreimg_g V HV). }
+  claim Hunion: (preimage_of A f V :\/: preimage_of B g V) :e subspace_topology X Tx (A :\/: B).
+  { exact (subspace_union_of_opens X Tx A B (preimage_of A f V) (preimage_of B g V)
+           HTx HA HB Hdisj HfV HgV). }
+  prove preimage_of (A :\/: B) (f :\/: g) V :e subspace_topology X Tx (A :\/: B).
+  rewrite Heq.
+  exact Hunion. }
+
+(** Assemble the proof **)
+prove ((topology_on (A :\/: B) (subspace_topology X Tx (A :\/: B)) /\ topology_on Y Ty) /\
+      total_function_on (f :\/: g) (A :\/: B) Y) /\
+      (forall V:set, V :e Ty ->
+        preimage_of (A :\/: B) (f :\/: g) V :e subspace_topology X Tx (A :\/: B)).
+apply andI.
+- apply andI.
+  * apply andI.
+    { exact HTsub. }
+    { exact HTy. }
+  * exact Htotfg.
+- exact Hpreimg_fg.
+Qed.
+
 (** from §18 Theorem 18.3: pasting lemma **)
 (** LATEX VERSION: Pasting lemma: continuous pieces on closed (or appropriate) sets assemble to a continuous map. **)
 Theorem pasting_lemma : forall X A B Y Tx Ty f g:set,
