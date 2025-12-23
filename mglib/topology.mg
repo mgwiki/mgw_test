@@ -40125,6 +40125,26 @@ apply andI.
   exact (EmptyE x HxE).
 Qed.
 
+(** Helper: a point lies in its own component **)
+Theorem point_in_component : forall X Tx x:set,
+  topology_on X Tx -> x :e X -> x :e component_of X Tx x.
+let X Tx x.
+assume HTx: topology_on X Tx.
+assume HxX: x :e X.
+prove x :e component_of X Tx x.
+prove x :e {y :e X | exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y :e C}.
+apply SepI.
+- exact HxX.
+- prove exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ x :e C.
+  witness {x}.
+  prove connected_space {x} (subspace_topology X Tx {x}) /\ x :e {x} /\ x :e {x}.
+  apply andI.
+  + apply andI.
+    - exact (singleton_subspace_connected X Tx x HTx HxX).
+    - exact (SingI x).
+  + exact (SingI x).
+Qed.
+
 (** Helper: connected subspace witness implies subset of X **)
 Theorem connected_subspace_subset : forall X Tx C:set,
   topology_on X Tx ->
@@ -40154,6 +40174,93 @@ claim HCsubV: C c= V.
 claim HVsubX: V c= X.
 { exact (topology_elem_subset X Tx V HTx HVTx). }
 exact (Subq_tra C V X HCsubV HVsubX).
+Qed.
+
+(** Helper: the component of a point is connected **)
+Theorem component_of_connected : forall X Tx x:set,
+  topology_on X Tx -> x :e X ->
+  connected_space (component_of X Tx x) (subspace_topology X Tx (component_of X Tx x)).
+let X Tx x.
+assume HTx: topology_on X Tx.
+assume HxX: x :e X.
+set F := {C :e Power X | connected_space C (subspace_topology X Tx C) /\ x :e C}.
+claim HFsub: forall C:set, C :e F -> C c= X.
+{ let C. assume HCinF: C :e F.
+  claim HCpow: C :e Power X.
+  { exact (SepE1 (Power X) (fun C0:set => connected_space C0 (subspace_topology X Tx C0) /\ x :e C0) C HCinF). }
+  exact (PowerE X C HCpow). }
+claim HFconn: forall C:set, C :e F -> connected_space C (subspace_topology X Tx C).
+{ let C. assume HCinF: C :e F.
+  claim HCpair: connected_space C (subspace_topology X Tx C) /\ x :e C.
+  { exact (SepE2 (Power X) (fun C0:set => connected_space C0 (subspace_topology X Tx C0) /\ x :e C0) C HCinF). }
+  exact (andEL (connected_space C (subspace_topology X Tx C)) (x :e C) HCpair). }
+claim Hcommon: exists w:set, forall C:set, C :e F -> w :e C.
+{ witness x.
+  let C. assume HCinF: C :e F.
+  claim HCpair: connected_space C (subspace_topology X Tx C) /\ x :e C.
+  { exact (SepE2 (Power X) (fun C0:set => connected_space C0 (subspace_topology X Tx C0) /\ x :e C0) C HCinF). }
+  exact (andER (connected_space C (subspace_topology X Tx C)) (x :e C) HCpair). }
+claim HUnionConn: connected_space (Union F) (subspace_topology X Tx (Union F)).
+{ exact (union_connected_common_point X Tx F HTx HFsub HFconn Hcommon). }
+claim Heq: component_of X Tx x = Union F.
+{ apply set_ext.
+  - let y. assume Hy: y :e component_of X Tx x.
+    prove y :e Union F.
+    claim HexC: exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y :e C.
+    { exact (SepE2 X (fun y0:set => exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y0 :e C) y Hy). }
+    apply HexC.
+    let C. assume HC: connected_space C (subspace_topology X Tx C) /\ x :e C /\ y :e C.
+    claim HCconn: connected_space C (subspace_topology X Tx C).
+    { exact (andEL (connected_space C (subspace_topology X Tx C)) (x :e C)
+                   (andEL (connected_space C (subspace_topology X Tx C) /\ x :e C) (y :e C) HC)). }
+    claim HxC: x :e C.
+    { exact (andER (connected_space C (subspace_topology X Tx C)) (x :e C)
+                   (andEL (connected_space C (subspace_topology X Tx C) /\ x :e C) (y :e C) HC)). }
+    claim HyC: y :e C.
+    { exact (andER (connected_space C (subspace_topology X Tx C) /\ x :e C) (y :e C) HC). }
+    claim HCsubX: C c= X.
+    { exact (connected_subspace_subset X Tx C HTx HCconn). }
+    claim HCpow: C :e Power X.
+    { exact (PowerI X C HCsubX). }
+    claim HCinF: C :e F.
+    { prove C :e {C0 :e Power X | connected_space C0 (subspace_topology X Tx C0) /\ x :e C0}.
+      apply SepI.
+      - exact HCpow.
+      - prove connected_space C (subspace_topology X Tx C) /\ x :e C.
+        apply andI.
+        * exact HCconn.
+        * exact HxC. }
+    exact (UnionI F y C HyC HCinF).
+  - let y. assume Hy: y :e Union F.
+    prove y :e component_of X Tx x.
+    apply (UnionE F y Hy).
+    let C. assume Hex: y :e C /\ C :e F.
+    claim HyC: y :e C.
+    { exact (andEL (y :e C) (C :e F) Hex). }
+    claim HCinF: C :e F.
+    { exact (andER (y :e C) (C :e F) Hex). }
+    claim HCsubX: C c= X.
+    { exact (HFsub C HCinF). }
+    claim HCpair: connected_space C (subspace_topology X Tx C) /\ x :e C.
+    { exact (SepE2 (Power X) (fun C0:set => connected_space C0 (subspace_topology X Tx C0) /\ x :e C0) C HCinF). }
+    claim HCconn: connected_space C (subspace_topology X Tx C).
+    { exact (andEL (connected_space C (subspace_topology X Tx C)) (x :e C) HCpair). }
+    claim HxC: x :e C.
+    { exact (andER (connected_space C (subspace_topology X Tx C)) (x :e C) HCpair). }
+    prove y :e {y0 :e X | exists D:set, connected_space D (subspace_topology X Tx D) /\ x :e D /\ y0 :e D}.
+    apply SepI.
+    - exact (HCsubX y HyC).
+    - prove exists D:set, connected_space D (subspace_topology X Tx D) /\ x :e D /\ y :e D.
+      witness C.
+      prove connected_space C (subspace_topology X Tx C) /\ x :e C /\ y :e C.
+      apply andI.
+      + apply andI.
+        * exact HCconn.
+        * exact HxC.
+      + exact HyC. }
+prove connected_space (component_of X Tx x) (subspace_topology X Tx (component_of X Tx x)).
+rewrite Heq.
+exact HUnionConn.
 Qed.
 
 (** Helper: if y lies in the component of x, their components coincide **)
@@ -40450,6 +40557,8 @@ prove path_component_of X Tx x = component_of X Tx x.
 admit.
 Qed.
 
+(** from §25: components are closed **) 
+(** LATEX VERSION: Every component is closed in X. **)
 Theorem components_are_closed : forall X Tx:set,
   topology_on X Tx ->
   forall x:set, x :e X -> closed_in X Tx (component_of X Tx x).
@@ -40458,7 +40567,57 @@ assume HTx: topology_on X Tx.
 let x.
 assume Hx: x :e X.
 prove closed_in X Tx (component_of X Tx x).
-admit.
+set A := component_of X Tx x.
+set B := closure_of X Tx A.
+claim HBdef: B = closure_of X Tx A.
+{ reflexivity. }
+claim HAsub: A c= X.
+{ let y. assume Hy: y :e A.
+  exact (SepE1 X (fun y0:set => exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y0 :e C) y Hy). }
+claim HBsub: B c= X.
+{ rewrite HBdef.
+  exact (closure_in_space X Tx A HTx). }
+claim HAB: A c= B.
+{ rewrite HBdef.
+  exact (subset_of_closure X Tx A HTx HAsub). }
+claim HAconn: connected_space A (subspace_topology X Tx A).
+{ exact (component_of_connected X Tx x HTx Hx). }
+claim HBcl: B c= closure_of X Tx A.
+{ rewrite HBdef.
+  exact (Subq_ref (closure_of X Tx A)). }
+claim HBconn: connected_space B (subspace_topology X Tx B).
+{ exact (connected_with_limit_points X Tx A B HTx HAsub HBsub HAconn HAB HBcl). }
+claim HBsubA: B c= A.
+{ let y. assume Hy: y :e B.
+  prove y :e A.
+  prove y :e {y0 :e X | exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y0 :e C}.
+  apply SepI.
+  - exact (HBsub y Hy).
+  - prove exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y :e C.
+    witness B.
+    prove connected_space B (subspace_topology X Tx B) /\ x :e B /\ y :e B.
+    apply andI.
+    + apply andI.
+      * exact HBconn.
+      * claim HxA: x :e A.
+        { exact (point_in_component X Tx x HTx Hx). }
+        exact (HAB x HxA).
+    + exact Hy. }
+claim Heq: B = A.
+{ apply set_ext.
+  - let y. assume Hy: y :e B.
+    exact (HBsubA y Hy).
+  - let y. assume Hy: y :e A.
+    exact (HAB y Hy). }
+claim HBclosed0: closed_in X Tx (closure_of X Tx A).
+{ exact (closure_is_closed X Tx A HTx HAsub). }
+claim HBclosed: closed_in X Tx B.
+{ rewrite <- HBdef.
+  exact HBclosed0. }
+claim HAclosed: closed_in X Tx A.
+{ rewrite <- Heq.
+  exact HBclosed. }
+exact HAclosed.
 Qed.
 
 (** from §25: components partition the space **) 
