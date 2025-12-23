@@ -47867,15 +47867,13 @@ Qed.
 (** from §50 Example 7: general position in R^3 (preliminary) **)
 (** LATEX VERSION: In R^3, points are in general position if no three are collinear and no four are coplanar. **)
 Definition collinear_in_R3 : set -> set -> set -> prop := fun p q r =>
-  p :e R /\ q :e R /\ r :e R /\
-  exists t1 t2:set, t1 :e R /\ t2 :e R /\
-    (exists a b:set, a :e R /\ b :e R /\
-      r = a :\: (b :\: (p :\: (q :\: p)))).
+  p :e (euclidean_space 3) /\ q :e (euclidean_space 3) /\ r :e (euclidean_space 3) /\
+  exists t:set, t :e R /\ True. (** stub: affine dependence condition on coordinates **)
 
 Definition coplanar_in_R3 : set -> set -> set -> set -> prop := fun p q r s =>
-  p :e R /\ q :e R /\ r :e R /\ s :e R /\
+  p :e (euclidean_space 3) /\ q :e (euclidean_space 3) /\ r :e (euclidean_space 3) /\ s :e (euclidean_space 3) /\
   exists A B C D:set, A :e R /\ B :e R /\ C :e R /\ D :e R /\
-    True. (** placeholder for plane equation **)
+    True. (** stub: plane equation on coordinates **)
 
 (** from §50: geometrically independent (affinely independent) points in R^N **)
 (** LATEX VERSION: Points {x₀,...,xₖ} in R^N are geometrically independent if Σaᵢxᵢ=0 and Σaᵢ=0 imply all aᵢ=0. **)
@@ -49095,7 +49093,7 @@ exact ex30_6b_ordered_square_not_metrizable_axiom.
 Qed.
 (** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **)
 (** LATEX VERSION: Determine which countability axioms S_Ω and S̄_Ω satisfy. **)
-(** stub: need actual topologies for S_Omega and Sbar_Omega **)
+(** Uses the existing SOmega_topology and SbarOmega_topology defined earlier in this section. **)
 Axiom ex30_7_SOmega_Sbar_Omega_countability_axiom :
   (first_countable_space S_Omega SOmega_topology /\
    second_countable_space S_Omega SOmega_topology /\
