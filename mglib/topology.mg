@@ -31696,10 +31696,12 @@ Qed.
 
 (** Helper: function union properties **)
 (** LATEX VERSION: If A and B are disjoint and f,g map A,B into Y, then the pasted graph f∪g maps A∪B into Y. **)
-Axiom function_union_on_disjoint : forall A B Y f g:set,
+Theorem function_union_on_disjoint : forall A B Y f g:set,
   A :/\: B = Empty ->
   function_on f A Y -> function_on g B Y ->
   function_on (f :\/: g) (A :\/: B) Y.
+admit.
+Qed.
 
 (** Helper: function_on for a pasted total functional map **)
 Theorem function_union_on_disjoint_total_functional : forall A B Y f g:set,
@@ -32013,10 +32015,12 @@ apply set_ext.
 Qed.
 
 (** LATEX VERSION: For disjoint domains A,B, the preimage of V under the pasted map f∪g is the union of the separate preimages. **)
-Axiom preimage_of_union_functions : forall A B f g V:set,
+Theorem preimage_of_union_functions : forall A B f g V:set,
   A :/\: B = Empty ->
   preimage_of (A :\/: B) (f :\/: g) V =
     (preimage_of A f V) :\/: (preimage_of B g V).
+admit.
+Qed.
 
 (** Helper: unions of open subsets of disjoint open subspaces are open in the union subspace **)
 Theorem subspace_union_of_opens : forall X Tx A B U V:set,
