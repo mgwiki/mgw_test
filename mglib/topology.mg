@@ -47868,13 +47868,17 @@ apply andI.
 
 (** from §31 Theorem 31.2: subspaces/products preserve Hausdorff and regular **) 
 (** LATEX VERSION: Hausdorff/regular properties preserved under subspaces and products (with factorwise assumptions). **)
-Axiom product_topology_full_Hausdorff_axiom : forall I Xi:set,
+Theorem product_topology_full_Hausdorff_axiom : forall I Xi:set,
   Hausdorff_spaces_family I Xi ->
   Hausdorff_space (product_space I Xi) (product_topology_full I Xi).
+admit.
+Qed.
 
-Axiom product_topology_full_regular_axiom : forall I Xi:set,
+Theorem product_topology_full_regular_axiom : forall I Xi:set,
   regular_spaces_family I Xi ->
   regular_space (product_space I Xi) (product_topology_full I Xi).
+admit.
+Qed.
 
 Theorem separation_axioms_subspace_product : forall X Tx:set,
   topology_on X Tx ->
@@ -48069,7 +48073,9 @@ Definition R_K : set := R.
 
 (** from §31 Example 1: R_K Hausdorff but not regular **) 
 (** LATEX VERSION: The K-topology on ℝ is Hausdorff but not regular. **)
-Axiom RK_not_regular_axiom : ~ regular_space R_K R_K_topology.
+Theorem RK_not_regular_axiom : ~ regular_space R_K R_K_topology.
+admit.
+Qed.
 Theorem RK_Hausdorff_not_regular :
   Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
 prove Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
@@ -48085,59 +48091,49 @@ Qed.
 
 (** from §31 Example 2: Sorgenfrey line normal **) 
 (** LATEX VERSION: The Sorgenfrey line is normal. **)
-Axiom Sorgenfrey_line_normal_axiom : normal_space Sorgenfrey_line Sorgenfrey_topology.
 Theorem Sorgenfrey_line_normal : normal_space Sorgenfrey_line Sorgenfrey_topology.
 prove normal_space Sorgenfrey_line Sorgenfrey_topology.
-exact Sorgenfrey_line_normal_axiom.
+admit.
 Qed.
 
 (** from §31 Example 3: Sorgenfrey plane not normal **) 
 (** LATEX VERSION: The Sorgenfrey plane is regular but not normal. **)
-Axiom Sorgenfrey_plane_not_normal_axiom :
-  regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
-  ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 Theorem Sorgenfrey_plane_not_normal :
   regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-exact Sorgenfrey_plane_not_normal_axiom.
+admit.
 Qed.
 
 (** from §32 Theorem 32.1: regular space with countable basis is normal **) 
 (** LATEX VERSION: Regular + second countable ⇒ normal (Theorem 32.1). **)
-Axiom regular_countable_basis_normal_axiom : forall X Tx:set,
-  regular_space X Tx -> second_countable_space X Tx -> normal_space X Tx.
 Theorem regular_countable_basis_normal : forall X Tx:set,
   regular_space X Tx -> second_countable_space X Tx -> normal_space X Tx.
 let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hscc: second_countable_space X Tx.
 prove normal_space X Tx.
-exact (regular_countable_basis_normal_axiom X Tx Hreg Hscc).
+admit.
 Qed.
 
 (** from §32 Theorem 32.4: well-ordered sets are normal in order topology **) 
 (** LATEX VERSION: Well-ordered sets with the order topology are normal. **)
-Axiom well_ordered_sets_normal_axiom : forall X:set,
-  well_ordered_set X -> normal_space X (order_topology X).
 Theorem well_ordered_sets_normal : forall X:set,
   well_ordered_set X -> normal_space X (order_topology X).
 let X.
 assume Hwo: well_ordered_set X.
 prove normal_space X (order_topology X).
-exact (well_ordered_sets_normal_axiom X Hwo).
+admit.
 Qed.
 (** from §32 Theorem 32.2: metrizable spaces are normal **) 
 (** LATEX VERSION: Every metrizable space is normal. **)
-Axiom metrizable_spaces_normal_axiom : forall X d:set,
-  metric_on X d -> normal_space X (metric_topology X d).
 Theorem metrizable_spaces_normal : forall X d:set,
   metric_on X d -> normal_space X (metric_topology X d).
 let X d.
 assume Hd: metric_on X d.
 prove normal_space X (metric_topology X d).
-exact (metrizable_spaces_normal_axiom X d Hd).
+admit.
 Qed.
 
 (** from §32 Theorem 32.3: compact Hausdorff spaces are normal **) 
