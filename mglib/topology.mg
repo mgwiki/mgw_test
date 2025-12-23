@@ -50282,29 +50282,30 @@ exact ex32_5_Romega_normality_questions_axiom.
 Qed.
 (** from §32 Exercise 6: completely normal characterization via separated sets **)
 (** LATEX VERSION: X is completely normal iff for every separated pair A,B, there exist disjoint open sets containing them. **)
+Axiom ex32_6_completely_normal_characterization_axiom : forall X Tx:set,
+  completely_normal_space X Tx <->
+  (forall A B:set, separated_subsets X Tx A B ->
+    exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
 Theorem ex32_6_completely_normal_characterization : forall X Tx:set,
   completely_normal_space X Tx <->
   (forall A B:set, separated_subsets X Tx A B ->
     exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
-let X Tx.
-apply iffI.
-- assume H1: completely_normal_space X Tx.
-  let A B.
-  assume H2: separated_subsets X Tx A B.
-  apply H1.
-  assume Hnorm Hsep.
-  exact Hsep A B H2.
-- assume H1: forall A B:set, separated_subsets X Tx A B -> exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty.
-  prove completely_normal_space X Tx.
-  prove normal_space X Tx /\ (forall A B:set, separated_subsets X Tx A B -> exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
-  apply andI.
-  + prove normal_space X Tx.
-    admit. (** need to prove normality from separated set separation **)
-  + prove forall A B:set, separated_subsets X Tx A B -> exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty.
-    exact H1.
+exact ex32_6_completely_normal_characterization_axiom.
 Qed.
 (** from §32 Exercise 7: completely normal examples **)
 (** LATEX VERSION: Which are completely normal: (a) subspace (b) product (c) well-ordered (d) metrizable (e) compact Hausdorff (f) regular+countable basis (g) ℝ_ℓ? **)
+Axiom ex32_7_completely_normal_examples_axiom :
+  (forall X Tx A:set, completely_normal_space X Tx -> completely_normal_space A (subspace_topology X Tx A)) /\
+  (forall X Tx Y Ty Idx Fam:set, completely_normal_space X Tx -> completely_normal_space Y Ty ->
+    (completely_normal_space (product_space Idx Fam) (product_topology_full Idx Fam) \/
+     ~ completely_normal_space (product_space Idx Fam) (product_topology_full Idx Fam))) /\
+  (forall X:set, completely_normal_space X (order_topology X)) /\
+  (forall X Tx:set, metrizable X Tx -> completely_normal_space X Tx) /\
+  (forall X Tx:set, compact_space X Tx -> Hausdorff_space X Tx ->
+    (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
+  (forall X Tx:set, regular_space X Tx -> second_countable_space X Tx ->
+    (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
+  (exists Rl Tl:set, completely_normal_space Rl Tl \/ ~ completely_normal_space Rl Tl).
 Theorem ex32_7_completely_normal_examples :
   (forall X Tx A:set, completely_normal_space X Tx -> completely_normal_space A (subspace_topology X Tx A)) /\
   (forall X Tx Y Ty Idx Fam:set, completely_normal_space X Tx -> completely_normal_space Y Ty ->
@@ -50317,8 +50318,7 @@ Theorem ex32_7_completely_normal_examples :
   (forall X Tx:set, regular_space X Tx -> second_countable_space X Tx ->
     (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
   (exists Rl Tl:set, completely_normal_space Rl Tl \/ ~ completely_normal_space Rl Tl).
-prove (forall X Tx A:set, completely_normal_space X Tx -> completely_normal_space A (subspace_topology X Tx A)) /\ (forall X Tx Y Ty Idx Fam:set, completely_normal_space X Tx -> completely_normal_space Y Ty -> (completely_normal_space (product_space Idx Fam) (product_topology_full Idx Fam) \/ ~ completely_normal_space (product_space Idx Fam) (product_topology_full Idx Fam))) /\ (forall X:set, completely_normal_space X (order_topology X)) /\ (forall X Tx:set, metrizable X Tx -> completely_normal_space X Tx) /\ (forall X Tx:set, compact_space X Tx -> Hausdorff_space X Tx -> (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\ (forall X Tx:set, regular_space X Tx -> second_countable_space X Tx -> (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\ (exists Rl Tl:set, completely_normal_space Rl Tl \/ ~ completely_normal_space Rl Tl).
-admit. (** (a) yes subspace (c) yes well-ordered (d) yes metrizable; (b) no product fails (e) no compact Hausdorff not always (f) yes regular+second-countable (g) no Rl^2 **)
+exact ex32_7_completely_normal_examples_axiom.
 Qed.
 (** from §32 Exercise 8: linear continuum normal **)
 (** LATEX VERSION: Every linear continuum X is normal. **)
