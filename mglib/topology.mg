@@ -34183,6 +34183,32 @@ Qed.
 
 (** from §23 Example 7: R^ω in the product topology is connected **) 
 (** LATEX VERSION: Let R^∞ be sequences eventually 0; it is connected as union of R^n; its closure is all of R^ω in product topology. **)
+Definition Romega_tilde : set -> set := fun n =>
+  {f :e R_omega_space | forall i:set, i :e omega -> n :e i -> apply_fun f i = 0}.
+
+Definition Romega_infty : set := Union {Romega_tilde n|n :e omega}.
+
+Theorem Romega_tilde_sub_Romega : forall n:set,
+  Romega_tilde n c= R_omega_space.
+let n.
+let f. assume Hf: f :e Romega_tilde n.
+prove f :e R_omega_space.
+exact (SepE1 R_omega_space (fun f0:set => forall i:set, i :e omega -> n :e i -> apply_fun f0 i = 0) f Hf).
+Qed.
+
+Theorem Romega_infty_sub_Romega : Romega_infty c= R_omega_space.
+let f. assume Hf: f :e Romega_infty.
+prove f :e R_omega_space.
+apply (UnionE_impred {Romega_tilde n|n :e omega} f Hf).
+let Y. assume HfY: f :e Y. assume HY: Y :e {Romega_tilde n|n :e omega}.
+apply (ReplE_impred omega (fun n:set => Romega_tilde n) Y HY (f :e R_omega_space)).
+let n. assume Hn: n :e omega. assume HYeq: Y = Romega_tilde n.
+claim HfY2: f :e Romega_tilde n.
+{ rewrite <- HYeq.
+  exact HfY. }
+exact (Romega_tilde_sub_Romega n f HfY2).
+Qed.
+
 Theorem R_omega_product_connected :
   connected_space (product_space omega (const_space_family omega R R_standard_topology))
     (product_topology_full omega (const_space_family omega R R_standard_topology)).
