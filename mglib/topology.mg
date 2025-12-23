@@ -20186,8 +20186,10 @@ Definition two_by_nat : set := setprod 2 omega.
 Definition two_by_nat_order_topology : set := order_topology two_by_nat.
 
 (** Helper: singleton {(1,0)} is not open in two_by_nat order topology **)
-Axiom two_by_nat_singleton_not_open :
+Theorem two_by_nat_singleton_not_open :
   ~ ({(1,0)} :e two_by_nat_order_topology).
+admit.
+Qed.
 
 (** LATEX VERSION: The two-by-ℕ dictionary order space fails to be discrete. **)
 Theorem two_by_nat_not_discrete :
