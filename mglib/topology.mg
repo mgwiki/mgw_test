@@ -35008,6 +35008,79 @@ exact (andER ((((metric_on X dX /\ metric_on Y dY) /\ function_on f_seq omega (f
              H).
 Qed.
 
+(** helper: transitivity of Rle **) 
+Theorem Rle_tra : forall a b c:set, Rle a b -> Rle b c -> Rle a c.
+let a b c.
+assume Hab: Rle a b.
+assume Hbc: Rle b c.
+apply (RleI a c (RleE_left a b Hab) (RleE_right b c Hbc)).
+assume Hca: Rlt c a.
+claim HaR: a :e R.
+{ exact (RleE_left a b Hab). }
+claim HbR: b :e R.
+{ exact (RleE_right a b Hab). }
+claim HcR: c :e R.
+{ exact (RltE_left c a Hca). }
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+claim HcS: SNo c.
+{ exact (real_SNo c HcR). }
+claim Hncb: ~(Rlt c b).
+{ exact (RleE_nlt b c Hbc). }
+apply (SNoLt_trichotomy_or_impred c b HcS HbS False).
+- assume Hcltb: c < b.
+  prove False.
+  claim Hcb: Rlt c b.
+  { exact (RltI c b HcR HbR Hcltb). }
+  exact (Hncb Hcb).
+- assume Hceq: c = b.
+  prove False.
+  claim Hba: Rlt b a.
+  { rewrite <- Hceq. exact Hca. }
+  exact ((RleE_nlt a b Hab) Hba).
+- assume Hbltc: b < c.
+  prove False.
+  claim HcaS: c < a.
+  { exact (RltE_lt c a Hca). }
+  claim Hbalt: b < a.
+  { exact (SNoLt_tra b c a HbS HcS HaS Hbltc HcaS). }
+  claim Hba: Rlt b a.
+  { exact (RltI b a HbR HaR Hbalt). }
+  exact ((RleE_nlt a b Hab) Hba).
+Qed.
+
+(** helper: monotonicity of add_SNo in Rle form (right argument) **) 
+Theorem Rle_add_SNo_2 : forall x y z:set,
+  x :e R -> y :e R -> z :e R ->
+  Rle y z -> Rle (add_SNo x y) (add_SNo x z).
+let x y z.
+assume HxR: x :e R.
+assume HyR: y :e R.
+assume HzR: z :e R.
+assume Hyz: Rle y z.
+claim HxS: SNo x.
+{ exact (real_SNo x HxR). }
+claim HyS: SNo y.
+{ exact (real_SNo y HyR). }
+claim HzS: SNo z.
+{ exact (real_SNo z HzR). }
+claim HxyR: add_SNo x y :e R.
+{ exact (real_add_SNo x HxR y HyR). }
+claim HxzR: add_SNo x z :e R.
+{ exact (real_add_SNo x HxR z HzR). }
+apply (RleI (add_SNo x y) (add_SNo x z) HxyR HxzR).
+assume Hlt: Rlt (add_SNo x z) (add_SNo x y).
+claim HltS: add_SNo x z < add_SNo x y.
+{ exact (RltE_lt (add_SNo x z) (add_SNo x y) Hlt). }
+claim Hzly: z < y.
+{ exact (add_SNo_Lt2_cancel x z y HxS HzS HyS HltS). }
+claim Hzy: Rlt z y.
+{ exact (RltI z y HzR HyR Hzly). }
+exact ((RleE_nlt y z Hyz) Hzy).
+Qed.
+
 (** from §21: uniform limit theorem placeholder **) 
 (** LATEX VERSION: Uniform limit of continuous functions between metric spaces is continuous. **)
 Theorem uniform_limit_of_continuous_is_continuous :
@@ -35024,7 +35097,276 @@ assume Hfseq: function_on f_seq omega (function_space X Y).
 assume Hcont: forall n:set, n :e omega -> continuous_map X (metric_topology X dX) Y (metric_topology Y dY) (apply_fun f_seq n).
 assume Hunif: uniform_convergence_functions X dX Y dY f_seq f.
 prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
-admit.
+claim Hf: function_on f X Y.
+{ exact (uniform_convergence_functions_f X dX Y dY f_seq f Hunif). }
+claim Hed: forall x0:set, x0 :e X ->
+  forall eps:set, eps :e R /\ Rlt 0 eps ->
+    exists delta:set, delta :e R /\ Rlt 0 delta /\
+      (forall x:set, x :e X ->
+        Rlt (apply_fun dX (x,x0)) delta ->
+        Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps).
+{ let x0. assume Hx0X: x0 :e X.
+  let eps. assume Heps: eps :e R /\ Rlt 0 eps.
+  claim HepsR: eps :e R.
+  { exact (andEL (eps :e R) (Rlt 0 eps) Heps). }
+  claim Hepspos: Rlt 0 eps.
+  { exact (andER (eps :e R) (Rlt 0 eps) Heps). }
+  (** choose N0 with eps_ N0 < eps and set eta := eps_ (ordsucc (ordsucc N0)) **)
+  claim HexN0: exists N0 :e omega, eps_ N0 < eps.
+  { exact (exists_eps_lt_pos eps HepsR Hepspos). }
+  apply HexN0.
+  let N0. assume HN0pair.
+  claim HN0omega: N0 :e omega.
+  { exact (andEL (N0 :e omega) (eps_ N0 < eps) HN0pair). }
+  claim HepsN0lt: eps_ N0 < eps.
+  { exact (andER (N0 :e omega) (eps_ N0 < eps) HN0pair). }
+  claim HN0nat: nat_p N0.
+  { exact (omega_nat_p N0 HN0omega). }
+  claim Hsucc0: ordsucc N0 :e omega.
+  { exact (omega_ordsucc N0 HN0omega). }
+  claim Hsucc1: ordsucc (ordsucc N0) :e omega.
+  { exact (omega_ordsucc (ordsucc N0) Hsucc0). }
+  set eta := eps_ (ordsucc (ordsucc N0)).
+  claim HetaR: eta :e R.
+  { exact (SNoS_omega_real eta (SNo_eps_SNoS_omega (ordsucc (ordsucc N0)) Hsucc1)). }
+  claim HetaS: SNo eta.
+  { exact (SNo_eps_ (ordsucc (ordsucc N0)) Hsucc1). }
+  claim H0lt_eta: 0 < eta.
+  { exact (SNo_eps_pos (ordsucc (ordsucc N0)) Hsucc1). }
+  claim HetaPos: Rlt 0 eta.
+  { exact (RltI 0 eta real_0 HetaR H0lt_eta). }
+  (** uniform convergence bound with eps = eta **)
+  claim HexNu: exists Nu:set, Nu :e omega /\
+    forall n:set, n :e omega -> Nu c= n ->
+      forall x:set, x :e X ->
+        Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eta.
+  { exact (uniform_convergence_functions_eps X dX Y dY f_seq f Hunif eta (andI (eta :e R) (Rlt 0 eta) HetaR HetaPos)). }
+  apply HexNu.
+  let Nu. assume HNupair.
+  claim HNuomega: Nu :e omega.
+  { exact (andEL (Nu :e omega)
+                 (forall n:set, n :e omega -> Nu c= n ->
+                   forall x:set, x :e X ->
+                     Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eta)
+                 HNupair). }
+  claim HNuprop: forall n:set, n :e omega -> Nu c= n ->
+    forall x:set, x :e X ->
+      Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eta.
+  { exact (andER (Nu :e omega)
+                 (forall n:set, n :e omega -> Nu c= n ->
+                   forall x:set, x :e X ->
+                     Rlt (apply_fun dY (apply_fun (apply_fun f_seq n) x, apply_fun f x)) eta)
+                 HNupair). }
+  (** choose fn := f_seq(Nu), use its continuity at x0 with eps = eta **)
+  set fn := apply_fun f_seq Nu.
+  claim Hfncont: continuous_map X (metric_topology X dX) Y (metric_topology Y dY) fn.
+  { exact (Hcont Nu HNuomega). }
+  claim Hfn: function_on fn X Y.
+  { exact (continuous_map_function_on X (metric_topology X dX) Y (metric_topology Y dY) fn Hfncont). }
+  claim Hedfn: forall x1:set, x1 :e X ->
+     forall eps1:set, eps1 :e R /\ Rlt 0 eps1 ->
+       exists delta1:set, delta1 :e R /\ Rlt 0 delta1 /\
+         (forall x2:set, x2 :e X ->
+            Rlt (apply_fun dX (x2,x1)) delta1 ->
+            Rlt (apply_fun dY (apply_fun fn x2, apply_fun fn x1)) eps1).
+  { exact (iffEL
+            (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) fn)
+            (forall x1:set, x1 :e X ->
+              forall eps1:set, eps1 :e R /\ Rlt 0 eps1 ->
+                exists delta1:set, delta1 :e R /\ Rlt 0 delta1 /\
+                  (forall x2:set, x2 :e X ->
+                    Rlt (apply_fun dX (x2,x1)) delta1 ->
+                    Rlt (apply_fun dY (apply_fun fn x2, apply_fun fn x1)) eps1))
+            (metric_epsilon_delta_continuity X dX Y dY fn HdX HdY Hfn)
+            Hfncont). }
+  apply (Hedfn x0 Hx0X eta (andI (eta :e R) (Rlt 0 eta) HetaR HetaPos)).
+  let delta. assume Hdelta.
+  claim Hdelta12: delta :e R /\ Rlt 0 delta.
+  { exact (andEL (delta :e R /\ Rlt 0 delta)
+                 (forall x2:set, x2 :e X ->
+                   Rlt (apply_fun dX (x2,x0)) delta ->
+                   Rlt (apply_fun dY (apply_fun fn x2, apply_fun fn x0)) eta)
+                 Hdelta). }
+  claim HdeltaImp: forall x2:set, x2 :e X ->
+    Rlt (apply_fun dX (x2,x0)) delta ->
+    Rlt (apply_fun dY (apply_fun fn x2, apply_fun fn x0)) eta.
+  { exact (andER (delta :e R /\ Rlt 0 delta)
+                 (forall x2:set, x2 :e X ->
+                   Rlt (apply_fun dX (x2,x0)) delta ->
+                   Rlt (apply_fun dY (apply_fun fn x2, apply_fun fn x0)) eta)
+                 Hdelta). }
+  witness delta.
+  apply andI.
+  - exact Hdelta12.
+  - let x. assume HxX: x :e X.
+    assume Hdx: Rlt (apply_fun dX (x,x0)) delta.
+    (** shorthand points in Y **)
+    claim HfxY: apply_fun f x :e Y.
+    { exact (Hf x HxX). }
+    claim Hfx0Y: apply_fun f x0 :e Y.
+    { exact (Hf x0 Hx0X). }
+    claim HfnxY: apply_fun fn x :e Y.
+    { exact (Hfn x HxX). }
+    claim Hfnx0Y: apply_fun fn x0 :e Y.
+    { exact (Hfn x0 Hx0X). }
+    (** bounds from uniform convergence at n=Nu **)
+    claim HNuSub: Nu c= Nu.
+    { let u. assume Hu: u :e Nu.
+      exact Hu. }
+    claim Huc1: Rlt (apply_fun dY (apply_fun fn x, apply_fun f x)) eta.
+    { exact (HNuprop Nu HNuomega HNuSub x HxX). }
+    claim Huc2: Rlt (apply_fun dY (apply_fun fn x0, apply_fun f x0)) eta.
+    { exact (HNuprop Nu HNuomega HNuSub x0 Hx0X). }
+    (** rewrite these bounds using symmetry to align directions **)
+    claim Hsym1: apply_fun dY (apply_fun f x, apply_fun fn x) =
+      apply_fun dY (apply_fun fn x, apply_fun f x).
+    { exact (metric_on_symmetric Y dY (apply_fun f x) (apply_fun fn x) HdY HfxY HfnxY). }
+    claim Hsym2: apply_fun dY (apply_fun fn x0, apply_fun f x0) =
+      apply_fun dY (apply_fun f x0, apply_fun fn x0).
+    { exact (metric_on_symmetric Y dY (apply_fun fn x0) (apply_fun f x0) HdY Hfnx0Y Hfx0Y). }
+    claim Hp: Rlt (apply_fun dY (apply_fun f x, apply_fun fn x)) eta.
+    { rewrite Hsym1. exact Huc1. }
+    claim Hr: Rlt (apply_fun dY (apply_fun fn x0, apply_fun f x0)) eta.
+    { exact Huc2. }
+    claim Hq: Rlt (apply_fun dY (apply_fun fn x, apply_fun fn x0)) eta.
+    { exact (HdeltaImp x HxX Hdx). }
+    (** triangle inequality: d(fx,fx0) <= p + (q + r) **)
+    set p := apply_fun dY (apply_fun f x, apply_fun fn x).
+    set q := apply_fun dY (apply_fun fn x, apply_fun fn x0).
+    set r := apply_fun dY (apply_fun fn x0, apply_fun f x0).
+    claim HpR: p :e R.
+    { exact ((metric_on_function_on Y dY HdY) (apply_fun f x, apply_fun fn x)
+             (tuple_2_setprod Y Y (apply_fun f x) HfxY (apply_fun fn x) HfnxY)). }
+    claim HqR: q :e R.
+    { exact ((metric_on_function_on Y dY HdY) (apply_fun fn x, apply_fun fn x0)
+             (tuple_2_setprod Y Y (apply_fun fn x) HfnxY (apply_fun fn x0) Hfnx0Y)). }
+    claim HrR: r :e R.
+    { exact ((metric_on_function_on Y dY HdY) (apply_fun fn x0, apply_fun f x0)
+             (tuple_2_setprod Y Y (apply_fun fn x0) Hfnx0Y (apply_fun f x0) Hfx0Y)). }
+    claim Hpdlt: p < eta.
+    { exact (RltE_lt p eta Hp). }
+    claim Hqdlt: q < eta.
+    { exact (RltE_lt q eta Hq). }
+    claim Hrdlt: r < eta.
+    { exact (RltE_lt r eta Hr). }
+    claim HpS: SNo p.
+    { exact (real_SNo p HpR). }
+    claim HqS: SNo q.
+    { exact (real_SNo q HqR). }
+    claim HrS: SNo r.
+    { exact (real_SNo r HrR). }
+    claim Hsumqr_lt: add_SNo q r < add_SNo eta eta.
+    { claim Ht1: add_SNo q r < add_SNo q eta.
+      { exact (add_SNo_Lt2 q r eta HqS HrS HetaS Hrdlt). }
+      claim Ht2: add_SNo q eta < add_SNo eta eta.
+      { exact (add_SNo_Lt1 q eta eta HqS HetaS HetaS Hqdlt). }
+      exact (SNoLt_tra (add_SNo q r) (add_SNo q eta) (add_SNo eta eta)
+              (SNo_add_SNo q r HqS HrS)
+              (SNo_add_SNo q eta HqS HetaS)
+              (SNo_add_SNo eta eta HetaS HetaS)
+              Ht1 Ht2). }
+    claim Hsum_pqr_lt: add_SNo p (add_SNo q r) < add_SNo eta (add_SNo eta eta).
+    { claim Ht1: add_SNo p (add_SNo q r) < add_SNo p (add_SNo eta eta).
+      { exact (add_SNo_Lt2 p (add_SNo q r) (add_SNo eta eta)
+               HpS (SNo_add_SNo q r HqS HrS) (SNo_add_SNo eta eta HetaS HetaS) Hsumqr_lt). }
+      claim Ht2: add_SNo p (add_SNo eta eta) < add_SNo eta (add_SNo eta eta).
+      { exact (add_SNo_Lt1 p (add_SNo eta eta) eta
+               HpS (SNo_add_SNo eta eta HetaS HetaS) HetaS Hpdlt). }
+      exact (SNoLt_tra (add_SNo p (add_SNo q r))
+              (add_SNo p (add_SNo eta eta))
+              (add_SNo eta (add_SNo eta eta))
+              (SNo_add_SNo p (add_SNo q r) HpS (SNo_add_SNo q r HqS HrS))
+              (SNo_add_SNo p (add_SNo eta eta) HpS (SNo_add_SNo eta eta HetaS HetaS))
+              (SNo_add_SNo eta (add_SNo eta eta) HetaS (SNo_add_SNo eta eta HetaS HetaS))
+              Ht1 Ht2). }
+    (** show add_SNo eta (add_SNo eta eta) < eps via 4 eta = eps_N0 < eps **)
+    claim Heta2eq: add_SNo eta eta = eps_ (ordsucc N0).
+    { exact (eps_ordsucc_half_add (ordsucc N0) (omega_nat_p (ordsucc N0) Hsucc0)). }
+    claim Heta4eq: add_SNo (add_SNo eta eta) (add_SNo eta eta) = eps_ N0.
+    { rewrite Heta2eq.
+      exact (eps_ordsucc_half_add N0 HN0nat). }
+    claim Heta3lt_eta4: add_SNo (add_SNo eta eta) eta < add_SNo (add_SNo eta eta) (add_SNo eta eta).
+    { claim Heta_lt_2eta: eta < add_SNo eta eta.
+      { claim H0lt: 0 < eta.
+        { exact H0lt_eta. }
+        claim H0ltR: Rlt 0 eta.
+        { exact HetaPos. }
+        claim H0ltS: 0 < eta.
+        { exact H0lt. }
+        claim H0lt2: add_SNo 0 eta < add_SNo eta eta.
+        { exact (add_SNo_Lt1 0 eta eta SNo_0 HetaS HetaS H0ltS). }
+        rewrite <- (add_SNo_0L eta HetaS) at 1.
+        exact H0lt2. }
+      exact (add_SNo_Lt2 (add_SNo eta eta) eta (add_SNo eta eta)
+             (SNo_add_SNo eta eta HetaS HetaS) HetaS (SNo_add_SNo eta eta HetaS HetaS) Heta_lt_2eta). }
+    claim Heta3lt_epsN0: add_SNo (add_SNo eta eta) eta < eps_ N0.
+    { rewrite <- Heta4eq.
+      exact Heta3lt_eta4. }
+    claim HepsN0R: eps_ N0 :e R.
+    { exact (SNoS_omega_real (eps_ N0) (SNo_eps_SNoS_omega N0 HN0omega)). }
+    claim HepsN0S: SNo (eps_ N0).
+    { exact (real_SNo (eps_ N0) HepsN0R). }
+    claim Heta3S: SNo (add_SNo (add_SNo eta eta) eta).
+    { exact (SNo_add_SNo (add_SNo eta eta) eta (SNo_add_SNo eta eta HetaS HetaS) HetaS). }
+    claim Heta3lt_eps: add_SNo (add_SNo eta eta) eta < eps.
+    { exact (SNoLt_tra (add_SNo (add_SNo eta eta) eta) (eps_ N0) eps
+             Heta3S HepsN0S (real_SNo eps HepsR) Heta3lt_epsN0 HepsN0lt). }
+    claim Hsumlt_eps: add_SNo p (add_SNo q r) < eps.
+    { claim Hmid: add_SNo eta (add_SNo eta eta) < eps.
+      { rewrite (add_SNo_assoc eta eta eta HetaS HetaS HetaS).
+        exact Heta3lt_eps. }
+      exact (SNoLt_tra (add_SNo p (add_SNo q r))
+              (add_SNo eta (add_SNo eta eta))
+              eps
+              (SNo_add_SNo p (add_SNo q r) HpS (SNo_add_SNo q r HqS HrS))
+              (SNo_add_SNo eta (add_SNo eta eta) HetaS (SNo_add_SNo eta eta HetaS HetaS))
+              (real_SNo eps HepsR)
+              Hsum_pqr_lt Hmid). }
+    claim HsumR: add_SNo p (add_SNo q r) :e R.
+    { exact (real_add_SNo p HpR (add_SNo q r) (real_add_SNo q HqR r HrR)). }
+    claim HsumRlt: Rlt (add_SNo p (add_SNo q r)) eps.
+    { exact (RltI (add_SNo p (add_SNo q r)) eps HsumR HepsR Hsumlt_eps). }
+    (** Rle bound for the metric distance **)
+    claim Htri1: Rle (apply_fun dY (apply_fun f x, apply_fun f x0))
+                 (add_SNo p (apply_fun dY (apply_fun fn x, apply_fun f x0))).
+    { exact (metric_triangle_Rle Y dY (apply_fun f x) (apply_fun fn x) (apply_fun f x0)
+             HdY HfxY HfnxY Hfx0Y). }
+    claim Htri2: Rle (apply_fun dY (apply_fun fn x, apply_fun f x0))
+                 (add_SNo q r).
+    { exact (metric_triangle_Rle Y dY (apply_fun fn x) (apply_fun fn x0) (apply_fun f x0)
+             HdY HfnxY Hfnx0Y Hfx0Y). }
+    claim Hadd: Rle (add_SNo p (apply_fun dY (apply_fun fn x, apply_fun f x0)))
+                  (add_SNo p (add_SNo q r)).
+    { exact (Rle_add_SNo_2 p
+             (apply_fun dY (apply_fun fn x, apply_fun f x0))
+             (add_SNo q r)
+             HpR
+             ((metric_on_function_on Y dY HdY) (apply_fun fn x, apply_fun f x0)
+              (tuple_2_setprod Y Y (apply_fun fn x) HfnxY (apply_fun f x0) Hfx0Y))
+             (real_add_SNo q HqR r HrR)
+             Htri2). }
+    claim Htri3: Rle (apply_fun dY (apply_fun f x, apply_fun f x0))
+                 (add_SNo p (add_SNo q r)).
+    { exact (Rle_tra (apply_fun dY (apply_fun f x, apply_fun f x0))
+             (add_SNo p (apply_fun dY (apply_fun fn x, apply_fun f x0)))
+             (add_SNo p (add_SNo q r))
+             Htri1 Hadd). }
+    exact (Rle_Rlt_tra
+            (apply_fun dY (apply_fun f x, apply_fun f x0))
+            (add_SNo p (add_SNo q r))
+            eps
+            Htri3 HsumRlt).
+}
+exact (iffER
+        (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f)
+        (forall x0:set, x0 :e X ->
+          forall eps:set, eps :e R /\ Rlt 0 eps ->
+            exists delta:set, delta :e R /\ Rlt 0 delta /\
+              (forall x:set, x :e X ->
+                Rlt (apply_fun dX (x,x0)) delta ->
+                Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps))
+        (metric_epsilon_delta_continuity X dX Y dY f HdX HdY Hf)
+        Hed).
 Qed.
 
 (** from §21: convergence of sequences in metric spaces **) 
