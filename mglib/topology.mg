@@ -33244,6 +33244,98 @@ claim HxinEmpty: x :e Empty.
 exact (EmptyE x HxinEmpty).
 Qed.
 
+(** Helper: for any positive real d, some eps_N is smaller than d **)
+Theorem exists_eps_lt_pos : forall d:set, d :e R -> Rlt 0 d -> exists N :e omega, eps_ N < d.
+let d.
+assume HdR: d :e R.
+assume Hdpos: Rlt 0 d.
+claim HdS: SNo d.
+{ exact (real_SNo d HdR). }
+claim H0ltd: 0 < d.
+{ exact (RltE_lt 0 d Hdpos). }
+set invd := recip_SNo_pos d.
+claim HinvdDef: invd = recip_SNo_pos d.
+{ reflexivity. }
+claim HinvdR: invd :e R.
+{ rewrite HinvdDef.
+  exact (real_recip_SNo_pos d HdR H0ltd). }
+claim HinvdS: SNo invd.
+{ exact (real_SNo invd HinvdR). }
+claim Hinvdpos: 0 < invd.
+{ exact (recip_SNo_pos_is_pos d HdS H0ltd). }
+apply (real_E invd HinvdR (exists N :e omega, eps_ N < d)).
+assume HinvS: SNo invd.
+assume Hlev.
+assume HinS.
+assume Hlow.
+assume Hup.
+assume Huniq.
+assume Happrox.
+claim HexNlt: exists N :e omega, mul_SNo (eps_ N) invd < 1.
+{ exact (SNoS_ordsucc_omega_bdd_eps_pos invd HinS Hinvdpos Hup). }
+apply HexNlt.
+let N. assume HNpair.
+claim HNomega: N :e omega.
+{ exact (andEL (N :e omega) (mul_SNo (eps_ N) invd < 1) HNpair). }
+claim HmulLt: mul_SNo (eps_ N) invd < 1.
+{ exact (andER (N :e omega) (mul_SNo (eps_ N) invd < 1) HNpair). }
+witness N.
+apply andI.
+- exact HNomega.
+- claim HepsS: SNo (eps_ N).
+  { exact (SNo_eps_ N HNomega). }
+  claim HepsLtDiv: eps_ N < div_SNo 1 invd.
+  { exact (div_SNo_pos_LtR 1 invd (eps_ N) SNo_1 HinvS HepsS Hinvdpos HmulLt). }
+  claim HdivEq: div_SNo 1 invd = d.
+  { claim Hposcase: recip_SNo invd = recip_SNo_pos invd.
+    { exact (recip_SNo_poscase invd Hinvdpos). }
+    claim HrecipInv: recip_SNo_pos invd = d.
+    { rewrite HinvdDef.
+      exact (recip_SNo_pos_invol d HdS H0ltd). }
+    claim HdivDef: div_SNo 1 invd = mul_SNo 1 (recip_SNo invd).
+    { reflexivity. }
+    rewrite HdivDef.
+    rewrite Hposcase.
+    rewrite HrecipInv.
+    exact (mul_SNo_oneL d HdS). }
+  rewrite <- HdivEq.
+  exact HepsLtDiv.
+Qed.
+
+(** Helper: if a <= b and b < c then a < c **)
+Theorem Rle_Rlt_tra : forall a b c:set, Rle a b -> Rlt b c -> Rlt a c.
+let a b c.
+assume Hab: Rle a b.
+assume Hbc: Rlt b c.
+claim HaR: a :e R.
+{ exact (RleE_left a b Hab). }
+claim HbR: b :e R.
+{ exact (RleE_right a b Hab). }
+claim HcR: c :e R.
+{ exact (RltE_right b c Hbc). }
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+apply (SNoLt_trichotomy_or_impred a b HaS HbS (Rlt a c)).
+- assume Hablt: a < b.
+  claim HabRlt: Rlt a b.
+  { exact (RltI a b HaR HbR Hablt). }
+  exact (Rlt_tra a b c HabRlt Hbc).
+- assume Habeq: a = b.
+  rewrite Habeq.
+  exact Hbc.
+- assume Hbalt: b < a.
+  claim HbaRlt: Rlt b a.
+  { exact (RltI b a HbR HaR Hbalt). }
+  claim Hnlt: ~(Rlt b a).
+  { exact (RleE_nlt a b Hab). }
+  claim Hfalse: False.
+  { exact (Hnlt HbaRlt). }
+  apply FalseE.
+  exact Hfalse.
+Qed.
+
 (** Helper: refinement of two open balls around a common point **)
 (** LATEX VERSION: If x lies in two open balls, then some smaller ball around x is contained in their intersection. **)
 Theorem open_ball_refine_intersection : forall X d c1 c2 x r1 r2:set,
@@ -33255,7 +33347,474 @@ Theorem open_ball_refine_intersection : forall X d c1 c2 x r1 r2:set,
   x :e open_ball X d c2 r2 ->
   exists r3:set, r3 :e R /\ Rlt 0 r3 /\
     open_ball X d x r3 c= (open_ball X d c1 r1) :/\: (open_ball X d c2 r2).
-admit.
+let X d c1 c2 x r1 r2.
+assume Hm: metric_on X d.
+assume Hc1: c1 :e X.
+assume Hc2: c2 :e X.
+assume HxX: x :e X.
+assume Hr1R: r1 :e R.
+assume Hr2R: r2 :e R.
+assume Hr1pos: Rlt 0 r1.
+assume Hr2pos: Rlt 0 r2.
+assume HxB1: x :e open_ball X d c1 r1.
+assume HxB2: x :e open_ball X d c2 r2.
+
+claim Hfun: function_on d (setprod X X) R.
+{ exact (metric_on_function_on X d Hm). }
+
+claim Hc1xIn: (c1,x) :e setprod X X.
+{ exact (tuple_2_setprod X X c1 Hc1 x HxX). }
+claim Hc2xIn: (c2,x) :e setprod X X.
+{ exact (tuple_2_setprod X X c2 Hc2 x HxX). }
+
+set dx1 := apply_fun d (c1,x).
+set dx2 := apply_fun d (c2,x).
+claim Hdx1R: dx1 :e R.
+{ exact (Hfun (c1,x) Hc1xIn). }
+claim Hdx2R: dx2 :e R.
+{ exact (Hfun (c2,x) Hc2xIn). }
+claim Hdx1S: SNo dx1.
+{ exact (real_SNo dx1 Hdx1R). }
+claim Hdx2S: SNo dx2.
+{ exact (real_SNo dx2 Hdx2R). }
+claim Hr1S: SNo r1.
+{ exact (real_SNo r1 Hr1R). }
+claim Hr2S: SNo r2.
+{ exact (real_SNo r2 Hr2R). }
+
+claim Hdx1lt_r1: dx1 < r1.
+{ exact (RltE_lt dx1 r1 (open_ballE2 X d c1 r1 x HxB1)). }
+claim Hdx2lt_r2: dx2 < r2.
+{ exact (RltE_lt dx2 r2 (open_ballE2 X d c2 r2 x HxB2)). }
+
+set mdx1 := minus_SNo dx1.
+set mdx2 := minus_SNo dx2.
+claim Hmdx1Def: mdx1 = minus_SNo dx1.
+{ reflexivity. }
+claim Hmdx2Def: mdx2 = minus_SNo dx2.
+{ reflexivity. }
+claim Hmdx1R: mdx1 :e R.
+{ exact (real_minus_SNo dx1 Hdx1R). }
+claim Hmdx2R: mdx2 :e R.
+{ exact (real_minus_SNo dx2 Hdx2R). }
+claim Hmdx1S: SNo mdx1.
+{ exact (real_SNo mdx1 Hmdx1R). }
+claim Hmdx2S: SNo mdx2.
+{ exact (real_SNo mdx2 Hmdx2R). }
+
+set delta1 := add_SNo r1 mdx1.
+set delta2 := add_SNo r2 mdx2.
+claim Hdelta1Def: delta1 = add_SNo r1 mdx1.
+{ reflexivity. }
+claim Hdelta2Def: delta2 = add_SNo r2 mdx2.
+{ reflexivity. }
+claim Hdelta1R: delta1 :e R.
+{ exact (real_add_SNo r1 Hr1R mdx1 Hmdx1R). }
+claim Hdelta2R: delta2 :e R.
+{ exact (real_add_SNo r2 Hr2R mdx2 Hmdx2R). }
+claim Hdelta1S: SNo delta1.
+{ exact (real_SNo delta1 Hdelta1R). }
+claim Hdelta2S: SNo delta2.
+{ exact (real_SNo delta2 Hdelta2R). }
+
+claim H0lt_delta1: 0 < delta1.
+{ rewrite Hdelta1Def.
+  rewrite Hmdx1Def.
+  claim H0plus: add_SNo 0 dx1 < r1.
+  { rewrite (add_SNo_0L dx1 Hdx1S).
+    exact Hdx1lt_r1. }
+  exact (add_SNo_minus_Lt2b r1 dx1 0 Hr1S Hdx1S SNo_0 H0plus). }
+claim H0lt_delta2: 0 < delta2.
+{ rewrite Hdelta2Def.
+  rewrite Hmdx2Def.
+  claim H0plus: add_SNo 0 dx2 < r2.
+  { rewrite (add_SNo_0L dx2 Hdx2S).
+    exact Hdx2lt_r2. }
+  exact (add_SNo_minus_Lt2b r2 dx2 0 Hr2S Hdx2S SNo_0 H0plus). }
+
+claim Hdelta1pos: Rlt 0 delta1.
+{ exact (RltI 0 delta1 real_0 Hdelta1R H0lt_delta1). }
+claim Hdelta2pos: Rlt 0 delta2.
+{ exact (RltI 0 delta2 real_0 Hdelta2R H0lt_delta2). }
+
+apply (SNoLt_trichotomy_or_impred delta1 delta2 Hdelta1S Hdelta2S
+  (exists r3:set, r3 :e R /\ Rlt 0 r3 /\
+    open_ball X d x r3 c= (open_ball X d c1 r1) :/\: (open_ball X d c2 r2))).
+- assume Hdelta1lt: delta1 < delta2.
+  claim HexN: exists N :e omega, eps_ N < delta1.
+  { exact (exists_eps_lt_pos delta1 Hdelta1R Hdelta1pos). }
+  apply HexN.
+  let N. assume HNpair.
+  claim HNomega: N :e omega.
+  { exact (andEL (N :e omega) (eps_ N < delta1) HNpair). }
+  claim HepsLt1: eps_ N < delta1.
+  { exact (andER (N :e omega) (eps_ N < delta1) HNpair). }
+  set r3 := eps_ N.
+  claim Hr3S: SNo r3.
+  { exact (SNo_eps_ N HNomega). }
+  claim Hr3InS: r3 :e SNoS_ omega.
+  { exact (SNo_eps_SNoS_omega N HNomega). }
+  claim Hr3R: r3 :e R.
+  { exact (SNoS_omega_real r3 Hr3InS). }
+  claim H0lt_r3: 0 < r3.
+  { exact (SNo_eps_pos N HNomega). }
+  claim Hr3pos: Rlt 0 r3.
+  { exact (RltI 0 r3 real_0 Hr3R H0lt_r3). }
+  claim Hr3lt1: r3 < delta1.
+  { exact HepsLt1. }
+  claim Hr3lt2: r3 < delta2.
+  { exact (SNoLt_tra r3 delta1 delta2 Hr3S Hdelta1S Hdelta2S Hr3lt1 Hdelta1lt). }
+  witness r3.
+  apply andI.
+  - apply andI.
+    + exact Hr3R.
+    + exact Hr3pos.
+  - let y. assume Hy: y :e open_ball X d x r3.
+    claim HyX: y :e X.
+    { exact (open_ballE1 X d x r3 y Hy). }
+    claim HxyIn: (x,y) :e setprod X X.
+    { exact (tuple_2_setprod X X x HxX y HyX). }
+    claim Hc1yIn: (c1,y) :e setprod X X.
+    { exact (tuple_2_setprod X X c1 Hc1 y HyX). }
+    claim Hc2yIn: (c2,y) :e setprod X X.
+    { exact (tuple_2_setprod X X c2 Hc2 y HyX). }
+    set dxy := apply_fun d (x,y).
+    set dc1y := apply_fun d (c1,y).
+    set dc2y := apply_fun d (c2,y).
+    claim HdxyR: dxy :e R.
+    { exact (Hfun (x,y) HxyIn). }
+    claim Hdc1yR: dc1y :e R.
+    { exact (Hfun (c1,y) Hc1yIn). }
+    claim Hdc2yR: dc2y :e R.
+    { exact (Hfun (c2,y) Hc2yIn). }
+    claim HdxyS: SNo dxy.
+    { exact (real_SNo dxy HdxyR). }
+    claim Hdc1yS: SNo dc1y.
+    { exact (real_SNo dc1y Hdc1yR). }
+    claim Hdc2yS: SNo dc2y.
+    { exact (real_SNo dc2y Hdc2yR). }
+    claim HdxyLtR3: dxy < r3.
+    { exact (RltE_lt dxy r3 (open_ballE2 X d x r3 y Hy)). }
+    claim Hsum1R: add_SNo dx1 dxy :e R.
+    { exact (real_add_SNo dx1 Hdx1R dxy HdxyR). }
+    claim Hsum2R: add_SNo dx2 dxy :e R.
+    { exact (real_add_SNo dx2 Hdx2R dxy HdxyR). }
+    claim Hsum1S: SNo (add_SNo dx1 dxy).
+    { exact (real_SNo (add_SNo dx1 dxy) Hsum1R). }
+    claim Hsum2S: SNo (add_SNo dx2 dxy).
+    { exact (real_SNo (add_SNo dx2 dxy) Hsum2R). }
+    claim Hdx1r3R: add_SNo dx1 r3 :e R.
+    { exact (real_add_SNo dx1 Hdx1R r3 Hr3R). }
+    claim Hdx2r3R: add_SNo dx2 r3 :e R.
+    { exact (real_add_SNo dx2 Hdx2R r3 Hr3R). }
+    claim Hdx1r3S: SNo (add_SNo dx1 r3).
+    { exact (real_SNo (add_SNo dx1 r3) Hdx1r3R). }
+    claim Hdx2r3S: SNo (add_SNo dx2 r3).
+    { exact (real_SNo (add_SNo dx2 r3) Hdx2r3R). }
+    claim Hdx1delta1R: add_SNo dx1 delta1 :e R.
+    { exact (real_add_SNo dx1 Hdx1R delta1 Hdelta1R). }
+    claim Hdx2delta2R: add_SNo dx2 delta2 :e R.
+    { exact (real_add_SNo dx2 Hdx2R delta2 Hdelta2R). }
+    claim Hdx1delta1S: SNo (add_SNo dx1 delta1).
+    { exact (real_SNo (add_SNo dx1 delta1) Hdx1delta1R). }
+    claim Hdx2delta2S: SNo (add_SNo dx2 delta2).
+    { exact (real_SNo (add_SNo dx2 delta2) Hdx2delta2R). }
+    claim Hdx1r3lt: add_SNo dx1 r3 < r1.
+    { claim Hdx1r3lt': add_SNo dx1 r3 < add_SNo dx1 delta1.
+      { exact (add_SNo_Lt2 dx1 r3 delta1 Hdx1S Hr3S Hdelta1S Hr3lt1). }
+      claim Heq: add_SNo dx1 delta1 = r1.
+      { claim Hcom: add_SNo dx1 delta1 = add_SNo delta1 dx1.
+        { exact (add_SNo_com dx1 delta1 Hdx1S Hdelta1S). }
+        rewrite Hcom.
+        rewrite (add_SNo_minus_R2' r1 dx1 Hr1S Hdx1S).
+        reflexivity. }
+      rewrite <- Heq.
+      exact Hdx1r3lt'. }
+    claim Hdx2r3lt: add_SNo dx2 r3 < r2.
+    { claim Hdx2r3lt': add_SNo dx2 r3 < add_SNo dx2 delta2.
+      { exact (add_SNo_Lt2 dx2 r3 delta2 Hdx2S Hr3S Hdelta2S Hr3lt2). }
+      claim Heq: add_SNo dx2 delta2 = r2.
+      { claim Hcom: add_SNo dx2 delta2 = add_SNo delta2 dx2.
+        { exact (add_SNo_com dx2 delta2 Hdx2S Hdelta2S). }
+        rewrite Hcom.
+        rewrite (add_SNo_minus_R2' r2 dx2 Hr2S Hdx2S).
+        reflexivity. }
+      rewrite <- Heq.
+      exact Hdx2r3lt'. }
+    claim Hsum1lt: add_SNo dx1 dxy < r1.
+    { claim Hlt1: add_SNo dx1 dxy < add_SNo dx1 r3.
+      { exact (add_SNo_Lt2 dx1 dxy r3 Hdx1S HdxyS Hr3S HdxyLtR3). }
+      exact (SNoLt_tra (add_SNo dx1 dxy) (add_SNo dx1 r3) r1
+             Hsum1S Hdx1r3S Hr1S Hlt1 Hdx1r3lt). }
+    claim Hsum2lt: add_SNo dx2 dxy < r2.
+    { claim Hlt1: add_SNo dx2 dxy < add_SNo dx2 r3.
+      { exact (add_SNo_Lt2 dx2 dxy r3 Hdx2S HdxyS Hr3S HdxyLtR3). }
+      exact (SNoLt_tra (add_SNo dx2 dxy) (add_SNo dx2 r3) r2
+             Hsum2S Hdx2r3S Hr2S Hlt1 Hdx2r3lt). }
+    claim Htri1: Rle dc1y (add_SNo dx1 dxy).
+    { exact (metric_triangle_Rle X d c1 x y Hm Hc1 HxX HyX). }
+    claim Htri2: Rle dc2y (add_SNo dx2 dxy).
+    { exact (metric_triangle_Rle X d c2 x y Hm Hc2 HxX HyX). }
+    claim Hsum1Rlt: Rlt (add_SNo dx1 dxy) r1.
+    { exact (RltI (add_SNo dx1 dxy) r1 Hsum1R Hr1R Hsum1lt). }
+    claim Hsum2Rlt: Rlt (add_SNo dx2 dxy) r2.
+    { exact (RltI (add_SNo dx2 dxy) r2 Hsum2R Hr2R Hsum2lt). }
+    claim Hdc1yRlt: Rlt dc1y r1.
+    { exact (Rle_Rlt_tra dc1y (add_SNo dx1 dxy) r1 Htri1 Hsum1Rlt). }
+    claim Hdc2yRlt: Rlt dc2y r2.
+    { exact (Rle_Rlt_tra dc2y (add_SNo dx2 dxy) r2 Htri2 Hsum2Rlt). }
+    claim HyB1: y :e open_ball X d c1 r1.
+    { exact (open_ballI X d c1 r1 y HyX Hdc1yRlt). }
+    claim HyB2: y :e open_ball X d c2 r2.
+    { exact (open_ballI X d c2 r2 y HyX Hdc2yRlt). }
+    apply binintersectI.
+    + exact HyB1.
+    + exact HyB2.
+- assume Hdeltaeq: delta1 = delta2.
+  claim HexN: exists N :e omega, eps_ N < delta2.
+  { exact (exists_eps_lt_pos delta2 Hdelta2R Hdelta2pos). }
+  apply HexN.
+  let N. assume HNpair.
+  claim HNomega: N :e omega.
+  { exact (andEL (N :e omega) (eps_ N < delta2) HNpair). }
+  claim HepsLt2: eps_ N < delta2.
+  { exact (andER (N :e omega) (eps_ N < delta2) HNpair). }
+  set r3 := eps_ N.
+  claim Hr3S: SNo r3.
+  { exact (SNo_eps_ N HNomega). }
+  claim Hr3InS: r3 :e SNoS_ omega.
+  { exact (SNo_eps_SNoS_omega N HNomega). }
+  claim Hr3R: r3 :e R.
+  { exact (SNoS_omega_real r3 Hr3InS). }
+  claim H0lt_r3: 0 < r3.
+  { exact (SNo_eps_pos N HNomega). }
+  claim Hr3pos: Rlt 0 r3.
+  { exact (RltI 0 r3 real_0 Hr3R H0lt_r3). }
+  claim Hr3lt2: r3 < delta2.
+  { exact HepsLt2. }
+  claim Hr3lt1: r3 < delta1.
+  { rewrite Hdeltaeq.
+    exact Hr3lt2. }
+  witness r3.
+  apply andI.
+  - apply andI.
+    + exact Hr3R.
+    + exact Hr3pos.
+  - let y. assume Hy: y :e open_ball X d x r3.
+    claim HyX: y :e X.
+    { exact (open_ballE1 X d x r3 y Hy). }
+    claim HxyIn: (x,y) :e setprod X X.
+    { exact (tuple_2_setprod X X x HxX y HyX). }
+    claim Hc1yIn: (c1,y) :e setprod X X.
+    { exact (tuple_2_setprod X X c1 Hc1 y HyX). }
+    claim Hc2yIn: (c2,y) :e setprod X X.
+    { exact (tuple_2_setprod X X c2 Hc2 y HyX). }
+    set dxy := apply_fun d (x,y).
+    set dc1y := apply_fun d (c1,y).
+    set dc2y := apply_fun d (c2,y).
+    claim HdxyR: dxy :e R.
+    { exact (Hfun (x,y) HxyIn). }
+    claim Hdc1yR: dc1y :e R.
+    { exact (Hfun (c1,y) Hc1yIn). }
+    claim Hdc2yR: dc2y :e R.
+    { exact (Hfun (c2,y) Hc2yIn). }
+    claim HdxyS: SNo dxy.
+    { exact (real_SNo dxy HdxyR). }
+    claim Hdc1yS: SNo dc1y.
+    { exact (real_SNo dc1y Hdc1yR). }
+    claim Hdc2yS: SNo dc2y.
+    { exact (real_SNo dc2y Hdc2yR). }
+    claim HdxyLtR3: dxy < r3.
+    { exact (RltE_lt dxy r3 (open_ballE2 X d x r3 y Hy)). }
+    claim Hsum1R: add_SNo dx1 dxy :e R.
+    { exact (real_add_SNo dx1 Hdx1R dxy HdxyR). }
+    claim Hsum2R: add_SNo dx2 dxy :e R.
+    { exact (real_add_SNo dx2 Hdx2R dxy HdxyR). }
+    claim Hsum1S: SNo (add_SNo dx1 dxy).
+    { exact (real_SNo (add_SNo dx1 dxy) Hsum1R). }
+    claim Hsum2S: SNo (add_SNo dx2 dxy).
+    { exact (real_SNo (add_SNo dx2 dxy) Hsum2R). }
+    claim Hdx1r3R: add_SNo dx1 r3 :e R.
+    { exact (real_add_SNo dx1 Hdx1R r3 Hr3R). }
+    claim Hdx2r3R: add_SNo dx2 r3 :e R.
+    { exact (real_add_SNo dx2 Hdx2R r3 Hr3R). }
+    claim Hdx1r3S: SNo (add_SNo dx1 r3).
+    { exact (real_SNo (add_SNo dx1 r3) Hdx1r3R). }
+    claim Hdx2r3S: SNo (add_SNo dx2 r3).
+    { exact (real_SNo (add_SNo dx2 r3) Hdx2r3R). }
+    claim Hdx1r3lt: add_SNo dx1 r3 < r1.
+    { claim Hdx1r3lt': add_SNo dx1 r3 < add_SNo dx1 delta1.
+      { exact (add_SNo_Lt2 dx1 r3 delta1 Hdx1S Hr3S Hdelta1S Hr3lt1). }
+      claim Heq: add_SNo dx1 delta1 = r1.
+      { claim Hcom: add_SNo dx1 delta1 = add_SNo delta1 dx1.
+        { exact (add_SNo_com dx1 delta1 Hdx1S Hdelta1S). }
+        rewrite Hcom.
+        rewrite (add_SNo_minus_R2' r1 dx1 Hr1S Hdx1S).
+        reflexivity. }
+      rewrite <- Heq.
+      exact Hdx1r3lt'. }
+    claim Hdx2r3lt: add_SNo dx2 r3 < r2.
+    { claim Hdx2r3lt': add_SNo dx2 r3 < add_SNo dx2 delta2.
+      { exact (add_SNo_Lt2 dx2 r3 delta2 Hdx2S Hr3S Hdelta2S Hr3lt2). }
+      claim Heq: add_SNo dx2 delta2 = r2.
+      { claim Hcom: add_SNo dx2 delta2 = add_SNo delta2 dx2.
+        { exact (add_SNo_com dx2 delta2 Hdx2S Hdelta2S). }
+        rewrite Hcom.
+        rewrite (add_SNo_minus_R2' r2 dx2 Hr2S Hdx2S).
+        reflexivity. }
+      rewrite <- Heq.
+      exact Hdx2r3lt'. }
+    claim Hsum1lt: add_SNo dx1 dxy < r1.
+    { claim Hlt1: add_SNo dx1 dxy < add_SNo dx1 r3.
+      { exact (add_SNo_Lt2 dx1 dxy r3 Hdx1S HdxyS Hr3S HdxyLtR3). }
+      exact (SNoLt_tra (add_SNo dx1 dxy) (add_SNo dx1 r3) r1
+             Hsum1S Hdx1r3S Hr1S Hlt1 Hdx1r3lt). }
+    claim Hsum2lt: add_SNo dx2 dxy < r2.
+    { claim Hlt1: add_SNo dx2 dxy < add_SNo dx2 r3.
+      { exact (add_SNo_Lt2 dx2 dxy r3 Hdx2S HdxyS Hr3S HdxyLtR3). }
+      exact (SNoLt_tra (add_SNo dx2 dxy) (add_SNo dx2 r3) r2
+             Hsum2S Hdx2r3S Hr2S Hlt1 Hdx2r3lt). }
+    claim Htri1: Rle dc1y (add_SNo dx1 dxy).
+    { exact (metric_triangle_Rle X d c1 x y Hm Hc1 HxX HyX). }
+    claim Htri2: Rle dc2y (add_SNo dx2 dxy).
+    { exact (metric_triangle_Rle X d c2 x y Hm Hc2 HxX HyX). }
+    claim Hsum1Rlt: Rlt (add_SNo dx1 dxy) r1.
+    { exact (RltI (add_SNo dx1 dxy) r1 Hsum1R Hr1R Hsum1lt). }
+    claim Hsum2Rlt: Rlt (add_SNo dx2 dxy) r2.
+    { exact (RltI (add_SNo dx2 dxy) r2 Hsum2R Hr2R Hsum2lt). }
+    claim Hdc1yRlt: Rlt dc1y r1.
+    { exact (Rle_Rlt_tra dc1y (add_SNo dx1 dxy) r1 Htri1 Hsum1Rlt). }
+    claim Hdc2yRlt: Rlt dc2y r2.
+    { exact (Rle_Rlt_tra dc2y (add_SNo dx2 dxy) r2 Htri2 Hsum2Rlt). }
+    claim HyB1: y :e open_ball X d c1 r1.
+    { exact (open_ballI X d c1 r1 y HyX Hdc1yRlt). }
+    claim HyB2: y :e open_ball X d c2 r2.
+    { exact (open_ballI X d c2 r2 y HyX Hdc2yRlt). }
+    apply binintersectI.
+    + exact HyB1.
+    + exact HyB2.
+- assume Hdelta2lt: delta2 < delta1.
+  claim HexN: exists N :e omega, eps_ N < delta2.
+  { exact (exists_eps_lt_pos delta2 Hdelta2R Hdelta2pos). }
+  apply HexN.
+  let N. assume HNpair.
+  claim HNomega: N :e omega.
+  { exact (andEL (N :e omega) (eps_ N < delta2) HNpair). }
+  claim HepsLt2: eps_ N < delta2.
+  { exact (andER (N :e omega) (eps_ N < delta2) HNpair). }
+  set r3 := eps_ N.
+  claim Hr3S: SNo r3.
+  { exact (SNo_eps_ N HNomega). }
+  claim Hr3InS: r3 :e SNoS_ omega.
+  { exact (SNo_eps_SNoS_omega N HNomega). }
+  claim Hr3R: r3 :e R.
+  { exact (SNoS_omega_real r3 Hr3InS). }
+  claim H0lt_r3: 0 < r3.
+  { exact (SNo_eps_pos N HNomega). }
+  claim Hr3pos: Rlt 0 r3.
+  { exact (RltI 0 r3 real_0 Hr3R H0lt_r3). }
+  claim Hr3lt2: r3 < delta2.
+  { exact HepsLt2. }
+  claim Hr3lt1: r3 < delta1.
+  { exact (SNoLt_tra r3 delta2 delta1 Hr3S Hdelta2S Hdelta1S Hr3lt2 Hdelta2lt). }
+  witness r3.
+  apply andI.
+  - apply andI.
+    + exact Hr3R.
+    + exact Hr3pos.
+  - let y. assume Hy: y :e open_ball X d x r3.
+    claim HyX: y :e X.
+    { exact (open_ballE1 X d x r3 y Hy). }
+    claim HxyIn: (x,y) :e setprod X X.
+    { exact (tuple_2_setprod X X x HxX y HyX). }
+    claim Hc1yIn: (c1,y) :e setprod X X.
+    { exact (tuple_2_setprod X X c1 Hc1 y HyX). }
+    claim Hc2yIn: (c2,y) :e setprod X X.
+    { exact (tuple_2_setprod X X c2 Hc2 y HyX). }
+    set dxy := apply_fun d (x,y).
+    set dc1y := apply_fun d (c1,y).
+    set dc2y := apply_fun d (c2,y).
+    claim HdxyR: dxy :e R.
+    { exact (Hfun (x,y) HxyIn). }
+    claim Hdc1yR: dc1y :e R.
+    { exact (Hfun (c1,y) Hc1yIn). }
+    claim Hdc2yR: dc2y :e R.
+    { exact (Hfun (c2,y) Hc2yIn). }
+    claim HdxyS: SNo dxy.
+    { exact (real_SNo dxy HdxyR). }
+    claim Hdc1yS: SNo dc1y.
+    { exact (real_SNo dc1y Hdc1yR). }
+    claim Hdc2yS: SNo dc2y.
+    { exact (real_SNo dc2y Hdc2yR). }
+    claim HdxyLtR3: dxy < r3.
+    { exact (RltE_lt dxy r3 (open_ballE2 X d x r3 y Hy)). }
+    claim Hsum1R: add_SNo dx1 dxy :e R.
+    { exact (real_add_SNo dx1 Hdx1R dxy HdxyR). }
+    claim Hsum2R: add_SNo dx2 dxy :e R.
+    { exact (real_add_SNo dx2 Hdx2R dxy HdxyR). }
+    claim Hsum1S: SNo (add_SNo dx1 dxy).
+    { exact (real_SNo (add_SNo dx1 dxy) Hsum1R). }
+    claim Hsum2S: SNo (add_SNo dx2 dxy).
+    { exact (real_SNo (add_SNo dx2 dxy) Hsum2R). }
+    claim Hdx1r3R: add_SNo dx1 r3 :e R.
+    { exact (real_add_SNo dx1 Hdx1R r3 Hr3R). }
+    claim Hdx2r3R: add_SNo dx2 r3 :e R.
+    { exact (real_add_SNo dx2 Hdx2R r3 Hr3R). }
+    claim Hdx1r3S: SNo (add_SNo dx1 r3).
+    { exact (real_SNo (add_SNo dx1 r3) Hdx1r3R). }
+    claim Hdx2r3S: SNo (add_SNo dx2 r3).
+    { exact (real_SNo (add_SNo dx2 r3) Hdx2r3R). }
+    claim Hdx1r3lt: add_SNo dx1 r3 < r1.
+    { claim Hdx1r3lt': add_SNo dx1 r3 < add_SNo dx1 delta1.
+      { exact (add_SNo_Lt2 dx1 r3 delta1 Hdx1S Hr3S Hdelta1S Hr3lt1). }
+      claim Heq: add_SNo dx1 delta1 = r1.
+      { claim Hcom: add_SNo dx1 delta1 = add_SNo delta1 dx1.
+        { exact (add_SNo_com dx1 delta1 Hdx1S Hdelta1S). }
+        rewrite Hcom.
+        rewrite (add_SNo_minus_R2' r1 dx1 Hr1S Hdx1S).
+        reflexivity. }
+      rewrite <- Heq.
+      exact Hdx1r3lt'. }
+    claim Hdx2r3lt: add_SNo dx2 r3 < r2.
+    { claim Hdx2r3lt': add_SNo dx2 r3 < add_SNo dx2 delta2.
+      { exact (add_SNo_Lt2 dx2 r3 delta2 Hdx2S Hr3S Hdelta2S Hr3lt2). }
+      claim Heq: add_SNo dx2 delta2 = r2.
+      { claim Hcom: add_SNo dx2 delta2 = add_SNo delta2 dx2.
+        { exact (add_SNo_com dx2 delta2 Hdx2S Hdelta2S). }
+        rewrite Hcom.
+        rewrite (add_SNo_minus_R2' r2 dx2 Hr2S Hdx2S).
+        reflexivity. }
+      rewrite <- Heq.
+      exact Hdx2r3lt'. }
+    claim Hsum1lt: add_SNo dx1 dxy < r1.
+    { claim Hlt1: add_SNo dx1 dxy < add_SNo dx1 r3.
+      { exact (add_SNo_Lt2 dx1 dxy r3 Hdx1S HdxyS Hr3S HdxyLtR3). }
+      exact (SNoLt_tra (add_SNo dx1 dxy) (add_SNo dx1 r3) r1
+             Hsum1S Hdx1r3S Hr1S Hlt1 Hdx1r3lt). }
+    claim Hsum2lt: add_SNo dx2 dxy < r2.
+    { claim Hlt1: add_SNo dx2 dxy < add_SNo dx2 r3.
+      { exact (add_SNo_Lt2 dx2 dxy r3 Hdx2S HdxyS Hr3S HdxyLtR3). }
+      exact (SNoLt_tra (add_SNo dx2 dxy) (add_SNo dx2 r3) r2
+             Hsum2S Hdx2r3S Hr2S Hlt1 Hdx2r3lt). }
+    claim Htri1: Rle dc1y (add_SNo dx1 dxy).
+    { exact (metric_triangle_Rle X d c1 x y Hm Hc1 HxX HyX). }
+    claim Htri2: Rle dc2y (add_SNo dx2 dxy).
+    { exact (metric_triangle_Rle X d c2 x y Hm Hc2 HxX HyX). }
+    claim Hsum1Rlt: Rlt (add_SNo dx1 dxy) r1.
+    { exact (RltI (add_SNo dx1 dxy) r1 Hsum1R Hr1R Hsum1lt). }
+    claim Hsum2Rlt: Rlt (add_SNo dx2 dxy) r2.
+    { exact (RltI (add_SNo dx2 dxy) r2 Hsum2R Hr2R Hsum2lt). }
+    claim Hdc1yRlt: Rlt dc1y r1.
+    { exact (Rle_Rlt_tra dc1y (add_SNo dx1 dxy) r1 Htri1 Hsum1Rlt). }
+    claim Hdc2yRlt: Rlt dc2y r2.
+    { exact (Rle_Rlt_tra dc2y (add_SNo dx2 dxy) r2 Htri2 Hsum2Rlt). }
+    claim HyB1: y :e open_ball X d c1 r1.
+    { exact (open_ballI X d c1 r1 y HyX Hdc1yRlt). }
+    claim HyB2: y :e open_ball X d c2 r2.
+    { exact (open_ballI X d c2 r2 y HyX Hdc2yRlt). }
+    apply binintersectI.
+    + exact HyB1.
+    + exact HyB2.
 Qed.
 
 Definition metric_topology : set -> set -> set := fun X d =>
