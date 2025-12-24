@@ -19895,6 +19895,85 @@ rewrite <- Heq.
 reflexivity.
 Qed.
 
+(** helper: setprod 2 omega is not R **)
+Theorem setprod_2_omega_neq_R : setprod 2 omega <> R.
+admit.
+Qed.
+
+(** helper: setprod 2 omega is not rational_numbers **)
+Theorem setprod_2_omega_neq_rational_numbers : setprod 2 omega <> rational_numbers.
+admit.
+Qed.
+
+(** helper: unfold order_rel on setprod 2 omega to the dictionary-order case **)
+Theorem order_rel_setprod_2_omega_unfold : forall a b:set,
+  order_rel (setprod 2 omega) a b ->
+  exists i m j n:set,
+    i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+    a = (i, m) /\ b = (j, n) /\
+    (i :e j \/ (i = j /\ m :e n)).
+let a b. assume Hrel: order_rel (setprod 2 omega) a b.
+apply (Hrel (exists i m j n:set,
+               i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+               a = (i, m) /\ b = (j, n) /\
+               (i :e j \/ (i = j /\ m :e n)))).
+- assume Hleft.
+  apply (Hleft (exists i m j n:set,
+                 i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+                 a = (i, m) /\ b = (j, n) /\
+                 (i :e j \/ (i = j /\ m :e n)))).
+  - assume Hmid.
+    apply (Hmid (exists i m j n:set,
+                   i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+                   a = (i, m) /\ b = (j, n) /\
+                   (i :e j \/ (i = j /\ m :e n)))).
+    + assume Hm2.
+      apply (Hm2 (exists i m j n:set,
+                    i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+                    a = (i, m) /\ b = (j, n) /\
+                    (i :e j \/ (i = j /\ m :e n)))).
+      - assume Hm3.
+        apply (Hm3 (exists i m j n:set,
+                      i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+                      a = (i, m) /\ b = (j, n) /\
+                      (i :e j \/ (i = j /\ m :e n)))).
+        - assume Hc1.
+          apply FalseE.
+          claim Heq: setprod 2 omega = R.
+          { exact (andEL (setprod 2 omega = R) (Rlt a b) Hc1). }
+          exact (setprod_2_omega_neq_R Heq).
+        - assume Hc2.
+          apply FalseE.
+          claim Heq: setprod 2 omega = rational_numbers.
+          { exact (andEL (setprod 2 omega = rational_numbers) (Rlt a b) Hc2). }
+          exact (setprod_2_omega_neq_rational_numbers Heq).
+      - assume Hc3.
+        apply FalseE.
+        claim Heq: setprod 2 omega = omega.
+        { exact (andEL (setprod 2 omega = omega) (a :e b) Hc3). }
+        exact (setprod_2_omega_neq_omega Heq).
+    + assume Hc4.
+      apply FalseE.
+      claim Heq: setprod 2 omega = omega :\: {0}.
+      { exact (andEL (setprod 2 omega = omega :\: {0}) (a :e b) Hc4). }
+      exact (setprod_2_omega_neq_omega_nonzero Heq).
+  - assume Hc5.
+    exact (andER (setprod 2 omega = setprod 2 omega)
+                 (exists i m j n:set,
+                   i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+                   a = (i, m) /\ b = (j, n) /\
+                   (i :e j \/ (i = j /\ m :e n)))
+                 Hc5).
+- assume Hc6.
+  apply FalseE.
+  claim Heq: setprod 2 omega = setprod R R.
+  { exact (andEL (setprod 2 omega = setprod R R)
+                (exists a1 a2 b1 b2:set,
+                  a = (a1, a2) /\ b = (b1, b2) /\ (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2)))
+                Hc6). }
+  exact (setprod_2_omega_neq_setprod_R_R Heq).
+Qed.
+
 (** helper: unfold order_rel on setprod R R to the dictionary-order case **)
 Theorem order_rel_setprod_R_R_unfold : forall a b:set,
   order_rel (setprod R R) a b ->
