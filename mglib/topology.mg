@@ -23642,6 +23642,89 @@ Definition interval_or_ray_in : set -> set -> prop := fun X Y =>
 (** Counterexample pattern inside Q: points with q^2 < 2 form a convex set with no endpoint in Q. **)
 Definition Q_sqrt2_cut : set := {q :e rational_numbers | mul_SNo q q < 2}.
 
+(** helper for §16 Exercise 7: 2 is a rational number **)
+(** LATEX VERSION: The number 2 is rational (2 = 2/1). **)
+Theorem two_in_rational_numbers : 2 :e rational_numbers.
+prove 2 :e rational.
+claim H2omega: 2 :e omega.
+{ exact (nat_p_omega 2 nat_2). }
+claim H2SNoS: 2 :e SNoS_ omega.
+{ exact (omega_SNoS_omega 2 H2omega). }
+claim H2real: 2 :e real.
+{ exact (SNoS_omega_real 2 H2SNoS). }
+claim H2int: 2 :e int.
+{ exact (Subq_omega_int 2 H2omega). }
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim H1not0: 1 /:e {0}.
+{ assume H1: 1 :e {0}.
+  prove False.
+  claim Heq: 1 = 0.
+  { exact (SingE 0 1 H1). }
+  exact (neq_1_0 Heq). }
+claim H1nonzero: 1 :e omega :\: {0}.
+{ exact (setminusI omega {0} 1 H1omega H1not0). }
+claim Hrecip1: recip_SNo 1 = 1.
+{ claim H1neq0: 1 <> 0.
+  { exact neq_1_0. }
+  claim Hinv: mul_SNo 1 (recip_SNo 1) = 1.
+  { exact (recip_SNo_invR 1 SNo_1 H1neq0). }
+  rewrite <- (mul_SNo_oneL (recip_SNo 1) (SNo_recip_SNo 1 SNo_1)) at 1.
+  exact Hinv. }
+claim Heq2: 2 = div_SNo 2 1.
+{ claim Hdivdef: div_SNo 2 1 = mul_SNo 2 (recip_SNo 1).
+  { reflexivity. }
+  rewrite Hdivdef.
+  rewrite Hrecip1.
+  rewrite (mul_SNo_oneR 2 SNo_2).
+  reflexivity. }
+claim Hex: exists m :e int, exists n :e omega :\: {0}, 2 = div_SNo m n.
+{ witness 2.
+  apply andI.
+  - exact H2int.
+  - witness 1.
+    apply andI.
+    + exact H1nonzero.
+    + exact Heq2. }
+exact (SepI real (fun x:set => exists m :e int, exists n :e omega :\: {0}, x = div_SNo m n) 2 H2real Hex).
+Qed.
+
+(** helper for §16 Exercise 7: 2 is not in the sqrt(2)-cut **)
+(** LATEX VERSION: Since 2^2 is not < 2, we have 2 ∉ {q∈Q | q^2 < 2}. **)
+Theorem two_not_in_Q_sqrt2_cut : 2 /:e Q_sqrt2_cut.
+assume H2: 2 :e Q_sqrt2_cut.
+prove False.
+claim H2Q: 2 :e rational_numbers.
+{ exact (SepE1 rational_numbers (fun q:set => mul_SNo q q < 2) 2 H2). }
+claim Hlt: mul_SNo 2 2 < 2.
+{ exact (SepE2 rational_numbers (fun q:set => mul_SNo q q < 2) 2 H2). }
+claim Hpos2: 0 < 2.
+{ exact SNoLt_0_2. }
+claim H12: 1 < 2.
+{ exact SNoLt_1_2. }
+claim H1mul: mul_SNo 1 2 < mul_SNo 2 2.
+{ exact (pos_mul_SNo_Lt' 1 2 2 SNo_1 SNo_2 SNo_2 Hpos2 H12). }
+claim H2lt22: 2 < mul_SNo 2 2.
+{ rewrite <- (mul_SNo_oneL 2 SNo_2) at 1.
+  exact H1mul. }
+claim H2lt2: 2 < 2.
+{ exact (SNoLt_tra 2 (mul_SNo 2 2) 2 SNo_2 (SNo_mul_SNo 2 2 SNo_2 SNo_2) SNo_2 H2lt22 Hlt). }
+exact ((SNoLt_irref 2) H2lt2).
+Qed.
+
+(** helper for §16 Exercise 7: Q_sqrt2_cut is a proper subset of Q **)
+(** LATEX VERSION: The sqrt(2)-cut is not all of Q (for instance 2 is not in it). **)
+Theorem Q_sqrt2_cut_neq_Q : Q_sqrt2_cut <> rational_numbers.
+assume Heq: Q_sqrt2_cut = rational_numbers.
+prove False.
+claim H2inQ: 2 :e rational_numbers.
+{ exact two_in_rational_numbers. }
+claim H2inCut: 2 :e Q_sqrt2_cut.
+{ rewrite Heq.
+  exact H2inQ. }
+exact (two_not_in_Q_sqrt2_cut H2inCut).
+Qed.
+
 Theorem ex16_7_convex_interval_or_ray :
   exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
 prove exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
@@ -23652,7 +23735,7 @@ prove convex_in rational_numbers Q_sqrt2_cut /\ Q_sqrt2_cut <> rational_numbers 
 apply andI.
 - apply andI.
   + admit.
-  + admit.
+  + exact Q_sqrt2_cut_neq_Q.
 - admit.
 Qed.
 
