@@ -33244,6 +33244,20 @@ claim HxinEmpty: x :e Empty.
 exact (EmptyE x HxinEmpty).
 Qed.
 
+(** Helper: refinement of two open balls around a common point **)
+(** LATEX VERSION: If x lies in two open balls, then some smaller ball around x is contained in their intersection. **)
+Theorem open_ball_refine_intersection : forall X d c1 c2 x r1 r2:set,
+  metric_on X d ->
+  c1 :e X -> c2 :e X -> x :e X ->
+  r1 :e R -> r2 :e R ->
+  Rlt 0 r1 -> Rlt 0 r2 ->
+  x :e open_ball X d c1 r1 ->
+  x :e open_ball X d c2 r2 ->
+  exists r3:set, r3 :e R /\ Rlt 0 r3 /\
+    open_ball X d x r3 c= (open_ball X d c1 r1) :/\: (open_ball X d c2 r2).
+admit.
+Qed.
+
 Definition metric_topology : set -> set -> set := fun X d =>
   generated_topology X (famunion X (fun x => {open_ball X d x r|r :e R, Rlt 0 r})).
 
@@ -33310,7 +33324,45 @@ apply andI.
   let r2. assume Hr2R: r2 :e R.
   assume Hr2pos: Rlt 0 r2.
   assume Hb2eq: b2 = open_ball X d c2 r2.
-  admit.
+  claim Hxball1: x :e open_ball X d c1 r1.
+  { rewrite <- Hb1eq. exact Hxb1. }
+  claim Hxball2: x :e open_ball X d c2 r2.
+  { rewrite <- Hb2eq. exact Hxb2. }
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun y0:set => Rlt (apply_fun d (c1,y0)) r1) x Hxball1). }
+  claim Hexr3: exists r3:set, r3 :e R /\ Rlt 0 r3 /\
+    open_ball X d x r3 c= (open_ball X d c1 r1) :/\: (open_ball X d c2 r2).
+  { exact (open_ball_refine_intersection X d c1 c2 x r1 r2 Hd Hc1 Hc2 HxX
+            Hr1R Hr2R Hr1pos Hr2pos Hxball1 Hxball2). }
+  apply Hexr3.
+  let r3. assume Hr3: r3 :e R /\ Rlt 0 r3 /\ open_ball X d x r3 c= (open_ball X d c1 r1) :/\: (open_ball X d c2 r2).
+  claim Hr3left: r3 :e R /\ Rlt 0 r3.
+  { exact (andEL (r3 :e R /\ Rlt 0 r3)
+                 (open_ball X d x r3 c= (open_ball X d c1 r1) :/\: (open_ball X d c2 r2))
+                 Hr3). }
+  claim Hr3R: r3 :e R.
+  { exact (andEL (r3 :e R) (Rlt 0 r3) Hr3left). }
+  claim Hr3pos: Rlt 0 r3.
+  { exact (andER (r3 :e R) (Rlt 0 r3) Hr3left). }
+  claim Hr3sub: open_ball X d x r3 c= (open_ball X d c1 r1) :/\: (open_ball X d c2 r2).
+  { exact (andER (r3 :e R /\ Rlt 0 r3)
+                 (open_ball X d x r3 c= (open_ball X d c1 r1) :/\: (open_ball X d c2 r2))
+                 Hr3). }
+  witness (open_ball X d x r3).
+  prove open_ball X d x r3 :e B /\ (x :e open_ball X d x r3 /\ open_ball X d x r3 c= b1 :/\: b2).
+  apply andI.
+  - (** open_ball X d x r3 :e B **)
+    claim HballIn: open_ball X d x r3 :e {open_ball X d x r|r :e R, Rlt 0 r}.
+    { exact (ReplSepI R (fun r0:set => Rlt 0 r0) (fun r0:set => open_ball X d x r0) r3 Hr3R Hr3pos). }
+    exact (famunionI X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}) x (open_ball X d x r3)
+           HxX HballIn).
+  - apply andI.
+    + (** x :e open_ball X d x r3 **)
+      exact (center_in_open_ball X d x r3 Hd HxX Hr3pos).
+    + (** subset **)
+      rewrite Hb1eq.
+      rewrite Hb2eq.
+      exact Hr3sub.
 Qed.
 
 Theorem metric_topology_is_topology : forall X d:set,
