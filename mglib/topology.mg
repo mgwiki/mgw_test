@@ -22527,6 +22527,30 @@ Definition ordered_square_open_strip : set :=
 Definition ordered_square_subspace_topology : set :=
   subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
 
+(** helper: ordered square as a standard subspace is the product topology **)
+(** LATEX VERSION: The standard subspace topology on I×I agrees with the product topology on I×I. **)
+Theorem ordered_square_standard_subspace_equals_product :
+  subspace_topology (setprod R R) R2_standard_topology ordered_square =
+  product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
+prove subspace_topology (setprod R R) R2_standard_topology ordered_square =
+  product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
+claim Hsq: ordered_square = setprod unit_interval unit_interval.
+{ reflexivity. }
+claim Hut: unit_interval_topology = subspace_topology R R_standard_topology unit_interval.
+{ reflexivity. }
+rewrite Hsq.
+rewrite Hut.
+rewrite R2_standard_equals_product.
+(** rewrite the product topology as a subspace of the product using `product_subspace_topology` **)
+rewrite (product_subspace_topology
+          R R_standard_topology
+          R R_standard_topology
+          unit_interval unit_interval
+          R_standard_topology_is_topology R_standard_topology_is_topology
+          unit_interval_sub_R unit_interval_sub_R).
+reflexivity.
+Qed.
+
 Theorem ordered_square_not_subspace_dictionary :
   ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
 prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
