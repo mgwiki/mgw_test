@@ -34661,7 +34661,172 @@ assume Hseq: sequence_on seq X.
 assume Hx: sequence_converges_metric X d seq x.
 assume Hy: sequence_converges_metric X d seq y.
 prove x = y.
-admit.
+apply xm (x = y).
+- exact (fun H => H).
+- assume Hneq: ~(x = y).
+  prove False.
+  claim HxX: x :e X.
+  { exact (sequence_converges_metric_point_in_X X d seq x Hx). }
+  claim HyX: y :e X.
+  { exact (sequence_converges_metric_point_in_X X d seq y Hy). }
+  claim Hfun: function_on d (setprod X X) R.
+  { exact (metric_on_function_on X d Hd). }
+  claim HxyIn: (x,y) :e setprod X X.
+  { exact (tuple_2_setprod X X x HxX y HyX). }
+  claim HdxyR: apply_fun d (x,y) :e R.
+  { exact (Hfun (x,y) HxyIn). }
+  claim HdxyS: SNo (apply_fun d (x,y)).
+  { exact (real_SNo (apply_fun d (x,y)) HdxyR). }
+  claim HdxyNe0: ~(apply_fun d (x,y) = 0).
+  { assume H0: apply_fun d (x,y) = 0.
+    apply Hneq.
+    exact (metric_on_zero_eq X d x y Hd HxX HyX H0). }
+  claim HdxyPos: Rlt 0 (apply_fun d (x,y)).
+  { apply (SNoLt_trichotomy_or_impred 0 (apply_fun d (x,y)) SNo_0 HdxyS
+           (Rlt 0 (apply_fun d (x,y)))).
+    - assume H0lt: 0 < apply_fun d (x,y).
+      exact (RltI 0 (apply_fun d (x,y)) real_0 HdxyR H0lt).
+    - assume Heq: 0 = apply_fun d (x,y).
+      prove False.
+      claim H0eq: apply_fun d (x,y) = 0.
+      { rewrite <- Heq. reflexivity. }
+      exact (HdxyNe0 H0eq).
+    - assume Hlt0: apply_fun d (x,y) < 0.
+      prove False.
+      claim HltR: Rlt (apply_fun d (x,y)) 0.
+      { exact (RltI (apply_fun d (x,y)) 0 HdxyR real_0 Hlt0). }
+      exact ((metric_on_nonneg X d x y Hd HxX HyX) HltR). }
+  claim HexN: exists N :e omega, eps_ N < apply_fun d (x,y).
+  { exact (exists_eps_lt_pos (apply_fun d (x,y)) HdxyR HdxyPos). }
+  apply HexN.
+  let N. assume HNpair.
+  claim HNomega: N :e omega.
+  { exact (andEL (N :e omega) (eps_ N < apply_fun d (x,y)) HNpair). }
+  claim HepsNlt: eps_ N < apply_fun d (x,y).
+  { exact (andER (N :e omega) (eps_ N < apply_fun d (x,y)) HNpair). }
+  claim HNnat: nat_p N.
+  { exact (omega_nat_p N HNomega). }
+  claim HsuccOmega: ordsucc N :e omega.
+  { exact (omega_ordsucc N HNomega). }
+  claim HepsR: eps_ (ordsucc N) :e R.
+  { exact (SNoS_omega_real (eps_ (ordsucc N))
+           (SNo_eps_SNoS_omega (ordsucc N) HsuccOmega)). }
+  claim HepsS: SNo (eps_ (ordsucc N)).
+  { exact (SNo_eps_ (ordsucc N) HsuccOmega). }
+  claim H0lt_eps: 0 < eps_ (ordsucc N).
+  { exact (SNo_eps_pos (ordsucc N) HsuccOmega). }
+  claim HepsPos: Rlt 0 (eps_ (ordsucc N)).
+  { exact (RltI 0 (eps_ (ordsucc N)) real_0 HepsR H0lt_eps). }
+  claim HexNx: exists Nx:set, Nx :e omega /\
+    forall n:set, n :e omega -> Nx c= n ->
+      Rlt (apply_fun d (apply_fun seq n, x)) (eps_ (ordsucc N)).
+  { exact (sequence_converges_metric_eps X d seq x Hx (eps_ (ordsucc N))
+           (andI (eps_ (ordsucc N) :e R) (Rlt 0 (eps_ (ordsucc N))) HepsR HepsPos)). }
+  claim HexNy: exists Ny:set, Ny :e omega /\
+    forall n:set, n :e omega -> Ny c= n ->
+      Rlt (apply_fun d (apply_fun seq n, y)) (eps_ (ordsucc N)).
+  { exact (sequence_converges_metric_eps X d seq y Hy (eps_ (ordsucc N))
+           (andI (eps_ (ordsucc N) :e R) (Rlt 0 (eps_ (ordsucc N))) HepsR HepsPos)). }
+  apply HexNx.
+  let Nx. assume HNxpair.
+  apply HexNy.
+  let Ny. assume HNypair.
+  claim HNxomega: Nx :e omega.
+  { exact (andEL (Nx :e omega)
+                 (forall n:set, n :e omega -> Nx c= n ->
+                   Rlt (apply_fun d (apply_fun seq n, x)) (eps_ (ordsucc N)))
+                 HNxpair). }
+  claim HNxprop: forall n:set, n :e omega -> Nx c= n ->
+    Rlt (apply_fun d (apply_fun seq n, x)) (eps_ (ordsucc N)).
+  { exact (andER (Nx :e omega)
+                 (forall n:set, n :e omega -> Nx c= n ->
+                   Rlt (apply_fun d (apply_fun seq n, x)) (eps_ (ordsucc N)))
+                 HNxpair). }
+  claim HNyomega: Ny :e omega.
+  { exact (andEL (Ny :e omega)
+                 (forall n:set, n :e omega -> Ny c= n ->
+                   Rlt (apply_fun d (apply_fun seq n, y)) (eps_ (ordsucc N)))
+                 HNypair). }
+  claim HNyprop: forall n:set, n :e omega -> Ny c= n ->
+    Rlt (apply_fun d (apply_fun seq n, y)) (eps_ (ordsucc N)).
+  { exact (andER (Ny :e omega)
+                 (forall n:set, n :e omega -> Ny c= n ->
+                   Rlt (apply_fun d (apply_fun seq n, y)) (eps_ (ordsucc N)))
+                 HNypair). }
+  set n0 := Nx :\/: Ny.
+  claim Hn0omega: n0 :e omega.
+  { exact (omega_binunion Nx Ny HNxomega HNyomega). }
+  claim HNxsub: Nx c= n0.
+  { exact (binunion_Subq_1 Nx Ny). }
+  claim HNysub: Ny c= n0.
+  { exact (binunion_Subq_2 Nx Ny). }
+  claim Hdx0: Rlt (apply_fun d (apply_fun seq n0, x)) (eps_ (ordsucc N)).
+  { exact (HNxprop n0 Hn0omega HNxsub). }
+  claim Hdy0: Rlt (apply_fun d (apply_fun seq n0, y)) (eps_ (ordsucc N)).
+  { exact (HNyprop n0 Hn0omega HNysub). }
+  claim Hseqfun: function_on seq omega X.
+  { exact Hseq. }
+  claim Hseqn0X: apply_fun seq n0 :e X.
+  { exact (Hseqfun n0 Hn0omega). }
+  claim HsymX: apply_fun d (x, apply_fun seq n0) = apply_fun d (apply_fun seq n0, x).
+  { exact (metric_on_symmetric X d x (apply_fun seq n0) Hd HxX Hseqn0X). }
+  claim Hdx: Rlt (apply_fun d (x, apply_fun seq n0)) (eps_ (ordsucc N)).
+  { rewrite HsymX. exact Hdx0. }
+  set a := apply_fun d (x, apply_fun seq n0).
+  set b := apply_fun d (apply_fun seq n0, y).
+  claim Hxn0In: (x, apply_fun seq n0) :e setprod X X.
+  { exact (tuple_2_setprod X X x HxX (apply_fun seq n0) Hseqn0X). }
+  claim Hn0yIn: (apply_fun seq n0, y) :e setprod X X.
+  { exact (tuple_2_setprod X X (apply_fun seq n0) Hseqn0X y HyX). }
+  claim HaR: a :e R.
+  { exact (Hfun (x, apply_fun seq n0) Hxn0In). }
+  claim HbR: b :e R.
+  { exact (Hfun (apply_fun seq n0, y) Hn0yIn). }
+  claim HaS: SNo a.
+  { exact (real_SNo a HaR). }
+  claim HbS: SNo b.
+  { exact (real_SNo b HbR). }
+  claim Haxlt: a < eps_ (ordsucc N).
+  { exact (RltE_lt a (eps_ (ordsucc N)) Hdx). }
+  claim Hbylt: b < eps_ (ordsucc N).
+  { exact (RltE_lt b (eps_ (ordsucc N)) Hdy0). }
+  claim Hstep1: add_SNo a b < add_SNo a (eps_ (ordsucc N)).
+  { exact (add_SNo_Lt2 a b (eps_ (ordsucc N)) HaS HbS HepsS Hbylt). }
+  claim Hstep2raw: add_SNo (eps_ (ordsucc N)) a < add_SNo (eps_ (ordsucc N)) (eps_ (ordsucc N)).
+  { exact (add_SNo_Lt2 (eps_ (ordsucc N)) a (eps_ (ordsucc N)) HepsS HaS HepsS Haxlt). }
+  claim Hcom: add_SNo (eps_ (ordsucc N)) a = add_SNo a (eps_ (ordsucc N)).
+  { exact (add_SNo_com (eps_ (ordsucc N)) a HepsS HaS). }
+  claim Hstep2: add_SNo a (eps_ (ordsucc N)) < add_SNo (eps_ (ordsucc N)) (eps_ (ordsucc N)).
+  { rewrite <- Hcom at 1.
+    exact Hstep2raw. }
+  claim Hsumlt_eps2: add_SNo a b < add_SNo (eps_ (ordsucc N)) (eps_ (ordsucc N)).
+  { exact (SNoLt_tra (add_SNo a b) (add_SNo a (eps_ (ordsucc N)))
+           (add_SNo (eps_ (ordsucc N)) (eps_ (ordsucc N)))
+           (SNo_add_SNo a b HaS HbS)
+           (SNo_add_SNo a (eps_ (ordsucc N)) HaS HepsS)
+           (SNo_add_SNo (eps_ (ordsucc N)) (eps_ (ordsucc N)) HepsS HepsS)
+           Hstep1 Hstep2). }
+  claim HepsHalf: add_SNo (eps_ (ordsucc N)) (eps_ (ordsucc N)) = eps_ N.
+  { exact (eps_ordsucc_half_add N HNnat). }
+  claim HsumS: SNo (add_SNo a b).
+  { exact (SNo_add_SNo a b HaS HbS). }
+  claim HepsNR: eps_ N :e R.
+  { exact (SNoS_omega_real (eps_ N) (SNo_eps_SNoS_omega N HNomega)). }
+  claim HepsNS: SNo (eps_ N).
+  { exact (real_SNo (eps_ N) HepsNR). }
+  claim Hsumlt_epsN: add_SNo a b < eps_ N.
+  { rewrite <- HepsHalf.
+    exact Hsumlt_eps2. }
+  claim Hsumlt_dxy: add_SNo a b < apply_fun d (x,y).
+  { exact (SNoLt_tra (add_SNo a b) (eps_ N) (apply_fun d (x,y))
+           HsumS HepsNS HdxyS Hsumlt_epsN HepsNlt). }
+  claim HsumR: add_SNo a b :e R.
+  { exact (real_add_SNo a HaR b HbR). }
+  claim HsumltR: Rlt (add_SNo a b) (apply_fun d (x,y)).
+  { exact (RltI (add_SNo a b) (apply_fun d (x,y)) HsumR HdxyR Hsumlt_dxy). }
+  claim Htri: ~(Rlt (add_SNo a b) (apply_fun d (x,y))).
+  { exact (metric_on_triangle X d x (apply_fun seq n0) y Hd HxX Hseqn0X HyX). }
+  exact (Htri HsumltR).
 Qed.
 
 (** uniform convergence of function sequences between metric spaces **) 
