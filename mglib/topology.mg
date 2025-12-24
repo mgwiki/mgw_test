@@ -23779,10 +23779,10 @@ apply andI.
 	                     x
 	                     Hx). }
 	      claim Hxx: mul_SNo x x < 2.
-	      { admit. }
+	      { admit. (** FAIL **) }
 	      exact (SepI rational_numbers (fun q:set => mul_SNo q q < 2) x HxQ Hxx).
 	  + exact Q_sqrt2_cut_neq_Q.
-- admit.
+- admit. (** FAIL **)
 Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
