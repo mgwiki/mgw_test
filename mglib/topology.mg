@@ -24278,7 +24278,55 @@ apply andI.
     (** obtain a product-subbasis rectangle b with p0 :e b and b c= U **)
     claim Href0: exists b :e B1, p0 :e b /\ b c= U.
     { exact (Href p0 Hp0U). }
-    (** the remaining contradiction uses that any product-subbasis neighborhood of p0 varies the first coordinate, but U fixes it **)
+    (** destruct the subbasis element containing p0 **)
+    apply Href0.
+    let b0. assume Hb0pair.
+    apply Hb0pair.
+    assume Hb0B: b0 :e B1.
+    assume Hb0core: p0 :e b0 /\ b0 c= U.
+    claim Hp0b0: p0 :e b0.
+    { exact (andEL (p0 :e b0) (b0 c= U) Hb0core). }
+    claim Hb0subU: b0 c= U.
+    { exact (andER (p0 :e b0) (b0 c= U) Hb0core). }
+    (** expand membership in product_subbasis to obtain a rectangle representation **)
+    apply (famunionE unit_interval_topology
+                     (fun U0:set => {rectangle_set U0 V|V :e unit_interval_topology})
+                     b0
+                     Hb0B).
+    let U0. assume HU0pair.
+    apply HU0pair.
+    assume HU0Tx: U0 :e unit_interval_topology.
+    assume Hb0Repl: b0 :e {rectangle_set U0 V|V :e unit_interval_topology}.
+    apply (ReplE unit_interval_topology (fun V0:set => rectangle_set U0 V0) b0 Hb0Repl).
+    let V0. assume HV0pair.
+    apply HV0pair.
+    assume HV0Ty: V0 :e unit_interval_topology.
+	    assume Hb0eq: b0 = rectangle_set U0 V0.
+	    claim Hp0rect: p0 :e rectangle_set U0 V0.
+	    { rewrite <- Hb0eq.
+	      exact Hp0b0. }
+    (** extract coordinate membership eps_1:e U0 and 1:e V0 **)
+    claim Hp00: p0 0 = eps_ 1.
+    { claim Hp0def: p0 = (eps_ 1, 1).
+      { reflexivity. }
+      rewrite Hp0def.
+      exact (tuple_2_0_eq (eps_ 1) 1). }
+    claim Hp01: p0 1 = 1.
+    { claim Hp0def: p0 = (eps_ 1, 1).
+      { reflexivity. }
+      rewrite Hp0def.
+      exact (tuple_2_1_eq (eps_ 1) 1). }
+    claim HepsU0: (eps_ 1) :e U0.
+    { claim Hp0U0: (p0 0) :e U0.
+      { exact (ap0_Sigma U0 (fun _ : set => V0) p0 Hp0rect). }
+      rewrite <- Hp00.
+      exact Hp0U0. }
+    claim H1V0: 1 :e V0.
+    { claim Hp0V0: (p0 1) :e V0.
+      { exact (ap1_Sigma U0 (fun _ : set => V0) p0 Hp0rect). }
+      rewrite <- Hp01.
+      exact Hp0V0. }
+    (** the remaining contradiction uses that U0 contains points different from eps_1, yielding a point of b0 not in U **)
     admit.
   }
   exact (HUnprod HUprod).
