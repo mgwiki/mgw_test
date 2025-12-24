@@ -20716,6 +20716,156 @@ apply (andER (basis_on (setprod X Y) (product_basis_from Bx By))
              (basis_refines_topology (setprod X Y) (product_topology X Tx Y Ty) (product_basis_from Bx By) HTprod HCsub Href)).
 Qed.
 
+(** Helper: product_basis_from is a basis on the product **)
+Theorem product_basis_from_is_basis_on : forall X Y Bx By Tx Ty:set,
+  basis_on X Bx -> generated_topology X Bx = Tx ->
+  basis_on Y By -> generated_topology Y By = Ty ->
+  basis_on (setprod X Y) (product_basis_from Bx By).
+let X Y Bx By Tx Ty.
+assume HBx_basis: basis_on X Bx.
+assume HTx_eq: generated_topology X Bx = Tx.
+assume HBy_basis: basis_on Y By.
+assume HTy_eq: generated_topology Y By = Ty.
+claim HTx: topology_on X Tx.
+{ rewrite <- HTx_eq.
+  exact (lemma_topology_from_basis X Bx HBx_basis). }
+claim HTy: topology_on Y Ty.
+{ rewrite <- HTy_eq.
+  exact (lemma_topology_from_basis Y By HBy_basis). }
+claim HTprod: topology_on (setprod X Y) (product_topology X Tx Y Ty).
+{ exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
+claim HCsub: forall c :e product_basis_from Bx By, c :e product_topology X Tx Y Ty.
+{ let c. assume HcC.
+  claim HBprod: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+  { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+  claim HexU: exists U :e Bx, c :e {setprod U V | V :e By}.
+  { exact (famunionE Bx (fun U0:set => {setprod U0 V0 | V0 :e By}) c HcC). }
+  apply HexU.
+  let U. assume HUconj: U :e Bx /\ c :e {setprod U V | V :e By}.
+  claim HU: U :e Bx.
+  { exact (andEL (U :e Bx) (c :e {setprod U V | V :e By}) HUconj). }
+  claim HcRepl: c :e {setprod U V | V :e By}.
+  { exact (andER (U :e Bx) (c :e {setprod U V | V :e By}) HUconj). }
+  claim HexV: exists V :e By, c = setprod U V.
+  { exact (ReplE By (fun V0:set => setprod U V0) c HcRepl). }
+  apply HexV.
+  let V. assume HVconj: V :e By /\ c = setprod U V.
+  claim HV: V :e By.
+  { exact (andEL (V :e By) (c = setprod U V) HVconj). }
+  claim Hceq: c = setprod U V.
+  { exact (andER (V :e By) (c = setprod U V) HVconj). }
+  claim HUTx: U :e Tx.
+  { rewrite <- HTx_eq.
+    exact (generated_topology_contains_basis X Bx HBx_basis U HU). }
+  claim HVTy: V :e Ty.
+  { rewrite <- HTy_eq.
+    exact (generated_topology_contains_basis Y By HBy_basis V HV). }
+  claim HcSub: c :e product_subbasis X Tx Y Ty.
+  { rewrite Hceq.
+    claim Hrepl: rectangle_set U V :e {rectangle_set U W | W :e Ty}.
+    { exact (ReplI Ty (fun W:set => rectangle_set U W) V HVTy). }
+    exact (famunionI Tx (fun U0:set => {rectangle_set U0 W | W :e Ty}) U (rectangle_set U V) HUTx Hrepl). }
+  exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBprod c HcSub). }
+claim Href: forall U :e product_topology X Tx Y Ty, forall p :e U,
+  exists Cx :e product_basis_from Bx By, p :e Cx /\ Cx c= U.
+{ let U. assume HU: U :e product_topology X Tx Y Ty.
+  let p. assume Hp: p :e U.
+  claim HUprop: forall q :e U, exists b :e product_subbasis X Tx Y Ty, q :e b /\ b c= U.
+  { exact (SepE2 (Power (setprod X Y))
+                 (fun U0:set => forall q0 :e U0, exists b0 :e product_subbasis X Tx Y Ty, q0 :e b0 /\ b0 c= U0)
+                 U HU). }
+  claim Hexb: exists b :e product_subbasis X Tx Y Ty, p :e b /\ b c= U.
+  { exact (HUprop p Hp). }
+  apply Hexb.
+  let b. assume Hbpair.
+  claim HbSub: b :e product_subbasis X Tx Y Ty.
+  { exact (andEL (b :e product_subbasis X Tx Y Ty) (p :e b /\ b c= U) Hbpair). }
+  claim Hbprop: p :e b /\ b c= U.
+  { exact (andER (b :e product_subbasis X Tx Y Ty) (p :e b /\ b c= U) Hbpair). }
+  claim Hpb: p :e b.
+  { exact (andEL (p :e b) (b c= U) Hbprop). }
+  claim HbsubU: b c= U.
+  { exact (andER (p :e b) (b c= U) Hbprop). }
+  claim HexU0: exists U0 :e Tx, b :e {rectangle_set U0 V0 | V0 :e Ty}.
+  { exact (famunionE Tx (fun U1:set => {rectangle_set U1 V1 | V1 :e Ty}) b HbSub). }
+  apply HexU0.
+  let U0. assume HU0conj: U0 :e Tx /\ b :e {rectangle_set U0 V0 | V0 :e Ty}.
+  claim HU0: U0 :e Tx.
+  { exact (andEL (U0 :e Tx) (b :e {rectangle_set U0 V0 | V0 :e Ty}) HU0conj). }
+  claim HbRepl: b :e {rectangle_set U0 V0 | V0 :e Ty}.
+  { exact (andER (U0 :e Tx) (b :e {rectangle_set U0 V0 | V0 :e Ty}) HU0conj). }
+  claim HexV0: exists V0 :e Ty, b = rectangle_set U0 V0.
+  { exact (ReplE Ty (fun V1:set => rectangle_set U0 V1) b HbRepl). }
+  apply HexV0.
+  let V0. assume HV0conj: V0 :e Ty /\ b = rectangle_set U0 V0.
+  claim HV0: V0 :e Ty.
+  { exact (andEL (V0 :e Ty) (b = rectangle_set U0 V0) HV0conj). }
+  claim Hbeq: b = rectangle_set U0 V0.
+  { exact (andER (V0 :e Ty) (b = rectangle_set U0 V0) HV0conj). }
+  claim Hpb0: p :e rectangle_set U0 V0.
+  { prove p :e rectangle_set U0 V0.
+    rewrite <- Hbeq.
+    exact Hpb. }
+  claim Hp0U0: p 0 :e U0.
+  { exact (ap0_Sigma U0 (fun _ : set => V0) p Hpb0). }
+  claim Hp1V0: p 1 :e V0.
+  { exact (ap1_Sigma U0 (fun _ : set => V0) p Hpb0). }
+  claim HU0gen: U0 :e generated_topology X Bx.
+  { rewrite HTx_eq. exact HU0. }
+  claim HV0gen: V0 :e generated_topology Y By.
+  { rewrite HTy_eq. exact HV0. }
+  claim HU0loc: forall x :e U0, exists bx :e Bx, x :e bx /\ bx c= U0.
+  { exact (SepE2 (Power X)
+                 (fun U1:set => forall x1 :e U1, exists b1 :e Bx, x1 :e b1 /\ b1 c= U1)
+                 U0 HU0gen). }
+  claim HV0loc: forall y :e V0, exists by :e By, y :e by /\ by c= V0.
+  { exact (SepE2 (Power Y)
+                 (fun V1:set => forall y1 :e V1, exists b1 :e By, y1 :e b1 /\ b1 c= V1)
+                 V0 HV0gen). }
+  claim Hexbx: exists bx :e Bx, p 0 :e bx /\ bx c= U0.
+  { exact (HU0loc (p 0) Hp0U0). }
+  apply Hexbx.
+  let bx. assume Hbxpair.
+  claim Hbx: bx :e Bx.
+  { exact (andEL (bx :e Bx) (p 0 :e bx /\ bx c= U0) Hbxpair). }
+  claim Hbxprop: p 0 :e bx /\ bx c= U0.
+  { exact (andER (bx :e Bx) (p 0 :e bx /\ bx c= U0) Hbxpair). }
+  claim Hp0bx: p 0 :e bx.
+  { exact (andEL (p 0 :e bx) (bx c= U0) Hbxprop). }
+  claim Hbxsub: bx c= U0.
+  { exact (andER (p 0 :e bx) (bx c= U0) Hbxprop). }
+  claim Hexby: exists by :e By, p 1 :e by /\ by c= V0.
+  { exact (HV0loc (p 1) Hp1V0). }
+  apply Hexby.
+  let by. assume Hbypair.
+  claim Hby: by :e By.
+  { exact (andEL (by :e By) (p 1 :e by /\ by c= V0) Hbypair). }
+  claim Hbyprop: p 1 :e by /\ by c= V0.
+  { exact (andER (by :e By) (p 1 :e by /\ by c= V0) Hbypair). }
+  claim Hp1by: p 1 :e by.
+  { exact (andEL (p 1 :e by) (by c= V0) Hbyprop). }
+  claim Hbysub: by c= V0.
+  { exact (andER (p 1 :e by) (by c= V0) Hbyprop). }
+  witness (setprod bx by).
+  apply andI.
+  - claim Hrepl: setprod bx by :e {setprod bx w | w :e By}.
+    { exact (ReplI By (fun w:set => setprod bx w) by Hby). }
+    exact (famunionI Bx (fun u:set => {setprod u w | w :e By}) bx (setprod bx by) Hbx Hrepl).
+  - apply andI.
+    + claim Heta: p = (p 0, p 1).
+      { exact (setprod_eta U0 V0 p Hpb0). }
+      rewrite Heta.
+      exact (tuple_2_setprod bx by (p 0) Hp0bx (p 1) Hp1by).
+    + claim Hsubbb: setprod bx by c= setprod U0 V0.
+      { exact (setprod_Subq bx by U0 V0 Hbxsub Hbysub). }
+      claim HsubbU: setprod U0 V0 c= U.
+      { rewrite <- Hbeq. exact HbsubU. }
+      exact (Subq_tra (setprod bx by) (setprod U0 V0) U Hsubbb HsubbU). }
+exact (andEL (basis_on (setprod X Y) (product_basis_from Bx By))
+             (generated_topology (setprod X Y) (product_basis_from Bx By) = product_topology X Tx Y Ty)
+             (basis_refines_topology (setprod X Y) (product_topology X Tx Y Ty) (product_basis_from Bx By) HTprod HCsub Href)).
+Qed.
+
 (** from §15 Theorem: basis of products of basis elements **)
 (** LATEX VERSION: If Bx, By are bases for Tx, Ty, then the collection {U×V|U∈Bx, V∈By} is a basis generating the product topology. **)
 Theorem product_basis_generates :
@@ -23438,18 +23588,20 @@ Qed.
 Theorem ex16_6_rational_rectangles_basis :
   basis_on (setprod R R) rational_rectangle_basis /\
   generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
+set B := rational_open_intervals_basis.
+claim HBpkg: basis_on R B /\ generated_topology R B = R_standard_topology.
+{ exact ex13_8a_rational_intervals_basis_standard. }
+claim HBbasis: basis_on R B.
+{ exact (andEL (basis_on R B) (generated_topology R B = R_standard_topology) HBpkg). }
+claim HBeq: generated_topology R B = R_standard_topology.
+{ exact (andER (basis_on R B) (generated_topology R B = R_standard_topology) HBpkg). }
 apply andI.
-- admit.
+- rewrite rational_rectangle_basis_eq_product_basis_from.
+  exact (product_basis_from_is_basis_on R R B B R_standard_topology R_standard_topology
+         HBbasis HBeq HBbasis HBeq).
 - (** reduce to product-basis theorem using equality of bases **)
   rewrite rational_rectangle_basis_eq_product_basis_from.
   rewrite R2_standard_equals_product.
-  set B := rational_open_intervals_basis.
-  claim HBpkg: basis_on R B /\ generated_topology R B = R_standard_topology.
-  { exact ex13_8a_rational_intervals_basis_standard. }
-  claim HBbasis: basis_on R B.
-  { exact (andEL (basis_on R B) (generated_topology R B = R_standard_topology) HBpkg). }
-  claim HBeq: generated_topology R B = R_standard_topology.
-  { exact (andER (basis_on R B) (generated_topology R B = R_standard_topology) HBpkg). }
   exact (product_basis_generates_product_topology R R B B R_standard_topology R_standard_topology
          HBbasis HBeq HBbasis HBeq).
 Qed.
