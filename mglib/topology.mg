@@ -22400,7 +22400,13 @@ Theorem convex_subspace_order_topology : forall X Y:set,
 let X Y.
 assume Hconv: convex_in X Y.
 prove order_topology Y = subspace_topology X (order_topology X) Y.
-admit.
+apply set_ext.
+- let U. assume HU: U :e order_topology Y.
+  prove U :e subspace_topology X (order_topology X) Y.
+  admit.
+- let U. assume HU: U :e subspace_topology X (order_topology X) Y.
+  prove U :e order_topology Y.
+  admit.
 Qed.
 
 (** helper: intersection with a subset can drop the larger set **) 
@@ -23196,7 +23202,9 @@ Theorem ex16_6_rational_rectangles_basis :
   basis_on (setprod R R) rational_rectangle_basis /\
   generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
 prove basis_on (setprod R R) rational_rectangle_basis /\ generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
-admit.
+apply andI.
+- admit.
+- admit.
 Qed.
 
 (** from §16 Exercise 7: convex subset implies interval or ray? **) 
@@ -23238,7 +23246,15 @@ Definition Q_sqrt2_cut : set := {q :e rational_numbers | mul_SNo q q < 2}.
 Theorem ex16_7_convex_interval_or_ray :
   exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
 prove exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
-admit.
+witness rational_numbers.
+witness Q_sqrt2_cut.
+prove convex_in rational_numbers Q_sqrt2_cut /\ Q_sqrt2_cut <> rational_numbers /\ ~ interval_or_ray_in rational_numbers Q_sqrt2_cut.
+(** conjunction is left-associative: (A /\ B) /\ C **)
+apply andI.
+- apply andI.
+  + admit.
+  + admit.
+- admit.
 Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
@@ -23249,7 +23265,17 @@ Theorem ex16_8_lines_in_lower_limit_products :
     subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L =
       R_lower_limit_topology.
 prove exists L:set, L c= setprod R R /\ L = {(x,x)|x :e R} /\ subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L = R_lower_limit_topology.
-admit.
+set L := {(x,x)|x :e R}.
+witness L.
+prove L c= setprod R R /\ L = {(x,x)|x :e R} /\ subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L = R_lower_limit_topology.
+(** conjunction is left-associative: (A /\ B) /\ C **)
+apply andI.
+- (** L c= setprod R R /\ L = diagonal **)
+  apply andI.
+  + admit.
+  + reflexivity.
+- (** induced subspace topology equals R_lower_limit_topology **)
+  admit.
 Qed.
 
 (** from §16 Exercise 9: dictionary order topology on ℝ×ℝ equals ℝ_d × ℝ **) 
@@ -23258,7 +23284,9 @@ Theorem ex16_9_dictionary_equals_product :
   R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology
   /\ R2_dictionary_order_topology <> R2_standard_topology.
 prove R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology /\ R2_dictionary_order_topology <> R2_standard_topology.
-admit.
+apply andI.
+- admit.
+- admit.
 Qed.
 
 (** from §16 Exercise 10: compare topologies on I×I **) 
@@ -23268,7 +23296,9 @@ Theorem ex16_10_compare_topologies_on_square :
   subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <>
     product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
 prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\ subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <> product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
-admit.
+apply andI.
+- admit.
+- admit.
 Qed.
 
 (** from §17 Definition: interior and closure of a set **) 
