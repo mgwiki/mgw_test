@@ -33286,6 +33286,30 @@ apply andI.
 	    - (** x :e b **)
 	      exact (center_in_open_ball X d x 1 Hd Hx Rlt_0_1).
 - (** refinement property for intersections around a point **)
+  let b1. assume Hb1: b1 :e B.
+  let b2. assume Hb2: b2 :e B.
+  let x. assume Hxb1: x :e b1.
+  assume Hxb2: x :e b2.
+  prove exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2.
+  (** destruct b1 and b2 as open balls; the remaining metric refinement is admitted **)
+  apply (famunionE_impred X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}) b1 Hb1
+         (exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)).
+  let c1. assume Hc1: c1 :e X.
+  assume Hb1In: b1 :e {open_ball X d c1 r|r :e R, Rlt 0 r}.
+  apply (ReplSepE_impred R (fun r0:set => Rlt 0 r0) (fun r0:set => open_ball X d c1 r0) b1 Hb1In
+         (exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)).
+  let r1. assume Hr1R: r1 :e R.
+  assume Hr1pos: Rlt 0 r1.
+  assume Hb1eq: b1 = open_ball X d c1 r1.
+  apply (famunionE_impred X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}) b2 Hb2
+         (exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)).
+  let c2. assume Hc2: c2 :e X.
+  assume Hb2In: b2 :e {open_ball X d c2 r|r :e R, Rlt 0 r}.
+  apply (ReplSepE_impred R (fun r0:set => Rlt 0 r0) (fun r0:set => open_ball X d c2 r0) b2 Hb2In
+         (exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2)).
+  let r2. assume Hr2R: r2 :e R.
+  assume Hr2pos: Rlt 0 r2.
+  assume Hb2eq: b2 = open_ball X d c2 r2.
   admit.
 Qed.
 
