@@ -19886,6 +19886,15 @@ claim HSingOmega: {1} :e omega.
 exact (Sing1_not_in_omega HSingOmega).
 Qed.
 
+(** helper: setprod 2 omega is not setprod R R **)
+Theorem setprod_2_omega_neq_setprod_R_R : setprod 2 omega <> setprod R R.
+assume Heq: setprod 2 omega = setprod R R.
+prove False.
+apply setprod_R_R_neq_setprod_2_omega.
+rewrite <- Heq.
+reflexivity.
+Qed.
+
 (** helper: unfold order_rel on setprod R R to the dictionary-order case **)
 Theorem order_rel_setprod_R_R_unfold : forall a b:set,
   order_rel (setprod R R) a b ->
