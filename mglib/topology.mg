@@ -24145,7 +24145,38 @@ apply andI.
         exact (binintersectI V ordered_square p HpV HpSq).
       - let p. assume Hp: p :e V :/\: ordered_square.
         prove p :e U.
-        admit.
+        (** reduce to the defining predicate for U in the Sep **)
+        claim HpPair: p :e V /\ p :e ordered_square.
+        { exact (binintersectE V ordered_square p Hp). }
+	        claim HpSq: p :e ordered_square.
+	        { exact (andER (p :e V) (p :e ordered_square) HpPair). }
+	        claim Hexists: exists y:set, p = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y).
+	        { (** extract a coordinate representation of p from HpSq **)
+	          claim HsqDef: ordered_square = setprod unit_interval unit_interval.
+	          { reflexivity. }
+	          claim HpProd: p :e setprod unit_interval unit_interval.
+	          { rewrite <- HsqDef.
+	            exact HpSq. }
+	          set y := proj1 p.
+	          claim HyU: y :e unit_interval.
+	          { exact (proj1_Sigma unit_interval (fun _ : set => unit_interval) p HpProd). }
+	          (** from y :e unit_interval, obtain ~(Rlt 1 y) **)
+	          claim Hyprop: ~(Rlt 1 y).
+	          { exact (andER (~(Rlt y 0)) (~(Rlt 1 y))
+	                        (SepE2 R (fun t:set => ~(Rlt t 0) /\ ~(Rlt 1 t)) y HyU)). }
+	          witness y.
+	          (** the remaining identification of the first coordinate and the strict inequality are the key work **)
+	          prove p = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y).
+	          apply andI.
+	          - apply andI.
+	            + admit.
+	            + admit.
+	          - exact Hyprop. }
+	        exact (SepI ordered_square
+	                    (fun p0:set => exists y:set, p0 = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y))
+	                    p
+	                    HpSq
+	                    Hexists).
     }
     claim Hex: exists W :e R2_dictionary_order_topology, U = W :/\: ordered_square.
     { witness V.
