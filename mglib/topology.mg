@@ -41660,7 +41660,12 @@ Theorem ex23_Rl_components :
   component_of R R_lower_limit_topology 0 = {0} /\
   (forall x:set, x :e R -> component_of R R_lower_limit_topology x = {x}).
 prove component_of R R_lower_limit_topology 0 = {0} /\ (forall x:set, x :e R -> component_of R R_lower_limit_topology x = {x}).
-admit.
+apply andI.
+- (** component_of ... 0 = {0} **)
+  admit.
+- (** all components are singletons **)
+  let x. assume HxR: x :e R.
+  admit.
 Qed.
 
 (** from §23 Exercise: components of ℝ^ω in product/uniform/box topologies **) 
@@ -41671,7 +41676,11 @@ Theorem ex23_Romega_components :
   component_of (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)) (const_family omega 0) =
     {f :e product_space omega (const_space_family omega R R_standard_topology) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
 prove component_of (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) (const_family omega 0) = product_space omega (const_space_family omega R R_standard_topology) /\ component_of (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)) (const_family omega 0) = {f :e product_space omega (const_space_family omega R R_standard_topology) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
-admit.
+apply andI.
+- (** product topology: connected **)
+  admit.
+- (** box topology: finite support condition **)
+  admit.
 Qed.
 
 (** from §23 Exercise: ordered square locally connected but not locally path connected **) 
@@ -41680,7 +41689,11 @@ Theorem ex23_ordered_square_locally_conn_not_pathconn :
   locally_connected ordered_square ordered_square_topology /\
   ~ locally_path_connected ordered_square ordered_square_topology.
 prove locally_connected ordered_square ordered_square_topology /\ ~ locally_path_connected ordered_square ordered_square_topology.
-admit.
+apply andI.
+- (** locally_connected **)
+  admit.
+- (** not locally_path_connected **)
+  admit.
 Qed.
 
 (** from §23 Exercise: connected open subsets of locally path connected spaces are path connected **) 
