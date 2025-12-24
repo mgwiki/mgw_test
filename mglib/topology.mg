@@ -33933,86 +33933,17 @@ exact (continuous_map_total_imp (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y
 Qed.
 
 (** from §18 Theorem 18.3: pasting lemma **)
-(** LATEX VERSION: Pasting lemma: continuous pieces on closed (or appropriate) sets assemble to a continuous map. **)
+(** LATEX VERSION: Let X=A∪B, where A and B are closed in X. Let f:A→Y and g:B→Y be continuous. If f=g on A∩B, then the combined map h:X→Y defined by h|A=f and h|B=g is continuous. **)
 Theorem pasting_lemma : forall X A B Y Tx Ty f g:set,
   topology_on X Tx ->
-  A :e Tx -> B :e Tx -> A :/\: B = Empty ->
+  closed_in X Tx A ->
+  closed_in X Tx B ->
+  A :\/: B = X ->
   continuous_map A (subspace_topology X Tx A) Y Ty f ->
   continuous_map B (subspace_topology X Tx B) Y Ty g ->
-  continuous_map (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g).
-let X A B Y Tx Ty f g.
-assume HTx: topology_on X Tx.
-assume HA: A :e Tx.
-assume HB: B :e Tx.
-assume Hdisj: A :/\: B = Empty.
-assume Hf: continuous_map A (subspace_topology X Tx A) Y Ty f.
-assume Hg: continuous_map B (subspace_topology X Tx B) Y Ty g.
-prove continuous_map (A :\/: B) (subspace_topology X Tx (A :\/: B)) Y Ty (f :\/: g).
-(** Extract components from Hf **)
-claim HTy: topology_on Y Ty.
-{ exact (andER (topology_on A (subspace_topology X Tx A)) (topology_on Y Ty)
-          (andEL (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty) (function_on f A Y)
-            (andEL (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty /\ function_on f A Y)
-                   (forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A)
-                   Hf))). }
-claim Hfun_f: function_on f A Y.
-{ exact (andER (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty) (function_on f A Y)
-          (andEL (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty /\ function_on f A Y)
-                 (forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A)
-                 Hf)). }
-claim Hpreimg_f: forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A.
-{ exact (andER (topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty /\ function_on f A Y)
-               (forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A)
-               Hf). }
-(** Extract components from Hg **)
-claim Hfun_g: function_on g B Y.
-{ exact (andER (topology_on B (subspace_topology X Tx B) /\ topology_on Y Ty) (function_on g B Y)
-          (andEL (topology_on B (subspace_topology X Tx B) /\ topology_on Y Ty /\ function_on g B Y)
-                 (forall V:set, V :e Ty -> preimage_of B g V :e subspace_topology X Tx B)
-                 Hg)). }
-claim Hpreimg_g: forall V:set, V :e Ty -> preimage_of B g V :e subspace_topology X Tx B.
-{ exact (andER (topology_on B (subspace_topology X Tx B) /\ topology_on Y Ty /\ function_on g B Y)
-               (forall V:set, V :e Ty -> preimage_of B g V :e subspace_topology X Tx B)
-               Hg). }
-(** Build continuous_map for (f :\/: g) **)
-claim HAB_sub: A :\/: B c= X.
-{ apply binunion_Subq_min.
-  - exact (topology_elem_subset X Tx A HTx HA).
-  - exact (topology_elem_subset X Tx B HTx HB). }
-claim HTsub: topology_on (A :\/: B) (subspace_topology X Tx (A :\/: B)).
-{ exact (subspace_topology_is_topology X Tx (A :\/: B) HTx HAB_sub). }
-claim Hfun_fg: function_on (f :\/: g) (A :\/: B) Y.
-{ exact (function_union_on_disjoint A B Y f g Hdisj Hfun_f Hfun_g). }
-claim Hpreimg_fg: forall V:set, V :e Ty -> preimage_of (A :\/: B) (f :\/: g) V :e subspace_topology X Tx (A :\/: B).
-{ let V. assume HV: V :e Ty.
-  (** Use preimage decomposition axiom **)
-  claim Heq: preimage_of (A :\/: B) (f :\/: g) V = (preimage_of A f V) :\/: (preimage_of B g V).
-  { exact (preimage_of_union_functions A B f g V Hdisj). }
-  (** Both preimages are in their respective subspace topologies **)
-  claim HfV: preimage_of A f V :e subspace_topology X Tx A.
-  { exact (Hpreimg_f V HV). }
-  claim HgV: preimage_of B g V :e subspace_topology X Tx B.
-  { exact (Hpreimg_g V HV). }
-  (** Since A and B are open in X, subspace opens are just intersections **)
-  (** Apply axiom: union of subspace opens is in subspace topology of union **)
-  claim Hunion: (preimage_of A f V :\/: preimage_of B g V) :e subspace_topology X Tx (A :\/: B).
-  { exact (subspace_union_of_opens X Tx A B (preimage_of A f V) (preimage_of B g V) HTx HA HB Hdisj HfV HgV). }
-  (** Rewrite using Heq to get the desired form **)
-  prove preimage_of (A :\/: B) (f :\/: g) V :e subspace_topology X Tx (A :\/: B).
-  rewrite Heq.
-  exact Hunion.
-}
-(** Assemble the proof **)
-prove topology_on (A :\/: B) (subspace_topology X Tx (A :\/: B)) /\
-      topology_on Y Ty /\ function_on (f :\/: g) (A :\/: B) Y /\
-      (forall V:set, V :e Ty -> preimage_of (A :\/: B) (f :\/: g) V :e subspace_topology X Tx (A :\/: B)).
-apply andI.
-- apply andI.
-  + apply andI.
-    * exact HTsub.
-    * exact HTy.
-  + exact Hfun_fg.
-- exact Hpreimg_fg.
+  (forall x:set, x :e (A :/\: B) -> apply_fun f x = apply_fun g x) ->
+  continuous_map X Tx Y Ty (f :\/: g).
+admit. (** FAIL **)
 Qed.
 
 (** from §18 Theorem 18.4: maps into products **) 
