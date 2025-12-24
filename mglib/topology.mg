@@ -19559,7 +19559,7 @@ Qed.
 (** NOTE: The earlier axiom equating bases was too strong; we only need equality of the generated topologies. **)
 Theorem standard_topology_is_order_topology : order_topology R = R_standard_topology.
 prove order_topology R = R_standard_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
@@ -20354,7 +20354,7 @@ Definition two_by_nat_order_topology : set := order_topology two_by_nat.
 (** Helper: singleton {(1,0)} is not open in two_by_nat order topology **)
 Theorem two_by_nat_singleton_not_open :
   ~ ({(1,0)} :e two_by_nat_order_topology).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** LATEX VERSION: The two-by-ℕ dictionary order space fails to be discrete. **)
@@ -33718,7 +33718,7 @@ Theorem preimage_of_union_functions : forall A B f g V:set,
   A :/\: B = Empty ->
   preimage_of (A :\/: B) (f :\/: g) V =
     (preimage_of A f V) :\/: (preimage_of B g V).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** Helper: unions of open subsets of disjoint open subspaces are open in the union subspace **)
@@ -43747,14 +43747,14 @@ Definition path_component_of : set -> set -> set -> set := fun X Tx x =>
 Theorem path_component_symmetric_axiom : forall X Tx x y:set,
   topology_on X Tx -> x :e X -> y :e X ->
   y :e path_component_of X Tx x -> x :e path_component_of X Tx y.
-admit.
+admit. (** FAIL **)
 Qed.
  
 Theorem path_component_transitive_axiom : forall X Tx x y z:set,
   topology_on X Tx -> x :e X -> y :e X -> z :e X ->
   y :e path_component_of X Tx x -> z :e path_component_of X Tx y ->
   z :e path_component_of X Tx x.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** Helper: a path connected subspace lies inside a single path component **)
