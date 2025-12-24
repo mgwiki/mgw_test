@@ -35510,7 +35510,249 @@ apply iffI.
     sequence_converges_metric X dX seq x ->
     sequence_converges_metric Y dY ({(n, apply_fun f (apply_fun seq n))|n :e omega}) (apply_fun f x).
   prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
-  admit.
+  claim Hed: forall x0:set, x0 :e X ->
+    forall eps:set, eps :e R /\ Rlt 0 eps ->
+      exists delta:set, delta :e R /\ Rlt 0 delta /\
+        (forall x:set, x :e X ->
+          Rlt (apply_fun dX (x,x0)) delta ->
+          Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps).
+  { let x0. assume Hx0X: x0 :e X.
+    let eps. assume Heps: eps :e R /\ Rlt 0 eps.
+    apply dneg.
+    assume Hno: ~(exists delta:set, delta :e R /\ Rlt 0 delta /\
+      (forall x:set, x :e X ->
+        Rlt (apply_fun dX (x,x0)) delta ->
+        Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps)).
+    prove False.
+    claim HepsR: eps :e R.
+    { exact (andEL (eps :e R) (Rlt 0 eps) Heps). }
+    claim Hepspos: Rlt 0 eps.
+    { exact (andER (eps :e R) (Rlt 0 eps) Heps). }
+    claim Hbad: forall delta:set, delta :e R /\ Rlt 0 delta ->
+      exists x:set, x :e X /\ Rlt (apply_fun dX (x,x0)) delta /\
+        ~(Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps).
+    { let delta. assume Hdelta: delta :e R /\ Rlt 0 delta.
+      apply dneg.
+      assume Hnobad: ~(exists x:set, x :e X /\ Rlt (apply_fun dX (x,x0)) delta /\
+        ~(Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps)).
+      prove False.
+      apply Hno.
+      witness delta.
+      apply andI.
+      - exact Hdelta.
+      - let x. assume HxX: x :e X.
+        assume Hdx: Rlt (apply_fun dX (x,x0)) delta.
+        apply dneg.
+        assume HnRlt: ~(Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps).
+        prove False.
+        apply Hnobad.
+        witness x.
+        apply andI.
+        - apply andI.
+          + exact HxX.
+          + exact Hdx.
+        - exact HnRlt. }
+    set g := fun n:set =>
+      Eps_i (fun x:set =>
+        x :e X /\
+        Rlt (apply_fun dX (x,x0)) (eps_ n) /\
+        ~(Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps)).
+    set seq := {(n, g n)|n :e omega}.
+    claim Hseqfun: function_on seq omega X.
+    { claim HgAll: forall n:set, n :e omega -> g n :e X.
+      { let n. assume Hnomega: n :e omega.
+        claim Hgnreal: eps_ n :e R.
+        { exact (SNoS_omega_real (eps_ n) (SNo_eps_SNoS_omega n Hnomega)). }
+        claim HgnposS: 0 < eps_ n.
+        { exact (SNo_eps_pos n Hnomega). }
+        claim Hgnpos: Rlt 0 (eps_ n).
+        { exact (RltI 0 (eps_ n) real_0 Hgnreal HgnposS). }
+        claim Hexbad: exists x:set, x :e X /\ Rlt (apply_fun dX (x,x0)) (eps_ n) /\
+          ~(Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps).
+        { exact (Hbad (eps_ n) (andI (eps_ n :e R) (Rlt 0 (eps_ n)) Hgnreal Hgnpos)). }
+        claim Hgprop: g n :e X /\ Rlt (apply_fun dX (g n,x0)) (eps_ n) /\
+          ~(Rlt (apply_fun dY (apply_fun f (g n), apply_fun f x0)) eps).
+        { exact (Eps_i_ex
+                  (fun x:set => x :e X /\ Rlt (apply_fun dX (x,x0)) (eps_ n) /\
+                    ~(Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps))
+                  Hexbad). }
+        claim Hg12: g n :e X /\ Rlt (apply_fun dX (g n,x0)) (eps_ n).
+        { exact (andEL
+                  (g n :e X /\ Rlt (apply_fun dX (g n,x0)) (eps_ n))
+                  (~(Rlt (apply_fun dY (apply_fun f (g n), apply_fun f x0)) eps))
+                  Hgprop). }
+        exact (andEL (g n :e X) (Rlt (apply_fun dX (g n,x0)) (eps_ n)) Hg12). }
+      claim Hrng: graph_range_subset seq X.
+      { exact (graph_range_subset_graph omega X (fun n0:set => g n0) HgAll). }
+      let n. assume Hnomega: n :e omega.
+      claim HpairIn: (n, g n) :e seq.
+      { exact (ReplI omega (fun n0:set => (n0, g n0)) n Hnomega). }
+      claim HpairApp: (n, apply_fun seq n) :e seq.
+      { exact (Eps_i_ax (fun y0:set => (n,y0) :e seq) (g n) HpairIn). }
+      exact (Hrng n (apply_fun seq n) HpairApp). }
+	    claim Hseqconv: sequence_converges_metric X dX seq x0.
+	    { prove (metric_on X dX /\ sequence_on seq X) /\ x0 :e X /\
+	        forall eps0:set, eps0 :e R /\ Rlt 0 eps0 ->
+	          exists N:set, N :e omega /\
+	            forall n:set, n :e omega -> N c= n ->
+	              Rlt (apply_fun dX (apply_fun seq n, x0)) eps0.
+	      apply andI.
+	      - apply andI.
+	        + apply andI.
+	          * exact HdX.
+	          * exact Hseqfun.
+	        + exact Hx0X.
+	      - let eps0. assume Heps0: eps0 :e R /\ Rlt 0 eps0.
+	        claim Heps0R: eps0 :e R.
+	        { exact (andEL (eps0 :e R) (Rlt 0 eps0) Heps0). }
+	        claim Heps0pos: Rlt 0 eps0.
+	        { exact (andER (eps0 :e R) (Rlt 0 eps0) Heps0). }
+	        claim HexN: exists N :e omega, eps_ N < eps0.
+	        { exact (exists_eps_lt_pos eps0 Heps0R Heps0pos). }
+	        apply HexN.
+	        let N. assume HNpair.
+	        claim HNomega: N :e omega.
+	        { exact (andEL (N :e omega) (eps_ N < eps0) HNpair). }
+	        claim HepsNlt: eps_ N < eps0.
+	        { exact (andER (N :e omega) (eps_ N < eps0) HNpair). }
+	        claim HepsNR: eps_ N :e R.
+	        { exact (SNoS_omega_real (eps_ N) (SNo_eps_SNoS_omega N HNomega)). }
+	        claim HepsNltR: Rlt (eps_ N) eps0.
+	        { exact (RltI (eps_ N) eps0 HepsNR Heps0R HepsNlt). }
+	        witness N.
+	        apply andI.
+	        + exact HNomega.
+	        + let n. assume Hnomega: n :e omega.
+	          assume HNsubn: N c= n.
+	          claim HepsnR: eps_ n :e R.
+	          { exact (SNoS_omega_real (eps_ n) (SNo_eps_SNoS_omega n Hnomega)). }
+	          claim HordN: ordinal N.
+	          { exact (nat_p_ordinal N (omega_nat_p N HNomega)). }
+	          claim Hordn: ordinal n.
+	          { exact (nat_p_ordinal n (omega_nat_p n Hnomega)). }
+	          claim Hnot_nInN: ~(n :e N).
+	          { assume HninN: n :e N.
+	            claim Hnn: n :e n.
+	            { exact (HNsubn n HninN). }
+	            exact ((In_irref n) Hnn). }
+	          claim Hfunc: functional_graph seq.
+	          { exact (functional_graph_graph omega (fun n0:set => g n0)). }
+	          claim HpairIn: (n, g n) :e seq.
+	          { exact (ReplI omega (fun n0:set => (n0, g n0)) n Hnomega). }
+	          claim Happ: apply_fun seq n = g n.
+	          { exact (functional_graph_apply_fun_eq seq n (g n) Hfunc HpairIn). }
+	          claim HgnposS: 0 < eps_ n.
+	          { exact (SNo_eps_pos n Hnomega). }
+	          claim Hgnpos: Rlt 0 (eps_ n).
+	          { exact (RltI 0 (eps_ n) real_0 HepsnR HgnposS). }
+	          claim Hexbad: exists x:set, x :e X /\ Rlt (apply_fun dX (x,x0)) (eps_ n) /\
+	            ~(Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps).
+	          { exact (Hbad (eps_ n) (andI (eps_ n :e R) (Rlt 0 (eps_ n)) HepsnR Hgnpos)). }
+	          claim Hgprop: g n :e X /\ Rlt (apply_fun dX (g n,x0)) (eps_ n) /\
+	            ~(Rlt (apply_fun dY (apply_fun f (g n), apply_fun f x0)) eps).
+	          { exact (Eps_i_ex
+	                    (fun x:set => x :e X /\ Rlt (apply_fun dX (x,x0)) (eps_ n) /\
+	                      ~(Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps))
+	                    Hexbad). }
+	          claim Hg12: g n :e X /\ Rlt (apply_fun dX (g n,x0)) (eps_ n).
+	          { exact (andEL
+	                    (g n :e X /\ Rlt (apply_fun dX (g n,x0)) (eps_ n))
+	                    (~(Rlt (apply_fun dY (apply_fun f (g n), apply_fun f x0)) eps))
+	                    Hgprop). }
+	          claim Hdxlt_epsn: Rlt (apply_fun dX (g n, x0)) (eps_ n).
+	          { exact (andER (g n :e X) (Rlt (apply_fun dX (g n,x0)) (eps_ n)) Hg12). }
+	          claim Hdxlt_epsn2: Rlt (apply_fun dX (apply_fun seq n, x0)) (eps_ n).
+	          { rewrite Happ. exact Hdxlt_epsn. }
+          claim Hepsnlt_eps0: Rlt (eps_ n) eps0.
+          { apply (ordinal_trichotomy_or_impred N n HordN Hordn (Rlt (eps_ n) eps0)).
+            - assume HNin: N :e n.
+              claim Hepsnlt_epsN: eps_ n < eps_ N.
+              { exact (SNo_eps_decr n Hnomega N HNin). }
+              claim Hepsnlt_epsNR: Rlt (eps_ n) (eps_ N).
+              { exact (RltI (eps_ n) (eps_ N) HepsnR HepsNR Hepsnlt_epsN). }
+              exact (Rlt_tra (eps_ n) (eps_ N) eps0 Hepsnlt_epsNR HepsNltR).
+            - assume Heq: N = n.
+              rewrite <- Heq.
+              exact HepsNltR.
+            - assume HninN: n :e N.
+              apply FalseE.
+              prove False.
+              exact (Hnot_nInN HninN). }
+	          exact (Rlt_tra (apply_fun dX (apply_fun seq n, x0)) (eps_ n) eps0 Hdxlt_epsn2 Hepsnlt_eps0). }
+    set seqY := {(n, apply_fun f (apply_fun seq n))|n :e omega}.
+    claim Himgconv: sequence_converges_metric Y dY seqY (apply_fun f x0).
+    { exact (Hseqcont seq x0 Hseqconv). }
+    claim HexNimg: exists N:set, N :e omega /\
+      forall n:set, n :e omega -> N c= n ->
+        Rlt (apply_fun dY (apply_fun seqY n, apply_fun f x0)) eps.
+    { exact (sequence_converges_metric_eps Y dY seqY (apply_fun f x0) Himgconv eps Heps). }
+    apply HexNimg.
+    let N. assume HNpair.
+    claim HNomega: N :e omega.
+    { exact (andEL (N :e omega)
+                   (forall n:set, n :e omega -> N c= n ->
+                     Rlt (apply_fun dY (apply_fun seqY n, apply_fun f x0)) eps)
+                   HNpair). }
+    claim HNprop: forall n:set, n :e omega -> N c= n ->
+      Rlt (apply_fun dY (apply_fun seqY n, apply_fun f x0)) eps.
+    { exact (andER (N :e omega)
+                   (forall n:set, n :e omega -> N c= n ->
+                     Rlt (apply_fun dY (apply_fun seqY n, apply_fun f x0)) eps)
+                   HNpair). }
+    claim HNsubN: N c= N.
+    { exact (Subq_ref N). }
+    claim Hdylt: Rlt (apply_fun dY (apply_fun seqY N, apply_fun f x0)) eps.
+    { exact (HNprop N HNomega HNsubN). }
+    claim HfuncY: functional_graph seqY.
+    { exact (functional_graph_graph omega (fun n0:set => apply_fun f (apply_fun seq n0))). }
+    claim HpairY: (N, apply_fun f (apply_fun seq N)) :e seqY.
+    { exact (ReplI omega (fun n0:set => (n0, apply_fun f (apply_fun seq n0))) N HNomega). }
+    claim HappY: apply_fun seqY N = apply_fun f (apply_fun seq N).
+    { exact (functional_graph_apply_fun_eq seqY N (apply_fun f (apply_fun seq N)) HfuncY HpairY). }
+    claim HfuncX: functional_graph seq.
+    { exact (functional_graph_graph omega (fun n0:set => g n0)). }
+    claim HpairX: (N, g N) :e seq.
+    { exact (ReplI omega (fun n0:set => (n0, g n0)) N HNomega). }
+    claim HappX: apply_fun seq N = g N.
+    { exact (functional_graph_apply_fun_eq seq N (g N) HfuncX HpairX). }
+    claim Hgnreal: eps_ N :e R.
+    { exact (SNoS_omega_real (eps_ N) (SNo_eps_SNoS_omega N HNomega)). }
+    claim HgnposS: 0 < eps_ N.
+    { exact (SNo_eps_pos N HNomega). }
+    claim Hgnpos: Rlt 0 (eps_ N).
+    { exact (RltI 0 (eps_ N) real_0 Hgnreal HgnposS). }
+    claim Hexbad: exists x:set, x :e X /\ Rlt (apply_fun dX (x,x0)) (eps_ N) /\
+      ~(Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps).
+    { exact (Hbad (eps_ N) (andI (eps_ N :e R) (Rlt 0 (eps_ N)) Hgnreal Hgnpos)). }
+    claim Hgprop: g N :e X /\ Rlt (apply_fun dX (g N,x0)) (eps_ N) /\
+      ~(Rlt (apply_fun dY (apply_fun f (g N), apply_fun f x0)) eps).
+    { exact (Eps_i_ex
+              (fun x:set => x :e X /\ Rlt (apply_fun dX (x,x0)) (eps_ N) /\
+                ~(Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps))
+              Hexbad). }
+    claim Hnot: ~(Rlt (apply_fun dY (apply_fun f (g N), apply_fun f x0)) eps).
+    { exact (andER
+              (g N :e X /\ Rlt (apply_fun dX (g N,x0)) (eps_ N))
+              (~(Rlt (apply_fun dY (apply_fun f (g N), apply_fun f x0)) eps))
+              Hgprop). }
+    claim Hdylt2: Rlt (apply_fun dY (apply_fun f (g N), apply_fun f x0)) eps.
+    { claim HeqY: apply_fun seqY N = apply_fun f (g N).
+      { rewrite HappY.
+        rewrite HappX.
+        reflexivity. }
+      rewrite <- HeqY at 1.
+      exact Hdylt. }
+    exact (Hnot Hdylt2). }
+  exact (iffER
+          (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f)
+          (forall x0:set, x0 :e X ->
+            forall eps:set, eps :e R /\ Rlt 0 eps ->
+              exists delta:set, delta :e R /\ Rlt 0 delta /\
+                (forall x:set, x :e X ->
+                  Rlt (apply_fun dX (x,x0)) delta ->
+                  Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps))
+          (metric_epsilon_delta_continuity X dX Y dY f HdX HdY Hf)
+          Hed).
 Qed.
 
 (** from §22 Definition: quotient map and quotient topology **) 
