@@ -33393,15 +33393,6 @@ exact (andER (continuous_map X Tx Y Ty f)
              Hhom).
 Qed.
 
-(** Helper: function union properties **)
-(** LATEX VERSION: If A and B are disjoint and f,g map A,B into Y, then the pasted graph f∪g maps A∪B into Y. **)
-Theorem function_union_on_disjoint : forall A B Y f g:set,
-  A :/\: B = Empty ->
-  function_on f A Y -> function_on g B Y ->
-  function_on (f :\/: g) (A :\/: B) Y.
-admit. (** FAIL **)
-Qed.
-
 (** Helper: function_on for a pasted total functional map **)
 Theorem function_union_on_disjoint_total_functional : forall A B Y f g:set,
   A :/\: B = Empty ->
@@ -33444,45 +33435,6 @@ claim Htotfg: forall x:set, x :e (A :\/: B) -> exists y:set, y :e Y /\ (x,y) :e 
     + exact (andEL (y :e Y) ((x,y) :e g) Hy).
     + exact (binunionI2 f g (x,y) (andER (y :e Y) ((x,y) :e g) Hy)). }
 exact (function_on_from_totality_and_range (A :\/: B) Y (f :\/: g) Htotfg Hrfg).
-Qed.
-
-(** Helper: total_function_on union properties **)
-(** Uses `function_union_on_disjoint` for the function_on part, and proves totality directly by cases on x∈A∪B. **)
-Theorem total_function_union_on_disjoint : forall A B Y f g:set,
-  A :/\: B = Empty ->
-  total_function_on f A Y -> total_function_on g B Y ->
-  total_function_on (f :\/: g) (A :\/: B) Y.
-let A B Y f g.
-assume Hdisj: A :/\: B = Empty.
-assume Hf: total_function_on f A Y.
-assume Hg: total_function_on g B Y.
-prove function_on (f :\/: g) (A :\/: B) Y /\
-  forall x:set, x :e (A :\/: B) -> exists y:set, y :e Y /\ (x,y) :e (f :\/: g).
-apply andI.
-- (** function_on part **)
-  claim Hf_on: function_on f A Y.
-  { exact (total_function_on_function_on f A Y Hf). }
-  claim Hg_on: function_on g B Y.
-  { exact (total_function_on_function_on g B Y Hg). }
-  exact (function_union_on_disjoint A B Y f g Hdisj Hf_on Hg_on).
-- (** totality part **)
-  let x. assume Hx: x :e (A :\/: B).
-  prove exists y:set, y :e Y /\ (x,y) :e (f :\/: g).
-  apply (binunionE A B x Hx).
-  + assume HxA: x :e A.
-    apply (total_function_on_totality f A Y Hf x HxA).
-    let y. assume Hy: y :e Y /\ (x,y) :e f.
-    witness y.
-    apply andI.
-    * exact (andEL (y :e Y) ((x,y) :e f) Hy).
-    * exact (binunionI1 f g (x,y) (andER (y :e Y) ((x,y) :e f) Hy)).
-  + assume HxB: x :e B.
-    apply (total_function_on_totality g B Y Hg x HxB).
-    let y. assume Hy: y :e Y /\ (x,y) :e g.
-    witness y.
-    apply andI.
-    * exact (andEL (y :e Y) ((x,y) :e g) Hy).
-	    * exact (binunionI2 f g (x,y) (andER (y :e Y) ((x,y) :e g) Hy)).
 Qed.
 
 (** Helper: total_function_on for a pasted total functional map **)
@@ -33711,14 +33663,6 @@ apply set_ext.
     { rewrite Happ.
       exact HgxV. }
     exact (SepI (A :\/: B) (fun x0:set => apply_fun (f :\/: g) x0 :e V) x HxAB HfgV).
-Qed.
-
-(** LATEX VERSION: For disjoint domains A,B, the preimage of V under the pasted map f∪g is the union of the separate preimages. **)
-Theorem preimage_of_union_functions : forall A B f g V:set,
-  A :/\: B = Empty ->
-  preimage_of (A :\/: B) (f :\/: g) V =
-    (preimage_of A f V) :\/: (preimage_of B g V).
-admit. (** FAIL **)
 Qed.
 
 (** Helper: unions of open subsets of disjoint open subspaces are open in the union subspace **)
