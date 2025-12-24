@@ -18830,6 +18830,73 @@ Definition order_rel : set -> set -> set -> prop := fun X a b =>
      a = (a1, a2) /\ b = (b1, b2) /\
      (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
 
+(** helper: eps_ 1 is not an element of the ordinal 2 **)
+(** LATEX VERSION: 1/2 is neither 0 nor 1. **)
+Theorem eps_1_not_in_2 : eps_ 1 /:e 2.
+assume Heps2: eps_ 1 :e 2.
+prove False.
+claim Hsub: 2 c= {0,1}.
+{ exact Subq_2_UPair01. }
+claim Heps01: eps_ 1 :e {0,1}.
+{ exact (Hsub (eps_ 1) Heps2). }
+apply (UPairE (eps_ 1) 0 1 Heps01 False).
+- assume Heq0: eps_ 1 = 0.
+  claim H1omega: 1 :e omega.
+  { exact (nat_p_omega 1 nat_1). }
+  claim Heps1SNoS: eps_ 1 :e SNoS_ omega.
+  { exact (SNo_eps_SNoS_omega 1 H1omega). }
+  claim HepsR: eps_ 1 :e R.
+  { exact (SNoS_omega_real (eps_ 1) Heps1SNoS). }
+  claim H0ltEps: Rlt 0 (eps_ 1).
+  { exact (RltI 0 (eps_ 1) real_0 HepsR (SNo_eps_pos 1 H1omega)). }
+  claim Hbad: Rlt 0 0.
+  { rewrite <- Heq0 at 2. exact H0ltEps. }
+  exact ((not_Rlt_refl 0 real_0) Hbad).
+- assume Heq1: eps_ 1 = 1.
+  claim H1omega: 1 :e omega.
+  { exact (nat_p_omega 1 nat_1). }
+  claim Heps1SNoS: eps_ 1 :e SNoS_ omega.
+  { exact (SNo_eps_SNoS_omega 1 H1omega). }
+  claim HepsR: eps_ 1 :e R.
+  { exact (SNoS_omega_real (eps_ 1) Heps1SNoS). }
+  claim H0Ord: ordinal 0.
+  { exact (nat_p_ordinal 0 nat_0). }
+  claim H0in1: 0 :e 1.
+  { exact (ordinal_0_In_ordsucc 0 H0Ord). }
+  claim HepsLt1S: (eps_ 1) < 1.
+  { claim HepsLtE0: eps_ 1 < eps_ 0.
+    { exact (SNo_eps_decr 1 H1omega 0 H0in1). }
+    rewrite <- (eps_0_1) at 2.
+    exact HepsLtE0. }
+  claim HepsLt1: Rlt (eps_ 1) 1.
+  { exact (RltI (eps_ 1) 1 HepsR real_1 HepsLt1S). }
+  claim Hbad: Rlt 1 1.
+  { rewrite <- Heq1 at 1. exact HepsLt1. }
+  exact ((not_Rlt_refl 1 real_1) Hbad).
+Qed.
+
+(** helper: setprod R R is not setprod 2 omega **)
+Theorem setprod_R_R_neq_setprod_2_omega : setprod R R <> setprod 2 omega.
+assume Heq: setprod R R = setprod 2 omega.
+prove False.
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim Heps1SNoS: eps_ 1 :e SNoS_ omega.
+{ exact (SNo_eps_SNoS_omega 1 H1omega). }
+claim HepsR: eps_ 1 :e R.
+{ exact (SNoS_omega_real (eps_ 1) Heps1SNoS). }
+claim HpRR: (eps_ 1, 0) :e setprod R R.
+{ exact (tuple_2_setprod R R (eps_ 1) HepsR 0 real_0). }
+claim Hp2o: (eps_ 1, 0) :e setprod 2 omega.
+{ rewrite <- Heq. exact HpRR. }
+claim Heps2: ((eps_ 1, 0) 0) :e 2.
+{ exact (ap0_Sigma 2 (fun _ : set => omega) (eps_ 1, 0) Hp2o). }
+claim Heps2': eps_ 1 :e 2.
+{ rewrite <- (tuple_2_0_eq (eps_ 1) 0).
+  exact Heps2. }
+exact (eps_1_not_in_2 Heps2').
+Qed.
+
 (** Helper: strict order on ℝ implies order_rel on ℝ **)
 (** LATEX VERSION: If a<b in ℝ then order_rel(ℝ,a,b) holds (first disjunct in the definition). **)
 Theorem Rlt_implies_order_rel_R : forall a b:set, Rlt a b -> order_rel R a b.
