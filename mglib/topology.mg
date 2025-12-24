@@ -34033,7 +34033,7 @@ Qed.
 (** from §21: epsilon-delta continuity in metric spaces **) 
 (** LATEX VERSION: A map between metric spaces is continuous exactly when it satisfies the epsilon-delta condition. **)
 Theorem metric_epsilon_delta_continuity : forall X dX Y dY f:set,
-  metric_on X dX -> metric_on Y dY ->
+  metric_on X dX -> metric_on Y dY -> function_on f X Y ->
   (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
   (forall x0:set, x0 :e X ->
      forall eps:set, eps :e R /\ Rlt 0 eps ->
@@ -34044,6 +34044,7 @@ Theorem metric_epsilon_delta_continuity : forall X dX Y dY f:set,
 let X dX Y dY f.
 assume HdX: metric_on X dX.
 assume HdY: metric_on Y dY.
+assume Hf: function_on f X Y.
 prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
   (forall x0:set, x0 :e X ->
      forall eps:set, eps :e R /\ Rlt 0 eps ->
@@ -34063,8 +34064,6 @@ apply iffI.
   { exact (andEL (eps :e R) (Rlt 0 eps) Heps). }
   claim Hepspos: Rlt 0 eps.
   { exact (andER (eps :e R) (Rlt 0 eps) Heps). }
-  claim Hf: function_on f X Y.
-  { exact (continuous_map_function_on X (metric_topology X dX) Y (metric_topology Y dY) f Hcont). }
   claim Hfx0Y: apply_fun f x0 :e Y.
   { exact (Hf x0 Hx0). }
   set V := open_ball Y dY (apply_fun f x0) eps.
@@ -34169,8 +34168,6 @@ apply iffI.
   { exact (metric_topology_is_topology X dX HdX). }
   claim HTy: topology_on Y (metric_topology Y dY).
   { exact (metric_topology_is_topology Y dY HdY). }
-  claim Hf: function_on f X Y.
-  { admit. }
   prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
   prove ((topology_on X (metric_topology X dX) /\ topology_on Y (metric_topology Y dY)) /\
          function_on f X Y) /\
@@ -35121,7 +35118,7 @@ apply iffI.
                     (forall x1:set, x1 :e X ->
                       Rlt (apply_fun dX (x1,x0)) delta ->
                       Rlt (apply_fun dY (apply_fun f x1, apply_fun f x0)) eps0))
-              (metric_epsilon_delta_continuity X dX Y dY f HdX HdY)
+              (metric_epsilon_delta_continuity X dX Y dY f HdX HdY Hf)
               Hcont). }
     apply (Hedcont x HxX eps Heps).
     let delta. assume Hdelta.
