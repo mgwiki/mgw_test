@@ -35977,7 +35977,11 @@ Qed.
 (** LATEX VERSION: Corollary 24.2: The real line R is connected (and so are intervals and rays in R). **)
 (** LATEX VERSION: The real line with the standard topology is connected. **)
 Theorem interval_connected : connected_space R R_standard_topology.
-admit.
+prove topology_on R R_standard_topology /\
+  ~(exists U V:set, U :e R_standard_topology /\ V :e R_standard_topology /\ separation_of R U V).
+apply andI.
+- exact R_standard_topology_is_topology.
+- admit.
 Qed.
 
 (** from §24 Theorem 24.3: intermediate value theorem (order topology) **)
@@ -36005,6 +36009,11 @@ assume Hb: b :e X.
 assume Hr: r :e Y.
 assume Hbetw: between_in_order Y (apply_fun f a) r (apply_fun f b).
 prove exists c:set, c :e X /\ apply_fun f c = r.
+set Im := image_of f X.
+set Tim := subspace_topology Y (order_topology Y) Im.
+claim HImconn: connected_space Im Tim.
+{ exact (continuous_image_connected X Tx Y (order_topology Y) f Hconn Hcont). }
+(** reduce to showing r :e Im, then use the image witness **)
 admit.
 Qed.
 
