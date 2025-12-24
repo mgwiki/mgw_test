@@ -40620,6 +40620,113 @@ claim HAclosed: closed_in X Tx A.
 exact HAclosed.
 Qed.
 
+(** from §25: components are open in locally connected spaces **) 
+(** LATEX VERSION: In a locally connected space, every component is open. **)
+Theorem components_are_open_in_locally_connected : forall X Tx:set,
+  locally_connected X Tx ->
+  forall x:set, x :e X -> open_in X Tx (component_of X Tx x).
+let X Tx.
+assume Hloc: locally_connected X Tx.
+let x.
+assume HxX: x :e X.
+prove open_in X Tx (component_of X Tx x).
+prove topology_on X Tx /\ component_of X Tx x :e Tx.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x0:set, x0 :e X ->
+                 forall U:set, U :e Tx -> x0 :e U ->
+                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V))
+               Hloc). }
+claim Hlocprop: forall y:set, y :e X ->
+  forall U:set, U :e Tx -> y :e U ->
+    exists V:set, V :e Tx /\ y :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V).
+{ exact (andER (topology_on X Tx)
+               (forall x0:set, x0 :e X ->
+                 forall U:set, U :e Tx -> x0 :e U ->
+                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V))
+               Hloc). }
+apply andI.
+- exact HTx.
+- set Comp := component_of X Tx x.
+  set UFam := {V :e Tx | V c= Comp /\ connected_space V (subspace_topology X Tx V)}.
+  claim HUFsub: UFam c= Tx.
+  { let V. assume HV: V :e UFam.
+    exact (SepE1 Tx (fun V0:set => V0 c= Comp /\ connected_space V0 (subspace_topology X Tx V0)) V HV). }
+  claim HUnionTx: Union UFam :e Tx.
+  { exact (topology_union_closed X Tx UFam HTx HUFsub). }
+  claim HUnionEq: Union UFam = Comp.
+  { apply set_ext.
+    - let y. assume Hy: y :e Union UFam.
+      apply (UnionE UFam y Hy).
+      let V. assume Hex: y :e V /\ V :e UFam.
+      claim HyV: y :e V.
+      { exact (andEL (y :e V) (V :e UFam) Hex). }
+      claim HVUF: V :e UFam.
+      { exact (andER (y :e V) (V :e UFam) Hex). }
+      claim HVpair: V c= Comp /\ connected_space V (subspace_topology X Tx V).
+      { exact (SepE2 Tx (fun V0:set => V0 c= Comp /\ connected_space V0 (subspace_topology X Tx V0)) V HVUF). }
+      claim HVsubComp: V c= Comp.
+      { exact (andEL (V c= Comp) (connected_space V (subspace_topology X Tx V)) HVpair). }
+      exact (HVsubComp y HyV).
+    - let y. assume Hy: y :e Comp.
+      claim HyX: y :e X.
+      { exact (SepE1 X (fun y0:set => exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y0 :e C) y Hy). }
+      claim HXTx: X :e Tx.
+      { exact (topology_has_X X Tx HTx). }
+      claim HexV: exists V:set, V :e Tx /\ y :e V /\ V c= X /\ connected_space V (subspace_topology X Tx V).
+      { exact (Hlocprop y HyX X HXTx HyX). }
+      apply HexV.
+      let V. assume HV: V :e Tx /\ y :e V /\ V c= X /\ connected_space V (subspace_topology X Tx V).
+      claim HVpre: ((V :e Tx /\ y :e V) /\ V c= X).
+      { exact (andEL ((V :e Tx /\ y :e V) /\ V c= X)
+                     (connected_space V (subspace_topology X Tx V)) HV). }
+      claim HVconn: connected_space V (subspace_topology X Tx V).
+      { exact (andER ((V :e Tx /\ y :e V) /\ V c= X)
+                     (connected_space V (subspace_topology X Tx V)) HV). }
+      claim HVTx_y: V :e Tx /\ y :e V.
+      { exact (andEL (V :e Tx /\ y :e V) (V c= X) HVpre). }
+      claim HVTx: V :e Tx.
+      { exact (andEL (V :e Tx) (y :e V) HVTx_y). }
+      claim HyV: y :e V.
+      { exact (andER (V :e Tx) (y :e V) HVTx_y). }
+      claim HVsubX: V c= X.
+      { exact (andER (V :e Tx /\ y :e V) (V c= X) HVpre). }
+      claim HcompEq: component_of X Tx y = component_of X Tx x.
+      { exact (component_of_eq_if_in X Tx x y HTx HxX Hy). }
+      claim HVsubComp: V c= Comp.
+      { let z. assume HzV: z :e V.
+        prove z :e Comp.
+        claim HzX: z :e X.
+        { exact (HVsubX z HzV). }
+        claim HzCompy: z :e component_of X Tx y.
+        { prove z :e {y0 :e X | exists C:set, connected_space C (subspace_topology X Tx C) /\ y :e C /\ y0 :e C}.
+          apply SepI.
+          - exact HzX.
+          - prove exists C:set, connected_space C (subspace_topology X Tx C) /\ y :e C /\ z :e C.
+            witness V.
+            prove connected_space V (subspace_topology X Tx V) /\ y :e V /\ z :e V.
+            apply andI.
+            + apply andI.
+              * exact HVconn.
+              * exact HyV.
+            + exact HzV. }
+        rewrite <- HcompEq.
+        exact HzCompy. }
+      claim HVinUFam: V :e UFam.
+      { prove V :e {V0 :e Tx | V0 c= Comp /\ connected_space V0 (subspace_topology X Tx V0)}.
+        apply SepI.
+        - exact HVTx.
+        - prove V c= Comp /\ connected_space V (subspace_topology X Tx V).
+          apply andI.
+          * exact HVsubComp.
+          * exact HVconn. }
+      exact (UnionI UFam y V HyV HVinUFam). }
+  claim HCompTx: Comp :e Tx.
+  { rewrite <- HUnionEq.
+    exact HUnionTx. }
+  exact HCompTx.
+Qed.
+
 (** from §25: components partition the space **) 
 (** LATEX VERSION: Components cover X and are pairwise disjoint. **)
 Theorem components_partition_space : forall X Tx:set,
@@ -40715,14 +40822,13 @@ Definition quasicomponent_of : set -> set -> set -> set := fun X Tx x =>
 Theorem components_vs_quasicomponents : forall X Tx:set,
   topology_on X Tx ->
   (forall x:set, component_of X Tx x c= quasicomponent_of X Tx x) /\
-  (locally_connected X Tx -> forall x:set, component_of X Tx x = quasicomponent_of X Tx x).
+  (locally_connected X Tx -> forall x:set, x :e X -> component_of X Tx x = quasicomponent_of X Tx x).
 let X Tx.
 assume HTx: topology_on X Tx.
 prove (forall x:set, component_of X Tx x c= quasicomponent_of X Tx x) /\
-  (locally_connected X Tx -> forall x:set, component_of X Tx x = quasicomponent_of X Tx x).
-apply andI.
-- (** components are contained in quasicomponents **)
-  let x.
+  (locally_connected X Tx -> forall x:set, x :e X -> component_of X Tx x = quasicomponent_of X Tx x).
+claim Hsub: forall x:set, component_of X Tx x c= quasicomponent_of X Tx x.
+{ let x.
   prove component_of X Tx x c= quasicomponent_of X Tx x.
   let y. assume Hy: y :e component_of X Tx x.
   prove y :e quasicomponent_of X Tx x.
@@ -40751,7 +40857,6 @@ apply andI.
       { exact (open_of_closed_complement X Tx U HUclosed). }
       claim HcompinTx: (X :\: U) :e Tx.
       { exact (andER (topology_on X Tx) ((X :\: U) :e Tx) HcompOpen). }
-      (** unpack the component witness C containing x and y **)
       claim HexC: exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y :e C.
       { exact (SepE2 X (fun y0:set => exists C:set, connected_space C (subspace_topology X Tx C) /\ x :e C /\ y0 :e C) y Hy). }
       apply HexC.
@@ -40766,22 +40871,39 @@ apply andI.
       { exact (andER (connected_space C (subspace_topology X Tx C) /\ x :e C) (y :e C) HC). }
       claim HCsubX: C c= X.
       { exact (connected_subspace_subset X Tx C HTx HCconn). }
-      (** connected subspace C must lie in one side of the separation (U, X\\U) **)
       claim Hside: C c= U \/ C c= (X :\: U).
       { exact (connected_subset_in_separation_side X Tx U (X :\: U) C HTx HCsubX HCconn HUinTx HcompinTx HsepUX). }
       apply (Hside (y :e U)).
       - assume HCsubU: C c= U.
         exact (HCsubU y HyC).
       - assume HCsubComp: C c= (X :\: U).
-        (** x is in U, so x cannot be in X\\U; contradiction **)
         claim HxComp: x :e X :\: U.
         { exact (HCsubComp x HxC). }
         claim HxNotU: x /:e U.
         { exact (setminusE2 X U x HxComp). }
         apply FalseE.
-        exact (HxNotU HxU).
-- (** locally connected implies equality (left as placeholder) **)
-  admit.
+        exact (HxNotU HxU). }
+claim Heq: locally_connected X Tx -> forall x:set, x :e X -> component_of X Tx x = quasicomponent_of X Tx x.
+{ assume Hloc: locally_connected X Tx.
+  let x. assume HxX: x :e X.
+  prove component_of X Tx x = quasicomponent_of X Tx x.
+  apply set_ext.
+  - let y. assume Hy: y :e component_of X Tx x.
+    exact (Hsub x y Hy).
+  - let y. assume HyQ: y :e quasicomponent_of X Tx x.
+    prove y :e component_of X Tx x.
+    claim HUopen: open_in X Tx (component_of X Tx x).
+    { exact (components_are_open_in_locally_connected X Tx Hloc x HxX). }
+    claim HUclosed: closed_in X Tx (component_of X Tx x).
+    { exact (components_are_closed X Tx HTx x HxX). }
+    claim HxU: x :e component_of X Tx x.
+    { exact (point_in_component X Tx x HTx HxX). }
+    claim Hprop: forall U:set, open_in X Tx U -> closed_in X Tx U -> x :e U -> y :e U.
+    { exact (SepE2 X (fun y0:set => forall U:set, open_in X Tx U -> closed_in X Tx U -> x :e U -> y0 :e U) y HyQ). }
+    exact (Hprop (component_of X Tx x) HUopen HUclosed HxU). }
+apply andI.
+- exact Hsub.
+- exact Heq.
 Qed.
 
 (** from §23 Exercise: components and path components of ℝℓ **) 
