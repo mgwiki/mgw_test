@@ -35043,7 +35043,7 @@ Qed.
     Was: {setprod n (apply_fun f (apply_fun seq n))|n :e omega} = {n × f(seq(n)) | n ∈ ω}
     Now: {(n, apply_fun f (apply_fun seq n))|n :e omega} = graph of n ↦ f(seq(n)) **)
 Theorem continuity_via_sequences_metric : forall X dX Y dY f:set,
-  metric_on X dX -> metric_on Y dY ->
+  metric_on X dX -> metric_on Y dY -> function_on f X Y ->
   (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
     forall seq x:set,
       sequence_converges_metric X dX seq x ->
@@ -35053,6 +35053,7 @@ Theorem continuity_via_sequences_metric : forall X dX Y dY f:set,
 let X dX Y dY f.
 assume HdX: metric_on X dX.
 assume HdY: metric_on Y dY.
+assume Hf: function_on f X Y.
 prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
     forall seq x:set,
       sequence_converges_metric X dX seq x ->
@@ -35069,8 +35070,6 @@ apply iffI.
   { exact (sequence_converges_metric_sequence_on X dX seq x Hseq). }
   claim HxX: x :e X.
   { exact (sequence_converges_metric_point_in_X X dX seq x Hseq). }
-  claim Hf: function_on f X Y.
-  { exact (continuous_map_function_on X (metric_topology X dX) Y (metric_topology Y dY) f Hcont). }
   claim HfxY: apply_fun f x :e Y.
   { exact (Hf x HxX). }
   claim HseqYfun: function_on seqY omega Y.
