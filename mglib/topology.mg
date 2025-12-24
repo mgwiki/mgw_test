@@ -33254,7 +33254,39 @@ Theorem open_balls_form_basis : forall X d:set,
 let X d.
 assume Hd: metric_on X d.
 prove basis_on X (famunion X (fun x => {open_ball X d x r|r :e R, Rlt 0 r})).
-admit.
+set B := famunion X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}).
+prove (B c= Power X /\ (forall x :e X, exists b :e B, x :e b)) /\
+  (forall b1 :e B, forall b2 :e B, forall x:set,
+     x :e b1 -> x :e b2 ->
+     exists b3 :e B, x :e b3 /\ b3 c= b1 :/\: b2).
+apply andI.
+- (** B c= Power X and cover property **)
+  apply andI.
+  + (** B c= Power X **)
+    let b. assume Hb: b :e B.
+    prove b :e Power X.
+    apply (famunionE_impred X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}) b Hb (b :e Power X)).
+    let x0. assume Hx0: x0 :e X.
+    assume HbIn: b :e {open_ball X d x0 r|r :e R, Rlt 0 r}.
+    apply (ReplSepE_impred R (fun r0:set => Rlt 0 r0) (fun r0:set => open_ball X d x0 r0) b HbIn (b :e Power X)).
+    let r0. assume Hr0R: r0 :e R.
+    assume Hr0pos: Rlt 0 r0.
+    assume Hbeq: b = open_ball X d x0 r0.
+    rewrite Hbeq.
+    exact (open_ball_in_Power X d x0 r0).
+	  + (** cover property **)
+	    let x. assume Hx: x :e X.
+	    prove exists b :e B, x :e b.
+	    witness (open_ball X d x 1).
+	    apply andI.
+	    - (** b :e B **)
+	      claim HballIn: open_ball X d x 1 :e {open_ball X d x r|r :e R, Rlt 0 r}.
+	      { exact (ReplSepI R (fun r0:set => Rlt 0 r0) (fun r0:set => open_ball X d x r0) 1 real_1 Rlt_0_1). }
+	      exact (famunionI X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}) x (open_ball X d x 1) Hx HballIn).
+	    - (** x :e b **)
+	      exact (center_in_open_ball X d x 1 Hd Hx Rlt_0_1).
+- (** refinement property for intersections around a point **)
+  admit.
 Qed.
 
 Theorem metric_topology_is_topology : forall X d:set,
