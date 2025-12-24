@@ -36047,7 +36047,9 @@ prove topology_on R R_standard_topology /\
   ~(exists U V:set, U :e R_standard_topology /\ V :e R_standard_topology /\ separation_of R U V).
 apply andI.
 - exact R_standard_topology_is_topology.
-- admit.
+- assume Hsep: exists U V:set, U :e R_standard_topology /\ V :e R_standard_topology /\ separation_of R U V.
+  (** standard proof uses order properties of R to contradict existence of a separation **)
+  admit.
 Qed.
 
 (** from §24 Theorem 24.3: intermediate value theorem (order topology) **)
@@ -40133,6 +40135,10 @@ apply andI.
   { exact (setminus_Subq EuclidPlane {(0,0)}). }
   exact (subspace_topology_is_topology EuclidPlane R2_standard_topology X HtopPlane HXsub).
 - (** path connectedness (stub) **)
+  let x y.
+  assume Hx: x :e X.
+  assume Hy: y :e X.
+  prove exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
   admit.
 Qed.
 
