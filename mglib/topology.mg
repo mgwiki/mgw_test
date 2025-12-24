@@ -22526,7 +22526,271 @@ Theorem unit_interval_open_neighborhood_has_other_point : forall U0:set,
   U0 :e unit_interval_topology ->
   eps_ 1 :e U0 ->
   exists x:set, x :e U0 /\ x <> eps_ 1.
-admit.
+let U0.
+assume HU0Tx: U0 :e unit_interval_topology.
+assume HepsU0: eps_ 1 :e U0.
+claim Hut: unit_interval_topology = subspace_topology R R_standard_topology unit_interval.
+{ reflexivity. }
+claim HU0Sub: U0 :e subspace_topology R R_standard_topology unit_interval.
+{ rewrite <- Hut. exact HU0Tx. }
+claim HU0Pow: U0 :e Power unit_interval.
+{ exact (SepE1 (Power unit_interval)
+               (fun U:set => exists V :e R_standard_topology, U = V :/\: unit_interval)
+               U0 HU0Sub). }
+claim HU0subI: U0 c= unit_interval.
+{ exact (PowerE unit_interval U0 HU0Pow). }
+claim HepsI: eps_ 1 :e unit_interval.
+{ exact (HU0subI (eps_ 1) HepsU0). }
+claim HepsR: eps_ 1 :e R.
+{ exact (unit_interval_sub_R (eps_ 1) HepsI). }
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim HepsS: SNo (eps_ 1).
+{ exact (real_SNo (eps_ 1) HepsR). }
+claim HepsPosS: 0 < (eps_ 1).
+{ exact (SNo_eps_pos 1 H1omega). }
+claim H0ltEps: Rlt 0 (eps_ 1).
+{ exact (RltI 0 (eps_ 1) real_0 HepsR HepsPosS). }
+claim H0Ord: ordinal 0.
+{ exact (nat_p_ordinal 0 nat_0). }
+claim H0in1: 0 :e 1.
+{ exact (ordinal_0_In_ordsucc 0 H0Ord). }
+claim HepsLt1S: (eps_ 1) < 1.
+{ claim HepsLtE0: eps_ 1 < eps_ 0.
+  { exact (SNo_eps_decr 1 H1omega 0 H0in1). }
+  rewrite <- (eps_0_1) at 2.
+  exact HepsLtE0. }
+claim HepsLt1: Rlt (eps_ 1) 1.
+{ exact (RltI (eps_ 1) 1 HepsR real_1 HepsLt1S). }
+claim HexV: exists V :e R_standard_topology, U0 = V :/\: unit_interval.
+{ exact (SepE2 (Power unit_interval)
+               (fun U:set => exists V :e R_standard_topology, U = V :/\: unit_interval)
+               U0 HU0Sub). }
+apply HexV.
+let V.
+assume HVpair.
+claim HV: V :e R_standard_topology.
+{ exact (andEL (V :e R_standard_topology) (U0 = V :/\: unit_interval) HVpair). }
+claim HU0eq: U0 = V :/\: unit_interval.
+{ exact (andER (V :e R_standard_topology) (U0 = V :/\: unit_interval) HVpair). }
+claim HepsV: eps_ 1 :e V.
+{ claim HepsCap: eps_ 1 :e V :/\: unit_interval.
+  { rewrite <- HU0eq. exact HepsU0. }
+  apply (binintersectE V unit_interval (eps_ 1) HepsCap).
+  assume HepsV0 HepsI0.
+  exact HepsV0. }
+claim HrTopDef: R_standard_topology = generated_topology R R_standard_basis.
+{ reflexivity. }
+claim HVgen: V :e generated_topology R R_standard_basis.
+{ rewrite <- HrTopDef. exact HV. }
+claim HVprop: forall x :e V, exists b :e R_standard_basis, x :e b /\ b c= V.
+{ exact (SepE2 (Power R)
+               (fun U:set => forall x0 :e U, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U)
+               V HVgen). }
+claim Hexb: exists b :e R_standard_basis, eps_ 1 :e b /\ b c= V.
+{ exact (HVprop (eps_ 1) HepsV). }
+apply Hexb.
+let b.
+assume Hbpair.
+claim HbB: b :e R_standard_basis.
+{ exact (andEL (b :e R_standard_basis) (eps_ 1 :e b /\ b c= V) Hbpair). }
+claim Hbprop: eps_ 1 :e b /\ b c= V.
+{ exact (andER (b :e R_standard_basis) (eps_ 1 :e b /\ b c= V) Hbpair). }
+claim Hepsb: eps_ 1 :e b.
+{ exact (andEL (eps_ 1 :e b) (b c= V) Hbprop). }
+claim HbsubV: b c= V.
+{ exact (andER (eps_ 1 :e b) (b c= V) Hbprop). }
+claim Hexa: exists a :e R, b :e {open_interval a bb|bb :e R}.
+{ exact (famunionE R (fun a0:set => {open_interval a0 bb|bb :e R}) b HbB). }
+apply Hexa.
+let a.
+assume Hapair.
+claim HaR: a :e R.
+{ exact (andEL (a :e R) (b :e {open_interval a bb|bb :e R}) Hapair). }
+claim HbFam: b :e {open_interval a bb|bb :e R}.
+{ exact (andER (a :e R) (b :e {open_interval a bb|bb :e R}) Hapair). }
+claim Hexbb: exists bb :e R, b = open_interval a bb.
+{ exact (ReplE R (fun bb0:set => open_interval a bb0) b HbFam). }
+apply Hexbb.
+let bb.
+assume Hbbpair.
+claim HbbR: bb :e R.
+{ exact (andEL (bb :e R) (b = open_interval a bb) Hbbpair). }
+claim Hbeq: b = open_interval a bb.
+{ exact (andER (bb :e R) (b = open_interval a bb) Hbbpair). }
+claim HepsInInt: eps_ 1 :e open_interval a bb.
+{ rewrite <- Hbeq. exact Hepsb. }
+claim HepsIntProp: Rlt a (eps_ 1) /\ Rlt (eps_ 1) bb.
+{ exact (SepE2 R (fun t:set => Rlt a t /\ Rlt t bb) (eps_ 1) HepsInInt). }
+claim HaLtEps: Rlt a (eps_ 1).
+{ exact (andEL (Rlt a (eps_ 1)) (Rlt (eps_ 1) bb) HepsIntProp). }
+claim HepsLtbb: Rlt (eps_ 1) bb.
+{ exact (andER (Rlt a (eps_ 1)) (Rlt (eps_ 1) bb) HepsIntProp). }
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbbS: SNo bb.
+{ exact (real_SNo bb HbbR). }
+apply (SNoLt_trichotomy_or_impred bb 1 HbbS SNo_1 (exists x:set, x :e U0 /\ x <> eps_ 1)).
+- assume HbbLt1S: bb < 1.
+  claim HbbLt1: Rlt bb 1.
+  { exact (RltI bb 1 HbbR real_1 HbbLt1S). }
+  apply (rational_dense_between_reals (eps_ 1) bb HepsR HbbR HepsLtbb).
+  let q.
+  assume Hqpair.
+  claim HqQ: q :e rational_numbers.
+  { exact (andEL (q :e rational_numbers) (Rlt (eps_ 1) q /\ Rlt q bb) Hqpair). }
+  claim Hqprop: Rlt (eps_ 1) q /\ Rlt q bb.
+  { exact (andER (q :e rational_numbers) (Rlt (eps_ 1) q /\ Rlt q bb) Hqpair). }
+  claim HepsLtq: Rlt (eps_ 1) q.
+  { exact (andEL (Rlt (eps_ 1) q) (Rlt q bb) Hqprop). }
+  claim HqLtbb: Rlt q bb.
+  { exact (andER (Rlt (eps_ 1) q) (Rlt q bb) Hqprop). }
+  claim HqR: q :e R.
+  { exact (rational_numbers_in_R q HqQ). }
+  claim HaLtq: Rlt a q.
+  { exact (Rlt_tra a (eps_ 1) q HaLtEps HepsLtq). }
+  claim HqInb: q :e b.
+  { rewrite Hbeq.
+    claim Hqconj: Rlt a q /\ Rlt q bb.
+    { apply andI.
+      - exact HaLtq.
+      - exact HqLtbb. }
+    exact (SepI R (fun t:set => Rlt a t /\ Rlt t bb) q HqR Hqconj). }
+  claim HqInV: q :e V.
+  { exact (HbsubV q HqInb). }
+  claim H0ltq: Rlt 0 q.
+  { exact (Rlt_tra 0 (eps_ 1) q H0ltEps HepsLtq). }
+  claim HqLt1: Rlt q 1.
+  { exact (Rlt_tra q bb 1 HqLtbb HbbLt1). }
+  claim Hnltq0: ~(Rlt q 0).
+  { exact (not_Rlt_sym 0 q H0ltq). }
+  claim Hnlt1q: ~(Rlt 1 q).
+  { exact (not_Rlt_sym q 1 HqLt1). }
+  claim HqInI: q :e unit_interval.
+  { claim Hqconj: ~(Rlt q 0) /\ ~(Rlt 1 q).
+    { apply andI.
+      - exact Hnltq0.
+      - exact Hnlt1q. }
+    exact (SepI R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) q HqR Hqconj). }
+  claim HqInU0: q :e U0.
+  { rewrite HU0eq.
+    apply binintersectI.
+    - exact HqInV.
+    - exact HqInI. }
+  witness q.
+  apply andI.
+  * exact HqInU0.
+  * prove q <> eps_ 1.
+    assume Heq: q = eps_ 1.
+    claim Hbad: Rlt (eps_ 1) (eps_ 1).
+    { rewrite <- Heq at 2. exact HepsLtq. }
+    exact ((not_Rlt_refl (eps_ 1) HepsR) Hbad).
+- assume HbbEq: bb = 1.
+  apply (rational_dense_between_reals (eps_ 1) 1 HepsR real_1 HepsLt1).
+  let q.
+  assume Hqpair.
+  claim HqQ: q :e rational_numbers.
+  { exact (andEL (q :e rational_numbers) (Rlt (eps_ 1) q /\ Rlt q 1) Hqpair). }
+  claim Hqprop: Rlt (eps_ 1) q /\ Rlt q 1.
+  { exact (andER (q :e rational_numbers) (Rlt (eps_ 1) q /\ Rlt q 1) Hqpair). }
+  claim HepsLtq: Rlt (eps_ 1) q.
+  { exact (andEL (Rlt (eps_ 1) q) (Rlt q 1) Hqprop). }
+  claim HqLt1: Rlt q 1.
+  { exact (andER (Rlt (eps_ 1) q) (Rlt q 1) Hqprop). }
+  claim HqR: q :e R.
+  { exact (rational_numbers_in_R q HqQ). }
+  claim HaLtq: Rlt a q.
+  { exact (Rlt_tra a (eps_ 1) q HaLtEps HepsLtq). }
+  claim HqLtbb: Rlt q bb.
+  { rewrite HbbEq. exact HqLt1. }
+  claim HqInb: q :e b.
+  { rewrite Hbeq.
+    claim Hqconj: Rlt a q /\ Rlt q bb.
+    { apply andI.
+      - exact HaLtq.
+      - exact HqLtbb. }
+    exact (SepI R (fun t:set => Rlt a t /\ Rlt t bb) q HqR Hqconj). }
+  claim HqInV: q :e V.
+  { exact (HbsubV q HqInb). }
+  claim H0ltq: Rlt 0 q.
+  { exact (Rlt_tra 0 (eps_ 1) q H0ltEps HepsLtq). }
+  claim Hnltq0: ~(Rlt q 0).
+  { exact (not_Rlt_sym 0 q H0ltq). }
+  claim Hnlt1q: ~(Rlt 1 q).
+  { exact (not_Rlt_sym q 1 HqLt1). }
+  claim HqInI: q :e unit_interval.
+  { claim Hqconj: ~(Rlt q 0) /\ ~(Rlt 1 q).
+    { apply andI.
+      - exact Hnltq0.
+      - exact Hnlt1q. }
+    exact (SepI R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) q HqR Hqconj). }
+  claim HqInU0: q :e U0.
+  { rewrite HU0eq.
+    apply binintersectI.
+    - exact HqInV.
+    - exact HqInI. }
+  witness q.
+  apply andI.
+  * exact HqInU0.
+  * prove q <> eps_ 1.
+    assume Heq: q = eps_ 1.
+    claim Hbad: Rlt (eps_ 1) (eps_ 1).
+    { rewrite <- Heq at 2. exact HepsLtq. }
+    exact ((not_Rlt_refl (eps_ 1) HepsR) Hbad).
+- assume H1LtbbS: 1 < bb.
+  claim H1Ltbb: Rlt 1 bb.
+  { exact (RltI 1 bb real_1 HbbR H1LtbbS). }
+  apply (rational_dense_between_reals (eps_ 1) 1 HepsR real_1 HepsLt1).
+  let q.
+  assume Hqpair.
+  claim HqQ: q :e rational_numbers.
+  { exact (andEL (q :e rational_numbers) (Rlt (eps_ 1) q /\ Rlt q 1) Hqpair). }
+  claim Hqprop: Rlt (eps_ 1) q /\ Rlt q 1.
+  { exact (andER (q :e rational_numbers) (Rlt (eps_ 1) q /\ Rlt q 1) Hqpair). }
+  claim HepsLtq: Rlt (eps_ 1) q.
+  { exact (andEL (Rlt (eps_ 1) q) (Rlt q 1) Hqprop). }
+  claim HqLt1: Rlt q 1.
+  { exact (andER (Rlt (eps_ 1) q) (Rlt q 1) Hqprop). }
+  claim HqR: q :e R.
+  { exact (rational_numbers_in_R q HqQ). }
+  claim HaLtq: Rlt a q.
+  { exact (Rlt_tra a (eps_ 1) q HaLtEps HepsLtq). }
+  claim HqLtbb: Rlt q bb.
+  { exact (Rlt_tra q 1 bb HqLt1 H1Ltbb). }
+  claim HqInb: q :e b.
+  { rewrite Hbeq.
+    claim Hqconj: Rlt a q /\ Rlt q bb.
+    { apply andI.
+      - exact HaLtq.
+      - exact HqLtbb. }
+    exact (SepI R (fun t:set => Rlt a t /\ Rlt t bb) q HqR Hqconj). }
+  claim HqInV: q :e V.
+  { exact (HbsubV q HqInb). }
+  claim H0ltq: Rlt 0 q.
+  { exact (Rlt_tra 0 (eps_ 1) q H0ltEps HepsLtq). }
+  claim Hnltq0: ~(Rlt q 0).
+  { exact (not_Rlt_sym 0 q H0ltq). }
+  claim Hnlt1q: ~(Rlt 1 q).
+  { exact (not_Rlt_sym q 1 HqLt1). }
+  claim HqInI: q :e unit_interval.
+  { claim Hqconj: ~(Rlt q 0) /\ ~(Rlt 1 q).
+    { apply andI.
+      - exact Hnltq0.
+      - exact Hnlt1q. }
+    exact (SepI R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) q HqR Hqconj). }
+  claim HqInU0: q :e U0.
+  { rewrite HU0eq.
+    apply binintersectI.
+    - exact HqInV.
+    - exact HqInI. }
+  witness q.
+  apply andI.
+  * exact HqInU0.
+  * prove q <> eps_ 1.
+    assume Heq: q = eps_ 1.
+    claim Hbad: Rlt (eps_ 1) (eps_ 1).
+    { rewrite <- Heq at 2. exact HepsLtq. }
+    exact ((not_Rlt_refl (eps_ 1) HepsR) Hbad).
 Qed.
 Definition ordered_square : set := setprod unit_interval unit_interval.
 Definition ordered_square_topology : set := order_topology ordered_square.
