@@ -23725,6 +23725,28 @@ claim H2inCut: 2 :e Q_sqrt2_cut.
 exact (two_not_in_Q_sqrt2_cut H2inCut).
 Qed.
 
+(** helper for §16 Exercise 7: cut subset property **)
+(** LATEX VERSION: The set {q∈Q | q^2<2} is a subset of Q. **)
+Theorem Q_sqrt2_cut_sub_Q : Q_sqrt2_cut c= rational_numbers.
+let q. assume Hq: q :e Q_sqrt2_cut.
+prove q :e rational_numbers.
+exact (SepE1 rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) q Hq).
+Qed.
+
+(** helper for §16 Exercise 7: 0 is in the cut **)
+(** LATEX VERSION: Since 0^2<2, we have 0 ∈ {q∈Q | q^2<2}. **)
+Theorem zero_in_Q_sqrt2_cut : 0 :e Q_sqrt2_cut.
+prove 0 :e Q_sqrt2_cut.
+claim H0Q: 0 :e rational_numbers.
+{ exact zero_in_rational_numbers. }
+claim H00: mul_SNo 0 0 = 0.
+{ exact (mul_SNo_zeroL 0 SNo_0). }
+claim Hlt: mul_SNo 0 0 < 2.
+{ rewrite H00.
+  exact SNoLt_0_2. }
+exact (SepI rational_numbers (fun q:set => mul_SNo q q < 2) 0 H0Q Hlt).
+Qed.
+
 Theorem ex16_7_convex_interval_or_ray :
   exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
 prove exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
@@ -23733,9 +23755,15 @@ witness Q_sqrt2_cut.
 prove convex_in rational_numbers Q_sqrt2_cut /\ Q_sqrt2_cut <> rational_numbers /\ ~ interval_or_ray_in rational_numbers Q_sqrt2_cut.
 (** conjunction is left-associative: (A /\ B) /\ C **)
 apply andI.
-- apply andI.
-  + admit.
-  + exact Q_sqrt2_cut_neq_Q.
+	- apply andI.
+	  + prove convex_in rational_numbers Q_sqrt2_cut.
+	    (** convex_in X Y = Y c= X /\ interval-closure property **)
+	    prove Q_sqrt2_cut c= rational_numbers /\
+	          forall a b:set, a :e Q_sqrt2_cut -> b :e Q_sqrt2_cut -> order_interval rational_numbers a b c= Q_sqrt2_cut.
+	    apply andI.
+	    - exact Q_sqrt2_cut_sub_Q.
+	    - admit.
+	  + exact Q_sqrt2_cut_neq_Q.
 - admit.
 Qed.
 
