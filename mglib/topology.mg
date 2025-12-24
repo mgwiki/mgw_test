@@ -35726,7 +35726,208 @@ let X Tx Y Ty f.
 assume HX: connected_space X Tx.
 assume Hf: continuous_map X Tx Y Ty f.
 prove connected_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
-admit.
+set Im := image_of f X.
+set Tim := subspace_topology Y Ty Im.
+claim HtopX: topology_on X Tx.
+{ exact (andEL (topology_on X Tx) (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V)) HX). }
+claim HnoSepX: ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
+{ exact (andER (topology_on X Tx) (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V)) HX). }
+claim HTy: topology_on Y Ty.
+{ exact (continuous_map_topology_cod X Tx Y Ty f Hf). }
+claim Hfun: function_on f X Y.
+{ exact (continuous_map_function_on X Tx Y Ty f Hf). }
+claim HImsubY: Im c= Y.
+{ exact (image_of_sub_codomain f X Y X Hfun (Subq_ref X)). }
+claim HtopIm: topology_on Im Tim.
+{ exact (subspace_topology_is_topology Y Ty Im HTy HImsubY). }
+prove topology_on Im Tim /\ ~(exists U V:set, U :e Tim /\ V :e Tim /\ separation_of Im U V).
+apply andI.
+- exact HtopIm.
+- assume HsepIm: exists U V:set, U :e Tim /\ V :e Tim /\ separation_of Im U V.
+  prove False.
+  apply HsepIm.
+  let U. assume HexV: exists V:set, U :e Tim /\ V :e Tim /\ separation_of Im U V.
+  apply HexV.
+  let V. assume HUV: U :e Tim /\ V :e Tim /\ separation_of Im U V.
+  claim HUV0: U :e Tim /\ V :e Tim.
+  { exact (andEL (U :e Tim /\ V :e Tim) (separation_of Im U V) HUV). }
+  claim HUin: U :e Tim.
+  { exact (andEL (U :e Tim) (V :e Tim) HUV0). }
+  claim HVin: V :e Tim.
+  { exact (andER (U :e Tim) (V :e Tim) HUV0). }
+  claim HsepUV: separation_of Im U V.
+  { exact (andER (U :e Tim /\ V :e Tim) (separation_of Im U V) HUV). }
+  claim HUrep: exists U0 :e Ty, U = U0 :/\: Im.
+  { exact (SepE2 (Power Im) (fun W:set => exists U0 :e Ty, W = U0 :/\: Im) U HUin). }
+  claim HVrep: exists V0 :e Ty, V = V0 :/\: Im.
+  { exact (SepE2 (Power Im) (fun W:set => exists V0 :e Ty, W = V0 :/\: Im) V HVin). }
+  apply HUrep.
+  let U0. assume HU0pair.
+  claim HU0: U0 :e Ty.
+  { exact (andEL (U0 :e Ty) (U = U0 :/\: Im) HU0pair). }
+  claim HUeq: U = U0 :/\: Im.
+  { exact (andER (U0 :e Ty) (U = U0 :/\: Im) HU0pair). }
+  apply HVrep.
+  let V0. assume HV0pair.
+  claim HV0: V0 :e Ty.
+  { exact (andEL (V0 :e Ty) (V = V0 :/\: Im) HV0pair). }
+  claim HVeql: V = V0 :/\: Im.
+  { exact (andER (V0 :e Ty) (V = V0 :/\: Im) HV0pair). }
+  set preU := preimage_of X f U0.
+  set preV := preimage_of X f V0.
+  claim HpreU: preU :e Tx.
+  { exact (continuous_map_preimage X Tx Y Ty f Hf U0 HU0). }
+  claim HpreV: preV :e Tx.
+  { exact (continuous_map_preimage X Tx Y Ty f Hf V0 HV0). }
+  claim HsepX: separation_of X preU preV.
+  { (** extract separation data on Im **)
+    claim HsepL1: ((((U :e Power Im /\ V :e Power Im) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
+    { exact (andEL ((((U :e Power Im /\ V :e Power Im) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                   (U :\/: V = Im) HsepUV). }
+    claim Hunion: U :\/: V = Im.
+    { exact (andER ((((U :e Power Im /\ V :e Power Im) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                   (U :\/: V = Im) HsepUV). }
+    claim HsepL2: (((U :e Power Im /\ V :e Power Im) /\ U :/\: V = Empty) /\ U <> Empty).
+    { exact (andEL (((U :e Power Im /\ V :e Power Im) /\ U :/\: V = Empty) /\ U <> Empty)
+                   (V <> Empty) HsepL1). }
+    claim HVne: V <> Empty.
+    { exact (andER (((U :e Power Im /\ V :e Power Im) /\ U :/\: V = Empty) /\ U <> Empty)
+                   (V <> Empty) HsepL1). }
+    claim HsepL3: (U :e Power Im /\ V :e Power Im) /\ U :/\: V = Empty.
+    { exact (andEL ((U :e Power Im /\ V :e Power Im) /\ U :/\: V = Empty)
+                   (U <> Empty) HsepL2). }
+    claim HUne: U <> Empty.
+    { exact (andER ((U :e Power Im /\ V :e Power Im) /\ U :/\: V = Empty)
+                   (U <> Empty) HsepL2). }
+    claim Hpow: U :e Power Im /\ V :e Power Im.
+    { exact (andEL (U :e Power Im /\ V :e Power Im) (U :/\: V = Empty) HsepL3). }
+    claim Hdisj: U :/\: V = Empty.
+    { exact (andER (U :e Power Im /\ V :e Power Im) (U :/\: V = Empty) HsepL3). }
+    claim HU0pow: U :e Power Im.
+    { exact (andEL (U :e Power Im) (V :e Power Im) Hpow). }
+    claim HV0pow: V :e Power Im.
+    { exact (andER (U :e Power Im) (V :e Power Im) Hpow). }
+    (** show preU and preV form a separation of X **)
+    claim HpreUsubX: preU c= X.
+    { let x. assume Hx: x :e preU.
+      exact (SepE1 X (fun x0:set => apply_fun f x0 :e U0) x Hx). }
+    claim HpreVsubX: preV c= X.
+    { let x. assume Hx: x :e preV.
+      exact (SepE1 X (fun x0:set => apply_fun f x0 :e V0) x Hx). }
+    claim HpreUPow: preU :e Power X.
+    { exact (PowerI X preU HpreUsubX). }
+    claim HpreVPow: preV :e Power X.
+    { exact (PowerI X preV HpreVsubX). }
+    claim HdisjPre: preU :/\: preV = Empty.
+    { apply Empty_eq.
+      let x. assume Hx: x :e preU :/\: preV.
+      apply (binintersectE preU preV x Hx).
+      assume HxU: x :e preU.
+      assume HxV: x :e preV.
+      claim HxX: x :e X.
+      { exact (SepE1 X (fun x0:set => apply_fun f x0 :e U0) x HxU). }
+      claim HfxU0: apply_fun f x :e U0.
+      { exact (SepE2 X (fun x0:set => apply_fun f x0 :e U0) x HxU). }
+      claim HfxV0: apply_fun f x :e V0.
+      { exact (SepE2 X (fun x0:set => apply_fun f x0 :e V0) x HxV). }
+      claim HfxIm: apply_fun f x :e Im.
+      { exact (ReplI X (fun x0:set => apply_fun f x0) x HxX). }
+      claim HfxU: apply_fun f x :e U.
+      { rewrite HUeq.
+        exact (binintersectI U0 Im (apply_fun f x) HfxU0 HfxIm). }
+      claim HfxV: apply_fun f x :e V.
+      { rewrite HVeql.
+        exact (binintersectI V0 Im (apply_fun f x) HfxV0 HfxIm). }
+      claim HfxUV: apply_fun f x :e U :/\: V.
+      { exact (binintersectI U V (apply_fun f x) HfxU HfxV). }
+      claim HfxE: apply_fun f x :e Empty.
+      { rewrite <- Hdisj. exact HfxUV. }
+      exact (EmptyE (apply_fun f x) HfxE). }
+    claim HpreUne: preU <> Empty.
+    { apply (nonempty_has_element U HUne).
+      let y. assume HyU: y :e U.
+      claim HUsubIm: U c= Im.
+      { exact (PowerE Im U HU0pow). }
+      claim HyIm: y :e Im.
+      { exact (HUsubIm y HyU). }
+      apply (ReplE_impred X (fun x0:set => apply_fun f x0) y HyIm).
+      let x. assume HxX: x :e X.
+      assume Hyx: y = apply_fun f x.
+      claim HyU0Im: y :e U0 :/\: Im.
+      { rewrite <- HUeq. exact HyU. }
+      claim HyU0: y :e U0.
+      { exact (binintersectE1 U0 Im y HyU0Im). }
+      claim HfxU0: apply_fun f x :e U0.
+      { rewrite <- Hyx. exact HyU0. }
+      claim HxPreU: x :e preU.
+      { exact (SepI X (fun x0:set => apply_fun f x0 :e U0) x HxX HfxU0). }
+      exact (elem_implies_nonempty preU x HxPreU). }
+    claim HpreVne: preV <> Empty.
+    { apply (nonempty_has_element V HVne).
+      let y. assume HyV: y :e V.
+      claim HVsubIm: V c= Im.
+      { exact (PowerE Im V HV0pow). }
+      claim HyIm: y :e Im.
+      { exact (HVsubIm y HyV). }
+      apply (ReplE_impred X (fun x0:set => apply_fun f x0) y HyIm).
+      let x. assume HxX: x :e X.
+      assume Hyx: y = apply_fun f x.
+      claim HyV0Im: y :e V0 :/\: Im.
+      { rewrite <- HVeql. exact HyV. }
+      claim HyV0: y :e V0.
+      { exact (binintersectE1 V0 Im y HyV0Im). }
+      claim HfxV0: apply_fun f x :e V0.
+      { rewrite <- Hyx. exact HyV0. }
+      claim HxPreV: x :e preV.
+      { exact (SepI X (fun x0:set => apply_fun f x0 :e V0) x HxX HfxV0). }
+      exact (elem_implies_nonempty preV x HxPreV). }
+    claim HunionPre: preU :\/: preV = X.
+    { apply set_ext.
+      - let x. assume Hx: x :e preU :\/: preV.
+        apply (binunionE preU preV x Hx).
+        + assume HxU: x :e preU.
+          exact (SepE1 X (fun x0:set => apply_fun f x0 :e U0) x HxU).
+        + assume HxV: x :e preV.
+          exact (SepE1 X (fun x0:set => apply_fun f x0 :e V0) x HxV).
+      - let x. assume HxX: x :e X.
+        prove x :e preU :\/: preV.
+        claim HfxIm: apply_fun f x :e Im.
+        { exact (ReplI X (fun x0:set => apply_fun f x0) x HxX). }
+        claim HfxUV: apply_fun f x :e U :\/: V.
+        { rewrite Hunion. exact HfxIm. }
+        apply (binunionE U V (apply_fun f x) HfxUV).
+        + assume HfxU: apply_fun f x :e U.
+          claim HfxU0Im: apply_fun f x :e U0 :/\: Im.
+          { rewrite <- HUeq. exact HfxU. }
+          claim HfxU0: apply_fun f x :e U0.
+          { exact (binintersectE1 U0 Im (apply_fun f x) HfxU0Im). }
+          exact (binunionI1 preU preV x (SepI X (fun x0:set => apply_fun f x0 :e U0) x HxX HfxU0)).
+        + assume HfxV: apply_fun f x :e V.
+          claim HfxV0Im: apply_fun f x :e V0 :/\: Im.
+          { rewrite <- HVeql. exact HfxV. }
+          claim HfxV0: apply_fun f x :e V0.
+          { exact (binintersectE1 V0 Im (apply_fun f x) HfxV0Im). }
+          exact (binunionI2 preU preV x (SepI X (fun x0:set => apply_fun f x0 :e V0) x HxX HfxV0)). }
+    prove (((((preU :e Power X /\ preV :e Power X) /\ preU :/\: preV = Empty) /\ preU <> Empty) /\ preV <> Empty) /\ preU :\/: preV = X).
+    apply andI.
+    * apply andI.
+      { apply andI.
+        - apply andI.
+          + apply andI.
+            { exact HpreUPow. }
+            { exact HpreVPow. }
+          + exact HdisjPre.
+        - exact HpreUne. }
+      { exact HpreVne. }
+    * exact HunionPre. }
+  apply HnoSepX.
+  witness preU. witness preV.
+  prove preU :e Tx /\ preV :e Tx /\ separation_of X preU preV.
+  apply andI.
+  - apply andI.
+    + exact HpreU.
+    + exact HpreV.
+  - exact HsepX.
 Qed.
 
 (** from §24 Corollary 24.2: the real line is connected **)
