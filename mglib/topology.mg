@@ -33942,8 +33942,300 @@ Theorem pasting_lemma : forall X A B Y Tx Ty f g:set,
   continuous_map A (subspace_topology X Tx A) Y Ty f ->
   continuous_map B (subspace_topology X Tx B) Y Ty g ->
   (forall x:set, x :e (A :/\: B) -> apply_fun f x = apply_fun g x) ->
-  continuous_map X Tx Y Ty (f :\/: g).
-admit. (** FAIL **)
+  exists h:set,
+    continuous_map X Tx Y Ty h /\
+    ((forall x:set, x :e A -> apply_fun h x = apply_fun f x) /\
+     (forall x:set, x :e B -> apply_fun h x = apply_fun g x)).
+let X A B Y Tx Ty f g.
+assume HTx: topology_on X Tx.
+assume HclA: closed_in X Tx A.
+assume HclB: closed_in X Tx B.
+assume HABeq: A :\/: B = X.
+assume Hf: continuous_map A (subspace_topology X Tx A) Y Ty f.
+assume Hg: continuous_map B (subspace_topology X Tx B) Y Ty g.
+assume Hagree: forall x:set, x :e (A :/\: B) -> apply_fun f x = apply_fun g x.
+
+(** Define the pasted graph using a piecewise rule on membership in A **)
+set h := graph X (fun x0:set => if x0 :e A then apply_fun f x0 else apply_fun g x0).
+witness h.
+prove continuous_map X Tx Y Ty h /\
+  ((forall x:set, x :e A -> apply_fun h x = apply_fun f x) /\
+   (forall x:set, x :e B -> apply_fun h x = apply_fun g x)).
+
+apply andI.
+- (** continuity of h **)
+  claim HTy: topology_on Y Ty.
+  { exact (continuous_map_topology_cod A (subspace_topology X Tx A) Y Ty f Hf). }
+
+  claim Hfunf: function_on f A Y.
+  { exact (continuous_map_function_on A (subspace_topology X Tx A) Y Ty f Hf). }
+  claim Hfung: function_on g B Y.
+  { exact (continuous_map_function_on B (subspace_topology X Tx B) Y Ty g Hg). }
+
+  prove continuous_map X Tx Y Ty h.
+  prove topology_on X Tx /\ topology_on Y Ty /\ function_on h X Y /\
+        forall V:set, V :e Ty -> preimage_of X h V :e Tx.
+  apply andI.
+  + (** (topology_on X Tx /\ topology_on Y Ty) /\ function_on h X Y **)
+    apply andI.
+    * apply andI.
+      { exact HTx. }
+      { exact HTy. }
+    * (** function_on h X Y **)
+      let x. assume HxX: x :e X.
+      prove apply_fun h x :e Y.
+      claim Happ: apply_fun h x = if x :e A then apply_fun f x else apply_fun g x.
+      { rewrite (apply_fun_graph X (fun x0:set => if x0 :e A then apply_fun f x0 else apply_fun g x0) x HxX).
+        reflexivity. }
+      rewrite Happ.
+      apply (xm (x :e A)).
+      + assume HxA: x :e A.
+         rewrite (If_i_1 (x :e A) (apply_fun f x) (apply_fun g x) HxA).
+         exact (Hfunf x HxA).
+      + assume HxNotA: x /:e A.
+         claim HxAB: x :e A :\/: B.
+         { rewrite HABeq. exact HxX. }
+         apply (binunionE A B x HxAB).
+         + assume HxA: x :e A.
+             apply FalseE.
+             exact (HxNotA HxA).
+         + assume HxB: x :e B.
+             rewrite (If_i_0 (x :e A) (apply_fun f x) (apply_fun g x) HxNotA).
+             exact (Hfung x HxB).
+
+  + (** preimage condition **)
+    let V. assume HV: V :e Ty.
+    (** preimages in the subspace topologies **)
+    claim HpreA: preimage_of A f V :e subspace_topology X Tx A.
+    { exact (continuous_map_preimage A (subspace_topology X Tx A) Y Ty f Hf V HV). }
+    claim HpreB: preimage_of B g V :e subspace_topology X Tx B.
+    { exact (continuous_map_preimage B (subspace_topology X Tx B) Y Ty g Hg V HV). }
+
+    (** choose open sets U0,W0 in X representing these subspace opens **)
+    claim HexU0: exists U0 :e Tx, preimage_of A f V = U0 :/\: A.
+    { exact (SepE2 (Power A) (fun U:set => exists U0 :e Tx, U = U0 :/\: A) (preimage_of A f V) HpreA). }
+    apply HexU0.
+    let U0. assume HU0pair.
+    claim HU0: U0 :e Tx.
+    { exact (andEL (U0 :e Tx) (preimage_of A f V = U0 :/\: A) HU0pair). }
+    claim HpreAeq: preimage_of A f V = U0 :/\: A.
+    { exact (andER (U0 :e Tx) (preimage_of A f V = U0 :/\: A) HU0pair). }
+
+    claim HexW0: exists W0 :e Tx, preimage_of B g V = W0 :/\: B.
+    { exact (SepE2 (Power B) (fun U:set => exists W0 :e Tx, U = W0 :/\: B) (preimage_of B g V) HpreB). }
+    apply HexW0.
+    let W0. assume HW0pair.
+    claim HW0: W0 :e Tx.
+    { exact (andEL (W0 :e Tx) (preimage_of B g V = W0 :/\: B) HW0pair). }
+    claim HpreBeq: preimage_of B g V = W0 :/\: B.
+    { exact (andER (W0 :e Tx) (preimage_of B g V = W0 :/\: B) HW0pair). }
+
+    (** complements are open since A and B are closed **)
+    claim HcompAin: open_in X Tx (X :\: A).
+    { exact (open_of_closed_complement X Tx A HclA). }
+    claim HcompA: (X :\: A) :e Tx.
+    { exact (open_in_elem X Tx (X :\: A) HcompAin). }
+    claim HcompBin: open_in X Tx (X :\: B).
+    { exact (open_of_closed_complement X Tx B HclB). }
+    claim HcompB: (X :\: B) :e Tx.
+    { exact (open_in_elem X Tx (X :\: B) HcompBin). }
+
+    (** define the open sets U = U0 ∪ (X\\A) and W = W0 ∪ (X\\B) **)
+    set U := U0 :\/: (X :\: A).
+    set W := W0 :\/: (X :\: B).
+    claim HUopen: U :e Tx.
+    { exact (topology_binunion_closed X Tx U0 (X :\: A) HTx HU0 HcompA). }
+    claim HWopen: W :e Tx.
+    { exact (topology_binunion_closed X Tx W0 (X :\: B) HTx HW0 HcompB). }
+
+    (** main set equality: h^{-1}(V) = U ∩ W **)
+    claim Heq: preimage_of X h V = U :/\: W.
+    { apply set_ext.
+      - let x. assume Hx: x :e preimage_of X h V.
+        prove x :e U :/\: W.
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun x0:set => apply_fun h x0 :e V) x Hx). }
+        claim HhxV: apply_fun h x :e V.
+        { exact (SepE2 X (fun x0:set => apply_fun h x0 :e V) x Hx). }
+        (** show x ∈ U **)
+        claim HxU: x :e U.
+        { apply (xm (x :e A)).
+          + assume HxA: x :e A.
+             claim Happ: apply_fun h x = apply_fun f x.
+             { rewrite (apply_fun_graph X (fun x0:set => if x0 :e A then apply_fun f x0 else apply_fun g x0) x HxX).
+               rewrite (If_i_1 (x :e A) (apply_fun f x) (apply_fun g x) HxA).
+               reflexivity. }
+             claim HfxV: apply_fun f x :e V.
+             { rewrite <- Happ. exact HhxV. }
+             claim HxPreA: x :e preimage_of A f V.
+             { exact (SepI A (fun x0:set => apply_fun f x0 :e V) x HxA HfxV). }
+             claim HxU0A: x :e U0 :/\: A.
+             { rewrite <- HpreAeq. exact HxPreA. }
+             claim HxU0: x :e U0.
+             { exact (binintersectE1 U0 A x HxU0A). }
+             exact (binunionI1 U0 (X :\: A) x HxU0).
+          + assume HxNotA: x /:e A.
+             claim HxXA: x :e (X :\: A).
+             { exact (setminusI X A x HxX HxNotA). }
+             exact (binunionI2 U0 (X :\: A) x HxXA). }
+        (** show x ∈ W **)
+        claim HxW: x :e W.
+        { apply (xm (x :e B)).
+          + assume HxB: x :e B.
+             claim HgV: apply_fun g x :e V.
+             { apply (xm (x :e A)).
+               + assume HxA: x :e A.
+                   claim HxAB: x :e A :/\: B.
+                   { exact (binintersectI A B x HxA HxB). }
+                   claim Heqfg: apply_fun f x = apply_fun g x.
+                   { exact (Hagree x HxAB). }
+                   claim Happ: apply_fun h x = apply_fun f x.
+                   { rewrite (apply_fun_graph X (fun x0:set => if x0 :e A then apply_fun f x0 else apply_fun g x0) x HxX).
+                     rewrite (If_i_1 (x :e A) (apply_fun f x) (apply_fun g x) HxA).
+                     reflexivity. }
+                   claim HfxV: apply_fun f x :e V.
+                   { rewrite <- Happ. exact HhxV. }
+                   rewrite <- Heqfg.
+                   exact HfxV.
+               + assume HxNotA: x /:e A.
+                   claim Happ: apply_fun h x = apply_fun g x.
+                   { rewrite (apply_fun_graph X (fun x0:set => if x0 :e A then apply_fun f x0 else apply_fun g x0) x HxX).
+                     rewrite (If_i_0 (x :e A) (apply_fun f x) (apply_fun g x) HxNotA).
+                     reflexivity. }
+                   rewrite <- Happ.
+                   exact HhxV. }
+             claim HxPreB: x :e preimage_of B g V.
+             { exact (SepI B (fun x0:set => apply_fun g x0 :e V) x HxB HgV). }
+             claim HxW0B: x :e W0 :/\: B.
+             { rewrite <- HpreBeq. exact HxPreB. }
+             claim HxW0: x :e W0.
+             { exact (binintersectE1 W0 B x HxW0B). }
+             exact (binunionI1 W0 (X :\: B) x HxW0).
+          + assume HxNotB: x /:e B.
+             claim HxXB: x :e (X :\: B).
+             { exact (setminusI X B x HxX HxNotB). }
+             exact (binunionI2 W0 (X :\: B) x HxXB). }
+        exact (binintersectI U W x HxU HxW).
+      - let x. assume Hx: x :e U :/\: W.
+        prove x :e preimage_of X h V.
+        claim HxU: x :e U.
+        { exact (binintersectE1 U W x Hx). }
+        claim HxW: x :e W.
+        { exact (binintersectE2 U W x Hx). }
+        (** show x ∈ X and apply_fun h x ∈ V **)
+        apply (xm (x :e A)).
+        + assume HxA: x :e A.
+           claim HxX: x :e X.
+           { claim HA_sub: A c= X.
+             { rewrite <- HABeq. exact (binunion_Subq_1 A B). }
+             exact (HA_sub x HxA). }
+           claim HxU0: x :e U0.
+           { apply (binunionE U0 (X :\: A) x HxU).
+             + assume HxU0: x :e U0.
+                 exact HxU0.
+             + assume HxXA: x :e (X :\: A).
+                 claim HnotA: x /:e A.
+                 { exact (setminusE2 X A x HxXA). }
+                 apply FalseE.
+                 exact (HnotA HxA). }
+             claim HxPreA: x :e preimage_of A f V.
+             { claim HxU0A: x :e U0 :/\: A.
+               { exact (binintersectI U0 A x HxU0 HxA). }
+             rewrite HpreAeq.
+             exact HxU0A. }
+           claim HfxV: apply_fun f x :e V.
+           { exact (SepE2 A (fun x0:set => apply_fun f x0 :e V) x HxPreA). }
+           claim Happ: apply_fun h x = apply_fun f x.
+           { rewrite (apply_fun_graph X (fun x0:set => if x0 :e A then apply_fun f x0 else apply_fun g x0) x HxX).
+             rewrite (If_i_1 (x :e A) (apply_fun f x) (apply_fun g x) HxA).
+             reflexivity. }
+           prove x :e preimage_of X h V.
+           claim HhxV': apply_fun h x :e V.
+           { rewrite Happ.
+             exact HfxV. }
+           exact (SepI X (fun x0:set => apply_fun h x0 :e V) x HxX HhxV').
+        + assume HxNotA: x /:e A.
+           (** x ∈ X follows from x ∈ U (second disjunct forces x∈X) **)
+           claim HxX: x :e X.
+           { apply (binunionE U0 (X :\: A) x HxU).
+             + assume HxU0: x :e U0.
+                 claim HU0sub: U0 c= X.
+                 { exact (topology_elem_subset X Tx U0 HTx HU0). }
+                 exact (HU0sub x HxU0).
+             + assume HxXA: x :e (X :\: A).
+                 exact (setminusE1 X A x HxXA). }
+           (** from cover: x ∈ B **)
+           claim HxAB: x :e A :\/: B.
+           { rewrite HABeq. exact HxX. }
+           claim HxB: x :e B.
+           { apply (binunionE A B x HxAB).
+             + assume HxA: x :e A.
+                 apply FalseE.
+                 exact (HxNotA HxA).
+             + assume HxB: x :e B.
+                 exact HxB. }
+           (** x ∈ W forces x ∈ W0 (since x ∈ B) **)
+           claim HxW0: x :e W0.
+           { apply (binunionE W0 (X :\: B) x HxW).
+             + assume HxW0: x :e W0.
+                 exact HxW0.
+             + assume HxXB: x :e (X :\: B).
+                 claim HnotB: x /:e B.
+                 { exact (setminusE2 X B x HxXB). }
+                 apply FalseE.
+                 exact (HnotB HxB). }
+             claim HxPreB: x :e preimage_of B g V.
+             { claim HxW0B: x :e W0 :/\: B.
+               { exact (binintersectI W0 B x HxW0 HxB). }
+             rewrite HpreBeq.
+             exact HxW0B. }
+           claim HgV: apply_fun g x :e V.
+           { exact (SepE2 B (fun x0:set => apply_fun g x0 :e V) x HxPreB). }
+           claim Happ: apply_fun h x = apply_fun g x.
+           { rewrite (apply_fun_graph X (fun x0:set => if x0 :e A then apply_fun f x0 else apply_fun g x0) x HxX).
+             rewrite (If_i_0 (x :e A) (apply_fun f x) (apply_fun g x) HxNotA).
+             reflexivity. }
+           prove x :e preimage_of X h V.
+           claim HhxV': apply_fun h x :e V.
+           { rewrite Happ.
+             exact HgV. }
+           exact (SepI X (fun x0:set => apply_fun h x0 :e V) x HxX HhxV'). }
+
+    prove preimage_of X h V :e Tx.
+    rewrite Heq.
+    exact (topology_binintersect_closed X Tx U W HTx HUopen HWopen).
+
+- (** h agrees with f on A and with g on B **)
+  apply andI.
+  + let x. assume HxA: x :e A.
+    (** x ∈ X from cover **)
+    claim HxAB: x :e A :\/: B.
+    { exact (binunionI1 A B x HxA). }
+    claim HxX: x :e X.
+    { rewrite <- HABeq. exact HxAB. }
+    rewrite (apply_fun_graph X (fun x0:set => if x0 :e A then apply_fun f x0 else apply_fun g x0) x HxX).
+    rewrite (If_i_1 (x :e A) (apply_fun f x) (apply_fun g x) HxA).
+    reflexivity.
+  + let x. assume HxB: x :e B.
+    (** x ∈ X from cover **)
+    claim HxAB: x :e A :\/: B.
+    { exact (binunionI2 A B x HxB). }
+    claim HxX: x :e X.
+    { rewrite <- HABeq. exact HxAB. }
+    apply (xm (x :e A)).
+    * assume HxA: x :e A.
+      claim HxABi: x :e A :/\: B.
+      { exact (binintersectI A B x HxA HxB). }
+      claim Heqfg: apply_fun f x = apply_fun g x.
+      { exact (Hagree x HxABi). }
+      rewrite (apply_fun_graph X (fun x0:set => if x0 :e A then apply_fun f x0 else apply_fun g x0) x HxX).
+      rewrite (If_i_1 (x :e A) (apply_fun f x) (apply_fun g x) HxA).
+      rewrite Heqfg.
+      reflexivity.
+    * assume HxNotA: x /:e A.
+      rewrite (apply_fun_graph X (fun x0:set => if x0 :e A then apply_fun f x0 else apply_fun g x0) x HxX).
+      rewrite (If_i_0 (x :e A) (apply_fun f x) (apply_fun g x) HxNotA).
+      reflexivity.
 Qed.
 
 (** from §18 Theorem 18.4: maps into products **) 
