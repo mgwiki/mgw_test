@@ -23800,7 +23800,19 @@ prove L c= setprod R R /\ L = {(x,x)|x :e R} /\ subspace_topology (setprod R R) 
 apply andI.
 - (** L c= setprod R R /\ L = diagonal **)
   apply andI.
-  + admit.
+  + prove L c= setprod R R.
+    let p. assume Hp: p :e L.
+    prove p :e setprod R R.
+    claim Hex: exists x :e R, p = (x,x).
+    { exact (ReplE R (fun x:set => (x,x)) p Hp). }
+    apply Hex.
+    let x. assume Hpair.
+    claim HxR: x :e R.
+    { exact (andEL (x :e R) (p = (x,x)) Hpair). }
+    claim Hpeq: p = (x,x).
+    { exact (andER (x :e R) (p = (x,x)) Hpair). }
+    rewrite Hpeq.
+    exact (tuple_2_setprod R R x HxR x HxR).
   + reflexivity.
 - (** induced subspace topology equals R_lower_limit_topology **)
   admit.
