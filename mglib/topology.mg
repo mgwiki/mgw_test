@@ -23837,7 +23837,7 @@ Theorem ex16_10_compare_topologies_on_square :
     product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
 prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\ subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <> product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
 apply andI.
-- admit.
+- exact ordered_square_not_subspace_dictionary.
 - admit.
 Qed.
 
