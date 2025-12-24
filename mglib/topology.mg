@@ -23970,7 +23970,182 @@ apply andI.
     }
     claim HeqU: U = V :/\: ordered_square.
     { (** this is the key set identity from Example 3 **)
-      admit.
+      apply set_ext.
+      - let p. assume HpU: p :e U.
+        prove p :e V :/\: ordered_square.
+        claim HpSq: p :e ordered_square.
+        { exact (SepE1 ordered_square
+                     (fun p0:set => exists y:set, p0 = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y))
+                     p
+                     HpU). }
+        claim Hexy: exists y:set, p = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y).
+        { exact (SepE2 ordered_square
+                     (fun p0:set => exists y:set, p0 = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y))
+                     p
+                     HpU). }
+	        apply Hexy.
+	        let y. assume Hyprop.
+	        (** conjunction is left-associative: (A /\ B) /\ C **)
+	        claim Hpair: (p = (eps_ 1,y) /\ Rlt (eps_ 1) y).
+	        { exact (andEL (p = (eps_ 1,y) /\ Rlt (eps_ 1) y)
+	                      (~(Rlt 1 y))
+	                      Hyprop). }
+	        claim Hyle1: ~(Rlt 1 y).
+	        { exact (andER (p = (eps_ 1,y) /\ Rlt (eps_ 1) y)
+	                      (~(Rlt 1 y))
+	                      Hyprop). }
+	        claim Hpy: p = (eps_ 1,y).
+	        { exact (andEL (p = (eps_ 1,y))
+	                      (Rlt (eps_ 1) y)
+	                      Hpair). }
+	        claim Hey: Rlt (eps_ 1) y.
+	        { exact (andER (p = (eps_ 1,y))
+	                      (Rlt (eps_ 1) y)
+	                      Hpair). }
+	        claim Heps1R: eps_ 1 :e R.
+	        { exact (RltE_left (eps_ 1) y Hey). }
+	        claim HyR: y :e R.
+	        { exact (RltE_right (eps_ 1) y Hey). }
+        (** build p :e V **)
+        claim HpV: p :e V.
+        { prove p :e V.
+          claim HpRR: p :e setprod R R.
+          { rewrite Hpy.
+            exact (tuple_2_setprod R R (eps_ 1) Heps1R y HyR). }
+	          claim Hord1: order_rel (setprod R R) a p.
+	          { (** use the defining disjunction for order_rel and inject to the last case **)
+	            prove (setprod R R = R /\ Rlt a p)
+	              \/
+	              (setprod R R = rational_numbers /\ Rlt a p)
+	              \/
+	              (setprod R R = omega /\ a :e p)
+	              \/
+	              (setprod R R = omega :\: {0} /\ a :e p)
+	              \/
+	              (setprod R R = setprod 2 omega /\
+	               exists i m j n:set,
+	                 i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+	                 a = (i, m) /\ p = (j, n) /\
+	                 (i :e j \/ (i = j /\ m :e n)))
+	              \/
+	              (setprod R R = setprod R R /\
+	               exists a1 a2 b1 b2:set,
+	                 a = (a1, a2) /\ p = (b1, b2) /\
+	                 (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
+	            apply orIR.
+	            prove (setprod R R = setprod R R /\
+	                   exists a1 a2 b1 b2:set,
+	                     a = (a1, a2) /\ p = (b1, b2) /\
+	                     (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
+	            apply andI.
+	            - reflexivity.
+	            - witness (eps_ 1).
+              witness (eps_ 1).
+              witness (eps_ 1).
+              witness y.
+              prove a = (eps_ 1, eps_ 1) /\ p = (eps_ 1, y) /\
+                    (Rlt (eps_ 1) (eps_ 1) \/ ((eps_ 1) = (eps_ 1) /\ Rlt (eps_ 1) y)).
+              apply andI.
+              + apply andI.
+                * reflexivity.
+                * exact Hpy.
+              + apply orIR.
+                apply andI.
+                * reflexivity.
+                * exact Hey. }
+	          claim Hord2: order_rel (setprod R R) p b.
+	          { prove (setprod R R = R /\ Rlt p b)
+	              \/
+	              (setprod R R = rational_numbers /\ Rlt p b)
+	              \/
+	              (setprod R R = omega /\ p :e b)
+	              \/
+	              (setprod R R = omega :\: {0} /\ p :e b)
+	              \/
+	              (setprod R R = setprod 2 omega /\
+	               exists i m j n:set,
+	                 i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+	                 p = (i, m) /\ b = (j, n) /\
+	                 (i :e j \/ (i = j /\ m :e n)))
+	              \/
+	              (setprod R R = setprod R R /\
+	               exists a1 a2 b1 b2:set,
+	                 p = (a1, a2) /\ b = (b1, b2) /\
+	                 (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
+	            apply orIR.
+	            prove (setprod R R = setprod R R /\
+	                   exists a1 a2 b1 b2:set,
+	                     p = (a1, a2) /\ b = (b1, b2) /\
+	                     (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
+	            apply andI.
+	            - reflexivity.
+	            - (** derive Rlt y 2 from y <= 1 and 1 < 2 **)
+              claim HdefR: R = real.
+              { reflexivity. }
+              claim H1R: 1 :e R.
+              { rewrite HdefR. exact real_1. }
+              claim H2R: 2 :e R.
+              { claim H2real: 2 :e real.
+                { rewrite <- add_SNo_1_1_2.
+                  exact (real_add_SNo 1 real_1 1 real_1). }
+                rewrite HdefR.
+                exact H2real. }
+	              claim H12: Rlt 1 2.
+	              { exact (RltI 1 2 H1R H2R SNoLt_1_2). }
+	              claim Hy2: Rlt y 2.
+	              { (** derive y < 2 by trichotomy, using that ~(1 < y) **)
+	                claim Hyreal: y :e real.
+	                { rewrite <- HdefR.
+	                  exact HyR. }
+	                claim H2real: 2 :e real.
+	                { rewrite <- HdefR.
+	                  exact H2R. }
+	                claim HyS: SNo y.
+	                { exact (real_SNo y Hyreal). }
+	                claim H2S: SNo 2.
+	                { exact (real_SNo 2 H2real). }
+	                apply (SNoLt_trichotomy_or_impred y 2 HyS H2S (Rlt y 2)).
+	                - assume Hylt: y < 2.
+	                  exact (RltI y 2 HyR H2R Hylt).
+		                - assume Hyeq: y = 2.
+		                  apply FalseE.
+		                  claim H1y: Rlt 1 y.
+		                  { rewrite Hyeq.
+		                    exact H12. }
+		                  exact (Hyle1 H1y).
+	                - assume H2lty: 2 < y.
+	                  apply FalseE.
+	                  claim H2y: Rlt 2 y.
+	                  { exact (RltI 2 y H2R HyR H2lty). }
+	                  claim H1y: Rlt 1 y.
+	                  { exact (Rlt_tra 1 2 y H12 H2y). }
+	                  exact (Hyle1 H1y). }
+              witness (eps_ 1).
+              witness y.
+              witness (eps_ 1).
+              witness 2.
+              prove p = (eps_ 1, y) /\ b = (eps_ 1, 2) /\
+                    (Rlt (eps_ 1) (eps_ 1) \/ ((eps_ 1) = (eps_ 1) /\ Rlt y 2)).
+              apply andI.
+              + apply andI.
+                * exact Hpy.
+                * reflexivity.
+              + apply orIR.
+                apply andI.
+                * reflexivity.
+                * exact Hy2. }
+          exact (SepI (setprod R R)
+                      (fun p0:set => order_rel (setprod R R) a p0 /\ order_rel (setprod R R) p0 b)
+                      p
+                      HpRR
+                      (andI (order_rel (setprod R R) a p)
+                            (order_rel (setprod R R) p b)
+                            Hord1
+                            Hord2)). }
+        exact (binintersectI V ordered_square p HpV HpSq).
+      - let p. assume Hp: p :e V :/\: ordered_square.
+        prove p :e U.
+        admit.
     }
     claim Hex: exists W :e R2_dictionary_order_topology, U = W :/\: ordered_square.
     { witness V.
