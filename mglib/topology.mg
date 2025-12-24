@@ -20478,7 +20478,42 @@ Definition two_by_nat_order_topology : set := order_topology two_by_nat.
 (** helper: singleton {(1,0)} is not a basis element in the order topology basis on two_by_nat **)
 Theorem two_by_nat_singleton_not_in_basis :
   {(1,0)} /:e order_topology_basis two_by_nat.
-admit.
+set X := two_by_nat.
+set U := {(1,0)}.
+assume HU: U :e order_topology_basis X.
+prove False.
+
+apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
+                      I = {x :e X | order_rel X a x /\ order_rel X x b}}
+                   :\/:
+                   {I :e Power X | exists b :e X,
+                      I = {x :e X | order_rel X x b}})
+                  {I :e Power X | exists a :e X,
+                      I = {x :e X | order_rel X a x}}
+                  U
+                  False).
+- assume HU12: U :e ({I :e Power X | exists a :e X, exists b :e X,
+                        I = {x :e X | order_rel X a x /\ order_rel X x b}}
+                     :\/:
+                     {I :e Power X | exists b :e X,
+                        I = {x :e X | order_rel X x b}}).
+  apply (binunionE' {I :e Power X | exists a :e X, exists b :e X,
+                       I = {x :e X | order_rel X a x /\ order_rel X x b}}
+                    {I :e Power X | exists b :e X,
+                       I = {x :e X | order_rel X x b}}
+                    U
+                    False).
+  + assume HU1: U :e {I :e Power X | exists a :e X, exists b :e X,
+                        I = {x :e X | order_rel X a x /\ order_rel X x b}}.
+    admit.
+  + assume HU2: U :e {I :e Power X | exists b :e X,
+                        I = {x :e X | order_rel X x b}}.
+    admit.
+  + exact HU12.
+- assume HU3: U :e {I :e Power X | exists a :e X,
+                      I = {x :e X | order_rel X a x}}.
+  admit.
+- exact HU.
 Qed.
 
 (** Helper: singleton {(1,0)} is not open in two_by_nat order topology **)
