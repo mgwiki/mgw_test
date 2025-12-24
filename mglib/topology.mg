@@ -20351,6 +20351,12 @@ Qed.
 Definition two_by_nat : set := setprod 2 omega.
 Definition two_by_nat_order_topology : set := order_topology two_by_nat.
 
+(** helper: singleton {(1,0)} is not a basis element in the order topology basis on two_by_nat **)
+Theorem two_by_nat_singleton_not_in_basis :
+  {(1,0)} /:e order_topology_basis two_by_nat.
+admit.
+Qed.
+
 (** Helper: singleton {(1,0)} is not open in two_by_nat order topology **)
 Theorem two_by_nat_singleton_not_open :
   ~ ({(1,0)} :e two_by_nat_order_topology).
@@ -20392,9 +20398,8 @@ claim HbeqU: b = U.
   - let y. assume Hy: y :e U.
     exact (HUcb y Hy). }
 
-(** Key fact: {(1,0)} is not itself a basis element in the order topology basis on two_by_nat **)
 claim HUnotB: U /:e B.
-{ admit. }
+{ exact two_by_nat_singleton_not_in_basis. }
 
 claim HUinB: U :e B.
 { rewrite <- HbeqU. exact HbB. }
