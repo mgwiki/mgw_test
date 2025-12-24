@@ -23862,7 +23862,25 @@ Theorem ex16_10_compare_topologies_on_square :
 prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square /\ subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square <> product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
 apply andI.
 - exact ordered_square_not_subspace_dictionary.
-- admit.
+- (** show the dictionary-order subspace topology differs from the product topology **)
+  set Tdic := subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
+  set Tprod := product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
+  prove Tdic <> Tprod.
+  assume Heq: Tdic = Tprod.
+  set U := ordered_square_open_strip.
+  claim HUdic: U :e Tdic.
+  { (** U should be open in the dictionary-order subspace topology by Example 3 **)
+    admit.
+  }
+  claim HUprod: U :e Tprod.
+  { rewrite <- Heq.
+    exact HUdic.
+  }
+  claim HUnprod: ~(U :e Tprod).
+  { (** U is not open in the product (standard) topology on I×I **)
+    admit.
+  }
+  exact (HUnprod HUprod).
 Qed.
 
 (** from §17 Definition: interior and closure of a set **) 
