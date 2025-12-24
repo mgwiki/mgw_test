@@ -19808,6 +19808,38 @@ apply set_ext.
   exact (Inj1_setsum 0 1 0 In_0_1).
 Qed.
 
+(** helper: setprod R R is not omega **)
+Theorem setprod_R_R_neq_omega : setprod R R <> omega.
+assume Heq: setprod R R = omega.
+prove False.
+claim HpRR: (0,1) :e setprod R R.
+{ exact (tuple_2_setprod R R 0 real_0 1 real_1). }
+claim HpOmega: (0,1) :e omega.
+{ rewrite <- Heq. exact HpRR. }
+claim HSingOmega: {1} :e omega.
+{ rewrite <- tuple_0_1_eq_Sing1.
+  exact HpOmega. }
+exact (Sing1_not_in_omega HSingOmega).
+Qed.
+
+(** helper: setprod R R is not omega nonzero **)
+Theorem setprod_R_R_neq_omega_nonzero : setprod R R <> (omega :\: {0}).
+assume Heq: setprod R R = (omega :\: {0}).
+prove False.
+claim HpRR: (0,1) :e setprod R R.
+{ exact (tuple_2_setprod R R 0 real_0 1 real_1). }
+claim HpNZ: (0,1) :e (omega :\: {0}).
+{ rewrite <- Heq. exact HpRR. }
+claim Hcore: (0,1) :e omega /\ (0,1) /:e {0}.
+{ exact (setminusE omega {0} (0,1) HpNZ). }
+claim HpOmega: (0,1) :e omega.
+{ exact (andEL ((0,1) :e omega) ((0,1) /:e {0}) Hcore). }
+claim HSingOmega: {1} :e omega.
+{ rewrite <- tuple_0_1_eq_Sing1.
+  exact HpOmega. }
+exact (Sing1_not_in_omega HSingOmega).
+Qed.
+
 (** Helper: Zplus is not setprod 2 omega **)
 Theorem Zplus_neq_setprod_2_omega : Zplus <> setprod 2 omega.
 assume Heq: Zplus = setprod 2 omega.
