@@ -24195,6 +24195,90 @@ apply andI.
   }
   claim HUnprod: ~(U :e Tprod).
   { (** U is not open in the product (standard) topology on I×I **)
+    assume HUin: U :e Tprod.
+	    set p0 := (eps_ 1, 1).
+	    (** show p0 :e U **)
+	    claim Hp0U: p0 :e U.
+	    { (** eps_ 1 and 1 are in the unit interval **)
+	      claim H1omega: 1 :e omega.
+	      { exact (nat_p_omega 1 nat_1). }
+	      claim Heps1SNoS: eps_ 1 :e SNoS_ omega.
+	      { exact (SNo_eps_SNoS_omega 1 H1omega). }
+      claim Heps1R: eps_ 1 :e R.
+      { exact (SNoS_omega_real (eps_ 1) Heps1SNoS). }
+      claim HdefR: R = real.
+      { reflexivity. }
+      claim H1R: 1 :e R.
+      { rewrite HdefR. exact real_1. }
+      claim H0R: 0 :e R.
+      { rewrite HdefR. exact real_0. }
+      claim H0in1: 0 :e 1.
+      { claim H0Ord: ordinal 0.
+        { exact (nat_p_ordinal 0 nat_0). }
+        exact (ordinal_0_In_ordsucc 0 H0Ord). }
+      claim Heps1lt1: eps_ 1 < 1.
+      { claim Heps1ltE0: eps_ 1 < eps_ 0.
+        { exact (SNo_eps_decr 1 H1omega 0 H0in1). }
+        rewrite <- (eps_0_1) at 2.
+        exact Heps1ltE0. }
+      claim Heps1lt1R: Rlt (eps_ 1) 1.
+      { exact (RltI (eps_ 1) 1 Heps1R H1R Heps1lt1). }
+      claim H0lt1: Rlt 0 1.
+      { exact (RltI 0 1 H0R H1R SNoLt_0_1). }
+      claim H0lteps1: Rlt 0 (eps_ 1).
+      { exact (RltI 0 (eps_ 1) H0R Heps1R (SNo_eps_pos 1 H1omega)). }
+      claim Hnlt_eps10: ~(Rlt (eps_ 1) 0).
+      { exact (not_Rlt_sym 0 (eps_ 1) H0lteps1). }
+      claim Hnlt_1eps1: ~(Rlt 1 (eps_ 1)).
+      { exact (not_Rlt_sym (eps_ 1) 1 Heps1lt1R). }
+      claim Hnlt_10: ~(Rlt 1 0).
+      { exact (not_Rlt_sym 0 1 H0lt1). }
+      claim Hnlt_11: ~(Rlt 1 1).
+      { exact (not_Rlt_refl 1 H1R). }
+      claim Heps1U: (eps_ 1) :e unit_interval.
+      { exact (SepI R (fun t:set => ~(Rlt t 0) /\ ~(Rlt 1 t))
+                   (eps_ 1)
+                   Heps1R
+                   (andI (~(Rlt (eps_ 1) 0)) (~(Rlt 1 (eps_ 1))) Hnlt_eps10 Hnlt_1eps1)). }
+      claim H1U: 1 :e unit_interval.
+	      { exact (SepI R (fun t:set => ~(Rlt t 0) /\ ~(Rlt 1 t))
+	                   1
+	                   H1R
+	                   (andI (~(Rlt 1 0)) (~(Rlt 1 1)) Hnlt_10 Hnlt_11)). }
+	      claim Hp0Sq: p0 :e ordered_square.
+	      { prove (eps_ 1, 1) :e setprod unit_interval unit_interval.
+	        exact (tuple_2_setprod unit_interval unit_interval (eps_ 1) Heps1U 1 H1U). }
+	      claim Hp0Ex: exists y:set, p0 = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y).
+	      { witness 1.
+	        prove p0 = (eps_ 1,1) /\ Rlt (eps_ 1) 1 /\ ~(Rlt 1 1).
+	        apply andI.
+	        - apply andI.
+	          + reflexivity.
+	          + exact Heps1lt1R.
+	        - exact Hnlt_11. }
+	      exact (SepI ordered_square
+	                  (fun q:set => exists y:set, q = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y))
+	                  p0
+	                  Hp0Sq
+	                  Hp0Ex).
+	    }
+    (** use the defining refinement property of generated_topology for Tprod **)
+    set X1 := setprod unit_interval unit_interval.
+    set B1 := product_subbasis unit_interval unit_interval_topology unit_interval unit_interval_topology.
+    claim HTdef: Tprod = generated_topology X1 B1.
+    { reflexivity. }
+    claim HUgen: U :e generated_topology X1 B1.
+    { rewrite <- HTdef.
+      exact HUin. }
+    claim Href: forall x :e U, exists b :e B1, x :e b /\ b c= U.
+    { exact (SepE2 (Power X1)
+                   (fun U0:set => forall x :e U0, exists b :e B1, x :e b /\ b c= U0)
+                   U
+                   HUgen). }
+    (** obtain a product-subbasis rectangle b with p0 :e b and b c= U **)
+    claim Href0: exists b :e B1, p0 :e b /\ b c= U.
+    { exact (Href p0 Hp0U). }
+    (** the remaining contradiction uses that any product-subbasis neighborhood of p0 varies the first coordinate, but U fixes it **)
     admit.
   }
   exact (HUnprod HUprod).
