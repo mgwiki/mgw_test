@@ -19850,6 +19850,42 @@ claim HSingOmega: {1} :e omega.
 exact (Sing1_not_in_omega HSingOmega).
 Qed.
 
+(** helper: setprod 2 omega is not omega **)
+Theorem setprod_2_omega_neq_omega : setprod 2 omega <> omega.
+assume Heq: setprod 2 omega = omega.
+prove False.
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim Hp: (0,1) :e setprod 2 omega.
+{ exact (tuple_2_setprod 2 omega 0 In_0_2 1 H1omega). }
+claim HpOmega: (0,1) :e omega.
+{ rewrite <- Heq. exact Hp. }
+claim HSingOmega: {1} :e omega.
+{ rewrite <- tuple_0_1_eq_Sing1.
+  exact HpOmega. }
+exact (Sing1_not_in_omega HSingOmega).
+Qed.
+
+(** helper: setprod 2 omega is not omega nonzero **)
+Theorem setprod_2_omega_neq_omega_nonzero : setprod 2 omega <> (omega :\: {0}).
+assume Heq: setprod 2 omega = (omega :\: {0}).
+prove False.
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim Hp: (0,1) :e setprod 2 omega.
+{ exact (tuple_2_setprod 2 omega 0 In_0_2 1 H1omega). }
+claim HpNZ: (0,1) :e (omega :\: {0}).
+{ rewrite <- Heq. exact Hp. }
+claim Hcore: (0,1) :e omega /\ (0,1) /:e {0}.
+{ exact (setminusE omega {0} (0,1) HpNZ). }
+claim HpOmega: (0,1) :e omega.
+{ exact (andEL ((0,1) :e omega) ((0,1) /:e {0}) Hcore). }
+claim HSingOmega: {1} :e omega.
+{ rewrite <- tuple_0_1_eq_Sing1.
+  exact HpOmega. }
+exact (Sing1_not_in_omega HSingOmega).
+Qed.
+
 (** helper: unfold order_rel on setprod R R to the dictionary-order case **)
 Theorem order_rel_setprod_R_R_unfold : forall a b:set,
   order_rel (setprod R R) a b ->
