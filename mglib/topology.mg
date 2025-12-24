@@ -39936,6 +39936,174 @@ Theorem path_component_transitive_axiom : forall X Tx x y z:set,
 admit.
 Qed.
 
+(** Helper: a path connected subspace lies inside a single path component **)
+Theorem subspace_path_connected_implies_in_path_component : forall X Tx V y z:set,
+  topology_on X Tx -> V c= X ->
+  path_connected_space V (subspace_topology X Tx V) ->
+  y :e V -> z :e V ->
+  z :e path_component_of X Tx y.
+let X Tx V y z.
+assume HTx: topology_on X Tx.
+assume HVsubX: V c= X.
+assume HpathV: path_connected_space V (subspace_topology X Tx V).
+assume HyV: y :e V.
+assume HzV: z :e V.
+prove z :e path_component_of X Tx y.
+claim HyX: y :e X.
+{ exact (HVsubX y HyV). }
+claim HzX: z :e X.
+{ exact (HVsubX z HzV). }
+claim HtopV: topology_on V (subspace_topology X Tx V).
+{ exact (andEL (topology_on V (subspace_topology X Tx V))
+               (forall x0 y0:set, x0 :e V -> y0 :e V ->
+                 exists p:set, path_between V x0 y0 p /\ continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p)
+               HpathV). }
+claim Hpaths: forall x0 y0:set, x0 :e V -> y0 :e V ->
+  exists p:set, path_between V x0 y0 p /\ continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p.
+{ exact (andER (topology_on V (subspace_topology X Tx V))
+               (forall x0 y0:set, x0 :e V -> y0 :e V ->
+                 exists p:set, path_between V x0 y0 p /\ continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p)
+               HpathV). }
+claim Hex: exists p:set, path_between V y z p /\ continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p.
+{ exact (Hpaths y z HyV HzV). }
+apply Hex.
+let p.
+assume Hp: path_between V y z p /\ continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p.
+claim Hpb: path_between V y z p.
+{ exact (andEL (path_between V y z p)
+               (continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p) Hp). }
+claim HpcontV: continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p.
+{ exact (andER (path_between V y z p)
+               (continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p) Hp). }
+claim HpbL: function_on p unit_interval V /\ apply_fun p 0 = y.
+{ exact (andEL (function_on p unit_interval V /\ apply_fun p 0 = y)
+               (apply_fun p 1 = z) Hpb). }
+claim Hp1: apply_fun p 1 = z.
+{ exact (andER (function_on p unit_interval V /\ apply_fun p 0 = y)
+               (apply_fun p 1 = z) Hpb). }
+claim Hp0: apply_fun p 0 = y.
+{ exact (andER (function_on p unit_interval V) (apply_fun p 0 = y) HpbL). }
+claim HpfunV: function_on p unit_interval V.
+{ exact (andEL (function_on p unit_interval V) (apply_fun p 0 = y) HpbL). }
+set j := {(y0,y0) | y0 :e V}.
+claim Hjdef: j = {(y0,y0) | y0 :e V}.
+{ reflexivity. }
+claim Hjfun: function_on j V X.
+{ let v. assume HvV: v :e V.
+  prove apply_fun j v :e X.
+  claim Hjv: apply_fun j v = v.
+  { rewrite Hjdef.
+    exact (identity_function_apply V v HvV). }
+  rewrite Hjv.
+  exact (HVsubX v HvV). }
+set q := compose_fun unit_interval p j.
+claim Hqfun: function_on q unit_interval X.
+{ exact (function_on_compose_fun unit_interval V X p j HpfunV Hjfun). }
+claim HcontJ: continuous_map V (subspace_topology X Tx V) X Tx j.
+{ prove topology_on V (subspace_topology X Tx V) /\ topology_on X Tx /\ function_on j V X /\
+    forall U:set, U :e Tx -> preimage_of V j U :e subspace_topology X Tx V.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact HtopV.
+      * exact HTx.
+    + exact Hjfun.
+  - let U. assume HU: U :e Tx.
+    prove preimage_of V j U :e subspace_topology X Tx V.
+    claim Heq: preimage_of V j U = U :/\: V.
+    { apply set_ext.
+      - let v. assume Hv: v :e preimage_of V j U.
+        claim HvV: v :e V.
+        { exact (SepE1 V (fun v0:set => apply_fun j v0 :e U) v Hv). }
+        claim HjinU: apply_fun j v :e U.
+    { exact (SepE2 V (fun v0:set => apply_fun j v0 :e U) v Hv). }
+        claim Hjv0: apply_fun {(y0,y0) | y0 :e V} v = v.
+        { exact (identity_function_apply V v HvV). }
+        claim HjinU0: apply_fun {(y0,y0) | y0 :e V} v :e U.
+        { rewrite <- Hjdef.
+          exact HjinU. }
+        claim HvU: v :e U.
+        { rewrite <- Hjv0.
+          exact HjinU0. }
+        exact (binintersectI U V v HvU HvV).
+      - let v. assume Hv: v :e U :/\: V.
+        apply (binintersectE U V v Hv).
+        assume HvU: v :e U.
+        assume HvV: v :e V.
+        prove v :e preimage_of V j U.
+        prove v :e {v0 :e V | apply_fun j v0 :e U}.
+        apply SepI.
+        * exact HvV.
+        * claim Hjv0: apply_fun {(y0,y0) | y0 :e V} v = v.
+          { exact (identity_function_apply V v HvV). }
+          prove apply_fun j v :e U.
+          rewrite Hjdef.
+          claim HvU0: apply_fun {(y0,y0) | y0 :e V} v :e U.
+          { rewrite Hjv0.
+            exact HvU. }
+          exact HvU0. }
+    rewrite Heq.
+    prove U :/\: V :e subspace_topology X Tx V.
+    prove U :/\: V :e {W :e Power V | exists V0 :e Tx, W = V0 :/\: V}.
+    apply SepI.
+    * apply PowerI.
+      exact (binintersect_Subq_2 U V).
+    * prove exists V0 :e Tx, U :/\: V = V0 :/\: V.
+      witness U.
+      apply andI.
+      + exact HU.
+      + reflexivity. }
+claim Hqcont: continuous_map unit_interval unit_interval_topology X Tx q.
+{ exact (composition_continuous unit_interval unit_interval_topology V (subspace_topology X Tx V) X Tx p j HpcontV HcontJ). }
+claim H01: 0 :e unit_interval /\ 1 :e unit_interval.
+{ exact zero_one_in_unit_interval. }
+claim H0I: 0 :e unit_interval.
+{ exact (andEL (0 :e unit_interval) (1 :e unit_interval) H01). }
+claim H1I: 1 :e unit_interval.
+{ exact (andER (0 :e unit_interval) (1 :e unit_interval) H01). }
+claim Hq0: apply_fun q 0 = y.
+{ claim Hq0def: apply_fun q 0 = apply_fun j (apply_fun p 0).
+  { exact (compose_fun_apply unit_interval p j 0 H0I). }
+  rewrite Hq0def.
+  rewrite Hp0.
+  claim Hjy: apply_fun j y = y.
+  { rewrite Hjdef.
+    exact (identity_function_apply V y HyV). }
+  rewrite Hjy.
+  reflexivity. }
+claim Hq1: apply_fun q 1 = z.
+{ claim Hq1def: apply_fun q 1 = apply_fun j (apply_fun p 1).
+  { exact (compose_fun_apply unit_interval p j 1 H1I). }
+  rewrite Hq1def.
+  rewrite Hp1.
+  claim Hjz: apply_fun j z = z.
+  { rewrite Hjdef.
+    exact (identity_function_apply V z HzV). }
+  rewrite Hjz.
+  reflexivity. }
+prove z :e {y0 :e X | exists q0:set,
+  function_on q0 unit_interval X /\
+  continuous_map unit_interval unit_interval_topology X Tx q0 /\
+  apply_fun q0 0 = y /\ apply_fun q0 1 = y0}.
+apply SepI.
+- exact HzX.
+- prove exists q0:set,
+    function_on q0 unit_interval X /\
+    continuous_map unit_interval unit_interval_topology X Tx q0 /\
+    apply_fun q0 0 = y /\ apply_fun q0 1 = z.
+  witness q.
+  prove function_on q unit_interval X /\
+    continuous_map unit_interval unit_interval_topology X Tx q /\
+    apply_fun q 0 = y /\ apply_fun q 1 = z.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact Hqfun.
+      * exact Hqcont.
+    + exact Hq0.
+  - exact Hq1.
+Qed.
+
 (** Helper: path component is reflexive **)
 (** LATEX VERSION: Any point is path connectible to itself via the constant path. **)
 Theorem path_component_reflexive : forall X Tx x:set,
@@ -40540,7 +40708,89 @@ assume Hlpc: locally_path_connected X Tx.
 let x.
 assume Hx: x :e X.
 prove open_in X Tx (path_component_of X Tx x).
-admit.
+prove topology_on X Tx /\ path_component_of X Tx x :e Tx.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x0:set, x0 :e X ->
+                 forall U:set, U :e Tx -> x0 :e U ->
+                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V))
+               Hlpc). }
+claim Hlpcprop: forall x0:set, x0 :e X ->
+  forall U:set, U :e Tx -> x0 :e U ->
+    exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V).
+{ exact (andER (topology_on X Tx)
+               (forall x0:set, x0 :e X ->
+                 forall U:set, U :e Tx -> x0 :e U ->
+                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V))
+               Hlpc). }
+apply andI.
+- exact HTx.
+- set P := path_component_of X Tx x.
+  set Fam := {V :e Tx | V c= P /\ path_connected_space V (subspace_topology X Tx V)}.
+  claim HFsub: Fam c= Tx.
+  { let V. assume HV: V :e Fam.
+    exact (SepE1 Tx (fun V0:set => V0 c= P /\ path_connected_space V0 (subspace_topology X Tx V0)) V HV). }
+  claim HUnionTx: Union Fam :e Tx.
+  { exact (topology_union_closed X Tx Fam HTx HFsub). }
+  claim HUnionEq: Union Fam = P.
+  { apply set_ext.
+    - let y. assume Hy: y :e Union Fam.
+      apply (UnionE Fam y Hy).
+      let V. assume Hex: y :e V /\ V :e Fam.
+      claim HyV: y :e V.
+      { exact (andEL (y :e V) (V :e Fam) Hex). }
+      claim HVFam: V :e Fam.
+      { exact (andER (y :e V) (V :e Fam) Hex). }
+      claim HVpair: V c= P /\ path_connected_space V (subspace_topology X Tx V).
+      { exact (SepE2 Tx (fun V0:set => V0 c= P /\ path_connected_space V0 (subspace_topology X Tx V0)) V HVFam). }
+      claim HVsubP: V c= P.
+      { exact (andEL (V c= P) (path_connected_space V (subspace_topology X Tx V)) HVpair). }
+      exact (HVsubP y HyV).
+    - let y. assume HyP: y :e P.
+      claim HyX: y :e X.
+      { exact (SepE1 X (fun y0:set => exists p:set,
+        function_on p unit_interval X /\
+        continuous_map unit_interval unit_interval_topology X Tx p /\
+        apply_fun p 0 = x /\ apply_fun p 1 = y0) y HyP). }
+      claim HXTx: X :e Tx.
+      { exact (topology_has_X X Tx HTx). }
+      claim HexV: exists V:set, V :e Tx /\ y :e V /\ V c= X /\ path_connected_space V (subspace_topology X Tx V).
+      { exact (Hlpcprop y HyX X HXTx HyX). }
+      apply HexV.
+      let V. assume HV: V :e Tx /\ y :e V /\ V c= X /\ path_connected_space V (subspace_topology X Tx V).
+      claim HVpre: ((V :e Tx /\ y :e V) /\ V c= X).
+      { exact (andEL ((V :e Tx /\ y :e V) /\ V c= X)
+                     (path_connected_space V (subspace_topology X Tx V)) HV). }
+      claim HVpath: path_connected_space V (subspace_topology X Tx V).
+      { exact (andER ((V :e Tx /\ y :e V) /\ V c= X)
+                     (path_connected_space V (subspace_topology X Tx V)) HV). }
+      claim HVTx_y: V :e Tx /\ y :e V.
+      { exact (andEL (V :e Tx /\ y :e V) (V c= X) HVpre). }
+      claim HVTx: V :e Tx.
+      { exact (andEL (V :e Tx) (y :e V) HVTx_y). }
+      claim HyV: y :e V.
+      { exact (andER (V :e Tx) (y :e V) HVTx_y). }
+      claim HVsubX: V c= X.
+      { exact (andER (V :e Tx /\ y :e V) (V c= X) HVpre). }
+      claim HVsubP: V c= P.
+      { let z. assume HzV: z :e V.
+        prove z :e P.
+        claim HzX: z :e X.
+        { exact (HVsubX z HzV). }
+        claim HzPcy: z :e path_component_of X Tx y.
+        { exact (subspace_path_connected_implies_in_path_component X Tx V y z HTx HVsubX HVpath HyV HzV). }
+        exact (path_component_transitive_axiom X Tx x y z HTx Hx HyX HzX HyP HzPcy). }
+      claim HVinFam: V :e Fam.
+      { prove V :e {V0 :e Tx | V0 c= P /\ path_connected_space V0 (subspace_topology X Tx V0)}.
+        apply SepI.
+        - exact HVTx.
+        - prove V c= P /\ path_connected_space V (subspace_topology X Tx V).
+          apply andI.
+          * exact HVsubP.
+          * exact HVpath. }
+      exact (UnionI Fam y V HyV HVinFam). }
+  rewrite <- HUnionEq.
+  exact HUnionTx.
 Qed.
 
 (** from §25: components equal path components when locally path connected **) 
@@ -40554,7 +40804,275 @@ assume Hlpc: locally_path_connected X Tx.
 let x.
 assume Hx: x :e X.
 prove path_component_of X Tx x = component_of X Tx x.
-admit.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x0:set, x0 :e X ->
+                 forall U:set, U :e Tx -> x0 :e U ->
+                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V))
+               Hlpc). }
+claim Hlpcprop: forall x0:set, x0 :e X ->
+  forall U:set, U :e Tx -> x0 :e U ->
+    exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V).
+{ exact (andER (topology_on X Tx)
+               (forall x0:set, x0 :e X ->
+                 forall U:set, U :e Tx -> x0 :e U ->
+                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V))
+               Hlpc). }
+set P := path_component_of X Tx x.
+set C := component_of X Tx x.
+claim HCsubX: C c= X.
+{ let y. assume Hy: y :e C.
+  exact (SepE1 X (fun y0:set => exists C0:set, connected_space C0 (subspace_topology X Tx C0) /\ x :e C0 /\ y0 :e C0) y Hy). }
+claim HopenP: open_in X Tx P.
+{ exact (path_components_open X Tx Hlpc x Hx). }
+claim HPinTx: P :e Tx.
+{ exact (andER (topology_on X Tx) (P :e Tx) HopenP). }
+claim HxP: x :e P.
+{ exact (path_component_reflexive X Tx x HTx Hx). }
+claim HxC: x :e C.
+{ exact (point_in_component X Tx x HTx Hx). }
+apply set_ext.
+- (** P ⊆ C **)
+  let y. assume HyP: y :e P.
+  prove y :e C.
+  claim HyX: y :e X.
+  { exact (SepE1 X (fun y0:set => exists p:set,
+     function_on p unit_interval X /\
+     continuous_map unit_interval unit_interval_topology X Tx p /\
+     apply_fun p 0 = x /\ apply_fun p 1 = y0) y HyP). }
+  claim Hex: exists p:set,
+     function_on p unit_interval X /\
+     continuous_map unit_interval unit_interval_topology X Tx p /\
+     apply_fun p 0 = x /\ apply_fun p 1 = y.
+  { exact (SepE2 X (fun y0:set => exists p:set,
+     function_on p unit_interval X /\
+     continuous_map unit_interval unit_interval_topology X Tx p /\
+     apply_fun p 0 = x /\ apply_fun p 1 = y0) y HyP). }
+  apply Hex.
+  let p. assume Hp.
+  claim H01: 0 :e unit_interval /\ 1 :e unit_interval.
+  { exact zero_one_in_unit_interval. }
+  claim H0I: 0 :e unit_interval.
+  { exact (andEL (0 :e unit_interval) (1 :e unit_interval) H01). }
+  claim H1I: 1 :e unit_interval.
+  { exact (andER (0 :e unit_interval) (1 :e unit_interval) H01). }
+  claim Htmp: ((function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p) /\ apply_fun p 0 = x) /\ apply_fun p 1 = y.
+  { exact Hp. }
+  claim Hp1: apply_fun p 1 = y.
+  { exact (andER ((function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p) /\ apply_fun p 0 = x)
+                 (apply_fun p 1 = y) Htmp). }
+  claim Htmp2: (function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p) /\ apply_fun p 0 = x.
+  { exact (andEL ((function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p) /\ apply_fun p 0 = x)
+                 (apply_fun p 1 = y) Htmp). }
+  claim Hp0: apply_fun p 0 = x.
+  { exact (andER (function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p)
+                 (apply_fun p 0 = x) Htmp2). }
+  claim Hpfc: function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p.
+  { exact (andEL (function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p)
+                 (apply_fun p 0 = x) Htmp2). }
+  claim Hpfun: function_on p unit_interval X.
+  { exact (andEL (function_on p unit_interval X) (continuous_map unit_interval unit_interval_topology X Tx p) Hpfc). }
+  claim Hpcont: continuous_map unit_interval unit_interval_topology X Tx p.
+  { exact (andER (function_on p unit_interval X) (continuous_map unit_interval unit_interval_topology X Tx p) Hpfc). }
+  set Img := image_of p unit_interval.
+  claim HimgConn: connected_space Img (subspace_topology X Tx Img).
+  { exact (continuous_image_connected unit_interval unit_interval_topology X Tx p unit_interval_connected Hpcont). }
+  claim HxImg: x :e Img.
+  { claim Hpx: apply_fun p 0 :e Img.
+    { exact (ReplI unit_interval (fun t:set => apply_fun p t) 0 H0I). }
+    rewrite <- Hp0.
+    exact Hpx. }
+  claim HyImg: y :e Img.
+  { claim Hpy: apply_fun p 1 :e Img.
+    { exact (ReplI unit_interval (fun t:set => apply_fun p t) 1 H1I). }
+    rewrite <- Hp1.
+    exact Hpy. }
+  prove y :e {y0 :e X | exists C0:set, connected_space C0 (subspace_topology X Tx C0) /\ x :e C0 /\ y0 :e C0}.
+  apply SepI.
+  - exact HyX.
+  - prove exists C0:set, connected_space C0 (subspace_topology X Tx C0) /\ x :e C0 /\ y :e C0.
+    witness Img.
+    prove connected_space Img (subspace_topology X Tx Img) /\ x :e Img /\ y :e Img.
+    apply andI.
+    + apply andI.
+      * exact HimgConn.
+      * exact HxImg.
+    + exact HyImg.
+- (** C ⊆ P **)
+  let y. assume HyC: y :e C.
+  prove y :e P.
+  set Tc := subspace_topology X Tx C.
+  claim HCconn: connected_space C Tc.
+  { exact (component_of_connected X Tx x HTx Hx). }
+  claim HtopC: topology_on C Tc.
+  { exact (andEL (topology_on C Tc)
+                 (~(exists U V:set, U :e Tc /\ V :e Tc /\ separation_of C U V))
+                 HCconn). }
+  set A := P :/\: C.
+  set D := C :\: P.
+  claim HA_subC: A c= C.
+  { exact (binintersect_Subq_2 P C). }
+  claim HAopen: open_in C Tc A.
+  { claim Hiff: open_in C Tc A <-> exists V :e Tx, A = V :/\: C.
+    { exact (open_in_subspace_iff X Tx C A HTx HCsubX HA_subC). }
+    apply (iffER (open_in C Tc A) (exists V :e Tx, A = V :/\: C) Hiff).
+    prove exists V :e Tx, A = V :/\: C.
+    witness P.
+    apply andI.
+    - exact HPinTx.
+    - reflexivity. }
+  (** D is open in the subspace topology on C **)
+  set UFam := {W :e Tc | W c= D}.
+  claim HUFsub: UFam c= Tc.
+  { let W. assume HW: W :e UFam.
+    exact (SepE1 Tc (fun W0:set => W0 c= D) W HW). }
+  claim HUnionTc: Union UFam :e Tc.
+  { exact (topology_union_closed C Tc UFam HtopC HUFsub). }
+  claim HUnionEq: Union UFam = D.
+  { apply set_ext.
+    - let z. assume Hz: z :e Union UFam.
+      apply (UnionE UFam z Hz).
+      let W. assume HexW: z :e W /\ W :e UFam.
+      claim HzW: z :e W.
+      { exact (andEL (z :e W) (W :e UFam) HexW). }
+      claim HWUF: W :e UFam.
+      { exact (andER (z :e W) (W :e UFam) HexW). }
+      claim HWsubD: W c= D.
+      { exact (SepE2 Tc (fun W0:set => W0 c= D) W HWUF). }
+      exact (HWsubD z HzW).
+    - let z. assume HzD: z :e D.
+      claim HzC: z :e C.
+      { exact (setminusE1 C P z HzD). }
+      claim HzNotP: z /:e P.
+      { exact (setminusE2 C P z HzD). }
+      claim HzX: z :e X.
+      { exact (HCsubX z HzC). }
+      claim HXTx: X :e Tx.
+      { exact (topology_has_X X Tx HTx). }
+      claim HexV: exists V:set, V :e Tx /\ z :e V /\ V c= X /\ path_connected_space V (subspace_topology X Tx V).
+      { exact (Hlpcprop z HzX X HXTx HzX). }
+      apply HexV.
+      let V. assume HV: V :e Tx /\ z :e V /\ V c= X /\ path_connected_space V (subspace_topology X Tx V).
+      claim HVpre: ((V :e Tx /\ z :e V) /\ V c= X).
+      { exact (andEL ((V :e Tx /\ z :e V) /\ V c= X)
+                     (path_connected_space V (subspace_topology X Tx V)) HV). }
+      claim HVpath: path_connected_space V (subspace_topology X Tx V).
+      { exact (andER ((V :e Tx /\ z :e V) /\ V c= X)
+                     (path_connected_space V (subspace_topology X Tx V)) HV). }
+      claim HVTx_z: V :e Tx /\ z :e V.
+      { exact (andEL (V :e Tx /\ z :e V) (V c= X) HVpre). }
+      claim HVTx: V :e Tx.
+      { exact (andEL (V :e Tx) (z :e V) HVTx_z). }
+      claim HzV: z :e V.
+      { exact (andER (V :e Tx) (z :e V) HVTx_z). }
+      claim HVsubX: V c= X.
+      { exact (andER (V :e Tx /\ z :e V) (V c= X) HVpre). }
+      set W := V :/\: C.
+      claim HW_Tc: W :e Tc.
+      { prove W :e {U :e Power C | exists V0 :e Tx, U = V0 :/\: C}.
+        apply SepI.
+        - apply PowerI.
+          exact (binintersect_Subq_2 V C).
+        - prove exists V0 :e Tx, W = V0 :/\: C.
+          witness V.
+          apply andI.
+          + exact HVTx.
+          + reflexivity. }
+      claim HzW: z :e W.
+      { exact (binintersectI V C z HzV HzC). }
+      claim HWsubD: W c= D.
+      { let t. assume HtW: t :e W.
+        apply (binintersectE V C t HtW).
+        assume HtV: t :e V.
+        assume HtC: t :e C.
+        prove t :e D.
+        prove t :e C :\: P.
+        apply setminusI.
+        - exact HtC.
+        - assume HtP: t :e P.
+          claim HzPc_t: z :e path_component_of X Tx t.
+          { exact (subspace_path_connected_implies_in_path_component X Tx V t z HTx HVsubX HVpath HtV HzV). }
+          claim HtX: t :e X.
+          { exact (HCsubX t HtC). }
+          claim HzPc_x: z :e path_component_of X Tx x.
+          { exact (path_component_transitive_axiom X Tx x t z HTx Hx HtX HzX HtP HzPc_t). }
+          exact (HzNotP HzPc_x). }
+      claim HWUF: W :e UFam.
+      { prove W :e {W0 :e Tc | W0 c= D}.
+        apply SepI.
+        - exact HW_Tc.
+        - exact HWsubD. }
+      exact (UnionI UFam z W HzW HWUF). }
+  claim HD_Tc: D :e Tc.
+  { rewrite <- HUnionEq.
+    exact HUnionTc. }
+  claim HDopen: open_in C Tc D.
+  { prove topology_on C Tc /\ D :e Tc.
+    apply andI.
+    - exact HtopC.
+    - exact HD_Tc. }
+  claim HAeq: A = C :\: D.
+  { apply set_ext.
+    - let t. assume HtA: t :e A.
+      apply (binintersectE P C t HtA).
+      assume HtP: t :e P.
+      assume HtC: t :e C.
+      prove t :e C :\: D.
+      apply setminusI.
+      + exact HtC.
+      + assume HtD: t :e D.
+        claim HtNotP: t /:e P.
+        { exact (setminusE2 C P t HtD). }
+        exact (HtNotP HtP).
+    - let t. assume HtCD: t :e C :\: D.
+      claim HtC: t :e C.
+      { exact (setminusE1 C D t HtCD). }
+      claim HtNotD: t /:e D.
+      { exact (setminusE2 C D t HtCD). }
+      claim HtP: t :e P.
+      { apply (xm (t :e P)).
+        - assume HtP0: t :e P. exact HtP0.
+        - assume HtNotP: t /:e P.
+          apply FalseE.
+          apply HtNotD.
+          exact (setminusI C P t HtC HtNotP). }
+      exact (binintersectI P C t HtP HtC). }
+  claim HAclosed: closed_in C Tc A.
+  { claim HDinTc: D :e Tc.
+    { exact HD_Tc. }
+    claim Hcl: closed_in C Tc (C :\: D).
+    { exact (closed_of_open_complement C Tc D HtopC HDinTc). }
+    rewrite HAeq.
+    exact Hcl. }
+  (** show A = C by connectedness of C and clopen property of A **)
+  claim HnoClopen: ~(exists B:set, B <> Empty /\ B <> C /\ open_in C Tc B /\ closed_in C Tc B).
+  { exact (iffEL (connected_space C Tc)
+                 (~(exists B:set, B <> Empty /\ B <> C /\ open_in C Tc B /\ closed_in C Tc B))
+                 (connected_iff_no_nontrivial_clopen C Tc HtopC) HCconn). }
+  claim HAne: A <> Empty.
+  { exact (elem_implies_nonempty A x (binintersectI P C x HxP HxC)). }
+  claim HAeqC: A = C.
+  { apply (xm (A = C)).
+    - assume H. exact H.
+    - assume Hneq: A <> C.
+      apply FalseE.
+      apply HnoClopen.
+      witness A.
+      prove A <> Empty /\ A <> C /\ open_in C Tc A /\ closed_in C Tc A.
+      apply andI.
+      - apply andI.
+        + apply andI.
+          * exact HAne.
+          * exact Hneq.
+        + exact HAopen.
+      - exact HAclosed. }
+  claim HyA: y :e A.
+  { rewrite HAeqC.
+    exact HyC. }
+  apply (binintersectE P C y HyA).
+  assume HyP: y :e P.
+  assume HyC0: y :e C.
+  exact HyP.
 Qed.
 
 (** from §25: components are closed **) 
