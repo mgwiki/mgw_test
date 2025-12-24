@@ -23257,12 +23257,201 @@ apply andI.
 - exact Heq.
 Qed.
 
+(** helper: rational rectangles are exactly products of rational open intervals **)
+(** LATEX VERSION: Rational rectangles (q1,q2)×(r1,r2) form the product basis from the rational-interval basis on each coordinate. **)
+Theorem rational_rectangle_basis_eq_product_basis_from :
+  rational_rectangle_basis =
+    product_basis_from rational_open_intervals_basis rational_open_intervals_basis.
+apply set_ext.
+- let r. assume Hr: r :e rational_rectangle_basis.
+  prove r :e product_basis_from rational_open_intervals_basis rational_open_intervals_basis.
+  claim Hex: exists a b c d:set,
+    a :e rational_numbers /\ b :e rational_numbers /\
+    c :e rational_numbers /\ d :e rational_numbers /\
+    r = setprod (open_interval a b) (open_interval c d).
+  { exact (SepE2 (Power (setprod R R))
+                 (fun r0:set => exists a b c d:set,
+                   a :e rational_numbers /\ b :e rational_numbers /\
+                   c :e rational_numbers /\ d :e rational_numbers /\
+                   r0 = setprod (open_interval a b) (open_interval c d))
+                 r
+                 Hr). }
+  apply Hex.
+  let a. assume H1.
+  apply H1.
+  let b. assume H2.
+  apply H2.
+  let c. assume H3.
+  apply H3.
+  let d. assume H4.
+  claim Hcore:
+    a :e rational_numbers /\ b :e rational_numbers /\
+    c :e rational_numbers /\ d :e rational_numbers /\
+    r = setprod (open_interval a b) (open_interval c d).
+  { exact H4. }
+  (** conjunction is left-associative: ((((aQ /\ bQ) /\ cQ) /\ dQ) /\ eq) **)
+  claim Hleft : (((a :e rational_numbers /\ b :e rational_numbers) /\ c :e rational_numbers) /\ d :e rational_numbers)
+                /\ r = setprod (open_interval a b) (open_interval c d).
+  { exact Hcore. }
+  claim Hfour : ((a :e rational_numbers /\ b :e rational_numbers) /\ c :e rational_numbers) /\ d :e rational_numbers.
+  { exact (andEL (((a :e rational_numbers /\ b :e rational_numbers) /\ c :e rational_numbers) /\ d :e rational_numbers)
+                 (r = setprod (open_interval a b) (open_interval c d))
+                 Hleft). }
+  claim Hreq : r = setprod (open_interval a b) (open_interval c d).
+  { exact (andER (((a :e rational_numbers /\ b :e rational_numbers) /\ c :e rational_numbers) /\ d :e rational_numbers)
+                 (r = setprod (open_interval a b) (open_interval c d))
+                 Hleft). }
+  claim Hthree : (a :e rational_numbers /\ b :e rational_numbers) /\ c :e rational_numbers.
+  { exact (andEL ((a :e rational_numbers /\ b :e rational_numbers) /\ c :e rational_numbers)
+                 (d :e rational_numbers)
+                 Hfour). }
+  claim HdQ : d :e rational_numbers.
+  { exact (andER ((a :e rational_numbers /\ b :e rational_numbers) /\ c :e rational_numbers)
+                 (d :e rational_numbers)
+                 Hfour). }
+  claim Hab : a :e rational_numbers /\ b :e rational_numbers.
+  { exact (andEL (a :e rational_numbers /\ b :e rational_numbers)
+                 (c :e rational_numbers)
+                 Hthree). }
+  claim HcQ : c :e rational_numbers.
+  { exact (andER (a :e rational_numbers /\ b :e rational_numbers)
+                 (c :e rational_numbers)
+                 Hthree). }
+  claim HaQ : a :e rational_numbers.
+  { exact (andEL (a :e rational_numbers) (b :e rational_numbers) Hab). }
+  claim HbQ : b :e rational_numbers.
+  { exact (andER (a :e rational_numbers) (b :e rational_numbers) Hab). }
+  claim HUinBx: open_interval a b :e rational_open_intervals_basis.
+  { exact (open_interval_in_rational_open_intervals_basis a b HaQ HbQ). }
+  claim HVinBy: open_interval c d :e rational_open_intervals_basis.
+  { exact (open_interval_in_rational_open_intervals_basis c d HcQ HdQ). }
+  claim HRepl: setprod (open_interval a b) (open_interval c d)
+    :e {setprod (open_interval a b) V | V :e rational_open_intervals_basis}.
+  { exact (ReplI rational_open_intervals_basis
+                 (fun V:set => setprod (open_interval a b) V)
+                 (open_interval c d)
+                 HVinBy). }
+  rewrite Hreq.
+  exact (famunionI rational_open_intervals_basis
+                   (fun U:set => {setprod U V | V :e rational_open_intervals_basis})
+                   (open_interval a b)
+                   (setprod (open_interval a b) (open_interval c d))
+                   HUinBx
+                   HRepl).
+- let r. assume Hr: r :e product_basis_from rational_open_intervals_basis rational_open_intervals_basis.
+  prove r :e rational_rectangle_basis.
+  claim HexU: exists U :e rational_open_intervals_basis,
+    r :e {setprod U V | V :e rational_open_intervals_basis}.
+  { exact (famunionE rational_open_intervals_basis
+           (fun U:set => {setprod U V | V :e rational_open_intervals_basis})
+           r
+           Hr). }
+  apply HexU.
+  let U. assume HUcore.
+  claim HU: U :e rational_open_intervals_basis.
+  { exact (andEL (U :e rational_open_intervals_basis)
+                 (r :e {setprod U V | V :e rational_open_intervals_basis})
+                 HUcore). }
+  claim HrRepl: r :e {setprod U V | V :e rational_open_intervals_basis}.
+  { exact (andER (U :e rational_open_intervals_basis)
+                 (r :e {setprod U V | V :e rational_open_intervals_basis})
+                 HUcore). }
+  claim HexV: exists V :e rational_open_intervals_basis, r = setprod U V.
+  { exact (ReplE rational_open_intervals_basis (fun V0:set => setprod U V0) r HrRepl). }
+  apply HexV.
+  let V. assume HVcore.
+	  claim HV: V :e rational_open_intervals_basis.
+	  { exact (andEL (V :e rational_open_intervals_basis) (r = setprod U V) HVcore). }
+	  claim Hreq: r = setprod U V.
+	  { exact (andER (V :e rational_open_intervals_basis) (r = setprod U V) HVcore). }
+	  claim HexUab: exists a, exists b, (a :e rational_numbers /\ b :e rational_numbers /\ U = open_interval a b).
+	  { exact (rational_open_intervals_basisE U HU). }
+	  claim HexVcd: exists c, exists d, (c :e rational_numbers /\ d :e rational_numbers /\ V = open_interval c d).
+	  { exact (rational_open_intervals_basisE V HV). }
+	  apply HexUab.
+	  let a. assume Ha2.
+	  apply Ha2.
+	  let b. assume Hab.
+	  apply HexVcd.
+	  let c. assume Hc2.
+	  apply Hc2.
+	  let d. assume Hcd.
+	  claim HabLeft: a :e rational_numbers /\ b :e rational_numbers.
+	  { exact (andEL (a :e rational_numbers /\ b :e rational_numbers)
+	                 (U = open_interval a b)
+	                 Hab). }
+	  claim HUeq: U = open_interval a b.
+	  { exact (andER (a :e rational_numbers /\ b :e rational_numbers)
+	                 (U = open_interval a b)
+	                 Hab). }
+	  claim HaQ: a :e rational_numbers.
+	  { exact (andEL (a :e rational_numbers) (b :e rational_numbers) HabLeft). }
+	  claim HbQ: b :e rational_numbers.
+	  { exact (andER (a :e rational_numbers) (b :e rational_numbers) HabLeft). }
+	  claim HcdLeft: c :e rational_numbers /\ d :e rational_numbers.
+	  { exact (andEL (c :e rational_numbers /\ d :e rational_numbers)
+	                 (V = open_interval c d)
+	                 Hcd). }
+	  claim HVeql: V = open_interval c d.
+	  { exact (andER (c :e rational_numbers /\ d :e rational_numbers)
+	                 (V = open_interval c d)
+	                 Hcd). }
+	  claim HcQ: c :e rational_numbers.
+	  { exact (andEL (c :e rational_numbers) (d :e rational_numbers) HcdLeft). }
+	  claim HdQ: d :e rational_numbers.
+	  { exact (andER (c :e rational_numbers) (d :e rational_numbers) HcdLeft). }
+	  claim HUsubR: U c= R.
+	  { rewrite HUeq.
+	    exact (open_interval_Subq_R a b). }
+  claim HVsubR: V c= R.
+  { rewrite HVeql.
+    exact (open_interval_Subq_R c d). }
+  claim HrectSubRR: setprod U V c= setprod R R.
+  { exact (setprod_Subq U V R R HUsubR HVsubR). }
+  claim HrectPow: setprod U V :e Power (setprod R R).
+  { exact (PowerI (setprod R R) (setprod U V) HrectSubRR). }
+	  claim HexDef: exists a0 b0 c0 d0:set,
+	    a0 :e rational_numbers /\ b0 :e rational_numbers /\
+	    c0 :e rational_numbers /\ d0 :e rational_numbers /\
+	    setprod U V = setprod (open_interval a0 b0) (open_interval c0 d0).
+	  { witness a. witness b. witness c. witness d.
+	    apply andI.
+	    - apply andI.
+	      + apply andI.
+	        * apply andI.
+	          { exact HaQ. }
+	          { exact HbQ. }
+	        * exact HcQ.
+	      + exact HdQ.
+	    - rewrite HUeq. rewrite HVeql. reflexivity. }
+	  rewrite Hreq.
+	  exact (SepI (Power (setprod R R))
+	              (fun r0:set => exists a0 b0 c0 d0:set,
+	                a0 :e rational_numbers /\ b0 :e rational_numbers /\
+                c0 :e rational_numbers /\ d0 :e rational_numbers /\
+                r0 = setprod (open_interval a0 b0) (open_interval c0 d0))
+              (setprod U V)
+              HrectPow
+              HexDef).
+Qed.
+
 Theorem ex16_6_rational_rectangles_basis :
   basis_on (setprod R R) rational_rectangle_basis /\
   generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
 apply andI.
 - admit.
-- admit.
+- (** reduce to product-basis theorem using equality of bases **)
+  rewrite rational_rectangle_basis_eq_product_basis_from.
+  rewrite R2_standard_equals_product.
+  set B := rational_open_intervals_basis.
+  claim HBpkg: basis_on R B /\ generated_topology R B = R_standard_topology.
+  { exact ex13_8a_rational_intervals_basis_standard. }
+  claim HBbasis: basis_on R B.
+  { exact (andEL (basis_on R B) (generated_topology R B = R_standard_topology) HBpkg). }
+  claim HBeq: generated_topology R B = R_standard_topology.
+  { exact (andER (basis_on R B) (generated_topology R B = R_standard_topology) HBpkg). }
+  exact (product_basis_generates_product_topology R R B B R_standard_topology R_standard_topology
+         HBbasis HBeq HBbasis HBeq).
 Qed.
 
 (** from §16 Exercise 7: convex subset implies interval or ray? **) 
