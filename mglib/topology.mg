@@ -41007,10 +41007,7 @@ apply set_ext.
   { rewrite <- HUnionEq.
     exact HUnionTc. }
   claim HDopen: open_in C Tc D.
-  { prove topology_on C Tc /\ D :e Tc.
-    apply andI.
-    - exact HtopC.
-    - exact HD_Tc. }
+  { exact (open_inI C Tc D HtopC HD_Tc). }
   claim HAeq: A = C :\: D.
   { apply set_ext.
     - let t. assume HtA: t :e A.
