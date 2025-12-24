@@ -33995,7 +33995,17 @@ prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
       sequence_converges_metric Y dY
         ({(n, apply_fun f (apply_fun seq n))|n :e omega})
         (apply_fun f x).
-admit.
+apply iffI.
+- assume Hcont: continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
+  let seq x.
+  assume Hseq: sequence_converges_metric X dX seq x.
+  prove sequence_converges_metric Y dY ({(n, apply_fun f (apply_fun seq n))|n :e omega}) (apply_fun f x).
+  admit.
+- assume Hseqcont: forall seq x:set,
+    sequence_converges_metric X dX seq x ->
+    sequence_converges_metric Y dY ({(n, apply_fun f (apply_fun seq n))|n :e omega}) (apply_fun f x).
+  prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
+  admit.
 Qed.
 
 (** from §22 Definition: quotient map and quotient topology **) 
