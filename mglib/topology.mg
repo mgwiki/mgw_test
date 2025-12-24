@@ -33817,6 +33817,51 @@ apply (SNoLt_trichotomy_or_impred delta1 delta2 Hdelta1S Hdelta2S
     + exact HyB2.
 Qed.
 
+(** Helper: if x lies in an open ball, then some ball around x lies inside it **)
+(** LATEX VERSION: If x in B_r(c), then exists s>0 with B_s(x) subset B_r(c). **)
+Theorem open_ball_refine_center : forall X d c x r:set,
+  metric_on X d ->
+  c :e X -> x :e X ->
+  r :e R -> Rlt 0 r ->
+  x :e open_ball X d c r ->
+  exists s:set, s :e R /\ Rlt 0 s /\ open_ball X d x s c= open_ball X d c r.
+let X d c x r.
+assume Hm: metric_on X d.
+assume Hc: c :e X.
+assume HxX: x :e X.
+assume HrR: r :e R.
+assume Hrpos: Rlt 0 r.
+assume Hxin: x :e open_ball X d c r.
+claim Hcenter: x :e open_ball X d x r.
+{ exact (center_in_open_ball X d x r Hm HxX Hrpos). }
+claim Hex: exists s:set, s :e R /\ Rlt 0 s /\
+  open_ball X d x s c= (open_ball X d c r) :/\: (open_ball X d x r).
+{ exact (open_ball_refine_intersection X d c x x r r Hm Hc HxX HxX HrR HrR Hrpos Hrpos Hxin Hcenter). }
+apply Hex.
+let s. assume Hs.
+claim Hs1: s :e R /\ Rlt 0 s.
+{ exact (andEL (s :e R /\ Rlt 0 s)
+               (open_ball X d x s c= (open_ball X d c r) :/\: (open_ball X d x r))
+               Hs). }
+claim HsR: s :e R.
+{ exact (andEL (s :e R) (Rlt 0 s) Hs1). }
+claim Hspos: Rlt 0 s.
+{ exact (andER (s :e R) (Rlt 0 s) Hs1). }
+claim Hsubcap: open_ball X d x s c= (open_ball X d c r) :/\: (open_ball X d x r).
+{ exact (andER (s :e R /\ Rlt 0 s)
+               (open_ball X d x s c= (open_ball X d c r) :/\: (open_ball X d x r))
+               Hs). }
+claim Hsub: open_ball X d x s c= open_ball X d c r.
+{ exact (Subq_tra (open_ball X d x s) ((open_ball X d c r) :/\: (open_ball X d x r)) (open_ball X d c r)
+         Hsubcap (binintersect_Subq_1 (open_ball X d c r) (open_ball X d x r))). }
+witness s.
+apply andI.
+- apply andI.
+  + exact HsR.
+  + exact Hspos.
+- exact Hsub.
+Qed.
+
 Definition metric_topology : set -> set -> set := fun X d =>
   generated_topology X (famunion X (fun x => {open_ball X d x r|r :e R, Rlt 0 r})).
 
