@@ -39696,7 +39696,11 @@ Definition path_connected_space : set -> set -> prop := fun X Tx =>
 
 (** Helper axioms for path_connected_implies_connected **)
 Theorem unit_interval_connected : connected_space unit_interval unit_interval_topology.
-admit.
+prove topology_on unit_interval unit_interval_topology /\
+  ~(exists U V:set, U :e unit_interval_topology /\ V :e unit_interval_topology /\ separation_of unit_interval U V).
+apply andI.
+- exact unit_interval_topology_on.
+- admit.
 Qed.
 
 Theorem zero_one_in_unit_interval : 0 :e unit_interval /\ 1 :e unit_interval.
@@ -40115,7 +40119,21 @@ Theorem punctured_space_path_connected :
   path_connected_space (EuclidPlane :\: {(0,0)})
     (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {(0,0)})).
 prove path_connected_space (EuclidPlane :\: {(0,0)}) (subspace_topology EuclidPlane R2_standard_topology (EuclidPlane :\: {(0,0)})).
-admit.
+set X := EuclidPlane :\: {(0,0)}.
+set Tx := subspace_topology EuclidPlane R2_standard_topology X.
+prove topology_on X Tx /\
+  forall x y:set, x :e X -> y :e X ->
+    exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
+apply andI.
+- (** topology_on X Tx **)
+  claim HtopPlane: topology_on EuclidPlane R2_standard_topology.
+  { exact (product_topology_is_topology R R_standard_topology R R_standard_topology
+           R_standard_topology_is_topology R_standard_topology_is_topology). }
+  claim HXsub: X c= EuclidPlane.
+  { exact (setminus_Subq EuclidPlane {(0,0)}). }
+  exact (subspace_topology_is_topology EuclidPlane R2_standard_topology X HtopPlane HXsub).
+- (** path connectedness (stub) **)
+  admit.
 Qed.
 
 (** from §24: continuous surjective image of a path connected space is path connected **) 
