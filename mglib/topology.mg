@@ -34059,7 +34059,103 @@ apply iffI.
   let x0. assume Hx0: x0 :e X.
   let eps. assume Heps: eps :e R /\ Rlt 0 eps.
   (** Goal: produce delta from openness of preimage of the eps-ball around f(x0). **)
-  admit.
+  claim HepsR: eps :e R.
+  { exact (andEL (eps :e R) (Rlt 0 eps) Heps). }
+  claim Hepspos: Rlt 0 eps.
+  { exact (andER (eps :e R) (Rlt 0 eps) Heps). }
+  claim Hf: function_on f X Y.
+  { exact (continuous_map_function_on X (metric_topology X dX) Y (metric_topology Y dY) f Hcont). }
+  claim Hfx0Y: apply_fun f x0 :e Y.
+  { exact (Hf x0 Hx0). }
+  set V := open_ball Y dY (apply_fun f x0) eps.
+  claim HVtop: V :e metric_topology Y dY.
+  { exact (open_ball_in_metric_topology Y dY (apply_fun f x0) eps HdY Hfx0Y Hepspos). }
+  set U := preimage_of X f V.
+  claim HUtop: U :e metric_topology X dX.
+  { exact (continuous_map_preimage X (metric_topology X dX) Y (metric_topology Y dY) f Hcont V HVtop). }
+  set Bx := famunion X (fun x0:set => {open_ball X dX x0 r|r :e R, Rlt 0 r}).
+  claim HUgen: U :e generated_topology X Bx.
+  { exact HUtop. }
+  claim Hx0ball: apply_fun f x0 :e V.
+  { exact (center_in_open_ball Y dY (apply_fun f x0) eps HdY Hfx0Y Hepspos). }
+  claim Hx0U: x0 :e U.
+  { exact (SepI X (fun x:set => apply_fun f x :e V) x0 Hx0 Hx0ball). }
+  claim HUlocal: forall z :e U, exists b :e Bx, z :e b /\ b c= U.
+  { exact (SepE2 (Power X)
+                 (fun U0 : set => forall x0 :e U0, exists b :e Bx, x0 :e b /\ b c= U0)
+                 U HUgen). }
+  apply (HUlocal x0 Hx0U).
+  let b. assume Hbpair.
+  claim HbBx: b :e Bx.
+  { exact (andEL (b :e Bx) (x0 :e b /\ b c= U) Hbpair). }
+  claim Hbprop: x0 :e b /\ b c= U.
+  { exact (andER (b :e Bx) (x0 :e b /\ b c= U) Hbpair). }
+  claim Hx0b: x0 :e b.
+  { exact (andEL (x0 :e b) (b c= U) Hbprop). }
+  claim HbsubU: b c= U.
+  { exact (andER (x0 :e b) (b c= U) Hbprop). }
+  (** destruct b as an open ball, then refine to a ball centered at x0 **)
+  apply (famunionE_impred X (fun x0:set => {open_ball X dX x0 r|r :e R, Rlt 0 r}) b HbBx
+         (exists delta:set, delta :e R /\ Rlt 0 delta /\
+           (forall x:set, x :e X ->
+              Rlt (apply_fun dX (x,x0)) delta ->
+              Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps))).
+  let c. assume HcX: c :e X.
+  assume HbIn: b :e {open_ball X dX c r|r :e R, Rlt 0 r}.
+  apply (ReplSepE_impred R (fun r0:set => Rlt 0 r0) (fun r0:set => open_ball X dX c r0) b HbIn
+         (exists delta:set, delta :e R /\ Rlt 0 delta /\
+           (forall x:set, x :e X ->
+              Rlt (apply_fun dX (x,x0)) delta ->
+              Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps))).
+  let r. assume HrR: r :e R.
+  assume Hrpos: Rlt 0 r.
+  assume Hbeq: b = open_ball X dX c r.
+  claim Hx0inBall: x0 :e open_ball X dX c r.
+  { rewrite <- Hbeq. exact Hx0b. }
+  claim Hexdelta: exists delta:set, delta :e R /\ Rlt 0 delta /\ open_ball X dX x0 delta c= open_ball X dX c r.
+  { exact (open_ball_refine_center X dX c x0 r HdX HcX Hx0 HrR Hrpos Hx0inBall). }
+  apply Hexdelta.
+  let delta. assume Hdelta.
+  claim Hdelta12: delta :e R /\ Rlt 0 delta.
+  { exact (andEL (delta :e R /\ Rlt 0 delta)
+                 (open_ball X dX x0 delta c= open_ball X dX c r)
+                 Hdelta). }
+  claim HdeltaR: delta :e R.
+  { exact (andEL (delta :e R) (Rlt 0 delta) Hdelta12). }
+  claim Hdeltapos: Rlt 0 delta.
+  { exact (andER (delta :e R) (Rlt 0 delta) Hdelta12). }
+  claim Hballsub: open_ball X dX x0 delta c= open_ball X dX c r.
+  { exact (andER (delta :e R /\ Rlt 0 delta)
+                 (open_ball X dX x0 delta c= open_ball X dX c r)
+                 Hdelta). }
+  claim HballsubU: open_ball X dX x0 delta c= U.
+  { claim Hsubb: open_ball X dX x0 delta c= b.
+    { rewrite Hbeq.
+      exact Hballsub. }
+    exact (Subq_tra (open_ball X dX x0 delta) b U Hsubb HbsubU). }
+  witness delta.
+  apply andI.
+  - apply andI.
+    + exact HdeltaR.
+    + exact Hdeltapos.
+  - let x. assume HxX: x :e X.
+    assume Hdx: Rlt (apply_fun dX (x,x0)) delta.
+    claim Hsym: apply_fun dX (x0,x) = apply_fun dX (x,x0).
+    { exact (metric_on_symmetric X dX x0 x HdX Hx0 HxX). }
+    claim Hdx': Rlt (apply_fun dX (x0,x)) delta.
+    { rewrite Hsym. exact Hdx. }
+    claim HxinBall: x :e open_ball X dX x0 delta.
+    { exact (open_ballI X dX x0 delta x HxX Hdx'). }
+    claim HxinU: x :e U.
+    { exact (HballsubU x HxinBall). }
+    claim HfxV: apply_fun f x :e V.
+    { exact (SepE2 X (fun x0:set => apply_fun f x0 :e V) x HxinU). }
+    claim HfxY: apply_fun f x :e Y.
+    { exact (Hf x HxX). }
+    claim HsymY: apply_fun dY (apply_fun f x, apply_fun f x0) = apply_fun dY (apply_fun f x0, apply_fun f x).
+    { exact (metric_on_symmetric Y dY (apply_fun f x) (apply_fun f x0) HdY HfxY Hfx0Y). }
+    rewrite HsymY.
+    exact (open_ballE2 Y dY (apply_fun f x0) eps (apply_fun f x) HfxV).
 - assume Hed: forall x0:set, x0 :e X ->
     forall eps:set, eps :e R /\ Rlt 0 eps ->
       exists delta:set, delta :e R /\ Rlt 0 delta /\
