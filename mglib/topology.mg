@@ -34902,7 +34902,107 @@ apply iffI.
   let seq x.
   assume Hseq: sequence_converges_metric X dX seq x.
   prove sequence_converges_metric Y dY ({(n, apply_fun f (apply_fun seq n))|n :e omega}) (apply_fun f x).
-  admit.
+  set seqY := {(n, apply_fun f (apply_fun seq n))|n :e omega}.
+  claim Hseqon: sequence_on seq X.
+  { exact (sequence_converges_metric_sequence_on X dX seq x Hseq). }
+  claim HxX: x :e X.
+  { exact (sequence_converges_metric_point_in_X X dX seq x Hseq). }
+  claim Hf: function_on f X Y.
+  { exact (continuous_map_function_on X (metric_topology X dX) Y (metric_topology Y dY) f Hcont). }
+  claim HfxY: apply_fun f x :e Y.
+  { exact (Hf x HxX). }
+  claim HseqYfun: function_on seqY omega Y.
+  { let n. assume Hnomega: n :e omega.
+    claim Hseqfun: function_on seq omega X.
+    { exact Hseqon. }
+    claim HseqnX: apply_fun seq n :e X.
+    { exact (Hseqfun n Hnomega). }
+    claim HfseqnY: apply_fun f (apply_fun seq n) :e Y.
+    { exact (Hf (apply_fun seq n) HseqnX). }
+    claim Hfunc: functional_graph seqY.
+    { exact (functional_graph_graph omega (fun n0:set => apply_fun f (apply_fun seq n0))). }
+    claim HpairIn: (n, apply_fun f (apply_fun seq n)) :e seqY.
+    { exact (ReplI omega (fun n0:set => (n0, apply_fun f (apply_fun seq n0))) n Hnomega). }
+    claim Happ: apply_fun seqY n = apply_fun f (apply_fun seq n).
+    { exact (functional_graph_apply_fun_eq seqY n (apply_fun f (apply_fun seq n)) Hfunc HpairIn). }
+    rewrite Happ.
+    exact HfseqnY. }
+  claim HseqYon: sequence_on seqY Y.
+  { exact HseqYfun. }
+  prove sequence_converges_metric Y dY seqY (apply_fun f x).
+  prove (metric_on Y dY /\ sequence_on seqY Y) /\ (apply_fun f x :e Y) /\
+    forall eps:set, eps :e R /\ Rlt 0 eps ->
+      exists N:set, N :e omega /\
+        forall n:set, n :e omega -> N c= n ->
+          Rlt (apply_fun dY (apply_fun seqY n, apply_fun f x)) eps.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact HdY.
+      * exact HseqYon.
+    + exact HfxY.
+  - let eps. assume Heps: eps :e R /\ Rlt 0 eps.
+    claim Hedcont: forall x0:set, x0 :e X ->
+      forall eps0:set, eps0 :e R /\ Rlt 0 eps0 ->
+        exists delta:set, delta :e R /\ Rlt 0 delta /\
+          (forall x1:set, x1 :e X ->
+            Rlt (apply_fun dX (x1,x0)) delta ->
+            Rlt (apply_fun dY (apply_fun f x1, apply_fun f x0)) eps0).
+    { exact (iffEL
+              (continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f)
+              (forall x0:set, x0 :e X ->
+                forall eps0:set, eps0 :e R /\ Rlt 0 eps0 ->
+                  exists delta:set, delta :e R /\ Rlt 0 delta /\
+                    (forall x1:set, x1 :e X ->
+                      Rlt (apply_fun dX (x1,x0)) delta ->
+                      Rlt (apply_fun dY (apply_fun f x1, apply_fun f x0)) eps0))
+              (metric_epsilon_delta_continuity X dX Y dY f HdX HdY)
+              Hcont). }
+    apply (Hedcont x HxX eps Heps).
+    let delta. assume Hdelta.
+    claim Hdelta12: delta :e R /\ Rlt 0 delta.
+    { exact (andEL (delta :e R /\ Rlt 0 delta)
+                   (forall x1:set, x1 :e X ->
+                     Rlt (apply_fun dX (x1,x)) delta ->
+                     Rlt (apply_fun dY (apply_fun f x1, apply_fun f x)) eps)
+                   Hdelta). }
+    claim HdeltaImp: forall x1:set, x1 :e X ->
+      Rlt (apply_fun dX (x1,x)) delta ->
+      Rlt (apply_fun dY (apply_fun f x1, apply_fun f x)) eps.
+    { exact (andER (delta :e R /\ Rlt 0 delta)
+                   (forall x1:set, x1 :e X ->
+                     Rlt (apply_fun dX (x1,x)) delta ->
+                     Rlt (apply_fun dY (apply_fun f x1, apply_fun f x)) eps)
+                   Hdelta). }
+    apply (sequence_converges_metric_eps X dX seq x Hseq delta Hdelta12).
+    let N. assume HNpair.
+    witness N.
+    apply andI.
+    - exact (andEL (N :e omega)
+                   (forall n:set, n :e omega -> N c= n -> Rlt (apply_fun dX (apply_fun seq n, x)) delta)
+                   HNpair).
+    - let n. assume Hnomega: n :e omega.
+      assume HNsubn: N c= n.
+      claim HNprop: forall n0:set, n0 :e omega -> N c= n0 -> Rlt (apply_fun dX (apply_fun seq n0, x)) delta.
+      { exact (andER (N :e omega)
+                     (forall n0:set, n0 :e omega -> N c= n0 -> Rlt (apply_fun dX (apply_fun seq n0, x)) delta)
+                     HNpair). }
+      claim Hdx: Rlt (apply_fun dX (apply_fun seq n, x)) delta.
+      { exact (HNprop n Hnomega HNsubn). }
+      claim Hseqfun: function_on seq omega X.
+      { exact Hseqon. }
+      claim HseqnX: apply_fun seq n :e X.
+      { exact (Hseqfun n Hnomega). }
+      claim Hdy: Rlt (apply_fun dY (apply_fun f (apply_fun seq n), apply_fun f x)) eps.
+      { exact (HdeltaImp (apply_fun seq n) HseqnX Hdx). }
+      claim Hfunc: functional_graph seqY.
+      { exact (functional_graph_graph omega (fun n0:set => apply_fun f (apply_fun seq n0))). }
+      claim HpairIn: (n, apply_fun f (apply_fun seq n)) :e seqY.
+      { exact (ReplI omega (fun n0:set => (n0, apply_fun f (apply_fun seq n0))) n Hnomega). }
+      claim Happ: apply_fun seqY n = apply_fun f (apply_fun seq n).
+      { exact (functional_graph_apply_fun_eq seqY n (apply_fun f (apply_fun seq n)) Hfunc HpairIn). }
+      rewrite Happ.
+      exact Hdy.
 - assume Hseqcont: forall seq x:set,
     sequence_converges_metric X dX seq x ->
     sequence_converges_metric Y dY ({(n, apply_fun f (apply_fun seq n))|n :e omega}) (apply_fun f x).
