@@ -18899,12 +18899,12 @@ Qed.
 
 (** helper: setprod R R is not R **)
 Theorem setprod_R_R_neq_R : setprod R R <> R.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** helper: setprod R R is not rational_numbers **)
 Theorem setprod_R_R_neq_rational_numbers : setprod R R <> rational_numbers.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** Helper: strict order on ℝ implies order_rel on ℝ **)
@@ -33399,7 +33399,7 @@ Theorem function_union_on_disjoint : forall A B Y f g:set,
   A :/\: B = Empty ->
   function_on f A Y -> function_on g B Y ->
   function_on (f :\/: g) (A :\/: B) Y.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** Helper: function_on for a pasted total functional map **)
