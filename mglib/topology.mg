@@ -23762,7 +23762,25 @@ apply andI.
 	          forall a b:set, a :e Q_sqrt2_cut -> b :e Q_sqrt2_cut -> order_interval rational_numbers a b c= Q_sqrt2_cut.
 	    apply andI.
 	    - exact Q_sqrt2_cut_sub_Q.
-	    - admit.
+	    - let a b.
+	      assume Ha: a :e Q_sqrt2_cut.
+	      assume Hb: b :e Q_sqrt2_cut.
+	      prove order_interval rational_numbers a b c= Q_sqrt2_cut.
+	      let x. assume Hx: x :e order_interval rational_numbers a b.
+	      prove x :e Q_sqrt2_cut.
+	      claim HxQ: x :e rational_numbers.
+	      { exact (SepE1 rational_numbers
+	                     (fun x0:set => order_rel rational_numbers a x0 /\ order_rel rational_numbers x0 b)
+	                     x
+	                     Hx). }
+	      claim HxLt: order_rel rational_numbers a x /\ order_rel rational_numbers x b.
+	      { exact (SepE2 rational_numbers
+	                     (fun x0:set => order_rel rational_numbers a x0 /\ order_rel rational_numbers x0 b)
+	                     x
+	                     Hx). }
+	      claim Hxx: mul_SNo x x < 2.
+	      { admit. }
+	      exact (SepI rational_numbers (fun q:set => mul_SNo q q < 2) x HxQ Hxx).
 	  + exact Q_sqrt2_cut_neq_Q.
 - admit.
 Qed.
