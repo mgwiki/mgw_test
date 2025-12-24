@@ -41538,7 +41538,26 @@ let X Tx Y f.
 assume Hquot: quotient_map X Tx Y f.
 assume Hloc: locally_connected X Tx.
 prove locally_connected Y (quotient_topology X Tx Y f).
-admit.
+set Q := quotient_topology X Tx Y f.
+prove topology_on Y Q /\
+  forall y:set, y :e Y ->
+    forall U:set, U :e Q -> y :e U ->
+      exists V:set, V :e Q /\ y :e V /\ V c= U /\ connected_space V (subspace_topology Y Q V).
+apply andI.
+- (** topology_on Y Q **)
+  claim HTx: topology_on X Tx.
+  { claim Htopfun: topology_on X Tx /\ function_on f X Y.
+    { exact (andEL (topology_on X Tx /\ function_on f X Y)
+                   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y)
+                   Hquot). }
+    exact (andEL (topology_on X Tx) (function_on f X Y) Htopfun). }
+  exact (quotient_topology_is_topology X Tx Y f HTx Hquot).
+- (** neighborhood property (stub) **)
+  let y. assume HyY: y :e Y.
+  let U. assume HU: U :e Q.
+  assume HyU: y :e U.
+  (** Goal: find V open in Q with y∈V⊂U and V connected in the subspace topology. **)
+  admit.
 Qed.
 
 (** from §25 Definition: quasicomponent equivalence relation **) 
