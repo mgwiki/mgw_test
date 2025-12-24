@@ -33309,10 +33309,23 @@ prove continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f <->
     Was: apply_fun dY ((apply_fun f x, apply_fun f x0))
     Now: apply_fun dY (apply_fun f x, apply_fun f x0) - consistent with dX usage **)
 	       exists delta:set, delta :e R /\ Rlt 0 delta /\
-		         (forall x:set, x :e X ->
-		            Rlt (apply_fun dX (x,x0)) delta ->
-		            Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps)).
-admit.
+			         (forall x:set, x :e X ->
+			            Rlt (apply_fun dX (x,x0)) delta ->
+			            Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps)).
+apply iffI.
+- assume Hcont: continuous_map X (metric_topology X dX) Y (metric_topology Y dY) f.
+  let x0. assume Hx0: x0 :e X.
+  let eps. assume Heps: eps :e R /\ Rlt 0 eps.
+  (** Goal: produce delta from openness of preimage of the eps-ball around f(x0). **)
+  admit.
+- assume Hed: forall x0:set, x0 :e X ->
+    forall eps:set, eps :e R /\ Rlt 0 eps ->
+      exists delta:set, delta :e R /\ Rlt 0 delta /\
+        (forall x:set, x :e X ->
+          Rlt (apply_fun dX (x,x0)) delta ->
+          Rlt (apply_fun dY (apply_fun f x, apply_fun f x0)) eps).
+  (** Goal: show continuity by checking preimages of open balls. **)
+  admit.
 Qed.
 
 (** sequences as functions from omega **) 
