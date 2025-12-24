@@ -22519,6 +22519,15 @@ exact (subspace_topology_is_topology R R_standard_topology unit_interval
          R_standard_topology_is_topology
          unit_interval_sub_R).
 Qed.
+
+(** helper: neighborhoods of eps_ 1 in the unit interval contain other points **)
+(** LATEX VERSION: Any open set in the unit interval topology containing 1/2 contains a point different from 1/2. **)
+Theorem unit_interval_open_neighborhood_has_other_point : forall U0:set,
+  U0 :e unit_interval_topology ->
+  eps_ 1 :e U0 ->
+  exists x:set, x :e U0 /\ x <> eps_ 1.
+admit.
+Qed.
 Definition ordered_square : set := setprod unit_interval unit_interval.
 Definition ordered_square_topology : set := order_topology ordered_square.
 (** LATEX VERSION: The vertical strip {1/2}×(1/2,1] inside I×I. **)
@@ -24321,15 +24330,58 @@ apply andI.
       { exact (ap0_Sigma U0 (fun _ : set => V0) p0 Hp0rect). }
       rewrite <- Hp00.
       exact Hp0U0. }
-    claim H1V0: 1 :e V0.
-    { claim Hp0V0: (p0 1) :e V0.
-      { exact (ap1_Sigma U0 (fun _ : set => V0) p0 Hp0rect). }
-      rewrite <- Hp01.
-      exact Hp0V0. }
-    (** the remaining contradiction uses that U0 contains points different from eps_1, yielding a point of b0 not in U **)
-    admit.
-  }
-  exact (HUnprod HUprod).
+	    claim H1V0: 1 :e V0.
+	    { claim Hp0V0: (p0 1) :e V0.
+	      { exact (ap1_Sigma U0 (fun _ : set => V0) p0 Hp0rect). }
+	      rewrite <- Hp01.
+	      exact Hp0V0. }
+	    (** choose another x in U0 distinct from eps_ 1 and form (x,1) in the rectangle **)
+	    claim Hexother: exists x:set, x :e U0 /\ x <> eps_ 1.
+	    { exact (unit_interval_open_neighborhood_has_other_point U0 HU0Tx HepsU0). }
+	    apply Hexother.
+	    let x. assume Hxpair.
+	    claim HxU0: x :e U0.
+	    { exact (andEL (x :e U0) (x <> eps_ 1) Hxpair). }
+	    claim Hxneq: x <> eps_ 1.
+	    { exact (andER (x :e U0) (x <> eps_ 1) Hxpair). }
+	    set p1 := (x,1).
+	    claim Hp1b0: p1 :e b0.
+	    { rewrite Hb0eq.
+	      prove p1 :e rectangle_set U0 V0.
+	      exact (tuple_2_setprod U0 V0 x HxU0 1 H1V0). }
+	    claim Hp1U: p1 :e U.
+	    { exact (Hb0subU p1 Hp1b0). }
+	    (** from p1:e U, extract p1=(eps_ 1,y) and compare first coordinates **)
+	    claim Hstrip: exists y:set, p1 = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y).
+	    { exact (SepE2 ordered_square
+	                   (fun q:set => exists y:set, q = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y))
+	                   p1
+	                   Hp1U). }
+		    apply Hstrip.
+		    let y. assume Hyprop.
+		    claim Hycore: p1 = (eps_ 1,y) /\ Rlt (eps_ 1) y.
+		    { exact (andEL (p1 = (eps_ 1,y) /\ Rlt (eps_ 1) y)
+		                  (~(Rlt 1 y))
+		                  Hyprop). }
+		    claim HyPair: p1 = (eps_ 1,y).
+		    { exact (andEL (p1 = (eps_ 1,y))
+		                  (Rlt (eps_ 1) y)
+		                  Hycore). }
+	    claim Hp10: p1 0 = x.
+	    { claim Hp1def: p1 = (x,1).
+	      { reflexivity. }
+	      rewrite Hp1def.
+	      exact (tuple_2_0_eq x 1). }
+	    claim Hp10': p1 0 = eps_ 1.
+	    { rewrite HyPair.
+	      exact (tuple_2_0_eq (eps_ 1) y). }
+	    claim Hxeq: x = eps_ 1.
+	    { rewrite <- Hp10.
+	      exact Hp10'. }
+	    apply FalseE.
+	    exact (Hxneq Hxeq).
+	  }
+	  exact (HUnprod HUprod).
 Qed.
 
 (** from §17 Definition: interior and closure of a set **) 
