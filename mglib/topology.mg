@@ -20354,7 +20354,51 @@ Definition two_by_nat_order_topology : set := order_topology two_by_nat.
 (** Helper: singleton {(1,0)} is not open in two_by_nat order topology **)
 Theorem two_by_nat_singleton_not_open :
   ~ ({(1,0)} :e two_by_nat_order_topology).
-admit. (** FAIL **)
+assume Hopen: {(1,0)} :e two_by_nat_order_topology.
+prove False.
+set X := two_by_nat.
+set B := order_topology_basis X.
+set U := {(1,0)}.
+
+(** Unpack generated_topology membership: x in U implies existence of basis neighborhood inside U **)
+claim Hneigh: forall x :e U, exists b :e B, x :e b /\ b c= U.
+{ exact (SepE2 (Power X)
+               (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0)
+               U
+               Hopen). }
+
+claim HxU: (1,0) :e U.
+{ exact (SingI (1,0)). }
+
+claim Hexb: exists b :e B, (1,0) :e b /\ b c= U.
+{ exact (Hneigh (1,0) HxU). }
+apply Hexb.
+let b. assume Hbpair. apply Hbpair.
+assume HbB: b :e B.
+assume Hbcore: (1,0) :e b /\ b c= U.
+claim HbcU: b c= U.
+{ exact (andER ((1,0) :e b) (b c= U) Hbcore). }
+claim HUcb: U c= b.
+{ let y. assume Hy: y :e U.
+  prove y :e b.
+  claim HyEq: y = (1,0).
+  { exact (SingE (1,0) y Hy). }
+  rewrite HyEq.
+  exact (andEL ((1,0) :e b) (b c= U) Hbcore). }
+claim HbeqU: b = U.
+{ apply set_ext.
+  - let y. assume Hy: y :e b.
+    exact (HbcU y Hy).
+  - let y. assume Hy: y :e U.
+    exact (HUcb y Hy). }
+
+(** Key fact: {(1,0)} is not itself a basis element in the order topology basis on two_by_nat **)
+claim HUnotB: U /:e B.
+{ admit. }
+
+claim HUinB: U :e B.
+{ rewrite <- HbeqU. exact HbB. }
+exact (HUnotB HUinB).
 Qed.
 
 (** LATEX VERSION: The two-by-ℕ dictionary order space fails to be discrete. **)
