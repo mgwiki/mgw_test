@@ -23198,10 +23198,68 @@ Definition rational_rectangle_basis : set :=
        c :e rational_numbers /\ d :e rational_numbers /\
        r = setprod (open_interval a b) (open_interval c d)}.
 
+(** helper: open intervals are standard-open when endpoints are real **)
+(** LATEX VERSION: Since the standard basis contains all open intervals (a,b) with a,b in R, such intervals are open in the standard topology. **)
+Theorem open_interval_in_R_standard_topology_endpoints : forall a b:set,
+  a :e R -> b :e R -> open_interval a b :e R_standard_topology.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+claim HbFam : open_interval a b :e {open_interval a b0|b0 :e R}.
+{ exact (ReplI R (fun b0:set => open_interval a b0) b HbR). }
+claim HbStd : open_interval a b :e R_standard_basis.
+{ exact (famunionI R (fun a0:set => {open_interval a0 b0|b0 :e R}) a (open_interval a b) HaR HbFam). }
+exact (generated_topology_contains_basis R R_standard_basis R_standard_basis_is_basis_local (open_interval a b) HbStd).
+Qed.
+
+(** helper: rational open intervals are in the rational-interval basis **)
+Theorem open_interval_in_rational_open_intervals_basis : forall q1 q2:set,
+  q1 :e rational_numbers -> q2 :e rational_numbers ->
+  open_interval q1 q2 :e rational_open_intervals_basis.
+let q1 q2.
+assume Hq1Q: q1 :e rational_numbers.
+assume Hq2Q: q2 :e rational_numbers.
+claim Hq2fam : open_interval q1 q2 :e {open_interval q1 q2'|q2' :e rational_numbers}.
+{ exact (ReplI rational_numbers (fun q2' : set => open_interval q1 q2') q2 Hq2Q). }
+exact (famunionI rational_numbers
+                 (fun q1' : set => {open_interval q1' q2'|q2' :e rational_numbers})
+                 q1
+                 (open_interval q1 q2)
+                 Hq1Q
+                 Hq2fam).
+Qed.
+
+(** helper: eliminate membership in rational_open_intervals_basis **)
+Theorem rational_open_intervals_basisE : forall b:set,
+  b :e rational_open_intervals_basis ->
+  exists q1, exists q2, (q1 :e rational_numbers /\ q2 :e rational_numbers /\ b = open_interval q1 q2).
+let b. assume Hb: b :e rational_open_intervals_basis.
+apply (famunionE_impred rational_numbers
+         (fun q1 : set => {open_interval q1 q2|q2 :e rational_numbers})
+         b
+         Hb
+         (exists q1, exists q2, (q1 :e rational_numbers /\ q2 :e rational_numbers /\ b = open_interval q1 q2))).
+let q1.
+assume Hq1Q: q1 :e rational_numbers.
+assume Hbq1: b :e {open_interval q1 q2|q2 :e rational_numbers}.
+apply (ReplE_impred rational_numbers (fun q2:set => open_interval q1 q2)
+         b Hbq1
+         (exists q1, exists q2, (q1 :e rational_numbers /\ q2 :e rational_numbers /\ b = open_interval q1 q2))).
+let q2.
+assume Hq2Q: q2 :e rational_numbers.
+assume Heq: b = open_interval q1 q2.
+witness q1.
+witness q2.
+apply andI.
+- apply andI.
+  + exact Hq1Q.
+  + exact Hq2Q.
+- exact Heq.
+Qed.
+
 Theorem ex16_6_rational_rectangles_basis :
   basis_on (setprod R R) rational_rectangle_basis /\
   generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
-prove basis_on (setprod R R) rational_rectangle_basis /\ generated_topology (setprod R R) rational_rectangle_basis = R2_standard_topology.
 apply andI.
 - admit.
 - admit.
