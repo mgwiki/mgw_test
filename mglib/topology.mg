@@ -60753,25 +60753,14 @@ Qed.
 (** stub: this metric is meant to be the sup metric on C(I,R) **)
 Definition uniform_metric_C_I_R : set := Eps_i (fun d:set => metric_on C_I_R d).
 Definition uniform_topology_C_I_R : set := metric_topology C_I_R uniform_metric_C_I_R.
-Axiom ex30_15_CI_has_countable_dense_uniform_axiom :
-  exists D:set,
-    D c= C_I_R /\ countable D /\ dense_in D C_I_R uniform_topology_C_I_R /\
-    second_countable_space C_I_R uniform_topology_C_I_R.
 Theorem ex30_15_CI_has_countable_dense_uniform :
   exists D:set,
     D c= C_I_R /\ countable D /\ dense_in D C_I_R uniform_topology_C_I_R /\
     second_countable_space C_I_R uniform_topology_C_I_R.
-exact ex30_15_CI_has_countable_dense_uniform_axiom.
+admit.
 Qed.
 (** from §30 Exercise 16a: product R^I where I=[0,1] has countable dense subset **)
 (** LATEX VERSION: The product space ℝ^I, where I=[0,1], has a countable dense subset. **)
-Axiom ex30_16a_product_RI_countable_dense_axiom :
-  exists D:set,
-    D c= product_space unit_interval (const_space_family unit_interval R R_standard_topology) /\
-    countable D /\
-    dense_in D
-      (product_space unit_interval (const_space_family unit_interval R R_standard_topology))
-      (product_topology_full unit_interval (const_space_family unit_interval R R_standard_topology)).
 Theorem ex30_16a_product_RI_countable_dense :
   exists D:set,
     D c= product_space unit_interval (const_space_family unit_interval R R_standard_topology) /\
@@ -60779,20 +60768,11 @@ Theorem ex30_16a_product_RI_countable_dense :
     dense_in D
       (product_space unit_interval (const_space_family unit_interval R R_standard_topology))
       (product_topology_full unit_interval (const_space_family unit_interval R R_standard_topology)).
-exact ex30_16a_product_RI_countable_dense_axiom.
+admit.
 Qed.
 
 (** from §30 Exercise 16b: large product does not have countable dense subset **)
 (** LATEX VERSION: If J has cardinality > 𝒫(ℤ₊), then ℝ^J does not have countable dense subset. **)
-Axiom ex30_16b_large_product_no_countable_dense_axiom : forall J:set,
-  atleastp (Power omega) J ->
-  ~ equip J (Power omega) ->
-  ~ (exists D:set,
-      D c= product_space J (const_space_family J R R_standard_topology) /\
-      countable D /\
-      dense_in D
-        (product_space J (const_space_family J R R_standard_topology))
-        (product_topology_full J (const_space_family J R R_standard_topology))).
 Theorem ex30_16b_large_product_no_countable_dense : forall J:set,
   atleastp (Power omega) J ->
   ~ equip J (Power omega) ->
@@ -60802,7 +60782,7 @@ Theorem ex30_16b_large_product_no_countable_dense : forall J:set,
       dense_in D
         (product_space J (const_space_family J R R_standard_topology))
         (product_topology_full J (const_space_family J R R_standard_topology))).
-exact ex30_16b_large_product_no_countable_dense_axiom.
+admit.
 Qed.
 (** from §30 Exercise 17: Romega box topology countability axioms **)
 (** LATEX VERSION: ℝ^ω with box topology, subspace ℚ^∞ (rationals ending in infinite 0s): which countability axioms? **)
@@ -60814,33 +60794,22 @@ Definition Q_infty : set :=
       forall m:set, m :e omega -> ~(m :e n0) -> apply_fun f m = 0)}.
 Definition Q_infty_topology : set :=
   subspace_topology R_omega_space R_omega_box_topology Q_infty.
-Axiom ex30_17_Romega_box_countability_axiom :
-  (first_countable_space Q_infty Q_infty_topology \/ ~ first_countable_space Q_infty Q_infty_topology) /\
-  (second_countable_space Q_infty Q_infty_topology \/ ~ second_countable_space Q_infty Q_infty_topology) /\
-  (Lindelof_space Q_infty Q_infty_topology \/ ~ Lindelof_space Q_infty Q_infty_topology) /\
-  ((exists D:set, D c= Q_infty /\ countable D /\ dense_in D Q_infty Q_infty_topology) \/
-   ~ (exists D:set, D c= Q_infty /\ countable D /\ dense_in D Q_infty Q_infty_topology)).
 Theorem ex30_17_Romega_box_countability :
   (first_countable_space Q_infty Q_infty_topology \/ ~ first_countable_space Q_infty Q_infty_topology) /\
   (second_countable_space Q_infty Q_infty_topology \/ ~ second_countable_space Q_infty Q_infty_topology) /\
   (Lindelof_space Q_infty Q_infty_topology \/ ~ Lindelof_space Q_infty Q_infty_topology) /\
   ((exists D:set, D c= Q_infty /\ countable D /\ dense_in D Q_infty Q_infty_topology) \/
    ~ (exists D:set, D c= Q_infty /\ countable D /\ dense_in D Q_infty Q_infty_topology)).
-exact ex30_17_Romega_box_countability_axiom.
+admit.
 Qed.
 (** from §30 Exercise 18: first-countable topological group with dense/Lindelof implies countable basis **)
 (** LATEX VERSION: If G is first-countable topological group with countable dense subset or Lindelöf, then G has countable basis. **)
-Axiom ex30_18_first_countable_group_countable_basis_axiom : forall G Tg:set,
-  topological_group G Tg ->
-  first_countable_space G Tg ->
-  ((exists D:set, D c= G /\ countable D /\ dense_in D G Tg) \/ Lindelof_space G Tg) ->
-  second_countable_space G Tg.
 Theorem ex30_18_first_countable_group_countable_basis : forall G Tg:set,
   topological_group G Tg ->
   first_countable_space G Tg ->
   ((exists D:set, D c= G /\ countable D /\ dense_in D G Tg) \/ Lindelof_space G Tg) ->
   second_countable_space G Tg.
-exact ex30_18_first_countable_group_countable_basis_axiom.
+admit.
 Qed.
 
 (** from §31 Exercise 1: regular implies disjoint closures of neighborhoods **)
