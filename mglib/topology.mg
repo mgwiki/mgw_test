@@ -38644,6 +38644,171 @@ exact (SepI EuclidPlane
         Hprop).
 Qed.
 
+(** Helper: if b=0 then the affine line is the vertical slice {c/a} times R **)
+Theorem affine_line_R2_b0_eq_slice : forall a b c:set,
+  a :e R -> b :e R -> c :e R ->
+  b = 0 ->
+  a <> 0 ->
+  affine_line_R2 a b c = setprod {div_SNo c a} R.
+let a b c.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HcR: c :e R.
+assume Hb0: b = 0.
+assume Ha0: a <> 0.
+set x0 := div_SNo c a.
+apply set_ext.
+- let p. assume Hp: p :e affine_line_R2 a b c.
+  prove p :e setprod {x0} R.
+  claim HpRR: p :e setprod R R.
+  { exact (affine_line_R2_subset_R2 a b c p Hp). }
+  claim Hp0R: (p 0) :e R.
+  { exact (ap0_Sigma R (fun _ : set => R) p HpRR). }
+  claim Hp1R: (p 1) :e R.
+  { exact (ap1_Sigma R (fun _ : set => R) p HpRR). }
+  claim Heqdef: add_SNo (mul_SNo a (R2_xcoord p)) (mul_SNo b (R2_ycoord p)) = c.
+  { exact (SepE2 EuclidPlane
+              (fun p0:set => add_SNo (mul_SNo a (R2_xcoord p0)) (mul_SNo b (R2_ycoord p0)) = c)
+              p
+              Hp). }
+  claim Hxdef: R2_xcoord p = p 0.
+  { reflexivity. }
+  claim Hydef: R2_ycoord p = p 1.
+  { reflexivity. }
+  claim Hmul: mul_SNo a (p 0) = c.
+  { claim Heq0: add_SNo (mul_SNo a (p 0)) (mul_SNo b (p 1)) = c.
+    { rewrite <- Hxdef.
+      rewrite <- Hydef.
+      exact Heqdef. }
+    claim HdefR: R = real.
+    { reflexivity. }
+    claim Hp1Real: (p 1) :e real.
+    { rewrite <- HdefR. exact Hp1R. }
+    claim Hp1S: SNo (p 1).
+    { exact (real_SNo (p 1) Hp1Real). }
+    claim Hbterm: mul_SNo b (p 1) = 0.
+    { rewrite Hb0.
+      exact (mul_SNo_zeroL (p 1) Hp1S). }
+    claim Heq2: add_SNo (mul_SNo a (p 0)) 0 = c.
+    { claim HlhsEq: add_SNo (mul_SNo a (p 0)) (mul_SNo b (p 1)) = add_SNo (mul_SNo a (p 0)) 0.
+      { rewrite Hbterm.
+        reflexivity. }
+      rewrite <- HlhsEq.
+      exact Heq0. }
+    claim Hap0: SNo (mul_SNo a (p 0)).
+    { claim HaReal: a :e real.
+      { rewrite <- HdefR. exact HaR. }
+      claim Hp0Real: (p 0) :e real.
+      { rewrite <- HdefR. exact Hp0R. }
+      exact (SNo_mul_SNo a (p 0) (real_SNo a HaReal) (real_SNo (p 0) Hp0Real)). }
+    rewrite <- (add_SNo_0R (mul_SNo a (p 0)) Hap0).
+    exact Heq2. }
+  claim HdefR: R = real.
+  { reflexivity. }
+  claim HaReal: a :e real.
+  { rewrite <- HdefR. exact HaR. }
+  claim HcReal: c :e real.
+  { rewrite <- HdefR. exact HcR. }
+  claim Hp0Real: (p 0) :e real.
+  { rewrite <- HdefR. exact Hp0R. }
+  claim HaS: SNo a.
+  { exact (real_SNo a HaReal). }
+  claim HcS: SNo c.
+  { exact (real_SNo c HcReal). }
+  claim Hp0S: SNo (p 0).
+  { exact (real_SNo (p 0) Hp0Real). }
+  claim Hmul2: c = mul_SNo a (p 0).
+  { rewrite Hmul.
+    reflexivity. }
+  claim HdivEq: div_SNo c a = (p 0).
+  { exact (mul_div_SNo_nonzero_eq c a (p 0) HcS HaS Hp0S Ha0 Hmul2). }
+  claim Hx0def: x0 = div_SNo c a.
+  { reflexivity. }
+  claim Hx0eq: x0 = (p 0).
+  { rewrite Hx0def.
+    exact HdivEq. }
+  claim Hp0Sing: (p 0) :e {x0}.
+  { rewrite <- Hx0eq.
+    exact (SingI x0). }
+  claim Heta: p = (p 0, p 1).
+  { exact (setprod_eta R R p HpRR). }
+  rewrite Heta.
+  exact (tuple_2_setprod {x0} R (p 0) Hp0Sing (p 1) Hp1R).
+- let p. assume Hp: p :e setprod {x0} R.
+  prove p :e affine_line_R2 a b c.
+  claim Hp0Sing: (p 0) :e {x0}.
+  { exact (ap0_Sigma {x0} (fun _ : set => R) p Hp). }
+  claim Hp1R: (p 1) :e R.
+  { exact (ap1_Sigma {x0} (fun _ : set => R) p Hp). }
+  claim Hp0eq: (p 0) = x0.
+  { exact (singleton_elem (p 0) x0 Hp0Sing). }
+  claim HpRR: p :e setprod R R.
+  { claim HSingSub: {x0} c= R.
+    { claim Hx0Real: x0 :e real.
+      { claim HdefR: R = real.
+        { reflexivity. }
+        claim HaReal: a :e real.
+        { rewrite <- HdefR. exact HaR. }
+        claim HcReal: c :e real.
+        { rewrite <- HdefR. exact HcR. }
+        exact (real_div_SNo c HcReal a HaReal). }
+      claim Hx0R: x0 :e R.
+      { claim HdefR: R = real.
+        { reflexivity. }
+        rewrite HdefR. exact Hx0Real. }
+      exact (singleton_subset x0 R Hx0R). }
+    exact (setprod_Subq {x0} R R R HSingSub (Subq_ref R) p Hp). }
+  claim Hdef: affine_line_R2 a b c =
+    {q :e EuclidPlane | add_SNo (mul_SNo a (R2_xcoord q)) (mul_SNo b (R2_ycoord q)) = c}.
+  { reflexivity. }
+  rewrite Hdef.
+  claim HxyPlane: p :e EuclidPlane.
+  { claim Heq: EuclidPlane = setprod R R.
+    { reflexivity. }
+    rewrite Heq.
+    exact HpRR. }
+  prove p :e {q :e EuclidPlane | add_SNo (mul_SNo a (R2_xcoord q)) (mul_SNo b (R2_ycoord q)) = c}.
+  apply (SepI EuclidPlane
+          (fun q:set => add_SNo (mul_SNo a (R2_xcoord q)) (mul_SNo b (R2_ycoord q)) = c)
+          p
+          HxyPlane).
+  claim Hxdef: R2_xcoord p = p 0.
+  { reflexivity. }
+  claim Hydef: R2_ycoord p = p 1.
+  { reflexivity. }
+  rewrite Hxdef.
+  rewrite Hydef.
+  rewrite Hb0.
+  claim HdefR: R = real.
+  { reflexivity. }
+  claim HaReal: a :e real.
+  { rewrite <- HdefR. exact HaR. }
+  claim HcReal: c :e real.
+  { rewrite <- HdefR. exact HcR. }
+  claim Hp1Real: (p 1) :e real.
+  { rewrite <- HdefR. exact Hp1R. }
+  claim Hp1S: SNo (p 1).
+  { exact (real_SNo (p 1) Hp1Real). }
+  rewrite (mul_SNo_zeroL (p 1) Hp1S).
+  rewrite Hp0eq.
+  claim HaS: SNo a.
+  { exact (real_SNo a HaReal). }
+  claim HcS: SNo c.
+  { exact (real_SNo c HcReal). }
+  claim Hx0Real: x0 :e real.
+  { exact (real_div_SNo c HcReal a HaReal). }
+  claim Hx0S: SNo x0.
+  { exact (real_SNo x0 Hx0Real). }
+  rewrite (add_SNo_0R (mul_SNo a x0) (SNo_mul_SNo a x0 HaS Hx0S)).
+  claim Hmul: mul_SNo a x0 = c.
+  { claim Hx0def: x0 = div_SNo c a.
+    { reflexivity. }
+    rewrite Hx0def.
+    rewrite (mul_div_SNo_invR c a HcS HaS Ha0).
+    reflexivity. }
+  exact Hmul.
+Qed.
+
 (** from §16 Exercise 8: helper predicate for negative slope in affine form **)
 (** LATEX VERSION: For ax+by=c with b not zero, the slope is negative exactly when a and b have the same sign. **)
 Definition same_sign_nonzero_R : set -> set -> prop :=
@@ -38735,35 +38900,27 @@ prove ( (b = 0 ->
                (product_topology R R_lower_limit_topology R R_lower_limit_topology)
                (affine_line_R2 a b c)) f).
 apply andI.
-- apply andI.
-  + apply andI.
-    * assume Hb0: b = 0.
-      claim Ha0: a <> 0.
-      { prove ~ (a = 0).
-        assume Ha0eq: a = 0.
-        prove False.
-        apply Hnotboth.
-        apply andI.
-        - exact Ha0eq.
-        - exact Hb0. }
-      witness (affine_line_R2_param_by_y a b c).
-      admit.
+  - apply andI.
+	  + apply andI.
+	    * assume Hb0: b = 0.
+	      witness (affine_line_R2_param_by_y a b c).
+	      admit.
     * assume Hbne: b <> 0.
       witness (affine_line_R2_param_by_x a b c).
       admit.
   + assume Hneg: b <> 0 /\ same_sign_nonzero_R a b.
     witness (affine_line_R2_param_by_x a b c).
     admit.
-- assume Hcase: b = 0 \/ ~ same_sign_nonzero_R a b.
-  claim Hb0case: b = 0 ->
-    exists f:set,
-      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
-        (subspace_topology (setprod R R)
-           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
-           (affine_line_R2 a b c)) f.
-  { assume Hb0: b = 0.
-    witness (affine_line_R2_param_by_y a b c).
-    admit. }
+  - assume Hcase: b = 0 \/ ~ same_sign_nonzero_R a b.
+	  claim Hb0case: b = 0 ->
+	    exists f:set,
+	      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+	        (subspace_topology (setprod R R)
+	           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	           (affine_line_R2 a b c)) f.
+	  { assume Hb0: b = 0.
+	    witness (affine_line_R2_param_by_y a b c).
+	    admit. }
   claim Hnotsigncase: ~ same_sign_nonzero_R a b ->
     exists f:set,
       homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
