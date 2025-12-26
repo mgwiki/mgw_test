@@ -9827,6 +9827,34 @@ rewrite <- (tuple_pair x y).
 exact (pair_ap_1 x y).
 Qed.
 
+(** helper: equality of ordered pairs is coordinatewise **)
+(** LATEX VERSION: If (x1,y1) = (x2,y2) then x1=x2 and y1=y2. **)
+Theorem tuple_eq_coords : forall x1 y1 x2 y2:set,
+  (x1,y1) = (x2,y2) -> x1 = x2 /\ y1 = y2.
+let x1 y1 x2 y2. assume Heq.
+apply andI.
+- prove x1 = x2.
+  claim Hproj0: (x1,y1) 0 = (x2,y2) 0.
+  { rewrite Heq. reflexivity. }
+  claim Hx1: (x1,y1) 0 = x1.
+  { exact (tuple_2_0_eq x1 y1). }
+  claim Hx2: (x2,y2) 0 = x2.
+  { exact (tuple_2_0_eq x2 y2). }
+  rewrite <- Hx1.
+  rewrite <- Hx2.
+  exact Hproj0.
+- prove y1 = y2.
+  claim Hproj1: (x1,y1) 1 = (x2,y2) 1.
+  { rewrite Heq. reflexivity. }
+  claim Hy1: (x1,y1) 1 = y1.
+  { exact (tuple_2_1_eq x1 y1). }
+  claim Hy2: (x2,y2) 1 = y2.
+  { exact (tuple_2_1_eq x2 y2). }
+  rewrite <- Hy1.
+  rewrite <- Hy2.
+  exact Hproj1.
+Qed.
+
 (** from §13 Example 4: equality of points in R×R is coordinatewise **)
 (** LATEX VERSION: If (x1,y1) = (x2,y2) then x1=x2 and y1=y2. **)
 Theorem tuple_eq_coords_R2 : forall x1 y1 x2 y2:set,
