@@ -20584,8 +20584,10 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 				    assume Hpre4 HnOmega.
 				    apply Hpre4.
 				    assume Hpre5 Hj2.
-				    apply Hpre5.
-				    assume Hi2 HmOmega.
+					    claim Hi2: i :e 2.
+					    { exact (andEL (i :e 2) (m :e omega) Hpre5). }
+					    claim HmOmega: m :e omega.
+					    { exact (andER (i :e 2) (m :e omega) Hpre5). }
 
 			    (** compute i = 1 and m = 0 from (1,0) = (i,m) **)
 			    claim Hi1: i = 1.
