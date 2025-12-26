@@ -20602,10 +20602,12 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    apply Hpre2.
 		    assume Hpre3 H10Eq.
 		    apply Hpre3.
-		    assume Hpre4 HnOmega.
-		    apply Hpre4.
-		    assume Hpre5 Hj2.
-		    admit.
+			    assume Hpre4 HnOmega.
+			    apply Hpre4.
+			    assume Hpre5 Hj2.
+			    claim Hi2: i :e 2.
+			    { exact Hpre5. }
+			    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
                       I = {x :e X | order_rel X a x}}.
