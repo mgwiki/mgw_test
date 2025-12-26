@@ -20677,6 +20677,16 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 				        exact (tuple_2_1_eq 1 0). }
 				      rewrite <- (tuple_2_1_eq i m) at 1.
 				      exact Him1. }
+
+				    (** Derived coordinate equalities for b from HbEq2: b = (j,n). **)
+				    claim Hb0_eq_j: b 0 = j.
+				    { prove b 0 = j.
+				      rewrite HbEq2.
+				      exact (tuple_2_0_eq j n). }
+				    claim Hb1_eq_n: b 1 = n.
+				    { prove b 1 = n.
+				      rewrite HbEq2.
+				      exact (tuple_2_1_eq j n). }
 				    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
