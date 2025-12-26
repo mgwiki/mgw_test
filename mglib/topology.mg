@@ -11384,7 +11384,13 @@ claim HbPred:
                b
                Hb). }
 apply HbPred.
-let a. let b0. let c. let d0. assume Habcd.
+let a. assume HbPred2.
+apply HbPred2.
+let b0. assume HbPred3.
+apply HbPred3.
+let c. assume HbPred4.
+apply HbPred4.
+let d0. assume Habcd.
 set Rect := {p :e EuclidPlane|exists x1 y1:set, p = (x1,y1) /\ Rlt a x1 /\ Rlt x1 b0 /\ Rlt c y1 /\ Rlt y1 d0}.
 claim HbEq: b = Rect.
 { exact (andER
