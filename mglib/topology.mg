@@ -48760,7 +48760,150 @@ Qed.
 
 Theorem double_minus_one_map_function_on :
   function_on double_minus_one_map_right_half unit_interval_right_half unit_interval.
-admit.
+let t.
+assume HtH: t :e unit_interval_right_half.
+prove apply_fun double_minus_one_map_right_half t :e unit_interval.
+rewrite (double_minus_one_map_apply t HtH).
+prove add_SNo (mul_SNo 2 t) (minus_SNo 1) :e unit_interval.
+
+claim HtI: t :e unit_interval.
+{ exact (unit_interval_right_half_sub t HtH). }
+claim HtR: t :e R.
+{ exact (unit_interval_sub_R t HtI). }
+claim HtS: SNo t.
+{ exact (real_SNo t HtR). }
+claim HeR: eps_ 1 :e R.
+{ exact eps_1_in_R. }
+claim HeS: SNo (eps_ 1).
+{ exact (real_SNo (eps_ 1) HeR). }
+claim H2R: 2 :e R.
+{ exact two_in_R. }
+claim Hm1R: minus_SNo 1 :e R.
+{ exact (real_minus_SNo 1 real_1). }
+claim Hm1S: SNo (minus_SNo 1).
+{ exact (real_SNo (minus_SNo 1) Hm1R). }
+claim H2S: SNo 2.
+{ exact SNo_2. }
+
+claim HmulR: mul_SNo 2 t :e R.
+{ exact (real_mul_SNo 2 H2R t HtR). }
+claim HsR: add_SNo (mul_SNo 2 t) (minus_SNo 1) :e R.
+{ exact (real_add_SNo (mul_SNo 2 t) HmulR (minus_SNo 1) Hm1R). }
+claim HsS: SNo (add_SNo (mul_SNo 2 t) (minus_SNo 1)).
+{ exact (real_SNo (add_SNo (mul_SNo 2 t) (minus_SNo 1)) HsR). }
+
+apply (SepI R (fun u:set => ~(Rlt u 0) /\ ~(Rlt 1 u))
+         (add_SNo (mul_SNo 2 t) (minus_SNo 1)) HsR).
+apply andI.
+- assume Hlt: Rlt (add_SNo (mul_SNo 2 t) (minus_SNo 1)) 0.
+  prove False.
+  claim Hslt0: add_SNo (mul_SNo 2 t) (minus_SNo 1) < 0.
+  { exact (RltE_lt (add_SNo (mul_SNo 2 t) (minus_SNo 1)) 0 Hlt). }
+
+  claim Hnlt_t_eps: ~(Rlt t (eps_ 1)).
+  { exact (SepE2 unit_interval (fun u:set => ~(Rlt u (eps_ 1))) t HtH). }
+  claim Hepsle_t: (eps_ 1) <= t.
+  { prove (eps_ 1) <= t.
+    apply (SNoLtLe_or t (eps_ 1) HtS HeS).
+    - assume Htlt: t < (eps_ 1).
+      claim Hrlt: Rlt t (eps_ 1).
+      { exact (RltI t (eps_ 1) HtR HeR Htlt). }
+      apply FalseE.
+      exact (Hnlt_t_eps Hrlt).
+    - assume Hle: (eps_ 1) <= t.
+      exact Hle. }
+
+  claim H0le2: 0 <= 2.
+  { exact (SNoLtLe 0 2 SNoLt_0_2). }
+  claim H2eps_le_2t: mul_SNo 2 (eps_ 1) <= mul_SNo 2 t.
+  { exact (nonneg_mul_SNo_Le 2 (eps_ 1) t H2S H0le2 HeS HtS Hepsle_t). }
+  claim H1le2t: 1 <= mul_SNo 2 t.
+  { rewrite <- eps_1_half_eq2 at 1.
+    exact H2eps_le_2t. }
+  claim H0les: 0 <= add_SNo (mul_SNo 2 t) (minus_SNo 1).
+  { prove 0 <= add_SNo (mul_SNo 2 t) (minus_SNo 1).
+    rewrite <- (add_SNo_minus_SNo_rinv 1 SNo_1) at 1.
+    exact (add_SNo_Le1 1 (minus_SNo 1) (mul_SNo 2 t)
+             SNo_1 Hm1S (SNo_mul_SNo 2 t H2S HtS)
+             H1le2t). }
+
+  claim Hcases: 0 < add_SNo (mul_SNo 2 t) (minus_SNo 1) \/
+                0 = add_SNo (mul_SNo 2 t) (minus_SNo 1).
+  { exact (SNoLeE 0 (add_SNo (mul_SNo 2 t) (minus_SNo 1)) SNo_0 HsS H0les). }
+  apply Hcases.
+  - assume Hpos: 0 < add_SNo (mul_SNo 2 t) (minus_SNo 1).
+    claim H00: 0 < 0.
+    { exact (SNoLt_tra 0 (add_SNo (mul_SNo 2 t) (minus_SNo 1)) 0
+             SNo_0 HsS SNo_0 Hpos Hslt0). }
+    exact ((SNoLt_irref 0) H00).
+  - assume Heq: 0 = add_SNo (mul_SNo 2 t) (minus_SNo 1).
+    claim H00: 0 < 0.
+    { rewrite Heq at 1.
+      exact Hslt0. }
+    exact ((SNoLt_irref 0) H00).
+- assume Hlt: Rlt 1 (add_SNo (mul_SNo 2 t) (minus_SNo 1)).
+  prove False.
+  claim H1lts: 1 < add_SNo (mul_SNo 2 t) (minus_SNo 1).
+  { exact (RltE_lt 1 (add_SNo (mul_SNo 2 t) (minus_SNo 1)) Hlt). }
+
+  claim Hnlt_1t: ~(Rlt 1 t).
+  { claim Hconj: ~(Rlt t 0) /\ ~(Rlt 1 t).
+    { exact (SepE2 R (fun u:set => ~(Rlt u 0) /\ ~(Rlt 1 u)) t HtI). }
+    exact (andER (~(Rlt t 0)) (~(Rlt 1 t)) Hconj). }
+  claim Htle1: t <= 1.
+  { prove t <= 1.
+    apply (SNoLtLe_or 1 t SNo_1 HtS).
+    - assume H1lt: 1 < t.
+      claim Hrlt: Rlt 1 t.
+      { exact (RltI 1 t real_1 HtR H1lt). }
+      apply FalseE.
+      exact (Hnlt_1t Hrlt).
+    - assume Hle: t <= 1.
+      exact Hle. }
+
+  claim H0le2: 0 <= 2.
+  { exact (SNoLtLe 0 2 SNoLt_0_2). }
+  claim H2t_le_2: mul_SNo 2 t <= mul_SNo 2 1.
+  { exact (nonneg_mul_SNo_Le 2 t 1 H2S H0le2 HtS SNo_1 Htle1). }
+  claim H2t_le_2': mul_SNo 2 t <= 2.
+  { rewrite <- (mul_SNo_oneR 2 SNo_2) at 2.
+    exact H2t_le_2. }
+  claim Hsle_2m1: add_SNo (mul_SNo 2 t) (minus_SNo 1) <= add_SNo 2 (minus_SNo 1).
+  { exact (add_SNo_Le1 (mul_SNo 2 t) (minus_SNo 1) 2
+           (SNo_mul_SNo 2 t H2S HtS) Hm1S SNo_2
+           H2t_le_2'). }
+  claim H2m1eq1: add_SNo 2 (minus_SNo 1) = 1.
+  { rewrite <- add_SNo_1_1_2 at 1.
+    rewrite <- (add_SNo_assoc 1 1 (minus_SNo 1) SNo_1 SNo_1 Hm1S) at 1.
+    rewrite (add_SNo_minus_SNo_rinv 1 SNo_1) at 1.
+    rewrite (add_SNo_0R 1 SNo_1) at 1.
+    reflexivity. }
+  claim Hsle1: add_SNo (mul_SNo 2 t) (minus_SNo 1) <= 1.
+  { claim H2m1S: SNo (add_SNo 2 (minus_SNo 1)).
+    { exact (SNo_add_SNo 2 (minus_SNo 1) SNo_2 Hm1S). }
+    claim H2m1le1: add_SNo 2 (minus_SNo 1) <= 1.
+    { rewrite H2m1eq1 at 1.
+      exact (SNoLe_ref 1). }
+    exact (SNoLe_tra (add_SNo (mul_SNo 2 t) (minus_SNo 1))
+                     (add_SNo 2 (minus_SNo 1))
+                     1
+                     HsS H2m1S SNo_1
+                     Hsle_2m1 H2m1le1). }
+
+  claim Hcases: add_SNo (mul_SNo 2 t) (minus_SNo 1) < 1 \/
+                add_SNo (mul_SNo 2 t) (minus_SNo 1) = 1.
+  { exact (SNoLeE (add_SNo (mul_SNo 2 t) (minus_SNo 1)) 1 HsS SNo_1 Hsle1). }
+  apply Hcases.
+  - assume Hslt1: add_SNo (mul_SNo 2 t) (minus_SNo 1) < 1.
+    claim H11: 1 < 1.
+    { exact (SNoLt_tra 1 (add_SNo (mul_SNo 2 t) (minus_SNo 1)) 1
+             SNo_1 HsS SNo_1 H1lts Hslt1). }
+    exact ((SNoLt_irref 1) H11).
+  - assume Heq: add_SNo (mul_SNo 2 t) (minus_SNo 1) = 1.
+    claim H11: 1 < 1.
+    { rewrite <- Heq at 2.
+      exact H1lts. }
+    exact ((SNoLt_irref 1) H11).
 Qed.
 
 Theorem double_map_continuous :
