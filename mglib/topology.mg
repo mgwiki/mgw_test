@@ -47949,13 +47949,11 @@ apply andI.
   { exact (andER (0 :e unit_interval) (1 :e unit_interval) H01). }
 
   claim Hp_left: function_on p unit_interval X /\ apply_fun p 0 = x1.
-  { exact (andEL (function_on p unit_interval X /\ apply_fun p 0 = x1)
-                 (apply_fun p 1 = x2) Hp_between). }
+  { exact (path_between_pair0 X x1 x2 p Hp_between). }
   claim Hp0: apply_fun p 0 = x1.
-  { exact (andER (function_on p unit_interval X) (apply_fun p 0 = x1) Hp_left). }
+  { exact (path_between_at_zero X x1 x2 p Hp_between). }
   claim Hp1: apply_fun p 1 = x2.
-  { exact (andER (function_on p unit_interval X /\ apply_fun p 0 = x1)
-                 (apply_fun p 1 = x2) Hp_between). }
+  { exact (path_between_at_one X x1 x2 p Hp_between). }
 
   claim Hq0: apply_fun q 0 = y1.
   { claim Hq0a: apply_fun q 0 = apply_fun f (apply_fun p 0).
