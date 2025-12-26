@@ -26374,7 +26374,7 @@ claim HUnord: ~(U :e ordered_square_topology).
           exact (Hb0prop H1b0). }
       set z := (q,0).
       claim HzSq: z :e ordered_square.
-      { exact (tuple_2_setprod unit_interval unit_interval q HqU 0 zero_in_unit_interval). }
+      { exact (tuple_2_setprod_by_pair_Sigma unit_interval unit_interval q 0 HqU zero_in_unit_interval). }
       claim HaEta: a = (a 0, a 1).
       { exact (setprod_eta unit_interval unit_interval a HaSq). }
       claim Ha0U: (a 0) :e unit_interval.
@@ -26602,7 +26602,7 @@ claim HUnord: ~(U :e ordered_square_topology).
           exact (Hb0prop H1b0). }
       set z := (q,0).
       claim HzSq: z :e ordered_square.
-      { exact (tuple_2_setprod unit_interval unit_interval q HqU 0 zero_in_unit_interval). }
+      { exact (tuple_2_setprod_by_pair_Sigma unit_interval unit_interval q 0 HqU zero_in_unit_interval). }
       claim HzInI: z :e I.
       { rewrite HeqI.
         apply (SepI ordered_square (fun x:set => order_rel (setprod R R) x b) z HzSq).
@@ -26717,7 +26717,7 @@ claim HUnord: ~(U :e ordered_square_topology).
         exact eps_1_lt1_R. }
     set z := (1,0).
     claim HzSq: z :e ordered_square.
-    { exact (tuple_2_setprod unit_interval unit_interval 1 one_in_unit_interval 0 zero_in_unit_interval). }
+    { exact (tuple_2_setprod_by_pair_Sigma unit_interval unit_interval 1 0 one_in_unit_interval zero_in_unit_interval). }
     claim HzInI: z :e I.
     { rewrite HeqI.
       apply (SepI ordered_square (fun x:set => order_rel (setprod R R) a x) z HzSq).
@@ -29048,10 +29048,10 @@ apply andI.
 	          exact H2real. }
 	        claim HaX: a :e X.
 	        { prove (eps_ 1, eps_ 1) :e setprod R R.
-	          exact (tuple_2_setprod R R (eps_ 1) Heps1R (eps_ 1) Heps1R). }
-        claim HbX: b :e X.
-        { prove (eps_ 1, 2) :e setprod R R.
-          exact (tuple_2_setprod R R (eps_ 1) Heps1R 2 H2R). }
+	          exact (tuple_2_setprod_by_pair_Sigma R R (eps_ 1) (eps_ 1) Heps1R Heps1R). }
+	        claim HbX: b :e X.
+	        { prove (eps_ 1, 2) :e setprod R R.
+	          exact (tuple_2_setprod_by_pair_Sigma R R (eps_ 1) 2 Heps1R H2R). }
         claim HVex: exists a0 :e X, exists b0 :e X,
           V = {x :e X | order_rel X a0 x /\ order_rel X x b0}.
         { witness a.
@@ -29120,11 +29120,11 @@ apply andI.
 	        claim HyR: y :e R.
 	        { exact (RltE_right (eps_ 1) y Hey). }
         (** build p :e V **)
-        claim HpV: p :e V.
-        { prove p :e V.
-          claim HpRR: p :e setprod R R.
-          { rewrite Hpy.
-            exact (tuple_2_setprod R R (eps_ 1) Heps1R y HyR). }
+	        claim HpV: p :e V.
+	        { prove p :e V.
+	          claim HpRR: p :e setprod R R.
+	          { rewrite Hpy.
+	            exact (tuple_2_setprod_by_pair_Sigma R R (eps_ 1) y Heps1R HyR). }
 	          claim Hord1: order_rel (setprod R R) a p.
 	          { (** use the defining disjunction for order_rel and inject to the last case **)
 	            prove (setprod R R = R /\ Rlt a p)
@@ -29576,9 +29576,9 @@ apply andI.
 	                   1
 	                   H1R
 	                   (andI (~(Rlt 1 0)) (~(Rlt 1 1)) Hnlt_10 Hnlt_11)). }
-	      claim Hp0Sq: p0 :e ordered_square.
-	      { prove (eps_ 1, 1) :e setprod unit_interval unit_interval.
-	        exact (tuple_2_setprod unit_interval unit_interval (eps_ 1) Heps1U 1 H1U). }
+		      claim Hp0Sq: p0 :e ordered_square.
+		      { prove (eps_ 1, 1) :e setprod unit_interval unit_interval.
+		        exact (tuple_2_setprod_by_pair_Sigma unit_interval unit_interval (eps_ 1) 1 Heps1U H1U). }
 	      claim Hp0Ex: exists y:set, p0 = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y).
 	      { witness 1.
 	        prove p0 = (eps_ 1,1) /\ Rlt (eps_ 1) 1 /\ ~(Rlt 1 1).
@@ -36457,11 +36457,11 @@ apply set_ext.
   { exact (ap1_Sigma U (fun _ : set => Y) p HpUY). }
   claim Hp0X: p 0 :e X.
   { exact (HUsub (p 0) Hp0U). }
-  claim HpXY: p :e setprod X Y.
-  { claim Heta: p = (p 0, p 1).
-    { exact (setprod_eta U Y p HpUY). }
-    rewrite Heta.
-    exact (tuple_2_setprod X Y (p 0) Hp0X (p 1) Hp1Y). }
+	  claim HpXY: p :e setprod X Y.
+	  { claim Heta: p = (p 0, p 1).
+	    { exact (setprod_eta U Y p HpUY). }
+	    rewrite Heta.
+	    exact (tuple_2_setprod_by_pair_Sigma X Y (p 0) (p 1) Hp0X Hp1Y). }
   claim Hprop: apply_fun (projection1 X Y) p :e U.
   { claim Happ: apply_fun (projection1 X Y) p = p 0.
     { exact (projection1_apply X Y p HpXY). }
@@ -36503,11 +36503,11 @@ apply set_ext.
   { exact (ap1_Sigma X (fun _ : set => V) p HpXV). }
   claim Hp1Y: p 1 :e Y.
   { exact (HVsub (p 1) Hp1V). }
-  claim HpXY: p :e setprod X Y.
-  { claim Heta: p = (p 0, p 1).
-    { exact (setprod_eta X V p HpXV). }
-    rewrite Heta.
-    exact (tuple_2_setprod X Y (p 0) Hp0X (p 1) Hp1Y). }
+	  claim HpXY: p :e setprod X Y.
+	  { claim Heta: p = (p 0, p 1).
+	    { exact (setprod_eta X V p HpXV). }
+	    rewrite Heta.
+	    exact (tuple_2_setprod_by_pair_Sigma X Y (p 0) (p 1) Hp0X Hp1Y). }
   claim Hprop: apply_fun (projection2 X Y) p :e V.
   { claim Happ: apply_fun (projection2 X Y) p = p 1.
     { exact (projection2_apply X Y p HpXY). }
