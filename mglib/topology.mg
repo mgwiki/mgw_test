@@ -20609,9 +20609,59 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 			    { exact Hpre5. }
 			    claim HmOmega: m :e omega.
 			    { exact Hj2. }
-			    claim Hj2': j :e 2.
-			    { exact HnOmega. }
-			    admit.
+				    claim Hj2': j :e 2.
+				    { exact HnOmega. }
+				    (** Start the HU2 contradiction proof; leave remaining steps admitted for now. **)
+				    claim Hi1: i = 1.
+				    { prove i = 1.
+				      rewrite <- (tuple_2_0_eq i m) at 1.
+				      rewrite <- H10Eq at 1.
+				      exact (tuple_2_0_eq 1 0). }
+
+				    claim Hnotij: ~(i :e j).
+				    { assume Hij.
+				      claim Hsub: 2 c= {0,1}.
+				      { exact Subq_2_UPair01. }
+				      claim Hj01: j :e {0,1}.
+				      { exact (Hsub j Hj2'). }
+				      apply (UPairE j 0 1 Hj01 False).
+				      - assume Hj0: j = 0.
+				        claim Hij0: 1 :e 0.
+				        { prove 1 :e 0.
+				          rewrite <- Hj0 at 2.
+				          rewrite <- Hi1 at 1.
+				          exact Hij. }
+				        exact (EmptyE 1 Hij0).
+				      - assume Hj1: j = 1.
+				        claim Hij1: 1 :e 1.
+				        { prove 1 :e 1.
+				          rewrite Hj1 at 2.
+				          rewrite <- Hi1 at 1.
+				          exact Hij. }
+				        claim HjSing: 1 :e {0}.
+				        { prove 1 :e {0}.
+				          rewrite <- eq_1_Sing0 at 2.
+				          exact Hij1. }
+				        claim H10: 1 = 0.
+				        { exact (SingE 0 1 HjSing). }
+				        exact (neq_1_0 H10). }
+
+				    claim Hpair: i = j /\ m :e n.
+				    { apply Hlex.
+				      - assume Hij.
+				        exact (FalseE (Hnotij Hij) (i = j /\ m :e n)).
+				      - assume Hijn: i = j /\ m :e n.
+				        exact Hijn. }
+
+				    claim HijEq: i = j.
+				    { exact (andEL (i = j) (m :e n) Hpair). }
+
+				    claim Hj1: j = 1.
+				    { prove j = 1.
+				      rewrite <- HijEq at 1.
+				      exact Hi1. }
+
+				    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
                       I = {x :e X | order_rel X a x}}.
