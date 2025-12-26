@@ -62325,15 +62325,6 @@ Qed.
 (** from §49 Exercise 2: construct continuous function in U_n with bounded values **)
 (** LATEX VERSION: Given n and ε, define continuous f:I→ℝ such that f∈Uₙ and |f(x)|≤ε for all x. **)
 (** stub: the analytic inequalities are not expanded here **)
-Axiom ex49_2_construct_bounded_function_axiom : forall n:set, forall eps:set,
-  n :e omega ->
-  2 c= n ->
-  eps :e R ->
-  exists f:set,
-    continuous_map unit_interval I_topology R R_standard_topology f /\
-    (forall x:set, x :e unit_interval -> apply_fun f x :e R) /\
-    f :e U_n n /\
-    (forall x:set, x :e unit_interval -> Rle (Abs (apply_fun f x)) eps).
 Theorem ex49_2_construct_bounded_function : forall n:set, forall eps:set,
   n :e omega ->
   2 c= n ->
@@ -62343,7 +62334,7 @@ Theorem ex49_2_construct_bounded_function : forall n:set, forall eps:set,
     (forall x:set, x :e unit_interval -> apply_fun f x :e R) /\
     f :e U_n n /\
     (forall x:set, x :e unit_interval -> Rle (Abs (apply_fun f x)) eps).
-exact ex49_2_construct_bounded_function_axiom.
+admit.
 Qed.
 
 (** from §50 Exercises: dimension theory introduction (placeholder) **) 
