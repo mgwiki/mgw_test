@@ -11835,9 +11835,7 @@ Definition subbasis_on : set -> set -> prop := fun X S =>
 
 (** from §13: finite intersections of subbasis elements **)
 (** LATEX VERSION: intersection_of_family collects common points of all sets in a family; finite_subcollections picks finite families; finite_intersections_of X S takes intersections of finite subfamilies of S. **)
-(** FIXED: Now takes ambient set X as first parameter. Empty family correctly gives X.
-    For empty Fam: all x in X vacuously satisfy "forall U :e Empty, x :e U", so result is X.
-    For nonempty Fam: standard intersection of all sets in family, within X. **)
+(** FIXED: Now takes ambient set X as first parameter. Empty family correctly gives X; nonempty Fam gives the usual intersection inside X. **)
 (** SUSPICIOUS DEFINITION: `intersection_of_family X Fam` does not require `Fam c= Power X`; it relies on the ambient restriction `x :e X` to force the intersection to lie in X. **)
 Definition intersection_of_family : set -> set -> set :=
   fun X Fam => {x :e X|forall U:set, U :e Fam -> x :e U}.
@@ -11853,8 +11851,7 @@ Definition finite_intersections_of : set -> set -> set := fun X S =>
 
 (** from §13: basis obtained from a subbasis by finite intersections **)
 (** LATEX VERSION: basis_of_subbasis X S is the set of nonempty finite intersections of elements of S. **)
-(** FIXED: Now properly uses X parameter. Empty intersection gives X.
-    Filter keeps only nonempty intersections (so X included only if X nonempty). **)
+(** FIXED: Now properly uses X parameter. Empty intersection gives X; the filter keeps only nonempty intersections. **)
 (** SUSPICIOUS DEFINITION: `basis_of_subbasis` removes `Empty`; this matches the usual convention but means `X` appears only via the empty intersection and only when `X <> Empty`. **)
 Definition basis_of_subbasis : set -> set -> set := fun X S =>
   {b :e finite_intersections_of X S | b <> Empty}.
@@ -12106,8 +12103,7 @@ apply andI.
     (** Need to show b c= X **)
     let x. assume Hx: x :e b.
     prove x :e X.
-    (** With new definition: intersection_of_family X F = {x :e X | forall U :e F, x :e U}
-        So x :e intersection_of_family X F directly gives x :e X **)
+    (** With new definition: intersection_of_family X F = {x :e X | forall U :e F, x :e U}. So x :e intersection_of_family X F directly gives x :e X. **)
     claim Hx_intersect: x :e intersection_of_family X F.
     { rewrite <- Hbeq. exact Hx. }
     exact (SepE1 X (fun x0 => forall U:set, U :e F -> x0 :e U) x Hx_intersect).
@@ -12175,9 +12171,7 @@ apply andI.
     let F2. assume HF2_and_eq2. apply HF2_and_eq2.
     assume HF2: F2 :e finite_subcollections S.
     assume Hb2eq: b2 = intersection_of_family X F2.
-    (** With new definition: intersection_of_family X Empty = X.
-        So F1 and F2 can be empty - if empty, they give X as intersection.
-        No longer need to prove F1, F2 nonempty. **)
+    (** With new definition: intersection_of_family X Empty = X. So F1 and F2 may be empty without causing ill-defined intersections. **)
     (** Now b3 = b1 :/\: b2 = intersection_of_family X (F1 :\/: F2) **)
     set F12 := F1 :\/: F2.
     (** Show F12 :e finite_subcollections S **)
