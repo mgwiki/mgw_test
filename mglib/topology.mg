@@ -20643,6 +20643,10 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 			    assume Hleft2 Hright2.
 			    claim H10Eq2: (1,0) = (i, m).
 			    { exact Hright2. }
+			    apply Hleft2.
+			    assume Hleft3 Hright3.
+			    claim Hdisj: i :e j \/ (i = j /\ m :e n).
+			    { exact Hright3. }
 			    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
