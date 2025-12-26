@@ -50017,6 +50017,71 @@ Qed.
 Definition open_cover_of : set -> set -> set -> prop := fun X Tx Fam =>
   topology_on X Tx /\ Fam c= Power X /\ X c= Union Fam /\ (forall U:set, U :e Fam -> U :e Tx).
 
+(** Helper: extract topology_on from open_cover_of **)
+Theorem open_cover_of_topology : forall X Tx Fam:set,
+  open_cover_of X Tx Fam -> topology_on X Tx.
+let X Tx Fam.
+assume H: open_cover_of X Tx Fam.
+claim H0: ((topology_on X Tx /\ Fam c= Power X) /\ X c= Union Fam) /\ (forall U:set, U :e Fam -> U :e Tx).
+{ exact H. }
+claim H1: (topology_on X Tx /\ Fam c= Power X) /\ X c= Union Fam.
+{ exact (andEL ((topology_on X Tx /\ Fam c= Power X) /\ X c= Union Fam)
+               (forall U:set, U :e Fam -> U :e Tx)
+               H0). }
+claim H2: topology_on X Tx /\ Fam c= Power X.
+{ exact (andEL (topology_on X Tx /\ Fam c= Power X)
+               (X c= Union Fam)
+               H1). }
+exact (andEL (topology_on X Tx) (Fam c= Power X) H2).
+Qed.
+
+(** Helper: extract Fam c= Power X from open_cover_of **)
+Theorem open_cover_of_family_sub : forall X Tx Fam:set,
+  open_cover_of X Tx Fam -> Fam c= Power X.
+let X Tx Fam.
+assume H: open_cover_of X Tx Fam.
+claim H0: ((topology_on X Tx /\ Fam c= Power X) /\ X c= Union Fam) /\ (forall U:set, U :e Fam -> U :e Tx).
+{ exact H. }
+claim H1: (topology_on X Tx /\ Fam c= Power X) /\ X c= Union Fam.
+{ exact (andEL ((topology_on X Tx /\ Fam c= Power X) /\ X c= Union Fam)
+               (forall U:set, U :e Fam -> U :e Tx)
+               H0). }
+claim H2: topology_on X Tx /\ Fam c= Power X.
+{ exact (andEL (topology_on X Tx /\ Fam c= Power X)
+               (X c= Union Fam)
+               H1). }
+exact (andER (topology_on X Tx) (Fam c= Power X) H2).
+Qed.
+
+(** Helper: extract cover property X c= Union Fam from open_cover_of **)
+Theorem open_cover_of_covers : forall X Tx Fam:set,
+  open_cover_of X Tx Fam -> X c= Union Fam.
+let X Tx Fam.
+assume H: open_cover_of X Tx Fam.
+claim H0: ((topology_on X Tx /\ Fam c= Power X) /\ X c= Union Fam) /\ (forall U:set, U :e Fam -> U :e Tx).
+{ exact H. }
+claim H1: (topology_on X Tx /\ Fam c= Power X) /\ X c= Union Fam.
+{ exact (andEL ((topology_on X Tx /\ Fam c= Power X) /\ X c= Union Fam)
+               (forall U:set, U :e Fam -> U :e Tx)
+               H0). }
+exact (andER (topology_on X Tx /\ Fam c= Power X) (X c= Union Fam) H1).
+Qed.
+
+(** Helper: extract openness of cover members from open_cover_of **)
+Theorem open_cover_of_members_open : forall X Tx Fam U:set,
+  open_cover_of X Tx Fam -> U :e Fam -> U :e Tx.
+let X Tx Fam U.
+assume H: open_cover_of X Tx Fam.
+assume HU: U :e Fam.
+claim H0: ((topology_on X Tx /\ Fam c= Power X) /\ X c= Union Fam) /\ (forall U0:set, U0 :e Fam -> U0 :e Tx).
+{ exact H. }
+claim Hprop: forall U0:set, U0 :e Fam -> U0 :e Tx.
+{ exact (andER ((topology_on X Tx /\ Fam c= Power X) /\ X c= Union Fam)
+               (forall U0:set, U0 :e Fam -> U0 :e Tx)
+               H0). }
+exact (Hprop U HU).
+Qed.
+
 Definition has_finite_subcover : set -> set -> set -> prop := fun X Tx Fam =>
   exists G:set, G c= Fam /\ finite G /\ X c= Union G.
 
