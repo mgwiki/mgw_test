@@ -49090,7 +49090,385 @@ claim HcontR: continuous_map unit_interval_left_half
   (subspace_topology unit_interval unit_interval_topology unit_interval_left_half)
   R R_standard_topology
   double_map_left_half.
-{ admit. (** FAIL **) }
+{ set Tx := subspace_topology unit_interval unit_interval_topology unit_interval_left_half.
+  set S := open_rays_subbasis R.
+
+  claim HTui: topology_on unit_interval unit_interval_topology.
+  { exact unit_interval_topology_on. }
+  claim HTx: topology_on unit_interval_left_half Tx.
+  { exact (subspace_topology_is_topology unit_interval unit_interval_topology unit_interval_left_half
+           HTui
+           unit_interval_left_half_sub). }
+
+  claim HS: subbasis_on R S.
+  { exact (open_rays_subbasis_is_subbasis R). }
+
+  claim Hfun: function_on double_map_left_half unit_interval_left_half R.
+  { let t. assume Ht: t :e unit_interval_left_half.
+    prove apply_fun double_map_left_half t :e R.
+    claim HtI: t :e unit_interval.
+    { exact (unit_interval_left_half_sub t Ht). }
+    claim HtR: t :e R.
+    { exact (unit_interval_sub_R t HtI). }
+    claim H2R: 2 :e R.
+    { exact real_2. }
+    claim HmulR: mul_SNo 2 t :e R.
+    { claim HdefR: R = real.
+      { reflexivity. }
+      rewrite HdefR.
+      claim H2Real: 2 :e real.
+      { rewrite <- HdefR.
+        exact H2R. }
+      claim HtReal: t :e real.
+      { rewrite <- HdefR.
+        exact HtR. }
+      exact (real_mul_SNo 2 H2Real t HtReal). }
+    rewrite (double_map_apply t Ht).
+    exact HmulR. }
+
+  claim Hgen: generated_topology_from_subbasis R S = R_standard_topology.
+  { rewrite (open_rays_subbasis_for_order_topology R).
+    rewrite standard_topology_is_order_topology.
+    reflexivity. }
+  rewrite <- Hgen.
+
+  claim HpreS: forall s:set, s :e S -> preimage_of unit_interval_left_half double_map_left_half s :e Tx.
+  { let s. assume HsS: s :e S.
+    prove preimage_of unit_interval_left_half double_map_left_half s :e Tx.
+    apply (binunionE' ({I :e Power R | exists a :e R, I = open_ray_upper R a}
+                       :\/:
+                       {I :e Power R | exists b :e R, I = open_ray_lower R b})
+                      {R}
+                      s
+                      (preimage_of unit_interval_left_half double_map_left_half s :e Tx)).
+    - assume Hs0: s :e ({I :e Power R | exists a :e R, I = open_ray_upper R a}
+                        :\/:
+                        {I :e Power R | exists b :e R, I = open_ray_lower R b}).
+      apply (binunionE' {I :e Power R | exists a :e R, I = open_ray_upper R a}
+                        {I :e Power R | exists b :e R, I = open_ray_lower R b}
+                        s
+                        (preimage_of unit_interval_left_half double_map_left_half s :e Tx)).
+      + assume Hsu: s :e {I :e Power R | exists a :e R, I = open_ray_upper R a}.
+        claim Hex: exists a :e R, s = open_ray_upper R a.
+        { exact (SepE2 (Power R)
+                      (fun I0 : set => exists a :e R, I0 = open_ray_upper R a)
+                      s Hsu). }
+        apply Hex.
+        let a. assume Hcore.
+        apply Hcore.
+        assume HaR: a :e R.
+        assume Hseq: s = open_ray_upper R a.
+        rewrite Hseq.
+
+        set c := mul_SNo (eps_ 1) a.
+        claim HcR: c :e R.
+        { claim HdefR: R = real.
+          { reflexivity. }
+          rewrite HdefR.
+          claim HaReal: a :e real.
+          { rewrite <- HdefR.
+            exact HaR. }
+          claim He1Real: (eps_ 1) :e real.
+          { rewrite <- HdefR.
+            exact eps_1_in_R. }
+          exact (real_mul_SNo (eps_ 1) He1Real a HaReal). }
+
+        claim HpreEq: preimage_of unit_interval_left_half double_map_left_half (open_ray_upper R a)
+                      = (open_ray_upper R c) :/\: unit_interval_left_half.
+        { apply set_ext.
+          - let t. assume Ht: t :e preimage_of unit_interval_left_half double_map_left_half (open_ray_upper R a).
+            prove t :e (open_ray_upper R c) :/\: unit_interval_left_half.
+            claim HtLH: t :e unit_interval_left_half.
+            { exact (SepE1 unit_interval_left_half
+                         (fun u : set => apply_fun double_map_left_half u :e open_ray_upper R a) t Ht). }
+            claim HtI: t :e unit_interval.
+            { exact (unit_interval_left_half_sub t HtLH). }
+            claim HtR: t :e R.
+            { exact (unit_interval_sub_R t HtI). }
+            claim Himg: apply_fun double_map_left_half t :e open_ray_upper R a.
+            { exact (SepE2 unit_interval_left_half
+                         (fun u : set => apply_fun double_map_left_half u :e open_ray_upper R a) t Ht). }
+            claim Hrel: order_rel R a (apply_fun double_map_left_half t).
+            { exact (SepE2 R (fun x0 : set => order_rel R a x0) (apply_fun double_map_left_half t) Himg). }
+            claim Hrlt: Rlt a (apply_fun double_map_left_half t).
+            { exact (order_rel_R_implies_Rlt a (apply_fun double_map_left_half t) Hrel). }
+            claim Hrlt2: Rlt a (mul_SNo 2 t).
+            { rewrite <- (double_map_apply t HtLH).
+              exact Hrlt. }
+            claim Hrltc: Rlt c t.
+            { exact (iffEL (Rlt a (mul_SNo 2 t)) (Rlt (mul_SNo (eps_ 1) a) t)
+                          (Rlt_mul2_left_iff a t HaR HtR) Hrlt2). }
+            claim HcRel: order_rel R c t.
+            { exact (Rlt_implies_order_rel_R c t Hrltc). }
+            claim HtRay: t :e open_ray_upper R c.
+            { exact (SepI R (fun x0 : set => order_rel R c x0) t HtR HcRel). }
+            exact (binintersectI (open_ray_upper R c) unit_interval_left_half t HtRay HtLH).
+          - let t. assume Ht: t :e (open_ray_upper R c) :/\: unit_interval_left_half.
+            prove t :e preimage_of unit_interval_left_half double_map_left_half (open_ray_upper R a).
+            claim HtRay: t :e open_ray_upper R c.
+            { exact (binintersectE1 (open_ray_upper R c) unit_interval_left_half t Ht). }
+            claim HtLH: t :e unit_interval_left_half.
+            { exact (binintersectE2 (open_ray_upper R c) unit_interval_left_half t Ht). }
+            claim HtI: t :e unit_interval.
+            { exact (unit_interval_left_half_sub t HtLH). }
+            claim HtR: t :e R.
+            { exact (unit_interval_sub_R t HtI). }
+            claim Hrel: order_rel R c t.
+            { exact (SepE2 R (fun x0 : set => order_rel R c x0) t HtRay). }
+            claim Hrlt: Rlt c t.
+            { exact (order_rel_R_implies_Rlt c t Hrel). }
+            claim Hrlt2: Rlt a (mul_SNo 2 t).
+            { exact (iffER (Rlt a (mul_SNo 2 t)) (Rlt (mul_SNo (eps_ 1) a) t)
+                          (Rlt_mul2_left_iff a t HaR HtR) Hrlt). }
+            claim Hrlt3: Rlt a (apply_fun double_map_left_half t).
+            { rewrite (double_map_apply t HtLH).
+              exact Hrlt2. }
+            claim Hrel2: order_rel R a (apply_fun double_map_left_half t).
+            { exact (Rlt_implies_order_rel_R a (apply_fun double_map_left_half t) Hrlt3). }
+            claim HimgR: apply_fun double_map_left_half t :e R.
+            { exact (Hfun t HtLH). }
+            claim Himg: apply_fun double_map_left_half t :e open_ray_upper R a.
+            { exact (SepI R (fun x0 : set => order_rel R a x0)
+                          (apply_fun double_map_left_half t) HimgR Hrel2). }
+            exact (SepI unit_interval_left_half
+                        (fun u : set => apply_fun double_map_left_half u :e open_ray_upper R a)
+                        t HtLH Himg). }
+
+        rewrite HpreEq.
+        prove (open_ray_upper R c) :/\: unit_interval_left_half :e Tx.
+        prove (open_ray_upper R c) :/\: unit_interval_left_half :e
+             {W :e Power unit_interval_left_half | exists Z :e unit_interval_topology,
+                  W = Z :/\: unit_interval_left_half}.
+        claim Hpow: (open_ray_upper R c) :/\: unit_interval_left_half :e Power unit_interval_left_half.
+        { apply PowerI.
+          let t. assume Ht: t :e (open_ray_upper R c) :/\: unit_interval_left_half.
+          exact (binintersectE2 (open_ray_upper R c) unit_interval_left_half t Ht). }
+        set Z0 := (open_ray_upper R c) :/\: unit_interval.
+        claim HZ0: Z0 :e unit_interval_topology.
+        { claim Hut: unit_interval_topology = subspace_topology R R_standard_topology unit_interval.
+          { reflexivity. }
+          rewrite Hut.
+          prove Z0 :e {W :e Power unit_interval | exists Z :e R_standard_topology, W = Z :/\: unit_interval}.
+          claim HZ0pow: Z0 :e Power unit_interval.
+          { apply PowerI.
+            let t. assume Ht: t :e Z0.
+            exact (binintersectE2 (open_ray_upper R c) unit_interval t Ht). }
+          claim HopenR: open_ray_upper R c :e R_standard_topology.
+          { rewrite <- standard_topology_is_order_topology.
+            claim HcS: c :e R.
+            { exact HcR. }
+            claim HsRay: open_ray_upper R c :e open_rays_subbasis R.
+            { exact (open_ray_upper_in_open_rays_subbasis R c HcS). }
+            exact (open_rays_subbasis_sub_order_topology R (open_ray_upper R c) HsRay). }
+          claim Hex: exists Z :e R_standard_topology, Z0 = Z :/\: unit_interval.
+          { witness (open_ray_upper R c).
+            apply andI.
+            - exact HopenR.
+            - reflexivity. }
+          exact (SepI (Power unit_interval)
+                      (fun W0 : set => exists Z :e R_standard_topology, W0 = Z :/\: unit_interval)
+                      Z0 HZ0pow Hex). }
+        claim Heq: (open_ray_upper R c) :/\: unit_interval_left_half = Z0 :/\: unit_interval_left_half.
+        { apply set_ext.
+          - let t. assume Ht: t :e (open_ray_upper R c) :/\: unit_interval_left_half.
+            prove t :e Z0 :/\: unit_interval_left_half.
+            claim HtRay: t :e open_ray_upper R c.
+            { exact (binintersectE1 (open_ray_upper R c) unit_interval_left_half t Ht). }
+            claim HtLH: t :e unit_interval_left_half.
+            { exact (binintersectE2 (open_ray_upper R c) unit_interval_left_half t Ht). }
+            claim HtI: t :e unit_interval.
+            { exact (unit_interval_left_half_sub t HtLH). }
+            claim HtZ0: t :e Z0.
+            { exact (binintersectI (open_ray_upper R c) unit_interval t HtRay HtI). }
+            exact (binintersectI Z0 unit_interval_left_half t HtZ0 HtLH).
+          - let t. assume Ht: t :e Z0 :/\: unit_interval_left_half.
+            prove t :e (open_ray_upper R c) :/\: unit_interval_left_half.
+            claim HtZ0: t :e Z0.
+            { exact (binintersectE1 Z0 unit_interval_left_half t Ht). }
+            claim HtLH: t :e unit_interval_left_half.
+            { exact (binintersectE2 Z0 unit_interval_left_half t Ht). }
+            claim HtRay: t :e open_ray_upper R c.
+            { exact (binintersectE1 (open_ray_upper R c) unit_interval t HtZ0). }
+            exact (binintersectI (open_ray_upper R c) unit_interval_left_half t HtRay HtLH). }
+        claim Hex: exists Z :e unit_interval_topology,
+          (open_ray_upper R c) :/\: unit_interval_left_half = Z :/\: unit_interval_left_half.
+        { witness Z0.
+          apply andI.
+          - exact HZ0.
+          - rewrite <- Heq.
+            reflexivity. }
+        exact (SepI (Power unit_interval_left_half)
+                    (fun W0 : set => exists Z :e unit_interval_topology, W0 = Z :/\: unit_interval_left_half)
+                    ((open_ray_upper R c) :/\: unit_interval_left_half)
+                    Hpow
+                    Hex).
+      + assume Hsl: s :e {I :e Power R | exists b :e R, I = open_ray_lower R b}.
+        claim Hex: exists b :e R, s = open_ray_lower R b.
+        { exact (SepE2 (Power R)
+                      (fun I0 : set => exists b :e R, I0 = open_ray_lower R b)
+                      s Hsl). }
+        apply Hex.
+        let b. assume Hcore.
+        apply Hcore.
+        assume HbR: b :e R.
+        assume Hseq: s = open_ray_lower R b.
+        rewrite Hseq.
+
+        set c := mul_SNo (eps_ 1) b.
+        claim HcR: c :e R.
+        { claim HdefR: R = real.
+          { reflexivity. }
+          rewrite HdefR.
+          claim HbReal: b :e real.
+          { rewrite <- HdefR.
+            exact HbR. }
+          claim He1Real: (eps_ 1) :e real.
+          { rewrite <- HdefR.
+            exact eps_1_in_R. }
+          exact (real_mul_SNo (eps_ 1) He1Real b HbReal). }
+
+        claim HpreEq: preimage_of unit_interval_left_half double_map_left_half (open_ray_lower R b)
+                      = (open_ray_lower R c) :/\: unit_interval_left_half.
+        { apply set_ext.
+          - let t. assume Ht: t :e preimage_of unit_interval_left_half double_map_left_half (open_ray_lower R b).
+            prove t :e (open_ray_lower R c) :/\: unit_interval_left_half.
+            claim HtLH: t :e unit_interval_left_half.
+            { exact (SepE1 unit_interval_left_half
+                         (fun u : set => apply_fun double_map_left_half u :e open_ray_lower R b) t Ht). }
+            claim HtI: t :e unit_interval.
+            { exact (unit_interval_left_half_sub t HtLH). }
+            claim HtR: t :e R.
+            { exact (unit_interval_sub_R t HtI). }
+            claim Himg: apply_fun double_map_left_half t :e open_ray_lower R b.
+            { exact (SepE2 unit_interval_left_half
+                         (fun u : set => apply_fun double_map_left_half u :e open_ray_lower R b) t Ht). }
+            claim Hrel: order_rel R (apply_fun double_map_left_half t) b.
+            { exact (SepE2 R (fun x0 : set => order_rel R x0 b) (apply_fun double_map_left_half t) Himg). }
+            claim Hrlt: Rlt (apply_fun double_map_left_half t) b.
+            { exact (order_rel_R_implies_Rlt (apply_fun double_map_left_half t) b Hrel). }
+            claim Hrlt2: Rlt (mul_SNo 2 t) b.
+            { rewrite <- (double_map_apply t HtLH) at 1.
+              exact Hrlt. }
+            claim Hrltc: Rlt t c.
+            { exact (iffEL (Rlt (mul_SNo 2 t) b) (Rlt t (mul_SNo (eps_ 1) b))
+                          (Rlt_mul2_right_iff t b HtR HbR) Hrlt2). }
+            claim HcRel: order_rel R t c.
+            { exact (Rlt_implies_order_rel_R t c Hrltc). }
+            claim HtRay: t :e open_ray_lower R c.
+            { exact (SepI R (fun x0 : set => order_rel R x0 c) t HtR HcRel). }
+            exact (binintersectI (open_ray_lower R c) unit_interval_left_half t HtRay HtLH).
+          - let t. assume Ht: t :e (open_ray_lower R c) :/\: unit_interval_left_half.
+            prove t :e preimage_of unit_interval_left_half double_map_left_half (open_ray_lower R b).
+            claim HtRay: t :e open_ray_lower R c.
+            { exact (binintersectE1 (open_ray_lower R c) unit_interval_left_half t Ht). }
+            claim HtLH: t :e unit_interval_left_half.
+            { exact (binintersectE2 (open_ray_lower R c) unit_interval_left_half t Ht). }
+            claim HtI: t :e unit_interval.
+            { exact (unit_interval_left_half_sub t HtLH). }
+            claim HtR: t :e R.
+            { exact (unit_interval_sub_R t HtI). }
+            claim Hrel: order_rel R t c.
+            { exact (SepE2 R (fun x0 : set => order_rel R x0 c) t HtRay). }
+            claim Hrlt: Rlt t c.
+            { exact (order_rel_R_implies_Rlt t c Hrel). }
+            claim Hrlt2: Rlt (mul_SNo 2 t) b.
+            { exact (iffER (Rlt (mul_SNo 2 t) b) (Rlt t (mul_SNo (eps_ 1) b))
+                          (Rlt_mul2_right_iff t b HtR HbR) Hrlt). }
+            claim Hrlt3: Rlt (apply_fun double_map_left_half t) b.
+            { rewrite (double_map_apply t HtLH) at 1.
+              exact Hrlt2. }
+            claim Hrel2: order_rel R (apply_fun double_map_left_half t) b.
+            { exact (Rlt_implies_order_rel_R (apply_fun double_map_left_half t) b Hrlt3). }
+            claim HimgR: apply_fun double_map_left_half t :e R.
+            { exact (Hfun t HtLH). }
+            claim Himg: apply_fun double_map_left_half t :e open_ray_lower R b.
+            { exact (SepI R (fun x0 : set => order_rel R x0 b)
+                          (apply_fun double_map_left_half t) HimgR Hrel2). }
+            exact (SepI unit_interval_left_half
+                        (fun u : set => apply_fun double_map_left_half u :e open_ray_lower R b)
+                        t HtLH Himg). }
+
+        rewrite HpreEq.
+        prove (open_ray_lower R c) :/\: unit_interval_left_half :e Tx.
+        prove (open_ray_lower R c) :/\: unit_interval_left_half :e
+             {W :e Power unit_interval_left_half | exists Z :e unit_interval_topology,
+                  W = Z :/\: unit_interval_left_half}.
+        claim Hpow: (open_ray_lower R c) :/\: unit_interval_left_half :e Power unit_interval_left_half.
+        { apply PowerI.
+          let t. assume Ht: t :e (open_ray_lower R c) :/\: unit_interval_left_half.
+          exact (binintersectE2 (open_ray_lower R c) unit_interval_left_half t Ht). }
+        set Z0 := (open_ray_lower R c) :/\: unit_interval.
+        claim HZ0: Z0 :e unit_interval_topology.
+        { claim Hut: unit_interval_topology = subspace_topology R R_standard_topology unit_interval.
+          { reflexivity. }
+          rewrite Hut.
+          prove Z0 :e {W :e Power unit_interval | exists Z :e R_standard_topology, W = Z :/\: unit_interval}.
+          claim HZ0pow: Z0 :e Power unit_interval.
+          { apply PowerI.
+            let t. assume Ht: t :e Z0.
+            exact (binintersectE2 (open_ray_lower R c) unit_interval t Ht). }
+          claim HopenR: open_ray_lower R c :e R_standard_topology.
+          { rewrite <- standard_topology_is_order_topology.
+            claim HcS: c :e R.
+            { exact HcR. }
+            claim HsRay: open_ray_lower R c :e open_rays_subbasis R.
+            { exact (open_ray_lower_in_open_rays_subbasis R c HcS). }
+            exact (open_rays_subbasis_sub_order_topology R (open_ray_lower R c) HsRay). }
+          claim Hex: exists Z :e R_standard_topology, Z0 = Z :/\: unit_interval.
+          { witness (open_ray_lower R c).
+            apply andI.
+            - exact HopenR.
+            - reflexivity. }
+          exact (SepI (Power unit_interval)
+                      (fun W0 : set => exists Z :e R_standard_topology, W0 = Z :/\: unit_interval)
+                      Z0 HZ0pow Hex). }
+        claim Heq: (open_ray_lower R c) :/\: unit_interval_left_half = Z0 :/\: unit_interval_left_half.
+        { apply set_ext.
+          - let t. assume Ht: t :e (open_ray_lower R c) :/\: unit_interval_left_half.
+            prove t :e Z0 :/\: unit_interval_left_half.
+            claim HtRay: t :e open_ray_lower R c.
+            { exact (binintersectE1 (open_ray_lower R c) unit_interval_left_half t Ht). }
+            claim HtLH: t :e unit_interval_left_half.
+            { exact (binintersectE2 (open_ray_lower R c) unit_interval_left_half t Ht). }
+            claim HtI: t :e unit_interval.
+            { exact (unit_interval_left_half_sub t HtLH). }
+            claim HtZ0: t :e Z0.
+            { exact (binintersectI (open_ray_lower R c) unit_interval t HtRay HtI). }
+            exact (binintersectI Z0 unit_interval_left_half t HtZ0 HtLH).
+          - let t. assume Ht: t :e Z0 :/\: unit_interval_left_half.
+            prove t :e (open_ray_lower R c) :/\: unit_interval_left_half.
+            claim HtZ0: t :e Z0.
+            { exact (binintersectE1 Z0 unit_interval_left_half t Ht). }
+            claim HtLH: t :e unit_interval_left_half.
+            { exact (binintersectE2 Z0 unit_interval_left_half t Ht). }
+            claim HtRay: t :e open_ray_lower R c.
+            { exact (binintersectE1 (open_ray_lower R c) unit_interval t HtZ0). }
+            exact (binintersectI (open_ray_lower R c) unit_interval_left_half t HtRay HtLH). }
+        claim Hex: exists Z :e unit_interval_topology,
+          (open_ray_lower R c) :/\: unit_interval_left_half = Z :/\: unit_interval_left_half.
+        { witness Z0.
+          apply andI.
+          - exact HZ0.
+          - rewrite <- Heq.
+            reflexivity. }
+        exact (SepI (Power unit_interval_left_half)
+                    (fun W0 : set => exists Z :e unit_interval_topology, W0 = Z :/\: unit_interval_left_half)
+                    ((open_ray_lower R c) :/\: unit_interval_left_half)
+                    Hpow
+                    Hex).
+      + exact Hs0.
+    - assume HsR: s :e {R}.
+      claim Hseq: s = R.
+      { exact (SingE R s HsR). }
+      rewrite Hseq.
+      claim Heq: preimage_of unit_interval_left_half double_map_left_half R = unit_interval_left_half.
+      { exact (preimage_of_whole unit_interval_left_half R double_map_left_half Hfun). }
+      rewrite Heq.
+      exact (topology_has_X unit_interval_left_half Tx HTx).
+    - exact HsS. }
+
+  exact (continuous_map_from_subbasis unit_interval_left_half Tx R S double_map_left_half
+          HTx Hfun HS HpreS). }
 
 (** helper: restricting the range of a continuous map to a subspace containing the image **)
 claim HrangeRestrict:
