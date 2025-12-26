@@ -8609,8 +8609,7 @@ Qed.
 
 (** from §12: fineness via set inclusion of topologies **)
 (** LATEX VERSION: A restatement of fineness between topologies on X as inclusion of their open sets. **)
-Definition finer_than_topology_by_inclusion : set -> set -> set -> prop := fun X T' T =>
-  topology_on X T' /\ topology_on X T /\ T c= T'.
+Definition finer_than_topology_by_inclusion : set -> set -> set -> prop := finer_than_topology.
 
 (** from §12: fineness via inclusion characterization **)
 (** LATEX VERSION: The earlier fineness notion between topologies on X is equivalent to plain inclusion of their open sets. **)
