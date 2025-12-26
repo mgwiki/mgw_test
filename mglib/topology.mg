@@ -48104,15 +48104,13 @@ claim HpcontV: continuous_map unit_interval unit_interval_topology V (subspace_t
 { exact (andER (path_between V y z p)
                (continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p) Hp). }
 claim HpbL: function_on p unit_interval V /\ apply_fun p 0 = y.
-{ exact (andEL (function_on p unit_interval V /\ apply_fun p 0 = y)
-               (apply_fun p 1 = z) Hpb). }
+{ exact (path_between_pair0 V y z p Hpb). }
 claim Hp1: apply_fun p 1 = z.
-{ exact (andER (function_on p unit_interval V /\ apply_fun p 0 = y)
-               (apply_fun p 1 = z) Hpb). }
+{ exact (path_between_at_one V y z p Hpb). }
 claim Hp0: apply_fun p 0 = y.
-{ exact (andER (function_on p unit_interval V) (apply_fun p 0 = y) HpbL). }
+{ exact (path_between_at_zero V y z p Hpb). }
 claim HpfunV: function_on p unit_interval V.
-{ exact (andEL (function_on p unit_interval V) (apply_fun p 0 = y) HpbL). }
+{ exact (path_between_function_on V y z p Hpb). }
 set j := {(y0,y0) | y0 :e V}.
 claim Hjdef: j = {(y0,y0) | y0 :e V}.
 { reflexivity. }
@@ -48794,16 +48792,14 @@ apply set_ext.
     prove function_on p unit_interval X /\
       continuous_map unit_interval unit_interval_topology X Tx p /\
       apply_fun p 0 = x /\ apply_fun p 1 = y.
-    claim Hpb1: (function_on p unit_interval X /\ apply_fun p 0 = x) /\ apply_fun p 1 = y.
-    { exact Hpb. }
     claim HpbL: function_on p unit_interval X /\ apply_fun p 0 = x.
-    { exact (andEL (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = y) Hpb1). }
+    { exact (path_between_pair0 X x y p Hpb). }
     claim Hp1: apply_fun p 1 = y.
-    { exact (andER (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = y) Hpb1). }
+    { exact (path_between_at_one X x y p Hpb). }
     claim Hp0: apply_fun p 0 = x.
-    { exact (andER (function_on p unit_interval X) (apply_fun p 0 = x) HpbL). }
+    { exact (path_between_at_zero X x y p Hpb). }
     claim Hfun: function_on p unit_interval X.
-    { exact (andEL (function_on p unit_interval X) (apply_fun p 0 = x) HpbL). }
+    { exact (path_between_function_on X x y p Hpb). }
     apply andI.
     - apply andI.
       + apply andI.
