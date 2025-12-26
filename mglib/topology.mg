@@ -24594,6 +24594,22 @@ let x. assume Hx: x :e unit_interval.
 exact (SepE1 R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) x Hx).
 Qed.
 
+(** helper: 2 is not in the unit interval **)
+(** LATEX VERSION: 2 is not in [0,1]. **)
+Theorem two_not_in_unit_interval : 2 /:e unit_interval.
+assume H2I: 2 :e unit_interval.
+prove False.
+claim H2R: 2 :e R.
+{ exact (SepE1 R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) 2 H2I). }
+claim Hprop: ~(Rlt 1 2).
+{ claim Hconj: ~(Rlt 2 0) /\ ~(Rlt 1 2).
+  { exact (SepE2 R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) 2 H2I). }
+  exact (andER (~(Rlt 2 0)) (~(Rlt 1 2)) Hconj). }
+claim H12: Rlt 1 2.
+{ exact (RltI 1 2 real_1 H2R SNoLt_1_2). }
+exact (Hprop H12).
+Qed.
+
 (** helper: standard topology on the unit interval as a subspace of R **)
 (** LATEX VERSION: Equip [0,1] with the subspace topology inherited from the standard topology on R. **)
 Definition unit_interval_topology : set :=
