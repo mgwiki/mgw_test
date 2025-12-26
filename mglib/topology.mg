@@ -31621,13 +31621,13 @@ prove False.
     But U ∩ V = ∅, so seq can't be in both eventually - contradiction. **)
 (** Extract topology and separation property **)
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
-               HH). }
+{ exact (Hausdorff_space_topology X Tx HH). }
 claim HSep: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
-{ exact (andER (topology_on X Tx)
-               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
-               HH). }
+{ let x1 x2.
+  assume Hx1: x1 :e X.
+  assume Hx2: x2 :e X.
+  assume Hneq12: x1 <> x2.
+  exact (Hausdorff_space_separation X Tx x1 x2 HH Hx1 Hx2 Hneq12). }
 (** Apply separation to x and y **)
 claim HexUV: exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty.
 { exact (HSep x y HxX HyX Hneq). }
