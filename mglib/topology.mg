@@ -34009,13 +34009,13 @@ apply set_ext.
     { exact (binintersectE1 V0 B b0 HbVB). }
     claim HbB: b0 :e B.
     { exact (binintersectE2 V0 B b0 HbVB). }
-    (** now (a,b0) ∈ (U0×V0) ⊆ W and (a,b0) ∈ A×B **)
-    set q := (a,b0).
-    claim HqRect: q :e rectangle_set U0 V0.
-    { exact (tuple_2_setprod U0 V0 a HaU0 b0 HbV0). }
-    claim Hqb: q :e b.
-    { rewrite Hbeq.
-      exact HqRect. }
+	    (** now (a,b0) ∈ (U0×V0) ⊆ W and (a,b0) ∈ A×B **)
+	    set q := (a,b0).
+	    claim HqRect: q :e rectangle_set U0 V0.
+	    { exact (tuple_2_rectangle_set U0 V0 a b0 HaU0 HbV0). }
+	    claim Hqb: q :e b.
+	    { rewrite Hbeq.
+	      exact HqRect. }
     claim HqW: q :e W.
     { exact (HbW q Hqb). }
     claim HqP: q :e P.
