@@ -49507,11 +49507,7 @@ prove topology_on Y Q /\
 apply andI.
 - (** topology_on Y Q **)
   claim HTx: topology_on X Tx.
-  { claim Htopfun: topology_on X Tx /\ function_on f X Y.
-    { exact (andEL (topology_on X Tx /\ function_on f X Y)
-                   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y)
-                   Hquot). }
-    exact (andEL (topology_on X Tx) (function_on f X Y) Htopfun). }
+  { exact (locally_connected_topology X Tx Hloc). }
   exact (quotient_topology_is_topology X Tx Y f HTx Hquot).
 - (** neighborhood property (stub) **)
   let y. assume HyY: y :e Y.
