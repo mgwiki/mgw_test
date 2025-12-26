@@ -22973,6 +22973,17 @@ prove (p 0, p 1) :e setprod X Y.
 exact (tuple_2_setprod X Y (p 0) Hp0X (p 1) Hp1Y).
 Qed.
 
+(** Helper: pairing belongs to setprod via Sigma encoding **)
+Theorem tuple_2_setprod_by_pair_Sigma : forall X Y:set, forall x y:set,
+  x :e X -> y :e Y -> (x,y) :e setprod X Y.
+let X Y x y.
+assume Hx: x :e X.
+assume Hy: y :e Y.
+prove (x,y) :e setprod X Y.
+rewrite <- (tuple_pair x y) at 1.
+exact (pair_Sigma X (fun _ : set => Y) x Hx y Hy).
+Qed.
+
 (** Helper: elements of cartesian products have coordinates **)
 Theorem setprod_elem_decompose : forall X Y p:set,
   p :e setprod X Y ->
@@ -39825,7 +39836,7 @@ apply (SepI (Power (affine_line_R2 a b c))
 						        { rewrite <- Hydef. exact HyV. }
 						        rewrite Hpeta at 1.
 						        rewrite rectangle_set_def.
-						        exact (tuple_2_setprod U V (p 0) Hp0U (p 1) Hp1V).
+						        exact (tuple_2_setprod_by_pair_Sigma U V (p 0) (p 1) Hp0U Hp1V).
 						      + exact HpL.
 				    - let q. assume Hq: q :e (rectangle_set U V) :/\: affine_line_R2 a b c.
 				      prove q :e {p}.
