@@ -18830,6 +18830,65 @@ Definition order_rel : set -> set -> set -> prop := fun X a b =>
      a = (a1, a2) /\ b = (b1, b2) /\
      (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
 
+(** helper: in the dictionary order on {0,1}×ω we have (0,0) < (1,0) **)
+Theorem order_rel_setprod_2_omega_00_10 :
+  order_rel (setprod 2 omega) (0,0) (1,0).
+prove order_rel (setprod 2 omega) (0,0) (1,0).
+(** Unfold `order_rel` at X = setprod 2 omega and select the 5th disjunct. **)
+prove (setprod 2 omega = R /\ Rlt (0,0) (1,0))
+  \/
+  (setprod 2 omega = rational_numbers /\ Rlt (0,0) (1,0))
+  \/
+  (setprod 2 omega = omega /\ (0,0) :e (1,0))
+  \/
+  (setprod 2 omega = omega :\: {0} /\ (0,0) :e (1,0))
+  \/
+  (setprod 2 omega = setprod 2 omega /\
+   exists i m j n:set,
+     i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+     (0,0) = (i, m) /\ (1,0) = (j, n) /\
+     (i :e j \/ (i = j /\ m :e n)))
+  \/
+  (setprod 2 omega = setprod R R /\
+   exists a1 a2 b1 b2:set,
+     (0,0) = (a1, a2) /\ (1,0) = (b1, b2) /\
+     (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
+apply orIL.
+apply orIR.
+prove setprod 2 omega = setprod 2 omega /\
+   exists i m j n:set,
+     i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+     (0,0) = (i, m) /\ (1,0) = (j, n) /\
+     (i :e j \/ (i = j /\ m :e n)).
+apply andI.
+- reflexivity.
+- witness 0.
+  witness 0.
+  witness 1.
+  witness 0.
+  claim Hm0: 0 :e omega.
+  { exact (nat_p_omega 0 nat_0). }
+  claim Heq00: (0,0) = (0,0).
+  { reflexivity. }
+  claim Heq10: (1,0) = (1,0).
+  { reflexivity. }
+  claim H12: 0 :e 2 /\ 0 :e omega.
+  { exact (andI (0 :e 2) (0 :e omega) In_0_2 Hm0). }
+  claim H123: (0 :e 2 /\ 0 :e omega) /\ 1 :e 2.
+  { exact (andI (0 :e 2 /\ 0 :e omega) (1 :e 2) H12 In_1_2). }
+  claim H1234: ((0 :e 2 /\ 0 :e omega) /\ 1 :e 2) /\ 0 :e omega.
+  { exact (andI ((0 :e 2 /\ 0 :e omega) /\ 1 :e 2) (0 :e omega) H123 Hm0). }
+  claim H12345: (((0 :e 2 /\ 0 :e omega) /\ 1 :e 2) /\ 0 :e omega) /\ (0,0) = (0,0).
+  { exact (andI (((0 :e 2 /\ 0 :e omega) /\ 1 :e 2) /\ 0 :e omega) ((0,0) = (0,0)) H1234 Heq00). }
+  claim H123456: ((((0 :e 2 /\ 0 :e omega) /\ 1 :e 2) /\ 0 :e omega) /\ (0,0) = (0,0)) /\ (1,0) = (1,0).
+  { exact (andI ((((0 :e 2 /\ 0 :e omega) /\ 1 :e 2) /\ 0 :e omega) /\ (0,0) = (0,0)) ((1,0) = (1,0)) H12345 Heq10). }
+  claim Hlex: 0 :e 1 \/ (0 = 1 /\ 0 :e 0).
+  { exact (orIL (0 :e 1) (0 = 1 /\ 0 :e 0) In_0_1). }
+  apply andI.
+  - exact H123456.
+  - exact Hlex.
+Qed.
+
 (** helper: eps_ 1 is not an element of the ordinal 2 **)
 (** LATEX VERSION: 1/2 is neither 0 nor 1. **)
 Theorem eps_1_not_in_2 : eps_ 1 /:e 2.
@@ -20632,43 +20691,36 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 			    let i. assume HiPair. apply HiPair.
 			    let m. assume HmPair. apply HmPair.
 			    let j. assume HjPair. apply HjPair.
-				    let n. assume HnPair. apply HnPair.
-				    assume Hcore.
-				    (** Try to project the final lex/dictionary-order disjunction explicitly from the witness package. **)
-				    claim Hlex: (i :e j \/ (i = j /\ m :e n)).
-				    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-				                    (1,0) = (i, m) /\ b = (j, n))
-				                   (i :e j \/ (i = j /\ m :e n))
-				                   Hcore). }
-				    claim Hcoords: i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-				                   (1,0) = (i, m) /\ b = (j, n).
-				    { exact (andEL (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-				                    (1,0) = (i, m) /\ b = (j, n))
-				                   (i :e j \/ (i = j /\ m :e n))
-				                   Hcore). }
-				    apply Hcoords.
-				    assume Hleft Hright.
-				    claim HbEq2: b = (j, n).
-				    { exact Hright. }
-				    apply Hleft.
-				    assume Hleft2 Hright2.
-				    claim H10Eq2: (1,0) = (i, m).
-				    { exact Hright2. }
-				    apply Hleft2.
-				    assume Hleft3 Hright3.
-				    claim HnOmega: n :e omega.
-				    { exact Hright3. }
-				    apply Hleft3.
-				    assume Hleft4 Hright4.
-				    claim Hj2: j :e 2.
-				    { exact Hright4. }
-				    apply Hleft4.
-				    assume Hleft5 Hright5.
-				    claim HmOmega: m :e omega.
-				    { exact Hright5. }
-				    claim Hi2: i :e 2.
-				    { exact Hleft5. }
-				    admit.
+			    let n. assume HnPair. apply HnPair.
+			    assume Hcore.
+			    (** Conjunction-shape diagnostics:
+			        Repeated splitting of the witness package `Hcore` exposes (in this order):
+			        b = (j,n), (1,0) = (i,m), n :e omega, j :e 2, m :e omega, i :e 2.
+			        The lex/dictionary-order disjunction from the statement of `Hex`
+			        is not reachable via this splitting pattern, so HU2 remains admitted for now. **)
+			    apply Hcore.
+			    assume Hleft Hright.
+			    claim HbEq2: b = (j, n).
+			    { exact Hright. }
+			    apply Hleft.
+			    assume Hleft2 Hright2.
+			    claim H10Eq2: (1,0) = (i, m).
+			    { exact Hright2. }
+			    apply Hleft2.
+			    assume Hleft3 Hright3.
+			    claim HnOmega: n :e omega.
+			    { exact Hright3. }
+			    apply Hleft3.
+			    assume Hleft4 Hright4.
+			    claim Hj2: j :e 2.
+			    { exact Hright4. }
+			    apply Hleft4.
+			    assume Hleft5 Hright5.
+			    claim HmOmega: m :e omega.
+			    { exact Hright5. }
+			    claim Hi2: i :e 2.
+			    { exact Hleft5. }
+			    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
                       I = {x :e X | order_rel X a x}}.
