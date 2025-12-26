@@ -20619,100 +20619,194 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    (** Reduce to the setprod 2 omega case and unfold the dictionary-order witness data. **)
 		    claim HXeq: X = setprod 2 omega.
 		    { reflexivity. }
-		    claim Hrel2: order_rel (setprod 2 omega) (1,0) b.
-		    { prove order_rel (setprod 2 omega) (1,0) b.
-		      rewrite <- HXeq at 1.
-		      exact Hrel. }
-		    claim Hex: exists i m j n:set,
-		      i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-		      (1,0) = (i, m) /\ b = (j, n) /\
-		      (i :e j \/ (i = j /\ m :e n)).
-		    { exact (order_rel_setprod_2_omega_unfold (1,0) b Hrel2). }
-		    apply Hex.
-		    let i. assume HiPair. apply HiPair.
-		    let m. assume HmPair. apply HmPair.
-		    let j. assume HjPair. apply HjPair.
-		    let n. assume HnPair. apply HnPair.
-		    assume Hcore.
-		    (** Extract all 7 components from the left-associated conjunction. **)
-		    claim Hpre6: i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m) /\ b = (j, n).
-		    { exact (andEL (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m) /\ b = (j, n))
-		                   (i :e j \/ (i = j /\ m :e n))
-		                   Hcore). }
-		    claim Hdisj: i :e j \/ (i = j /\ m :e n).
-		    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m) /\ b = (j, n))
-		                   (i :e j \/ (i = j /\ m :e n))
-		                   Hcore). }
+			    claim Hrel2: order_rel (setprod 2 omega) (1,0) b.
+			    { prove order_rel (setprod 2 omega) (1,0) b.
+			      rewrite <- HXeq at 1.
+			      exact Hrel. }
+			    claim Hex: exists i m j n:set,
+			      i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+			      (1,0) = (i, m) /\ b = (j, n) /\
+			      (i :e j \/ (i = j /\ m :e n)).
+			    { (** Extract the setprod 2 omega case directly from the definition of order_rel. **)
+			      apply (Hrel2 (exists i m j n:set,
+			                      i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+			                      (1,0) = (i, m) /\ b = (j, n) /\
+			                      (i :e j \/ (i = j /\ m :e n)))).
+			      - assume Hleft.
+			        apply (Hleft (exists i m j n:set,
+			                        i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+			                        (1,0) = (i, m) /\ b = (j, n) /\
+			                        (i :e j \/ (i = j /\ m :e n)))).
+			        - assume Hmid.
+			          apply (Hmid (exists i m j n:set,
+			                         i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+			                         (1,0) = (i, m) /\ b = (j, n) /\
+			                         (i :e j \/ (i = j /\ m :e n)))).
+			          + assume Hm2.
+			            apply (Hm2 (exists i m j n:set,
+			                          i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+			                          (1,0) = (i, m) /\ b = (j, n) /\
+			                          (i :e j \/ (i = j /\ m :e n)))).
+			            - assume Hm3.
+			              apply (Hm3 (exists i m j n:set,
+			                            i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+			                            (1,0) = (i, m) /\ b = (j, n) /\
+			                            (i :e j \/ (i = j /\ m :e n)))).
+			              - assume Hc1.
+			                apply FalseE.
+			                claim Heq: setprod 2 omega = R.
+			                { exact (andEL (setprod 2 omega = R) (Rlt (1,0) b) Hc1). }
+			                exact (setprod_2_omega_neq_R Heq).
+			              - assume Hc2.
+			                apply FalseE.
+			                claim Heq: setprod 2 omega = rational_numbers.
+			                { exact (andEL (setprod 2 omega = rational_numbers) (Rlt (1,0) b) Hc2). }
+			                exact (setprod_2_omega_neq_rational_numbers Heq).
+			            - assume Hc3.
+			              apply FalseE.
+			              claim Heq: setprod 2 omega = omega.
+			              { exact (andEL (setprod 2 omega = omega) ((1,0) :e b) Hc3). }
+			              exact (setprod_2_omega_neq_omega Heq).
+			          + assume Hc4.
+			            apply FalseE.
+			            claim Heq: setprod 2 omega = omega :\: {0}.
+			            { exact (andEL (setprod 2 omega = omega :\: {0}) ((1,0) :e b) Hc4). }
+			            exact (setprod_2_omega_neq_omega_nonzero Heq).
+			        - assume Hc5.
+			          exact (andER (setprod 2 omega = setprod 2 omega)
+			                       (exists i m j n:set,
+			                         i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+			                         (1,0) = (i, m) /\ b = (j, n) /\
+			                         (i :e j \/ (i = j /\ m :e n)))
+			                       Hc5).
+			      - assume Hc6.
+			        apply FalseE.
+			        claim Heq: setprod 2 omega = setprod R R.
+			        { exact (andEL (setprod 2 omega = setprod R R)
+			                      (exists a1 a2 b1 b2:set,
+			                        (1,0) = (a1, a2) /\ b = (b1, b2) /\ (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2)))
+			                      Hc6). }
+			        exact (setprod_2_omega_neq_setprod_R_R Heq). }
+			    apply Hex.
+			    let i. assume HiPair. apply HiPair.
+			    let m. assume HmPair. apply HmPair.
+			    let j. assume HjPair. apply HjPair.
+			    let n. assume HnPair. apply HnPair.
+			    assume Hcore.
+			    (** Extract all 7 components from the 7-way conjunction in the dictionary-order witness. **)
+			    claim Hi2: i :e 2.
+			    { apply (and7E (i :e 2)
+			                   (m :e omega)
+			                   (j :e 2)
+			                   (n :e omega)
+			                   ((1,0) = (i, m))
+			                   (b = (j, n))
+			                   (i :e j \/ (i = j /\ m :e n))
+			                   Hcore
+			                   (i :e 2)).
+			      assume Hi2 HmOmega Hj2 HnOmega H10Eq HbEq Hdisj.
+			      exact Hi2. }
+			    claim HmOmega: m :e omega.
+			    { apply (and7E (i :e 2)
+			                   (m :e omega)
+			                   (j :e 2)
+			                   (n :e omega)
+			                   ((1,0) = (i, m))
+			                   (b = (j, n))
+			                   (i :e j \/ (i = j /\ m :e n))
+			                   Hcore
+			                   (m :e omega)).
+			      assume Hi2 HmOmega Hj2 HnOmega H10Eq HbEq Hdisj.
+			      exact HmOmega. }
+			    claim Hj2': j :e 2.
+			    { apply (and7E (i :e 2)
+			                   (m :e omega)
+			                   (j :e 2)
+			                   (n :e omega)
+			                   ((1,0) = (i, m))
+			                   (b = (j, n))
+			                   (i :e j \/ (i = j /\ m :e n))
+			                   Hcore
+			                   (j :e 2)).
+			      assume Hi2 HmOmega Hj2 HnOmega H10Eq HbEq Hdisj.
+			      exact Hj2. }
+			    claim HnOmega2: n :e omega.
+			    { apply (and7E (i :e 2)
+			                   (m :e omega)
+			                   (j :e 2)
+			                   (n :e omega)
+			                   ((1,0) = (i, m))
+			                   (b = (j, n))
+			                   (i :e j \/ (i = j /\ m :e n))
+			                   Hcore
+			                   (n :e omega)).
+			      assume Hi2 HmOmega Hj2 HnOmega H10Eq HbEq Hdisj.
+			      exact HnOmega. }
+			    claim H10Eq2: (1,0) = (i, m).
+			    { apply (and7E (i :e 2)
+			                   (m :e omega)
+			                   (j :e 2)
+			                   (n :e omega)
+			                   ((1,0) = (i, m))
+			                   (b = (j, n))
+			                   (i :e j \/ (i = j /\ m :e n))
+			                   Hcore
+			                   ((1,0) = (i, m))).
+			      assume Hi2 HmOmega Hj2 HnOmega H10Eq HbEq Hdisj.
+			      exact H10Eq. }
+			    claim HbEq2: b = (j, n).
+			    { apply (and7E (i :e 2)
+			                   (m :e omega)
+			                   (j :e 2)
+			                   (n :e omega)
+			                   ((1,0) = (i, m))
+			                   (b = (j, n))
+			                   (i :e j \/ (i = j /\ m :e n))
+			                   Hcore
+			                   (b = (j, n))).
+			      assume Hi2 HmOmega Hj2 HnOmega H10Eq HbEq Hdisj.
+			      exact HbEq. }
+			    claim Hdisj: i :e j \/ (i = j /\ m :e n).
+			    { apply (and7E (i :e 2)
+			                   (m :e omega)
+			                   (j :e 2)
+			                   (n :e omega)
+			                   ((1,0) = (i, m))
+			                   (b = (j, n))
+			                   (i :e j \/ (i = j /\ m :e n))
+			                   Hcore
+			                   (i :e j \/ (i = j /\ m :e n))).
+			      assume Hi2 HmOmega Hj2 HnOmega H10Eq HbEq Hdisj.
+			      exact Hdisj. }
 
-		    claim Hpre5: i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m).
-		    { exact (andEL (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m))
-		                   (b = (j, n))
-		                   Hpre6). }
-		    claim HbEq2: b = (j, n).
-		    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m))
-		                   (b = (j, n))
-		                   Hpre6). }
-
-		    claim Hpre4: i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega.
-		    { exact (andEL (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega)
-		                   ((1,0) = (i, m))
-		                   Hpre5). }
-		    claim H10Eq2: (1,0) = (i, m).
-		    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega)
-		                   ((1,0) = (i, m))
-		                   Hpre5). }
-
-		    claim Hpre3: i :e 2 /\ m :e omega /\ j :e 2.
-		    { exact (andEL (i :e 2 /\ m :e omega /\ j :e 2)
-		                   (n :e omega)
-		                   Hpre4). }
-		    claim HnOmega2: n :e omega.
-		    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2)
-		                   (n :e omega)
-		                   Hpre4). }
-
-		    claim Hpre2: i :e 2 /\ m :e omega.
-		    { exact (andEL (i :e 2 /\ m :e omega)
-		                   (j :e 2)
-		                   Hpre3). }
-		    claim Hj2': j :e 2.
-		    { exact (andER (i :e 2 /\ m :e omega)
-		                   (j :e 2)
-		                   Hpre3). }
-
-		    claim Hi2: i :e 2.
-		    { exact (andEL (i :e 2) (m :e omega) Hpre2). }
-		    claim HmOmega: m :e omega.
-		    { exact (andER (i :e 2) (m :e omega) Hpre2). }
-
-				    (** Derived equalities from (1,0) = (i,m). **)
-				    claim Hi1: i = 1.
-				    { prove i = 1.
-				      claim Him0: (i,m) 0 = 1.
-				      { prove (i,m) 0 = 1.
-				        rewrite <- H10Eq2 at 1.
-				        exact (tuple_2_0_eq 1 0). }
-				      rewrite <- (tuple_2_0_eq i m) at 1.
-				      exact Him0. }
-				    claim Hm0: m = 0.
-				    { prove m = 0.
-				      claim Him1: (i,m) 1 = 0.
-				      { prove (i,m) 1 = 0.
-				        rewrite <- H10Eq2 at 1.
-				        exact (tuple_2_1_eq 1 0). }
-				      rewrite <- (tuple_2_1_eq i m) at 1.
-				      exact Him1. }
+					    (** Derived equalities from (1,0) = (i,m). **)
+					    claim Hi1: i = 1.
+					    { prove i = 1.
+					      claim Him0: (i,m) 0 = 1.
+					      { prove (i,m) 0 = 1.
+					        rewrite <- H10Eq2 at 1.
+					        exact (tuple_2_0_eq 1 0). }
+					      rewrite <- (tuple_2_0_eq i m) at 1.
+					      exact Him0. }
+					    claim Hm0: m = 0.
+					    { prove m = 0.
+					      claim Him1: (i,m) 1 = 0.
+					      { prove (i,m) 1 = 0.
+					        rewrite <- H10Eq2 at 1.
+					        exact (tuple_2_1_eq 1 0). }
+					      rewrite <- (tuple_2_1_eq i m) at 1.
+					      exact Him1. }
 
 				    (** Derived coordinate equalities for b from HbEq2: b = (j,n). **)
-				    claim Hb0_eq_j: b 0 = j.
-				    { prove b 0 = j.
-				      rewrite HbEq2.
-				      exact (tuple_2_0_eq j n). }
-				    claim Hb1_eq_n: b 1 = n.
-				    { prove b 1 = n.
-				      rewrite HbEq2.
-				      exact (tuple_2_1_eq j n). }
-				    (** Simplify the disjunction using i=1 and m=0. **)
+					    claim Hb0_eq_j: b 0 = j.
+					    { prove b 0 = j.
+					      rewrite HbEq2.
+					      exact (tuple_2_0_eq j n). }
+					    claim Hb1_eq_n: b 1 = n.
+					    { prove b 1 = n.
+					      rewrite HbEq2.
+					      exact (tuple_2_1_eq j n). }
+				    (** Use the lex/dictionary-order disjunction together with i=1, m=0, and j:e2. **)
 				    claim Hdisj_simpl: 1 :e j \/ (1 = j /\ 0 :e n).
 				    { apply (Hdisj (1 :e j \/ (1 = j /\ 0 :e n))).
 				      - assume Hij: i :e j.
@@ -20734,7 +20828,6 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 				          rewrite <- Hm0 at 1.
 				          exact Hmn. }
 
-				    (** Show that 1 :e j is impossible for j :e 2, so we must be in the second disjunct. **)
 				    claim Hj_not: ~(1 :e j).
 				    { apply (cases_2 j Hj2' (fun t:set => ~(1 :e t))).
 				      - prove ~(1 :e 0).
@@ -20759,7 +20852,7 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 				    claim H0inN: 0 :e n.
 				    { exact (andER (1 = j) (0 :e n) Hj1npos). }
 
-				    (** (0,0) is also below b, hence belongs to the lower ray, contradicting U = {(1,0)}. **)
+				    (** Build (0,0) :e U from HUeq by showing (0,0) < b. **)
 				    claim H0omega: 0 :e omega.
 				    { exact (nat_p_omega 0 nat_0). }
 				    claim H00inX: (0,0) :e X.
@@ -20790,11 +20883,12 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 				                 - exact Hj2'. }
 				               { exact HnOmega2. }
 				            -- reflexivity.
-				          * exact HbEq2.
+				          * (** b=(j,n) **)
+				            exact HbEq2.
 				        + (** 0:e j \/ (0=j /\ 0:e n) **)
 				          apply orIL.
 				          prove 0 :e j.
-				          rewrite Hj1 at 2.
+				          rewrite Hj1.
 				          exact In_0_1. }
 
 				    claim Hrel00b: order_rel X (0,0) b.
