@@ -10217,6 +10217,39 @@ rewrite (sqrt_SNo_nonneg_sqr sum HsumS HsumNonneg).
 reflexivity.
 Qed.
 
+(** helper: the square of abs equals the square of the original **)
+(** LATEX VERSION: For real numbers, abs(x) squared equals x squared. **)
+Theorem abs_SNo_sqr_eq : forall x:set,
+  SNo x ->
+  mul_SNo (abs_SNo x) (abs_SNo x) = mul_SNo x x.
+let x.
+assume HxS: SNo x.
+apply (xm (0 <= x)).
+- assume H0le: 0 <= x.
+  rewrite (nonneg_abs_SNo x H0le).
+  reflexivity.
+- assume Hn0le: ~(0 <= x).
+  rewrite (not_nonneg_abs_SNo x Hn0le).
+  rewrite (mul_SNo_minus_minus x x HxS HxS).
+  reflexivity.
+Qed.
+
+(** helper: adding a nonnegative term preserves order on the right **)
+(** LATEX VERSION: If y is nonnegative then x <= x + y. **)
+Theorem SNoLe_add_nonneg_right : forall x y:set,
+  SNo x -> SNo y -> 0 <= y -> x <= add_SNo x y.
+let x y.
+assume HxS: SNo x.
+assume HyS: SNo y.
+assume H0ley: 0 <= y.
+claim H0S: SNo 0.
+{ exact SNo_0. }
+claim Hle: add_SNo x 0 <= add_SNo x y.
+{ exact (add_SNo_Le2 x 0 y HxS H0S HyS H0ley). }
+rewrite (add_SNo_0R x HxS) in Hle.
+exact Hle.
+Qed.
+
 (** from §13 Example 4: distance from a point to itself is 0 **)
 (** LATEX VERSION: d(p,p) = 0. **)
 Theorem distance_R2_refl_0 : forall p:set, p :e EuclidPlane -> distance_R2 p p = 0.
