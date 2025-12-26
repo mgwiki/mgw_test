@@ -48331,6 +48331,41 @@ Definition locally_connected : set -> set -> prop := fun X Tx =>
     forall U:set, U :e Tx -> x :e U ->
       exists V:set, V :e Tx /\ x :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V).
 
+(** Helper: extract topology_on from locally_connected **)
+Theorem locally_connected_topology : forall X Tx:set,
+  locally_connected X Tx -> topology_on X Tx.
+let X Tx.
+assume H: locally_connected X Tx.
+exact (andEL (topology_on X Tx)
+             (forall x:set, x :e X ->
+               forall U:set, U :e Tx -> x :e U ->
+                 exists V:set, V :e Tx /\ x :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V))
+             H).
+Qed.
+
+(** Helper: extract local connectedness property **)
+Theorem locally_connected_local : forall X Tx x U:set,
+  locally_connected X Tx ->
+  x :e X ->
+  U :e Tx ->
+  x :e U ->
+  exists V:set, V :e Tx /\ x :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V).
+let X Tx x U.
+assume H: locally_connected X Tx.
+assume Hx: x :e X.
+assume HU: U :e Tx.
+assume HxU: x :e U.
+claim Hprop: forall x0:set, x0 :e X ->
+  forall U0:set, U0 :e Tx -> x0 :e U0 ->
+    exists V:set, V :e Tx /\ x0 :e V /\ V c= U0 /\ connected_space V (subspace_topology X Tx V).
+{ exact (andER (topology_on X Tx)
+               (forall x0:set, x0 :e X ->
+                 forall U0:set, U0 :e Tx -> x0 :e U0 ->
+                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U0 /\ connected_space V (subspace_topology X Tx V))
+               H). }
+exact (Hprop x Hx U HU HxU).
+Qed.
+
 (** from §25 Definition: locally path connected **)
 (** LATEX VERSION: Locally path connected means each point has a neighborhood basis of path-connected sets. **)
 Definition locally_path_connected : set -> set -> prop := fun X Tx =>
@@ -49292,19 +49327,14 @@ assume HxX: x :e X.
 prove open_in X Tx (component_of X Tx x).
 prove topology_on X Tx /\ component_of X Tx x :e Tx.
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x0:set, x0 :e X ->
-                 forall U:set, U :e Tx -> x0 :e U ->
-                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V))
-               Hloc). }
+{ exact (locally_connected_topology X Tx Hloc). }
 claim Hlocprop: forall y:set, y :e X ->
   forall U:set, U :e Tx -> y :e U ->
     exists V:set, V :e Tx /\ y :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V).
-{ exact (andER (topology_on X Tx)
-               (forall x0:set, x0 :e X ->
-                 forall U:set, U :e Tx -> x0 :e U ->
-                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ connected_space V (subspace_topology X Tx V))
-               Hloc). }
+{ let y. assume Hy: y :e X.
+  let U. assume HU: U :e Tx.
+  assume HyU: y :e U.
+  exact (locally_connected_local X Tx y U Hloc Hy HU HyU). }
 apply andI.
 - exact HTx.
 - set Comp := component_of X Tx x.
