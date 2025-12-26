@@ -45753,6 +45753,127 @@ apply set_ext.
   exact (ReplI Y (fun a:set => apply_fun f a) (p 1) Hp1Y).
 Qed.
 
+(** Helper: y maps to (x0,y) is a homeomorphism onto the slice {x0} times Y **)
+Theorem homeomorphism_const_id_slice : forall X Tx Y Ty x0:set,
+  topology_on X Tx -> topology_on Y Ty -> x0 :e X ->
+  homeomorphism Y Ty (setprod {x0} Y)
+    (subspace_topology (setprod X Y) (product_topology X Tx Y Ty) (setprod {x0} Y))
+    (pair_map Y (const_fun Y x0) {(y,y)|y :e Y}).
+let X Tx Y Ty x0.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+assume Hx0X: x0 :e X.
+set idY := {(y,y)|y :e Y}.
+set c := const_fun Y x0.
+set f := pair_map Y c idY.
+set Slice := setprod {x0} Y.
+set Tslice := subspace_topology (setprod X Y) (product_topology X Tx Y Ty) Slice.
+
+claim HTprod: topology_on (setprod X Y) (product_topology X Tx Y Ty).
+{ exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
+
+claim Hc: continuous_map Y Ty X Tx c.
+{ exact (const_fun_continuous Y Ty X Tx x0 HTy HTx Hx0X). }
+claim Hid: continuous_map Y Ty Y Ty idY.
+{ exact (identity_continuous Y Ty HTy). }
+claim HfProd: continuous_map Y Ty (setprod X Y) (product_topology X Tx Y Ty) f.
+{ exact (maps_into_products Y Ty X Tx Y Ty c idY Hc Hid). }
+
+claim HSingSub: {x0} c= X.
+{ exact (singleton_subset x0 X Hx0X). }
+claim HSlicesub: Slice c= setprod X Y.
+{ exact (setprod_Subq {x0} Y X Y HSingSub (Subq_ref Y)). }
+claim Himg: forall y:set, y :e Y -> apply_fun f y :e Slice.
+{ let y. assume HyY: y :e Y.
+  prove apply_fun f y :e Slice.
+  claim Happ: apply_fun f y = (apply_fun c y, apply_fun idY y).
+  { exact (pair_map_apply Y X Y c idY y HyY). }
+  claim Hcapp: apply_fun c y = x0.
+  { exact (const_fun_apply Y x0 y HyY). }
+  claim Hidapp: apply_fun idY y = y.
+  { exact (identity_function_apply Y y HyY). }
+  rewrite Happ.
+  rewrite Hcapp.
+  rewrite Hidapp.
+  exact (tuple_2_setprod {x0} Y x0 (SingI x0) y HyY). }
+claim Hf: continuous_map Y Ty Slice Tslice f.
+{ exact (continuous_map_range_restrict Y Ty (setprod X Y) (product_topology X Tx Y Ty) f Slice
+          HfProd HSlicesub Himg). }
+
+claim HprojPair:
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y) /\
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y).
+{ exact (projection_maps_continuous X Tx Y Ty HTx HTy). }
+claim Hproj2:
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y).
+{ exact (andER (continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection_map1 X Y))
+               (continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y))
+               HprojPair). }
+claim Hg:
+  continuous_map Slice Tslice Y Ty (projection_map2 X Y).
+{ exact (continuous_on_subspace (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection_map2 X Y) Slice
+          HTprod HSlicesub Hproj2). }
+
+prove continuous_map Y Ty Slice Tslice f /\
+  exists g:set, continuous_map Slice Tslice Y Ty g /\
+    (forall x:set, x :e Y -> apply_fun g (apply_fun f x) = x) /\
+    (forall y:set, y :e Slice -> apply_fun f (apply_fun g y) = y).
+apply andI.
+- exact Hf.
+- witness (projection_map2 X Y).
+  apply andI.
+  + apply andI.
+    * exact Hg.
+    * (** g after f is identity on Y **)
+      let y. assume HyY: y :e Y.
+      prove apply_fun (projection_map2 X Y) (apply_fun f y) = y.
+      claim Happf: apply_fun f y = (apply_fun c y, apply_fun idY y).
+      { exact (pair_map_apply Y X Y c idY y HyY). }
+      claim Hcapp: apply_fun c y = x0.
+      { exact (const_fun_apply Y x0 y HyY). }
+      claim Hidapp: apply_fun idY y = y.
+      { exact (identity_function_apply Y y HyY). }
+      claim HxyXY: (x0,y) :e setprod X Y.
+      { exact (tuple_2_setprod X Y x0 Hx0X y HyY). }
+      rewrite Happf.
+      rewrite Hcapp.
+      rewrite Hidapp.
+      claim Happ2: apply_fun (projection_map2 X Y) (x0,y) = (x0,y) 1.
+      { exact (projection2_apply X Y (x0,y) HxyXY). }
+      rewrite Happ2.
+      exact (tuple_2_1_eq x0 y).
+  + (** f after g is identity on Slice **)
+    let p. assume HpSlice: p :e Slice.
+    prove apply_fun f (apply_fun (projection_map2 X Y) p) = p.
+    claim HpXY: p :e setprod X Y.
+    { exact (HSlicesub p HpSlice). }
+    claim Hp1Y: (p 1) :e Y.
+    { exact (ap1_Sigma {x0} (fun _:set => Y) p HpSlice). }
+    claim Happ2: apply_fun (projection_map2 X Y) p = p 1.
+    { exact (projection2_apply X Y p HpXY). }
+    rewrite Happ2.
+    claim Happf: apply_fun f (p 1) = (apply_fun c (p 1), apply_fun idY (p 1)).
+    { exact (pair_map_apply Y X Y c idY (p 1) Hp1Y). }
+    claim Hcapp: apply_fun c (p 1) = x0.
+    { exact (const_fun_apply Y x0 (p 1) Hp1Y). }
+    claim Hidapp: apply_fun idY (p 1) = (p 1).
+    { exact (identity_function_apply Y (p 1) Hp1Y). }
+    rewrite Happf.
+    rewrite Hcapp.
+    rewrite Hidapp.
+    claim Hp0Sing: (p 0) :e {x0}.
+    { exact (ap0_Sigma {x0} (fun _:set => Y) p HpSlice). }
+    claim Hp0eq: (p 0) = x0.
+    { exact (singleton_elem (p 0) x0 Hp0Sing). }
+    claim Heta: p = (p 0, p 1).
+    { exact (setprod_eta {x0} Y p HpSlice). }
+    claim HtupleEq: (p 0, p 1) = p.
+    { rewrite <- Heta.
+      reflexivity. }
+    rewrite <- Hp0eq at 1.
+    exact HtupleEq.
+Qed.
+
 (** Helper: slice {x0} times Y is connected when Y is connected **)
 Theorem slice_Y_connected : forall X Tx Y Ty x0:set,
   connected_space Y Ty -> topology_on X Tx -> x0 :e X ->
