@@ -47330,6 +47330,34 @@ Definition path_connected_space : set -> set -> prop := fun X Tx =>
   forall x y:set, x :e X -> y :e X ->
     exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
 
+(** Helper: extract topology_on from path_connected_space **)
+Theorem path_connected_space_topology : forall X Tx:set,
+  path_connected_space X Tx -> topology_on X Tx.
+let X Tx.
+assume H: path_connected_space X Tx.
+exact (andEL (topology_on X Tx)
+             (forall x y:set, x :e X -> y :e X ->
+               exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p)
+             H).
+Qed.
+
+(** Helper: extract existence of paths from path_connected_space **)
+Theorem path_connected_space_paths : forall X Tx x y:set,
+  path_connected_space X Tx -> x :e X -> y :e X ->
+  exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
+let X Tx x y.
+assume H: path_connected_space X Tx.
+assume Hx: x :e X.
+assume Hy: y :e X.
+claim Hpaths: forall x0 y0:set, x0 :e X -> y0 :e X ->
+  exists p:set, path_between X x0 y0 p /\ continuous_map unit_interval unit_interval_topology X Tx p.
+{ exact (andER (topology_on X Tx)
+               (forall x0 y0:set, x0 :e X -> y0 :e X ->
+                 exists p:set, path_between X x0 y0 p /\ continuous_map unit_interval unit_interval_topology X Tx p)
+               H). }
+exact (Hpaths x y Hx Hy).
+Qed.
+
 (** Helper axioms for path_connected_implies_connected **)
 Theorem unit_interval_connected : connected_space unit_interval unit_interval_topology.
 prove topology_on unit_interval unit_interval_topology /\
