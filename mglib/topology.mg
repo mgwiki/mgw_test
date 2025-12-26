@@ -38411,6 +38411,76 @@ assume HyR: y :e R.
 exact (apply_fun_graph R (fun y0:set => (div_SNo c a, y0)) y HyR).
 Qed.
 
+(** Helper: projection2 composed with affine_line_R2_param_by_y is the identity on R **)
+Theorem projection2_after_affine_line_R2_param_by_y : forall a b c y:set,
+  a :e R -> c :e R -> y :e R ->
+  apply_fun (projection2 R R) (apply_fun (affine_line_R2_param_by_y a b c) y) = y.
+let a b c y.
+assume HaR: a :e R.
+assume HcR: c :e R.
+assume HyR: y :e R.
+rewrite (affine_line_R2_param_by_y_apply a b c y HyR).
+set x0 := div_SNo c a.
+claim Hx0R: x0 :e R.
+{ claim HdefR: R = real.
+  { reflexivity. }
+  claim HaReal: a :e real.
+  { rewrite <- HdefR. exact HaR. }
+  claim HcReal: c :e real.
+  { rewrite <- HdefR. exact HcR. }
+  claim Hx0Real: x0 :e real.
+  { exact (real_div_SNo c HcReal a HaReal). }
+  rewrite HdefR.
+  exact Hx0Real. }
+claim Hxy: (x0,y) :e setprod R R.
+{ exact (tuple_2_setprod R R x0 Hx0R y HyR). }
+claim Happ2: apply_fun (projection2 R R) (x0,y) = (x0,y) 1.
+{ exact (projection2_apply R R (x0,y) Hxy). }
+rewrite Happ2.
+exact (tuple_2_1_eq x0 y).
+Qed.
+
+(** Helper: affine_line_R2_param_by_y after projection2 is identity on the vertical slice **)
+Theorem affine_line_R2_param_by_y_after_projection2_on_slice : forall a b c p:set,
+  a :e R -> c :e R ->
+  p :e setprod {div_SNo c a} R ->
+  apply_fun (affine_line_R2_param_by_y a b c) (apply_fun (projection2 R R) p) = p.
+let a b c p.
+assume HaR: a :e R.
+assume HcR: c :e R.
+assume Hp: p :e setprod {div_SNo c a} R.
+set x0 := div_SNo c a.
+claim Hp0Sing: (p 0) :e {x0}.
+{ exact (ap0_Sigma {x0} (fun _ : set => R) p Hp). }
+claim Hp1R: (p 1) :e R.
+{ exact (ap1_Sigma {x0} (fun _ : set => R) p Hp). }
+claim Hp0eq: (p 0) = x0.
+{ exact (singleton_elem (p 0) x0 Hp0Sing). }
+claim Heta: p = (p 0, p 1).
+{ exact (setprod_eta {x0} R p Hp). }
+claim HpRR: p :e setprod R R.
+{ claim HSingSub: {x0} c= R.
+  { claim HdefR: R = real.
+    { reflexivity. }
+    claim HaReal: a :e real.
+    { rewrite <- HdefR. exact HaR. }
+    claim HcReal: c :e real.
+    { rewrite <- HdefR. exact HcR. }
+    claim Hx0Real: x0 :e real.
+    { exact (real_div_SNo c HcReal a HaReal). }
+    claim Hx0R: x0 :e R.
+    { rewrite HdefR. exact Hx0Real. }
+    exact (singleton_subset x0 R Hx0R). }
+  exact (setprod_Subq {x0} R R R HSingSub (Subq_ref R) p Hp). }
+claim Happ2: apply_fun (projection2 R R) p = p 1.
+{ exact (projection2_apply R R p HpRR). }
+rewrite Happ2.
+rewrite (affine_line_R2_param_by_y_apply a b c (p 1) Hp1R).
+rewrite <- Hp0eq.
+rewrite <- Heta.
+reflexivity.
+Qed.
+
 (** Helper: affine_line_R2_param_by_x maps into EuclidPlane **)
 Theorem affine_line_R2_param_by_x_function_on : forall a b c:set,
   a :e R -> b :e R -> c :e R ->
