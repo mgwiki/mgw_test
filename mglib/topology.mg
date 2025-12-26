@@ -10905,9 +10905,7 @@ apply andI.
     { rewrite <- Hp_tup1. rewrite <- Hp_tup2. reflexivity. }
     claim Hcoords : x1 = x2 /\ y1 = y2.
     { exact (tuple_eq_coords_R2 x1 y1 x2 y2 Heq12). }
-    (** At this point we have x1,y1 and inequalities from both rectangles.
-        The remaining task is to pick new endpoints a3,b3,c3,d3 giving a rectangle around (x1,y1)
-        that is contained in the intersection. **)
+    (** At this point we have x1,y1 and inequalities from both rectangles; the remaining task is to pick new endpoints a3,b3,c3,d3 giving a rectangle around (x1,y1) contained in the intersection. **)
     claim Hx1eq : x1 = x2.
     { exact (andEL (x1 = x2) (y1 = y2) Hcoords). }
     claim Hy1eq : y1 = y2.
@@ -13243,8 +13241,7 @@ Qed.
 
 (** helper for §13 exercises: intersection of a family of topologies (placeholder) **)
 (** LATEX VERSION: Intersection_Fam X Fam denotes the intersection (common opens) of all topologies in Fam. **)
-(** FIXED: `Intersection_Fam X Fam` is the collection of common open sets, as subsets of the given ambient set `X`.
-    This makes the empty-family case correct: if `Fam = Empty`, then `Intersection_Fam X Fam = Power X`. **)
+(** FIXED: `Intersection_Fam X Fam` is the collection of common open sets, as subsets of the given ambient set `X`; for `Fam = Empty`, `Intersection_Fam X Fam = Power X`. **)
 Definition Intersection_Fam : set -> set -> set :=
   fun X Fam => {U :e Power X|forall T:set, T :e Fam -> U :e T}.
 
@@ -13307,8 +13304,7 @@ let X U.
 assume HU: U :e countable_complement_topology X.
 assume Hnemp: U <> Empty.
 prove countable (X :\: U).
-(** By definition, U ∈ countable_complement_topology X means countable(X\U) ∨ U = Empty.
-    Since U ≠ Empty, we get countable(X\U). **)
+(** By definition, U ∈ countable_complement_topology X means countable(X\\U) ∨ U = Empty; since U ≠ Empty, we get countable(X\\U). **)
 claim Hprop: countable (X :\: U) \/ U = Empty.
 { exact (SepE2 (Power X) (fun V:set => countable (X :\: V) \/ V = Empty) U HU). }
 claim Hcount_branch: countable (X :\: U) -> countable (X :\: U).
@@ -13545,8 +13541,7 @@ Theorem ex13_4b_smallest_largest : forall X Fam:set,
 let X Fam.
 assume HfamTop: forall T :e Fam, topology_on X T.
 prove exists Tmin, topology_on X Tmin /\ (forall T :e Fam, T c= Tmin) /\ (forall T', topology_on X T' /\ (forall T :e Fam, T c= T') -> Tmin c= T') /\ exists Tmax, topology_on X Tmax /\ (forall T :e Fam, Tmax c= T) /\ (forall T', topology_on X T' /\ (forall T :e Fam, T' c= T) -> T' c= Tmax).
-	(** Strategy: Tmax = Intersection_Fam X Fam (by ex13_4a_intersection_topology);
-	    Tmin = generated_topology_from_subbasis X (Union Fam :\/: {X}) (add X so subbasis union equals X even if Fam is empty). **)
+		(** Strategy: Tmax = Intersection_Fam X Fam (by ex13_4a_intersection_topology); Tmin = generated_topology_from_subbasis X (Union Fam :\/: {X}) (adding X so the subbasis union equals X even if Fam is empty). **)
 set Tmax := Intersection_Fam X Fam.
 set Tmin := generated_topology_from_subbasis X (Union Fam :\/: {X}).
 (** First prove Tmax properties **)
