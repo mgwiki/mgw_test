@@ -60601,58 +60601,37 @@ admit.
 Qed.
 (** from §30 Exercise 5a: metrizable with countable dense has countable basis **)
 (** LATEX VERSION: Every metrizable space with a countable dense subset has a countable basis. **)
-Axiom ex30_5a_metrizable_countable_dense_second_countable_axiom : forall X Tx:set,
-  metrizable X Tx ->
-  (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
-  second_countable_space X Tx.
 Theorem ex30_5a_metrizable_countable_dense_second_countable : forall X Tx:set,
   metrizable X Tx ->
   (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
   second_countable_space X Tx.
-exact ex30_5a_metrizable_countable_dense_second_countable_axiom.
+admit.
 Qed.
 
 (** from §30 Exercise 5b: metrizable Lindelof has countable basis **)
 (** LATEX VERSION: Every metrizable Lindelöf space has a countable basis. **)
-Axiom ex30_5b_metrizable_Lindelof_second_countable_axiom : forall X Tx:set,
-  metrizable X Tx ->
-  Lindelof_space X Tx ->
-  second_countable_space X Tx.
 Theorem ex30_5b_metrizable_Lindelof_second_countable : forall X Tx:set,
   metrizable X Tx ->
   Lindelof_space X Tx ->
   second_countable_space X Tx.
-exact ex30_5b_metrizable_Lindelof_second_countable_axiom.
+admit.
 Qed.
 (** from §30 Exercise 6a: R_l not metrizable **)
 (** LATEX VERSION: The Sorgenfrey line ℝ_ℓ is not metrizable. **)
-Axiom ex30_6a_Rl_not_metrizable_axiom :
-  ~ metrizable R R_lower_limit_topology.
 Theorem ex30_6a_Rl_not_metrizable :
   ~ metrizable R R_lower_limit_topology.
-exact ex30_6a_Rl_not_metrizable_axiom.
+admit.
 Qed.
 
 (** from §30 Exercise 6b: ordered square not metrizable **)
 (** LATEX VERSION: The ordered square is not metrizable. **)
-Axiom ex30_6b_ordered_square_not_metrizable_axiom :
-  ~ metrizable ordered_square ordered_square_topology.
 Theorem ex30_6b_ordered_square_not_metrizable :
   ~ metrizable ordered_square ordered_square_topology.
-exact ex30_6b_ordered_square_not_metrizable_axiom.
+admit.
 Qed.
 (** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **)
 (** LATEX VERSION: Determine which countability axioms S_Ω and S̄_Ω satisfy. **)
 (** Uses the existing SOmega_topology and SbarOmega_topology defined earlier in this section. **)
-Axiom ex30_7_SOmega_Sbar_Omega_countability_axiom :
-  (first_countable_space S_Omega SOmega_topology /\
-   second_countable_space S_Omega SOmega_topology /\
-   Lindelof_space S_Omega SOmega_topology /\
-   (exists D:set, D c= S_Omega /\ countable D /\ dense_in D S_Omega SOmega_topology)) /\
-  (first_countable_space Sbar_Omega SbarOmega_topology /\
-   ~ second_countable_space Sbar_Omega SbarOmega_topology /\
-   ~ Lindelof_space Sbar_Omega SbarOmega_topology /\
-   ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega SbarOmega_topology)).
 Theorem ex30_7_SOmega_Sbar_Omega_countability :
   (first_countable_space S_Omega SOmega_topology /\
    second_countable_space S_Omega SOmega_topology /\
@@ -60662,21 +60641,16 @@ Theorem ex30_7_SOmega_Sbar_Omega_countability :
    ~ second_countable_space Sbar_Omega SbarOmega_topology /\
    ~ Lindelof_space Sbar_Omega SbarOmega_topology /\
    ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega SbarOmega_topology)).
-exact ex30_7_SOmega_Sbar_Omega_countability_axiom.
+admit.
 Qed.
 (** from §30 Exercise 8: countability axioms for R^omega uniform topology **)
 (** LATEX VERSION: Determine which countability axioms R^ω satisfies in the uniform topology. **)
-Axiom ex30_8_Romega_uniform_countability_axiom :
-  first_countable_space real_sequences uniform_topology /\
-  ~ second_countable_space real_sequences uniform_topology /\
-  ~ Lindelof_space real_sequences uniform_topology /\
-  ~ (exists D:set, D c= real_sequences /\ countable D /\ dense_in D real_sequences uniform_topology).
 Theorem ex30_8_Romega_uniform_countability :
   first_countable_space real_sequences uniform_topology /\
   ~ second_countable_space real_sequences uniform_topology /\
   ~ Lindelof_space real_sequences uniform_topology /\
   ~ (exists D:set, D c= real_sequences /\ countable D /\ dense_in D real_sequences uniform_topology).
-exact ex30_8_Romega_uniform_countability_axiom.
+admit.
 Qed.
 (** from §30 Exercise 9a: closed subspace of Lindelof is Lindelof **)
 (** LATEX VERSION: If A is closed in Lindelöf space X, then A is Lindelöf. **)
