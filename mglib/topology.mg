@@ -61715,7 +61715,25 @@ Theorem ex32_7_completely_normal_examples :
   (forall X Tx:set, regular_space X Tx -> second_countable_space X Tx ->
     (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
   (completely_normal_space R R_lower_limit_topology \/ ~ completely_normal_space R R_lower_limit_topology).
-admit.
+apply and7I.
+- admit.
+- let X Tx Y Ty.
+  assume HX: completely_normal_space X Tx.
+  assume HY: completely_normal_space Y Ty.
+  exact (xm (completely_normal_space (setprod X Y) (product_topology X Tx Y Ty))).
+- let X.
+  assume Hwo: well_ordered_set X.
+  exact (xm (completely_normal_space X (order_topology X))).
+- admit.
+- let X Tx.
+  assume Hc: compact_space X Tx.
+  assume HH: Hausdorff_space X Tx.
+  exact (xm (completely_normal_space X Tx)).
+- let X Tx.
+  assume Hr: regular_space X Tx.
+  assume Hsc: second_countable_space X Tx.
+  exact (xm (completely_normal_space X Tx)).
+- exact (xm (completely_normal_space R R_lower_limit_topology)).
 Qed.
 (** from §32 Exercise 8: linear continuum normal **)
 (** LATEX VERSION: Every linear continuum X is normal. **)
