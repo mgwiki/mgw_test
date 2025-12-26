@@ -6496,6 +6496,7 @@ Section Topology.
 
 (** from §12 Topological Spaces: definition of topology on X **)
 (** LATEX VERSION: A topology on a set X is a collection T of subsets of X such that ∅ and X are in T, arbitrary unions of subcollections of T lie in T, and finite intersections of elements of T lie in T. **)
+(** SUSPICIOUS DEFINITION: This is a left-associated conjunction; later proofs must destruct it as ((((A /\ B) /\ C) /\ D) /\ E). **)
 Definition topology_on : set -> set -> prop := fun X T =>
   T c= Power X
 /\ Empty :e T
