@@ -38284,26 +38284,12 @@ claim HcontR: continuous_map unit_interval Tx R R_standard_topology flip_unit_in
   exact (continuous_map_from_subbasis unit_interval Tx R S flip_unit_interval
           HTx HfunR HS HpreS). }
 
-claim HrangeRestrict:
-  forall X Tx0 Y Ty f Z0:set,
-    continuous_map X Tx0 Y Ty f ->
-    Z0 c= Y ->
-    (forall x:set, x :e X -> apply_fun f x :e Z0) ->
-    continuous_map X Tx0 Z0 (subspace_topology Y Ty Z0) f.
-{ let X Tx0 Y Ty f Z0.
-  assume Hf: continuous_map X Tx0 Y Ty f.
-  assume HZ0: Z0 c= Y.
-  assume Himg: forall x:set, x :e X -> apply_fun f x :e Z0.
-  exact (continuous_map_range_restrict X Tx0 Y Ty f Z0 Hf HZ0 Himg). }
-
 claim Himg: forall t:set, t :e unit_interval -> apply_fun flip_unit_interval t :e unit_interval.
 { let t. assume Ht: t :e unit_interval.
   exact (flip_unit_interval_function_on t Ht). }
 
-exact (HrangeRestrict unit_interval Tx R R_standard_topology flip_unit_interval unit_interval
-        HcontR
-        unit_interval_sub_R
-        Himg).
+exact (continuous_map_range_restrict unit_interval Tx R R_standard_topology flip_unit_interval unit_interval
+        HcontR unit_interval_sub_R Himg).
 Qed.
 
 (** from §18 Definition: homeomorphism **) 
@@ -50529,19 +50515,6 @@ claim HcontR: continuous_map unit_interval_left_half
   exact (continuous_map_from_subbasis unit_interval_left_half Tx R S double_map_left_half
           HTx Hfun HS HpreS). }
 
-(** helper: restricting the range of a continuous map to a subspace containing the image **)
-claim HrangeRestrict:
-  forall X Tx Y Ty f Z0:set,
-    continuous_map X Tx Y Ty f ->
-    Z0 c= Y ->
-    (forall x:set, x :e X -> apply_fun f x :e Z0) ->
-    continuous_map X Tx Z0 (subspace_topology Y Ty Z0) f.
-{ let X Tx Y Ty f Z0.
-  assume Hf: continuous_map X Tx Y Ty f.
-  assume HZ0: Z0 c= Y.
-  assume Himg: forall x:set, x :e X -> apply_fun f x :e Z0.
-  exact (continuous_map_range_restrict X Tx Y Ty f Z0 Hf HZ0 Himg). }
-
 claim Himg: forall t:set, t :e unit_interval_left_half -> apply_fun double_map_left_half t :e unit_interval.
 { let t. assume Ht: t :e unit_interval_left_half.
   exact (double_map_function_on t Ht). }
@@ -50549,7 +50522,7 @@ claim Himg: forall t:set, t :e unit_interval_left_half -> apply_fun double_map_l
 claim Hut: unit_interval_topology = subspace_topology R R_standard_topology unit_interval.
 { reflexivity. }
 rewrite Hut.
-exact (HrangeRestrict unit_interval_left_half
+exact (continuous_map_range_restrict unit_interval_left_half
         (subspace_topology unit_interval unit_interval_topology unit_interval_left_half)
         R R_standard_topology
         double_map_left_half
@@ -51171,18 +51144,6 @@ claim HcontR: continuous_map unit_interval_right_half
   exact (continuous_map_from_subbasis unit_interval_right_half Tx R S double_minus_one_map_right_half
           HTx Hfun HS HpreS). }
 
-claim HrangeRestrict:
-  forall X Tx Y Ty f Z0:set,
-    continuous_map X Tx Y Ty f ->
-    Z0 c= Y ->
-    (forall x:set, x :e X -> apply_fun f x :e Z0) ->
-    continuous_map X Tx Z0 (subspace_topology Y Ty Z0) f.
-{ let X Tx Y Ty f Z0.
-  assume Hf: continuous_map X Tx Y Ty f.
-  assume HZ0: Z0 c= Y.
-  assume Himg: forall x:set, x :e X -> apply_fun f x :e Z0.
-  exact (continuous_map_range_restrict X Tx Y Ty f Z0 Hf HZ0 Himg). }
-
 claim Himg: forall t:set, t :e unit_interval_right_half -> apply_fun double_minus_one_map_right_half t :e unit_interval.
 { let t. assume Ht: t :e unit_interval_right_half.
   exact (double_minus_one_map_function_on t Ht). }
@@ -51190,7 +51151,7 @@ claim Himg: forall t:set, t :e unit_interval_right_half -> apply_fun double_minu
 claim Hut: unit_interval_topology = subspace_topology R R_standard_topology unit_interval.
 { reflexivity. }
 rewrite Hut.
-exact (HrangeRestrict unit_interval_right_half
+exact (continuous_map_range_restrict unit_interval_right_half
         (subspace_topology unit_interval unit_interval_topology unit_interval_right_half)
         R R_standard_topology
         double_minus_one_map_right_half
