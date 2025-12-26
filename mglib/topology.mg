@@ -43703,6 +43703,10 @@ let Y u r v.
 assume Hur: order_rel Y u r.
 assume Hrv: order_rel Y r v.
 prove between_in_order Y u r v.
+prove (order_rel Y u r /\ order_rel Y r v)
+  \/ (order_rel Y v r /\ order_rel Y r u)
+  \/ r = u
+  \/ r = v.
 apply orIL.
 apply orIL.
 apply orIL.
@@ -43718,6 +43722,10 @@ let Y u r v.
 assume Hvr: order_rel Y v r.
 assume Hru: order_rel Y r u.
 prove between_in_order Y u r v.
+prove (order_rel Y u r /\ order_rel Y r v)
+  \/ (order_rel Y v r /\ order_rel Y r u)
+  \/ r = u
+  \/ r = v.
 apply orIL.
 apply orIL.
 apply orIR.
@@ -43729,6 +43737,10 @@ Theorem between_in_orderI_eq_left : forall Y u v:set,
   between_in_order Y u u v.
 let Y u v.
 prove between_in_order Y u u v.
+prove (order_rel Y u u /\ order_rel Y u v)
+  \/ (order_rel Y v u /\ order_rel Y u u)
+  \/ u = u
+  \/ u = v.
 apply orIL.
 apply orIR.
 reflexivity.
@@ -43739,6 +43751,10 @@ Theorem between_in_orderI_eq_right : forall Y u v:set,
   between_in_order Y u v v.
 let Y u v.
 prove between_in_order Y u v v.
+prove (order_rel Y u v /\ order_rel Y v v)
+  \/ (order_rel Y v v /\ order_rel Y v u)
+  \/ v = u
+  \/ v = v.
 apply orIR.
 reflexivity.
 Qed.
