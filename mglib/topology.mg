@@ -59013,13 +59013,10 @@ Definition relatively_compact_in_compact_convergence : set -> set -> set -> set 
 
 (** from §47 Ascoli theorem **) 
 (** LATEX VERSION: Ascoli–Arzelà theorem (placeholder statement) on compact convergence. **)
-Axiom Ascoli_theorem_axiom : forall X Tx Y Ty F:set,
-  compact_space X Tx -> Hausdorff_space Y Ty ->
-  equicontinuous_family X Tx Y Ty F -> relatively_compact_in_compact_convergence X Tx Y Ty F.
 Theorem Ascoli_theorem : forall X Tx Y Ty F:set,
   compact_space X Tx -> Hausdorff_space Y Ty ->
   equicontinuous_family X Tx Y Ty F -> relatively_compact_in_compact_convergence X Tx Y Ty F.
-exact Ascoli_theorem_axiom.
+admit.
 Qed.
 
 (** helper: intersection over a family within a universe X **) 
@@ -59066,30 +59063,24 @@ Qed.
 
 (** from §48 Theorem: Baire category theorem for complete metric spaces **)
 (** LATEX VERSION: Complete metric spaces are Baire. **)
-Axiom Baire_category_complete_metric_axiom : forall X d:set,
-  complete_metric_space X d -> Baire_space X (metric_topology X d).
 Theorem Baire_category_complete_metric : forall X d:set,
   complete_metric_space X d -> Baire_space X (metric_topology X d).
-exact Baire_category_complete_metric_axiom.
+admit.
 Qed.
 
 (** from §48 Theorem: compact Hausdorff spaces are Baire spaces **)
 (** LATEX VERSION: Compact Hausdorff spaces are Baire. **)
-Axiom Baire_category_compact_Hausdorff_axiom : forall X Tx:set,
-  compact_space X Tx -> Hausdorff_space X Tx -> Baire_space X Tx.
 Theorem Baire_category_compact_Hausdorff : forall X Tx:set,
   compact_space X Tx -> Hausdorff_space X Tx -> Baire_space X Tx.
-exact Baire_category_compact_Hausdorff_axiom.
+admit.
 Qed.
 
 (** from §48 Theorem: Baire category theorem general version **)
 (** LATEX VERSION: General Baire category consequence: nonempty open sets in Baire space. **)
 (** FIXED: Corrected Baire_space to take both X and Tx parameters. **)
-Axiom Baire_category_theorem_axiom : forall X Tx:set,
-  Baire_space X Tx -> forall U:set, open_in X Tx U -> U <> Empty.
 Theorem Baire_category_theorem : forall X Tx:set,
   Baire_space X Tx -> forall U:set, open_in X Tx U -> U <> Empty.
-exact Baire_category_theorem_axiom.
+admit.
 Qed.
 
 (** from §49 Definition: differentiability and nowhere-differentiable function **) 
@@ -59124,15 +59115,6 @@ Definition C_I_R : set := {f :e function_space unit_interval R | continuous_real
 
 (** from §49 Theorem 49.1: approximation by nowhere-differentiable functions **)
 (** LATEX VERSION: Given continuous h and epsilon>0, there exists continuous g with |h(x)-g(x)|<epsilon for all x, such that g is nowhere differentiable. **)
-Axiom theorem_49_1_nowhere_differentiable_approx_axiom : forall h eps:set,
-  continuous_map unit_interval I_topology R R_standard_topology h ->
-  eps :e R ->
-  Rlt 0 eps ->
-  exists g:set,
-    continuous_map unit_interval I_topology R R_standard_topology g /\
-    nowhere_differentiable g /\
-    forall x:set, x :e unit_interval ->
-      Rlt (Abs (add_SNo (apply_fun h x) (minus_SNo (apply_fun g x)))) eps.
 Theorem theorem_49_1_nowhere_differentiable_approx : forall h eps:set,
   continuous_map unit_interval I_topology R R_standard_topology h ->
   eps :e R ->
@@ -59142,7 +59124,7 @@ Theorem theorem_49_1_nowhere_differentiable_approx : forall h eps:set,
     nowhere_differentiable g /\
     forall x:set, x :e unit_interval ->
       Rlt (Abs (add_SNo (apply_fun h x) (minus_SNo (apply_fun g x)))) eps.
-exact theorem_49_1_nowhere_differentiable_approx_axiom.
+admit.
 Qed.
 
 Definition diffquot_forward_abs : set -> set -> set -> set := fun f x h =>
