@@ -59267,8 +59267,7 @@ Definition cardinality_at_most : set -> set -> prop := fun S n =>
   ordinal n /\ exists k:set, ordinal k /\ k c= n /\ equip S k.
 
 (** from §50 Definition: order of a collection of subsets **) 
-(** LATEX VERSION: A collection A has order m+1 if some point lies in m+1 elements of A,
-   and no point lies in more than m+1 elements of A. **)
+(** LATEX VERSION: A collection A has order m+1 if some point lies in m+1 elements of A, and no point lies in more than m+1 elements of A. **)
 Definition collection_has_order_at_m_plus_one : set -> set -> set -> prop :=
   fun X A m =>
     ordinal m /\
@@ -59565,11 +59564,7 @@ Qed.
 
 (** from §50 Theorem 50.5: Menger-Nöbeling embedding theorem **)
 (** LATEX VERSION: Every compact metrizable space X of topological dimension m can be embedded in R^{2m+1}. **)
-(** FIXED: Dimension calculation error.
-    Was: N = m ∪ m ∪ {∅} = m ∪ {∅} = m+1 (successor of m, not 2m+1!)
-    Now: N = add_nat (mul_nat two m) 1 = 2m+1 (correct dimension)
-    The comment says R^{2m+1}, so need to compute 2m+1 using add_nat and mul_nat.
-    Using two from line 17259 and 1 = Sing Empty. **)
+(** FIXED: Dimension parameter uses N = add_nat (mul_nat two m) (Sing Empty) to represent 2m+1, not m+1. **) 
 Axiom Menger_Nobeling_embedding_full_axiom : forall X Tx m:set,
   compact_space X Tx ->
   metrizable X Tx ->
@@ -59621,9 +59616,7 @@ Qed.
 
 (** from §50 Corollary 50.8: compact m-manifold embeds in R^{2m+1} **)
 (** LATEX VERSION: Every compact m-manifold can be embedded in R^{2m+1}. **)
-(** FIXED: Same dimension error as previous theorem.
-    Was: N = m ∪ m ∪ {∅} = m+1 (not 2m+1!)
-    Now: N = add_nat (mul_nat two m) (Sing Empty) = 2m+1 **)
+(** FIXED: Same correction as above: N = add_nat (mul_nat two m) (Sing Empty) represents 2m+1. **) 
 Axiom compact_m_manifold_embeds_R2mp1_axiom : forall X Tx m:set,
   m :e omega ->
   compact_space X Tx ->
@@ -60403,12 +60396,7 @@ Qed.
 
 (** from §50 Exercise 8: sigma-compact Hausdorff with compact subspaces of dimension ≤m has dimension ≤m **)
 (** LATEX VERSION: A σ-compact Hausdorff space whose compact subspaces have dimension ≤m has dimension ≤m. **)
-(** FIXED: Union condition was wrong - had nonsensical filtering.
-    Was: X = Union {C :e Fam | exists U:set, open_in X Tx U /\ C c= U}
-         (filters Fam by "C is contained in some open set" - almost always true, nonsensical)
-    Now: X = Union Fam
-         (correctly: X is the union of the compact sets in Fam)
-    Sigma-compact means: countable union of compact subsets. **)
+(** FIXED: sigma_compact uses X = Union Fam, not a filtered union; sigma-compact means a countable union of compact subspaces. **) 
 Definition sigma_compact : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   exists Fam:set,
@@ -60783,10 +60771,7 @@ Definition Gdelta_in : set -> set -> set -> prop := fun X Tx A =>
     Intersection_Fam X Fam = A.
 
 (** helper: open map - images of open sets are open **)
-(** FIXED: apply_fun f U doesn't make sense - apply_fun is for elements, not sets.
-    Was: apply_fun f U (applying f to set U - wrong!)
-    Now: image_of f U = {f(x) | x ∈ U} (image of set U under f)
-    Using image_of from line 15049. **)
+(** FIXED: open_map uses image_of f U for set images; apply_fun is only for elements. **) 
 Definition open_map : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f =>
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
@@ -60871,10 +60856,7 @@ exact ex30_2_basis_contains_countable_axiom.
 Qed.
 (** from §30 Exercise 3: uncountable subset has uncountably many limit points **)
 (** LATEX VERSION: If X has countable basis and A is uncountable subset, then uncountably many points of A are limit points. **)
-(** FIXED: limit_point_of parameter order error.
-    Was: limit_point_of x A X Tx (wrong order!)
-    Now: limit_point_of X Tx A x (correct: space, topology, set, point)
-    Definition at line 13115 has signature: X Tx A x. **)
+(** FIXED: Use limit_point_of X Tx A x (space, topology, set, point), not a permuted argument order. **) 
 Axiom ex30_3_uncountably_many_limit_points_axiom : forall X Tx A:set,
   second_countable_space X Tx ->
   A c= X ->
@@ -61037,8 +61019,7 @@ Qed.
 
 (** from §30 Exercise 11a: continuous image of Lindelof is Lindelof **)
 (** LATEX VERSION: If f:X→Y continuous and X Lindelöf, then f(X) is Lindelöf. **)
-(** FIXED: apply_fun f X should be image_of f X (image of set under function).
-    apply_fun is for elements; image_of is for sets. **)
+(** FIXED: Use image_of f X for the image set; apply_fun is for elements. **) 
 Axiom ex30_11a_image_Lindelof_axiom : forall X Tx Y Ty f:set,
   Lindelof_space X Tx ->
   continuous_map X Tx Y Ty f ->
@@ -62214,10 +62195,7 @@ Definition perfectly_normal_space : set -> set -> prop := fun X Tx =>
   normal_space X Tx /\ (forall A:set, closed_in X Tx A -> Gdelta_in X Tx A).
 
 (** FIXED: Removed nonsensical fourth clause.
-    Was: (forall r:set, apply_fun f X = {x :e X | apply_fun f x = r})
-    Issue: Says "for all r, f(X) = {x ∈ X | f(x) = r}", but LHS is image (subset of R)
-           and RHS is level set/preimage (subset of X) - these can never be equal.
-    Now: Just states basic Urysohn lemma. Exercise about level set formula left as admitted stub. **)
+    Was: forall r, apply_fun f X = {x :e X | apply_fun f x = r} mixes an image in R with a level set in X; now removed and left as a separate admitted exercise. **)
 (** from §33 Exercise 1: expression for level sets in Urysohn proof **)
 (** LATEX VERSION: In Urysohn lemma proof, show f^{-1}(r) = ∩_{p>r} U_p - ∪_{q<r} U_q for rational p,q. **)
 Axiom ex33_1_level_sets_urysohn_axiom : forall X Tx A B:set, forall U:set -> set,
