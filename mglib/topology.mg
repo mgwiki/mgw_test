@@ -51275,9 +51275,9 @@ prove compact_space (image_of_fun f X) (subspace_topology Y Ty (image_of_fun f X
 set Img := image_of_fun f X.
 set Timg := subspace_topology Y Ty Img.
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+{ exact (compact_space_topology X Tx Hcomp). }
 claim HsubcoverX: forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
-{ exact (andER (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+{ exact (compact_space_subcover_property X Tx Hcomp). }
 
 claim Hf_left: ((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y) /\ (forall V:set, V :e Ty -> preimage_of X f V :e Tx).
 { exact Hf. }
@@ -51860,7 +51860,7 @@ prove continuous_map Y Ty X Tx g.
 prove topology_on Y Ty /\ topology_on X Tx /\ function_on g Y X /\
       forall V:set, V :e Tx -> preimage_of Y g V :e Ty.
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+{ exact (compact_space_topology X Tx Hcomp). }
 claim HTy: topology_on Y Ty.
 { exact (andEL (topology_on Y Ty)
                (forall x1 x2:set, x1 :e Y -> x2 :e Y -> x1 <> x2 ->
@@ -52146,9 +52146,9 @@ prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\
         open_cover_of (setprod X Y) (product_topology X Tx Y Ty) Fam ->
         has_finite_subcover (setprod X Y) (product_topology X Tx Y Ty) Fam.
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) HX). }
+{ exact (compact_space_topology X Tx HX). }
 claim HTy: topology_on Y Ty.
-{ exact (andEL (topology_on Y Ty) (forall Fam:set, open_cover_of Y Ty Fam -> has_finite_subcover Y Ty Fam) HY). }
+{ exact (compact_space_topology Y Ty HY). }
 apply andI.
 - exact (product_topology_is_topology X Tx Y Ty HTx HTy).
 - let Fam. assume HFam: open_cover_of (setprod X Y) (product_topology X Tx Y Ty) Fam.
@@ -53059,7 +53059,7 @@ let X Tx.
 assume Hcomp: compact_space X Tx.
 prove limit_point_compact X Tx.
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+{ exact (compact_space_topology X Tx Hcomp). }
 prove topology_on X Tx /\
   forall A:set, A c= X -> infinite A -> exists x:set, limit_point_of X Tx A x.
 apply andI.
@@ -57947,7 +57947,7 @@ assume Hcomp: compact_space X Tx.
 assume HH: Hausdorff_space X Tx.
 prove normal_space X Tx.
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+{ exact (compact_space_topology X Tx Hcomp). }
 claim HT1: one_point_sets_closed X Tx.
 { prove topology_on X Tx /\ forall x:set, x :e X -> closed_in X Tx {x}.
   apply andI.
