@@ -25974,7 +25974,17 @@ apply andI.
     exact (tuple_2_setprod R R x HxR x HxR).
   + reflexivity.
 - (** induced subspace topology equals R_lower_limit_topology **)
-  admit. (** FAIL **)
+  set Tp := product_topology R R_lower_limit_topology R R_lower_limit_topology.
+  set Ts := subspace_topology (setprod R R) Tp L.
+  set Td := R_lower_limit_topology.
+  prove Ts = Td.
+  apply set_ext.
+  - let U. assume HU: U :e Ts.
+    prove U :e Td.
+    admit.
+  - let U. assume HU: U :e Td.
+    prove U :e Ts.
+    admit.
 Qed.
 
 (** from §16 Exercise 9: dictionary order topology on ℝ×ℝ equals ℝ_d × ℝ **) 
