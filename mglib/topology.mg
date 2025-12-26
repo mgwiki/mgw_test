@@ -6527,6 +6527,7 @@ Qed.
 
 (** from §12: definition of open sets in a topology **)
 (** LATEX VERSION: If X has topology T, a subset U of X is open exactly when U is an element of T. **)
+(** SUSPICIOUS DEFINITION: `open_in X T U` bundles the hypothesis `topology_on X T`; this is convenient but means “open” cannot be stated independently of already knowing T is a topology. **)
 Definition open_in : set -> set -> set -> prop := fun X T U =>
   topology_on X T /\ U :e T.
 
@@ -7047,6 +7048,7 @@ Definition finite_complement_topology : set -> set :=
 (** helper: countable set: admits an injection into omega (at most countable) **)
 (** LATEX VERSION: A set is countable if it admits an injection into ω (at most countable). **)
 (** NOTE: `atleastp X omega` is used here in the sense “there exists an injection from X into omega” (cardinality at most omega). **)
+(** SUSPICIOUS DEFINITION: This is “at most countable” (injects into omega), not “countably infinite” (equip omega). Later statements must use the intended meaning consistently. **)
 Definition countable : set -> prop := fun X => atleastp X omega.
 
 (** LATEX VERSION: Every finite set is countable. **)
