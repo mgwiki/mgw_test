@@ -58622,24 +58622,17 @@ Qed.
 
 (** from §34 Theorem 34.1: Urysohn metrization theorem **) 
 (** LATEX VERSION: Regular second-countable spaces are metrizable (Urysohn). **)
-Axiom Urysohn_metrization_theorem_axiom : forall X Tx:set,
-  regular_space X Tx -> second_countable_space X Tx ->
-  exists d:set, metric_on X d /\ metric_topology X d = Tx.
 Theorem Urysohn_metrization_theorem : forall X Tx:set,
   regular_space X Tx -> second_countable_space X Tx -> exists d:set, metric_on X d /\ metric_topology X d = Tx.
 let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hscc: second_countable_space X Tx.
 prove exists d:set, metric_on X d /\ metric_topology X d = Tx.
-exact (Urysohn_metrization_theorem_axiom X Tx Hreg Hscc).
+admit.
 Qed.
 
 (** from §34 Theorem 34.2: Imbedding via separating family of functions **) 
 (** LATEX VERSION: Embedding into product of reals via separating family of continuous functions. **)
-Axiom embedding_via_functions_axiom : forall X Tx:set,
-  topology_on X Tx -> one_point_sets_closed X Tx ->
-  forall F J:set, separating_family_of_functions X Tx F J ->
-    exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_space_family J R R_standard_topology)) Fmap.
 Theorem embedding_via_functions : forall X Tx:set,
   topology_on X Tx -> one_point_sets_closed X Tx ->
   forall F J:set, separating_family_of_functions X Tx F J ->
@@ -58650,33 +58643,22 @@ assume Hclosed: one_point_sets_closed X Tx.
 let F J.
 assume Hsep: separating_family_of_functions X Tx F J.
 prove exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_space_family J R R_standard_topology)) Fmap.
-exact (embedding_via_functions_axiom X Tx HTx Hclosed F J Hsep).
+admit.
 Qed.
 
 (** from §34 Corollary 34.3: completely regular iff embeds in [0,1]^J **) 
 (** LATEX VERSION: Completely regular iff embeds into a Tychonoff cube [0,1]^J. **)
-Axiom completely_regular_iff_embeds_in_cube_axiom : forall X Tx:set,
-  (completely_regular_space X Tx <->
-    exists J:set, exists Fmap:set,
-      embedding_of X Tx (unit_interval_power J)
-        (product_topology_full J (const_space_family J unit_interval (subspace_topology R R_standard_topology unit_interval)))
-        Fmap).
 Theorem completely_regular_iff_embeds_in_cube : forall X Tx:set,
   (completely_regular_space X Tx <->
     exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_space_family J unit_interval (subspace_topology R R_standard_topology unit_interval))) Fmap).
 let X Tx.
 prove (completely_regular_space X Tx <->
     exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_space_family J unit_interval (subspace_topology R R_standard_topology unit_interval))) Fmap).
-exact (completely_regular_iff_embeds_in_cube_axiom X Tx).
+admit.
 Qed.
 
 (** from §35 Theorem 35.1: Tietze extension theorem **) 
 (** LATEX VERSION: Tietze extension theorem for normal spaces and intervals. **)
-Axiom Tietze_extension_interval_axiom : forall X Tx A a b f:set,
-  normal_space X Tx -> closed_in X Tx A ->
-  continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f ->
-  exists g:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) g /\
-    (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
 Theorem Tietze_extension_interval : forall X Tx A a b f:set,
   normal_space X Tx -> closed_in X Tx A ->
   continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f ->
@@ -58688,14 +58670,9 @@ assume HA: closed_in X Tx A.
 assume Hf: continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f.
 prove exists g:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) g /\
     (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
-exact (Tietze_extension_interval_axiom X Tx A a b f Hnorm HA Hf).
+admit.
 Qed.
 
-Axiom Tietze_extension_real_axiom : forall X Tx A f:set,
-  normal_space X Tx -> closed_in X Tx A ->
-  continuous_map A (subspace_topology X Tx A) R R_standard_topology f ->
-  exists g:set, continuous_map X Tx R R_standard_topology g /\
-    (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
 Theorem Tietze_extension_real : forall X Tx A f:set,
   normal_space X Tx -> closed_in X Tx A ->
   continuous_map A (subspace_topology X Tx A) R R_standard_topology f ->
@@ -58707,7 +58684,7 @@ assume HA: closed_in X Tx A.
 assume Hf: continuous_map A (subspace_topology X Tx A) R R_standard_topology f.
 prove exists g:set, continuous_map X Tx R R_standard_topology g /\
     (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
-exact (Tietze_extension_real_axiom X Tx A f Hnorm HA Hf).
+admit.
 Qed.
 
 (** from §36 Definition: m-manifold **) 
@@ -58761,16 +58738,13 @@ Qed.
 (** from §37 Theorem: Tychonoff theorem **)
 (** LATEX VERSION: Arbitrary product of compact spaces is compact (Tychonoff). **)
 (** FIXED: Hypothesis quantifies i only over i:e I (not all sets). **) 
-Axiom Tychonoff_theorem_axiom : forall I Xi:set,
-  (forall i:set, i :e I -> compact_space (product_component Xi i) (product_component_topology Xi i)) ->
-  compact_space (product_space I Xi) (product_topology_full I Xi).
 Theorem Tychonoff_theorem : forall I Xi:set,
   (forall i:set, i :e I -> compact_space (product_component Xi i) (product_component_topology Xi i)) ->
   compact_space (product_space I Xi) (product_topology_full I Xi).
 let I Xi.
 assume Hcomp: forall i:set, i :e I -> compact_space (product_component Xi i) (product_component_topology Xi i).
 prove compact_space (product_space I Xi) (product_topology_full I Xi).
-exact (Tychonoff_theorem_axiom I Xi Hcomp).
+admit.
 Qed.
 
 (** from §38 Definition: Stone-Cech compactification and universal property **) 
@@ -58780,11 +58754,6 @@ Definition Stone_Cech_compactification : set -> set -> set := fun X Tx =>
     exists Y Ty e:set,
       p = setprod (setprod Y Ty) e /\
       compact_space Y Ty /\ Hausdorff_space Y Ty /\ embedding_of X Tx Y Ty e}.
-Axiom Stone_Cech_universal_property_axiom : forall X Tx:set,
-  Tychonoff_space X Tx ->
-  exists Ty:set,
-    compact_space (Stone_Cech_compactification X Tx) Ty /\
-    Hausdorff_space (Stone_Cech_compactification X Tx) Ty.
 Theorem Stone_Cech_universal_property : forall X Tx:set,
   Tychonoff_space X Tx ->
   exists Ty:set,
@@ -58795,7 +58764,7 @@ assume HT: Tychonoff_space X Tx.
 prove exists Ty:set,
   compact_space (Stone_Cech_compactification X Tx) Ty /\
   Hausdorff_space (Stone_Cech_compactification X Tx) Ty.
-exact (Stone_Cech_universal_property_axiom X Tx HT).
+admit.
 Qed.
 
 (** from §39 Definition: locally finite family and refinement **) 
@@ -58821,15 +58790,13 @@ Definition sigma_locally_finite_basis : set -> set -> prop := fun X Tx =>
 
 (** from §40 Nagata-Smirnov metrization theorem **) 
 (** LATEX VERSION: Nagata–Smirnov: A regular space with a σ-locally-finite basis is metrizable. **)
-Axiom Nagata_Smirnov_metrization_axiom : forall X Tx:set,
-  regular_space X Tx -> sigma_locally_finite_basis X Tx -> metrizable X Tx.
 Theorem Nagata_Smirnov_metrization : forall X Tx:set,
   regular_space X Tx -> sigma_locally_finite_basis X Tx -> metrizable X Tx.
 let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hbasis: sigma_locally_finite_basis X Tx.
 prove metrizable X Tx.
-exact (Nagata_Smirnov_metrization_axiom X Tx Hreg Hbasis).
+admit.
 Qed.
 
 (** from §41 Definition: paracompact space **) 
@@ -58866,28 +58833,24 @@ Qed.
 
 (** from §41 Theorem: paracompact Hausdorff implies normal **) 
 (** LATEX VERSION: Paracompact Hausdorff spaces are normal. **)
-Axiom paracompact_Hausdorff_normal_axiom : forall X Tx:set,
-  paracompact_space X Tx -> Hausdorff_space X Tx -> normal_space X Tx.
 Theorem paracompact_Hausdorff_normal : forall X Tx:set,
   paracompact_space X Tx -> Hausdorff_space X Tx -> normal_space X Tx.
 let X Tx.
 assume Hpara: paracompact_space X Tx.
 assume HH: Hausdorff_space X Tx.
 prove normal_space X Tx.
-exact (paracompact_Hausdorff_normal_axiom X Tx Hpara HH).
+admit.
 Qed.
 
 (** from §42 Smirnov metrization theorem **) 
 (** LATEX VERSION: Smirnov metrization: regular spaces with a locally finite basis are metrizable. **)
-Axiom Smirnov_metrization_axiom : forall X Tx:set,
-  regular_space X Tx -> locally_finite_basis X Tx -> metrizable X Tx.
 Theorem Smirnov_metrization : forall X Tx:set,
   regular_space X Tx -> locally_finite_basis X Tx -> metrizable X Tx.
 let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hbasis: locally_finite_basis X Tx.
 prove metrizable X Tx.
-exact (Smirnov_metrization_axiom X Tx Hreg Hbasis).
+admit.
 Qed.
 
 (** helper: Cauchy sequence in a metric space **)
