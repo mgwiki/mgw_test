@@ -26533,7 +26533,165 @@ apply H.
                   \/ Q_sqrt2_cut = halfopen_interval_left_in rational_numbers a b.
       apply Hleft2.
       * assume HeqOI: Q_sqrt2_cut = order_interval rational_numbers a b.
-        admit.
+        (** use sqrt(2) to refute existence of rational endpoints a<b with {q∈Q|q^2<2} = (a,b) **)
+        claim H0in: 0 :e order_interval rational_numbers a b.
+        { rewrite <- HeqOI. exact H0cut. }
+        claim H0pred: order_rel rational_numbers a 0 /\ order_rel rational_numbers 0 b.
+        { exact (SepE2 rational_numbers
+                       (fun x0:set => order_rel rational_numbers a x0 /\ order_rel rational_numbers x0 b)
+                       0
+                       H0in). }
+        claim Ha0: order_rel rational_numbers a 0.
+        { exact (andEL (order_rel rational_numbers a 0) (order_rel rational_numbers 0 b) H0pred). }
+        claim H0b: order_rel rational_numbers 0 b.
+        { exact (andER (order_rel rational_numbers a 0) (order_rel rational_numbers 0 b) H0pred). }
+        claim HaR: a :e R.
+        { exact (rational_numbers_in_R a HaQ). }
+        claim HbR: b :e R.
+        { exact (rational_numbers_in_R b HbQ). }
+        claim HaS: SNo a.
+        { exact (real_SNo a HaR). }
+        claim HbS: SNo b.
+        { exact (real_SNo b HbR). }
+        claim Halt0: Rlt a 0.
+        { exact (order_rel_Q_implies_Rlt a 0 Ha0). }
+        claim H0blt: Rlt 0 b.
+        { exact (order_rel_Q_implies_Rlt 0 b H0b). }
+        set s2 := sqrt_SNo_nonneg 2.
+        claim H2R: 2 :e R.
+        { exact (rational_numbers_in_R 2 two_in_rational_numbers). }
+        claim H0le2: 0 <= 2.
+        { exact (SNoLtLe 0 2 SNoLt_0_2). }
+        claim Hs2R: s2 :e R.
+        { exact (sqrt_SNo_nonneg_real 2 H2R H0le2). }
+        claim Hs2S: SNo s2.
+        { exact (real_SNo s2 Hs2R). }
+        claim Hs2nonneg: 0 <= s2.
+        { exact (sqrt_SNo_nonneg_nonneg 2 SNo_2 H0le2). }
+        claim Hs2sq: mul_SNo s2 s2 = 2.
+        { exact (sqrt_SNo_nonneg_sqr 2 SNo_2 H0le2). }
+        claim Hs2neq0: s2 <> 0.
+        { assume Hs2eq0: s2 = 0.
+          apply neq_2_0.
+          rewrite <- Hs2sq.
+          rewrite Hs2eq0.
+          rewrite (mul_SNo_zeroL 0 SNo_0).
+          reflexivity. }
+        claim H0lts2: 0 < s2.
+        { claim Hdisj: 0 < s2 \/ 0 = s2.
+          { exact (SNoLeE 0 s2 SNo_0 Hs2S Hs2nonneg). }
+          apply Hdisj.
+          - assume Hlt0: 0 < s2.
+            exact Hlt0.
+          - assume Heq0: 0 = s2.
+            apply FalseE.
+            claim Hs2eq0: s2 = 0.
+            { rewrite <- Heq0. reflexivity. }
+            exact (Hs2neq0 Hs2eq0). }
+        (** compare b to sqrt(2) **)
+        apply (SNoLt_trichotomy_or_impred b s2 HbS Hs2S False).
+        - assume Hblts2: b < s2.
+          claim Hbs2: Rlt b s2.
+          { exact (RltI b s2 HbR Hs2R Hblts2). }
+          (** choose q with b<q<s2, then q is in the interval so should be in the cut, but q<b from interval membership **)
+          apply (rational_dense_between_reals b s2 HbR Hs2R Hbs2).
+          let q. assume Hqpair. apply Hqpair.
+          assume HqQ: q :e rational_numbers.
+          assume HqProp: Rlt b q /\ Rlt q s2.
+          claim Hbq: Rlt b q.
+          { exact (andEL (Rlt b q) (Rlt q s2) HqProp). }
+          claim Hqs2: Rlt q s2.
+          { exact (andER (Rlt b q) (Rlt q s2) HqProp). }
+          claim HqR: q :e R.
+          { exact (rational_numbers_in_R q HqQ). }
+          claim HqS: SNo q.
+          { exact (real_SNo q HqR). }
+          claim H0q: Rlt 0 q.
+          { exact (Rlt_tra 0 b q H0blt Hbq). }
+          claim H0ltq: 0 < q.
+          { exact (RltE_lt 0 q H0q). }
+          claim Hqlts2: q < s2.
+          { exact (RltE_lt q s2 Hqs2). }
+          claim Hqqlt2: mul_SNo q q < 2.
+          { claim Hqqs2: mul_SNo q q < mul_SNo s2 s2.
+            { exact (pos_mul_SNo_Lt2 q q s2 s2 HqS HqS Hs2S Hs2S H0ltq H0ltq Hqlts2 Hqlts2). }
+            rewrite <- Hs2sq.
+            exact Hqqs2. }
+          claim HqCut: q :e Q_sqrt2_cut.
+          { exact (SepI rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) q HqQ Hqqlt2). }
+          claim HqInI: q :e order_interval rational_numbers a b.
+          { rewrite <- HeqOI. exact HqCut. }
+          claim HqPred: order_rel rational_numbers a q /\ order_rel rational_numbers q b.
+          { exact (SepE2 rational_numbers
+                         (fun x0:set => order_rel rational_numbers a x0 /\ order_rel rational_numbers x0 b)
+                         q
+                         HqInI). }
+          claim Hqb: order_rel rational_numbers q b.
+          { exact (andER (order_rel rational_numbers a q) (order_rel rational_numbers q b) HqPred). }
+          claim Hqblt: Rlt q b.
+          { exact (order_rel_Q_implies_Rlt q b Hqb). }
+          exact ((not_Rlt_sym b q Hbq) Hqblt).
+        - assume Hbeq: b = s2.
+          (** b is rational, so sqrt(2) would be rational, contradiction **)
+          claim Hirr: s2 :e real :\: rational.
+          { exact sqrt_2_irrational. }
+          claim Hnotrat: s2 /:e rational.
+          { exact (setminusE2 real rational s2 Hirr). }
+          claim Hs2Q: s2 :e rational_numbers.
+          { rewrite <- Hbeq. exact HbQ. }
+          claim HdefQ: rational_numbers = rational.
+          { reflexivity. }
+          claim Hs2rat: s2 :e rational.
+          { rewrite <- HdefQ. exact Hs2Q. }
+          exact (Hnotrat Hs2rat).
+        - assume Hs2ltb: s2 < b.
+          claim Hs2b: Rlt s2 b.
+          { exact (RltI s2 b Hs2R HbR Hs2ltb). }
+          (** choose q with s2<q<b; q is in the interval so must be in the cut, but then q^2<2 contradicts s2<q **)
+          apply (rational_dense_between_reals s2 b Hs2R HbR Hs2b).
+          let q. assume Hqpair. apply Hqpair.
+          assume HqQ: q :e rational_numbers.
+          assume HqProp: Rlt s2 q /\ Rlt q b.
+          claim Hs2q: Rlt s2 q.
+          { exact (andEL (Rlt s2 q) (Rlt q b) HqProp). }
+          claim Hqb: Rlt q b.
+          { exact (andER (Rlt s2 q) (Rlt q b) HqProp). }
+          claim HqR: q :e R.
+          { exact (rational_numbers_in_R q HqQ). }
+          claim HqS: SNo q.
+          { exact (real_SNo q HqR). }
+          claim Hs2ltq: s2 < q.
+          { exact (RltE_lt s2 q Hs2q). }
+          claim H0ltq: 0 < q.
+          { exact (SNoLt_tra 0 s2 q SNo_0 Hs2S HqS H0lts2 Hs2ltq). }
+          claim Haq: Rlt a q.
+          { claim H0q: Rlt 0 q.
+            { exact (RltI 0 q real_0 HqR H0ltq). }
+            exact (Rlt_tra a 0 q Halt0 H0q). }
+          claim Haqrel: order_rel rational_numbers a q.
+          { exact (Rlt_implies_order_rel_Q a q Haq). }
+          claim Hqbrep: order_rel rational_numbers q b.
+          { exact (Rlt_implies_order_rel_Q q b Hqb). }
+          claim HqInI: q :e order_interval rational_numbers a b.
+          { exact (SepI rational_numbers
+                         (fun x0:set => order_rel rational_numbers a x0 /\ order_rel rational_numbers x0 b)
+                         q
+                         HqQ
+                         (andI (order_rel rational_numbers a q) (order_rel rational_numbers q b) Haqrel Hqbrep)). }
+          claim HqCut: q :e Q_sqrt2_cut.
+          { rewrite HeqOI. exact HqInI. }
+          claim Hqqlt2: mul_SNo q q < 2.
+          { exact (SepE2 rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) q HqCut). }
+          claim Hs2s2ltqq: mul_SNo s2 s2 < mul_SNo q q.
+          { exact (pos_mul_SNo_Lt2 s2 s2 q q Hs2S Hs2S HqS HqS H0lts2 H0lts2 Hs2ltq Hs2ltq). }
+          claim H2ltqq: 2 < mul_SNo q q.
+          { rewrite <- Hs2sq at 1.
+            exact Hs2s2ltqq. }
+          claim HqqS: SNo (mul_SNo q q).
+          { exact (SNo_mul_SNo q q HqS HqS). }
+          claim H2lt2: 2 < 2.
+          { exact (SNoLt_tra 2 (mul_SNo q q) 2 SNo_2 HqqS SNo_2 H2ltqq Hqqlt2). }
+          exact ((SNoLt_irref 2) H2lt2).
       * assume HeqHL: Q_sqrt2_cut = halfopen_interval_left_in rational_numbers a b.
         (** derive order_rel a b from 0 in the interval **)
         claim H0in: 0 :e halfopen_interval_left_in rational_numbers a b.
