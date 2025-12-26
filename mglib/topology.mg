@@ -48657,7 +48657,105 @@ Qed.
 
 Theorem double_map_function_on :
   function_on double_map_left_half unit_interval_left_half unit_interval.
-admit.
+let t.
+assume HtL: t :e unit_interval_left_half.
+prove apply_fun double_map_left_half t :e unit_interval.
+rewrite (double_map_apply t HtL).
+prove mul_SNo 2 t :e unit_interval.
+claim HtI: t :e unit_interval.
+{ exact (unit_interval_left_half_sub t HtL). }
+claim HtR: t :e R.
+{ exact (unit_interval_sub_R t HtI). }
+claim HtS: SNo t.
+{ exact (real_SNo t HtR). }
+claim H2R: 2 :e R.
+{ exact two_in_R. }
+claim HmulR: mul_SNo 2 t :e R.
+{ exact (real_mul_SNo 2 H2R t HtR). }
+apply (SepI R (fun s:set => ~(Rlt s 0) /\ ~(Rlt 1 s)) (mul_SNo 2 t) HmulR).
+apply andI.
+- (** show ~(mul_SNo 2 t < 0) **)
+  assume Hlt: Rlt (mul_SNo 2 t) 0.
+  prove False.
+  claim H2S: SNo 2.
+  { exact SNo_2. }
+  claim HmulS: SNo (mul_SNo 2 t).
+  { exact (SNo_mul_SNo 2 t H2S HtS). }
+  claim Ht0nlt: ~(Rlt t 0).
+  { claim Hconj: ~(Rlt t 0) /\ ~(Rlt 1 t).
+    { exact (SepE2 R (fun u:set => ~(Rlt u 0) /\ ~(Rlt 1 u)) t HtI). }
+    exact (andEL (~(Rlt t 0)) (~(Rlt 1 t)) Hconj). }
+  claim H0le2: 0 <= 2.
+  { exact (SNoLtLe 0 2 SNoLt_0_2). }
+  claim H0let: 0 <= t.
+  { prove 0 <= t.
+    apply (SNoLtLe_or t 0 HtS SNo_0).
+    - assume Htlt0: t < 0.
+      claim Hrtlt: Rlt t 0.
+      { exact (RltI t 0 HtR real_0 Htlt0). }
+      apply FalseE.
+      exact (Ht0nlt Hrtlt).
+    - assume H0let': 0 <= t.
+      exact H0let'. }
+  claim H0lemul: 0 <= mul_SNo 2 t.
+  { exact (mul_SNo_nonneg_nonneg 2 t H2S HtS H0le2 H0let). }
+  claim HmulLt0: mul_SNo 2 t < 0.
+  { exact (RltE_lt (mul_SNo 2 t) 0 Hlt). }
+  claim Hcases: 0 < (mul_SNo 2 t) \/ 0 = (mul_SNo 2 t).
+  { exact (SNoLeE 0 (mul_SNo 2 t) SNo_0 HmulS H0lemul). }
+  apply Hcases.
+  - assume Hpos: 0 < (mul_SNo 2 t).
+    claim H00: 0 < 0.
+    { exact (SNoLt_tra 0 (mul_SNo 2 t) 0 SNo_0 HmulS SNo_0 Hpos HmulLt0). }
+    exact ((SNoLt_irref 0) H00).
+	  - assume Heq: 0 = (mul_SNo 2 t).
+	    claim H00: 0 < 0.
+	    { rewrite Heq at 1.
+	      exact HmulLt0. }
+	    exact ((SNoLt_irref 0) H00).
+- (** show ~(1 < mul_SNo 2 t) **)
+  assume Hlt: Rlt 1 (mul_SNo 2 t).
+  prove False.
+  claim H2S: SNo 2.
+  { exact SNo_2. }
+  claim HmulS: SNo (mul_SNo 2 t).
+  { exact (SNo_mul_SNo 2 t H2S HtS). }
+  claim HeS: SNo (eps_ 1).
+  { exact (real_SNo (eps_ 1) eps_1_in_R). }
+  claim Hnlt: ~(Rlt (eps_ 1) t).
+  { exact (SepE2 unit_interval (fun u:set => ~(Rlt (eps_ 1) u)) t HtL). }
+  claim Htle: t <= (eps_ 1).
+  { prove t <= (eps_ 1).
+    apply (SNoLtLe_or (eps_ 1) t HeS HtS).
+    - assume Hepslt: (eps_ 1) < t.
+      claim Hrtlt: Rlt (eps_ 1) t.
+      { exact (RltI (eps_ 1) t eps_1_in_R HtR Hepslt). }
+      apply FalseE.
+      exact (Hnlt Hrtlt).
+    - assume Htle': t <= (eps_ 1).
+      exact Htle'. }
+  claim H0le2: 0 <= 2.
+  { exact (SNoLtLe 0 2 SNoLt_0_2). }
+  claim H2tLe: mul_SNo 2 t <= 1.
+  { claim H2eps: mul_SNo 2 t <= mul_SNo 2 (eps_ 1).
+    { exact (nonneg_mul_SNo_Le 2 t (eps_ 1) H2S H0le2 HtS HeS Htle). }
+    prove mul_SNo 2 t <= 1.
+    rewrite <- eps_1_half_eq2 at 2.
+    exact H2eps. }
+  claim H1lt: 1 < (mul_SNo 2 t).
+  { exact (RltE_lt 1 (mul_SNo 2 t) Hlt). }
+  claim Hcases: (mul_SNo 2 t) < 1 \/ (mul_SNo 2 t) = 1.
+  { exact (SNoLeE (mul_SNo 2 t) 1 HmulS SNo_1 H2tLe). }
+  apply Hcases.
+  - assume Hlt2: (mul_SNo 2 t) < 1.
+    claim H11: 1 < 1.
+    { exact (SNoLt_tra 1 (mul_SNo 2 t) 1 SNo_1 HmulS SNo_1 H1lt Hlt2). }
+    exact ((SNoLt_irref 1) H11).
+  - assume Heq: (mul_SNo 2 t) = 1.
+    claim H11: 1 < 1.
+    { rewrite <- Heq at 2.
+      exact H1lt. }
+    exact ((SNoLt_irref 1) H11).
 Qed.
 
 Theorem double_minus_one_map_function_on :
