@@ -13319,6 +13319,32 @@ claim Htop : topology_on X (countable_complement_topology X).
 exact (topology_union_axiom X (countable_complement_topology X) Htop UFam HUFam).
 Qed.
 
+(** helper: removing a finite subset from an infinite set leaves an infinite set **)
+(** LATEX VERSION: If X is infinite and F is finite, then X\\F is infinite. **)
+Theorem infinite_setminus_finite : forall X F:set,
+  infinite X -> finite F -> infinite (X :\: F).
+let X F.
+assume HinfX: infinite X.
+assume HfinF: finite F.
+prove infinite (X :\: F).
+assume HfinXF: finite (X :\: F).
+claim HfinU: finite ((X :\: F) :\/: F).
+{ exact (binunion_finite (X :\: F) HfinXF F HfinF). }
+claim HXsubU: X c= (X :\: F) :\/: F.
+{ let x. assume HxX: x :e X.
+  apply (xm (x :e F)).
+  - assume HxF: x :e F.
+    exact (binunionI2 (X :\: F) F x HxF).
+  - assume HxnotF: ~(x :e F).
+    claim HxXF: x :e X :\: F.
+    { exact (setminusI X F x HxX HxnotF). }
+    exact (binunionI1 (X :\: F) F x HxXF).
+}
+claim HfinX: finite X.
+{ exact (Subq_finite X HfinU ((X :\: F) :\/: F) HXsubU). }
+exact (HinfX HfinX).
+Qed.
+
 Theorem ex13_3b_witness_sets : forall X:set,
   infinite X ->
   exists U V:set,
