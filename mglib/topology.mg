@@ -8647,7 +8647,7 @@ Qed.
 
 (** from §12: alternative naming for topological space **)
 (** LATEX VERSION: Using notation topological_space X T for topology_on X T and open_set_family/open_set for opens. **)
-(** SUSPICIOUS DEFINITION: `open_set` duplicates `open_in`; later statements should use one convention consistently to avoid bookkeeping duplication. **)
+(** NOTE: `open_set` is defined as an alias of `open_in` to avoid duplicate bookkeeping. **)
 Definition topological_space : set -> set -> prop := topology_on.
 
 Definition open_set_family : set -> set -> set := fun _ T => T.
