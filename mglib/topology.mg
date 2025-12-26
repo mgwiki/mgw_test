@@ -38566,6 +38566,84 @@ exact (SepI EuclidPlane
         Hprop).
 Qed.
 
+(** Helper: param by y lands in the affine line when b is zero and a is not zero **)
+Theorem affine_line_R2_param_by_y_in_line : forall a b c y:set,
+  a :e R -> b :e R -> c :e R -> y :e R ->
+  b = 0 ->
+  a <> 0 ->
+  apply_fun (affine_line_R2_param_by_y a b c) y :e affine_line_R2 a b c.
+let a b c y.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HcR: c :e R.
+assume HyR: y :e R.
+assume Hb0: b = 0.
+assume Ha0: a <> 0.
+prove apply_fun (affine_line_R2_param_by_y a b c) y :e affine_line_R2 a b c.
+rewrite (affine_line_R2_param_by_y_apply a b c y HyR).
+set x0 := div_SNo c a.
+prove (x0,y) :e affine_line_R2 a b c.
+claim Hdef: affine_line_R2 a b c =
+  {p :e EuclidPlane | add_SNo (mul_SNo a (R2_xcoord p)) (mul_SNo b (R2_ycoord p)) = c}.
+{ reflexivity. }
+rewrite Hdef.
+claim HxyPlane: (x0,y) :e EuclidPlane.
+{ claim HdefR: R = real.
+  { reflexivity. }
+  claim HaReal: a :e real.
+  { rewrite <- HdefR. exact HaR. }
+  claim HcReal: c :e real.
+  { rewrite <- HdefR. exact HcR. }
+  claim HxReal: x0 :e real.
+  { exact (real_div_SNo c HcReal a HaReal). }
+  claim HxR: x0 :e R.
+  { rewrite HdefR. exact HxReal. }
+  exact (tuple_2_setprod R R x0 HxR y HyR). }
+
+claim Hprop: add_SNo (mul_SNo a (R2_xcoord (x0,y))) (mul_SNo b (R2_ycoord (x0,y))) = c.
+{ claim HdefR: R = real.
+  { reflexivity. }
+  claim HaReal: a :e real.
+  { rewrite <- HdefR. exact HaR. }
+  claim HbReal: b :e real.
+  { rewrite <- HdefR. exact HbR. }
+  claim HcReal: c :e real.
+  { rewrite <- HdefR. exact HcR. }
+  claim HaS: SNo a.
+  { exact (real_SNo a HaReal). }
+  claim HbS: SNo b.
+  { exact (real_SNo b HbReal). }
+  claim HcS: SNo c.
+  { exact (real_SNo c HcReal). }
+  claim Hx0Real: x0 :e real.
+  { exact (real_div_SNo c HcReal a HaReal). }
+  claim Hx0S: SNo x0.
+  { exact (real_SNo x0 Hx0Real). }
+  rewrite (R2_xcoord_tuple x0 y).
+  rewrite (R2_ycoord_tuple x0 y).
+  rewrite Hb0.
+  claim HyReal: y :e real.
+  { rewrite <- HdefR. exact HyR. }
+  claim HyS: SNo y.
+  { exact (real_SNo y HyReal). }
+  rewrite (mul_SNo_zeroL y HyS).
+  rewrite (add_SNo_0R (mul_SNo a x0) (SNo_mul_SNo a x0 HaS Hx0S)).
+  (** a times (c/a) equals c **)
+  claim Hmul: mul_SNo a x0 = c.
+  { claim Hx0def: x0 = div_SNo c a.
+    { reflexivity. }
+    rewrite Hx0def.
+    rewrite (mul_div_SNo_invR c a HcS HaS Ha0).
+    reflexivity. }
+  exact Hmul. }
+
+exact (SepI EuclidPlane
+        (fun p0:set => add_SNo (mul_SNo a (R2_xcoord p0)) (mul_SNo b (R2_ycoord p0)) = c)
+        (x0,y)
+        HxyPlane
+        Hprop).
+Qed.
+
 (** from §16 Exercise 8: helper predicate for negative slope in affine form **)
 (** LATEX VERSION: For ax+by=c with b not zero, the slope is negative exactly when a and b have the same sign. **)
 Definition same_sign_nonzero_R : set -> set -> prop :=
