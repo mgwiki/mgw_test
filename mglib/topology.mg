@@ -39448,6 +39448,165 @@ Qed.
 Definition same_sign_nonzero_R : set -> set -> prop :=
   fun a b => (Rlt 0 a /\ Rlt 0 b) \/ (Rlt a 0 /\ Rlt b 0).
 
+(** helper for §16 Exercise 8: in the same-sign case, the line graph decreases in y as x increases **)
+(** LATEX VERSION: If a and b have the same sign and b is nonzero, then for x1<x2 we have (c-ax2)/b < (c-ax1)/b. **)
+Theorem affine_line_R2_param_by_x_y_decreases_same_sign : forall a b c x1 x2:set,
+  a :e R -> b :e R -> c :e R ->
+  b <> 0 ->
+  same_sign_nonzero_R a b ->
+  x1 :e R -> x2 :e R ->
+  Rlt x1 x2 ->
+  Rlt (div_SNo (add_SNo c (minus_SNo (mul_SNo a x2))) b)
+      (div_SNo (add_SNo c (minus_SNo (mul_SNo a x1))) b).
+let a b c x1 x2.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HcR: c :e R.
+assume Hbne: b <> 0.
+assume Hsign: same_sign_nonzero_R a b.
+assume Hx1R: x1 :e R.
+assume Hx2R: x2 :e R.
+assume Hx12: Rlt x1 x2.
+prove Rlt (div_SNo (add_SNo c (minus_SNo (mul_SNo a x2))) b)
+          (div_SNo (add_SNo c (minus_SNo (mul_SNo a x1))) b).
+claim HdefR: R = real.
+{ reflexivity. }
+claim HaReal: a :e real.
+{ rewrite <- HdefR. exact HaR. }
+claim HbReal: b :e real.
+{ rewrite <- HdefR. exact HbR. }
+claim HcReal: c :e real.
+{ rewrite <- HdefR. exact HcR. }
+claim Hx1Real: x1 :e real.
+{ rewrite <- HdefR. exact Hx1R. }
+claim Hx2Real: x2 :e real.
+{ rewrite <- HdefR. exact Hx2R. }
+claim HaS: SNo a.
+{ exact (real_SNo a HaReal). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbReal). }
+claim HcS: SNo c.
+{ exact (real_SNo c HcReal). }
+claim Hx1S: SNo x1.
+{ exact (real_SNo x1 Hx1Real). }
+claim Hx2S: SNo x2.
+{ exact (real_SNo x2 Hx2Real). }
+claim Hx12lt: x1 < x2.
+{ exact (RltE_lt x1 x2 Hx12). }
+set num1 := add_SNo c (minus_SNo (mul_SNo a x1)).
+set num2 := add_SNo c (minus_SNo (mul_SNo a x2)).
+claim Hnum1S: SNo num1.
+{ exact (SNo_add_SNo c (minus_SNo (mul_SNo a x1)) HcS
+          (SNo_minus_SNo (mul_SNo a x1) (SNo_mul_SNo a x1 HaS Hx1S))). }
+claim Hnum2S: SNo num2.
+{ exact (SNo_add_SNo c (minus_SNo (mul_SNo a x2)) HcS
+          (SNo_minus_SNo (mul_SNo a x2) (SNo_mul_SNo a x2 HaS Hx2S))). }
+claim Hy1Real: div_SNo (add_SNo c (minus_SNo (mul_SNo a x1))) b :e real.
+{ exact (real_div_SNo (add_SNo c (minus_SNo (mul_SNo a x1))) (real_add_SNo c HcReal (minus_SNo (mul_SNo a x1)) (real_minus_SNo (mul_SNo a x1) (real_mul_SNo a HaReal x1 Hx1Real)))
+         b HbReal). }
+claim Hy2Real: div_SNo (add_SNo c (minus_SNo (mul_SNo a x2))) b :e real.
+{ exact (real_div_SNo (add_SNo c (minus_SNo (mul_SNo a x2))) (real_add_SNo c HcReal (minus_SNo (mul_SNo a x2)) (real_minus_SNo (mul_SNo a x2) (real_mul_SNo a HaReal x2 Hx2Real)))
+         b HbReal). }
+claim Hy1R: div_SNo (add_SNo c (minus_SNo (mul_SNo a x1))) b :e R.
+{ rewrite HdefR. exact Hy1Real. }
+claim Hy2R: div_SNo (add_SNo c (minus_SNo (mul_SNo a x2))) b :e R.
+{ rewrite HdefR. exact Hy2Real. }
+apply Hsign.
+- (** positive case: 0<a and 0<b **)
+  assume Hpos: Rlt 0 a /\ Rlt 0 b.
+  claim H0a: Rlt 0 a.
+  { exact (andEL (Rlt 0 a) (Rlt 0 b) Hpos). }
+  claim H0b: Rlt 0 b.
+  { exact (andER (Rlt 0 a) (Rlt 0 b) Hpos). }
+  claim H0alt: 0 < a.
+  { exact (RltE_lt 0 a H0a). }
+  claim H0blt: 0 < b.
+  { exact (RltE_lt 0 b H0b). }
+  claim Hax1ax2: mul_SNo a x1 < mul_SNo a x2.
+  { exact (pos_mul_SNo_Lt a x1 x2 HaS H0alt Hx1S Hx2S Hx12lt). }
+  claim HmAx2mAx1: minus_SNo (mul_SNo a x2) < minus_SNo (mul_SNo a x1).
+  { exact (minus_SNo_Lt_contra (mul_SNo a x1) (mul_SNo a x2)
+            (SNo_mul_SNo a x1 HaS Hx1S) (SNo_mul_SNo a x2 HaS Hx2S) Hax1ax2). }
+  claim Hnum2num1: num2 < num1.
+  { exact (add_SNo_Lt2 c (minus_SNo (mul_SNo a x2)) (minus_SNo (mul_SNo a x1))
+            HcS (SNo_minus_SNo (mul_SNo a x2) (SNo_mul_SNo a x2 HaS Hx2S))
+            (SNo_minus_SNo (mul_SNo a x1) (SNo_mul_SNo a x1 HaS Hx1S))
+            HmAx2mAx1). }
+  claim HrecipPos: 0 < recip_SNo b.
+  { exact (recip_SNo_of_pos_is_pos b HbS H0blt). }
+  claim HrecipS: SNo (recip_SNo b).
+  { exact (SNo_recip_SNo b HbS). }
+  claim HdivLt: div_SNo num2 b < div_SNo num1 b.
+  { claim Heq2: div_SNo num2 b = mul_SNo num2 (recip_SNo b).
+    { reflexivity. }
+    claim Heq1: div_SNo num1 b = mul_SNo num1 (recip_SNo b).
+    { reflexivity. }
+    rewrite Heq2.
+    rewrite Heq1.
+    exact (pos_mul_SNo_Lt' num2 num1 (recip_SNo b) Hnum2S Hnum1S HrecipS HrecipPos Hnum2num1). }
+  exact (RltI (div_SNo num2 b) (div_SNo num1 b) Hy2R Hy1R HdivLt).
+- (** negative case: a<0 and b<0 **)
+  assume Hneg: Rlt a 0 /\ Rlt b 0.
+  claim Ha0: Rlt a 0.
+  { exact (andEL (Rlt a 0) (Rlt b 0) Hneg). }
+  claim Hb0: Rlt b 0.
+  { exact (andER (Rlt a 0) (Rlt b 0) Hneg). }
+  claim Halt0: a < 0.
+  { exact (RltE_lt a 0 Ha0). }
+  claim Hblt0: b < 0.
+  { exact (RltE_lt b 0 Hb0). }
+  claim Hax2ax1: mul_SNo a x2 < mul_SNo a x1.
+  { exact (neg_mul_SNo_Lt a x2 x1 HaS Halt0 Hx2S Hx1S Hx12lt). }
+  claim HmAx1mAx2: minus_SNo (mul_SNo a x1) < minus_SNo (mul_SNo a x2).
+  { exact (minus_SNo_Lt_contra (mul_SNo a x2) (mul_SNo a x1)
+            (SNo_mul_SNo a x2 HaS Hx2S) (SNo_mul_SNo a x1 HaS Hx1S) Hax2ax1). }
+  claim Hnum1num2: num1 < num2.
+  { exact (add_SNo_Lt2 c (minus_SNo (mul_SNo a x1)) (minus_SNo (mul_SNo a x2))
+            HcS (SNo_minus_SNo (mul_SNo a x1) (SNo_mul_SNo a x1 HaS Hx1S))
+            (SNo_minus_SNo (mul_SNo a x2) (SNo_mul_SNo a x2 HaS Hx2S))
+            HmAx1mAx2). }
+  claim HrecipNeg: recip_SNo b < 0.
+  { (** recip_SNo b = -recip_SNo_pos (-b) and recip_SNo_pos (-b) is positive **)
+    claim HminusbS: SNo (minus_SNo b).
+    { exact (SNo_minus_SNo b HbS). }
+    claim HminusbPos: 0 < minus_SNo b.
+    { (** from b<0 get 0 < -b **)
+      claim H0ltminusb: minus_SNo 0 < minus_SNo b.
+      { exact (minus_SNo_Lt_contra b 0 HbS SNo_0 Hblt0). }
+      prove 0 < minus_SNo b.
+      rewrite <- (minus_SNo_0) at 1.
+      exact H0ltminusb. }
+    claim HrecipPosDef: recip_SNo b = minus_SNo (recip_SNo_pos (minus_SNo b)).
+    { rewrite (recip_SNo_negcase b HbS Hblt0).
+      reflexivity. }
+    claim HtS: SNo (recip_SNo_pos (minus_SNo b)).
+    { exact (SNo_recip_SNo_pos (minus_SNo b) HminusbS HminusbPos). }
+    claim HtPos: 0 < recip_SNo_pos (minus_SNo b).
+    { exact (recip_SNo_pos_is_pos (minus_SNo b) HminusbS HminusbPos). }
+    rewrite HrecipPosDef.
+    claim HnegT: minus_SNo (recip_SNo_pos (minus_SNo b)) < 0.
+    { claim Hmtltm0: minus_SNo (recip_SNo_pos (minus_SNo b)) < minus_SNo 0.
+      { exact (minus_SNo_Lt_contra 0 (recip_SNo_pos (minus_SNo b)) SNo_0 HtS HtPos). }
+      prove minus_SNo (recip_SNo_pos (minus_SNo b)) < 0.
+      rewrite <- (minus_SNo_0) at 1.
+      exact Hmtltm0. }
+    exact HnegT. }
+  claim HrecipS: SNo (recip_SNo b).
+  { exact (SNo_recip_SNo b HbS). }
+  claim HdivLt: div_SNo num2 b < div_SNo num1 b.
+  { claim Heq2: div_SNo num2 b = mul_SNo num2 (recip_SNo b).
+    { reflexivity. }
+    claim Heq1: div_SNo num1 b = mul_SNo num1 (recip_SNo b).
+    { reflexivity. }
+    rewrite Heq2.
+    rewrite Heq1.
+    (** use commutativity and multiply on the left by the negative factor **)
+    rewrite (mul_SNo_com num2 (recip_SNo b) Hnum2S HrecipS).
+    rewrite (mul_SNo_com num1 (recip_SNo b) Hnum1S HrecipS).
+    exact (neg_mul_SNo_Lt (recip_SNo b) num2 num1 HrecipS HrecipNeg Hnum2S Hnum1S Hnum1num2). }
+  exact (RltI (div_SNo num2 b) (div_SNo num1 b) Hy2R Hy1R HdivLt).
+Qed.
+
 (** from §16 Exercise 8: topology on a line in R_l×R and R_l×R_l is familiar **)
 (** LATEX VERSION: For a straight line L in the plane, the subspace topology from R_l×R and from R_l×R_l is a familiar topology on L. **)
 Theorem ex16_8_lines_in_lower_limit_products : forall a b c:set,
