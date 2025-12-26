@@ -11373,7 +11373,255 @@ let b x.
 assume Hb: b :e rectangular_regions.
 assume HxE: x :e EuclidPlane.
 assume Hxb: x :e b.
-admit.
+claim HbPred:
+  exists a b0 c d0:set,
+    a :e R /\ b0 :e R /\ c :e R /\ d0 :e R /\ Rlt a b0 /\ Rlt c d0 /\
+      b = {p :e EuclidPlane|exists x1 y1:set, p = (x1,y1) /\ Rlt a x1 /\ Rlt x1 b0 /\ Rlt c y1 /\ Rlt y1 d0}.
+{ exact (SepE2 (Power EuclidPlane)
+               (fun U0 : set =>
+                 exists a0 b0 c0 d0:set, a0 :e R /\ b0 :e R /\ c0 :e R /\ d0 :e R /\ Rlt a0 b0 /\ Rlt c0 d0 /\
+                   U0 = {p :e EuclidPlane|exists x1 y1:set, p = (x1,y1) /\ Rlt a0 x1 /\ Rlt x1 b0 /\ Rlt c0 y1 /\ Rlt y1 d0})
+               b
+               Hb). }
+apply HbPred.
+let a b0 c d0. assume Habcd.
+set Rect := {p :e EuclidPlane|exists x1 y1:set, p = (x1,y1) /\ Rlt a x1 /\ Rlt x1 b0 /\ Rlt c y1 /\ Rlt y1 d0}.
+claim HbEq: b = Rect.
+{ exact (andER
+          (a :e R /\ b0 :e R /\ c :e R /\ d0 :e R /\ Rlt a b0 /\ Rlt c d0)
+          (b = Rect)
+          Habcd). }
+claim HabcdLeft: a :e R /\ b0 :e R /\ c :e R /\ d0 :e R /\ Rlt a b0 /\ Rlt c d0.
+{ exact (andEL
+          (a :e R /\ b0 :e R /\ c :e R /\ d0 :e R /\ Rlt a b0 /\ Rlt c d0)
+          (b = Rect)
+          Habcd). }
+claim Hcd: Rlt c d0.
+{ exact (andER
+          (a :e R /\ b0 :e R /\ c :e R /\ d0 :e R /\ Rlt a b0)
+          (Rlt c d0)
+          HabcdLeft). }
+claim HabcdLeft2: a :e R /\ b0 :e R /\ c :e R /\ d0 :e R /\ Rlt a b0.
+{ exact (andEL
+          (a :e R /\ b0 :e R /\ c :e R /\ d0 :e R /\ Rlt a b0)
+          (Rlt c d0)
+          HabcdLeft). }
+claim Hab: Rlt a b0.
+{ exact (andER
+          (a :e R /\ b0 :e R /\ c :e R /\ d0 :e R)
+          (Rlt a b0)
+          HabcdLeft2). }
+claim HabcdLeft3: a :e R /\ b0 :e R /\ c :e R /\ d0 :e R.
+{ exact (andEL
+          (a :e R /\ b0 :e R /\ c :e R /\ d0 :e R)
+          (Rlt a b0)
+          HabcdLeft2). }
+claim Hd0R: d0 :e R.
+{ exact (andER
+          (a :e R /\ b0 :e R /\ c :e R)
+          (d0 :e R)
+          HabcdLeft3). }
+claim HabcdLeft4: a :e R /\ b0 :e R /\ c :e R.
+{ exact (andEL
+          (a :e R /\ b0 :e R /\ c :e R)
+          (d0 :e R)
+          HabcdLeft3). }
+claim HcR: c :e R.
+{ exact (andER
+          (a :e R /\ b0 :e R)
+          (c :e R)
+          HabcdLeft4). }
+claim HabR: a :e R /\ b0 :e R.
+{ exact (andEL
+          (a :e R /\ b0 :e R)
+          (c :e R)
+          HabcdLeft4). }
+claim HaR: a :e R.
+{ exact (andEL (a :e R) (b0 :e R) HabR). }
+claim Hb0R: b0 :e R.
+{ exact (andER (a :e R) (b0 :e R) HabR). }
+
+claim HxRect: x :e Rect.
+{ prove x :e Rect.
+  rewrite HbEq at 1.
+  exact Hxb. }
+claim HxRectPred: exists x0 y0:set,
+  x = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0.
+{ exact (SepE2 EuclidPlane
+              (fun p0 : set => exists x0 y0:set, p0 = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0)
+              x
+              HxRect). }
+apply HxRectPred.
+let x0 y0. assume Hxy0.
+claim Hxy0Rest: Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0.
+{ exact (andER (x = (x0,y0)) (Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0) Hxy0). }
+claim HxEq: x = (x0,y0).
+{ exact (andEL (x = (x0,y0)) (Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0) Hxy0). }
+claim Hy0Rest2: Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0.
+{ exact (andER (Rlt a x0) (Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0) Hxy0Rest). }
+claim Hax0: Rlt a x0.
+{ exact (andEL (Rlt a x0) (Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0) Hxy0Rest). }
+claim Hy0Rest3: Rlt c y0 /\ Rlt y0 d0.
+{ exact (andER (Rlt x0 b0) (Rlt c y0 /\ Rlt y0 d0) Hy0Rest2). }
+claim Hx0b0: Rlt x0 b0.
+{ exact (andEL (Rlt x0 b0) (Rlt c y0 /\ Rlt y0 d0) Hy0Rest2). }
+claim Hcy0: Rlt c y0.
+{ exact (andEL (Rlt c y0) (Rlt y0 d0) Hy0Rest3). }
+claim Hy0d0: Rlt y0 d0.
+{ exact (andER (Rlt c y0) (Rlt y0 d0) Hy0Rest3). }
+
+claim Hx0R: x0 :e R.
+{ exact (RltE_right a x0 Hax0). }
+claim Hy0R: y0 :e R.
+{ exact (RltE_right c y0 Hcy0). }
+claim Hx0S: SNo x0.
+{ exact (real_SNo x0 Hx0R). }
+claim Hy0S: SNo y0.
+{ exact (real_SNo y0 Hy0R). }
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim Hb0S: SNo b0.
+{ exact (real_SNo b0 Hb0R). }
+claim HcS: SNo c.
+{ exact (real_SNo c HcR). }
+claim Hd0S: SNo d0.
+{ exact (real_SNo d0 Hd0R). }
+
+set m1 := add_SNo x0 (minus_SNo a).
+set m2 := add_SNo b0 (minus_SNo x0).
+set m3 := add_SNo y0 (minus_SNo c).
+set m4 := add_SNo d0 (minus_SNo y0).
+claim Hm1R: m1 :e R.
+{ exact (real_add_SNo x0 Hx0R (minus_SNo a) (real_minus_SNo a HaR)). }
+claim Hm2R: m2 :e R.
+{ exact (real_add_SNo b0 Hb0R (minus_SNo x0) (real_minus_SNo x0 Hx0R)). }
+claim Hm3R: m3 :e R.
+{ exact (real_add_SNo y0 Hy0R (minus_SNo c) (real_minus_SNo c HcR)). }
+claim Hm4R: m4 :e R.
+{ exact (real_add_SNo d0 Hd0R (minus_SNo y0) (real_minus_SNo y0 Hy0R)). }
+claim Hm1S: SNo m1.
+{ exact (real_SNo m1 Hm1R). }
+claim Hm2S: SNo m2.
+{ exact (real_SNo m2 Hm2R). }
+claim Hm3S: SNo m3.
+{ exact (real_SNo m3 Hm3R). }
+claim Hm4S: SNo m4.
+{ exact (real_SNo m4 Hm4R). }
+
+(** positivity of margins from strict inequalities **)
+claim Hax0Slt: a < x0.
+{ exact (RltE_lt a x0 Hax0). }
+claim Hx0b0Slt: x0 < b0.
+{ exact (RltE_lt x0 b0 Hx0b0). }
+claim Hcy0Slt: c < y0.
+{ exact (RltE_lt c y0 Hcy0). }
+claim Hy0d0Slt: y0 < d0.
+{ exact (RltE_lt y0 d0 Hy0d0). }
+claim HmaS: SNo (minus_SNo a).
+{ exact (SNo_minus_SNo a HaS). }
+claim Hmx0S: SNo (minus_SNo x0).
+{ exact (SNo_minus_SNo x0 Hx0S). }
+claim HmcS: SNo (minus_SNo c).
+{ exact (SNo_minus_SNo c HcS). }
+claim Hmy0S: SNo (minus_SNo y0).
+{ exact (SNo_minus_SNo y0 Hy0S). }
+
+claim Hm1posS: 0 < m1.
+{ claim Hlt: add_SNo (minus_SNo a) a < add_SNo (minus_SNo a) x0.
+  { exact (add_SNo_Lt2 (minus_SNo a) a x0 HmaS HaS Hx0S Hax0Slt). }
+  claim H0eq: add_SNo (minus_SNo a) a = 0.
+  { exact (add_SNo_minus_SNo_linv a HaS). }
+  claim Hm1eq: add_SNo (minus_SNo a) x0 = m1.
+  { claim Hcom: add_SNo (minus_SNo a) x0 = add_SNo x0 (minus_SNo a).
+    { exact (add_SNo_com (minus_SNo a) x0 HmaS Hx0S). }
+    rewrite Hcom.
+    reflexivity. }
+  rewrite H0eq at 1.
+  rewrite Hm1eq at 1.
+  exact Hlt. }
+claim Hm2posS: 0 < m2.
+{ claim Hlt: add_SNo (minus_SNo x0) x0 < add_SNo (minus_SNo x0) b0.
+  { exact (add_SNo_Lt2 (minus_SNo x0) x0 b0 Hmx0S Hx0S Hb0S Hx0b0Slt). }
+  claim H0eq: add_SNo (minus_SNo x0) x0 = 0.
+  { exact (add_SNo_minus_SNo_linv x0 Hx0S). }
+  claim Hm2eq: add_SNo (minus_SNo x0) b0 = m2.
+  { claim Hcom: add_SNo (minus_SNo x0) b0 = add_SNo b0 (minus_SNo x0).
+    { exact (add_SNo_com (minus_SNo x0) b0 Hmx0S Hb0S). }
+    rewrite Hcom.
+    reflexivity. }
+  rewrite H0eq at 1.
+  rewrite Hm2eq at 1.
+  exact Hlt. }
+claim Hm3posS: 0 < m3.
+{ claim Hlt: add_SNo (minus_SNo c) c < add_SNo (minus_SNo c) y0.
+  { exact (add_SNo_Lt2 (minus_SNo c) c y0 HmcS HcS Hy0S Hcy0Slt). }
+  claim H0eq: add_SNo (minus_SNo c) c = 0.
+  { exact (add_SNo_minus_SNo_linv c HcS). }
+  claim Hm3eq: add_SNo (minus_SNo c) y0 = m3.
+  { claim Hcom: add_SNo (minus_SNo c) y0 = add_SNo y0 (minus_SNo c).
+    { exact (add_SNo_com (minus_SNo c) y0 HmcS Hy0S). }
+    rewrite Hcom.
+    reflexivity. }
+  rewrite H0eq at 1.
+  rewrite Hm3eq at 1.
+  exact Hlt. }
+claim Hm4posS: 0 < m4.
+{ claim Hlt: add_SNo (minus_SNo y0) y0 < add_SNo (minus_SNo y0) d0.
+  { exact (add_SNo_Lt2 (minus_SNo y0) y0 d0 Hmy0S Hy0S Hd0S Hy0d0Slt). }
+  claim H0eq: add_SNo (minus_SNo y0) y0 = 0.
+  { exact (add_SNo_minus_SNo_linv y0 Hy0S). }
+  claim Hm4eq: add_SNo (minus_SNo y0) d0 = m4.
+  { claim Hcom: add_SNo (minus_SNo y0) d0 = add_SNo d0 (minus_SNo y0).
+    { exact (add_SNo_com (minus_SNo y0) d0 Hmy0S Hd0S). }
+    rewrite Hcom.
+    reflexivity. }
+  rewrite H0eq at 1.
+  rewrite Hm4eq at 1.
+  exact Hlt. }
+claim Hm1pos: Rlt 0 m1.
+{ exact (RltI 0 m1 real_0 Hm1R Hm1posS). }
+claim Hm2pos: Rlt 0 m2.
+{ exact (RltI 0 m2 real_0 Hm2R Hm2posS). }
+claim Hm3pos: Rlt 0 m3.
+{ exact (RltI 0 m3 real_0 Hm3R Hm3posS). }
+claim Hm4pos: Rlt 0 m4.
+{ exact (RltI 0 m4 real_0 Hm4R Hm4posS). }
+
+claim Hexr3:
+  exists r3:set, r3 :e R /\ Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4.
+{ exact (exists_eps_lt_four_pos_Euclid m1 m2 m3 m4 Hm1R Hm2R Hm3R Hm4R Hm1pos Hm2pos Hm3pos Hm4pos). }
+apply Hexr3.
+let r3. assume Hr3.
+claim Hr3rest: Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4.
+{ exact (andER (r3 :e R) (Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4) Hr3). }
+claim Hr3R: r3 :e R.
+{ exact (andEL (r3 :e R) (Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4) Hr3). }
+claim Hr3pos: Rlt 0 r3.
+{ exact (andEL (Rlt 0 r3) (Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4) Hr3rest). }
+claim Hr3rest2: Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4.
+{ exact (andER (Rlt 0 r3) (Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4) Hr3rest). }
+claim Hr3m1: Rlt r3 m1.
+{ exact (andEL (Rlt r3 m1) (Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4) Hr3rest2). }
+claim Hr3rest3: Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4.
+{ exact (andER (Rlt r3 m1) (Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4) Hr3rest2). }
+claim Hr3m2: Rlt r3 m2.
+{ exact (andEL (Rlt r3 m2) (Rlt r3 m3 /\ Rlt r3 m4) Hr3rest3). }
+claim Hr3rest4: Rlt r3 m3 /\ Rlt r3 m4.
+{ exact (andER (Rlt r3 m2) (Rlt r3 m3 /\ Rlt r3 m4) Hr3rest3). }
+claim Hr3m3: Rlt r3 m3.
+{ exact (andEL (Rlt r3 m3) (Rlt r3 m4) Hr3rest4). }
+claim Hr3m4: Rlt r3 m4.
+{ exact (andER (Rlt r3 m3) (Rlt r3 m4) Hr3rest4). }
+
+witness r3.
+apply andI.
+- exact Hr3pos.
+- let p. assume HpE: p :e EuclidPlane.
+  assume Hdp: Rlt (distance_R2 p x) r3.
+  prove p :e b.
+  rewrite HbEq.
+  (** the remaining coordinate inequality bookkeeping is structured but left for refinement **)
+  admit.
 Qed.
 
 (** from §13 Example 4: circular regions form a basis on EuclidPlane **)
