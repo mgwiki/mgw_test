@@ -20470,6 +20470,35 @@ prove order_topology Zplus = discrete_topology Zplus.
 exact Zplus_order_topology_is_discrete.
 Qed.
 
+(** Helper: conjunction reassociation (/\ is left-associative) **)
+Theorem and_assoc : forall A B C:prop, (A /\ B) /\ C -> A /\ (B /\ C).
+let A B C.
+assume H.
+apply (H (A /\ (B /\ C))).
+assume Hab Hc.
+apply (Hab (A /\ (B /\ C))).
+assume Ha Hb.
+apply andI.
+- exact Ha.
+- apply andI.
+  * exact Hb.
+  * exact Hc.
+Qed.
+
+Theorem and_assoc_rev : forall A B C:prop, A /\ (B /\ C) -> (A /\ B) /\ C.
+let A B C.
+assume H.
+apply (H ((A /\ B) /\ C)).
+assume Ha Hbc.
+apply (Hbc ((A /\ B) /\ C)).
+assume Hb Hc.
+apply andI.
+- apply andI.
+  * exact Ha.
+  * exact Hb.
+- exact Hc.
+Qed.
+
 (** from §14 Example 4: two-row dictionary order space is not discrete **) 
 (** LATEX VERSION: Example 4: The dictionary order topology on {1,2}×ℕ is not discrete. **)
 Definition two_by_nat : set := setprod 2 omega.
