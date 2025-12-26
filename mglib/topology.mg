@@ -19218,6 +19218,63 @@ claim Hcount_real: atleastp real omega.
 exact (form100_22_real_uncountable_atleastp Hcount_real).
 Qed.
 
+(** helper: R is not countable, hence R is not omega, omega\\{0}, or Q **)
+(** LATEX VERSION: Uses uncountability of reals to separate R from ω and ℚ. **)
+Theorem R_neq_omega : R <> omega.
+assume Heq: R = omega.
+prove False.
+claim HdefR: R = real.
+{ reflexivity. }
+claim Heq': real = omega.
+{ rewrite <- HdefR. exact Heq. }
+claim Homega_countable: atleastp omega omega.
+{ exact (Subq_atleastp omega omega (Subq_ref omega)). }
+claim Hreal_countable: atleastp real omega.
+{ rewrite Heq' at 1.
+  exact Homega_countable. }
+exact (form100_22_real_uncountable_atleastp Hreal_countable).
+Qed.
+
+Theorem R_neq_omega_nonzero : R <> (omega :\: {0}).
+assume Heq: R = omega :\: {0}.
+prove False.
+claim HdefR: R = real.
+{ reflexivity. }
+claim Heq': real = omega :\: {0}.
+{ rewrite <- HdefR. exact Heq. }
+claim Hsub: (omega :\: {0}) c= omega.
+{ exact (setminus_Subq omega {0}). }
+claim Hcount_nonzero: atleastp (omega :\: {0}) omega.
+{ exact (Subq_atleastp (omega :\: {0}) omega Hsub). }
+claim Hreal_countable: atleastp real omega.
+{ rewrite Heq' at 1.
+  exact Hcount_nonzero. }
+exact (form100_22_real_uncountable_atleastp Hreal_countable).
+Qed.
+
+Theorem R_neq_rational_numbers : R <> rational_numbers.
+assume Heq: R = rational_numbers.
+prove False.
+claim HdefR: R = real.
+{ reflexivity. }
+claim Heq': real = rational_numbers.
+{ rewrite <- HdefR. exact Heq. }
+(** rationals are countable by form100_3 and rational_numbers = rational **)
+claim Hequip: equip omega rational_numbers.
+{ claim HdefQ: rational_numbers = rational.
+  { reflexivity. }
+  rewrite HdefQ.
+  exact form100_3. }
+claim Hequip_sym: equip rational_numbers omega.
+{ exact (equip_sym omega rational_numbers Hequip). }
+claim Hcount_Q: atleastp rational_numbers omega.
+{ exact (equip_atleastp rational_numbers omega Hequip_sym). }
+claim Hreal_countable: atleastp real omega.
+{ rewrite Heq' at 1.
+  exact Hcount_Q. }
+exact (form100_22_real_uncountable_atleastp Hreal_countable).
+Qed.
+
 (** Helper: strict order on ℝ implies order_rel on ℝ **)
 (** LATEX VERSION: If a<b in ℝ then order_rel(ℝ,a,b) holds (first disjunct in the definition). **)
 Theorem Rlt_implies_order_rel_R : forall a b:set, Rlt a b -> order_rel R a b.
