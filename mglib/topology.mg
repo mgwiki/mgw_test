@@ -39804,15 +39804,15 @@ apply (SepI (Power (affine_line_R2 a b c))
       claim Hqeq: q = p.
       { exact (SingE p q Hq). }
       rewrite Hqeq.
-		      apply binintersectI.
-			      + claim Hpeta: p = (x,y).
-			        { exact (setprod_eta R R p HpRR). }
-			        rewrite Hpeta.
-			        (** NOTE: goal shape mismatch here; keep as admit until we find a rewrite or coercion lemma **)
-			        admit.
-		      + exact HpL.
-		    - let q. assume Hq: q :e (rectangle_set U V) :/\: affine_line_R2 a b c.
-		      prove q :e {p}.
+			      apply binintersectI.
+				      + claim Hpeta: p = (x,y).
+				        { exact (setprod_eta R R p HpRR). }
+				        rewrite Hpeta.
+				        (** NOTE: goal shape mismatch; revisit with tuple_pair and the Sigma encoding of setprod. **)
+				        admit.
+			      + exact HpL.
+			    - let q. assume Hq: q :e (rectangle_set U V) :/\: affine_line_R2 a b c.
+			      prove q :e {p}.
       claim HqL: q :e affine_line_R2 a b c.
       { exact (binintersectE2 (rectangle_set U V) (affine_line_R2 a b c) q Hq). }
       claim HqW: q :e rectangle_set U V.
