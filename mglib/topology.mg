@@ -48163,6 +48163,10 @@ prove x :e {z :e X | exists p:set,
 apply SepI.
 - exact HxX.
 - (** extract a path p from x to y, then reverse it **)
+  prove exists p:set,
+     function_on p unit_interval X /\
+     continuous_map unit_interval unit_interval_topology X Tx p /\
+     apply_fun p 0 = y /\ apply_fun p 1 = x.
   claim Hex: exists p:set,
      function_on p unit_interval X /\
      continuous_map unit_interval unit_interval_topology X Tx p /\
@@ -48171,83 +48175,92 @@ apply SepI.
        function_on p unit_interval X /\
        continuous_map unit_interval unit_interval_topology X Tx p /\
        apply_fun p 0 = x /\ apply_fun p 1 = y0) y HyPc). }
-  apply Hex.
-  let p. assume Hp.
-  (** reverse p on [0,1] to obtain a path from y to x **)
-  (** Hp is a left-associated conjunction: (((P /\ Q) /\ R) /\ S) **)
-  claim HpA:
-    ((function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p) /\
-      apply_fun p 0 = x) /\
-    apply_fun p 1 = y.
-  { exact Hp. }
-  claim HpB:
-    (function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p) /\
-    apply_fun p 0 = x.
-  { exact (andEL ((function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p) /\
-                   apply_fun p 0 = x)
-                 (apply_fun p 1 = y)
-                 HpA). }
-  claim HpC: function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p.
-  { exact (andEL (function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p)
-                 (apply_fun p 0 = x)
-                 HpB). }
-  claim Hp_fun: function_on p unit_interval X.
-  { exact (andEL (function_on p unit_interval X)
-                 (continuous_map unit_interval unit_interval_topology X Tx p)
-                 HpC). }
-  claim Hp_cont: continuous_map unit_interval unit_interval_topology X Tx p.
-  { exact (andER (function_on p unit_interval X)
-                 (continuous_map unit_interval unit_interval_topology X Tx p)
-                 HpC). }
-  claim Hp0: apply_fun p 0 = x.
-  { exact (andER (function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p)
-                 (apply_fun p 0 = x)
-                 HpB). }
-  claim Hp1: apply_fun p 1 = y.
-  { exact (andER ((function_on p unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p) /\
-                   apply_fun p 0 = x)
-                 (apply_fun p 1 = y)
-                 HpA). }
+  set p0 := Eps_i (fun p:set =>
+     function_on p unit_interval X /\
+     continuous_map unit_interval unit_interval_topology X Tx p /\
+     apply_fun p 0 = x /\ apply_fun p 1 = y).
+  claim Hp0prop:
+     function_on p0 unit_interval X /\
+     continuous_map unit_interval unit_interval_topology X Tx p0 /\
+     apply_fun p0 0 = x /\ apply_fun p0 1 = y.
+  { exact (Eps_i_ex (fun p:set =>
+       function_on p unit_interval X /\
+       continuous_map unit_interval unit_interval_topology X Tx p /\
+       apply_fun p 0 = x /\ apply_fun p 1 = y) Hex). }
+  (** Hp0prop is a left-associated conjunction: (((P /\ Q) /\ R) /\ S) **)
+  claim Hp0A:
+    ((function_on p0 unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p0) /\
+      apply_fun p0 0 = x) /\
+    apply_fun p0 1 = y.
+  { exact Hp0prop. }
+  claim Hp0B:
+    (function_on p0 unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p0) /\
+    apply_fun p0 0 = x.
+  { exact (andEL ((function_on p0 unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p0) /\
+                   apply_fun p0 0 = x)
+                 (apply_fun p0 1 = y)
+                 Hp0A). }
+  claim Hp0C: function_on p0 unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p0.
+  { exact (andEL (function_on p0 unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p0)
+                 (apply_fun p0 0 = x)
+                 Hp0B). }
+  claim Hp_fun: function_on p0 unit_interval X.
+  { exact (andEL (function_on p0 unit_interval X)
+                 (continuous_map unit_interval unit_interval_topology X Tx p0)
+                 Hp0C). }
+  claim Hp_cont: continuous_map unit_interval unit_interval_topology X Tx p0.
+  { exact (andER (function_on p0 unit_interval X)
+                 (continuous_map unit_interval unit_interval_topology X Tx p0)
+                 Hp0C). }
+  claim Hp0eq: apply_fun p0 0 = x.
+  { exact (andER (function_on p0 unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p0)
+                 (apply_fun p0 0 = x)
+                 Hp0B). }
+  claim Hp1eq: apply_fun p0 1 = y.
+  { exact (andER ((function_on p0 unit_interval X /\ continuous_map unit_interval unit_interval_topology X Tx p0) /\
+                   apply_fun p0 0 = x)
+                 (apply_fun p0 1 = y)
+                 Hp0A). }
 
-  set q := compose_fun unit_interval flip_unit_interval p.
-  witness q.
-  prove function_on q unit_interval X /\
-       continuous_map unit_interval unit_interval_topology X Tx q /\
-       apply_fun q 0 = y /\ apply_fun q 1 = x.
-  apply andI.
-  - (** function_on and continuity, packaged **)
-    apply andI.
-    + exact (function_on_compose_fun unit_interval unit_interval X
-             flip_unit_interval p
-             flip_unit_interval_function_on
-             Hp_fun).
-    + exact (composition_continuous unit_interval unit_interval_topology
-             unit_interval unit_interval_topology
-             X Tx
-             flip_unit_interval p
-             flip_unit_interval_continuous
-             Hp_cont).
-  - (** endpoints **)
-    apply andI.
-    + (** q 0 = y **)
-      claim H0I: 0 :e unit_interval.
-      { exact zero_in_unit_interval. }
-      claim Hq0: apply_fun q 0 = apply_fun p (apply_fun flip_unit_interval 0).
-      { exact (compose_fun_apply unit_interval flip_unit_interval p 0 H0I). }
-      rewrite Hq0.
-      rewrite flip_unit_interval_at_0.
-      rewrite Hp1.
-      reflexivity.
-    + (** q 1 = x **)
-      claim H1I: 1 :e unit_interval.
-      { exact one_in_unit_interval. }
-      claim Hq1: apply_fun q 1 = apply_fun p (apply_fun flip_unit_interval 1).
-      { exact (compose_fun_apply unit_interval flip_unit_interval p 1 H1I). }
-      rewrite Hq1.
-      rewrite flip_unit_interval_at_1.
-      rewrite Hp0.
-      reflexivity.
-Qed.
+	  set q := compose_fun unit_interval flip_unit_interval p0.
+	  witness q.
+	  prove function_on q unit_interval X /\
+	       continuous_map unit_interval unit_interval_topology X Tx q /\
+	       apply_fun q 0 = y /\ apply_fun q 1 = x.
+	  apply andI.
+	  - (** left-associative goals: ((fun_on /\ cont) /\ q0eq) **)
+	    apply andI.
+	    + (** fun_on /\ cont **)
+	      apply andI.
+	      * exact (function_on_compose_fun unit_interval unit_interval X
+	               flip_unit_interval p0
+	               flip_unit_interval_function_on
+	               Hp_fun).
+	      * exact (composition_continuous unit_interval unit_interval_topology
+	               unit_interval unit_interval_topology
+	               X Tx
+	               flip_unit_interval p0
+	               flip_unit_interval_continuous
+	               Hp_cont).
+	    + (** q 0 = y **)
+	      claim H0I: 0 :e unit_interval.
+	      { exact zero_in_unit_interval. }
+	      claim Hq0: apply_fun q 0 = apply_fun p0 (apply_fun flip_unit_interval 0).
+	      { exact (compose_fun_apply unit_interval flip_unit_interval p0 0 H0I). }
+	      rewrite Hq0.
+	      rewrite flip_unit_interval_at_0.
+	      rewrite Hp1eq.
+	      reflexivity.
+	  - (** q 1 = x **)
+	    claim H1I: 1 :e unit_interval.
+	    { exact one_in_unit_interval. }
+	    claim Hq1: apply_fun q 1 = apply_fun p0 (apply_fun flip_unit_interval 1).
+	    { exact (compose_fun_apply unit_interval flip_unit_interval p0 1 H1I). }
+	    rewrite Hq1.
+	    rewrite flip_unit_interval_at_1.
+	    rewrite Hp0eq.
+	    reflexivity.
+	Qed.
  
 Theorem path_component_transitive_axiom : forall X Tx x y z:set,
   topology_on X Tx -> x :e X -> y :e X -> z :e X ->
