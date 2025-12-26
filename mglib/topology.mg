@@ -48339,6 +48339,41 @@ Definition locally_path_connected : set -> set -> prop := fun X Tx =>
     forall U:set, U :e Tx -> x :e U ->
       exists V:set, V :e Tx /\ x :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V).
 
+(** Helper: extract topology_on from locally_path_connected **)
+Theorem locally_path_connected_topology : forall X Tx:set,
+  locally_path_connected X Tx -> topology_on X Tx.
+let X Tx.
+assume H: locally_path_connected X Tx.
+exact (andEL (topology_on X Tx)
+             (forall x:set, x :e X ->
+               forall U:set, U :e Tx -> x :e U ->
+                 exists V:set, V :e Tx /\ x :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V))
+             H).
+Qed.
+
+(** Helper: extract local path connectedness property **)
+Theorem locally_path_connected_local : forall X Tx x U:set,
+  locally_path_connected X Tx ->
+  x :e X ->
+  U :e Tx ->
+  x :e U ->
+  exists V:set, V :e Tx /\ x :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V).
+let X Tx x U.
+assume H: locally_path_connected X Tx.
+assume Hx: x :e X.
+assume HU: U :e Tx.
+assume HxU: x :e U.
+claim Hprop: forall x0:set, x0 :e X ->
+  forall U0:set, U0 :e Tx -> x0 :e U0 ->
+    exists V:set, V :e Tx /\ x0 :e V /\ V c= U0 /\ path_connected_space V (subspace_topology X Tx V).
+{ exact (andER (topology_on X Tx)
+               (forall x0:set, x0 :e X ->
+                 forall U0:set, U0 :e Tx -> x0 :e U0 ->
+                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U0 /\ path_connected_space V (subspace_topology X Tx V))
+               H). }
+exact (Hprop x Hx U HU HxU).
+Qed.
+
 (** Helper: singleton subspace is connected **)
 Theorem singleton_subspace_connected : forall X Tx x:set,
   topology_on X Tx -> x :e X ->
@@ -48920,19 +48955,14 @@ let x.
 assume Hx: x :e X.
 prove path_component_of X Tx x = component_of X Tx x.
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x0:set, x0 :e X ->
-                 forall U:set, U :e Tx -> x0 :e U ->
-                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V))
-               Hlpc). }
+{ exact (locally_path_connected_topology X Tx Hlpc). }
 claim Hlpcprop: forall x0:set, x0 :e X ->
   forall U:set, U :e Tx -> x0 :e U ->
     exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V).
-{ exact (andER (topology_on X Tx)
-               (forall x0:set, x0 :e X ->
-                 forall U:set, U :e Tx -> x0 :e U ->
-                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V))
-               Hlpc). }
+{ let x0. assume Hx0: x0 :e X.
+  let U. assume HU: U :e Tx.
+  assume Hx0U: x0 :e U.
+  exact (locally_path_connected_local X Tx x0 U Hlpc Hx0 HU Hx0U). }
 set P := path_component_of X Tx x.
 set C := component_of X Tx x.
 claim HCsubX: C c= X.
