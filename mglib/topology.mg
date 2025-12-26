@@ -61224,11 +61224,9 @@ apply and5I.
 Qed.
 (** from §31 Exercise 3: every order topology regular **)
 (** LATEX VERSION: Every order topology is regular. **)
-Axiom ex31_3_order_topology_regular_axiom : forall X:set,
-  regular_space X (order_topology X).
 Theorem ex31_3_order_topology_regular : forall X:set,
   regular_space X (order_topology X).
-exact ex31_3_order_topology_regular_axiom.
+admit.
 Qed.
 (** from §31 Exercise 4: comparing finer/coarser separation axioms **)
 (** LATEX VERSION: Let X have two topologies T and T', with T' ⊃ T. Compare separation properties. **)
@@ -61578,19 +61576,13 @@ Qed.
 Definition closed_map : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty p =>
   function_on p X Y /\ forall A:set, closed_in X Tx A -> closed_in Y Ty (image_of p A).
 
-Axiom ex31_6_closed_map_preserves_normal_axiom : forall X Tx Y Ty p:set,
-  normal_space X Tx ->
-  continuous_map X Tx Y Ty p ->
-  closed_map X Tx Y Ty p ->
-  (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) ->
-  normal_space Y Ty.
 Theorem ex31_6_closed_map_preserves_normal : forall X Tx Y Ty p:set,
   normal_space X Tx ->
   continuous_map X Tx Y Ty p ->
   closed_map X Tx Y Ty p ->
   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) ->
   normal_space Y Ty.
-exact ex31_6_closed_map_preserves_normal_axiom.
+admit.
 Qed.
 (** from §31 Exercise 7: perfect map preserves separation/countability/local compactness **)
 (** LATEX VERSION: Perfect map (closed continuous surjective with compact fibers) preserves Hausdorff, regular, locally compact, second-countable. **)
@@ -61604,30 +61596,16 @@ Definition perfect_map : set -> set -> set -> set -> set -> prop := fun X Tx Y T
     compact_space {x :e X | apply_fun p x = y}
                  (subspace_topology X Tx {x :e X | apply_fun p x = y})).
 
-Axiom ex31_7_perfect_map_properties_axiom : forall X Tx Y Ty p:set,
-  perfect_map X Tx Y Ty p ->
-  (Hausdorff_space X Tx -> Hausdorff_space Y Ty) /\
-  (regular_space X Tx -> regular_space Y Ty) /\
-  (locally_compact X Tx -> locally_compact Y Ty) /\
-  (second_countable_space X Tx -> second_countable_space Y Ty).
 Theorem ex31_7_perfect_map_properties : forall X Tx Y Ty p:set,
   perfect_map X Tx Y Ty p ->
   (Hausdorff_space X Tx -> Hausdorff_space Y Ty) /\
   (regular_space X Tx -> regular_space Y Ty) /\
   (locally_compact X Tx -> locally_compact Y Ty) /\
   (second_countable_space X Tx -> second_countable_space Y Ty).
-exact ex31_7_perfect_map_properties_axiom.
+admit.
 Qed.
 (** from §31 Exercise 8: orbit space of compact group action preserves properties **)
 (** LATEX VERSION: Let G be compact topological group, α action of G on X. Orbit space X/G retains Hausdorff, regular, normal, locally compact, second-countable properties. **)
-Axiom ex31_8_orbit_space_properties_axiom : forall G Tg X Tx alpha:set,
-  topological_group G Tg ->
-  compact_space G Tg ->
-  (Hausdorff_space X Tx -> exists XG TxG:set, Hausdorff_space XG TxG) /\
-  (regular_space X Tx -> exists XG TxG:set, regular_space XG TxG) /\
-  (normal_space X Tx -> exists XG TxG:set, normal_space XG TxG) /\
-  (locally_compact X Tx -> exists XG TxG:set, locally_compact XG TxG) /\
-  (second_countable_space X Tx -> exists XG TxG:set, second_countable_space XG TxG).
 Theorem ex31_8_orbit_space_properties : forall G Tg X Tx alpha:set,
   topological_group G Tg ->
   compact_space G Tg ->
@@ -61636,7 +61614,7 @@ Theorem ex31_8_orbit_space_properties : forall G Tg X Tx alpha:set,
   (normal_space X Tx -> exists XG TxG:set, normal_space XG TxG) /\
   (locally_compact X Tx -> exists XG TxG:set, locally_compact XG TxG) /\
   (second_countable_space X Tx -> exists XG TxG:set, second_countable_space XG TxG).
-exact ex31_8_orbit_space_properties_axiom.
+admit.
 Qed.
 (** from §31 Exercise 9: Sorgenfrey plane rational/irrational diagonal non-separation **)
 (** LATEX VERSION: In ℝ_ℓ², let A = {x × (-x) | x rational}, B = {x × (-x) | x irrational}. No open sets separate A and B. **)
@@ -61645,13 +61623,6 @@ Definition Sorgenfrey_plane_diag_rational : set :=
   {(x, minus_SNo x) | x :e rational_numbers}.
 Definition Sorgenfrey_plane_diag_irrational : set :=
   {(x, minus_SNo x) | x :e (Sorgenfrey_line :\: rational_numbers)}.
-Axiom ex31_9_Sorgenfrey_plane_no_separation_axiom :
-  ~ (exists U V:set,
-      open_in (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology U /\
-      open_in (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology V /\
-      Sorgenfrey_plane_diag_rational c= U /\
-      Sorgenfrey_plane_diag_irrational c= V /\
-      U :/\: V = Empty).
 Theorem ex31_9_Sorgenfrey_plane_no_separation :
   ~ (exists U V:set,
       open_in (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology U /\
@@ -61659,31 +61630,19 @@ Theorem ex31_9_Sorgenfrey_plane_no_separation :
       Sorgenfrey_plane_diag_rational c= U /\
       Sorgenfrey_plane_diag_irrational c= V /\
       U :/\: V = Empty).
-exact ex31_9_Sorgenfrey_plane_no_separation_axiom.
+admit.
 Qed.
 
 (** from §32 Exercise 1: closed subspace of normal is normal **)
 (** LATEX VERSION: A closed subspace of a normal space is normal. **)
-Axiom ex32_1_closed_subspace_normal_axiom : forall X Tx A:set,
-  normal_space X Tx ->
-  closed_in X Tx A ->
-  normal_space A (subspace_topology X Tx A).
 Theorem ex32_1_closed_subspace_normal : forall X Tx A:set,
   normal_space X Tx ->
   closed_in X Tx A ->
   normal_space A (subspace_topology X Tx A).
-exact ex32_1_closed_subspace_normal_axiom.
+admit.
 Qed.
 (** from §32 Exercise 2: factor spaces of products inherit separation **)
 (** LATEX VERSION: If ∏X_α is Hausdorff/regular/normal, then so is each X_α (assuming X_α nonempty). **)
-Axiom ex32_2_factors_inherit_separation_axiom : forall Idx Fam:set,
-  (forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ Xi <> Empty) ->
-  ((Hausdorff_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
-      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ Hausdorff_space Xi Txi) /\
-   (regular_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
-      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ regular_space Xi Txi) /\
-   (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
-      forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ normal_space Xi Txi)).
 Theorem ex32_2_factors_inherit_separation : forall Idx Fam:set,
   (forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ Xi <> Empty) ->
   ((Hausdorff_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
@@ -61692,31 +61651,23 @@ Theorem ex32_2_factors_inherit_separation : forall Idx Fam:set,
       forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ regular_space Xi Txi) /\
    (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
       forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ normal_space Xi Txi)).
-exact ex32_2_factors_inherit_separation_axiom.
+admit.
 Qed.
 (** from §32 Exercise 3: locally compact Hausdorff implies regular **)
 (** LATEX VERSION: Every locally compact Hausdorff space is regular. **)
-Axiom ex32_3_locally_compact_Hausdorff_regular_axiom : forall X Tx:set,
-  locally_compact X Tx ->
-  Hausdorff_space X Tx ->
-  regular_space X Tx.
 Theorem ex32_3_locally_compact_Hausdorff_regular : forall X Tx:set,
   locally_compact X Tx ->
   Hausdorff_space X Tx ->
   regular_space X Tx.
-exact ex32_3_locally_compact_Hausdorff_regular_axiom.
+admit.
 Qed.
 (** from §32 Exercise 4: regular Lindelof implies normal **)
 (** LATEX VERSION: Every regular Lindelöf space is normal. **)
-Axiom ex32_4_regular_Lindelof_normal_axiom : forall X Tx:set,
-  regular_space X Tx ->
-  Lindelof_space X Tx ->
-  normal_space X Tx.
 Theorem ex32_4_regular_Lindelof_normal : forall X Tx:set,
   regular_space X Tx ->
   Lindelof_space X Tx ->
   normal_space X Tx.
-exact ex32_4_regular_Lindelof_normal_axiom.
+admit.
 Qed.
 (** from §32 Exercise 5: normality questions for Romega product topologies **)
 (** LATEX VERSION: Is ℝ^ω normal in product topology? In uniform topology? **)
