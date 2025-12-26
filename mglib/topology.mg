@@ -20576,6 +20576,117 @@ exact (SepI real
             Hex).
 Qed.
 
+(** Helper: 1 is in rational_numbers **)
+(** Uses the definition rational = {x :e real | exists m :e int, exists n :e omega :\: {0}, x = m :/: n}. **)
+Theorem one_in_rational_numbers : 1 :e rational_numbers.
+prove 1 :e rational.
+claim H1real: 1 :e real.
+{ exact real_1. }
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim H1int: 1 :e int.
+{ exact (Subq_omega_int 1 H1omega). }
+claim H1not0: 1 /:e {0}.
+{ assume H1: 1 :e {0}.
+  prove False.
+  claim Heq: 1 = 0.
+  { exact (SingE 0 1 H1). }
+  exact (neq_1_0 Heq). }
+claim H1nonzero: 1 :e omega :\: {0}.
+{ exact (setminusI omega {0} 1 H1omega H1not0). }
+claim Hrecip1: recip_SNo 1 = 1.
+{ claim H1neq0: 1 <> 0.
+  { exact neq_1_0. }
+  claim Hinv: mul_SNo 1 (recip_SNo 1) = 1.
+  { exact (recip_SNo_invR 1 SNo_1 H1neq0). }
+  rewrite <- (mul_SNo_oneL (recip_SNo 1) (SNo_recip_SNo 1 SNo_1)) at 1.
+  exact Hinv. }
+claim Heq1: 1 = div_SNo 1 1.
+{ claim Hdivdef: div_SNo 1 1 = mul_SNo 1 (recip_SNo 1).
+  { reflexivity. }
+  rewrite Hdivdef.
+  rewrite Hrecip1.
+  rewrite (mul_SNo_oneR 1 SNo_1).
+  reflexivity. }
+claim Hex: exists m :e int, exists n :e omega :\: {0}, 1 = div_SNo m n.
+{ witness 1.
+  apply andI.
+  - exact H1int.
+  - witness 1.
+    apply andI.
+    + exact H1nonzero.
+    + exact Heq1. }
+exact (SepI real
+            (fun x:set => exists m :e int, exists n :e omega :\: {0}, x = div_SNo m n)
+            1
+            H1real
+            Hex).
+Qed.
+
+(** Helper: minus one is in rational_numbers **)
+Theorem minus_one_in_rational_numbers : minus_SNo 1 :e rational_numbers.
+prove minus_SNo 1 :e rational.
+claim HdefQ: rational_numbers = rational.
+{ reflexivity. }
+claim H1rat: 1 :e rational.
+{ rewrite <- HdefQ at 1.
+  exact one_in_rational_numbers. }
+claim Hm1rat: minus_SNo 1 :e rational.
+{ exact (rational_minus_SNo 1 H1rat). }
+rewrite <- HdefQ at 1.
+exact Hm1rat.
+Qed.
+
+(** Helper: minus one is not in omega **)
+Theorem minus_one_not_in_omega : minus_SNo 1 /:e omega.
+assume Hm1: minus_SNo 1 :e omega.
+prove False.
+claim Hle0: 0 <= minus_SNo 1.
+{ exact (omega_nonneg (minus_SNo 1) Hm1). }
+claim Hm1S: SNo (minus_SNo 1).
+{ exact (SNo_minus_SNo 1 SNo_1). }
+apply (SNoLeE 0 (minus_SNo 1) SNo_0 Hm1S Hle0 False).
+- assume H0ltm1: 0 < minus_SNo 1.
+  claim Hm1lt0: minus_SNo 1 < 0.
+  { exact minus_1_lt_0. }
+  claim H00: 0 < 0.
+  { exact (SNoLt_tra 0 (minus_SNo 1) 0 SNo_0 Hm1S SNo_0 H0ltm1 Hm1lt0). }
+  exact ((SNoLt_irref 0) H00).
+- assume H0eqm1: 0 = minus_SNo 1.
+  claim Hm1lt0: minus_SNo 1 < 0.
+  { exact minus_1_lt_0. }
+  claim H00: 0 < 0.
+  { rewrite H0eqm1 at 1.
+    exact Hm1lt0. }
+  exact ((SNoLt_irref 0) H00).
+Qed.
+
+(** Helper: rational_numbers is not omega **)
+Theorem rational_numbers_neq_omega : rational_numbers <> omega.
+assume Heq: rational_numbers = omega.
+prove False.
+claim Hm1Q: minus_SNo 1 :e rational_numbers.
+{ exact minus_one_in_rational_numbers. }
+claim Hm1omega: minus_SNo 1 :e omega.
+{ rewrite <- Heq.
+  exact Hm1Q. }
+exact (minus_one_not_in_omega Hm1omega).
+Qed.
+
+(** Helper: rational_numbers is not omega minus {0} **)
+Theorem rational_numbers_neq_omega_nonzero : rational_numbers <> (omega :\: {0}).
+assume Heq: rational_numbers = omega :\: {0}.
+prove False.
+claim Hm1Q: minus_SNo 1 :e rational_numbers.
+{ exact minus_one_in_rational_numbers. }
+claim Hm1NZ: minus_SNo 1 :e omega :\: {0}.
+{ rewrite <- Heq.
+  exact Hm1Q. }
+claim Hm1omega: minus_SNo 1 :e omega.
+{ exact (setminusE1 omega {0} (minus_SNo 1) Hm1NZ). }
+exact (minus_one_not_in_omega Hm1omega).
+Qed.
+
 (** Helper: Zplus is not omega **)
 Theorem Zplus_neq_omega : Zplus <> omega.
 assume Heq: Zplus = omega.
@@ -20806,6 +20917,63 @@ prove False.
 apply R_neq_rational_numbers.
 rewrite <- Heq.
 reflexivity.
+Qed.
+
+(** Helper: order_rel on rational_numbers implies strict order in R **)
+(** LATEX VERSION: If order_rel(ℚ,a,b) then a<b in ℝ (all other disjuncts contradict known inequalities of carrier sets). **)
+Theorem order_rel_Q_implies_Rlt : forall a b:set, order_rel rational_numbers a b -> Rlt a b.
+let a b. assume Hrel: order_rel rational_numbers a b.
+prove Rlt a b.
+apply (Hrel (Rlt a b)).
+- assume Hleft.
+  apply (Hleft (Rlt a b)).
+  - assume Hleft2.
+    apply (Hleft2 (Rlt a b)).
+    + assume Hleft3.
+      apply (Hleft3 (Rlt a b)).
+      * assume Hleft4.
+        apply (Hleft4 (Rlt a b)).
+        - assume HA: rational_numbers = R /\ Rlt a b.
+          apply FalseE.
+          claim Heq: rational_numbers = R.
+          { exact (andEL (rational_numbers = R) (Rlt a b) HA). }
+          exact (rational_numbers_neq_R Heq).
+        - assume HB: rational_numbers = rational_numbers /\ Rlt a b.
+          exact (andER (rational_numbers = rational_numbers) (Rlt a b) HB).
+      * assume HC: rational_numbers = omega /\ a :e b.
+        apply FalseE.
+        claim Heq: rational_numbers = omega.
+        { exact (andEL (rational_numbers = omega) (a :e b) HC). }
+        exact (rational_numbers_neq_omega Heq).
+    + assume HD: rational_numbers = omega :\: {0} /\ a :e b.
+      apply FalseE.
+      claim Heq: rational_numbers = omega :\: {0}.
+      { exact (andEL (rational_numbers = omega :\: {0}) (a :e b) HD). }
+      exact (rational_numbers_neq_omega_nonzero Heq).
+  - assume HE: rational_numbers = setprod 2 omega /\
+      exists i m j n:set,
+        i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+        a = (i, m) /\ b = (j, n) /\ (i :e j \/ (i = j /\ m :e n)).
+    apply FalseE.
+    claim Heq: rational_numbers = setprod 2 omega.
+    { exact (andEL (rational_numbers = setprod 2 omega)
+                  (exists i m j n:set,
+                    i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+                    a = (i, m) /\ b = (j, n) /\ (i :e j \/ (i = j /\ m :e n)))
+                  HE). }
+    exact (rational_numbers_neq_setprod_2_omega Heq).
+- assume HF: rational_numbers = setprod R R /\
+    exists a1 a2 b1 b2:set,
+      a = (a1, a2) /\ b = (b1, b2) /\
+      (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2)).
+  apply FalseE.
+  claim Heq: rational_numbers = setprod R R.
+  { exact (andEL (rational_numbers = setprod R R)
+                 (exists a1 a2 b1 b2:set,
+                   a = (a1, a2) /\ b = (b1, b2) /\
+                   (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2)))
+                 HF). }
+  exact (rational_numbers_neq_setprod_R_R Heq).
 Qed.
 
 (** helper: unfold order_rel on setprod 2 omega to the dictionary-order case **)
