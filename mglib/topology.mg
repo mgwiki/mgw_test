@@ -60253,39 +60253,27 @@ Definition locally_metrizable_space : set -> set -> prop := fun X Tx =>
     exists N:set, N :e Tx /\ x :e N /\
       exists d:set, metric_on N d /\ subspace_topology X Tx N = metric_topology N d.
 
-Axiom supp_ex_locally_euclidean_1_axiom : forall X Tx m:set,
-  locally_m_euclidean X Tx m ->
-  locally_compact X Tx /\ locally_metrizable_space X Tx.
 Theorem supp_ex_locally_euclidean_1 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   locally_compact X Tx /\ locally_metrizable_space X Tx.
-exact supp_ex_locally_euclidean_1_axiom.
+admit.
 Qed.
 
 (** from Supplementary Exercises Exercise 2: implications among conditions **)
 (** LATEX VERSION: For locally m-euclidean X: (i) compact Hausdorff ⇒ (ii) m-manifold ⇒ (iii) metrizable ⇒ (iv) normal ⇒ (v) Hausdorff. **)
-Axiom supp_ex_locally_euclidean_2_i_implies_ii_axiom : forall X Tx m:set,
-  locally_m_euclidean X Tx m ->
-  compact_space X Tx ->
-  Hausdorff_space X Tx ->
-  m_manifold X Tx.
 Theorem supp_ex_locally_euclidean_2_i_implies_ii : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   compact_space X Tx ->
   Hausdorff_space X Tx ->
   m_manifold X Tx.
-exact supp_ex_locally_euclidean_2_i_implies_ii_axiom.
+admit.
 Qed.
 
-Axiom supp_ex_locally_euclidean_2_ii_implies_iii_axiom : forall X Tx m:set,
-  locally_m_euclidean X Tx m ->
-  m_manifold X Tx ->
-  metrizable X Tx.
 Theorem supp_ex_locally_euclidean_2_ii_implies_iii : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   m_manifold X Tx ->
   metrizable X Tx.
-exact supp_ex_locally_euclidean_2_ii_implies_iii_axiom.
+admit.
 Qed.
 
 Theorem supp_ex_locally_euclidean_2_iii_implies_iv : forall X Tx:set,
@@ -60442,28 +60430,20 @@ Qed.
 
 (** from Supplementary Exercises Exercise 3: R is locally 1-euclidean satisfies (ii) not (i) **)
 (** LATEX VERSION: R is locally 1-euclidean and satisfies (ii) but not (i). **)
-Axiom supp_ex_locally_euclidean_3_axiom :
-  locally_m_euclidean R R_standard_topology (Sing Empty) /\
-  m_manifold R R_standard_topology /\
-  ~ (compact_space R R_standard_topology /\ Hausdorff_space R R_standard_topology).
 Theorem supp_ex_locally_euclidean_3 :
   locally_m_euclidean R R_standard_topology (Sing Empty) /\
   m_manifold R R_standard_topology /\
   ~ (compact_space R R_standard_topology /\ Hausdorff_space R R_standard_topology).
-exact supp_ex_locally_euclidean_3_axiom.
+admit.
 Qed.
 
 (** from Supplementary Exercises Exercise 4: R×R dictionary order is locally 1-euclidean satisfies (iii) not (ii) **)
 (** LATEX VERSION: R×R in dictionary order topology is locally 1-euclidean and satisfies (iii) but not (ii). **)
-Axiom supp_ex_locally_euclidean_4_axiom :
-  locally_m_euclidean EuclidPlane (order_topology EuclidPlane) (Sing Empty) /\
-  metrizable EuclidPlane (order_topology EuclidPlane) /\
-  ~ m_manifold EuclidPlane (order_topology EuclidPlane).
 Theorem supp_ex_locally_euclidean_4 :
   locally_m_euclidean EuclidPlane (order_topology EuclidPlane) (Sing Empty) /\
   metrizable EuclidPlane (order_topology EuclidPlane) /\
   ~ m_manifold EuclidPlane (order_topology EuclidPlane).
-exact supp_ex_locally_euclidean_4_axiom.
+admit.
 Qed.
 
 (** from Supplementary Exercises Exercise 5: long line is locally 1-euclidean satisfies (iv) not (iii) **)
@@ -60493,52 +60473,37 @@ claim Hex: exists T:set, topology_on long_line T.
   exact (discrete_topology_on long_line). }
 exact (Eps_i_ex (fun T:set => topology_on long_line T) Hex).
 Qed.
-Axiom supp_ex_locally_euclidean_5_axiom :
-  locally_m_euclidean long_line long_line_topology (Sing Empty) /\
-  normal_space long_line long_line_topology /\
-  ~ metrizable long_line long_line_topology.
 Theorem supp_ex_locally_euclidean_5 :
   locally_m_euclidean long_line long_line_topology (Sing Empty) /\
   normal_space long_line long_line_topology /\
   ~ metrizable long_line long_line_topology.
-exact supp_ex_locally_euclidean_5_axiom.
+admit.
 Qed.
 
 (** from Supplementary Exercises Exercise 7: Hausdorff iff completely regular **)
 (** LATEX VERSION: For locally m-euclidean X: X is Hausdorff iff X is completely regular. **)
-Axiom supp_ex_locally_euclidean_7_axiom : forall X Tx m:set,
-  locally_m_euclidean X Tx m ->
-  (Hausdorff_space X Tx <-> completely_regular_space X Tx).
 Theorem supp_ex_locally_euclidean_7 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   (Hausdorff_space X Tx <-> completely_regular_space X Tx).
-exact supp_ex_locally_euclidean_7_axiom.
+admit.
 Qed.
 
 (** from Supplementary Exercises Exercise 8: metrizable iff paracompact Hausdorff **)
 (** LATEX VERSION: For locally m-euclidean X: X is metrizable iff X is paracompact Hausdorff. **)
-Axiom supp_ex_locally_euclidean_8_axiom : forall X Tx m:set,
-  locally_m_euclidean X Tx m ->
-  (metrizable X Tx <-> (paracompact_space X Tx /\ Hausdorff_space X Tx)).
 Theorem supp_ex_locally_euclidean_8 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   (metrizable X Tx <-> (paracompact_space X Tx /\ Hausdorff_space X Tx)).
-exact supp_ex_locally_euclidean_8_axiom.
+admit.
 Qed.
 
 (** from Supplementary Exercises Exercise 9: metrizable implies components are m-manifolds **)
 (** LATEX VERSION: If locally m-euclidean X is metrizable, then each component of X is an m-manifold. **)
-Axiom supp_ex_locally_euclidean_9_axiom : forall X Tx m:set,
-  locally_m_euclidean X Tx m ->
-  metrizable X Tx ->
-  forall x:set, x :e X ->
-    m_manifold (component_of X Tx x) (subspace_topology X Tx (component_of X Tx x)).
 Theorem supp_ex_locally_euclidean_9 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   metrizable X Tx ->
   forall x:set, x :e X ->
     m_manifold (component_of X Tx x) (subspace_topology X Tx (component_of X Tx x)).
-exact supp_ex_locally_euclidean_9_axiom.
+admit.
 Qed.
 
 (** helper: G_delta subset coded via countable intersection of open sets **)
