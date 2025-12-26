@@ -47414,6 +47414,27 @@ claim Hpair0: function_on p unit_interval X /\ apply_fun p 0 = x.
 exact (andI (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = y) Hpair0 H1).
 Qed.
 
+(** Helper: split a path witness pair (path_between and continuity) **)
+Theorem path_witness_between : forall X Tx x y p:set,
+  (path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p) ->
+  path_between X x y p.
+let X Tx x y p.
+assume H: path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
+exact (andEL (path_between X x y p)
+             (continuous_map unit_interval unit_interval_topology X Tx p)
+             H).
+Qed.
+
+Theorem path_witness_continuous : forall X Tx x y p:set,
+  (path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p) ->
+  continuous_map unit_interval unit_interval_topology X Tx p.
+let X Tx x y p.
+assume H: path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
+exact (andER (path_between X x y p)
+             (continuous_map unit_interval unit_interval_topology X Tx p)
+             H).
+Qed.
+
 (** Helper: extract topology_on from path_connected_space **)
 Theorem path_connected_space_topology : forall X Tx:set,
   path_connected_space X Tx -> topology_on X Tx.
@@ -47692,9 +47713,9 @@ apply andI.
   let p. assume Hp_and_cont.
   (** Extract path_between and continuity **)
   claim Hp: path_between X x y p.
-  { exact (andEL (path_between X x y p) (continuous_map unit_interval unit_interval_topology X Tx p) Hp_and_cont). }
+  { exact (path_witness_between X Tx x y p Hp_and_cont). }
   claim Hpcont: continuous_map unit_interval unit_interval_topology X Tx p.
-  { exact (andER (path_between X x y p) (continuous_map unit_interval unit_interval_topology X Tx p) Hp_and_cont). }
+  { exact (path_witness_continuous X Tx x y p Hp_and_cont). }
   (** Extract function and endpoints from Hp (left-associative /\) **)
   claim Hpfunc: function_on p unit_interval X.
   { exact (path_between_function_on X x y p Hp). }
@@ -47919,11 +47940,9 @@ apply andI.
   apply (Hpath_prop x1 x2 Hx1X Hx2X).
   let p. assume Hp_pair: path_between X x1 x2 p /\ continuous_map unit_interval unit_interval_topology X Tx p.
   claim Hp_between: path_between X x1 x2 p.
-  { exact (andEL (path_between X x1 x2 p)
-                 (continuous_map unit_interval unit_interval_topology X Tx p) Hp_pair). }
+  { exact (path_witness_between X Tx x1 x2 p Hp_pair). }
   claim Hp_cont: continuous_map unit_interval unit_interval_topology X Tx p.
-  { exact (andER (path_between X x1 x2 p)
-                 (continuous_map unit_interval unit_interval_topology X Tx p) Hp_pair). }
+  { exact (path_witness_continuous X Tx x1 x2 p Hp_pair). }
 
   (** Define the composed path q = f ∘ p **)
   set q := compose_fun unit_interval p f.
@@ -48092,11 +48111,9 @@ apply Hex.
 let p.
 assume Hp: path_between V y z p /\ continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p.
 claim Hpb: path_between V y z p.
-{ exact (andEL (path_between V y z p)
-               (continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p) Hp). }
+{ exact (path_witness_between V (subspace_topology X Tx V) y z p Hp). }
 claim HpcontV: continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p.
-{ exact (andER (path_between V y z p)
-               (continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p) Hp). }
+{ exact (path_witness_continuous V (subspace_topology X Tx V) y z p Hp). }
 claim HpbL: function_on p unit_interval V /\ apply_fun p 0 = y.
 { exact (path_between_pair0 V y z p Hpb). }
 claim Hp1: apply_fun p 1 = z.
@@ -48846,9 +48863,9 @@ apply set_ext.
     let p.
     assume Hp: path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
     claim Hpb: path_between X x y p.
-    { exact (andEL (path_between X x y p) (continuous_map unit_interval unit_interval_topology X Tx p) Hp). }
+    { exact (path_witness_between X Tx x y p Hp). }
     claim Hcont: continuous_map unit_interval unit_interval_topology X Tx p.
-    { exact (andER (path_between X x y p) (continuous_map unit_interval unit_interval_topology X Tx p) Hp). }
+    { exact (path_witness_continuous X Tx x y p Hp). }
     prove exists q:set, function_on q unit_interval X /\
       continuous_map unit_interval unit_interval_topology X Tx q /\
       apply_fun q 0 = x /\ apply_fun q 1 = y.
