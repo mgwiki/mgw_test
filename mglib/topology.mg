@@ -37839,6 +37839,86 @@ apply andI.
     exact (topology_union_closed X Tx Fam HTx HFamSubTx).
 Qed.
 
+(** helper: restricting the domain to a subspace preserves continuity **)
+(** LATEX VERSION: If f is continuous on X and A⊂X, then f restricted to A is continuous with the subspace topology on A. **)
+Theorem continuous_on_subspace_rule : forall X Tx Y Ty f A:set,
+  topology_on X Tx -> topology_on Y Ty -> A c= X ->
+  continuous_map X Tx Y Ty f ->
+  continuous_map A (subspace_topology X Tx A) Y Ty f.
+let X Tx Y Ty f A.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+assume HA: A c= X.
+assume Hf: continuous_map X Tx Y Ty f.
+prove continuous_map A (subspace_topology X Tx A) Y Ty f.
+claim HTA: topology_on A (subspace_topology X Tx A).
+{ exact (subspace_topology_is_topology X Tx A HTx HA). }
+claim HpreX: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+{ exact (andER (((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y))
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+               Hf). }
+claim Htmp: (topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y.
+{ exact (andEL (((topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y))
+               (forall V:set, V :e Ty -> preimage_of X f V :e Tx)
+               Hf). }
+claim HfunXY: function_on f X Y.
+{ exact (andER (topology_on X Tx /\ topology_on Y Ty)
+               (function_on f X Y)
+               Htmp). }
+prove topology_on A (subspace_topology X Tx A) /\ topology_on Y Ty /\ function_on f A Y /\
+  forall V:set, V :e Ty -> preimage_of A f V :e subspace_topology X Tx A.
+apply andI.
+- apply andI.
+  + apply andI.
+    * exact HTA.
+    * exact HTy.
+  + (** function_on f A Y **)
+    let a. assume HaA: a :e A.
+    prove apply_fun f a :e Y.
+    claim HaX: a :e X.
+    { exact (HA a HaA). }
+    exact (HfunXY a HaX).
+- let V. assume HV: V :e Ty.
+  prove preimage_of A f V :e subspace_topology X Tx A.
+  set U := preimage_of X f V.
+  claim HU_open: U :e Tx.
+  { exact (HpreX V HV). }
+  claim Heq: preimage_of A f V = U :/\: A.
+  { apply set_ext.
+    - let a. assume Ha: a :e preimage_of A f V.
+      prove a :e U :/\: A.
+      claim HaA: a :e A.
+      { exact (SepE1 A (fun u:set => apply_fun f u :e V) a Ha). }
+      claim HaU: a :e U.
+      { claim HaX: a :e X.
+        { exact (HA a HaA). }
+        claim HaV: apply_fun f a :e V.
+        { exact (SepE2 A (fun u:set => apply_fun f u :e V) a Ha). }
+        exact (SepI X (fun x:set => apply_fun f x :e V) a HaX HaV). }
+      exact (binintersectI U A a HaU HaA).
+    - let a. assume Ha: a :e U :/\: A.
+      prove a :e preimage_of A f V.
+      claim HaU: a :e U.
+      { exact (binintersectE1 U A a Ha). }
+      claim HaA: a :e A.
+      { exact (binintersectE2 U A a Ha). }
+      claim HaV: apply_fun f a :e V.
+      { exact (SepE2 X (fun x:set => apply_fun f x :e V) a HaU). }
+      exact (SepI A (fun u:set => apply_fun f u :e V) a HaA HaV).
+  }
+  rewrite Heq.
+  claim HWpow: (U :/\: A) :e Power A.
+  { apply PowerI.
+    let a. assume Ha: a :e U :/\: A.
+    exact (binintersectE2 U A a Ha). }
+  claim HexW: exists W :e Tx, U :/\: A = W :/\: A.
+  { witness U.
+    apply andI.
+    - exact HU_open.
+    - reflexivity. }
+  exact (SepI (Power A) (fun U0:set => exists W :e Tx, U0 = W :/\: A) (U :/\: A) HWpow HexW).
+Qed.
+
 (** helper: flip_unit_interval is continuous in the unit interval topology **)
 (** LATEX VERSION: The map t |-> 1 - t is continuous on the unit interval I. **)
 Theorem flip_unit_interval_continuous :
@@ -39448,13 +39528,30 @@ apply andI.
 		      apply andI.
 		      - admit.
 		      - witness (projection1 R R).
-		        apply andI.
+			        apply andI.
 			        + apply andI.
-			          * admit.
+			          * claim HTll: topology_on R R_lower_limit_topology.
+			            { exact R_lower_limit_topology_is_topology. }
+			            claim HTstd: topology_on R R_standard_topology.
+			            { exact R_standard_topology_is_topology. }
+			            claim HTprod: topology_on (setprod R R)
+			              (product_topology R R_lower_limit_topology R R_standard_topology).
+			            { exact (product_topology_is_topology R R_lower_limit_topology R R_standard_topology HTll HTstd). }
+			            claim Hproj1Cont:
+			              continuous_map (setprod R R)
+			                (product_topology R R_lower_limit_topology R R_standard_topology)
+			                R R_lower_limit_topology (projection1 R R).
+			            { exact (projection1_continuous_in_product R R_lower_limit_topology R R_standard_topology HTll HTstd). }
+			            claim Hsub: affine_line_R2 a b c c= setprod R R.
+			            { exact (affine_line_R2_subset_R2 a b c). }
+			            exact (continuous_on_subspace_rule (setprod R R)
+			              (product_topology R R_lower_limit_topology R R_standard_topology)
+			              R R_lower_limit_topology (projection1 R R) (affine_line_R2 a b c)
+			              HTprod HTll Hsub Hproj1Cont).
 			          * let x. assume HxR: x :e R.
 			            exact (projection1_after_affine_line_R2_param_by_x a b c x HaR HbR HcR HxR).
-		        + let p. assume Hp: p :e affine_line_R2 a b c.
-		          exact (affine_line_R2_param_by_x_after_projection1_on_line a b c p HaR HbR HcR Hbne Hp).
+			        + let p. assume Hp: p :e affine_line_R2 a b c.
+			          exact (affine_line_R2_param_by_x_after_projection1_on_line a b c p HaR HbR HcR Hbne Hp).
   + assume Hneg: b <> 0 /\ same_sign_nonzero_R a b.
     witness (affine_line_R2_param_by_x a b c).
     admit.
