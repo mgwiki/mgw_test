@@ -24613,8 +24613,7 @@ Qed.
 
 (** from §16 Example 3: ordered square versus subspace topology **) 
 (** LATEX VERSION: Example 3: The order topology on the ordered square differs from the subspace topology inherited from the dictionary order on ℝ×ℝ. **)
-(** FIXED: Unit interval [0,1] = {x ∈ R | 0 ≤ x ≤ 1}.
-    Using negated strict inequality: x ≥ 0 means ~(x < 0), x ≤ 1 means ~(1 < x). **)
+(** FIXED: Unit interval [0,1] = {x ∈ R | 0 ≤ x ≤ 1}, using negated strict inequality: x ≥ 0 means ~(x < 0) and x ≤ 1 means ~(1 < x). **)
 Definition unit_interval : set := {x :e R | ~(Rlt x 0) /\ ~(Rlt 1 x)}.
 
 (** helper: unit_interval is a subset of R **)
@@ -26193,8 +26192,7 @@ assume Htop': topology_on X T'.
 assume Hfiner: T' c= T.
 assume HY: Y c= X.
 prove subspace_topology X T' Y c= subspace_topology X T Y.
-(** Strategy: If W ∈ subspace_topology X T' Y, then W = V' ∩ Y for some V' ∈ T'.
-    Since T' ⊆ T, we have V' ∈ T, so W ∈ subspace_topology X T Y. **)
+(** Strategy: If W ∈ subspace_topology X T' Y, then W = V' ∩ Y for some V' ∈ T'; since T' ⊆ T, V' ∈ T, so W ∈ subspace_topology X T Y. **)
 let W.
 assume HW: W :e subspace_topology X T' Y.
 prove W :e subspace_topology X T Y.
@@ -29445,8 +29443,7 @@ let X Tx A.
 assume Htop: topology_on X Tx.
 assume HA: A c= X.
 prove interior_of X Tx A = X :\: closure_of X Tx (X :\: A).
-(** Strategy: int(A) is the largest open subset of A.
-    X \ cl(X\A) is open (complement of closed), and we show it equals int(A). **)
+(** Strategy: int(A) is the largest open subset of A; X \\ cl(X\\A) is open (complement of closed), and we show it equals int(A). **)
 claim HXA_sub: X :\: A c= X.
 { let x. assume Hx: x :e X :\: A.
   exact (setminusE1 X A x Hx). }
@@ -29721,8 +29718,7 @@ apply set_ext.
 - prove closure_of X Tx Empty c= Empty.
   let x. assume Hx: x :e closure_of X Tx Empty.
   prove x :e Empty.
-  (** x :e closure means: x :e X and for all U open with x :e U, U ∩ Empty ≠ Empty.
-      But U ∩ Empty = Empty always, so this is impossible unless X is open and x :e X forces contradiction. **)
+  (** x :e closure means: x :e X and for all U open with x :e U, U ∩ Empty ≠ Empty; but U ∩ Empty = Empty, so this is impossible. **)
   apply (SepE X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: Empty <> Empty) x Hx).
   assume HxX: x :e X.
   assume Hcond: forall U:set, U :e Tx -> x :e U -> U :/\: Empty <> Empty.
