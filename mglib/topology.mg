@@ -22948,6 +22948,17 @@ rewrite Hp1.
 exact HeqT.
 Qed.
 
+(** Helper: pairing belongs to setprod via Sigma encoding **)
+Theorem tuple_2_setprod_by_pair_Sigma : forall X Y:set, forall x y:set,
+  x :e X -> y :e Y -> (x,y) :e setprod X Y.
+let X Y x y.
+assume Hx: x :e X.
+assume Hy: y :e Y.
+prove (x,y) :e setprod X Y.
+rewrite <- (tuple_pair x y) at 1.
+exact (pair_Sigma X (fun _ : set => Y) x Hx y Hy).
+Qed.
+
 (** Helper: cartesian products preserve subset relation **)
 Theorem setprod_Subq : forall U V X Y:set,
   U c= X -> V c= Y -> setprod U V c= setprod X Y.
@@ -22970,18 +22981,7 @@ claim Heta: p = (p 0, p 1).
 { exact (setprod_eta U V p Hp). }
 rewrite Heta.
 prove (p 0, p 1) :e setprod X Y.
-exact (tuple_2_setprod X Y (p 0) Hp0X (p 1) Hp1Y).
-Qed.
-
-(** Helper: pairing belongs to setprod via Sigma encoding **)
-Theorem tuple_2_setprod_by_pair_Sigma : forall X Y:set, forall x y:set,
-  x :e X -> y :e Y -> (x,y) :e setprod X Y.
-let X Y x y.
-assume Hx: x :e X.
-assume Hy: y :e Y.
-prove (x,y) :e setprod X Y.
-rewrite <- (tuple_pair x y) at 1.
-exact (pair_Sigma X (fun _ : set => Y) x Hx y Hy).
+exact (tuple_2_setprod_by_pair_Sigma X Y (p 0) (p 1) Hp0X Hp1Y).
 Qed.
 
 (** Helper: elements of cartesian products have coordinates **)
@@ -23003,7 +23003,7 @@ apply andI.
   * claim Heta: p = (p 0, p 1).
     { exact (setprod_eta X Y p Hp). }
     rewrite Heta at 1.
-    exact (tuple_2_setprod {p 0} {p 1} (p 0) (SingI (p 0)) (p 1) (SingI (p 1))).
+    exact (tuple_2_setprod_by_pair_Sigma {p 0} {p 1} (p 0) (p 1) (SingI (p 0)) (SingI (p 1))).
 Qed.
 
 (** Helper: singleton subset property **)
@@ -23079,7 +23079,7 @@ apply set_ext.
   claim Heta: p = (p 0, p 1).
   { exact (setprod_eta U1 V1 p HpU1V1). }
   rewrite Heta.
-  exact (tuple_2_setprod (U1 :/\: U2) (V1 :/\: V2) (p 0) Hp0 (p 1) Hp1).
+  exact (tuple_2_setprod_by_pair_Sigma (U1 :/\: U2) (V1 :/\: V2) (p 0) (p 1) Hp0 Hp1).
 - let p. assume Hp: p :e setprod (U1 :/\: U2) (V1 :/\: V2).
   prove p :e setprod U1 V1 :/\: setprod U2 V2.
   claim Hp0: p 0 :e U1 :/\: U2.
@@ -23098,8 +23098,8 @@ apply set_ext.
   { exact (setprod_eta (U1 :/\: U2) (V1 :/\: V2) p Hp). }
   rewrite Heta.
   apply binintersectI.
-  + exact (tuple_2_setprod U1 V1 (p 0) Hp0U1 (p 1) Hp1V1).
-  + exact (tuple_2_setprod U2 V2 (p 0) Hp0U2 (p 1) Hp1V2).
+  + exact (tuple_2_setprod_by_pair_Sigma U1 V1 (p 0) (p 1) Hp0U1 Hp1V1).
+  + exact (tuple_2_setprod_by_pair_Sigma U2 V2 (p 0) (p 1) Hp0U2 Hp1V2).
 Qed.
 
 Definition product_subbasis : set -> set -> set -> set -> set :=
