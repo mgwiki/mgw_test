@@ -42549,9 +42549,9 @@ claim Hfun: function_on d (setprod X X) R.
 { exact (metric_on_function_on X d Hm). }
 
 claim Hc1xIn: (c1,x) :e setprod X X.
-{ exact (tuple_2_setprod X X c1 Hc1 x HxX). }
+{ exact (tuple_2_setprod_by_pair_Sigma X X c1 x Hc1 HxX). }
 claim Hc2xIn: (c2,x) :e setprod X X.
-{ exact (tuple_2_setprod X X c2 Hc2 x HxX). }
+{ exact (tuple_2_setprod_by_pair_Sigma X X c2 x Hc2 HxX). }
 
 set dx1 := apply_fun d (c1,x).
 set dx2 := apply_fun d (c2,x).
@@ -42659,11 +42659,11 @@ apply (SNoLt_trichotomy_or_impred delta1 delta2 Hdelta1S Hdelta2S
     claim HyX: y :e X.
     { exact (open_ballE1 X d x r3 y Hy). }
     claim HxyIn: (x,y) :e setprod X X.
-    { exact (tuple_2_setprod X X x HxX y HyX). }
+    { exact (tuple_2_setprod_by_pair_Sigma X X x y HxX HyX). }
     claim Hc1yIn: (c1,y) :e setprod X X.
-    { exact (tuple_2_setprod X X c1 Hc1 y HyX). }
+    { exact (tuple_2_setprod_by_pair_Sigma X X c1 y Hc1 HyX). }
     claim Hc2yIn: (c2,y) :e setprod X X.
-    { exact (tuple_2_setprod X X c2 Hc2 y HyX). }
+    { exact (tuple_2_setprod_by_pair_Sigma X X c2 y Hc2 HyX). }
     set dxy := apply_fun d (x,y).
     set dc1y := apply_fun d (c1,y).
     set dc2y := apply_fun d (c2,y).
@@ -42790,11 +42790,11 @@ apply (SNoLt_trichotomy_or_impred delta1 delta2 Hdelta1S Hdelta2S
     claim HyX: y :e X.
     { exact (open_ballE1 X d x r3 y Hy). }
     claim HxyIn: (x,y) :e setprod X X.
-    { exact (tuple_2_setprod X X x HxX y HyX). }
+    { exact (tuple_2_setprod_by_pair_Sigma X X x y HxX HyX). }
     claim Hc1yIn: (c1,y) :e setprod X X.
-    { exact (tuple_2_setprod X X c1 Hc1 y HyX). }
+    { exact (tuple_2_setprod_by_pair_Sigma X X c1 y Hc1 HyX). }
     claim Hc2yIn: (c2,y) :e setprod X X.
-    { exact (tuple_2_setprod X X c2 Hc2 y HyX). }
+    { exact (tuple_2_setprod_by_pair_Sigma X X c2 y Hc2 HyX). }
     set dxy := apply_fun d (x,y).
     set dc1y := apply_fun d (c1,y).
     set dc2y := apply_fun d (c2,y).
@@ -42912,11 +42912,11 @@ apply (SNoLt_trichotomy_or_impred delta1 delta2 Hdelta1S Hdelta2S
     claim HyX: y :e X.
     { exact (open_ballE1 X d x r3 y Hy). }
     claim HxyIn: (x,y) :e setprod X X.
-    { exact (tuple_2_setprod X X x HxX y HyX). }
+    { exact (tuple_2_setprod_by_pair_Sigma X X x y HxX HyX). }
     claim Hc1yIn: (c1,y) :e setprod X X.
-    { exact (tuple_2_setprod X X c1 Hc1 y HyX). }
+    { exact (tuple_2_setprod_by_pair_Sigma X X c1 y Hc1 HyX). }
     claim Hc2yIn: (c2,y) :e setprod X X.
-    { exact (tuple_2_setprod X X c2 Hc2 y HyX). }
+    { exact (tuple_2_setprod_by_pair_Sigma X X c2 y Hc2 HyX). }
     set dxy := apply_fun d (x,y).
     set dc1y := apply_fun d (c1,y).
     set dc2y := apply_fun d (c2,y).
@@ -43853,7 +43853,7 @@ apply xm (x = y).
   claim Hfun: function_on d (setprod X X) R.
   { exact (metric_on_function_on X d Hd). }
   claim HxyIn: (x,y) :e setprod X X.
-  { exact (tuple_2_setprod X X x HxX y HyX). }
+  { exact (tuple_2_setprod_by_pair_Sigma X X x y HxX HyX). }
   claim HdxyR: apply_fun d (x,y) :e R.
   { exact (Hfun (x,y) HxyIn). }
   claim HdxyS: SNo (apply_fun d (x,y)).
@@ -43956,9 +43956,9 @@ apply xm (x = y).
   set a := apply_fun d (x, apply_fun seq n0).
   set b := apply_fun d (apply_fun seq n0, y).
   claim Hxn0In: (x, apply_fun seq n0) :e setprod X X.
-  { exact (tuple_2_setprod X X x HxX (apply_fun seq n0) Hseqn0X). }
+  { exact (tuple_2_setprod_by_pair_Sigma X X x (apply_fun seq n0) HxX Hseqn0X). }
   claim Hn0yIn: (apply_fun seq n0, y) :e setprod X X.
-  { exact (tuple_2_setprod X X (apply_fun seq n0) Hseqn0X y HyX). }
+  { exact (tuple_2_setprod_by_pair_Sigma X X (apply_fun seq n0) y Hseqn0X HyX). }
   claim HaR: a :e R.
   { exact (Hfun (x, apply_fun seq n0) Hxn0In). }
   claim HbR: b :e R.
@@ -44420,13 +44420,13 @@ claim Hed: forall x0:set, x0 :e X ->
     set r := apply_fun dY (apply_fun fn x0, apply_fun f x0).
     claim HpR: p :e R.
     { exact ((metric_on_function_on Y dY HdY) (apply_fun f x, apply_fun fn x)
-             (tuple_2_setprod Y Y (apply_fun f x) HfxY (apply_fun fn x) HfnxY)). }
+             (tuple_2_setprod_by_pair_Sigma Y Y (apply_fun f x) (apply_fun fn x) HfxY HfnxY)). }
     claim HqR: q :e R.
     { exact ((metric_on_function_on Y dY HdY) (apply_fun fn x, apply_fun fn x0)
-             (tuple_2_setprod Y Y (apply_fun fn x) HfnxY (apply_fun fn x0) Hfnx0Y)). }
+             (tuple_2_setprod_by_pair_Sigma Y Y (apply_fun fn x) (apply_fun fn x0) HfnxY Hfnx0Y)). }
     claim HrR: r :e R.
     { exact ((metric_on_function_on Y dY HdY) (apply_fun fn x0, apply_fun f x0)
-             (tuple_2_setprod Y Y (apply_fun fn x0) Hfnx0Y (apply_fun f x0) Hfx0Y)). }
+             (tuple_2_setprod_by_pair_Sigma Y Y (apply_fun fn x0) (apply_fun f x0) Hfnx0Y Hfx0Y)). }
     claim Hpdlt: p < eta.
     { exact (RltE_lt p eta Hp). }
     claim Hqdlt: q < eta.
@@ -44526,7 +44526,7 @@ claim Hed: forall x0:set, x0 :e X ->
              (add_SNo q r)
              HpR
              ((metric_on_function_on Y dY HdY) (apply_fun fn x, apply_fun f x0)
-              (tuple_2_setprod Y Y (apply_fun fn x) HfnxY (apply_fun f x0) Hfx0Y))
+              (tuple_2_setprod_by_pair_Sigma Y Y (apply_fun fn x) (apply_fun f x0) HfnxY Hfx0Y))
              (real_add_SNo q HqR r HrR)
              Htri2). }
     claim Htri3: Rle (apply_fun dY (apply_fun f x, apply_fun f x0))
@@ -47586,7 +47586,7 @@ apply andI.
       claim Hidapp: apply_fun idY y = y.
       { exact (identity_function_apply Y y HyY). }
       claim HxyXY: (x0,y) :e setprod X Y.
-      { exact (tuple_2_setprod X Y x0 Hx0X y HyY). }
+      { exact (tuple_2_setprod_by_pair_Sigma X Y x0 y Hx0X HyY). }
       rewrite Happf.
       rewrite Hcapp.
       rewrite Hidapp.
@@ -47893,7 +47893,7 @@ apply xm (X = Empty).
           apply (UPairE D A B HD ((x,y0) :e D)).
           + assume HDa: D = A.
             rewrite HDa.
-            exact (tuple_2_setprod {x} Y x (SingI x) y0 Hy0Y).
+            exact (tuple_2_setprod_by_pair_Sigma {x} Y x y0 (SingI x) Hy0Y).
           + assume HDb: D = B.
             rewrite HDb.
             exact (tuple_2_setprod_by_pair_Sigma X {y0} x y0 HxX (SingI y0)). }
@@ -47942,7 +47942,7 @@ apply xm (X = Empty).
       claim Heta: p = (p 0, p 1).
       { exact (setprod_eta X Y p Hp). }
       rewrite Heta at 1.
-      exact (tuple_2_setprod {p 0} Y (p 0) (SingI (p 0)) (p 1) Hp1Y).
+      exact (tuple_2_setprod_by_pair_Sigma {p 0} Y (p 0) (p 1) (SingI (p 0)) Hp1Y).
       - exact HC0F. }
     claim HUnionEq: Union F = setprod X Y.
     { apply set_ext.
@@ -57233,7 +57233,7 @@ claim HYcov: Y c= Union VFam.
     rewrite <- HbEq at 1.
     exact Hpb. }
   claim HpXY0: p :e setprod {x0} {y}.
-  { exact (tuple_2_setprod {x0} {y} x0 (SingI x0) y (SingI y)). }
+  { exact (tuple_2_setprod_by_pair_Sigma {x0} {y} x0 y (SingI x0) (SingI y)). }
   claim Hcoords: x0 :e U0 /\ y :e V0.
   { exact (setprod_coords_in x0 y U0 V0 p HpXY0 HpUV). }
   claim Hx0U0: x0 :e U0.
@@ -57911,7 +57911,7 @@ apply andI.
               prove y :e Union VFam.
               set p := (x,y).
               claim HpXY: p :e setprod X Y.
-              { exact (tuple_2_setprod X Y x Hx y Hy). }
+              { exact (tuple_2_setprod_by_pair_Sigma X Y x y Hx Hy). }
               claim HpInUnion: p :e Union Fam.
               { exact (HcovXY p HpXY). }
               apply (UnionE_impred Fam p HpInUnion).
@@ -57946,7 +57946,7 @@ apply andI.
                 rewrite <- HbEq at 1.
                 exact Hpb. }
               claim HpXY0: p :e setprod {x} {y}.
-              { exact (tuple_2_setprod {x} {y} x (SingI x) y (SingI y)). }
+              { exact (tuple_2_setprod_by_pair_Sigma {x} {y} x y (SingI x) (SingI y)). }
               claim Hcoords: x :e U0 /\ y :e V0.
               { exact (setprod_coords_in x y U0 V0 p HpXY0 HpUV). }
               claim HxU0: x :e U0.
@@ -58229,7 +58229,7 @@ apply andI.
     claim HcovU0: setprod U0 Y c= Union (pickH U0).
     { exact (andER (pickH U0 c= Fam /\ finite (pickH U0)) (setprod U0 Y c= Union (pickH U0)) Hprop). }
     claim HpInU0Y: (p 0, p 1) :e setprod U0 Y.
-    { exact (tuple_2_setprod U0 Y (p 0) Hp0U0 (p 1) Hp1Y). }
+    { exact (tuple_2_setprod_by_pair_Sigma U0 Y (p 0) (p 1) Hp0U0 Hp1Y). }
     claim HpInUnionPick: (p 0, p 1) :e Union (pickH U0).
     { exact (HcovU0 (p 0, p 1) HpInU0Y). }
     apply (UnionE_impred (pickH U0) (p 0, p 1) HpInUnionPick).
