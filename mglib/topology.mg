@@ -8653,7 +8653,7 @@ Definition topological_space : set -> set -> prop := topology_on.
 
 Definition open_set_family : set -> set -> set := fun _ T => T.
 
-Definition open_set : set -> set -> set -> prop := fun X T U => topology_on X T /\ U :e T.
+Definition open_set : set -> set -> set -> prop := open_in.
 
 (** from §13 Definition: basis for a topology **) 
 (** LATEX VERSION: A basis on X is a collection B⊂P(X) such that every x∈X lies in some b∈B and intersections around a point refine to another basis element. **)
