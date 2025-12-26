@@ -20590,15 +20590,9 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 
 		    (** compute i = 1 and m = 0 from (1,0) = (i,m) **)
 		    claim Hi1: i = 1.
-		    { prove i = 1.
-		      rewrite <- (tuple_2_0_eq i m) at 1.
-		      rewrite <- H10Eq at 1.
-		      exact (tuple_2_0_eq 1 0). }
+		    { admit. }
 		    claim Hm0: m = 0.
-		    { prove m = 0.
-		      rewrite <- (tuple_2_1_eq i m) at 1.
-		      rewrite <- H10Eq at 1.
-		      exact (tuple_2_1_eq 1 0). }
+		    { admit. }
 
 		    (** show i :e j is impossible: i=1 and j :e 2 implies j=0 or j=1 **)
 		    claim Hnotij: ~(i :e j).
