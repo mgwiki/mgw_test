@@ -60800,7 +60800,18 @@ Theorem ex30_17_Romega_box_countability :
   (Lindelof_space Q_infty Q_infty_topology \/ ~ Lindelof_space Q_infty Q_infty_topology) /\
   ((exists D:set, D c= Q_infty /\ countable D /\ dense_in D Q_infty Q_infty_topology) \/
    ~ (exists D:set, D c= Q_infty /\ countable D /\ dense_in D Q_infty Q_infty_topology)).
-admit.
+apply andI.
+- prove ((first_countable_space Q_infty Q_infty_topology \/ ~ first_countable_space Q_infty Q_infty_topology) /\
+        (second_countable_space Q_infty Q_infty_topology \/ ~ second_countable_space Q_infty Q_infty_topology))
+       /\ (Lindelof_space Q_infty Q_infty_topology \/ ~ Lindelof_space Q_infty Q_infty_topology).
+  apply andI.
+  - prove (first_countable_space Q_infty Q_infty_topology \/ ~ first_countable_space Q_infty Q_infty_topology) /\
+          (second_countable_space Q_infty Q_infty_topology \/ ~ second_countable_space Q_infty Q_infty_topology).
+    apply andI.
+    + exact (xm (first_countable_space Q_infty Q_infty_topology)).
+    + exact (xm (second_countable_space Q_infty Q_infty_topology)).
+  - exact (xm (Lindelof_space Q_infty Q_infty_topology)).
+- exact (xm (exists D:set, D c= Q_infty /\ countable D /\ dense_in D Q_infty Q_infty_topology)).
 Qed.
 (** from §30 Exercise 18: first-countable topological group with dense/Lindelof implies countable basis **)
 (** LATEX VERSION: If G is first-countable topological group with countable dense subset or Lindelöf, then G has countable basis. **)
@@ -61676,7 +61687,9 @@ Theorem ex32_5_Romega_normality_questions :
    ~ normal_space R_omega_space R_omega_product_topology) /\
   (normal_space real_sequences uniform_topology \/
    ~ normal_space real_sequences uniform_topology).
-admit.
+apply andI.
+- exact (xm (normal_space R_omega_space R_omega_product_topology)).
+- exact (xm (normal_space real_sequences uniform_topology)).
 Qed.
 (** from §32 Exercise 6: completely normal characterization via separated sets **)
 (** LATEX VERSION: X is completely normal iff for every separated pair A,B, there exist disjoint open sets containing them. **)
