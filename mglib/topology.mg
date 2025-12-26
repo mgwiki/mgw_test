@@ -9909,7 +9909,26 @@ Qed.
 (** helper: eta law for points in EuclidPlane **)
 (** LATEX VERSION: Every point p in R×R is equal to the ordered pair of its coordinates. **)
 Theorem EuclidPlane_eta : forall p:set, p :e EuclidPlane -> (R2_xcoord p, R2_ycoord p) = p.
-admit.
+let p. assume Hp.
+prove (R2_xcoord p, R2_ycoord p) = p.
+apply (Sigma_E R (fun _ : set => R) p Hp).
+let x.
+assume Hx_pair.
+apply Hx_pair.
+assume HxR Hexy.
+apply Hexy.
+let y.
+assume Hy_pair.
+apply Hy_pair.
+assume HyR Hpeq.
+claim HeqT: p = (x,y).
+{ prove p = (x,y).
+  rewrite <- (tuple_pair x y).
+  exact Hpeq. }
+rewrite HeqT.
+rewrite (R2_xcoord_tuple x y).
+rewrite (R2_ycoord_tuple x y).
+reflexivity.
 Qed.
 
 (** from §13 Example 4: equality of points in R×R is coordinatewise **)
