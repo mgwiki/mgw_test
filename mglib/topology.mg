@@ -48920,7 +48920,7 @@ claim HcontR: continuous_map unit_interval_left_half
   (subspace_topology unit_interval unit_interval_topology unit_interval_left_half)
   R R_standard_topology
   double_map_left_half.
-{ admit. }
+{ admit. (** FAIL **) }
 
 (** helper: restricting the range of a continuous map to a subspace containing the image **)
 claim HrangeRestrict:
@@ -49024,7 +49024,7 @@ claim HcontR: continuous_map unit_interval_right_half
   (subspace_topology unit_interval unit_interval_topology unit_interval_right_half)
   R R_standard_topology
   double_minus_one_map_right_half.
-{ admit. }
+{ admit. (** FAIL **) }
 
 claim HrangeRestrict:
   forall X Tx Y Ty f Z0:set,
