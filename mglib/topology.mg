@@ -31391,10 +31391,7 @@ assume HFsub: F c= X.
 assume HF: finite F.
 prove closed_in X Tx F.
 claim Htop: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
-                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
-               HH). }
+{ exact (Hausdorff_space_topology X Tx HH). }
 claim Hclosed_empty: closed_in X Tx Empty.
 { exact (empty_is_closed X Tx Htop). }
 claim Hall: forall F0:set, finite F0 -> (F0 c= X -> closed_in X Tx F0).
@@ -31424,9 +31421,10 @@ assume HT1: T1_space X Tx.
 assume HxX: x :e X.
 prove limit_point_of X Tx A x <-> (forall U :e Tx, x :e U -> infinite (U :/\: A)).
 claim Htop: topology_on X Tx.
-{ exact (andEL (topology_on X Tx) (forall F:set, F c= X -> finite F -> closed_in X Tx F) HT1). }
+{ exact (T1_space_topology X Tx HT1). }
 claim Hfinite_closed: forall F:set, F c= X -> finite F -> closed_in X Tx F.
-{ exact (andER (topology_on X Tx) (forall F:set, F c= X -> finite F -> closed_in X Tx F) HT1). }
+{ let F. assume HFsub. assume HFfin.
+  exact (T1_space_finite_closed X Tx F HT1 HFsub HFfin). }
 apply iffI.
 - (** limit point gives infinite intersections **)
   assume Hlim: limit_point_of X Tx A x.
