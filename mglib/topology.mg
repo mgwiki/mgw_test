@@ -9648,6 +9648,7 @@ Definition Rlt : set -> set -> prop := fun a b =>
 
 (** helper: non-strict order on the reals by negating strict order **)
 (** LATEX VERSION: Write a ≤ b for not(b < a) in the ambient strict order on ℝ. **)
+(** SUSPICIOUS DEFINITION: This defines `a <= b` as `~(b < a)`, not as `a=b \/ a<b`; later uses rely on the trichotomy properties of `<` on reals. **)
 Definition Rle : set -> set -> prop := fun a b =>
   a :e R /\ b :e R /\ ~(Rlt b a).
 
