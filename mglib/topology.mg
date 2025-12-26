@@ -31364,10 +31364,7 @@ assume HH: Hausdorff_space X Tx.
 assume HxX: x :e X.
 prove closed_in X Tx {x}.
 claim Htop: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
-                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
-               HH). }
+{ exact (Hausdorff_space_topology X Tx HH). }
 claim HxSub: {x} c= X.
 { let y. assume Hy: y :e {x}.
   claim Hyeq: y = x.
