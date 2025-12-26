@@ -61781,17 +61781,6 @@ admit.
 Qed.
 (** from §33 Exercise 5: strong Urysohn lemma **)
 (** LATEX VERSION: Strong Urysohn: ∃f with f(A)=0, f(B)=1, 0<f<1 elsewhere iff A,B closed G_δ. **)
-Axiom ex33_5_strong_urysohn_axiom : forall X Tx A B:set,
-  normal_space X Tx ->
-  closed_in X Tx A ->
-  closed_in X Tx B ->
-  A :/\: B = Empty ->
-  (Gdelta_in X Tx A /\ Gdelta_in X Tx B <->
-    exists f:set,
-      continuous_map X Tx R R_standard_topology f /\
-      (forall x:set, x :e A -> apply_fun f x = 0) /\
-      (forall x:set, x :e B -> apply_fun f x = 1) /\
-      (forall x:set, x :e X -> x /:e A -> x /:e B -> ~ (apply_fun f x = 0) /\ ~ (apply_fun f x = 1))).
 Theorem ex33_5_strong_urysohn : forall X Tx A B:set,
   normal_space X Tx ->
   closed_in X Tx A ->
@@ -61803,65 +61792,42 @@ Theorem ex33_5_strong_urysohn : forall X Tx A B:set,
       (forall x:set, x :e A -> apply_fun f x = 0) /\
       (forall x:set, x :e B -> apply_fun f x = 1) /\
       (forall x:set, x :e X -> x /:e A -> x /:e B -> ~ (apply_fun f x = 0) /\ ~ (apply_fun f x = 1))).
-exact ex33_5_strong_urysohn_axiom.
+admit.
 Qed.
 (** from §33 Exercise 6a: metrizable implies perfectly normal **)
 (** LATEX VERSION: Every metrizable space is perfectly normal. **)
-Axiom ex33_6a_metrizable_perfectly_normal_axiom : forall X Tx:set,
-  metrizable X Tx ->
-  perfectly_normal_space X Tx.
 Theorem ex33_6a_metrizable_perfectly_normal : forall X Tx:set,
   metrizable X Tx ->
   perfectly_normal_space X Tx.
-exact ex33_6a_metrizable_perfectly_normal_axiom.
+admit.
 Qed.
 
 (** from §33 Exercise 6b: perfectly normal implies completely normal **)
 (** LATEX VERSION: Every perfectly normal space is completely normal. **)
-Axiom ex33_6b_perfectly_completely_normal_axiom : forall X Tx:set,
-  perfectly_normal_space X Tx ->
-  completely_normal_space X Tx.
 Theorem ex33_6b_perfectly_completely_normal : forall X Tx:set,
   perfectly_normal_space X Tx ->
   completely_normal_space X Tx.
-exact ex33_6b_perfectly_completely_normal_axiom.
+admit.
 Qed.
 
 (** from §33 Exercise 6c: completely normal not perfectly normal example **)
 (** LATEX VERSION: There exists completely normal but not perfectly normal space. **)
-Axiom ex33_6c_completely_not_perfectly_normal_axiom :
-  exists X Tx:set,
-    completely_normal_space X Tx /\
-    ~ perfectly_normal_space X Tx.
 Theorem ex33_6c_completely_not_perfectly_normal :
   exists X Tx:set,
     completely_normal_space X Tx /\
     ~ perfectly_normal_space X Tx.
-exact ex33_6c_completely_not_perfectly_normal_axiom.
+admit.
 Qed.
 (** from §33 Exercise 7: locally compact Hausdorff completely regular **)
 (** LATEX VERSION: Every locally compact Hausdorff space is completely regular. **)
-Axiom ex33_7_locally_compact_Hausdorff_completely_regular_axiom : forall X Tx:set,
-  locally_compact X Tx ->
-  Hausdorff_space X Tx ->
-  completely_regular_space X Tx.
 Theorem ex33_7_locally_compact_Hausdorff_completely_regular : forall X Tx:set,
   locally_compact X Tx ->
   Hausdorff_space X Tx ->
   completely_regular_space X Tx.
-exact ex33_7_locally_compact_Hausdorff_completely_regular_axiom.
+admit.
 Qed.
 (** from §33 Exercise 8: continuous separation when A compact **)
 (** LATEX VERSION: If X completely regular, A compact, B closed disjoint from A, then ∃f:X→[0,1] with f(A)=0, f(B)=1. **)
-Axiom ex33_8_compact_subset_continuous_separation_axiom : forall X Tx A B:set,
-  completely_regular_space X Tx ->
-  compact_space A (subspace_topology X Tx A) ->
-  closed_in X Tx B ->
-  A :/\: B = Empty ->
-  exists f:set,
-    continuous_map X Tx R R_standard_topology f /\
-    (forall x:set, x :e A -> apply_fun f x = 0) /\
-    (forall x:set, x :e B -> apply_fun f x = 1).
 Theorem ex33_8_compact_subset_continuous_separation : forall X Tx A B:set,
   completely_regular_space X Tx ->
   compact_space A (subspace_topology X Tx A) ->
@@ -61871,7 +61837,7 @@ Theorem ex33_8_compact_subset_continuous_separation : forall X Tx A B:set,
     continuous_map X Tx R R_standard_topology f /\
     (forall x:set, x :e A -> apply_fun f x = 0) /\
     (forall x:set, x :e B -> apply_fun f x = 1).
-exact ex33_8_compact_subset_continuous_separation_axiom.
+admit.
 Qed.
 (** from §33 Exercise 9: Romega box topology completely regular **)
 (** LATEX VERSION: ℝ^ω in box topology is completely regular. **)
@@ -61885,25 +61851,18 @@ exact ex33_9_Romega_box_completely_regular_axiom.
 Qed.
 (** from §33 Exercise 10: topological group completely regular **)
 (** LATEX VERSION: Every topological group is completely regular. **)
-Axiom ex33_10_topological_group_completely_regular_axiom : forall G Tg:set,
-  topological_group G Tg ->
-  completely_regular_space G Tg.
 Theorem ex33_10_topological_group_completely_regular : forall G Tg:set,
   topological_group G Tg ->
   completely_regular_space G Tg.
-exact ex33_10_topological_group_completely_regular_axiom.
+admit.
 Qed.
 (** from §33 Exercise 11: regular not completely regular example **)
 (** LATEX VERSION: There exists regular space that is not completely regular. **)
-Axiom ex33_11_regular_not_completely_regular_axiom :
-  exists X Tx:set,
-    regular_space X Tx /\
-    ~ completely_regular_space X Tx.
 Theorem ex33_11_regular_not_completely_regular :
   exists X Tx:set,
     regular_space X Tx /\
     ~ completely_regular_space X Tx.
-exact ex33_11_regular_not_completely_regular_axiom.
+admit.
 Qed.
 
 (** helper: retraction data **) 
