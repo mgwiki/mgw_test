@@ -29656,10 +29656,10 @@ apply andI.
 	    claim Hxneq: x <> eps_ 1.
 	    { exact (andER (x :e U0) (x <> eps_ 1) Hxpair). }
 	    set p1 := (x,1).
-	    claim Hp1b0: p1 :e b0.
-	    { rewrite Hb0eq.
-	      prove p1 :e rectangle_set U0 V0.
-	      exact (tuple_2_setprod U0 V0 x HxU0 1 H1V0). }
+		    claim Hp1b0: p1 :e b0.
+		    { rewrite Hb0eq.
+		      prove p1 :e rectangle_set U0 V0.
+		      exact (tuple_2_rectangle_set U0 V0 x 1 HxU0 H1V0). }
 	    claim Hp1U: p1 :e U.
 	    { exact (Hb0subU p1 Hp1b0). }
 	    (** from p1:e U, extract p1=(eps_ 1,y) and compare first coordinates **)
@@ -34450,8 +34450,8 @@ apply iffI.
         claim HzX: z :e X.
         { exact (topology_elem_subset X Tx U0 Htop HU0Tx z HzU0). }
 	        set q := (z,z).
-        claim HqInb: q :e rectangle_set U0 V0.
-        { exact (tuple_2_setprod U0 V0 z HzU0 z HzV0). }
+	        claim HqInb: q :e rectangle_set U0 V0.
+	        { exact (tuple_2_rectangle_set U0 V0 z z HzU0 HzV0). }
         claim HqInb0: q :e b.
         { rewrite Hbeq.
           exact HqInb. }
