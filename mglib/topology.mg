@@ -47381,7 +47381,7 @@ apply set_ext.
   rewrite Hfa.
   rewrite Hid.
   rewrite Hc.
-  exact (tuple_2_setprod X {y0} a HaX y0 (SingI y0)).
+  exact (tuple_2_setprod_by_pair_Sigma X {y0} a y0 HaX (SingI y0)).
 - let p. assume Hp: p :e setprod X {y0}.
   prove p :e image_of (pair_map X {(x,x)|x :e X} (const_fun X y0)) X.
   set f := pair_map X {(x,x)|x :e X} (const_fun X y0).
@@ -47472,7 +47472,7 @@ apply set_ext.
   rewrite Hfa.
   rewrite Hc.
   rewrite Hid.
-  exact (tuple_2_setprod {x0} Y x0 (SingI x0) a HaY).
+  exact (tuple_2_setprod_by_pair_Sigma {x0} Y x0 a (SingI x0) HaY).
 - let p. assume Hp: p :e setprod {x0} Y.
   prove p :e image_of (pair_map Y (const_fun Y x0) idY) Y.
   set f := pair_map Y (const_fun Y x0) idY.
@@ -47547,7 +47547,7 @@ claim Himg: forall y:set, y :e Y -> apply_fun f y :e Slice.
   rewrite Happ.
   rewrite Hcapp.
   rewrite Hidapp.
-  exact (tuple_2_setprod {x0} Y x0 (SingI x0) y HyY). }
+  exact (tuple_2_setprod_by_pair_Sigma {x0} Y x0 y (SingI x0) HyY). }
 claim Hf: continuous_map Y Ty Slice Tslice f.
 { exact (continuous_map_range_restrict Y Ty (setprod X Y) (product_topology X Tx Y Ty) f Slice
           HfProd HSlicesub Himg). }
@@ -47896,7 +47896,7 @@ apply xm (X = Empty).
             exact (tuple_2_setprod {x} Y x (SingI x) y0 Hy0Y).
           + assume HDb: D = B.
             rewrite HDb.
-            exact (tuple_2_setprod X {y0} x HxX y0 (SingI y0)). }
+            exact (tuple_2_setprod_by_pair_Sigma X {y0} x y0 HxX (SingI y0)). }
 
       (** Rewrite Union {A,B} into A :\/: B **)
       rewrite (binunion_eq_Union_pair A B).
@@ -47912,7 +47912,7 @@ apply xm (X = Empty).
       rewrite HCeq.
       prove (x0,y0) :e setprod {x} Y :\/: Hhor.
       apply binunionI2.
-      exact (tuple_2_setprod X {y0} x0 Hx0X y0 (SingI y0)). }
+      exact (tuple_2_setprod_by_pair_Sigma X {y0} x0 y0 Hx0X (SingI y0)). }
 
     (** Connectedness of the union Union F **)
     claim HconnUnion: connected_space (Union F)
@@ -57207,7 +57207,7 @@ claim HYcov: Y c= Union VFam.
   prove y :e Union VFam.
   set p := (x0,y).
   claim HpXY: p :e setprod {x0} Y.
-  { exact (tuple_2_setprod {x0} Y x0 (SingI x0) y Hy). }
+  { exact (tuple_2_setprod_by_pair_Sigma {x0} Y x0 y (SingI x0) Hy). }
   claim HpN: p :e N.
   { exact (HNsub p HpXY). }
   claim Hrect: exists b :e B, p :e b /\ b c= N.
