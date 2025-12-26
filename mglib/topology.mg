@@ -26094,6 +26094,24 @@ claim H2lt2: 2 < 2.
 exact ((SNoLt_irref 2) H2lt2).
 Qed.
 
+(** helper for §16 Exercise 7: minus two is not in the sqrt(2)-cut **)
+(** LATEX VERSION: Since (-2)^2 is not < 2, we have -2 ∉ {q∈Q | q^2 < 2}. **)
+Theorem minus_two_not_in_Q_sqrt2_cut : minus_SNo 2 /:e Q_sqrt2_cut.
+assume Hm2: minus_SNo 2 :e Q_sqrt2_cut.
+prove False.
+claim Hm2lt: mul_SNo (minus_SNo 2) (minus_SNo 2) < 2.
+{ exact (SepE2 rational_numbers (fun q:set => mul_SNo q q < 2) (minus_SNo 2) Hm2). }
+claim H22lt: mul_SNo 2 2 < 2.
+{ prove mul_SNo 2 2 < 2.
+  rewrite <- (mul_SNo_minus_minus 2 2 SNo_2 SNo_2) at 1.
+  exact Hm2lt. }
+claim H2Q: 2 :e rational_numbers.
+{ exact two_in_rational_numbers. }
+claim H2cut: 2 :e Q_sqrt2_cut.
+{ exact (SepI rational_numbers (fun q:set => mul_SNo q q < 2) 2 H2Q H22lt). }
+exact (two_not_in_Q_sqrt2_cut H2cut).
+Qed.
+
 (** helper for §16 Exercise 7: Q_sqrt2_cut is a proper subset of Q **)
 (** LATEX VERSION: The sqrt(2)-cut is not all of Q (for instance 2 is not in it). **)
 Theorem Q_sqrt2_cut_neq_Q : Q_sqrt2_cut <> rational_numbers.
@@ -26269,7 +26287,140 @@ Qed.
 (** LATEX VERSION: {q∈Q | q^2<2} is not an interval or ray in Q since it has no endpoint in Q. **)
 Theorem Q_sqrt2_cut_not_interval_or_ray :
   ~ interval_or_ray_in rational_numbers Q_sqrt2_cut.
-admit.
+assume H: interval_or_ray_in rational_numbers Q_sqrt2_cut.
+prove False.
+(** interval_or_ray_in X Y = (exists a b, interval_in ...) \/ (exists a, ray_in ...) **)
+apply H.
+- assume Hinterval: exists a b:set, a :e rational_numbers /\ b :e rational_numbers /\ interval_in rational_numbers a b Q_sqrt2_cut.
+  admit.
+- assume Hray: exists a:set, a :e rational_numbers /\ ray_in rational_numbers a Q_sqrt2_cut.
+  apply Hray.
+  let a. assume Hpair.
+  claim HaQ: a :e rational_numbers.
+  { exact (andEL (a :e rational_numbers) (ray_in rational_numbers a Q_sqrt2_cut) Hpair). }
+  claim Hrayin: ray_in rational_numbers a Q_sqrt2_cut.
+  { exact (andER (a :e rational_numbers) (ray_in rational_numbers a Q_sqrt2_cut) Hpair). }
+  claim H0cut: 0 :e Q_sqrt2_cut.
+  { exact zero_in_Q_sqrt2_cut. }
+  claim H2Q: 2 :e rational_numbers.
+  { exact two_in_rational_numbers. }
+  claim Hm2Q: minus_SNo 2 :e rational_numbers.
+  { exact (rational_minus_SNo 2 H2Q). }
+  claim Hm2lt0: minus_SNo 2 < 0.
+  { prove minus_SNo 2 < 0.
+    rewrite <- (minus_SNo_0) at 2.
+    exact (minus_SNo_Lt_contra 0 2 SNo_0 SNo_2 SNoLt_0_2). }
+  (** eliminate the four ray forms using 0 in the cut and +-2 outside the cut **)
+  apply Hrayin.
+  - assume Hleft: Q_sqrt2_cut = open_ray_upper rational_numbers a
+                \/ Q_sqrt2_cut = closed_ray_upper rational_numbers a
+                \/ Q_sqrt2_cut = open_ray_lower rational_numbers a.
+    apply Hleft.
+    + assume Hup: Q_sqrt2_cut = open_ray_upper rational_numbers a
+                \/ Q_sqrt2_cut = closed_ray_upper rational_numbers a.
+      apply Hup.
+      * assume HeqU: Q_sqrt2_cut = open_ray_upper rational_numbers a.
+        claim H0in: 0 :e open_ray_upper rational_numbers a.
+        { rewrite <- HeqU. exact H0cut. }
+        claim Hrel: order_rel rational_numbers a 0.
+        { exact (SepE2 rational_numbers (fun x0:set => order_rel rational_numbers a x0) 0 H0in). }
+        claim Ha0: Rlt a 0.
+        { exact (order_rel_Q_implies_Rlt a 0 Hrel). }
+        claim H02: Rlt 0 2.
+        { exact (RltI 0 2 real_0 (rational_numbers_in_R 2 H2Q) SNoLt_0_2). }
+        claim Ha2: Rlt a 2.
+        { exact (Rlt_tra a 0 2 Ha0 H02). }
+        claim Hrel2: order_rel rational_numbers a 2.
+        { exact (Rlt_implies_order_rel_Q a 2 Ha2). }
+        claim H2in: 2 :e open_ray_upper rational_numbers a.
+        { exact (SepI rational_numbers (fun x0:set => order_rel rational_numbers a x0) 2 H2Q Hrel2). }
+        claim H2cut: 2 :e Q_sqrt2_cut.
+        { rewrite HeqU. exact H2in. }
+        exact (two_not_in_Q_sqrt2_cut H2cut).
+      * assume HeqU: Q_sqrt2_cut = closed_ray_upper rational_numbers a.
+        claim H0in: 0 :e closed_ray_upper rational_numbers a.
+        { rewrite <- HeqU. exact H0cut. }
+        claim Hrel0: 0 = a \/ order_rel rational_numbers a 0.
+        { exact (SepE2 rational_numbers (fun x0:set => x0 = a \/ order_rel rational_numbers a x0) 0 H0in). }
+        apply Hrel0.
+        - assume H0eq: 0 = a.
+           claim H02: Rlt 0 2.
+           { exact (RltI 0 2 real_0 (rational_numbers_in_R 2 H2Q) SNoLt_0_2). }
+           claim Ha2: Rlt a 2.
+           { rewrite <- H0eq. exact H02. }
+           claim Hrel2: order_rel rational_numbers a 2.
+           { exact (Rlt_implies_order_rel_Q a 2 Ha2). }
+           claim H2in: 2 :e closed_ray_upper rational_numbers a.
+           { exact (SepI rational_numbers (fun x0:set => x0 = a \/ order_rel rational_numbers a x0) 2 H2Q (orIR (2 = a) (order_rel rational_numbers a 2) Hrel2)). }
+           claim H2cut: 2 :e Q_sqrt2_cut.
+           { rewrite HeqU. exact H2in. }
+           exact (two_not_in_Q_sqrt2_cut H2cut).
+        - assume Hrel: order_rel rational_numbers a 0.
+           claim Ha0: Rlt a 0.
+           { exact (order_rel_Q_implies_Rlt a 0 Hrel). }
+           claim H02: Rlt 0 2.
+           { exact (RltI 0 2 real_0 (rational_numbers_in_R 2 H2Q) SNoLt_0_2). }
+           claim Ha2: Rlt a 2.
+           { exact (Rlt_tra a 0 2 Ha0 H02). }
+           claim Hrel2: order_rel rational_numbers a 2.
+           { exact (Rlt_implies_order_rel_Q a 2 Ha2). }
+           claim H2in: 2 :e closed_ray_upper rational_numbers a.
+           { exact (SepI rational_numbers (fun x0:set => x0 = a \/ order_rel rational_numbers a x0) 2 H2Q (orIR (2 = a) (order_rel rational_numbers a 2) Hrel2)). }
+           claim H2cut: 2 :e Q_sqrt2_cut.
+           { rewrite HeqU. exact H2in. }
+           exact (two_not_in_Q_sqrt2_cut H2cut).
+    + assume HeqL: Q_sqrt2_cut = open_ray_lower rational_numbers a.
+      claim H0in: 0 :e open_ray_lower rational_numbers a.
+      { rewrite <- HeqL. exact H0cut. }
+      claim Hrel0: order_rel rational_numbers 0 a.
+      { exact (SepE2 rational_numbers (fun x0:set => order_rel rational_numbers x0 a) 0 H0in). }
+      claim H0a: Rlt 0 a.
+      { exact (order_rel_Q_implies_Rlt 0 a Hrel0). }
+      claim Hm20: Rlt (minus_SNo 2) 0.
+      { exact (RltI (minus_SNo 2) 0 (rational_numbers_in_R (minus_SNo 2) Hm2Q) real_0 Hm2lt0). }
+      claim Hm2a: Rlt (minus_SNo 2) a.
+      { exact (Rlt_tra (minus_SNo 2) 0 a Hm20 H0a). }
+      claim Hrelm2: order_rel rational_numbers (minus_SNo 2) a.
+      { exact (Rlt_implies_order_rel_Q (minus_SNo 2) a Hm2a). }
+      claim Hm2in: minus_SNo 2 :e open_ray_lower rational_numbers a.
+      { exact (SepI rational_numbers (fun x0:set => order_rel rational_numbers x0 a) (minus_SNo 2) Hm2Q Hrelm2). }
+      claim Hm2cut: minus_SNo 2 :e Q_sqrt2_cut.
+      { rewrite HeqL. exact Hm2in. }
+      exact (minus_two_not_in_Q_sqrt2_cut Hm2cut).
+  - assume HeqL: Q_sqrt2_cut = closed_ray_lower rational_numbers a.
+    claim H0in: 0 :e closed_ray_lower rational_numbers a.
+    { rewrite <- HeqL. exact H0cut. }
+    claim Hrel0: 0 = a \/ order_rel rational_numbers 0 a.
+    { exact (SepE2 rational_numbers (fun x0:set => x0 = a \/ order_rel rational_numbers x0 a) 0 H0in). }
+    apply Hrel0.
+    + assume H0eq: 0 = a.
+      claim Hm20: Rlt (minus_SNo 2) 0.
+      { exact (RltI (minus_SNo 2) 0 (rational_numbers_in_R (minus_SNo 2) Hm2Q) real_0 Hm2lt0). }
+      claim Hm2a: Rlt (minus_SNo 2) a.
+      { rewrite <- H0eq. exact Hm20. }
+      claim Hrelm2: order_rel rational_numbers (minus_SNo 2) a.
+      { exact (Rlt_implies_order_rel_Q (minus_SNo 2) a Hm2a). }
+      claim Hm2in: minus_SNo 2 :e closed_ray_lower rational_numbers a.
+      { exact (SepI rational_numbers (fun x0:set => x0 = a \/ order_rel rational_numbers x0 a) (minus_SNo 2) Hm2Q
+                (orIR ((minus_SNo 2) = a) (order_rel rational_numbers (minus_SNo 2) a) Hrelm2)). }
+      claim Hm2cut: minus_SNo 2 :e Q_sqrt2_cut.
+      { rewrite HeqL. exact Hm2in. }
+      exact (minus_two_not_in_Q_sqrt2_cut Hm2cut).
+    + assume Hrel: order_rel rational_numbers 0 a.
+      claim H0a: Rlt 0 a.
+      { exact (order_rel_Q_implies_Rlt 0 a Hrel). }
+      claim Hm20: Rlt (minus_SNo 2) 0.
+      { exact (RltI (minus_SNo 2) 0 (rational_numbers_in_R (minus_SNo 2) Hm2Q) real_0 Hm2lt0). }
+      claim Hm2a: Rlt (minus_SNo 2) a.
+      { exact (Rlt_tra (minus_SNo 2) 0 a Hm20 H0a). }
+      claim Hrelm2: order_rel rational_numbers (minus_SNo 2) a.
+      { exact (Rlt_implies_order_rel_Q (minus_SNo 2) a Hm2a). }
+      claim Hm2in: minus_SNo 2 :e closed_ray_lower rational_numbers a.
+      { exact (SepI rational_numbers (fun x0:set => x0 = a \/ order_rel rational_numbers x0 a) (minus_SNo 2) Hm2Q
+                (orIR ((minus_SNo 2) = a) (order_rel rational_numbers (minus_SNo 2) a) Hrelm2)). }
+      claim Hm2cut: minus_SNo 2 :e Q_sqrt2_cut.
+      { rewrite HeqL. exact Hm2in. }
+      exact (minus_two_not_in_Q_sqrt2_cut Hm2cut).
 Qed.
 
 Theorem ex16_7_convex_interval_or_ray :
