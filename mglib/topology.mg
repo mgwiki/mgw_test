@@ -58168,9 +58168,7 @@ Qed.
 
 (** from §32 Example 2: SOmega x SbarOmega not normal **)
 (** LATEX VERSION: Product S_Ω×S̄_Ω gives a non-normal example. **)
-(** FIXED: Product of two spaces should use binary product_topology, not general product_space.
-    Was: R^{S_Omega × Sbar_Omega} (product indexed by S_Omega × Sbar_Omega with each factor R)
-    Now: S_Omega × Sbar_Omega (Cartesian product with product topology) **)
+(** FIXED: Use the binary product topology on S_Omega × Sbar_Omega, not a function-space product indexed by S_Omega × Sbar_Omega. **) 
 Definition S_Omega : set := omega.
 Definition Sbar_Omega : set := Power omega.
 Definition SOmega_topology : set := discrete_topology S_Omega.
@@ -58197,10 +58195,7 @@ Qed.
 
 (** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **)
 (** LATEX VERSION: Urysohn lemma: In a normal space, disjoint closed sets can be separated by continuous f: X→[a,b]. **)
-(** FIXED: Urysohn lemma was missing separation conditions.
-    Was: exists f continuous from X to [a,b] (trivially true - any constant function works!)
-    Now: exists f continuous with f(A)=a and f(B)=b (actually separates A from B)
-    The comment says "separated by continuous f", so f must map A to a and B to b. **)
+(** FIXED: Urysohn_lemma includes separation conditions f|A = a and f|B = b, not merely existence of some continuous f. **) 
 Definition closed_interval : set -> set -> set := fun a b =>
   {x :e R | ~(Rlt x a) /\ ~(Rlt b x)}.
 
@@ -58606,9 +58601,7 @@ Qed.
 
 (** from §33 Example 1 cont.: SOmega x SbarOmega completely regular not normal **)
 (** LATEX VERSION: Another example of completely regular but non-normal product. **)
-(** FIXED: Same issue - topology must match the space S_Omega × Sbar_Omega, not R^{S_Omega × Sbar_Omega}.
-    Was: topology on R^{S_Omega × Sbar_Omega} applied to space S_Omega × Sbar_Omega (mismatch!)
-    Now: product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology **)
+(** FIXED: Use product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology on S_Omega × Sbar_Omega (not a mismatched topology on a function space). **) 
 Axiom SOmega_SbarOmega_completely_regular_axiom :
   completely_regular_space (setprod S_Omega Sbar_Omega)
     (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
@@ -58767,10 +58760,7 @@ Qed.
 
 (** from §37 Theorem: Tychonoff theorem **)
 (** LATEX VERSION: Arbitrary product of compact spaces is compact (Tychonoff). **)
-(** FIXED: Quantifier scope error - i should be restricted to index set.
-    Was: forall i:set, compact_space ... (i ranges over ALL sets!)
-    Now: forall i:set, i :e I -> compact_space ... (i restricted to index set I)
-    Only need component spaces indexed by I to be compact. **)
+(** FIXED: Hypothesis quantifies i only over i:e I (not all sets). **) 
 Axiom Tychonoff_theorem_axiom : forall I Xi:set,
   (forall i:set, i :e I -> compact_space (product_component Xi i) (product_component_topology Xi i)) ->
   compact_space (product_space I Xi) (product_topology_full I Xi).
