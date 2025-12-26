@@ -13850,6 +13850,7 @@ exact (rational_numbers_Subq_R q Hq).
 Qed.
 
 Definition open_interval : set -> set -> set := fun a b => {x :e R|Rlt a x /\ Rlt x b}.
+(** SUSPICIOUS DEFINITION: The endpoints `a,b` are not required to be in `R` explicitly; membership uses `Rlt` so ill-typed endpoints make the interval behave like `Empty`. **)
 (** from §13 Exercise 6: lower limit basis element **)
 (** LATEX VERSION: Lower limit topology uses half open intervals [a,b). **)
 Definition halfopen_interval_left : set -> set -> set := fun a b => {x :e R|~(Rlt x a) /\ Rlt x b}.
@@ -13857,6 +13858,7 @@ Definition halfopen_interval_left : set -> set -> set := fun a b => {x :e R|~(Rl
 (** from §13 Exercise 7: upper limit basis element **)
 (** LATEX VERSION: Upper limit topology uses half open intervals (a,b]. **)
 Definition halfopen_interval_right : set -> set -> set := fun a b => {x :e R|Rlt a x /\ ~(Rlt b x)}.
+(** SUSPICIOUS DEFINITION: These half-open intervals use `~(Rlt x a)` and `~(Rlt b x)` as non-strict bounds; later proofs rely on the linearity of `<` on `R` to relate this to equality. **)
 
 (** from §13 Exercise 7: upper limit interval is a subset of R **)
 (** LATEX VERSION: (a,b] is a subset of R. **)
@@ -13954,6 +13956,7 @@ Definition R_standard_basis : set :=
 
 Definition R_standard_topology : set :=
   generated_topology R R_standard_basis.
+(** SUSPICIOUS DEFINITION: This basis includes all `open_interval a b` with `a,b :e R` without requiring `Rlt a b`; empty intervals are allowed as basis elements, which is harmless but can complicate refinement arguments. **)
 
 (** from §13: standard open intervals form a basis on R **)
 (** LATEX VERSION: The collection of open intervals (a,b) is a basis for the standard topology on R. **)
