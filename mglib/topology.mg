@@ -20543,19 +20543,17 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
     assume Hpre Hcond.
     apply Hpre.
     assume Hpre2 HbEq.
-    apply Hpre2.
-    assume Hpre3 H10Eq.
+	    apply Hpre2.
+	    assume Hpre3 H10Eq.
 	    apply Hpre3.
 	    assume Hpre4 HnOmega.
+	    apply Hpre4.
+	    assume Hpre5 Hj2.
 	
-	    claim Hj2: j :e 2.
-	    { exact (andER (i :e 2 /\ m :e omega) (j :e 2) Hpre4). }
-	    claim Him2m: i :e 2 /\ m :e omega.
-	    { exact (andEL (i :e 2 /\ m :e omega) (j :e 2) Hpre4). }
 	    claim Him2: i :e 2.
-	    { exact (andEL (i :e 2) (m :e omega) Him2m). }
+	    { exact (andEL (i :e 2) (m :e omega) Hpre5). }
 	    claim HmOmega: m :e omega.
-	    { exact (andER (i :e 2) (m :e omega) Him2m). }
+	    { exact (andER (i :e 2) (m :e omega) Hpre5). }
 	
 	    claim Hi1: i = 1.
 	    { claim Ht0: (1,0) 0 = 1.
