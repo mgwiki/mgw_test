@@ -31791,9 +31791,7 @@ claim HX: Hausdorff_space X Tx.
 claim HY: Hausdorff_space Y Ty.
 { exact (andER (Hausdorff_space X Tx) (Hausdorff_space Y Ty) H). }
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
-               HX). }
+{ exact (Hausdorff_space_topology X Tx HX). }
 claim HTy: topology_on Y Ty.
 { exact (andEL (topology_on Y Ty)
                (forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
