@@ -26142,6 +26142,14 @@ apply andI.
 - let a b.
   assume Ha: a :e Q_sqrt2_cut.
   assume Hb: b :e Q_sqrt2_cut.
+  claim HaQ: a :e rational_numbers.
+  { exact (SepE1 rational_numbers (fun q:set => mul_SNo q q < 2) a Ha). }
+  claim HbQ: b :e rational_numbers.
+  { exact (SepE1 rational_numbers (fun q:set => mul_SNo q q < 2) b Hb). }
+  claim Haa: mul_SNo a a < 2.
+  { exact (SepE2 rational_numbers (fun q:set => mul_SNo q q < 2) a Ha). }
+  claim Hbb: mul_SNo b b < 2.
+  { exact (SepE2 rational_numbers (fun q:set => mul_SNo q q < 2) b Hb). }
   prove order_interval rational_numbers a b c= Q_sqrt2_cut.
   let x. assume Hx: x :e order_interval rational_numbers a b.
   prove x :e Q_sqrt2_cut.
