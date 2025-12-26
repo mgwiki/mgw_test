@@ -26083,6 +26083,31 @@ assume Hx: x :e order_interval X a b.
 exact (SepE1 X (fun x0:set => order_rel X a x0 /\ order_rel X x0 b) x Hx).
 Qed.
 
+(** Helper: eliminator for order_interval membership **)
+Theorem order_intervalE : forall X a b x:set,
+  x :e order_interval X a b ->
+  x :e X /\ (order_rel X a x /\ order_rel X x b).
+let X a b x.
+assume Hx: x :e order_interval X a b.
+apply andI.
+- exact (SepE1 X (fun x0:set => order_rel X a x0 /\ order_rel X x0 b) x Hx).
+- exact (SepE2 X (fun x0:set => order_rel X a x0 /\ order_rel X x0 b) x Hx).
+Qed.
+
+(** Helper: introduction rule for order_interval membership **)
+Theorem order_intervalI : forall X a b x:set,
+  x :e X ->
+  order_rel X a x ->
+  order_rel X x b ->
+  x :e order_interval X a b.
+let X a b x.
+assume HxX: x :e X.
+assume Hax: order_rel X a x.
+assume Hxb: order_rel X x b.
+exact (SepI X (fun x0:set => order_rel X a x0 /\ order_rel X x0 b)
+            x HxX (andI (order_rel X a x) (order_rel X x b) Hax Hxb)).
+Qed.
+
 (** Helper: convex subset definition used in Theorem 16.4 **)
 Definition convex_in : set -> set -> prop := fun X Y =>
   Y c= X /\
