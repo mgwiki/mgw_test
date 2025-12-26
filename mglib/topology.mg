@@ -20586,7 +20586,7 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    apply Hpre3.
 		    assume Hpre4 HnOmega.
 		    apply Hpre4.
-		    assume Hpre5 Hj2.
+		    assume Hj2 Hpre5.
 
 		    (** compute i = 1 and m = 0 from (1,0) = (i,m) **)
 		    claim Hi1: i = 1.
