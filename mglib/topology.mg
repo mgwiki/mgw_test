@@ -52235,19 +52235,12 @@ apply andI.
           exists H:set, H c= Fam /\ finite H /\ setprod U Y c= Union H.
         { (** Reduce to producing a finite subfamily H of Fam that covers {x}×Y, then apply tube_lemma to N = Union H. **)
           claim HFamOpen: forall U0:set, U0 :e Fam -> U0 :e product_topology X Tx Y Ty.
-          { exact (andER ((topology_on (setprod X Y) (product_topology X Tx Y Ty) /\ Fam c= Power (setprod X Y)) /\ setprod X Y c= Union Fam)
-                         (forall U0:set, U0 :e Fam -> U0 :e product_topology X Tx Y Ty)
-                         HFam). }
+          { let U0. assume HU0: U0 :e Fam.
+            exact (open_cover_of_members_open (setprod X Y) (product_topology X Tx Y Ty) Fam U0 HFam HU0). }
           claim HexSlice: exists H:set, H c= Fam /\ finite H /\ setprod {x} Y c= Union H.
           { (** Build an open cover of Y by second-coordinate slices coming from rectangles inside members of Fam. **)
-            claim HFamABC: (topology_on (setprod X Y) (product_topology X Tx Y Ty) /\ Fam c= Power (setprod X Y)) /\ setprod X Y c= Union Fam.
-            { exact (andEL ((topology_on (setprod X Y) (product_topology X Tx Y Ty) /\ Fam c= Power (setprod X Y)) /\ setprod X Y c= Union Fam)
-                           (forall U0:set, U0 :e Fam -> U0 :e product_topology X Tx Y Ty)
-                           HFam). }
             claim HcovXY: setprod X Y c= Union Fam.
-            { exact (andER (topology_on (setprod X Y) (product_topology X Tx Y Ty) /\ Fam c= Power (setprod X Y))
-                           (setprod X Y c= Union Fam)
-                           HFamABC). }
+            { exact (open_cover_of_covers (setprod X Y) (product_topology X Tx Y Ty) Fam HFam). }
             set B := product_subbasis X Tx Y Ty.
             claim HBasis: basis_on (setprod X Y) B.
             { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
