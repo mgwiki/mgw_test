@@ -26290,11 +26290,79 @@ Theorem Q_sqrt2_cut_no_max : forall q:set,
 admit.
 Qed.
 
+(** helper for §16 Exercise 7: the sqrt2 cut is closed under negation **)
+(** LATEX VERSION: If q^2<2 then (-q)^2<2, so the cut is symmetric. **)
+Theorem Q_sqrt2_cut_neg_closed : forall q:set,
+  q :e Q_sqrt2_cut -> minus_SNo q :e Q_sqrt2_cut.
+let q. assume Hq: q :e Q_sqrt2_cut.
+prove minus_SNo q :e Q_sqrt2_cut.
+claim HqQ: q :e rational_numbers.
+{ exact (SepE1 rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) q Hq). }
+claim Hqq: mul_SNo q q < 2.
+{ exact (SepE2 rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) q Hq). }
+claim HqR: q :e R.
+{ exact (rational_numbers_in_R q HqQ). }
+claim HqS: SNo q.
+{ exact (real_SNo q HqR). }
+claim HnegQ: minus_SNo q :e rational_numbers.
+{ exact (rational_minus_SNo q HqQ). }
+claim HnegR: minus_SNo q :e R.
+{ exact (rational_numbers_in_R (minus_SNo q) HnegQ). }
+claim HnegS: SNo (minus_SNo q).
+{ exact (real_SNo (minus_SNo q) HnegR). }
+claim Hnegneg: mul_SNo (minus_SNo q) (minus_SNo q) < 2.
+{ prove mul_SNo (minus_SNo q) (minus_SNo q) < 2.
+  rewrite (mul_SNo_minus_minus q q HqS HqS).
+  exact Hqq. }
+exact (SepI rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) (minus_SNo q) HnegQ Hnegneg).
+Qed.
+
 (** helper for §16 Exercise 7: the sqrt2 cut has no minimum element in Q **)
 (** LATEX VERSION: The cut {q∈Q | q^2<2} has no endpoint in Q. **)
 Theorem Q_sqrt2_cut_no_min : forall q:set,
   q :e Q_sqrt2_cut -> exists r:set, r :e Q_sqrt2_cut /\ Rlt r q.
-admit.
+let q. assume Hq: q :e Q_sqrt2_cut.
+prove exists r:set, r :e Q_sqrt2_cut /\ Rlt r q.
+claim HnegqCut: minus_SNo q :e Q_sqrt2_cut.
+{ exact (Q_sqrt2_cut_neg_closed q Hq). }
+apply (Q_sqrt2_cut_no_max (minus_SNo q) HnegqCut).
+let r. assume Hrconj.
+claim HrCut: r :e Q_sqrt2_cut.
+{ exact (andEL (r :e Q_sqrt2_cut) (Rlt (minus_SNo q) r) Hrconj). }
+claim Hlt: Rlt (minus_SNo q) r.
+{ exact (andER (r :e Q_sqrt2_cut) (Rlt (minus_SNo q) r) Hrconj). }
+set s := minus_SNo r.
+claim HsCut: s :e Q_sqrt2_cut.
+{ exact (Q_sqrt2_cut_neg_closed r HrCut). }
+claim HrQ: r :e rational_numbers.
+{ exact (SepE1 rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) r HrCut). }
+claim HqQ: q :e rational_numbers.
+{ exact (SepE1 rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) q Hq). }
+claim HrR: r :e R.
+{ exact (rational_numbers_in_R r HrQ). }
+claim HqR: q :e R.
+{ exact (rational_numbers_in_R q HqQ). }
+claim HrS: SNo r.
+{ exact (real_SNo r HrR). }
+claim HnegqR: minus_SNo q :e R.
+{ exact (rational_numbers_in_R (minus_SNo q) (SepE1 rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) (minus_SNo q) HnegqCut)). }
+claim HnegqS: SNo (minus_SNo q).
+{ exact (real_SNo (minus_SNo q) HnegqR). }
+claim HltS: minus_SNo q < r.
+{ exact (RltE_lt (minus_SNo q) r Hlt). }
+claim Hneglt: minus_SNo r < minus_SNo (minus_SNo q).
+{ exact (minus_SNo_Lt_contra (minus_SNo q) r HnegqS HrS HltS). }
+claim Hslt: s < q.
+{ claim Hinv: minus_SNo (minus_SNo q) = q.
+  { exact (minus_SNo_invol q (real_SNo q HqR)). }
+  rewrite <- Hinv.
+  exact Hneglt. }
+claim HsR: s :e R.
+{ exact (rational_numbers_in_R s (SepE1 rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) s HsCut)). }
+claim Hsq: Rlt s q.
+{ exact (RltI s q HsR HqR Hslt). }
+witness s.
+exact (andI (s :e Q_sqrt2_cut) (Rlt s q) HsCut Hsq).
 Qed.
 
 (** helper for §16 Exercise 7: the sqrt(2) cut in Q is not an interval or ray (endpoints must lie in Q) **)
