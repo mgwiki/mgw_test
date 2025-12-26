@@ -11007,6 +11007,308 @@ exact (SepI (Power EuclidPlane)
             HPred).
 Qed.
 
+(** Helper: for any positive real d, some eps_N is smaller than d **)
+Theorem exists_eps_lt_pos_Euclid : forall d:set, d :e R -> Rlt 0 d -> exists N :e omega, eps_ N < d.
+let d.
+assume HdR: d :e R.
+assume Hdpos: Rlt 0 d.
+claim HdS: SNo d.
+{ exact (real_SNo d HdR). }
+claim H0ltd: 0 < d.
+{ exact (RltE_lt 0 d Hdpos). }
+set invd := recip_SNo_pos d.
+claim HinvdDef: invd = recip_SNo_pos d.
+{ reflexivity. }
+claim HinvdR: invd :e R.
+{ rewrite HinvdDef.
+  exact (real_recip_SNo_pos d HdR H0ltd). }
+claim HinvdS: SNo invd.
+{ exact (real_SNo invd HinvdR). }
+claim Hinvdpos: 0 < invd.
+{ exact (recip_SNo_pos_is_pos d HdS H0ltd). }
+apply (real_E invd HinvdR (exists N :e omega, eps_ N < d)).
+assume HinvS: SNo invd.
+assume Hlev.
+assume HinS.
+assume Hlow.
+assume Hup.
+assume Huniq.
+assume Happrox.
+claim HexNlt: exists N :e omega, mul_SNo (eps_ N) invd < 1.
+{ exact (SNoS_ordsucc_omega_bdd_eps_pos invd HinS Hinvdpos Hup). }
+apply HexNlt.
+let N. assume HNpair.
+claim HNomega: N :e omega.
+{ exact (andEL (N :e omega) (mul_SNo (eps_ N) invd < 1) HNpair). }
+claim HmulLt: mul_SNo (eps_ N) invd < 1.
+{ exact (andER (N :e omega) (mul_SNo (eps_ N) invd < 1) HNpair). }
+witness N.
+apply andI.
+- exact HNomega.
+- claim HepsS: SNo (eps_ N).
+  { exact (SNo_eps_ N HNomega). }
+  claim HepsLtDiv: eps_ N < div_SNo 1 invd.
+  { exact (div_SNo_pos_LtR 1 invd (eps_ N) SNo_1 HinvS HepsS Hinvdpos HmulLt). }
+  claim HdivEq: div_SNo 1 invd = d.
+  { claim Hposcase: recip_SNo invd = recip_SNo_pos invd.
+    { exact (recip_SNo_poscase invd Hinvdpos). }
+    claim HrecipInv: recip_SNo_pos invd = d.
+    { rewrite HinvdDef.
+      exact (recip_SNo_pos_invol d HdS H0ltd). }
+    claim HdivDef: div_SNo 1 invd = mul_SNo 1 (recip_SNo invd).
+    { reflexivity. }
+    rewrite HdivDef.
+    rewrite Hposcase.
+    rewrite HrecipInv.
+    exact (mul_SNo_oneL d HdS). }
+  rewrite <- HdivEq.
+  exact HepsLtDiv.
+Qed.
+
+(** Helper: choose a single eps below two positive reals **)
+(** LATEX VERSION: Given two positive real numbers, there is a positive eps radius smaller than both. **)
+Theorem exists_eps_lt_two_pos_Euclid : forall a b:set,
+  a :e R -> b :e R ->
+  Rlt 0 a -> Rlt 0 b ->
+  exists r3:set, r3 :e R /\ Rlt 0 r3 /\ Rlt r3 a /\ Rlt r3 b.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume Ha0: Rlt 0 a.
+assume Hb0: Rlt 0 b.
+claim Hex1: exists N1 :e omega, eps_ N1 < a.
+{ exact (exists_eps_lt_pos_Euclid a HaR Ha0). }
+apply Hex1.
+let N1. assume HN1pair.
+claim HN1o: N1 :e omega.
+{ exact (andEL (N1 :e omega) (eps_ N1 < a) HN1pair). }
+claim Heps1lt_a: eps_ N1 < a.
+{ exact (andER (N1 :e omega) (eps_ N1 < a) HN1pair). }
+claim Heps1R: eps_ N1 :e R.
+{ exact (SNoS_omega_real (eps_ N1) (SNo_eps_SNoS_omega N1 HN1o)). }
+claim Heps1Rlt: Rlt (eps_ N1) a.
+{ exact (RltI (eps_ N1) a Heps1R HaR Heps1lt_a). }
+
+claim Hex2: exists N2 :e omega, eps_ N2 < b.
+{ exact (exists_eps_lt_pos_Euclid b HbR Hb0). }
+apply Hex2.
+let N2. assume HN2pair.
+claim HN2o: N2 :e omega.
+{ exact (andEL (N2 :e omega) (eps_ N2 < b) HN2pair). }
+claim Heps2lt_b: eps_ N2 < b.
+{ exact (andER (N2 :e omega) (eps_ N2 < b) HN2pair). }
+claim Heps2R: eps_ N2 :e R.
+{ exact (SNoS_omega_real (eps_ N2) (SNo_eps_SNoS_omega N2 HN2o)). }
+claim Heps2Rlt: Rlt (eps_ N2) b.
+{ exact (RltI (eps_ N2) b Heps2R HbR Heps2lt_b). }
+
+(** choose an index N above both N1 and N2 by trichotomy, then take eps_N **)
+claim Hord1: ordinal N1.
+{ exact (nat_p_ordinal N1 (omega_nat_p N1 HN1o)). }
+claim Hord2: ordinal N2.
+{ exact (nat_p_ordinal N2 (omega_nat_p N2 HN2o)). }
+apply (ordinal_trichotomy_or_impred N1 N2 Hord1 Hord2
+  (exists r3:set, r3 :e R /\ Rlt 0 r3 /\ Rlt r3 a /\ Rlt r3 b)).
+- assume H12: N1 :e N2.
+  set N := ordsucc N2.
+  claim HNo: N :e omega.
+  { exact (omega_ordsucc N2 HN2o). }
+  set r3 := eps_ N.
+  claim Hr3R: r3 :e R.
+  { exact (SNoS_omega_real r3 (SNo_eps_SNoS_omega N HNo)). }
+  claim Hr3posS: 0 < r3.
+  { exact (SNo_eps_pos N HNo). }
+  claim Hr3pos: Rlt 0 r3.
+  { exact (RltI 0 r3 real_0 Hr3R Hr3posS). }
+  claim HN2in: N2 :e N.
+  { exact (ordsuccI2 N2). }
+  claim HN1in: N1 :e N.
+  { exact (ordsuccI1 N2 N1 H12). }
+  claim HepsNlt2: r3 < eps_ N2.
+  { exact (SNo_eps_decr N HNo N2 HN2in). }
+  claim HepsNlt1: r3 < eps_ N1.
+  { exact (SNo_eps_decr N HNo N1 HN1in). }
+  claim HepsNlt2Rlt: Rlt r3 (eps_ N2).
+  { exact (RltI r3 (eps_ N2) Hr3R Heps2R HepsNlt2). }
+  claim HepsNlt1Rlt: Rlt r3 (eps_ N1).
+  { exact (RltI r3 (eps_ N1) Hr3R Heps1R HepsNlt1). }
+  witness r3.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact Hr3R.
+      * exact Hr3pos.
+    + exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
+  - exact (Rlt_tra r3 (eps_ N2) b HepsNlt2Rlt Heps2Rlt).
+- assume H21: N2 :e N1.
+  set N := ordsucc N1.
+  claim HNo: N :e omega.
+  { exact (omega_ordsucc N1 HN1o). }
+  set r3 := eps_ N.
+  claim Hr3R: r3 :e R.
+  { exact (SNoS_omega_real r3 (SNo_eps_SNoS_omega N HNo)). }
+  claim Hr3posS: 0 < r3.
+  { exact (SNo_eps_pos N HNo). }
+  claim Hr3pos: Rlt 0 r3.
+  { exact (RltI 0 r3 real_0 Hr3R Hr3posS). }
+  claim HN1in: N1 :e N.
+  { exact (ordsuccI2 N1). }
+  claim HN2in: N2 :e N.
+  { exact (ordsuccI1 N1 N2 H21). }
+  claim HepsNlt1: r3 < eps_ N1.
+  { exact (SNo_eps_decr N HNo N1 HN1in). }
+  claim HepsNlt2: r3 < eps_ N2.
+  { exact (SNo_eps_decr N HNo N2 HN2in). }
+  claim HepsNlt1Rlt: Rlt r3 (eps_ N1).
+  { exact (RltI r3 (eps_ N1) Hr3R Heps1R HepsNlt1). }
+  claim HepsNlt2Rlt: Rlt r3 (eps_ N2).
+  { exact (RltI r3 (eps_ N2) Hr3R Heps2R HepsNlt2). }
+  witness r3.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact Hr3R.
+      * exact Hr3pos.
+    + exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
+  - exact (Rlt_tra r3 (eps_ N2) b HepsNlt2Rlt Heps2Rlt).
+- assume Heq: N1 = N2.
+  set N := ordsucc N1.
+  claim HNo: N :e omega.
+  { exact (omega_ordsucc N1 HN1o). }
+  set r3 := eps_ N.
+  claim Hr3R: r3 :e R.
+  { exact (SNoS_omega_real r3 (SNo_eps_SNoS_omega N HNo)). }
+  claim Hr3posS: 0 < r3.
+  { exact (SNo_eps_pos N HNo). }
+  claim Hr3pos: Rlt 0 r3.
+  { exact (RltI 0 r3 real_0 Hr3R Hr3posS). }
+  claim HN1in: N1 :e N.
+  { exact (ordsuccI2 N1). }
+  claim HepsNlt1: r3 < eps_ N1.
+  { exact (SNo_eps_decr N HNo N1 HN1in). }
+  claim HepsNlt1Rlt: Rlt r3 (eps_ N1).
+  { exact (RltI r3 (eps_ N1) Hr3R Heps1R HepsNlt1). }
+  witness r3.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact Hr3R.
+      * exact Hr3pos.
+    + exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
+  - claim Heps1Rltb: Rlt (eps_ N1) b.
+    { prove Rlt (eps_ N1) b.
+      rewrite Heq at 1.
+      exact Heps2Rlt. }
+    exact (Rlt_tra r3 (eps_ N1) b HepsNlt1Rlt Heps1Rltb).
+Qed.
+
+(** Helper: choose a single eps below four positive reals **)
+(** LATEX VERSION: Given finitely many positive reals, there is a positive eps radius smaller than all of them. **)
+Theorem exists_eps_lt_four_pos_Euclid : forall a b c d:set,
+  a :e R -> b :e R -> c :e R -> d :e R ->
+  Rlt 0 a -> Rlt 0 b -> Rlt 0 c -> Rlt 0 d ->
+  exists r3:set, r3 :e R /\ Rlt 0 r3 /\ Rlt r3 a /\ Rlt r3 b /\ Rlt r3 c /\ Rlt r3 d.
+let a b c d.
+assume HaR HbR HcR HdR.
+assume Ha0 Hb0 Hc0 Hd0.
+claim Hexab: exists r:set, r :e R /\ Rlt 0 r /\ Rlt r a /\ Rlt r b.
+{ exact (exists_eps_lt_two_pos_Euclid a b HaR HbR Ha0 Hb0). }
+apply Hexab.
+let r12. assume Hr12.
+claim Hr12b: Rlt r12 b.
+{ exact (andER ((r12 :e R /\ Rlt 0 r12) /\ Rlt r12 a) (Rlt r12 b) Hr12). }
+claim Hr12left: (r12 :e R /\ Rlt 0 r12) /\ Rlt r12 a.
+{ exact (andEL ((r12 :e R /\ Rlt 0 r12) /\ Rlt r12 a) (Rlt r12 b) Hr12). }
+claim Hr12a: Rlt r12 a.
+{ exact (andER (r12 :e R /\ Rlt 0 r12) (Rlt r12 a) Hr12left). }
+claim Hr12pair: r12 :e R /\ Rlt 0 r12.
+{ exact (andEL (r12 :e R /\ Rlt 0 r12) (Rlt r12 a) Hr12left). }
+claim Hr12R: r12 :e R.
+{ exact (andEL (r12 :e R) (Rlt 0 r12) Hr12pair). }
+claim Hr12pos: Rlt 0 r12.
+{ exact (andER (r12 :e R) (Rlt 0 r12) Hr12pair). }
+
+claim Hexcd: exists r:set, r :e R /\ Rlt 0 r /\ Rlt r c /\ Rlt r d.
+{ exact (exists_eps_lt_two_pos_Euclid c d HcR HdR Hc0 Hd0). }
+apply Hexcd.
+let r34. assume Hr34.
+claim Hr34d: Rlt r34 d.
+{ exact (andER ((r34 :e R /\ Rlt 0 r34) /\ Rlt r34 c) (Rlt r34 d) Hr34). }
+claim Hr34left: (r34 :e R /\ Rlt 0 r34) /\ Rlt r34 c.
+{ exact (andEL ((r34 :e R /\ Rlt 0 r34) /\ Rlt r34 c) (Rlt r34 d) Hr34). }
+claim Hr34c: Rlt r34 c.
+{ exact (andER (r34 :e R /\ Rlt 0 r34) (Rlt r34 c) Hr34left). }
+claim Hr34pair: r34 :e R /\ Rlt 0 r34.
+{ exact (andEL (r34 :e R /\ Rlt 0 r34) (Rlt r34 c) Hr34left). }
+claim Hr34R: r34 :e R.
+{ exact (andEL (r34 :e R) (Rlt 0 r34) Hr34pair). }
+claim Hr34pos: Rlt 0 r34.
+{ exact (andER (r34 :e R) (Rlt 0 r34) Hr34pair). }
+
+claim Hex: exists r3:set, r3 :e R /\ Rlt 0 r3 /\ Rlt r3 r12 /\ Rlt r3 r34.
+{ exact (exists_eps_lt_two_pos_Euclid r12 r34 Hr12R Hr34R Hr12pos Hr34pos). }
+apply Hex.
+let r3. assume Hr3.
+claim Hr3lt34: Rlt r3 r34.
+{ exact (andER ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 r12) (Rlt r3 r34) Hr3). }
+claim Hr3left: (r3 :e R /\ Rlt 0 r3) /\ Rlt r3 r12.
+{ exact (andEL ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 r12) (Rlt r3 r34) Hr3). }
+claim Hr3lt12: Rlt r3 r12.
+{ exact (andER (r3 :e R /\ Rlt 0 r3) (Rlt r3 r12) Hr3left). }
+claim Hr3pair: r3 :e R /\ Rlt 0 r3.
+{ exact (andEL (r3 :e R /\ Rlt 0 r3) (Rlt r3 r12) Hr3left). }
+claim Hr3R: r3 :e R.
+{ exact (andEL (r3 :e R) (Rlt 0 r3) Hr3pair). }
+claim Hr3pos: Rlt 0 r3.
+{ exact (andER (r3 :e R) (Rlt 0 r3) Hr3pair). }
+witness r3.
+apply andI.
+{ apply andI.
+  { apply andI.
+    { apply andI.
+      { apply andI.
+        { exact Hr3R. }
+        { exact Hr3pos. } }
+      { exact (Rlt_tra r3 r12 a Hr3lt12 Hr12a). } }
+    { exact (Rlt_tra r3 r12 b Hr3lt12 Hr12b). } }
+  { exact (Rlt_tra r3 r34 c Hr3lt34 Hr34c). } }
+{ exact (Rlt_tra r3 r34 d Hr3lt34 Hr34d). }
+Qed.
+
+(** Helper: if a <= b and b < c then a < c **)
+Theorem Rle_Rlt_tra_Euclid : forall a b c:set, Rle a b -> Rlt b c -> Rlt a c.
+let a b c.
+assume Hab: Rle a b.
+assume Hbc: Rlt b c.
+claim HaR: a :e R.
+{ exact (RleE_left a b Hab). }
+claim HbR: b :e R.
+{ exact (RleE_right a b Hab). }
+claim HcR: c :e R.
+{ exact (RltE_right b c Hbc). }
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+apply (SNoLt_trichotomy_or_impred a b HaS HbS (Rlt a c)).
+- assume Hablt: a < b.
+  claim HabRlt: Rlt a b.
+  { exact (RltI a b HaR HbR Hablt). }
+  exact (Rlt_tra a b c HabRlt Hbc).
+- assume Habeq: a = b.
+  rewrite Habeq.
+  exact Hbc.
+- assume Hbalt: b < a.
+  claim HbaRlt: Rlt b a.
+  { exact (RltI b a HbR HaR Hbalt). }
+  claim Hnlt: ~(Rlt b a).
+  { exact (RleE_nlt a b Hab). }
+  claim Hfalse: False.
+  { exact (Hnlt HbaRlt). }
+  apply FalseE.
+  exact Hfalse.
+Qed.
+
 (** helper for §13 Example 4: two-ball refinement around a point **)
 (** LATEX VERSION: If x lies in two open balls B(c1,r1) and B(c2,r2), then there is a smaller ball B(x,r3) contained in their intersection. **)
 (** SUSPICIOUS DEFINITION: The intended proof needs a triangle inequality for distance_R2 and monotonicity style estimates for sqrt and squares; those are not yet proved in this section, so this lemma is currently admitted. **)
