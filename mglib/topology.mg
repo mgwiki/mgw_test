@@ -12490,9 +12490,7 @@ Qed.
 Definition a_elt : set := Empty.
 Definition b_elt : set := {Empty}.
 Definition c_elt : set := {{Empty}}.
-(** FIXED: Use binunion to create proper 3-element set {a,b,c}.
-    Old: UPair a_elt (UPair b_elt c_elt) gave {a, {b,c}}, a 2-element set.
-    New: UPair a_elt b_elt :\/: {c_elt} gives {a, b} ∪ {c} = {a, b, c}. **)
+(** FIXED: Use binunion to create proper 3-element set {a,b,c}; old UPair a_elt (UPair b_elt c_elt) gave {a,{b,c}}, new UPair a_elt b_elt :\/: {c_elt} gives {a,b,c}. **)
 Definition abc_set : set := UPair a_elt b_elt :\/: {c_elt}.
 
 Definition top_abc_1 : set := UPair Empty abc_set.
@@ -17352,12 +17350,7 @@ Theorem ex13_8a_rational_intervals_basis_standard :
   basis_on R rational_open_intervals_basis /\
   generated_topology R rational_open_intervals_basis = R_standard_topology.
 prove basis_on R rational_open_intervals_basis /\ generated_topology R rational_open_intervals_basis = R_standard_topology.
-(** NOTE: This needs a density lemma for `rational_numbers` in `R`:
-    for any `a b :e R` with `Rlt a b` and any `x :e open_interval a b`,
-    there exist rationals `q1 q2` with `Rlt a q1`, `Rlt q1 x`, `Rlt x q2`, `Rlt q2 b`.
-    A promising route is to use `real_E` (pre-topology, trusted) to approximate reals by elements of `SNoS_ omega`,
-    then use `Subq_SNoS_omega_rational` to view those approximants as rationals. The missing piece is a clean
-    inequality bridge showing that sufficiently small `eps_ k` yields a strict point between `a` and `b`. **)
+(** NOTE: This needs a density lemma for `rational_numbers` in `R`; a route is to use `real_E` to approximate reals by elements of `SNoS_ omega` and then `Subq_SNoS_omega_rational`, plus an inequality bridge using `eps_ k`. **)
 apply andI.
 - (** rational open intervals satisfy basis_on R (partial: subset property) **)
   prove rational_open_intervals_basis c= Power R
@@ -18073,10 +18066,7 @@ Theorem ex13_8b_halfopen_rational_basis_topology :
   basis_on R rational_halfopen_intervals_basis /\
   generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology.
 prove basis_on R rational_halfopen_intervals_basis /\ generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology.
-(** NOTE: This similarly needs density of rationals plus a separation argument showing
-    the generated topology from halfopen rational intervals does not coincide with
-    the lower limit topology on `R`. As in (a), `real_E` plus `Subq_SNoS_omega_rational` should supply many rational
-    endpoints once the relevant order/epsilon inequalities are available. **)
+(** NOTE: This needs density of rationals plus a separation argument showing the generated topology from halfopen rational intervals differs from the lower limit topology; as in (a), use `real_E` and `Subq_SNoS_omega_rational` once order and epsilon inequalities are available. **)
 apply andI.
 - (** rational half-open intervals satisfy basis_on R (partial: subset property) **)
   prove rational_halfopen_intervals_basis c= Power R
@@ -18841,10 +18831,7 @@ apply andI.
 
 (** from §14 Definition: basis for the order topology **) 
 (** LATEX VERSION: For a simply ordered set X, the order-topology basis consists of all open intervals/rays; here represented abstractly. **)
-(** FIXED: For dictionary order on R², a and b are ordered pairs (a1,a2) and (b1,b2),
-    not Cartesian products a1×a2 and b1×b2.
-    Was: a = setprod a1 a2 (which is a1×a2, a SET of all pairs)
-    Now: a = (a1,a2) (which is a SINGLE ordered pair) **)
+(** FIXED: For dictionary order on R², a and b are ordered pairs (a1,a2) and (b1,b2), not cartesian products setprod a1 a2 and setprod b1 b2. **)
 (** SUSPICIOUS DEFINITION: `order_rel` is implemented as a case split over a small list of carrier sets used later; this is not a general interface for simply ordered sets and may force later axioms. **)
 Definition order_rel : set -> set -> set -> prop := fun X a b =>
   (X = R /\ Rlt a b)
@@ -23329,12 +23316,7 @@ Qed.
 
 (** from §15 Definition: projections on a product **) 
 (** LATEX VERSION: Define coordinate projection relations π₁ and π₂ from X×Y. **)
-(** FIXED: Projections must use ordered pairs for function graphs.
-    proj₁: X×Y → X maps (x,y) ↦ x, graph = {((x,y), x) | x∈X, y∈Y}.
-    proj₂: X×Y → Y maps (x,y) ↦ y, graph = {((x,y), y) | x∈X, y∈Y}.
-    Was using UPair (setprod x y) which is wrong on two counts:
-    (1) UPair is unordered, need ordered pairs (tuple notation)
-    (2) setprod x y is X×Y cartesian product, need (x,y) for single ordered pair **)
+(** FIXED: Projections must use ordered pairs for function graphs: proj₁ maps (x,y)↦x and proj₂ maps (x,y)↦y, with graphs {((x,y),x)} and {((x,y),y)}; UPair and setprod x y were incorrect here. **)
 Definition projection1 : set -> set -> set := fun X Y =>
   {(p, p 0) | p :e setprod X Y}.
 Definition projection2 : set -> set -> set := fun X Y =>
@@ -23367,11 +23349,7 @@ apply andI.
   reflexivity.
 Qed.
 
-(** FIXED: Function-related definitions must use ordered pairs, not UPair.
-    Functions are represented as sets of ordered pairs (x,y) where x↦y.
-    apply_fun looks up y such that (x,y) ∈ f.
-    Identity function: {(y,y) | y ∈ X}.
-    Constant family: {(i, X) | i ∈ I}. **)
+(** FIXED: Function-related definitions use ordered pairs, not UPair; functions are sets of ordered pairs (x,y), apply_fun looks up y with (x,y) ∈ f, identity is {(y,y)|y∈X}. **)
 (** SUSPICIOUS DEFINITION: `apply_fun` is based on `Eps_i`, so `function_on` only constrains the chosen values, not that `f` is a genuine functional graph; later results about unions/preimages may require extra axioms. Use `total_function_on` when totality is required. **)
 Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => (x,y) :e f).
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
