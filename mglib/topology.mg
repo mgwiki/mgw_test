@@ -25918,42 +25918,30 @@ claim Hlt: mul_SNo 0 0 < 2.
 exact (SepI rational_numbers (fun q:set => mul_SNo q q < 2) 0 H0Q Hlt).
 Qed.
 
+(** helper for §16 Exercise 7: convexity of the sqrt(2) cut in Q **)
+(** LATEX VERSION: The set {q∈Q | q^2<2} is convex in Q. **)
+Theorem Q_sqrt2_cut_convex : convex_in rational_numbers Q_sqrt2_cut.
+admit.
+Qed.
+
+(** helper for §16 Exercise 7: the sqrt(2) cut in Q is not an interval or ray (endpoints must lie in Q) **)
+(** LATEX VERSION: {q∈Q | q^2<2} is not an interval or ray in Q since it has no endpoint in Q. **)
+Theorem Q_sqrt2_cut_not_interval_or_ray :
+  ~ interval_or_ray_in rational_numbers Q_sqrt2_cut.
+admit.
+Qed.
+
 Theorem ex16_7_convex_interval_or_ray :
   exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
 prove exists X Y:set, convex_in X Y /\ Y <> X /\ ~ interval_or_ray_in X Y.
 witness rational_numbers.
 witness Q_sqrt2_cut.
 prove convex_in rational_numbers Q_sqrt2_cut /\ Q_sqrt2_cut <> rational_numbers /\ ~ interval_or_ray_in rational_numbers Q_sqrt2_cut.
-(** conjunction is left-associative: (A /\ B) /\ C **)
 apply andI.
-	- apply andI.
-	  + prove convex_in rational_numbers Q_sqrt2_cut.
-	    (** convex_in X Y = Y c= X /\ interval-closure property **)
-	    prove Q_sqrt2_cut c= rational_numbers /\
-	          forall a b:set, a :e Q_sqrt2_cut -> b :e Q_sqrt2_cut -> order_interval rational_numbers a b c= Q_sqrt2_cut.
-	    apply andI.
-	    - exact Q_sqrt2_cut_sub_Q.
-	    - let a b.
-	      assume Ha: a :e Q_sqrt2_cut.
-	      assume Hb: b :e Q_sqrt2_cut.
-	      prove order_interval rational_numbers a b c= Q_sqrt2_cut.
-	      let x. assume Hx: x :e order_interval rational_numbers a b.
-	      prove x :e Q_sqrt2_cut.
-	      claim HxQ: x :e rational_numbers.
-	      { exact (SepE1 rational_numbers
-	                     (fun x0:set => order_rel rational_numbers a x0 /\ order_rel rational_numbers x0 b)
-	                     x
-	                     Hx). }
-	      claim HxLt: order_rel rational_numbers a x /\ order_rel rational_numbers x b.
-	      { exact (SepE2 rational_numbers
-	                     (fun x0:set => order_rel rational_numbers a x0 /\ order_rel rational_numbers x0 b)
-	                     x
-	                     Hx). }
-	      claim Hxx: mul_SNo x x < 2.
-	      { admit. (** FAIL **) }
-	      exact (SepI rational_numbers (fun q:set => mul_SNo q q < 2) x HxQ Hxx).
-	  + exact Q_sqrt2_cut_neq_Q.
-- admit. (** FAIL **)
+  - apply andI.
+    + exact Q_sqrt2_cut_convex.
+    + exact Q_sqrt2_cut_neq_Q.
+  - exact Q_sqrt2_cut_not_interval_or_ray.
 Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
