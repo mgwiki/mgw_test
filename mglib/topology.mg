@@ -39607,6 +39607,418 @@ apply Hsign.
   exact (RltI (div_SNo num2 b) (div_SNo num1 b) Hy2R Hy1R HdivLt).
 Qed.
 
+(** Helper for ex16_8_lines_in_lower_limit_products: in the same_sign case, each singleton on the line is open in the R_lower_limit_topology product subspace topology **)
+Theorem affine_line_R2_singleton_open_same_sign : forall a b c p:set,
+  a :e R -> b :e R -> c :e R ->
+  b <> 0 -> same_sign_nonzero_R a b ->
+  p :e affine_line_R2 a b c ->
+  {p} :e subspace_topology (setprod R R)
+    (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+    (affine_line_R2 a b c).
+let a b c p.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HcR: c :e R.
+assume Hbne: b <> 0.
+assume Hsign: same_sign_nonzero_R a b.
+assume HpL: p :e affine_line_R2 a b c.
+prove {p} :e subspace_topology (setprod R R)
+  (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+  (affine_line_R2 a b c).
+claim HdefTL:
+  subspace_topology (setprod R R)
+    (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+    (affine_line_R2 a b c)
+  = {U0 :e Power (affine_line_R2 a b c) |
+       exists V0 :e (product_topology R R_lower_limit_topology R R_lower_limit_topology),
+         U0 = V0 :/\: (affine_line_R2 a b c)}.
+{ reflexivity. }
+rewrite HdefTL.
+apply (SepI (Power (affine_line_R2 a b c))
+  (fun U0:set => exists V0 :e (product_topology R R_lower_limit_topology R R_lower_limit_topology),
+    U0 = V0 :/\: (affine_line_R2 a b c)) {p}).
+- apply PowerI (affine_line_R2 a b c) {p}.
+  let q. assume Hq: q :e {p}.
+  prove q :e affine_line_R2 a b c.
+  claim Hqeq: q = p.
+  { exact (SingE p q Hq). }
+  rewrite Hqeq.
+  exact HpL.
+- claim HpRR: p :e setprod R R.
+  { exact (affine_line_R2_subset_R2 a b c p HpL). }
+  set x := p 0.
+  set y := p 1.
+  claim HxR: x :e R.
+  { exact (ap0_Sigma R (fun _ : set => R) p HpRR). }
+  claim HyR: y :e R.
+  { exact (ap1_Sigma R (fun _ : set => R) p HpRR). }
+  claim HdefR: R = real.
+  { reflexivity. }
+  claim HxReal: x :e real.
+  { rewrite <- HdefR. exact HxR. }
+  claim HyReal: y :e real.
+  { rewrite <- HdefR. exact HyR. }
+  claim HxS: SNo x.
+  { exact (real_SNo x HxReal). }
+  claim HyS: SNo y.
+  { exact (real_SNo y HyReal). }
+  set x1 := add_SNo x 1.
+  set y1 := add_SNo y 1.
+  claim Hx1Real: x1 :e real.
+  { exact (real_add_SNo x HxReal 1 real_1). }
+  claim Hy1Real: y1 :e real.
+  { exact (real_add_SNo y HyReal 1 real_1). }
+  claim Hx1R: x1 :e R.
+  { rewrite HdefR. exact Hx1Real. }
+  claim Hy1R: y1 :e R.
+  { rewrite HdefR. exact Hy1Real. }
+  claim Hx1def: x1 = add_SNo x 1.
+  { reflexivity. }
+  claim Hy1def: y1 = add_SNo y 1.
+  { reflexivity. }
+  claim Hxltx1: x < x1.
+  { prove x < x1.
+    rewrite Hx1def.
+    claim H0S: SNo 0.
+    { exact SNo_0. }
+    claim H1S: SNo 1.
+    { exact SNo_1. }
+    claim H0lt1: 0 < 1.
+    { exact SNoLt_0_1. }
+    claim Hx0ltx1: add_SNo x 0 < add_SNo x 1.
+    { exact (add_SNo_Lt2 x 0 1 HxS H0S H1S H0lt1). }
+    rewrite <- (add_SNo_0R x HxS) at 1.
+    exact Hx0ltx1. }
+  claim Hylt1: y < y1.
+  { prove y < y1.
+    rewrite Hy1def.
+    claim H0S: SNo 0.
+    { exact SNo_0. }
+    claim H1S: SNo 1.
+    { exact SNo_1. }
+    claim H0lt1: 0 < 1.
+    { exact SNoLt_0_1. }
+    claim Hy0lty1: add_SNo y 0 < add_SNo y 1.
+    { exact (add_SNo_Lt2 y 0 1 HyS H0S H1S H0lt1). }
+    rewrite <- (add_SNo_0R y HyS) at 1.
+    exact Hy0lty1. }
+  claim HRlt_x_x1: Rlt x x1.
+  { exact (RltI x x1 HxR Hx1R Hxltx1). }
+  claim HRlt_y_y1: Rlt y y1.
+  { exact (RltI y y1 HyR Hy1R Hylt1). }
+  set U := halfopen_interval_left x x1.
+  set V := halfopen_interval_left y y1.
+  claim HxU: x :e U.
+  { exact (halfopen_interval_left_leftmem x x1 HRlt_x_x1). }
+  claim HyV: y :e V.
+  { exact (halfopen_interval_left_leftmem y y1 HRlt_y_y1). }
+  claim HUinBasis: U :e R_lower_limit_basis.
+  { prove U :e R_lower_limit_basis.
+    claim HUfam: U :e {halfopen_interval_left x b0|b0 :e R}.
+    { exact (ReplI R (fun b0:set => halfopen_interval_left x b0) x1 Hx1R). }
+    exact (famunionI R (fun a0:set => {halfopen_interval_left a0 b0|b0 :e R}) x U HxR HUfam). }
+  claim HVinBasis: V :e R_lower_limit_basis.
+  { prove V :e R_lower_limit_basis.
+    claim HVfam: V :e {halfopen_interval_left y b0|b0 :e R}.
+    { exact (ReplI R (fun b0:set => halfopen_interval_left y b0) y1 Hy1R). }
+    exact (famunionI R (fun a0:set => {halfopen_interval_left a0 b0|b0 :e R}) y V HyR HVfam). }
+  claim HBasis: basis_on R R_lower_limit_basis.
+  { exact R_lower_limit_basis_is_basis_local. }
+  claim HUopen: U :e R_lower_limit_topology.
+  { exact (generated_topology_contains_basis R R_lower_limit_basis HBasis U HUinBasis). }
+  claim HVopen: V :e R_lower_limit_topology.
+  { exact (generated_topology_contains_basis R R_lower_limit_basis HBasis V HVinBasis). }
+  claim HWsub: rectangle_set U V :e product_subbasis R R_lower_limit_topology R R_lower_limit_topology.
+  { prove rectangle_set U V :e product_subbasis R R_lower_limit_topology R R_lower_limit_topology.
+    claim HWV: rectangle_set U V :e {rectangle_set U V0|V0 :e R_lower_limit_topology}.
+    { exact (ReplI R_lower_limit_topology (fun V0:set => rectangle_set U V0) V HVopen). }
+    exact (famunionI R_lower_limit_topology (fun U0:set => {rectangle_set U0 V0|V0 :e R_lower_limit_topology}) U (rectangle_set U V) HUopen HWV). }
+  claim HBsub: basis_on (setprod R R) (product_subbasis R R_lower_limit_topology R R_lower_limit_topology).
+  { exact (product_subbasis_is_basis R R_lower_limit_topology R R_lower_limit_topology R_lower_limit_topology_is_topology R_lower_limit_topology_is_topology). }
+  claim HWopen: rectangle_set U V :e product_topology R R_lower_limit_topology R R_lower_limit_topology.
+  { exact (generated_topology_contains_basis (setprod R R) (product_subbasis R R_lower_limit_topology R R_lower_limit_topology) HBsub (rectangle_set U V) HWsub). }
+  claim HsingEq: {p} = (rectangle_set U V) :/\: affine_line_R2 a b c.
+  { apply set_ext.
+    - let q. assume Hq: q :e {p}.
+      prove q :e (rectangle_set U V) :/\: affine_line_R2 a b c.
+      claim Hqeq: q = p.
+      { exact (SingE p q Hq). }
+      rewrite Hqeq.
+      apply binintersectI.
+      + claim Hpeta: p = (x,y).
+        { exact (setprod_eta R R p HpRR). }
+        rewrite Hpeta.
+        admit.
+      + exact HpL.
+    - let q. assume Hq: q :e (rectangle_set U V) :/\: affine_line_R2 a b c.
+      prove q :e {p}.
+      claim HqL: q :e affine_line_R2 a b c.
+      { exact (binintersectE2 (rectangle_set U V) (affine_line_R2 a b c) q Hq). }
+      claim HqW: q :e rectangle_set U V.
+      { exact (binintersectE1 (rectangle_set U V) (affine_line_R2 a b c) q Hq). }
+      claim HqUV: q :e setprod U V.
+      { exact HqW. }
+      set qx := q 0.
+      set qy := q 1.
+      claim HqRR: q :e setprod R R.
+      { exact (affine_line_R2_subset_R2 a b c q HqL). }
+      claim HqxR: qx :e R.
+      { exact (ap0_Sigma R (fun _ : set => R) q HqRR). }
+      claim HqyR: qy :e R.
+      { exact (ap1_Sigma R (fun _ : set => R) q HqRR). }
+      claim HqxS: SNo qx.
+      { claim HqxReal: qx :e real.
+        { rewrite <- HdefR. exact HqxR. }
+        exact (real_SNo qx HqxReal). }
+      claim HqyS: SNo qy.
+      { claim HqyReal: qy :e real.
+        { rewrite <- HdefR. exact HqyR. }
+        exact (real_SNo qy HqyReal). }
+      claim HqxU: qx :e U.
+      { exact (ap0_Sigma U (fun _ : set => V) q HqUV). }
+      claim HqyV: qy :e V.
+      { exact (ap1_Sigma U (fun _ : set => V) q HqUV). }
+      claim HqxCond: ~(Rlt qx x) /\ Rlt qx x1.
+      { exact (SepE2 R (fun t:set => ~(Rlt t x) /\ Rlt t x1) qx HqxU). }
+      claim HqyCond: ~(Rlt qy y) /\ Rlt qy y1.
+      { exact (SepE2 R (fun t:set => ~(Rlt t y) /\ Rlt t y1) qy HqyV). }
+      claim HnotRlt_qx_x: ~(Rlt qx x).
+      { exact (andEL (~(Rlt qx x)) (Rlt qx x1) HqxCond). }
+      claim HnotRlt_qy_y: ~(Rlt qy y).
+      { exact (andEL (~(Rlt qy y)) (Rlt qy y1) HqyCond). }
+      claim Hnotlt_qx_x: ~ (qx < x).
+      { assume Hlt: qx < x.
+        apply HnotRlt_qx_x.
+        exact (RltI qx x HqxR HxR Hlt). }
+      claim Hqeq: q = p.
+      { apply (SNoLt_trichotomy_or_impred qx x HqxS HxS (q = p)).
+        - assume Hqxlt: qx < x.
+          prove q = p.
+          apply FalseE.
+          apply Hnotlt_qx_x.
+          exact Hqxlt.
+        - assume HqxEq: qx = x.
+          prove q = p.
+          set f := affine_line_R2_param_by_x a b c.
+          claim Hpx: apply_fun f x = p.
+          { claim Happ1p: apply_fun (projection1 R R) p = x.
+            { rewrite (projection1_apply R R p HpRR).
+              reflexivity. }
+            rewrite <- Happ1p.
+            exact (affine_line_R2_param_by_x_after_projection1_on_line a b c p HaR HbR HcR Hbne HpL). }
+          claim Hqpx: apply_fun f qx = q.
+          { claim Happ1q: apply_fun (projection1 R R) q = qx.
+            { rewrite (projection1_apply R R q HqRR).
+              reflexivity. }
+            rewrite <- Happ1q.
+            exact (affine_line_R2_param_by_x_after_projection1_on_line a b c q HaR HbR HcR Hbne HqL). }
+          rewrite <- Hqpx.
+          rewrite <- Hpx.
+          rewrite HqxEq.
+          reflexivity.
+        - assume Hxlt: x < qx.
+          prove q = p.
+          apply FalseE.
+          set f := affine_line_R2_param_by_x a b c.
+          set yx := div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b.
+          set yq := div_SNo (add_SNo c (minus_SNo (mul_SNo a qx))) b.
+          claim Hyxdef: yx = div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b.
+          { reflexivity. }
+          claim Hyqdef: yq = div_SNo (add_SNo c (minus_SNo (mul_SNo a qx))) b.
+          { reflexivity. }
+          claim Hpx: apply_fun f x = p.
+          { claim Happ1p: apply_fun (projection1 R R) p = x.
+            { rewrite (projection1_apply R R p HpRR).
+              reflexivity. }
+            rewrite <- Happ1p.
+            exact (affine_line_R2_param_by_x_after_projection1_on_line a b c p HaR HbR HcR Hbne HpL). }
+          claim Hqpx: apply_fun f qx = q.
+          { claim Happ1q: apply_fun (projection1 R R) q = qx.
+            { rewrite (projection1_apply R R q HqRR).
+              reflexivity. }
+            rewrite <- Happ1q.
+            exact (affine_line_R2_param_by_x_after_projection1_on_line a b c q HaR HbR HcR Hbne HqL). }
+          claim Hpeta: p = (x,y).
+          { exact (setprod_eta R R p HpRR). }
+          claim Hqeta: q = (qx,qy).
+          { exact (setprod_eta R R q HqRR). }
+          claim HpairP: (x,yx) = (x,y).
+          { claim Hfx: apply_fun f x = (x,yx).
+            { rewrite (affine_line_R2_param_by_x_apply a b c x HxR).
+              rewrite <- Hyxdef.
+              reflexivity. }
+            rewrite <- Hpeta.
+            rewrite <- Hfx.
+            exact Hpx. }
+          claim HyxEq: yx = y.
+          { exact (andER (x = x) (yx = y) (tuple_eq_coords x yx x y HpairP)). }
+          claim HpairQ: (qx,yq) = (qx,qy).
+          { claim Hfq: apply_fun f qx = (qx,yq).
+            { rewrite (affine_line_R2_param_by_x_apply a b c qx HqxR).
+              rewrite <- Hyqdef.
+              reflexivity. }
+            rewrite <- Hqeta.
+            rewrite <- Hfq.
+            exact Hqpx. }
+          claim HyqEq: yq = qy.
+          { exact (andER (qx = qx) (yq = qy) (tuple_eq_coords qx yq qx qy HpairQ)). }
+          claim HRlt_x_qx: Rlt x qx.
+          { exact (RltI x qx HxR HqxR Hxlt). }
+          claim HRlt_yq_yx: Rlt yq yx.
+          { exact (affine_line_R2_param_by_x_y_decreases_same_sign a b c x qx
+                    HaR HbR HcR Hbne Hsign HxR HqxR HRlt_x_qx). }
+          claim Hbad: Rlt qy y.
+          { rewrite <- HyqEq.
+            rewrite <- HyxEq.
+            exact HRlt_yq_yx. }
+          apply HnotRlt_qy_y.
+          exact Hbad. }
+      rewrite Hqeq.
+      exact (SingI p). }
+  witness (rectangle_set U V).
+  apply andI.
+  - exact HWopen.
+  - exact HsingEq.
+Qed.
+
+(** Helper for ex16_8_lines_in_lower_limit_products: projection1 into a discrete codomain is continuous on the same_sign affine line **)
+Theorem projection1_continuous_on_affine_line_same_sign : forall a b c:set,
+  a :e R -> b :e R -> c :e R ->
+  b <> 0 -> same_sign_nonzero_R a b ->
+  continuous_map (affine_line_R2 a b c)
+    (subspace_topology (setprod R R)
+      (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+      (affine_line_R2 a b c))
+    R (discrete_topology R) (projection1 R R).
+let a b c.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HcR: c :e R.
+assume Hbne: b <> 0.
+assume Hsign: same_sign_nonzero_R a b.
+set g := projection1 R R.
+prove continuous_map (affine_line_R2 a b c)
+  (subspace_topology (setprod R R)
+    (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+    (affine_line_R2 a b c))
+  R (discrete_topology R) g.
+claim HTll: topology_on R R_lower_limit_topology.
+{ exact R_lower_limit_topology_is_topology. }
+claim HTprod: topology_on (setprod R R)
+  (product_topology R R_lower_limit_topology R R_lower_limit_topology).
+{ exact (product_topology_is_topology R R_lower_limit_topology R R_lower_limit_topology HTll HTll). }
+claim HLsub: affine_line_R2 a b c c= setprod R R.
+{ exact (affine_line_R2_subset_R2 a b c). }
+claim HTL: topology_on (affine_line_R2 a b c)
+  (subspace_topology (setprod R R)
+    (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+    (affine_line_R2 a b c)).
+{ exact (subspace_topology_is_topology (setprod R R)
+          (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+          (affine_line_R2 a b c) HTprod HLsub). }
+claim HTd: topology_on R (discrete_topology R).
+{ exact (discrete_topology_on R). }
+claim Hfun: function_on g (affine_line_R2 a b c) R.
+{ let p. assume HpL: p :e affine_line_R2 a b c.
+  prove apply_fun g p :e R.
+  claim HpRR: p :e setprod R R.
+  { exact (HLsub p HpL). }
+  claim Happ: apply_fun g p = p 0.
+  { exact (projection1_apply R R p HpRR). }
+  rewrite Happ.
+  exact (ap0_Sigma R (fun _ : set => R) p HpRR). }
+prove topology_on (affine_line_R2 a b c)
+    (subspace_topology (setprod R R)
+      (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+      (affine_line_R2 a b c))
+  /\ topology_on R (discrete_topology R)
+  /\ function_on g (affine_line_R2 a b c) R
+  /\ forall V:set, V :e discrete_topology R ->
+       preimage_of (affine_line_R2 a b c) g V :e
+         (subspace_topology (setprod R R)
+           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+           (affine_line_R2 a b c)).
+apply andI.
+- apply andI.
+  * apply andI.
+    + exact HTL.
+    + exact HTd.
+  * exact Hfun.
+- let V. assume HV: V :e discrete_topology R.
+  prove preimage_of (affine_line_R2 a b c) g V :e
+    (subspace_topology (setprod R R)
+      (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+      (affine_line_R2 a b c)).
+  set S := preimage_of (affine_line_R2 a b c) g V.
+  set Fam := {{p0}|p0 :e S}.
+  claim HFamSub: Fam c=
+    (subspace_topology (setprod R R)
+      (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+      (affine_line_R2 a b c)).
+  { let U. assume HU: U :e Fam.
+    prove U :e
+      (subspace_topology (setprod R R)
+        (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+        (affine_line_R2 a b c)).
+    claim Hex: exists p0 :e S, U = {p0}.
+    { exact (ReplE S (fun p0:set => {p0}) U HU). }
+    apply Hex.
+    let p0. assume Hp0pair.
+    claim Hp0S: p0 :e S.
+    { exact (andEL (p0 :e S) (U = {p0}) Hp0pair). }
+    claim HUeq: U = {p0}.
+    { exact (andER (p0 :e S) (U = {p0}) Hp0pair). }
+    rewrite HUeq.
+    claim Hp0L: p0 :e affine_line_R2 a b c.
+    { exact (SepE1 (affine_line_R2 a b c) (fun u:set => apply_fun g u :e V) p0 Hp0S). }
+    exact (affine_line_R2_singleton_open_same_sign a b c p0 HaR HbR HcR Hbne Hsign Hp0L). }
+  claim HUnionOpen: Union Fam :e
+    (subspace_topology (setprod R R)
+      (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+      (affine_line_R2 a b c)).
+  { exact (topology_union_closed (affine_line_R2 a b c)
+            (subspace_topology (setprod R R)
+              (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+              (affine_line_R2 a b c))
+            Fam
+            HTL
+            HFamSub). }
+  claim HUnionEq: Union Fam = S.
+  { apply set_ext.
+    - let x. assume Hx: x :e Union Fam.
+      prove x :e S.
+      claim HexU: exists U:set, x :e U /\ U :e Fam.
+      { exact (UnionE Fam x Hx). }
+      apply HexU.
+      let U. assume HUconj.
+      claim HxU: x :e U.
+      { exact (andEL (x :e U) (U :e Fam) HUconj). }
+      claim HUfam: U :e Fam.
+      { exact (andER (x :e U) (U :e Fam) HUconj). }
+      claim Hex: exists p0 :e S, U = {p0}.
+      { exact (ReplE S (fun p0:set => {p0}) U HUfam). }
+      apply Hex.
+      let p0. assume Hp0pair.
+      claim Hp0S: p0 :e S.
+      { exact (andEL (p0 :e S) (U = {p0}) Hp0pair). }
+      claim HUeq: U = {p0}.
+      { exact (andER (p0 :e S) (U = {p0}) Hp0pair). }
+      claim HxU2: x :e {p0}.
+      { rewrite <- HUeq.
+        exact HxU. }
+      claim Hxeq: x = p0.
+      { exact (SingE p0 x HxU2). }
+      rewrite Hxeq.
+      exact Hp0S.
+    - let x. assume Hx: x :e S.
+      prove x :e Union Fam.
+      claim HsingFam: {x} :e Fam.
+      { exact (ReplI S (fun p0:set => {p0}) x Hx). }
+      exact (UnionI Fam x {x} (SingI x) HsingFam). }
+  rewrite <- HUnionEq.
+  exact HUnionOpen.
+Qed.
+
 (** from §16 Exercise 8: topology on a line in R_l×R and R_l×R_l is familiar **)
 (** LATEX VERSION: For a straight line L in the plane, the subspace topology from R_l×R and from R_l×R_l is a familiar topology on L. **)
 Theorem ex16_8_lines_in_lower_limit_products : forall a b c:set,
@@ -39806,13 +40218,17 @@ apply andI.
 			            exact (projection1_after_affine_line_R2_param_by_x a b c x HaR HbR HcR HxR).
 			        + let p. assume Hp: p :e affine_line_R2 a b c.
 			          exact (affine_line_R2_param_by_x_after_projection1_on_line a b c p HaR HbR HcR Hbne Hp).
-	  + assume Hneg: b <> 0 /\ same_sign_nonzero_R a b.
-	    witness (affine_line_R2_param_by_x a b c).
-	    claim Hbne: b <> 0.
-	    { apply Hneg.
-	      assume Hbne0 Hsign.
-	      exact Hbne0. }
-	    set f := affine_line_R2_param_by_x a b c.
+		  + assume Hneg: b <> 0 /\ same_sign_nonzero_R a b.
+		    witness (affine_line_R2_param_by_x a b c).
+		    claim Hbne: b <> 0.
+		    { apply Hneg.
+		      assume Hbne0 Hsign.
+		      exact Hbne0. }
+		    claim Hsign: same_sign_nonzero_R a b.
+		    { apply Hneg.
+		      assume Hbne0 Hsign0.
+		      exact Hsign0. }
+		    set f := affine_line_R2_param_by_x a b c.
 	    prove continuous_map R (discrete_topology R) (affine_line_R2 a b c)
 	      (subspace_topology (setprod R R)
 	         (product_topology R R_lower_limit_topology R R_lower_limit_topology)
@@ -39875,14 +40291,14 @@ apply andI.
 		        { let x. assume Hx: x :e preimage_of R f V.
 		          exact (SepE1 R (fun u:set => apply_fun f u :e V) x Hx). }
 		        exact (discrete_open_all R (preimage_of R f V) HsubV).
-		    - witness (projection1 R R).
-		      apply andI.
-		      + apply andI.
-			        * admit. (** FAIL **)
-		        * let x. assume HxR: x :e R.
-		          exact (projection1_after_affine_line_R2_param_by_x a b c x HaR HbR HcR HxR).
-		      + let p. assume Hp: p :e affine_line_R2 a b c.
-		        exact (affine_line_R2_param_by_x_after_projection1_on_line a b c p HaR HbR HcR Hbne Hp).
+			    - witness (projection1 R R).
+			      apply andI.
+			      + apply andI.
+				        * exact (projection1_continuous_on_affine_line_same_sign a b c HaR HbR HcR Hbne Hsign).
+			        * let x. assume HxR: x :e R.
+			          exact (projection1_after_affine_line_R2_param_by_x a b c x HaR HbR HcR HxR).
+			      + let p. assume Hp: p :e affine_line_R2 a b c.
+			        exact (affine_line_R2_param_by_x_after_projection1_on_line a b c p HaR HbR HcR Hbne Hp).
   - assume Hcase: b = 0 \/ ~ same_sign_nonzero_R a b.
 	  claim Hb0case: b = 0 ->
 	    exists f:set,
