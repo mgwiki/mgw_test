@@ -11611,10 +11611,7 @@ claim Hr3Left5: (((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2) /\ Rlt r3 m3
           (Rlt r3 m4)
           Hr3). }
 claim Hr3m3: Rlt r3 m3.
-{ exact (andER
-          ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2
-          (Rlt r3 m3)
-          Hr3Left5). }
+{ exact (andER (((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2) (Rlt r3 m3) Hr3Left5). }
 claim Hr3Left4: ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2.
 { exact (andEL
           (((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2)
