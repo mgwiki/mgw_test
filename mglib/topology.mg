@@ -41967,12 +41967,10 @@ prove connected_space Y Ty.
 prove topology_on Y Ty /\ ~(exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V).
 apply andI.
 - exact (homeomorphism_topology_right X Tx Y Ty f Hhom).
-- assume HsepY: exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V.
-  prove False.
-  claim HnoSepX: ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
-  { exact (andER (topology_on X Tx)
-                 (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V))
-                 HX). }
+  - assume HsepY: exists U V:set, U :e Ty /\ V :e Ty /\ separation_of Y U V.
+    prove False.
+    claim HnoSepX: ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
+  { exact (connected_space_no_separation X Tx HX). }
   claim Hcontf: continuous_map X Tx Y Ty f.
   { exact (andEL (continuous_map X Tx Y Ty f)
                  (exists g:set, continuous_map Y Ty X Tx g /\
