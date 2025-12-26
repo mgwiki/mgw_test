@@ -62160,28 +62160,16 @@ Qed.
 
 (** from §48 Exercise 7a: continuity set is G_delta **)
 (** LATEX VERSION: For f:ℝ→ℝ, the set C of continuity points is G_δ. **)
-Axiom ex48_7a_continuity_set_Gdelta_axiom : forall f:set,
-  function_on f R R ->
-  exists Fam:set, countable_set Fam /\
-    (forall U:set, U :e Fam -> U :e R_standard_topology) /\
-    {x :e R | continuous_at f x} = intersection_over_family R Fam.
 Theorem ex48_7a_continuity_set_Gdelta : forall f:set,
   function_on f R R ->
   exists Fam:set, countable_set Fam /\
     (forall U:set, U :e Fam -> U :e R_standard_topology) /\
     {x :e R | continuous_at f x} = intersection_over_family R Fam.
-exact ex48_7a_continuity_set_Gdelta_axiom.
+admit.
 Qed.
 
 (** from §48 Exercise 7b: countable dense not G_delta **)
 (** LATEX VERSION: Countable dense D ⊂ ℝ is not G_δ. **)
-Axiom ex48_7b_countable_dense_not_Gdelta_axiom : forall D:set,
-  D c= R ->
-  countable_set D ->
-  dense_in D R R_standard_topology ->
-  ~ (exists Fam:set, countable_set Fam /\
-      (forall W:set, W :e Fam -> W :e R_standard_topology) /\
-      D = intersection_over_family R Fam).
 Theorem ex48_7b_countable_dense_not_Gdelta : forall D:set,
   D c= R ->
   countable_set D ->
@@ -62189,18 +62177,11 @@ Theorem ex48_7b_countable_dense_not_Gdelta : forall D:set,
   ~ (exists Fam:set, countable_set Fam /\
       (forall W:set, W :e Fam -> W :e R_standard_topology) /\
       D = intersection_over_family R Fam).
-exact ex48_7b_countable_dense_not_Gdelta_axiom.
+admit.
 Qed.
 
 (** from §48 Exercise 7: no function continuous precisely on countable dense set **)
 (** LATEX VERSION: If D is countable dense in ℝ, no f:ℝ→ℝ is continuous precisely on D. **)
-Axiom ex48_7_no_function_continuous_on_countable_dense_axiom : forall D:set,
-  D c= R ->
-  countable_set D ->
-  dense_in D R R_standard_topology ->
-  ~ (exists f:set, function_on f R R /\
-      (forall x:set, x :e D -> continuous_at f x) /\
-      (forall x:set, x :e R -> x /:e D -> ~ continuous_at f x)).
 Theorem ex48_7_no_function_continuous_on_countable_dense : forall D:set,
   D c= R ->
   countable_set D ->
@@ -62208,7 +62189,7 @@ Theorem ex48_7_no_function_continuous_on_countable_dense : forall D:set,
   ~ (exists f:set, function_on f R R /\
       (forall x:set, x :e D -> continuous_at f x) /\
       (forall x:set, x :e R -> x /:e D -> ~ continuous_at f x)).
-exact ex48_7_no_function_continuous_on_countable_dense_axiom.
+admit.
 Qed.
 
 (** from §48 Exercise 8: pointwise limit continuous uncountably many points **)
@@ -62219,50 +62200,28 @@ Definition pointwise_limit_of_sequence_of_functions : set -> set -> prop := fun 
       exists N:set, N :e omega /\
         forall n:set, n :e omega -> N c= n ->
           Rlt (Abs (add_SNo (apply_fun (apply_fun fn n) x) (minus_SNo (apply_fun f x)))) eps.
-Axiom ex48_8_pointwise_limit_continuity_axiom : forall fn:set, forall f:set,
-  (forall n:set, n :e omega ->
-    continuous_map R R_standard_topology R R_standard_topology (apply_fun fn n)) ->
-  function_on f R R ->
-  pointwise_limit_of_sequence_of_functions fn f ->
-  ~ countable_set {x :e R | continuous_at f x}.
 Theorem ex48_8_pointwise_limit_continuity : forall fn:set, forall f:set,
   (forall n:set, n :e omega ->
     continuous_map R R_standard_topology R R_standard_topology (apply_fun fn n)) ->
   function_on f R R ->
   pointwise_limit_of_sequence_of_functions fn f ->
   ~ countable_set {x :e R | continuous_at f x}.
-exact ex48_8_pointwise_limit_continuity_axiom.
+admit.
 Qed.
 
 (** from §48 Exercise 9: Thomae function **)
 (** LATEX VERSION: Define f(xₙ)=1/n for rationals, f(x)=0 for irrationals. Then f is continuous at irrationals. **)
-Axiom ex48_9_Thomae_function_axiom : forall g:set, forall f:set,
-  (forall n:set, n :e omega -> apply_fun g n :e Q) ->
-  function_on f R R ->
-  (forall n:set, n :e omega -> apply_fun f (apply_fun g n) = recip_SNo (ordsucc n)) ->
-  (forall x:set, x :e R -> x /:e Q -> apply_fun f x = 0) ->
-  forall x:set, x :e R -> x /:e Q -> continuous_at f x.
 Theorem ex48_9_Thomae_function : forall g:set, forall f:set,
   (forall n:set, n :e omega -> apply_fun g n :e Q) ->
   function_on f R R ->
   (forall n:set, n :e omega -> apply_fun f (apply_fun g n) = recip_SNo (ordsucc n)) ->
   (forall x:set, x :e R -> x /:e Q -> apply_fun f x = 0) ->
   forall x:set, x :e R -> x /:e Q -> continuous_at f x.
-exact ex48_9_Thomae_function_axiom.
+admit.
 Qed.
 
 (** from §48 Exercise 10: uniform boundedness principle **)
 (** LATEX VERSION: Uniform boundedness: if X complete metric and ℱ⊂C(X,ℝ) pointwise bounded, then uniformly bounded on some nonempty open set. **)
-Axiom ex48_10_uniform_boundedness_axiom : forall X d:set, forall FF:set,
-  complete_metric_space X d ->
-  FF c= Power (Power R) ->
-  (forall a:set, a :e X ->
-    exists M:set, M :e R /\
-      forall f:set, f :e FF -> apply_fun f a :e R) ->
-  exists U:set, exists M:set, U :e (metric_topology X d) /\ U <> Empty /\
-    M :e R /\
-    forall f:set, f :e FF ->
-      forall x:set, x :e U -> apply_fun f x :e R.
 Theorem ex48_10_uniform_boundedness : forall X d:set, forall FF:set,
   complete_metric_space X d ->
   FF c= Power (Power R) ->
@@ -62273,15 +62232,14 @@ Theorem ex48_10_uniform_boundedness : forall X d:set, forall FF:set,
     M :e R /\
     forall f:set, f :e FF ->
       forall x:set, x :e U -> apply_fun f x :e R.
-exact ex48_10_uniform_boundedness_axiom.
+admit.
 Qed.
 
 (** from §48 Exercise 11: is R_l a Baire space **)
 (** LATEX VERSION: Determine whether ℝ_ℓ is a Baire space. **)
 (** FIXED: Use the existing lower limit topology constant R_lower_limit_topology. **)
-Axiom ex48_11_Rl_Baire_axiom : Baire_space R R_lower_limit_topology.
 Theorem ex48_11_Rl_Baire : Baire_space R R_lower_limit_topology.
-exact ex48_11_Rl_Baire_axiom.
+admit.
 Qed.
 
 (** from §49 Exercise 1: verify properties of example functions **)
