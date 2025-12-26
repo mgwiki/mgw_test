@@ -20762,7 +20762,23 @@ Qed.
 
 (** helper: setprod 2 omega is not rational_numbers **)
 Theorem setprod_2_omega_neq_rational_numbers : setprod 2 omega <> rational_numbers.
-admit.
+assume Heq: setprod 2 omega = rational_numbers.
+prove False.
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim Hp: (0,1) :e setprod 2 omega.
+{ exact (tuple_2_setprod 2 omega 0 In_0_2 1 H1omega). }
+claim HpQ: (0,1) :e rational_numbers.
+{ rewrite <- Heq.
+  exact Hp. }
+claim HSingQ: {1} :e rational_numbers.
+{ rewrite <- tuple_0_1_eq_Sing1.
+  exact HpQ. }
+claim HSingR: {1} :e R.
+{ exact (rational_numbers_in_R {1} HSingQ). }
+claim HSingS: SNo {1}.
+{ exact (real_SNo {1} HSingR). }
+exact (Sing1_not_SNo HSingS).
 Qed.
 
 (** helper: unfold order_rel on setprod 2 omega to the dictionary-order case **)
