@@ -59488,14 +59488,6 @@ Qed.
 (** from §50 Theorem 50.5: Menger-Nöbeling embedding theorem **)
 (** LATEX VERSION: Every compact metrizable space X of topological dimension m can be embedded in R^{2m+1}. **)
 (** FIXED: Dimension parameter uses N = add_nat (mul_nat two m) (Sing Empty) to represent 2m+1, not m+1. **) 
-Axiom Menger_Nobeling_embedding_full_axiom : forall X Tx m:set,
-  compact_space X Tx ->
-  metrizable X Tx ->
-  covering_dimension X Tx m ->
-  m :e omega ->
-  exists N:set, exists e:set,
-    N = add_nat (mul_nat two m) (Sing Empty) /\
-    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 Theorem Menger_Nobeling_embedding_full : forall X Tx m:set,
   compact_space X Tx ->
   metrizable X Tx ->
@@ -59504,49 +59496,32 @@ Theorem Menger_Nobeling_embedding_full : forall X Tx m:set,
   exists N:set, exists e:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-exact Menger_Nobeling_embedding_full_axiom.
+admit.
 Qed.
 
 (** from §50 Theorem 50.6: compact subspace of R^N has dimension at most N **)
 (** LATEX VERSION: Every compact subspace of R^N has topological dimension at most N. **)
-Axiom compact_subspace_RN_dimension_le_N_axiom : forall X N:set,
-  N :e omega ->
-  X c= (euclidean_space N) ->
-  compact_space X (subspace_topology (euclidean_space N) (euclidean_topology N) X) ->
-  covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
 Theorem compact_subspace_RN_dimension_le_N : forall X N:set,
   N :e omega ->
   X c= (euclidean_space N) ->
   compact_space X (subspace_topology (euclidean_space N) (euclidean_topology N) X) ->
   covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
-exact compact_subspace_RN_dimension_le_N_axiom.
+admit.
 Qed.
 
 (** from §50 Corollary 50.7: compact m-manifold has dimension at most m **)
 (** LATEX VERSION: Every compact m-manifold has topological dimension at most m. **)
-Axiom compact_m_manifold_dimension_le_m_axiom : forall X Tx m:set,
-  m :e omega ->
-  compact_space X Tx ->
-  m_manifold X Tx ->
-  covering_dimension X Tx m.
 Theorem compact_m_manifold_dimension_le_m : forall X Tx m:set,
   m :e omega ->
   compact_space X Tx ->
   m_manifold X Tx ->
   covering_dimension X Tx m.
-exact compact_m_manifold_dimension_le_m_axiom.
+admit.
 Qed.
 
 (** from §50 Corollary 50.8: compact m-manifold embeds in R^{2m+1} **)
 (** LATEX VERSION: Every compact m-manifold can be embedded in R^{2m+1}. **)
 (** FIXED: Same correction as above: N = add_nat (mul_nat two m) (Sing Empty) represents 2m+1. **) 
-Axiom compact_m_manifold_embeds_R2mp1_axiom : forall X Tx m:set,
-  m :e omega ->
-  compact_space X Tx ->
-  m_manifold X Tx ->
-  exists N:set, exists e:set,
-    N = add_nat (mul_nat two m) (Sing Empty) /\
-    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 Theorem compact_m_manifold_embeds_R2mp1 : forall X Tx m:set,
   m :e omega ->
   compact_space X Tx ->
@@ -59554,19 +59529,11 @@ Theorem compact_m_manifold_embeds_R2mp1 : forall X Tx m:set,
   exists N:set, exists e:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-exact compact_m_manifold_embeds_R2mp1_axiom.
+admit.
 Qed.
 
 (** from §50 Corollary 50.9: compact metrizable embeds in R^N iff finite dimensional **)
 (** LATEX VERSION: A compact metrizable space X can be embedded in R^N for some N iff X has finite topological dimension. **)
-Axiom compact_metrizable_embeds_iff_finite_dim_axiom : forall X Tx:set,
-  compact_space X Tx ->
-  metrizable X Tx ->
-  ((exists N:set, exists e:set,
-    N :e omega /\
-    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e)
-  <->
-  finite_dimensional_space X Tx).
 Theorem compact_metrizable_embeds_iff_finite_dim : forall X Tx:set,
   compact_space X Tx ->
   metrizable X Tx ->
@@ -59575,7 +59542,7 @@ Theorem compact_metrizable_embeds_iff_finite_dim : forall X Tx:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e)
   <->
   finite_dimensional_space X Tx).
-exact compact_metrizable_embeds_iff_finite_dim_axiom.
+admit.
 Qed.
 
 (** from Supplementary Exercises: locally m-euclidean space **)
