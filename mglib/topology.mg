@@ -20591,11 +20591,16 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    { exact (order_rel_setprod_2_omega_unfold (1,0) b Hrel2). }
 		    apply Hex.
 		    let i. assume HiPair. apply HiPair.
-		    let m. assume HmPair. apply HmPair.
-		    let j. assume HjPair. apply HjPair.
-		    let n. assume HnPair. apply HnPair.
-		    assume Hcore.
-		    apply Hcore.
+			    let m. assume HmPair. apply HmPair.
+			    let j. assume HjPair. apply HjPair.
+			    let n. assume HnPair. apply HnPair.
+			    assume Hcore.
+			    (** Probe: try to extract the lexicographic disjunction directly from Hcore. **)
+			    claim Hlex_disj_direct: i :e j \/ (i = j /\ m :e n).
+			    { apply (Hcore (i :e j \/ (i = j /\ m :e n))).
+			      assume Hleft Hright.
+			      exact Hright. }
+			    apply Hcore.
 		    assume Hpre Hlex.
 		    apply Hpre.
 		    assume Hpre2 HbEq.
