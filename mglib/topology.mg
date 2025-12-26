@@ -61671,46 +61671,23 @@ admit.
 Qed.
 (** from §32 Exercise 5: normality questions for Romega product topologies **)
 (** LATEX VERSION: Is ℝ^ω normal in product topology? In uniform topology? **)
-Axiom ex32_5_Romega_normality_questions_axiom :
-  (normal_space R_omega_space R_omega_product_topology \/
-   ~ normal_space R_omega_space R_omega_product_topology) /\
-  (normal_space real_sequences uniform_topology \/
-   ~ normal_space real_sequences uniform_topology).
 Theorem ex32_5_Romega_normality_questions :
   (normal_space R_omega_space R_omega_product_topology \/
    ~ normal_space R_omega_space R_omega_product_topology) /\
   (normal_space real_sequences uniform_topology \/
    ~ normal_space real_sequences uniform_topology).
-exact ex32_5_Romega_normality_questions_axiom.
+admit.
 Qed.
 (** from §32 Exercise 6: completely normal characterization via separated sets **)
 (** LATEX VERSION: X is completely normal iff for every separated pair A,B, there exist disjoint open sets containing them. **)
-Axiom ex32_6_completely_normal_characterization_axiom : forall X Tx:set,
-  completely_normal_space X Tx <->
-  (forall A B:set, separated_subsets X Tx A B ->
-    exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
 Theorem ex32_6_completely_normal_characterization : forall X Tx:set,
   completely_normal_space X Tx <->
   (forall A B:set, separated_subsets X Tx A B ->
     exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
-exact ex32_6_completely_normal_characterization_axiom.
+admit.
 Qed.
 (** from §32 Exercise 7: completely normal examples **)
 (** LATEX VERSION: Which are completely normal: (a) subspace (b) product (c) well-ordered (d) metrizable (e) compact Hausdorff (f) regular+countable basis (g) ℝ_ℓ? **)
-Axiom ex32_7_completely_normal_examples_axiom :
-  (forall X Tx A:set, completely_normal_space X Tx -> completely_normal_space A (subspace_topology X Tx A)) /\
-  (forall X Tx Y Ty:set, completely_normal_space X Tx -> completely_normal_space Y Ty ->
-    (completely_normal_space (setprod X Y) (product_topology X Tx Y Ty) \/
-     ~ completely_normal_space (setprod X Y) (product_topology X Tx Y Ty))) /\
-  (forall X:set, well_ordered_set X ->
-    (completely_normal_space X (order_topology X) \/
-     ~ completely_normal_space X (order_topology X))) /\
-  (forall X Tx:set, metrizable X Tx -> completely_normal_space X Tx) /\
-  (forall X Tx:set, compact_space X Tx -> Hausdorff_space X Tx ->
-    (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
-  (forall X Tx:set, regular_space X Tx -> second_countable_space X Tx ->
-    (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
-  (completely_normal_space R R_lower_limit_topology \/ ~ completely_normal_space R R_lower_limit_topology).
 Theorem ex32_7_completely_normal_examples :
   (forall X Tx A:set, completely_normal_space X Tx -> completely_normal_space A (subspace_topology X Tx A)) /\
   (forall X Tx Y Ty:set, completely_normal_space X Tx -> completely_normal_space Y Ty ->
@@ -61725,27 +61702,21 @@ Theorem ex32_7_completely_normal_examples :
   (forall X Tx:set, regular_space X Tx -> second_countable_space X Tx ->
     (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
   (completely_normal_space R R_lower_limit_topology \/ ~ completely_normal_space R R_lower_limit_topology).
-exact ex32_7_completely_normal_examples_axiom.
+admit.
 Qed.
 (** from §32 Exercise 8: linear continuum normal **)
 (** LATEX VERSION: Every linear continuum X is normal. **)
-Axiom ex32_8_linear_continuum_normal_axiom : forall X Tx:set,
-  linear_continuum X Tx ->
-  normal_space X Tx.
 Theorem ex32_8_linear_continuum_normal : forall X Tx:set,
   linear_continuum X Tx ->
   normal_space X Tx.
-exact ex32_8_linear_continuum_normal_axiom.
+admit.
 Qed.
 (** from §32 Exercise 9: uncountable product of R not normal **)
 (** LATEX VERSION: If J is uncountable, then ℝ^J is not normal. **)
-Axiom ex32_9_uncountable_product_not_normal_axiom : forall J:set,
-  ~ countable J ->
-  ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
 Theorem ex32_9_uncountable_product_not_normal : forall J:set,
   ~ countable J ->
   ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
-exact ex32_9_uncountable_product_not_normal_axiom.
+admit.
 Qed.
 
 (** helper: perfect normality predicate **)
