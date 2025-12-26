@@ -58969,37 +58969,22 @@ Definition bounded_product_metric : set -> set := fun J => discrete_metric (powe
 
 (** from §43 Lemma 43.1: Cauchy with convergent subsequence converges **) 
 (** LATEX VERSION: In a metric space, a Cauchy sequence with a convergent subsequence converges to the same limit. **)
-Axiom Cauchy_with_convergent_subsequence_converges_axiom : forall X d seq x:set,
-  metric_on X d -> cauchy_sequence X d seq ->
-  (exists subseq:set, subseq c= seq /\ converges_to X (metric_topology X d) subseq x) ->
-  converges_to X (metric_topology X d) seq x.
 Theorem Cauchy_with_convergent_subsequence_converges : forall X d seq x:set,
   metric_on X d -> cauchy_sequence X d seq ->
   (exists subseq:set, subseq c= seq /\ converges_to X (metric_topology X d) subseq x) ->
   converges_to X (metric_topology X d) seq x.
-exact Cauchy_with_convergent_subsequence_converges_axiom.
+admit.
 Qed.
 
 (** from §43 Theorem 43.2: Euclidean space is complete **) 
 (** LATEX VERSION: Euclidean spaces are complete metric spaces. **)
-Axiom Euclidean_space_complete_axiom : forall k:set,
-  complete_metric_space (euclidean_space k) (euclidean_metric k).
 Theorem Euclidean_space_complete : forall k:set,
   complete_metric_space (euclidean_space k) (euclidean_metric k).
-exact Euclidean_space_complete_axiom.
+admit.
 Qed.
 
 (** from §43 Lemma 43.3: product convergence via projections **) 
 (** LATEX VERSION: Convergence in a product metric topology iff coordinatewise convergence. **)
-Axiom product_sequence_convergence_iff_coordinates_axiom : forall X J:set,
-  X = product_space J (const_space_family J R R_standard_topology) ->
-  forall seq x:set,
-    converges_to X (product_topology_full J (const_space_family J R R_standard_topology)) seq x <->
-    (forall j:set, j :e J ->
-    converges_to (product_component (const_space_family J R R_standard_topology) j)
-                   (product_component_topology (const_space_family J R R_standard_topology) j)
-                   (Repl seq (fun s => apply_fun s j))
-                   (apply_fun x j)).
 Theorem product_sequence_convergence_iff_coordinates : forall X J:set,
   X = product_space J (const_space_family J R R_standard_topology) ->
   forall seq x:set,
@@ -59009,15 +58994,13 @@ Theorem product_sequence_convergence_iff_coordinates : forall X J:set,
                    (product_component_topology (const_space_family J R R_standard_topology) j)
                    (Repl seq (fun s => apply_fun s j))
                    (apply_fun x j)).
-exact product_sequence_convergence_iff_coordinates_axiom.
+admit.
 Qed.
 
 (** from §43 Theorem 43.4: complete metric on R^omega **) 
 (** LATEX VERSION: The bounded product metric makes R^ω complete. **)
-Axiom product_Romega_complete_axiom :
-  complete_metric_space (power_real omega) (bounded_product_metric omega).
 Theorem product_Romega_complete : complete_metric_space (power_real omega) (bounded_product_metric omega).
-exact product_Romega_complete_axiom.
+admit.
 Qed.
 
 (** from §44 Theorem: space-filling curve existence **) 
@@ -59025,10 +59008,8 @@ Qed.
 Definition unit_square : set := setprod unit_interval unit_interval.
 Definition unit_square_topology : set :=
   product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
-Axiom space_filling_curve_axiom :
-  exists f:set, continuous_map unit_interval unit_interval_topology unit_square unit_square_topology f.
 Theorem space_filling_curve : exists f:set, continuous_map unit_interval unit_interval_topology unit_square unit_square_topology f.
-exact space_filling_curve_axiom.
+admit.
 Qed.
 
 (** from §45 Definition: sequential compactness **)
@@ -59041,13 +59022,10 @@ Definition sequentially_compact : set -> set -> prop := fun X Tx =>
 
 (** from §45 Theorem: compactness in metric spaces equivalences **) 
 (** LATEX VERSION: In metric spaces, compact ⇔ sequentially compact. **)
-Axiom compact_metric_equivalences_axiom : forall X d:set,
-  metric_on X d ->
-  (compact_space X (metric_topology X d) <-> sequentially_compact X (metric_topology X d)).
 Theorem compact_metric_equivalences : forall X d:set,
   metric_on X d ->
   (compact_space X (metric_topology X d) <-> sequentially_compact X (metric_topology X d)).
-exact compact_metric_equivalences_axiom.
+admit.
 Qed.
 
 (** from §46 Definition: pointwise and compact convergence topologies **) 
