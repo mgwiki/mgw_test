@@ -21310,7 +21310,7 @@ Theorem setprod_R_R_neq_omega : setprod R R <> omega.
 assume Heq: setprod R R = omega.
 prove False.
 claim HpRR: (0,1) :e setprod R R.
-{ exact (tuple_2_setprod R R 0 real_0 1 real_1). }
+{ exact (tuple_2_setprod_by_pair_Sigma R R 0 1 real_0 real_1). }
 claim HpOmega: (0,1) :e omega.
 { rewrite <- Heq. exact HpRR. }
 claim HSingOmega: {1} :e omega.
@@ -21324,7 +21324,7 @@ Theorem setprod_R_R_neq_omega_nonzero : setprod R R <> (omega :\: {0}).
 assume Heq: setprod R R = (omega :\: {0}).
 prove False.
 claim HpRR: (0,1) :e setprod R R.
-{ exact (tuple_2_setprod R R 0 real_0 1 real_1). }
+{ exact (tuple_2_setprod_by_pair_Sigma R R 0 1 real_0 real_1). }
 claim HpNZ: (0,1) :e (omega :\: {0}).
 { rewrite <- Heq. exact HpRR. }
 claim Hcore: (0,1) :e omega /\ (0,1) /:e {0}.
@@ -21433,7 +21433,7 @@ prove False.
 claim H1omega: 1 :e omega.
 { exact (nat_p_omega 1 nat_1). }
 claim Hp: (0,1) :e setprod 2 omega.
-{ exact (tuple_2_setprod 2 omega 0 In_0_2 1 H1omega). }
+{ exact (tuple_2_setprod_by_pair_Sigma 2 omega 0 1 In_0_2 H1omega). }
 claim HpQ: (0,1) :e rational_numbers.
 { rewrite <- Heq.
   exact Hp. }
@@ -21703,7 +21703,7 @@ prove False.
 claim H1omega: 1 :e omega.
 { exact (nat_p_omega 1 nat_1). }
 claim Hp: (0,1) :e setprod 2 omega.
-{ exact (tuple_2_setprod 2 omega 0 In_0_2 1 H1omega). }
+{ exact (tuple_2_setprod_by_pair_Sigma 2 omega 0 1 In_0_2 H1omega). }
 claim HpZ: (0,1) :e Zplus.
 { rewrite Heq. exact Hp. }
 claim Hcore: (0,1) :e omega /\ (0,1) /:e {0}.
@@ -21722,7 +21722,7 @@ Theorem Zplus_neq_setprod_R_R : Zplus <> setprod R R.
 assume Heq: Zplus = setprod R R.
 prove False.
 claim Hp: (0,1) :e setprod R R.
-{ exact (tuple_2_setprod R R 0 real_0 1 real_1). }
+{ exact (tuple_2_setprod_by_pair_Sigma R R 0 1 real_0 real_1). }
 claim HpZ: (0,1) :e Zplus.
 { rewrite Heq. exact Hp. }
 claim Hcore: (0,1) :e omega /\ (0,1) /:e {0}.
@@ -22642,9 +22642,9 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 
 		    claim H0omega: 0 :e omega.
 		    { exact (nat_p_omega 0 nat_0). }
-		    claim H00X: (0,0) :e X.
-		    { rewrite HXeq.
-		      exact (tuple_2_setprod 2 omega 0 In_0_2 0 H0omega). }
+    claim H00X: (0,0) :e X.
+    { rewrite HXeq.
+      exact (tuple_2_setprod_by_pair_Sigma 2 omega 0 0 In_0_2 H0omega). }
 		    claim H00rel: order_rel X (0,0) b.
 		    { prove order_rel X (0,0) b.
 		      rewrite HXeq at 1.
@@ -22797,9 +22797,9 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 
 		  claim HsuccOmega: ordsucc m :e omega.
 		  { exact (omega_ordsucc m HmOmega). }
-		  claim H0sX: (0, ordsucc m) :e X.
-		  { rewrite HXeq.
-		    exact (tuple_2_setprod 2 omega 0 In_0_2 (ordsucc m) HsuccOmega). }
+			  claim H0sX: (0, ordsucc m) :e X.
+			  { rewrite HXeq.
+			    exact (tuple_2_setprod_by_pair_Sigma 2 omega 0 (ordsucc m) In_0_2 HsuccOmega). }
 
 		  claim H0srel: order_rel X a (0, ordsucc m).
 		  { prove order_rel X a (0, ordsucc m).
@@ -22891,7 +22891,7 @@ claim Hsingleton_in_discrete: singleton_1_0 :e discrete_topology two_by_nat.
   claim H0omega: 0 :e omega.
   { exact (nat_p_omega 0 nat_0). }
   claim Helem: (1,0) :e two_by_nat.
-  { exact (tuple_2_setprod 2 omega 1 In_1_2 0 H0omega). }
+  { exact (tuple_2_setprod_by_pair_Sigma 2 omega 1 0 In_1_2 H0omega). }
   claim Hsub: singleton_1_0 c= two_by_nat.
   { let y. assume Hy: y :e singleton_1_0.
     prove y :e two_by_nat.
