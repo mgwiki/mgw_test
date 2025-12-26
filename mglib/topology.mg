@@ -24610,6 +24610,16 @@ claim H12: Rlt 1 2.
 exact (Hprop H12).
 Qed.
 
+(** helper: 2 is a real number **)
+(** LATEX VERSION: 2 is a real number. **)
+Theorem two_in_R : 2 :e R.
+prove 2 :e R.
+claim HsumR: add_SNo 1 1 :e R.
+{ exact (real_add_SNo 1 real_1 1 real_1). }
+rewrite <- add_SNo_1_1_2.
+exact HsumR.
+Qed.
+
 (** helper: standard topology on the unit interval as a subspace of R **)
 (** LATEX VERSION: Equip [0,1] with the subspace topology inherited from the standard topology on R. **)
 Definition unit_interval_topology : set :=
@@ -24900,6 +24910,26 @@ Definition ordered_square_open_strip : set :=
   {p :e ordered_square|exists y:set, p = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y)}.
 Definition ordered_square_subspace_topology : set :=
   subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
+
+(** helper: ordered square is a proper subset of R×R **)
+(** LATEX VERSION: I×I is a proper subset of ℝ×ℝ. **)
+Theorem ordered_square_neq_setprod_R_R : ordered_square <> setprod R R.
+assume Heq: ordered_square = setprod R R.
+prove False.
+set p := (2,2).
+claim HpRR: p :e setprod R R.
+{ exact (tuple_2_setprod R R 2 two_in_R 2 two_in_R). }
+claim HpOS: p :e ordered_square.
+{ rewrite Heq.
+  exact HpRR. }
+claim HpSing: p :e setprod {2} {2}.
+{ exact (tuple_2_setprod {2} {2} 2 (SingI 2) 2 (SingI 2)). }
+claim Hcoords: 2 :e unit_interval /\ 2 :e unit_interval.
+{ exact (setprod_coords_in 2 2 unit_interval unit_interval p HpSing HpOS). }
+claim H2I: 2 :e unit_interval.
+{ exact (andEL (2 :e unit_interval) (2 :e unit_interval) Hcoords). }
+exact (two_not_in_unit_interval H2I).
+Qed.
 
 (** helper: ordered square as a standard subspace is the product topology **)
 (** LATEX VERSION: The standard subspace topology on I×I agrees with the product topology on I×I. **)
