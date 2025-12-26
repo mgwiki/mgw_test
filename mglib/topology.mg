@@ -41935,6 +41935,26 @@ Definition connected_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
 
+(** Helper: extract topology_on from connected_space **)
+Theorem connected_space_topology : forall X Tx:set,
+  connected_space X Tx -> topology_on X Tx.
+let X Tx.
+assume H: connected_space X Tx.
+exact (andEL (topology_on X Tx)
+             (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V))
+             H).
+Qed.
+
+(** Helper: extract no-separation property from connected_space **)
+Theorem connected_space_no_separation : forall X Tx:set,
+  connected_space X Tx -> ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
+let X Tx.
+assume H: connected_space X Tx.
+exact (andER (topology_on X Tx)
+             (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V))
+             H).
+Qed.
+
 (** Helper: homeomorphisms preserve connectedness **)
 Theorem homeomorphism_preserves_connected : forall X Tx Y Ty f:set,
   homeomorphism X Tx Y Ty f ->
