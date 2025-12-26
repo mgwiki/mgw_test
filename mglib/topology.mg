@@ -43509,9 +43509,9 @@ prove connected_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
 set Im := image_of f X.
 set Tim := subspace_topology Y Ty Im.
 claim HtopX: topology_on X Tx.
-{ exact (andEL (topology_on X Tx) (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V)) HX). }
+{ exact (connected_space_topology X Tx HX). }
 claim HnoSepX: ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
-{ exact (andER (topology_on X Tx) (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V)) HX). }
+{ exact (connected_space_no_separation X Tx HX). }
 claim HTy: topology_on Y Ty.
 { exact (continuous_map_topology_cod X Tx Y Ty f Hf). }
 claim Hfun: function_on f X Y.
