@@ -20617,6 +20617,9 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 				    (** Confirmed probe: HbEq has type (1,0) = (i,m). **)
 				    claim H10Eq2: (1,0) = (i, m).
 				    { exact HbEq. }
+				    (** Probe: Hlex should be the lexicographic disjunction component. **)
+				    claim Hlex2: i :e j \/ (i = j /\ m :e n).
+				    { exact Hlex. }
 				    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
