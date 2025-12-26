@@ -34030,7 +34030,7 @@ apply set_ext.
     claim HqW: q :e W.
     { exact (HbW q Hqb). }
     claim HqP: q :e P.
-    { exact (tuple_2_setprod A B a HaA b0 HbB). }
+    { exact (tuple_2_setprod_by_pair_Sigma A B a b0 HaA HbB). }
     set I := W :/\: P.
     claim HqInt: q :e W :/\: P.
     { exact (binintersectI W P q HqW HqP). }
@@ -34239,7 +34239,7 @@ apply iffI.
 	    claim Hpeq: p = (x,x).
 	    { exact (andER (x :e X) (p = (x,x)) Hxpair). }
 	    rewrite Hpeq.
-	    exact (tuple_2_setprod X X x HxX x HxX). }
+	    exact (tuple_2_setprod_by_pair_Sigma X X x x HxX HxX). }
   claim HUinProd: U :e product_topology X Tx X Tx.
   { prove U :e product_topology X Tx X Tx.
     prove U :e generated_topology (setprod X X) (product_subbasis X Tx X Tx).
@@ -34384,12 +34384,12 @@ apply iffI.
 	      claim Hpeq: p = (z,z).
 	      { exact (andER (z :e X) (p = (z,z)) Hzconj). }
       claim HpSing: p :e setprod {x1} {x2}.
-      { exact (tuple_2_setprod {x1} {x2} x1 (SingI x1) x2 (SingI x2)). }
+      { exact (tuple_2_setprod_by_pair_Sigma {x1} {x2} x1 x2 (SingI x1) (SingI x2)). }
       claim HzzIn: (z,z) :e setprod {x1} {x2}.
       { rewrite <- Hpeq.
         exact HpSing. }
       claim HzzSing: (z,z) :e setprod {z} {z}.
-      { exact (tuple_2_setprod {z} {z} z (SingI z) z (SingI z)). }
+      { exact (tuple_2_setprod_by_pair_Sigma {z} {z} z z (SingI z) (SingI z)). }
       claim HzIn: z :e {x1} /\ z :e {x2}.
       { exact (setprod_coords_in z z {x1} {x2} (z,z) HzzSing HzzIn). }
       claim Hzx1: z :e {x1}.
@@ -34408,7 +34408,7 @@ apply iffI.
 	    claim HpInU: p :e U.
 	    { rewrite <- HcompEq.
 	      exact (setminusI (setprod X X) D p
-	              (tuple_2_setprod X X x1 Hx1X x2 Hx2X)
+	              (tuple_2_setprod_by_pair_Sigma X X x1 x2 Hx1X Hx2X)
 	              HpNotD). }
 	    claim HUprop: forall z :e U, exists b :e product_subbasis X Tx X Tx, z :e b /\ b c= U.
 	    { exact (SepE2 (Power (setprod X X))
@@ -34441,7 +34441,7 @@ apply iffI.
     { rewrite <- Hbeq.
       exact Hpb. }
     claim HpSing: p :e setprod {x1} {x2}.
-    { exact (tuple_2_setprod {x1} {x2} x1 (SingI x1) x2 (SingI x2)). }
+    { exact (tuple_2_setprod_by_pair_Sigma {x1} {x2} x1 x2 (SingI x1) (SingI x2)). }
     claim Hcoords: x1 :e U0 /\ x2 :e V0.
     { exact (setprod_coords_in x1 x2 U0 V0 p HpSing HpbRect). }
     claim Hx1U0: x1 :e U0.
@@ -38623,7 +38623,7 @@ claim Hx0R: x0 :e R.
   rewrite HdefR.
   exact Hx0Real. }
 claim Hxy: (x0,y) :e setprod R R.
-{ exact (tuple_2_setprod R R x0 Hx0R y HyR). }
+{ exact (tuple_2_setprod_by_pair_Sigma R R x0 y Hx0R HyR). }
 claim Happ2: apply_fun (projection2 R R) (x0,y) = (x0,y) 1.
 { exact (projection2_apply R R (x0,y) Hxy). }
 rewrite Happ2.
@@ -39446,7 +39446,7 @@ apply set_ext.
   claim Heta: p = (p 0, p 1).
   { exact (setprod_eta R R p HpRR). }
   rewrite Heta.
-  exact (tuple_2_setprod {x0} R (p 0) Hp0Sing (p 1) Hp1R).
+  exact (tuple_2_setprod_by_pair_Sigma {x0} R (p 0) (p 1) Hp0Sing Hp1R).
 - let p. assume Hp: p :e setprod {x0} R.
   prove p :e affine_line_R2 a b c.
   claim Hp0Sing: (p 0) :e {x0}.
@@ -41557,7 +41557,7 @@ apply set_ext.
   claim HgaV: apply_fun g a :e V.
   { exact (SepE2 A (fun a0:set => apply_fun g a0 :e V) a Hag). }
   claim HpairIn: (apply_fun f a, apply_fun g a) :e rectangle_set U V.
-  { exact (tuple_2_setprod U V (apply_fun f a) HfaU (apply_fun g a) HgaV). }
+  { exact (tuple_2_rectangle_set U V (apply_fun f a) (apply_fun g a) HfaU HgaV). }
   claim Happ: apply_fun (pair_map A f g) a = (apply_fun f a, apply_fun g a).
   { exact (pair_map_apply A X Y f g a HaA). }
   claim Himg: apply_fun (pair_map A f g) a :e rectangle_set U V.
