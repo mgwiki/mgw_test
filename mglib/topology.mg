@@ -20594,10 +20594,15 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    let m. assume HmPair. apply HmPair.
 		    let j. assume HjPair. apply HjPair.
 		    let n. assume HnPair. apply HnPair.
-		    assume Hcore.
-		    apply Hcore.
-		    assume Hpre Hlex.
-		    apply Hpre.
+			    assume Hcore.
+			    apply Hcore.
+			    assume Hpre Hlex.
+			    (** Probe: try to extract the lexicographic disjunction from the left component Hpre. **)
+			    claim Hlex_disj_from_Hpre: i :e j \/ (i = j /\ m :e n).
+			    { apply (Hpre (i :e j \/ (i = j /\ m :e n))).
+			      assume Hleft Hright.
+			      exact Hright. }
+			    apply Hpre.
 		    assume Hpre2 HbEq.
 		    apply Hpre2.
 		    assume Hpre3 H10Eq.
