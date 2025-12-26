@@ -48140,9 +48140,7 @@ apply SepI.
         exact HxX.
       * (** continuous_map **)
         claim HtopI: topology_on unit_interval unit_interval_topology.
-        { exact (andEL (topology_on unit_interval unit_interval_topology)
-                       (~(exists U V:set, U :e unit_interval_topology /\ V :e unit_interval_topology /\ separation_of unit_interval U V))
-                       unit_interval_connected). }
+        { exact unit_interval_topology_on. }
         exact (const_fun_continuous unit_interval unit_interval_topology X Tx x HtopI HTx HxX).
     + (** apply_fun p 0 = x **)
       claim H01: 0 :e unit_interval /\ 1 :e unit_interval.
