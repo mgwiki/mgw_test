@@ -9531,7 +9531,7 @@ Qed.
 
 (** from §13 Example 3: singleton basis **) 
 (** LATEX VERSION: Example 3: the collection of all one-point subsets of X forms a basis. **)
-(** SUSPICIOUS DEFINITION: Written as `{x,x}`; this is extensionally `{x}` but relies on the convention that duplicate pair elements collapse. **)
+(** FIXED: Use `{x}` directly rather than `{x,x}`. **)
 Definition singleton_basis : set -> set := fun X => {{x}|x :e X}.
 
 (** from §13 Example 3: singleton collection forms a basis **) 
