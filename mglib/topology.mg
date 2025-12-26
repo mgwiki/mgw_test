@@ -26287,7 +26287,143 @@ Qed.
 (** LATEX VERSION: The cut {q∈Q | q^2<2} has no endpoint in Q. **)
 Theorem Q_sqrt2_cut_no_max : forall q:set,
   q :e Q_sqrt2_cut -> exists r:set, r :e Q_sqrt2_cut /\ Rlt q r.
-admit.
+let q. assume Hq: q :e Q_sqrt2_cut.
+prove exists r:set, r :e Q_sqrt2_cut /\ Rlt q r.
+claim HqQ: q :e rational_numbers.
+{ exact (SepE1 rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) q Hq). }
+claim HqR: q :e R.
+{ exact (rational_numbers_in_R q HqQ). }
+claim HqS: SNo q.
+{ exact (real_SNo q HqR). }
+claim Hqq: mul_SNo q q < 2.
+{ exact (SepE2 rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) q Hq). }
+(** split on q relative to 0 **)
+apply (SNoLt_trichotomy_or_impred q 0 HqS SNo_0 (exists r:set, r :e Q_sqrt2_cut /\ Rlt q r)).
+- assume Hqlt0: q < 0.
+  witness 0.
+  apply andI.
+  + exact zero_in_Q_sqrt2_cut.
+  + exact (RltI q 0 HqR real_0 Hqlt0).
+- assume Hqeq0: q = 0.
+  witness 1.
+  apply andI.
+  + (** 1 is in the cut **)
+    claim H1Q: 1 :e rational_numbers.
+    { exact one_in_rational_numbers. }
+    claim H11: mul_SNo 1 1 < 2.
+    { prove mul_SNo 1 1 < 2.
+      rewrite (mul_SNo_oneL 1 SNo_1).
+      exact SNoLt_1_2. }
+    exact (SepI rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) 1 H1Q H11).
+  + (** q<1 **)
+    claim H1R: 1 :e R.
+    { exact (rational_numbers_in_R 1 one_in_rational_numbers). }
+    rewrite Hqeq0.
+    exact (RltI 0 1 real_0 H1R SNoLt_0_1).
+- assume H0ltq: 0 < q.
+  (** define sqrt(2) and use density of Q in R **)
+  set s2 := sqrt_SNo_nonneg 2.
+  claim Hs2Def: s2 = sqrt_SNo_nonneg 2.
+  { reflexivity. }
+  claim H2R: 2 :e R.
+  { exact (rational_numbers_in_R 2 two_in_rational_numbers). }
+  claim H0le2: 0 <= 2.
+  { exact (SNoLtLe 0 2 SNoLt_0_2). }
+  claim Hs2R: s2 :e R.
+  { exact (sqrt_SNo_nonneg_real 2 H2R H0le2). }
+  claim Hs2S: SNo s2.
+  { exact (real_SNo s2 Hs2R). }
+  claim Hs2nonneg: 0 <= s2.
+  { exact (sqrt_SNo_nonneg_nonneg 2 SNo_2 H0le2). }
+  claim Hs2sq: mul_SNo s2 s2 = 2.
+  { prove mul_SNo s2 s2 = 2.
+    rewrite Hs2Def at 1.
+    rewrite Hs2Def at 2.
+    exact (sqrt_SNo_nonneg_sqr 2 SNo_2 H0le2). }
+  (** show q < s2 (otherwise q^2 >= 2 or q = sqrt(2) irrational) **)
+  claim Hqlts2: q < s2.
+  { apply (SNoLt_trichotomy_or_impred q s2 HqS Hs2S (q < s2)).
+    - assume Hlt: q < s2.
+      exact Hlt.
+    - assume Heq: q = s2.
+      apply FalseE.
+      claim Hirr: s2 :e real :\: rational.
+      { exact sqrt_2_irrational. }
+      claim Hnotrat: s2 /:e rational.
+      { exact (setminusE2 real rational s2 Hirr). }
+      claim Hs2Q: s2 :e rational_numbers.
+      { rewrite <- Heq. exact HqQ. }
+      claim HdefQ: rational_numbers = rational.
+      { reflexivity. }
+      claim Hs2rat: s2 :e rational.
+      { rewrite <- HdefQ. exact Hs2Q. }
+      exact (Hnotrat Hs2rat).
+    - assume Hs2ltq: s2 < q.
+      apply FalseE.
+      (** get 0 < s2 from 0 <= s2 and s2 <> 0 **)
+      claim Hs2neq0: s2 <> 0.
+      { assume Hs2eq0: s2 = 0.
+        apply neq_2_0.
+        rewrite <- Hs2sq.
+        rewrite Hs2eq0.
+        rewrite (mul_SNo_zeroL 0 SNo_0).
+        reflexivity. }
+      claim H0lts2: 0 < s2.
+      { claim Hdisj: 0 < s2 \/ 0 = s2.
+        { exact (SNoLeE 0 s2 SNo_0 Hs2S Hs2nonneg). }
+        apply Hdisj.
+        - assume Hlt0: 0 < s2.
+          exact Hlt0.
+	        - assume Heq0: 0 = s2.
+	          apply FalseE.
+	          claim Hs2eq0: s2 = 0.
+	          { rewrite <- Heq0.
+	            reflexivity. }
+	          exact (Hs2neq0 Hs2eq0). }
+      claim HqqS: SNo (mul_SNo q q).
+      { exact (SNo_mul_SNo q q HqS HqS). }
+      claim Hs2s2S: SNo (mul_SNo s2 s2).
+      { exact (SNo_mul_SNo s2 s2 Hs2S Hs2S). }
+      claim Hs2s2ltqq: mul_SNo s2 s2 < mul_SNo q q.
+      { exact (pos_mul_SNo_Lt2 s2 s2 q q Hs2S Hs2S HqS HqS H0lts2 H0lts2 Hs2ltq Hs2ltq). }
+      claim H2ltqq: 2 < mul_SNo q q.
+      { rewrite <- Hs2sq at 1.
+        exact Hs2s2ltqq. }
+      claim H2lt2: 2 < 2.
+      { exact (SNoLt_tra 2 (mul_SNo q q) 2 SNo_2 HqqS SNo_2 H2ltqq Hqq). }
+      exact ((SNoLt_irref 2) H2lt2). }
+  claim Hqs2: Rlt q s2.
+  { exact (RltI q s2 HqR Hs2R Hqlts2). }
+  apply (rational_dense_between_reals q s2 HqR Hs2R Hqs2).
+  let r. assume Hrpair.
+  apply Hrpair.
+  assume HrQ: r :e rational_numbers.
+  assume Hrlt: Rlt q r /\ Rlt r s2.
+  claim Hqr: Rlt q r.
+  { exact (andEL (Rlt q r) (Rlt r s2) Hrlt). }
+  claim Hrs2: Rlt r s2.
+  { exact (andER (Rlt q r) (Rlt r s2) Hrlt). }
+  (** show r is in the cut using r<s2 and s2^2=2 **)
+  claim HrR: r :e R.
+  { exact (rational_numbers_in_R r HrQ). }
+  claim HrS: SNo r.
+  { exact (real_SNo r HrR). }
+  claim Hqrrlt: q < r.
+  { exact (RltE_lt q r Hqr). }
+  claim Hrs2lt: r < s2.
+  { exact (RltE_lt r s2 Hrs2). }
+  claim H0ltr: 0 < r.
+  { exact (SNoLt_tra 0 q r SNo_0 HqS HrS H0ltq Hqrrlt). }
+  claim Hrrlt2: mul_SNo r r < 2.
+  { prove mul_SNo r r < 2.
+	    claim Hrrlts2: mul_SNo r r < mul_SNo s2 s2.
+	    { exact (pos_mul_SNo_Lt2 r r s2 s2 HrS HrS Hs2S Hs2S H0ltr H0ltr Hrs2lt Hrs2lt). }
+	    rewrite <- Hs2sq.
+	    exact Hrrlts2. }
+  claim HrCut: r :e Q_sqrt2_cut.
+  { exact (SepI rational_numbers (fun q0:set => mul_SNo q0 q0 < 2) r HrQ Hrrlt2). }
+  witness r.
+  exact (andI (r :e Q_sqrt2_cut) (Rlt q r) HrCut Hqr).
 Qed.
 
 (** helper for §16 Exercise 7: the sqrt2 cut is closed under negation **)
