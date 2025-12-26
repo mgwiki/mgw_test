@@ -10659,6 +10659,88 @@ apply (xm (0 <= t)).
   exact Hab.
 Qed.
 
+(** Helper: distance bound gives x coordinate abs bound **)
+(** LATEX VERSION: If d(p,x) < r then abs(xp-xx) < r. **)
+Theorem abs_xcoord_lt_of_distance_lt : forall p x r:set,
+  p :e EuclidPlane ->
+  x :e EuclidPlane ->
+  r :e R ->
+  Rlt (distance_R2 p x) r ->
+  abs_SNo (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord x))) < r.
+let p x r.
+assume Hp: p :e EuclidPlane.
+assume Hx: x :e EuclidPlane.
+assume HrR: r :e R.
+assume Hdr: Rlt (distance_R2 p x) r.
+set dx := add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord x)).
+set a := abs_SNo dx.
+set d := distance_R2 p x.
+claim Hp0R : R2_xcoord p :e R.
+{ exact (EuclidPlane_xcoord_in_R p Hp). }
+claim Hx0R : R2_xcoord x :e R.
+{ exact (EuclidPlane_xcoord_in_R x Hx). }
+claim Hmx : minus_SNo (R2_xcoord x) :e R.
+{ exact (real_minus_SNo (R2_xcoord x) Hx0R). }
+claim HdxR : dx :e R.
+{ exact (real_add_SNo (R2_xcoord p) Hp0R (minus_SNo (R2_xcoord x)) Hmx). }
+claim HdxS : SNo dx.
+{ exact (real_SNo dx HdxR). }
+claim HaS : SNo a.
+{ exact (SNo_abs_SNo dx HdxS). }
+claim HdR : d :e R.
+{ exact (distance_R2_in_R p x Hp Hx). }
+claim HdS : SNo d.
+{ exact (real_SNo d HdR). }
+claim HrS : SNo r.
+{ exact (real_SNo r HrR). }
+claim Hle: a <= d.
+{ exact (abs_dx_le_distance_R2 p x Hp Hx). }
+claim Hdlt: d < r.
+{ exact (RltE_lt d r Hdr). }
+exact (SNoLeLt_tra a d r HaS HdS HrS Hle Hdlt).
+Qed.
+
+(** Helper: distance bound gives y coordinate abs bound **)
+(** LATEX VERSION: If d(p,x) < r then abs(yp-yx) < r. **)
+Theorem abs_ycoord_lt_of_distance_lt : forall p x r:set,
+  p :e EuclidPlane ->
+  x :e EuclidPlane ->
+  r :e R ->
+  Rlt (distance_R2 p x) r ->
+  abs_SNo (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord x))) < r.
+let p x r.
+assume Hp: p :e EuclidPlane.
+assume Hx: x :e EuclidPlane.
+assume HrR: r :e R.
+assume Hdr: Rlt (distance_R2 p x) r.
+set dy := add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord x)).
+set a := abs_SNo dy.
+set d := distance_R2 p x.
+claim Hp1R : R2_ycoord p :e R.
+{ exact (EuclidPlane_ycoord_in_R p Hp). }
+claim Hx1R : R2_ycoord x :e R.
+{ exact (EuclidPlane_ycoord_in_R x Hx). }
+claim Hmy : minus_SNo (R2_ycoord x) :e R.
+{ exact (real_minus_SNo (R2_ycoord x) Hx1R). }
+claim HdyR : dy :e R.
+{ exact (real_add_SNo (R2_ycoord p) Hp1R (minus_SNo (R2_ycoord x)) Hmy). }
+claim HdyS : SNo dy.
+{ exact (real_SNo dy HdyR). }
+claim HaS : SNo a.
+{ exact (SNo_abs_SNo dy HdyS). }
+claim HdR : d :e R.
+{ exact (distance_R2_in_R p x Hp Hx). }
+claim HdS : SNo d.
+{ exact (real_SNo d HdR). }
+claim HrS : SNo r.
+{ exact (real_SNo r HrR). }
+claim Hle: a <= d.
+{ exact (abs_dy_le_distance_R2 p x Hp Hx). }
+claim Hdlt: d < r.
+{ exact (RltE_lt d r Hdr). }
+exact (SNoLeLt_tra a d r HaS HdS HrS Hle Hdlt).
+Qed.
+
 (** from §13 Example 4: distance from a point to itself is 0 **)
 (** LATEX VERSION: d(p,p) = 0. **)
 Theorem distance_R2_refl_0 : forall p:set, p :e EuclidPlane -> distance_R2 p p = 0.
