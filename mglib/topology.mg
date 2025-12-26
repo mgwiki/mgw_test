@@ -29759,8 +29759,7 @@ assume Htop: topology_on X Tx.
 assume HC: closed_in X Tx C.
 assume HD: closed_in X Tx D.
 prove closed_in X Tx (C :\/: D).
-(** C = X \ U and D = X \ V for some open U, V.
-    Then C ∪ D = X \ (U ∩ V), and U ∩ V is open. **)
+  (** C = X \\ U and D = X \\ V for some open U,V; then C ∪ D = X \\ (U ∩ V) and U ∩ V is open. **)
 prove topology_on X Tx /\ (C :\/: D c= X /\ exists W :e Tx, C :\/: D = X :\: W).
 apply andI.
 - exact Htop.
@@ -29928,8 +29927,7 @@ assume Htop: topology_on X Tx.
 assume HC: closed_in X Tx C.
 assume HD: closed_in X Tx D.
 prove closed_in X Tx (C :/\: D).
-(** C = X \ U and D = X \ V for some open U, V.
-    Then C ∩ D = (X\U) ∩ (X\V) = X \ (U ∪ V), and U ∪ V is open. **)
+  (** C = X \\ U and D = X \\ V for some open U,V; then C ∩ D = (X\\U) ∩ (X\\V) = X \\ (U ∪ V) and U ∪ V is open. **)
 prove topology_on X Tx /\ (C :/\: D c= X /\ exists W :e Tx, C :/\: D = X :\: W).
 apply andI.
 - exact Htop.
@@ -29996,10 +29994,7 @@ claim HCsub: C c= X.
 apply set_ext.
 - (** closure(C) ⊆ C **)
   prove closure_of X Tx C c= C.
-  (** We need to show: if x ∈ closure(C), then x ∈ C.
-      By closure characterization, x ∈ closure(C) means every open containing x meets C.
-      If x ∉ C, then x ∈ X \ C. Since C is closed, X \ C is open.
-      So X \ C is an open containing x. If it meets C, we'd have a point in both C and X \ C, contradiction. **)
+  (** We show: x ∈ closure(C) implies x ∈ C; otherwise x ∈ X \\ C and X \\ C is open, contradicting that every open neighborhood of x meets C. **)
   let x. assume Hx: x :e closure_of X Tx C.
   prove x :e C.
   (** Use excluded middle **)
@@ -30202,11 +30197,7 @@ set C := {X :\: U|U :e T}.
 prove X :e C /\ Empty :e C /\
     (forall F:set, F :e Power C -> intersection_of_family X F :e C) /\
     (forall A B:set, A :e C -> B :e C -> A :\/: B :e C).
-(** Strategy: Use De Morgan laws and topology axioms
-    - X = X \ ∅, and ∅ ∈ T
-    - ∅ = X \ X, and X ∈ T
-    - ∩(X\Uᵢ) = X \ (⋃Uᵢ), and ⋃Uᵢ ∈ T
-    - (X\U) ∪ (X\V) = X \ (U ∩ V), and U ∩ V ∈ T **)
+  (** Strategy: Use De Morgan laws and topology axioms: X = X\\∅, ∅ = X\\X, intersections of complements are complements of unions, and unions of complements are complements of intersections. **)
 claim Hempty_in_T: Empty :e T.
 { exact (topology_has_empty X T HT). }
 claim HX_in_T: X :e T.
@@ -30594,9 +30585,7 @@ assume HTx: topology_on X Tx.
 assume HY: closed_in X Tx Y.
 assume HA: closed_in Y (subspace_topology X Tx Y) A.
 prove closed_in X Tx A.
-(** Strategy: A = C ∩ Y where C closed in X (by closed_in_subspace_iff_intersection).
-    C = X \ U and Y = X \ V for some U,V ∈ Tx.
-    Then A = (X\U) ∩ (X\V) = X \ (U∪V), and U∪V ∈ Tx. **)
+  (** Strategy: A = C ∩ Y with C closed in X; write C = X\\U and Y = X\\V, then A = X\\(U∪V) and U∪V is open. **)
 claim HYsub: Y c= X.
 { exact (andEL (Y c= X) (exists U :e Tx, Y = X :\: U) (andER (topology_on X Tx) (Y c= X /\ exists U :e Tx, Y = X :\: U) HY)). }
 claim Hexists: exists C:set, closed_in X Tx C /\ A = C :/\: Y.
@@ -30789,10 +30778,7 @@ apply set_ext.
     rewrite HUeq.
     prove (V :/\: Y) :/\: A <> Empty.
     assume HVYAempty: (V :/\: Y) :/\: A = Empty.
-    (** Since V :/\: A is nonempty, there exists w in V :/\: A.
-        (V :/\: Y) :/\: A = V :/\: (Y :/\: A) by associativity.
-        If this is empty, then V is disjoint from Y :/\: A.
-        But we need to show this contradicts V :/\: A being nonempty and y in V :/\: Y. **)
+    (** If (V ∩ Y) ∩ A is empty but V ∩ A is nonempty, we derive a contradiction using A ⊆ Y to move a witness into Y. **)
     claim HVA_sub_VYA: V :/\: (Y :/\: A) c= V :/\: A.
     { let z. assume Hz: z :e V :/\: (Y :/\: A).
       claim HzV: z :e V.
@@ -30830,12 +30816,8 @@ apply set_ext.
         exact (binintersectI V (Y :/\: A) z HzV HzYA). }
     claim HVYAempty2: V :/\: (Y :/\: A) = Empty.
     { rewrite HVYAeq. exact HVYAempty. }
-    (** Now we need to derive a contradiction. We know V :/\: A <> Empty.
-        But we don't immediately know that V :/\: (Y :/\: A) <> Empty.
-        This requires that the witness in V :/\: A is also in Y. **)
-    (** The key issue: we need A c= Y for this direction to work properly.
-        Classical statement requires A c= Y or should be about closure_of Y ... (A :/\: Y).
-        For now, assume this holds or use that any w :e A that matters is in Y. **)
+    (** We know V ∩ A is nonempty; to contradict emptiness of V ∩ (Y ∩ A) we need a witness in A to also lie in Y (using A ⊆ Y). **)
+    (** Key issue: need A ⊆ Y (or restate with A ∩ Y) so that a witness w ∈ A is also in Y. **)
     (** Alternative: use y :e closure implies y in closure of A :/\: Y **)
     (** Since we have V :/\: A <> Empty, pick witness w **)
     claim Hex_w: exists w:set, w :e V :/\: A.
@@ -30909,9 +30891,7 @@ let X Tx A.
 assume HTx: topology_on X Tx.
 assume HA: A c= X.
 prove closure_of X Tx A = A :\/: limit_points_of X Tx A.
-(** Strategy: cl(A) = A ∪ lim(A) by double inclusion.
-    - A ⊆ cl(A) already known, and lim(A) ⊆ cl(A) since limit points satisfy closure condition
-    - If x ∈ cl(A) and x ∉ A, then x is a limit point **)
+  (** Strategy: cl(A) = A ∪ lim(A) by double inclusion: A ⊆ cl(A), lim(A) ⊆ cl(A), and if x ∈ cl(A) with x ∉ A then x is a limit point. **)
 apply set_ext.
 - (** cl(A) ⊆ A ∪ lim(A) **)
   let x. assume Hx: x :e closure_of X Tx A.
@@ -31067,13 +31047,7 @@ apply iffI.
 - (** Backward: If lim(A) ⊆ A, then A closed **)
   assume Hlim_sub: limit_points_of X Tx A c= A.
   prove closed_in X Tx A.
-  (** Strategy:
-      1. cl(A) = A ∪ lim(A) by closure_equals_set_plus_limit_points
-      2. lim(A) ⊆ A given, so A ∪ lim(A) = A
-      3. Therefore cl(A) = A
-      4. cl(A) ⊆ X by definition, so A ⊆ X
-      5. cl(A) is closed by closure_is_closed
-      6. Since A = cl(A) and cl(A) is closed, A is closed **)
+  (** Strategy: use cl(A)=A∪lim(A) and lim(A)⊆A to get cl(A)=A; since cl(A) is closed, A is closed. **)
   claim Heq_union: closure_of X Tx A = A :\/: limit_points_of X Tx A.
   { exact (closure_equals_set_plus_limit_points X Tx A HTx HA). }
   (** Show A ∪ lim(A) = A when lim(A) ⊆ A **)
@@ -31136,13 +31110,7 @@ claim Hsep: forall a b:set, a :e X -> b :e X -> a <> b ->
 exact (Hsep x1 x2 Hx1 Hx2 Hneq).
 Qed.
 
-(** FIXED: Quantifier scope error.
-    Was: forall F:set, finite F -> closed_in X Tx F (applies to ALL finite sets!)
-    Issue: For F not a subset of X, closed_in X Tx F is false (closed_in requires F c= X).
-           So this requires: "for all finite F (even those not in X), F is closed in X",
-           which is impossible, making T1_space always false.
-    Now: forall F:set, F c= X -> finite F -> closed_in X Tx F
-    T1 property should only require finite subsets of X to be closed. **)
+(** FIXED: Quantifier scope error; T1_space requires finite subsets of X to be closed (F ⊆ X -> finite F -> closed_in X Tx F), not all finite sets. **)
 Definition T1_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ (forall F:set, F c= X -> finite F -> closed_in X Tx F).
 
@@ -31564,10 +31532,7 @@ assume Hseq: function_on seq omega X.
 assume Hx: forall U:set, U :e Tx -> x :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
 assume Hy: forall U:set, U :e Tx -> y :e U -> exists N:set, N :e omega /\ forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U.
 prove False.
-(** Strategy: Use Hausdorff property to separate x and y with disjoint opens U, V.
-    Sequence converges to x means eventually in U.
-    Sequence converges to y means eventually in V.
-    But U ∩ V = ∅, so seq can't be in both eventually - contradiction. **)
+  (** Strategy: separate x and y by disjoint opens U,V; convergence forces the sequence eventually in U and eventually in V, contradicting U ∩ V = ∅. **)
 (** Extract topology and separation property **)
 claim HTx: topology_on X Tx.
 { exact (Hausdorff_space_topology X Tx HH). }
@@ -32016,11 +31981,7 @@ let X Tx Y Ty A B.
 assume HA: closed_in X Tx A.
 assume HB: closed_in Y Ty B.
 prove closed_in (setprod X Y) (product_topology X Tx Y Ty) (setprod A B).
-(** Strategy: Show complement of A×B is open in product topology.
-    (X×Y) \ (A×B) = (X\A)×Y ∪ X×(Y\B)
-    Since A,B closed, X\A,Y\B are open.
-    Products of opens are open in product topology.
-    Union of two opens is open. **)
+  (** Strategy: (X×Y)\\(A×B) = (X\\A)×Y ∪ X×(Y\\B); X\\A and Y\\B are open, products are open, and unions are open. **)
 (** Extract topologies and components from closed_in **)
 claim HTx: topology_on X Tx.
 { exact (andEL (topology_on X Tx) (A c= X /\ exists U :e Tx, A = X :\: U) HA). }
