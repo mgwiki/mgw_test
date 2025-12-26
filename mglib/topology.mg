@@ -10592,6 +10592,73 @@ apply (SNoLtLe_or d a HdS HaS).
   exact Hle.
 Qed.
 
+(** Helper: from abs(t)<r and r>0 infer t<r **)
+(** LATEX VERSION: If abs(t) < r and r is positive then t < r. **)
+Theorem abs_SNo_lt_imp_lt : forall t r:set,
+  SNo t ->
+  SNo r ->
+  0 < r ->
+  abs_SNo t < r ->
+  t < r.
+let t r.
+assume HtS: SNo t.
+assume HrS: SNo r.
+assume Hrpos: 0 < r.
+assume Hab: abs_SNo t < r.
+apply (xm (0 <= t)).
+- assume H0let: 0 <= t.
+  rewrite <- (nonneg_abs_SNo t H0let) at 1.
+  exact Hab.
+- assume Hn0let: ~(0 <= t).
+  (** if t is negative then t<0<r, hence t<r **)
+  claim Htlt0: t < 0.
+  { apply (SNoLt_trichotomy_or_impred t 0 HtS SNo_0 (t < 0)).
+    - assume H: t < 0.
+      exact H.
+    - assume Ht0: t = 0.
+      claim H0let: 0 <= t.
+      { rewrite Ht0.
+        exact (SNoLe_ref 0). }
+      prove t < 0.
+      exact (FalseE (Hn0let H0let) (t < 0)).
+    - assume H0ltt: 0 < t.
+      claim H0let: 0 <= t.
+      { exact (SNoLtLe 0 t H0ltt). }
+      prove t < 0.
+      exact (FalseE (Hn0let H0let) (t < 0)). }
+  exact (SNoLt_tra t 0 r HtS SNo_0 HrS Htlt0 Hrpos).
+Qed.
+
+(** Helper: from abs(t)<r and r>0 infer -t<r **)
+(** LATEX VERSION: If abs(t) < r and r is positive then -t < r. **)
+Theorem abs_SNo_lt_imp_neg_lt : forall t r:set,
+  SNo t ->
+  SNo r ->
+  0 < r ->
+  abs_SNo t < r ->
+  minus_SNo t < r.
+let t r.
+assume HtS: SNo t.
+assume HrS: SNo r.
+assume Hrpos: 0 < r.
+assume Hab: abs_SNo t < r.
+apply (xm (0 <= t)).
+- assume H0let: 0 <= t.
+  claim HnegS: SNo (minus_SNo t).
+  { exact (SNo_minus_SNo t HtS). }
+  claim Hle: minus_SNo t <= 0.
+  { claim H0S: SNo 0.
+    { exact SNo_0. }
+    claim HnegLe: minus_SNo t <= minus_SNo 0.
+    { exact (minus_SNo_Le_contra 0 t SNo_0 HtS H0let). }
+    rewrite <- minus_SNo_0.
+    exact HnegLe. }
+  exact (SNoLeLt_tra (minus_SNo t) 0 r HnegS SNo_0 HrS Hle Hrpos).
+- assume Hn0let: ~(0 <= t).
+  rewrite <- (not_nonneg_abs_SNo t Hn0let) at 1.
+  exact Hab.
+Qed.
+
 (** from §13 Example 4: distance from a point to itself is 0 **)
 (** LATEX VERSION: d(p,p) = 0. **)
 Theorem distance_R2_refl_0 : forall p:set, p :e EuclidPlane -> distance_R2 p p = 0.
