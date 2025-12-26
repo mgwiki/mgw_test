@@ -26074,6 +26074,15 @@ Qed.
 Definition order_interval : set -> set -> set -> set := fun X a b =>
   {x :e X | order_rel X a x /\ order_rel X x b}.
 
+(** Helper: order intervals are subsets of the ambient set **)
+Theorem order_interval_subset : forall X a b:set,
+  order_interval X a b c= X.
+let X a b.
+let x.
+assume Hx: x :e order_interval X a b.
+exact (SepE1 X (fun x0:set => order_rel X a x0 /\ order_rel X x0 b) x Hx).
+Qed.
+
 (** Helper: convex subset definition used in Theorem 16.4 **)
 Definition convex_in : set -> set -> prop := fun X Y =>
   Y c= X /\
