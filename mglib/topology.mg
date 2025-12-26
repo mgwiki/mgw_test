@@ -24639,6 +24639,85 @@ let x. assume Hx: x :e unit_interval.
 exact (SepE1 R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) x Hx).
 Qed.
 
+(** helper: eps_1 is a real number **)
+Theorem eps_1_in_R : eps_ 1 :e R.
+prove eps_ 1 :e R.
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim Heps1SNoS: eps_ 1 :e SNoS_ omega.
+{ exact (SNo_eps_SNoS_omega 1 H1omega). }
+exact (SNoS_omega_real (eps_ 1) Heps1SNoS).
+Qed.
+
+(** helper: eps_1 is strictly between 0 and 1 in R **)
+Theorem eps_1_pos_R : Rlt 0 (eps_ 1).
+prove Rlt 0 (eps_ 1).
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+exact (RltI 0 (eps_ 1) real_0 eps_1_in_R (SNo_eps_pos 1 H1omega)).
+Qed.
+
+(** helper: eps_1 is less than 1 in R **)
+Theorem eps_1_lt1_R : Rlt (eps_ 1) 1.
+prove Rlt (eps_ 1) 1.
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim H0Ord: ordinal 0.
+{ exact (nat_p_ordinal 0 nat_0). }
+claim H0in1: 0 :e 1.
+{ exact (ordinal_0_In_ordsucc 0 H0Ord). }
+claim HepsLtE0: eps_ 1 < eps_ 0.
+{ exact (SNo_eps_decr 1 H1omega 0 H0in1). }
+claim HepsLt1S: (eps_ 1) < 1.
+{ rewrite <- (eps_0_1) at 2.
+  exact HepsLtE0. }
+exact (RltI (eps_ 1) 1 eps_1_in_R real_1 HepsLt1S).
+Qed.
+
+(** helper: 0 is in the unit interval **)
+Theorem zero_in_unit_interval : 0 :e unit_interval.
+prove 0 :e unit_interval.
+claim H0R: 0 :e R.
+{ exact real_0. }
+claim Hnlt00: ~(Rlt 0 0).
+{ exact (not_Rlt_refl 0 H0R). }
+claim H0lt1: Rlt 0 1.
+{ exact (RltI 0 1 real_0 real_1 SNoLt_0_1). }
+claim Hnlt10: ~(Rlt 1 0).
+{ exact (not_Rlt_sym 0 1 H0lt1). }
+exact (SepI R (fun t:set => ~(Rlt t 0) /\ ~(Rlt 1 t))
+           0 H0R
+           (andI (~(Rlt 0 0)) (~(Rlt 1 0)) Hnlt00 Hnlt10)).
+Qed.
+
+(** helper: 1 is in the unit interval **)
+Theorem one_in_unit_interval : 1 :e unit_interval.
+prove 1 :e unit_interval.
+claim H1R: 1 :e R.
+{ exact real_1. }
+claim H0lt1: Rlt 0 1.
+{ exact (RltI 0 1 real_0 real_1 SNoLt_0_1). }
+claim Hnlt10: ~(Rlt 1 0).
+{ exact (not_Rlt_sym 0 1 H0lt1). }
+claim Hnlt11: ~(Rlt 1 1).
+{ exact (not_Rlt_refl 1 H1R). }
+exact (SepI R (fun t:set => ~(Rlt t 0) /\ ~(Rlt 1 t))
+           1 H1R
+           (andI (~(Rlt 1 0)) (~(Rlt 1 1)) Hnlt10 Hnlt11)).
+Qed.
+
+(** helper: eps_1 is in the unit interval **)
+Theorem eps_1_in_unit_interval : eps_ 1 :e unit_interval.
+prove eps_ 1 :e unit_interval.
+claim Hnlt_eps10: ~(Rlt (eps_ 1) 0).
+{ exact (not_Rlt_sym 0 (eps_ 1) eps_1_pos_R). }
+claim Hnlt_1eps1: ~(Rlt 1 (eps_ 1)).
+{ exact (not_Rlt_sym (eps_ 1) 1 eps_1_lt1_R). }
+exact (SepI R (fun t:set => ~(Rlt t 0) /\ ~(Rlt 1 t))
+           (eps_ 1) eps_1_in_R
+           (andI (~(Rlt (eps_ 1) 0)) (~(Rlt 1 (eps_ 1))) Hnlt_eps10 Hnlt_1eps1)).
+Qed.
+
 (** helper: 2 is not in the unit interval **)
 (** LATEX VERSION: 2 is not in [0,1]. **)
 Theorem two_not_in_unit_interval : 2 /:e unit_interval.
