@@ -38354,6 +38354,11 @@ Definition affine_line_R2 : set -> set -> set -> set :=
     {p :e EuclidPlane |
       add_SNo (mul_SNo a (R2_xcoord p)) (mul_SNo b (R2_ycoord p)) = c}.
 
+(** from §16 Exercise 8: helper predicate for negative slope in affine form **)
+(** LATEX VERSION: For ax+by=c with b not zero, the slope is negative exactly when a and b have the same sign. **)
+Definition same_sign_nonzero_R : set -> set -> prop :=
+  fun a b => (Rlt 0 a /\ Rlt 0 b) \/ (Rlt a 0 /\ Rlt b 0).
+
 (** from §16 Exercise 8: topology on a line in R_l×R and R_l×R_l is familiar **)
 (** LATEX VERSION: For a straight line L in the plane, the subspace topology from R_l×R and from R_l×R_l is a familiar topology on L. **)
 Theorem ex16_8_lines_in_lower_limit_products : forall a b c:set,
@@ -38371,11 +38376,18 @@ Theorem ex16_8_lines_in_lower_limit_products : forall a b c:set,
           (subspace_topology (setprod R R)
              (product_topology R R_lower_limit_topology R R_standard_topology)
              (affine_line_R2 a b c)) f) )
-	  /\ exists f:set,
-	      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
-	        (subspace_topology (setprod R R)
-	           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
-	           (affine_line_R2 a b c)) f.
+  /\ ( (b <> 0 /\ same_sign_nonzero_R a b) ->
+        exists f:set,
+          homeomorphism R (discrete_topology R) (affine_line_R2 a b c)
+            (subspace_topology (setprod R R)
+               (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+               (affine_line_R2 a b c)) f)
+     /\ ( (b = 0 \/ ~ same_sign_nonzero_R a b) ->
+        exists f:set,
+          homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+            (subspace_topology (setprod R R)
+               (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+               (affine_line_R2 a b c)) f).
 prove forall a b c:set,
   a :e R -> b :e R -> c :e R ->
   ~ (a = 0 /\ b = 0) ->
@@ -38391,11 +38403,18 @@ prove forall a b c:set,
           (subspace_topology (setprod R R)
              (product_topology R R_lower_limit_topology R R_standard_topology)
              (affine_line_R2 a b c)) f) )
-  /\ exists f:set,
-      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
-        (subspace_topology (setprod R R)
-           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
-           (affine_line_R2 a b c)) f.
+  /\ ( (b <> 0 /\ same_sign_nonzero_R a b) ->
+        exists f:set,
+          homeomorphism R (discrete_topology R) (affine_line_R2 a b c)
+            (subspace_topology (setprod R R)
+               (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+               (affine_line_R2 a b c)) f)
+     /\ ( (b = 0 \/ ~ same_sign_nonzero_R a b) ->
+        exists f:set,
+          homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+            (subspace_topology (setprod R R)
+               (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+               (affine_line_R2 a b c)) f).
 admit.
 Qed.
 
