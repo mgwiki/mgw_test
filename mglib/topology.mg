@@ -20550,11 +20550,6 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 	    apply Hpre4.
 	    assume Hpre5 Hj2.
 	
-	    claim Him2: i :e 2.
-	    { exact (andEL (i :e 2) (m :e omega) Hpre5). }
-	    claim HmOmega: m :e omega.
-	    { exact (andER (i :e 2) (m :e omega) Hpre5). }
-	
 	    claim Hi1: i = 1.
 	    { claim Ht0: (1,0) 0 = 1.
 	      { exact (tuple_2_0_eq 1 0). }
