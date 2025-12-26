@@ -20634,10 +20634,10 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 			    let j. assume HjPair. apply HjPair.
 			    let n. assume HnPair. apply HnPair.
 			    assume Hcore.
-			    (** Probe the outermost conjunction split to locate the lex/dictionary-order disjunction. **)
+			    (** Probe the outermost conjunction split to identify the rightmost conjunct. **)
 			    apply Hcore.
 			    assume Hleft Hright.
-			    claim Hdisj: i :e j \/ (i = j /\ m :e n).
+			    claim HbEq2: b = (j, n).
 			    { exact Hright. }
 			    admit.
   + exact HU12.
