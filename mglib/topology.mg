@@ -43213,16 +43213,17 @@ claim Hr3pos: Rlt 0 r3.
 { exact (andER (r3 :e R) (Rlt 0 r3) Hr3pair). }
 witness r3.
 apply andI.
-- apply andI.
-  + apply andI.
-    * apply andI.
-      -- apply andI.
-         { exact Hr3R. }
-         { exact Hr3pos. }
-      -- exact (Rlt_tra r3 r12 a Hr3lt12 Hr12a).
-    * exact (Rlt_tra r3 r12 b Hr3lt12 Hr12b).
-  + exact (Rlt_tra r3 r34 c Hr3lt34 Hr34c).
-- exact (Rlt_tra r3 r34 d Hr3lt34 Hr34d).
+{ apply andI.
+  { apply andI.
+    { apply andI.
+      { apply andI.
+        { apply andI.
+          { exact Hr3R. }
+          { exact Hr3pos. } }
+        { exact (Rlt_tra r3 r12 a Hr3lt12 Hr12a). } }
+      { exact (Rlt_tra r3 r12 b Hr3lt12 Hr12b). } }
+    { exact (Rlt_tra r3 r34 c Hr3lt34 Hr34c). } }
+  { exact (Rlt_tra r3 r34 d Hr3lt34 Hr34d). } }
 Qed.
 
 (** Helper: if a <= b and b < c then a < c **)
