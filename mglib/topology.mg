@@ -48766,14 +48766,14 @@ apply SepI.
   claim Hagree: forall t:set,
     t :e (unit_interval_left_half :/\: unit_interval_right_half) ->
     apply_fun pf t = apply_fun qf t.
-  { let t.
-    assume Ht: t :e (unit_interval_left_half :/\: unit_interval_right_half).
-    claim HtSing: t :e Sing (eps_ 1).
-    { rewrite <- unit_interval_halves_intersection.
-      exact Ht. }
-    claim Hteq: t = eps_ 1.
-    { exact (SingE (eps_ 1) t HtSing). }
-    rewrite Hteq.
+	  { let t.
+	    assume Ht: t :e (unit_interval_left_half :/\: unit_interval_right_half).
+	    claim HtSing: t :e {eps_ 1}.
+	    { rewrite <- unit_interval_halves_intersection.
+	      exact Ht. }
+	    claim Hteq: t = eps_ 1.
+	    { exact (SingE (eps_ 1) t HtSing). }
+	    rewrite Hteq.
     claim HeI: eps_ 1 :e unit_interval.
     { exact eps_1_in_unit_interval. }
     claim Hpf: apply_fun pf (eps_ 1) = apply_fun p (apply_fun double_map_unit_interval (eps_ 1)).
