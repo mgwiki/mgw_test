@@ -8343,6 +8343,7 @@ Qed.
 
 (** from §12: comparability of topologies **)
 (** LATEX VERSION: Two topologies are comparable if one contains the other. **)
+(** SUSPICIOUS DEFINITION: This is defined for arbitrary families `T1,T2`; it does not assert either is a topology on any `X` unless added separately. **)
 Definition comparable_topologies : set -> set -> prop := fun T1 T2 =>
   finer_than T1 T2 \/ finer_than T2 T1.
 
@@ -8425,6 +8426,7 @@ Definition trivial_topology : set -> set := indiscrete_topology.
 
 (** from §12: finer_than between topologies on same X **)
 (** LATEX VERSION: A notion of T' finer than T together with both being topologies on X. **)
+(** SUSPICIOUS DEFINITION: This bundles `topology_on` hypotheses; in proofs it is easy to accidentally use only the inclusion `finer_than T' T` without carrying those hypotheses along. **)
 Definition finer_than_topology : set -> set -> set -> prop := fun X T' T =>
   topology_on X T' /\ topology_on X T /\ finer_than T' T.
 
@@ -8646,6 +8648,7 @@ Qed.
 
 (** from §12: alternative naming for topological space **)
 (** LATEX VERSION: Using notation topological_space X T for topology_on X T and open_set_family/open_set for opens. **)
+(** SUSPICIOUS DEFINITION: `open_set` duplicates `open_in`; later statements should use one convention consistently to avoid bookkeeping duplication. **)
 Definition topological_space : set -> set -> prop := topology_on.
 
 Definition open_set_family : set -> set -> set := fun _ T => T.
@@ -23346,6 +23349,8 @@ Definition projection1 : set -> set -> set := fun X Y =>
   {(p, p 0) | p :e setprod X Y}.
 Definition projection2 : set -> set -> set := fun X Y =>
   {(p, p 1) | p :e setprod X Y}.
+ 
+(** SUSPICIOUS DEFINITION: These projection graphs rely on tuple-as-function encoding, so that for `p :e setprod X Y` we can read `p 0` and `p 1` as coordinates. **)
 
 (** from §15 Theorem 15.2: projection preimages form a subbasis **) 
 (** LATEX VERSION: The inverse images of opens under projections give a subbasis for the product topology. **)
@@ -23931,6 +23936,7 @@ Qed.
 
 (** from §16 Definition: subspace topology **) 
 (** LATEX VERSION: The subspace topology on Y⊂X with topology Tx consists of intersections V∩Y with V open in X. **)
+(** SUSPICIOUS DEFINITION: This is phrased as a family of subsets of `Y` (via `Power Y`) with witnesses `V :e Tx`; proofs often need to extract both the witness and the subset fact. **)
 Definition subspace_topology : set -> set -> set -> set :=
   fun X Tx Y => {U :e Power Y | exists V :e Tx, U = V :/\: Y}.
 
