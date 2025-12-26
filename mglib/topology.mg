@@ -11948,7 +11948,214 @@ apply andI.
 		  { exact (real_SNo (add_SNo x0 r3) (real_add_SNo x0 Hx0R r3 Hr3R)). }
 		  claim HxpLt_b0S: xp < b0.
 		  { exact (SNoLt_tra xp (add_SNo x0 r3) b0 HxpS Hx0r3S Hb0S HxpLt_x0r3 Hx0r3Lt_b0). }
-		  admit.
+		  claim HxpLt_b0: Rlt xp b0.
+		  { exact (RltI xp b0 HxpR Hb0R HxpLt_b0S). }
+
+		  (** y0 < yp + r3 from y0 - yp < r3 **)
+		  claim Hy0Lt_ypr3: y0 < add_SNo yp r3.
+		  { prove y0 < add_SNo yp r3.
+		    claim Hy0mypLt: add_SNo y0 (minus_SNo yp) < r3.
+		    { prove add_SNo y0 (minus_SNo yp) < r3.
+		      rewrite <- HnegdyEq at 1.
+		      exact HnegdyLt. }
+		    claim Hy0mypS: SNo (add_SNo y0 (minus_SNo yp)).
+		    { exact (real_SNo (add_SNo y0 (minus_SNo yp))
+		              (real_add_SNo y0 Hy0R (minus_SNo yp) (real_minus_SNo yp HypR))). }
+		    claim Htmp: add_SNo yp (add_SNo y0 (minus_SNo yp)) < add_SNo yp r3.
+		    { exact (add_SNo_Lt2 yp (add_SNo y0 (minus_SNo yp)) r3 HypS Hy0mypS Hr3S Hy0mypLt). }
+		    claim HlhsEq: add_SNo yp (add_SNo y0 (minus_SNo yp)) = y0.
+		    { claim HmypS: SNo (minus_SNo yp).
+		      { exact (SNo_minus_SNo yp HypS). }
+		      claim Hassoc1: add_SNo yp (add_SNo y0 (minus_SNo yp)) = add_SNo (add_SNo yp y0) (minus_SNo yp).
+		      { exact (add_SNo_assoc yp y0 (minus_SNo yp) HypS Hy0S HmypS). }
+		      claim Hcom1: add_SNo yp y0 = add_SNo y0 yp.
+		      { exact (add_SNo_com yp y0 HypS Hy0S). }
+		      claim Hassoc2: add_SNo (add_SNo y0 yp) (minus_SNo yp) = add_SNo y0 (add_SNo yp (minus_SNo yp)).
+		      { symmetry.
+		        exact (add_SNo_assoc y0 yp (minus_SNo yp) Hy0S HypS HmypS). }
+		      claim Hinv: add_SNo yp (minus_SNo yp) = 0.
+		      { exact (add_SNo_minus_SNo_rinv yp HypS). }
+		      prove add_SNo yp (add_SNo y0 (minus_SNo yp)) = y0.
+		      rewrite Hassoc1.
+		      rewrite Hcom1.
+		      rewrite Hassoc2.
+		      rewrite Hinv.
+		      exact (add_SNo_0R y0 Hy0S). }
+		    rewrite <- HlhsEq at 1.
+		    exact Htmp. }
+
+		  (** yp < y0 + r3 from yp - y0 < r3 **)
+		  claim HypLt_y0r3: yp < add_SNo y0 r3.
+		  { prove yp < add_SNo y0 r3.
+		    claim Hypmy0Lt: add_SNo yp (minus_SNo y0) < r3.
+		    { prove add_SNo yp (minus_SNo y0) < r3.
+		      rewrite <- HdyDef at 1.
+		      exact HdyLt. }
+		    claim Hypmy0S: SNo (add_SNo yp (minus_SNo y0)).
+		    { exact (real_SNo (add_SNo yp (minus_SNo y0))
+		              (real_add_SNo yp HypR (minus_SNo y0) (real_minus_SNo y0 Hy0R))). }
+		    claim Htmp: add_SNo y0 (add_SNo yp (minus_SNo y0)) < add_SNo y0 r3.
+		    { exact (add_SNo_Lt2 y0 (add_SNo yp (minus_SNo y0)) r3 Hy0S Hypmy0S Hr3S Hypmy0Lt). }
+		    claim HlhsEq: add_SNo y0 (add_SNo yp (minus_SNo y0)) = yp.
+		    { claim Hmy0S: SNo (minus_SNo y0).
+		      { exact (SNo_minus_SNo y0 Hy0S). }
+		      claim Hassoc1: add_SNo y0 (add_SNo yp (minus_SNo y0)) = add_SNo (add_SNo y0 yp) (minus_SNo y0).
+		      { exact (add_SNo_assoc y0 yp (minus_SNo y0) Hy0S HypS Hmy0S). }
+		      claim Hcom1: add_SNo y0 yp = add_SNo yp y0.
+		      { exact (add_SNo_com y0 yp Hy0S HypS). }
+		      claim Hassoc2: add_SNo (add_SNo yp y0) (minus_SNo y0) = add_SNo yp (add_SNo y0 (minus_SNo y0)).
+		      { symmetry.
+		        exact (add_SNo_assoc yp y0 (minus_SNo y0) HypS Hy0S Hmy0S). }
+		      claim Hinv: add_SNo y0 (minus_SNo y0) = 0.
+		      { exact (add_SNo_minus_SNo_rinv y0 Hy0S). }
+		      prove add_SNo y0 (add_SNo yp (minus_SNo y0)) = yp.
+		      rewrite Hassoc1.
+		      rewrite Hcom1.
+		      rewrite Hassoc2.
+		      rewrite Hinv.
+		      exact (add_SNo_0R yp HypS). }
+		    rewrite <- HlhsEq at 1.
+		    exact Htmp. }
+
+		  (** y0 + r3 < d0 from r3 < d0 - y0 **)
+		  claim Hy0r3Lt_d0: add_SNo y0 r3 < d0.
+		  { prove add_SNo y0 r3 < d0.
+		    claim Htmp: add_SNo y0 r3 < add_SNo y0 m4.
+		    { exact (add_SNo_Lt2 y0 r3 m4 Hy0S Hr3S Hm4S Hr3m4S). }
+		    claim HrhsEq: add_SNo y0 m4 = d0.
+		    { prove add_SNo y0 m4 = d0.
+		      claim Hmy0S: SNo (minus_SNo y0).
+		      { exact (SNo_minus_SNo y0 Hy0S). }
+		      rewrite (add_SNo_com y0 m4 Hy0S Hm4S).
+		      rewrite <- (add_SNo_assoc d0 (minus_SNo y0) y0 Hd0S Hmy0S Hy0S) at 1.
+		      claim Hinv: add_SNo (minus_SNo y0) y0 = 0.
+		      { exact (add_SNo_minus_SNo_linv y0 Hy0S). }
+		      rewrite Hinv at 1.
+		      exact (add_SNo_0R d0 Hd0S). }
+		    prove add_SNo y0 r3 < d0.
+		    rewrite <- HrhsEq.
+		    exact Htmp. }
+
+		  claim Hy0r3S: SNo (add_SNo y0 r3).
+		  { exact (real_SNo (add_SNo y0 r3) (real_add_SNo y0 Hy0R r3 Hr3R)). }
+		  claim HypLt_d0S: yp < d0.
+		  { exact (SNoLt_tra yp (add_SNo y0 r3) d0 HypS Hy0r3S Hd0S HypLt_y0r3 Hy0r3Lt_d0). }
+		  claim HypLt_d0: Rlt yp d0.
+		  { exact (RltI yp d0 HypR Hd0R HypLt_d0S). }
+
+		  (** c < yp via (c+r3) < y0 < (yp+r3) and cancellation **)
+		  claim Hr3m3Lt: r3 < m3.
+		  { exact Hr3m3S. }
+		  claim Hcr3Lt_cm3: add_SNo c r3 < add_SNo c m3.
+		  { exact (add_SNo_Lt2 c r3 m3 HcS Hr3S Hm3S Hr3m3Lt). }
+		  claim Hcm3Eq: add_SNo c m3 = y0.
+		  { prove add_SNo c m3 = y0.
+		    claim HmcS: SNo (minus_SNo c).
+		    { exact (SNo_minus_SNo c HcS). }
+		    claim Hassoc1: add_SNo c (add_SNo y0 (minus_SNo c)) = add_SNo (add_SNo c y0) (minus_SNo c).
+		    { exact (add_SNo_assoc c y0 (minus_SNo c) HcS Hy0S HmcS). }
+		    claim Hcom1: add_SNo c y0 = add_SNo y0 c.
+		    { exact (add_SNo_com c y0 HcS Hy0S). }
+		    claim Hassoc2: add_SNo (add_SNo y0 c) (minus_SNo c) = add_SNo y0 (add_SNo c (minus_SNo c)).
+		    { symmetry.
+		      exact (add_SNo_assoc y0 c (minus_SNo c) Hy0S HcS HmcS). }
+			    claim Hinv: add_SNo c (minus_SNo c) = 0.
+			    { exact (add_SNo_minus_SNo_rinv c HcS). }
+			    prove add_SNo c m3 = y0.
+			    claim Hm3Def: m3 = add_SNo y0 (minus_SNo c).
+			    { reflexivity. }
+			    rewrite Hm3Def.
+			    rewrite Hassoc1.
+			    rewrite Hcom1.
+			    rewrite Hassoc2.
+		    rewrite Hinv.
+		    exact (add_SNo_0R y0 Hy0S). }
+		  claim Hcr3Lt_y0: add_SNo c r3 < y0.
+		  { prove add_SNo c r3 < y0.
+		    rewrite <- Hcm3Eq.
+		    exact Hcr3Lt_cm3. }
+		  claim Hcr3S: SNo (add_SNo c r3).
+		  { exact (real_SNo (add_SNo c r3) (real_add_SNo c HcR r3 Hr3R)). }
+		  claim Hypr3S: SNo (add_SNo yp r3).
+		  { exact (real_SNo (add_SNo yp r3) (real_add_SNo yp HypR r3 Hr3R)). }
+		  claim Hcr3Lt_ypr3: add_SNo c r3 < add_SNo yp r3.
+		  { exact (SNoLt_tra (add_SNo c r3) y0 (add_SNo yp r3) Hcr3S Hy0S Hypr3S Hcr3Lt_y0 Hy0Lt_ypr3). }
+		  claim HcancelLc: add_SNo (minus_SNo r3) (add_SNo c r3) = c.
+		  { claim Hassoc1: add_SNo (minus_SNo r3) (add_SNo c r3) = add_SNo (add_SNo (minus_SNo r3) c) r3.
+		    { exact (add_SNo_assoc (minus_SNo r3) c r3 Hmr3S HcS Hr3S). }
+		    claim Hcom1: add_SNo (minus_SNo r3) c = add_SNo c (minus_SNo r3).
+		    { exact (add_SNo_com (minus_SNo r3) c Hmr3S HcS). }
+		    claim Hassoc2: add_SNo (add_SNo c (minus_SNo r3)) r3 = add_SNo c (add_SNo (minus_SNo r3) r3).
+		    { symmetry.
+		      exact (add_SNo_assoc c (minus_SNo r3) r3 HcS Hmr3S Hr3S). }
+		    claim Hinv: add_SNo (minus_SNo r3) r3 = 0.
+		    { exact (add_SNo_minus_SNo_linv r3 Hr3S). }
+		    rewrite Hassoc1.
+		    rewrite Hcom1.
+		    rewrite Hassoc2.
+		    rewrite Hinv.
+		    exact (add_SNo_0R c HcS). }
+		  claim HcancelRyp: add_SNo (minus_SNo r3) (add_SNo yp r3) = yp.
+		  { claim Hassoc1: add_SNo (minus_SNo r3) (add_SNo yp r3) = add_SNo (add_SNo (minus_SNo r3) yp) r3.
+		    { exact (add_SNo_assoc (minus_SNo r3) yp r3 Hmr3S HypS Hr3S). }
+		    claim Hcom1: add_SNo (minus_SNo r3) yp = add_SNo yp (minus_SNo r3).
+		    { exact (add_SNo_com (minus_SNo r3) yp Hmr3S HypS). }
+		    claim Hassoc2: add_SNo (add_SNo yp (minus_SNo r3)) r3 = add_SNo yp (add_SNo (minus_SNo r3) r3).
+		    { symmetry.
+		      exact (add_SNo_assoc yp (minus_SNo r3) r3 HypS Hmr3S Hr3S). }
+		    claim Hinv: add_SNo (minus_SNo r3) r3 = 0.
+		    { exact (add_SNo_minus_SNo_linv r3 Hr3S). }
+		    rewrite Hassoc1.
+		    rewrite Hcom1.
+		    rewrite Hassoc2.
+		    rewrite Hinv.
+		    exact (add_SNo_0R yp HypS). }
+		  claim HtmpCy: add_SNo (minus_SNo r3) (add_SNo c r3) < add_SNo (minus_SNo r3) (add_SNo yp r3).
+		  { exact (add_SNo_Lt2 (minus_SNo r3) (add_SNo c r3) (add_SNo yp r3) Hmr3S Hcr3S Hypr3S Hcr3Lt_ypr3). }
+		  claim HcySlt: c < yp.
+		  { prove c < yp.
+		    rewrite <- HcancelLc at 1.
+		    rewrite <- HcancelRyp.
+		    exact HtmpCy. }
+		  claim HcyRlt: Rlt c yp.
+		  { exact (RltI c yp HcR HypR HcySlt). }
+
+		  claim HpEq: p = (xp,yp).
+		  { prove p = (xp,yp).
+		    claim Heta: (R2_xcoord p, R2_ycoord p) = p.
+		    { exact (EuclidPlane_eta p HpE). }
+		    claim HxpEq: R2_xcoord p = xp.
+		    { symmetry.
+		      exact HxpDef. }
+		    claim HypEq: R2_ycoord p = yp.
+		    { symmetry.
+		      exact HypDef. }
+		    symmetry.
+		    rewrite HxpEq at 1.
+		    rewrite HypEq at 1.
+		    exact Heta. }
+
+		  claim HpProp:
+		    exists x1 y1:set,
+		      p = (x1,y1) /\ Rlt a x1 /\ Rlt x1 b0 /\ Rlt c y1 /\ Rlt y1 d0.
+		  { witness xp.
+		    witness yp.
+		    apply andI.
+		    - apply andI.
+		      + apply andI.
+		        * apply andI.
+		          - exact HpEq.
+		          - exact HaxRlt.
+		        * exact HxpLt_b0.
+		      + exact HcyRlt.
+		    - exact HypLt_d0. }
+		  exact (SepI EuclidPlane
+		              (fun p0 : set =>
+		                exists x1 y1:set,
+		                  p0 = (x1,y1) /\ Rlt a x1 /\ Rlt x1 b0 /\ Rlt c y1 /\ Rlt y1 d0)
+		              p
+		              HpE
+		              HpProp).
 Qed.
 
 (** from §13 Example 4: circular regions form a basis on EuclidPlane **)
