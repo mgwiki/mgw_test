@@ -10246,7 +10246,10 @@ claim H0S: SNo 0.
 { exact SNo_0. }
 claim Hle: add_SNo x 0 <= add_SNo x y.
 { exact (add_SNo_Le2 x 0 y HxS H0S HyS H0ley). }
-rewrite (add_SNo_0R x HxS) in Hle.
+claim Hx0: add_SNo x 0 = x.
+{ exact (add_SNo_0R x HxS). }
+prove x <= add_SNo x y.
+rewrite <- Hx0 at 1.
 exact Hle.
 Qed.
 
