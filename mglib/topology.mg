@@ -11461,22 +11461,22 @@ apply HxRectPred.
 let x0. assume HxRectPred2.
 apply HxRectPred2.
 let y0. assume Hxy0.
-claim Hxy0Rest: Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0.
-{ exact (andER (x = (x0,y0)) (Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0) Hxy0). }
-claim HxEq: x = (x0,y0).
-{ exact (andEL (x = (x0,y0)) (Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0) Hxy0). }
-claim Hy0Rest2: Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0.
-{ exact (andER (Rlt a x0) (Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0) Hxy0Rest). }
-claim Hax0: Rlt a x0.
-{ exact (andEL (Rlt a x0) (Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0) Hxy0Rest). }
-claim Hy0Rest3: Rlt c y0 /\ Rlt y0 d0.
-{ exact (andER (Rlt x0 b0) (Rlt c y0 /\ Rlt y0 d0) Hy0Rest2). }
-claim Hx0b0: Rlt x0 b0.
-{ exact (andEL (Rlt x0 b0) (Rlt c y0 /\ Rlt y0 d0) Hy0Rest2). }
-claim Hcy0: Rlt c y0.
-{ exact (andEL (Rlt c y0) (Rlt y0 d0) Hy0Rest3). }
 claim Hy0d0: Rlt y0 d0.
-{ exact (andER (Rlt c y0) (Rlt y0 d0) Hy0Rest3). }
+{ exact (andER (((x = (x0,y0) /\ Rlt a x0) /\ Rlt x0 b0) /\ Rlt c y0) (Rlt y0 d0) Hxy0). }
+claim HxyLeft3: ((x = (x0,y0) /\ Rlt a x0) /\ Rlt x0 b0) /\ Rlt c y0.
+{ exact (andEL (((x = (x0,y0) /\ Rlt a x0) /\ Rlt x0 b0) /\ Rlt c y0) (Rlt y0 d0) Hxy0). }
+claim Hcy0: Rlt c y0.
+{ exact (andER ((x = (x0,y0) /\ Rlt a x0) /\ Rlt x0 b0) (Rlt c y0) HxyLeft3). }
+claim HxyLeft2: (x = (x0,y0) /\ Rlt a x0) /\ Rlt x0 b0.
+{ exact (andEL ((x = (x0,y0) /\ Rlt a x0) /\ Rlt x0 b0) (Rlt c y0) HxyLeft3). }
+claim Hx0b0: Rlt x0 b0.
+{ exact (andER (x = (x0,y0) /\ Rlt a x0) (Rlt x0 b0) HxyLeft2). }
+claim HxyLeft1: x = (x0,y0) /\ Rlt a x0.
+{ exact (andEL (x = (x0,y0) /\ Rlt a x0) (Rlt x0 b0) HxyLeft2). }
+claim Hax0: Rlt a x0.
+{ exact (andER (x = (x0,y0)) (Rlt a x0) HxyLeft1). }
+claim HxEq: x = (x0,y0).
+{ exact (andEL (x = (x0,y0)) (Rlt a x0) HxyLeft1). }
 
 claim Hx0R: x0 :e R.
 { exact (RltE_right a x0 Hax0). }
