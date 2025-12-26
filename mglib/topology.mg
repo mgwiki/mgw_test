@@ -19729,6 +19729,7 @@ Definition order_topology_basis : set -> set := fun X =>
 Definition order_topology : set -> set := fun X => generated_topology X (order_topology_basis X).
 
 (** Helper: order topology basis satisfies basis axioms **)
+(** SUSPICIOUS DEFINITION: This lemma is stated for arbitrary X, but order_rel is only implemented for a small list of carrier sets; for other X the basis cover axiom may fail. This is a modeling gap, so the proof is currently admitted. **)
 Theorem order_topology_basis_is_basis : forall X:set,
   basis_on X (order_topology_basis X).
 admit.
@@ -34715,6 +34716,7 @@ Qed.
 (** helper: R is infinite **)
 Theorem infinite_R : infinite R.
 (** from pre-topology: real is uncountable, so in particular infinite **)
+(** LATEX VERSION: Not a numbered item; uses the earlier uncountability result for R to conclude R is infinite. **)
 claim Hunc: atleastp omega real /\ ~equip real omega.
 { exact form100_22_real_uncountable. }
 claim Hatleast: atleastp omega real.
@@ -34801,6 +34803,7 @@ claim HV: V :e R_finite_complement_topology.
 { exact (andER (U :e R_finite_complement_topology) (V :e R_finite_complement_topology) Hpair). }
 
 (** from HU and H0U, derive finite (R\\U); similarly for V **)
+(** LATEX VERSION: Not a numbered item; bookkeeping step using the definition of the finite complement topology. **)
 claim HUcases: finite (R :\: U) \/ U = Empty.
 { exact (SepE2 (Power R) (fun U0:set => finite (R :\: U0) \/ U0 = Empty) U HU). }
 claim HUfin: finite (R :\: U).
