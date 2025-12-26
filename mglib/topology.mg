@@ -62194,8 +62194,7 @@ Qed.
 Definition perfectly_normal_space : set -> set -> prop := fun X Tx =>
   normal_space X Tx /\ (forall A:set, closed_in X Tx A -> Gdelta_in X Tx A).
 
-(** FIXED: Removed nonsensical fourth clause.
-    Was: forall r, apply_fun f X = {x :e X | apply_fun f x = r} mixes an image in R with a level set in X; now removed and left as a separate admitted exercise. **)
+(** FIXED: Removed nonsensical fourth clause: forall r, apply_fun f X = {x :e X | apply_fun f x = r} mixes an image in R with a level set in X; now left as a separate admitted exercise. **)
 (** from §33 Exercise 1: expression for level sets in Urysohn proof **)
 (** LATEX VERSION: In Urysohn lemma proof, show f^{-1}(r) = ∩_{p>r} U_p - ∪_{q<r} U_q for rational p,q. **)
 Axiom ex33_1_level_sets_urysohn_axiom : forall X Tx A B:set, forall U:set -> set,
