@@ -20573,19 +20573,61 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 			    let j. assume HjPair. apply HjPair.
 			    let n. assume HnPair. apply HnPair.
 			    assume Hcore.
-				    (** destruct the conjunction package (/\ is left-associative) **)
-				    apply Hcore.
-				    assume Hpre Hlex.
-				    apply Hpre.
-				    assume Hpre2 HbEq.
-				    apply Hpre2.
-				    assume Hpre3 H10Eq.
-				    apply Hpre3.
-				    assume Hpre4 HnOmega.
-				    apply Hpre4.
-				    assume Hpre5 Hj2.
-					    apply (Hpre5 False).
-					    assume Hi2 HmOmega.
+					    (** destruct the conjunction package using andEL/andER (/\ is left-associative) **)
+					    claim Hlex: (i :e j \/ (i = j /\ m :e n)).
+					    { exact (andER
+					              (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m) /\ b = (j, n))
+					              (i :e j \/ (i = j /\ m :e n))
+					              Hcore). }
+					    claim Hpre: (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m) /\ b = (j, n)).
+					    { exact (andEL
+					              (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m) /\ b = (j, n))
+					              (i :e j \/ (i = j /\ m :e n))
+					              Hcore). }
+					    claim HbEq: b = (j, n).
+					    { exact (andER
+					              (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m))
+					              (b = (j, n))
+					              Hpre). }
+					    claim Hpre2: (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m)).
+					    { exact (andEL
+					              (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m))
+					              (b = (j, n))
+					              Hpre). }
+					    claim H10Eq: (1,0) = (i, m).
+					    { exact (andER
+					              (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega)
+					              ((1,0) = (i, m))
+					              Hpre2). }
+					    claim Hpre3: (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega).
+					    { exact (andEL
+					              (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega)
+					              ((1,0) = (i, m))
+					              Hpre2). }
+					    claim HnOmega: n :e omega.
+					    { exact (andER
+					              (i :e 2 /\ m :e omega /\ j :e 2)
+					              (n :e omega)
+					              Hpre3). }
+					    claim Hpre4: (i :e 2 /\ m :e omega /\ j :e 2).
+					    { exact (andEL
+					              (i :e 2 /\ m :e omega /\ j :e 2)
+					              (n :e omega)
+					              Hpre3). }
+					    claim Hj2: j :e 2.
+					    { exact (andER
+					              (i :e 2 /\ m :e omega)
+					              (j :e 2)
+					              Hpre4). }
+					    claim Hpre5: (i :e 2 /\ m :e omega).
+					    { exact (andEL
+					              (i :e 2 /\ m :e omega)
+					              (j :e 2)
+					              Hpre4). }
+					    claim Hi2: i :e 2.
+					    { exact (andEL (i :e 2) (m :e omega) Hpre5). }
+					    claim HmOmega: m :e omega.
+					    { exact (andER (i :e 2) (m :e omega) Hpre5). }
 
 			    (** compute i = 1 and m = 0 from (1,0) = (i,m) **)
 			    claim Hi1: i = 1.
