@@ -18948,6 +18948,64 @@ apply andI.
   - exact Hlex.
 Qed.
 
+(** helper: in the dictionary order on {0,1}×ω we have (0,k) < (1,n) for any k,n∈ω **)
+Theorem order_rel_setprod_2_omega_0k_1n : forall k n:set,
+  k :e omega -> n :e omega -> order_rel (setprod 2 omega) (0,k) (1,n).
+let k n. assume HkOmega. assume HnOmega.
+prove order_rel (setprod 2 omega) (0,k) (1,n).
+(** Unfold `order_rel` at X = setprod 2 omega and select the 5th disjunct. **)
+prove (setprod 2 omega = R /\ Rlt (0,k) (1,n))
+  \/
+  (setprod 2 omega = rational_numbers /\ Rlt (0,k) (1,n))
+  \/
+  (setprod 2 omega = omega /\ (0,k) :e (1,n))
+  \/
+  (setprod 2 omega = omega :\: {0} /\ (0,k) :e (1,n))
+  \/
+  (setprod 2 omega = setprod 2 omega /\
+   exists i m j n0:set,
+     i :e 2 /\ m :e omega /\ j :e 2 /\ n0 :e omega /\
+     (0,k) = (i, m) /\ (1,n) = (j, n0) /\
+     (i :e j \/ (i = j /\ m :e n0)))
+  \/
+  (setprod 2 omega = setprod R R /\
+   exists a1 a2 b1 b2:set,
+     (0,k) = (a1, a2) /\ (1,n) = (b1, b2) /\
+     (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
+apply orIL.
+apply orIR.
+prove setprod 2 omega = setprod 2 omega /\
+   exists i m j n0:set,
+     i :e 2 /\ m :e omega /\ j :e 2 /\ n0 :e omega /\
+     (0,k) = (i, m) /\ (1,n) = (j, n0) /\
+     (i :e j \/ (i = j /\ m :e n0)).
+apply andI.
+- reflexivity.
+- witness 0.
+  witness k.
+  witness 1.
+  witness n.
+  claim Heq0k: (0,k) = (0,k).
+  { reflexivity. }
+  claim Heq1n: (1,n) = (1,n).
+  { reflexivity. }
+  claim H12: 0 :e 2 /\ k :e omega.
+  { exact (andI (0 :e 2) (k :e omega) In_0_2 HkOmega). }
+  claim H123: (0 :e 2 /\ k :e omega) /\ 1 :e 2.
+  { exact (andI (0 :e 2 /\ k :e omega) (1 :e 2) H12 In_1_2). }
+  claim H1234: ((0 :e 2 /\ k :e omega) /\ 1 :e 2) /\ n :e omega.
+  { exact (andI ((0 :e 2 /\ k :e omega) /\ 1 :e 2) (n :e omega) H123 HnOmega). }
+  claim H12345: (((0 :e 2 /\ k :e omega) /\ 1 :e 2) /\ n :e omega) /\ (0,k) = (0,k).
+  { exact (andI (((0 :e 2 /\ k :e omega) /\ 1 :e 2) /\ n :e omega) ((0,k) = (0,k)) H1234 Heq0k). }
+  claim H123456: ((((0 :e 2 /\ k :e omega) /\ 1 :e 2) /\ n :e omega) /\ (0,k) = (0,k)) /\ (1,n) = (1,n).
+  { exact (andI ((((0 :e 2 /\ k :e omega) /\ 1 :e 2) /\ n :e omega) /\ (0,k) = (0,k)) ((1,n) = (1,n)) H12345 Heq1n). }
+  claim Hlex: 0 :e 1 \/ (0 = 1 /\ k :e n).
+  { exact (orIL (0 :e 1) (0 = 1 /\ k :e n) In_0_1). }
+  apply andI.
+  - exact H123456.
+  - exact Hlex.
+Qed.
+
 (** helper: eps_ 1 is not an element of the ordinal 2 **)
 (** LATEX VERSION: 1/2 is neither 0 nor 1. **)
 Theorem eps_1_not_in_2 : eps_ 1 /:e 2.
