@@ -32311,9 +32311,7 @@ claim HclA_sub: clA c= X.
 { let x. assume Hx: x :e clA.
   prove x :e X.
   exact (SepE1 X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hx). }
-(** To prove clA is closed, we would normally apply closure_is_closed, but that requires clA c= X
-    which we have. However, closure_is_closed X Tx clA gives us closed_in X Tx (closure_of X Tx clA),
-    not closed_in X Tx clA. We need a more direct proof that closure is closed. **)
+(** To show clA is closed we want closure_is_closed, but that yields closed_in X Tx (closure_of X Tx clA); we instead prove closed_in X Tx clA directly via the closure definition. **)
 apply andI.
 - (** cl(cl(A)) = cl(A) - idempotence follows from closure being closed **)
   prove closure_of X Tx clA = clA.
@@ -32782,8 +32780,7 @@ Theorem ex17_8a_closure_intersection_Subq_intersection_closures : forall X Tx A 
 let X Tx A B.
 assume Htop: topology_on X Tx.
 prove closure_of X Tx (A :/\: B) c= closure_of X Tx A :/\: closure_of X Tx B.
-(** Strategy: if x in closure(A∩B), then every open containing x meets A∩B,
-    hence meets A (and B), so x in closure(A) (and closure(B)). **)
+(** Strategy: x ∈ cl(A∩B) implies every open neighborhood meets A∩B, hence meets A and meets B, so x ∈ cl(A) ∩ cl(B). **)
 let x.
 assume Hx: x :e closure_of X Tx (A :/\: B).
 prove x :e closure_of X Tx A :/\: closure_of X Tx B.
@@ -33299,9 +33296,7 @@ apply andI.
 - let y1 y2. assume Hy1: y1 :e Y. assume Hy2: y2 :e Y. assume Hne: y1 <> y2.
   prove exists U V:set, U :e subspace_topology X Tx Y /\ V :e subspace_topology X Tx Y /\
                         y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
-  (** Strategy: y1, y2 are distinct points. If both in Y, they're distinct in X.
-      Get disjoint X-neighborhoods U', V' from Hausdorff property.
-      Then U' ∩ Y and V' ∩ Y are disjoint Y-neighborhoods. **)
+  (** Strategy: y1,y2 distinct in Y are distinct in X; take disjoint Tx-neighborhoods U',V' and intersect with Y to get disjoint subspace neighborhoods. **)
 claim Hsepax:
   forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
     exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
@@ -34062,8 +34057,7 @@ apply iffI.
   let x.
   assume Hx: x :e X.
   prove closed_in X Tx {x}.
-  (** By definition of T1_space, all finite subsets are closed.
-      Singletons are finite subsets, so {x} is closed. **)
+  (** T1_space says all finite subsets of X are closed; {x} is finite, hence closed. **)
   claim Hx_finite: finite {x}.
   { exact (Sing_finite x). }
   claim Hx_sub: {x} c= X.
@@ -34081,12 +34075,7 @@ apply iffI.
   + prove forall F:set, F c= X -> finite F -> closed_in X Tx F.
     let F. assume HFsub: F c= X. assume HF: finite F.
 	    prove closed_in X Tx F.
-		    (** Strategy: Every finite subset is a finite union of singletons.
-		        Since each singleton is closed and closed sets are closed under finite unions,
-		        F is closed. This requires:
-		        1. Decomposing F as a union of singletons
-		        2. Showing binary/finite unions of closed sets are closed
-		        We prove this by finite induction on F, using closure under binary unions. **)
+			    (** Strategy: prove finite unions of singletons are closed (use union_of_closed_is_closed and induction on finite sets). **)
 		    claim Hclosed_empty: closed_in X Tx Empty.
 		    { exact (empty_is_closed X Tx Htop). }
 		    claim Hclosed_union: forall A B:set, closed_in X Tx A -> closed_in X Tx B -> closed_in X Tx (A :\/: B).
@@ -35743,9 +35732,7 @@ apply set_ext.
   exact (SepI (setprod X Y) (fun q => apply_fun (projection2 X Y) q :e V) p HpXY Hprop).
 Qed.
 
-(** SUSPICIOUS DEFINITION: `continuous_map` relies on `function_on` (which is defined via `apply_fun`/`Eps_i`);
-    thus continuity is formulated purely via preimages of opens, and totality of the graph (existence of some y with (x,y) :e f)
-    is not available unless it is assumed separately. Use `total_function_on` when totality is needed. **)
+(** SUSPICIOUS DEFINITION: `continuous_map` relies on `function_on` via `apply_fun`/`Eps_i`, so it enforces only preimage-openness and codomain membership, not totality of the graph; use `total_function_on` when totality is needed. **)
 Definition continuous_map : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f =>
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
@@ -36272,12 +36259,7 @@ apply iffI.
 - (** Backward direction: three conditions imply continuous_map **)
   assume Hconds.
   prove continuous_map X Tx Y Ty f.
-  (** Extract function_on and preimage condition from the left-associative conjunction:
-      Hconds : (((A /\ B) /\ C) /\ D) where
-      A = function_on f X Y
-      B = forall V, V :e Ty -> preimage_of X f V :e Tx
-      C = forall C, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C)
-      D = forall x, ... neighborhood condition **)
+	  (** Extract function_on and preimage condition from Hconds, a left-associative conjunction: (((A /\ B) /\ C) /\ D). **)
   claim Habc:
     (function_on f X Y /\ (forall V:set, V :e Ty -> preimage_of X f V :e Tx)) /\
     (forall C:set, closed_in Y Ty C -> closed_in X Tx (preimage_of X f C)).
@@ -36320,13 +36302,8 @@ assume HTx: topology_on X Tx.
 prove let id := {(x,x)|x :e X} in continuous_map X Tx X Tx id.
 set id := {(x,x)|x :e X}.
 prove continuous_map X Tx X Tx id.
-(** Strategy: Unfold continuous_map definition and show:
-    1. topology_on X Tx (given)
-    2. function_on id X X (identity is a function)
-    3. For all V :e Tx, preimage_of X id V :e Tx
-    Key insight: preimage_of X id V = V for V :e Tx **)
-(** Unfold: continuous_map = topology_on X Tx /\ topology_on X Tx /\ function_on id X X /\ (forall V:set, V :e Tx -> preimage_of X id V :e Tx)
-    This is left-associative: (((A /\ B) /\ C) /\ D) **)
+  (** Strategy: unfold continuous_map; identity is function_on and preimage_of X id V = V for V :e Tx. **)
+  (** Unfold: continuous_map = topology_on X Tx /\ topology_on X Tx /\ function_on id X X /\ (forall V, V :e Tx -> preimage_of X id V :e Tx), left-associative. **)
 prove topology_on X Tx /\ topology_on X Tx /\ function_on id X X /\
   forall V:set, V :e Tx -> preimage_of X id V :e Tx.
 (** Build the conjunction left-to-right **)
@@ -36340,8 +36317,7 @@ claim Hpart2: (topology_on X Tx /\ topology_on X Tx) /\ function_on id X X.
     prove forall x:set, x :e X -> apply_fun id x :e X.
     let x. assume Hx: x :e X.
     prove apply_fun id x :e X.
-    (** For x :e X, we have (x,x) :e id, so apply_fun id x = x by Eps_i.
-        Therefore apply_fun id x :e X. This requires showing uniqueness of y in (x,y) :e id. **)
+    (** For x :e X, apply_fun id x = x and hence apply_fun id x :e X. **)
     claim Hid_x: apply_fun id x = x.
     { exact (identity_function_apply X x Hx). }
     rewrite Hid_x.
@@ -36530,10 +36506,7 @@ assume Hf: continuous_map X Tx Y Ty f.
 assume Hg: continuous_map Y Ty Z Tz g.
 prove continuous_map X Tx Z Tz (compose_fun X f g).
 set gf := compose_fun X f g.
-(** Strategy: Show g∘f is continuous by proving preimages of open sets are open.
-    Key insight: preimage of W under g∘f equals preimage of (preimage of W under g) under f.
-    Since g continuous: g⁻¹(W) is open in Y
-    Since f continuous: f⁻¹(g⁻¹(W)) is open in X **)
+  (** Strategy: show g∘f continuous by rewriting preimages: (g∘f)⁻¹(W) = f⁻¹(g⁻¹(W)). **)
 (** Extract components from continuous_map definitions **)
 (** Hf: topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\ (forall V...) **)
 claim HTx: topology_on X Tx.
