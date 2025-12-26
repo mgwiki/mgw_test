@@ -6805,6 +6805,17 @@ exact (andI (topology_on X T) (C c= X /\ exists U :e T, C = X :\: U)
             (andI (C c= X) (exists U :e T, C = X :\: U) HCsub Hex)).
 Qed.
 
+(** Helper: pairing belongs to setprod via Sigma encoding **)
+Theorem tuple_2_setprod_by_pair_Sigma : forall X Y:set, forall x y:set,
+  x :e X -> y :e Y -> (x,y) :e setprod X Y.
+let X Y x y.
+assume Hx: x :e X.
+assume Hy: y :e Y.
+prove (x,y) :e setprod X Y.
+rewrite <- (tuple_pair x y) at 1.
+exact (pair_Sigma X (fun _ : set => Y) x Hx y Hy).
+Qed.
+
 (** Helper: extract existence of open complement witness from closed_in **)
 Theorem closed_in_exists_open_complement : forall X T C:set,
   closed_in X T C -> exists U :e T, C = X :\: U.
@@ -19697,7 +19708,7 @@ claim Heps1SNoS: eps_ 1 :e SNoS_ omega.
 claim HepsR: eps_ 1 :e R.
 { exact (SNoS_omega_real (eps_ 1) Heps1SNoS). }
 claim HpRR: (eps_ 1, 0) :e setprod R R.
-{ exact (tuple_2_setprod R R (eps_ 1) HepsR 0 real_0). }
+{ exact (tuple_2_setprod_by_pair_Sigma R R (eps_ 1) 0 HepsR real_0). }
 claim Hp2o: (eps_ 1, 0) :e setprod 2 omega.
 { rewrite <- Heq. exact HpRR. }
 claim Heps2: ((eps_ 1, 0) 0) :e 2.
@@ -19877,7 +19888,7 @@ assume Heq: setprod R R = R.
 prove False.
 
 claim HpRR: (0,1) :e setprod R R.
-{ exact (tuple_2_setprod R R 0 real_0 1 real_1). }
+{ exact (tuple_2_setprod_by_pair_Sigma R R 0 1 real_0 real_1). }
 claim HpR: (0,1) :e R.
 { rewrite <- Heq. exact HpRR. }
 claim HSing1R: {1} :e R.
@@ -19919,7 +19930,7 @@ claim Hinj_R_prod: atleastp R (setprod R R).
   apply (injI R (setprod R R) (fun x:set => (x,0))).
   - let x. assume Hx: x :e R.
     prove (x,0) :e setprod R R.
-    exact (tuple_2_setprod R R x Hx 0 real_0).
+    exact (tuple_2_setprod_by_pair_Sigma R R x 0 Hx real_0).
   - let x.
     assume Hx: x :e R.
     let z.
@@ -21333,7 +21344,7 @@ prove False.
 claim H1omega: 1 :e omega.
 { exact (nat_p_omega 1 nat_1). }
 claim Hp: (0,1) :e setprod 2 omega.
-{ exact (tuple_2_setprod 2 omega 0 In_0_2 1 H1omega). }
+{ exact (tuple_2_setprod_by_pair_Sigma 2 omega 0 1 In_0_2 H1omega). }
 claim HpOmega: (0,1) :e omega.
 { rewrite <- Heq. exact Hp. }
 claim HSingOmega: {1} :e omega.
@@ -21349,7 +21360,7 @@ prove False.
 claim H1omega: 1 :e omega.
 { exact (nat_p_omega 1 nat_1). }
 claim Hp: (0,1) :e setprod 2 omega.
-{ exact (tuple_2_setprod 2 omega 0 In_0_2 1 H1omega). }
+{ exact (tuple_2_setprod_by_pair_Sigma 2 omega 0 1 In_0_2 H1omega). }
 claim HpNZ: (0,1) :e (omega :\: {0}).
 { rewrite <- Heq. exact Hp. }
 claim Hcore: (0,1) :e omega /\ (0,1) /:e {0}.
@@ -22465,9 +22476,9 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    (** Define a second point in the interval and derive contradiction. **)
 		    claim HsuccOmega: ordsucc m :e omega.
 		    { exact (omega_ordsucc m HmOmega). }
-		    claim H0sX: (0, ordsucc m) :e X.
-		    { rewrite HXeq.
-		      exact (tuple_2_setprod 2 omega 0 In_0_2 (ordsucc m) HsuccOmega). }
+			    claim H0sX: (0, ordsucc m) :e X.
+			    { rewrite HXeq.
+			      exact (tuple_2_setprod_by_pair_Sigma 2 omega 0 (ordsucc m) In_0_2 HsuccOmega). }
 
 		    claim H0sL: order_rel X a (0, ordsucc m).
 		    { prove order_rel X a (0, ordsucc m).
@@ -22946,17 +22957,6 @@ claim Hp1: p 1 = y.
 rewrite Hp0.
 rewrite Hp1.
 exact HeqT.
-Qed.
-
-(** Helper: pairing belongs to setprod via Sigma encoding **)
-Theorem tuple_2_setprod_by_pair_Sigma : forall X Y:set, forall x y:set,
-  x :e X -> y :e Y -> (x,y) :e setprod X Y.
-let X Y x y.
-assume Hx: x :e X.
-assume Hy: y :e Y.
-prove (x,y) :e setprod X Y.
-rewrite <- (tuple_pair x y) at 1.
-exact (pair_Sigma X (fun _ : set => Y) x Hx y Hy).
 Qed.
 
 (** Helper: cartesian products preserve subset relation **)
@@ -26207,7 +26207,7 @@ claim HUnord: ~(U :e ordered_square_topology).
                  HUgt). }
   set p0 := (eps_ 1, 1).
   claim Hp0Sq: p0 :e ordered_square.
-  { exact (tuple_2_setprod unit_interval unit_interval (eps_ 1) eps_1_in_unit_interval 1 one_in_unit_interval). }
+  { exact (tuple_2_setprod_by_pair_Sigma unit_interval unit_interval (eps_ 1) 1 eps_1_in_unit_interval one_in_unit_interval). }
   claim Hp0U: p0 :e U.
   { apply (SepI ordered_square
                 (fun p:set => exists y:set, p = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y))
