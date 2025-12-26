@@ -26113,6 +26113,27 @@ Definition convex_in : set -> set -> prop := fun X Y =>
   Y c= X /\
   forall a b:set, a :e Y -> b :e Y -> order_interval X a b c= Y.
 
+(** Helper: extract Y c= X from convex_in **)
+Theorem convex_in_subset : forall X Y:set,
+  convex_in X Y -> Y c= X.
+let X Y.
+assume H: convex_in X Y.
+exact (andEL (Y c= X)
+             (forall a b:set, a :e Y -> b :e Y -> order_interval X a b c= Y)
+             H).
+Qed.
+
+(** Helper: extract the interval closure property from convex_in **)
+Theorem convex_in_interval_property : forall X Y:set,
+  convex_in X Y ->
+  forall a b:set, a :e Y -> b :e Y -> order_interval X a b c= Y.
+let X Y.
+assume H: convex_in X Y.
+exact (andER (Y c= X)
+             (forall a b:set, a :e Y -> b :e Y -> order_interval X a b c= Y)
+             H).
+Qed.
+
 Theorem convex_subspace_order_topology : forall X Y:set,
   convex_in X Y ->
   order_topology Y = subspace_topology X (order_topology X) Y.
