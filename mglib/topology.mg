@@ -20542,44 +20542,44 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 	    (** project needed components out of the long conjunction **)
 	    claim Hlex: (i :e j \/ (i = j /\ m :e n)).
 	    { apply (Hcore (i :e j \/ (i = j /\ m :e n))).
-	      assume _ Hlex.
-	      exact Hlex. }
+	      assume Htmp Hlex0.
+	      exact Hlex0. }
 	    claim HbEq: b = (j,n).
 	    { apply (Hcore (b = (j,n))).
-	      assume Hpre _.
+	      assume Hpre Htmp.
 	      apply (Hpre (b = (j,n))).
-	      assume _ HbEq.
-	      exact HbEq. }
+	      assume Htmp2 HbEq0.
+	      exact HbEq0. }
 	    claim H10Eq: (1,0) = (i,m).
 	    { apply (Hcore ((1,0) = (i,m))).
-	      assume Hpre _.
+	      assume Hpre Htmp.
 	      apply (Hpre ((1,0) = (i,m))).
-	      assume Hpre2 _.
+	      assume Hpre2 Htmp2.
 	      apply (Hpre2 ((1,0) = (i,m))).
-	      assume _ H10Eq.
-	      exact H10Eq. }
+	      assume Htmp3 H10Eq0.
+	      exact H10Eq0. }
 	    claim HnOmega: n :e omega.
 	    { apply (Hcore (n :e omega)).
-	      assume Hpre _.
+	      assume Hpre Htmp.
 	      apply (Hpre (n :e omega)).
-	      assume Hpre2 _.
+	      assume Hpre2 Htmp2.
 	      apply (Hpre2 (n :e omega)).
-	      assume Hpre3 _.
+	      assume Hpre3 Htmp3.
 	      apply (Hpre3 (n :e omega)).
-	      assume _ HnOmega.
-	      exact HnOmega. }
+	      assume Htmp4 HnOmega0.
+	      exact HnOmega0. }
 	    claim Hj2: j :e 2.
 	    { apply (Hcore (j :e 2)).
-	      assume Hpre _.
+	      assume Hpre Htmp.
 	      apply (Hpre (j :e 2)).
-	      assume Hpre2 _.
+	      assume Hpre2 Htmp2.
 	      apply (Hpre2 (j :e 2)).
-	      assume Hpre3 _.
+	      assume Hpre3 Htmp3.
 	      apply (Hpre3 (j :e 2)).
-	      assume Hpre4 _.
+	      assume Hpre4 Htmp4.
 	      apply (Hpre4 (j :e 2)).
-	      assume _ Hj2.
-	      exact Hj2. }
+	      assume Htmp5 Hj20.
+	      exact Hj20. }
 	
 		    (** compute i = 1 and m = 0 from (1,0) = (i,m) **)
 		    claim Hi1: i = 1.
