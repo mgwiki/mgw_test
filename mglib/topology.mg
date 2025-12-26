@@ -25775,12 +25775,12 @@ assume Heq: ordered_square = setprod R R.
 prove False.
 set p := (2,2).
 claim HpRR: p :e setprod R R.
-{ exact (tuple_2_setprod R R 2 two_in_R 2 two_in_R). }
+{ exact (tuple_2_setprod_by_pair_Sigma R R 2 2 two_in_R two_in_R). }
 claim HpOS: p :e ordered_square.
 { rewrite Heq.
   exact HpRR. }
 claim HpSing: p :e setprod {2} {2}.
-{ exact (tuple_2_setprod {2} {2} 2 (SingI 2) 2 (SingI 2)). }
+{ exact (tuple_2_setprod_by_pair_Sigma {2} {2} 2 2 (SingI 2) (SingI 2)). }
 claim Hcoords: 2 :e unit_interval /\ 2 :e unit_interval.
 { exact (setprod_coords_in 2 2 unit_interval unit_interval p HpSing HpOS). }
 claim H2I: 2 :e unit_interval.
@@ -25859,9 +25859,9 @@ claim HUdic: U :e subspace_topology (setprod R R) R2_dictionary_order_topology o
       claim HVpow: V :e Power X.
       { exact (PowerI X V HVsubX). }
       claim HaX: a :e X.
-      { exact (tuple_2_setprod R R (eps_ 1) eps_1_in_R (eps_ 1) eps_1_in_R). }
+      { exact (tuple_2_setprod_by_pair_Sigma R R (eps_ 1) (eps_ 1) eps_1_in_R eps_1_in_R). }
       claim HbX: b :e X.
-      { exact (tuple_2_setprod R R (eps_ 1) eps_1_in_R 2 two_in_R). }
+      { exact (tuple_2_setprod_by_pair_Sigma R R (eps_ 1) 2 eps_1_in_R two_in_R). }
       claim HVpred: exists a0 :e X, exists b0 :e X,
         V = {x :e X | order_rel X a0 x /\ order_rel X x b0}.
       { witness a.
@@ -25930,7 +25930,7 @@ claim HUdic: U :e subspace_topology (setprod R R) R2_dictionary_order_topology o
       claim HpV: p :e V.
       { rewrite Hpy.
         claim HpRR: (eps_ 1,y) :e setprod R R.
-        { exact (tuple_2_setprod R R (eps_ 1) eps_1_in_R y HyR). }
+        { exact (tuple_2_setprod_by_pair_Sigma R R (eps_ 1) y eps_1_in_R HyR). }
         claim Hord1: order_rel (setprod R R) a (eps_ 1,y).
         { apply (order_rel_setprod_R_R_intro (eps_ 1) (eps_ 1) (eps_ 1) y).
           apply orIR.
