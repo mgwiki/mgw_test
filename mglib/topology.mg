@@ -20590,21 +20590,15 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 
 		    (** compute i = 1 and m = 0 from (1,0) = (i,m) **)
 		    claim Hi1: i = 1.
-		    { claim Ht0: (1,0) 0 = 1.
-		      { exact (tuple_2_0_eq 1 0). }
-		      rewrite H10Eq at 1 in Ht0.
-		      claim Ht0i: (i,m) 0 = i.
-		      { exact (tuple_2_0_eq i m). }
-		      rewrite Ht0i in Ht0.
-		      exact Ht0. }
+		    { prove i = 1.
+		      rewrite <- (tuple_2_0_eq i m) at 1.
+		      rewrite <- H10Eq at 1.
+		      exact (tuple_2_0_eq 1 0). }
 		    claim Hm0: m = 0.
-		    { claim Ht1: (1,0) 1 = 0.
-		      { exact (tuple_2_1_eq 1 0). }
-		      rewrite H10Eq at 1 in Ht1.
-		      claim Ht1m: (i,m) 1 = m.
-		      { exact (tuple_2_1_eq i m). }
-		      rewrite Ht1m in Ht1.
-		      exact Ht1. }
+		    { prove m = 0.
+		      rewrite <- (tuple_2_1_eq i m) at 1.
+		      rewrite <- H10Eq at 1.
+		      exact (tuple_2_1_eq 1 0). }
 
 		    (** show i :e j is impossible: i=1 and j :e 2 implies j=0 or j=1 **)
 		    claim Hnotij: ~(i :e j).
@@ -20616,16 +20610,22 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		      apply (UPairE j 0 1 Hj01 False).
 		      - assume Hj0: j = 0.
 		        apply FalseE.
-		        rewrite Hi1 in Hij.
-		        rewrite Hj0 in Hij.
-		        exact (EmptyE 1 Hij).
+		        claim H10: 1 :e 0.
+		        { prove 1 :e 0.
+		          rewrite <- Hi1 at 1.
+		          rewrite <- Hj0 at 2.
+		          exact Hij. }
+		        exact (EmptyE 1 H10).
 		      - assume Hj1: j = 1.
 		        apply FalseE.
-		        rewrite Hi1 in Hij.
-		        rewrite Hj1 in Hij.
-		        claim HjSing: 1 :e {0}.
-		        { rewrite <- eq_1_Sing0.
+		        claim H11: 1 :e 1.
+		        { prove 1 :e 1.
+		          rewrite <- Hi1 at 1.
 		          exact Hij. }
+		        claim HjSing: 1 :e {0}.
+		        { prove 1 :e {0}.
+		          rewrite <- eq_1_Sing0 at 2.
+		          exact H11. }
 		        claim H10: 1 = 0.
 		        { exact (SingE 0 1 HjSing). }
 		        exact (neq_1_0 H10). }
@@ -20699,13 +20699,10 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    claim Heq: (0,0) = (1,0).
 		    { exact (SingE (1,0) (0,0) H00inU). }
 		    claim Hbad: 0 = 1.
-		    { claim Ht0: (0,0) 0 = 0.
-		      { exact (tuple_2_0_eq 0 0). }
-		      rewrite Heq at 1 in Ht0.
-		      claim Ht01: (1,0) 0 = 1.
-		      { exact (tuple_2_0_eq 1 0). }
-		      rewrite Ht01 in Ht0.
-		      exact Ht0. }
+		    { prove 0 = 1.
+		      rewrite <- (tuple_2_0_eq 0 0) at 1.
+		      rewrite Heq at 1.
+		      exact (tuple_2_0_eq 1 0). }
 		    exact (neq_0_1 Hbad).
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
