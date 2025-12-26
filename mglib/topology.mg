@@ -25104,7 +25104,165 @@ Qed.
 Theorem ordered_square_not_subspace_dictionary :
   ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
 prove ordered_square_topology <> subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
-admit.
+assume Heq: ordered_square_topology =
+  subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
+prove False.
+set U := ordered_square_open_strip.
+
+(** U is open in the dictionary order subspace topology **)
+claim HUdic: U :e subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
+{ claim HUsub: U c= ordered_square.
+  { let p. assume Hp: p :e U.
+    exact (SepE1 ordered_square
+                 (fun p0:set => exists y:set, p0 = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y))
+                 p Hp). }
+  claim HUpow: U :e Power ordered_square.
+  { exact (PowerI ordered_square U HUsub). }
+  set a := (eps_ 1, eps_ 1).
+  set b := (eps_ 1, 2).
+  set V := {p :e setprod R R | order_rel (setprod R R) a p /\ order_rel (setprod R R) p b}.
+
+  claim HVopen: V :e R2_dictionary_order_topology.
+  { claim HdefR2: R2_dictionary_order_topology = order_topology (setprod R R).
+    { reflexivity. }
+    rewrite HdefR2.
+    claim HdefOT: order_topology (setprod R R) =
+      generated_topology (setprod R R) (order_topology_basis (setprod R R)).
+    { reflexivity. }
+    rewrite HdefOT.
+    set X := setprod R R.
+    set B := order_topology_basis X.
+    claim HBasis: basis_on X B.
+    { exact (order_topology_basis_is_basis X). }
+    claim HVinB: V :e B.
+    { set Bint := {I :e Power X | exists a0 :e X, exists b0 :e X,
+                    I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}.
+      set Blow := {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}.
+      set Bup := {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}.
+      claim HdefB: B = (Bint :\/: Blow :\/: Bup).
+      { reflexivity. }
+      rewrite HdefB.
+      claim HVsubX: V c= X.
+      { let p. assume Hp: p :e V.
+        exact (SepE1 X (fun p0:set => order_rel X a p0 /\ order_rel X p0 b) p Hp). }
+      claim HVpow: V :e Power X.
+      { exact (PowerI X V HVsubX). }
+      claim HaX: a :e X.
+      { exact (tuple_2_setprod R R (eps_ 1) eps_1_in_R (eps_ 1) eps_1_in_R). }
+      claim HbX: b :e X.
+      { exact (tuple_2_setprod R R (eps_ 1) eps_1_in_R 2 two_in_R). }
+      claim HVpred: exists a0 :e X, exists b0 :e X,
+        V = {x :e X | order_rel X a0 x /\ order_rel X x b0}.
+      { witness a.
+        apply andI.
+        - exact HaX.
+        - witness b.
+          apply andI.
+          + exact HbX.
+          + reflexivity. }
+      claim HVinBint: V :e Bint.
+      { exact (SepI (Power X)
+                   (fun I0:set => exists a0 :e X, exists b0 :e X,
+                        I0 = {x :e X | order_rel X a0 x /\ order_rel X x b0})
+                   V HVpow HVpred). }
+      claim HVinAB: V :e (Bint :\/: Blow).
+      { exact (binunionI1 Bint Blow V HVinBint). }
+      exact (binunionI1 (Bint :\/: Blow) Bup V HVinAB). }
+    exact (basis_in_generated X B V HBasis HVinB). }
+
+  claim HeqU: U = V :/\: ordered_square.
+  { apply set_ext.
+    - let p. assume HpU: p :e U.
+      prove p :e V :/\: ordered_square.
+      claim HpSq: p :e ordered_square.
+      { exact (HUsub p HpU). }
+      claim Hexy: exists y:set, p = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y).
+      { exact (SepE2 ordered_square
+                   (fun p0:set => exists y:set, p0 = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y))
+                   p HpU). }
+      apply Hexy.
+      let y. assume Hyprop.
+      claim Hpair: (p = (eps_ 1,y) /\ Rlt (eps_ 1) y).
+      { exact (andEL (p = (eps_ 1,y) /\ Rlt (eps_ 1) y) (~(Rlt 1 y)) Hyprop). }
+      claim Hpy: p = (eps_ 1,y).
+      { exact (andEL (p = (eps_ 1,y)) (Rlt (eps_ 1) y) Hpair). }
+      claim Hey: Rlt (eps_ 1) y.
+      { exact (andER (p = (eps_ 1,y)) (Rlt (eps_ 1) y) Hpair). }
+      claim Hnlt1y: ~(Rlt 1 y).
+      { exact (andER (p = (eps_ 1,y) /\ Rlt (eps_ 1) y) (~(Rlt 1 y)) Hyprop). }
+      claim HyR: y :e R.
+      { exact (RltE_right (eps_ 1) y Hey). }
+      claim Hylt2: Rlt y 2.
+      { (** y <= 1 and 1 < 2 gives y < 2 **)
+        claim HyS: SNo y.
+        { exact (real_SNo y HyR). }
+        claim H1S: SNo 1.
+        { exact (real_SNo 1 real_1). }
+        claim H2S: SNo 2.
+        { exact (real_SNo 2 two_in_R). }
+        claim HnltS: ~(1 < y).
+        { assume Hlt: 1 < y.
+          claim H1y: Rlt 1 y.
+          { exact (RltI 1 y real_1 HyR Hlt). }
+          exact (Hnlt1y H1y). }
+        apply (SNoLt_trichotomy_or_impred y 1 HyS H1S (Rlt y 2)).
+        - assume Hylt1S: y < 1.
+          claim Hylt2S: y < 2.
+          { exact (SNoLt_tra y 1 2 HyS H1S H2S Hylt1S SNoLt_1_2). }
+          exact (RltI y 2 HyR two_in_R Hylt2S).
+        - assume Hyeq: y = 1.
+          rewrite Hyeq.
+          exact (RltI 1 2 real_1 two_in_R SNoLt_1_2).
+        - assume H1ltyS: 1 < y.
+          apply FalseE.
+          exact (HnltS H1ltyS). }
+      claim HpV: p :e V.
+      { rewrite Hpy.
+        claim HpRR: (eps_ 1,y) :e setprod R R.
+        { exact (tuple_2_setprod R R (eps_ 1) eps_1_in_R y HyR). }
+        claim Hord1: order_rel (setprod R R) a (eps_ 1,y).
+        { apply (order_rel_setprod_R_R_intro (eps_ 1) (eps_ 1) (eps_ 1) y).
+          apply orIR.
+          apply andI.
+          - reflexivity.
+          - exact Hey. }
+        claim Hord2: order_rel (setprod R R) (eps_ 1,y) b.
+        { apply (order_rel_setprod_R_R_intro (eps_ 1) y (eps_ 1) 2).
+          apply orIR.
+          apply andI.
+          - reflexivity.
+          - exact Hylt2. }
+        claim Hpconj: order_rel (setprod R R) a (eps_ 1,y) /\ order_rel (setprod R R) (eps_ 1,y) b.
+        { exact (andI (order_rel (setprod R R) a (eps_ 1,y))
+                      (order_rel (setprod R R) (eps_ 1,y) b)
+                      Hord1 Hord2). }
+        exact (SepI (setprod R R)
+                    (fun p0:set => order_rel (setprod R R) a p0 /\ order_rel (setprod R R) p0 b)
+                    (eps_ 1,y) HpRR Hpconj). }
+      apply binintersectI.
+      - exact HpV.
+      - exact HpSq.
+    - let p. assume HpCap: p :e V :/\: ordered_square.
+      prove p :e U.
+      admit. }
+
+  claim Hex: exists W :e R2_dictionary_order_topology, U = W :/\: ordered_square.
+  { witness V.
+    apply andI.
+    - exact HVopen.
+    - exact HeqU. }
+  exact (SepI (Power ordered_square)
+              (fun U0:set => exists W :e R2_dictionary_order_topology, U0 = W :/\: ordered_square)
+              U HUpow Hex). }
+
+claim HUord: U :e ordered_square_topology.
+{ rewrite Heq.
+  exact HUdic. }
+
+claim HUnord: ~(U :e ordered_square_topology).
+{ admit. }
+
+exact (HUnord HUord).
 Qed.
 
 (** from §16 Theorem 16.4: convex subspaces share the order topology **) 
