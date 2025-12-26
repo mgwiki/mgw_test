@@ -10426,6 +10426,172 @@ rewrite (abs_SNo_sqr_eq dy HdyS).
 exact (dy2_le_distance_R2_sqr p c Hp Hc).
 Qed.
 
+(** Helper: absolute value is nonnegative **)
+(** LATEX VERSION: For real numbers, abs(x) is always nonnegative. **)
+Theorem abs_SNo_nonneg : forall x:set,
+  SNo x ->
+  0 <= abs_SNo x.
+let x.
+assume HxS: SNo x.
+apply (xm (0 <= x)).
+- assume H0le: 0 <= x.
+  rewrite (nonneg_abs_SNo x H0le).
+  exact H0le.
+- assume Hn0le: ~(0 <= x).
+  rewrite (not_nonneg_abs_SNo x Hn0le).
+  (** show x < 0 by trichotomy, since neither 0<=x nor x=0 can hold **)
+  claim Hxlt0: x < 0.
+  { apply (SNoLt_trichotomy_or_impred x 0 HxS SNo_0 (x < 0)).
+    - assume H: x < 0.
+      exact H.
+    - assume Hx0: x = 0.
+      claim H0le0: 0 <= x.
+      { rewrite Hx0.
+        exact (SNoLe_ref 0). }
+      prove x < 0.
+      exact (FalseE (Hn0le H0le0) (x < 0)).
+    - assume H0ltx: 0 < x.
+      claim H0lex: 0 <= x.
+      { exact (SNoLtLe 0 x H0ltx). }
+      prove x < 0.
+      exact (FalseE (Hn0le H0lex) (x < 0)). }
+  claim Hxle0: x <= 0.
+  { exact (SNoLtLe x 0 Hxlt0). }
+  claim Hneg0le: minus_SNo 0 <= minus_SNo x.
+  { exact (minus_SNo_Le_contra x 0 HxS SNo_0 Hxle0). }
+  rewrite <- minus_SNo_0 at 1.
+  exact Hneg0le.
+Qed.
+
+(** Helper: strict inequality implies strict inequality of squares for nonnegative numbers **)
+(** LATEX VERSION: If 0<=x<y then x squared is less than y squared. **)
+Theorem SNo_sqr_lt_of_lt_nonneg : forall x y:set,
+  SNo x ->
+  SNo y ->
+  0 <= x ->
+  x < y ->
+  mul_SNo x x < mul_SNo y y.
+let x y.
+assume HxS: SNo x.
+assume HyS: SNo y.
+assume H0lex: 0 <= x.
+assume Hxlt: x < y.
+claim H0lt_or_eq: 0 < x \/ 0 = x.
+{ claim H0x: 0 < x \/ 0 = x.
+  { exact (SNoLeE 0 x SNo_0 HxS H0lex). }
+  exact H0x. }
+apply H0lt_or_eq.
+- assume H0ltx: 0 < x.
+  claim H0lty: 0 < y.
+  { exact (SNoLt_tra 0 x y SNo_0 HxS HyS H0ltx Hxlt). }
+  exact (pos_mul_SNo_Lt2 x x y y HxS HxS HyS HyS H0ltx H0ltx Hxlt Hxlt).
+- assume H0eqx: 0 = x.
+  claim H0lt_y: 0 < y.
+  { rewrite H0eqx at 1.
+    exact Hxlt. }
+  rewrite <- H0eqx.
+  rewrite (mul_SNo_zeroL 0 SNo_0).
+  exact (mul_SNo_pos_pos y y HyS HyS H0lt_y H0lt_y).
+Qed.
+
+(** Helper: coordinate absolute difference bounded by distance **)
+(** LATEX VERSION: In Euclidean plane, abs(xp-xc) is at most d(p,c). **)
+Theorem abs_dx_le_distance_R2 : forall p c:set,
+  p :e EuclidPlane ->
+  c :e EuclidPlane ->
+  abs_SNo (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c))) <= distance_R2 p c.
+let p c.
+assume Hp: p :e EuclidPlane.
+assume Hc: c :e EuclidPlane.
+set dx := add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c)).
+set a := abs_SNo dx.
+set d := distance_R2 p c.
+claim Hp0R : R2_xcoord p :e R.
+{ exact (EuclidPlane_xcoord_in_R p Hp). }
+claim Hc0R : R2_xcoord c :e R.
+{ exact (EuclidPlane_xcoord_in_R c Hc). }
+claim Hmx : minus_SNo (R2_xcoord c) :e R.
+{ exact (real_minus_SNo (R2_xcoord c) Hc0R). }
+claim HdxR : dx :e R.
+{ exact (real_add_SNo (R2_xcoord p) Hp0R (minus_SNo (R2_xcoord c)) Hmx). }
+claim HdxS : SNo dx.
+{ exact (real_SNo dx HdxR). }
+claim HaS : SNo a.
+{ exact (SNo_abs_SNo dx HdxS). }
+claim Ha0le : 0 <= a.
+{ exact (abs_SNo_nonneg dx HdxS). }
+claim HdR : d :e R.
+{ exact (distance_R2_in_R p c Hp Hc). }
+claim HdS : SNo d.
+{ exact (real_SNo d HdR). }
+claim Hd0le : 0 <= d.
+{ exact (distance_R2_nonneg p c Hp Hc). }
+claim Hsqle : mul_SNo a a <= mul_SNo d d.
+{ exact (abs_dx2_le_distance_R2_sqr p c Hp Hc). }
+apply (SNoLtLe_or d a HdS HaS).
+- assume Hlt: d < a.
+  claim Hsqrlt : mul_SNo d d < mul_SNo a a.
+  { exact (SNo_sqr_lt_of_lt_nonneg d a HdS HaS Hd0le Hlt). }
+  claim Hd2S: SNo (mul_SNo d d).
+  { exact (SNo_mul_SNo d d HdS HdS). }
+  claim Ha2S: SNo (mul_SNo a a).
+  { exact (SNo_mul_SNo a a HaS HaS). }
+  claim Hbad: mul_SNo d d < mul_SNo d d.
+  { exact (SNoLtLe_tra (mul_SNo d d) (mul_SNo a a) (mul_SNo d d) Hd2S Ha2S Hd2S Hsqrlt Hsqle). }
+  exact (FalseE ((SNoLt_irref (mul_SNo d d)) Hbad) (a <= d)).
+- assume Hle: a <= d.
+  exact Hle.
+Qed.
+
+(** Helper: coordinate absolute difference bounded by distance **)
+(** LATEX VERSION: In Euclidean plane, abs(yp-yc) is at most d(p,c). **)
+Theorem abs_dy_le_distance_R2 : forall p c:set,
+  p :e EuclidPlane ->
+  c :e EuclidPlane ->
+  abs_SNo (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord c))) <= distance_R2 p c.
+let p c.
+assume Hp: p :e EuclidPlane.
+assume Hc: c :e EuclidPlane.
+set dy := add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord c)).
+set a := abs_SNo dy.
+set d := distance_R2 p c.
+claim Hp1R : R2_ycoord p :e R.
+{ exact (EuclidPlane_ycoord_in_R p Hp). }
+claim Hc1R : R2_ycoord c :e R.
+{ exact (EuclidPlane_ycoord_in_R c Hc). }
+claim Hmy : minus_SNo (R2_ycoord c) :e R.
+{ exact (real_minus_SNo (R2_ycoord c) Hc1R). }
+claim HdyR : dy :e R.
+{ exact (real_add_SNo (R2_ycoord p) Hp1R (minus_SNo (R2_ycoord c)) Hmy). }
+claim HdyS : SNo dy.
+{ exact (real_SNo dy HdyR). }
+claim HaS : SNo a.
+{ exact (SNo_abs_SNo dy HdyS). }
+claim Ha0le : 0 <= a.
+{ exact (abs_SNo_nonneg dy HdyS). }
+claim HdR : d :e R.
+{ exact (distance_R2_in_R p c Hp Hc). }
+claim HdS : SNo d.
+{ exact (real_SNo d HdR). }
+claim Hd0le : 0 <= d.
+{ exact (distance_R2_nonneg p c Hp Hc). }
+claim Hsqle : mul_SNo a a <= mul_SNo d d.
+{ exact (abs_dy2_le_distance_R2_sqr p c Hp Hc). }
+apply (SNoLtLe_or d a HdS HaS).
+- assume Hlt: d < a.
+  claim Hsqrlt : mul_SNo d d < mul_SNo a a.
+  { exact (SNo_sqr_lt_of_lt_nonneg d a HdS HaS Hd0le Hlt). }
+  claim Hd2S: SNo (mul_SNo d d).
+  { exact (SNo_mul_SNo d d HdS HdS). }
+  claim Ha2S: SNo (mul_SNo a a).
+  { exact (SNo_mul_SNo a a HaS HaS). }
+  claim Hbad: mul_SNo d d < mul_SNo d d.
+  { exact (SNoLtLe_tra (mul_SNo d d) (mul_SNo a a) (mul_SNo d d) Hd2S Ha2S Hd2S Hsqrlt Hsqle). }
+  exact (FalseE ((SNoLt_irref (mul_SNo d d)) Hbad) (a <= d)).
+- assume Hle: a <= d.
+  exact Hle.
+Qed.
+
 (** from §13 Example 4: distance from a point to itself is 0 **)
 (** LATEX VERSION: d(p,p) = 0. **)
 Theorem distance_R2_refl_0 : forall p:set, p :e EuclidPlane -> distance_R2 p p = 0.
