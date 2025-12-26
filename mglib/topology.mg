@@ -20636,6 +20636,9 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    assume Hcore.
 		    apply Hcore.
 		    assume Hpre Hlex.
+		    (** probe: does Hlex already contain the lex/dictionary-order disjunction? **)
+		    claim Hdisj_try: i :e j \/ (i = j /\ m :e n).
+		    { exact Hlex. }
 		    apply Hpre.
 		    assume Hpre2 HbEq.
 		    apply Hpre2.
