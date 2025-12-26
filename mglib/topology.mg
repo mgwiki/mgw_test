@@ -53399,10 +53399,7 @@ Qed.
 
 (** from exercises after §29: cofinal subsets of directed sets are directed **)
 (** LATEX VERSION: Cofinal subset of a directed set is directed. **)
-(** FIXED: Cofinality condition was trivially true.
-    Was: exists k, (k :e K /\ i :e K) \/ i :e J (trivially true since i :e J assumed)
-    Now: exists k, k :e K /\ (i :e k \/ i = k) (k in K is upper bound of i)
-    Cofinality means every element of J has an upper bound in K. **)
+(** FIXED: Cofinality hypothesis must say: forall i:e J, exists k:e K with i<=k (i :e k \/ i = k); old version was trivially true from i:e J. **)
 Theorem cofinal_subset_directed : forall J K:set,
   directed_set J -> K c= J ->
   (forall i:set, i :e J -> exists k:set, k :e K /\ (i :e k \/ i = k)) ->
@@ -53783,17 +53780,8 @@ Qed.
 
 (** from exercises after §29: accumulation point of a net **)
 (** LATEX VERSION: An accumulation point of a net means every neighborhood contains infinitely many (or cofinal) net points; placeholder formalization. **)
-(** FIXED: Multiple critical errors:
-    1. Missing topology parameter Tx (was 3-ary, now 4-ary)
-    2. Was quantifying over all sets U (x :e U), not just open sets (U :e Tx -> x :e U)
-    3. Was saying "exists one i", not "cofinally many i" (now: forall j0, exists j ≥ j0)
-    Was: fun X net x => ... forall U:set, x :e U -> exists i:set, ...
-    Now: fun X Tx net x => ... forall U:set, U :e Tx -> x :e U ->
-                                  forall j0:set, j0 :e J -> exists j:set, j :e J /\ (j0 :e j \/ j0 = j) /\ ...
-    This captures "cofinally many net points in every neighborhood".
-    Also: the net is treated as a function into the ambient space X (no extra codomain parameter). **)
-(** SUSPICIOUS DEFINITION: The order on directed sets is represented using membership `j0 :e j \/ j0 = j`;
-    this is convenient for ordinal index sets, but can make later subnet arguments need witness alignment lemmas. **)
+(** FIXED: accumulation_point_of_net now includes Tx, quantifies only over U:e Tx with x:e U, and uses cofinality forall j0:e J, exists j>=j0 with net(j):e U; net is a function into X. **) 
+(** SUSPICIOUS DEFINITION: Index comparison uses membership-based <= (j0 :e j \/ j0 = j), which is tailored to ordinal indices and may require alignment lemmas later. **) 
 Definition accumulation_point_of_net : set -> set -> set -> set -> prop := fun X Tx net x =>
   exists J:set, topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X /\
     forall U:set, U :e Tx -> x :e U ->
@@ -53802,14 +53790,7 @@ Definition accumulation_point_of_net : set -> set -> set -> set -> prop := fun X
 
 (** from exercises after §29: net convergence **)
 (** LATEX VERSION: A net converges to x if eventually in every neighborhood U of x. **)
-(** FIXED: Definition was wrong - said "exists i such that net(i) ∈ U" instead of
-    "eventually all net(i) are in U".
-    Was: forall U:set, U :e Tx -> x :e U -> exists i:set, i :e J /\ apply_fun net i :e U
-         (for every open U containing x, there exists ONE point net(i) in U)
-    Now: forall U:set, U :e Tx -> x :e U ->
-           exists i0:set, i0 :e J /\ forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U
-         (for every open U containing x, eventually all net(i) for i ≥ i0 are in U)
-    The ordering i0 ≤ i is von Neumann: (i0 :e i \/ i0 = i). **)
+(** FIXED: net_converges uses eventuality: forall U:e Tx with x:e U, exists i0:e J such that forall i:e J with i0<=i (i0 :e i \/ i0 = i), we have net(i):e U; old version only required one index in each neighborhood. **) 
 (** SUSPICIOUS DEFINITION: As above, this uses membership-based comparison on the index set; it is adequate for ordinal-indexed nets but may require extra axioms for arbitrary directed sets. **)
 Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
   exists J:set, topology_on X Tx /\ directed_set J /\ function_on net J X /\ x :e X /\
