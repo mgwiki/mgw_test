@@ -45620,14 +45620,74 @@ Definition path_component_of : set -> set -> set -> set := fun X Tx x =>
 Theorem path_component_symmetric_axiom : forall X Tx x y:set,
   topology_on X Tx -> x :e X -> y :e X ->
   y :e path_component_of X Tx x -> x :e path_component_of X Tx y.
-admit. (** FAIL **)
+let X Tx x y.
+assume HTx: topology_on X Tx.
+assume HxX: x :e X.
+assume HyX: y :e X.
+assume HyPc: y :e path_component_of X Tx x.
+prove x :e path_component_of X Tx y.
+prove x :e {z :e X | exists p:set,
+     function_on p unit_interval X /\
+     continuous_map unit_interval unit_interval_topology X Tx p /\
+     apply_fun p 0 = y /\ apply_fun p 1 = z}.
+apply SepI.
+- exact HxX.
+- (** extract a path p from x to y, then reverse it **)
+  claim Hex: exists p:set,
+     function_on p unit_interval X /\
+     continuous_map unit_interval unit_interval_topology X Tx p /\
+     apply_fun p 0 = x /\ apply_fun p 1 = y.
+  { exact (SepE2 X (fun y0:set => exists p:set,
+       function_on p unit_interval X /\
+       continuous_map unit_interval unit_interval_topology X Tx p /\
+       apply_fun p 0 = x /\ apply_fun p 1 = y0) y HyPc). }
+  apply Hex.
+  let p. assume Hp.
+  (** reverse p on [0,1] to obtain a path from y to x **)
+  admit.
 Qed.
  
 Theorem path_component_transitive_axiom : forall X Tx x y z:set,
   topology_on X Tx -> x :e X -> y :e X -> z :e X ->
   y :e path_component_of X Tx x -> z :e path_component_of X Tx y ->
   z :e path_component_of X Tx x.
-admit. (** FAIL **)
+let X Tx x y z.
+assume HTx: topology_on X Tx.
+assume HxX: x :e X.
+assume HyX: y :e X.
+assume HzX: z :e X.
+assume HyPc: y :e path_component_of X Tx x.
+assume HzPc: z :e path_component_of X Tx y.
+prove z :e path_component_of X Tx x.
+prove z :e {y0 :e X | exists p:set,
+     function_on p unit_interval X /\
+     continuous_map unit_interval unit_interval_topology X Tx p /\
+     apply_fun p 0 = x /\ apply_fun p 1 = y0}.
+apply SepI.
+- exact HzX.
+- (** extract p: x→y and q: y→z, then concatenate **)
+  claim Hex1: exists p:set,
+     function_on p unit_interval X /\
+     continuous_map unit_interval unit_interval_topology X Tx p /\
+     apply_fun p 0 = x /\ apply_fun p 1 = y.
+  { exact (SepE2 X (fun y0:set => exists p:set,
+       function_on p unit_interval X /\
+       continuous_map unit_interval unit_interval_topology X Tx p /\
+       apply_fun p 0 = x /\ apply_fun p 1 = y0) y HyPc). }
+  claim Hex2: exists q:set,
+     function_on q unit_interval X /\
+     continuous_map unit_interval unit_interval_topology X Tx q /\
+     apply_fun q 0 = y /\ apply_fun q 1 = z.
+  { exact (SepE2 X (fun y0:set => exists p:set,
+       function_on p unit_interval X /\
+       continuous_map unit_interval unit_interval_topology X Tx p /\
+       apply_fun p 0 = y /\ apply_fun p 1 = y0) z HzPc). }
+  apply Hex1.
+  let p. assume Hp.
+  apply Hex2.
+  let q. assume Hq.
+  (** concatenate p and q to obtain a path from x to z **)
+  admit.
 Qed.
 
 (** Helper: a path connected subspace lies inside a single path component **)
