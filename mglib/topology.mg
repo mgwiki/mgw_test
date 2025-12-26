@@ -58479,9 +58479,6 @@ Definition Tychonoff_space : set -> set -> prop := fun X Tx =>
 
 (** from §33 Theorem 33.2: subspaces/products of completely regular spaces **) 
 (** LATEX VERSION: Subspaces and products of completely regular spaces remain completely regular. **)
-Axiom completely_regular_products_axiom : forall I Xi:set,
-  completely_regular_spaces_family I Xi ->
-  completely_regular_space (product_space I Xi) (product_topology_full I Xi).
 Theorem completely_regular_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall Y:set, Y c= X -> completely_regular_space X Tx -> completely_regular_space Y (subspace_topology X Tx Y)) /\
@@ -58578,20 +58575,18 @@ apply andI.
       exact (HfC z HzC).
 - (** products **)
   let I Xi. assume Hfam: completely_regular_spaces_family I Xi.
-  exact (completely_regular_products_axiom I Xi Hfam).
+  admit.
 Qed.
 
 (** from §33 Example 1: products giving completely regular but not normal spaces **) 
 (** LATEX VERSION: Sorgenfrey plane is completely regular but not normal. **)
-Axiom Sorgenfrey_plane_completely_regular_axiom :
-  completely_regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 Theorem Sorgenfrey_plane_completely_regular_not_normal :
   completely_regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove completely_regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 apply andI.
-- exact Sorgenfrey_plane_completely_regular_axiom.
+- admit.
 - claim Hnot: ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
   { exact (andER (regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology)
                  (~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology)
@@ -58602,16 +58597,13 @@ Qed.
 (** from §33 Example 1 cont.: SOmega x SbarOmega completely regular not normal **)
 (** LATEX VERSION: Another example of completely regular but non-normal product. **)
 (** FIXED: Use product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology on S_Omega × Sbar_Omega (not a mismatched topology on a function space). **) 
-Axiom SOmega_SbarOmega_completely_regular_axiom :
-  completely_regular_space (setprod S_Omega Sbar_Omega)
-    (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 Theorem SOmega_SbarOmega_completely_regular_not_normal :
   completely_regular_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology) /\
   ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 prove completely_regular_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology) /\
   ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 apply andI.
-- exact SOmega_SbarOmega_completely_regular_axiom.
+- admit.
 - claim Hnot:
     ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
   { exact (andER (normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology)
@@ -58706,8 +58698,6 @@ Definition partition_of_unity_dominated : set -> set -> set -> prop := fun X Tx 
 
 (** from §36 Theorem 36.1: existence of finite partition of unity on normal space **) 
 (** LATEX VERSION: On a normal space, every finite open cover has a partition of unity subordinate to it. **)
-Axiom finite_partition_of_unity_exists_axiom : forall X Tx U:set,
-  normal_space X Tx -> finite U -> open_cover X Tx U -> exists P:set, partition_of_unity_dominated X Tx U.
 Theorem finite_partition_of_unity_exists : forall X Tx U:set,
   normal_space X Tx -> finite U -> open_cover X Tx U -> exists P:set, partition_of_unity_dominated X Tx U.
 let X Tx U.
@@ -58715,15 +58705,11 @@ assume Hnorm: normal_space X Tx.
 assume Hfin: finite U.
 assume Hcover: open_cover X Tx U.
 prove exists P:set, partition_of_unity_dominated X Tx U.
-exact (finite_partition_of_unity_exists_axiom X Tx U Hnorm Hfin Hcover).
+admit.
 Qed.
 
 (** from §36 Theorem: compact manifold embeds in Euclidean space **) 
 (** LATEX VERSION: Any compact manifold embeds in some Euclidean space. **)
-Axiom compact_manifold_embeds_in_Euclidean_axiom : forall X Tx:set,
-  m_manifold X Tx -> compact_space X Tx ->
-  exists N:set, exists e:set,
-    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 Theorem compact_manifold_embeds_in_Euclidean : forall X Tx:set,
   m_manifold X Tx -> compact_space X Tx -> exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
@@ -58732,7 +58718,7 @@ assume Hman: m_manifold X Tx.
 assume Hcomp: compact_space X Tx.
 prove exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-exact (compact_manifold_embeds_in_Euclidean_axiom X Tx Hman Hcomp).
+admit.
 Qed.
 
 (** from §37 Theorem: Tychonoff theorem **)
