@@ -38577,6 +38577,48 @@ claim HdivR: div_SNo c a :e R.
 exact (tuple_2_setprod R R (div_SNo c a) HdivR y HyR).
 Qed.
 
+(** Helper: projection1 is continuous for the product topology **)
+(** LATEX VERSION: Coordinate projections are continuous for the product topology. **)
+Theorem projection1_continuous_in_product : forall X Tx Y Ty:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection1 X Y).
+let X Tx Y Ty.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+prove continuous_map (setprod X Y) (product_topology X Tx Y Ty) X Tx (projection1 X Y).
+prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\ topology_on X Tx /\
+  function_on (projection1 X Y) (setprod X Y) X /\
+  forall U:set, U :e Tx -> preimage_of (setprod X Y) (projection1 X Y) U :e product_topology X Tx Y Ty.
+apply andI.
+- apply andI.
+  + apply andI.
+    * exact (product_topology_is_topology X Tx Y Ty HTx HTy).
+    * exact HTx.
+  + (** function_on **)
+    let p. assume Hp: p :e setprod X Y.
+    prove apply_fun (projection1 X Y) p :e X.
+    claim Happ: apply_fun (projection1 X Y) p = p 0.
+    { exact (projection1_apply X Y p Hp). }
+    rewrite Happ.
+    exact (ap0_Sigma X (fun _ : set => Y) p Hp).
+- let U. assume HU: U :e Tx.
+  prove preimage_of (setprod X Y) (projection1 X Y) U :e product_topology X Tx Y Ty.
+  claim HUsub: U c= X.
+  { exact (topology_elem_subset X Tx U HTx HU). }
+  claim HpreEq: preimage_of (setprod X Y) (projection1 X Y) U = rectangle_set U Y.
+  { exact (preimage_projection1_rectangle X Y U HUsub). }
+  rewrite HpreEq.
+  claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+  { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+  claim HYTy: Y :e Ty.
+  { exact (topology_has_X Y Ty HTy). }
+  claim HRsub: rectangle_set U Y :e product_subbasis X Tx Y Ty.
+  { claim HRfam: rectangle_set U Y :e {rectangle_set U V0|V0 :e Ty}.
+    { exact (ReplI Ty (fun V0:set => rectangle_set U V0) Y HYTy). }
+    exact (famunionI Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) U (rectangle_set U Y) HU HRfam). }
+  exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis (rectangle_set U Y) HRsub).
+Qed.
+
 (** Helper: projection2 is continuous for the product topology **)
 (** LATEX VERSION: Coordinate projections are continuous for the product topology. **)
 Theorem projection2_continuous_in_product : forall X Tx Y Ty:set,
@@ -39388,9 +39430,31 @@ apply andI.
 			            exact (projection2_after_affine_line_R2_param_by_y a b c y HaR HcR HyR).
 			        + let p. assume Hp: p :e setprod {x0} R.
 			          exact (affine_line_R2_param_by_y_after_projection2_on_slice a b c p HaR HcR Hp).
-	    * assume Hbne: b <> 0.
-	      witness (affine_line_R2_param_by_x a b c).
-	      admit.
+		    * assume Hbne: b <> 0.
+		      witness (affine_line_R2_param_by_x a b c).
+		      prove continuous_map R R_lower_limit_topology (affine_line_R2 a b c)
+		        (subspace_topology (setprod R R)
+		           (product_topology R R_lower_limit_topology R R_standard_topology)
+		           (affine_line_R2 a b c))
+		        (affine_line_R2_param_by_x a b c)
+		      /\ exists g:set,
+		           continuous_map (affine_line_R2 a b c)
+		             (subspace_topology (setprod R R)
+		               (product_topology R R_lower_limit_topology R R_standard_topology)
+		               (affine_line_R2 a b c))
+		             R R_lower_limit_topology g
+		           /\ (forall x:set, x :e R -> apply_fun g (apply_fun (affine_line_R2_param_by_x a b c) x) = x)
+		           /\ (forall y:set, y :e affine_line_R2 a b c -> apply_fun (affine_line_R2_param_by_x a b c) (apply_fun g y) = y).
+		      apply andI.
+		      - admit.
+		      - witness (projection1 R R).
+		        apply andI.
+			        + apply andI.
+			          * admit.
+			          * let x. assume HxR: x :e R.
+			            exact (projection1_after_affine_line_R2_param_by_x a b c x HaR HbR HcR HxR).
+		        + let p. assume Hp: p :e affine_line_R2 a b c.
+		          exact (affine_line_R2_param_by_x_after_projection1_on_line a b c p HaR HbR HcR Hbne Hp).
   + assume Hneg: b <> 0 /\ same_sign_nonzero_R a b.
     witness (affine_line_R2_param_by_x a b c).
     admit.
