@@ -20579,6 +20579,10 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    assume Hpre2 HbEq.
 		    apply Hpre2.
 		    assume Hpre3 H10Eq.
+		    apply Hpre3.
+		    assume Hpre4 HnOmega.
+		    apply Hpre4.
+		    assume Hpre5 Hj2.
 		    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
