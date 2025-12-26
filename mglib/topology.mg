@@ -24620,6 +24620,17 @@ rewrite <- add_SNo_1_1_2.
 exact HsumR.
 Qed.
 
+(** helper: unit interval is a proper subset of R **)
+(** LATEX VERSION: [0,1] is not all of ℝ. **)
+Theorem unit_interval_neq_R : unit_interval <> R.
+assume Heq: unit_interval = R.
+prove False.
+claim H2I: 2 :e unit_interval.
+{ rewrite Heq.
+  exact two_in_R. }
+exact (two_not_in_unit_interval H2I).
+Qed.
+
 (** helper: standard topology on the unit interval as a subspace of R **)
 (** LATEX VERSION: Equip [0,1] with the subspace topology inherited from the standard topology on R. **)
 Definition unit_interval_topology : set :=
