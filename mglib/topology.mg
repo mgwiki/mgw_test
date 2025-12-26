@@ -26131,6 +26131,23 @@ Qed.
 
 (** helper for §16 Exercise 7: convexity of the sqrt(2) cut in Q **)
 (** LATEX VERSION: The set {q∈Q | q^2<2} is convex in Q. **)
+(** helper: if x lies strictly between two cut points, then x is in the cut **)
+Theorem Q_sqrt2_cut_between_square : forall a b x:set,
+  a :e Q_sqrt2_cut ->
+  b :e Q_sqrt2_cut ->
+  x :e rational_numbers ->
+  Rlt a x ->
+  Rlt x b ->
+  mul_SNo x x < 2.
+let a b x.
+assume Ha: a :e Q_sqrt2_cut.
+assume Hb: b :e Q_sqrt2_cut.
+assume HxQ: x :e rational_numbers.
+assume Hax: Rlt a x.
+assume Hxb: Rlt x b.
+admit.
+Qed.
+
 Theorem Q_sqrt2_cut_convex : convex_in rational_numbers Q_sqrt2_cut.
 prove convex_in rational_numbers Q_sqrt2_cut.
 (** convex_in X Y = Y c= X /\ interval-closure property **)
@@ -26172,7 +26189,7 @@ apply andI.
   claim Hxblt: Rlt x b.
   { exact (order_rel_Q_implies_Rlt x b Hxb). }
   claim Hxx: mul_SNo x x < 2.
-  { admit. }
+  { exact (Q_sqrt2_cut_between_square a b x Ha Hb HxQ Haxlt Hxblt). }
   exact (SepI rational_numbers (fun q:set => mul_SNo q q < 2) x HxQ Hxx).
 Qed.
 
