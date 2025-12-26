@@ -9634,16 +9634,14 @@ apply set_ext.
               HUprop).
 Qed.
 
-(** Misleading "OrderedPair" definition eliminated. Cartesian products use
-    setprod (defined at line 2717). Individual ordered pairs use tuple notation (x,y). **)
+(** Misleading "OrderedPair" definition eliminated. Cartesian products use setprod (defined at line 2717). Individual ordered pairs use tuple notation (x,y). **)
 
 (** ambient real line **) 
 Definition R : set := real.
 
 (** rational numbers as subset of reals **)
 (** LATEX VERSION: The rationals ℚ as a subset of ℝ. **)
-(** FIXED: Now uses proper rational definition from line 6202.
-    rational = {x :e real | exists m :e int, exists n :e omega\{0}, x = m/n} **)
+(** FIXED: Now uses proper rational definition from line 6202. rational = {x :e real | exists m :e int, exists n :e omega\\{0}, x = m/n}. **)
 Definition Q : set := rational.
 
 (** ordering relation on the reals **) 
@@ -9885,8 +9883,7 @@ apply andI.
   reflexivity.
 Qed.
 
-(** Euclidean distance in ℝ²: sqrt((x1-x2)^2 + (y1-y2)^2),
-    implemented using pre-topology surreal/real operations. **)
+(** Euclidean distance in ℝ²: sqrt((x1-x2)^2 + (y1-y2)^2), implemented using pre-topology surreal/real operations. **)
 Definition distance_R2 : set -> set -> set := fun p c =>
   sqrt_SNo_nonneg
     (add_SNo
