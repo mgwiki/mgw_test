@@ -13817,7 +13817,8 @@ Qed.
 (** from §13 Exercise 6: incomparability of two real line topologies **)
 (** LATEX VERSION: Exercise 6: Compare the standard, lower limit, and K-topologies on ℝ; standard vs lower-limit and standard vs K are incomparable. **)
 (** FIXED: Now uses proper rational definition (same as Q); rational = {x :e real | exists m :e int, exists n :e omega\\{0}, x = m/n} from line 6202. **)
-Definition rational_numbers : set := rational.
+(** NOTE: `rational_numbers` is an alias of `Q`. **)
+Definition rational_numbers : set := Q.
 
 (** from §13: rationals are reals **)
 (** LATEX VERSION: Q is a subset of R. **)
