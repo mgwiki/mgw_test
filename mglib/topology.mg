@@ -39758,6 +39758,7 @@ apply (SepI (Power (affine_line_R2 a b c))
 			      + claim Hpeta: p = (x,y).
 			        { exact (setprod_eta R R p HpRR). }
 			        rewrite Hpeta.
+			        (** NOTE: goal shape mismatch here; keep as admit until we find a rewrite or coercion lemma **)
 			        admit.
 		      + exact HpL.
 		    - let q. assume Hq: q :e (rectangle_set U V) :/\: affine_line_R2 a b c.
