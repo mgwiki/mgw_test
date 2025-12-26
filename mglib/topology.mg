@@ -19165,9 +19165,189 @@ claim Heps2': eps_ 1 :e 2.
 exact (eps_1_not_in_2 Heps2').
 Qed.
 
+(** helper: reintroduce tagging notation y' as SetAdjoin y {1} in the topology section **)
+Definition tag_topology : set -> set := fun y => SetAdjoin y {1}.
+Postfix ' 100 := tag_topology.
+
+(** helper: singleton {1} is not a surreal number **)
+Theorem Sing1_not_SNo : ~SNo {1}.
+assume HSNo: SNo {1}.
+prove False.
+set alpha := SNoLev {1}.
+claim Hlev: ordinal alpha /\ SNo_ alpha {1}.
+{ exact (SNoLev_prop {1} HSNo). }
+claim Hord: ordinal alpha.
+{ exact (andEL (ordinal alpha) (SNo_ alpha {1}) Hlev). }
+claim HSNoa: SNo_ alpha {1}.
+{ exact (andER (ordinal alpha) (SNo_ alpha {1}) Hlev). }
+
+claim Hsub: {1} c= SNoElts_ alpha.
+{ exact (andEL ({1} c= SNoElts_ alpha)
+               (forall beta :e alpha, exactly1of2 (beta ' :e {1}) (beta :e {1}))
+               HSNoa). }
+claim Hprop: forall beta :e alpha, exactly1of2 (beta ' :e {1}) (beta :e {1}).
+{ exact (andER ({1} c= SNoElts_ alpha)
+               (forall beta :e alpha, exactly1of2 (beta ' :e {1}) (beta :e {1}))
+               HSNoa). }
+
+claim H1inElts: 1 :e SNoElts_ alpha.
+{ exact (Hsub 1 (SingI 1)). }
+
+claim H1inalpha: 1 :e alpha.
+{ apply (binunionE' alpha {beta '|beta :e alpha} 1 (1 :e alpha)).
+  - assume H1a: 1 :e alpha.
+    exact H1a.
+	  - assume H1tag: 1 :e {beta '|beta :e alpha}.
+	    apply (ReplE alpha (fun beta : set => beta ') 1 H1tag).
+	    let beta. assume Hbp.
+	    apply Hbp.
+	    assume Hbetaalpha: beta :e alpha.
+	    assume HtagEq: 1 = beta '.
+	    prove 1 :e alpha.
+	    apply FalseE.
+	    claim Hord1: ordinal 1.
+	    { exact (nat_p_ordinal 1 nat_1). }
+	    claim HnotOrdTag: ~ordinal (beta ').
+	    { exact (tagged_not_ordinal beta). }
+	    claim HnotOrd1: ~ordinal 1.
+	    { rewrite HtagEq at 1.
+	      exact HnotOrdTag. }
+	    exact (HnotOrd1 Hord1).
+	  - exact H1inElts. }
+
+claim Htr: TransSet alpha.
+{ exact (ordinal_TransSet alpha Hord). }
+claim H1sub: 1 c= alpha.
+{ exact (Htr 1 H1inalpha). }
+claim H0inalpha: 0 :e alpha.
+{ exact (H1sub 0 In_0_1). }
+
+claim Hex01: exactly1of2 (0 ' :e {1}) (0 :e {1}).
+{ exact (Hprop 0 H0inalpha). }
+
+apply (exactly1of2_E (0 ' :e {1}) (0 :e {1}) Hex01 False).
+- assume Htag: 0 ' :e {1}.
+  assume _: ~(0 :e {1}).
+  prove False.
+  claim HtagEq: 0 ' = 1.
+  { exact (SingE 1 (0 ') Htag). }
+	  claim Hord1: ordinal 1.
+	  { exact (nat_p_ordinal 1 nat_1). }
+	  claim HnotOrdTag: ~ordinal (0 ').
+	  { exact (tagged_not_ordinal 0). }
+	  claim HnotOrd1: ~ordinal 1.
+	  { rewrite <- HtagEq at 1.
+	    exact HnotOrdTag. }
+	  exact (HnotOrd1 Hord1).
+- assume _: ~(0 ' :e {1}).
+  assume H0: 0 :e {1}.
+  prove False.
+  claim H0eq: 0 = 1.
+  { exact (SingE 1 0 H0). }
+  exact (neq_0_1 H0eq).
+Qed.
+
+(** Helper: Inj1 0 equals 1 **)
+Theorem Inj1_0_eq_1 : Inj1 0 = 1.
+apply set_ext.
+- let y. assume Hy: y :e Inj1 0.
+  prove y :e 1.
+  claim Hcase: y = 0 \/ exists x :e 0, y = Inj1 x.
+  { exact (Inj1E 0 y Hy). }
+  apply (Hcase (y :e 1)).
+  - assume Hy0: y = 0.
+    rewrite Hy0.
+    exact In_0_1.
+  - assume Hex: exists x :e 0, y = Inj1 x.
+    apply Hex.
+    let x. assume Hxp.
+    apply Hxp.
+    assume Hx0 HyEq.
+    apply FalseE.
+    exact (EmptyE x Hx0).
+- let y. assume Hy: y :e 1.
+  prove y :e Inj1 0.
+  claim HySing: y :e {0}.
+  { prove y :e {0}.
+    rewrite <- eq_1_Sing0.
+    exact Hy. }
+  claim Hy0: y = 0.
+  { exact (SingE 0 y HySing). }
+  rewrite Hy0.
+  exact (Inj1I1 0).
+Qed.
+
+(** Helper: tuple (0,1) equals {1} **)
+Theorem tuple_0_1_eq_Sing1 : (0,1) = {1}.
+prove (0,1) = {1}.
+apply set_ext.
+- let z. assume Hz: z :e (0,1).
+  prove z :e {1}.
+  claim Hzsum: z :e 0 :+: 1.
+  { prove z :e 0 :+: 1.
+    rewrite (tuple_pair 0 1).
+    exact Hz. }
+  claim Hcases: (exists x :e 0, z = Inj0 x) \/ (exists y :e 1, z = Inj1 y).
+  { exact (setsum_Inj_inv 0 1 z Hzsum). }
+  apply (Hcases (z :e {1})).
+  - assume Hex: exists x :e 0, z = Inj0 x.
+    apply Hex.
+    let x. assume Hxp.
+    apply Hxp.
+    assume Hx0 HzEq.
+    apply FalseE.
+    exact (EmptyE x Hx0).
+  - assume Hex: exists y :e 1, z = Inj1 y.
+    apply Hex.
+    let y. assume Hyp.
+    apply Hyp.
+    assume Hy1 HzEq.
+    claim HySing: y :e {0}.
+    { prove y :e {0}.
+      rewrite <- eq_1_Sing0.
+      exact Hy1. }
+    claim Hy0: y = 0.
+    { exact (SingE 0 y HySing). }
+    claim HzInj10: z = Inj1 0.
+    { prove z = Inj1 0.
+      rewrite <- Hy0.
+      exact HzEq. }
+    claim Hz1: z = 1.
+    { rewrite HzInj10.
+      rewrite Inj1_0_eq_1.
+      reflexivity. }
+    rewrite Hz1.
+    exact (SingI 1).
+- let z. assume Hz: z :e {1}.
+  prove z :e (0,1).
+  rewrite <- (tuple_pair 0 1).
+  claim Hz1: z = 1.
+  { exact (SingE 1 z Hz). }
+  rewrite Hz1.
+  rewrite <- Inj1_0_eq_1 at 1.
+  exact (Inj1_setsum 0 1 0 In_0_1).
+Qed.
+
 (** helper: setprod R R is not R **)
 Theorem setprod_R_R_neq_R : setprod R R <> R.
-admit. (** FAIL **)
+assume Heq: setprod R R = R.
+prove False.
+
+claim HpRR: (0,1) :e setprod R R.
+{ exact (tuple_2_setprod R R 0 real_0 1 real_1). }
+claim HpR: (0,1) :e R.
+{ rewrite <- Heq. exact HpRR. }
+claim HSing1R: {1} :e R.
+{ rewrite <- tuple_0_1_eq_Sing1 at 1.
+  exact HpR. }
+claim HdefR: R = real.
+{ reflexivity. }
+claim HSing1real: {1} :e real.
+{ rewrite <- HdefR at 1.
+  exact HSing1R. }
+claim HSNo: SNo {1}.
+{ exact (real_SNo {1} HSing1real). }
+exact (Sing1_not_SNo HSNo).
 Qed.
 
 (** helper: setprod R R is not rational_numbers **)
@@ -19275,6 +19455,47 @@ claim Hreal_countable: atleastp real omega.
 exact (form100_22_real_uncountable_atleastp Hreal_countable).
 Qed.
 
+(** helper: R is not setprod 2 omega **)
+(** LATEX VERSION: ℝ is uncountable, but 2×ω is countable. **)
+Theorem R_neq_setprod_2_omega : R <> setprod 2 omega.
+assume Heq: R = setprod 2 omega.
+prove False.
+
+(** Countability of omega by the identity injection. **)
+claim Homega_countable: countable omega.
+{ exact (Subq_atleastp omega omega (Subq_ref omega)). }
+
+(** Countability of 2 via 2 c= {0,1} c= omega. **)
+claim H01subomega: {0,1} c= omega.
+{ let x. assume Hx: x :e {0,1}.
+  prove x :e omega.
+  apply (UPairE x 0 1 Hx (x :e omega)).
+  - assume Hx0: x = 0.
+    rewrite Hx0.
+    exact (nat_p_omega 0 nat_0).
+  - assume Hx1: x = 1.
+    rewrite Hx1.
+    exact (nat_p_omega 1 nat_1). }
+claim H2subomega: 2 c= omega.
+{ exact (Subq_tra 2 {0,1} omega Subq_2_UPair01 H01subomega). }
+claim H2countable: countable 2.
+{ exact (Subq_atleastp 2 omega H2subomega). }
+
+(** Therefore setprod 2 omega is countable. **)
+claim Hprod_countable: countable (setprod 2 omega).
+{ exact (setprod_countable 2 omega H2countable Homega_countable). }
+
+(** Transfer countability to R by rewriting, contradicting real uncountability. **)
+claim HRcountable: countable R.
+{ rewrite Heq. exact Hprod_countable. }
+claim HdefR: R = real.
+{ reflexivity. }
+claim Hreal_countable: atleastp real omega.
+{ rewrite <- HdefR at 1.
+  exact HRcountable. }
+exact (form100_22_real_uncountable_atleastp Hreal_countable).
+Qed.
+
 (** Helper: strict order on ℝ implies order_rel on ℝ **)
 (** LATEX VERSION: If a<b in ℝ then order_rel(ℝ,a,b) holds (first disjunct in the definition). **)
 Theorem Rlt_implies_order_rel_R : forall a b:set, Rlt a b -> order_rel R a b.
@@ -19309,6 +19530,65 @@ prove R = R /\ Rlt a b.
 apply andI.
 - reflexivity.
 - exact Hab.
+Qed.
+
+(** Helper: order_rel on ℝ implies strict order on ℝ **)
+(** LATEX VERSION: If order_rel(ℝ,a,b) then a<b in ℝ (all other disjuncts contradict known inequalities of carrier sets). **)
+Theorem order_rel_R_implies_Rlt : forall a b:set, order_rel R a b -> Rlt a b.
+let a b. assume Hrel: order_rel R a b.
+prove Rlt a b.
+apply (Hrel (Rlt a b)).
+- assume Hleft.
+  apply (Hleft (Rlt a b)).
+  - assume Hleft2.
+    apply (Hleft2 (Rlt a b)).
+    + assume Hleft3.
+      apply (Hleft3 (Rlt a b)).
+      * assume Hleft4.
+        apply (Hleft4 (Rlt a b)).
+        - assume HA: R = R /\ Rlt a b.
+           exact (andER (R = R) (Rlt a b) HA).
+        - assume HB: R = rational_numbers /\ Rlt a b.
+           apply FalseE.
+           claim Heq: R = rational_numbers.
+           { exact (andEL (R = rational_numbers) (Rlt a b) HB). }
+           exact (R_neq_rational_numbers Heq).
+      * assume HC: R = omega /\ a :e b.
+        apply FalseE.
+        claim Heq: R = omega.
+        { exact (andEL (R = omega) (a :e b) HC). }
+        exact (R_neq_omega Heq).
+    + assume HD: R = omega :\: {0} /\ a :e b.
+      apply FalseE.
+      claim Heq: R = omega :\: {0}.
+      { exact (andEL (R = omega :\: {0}) (a :e b) HD). }
+      exact (R_neq_omega_nonzero Heq).
+  - assume HE: R = setprod 2 omega /\
+      exists i m j n:set,
+        i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+        a = (i, m) /\ b = (j, n) /\ (i :e j \/ (i = j /\ m :e n)).
+    apply FalseE.
+    claim Heq: R = setprod 2 omega.
+    { exact (andEL (R = setprod 2 omega)
+                  (exists i m j n:set,
+                    i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+                    a = (i, m) /\ b = (j, n) /\ (i :e j \/ (i = j /\ m :e n)))
+                  HE). }
+    exact (R_neq_setprod_2_omega Heq).
+- assume HF: R = setprod R R /\
+    exists a1 a2 b1 b2:set,
+      a = (a1, a2) /\ b = (b1, b2) /\
+      (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2)).
+  apply FalseE.
+  claim Heq: R = setprod R R.
+  { exact (andEL (R = setprod R R)
+                 (exists a1 a2 b1 b2:set,
+                   a = (a1, a2) /\ b = (b1, b2) /\
+                   (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2)))
+                 HF). }
+  apply setprod_R_R_neq_R.
+  rewrite <- Heq.
+  reflexivity.
 Qed.
 
 (** Helper: strict order on ℚ implies order_rel on ℚ **)
@@ -19927,7 +20207,261 @@ Qed.
 (** NOTE: The earlier axiom equating bases was too strong; we only need equality of the generated topologies. **)
 Theorem standard_topology_is_order_topology : order_topology R = R_standard_topology.
 prove order_topology R = R_standard_topology.
-admit. (** FAIL **)
+apply set_ext.
+- let U. assume HU: U :e order_topology R.
+  prove U :e R_standard_topology.
+  claim HBasis: basis_on R (order_topology_basis R).
+  { exact (order_topology_basis_is_basis R). }
+  claim HTstd: topology_on R R_standard_topology.
+  { exact R_standard_topology_is_topology. }
+  claim HBsub: forall b :e order_topology_basis R, b :e R_standard_topology.
+  { let b. assume Hb: b :e order_topology_basis R.
+    prove b :e R_standard_topology.
+
+    set A := {I :e Power R | exists a :e R, exists b0 :e R,
+                I = {x :e R | order_rel R a x /\ order_rel R x b0}}.
+    set B := {I :e Power R | exists b0 :e R, I = {x :e R | order_rel R x b0}}.
+    set C := {I :e Power R | exists a :e R, I = {x :e R | order_rel R a x}}.
+
+    claim HbU: b :e (A :\/: B :\/: C).
+    { exact Hb. }
+
+    apply (binunionE' (A :\/: B) C b (b :e R_standard_topology)).
+    - assume HbAB: b :e (A :\/: B).
+      apply (binunionE' A B b (b :e R_standard_topology)).
+      + assume HbA: b :e A.
+        claim Hex: exists a :e R, exists b0 :e R, b = {x :e R | order_rel R a x /\ order_rel R x b0}.
+        { exact (SepE2 (Power R)
+                      (fun I0 : set => exists a :e R, exists b0 :e R,
+                         I0 = {x :e R | order_rel R a x /\ order_rel R x b0})
+                      b HbA). }
+        apply Hex.
+        let a. assume Hap.
+        apply Hap.
+        assume HaR: a :e R.
+        assume Hexb: exists b0 :e R, b = {x :e R | order_rel R a x /\ order_rel R x b0}.
+        apply Hexb.
+        let b0. assume Hbp.
+        apply Hbp.
+        assume Hb0R: b0 :e R.
+        assume Hbeq: b = {x :e R | order_rel R a x /\ order_rel R x b0}.
+
+        claim HintEq: {x :e R | order_rel R a x /\ order_rel R x b0} = open_interval a b0.
+        { apply set_ext.
+          - let x. assume HxI: x :e {x0 :e R | order_rel R a x0 /\ order_rel R x0 b0}.
+            prove x :e open_interval a b0.
+            claim HxR: x :e R.
+            { exact (SepE1 R (fun x0 : set => order_rel R a x0 /\ order_rel R x0 b0) x HxI). }
+            claim Hconj: order_rel R a x /\ order_rel R x b0.
+            { exact (SepE2 R (fun x0 : set => order_rel R a x0 /\ order_rel R x0 b0) x HxI). }
+            claim Hax: order_rel R a x.
+            { exact (andEL (order_rel R a x) (order_rel R x b0) Hconj). }
+            claim Hxb: order_rel R x b0.
+            { exact (andER (order_rel R a x) (order_rel R x b0) Hconj). }
+            claim Haxlt: Rlt a x.
+            { exact (order_rel_R_implies_Rlt a x Hax). }
+            claim Hxblt: Rlt x b0.
+            { exact (order_rel_R_implies_Rlt x b0 Hxb). }
+            claim Hconj': Rlt a x /\ Rlt x b0.
+            { exact (andI (Rlt a x) (Rlt x b0) Haxlt Hxblt). }
+            exact (SepI R (fun x0 : set => Rlt a x0 /\ Rlt x0 b0) x HxR Hconj').
+          - let x. assume HxI: x :e open_interval a b0.
+            prove x :e {x0 :e R | order_rel R a x0 /\ order_rel R x0 b0}.
+            claim HxR: x :e R.
+            { exact (SepE1 R (fun x0 : set => Rlt a x0 /\ Rlt x0 b0) x HxI). }
+            claim Hconj: Rlt a x /\ Rlt x b0.
+            { exact (SepE2 R (fun x0 : set => Rlt a x0 /\ Rlt x0 b0) x HxI). }
+            claim Hax: Rlt a x.
+            { exact (andEL (Rlt a x) (Rlt x b0) Hconj). }
+            claim Hxb: Rlt x b0.
+            { exact (andER (Rlt a x) (Rlt x b0) Hconj). }
+            claim Haxrel: order_rel R a x.
+            { exact (Rlt_implies_order_rel_R a x Hax). }
+            claim Hxbrel: order_rel R x b0.
+            { exact (Rlt_implies_order_rel_R x b0 Hxb). }
+            claim Hconj': order_rel R a x /\ order_rel R x b0.
+            { exact (andI (order_rel R a x) (order_rel R x b0) Haxrel Hxbrel). }
+            exact (SepI R (fun x0 : set => order_rel R a x0 /\ order_rel R x0 b0) x HxR Hconj'). }
+
+        rewrite Hbeq.
+        rewrite HintEq.
+        claim HIinBasis: open_interval a b0 :e R_standard_basis.
+        { claim HIa: open_interval a b0 :e {open_interval a bb|bb :e R}.
+          { exact (ReplI R (fun bb : set => open_interval a bb) b0 Hb0R). }
+          exact (famunionI R (fun aa : set => {open_interval aa bb|bb :e R}) a (open_interval a b0) HaR HIa). }
+        exact (generated_topology_contains_basis R R_standard_basis (R_standard_basis_is_basis) (open_interval a b0) HIinBasis).
+      + assume HbB: b :e B.
+        claim Hex: exists b0 :e R, b = {x :e R | order_rel R x b0}.
+        { exact (SepE2 (Power R)
+                      (fun I0 : set => exists b0 :e R, I0 = {x :e R | order_rel R x b0})
+                      b HbB). }
+        apply Hex.
+        let b0. assume Hbp.
+        apply Hbp.
+        assume Hb0R: b0 :e R.
+        assume Hbeq: b = {x :e R | order_rel R x b0}.
+        claim HrayEq: {x :e R | order_rel R x b0} = {x :e R | Rlt x b0}.
+        { apply set_ext.
+          - let x. assume HxU: x :e {x0 :e R | order_rel R x0 b0}.
+            prove x :e {x0 :e R | Rlt x0 b0}.
+            claim HxR: x :e R.
+            { exact (SepE1 R (fun x0 : set => order_rel R x0 b0) x HxU). }
+            claim Hrel: order_rel R x b0.
+            { exact (SepE2 R (fun x0 : set => order_rel R x0 b0) x HxU). }
+            claim Hlt: Rlt x b0.
+            { exact (order_rel_R_implies_Rlt x b0 Hrel). }
+            exact (SepI R (fun x0 : set => Rlt x0 b0) x HxR Hlt).
+          - let x. assume HxU: x :e {x0 :e R | Rlt x0 b0}.
+            prove x :e {x0 :e R | order_rel R x0 b0}.
+            claim HxR: x :e R.
+            { exact (SepE1 R (fun x0 : set => Rlt x0 b0) x HxU). }
+            claim Hlt: Rlt x b0.
+            { exact (SepE2 R (fun x0 : set => Rlt x0 b0) x HxU). }
+            claim Hrel: order_rel R x b0.
+            { exact (Rlt_implies_order_rel_R x b0 Hlt). }
+            exact (SepI R (fun x0 : set => order_rel R x0 b0) x HxR Hrel). }
+        rewrite Hbeq.
+        rewrite HrayEq.
+        exact (open_left_ray_in_R_standard_topology b0 Hb0R).
+      + exact HbAB.
+    - assume HbC: b :e C.
+      claim Hex: exists a :e R, b = {x :e R | order_rel R a x}.
+      { exact (SepE2 (Power R)
+                    (fun I0 : set => exists a0 :e R, I0 = {x :e R | order_rel R a0 x})
+                    b HbC). }
+      apply Hex.
+      let a. assume Hap.
+      apply Hap.
+      assume HaR: a :e R.
+      assume Hbeq: b = {x :e R | order_rel R a x}.
+      claim HrayEq: {x :e R | order_rel R a x} = {x :e R | Rlt a x}.
+      { apply set_ext.
+        - let x. assume HxU: x :e {x0 :e R | order_rel R a x0}.
+          prove x :e {x0 :e R | Rlt a x0}.
+          claim HxR: x :e R.
+          { exact (SepE1 R (fun x0 : set => order_rel R a x0) x HxU). }
+          claim Hrel: order_rel R a x.
+          { exact (SepE2 R (fun x0 : set => order_rel R a x0) x HxU). }
+          claim Hlt: Rlt a x.
+          { exact (order_rel_R_implies_Rlt a x Hrel). }
+          exact (SepI R (fun x0 : set => Rlt a x0) x HxR Hlt).
+        - let x. assume HxU: x :e {x0 :e R | Rlt a x0}.
+          prove x :e {x0 :e R | order_rel R a x0}.
+          claim HxR: x :e R.
+          { exact (SepE1 R (fun x0 : set => Rlt a x0) x HxU). }
+          claim Hlt: Rlt a x.
+          { exact (SepE2 R (fun x0 : set => Rlt a x0) x HxU). }
+          claim Hrel: order_rel R a x.
+          { exact (Rlt_implies_order_rel_R a x Hlt). }
+          exact (SepI R (fun x0 : set => order_rel R a x0) x HxR Hrel). }
+      rewrite Hbeq.
+      rewrite HrayEq.
+      exact (open_ray_in_R_standard_topology a HaR).
+    - exact HbU.
+  }
+  claim Hfiner: finer_than R_standard_topology (generated_topology R (order_topology_basis R)).
+  { exact (generated_topology_finer R (order_topology_basis R) R_standard_topology HBasis HTstd HBsub). }
+  exact (Hfiner U HU).
+- let U. assume HU: U :e R_standard_topology.
+  prove U :e order_topology R.
+  claim HBasisStd: basis_on R R_standard_basis.
+  { exact (R_standard_basis_is_basis). }
+  claim HTord: topology_on R (order_topology R).
+  { exact (order_topology_is_topology R). }
+  claim HBsubStd: forall b :e R_standard_basis, b :e order_topology R.
+  { let b. assume Hb: b :e R_standard_basis.
+    prove b :e order_topology R.
+    claim Hexa : exists a :e R, b :e {open_interval a bb|bb :e R}.
+    { exact (famunionE R (fun a0 : set => {open_interval a0 bb|bb :e R}) b Hb). }
+    apply Hexa.
+    let a. assume Hap.
+    apply Hap.
+    assume HaR: a :e R.
+    assume HbFam: b :e {open_interval a bb|bb :e R}.
+    claim Hexb : exists b0 :e R, b = open_interval a b0.
+    { exact (ReplE R (fun bb0 : set => open_interval a bb0) b HbFam). }
+    apply Hexb.
+    let b0. assume Hbp.
+    apply Hbp.
+    assume Hb0R: b0 :e R.
+    assume Hbeq: b = open_interval a b0.
+    rewrite Hbeq.
+
+    set A := {I :e Power R | exists a1 :e R, exists b1 :e R,
+                I = {x :e R | order_rel R a1 x /\ order_rel R x b1}}.
+    set B := {I :e Power R | exists b1 :e R, I = {x :e R | order_rel R x b1}}.
+    set C := {I :e Power R | exists a1 :e R, I = {x :e R | order_rel R a1 x}}.
+
+    claim HPow: open_interval a b0 :e Power R.
+    { exact (PowerI R (open_interval a b0) (open_interval_Subq_R a b0)). }
+
+    claim HintEq: open_interval a b0 = {x :e R | order_rel R a x /\ order_rel R x b0}.
+    { apply set_ext.
+      - let x. assume HxI: x :e open_interval a b0.
+        prove x :e {x0 :e R | order_rel R a x0 /\ order_rel R x0 b0}.
+        claim HxR: x :e R.
+        { exact (SepE1 R (fun x0 : set => Rlt a x0 /\ Rlt x0 b0) x HxI). }
+        claim Hconj: Rlt a x /\ Rlt x b0.
+        { exact (SepE2 R (fun x0 : set => Rlt a x0 /\ Rlt x0 b0) x HxI). }
+        claim Hax: Rlt a x.
+        { exact (andEL (Rlt a x) (Rlt x b0) Hconj). }
+        claim Hxb: Rlt x b0.
+        { exact (andER (Rlt a x) (Rlt x b0) Hconj). }
+        claim Haxrel: order_rel R a x.
+        { exact (Rlt_implies_order_rel_R a x Hax). }
+        claim Hxbrel: order_rel R x b0.
+        { exact (Rlt_implies_order_rel_R x b0 Hxb). }
+        claim Hconj': order_rel R a x /\ order_rel R x b0.
+        { exact (andI (order_rel R a x) (order_rel R x b0) Haxrel Hxbrel). }
+        exact (SepI R (fun x0 : set => order_rel R a x0 /\ order_rel R x0 b0) x HxR Hconj').
+      - let x. assume HxI: x :e {x0 :e R | order_rel R a x0 /\ order_rel R x0 b0}.
+        prove x :e open_interval a b0.
+        claim HxR: x :e R.
+        { exact (SepE1 R (fun x0 : set => order_rel R a x0 /\ order_rel R x0 b0) x HxI). }
+        claim Hconj: order_rel R a x /\ order_rel R x b0.
+        { exact (SepE2 R (fun x0 : set => order_rel R a x0 /\ order_rel R x0 b0) x HxI). }
+        claim Hax: order_rel R a x.
+        { exact (andEL (order_rel R a x) (order_rel R x b0) Hconj). }
+        claim Hxb: order_rel R x b0.
+        { exact (andER (order_rel R a x) (order_rel R x b0) Hconj). }
+        claim Haxlt: Rlt a x.
+        { exact (order_rel_R_implies_Rlt a x Hax). }
+        claim Hxblt: Rlt x b0.
+        { exact (order_rel_R_implies_Rlt x b0 Hxb). }
+        claim Hconj': Rlt a x /\ Rlt x b0.
+        { exact (andI (Rlt a x) (Rlt x b0) Haxlt Hxblt). }
+        exact (SepI R (fun x0 : set => Rlt a x0 /\ Rlt x0 b0) x HxR Hconj'). }
+
+    claim Hpred: exists a1 :e R, exists b1 :e R,
+        open_interval a b0 = {x :e R | order_rel R a1 x /\ order_rel R x b1}.
+    { witness a.
+      apply andI.
+      - exact HaR.
+      - witness b0.
+        apply andI.
+        + exact Hb0R.
+        + exact HintEq. }
+
+    claim HInA: open_interval a b0 :e A.
+    { exact (SepI (Power R)
+                 (fun I0 : set => exists a1 :e R, exists b1 :e R,
+                    I0 = {x :e R | order_rel R a1 x /\ order_rel R x b1})
+                 (open_interval a b0)
+                 HPow
+                 Hpred). }
+
+    claim HInAB: open_interval a b0 :e (A :\/: B).
+    { exact (binunionI1 A B (open_interval a b0) HInA). }
+    claim HInABC: open_interval a b0 :e (A :\/: B :\/: C).
+    { exact (binunionI1 (A :\/: B) C (open_interval a b0) HInAB). }
+    claim HbBasis: open_interval a b0 :e order_topology_basis R.
+    { exact HInABC. }
+    exact (generated_topology_contains_basis R (order_topology_basis R) (order_topology_basis_is_basis R)
+            (open_interval a b0) HbBasis).
+  }
+  claim Hfiner: finer_than (order_topology R) (generated_topology R R_standard_basis).
+  { exact (generated_topology_finer R R_standard_basis (order_topology R) HBasisStd HTord HBsubStd). }
+  exact (Hfiner U HU).
 Qed.
 
 (** from §14 Example 2: dictionary order topology on ℝ×ℝ **) 
@@ -20061,7 +20595,7 @@ claim H0R: 0 :e R.
 { exact real_0. }
 claim H0Z: 0 :e Zplus.
 { rewrite Heq. exact H0R. }
-exact (zero_not_in_Zplus H0Z).
+  exact (zero_not_in_Zplus H0Z).
 Qed.
 
 (** Helper: Zplus is not rational_numbers **)
@@ -20070,39 +20604,9 @@ assume Heq: Zplus = rational_numbers.
 prove False.
 claim H0Q: 0 :e rational_numbers.
 { exact zero_in_rational_numbers. }
-claim H0Z: 0 :e Zplus.
-{ rewrite Heq. exact H0Q. }
-exact (zero_not_in_Zplus H0Z).
-Qed.
-
-(** Helper: Inj1 0 equals 1 **)
-Theorem Inj1_0_eq_1 : Inj1 0 = 1.
-apply set_ext.
-- let y. assume Hy: y :e Inj1 0.
-  prove y :e 1.
-  claim Hcase: y = 0 \/ exists x :e 0, y = Inj1 x.
-  { exact (Inj1E 0 y Hy). }
-  apply (Hcase (y :e 1)).
-  * assume Hy0: y = 0.
-    rewrite Hy0.
-    exact In_0_1.
-  * assume Hex: exists x :e 0, y = Inj1 x.
-    apply Hex.
-    let x. assume Hxp.
-    apply Hxp.
-    assume Hx0 HyEq.
-    apply FalseE.
-    exact (EmptyE x Hx0).
-- let y. assume Hy: y :e 1.
-  prove y :e Inj1 0.
-  claim HySing: y :e {0}.
-  { prove y :e {0}.
-    rewrite <- eq_1_Sing0.
-    exact Hy. }
-  claim Hy0: y = 0.
-  { exact (SingE 0 y HySing). }
-  rewrite Hy0.
-  exact (Inj1I1 0).
+	claim H0Z: 0 :e Zplus.
+	{ rewrite Heq. exact H0Q. }
+	exact (zero_not_in_Zplus H0Z).
 Qed.
 
 (** Helper: {1} is not transitive **)
@@ -20133,57 +20637,6 @@ claim Hord: ordinal {1}.
 claim Htr: TransSet {1}.
 { exact (ordinal_TransSet {1} Hord). }
 exact (not_TransSet_singleton_1 Htr).
-Qed.
-
-(** Helper: tuple (0,1) equals {1} **)
-Theorem tuple_0_1_eq_Sing1 : (0,1) = {1}.
-prove (0,1) = {1}.
-apply set_ext.
-- let z. assume Hz: z :e (0,1).
-  prove z :e {1}.
-  claim Hzsum: z :e 0 :+: 1.
-  { prove z :e 0 :+: 1.
-    rewrite (tuple_pair 0 1).
-    exact Hz. }
-  claim Hcases: (exists x :e 0, z = Inj0 x) \/ (exists y :e 1, z = Inj1 y).
-  { exact (setsum_Inj_inv 0 1 z Hzsum). }
-  apply (Hcases (z :e {1})).
-  * assume Hex: exists x :e 0, z = Inj0 x.
-    apply Hex.
-    let x. assume Hxp.
-    apply Hxp.
-    assume Hx0 HzEq.
-    apply FalseE.
-    exact (EmptyE x Hx0).
-  * assume Hex: exists y :e 1, z = Inj1 y.
-    apply Hex.
-    let y. assume Hyp.
-    apply Hyp.
-    assume Hy1 HzEq.
-    claim HySing: y :e {0}.
-    { prove y :e {0}.
-      rewrite <- eq_1_Sing0.
-      exact Hy1. }
-    claim Hy0: y = 0.
-    { exact (SingE 0 y HySing). }
-    claim HzInj10: z = Inj1 0.
-    { prove z = Inj1 0.
-      rewrite <- Hy0.
-      exact HzEq. }
-    claim Hz1: z = 1.
-    { rewrite HzInj10.
-      rewrite Inj1_0_eq_1.
-      reflexivity. }
-    rewrite Hz1.
-    exact (SingI 1).
-- let z. assume Hz: z :e {1}.
-  prove z :e (0,1).
-  rewrite <- (tuple_pair 0 1).
-  claim Hz1: z = 1.
-  { exact (SingE 1 z Hz). }
-  rewrite Hz1.
-  rewrite <- Inj1_0_eq_1 at 1.
-  exact (Inj1_setsum 0 1 0 In_0_1).
 Qed.
 
 (** helper: setprod R R is not omega **)
