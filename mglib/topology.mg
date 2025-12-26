@@ -60510,7 +60510,7 @@ Qed.
 Definition Gdelta_in : set -> set -> set -> prop := fun X Tx A =>
   exists Fam:set, countable Fam /\
     (forall U :e Fam, open_in X Tx U) /\
-    Intersection_Fam X Fam = A.
+    intersection_over_family X Fam = A.
 
 (** helper: open map - images of open sets are open **)
 (** FIXED: open_map uses image_of f U for set images; apply_fun is only for elements. **) 
