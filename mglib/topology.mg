@@ -13294,12 +13294,12 @@ claim HEmptyPower: Empty :e Power X.
 exact (SepI (Power X) (fun U => forall T:set, T :e Fam -> U :e T) Empty HEmptyPower HFamEmpty).
 Qed.
 
-(** from §13 Exercise 3: infinite-complement collection **) 
-(** LATEX VERSION: Exercise 3 examines countable-complement topology vs. infinite-complement family on X. **)
+(** from §12 Exercises Item 3: countable complement topology and Tinfty **) 
+(** LATEX VERSION: Show that the collection Tc from Example 4 of §12 is a topology on X. Is the collection Tinfty = {U | X-U is infinite or empty or all of X} a topology on X. **)
 Definition infinite_complement_family : set -> set :=
   fun X => {U :e Power X | infinite (X :\: U) \/ U = Empty \/ U = X}.
 
-(** LATEX VERSION: Exercise 3(a): The countable-complement topology T_c on X is a topology. **)
+(** LATEX VERSION: Exercise 3: The countable-complement topology Tc on X is a topology. **)
 Theorem ex13_3a_Tc_topology : forall X:set, topology_on X (countable_complement_topology X).
 let X.
 exact (countable_complement_topology_on X).
@@ -13350,7 +13350,7 @@ prove exists U V:set,
 admit.
 Qed.
 
-(** LATEX VERSION: Exercise 3(b): For infinite X, the infinite-complement family is not a topology (fails union closure). **)
+(** LATEX VERSION: Exercise 3: For infinite X, Tinfty is not a topology (union-closure fails). **)
 Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   infinite X ->
   ~topology_on X (infinite_complement_family X).
