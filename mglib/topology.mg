@@ -48401,9 +48401,7 @@ assume HTx: topology_on X Tx.
 assume HCconn: connected_space C (subspace_topology X Tx C).
 prove C c= X.
 claim HCtop: topology_on C (subspace_topology X Tx C).
-{ exact (andEL (topology_on C (subspace_topology X Tx C))
-               (~(exists U V:set, U :e subspace_topology X Tx C /\ V :e subspace_topology X Tx C /\ separation_of C U V))
-               HCconn). }
+{ exact (connected_space_topology C (subspace_topology X Tx C) HCconn). }
 claim HCinSub: C :e subspace_topology X Tx C.
 { exact (topology_has_X C (subspace_topology X Tx C) HCtop). }
 claim HexV: exists V :e Tx, C = V :/\: C.
