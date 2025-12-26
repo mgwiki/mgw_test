@@ -34155,10 +34155,6 @@ apply iffI.
   prove closed_in X Tx {x}.
   (** By definition of T1_space, all finite subsets are closed.
       Singletons are finite subsets, so {x} is closed. **)
-  claim HT1_def: topology_on X Tx /\ (forall F:set, F c= X -> finite F -> closed_in X Tx F).
-  { exact HT1. }
-  claim Hfinite_closed: forall F:set, F c= X -> finite F -> closed_in X Tx F.
-  { exact (andER (topology_on X Tx) (forall F:set, F c= X -> finite F -> closed_in X Tx F) HT1_def). }
   claim Hx_finite: finite {x}.
   { exact (Sing_finite x). }
   claim Hx_sub: {x} c= X.
@@ -34166,7 +34162,7 @@ apply iffI.
     claim Hyeq: y = x.
     { exact (SingE x y Hy). }
     rewrite Hyeq. exact Hx. }
-  exact (Hfinite_closed {x} Hx_sub Hx_finite).
+  exact (T1_space_finite_closed X Tx {x} HT1 Hx_sub Hx_finite).
 - (** Backward: singletons closed → T1_space **)
   assume Hsing: forall x:set, x :e X -> closed_in X Tx {x}.
   prove T1_space X Tx.
