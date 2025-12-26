@@ -41622,10 +41622,10 @@ apply andI.
   + (** function_on **)
     let a. assume HaA: a :e A.
     prove apply_fun (pair_map A f g) a :e setprod X Y.
-    claim Happ: apply_fun (pair_map A f g) a = (apply_fun f a, apply_fun g a).
-    { exact (pair_map_apply A X Y f g a HaA). }
-    rewrite Happ.
-    exact (tuple_2_setprod X Y (apply_fun f a) (Hfun_f a HaA) (apply_fun g a) (Hfun_g a HaA)).
+	    claim Happ: apply_fun (pair_map A f g) a = (apply_fun f a, apply_fun g a).
+	    { exact (pair_map_apply A X Y f g a HaA). }
+	    rewrite Happ.
+	    exact (tuple_2_setprod_by_pair_Sigma X Y (apply_fun f a) (apply_fun g a) (Hfun_f a HaA) (Hfun_g a HaA)).
 - let W. assume HW: W :e product_topology X Tx Y Ty.
   prove preimage_of A (pair_map A f g) W :e Ta.
   claim HWopen: open_in (setprod X Y) (product_topology X Tx Y Ty) W.
@@ -41782,9 +41782,9 @@ apply set_ext.
     exact Hc2. }
   claim Heta: apply_fun h a = ((apply_fun h a) 0, (apply_fun h a) 1).
   { exact (setprod_eta X Y (apply_fun h a) HpXY). }
-  claim HpUV: apply_fun h a :e setprod U V.
-  { rewrite Heta.
-    exact (tuple_2_setprod U V ((apply_fun h a) 0) Hp0U ((apply_fun h a) 1) Hp1V). }
+	  claim HpUV: apply_fun h a :e setprod U V.
+	  { rewrite Heta.
+	    exact (tuple_2_setprod_by_pair_Sigma U V ((apply_fun h a) 0) ((apply_fun h a) 1) Hp0U Hp1V). }
   prove a :e preimage_of A h (rectangle_set U V).
   exact (SepI A (fun a0:set => apply_fun h a0 :e rectangle_set U V) a HaA HpUV).
 Qed.
