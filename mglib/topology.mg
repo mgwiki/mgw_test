@@ -48895,19 +48895,14 @@ assume Hx: x :e X.
 prove open_in X Tx (path_component_of X Tx x).
 prove topology_on X Tx /\ path_component_of X Tx x :e Tx.
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x0:set, x0 :e X ->
-                 forall U:set, U :e Tx -> x0 :e U ->
-                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V))
-               Hlpc). }
+{ exact (locally_path_connected_topology X Tx Hlpc). }
 claim Hlpcprop: forall x0:set, x0 :e X ->
   forall U:set, U :e Tx -> x0 :e U ->
     exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V).
-{ exact (andER (topology_on X Tx)
-               (forall x0:set, x0 :e X ->
-                 forall U:set, U :e Tx -> x0 :e U ->
-                   exists V:set, V :e Tx /\ x0 :e V /\ V c= U /\ path_connected_space V (subspace_topology X Tx V))
-               Hlpc). }
+{ let x0. assume Hx0: x0 :e X.
+  let U. assume HU: U :e Tx.
+  assume Hx0U: x0 :e U.
+  exact (locally_path_connected_local X Tx x0 U Hlpc Hx0 HU Hx0U). }
 apply andI.
 - exact HTx.
 - set P := path_component_of X Tx x.
