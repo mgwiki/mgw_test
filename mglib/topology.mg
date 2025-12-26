@@ -9610,15 +9610,16 @@ apply set_ext.
   { exact (PowerE X U HUinPow). }
   claim HUprop : forall x :e U, exists b :e singleton_basis X, x :e b /\ b c= U.
 { let x. assume HxU.
-  witness {x,x}.
+  witness {x}.
   apply andI.
-  - exact (ReplI X (fun x0 : set => {x0,x0}) x (HUsubX x HxU)).
+  - exact (ReplI X (fun x0 : set => {x0}) x (HUsubX x HxU)).
   - apply andI.
-    * exact (UPairI1 x x).
+    * exact (SingI x).
     * let y. assume Hy.
-      apply (UPairE y x x Hy (y :e U)).
-      { assume Hyx. rewrite Hyx. exact HxU. }
-      { assume Hyx. rewrite Hyx. exact HxU. } }
+      claim Hyx: y = x.
+      { exact (SingE x y Hy). }
+      rewrite Hyx.
+      exact HxU. }
   exact (SepI (Power X)
               (fun U0 : set => forall x0 :e U0, exists b :e singleton_basis X, x0 :e b /\ b c= U0)
               U
