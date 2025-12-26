@@ -20543,17 +20543,17 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
     assume Hpre Hcond.
     apply Hpre.
     assume Hpre2 HbEq.
-	    apply Hpre2.
-	    assume Hpre3 H10Eq.
-	    apply Hpre3.
-	    assume Hpre4 HnOmega.
-	    apply Hpre4.
-	    assume Hpre5 Hj2.
-	
-	    claim Hi1: i = 1.
-	    { claim Ht0: (1,0) 0 = 1.
-	      { exact (tuple_2_0_eq 1 0). }
-      rewrite H10Eq at 1 in Ht0.
+    apply Hpre2.
+    assume Hpre3 H10Eq.
+    apply Hpre3.
+    assume Hpre4 HnOmega.
+    apply Hpre4.
+    assume Hpre5 Hj2.
+
+    claim Hi1: i = 1.
+    { claim Ht0: (1,0) 0 = 1.
+      { exact (tuple_2_0_eq 1 0). }
+      rewrite H10Eq in Ht0.
       claim Ht0i: (i,m) 0 = i.
       { exact (tuple_2_0_eq i m). }
       rewrite Ht0i in Ht0.
@@ -20561,7 +20561,7 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
     claim Hm0: m = 0.
     { claim Ht1: (1,0) 1 = 0.
       { exact (tuple_2_1_eq 1 0). }
-      rewrite H10Eq at 1 in Ht1.
+      rewrite H10Eq in Ht1.
       claim Ht1m: (i,m) 1 = m.
       { exact (tuple_2_1_eq i m). }
       rewrite Ht1m in Ht1.
