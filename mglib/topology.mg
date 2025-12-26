@@ -10253,6 +10253,24 @@ rewrite <- Hx0 at 1.
 exact Hle.
 Qed.
 
+(** helper: a square is nonnegative **)
+(** LATEX VERSION: For real numbers, x squared is nonnegative. **)
+Theorem SNo_sqr_nonneg : forall x:set,
+  SNo x ->
+  0 <= mul_SNo x x.
+let x.
+assume HxS: SNo x.
+claim Hcases: x = 0 \/ 0 < mul_SNo x x.
+{ exact (SNo_zero_or_sqr_pos x HxS). }
+apply Hcases.
+- assume Hx0: x = 0.
+  rewrite Hx0.
+  rewrite (mul_SNo_zeroL 0 SNo_0).
+  exact (SNoLe_ref 0).
+- assume Hpos: 0 < mul_SNo x x.
+  exact (SNoLtLe 0 (mul_SNo x x) Hpos).
+Qed.
+
 (** from §13 Example 4: distance from a point to itself is 0 **)
 (** LATEX VERSION: d(p,p) = 0. **)
 Theorem distance_R2_refl_0 : forall p:set, p :e EuclidPlane -> distance_R2 p p = 0.
