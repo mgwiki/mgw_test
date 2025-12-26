@@ -47998,16 +47998,13 @@ claim HyX: y :e X.
 claim HzX: z :e X.
 { exact (HVsubX z HzV). }
 claim HtopV: topology_on V (subspace_topology X Tx V).
-{ exact (andEL (topology_on V (subspace_topology X Tx V))
-               (forall x0 y0:set, x0 :e V -> y0 :e V ->
-                 exists p:set, path_between V x0 y0 p /\ continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p)
-               HpathV). }
+{ exact (path_connected_space_topology V (subspace_topology X Tx V) HpathV). }
 claim Hpaths: forall x0 y0:set, x0 :e V -> y0 :e V ->
   exists p:set, path_between V x0 y0 p /\ continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p.
-{ exact (andER (topology_on V (subspace_topology X Tx V))
-               (forall x0 y0:set, x0 :e V -> y0 :e V ->
-                 exists p:set, path_between V x0 y0 p /\ continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p)
-               HpathV). }
+{ let x0 y0.
+  assume Hx0: x0 :e V.
+  assume Hy0: y0 :e V.
+  exact (path_connected_space_paths V (subspace_topology X Tx V) x0 y0 HpathV Hx0 Hy0). }
 claim Hex: exists p:set, path_between V y z p /\ continuous_map unit_interval unit_interval_topology V (subspace_topology X Tx V) p.
 { exact (Hpaths y z HyV HzV). }
 apply Hex.
