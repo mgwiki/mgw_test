@@ -38676,7 +38676,7 @@ Theorem ex16_8_lines_in_lower_limit_products : forall a b c:set,
         exists f:set,
           homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
             (subspace_topology (setprod R R)
-               (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+             (product_topology R R_lower_limit_topology R R_lower_limit_topology)
                (affine_line_R2 a b c)) f).
 prove forall a b c:set,
   a :e R -> b :e R -> c :e R ->
@@ -38705,7 +38705,82 @@ prove forall a b c:set,
             (subspace_topology (setprod R R)
                (product_topology R R_lower_limit_topology R R_lower_limit_topology)
                (affine_line_R2 a b c)) f).
-admit.
+let a b c.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HcR: c :e R.
+assume Hnotboth: ~ (a = 0 /\ b = 0).
+prove ( (b = 0 ->
+      exists f:set,
+        homeomorphism R R_standard_topology (affine_line_R2 a b c)
+          (subspace_topology (setprod R R)
+             (product_topology R R_lower_limit_topology R R_standard_topology)
+             (affine_line_R2 a b c)) f)
+    /\ (b <> 0 ->
+      exists f:set,
+        homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+          (subspace_topology (setprod R R)
+             (product_topology R R_lower_limit_topology R R_standard_topology)
+             (affine_line_R2 a b c)) f) )
+  /\ ( (b <> 0 /\ same_sign_nonzero_R a b) ->
+        exists f:set,
+          homeomorphism R (discrete_topology R) (affine_line_R2 a b c)
+            (subspace_topology (setprod R R)
+               (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+               (affine_line_R2 a b c)) f)
+     /\ ( (b = 0 \/ ~ same_sign_nonzero_R a b) ->
+        exists f:set,
+          homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+            (subspace_topology (setprod R R)
+               (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+               (affine_line_R2 a b c)) f).
+apply andI.
+- apply andI.
+  + apply andI.
+    * assume Hb0: b = 0.
+      claim Ha0: a <> 0.
+      { prove ~ (a = 0).
+        assume Ha0eq: a = 0.
+        prove False.
+        apply Hnotboth.
+        apply andI.
+        - exact Ha0eq.
+        - exact Hb0. }
+      witness (affine_line_R2_param_by_y a b c).
+      admit.
+    * assume Hbne: b <> 0.
+      witness (affine_line_R2_param_by_x a b c).
+      admit.
+  + assume Hneg: b <> 0 /\ same_sign_nonzero_R a b.
+    witness (affine_line_R2_param_by_x a b c).
+    admit.
+- assume Hcase: b = 0 \/ ~ same_sign_nonzero_R a b.
+  claim Hb0case: b = 0 ->
+    exists f:set,
+      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+        (subspace_topology (setprod R R)
+           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+           (affine_line_R2 a b c)) f.
+  { assume Hb0: b = 0.
+    witness (affine_line_R2_param_by_y a b c).
+    admit. }
+  claim Hnotsigncase: ~ same_sign_nonzero_R a b ->
+    exists f:set,
+      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+        (subspace_topology (setprod R R)
+           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+           (affine_line_R2 a b c)) f.
+  { assume Hnotsign: ~ same_sign_nonzero_R a b.
+    witness (affine_line_R2_param_by_x a b c).
+    admit. }
+  exact (Hcase
+    (exists f:set,
+      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+        (subspace_topology (setprod R R)
+           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+           (affine_line_R2 a b c)) f)
+    Hb0case
+    Hnotsigncase).
 Qed.
 
 (** helper: homeomorphisms are injective **)
