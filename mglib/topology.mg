@@ -47804,10 +47804,10 @@ claim HTy: topology_on Y Ty.
               (andEL (topology_on X Tx /\ topology_on Y Ty) (function_on f X Y) Hf_left)). }
 claim Hpath_prop: forall x y:set, x :e X -> y :e X ->
   exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
-{ exact (andER (topology_on X Tx)
-              (forall x y:set, x :e X -> y :e X ->
-                exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p)
-              Hpath). }
+{ let x y.
+  assume Hx: x :e X.
+  assume Hy: y :e X.
+  exact (path_connected_space_paths X Tx x y Hpath Hx Hy). }
 
 prove topology_on Y Ty /\
   forall y1 y2:set, y1 :e Y -> y2 :e Y ->
