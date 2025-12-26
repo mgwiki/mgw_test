@@ -28900,7 +28900,7 @@ Theorem ex16_9_dictionary_equals_product :
   /\ R2_dictionary_order_topology <> R2_standard_topology.
 prove R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology /\ R2_dictionary_order_topology <> R2_standard_topology.
 apply andI.
-- admit.
+			      - admit. (** FAIL **)
 - admit.
 Qed.
 
@@ -39552,9 +39552,83 @@ apply andI.
 			            exact (projection1_after_affine_line_R2_param_by_x a b c x HaR HbR HcR HxR).
 			        + let p. assume Hp: p :e affine_line_R2 a b c.
 			          exact (affine_line_R2_param_by_x_after_projection1_on_line a b c p HaR HbR HcR Hbne Hp).
-  + assume Hneg: b <> 0 /\ same_sign_nonzero_R a b.
-    witness (affine_line_R2_param_by_x a b c).
-    admit.
+	  + assume Hneg: b <> 0 /\ same_sign_nonzero_R a b.
+	    witness (affine_line_R2_param_by_x a b c).
+	    claim Hbne: b <> 0.
+	    { apply Hneg.
+	      assume Hbne0 Hsign.
+	      exact Hbne0. }
+	    set f := affine_line_R2_param_by_x a b c.
+	    prove continuous_map R (discrete_topology R) (affine_line_R2 a b c)
+	      (subspace_topology (setprod R R)
+	         (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	         (affine_line_R2 a b c)) f
+	    /\ exists g:set,
+	         continuous_map (affine_line_R2 a b c)
+	           (subspace_topology (setprod R R)
+	             (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	             (affine_line_R2 a b c))
+	           R (discrete_topology R) g
+	         /\ (forall x:set, x :e R -> apply_fun g (apply_fun f x) = x)
+	         /\ (forall y:set, y :e affine_line_R2 a b c -> apply_fun f (apply_fun g y) = y).
+	    apply andI.
+	    - (** continuity of f from a discrete domain **)
+	      claim HTll: topology_on R R_lower_limit_topology.
+	      { exact R_lower_limit_topology_is_topology. }
+	      claim HTprod: topology_on (setprod R R)
+	        (product_topology R R_lower_limit_topology R R_lower_limit_topology).
+	      { exact (product_topology_is_topology R R_lower_limit_topology R R_lower_limit_topology HTll HTll). }
+	      claim Hsub: affine_line_R2 a b c c= setprod R R.
+	      { exact (affine_line_R2_subset_R2 a b c). }
+	      claim HTcod: topology_on (affine_line_R2 a b c)
+	        (subspace_topology (setprod R R)
+	          (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	          (affine_line_R2 a b c)).
+	      { exact (subspace_topology_is_topology (setprod R R)
+	        (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	        (affine_line_R2 a b c) HTprod Hsub). }
+		      claim Hfun: function_on f R (affine_line_R2 a b c).
+		      { let x. assume HxR: x :e R.
+		        exact (affine_line_R2_param_by_x_in_line a b c x HaR HbR HcR HxR Hbne). }
+		      prove continuous_map R (discrete_topology R) (affine_line_R2 a b c)
+		        (subspace_topology (setprod R R)
+		          (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+		          (affine_line_R2 a b c)) f.
+		      claim HTd: topology_on R (discrete_topology R).
+		      { exact (discrete_topology_on R). }
+		      prove topology_on R (discrete_topology R) /\ topology_on (affine_line_R2 a b c)
+		        (subspace_topology (setprod R R)
+		          (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+		          (affine_line_R2 a b c)) /\ function_on f R (affine_line_R2 a b c) /\
+		        forall V:set, V :e (subspace_topology (setprod R R)
+		          (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+		          (affine_line_R2 a b c)) -> preimage_of R f V :e discrete_topology R.
+		      apply andI.
+		      - prove (topology_on R (discrete_topology R) /\ topology_on (affine_line_R2 a b c)
+		          (subspace_topology (setprod R R)
+		            (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+		            (affine_line_R2 a b c))) /\ function_on f R (affine_line_R2 a b c).
+		        apply andI.
+		        * apply andI.
+		          + exact HTd.
+		          + exact HTcod.
+		        * exact Hfun.
+		      - let V. assume HV: V :e (subspace_topology (setprod R R)
+		          (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+		          (affine_line_R2 a b c)).
+		        prove preimage_of R f V :e discrete_topology R.
+		        claim HsubV: preimage_of R f V c= R.
+		        { let x. assume Hx: x :e preimage_of R f V.
+		          exact (SepE1 R (fun u:set => apply_fun f u :e V) x Hx). }
+		        exact (discrete_open_all R (preimage_of R f V) HsubV).
+		    - witness (projection1 R R).
+		      apply andI.
+		      + apply andI.
+			        * admit. (** FAIL **)
+		        * let x. assume HxR: x :e R.
+		          exact (projection1_after_affine_line_R2_param_by_x a b c x HaR HbR HcR HxR).
+		      + let p. assume Hp: p :e affine_line_R2 a b c.
+		        exact (affine_line_R2_param_by_x_after_projection1_on_line a b c p HaR HbR HcR Hbne Hp).
   - assume Hcase: b = 0 \/ ~ same_sign_nonzero_R a b.
 	  claim Hb0case: b = 0 ->
 	    exists f:set,
@@ -39629,19 +39703,61 @@ apply andI.
 		          exact (projection2_after_affine_line_R2_param_by_y a b c y HaR HcR HyR).
 		      + let p. assume Hp: p :e setprod {x0} R.
 		        exact (affine_line_R2_param_by_y_after_projection2_on_slice a b c p HaR HcR Hp). }
-  claim Hnotsigncase: ~ same_sign_nonzero_R a b ->
-    exists f:set,
-      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
-        (subspace_topology (setprod R R)
-           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
-           (affine_line_R2 a b c)) f.
-  { assume Hnotsign: ~ same_sign_nonzero_R a b.
-    witness (affine_line_R2_param_by_x a b c).
-    admit. }
-  exact (Hcase
-    (exists f:set,
-      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
-        (subspace_topology (setprod R R)
+	  claim Hnotsigncase: ~ same_sign_nonzero_R a b ->
+	    exists f:set,
+	      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+	        (subspace_topology (setprod R R)
+	           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	           (affine_line_R2 a b c)) f.
+	  { assume Hnotsign: ~ same_sign_nonzero_R a b.
+	    apply (xm (b = 0)).
+	    - assume Hb0: b = 0.
+	      exact (Hb0case Hb0).
+	    - assume Hbne: b <> 0.
+	      witness (affine_line_R2_param_by_x a b c).
+	      prove continuous_map R R_lower_limit_topology (affine_line_R2 a b c)
+	        (subspace_topology (setprod R R)
+	           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	           (affine_line_R2 a b c))
+	        (affine_line_R2_param_by_x a b c)
+	      /\ exists g:set,
+	           continuous_map (affine_line_R2 a b c)
+	             (subspace_topology (setprod R R)
+	               (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	               (affine_line_R2 a b c))
+	             R R_lower_limit_topology g
+	           /\ (forall x:set, x :e R -> apply_fun g (apply_fun (affine_line_R2_param_by_x a b c) x) = x)
+	           /\ (forall y:set, y :e affine_line_R2 a b c -> apply_fun (affine_line_R2_param_by_x a b c) (apply_fun g y) = y).
+	      apply andI.
+		      - admit. (** FAIL **)
+	      - witness (projection1 R R).
+	        apply andI.
+	        + apply andI.
+	          * claim HTll: topology_on R R_lower_limit_topology.
+	            { exact R_lower_limit_topology_is_topology. }
+	            claim HTprod: topology_on (setprod R R)
+	              (product_topology R R_lower_limit_topology R R_lower_limit_topology).
+	            { exact (product_topology_is_topology R R_lower_limit_topology R R_lower_limit_topology HTll HTll). }
+	            claim Hproj1Cont:
+	              continuous_map (setprod R R)
+	                (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	                R R_lower_limit_topology (projection1 R R).
+	            { exact (projection1_continuous_in_product R R_lower_limit_topology R R_lower_limit_topology HTll HTll). }
+	            claim Hsub: affine_line_R2 a b c c= setprod R R.
+	            { exact (affine_line_R2_subset_R2 a b c). }
+	            exact (continuous_on_subspace_rule (setprod R R)
+	              (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	              R R_lower_limit_topology (projection1 R R) (affine_line_R2 a b c)
+	              HTprod HTll Hsub Hproj1Cont).
+	          * let x. assume HxR: x :e R.
+	            exact (projection1_after_affine_line_R2_param_by_x a b c x HaR HbR HcR HxR).
+	        + let p. assume Hp: p :e affine_line_R2 a b c.
+	          exact (affine_line_R2_param_by_x_after_projection1_on_line a b c p HaR HbR HcR Hbne Hp).
+	  }
+	  exact (Hcase
+	    (exists f:set,
+	      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+	        (subspace_topology (setprod R R)
            (product_topology R R_lower_limit_topology R R_lower_limit_topology)
            (affine_line_R2 a b c)) f)
     Hb0case
