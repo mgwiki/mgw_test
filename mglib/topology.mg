@@ -50034,6 +50034,29 @@ Qed.
 Definition compact_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
 
+(** Helper: extract topology_on from compact_space **)
+Theorem compact_space_topology : forall X Tx:set,
+  compact_space X Tx -> topology_on X Tx.
+let X Tx.
+assume H: compact_space X Tx.
+exact (andEL (topology_on X Tx)
+             (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam)
+             H).
+Qed.
+
+(** Helper: extract finite subcover property from compact_space **)
+Theorem compact_space_subcover_property : forall X Tx:set,
+  compact_space X Tx ->
+  forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
+let X Tx.
+assume H: compact_space X Tx.
+claim Hprop: forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
+{ exact (andER (topology_on X Tx)
+               (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam)
+               H). }
+exact Hprop.
+Qed.
+
 (** from §26: open cover characterization **) 
 (** LATEX VERSION: In a compact space, every open cover has a finite subcover. **)
 Theorem Heine_Borel_subcover : forall X Tx Fam:set,
@@ -50044,10 +50067,7 @@ let X Tx Fam.
 assume Hcomp: compact_space X Tx.
 assume HFam: open_cover_of X Tx Fam.
 prove has_finite_subcover X Tx Fam.
-(** compact_space X Tx = topology_on X Tx /\ (forall Fam, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) **)
-claim Hsubcover: forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
-{ exact (andER (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
-exact (Hsubcover Fam HFam).
+exact (compact_space_subcover_property X Tx Hcomp Fam HFam).
 Qed.
 
 (** from §26 Lemma 26.1: covering a subspace by ambient opens **)
@@ -50389,9 +50409,9 @@ assume HY: closed_in X Tx Y.
 prove compact_space Y (subspace_topology X Tx Y).
 set Ty := subspace_topology X Tx Y.
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+{ exact (compact_space_topology X Tx Hcomp). }
 claim HsubcoverX: forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
-{ exact (andER (topology_on X Tx) (forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam) Hcomp). }
+{ exact (compact_space_subcover_property X Tx Hcomp). }
 claim HYsub: Y c= X.
 { exact (closed_in_subset X Tx Y HY). }
 (** Choose an open complement U of Y in X. **)
