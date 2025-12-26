@@ -48427,7 +48427,28 @@ Qed.
 (** placeholders: properties needed to justify concatenation via the pasting lemma **)
 Theorem unit_interval_halves_cover :
   unit_interval_left_half :\/: unit_interval_right_half = unit_interval.
-admit.
+prove unit_interval_left_half :\/: unit_interval_right_half = unit_interval.
+apply set_ext.
+- let t. assume Ht: t :e unit_interval_left_half :\/: unit_interval_right_half.
+  prove t :e unit_interval.
+  apply (binunionE unit_interval_left_half unit_interval_right_half t Ht).
+  * assume HtL: t :e unit_interval_left_half.
+    exact (unit_interval_left_half_sub t HtL).
+  * assume HtR: t :e unit_interval_right_half.
+    exact (unit_interval_right_half_sub t HtR).
+- let t. assume HtI: t :e unit_interval.
+  prove t :e unit_interval_left_half :\/: unit_interval_right_half.
+  apply (xm (Rlt t (eps_ 1))).
+  * assume Htlt: Rlt t (eps_ 1).
+    claim Hnlt: ~(Rlt (eps_ 1) t).
+    { exact (not_Rlt_sym t (eps_ 1) Htlt). }
+    claim HtL: t :e unit_interval_left_half.
+    { exact (SepI unit_interval (fun t0:set => ~(Rlt (eps_ 1) t0)) t HtI Hnlt). }
+    exact (binunionI1 unit_interval_left_half unit_interval_right_half t HtL).
+  * assume Hnlt: ~(Rlt t (eps_ 1)).
+    claim HtR: t :e unit_interval_right_half.
+    { exact (SepI unit_interval (fun t0:set => ~(Rlt t0 (eps_ 1))) t HtI Hnlt). }
+    exact (binunionI2 unit_interval_left_half unit_interval_right_half t HtR).
 Qed.
 
 Theorem unit_interval_halves_closed :
@@ -48437,8 +48458,59 @@ admit.
 Qed.
 
 Theorem unit_interval_halves_intersection :
-  (unit_interval_left_half :/\: unit_interval_right_half) = Sing (eps_ 1).
-admit.
+  (unit_interval_left_half :/\: unit_interval_right_half) = {eps_ 1}.
+prove (unit_interval_left_half :/\: unit_interval_right_half) = {eps_ 1}.
+apply set_ext.
+- let t. assume Ht: t :e (unit_interval_left_half :/\: unit_interval_right_half).
+  prove t :e {eps_ 1}.
+  claim HtL: t :e unit_interval_left_half.
+  { exact (binintersectE1 unit_interval_left_half unit_interval_right_half t Ht). }
+  claim HtR: t :e unit_interval_right_half.
+  { exact (binintersectE2 unit_interval_left_half unit_interval_right_half t Ht). }
+  claim HtI: t :e unit_interval.
+  { exact (unit_interval_left_half_sub t HtL). }
+  claim HtReal: t :e R.
+  { exact (unit_interval_sub_R t HtI). }
+  claim HeReal: eps_ 1 :e R.
+  { exact eps_1_in_R. }
+  claim HtS: SNo t.
+  { exact (real_SNo t HtReal). }
+  claim HeS: SNo (eps_ 1).
+  { exact (real_SNo (eps_ 1) HeReal). }
+  claim Hnlt_et: ~(Rlt (eps_ 1) t).
+  { exact (SepE2 unit_interval (fun t0:set => ~(Rlt (eps_ 1) t0)) t HtL). }
+  claim Hnlt_te: ~(Rlt t (eps_ 1)).
+  { exact (SepE2 unit_interval (fun t0:set => ~(Rlt t0 (eps_ 1))) t HtR). }
+  apply (SNoLt_trichotomy_or_impred t (eps_ 1) HtS HeS (t :e {eps_ 1})).
+  * assume HtltS: t < (eps_ 1).
+    claim Htlt: Rlt t (eps_ 1).
+    { exact (RltI t (eps_ 1) HtReal HeReal HtltS). }
+    apply FalseE.
+    exact (Hnlt_te Htlt).
+  * assume Heq: t = eps_ 1.
+    rewrite Heq.
+    exact (SingI (eps_ 1)).
+  * assume HeltS: (eps_ 1) < t.
+    claim Helt: Rlt (eps_ 1) t.
+    { exact (RltI (eps_ 1) t HeReal HtReal HeltS). }
+    apply FalseE.
+    exact (Hnlt_et Helt).
+ - let t. assume Ht: t :e {eps_ 1}.
+  prove t :e (unit_interval_left_half :/\: unit_interval_right_half).
+  claim Hteq: t = eps_ 1.
+  { exact (SingE (eps_ 1) t Ht). }
+  rewrite Hteq.
+  claim HeI: eps_ 1 :e unit_interval.
+  { exact eps_1_in_unit_interval. }
+  claim Hnlt_e: ~(Rlt (eps_ 1) (eps_ 1)).
+  { exact (not_Rlt_refl (eps_ 1) eps_1_in_R). }
+  claim Hnlt_e2: ~(Rlt (eps_ 1) (eps_ 1)).
+  { exact (not_Rlt_refl (eps_ 1) eps_1_in_R). }
+  claim HeL: eps_ 1 :e unit_interval_left_half.
+  { exact (SepI unit_interval (fun t0:set => ~(Rlt (eps_ 1) t0)) (eps_ 1) HeI Hnlt_e). }
+  claim HeR: eps_ 1 :e unit_interval_right_half.
+  { exact (SepI unit_interval (fun t0:set => ~(Rlt t0 (eps_ 1))) (eps_ 1) HeI Hnlt_e2). }
+  exact (binintersectI unit_interval_left_half unit_interval_right_half (eps_ 1) HeL HeR).
 Qed.
 
 Theorem double_map_function_on :
