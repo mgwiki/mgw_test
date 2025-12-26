@@ -20781,6 +20781,33 @@ claim HSingS: SNo {1}.
 exact (Sing1_not_SNo HSingS).
 Qed.
 
+(** helper: rational_numbers is not setprod 2 omega **)
+Theorem rational_numbers_neq_setprod_2_omega : rational_numbers <> setprod 2 omega.
+assume Heq: rational_numbers = setprod 2 omega.
+prove False.
+apply setprod_2_omega_neq_rational_numbers.
+rewrite <- Heq.
+reflexivity.
+Qed.
+
+(** helper: rational_numbers is not setprod R R **)
+Theorem rational_numbers_neq_setprod_R_R : rational_numbers <> setprod R R.
+assume Heq: rational_numbers = setprod R R.
+prove False.
+apply setprod_R_R_neq_rational_numbers.
+rewrite <- Heq.
+reflexivity.
+Qed.
+
+(** helper: rational_numbers is not R **)
+Theorem rational_numbers_neq_R : rational_numbers <> R.
+assume Heq: rational_numbers = R.
+prove False.
+apply R_neq_rational_numbers.
+rewrite <- Heq.
+reflexivity.
+Qed.
+
 (** helper: unfold order_rel on setprod 2 omega to the dictionary-order case **)
 Theorem order_rel_setprod_2_omega_unfold : forall a b:set,
   order_rel (setprod 2 omega) a b ->
