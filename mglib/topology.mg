@@ -24866,7 +24866,77 @@ Qed.
 (** helper: flip_unit_interval is a self-map of the unit interval (placeholder) **)
 Theorem flip_unit_interval_function_on :
   function_on flip_unit_interval unit_interval unit_interval.
-admit.
+let t.
+assume HtI: t :e unit_interval.
+prove apply_fun flip_unit_interval t :e unit_interval.
+claim HtR: t :e R.
+{ exact (unit_interval_sub_R t HtI). }
+claim Htprop: ~(Rlt t 0) /\ ~(Rlt 1 t).
+{ exact (SepE2 R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0)) t HtI). }
+claim Hnlt_t0: ~(Rlt t 0).
+{ exact (andEL (~(Rlt t 0)) (~(Rlt 1 t)) Htprop). }
+claim Hnlt_1t: ~(Rlt 1 t).
+{ exact (andER (~(Rlt t 0)) (~(Rlt 1 t)) Htprop). }
+claim HmR: minus_SNo t :e R.
+{ exact (real_minus_SNo t HtR). }
+rewrite (flip_unit_interval_apply t HtI).
+prove (add_SNo 1 (minus_SNo t)) :e unit_interval.
+claim HsumR: add_SNo 1 (minus_SNo t) :e R.
+{ exact (real_add_SNo 1 real_1 (minus_SNo t) HmR). }
+claim HtS: SNo t.
+{ exact (real_SNo t HtR). }
+claim Hm1R: minus_SNo 1 :e R.
+{ exact (real_minus_SNo 1 real_1). }
+claim Hm1S: SNo (minus_SNo 1).
+{ exact (real_SNo (minus_SNo 1) Hm1R). }
+claim HmtS: SNo (minus_SNo t).
+{ exact (real_SNo (minus_SNo t) HmR). }
+
+(** lower bound: ~( (1 + (-t)) < 0 ), using add_SNo cancellation **)
+claim Hnlt_sum0: ~(Rlt (add_SNo 1 (minus_SNo t)) 0).
+{ assume Hlt: Rlt (add_SNo 1 (minus_SNo t)) 0.
+  prove False.
+  claim HltS: (add_SNo 1 (minus_SNo t)) < 0.
+  { exact (RltE_lt (add_SNo 1 (minus_SNo t)) 0 Hlt). }
+  claim HltS1: (add_SNo 1 (minus_SNo t)) < (add_SNo 1 (minus_SNo 1)).
+  { rewrite (add_SNo_minus_SNo_rinv 1 SNo_1).
+    exact HltS. }
+  claim Hmtltm1: (minus_SNo t) < (minus_SNo 1).
+  { exact (add_SNo_Lt2_cancel 1 (minus_SNo t) (minus_SNo 1) SNo_1 HmtS Hm1S HltS1). }
+  claim H1ltmm: 1 < minus_SNo (minus_SNo t).
+  { exact (minus_SNo_Lt_contra2 (minus_SNo t) 1 HmtS SNo_1 Hmtltm1). }
+  claim H1ltt: 1 < t.
+  { rewrite <- (minus_SNo_invol t HtS).
+    exact H1ltmm. }
+  claim H1lt: Rlt 1 t.
+  { exact (RltI 1 t real_1 HtR H1ltt). }
+  exact (Hnlt_1t H1lt). }
+
+(** upper bound: ~( 1 < (1 + (-t)) ), using add_SNo cancellation **)
+claim Hnlt_1sum: ~(Rlt 1 (add_SNo 1 (minus_SNo t))).
+{ assume Hlt: Rlt 1 (add_SNo 1 (minus_SNo t)).
+  prove False.
+  claim HltS: 1 < (add_SNo 1 (minus_SNo t)).
+  { exact (RltE_lt 1 (add_SNo 1 (minus_SNo t)) Hlt). }
+  claim HltS1: (add_SNo 1 0) < (add_SNo 1 (minus_SNo t)).
+  { rewrite (add_SNo_0R 1 SNo_1).
+    exact HltS. }
+  claim H0ltmt: 0 < (minus_SNo t).
+  { exact (add_SNo_Lt2_cancel 1 0 (minus_SNo t) SNo_1 SNo_0 HmtS HltS1). }
+  claim Htltm0: t < minus_SNo 0.
+  { exact (minus_SNo_Lt_contra2 0 t SNo_0 HtS H0ltmt). }
+  claim Htlt0S: t < 0.
+  { rewrite <- minus_SNo_0.
+    exact Htltm0. }
+  claim Htlt0: Rlt t 0.
+  { exact (RltI t 0 HtR real_0 Htlt0S). }
+  exact (Hnlt_t0 Htlt0). }
+
+exact (SepI R (fun x0:set => ~(Rlt x0 0) /\ ~(Rlt 1 x0))
+           (add_SNo 1 (minus_SNo t)) HsumR
+           (andI (~(Rlt (add_SNo 1 (minus_SNo t)) 0))
+                 (~(Rlt 1 (add_SNo 1 (minus_SNo t))))
+                 Hnlt_sum0 Hnlt_1sum)).
 Qed.
 
 (** helper: neighborhoods of eps_ 1 in the unit interval contain other points **)
