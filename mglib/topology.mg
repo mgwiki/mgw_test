@@ -43784,11 +43784,7 @@ apply (xm (z :e A)).
       U0 :e subspace_topology R R_standard_topology A /\
       V0 :e subspace_topology R R_standard_topology A /\
       separation_of A U0 V0).
-  { exact (andER (topology_on A (subspace_topology R R_standard_topology A))
-                 (~(exists U0 V0:set, U0 :e subspace_topology R R_standard_topology A /\
-                                   V0 :e subspace_topology R R_standard_topology A /\
-                                   separation_of A U0 V0))
-                 Hconn). }
+  { exact (connected_space_no_separation A (subspace_topology R R_standard_topology A) Hconn). }
   (** Show U and V are in the subspace topology on A. **)
   claim HUinTy: U :e subspace_topology R R_standard_topology A.
   { (** witness the open left ray in R **)
