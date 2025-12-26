@@ -38971,13 +38971,47 @@ prove ( (b = 0 ->
                (affine_line_R2 a b c)) f).
 apply andI.
   - apply andI.
-	  + apply andI.
-	    * assume Hb0: b = 0.
-	      witness (affine_line_R2_param_by_y a b c).
+		  + apply andI.
+		    * assume Hb0: b = 0.
+		      claim Ha0: a <> 0.
+		      { prove ~ (a = 0).
+		        assume Ha0eq: a = 0.
+		        prove False.
+		        apply Hnotboth.
+		        apply andI.
+		        - exact Ha0eq.
+		        - exact Hb0. }
+		      set x0 := div_SNo c a.
+		      claim HeqLine: affine_line_R2 a b c = setprod {x0} R.
+		      { exact (affine_line_R2_b0_eq_slice a b c HaR HbR HcR Hb0 Ha0). }
+		      witness (affine_line_R2_param_by_y a b c).
+		      rewrite HeqLine.
+		      prove continuous_map R R_standard_topology (setprod {x0} R)
+		        (subspace_topology (setprod R R)
+		           (product_topology R R_lower_limit_topology R R_standard_topology)
+		           (setprod {x0} R))
+		        (affine_line_R2_param_by_y a b c)
+		      /\ exists g:set,
+		           continuous_map (setprod {x0} R)
+		             (subspace_topology (setprod R R)
+		               (product_topology R R_lower_limit_topology R R_standard_topology)
+		               (setprod {x0} R))
+		             R R_standard_topology g
+		           /\ (forall x:set, x :e R -> apply_fun g (apply_fun (affine_line_R2_param_by_y a b c) x) = x)
+		           /\ (forall y:set, y :e setprod {x0} R -> apply_fun (affine_line_R2_param_by_y a b c) (apply_fun g y) = y).
+		      apply andI.
+		      - admit.
+		      - witness (projection2 R R).
+		        apply andI.
+		        + apply andI.
+		          * admit.
+		          * let y. assume HyR: y :e R.
+		            exact (projection2_after_affine_line_R2_param_by_y a b c y HaR HcR HyR).
+		        + let p. assume Hp: p :e setprod {x0} R.
+		          exact (affine_line_R2_param_by_y_after_projection2_on_slice a b c p HaR HcR Hp).
+	    * assume Hbne: b <> 0.
+	      witness (affine_line_R2_param_by_x a b c).
 	      admit.
-    * assume Hbne: b <> 0.
-      witness (affine_line_R2_param_by_x a b c).
-      admit.
   + assume Hneg: b <> 0 /\ same_sign_nonzero_R a b.
     witness (affine_line_R2_param_by_x a b c).
     admit.
@@ -38989,8 +39023,42 @@ apply andI.
 	           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
 	           (affine_line_R2 a b c)) f.
 	  { assume Hb0: b = 0.
+	    claim Ha0: a <> 0.
+	    { prove ~ (a = 0).
+	      assume Ha0eq: a = 0.
+	      prove False.
+	      apply Hnotboth.
+	      apply andI.
+	      - exact Ha0eq.
+	      - exact Hb0. }
+	    set x0 := div_SNo c a.
+	    claim HeqLine: affine_line_R2 a b c = setprod {x0} R.
+	    { exact (affine_line_R2_b0_eq_slice a b c HaR HbR HcR Hb0 Ha0). }
 	    witness (affine_line_R2_param_by_y a b c).
-	    admit. }
+	    rewrite HeqLine.
+	    prove continuous_map R R_lower_limit_topology (setprod {x0} R)
+	      (subspace_topology (setprod R R)
+	         (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	         (setprod {x0} R))
+	      (affine_line_R2_param_by_y a b c)
+	    /\ exists g:set,
+	         continuous_map (setprod {x0} R)
+	           (subspace_topology (setprod R R)
+	             (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	             (setprod {x0} R))
+	           R R_lower_limit_topology g
+	         /\ (forall x:set, x :e R -> apply_fun g (apply_fun (affine_line_R2_param_by_y a b c) x) = x)
+	         /\ (forall y:set, y :e setprod {x0} R -> apply_fun (affine_line_R2_param_by_y a b c) (apply_fun g y) = y).
+	    apply andI.
+	    - admit.
+	    - witness (projection2 R R).
+	      apply andI.
+	      + apply andI.
+	        * admit.
+	        * let y. assume HyR: y :e R.
+	          exact (projection2_after_affine_line_R2_param_by_y a b c y HaR HcR HyR).
+	      + let p. assume Hp: p :e setprod {x0} R.
+	        exact (affine_line_R2_param_by_y_after_projection2_on_slice a b c p HaR HcR Hp). }
   claim Hnotsigncase: ~ same_sign_nonzero_R a b ->
     exists f:set,
       homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
