@@ -8348,6 +8348,7 @@ Definition comparable_topologies : set -> set -> prop := fun T1 T2 =>
 
 (** from §12: equality of topologies **)
 (** LATEX VERSION: Topology equality on X means both are topologies on X and have identical collections of opens. **)
+(** SUSPICIOUS DEFINITION: This is literal set equality `T1 = T2` bundled with `topology_on` assumptions; statements using this should not confuse it with extensional “same open sets” without equality, but in this development sets are extensional anyway. **)
 Definition topology_eq : set -> set -> set -> prop := fun X T1 T2 =>
   topology_on X T1 /\ topology_on X T2 /\ T1 = T2.
 
@@ -8412,6 +8413,7 @@ Qed.
 
 (** from §12: strict fineness/coarseness **)
 (** LATEX VERSION: T' is strictly finer than T if T'⊃T and not conversely; strictly coarser is the dual. **)
+(** SUSPICIOUS DEFINITION: This is stated for arbitrary sets of subsets; it does not require `T` or `T'` to satisfy `topology_on` unless added separately. **)
 Definition strictly_finer_than : set -> set -> prop := fun T' T => finer_than T' T /\ ~finer_than T T'.
 
 Definition strictly_coarser_than : set -> set -> prop := fun T' T => coarser_than T' T /\ ~coarser_than T T'.
