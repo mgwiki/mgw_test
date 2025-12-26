@@ -6770,6 +6770,7 @@ apply andI.
 
 (** from §12: closed set as complement of open set **)
 (** LATEX VERSION: A set C is closed in X (with topology T) if there exists an open set U∈T whose complement in X equals C. **)
+(** SUSPICIOUS DEFINITION: This is packaged with an explicit subset condition `C c= X` and an existential complement witness; later closure lemmas must unpack that witness carefully. **)
 Definition closed_in : set -> set -> set -> prop := fun X T C =>
   topology_on X T /\ (C c= X /\ exists U :e T, C = X :\: U).
 
