@@ -26324,7 +26324,7 @@ Theorem subspace_topology_eq_of_eq : forall X T T' Y:set,
 let X T T' Y.
 assume Heq: T = T'.
 prove subspace_topology X T Y = subspace_topology X T' Y.
-rewrite Heq at 2.
+rewrite Heq.
 reflexivity.
 Qed.
 
