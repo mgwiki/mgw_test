@@ -20553,19 +20553,27 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
     claim Hi1: i = 1.
     { claim Ht0: (1,0) 0 = 1.
       { exact (tuple_2_0_eq 1 0). }
-      rewrite H10Eq in Ht0.
+      claim Ht0im: (i,m) 0 = 1.
+      { prove (i,m) 0 = 1.
+        rewrite <- H10Eq at 1.
+        exact Ht0. }
       claim Ht0i: (i,m) 0 = i.
       { exact (tuple_2_0_eq i m). }
-      rewrite Ht0i in Ht0.
-      exact Ht0. }
+      prove i = 1.
+      rewrite <- Ht0i at 1.
+      exact Ht0im. }
     claim Hm0: m = 0.
     { claim Ht1: (1,0) 1 = 0.
       { exact (tuple_2_1_eq 1 0). }
-      rewrite H10Eq in Ht1.
+      claim Ht1im: (i,m) 1 = 0.
+      { prove (i,m) 1 = 0.
+        rewrite <- H10Eq at 1.
+        exact Ht1. }
       claim Ht1m: (i,m) 1 = m.
       { exact (tuple_2_1_eq i m). }
-      rewrite Ht1m in Ht1.
-      exact Ht1. }
+      prove m = 0.
+      rewrite <- Ht1m at 1.
+      exact Ht1im. }
 
     claim Hnotij: ~(i :e j).
     { assume Hij.
