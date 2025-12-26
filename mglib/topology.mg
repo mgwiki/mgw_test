@@ -60551,42 +60551,25 @@ Definition linear_continuum : set -> set -> prop := fun X Tx =>
 
 (** from §30 Exercise 1a: one-point sets are G_delta in first-countable T1 **)
 (** LATEX VERSION: In a first-countable T₁ space, every one-point set is a G_δ set. **)
-Axiom ex30_1a_onepoint_Gdelta_firstcountable_T1_axiom : forall X Tx x:set,
-  first_countable_space X Tx ->
-  T1_space X Tx ->
-  x :e X ->
-  Gdelta_in X Tx (Sing x).
 Theorem ex30_1a_onepoint_Gdelta_firstcountable_T1 : forall X Tx x:set,
   first_countable_space X Tx ->
   T1_space X Tx ->
   x :e X ->
   Gdelta_in X Tx (Sing x).
-exact ex30_1a_onepoint_Gdelta_firstcountable_T1_axiom.
+admit.
 Qed.
 
 (** from §30 Exercise 1b: space with G_delta points but not first-countable **)
 (** LATEX VERSION: There exists a space where every one-point set is G_δ but which doesn't satisfy the first countability axiom. **)
-Axiom ex30_1b_Gdelta_not_firstcountable_exists_axiom :
-  exists X:set, exists Tx:set,
-    topology_on X Tx /\
-    (forall x:set, x :e X -> Gdelta_in X Tx (Sing x)) /\
-    ~ first_countable_space X Tx.
 Theorem ex30_1b_Gdelta_not_firstcountable_exists :
   exists X:set, exists Tx:set,
     topology_on X Tx /\
     (forall x:set, x :e X -> Gdelta_in X Tx (Sing x)) /\
     ~ first_countable_space X Tx.
-exact ex30_1b_Gdelta_not_firstcountable_exists_axiom.
+admit.
 Qed.
 (** from §30 Exercise 2: every basis contains countable basis when space has one **)
 (** LATEX VERSION: If X has a countable basis, then every basis for X contains a countable basis. **)
-Axiom ex30_2_basis_contains_countable_axiom : forall X Tx:set, forall Basis:set,
-  second_countable_space X Tx ->
-  basis_on X Basis ->
-  exists CountableSub:set,
-    CountableSub c= Basis /\
-    countable CountableSub /\
-    basis_on X CountableSub.
 Theorem ex30_2_basis_contains_countable : forall X Tx:set, forall Basis:set,
   second_countable_space X Tx ->
   basis_on X Basis ->
@@ -60594,38 +60577,27 @@ Theorem ex30_2_basis_contains_countable : forall X Tx:set, forall Basis:set,
     CountableSub c= Basis /\
     countable CountableSub /\
     basis_on X CountableSub.
-exact ex30_2_basis_contains_countable_axiom.
+admit.
 Qed.
 (** from §30 Exercise 3: uncountable subset has uncountably many limit points **)
 (** LATEX VERSION: If X has countable basis and A is uncountable subset, then uncountably many points of A are limit points. **)
 (** FIXED: Use limit_point_of X Tx A x (space, topology, set, point), not a permuted argument order. **) 
-Axiom ex30_3_uncountably_many_limit_points_axiom : forall X Tx A:set,
-  second_countable_space X Tx ->
-  A c= X ->
-  ~ countable A ->
-  ~ countable {x :e A | limit_point_of X Tx A x}.
 Theorem ex30_3_uncountably_many_limit_points : forall X Tx A:set,
   second_countable_space X Tx ->
   A c= X ->
   ~ countable A ->
   ~ countable {x :e A | limit_point_of X Tx A x}.
-exact ex30_3_uncountably_many_limit_points_axiom.
+admit.
 Qed.
 (** from §30 Exercise 4: compact metrizable implies second countable **)
 (** LATEX VERSION: Every compact metrizable space has a countable basis. **)
-Axiom ex30_4_compact_metrizable_second_countable_axiom : forall X Tx d:set,
-  compact_space X Tx ->
-  metrizable X Tx ->
-  metric_on X d ->
-  Tx = metric_topology X d ->
-  second_countable_space X Tx.
 Theorem ex30_4_compact_metrizable_second_countable : forall X Tx d:set,
   compact_space X Tx ->
   metrizable X Tx ->
   metric_on X d ->
   Tx = metric_topology X d ->
   second_countable_space X Tx.
-exact ex30_4_compact_metrizable_second_countable_axiom.
+admit.
 Qed.
 (** from §30 Exercise 5a: metrizable with countable dense has countable basis **)
 (** LATEX VERSION: Every metrizable space with a countable dense subset has a countable basis. **)
