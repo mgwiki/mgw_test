@@ -13352,6 +13352,7 @@ assume HinfX: infinite X.
 prove exists U V:set,
   U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
   ~(Union (UPair U V) :e infinite_complement_family X).
+(** SUSPICIOUS DEFINITION: This needs a set-theoretic construction on an arbitrary infinite set X producing U,V with infinite complements but with (X\\(U∪V)) finite nonempty; this is nontrivial in this development, so the witness construction is currently admitted. **)
 admit.
 Qed.
 
@@ -26090,9 +26091,11 @@ prove order_topology Y = subspace_topology X (order_topology X) Y.
 apply set_ext.
 - let U. assume HU: U :e order_topology Y.
   prove U :e subspace_topology X (order_topology X) Y.
+(** SUSPICIOUS DEFINITION: This requires unfolding generated_topology and showing that order-topology basis elements in Y arise as intersections with corresponding basis elements in X, using convexity; the detailed proof is not yet written here. **)
   admit.
 - let U. assume HU: U :e subspace_topology X (order_topology X) Y.
   prove U :e order_topology Y.
+(** SUSPICIOUS DEFINITION: Converse direction also requires translating subspace basic opens back to order-topology basics in Y; currently admitted. **)
   admit.
 Qed.
 
