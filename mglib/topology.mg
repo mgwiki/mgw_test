@@ -11140,6 +11140,35 @@ apply (ordinal_trichotomy_or_impred N1 N2 Hord1 Hord2
       * exact Hr3pos.
     + exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
   - exact (Rlt_tra r3 (eps_ N2) b HepsNlt2Rlt Heps2Rlt).
+- assume Heq: N1 = N2.
+  set N := ordsucc N1.
+  claim HNo: N :e omega.
+  { exact (omega_ordsucc N1 HN1o). }
+  set r3 := eps_ N.
+  claim Hr3R: r3 :e R.
+  { exact (SNoS_omega_real r3 (SNo_eps_SNoS_omega N HNo)). }
+  claim Hr3posS: 0 < r3.
+  { exact (SNo_eps_pos N HNo). }
+  claim Hr3pos: Rlt 0 r3.
+  { exact (RltI 0 r3 real_0 Hr3R Hr3posS). }
+  claim HN1in: N1 :e N.
+  { exact (ordsuccI2 N1). }
+  claim HepsNlt1: r3 < eps_ N1.
+  { exact (SNo_eps_decr N HNo N1 HN1in). }
+  claim HepsNlt1Rlt: Rlt r3 (eps_ N1).
+  { exact (RltI r3 (eps_ N1) Hr3R Heps1R HepsNlt1). }
+  witness r3.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact Hr3R.
+      * exact Hr3pos.
+    + exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
+  - claim Heps1Rltb: Rlt (eps_ N1) b.
+    { prove Rlt (eps_ N1) b.
+      rewrite Heq at 1.
+      exact Heps2Rlt. }
+    exact (Rlt_tra r3 (eps_ N1) b HepsNlt1Rlt Heps1Rltb).
 - assume H21: N2 :e N1.
   set N := ordsucc N1.
   claim HNo: N :e omega.
@@ -11171,35 +11200,6 @@ apply (ordinal_trichotomy_or_impred N1 N2 Hord1 Hord2
       * exact Hr3pos.
     + exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
   - exact (Rlt_tra r3 (eps_ N2) b HepsNlt2Rlt Heps2Rlt).
-- assume Heq: N1 = N2.
-  set N := ordsucc N1.
-  claim HNo: N :e omega.
-  { exact (omega_ordsucc N1 HN1o). }
-  set r3 := eps_ N.
-  claim Hr3R: r3 :e R.
-  { exact (SNoS_omega_real r3 (SNo_eps_SNoS_omega N HNo)). }
-  claim Hr3posS: 0 < r3.
-  { exact (SNo_eps_pos N HNo). }
-  claim Hr3pos: Rlt 0 r3.
-  { exact (RltI 0 r3 real_0 Hr3R Hr3posS). }
-  claim HN1in: N1 :e N.
-  { exact (ordsuccI2 N1). }
-  claim HepsNlt1: r3 < eps_ N1.
-  { exact (SNo_eps_decr N HNo N1 HN1in). }
-  claim HepsNlt1Rlt: Rlt r3 (eps_ N1).
-  { exact (RltI r3 (eps_ N1) Hr3R Heps1R HepsNlt1). }
-  witness r3.
-  apply andI.
-  - apply andI.
-    + apply andI.
-      * exact Hr3R.
-      * exact Hr3pos.
-    + exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
-  - claim Heps1Rltb: Rlt (eps_ N1) b.
-    { prove Rlt (eps_ N1) b.
-      rewrite Heq at 1.
-      exact Heps2Rlt. }
-    exact (Rlt_tra r3 (eps_ N1) b HepsNlt1Rlt Heps1Rltb).
 Qed.
 
 (** Helper: choose a single eps below four positive reals **)
