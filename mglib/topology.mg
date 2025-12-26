@@ -26283,6 +26283,20 @@ apply andI.
   exact (SepI rational_numbers (fun q:set => mul_SNo q q < 2) x HxQ Hxx).
 Qed.
 
+(** helper for §16 Exercise 7: the sqrt2 cut has no maximum element in Q **)
+(** LATEX VERSION: The cut {q∈Q | q^2<2} has no endpoint in Q. **)
+Theorem Q_sqrt2_cut_no_max : forall q:set,
+  q :e Q_sqrt2_cut -> exists r:set, r :e Q_sqrt2_cut /\ Rlt q r.
+admit.
+Qed.
+
+(** helper for §16 Exercise 7: the sqrt2 cut has no minimum element in Q **)
+(** LATEX VERSION: The cut {q∈Q | q^2<2} has no endpoint in Q. **)
+Theorem Q_sqrt2_cut_no_min : forall q:set,
+  q :e Q_sqrt2_cut -> exists r:set, r :e Q_sqrt2_cut /\ Rlt r q.
+admit.
+Qed.
+
 (** helper for §16 Exercise 7: the sqrt(2) cut in Q is not an interval or ray (endpoints must lie in Q) **)
 (** LATEX VERSION: {q∈Q | q^2<2} is not an interval or ray in Q since it has no endpoint in Q. **)
 Theorem Q_sqrt2_cut_not_interval_or_ray :
@@ -26292,7 +26306,155 @@ prove False.
 (** interval_or_ray_in X Y = (exists a b, interval_in ...) \/ (exists a, ray_in ...) **)
 apply H.
 - assume Hinterval: exists a b:set, a :e rational_numbers /\ b :e rational_numbers /\ interval_in rational_numbers a b Q_sqrt2_cut.
-  admit.
+  apply Hinterval.
+  let a. assume Hexb.
+  apply Hexb.
+  let b. assume Hab.
+  claim HabQ: a :e rational_numbers /\ b :e rational_numbers.
+  { exact (andEL (a :e rational_numbers /\ b :e rational_numbers) (interval_in rational_numbers a b Q_sqrt2_cut) Hab). }
+  claim HaQ: a :e rational_numbers.
+  { exact (andEL (a :e rational_numbers) (b :e rational_numbers) HabQ). }
+  claim HbQ: b :e rational_numbers.
+  { exact (andER (a :e rational_numbers) (b :e rational_numbers) HabQ). }
+  claim Hint: interval_in rational_numbers a b Q_sqrt2_cut.
+  { exact (andER (a :e rational_numbers /\ b :e rational_numbers) (interval_in rational_numbers a b Q_sqrt2_cut) Hab). }
+  claim H0cut: 0 :e Q_sqrt2_cut.
+  { exact zero_in_Q_sqrt2_cut. }
+  apply Hint.
+  - assume Hleft3: Q_sqrt2_cut = order_interval rational_numbers a b
+                \/ Q_sqrt2_cut = halfopen_interval_left_in rational_numbers a b
+                \/ Q_sqrt2_cut = halfopen_interval_right_in rational_numbers a b.
+    apply Hleft3.
+    + assume Hleft2: Q_sqrt2_cut = order_interval rational_numbers a b
+                  \/ Q_sqrt2_cut = halfopen_interval_left_in rational_numbers a b.
+      apply Hleft2.
+      * assume HeqOI: Q_sqrt2_cut = order_interval rational_numbers a b.
+        admit.
+      * assume HeqHL: Q_sqrt2_cut = halfopen_interval_left_in rational_numbers a b.
+        (** derive order_rel a b from 0 in the interval **)
+        claim H0in: 0 :e halfopen_interval_left_in rational_numbers a b.
+        { rewrite <- HeqHL. exact H0cut. }
+        claim H0pred: (0 = a \/ order_rel rational_numbers a 0) /\ order_rel rational_numbers 0 b.
+        { exact (SepE2 rational_numbers (fun x0:set => (x0 = a \/ order_rel rational_numbers a x0) /\ order_rel rational_numbers x0 b) 0 H0in). }
+        claim H0ab: 0 = a \/ order_rel rational_numbers a 0.
+        { exact (andEL (0 = a \/ order_rel rational_numbers a 0) (order_rel rational_numbers 0 b) H0pred). }
+        claim H0b: order_rel rational_numbers 0 b.
+        { exact (andER (0 = a \/ order_rel rational_numbers a 0) (order_rel rational_numbers 0 b) H0pred). }
+        claim Hab: order_rel rational_numbers a b.
+        { apply H0ab.
+          - assume H0eq: 0 = a.
+            rewrite <- H0eq.
+            exact H0b.
+          - assume Ha0: order_rel rational_numbers a 0.
+            claim Halt0: Rlt a 0.
+            { exact (order_rel_Q_implies_Rlt a 0 Ha0). }
+            claim H0blt: Rlt 0 b.
+            { exact (order_rel_Q_implies_Rlt 0 b H0b). }
+            claim Hablt: Rlt a b.
+            { exact (Rlt_tra a 0 b Halt0 H0blt). }
+            exact (Rlt_implies_order_rel_Q a b Hablt). }
+        (** show a is in the cut, then contradict no-minimum by pulling r<a back into the interval **)
+        claim HainI: a :e halfopen_interval_left_in rational_numbers a b.
+        { claim Heqaa: a = a.
+          { reflexivity. }
+          claim Hleft: a = a \/ order_rel rational_numbers a a.
+          { exact (orIL (a = a) (order_rel rational_numbers a a) Heqaa). }
+          exact (SepI rational_numbers
+                     (fun x0:set => (x0 = a \/ order_rel rational_numbers a x0) /\ order_rel rational_numbers x0 b)
+                     a
+                     HaQ
+                     (andI (a = a \/ order_rel rational_numbers a a)
+                           (order_rel rational_numbers a b)
+                           Hleft
+                           Hab)). }
+        claim HainCut: a :e Q_sqrt2_cut.
+        { rewrite HeqHL. exact HainI. }
+        apply (Q_sqrt2_cut_no_min a HainCut).
+        let r. assume Hrconj.
+        claim HrCut: r :e Q_sqrt2_cut.
+        { exact (andEL (r :e Q_sqrt2_cut) (Rlt r a) Hrconj). }
+        claim Hrlt: Rlt r a.
+        { exact (andER (r :e Q_sqrt2_cut) (Rlt r a) Hrconj). }
+        claim HrInI: r :e halfopen_interval_left_in rational_numbers a b.
+        { rewrite <- HeqHL. exact HrCut. }
+        claim HrPred: (r = a \/ order_rel rational_numbers a r) /\ order_rel rational_numbers r b.
+        { exact (SepE2 rational_numbers
+                     (fun x0:set => (x0 = a \/ order_rel rational_numbers a x0) /\ order_rel rational_numbers x0 b)
+                     r
+                     HrInI). }
+        claim HrLeft: r = a \/ order_rel rational_numbers a r.
+        { exact (andEL (r = a \/ order_rel rational_numbers a r) (order_rel rational_numbers r b) HrPred). }
+        apply HrLeft.
+	        - assume Hreq: r = a.
+	          apply (not_Rlt_refl a (rational_numbers_in_R a HaQ)).
+	          rewrite <- Hreq at 1.
+	          exact Hrlt.
+        - assume Hrel: order_rel rational_numbers a r.
+          claim Halt: Rlt a r.
+          { exact (order_rel_Q_implies_Rlt a r Hrel). }
+          exact ((not_Rlt_sym r a Hrlt) Halt).
+    + assume HeqHR: Q_sqrt2_cut = halfopen_interval_right_in rational_numbers a b.
+      (** derive order_rel a b from 0 in the interval **)
+      claim H0in: 0 :e halfopen_interval_right_in rational_numbers a b.
+      { rewrite <- HeqHR. exact H0cut. }
+      claim H0pred: order_rel rational_numbers a 0 /\ (0 = b \/ order_rel rational_numbers 0 b).
+      { exact (SepE2 rational_numbers (fun x0:set => order_rel rational_numbers a x0 /\ (x0 = b \/ order_rel rational_numbers x0 b)) 0 H0in). }
+      claim Ha0: order_rel rational_numbers a 0.
+      { exact (andEL (order_rel rational_numbers a 0) (0 = b \/ order_rel rational_numbers 0 b) H0pred). }
+      claim H0b: 0 = b \/ order_rel rational_numbers 0 b.
+      { exact (andER (order_rel rational_numbers a 0) (0 = b \/ order_rel rational_numbers 0 b) H0pred). }
+      claim Hab: order_rel rational_numbers a b.
+      { apply H0b.
+        - assume H0eq: 0 = b.
+          rewrite <- H0eq.
+          exact Ha0.
+        - assume Hrel: order_rel rational_numbers 0 b.
+          claim Halt0: Rlt a 0.
+          { exact (order_rel_Q_implies_Rlt a 0 Ha0). }
+          claim H0blt: Rlt 0 b.
+          { exact (order_rel_Q_implies_Rlt 0 b Hrel). }
+          claim Hablt: Rlt a b.
+          { exact (Rlt_tra a 0 b Halt0 H0blt). }
+          exact (Rlt_implies_order_rel_Q a b Hablt). }
+      (** show b is in the cut, then contradict no-maximum by pushing r>b back into the interval **)
+      claim HbinI: b :e halfopen_interval_right_in rational_numbers a b.
+      { claim Heqbb: b = b.
+        { reflexivity. }
+        claim Hright: b = b \/ order_rel rational_numbers b b.
+        { exact (orIL (b = b) (order_rel rational_numbers b b) Heqbb). }
+        exact (SepI rational_numbers
+                   (fun x0:set => order_rel rational_numbers a x0 /\ (x0 = b \/ order_rel rational_numbers x0 b))
+                   b
+                   HbQ
+                   (andI (order_rel rational_numbers a b)
+                         (b = b \/ order_rel rational_numbers b b)
+                         Hab
+                         Hright)). }
+      claim HbinCut: b :e Q_sqrt2_cut.
+      { rewrite HeqHR. exact HbinI. }
+      apply (Q_sqrt2_cut_no_max b HbinCut).
+      let r. assume Hrconj.
+      claim HrCut: r :e Q_sqrt2_cut.
+      { exact (andEL (r :e Q_sqrt2_cut) (Rlt b r) Hrconj). }
+      claim HbR: Rlt b r.
+      { exact (andER (r :e Q_sqrt2_cut) (Rlt b r) Hrconj). }
+      claim HrInI: r :e halfopen_interval_right_in rational_numbers a b.
+      { rewrite <- HeqHR. exact HrCut. }
+      claim HrPred: order_rel rational_numbers a r /\ (r = b \/ order_rel rational_numbers r b).
+      { exact (SepE2 rational_numbers (fun x0:set => order_rel rational_numbers a x0 /\ (x0 = b \/ order_rel rational_numbers x0 b)) r HrInI). }
+      claim HrRight: r = b \/ order_rel rational_numbers r b.
+      { exact (andER (order_rel rational_numbers a r) (r = b \/ order_rel rational_numbers r b) HrPred). }
+      apply HrRight.
+      - assume Hreq: r = b.
+        apply (not_Rlt_refl b (rational_numbers_in_R b HbQ)).
+        rewrite <- Hreq at 2.
+        exact HbR.
+      - assume Hrel: order_rel rational_numbers r b.
+        claim Hrltb: Rlt r b.
+        { exact (order_rel_Q_implies_Rlt r b Hrel). }
+        exact ((not_Rlt_sym b r HbR) Hrltb).
+  - assume HeqCI: Q_sqrt2_cut = closed_interval_in rational_numbers a b.
+    admit.
 - assume Hray: exists a:set, a :e rational_numbers /\ ray_in rational_numbers a Q_sqrt2_cut.
   apply Hray.
   let a. assume Hpair.
