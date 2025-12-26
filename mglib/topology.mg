@@ -9550,7 +9550,12 @@ prove ((singleton_basis X c= Power X
 	    apply (ReplE_impred X (fun x0 : set => {x0}) s Hs).
 	    let x. assume HxX Hseq.
 	    rewrite Hseq.
-	    exact (PowerI X {x} (singleton_subset x X HxX)).
+	    apply PowerI.
+	    let y. assume Hy: y :e {x}.
+	    claim Hyx: y = x.
+	    { exact (SingE x y Hy). }
+	    rewrite Hyx.
+	    exact HxX.
 	  * prove forall x :e X, exists b :e singleton_basis X, x :e b.
 	    let x. assume HxX.
 	    witness {x}.
