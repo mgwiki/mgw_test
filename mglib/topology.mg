@@ -26145,7 +26145,79 @@ assume Hb: b :e Q_sqrt2_cut.
 assume HxQ: x :e rational_numbers.
 assume Hax: Rlt a x.
 assume Hxb: Rlt x b.
-admit.
+claim HaQ: a :e rational_numbers.
+{ exact (SepE1 rational_numbers (fun q:set => mul_SNo q q < 2) a Ha). }
+claim HbQ: b :e rational_numbers.
+{ exact (SepE1 rational_numbers (fun q:set => mul_SNo q q < 2) b Hb). }
+claim Haa: mul_SNo a a < 2.
+{ exact (SepE2 rational_numbers (fun q:set => mul_SNo q q < 2) a Ha). }
+claim Hbb: mul_SNo b b < 2.
+{ exact (SepE2 rational_numbers (fun q:set => mul_SNo q q < 2) b Hb). }
+claim HaR: a :e R.
+{ exact (rational_numbers_in_R a HaQ). }
+claim HbR: b :e R.
+{ exact (rational_numbers_in_R b HbQ). }
+claim HxR: x :e R.
+{ exact (rational_numbers_in_R x HxQ). }
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+claim HxS: SNo x.
+{ exact (real_SNo x HxR). }
+claim Haxlt: a < x.
+{ exact (RltE_lt a x Hax). }
+claim Hxblt: x < b.
+{ exact (RltE_lt x b Hxb). }
+(** split on the position of x relative to 0 using trichotomy **)
+apply (SNoLt_trichotomy_or_impred x 0 HxS SNo_0 (mul_SNo x x < 2)).
+- assume Hxlt0: x < 0.
+  claim Halt0: a < 0.
+  { exact (SNoLt_tra a x 0 HaS HxS SNo_0 Haxlt Hxlt0). }
+  claim HnegxS: SNo (minus_SNo x).
+  { exact (SNo_minus_SNo x HxS). }
+  claim HnegaS: SNo (minus_SNo a).
+  { exact (SNo_minus_SNo a HaS). }
+  claim Hnegxltnega: minus_SNo x < minus_SNo a.
+  { exact (minus_SNo_Lt_contra a x HaS HxS Haxlt). }
+  claim H0ltnegx: 0 < minus_SNo x.
+  { claim Hm0: minus_SNo 0 < minus_SNo x.
+    { exact (minus_SNo_Lt_contra x 0 HxS SNo_0 Hxlt0). }
+    rewrite <- (minus_SNo_0) at 1.
+    exact Hm0. }
+  claim H0ltnega: 0 < minus_SNo a.
+  { claim Hm0: minus_SNo 0 < minus_SNo a.
+    { exact (minus_SNo_Lt_contra a 0 HaS SNo_0 Halt0). }
+    rewrite <- (minus_SNo_0) at 1.
+    exact Hm0. }
+  claim Hsq: mul_SNo (minus_SNo x) (minus_SNo x) < mul_SNo (minus_SNo a) (minus_SNo a).
+  { exact (pos_mul_SNo_Lt2 (minus_SNo x) (minus_SNo x) (minus_SNo a) (minus_SNo a)
+            HnegxS HnegxS HnegaS HnegaS
+            H0ltnegx H0ltnegx Hnegxltnega Hnegxltnega). }
+  claim Hxxlt: mul_SNo x x < mul_SNo a a.
+  { prove mul_SNo x x < mul_SNo a a.
+    rewrite <- (mul_SNo_minus_minus x x HxS HxS) at 1.
+    rewrite <- (mul_SNo_minus_minus a a HaS HaS) at 1.
+    exact Hsq. }
+  claim HxxS: SNo (mul_SNo x x).
+  { exact (SNo_mul_SNo x x HxS HxS). }
+  claim HaaS: SNo (mul_SNo a a).
+  { exact (SNo_mul_SNo a a HaS HaS). }
+  exact (SNoLt_tra (mul_SNo x x) (mul_SNo a a) 2 HxxS HaaS SNo_2 Hxxlt Haa).
+- assume Hxeq0: x = 0.
+  rewrite Hxeq0.
+  rewrite (mul_SNo_zeroL 0 SNo_0).
+  exact SNoLt_0_2.
+- assume H0ltx: 0 < x.
+  claim H0ltb: 0 < b.
+  { exact (SNoLt_tra 0 x b SNo_0 HxS HbS H0ltx Hxblt). }
+  claim Hsq: mul_SNo x x < mul_SNo b b.
+  { exact (pos_mul_SNo_Lt2 x x b b HxS HxS HbS HbS H0ltx H0ltx Hxblt Hxblt). }
+  claim HxxS: SNo (mul_SNo x x).
+  { exact (SNo_mul_SNo x x HxS HxS). }
+  claim HbbS: SNo (mul_SNo b b).
+  { exact (SNo_mul_SNo b b HbS HbS). }
+  exact (SNoLt_tra (mul_SNo x x) (mul_SNo b b) 2 HxxS HbbS SNo_2 Hsq Hbb).
 Qed.
 
 Theorem Q_sqrt2_cut_convex : convex_in rational_numbers Q_sqrt2_cut.
