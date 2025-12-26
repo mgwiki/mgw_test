@@ -31793,17 +31793,19 @@ claim HY: Hausdorff_space Y Ty.
 claim HTx: topology_on X Tx.
 { exact (Hausdorff_space_topology X Tx HX). }
 claim HTy: topology_on Y Ty.
-{ exact (andEL (topology_on Y Ty)
-               (forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
-               HY). }
+{ exact (Hausdorff_space_topology Y Ty HY). }
 claim HSepX: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
-{ exact (andER (topology_on X Tx)
-               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
-               HX). }
+{ let x1 x2.
+  assume Hx1: x1 :e X.
+  assume Hx2: x2 :e X.
+  assume Hneq12: x1 <> x2.
+  exact (Hausdorff_space_separation X Tx x1 x2 HX Hx1 Hx2 Hneq12). }
 claim HSepY: forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
-{ exact (andER (topology_on Y Ty)
-               (forall y1 y2:set, y1 :e Y -> y2 :e Y -> y1 <> y2 -> exists U V:set, U :e Ty /\ V :e Ty /\ y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
-               HY). }
+{ let y1 y2.
+  assume Hy1: y1 :e Y.
+  assume Hy2: y2 :e Y.
+  assume Hneq12: y1 <> y2.
+  exact (Hausdorff_space_separation Y Ty y1 y2 HY Hy1 Hy2 Hneq12). }
 (** Build Hausdorff property for product **)
 claim HTProd: topology_on (setprod X Y) (product_topology X Tx Y Ty).
 { exact (product_topology_is_topology X Tx Y Ty HTx HTy). }
