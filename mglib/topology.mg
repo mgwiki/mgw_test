@@ -48911,7 +48911,103 @@ Theorem double_map_continuous :
     (subspace_topology unit_interval unit_interval_topology unit_interval_left_half)
     unit_interval unit_interval_topology
     double_map_left_half.
-admit.
+prove continuous_map unit_interval_left_half
+        (subspace_topology unit_interval unit_interval_topology unit_interval_left_half)
+        unit_interval unit_interval_topology
+        double_map_left_half.
+(** range restriction: factor through R, then restrict codomain to unit_interval **)
+claim HcontR: continuous_map unit_interval_left_half
+  (subspace_topology unit_interval unit_interval_topology unit_interval_left_half)
+  R R_standard_topology
+  double_map_left_half.
+{ admit. }
+
+(** helper: restricting the range of a continuous map to a subspace containing the image **)
+claim HrangeRestrict:
+  forall X Tx Y Ty f Z0:set,
+    continuous_map X Tx Y Ty f ->
+    Z0 c= Y ->
+    (forall x:set, x :e X -> apply_fun f x :e Z0) ->
+    continuous_map X Tx Z0 (subspace_topology Y Ty Z0) f.
+{ let X Tx Y Ty f Z0.
+  assume Hf: continuous_map X Tx Y Ty f.
+  assume HZ0: Z0 c= Y.
+  assume Himg: forall x:set, x :e X -> apply_fun f x :e Z0.
+  prove continuous_map X Tx Z0 (subspace_topology Y Ty Z0) f.
+
+  claim HTx: topology_on X Tx.
+  { exact (continuous_map_topology_dom X Tx Y Ty f Hf). }
+  claim HTy: topology_on Y Ty.
+  { exact (continuous_map_topology_cod X Tx Y Ty f Hf). }
+  claim HTz0: topology_on Z0 (subspace_topology Y Ty Z0).
+  { exact (subspace_topology_is_topology Y Ty Z0 HTy HZ0). }
+  claim HfunXZ0: function_on f X Z0.
+  { let x. assume HxX: x :e X.
+    exact (Himg x HxX). }
+  claim HpreY: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+  { exact (continuous_map_preimage X Tx Y Ty f Hf). }
+
+  prove ((topology_on X Tx /\ topology_on Z0 (subspace_topology Y Ty Z0)) /\ function_on f X Z0) /\
+        forall B:set, B :e subspace_topology Y Ty Z0 -> preimage_of X f B :e Tx.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact HTx.
+      * exact HTz0.
+    + exact HfunXZ0.
+  - let B. assume HB: B :e subspace_topology Y Ty Z0.
+    prove preimage_of X f B :e Tx.
+    claim Hex: exists V :e Ty, B = V :/\: Z0.
+    { exact (SepE2 (Power Z0) (fun U0:set => exists V :e Ty, U0 = V :/\: Z0) B HB). }
+    apply Hex.
+    let V. assume HVpair.
+    claim HV: V :e Ty.
+    { exact (andEL (V :e Ty) (B = V :/\: Z0) HVpair). }
+    claim HB_eq: B = V :/\: Z0.
+    { exact (andER (V :e Ty) (B = V :/\: Z0) HVpair). }
+    claim HeqPre: preimage_of X f B = preimage_of X f V.
+    { apply set_ext.
+      - let x. assume Hx: x :e preimage_of X f B.
+        prove x :e preimage_of X f V.
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun u:set => apply_fun f u :e B) x Hx). }
+        claim HfxB: apply_fun f x :e B.
+        { exact (SepE2 X (fun u:set => apply_fun f u :e B) x Hx). }
+        claim HfxVz0: apply_fun f x :e V :/\: Z0.
+        { rewrite <- HB_eq. exact HfxB. }
+        claim HfxV: apply_fun f x :e V.
+        { exact (binintersectE1 V Z0 (apply_fun f x) HfxVz0). }
+        exact (SepI X (fun u:set => apply_fun f u :e V) x HxX HfxV).
+      - let x. assume Hx: x :e preimage_of X f V.
+        prove x :e preimage_of X f B.
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun u:set => apply_fun f u :e V) x Hx). }
+        claim HfxV: apply_fun f x :e V.
+        { exact (SepE2 X (fun u:set => apply_fun f u :e V) x Hx). }
+        claim HfxZ0: apply_fun f x :e Z0.
+        { exact (HfunXZ0 x HxX). }
+        claim HfxB: apply_fun f x :e B.
+        { rewrite HB_eq.
+          exact (binintersectI V Z0 (apply_fun f x) HfxV HfxZ0). }
+        exact (SepI X (fun u:set => apply_fun f u :e B) x HxX HfxB). }
+    rewrite HeqPre.
+    exact (HpreY V HV). }
+
+claim Himg: forall t:set, t :e unit_interval_left_half -> apply_fun double_map_left_half t :e unit_interval.
+{ let t. assume Ht: t :e unit_interval_left_half.
+  exact (double_map_function_on t Ht). }
+
+claim Hut: unit_interval_topology = subspace_topology R R_standard_topology unit_interval.
+{ reflexivity. }
+rewrite Hut.
+exact (HrangeRestrict unit_interval_left_half
+        (subspace_topology unit_interval unit_interval_topology unit_interval_left_half)
+        R R_standard_topology
+        double_map_left_half
+        unit_interval
+        HcontR
+        unit_interval_sub_R
+        Himg).
 Qed.
 
 Theorem double_minus_one_map_continuous :
@@ -48919,7 +49015,102 @@ Theorem double_minus_one_map_continuous :
     (subspace_topology unit_interval unit_interval_topology unit_interval_right_half)
     unit_interval unit_interval_topology
     double_minus_one_map_right_half.
-admit.
+prove continuous_map unit_interval_right_half
+        (subspace_topology unit_interval unit_interval_topology unit_interval_right_half)
+        unit_interval unit_interval_topology
+        double_minus_one_map_right_half.
+(** range restriction: factor through R, then restrict codomain to unit_interval **)
+claim HcontR: continuous_map unit_interval_right_half
+  (subspace_topology unit_interval unit_interval_topology unit_interval_right_half)
+  R R_standard_topology
+  double_minus_one_map_right_half.
+{ admit. }
+
+claim HrangeRestrict:
+  forall X Tx Y Ty f Z0:set,
+    continuous_map X Tx Y Ty f ->
+    Z0 c= Y ->
+    (forall x:set, x :e X -> apply_fun f x :e Z0) ->
+    continuous_map X Tx Z0 (subspace_topology Y Ty Z0) f.
+{ let X Tx Y Ty f Z0.
+  assume Hf: continuous_map X Tx Y Ty f.
+  assume HZ0: Z0 c= Y.
+  assume Himg: forall x:set, x :e X -> apply_fun f x :e Z0.
+  prove continuous_map X Tx Z0 (subspace_topology Y Ty Z0) f.
+
+  claim HTx: topology_on X Tx.
+  { exact (continuous_map_topology_dom X Tx Y Ty f Hf). }
+  claim HTy: topology_on Y Ty.
+  { exact (continuous_map_topology_cod X Tx Y Ty f Hf). }
+  claim HTz0: topology_on Z0 (subspace_topology Y Ty Z0).
+  { exact (subspace_topology_is_topology Y Ty Z0 HTy HZ0). }
+  claim HfunXZ0: function_on f X Z0.
+  { let x. assume HxX: x :e X.
+    exact (Himg x HxX). }
+  claim HpreY: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+  { exact (continuous_map_preimage X Tx Y Ty f Hf). }
+
+  prove ((topology_on X Tx /\ topology_on Z0 (subspace_topology Y Ty Z0)) /\ function_on f X Z0) /\
+        forall B:set, B :e subspace_topology Y Ty Z0 -> preimage_of X f B :e Tx.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact HTx.
+      * exact HTz0.
+    + exact HfunXZ0.
+  - let B. assume HB: B :e subspace_topology Y Ty Z0.
+    prove preimage_of X f B :e Tx.
+    claim Hex: exists V :e Ty, B = V :/\: Z0.
+    { exact (SepE2 (Power Z0) (fun U0:set => exists V :e Ty, U0 = V :/\: Z0) B HB). }
+    apply Hex.
+    let V. assume HVpair.
+    claim HV: V :e Ty.
+    { exact (andEL (V :e Ty) (B = V :/\: Z0) HVpair). }
+    claim HB_eq: B = V :/\: Z0.
+    { exact (andER (V :e Ty) (B = V :/\: Z0) HVpair). }
+    claim HeqPre: preimage_of X f B = preimage_of X f V.
+    { apply set_ext.
+      - let x. assume Hx: x :e preimage_of X f B.
+        prove x :e preimage_of X f V.
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun u:set => apply_fun f u :e B) x Hx). }
+        claim HfxB: apply_fun f x :e B.
+        { exact (SepE2 X (fun u:set => apply_fun f u :e B) x Hx). }
+        claim HfxVz0: apply_fun f x :e V :/\: Z0.
+        { rewrite <- HB_eq. exact HfxB. }
+        claim HfxV: apply_fun f x :e V.
+        { exact (binintersectE1 V Z0 (apply_fun f x) HfxVz0). }
+        exact (SepI X (fun u:set => apply_fun f u :e V) x HxX HfxV).
+      - let x. assume Hx: x :e preimage_of X f V.
+        prove x :e preimage_of X f B.
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun u:set => apply_fun f u :e V) x Hx). }
+        claim HfxV: apply_fun f x :e V.
+        { exact (SepE2 X (fun u:set => apply_fun f u :e V) x Hx). }
+        claim HfxZ0: apply_fun f x :e Z0.
+        { exact (HfunXZ0 x HxX). }
+        claim HfxB: apply_fun f x :e B.
+        { rewrite HB_eq.
+          exact (binintersectI V Z0 (apply_fun f x) HfxV HfxZ0). }
+        exact (SepI X (fun u:set => apply_fun f u :e B) x HxX HfxB). }
+    rewrite HeqPre.
+    exact (HpreY V HV). }
+
+claim Himg: forall t:set, t :e unit_interval_right_half -> apply_fun double_minus_one_map_right_half t :e unit_interval.
+{ let t. assume Ht: t :e unit_interval_right_half.
+  exact (double_minus_one_map_function_on t Ht). }
+
+claim Hut: unit_interval_topology = subspace_topology R R_standard_topology unit_interval.
+{ reflexivity. }
+rewrite Hut.
+exact (HrangeRestrict unit_interval_right_half
+        (subspace_topology unit_interval unit_interval_topology unit_interval_right_half)
+        R R_standard_topology
+        double_minus_one_map_right_half
+        unit_interval
+        HcontR
+        unit_interval_sub_R
+        Himg).
 Qed.
 
 Theorem path_component_transitive_axiom : forall X Tx x y z:set,
