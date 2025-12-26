@@ -20840,9 +20840,285 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
                        I = {x :e X | order_rel X x b}}
                     U
                     False).
-	  + assume HU1: U :e {I :e Power X | exists a :e X, exists b :e X,
-	                        I = {x :e X | order_rel X a x /\ order_rel X x b}}.
-	    admit.
+		  + assume HU1: U :e {I :e Power X | exists a :e X, exists b :e X,
+		                        I = {x :e X | order_rel X a x /\ order_rel X x b}}.
+		    claim Hexab: exists a :e X, exists b :e X,
+		      U = {x :e X | order_rel X a x /\ order_rel X x b}.
+		    { exact (SepE2 (Power X)
+		                   (fun I0 : set => exists a :e X, exists b :e X,
+		                     I0 = {x :e X | order_rel X a x /\ order_rel X x b})
+		                   U
+		                   HU1). }
+		    apply Hexab.
+		    let a. assume HaPair. apply HaPair.
+		    assume HaX: a :e X.
+		    assume Hexb.
+		    apply Hexb.
+		    let b. assume HbPair. apply HbPair.
+		    assume HbX: b :e X.
+		    assume HUeq: U = {x :e X | order_rel X a x /\ order_rel X x b}.
+
+		    claim H10inU: (1,0) :e U.
+		    { exact (SingI (1,0)). }
+		    claim H10inDef: (1,0) :e {x :e X | order_rel X a x /\ order_rel X x b}.
+		    { rewrite <- HUeq.
+		      exact H10inU. }
+		    claim Hrelconj: order_rel X a (1,0) /\ order_rel X (1,0) b.
+		    { exact (SepE2 X (fun x0 : set => order_rel X a x0 /\ order_rel X x0 b) (1,0) H10inDef). }
+		    claim HrelL: order_rel X a (1,0).
+		    { exact (andEL (order_rel X a (1,0)) (order_rel X (1,0) b) Hrelconj). }
+		    claim HrelR: order_rel X (1,0) b.
+		    { exact (andER (order_rel X a (1,0)) (order_rel X (1,0) b) Hrelconj). }
+
+		    claim HXeq: X = setprod 2 omega.
+		    { reflexivity. }
+		    claim HrelL2: order_rel (setprod 2 omega) a (1,0).
+		    { prove order_rel (setprod 2 omega) a (1,0).
+		      rewrite <- HXeq at 1.
+		      exact HrelL. }
+		    claim HrelR2: order_rel (setprod 2 omega) (1,0) b.
+		    { prove order_rel (setprod 2 omega) (1,0) b.
+		      rewrite <- HXeq at 1.
+		      exact HrelR. }
+
+		    (** Analyze `a < (1,0)` to get `a = (0,m)` for some m∈ω. **)
+		    claim HexL: exists i m j n0:set,
+		      i :e 2 /\ m :e omega /\ j :e 2 /\ n0 :e omega /\
+		      a = (i, m) /\ (1,0) = (j, n0) /\ (i :e j \/ (i = j /\ m :e n0)).
+		    { exact (order_rel_setprod_2_omega_unfold a (1,0) HrelL2). }
+		    apply HexL.
+		    let i. assume HiPair. apply HiPair.
+		    let m. assume HmPair. apply HmPair.
+		    let j. assume HjPair. apply HjPair.
+		    let n0. assume Hcore.
+
+		    claim Hcoords: i :e 2 /\ m :e omega /\ j :e 2 /\ n0 :e omega /\ a = (i, m) /\ (1,0) = (j, n0).
+		    { apply Hcore.
+		      assume Hcoords0 Hlex0.
+		      exact Hcoords0. }
+		    claim Hlex: i :e j \/ (i = j /\ m :e n0).
+		    { apply Hcore.
+		      assume Hcoords0 Hlex0.
+		      exact Hlex0. }
+
+		    claim HjnEq: (1,0) = (j, n0).
+		    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2 /\ n0 :e omega /\ a = (i, m))
+		                   ((1,0) = (j, n0))
+		                   Hcoords). }
+		    claim Hcoords5: i :e 2 /\ m :e omega /\ j :e 2 /\ n0 :e omega /\ a = (i, m).
+		    { exact (andEL (i :e 2 /\ m :e omega /\ j :e 2 /\ n0 :e omega /\ a = (i, m))
+		                   ((1,0) = (j, n0))
+		                   Hcoords). }
+
+		    claim HaEq2: a = (i, m).
+		    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2 /\ n0 :e omega)
+		                   (a = (i, m))
+		                   Hcoords5). }
+		    claim Hcoords4: i :e 2 /\ m :e omega /\ j :e 2 /\ n0 :e omega.
+		    { exact (andEL (i :e 2 /\ m :e omega /\ j :e 2 /\ n0 :e omega)
+		                   (a = (i, m))
+		                   Hcoords5). }
+
+		    claim Hn0Omega: n0 :e omega.
+		    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2)
+		                   (n0 :e omega)
+		                   Hcoords4). }
+		    claim Hcoords3: i :e 2 /\ m :e omega /\ j :e 2.
+		    { exact (andEL (i :e 2 /\ m :e omega /\ j :e 2)
+		                   (n0 :e omega)
+		                   Hcoords4). }
+
+		    claim Hj2: j :e 2.
+		    { exact (andER (i :e 2 /\ m :e omega)
+		                   (j :e 2)
+		                   Hcoords3). }
+		    claim Hcoords2: i :e 2 /\ m :e omega.
+		    { exact (andEL (i :e 2 /\ m :e omega)
+		                   (j :e 2)
+		                   Hcoords3). }
+
+		    claim Hi2: i :e 2.
+		    { exact (andEL (i :e 2) (m :e omega) Hcoords2). }
+		    claim HmOmega: m :e omega.
+		    { exact (andER (i :e 2) (m :e omega) Hcoords2). }
+
+		    claim HjEq1: j = 1.
+		    { prove j = 1.
+		      rewrite <- (tuple_2_0_eq j n0) at 1.
+		      rewrite <- (tuple_2_0_eq 1 0) at 2.
+		      claim Hproj0: (j,n0) 0 = (1,0) 0.
+		      { rewrite <- HjnEq. reflexivity. }
+		      exact Hproj0. }
+
+		    claim Hn0Eq0: n0 = 0.
+		    { prove n0 = 0.
+		      rewrite <- (tuple_2_1_eq j n0) at 1.
+		      rewrite <- HjnEq at 1.
+		      exact (tuple_2_1_eq 1 0). }
+
+		    claim HiEq0: i = 0.
+		    { apply (Hlex (i = 0)).
+		      - assume Hilj: i :e j.
+		        prove i = 0.
+		        claim HiIn1: i :e 1.
+		        { rewrite <- HjEq1.
+		          exact Hilj. }
+		        claim HiInSing0: i :e {0}.
+		        { rewrite <- eq_1_Sing0.
+		          exact HiIn1. }
+		        exact (SingE 0 i HiInSing0).
+		      - assume Hind: i = j /\ m :e n0.
+		        apply FalseE.
+		        claim Hmn: m :e n0.
+		        { exact (andER (i = j) (m :e n0) Hind). }
+		        claim HmIn0: m :e 0.
+		        { rewrite <- Hn0Eq0.
+		          exact Hmn. }
+		        exact (EmptyE m HmIn0). }
+
+		    claim HaEq: a = (0, m).
+		    { prove a = (0, m).
+		      rewrite HaEq2.
+		      rewrite HiEq0.
+		      reflexivity. }
+
+		    (** Analyze `(1,0) < b` to get `b = (1,n)` for some n∈ω. **)
+		    claim HexR: exists i2 m2 j2 n:set,
+		      i2 :e 2 /\ m2 :e omega /\ j2 :e 2 /\ n :e omega /\
+		      (1,0) = (i2, m2) /\ b = (j2, n) /\ (i2 :e j2 \/ (i2 = j2 /\ m2 :e n)).
+		    { exact (order_rel_setprod_2_omega_unfold (1,0) b HrelR2). }
+		    apply HexR.
+		    let i2. assume Hi2Pair. apply Hi2Pair.
+		    let m2. assume Hm2Pair. apply Hm2Pair.
+		    let j2. assume Hj2Pair. apply Hj2Pair.
+		    let n. assume Hcore2.
+
+		    claim HcoordsR: i2 :e 2 /\ m2 :e omega /\ j2 :e 2 /\ n :e omega /\ (1,0) = (i2, m2) /\ b = (j2, n).
+		    { apply Hcore2.
+		      assume Hcoords0 Hlex0.
+		      exact Hcoords0. }
+		    claim HlexR: i2 :e j2 \/ (i2 = j2 /\ m2 :e n).
+		    { apply Hcore2.
+		      assume Hcoords0 Hlex0.
+		      exact Hlex0. }
+
+		    claim HbEq2: b = (j2, n).
+		    { exact (andER (i2 :e 2 /\ m2 :e omega /\ j2 :e 2 /\ n :e omega /\ (1,0) = (i2, m2))
+		                   (b = (j2, n))
+		                   HcoordsR). }
+		    claim HcoordsR5: i2 :e 2 /\ m2 :e omega /\ j2 :e 2 /\ n :e omega /\ (1,0) = (i2, m2).
+		    { exact (andEL (i2 :e 2 /\ m2 :e omega /\ j2 :e 2 /\ n :e omega /\ (1,0) = (i2, m2))
+		                   (b = (j2, n))
+		                   HcoordsR). }
+
+		    claim H10EqR: (1,0) = (i2, m2).
+		    { exact (andER (i2 :e 2 /\ m2 :e omega /\ j2 :e 2 /\ n :e omega)
+		                   ((1,0) = (i2, m2))
+		                   HcoordsR5). }
+		    claim HcoordsR4: i2 :e 2 /\ m2 :e omega /\ j2 :e 2 /\ n :e omega.
+		    { exact (andEL (i2 :e 2 /\ m2 :e omega /\ j2 :e 2 /\ n :e omega)
+		                   ((1,0) = (i2, m2))
+		                   HcoordsR5). }
+
+		    claim HnOmega: n :e omega.
+		    { exact (andER (i2 :e 2 /\ m2 :e omega /\ j2 :e 2)
+		                   (n :e omega)
+		                   HcoordsR4). }
+		    claim HcoordsR3: i2 :e 2 /\ m2 :e omega /\ j2 :e 2.
+		    { exact (andEL (i2 :e 2 /\ m2 :e omega /\ j2 :e 2)
+		                   (n :e omega)
+		                   HcoordsR4). }
+
+		    claim Hj2_2: j2 :e 2.
+		    { exact (andER (i2 :e 2 /\ m2 :e omega)
+		                   (j2 :e 2)
+		                   HcoordsR3). }
+		    claim HcoordsR2: i2 :e 2 /\ m2 :e omega.
+		    { exact (andEL (i2 :e 2 /\ m2 :e omega)
+		                   (j2 :e 2)
+		                   HcoordsR3). }
+
+		    claim Hi2Eq1: i2 = 1.
+		    { prove i2 = 1.
+		      rewrite <- (tuple_2_0_eq i2 m2) at 1.
+		      rewrite <- (tuple_2_0_eq 1 0) at 2.
+		      claim Hproj0: (i2,m2) 0 = (1,0) 0.
+		      { rewrite <- H10EqR. reflexivity. }
+		      exact Hproj0. }
+
+		    claim Hj2Eq1: j2 = 1.
+		    { apply (HlexR (j2 = 1)).
+		      - assume Hilj: i2 :e j2.
+		        apply FalseE.
+		        claim H1j: 1 :e j2.
+		        { rewrite <- Hi2Eq1.
+		          exact Hilj. }
+		        claim Hsub2: 2 c= {0,1}.
+		        { exact Subq_2_UPair01. }
+		        claim Hj01: j2 :e {0,1}.
+		        { exact (Hsub2 j2 Hj2_2). }
+		        apply (UPairE j2 0 1 Hj01 False).
+			        + assume Hj0: j2 = 0.
+			          claim H1in0: 1 :e 0.
+			          { rewrite <- Hj0 at 2.
+			            exact H1j. }
+			          exact (EmptyE 1 H1in0).
+			        + assume Hj1: j2 = 1.
+			          claim H1in1: 1 :e 1.
+			          { rewrite <- Hj1 at 2.
+			            exact H1j. }
+			          exact (In_irref 1 H1in1).
+		      - assume Hind: i2 = j2 /\ m2 :e n.
+		        prove j2 = 1.
+		        claim Hij: i2 = j2.
+		        { exact (andEL (i2 = j2) (m2 :e n) Hind). }
+		        rewrite <- Hij.
+		        exact Hi2Eq1. }
+
+			    claim HbEq: b = (1, n).
+			    { prove b = (1, n).
+			      rewrite HbEq2.
+			      rewrite Hj2Eq1.
+			      reflexivity. }
+
+		    (** Define a second point in the interval and derive contradiction. **)
+		    claim HsuccOmega: ordsucc m :e omega.
+		    { exact (omega_ordsucc m HmOmega). }
+		    claim H0sX: (0, ordsucc m) :e X.
+		    { rewrite HXeq.
+		      exact (tuple_2_setprod 2 omega 0 In_0_2 (ordsucc m) HsuccOmega). }
+
+		    claim H0sL: order_rel X a (0, ordsucc m).
+		    { prove order_rel X a (0, ordsucc m).
+		      rewrite HXeq at 1.
+		      rewrite HaEq.
+		      exact (order_rel_setprod_2_omega_0k_0succk m HmOmega). }
+		    claim H0sR: order_rel X (0, ordsucc m) b.
+		    { prove order_rel X (0, ordsucc m) b.
+		      rewrite HXeq at 1.
+		      rewrite HbEq.
+		      exact (order_rel_setprod_2_omega_0k_1n (ordsucc m) n HsuccOmega HnOmega). }
+
+		    claim H0score: order_rel X a (0, ordsucc m) /\ order_rel X (0, ordsucc m) b.
+		    { apply andI.
+		      - exact H0sL.
+		      - exact H0sR. }
+		    claim H0sinDef: (0, ordsucc m) :e {x :e X | order_rel X a x /\ order_rel X x b}.
+		    { exact (SepI X (fun x0 : set => order_rel X a x0 /\ order_rel X x0 b) (0, ordsucc m) H0sX H0score). }
+		    claim H0sinU: (0, ordsucc m) :e U.
+		    { rewrite HUeq.
+		      exact H0sinDef. }
+
+		    claim H0sEq10: (0, ordsucc m) = (1,0).
+		    { exact (SingE (1,0) (0, ordsucc m) H0sinU). }
+		    claim H0Eq1: 0 = 1.
+		    { prove 0 = 1.
+		      rewrite <- (tuple_2_0_eq 0 (ordsucc m)) at 1.
+		      rewrite <- (tuple_2_0_eq 1 0) at 2.
+		      claim Hproj0: (0, ordsucc m) 0 = (1,0) 0.
+		      { rewrite H0sEq10. reflexivity. }
+		      exact Hproj0. }
+		    exact (neq_0_1 H0Eq1).
 		  + assume HU2: U :e {I :e Power X | exists b :e X,
 		                        I = {x :e X | order_rel X x b}}.
 		    claim Hexb: exists b :e X, U = {x :e X | order_rel X x b}.
