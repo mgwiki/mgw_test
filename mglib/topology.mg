@@ -59221,59 +59221,39 @@ Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
 
 (** from §50 Theorem: compact subspace of R^n has dimension at most n **) 
 (** LATEX VERSION: Compact subspace of ℝ^n has covering dimension ≤ n. **)
-Axiom compact_subspace_Rn_dimension_le_axiom : forall N X:set,
-  X c= (euclidean_space N) ->
-  compact_space X (subspace_topology (euclidean_space N) (euclidean_topology N) X) ->
-  covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
 Theorem compact_subspace_Rn_dimension_le : forall N X:set,
   X c= (euclidean_space N) ->
   compact_space X (subspace_topology (euclidean_space N) (euclidean_topology N) X) ->
   covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
-exact compact_subspace_Rn_dimension_le_axiom.
+admit.
 Qed.
 
 (** from §50 Theorem: compact m-manifold has dimension at most m **) 
 (** LATEX VERSION: Compact m-manifold has covering dimension ≤ m. **)
-Axiom compact_manifold_dimension_le_axiom : forall X Tx m:set,
-  m_manifold X Tx -> compact_space X Tx -> covering_dimension X Tx m.
 Theorem compact_manifold_dimension_le : forall X Tx m:set,
   m_manifold X Tx -> compact_space X Tx -> covering_dimension X Tx m.
-exact compact_manifold_dimension_le_axiom.
+admit.
 Qed.
 
 (** from §50 Theorem (Menger-Nöbeling): compact metrizable space of dimension m embeds in R^{2m+1} **) 
 (** LATEX VERSION: Menger–Nöbeling embedding theorem (placeholder). **)
-Axiom Menger_Nobeling_embedding_axiom : forall X Tx m:set,
-  compact_space X Tx -> metrizable X Tx -> covering_dimension X Tx m ->
-  exists N:set, exists e:set,
-    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 Theorem Menger_Nobeling_embedding : forall X Tx m:set,
   compact_space X Tx -> metrizable X Tx -> covering_dimension X Tx m ->
   exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-exact Menger_Nobeling_embedding_axiom.
+admit.
 Qed.
 
 (** from §50 Theorem 50.1: dimension of closed subspace bounded by ambient **) 
 (** LATEX VERSION: Dimension of a closed subspace does not exceed that of the ambient space. **)
-Axiom dimension_closed_subspace_le_axiom : forall X Tx Y n:set,
-  covering_dimension X Tx n -> closed_in X Tx Y ->
-  covering_dimension Y (subspace_topology X Tx Y) n.
 Theorem dimension_closed_subspace_le : forall X Tx Y n:set,
   covering_dimension X Tx n -> closed_in X Tx Y ->
   covering_dimension Y (subspace_topology X Tx Y) n.
-exact dimension_closed_subspace_le_axiom.
+admit.
 Qed.
 
 (** from §50 Theorem 50.2: dimension of union of closed sets is max **)
 (** LATEX VERSION: If X = Y ∪ Z where Y,Z are closed in X, then dim(X) ≤ max(dim(Y),dim(Z)) (and in fact equality holds for finite-dimensional spaces). **)
-Axiom dimension_union_closed_max_axiom : forall X Tx Y Z n:set,
-  topology_on X Tx ->
-  Y c= X -> Z c= X ->
-  closed_in X Tx Y -> closed_in X Tx Z ->
-  covering_dimension Y (subspace_topology X Tx Y) n ->
-  covering_dimension Z (subspace_topology X Tx Z) n ->
-  covering_dimension (Y :\/: Z) (subspace_topology X Tx (Y :\/: Z)) n.
 Theorem dimension_union_closed_max : forall X Tx Y Z n:set,
   topology_on X Tx ->
   Y c= X -> Z c= X ->
@@ -59281,41 +59261,32 @@ Theorem dimension_union_closed_max : forall X Tx Y Z n:set,
   covering_dimension Y (subspace_topology X Tx Y) n ->
   covering_dimension Z (subspace_topology X Tx Z) n ->
   covering_dimension (Y :\/: Z) (subspace_topology X Tx (Y :\/: Z)) n.
-exact dimension_union_closed_max_axiom.
+admit.
 Qed.
 
 (** from §50 Corollary 50.3: finite union of closed finite-dimensional sets **)
 (** LATEX VERSION: If X is a finite union of closed subspaces each of dimension ≤ n, then X has dimension ≤ n. **)
-Axiom dimension_finite_union_closed_max_axiom : forall X Tx Fam n:set,
-  topology_on X Tx ->
-  finite Fam ->
-  (forall Y:set, Y :e Fam -> Y c= X /\ closed_in X Tx Y /\ covering_dimension Y (subspace_topology X Tx Y) n) ->
-  covering_dimension (Union Fam) (subspace_topology X Tx (Union Fam)) n.
 Theorem dimension_finite_union_closed_max : forall X Tx Fam n:set,
   topology_on X Tx ->
   finite Fam ->
   (forall Y:set, Y :e Fam -> Y c= X /\ closed_in X Tx Y /\ covering_dimension Y (subspace_topology X Tx Y) n) ->
   covering_dimension (Union Fam) (subspace_topology X Tx (Union Fam)) n.
-exact dimension_finite_union_closed_max_axiom.
+admit.
 Qed.
 
 (** from §50 Example 4: compact 1-manifold has dimension 1 **)
 (** LATEX VERSION: Every compact 1-manifold X has topological dimension 1. **)
-Axiom compact_1_manifold_dimension_1_axiom : forall X Tx:set,
-  compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx (Sing Empty).
 Theorem compact_1_manifold_dimension_1 : forall X Tx:set,
   compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx (Sing Empty).
-exact compact_1_manifold_dimension_1_axiom.
+admit.
 Qed.
 
 (** from §50 Example 5: compact 2-manifold has dimension at most 2 **)
 (** LATEX VERSION: Every compact 2-manifold X has topological dimension at most 2. **)
 Definition two : set := Sing (Sing Empty).
-Axiom compact_2_manifold_dimension_le_2_axiom : forall X Tx:set,
-  compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx two.
 Theorem compact_2_manifold_dimension_le_2 : forall X Tx:set,
   compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx two.
-exact compact_2_manifold_dimension_le_2_axiom.
+admit.
 Qed.
 
 (** from §50 Example 6: arcs and linear graphs **)
@@ -59367,11 +59338,9 @@ Definition linear_graph : set -> set -> prop := fun G Tg =>
 
 (** from §50 Example 6: linear graphs have dimension 1 **)
 (** LATEX VERSION: A linear graph G has topological dimension 1. **)
-Axiom linear_graph_dimension_1_axiom : forall G Tg:set,
-  linear_graph G Tg -> covering_dimension G Tg (Sing Empty).
 Theorem linear_graph_dimension_1 : forall G Tg:set,
   linear_graph G Tg -> covering_dimension G Tg (Sing Empty).
-exact linear_graph_dimension_1_axiom.
+admit.
 Qed.
 
 (** from §50 Example 7: general position in R^3 (preliminary) **)
@@ -59450,15 +59419,6 @@ Definition general_position_RN : set -> set -> prop := fun N A =>
 (** from §50 Lemma 50.4: approximation in general position **)
 (** LATEX VERSION: Given finite {x₁,...,xₙ} in R^N and δ>0, there exists {y₁,...,yₙ} in general position with |xᵢ-yᵢ|<δ for all i. **)
 (** stub: proper ordering and metric conditions need to be formulated **)
-Axiom finite_set_approximation_general_position_axiom : forall N:set, forall pts:set, forall delta:set,
-  N :e omega ->
-  finite pts ->
-  pts c= euclidean_space N ->
-  delta :e R ->
-  exists pts':set,
-    general_position_RN N pts' /\
-    finite pts' /\
-    equip pts pts'.
 Theorem finite_set_approximation_general_position : forall N:set, forall pts:set, forall delta:set,
   N :e omega ->
   finite pts ->
@@ -59468,7 +59428,7 @@ Theorem finite_set_approximation_general_position : forall N:set, forall pts:set
     general_position_RN N pts' /\
     finite pts' /\
     equip pts pts'.
-exact finite_set_approximation_general_position_axiom.
+admit.
 Qed.
 
 (** from §50 Theorem 50.5: Menger-Nöbeling embedding theorem **)
