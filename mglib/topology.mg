@@ -61841,13 +61841,10 @@ admit.
 Qed.
 (** from §33 Exercise 9: Romega box topology completely regular **)
 (** LATEX VERSION: ℝ^ω in box topology is completely regular. **)
-Axiom ex33_9_Romega_box_completely_regular_axiom :
-  completely_regular_space (product_space omega (const_space_family omega R R_standard_topology))
-                           (box_topology omega (const_space_family omega R R_standard_topology)).
 Theorem ex33_9_Romega_box_completely_regular :
   completely_regular_space (product_space omega (const_space_family omega R R_standard_topology))
                            (box_topology omega (const_space_family omega R R_standard_topology)).
-exact ex33_9_Romega_box_completely_regular_axiom.
+admit.
 Qed.
 (** from §33 Exercise 10: topological group completely regular **)
 (** LATEX VERSION: Every topological group is completely regular. **)
