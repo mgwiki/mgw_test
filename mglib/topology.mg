@@ -20634,11 +20634,11 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 			    let j. assume HjPair. apply HjPair.
 			    let n. assume HnPair. apply HnPair.
 			    assume Hcore.
-			    (** Probe: can we extract the lex/dictionary-order disjunction directly as the last conjunct? **)
-			    claim Hdisj_probe: i :e j \/ (i = j /\ m :e n).
+			    (** Probe: can we extract b = (j,n) as the last conjunct (with the disjunction earlier)? **)
+			    claim HbEq_last_probe: b = (j, n).
 			    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-			                   (1,0) = (i, m) /\ b = (j, n))
-			                  (i :e j \/ (i = j /\ m :e n))
+			                   (1,0) = (i, m) /\ (i :e j \/ (i = j /\ m :e n)))
+			                  (b = (j, n))
 			                  Hcore). }
 			    apply Hcore.
 			    assume Hpre Hlex.
