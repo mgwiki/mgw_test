@@ -11600,26 +11600,44 @@ claim Hexr3:
 { exact (exists_eps_lt_four_pos_Euclid m1 m2 m3 m4 Hm1R Hm2R Hm3R Hm4R Hm1pos Hm2pos Hm3pos Hm4pos). }
 apply Hexr3.
 let r3. assume Hr3.
-claim Hr3rest: Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4.
-{ exact (andER (r3 :e R) (Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4) Hr3). }
-claim Hr3R: r3 :e R.
-{ exact (andEL (r3 :e R) (Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4) Hr3). }
-claim Hr3pos: Rlt 0 r3.
-{ exact (andEL (Rlt 0 r3) (Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4) Hr3rest). }
-claim Hr3rest2: Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4.
-{ exact (andER (Rlt 0 r3) (Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4) Hr3rest). }
-claim Hr3m1: Rlt r3 m1.
-{ exact (andEL (Rlt r3 m1) (Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4) Hr3rest2). }
-claim Hr3rest3: Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4.
-{ exact (andER (Rlt r3 m1) (Rlt r3 m2 /\ Rlt r3 m3 /\ Rlt r3 m4) Hr3rest2). }
-claim Hr3m2: Rlt r3 m2.
-{ exact (andEL (Rlt r3 m2) (Rlt r3 m3 /\ Rlt r3 m4) Hr3rest3). }
-claim Hr3rest4: Rlt r3 m3 /\ Rlt r3 m4.
-{ exact (andER (Rlt r3 m2) (Rlt r3 m3 /\ Rlt r3 m4) Hr3rest3). }
-claim Hr3m3: Rlt r3 m3.
-{ exact (andEL (Rlt r3 m3) (Rlt r3 m4) Hr3rest4). }
 claim Hr3m4: Rlt r3 m4.
-{ exact (andER (Rlt r3 m3) (Rlt r3 m4) Hr3rest4). }
+{ exact (andER
+          ((((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2) /\ Rlt r3 m3)
+          (Rlt r3 m4)
+          Hr3). }
+claim Hr3Left5: (((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2) /\ Rlt r3 m3.
+{ exact (andEL
+          ((((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2) /\ Rlt r3 m3)
+          (Rlt r3 m4)
+          Hr3). }
+claim Hr3m3: Rlt r3 m3.
+{ exact (andER
+          ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2
+          (Rlt r3 m3)
+          Hr3Left5). }
+claim Hr3Left4: ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2.
+{ exact (andEL
+          (((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2)
+          (Rlt r3 m3)
+          Hr3Left5). }
+claim Hr3m2: Rlt r3 m2.
+{ exact (andER
+          ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1)
+          (Rlt r3 m2)
+          Hr3Left4). }
+claim Hr3Left3: (r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1.
+{ exact (andEL
+          ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1)
+          (Rlt r3 m2)
+          Hr3Left4). }
+claim Hr3m1: Rlt r3 m1.
+{ exact (andER (r3 :e R /\ Rlt 0 r3) (Rlt r3 m1) Hr3Left3). }
+claim Hr3Pair: r3 :e R /\ Rlt 0 r3.
+{ exact (andEL (r3 :e R /\ Rlt 0 r3) (Rlt r3 m1) Hr3Left3). }
+claim Hr3R: r3 :e R.
+{ exact (andEL (r3 :e R) (Rlt 0 r3) Hr3Pair). }
+claim Hr3pos: Rlt 0 r3.
+{ exact (andER (r3 :e R) (Rlt 0 r3) Hr3Pair). }
 
 witness r3.
 apply andI.
