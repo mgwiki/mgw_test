@@ -10485,7 +10485,8 @@ Qed.
 
 (** helper for §13 Example 4: two-ball refinement around a point **)
 (** LATEX VERSION: If x lies in two open balls B(c1,r1) and B(c2,r2), then there is a smaller ball B(x,r3) contained in their intersection. **)
-(** SUSPICIOUS DEFINITION: The intended proof needs a triangle inequality for distance_R2 and a monotonicity fact for sqrt; those are not yet available near this point, so this lemma is currently admitted. **)
+(** SUSPICIOUS DEFINITION: The intended proof needs a triangle inequality for distance_R2; sqrt monotonicity is available in the trusted pre-topology development, but the remaining metric estimates are not yet assembled here, so this lemma is currently admitted. **)
+(** NOTE: An automated proof attempt at this admit timed out. **)
 Theorem ball_refine_two_balls :
   forall x c1 c2 r1 r2:set,
     x :e EuclidPlane ->
@@ -10514,7 +10515,7 @@ Qed.
 
 (** helper for §13 Example 4: rectangle inside a ball around a center **)
 (** LATEX VERSION: Every point x in a ball B(c,r0) has a rectangular neighborhood contained in B(c,r0). **)
-(** SUSPICIOUS DEFINITION: This also depends on estimates relating coordinate bounds to distance_R2, currently not derived. **)
+(** SUSPICIOUS DEFINITION: This depends on coordinate to distance_R2 estimates (bounding coordinate differences by the Euclidean distance); the relevant real and sqrt lemmas exist earlier, but the required inequalities are not yet proved in this section. **)
 Theorem rectangle_inside_ball :
   forall x c r0:set,
     x :e EuclidPlane ->
@@ -10533,7 +10534,7 @@ Qed.
 
 (** helper for §13 Example 4: ball inside a rectangle around a point **)
 (** LATEX VERSION: Every point x in a rectangle has a circular neighborhood contained in it. **)
-(** SUSPICIOUS DEFINITION: This needs a bound abs(dx) <= distance_R2 and similar for dy, which is not yet proved here. **)
+(** SUSPICIOUS DEFINITION: This needs bounds of the form abs(dx) <= distance_R2 and abs(dy) <= distance_R2, plus basic order lemmas to choose a positive radius below the rectangle margins; these are not yet proved here. **)
 Theorem ball_inside_rectangle :
   forall b x:set,
     b :e rectangular_regions ->
