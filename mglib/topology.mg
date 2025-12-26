@@ -37333,6 +37333,7 @@ apply andI.
 Qed.
 
 (** helper: flip_unit_interval is continuous in the unit interval topology **)
+(** LATEX VERSION: The map t |-> 1 - t is continuous on the unit interval I. **)
 Theorem flip_unit_interval_continuous :
   continuous_map unit_interval unit_interval_topology unit_interval unit_interval_topology flip_unit_interval.
 prove continuous_map unit_interval unit_interval_topology unit_interval unit_interval_topology flip_unit_interval.
