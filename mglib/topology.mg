@@ -34208,9 +34208,7 @@ assume HT1: T1_space X Tx.
 assume HxX: x :e X.
 prove X :\: {x} :e Tx.
 claim Htop: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall F:set, F c= X -> finite F -> closed_in X Tx F)
-               HT1). }
+{ exact (T1_space_topology X Tx HT1). }
 claim Hsing: closed_in X Tx {x}.
 { exact ((iffEL (T1_space X Tx)
                 (forall z:set, z :e X -> closed_in X Tx {z})
