@@ -21096,6 +21096,51 @@ apply (Hrel (exists a1 a2 b1 b2:set,
                Hc6).
 Qed.
 
+(** helper: introduce order_rel on R×R from the dictionary comparison disjunction **)
+Theorem order_rel_setprod_R_R_intro : forall a1 a2 b1 b2:set,
+  (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2)) ->
+  order_rel (setprod R R) (a1, a2) (b1, b2).
+let a1 a2 b1 b2.
+assume Hdisj.
+prove order_rel (setprod R R) (a1, a2) (b1, b2).
+prove (setprod R R = R /\ Rlt (a1, a2) (b1, b2))
+  \/
+  (setprod R R = rational_numbers /\ Rlt (a1, a2) (b1, b2))
+  \/
+  (setprod R R = omega /\ (a1, a2) :e (b1, b2))
+  \/
+  (setprod R R = omega :\: {0} /\ (a1, a2) :e (b1, b2))
+  \/
+  (setprod R R = setprod 2 omega /\
+   exists i m j n:set,
+     i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+     (a1, a2) = (i, m) /\ (b1, b2) = (j, n) /\
+     (i :e j \/ (i = j /\ m :e n)))
+  \/
+  (setprod R R = setprod R R /\
+   exists c1 c2 d1 d2:set,
+     (a1, a2) = (c1, c2) /\ (b1, b2) = (d1, d2) /\
+     (Rlt c1 d1 \/ (c1 = d1 /\ Rlt c2 d2))).
+apply orIR.
+prove setprod R R = setprod R R /\
+   exists c1 c2 d1 d2:set,
+     (a1, a2) = (c1, c2) /\ (b1, b2) = (d1, d2) /\
+     (Rlt c1 d1 \/ (c1 = d1 /\ Rlt c2 d2)).
+apply andI.
+- reflexivity.
+- witness a1.
+  witness a2.
+  witness b1.
+  witness b2.
+  prove (a1, a2) = (a1, a2) /\ (b1, b2) = (b1, b2) /\
+        (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2)).
+  apply andI.
+  + apply andI.
+    - reflexivity.
+    - reflexivity.
+  + exact Hdisj.
+Qed.
+
 (** Helper: Zplus is not setprod 2 omega **)
 Theorem Zplus_neq_setprod_2_omega : Zplus <> setprod 2 omega.
 assume Heq: Zplus = setprod 2 omega.
@@ -24915,7 +24960,18 @@ apply (SNoLt_trichotomy_or_impred bb 1 HbbS SNo_1 (exists x:set, x :e U0 /\ x <>
     exact ((not_Rlt_refl (eps_ 1) HepsR) Hbad).
 Qed.
 Definition ordered_square : set := setprod unit_interval unit_interval.
-Definition ordered_square_topology : set := order_topology ordered_square.
+(** helper: basis for the dictionary order topology on I×I, using the dictionary comparison on R×R **)
+Definition ordered_square_order_basis : set :=
+  ({I :e Power ordered_square | exists a :e ordered_square, exists b :e ordered_square,
+        I = {x :e ordered_square | order_rel (setprod R R) a x /\ order_rel (setprod R R) x b}}
+   :\/:
+   {I :e Power ordered_square | exists b :e ordered_square,
+        I = {x :e ordered_square | order_rel (setprod R R) x b}}
+   :\/:
+   {I :e Power ordered_square | exists a :e ordered_square,
+        I = {x :e ordered_square | order_rel (setprod R R) a x}}).
+
+Definition ordered_square_topology : set := generated_topology ordered_square ordered_square_order_basis.
 (** LATEX VERSION: The vertical strip {1/2}×(1/2,1] inside I×I. **)
 Definition ordered_square_open_strip : set :=
   {p :e ordered_square|exists y:set, p = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y)}.
