@@ -11449,7 +11449,7 @@ claim Hb0R: b0 :e R.
 
 claim HxRect: x :e Rect.
 { prove x :e Rect.
-  rewrite HbEq at 1.
+  rewrite <- HbEq.
   exact Hxb. }
 claim HxRectPred: exists x0 y0:set,
   x = (x0,y0) /\ Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0.
