@@ -20552,10 +20552,28 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 	    claim H10inDef: (1,0) :e {x :e X | order_rel X x b}.
 	    { rewrite <- HUeq.
 	      exact H10inU. }
-	    claim Hrel: order_rel X (1,0) b.
-	    { exact (SepE2 X (fun x0 : set => order_rel X x0 b) (1,0) H10inDef). }
+		    claim Hrel: order_rel X (1,0) b.
+		    { exact (SepE2 X (fun x0 : set => order_rel X x0 b) (1,0) H10inDef). }
 
-	    admit.
+		    (** Reduce to the setprod 2 omega case and unfold the dictionary-order witness data. **)
+		    claim HXeq: X = setprod 2 omega.
+		    { reflexivity. }
+		    claim Hrel2: order_rel (setprod 2 omega) (1,0) b.
+		    { prove order_rel (setprod 2 omega) (1,0) b.
+		      rewrite <- HXeq at 1.
+		      exact Hrel. }
+		    claim Hex: exists i m j n:set,
+		      i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+		      (1,0) = (i, m) /\ b = (j, n) /\
+		      (i :e j \/ (i = j /\ m :e n)).
+		    { exact (order_rel_setprod_2_omega_unfold (1,0) b Hrel2). }
+		    apply Hex.
+		    let i. assume HiPair. apply HiPair.
+		    let m. assume HmPair. apply HmPair.
+		    let j. assume HjPair. apply HjPair.
+		    let n. assume HnPair. apply HnPair.
+		    assume Hcore.
+		    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
                       I = {x :e X | order_rel X a x}}.
