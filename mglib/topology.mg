@@ -60508,7 +60508,7 @@ Qed.
 
 (** helper: G_delta subset coded via countable intersection of open sets **)
 Definition Gdelta_in : set -> set -> set -> prop := fun X Tx A =>
-  exists Fam:set, countable Fam /\
+  exists Fam:set, countable_set Fam /\
     (forall U :e Fam, open_in X Tx U) /\
     intersection_over_family X Fam = A.
 
@@ -60556,7 +60556,146 @@ Theorem ex30_1a_onepoint_Gdelta_firstcountable_T1 : forall X Tx x:set,
   T1_space X Tx ->
   x :e X ->
   Gdelta_in X Tx (Sing x).
-admit.
+let X Tx x.
+assume Hfc: first_countable_space X Tx.
+assume HT1: T1_space X Tx.
+assume HxX: x :e X.
+prove Gdelta_in X Tx (Sing x).
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall x0:set, x0 :e X -> countable_basis_at X Tx x0)
+               Hfc). }
+claim Hcountbas: forall x0:set, x0 :e X -> countable_basis_at X Tx x0.
+{ exact (andER (topology_on X Tx)
+               (forall x0:set, x0 :e X -> countable_basis_at X Tx x0)
+               Hfc). }
+claim Hcbx: countable_basis_at X Tx x.
+{ exact (Hcountbas x HxX). }
+claim HexB: exists B:set,
+  B c= Tx /\ countable_set B /\
+  (forall b:set, b :e B -> x :e b) /\
+  (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U).
+{ exact (andER (topology_on X Tx /\ x :e X)
+               (exists B:set,
+                 B c= Tx /\ countable_set B /\
+                 (forall b:set, b :e B -> x :e b) /\
+                 (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U))
+               Hcbx). }
+set B := Eps_i (fun B0:set =>
+  B0 c= Tx /\ countable_set B0 /\
+  (forall b:set, b :e B0 -> x :e b) /\
+  (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B0 /\ b c= U)).
+claim HBprop:
+  B c= Tx /\ countable_set B /\
+  (forall b:set, b :e B -> x :e b) /\
+  (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U).
+{ exact (Eps_i_ex (fun B0:set =>
+           B0 c= Tx /\ countable_set B0 /\
+           (forall b:set, b :e B0 -> x :e b) /\
+           (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B0 /\ b c= U))
+         HexB). }
+claim HB123: ((B c= Tx /\ countable_set B) /\ (forall b:set, b :e B -> x :e b)).
+{ exact (andEL ((B c= Tx /\ countable_set B) /\ (forall b:set, b :e B -> x :e b))
+               (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U)
+               HBprop). }
+claim HBrefine: forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U.
+{ exact (andER ((B c= Tx /\ countable_set B) /\ (forall b:set, b :e B -> x :e b))
+               (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U)
+               HBprop). }
+claim HB12: (B c= Tx /\ countable_set B).
+{ exact (andEL (B c= Tx /\ countable_set B)
+               (forall b:set, b :e B -> x :e b)
+               HB123). }
+claim HBx: forall b:set, b :e B -> x :e b.
+{ exact (andER (B c= Tx /\ countable_set B)
+               (forall b:set, b :e B -> x :e b)
+               HB123). }
+claim HBsub: B c= Tx.
+{ exact (andEL (B c= Tx) (countable_set B) HB12). }
+claim HBcount: countable_set B.
+{ exact (andER (B c= Tx) (countable_set B) HB12). }
+
+prove exists Fam:set, countable_set Fam /\ (forall U :e Fam, open_in X Tx U) /\ intersection_over_family X Fam = Sing x.
+witness B.
+apply andI.
+- prove countable_set B /\ (forall U :e B, open_in X Tx U).
+  apply andI.
+  - exact HBcount.
+  - let U. assume HU: U :e B.
+    prove topology_on X Tx /\ U :e Tx.
+    apply andI.
+    + exact HTx.
+    + apply HBsub. exact HU.
+- apply set_ext.
+    + let z. assume Hz: z :e intersection_over_family X B.
+      prove z :e Sing x.
+      claim HzX: z :e X.
+      { exact (SepE1 X (fun z0:set => forall U:set, U :e B -> z0 :e U) z Hz). }
+      claim Hzall: forall U:set, U :e B -> z :e U.
+      { exact (SepE2 X (fun z0:set => forall U:set, U :e B -> z0 :e U) z Hz). }
+      apply xm (z = x).
+      - assume Hzx: z = x.
+        rewrite Hzx.
+        exact (SingI x).
+      - assume Hzneq: z <> x.
+        apply FalseE.
+        claim HsubZ: {z} c= X.
+        { exact (singleton_subset z X HzX). }
+        claim Hzfin: finite {z}.
+        { exact (Sing_finite z). }
+        claim Hzclosed: closed_in X Tx {z}.
+        { exact (T1_space_finite_closed X Tx {z} HT1 HsubZ Hzfin). }
+        set Uc := X :\: {z}.
+        claim HUcopen: open_in X Tx Uc.
+        { exact (open_of_closed_complement X Tx {z} Hzclosed). }
+        claim HUcTx: Uc :e Tx.
+        { exact (open_in_elem X Tx Uc HUcopen). }
+        claim Hxnotz: x /:e {z}.
+        { assume Hxz: x :e {z}.
+          claim HxzEq: x = z.
+          { exact (SingE z x Hxz). }
+          claim HzxEq: z = x.
+          { rewrite HxzEq. reflexivity. }
+          exact (Hzneq HzxEq). }
+        claim HxUc: x :e Uc.
+        { exact (setminusI X {z} x HxX Hxnotz). }
+        claim Hexb: exists b:set, b :e B /\ b c= Uc.
+        { exact (HBrefine Uc HUcTx HxUc). }
+        set b0 := Eps_i (fun b:set => b :e B /\ b c= Uc).
+        claim Hb0prop: b0 :e B /\ b0 c= Uc.
+        { exact (Eps_i_ex (fun b:set => b :e B /\ b c= Uc) Hexb). }
+        claim Hb0B: b0 :e B.
+        { exact (andEL (b0 :e B) (b0 c= Uc) Hb0prop). }
+        claim Hb0sub: b0 c= Uc.
+        { exact (andER (b0 :e B) (b0 c= Uc) Hb0prop). }
+        claim Hzz: z :e {z}.
+        { exact (SingI z). }
+        claim HznotUc: z /:e Uc.
+        { assume HzUc: z :e Uc.
+          claim HznotZ: z /:e {z}.
+          { exact (setminusE2 X {z} z HzUc). }
+          exact (HznotZ Hzz). }
+        claim Hznotb0: z /:e b0.
+        { assume Hzb: z :e b0.
+          claim HzUc: z :e Uc.
+          { apply Hb0sub. exact Hzb. }
+          exact (HznotUc HzUc). }
+        claim Hzb0: z :e b0.
+        { exact (Hzall b0 Hb0B). }
+        exact (Hznotb0 Hzb0).
+    + let z. assume Hz: z :e Sing x.
+      prove z :e intersection_over_family X B.
+      claim HzEq: z = x.
+      { exact (SingE x z Hz). }
+      claim HdefInt: intersection_over_family X B =
+        {z0 :e X|forall U:set, U :e B -> z0 :e U}.
+      { reflexivity. }
+      rewrite HdefInt.
+      apply (SepI X (fun z0:set => forall U:set, U :e B -> z0 :e U) z).
+      - rewrite HzEq. exact HxX.
+      - let U. assume HU: U :e B.
+        rewrite HzEq.
+        exact (HBx U HU).
 Qed.
 
 (** from §30 Exercise 1b: space with G_delta points but not first-countable **)
