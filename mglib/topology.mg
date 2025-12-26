@@ -33377,9 +33377,7 @@ assume HX: Hausdorff_space X Tx.
 assume HYsubX: Y c= X.
 prove Hausdorff_space Y (subspace_topology X Tx Y).
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 -> exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
-               HX). }
+{ exact (Hausdorff_space_topology X Tx HX). }
 claim HTy: topology_on Y (subspace_topology X Tx Y).
 { exact (subspace_topology_is_topology X Tx Y HTx HYsubX). }
 prove topology_on Y (subspace_topology X Tx Y) /\
@@ -33394,13 +33392,14 @@ apply andI.
   (** Strategy: y1, y2 are distinct points. If both in Y, they're distinct in X.
       Get disjoint X-neighborhoods U', V' from Hausdorff property.
       Then U' ∩ Y and V' ∩ Y are disjoint Y-neighborhoods. **)
-  claim Hsepax:
-    forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
-      exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
-  { exact (andER (topology_on X Tx)
-                 (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
-                   exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
-                 HX). }
+claim Hsepax:
+  forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+    exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+{ let x1 x2.
+  assume Hx1: x1 :e X.
+  assume Hx2: x2 :e X.
+  assume Hneq: x1 <> x2.
+  exact (Hausdorff_space_separation X Tx x1 x2 HX Hx1 Hx2 Hneq). }
   claim Hy1X: y1 :e X.
   { exact (HYsubX y1 Hy1). }
   claim Hy2X: y2 :e X.
