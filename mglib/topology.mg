@@ -50925,10 +50925,7 @@ Qed.
 
 (** from §26 Lemma 26.4: separating point and compact set in Hausdorff space **)
 (** LATEX VERSION: In a Hausdorff space, a point not in a compact set can be separated from that compact set by disjoint open sets. **)
-(** FIXED: Point x should be disjoint from Y, not intersect as sets.
-    Was: x :/\: Y = Empty (treating point x as a set, intersecting with Y)
-    Now: x /:e Y (point x is not an element of set Y)
-    The conclusion x :e U confirms x is a point, so disjointness should be x ∉ Y. **)
+(** FIXED: Point disjointness is x /:e Y (x not an element of Y), not x :/\: Y = Empty which treats x as a set. **)
 Theorem Hausdorff_separate_point_compact_set : forall X Tx Y x:set,
   Hausdorff_space X Tx -> Y c= X -> compact_space Y (subspace_topology X Tx Y) -> x :e X -> x /:e Y ->
   exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ Y c= V /\ U :/\: V = Empty.
@@ -51386,10 +51383,7 @@ Qed.
 
 (** from §26: tube lemma used in product compactness **)
 (** LATEX VERSION: Tube lemma: in X×Y with Y compact, a neighborhood of {x0}×Y contains some U×Y. **)
-(** FIXED: Tube lemma should state U×{y} ⊆ N for all y, not U×y ∈ N.
-    Was: setprod U y :e N (Cartesian product U×y as element)
-    Now: setprod U {y} c= N (Cartesian product U×{y} as subset)
-    The tube lemma says U×Y ⊆ N, which is equivalent to ∀y∈Y. U×{y} ⊆ N. **)
+(** FIXED: Use setprod U {y} c= N (subset) rather than setprod U y :e N; tube lemma encodes U×Y c= N and can be viewed pointwise as forall y:e Y, setprod U {y} c= N. **)
 Theorem tube_lemma : forall X Tx Y Ty:set,
   topology_on X Tx -> topology_on Y Ty ->
   compact_space Y Ty ->
@@ -53300,14 +53294,8 @@ Qed.
 
 (** from exercises after §29: directed sets **)
 (** LATEX VERSION: Directed set definition (nonempty, every pair has an upper bound). **)
-(** FIXED: Upper bound condition was missing.
-    Was: exists k:set, k :e J (k not related to i,j at all!)
-    Now: exists k:set, k :e J /\ (i :e k \/ i = k) /\ (j :e k \/ j = k)
-    The comment requires "every pair has an upper bound", so k must satisfy i≤k and j≤k.
-    Using von Neumann ordinal ordering: i≤k means (i :e k \/ i = k). **)
-(** SUSPICIOUS DEFINITION: This encodes the preorder on indices using membership `i :e k \/ i = k`;
-    this is natural for ordinal-indexed nets, but directed sets in general topology are usually abstract posets,
-    so later results may need witness translations when indices are not literal ordinals. **)
+(** FIXED: Upper bound condition uses exists k:e J with (i :e k \/ i = k) and (j :e k \/ j = k), interpreting <= via von Neumann ordinals. **) 
+(** SUSPICIOUS DEFINITION: Directed-set order is encoded by membership on ordinals (i :e k \/ i = k), while general topology uses abstract preorders; later translations may be needed. **) 
 Definition directed_set : set -> prop := fun J =>
   (J <> Empty /\ forall i:set, i :e J -> ordinal i)
   /\ forall i j:set, i :e J -> j :e J ->
@@ -53556,19 +53544,8 @@ Definition net_on : set -> prop := fun net =>
 
 (** from exercises after §29: subnet definition placeholder **)
 (** LATEX VERSION: Definition of subnet (Exercise, placeholder formalization). **)
-(** FIXED: Lines 16152-16153 had nonsensical condition making phi constant.
-    Was: forall k1 k2:set, k1 :e K -> k2 :e K -> exists k3:set,
-           k3 :e K /\ apply_fun phi k3 = apply_fun phi k1 /\ apply_fun phi k3 = apply_fun phi k2
-         This says phi(k3) = phi(k1) AND phi(k3) = phi(k2), so phi(k1) = phi(k2) for ALL k1, k2,
-         making phi constant!
-    Now: forall j:set, j :e J -> exists k0:set, k0 :e K /\
-           forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
-             (j :e apply_fun phi k \/ j = apply_fun phi k)
-         This is the cofinality condition: for every j ∈ J, eventually phi(k) ≥ j.
-    Also: subnet values are forced to land in the same space X as the original net:
-      apply_fun sub k = apply_fun net (apply_fun phi k). **)
-(** SUSPICIOUS DEFINITION: `subnet_of` packages a shared codomain and a cofinal map;
-    since `net_converges` existentially quantifies the index set, connecting convergence and subnet data can require a witness-alignment lemma. **)
+(** FIXED: Cofinality condition is forall j:e J, exists k0:e K, forall k:e K with k0<=k, we have j<=phi(k); old version forced phi to be constant; also subnet values satisfy sub(k) = net(phi(k)) in the same codomain X. **) 
+(** SUSPICIOUS DEFINITION: subnet_of packages shared codomain and cofinal map; relating it to net_converges may require an index-alignment lemma since net_converges hides the index set. **) 
 Definition subnet_of : set -> set -> prop := fun net sub =>
   exists J K X phi:set,
     directed_set J /\ directed_set K /\
