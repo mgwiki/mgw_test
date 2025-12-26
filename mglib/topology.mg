@@ -38386,11 +38386,88 @@ Qed.
 (** LATEX VERSION: For ax+by=c, if b is not zero one can solve for y as a function of x; if b=0 one can solve for x as a constant and parametrize by y. **)
 Definition affine_line_R2_param_by_x : set -> set -> set -> set :=
   fun a b c =>
-    {(x, (x, div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b)) | x :e R}.
+    graph R (fun x:set => (x, div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b)).
 
 Definition affine_line_R2_param_by_y : set -> set -> set -> set :=
   fun a b c =>
-    {(y, (div_SNo c a, y)) | y :e R}.
+    graph R (fun y:set => (div_SNo c a, y)).
+
+(** Helper: apply_fun on affine_line_R2_param_by_x **)
+Theorem affine_line_R2_param_by_x_apply : forall a b c x:set,
+  x :e R ->
+  apply_fun (affine_line_R2_param_by_x a b c) x =
+    (x, div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b).
+let a b c x.
+assume HxR: x :e R.
+exact (apply_fun_graph R (fun x0:set => (x0, div_SNo (add_SNo c (minus_SNo (mul_SNo a x0))) b)) x HxR).
+Qed.
+
+(** Helper: apply_fun on affine_line_R2_param_by_y **)
+Theorem affine_line_R2_param_by_y_apply : forall a b c y:set,
+  y :e R ->
+  apply_fun (affine_line_R2_param_by_y a b c) y = (div_SNo c a, y).
+let a b c y.
+assume HyR: y :e R.
+exact (apply_fun_graph R (fun y0:set => (div_SNo c a, y0)) y HyR).
+Qed.
+
+(** Helper: affine_line_R2_param_by_x maps into EuclidPlane **)
+Theorem affine_line_R2_param_by_x_function_on : forall a b c:set,
+  a :e R -> b :e R -> c :e R ->
+  function_on (affine_line_R2_param_by_x a b c) R EuclidPlane.
+let a b c.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HcR: c :e R.
+let x. assume HxR: x :e R.
+prove apply_fun (affine_line_R2_param_by_x a b c) x :e EuclidPlane.
+rewrite (affine_line_R2_param_by_x_apply a b c x HxR).
+claim HdefR: R = real.
+{ reflexivity. }
+claim HaReal: a :e real.
+{ rewrite <- HdefR. exact HaR. }
+claim HbReal: b :e real.
+{ rewrite <- HdefR. exact HbR. }
+claim HcReal: c :e real.
+{ rewrite <- HdefR. exact HcR. }
+claim HxReal: x :e real.
+{ rewrite <- HdefR. exact HxR. }
+claim HmulReal: mul_SNo a x :e real.
+{ exact (real_mul_SNo a HaReal x HxReal). }
+claim HmReal: minus_SNo (mul_SNo a x) :e real.
+{ exact (real_minus_SNo (mul_SNo a x) HmulReal). }
+claim HnumReal: add_SNo c (minus_SNo (mul_SNo a x)) :e real.
+{ exact (real_add_SNo c HcReal (minus_SNo (mul_SNo a x)) HmReal). }
+claim HdivReal: div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b :e real.
+{ exact (real_div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) HnumReal b HbReal). }
+claim HdivR: div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b :e R.
+{ rewrite HdefR. exact HdivReal. }
+exact (tuple_2_setprod R R x HxR (div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b) HdivR).
+Qed.
+
+(** Helper: affine_line_R2_param_by_y maps into EuclidPlane **)
+Theorem affine_line_R2_param_by_y_function_on : forall a b c:set,
+  a :e R -> b :e R -> c :e R ->
+  function_on (affine_line_R2_param_by_y a b c) R EuclidPlane.
+let a b c.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HcR: c :e R.
+let y. assume HyR: y :e R.
+prove apply_fun (affine_line_R2_param_by_y a b c) y :e EuclidPlane.
+rewrite (affine_line_R2_param_by_y_apply a b c y HyR).
+claim HdefR: R = real.
+{ reflexivity. }
+claim HaReal: a :e real.
+{ rewrite <- HdefR. exact HaR. }
+claim HcReal: c :e real.
+{ rewrite <- HdefR. exact HcR. }
+claim HdivReal: div_SNo c a :e real.
+{ exact (real_div_SNo c HcReal a HaReal). }
+claim HdivR: div_SNo c a :e R.
+{ rewrite HdefR. exact HdivReal. }
+exact (tuple_2_setprod R R (div_SNo c a) HdivR y HyR).
+Qed.
 
 (** from §16 Exercise 8: helper predicate for negative slope in affine form **)
 (** LATEX VERSION: For ax+by=c with b not zero, the slope is negative exactly when a and b have the same sign. **)
