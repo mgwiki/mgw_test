@@ -11798,7 +11798,8 @@ apply andI.
 	      claim Hcom1: add_SNo xp x0 = add_SNo x0 xp.
 	      { exact (add_SNo_com xp x0 HxpS Hx0S). }
 	      claim Hassoc2: add_SNo (add_SNo x0 xp) (minus_SNo xp) = add_SNo x0 (add_SNo xp (minus_SNo xp)).
-	      { exact (add_SNo_assoc x0 xp (minus_SNo xp) Hx0S HxpS HmxpS). }
+	      { symmetry.
+	        exact (add_SNo_assoc x0 xp (minus_SNo xp) Hx0S HxpS HmxpS). }
 	      claim Hinv: add_SNo xp (minus_SNo xp) = 0.
 	      { exact (add_SNo_minus_SNo_rinv xp HxpS). }
 	      claim Hz: add_SNo x0 0 = x0.
