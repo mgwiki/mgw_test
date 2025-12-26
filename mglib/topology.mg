@@ -20703,13 +20703,15 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 			    apply Hex.
 			    let i. assume HiPair. apply HiPair.
 			    let m. assume HmPair. apply HmPair.
-			    let j. assume HjPair. apply HjPair.
-			    let n. assume HnPair. apply HnPair.
-			    assume Hcore.
-			    (** Conjunction-shape diagnostics:
-			        Repeated splitting of the witness package `Hcore` exposes (in this order):
-			        b = (j,n), (1,0) = (i,m), n :e omega, j :e 2, m :e omega, i :e 2.
-			        The lex/dictionary-order disjunction from the statement of `Hex`
+				    let j. assume HjPair. apply HjPair.
+				    let n. assume HnPair. apply HnPair.
+				    assume Hcore.
+				    claim Hlex: (i :e j \/ (i = j /\ m :e n)).
+				    { exact (conj7_last_disjE i m j n (1,0) b Hcore). }
+				    (** Conjunction-shape diagnostics:
+				        Repeated splitting of the witness package `Hcore` exposes (in this order):
+				        b = (j,n), (1,0) = (i,m), n :e omega, j :e 2, m :e omega, i :e 2.
+				        The lex/dictionary-order disjunction from the statement of `Hex`
 			        is not reachable via this splitting pattern, so HU2 remains admitted for now. **)
 			    apply Hcore.
 			    assume Hleft Hright.
