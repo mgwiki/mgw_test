@@ -20614,6 +20614,9 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 				    (** In this destruct chain, the remaining component `H10Eq` is the proof that n :e omega. **)
 				    claim HnOmega2: n :e omega.
 				    { exact H10Eq. }
+				    (** Probe: HbEq appears to be the equation b = (j,n). **)
+				    claim HbEq2: b = (j, n).
+				    { exact HbEq. }
 				    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
