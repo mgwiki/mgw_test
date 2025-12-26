@@ -20535,9 +20535,27 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
   + assume HU1: U :e {I :e Power X | exists a :e X, exists b :e X,
                         I = {x :e X | order_rel X a x /\ order_rel X x b}}.
     admit.
-  + assume HU2: U :e {I :e Power X | exists b :e X,
-                        I = {x :e X | order_rel X x b}}.
-    admit.
+	  + assume HU2: U :e {I :e Power X | exists b :e X,
+	                        I = {x :e X | order_rel X x b}}.
+	    claim Hexb: exists b :e X, U = {x :e X | order_rel X x b}.
+	    { exact (SepE2 (Power X)
+	                   (fun I0 : set => exists b :e X, I0 = {x :e X | order_rel X x b})
+	                   U
+	                   HU2). }
+	    apply Hexb.
+	    let b. assume HbPair. apply HbPair.
+	    assume HbX: b :e X.
+	    assume HUeq: U = {x :e X | order_rel X x b}.
+
+	    claim H10inU: (1,0) :e U.
+	    { exact (SingI (1,0)). }
+	    claim H10inDef: (1,0) :e {x :e X | order_rel X x b}.
+	    { rewrite <- HUeq.
+	      exact H10inU. }
+	    claim Hrel: order_rel X (1,0) b.
+	    { exact (SepE2 X (fun x0 : set => order_rel X x0 b) (1,0) H10inDef). }
+
+	    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
                       I = {x :e X | order_rel X a x}}.
