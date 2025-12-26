@@ -18822,8 +18822,7 @@ Definition order_rel : set -> set -> set -> prop := fun X a b =>
   (X = setprod 2 omega /\
    exists i m j n:set,
      (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-      a = (i, m) /\ b = (j, n) /\
-      (i :e j \/ (i = j /\ m :e n))))
+      a = (i, m) /\ b = (j, n) /\ (i :e j \/ (i = j /\ m :e n))))
   \/
   (X = setprod R R /\
    exists a1 a2 b1 b2:set,
@@ -20008,33 +20007,27 @@ Theorem order_rel_setprod_2_omega_unfold : forall a b:set,
   order_rel (setprod 2 omega) a b ->
   exists i m j n:set,
     (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-     a = (i, m) /\ b = (j, n) /\
-     (i :e j \/ (i = j /\ m :e n))).
+     a = (i, m) /\ b = (j, n) /\ (i :e j \/ (i = j /\ m :e n))).
 let a b. assume Hrel: order_rel (setprod 2 omega) a b.
 apply (Hrel (exists i m j n:set,
                (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-                a = (i, m) /\ b = (j, n) /\
-                (i :e j \/ (i = j /\ m :e n))))).
+                a = (i, m) /\ b = (j, n) /\ (i :e j \/ (i = j /\ m :e n))))).
 - assume Hleft.
   apply (Hleft (exists i m j n:set,
                  (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-                  a = (i, m) /\ b = (j, n) /\
-                  (i :e j \/ (i = j /\ m :e n))))).
+                  a = (i, m) /\ b = (j, n) /\ (i :e j \/ (i = j /\ m :e n))))).
   - assume Hmid.
     apply (Hmid (exists i m j n:set,
                    (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-                    a = (i, m) /\ b = (j, n) /\
-                    (i :e j \/ (i = j /\ m :e n))))).
+                    a = (i, m) /\ b = (j, n) /\ (i :e j \/ (i = j /\ m :e n))))).
     + assume Hm2.
       apply (Hm2 (exists i m j n:set,
                     (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-                     a = (i, m) /\ b = (j, n) /\
-                     (i :e j \/ (i = j /\ m :e n))))).
+                     a = (i, m) /\ b = (j, n) /\ (i :e j \/ (i = j /\ m :e n))))).
       - assume Hm3.
         apply (Hm3 (exists i m j n:set,
                       (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-                       a = (i, m) /\ b = (j, n) /\
-                       (i :e j \/ (i = j /\ m :e n))))).
+                       a = (i, m) /\ b = (j, n) /\ (i :e j \/ (i = j /\ m :e n))))).
         - assume Hc1.
           apply FalseE.
           claim Heq: setprod 2 omega = R.
@@ -20670,70 +20663,7 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
     admit.
 	  + assume HU2: U :e {I :e Power X | exists b :e X,
 	                        I = {x :e X | order_rel X x b}}.
-	    claim Hexb: exists b :e X, U = {x :e X | order_rel X x b}.
-	    { exact (SepE2 (Power X)
-	                   (fun I0 : set => exists b :e X, I0 = {x :e X | order_rel X x b})
-	                   U
-	                   HU2). }
-	    apply Hexb.
-	    let b. assume HbPair. apply HbPair.
-	    assume HbX: b :e X.
-	    assume HUeq: U = {x :e X | order_rel X x b}.
-
-	    claim H10inU: (1,0) :e U.
-	    { exact (SingI (1,0)). }
-	    claim H10inDef: (1,0) :e {x :e X | order_rel X x b}.
-	    { rewrite <- HUeq.
-	      exact H10inU. }
-		    claim Hrel: order_rel X (1,0) b.
-		    { exact (SepE2 X (fun x0 : set => order_rel X x0 b) (1,0) H10inDef). }
-
-		    (** Reduce to the setprod 2 omega case and unfold the dictionary-order witness data. **)
-		    claim HXeq: X = setprod 2 omega.
-		    { reflexivity. }
-		    claim Hrel2: order_rel (setprod 2 omega) (1,0) b.
-		    { prove order_rel (setprod 2 omega) (1,0) b.
-		      rewrite <- HXeq at 1.
-		      exact Hrel. }
-			    claim Hex: exists i m j n:set,
-			      (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-			       (1,0) = (i, m) /\ b = (j, n) /\
-			       (i :e j \/ (i = j /\ m :e n))).
-		    { exact (order_rel_setprod_2_omega_unfold (1,0) b Hrel2). }
-			    apply Hex.
-			    let i. assume HiPair. apply HiPair.
-			    let m. assume HmPair. apply HmPair.
-			    let j. assume HjPair. apply HjPair.
-			    let n. assume HnPair. apply HnPair.
-			    assume Hcore.
-			    (** Conjunction-shape diagnostics:
-			        Repeated splitting of the witness package `Hcore` exposes (in this order):
-			        b = (j,n), (1,0) = (i,m), n :e omega, j :e 2, m :e omega, i :e 2.
-			        The lex/dictionary-order disjunction from the statement of `Hex`
-			        is not reachable via this splitting pattern, so HU2 remains admitted for now. **)
-			    apply Hcore.
-			    assume Hleft Hright.
-			    claim HbEq2: b = (j, n).
-			    { exact Hright. }
-			    apply Hleft.
-			    assume Hleft2 Hright2.
-			    claim H10Eq2: (1,0) = (i, m).
-			    { exact Hright2. }
-			    apply Hleft2.
-			    assume Hleft3 Hright3.
-			    claim HnOmega: n :e omega.
-			    { exact Hright3. }
-			    apply Hleft3.
-			    assume Hleft4 Hright4.
-			    claim Hj2: j :e 2.
-			    { exact Hright4. }
-			    apply Hleft4.
-			    assume Hleft5 Hright5.
-			    claim HmOmega: m :e omega.
-			    { exact Hright5. }
-			    claim Hi2: i :e 2.
-			    { exact Hleft5. }
-			    admit.
+	    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
                       I = {x :e X | order_rel X a x}}.
