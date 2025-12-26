@@ -11859,22 +11859,9 @@ apply andI.
 	      { exact (add_SNo_minus_SNo_linv x0 Hx0S). }
 	      rewrite Hinv at 1.
 	      exact (add_SNo_0R b0 Hb0S). }
-	    claim Hgoal: add_SNo x0 r3 < b0.
-	    { prove add_SNo x0 r3 < b0.
-	      rewrite <- HrhsEq at 2.
-	      exact (SNoLt_tra (add_SNo x0 r3) (add_SNo x0 m2) b0
-	                       (real_SNo (add_SNo x0 r3) (real_add_SNo x0 Hx0R r3 Hr3R))
-	                       (real_SNo (add_SNo x0 m2) (real_add_SNo x0 Hx0R m2 Hm2R))
-	                       Hb0S
-	                       Htmp
-	                       (SNoLt_ref (add_SNo x0 m2) (real_SNo (add_SNo x0 m2) (real_add_SNo x0 Hx0R m2 Hm2R)))). }
-	    rewrite <- HrhsEq at 2.
-	    exact (SNoLt_tra (add_SNo x0 r3) (add_SNo x0 m2) b0
-	                     (real_SNo (add_SNo x0 r3) (real_add_SNo x0 Hx0R r3 Hr3R))
-	                     (real_SNo (add_SNo x0 m2) (real_add_SNo x0 Hx0R m2 Hm2R))
-	                     Hb0S
-	                     Htmp
-	                     (RltE_lt (add_SNo x0 m2) b0 (RltI (add_SNo x0 m2) b0 (real_add_SNo x0 Hx0R m2 Hm2R) Hb0R (SNoLt_ref (add_SNo x0 m2) (real_SNo (add_SNo x0 m2) (real_add_SNo x0 Hx0R m2 Hm2R)))))). }
+		    prove add_SNo x0 r3 < b0.
+		    rewrite <- HrhsEq.
+		    exact Htmp. }
 
 	  (** TODO: finish linear inequalities and complete SepI proof; keep compiling for now **)
 	  admit.
