@@ -36432,10 +36432,10 @@ apply set_ext.
     exact HprojU. }
   claim Hp1Y: p 1 :e Y.
   { exact (ap1_Sigma X (fun _ : set => Y) p HpXY). }
-  claim Heta: p = (p 0, p 1).
-  { exact (setprod_eta X Y p HpXY). }
-  rewrite Heta.
-  exact (tuple_2_setprod U Y (p 0) Hp0U (p 1) Hp1Y).
+	  claim Heta: p = (p 0, p 1).
+	  { exact (setprod_eta X Y p HpXY). }
+	  rewrite Heta.
+	  exact (tuple_2_rectangle_set U Y (p 0) (p 1) Hp0U Hp1Y).
 - let p. assume Hp: p :e rectangle_set U Y.
   prove p :e preimage_of (setprod X Y) (projection1 X Y) U.
   claim HpUY: p :e setprod U Y.
@@ -36478,10 +36478,10 @@ apply set_ext.
     exact HprojV. }
   claim Hp0X: p 0 :e X.
   { exact (ap0_Sigma X (fun _ : set => Y) p HpXY). }
-  claim Heta: p = (p 0, p 1).
-  { exact (setprod_eta X Y p HpXY). }
-  rewrite Heta.
-  exact (tuple_2_setprod X V (p 0) Hp0X (p 1) Hp1V).
+	  claim Heta: p = (p 0, p 1).
+	  { exact (setprod_eta X Y p HpXY). }
+	  rewrite Heta.
+	  exact (tuple_2_rectangle_set X V (p 0) (p 1) Hp0X Hp1V).
 - let p. assume Hp: p :e rectangle_set X V.
   prove p :e preimage_of (setprod X Y) (projection2 X Y) V.
   claim HpXV: p :e setprod X V.
