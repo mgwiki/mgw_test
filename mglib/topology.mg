@@ -20634,71 +20634,12 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 			    let j. assume HjPair. apply HjPair.
 			    let n. assume HnPair. apply HnPair.
 			    assume Hcore.
-			    (** Probe: can we extract b = (j,n) as the last conjunct (with the disjunction earlier)? **)
-			    claim HbEq_last_probe: b = (j, n).
-			    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
-			                   (1,0) = (i, m) /\ (i :e j \/ (i = j /\ m :e n)))
-			                  (b = (j, n))
-			                  Hcore). }
+			    (** Probe the outermost conjunction split to locate the lex/dictionary-order disjunction. **)
 			    apply Hcore.
-			    assume Hpre Hlex.
-			    apply Hpre.
-			    assume Hpre2 HbEq.
-		    apply Hpre2.
-		    assume Hpre3 H10Eq.
-		    apply Hpre3.
-			    assume Hpre4 HnOmega.
-			    apply Hpre4.
-			    assume Hpre5 Hj2.
-			    claim Hi2: i :e 2.
-			    { exact Hpre5. }
-				    claim HmOmega: m :e omega.
-				    { exact Hj2. }
-				    claim Hj2': j :e 2.
-				    { exact HnOmega. }
-				    (** In this destruct chain, the remaining component `H10Eq` is the proof that n :e omega. **)
-				    claim HnOmega2: n :e omega.
-				    { exact H10Eq. }
-				    (** Confirmed probe: HbEq has type (1,0) = (i,m). **)
-				    claim H10Eq2: (1,0) = (i, m).
-				    { exact HbEq. }
-				    (** Probe: Hlex has type b = (j,n). **)
-				    claim HbEq2: b = (j, n).
-				    { exact Hlex. }
-
-				    (** Derived equalities from (1,0) = (i,m). **)
-				    claim Hi1: i = 1.
-				    { prove i = 1.
-				      claim Him0: (i,m) 0 = 1.
-				      { prove (i,m) 0 = 1.
-				        rewrite <- H10Eq2 at 1.
-				        exact (tuple_2_0_eq 1 0). }
-				      rewrite <- (tuple_2_0_eq i m) at 1.
-				      exact Him0. }
-				    claim Hm0: m = 0.
-				    { prove m = 0.
-				      claim Him1: (i,m) 1 = 0.
-				      { prove (i,m) 1 = 0.
-				        rewrite <- H10Eq2 at 1.
-				        exact (tuple_2_1_eq 1 0). }
-				      rewrite <- (tuple_2_1_eq i m) at 1.
-				      exact Him1. }
-
-				    (** Derived coordinate equalities for b from HbEq2: b = (j,n). **)
-				    claim Hb0_eq_j: b 0 = j.
-				    { prove b 0 = j.
-				      rewrite HbEq2.
-				      exact (tuple_2_0_eq j n). }
-					    claim Hb1_eq_n: b 1 = n.
-					    { prove b 1 = n.
-					      rewrite HbEq2.
-					      exact (tuple_2_1_eq j n). }
-					    (** NOTE: At this point we still need the lex/dictionary-order disjunction
-					        `i :e j \/ (i = j /\ m :e n)` to force j=1 and get an extra point (0,0) in the lower ray.
-					        Multiple attempts indicate the proof package obtained from
-					        `order_rel_setprod_2_omega_unfold (1,0) b Hrel2` does not expose this disjunction
-					        via the expected conjunction destruct pattern, so HU2 is postponed for now. **)
-					    admit.
+			    assume Hleft Hright.
+			    claim Hdisj: i :e j \/ (i = j /\ m :e n).
+			    { exact Hright. }
+			    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
                       I = {x :e X | order_rel X a x}}.
