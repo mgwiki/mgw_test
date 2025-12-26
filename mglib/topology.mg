@@ -20591,77 +20591,136 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    { exact (order_rel_setprod_2_omega_unfold (1,0) b Hrel2). }
 		    apply Hex.
 		    let i. assume HiPair. apply HiPair.
-		    let m. assume HmPair. apply HmPair.
-		    let j. assume HjPair. apply HjPair.
-		    let n. assume HnPair. apply HnPair.
-		    assume Hcore.
-		    apply Hcore.
-		    assume Hpre Hlex.
-		    apply Hpre.
-		    assume Hpre2 HbEq.
-		    apply Hpre2.
-		    assume Hpre3 H10Eq.
-		    apply Hpre3.
-			    assume Hpre4 HnOmega.
-			    apply Hpre4.
-			    assume Hpre5 Hj2.
-			    claim Hi2: i :e 2.
-			    { exact Hpre5. }
-			    claim HmOmega: m :e omega.
-			    { exact Hj2. }
-				    claim Hj2': j :e 2.
-				    { exact HnOmega. }
-				    (** Start the HU2 contradiction proof; leave remaining steps admitted for now. **)
+			    let m. assume HmPair. apply HmPair.
+				    let j. assume HjPair. apply HjPair.
+				    let n. assume HnPair. apply HnPair.
+				    assume Hcore.
+				    apply Hcore.
+				    assume Hpre Hlex.
+				    apply Hpre.
+				    assume Hpre2 HbEq.
+				    apply Hpre2.
+				    assume Hpre3 HnOmega_and_H10Eq.
+				    apply Hpre3.
+				    assume Hpre4 Hj2'.
+				    apply Hpre4.
+				    assume Hi2 HmOmega.
+				    claim H10Eq2: (1,0) = (i, m).
+				    { exact HnOmega_and_H10Eq. }
+				    claim HbEq2: b = (j, n).
+				    { exact HbEq. }
+				    (** Conclude j = 1 and construct a second point (0,0) in the lower ray, contradicting U = {(1,0)}. **)
 				    claim Hi1: i = 1.
 				    { prove i = 1.
+				      claim H10_0: (1,0) 0 = 1.
+				      { exact (tuple_2_0_eq 1 0). }
+				      claim Him_0: (i,m) 0 = 1.
+				      { rewrite <- H10Eq2 at 1. exact H10_0. }
 				      rewrite <- (tuple_2_0_eq i m) at 1.
-				      rewrite <- H10Eq at 1.
-				      exact (tuple_2_0_eq 1 0). }
+				      exact Him_0. }
+				    claim Hm0: m = 0.
+				    { prove m = 0.
+				      claim H10_1: (1,0) 1 = 0.
+				      { exact (tuple_2_1_eq 1 0). }
+				      claim Him_1: (i,m) 1 = 0.
+				      { rewrite <- H10Eq2 at 1. exact H10_1. }
+				      rewrite <- (tuple_2_1_eq i m) at 1.
+				      exact Him_1. }
 
-				    claim Hnotij: ~(i :e j).
-				    { assume Hij.
-				      claim Hsub: 2 c= {0,1}.
-				      { exact Subq_2_UPair01. }
-				      claim Hj01: j :e {0,1}.
-				      { exact (Hsub j Hj2'). }
-				      apply (UPairE j 0 1 Hj01 False).
-				      - assume Hj0: j = 0.
-				        claim Hij0: 1 :e 0.
-				        { prove 1 :e 0.
-				          rewrite <- Hj0 at 2.
-				          rewrite <- Hi1 at 1.
-				          exact Hij. }
-				        exact (EmptyE 1 Hij0).
-				      - assume Hj1: j = 1.
-				        claim Hij1: 1 :e 1.
-				        { prove 1 :e 1.
-				          rewrite Hj1 at 2.
-				          rewrite <- Hi1 at 1.
-				          exact Hij. }
-				        claim HjSing: 1 :e {0}.
-				        { prove 1 :e {0}.
-				          rewrite <- eq_1_Sing0 at 2.
-				          exact Hij1. }
-				        claim H10: 1 = 0.
-				        { exact (SingE 0 1 HjSing). }
-				        exact (neq_1_0 H10). }
+			    claim Hj01: j :e {0,1}.
+			    { claim Hsub: 2 c= {0,1}.
+			      { exact Subq_2_UPair01. }
+			      exact (Hsub j Hj2'). }
+			    claim Hnot_1_in_j: ~(1 :e j).
+			    { assume H1j: 1 :e j.
+			      apply (UPairE j 0 1 Hj01 False).
+			      - assume Hj0: j = 0.
+			        rewrite Hj0 in H1j.
+			        exact (EmptyE 1 H1j).
+			      - assume Hj1: j = 1.
+			        rewrite Hj1 in H1j.
+			        rewrite eq_1_Sing0 in H1j.
+			        claim H10: 1 = 0.
+			        { exact (SingE 0 1 H1j). }
+			        exact (neq_1_0 H10). }
 
-				    claim Hpair: i = j /\ m :e n.
-				    { apply Hlex.
-				      - assume Hij.
-				        exact (FalseE (Hnotij Hij) (i = j /\ m :e n)).
-				      - assume Hijn: i = j /\ m :e n.
-				        exact Hijn. }
+			    claim Hpair: i = j /\ m :e n.
+			    { apply (Hlex (i = j /\ m :e n)).
+			      - assume Hij: i :e j.
+			        apply FalseE.
+			        claim H1j: 1 :e j.
+			        { rewrite Hi1 at 1. exact Hij. }
+			        exact (Hnot_1_in_j H1j).
+			      - assume Hmj: i = j /\ m :e n.
+			        exact Hmj. }
+			    claim HijEq: i = j.
+			    { exact (andEL (i = j) (m :e n) Hpair). }
+			    claim Hj1: j = 1.
+			    { prove j = 1.
+			      rewrite <- HijEq at 1.
+			      exact Hi1. }
+			    claim HbEq1: b = (1,n).
+			    { rewrite HbEq2.
+			      rewrite Hj1.
+			      reflexivity. }
 
-				    claim HijEq: i = j.
-				    { exact (andEL (i = j) (m :e n) Hpair). }
+			    (** Obtain n :e omega from b :e setprod 2 omega and b = (1,n). **)
+			    claim HbX2: b :e setprod 2 omega.
+			    { rewrite <- HXeq. exact HbX. }
+			    claim Hb1Omega: b 1 :e omega.
+			    { exact (ap1_Sigma 2 (fun _ : set => omega) b HbX2). }
+			    claim HnOmega2: n :e omega.
+			    { prove n :e omega.
+			      claim Htmp: (1,n) 1 :e omega.
+			      { rewrite <- HbEq1 at 1. exact Hb1Omega. }
+			      rewrite <- (tuple_2_1_eq 1 n) at 1.
+			      exact Htmp. }
 
-				    claim Hj1: j = 1.
-				    { prove j = 1.
-				      rewrite <- HijEq at 1.
-				      exact Hi1. }
+			    (** Show (0,0) is in the lower ray {x:eX | order_rel X x b}. **)
+			    claim H00inX: (0,0) :e X.
+			    { rewrite HXeq.
+			      exact (tuple_2_setprod 2 omega 0 In_0_2 0 (nat_p_omega 0 nat_0)). }
+			    claim Hrel00: order_rel X (0,0) b.
+			    { prove order_rel X (0,0) b.
+			      rewrite HXeq at 1.
+			      prove order_rel (setprod 2 omega) (0,0) b.
+			      apply orIL.
+			      apply orIR.
+			      apply andI.
+			      - reflexivity.
+			      - witness 0.
+			        witness 0.
+			        witness 1.
+			        witness n.
+			        apply andI.
+			        + apply andI.
+			          * apply andI.
+			            -- apply andI.
+			               { apply andI.
+			                 - apply andI.
+			                   + exact In_0_2
+			                   + exact (nat_p_omega 0 nat_0)
+			                 - exact In_1_2 }
+			               { exact HnOmega2 }
+			            -- reflexivity
+			          * exact HbEq1
+			        + apply orIL.
+			          exact In_0_1. }
+			    claim H00inDef: (0,0) :e {x :e X | order_rel X x b}.
+			    { exact (SepI X (fun x0 : set => order_rel X x0 b) (0,0) H00inX Hrel00). }
+			    claim H00inU: (0,0) :e U.
+			    { rewrite HUeq. exact H00inDef. }
 
-				    admit.
+			    claim H00eq10: (0,0) = (1,0).
+			    { exact (SingE (1,0) (0,0) H00inU). }
+			    claim H01: 0 = 1.
+			    { prove 0 = 1.
+			      claim H00eq0: (0,0) 0 = (1,0) 0.
+			      { rewrite H00eq10. reflexivity. }
+			      rewrite <- (tuple_2_0_eq 0 0) at 1.
+			      rewrite <- (tuple_2_0_eq 1 0) at 2.
+			      exact H00eq0. }
+			    exact (neq_0_1 H01).
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
                       I = {x :e X | order_rel X a x}}.
