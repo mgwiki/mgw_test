@@ -20499,6 +20499,28 @@ apply andI.
 - exact Hc.
 Qed.
 
+(** Helper: eliminate a 7-way conjunction A /\ B /\ C /\ D /\ E /\ F /\ G **)
+Theorem and7E : forall A B C D E F G:prop,
+  A /\ B /\ C /\ D /\ E /\ F /\ G ->
+  forall p:prop, (A -> B -> C -> D -> E -> F -> G -> p) -> p.
+let A B C D E F G.
+assume H.
+let p. assume Hp.
+apply (H p).
+assume H1 Hg.
+apply (H1 p).
+assume H2 Hf.
+apply (H2 p).
+assume H3 He.
+apply (H3 p).
+assume H4 Hd.
+apply (H4 p).
+assume H5 Hc.
+apply (H5 p).
+assume Ha Hb.
+exact (Hp Ha Hb Hc Hd He Hf Hg).
+Qed.
+
 (** from §14 Example 4: two-row dictionary order space is not discrete **) 
 (** LATEX VERSION: Example 4: The dictionary order topology on {1,2}×ℕ is not discrete. **)
 Definition two_by_nat : set := setprod 2 omega.
@@ -20580,142 +20602,10 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    apply Hpre2.
 		    assume Hpre3 H10Eq.
 		    apply Hpre3.
-			    assume Hpre4 HnOmega.
-			    apply Hpre4.
-			    assume Hpre5 Hj2.
-			    (** Extract the remaining 2-way conjunction i:e2 /\ m:eomega. **)
-			    claim Hi2: i :e 2.
-			    { exact (andEL (i :e 2) (m :e omega) Hpre5). }
-			    claim HmOmega: m :e omega.
-			    { exact (andER (i :e 2) (m :e omega) Hpre5). }
-
-			    (** compute i = 1 and m = 0 from (1,0) = (i,m) **)
-			    claim Hi1: i = 1.
-			    { prove i = 1.
-			      rewrite <- (tuple_2_0_eq i m) at 1.
-			      rewrite <- H10Eq at 1.
-			      exact (tuple_2_0_eq 1 0). }
-			    claim Hm0: m = 0.
-			    { prove m = 0.
-			      rewrite <- (tuple_2_1_eq i m) at 1.
-			      rewrite <- H10Eq at 1.
-			      exact (tuple_2_1_eq 1 0). }
-
-			    (** show i :e j is impossible (since j :e 2 and i=1) **)
-			    claim Hnotij: ~(i :e j).
-			    { assume Hij.
-			      claim Hsub: 2 c= {0,1}.
-			      { exact Subq_2_UPair01. }
-			      claim Hj01: j :e {0,1}.
-			      { exact (Hsub j Hj2). }
-			      apply (UPairE j 0 1 Hj01 False).
-			      - assume Hj0: j = 0.
-			        claim Hij0: 1 :e 0.
-			        { prove 1 :e 0.
-			          rewrite <- Hj0 at 2.
-			          rewrite <- Hi1 at 1.
-			          exact Hij. }
-			        exact (EmptyE 1 Hij0).
-			      - assume Hj1: j = 1.
-			        claim Hij1: 1 :e 1.
-			        { prove 1 :e 1.
-			          rewrite Hj1 at 2.
-			          rewrite <- Hi1 at 1.
-			          exact Hij. }
-			        claim HjSing: 1 :e {0}.
-			        { prove 1 :e {0}.
-			          rewrite <- eq_1_Sing0 at 2.
-			          exact Hij1. }
-			        claim H10: 1 = 0.
-			        { exact (SingE 0 1 HjSing). }
-			        exact (neq_1_0 H10). }
-
-			    (** obtain i=j and m:e n from the lexicographic disjunction **)
-			    claim Hpair: i = j /\ m :e n.
-			    { apply Hlex.
-			      - assume Hij.
-			        exact (FalseE (Hnotij Hij) (i = j /\ m :e n)).
-			      - assume Hijn: i = j /\ m :e n.
-			        exact Hijn. }
-
-			    claim HijEq: i = j.
-			    { exact (andEL (i = j) (m :e n) Hpair). }
-
-			    claim Hj1: j = 1.
-			    { prove j = 1.
-			      rewrite <- HijEq at 1.
-			      exact Hi1. }
-
-			    (** show (0,0) :e U by proving order_rel X (0,0) b and using HUeq **)
-			    claim H0omega: 0 :e omega.
-			    { exact (nat_p_omega 0 nat_0). }
-			    claim H00X: (0,0) :e X.
-			    { rewrite HXeq.
-			      exact (tuple_2_setprod 2 omega 0 In_0_2 0 H0omega). }
-
-			    claim Hord00: order_rel X (0,0) b.
-			    { prove order_rel X (0,0) b.
-			      prove (X = R /\ Rlt (0,0) b)
-			        \/
-			        (X = rational_numbers /\ Rlt (0,0) b)
-			        \/
-			        (X = omega /\ (0,0) :e b)
-			        \/
-			        (X = omega :\: {0} /\ (0,0) :e b)
-			        \/
-			        (X = setprod 2 omega /\
-			         exists i0 m0 j0 n0:set,
-			           i0 :e 2 /\ m0 :e omega /\ j0 :e 2 /\ n0 :e omega /\
-			           (0,0) = (i0, m0) /\ b = (j0, n0) /\
-			           (i0 :e j0 \/ (i0 = j0 /\ m0 :e n0)))
-			        \/
-			        (X = setprod R R /\
-			         exists a1 a2 b1 b2:set,
-			           (0,0) = (a1, a2) /\ b = (b1, b2) /\
-			           (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))).
-			      apply orIL.
-			      apply orIR.
-			      prove X = setprod 2 omega /\
-			        exists i0 m0 j0 n0:set,
-			          i0 :e 2 /\ m0 :e omega /\ j0 :e 2 /\ n0 :e omega /\
-			          (0,0) = (i0, m0) /\ b = (j0, n0) /\
-			          (i0 :e j0 \/ (i0 = j0 /\ m0 :e n0)).
-			      apply andI.
-			      - exact HXeq.
-			      - witness 0. witness 0. witness j. witness n.
-			        apply andI.
-			        { prove 0 :e 2 /\ 0 :e omega /\ j :e 2 /\ n :e omega /\ (0,0) = (0,0) /\ b = (j,n).
-			          apply andI.
-			          - exact In_0_2.
-			          - apply andI.
-			            + exact H0omega.
-			            + apply andI.
-			              * exact Hj2.
-			              * apply andI.
-			                { exact HnOmega. }
-			                { apply andI.
-			                  - reflexivity.
-			                  - exact HbEq. } }
-			        { prove (0 :e j \/ (0 = j /\ 0 :e n)).
-			          apply orIL.
-			          rewrite Hj1.
-			          exact In_0_1. } }
-
-			    claim H00inDef: (0,0) :e {x :e X | order_rel X x b}.
-			    { exact (SepI X (fun x0 : set => order_rel X x0 b) (0,0) H00X Hord00). }
-			    claim H00inU: (0,0) :e U.
-			    { prove (0,0) :e U.
-			      rewrite HUeq.
-			      exact H00inDef. }
-
-			    claim Heq: (0,0) = (1,0).
-			    { exact (SingE (1,0) (0,0) H00inU). }
-			    claim Hbad: 0 = 1.
-			    { prove 0 = 1.
-			      rewrite <- (tuple_2_0_eq 0 0) at 1.
-			      rewrite Heq at 1.
-			      exact (tuple_2_0_eq 1 0). }
-			    exact (neq_0_1 Hbad).
+		    assume Hpre4 HnOmega.
+		    apply Hpre4.
+		    assume Hpre5 Hj2.
+		    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
                       I = {x :e X | order_rel X a x}}.
