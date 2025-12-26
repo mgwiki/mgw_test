@@ -28869,9 +28869,9 @@ apply andI.
   - exact Q_sqrt2_cut_not_interval_or_ray.
 Qed.
 
-(** from §16 Exercise 8: lines as subspaces of lower limit products **) 
-(** LATEX VERSION: Exercise 8: The diagonal line in ℝ×ℝ with the lower limit product topology is homeomorphic to ℝ with lower limit topology. **)
-(** NOTE: This theorem is stated later, after `homeomorphism` and the product continuity lemmas are available. **)
+(** from §16 Exercise 8: lines as subspaces of lower limit products **)
+(** LATEX VERSION: Exercise 8: If L is a straight line in the plane, describe the topology L inherits as a subspace of R_l×R and as a subspace of R_l×R_l. In each case it is a familiar topology. **)
+(** NOTE: Formal statement currently deferred to Theorem ex16_8_lines_in_lower_limit_products, placed after Definition homeomorphism. **)
 
 (** from §16 Exercise 9: dictionary order topology on ℝ×ℝ equals ℝ_d × ℝ **) 
 (** LATEX VERSION: Exercise 9: The dictionary order topology on ℝ×ℝ is the same as the product topology ℝ_d×ℝ; compare it with the standard topology. **)
@@ -38345,6 +38345,58 @@ Theorem homeomorphism_topology_right : forall X Tx Y Ty f:set,
 let X Tx Y Ty f.
 assume Hhom: homeomorphism X Tx Y Ty f.
 exact (continuous_map_topology_cod X Tx Y Ty f (homeomorphism_continuous X Tx Y Ty f Hhom)).
+Qed.
+
+(** from §16 Exercise 8: helper definition of straight line by affine equation **)
+(** LATEX VERSION: A straight line in R×R can be described by an affine equation ax+by=c with not both a and b zero. **)
+Definition affine_line_R2 : set -> set -> set -> set :=
+  fun a b c =>
+    {p :e EuclidPlane |
+      add_SNo (mul_SNo a (R2_xcoord p)) (mul_SNo b (R2_ycoord p)) = c}.
+
+(** from §16 Exercise 8: topology on a line in R_l×R and R_l×R_l is familiar **)
+(** LATEX VERSION: For a straight line L in the plane, the subspace topology from R_l×R and from R_l×R_l is a familiar topology on L. **)
+Theorem ex16_8_lines_in_lower_limit_products : forall a b c:set,
+  a :e R -> b :e R -> c :e R ->
+  ~ (a = 0 /\ b = 0) ->
+  ( (b = 0 ->
+      exists f:set,
+        homeomorphism R R_standard_topology (affine_line_R2 a b c)
+          (subspace_topology (setprod R R)
+             (product_topology R R_lower_limit_topology R R_standard_topology)
+             (affine_line_R2 a b c)) f)
+    /\ (b <> 0 ->
+      exists f:set,
+        homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+          (subspace_topology (setprod R R)
+             (product_topology R R_lower_limit_topology R R_standard_topology)
+             (affine_line_R2 a b c)) f) )
+	  /\ exists f:set,
+	      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+	        (subspace_topology (setprod R R)
+	           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+	           (affine_line_R2 a b c)) f.
+prove forall a b c:set,
+  a :e R -> b :e R -> c :e R ->
+  ~ (a = 0 /\ b = 0) ->
+  ( (b = 0 ->
+      exists f:set,
+        homeomorphism R R_standard_topology (affine_line_R2 a b c)
+          (subspace_topology (setprod R R)
+             (product_topology R R_lower_limit_topology R R_standard_topology)
+             (affine_line_R2 a b c)) f)
+    /\ (b <> 0 ->
+      exists f:set,
+        homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+          (subspace_topology (setprod R R)
+             (product_topology R R_lower_limit_topology R R_standard_topology)
+             (affine_line_R2 a b c)) f) )
+  /\ exists f:set,
+      homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
+        (subspace_topology (setprod R R)
+           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+           (affine_line_R2 a b c)) f.
+admit.
 Qed.
 
 (** helper: homeomorphisms are injective **)
