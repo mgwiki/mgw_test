@@ -20582,7 +20582,7 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    apply Hpre.
 		    assume Hpre2 HbEq.
 		    apply Hpre2.
-		    assume Hpre3 H10Eq.
+		    assume H10Eq Hpre3.
 		    apply Hpre3.
 		    assume Hpre4 HnOmega.
 		    apply Hpre4.
