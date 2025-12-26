@@ -9894,6 +9894,12 @@ rewrite Hy.
 reflexivity.
 Qed.
 
+(** helper: eta law for points in EuclidPlane **)
+(** LATEX VERSION: Every point p in R×R is equal to the ordered pair of its coordinates. **)
+Theorem EuclidPlane_eta : forall p:set, p :e EuclidPlane -> (R2_xcoord p, R2_ycoord p) = p.
+admit.
+Qed.
+
 (** from §13 Example 4: equality of points in R×R is coordinatewise **)
 (** LATEX VERSION: If (x1,y1) = (x2,y2) then x1=x2 and y1=y2. **)
 Theorem tuple_eq_coords_R2 : forall x1 y1 x2 y2:set,
