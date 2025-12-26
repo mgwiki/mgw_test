@@ -19172,7 +19172,50 @@ Qed.
 
 (** helper: setprod R R is not rational_numbers **)
 Theorem setprod_R_R_neq_rational_numbers : setprod R R <> rational_numbers.
-admit. (** FAIL **)
+assume Heq: setprod R R = rational_numbers.
+prove False.
+
+(** rationals are countable: equip omega rational_numbers gives atleastp rational_numbers omega **)
+claim Hequip: equip omega rational_numbers.
+{ claim HdefQ: rational_numbers = rational.
+  { reflexivity. }
+  rewrite HdefQ.
+  exact form100_3. }
+claim Hequip_sym: equip rational_numbers omega.
+{ exact (equip_sym omega rational_numbers Hequip). }
+claim Hcount_Q: atleastp rational_numbers omega.
+{ exact (equip_atleastp rational_numbers omega Hequip_sym). }
+claim Hcount_prod: atleastp (setprod R R) omega.
+{ rewrite Heq.
+  exact Hcount_Q. }
+
+(** inject R into R×R via x ↦ (x,0) **)
+claim Hinj_R_prod: atleastp R (setprod R R).
+{ prove exists f : set -> set, inj R (setprod R R) f.
+  witness (fun x:set => (x,0)).
+  apply (injI R (setprod R R) (fun x:set => (x,0))).
+  - let x. assume Hx: x :e R.
+    prove (x,0) :e setprod R R.
+    exact (tuple_2_setprod R R x Hx 0 real_0).
+  - let x.
+    assume Hx: x :e R.
+    let z.
+    assume Hz: z :e R.
+    assume Hxz: (x,0) = (z,0).
+    prove x = z.
+    claim Hcoords: x = z /\ 0 = 0.
+    { exact (tuple_eq_coords x 0 z 0 Hxz). }
+    exact (andEL (x = z) (0 = 0) Hcoords). }
+
+(** compose injections to get R countable, contradict real uncountability **)
+claim Hcount_R: atleastp R omega.
+{ exact (atleastp_tra R (setprod R R) omega Hinj_R_prod Hcount_prod). }
+claim HdefR: R = real.
+{ reflexivity. }
+claim Hcount_real: atleastp real omega.
+{ rewrite <- HdefR.
+  exact Hcount_R. }
+exact (form100_22_real_uncountable_atleastp Hcount_real).
 Qed.
 
 (** Helper: strict order on ℝ implies order_rel on ℝ **)
