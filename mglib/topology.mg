@@ -25242,9 +25242,231 @@ claim HUdic: U :e subspace_topology (setprod R R) R2_dictionary_order_topology o
       apply binintersectI.
       - exact HpV.
       - exact HpSq.
-    - let p. assume HpCap: p :e V :/\: ordered_square.
-      prove p :e U.
-      admit. }
+	    - let p. assume HpCap: p :e V :/\: ordered_square.
+	      prove p :e U.
+	      claim HpV: p :e V.
+	      { exact (binintersectE1 V ordered_square p HpCap). }
+	      claim HpSq: p :e ordered_square.
+	      { exact (binintersectE2 V ordered_square p HpCap). }
+	      claim HpRR: p :e setprod R R.
+	      { exact (SepE1 (setprod R R)
+	                   (fun p0:set => order_rel (setprod R R) a p0 /\ order_rel (setprod R R) p0 b)
+	                   p
+	                   HpV). }
+	      claim HpEta: p = (p 0, p 1).
+	      { exact (setprod_eta R R p HpRR). }
+	      claim Hpord: order_rel (setprod R R) a p /\ order_rel (setprod R R) p b.
+	      { exact (SepE2 (setprod R R)
+	                     (fun p0:set => order_rel (setprod R R) a p0 /\ order_rel (setprod R R) p0 b)
+	                     p
+	                     HpV). }
+	      claim Hord1: order_rel (setprod R R) a p.
+	      { exact (andEL (order_rel (setprod R R) a p)
+	                     (order_rel (setprod R R) p b)
+	                     Hpord). }
+	      claim Hord2: order_rel (setprod R R) p b.
+	      { exact (andER (order_rel (setprod R R) a p)
+	                     (order_rel (setprod R R) p b)
+	                     Hpord). }
+	      claim Hex_ap: exists a1 a2 b1 b2:set,
+	        a = (a1, a2) /\ p = (b1, b2) /\ (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2)).
+	      { exact (order_rel_setprod_R_R_unfold a p Hord1). }
+	      claim Hex_pb: exists a1 a2 b1 b2:set,
+	        p = (a1, a2) /\ b = (b1, b2) /\ (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2)).
+	      { exact (order_rel_setprod_R_R_unfold p b Hord2). }
+	      claim Hdisj1p: Rlt (eps_ 1) (p 0) \/ ((eps_ 1) = (p 0) /\ Rlt (eps_ 1) (p 1)).
+	      { apply Hex_ap.
+	        let a1. assume Hex_a2.
+	        apply Hex_a2.
+	        let a2. assume Hex_b1.
+	        apply Hex_b1.
+	        let b1. assume Hex_b2.
+	        apply Hex_b2.
+	        let b2. assume Hap.
+	        claim Hcore1: a = (a1, a2) /\ p = (b1, b2).
+	        { exact (andEL (a = (a1, a2) /\ p = (b1, b2))
+	                      (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))
+	                      Hap). }
+	        claim HaEq: a = (a1, a2).
+	        { exact (andEL (a = (a1, a2)) (p = (b1, b2)) Hcore1). }
+	        claim HpEq: p = (b1, b2).
+	        { exact (andER (a = (a1, a2)) (p = (b1, b2)) Hcore1). }
+	        claim Hdisj1: Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2).
+	        { exact (andER (a = (a1, a2) /\ p = (b1, b2))
+	                      (Rlt a1 b1 \/ (a1 = b1 /\ Rlt a2 b2))
+	                      Hap). }
+	        claim HaDef: a = (eps_ 1, eps_ 1).
+	        { reflexivity. }
+	        claim Haa: (eps_ 1, eps_ 1) = (a1, a2).
+	        { rewrite HaDef at 1.
+	          exact HaEq. }
+	        claim HaCoords: (eps_ 1) = a1 /\ (eps_ 1) = a2.
+	        { exact (tuple_eq_coords (eps_ 1) (eps_ 1) a1 a2 Haa). }
+	        claim Ha1eq: a1 = eps_ 1.
+	        { symmetry.
+	          exact (andEL ((eps_ 1) = a1) ((eps_ 1) = a2) HaCoords). }
+	        claim Ha2eq: a2 = eps_ 1.
+	        { symmetry.
+	          exact (andER ((eps_ 1) = a1) ((eps_ 1) = a2) HaCoords). }
+	        claim Hbb: (b1, b2) = (p 0, p 1).
+	        { rewrite <- HpEq at 1.
+	          exact HpEta. }
+	        claim HbCoords: b1 = p 0 /\ b2 = p 1.
+	        { exact (tuple_eq_coords b1 b2 (p 0) (p 1) Hbb). }
+	        claim Hb1eq: b1 = p 0.
+	        { exact (andEL (b1 = p 0) (b2 = p 1) HbCoords). }
+	        claim Hb2eq: b2 = p 1.
+	        { exact (andER (b1 = p 0) (b2 = p 1) HbCoords). }
+	        apply (Hdisj1 (Rlt (eps_ 1) (p 0) \/ ((eps_ 1) = (p 0) /\ Rlt (eps_ 1) (p 1)))).
+	        - assume Hlt: Rlt a1 b1.
+	          apply orIL.
+	          prove Rlt (eps_ 1) (p 0).
+		          claim Htmp: Rlt (eps_ 1) b1.
+		          { rewrite <- Ha1eq at 1.
+		            exact Hlt. }
+	          rewrite <- Hb1eq at 1.
+	          exact Htmp.
+	        - assume Hc: a1 = b1 /\ Rlt a2 b2.
+	          claim Ha1b1: a1 = b1.
+	          { exact (andEL (a1 = b1) (Rlt a2 b2) Hc). }
+	          claim Ha2b2: Rlt a2 b2.
+	          { exact (andER (a1 = b1) (Rlt a2 b2) Hc). }
+	          claim Heq0: (eps_ 1) = (p 0).
+	          { prove (eps_ 1) = (p 0).
+	            claim Heq1: (eps_ 1) = b1.
+	            { rewrite <- Ha1eq at 1.
+	              exact Ha1b1. }
+		            rewrite <- Hb1eq at 1.
+	            exact Heq1. }
+	          claim Hlt1: Rlt (eps_ 1) (p 1).
+	          { prove Rlt (eps_ 1) (p 1).
+		            claim Htmp2: Rlt (eps_ 1) b2.
+		            { rewrite <- Ha2eq at 1.
+		              exact Ha2b2. }
+		            rewrite <- Hb2eq at 1.
+	            exact Htmp2. }
+	          apply orIR.
+	          exact (andI ((eps_ 1) = (p 0)) (Rlt (eps_ 1) (p 1)) Heq0 Hlt1). }
+	      claim Hdisj2p: Rlt (p 0) (eps_ 1) \/ ((p 0) = (eps_ 1) /\ Rlt (p 1) 2).
+	      { apply Hex_pb.
+	        let c1. assume Hex_c2.
+	        apply Hex_c2.
+	        let c2. assume Hex_d1.
+	        apply Hex_d1.
+	        let d1. assume Hex_d2.
+	        apply Hex_d2.
+	        let d2. assume Hpb.
+	        claim Hcore2: p = (c1, c2) /\ b = (d1, d2).
+	        { exact (andEL (p = (c1, c2) /\ b = (d1, d2))
+	                      (Rlt c1 d1 \/ (c1 = d1 /\ Rlt c2 d2))
+	                      Hpb). }
+	        claim HpEq2: p = (c1, c2).
+	        { exact (andEL (p = (c1, c2)) (b = (d1, d2)) Hcore2). }
+	        claim HbEq: b = (d1, d2).
+	        { exact (andER (p = (c1, c2)) (b = (d1, d2)) Hcore2). }
+	        claim Hdisj2: Rlt c1 d1 \/ (c1 = d1 /\ Rlt c2 d2).
+	        { exact (andER (p = (c1, c2) /\ b = (d1, d2))
+	                      (Rlt c1 d1 \/ (c1 = d1 /\ Rlt c2 d2))
+	                      Hpb). }
+	        claim Hpc: (c1, c2) = (p 0, p 1).
+	        { rewrite <- HpEq2 at 1.
+	          exact HpEta. }
+	        claim HpCoords: c1 = p 0 /\ c2 = p 1.
+	        { exact (tuple_eq_coords c1 c2 (p 0) (p 1) Hpc). }
+	        claim Hc1eq: c1 = p 0.
+	        { exact (andEL (c1 = p 0) (c2 = p 1) HpCoords). }
+	        claim Hc2eq: c2 = p 1.
+	        { exact (andER (c1 = p 0) (c2 = p 1) HpCoords). }
+	        claim HbDef: b = (eps_ 1, 2).
+	        { reflexivity. }
+	        claim Hbd: (eps_ 1, 2) = (d1, d2).
+	        { rewrite HbDef at 1.
+	          exact HbEq. }
+	        claim HbCoords: (eps_ 1) = d1 /\ 2 = d2.
+	        { exact (tuple_eq_coords (eps_ 1) 2 d1 d2 Hbd). }
+	        claim Hd1eq: d1 = eps_ 1.
+	        { symmetry.
+	          exact (andEL ((eps_ 1) = d1) (2 = d2) HbCoords). }
+	        claim Hd2eq: d2 = 2.
+	        { symmetry.
+	          exact (andER ((eps_ 1) = d1) (2 = d2) HbCoords). }
+	        apply (Hdisj2 (Rlt (p 0) (eps_ 1) \/ ((p 0) = (eps_ 1) /\ Rlt (p 1) 2))).
+	        - assume Hlt: Rlt c1 d1.
+	          apply orIL.
+	          prove Rlt (p 0) (eps_ 1).
+	          claim Htmp: Rlt (p 0) d1.
+	          { rewrite <- Hc1eq at 1.
+	            exact Hlt. }
+		          rewrite <- Hd1eq at 1.
+	          exact Htmp.
+	        - assume Hc: c1 = d1 /\ Rlt c2 d2.
+	          claim Hc1d1: c1 = d1.
+	          { exact (andEL (c1 = d1) (Rlt c2 d2) Hc). }
+	          claim Hc2d2: Rlt c2 d2.
+	          { exact (andER (c1 = d1) (Rlt c2 d2) Hc). }
+	          claim Heq0: (p 0) = (eps_ 1).
+	          { prove (p 0) = (eps_ 1).
+		            claim Heq1: (p 0) = d1.
+		            { rewrite <- Hc1eq at 1.
+		              exact Hc1d1. }
+		            rewrite <- Hd1eq at 1.
+	            exact Heq1. }
+	          claim Hlt1: Rlt (p 1) 2.
+	          { prove Rlt (p 1) 2.
+	            claim Htmp2: Rlt (p 1) d2.
+	            { rewrite <- Hc2eq at 1.
+	              exact Hc2d2. }
+		            rewrite <- Hd2eq at 1.
+	            exact Htmp2. }
+	          apply orIR.
+	          exact (andI ((p 0) = (eps_ 1)) (Rlt (p 1) 2) Heq0 Hlt1). }
+	      claim Hp0eq: (p 0) = (eps_ 1).
+	      { apply (Hdisj2p ((p 0) = (eps_ 1))).
+	        - assume Hp0lt: Rlt (p 0) (eps_ 1).
+	          apply FalseE.
+	          apply (Hdisj1p False).
+	          + assume Hepslt: Rlt (eps_ 1) (p 0).
+	            exact ((not_Rlt_sym (eps_ 1) (p 0) Hepslt) Hp0lt).
+	          + assume Hc: (eps_ 1) = (p 0) /\ Rlt (eps_ 1) (p 1).
+	            claim Heq: (p 0) = (eps_ 1).
+	            { symmetry.
+	              exact (andEL ((eps_ 1) = (p 0)) (Rlt (eps_ 1) (p 1)) Hc). }
+		            claim Hbad: Rlt (eps_ 1) (eps_ 1).
+		            { rewrite <- Heq at 1.
+		              exact Hp0lt. }
+	            exact ((not_Rlt_refl (eps_ 1) eps_1_in_R) Hbad).
+	        - assume Hc: (p 0) = (eps_ 1) /\ Rlt (p 1) 2.
+	          exact (andEL ((p 0) = (eps_ 1)) (Rlt (p 1) 2) Hc). }
+	      claim Hey: Rlt (eps_ 1) (p 1).
+	      { apply (Hdisj1p (Rlt (eps_ 1) (p 1))).
+	        - assume Hepslt: Rlt (eps_ 1) (p 0).
+	          apply FalseE.
+		          claim Hbad: Rlt (eps_ 1) (eps_ 1).
+		          { rewrite <- Hp0eq at 2.
+		            exact Hepslt. }
+	          exact ((not_Rlt_refl (eps_ 1) eps_1_in_R) Hbad).
+	        - assume Hc: (eps_ 1) = (p 0) /\ Rlt (eps_ 1) (p 1).
+	          exact (andER ((eps_ 1) = (p 0)) (Rlt (eps_ 1) (p 1)) Hc). }
+	      claim HyU: (p 1) :e unit_interval.
+	      { exact (ap1_Sigma unit_interval (fun _ : set => unit_interval) p HpSq). }
+	      claim Hnlt1y: ~(Rlt 1 (p 1)).
+	      { exact (andER (~(Rlt (p 1) 0)) (~(Rlt 1 (p 1)))
+	                    (SepE2 R (fun t:set => ~(Rlt t 0) /\ ~(Rlt 1 t)) (p 1) HyU)). }
+	      apply (SepI ordered_square
+	                  (fun p0:set => exists y:set, p0 = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y))
+	                  p
+	                  HpSq).
+	      witness (p 1).
+	      prove p = (eps_ 1, p 1) /\ Rlt (eps_ 1) (p 1) /\ ~(Rlt 1 (p 1)).
+	      apply andI.
+	      - prove p = (eps_ 1, p 1) /\ Rlt (eps_ 1) (p 1).
+	        apply andI.
+		        + prove p = (eps_ 1, p 1).
+		          rewrite HpEta at 1.
+		          rewrite Hp0eq.
+		          reflexivity.
+	        + exact Hey.
+	      - exact Hnlt1y. }
 
   claim Hex: exists W :e R2_dictionary_order_topology, U = W :/\: ordered_square.
   { witness V.
