@@ -48484,7 +48484,119 @@ Qed.
 Theorem unit_interval_halves_closed :
   closed_in unit_interval unit_interval_topology unit_interval_left_half /\
   closed_in unit_interval unit_interval_topology unit_interval_right_half.
-admit.
+prove closed_in unit_interval unit_interval_topology unit_interval_left_half /\
+  closed_in unit_interval unit_interval_topology unit_interval_right_half.
+apply andI.
+- (** left half is closed in the subspace topology **)
+  apply (closed_inI unit_interval unit_interval_topology unit_interval_left_half).
+  * exact unit_interval_topology_on.
+  * exact unit_interval_left_half_sub.
+  * set V := {x :e R|Rlt (eps_ 1) x}.
+	set U := V :/\: unit_interval.
+	witness U.
+	apply andI.
+	- (** U is open in the unit interval topology **)
+	   claim Hut: unit_interval_topology = subspace_topology R R_standard_topology unit_interval.
+	   { reflexivity. }
+	   rewrite Hut.
+	   claim HUpow: U :e Power unit_interval.
+	   { exact (PowerI unit_interval U (binintersect_Subq_2 V unit_interval)). }
+       claim Hex: exists W :e R_standard_topology, U = W :/\: unit_interval.
+       { witness V.
+         apply andI.
+         - exact (open_ray_in_R_standard_topology (eps_ 1) eps_1_in_R).
+         - reflexivity. }
+       exact (SepI (Power unit_interval)
+                   (fun U0:set => exists W :e R_standard_topology, U0 = W :/\: unit_interval)
+                   U HUpow Hex).
+	- (** left half is the complement of U in unit_interval **)
+	   prove unit_interval_left_half = unit_interval :\: U.
+	   apply set_ext.
+       - let t. assume HtL: t :e unit_interval_left_half.
+         prove t :e unit_interval :\: U.
+         apply setminusI.
+         + exact (unit_interval_left_half_sub t HtL).
+         + assume HtU: t :e U.
+           prove False.
+           claim HtV: t :e V.
+           { exact (binintersectE1 V unit_interval t HtU). }
+           claim Hnlt: ~(Rlt (eps_ 1) t).
+           { exact (SepE2 unit_interval (fun t0:set => ~(Rlt (eps_ 1) t0)) t HtL). }
+           claim Hlt: Rlt (eps_ 1) t.
+           { exact (SepE2 R (fun x0:set => Rlt (eps_ 1) x0) t HtV). }
+           exact (Hnlt Hlt).
+       - let t. assume Ht: t :e unit_interval :\: U.
+         prove t :e unit_interval_left_half.
+         claim HtI: t :e unit_interval.
+         { exact (setminusE1 unit_interval U t Ht). }
+         apply (SepI unit_interval (fun t0:set => ~(Rlt (eps_ 1) t0)) t HtI).
+         prove ~(Rlt (eps_ 1) t).
+         assume Hlt: Rlt (eps_ 1) t.
+         prove False.
+         claim HtR: t :e R.
+         { exact (unit_interval_sub_R t HtI). }
+         claim HtV: t :e V.
+         { exact (SepI R (fun x0:set => Rlt (eps_ 1) x0) t HtR Hlt). }
+         claim HtU2: t :e U.
+         { exact (binintersectI V unit_interval t HtV HtI). }
+         claim HnotU: t /:e U.
+         { exact (setminusE2 unit_interval U t Ht). }
+         exact (HnotU HtU2).
+- (** right half is closed in the subspace topology **)
+  apply (closed_inI unit_interval unit_interval_topology unit_interval_right_half).
+  * exact unit_interval_topology_on.
+  * exact unit_interval_right_half_sub.
+  * set V := {x :e R|Rlt x (eps_ 1)}.
+	set U := V :/\: unit_interval.
+	witness U.
+	apply andI.
+	- (** U is open in the unit interval topology **)
+	   claim Hut: unit_interval_topology = subspace_topology R R_standard_topology unit_interval.
+	   { reflexivity. }
+	   rewrite Hut.
+	   claim HUpow: U :e Power unit_interval.
+	   { exact (PowerI unit_interval U (binintersect_Subq_2 V unit_interval)). }
+       claim Hex: exists W :e R_standard_topology, U = W :/\: unit_interval.
+       { witness V.
+         apply andI.
+         - exact (open_left_ray_in_R_standard_topology (eps_ 1) eps_1_in_R).
+         - reflexivity. }
+       exact (SepI (Power unit_interval)
+                   (fun U0:set => exists W :e R_standard_topology, U0 = W :/\: unit_interval)
+                   U HUpow Hex).
+	- (** right half is the complement of U in unit_interval **)
+	   prove unit_interval_right_half = unit_interval :\: U.
+	   apply set_ext.
+       - let t. assume HtR: t :e unit_interval_right_half.
+         prove t :e unit_interval :\: U.
+         apply setminusI.
+         + exact (unit_interval_right_half_sub t HtR).
+         + assume HtU: t :e U.
+           prove False.
+           claim HtV: t :e V.
+           { exact (binintersectE1 V unit_interval t HtU). }
+           claim Hnlt: ~(Rlt t (eps_ 1)).
+           { exact (SepE2 unit_interval (fun t0:set => ~(Rlt t0 (eps_ 1))) t HtR). }
+           claim Hlt: Rlt t (eps_ 1).
+           { exact (SepE2 R (fun x0:set => Rlt x0 (eps_ 1)) t HtV). }
+           exact (Hnlt Hlt).
+       - let t. assume Ht: t :e unit_interval :\: U.
+         prove t :e unit_interval_right_half.
+         claim HtI: t :e unit_interval.
+         { exact (setminusE1 unit_interval U t Ht). }
+         apply (SepI unit_interval (fun t0:set => ~(Rlt t0 (eps_ 1))) t HtI).
+         prove ~(Rlt t (eps_ 1)).
+         assume Hlt: Rlt t (eps_ 1).
+         prove False.
+         claim HtR: t :e R.
+         { exact (unit_interval_sub_R t HtI). }
+         claim HtV: t :e V.
+         { exact (SepI R (fun x0:set => Rlt x0 (eps_ 1)) t HtR Hlt). }
+         claim HtU2: t :e U.
+         { exact (binintersectI V unit_interval t HtV HtI). }
+         claim HnotU: t /:e U.
+         { exact (setminusE2 unit_interval U t Ht). }
+         exact (HnotU HtU2).
 Qed.
 
 Theorem unit_interval_halves_intersection :
