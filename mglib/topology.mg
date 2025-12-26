@@ -38367,6 +38367,21 @@ let a b c.
 exact (PowerI EuclidPlane (affine_line_R2 a b c) (affine_line_R2_subset a b c)).
 Qed.
 
+(** Helper: affine_line_R2 is a subset of setprod R R **)
+Theorem affine_line_R2_subset_R2 : forall a b c:set, affine_line_R2 a b c c= setprod R R.
+let a b c.
+claim Heq: EuclidPlane = setprod R R.
+{ reflexivity. }
+rewrite <- Heq.
+exact (affine_line_R2_subset a b c).
+Qed.
+
+(** Helper: affine_line_R2 is in Power (setprod R R) **)
+Theorem affine_line_R2_in_Power_R2 : forall a b c:set, affine_line_R2 a b c :e Power (setprod R R).
+let a b c.
+exact (PowerI (setprod R R) (affine_line_R2 a b c) (affine_line_R2_subset_R2 a b c)).
+Qed.
+
 (** from §16 Exercise 8: helper predicate for negative slope in affine form **)
 (** LATEX VERSION: For ax+by=c with b not zero, the slope is negative exactly when a and b have the same sign. **)
 Definition same_sign_nonzero_R : set -> set -> prop :=
