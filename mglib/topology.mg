@@ -38354,6 +38354,23 @@ Definition affine_line_R2 : set -> set -> set -> set :=
     {p :e EuclidPlane |
       add_SNo (mul_SNo a (R2_xcoord p)) (mul_SNo b (R2_ycoord p)) = c}.
 
+(** Helper: affine_line_R2 is a subset of EuclidPlane **)
+Theorem affine_line_R2_subset : forall a b c:set, affine_line_R2 a b c c= EuclidPlane.
+let a b c.
+prove affine_line_R2 a b c c= EuclidPlane.
+let p.
+assume Hp: p :e affine_line_R2 a b c.
+exact (SepE1 EuclidPlane
+         (fun p0:set => add_SNo (mul_SNo a (R2_xcoord p0)) (mul_SNo b (R2_ycoord p0)) = c)
+         p Hp).
+Qed.
+
+(** Helper: affine_line_R2 is in Power EuclidPlane **)
+Theorem affine_line_R2_in_Power : forall a b c:set, affine_line_R2 a b c :e Power EuclidPlane.
+let a b c.
+exact (PowerI EuclidPlane (affine_line_R2 a b c) (affine_line_R2_subset a b c)).
+Qed.
+
 (** from §16 Exercise 8: helper predicate for negative slope in affine form **)
 (** LATEX VERSION: For ax+by=c with b not zero, the slope is negative exactly when a and b have the same sign. **)
 Definition same_sign_nonzero_R : set -> set -> prop :=
