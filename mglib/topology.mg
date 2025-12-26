@@ -55610,9 +55610,7 @@ Qed.
 
 (** from §30 Theorem 30.1(b): sequences and continuity in first-countable spaces **)
 (** LATEX VERSION: Sequential criterion for continuity in first-countable spaces. **)
-(** FIXED: Multiple errors in the earlier draft of this theorem.
-    Issues included: wrong convergence target (Empty instead of a point) and wrong image limit (f instead of f(x)).
-    The intended statement is: if x_n→x then f(x_n)→f(x). **)
+(** FIXED: Correct convergence target and image limit: if x_n converges to x then f(x_n) converges to f(x). **)
 Theorem first_countable_sequences_detect_continuity : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f ->
@@ -55728,10 +55726,7 @@ Qed.
 
 (** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **)
 (** LATEX VERSION: First/second countability are inherited by subspaces and countable products (Theorem 30.2). **)
-(** FIXED: Quantifier scope error in product clauses.
-    Was: forall i:set, first_countable_space Xi ... (i ranges over ALL sets!)
-    Now: forall i:set, i :e I -> first_countable_space Xi ... (i restricted to index set I)
-    The product should only require spaces indexed by i∈I to be first/second countable. **)
+(** FIXED: Product clauses quantify i only over i:e I (not all sets). **) 
 Theorem countability_axioms_subspace_product : forall X Tx:set,
   topology_on X Tx ->
   (forall A:set, A c= X -> first_countable_space X Tx -> first_countable_space A (subspace_topology X Tx A)) /\
@@ -57143,12 +57138,7 @@ Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
     (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
        exists f:set, f :e F /\ apply_fun f x1 <> apply_fun f x2).
 (** LATEX VERSION: Embedding predicate. **)
-(** FIXED: Definition was incomplete - only required continuous injection, not homeomorphism onto image.
-    Was: function_on f X Y /\ continuous_map X Tx Y Ty f /\ injective
-         (continuous injection, but NOT necessarily a homeomorphism onto its image!)
-    Now: homeomorphism X Tx (image_of f X) (subspace_topology Y Ty (image_of f X)) f
-         (f is a homeomorphism from X to f(X) with subspace topology)
-    This is the correct definition: an embedding is a map that is a homeomorphism onto its image. **)
+(** FIXED: embedding_of uses homeomorphism X Tx (image_of f X) (subspace_topology Y Ty (image_of f X)) f, not merely continuous injective. **) 
 Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f =>
   homeomorphism X Tx (image_of f X) (subspace_topology Y Ty (image_of f X)) f.
 (** LATEX VERSION: Power and unit-interval cubes helpers; metrizability predicate. **)
