@@ -10271,6 +10271,107 @@ apply Hcases.
   exact (SNoLtLe 0 (mul_SNo x x) Hpos).
 Qed.
 
+(** Helper: first squared coordinate difference bounded by squared distance **)
+(** LATEX VERSION: If d(p,c) is the Euclidean distance then (xp-xc) squared is at most d(p,c) squared. **)
+Theorem dx2_le_distance_R2_sqr : forall p c:set,
+  p :e EuclidPlane ->
+  c :e EuclidPlane ->
+  mul_SNo (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c)))
+         (add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c)))
+  <= mul_SNo (distance_R2 p c) (distance_R2 p c).
+let p c.
+assume Hp: p :e EuclidPlane.
+assume Hc: c :e EuclidPlane.
+set dx := add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c)).
+set dy := add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord c)).
+claim Hp0R : R2_xcoord p :e R.
+{ exact (EuclidPlane_xcoord_in_R p Hp). }
+claim Hp1R : R2_ycoord p :e R.
+{ exact (EuclidPlane_ycoord_in_R p Hp). }
+claim Hc0R : R2_xcoord c :e R.
+{ exact (EuclidPlane_xcoord_in_R c Hc). }
+claim Hc1R : R2_ycoord c :e R.
+{ exact (EuclidPlane_ycoord_in_R c Hc). }
+claim Hmx : minus_SNo (R2_xcoord c) :e R.
+{ exact (real_minus_SNo (R2_xcoord c) Hc0R). }
+claim Hmy : minus_SNo (R2_ycoord c) :e R.
+{ exact (real_minus_SNo (R2_ycoord c) Hc1R). }
+claim HdxR : dx :e R.
+{ exact (real_add_SNo (R2_xcoord p) Hp0R (minus_SNo (R2_xcoord c)) Hmx). }
+claim HdyR : dy :e R.
+{ exact (real_add_SNo (R2_ycoord p) Hp1R (minus_SNo (R2_ycoord c)) Hmy). }
+claim HdxS : SNo dx.
+{ exact (real_SNo dx HdxR). }
+claim HdyS : SNo dy.
+{ exact (real_SNo dy HdyR). }
+set dx2 := mul_SNo dx dx.
+set dy2 := mul_SNo dy dy.
+claim Hdx2R : dx2 :e R.
+{ exact (real_mul_SNo dx HdxR dx HdxR). }
+claim Hdy2R : dy2 :e R.
+{ exact (real_mul_SNo dy HdyR dy HdyR). }
+claim Hdx2S : SNo dx2.
+{ exact (real_SNo dx2 Hdx2R). }
+claim Hdy2S : SNo dy2.
+{ exact (real_SNo dy2 Hdy2R). }
+claim Hdy2nonneg : 0 <= dy2.
+{ exact (SNo_sqr_nonneg dy HdyS). }
+prove mul_SNo dx dx <= mul_SNo (distance_R2 p c) (distance_R2 p c).
+rewrite (distance_R2_sqr p c Hp Hc).
+exact (SNoLe_add_nonneg_right dx2 dy2 Hdx2S Hdy2S Hdy2nonneg).
+Qed.
+
+(** Helper: second squared coordinate difference bounded by squared distance **)
+(** LATEX VERSION: If d(p,c) is the Euclidean distance then (yp-yc) squared is at most d(p,c) squared. **)
+Theorem dy2_le_distance_R2_sqr : forall p c:set,
+  p :e EuclidPlane ->
+  c :e EuclidPlane ->
+  mul_SNo (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord c)))
+         (add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord c)))
+  <= mul_SNo (distance_R2 p c) (distance_R2 p c).
+let p c.
+assume Hp: p :e EuclidPlane.
+assume Hc: c :e EuclidPlane.
+set dx := add_SNo (R2_xcoord p) (minus_SNo (R2_xcoord c)).
+set dy := add_SNo (R2_ycoord p) (minus_SNo (R2_ycoord c)).
+claim Hp0R : R2_xcoord p :e R.
+{ exact (EuclidPlane_xcoord_in_R p Hp). }
+claim Hp1R : R2_ycoord p :e R.
+{ exact (EuclidPlane_ycoord_in_R p Hp). }
+claim Hc0R : R2_xcoord c :e R.
+{ exact (EuclidPlane_xcoord_in_R c Hc). }
+claim Hc1R : R2_ycoord c :e R.
+{ exact (EuclidPlane_ycoord_in_R c Hc). }
+claim Hmx : minus_SNo (R2_xcoord c) :e R.
+{ exact (real_minus_SNo (R2_xcoord c) Hc0R). }
+claim Hmy : minus_SNo (R2_ycoord c) :e R.
+{ exact (real_minus_SNo (R2_ycoord c) Hc1R). }
+claim HdxR : dx :e R.
+{ exact (real_add_SNo (R2_xcoord p) Hp0R (minus_SNo (R2_xcoord c)) Hmx). }
+claim HdyR : dy :e R.
+{ exact (real_add_SNo (R2_ycoord p) Hp1R (minus_SNo (R2_ycoord c)) Hmy). }
+claim HdxS : SNo dx.
+{ exact (real_SNo dx HdxR). }
+claim HdyS : SNo dy.
+{ exact (real_SNo dy HdyR). }
+set dx2 := mul_SNo dx dx.
+set dy2 := mul_SNo dy dy.
+claim Hdx2R : dx2 :e R.
+{ exact (real_mul_SNo dx HdxR dx HdxR). }
+claim Hdy2R : dy2 :e R.
+{ exact (real_mul_SNo dy HdyR dy HdyR). }
+claim Hdx2S : SNo dx2.
+{ exact (real_SNo dx2 Hdx2R). }
+claim Hdy2S : SNo dy2.
+{ exact (real_SNo dy2 Hdy2R). }
+claim Hdx2nonneg : 0 <= dx2.
+{ exact (SNo_sqr_nonneg dx HdxS). }
+prove mul_SNo dy dy <= mul_SNo (distance_R2 p c) (distance_R2 p c).
+rewrite (distance_R2_sqr p c Hp Hc).
+rewrite (add_SNo_com dx2 dy2 Hdx2S Hdy2S).
+exact (SNoLe_add_nonneg_right dy2 dx2 Hdy2S Hdx2S Hdx2nonneg).
+Qed.
+
 (** from §13 Example 4: distance from a point to itself is 0 **)
 (** LATEX VERSION: d(p,p) = 0. **)
 Theorem distance_R2_refl_0 : forall p:set, p :e EuclidPlane -> distance_R2 p p = 0.
