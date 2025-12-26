@@ -20609,6 +20609,8 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 			    { exact Hpre5. }
 			    claim HmOmega: m :e omega.
 			    { exact Hj2. }
+			    claim Hj2': j :e 2.
+			    { exact HnOmega. }
 			    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
