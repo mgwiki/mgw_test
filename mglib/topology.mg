@@ -9882,6 +9882,18 @@ Qed.
 
 (** helper: equality of ordered pairs from coordinate equalities **)
 (** LATEX VERSION: If x1=x2 and y1=y2 then (x1,y1)=(x2,y2). **)
+Theorem tuple_coords_eq : forall x1 y1 x2 y2:set,
+  x1 = x2 -> y1 = y2 -> (x1,y1) = (x2,y2).
+let x1 y1 x2 y2.
+assume Hx: x1 = x2.
+assume Hy: y1 = y2.
+rewrite Hx.
+rewrite Hy.
+reflexivity.
+Qed.
+
+(** helper: equality of ordered pairs from coordinate equalities **)
+(** LATEX VERSION: If x1=x2 and y1=y2 then (x1,y1)=(x2,y2). **)
 Theorem coords_eq_tuple : forall x1 y1 x2 y2:set,
   x1 = x2 -> y1 = y2 -> (x1,y1) = (x2,y2).
 let x1 y1 x2 y2.
@@ -39102,7 +39114,90 @@ Theorem affine_line_R2_param_by_x_after_projection1_on_line : forall a b c p:set
   a :e R -> b :e R -> c :e R -> b <> 0 ->
   p :e affine_line_R2 a b c ->
   apply_fun (affine_line_R2_param_by_x a b c) (apply_fun (projection1 R R) p) = p.
-admit.
+let a b c p.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HcR: c :e R.
+assume Hbne: b <> 0.
+assume Hp: p :e affine_line_R2 a b c.
+prove apply_fun (affine_line_R2_param_by_x a b c) (apply_fun (projection1 R R) p) = p.
+claim HpRR: p :e setprod R R.
+{ exact (affine_line_R2_subset_R2 a b c p Hp). }
+claim Hpeta: p = (p 0, p 1).
+{ exact (setprod_eta R R p HpRR). }
+claim Hp0R: p 0 :e R.
+{ exact (ap0_Sigma R (fun _ : set => R) p HpRR). }
+claim Hp1R: p 1 :e R.
+{ exact (ap1_Sigma R (fun _ : set => R) p HpRR). }
+claim Happ1: apply_fun (projection1 R R) p = p 0.
+{ exact (projection1_apply R R p HpRR). }
+rewrite Happ1.
+rewrite (affine_line_R2_param_by_x_apply a b c (p 0) Hp0R).
+rewrite Hpeta at 3.
+claim Hycoord: div_SNo (add_SNo c (minus_SNo (mul_SNo a (p 0)))) b = p 1.
+{ claim HdefR: R = real.
+  { reflexivity. }
+  claim HaReal: a :e real.
+  { rewrite <- HdefR. exact HaR. }
+  claim HbReal: b :e real.
+  { rewrite <- HdefR. exact HbR. }
+  claim HcReal: c :e real.
+  { rewrite <- HdefR. exact HcR. }
+  claim Hp0Real: p 0 :e real.
+  { rewrite <- HdefR. exact Hp0R. }
+  claim Hp1Real: p 1 :e real.
+  { rewrite <- HdefR. exact Hp1R. }
+  claim HaS: SNo a.
+  { exact (real_SNo a HaReal). }
+  claim HbS: SNo b.
+  { exact (real_SNo b HbReal). }
+  claim HcS: SNo c.
+  { exact (real_SNo c HcReal). }
+  claim Hp0S: SNo (p 0).
+  { exact (real_SNo (p 0) Hp0Real). }
+  claim Hp1S: SNo (p 1).
+  { exact (real_SNo (p 1) Hp1Real). }
+  claim HaxS: SNo (mul_SNo a (p 0)).
+  { exact (SNo_mul_SNo a (p 0) HaS Hp0S). }
+  claim HbyS: SNo (mul_SNo b (p 1)).
+  { exact (SNo_mul_SNo b (p 1) HbS Hp1S). }
+  claim HmAxS: SNo (minus_SNo (mul_SNo a (p 0))).
+  { exact (SNo_minus_SNo (mul_SNo a (p 0)) HaxS). }
+  claim Hline0:
+    add_SNo (mul_SNo a (R2_xcoord p)) (mul_SNo b (R2_ycoord p)) = c.
+  { exact (SepE2 EuclidPlane
+           (fun p0:set => add_SNo (mul_SNo a (R2_xcoord p0)) (mul_SNo b (R2_ycoord p0)) = c)
+           p
+           Hp). }
+  claim Hline:
+    add_SNo (mul_SNo a (p 0)) (mul_SNo b (p 1)) = c.
+  { claim Hxcoord: R2_xcoord p = p 0.
+    { reflexivity. }
+    claim Hycoord0: R2_ycoord p = p 1.
+    { reflexivity. }
+    rewrite <- Hxcoord.
+    rewrite <- Hycoord0.
+    exact Hline0. }
+  claim HbyEq: add_SNo c (minus_SNo (mul_SNo a (p 0))) = mul_SNo b (p 1).
+  { rewrite <- Hline at 1.
+    rewrite <- (add_SNo_assoc (mul_SNo a (p 0)) (mul_SNo b (p 1)) (minus_SNo (mul_SNo a (p 0))) HaxS HbyS HmAxS).
+    rewrite (add_SNo_com (mul_SNo b (p 1)) (minus_SNo (mul_SNo a (p 0))) HbyS HmAxS) at 1.
+    rewrite (add_SNo_assoc (mul_SNo a (p 0)) (minus_SNo (mul_SNo a (p 0))) (mul_SNo b (p 1)) HaxS HmAxS HbyS).
+    rewrite (add_SNo_minus_SNo_rinv (mul_SNo a (p 0)) HaxS).
+    exact (add_SNo_0L (mul_SNo b (p 1)) HbyS). }
+  claim HxtermS: SNo (add_SNo c (minus_SNo (mul_SNo a (p 0)))).
+  { exact (SNo_add_SNo c (minus_SNo (mul_SNo a (p 0))) HcS HmAxS). }
+  exact (mul_div_SNo_nonzero_eq
+    (add_SNo c (minus_SNo (mul_SNo a (p 0))))
+    b
+    (p 1)
+    HxtermS
+    HbS
+    Hp1S
+    Hbne
+    HbyEq). }
+rewrite Hycoord.
+reflexivity.
 Qed.
 
 (** Helper: param by y lands in the affine line when b is zero and a is not zero **)
