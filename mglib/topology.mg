@@ -38539,6 +38539,307 @@ claim HdivR: div_SNo c a :e R.
 exact (tuple_2_setprod R R (div_SNo c a) HdivR y HyR).
 Qed.
 
+(** Helper: projection2 is continuous for the product topology **)
+(** LATEX VERSION: Coordinate projections are continuous for the product topology. **)
+Theorem projection2_continuous_in_product : forall X Tx Y Ty:set,
+  topology_on X Tx -> topology_on Y Ty ->
+  continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection2 X Y).
+let X Tx Y Ty.
+assume HTx: topology_on X Tx.
+assume HTy: topology_on Y Ty.
+prove continuous_map (setprod X Y) (product_topology X Tx Y Ty) Y Ty (projection2 X Y).
+prove topology_on (setprod X Y) (product_topology X Tx Y Ty) /\ topology_on Y Ty /\
+  function_on (projection2 X Y) (setprod X Y) Y /\
+  forall V:set, V :e Ty -> preimage_of (setprod X Y) (projection2 X Y) V :e product_topology X Tx Y Ty.
+apply andI.
+- apply andI.
+  + apply andI.
+    * exact (product_topology_is_topology X Tx Y Ty HTx HTy).
+    * exact HTy.
+  + (** function_on **)
+    let p. assume Hp: p :e setprod X Y.
+    prove apply_fun (projection2 X Y) p :e Y.
+    claim Happ: apply_fun (projection2 X Y) p = p 1.
+    { exact (projection2_apply X Y p Hp). }
+    rewrite Happ.
+    exact (ap1_Sigma X (fun _ : set => Y) p Hp).
+- let V. assume HV: V :e Ty.
+  prove preimage_of (setprod X Y) (projection2 X Y) V :e product_topology X Tx Y Ty.
+  claim HVsub: V c= Y.
+  { exact (topology_elem_subset Y Ty V HTy HV). }
+  claim HpreEq: preimage_of (setprod X Y) (projection2 X Y) V = rectangle_set X V.
+  { exact (preimage_projection2_rectangle X Y V HVsub). }
+  rewrite HpreEq.
+  claim HBasis: basis_on (setprod X Y) (product_subbasis X Tx Y Ty).
+  { exact (product_subbasis_is_basis X Tx Y Ty HTx HTy). }
+  claim HXTx: X :e Tx.
+  { exact (topology_has_X X Tx HTx). }
+  claim HRsub: rectangle_set X V :e product_subbasis X Tx Y Ty.
+  { claim HRfam: rectangle_set X V :e {rectangle_set X V0|V0 :e Ty}.
+    { exact (ReplI Ty (fun V0:set => rectangle_set X V0) V HV). }
+    exact (famunionI Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) X (rectangle_set X V) HXTx HRfam). }
+  exact (generated_topology_contains_basis (setprod X Y) (product_subbasis X Tx Y Ty) HBasis (rectangle_set X V) HRsub).
+Qed.
+
+(** Helper: projection2 is continuous on a vertical slice as a subspace **)
+(** LATEX VERSION: The projection to the second factor is continuous when restricted to any vertical slice {x0}×Y with the subspace topology. **)
+Theorem projection2_continuous_on_vertical_slice : forall x0 Tx Ty:set,
+  topology_on R Tx -> topology_on R Ty -> x0 :e R ->
+  continuous_map (setprod {x0} R)
+    (subspace_topology EuclidPlane (product_topology R Tx R Ty) (setprod {x0} R))
+    R Ty (projection2 R R).
+let x0 Tx Ty.
+assume HTx: topology_on R Tx.
+assume HTy: topology_on R Ty.
+assume Hx0R: x0 :e R.
+set X := EuclidPlane.
+set A := setprod {x0} R.
+set Tprod := product_topology R Tx R Ty.
+set Ta := subspace_topology X Tprod A.
+claim HTprod: topology_on X Tprod.
+{ exact (product_topology_is_topology R Tx R Ty HTx HTy). }
+claim HAsub: A c= X.
+{ let p. assume HpA: p :e A.
+  prove p :e X.
+  claim HSingSub: {x0} c= R.
+  { exact (singleton_subset x0 R Hx0R). }
+  exact (setprod_Subq {x0} R R R HSingSub (Subq_ref R) p HpA). }
+claim HTa: topology_on A Ta.
+{ exact (subspace_topology_is_topology X Tprod A HTprod HAsub). }
+prove continuous_map A Ta R Ty (projection2 R R).
+prove topology_on A Ta /\ topology_on R Ty /\ function_on (projection2 R R) A R /\
+  forall V:set, V :e Ty -> preimage_of A (projection2 R R) V :e Ta.
+apply andI.
+- apply andI.
+  + apply andI.
+    * exact HTa.
+    * exact HTy.
+  + (** function_on **)
+    let p. assume HpA: p :e A.
+    prove apply_fun (projection2 R R) p :e R.
+    claim HpRR: p :e setprod R R.
+    { claim HSingSub: {x0} c= R.
+      { exact (singleton_subset x0 R Hx0R). }
+      exact (setprod_Subq {x0} R R R HSingSub (Subq_ref R) p HpA). }
+    claim Happ: apply_fun (projection2 R R) p = p 1.
+    { exact (projection2_apply R R p HpRR). }
+    rewrite Happ.
+    exact (ap1_Sigma {x0} (fun _ : set => R) p HpA).
+- let V. assume HV: V :e Ty.
+  prove preimage_of A (projection2 R R) V :e Ta.
+  set U := preimage_of X (projection2 R R) V.
+  claim HcontFull: continuous_map X Tprod R Ty (projection2 R R).
+  { exact (projection2_continuous_in_product R Tx R Ty HTx HTy). }
+  claim HUopen: U :e Tprod.
+  { exact (continuous_map_preimage X Tprod R Ty (projection2 R R) HcontFull V HV). }
+  claim HeqPre: preimage_of A (projection2 R R) V = U :/\: A.
+  { apply set_ext.
+    - let p. assume Hp: p :e preimage_of A (projection2 R R) V.
+      prove p :e U :/\: A.
+      claim HpA: p :e A.
+      { exact (SepE1 A (fun q:set => apply_fun (projection2 R R) q :e V) p Hp). }
+      claim HpRR: p :e setprod R R.
+      { claim HSingSub: {x0} c= R.
+        { exact (singleton_subset x0 R Hx0R). }
+        exact (setprod_Subq {x0} R R R HSingSub (Subq_ref R) p HpA). }
+      claim HprojV: apply_fun (projection2 R R) p :e V.
+      { exact (SepE2 A (fun q:set => apply_fun (projection2 R R) q :e V) p Hp). }
+      claim HpX: p :e X.
+      { exact HpRR. }
+      claim HpU: p :e U.
+      { exact (SepI X (fun q:set => apply_fun (projection2 R R) q :e V) p HpX HprojV). }
+      exact (binintersectI U A p HpU HpA).
+    - let p. assume Hp: p :e U :/\: A.
+      prove p :e preimage_of A (projection2 R R) V.
+      claim HpU: p :e U.
+      { exact (binintersectE1 U A p Hp). }
+      claim HpA: p :e A.
+      { exact (binintersectE2 U A p Hp). }
+      claim HprojV: apply_fun (projection2 R R) p :e V.
+      { exact (SepE2 X (fun q:set => apply_fun (projection2 R R) q :e V) p HpU). }
+      exact (SepI A (fun q:set => apply_fun (projection2 R R) q :e V) p HpA HprojV). }
+  rewrite HeqPre.
+  claim Hpow: (U :/\: A) :e Power A.
+  { apply PowerI.
+    let p. assume Hp: p :e U :/\: A.
+    exact (binintersectE2 U A p Hp). }
+  claim HexW: exists W :e Tprod, U :/\: A = W :/\: A.
+  { witness U.
+    apply andI.
+    - exact HUopen.
+    - reflexivity. }
+  exact (SepI (Power A) (fun U0:set => exists W :e Tprod, U0 = W :/\: A) (U :/\: A) Hpow HexW).
+Qed.
+
+(** Helper: affine_line_R2_param_by_y is continuous into product_topology, with the domain using the second-factor topology **)
+(** LATEX VERSION: The map y ↦ (x0,y) is continuous into a product topology, since the preimage of each basic rectangle is either the corresponding second-factor open set or empty. **)
+Theorem affine_line_R2_param_by_y_continuous_in_product : forall a b c Tx Ty:set,
+  topology_on R Tx -> topology_on R Ty ->
+  a :e R -> c :e R ->
+  continuous_map R Ty EuclidPlane (product_topology R Tx R Ty) (affine_line_R2_param_by_y a b c).
+let a b c Tx Ty.
+assume HTx: topology_on R Tx.
+assume HTy: topology_on R Ty.
+assume HaR: a :e R.
+assume HcR: c :e R.
+set f := affine_line_R2_param_by_y a b c.
+set X := EuclidPlane.
+set Tprod := product_topology R Tx R Ty.
+prove continuous_map R Ty X Tprod f.
+prove topology_on R Ty /\ topology_on X Tprod /\ function_on f R X /\
+  forall W:set, W :e Tprod -> preimage_of R f W :e Ty.
+apply andI.
+- apply andI.
+  + apply andI.
+    * exact HTy.
+    * exact (product_topology_is_topology R Tx R Ty HTx HTy).
+  + (** function_on **)
+    let y. assume HyR: y :e R.
+    prove apply_fun f y :e X.
+    rewrite (affine_line_R2_param_by_y_apply a b c y HyR).
+    claim HdefR: R = real.
+    { reflexivity. }
+    claim HaReal: a :e real.
+    { rewrite <- HdefR. exact HaR. }
+    claim HcReal: c :e real.
+    { rewrite <- HdefR. exact HcR. }
+    claim Hx0Real: div_SNo c a :e real.
+    { exact (real_div_SNo c HcReal a HaReal). }
+    claim Hx0R: div_SNo c a :e R.
+    { rewrite HdefR. exact Hx0Real. }
+    exact (tuple_2_setprod R R (div_SNo c a) Hx0R y HyR).
+- let W. assume HW: W :e Tprod.
+  prove preimage_of R f W :e Ty.
+  claim HBasis: basis_on X (product_subbasis R Tx R Ty).
+  { exact (product_subbasis_is_basis R Tx R Ty HTx HTy). }
+  claim HWopen: open_in X Tprod W.
+  { exact (andI (topology_on X Tprod) (W :e Tprod)
+                (product_topology_is_topology R Tx R Ty HTx HTy) HW). }
+  apply (open_sets_as_unions_of_basis X (product_subbasis R Tx R Ty) HBasis W HWopen).
+  let Fam. assume HFamPair.
+  claim HFamPow: Fam :e Power (product_subbasis R Tx R Ty).
+  { exact (andEL (Fam :e Power (product_subbasis R Tx R Ty)) (Union Fam = W) HFamPair). }
+  claim HUnionEq: Union Fam = W.
+  { exact (andER (Fam :e Power (product_subbasis R Tx R Ty)) (Union Fam = W) HFamPair). }
+  claim HFamSub: Fam c= product_subbasis R Tx R Ty.
+  { exact (PowerE (product_subbasis R Tx R Ty) Fam HFamPow). }
+  set PreFam := {preimage_of R f b0|b0 :e Fam}.
+  claim HpreEq1: preimage_of R f W = preimage_of R f (Union Fam).
+  { rewrite <- HUnionEq.
+    reflexivity. }
+  claim HpreEq2: preimage_of R f (Union Fam) = Union PreFam.
+  { rewrite (preimage_of_Union R f Fam).
+    reflexivity. }
+  rewrite HpreEq1.
+  rewrite HpreEq2.
+  claim HPreFamSub: PreFam c= Ty.
+  { let P. assume HP: P :e PreFam.
+    apply (ReplE_impred Fam (fun b0:set => preimage_of R f b0) P HP).
+    let b0. assume Hb0Fam: b0 :e Fam.
+    assume HPeq: P = preimage_of R f b0.
+    claim Hb0Sub: b0 :e product_subbasis R Tx R Ty.
+    { exact (HFamSub b0 Hb0Fam). }
+    claim HexU: exists U :e Tx, b0 :e {rectangle_set U V|V :e Ty}.
+    { exact (famunionE Tx (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) b0 Hb0Sub). }
+    apply HexU.
+    let U. assume HUconj: U :e Tx /\ b0 :e {rectangle_set U V|V :e Ty}.
+    claim HU: U :e Tx.
+    { exact (andEL (U :e Tx) (b0 :e {rectangle_set U V|V :e Ty}) HUconj). }
+    claim Hb0Repl: b0 :e {rectangle_set U V|V :e Ty}.
+    { exact (andER (U :e Tx) (b0 :e {rectangle_set U V|V :e Ty}) HUconj). }
+    claim HexV: exists V :e Ty, b0 = rectangle_set U V.
+    { exact (ReplE Ty (fun V0:set => rectangle_set U V0) b0 Hb0Repl). }
+    apply HexV.
+    let V. assume HVconj: V :e Ty /\ b0 = rectangle_set U V.
+    claim HV: V :e Ty.
+    { exact (andEL (V :e Ty) (b0 = rectangle_set U V) HVconj). }
+    claim Hbeq: b0 = rectangle_set U V.
+    { exact (andER (V :e Ty) (b0 = rectangle_set U V) HVconj). }
+    rewrite HPeq.
+    rewrite Hbeq.
+    set x0 := div_SNo c a.
+    claim Hx0R: x0 :e R.
+    { claim HdefR: R = real.
+      { reflexivity. }
+      claim HaReal: a :e real.
+      { rewrite <- HdefR. exact HaR. }
+      claim HcReal: c :e real.
+      { rewrite <- HdefR. exact HcR. }
+      claim Hx0Real: x0 :e real.
+      { exact (real_div_SNo c HcReal a HaReal). }
+      rewrite HdefR.
+      exact Hx0Real. }
+    apply (xm (x0 :e U)).
+    - assume Hx0U: x0 :e U.
+      claim HVR: V c= R.
+      { exact (topology_elem_subset R Ty V HTy HV). }
+      claim HeqPre: preimage_of R f (rectangle_set U V) = V.
+      { apply set_ext.
+        - let y. assume Hy: y :e preimage_of R f (rectangle_set U V).
+          prove y :e V.
+          claim HyR: y :e R.
+          { exact (SepE1 R (fun y0:set => apply_fun f y0 :e rectangle_set U V) y Hy). }
+          claim Hfy: apply_fun f y :e rectangle_set U V.
+          { exact (SepE2 R (fun y0:set => apply_fun f y0 :e rectangle_set U V) y Hy). }
+          claim Happ: apply_fun f y = (x0,y).
+          { rewrite (affine_line_R2_param_by_y_apply a b c y HyR).
+            reflexivity. }
+          claim Hxy: (x0,y) :e rectangle_set U V.
+          { rewrite <- Happ.
+            exact Hfy. }
+          claim HyV0: (x0,y) 1 :e V.
+          { exact (ap1_Sigma U (fun _ : set => V) (x0,y) Hxy). }
+          claim HyV: y :e V.
+          { rewrite <- (tuple_2_1_eq x0 y).
+            exact HyV0. }
+          exact HyV.
+        - let y. assume HyV: y :e V.
+          prove y :e preimage_of R f (rectangle_set U V).
+          claim HyR: y :e R.
+          { exact (HVR y HyV). }
+          claim Hxy: (x0,y) :e rectangle_set U V.
+          { exact (tuple_2_setprod U V x0 Hx0U y HyV). }
+          claim Happ: apply_fun f y = (x0,y).
+          { rewrite (affine_line_R2_param_by_y_apply a b c y HyR).
+            reflexivity. }
+          claim Hprop: apply_fun f y :e rectangle_set U V.
+          { rewrite Happ.
+            exact Hxy. }
+          exact (SepI R (fun y0:set => apply_fun f y0 :e rectangle_set U V) y HyR Hprop). }
+      rewrite HeqPre.
+      exact HV.
+    - assume Hx0notU: ~ (x0 :e U).
+      claim HeqPre: preimage_of R f (rectangle_set U V) = Empty.
+      { apply set_ext.
+        - let y. assume Hy: y :e preimage_of R f (rectangle_set U V).
+          apply FalseE.
+          claim HyR: y :e R.
+          { exact (SepE1 R (fun y0:set => apply_fun f y0 :e rectangle_set U V) y Hy). }
+          claim Hfy: apply_fun f y :e rectangle_set U V.
+          { exact (SepE2 R (fun y0:set => apply_fun f y0 :e rectangle_set U V) y Hy). }
+          claim Happ: apply_fun f y = (x0,y).
+          { rewrite (affine_line_R2_param_by_y_apply a b c y HyR).
+            reflexivity. }
+          claim Hxy: (x0,y) :e rectangle_set U V.
+          { rewrite <- Happ.
+            exact Hfy. }
+          claim Hx0U0: (x0,y) 0 :e U.
+          { exact (ap0_Sigma U (fun _ : set => V) (x0,y) Hxy). }
+          claim Hx0U: x0 :e U.
+          { rewrite <- (tuple_2_0_eq x0 y).
+            exact Hx0U0. }
+          exact (Hx0notU Hx0U).
+        - let y. assume Hy: y :e Empty.
+          apply FalseE.
+          exact (EmptyE y Hy). }
+      rewrite HeqPre.
+      exact (topology_has_empty R Ty HTy). }
+  claim HPreFamPow: PreFam :e Power Ty.
+  { apply PowerI.
+    exact HPreFamSub. }
+  exact (topology_union_axiom R Ty HTy PreFam HPreFamPow).
+Qed.
+
 (** Helper: param by x lands in the affine line when b is not zero **)
 Theorem affine_line_R2_param_by_x_in_line : forall a b c x:set,
   a :e R -> b :e R -> c :e R -> x :e R ->
@@ -38984,13 +39285,28 @@ apply andI.
 		      set x0 := div_SNo c a.
 		      claim HeqLine: affine_line_R2 a b c = setprod {x0} R.
 		      { exact (affine_line_R2_b0_eq_slice a b c HaR HbR HcR Hb0 Ha0). }
-		      witness (affine_line_R2_param_by_y a b c).
-		      rewrite HeqLine.
-		      prove continuous_map R R_standard_topology (setprod {x0} R)
-		        (subspace_topology (setprod R R)
-		           (product_topology R R_lower_limit_topology R R_standard_topology)
-		           (setprod {x0} R))
-		        (affine_line_R2_param_by_y a b c)
+			      witness (affine_line_R2_param_by_y a b c).
+			      rewrite HeqLine.
+			      claim HTll: topology_on R R_lower_limit_topology.
+			      { exact R_lower_limit_topology_is_topology. }
+			      claim HTstd: topology_on R R_standard_topology.
+			      { exact R_standard_topology_is_topology. }
+			      claim Hx0R: x0 :e R.
+			      { claim HdefR: R = real.
+			        { reflexivity. }
+			        claim HaReal: a :e real.
+			        { rewrite <- HdefR. exact HaR. }
+			        claim HcReal: c :e real.
+			        { rewrite <- HdefR. exact HcR. }
+			        claim Hx0Real: x0 :e real.
+			        { exact (real_div_SNo c HcReal a HaReal). }
+			        rewrite HdefR.
+			        exact Hx0Real. }
+			      prove continuous_map R R_standard_topology (setprod {x0} R)
+			        (subspace_topology (setprod R R)
+			           (product_topology R R_lower_limit_topology R R_standard_topology)
+			           (setprod {x0} R))
+			        (affine_line_R2_param_by_y a b c)
 		      /\ exists g:set,
 		           continuous_map (setprod {x0} R)
 		             (subspace_topology (setprod R R)
@@ -38999,16 +39315,33 @@ apply andI.
 		             R R_standard_topology g
 		           /\ (forall x:set, x :e R -> apply_fun g (apply_fun (affine_line_R2_param_by_y a b c) x) = x)
 		           /\ (forall y:set, y :e setprod {x0} R -> apply_fun (affine_line_R2_param_by_y a b c) (apply_fun g y) = y).
-		      apply andI.
-		      - admit.
-		      - witness (projection2 R R).
-		        apply andI.
-		        + apply andI.
-		          * admit.
-		          * let y. assume HyR: y :e R.
-		            exact (projection2_after_affine_line_R2_param_by_y a b c y HaR HcR HyR).
-		        + let p. assume Hp: p :e setprod {x0} R.
-		          exact (affine_line_R2_param_by_y_after_projection2_on_slice a b c p HaR HcR Hp).
+			      apply andI.
+			      - set f := affine_line_R2_param_by_y a b c.
+			        claim HcontProd: continuous_map R R_standard_topology EuclidPlane
+			          (product_topology R R_lower_limit_topology R R_standard_topology) f.
+			        { exact (affine_line_R2_param_by_y_continuous_in_product a b c
+			                  R_lower_limit_topology R_standard_topology HTll HTstd HaR HcR). }
+			        claim HsliceSub: (setprod {x0} R) c= EuclidPlane.
+			        { let p. assume Hp: p :e setprod {x0} R.
+			          claim HSingSub: {x0} c= R.
+			          { exact (singleton_subset x0 R Hx0R). }
+			          exact (setprod_Subq {x0} R R R HSingSub (Subq_ref R) p Hp). }
+			        claim Himg: forall y:set, y :e R -> apply_fun f y :e setprod {x0} R.
+			        { let y. assume HyR: y :e R.
+			          rewrite (affine_line_R2_param_by_y_apply a b c y HyR).
+			          exact (tuple_2_setprod {x0} R x0 (SingI x0) y HyR). }
+			        exact (continuous_map_range_restrict R R_standard_topology EuclidPlane
+			                  (product_topology R R_lower_limit_topology R R_standard_topology)
+			                  f (setprod {x0} R) HcontProd HsliceSub Himg).
+			      - witness (projection2 R R).
+			        apply andI.
+			        + apply andI.
+			          * exact (projection2_continuous_on_vertical_slice x0
+			                    R_lower_limit_topology R_standard_topology HTll HTstd Hx0R).
+			          * let y. assume HyR: y :e R.
+			            exact (projection2_after_affine_line_R2_param_by_y a b c y HaR HcR HyR).
+			        + let p. assume Hp: p :e setprod {x0} R.
+			          exact (affine_line_R2_param_by_y_after_projection2_on_slice a b c p HaR HcR Hp).
 	    * assume Hbne: b <> 0.
 	      witness (affine_line_R2_param_by_x a b c).
 	      admit.
@@ -39022,8 +39355,8 @@ apply andI.
 	        (subspace_topology (setprod R R)
 	           (product_topology R R_lower_limit_topology R R_lower_limit_topology)
 	           (affine_line_R2 a b c)) f.
-	  { assume Hb0: b = 0.
-	    claim Ha0: a <> 0.
+		  { assume Hb0: b = 0.
+		    claim Ha0: a <> 0.
 	    { prove ~ (a = 0).
 	      assume Ha0eq: a = 0.
 	      prove False.
@@ -39034,13 +39367,26 @@ apply andI.
 	    set x0 := div_SNo c a.
 	    claim HeqLine: affine_line_R2 a b c = setprod {x0} R.
 	    { exact (affine_line_R2_b0_eq_slice a b c HaR HbR HcR Hb0 Ha0). }
-	    witness (affine_line_R2_param_by_y a b c).
-	    rewrite HeqLine.
-	    prove continuous_map R R_lower_limit_topology (setprod {x0} R)
-	      (subspace_topology (setprod R R)
-	         (product_topology R R_lower_limit_topology R R_lower_limit_topology)
-	         (setprod {x0} R))
-	      (affine_line_R2_param_by_y a b c)
+		    witness (affine_line_R2_param_by_y a b c).
+		    rewrite HeqLine.
+		    claim HTll: topology_on R R_lower_limit_topology.
+		    { exact R_lower_limit_topology_is_topology. }
+		    claim Hx0R: x0 :e R.
+		    { claim HdefR: R = real.
+		      { reflexivity. }
+		      claim HaReal: a :e real.
+		      { rewrite <- HdefR. exact HaR. }
+		      claim HcReal: c :e real.
+		      { rewrite <- HdefR. exact HcR. }
+		      claim Hx0Real: x0 :e real.
+		      { exact (real_div_SNo c HcReal a HaReal). }
+		      rewrite HdefR.
+		      exact Hx0Real. }
+		    prove continuous_map R R_lower_limit_topology (setprod {x0} R)
+		      (subspace_topology (setprod R R)
+		         (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+		         (setprod {x0} R))
+		      (affine_line_R2_param_by_y a b c)
 	    /\ exists g:set,
 	         continuous_map (setprod {x0} R)
 	           (subspace_topology (setprod R R)
@@ -39049,16 +39395,33 @@ apply andI.
 	           R R_lower_limit_topology g
 	         /\ (forall x:set, x :e R -> apply_fun g (apply_fun (affine_line_R2_param_by_y a b c) x) = x)
 	         /\ (forall y:set, y :e setprod {x0} R -> apply_fun (affine_line_R2_param_by_y a b c) (apply_fun g y) = y).
-	    apply andI.
-	    - admit.
-	    - witness (projection2 R R).
-	      apply andI.
-	      + apply andI.
-	        * admit.
-	        * let y. assume HyR: y :e R.
-	          exact (projection2_after_affine_line_R2_param_by_y a b c y HaR HcR HyR).
-	      + let p. assume Hp: p :e setprod {x0} R.
-	        exact (affine_line_R2_param_by_y_after_projection2_on_slice a b c p HaR HcR Hp). }
+		    apply andI.
+		    - set f := affine_line_R2_param_by_y a b c.
+		      claim HcontProd: continuous_map R R_lower_limit_topology EuclidPlane
+		        (product_topology R R_lower_limit_topology R R_lower_limit_topology) f.
+		      { exact (affine_line_R2_param_by_y_continuous_in_product a b c
+		                R_lower_limit_topology R_lower_limit_topology HTll HTll HaR HcR). }
+		      claim HsliceSub: (setprod {x0} R) c= EuclidPlane.
+		      { let p. assume Hp: p :e setprod {x0} R.
+		        claim HSingSub: {x0} c= R.
+		        { exact (singleton_subset x0 R Hx0R). }
+		        exact (setprod_Subq {x0} R R R HSingSub (Subq_ref R) p Hp). }
+		      claim Himg: forall y:set, y :e R -> apply_fun f y :e setprod {x0} R.
+		      { let y. assume HyR: y :e R.
+		        rewrite (affine_line_R2_param_by_y_apply a b c y HyR).
+		        exact (tuple_2_setprod {x0} R x0 (SingI x0) y HyR). }
+		      exact (continuous_map_range_restrict R R_lower_limit_topology EuclidPlane
+		                (product_topology R R_lower_limit_topology R R_lower_limit_topology)
+		                f (setprod {x0} R) HcontProd HsliceSub Himg).
+		    - witness (projection2 R R).
+		      apply andI.
+		      + apply andI.
+		        * exact (projection2_continuous_on_vertical_slice x0
+		                  R_lower_limit_topology R_lower_limit_topology HTll HTll Hx0R).
+		        * let y. assume HyR: y :e R.
+		          exact (projection2_after_affine_line_R2_param_by_y a b c y HaR HcR HyR).
+		      + let p. assume Hp: p :e setprod {x0} R.
+		        exact (affine_line_R2_param_by_y_after_projection2_on_slice a b c p HaR HcR Hp). }
   claim Hnotsigncase: ~ same_sign_nonzero_R a b ->
     exists f:set,
       homeomorphism R R_lower_limit_topology (affine_line_R2 a b c)
