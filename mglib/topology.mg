@@ -28871,46 +28871,7 @@ Qed.
 
 (** from §16 Exercise 8: lines as subspaces of lower limit products **) 
 (** LATEX VERSION: Exercise 8: The diagonal line in ℝ×ℝ with the lower limit product topology is homeomorphic to ℝ with lower limit topology. **)
-Theorem ex16_8_lines_in_lower_limit_products :
-  exists L:set, L c= setprod R R /\
-    L = {(x,x)|x :e R} /\
-    subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L =
-      R_lower_limit_topology.
-prove exists L:set, L c= setprod R R /\ L = {(x,x)|x :e R} /\ subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L = R_lower_limit_topology.
-set L := {(x,x)|x :e R}.
-witness L.
-prove L c= setprod R R /\ L = {(x,x)|x :e R} /\ subspace_topology (setprod R R) (product_topology R R_lower_limit_topology R R_lower_limit_topology) L = R_lower_limit_topology.
-(** conjunction is left-associative: (A /\ B) /\ C **)
-apply andI.
-- (** L c= setprod R R /\ L = diagonal **)
-  apply andI.
-  + prove L c= setprod R R.
-    let p. assume Hp: p :e L.
-    prove p :e setprod R R.
-    claim Hex: exists x :e R, p = (x,x).
-    { exact (ReplE R (fun x:set => (x,x)) p Hp). }
-    apply Hex.
-    let x. assume Hpair.
-    claim HxR: x :e R.
-    { exact (andEL (x :e R) (p = (x,x)) Hpair). }
-    claim Hpeq: p = (x,x).
-    { exact (andER (x :e R) (p = (x,x)) Hpair). }
-    rewrite Hpeq.
-    exact (tuple_2_setprod R R x HxR x HxR).
-  + reflexivity.
-- (** induced subspace topology equals R_lower_limit_topology **)
-  set Tp := product_topology R R_lower_limit_topology R R_lower_limit_topology.
-  set Ts := subspace_topology (setprod R R) Tp L.
-  set Td := R_lower_limit_topology.
-  prove Ts = Td.
-  apply set_ext.
-  - let U. assume HU: U :e Ts.
-    prove U :e Td.
-    admit.
-  - let U. assume HU: U :e Td.
-    prove U :e Ts.
-    admit.
-Qed.
+(** NOTE: This theorem is stated later, after `homeomorphism` and the product continuity lemmas are available. **)
 
 (** from §16 Exercise 9: dictionary order topology on ℝ×ℝ equals ℝ_d × ℝ **) 
 (** LATEX VERSION: Exercise 9: The dictionary order topology on ℝ×ℝ is the same as the product topology ℝ_d×ℝ; compare it with the standard topology. **)
