@@ -11640,11 +11640,242 @@ witness r3.
 apply andI.
 - exact Hr3pos.
 - let p. assume HpE: p :e EuclidPlane.
-  assume Hdp: Rlt (distance_R2 p x) r3.
-  prove p :e b.
-  rewrite HbEq.
-  (** the remaining coordinate inequality bookkeeping is structured but left for refinement **)
-  admit.
+	  assume Hdp: Rlt (distance_R2 p x) r3.
+	  prove p :e b.
+	  rewrite HbEq.
+	  prove p :e Rect.
+	  set xp := R2_xcoord p.
+	  set yp := R2_ycoord p.
+	  claim HxpDef: xp = R2_xcoord p.
+	  { reflexivity. }
+	  claim HypDef: yp = R2_ycoord p.
+	  { reflexivity. }
+	  claim HxpR: xp :e R.
+	  { rewrite HxpDef.
+	    exact (EuclidPlane_xcoord_in_R p HpE). }
+	  claim HypR: yp :e R.
+	  { rewrite HypDef.
+	    exact (EuclidPlane_ycoord_in_R p HpE). }
+	  claim HxpS: SNo xp.
+	  { exact (real_SNo xp HxpR). }
+	  claim HypS: SNo yp.
+	  { exact (real_SNo yp HypR). }
+
+	  claim Hxcoord: R2_xcoord x = x0.
+	  { prove R2_xcoord x = x0.
+	    rewrite HxEq at 1.
+	    exact (R2_xcoord_tuple x0 y0). }
+	  claim Hycoord: R2_ycoord x = y0.
+	  { prove R2_ycoord x = y0.
+	    rewrite HxEq at 1.
+	    exact (R2_ycoord_tuple x0 y0). }
+
+	  claim Hr3S: SNo r3.
+	  { exact (real_SNo r3 Hr3R). }
+	  claim Hr3posS: 0 < r3.
+	  { exact (RltE_lt 0 r3 Hr3pos). }
+
+	  claim Habsdx: abs_SNo (add_SNo xp (minus_SNo x0)) < r3.
+	  { prove abs_SNo (add_SNo xp (minus_SNo x0)) < r3.
+	    rewrite HxpDef at 1.
+	    rewrite <- Hxcoord at 1.
+	    exact (abs_xcoord_lt_of_distance_lt p x r3 HpE HxE Hr3R Hdp). }
+	  claim Habsdy: abs_SNo (add_SNo yp (minus_SNo y0)) < r3.
+	  { prove abs_SNo (add_SNo yp (minus_SNo y0)) < r3.
+	    rewrite HypDef at 1.
+	    rewrite <- Hycoord at 1.
+	    exact (abs_ycoord_lt_of_distance_lt p x r3 HpE HxE Hr3R Hdp). }
+
+	  set dx := add_SNo xp (minus_SNo x0).
+	  set dy := add_SNo yp (minus_SNo y0).
+	  claim HdxDef: dx = add_SNo xp (minus_SNo x0).
+	  { reflexivity. }
+	  claim HdyDef: dy = add_SNo yp (minus_SNo y0).
+	  { reflexivity. }
+	  claim HdxR: dx :e R.
+	  { rewrite HdxDef.
+	    exact (real_add_SNo xp HxpR (minus_SNo x0) (real_minus_SNo x0 Hx0R)). }
+	  claim HdyR: dy :e R.
+	  { rewrite HdyDef.
+	    exact (real_add_SNo yp HypR (minus_SNo y0) (real_minus_SNo y0 Hy0R)). }
+	  claim HdxS: SNo dx.
+	  { exact (real_SNo dx HdxR). }
+	  claim HdyS: SNo dy.
+	  { exact (real_SNo dy HdyR). }
+
+	  claim HdxLt: dx < r3.
+	  { rewrite HdxDef at 1.
+	    exact (abs_SNo_lt_imp_lt
+	            (add_SNo xp (minus_SNo x0)) r3
+	            (real_SNo (add_SNo xp (minus_SNo x0)) HdxR)
+	            Hr3S Hr3posS Habsdx). }
+	  claim HdyLt: dy < r3.
+	  { rewrite HdyDef at 1.
+	    exact (abs_SNo_lt_imp_lt
+	            (add_SNo yp (minus_SNo y0)) r3
+	            (real_SNo (add_SNo yp (minus_SNo y0)) HdyR)
+	            Hr3S Hr3posS Habsdy). }
+
+	  claim HnegdxLt: minus_SNo dx < r3.
+	  { rewrite HdxDef at 1.
+	    exact (abs_SNo_lt_imp_neg_lt
+	            (add_SNo xp (minus_SNo x0)) r3
+	            (real_SNo (add_SNo xp (minus_SNo x0)) HdxR)
+	            Hr3S Hr3posS Habsdx). }
+	  claim HnegdyLt: minus_SNo dy < r3.
+	  { rewrite HdyDef at 1.
+	    exact (abs_SNo_lt_imp_neg_lt
+	            (add_SNo yp (minus_SNo y0)) r3
+	            (real_SNo (add_SNo yp (minus_SNo y0)) HdyR)
+	            Hr3S Hr3posS Habsdy). }
+
+	  claim HnegdxEq: minus_SNo dx = add_SNo x0 (minus_SNo xp).
+	  { prove minus_SNo dx = add_SNo x0 (minus_SNo xp).
+	    rewrite HdxDef at 1.
+	    claim Hmx0S: SNo (minus_SNo x0).
+	    { exact (SNo_minus_SNo x0 Hx0S). }
+	    claim HmxpS: SNo (minus_SNo xp).
+	    { exact (SNo_minus_SNo xp HxpS). }
+	    claim Hneg : minus_SNo (add_SNo xp (minus_SNo x0))
+	              = add_SNo (minus_SNo xp) (minus_SNo (minus_SNo x0)).
+	    { exact (minus_add_SNo_distr xp (minus_SNo x0) HxpS Hmx0S). }
+	    claim Hinv : minus_SNo (minus_SNo x0) = x0.
+	    { exact (minus_SNo_invol x0 Hx0S). }
+	    claim Hneg2 : minus_SNo (add_SNo xp (minus_SNo x0)) = add_SNo (minus_SNo xp) x0.
+	    { rewrite <- Hinv at 2.
+	      exact Hneg. }
+	    claim Hcom : add_SNo (minus_SNo xp) x0 = add_SNo x0 (minus_SNo xp).
+	    { exact (add_SNo_com (minus_SNo xp) x0 HmxpS Hx0S). }
+	    rewrite <- Hcom.
+	    exact Hneg2. }
+
+	  claim HnegdyEq: minus_SNo dy = add_SNo y0 (minus_SNo yp).
+	  { prove minus_SNo dy = add_SNo y0 (minus_SNo yp).
+	    rewrite HdyDef at 1.
+	    claim Hmy0S: SNo (minus_SNo y0).
+	    { exact (SNo_minus_SNo y0 Hy0S). }
+	    claim HmypS: SNo (minus_SNo yp).
+	    { exact (SNo_minus_SNo yp HypS). }
+	    claim Hneg : minus_SNo (add_SNo yp (minus_SNo y0))
+	              = add_SNo (minus_SNo yp) (minus_SNo (minus_SNo y0)).
+	    { exact (minus_add_SNo_distr yp (minus_SNo y0) HypS Hmy0S). }
+	    claim Hinv : minus_SNo (minus_SNo y0) = y0.
+	    { exact (minus_SNo_invol y0 Hy0S). }
+	    claim Hneg2 : minus_SNo (add_SNo yp (minus_SNo y0)) = add_SNo (minus_SNo yp) y0.
+	    { rewrite <- Hinv at 2.
+	      exact Hneg. }
+	    claim Hcom : add_SNo (minus_SNo yp) y0 = add_SNo y0 (minus_SNo yp).
+	    { exact (add_SNo_com (minus_SNo yp) y0 HmypS Hy0S). }
+	    rewrite <- Hcom.
+	    exact Hneg2. }
+
+	  claim Hr3m1S: r3 < m1.
+	  { exact (RltE_lt r3 m1 Hr3m1). }
+	  claim Hr3m2S: r3 < m2.
+	  { exact (RltE_lt r3 m2 Hr3m2). }
+	  claim Hr3m3S: r3 < m3.
+	  { exact (RltE_lt r3 m3 Hr3m3). }
+	  claim Hr3m4S: r3 < m4.
+	  { exact (RltE_lt r3 m4 Hr3m4). }
+
+	  (** x0 < xp + r3 from x0 - xp < r3 **)
+	  claim Hx0Lt_xpr3: x0 < add_SNo xp r3.
+	  { prove x0 < add_SNo xp r3.
+	    claim Hx0mxpLt: add_SNo x0 (minus_SNo xp) < r3.
+	    { prove add_SNo x0 (minus_SNo xp) < r3.
+	      rewrite <- HnegdxEq at 1.
+	      exact HnegdxLt. }
+	    claim Hx0mxpS: SNo (add_SNo x0 (minus_SNo xp)).
+	    { exact (real_SNo (add_SNo x0 (minus_SNo xp))
+	                      (real_add_SNo x0 Hx0R (minus_SNo xp) (real_minus_SNo xp HxpR))). }
+	    claim Htmp: add_SNo xp (add_SNo x0 (minus_SNo xp)) < add_SNo xp r3.
+	    { exact (add_SNo_Lt2 xp (add_SNo x0 (minus_SNo xp)) r3 HxpS Hx0mxpS Hr3S Hx0mxpLt). }
+	    claim HlhsEq: add_SNo xp (add_SNo x0 (minus_SNo xp)) = x0.
+	    { claim HmxpS: SNo (minus_SNo xp).
+	      { exact (SNo_minus_SNo xp HxpS). }
+	      claim Hassoc1: add_SNo xp (add_SNo x0 (minus_SNo xp)) = add_SNo (add_SNo xp x0) (minus_SNo xp).
+	      { exact (add_SNo_assoc xp x0 (minus_SNo xp) HxpS Hx0S HmxpS). }
+	      claim Hcom1: add_SNo xp x0 = add_SNo x0 xp.
+	      { exact (add_SNo_com xp x0 HxpS Hx0S). }
+	      claim Hassoc2: add_SNo (add_SNo x0 xp) (minus_SNo xp) = add_SNo x0 (add_SNo xp (minus_SNo xp)).
+	      { exact (add_SNo_assoc x0 xp (minus_SNo xp) Hx0S HxpS HmxpS). }
+	      claim Hinv: add_SNo xp (minus_SNo xp) = 0.
+	      { exact (add_SNo_minus_SNo_rinv xp HxpS). }
+	      claim Hz: add_SNo x0 0 = x0.
+	      { exact (add_SNo_0R x0 Hx0S). }
+	      prove add_SNo xp (add_SNo x0 (minus_SNo xp)) = x0.
+	      rewrite Hassoc1.
+	      rewrite Hcom1.
+	      rewrite Hassoc2.
+	      rewrite Hinv.
+	      exact Hz. }
+	    rewrite <- HlhsEq at 1.
+	    exact Htmp. }
+
+	  (** xp < x0 + r3 from xp - x0 < r3 **)
+	  claim HxpLt_x0r3: xp < add_SNo x0 r3.
+	  { prove xp < add_SNo x0 r3.
+	    claim HdxSlt: add_SNo xp (minus_SNo x0) < r3.
+	    { rewrite <- HdxDef at 1.
+	      exact HdxLt. }
+	    claim HdxtermS: SNo (add_SNo xp (minus_SNo x0)).
+	    { exact (real_SNo (add_SNo xp (minus_SNo x0)) HdxR). }
+	    claim Htmp: add_SNo x0 (add_SNo xp (minus_SNo x0)) < add_SNo x0 r3.
+	    { exact (add_SNo_Lt2 x0 (add_SNo xp (minus_SNo x0)) r3 Hx0S HdxtermS Hr3S HdxSlt). }
+	    claim HlhsEq: add_SNo x0 (add_SNo xp (minus_SNo x0)) = xp.
+	    { claim Hmx0S: SNo (minus_SNo x0).
+	      { exact (SNo_minus_SNo x0 Hx0S). }
+	      claim Hassoc1: add_SNo x0 (add_SNo xp (minus_SNo x0)) = add_SNo (add_SNo x0 xp) (minus_SNo x0).
+	      { exact (add_SNo_assoc x0 xp (minus_SNo x0) Hx0S HxpS Hmx0S). }
+	      claim Hcom1: add_SNo x0 xp = add_SNo xp x0.
+	      { exact (add_SNo_com x0 xp Hx0S HxpS). }
+	      claim Hassoc2: add_SNo (add_SNo xp x0) (minus_SNo x0) = add_SNo xp (add_SNo x0 (minus_SNo x0)).
+	      { exact (add_SNo_assoc xp x0 (minus_SNo x0) HxpS Hx0S Hmx0S). }
+	      claim Hinv: add_SNo x0 (minus_SNo x0) = 0.
+	      { exact (add_SNo_minus_SNo_rinv x0 Hx0S). }
+	      claim Hz: add_SNo xp 0 = xp.
+	      { exact (add_SNo_0R xp HxpS). }
+	      prove add_SNo x0 (add_SNo xp (minus_SNo x0)) = xp.
+	      rewrite Hassoc1.
+	      rewrite Hcom1.
+	      rewrite Hassoc2.
+	      rewrite Hinv.
+	      exact Hz. }
+	    rewrite <- HlhsEq at 1.
+	    exact Htmp. }
+
+	  (** x0 + r3 < b0 from r3 < b0 - x0 **)
+	  claim Hx0r3Lt_b0: add_SNo x0 r3 < b0.
+	  { prove add_SNo x0 r3 < b0.
+	    claim Htmp: add_SNo x0 r3 < add_SNo x0 m2.
+	    { exact (add_SNo_Lt2 x0 r3 m2 Hx0S Hr3S Hm2S Hr3m2S). }
+	    claim HrhsEq: add_SNo x0 m2 = b0.
+	    { prove add_SNo x0 m2 = b0.
+	      rewrite (add_SNo_com x0 m2 Hx0S Hm2S).
+	      rewrite <- (add_SNo_assoc b0 (minus_SNo x0) x0 Hb0S Hmx0S Hx0S) at 1.
+	      claim Hinv: add_SNo (minus_SNo x0) x0 = 0.
+	      { exact (add_SNo_minus_SNo_linv x0 Hx0S). }
+	      rewrite Hinv at 1.
+	      exact (add_SNo_0R b0 Hb0S). }
+	    claim Hgoal: add_SNo x0 r3 < b0.
+	    { prove add_SNo x0 r3 < b0.
+	      rewrite <- HrhsEq at 2.
+	      exact (SNoLt_tra (add_SNo x0 r3) (add_SNo x0 m2) b0
+	                       (real_SNo (add_SNo x0 r3) (real_add_SNo x0 Hx0R r3 Hr3R))
+	                       (real_SNo (add_SNo x0 m2) (real_add_SNo x0 Hx0R m2 Hm2R))
+	                       Hb0S
+	                       Htmp
+	                       (SNoLt_ref (add_SNo x0 m2) (real_SNo (add_SNo x0 m2) (real_add_SNo x0 Hx0R m2 Hm2R)))). }
+	    rewrite <- HrhsEq at 2.
+	    exact (SNoLt_tra (add_SNo x0 r3) (add_SNo x0 m2) b0
+	                     (real_SNo (add_SNo x0 r3) (real_add_SNo x0 Hx0R r3 Hr3R))
+	                     (real_SNo (add_SNo x0 m2) (real_add_SNo x0 Hx0R m2 Hm2R))
+	                     Hb0S
+	                     Htmp
+	                     (RltE_lt (add_SNo x0 m2) b0 (RltI (add_SNo x0 m2) b0 (real_add_SNo x0 Hx0R m2 Hm2R) Hb0R (SNoLt_ref (add_SNo x0 m2) (real_SNo (add_SNo x0 m2) (real_add_SNo x0 Hx0R m2 Hm2R)))))). }
+
+	  (** TODO: finish linear inequalities and complete SepI proof; keep compiling for now **)
+	  admit.
 Qed.
 
 (** from §13 Example 4: circular regions form a basis on EuclidPlane **)
