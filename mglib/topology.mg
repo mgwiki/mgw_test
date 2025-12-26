@@ -43694,6 +43694,55 @@ Definition between_in_order : set -> set -> set -> set -> prop := fun Y u r v =>
   \/ r = u
   \/ r = v.
 
+(** Helper: introduction rule for between_in_order using u <= r <= v **)
+Theorem between_in_orderI_left : forall Y u r v:set,
+  order_rel Y u r ->
+  order_rel Y r v ->
+  between_in_order Y u r v.
+let Y u r v.
+assume Hur: order_rel Y u r.
+assume Hrv: order_rel Y r v.
+prove between_in_order Y u r v.
+apply orIL.
+apply orIL.
+apply orIL.
+exact (andI (order_rel Y u r) (order_rel Y r v) Hur Hrv).
+Qed.
+
+(** Helper: introduction rule for between_in_order using v <= r <= u **)
+Theorem between_in_orderI_right : forall Y u r v:set,
+  order_rel Y v r ->
+  order_rel Y r u ->
+  between_in_order Y u r v.
+let Y u r v.
+assume Hvr: order_rel Y v r.
+assume Hru: order_rel Y r u.
+prove between_in_order Y u r v.
+apply orIL.
+apply orIL.
+apply orIR.
+exact (andI (order_rel Y v r) (order_rel Y r u) Hvr Hru).
+Qed.
+
+(** Helper: introduction rule for between_in_order when r = u **)
+Theorem between_in_orderI_eq_left : forall Y u v:set,
+  between_in_order Y u u v.
+let Y u v.
+prove between_in_order Y u u v.
+apply orIL.
+apply orIR.
+reflexivity.
+Qed.
+
+(** Helper: introduction rule for between_in_order when r = v **)
+Theorem between_in_orderI_eq_right : forall Y u v:set,
+  between_in_order Y u v v.
+let Y u v.
+prove between_in_order Y u v v.
+apply orIR.
+reflexivity.
+Qed.
+
 (** from §24 Theorem 24.3: intermediate value theorem (order topology) **)
 (** LATEX VERSION: If f is continuous and X is connected, every value between f(a) and f(b) is attained. **)
 (** LATEX VERSION: Intermediate value theorem, stated as a derived theorem wrapper. **)
