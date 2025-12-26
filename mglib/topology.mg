@@ -20582,9 +20582,7 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    apply Hpre3.
 		    assume Hpre4 HnOmega.
 		    apply Hpre4.
-		    assume Hj2 Hpre5.
-		    claim Hj2test: j :e 2.
-		    { exact Hj2. }
+		    assume Hpre5 Hj2.
 		    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
