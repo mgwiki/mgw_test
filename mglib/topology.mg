@@ -20620,6 +20620,24 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 				    (** Probe: Hlex has type b = (j,n). **)
 				    claim HbEq2: b = (j, n).
 				    { exact Hlex. }
+
+				    (** Derived equalities from (1,0) = (i,m). **)
+				    claim Hi1: i = 1.
+				    { prove i = 1.
+				      claim Him0: (i,m) 0 = 1.
+				      { prove (i,m) 0 = 1.
+				        rewrite <- H10Eq2 at 1.
+				        exact (tuple_2_0_eq 1 0). }
+				      rewrite <- (tuple_2_0_eq i m) at 1.
+				      exact Him0. }
+				    claim Hm0: m = 0.
+				    { prove m = 0.
+				      claim Him1: (i,m) 1 = 0.
+				      { prove (i,m) 1 = 0.
+				        rewrite <- H10Eq2 at 1.
+				        exact (tuple_2_1_eq 1 0). }
+				      rewrite <- (tuple_2_1_eq i m) at 1.
+				      exact Him1. }
 				    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
