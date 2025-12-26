@@ -53101,6 +53101,30 @@ Definition limit_point_compact : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall A:set, A c= X -> infinite A -> exists x:set, limit_point_of X Tx A x.
 
+(** Helper: extract topology_on from limit_point_compact **)
+Theorem limit_point_compact_topology : forall X Tx:set,
+  limit_point_compact X Tx -> topology_on X Tx.
+let X Tx.
+assume H: limit_point_compact X Tx.
+exact (andEL (topology_on X Tx)
+             (forall A:set, A c= X -> infinite A -> exists x:set, limit_point_of X Tx A x)
+             H).
+Qed.
+
+(** Helper: extract limit point property from limit_point_compact **)
+Theorem limit_point_compact_property : forall X Tx A:set,
+  limit_point_compact X Tx -> A c= X -> infinite A -> exists x:set, limit_point_of X Tx A x.
+let X Tx A.
+assume H: limit_point_compact X Tx.
+assume HA: A c= X.
+assume Hinf: infinite A.
+claim Hprop: forall A0:set, A0 c= X -> infinite A0 -> exists x:set, limit_point_of X Tx A0 x.
+{ exact (andER (topology_on X Tx)
+               (forall A0:set, A0 c= X -> infinite A0 -> exists x:set, limit_point_of X Tx A0 x)
+               H). }
+exact (Hprop A HA Hinf).
+Qed.
+
 (** LATEX VERSION: Compact ⇒ limit point compact. **)
 Theorem compact_implies_limit_point_compact : forall X Tx:set,
   compact_space X Tx -> limit_point_compact X Tx.
@@ -53317,6 +53341,38 @@ Definition locally_compact : set -> set -> prop := fun X Tx =>
   forall x:set, x :e X ->
     exists U:set, U :e Tx /\ x :e U /\
       compact_space (closure_of X Tx U) (subspace_topology X Tx (closure_of X Tx U)).
+
+(** Helper: extract topology_on from locally_compact **)
+Theorem locally_compact_topology : forall X Tx:set,
+  locally_compact X Tx -> topology_on X Tx.
+let X Tx.
+assume H: locally_compact X Tx.
+exact (andEL (topology_on X Tx)
+             (forall x:set, x :e X ->
+               exists U:set, U :e Tx /\ x :e U /\
+                 compact_space (closure_of X Tx U) (subspace_topology X Tx (closure_of X Tx U)))
+             H).
+Qed.
+
+(** Helper: extract local compactness neighborhood property **)
+Theorem locally_compact_local : forall X Tx x:set,
+  locally_compact X Tx ->
+  x :e X ->
+  exists U:set, U :e Tx /\ x :e U /\
+    compact_space (closure_of X Tx U) (subspace_topology X Tx (closure_of X Tx U)).
+let X Tx x.
+assume H: locally_compact X Tx.
+assume Hx: x :e X.
+claim Hprop: forall x0:set, x0 :e X ->
+  exists U:set, U :e Tx /\ x0 :e U /\
+    compact_space (closure_of X Tx U) (subspace_topology X Tx (closure_of X Tx U)).
+{ exact (andER (topology_on X Tx)
+               (forall x0:set, x0 :e X ->
+                 exists U:set, U :e Tx /\ x0 :e U /\
+                   compact_space (closure_of X Tx U) (subspace_topology X Tx (closure_of X Tx U)))
+               H). }
+exact (Hprop x Hx).
+Qed.
 
 (** LATEX VERSION: In Hausdorff spaces, compact subsets are closed. **)
 Theorem Hausdorff_compact_sets_closed : forall X Tx A:set,
