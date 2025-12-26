@@ -35992,11 +35992,8 @@ Definition continuous_map : set -> set -> set -> set -> set -> prop :=
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
     forall V:set, V :e Ty -> preimage_of X f V :e Tx.
 
-(** helper: flip_unit_interval is continuous in the unit interval topology (placeholder) **)
-Theorem flip_unit_interval_continuous :
-  continuous_map unit_interval unit_interval_topology unit_interval unit_interval_topology flip_unit_interval.
-admit.
-Qed.
+(** helper: flip_unit_interval is continuous in the unit interval topology **)
+(** NOTE: placed later, after continuity infrastructure **)
 
 (** Helper: extract topology_on X Tx from continuous_map **)
 Theorem continuous_map_topology_dom : forall X Tx Y Ty f:set,
@@ -37333,6 +37330,550 @@ apply andI.
     }
     rewrite <- HUnionFamEq.
     exact (topology_union_closed X Tx Fam HTx HFamSubTx).
+Qed.
+
+(** helper: flip_unit_interval is continuous in the unit interval topology **)
+Theorem flip_unit_interval_continuous :
+  continuous_map unit_interval unit_interval_topology unit_interval unit_interval_topology flip_unit_interval.
+prove continuous_map unit_interval unit_interval_topology unit_interval unit_interval_topology flip_unit_interval.
+set Tx := unit_interval_topology.
+
+(** first prove continuity as a map into R, then restrict the range to unit_interval **)
+claim HcontR: continuous_map unit_interval Tx R R_standard_topology flip_unit_interval.
+{ set S := open_rays_subbasis R.
+
+  claim HTx: topology_on unit_interval Tx.
+  { exact unit_interval_topology_on. }
+
+  claim HfunR: function_on flip_unit_interval unit_interval R.
+  { let t. assume Ht: t :e unit_interval.
+    exact (flip_unit_interval_in_R t Ht). }
+
+  claim HS: subbasis_on R S.
+  { exact (open_rays_subbasis_is_subbasis R). }
+
+  claim Hgen: generated_topology_from_subbasis R S = R_standard_topology.
+  { rewrite (open_rays_subbasis_for_order_topology R).
+    rewrite standard_topology_is_order_topology.
+    reflexivity. }
+  rewrite <- Hgen.
+
+  claim Hflip_upper: forall a t:set,
+    a :e R -> t :e R ->
+    (Rlt a (add_SNo 1 (minus_SNo t)) <-> Rlt t (add_SNo 1 (minus_SNo a))).
+  { let a t.
+    assume HaR: a :e R.
+    assume HtR: t :e R.
+    prove (Rlt a (add_SNo 1 (minus_SNo t)) <-> Rlt t (add_SNo 1 (minus_SNo a))).
+    apply iffI.
+    - assume Hlt: Rlt a (add_SNo 1 (minus_SNo t)).
+      prove Rlt t (add_SNo 1 (minus_SNo a)).
+      claim HaS: SNo a.
+      { exact (real_SNo a HaR). }
+      claim HtS: SNo t.
+      { exact (real_SNo t HtR). }
+      claim HmaS: SNo (minus_SNo a).
+      { exact (SNo_minus_SNo a HaS). }
+      claim HmtS: SNo (minus_SNo t).
+      { exact (SNo_minus_SNo t HtS). }
+      claim HsumS: SNo (add_SNo 1 (minus_SNo t)).
+      { exact (SNo_add_SNo 1 (minus_SNo t) SNo_1 HmtS). }
+      claim HltS: a < add_SNo 1 (minus_SNo t).
+      { exact (RltE_lt a (add_SNo 1 (minus_SNo t)) Hlt). }
+      claim H1: add_SNo a t < add_SNo (add_SNo 1 (minus_SNo t)) t.
+      { exact (add_SNo_Lt1 a t (add_SNo 1 (minus_SNo t)) HaS HtS HsumS HltS). }
+      claim HeqR: add_SNo (add_SNo 1 (minus_SNo t)) t = 1.
+      { rewrite <- (add_SNo_assoc 1 (minus_SNo t) t SNo_1 HmtS HtS).
+        rewrite (add_SNo_minus_SNo_linv t HtS).
+        exact (add_SNo_0R 1 SNo_1). }
+      claim H2: add_SNo a t < 1.
+      { rewrite <- HeqR.
+        exact H1. }
+      claim H2c: add_SNo t a < 1.
+      { rewrite (add_SNo_com t a HtS HaS).
+        exact H2. }
+      claim Hm1S: SNo (minus_SNo a).
+      { exact HmaS. }
+      claim H3: add_SNo (add_SNo t a) (minus_SNo a) < add_SNo 1 (minus_SNo a).
+      { exact (add_SNo_Lt1 (add_SNo t a) (minus_SNo a) 1
+               (SNo_add_SNo t a HtS HaS) Hm1S SNo_1 H2c). }
+      claim HeqL: add_SNo (add_SNo t a) (minus_SNo a) = t.
+      { rewrite <- (add_SNo_assoc t a (minus_SNo a) HtS HaS Hm1S).
+        rewrite (add_SNo_minus_SNo_rinv a HaS).
+        exact (add_SNo_0R t HtS). }
+      claim H4: t < add_SNo 1 (minus_SNo a).
+      { rewrite <- HeqL at 1.
+        exact H3. }
+      claim Hflip_aR: add_SNo 1 (minus_SNo a) :e R.
+      { claim HdefR: R = real.
+        { reflexivity. }
+        rewrite HdefR.
+        claim HaReal: a :e real.
+        { rewrite <- HdefR.
+          exact HaR. }
+        claim HmaReal: (minus_SNo a) :e real.
+        { exact (real_minus_SNo a HaReal). }
+        exact (real_add_SNo 1 real_1 (minus_SNo a) HmaReal). }
+      exact (RltI t (add_SNo 1 (minus_SNo a)) HtR Hflip_aR H4).
+    - assume Hlt: Rlt t (add_SNo 1 (minus_SNo a)).
+      prove Rlt a (add_SNo 1 (minus_SNo t)).
+      claim HaS: SNo a.
+      { exact (real_SNo a HaR). }
+      claim HtS: SNo t.
+      { exact (real_SNo t HtR). }
+      claim HmaS: SNo (minus_SNo a).
+      { exact (SNo_minus_SNo a HaS). }
+      claim HmtS: SNo (minus_SNo t).
+      { exact (SNo_minus_SNo t HtS). }
+      claim Hflip_aS: SNo (add_SNo 1 (minus_SNo a)).
+      { exact (SNo_add_SNo 1 (minus_SNo a) SNo_1 HmaS). }
+      claim HltS: t < add_SNo 1 (minus_SNo a).
+      { exact (RltE_lt t (add_SNo 1 (minus_SNo a)) Hlt). }
+      claim H1: add_SNo t a < add_SNo (add_SNo 1 (minus_SNo a)) a.
+      { exact (add_SNo_Lt1 t a (add_SNo 1 (minus_SNo a)) HtS HaS Hflip_aS HltS). }
+      claim HeqR: add_SNo (add_SNo 1 (minus_SNo a)) a = 1.
+      { rewrite <- (add_SNo_assoc 1 (minus_SNo a) a SNo_1 HmaS HaS).
+        rewrite (add_SNo_minus_SNo_linv a HaS).
+        exact (add_SNo_0R 1 SNo_1). }
+      claim H2: add_SNo t a < 1.
+      { rewrite <- HeqR.
+        exact H1. }
+      claim H2c: add_SNo a t < 1.
+      { rewrite (add_SNo_com a t HaS HtS).
+        exact H2. }
+      claim Hm1S: SNo (minus_SNo t).
+      { exact HmtS. }
+      claim H3: add_SNo (add_SNo a t) (minus_SNo t) < add_SNo 1 (minus_SNo t).
+      { exact (add_SNo_Lt1 (add_SNo a t) (minus_SNo t) 1
+               (SNo_add_SNo a t HaS HtS) Hm1S SNo_1 H2c). }
+      claim HeqL: add_SNo (add_SNo a t) (minus_SNo t) = a.
+      { rewrite <- (add_SNo_assoc a t (minus_SNo t) HaS HtS Hm1S).
+        rewrite (add_SNo_minus_SNo_rinv t HtS).
+        exact (add_SNo_0R a HaS). }
+      claim H4: a < add_SNo 1 (minus_SNo t).
+      { rewrite <- HeqL at 1.
+        exact H3. }
+      claim Hflip_tR: add_SNo 1 (minus_SNo t) :e R.
+      { claim HdefR: R = real.
+        { reflexivity. }
+        rewrite HdefR.
+        claim HtReal: t :e real.
+        { rewrite <- HdefR.
+          exact HtR. }
+        claim HmtReal: (minus_SNo t) :e real.
+        { exact (real_minus_SNo t HtReal). }
+        exact (real_add_SNo 1 real_1 (minus_SNo t) HmtReal). }
+      exact (RltI a (add_SNo 1 (minus_SNo t)) HaR Hflip_tR H4). }
+
+  claim Hflip_lower: forall t b:set,
+    t :e R -> b :e R ->
+    (Rlt (add_SNo 1 (minus_SNo t)) b <-> Rlt (add_SNo 1 (minus_SNo b)) t).
+  { let t b.
+    assume HtR: t :e R.
+    assume HbR: b :e R.
+    prove (Rlt (add_SNo 1 (minus_SNo t)) b <-> Rlt (add_SNo 1 (minus_SNo b)) t).
+    apply iffI.
+    - assume Hlt: Rlt (add_SNo 1 (minus_SNo t)) b.
+      prove Rlt (add_SNo 1 (minus_SNo b)) t.
+      claim HtS: SNo t.
+      { exact (real_SNo t HtR). }
+      claim HbS: SNo b.
+      { exact (real_SNo b HbR). }
+      claim HmtS: SNo (minus_SNo t).
+      { exact (SNo_minus_SNo t HtS). }
+      claim HmbS: SNo (minus_SNo b).
+      { exact (SNo_minus_SNo b HbS). }
+      claim HsumS: SNo (add_SNo 1 (minus_SNo t)).
+      { exact (SNo_add_SNo 1 (minus_SNo t) SNo_1 HmtS). }
+      claim HltS: add_SNo 1 (minus_SNo t) < b.
+      { exact (RltE_lt (add_SNo 1 (minus_SNo t)) b Hlt). }
+      claim H1: add_SNo (add_SNo 1 (minus_SNo t)) t < add_SNo b t.
+      { exact (add_SNo_Lt1 (add_SNo 1 (minus_SNo t)) t b HsumS HtS HbS HltS). }
+      claim HeqL: add_SNo (add_SNo 1 (minus_SNo t)) t = 1.
+      { rewrite <- (add_SNo_assoc 1 (minus_SNo t) t SNo_1 HmtS HtS).
+        rewrite (add_SNo_minus_SNo_linv t HtS).
+        exact (add_SNo_0R 1 SNo_1). }
+      claim H2: 1 < add_SNo b t.
+      { rewrite <- HeqL at 1.
+        exact H1. }
+      claim H2c: 1 < add_SNo t b.
+      { rewrite <- (add_SNo_com b t HbS HtS).
+        exact H2. }
+      claim Hm1S: SNo (minus_SNo b).
+      { exact HmbS. }
+      claim H3: add_SNo 1 (minus_SNo b) < add_SNo (add_SNo t b) (minus_SNo b).
+      { exact (add_SNo_Lt1 1 (minus_SNo b) (add_SNo t b)
+               SNo_1 Hm1S (SNo_add_SNo t b HtS HbS) H2c). }
+      claim HeqR: add_SNo (add_SNo t b) (minus_SNo b) = t.
+      { rewrite <- (add_SNo_assoc t b (minus_SNo b) HtS HbS Hm1S).
+        rewrite (add_SNo_minus_SNo_rinv b HbS).
+        exact (add_SNo_0R t HtS). }
+      claim H4: add_SNo 1 (minus_SNo b) < t.
+      { rewrite <- HeqR.
+        exact H3. }
+      claim Hflip_bR: add_SNo 1 (minus_SNo b) :e R.
+      { claim HdefR: R = real.
+        { reflexivity. }
+        rewrite HdefR.
+        claim HbReal: b :e real.
+        { rewrite <- HdefR.
+          exact HbR. }
+        claim HmbReal: (minus_SNo b) :e real.
+        { exact (real_minus_SNo b HbReal). }
+        exact (real_add_SNo 1 real_1 (minus_SNo b) HmbReal). }
+      exact (RltI (add_SNo 1 (minus_SNo b)) t Hflip_bR HtR H4).
+    - assume Hlt: Rlt (add_SNo 1 (minus_SNo b)) t.
+      prove Rlt (add_SNo 1 (minus_SNo t)) b.
+      claim HtS: SNo t.
+      { exact (real_SNo t HtR). }
+      claim HbS: SNo b.
+      { exact (real_SNo b HbR). }
+      claim HmtS: SNo (minus_SNo t).
+      { exact (SNo_minus_SNo t HtS). }
+      claim HmbS: SNo (minus_SNo b).
+      { exact (SNo_minus_SNo b HbS). }
+      claim HsumS: SNo (add_SNo 1 (minus_SNo b)).
+      { exact (SNo_add_SNo 1 (minus_SNo b) SNo_1 HmbS). }
+      claim HltS: add_SNo 1 (minus_SNo b) < t.
+      { exact (RltE_lt (add_SNo 1 (minus_SNo b)) t Hlt). }
+      claim H1: add_SNo (add_SNo 1 (minus_SNo b)) b < add_SNo t b.
+      { exact (add_SNo_Lt1 (add_SNo 1 (minus_SNo b)) b t HsumS HbS HtS HltS). }
+      claim HeqL: add_SNo (add_SNo 1 (minus_SNo b)) b = 1.
+      { rewrite <- (add_SNo_assoc 1 (minus_SNo b) b SNo_1 HmbS HbS).
+        rewrite (add_SNo_minus_SNo_linv b HbS).
+        exact (add_SNo_0R 1 SNo_1). }
+      claim H2: 1 < add_SNo t b.
+      { rewrite <- HeqL at 1.
+        exact H1. }
+      claim H2c: 1 < add_SNo b t.
+      { rewrite <- (add_SNo_com t b HtS HbS).
+        exact H2. }
+      claim Hm1S: SNo (minus_SNo t).
+      { exact HmtS. }
+      claim H3: add_SNo 1 (minus_SNo t) < add_SNo (add_SNo b t) (minus_SNo t).
+      { exact (add_SNo_Lt1 1 (minus_SNo t) (add_SNo b t)
+               SNo_1 Hm1S (SNo_add_SNo b t HbS HtS) H2c). }
+      claim HeqR: add_SNo (add_SNo b t) (minus_SNo t) = b.
+      { rewrite <- (add_SNo_assoc b t (minus_SNo t) HbS HtS Hm1S).
+        rewrite (add_SNo_minus_SNo_rinv t HtS).
+        exact (add_SNo_0R b HbS). }
+      claim H4: add_SNo 1 (minus_SNo t) < b.
+      { rewrite <- HeqR.
+        exact H3. }
+      claim Hflip_tR: add_SNo 1 (minus_SNo t) :e R.
+      { claim HdefR: R = real.
+        { reflexivity. }
+        rewrite HdefR.
+        claim HtReal: t :e real.
+        { rewrite <- HdefR.
+          exact HtR. }
+        claim HmtReal: (minus_SNo t) :e real.
+        { exact (real_minus_SNo t HtReal). }
+        exact (real_add_SNo 1 real_1 (minus_SNo t) HmtReal). }
+      exact (RltI (add_SNo 1 (minus_SNo t)) b Hflip_tR HbR H4). }
+
+  claim HpreS: forall s:set, s :e S -> preimage_of unit_interval flip_unit_interval s :e Tx.
+  { let s. assume HsS: s :e S.
+    prove preimage_of unit_interval flip_unit_interval s :e Tx.
+    apply (binunionE' ({I :e Power R | exists a :e R, I = open_ray_upper R a}
+                       :\/:
+                       {I :e Power R | exists b :e R, I = open_ray_lower R b})
+                      {R}
+                      s
+                      (preimage_of unit_interval flip_unit_interval s :e Tx)).
+    - assume Hs0: s :e ({I :e Power R | exists a :e R, I = open_ray_upper R a}
+                        :\/:
+                        {I :e Power R | exists b :e R, I = open_ray_lower R b}).
+      apply (binunionE' {I :e Power R | exists a :e R, I = open_ray_upper R a}
+                        {I :e Power R | exists b :e R, I = open_ray_lower R b}
+                        s
+                        (preimage_of unit_interval flip_unit_interval s :e Tx)).
+      + assume Hsu: s :e {I :e Power R | exists a :e R, I = open_ray_upper R a}.
+        claim Hex: exists a :e R, s = open_ray_upper R a.
+        { exact (SepE2 (Power R)
+                      (fun I0 : set => exists a :e R, I0 = open_ray_upper R a)
+                      s Hsu). }
+        apply Hex.
+        let a. assume Hcore.
+        apply Hcore.
+        assume HaR: a :e R.
+        assume Hseq: s = open_ray_upper R a.
+        rewrite Hseq.
+        set c := add_SNo 1 (minus_SNo a).
+        claim HcR: c :e R.
+        { claim HdefR: R = real.
+          { reflexivity. }
+          rewrite HdefR.
+          claim HaReal: a :e real.
+          { rewrite <- HdefR.
+            exact HaR. }
+          claim HmaReal: (minus_SNo a) :e real.
+          { exact (real_minus_SNo a HaReal). }
+          exact (real_add_SNo 1 real_1 (minus_SNo a) HmaReal). }
+
+        claim HpreEq: preimage_of unit_interval flip_unit_interval (open_ray_upper R a)
+                      = (open_ray_lower R c) :/\: unit_interval.
+        { apply set_ext.
+          - let t. assume Ht: t :e preimage_of unit_interval flip_unit_interval (open_ray_upper R a).
+            prove t :e (open_ray_lower R c) :/\: unit_interval.
+            claim HtI: t :e unit_interval.
+            { exact (SepE1 unit_interval (fun u : set => apply_fun flip_unit_interval u :e open_ray_upper R a) t Ht). }
+            claim HtR: t :e R.
+            { exact (unit_interval_sub_R t HtI). }
+            claim Himg: apply_fun flip_unit_interval t :e open_ray_upper R a.
+            { exact (SepE2 unit_interval (fun u : set => apply_fun flip_unit_interval u :e open_ray_upper R a) t Ht). }
+            claim Hrel: order_rel R a (apply_fun flip_unit_interval t).
+            { exact (SepE2 R (fun x0 : set => order_rel R a x0) (apply_fun flip_unit_interval t) Himg). }
+            claim Hrlt: Rlt a (apply_fun flip_unit_interval t).
+            { exact (order_rel_R_implies_Rlt a (apply_fun flip_unit_interval t) Hrel). }
+            claim Hrlt2: Rlt a (add_SNo 1 (minus_SNo t)).
+            { rewrite <- (flip_unit_interval_apply t HtI).
+              exact Hrlt. }
+            claim Hrlt3: Rlt t c.
+            { exact (iffEL (Rlt a (add_SNo 1 (minus_SNo t))) (Rlt t (add_SNo 1 (minus_SNo a)))
+                          (Hflip_upper a t HaR HtR) Hrlt2). }
+            claim Hrel2: order_rel R t c.
+            { exact (Rlt_implies_order_rel_R t c Hrlt3). }
+            claim HtRay: t :e open_ray_lower R c.
+            { exact (SepI R (fun x0 : set => order_rel R x0 c) t HtR Hrel2). }
+            exact (binintersectI (open_ray_lower R c) unit_interval t HtRay HtI).
+          - let t. assume Ht: t :e (open_ray_lower R c) :/\: unit_interval.
+            prove t :e preimage_of unit_interval flip_unit_interval (open_ray_upper R a).
+            claim HtRay: t :e open_ray_lower R c.
+            { exact (binintersectE1 (open_ray_lower R c) unit_interval t Ht). }
+            claim HtI: t :e unit_interval.
+            { exact (binintersectE2 (open_ray_lower R c) unit_interval t Ht). }
+            claim HtR: t :e R.
+            { exact (unit_interval_sub_R t HtI). }
+            claim Hrel: order_rel R t c.
+            { exact (SepE2 R (fun x0 : set => order_rel R x0 c) t HtRay). }
+            claim Hrlt: Rlt t c.
+            { exact (order_rel_R_implies_Rlt t c Hrel). }
+            claim Hrlt2: Rlt a (add_SNo 1 (minus_SNo t)).
+            { exact (iffER (Rlt a (add_SNo 1 (minus_SNo t))) (Rlt t (add_SNo 1 (minus_SNo a)))
+                          (Hflip_upper a t HaR HtR) Hrlt). }
+            claim Hrlt3: Rlt a (apply_fun flip_unit_interval t).
+            { rewrite (flip_unit_interval_apply t HtI).
+              exact Hrlt2. }
+            claim Hrel2: order_rel R a (apply_fun flip_unit_interval t).
+            { exact (Rlt_implies_order_rel_R a (apply_fun flip_unit_interval t) Hrlt3). }
+            claim HimgR: apply_fun flip_unit_interval t :e R.
+            { exact (HfunR t HtI). }
+            claim Himg: apply_fun flip_unit_interval t :e open_ray_upper R a.
+            { exact (SepI R (fun x0 : set => order_rel R a x0) (apply_fun flip_unit_interval t) HimgR Hrel2). }
+            exact (SepI unit_interval (fun u : set => apply_fun flip_unit_interval u :e open_ray_upper R a) t HtI Himg). }
+
+        rewrite HpreEq.
+        set Z0 := open_ray_lower R c.
+        claim HZ0open: Z0 :e R_standard_topology.
+        { rewrite <- standard_topology_is_order_topology.
+          claim HsRay: Z0 :e open_rays_subbasis R.
+          { exact (open_ray_lower_in_open_rays_subbasis R c HcR). }
+          exact (open_rays_subbasis_sub_order_topology R Z0 HsRay). }
+        claim HZ0cap: Z0 :/\: unit_interval :e Tx.
+        { prove Z0 :/\: unit_interval :e {W :e Power unit_interval | exists Z :e R_standard_topology, W = Z :/\: unit_interval}.
+          claim Hpow: Z0 :/\: unit_interval :e Power unit_interval.
+          { apply PowerI.
+            let t. assume Ht: t :e Z0 :/\: unit_interval.
+            exact (binintersectE2 Z0 unit_interval t Ht). }
+          claim Hex: exists Z :e R_standard_topology, Z0 :/\: unit_interval = Z :/\: unit_interval.
+          { witness Z0.
+            apply andI.
+            - exact HZ0open.
+            - reflexivity. }
+          exact (SepI (Power unit_interval)
+                      (fun W0 : set => exists Z :e R_standard_topology, W0 = Z :/\: unit_interval)
+                      (Z0 :/\: unit_interval) Hpow Hex). }
+        exact HZ0cap.
+      + assume Hsl: s :e {I :e Power R | exists b :e R, I = open_ray_lower R b}.
+        claim Hex: exists b :e R, s = open_ray_lower R b.
+        { exact (SepE2 (Power R)
+                      (fun I0 : set => exists b :e R, I0 = open_ray_lower R b)
+                      s Hsl). }
+        apply Hex.
+        let b. assume Hcore.
+        apply Hcore.
+        assume HbR: b :e R.
+        assume Hseq: s = open_ray_lower R b.
+        rewrite Hseq.
+        set c := add_SNo 1 (minus_SNo b).
+        claim HcR: c :e R.
+        { claim HdefR: R = real.
+          { reflexivity. }
+          rewrite HdefR.
+          claim HbReal: b :e real.
+          { rewrite <- HdefR.
+            exact HbR. }
+          claim HmbReal: (minus_SNo b) :e real.
+          { exact (real_minus_SNo b HbReal). }
+          exact (real_add_SNo 1 real_1 (minus_SNo b) HmbReal). }
+
+        claim HpreEq: preimage_of unit_interval flip_unit_interval (open_ray_lower R b)
+                      = (open_ray_upper R c) :/\: unit_interval.
+        { apply set_ext.
+          - let t. assume Ht: t :e preimage_of unit_interval flip_unit_interval (open_ray_lower R b).
+            prove t :e (open_ray_upper R c) :/\: unit_interval.
+            claim HtI: t :e unit_interval.
+            { exact (SepE1 unit_interval (fun u : set => apply_fun flip_unit_interval u :e open_ray_lower R b) t Ht). }
+            claim HtR: t :e R.
+            { exact (unit_interval_sub_R t HtI). }
+            claim Himg: apply_fun flip_unit_interval t :e open_ray_lower R b.
+            { exact (SepE2 unit_interval (fun u : set => apply_fun flip_unit_interval u :e open_ray_lower R b) t Ht). }
+            claim Hrel: order_rel R (apply_fun flip_unit_interval t) b.
+            { exact (SepE2 R (fun x0 : set => order_rel R x0 b) (apply_fun flip_unit_interval t) Himg). }
+            claim Hrlt: Rlt (apply_fun flip_unit_interval t) b.
+            { exact (order_rel_R_implies_Rlt (apply_fun flip_unit_interval t) b Hrel). }
+            claim Hrlt2: Rlt (add_SNo 1 (minus_SNo t)) b.
+            { rewrite <- (flip_unit_interval_apply t HtI).
+              exact Hrlt. }
+            claim Hrlt3: Rlt c t.
+            { exact (iffEL (Rlt (add_SNo 1 (minus_SNo t)) b) (Rlt (add_SNo 1 (minus_SNo b)) t)
+                          (Hflip_lower t b HtR HbR) Hrlt2). }
+            claim Hrel2: order_rel R c t.
+            { exact (Rlt_implies_order_rel_R c t Hrlt3). }
+            claim HtRay: t :e open_ray_upper R c.
+            { exact (SepI R (fun x0 : set => order_rel R c x0) t HtR Hrel2). }
+            exact (binintersectI (open_ray_upper R c) unit_interval t HtRay HtI).
+          - let t. assume Ht: t :e (open_ray_upper R c) :/\: unit_interval.
+            prove t :e preimage_of unit_interval flip_unit_interval (open_ray_lower R b).
+            claim HtRay: t :e open_ray_upper R c.
+            { exact (binintersectE1 (open_ray_upper R c) unit_interval t Ht). }
+            claim HtI: t :e unit_interval.
+            { exact (binintersectE2 (open_ray_upper R c) unit_interval t Ht). }
+            claim HtR: t :e R.
+            { exact (unit_interval_sub_R t HtI). }
+            claim Hrel: order_rel R c t.
+            { exact (SepE2 R (fun x0 : set => order_rel R c x0) t HtRay). }
+            claim Hrlt: Rlt c t.
+            { exact (order_rel_R_implies_Rlt c t Hrel). }
+            claim Hrlt2: Rlt (add_SNo 1 (minus_SNo t)) b.
+            { exact (iffER (Rlt (add_SNo 1 (minus_SNo t)) b) (Rlt (add_SNo 1 (minus_SNo b)) t)
+                          (Hflip_lower t b HtR HbR) Hrlt). }
+            claim Hrlt3: Rlt (apply_fun flip_unit_interval t) b.
+            { rewrite (flip_unit_interval_apply t HtI).
+              exact Hrlt2. }
+            claim Hrel2: order_rel R (apply_fun flip_unit_interval t) b.
+            { exact (Rlt_implies_order_rel_R (apply_fun flip_unit_interval t) b Hrlt3). }
+            claim HimgR: apply_fun flip_unit_interval t :e R.
+            { exact (HfunR t HtI). }
+            claim Himg: apply_fun flip_unit_interval t :e open_ray_lower R b.
+            { exact (SepI R (fun x0 : set => order_rel R x0 b) (apply_fun flip_unit_interval t) HimgR Hrel2). }
+            exact (SepI unit_interval (fun u : set => apply_fun flip_unit_interval u :e open_ray_lower R b) t HtI Himg). }
+
+        rewrite HpreEq.
+        set Z0 := open_ray_upper R c.
+        claim HZ0open: Z0 :e R_standard_topology.
+        { rewrite <- standard_topology_is_order_topology.
+          claim HsRay: Z0 :e open_rays_subbasis R.
+          { exact (open_ray_upper_in_open_rays_subbasis R c HcR). }
+          exact (open_rays_subbasis_sub_order_topology R Z0 HsRay). }
+        claim HZ0cap: Z0 :/\: unit_interval :e Tx.
+        { prove Z0 :/\: unit_interval :e {W :e Power unit_interval | exists Z :e R_standard_topology, W = Z :/\: unit_interval}.
+          claim Hpow: Z0 :/\: unit_interval :e Power unit_interval.
+          { apply PowerI.
+            let t. assume Ht: t :e Z0 :/\: unit_interval.
+            exact (binintersectE2 Z0 unit_interval t Ht). }
+          claim Hex: exists Z :e R_standard_topology, Z0 :/\: unit_interval = Z :/\: unit_interval.
+          { witness Z0.
+            apply andI.
+            - exact HZ0open.
+            - reflexivity. }
+          exact (SepI (Power unit_interval)
+                      (fun W0 : set => exists Z :e R_standard_topology, W0 = Z :/\: unit_interval)
+                      (Z0 :/\: unit_interval) Hpow Hex). }
+        exact HZ0cap.
+      + exact Hs0.
+    - assume HsR: s :e {R}.
+      claim Hseq: s = R.
+      { exact (SingE R s HsR). }
+      rewrite Hseq.
+      claim Heq: preimage_of unit_interval flip_unit_interval R = unit_interval.
+      { exact (preimage_of_whole unit_interval R flip_unit_interval HfunR). }
+      rewrite Heq.
+      exact (topology_has_X unit_interval Tx HTx).
+    - exact HsS. }
+
+  exact (continuous_map_from_subbasis unit_interval Tx R S flip_unit_interval
+          HTx HfunR HS HpreS). }
+
+claim HrangeRestrict:
+  forall X Tx0 Y Ty f Z0:set,
+    continuous_map X Tx0 Y Ty f ->
+    Z0 c= Y ->
+    (forall x:set, x :e X -> apply_fun f x :e Z0) ->
+    continuous_map X Tx0 Z0 (subspace_topology Y Ty Z0) f.
+{ let X Tx0 Y Ty f Z0.
+  assume Hf: continuous_map X Tx0 Y Ty f.
+  assume HZ0: Z0 c= Y.
+  assume Himg: forall x:set, x :e X -> apply_fun f x :e Z0.
+  prove continuous_map X Tx0 Z0 (subspace_topology Y Ty Z0) f.
+
+  claim HTx0: topology_on X Tx0.
+  { exact (continuous_map_topology_dom X Tx0 Y Ty f Hf). }
+  claim HTy: topology_on Y Ty.
+  { exact (continuous_map_topology_cod X Tx0 Y Ty f Hf). }
+  claim HTz0: topology_on Z0 (subspace_topology Y Ty Z0).
+  { exact (subspace_topology_is_topology Y Ty Z0 HTy HZ0). }
+  claim HfunXZ0: function_on f X Z0.
+  { let x. assume HxX: x :e X.
+    exact (Himg x HxX). }
+  claim HpreY: forall V:set, V :e Ty -> preimage_of X f V :e Tx0.
+  { exact (continuous_map_preimage X Tx0 Y Ty f Hf). }
+
+  prove ((topology_on X Tx0 /\ topology_on Z0 (subspace_topology Y Ty Z0)) /\ function_on f X Z0) /\
+        forall B:set, B :e subspace_topology Y Ty Z0 -> preimage_of X f B :e Tx0.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact HTx0.
+      * exact HTz0.
+    + exact HfunXZ0.
+  - let B. assume HB: B :e subspace_topology Y Ty Z0.
+    prove preimage_of X f B :e Tx0.
+    claim Hex: exists V :e Ty, B = V :/\: Z0.
+    { exact (SepE2 (Power Z0) (fun U0:set => exists V :e Ty, U0 = V :/\: Z0) B HB). }
+    apply Hex.
+    let V. assume HVpair.
+    claim HV: V :e Ty.
+    { exact (andEL (V :e Ty) (B = V :/\: Z0) HVpair). }
+    claim HB_eq: B = V :/\: Z0.
+    { exact (andER (V :e Ty) (B = V :/\: Z0) HVpair). }
+    claim HeqPre: preimage_of X f B = preimage_of X f V.
+    { apply set_ext.
+      - let x. assume Hx: x :e preimage_of X f B.
+        prove x :e preimage_of X f V.
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun u:set => apply_fun f u :e B) x Hx). }
+        claim HfxB: apply_fun f x :e B.
+        { exact (SepE2 X (fun u:set => apply_fun f u :e B) x Hx). }
+        claim HfxVz0: apply_fun f x :e V :/\: Z0.
+        { rewrite <- HB_eq. exact HfxB. }
+        claim HfxV: apply_fun f x :e V.
+        { exact (binintersectE1 V Z0 (apply_fun f x) HfxVz0). }
+        exact (SepI X (fun u:set => apply_fun f u :e V) x HxX HfxV).
+      - let x. assume Hx: x :e preimage_of X f V.
+        prove x :e preimage_of X f B.
+        claim HxX: x :e X.
+        { exact (SepE1 X (fun u:set => apply_fun f u :e V) x Hx). }
+        claim HfxV: apply_fun f x :e V.
+        { exact (SepE2 X (fun u:set => apply_fun f u :e V) x Hx). }
+        claim HfxZ0: apply_fun f x :e Z0.
+        { exact (HfunXZ0 x HxX). }
+        claim HfxB: apply_fun f x :e B.
+        { rewrite HB_eq.
+          exact (binintersectI V Z0 (apply_fun f x) HfxV HfxZ0). }
+        exact (SepI X (fun u:set => apply_fun f u :e B) x HxX HfxB). }
+    rewrite HeqPre.
+    exact (HpreY V HV). }
+
+claim Himg: forall t:set, t :e unit_interval -> apply_fun flip_unit_interval t :e unit_interval.
+{ let t. assume Ht: t :e unit_interval.
+  exact (flip_unit_interval_function_on t Ht). }
+
+exact (HrangeRestrict unit_interval Tx R R_standard_topology flip_unit_interval unit_interval
+        HcontR
+        unit_interval_sub_R
+        Himg).
 Qed.
 
 (** from §18 Definition: homeomorphism **) 
