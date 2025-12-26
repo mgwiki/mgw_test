@@ -20546,15 +20546,13 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 	    assume Hpre2 HbEq.
 	    apply Hpre2.
 	    assume Hpre3 H10Eq.
-	    apply Hpre3.
-	    assume Hpre4 HnOmega.
-	    apply Hpre4.
-	    assume Hpre5 Hj2.
-	    apply Hpre5.
-	    assume Hi2 HmOmega.
-
-	    (** compute i = 1 and m = 0 from (1,0) = (i,m) **)
-	    claim Hi1: i = 1.
+		    apply Hpre3.
+		    assume Hpre4 HnOmega.
+		    apply Hpre4.
+		    assume Hpre5 Hj2.
+	
+		    (** compute i = 1 and m = 0 from (1,0) = (i,m) **)
+		    claim Hi1: i = 1.
 	    { claim Ht0: (1,0) 0 = 1.
 	      { exact (tuple_2_0_eq 1 0). }
 	      claim Ht0im: (i,m) 0 = 1.
