@@ -39745,9 +39745,9 @@ apply (SepI (Power (affine_line_R2 a b c))
       { exact (SingE p q Hq). }
       rewrite Hqeq.
       apply binintersectI.
-	      + claim Hpeta: p = (x,y).
-	        { exact (setprod_eta R R p HpRR). }
-	        rewrite Hpeta.
+		      + claim Hpeta: p = (x,y).
+		        { exact (setprod_eta R R p HpRR). }
+		        rewrite Hpeta.
 	        admit.
 	      + exact HpL.
 	    - let q. assume Hq: q :e (rectangle_set U V) :/\: affine_line_R2 a b c.
