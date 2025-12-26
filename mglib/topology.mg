@@ -22914,7 +22914,9 @@ let U V x y.
 assume Hx: x :e U.
 assume Hy: y :e V.
 prove (x,y) :e rectangle_set U V.
-exact (tuple_2_setprod U V x Hx y Hy).
+rewrite rectangle_set_def.
+rewrite <- (tuple_pair x y) at 1.
+exact (pair_Sigma U (fun _ : set => V) x Hx y Hy).
 Qed.
 
 (** Helper: surjective pairing for setprod **)
@@ -39814,11 +39816,11 @@ apply (SepI (Power (affine_line_R2 a b c))
 				      + claim Hpeta: p = (x,y).
 				        { exact (setprod_eta R R p HpRR). }
 				        rewrite Hpeta.
-				        (** NOTE: goal shape mismatch; revisit with tuple_pair and the Sigma encoding of setprod. **)
+				        (** NOTE: goal shape mismatch; keep as admit for now. **)
 				        admit.
 			      + exact HpL.
-			    - let q. assume Hq: q :e (rectangle_set U V) :/\: affine_line_R2 a b c.
-			      prove q :e {p}.
+				    - let q. assume Hq: q :e (rectangle_set U V) :/\: affine_line_R2 a b c.
+				      prove q :e {p}.
       claim HqL: q :e affine_line_R2 a b c.
       { exact (binintersectE2 (rectangle_set U V) (affine_line_R2 a b c) q Hq). }
       claim HqW: q :e rectangle_set U V.
