@@ -60147,22 +60147,13 @@ apply (xm (i = 2)).
   rewrite Hif.
   exact real_0.
 Qed.
-Axiom ex50_4_points_general_position_R3_axiom :
-  general_position_RN 3 {ex50_R3_zero, ex50_R3_e1, ex50_R3_e2, ex50_R3_e3, ex50_R3_ones}.
 Theorem ex50_4_points_general_position_R3 :
   general_position_RN 3 {ex50_R3_zero, ex50_R3_e1, ex50_R3_e2, ex50_R3_e3, ex50_R3_ones}.
-exact ex50_4_points_general_position_R3_axiom.
+admit.
 Qed.
 
 (** from §50 Exercise 5: embedding theorem for m=1 maps to linear graph **)
 (** LATEX VERSION: For m=1, the map g in the embedding theorem proof maps X onto a linear graph in R³. **)
-Axiom ex50_5_embedding_m1_linear_graph_axiom : forall X Tx:set,
-  covering_dimension X Tx (Sing Empty) ->
-  compact_space X Tx ->
-  metrizable X Tx ->
-  exists g:set,
-    (forall x:set, x :e X -> apply_fun g x :e (euclidean_space 3)) /\
-    linear_graph (apply_fun g X) R_standard_topology.
 Theorem ex50_5_embedding_m1_linear_graph : forall X Tx:set,
   covering_dimension X Tx (Sing Empty) ->
   compact_space X Tx ->
@@ -60170,22 +60161,12 @@ Theorem ex50_5_embedding_m1_linear_graph : forall X Tx:set,
   exists g:set,
     (forall x:set, x :e X -> apply_fun g x :e (euclidean_space 3)) /\
     linear_graph (apply_fun g X) R_standard_topology.
-exact ex50_5_embedding_m1_linear_graph_axiom.
+admit.
 Qed.
 
 (** from §50 Exercise 6: locally compact Hausdorff with countable basis embeds in R^{2m+1} **)
 (** LATEX VERSION: A locally compact Hausdorff space with countable basis whose compact subspaces have dimension ≤m is homeomorphic to a closed subspace of R^{2m+1}. **)
 (** FIXED: Dimension error - should be 2m+1, not m+1. **)
-Axiom ex50_6_locally_compact_embeds_axiom : forall X Tx m:set,
-  m :e omega ->
-  locally_compact X Tx ->
-  Hausdorff_space X Tx ->
-  second_countable_space X Tx ->
-  (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C (subspace_topology X Tx C) m) ->
-  exists N:set, exists e:set,
-    N = add_nat (mul_nat two m) (Sing Empty) /\
-    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
-    closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
 Theorem ex50_6_locally_compact_embeds : forall X Tx m:set,
   m :e omega ->
   locally_compact X Tx ->
@@ -60196,7 +60177,7 @@ Theorem ex50_6_locally_compact_embeds : forall X Tx m:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
-exact ex50_6_locally_compact_embeds_axiom.
+admit.
 Qed.
 
 (** from §50 Exercise 7: every m-manifold embeds in R^{2m+1} as closed subspace **)
