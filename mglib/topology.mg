@@ -9880,6 +9880,20 @@ apply andI.
   exact Hproj1.
 Qed.
 
+(** helper: equality of ordered pairs from coordinate equalities **)
+(** LATEX VERSION: If x1=x2 and y1=y2 then (x1,y1)=(x2,y2). **)
+Theorem coords_eq_tuple : forall x1 y1 x2 y2:set,
+  x1 = x2 -> y1 = y2 -> (x1,y1) = (x2,y2).
+let x1 y1 x2 y2.
+assume Hx: x1 = x2.
+assume Hy: y1 = y2.
+rewrite <- (tuple_pair x1 y1) at 1.
+rewrite <- (tuple_pair x2 y2).
+rewrite Hx.
+rewrite Hy.
+reflexivity.
+Qed.
+
 (** from §13 Example 4: equality of points in R×R is coordinatewise **)
 (** LATEX VERSION: If (x1,y1) = (x2,y2) then x1=x2 and y1=y2. **)
 Theorem tuple_eq_coords_R2 : forall x1 y1 x2 y2:set,
@@ -38401,7 +38415,6 @@ let a b c x.
 assume HxR: x :e R.
 exact (apply_fun_graph R (fun x0:set => (x0, div_SNo (add_SNo c (minus_SNo (mul_SNo a x0))) b)) x HxR).
 Qed.
-
 (** Helper: apply_fun on affine_line_R2_param_by_y **)
 Theorem affine_line_R2_param_by_y_apply : forall a b c y:set,
   y :e R ->
@@ -38513,6 +38526,25 @@ claim HdivReal: div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b :e real.
 claim HdivR: div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b :e R.
 { rewrite HdefR. exact HdivReal. }
 exact (tuple_2_setprod R R x HxR (div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b) HdivR).
+Qed.
+
+(** Helper: projection1 composed with affine_line_R2_param_by_x is the identity on R **)
+Theorem projection1_after_affine_line_R2_param_by_x : forall a b c x:set,
+  a :e R -> b :e R -> c :e R -> x :e R ->
+  apply_fun (projection1 R R) (apply_fun (affine_line_R2_param_by_x a b c) x) = x.
+let a b c x.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HcR: c :e R.
+assume HxR: x :e R.
+set f := affine_line_R2_param_by_x a b c.
+claim Hfx: apply_fun f x :e EuclidPlane.
+{ exact (affine_line_R2_param_by_x_function_on a b c HaR HbR HcR x HxR). }
+claim Happ1: apply_fun (projection1 R R) (apply_fun f x) = (apply_fun f x) 0.
+{ exact (projection1_apply R R (apply_fun f x) Hfx). }
+rewrite Happ1.
+rewrite (affine_line_R2_param_by_x_apply a b c x HxR).
+exact (tuple_2_0_eq x (div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b)).
 Qed.
 
 (** Helper: affine_line_R2_param_by_y maps into EuclidPlane **)
@@ -38935,6 +38967,14 @@ exact (SepI EuclidPlane
         (x,y)
         HxyPlane
         Hprop).
+Qed.
+
+(** Helper: affine_line_R2_param_by_x after projection1 is identity on the line (when b is not zero) **)
+Theorem affine_line_R2_param_by_x_after_projection1_on_line : forall a b c p:set,
+  a :e R -> b :e R -> c :e R -> b <> 0 ->
+  p :e affine_line_R2 a b c ->
+  apply_fun (affine_line_R2_param_by_x a b c) (apply_fun (projection1 R R) p) = p.
+admit.
 Qed.
 
 (** Helper: param by y lands in the affine line when b is zero and a is not zero **)
