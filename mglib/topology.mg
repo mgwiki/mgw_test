@@ -20634,7 +20634,11 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 			    let j. assume HjPair. apply HjPair.
 			    let n. assume HnPair. apply HnPair.
 			    assume Hcore.
-			    (** Probe the outermost conjunction split to identify the rightmost conjunct. **)
+			    (** Conjunction-shape diagnostics:
+			        Repeated splitting of the witness package `Hcore` exposes (in this order):
+			        b = (j,n), (1,0) = (i,m), n :e omega, j :e 2, m :e omega, i :e 2.
+			        The lex/dictionary-order disjunction from the statement of `Hex`
+			        is not reachable via this splitting pattern, so HU2 remains admitted for now. **)
 			    apply Hcore.
 			    assume Hleft Hright.
 			    claim HbEq2: b = (j, n).
