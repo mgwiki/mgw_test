@@ -61726,15 +61726,6 @@ Definition perfectly_normal_space : set -> set -> prop := fun X Tx =>
 (** FIXED: Removed nonsensical fourth clause: forall r, apply_fun f X = {x :e X | apply_fun f x = r} mixes an image in R with a level set in X; now left as a separate admitted exercise. **)
 (** from §33 Exercise 1: expression for level sets in Urysohn proof **)
 (** LATEX VERSION: In Urysohn lemma proof, show f^{-1}(r) = ∩_{p>r} U_p - ∪_{q<r} U_q for rational p,q. **)
-Axiom ex33_1_level_sets_urysohn_axiom : forall X Tx A B:set, forall U:set -> set,
-  normal_space X Tx ->
-  closed_in X Tx A ->
-  closed_in X Tx B ->
-  A :/\: B = Empty ->
-  exists f:set,
-    continuous_map X Tx R R_standard_topology f /\
-    (forall x:set, x :e A -> apply_fun f x = 0) /\
-    (forall x:set, x :e B -> apply_fun f x = 1).
 Theorem ex33_1_level_sets_urysohn : forall X Tx A B:set, forall U:set -> set,
   normal_space X Tx ->
   closed_in X Tx A ->
@@ -61744,46 +61735,27 @@ Theorem ex33_1_level_sets_urysohn : forall X Tx A B:set, forall U:set -> set,
     continuous_map X Tx R R_standard_topology f /\
     (forall x:set, x :e A -> apply_fun f x = 0) /\
     (forall x:set, x :e B -> apply_fun f x = 1).
-exact ex33_1_level_sets_urysohn_axiom.
+admit.
 Qed.
 (** from §33 Exercise 2: connected normal/regular uncountable **)
 (** LATEX VERSION: Connected normal/regular space with >1 point is uncountable. **)
-Axiom ex33_2a_connected_normal_uncountable_axiom : forall X Tx:set,
-  connected_space X Tx ->
-  normal_space X Tx ->
-  (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
-  ~ countable X.
 Theorem ex33_2a_connected_normal_uncountable : forall X Tx:set,
   connected_space X Tx ->
   normal_space X Tx ->
   (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
   ~ countable X.
-exact ex33_2a_connected_normal_uncountable_axiom.
+admit.
 Qed.
 
-Axiom ex33_2b_connected_regular_uncountable_axiom : forall X Tx:set,
-  connected_space X Tx ->
-  regular_space X Tx ->
-  (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
-  ~ countable X.
 Theorem ex33_2b_connected_regular_uncountable : forall X Tx:set,
   connected_space X Tx ->
   regular_space X Tx ->
   (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
   ~ countable X.
-exact ex33_2b_connected_regular_uncountable_axiom.
+admit.
 Qed.
 (** from §33 Exercise 3: direct Urysohn proof in metric space **)
 (** LATEX VERSION: For metric space, Urysohn lemma direct proof: f(x) = d(x,A)/(d(x,A)+d(x,B)). **)
-Axiom ex33_3_urysohn_metric_direct_axiom : forall X d A B:set,
-  metric_on X d ->
-  closed_in X (metric_topology X d) A ->
-  closed_in X (metric_topology X d) B ->
-  A :/\: B = Empty ->
-  exists f:set,
-    continuous_map X (metric_topology X d) R R_standard_topology f /\
-    (forall x:set, x :e A -> apply_fun f x = 0) /\
-    (forall x:set, x :e B -> apply_fun f x = 1).
 Theorem ex33_3_urysohn_metric_direct : forall X d A B:set,
   metric_on X d ->
   closed_in X (metric_topology X d) A ->
@@ -61793,18 +61765,10 @@ Theorem ex33_3_urysohn_metric_direct : forall X d A B:set,
     continuous_map X (metric_topology X d) R R_standard_topology f /\
     (forall x:set, x :e A -> apply_fun f x = 0) /\
     (forall x:set, x :e B -> apply_fun f x = 1).
-exact ex33_3_urysohn_metric_direct_axiom.
+admit.
 Qed.
 (** from §33 Exercise 4: closed G_delta sets and vanishing functions **)
 (** LATEX VERSION: In normal X, ∃f:X→[0,1] vanishing precisely on A iff A is closed G_δ. **)
-Axiom ex33_4_closed_Gdelta_vanishing_function_axiom : forall X Tx A:set,
-  normal_space X Tx ->
-  closed_in X Tx A ->
-  (Gdelta_in X Tx A <->
-    exists f:set,
-      continuous_map X Tx R R_standard_topology f /\
-      (forall x:set, x :e A -> apply_fun f x = 0) /\
-      (forall x:set, x /:e A -> ~ (apply_fun f x = 0))).
 Theorem ex33_4_closed_Gdelta_vanishing_function : forall X Tx A:set,
   normal_space X Tx ->
   closed_in X Tx A ->
@@ -61813,7 +61777,7 @@ Theorem ex33_4_closed_Gdelta_vanishing_function : forall X Tx A:set,
       continuous_map X Tx R R_standard_topology f /\
       (forall x:set, x :e A -> apply_fun f x = 0) /\
       (forall x:set, x /:e A -> ~ (apply_fun f x = 0))).
-exact ex33_4_closed_Gdelta_vanishing_function_axiom.
+admit.
 Qed.
 (** from §33 Exercise 5: strong Urysohn lemma **)
 (** LATEX VERSION: Strong Urysohn: ∃f with f(A)=0, f(B)=1, 0<f<1 elsewhere iff A,B closed G_δ. **)
