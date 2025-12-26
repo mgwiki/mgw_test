@@ -48378,6 +48378,176 @@ rewrite (apply_fun_graph unit_interval_right_half (fun t0:set => add_SNo (mul_SN
 reflexivity.
 Qed.
 
+(** helper: scaling by 2 via eps_ 1 preserves strict inequalities on R **)
+Theorem Rlt_mul2_left_iff : forall a t:set,
+  a :e R -> t :e R -> (Rlt a (mul_SNo 2 t) <-> Rlt (mul_SNo (eps_ 1) a) t).
+let a t.
+assume HaR: a :e R.
+assume HtR: t :e R.
+prove (Rlt a (mul_SNo 2 t) <-> Rlt (mul_SNo (eps_ 1) a) t).
+apply iffI.
+- assume Halt: Rlt a (mul_SNo 2 t).
+  prove Rlt (mul_SNo (eps_ 1) a) t.
+  claim HaS: SNo a.
+  { exact (real_SNo a HaR). }
+  claim HtS: SNo t.
+  { exact (real_SNo t HtR). }
+  claim H2S: SNo 2.
+  { exact SNo_2. }
+  claim He1S: SNo (eps_ 1).
+  { exact SNo_eps_1. }
+  claim Hm2tS: SNo (mul_SNo 2 t).
+  { exact (SNo_mul_SNo 2 t H2S HtS). }
+  claim H0lte1: 0 < (eps_ 1).
+  { exact (RltE_lt 0 (eps_ 1) eps_1_pos_R). }
+  claim HaltS: a < mul_SNo 2 t.
+  { exact (RltE_lt a (mul_SNo 2 t) Halt). }
+  claim Hmul: mul_SNo (eps_ 1) a < mul_SNo (eps_ 1) (mul_SNo 2 t).
+  { exact (pos_mul_SNo_Lt (eps_ 1) a (mul_SNo 2 t) He1S H0lte1 HaS Hm2tS HaltS). }
+  claim Heq: mul_SNo (eps_ 1) (mul_SNo 2 t) = t.
+  { rewrite (mul_SNo_assoc (eps_ 1) 2 t He1S H2S HtS).
+    rewrite (mul_SNo_com (eps_ 1) 2 He1S H2S).
+    rewrite eps_1_half_eq2.
+    exact (mul_SNo_oneL t HtS). }
+  claim Hmul': mul_SNo (eps_ 1) a < t.
+  { rewrite <- Heq.
+    exact Hmul. }
+  claim Hmule1aR: mul_SNo (eps_ 1) a :e R.
+  { claim HdefR: R = real.
+    { reflexivity. }
+    rewrite HdefR.
+    claim HaReal: a :e real.
+    { rewrite <- HdefR.
+      exact HaR. }
+    claim He1Real: (eps_ 1) :e real.
+    { rewrite <- HdefR.
+      exact eps_1_in_R. }
+    exact (real_mul_SNo (eps_ 1) He1Real a HaReal). }
+  exact (RltI (mul_SNo (eps_ 1) a) t Hmule1aR HtR Hmul').
+- assume Hlt: Rlt (mul_SNo (eps_ 1) a) t.
+  prove Rlt a (mul_SNo 2 t).
+  claim HaS: SNo a.
+  { exact (real_SNo a HaR). }
+  claim HtS: SNo t.
+  { exact (real_SNo t HtR). }
+  claim H2S: SNo 2.
+  { exact SNo_2. }
+  claim He1S: SNo (eps_ 1).
+  { exact SNo_eps_1. }
+  claim He1aS: SNo (mul_SNo (eps_ 1) a).
+  { exact (SNo_mul_SNo (eps_ 1) a He1S HaS). }
+  claim H0lt2: 0 < 2.
+  { exact (SNoLt_0_2). }
+  claim HltS: mul_SNo (eps_ 1) a < t.
+  { exact (RltE_lt (mul_SNo (eps_ 1) a) t Hlt). }
+  claim Hmul: mul_SNo 2 (mul_SNo (eps_ 1) a) < mul_SNo 2 t.
+  { exact (pos_mul_SNo_Lt 2 (mul_SNo (eps_ 1) a) t H2S H0lt2 He1aS HtS HltS). }
+  claim Heq: mul_SNo 2 (mul_SNo (eps_ 1) a) = a.
+  { rewrite (mul_SNo_assoc 2 (eps_ 1) a H2S He1S HaS).
+    rewrite eps_1_half_eq2.
+    exact (mul_SNo_oneL a HaS). }
+  claim Hmul': a < mul_SNo 2 t.
+  { rewrite <- Heq at 1.
+    exact Hmul. }
+  claim H2tR: mul_SNo 2 t :e R.
+  { claim HdefR: R = real.
+    { reflexivity. }
+    rewrite HdefR.
+    claim H2Real: 2 :e real.
+    { rewrite <- HdefR.
+      exact real_2. }
+    claim HtReal: t :e real.
+    { rewrite <- HdefR.
+      exact HtR. }
+    exact (real_mul_SNo 2 H2Real t HtReal). }
+  exact (RltI a (mul_SNo 2 t) HaR H2tR Hmul').
+Qed.
+
+(** helper: scaling by 2 via eps_ 1 on the right-hand side **)
+Theorem Rlt_mul2_right_iff : forall t b:set,
+  t :e R -> b :e R -> (Rlt (mul_SNo 2 t) b <-> Rlt t (mul_SNo (eps_ 1) b)).
+let t b.
+assume HtR: t :e R.
+assume HbR: b :e R.
+prove (Rlt (mul_SNo 2 t) b <-> Rlt t (mul_SNo (eps_ 1) b)).
+apply iffI.
+- assume Hlt: Rlt (mul_SNo 2 t) b.
+  prove Rlt t (mul_SNo (eps_ 1) b).
+  claim HtS: SNo t.
+  { exact (real_SNo t HtR). }
+  claim HbS: SNo b.
+  { exact (real_SNo b HbR). }
+  claim H2S: SNo 2.
+  { exact SNo_2. }
+  claim He1S: SNo (eps_ 1).
+  { exact SNo_eps_1. }
+  claim H2tS: SNo (mul_SNo 2 t).
+  { exact (SNo_mul_SNo 2 t H2S HtS). }
+  claim H0lte1: 0 < (eps_ 1).
+  { exact (RltE_lt 0 (eps_ 1) eps_1_pos_R). }
+  claim HltS: mul_SNo 2 t < b.
+  { exact (RltE_lt (mul_SNo 2 t) b Hlt). }
+  claim Hmul: mul_SNo (eps_ 1) (mul_SNo 2 t) < mul_SNo (eps_ 1) b.
+  { exact (pos_mul_SNo_Lt (eps_ 1) (mul_SNo 2 t) b He1S H0lte1 H2tS HbS HltS). }
+  claim Heq: mul_SNo (eps_ 1) (mul_SNo 2 t) = t.
+  { rewrite (mul_SNo_assoc (eps_ 1) 2 t He1S H2S HtS).
+    rewrite (mul_SNo_com (eps_ 1) 2 He1S H2S).
+    rewrite eps_1_half_eq2.
+    exact (mul_SNo_oneL t HtS). }
+  claim Hmul': t < mul_SNo (eps_ 1) b.
+  { rewrite <- Heq at 1.
+    exact Hmul. }
+  claim He1bR: mul_SNo (eps_ 1) b :e R.
+  { claim HdefR: R = real.
+    { reflexivity. }
+    rewrite HdefR.
+    claim HbReal: b :e real.
+    { rewrite <- HdefR.
+      exact HbR. }
+    claim He1Real: (eps_ 1) :e real.
+    { rewrite <- HdefR.
+      exact eps_1_in_R. }
+    exact (real_mul_SNo (eps_ 1) He1Real b HbReal). }
+  exact (RltI t (mul_SNo (eps_ 1) b) HtR He1bR Hmul').
+- assume Hlt: Rlt t (mul_SNo (eps_ 1) b).
+  prove Rlt (mul_SNo 2 t) b.
+  claim HtS: SNo t.
+  { exact (real_SNo t HtR). }
+  claim HbS: SNo b.
+  { exact (real_SNo b HbR). }
+  claim H2S: SNo 2.
+  { exact SNo_2. }
+  claim He1S: SNo (eps_ 1).
+  { exact SNo_eps_1. }
+  claim He1bS: SNo (mul_SNo (eps_ 1) b).
+  { exact (SNo_mul_SNo (eps_ 1) b He1S HbS). }
+  claim H0lt2: 0 < 2.
+  { exact (SNoLt_0_2). }
+  claim HltS: t < mul_SNo (eps_ 1) b.
+  { exact (RltE_lt t (mul_SNo (eps_ 1) b) Hlt). }
+  claim Hmul: mul_SNo 2 t < mul_SNo 2 (mul_SNo (eps_ 1) b).
+  { exact (pos_mul_SNo_Lt 2 t (mul_SNo (eps_ 1) b) H2S H0lt2 HtS He1bS HltS). }
+  claim Heq: mul_SNo 2 (mul_SNo (eps_ 1) b) = b.
+  { rewrite (mul_SNo_assoc 2 (eps_ 1) b H2S He1S HbS).
+    rewrite eps_1_half_eq2.
+    exact (mul_SNo_oneL b HbS). }
+  claim Hmul': mul_SNo 2 t < b.
+  { rewrite <- Heq.
+    exact Hmul. }
+  claim H2tR: mul_SNo 2 t :e R.
+  { claim HdefR: R = real.
+    { reflexivity. }
+    rewrite HdefR.
+    claim H2Real: 2 :e real.
+    { rewrite <- HdefR.
+      exact real_2. }
+    claim HtReal: t :e real.
+    { rewrite <- HdefR.
+      exact HtR. }
+    exact (real_mul_SNo 2 H2Real t HtReal). }
+  exact (RltI (mul_SNo 2 t) b H2tR HbR Hmul').
+Qed.
+
 Theorem zero_in_unit_interval_left_half : 0 :e unit_interval_left_half.
 prove 0 :e unit_interval_left_half.
 claim H0I: 0 :e unit_interval.
