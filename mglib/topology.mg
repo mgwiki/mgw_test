@@ -11458,7 +11458,9 @@ claim HxRectPred: exists x0 y0:set,
               x
               HxRect). }
 apply HxRectPred.
-let x0 y0. assume Hxy0.
+let x0. assume HxRectPred2.
+apply HxRectPred2.
+let y0. assume Hxy0.
 claim Hxy0Rest: Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0.
 { exact (andER (x = (x0,y0)) (Rlt a x0 /\ Rlt x0 b0 /\ Rlt c y0 /\ Rlt y0 d0) Hxy0). }
 claim HxEq: x = (x0,y0).
