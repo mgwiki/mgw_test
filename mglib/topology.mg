@@ -47367,6 +47367,57 @@ Definition path_connected_space : set -> set -> prop := fun X Tx =>
   forall x y:set, x :e X -> y :e X ->
     exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
 
+(** Helper: extract function and endpoints from path_between **)
+Theorem path_between_pair0 : forall X x y p:set,
+  path_between X x y p -> function_on p unit_interval X /\ apply_fun p 0 = x.
+let X x y p.
+assume H: path_between X x y p.
+exact (andEL (function_on p unit_interval X /\ apply_fun p 0 = x)
+             (apply_fun p 1 = y)
+             H).
+Qed.
+
+Theorem path_between_function_on : forall X x y p:set,
+  path_between X x y p -> function_on p unit_interval X.
+let X x y p.
+assume H: path_between X x y p.
+claim H0: function_on p unit_interval X /\ apply_fun p 0 = x.
+{ exact (path_between_pair0 X x y p H). }
+exact (andEL (function_on p unit_interval X) (apply_fun p 0 = x) H0).
+Qed.
+
+Theorem path_between_at_zero : forall X x y p:set,
+  path_between X x y p -> apply_fun p 0 = x.
+let X x y p.
+assume H: path_between X x y p.
+claim H0: function_on p unit_interval X /\ apply_fun p 0 = x.
+{ exact (path_between_pair0 X x y p H). }
+exact (andER (function_on p unit_interval X) (apply_fun p 0 = x) H0).
+Qed.
+
+Theorem path_between_at_one : forall X x y p:set,
+  path_between X x y p -> apply_fun p 1 = y.
+let X x y p.
+assume H: path_between X x y p.
+exact (andER (function_on p unit_interval X /\ apply_fun p 0 = x)
+             (apply_fun p 1 = y)
+             H).
+Qed.
+
+Theorem path_betweenI : forall X x y p:set,
+  function_on p unit_interval X ->
+  apply_fun p 0 = x ->
+  apply_fun p 1 = y ->
+  path_between X x y p.
+let X x y p.
+assume Hfun: function_on p unit_interval X.
+assume H0: apply_fun p 0 = x.
+assume H1: apply_fun p 1 = y.
+claim Hpair0: function_on p unit_interval X /\ apply_fun p 0 = x.
+{ exact (andI (function_on p unit_interval X) (apply_fun p 0 = x) Hfun H0). }
+exact (andI (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = y) Hpair0 H1).
+Qed.
+
 (** Helper: extract topology_on from path_connected_space **)
 Theorem path_connected_space_topology : forall X Tx:set,
   path_connected_space X Tx -> topology_on X Tx.
@@ -47589,13 +47640,12 @@ assume Hpath: path_connected_space X Tx.
 prove connected_space X Tx.
 (** Extract components from path_connected_space **)
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p)
-               Hpath). }
+{ exact (path_connected_space_topology X Tx Hpath). }
 claim Hpath_prop: forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
-{ exact (andER (topology_on X Tx)
-               (forall x y:set, x :e X -> y :e X -> exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p)
-               Hpath). }
+{ let x y.
+  assume Hx: x :e X.
+  assume Hy: y :e X.
+  exact (path_connected_space_paths X Tx x y Hpath Hx Hy). }
 (** Prove X is connected by contradiction **)
 prove topology_on X Tx /\ ~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V).
 apply andI.
@@ -47650,14 +47700,12 @@ apply andI.
   claim Hpcont: continuous_map unit_interval unit_interval_topology X Tx p.
   { exact (andER (path_between X x y p) (continuous_map unit_interval unit_interval_topology X Tx p) Hp_and_cont). }
   (** Extract function and endpoints from Hp (left-associative /\) **)
-  claim Hp_pair0: function_on p unit_interval X /\ apply_fun p 0 = x.
-  { exact (andEL (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = y) Hp). }
   claim Hpfunc: function_on p unit_interval X.
-  { exact (andEL (function_on p unit_interval X) (apply_fun p 0 = x) Hp_pair0). }
+  { exact (path_between_function_on X x y p Hp). }
   claim Hp0eq: apply_fun p 0 = x.
-  { exact (andER (function_on p unit_interval X) (apply_fun p 0 = x) Hp_pair0). }
+  { exact (path_between_at_zero X x y p Hp). }
   claim Hp1eq: apply_fun p 1 = y.
-  { exact (andER (function_on p unit_interval X /\ apply_fun p 0 = x) (apply_fun p 1 = y) Hp). }
+  { exact (path_between_at_one X x y p Hp). }
 
   (** Extract disjointness and union from separation_of X U V **)
   claim Hsep_left: ((((U :e Power X /\ V :e Power X) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
