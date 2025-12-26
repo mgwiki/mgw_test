@@ -49006,7 +49006,7 @@ claim HCsubX: C c= X.
 claim HopenP: open_in X Tx P.
 { exact (path_components_open X Tx Hlpc x Hx). }
 claim HPinTx: P :e Tx.
-{ exact (andER (topology_on X Tx) (P :e Tx) HopenP). }
+{ exact (open_in_elem X Tx P HopenP). }
 claim HxP: x :e P.
 { exact (path_component_reflexive X Tx x HTx Hx). }
 claim HxC: x :e C.
