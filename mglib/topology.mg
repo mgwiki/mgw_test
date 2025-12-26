@@ -38745,7 +38745,7 @@ claim HdivReal: div_SNo c a :e real.
 { exact (real_div_SNo c HcReal a HaReal). }
 claim HdivR: div_SNo c a :e R.
 { rewrite HdefR. exact HdivReal. }
-exact (tuple_2_setprod R R (div_SNo c a) HdivR y HyR).
+exact (tuple_2_setprod_by_pair_Sigma R R (div_SNo c a) y HdivR HyR).
 Qed.
 
 (** Helper: projection1 is continuous for the product topology **)
@@ -38958,7 +38958,7 @@ apply andI.
     { exact (real_div_SNo c HcReal a HaReal). }
     claim Hx0R: div_SNo c a :e R.
     { rewrite HdefR. exact Hx0Real. }
-    exact (tuple_2_setprod R R (div_SNo c a) Hx0R y HyR).
+    exact (tuple_2_setprod_by_pair_Sigma R R (div_SNo c a) y Hx0R HyR).
 - let W. assume HW: W :e Tprod.
   prove preimage_of R f W :e Ty.
   claim HBasis: basis_on X (product_subbasis R Tx R Ty).
@@ -40251,7 +40251,7 @@ apply andI.
 			        claim Himg: forall y:set, y :e R -> apply_fun f y :e setprod {x0} R.
 			        { let y. assume HyR: y :e R.
 			          rewrite (affine_line_R2_param_by_y_apply a b c y HyR).
-			          exact (tuple_2_setprod {x0} R x0 (SingI x0) y HyR). }
+				          exact (tuple_2_setprod_by_pair_Sigma {x0} R x0 y (SingI x0) HyR). }
 			        exact (continuous_map_range_restrict R R_standard_topology EuclidPlane
 			                  (product_topology R R_lower_limit_topology R R_standard_topology)
 			                  f (setprod {x0} R) HcontProd HsliceSub Himg).
@@ -40448,7 +40448,7 @@ apply andI.
 		      claim Himg: forall y:set, y :e R -> apply_fun f y :e setprod {x0} R.
 		      { let y. assume HyR: y :e R.
 		        rewrite (affine_line_R2_param_by_y_apply a b c y HyR).
-		        exact (tuple_2_setprod {x0} R x0 (SingI x0) y HyR). }
+		        exact (tuple_2_setprod_by_pair_Sigma {x0} R x0 y (SingI x0) HyR). }
 		      exact (continuous_map_range_restrict R R_lower_limit_topology EuclidPlane
 		                (product_topology R R_lower_limit_topology R R_lower_limit_topology)
 		                f (setprod {x0} R) HcontProd HsliceSub Himg).
