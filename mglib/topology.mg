@@ -11544,8 +11544,8 @@ claim Hm1posS: 0 < m1.
     { exact (add_SNo_com (minus_SNo a) x0 HmaS Hx0S). }
     rewrite Hcom.
     reflexivity. }
-  rewrite H0eq at 1.
-  rewrite Hm1eq at 1.
+  rewrite <- H0eq at 1.
+  rewrite <- Hm1eq at 1.
   exact Hlt. }
 claim Hm2posS: 0 < m2.
 { claim Hlt: add_SNo (minus_SNo x0) x0 < add_SNo (minus_SNo x0) b0.
@@ -11557,8 +11557,8 @@ claim Hm2posS: 0 < m2.
     { exact (add_SNo_com (minus_SNo x0) b0 Hmx0S Hb0S). }
     rewrite Hcom.
     reflexivity. }
-  rewrite H0eq at 1.
-  rewrite Hm2eq at 1.
+  rewrite <- H0eq at 1.
+  rewrite <- Hm2eq at 1.
   exact Hlt. }
 claim Hm3posS: 0 < m3.
 { claim Hlt: add_SNo (minus_SNo c) c < add_SNo (minus_SNo c) y0.
@@ -11570,8 +11570,8 @@ claim Hm3posS: 0 < m3.
     { exact (add_SNo_com (minus_SNo c) y0 HmcS Hy0S). }
     rewrite Hcom.
     reflexivity. }
-  rewrite H0eq at 1.
-  rewrite Hm3eq at 1.
+  rewrite <- H0eq at 1.
+  rewrite <- Hm3eq at 1.
   exact Hlt. }
 claim Hm4posS: 0 < m4.
 { claim Hlt: add_SNo (minus_SNo y0) y0 < add_SNo (minus_SNo y0) d0.
@@ -11583,8 +11583,8 @@ claim Hm4posS: 0 < m4.
     { exact (add_SNo_com (minus_SNo y0) d0 Hmy0S Hd0S). }
     rewrite Hcom.
     reflexivity. }
-  rewrite H0eq at 1.
-  rewrite Hm4eq at 1.
+  rewrite <- H0eq at 1.
+  rewrite <- Hm4eq at 1.
   exact Hlt. }
 claim Hm1pos: Rlt 0 m1.
 { exact (RltI 0 m1 real_0 Hm1R Hm1posS). }
