@@ -58892,15 +58892,7 @@ Qed.
 
 (** helper: Cauchy sequence in a metric space **)
 (** LATEX VERSION: Cauchy sequence definition (metric). **)
-(** FIXED: Cauchy sequence must be a function (uses apply_fun seq m), not just a subset.
-    Was: seq c= X (any subset)
-    Now: sequence_on seq X (function omega → X)
-    ALSO FIXED: N c= omega condition is always true, doesn't relate N to m,n.
-    Was: N c= omega (always true for N :e omega, doesn't constrain m,n!)
-    Now: N c= m /\ N c= n (means m≥N and n≥N using von Neumann ordering)
-    ALSO FIXED: Metric application syntax and missing positive epsilon constraint.
-    Was: Rlt (d (apply_fun seq m) (apply_fun seq n)) eps with eps :e R
-    Now: Rlt (apply_fun d (apply_fun seq m, apply_fun seq n)) eps with Rlt 0 eps **)
+(** FIXED: cauchy_sequence requires sequence_on seq X and uses N c= m and N c= n (eventuality) plus eps :e R and Rlt 0 eps; metric is applied as apply_fun d (seq(m), seq(n)). **) 
 Definition cauchy_sequence : set -> set -> set -> prop := fun X d seq =>
   metric_on X d /\ sequence_on seq X /\
   forall eps:set, eps :e R /\ Rlt 0 eps ->
@@ -58954,8 +58946,7 @@ Qed.
 
 (** from §43 Definition: complete metric space **) 
 (** LATEX VERSION: Completeness: every Cauchy sequence converges. **)
-(** FIXED: Same issue - seq must be a function, not just a subset.
-    cauchy_sequence now requires sequence_on seq X, so seq c= X is redundant and wrong. **)
+(** FIXED: complete_metric_space quantifies over seq with sequence_on seq X, matching cauchy_sequence. **) 
 Definition complete_metric_space : set -> set -> prop := fun X d =>
   metric_on X d /\
   forall seq:set, sequence_on seq X -> cauchy_sequence X d seq ->
@@ -58966,11 +58957,7 @@ Definition complete_metric_space_total : set -> set -> prop := fun X d =>
   metric_on_total X d /\
   forall seq:set, sequence_on seq X -> cauchy_sequence_total X d seq ->
     exists x:set, converges_to X (metric_topology X d) seq x.
-(** FIXED: Wrong syntax for ordered pairs in metric definition.
-    Was: p = setprod (setprod x y) 0 (trying to use setprod for tuples - wrong!)
-    Now: Proper ordered pair notation for function representation
-    Discrete metric: d(x,y) = 0 if x=y, 1 if x≠y
-    Using famunion to construct over all pairs **)
+(** FIXED: discrete_metric uses ordered pairs ((x,y), value) and famunion; it represents d(x,y)=0 if x=y and 1 otherwise. **) 
 Definition discrete_metric : set -> set := fun X =>
   famunion X (fun x => {((x,y), If_i (x = y) 0 1) | y :e X}).
 (** helper: placeholder metric on euclidean_space n **) 
@@ -59046,12 +59033,7 @@ Qed.
 
 (** from §45 Definition: sequential compactness **)
 (** LATEX VERSION: Sequentially compact: every sequence has a convergent subsequence/limit in X. **)
-(** FIXED: Definition was wrong - said "every sequence converges" instead of
-    "every sequence has a convergent subsequence".
-    Was: forall seq, sequence_on seq X -> exists x, converges_to X Tx seq x
-         (every sequence converges - would make X trivial!)
-    Now: forall seq, sequence_on seq X -> exists subseq x, subseq c= seq /\ converges_to X Tx subseq x
-         (every sequence has a convergent subsequence) **)
+(** FIXED: sequentially_compact requires existence of a convergent subsequence, not that every sequence converges. **) 
 Definition sequentially_compact : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall seq:set, sequence_on seq X ->
@@ -59074,11 +59056,7 @@ Definition pointwise_convergence_topology : set -> set -> set -> set -> set :=
   fun X Tx Y Ty => generated_topology (function_space X Y) Empty.
 Definition compact_convergence_topology : set -> set -> set -> set -> set :=
   fun X Tx Y Ty => generated_topology (function_space X Y) Empty.
-(** FIXED: Quantifier structure was wrong - required ALL f to map U into V, not just those with f(x) in V.
-    Was: forall V, (exists f0 with f0(x) ∈ V) -> exists U such that (forall f ∈ F, f(U) ⊆ V)
-         This says: if ANY function maps x into V, then ALL functions map U into V (too strong!)
-    Now: forall V, exists U such that (forall f ∈ F, f(x) ∈ V -> f(U) ⊆ V)
-         This is correct equicontinuity: U works uniformly for all f that map x into V. **)
+(** FIXED: equicontinuous_family uses the implication apply_fun f x :e V -> forall y:e U, apply_fun f y :e V, not a global condition forcing all f to map U into V. **) 
 Definition equicontinuous_family : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty F =>
     topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
