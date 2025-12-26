@@ -19897,7 +19897,46 @@ Qed.
 
 (** helper: setprod 2 omega is not R **)
 Theorem setprod_2_omega_neq_R : setprod 2 omega <> R.
-admit.
+assume Heq: setprod 2 omega = R.
+prove False.
+
+(** Countability of omega by the identity injection. **)
+claim Homega_countable: countable omega.
+{ prove atleastp omega omega.
+  claim Homega_sub: omega c= omega.
+  { let x. assume Hx: x :e omega.
+    exact Hx. }
+  exact (Subq_atleastp omega omega Homega_sub). }
+
+(** Countability of 2 via 2 c= {0,1} c= omega. **)
+claim H01subomega: {0,1} c= omega.
+{ let x. assume Hx: x :e {0,1}.
+  prove x :e omega.
+  apply (UPairE x 0 1 Hx (x :e omega)).
+  - assume Hx0: x = 0.
+    rewrite Hx0.
+    exact (nat_p_omega 0 nat_0).
+  - assume Hx1: x = 1.
+    rewrite Hx1.
+    exact (nat_p_omega 1 nat_1). }
+claim H2subomega: 2 c= omega.
+{ exact (Subq_tra 2 {0,1} omega Subq_2_UPair01 H01subomega). }
+claim H2countable: countable 2.
+{ exact (Subq_atleastp 2 omega H2subomega). }
+
+(** Therefore setprod 2 omega is countable. **)
+claim Hprod_countable: countable (setprod 2 omega).
+{ exact (setprod_countable 2 omega H2countable Homega_countable). }
+
+(** Transfer countability to R by rewriting, contradicting real uncountability. **)
+claim HRcountable: countable R.
+{ rewrite <- Heq. exact Hprod_countable. }
+claim HdefR: R = real.
+{ reflexivity. }
+claim Hreal_countable: atleastp real omega.
+{ rewrite <- HdefR at 1.
+  exact HRcountable. }
+exact (form100_22_real_uncountable_atleastp Hreal_countable).
 Qed.
 
 (** helper: setprod 2 omega is not rational_numbers **)
