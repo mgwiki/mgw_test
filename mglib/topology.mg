@@ -20634,31 +20634,56 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 		    let j. assume HjPair. apply HjPair.
 		    let n. assume HnPair. apply HnPair.
 		    assume Hcore.
-		    apply Hcore.
-		    assume Hpre Hlex.
-		    apply Hpre.
-		    assume Hpre2 HbEq.
-		    apply Hpre2.
-		    assume Hpre3 H10Eq.
-		    apply Hpre3.
-			    assume Hpre4 HnOmega.
-			    apply Hpre4.
-			    assume Hpre5 Hj2.
-			    claim Hi2: i :e 2.
-			    { exact Hpre5. }
-				    claim HmOmega: m :e omega.
-				    { exact Hj2. }
-				    claim Hj2': j :e 2.
-				    { exact HnOmega. }
-				    (** In this destruct chain, the remaining component `H10Eq` is the proof that n :e omega. **)
-				    claim HnOmega2: n :e omega.
-				    { exact H10Eq. }
-				    (** Confirmed probe: HbEq has type (1,0) = (i,m). **)
-				    claim H10Eq2: (1,0) = (i, m).
-				    { exact HbEq. }
-				    (** Probe: Hlex has type b = (j,n). **)
-				    claim HbEq2: b = (j, n).
-				    { exact Hlex. }
+		    (** Extract all 7 components from the left-associated conjunction. **)
+		    claim Hpre6: i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m) /\ b = (j, n).
+		    { exact (andEL (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m) /\ b = (j, n))
+		                   (i :e j \/ (i = j /\ m :e n))
+		                   Hcore). }
+		    claim Hdisj: i :e j \/ (i = j /\ m :e n).
+		    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m) /\ b = (j, n))
+		                   (i :e j \/ (i = j /\ m :e n))
+		                   Hcore). }
+
+		    claim Hpre5: i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m).
+		    { exact (andEL (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m))
+		                   (b = (j, n))
+		                   Hpre6). }
+		    claim HbEq2: b = (j, n).
+		    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\ (1,0) = (i, m))
+		                   (b = (j, n))
+		                   Hpre6). }
+
+		    claim Hpre4: i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega.
+		    { exact (andEL (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega)
+		                   ((1,0) = (i, m))
+		                   Hpre5). }
+		    claim H10Eq2: (1,0) = (i, m).
+		    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega)
+		                   ((1,0) = (i, m))
+		                   Hpre5). }
+
+		    claim Hpre3: i :e 2 /\ m :e omega /\ j :e 2.
+		    { exact (andEL (i :e 2 /\ m :e omega /\ j :e 2)
+		                   (n :e omega)
+		                   Hpre4). }
+		    claim HnOmega2: n :e omega.
+		    { exact (andER (i :e 2 /\ m :e omega /\ j :e 2)
+		                   (n :e omega)
+		                   Hpre4). }
+
+		    claim Hpre2: i :e 2 /\ m :e omega.
+		    { exact (andEL (i :e 2 /\ m :e omega)
+		                   (j :e 2)
+		                   Hpre3). }
+		    claim Hj2': j :e 2.
+		    { exact (andER (i :e 2 /\ m :e omega)
+		                   (j :e 2)
+		                   Hpre3). }
+
+		    claim Hi2: i :e 2.
+		    { exact (andEL (i :e 2) (m :e omega) Hpre2). }
+		    claim HmOmega: m :e omega.
+		    { exact (andER (i :e 2) (m :e omega) Hpre2). }
 
 				    (** Derived equalities from (1,0) = (i,m). **)
 				    claim Hi1: i = 1.
@@ -20687,7 +20712,115 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 				    { prove b 1 = n.
 				      rewrite HbEq2.
 				      exact (tuple_2_1_eq j n). }
-				    admit.
+				    (** Simplify the disjunction using i=1 and m=0. **)
+				    claim Hdisj_simpl: 1 :e j \/ (1 = j /\ 0 :e n).
+				    { apply (Hdisj (1 :e j \/ (1 = j /\ 0 :e n))).
+				      - assume Hij: i :e j.
+				        apply orIL.
+				        prove 1 :e j.
+				        rewrite <- Hi1 at 1.
+				        exact Hij.
+				      - assume Heqconj: i = j /\ m :e n.
+				        apply orIR.
+				        apply andI.
+				        + prove 1 = j.
+				          claim Hij: i = j.
+				          { exact (andEL (i = j) (m :e n) Heqconj). }
+				          rewrite <- Hi1 at 1.
+				          exact Hij.
+				        + prove 0 :e n.
+				          claim Hmn: m :e n.
+				          { exact (andER (i = j) (m :e n) Heqconj). }
+				          rewrite <- Hm0 at 1.
+				          exact Hmn. }
+
+				    (** Show that 1 :e j is impossible for j :e 2, so we must be in the second disjunct. **)
+				    claim Hj_not: ~(1 :e j).
+				    { apply (cases_2 j Hj2' (fun t:set => ~(1 :e t))).
+				      - prove ~(1 :e 0).
+				        assume H10: 1 :e 0.
+				        exact (EmptyE 1 H10).
+				      - exact (In_irref 1). }
+
+				    claim Hj1npos: 1 = j /\ 0 :e n.
+				    { apply (Hdisj_simpl (1 = j /\ 0 :e n)).
+				      - assume H1inJ: 1 :e j.
+				        apply FalseE.
+				        exact (Hj_not H1inJ).
+				      - assume Hjn: 1 = j /\ 0 :e n.
+				        exact Hjn. }
+
+				    claim Hj1: j = 1.
+				    { prove j = 1.
+				      claim H1j: 1 = j.
+				      { exact (andEL (1 = j) (0 :e n) Hj1npos). }
+				      rewrite <- H1j at 1.
+				      reflexivity. }
+				    claim H0inN: 0 :e n.
+				    { exact (andER (1 = j) (0 :e n) Hj1npos). }
+
+				    (** (0,0) is also below b, hence belongs to the lower ray, contradicting U = {(1,0)}. **)
+				    claim H0omega: 0 :e omega.
+				    { exact (nat_p_omega 0 nat_0). }
+				    claim H00inX: (0,0) :e X.
+				    { prove (0,0) :e X.
+				      rewrite HXeq.
+				      exact (tuple_2_Sigma 2 (fun _ : set => omega) 0 In_0_2 0 H0omega). }
+
+				    claim Hrel00b2: order_rel (setprod 2 omega) (0,0) b.
+				    { prove order_rel (setprod 2 omega) (0,0) b.
+				      apply orIL.
+				      apply orIR.
+				      apply andI.
+				      - reflexivity.
+				      - witness 0. witness 0. witness j. witness n.
+				        apply andI.
+				        + (** 0:e2 /\ 0:eomega /\ j:e2 /\ n:eomega /\ (0,0)=(0,0) /\ b=(j,n) **)
+				          apply andI.
+				          * (** 0:e2 /\ 0:eomega /\ j:e2 /\ n:eomega /\ (0,0)=(0,0) **)
+				            apply andI.
+				            -- (** 0:e2 /\ 0:eomega /\ j:e2 /\ n:eomega **)
+				               apply andI.
+				               { (** 0:e2 /\ 0:eomega /\ j:e2 **)
+				                 apply andI.
+				                 - (** 0:e2 /\ 0:eomega **)
+				                   apply andI.
+				                   + exact In_0_2.
+				                   + exact H0omega.
+				                 - exact Hj2'. }
+				               { exact HnOmega2. }
+				            -- reflexivity.
+				          * exact HbEq2.
+				        + (** 0:e j \/ (0=j /\ 0:e n) **)
+				          apply orIL.
+				          prove 0 :e j.
+				          rewrite Hj1 at 2.
+				          exact In_0_1. }
+
+				    claim Hrel00b: order_rel X (0,0) b.
+				    { prove order_rel X (0,0) b.
+				      rewrite HXeq at 1.
+				      exact Hrel00b2. }
+
+				    claim H00inDef: (0,0) :e {x :e X | order_rel X x b}.
+				    { exact (SepI X (fun x0:set => order_rel X x0 b) (0,0) H00inX Hrel00b). }
+
+				    claim H00inU: (0,0) :e U.
+				    { rewrite <- HUeq.
+				      exact H00inDef. }
+
+				    claim H00eq10: (0,0) = (1,0).
+				    { exact (SingE (1,0) (0,0) H00inU). }
+
+				    claim H01: 0 = 1.
+				    { prove 0 = 1.
+				      claim Hcoord: (0,0) 0 = (1,0) 0.
+				      { rewrite H00eq10 at 1.
+				        reflexivity. }
+				      rewrite <- (tuple_2_0_eq 0 0) at 1.
+				      rewrite <- (tuple_2_0_eq 1 0) at 2.
+				      exact Hcoord. }
+				    exact (neq_0_1 H01).
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
                       I = {x :e X | order_rel X a x}}.
