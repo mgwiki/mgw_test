@@ -23407,7 +23407,7 @@ claim Href: forall U :e product_topology X Tx Y Ty, forall p :e U,
       claim Heta: p = (p 0, p 1).
       { exact (setprod_eta U0 V0 p Hpb0). }
       rewrite Heta.
-      exact (tuple_2_setprod bx by (p 0) Hp0bx (p 1) Hp1by).
+      exact (tuple_2_setprod_by_pair_Sigma bx by (p 0) (p 1) Hp0bx Hp1by).
     + (** subset **)
       claim Hsubbb: setprod bx by c= setprod U0 V0.
       { exact (setprod_Subq bx by U0 V0 Hbxsub Hbysub). }
@@ -23558,7 +23558,7 @@ claim Href: forall U :e product_topology X Tx Y Ty, forall p :e U,
     + claim Heta: p = (p 0, p 1).
       { exact (setprod_eta U0 V0 p Hpb0). }
       rewrite Heta.
-      exact (tuple_2_setprod bx by (p 0) Hp0bx (p 1) Hp1by).
+      exact (tuple_2_setprod_by_pair_Sigma bx by (p 0) (p 1) Hp0bx Hp1by).
     + claim Hsubbb: setprod bx by c= setprod U0 V0.
       { exact (setprod_Subq bx by U0 V0 Hbxsub Hbysub). }
       claim HsubbU: setprod U0 V0 c= U.
