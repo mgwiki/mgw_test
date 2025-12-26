@@ -24792,6 +24792,77 @@ exact (subspace_topology_is_topology R R_standard_topology unit_interval
          unit_interval_sub_R).
 Qed.
 
+(** helper: flip map t |-> 1 + -t on the unit interval, used for reversing paths **)
+Definition flip_unit_interval : set :=
+  {(t, add_SNo 1 (minus_SNo t)) | t :e unit_interval}.
+
+(** helper: application of flip_unit_interval **)
+Theorem flip_unit_interval_apply : forall t:set,
+  t :e unit_interval ->
+  apply_fun flip_unit_interval t = add_SNo 1 (minus_SNo t).
+let t.
+assume Ht: t :e unit_interval.
+prove apply_fun flip_unit_interval t = add_SNo 1 (minus_SNo t).
+prove Eps_i (fun z => (t,z) :e flip_unit_interval) = add_SNo 1 (minus_SNo t).
+claim H1: (t, add_SNo 1 (minus_SNo t)) :e flip_unit_interval.
+{ exact (ReplI unit_interval (fun t0:set => (t0, add_SNo 1 (minus_SNo t0))) t Ht). }
+claim H2: (t, Eps_i (fun z => (t,z) :e flip_unit_interval)) :e flip_unit_interval.
+{ exact (Eps_i_ax (fun z => (t,z) :e flip_unit_interval) (add_SNo 1 (minus_SNo t)) H1). }
+apply (ReplE_impred unit_interval (fun t0:set => (t0, add_SNo 1 (minus_SNo t0)))
+        (t, Eps_i (fun z => (t,z) :e flip_unit_interval)) H2).
+let y.
+assume Hy: y :e unit_interval.
+assume Heq: (t, Eps_i (fun z => (t,z) :e flip_unit_interval)) = (y, add_SNo 1 (minus_SNo y)).
+claim Ht_eq: t = y.
+{ rewrite <- (tuple_2_0_eq t (Eps_i (fun z => (t,z) :e flip_unit_interval))).
+  rewrite <- (tuple_2_0_eq y (add_SNo 1 (minus_SNo y))).
+  rewrite Heq.
+  reflexivity. }
+claim Hz_eq: Eps_i (fun z => (t,z) :e flip_unit_interval) = add_SNo 1 (minus_SNo y).
+{ rewrite <- (tuple_2_1_eq t (Eps_i (fun z => (t,z) :e flip_unit_interval))).
+  rewrite <- (tuple_2_1_eq y (add_SNo 1 (minus_SNo y))).
+  rewrite Heq.
+  reflexivity. }
+rewrite Hz_eq.
+rewrite <- Ht_eq.
+reflexivity.
+Qed.
+
+(** helper: flip_unit_interval maps into R **)
+Theorem flip_unit_interval_in_R : forall t:set,
+  t :e unit_interval ->
+  apply_fun flip_unit_interval t :e R.
+let t.
+assume Ht: t :e unit_interval.
+prove apply_fun flip_unit_interval t :e R.
+claim HtR: t :e R.
+{ exact (unit_interval_sub_R t Ht). }
+claim HmR: minus_SNo t :e R.
+{ exact (real_minus_SNo t HtR). }
+claim HaddR: add_SNo 1 (minus_SNo t) :e R.
+{ exact (real_add_SNo 1 real_1 (minus_SNo t) HmR). }
+rewrite (flip_unit_interval_apply t Ht).
+exact HaddR.
+Qed.
+
+(** helper: flip_unit_interval at endpoints **)
+Theorem flip_unit_interval_at_0 : apply_fun flip_unit_interval 0 = 1.
+prove apply_fun flip_unit_interval 0 = 1.
+claim H0I: 0 :e unit_interval.
+{ exact zero_in_unit_interval. }
+rewrite (flip_unit_interval_apply 0 H0I).
+rewrite minus_SNo_0.
+exact (add_SNo_0R 1 SNo_1).
+Qed.
+
+Theorem flip_unit_interval_at_1 : apply_fun flip_unit_interval 1 = 0.
+prove apply_fun flip_unit_interval 1 = 0.
+claim H1I: 1 :e unit_interval.
+{ exact one_in_unit_interval. }
+rewrite (flip_unit_interval_apply 1 H1I).
+exact (add_SNo_minus_SNo_rinv 1 SNo_1).
+Qed.
+
 (** helper: neighborhoods of eps_ 1 in the unit interval contain other points **)
 (** LATEX VERSION: Any open set in the unit interval topology containing 1/2 contains a point different from 1/2. **)
 Theorem unit_interval_open_neighborhood_has_other_point : forall U0:set,
