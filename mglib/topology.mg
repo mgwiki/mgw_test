@@ -48673,7 +48673,7 @@ assume Hconn: connected_space X Tx.
 assume HxX: x :e X.
 prove component_of X Tx x = X.
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx) (~(exists U V:set, U :e Tx /\ V :e Tx /\ separation_of X U V)) Hconn). }
+{ exact (connected_space_topology X Tx Hconn). }
 apply set_ext.
 - let y. assume Hy: y :e component_of X Tx x.
   prove y :e X.
@@ -48706,16 +48706,13 @@ assume Hpath: path_connected_space X Tx.
 assume HxX: x :e X.
 prove path_component_of X Tx x = X.
 claim HTx: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x y:set, x :e X -> y :e X ->
-                 exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p)
-               Hpath). }
+{ exact (path_connected_space_topology X Tx Hpath). }
 claim Hpathprop: forall x0 y0:set, x0 :e X -> y0 :e X ->
   exists p:set, path_between X x0 y0 p /\ continuous_map unit_interval unit_interval_topology X Tx p.
-{ exact (andER (topology_on X Tx)
-               (forall x y:set, x :e X -> y :e X ->
-                 exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p)
-               Hpath). }
+{ let x0 y0.
+  assume Hx0: x0 :e X.
+  assume Hy0: y0 :e X.
+  exact (path_connected_space_paths X Tx x0 y0 Hpath Hx0 Hy0). }
 apply set_ext.
 - (** path_component_of subset X **)
   let y. assume Hy: y :e path_component_of X Tx x.
