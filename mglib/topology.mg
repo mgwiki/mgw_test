@@ -31158,6 +31158,35 @@ Definition Hausdorff_space : set -> set -> prop := fun X Tx =>
   forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
     exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
 
+(** Helper: extract topology_on from Hausdorff_space **)
+Theorem Hausdorff_space_topology : forall X Tx:set,
+  Hausdorff_space X Tx -> topology_on X Tx.
+let X Tx.
+assume H: Hausdorff_space X Tx.
+exact (andEL (topology_on X Tx)
+             (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+               exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+             H).
+Qed.
+
+(** Helper: extract the separation axiom from Hausdorff_space **)
+Theorem Hausdorff_space_separation : forall X Tx x1 x2:set,
+  Hausdorff_space X Tx -> x1 :e X -> x2 :e X -> x1 <> x2 ->
+  exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+let X Tx x1 x2.
+assume H: Hausdorff_space X Tx.
+assume Hx1: x1 :e X.
+assume Hx2: x2 :e X.
+assume Hneq: x1 <> x2.
+claim Hsep: forall a b:set, a :e X -> b :e X -> a <> b ->
+  exists U V:set, U :e Tx /\ V :e Tx /\ a :e U /\ b :e V /\ U :/\: V = Empty.
+{ exact (andER (topology_on X Tx)
+               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
+                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
+               H). }
+exact (Hsep x1 x2 Hx1 Hx2 Hneq).
+Qed.
+
 (** FIXED: Quantifier scope error.
     Was: forall F:set, finite F -> closed_in X Tx F (applies to ALL finite sets!)
     Issue: For F not a subset of X, closed_in X Tx F is false (closed_in requires F c= X).
@@ -31168,6 +31197,30 @@ Definition Hausdorff_space : set -> set -> prop := fun X Tx =>
 Definition T1_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ (forall F:set, F c= X -> finite F -> closed_in X Tx F).
 
+(** Helper: extract topology_on from T1_space **)
+Theorem T1_space_topology : forall X Tx:set,
+  T1_space X Tx -> topology_on X Tx.
+let X Tx.
+assume H: T1_space X Tx.
+exact (andEL (topology_on X Tx)
+             (forall F:set, F c= X -> finite F -> closed_in X Tx F)
+             H).
+Qed.
+
+(** Helper: extract finite closedness axiom from T1_space **)
+Theorem T1_space_finite_closed : forall X Tx F:set,
+  T1_space X Tx -> F c= X -> finite F -> closed_in X Tx F.
+let X Tx F.
+assume H: T1_space X Tx.
+assume HFsub: F c= X.
+assume HFfin: finite F.
+claim Hfin: forall G:set, G c= X -> finite G -> closed_in X Tx G.
+{ exact (andER (topology_on X Tx)
+               (forall G:set, G c= X -> finite G -> closed_in X Tx G)
+               H). }
+exact (Hfin F HFsub HFfin).
+Qed.
+
 (** helper: in a Hausdorff space, the complement of a singleton is open **)
 Theorem Hausdorff_singleton_complement_open : forall X Tx x:set,
   Hausdorff_space X Tx -> x :e X -> X :\: {x} :e Tx.
@@ -31176,16 +31229,14 @@ assume HH: Hausdorff_space X Tx.
 assume HxX: x :e X.
 prove X :\: {x} :e Tx.
 claim Htop: topology_on X Tx.
-{ exact (andEL (topology_on X Tx)
-               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
-                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
-               HH). }
+{ exact (Hausdorff_space_topology X Tx HH). }
 claim HSep: forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
   exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
-{ exact (andER (topology_on X Tx)
-               (forall x1 x2:set, x1 :e X -> x2 :e X -> x1 <> x2 ->
-                 exists U V:set, U :e Tx /\ V :e Tx /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty)
-               HH). }
+{ let x1 x2.
+  assume Hx1: x1 :e X.
+  assume Hx2: x2 :e X.
+  assume Hneq: x1 <> x2.
+  exact (Hausdorff_space_separation X Tx x1 x2 HH Hx1 Hx2 Hneq). }
 (** family of open sets missing x, indexed by points y in X with y<>x **)
 set UFam := {V :e Power X |
   exists y:set,
