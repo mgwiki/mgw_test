@@ -51552,7 +51552,7 @@ claim HVFamSubTy: VFam c= Ty.
 { let V. assume HV: V :e VFam.
   exact (SepE1 Ty (fun V0:set => exists U:set, U :e Tx /\ x0 :e U /\ setprod U V0 c= N) V HV). }
 claim HtopY: topology_on Y Ty.
-{ exact (andEL (topology_on Y Ty) (forall Fam:set, open_cover_of Y Ty Fam -> has_finite_subcover Y Ty Fam) Hcomp). }
+{ exact (compact_space_topology Y Ty Hcomp). }
 claim HTyPow: Ty c= Power Y.
 { exact (topology_subset_axiom Y Ty HtopY). }
 claim HVFamPowY: VFam c= Power Y.
