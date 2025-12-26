@@ -33004,7 +33004,36 @@ Theorem ex17_5_closure_of_interval_in_order_topology : forall X a b:set,
   closure_of X (order_topology X) (order_interval X a b) c= closed_interval_in X a b.
 let X a b.
 prove closure_of X (order_topology X) (order_interval X a b) c= closed_interval_in X a b.
-admit.
+set Tx := order_topology X.
+claim HTx: topology_on X Tx.
+{ exact (order_topology_is_topology X). }
+claim Hsub: order_interval X a b c= closed_interval_in X a b.
+{ let x. assume Hx: x :e order_interval X a b.
+  prove x :e closed_interval_in X a b.
+  claim Hxpack: x :e X /\ (order_rel X a x /\ order_rel X x b).
+  { exact (order_intervalE X a b x Hx). }
+  claim HxX: x :e X.
+  { exact (andEL (x :e X) (order_rel X a x /\ order_rel X x b) Hxpack). }
+  claim Hrel: order_rel X a x /\ order_rel X x b.
+  { exact (andER (x :e X) (order_rel X a x /\ order_rel X x b) Hxpack). }
+	  claim Hax: order_rel X a x.
+	  { exact (andEL (order_rel X a x) (order_rel X x b) Hrel). }
+	  claim Hxb: order_rel X x b.
+	  { exact (andER (order_rel X a x) (order_rel X x b) Hrel). }
+	  claim Hci_def: closed_interval_in X a b =
+	    {x0 :e X | (x0 = a \/ order_rel X a x0) /\ (x0 = b \/ order_rel X x0 b)}.
+	  { reflexivity. }
+	  rewrite Hci_def.
+	  apply (SepI X
+	    (fun x0:set => (x0 = a \/ order_rel X a x0) /\ (x0 = b \/ order_rel X x0 b))
+	    x HxX).
+	  apply andI.
+	  - exact (orIR (x = a) (order_rel X a x) Hax).
+	  - exact (orIR (x = b) (order_rel X x b) Hxb). }
+claim Hclosed: closed_in X Tx (closed_interval_in X a b).
+{ admit. }
+exact (closure_subset_of_closed_superset X Tx (order_interval X a b) (closed_interval_in X a b)
+  HTx Hsub Hclosed).
 Qed.
 
 (** Helper definition for Exercise 5: no immediate successor and predecessor endpoints **)
