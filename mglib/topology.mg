@@ -34319,7 +34319,7 @@ apply iffI.
             { exact (andER (z :e X) (q = (z,z)) Hzconj). }
             claim Hsing: q :e setprod {z} {z}.
             { rewrite Hqeq.
-              exact (tuple_2_setprod {z} {z} z (SingI z) z (SingI z)). }
+              exact (tuple_2_setprod_by_pair_Sigma {z} {z} z z (SingI z) (SingI z)). }
             claim HzUV: z :e U0 /\ z :e V0.
             { exact (setprod_coords_in z z U0 V0 q Hsing Hqb). }
             claim HzU0: z :e U0.
@@ -38702,7 +38702,7 @@ claim HdivReal: div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b :e real.
 { exact (real_div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) HnumReal b HbReal). }
 claim HdivR: div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b :e R.
 { rewrite HdefR. exact HdivReal. }
-exact (tuple_2_setprod R R x HxR (div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b) HdivR).
+exact (tuple_2_setprod_by_pair_Sigma R R x (div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b) HxR HdivR).
 Qed.
 
 (** Helper: projection1 composed with affine_line_R2_param_by_x is the identity on R **)
@@ -39048,8 +39048,8 @@ apply andI.
           prove y :e preimage_of R f (rectangle_set U V).
           claim HyR: y :e R.
           { exact (HVR y HyV). }
-          claim Hxy: (x0,y) :e rectangle_set U V.
-          { exact (tuple_2_setprod U V x0 Hx0U y HyV). }
+	          claim Hxy: (x0,y) :e rectangle_set U V.
+	          { exact (tuple_2_rectangle_set U V x0 y Hx0U HyV). }
           claim Happ: apply_fun f y = (x0,y).
           { rewrite (affine_line_R2_param_by_y_apply a b c y HyR).
             reflexivity. }
@@ -39135,7 +39135,7 @@ claim HxyPlane: (x,y) :e EuclidPlane.
     exact (real_div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) HnumReal b HbReal). }
   claim HyR: y :e R.
   { rewrite HdefR. exact HyReal. }
-  exact (tuple_2_setprod R R x HxR y HyR). }
+  exact (tuple_2_setprod_by_pair_Sigma R R x y HxR HyR). }
 
 claim Hprop: add_SNo (mul_SNo a (R2_xcoord (x,y))) (mul_SNo b (R2_ycoord (x,y))) = c.
 { claim HdefR: R = real.
@@ -39311,7 +39311,7 @@ claim HxyPlane: (x0,y) :e EuclidPlane.
   { exact (real_div_SNo c HcReal a HaReal). }
   claim HxR: x0 :e R.
   { rewrite HdefR. exact HxReal. }
-  exact (tuple_2_setprod R R x0 HxR y HyR). }
+  exact (tuple_2_setprod_by_pair_Sigma R R x0 y HxR HyR). }
 
 claim Hprop: add_SNo (mul_SNo a (R2_xcoord (x0,y))) (mul_SNo b (R2_ycoord (x0,y))) = c.
 { claim HdefR: R = real.
