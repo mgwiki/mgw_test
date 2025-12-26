@@ -60534,13 +60534,15 @@ Definition completely_normal_space : set -> set -> prop := fun X Tx =>
 
 (** helper: linear continuum predicate (order topology with least upper bound property) **)
 Definition linear_continuum : set -> set -> prop := fun X Tx =>
-  exists less:set -> set -> prop,
-    Tx = order_topology X /\
-    (forall A:set, A c= X -> A <> Empty ->
-      (exists upper:set, upper :e X /\ forall a:set, a :e A -> less a upper) ->
-      exists lub:set, lub :e X /\
-        (forall a:set, a :e A -> less a lub \/ a = lub) /\
-        (forall bound:set, bound :e X -> (forall a:set, a :e A -> less a bound \/ a = bound) -> less lub bound \/ lub = bound)).
+  (** FIXED: Use `order_rel X` (the order relation used by `order_topology X`), not an unrelated existential relation. **)
+  Tx = order_topology X /\
+  (forall A:set, A c= X -> A <> Empty ->
+    (exists upper:set, upper :e X /\ forall a:set, a :e A -> order_rel X a upper) ->
+    exists lub:set, lub :e X /\
+      (forall a:set, a :e A -> order_rel X a lub \/ a = lub) /\
+      (forall bound:set, bound :e X ->
+        (forall a:set, a :e A -> order_rel X a bound \/ a = bound) ->
+        order_rel X lub bound \/ lub = bound)).
 
 (** from §30 Exercise 1a: one-point sets are G_delta in first-countable T1 **)
 (** LATEX VERSION: In a first-countable T₁ space, every one-point set is a G_δ set. **)
