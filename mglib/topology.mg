@@ -7085,6 +7085,28 @@ apply atleastp_tra X Y omega.
 - exact HcountY.
 Qed.
 
+(** Helper: intersection of a countable set with any set is countable **)
+(** LATEX VERSION: Any subset of a countable set is countable; in particular X∩Y is countable if X is countable. **)
+Theorem binintersect_countable_left : forall X Y:set,
+  countable X -> countable (X :/\: Y).
+let X Y.
+assume HcountX: countable X.
+prove countable (X :/\: Y).
+apply (Subq_countable (X :/\: Y) X HcountX).
+exact (binintersect_Subq_1 X Y).
+Qed.
+
+(** Helper: set difference of a countable set is countable **)
+(** LATEX VERSION: X\\A is countable if X is countable. **)
+Theorem setminus_countable : forall X A:set,
+  countable X -> countable (X :\: A).
+let X A.
+assume HcountX: countable X.
+prove countable (X :\: A).
+apply (Subq_countable (X :\: A) X HcountX).
+exact (setminus_Subq X A).
+Qed.
+
 (** Helper: Union of two countable sets is countable **)
 (** NOTE: This requires some form of choice or construction **)
 Theorem binunion_countable : forall X Y:set, countable X -> countable Y -> countable (X :\/: Y).
