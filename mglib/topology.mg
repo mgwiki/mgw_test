@@ -26132,7 +26132,40 @@ Qed.
 (** helper for §16 Exercise 7: convexity of the sqrt(2) cut in Q **)
 (** LATEX VERSION: The set {q∈Q | q^2<2} is convex in Q. **)
 Theorem Q_sqrt2_cut_convex : convex_in rational_numbers Q_sqrt2_cut.
-admit.
+prove convex_in rational_numbers Q_sqrt2_cut.
+(** convex_in X Y = Y c= X /\ interval-closure property **)
+prove Q_sqrt2_cut c= rational_numbers /\
+     forall a b:set, a :e Q_sqrt2_cut -> b :e Q_sqrt2_cut ->
+       order_interval rational_numbers a b c= Q_sqrt2_cut.
+apply andI.
+- exact Q_sqrt2_cut_sub_Q.
+- let a b.
+  assume Ha: a :e Q_sqrt2_cut.
+  assume Hb: b :e Q_sqrt2_cut.
+  prove order_interval rational_numbers a b c= Q_sqrt2_cut.
+  let x. assume Hx: x :e order_interval rational_numbers a b.
+  prove x :e Q_sqrt2_cut.
+  claim HxQ: x :e rational_numbers.
+  { exact (SepE1 rational_numbers
+                 (fun x0:set => order_rel rational_numbers a x0 /\ order_rel rational_numbers x0 b)
+                 x
+                 Hx). }
+  claim HxRel: order_rel rational_numbers a x /\ order_rel rational_numbers x b.
+  { exact (SepE2 rational_numbers
+                 (fun x0:set => order_rel rational_numbers a x0 /\ order_rel rational_numbers x0 b)
+                 x
+                 Hx). }
+  claim Hax: order_rel rational_numbers a x.
+  { exact (andEL (order_rel rational_numbers a x) (order_rel rational_numbers x b) HxRel). }
+  claim Hxb: order_rel rational_numbers x b.
+  { exact (andER (order_rel rational_numbers a x) (order_rel rational_numbers x b) HxRel). }
+  claim Haxlt: Rlt a x.
+  { exact (order_rel_Q_implies_Rlt a x Hax). }
+  claim Hxblt: Rlt x b.
+  { exact (order_rel_Q_implies_Rlt x b Hxb). }
+  claim Hxx: mul_SNo x x < 2.
+  { admit. }
+  exact (SepI rational_numbers (fun q:set => mul_SNo q q < 2) x HxQ Hxx).
 Qed.
 
 (** helper for §16 Exercise 7: the sqrt(2) cut in Q is not an interval or ray (endpoints must lie in Q) **)
