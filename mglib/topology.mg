@@ -38382,6 +38382,16 @@ let a b c.
 exact (PowerI (setprod R R) (affine_line_R2 a b c) (affine_line_R2_subset_R2 a b c)).
 Qed.
 
+(** from §16 Exercise 8: parametrizations of affine lines **)
+(** LATEX VERSION: For ax+by=c, if b is not zero one can solve for y as a function of x; if b=0 one can solve for x as a constant and parametrize by y. **)
+Definition affine_line_R2_param_by_x : set -> set -> set -> set :=
+  fun a b c =>
+    {(x, (x, div_SNo (add_SNo c (minus_SNo (mul_SNo a x))) b)) | x :e R}.
+
+Definition affine_line_R2_param_by_y : set -> set -> set -> set :=
+  fun a b c =>
+    {(y, (div_SNo c a, y)) | y :e R}.
+
 (** from §16 Exercise 8: helper predicate for negative slope in affine form **)
 (** LATEX VERSION: For ax+by=c with b not zero, the slope is negative exactly when a and b have the same sign. **)
 Definition same_sign_nonzero_R : set -> set -> prop :=
