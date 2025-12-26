@@ -13341,7 +13341,7 @@ claim HXsubU: X c= (X :\: F) :\/: F.
     exact (binunionI1 (X :\: F) F x HxXF).
 }
 claim HfinX: finite X.
-{ exact (Subq_finite X HfinU ((X :\: F) :\/: F) HXsubU). }
+{ exact (Subq_finite ((X :\: F) :\/: F) HfinU X HXsubU). }
 exact (HinfX HfinX).
 Qed.
 
