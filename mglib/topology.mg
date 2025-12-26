@@ -20639,6 +20639,11 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 			    assume Hleft Hright.
 			    claim HbEq2: b = (j, n).
 			    { exact Hright. }
+			    (** Next probe: destruct the remaining left package to locate the lex/dictionary-order disjunction. **)
+			    apply Hleft.
+			    assume Hleft2 Hright2.
+			    claim Hdisj: i :e j \/ (i = j /\ m :e n).
+			    { exact Hright2. }
 			    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
