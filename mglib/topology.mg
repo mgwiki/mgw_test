@@ -20619,6 +20619,19 @@ assume Ha Hb.
 exact (Hp Ha Hb Hc Hd He Hf Hg).
 Qed.
 
+(** Helper: if a 7-way conjunction ends with a specific disjunctive clause, extract it by one split **)
+Theorem conj7_last_disjE : forall i m j n a b:set,
+  i :e 2 /\ m :e omega /\ j :e 2 /\ n :e omega /\
+  a = (i, m) /\ b = (j, n) /\
+  (i :e j \/ (i = j /\ m :e n)) ->
+  (i :e j \/ (i = j /\ m :e n)).
+let i m j n a b.
+assume Hcore.
+apply Hcore.
+assume Hcoords Hlex.
+exact Hlex.
+Qed.
+
 (** from §14 Example 4: two-row dictionary order space is not discrete **) 
 (** LATEX VERSION: Example 4: The dictionary order topology on {1,2}×ℕ is not discrete. **)
 Definition two_by_nat : set := setprod 2 omega.
@@ -20691,24 +20704,36 @@ apply (binunionE' ({I :e Power X | exists a :e X, exists b :e X,
 			    let i. assume HiPair. apply HiPair.
 			    let m. assume HmPair. apply HmPair.
 			    let j. assume HjPair. apply HjPair.
-				    let n. assume HnPair. apply HnPair.
-				    assume Hcore.
-				    (** Split the witness package into the 6 coordinate facts and the lex/dictionary-order disjunction. **)
-				    apply Hcore.
-				    assume Hcoords Hlex.
-				    apply Hcoords.
-				    assume Hcoords1 HbEq2_.
-				    claim HbEq2: b = (j, n).
-				    { exact HbEq2_. }
-				    apply Hcoords1.
-				    assume Hcoords2 H10Eq2.
-				    apply Hcoords2.
-				    assume Hcoords3 HnOmega.
-				    apply Hcoords3.
-				    assume Hcoords4 Hj2.
-				    apply Hcoords4.
-				    assume Hi2 HmOmega.
-				    admit.
+			    let n. assume HnPair. apply HnPair.
+			    assume Hcore.
+			    (** Conjunction-shape diagnostics:
+			        Repeated splitting of the witness package `Hcore` exposes (in this order):
+			        b = (j,n), (1,0) = (i,m), n :e omega, j :e 2, m :e omega, i :e 2.
+			        The lex/dictionary-order disjunction from the statement of `Hex`
+			        is not reachable via this splitting pattern, so HU2 remains admitted for now. **)
+			    apply Hcore.
+			    assume Hleft Hright.
+			    claim HbEq2: b = (j, n).
+			    { exact Hright. }
+			    apply Hleft.
+			    assume Hleft2 Hright2.
+			    claim H10Eq2: (1,0) = (i, m).
+			    { exact Hright2. }
+			    apply Hleft2.
+			    assume Hleft3 Hright3.
+			    claim HnOmega: n :e omega.
+			    { exact Hright3. }
+			    apply Hleft3.
+			    assume Hleft4 Hright4.
+			    claim Hj2: j :e 2.
+			    { exact Hright4. }
+			    apply Hleft4.
+			    assume Hleft5 Hright5.
+			    claim HmOmega: m :e omega.
+			    { exact Hright5. }
+			    claim Hi2: i :e 2.
+			    { exact Hleft5. }
+			    admit.
   + exact HU12.
 - assume HU3: U :e {I :e Power X | exists a :e X,
                       I = {x :e X | order_rel X a x}}.
