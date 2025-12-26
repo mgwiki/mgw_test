@@ -48725,7 +48725,7 @@ claim Hf0: f0 :e R_omega_space.
     apply (ReplE_impred omega (fun a:set => (a,0)) p Hp (p :e setprod omega U0)).
     let a. assume HaO: a :e omega. assume Hpeq: p = (a,0).
     rewrite Hpeq.
-    exact (tuple_2_setprod omega U0 a HaO 0 H0U). }
+    exact (tuple_2_setprod_by_pair_Sigma omega U0 a 0 HaO H0U). }
   claim Hpow: f0 :e Power (setprod omega U0).
   { exact (PowerI (setprod omega U0) f0 Hsub). }
   claim Hfun: function_on f0 omega U0.
@@ -48841,7 +48841,7 @@ claim Hfid: fid :e R_omega_space.
     apply (ReplE_impred omega (fun i:set => (i,i)) p Hp (p :e setprod omega U)).
     let i. assume Hi: i :e omega. assume Hpeq: p = (i,i).
     rewrite Hpeq.
-    exact (tuple_2_setprod omega U i Hi i (HomegaU i Hi)). }
+    exact (tuple_2_setprod_by_pair_Sigma omega U i i Hi (HomegaU i Hi)). }
   claim Hpow: fid :e Power (setprod omega U).
   { exact (PowerI (setprod omega U) fid Hsub). }
 
@@ -49080,7 +49080,7 @@ claim Hsub: Romega_zero c= setprod omega U0.
   apply (ReplE_impred omega (fun a:set => (a,0)) p Hp (p :e setprod omega U0)).
   let a. assume HaO: a :e omega. assume Hpeq: p = (a,0).
   rewrite Hpeq.
-  exact (tuple_2_setprod omega U0 a HaO 0 H0U0). }
+  exact (tuple_2_setprod_by_pair_Sigma omega U0 a 0 HaO H0U0). }
 claim Hpow: Romega_zero :e Power (setprod omega U0).
 { exact (PowerI (setprod omega U0) Romega_zero Hsub). }
 claim Htot: total_function_on Romega_zero omega U0.
@@ -49451,7 +49451,7 @@ claim Hsub: graph omega h c= setprod omega U0.
   { exact (HhR i Hi). }
   claim HhiU0: h i :e U0.
   { exact (HRinU0 (h i) HhiR). }
-  exact (tuple_2_setprod omega U0 i Hi (h i) HhiU0). }
+  exact (tuple_2_setprod_by_pair_Sigma omega U0 i (h i) Hi HhiU0). }
 claim Hpow: graph omega h :e Power (setprod omega U0).
 { exact (PowerI (setprod omega U0) (graph omega h) Hsub). }
 claim Hfun: function_on (graph omega h) omega U0.
@@ -57352,7 +57352,7 @@ claim HUsubN: setprod U Y c= N.
     { exact (ReplI G (fun V1:set => pickU V1) V0 HV0G). }
     exact (Hp0All (pickU V0) Hmem). }
   claim HpairIn: (p 0, p 1) :e setprod (pickU V0) V0.
-  { exact (tuple_2_setprod (pickU V0) V0 (p 0) Hp0Pick (p 1) Hp1V0). }
+  { exact (tuple_2_setprod_by_pair_Sigma (pickU V0) V0 (p 0) (p 1) Hp0Pick Hp1V0). }
   claim HpN: (p 0, p 1) :e N.
   { exact (HrectSubN (p 0, p 1) HpairIn). }
   rewrite HpEta.
@@ -58052,7 +58052,7 @@ apply andI.
                   claim HrectSub: setprod (pickU V0) V0 c= pickN V0.
                   { exact (andER (pickN V0 :e Fam) (setprod (pickU V0) V0 c= pickN V0) HNprop). }
                   claim HpInRect: (x, p 1) :e setprod (pickU V0) V0.
-                  { exact (tuple_2_setprod (pickU V0) V0 x HxPick (p 1) Hp1V0). }
+                  { exact (tuple_2_setprod_by_pair_Sigma (pickU V0) V0 x (p 1) HxPick Hp1V0). }
                   claim HpInN: (x, p 1) :e pickN V0.
                   { exact (HrectSub (x, p 1) HpInRect). }
                   claim HNinH: pickN V0 :e H.
@@ -65803,7 +65803,7 @@ Theorem graph3_in_euclidean_space3 : forall g:set->set,
    rewrite HpEq.
    claim HgiU: g i :e U.
    { exact (real_in_space_family_union_R3 (g i) (HgR i)). }
-   exact (tuple_2_setprod 3 U i Hi3 (g i) HgiU). }
+   exact (tuple_2_setprod_by_pair_Sigma 3 U i (g i) Hi3 HgiU). }
  claim Hpow: graph 3 g :e Power (setprod 3 U).
  { exact (PowerI (setprod 3 U) (graph 3 g) Hsub). }
  claim Hfun: function_on (graph 3 g) 3 U.
@@ -68217,7 +68217,7 @@ apply (SepI (function_space unit_interval R) (fun f1:set => continuous_real_on_I
     apply (ReplE_impred unit_interval (fun a:set => (a,0)) p Hp (p :e setprod unit_interval R)).
     let a. assume Ha: a :e unit_interval. assume Heq: p = (a,0).
     rewrite Heq.
-    exact (tuple_2_setprod unit_interval R a Ha 0 real_0). }
+    exact (tuple_2_setprod_by_pair_Sigma unit_interval R a 0 Ha real_0). }
   claim Hfun: function_on f0 unit_interval R.
   { let x. assume Hx: x :e unit_interval.
     prove apply_fun f0 x :e R.
