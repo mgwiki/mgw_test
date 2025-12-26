@@ -42340,11 +42340,11 @@ claim Hfun: function_on d (setprod X X) R.
 { exact (metric_on_function_on X d Hm). }
 
 claim HxyIn: (x,y) :e setprod X X.
-{ exact (tuple_2_setprod X X x Hx y Hy). }
+{ exact (tuple_2_setprod_by_pair_Sigma X X x y Hx Hy). }
 claim HyzIn: (y,z) :e setprod X X.
-{ exact (tuple_2_setprod X X y Hy z Hz). }
+{ exact (tuple_2_setprod_by_pair_Sigma X X y z Hy Hz). }
 claim HxzIn: (x,z) :e setprod X X.
-{ exact (tuple_2_setprod X X x Hx z Hz). }
+{ exact (tuple_2_setprod_by_pair_Sigma X X x z Hx Hz). }
 
 claim HdxyR: apply_fun d (x,y) :e R.
 { exact (Hfun (x,y) HxyIn). }
