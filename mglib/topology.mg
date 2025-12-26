@@ -26317,6 +26317,17 @@ claim HWPred: exists V :e T, W = V :/\: Y.
 exact (SepI (Power Y) (fun W0:set => exists V :e T, W0 = V :/\: Y) W HWPowerY HWPred).
 Qed.
 
+(** Helper: subspace topology respects equality of ambient topologies **)
+Theorem subspace_topology_eq_of_eq : forall X T T' Y:set,
+  T = T' ->
+  subspace_topology X T Y = subspace_topology X T' Y.
+let X T T' Y.
+assume Heq: T = T'.
+prove subspace_topology X T Y = subspace_topology X T' Y.
+rewrite Heq at 2.
+reflexivity.
+Qed.
+
 (** from §16 Exercise 3: openness of specific sets in subspace [-1,1] **)
 (** LATEX VERSION: Exercise 3: Determine openness in subspace [-1,1]; formalized as existence of ambient open V with U=V∩Y. **)
 (** LATEX VERSION: A={x|1/2<|x|<1}, B={x|1/2<|x|<=1}, C={x|1/2<=|x|<1}, D={x|1/2<=|x|<=1}, E={x|0<|x|<1 and 1/x not in Zplus}. **)
