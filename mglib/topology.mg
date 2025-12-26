@@ -54080,12 +54080,7 @@ Qed.
 
 (** from exercises after §29: continuity via nets **)
 (** LATEX VERSION: Continuity iff every convergent net's image converges. **)
-(** FIXED: Net composition and convergence point errors.
-    Was: forall net, net_on net -> ... -> net_converges Y Ty net (Empty)
-    Issues: (1) net : J→X but should be f∘net : J→Y
-            (2) converges to Empty instead of f(x)
-    Now: Make J explicit to use compose_fun J net f, and converge to apply_fun f x
-    The comment confirms: "f continuous iff for all nets x_i→x, have f(x_i)→f(x)" **)
+(** FIXED: continuity_via_nets uses net_converges Y Ty (compose_fun J net f) (apply_fun f x); old version used net itself and converged to Empty. **)
 Theorem continuity_via_nets : forall X Tx Y Ty f:set,
   topology_on X Tx -> topology_on Y Ty ->
   (continuous_map X Tx Y Ty f <->
@@ -54960,10 +54955,7 @@ apply (Subq_countable (basis_of_subbasis X S) (finite_intersections_of X S)).
   exact (SepE1 (finite_intersections_of X S) (fun b0:set => b0 <> Empty) b Hb).
 Qed.
 (** LATEX VERSION: Real sequences and uniform metric/topology on R^ω (setup). **)
-(** FIXED: Real sequences are functions omega → R, not subsets of R!
-    Was: Power R (set of all subsets of R)
-    Now: setexp R omega (R^omega, the set of all functions omega → R)
-    Using setexp from line 2804 of TRUSTED_DEFS.txt. **)
+(** FIXED: real_sequences is setexp R omega (functions omega -> R), not Power R; uses setexp from TRUSTED_DEFS.txt. **)
 Definition real_sequences : set := setexp R omega.
 Definition uniform_metric_Romega : set := Eps_i (fun d => metric_on real_sequences d).
 Definition uniform_topology : set := metric_topology real_sequences uniform_metric_Romega.
@@ -54978,15 +54970,7 @@ Definition Sorgenfrey_topology : set := R_lower_limit_topology.
 
 
 (** LATEX VERSION: Countable basis at x (Definition 30.1). **)
-(** FIXED: Required global basis instead of local basis at x.
-    Was: exists B:set, basis_on X B /\ countable_set B /\ ...
-         (B is a countable BASIS FOR THE ENTIRE SPACE X!)
-    Issue: This would make first countable imply second countable (wrong!).
-           A countable basis at x should be a countable LOCAL basis at x, not a global basis.
-    Now: exists B:set, B c= Tx /\ countable_set B /\
-           (forall b:set, b :e B -> x :e b) /\
-           (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U)
-         (B is a countable collection of open sets containing x that form a local basis at x) **)
+(** FIXED: countable_basis_at uses a countable local basis B c= Tx at x, not a global basis_on X B; avoids collapsing first countable into second countable. **)
 Definition countable_basis_at : set -> set -> set -> prop := fun X Tx x =>
   topology_on X Tx /\ x :e X /\
   exists B:set, B c= Tx /\ countable_set B /\
