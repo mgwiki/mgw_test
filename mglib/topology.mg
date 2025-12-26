@@ -59906,30 +59906,21 @@ Qed.
 
 (** from §50 Exercise 1: discrete space has dimension 0 **)
 (** LATEX VERSION: Every discrete space has topological dimension 0. **)
-Axiom ex50_1_discrete_dimension_0_axiom : forall X Tx:set,
-  Tx = discrete_topology X ->
-  topology_on X Tx ->
-  covering_dimension X Tx Empty.
 Theorem ex50_1_discrete_dimension_0 : forall X Tx:set,
   Tx = discrete_topology X ->
   topology_on X Tx ->
   covering_dimension X Tx Empty.
-exact ex50_1_discrete_dimension_0_axiom.
+admit.
 Qed.
 
 (** from §50 Exercise 2: connected T1 space with >1 point has dimension ≥1 **)
 (** LATEX VERSION: Any connected T₁ space with more than one point has dimension at least 1. **)
-Axiom ex50_2_connected_T1_dimension_ge_1_axiom : forall X Tx:set,
-  connected_space X Tx ->
-  T1_space X Tx ->
-  (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
-  covering_dimension X Tx Empty -> False.
 Theorem ex50_2_connected_T1_dimension_ge_1 : forall X Tx:set,
   connected_space X Tx ->
   T1_space X Tx ->
   (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
   covering_dimension X Tx Empty -> False.
-exact ex50_2_connected_T1_dimension_ge_1_axiom.
+admit.
 Qed.
 
 (** from §50 Exercise 3: topologist's sine curve has dimension 1 **)
@@ -59959,11 +59950,9 @@ exact (subspace_topology_is_topology EuclidPlane R2_standard_topology topologist
          EuclidPlane_R2_standard_topology_on
          topologists_sine_curve_subset_EuclidPlane).
 Qed.
-Axiom ex50_3_sine_curve_dimension_1_axiom :
-  covering_dimension topologists_sine_curve topologists_sine_curve_topology (Sing Empty).
 Theorem ex50_3_sine_curve_dimension_1 :
   covering_dimension topologists_sine_curve topologists_sine_curve_topology (Sing Empty).
-exact ex50_3_sine_curve_dimension_1_axiom.
+admit.
 Qed.
 
 (** from §50 Exercise 4: specific points in general position in R³ **)
@@ -60213,13 +60202,6 @@ Qed.
 (** from §50 Exercise 7: every m-manifold embeds in R^{2m+1} as closed subspace **)
 (** LATEX VERSION: Every m-manifold can be embedded in R^{2m+1} as a closed subspace. **)
 (** FIXED: Dimension error - should be 2m+1, not m+1. **)
-Axiom ex50_7_manifold_closed_embedding_axiom : forall X Tx m:set,
-  m :e omega ->
-  m_manifold X Tx ->
-  exists N:set, exists e:set,
-    N = add_nat (mul_nat two m) (Sing Empty) /\
-    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
-    closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
 Theorem ex50_7_manifold_closed_embedding : forall X Tx m:set,
   m :e omega ->
   m_manifold X Tx ->
@@ -60227,7 +60209,7 @@ Theorem ex50_7_manifold_closed_embedding : forall X Tx m:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
-exact ex50_7_manifold_closed_embedding_axiom.
+admit.
 Qed.
 
 (** from §50 Exercise 8: sigma-compact Hausdorff with compact subspaces of dimension ≤m has dimension ≤m **)
@@ -60240,58 +60222,36 @@ Definition sigma_compact : set -> set -> prop := fun X Tx =>
     (forall C:set, C :e Fam -> C c= X /\ compact_space C (subspace_topology X Tx C)) /\
     X = Union Fam.
 
-Axiom ex50_8_sigma_compact_dimension_axiom : forall X Tx m:set,
-  m :e omega ->
-  sigma_compact X Tx ->
-  Hausdorff_space X Tx ->
-  (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C (subspace_topology X Tx C) m) ->
-  covering_dimension X Tx m.
 Theorem ex50_8_sigma_compact_dimension : forall X Tx m:set,
   m :e omega ->
   sigma_compact X Tx ->
   Hausdorff_space X Tx ->
   (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C (subspace_topology X Tx C) m) ->
   covering_dimension X Tx m.
-exact ex50_8_sigma_compact_dimension_axiom.
+admit.
 Qed.
 
 (** from §50 Exercise 9: every m-manifold has dimension ≤m **)
 (** LATEX VERSION: Every m-manifold has topological dimension at most m. **)
-Axiom ex50_9_manifold_dimension_le_m_axiom : forall X Tx m:set,
-  m :e omega ->
-  m_manifold X Tx ->
-  covering_dimension X Tx m.
 Theorem ex50_9_manifold_dimension_le_m : forall X Tx m:set,
   m :e omega ->
   m_manifold X Tx ->
   covering_dimension X Tx m.
-exact ex50_9_manifold_dimension_le_m_axiom.
+admit.
 Qed.
 
 (** from §50 Exercise 10: closed subspace of R^N has dimension ≤N **)
 (** LATEX VERSION: Every closed subspace of R^N has topological dimension at most N. **)
-Axiom ex50_10_closed_subspace_RN_dimension_axiom : forall X N:set,
-  N :e omega ->
-  X c= (euclidean_space N) ->
-  closed_in (euclidean_space N) (euclidean_topology N) X ->
-  covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
 Theorem ex50_10_closed_subspace_RN_dimension : forall X N:set,
   N :e omega ->
   X c= (euclidean_space N) ->
   closed_in (euclidean_space N) (euclidean_topology N) X ->
   covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
-exact ex50_10_closed_subspace_RN_dimension_axiom.
+admit.
 Qed.
 
 (** from §50 Exercise 11: embedding in R^N characterization **)
 (** LATEX VERSION: A space X can be embedded as a closed subspace of R^N for some N iff X is locally compact Hausdorff with countable basis and finite dimension. **)
-Axiom ex50_11_embedding_characterization_axiom : forall X Tx:set,
-  (exists N:set, exists e:set,
-    N :e omega /\
-    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
-    closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X))
-<->
-(locally_compact X Tx /\ Hausdorff_space X Tx /\ second_countable_space X Tx /\ finite_dimensional_space X Tx).
 Theorem ex50_11_embedding_characterization : forall X Tx:set,
   (exists N:set, exists e:set,
     N :e omega /\
@@ -60299,7 +60259,7 @@ Theorem ex50_11_embedding_characterization : forall X Tx:set,
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X))
 <->
 (locally_compact X Tx /\ Hausdorff_space X Tx /\ second_countable_space X Tx /\ finite_dimensional_space X Tx).
-exact ex50_11_embedding_characterization_axiom.
+admit.
 Qed.
 
 (** from Supplementary Exercises Exercise 1: locally m-euclidean implies locally compact and locally metrizable **)
