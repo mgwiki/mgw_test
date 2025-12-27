@@ -69661,6 +69661,7 @@ Definition Romega_D_metric_topology : set := metric_topology R_omega_space Romeg
 (** helper: open balls in the D metric are open in the product topology **)
 (** LATEX VERSION: For the D metric on R to the omega, every open ball is open in the product topology. **)
 Theorem Romega_D_metric_open_ball_in_product_topology : forall x r:set,
+  metric_on R_omega_space Romega_D_metric ->
   x :e R_omega_space -> r :e R -> Rlt 0 r ->
   open_ball R_omega_space Romega_D_metric x r :e R_omega_product_topology.
 admit.
@@ -69669,6 +69670,7 @@ Qed.
 (** helper: cylinder subbasis sets are open in the D metric topology **)
 (** LATEX VERSION: For the D metric, each cylinder set fixing one coordinate to be in an open interval is D-metric-open. **)
 Theorem Romega_product_cylinder_in_D_metric_topology : forall i U:set,
+  metric_on R_omega_space Romega_D_metric ->
   i :e omega -> U :e R_standard_topology ->
   product_cylinder omega (const_space_family omega R R_standard_topology) i U :e Romega_D_metric_topology.
 admit.
@@ -69922,7 +69924,7 @@ apply andI.
       assume Hr0pos: Rlt 0 r0.
       assume Hbeq: b = open_ball X d x0 r0.
       rewrite Hbeq.
-      exact (Romega_D_metric_open_ball_in_product_topology x0 r0 Hx0X Hr0R Hr0pos). }
+      exact (Romega_D_metric_open_ball_in_product_topology x0 r0 Hm Hx0X Hr0R Hr0pos). }
     claim Hfiner: finer_than R_omega_product_topology (generated_topology X B).
     { exact (generated_topology_finer X B R_omega_product_topology HBasis HTprod Hballsub). }
     claim Hinc: generated_topology X B c= R_omega_product_topology.
@@ -69992,7 +69994,7 @@ apply andI.
       claim HU0std: U0 :e R_standard_topology.
       { rewrite <- HtopEq.
         exact HU0Top. }
-      exact (Romega_product_cylinder_in_D_metric_topology i U0 Hi HU0std). }
+      exact (Romega_product_cylinder_in_D_metric_topology i U0 Hm Hi HU0std). }
     claim Hmin: finer_than Romega_D_metric_topology (generated_topology_from_subbasis X S).
     { exact (topology_generated_by_basis_is_minimal X S Romega_D_metric_topology HSsub HTm HSc). }
     claim Hinc: generated_topology_from_subbasis X S c= Romega_D_metric_topology.
