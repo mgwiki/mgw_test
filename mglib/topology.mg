@@ -66811,6 +66811,32 @@ apply (xm (Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1)).
   reflexivity.
 Qed.
 
+(** helper: bounded distance of a point to itself is 0 **)
+Theorem R_bounded_distance_self_zero : forall a:set,
+  a :e R -> R_bounded_distance a a = 0.
+let a.
+assume HaR: a :e R.
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+set t := add_SNo a (minus_SNo a).
+claim Ht0: t = 0.
+{ exact (add_SNo_minus_SNo_rinv a HaS). }
+claim H0le0: 0 <= 0.
+{ exact (SNoLe_ref 0). }
+claim Habseq: abs_SNo 0 = 0.
+{ exact (nonneg_abs_SNo 0 H0le0). }
+claim Habs0: abs_SNo t = 0.
+{ rewrite Ht0.
+  exact Habseq. }
+claim Hdef: R_bounded_distance a a =
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+{ reflexivity. }
+rewrite Hdef.
+rewrite Habs0.
+rewrite (If_i_1 (Rlt 0 1) 0 1 Rlt_0_1).
+reflexivity.
+Qed.
+
 (** helper: bounded distance is always <= 1 **)
 Theorem R_bounded_distance_le_1 : forall a b:set,
   a :e R -> b :e R -> Rle (R_bounded_distance a b) 1.
