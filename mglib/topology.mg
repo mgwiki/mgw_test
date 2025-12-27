@@ -67944,10 +67944,13 @@ claim HinjAB: inj A B pick.
       exact Ha1UA. }
     symmetry.
     exact (singleton_elem a1 a0 Ha1sing). }
-claim Hab: atleastp A B.
-{ witness pick.
-  exact HinjAB. }
-exact (atleastp_tra A B omega Hab HBcount).
+prove atleastp A omega.
+apply atleastp_tra A B omega.
+- prove atleastp A B.
+  prove exists f : set -> set, inj A B f.
+  witness pick.
+  exact HinjAB.
+- exact HBcount.
 Qed.
 
 (** from §30 Example 2: the subspace of binary sequences **) 
