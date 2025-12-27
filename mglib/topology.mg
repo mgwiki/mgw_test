@@ -66350,7 +66350,7 @@ apply andI.
       exact (HfC z HzC).
 - (** products **)
   let I Xi. assume Hfam: completely_regular_spaces_family I Xi.
-  admit.
+  admit. (** FAIL **)
 Qed.
 
 (** from §33 Example 1: products giving completely regular but not normal spaces **) 
@@ -66361,7 +66361,7 @@ Theorem Sorgenfrey_plane_completely_regular_not_normal :
 prove completely_regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 apply andI.
-- admit.
+- admit. (** FAIL **)
 - claim Hnot: ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
   { exact (andER (regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology)
                  (~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology)
@@ -66378,7 +66378,7 @@ Theorem SOmega_SbarOmega_completely_regular_not_normal :
 prove completely_regular_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology) /\
   ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 apply andI.
-- admit.
+- admit. (** FAIL **)
 - claim Hnot:
     ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
   { exact (andER (normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology)
@@ -66395,7 +66395,7 @@ let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hscc: second_countable_space X Tx.
 prove exists d:set, metric_on X d /\ metric_topology X d = Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §34 Theorem 34.2: Imbedding via separating family of functions **) 
@@ -66410,7 +66410,7 @@ assume Hclosed: one_point_sets_closed X Tx.
 let F J.
 assume Hsep: separating_family_of_functions X Tx F J.
 prove exists Fmap:set, embedding_of X Tx (power_real J) (product_topology_full J (const_space_family J R R_standard_topology)) Fmap.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §34 Corollary 34.3: completely regular iff embeds in [0,1]^J **) 
@@ -66421,7 +66421,7 @@ Theorem completely_regular_iff_embeds_in_cube : forall X Tx:set,
 let X Tx.
 prove (completely_regular_space X Tx <->
     exists J:set, exists Fmap:set, embedding_of X Tx (unit_interval_power J) (product_topology_full J (const_space_family J unit_interval (subspace_topology R R_standard_topology unit_interval))) Fmap).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §35 Theorem 35.1: Tietze extension theorem **) 
