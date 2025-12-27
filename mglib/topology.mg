@@ -67685,7 +67685,7 @@ Theorem ex50_1_discrete_dimension_0 : forall X Tx:set,
   Tx = discrete_topology X ->
   topology_on X Tx ->
   covering_dimension X Tx Empty.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Exercise 2: connected T1 space with >1 point has dimension ≥1 **)
@@ -67695,7 +67695,7 @@ Theorem ex50_2_connected_T1_dimension_ge_1 : forall X Tx:set,
   T1_space X Tx ->
   (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
   covering_dimension X Tx Empty -> False.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Exercise 3: topologist's sine curve has dimension 1 **)
@@ -67727,7 +67727,7 @@ exact (subspace_topology_is_topology EuclidPlane R2_standard_topology topologist
 Qed.
 Theorem ex50_3_sine_curve_dimension_1 :
   covering_dimension topologists_sine_curve topologists_sine_curve_topology (Sing Empty).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Exercise 4: specific points in general position in R³ **)
