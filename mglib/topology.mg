@@ -38968,6 +38968,64 @@ exact (sqrt_SNo_nonneg_real 2 real_2 (SNoLtLe 0 2 SNoLt_0_2)).
 Qed.
 
 Definition R_C_topology : set := generated_topology R rational_halfopen_intervals_basis.
+
+(** Helper: the lower limit topology is finer than the rational half-open topology **)
+(** LATEX VERSION: Since the half-open rational intervals are among the half-open real intervals, the topology they generate is coarser than the lower limit topology. **)
+Theorem R_lower_limit_finer_than_R_C : finer_than R_lower_limit_topology R_C_topology.
+prove finer_than R_lower_limit_topology R_C_topology.
+(** apply generated_topology_finer with T = R_lower_limit_topology and basis B = rational_halfopen_intervals_basis **)
+claim HBasisC: basis_on R rational_halfopen_intervals_basis.
+{ exact (andEL (basis_on R rational_halfopen_intervals_basis)
+               (generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology)
+               ex13_8b_halfopen_rational_basis_topology). }
+claim HTlower: topology_on R R_lower_limit_topology.
+{ exact R_lower_limit_topology_is_topology. }
+claim HBsub: forall b :e rational_halfopen_intervals_basis, b :e R_lower_limit_topology.
+{ let b. assume HbB: b :e rational_halfopen_intervals_basis.
+  prove b :e R_lower_limit_topology.
+  (** show b is a lower-limit basis element, then lift to the generated topology **)
+  claim Hexq1: exists q1 :e rational_numbers, b :e {halfopen_interval_left q1 q2|q2 :e rational_numbers}.
+  { exact (famunionE rational_numbers
+           (fun q1 : set => {halfopen_interval_left q1 q2|q2 :e rational_numbers})
+           b
+           HbB). }
+  apply Hexq1.
+  let q1. assume Hq1pair. apply Hq1pair.
+  assume Hq1Q: q1 :e rational_numbers.
+  assume HbFam: b :e {halfopen_interval_left q1 q2|q2 :e rational_numbers}.
+  claim Hexq2: exists q2 :e rational_numbers, b = halfopen_interval_left q1 q2.
+  { exact (ReplE rational_numbers (fun q2 : set => halfopen_interval_left q1 q2) b HbFam). }
+  apply Hexq2.
+  let q2. assume Hq2pair.
+  claim Hq2Q: q2 :e rational_numbers.
+  { exact (andEL (q2 :e rational_numbers) (b = halfopen_interval_left q1 q2) Hq2pair). }
+  claim Hbeq: b = halfopen_interval_left q1 q2.
+  { exact (andER (q2 :e rational_numbers) (b = halfopen_interval_left q1 q2) Hq2pair). }
+  rewrite Hbeq.
+  claim Hq1R: q1 :e R.
+  { exact (rational_numbers_in_R q1 Hq1Q). }
+  claim Hq2R: q2 :e R.
+  { exact (rational_numbers_in_R q2 Hq2Q). }
+  claim HbInLowerBasis: halfopen_interval_left q1 q2 :e R_lower_limit_basis.
+  { prove halfopen_interval_left q1 q2 :e R_lower_limit_basis.
+    claim HbFamR: halfopen_interval_left q1 q2 :e {halfopen_interval_left q1 bb|bb :e R}.
+    { exact (ReplI R (fun bb : set => halfopen_interval_left q1 bb) q2 Hq2R). }
+    exact (famunionI R (fun aa : set => {halfopen_interval_left aa bb|bb :e R})
+                     q1
+                     (halfopen_interval_left q1 q2)
+                     Hq1R
+                     HbFamR). }
+  (** lift basis element into generated topology = R_lower_limit_topology **)
+  claim HbInGen: halfopen_interval_left q1 q2 :e generated_topology R R_lower_limit_basis.
+  { exact (generated_topology_contains_basis R R_lower_limit_basis
+           R_lower_limit_basis_is_basis_local
+           (halfopen_interval_left q1 q2)
+           HbInLowerBasis). }
+  exact HbInGen. }
+exact (generated_topology_finer R rational_halfopen_intervals_basis R_lower_limit_topology
+       HBasisC HTlower HBsub).
+Qed.
+
 Definition ex17_17_interval_A : set := open_interval 0 sqrt2.
 Definition ex17_17_interval_B : set := open_interval sqrt2 3.
 Definition ex17_17_interval_A_closure_lower : set := {x :e R|0 <= x /\ x < sqrt2}.
