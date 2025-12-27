@@ -65974,7 +65974,7 @@ Qed.
 (** FIXED: real_sequences is setexp R omega (functions omega -> R), not Power R; uses setexp from TRUSTED_DEFS.txt. **)
 Definition real_sequences : set := setexp R omega.
 
-(** helper: existence of a metric on any set (placeholder) **)
+(** helper: existence of a metric on any set (discrete metric construction) **)
 (** LATEX VERSION: Every set admits a metric (e.g. the discrete metric). **)
 Theorem exists_metric_on : forall X:set, exists d:set, metric_on X d.
 let X.
