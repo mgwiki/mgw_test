@@ -67924,8 +67924,9 @@ claim HF_inj: inj (Power omega) binary_sequences_Romega F.
         { rewrite Heq.
           reflexivity. }
         claim H1: 1 = apply_fun (F B) n.
-        { rewrite <- HAval.
-          exact HappEq. }
+        { rewrite <- HappEq.
+          symmetry.
+          exact HAval. }
         claim Hcontra: 1 = 0.
         { rewrite <- HBval.
           exact H1. }
@@ -67961,8 +67962,9 @@ claim HF_inj: inj (Power omega) binary_sequences_Romega F.
         { symmetry.
           exact HappEqAB. }
         claim H1: 1 = apply_fun (F A) n.
-        { rewrite <- HBval.
-          exact HappEq. }
+        { rewrite <- HappEq.
+          symmetry.
+          exact HBval. }
         claim Hcontra: 1 = 0.
         { rewrite <- HAval.
           exact H1. }
