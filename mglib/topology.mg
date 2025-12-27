@@ -67092,6 +67092,36 @@ rewrite (If_i_1 (Rlt 0 1) 0 1 Rlt_0_1).
 reflexivity.
 Qed.
 
+(** helper: bounded distance is nonnegative **)
+Theorem R_bounded_distance_nonneg : forall a b:set,
+  a :e R -> b :e R -> 0 <= R_bounded_distance a b.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+set t := add_SNo a (minus_SNo b).
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+claim HmbS: SNo (minus_SNo b).
+{ exact (SNo_minus_SNo b HbS). }
+claim HtS: SNo t.
+{ exact (SNo_add_SNo a (minus_SNo b) HaS HmbS). }
+claim HabsNN: 0 <= abs_SNo t.
+{ exact (abs_SNo_nonneg t HtS). }
+claim Hdef: R_bounded_distance a b =
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+{ reflexivity. }
+rewrite Hdef.
+apply (xm (Rlt (abs_SNo t) 1) (0 <= If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1)).
+- assume Hlt: Rlt (abs_SNo t) 1.
+  rewrite (If_i_1 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hlt).
+  exact HabsNN.
+- assume Hnlt: ~(Rlt (abs_SNo t) 1).
+  rewrite (If_i_0 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hnlt).
+  exact (SNoLtLe 0 1 SNoLt_0_1).
+Qed.
+
 (** helper: bounded distance is always <= 1 **)
 Theorem R_bounded_distance_le_1 : forall a b:set,
   a :e R -> b :e R -> Rle (R_bounded_distance a b) 1.
@@ -67574,6 +67604,114 @@ claim Hlub0: R_lub A 0.
 exact (R_lub_unique A (Romega_D_metric_value x x) 0 Hlub1 Hlub0).
 Qed.
 
+(** helper: D metric values are not negative **)
+Theorem Romega_D_metric_value_nonneg : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  ~(Rlt (Romega_D_metric_value x y) 0).
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+set A := Romega_D_scaled_diffs x y.
+set l := Romega_D_metric_value x y.
+claim HlR: l :e R.
+{ exact (R_lub_in_R (Romega_D_scaled_diffs x y)
+                    (Romega_D_metric_value x y)
+                    (Romega_D_metric_value_is_lub x y Hx Hy)). }
+claim Hlub: R_lub A l.
+{ exact (Romega_D_metric_value_is_lub x y Hx Hy). }
+claim Hcore: l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andEL (l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l u)
+               Hlub). }
+claim Hub: forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andER (l :e R) (forall a:set, a :e A -> a :e R -> Rle a l) Hcore). }
+assume Hl0: Rlt l 0.
+prove False.
+set a1 := mul_SNo (R_bounded_distance (apply_fun x 1) (apply_fun y 1)) (inv_nat 1).
+claim H1omega: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim H1not0: 1 /:e {0}.
+{ assume H1: 1 :e {0}.
+  claim Heq: 1 = 0.
+  { exact (SingE 0 1 H1). }
+  exact (neq_1_0 Heq). }
+claim H1In: 1 :e omega :\: {0}.
+{ exact (setminusI omega {0} 1 H1omega H1not0). }
+claim Ha1A: a1 :e A.
+{ exact (ReplI (omega :\: {0})
+               (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i))
+               1
+               H1In). }
+claim HxiR: apply_fun x 1 :e R.
+{ exact (Romega_coord_in_R x 1 Hx H1omega). }
+claim HyiR: apply_fun y 1 :e R.
+{ exact (Romega_coord_in_R y 1 Hy H1omega). }
+claim HbdR: R_bounded_distance (apply_fun x 1) (apply_fun y 1) :e R.
+{ exact (R_bounded_distance_in_R (apply_fun x 1) (apply_fun y 1) HxiR HyiR). }
+claim HinvR: inv_nat 1 :e R.
+{ exact (inv_nat_real 1 H1omega). }
+claim Ha1R: a1 :e R.
+{ exact (real_mul_SNo (R_bounded_distance (apply_fun x 1) (apply_fun y 1)) HbdR (inv_nat 1) HinvR). }
+claim Ha1S: SNo a1.
+{ exact (real_SNo a1 Ha1R). }
+claim HlS: SNo l.
+{ exact (real_SNo l HlR). }
+claim H0S: SNo 0.
+{ exact SNo_0. }
+claim HbdS: SNo (R_bounded_distance (apply_fun x 1) (apply_fun y 1)).
+{ exact (real_SNo (R_bounded_distance (apply_fun x 1) (apply_fun y 1)) HbdR). }
+claim HinvS: SNo (inv_nat 1).
+{ exact (real_SNo (inv_nat 1) HinvR). }
+claim H0le0: 0 <= 0.
+{ exact (SNoLe_ref 0). }
+claim HbdNN: 0 <= R_bounded_distance (apply_fun x 1) (apply_fun y 1).
+{ exact (R_bounded_distance_nonneg (apply_fun x 1) (apply_fun y 1) HxiR HyiR). }
+claim HinvPosR: Rlt 0 (inv_nat 1).
+{ exact (inv_nat_pos 1 H1In). }
+claim HinvPos: 0 < inv_nat 1.
+{ exact (RltE_lt 0 (inv_nat 1) HinvPosR). }
+claim HinvNN: 0 <= inv_nat 1.
+{ exact (SNoLtLe 0 (inv_nat 1) HinvPos). }
+claim Ha1nonneg: 0 <= a1.
+{ claim H00: mul_SNo 0 0 = 0.
+  { exact (mul_SNo_zeroL 0 SNo_0). }
+  rewrite <- H00.
+  exact (nonneg_mul_SNo_Le2 0 0 (R_bounded_distance (apply_fun x 1) (apply_fun y 1)) (inv_nat 1)
+                             SNo_0 SNo_0 HbdS HinvS
+                             H0le0 H0le0 HbdNN HinvNN). }
+claim Ha1lt0n: ~(a1 < 0).
+{ claim Hcase: 0 < a1 \/ 0 = a1.
+  { exact (SNoLeE 0 a1 H0S Ha1S Ha1nonneg). }
+  assume Ha1lt0: a1 < 0.
+  apply (Hcase False).
+  - assume H0lta1: 0 < a1.
+    claim H00: 0 < 0.
+    { exact (SNoLt_tra 0 a1 0 H0S Ha1S H0S H0lta1 Ha1lt0). }
+    exact ((SNoLt_irref 0) H00).
+  - assume H0eq: 0 = a1.
+    claim H00: 0 < 0.
+    { rewrite H0eq at 1.
+      exact Ha1lt0. }
+    exact ((SNoLt_irref 0) H00). }
+claim Hl0lt: l < 0.
+{ exact (RltE_lt l 0 Hl0). }
+claim Hlta1: l < a1.
+{ apply (SNoLt_trichotomy_or_impred a1 0 Ha1S H0S (l < a1)).
+  - assume Ha1lt0: a1 < 0.
+    exact (FalseE (Ha1lt0n Ha1lt0) (l < a1)).
+  - assume Ha1eq0: a1 = 0.
+    rewrite Ha1eq0.
+    exact Hl0lt.
+  - assume H0lta1: 0 < a1.
+    exact (SNoLt_tra l 0 a1 HlS H0S Ha1S Hl0lt H0lta1). }
+claim Hltla1: Rlt l a1.
+{ exact (RltI l a1 HlR Ha1R Hlta1). }
+claim HRle: Rle a1 l.
+{ exact (Hub a1 Ha1A Ha1R). }
+exact ((RleE_nlt a1 l HRle) Hltla1).
+Qed.
+
 (** helper: D metric values are real numbers **)
 Theorem Romega_D_metric_value_in_R : forall x y:set,
   x :e R_omega_space ->
@@ -67666,7 +67804,21 @@ apply andI.
         rewrite (tuple_2_0_eq x x).
         rewrite (tuple_2_1_eq x x).
         exact (Romega_D_metric_value_self_zero x Hx).
-    * admit.
+    * let x y.
+      assume Hx: x :e R_omega_space.
+      assume Hy: y :e R_omega_space.
+      prove ~(Rlt (apply_fun Romega_D_metric (x,y)) 0) /\ (apply_fun Romega_D_metric (x,y) = 0 -> x = y).
+      apply andI.
+      { claim Hxyprod: (x,y) :e setprod R_omega_space R_omega_space.
+        { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space x y Hx Hy). }
+        rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+                                 (fun p:set => Romega_D_metric_value (p 0) (p 1))
+                                 (x,y)
+                                 Hxyprod).
+        rewrite (tuple_2_0_eq x y).
+        rewrite (tuple_2_1_eq x y).
+        exact (Romega_D_metric_value_nonneg x y Hx Hy). }
+      { admit. }
   + admit.
 - (** topology equality part **)
   admit.
