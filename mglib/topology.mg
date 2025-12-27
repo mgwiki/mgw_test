@@ -70041,6 +70041,14 @@ apply SepI.
 				            { exact (real_SNo r3 Hr3R). }
 				            claim Hr3posS: 0 < r3.
 				            { exact (RltE_lt 0 r3 Hr3pos). }
+				            claim Hm1S: SNo m1.
+				            { exact (real_SNo m1 Hm1R). }
+				            claim Hm2S: SNo m2.
+				            { exact (real_SNo m2 Hm2R). }
+				            claim Hr3m1ltS: r3 < m1.
+				            { exact (RltE_lt r3 m1 Hr3m1lt). }
+				            claim Hr3m2ltS: r3 < m2.
+				            { exact (RltE_lt r3 m2 Hr3m2lt). }
 				            claim HgiS: SNo (apply_fun g i).
 				            { exact (real_SNo (apply_fun g i) HgiR). }
 				            claim HmtS: SNo (minus_SNo (apply_fun g i)).
@@ -70051,7 +70059,6 @@ apply SepI.
 				            { exact (abs_SNo_lt_imp_lt t r3 HtS Hr3S Hr3posS Habfg). }
 				            claim Hmtlt: minus_SNo t < r3.
 				            { exact (abs_SNo_lt_imp_neg_lt t r3 HtS Hr3S Hr3posS Habfg). }
-				            (** TODO: use Htlt Hmtlt with Hr3m1lt Hr3m2lt to derive a < g_i < b **)
 				            claim HinterDef: open_interval a b = {x0 :e R | Rlt a x0 /\ Rlt x0 b}.
 				            { reflexivity. }
 				            rewrite HinterDef.
@@ -70059,8 +70066,64 @@ apply SepI.
 				            - exact HgiR.
 				            - prove Rlt a (apply_fun g i) /\ Rlt (apply_fun g i) b.
 				              apply andI.
-				              + admit.
-				              + admit. }
+				              + (** a < g_i from xi - g_i < r3 < xi - a **)
+				                prove Rlt a (apply_fun g i).
+				                claim Htltm1: t < m1.
+				                { exact (SNoLt_tra t r3 m1 HtS Hr3S Hm1S Htlt Hr3m1ltS). }
+				                claim HmaS: SNo (minus_SNo a).
+				                { exact (SNo_minus_SNo a HaS). }
+				                claim Htdef: t = add_SNo xi (minus_SNo (apply_fun g i)).
+				                { reflexivity. }
+				                claim Hm1def: m1 = add_SNo xi (minus_SNo a).
+				                { reflexivity. }
+				                claim Htltm1': add_SNo xi (minus_SNo (apply_fun g i)) < add_SNo xi (minus_SNo a).
+				                { rewrite <- Htdef.
+				                  rewrite <- Hm1def.
+				                  exact Htltm1. }
+				                claim Hneglt: minus_SNo (apply_fun g i) < minus_SNo a.
+				                { exact (add_SNo_Lt2_cancel xi (minus_SNo (apply_fun g i)) (minus_SNo a)
+				                                          HxiS HmtS HmaS Htltm1'). }
+				                claim Hnegneg: minus_SNo (minus_SNo a) < minus_SNo (minus_SNo (apply_fun g i)).
+				                { exact (minus_SNo_Lt_contra (minus_SNo (apply_fun g i)) (minus_SNo a) HmtS HmaS Hneglt). }
+				                claim Hainv: minus_SNo (minus_SNo a) = a.
+				                { exact (minus_SNo_invol a HaS). }
+				                claim Hgiinv: minus_SNo (minus_SNo (apply_fun g i)) = apply_fun g i.
+				                { exact (minus_SNo_invol (apply_fun g i) HgiS). }
+				                claim HaltS: a < apply_fun g i.
+				                { rewrite <- Hainv at 1.
+				                  rewrite <- Hgiinv.
+				                  exact Hnegneg. }
+				                exact (RltI a (apply_fun g i) HaR HgiR HaltS).
+				              + (** g_i < b from g_i - xi < r3 < b - xi **)
+				                prove Rlt (apply_fun g i) b.
+				                claim Hmtltm2: minus_SNo t < m2.
+				                { exact (SNoLt_tra (minus_SNo t) r3 m2
+				                                   (SNo_minus_SNo t HtS) Hr3S Hm2S
+				                                   Hmtlt Hr3m2ltS). }
+				                claim HmxiS: SNo (minus_SNo xi).
+				                { exact (SNo_minus_SNo xi HxiS). }
+				                claim Hm2def: m2 = add_SNo b (minus_SNo xi).
+				                { reflexivity. }
+				                claim Hnegtdistr: minus_SNo t = add_SNo (minus_SNo xi) (minus_SNo (minus_SNo (apply_fun g i))).
+				                { exact (minus_add_SNo_distr xi (minus_SNo (apply_fun g i)) HxiS HmtS). }
+				                claim Hgiinv2: minus_SNo (minus_SNo (apply_fun g i)) = apply_fun g i.
+				                { exact (minus_SNo_invol (apply_fun g i) HgiS). }
+				                claim Hnegteq: minus_SNo t = add_SNo (minus_SNo xi) (apply_fun g i).
+				                { rewrite <- Hgiinv2 at 2.
+				                  exact Hnegtdistr. }
+				                claim Hnegteq2: add_SNo (apply_fun g i) (minus_SNo xi) = minus_SNo t.
+				                { claim Hcom: add_SNo (minus_SNo xi) (apply_fun g i) = add_SNo (apply_fun g i) (minus_SNo xi).
+				                  { exact (add_SNo_com (minus_SNo xi) (apply_fun g i) HmxiS HgiS). }
+				                  rewrite <- Hcom.
+				                  rewrite <- Hnegteq.
+				                  reflexivity. }
+				                claim Hineq: add_SNo (apply_fun g i) (minus_SNo xi) < add_SNo b (minus_SNo xi).
+				                { rewrite Hnegteq2.
+				                  rewrite <- Hm2def.
+				                  exact Hmtltm2. }
+				                claim HltS: apply_fun g i < b.
+				                { exact (add_SNo_Lt1_cancel (apply_fun g i) (minus_SNo xi) b HgiS HmxiS HbS Hineq). }
+				                exact (RltI (apply_fun g i) b HgiR HbR HltS). }
 			          claim HgiB0: apply_fun g i :e b0.
 			          { rewrite Hb0eq.
 			            exact Hgib. }
