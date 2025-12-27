@@ -67816,7 +67816,120 @@ Theorem second_countable_discrete_subspace_countable : forall X Tx A:set,
   second_countable_space X Tx ->
   discrete_subspace X Tx A ->
   countable_set A.
-admit.
+let X Tx A.
+assume Hsc: second_countable_space X Tx.
+assume Hdisc: discrete_subspace X Tx A.
+prove countable_set A.
+claim HAcX: A c= X.
+{ exact (andEL (A c= X) (forall a:set, a :e A -> exists U:set, U :e Tx /\ U :/\: A = {a}) Hdisc). }
+claim HdiscU: forall a:set, a :e A -> exists U:set, U :e Tx /\ U :/\: A = {a}.
+{ exact (andER (A c= X) (forall a:set, a :e A -> exists U:set, U :e Tx /\ U :/\: A = {a}) Hdisc). }
+claim HexB: exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
+{ exact (andER (topology_on X Tx) (exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx) Hsc). }
+apply HexB.
+let B. assume HBpair.
+claim HBasisCount: basis_on X B /\ countable_set B.
+{ exact (andEL (basis_on X B /\ countable_set B) (basis_generates X B Tx) HBpair). }
+claim HBasis: basis_on X B.
+{ exact (andEL (basis_on X B) (countable_set B) HBasisCount). }
+claim HBcount: countable_set B.
+{ exact (andER (basis_on X B) (countable_set B) HBasisCount). }
+claim HBgener: basis_generates X B Tx.
+{ exact (andER (basis_on X B /\ countable_set B) (basis_generates X B Tx) HBpair). }
+claim HTxeq: generated_topology X B = Tx.
+{ exact (andER (basis_on X B) (generated_topology X B = Tx) HBgener). }
+set P := (fun a:set =>
+  fun b:set => b :e B /\ exists U:set, U :e Tx /\ U :/\: A = {a} /\ a :e b /\ b c= U).
+set pick := (fun a:set => Eps_i (P a)).
+claim HpickP: forall a:set, a :e A -> (P a) (pick a).
+{ let a. assume Ha: a :e A.
+  prove (P a) (pick a).
+  claim HexU: exists U:set, U :e Tx /\ U :/\: A = {a}.
+  { exact (HdiscU a Ha). }
+  apply HexU.
+  let U. assume HUpair.
+  claim HU: U :e Tx.
+  { exact (andEL (U :e Tx) (U :/\: A = {a}) HUpair). }
+  claim HUA: U :/\: A = {a}.
+  { exact (andER (U :e Tx) (U :/\: A = {a}) HUpair). }
+  claim HUinGen: U :e generated_topology X B.
+  { rewrite HTxeq.
+    exact HU. }
+  claim HUbasis: forall x :e U, exists b :e B, x :e b /\ b c= U.
+  { exact (SepE2 (Power X) (fun U0:set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0) U HUinGen). }
+  claim HainUA: a :e U :/\: A.
+  { rewrite HUA.
+    exact (SingI a). }
+  claim HaU: a :e U.
+  { exact (binintersectE1 U A a HainUA). }
+  claim Hexb: exists b :e B, a :e b /\ b c= U.
+  { exact (HUbasis a HaU). }
+  apply Hexb.
+  let b. assume Hbpair2.
+  claim HbB: b :e B.
+  { exact (andEL (b :e B) (a :e b /\ b c= U) Hbpair2). }
+  claim Habsub: a :e b /\ b c= U.
+  { exact (andER (b :e B) (a :e b /\ b c= U) Hbpair2). }
+  claim Hab: a :e b.
+  { exact (andEL (a :e b) (b c= U) Habsub). }
+  claim HbsubU: b c= U.
+  { exact (andER (a :e b) (b c= U) Habsub). }
+  claim Hwit: (P a) b.
+  { apply andI.
+    - exact HbB.
+    - witness U.
+      apply andI.
+      + exact HU.
+      + apply andI.
+        * exact HUA.
+        * apply andI.
+          { exact Hab. }
+          { exact HbsubU. } }
+  exact (Eps_i_ax (P a) b Hwit). }
+claim HinjAB: inj A B pick.
+{ prove (forall a :e A, pick a :e B) /\ (forall a0 a1 :e A, pick a0 = pick a1 -> a0 = a1).
+  apply andI.
+  - let a. assume Ha: a :e A.
+    prove pick a :e B.
+    claim Hp: (P a) (pick a).
+    { exact (HpickP a Ha). }
+    exact (andEL (pick a :e B) (exists U:set, U :e Tx /\ U :/\: A = {a} /\ a :e pick a /\ pick a c= U) Hp).
+  - let a0. assume Ha0: a0 :e A.
+    let a1. assume Ha1: a1 :e A.
+    assume Heq: pick a0 = pick a1.
+    prove a0 = a1.
+    claim Hp0: (P a0) (pick a0).
+    { exact (HpickP a0 Ha0). }
+    claim Hp1: (P a1) (pick a1).
+    { exact (HpickP a1 Ha1). }
+    claim Hex0: exists U:set, U :e Tx /\ U :/\: A = {a0} /\ a0 :e pick a0 /\ pick a0 c= U.
+    { exact (andER (pick a0 :e B) (exists U:set, U :e Tx /\ U :/\: A = {a0} /\ a0 :e pick a0 /\ pick a0 c= U) Hp0). }
+    claim Ha1inpick0: a1 :e pick a0.
+    { rewrite Heq.
+      exact (andER (pick a1 :e B) (exists U:set, U :e Tx /\ U :/\: A = {a1} /\ a1 :e pick a1 /\ pick a1 c= U) Hp1
+                   (a1 :e pick a0)). }
+    apply Hex0.
+    let U0. assume HU0pair.
+    claim HU0: U0 :e Tx.
+    { exact (andEL (U0 :e Tx) (U0 :/\: A = {a0} /\ a0 :e pick a0 /\ pick a0 c= U0) HU0pair). }
+    claim HU0rest: U0 :/\: A = {a0} /\ a0 :e pick a0 /\ pick a0 c= U0.
+    { exact (andER (U0 :e Tx) (U0 :/\: A = {a0} /\ a0 :e pick a0 /\ pick a0 c= U0) HU0pair). }
+    claim HU0eq: U0 :/\: A = {a0}.
+    { exact (andEL (U0 :/\: A = {a0}) (a0 :e pick a0 /\ pick a0 c= U0) HU0rest). }
+    claim HsubU0: pick a0 c= U0.
+    { exact (andER (a0 :e pick a0) (pick a0 c= U0) (andER (U0 :/\: A = {a0}) (a0 :e pick a0 /\ pick a0 c= U0) HU0rest)). }
+    claim Ha1U0: a1 :e U0.
+    { exact (HsubU0 a1 Ha1inpick0). }
+    claim Ha1UA: a1 :e U0 :/\: A.
+    { exact (binintersectI U0 A a1 Ha1U0 Ha1). }
+    claim Ha1sing: a1 :e {a0}.
+    { rewrite <- HU0eq.
+      exact Ha1UA. }
+    exact (singleton_elem a1 a0 Ha1sing). }
+claim Hab: atleastp A B.
+{ witness pick.
+  exact HinjAB. }
+exact (atleastp_tra A B omega Hab HBcount).
 Qed.
 
 (** from §30 Example 2: the subspace of binary sequences **) 
