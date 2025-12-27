@@ -70035,8 +70035,321 @@ apply SepI.
 	                       Hlub). }
 	        claim Hub: forall a:set, a :e A -> a :e R -> Rle a eps.
 	        { let a. assume HaA: a :e A. assume HaR: a :e R.
-	          (** TODO: use HzAll and the definition of F to bound each scaled difference by eps **)
-	          admit. (** FAIL **) }
+	          apply (ReplE_impred omega
+	                  (fun i0:set => mul_SNo (R_bounded_distance (apply_fun y i0) (apply_fun z i0)) (inv_nat (ordsucc i0)))
+	                  a
+	                  HaA
+	                  (Rle a eps)).
+	          let i0. assume Hi0O: i0 :e omega.
+	          assume Hai0: a = mul_SNo (R_bounded_distance (apply_fun y i0) (apply_fun z i0)) (inv_nat (ordsucc i0)).
+	          rewrite Hai0.
+	          apply (xm (i0 :e I)).
+	          - assume Hi0I: i0 :e I.
+	            (** z lies in the cylinder around y_i0, so its i0-coordinate is eps-close to y_i0 **)
+	            set yi := apply_fun y i0.
+	            set zi := apply_fun z i0.
+	            set Ui0 := open_interval (add_SNo yi (minus_SNo eps)) (add_SNo yi eps).
+	            set bd := R_bounded_distance yi zi.
+	            set inv := inv_nat (ordsucc i0).
+	            claim HyiR: yi :e R.
+	            { exact (Romega_coord_in_R y i0 HyX Hi0O). }
+	            claim HziR: zi :e R.
+	            { exact (Romega_coord_in_R z i0 HzX Hi0O). }
+	            claim HyiS: SNo yi.
+	            { exact (real_SNo yi HyiR). }
+	            claim HziS: SNo zi.
+	            { exact (real_SNo zi HziR). }
+	            claim HepsS: SNo eps.
+	            { exact (real_SNo eps HepsR). }
+	            claim HbdR: bd :e R.
+	            { exact (R_bounded_distance_in_R yi zi HyiR HziR). }
+	            claim HbdS: SNo bd.
+	            { exact (real_SNo bd HbdR). }
+	            claim HSi0: ordsucc i0 :e omega.
+	            { exact (omega_ordsucc i0 Hi0O). }
+	            claim HinvR: inv :e R.
+	            { exact (inv_nat_real (ordsucc i0) HSi0). }
+	            claim HinvS: SNo inv.
+	            { exact (real_SNo inv HinvR). }
+	            claim HmulR: mul_SNo bd inv :e R.
+	            { exact (real_mul_SNo bd HbdR inv HinvR). }
+	            claim HmulS: SNo (mul_SNo bd inv).
+	            { exact (real_SNo (mul_SNo bd inv) HmulR). }
+	            (** obtain zi in Ui0 from cylinder membership **)
+	            claim HcylInF: cyl i0 :e F.
+	            { claim HFdef: F = Repl I cyl.
+	              { reflexivity. }
+	              rewrite HFdef.
+	              exact (ReplI I cyl i0 Hi0I). }
+	            claim HzCyl: z :e cyl i0.
+	            { exact (HzAll (cyl i0) HcylInF). }
+	            claim HzCyl0: z :e product_cylinder omega Xi0 i0 Ui0.
+	            { prove z :e product_cylinder omega Xi0 i0 Ui0.
+	              claim HcylEq: cyl i0 = product_cylinder omega Xi0 i0 Ui0.
+	              { reflexivity. }
+	              rewrite <- HcylEq.
+	              exact HzCyl. }
+	            claim HzCylConj: i0 :e omega /\ Ui0 :e space_family_topology Xi0 i0 /\ apply_fun z i0 :e Ui0.
+	            { exact (SepE2 (product_space omega Xi0)
+	                           (fun f0:set => i0 :e omega /\ Ui0 :e space_family_topology Xi0 i0 /\ apply_fun f0 i0 :e Ui0)
+	                           z
+	                           HzCyl0). }
+	            claim HziUi0: zi :e Ui0.
+	            { apply HzCylConj.
+	              assume Htmp HziUi0.
+	              exact HziUi0. }
+	            (** turn Ui0 membership into bounds **)
+	            claim HUi0Def: Ui0 = {x0 :e R | Rlt (add_SNo yi (minus_SNo eps)) x0 /\ Rlt x0 (add_SNo yi eps)}.
+	            { reflexivity. }
+	            claim HziUi0': zi :e {x0 :e R | Rlt (add_SNo yi (minus_SNo eps)) x0 /\ Rlt x0 (add_SNo yi eps)}.
+	            { rewrite <- HUi0Def.
+	              exact HziUi0. }
+	            claim HziConj: Rlt (add_SNo yi (minus_SNo eps)) zi /\ Rlt zi (add_SNo yi eps).
+	            { exact (SepE2 R (fun x0:set => Rlt (add_SNo yi (minus_SNo eps)) x0 /\ Rlt x0 (add_SNo yi eps)) zi HziUi0'). }
+	            claim HleftR: Rlt (add_SNo yi (minus_SNo eps)) zi.
+	            { exact (andEL (Rlt (add_SNo yi (minus_SNo eps)) zi) (Rlt zi (add_SNo yi eps)) HziConj). }
+	            claim HrightR: Rlt zi (add_SNo yi eps).
+	            { exact (andER (Rlt (add_SNo yi (minus_SNo eps)) zi) (Rlt zi (add_SNo yi eps)) HziConj). }
+	            claim HyimepsR: add_SNo yi (minus_SNo eps) :e R.
+	            { exact (real_add_SNo yi HyiR (minus_SNo eps) (real_minus_SNo eps HepsR)). }
+	            claim HyiepsR: add_SNo yi eps :e R.
+	            { exact (real_add_SNo yi HyiR eps HepsR). }
+	            claim HyimepsS: SNo (add_SNo yi (minus_SNo eps)).
+	            { exact (real_SNo (add_SNo yi (minus_SNo eps)) HyimepsR). }
+	            claim HyiepsS: SNo (add_SNo yi eps).
+	            { exact (real_SNo (add_SNo yi eps) HyiepsR). }
+	            claim HleftS: add_SNo yi (minus_SNo eps) < zi.
+	            { exact (RltE_lt (add_SNo yi (minus_SNo eps)) zi HleftR). }
+	            claim HrightS: zi < add_SNo yi eps.
+	            { exact (RltE_lt zi (add_SNo yi eps) HrightR). }
+	            set t := add_SNo yi (minus_SNo zi).
+	            claim HtR: t :e R.
+	            { exact (real_add_SNo yi HyiR (minus_SNo zi) (real_minus_SNo zi HziR)). }
+	            claim HtS: SNo t.
+	            { exact (real_SNo t HtR). }
+	            (** derive bounds: -eps < t < eps **)
+	            claim HmYiS: SNo (minus_SNo yi).
+	            { exact (SNo_minus_SNo yi HyiS). }
+	            claim HmZiS: SNo (minus_SNo zi).
+	            { exact (SNo_minus_SNo zi HziS). }
+	            claim HmepsS: SNo (minus_SNo eps).
+	            { exact (SNo_minus_SNo eps HepsS). }
+	            (** from zi < yi+eps get -eps < yi-zi **)
+	            claim HdiffLt1: add_SNo (minus_SNo yi) zi < add_SNo (minus_SNo yi) (add_SNo yi eps).
+	            { exact (add_SNo_Lt2 (minus_SNo yi) zi (add_SNo yi eps) HmYiS HziS HyiepsS HrightS). }
+	            claim HdiffLt2: add_SNo zi (minus_SNo yi) < eps.
+	            { prove add_SNo zi (minus_SNo yi) < eps.
+	              rewrite <- (add_SNo_com (minus_SNo yi) zi HmYiS HziS) at 1.
+	              claim HRhs: add_SNo (minus_SNo yi) (add_SNo yi eps) = eps.
+	              { claim Hassoc: add_SNo (minus_SNo yi) (add_SNo yi eps) = add_SNo (add_SNo (minus_SNo yi) yi) eps.
+	                { exact (add_SNo_assoc (minus_SNo yi) yi eps HmYiS HyiS HepsS). }
+	                rewrite Hassoc.
+	                rewrite (add_SNo_minus_SNo_linv yi HyiS).
+	                rewrite (add_SNo_0L eps HepsS).
+	                reflexivity. }
+	              rewrite <- HRhs.
+	              exact HdiffLt1. }
+	            claim HmDiff: minus_SNo eps < minus_SNo (add_SNo zi (minus_SNo yi)).
+	            { exact (minus_SNo_Lt_contra (add_SNo zi (minus_SNo yi)) eps
+	                                        (SNo_add_SNo zi (minus_SNo yi) HziS HmYiS)
+	                                        HepsS
+	                                        HdiffLt2). }
+	            claim HmDiffEq: minus_SNo (add_SNo zi (minus_SNo yi)) = t.
+	            { rewrite (minus_add_SNo_distr zi (minus_SNo yi) HziS HmYiS).
+	              rewrite (minus_SNo_invol yi HyiS).
+	              rewrite (add_SNo_com (minus_SNo zi) yi HmZiS HyiS).
+	              reflexivity. }
+	            claim HloLt: minus_SNo eps < t.
+	            { rewrite <- HmDiffEq.
+	              exact HmDiff. }
+	            (** from yi-eps < zi get t < eps **)
+	            claim HdiffLt3: add_SNo (minus_SNo yi) (add_SNo yi (minus_SNo eps)) < add_SNo (minus_SNo yi) zi.
+	            { exact (add_SNo_Lt2 (minus_SNo yi) (add_SNo yi (minus_SNo eps)) zi
+	                                HmYiS HyimepsS HziS HleftS). }
+	            claim HdiffLt4: minus_SNo eps < add_SNo zi (minus_SNo yi).
+	            { prove minus_SNo eps < add_SNo zi (minus_SNo yi).
+	              rewrite <- (add_SNo_com (minus_SNo yi) zi HmYiS HziS).
+	              claim HLhs: add_SNo (minus_SNo yi) (add_SNo yi (minus_SNo eps)) = minus_SNo eps.
+	              { claim Hassoc2: add_SNo (minus_SNo yi) (add_SNo yi (minus_SNo eps)) = add_SNo (add_SNo (minus_SNo yi) yi) (minus_SNo eps).
+	                { exact (add_SNo_assoc (minus_SNo yi) yi (minus_SNo eps) HmYiS HyiS HmepsS). }
+	                rewrite Hassoc2.
+	                rewrite (add_SNo_minus_SNo_linv yi HyiS).
+	                rewrite (add_SNo_0L (minus_SNo eps) HmepsS).
+	                reflexivity. }
+	              rewrite <- HLhs at 1.
+	              exact HdiffLt3. }
+	            claim HtLt: t < eps.
+	            { rewrite <- HmDiffEq.
+	              rewrite <- (minus_SNo_invol eps HepsS).
+	              exact (minus_SNo_Lt_contra (minus_SNo eps) (add_SNo zi (minus_SNo yi))
+	                                        HmepsS
+	                                        (SNo_add_SNo zi (minus_SNo yi) HziS HmYiS)
+	                                        HdiffLt4). }
+	            claim Hlo: minus_SNo eps <= t.
+	            { exact (SNoLtLe (minus_SNo eps) t HloLt). }
+	            claim Hhi: t <= eps.
+	            { exact (SNoLtLe t eps HtLt). }
+	            claim HabsLe: abs_SNo t <= eps.
+	            { exact (abs_SNo_Le_of_bounds t eps HtS HepsS Hlo Hhi). }
+	            claim HabsR: abs_SNo t :e R.
+	            { exact (abs_SNo_in_R t HtR). }
+	            claim HabsS: SNo (abs_SNo t).
+	            { exact (SNo_abs_SNo t HtS). }
+	            (** bd = abs t since abs t < 1 **)
+	            claim HepsLt1S: eps < 1.
+	            { exact (RltE_lt eps 1 HepsLt1). }
+	            claim HabsLt1S: abs_SNo t < 1.
+	            { exact (SNoLeLt_tra (abs_SNo t) eps 1 HabsS HepsS SNo_1 HabsLe HepsLt1S). }
+	            claim HabsLt1R: Rlt (abs_SNo t) 1.
+	            { exact (RltI (abs_SNo t) 1 HabsR real_1 HabsLt1S). }
+	            claim HbdEq: bd = abs_SNo t.
+	            { claim HbdDef: bd =
+	                If_i (Rlt (abs_SNo (add_SNo yi (minus_SNo zi))) 1)
+	                     (abs_SNo (add_SNo yi (minus_SNo zi)))
+	                     1.
+	              { reflexivity. }
+	              rewrite HbdDef.
+	              rewrite (If_i_1 (Rlt (abs_SNo (add_SNo yi (minus_SNo zi))) 1)
+	                              (abs_SNo (add_SNo yi (minus_SNo zi)))
+	                              1
+	                              HabsLt1R).
+	              reflexivity. }
+	            claim HbdLe: bd <= eps.
+	            { rewrite HbdEq.
+	              exact HabsLe. }
+	            (** inv <= 1 and inv >= 0 **)
+	            claim HsuccNotIn0: ordsucc i0 /:e {0}.
+	            { assume Hin0: ordsucc i0 :e {0}.
+	              claim Heq0: ordsucc i0 = 0.
+	              { exact (SingE 0 (ordsucc i0) Hin0). }
+	              exact (neq_ordsucc_0 i0 Heq0). }
+	            claim HiIn: ordsucc i0 :e omega :\: {0}.
+	            { exact (setminusI omega {0} (ordsucc i0) HSi0 HsuccNotIn0). }
+	            claim HinvRle1: Rle inv 1.
+	            { exact (inv_nat_Rle_1 (ordsucc i0) HiIn). }
+	            claim HinvLe1: inv <= 1.
+	            { apply (SNoLt_trichotomy_or_impred inv 1 HinvS SNo_1 (inv <= 1)).
+	              - assume Hlt: inv < 1.
+	                exact (SNoLtLe inv 1 Hlt).
+	              - assume Heq: inv = 1.
+	                rewrite Heq.
+	                exact (SNoLe_ref 1).
+	              - assume H1lt: 1 < inv.
+	                apply FalseE.
+	                claim HinvRlt: Rlt 1 inv.
+	                { exact (RltI 1 inv real_1 HinvR H1lt). }
+	                exact ((RleE_nlt inv 1 HinvRle1) HinvRlt). }
+	            claim HinvPosR: Rlt 0 inv.
+	            { exact (inv_nat_pos (ordsucc i0) HiIn). }
+	            claim HinvPosS: 0 < inv.
+	            { exact (RltE_lt 0 inv HinvPosR). }
+	            claim HinvNN: 0 <= inv.
+	            { exact (SNoLtLe 0 inv HinvPosS). }
+	            claim HbdNN: 0 <= bd.
+	            { exact (R_bounded_distance_nonneg yi zi HyiR HziR). }
+	            claim HmulLe: mul_SNo bd inv <= eps.
+	            { claim HmulLe': mul_SNo bd inv <= mul_SNo eps 1.
+	              { exact (nonneg_mul_SNo_Le2 bd inv eps 1 HbdS HinvS HepsS SNo_1 HbdNN HinvNN HbdLe HinvLe1). }
+	              prove mul_SNo bd inv <= eps.
+	              rewrite <- (mul_SNo_oneR eps HepsS).
+	              exact HmulLe'. }
+	            exact (Rle_of_SNoLe (mul_SNo bd inv) eps HmulR HepsR HmulLe).
+	          - assume Hnot: ~(i0 :e I).
+	            (** for i0 outside I, inv_nat(ordsucc i0) is small enough so the scaled diff is <= eps **)
+	            set yi := apply_fun y i0.
+	            set zi := apply_fun z i0.
+	            set bd := R_bounded_distance yi zi.
+	            set inv := inv_nat (ordsucc i0).
+	            claim HyiR: yi :e R.
+	            { exact (Romega_coord_in_R y i0 HyX Hi0O). }
+	            claim HziR: zi :e R.
+	            { exact (Romega_coord_in_R z i0 HzX Hi0O). }
+	            claim HyiS: SNo yi.
+	            { exact (real_SNo yi HyiR). }
+	            claim HziS: SNo zi.
+	            { exact (real_SNo zi HziR). }
+	            claim HbdR: bd :e R.
+	            { exact (R_bounded_distance_in_R yi zi HyiR HziR). }
+	            claim HbdS: SNo bd.
+	            { exact (real_SNo bd HbdR). }
+	            claim HSi0: ordsucc i0 :e omega.
+	            { exact (omega_ordsucc i0 Hi0O). }
+	            claim HinvR: inv :e R.
+	            { exact (inv_nat_real (ordsucc i0) HSi0). }
+	            claim HinvS: SNo inv.
+	            { exact (real_SNo inv HinvR). }
+	            claim HmulR: mul_SNo bd inv :e R.
+	            { exact (real_mul_SNo bd HbdR inv HinvR). }
+	            (** show inv < eps using antitonicity, since i0 is outside I = ordsucc N **)
+	            claim Hi0Ord: ordinal i0.
+	            { exact (ordinal_Hered omega omega_ordinal i0 Hi0O). }
+	            claim HIdef0: I = ordsucc N.
+	            { reflexivity. }
+	            claim HNOrd: ordinal N.
+	            { exact (ordinal_Hered omega omega_ordinal N HNO). }
+	            claim HIOrd: ordinal I.
+	            { rewrite HIdef0.
+	              exact (ordinal_ordsucc N HNOrd). }
+	            claim Hcases: i0 :e I \/ I c= i0.
+	            { exact (ordinal_In_Or_Subq i0 I Hi0Ord HIOrd). }
+	            claim HIc: I c= i0.
+	            { apply (Hcases (I c= i0)).
+	              - assume Hi0InI: i0 :e I.
+	                apply FalseE.
+	                exact (Hnot Hi0InI).
+	              - assume Hsub: I c= i0.
+	                exact Hsub. }
+	            claim HNInI: N :e I.
+	            { rewrite HIdef0.
+	              exact (ordsuccI2 N). }
+	            claim HNi0: N :e i0.
+	            { exact (HIc N HNInI). }
+	            claim HinvLtN: Rlt (inv_nat (ordsucc i0)) (inv_nat (ordsucc N)).
+	            { exact (inv_nat_ordsucc_antitone N i0 HNO Hi0O HNi0). }
+	            claim HinvLt: Rlt (inv_nat (ordsucc i0)) eps.
+	            { exact (Rlt_tra (inv_nat (ordsucc i0)) (inv_nat (ordsucc N)) eps HinvLtN HinvNLt). }
+	            claim HepsS: SNo eps.
+	            { exact (real_SNo eps HepsR). }
+	            claim HinvLtS: inv < eps.
+	            { exact (RltE_lt inv eps HinvLt). }
+	            claim HinvLe: inv <= eps.
+	            { exact (SNoLtLe inv eps HinvLtS). }
+	            (** bound mul by inv since bd <= 1 **)
+	            claim HbdLe1R: Rle bd 1.
+	            { exact (R_bounded_distance_le_1 yi zi HyiR HziR). }
+	            claim HbdLe1: bd <= 1.
+	            { apply (SNoLt_trichotomy_or_impred bd 1 HbdS SNo_1 (bd <= 1)).
+	              - assume Hlt: bd < 1.
+	                exact (SNoLtLe bd 1 Hlt).
+	              - assume Heq: bd = 1.
+	                rewrite Heq.
+	                exact (SNoLe_ref 1).
+	              - assume H1lt: 1 < bd.
+	                apply FalseE.
+	                claim HbdRlt: Rlt 1 bd.
+	                { exact (RltI 1 bd real_1 HbdR H1lt). }
+	                exact ((RleE_nlt bd 1 HbdLe1R) HbdRlt). }
+	            claim HinvPosR: Rlt 0 inv.
+	            { set mi := ordsucc i0.
+	              claim HmiNotIn0: mi /:e {0}.
+	              { assume Hin0: mi :e {0}.
+	                claim Heq0: mi = 0.
+	                { exact (SingE 0 mi Hin0). }
+	                exact (neq_ordsucc_0 i0 Heq0). }
+	              claim HmiIn: mi :e omega :\: {0}.
+	              { exact (setminusI omega {0} mi HSi0 HmiNotIn0). }
+	              exact (inv_nat_pos mi HmiIn). }
+	            claim HinvPosS: 0 < inv.
+	            { exact (RltE_lt 0 inv HinvPosR). }
+	            claim HinvNN: 0 <= inv.
+	            { exact (SNoLtLe 0 inv HinvPosS). }
+	            claim HmulLeInv: mul_SNo bd inv <= inv.
+	            { exact (mul_SNo_Le1_nonneg_Le bd inv HbdS HinvS HbdLe1 HinvNN). }
+	            claim HmulS: SNo (mul_SNo bd inv).
+	            { exact (real_SNo (mul_SNo bd inv) HmulR). }
+	            claim HmulLe: mul_SNo bd inv <= eps.
+	            { exact (SNoLe_tra (mul_SNo bd inv) inv eps HmulS HinvS HepsS HmulLeInv HinvLe). }
+	            exact (Rle_of_SNoLe (mul_SNo bd inv) eps HmulR HepsR HmulLe). }
 	        claim Hle': Rle l eps.
 	        { exact (HlubMin eps HepsR Hub). }
 	        exact Hle'. }
