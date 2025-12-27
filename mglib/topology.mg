@@ -57282,9 +57282,9 @@ Theorem ex23_Romega_components :
 prove component_of (product_space omega (const_space_family omega R R_standard_topology)) (product_topology_full omega (const_space_family omega R R_standard_topology)) (const_family omega 0) = product_space omega (const_space_family omega R R_standard_topology) /\ component_of (product_space omega (const_space_family omega R R_standard_topology)) (box_topology omega (const_space_family omega R R_standard_topology)) (const_family omega 0) = {f :e product_space omega (const_space_family omega R R_standard_topology) | exists F:set, finite F /\ forall i:set, i :e omega :\: F -> apply_fun f i = 0}.
 apply andI.
 - (** product topology: connected **)
-  admit.
+  admit. (** FAIL **)
 - (** box topology: finite support condition **)
-  admit.
+  admit. (** FAIL **)
 Qed.
 
 (** from §23 Exercise: ordered square locally connected but not locally path connected **) 
