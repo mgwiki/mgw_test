@@ -69968,8 +69968,25 @@ apply SepI.
 		            claim Hleft: i :e omega /\ Ui :e space_family_topology Xi0 i.
 		            { exact (andI (i :e omega) (Ui :e space_family_topology Xi0 i) HiO HUiIn). }
 		            exact (andI (i :e omega /\ Ui :e space_family_topology Xi0 i) (apply_fun y i :e Ui) Hleft HyUi).
-    - (** intersection subset open_ball **)
-      admit. (** FAIL **) }
+	    - (** intersection subset open_ball **)
+	      prove intersection_of_family X F c= open_ball X d x r.
+	      let z. assume HzInt: z :e intersection_of_family X F.
+	      prove z :e open_ball X d x r.
+	      (** unfold intersection_of_family to get z :e X and membership in all cylinders in F **)
+	      claim HinterDefZ: intersection_of_family X F = {x0 :e X|forall U:set, U :e F -> x0 :e U}.
+	      { reflexivity. }
+	      claim HzInt0: z :e {x0 :e X|forall U:set, U :e F -> x0 :e U}.
+	      { rewrite <- HinterDefZ.
+	        exact HzInt. }
+	      claim HzX: z :e X.
+	      { exact (SepE1 X (fun x0:set => forall U:set, U :e F -> x0 :e U) z HzInt0). }
+	      claim HzAll: forall U:set, U :e F -> z :e U.
+	      { exact (SepE2 X (fun x0:set => forall U:set, U :e F -> x0 :e U) z HzInt0). }
+	      (** triangle inequality: d(x,z) <= d(x,y)+d(y,z) **)
+	      claim Htri: Rle (apply_fun d (x,z)) (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z))).
+	      { exact (metric_triangle_Rle X d x y z Hm Hx HyX HzX). }
+	      (** it remains to bound d(y,z) by eps and then use eps < gap = r-d(x,y) **)
+	      admit. (** FAIL **) }
   apply HexF.
   let F. assume HFcore.
   claim HFleft: F :e finite_subcollections S /\ y :e intersection_of_family X F.
