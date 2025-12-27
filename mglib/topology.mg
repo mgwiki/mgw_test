@@ -10916,6 +10916,194 @@ Theorem distance_R2_triangle_Rle : forall x y z:set,
 admit. (** FAIL **)
 Qed.
 
+(** helper: distance_R2 = 0 implies equality of points **)
+(** LATEX VERSION: In ℝ², d(p,c)=0 implies p=c. **)
+Theorem distance_R2_eq0 : forall p c:set,
+  p :e EuclidPlane -> c :e EuclidPlane ->
+  distance_R2 p c = 0 -> p = c.
+let p c.
+assume Hp: p :e EuclidPlane.
+assume Hc: c :e EuclidPlane.
+assume Hd0: distance_R2 p c = 0.
+set xp := R2_xcoord p.
+set yp := R2_ycoord p.
+set xc := R2_xcoord c.
+set yc := R2_ycoord c.
+set dx := add_SNo xp (minus_SNo xc).
+set dy := add_SNo yp (minus_SNo yc).
+set dx2 := mul_SNo dx dx.
+set dy2 := mul_SNo dy dy.
+set sum := add_SNo dx2 dy2.
+
+claim HxpR : xp :e R.
+{ exact (EuclidPlane_xcoord_in_R p Hp). }
+claim HypR : yp :e R.
+{ exact (EuclidPlane_ycoord_in_R p Hp). }
+claim HxcR : xc :e R.
+{ exact (EuclidPlane_xcoord_in_R c Hc). }
+claim HycR : yc :e R.
+{ exact (EuclidPlane_ycoord_in_R c Hc). }
+claim HmxR : minus_SNo xc :e R.
+{ exact (real_minus_SNo xc HxcR). }
+claim HmyR : minus_SNo yc :e R.
+{ exact (real_minus_SNo yc HycR). }
+claim HdxR : dx :e R.
+{ exact (real_add_SNo xp HxpR (minus_SNo xc) HmxR). }
+claim HdyR : dy :e R.
+{ exact (real_add_SNo yp HypR (minus_SNo yc) HmyR). }
+claim HdxS : SNo dx.
+{ exact (real_SNo dx HdxR). }
+claim HdyS : SNo dy.
+{ exact (real_SNo dy HdyR). }
+claim Hdx2S : SNo dx2.
+{ exact (SNo_mul_SNo dx dx HdxS HdxS). }
+claim Hdy2S : SNo dy2.
+{ exact (SNo_mul_SNo dy dy HdyS HdyS). }
+claim HsumS : SNo sum.
+{ exact (SNo_add_SNo dx2 dy2 Hdx2S Hdy2S). }
+
+(** From d(p,c)=0 derive dx2+dy2=0 using the squared distance formula **)
+claim Hd2eq0 : mul_SNo (distance_R2 p c) (distance_R2 p c) = 0.
+{ rewrite Hd0.
+  rewrite (mul_SNo_zeroL 0 SNo_0).
+  reflexivity. }
+claim Hsqr : mul_SNo (distance_R2 p c) (distance_R2 p c) = sum.
+{ prove mul_SNo (distance_R2 p c) (distance_R2 p c) = sum.
+  rewrite (distance_R2_sqr p c Hp Hc).
+  reflexivity. }
+claim Hsum0 : sum = 0.
+{ rewrite <- Hsqr.
+  exact Hd2eq0. }
+
+(** Each square is nonnegative; compare each to the sum **)
+claim Hdx2nonneg : 0 <= dx2.
+{ exact (SNo_sqr_nonneg dx HdxS). }
+claim Hdy2nonneg : 0 <= dy2.
+{ exact (SNo_sqr_nonneg dy HdyS). }
+claim Hdx2_le_sum : dx2 <= sum.
+{ exact (SNoLe_add_nonneg_right dx2 dy2 Hdx2S Hdy2S Hdy2nonneg). }
+claim Hdy2_le_sum : dy2 <= sum.
+{ rewrite (add_SNo_com dx2 dy2 Hdx2S Hdy2S).
+  exact (SNoLe_add_nonneg_right dy2 dx2 Hdy2S Hdx2S Hdx2nonneg). }
+claim Hdx2le0 : dx2 <= 0.
+{ prove dx2 <= 0.
+  rewrite <- Hsum0 at 1.
+  exact Hdx2_le_sum. }
+claim Hdy2le0 : dy2 <= 0.
+{ prove dy2 <= 0.
+  rewrite <- Hsum0 at 1.
+  exact Hdy2_le_sum. }
+claim H0S : SNo 0.
+{ exact SNo_0. }
+claim Hdx2eq0 : dx2 = 0.
+{ exact (SNoLe_antisym dx2 0 Hdx2S H0S Hdx2le0 Hdx2nonneg). }
+claim Hdy2eq0 : dy2 = 0.
+{ exact (SNoLe_antisym dy2 0 Hdy2S H0S Hdy2le0 Hdy2nonneg). }
+
+(** A square is 0 iff the number is 0 **)
+claim Hdx0 : dx = 0.
+{ claim Hcases: dx = 0 \/ 0 < mul_SNo dx dx.
+  { exact (SNo_zero_or_sqr_pos dx HdxS). }
+  apply Hcases.
+  - assume H0: dx = 0.
+    exact H0.
+  - assume Hpos: 0 < mul_SNo dx dx.
+    claim Hbad: mul_SNo dx dx < mul_SNo dx dx.
+    { claim Hdx2def: dx2 = mul_SNo dx dx.
+      { reflexivity. }
+      claim Hdx2zero: mul_SNo dx dx = 0.
+      { rewrite <- Hdx2def at 1.
+        exact Hdx2eq0. }
+      claim Hpos0: 0 < 0.
+      { rewrite <- Hdx2zero at 2.
+        exact Hpos. }
+      rewrite Hdx2zero at 2.
+      rewrite Hdx2zero at 1.
+      exact Hpos0. }
+    exact (FalseE ((SNoLt_irref (mul_SNo dx dx)) Hbad) (dx = 0)). }
+claim Hdy0 : dy = 0.
+{ claim Hcases: dy = 0 \/ 0 < mul_SNo dy dy.
+  { exact (SNo_zero_or_sqr_pos dy HdyS). }
+  apply Hcases.
+  - assume H0: dy = 0.
+    exact H0.
+  - assume Hpos: 0 < mul_SNo dy dy.
+    claim Hbad: mul_SNo dy dy < mul_SNo dy dy.
+    { claim Hdy2def: dy2 = mul_SNo dy dy.
+      { reflexivity. }
+      claim Hdy2zero: mul_SNo dy dy = 0.
+      { rewrite <- Hdy2def at 1.
+        exact Hdy2eq0. }
+      claim Hpos0: 0 < 0.
+      { rewrite <- Hdy2zero at 2.
+        exact Hpos. }
+      rewrite Hdy2zero at 2.
+      rewrite Hdy2zero at 1.
+      exact Hpos0. }
+    exact (FalseE ((SNoLt_irref (mul_SNo dy dy)) Hbad) (dy = 0)). }
+
+(** Convert dx=0,dy=0 into coordinate equalities xp=xc and yp=yc **)
+claim HxpS : SNo xp.
+{ exact (real_SNo xp HxpR). }
+claim HypS : SNo yp.
+{ exact (real_SNo yp HypR). }
+claim HxcS : SNo xc.
+{ exact (real_SNo xc HxcR). }
+claim HycS : SNo yc.
+{ exact (real_SNo yc HycR). }
+claim HmxcS : SNo (minus_SNo xc).
+{ exact (SNo_minus_SNo xc HxcS). }
+claim HmycS : SNo (minus_SNo yc).
+{ exact (SNo_minus_SNo yc HycS). }
+claim Hxp_eq_xc : xp = xc.
+{ claim HdxDef: dx = add_SNo xp (minus_SNo xc).
+  { reflexivity. }
+  claim Hdx0': add_SNo xp (minus_SNo xc) = 0.
+  { rewrite <- HdxDef.
+    exact Hdx0. }
+  claim Hl_to_xc: add_SNo (add_SNo xp (minus_SNo xc)) xc = xc.
+  { rewrite Hdx0' at 1.
+    exact (add_SNo_0L xc HxcS). }
+  claim Hl_to_xp: add_SNo (add_SNo xp (minus_SNo xc)) xc = xp.
+  { rewrite <- (add_SNo_assoc xp (minus_SNo xc) xc HxpS HmxcS HxcS).
+    rewrite (add_SNo_com (minus_SNo xc) xc HmxcS HxcS).
+    rewrite (add_SNo_assoc xp xc (minus_SNo xc) HxpS HxcS HmxcS).
+    rewrite (add_SNo_minus_R2 xp xc HxpS HxcS).
+    reflexivity. }
+  prove xp = xc.
+  rewrite <- Hl_to_xp at 1.
+  exact Hl_to_xc. }
+claim Hyp_eq_yc : yp = yc.
+{ claim HdyDef: dy = add_SNo yp (minus_SNo yc).
+  { reflexivity. }
+  claim Hdy0': add_SNo yp (minus_SNo yc) = 0.
+  { rewrite <- HdyDef.
+    exact Hdy0. }
+  claim Hl_to_yc: add_SNo (add_SNo yp (minus_SNo yc)) yc = yc.
+  { rewrite Hdy0' at 1.
+    exact (add_SNo_0L yc HycS). }
+  claim Hl_to_yp: add_SNo (add_SNo yp (minus_SNo yc)) yc = yp.
+  { rewrite <- (add_SNo_assoc yp (minus_SNo yc) yc HypS HmycS HycS).
+    rewrite (add_SNo_com (minus_SNo yc) yc HmycS HycS).
+    rewrite (add_SNo_assoc yp yc (minus_SNo yc) HypS HycS HmycS).
+    rewrite (add_SNo_minus_R2 yp yc HypS HycS).
+    reflexivity. }
+  prove yp = yc.
+  rewrite <- Hl_to_yp at 1.
+  exact Hl_to_yc. }
+
+(** Conclude p=c by eta expansion on EuclidPlane **)
+claim Hp_eta : (xp, yp) = p.
+{ exact (EuclidPlane_eta p Hp). }
+claim Hc_eta : (xc, yc) = c.
+{ exact (EuclidPlane_eta c Hc). }
+rewrite <- Hp_eta.
+rewrite <- Hc_eta.
+rewrite Hxp_eq_xc.
+rewrite Hyp_eq_yc.
+reflexivity.
+Qed.
+
 (** from §13 Example 4: circular region basis elements in EuclidPlane **)
 (** LATEX VERSION: Circular regions: sets of the form {p in R^2 | d(p,c) < r} with c in R^2 and 0<r. **)
 Definition circular_regions : set :=
