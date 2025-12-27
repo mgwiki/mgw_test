@@ -68141,52 +68141,55 @@ claim Hub: forall a:set, a :e A -> a :e R -> Rle a l.
 { exact (andER (l :e R) (forall a:set, a :e A -> a :e R -> Rle a l) Hcore). }
 assume Hl0: Rlt l 0.
 prove False.
-set a1 := mul_SNo (R_bounded_distance (apply_fun x 1) (apply_fun y 1)) (inv_nat 1).
-claim H1omega: 1 :e omega.
-{ exact (nat_p_omega 1 nat_1). }
-claim H1not0: 1 /:e {0}.
-{ assume H1: 1 :e {0}.
-  claim Heq: 1 = 0.
-  { exact (SingE 0 1 H1). }
-  exact (neq_1_0 Heq). }
-claim H1In: 1 :e omega :\: {0}.
-{ exact (setminusI omega {0} 1 H1omega H1not0). }
+set a1 := mul_SNo (R_bounded_distance (apply_fun x 0) (apply_fun y 0)) (inv_nat (ordsucc 0)).
+claim H0omega: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
 claim Ha1A: a1 :e A.
-{ exact (ReplI (omega :\: {0})
-               (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i))
-               1
-               H1In). }
-claim HxiR: apply_fun x 1 :e R.
-{ exact (Romega_coord_in_R x 1 Hx H1omega). }
-claim HyiR: apply_fun y 1 :e R.
-{ exact (Romega_coord_in_R y 1 Hy H1omega). }
-claim HbdR: R_bounded_distance (apply_fun x 1) (apply_fun y 1) :e R.
-{ exact (R_bounded_distance_in_R (apply_fun x 1) (apply_fun y 1) HxiR HyiR). }
-claim HinvR: inv_nat 1 :e R.
-{ exact (inv_nat_real 1 H1omega). }
+{ exact (ReplI omega
+               (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+               0
+               H0omega). }
+claim HxiR: apply_fun x 0 :e R.
+{ exact (Romega_coord_in_R x 0 Hx H0omega). }
+claim HyiR: apply_fun y 0 :e R.
+{ exact (Romega_coord_in_R y 0 Hy H0omega). }
+claim HbdR: R_bounded_distance (apply_fun x 0) (apply_fun y 0) :e R.
+{ exact (R_bounded_distance_in_R (apply_fun x 0) (apply_fun y 0) HxiR HyiR). }
+claim H1omega: ordsucc 0 :e omega.
+{ exact (omega_ordsucc 0 H0omega). }
+claim H1not0: ordsucc 0 /:e {0}.
+{ assume H1: ordsucc 0 :e {0}.
+  claim Heq: ordsucc 0 = 0.
+  { exact (SingE 0 (ordsucc 0) H1). }
+  exact (neq_ordsucc_0 0 Heq). }
+claim H1In: ordsucc 0 :e omega :\: {0}.
+{ exact (setminusI omega {0} (ordsucc 0) H1omega H1not0). }
+claim HinvR: inv_nat (ordsucc 0) :e R.
+{ exact (inv_nat_real (ordsucc 0) H1omega). }
 claim Ha1R: a1 :e R.
-{ exact (real_mul_SNo (R_bounded_distance (apply_fun x 1) (apply_fun y 1)) HbdR (inv_nat 1) HinvR). }
+{ exact (real_mul_SNo (R_bounded_distance (apply_fun x 0) (apply_fun y 0)) HbdR
+                      (inv_nat (ordsucc 0)) HinvR). }
 claim Ha1S: SNo a1.
 { exact (real_SNo a1 Ha1R). }
 claim HlS: SNo l.
 { exact (real_SNo l HlR). }
 claim H0S: SNo 0.
 { exact SNo_0. }
-claim HbdS: SNo (R_bounded_distance (apply_fun x 1) (apply_fun y 1)).
-{ exact (real_SNo (R_bounded_distance (apply_fun x 1) (apply_fun y 1)) HbdR). }
-claim HinvS: SNo (inv_nat 1).
-{ exact (real_SNo (inv_nat 1) HinvR). }
-claim HbdNN: 0 <= R_bounded_distance (apply_fun x 1) (apply_fun y 1).
-{ exact (R_bounded_distance_nonneg (apply_fun x 1) (apply_fun y 1) HxiR HyiR). }
-claim HinvPosR: Rlt 0 (inv_nat 1).
-{ exact (inv_nat_pos 1 H1In). }
-claim HinvPos: 0 < inv_nat 1.
-{ exact (RltE_lt 0 (inv_nat 1) HinvPosR). }
-claim HinvNN: 0 <= inv_nat 1.
-{ exact (SNoLtLe 0 (inv_nat 1) HinvPos). }
+claim HbdS: SNo (R_bounded_distance (apply_fun x 0) (apply_fun y 0)).
+{ exact (real_SNo (R_bounded_distance (apply_fun x 0) (apply_fun y 0)) HbdR). }
+claim HinvS: SNo (inv_nat (ordsucc 0)).
+{ exact (real_SNo (inv_nat (ordsucc 0)) HinvR). }
+claim HbdNN: 0 <= R_bounded_distance (apply_fun x 0) (apply_fun y 0).
+{ exact (R_bounded_distance_nonneg (apply_fun x 0) (apply_fun y 0) HxiR HyiR). }
+claim HinvPosR: Rlt 0 (inv_nat (ordsucc 0)).
+{ exact (inv_nat_pos (ordsucc 0) H1In). }
+claim HinvPos: 0 < inv_nat (ordsucc 0).
+{ exact (RltE_lt 0 (inv_nat (ordsucc 0)) HinvPosR). }
+claim HinvNN: 0 <= inv_nat (ordsucc 0).
+{ exact (SNoLtLe 0 (inv_nat (ordsucc 0)) HinvPos). }
 claim Ha1nonneg: 0 <= a1.
-{ exact (mul_SNo_nonneg_nonneg (R_bounded_distance (apply_fun x 1) (apply_fun y 1))
-                               (inv_nat 1)
+{ exact (mul_SNo_nonneg_nonneg (R_bounded_distance (apply_fun x 0) (apply_fun y 0))
+                               (inv_nat (ordsucc 0))
                                HbdS HinvS
                                HbdNN HinvNN). }
 claim Ha1lt0n: ~(a1 < 0).
