@@ -66484,9 +66484,76 @@ Definition Romega_D_scaled_diffs : set -> set -> set := fun x y =>
 Definition Romega_D_metric_value : set -> set -> set := fun x y =>
   Eps_i (fun r:set => R_lub (Romega_D_scaled_diffs x y) r).
 
+(** helper: scaled diffs are real numbers **)
+Theorem Romega_D_scaled_diffs_in_R : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  forall a:set, a :e Romega_D_scaled_diffs x y -> a :e R.
+admit. (** FAIL **)
+Qed.
+
+(** helper: scaled diffs are bounded above in R **)
+Theorem Romega_D_scaled_diffs_bounded : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  exists u:set, u :e R /\ forall a:set, a :e Romega_D_scaled_diffs x y -> a :e R -> Rle a u.
+admit. (** FAIL **)
+Qed.
+
+(** helper: the chosen D value is a least upper bound **)
+Theorem Romega_D_metric_value_is_lub : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  R_lub (Romega_D_scaled_diffs x y) (Romega_D_metric_value x y).
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+set A := Romega_D_scaled_diffs x y.
+set P := (fun r:set => R_lub A r).
+claim HAinR: forall a:set, a :e A -> a :e R.
+{ exact (Romega_D_scaled_diffs_in_R x y Hx Hy). }
+claim Hub: exists u:set, u :e R /\ forall a:set, a :e A -> a :e R -> Rle a u.
+{ exact (Romega_D_scaled_diffs_bounded x y Hx Hy). }
+claim Hex: exists l:set, P l.
+{ exact (R_lub_exists A HAinR Hub). }
+exact (Eps_i_ex P Hex).
+Qed.
+
+(** helper: D metric values are real numbers **)
+Theorem Romega_D_metric_value_in_R : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  Romega_D_metric_value x y :e R.
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+exact (R_lub_in_R (Romega_D_scaled_diffs x y)
+                  (Romega_D_metric_value x y)
+                  (Romega_D_metric_value_is_lub x y Hx Hy)).
+Qed.
+
 Definition Romega_D_metric : set :=
   graph (setprod R_omega_space R_omega_space)
         (fun p:set => Romega_D_metric_value (p 0) (p 1)).
+
+(** helper: D metric is function_on into R **)
+Theorem Romega_D_metric_function_on :
+  function_on Romega_D_metric (setprod R_omega_space R_omega_space) R.
+let p.
+assume Hp: p :e setprod R_omega_space R_omega_space.
+prove apply_fun Romega_D_metric p :e R.
+claim Happ: apply_fun Romega_D_metric p =
+  Romega_D_metric_value (p 0) (p 1).
+{ exact (apply_fun_graph (setprod R_omega_space R_omega_space)
+                         (fun q:set => Romega_D_metric_value (q 0) (q 1))
+                         p Hp). }
+rewrite Happ.
+claim Hp0: p 0 :e R_omega_space.
+{ exact (ap0_Sigma R_omega_space (fun _ : set => R_omega_space) p Hp). }
+claim Hp1: p 1 :e R_omega_space.
+{ exact (ap1_Sigma R_omega_space (fun _ : set => R_omega_space) p Hp). }
+exact (Romega_D_metric_value_in_R (p 0) (p 1) Hp0 Hp1).
+Qed.
 
 Definition Romega_D_metric_topology : set := metric_topology R_omega_space Romega_D_metric.
 
