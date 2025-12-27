@@ -39026,6 +39026,35 @@ apply (SNoLt_trichotomy_or_impred sqrt2 0 Hs2S SNo_0 (0 < sqrt2)).
   exact H0lts2.
 Qed.
 
+(** Helper: 3 is a rational number **)
+Theorem three_in_rational_numbers : 3 :e rational_numbers.
+prove 3 :e rational.
+claim H3nat: nat_p 3.
+{ rewrite <- ordsucc_2_eq_3.
+  exact (nat_ordsucc 2 nat_2). }
+claim H3omega: 3 :e omega.
+{ exact (nat_p_omega 3 H3nat). }
+claim H3SNoS: 3 :e SNoS_ omega.
+{ exact (omega_SNoS_omega 3 H3omega). }
+exact (Subq_SNoS_omega_rational 3 H3SNoS).
+Qed.
+
+(** Helper: sqrt2 is not rational **)
+Theorem sqrt2_not_rational_numbers : sqrt2 /:e rational_numbers.
+assume Hs2Q: sqrt2 :e rational_numbers.
+prove False.
+claim Hirr: sqrt2 :e real :\: rational.
+{ exact sqrt_2_irrational. }
+claim HnotRat: sqrt2 /:e rational.
+{ exact (setminusE2 real rational sqrt2 Hirr). }
+claim HdefQ: rational_numbers = rational.
+{ reflexivity. }
+claim Hs2Rat: sqrt2 :e rational.
+{ rewrite <- HdefQ.
+  exact Hs2Q. }
+exact (HnotRat Hs2Rat).
+Qed.
+
 Definition R_C_topology : set := generated_topology R rational_halfopen_intervals_basis.
 
 (** Helper: the lower limit topology is finer than the rational half-open topology **)
