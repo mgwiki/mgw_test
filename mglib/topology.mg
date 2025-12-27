@@ -39010,15 +39010,17 @@ apply (SNoLt_trichotomy_or_impred sqrt2 0 Hs2S SNo_0 (0 < sqrt2)).
   exact ((SNoLt_irref 0) H0lt0).
 - assume Heq: sqrt2 = 0.
   apply FalseE.
-  claim Hs2sqr: mul_SNo sqrt2 sqrt2 = 2.
+  claim Htmp: mul_SNo sqrt2 sqrt2 = 2.
+  { exact (sqrt_SNo_nonneg_sqr 2 SNo_2 (SNoLtLe 0 2 SNoLt_0_2)). }
+  claim Hs2sqr0: mul_SNo 0 0 = 2.
   { rewrite <- Heq at 1.
-    rewrite <- Heq at 2.
-    exact (sqrt_SNo_nonneg_sqr 2 SNo_2 (SNoLtLe 0 2 SNoLt_0_2)). }
+    rewrite <- Heq at 1.
+    exact Htmp. }
   claim H00: mul_SNo 0 0 = 0.
   { exact (mul_SNo_zeroL 0 SNo_0). }
   claim H02: 0 = 2.
   { rewrite <- H00 at 1.
-    exact Hs2sqr. }
+    exact Hs2sqr0. }
   exact (neq_0_2 H02).
 - assume H0lts2: 0 < sqrt2.
   exact H0lts2.
