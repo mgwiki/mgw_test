@@ -37833,7 +37833,7 @@ prove closure_of R R_lower_limit_topology ex17_17_interval_A = ex17_17_interval_
   closure_of R R_C_topology ex17_17_interval_A = ex17_17_interval_A_closure_C /\
   closure_of R R_lower_limit_topology ex17_17_interval_B = ex17_17_interval_B_closure_lower /\
   closure_of R R_C_topology ex17_17_interval_B = ex17_17_interval_B_closure_lower.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** LATEX VERSION: Exercise 18: Determine the closures of the subsets A,B,C,D,E of the ordered square listed in the text. **)
@@ -37858,7 +37858,7 @@ prove closure_of ordered_square ordered_square_topology ordsq_A = ordsq_A :\/: {
   closure_of ordered_square ordered_square_topology ordsq_C = ordsq_C :\/: {ordsq_p01} :\/: {ordsq_p10} /\
   closure_of ordered_square ordered_square_topology ordsq_D = ordsq_D :\/: ordsq_C :\/: {ordsq_p01} :\/: {ordsq_p10} /\
   closure_of ordered_square ordered_square_topology ordsq_E = ordsq_E_closure.
-admit.
+admit. (** FAIL **)
 Qed.
 
 Definition boundary_of : set -> set -> set -> set := fun X Tx A =>
@@ -37885,7 +37885,7 @@ Theorem ex17_20_boundaries_and_interiors_in_R2 :
   boundary_of (setprod R R) R2_standard_topology ordered_square_open_strip <>
   boundary_of (setprod R R) R2_dictionary_order_topology ordered_square_open_strip.
 prove boundary_of (setprod R R) R2_standard_topology ordered_square_open_strip <> boundary_of (setprod R R) R2_dictionary_order_topology ordered_square_open_strip.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** LATEX VERSION: Exercise 21: Kuratowski example in discrete topology gives maximal closure after complement. **)
