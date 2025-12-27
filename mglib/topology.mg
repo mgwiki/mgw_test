@@ -26504,9 +26504,9 @@ Definition topology_family_union : set -> set -> set := fun I Xi =>
 
 Definition product_space : set -> set -> set := fun I Xi =>
   {f :e Power (setprod I (space_family_union I Xi))|
-     function_on f I (space_family_union I Xi) /\
+     total_function_on f I (space_family_union I Xi) /\ functional_graph f /\
      forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i}.
-(** SUSPICIOUS DEFINITION: This uses `function_on`/`apply_fun` (based on `Eps_i`), so membership in `product_space` does not by itself assert that `f` is a genuine functional graph unless paired with separate functional-graph hypotheses. **)
+(** FIXED: product_space elements are now total functional graphs I -> space_family_union, matching the intended set-theoretic product and avoiding Eps-choice pathologies. **)
 Definition product_cylinder : set -> set -> set -> set -> set :=
   fun I Xi i U =>
     {f :e product_space I Xi | i :e I /\ U :e space_family_topology Xi i /\ apply_fun f i :e U}.
@@ -26517,10 +26517,10 @@ Definition product_topology_full : set -> set -> set := fun I Xi =>
 (** FIXED: Was using Power set which generates discrete topology, not box topology; now box_topology is generated from the box_basis (products of opens in each component). **)
 Definition box_basis : set -> set -> set := fun I Xi =>
   {B :e Power (product_space I Xi) |
-    exists U:set, function_on U I (topology_family_union I Xi) /\
+    exists U:set, total_function_on U I (topology_family_union I Xi) /\ functional_graph U /\
       (forall i:set, i :e I -> apply_fun U i :e space_family_topology Xi i) /\
       B = {f :e product_space I Xi | forall i:set, i :e I -> apply_fun f i :e apply_fun U i}}.
-(** SUSPICIOUS DEFINITION: The witness `U` is itself only constrained by `function_on`/`apply_fun`; later proofs about box-basic opens may need explicit functional-graph facts about `U` to avoid Eps-choice pathologies. **)
+(** FIXED: box_basis witnesses are total functional graphs U:I->(union of component topologies), ensuring `apply_fun U i` is backed by an actual graph element. **)
 Definition box_topology : set -> set -> set := fun I Xi =>
   generated_topology (product_space I Xi) (box_basis I Xi).
 Definition countable_product_space : set -> set -> set := fun I Xi =>
