@@ -29513,7 +29513,7 @@ apply andI.
 Qed.
 
 (** from §16 Exercise 5(a): product topology monotonicity **)
-(** LATEX VERSION: Exercise 5(a): If T⊂T' and U⊂U', then the product topology from T,U is contained in that from T',U'. **)
+(** LATEX VERSION: Exercise 5(a): Assume X and Y are nonempty. If T⊂T' and U⊂U', then the product topology from T,U is contained in that from T',U'. **)
 Theorem ex16_5a_product_monotone : forall X T T' Y U U':set,
   X <> Empty -> Y <> Empty ->
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
@@ -29571,7 +29571,7 @@ Theorem ex16_5a_product_monotone : forall X T T' Y U U':set,
 Qed.
 
 (** from §16 Exercise 5(b): converse question about product fineness **)
-(** LATEX VERSION: Exercise 5(b): If product topology from T,U is contained in that from T',U', then T⊂T' and U⊂U'. **)
+(** LATEX VERSION: Exercise 5(b): Assume X and Y are nonempty. If product topology from T,U is contained in that from T',U', then T⊂T' and U⊂U'. **)
 Theorem ex16_5b_product_converse : forall X T T' Y U U':set,
   X <> Empty -> Y <> Empty ->
   topology_on X T -> topology_on X T' -> topology_on Y U -> topology_on Y U' ->
