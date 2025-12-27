@@ -71166,12 +71166,14 @@ apply andI.
 					                           (andEL (Bsel i0 c= Power (space_family_set Xi i0) /\ (forall x :e space_family_set Xi i0, exists b :e Bsel i0, x :e b))
 					                                  (forall b1 :e Bsel i0, forall b2 :e Bsel i0, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e Bsel i0, x :e b3 /\ b3 c= b1 :/\: b2)
 					                                  HBsel_i0)). }
-					            claim Hf0prop: function_on f0 I (space_family_union I Xi) /\ forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i.
+					            claim Hf0prop: (total_function_on f0 I (space_family_union I Xi) /\ functional_graph f0) /\
+					              forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i.
 					            { exact (SepE2 (Power (setprod I (space_family_union I Xi)))
-					                         (fun f1:set => function_on f1 I (space_family_union I Xi) /\ forall i:set, i :e I -> apply_fun f1 i :e space_family_set Xi i)
+					                         (fun f1:set => (total_function_on f1 I (space_family_union I Xi) /\ functional_graph f1) /\
+					                           forall i:set, i :e I -> apply_fun f1 i :e space_family_set Xi i)
 					                         f0 Hf0). }
 					            claim Hcompf0: forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i.
-					            { exact (andER (function_on f0 I (space_family_union I Xi))
+					            { exact (andER (total_function_on f0 I (space_family_union I Xi) /\ functional_graph f0)
 					                           (forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i)
 					                           Hf0prop). }
 					            claim Hfi0: apply_fun f0 i0 :e space_family_set Xi i0.
