@@ -69939,11 +69939,25 @@ apply SepI.
 	        {f0 :e product_space omega Xi0 |
 	          (i :e omega /\ U :e space_family_topology Xi0 i) /\ apply_fun f0 i :e U}.
 	      { reflexivity. }
-	      rewrite HCdef.
-	      apply SepI.
-	      - exact Hgprod.
-	      - (** show (i :e omega /\ U :e space_family_topology Xi0 i) /\ apply_fun g i :e U **)
-	        admit. }
+		      rewrite HCdef.
+		      apply SepI.
+		      - exact Hgprod.
+			      - (** show (i :e omega /\ U :e space_family_topology Xi0 i) /\ apply_fun g i :e U **)
+			        prove (i :e omega /\ U :e space_family_topology Xi0 i) /\ apply_fun g i :e U.
+			        claim Hleft: i :e omega /\ U :e space_family_topology Xi0 i.
+			        { apply andI.
+			          - exact Hi.
+			          - claim HTi: space_family_topology Xi0 i = R_standard_topology.
+			            { claim Hdef: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+			              { reflexivity. }
+			              rewrite Hdef.
+			              rewrite (const_space_family_apply omega R R_standard_topology i Hi).
+			              exact (tuple_2_1_eq R R_standard_topology). }
+			            rewrite HTi.
+			            exact HU. }
+			        apply (andI (i :e omega /\ U :e space_family_topology Xi0 i) (apply_fun g i :e U)).
+			        - exact Hleft.
+			        - admit. }
   apply HexBall.
   let r0. assume Hr0pair.
   apply Hr0pair.
