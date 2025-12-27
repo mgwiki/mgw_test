@@ -65365,13 +65365,13 @@ apply andI.
 Theorem product_topology_full_Hausdorff_axiom : forall I Xi:set,
   Hausdorff_spaces_family I Xi ->
   Hausdorff_space (product_space I Xi) (product_topology_full I Xi).
-admit.
+admit. (** FAIL **)
 Qed.
 
 Theorem product_topology_full_regular_axiom : forall I Xi:set,
   regular_spaces_family I Xi ->
   regular_space (product_space I Xi) (product_topology_full I Xi).
-admit.
+admit. (** FAIL **)
 Qed.
 
 Theorem separation_axioms_subspace_product : forall X Tx:set,
