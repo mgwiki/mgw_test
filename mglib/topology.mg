@@ -53591,22 +53591,49 @@ claim Hcond: forall f :e unbounded_sequences_Romega, exists b :e B, f :e b /\ b 
       { exact (HUapply i Hi). }
       rewrite HappUi.
       exact HopenI. }
-    claim HexU: exists U0:set, function_on U0 omega TU /\
-      (forall i:set, i :e omega -> apply_fun U0 i :e space_family_topology Xi i) /\
-      bU = {f0 :e X | forall i:set, i :e omega -> apply_fun f0 i :e apply_fun U0 i}.
-    { witness U.
-      apply andI.
-      - apply andI.
-        + exact HUfun.
-        + exact HUcoords.
-      - reflexivity. }
-    exact (SepI (Power X)
-                (fun B0:set => exists U0:set, function_on U0 omega TU /\
-                  (forall i:set, i :e omega -> apply_fun U0 i :e space_family_topology Xi i) /\
-                  B0 = {f0 :e X | forall i:set, i :e omega -> apply_fun f0 i :e apply_fun U0 i})
-                bU
-                HbUpow
-                HexU).
+	    claim HUTot: total_function_on U omega TU.
+	    { apply andI.
+	      - exact HUfun.
+	      - let i. assume Hi: i :e omega.
+	        witness (open_interval (add_SNo (apply_fun f i) (minus_SNo 1))
+	                               (add_SNo (apply_fun f i) 1)).
+	        apply andI.
+	        + claim HappUi: apply_fun U i =
+	            open_interval (add_SNo (apply_fun f i) (minus_SNo 1))
+	                          (add_SNo (apply_fun f i) 1).
+	          { exact (HUapply i Hi). }
+	          rewrite <- HappUi.
+	          exact (HUfun i Hi).
+	        + exact (ReplI omega
+	                       (fun i0:set =>
+	                         (i0, open_interval (add_SNo (apply_fun f i0) (minus_SNo 1))
+	                                            (add_SNo (apply_fun f i0) 1)))
+	                       i
+	                       Hi). }
+	    claim HUFG: functional_graph U.
+	    { exact (functional_graph_graph omega (fun i0:set =>
+	             open_interval (add_SNo (apply_fun f i0) (minus_SNo 1))
+	                           (add_SNo (apply_fun f i0) 1))). }
+	    claim HexU: exists U0:set,
+	      total_function_on U0 omega TU /\ functional_graph U0 /\
+	      (forall i:set, i :e omega -> apply_fun U0 i :e space_family_topology Xi i) /\
+	      bU = {f0 :e X | forall i:set, i :e omega -> apply_fun f0 i :e apply_fun U0 i}.
+	    { witness U.
+	      apply andI.
+	      - apply andI.
+	        + apply andI.
+	          * exact HUTot.
+	          * exact HUFG.
+	        + exact HUcoords.
+	      - reflexivity. }
+	    exact (SepI (Power X)
+	                (fun B0:set => exists U0:set,
+	                  total_function_on U0 omega TU /\ functional_graph U0 /\
+	                  (forall i:set, i :e omega -> apply_fun U0 i :e space_family_topology Xi i) /\
+	                  B0 = {f0 :e X | forall i:set, i :e omega -> apply_fun f0 i :e apply_fun U0 i})
+	                bU
+	                HbUpow
+	                HexU).
   - apply andI.
     + (** f :e bU **)
       prove f :e bU.
