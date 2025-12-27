@@ -67827,7 +67827,123 @@ Definition binary_sequences_Romega : set :=
 (** from §30 Example 2: uncountability of the binary sequences subset **) 
 (** LATEX VERSION: The set of binary sequences is uncountable because Power omega injects into it via characteristic functions. **)
 Theorem binary_sequences_Romega_uncountable : ~ countable_set binary_sequences_Romega.
-admit.
+prove ~ countable_set binary_sequences_Romega.
+assume Hcount: countable_set binary_sequences_Romega.
+apply Hcount.
+let g. assume Hg: inj binary_sequences_Romega omega g.
+set F := (fun A:set => graph omega (fun n:set => if n :e A then 1 else 0)).
+claim HF_inj: inj (Power omega) binary_sequences_Romega F.
+{ prove (forall A :e Power omega, F A :e binary_sequences_Romega) /\
+    (forall A B :e Power omega, F A = F B -> A = B).
+  apply andI.
+  - let A. assume HA: A :e Power omega.
+    prove F A :e binary_sequences_Romega.
+    apply (SepI real_sequences (fun f0:set => forall n:set, n :e omega -> apply_fun f0 n :e {0,1}) (F A)).
+    + (** F A :e real_sequences **)
+      set h := (fun n:set => if n :e A then 1 else 0).
+      claim Hsub: graph omega h c= setprod omega R.
+      { let p. assume Hp: p :e graph omega h.
+        prove p :e setprod omega R.
+        apply (ReplE_impred omega (fun i:set => (i, h i)) p Hp (p :e setprod omega R)).
+        let i. assume Hi: i :e omega. assume Hpdef: p = (i, h i).
+        rewrite Hpdef.
+        claim HhiR: h i :e R.
+        { apply (xm (i :e A) (h i :e R)).
+          - assume HiA: i :e A.
+            claim Heq: h i = 1.
+            { exact (If_i_1 (i :e A) 1 0 HiA). }
+            rewrite Heq.
+            exact real_1.
+          - assume HniA: ~(i :e A).
+            claim Heq: h i = 0.
+            { exact (If_i_0 (i :e A) 1 0 HniA). }
+            rewrite Heq.
+            exact real_0. }
+        exact (tuple_2_setprod_by_pair_Sigma omega R i (h i) Hi HhiR). }
+      claim Hpow: graph omega h :e Power (setprod omega R).
+      { exact (PowerI (setprod omega R) (graph omega h) Hsub). }
+      claim Hfun: function_on (graph omega h) omega R.
+      { let i. assume Hi: i :e omega.
+        prove apply_fun (graph omega h) i :e R.
+        claim Happ: apply_fun (graph omega h) i = h i.
+        { exact (apply_fun_graph omega h i Hi). }
+        rewrite Happ.
+        apply (xm (i :e A) (h i :e R)).
+        - assume HiA: i :e A.
+          claim Heq: h i = 1.
+          { exact (If_i_1 (i :e A) 1 0 HiA). }
+          rewrite Heq.
+          exact real_1.
+        - assume HniA: ~(i :e A).
+          claim Heq: h i = 0.
+          { exact (If_i_0 (i :e A) 1 0 HniA). }
+          rewrite Heq.
+          exact real_0. }
+      exact (SepI (Power (setprod omega R)) (fun f0:set => function_on f0 omega R) (graph omega h) Hpow Hfun).
+    + (** values lie in {0,1} **)
+      let n. assume Hn: n :e omega.
+      prove apply_fun (F A) n :e {0,1}.
+      claim Happ: apply_fun (F A) n = if n :e A then 1 else 0.
+      { exact (apply_fun_graph omega (fun k:set => if k :e A then 1 else 0) n Hn). }
+      rewrite Happ.
+      apply (xm (n :e A) (if n :e A then 1 else 0 :e {0,1})).
+      * assume HnA: n :e A.
+        rewrite (If_i_1 (n :e A) 1 0 HnA).
+        exact (UPairI1 1 0).
+      * assume HnnotA: ~(n :e A).
+        rewrite (If_i_0 (n :e A) 1 0 HnnotA).
+        exact (UPairI2 1 0).
+  - let A. assume HA: A :e Power omega.
+    let B. assume HB: B :e Power omega.
+    assume Heq: F A = F B.
+    prove A = B.
+    apply set_ext.
+    + let n. assume HnA: n :e A.
+      prove n :e B.
+      apply (xm (n :e B) (n :e B)).
+      * assume HnB: n :e B.
+        exact HnB.
+      * assume HnnotB: ~(n :e B).
+        claim HnO: n :e omega.
+        { exact (PowerE omega A HA n HnA). }
+        claim HAval: apply_fun (F A) n = 1.
+        { rewrite (apply_fun_graph omega (fun k:set => if k :e A then 1 else 0) n HnO).
+          rewrite (If_i_1 (n :e A) 1 0 HnA).
+          reflexivity. }
+        claim HBval: apply_fun (F B) n = 0.
+        { rewrite (apply_fun_graph omega (fun k:set => if k :e B then 1 else 0) n HnO).
+          rewrite (If_i_0 (n :e B) 1 0 HnnotB).
+          reflexivity. }
+        claim Hcontra: 1 = 0.
+        { rewrite <- HBval.
+          rewrite <- Heq.
+          exact HAval. }
+        exact (FalseE (neq_0_1 (eq_sym 0 1 Hcontra)) (n :e B)). 
+    + let n. assume HnB: n :e B.
+      prove n :e A.
+      apply (xm (n :e A) (n :e A)).
+      * assume HnA: n :e A.
+        exact HnA.
+      * assume HnnotA: ~(n :e A).
+        claim HnO: n :e omega.
+        { exact (PowerE omega B HB n HnB). }
+        claim HBval: apply_fun (F B) n = 1.
+        { rewrite (apply_fun_graph omega (fun k:set => if k :e B then 1 else 0) n HnO).
+          rewrite (If_i_1 (n :e B) 1 0 HnB).
+          reflexivity. }
+        claim HAval: apply_fun (F A) n = 0.
+        { rewrite (apply_fun_graph omega (fun k:set => if k :e A then 1 else 0) n HnO).
+          rewrite (If_i_0 (n :e A) 1 0 HnnotA).
+          reflexivity. }
+        claim Hcontra: 1 = 0.
+        { rewrite <- HAval.
+          rewrite Heq.
+          exact HBval. }
+        exact (FalseE (neq_0_1 (eq_sym 0 1 Hcontra)) (n :e A)). }
+set h := (fun A:set => g (F A)).
+claim HinjPow: inj (Power omega) omega h.
+{ exact (inj_comp (Power omega) binary_sequences_Romega omega F g HF_inj Hg). }
+exact (form100_22_v2 h HinjPow).
 Qed.
 
 (** from §30 Example 2: discreteness of binary sequences in the uniform topology **) 
