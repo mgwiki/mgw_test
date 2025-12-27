@@ -67875,8 +67875,7 @@ claim HpickP: forall a:set, a :e A ->
   { exact (andEL (a :e b) (b c= U) Habsub). }
   claim HbsubU: b c= U.
   { exact (andER (a :e b) (b c= U) Habsub). }
-  claim Hwit: (fun b0:set => b0 :e B /\
-    exists U0:set, U0 :e Tx /\ (U0 :/\: A = {a} /\ (a :e b0 /\ b0 c= U0))) b.
+  claim Hwit0: b :e B /\ exists U0:set, U0 :e Tx /\ (U0 :/\: A = {a} /\ (a :e b /\ b c= U0)).
   { apply andI.
     - exact HbB.
     - witness U.
@@ -67888,7 +67887,7 @@ claim HpickP: forall a:set, a :e A ->
           { exact Hab. }
           { exact HbsubU. } }
   exact (Eps_i_ax (fun b0:set => b0 :e B /\
-    exists U0:set, U0 :e Tx /\ (U0 :/\: A = {a} /\ (a :e b0 /\ b0 c= U0))) b Hwit). }
+    exists U0:set, U0 :e Tx /\ (U0 :/\: A = {a} /\ (a :e b0 /\ b0 c= U0))) b Hwit0). }
 claim HinjAB: inj A B pick.
 { prove (forall a :e A, pick a :e B) /\ (forall a0 a1 :e A, pick a0 = pick a1 -> a0 = a1).
   apply andI.
