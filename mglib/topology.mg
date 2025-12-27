@@ -37541,6 +37541,137 @@ apply set_ext.
   exact (SepI R (fun x0:set => forall U:set, U :e R_ray_topology -> x0 :e U -> U :/\: K_set <> Empty) x HxR Hcl).
 Qed.
 
+(** helper: closure of K_set in the upper limit topology is K_set **)
+Theorem closure_of_K_in_R_upper_limit_topology :
+  closure_of R R_upper_limit_topology K_set = K_set.
+apply set_ext.
+- (** closure subset K_set **)
+  let x. assume Hx: x :e closure_of R R_upper_limit_topology K_set.
+  prove x :e K_set.
+  claim HxR: x :e R.
+  { exact (SepE1 R (fun x0:set => forall U:set, U :e R_upper_limit_topology -> x0 :e U -> U :/\: K_set <> Empty) x Hx). }
+  claim Hcl: forall U:set, U :e R_upper_limit_topology -> x :e U -> U :/\: K_set <> Empty.
+  { exact (SepE2 R (fun x0:set => forall U:set, U :e R_upper_limit_topology -> x0 :e U -> U :/\: K_set <> Empty) x Hx). }
+  apply (xm (x :e K_set)).
+  - assume HxK: x :e K_set.
+    exact HxK.
+  - assume HxnotK: ~(x :e K_set).
+    apply FalseE.
+    claim HxS: SNo x.
+    { exact (real_SNo x HxR). }
+    apply (SNoLt_trichotomy_or_impred x 0 HxS SNo_0 False).
+    - (** case x < 0: use left ray (-∞,0) open in standard hence in upper limit **)
+      assume Hxlt0: x < 0.
+      set U0 := {y :e R|Rlt y 0}.
+      claim HU0std: U0 :e R_standard_topology.
+      { exact (open_left_ray_in_R_standard_topology 0 real_0). }
+      claim Hcont: finer_than R_upper_limit_topology R_standard_topology.
+      { claim Hall:
+          (((finer_than R_upper_limit_topology R_standard_topology /\
+             finer_than R_K_topology R_standard_topology) /\
+            finer_than R_standard_topology R_finite_complement_topology) /\
+           finer_than R_standard_topology R_ray_topology).
+        { exact ex13_7_R_topology_containments. }
+        claim Hleft:
+          ((finer_than R_upper_limit_topology R_standard_topology /\
+            finer_than R_K_topology R_standard_topology) /\
+           finer_than R_standard_topology R_finite_complement_topology).
+        { exact (andEL ((finer_than R_upper_limit_topology R_standard_topology /\
+                         finer_than R_K_topology R_standard_topology) /\
+                        finer_than R_standard_topology R_finite_complement_topology)
+                       (finer_than R_standard_topology R_ray_topology)
+                       Hall). }
+        claim Hpair:
+          (finer_than R_upper_limit_topology R_standard_topology /\
+           finer_than R_K_topology R_standard_topology).
+        { exact (andEL (finer_than R_upper_limit_topology R_standard_topology /\
+                        finer_than R_K_topology R_standard_topology)
+                       (finer_than R_standard_topology R_finite_complement_topology)
+                       Hleft). }
+        exact (andEL (finer_than R_upper_limit_topology R_standard_topology)
+                     (finer_than R_K_topology R_standard_topology)
+                     Hpair). }
+      claim HU0: U0 :e R_upper_limit_topology.
+      { exact (Hcont U0 HU0std). }
+      claim HxU0: x :e U0.
+      { claim HxRlt0: Rlt x 0.
+        { exact (RltI x 0 HxR real_0 Hxlt0). }
+        exact (SepI R (fun y0:set => Rlt y0 0) x HxR HxRlt0). }
+      claim Hne: U0 :/\: K_set <> Empty.
+      { exact (Hcl U0 HU0 HxU0). }
+      claim Hempty: U0 :/\: K_set = Empty.
+      { apply Empty_Subq_eq.
+        let z. assume Hz: z :e U0 :/\: K_set.
+        prove z :e Empty.
+        apply FalseE.
+        claim HzU0: z :e U0.
+        { exact (binintersectE1 U0 K_set z Hz). }
+        claim HzK: z :e K_set.
+        { exact (binintersectE2 U0 K_set z Hz). }
+        claim Hzlt0: Rlt z 0.
+        { exact (SepE2 R (fun y0:set => Rlt y0 0) z HzU0). }
+        apply (ReplE_impred (omega :\: {0}) (fun n:set => inv_nat n) z HzK False).
+        let n. assume HnIn: n :e omega :\: {0}. assume Hzeq: z = inv_nat n.
+        claim Hzpos: Rlt 0 z.
+        { rewrite Hzeq.
+          exact (inv_nat_pos n HnIn). }
+        claim H00: Rlt 0 0.
+        { exact (Rlt_tra 0 z 0 Hzpos Hzlt0). }
+        exact ((not_Rlt_refl 0 real_0) H00). }
+      exact (Hne Hempty).
+    - (** case x = 0: use basic upper-limit neighborhood (-1,0] **)
+      assume Hx0: x = 0.
+      set U1 := halfopen_interval_right (minus_SNo 1) 0.
+      claim Hm1R: minus_SNo 1 :e R.
+      { exact (real_minus_SNo 1 real_1). }
+      claim Hm10: Rlt (minus_SNo 1) 0.
+      { exact (RltI (minus_SNo 1) 0 Hm1R real_0 minus_1_lt_0). }
+      claim HU1basis: U1 :e R_upper_limit_basis.
+      { claim HU1fam: U1 :e {halfopen_interval_right (minus_SNo 1) b|b :e R}.
+        { exact (ReplI R (fun b0:set => halfopen_interval_right (minus_SNo 1) b0) 0 real_0). }
+        exact (famunionI R (fun a0:set => {halfopen_interval_right a0 b|b :e R}) (minus_SNo 1) U1 Hm1R HU1fam). }
+      claim HU1: U1 :e R_upper_limit_topology.
+      { exact (basis_in_generated R R_upper_limit_basis U1 R_upper_limit_basis_is_basis_local HU1basis). }
+      claim H0U1: 0 :e U1.
+      { exact (halfopen_interval_right_rightmem (minus_SNo 1) 0 Hm10). }
+      claim HxU1: x :e U1.
+      { rewrite Hx0.
+        exact H0U1. }
+      claim Hne: U1 :/\: K_set <> Empty.
+      { exact (Hcl U1 HU1 HxU1). }
+      claim Hempty: U1 :/\: K_set = Empty.
+      { apply Empty_Subq_eq.
+        let z. assume Hz: z :e U1 :/\: K_set.
+        prove z :e Empty.
+        apply FalseE.
+        claim HzU1: z :e U1.
+        { exact (binintersectE1 U1 K_set z Hz). }
+        claim HzK: z :e K_set.
+        { exact (binintersectE2 U1 K_set z Hz). }
+        claim Hzprop: Rlt (minus_SNo 1) z /\ ~(Rlt 0 z).
+        { exact (SepE2 R (fun y0:set => Rlt (minus_SNo 1) y0 /\ ~(Rlt 0 y0)) z HzU1). }
+        claim Hnot0z: ~(Rlt 0 z).
+        { exact (andER (Rlt (minus_SNo 1) z) (~(Rlt 0 z)) Hzprop). }
+        apply (ReplE_impred (omega :\: {0}) (fun n:set => inv_nat n) z HzK False).
+        let n. assume HnIn: n :e omega :\: {0}. assume Hzeq: z = inv_nat n.
+        claim Hzpos: Rlt 0 z.
+        { rewrite Hzeq.
+          exact (inv_nat_pos n HnIn). }
+        exact (Hnot0z Hzpos). }
+      exact (Hne Hempty).
+    - (** case 0 < x: a separating neighborhood exists; pending full arithmetic proof **)
+      assume H0ltx: 0 < x.
+      admit. (** FAIL **)
+- (** K_set subset closure **)
+  let x. assume Hx: x :e K_set.
+  prove x :e closure_of R R_upper_limit_topology K_set.
+  claim HKsub: K_set c= R.
+  { exact K_set_Subq_R. }
+  claim Hsub: K_set c= closure_of R R_upper_limit_topology K_set.
+  { exact (subset_of_closure R R_upper_limit_topology K_set R_upper_limit_topology_is_topology_local HKsub). }
+  exact (Hsub x Hx).
+Qed.
+
 Theorem ex17_16a_closure_of_K_in_five_topologies :
   closure_of R R_standard_topology K_set = K_set :\/: {0} /\
   closure_of R R_K_topology K_set = K_set /\
@@ -37570,7 +37701,7 @@ apply andI.
       rewrite HTdef.
       exact (closure_infinite_finite_complement R K_set HKsub HKinf).
   + (** D: upper limit topology **)
-    admit. (** FAIL **)
+    exact closure_of_K_in_R_upper_limit_topology.
 - (** E: ray topology **)
   exact closure_of_K_in_R_ray_topology.
 Qed.
