@@ -54516,18 +54516,18 @@ claim HUnionS: Union S = X.
         apply andI.
         - exact Hi0.
         - exact HU0top.
-      + claim Hfprop: function_on f omega (space_family_union omega Xi) /\
-            forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i.
-          { exact (SepE2 (Power (setprod omega (space_family_union omega Xi)))
-                         (fun f0:set => function_on f0 omega (space_family_union omega Xi) /\
-                           forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i)
-                         f
-                         Hf). }
-          claim Hcoords: forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i.
-          { exact (andER (function_on f omega (space_family_union omega Xi))
-                         (forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
-                         Hfprop). }
-          exact (Hcoords i0 Hi0).
+	      + claim Hfpack: (total_function_on f omega (space_family_union omega Xi) /\ functional_graph f) /\
+	            forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i.
+	          { exact (SepE2 (Power (setprod omega (space_family_union omega Xi)))
+	                         (fun f0:set => (total_function_on f0 omega (space_family_union omega Xi) /\ functional_graph f0) /\
+	                           forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i)
+	                         f
+	                         Hf). }
+	          claim Hcoords: forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i.
+	          { exact (andER (total_function_on f omega (space_family_union omega Xi) /\ functional_graph f)
+	                         (forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
+	                         Hfpack). }
+	          exact (Hcoords i0 Hi0).
     - exact Hs0S. }
 
 claim HS: subbasis_on X S.
