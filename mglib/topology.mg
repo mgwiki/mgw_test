@@ -69153,7 +69153,7 @@ Qed.
 (** LATEX VERSION: Every order topology is regular. **)
 Theorem ex31_3_order_topology_regular : forall X:set,
   regular_space X (order_topology X).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §31 Exercise 4: comparing finer/coarser separation axioms **)
 (** LATEX VERSION: Let X have two topologies T and T', with T' ⊃ T. Compare separation properties. **)
