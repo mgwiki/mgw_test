@@ -9802,6 +9802,46 @@ apply (RleI a a Ha Ha).
 exact (not_Rlt_refl a Ha).
 Qed.
 
+(** helper: antisymmetry for Rle, via SNo trichotomy on reals **)
+Theorem R_eq_of_not_Rlt : forall a b:set,
+  a :e R -> b :e R -> ~(Rlt a b) -> ~(Rlt b a) -> a = b.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume Hnltab: ~(Rlt a b).
+assume Hnltba: ~(Rlt b a).
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+apply (SNoLt_trichotomy_or_impred a b HaS HbS (a = b)).
+- assume Hab: a < b.
+  claim Hr: Rlt a b.
+  { exact (RltI a b HaR HbR Hab). }
+  exact (FalseE (Hnltab Hr) (a = b)).
+- assume Heq: a = b.
+  exact Heq.
+- assume Hba: b < a.
+  claim Hr: Rlt b a.
+  { exact (RltI b a HbR HaR Hba). }
+  exact (FalseE (Hnltba Hr) (a = b)).
+Qed.
+
+Theorem Rle_antisym : forall a b:set, Rle a b -> Rle b a -> a = b.
+let a b.
+assume Hab: Rle a b.
+assume Hba: Rle b a.
+claim HaR: a :e R.
+{ exact (RleE_left a b Hab). }
+claim HbR: b :e R.
+{ exact (RleE_left b a Hba). }
+claim Hnltab: ~(Rlt a b).
+{ exact (RleE_nlt b a Hba). }
+claim Hnltba: ~(Rlt b a).
+{ exact (RleE_nlt a b Hab). }
+exact (R_eq_of_not_Rlt a b HaR HbR Hnltab Hnltba).
+Qed.
+
 (** helper for §13 Example 4: 0 < 1 in Rlt form **)
 (** LATEX VERSION: We use 0<1 in the usual order on R. **)
 Theorem Rlt_0_1 : Rlt 0 1.
@@ -66279,6 +66319,44 @@ exact (andEL (l :e R)
              Hcore).
 Qed.
 
+(** helper: uniqueness of least upper bounds in R **)
+Theorem R_lub_unique : forall A l1 l2:set, R_lub A l1 -> R_lub A l2 -> l1 = l2.
+let A l1 l2.
+assume H1: R_lub A l1.
+assume H2: R_lub A l2.
+claim H1core: l1 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l1.
+{ exact (andEL (l1 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l1)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l1 u)
+               H1). }
+claim H1min: forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l1 u.
+{ exact (andER (l1 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l1)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l1 u)
+               H1). }
+claim H1R: l1 :e R.
+{ exact (andEL (l1 :e R) (forall a:set, a :e A -> a :e R -> Rle a l1) H1core). }
+claim H1ub: forall a:set, a :e A -> a :e R -> Rle a l1.
+{ exact (andER (l1 :e R) (forall a:set, a :e A -> a :e R -> Rle a l1) H1core). }
+
+claim H2core: l2 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l2.
+{ exact (andEL (l2 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l2)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l2 u)
+               H2). }
+claim H2min: forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l2 u.
+{ exact (andER (l2 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l2)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l2 u)
+               H2). }
+claim H2R: l2 :e R.
+{ exact (andEL (l2 :e R) (forall a:set, a :e A -> a :e R -> Rle a l2) H2core). }
+claim H2ub: forall a:set, a :e A -> a :e R -> Rle a l2.
+{ exact (andER (l2 :e R) (forall a:set, a :e A -> a :e R -> Rle a l2) H2core). }
+
+claim Hle12: Rle l1 l2.
+{ exact (H1min l2 H2R H2ub). }
+claim Hle21: Rle l2 l1.
+{ exact (H2min l1 H1R H1ub). }
+exact (Rle_antisym l1 l2 Hle12 Hle21).
+Qed.
+
 (** helper: existence of least upper bounds in R (used for uniform metric) **)
 (** LATEX VERSION: The expression sup{...} is assumed to exist as a real number. **)
 Theorem R_lub_exists : forall A:set,
@@ -66297,6 +66375,53 @@ Definition Romega_coord_clipped_diff : set -> set -> set -> set := fun f g n =>
 
 Definition Romega_clipped_diffs : set -> set -> set := fun f g =>
   Repl omega (fun n:set => Romega_coord_clipped_diff f g n).
+
+(** helper: clipped diffs are symmetric **)
+Theorem Romega_clipped_diffs_sym : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  Romega_clipped_diffs f g = Romega_clipped_diffs g f.
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+apply (ReplEq_ext omega
+        (fun n:set => Romega_coord_clipped_diff f g n)
+        (fun n:set => Romega_coord_clipped_diff g f n)).
+let n.
+assume HnO: n :e omega.
+claim Hfpack: total_function_on f omega R /\ functional_graph f.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               f Hf). }
+claim Hgpack: total_function_on g omega R /\ functional_graph g.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun g0:set => total_function_on g0 omega R /\ functional_graph g0)
+               g Hg). }
+claim Htotf: total_function_on f omega R.
+{ exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+claim Htotg: total_function_on g omega R.
+{ exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+claim HfnR: apply_fun f n :e R.
+{ exact (total_function_on_apply_fun_in_Y f omega R n Htotf HnO). }
+claim HgnR: apply_fun g n :e R.
+{ exact (total_function_on_apply_fun_in_Y g omega R n Htotg HnO). }
+claim HfnS: SNo (apply_fun f n).
+{ exact (real_SNo (apply_fun f n) HfnR). }
+claim HgnS: SNo (apply_fun g n).
+{ exact (real_SNo (apply_fun g n) HgnR). }
+claim Habs: Romega_coord_abs_diff f g n = Romega_coord_abs_diff g f n.
+{ exact (abs_SNo_dist_swap (apply_fun f n) (apply_fun g n) HfnS HgnS). }
+claim Hdef1: Romega_coord_clipped_diff f g n =
+  If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1.
+{ reflexivity. }
+claim Hdef2: Romega_coord_clipped_diff g f n =
+  If_i (Rlt (Romega_coord_abs_diff g f n) 1) (Romega_coord_abs_diff g f n) 1.
+{ reflexivity. }
+rewrite Hdef1.
+rewrite Hdef2.
+rewrite Habs.
+reflexivity.
+Qed.
 
 Definition Romega_uniform_metric_value : set -> set -> set := fun f g =>
   Eps_i (fun r:set => R_lub (Romega_clipped_diffs f g) r).
@@ -66492,6 +66617,25 @@ claim Hub: exists u:set, u :e R /\ forall a:set, a :e A -> a :e R -> Rle a u.
 claim Hex: exists l:set, P l.
 { exact (R_lub_exists A HAinR Hub). }
 exact (Eps_i_ex P Hex).
+Qed.
+
+(** helper: uniform metric value is symmetric **)
+Theorem Romega_uniform_metric_value_sym : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  Romega_uniform_metric_value f g = Romega_uniform_metric_value g f.
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+set A := Romega_clipped_diffs f g.
+claim HAeq: A = Romega_clipped_diffs g f.
+{ exact (Romega_clipped_diffs_sym f g Hf Hg). }
+claim Hlub1: R_lub A (Romega_uniform_metric_value f g).
+{ exact (Romega_uniform_metric_value_is_lub f g Hf Hg). }
+claim Hlub2': R_lub A (Romega_uniform_metric_value g f).
+{ rewrite HAeq.
+  exact (Romega_uniform_metric_value_is_lub g f Hg Hf). }
+exact (R_lub_unique A (Romega_uniform_metric_value f g) (Romega_uniform_metric_value g f) Hlub1 Hlub2').
 Qed.
 
 (** helper: uniform metric values are real numbers **)
@@ -69032,82 +69176,7 @@ apply (xm (exists n:set, n :e omega /\ apply_fun f n <> apply_fun g n)
   exact (FalseE (Hneq Heq) (exists n:set, n :e omega /\ apply_fun f n <> apply_fun g n)).
 Qed.
 
-(** helper: antisymmetry for Rle, via SNo trichotomy on reals **)
-Theorem R_eq_of_not_Rlt : forall a b:set,
-  a :e R -> b :e R -> ~(Rlt a b) -> ~(Rlt b a) -> a = b.
-let a b.
-assume HaR: a :e R.
-assume HbR: b :e R.
-assume Hnltab: ~(Rlt a b).
-assume Hnltba: ~(Rlt b a).
-claim HaS: SNo a.
-{ exact (real_SNo a HaR). }
-claim HbS: SNo b.
-{ exact (real_SNo b HbR). }
-apply (SNoLt_trichotomy_or_impred a b HaS HbS (a = b)).
-- assume Hab: a < b.
-  claim Hr: Rlt a b.
-  { exact (RltI a b HaR HbR Hab). }
-  exact (FalseE (Hnltab Hr) (a = b)).
-- assume Heq: a = b.
-  exact Heq.
-- assume Hba: b < a.
-  claim Hr: Rlt b a.
-  { exact (RltI b a HbR HaR Hba). }
-  exact (FalseE (Hnltba Hr) (a = b)).
-Qed.
-
-Theorem Rle_antisym : forall a b:set, Rle a b -> Rle b a -> a = b.
-let a b.
-assume Hab: Rle a b.
-assume Hba: Rle b a.
-claim HaR: a :e R.
-{ exact (RleE_left a b Hab). }
-claim HbR: b :e R.
-{ exact (RleE_left b a Hba). }
-claim Hnltab: ~(Rlt a b).
-{ exact (RleE_nlt b a Hba). }
-claim Hnltba: ~(Rlt b a).
-{ exact (RleE_nlt a b Hab). }
-exact (R_eq_of_not_Rlt a b HaR HbR Hnltab Hnltba).
-Qed.
-
-Theorem R_lub_unique : forall A l1 l2:set, R_lub A l1 -> R_lub A l2 -> l1 = l2.
-let A l1 l2.
-assume H1: R_lub A l1.
-assume H2: R_lub A l2.
-claim H1core: l1 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l1.
-{ exact (andEL (l1 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l1)
-               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l1 u)
-               H1). }
-claim H1min: forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l1 u.
-{ exact (andER (l1 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l1)
-               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l1 u)
-               H1). }
-claim H1R: l1 :e R.
-{ exact (andEL (l1 :e R) (forall a:set, a :e A -> a :e R -> Rle a l1) H1core). }
-claim H1ub: forall a:set, a :e A -> a :e R -> Rle a l1.
-{ exact (andER (l1 :e R) (forall a:set, a :e A -> a :e R -> Rle a l1) H1core). }
-
-claim H2core: l2 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l2.
-{ exact (andEL (l2 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l2)
-               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l2 u)
-               H2). }
-claim H2min: forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l2 u.
-{ exact (andER (l2 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l2)
-               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l2 u)
-               H2). }
-claim H2R: l2 :e R.
-{ exact (andEL (l2 :e R) (forall a:set, a :e A -> a :e R -> Rle a l2) H2core). }
-claim H2ub: forall a:set, a :e A -> a :e R -> Rle a l2.
-{ exact (andER (l2 :e R) (forall a:set, a :e A -> a :e R -> Rle a l2) H2core). }
-
-claim Hle12: Rle l1 l2.
-{ exact (H1min l2 H2R H2ub). }
-claim Hle21: Rle l2 l1.
-{ exact (H2min l1 H1R H1ub). }
-exact (Rle_antisym l1 l2 Hle12 Hle21).
-Qed.
+(** helper: R_eq_of_not_Rlt, Rle_antisym, R_lub_unique moved earlier **)
 
 (** helper: distance 1 between distinct binary sequences (intended property of the uniform metric) **)
 (** LATEX VERSION: For a≠b in {0,1}^ω, one has \\bar\\rho(a,b)=1. **)
