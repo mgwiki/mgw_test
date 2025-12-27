@@ -10907,6 +10907,15 @@ rewrite Hsqy.
 reflexivity.
 Qed.
 
+(** helper: triangle inequality for distance_R2 in Rle form **)
+(** LATEX VERSION: For points x,y,z in R^2, d(x,z) <= d(x,y) + d(y,z). **)
+(** SUSPICIOUS DEFINITION: This requires Minkowski style inequalities; it is not proved in this development yet. **)
+Theorem distance_R2_triangle_Rle : forall x y z:set,
+  x :e EuclidPlane -> y :e EuclidPlane -> z :e EuclidPlane ->
+  Rle (distance_R2 x z) (add_SNo (distance_R2 x y) (distance_R2 y z)).
+admit.
+Qed.
+
 (** from §13 Example 4: circular region basis elements in EuclidPlane **)
 (** LATEX VERSION: Circular regions: sets of the form {p in R^2 | d(p,c) < r} with c in R^2 and 0<r. **)
 Definition circular_regions : set :=
@@ -11336,7 +11345,175 @@ assume Hr1: Rlt 0 r1.
 assume Hr2: Rlt 0 r2.
 assume Hx1: Rlt (distance_R2 x c1) r1.
 assume Hx2: Rlt (distance_R2 x c2) r2.
-admit.
+set d1 := distance_R2 x c1.
+set d2 := distance_R2 x c2.
+claim Hd1R: d1 :e R.
+{ exact (distance_R2_in_R x c1 Hx Hc1). }
+claim Hd2R: d2 :e R.
+{ exact (distance_R2_in_R x c2 Hx Hc2). }
+claim Hr1R: r1 :e R.
+{ exact (RltE_right 0 r1 Hr1). }
+claim Hr2R: r2 :e R.
+{ exact (RltE_right 0 r2 Hr2). }
+claim Hd1S: SNo d1.
+{ exact (real_SNo d1 Hd1R). }
+claim Hd2S: SNo d2.
+{ exact (real_SNo d2 Hd2R). }
+claim Hr1S: SNo r1.
+{ exact (real_SNo r1 Hr1R). }
+claim Hr2S: SNo r2.
+{ exact (real_SNo r2 Hr2R). }
+
+set m1 := add_SNo r1 (minus_SNo d1).
+set m2 := add_SNo r2 (minus_SNo d2).
+claim Hm1R: m1 :e R.
+{ exact (real_add_SNo r1 Hr1R (minus_SNo d1) (real_minus_SNo d1 Hd1R)). }
+claim Hm2R: m2 :e R.
+{ exact (real_add_SNo r2 Hr2R (minus_SNo d2) (real_minus_SNo d2 Hd2R)). }
+claim Hm1S: SNo m1.
+{ exact (real_SNo m1 Hm1R). }
+claim Hm2S: SNo m2.
+{ exact (real_SNo m2 Hm2R). }
+
+(** positivity of margins from strict inequalities d(x,ci) < ri **)
+claim Hd1lt: d1 < r1.
+{ exact (RltE_lt d1 r1 Hx1). }
+claim Hd2lt: d2 < r2.
+{ exact (RltE_lt d2 r2 Hx2). }
+claim Hm1posS: 0 < m1.
+{ exact (SNoLt_minus_pos d1 r1 Hd1S Hr1S Hd1lt). }
+claim Hm2posS: 0 < m2.
+{ exact (SNoLt_minus_pos d2 r2 Hd2S Hr2S Hd2lt). }
+claim Hm1pos: Rlt 0 m1.
+{ exact (RltI 0 m1 real_0 Hm1R Hm1posS). }
+claim Hm2pos: Rlt 0 m2.
+{ exact (RltI 0 m2 real_0 Hm2R Hm2posS). }
+
+(** choose r3 smaller than both positive margins **)
+apply (exists_eps_lt_two_pos_Euclid m1 m2 Hm1R Hm2R Hm1pos Hm2pos).
+let r3. assume Hr3core.
+claim Hr3Left1: (r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1.
+{ exact (andEL ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) (Rlt r3 m2) Hr3core). }
+claim Hr3m2: Rlt r3 m2.
+{ exact (andER ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) (Rlt r3 m2) Hr3core). }
+claim Hr3pair: r3 :e R /\ Rlt 0 r3.
+{ exact (andEL (r3 :e R /\ Rlt 0 r3) (Rlt r3 m1) Hr3Left1). }
+claim Hr3m1: Rlt r3 m1.
+{ exact (andER (r3 :e R /\ Rlt 0 r3) (Rlt r3 m1) Hr3Left1). }
+claim Hr3R: r3 :e R.
+{ exact (andEL (r3 :e R) (Rlt 0 r3) Hr3pair). }
+claim Hr3pos: Rlt 0 r3.
+{ exact (andER (r3 :e R) (Rlt 0 r3) Hr3pair). }
+
+witness r3.
+apply andI.
+- exact Hr3pos.
+- let p. assume Hp: p :e EuclidPlane.
+  assume Hpx: Rlt (distance_R2 p x) r3.
+  prove Rlt (distance_R2 p c1) r1 /\ Rlt (distance_R2 p c2) r2.
+  apply andI.
+  * (** first ball around c1 **)
+    set dpx := distance_R2 p x.
+    claim HdpxR: dpx :e R.
+    { exact (distance_R2_in_R p x Hp Hx). }
+    claim HdpxS: SNo dpx.
+    { exact (real_SNo dpx HdpxR). }
+    claim Hr3S: SNo r3.
+    { exact (real_SNo r3 Hr3R). }
+    claim Hpxlt: dpx < r3.
+    { exact (RltE_lt dpx r3 Hpx). }
+    claim Hdpxm1: Rlt dpx m1.
+    { exact (Rlt_tra dpx r3 m1 Hpx Hr3m1). }
+    claim Hdpxm1lt: dpx < m1.
+    { exact (RltE_lt dpx m1 Hdpxm1). }
+    claim HsumLt: Rlt (add_SNo dpx d1) r1.
+    { prove Rlt (add_SNo dpx d1) r1.
+      claim HsumS: SNo (add_SNo d1 dpx).
+      { exact (real_SNo (add_SNo d1 dpx) (real_add_SNo d1 Hd1R dpx HdpxR)). }
+      claim HsumS2: SNo (add_SNo dpx d1).
+      { exact (real_SNo (add_SNo dpx d1) (real_add_SNo dpx HdpxR d1 Hd1R)). }
+      claim HtmpS: add_SNo d1 dpx < add_SNo d1 m1.
+      { exact (add_SNo_Lt2 d1 dpx m1 Hd1S HdpxS Hm1S Hdpxm1lt). }
+      claim HtmpR: Rlt (add_SNo d1 dpx) (add_SNo d1 m1).
+      { exact (RltI (add_SNo d1 dpx) (add_SNo d1 m1)
+                    (real_add_SNo d1 Hd1R dpx HdpxR)
+                    (real_add_SNo d1 Hd1R m1 Hm1R)
+                    HtmpS). }
+      claim Heq: add_SNo d1 m1 = r1.
+      { prove add_SNo d1 m1 = r1.
+        claim Hmd1S: SNo (minus_SNo d1).
+        { exact (SNo_minus_SNo d1 Hd1S). }
+        claim Hassoc1: add_SNo d1 (add_SNo r1 (minus_SNo d1)) = add_SNo (add_SNo d1 r1) (minus_SNo d1).
+        { exact (add_SNo_assoc d1 r1 (minus_SNo d1) Hd1S Hr1S Hmd1S). }
+        claim Hcom1: add_SNo d1 r1 = add_SNo r1 d1.
+        { exact (add_SNo_com d1 r1 Hd1S Hr1S). }
+        claim Hassoc2: add_SNo (add_SNo r1 d1) (minus_SNo d1) = add_SNo r1 (add_SNo d1 (minus_SNo d1)).
+        { symmetry.
+          exact (add_SNo_assoc r1 d1 (minus_SNo d1) Hr1S Hd1S Hmd1S). }
+        claim Hinv: add_SNo d1 (minus_SNo d1) = 0.
+        { exact (add_SNo_minus_SNo_rinv d1 Hd1S). }
+        prove add_SNo d1 m1 = r1.
+        claim Hm1Def: m1 = add_SNo r1 (minus_SNo d1).
+        { reflexivity. }
+        rewrite Hm1Def.
+        rewrite Hassoc1.
+        rewrite Hcom1.
+        rewrite Hassoc2.
+        rewrite Hinv.
+        exact (add_SNo_0R r1 Hr1S). }
+      rewrite (add_SNo_com dpx d1 HdpxS Hd1S) at 1.
+      rewrite <- Heq.
+      exact HtmpR. }
+    claim Htri: Rle (distance_R2 p c1) (add_SNo dpx d1).
+    { exact (distance_R2_triangle_Rle p x c1 Hp Hx Hc1). }
+    exact (Rle_Rlt_tra_Euclid (distance_R2 p c1) (add_SNo dpx d1) r1 Htri HsumLt).
+  * (** second ball around c2 **)
+    set dpx := distance_R2 p x.
+    claim HdpxR: dpx :e R.
+    { exact (distance_R2_in_R p x Hp Hx). }
+    claim HdpxS: SNo dpx.
+    { exact (real_SNo dpx HdpxR). }
+    claim Hdpxm2: Rlt dpx m2.
+    { exact (Rlt_tra dpx r3 m2 Hpx Hr3m2). }
+    claim Hdpxm2lt: dpx < m2.
+    { exact (RltE_lt dpx m2 Hdpxm2). }
+    claim HsumLt: Rlt (add_SNo dpx d2) r2.
+    { prove Rlt (add_SNo dpx d2) r2.
+      claim HtmpS: add_SNo d2 dpx < add_SNo d2 m2.
+      { exact (add_SNo_Lt2 d2 dpx m2 Hd2S HdpxS Hm2S Hdpxm2lt). }
+      claim HtmpR: Rlt (add_SNo d2 dpx) (add_SNo d2 m2).
+      { exact (RltI (add_SNo d2 dpx) (add_SNo d2 m2)
+                    (real_add_SNo d2 Hd2R dpx HdpxR)
+                    (real_add_SNo d2 Hd2R m2 Hm2R)
+                    HtmpS). }
+      claim Heq: add_SNo d2 m2 = r2.
+      { prove add_SNo d2 m2 = r2.
+        claim Hmd2S: SNo (minus_SNo d2).
+        { exact (SNo_minus_SNo d2 Hd2S). }
+        claim Hassoc1: add_SNo d2 (add_SNo r2 (minus_SNo d2)) = add_SNo (add_SNo d2 r2) (minus_SNo d2).
+        { exact (add_SNo_assoc d2 r2 (minus_SNo d2) Hd2S Hr2S Hmd2S). }
+        claim Hcom1: add_SNo d2 r2 = add_SNo r2 d2.
+        { exact (add_SNo_com d2 r2 Hd2S Hr2S). }
+        claim Hassoc2: add_SNo (add_SNo r2 d2) (minus_SNo d2) = add_SNo r2 (add_SNo d2 (minus_SNo d2)).
+        { symmetry.
+          exact (add_SNo_assoc r2 d2 (minus_SNo d2) Hr2S Hd2S Hmd2S). }
+        claim Hinv: add_SNo d2 (minus_SNo d2) = 0.
+        { exact (add_SNo_minus_SNo_rinv d2 Hd2S). }
+        prove add_SNo d2 m2 = r2.
+        claim Hm2Def: m2 = add_SNo r2 (minus_SNo d2).
+        { reflexivity. }
+        rewrite Hm2Def.
+        rewrite Hassoc1.
+        rewrite Hcom1.
+        rewrite Hassoc2.
+        rewrite Hinv.
+        exact (add_SNo_0R r2 Hr2S). }
+      rewrite (add_SNo_com dpx d2 HdpxS Hd2S) at 1.
+      rewrite <- Heq.
+      exact HtmpR. }
+    claim Htri: Rle (distance_R2 p c2) (add_SNo dpx d2).
+    { exact (distance_R2_triangle_Rle p x c2 Hp Hx Hc2). }
+    exact (Rle_Rlt_tra_Euclid (distance_R2 p c2) (add_SNo dpx d2) r2 Htri HsumLt).
 Qed.
 
 (** helper for §13 Example 4: rectangle inside a ball around a center **)
