@@ -53205,19 +53205,19 @@ Theorem Romega_coord_in_R : forall f i:set,
 let f i.
 assume Hf: f :e R_omega_space.
 assume Hi: i :e omega.
-prove apply_fun f i :e R.
-set Xi := const_space_family omega R R_standard_topology.
-claim Hfprop: function_on f omega (space_family_union omega Xi) /\
-              forall j:set, j :e omega -> apply_fun f j :e space_family_set Xi j.
-{ exact (SepE2 (Power (setprod omega (space_family_union omega Xi)))
-               (fun f0:set => function_on f0 omega (space_family_union omega Xi) /\
-                 forall j:set, j :e omega -> apply_fun f0 j :e space_family_set Xi j)
-               f
-               Hf). }
-claim Hcoords: forall j:set, j :e omega -> apply_fun f j :e space_family_set Xi j.
-{ exact (andER (function_on f omega (space_family_union omega Xi))
-               (forall j:set, j :e omega -> apply_fun f j :e space_family_set Xi j)
-               Hfprop). }
+	prove apply_fun f i :e R.
+	set Xi := const_space_family omega R R_standard_topology.
+	claim Hfprop: (total_function_on f omega (space_family_union omega Xi) /\ functional_graph f) /\
+	              forall j:set, j :e omega -> apply_fun f j :e space_family_set Xi j.
+	{ exact (SepE2 (Power (setprod omega (space_family_union omega Xi)))
+	               (fun f0:set => (total_function_on f0 omega (space_family_union omega Xi) /\ functional_graph f0) /\
+	                 forall j:set, j :e omega -> apply_fun f0 j :e space_family_set Xi j)
+	               f
+	               Hf). }
+	claim Hcoords: forall j:set, j :e omega -> apply_fun f j :e space_family_set Xi j.
+	{ exact (andER (total_function_on f omega (space_family_union omega Xi) /\ functional_graph f)
+	               (forall j:set, j :e omega -> apply_fun f j :e space_family_set Xi j)
+	               Hfprop). }
 claim Hfi: apply_fun f i :e space_family_set Xi i.
 { exact (Hcoords i Hi). }
 claim HXi: apply_fun Xi i = (R, R_standard_topology).
