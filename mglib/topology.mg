@@ -66355,6 +66355,24 @@ Definition uniform_metric_Romega : set :=
   graph (setprod real_sequences real_sequences)
         (fun p:set => Romega_uniform_metric_value (p 0) (p 1)).
 
+(** helper: uniform_metric_Romega is function_on into R **)
+Theorem uniform_metric_Romega_function_on : function_on uniform_metric_Romega (setprod real_sequences real_sequences) R.
+let p.
+assume Hp: p :e setprod real_sequences real_sequences.
+prove apply_fun uniform_metric_Romega p :e R.
+claim Happ: apply_fun uniform_metric_Romega p =
+  Romega_uniform_metric_value (p 0) (p 1).
+{ exact (apply_fun_graph (setprod real_sequences real_sequences)
+                         (fun q:set => Romega_uniform_metric_value (q 0) (q 1))
+                         p Hp). }
+rewrite Happ.
+claim Hp0: p 0 :e real_sequences.
+{ exact (ap0_Sigma real_sequences (fun _ : set => real_sequences) p Hp). }
+claim Hp1: p 1 :e real_sequences.
+{ exact (ap1_Sigma real_sequences (fun _ : set => real_sequences) p Hp). }
+exact (Romega_uniform_metric_value_in_R (p 0) (p 1) Hp0 Hp1).
+Qed.
+
 Definition uniform_topology : set := metric_topology real_sequences uniform_metric_Romega.
 
 (** helper: uniform_metric_Romega satisfies metric_on (pending full proof) **)
