@@ -66015,6 +66015,158 @@ claim Hdlt2: Rlt (apply_fun d (x,y)) r2.
 exact (open_ballI X d x r2 y HyX Hdlt2).
 Qed.
 
+(** helper: metric topologies are first countable **)
+(** LATEX VERSION: Every metric space is first countable (use balls of radius eps_N as a countable neighborhood basis). **)
+Theorem metric_topology_first_countable : forall X d:set,
+  metric_on X d -> first_countable_space X (metric_topology X d).
+let X d.
+assume Hm: metric_on X d.
+prove first_countable_space X (metric_topology X d).
+prove topology_on X (metric_topology X d) /\ forall x:set, x :e X -> countable_basis_at X (metric_topology X d) x.
+apply andI.
+- exact (metric_topology_is_topology X d Hm).
+- let x. assume Hx: x :e X.
+  prove countable_basis_at X (metric_topology X d) x.
+  set Tx := metric_topology X d.
+  set Bbasis := famunion X (fun c0:set => {open_ball X d c0 r|r :e R, Rlt 0 r}).
+  set Bx := Repl omega (fun N0:set => open_ball X d x (eps_ N0)).
+  prove topology_on X Tx /\ x :e X /\
+    exists B:set, B c= Tx /\ countable_set B /\
+      (forall b:set, b :e B -> x :e b) /\
+      (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U).
+  (** countable_basis_at is left-associative: (topology_on /\ x∈X) /\ exists B, ... **)
+  apply andI.
+  - (** topology_on X Tx /\ x :e X **)
+    apply andI.
+    + exact (metric_topology_is_topology X d Hm).
+    + exact Hx.
+  - witness Bx.
+    (** Bx c= Tx /\ countable_set Bx /\ (forall b∈Bx, x∈b) /\ (local refinement) **)
+    apply andI.
+    - (** (Bx c= Tx /\ countable_set Bx) /\ (forall b:set, b:e Bx -> x:e b) **)
+      apply andI.
+      + (** Bx c= Tx /\ countable_set Bx **)
+        apply andI.
+        * (** Bx c= Tx **)
+          let b. assume Hb: b :e Bx.
+          prove b :e Tx.
+          claim HexN: exists N :e omega, b = open_ball X d x (eps_ N).
+          { exact (ReplE omega (fun N0:set => open_ball X d x (eps_ N0)) b Hb). }
+          apply HexN.
+          let N. assume HNpair.
+          claim HNomega: N :e omega.
+          { exact (andEL (N :e omega) (b = open_ball X d x (eps_ N)) HNpair). }
+          claim HbEq: b = open_ball X d x (eps_ N).
+          { exact (andER (N :e omega) (b = open_ball X d x (eps_ N)) HNpair). }
+          claim HepsR: (eps_ N) :e R.
+          { exact (SNoS_omega_real (eps_ N) (SNo_eps_SNoS_omega N HNomega)). }
+          claim HepsPosS: 0 < (eps_ N).
+          { exact (SNo_eps_pos N HNomega). }
+          claim HepsPos: Rlt 0 (eps_ N).
+          { exact (RltI 0 (eps_ N) real_0 HepsR HepsPosS). }
+          rewrite HbEq.
+          exact (open_ball_in_metric_topology X d x (eps_ N) Hm Hx HepsPos).
+        * (** countable_set Bx **)
+          claim HomegaCount: countable_set omega.
+          { exact (Subq_atleastp omega omega (Subq_ref omega)). }
+          exact (countable_image omega HomegaCount (fun N0:set => open_ball X d x (eps_ N0))).
+      + (** forall b∈Bx, x∈b **)
+        let b. assume Hb: b :e Bx.
+        prove x :e b.
+        claim HexN: exists N :e omega, b = open_ball X d x (eps_ N).
+        { exact (ReplE omega (fun N0:set => open_ball X d x (eps_ N0)) b Hb). }
+        apply HexN.
+        let N. assume HNpair.
+        claim HNomega: N :e omega.
+        { exact (andEL (N :e omega) (b = open_ball X d x (eps_ N)) HNpair). }
+        claim HbEq: b = open_ball X d x (eps_ N).
+        { exact (andER (N :e omega) (b = open_ball X d x (eps_ N)) HNpair). }
+        claim HepsR: (eps_ N) :e R.
+        { exact (SNoS_omega_real (eps_ N) (SNo_eps_SNoS_omega N HNomega)). }
+        claim HepsPosS: 0 < (eps_ N).
+        { exact (SNo_eps_pos N HNomega). }
+        claim HepsPos: Rlt 0 (eps_ N).
+        { exact (RltI 0 (eps_ N) real_0 HepsR HepsPosS). }
+        rewrite HbEq.
+        exact (center_in_open_ball X d x (eps_ N) Hm Hx HepsPos).
+    - (** local refinement: for any U open containing x, some b∈Bx with b⊂U **)
+      let U. assume HU: U :e Tx.
+      assume HxU: x :e U.
+      prove exists b:set, b :e Bx /\ b c= U.
+      (** rewrite Tx as generated_topology X Bbasis **)
+      claim HTdef: Tx = generated_topology X Bbasis.
+      { reflexivity. }
+      claim HUgen: U :e generated_topology X Bbasis.
+      { rewrite <- HTdef. exact HU. }
+      claim Hloc: forall y0 :e U, exists b0 :e Bbasis, y0 :e b0 /\ b0 c= U.
+      { exact (SepE2 (Power X)
+                     (fun U0:set => forall y1 :e U0, exists b0 :e Bbasis, y1 :e b0 /\ b0 c= U0)
+                     U HUgen). }
+      claim Hexb0: exists b0 :e Bbasis, x :e b0 /\ b0 c= U.
+      { exact (Hloc x HxU). }
+      apply Hexb0.
+      let b0. assume Hb0pair.
+      claim Hb0B: b0 :e Bbasis.
+      { exact (andEL (b0 :e Bbasis) (x :e b0 /\ b0 c= U) Hb0pair). }
+      claim Hxb0: x :e b0 /\ b0 c= U.
+      { exact (andER (b0 :e Bbasis) (x :e b0 /\ b0 c= U) Hb0pair). }
+      claim HxInb0: x :e b0.
+      { exact (andEL (x :e b0) (b0 c= U) Hxb0). }
+      claim Hb0subU: b0 c= U.
+      { exact (andER (x :e b0) (b0 c= U) Hxb0). }
+      (** destruct b0 as an open ball open_ball X d c r with r>0 **)
+      apply (famunionE_impred X (fun c0:set => {open_ball X d c0 r|r :e R, Rlt 0 r}) b0 Hb0B
+             (exists b:set, b :e Bx /\ b c= U)).
+      let c. assume HcX: c :e X.
+      assume Hb0In: b0 :e {open_ball X d c r|r :e R, Rlt 0 r}.
+      apply (ReplSepE_impred R (fun r0:set => Rlt 0 r0) (fun r0:set => open_ball X d c r0) b0 Hb0In
+             (exists b:set, b :e Bx /\ b c= U)).
+      let r. assume HrR: r :e R.
+      assume Hrpos: Rlt 0 r.
+      assume Hb0eq: b0 = open_ball X d c r.
+      claim HxInBall: x :e open_ball X d c r.
+      { rewrite <- Hb0eq. exact HxInb0. }
+      claim Hexs: exists s:set, s :e R /\ Rlt 0 s /\ open_ball X d x s c= open_ball X d c r.
+      { exact (open_ball_refine_center X d c x r Hm HcX Hx HrR Hrpos HxInBall). }
+      apply Hexs.
+      let s. assume Hspair.
+      claim Hs1: s :e R /\ Rlt 0 s.
+      { exact (andEL (s :e R /\ Rlt 0 s) (open_ball X d x s c= open_ball X d c r) Hspair). }
+      claim HsR: s :e R.
+      { exact (andEL (s :e R) (Rlt 0 s) Hs1). }
+      claim Hspos: Rlt 0 s.
+      { exact (andER (s :e R) (Rlt 0 s) Hs1). }
+      claim Hballsub: open_ball X d x s c= open_ball X d c r.
+      { exact (andER (s :e R /\ Rlt 0 s) (open_ball X d x s c= open_ball X d c r) Hspair). }
+      (** choose eps_N < s **)
+      claim HexN: exists N :e omega, eps_ N < s.
+      { exact (exists_eps_lt_pos s HsR Hspos). }
+      apply HexN.
+      let N. assume HNpair.
+      claim HNomega: N :e omega.
+      { exact (andEL (N :e omega) (eps_ N < s) HNpair). }
+      claim HepsLtS: eps_ N < s.
+      { exact (andER (N :e omega) (eps_ N < s) HNpair). }
+      claim HepsR: (eps_ N) :e R.
+      { exact (SNoS_omega_real (eps_ N) (SNo_eps_SNoS_omega N HNomega)). }
+      claim HepsRltS: Rlt (eps_ N) s.
+      { exact (RltI (eps_ N) s HepsR HsR HepsLtS). }
+      set b := open_ball X d x (eps_ N).
+      witness b.
+      apply andI.
+      + (** b :e Bx **)
+        exact (ReplI omega (fun N0:set => open_ball X d x (eps_ N0)) N HNomega).
+      + (** b c= U **)
+        claim HbSubS: b c= open_ball X d x s.
+        { exact (open_ball_radius_mono X d x (eps_ N) s HepsRltS). }
+        claim HsSubb0: open_ball X d x s c= b0.
+        { rewrite Hb0eq.
+          exact Hballsub. }
+        claim HbSubb0: b c= b0.
+        { exact (Subq_tra b (open_ball X d x s) b0 HbSubS HsSubb0). }
+        exact (Subq_tra b b0 U HbSubb0 Hb0subU).
+Qed.
+
 (** helper: countable local basis at a point in a nonempty countable product of first-countable spaces **)
 (** LATEX VERSION: The usual product argument produces a countable neighborhood basis at a point. **)
 Theorem product_countable_basis_at_point_if_components_first_countable : forall I Xi f:set,
