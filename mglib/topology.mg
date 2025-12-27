@@ -66015,6 +66015,126 @@ Qed.
 Definition real_sequences : set :=
   {f :e Power (setprod omega R) | total_function_on f omega R /\ functional_graph f}.
 
+(** helper: extensionality for real_sequences by pointwise apply_fun equality **)
+Theorem real_sequences_ext : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  (forall n:set, n :e omega -> apply_fun f n = apply_fun g n) ->
+  f = g.
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+assume Hagree: forall n:set, n :e omega -> apply_fun f n = apply_fun g n.
+claim HfPow: f :e Power (setprod omega R).
+{ exact (SepE1 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               f Hf). }
+claim HgPow: g :e Power (setprod omega R).
+{ exact (SepE1 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               g Hg). }
+claim HfSub: f c= setprod omega R.
+{ exact (PowerE (setprod omega R) f HfPow). }
+claim HgSub: g c= setprod omega R.
+{ exact (PowerE (setprod omega R) g HgPow). }
+claim Hfpack: total_function_on f omega R /\ functional_graph f.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               f Hf). }
+claim Hgpack: total_function_on g omega R /\ functional_graph g.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               g Hg). }
+claim Hftot: total_function_on f omega R.
+{ exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+claim Hgtot: total_function_on g omega R.
+{ exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+claim Hffun: functional_graph f.
+{ exact (andER (total_function_on f omega R) (functional_graph f) Hfpack). }
+claim Hgfun: functional_graph g.
+{ exact (andER (total_function_on g omega R) (functional_graph g) Hgpack). }
+claim Hgtot2: forall n:set, n :e omega -> exists y:set, y :e R /\ (n,y) :e g.
+{ exact (andER (function_on g omega R)
+               (forall x:set, x :e omega -> exists y:set, y :e R /\ (x,y) :e g)
+               Hgtot). }
+claim Hftot2: forall n:set, n :e omega -> exists y:set, y :e R /\ (n,y) :e f.
+{ exact (andER (function_on f omega R)
+               (forall x:set, x :e omega -> exists y:set, y :e R /\ (x,y) :e f)
+               Hftot). }
+apply set_ext.
+- let p. assume Hp: p :e f.
+  prove p :e g.
+  claim HpXY: p :e setprod omega R.
+  { exact (HfSub p Hp). }
+  claim Heta: p = (p 0, p 1).
+  { exact (setprod_eta omega R p HpXY). }
+  claim Hp0: p 0 :e omega.
+  { exact (ap0_Sigma omega (fun _ : set => R) p HpXY). }
+  claim Hp1: p 1 :e R.
+  { exact (ap1_Sigma omega (fun _ : set => R) p HpXY). }
+  claim Hpair: (p 0, p 1) :e f.
+  { rewrite <- Heta.
+    exact Hp. }
+  claim Happf: apply_fun f (p 0) = (p 1).
+  { exact (functional_graph_apply_fun_eq f (p 0) (p 1) Hffun Hpair). }
+  claim Hfg: apply_fun f (p 0) = apply_fun g (p 0).
+  { exact (Hagree (p 0) Hp0). }
+  claim Hgf: apply_fun g (p 0) = apply_fun f (p 0).
+  { symmetry.
+    exact Hfg. }
+  claim Happg: apply_fun g (p 0) = (p 1).
+  { rewrite Hgf.
+    exact Happf. }
+  claim Hexg: exists y:set, (p 0, y) :e g.
+  { apply (Hgtot2 (p 0) Hp0).
+    let y.
+    assume Hy: y :e R /\ (p 0, y) :e g.
+    witness y.
+    exact (andER (y :e R) ((p 0, y) :e g) Hy). }
+  claim Hgpair: (p 0, apply_fun g (p 0)) :e g.
+  { exact (apply_fun_in_graph_of_ex g (p 0) Hexg). }
+  claim Hpeq: (p 0, apply_fun g (p 0)) = (p 0, p 1).
+  { rewrite Happg.
+    reflexivity. }
+  rewrite Heta.
+  rewrite <- Hpeq.
+  exact Hgpair.
+- let p. assume Hp: p :e g.
+  prove p :e f.
+  claim HpXY: p :e setprod omega R.
+  { exact (HgSub p Hp). }
+  claim Heta: p = (p 0, p 1).
+  { exact (setprod_eta omega R p HpXY). }
+  claim Hp0: p 0 :e omega.
+  { exact (ap0_Sigma omega (fun _ : set => R) p HpXY). }
+  claim Hp1: p 1 :e R.
+  { exact (ap1_Sigma omega (fun _ : set => R) p HpXY). }
+  claim Hpair: (p 0, p 1) :e g.
+  { rewrite <- Heta.
+    exact Hp. }
+  claim Happg: apply_fun g (p 0) = (p 1).
+  { exact (functional_graph_apply_fun_eq g (p 0) (p 1) Hgfun Hpair). }
+  claim Hfg: apply_fun f (p 0) = apply_fun g (p 0).
+  { exact (Hagree (p 0) Hp0). }
+  claim Happf: apply_fun f (p 0) = (p 1).
+  { rewrite Hfg.
+    exact Happg. }
+  claim Hexf: exists y:set, (p 0, y) :e f.
+  { apply (Hftot2 (p 0) Hp0).
+    let y.
+    assume Hy: y :e R /\ (p 0, y) :e f.
+    witness y.
+    exact (andER (y :e R) ((p 0, y) :e f) Hy). }
+  claim Hfpair: (p 0, apply_fun f (p 0)) :e f.
+  { exact (apply_fun_in_graph_of_ex f (p 0) Hexf). }
+  claim Hpeq: (p 0, apply_fun f (p 0)) = (p 0, p 1).
+  { rewrite Happf.
+    reflexivity. }
+  rewrite Heta.
+  rewrite <- Hpeq.
+  exact Hfpair.
+Qed.
+
 (** helper: existence of a metric on any set (discrete metric construction) **)
 (** LATEX VERSION: Every set admits a metric (e.g. the discrete metric). **)
 Theorem exists_metric_on : forall X:set, exists d:set, metric_on X d.
