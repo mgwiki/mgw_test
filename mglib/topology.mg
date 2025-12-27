@@ -69692,6 +69692,24 @@ apply SepI.
 - let y. assume Hy: y :e open_ball X d x r.
   prove exists b :e B, y :e b /\ b c= open_ball X d x r.
   (** TODO: choose a finite-intersection cylinder neighborhood b around y, using the D-metric bound and Romega_D_metric_coord_abs_lt **)
+  claim HyX: y :e X.
+  { exact (open_ballE1 X d x r y Hy). }
+  claim Hxyprod: (x,y) :e setprod X X.
+  { exact (tuple_2_setprod_by_pair_Sigma X X x y Hx HyX). }
+  claim Hdapp: apply_fun d (x,y) = Romega_D_metric_value x y.
+  { rewrite (apply_fun_graph (setprod X X)
+                             (fun p:set => Romega_D_metric_value (p 0) (p 1))
+                             (x,y)
+                             Hxyprod).
+    rewrite (tuple_2_0_eq x y).
+    rewrite (tuple_2_1_eq x y).
+    reflexivity. }
+  claim Hltball: Rlt (apply_fun d (x,y)) r.
+  { exact (open_ballE2 X d x r y Hy). }
+  claim Hltval: Rlt (Romega_D_metric_value x y) r.
+  { rewrite <- Hdapp.
+    exact Hltball. }
+  (** TODO: build a finite intersection of cylinder sets around y which is contained in the ball, using Hltval **)
   admit.
 Qed.
 
