@@ -53592,7 +53592,10 @@ claim Hcond: forall f :e unbounded_sequences_Romega, exists b :e B, f :e b /\ b 
       rewrite HappUi.
       exact HopenI. }
 	    claim HUTot: total_function_on U omega TU.
-	    { apply andI.
+	    { prove function_on U omega TU /\
+	        forall x:set, x :e omega ->
+	          exists y:set, y :e TU /\ (x,y) :e U.
+	      apply andI.
 	      - exact HUfun.
 	      - let i. assume Hi: i :e omega.
 	        witness (open_interval (add_SNo (apply_fun f i) (minus_SNo 1))
