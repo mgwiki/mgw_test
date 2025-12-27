@@ -37547,7 +37547,141 @@ Theorem K_set_above_positive_bound_finite : forall b:set,
   b :e R ->
   Rlt 0 b ->
   finite (K_set :/\: {y :e R|Rlt b y}).
-admit. (** FAIL **)
+let b.
+assume HbR: b :e R.
+assume Hbpos: Rlt 0 b.
+prove finite (K_set :/\: {y :e R|Rlt b y}).
+set V := {y :e R|Rlt b y}.
+set r := recip_SNo b.
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+claim H0ltb: 0 < b.
+{ exact (RltE_lt 0 b Hbpos). }
+claim HrS: SNo r.
+{ exact (SNo_recip_SNo b HbS). }
+claim HrR: r :e R.
+{ exact (real_recip_SNo b HbR). }
+claim Hrpos: 0 < r.
+{ exact (recip_SNo_of_pos_is_pos b HbS H0ltb). }
+claim Hrnonneg: 0 <= r.
+{ exact (SNoLtLe 0 r Hrpos). }
+claim Hexn: exists n :e omega, n <= r /\ r < ordsucc n.
+{ exact (nonneg_real_nat_interval r HrR Hrnonneg). }
+apply Hexn.
+let n. assume Hnpair.
+claim HnOmega: n :e omega.
+{ exact (andEL (n :e omega) (n <= r /\ r < ordsucc n) Hnpair). }
+claim Hnrest: n <= r /\ r < ordsucc n.
+{ exact (andER (n :e omega) (n <= r /\ r < ordsucc n) Hnpair). }
+claim HrltN: r < ordsucc n.
+{ exact (andER (n <= r) (r < ordsucc n) Hnrest). }
+set N := ordsucc n.
+claim HNOmega: N :e omega.
+{ exact (omega_ordsucc n HnOmega). }
+claim HNS: SNo N.
+{ exact (omega_SNo N HNOmega). }
+claim HNNat: nat_p N.
+{ exact (omega_nat_p N HNOmega). }
+claim HNOrd: ordinal N.
+{ exact (nat_p_ordinal N HNNat). }
+claim HNfin: finite N.
+{ exact (nat_finite N HNNat). }
+set I := N :\: {0}.
+claim HIfin: finite I.
+{ exact (Subq_finite N HNfin I (setminus_Subq N {0})). }
+set Big := {inv_nat m|m :e I}.
+claim HBigFin: finite Big.
+{ exact (Repl_finite (fun m:set => inv_nat m) I HIfin). }
+claim Hsub: K_set :/\: V c= Big.
+{ let x. assume Hx: x :e K_set :/\: V.
+  prove x :e Big.
+  claim HxK: x :e K_set.
+  { exact (binintersectE1 K_set V x Hx). }
+  claim HxV: x :e V.
+  { exact (binintersectE2 K_set V x Hx). }
+  apply (ReplE (omega :\: {0}) (fun m:set => inv_nat m) x HxK).
+  let m. assume Hmconj.
+  claim HmIn: m :e omega :\: {0}.
+  { exact (andEL (m :e omega :\: {0}) (x = inv_nat m) Hmconj). }
+  claim Hxeq: x = inv_nat m.
+  { exact (andER (m :e omega :\: {0}) (x = inv_nat m) Hmconj). }
+  rewrite Hxeq.
+  claim HmOmega: m :e omega.
+  { exact (setminusE1 omega {0} m HmIn). }
+  claim Hmnot0: m /:e {0}.
+  { exact (setminusE2 omega {0} m HmIn). }
+  claim HmS: SNo m.
+  { exact (omega_SNo m HmOmega). }
+  claim HmNat: nat_p m.
+  { exact (omega_nat_p m HmOmega). }
+  claim HmOrd: ordinal m.
+  { exact (nat_p_ordinal m HmNat). }
+  claim Hmne0: m <> 0.
+  { assume Hm0: m = 0.
+    claim Hmin0: m :e {0}.
+    { rewrite Hm0. exact (SingI 0). }
+    exact (Hmnot0 Hmin0). }
+  claim Hmcase: m = 0 \/ exists k:set, nat_p k /\ m = ordsucc k.
+  { exact (nat_inv m HmNat). }
+  claim Hexk: exists k:set, nat_p k /\ m = ordsucc k.
+  { apply (Hmcase (exists k:set, nat_p k /\ m = ordsucc k)).
+    - assume Hm0: m = 0.
+      apply FalseE.
+      exact (Hmne0 Hm0).
+    - assume H. exact H. }
+  apply Hexk.
+  let k. assume Hkconj.
+  claim Hkeq: m = ordsucc k.
+  { exact (andER (nat_p k) (m = ordsucc k) Hkconj). }
+  claim HkNat: nat_p k.
+  { exact (andEL (nat_p k) (m = ordsucc k) Hkconj). }
+  claim HkOrd: ordinal k.
+  { exact (nat_p_ordinal k HkNat). }
+  claim H0ltm: 0 < m.
+  { rewrite Hkeq.
+    exact (ordinal_ordsucc_pos k HkOrd). }
+  claim HVdef: V = {y :e R|Rlt b y}.
+  { reflexivity. }
+  claim HxVsep: x :e {y :e R|Rlt b y}.
+  { rewrite <- HVdef.
+    exact HxV. }
+  claim HmVsep: inv_nat m :e {y :e R|Rlt b y}.
+  { rewrite <- Hxeq.
+    exact HxVsep. }
+  claim HbInvRlt: Rlt b (inv_nat m).
+  { exact (SepE2 R (fun y0:set => Rlt b y0) (inv_nat m) HmVsep). }
+  claim HbInvLt: b < inv_nat m.
+  { exact (RltE_lt b (inv_nat m) HbInvRlt). }
+  claim HinvS: SNo (inv_nat m).
+  { exact (SNo_recip_SNo m HmS). }
+  claim HmbLt: mul_SNo m b < mul_SNo m (inv_nat m).
+  { exact (pos_mul_SNo_Lt m b (inv_nat m) HmS H0ltm HbS HinvS HbInvLt). }
+  claim HmbLt1: mul_SNo m b < 1.
+  { claim Hminv: mul_SNo m (inv_nat m) = 1.
+    { exact (recip_SNo_invR m HmS Hmne0). }
+    rewrite <- Hminv.
+    exact HmbLt. }
+  claim HmLtrdiv: m < div_SNo 1 b.
+  { exact (div_SNo_pos_LtR 1 b m SNo_1 HbS HmS H0ltb HmbLt1). }
+  claim Hrdiv: div_SNo 1 b = r.
+  { claim Hdivdef: div_SNo 1 b = mul_SNo 1 (recip_SNo b).
+    { reflexivity. }
+    rewrite Hdivdef.
+    rewrite (mul_SNo_oneL (recip_SNo b) (SNo_recip_SNo b HbS)).
+    reflexivity. }
+  claim HmLtr: m < r.
+  { rewrite <- Hrdiv.
+    exact HmLtrdiv. }
+  claim HmLtN: m < N.
+  { exact (SNoLt_tra m r N HmS HrS HNS HmLtr HrltN). }
+  claim HmInN: m :e N.
+  { exact (ordinal_SNoLt_In m N HmOrd HNOrd HmLtN). }
+  claim HmInI: m :e I.
+  { apply setminusI.
+    - exact HmInN.
+    - exact Hmnot0. }
+  exact (ReplI I (fun t:set => inv_nat t) m HmInI). }
+exact (Subq_finite Big HBigFin (K_set :/\: V) Hsub).
 Qed.
 
 Theorem standard_open_neighborhood_disjoint_from_K_set_pos : forall x:set,
