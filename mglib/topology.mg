@@ -69664,6 +69664,18 @@ Theorem Romega_D_metric_open_ball_in_product_topology : forall x r:set,
   metric_on R_omega_space Romega_D_metric ->
   x :e R_omega_space -> r :e R -> Rlt 0 r ->
   open_ball R_omega_space Romega_D_metric x r :e R_omega_product_topology.
+let x r.
+assume Hm: metric_on R_omega_space Romega_D_metric.
+assume Hx: x :e R_omega_space.
+assume HrR: r :e R.
+assume Hrpos: Rlt 0 r.
+set Xi0 := const_space_family omega R R_standard_topology.
+set S := product_subbasis_full omega Xi0.
+claim Hdef: R_omega_product_topology = generated_topology_from_subbasis R_omega_space S.
+{ reflexivity. }
+rewrite Hdef.
+(** TODO: show the D-metric open ball is open in the generated topology from the cylinder subbasis **)
+(** Strategy: use the basis_of_subbasis neighborhood characterization and Romega_D_metric_coord_abs_lt to build a finite cylinder neighborhood inside the ball. **)
 admit.
 Qed.
 
@@ -69673,6 +69685,17 @@ Theorem Romega_product_cylinder_in_D_metric_topology : forall i U:set,
   metric_on R_omega_space Romega_D_metric ->
   i :e omega -> U :e R_standard_topology ->
   product_cylinder omega (const_space_family omega R R_standard_topology) i U :e Romega_D_metric_topology.
+let i U.
+assume Hm: metric_on R_omega_space Romega_D_metric.
+assume Hi: i :e omega.
+assume HU: U :e R_standard_topology.
+set Xi0 := const_space_family omega R R_standard_topology.
+set C := product_cylinder omega Xi0 i U.
+set X := R_omega_space.
+set d := Romega_D_metric.
+claim HTm: topology_on X (metric_topology X d).
+{ exact (metric_topology_is_topology X d Hm). }
+(** TODO: show C is open in the metric topology by taking for each f :e C a small D-ball contained in C; use the local-interval property of R_standard_topology at apply_fun f i. **)
 admit.
 Qed.
 
