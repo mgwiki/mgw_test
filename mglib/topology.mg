@@ -69879,9 +69879,18 @@ apply andI.
 				    rewrite (tuple_2_0_eq x z).
 				    rewrite (tuple_2_1_eq x z).
 				    exact (Romega_D_metric_value_triangle x y z Hx Hy Hz).
-				- (** topology equality part **)
-				  admit.
-Qed.
+					- (** topology equality part **)
+					  prove Romega_D_metric_topology = R_omega_product_topology.
+					  apply set_ext.
+					  + let U. assume HU: U :e Romega_D_metric_topology.
+					    prove U :e R_omega_product_topology.
+					    (** TODO: show every D-metric open set is open in the product topology **)
+					    admit.
+					  + let U. assume HU: U :e R_omega_product_topology.
+					    prove U :e Romega_D_metric_topology.
+					    (** TODO: show every product-basic cylinder is open in the D-metric topology, then use minimality of generated_topology_from_subbasis **)
+					    admit.
+	Qed.
 
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
 Definition open_cover : set -> set -> set -> prop :=
