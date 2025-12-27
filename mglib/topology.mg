@@ -66661,9 +66661,12 @@ Definition second_countable_space : set -> set -> prop := fun X Tx =>
 
 (** from §30 Example 1: R^n has countable basis **) 
 (** LATEX VERSION: Euclidean spaces have a countable basis, hence are second countable. **)
+(** LATEX VERSION: For n in ω, the product space ℝ^n is second countable. **)
 Theorem euclidean_spaces_second_countable : forall n:set,
+  n :e omega ->
   second_countable_space (euclidean_space n) (euclidean_topology n).
 let n.
+assume Hn: n :e omega.
 prove second_countable_space (euclidean_space n) (euclidean_topology n).
 admit. (** FAIL **)
 Qed.
