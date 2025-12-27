@@ -69786,12 +69786,46 @@ apply SepI.
     set m2 := add_SNo b (minus_SNo xi).
     claim Hm1R: m1 :e R.
     { exact (real_add_SNo xi HxiR (minus_SNo a) (real_minus_SNo a HaR)). }
-    claim Hm2R: m2 :e R.
-    { exact (real_add_SNo b HbR (minus_SNo xi) (real_minus_SNo xi HxiR)). }
-    claim Hm1pos: Rlt 0 m1.
-    { admit. }
-    claim Hm2pos: Rlt 0 m2.
-    { admit. }
+	    claim Hm2R: m2 :e R.
+	    { exact (real_add_SNo b HbR (minus_SNo xi) (real_minus_SNo xi HxiR)). }
+	    claim Hm1pos: Rlt 0 m1.
+	    { claim Haxlt: a < xi.
+	      { exact (RltE_lt a xi Hailt). }
+	      claim Hm1posS: 0 < m1.
+	      { claim HmaS: SNo (minus_SNo a).
+	        { exact (SNo_minus_SNo a HaS). }
+	        claim Hlt: add_SNo (minus_SNo a) a < add_SNo (minus_SNo a) xi.
+	        { exact (add_SNo_Lt2 (minus_SNo a) a xi HmaS HaS HxiS Haxlt). }
+	        claim H0eq: add_SNo (minus_SNo a) a = 0.
+	        { exact (add_SNo_minus_SNo_linv a HaS). }
+	        claim Hm1eq: add_SNo (minus_SNo a) xi = m1.
+	        { claim Hcom: add_SNo (minus_SNo a) xi = add_SNo xi (minus_SNo a).
+	          { exact (add_SNo_com (minus_SNo a) xi HmaS HxiS). }
+	          rewrite Hcom.
+	          reflexivity. }
+	        rewrite <- H0eq at 1.
+	        rewrite <- Hm1eq at 1.
+	        exact Hlt. }
+	      exact (RltI 0 m1 real_0 Hm1R Hm1posS). }
+	    claim Hm2pos: Rlt 0 m2.
+	    { claim Hxblt: xi < b.
+	      { exact (RltE_lt xi b Hiltb). }
+	      claim Hm2posS: 0 < m2.
+	      { claim HmxiS: SNo (minus_SNo xi).
+	        { exact (SNo_minus_SNo xi HxiS). }
+	        claim Hlt: add_SNo (minus_SNo xi) xi < add_SNo (minus_SNo xi) b.
+	        { exact (add_SNo_Lt2 (minus_SNo xi) xi b HmxiS HxiS HbS Hxblt). }
+	        claim H0eq: add_SNo (minus_SNo xi) xi = 0.
+	        { exact (add_SNo_minus_SNo_linv xi HxiS). }
+	        claim Hm2eq: add_SNo (minus_SNo xi) b = m2.
+	        { claim Hcom: add_SNo (minus_SNo xi) b = add_SNo b (minus_SNo xi).
+	          { exact (add_SNo_com (minus_SNo xi) b HmxiS HbS). }
+	          rewrite Hcom.
+	          reflexivity. }
+	        rewrite <- H0eq at 1.
+	        rewrite <- Hm2eq at 1.
+	        exact Hlt. }
+	      exact (RltI 0 m2 real_0 Hm2R Hm2posS). }
     claim H1R: 1 :e R.
     { exact real_1. }
     claim H1pos: Rlt 0 1.
