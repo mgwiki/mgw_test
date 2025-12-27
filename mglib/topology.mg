@@ -67764,27 +67764,27 @@ assume Hx: x :e R_omega_space.
 let a.
 assume Ha: a :e Romega_D_scaled_diffs x x.
 prove a :e {0}.
-apply (ReplE_impred (omega :\: {0})
-                    (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun x i)) (inv_nat i))
+apply (ReplE_impred omega
+                    (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun x i)) (inv_nat (ordsucc i)))
                     a
                     Ha
                     (a :e {0})).
 let i.
-assume HiIn: i :e omega :\: {0}.
-assume Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun x i)) (inv_nat i).
+assume HiO: i :e omega.
+assume Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun x i)) (inv_nat (ordsucc i)).
 rewrite Hai.
-claim HiO: i :e omega.
-{ exact (setminusE1 omega {0} i HiIn). }
 claim HxiR: apply_fun x i :e R.
 { exact (Romega_coord_in_R x i Hx HiO). }
 claim Hbd0: R_bounded_distance (apply_fun x i) (apply_fun x i) = 0.
 { exact (R_bounded_distance_self_zero (apply_fun x i) HxiR). }
 rewrite Hbd0.
-claim HinvR: inv_nat i :e R.
-{ exact (inv_nat_real i HiO). }
-claim HinvS: SNo (inv_nat i).
-{ exact (real_SNo (inv_nat i) HinvR). }
-rewrite (mul_SNo_zeroL (inv_nat i) HinvS).
+claim HSi: ordsucc i :e omega.
+{ exact (omega_ordsucc i HiO). }
+claim HinvR: inv_nat (ordsucc i) :e R.
+{ exact (inv_nat_real (ordsucc i) HSi). }
+claim HinvS: SNo (inv_nat (ordsucc i)).
+{ exact (real_SNo (inv_nat (ordsucc i)) HinvR). }
+rewrite (mul_SNo_zeroL (inv_nat (ordsucc i)) HinvS).
 exact (SingI 0).
 Qed.
 
@@ -67803,32 +67803,27 @@ apply set_ext.
   { exact (SingE 0 a Ha0). }
   rewrite HaEq.
   prove 0 :e Romega_D_scaled_diffs x x.
-  claim H1omega: 1 :e omega.
-  { exact (nat_p_omega 1 nat_1). }
-  claim H1not0: 1 /:e {0}.
-  { assume H1: 1 :e {0}.
-    claim Heq: 1 = 0.
-    { exact (SingE 0 1 H1). }
-    exact (neq_1_0 Heq). }
-  claim H1In: 1 :e omega :\: {0}.
-  { exact (setminusI omega {0} 1 H1omega H1not0). }
-  claim HxiR: apply_fun x 1 :e R.
-  { exact (Romega_coord_in_R x 1 Hx H1omega). }
-  claim Hbd0: R_bounded_distance (apply_fun x 1) (apply_fun x 1) = 0.
-  { exact (R_bounded_distance_self_zero (apply_fun x 1) HxiR). }
-  claim HinvR: inv_nat 1 :e R.
-  { exact (inv_nat_real 1 H1omega). }
-  claim HinvS: SNo (inv_nat 1).
-  { exact (real_SNo (inv_nat 1) HinvR). }
-  claim Hdef: 0 = mul_SNo (R_bounded_distance (apply_fun x 1) (apply_fun x 1)) (inv_nat 1).
+  claim H0omega: 0 :e omega.
+  { exact (nat_p_omega 0 nat_0). }
+  claim HxiR: apply_fun x 0 :e R.
+  { exact (Romega_coord_in_R x 0 Hx H0omega). }
+  claim Hbd0: R_bounded_distance (apply_fun x 0) (apply_fun x 0) = 0.
+  { exact (R_bounded_distance_self_zero (apply_fun x 0) HxiR). }
+  claim H10: ordsucc 0 :e omega.
+  { exact (omega_ordsucc 0 H0omega). }
+  claim HinvR: inv_nat (ordsucc 0) :e R.
+  { exact (inv_nat_real (ordsucc 0) H10). }
+  claim HinvS: SNo (inv_nat (ordsucc 0)).
+  { exact (real_SNo (inv_nat (ordsucc 0)) HinvR). }
+  claim Hdef: 0 = mul_SNo (R_bounded_distance (apply_fun x 0) (apply_fun x 0)) (inv_nat (ordsucc 0)).
   { rewrite Hbd0.
-    rewrite (mul_SNo_zeroL (inv_nat 1) HinvS).
+    rewrite (mul_SNo_zeroL (inv_nat (ordsucc 0)) HinvS).
     reflexivity. }
   rewrite Hdef.
-  exact (ReplI (omega :\: {0})
-               (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun x i)) (inv_nat i))
-               1
-               H1In).
+  exact (ReplI omega
+               (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun x i)) (inv_nat (ordsucc i)))
+               0
+               H0omega).
 Qed.
 
 Definition Romega_D_metric_value : set -> set -> set := fun x y =>
