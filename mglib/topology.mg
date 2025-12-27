@@ -37319,6 +37319,88 @@ Qed.
 (** LATEX VERSION: Exercise 16(a): Determine the closure of K={1/n : n in Zplus} under each of the five R topologies from §13 Exercise 7. **)
 Definition R_nonneg_set : set := {x :e R|0 <= x}.
 
+(** helper: the closure of K_set in the K-topology is K_set (K_set is closed in the K-topology) **)
+Theorem closure_of_K_in_R_K_topology :
+  closure_of R R_K_topology K_set = K_set.
+apply set_ext.
+- let x. assume Hx: x :e closure_of R R_K_topology K_set.
+  prove x :e K_set.
+  claim HxR: x :e R.
+  { exact (SepE1 R (fun x0:set => forall U:set, U :e R_K_topology -> x0 :e U -> U :/\: K_set <> Empty) x Hx). }
+  claim Hcl: forall U:set, U :e R_K_topology -> x :e U -> U :/\: K_set <> Empty.
+  { exact (SepE2 R (fun x0:set => forall U:set, U :e R_K_topology -> x0 :e U -> U :/\: K_set <> Empty) x Hx). }
+  apply (xm (x :e K_set)).
+  - assume HxK: x :e K_set.
+    exact HxK.
+  - assume HxnotK: ~(x :e K_set).
+    apply FalseE.
+    (** choose a standard open interval I containing x, then remove K_set: U = I\\K_set **)
+    claim HexI: exists I :e R_standard_basis, x :e I.
+    { exact (basis_on_cov R R_standard_basis R_standard_basis_is_basis_local x HxR). }
+    apply HexI.
+    let I. assume HIpair.
+    claim HIstd: I :e R_standard_basis.
+    { exact (andEL (I :e R_standard_basis) (x :e I) HIpair). }
+    claim HxI: x :e I.
+    { exact (andER (I :e R_standard_basis) (x :e I) HIpair). }
+    (** destruct I = open_interval a b **)
+    claim Hexa: exists a :e R, I :e {open_interval a b|b :e R}.
+    { exact (famunionE R (fun a0 : set => {open_interval a0 b|b :e R}) I HIstd). }
+    apply Hexa.
+    let a. assume Hapair.
+    claim HaR: a :e R.
+    { exact (andEL (a :e R) (I :e {open_interval a b|b :e R}) Hapair). }
+    claim HIfam: I :e {open_interval a b|b :e R}.
+    { exact (andER (a :e R) (I :e {open_interval a b|b :e R}) Hapair). }
+    claim Hexb: exists b :e R, I = open_interval a b.
+    { exact (ReplE R (fun b0 : set => open_interval a b0) I HIfam). }
+    apply Hexb.
+    let b. assume Hbpair.
+    claim HbR: b :e R.
+    { exact (andEL (b :e R) (I = open_interval a b) Hbpair). }
+    claim HIeq: I = open_interval a b.
+    { exact (andER (b :e R) (I = open_interval a b) Hbpair). }
+    set U := open_interval a b :\: K_set.
+    claim HUopen: U :e R_K_topology.
+    { (** U is a basis element in the generated K-topology **)
+      claim HUk: U :e R_K_basis.
+      { claim HUr: U :e {open_interval a b0 :\: K_set|b0 :e R}.
+        { exact (ReplI R (fun b0 : set => open_interval a b0 :\: K_set) b HbR). }
+        exact (famunionI R (fun a0 : set => {open_interval a0 b0 :\: K_set|b0 :e R}) a U HaR HUr). }
+      claim HUinB: U :e (R_standard_basis :\/: R_K_basis).
+      { exact (binunionI2 R_standard_basis R_K_basis U HUk). }
+      rewrite (refl_equal R_K_topology).
+      exact (basis_in_generated R (R_standard_basis :\/: R_K_basis) U R_standard_plus_K_basis_is_basis_local HUinB). }
+    claim HxU: x :e U.
+    { rewrite <- HIeq in HxI.
+      exact (setminusI (open_interval a b) K_set x HxI HxnotK). }
+    claim Hne: U :/\: K_set <> Empty.
+    { exact (Hcl U HUopen HxU). }
+    (** but (open_interval a b \\ K_set) ∩ K_set is empty **)
+    claim Hempty: U :/\: K_set = Empty.
+    { apply Empty_Subq_eq.
+      let y. assume Hy: y :e U :/\: K_set.
+      prove y :e Empty.
+      apply FalseE.
+      claim HyU: y :e U.
+      { exact (binintersectE1 U K_set y Hy). }
+      claim HyK: y :e K_set.
+      { exact (binintersectE2 U K_set y Hy). }
+      claim HyNotK: y /:e K_set.
+      { rewrite (refl_equal U) in HyU.
+        exact (setminusE2 (open_interval a b) K_set y HyU). }
+      exact (HyNotK HyK). }
+    exact (Hne Hempty).
+- (** K_set is always a subset of its closure **)
+  let x. assume Hx: x :e K_set.
+  prove x :e closure_of R R_K_topology K_set.
+  claim HKsub: K_set c= R.
+  { exact K_set_Subq_R. }
+  claim Hsub: K_set c= closure_of R R_K_topology K_set.
+  { exact (subset_of_closure R R_K_topology K_set R_K_topology_is_topology_local HKsub). }
+  exact (Hsub x Hx).
+Qed.
+
 Theorem ex17_16a_closure_of_K_in_five_topologies :
   closure_of R R_standard_topology K_set = K_set :\/: {0} /\
   closure_of R R_K_topology K_set = K_set /\
@@ -37337,7 +37419,7 @@ apply andI.
     * (** A /\ B **)
       apply andI.
       - admit. (** FAIL **)
-      - admit. (** FAIL **)
+      - exact closure_of_K_in_R_K_topology.
     * (** C: finite complement topology **)
       claim HKinf: infinite K_set.
       { exact K_set_infinite. }
