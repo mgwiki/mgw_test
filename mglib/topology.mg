@@ -66885,7 +66885,7 @@ Theorem theorem_49_1_nowhere_differentiable_approx : forall h eps:set,
     nowhere_differentiable g /\
     forall x:set, x :e unit_interval ->
       Rlt (Abs (add_SNo (apply_fun h x) (minus_SNo (apply_fun g x)))) eps.
-admit.
+admit. (** FAIL **)
 Qed.
 
 Definition diffquot_forward_abs : set -> set -> set -> set := fun f x h =>
@@ -67000,14 +67000,14 @@ Theorem compact_subspace_Rn_dimension_le : forall N X:set,
   X c= (euclidean_space N) ->
   compact_space X (subspace_topology (euclidean_space N) (euclidean_topology N) X) ->
   covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Theorem: compact m-manifold has dimension at most m **) 
 (** LATEX VERSION: Compact m-manifold has covering dimension ≤ m. **)
 Theorem compact_manifold_dimension_le : forall X Tx m:set,
   m_manifold X Tx -> compact_space X Tx -> covering_dimension X Tx m.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Theorem (Menger-Nöbeling): compact metrizable space of dimension m embeds in R^{2m+1} **) 
@@ -67016,7 +67016,7 @@ Theorem Menger_Nobeling_embedding : forall X Tx m:set,
   compact_space X Tx -> metrizable X Tx -> covering_dimension X Tx m ->
   exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Theorem 50.1: dimension of closed subspace bounded by ambient **) 
@@ -67024,7 +67024,7 @@ Qed.
 Theorem dimension_closed_subspace_le : forall X Tx Y n:set,
   covering_dimension X Tx n -> closed_in X Tx Y ->
   covering_dimension Y (subspace_topology X Tx Y) n.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Theorem 50.2: dimension of union of closed sets is max **)
@@ -67036,7 +67036,7 @@ Theorem dimension_union_closed_max : forall X Tx Y Z n:set,
   covering_dimension Y (subspace_topology X Tx Y) n ->
   covering_dimension Z (subspace_topology X Tx Z) n ->
   covering_dimension (Y :\/: Z) (subspace_topology X Tx (Y :\/: Z)) n.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Corollary 50.3: finite union of closed finite-dimensional sets **)
