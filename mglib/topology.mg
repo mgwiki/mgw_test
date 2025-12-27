@@ -67828,14 +67828,14 @@ claim HexB: exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B
 { exact (andER (topology_on X Tx) (exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx) Hsc). }
 apply HexB.
 let B. assume HBpair.
+claim HBasisCount: basis_on X B /\ countable_set B.
+{ exact (andEL (basis_on X B /\ countable_set B) (basis_generates X B Tx) HBpair). }
 claim HBasis: basis_on X B.
-{ exact (andEL (basis_on X B) (countable_set B /\ basis_generates X B Tx) HBpair). }
-claim HBrest: countable_set B /\ basis_generates X B Tx.
-{ exact (andER (basis_on X B) (countable_set B /\ basis_generates X B Tx) HBpair). }
+{ exact (andEL (basis_on X B) (countable_set B) HBasisCount). }
 claim HBcount: countable_set B.
-{ exact (andEL (countable_set B) (basis_generates X B Tx) HBrest). }
+{ exact (andER (basis_on X B) (countable_set B) HBasisCount). }
 claim HBgener: basis_generates X B Tx.
-{ exact (andER (countable_set B) (basis_generates X B Tx) HBrest). }
+{ exact (andER (basis_on X B /\ countable_set B) (basis_generates X B Tx) HBpair). }
 claim HTxeq: generated_topology X B = Tx.
 { exact (andER (basis_on X B) (generated_topology X B = Tx) HBgener). }
 set pick := (fun a:set =>
