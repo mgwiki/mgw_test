@@ -66263,6 +66263,31 @@ Definition R_lub : set -> set -> prop := fun A l =>
      (forall a:set, a :e A -> a :e R -> Rle a u) ->
      Rle l u).
 
+(** helper: extract l :e R from R_lub **)
+Theorem R_lub_in_R : forall A l:set, R_lub A l -> l :e R.
+let A l.
+assume Hlub: R_lub A l.
+(** R_lub A l parses as ((l :e R /\ UB) /\ MIN) because /\ is left associative **)
+claim Hcore: l :e R /\ (forall a:set, a :e A -> a :e R -> Rle a l).
+{ exact (andEL (l :e R /\ (forall a:set, a :e A -> a :e R -> Rle a l))
+               (forall u:set, u :e R ->
+                 (forall a:set, a :e A -> a :e R -> Rle a u) ->
+                 Rle l u)
+               Hlub). }
+exact (andEL (l :e R)
+             (forall a:set, a :e A -> a :e R -> Rle a l)
+             Hcore).
+Qed.
+
+(** helper: existence of least upper bounds in R (used for uniform metric) **)
+(** LATEX VERSION: The expression sup{...} is assumed to exist as a real number. **)
+Theorem R_lub_exists : forall A:set,
+  (forall a:set, a :e A -> a :e R) ->
+  (exists u:set, u :e R /\ forall a:set, a :e A -> a :e R -> Rle a u) ->
+  exists l:set, R_lub A l.
+admit. (** FAIL **)
+Qed.
+
 (** helper: clipped coordinate difference (for the intended uniform metric) **)
 Definition Romega_coord_abs_diff : set -> set -> set -> set := fun f g n =>
   abs_SNo (add_SNo (apply_fun f n) (minus_SNo (apply_fun g n))).
@@ -66276,6 +66301,55 @@ Definition Romega_clipped_diffs : set -> set -> set := fun f g =>
 Definition Romega_uniform_metric_value : set -> set -> set := fun f g =>
   Eps_i (fun r:set => R_lub (Romega_clipped_diffs f g) r).
 
+(** helper: clipped diffs are real numbers **)
+Theorem Romega_clipped_diffs_in_R : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  forall a:set, a :e Romega_clipped_diffs f g -> a :e R.
+admit. (** FAIL **)
+Qed.
+
+(** helper: clipped diffs are bounded above in R **)
+Theorem Romega_clipped_diffs_bounded : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  exists u:set, u :e R /\ forall a:set, a :e Romega_clipped_diffs f g -> a :e R -> Rle a u.
+admit. (** FAIL **)
+Qed.
+
+(** helper: the chosen uniform metric value is a least upper bound **)
+Theorem Romega_uniform_metric_value_is_lub : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  R_lub (Romega_clipped_diffs f g) (Romega_uniform_metric_value f g).
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+set A := Romega_clipped_diffs f g.
+set P := (fun r:set => R_lub A r).
+claim HAinR: forall a:set, a :e A -> a :e R.
+{ exact (Romega_clipped_diffs_in_R f g Hf Hg). }
+claim Hub: exists u:set, u :e R /\ forall a:set, a :e A -> a :e R -> Rle a u.
+{ exact (Romega_clipped_diffs_bounded f g Hf Hg). }
+claim Hex: exists l:set, P l.
+{ exact (R_lub_exists A HAinR Hub). }
+exact (Eps_i_ex P Hex).
+Qed.
+
+(** helper: uniform metric values are real numbers **)
+Theorem Romega_uniform_metric_value_in_R : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  Romega_uniform_metric_value f g :e R.
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+exact (R_lub_in_R (Romega_clipped_diffs f g)
+                  (Romega_uniform_metric_value f g)
+                  (Romega_uniform_metric_value_is_lub f g Hf Hg)).
+Qed.
+
+(** from §20 Definition: uniform metric on R to the omega **)
 (** LATEX VERSION: The uniform metric on R^ω is defined by taking the supremum of the clipped coordinate differences. **)
 Definition uniform_metric_Romega : set :=
   graph (setprod real_sequences real_sequences)
