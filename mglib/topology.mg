@@ -67162,7 +67162,137 @@ apply (xm (n = Empty)).
 	                   (ReplI B0 (fun Uj:set => product_cylinder n Xi i Uj) b HbB0)). }
 	          exact (subbasis_elem_open_in_generated_from_subbasis Xprod Ssmall (product_cylinder n Xi i b) HSsmall HcSsmall). }
 	        claim HcylEq: product_cylinder n Xi i U0 = Union UFam.
-	        { admit. }
+	        { apply set_ext.
+	          - let f. assume Hf: f :e product_cylinder n Xi i U0.
+	            prove f :e Union UFam.
+	            claim HfX: f :e Xprod.
+	            { exact (SepE1 Xprod
+	                            (fun f0:set => i :e n /\ U0 :e space_family_topology Xi i /\ apply_fun f0 i :e U0)
+	                            f
+	                            Hf). }
+	            claim Hpred: (i :e n /\ U0 :e space_family_topology Xi i) /\ apply_fun f i :e U0.
+	            { exact (SepE2 Xprod
+	                           (fun f0:set => i :e n /\ U0 :e space_family_topology Xi i /\ apply_fun f0 i :e U0)
+	                           f
+	                           Hf). }
+	            claim Hiu: i :e n /\ U0 :e space_family_topology Xi i.
+	            { exact (andEL (i :e n /\ U0 :e space_family_topology Xi i) (apply_fun f i :e U0) Hpred). }
+	            claim HiN: i :e n.
+	            { exact (andEL (i :e n) (U0 :e space_family_topology Xi i) Hiu). }
+	            claim HU0top2: U0 :e space_family_topology Xi i.
+	            { exact (andER (i :e n) (U0 :e space_family_topology Xi i) Hiu). }
+	            claim HfiU0: apply_fun f i :e U0.
+	            { exact (andER (i :e n /\ U0 :e space_family_topology Xi i) (apply_fun f i :e U0) Hpred). }
+	            (** Identify the i-th topology as the standard topology on R. **)
+	            claim HXi_i: apply_fun Xi i = (R, R_standard_topology).
+	            { exact (const_space_family_apply n R R_standard_topology i HiN). }
+	            claim HXtopi: space_family_topology Xi i = R_standard_topology.
+	            { claim HXtop_def: space_family_topology Xi i = (apply_fun Xi i) 1.
+	              { reflexivity. }
+	              rewrite HXtop_def.
+	              rewrite HXi_i.
+	              rewrite (tuple_2_1_eq R R_standard_topology).
+	              reflexivity. }
+	            claim HU0std: U0 :e R_standard_topology.
+	            { rewrite <- HXtopi.
+	              exact HU0top2. }
+	            claim HBasisStd: basis_on R B0 /\ generated_topology R B0 = R_standard_topology.
+	            { exact ex13_8a_rational_intervals_basis_standard. }
+	            claim HU0gen: U0 :e generated_topology R B0.
+	            { rewrite (andER (basis_on R B0) (generated_topology R B0 = R_standard_topology) HBasisStd).
+	              exact HU0std. }
+	            (** Choose b :e B0 with f i :e b and b c= U0. **)
+	            claim HU0loc: forall x :e U0, exists b :e B0, x :e b /\ b c= U0.
+	            { exact (SepE2 (Power R)
+	                           (fun U:set => forall x0 :e U, exists b :e B0, x0 :e b /\ b c= U)
+	                           U0
+	                           HU0gen). }
+	            claim Hexb: exists b :e B0, apply_fun f i :e b /\ b c= U0.
+	            { exact (HU0loc (apply_fun f i) HfiU0). }
+	            apply Hexb.
+	            let b. assume Hbpair.
+	            claim HbB0: b :e B0.
+	            { exact (andEL (b :e B0) (apply_fun f i :e b /\ b c= U0) Hbpair). }
+	            claim Hbib: apply_fun f i :e b /\ b c= U0.
+	            { exact (andER (b :e B0) (apply_fun f i :e b /\ b c= U0) Hbpair). }
+	            claim Hfib: apply_fun f i :e b.
+	            { exact (andEL (apply_fun f i :e b) (b c= U0) Hbib). }
+	            claim HbSub: b c= U0.
+	            { exact (andER (apply_fun f i :e b) (b c= U0) Hbib). }
+	            claim HbFam: b :e Fam.
+	            { exact (SepI B0 (fun b0:set => b0 c= U0) b HbB0 HbSub). }
+	            set c := product_cylinder n Xi i b.
+	            claim HcUFam: c :e UFam.
+	            { exact (ReplI Fam (fun b0:set => product_cylinder n Xi i b0) b HbFam). }
+	            apply (UnionI UFam f c).
+	            + (** f :e c **)
+	              prove f :e product_cylinder n Xi i b.
+	              claim Hcyl_def: product_cylinder n Xi i b =
+	                {f0 :e Xprod | i :e n /\ b :e space_family_topology Xi i /\ apply_fun f0 i :e b}.
+	              { reflexivity. }
+	              rewrite Hcyl_def.
+	              apply (SepI Xprod
+	                          (fun f0:set => i :e n /\ b :e space_family_topology Xi i /\ apply_fun f0 i :e b)
+	                          f
+	                          HfX).
+	              claim Hleft: i :e n /\ b :e space_family_topology Xi i.
+	              { claim HbStd: b :e R_standard_topology.
+	                { rewrite <- (andER (basis_on R B0) (generated_topology R B0 = R_standard_topology) HBasisStd).
+	                  claim HBasis0: basis_on R B0.
+	                  { exact (andEL (basis_on R B0) (generated_topology R B0 = R_standard_topology) HBasisStd). }
+	                  exact (generated_topology_contains_basis R B0 HBasis0 b HbB0). }
+	                claim HbTop: b :e space_family_topology Xi i.
+	                { rewrite HXtopi.
+	                  exact HbStd. }
+	                exact (andI (i :e n) (b :e space_family_topology Xi i) HiN HbTop). }
+	              exact (andI (i :e n /\ b :e space_family_topology Xi i) (apply_fun f i :e b) Hleft Hfib).
+	            + exact HcUFam.
+	          - let f. assume Hf: f :e Union UFam.
+	            prove f :e product_cylinder n Xi i U0.
+	            apply (UnionE_impred UFam f Hf).
+	            let c. assume Hfc: f :e c. assume Hc: c :e UFam.
+	            claim Hexb: exists b :e Fam, c = product_cylinder n Xi i b.
+	            { exact (ReplE Fam (fun b0:set => product_cylinder n Xi i b0) c Hc). }
+	            apply Hexb.
+	            let b. assume Hbpair.
+	            claim HbFam: b :e Fam.
+	            { exact (andEL (b :e Fam) (c = product_cylinder n Xi i b) Hbpair). }
+	            claim HcEq: c = product_cylinder n Xi i b.
+	            { exact (andER (b :e Fam) (c = product_cylinder n Xi i b) Hbpair). }
+	            claim HbSub: b c= U0.
+	            { exact (SepE2 B0 (fun b0:set => b0 c= U0) b HbFam). }
+	            claim HfCyl: f :e product_cylinder n Xi i b.
+	            { rewrite <- HcEq.
+	              exact Hfc. }
+	            claim Hpredb: (i :e n /\ b :e space_family_topology Xi i) /\ apply_fun f i :e b.
+	            { exact (SepE2 Xprod
+	                           (fun f0:set => i :e n /\ b :e space_family_topology Xi i /\ apply_fun f0 i :e b)
+	                           f
+	                           HfCyl). }
+	            claim Hiu: i :e n /\ b :e space_family_topology Xi i.
+	            { exact (andEL (i :e n /\ b :e space_family_topology Xi i) (apply_fun f i :e b) Hpredb). }
+	            claim HiN: i :e n.
+	            { exact (andEL (i :e n) (b :e space_family_topology Xi i) Hiu). }
+	            claim Hfib: apply_fun f i :e b.
+	            { exact (andER (i :e n /\ b :e space_family_topology Xi i) (apply_fun f i :e b) Hpredb). }
+	            claim HfiU0: apply_fun f i :e U0.
+	            { exact (HbSub (apply_fun f i) Hfib). }
+	            claim HfX: f :e Xprod.
+	            { exact (SepE1 Xprod
+	                            (fun f0:set => i :e n /\ b :e space_family_topology Xi i /\ apply_fun f0 i :e b)
+	                            f
+	                            HfCyl). }
+	            claim HcylU0_def: product_cylinder n Xi i U0 =
+	              {f0 :e Xprod | i :e n /\ U0 :e space_family_topology Xi i /\ apply_fun f0 i :e U0}.
+	            { reflexivity. }
+	            rewrite HcylU0_def.
+	            apply (SepI Xprod
+	                        (fun f0:set => i :e n /\ U0 :e space_family_topology Xi i /\ apply_fun f0 i :e U0)
+	                        f
+	                        HfX).
+	            claim Hleft: i :e n /\ U0 :e space_family_topology Xi i.
+	            { exact (andI (i :e n) (U0 :e space_family_topology Xi i) HiN HU0top). }
+	            exact (andI (i :e n /\ U0 :e space_family_topology Xi i) (apply_fun f i :e U0) Hleft HfiU0). }
 	        (** Union UFam is open in Tsmall, hence the cylinder is open in Tsmall. **)
 	        claim HUFamSub2: UFam c= Tsmall.
 	        { let c. assume Hc: c :e UFam.
