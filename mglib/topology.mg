@@ -65399,7 +65399,7 @@ apply set_ext.
   prove f :e {Empty}.
   claim HfPow: f :e Power (setprod Empty (space_family_union Empty Xi)).
   { exact (SepE1 (Power (setprod Empty (space_family_union Empty Xi)))
-                 (fun f0:set => function_on f0 Empty (space_family_union Empty Xi) /\
+                 (fun f0:set => (total_function_on f0 Empty (space_family_union Empty Xi) /\ functional_graph f0) /\
                    forall i:set, i :e Empty -> apply_fun f0 i :e space_family_set Xi i)
                  f Hf). }
   claim Heqprod: setprod Empty (space_family_union Empty Xi) = Empty.
