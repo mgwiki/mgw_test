@@ -68437,10 +68437,10 @@ apply andI.
 		        claim Hval0: Romega_D_metric_value x y = 0.
 		        { rewrite <- Happ.
 		          exact H0. }
-		        claim Hcoord: forall i:set, i :e omega :\: {0} -> apply_fun x i = apply_fun y i.
-		        { let i.
-		          assume HiIn: i :e omega :\: {0}.
-		          exact (Romega_D_metric_value_eq0_coord_eq x y Hx Hy Hval0 i HiIn). }
+			        claim Hcoord: forall i:set, i :e omega -> apply_fun x i = apply_fun y i.
+			        { let i.
+			          assume HiO: i :e omega.
+			          exact (Romega_D_metric_value_eq0_coord_eq x y Hx Hy Hval0 i HiO). }
 		        admit. }
 		  + admit.
 		- (** topology equality part **)
