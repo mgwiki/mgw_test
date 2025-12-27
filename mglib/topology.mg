@@ -42064,13 +42064,13 @@ apply andI.
 		               (affine_line_R2 a b c))
 		             R R_lower_limit_topology g
 		           /\ (forall x:set, x :e R -> apply_fun g (apply_fun (affine_line_R2_param_by_x a b c) x) = x)
-		           /\ (forall y:set, y :e affine_line_R2 a b c -> apply_fun (affine_line_R2_param_by_x a b c) (apply_fun g y) = y).
-		      apply andI.
-		      - admit.
-		      - witness (projection1 R R).
-			        apply andI.
-			        + apply andI.
-			          * claim HTll: topology_on R R_lower_limit_topology.
+			           /\ (forall y:set, y :e affine_line_R2 a b c -> apply_fun (affine_line_R2_param_by_x a b c) (apply_fun g y) = y).
+			      apply andI.
+			      - admit. (** FAIL **)
+			      - witness (projection1 R R).
+				        apply andI.
+				        + apply andI.
+				          * claim HTll: topology_on R R_lower_limit_topology.
 			            { exact R_lower_limit_topology_is_topology. }
 			            claim HTstd: topology_on R R_standard_topology.
 			            { exact R_standard_topology_is_topology. }
@@ -42273,16 +42273,16 @@ apply andI.
 		           /\ (forall x:set, x :e R -> apply_fun g (apply_fun (affine_line_R2_param_by_x a b c) x) = x)
 		           /\ (forall y:set, y :e affine_line_R2 a b c -> apply_fun (affine_line_R2_param_by_x a b c) (apply_fun g y) = y).
 		      apply andI.
-			      - set f := affine_line_R2_param_by_x a b c.
-			        claim HTll: topology_on R R_lower_limit_topology.
-			        { exact R_lower_limit_topology_is_topology. }
-			        claim HcontProd: continuous_map R R_lower_limit_topology (setprod R R)
-			          (product_topology R R_lower_limit_topology R R_lower_limit_topology) f.
-			        { admit. }
-			        claim Hsub: affine_line_R2 a b c c= setprod R R.
-			        { exact (affine_line_R2_subset_R2 a b c). }
-			        claim Himg: forall x:set, x :e R -> apply_fun f x :e affine_line_R2 a b c.
-			        { let x. assume HxR: x :e R.
+				      - set f := affine_line_R2_param_by_x a b c.
+				        claim HTll: topology_on R R_lower_limit_topology.
+				        { exact R_lower_limit_topology_is_topology. }
+				        claim HcontProd: continuous_map R R_lower_limit_topology (setprod R R)
+				          (product_topology R R_lower_limit_topology R R_lower_limit_topology) f.
+				        { admit. (** FAIL **) }
+				        claim Hsub: affine_line_R2 a b c c= setprod R R.
+				        { exact (affine_line_R2_subset_R2 a b c). }
+				        claim Himg: forall x:set, x :e R -> apply_fun f x :e affine_line_R2 a b c.
+				        { let x. assume HxR: x :e R.
 			          exact (affine_line_R2_param_by_x_in_line a b c x HaR HbR HcR HxR Hbne). }
 			        exact (continuous_map_range_restrict R R_lower_limit_topology (setprod R R)
 			          (product_topology R R_lower_limit_topology R R_lower_limit_topology)
@@ -48994,7 +48994,7 @@ apply andI.
 - exact R_standard_topology_is_topology.
 - assume Hsep: exists U V:set, U :e R_standard_topology /\ V :e R_standard_topology /\ separation_of R U V.
   (** standard proof uses order properties of R to contradict existence of a separation **)
-  admit.
+  admit. (** FAIL **)
 Qed.
 
 (** from §24 Theorem 24.3: intermediate value theorem (order topology) **)
