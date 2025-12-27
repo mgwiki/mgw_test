@@ -54341,7 +54341,7 @@ claim H0U0: 0 :e U0.
 
 prove Romega_zero :e product_space omega Xi.
 prove Romega_zero :e {f :e Power (setprod omega (space_family_union omega Xi))|
-   function_on f omega (space_family_union omega Xi) /\
+   total_function_on f omega (space_family_union omega Xi) /\ functional_graph f /\
    forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i}.
 claim Hsub: Romega_zero c= setprod omega U0.
 { let p. assume Hp: p :e Romega_zero.
@@ -54354,8 +54354,8 @@ claim Hpow: Romega_zero :e Power (setprod omega U0).
 { exact (PowerI (setprod omega U0) Romega_zero Hsub). }
 claim Htot: total_function_on Romega_zero omega U0.
 { exact (const_fun_total_function_on omega U0 0 H0U0). }
-claim Hfun: function_on Romega_zero omega U0.
-{ exact (total_function_on_function_on Romega_zero omega U0 Htot). }
+claim Hfg: functional_graph Romega_zero.
+{ exact (functional_graph_const_fun omega 0). }
 claim Hcoords: forall i:set, i :e omega -> apply_fun Romega_zero i :e space_family_set Xi i.
 { let i. assume Hi: i :e omega.
   prove apply_fun Romega_zero i :e space_family_set Xi i.
@@ -54372,12 +54372,16 @@ claim Hcoords: forall i:set, i :e omega -> apply_fun Romega_zero i :e space_fami
     exact (tuple_2_0_eq R R_standard_topology). }
   rewrite Hset.
   exact real_0. }
-claim Hprop: function_on Romega_zero omega U0 /\ forall i:set, i :e omega -> apply_fun Romega_zero i :e space_family_set Xi i.
+claim Hprop: (total_function_on Romega_zero omega U0 /\ functional_graph Romega_zero) /\
+             forall i:set, i :e omega -> apply_fun Romega_zero i :e space_family_set Xi i.
 { apply andI.
-  - exact Hfun.
+  - apply andI.
+    + exact Htot.
+    + exact Hfg.
   - exact Hcoords. }
 exact (SepI (Power (setprod omega U0))
-            (fun f:set => function_on f omega U0 /\ forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
+            (fun f:set => (total_function_on f omega U0 /\ functional_graph f) /\
+                          forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
             Romega_zero
             Hpow
             Hprop).
