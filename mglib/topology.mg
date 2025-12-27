@@ -40433,7 +40433,7 @@ apply andI.
   + let x. assume Hx: x :e closure_of R R_C_topology ex17_17_interval_B.
     exact (ex17_17_closure_B_C_Subq x Hx).
   + let x. assume Hx: x :e ex17_17_interval_B_closure_lower.
-    admit.
+    exact (ex17_17_closure_B_C_Supq x Hx).
 Qed.
 
 (** LATEX VERSION: Exercise 18: Determine the closures of the subsets A,B,C,D,E of the ordered square listed in the text. **)
