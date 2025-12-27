@@ -69682,7 +69682,7 @@ Theorem ex33_1_level_sets_urysohn : forall X Tx A B:set, forall U:set -> set,
     continuous_map X Tx R R_standard_topology f /\
     (forall x:set, x :e A -> apply_fun f x = 0) /\
     (forall x:set, x :e B -> apply_fun f x = 1).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §33 Exercise 2: connected normal/regular uncountable **)
 (** LATEX VERSION: Connected normal/regular space with >1 point is uncountable. **)
@@ -69691,7 +69691,7 @@ Theorem ex33_2a_connected_normal_uncountable : forall X Tx:set,
   normal_space X Tx ->
   (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
   ~ countable X.
-admit.
+admit. (** FAIL **)
 Qed.
 
 Theorem ex33_2b_connected_regular_uncountable : forall X Tx:set,
@@ -69699,7 +69699,7 @@ Theorem ex33_2b_connected_regular_uncountable : forall X Tx:set,
   regular_space X Tx ->
   (exists x y:set, x :e X /\ y :e X /\ x <> y) ->
   ~ countable X.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §33 Exercise 3: direct Urysohn proof in metric space **)
 (** LATEX VERSION: For metric space, Urysohn lemma direct proof: f(x) = d(x,A)/(d(x,A)+d(x,B)). **)
@@ -69712,7 +69712,7 @@ Theorem ex33_3_urysohn_metric_direct : forall X d A B:set,
     continuous_map X (metric_topology X d) R R_standard_topology f /\
     (forall x:set, x :e A -> apply_fun f x = 0) /\
     (forall x:set, x :e B -> apply_fun f x = 1).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §33 Exercise 4: closed G_delta sets and vanishing functions **)
 (** LATEX VERSION: In normal X, ∃f:X→[0,1] vanishing precisely on A iff A is closed G_δ. **)
@@ -69724,7 +69724,7 @@ Theorem ex33_4_closed_Gdelta_vanishing_function : forall X Tx A:set,
       continuous_map X Tx R R_standard_topology f /\
       (forall x:set, x :e A -> apply_fun f x = 0) /\
       (forall x:set, x /:e A -> ~ (apply_fun f x = 0))).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §33 Exercise 5: strong Urysohn lemma **)
 (** LATEX VERSION: Strong Urysohn: ∃f with f(A)=0, f(B)=1, 0<f<1 elsewhere iff A,B closed G_δ. **)
@@ -69739,14 +69739,14 @@ Theorem ex33_5_strong_urysohn : forall X Tx A B:set,
       (forall x:set, x :e A -> apply_fun f x = 0) /\
       (forall x:set, x :e B -> apply_fun f x = 1) /\
       (forall x:set, x :e X -> x /:e A -> x /:e B -> ~ (apply_fun f x = 0) /\ ~ (apply_fun f x = 1))).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §33 Exercise 6a: metrizable implies perfectly normal **)
 (** LATEX VERSION: Every metrizable space is perfectly normal. **)
 Theorem ex33_6a_metrizable_perfectly_normal : forall X Tx:set,
   metrizable X Tx ->
   perfectly_normal_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §33 Exercise 6b: perfectly normal implies completely normal **)
@@ -69754,7 +69754,7 @@ Qed.
 Theorem ex33_6b_perfectly_completely_normal : forall X Tx:set,
   perfectly_normal_space X Tx ->
   completely_normal_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §33 Exercise 6c: completely normal not perfectly normal example **)
@@ -69763,7 +69763,7 @@ Theorem ex33_6c_completely_not_perfectly_normal :
   exists X Tx:set,
     completely_normal_space X Tx /\
     ~ perfectly_normal_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §33 Exercise 7: locally compact Hausdorff completely regular **)
 (** LATEX VERSION: Every locally compact Hausdorff space is completely regular. **)
@@ -69771,7 +69771,7 @@ Theorem ex33_7_locally_compact_Hausdorff_completely_regular : forall X Tx:set,
   locally_compact X Tx ->
   Hausdorff_space X Tx ->
   completely_regular_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §33 Exercise 8: continuous separation when A compact **)
 (** LATEX VERSION: If X completely regular, A compact, B closed disjoint from A, then ∃f:X→[0,1] with f(A)=0, f(B)=1. **)
@@ -69784,21 +69784,21 @@ Theorem ex33_8_compact_subset_continuous_separation : forall X Tx A B:set,
     continuous_map X Tx R R_standard_topology f /\
     (forall x:set, x :e A -> apply_fun f x = 0) /\
     (forall x:set, x :e B -> apply_fun f x = 1).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §33 Exercise 9: Romega box topology completely regular **)
 (** LATEX VERSION: ℝ^ω in box topology is completely regular. **)
 Theorem ex33_9_Romega_box_completely_regular :
   completely_regular_space (product_space omega (const_space_family omega R R_standard_topology))
                            (box_topology omega (const_space_family omega R R_standard_topology)).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §33 Exercise 10: topological group completely regular **)
 (** LATEX VERSION: Every topological group is completely regular. **)
 Theorem ex33_10_topological_group_completely_regular : forall G Tg:set,
   topological_group G Tg ->
   completely_regular_space G Tg.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §33 Exercise 11: regular not completely regular example **)
 (** LATEX VERSION: There exists regular space that is not completely regular. **)
@@ -69806,7 +69806,7 @@ Theorem ex33_11_regular_not_completely_regular :
   exists X Tx:set,
     regular_space X Tx /\
     ~ completely_regular_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** helper: retraction data **) 
