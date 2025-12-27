@@ -61869,7 +61869,7 @@ prove continuous_map X Tx Y Ty f <->
     forall J X0 net:set, directed_set J -> function_on net J X0 ->
       forall x:set, net_converges X Tx net x ->
         net_converges Y Ty (compose_fun J net f) (apply_fun f x).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from exercises after §29: accumulation points and subnets **)
@@ -61879,7 +61879,7 @@ Theorem subnet_converges_to_accumulation : forall X Tx net x:set,
 let X Tx net x.
 assume Hacc: accumulation_point_of_net X Tx net x.
 prove exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from exercises after §29: compactness via nets **) 
@@ -61890,7 +61890,7 @@ Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
 let X Tx.
 assume HTx: topology_on X Tx.
 prove compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Definition 30.1: countable basis at a point / first countable **) 
