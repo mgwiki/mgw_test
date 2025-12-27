@@ -66474,7 +66474,55 @@ Qed.
 (** helper: bounded distance is always <= 1 **)
 Theorem R_bounded_distance_le_1 : forall a b:set,
   a :e R -> b :e R -> Rle (R_bounded_distance a b) 1.
-admit. (** FAIL **)
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+set t := add_SNo a (minus_SNo b).
+claim HmbR: minus_SNo b :e R.
+{ exact (real_minus_SNo b HbR). }
+claim HtR: t :e R.
+{ exact (real_add_SNo a HaR (minus_SNo b) HmbR). }
+claim HabsR: abs_SNo t :e R.
+{ apply (xm (0 <= t)).
+  - assume H0le: 0 <= t.
+    claim Habseq: abs_SNo t = t.
+    { exact (nonneg_abs_SNo t H0le). }
+    rewrite Habseq.
+    exact HtR.
+  - assume Hn0le: ~(0 <= t).
+    claim HmtR: minus_SNo t :e R.
+    { exact (real_minus_SNo t HtR). }
+    claim Habseq: abs_SNo t = minus_SNo t.
+    { exact (not_nonneg_abs_SNo t Hn0le). }
+    rewrite Habseq.
+    exact HmtR. }
+claim HdistR: R_bounded_distance a b :e R.
+{ claim Hdef: R_bounded_distance a b =
+    If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+  { reflexivity. }
+  apply (xm (Rlt (abs_SNo t) 1)).
+  - assume Hlt: Rlt (abs_SNo t) 1.
+    rewrite Hdef.
+    rewrite (If_i_1 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hlt).
+    exact HabsR.
+  - assume Hnlt: ~(Rlt (abs_SNo t) 1).
+    rewrite Hdef.
+    rewrite (If_i_0 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hnlt).
+    exact real_1. }
+apply (RleI (R_bounded_distance a b) 1 HdistR real_1).
+prove ~(Rlt 1 (R_bounded_distance a b)).
+claim Hdef: R_bounded_distance a b =
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+{ reflexivity. }
+apply (xm (Rlt (abs_SNo t) 1)).
+- assume Hlt: Rlt (abs_SNo t) 1.
+  rewrite Hdef.
+  rewrite (If_i_1 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hlt).
+  exact (not_Rlt_sym (abs_SNo t) 1 Hlt).
+- assume Hnlt: ~(Rlt (abs_SNo t) 1).
+  rewrite Hdef.
+  rewrite (If_i_0 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hnlt).
+  exact (not_Rlt_refl 1 real_1).
 Qed.
 
 (** helper: abs of a real is real **)
