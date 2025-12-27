@@ -65608,7 +65608,7 @@ let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hscc: second_countable_space X Tx.
 prove normal_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §32 Theorem 32.4: well-ordered sets are normal in order topology **) 
@@ -65618,7 +65618,7 @@ Theorem well_ordered_sets_normal : forall X:set,
 let X.
 assume Hwo: well_ordered_set X.
 prove normal_space X (order_topology X).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §32 Theorem 32.2: metrizable spaces are normal **) 
 (** LATEX VERSION: Every metrizable space is normal. **)
@@ -65627,7 +65627,7 @@ Theorem metrizable_spaces_normal : forall X d:set,
 let X d.
 assume Hd: metric_on X d.
 prove normal_space X (metric_topology X d).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §32 Theorem 32.3: compact Hausdorff spaces are normal **) 
