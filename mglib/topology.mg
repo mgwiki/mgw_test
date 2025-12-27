@@ -69798,13 +69798,35 @@ apply SepI.
     { exact Rlt_0_1. }
     claim Hexr3: exists r3:set, r3 :e R /\ Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 1 /\ Rlt r3 1.
     { exact (exists_eps_lt_four_pos_Euclid m1 m2 1 1 Hm1R Hm2R H1R H1R Hm1pos Hm2pos H1pos H1pos). }
-    apply Hexr3.
-    let r3.
-    assume Hr3conj: r3 :e R /\ Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 1 /\ Rlt r3 1.
-    claim Hr3R: r3 :e R.
-    { admit. }
-    claim Hr3pos: Rlt 0 r3.
-    { admit. }
+	    apply Hexr3.
+	    let r3.
+	    assume Hr3conj: r3 :e R /\ Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 1 /\ Rlt r3 1.
+	    claim Hr3top: ((((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2) /\ Rlt r3 1) /\ Rlt r3 1.
+	    { exact Hr3conj. }
+	    claim Hr3top1: (((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2) /\ Rlt r3 1.
+	    { apply Hr3top.
+	      assume Hr3top1 Hr3lt1b.
+	      exact Hr3top1. }
+	    claim Hr3top2: ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2.
+	    { apply Hr3top1.
+	      assume Hr3top2 Hr3lt1.
+	      exact Hr3top2. }
+	    claim Hr3top3: (r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1.
+	    { apply Hr3top2.
+	      assume Hr3top3 Hr3m2.
+	      exact Hr3top3. }
+	    claim Hr3pair: r3 :e R /\ Rlt 0 r3.
+	    { apply Hr3top3.
+	      assume Hr3pair Hr3m1.
+	      exact Hr3pair. }
+	    claim Hr3R: r3 :e R.
+	    { apply Hr3pair.
+	      assume Hr3R Hr3pos.
+	      exact Hr3R. }
+	    claim Hr3pos: Rlt 0 r3.
+	    { apply Hr3pair.
+	      assume Hr3R Hr3pos.
+	      exact Hr3pos. }
 	    set inv := inv_nat (ordsucc i).
 	    claim HinvR: inv :e R.
 	    { claim Hisuc: ordsucc i :e omega.
