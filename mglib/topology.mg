@@ -69710,7 +69710,42 @@ apply SepI.
   { rewrite <- Hdapp.
     exact Hltball. }
   (** TODO: build a finite intersection of cylinder sets around y which is contained in the ball, using Hltval **)
-  admit.
+  claim HexF: exists F:set,
+    (F :e finite_subcollections S /\ y :e intersection_of_family X F)
+    /\ intersection_of_family X F c= open_ball X d x r.
+  { admit. }
+  apply HexF.
+  let F. assume HFcore.
+  claim HFleft: F :e finite_subcollections S /\ y :e intersection_of_family X F.
+  { apply HFcore.
+    assume HFleft HFsub.
+    exact HFleft. }
+  claim HFsub: intersection_of_family X F c= open_ball X d x r.
+  { apply HFcore.
+    assume HFleft HFsub.
+    exact HFsub. }
+  claim HF: F :e finite_subcollections S.
+  { apply HFleft.
+    assume HF HyIn.
+    exact HF. }
+  claim HyIn: y :e intersection_of_family X F.
+  { apply HFleft.
+    assume HF HyIn.
+    exact HyIn. }
+  witness (intersection_of_family X F).
+  apply andI.
+  - prove intersection_of_family X F :e B.
+	    claim Hnon: intersection_of_family X F <> Empty.
+	    { assume Heq: intersection_of_family X F = Empty.
+	      prove False.
+	      claim HyE: y :e Empty.
+	      { rewrite <- Heq.
+	        exact HyIn. }
+	      exact (EmptyE y HyE). }
+    exact (finite_intersection_in_basis X S F HF Hnon).
+  - apply andI.
+    + exact HyIn.
+    + exact HFsub.
 Qed.
 
 (** helper: cylinder subbasis sets are open in the D metric topology **)
