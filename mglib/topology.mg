@@ -15226,7 +15226,7 @@ prove exists U V:set,
   U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
   ~(Union (UPair U V) :e infinite_complement_family X).
 (** SUSPICIOUS DEFINITION: This needs a set-theoretic construction on an arbitrary infinite set X producing U,V with infinite complements but with (X\\(U∪V)) finite nonempty; this is nontrivial in this development, so the witness construction is currently admitted. **)
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** LATEX VERSION: Exercise 3: For infinite X, Tinfty is not a topology (union-closure fails). **)
@@ -22050,7 +22050,7 @@ Definition order_topology : set -> set := fun X => generated_topology X (order_t
 (** SUSPICIOUS DEFINITION: This lemma is stated for arbitrary X, but order_rel is only implemented for a small list of carrier sets; for other X the basis cover axiom may fail. This is a modeling gap, so the proof is currently admitted. **)
 Theorem order_topology_basis_is_basis : forall X:set,
   basis_on X (order_topology_basis X).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §14: order topology is a topology **) 
@@ -28615,11 +28615,11 @@ apply set_ext.
 - let U. assume HU: U :e order_topology Y.
   prove U :e subspace_topology X (order_topology X) Y.
 (** SUSPICIOUS DEFINITION: This requires unfolding generated_topology and showing that order-topology basis elements in Y arise as intersections with corresponding basis elements in X, using convexity; the detailed proof is not yet written here. **)
-  admit.
+  admit. (** FAIL **)
 - let U. assume HU: U :e subspace_topology X (order_topology X) Y.
   prove U :e order_topology Y.
 (** SUSPICIOUS DEFINITION: Converse direction also requires translating subspace basic opens back to order-topology basics in Y; currently admitted. **)
-  admit.
+  admit. (** FAIL **)
 Qed.
 
 (** helper: intersection with a subset can drop the larger set **) 
