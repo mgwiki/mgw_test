@@ -67907,11 +67907,17 @@ claim HF_inj: inj (Power omega) binary_sequences_Romega F.
         claim HnO: n :e omega.
         { exact (PowerE omega A HA n HnA). }
         claim HAval: apply_fun (F A) n = 1.
-        { rewrite (apply_fun_graph omega (fun k:set => if k :e A then 1 else 0) n HnO).
+        { claim HFdef: F A = graph omega (fun k:set => if k :e A then 1 else 0).
+          { reflexivity. }
+          rewrite HFdef.
+          rewrite (apply_fun_graph omega (fun k:set => if k :e A then 1 else 0) n HnO).
           rewrite (If_i_1 (n :e A) 1 0 HnA).
           reflexivity. }
         claim HBval: apply_fun (F B) n = 0.
-        { rewrite (apply_fun_graph omega (fun k:set => if k :e B then 1 else 0) n HnO).
+        { claim HFdef: F B = graph omega (fun k:set => if k :e B then 1 else 0).
+          { reflexivity. }
+          rewrite HFdef.
+          rewrite (apply_fun_graph omega (fun k:set => if k :e B then 1 else 0) n HnO).
           rewrite (If_i_0 (n :e B) 1 0 HnnotB).
           reflexivity. }
         claim Hcontra: 1 = 0.
@@ -67928,11 +67934,17 @@ claim HF_inj: inj (Power omega) binary_sequences_Romega F.
         claim HnO: n :e omega.
         { exact (PowerE omega B HB n HnB). }
         claim HBval: apply_fun (F B) n = 1.
-        { rewrite (apply_fun_graph omega (fun k:set => if k :e B then 1 else 0) n HnO).
+        { claim HFdef: F B = graph omega (fun k:set => if k :e B then 1 else 0).
+          { reflexivity. }
+          rewrite HFdef.
+          rewrite (apply_fun_graph omega (fun k:set => if k :e B then 1 else 0) n HnO).
           rewrite (If_i_1 (n :e B) 1 0 HnB).
           reflexivity. }
         claim HAval: apply_fun (F A) n = 0.
-        { rewrite (apply_fun_graph omega (fun k:set => if k :e A then 1 else 0) n HnO).
+        { claim HFdef: F A = graph omega (fun k:set => if k :e A then 1 else 0).
+          { reflexivity. }
+          rewrite HFdef.
+          rewrite (apply_fun_graph omega (fun k:set => if k :e A then 1 else 0) n HnO).
           rewrite (If_i_0 (n :e A) 1 0 HnnotA).
           reflexivity. }
         claim Hcontra: 1 = 0.
