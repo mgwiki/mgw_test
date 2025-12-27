@@ -67886,7 +67886,7 @@ claim HF_inj: inj (Power omega) binary_sequences_Romega F.
       claim Happ: apply_fun (F A) n = if n :e A then 1 else 0.
       { exact (apply_fun_graph omega (fun k:set => if k :e A then 1 else 0) n Hn). }
       rewrite Happ.
-      apply (xm (n :e A) (if n :e A then 1 else 0 :e {0,1})).
+      apply (xm (n :e A) ((if n :e A then 1 else 0) :e {0,1})).
       * assume HnA: n :e A.
         rewrite (If_i_1 (n :e A) 1 0 HnA).
         exact (UPairI1 1 0).
