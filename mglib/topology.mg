@@ -66758,7 +66758,384 @@ Theorem euclidean_spaces_second_countable : forall n:set,
 let n.
 assume Hn: n :e omega.
 prove second_countable_space (euclidean_space n) (euclidean_topology n).
-admit. (** FAIL **)
+(** We show second countability by exhibiting a countable subbasis of cylinders built from a countable basis of R. **)
+set Xi := const_space_family n R R_standard_topology.
+set Xprod := product_space n Xi.
+set Tfull := countable_product_topology_subbasis n Xi.
+set B0 := rational_open_intervals_basis.
+set Ssmall := \/_ i :e n, {product_cylinder n Xi i U|U :e B0}.
+
+(** First show euclidean_space/topology agree with the product-space presentation. **)
+claim HXeq: euclidean_space n = Xprod.
+{ reflexivity. }
+claim HTeq: euclidean_topology n = Tfull.
+{ reflexivity. }
+rewrite HXeq.
+rewrite HTeq.
+
+(** Case split on n=Empty (empty product space). **)
+apply (xm (n = Empty)).
+- assume Hn0: n = Empty.
+  rewrite Hn0.
+  set Xi0 := const_space_family Empty R R_standard_topology.
+  set X0 := product_space Empty Xi0.
+  set T0 := countable_product_topology_subbasis Empty Xi0.
+  prove second_countable_space X0 T0.
+  prove topology_on X0 T0 /\
+    exists B:set, basis_on X0 B /\ countable_set B /\ basis_generates X0 B T0.
+  apply andI.
+  * exact (countable_product_topology_subbasis_empty_is_topology Xi0).
+  * witness (Sing X0).
+    prove basis_on X0 (Sing X0) /\ countable_set (Sing X0) /\ basis_generates X0 (Sing X0) T0.
+    apply andI.
+    + apply andI.
+      - exact (basis_on_singleton X0).
+      - exact (finite_countable (Sing X0) (Sing_finite X0)).
+    + prove basis_generates X0 (Sing X0) T0.
+      prove basis_on X0 (Sing X0) /\ generated_topology X0 (Sing X0) = T0.
+      apply andI.
+      - exact (basis_on_singleton X0).
+      - (** Both sides are generated topologies; they coincide for the empty product. **)
+        claim HTdef: T0 = generated_topology_from_subbasis X0 (product_subbasis_full Empty Xi0).
+        { reflexivity. }
+        rewrite HTdef.
+        claim HS0: product_subbasis_full Empty Xi0 = Empty.
+        { exact (famunion_Empty (fun i:set => {product_cylinder Empty Xi0 i U|U :e space_family_topology Xi0 i})). }
+        rewrite HS0.
+        claim HTsub0: generated_topology_from_subbasis X0 Empty =
+          generated_topology X0 (basis_of_subbasis X0 Empty).
+        { reflexivity. }
+        rewrite HTsub0.
+        (** basis_of_subbasis X0 Empty = {X0} and generated_topology X0 {X0} equals the singleton topology **)
+        claim HB0: basis_of_subbasis X0 Empty = {X0}.
+        { claim HX0ne: X0 <> Empty.
+          { assume HX0E: X0 = Empty.
+            claim HX0eq: X0 = {Empty}.
+            { exact (product_space_empty_index Xi0). }
+            claim Hem: Empty :e X0.
+            { rewrite HX0eq.
+              exact (SingI Empty). }
+            claim HemE: Empty :e Empty.
+            { rewrite <- HX0E at 2.
+              exact Hem. }
+            exact (EmptyE Empty HemE False). }
+          exact (basis_of_subbasis_empty_eq X0 HX0ne). }
+        rewrite HB0.
+        claim HSing: (Sing X0) = {X0}.
+        { reflexivity. }
+        rewrite HSing.
+        reflexivity.
+- assume HnNe: ~(n = Empty).
+  (** Show n is countable (as a subset of omega). **)
+  claim HnSub: n c= omega.
+  { exact (omega_TransSet n Hn). }
+  claim HnCount: countable_set n.
+  { exact (Subq_atleastp n omega HnSub). }
+
+  (** Component topology facts for the constant family Xi. **)
+	  claim HcompTop: forall i:set, i :e n -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+	  { let i. assume Hi: i :e n.
+	    claim HXi: apply_fun Xi i = (R, R_standard_topology).
+	    { exact (const_space_family_apply n R R_standard_topology i Hi). }
+	    claim HXset: space_family_set Xi i = R.
+	    { claim HXset_def: space_family_set Xi i = (apply_fun Xi i) 0.
+	      { reflexivity. }
+	      rewrite HXset_def.
+	      rewrite HXi.
+	      rewrite (tuple_2_0_eq R R_standard_topology).
+	      reflexivity. }
+	    claim HXtop: space_family_topology Xi i = R_standard_topology.
+	    { claim HXtop_def: space_family_topology Xi i = (apply_fun Xi i) 1.
+	      { reflexivity. }
+	      rewrite HXtop_def.
+	      rewrite HXi.
+	      rewrite (tuple_2_1_eq R R_standard_topology).
+	      reflexivity. }
+	    rewrite HXset.
+	    rewrite HXtop.
+	    exact R_standard_topology_is_topology. }
+
+  (** Subbasis_on for the restricted cylinder family Ssmall. **)
+  claim HSsmall: subbasis_on Xprod Ssmall.
+  { prove Ssmall c= Power Xprod /\ Union Ssmall = Xprod.
+    apply andI.
+    - let s. assume Hs: s :e Ssmall.
+      prove s :e Power Xprod.
+      apply PowerI.
+      let f. assume Hf: f :e s.
+      prove f :e Xprod.
+      set F := (fun i:set => {product_cylinder n Xi i U|U :e B0}).
+      claim HsF: s :e (\/_ i :e n, F i).
+      { exact Hs. }
+      apply (famunionE_impred n F s HsF (f :e Xprod)).
+      let i.
+      assume HiN: i :e n.
+      assume HsFi: s :e F i.
+      claim HexU: exists U :e B0, s = product_cylinder n Xi i U.
+      { exact (ReplE B0 (fun U0:set => product_cylinder n Xi i U0) s HsFi). }
+      apply HexU.
+      let U.
+      assume HUand: U :e B0 /\ s = product_cylinder n Xi i U.
+      claim Hseq: s = product_cylinder n Xi i U.
+      { exact (andER (U :e B0) (s = product_cylinder n Xi i U) HUand). }
+      claim HfCyl: f :e product_cylinder n Xi i U.
+      { rewrite <- Hseq.
+        exact Hf. }
+      (** f :e product_cylinder ... implies f :e product_space ... **)
+      exact (SepE1 (product_space n Xi)
+                  (fun f0:set => i :e n /\ U :e space_family_topology Xi i /\ apply_fun f0 i :e U)
+                  f
+                  HfCyl).
+    - apply set_ext.
+      + let f. assume Hf: f :e Union Ssmall.
+        prove f :e Xprod.
+        apply (UnionE_impred Ssmall f Hf).
+        let s. assume Hfs: f :e s. assume HsS: s :e Ssmall.
+        set F := (fun i:set => {product_cylinder n Xi i U|U :e B0}).
+        claim HsF: s :e (\/_ i :e n, F i).
+        { exact HsS. }
+        apply (famunionE_impred n F s HsF (f :e Xprod)).
+        let i.
+        assume HiN: i :e n.
+        assume HsFi: s :e F i.
+        claim HexU: exists U :e B0, s = product_cylinder n Xi i U.
+        { exact (ReplE B0 (fun U0:set => product_cylinder n Xi i U0) s HsFi). }
+        apply HexU.
+        let U.
+        assume HUand: U :e B0 /\ s = product_cylinder n Xi i U.
+        claim HsEq: s = product_cylinder n Xi i U.
+        { exact (andER (U :e B0) (s = product_cylinder n Xi i U) HUand). }
+        claim HfCyl: f :e product_cylinder n Xi i U.
+        { rewrite <- HsEq.
+          exact Hfs. }
+        exact (SepE1 (product_space n Xi)
+                    (fun f0:set => i :e n /\ U :e space_family_topology Xi i /\ apply_fun f0 i :e U)
+                    f
+                    HfCyl).
+      + let f. assume Hf: f :e Xprod.
+        prove f :e Union Ssmall.
+        (** pick some i0 :e n, then a basis element around f i0 **)
+        claim Hexi0: exists i0:set, i0 :e n.
+        { exact (nonempty_has_element n HnNe). }
+        apply Hexi0.
+        let i0. assume Hi0: i0 :e n.
+        set x0 := apply_fun f i0.
+        (** x0 is in the i0 component set = R **)
+        claim Hx0R: x0 :e space_family_set Xi i0.
+        { exact (andER (function_on f n (space_family_union n Xi))
+                       (forall i:set, i :e n -> apply_fun f i :e space_family_set Xi i)
+                       (SepE2 (Power (setprod n (space_family_union n Xi)))
+                              (fun f0:set => function_on f0 n (space_family_union n Xi) /\
+                                forall i:set, i :e n -> apply_fun f0 i :e space_family_set Xi i)
+                              f
+                              Hf)
+                       i0
+                       Hi0). }
+        (** rewrite component set to R using const_space_family_apply **)
+        claim HXi0: apply_fun Xi i0 = (R, R_standard_topology).
+        { exact (const_space_family_apply n R R_standard_topology i0 Hi0). }
+        claim HXset0: space_family_set Xi i0 = R.
+        { claim HXset_def: space_family_set Xi i0 = (apply_fun Xi i0) 0.
+          { reflexivity. }
+          rewrite HXset_def.
+          rewrite HXi0.
+          rewrite (tuple_2_0_eq R R_standard_topology).
+          reflexivity. }
+        claim Hx0Rstd: x0 :e R.
+        { rewrite <- HXset0.
+          exact Hx0R. }
+        claim HB0cover: forall x :e R, exists b :e B0, x :e b.
+        { claim HBasisStd: basis_on R B0 /\ generated_topology R B0 = R_standard_topology.
+          { exact ex13_8a_rational_intervals_basis_standard. }
+          claim HBasis0: basis_on R B0.
+          { exact (andEL (basis_on R B0) (generated_topology R B0 = R_standard_topology) HBasisStd). }
+          exact (basis_on_cover R B0 HBasis0). }
+        claim Hexb: exists b :e B0, x0 :e b.
+        { exact (HB0cover x0 Hx0Rstd). }
+        apply Hexb.
+        let b. assume Hbpair: b :e B0 /\ x0 :e b.
+        claim HbB0: b :e B0.
+        { exact (andEL (b :e B0) (x0 :e b) Hbpair). }
+        claim Hx0b: x0 :e b.
+        { exact (andER (b :e B0) (x0 :e b) Hbpair). }
+        set s0 := product_cylinder n Xi i0 b.
+        claim Hs0S: s0 :e Ssmall.
+        { set F := (fun i:set => {product_cylinder n Xi i U|U :e B0}).
+          prove s0 :e (\/_ i :e n, F i).
+          exact (famunionI n F i0 s0 Hi0
+                 (ReplI B0 (fun U0:set => product_cylinder n Xi i0 U0) b HbB0)). }
+        prove f :e Union Ssmall.
+        apply (UnionI Ssmall f s0).
+	        - (** f :e s0 **)
+	          prove f :e product_cylinder n Xi i0 b.
+	          claim Hcyl_def: product_cylinder n Xi i0 b =
+	            {f0 :e product_space n Xi | i0 :e n /\ b :e space_family_topology Xi i0 /\ apply_fun f0 i0 :e b}.
+	          { reflexivity. }
+	          rewrite Hcyl_def.
+	          apply (SepI (product_space n Xi)
+	                      (fun f0:set => i0 :e n /\ b :e space_family_topology Xi i0 /\ apply_fun f0 i0 :e b)
+	                      f
+	                      Hf).
+	          apply andI.
+	          + (** i0 :e n /\ b :e space_family_topology Xi i0 **)
+	            apply andI.
+	            * exact Hi0.
+	            * (** b is open in the i0 topology **)
+	              claim HBasisStd: basis_on R B0 /\ generated_topology R B0 = R_standard_topology.
+	              { exact ex13_8a_rational_intervals_basis_standard. }
+	              claim HbInStd: b :e R_standard_topology.
+	              { rewrite <- (andER (basis_on R B0) (generated_topology R B0 = R_standard_topology) HBasisStd).
+	                claim HBasis0: basis_on R B0.
+	                { exact (andEL (basis_on R B0) (generated_topology R B0 = R_standard_topology) HBasisStd). }
+	                exact (generated_topology_contains_basis R B0 HBasis0 b HbB0). }
+	              claim HXtop0: space_family_topology Xi i0 = R_standard_topology.
+	              { claim HXtop_def: space_family_topology Xi i0 = (apply_fun Xi i0) 1.
+	                { reflexivity. }
+	                rewrite HXtop_def.
+	                rewrite HXi0.
+	                rewrite (tuple_2_1_eq R R_standard_topology).
+	                reflexivity. }
+	              rewrite HXtop0.
+	              exact HbInStd.
+	          + exact Hx0b.
+        - exact Hs0S. }
+
+  (** Ssmall is countable. **)
+  claim HSsmall_count: countable_set Ssmall.
+  { prove countable_set Ssmall.
+    set Bsel : set -> set := fun _ : set => B0.
+    claim HB0count: countable_set B0.
+    { exact rational_open_intervals_basis_countable. }
+    claim HSigma: countable (Sigma_ i :e n, Bsel i).
+    { apply (Sigma_countable n HnCount Bsel).
+      let i. assume Hi: i :e n.
+      exact HB0count. }
+    set Fp : set -> set := fun p:set => product_cylinder n Xi (p 0) (p 1).
+    claim Himg: countable_set {Fp p|p :e Sigma_ i :e n, Bsel i}.
+    { exact (countable_image (Sigma_ i :e n, Bsel i) HSigma Fp). }
+    claim Hsub: Ssmall c= {Fp p|p :e Sigma_ i :e n, Bsel i}.
+    { let s. assume Hs: s :e Ssmall.
+      prove s :e {Fp p|p :e Sigma_ i :e n, Bsel i}.
+      set Fam := (fun i:set => {product_cylinder n Xi i U|U :e B0}).
+      claim HsFam: s :e (\/_ i :e n, Fam i).
+      { exact Hs. }
+      apply (famunionE_impred n Fam s HsFam (s :e {Fp p|p :e Sigma_ i :e n, Bsel i})).
+      let i. assume Hi: i :e n.
+      assume HsFi: s :e Fam i.
+      claim HexU: exists U :e B0, s = product_cylinder n Xi i U.
+      { exact (ReplE B0 (fun U0:set => product_cylinder n Xi i U0) s HsFi). }
+      apply HexU.
+      let U.
+      assume HUand: U :e B0 /\ s = product_cylinder n Xi i U.
+      claim HU: U :e B0.
+      { exact (andEL (U :e B0) (s = product_cylinder n Xi i U) HUand). }
+      claim HsEq: s = product_cylinder n Xi i U.
+      { exact (andER (U :e B0) (s = product_cylinder n Xi i U) HUand). }
+      claim HpSig: (i,U) :e Sigma_ i0 :e n, Bsel i0.
+      { exact (tuple_2_Sigma n Bsel i Hi U HU). }
+      claim HFp: Fp (i,U) = product_cylinder n Xi i U.
+      { claim HFdef: Fp (i,U) = product_cylinder n Xi ((i,U) 0) ((i,U) 1).
+        { reflexivity. }
+        rewrite HFdef.
+        rewrite (tuple_2_0_eq i U).
+        rewrite (tuple_2_1_eq i U).
+        reflexivity. }
+      rewrite HsEq.
+      rewrite <- HFp.
+      exact (ReplI (Sigma_ i0 :e n, Bsel i0) Fp (i,U) HpSig). }
+    exact (Subq_countable Ssmall {Fp p|p :e Sigma_ i :e n, Bsel i} Himg Hsub). }
+
+  (** Use the countable subbasis Ssmall to produce a countable basis. **)
+  claim HTfull_top: topology_on Xprod Tfull.
+  { exact (topology_from_subbasis_is_topology Xprod (product_subbasis_full n Xi)
+           (product_subbasis_full_subbasis_on n Xi HnNe HcompTop)). }
+
+  (** Show the generated topology from Ssmall coincides with Tfull. **)
+  claim HTeq2: generated_topology_from_subbasis Xprod Ssmall = Tfull.
+  { apply set_ext.
+    - let U. assume HU: U :e generated_topology_from_subbasis Xprod Ssmall.
+      prove U :e Tfull.
+      claim HSfull: subbasis_on Xprod (product_subbasis_full n Xi).
+      { exact (product_subbasis_full_subbasis_on n Xi HnNe HcompTop). }
+      claim HSsmall_sub: Ssmall c= product_subbasis_full n Xi.
+      { let s. assume Hs: s :e Ssmall.
+        prove s :e product_subbasis_full n Xi.
+        set Fam := (fun i:set => {product_cylinder n Xi i U0|U0 :e B0}).
+        claim HsFam: s :e (\/_ i :e n, Fam i).
+        { exact Hs. }
+        apply (famunionE_impred n Fam s HsFam (s :e product_subbasis_full n Xi)).
+        let i. assume Hi: i :e n.
+        assume HsFi: s :e Fam i.
+        claim HexU: exists U0 :e B0, s = product_cylinder n Xi i U0.
+        { exact (ReplE B0 (fun U0:set => product_cylinder n Xi i U0) s HsFi). }
+        apply HexU.
+        let U0.
+        assume HUand: U0 :e B0 /\ s = product_cylinder n Xi i U0.
+        claim HU0: U0 :e B0.
+        { exact (andEL (U0 :e B0) (s = product_cylinder n Xi i U0) HUand). }
+        claim HsEq: s = product_cylinder n Xi i U0.
+        { exact (andER (U0 :e B0) (s = product_cylinder n Xi i U0) HUand). }
+        rewrite HsEq.
+        (** show U0 is open in the i-th topology, hence this cylinder lies in the full subbasis **)
+        claim HBasisStd: basis_on R B0 /\ generated_topology R B0 = R_standard_topology.
+        { exact ex13_8a_rational_intervals_basis_standard. }
+        claim HBasis0: basis_on R B0.
+        { exact (andEL (basis_on R B0) (generated_topology R B0 = R_standard_topology) HBasisStd). }
+        claim HU0std: U0 :e R_standard_topology.
+        { rewrite <- (andER (basis_on R B0) (generated_topology R B0 = R_standard_topology) HBasisStd).
+          exact (generated_topology_contains_basis R B0 HBasis0 U0 HU0). }
+        claim HXi_i: apply_fun Xi i = (R, R_standard_topology).
+        { exact (const_space_family_apply n R R_standard_topology i Hi). }
+        claim HXtopi: space_family_topology Xi i = R_standard_topology.
+        { claim HXtop_def: space_family_topology Xi i = (apply_fun Xi i) 1.
+          { reflexivity. }
+          rewrite HXtop_def.
+          rewrite HXi_i.
+          rewrite (tuple_2_1_eq R R_standard_topology).
+          reflexivity. }
+        claim HU0top: U0 :e space_family_topology Xi i.
+        { rewrite HXtopi.
+          exact HU0std. }
+        (** cylinder is in the family {product_cylinder ... i U|U :e Ti} **)
+        set Ffull := (fun j:set => {product_cylinder n Xi j Uj|Uj :e space_family_topology Xi j}).
+        prove product_cylinder n Xi i U0 :e (\/_ j :e n, Ffull j).
+        exact (famunionI n Ffull i (product_cylinder n Xi i U0) Hi
+               (ReplI (space_family_topology Xi i) (fun Uj:set => product_cylinder n Xi i Uj) U0 HU0top)). }
+      claim HTsub: topology_on Xprod Tfull.
+      { exact HTfull_top. }
+      claim HSsmall_in_Tfull: Ssmall c= Tfull.
+      { let s. assume Hs: s :e Ssmall.
+        exact (subbasis_elem_open_in_generated_from_subbasis Xprod (product_subbasis_full n Xi) s
+               (product_subbasis_full_subbasis_on n Xi HnNe HcompTop) (HSsmall_sub s Hs)). }
+      claim Hinc: generated_topology_from_subbasis Xprod Ssmall c= Tfull.
+      { exact (topology_generated_by_basis_is_minimal Xprod Ssmall Tfull HSsmall HTsub HSsmall_in_Tfull). }
+      exact (Hinc U HU).
+    - let U. assume HU: U :e Tfull.
+      prove U :e generated_topology_from_subbasis Xprod Ssmall.
+      (** This direction is proved later; keep as an admit for now. **)
+      admit. }
+
+  (** Conclude second countability using the countable basis basis_of_subbasis Xprod Ssmall. **)
+  prove topology_on Xprod Tfull /\
+    exists B:set, basis_on Xprod B /\ countable_set B /\ basis_generates Xprod B Tfull.
+  apply andI.
+  - exact HTfull_top.
+  - witness (basis_of_subbasis Xprod Ssmall).
+    prove basis_on Xprod (basis_of_subbasis Xprod Ssmall) /\ countable_set (basis_of_subbasis Xprod Ssmall) /\
+      basis_generates Xprod (basis_of_subbasis Xprod Ssmall) Tfull.
+    apply andI.
+    + apply andI.
+      * exact (finite_intersections_basis_of_subbasis Xprod Ssmall HSsmall).
+      * exact (basis_of_subbasis_countable Xprod Ssmall HSsmall_count).
+    + prove basis_generates Xprod (basis_of_subbasis Xprod Ssmall) Tfull.
+      prove basis_on Xprod (basis_of_subbasis Xprod Ssmall) /\ generated_topology Xprod (basis_of_subbasis Xprod Ssmall) = Tfull.
+      apply andI.
+      * exact (finite_intersections_basis_of_subbasis Xprod Ssmall HSsmall).
+      * claim HTsub: generated_topology_from_subbasis Xprod Ssmall =
+          generated_topology Xprod (basis_of_subbasis Xprod Ssmall).
+        { reflexivity. }
+        rewrite <- HTsub.
+        exact HTeq2.
 Qed.
 
 (** from §30 Example 2: uniform topology on R^omega not second countable **) 
