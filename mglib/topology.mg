@@ -61052,7 +61052,7 @@ let X Tx.
 assume Hlc: locally_compact X Tx.
 assume HH: Hausdorff_space X Tx.
 prove exists Y Ty:set, one_point_compactification X Tx Y Ty.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §29 Exercises: local compactness and compactification **) 
@@ -61722,7 +61722,7 @@ let X Tx net sub x.
 assume Hnet: net_converges X Tx net x.
 assume Hsub: subnet_of net sub.
 prove net_converges X Tx sub x.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** helper: subnet preserves convergence for fixed index set witnesses **)
@@ -61850,7 +61850,7 @@ Theorem closure_via_nets : forall X Tx A x:set,
 let X Tx A x.
 assume HTx: topology_on X Tx.
 prove x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from exercises after §29: continuity via nets **)
