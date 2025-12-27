@@ -67942,6 +67942,7 @@ claim HinjAB: inj A B pick.
     claim Ha1sing: a1 :e {a0}.
     { rewrite <- HU0eq.
       exact Ha1UA. }
+    symmetry.
     exact (singleton_elem a1 a0 Ha1sing). }
 claim Hab: atleastp A B.
 { witness pick.
