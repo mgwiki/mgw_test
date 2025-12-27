@@ -52084,7 +52084,7 @@ Theorem Romega_tilde_succ_homeomorphism : forall k:set,
     (Romega_tilde (ordsucc k))
     (subspace_topology R_omega_space R_omega_product_topology (Romega_tilde (ordsucc k)))
     (Romega_extend_map k).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** Helper: every finite subset of omega is bounded by some n in omega **)
@@ -52950,7 +52950,7 @@ prove topology_on unit_interval unit_interval_topology /\
   ~(exists U V:set, U :e unit_interval_topology /\ V :e unit_interval_topology /\ separation_of unit_interval U V).
 apply andI.
 - exact unit_interval_topology_on.
-- admit.
+- admit. (** FAIL **)
 Qed.
 
 Theorem zero_one_in_unit_interval : 0 :e unit_interval /\ 1 :e unit_interval.
@@ -53360,9 +53360,9 @@ apply andI.
 - (** path connectedness (stub) **)
   let x y.
   assume Hx: x :e X.
-  assume Hy: y :e X.
-  prove exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
-  admit.
+	  assume Hy: y :e X.
+	  prove exists p:set, path_between X x y p /\ continuous_map unit_interval unit_interval_topology X Tx p.
+	  admit. (** FAIL **)
 Qed.
 
 (** from §24: continuous surjective image of a path connected space is path connected **) 
