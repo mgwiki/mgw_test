@@ -69877,6 +69877,22 @@ apply SepI.
 	    { apply Hr3pair.
 	      assume Hr3R Hr3pos.
 	      exact Hr3pos. }
+	    claim Hr3lt1b: Rlt r3 1.
+	    { apply Hr3top.
+	      assume Hr3top1 Hr3lt1b.
+	      exact Hr3lt1b. }
+	    claim Hr3lt1: Rlt r3 1.
+	    { apply Hr3top1.
+	      assume Hr3top2 Hr3lt1.
+	      exact Hr3lt1. }
+	    claim Hr3m2lt: Rlt r3 m2.
+	    { apply Hr3top2.
+	      assume Hr3top3 Hr3m2lt.
+	      exact Hr3m2lt. }
+	    claim Hr3m1lt: Rlt r3 m1.
+	    { apply Hr3top3.
+	      assume Hr3pair Hr3m1lt.
+	      exact Hr3m1lt. }
 	    set inv := inv_nat (ordsucc i).
 	    claim Hisuc: ordsucc i :e omega.
 	    { exact (omega_ordsucc i Hi). }
