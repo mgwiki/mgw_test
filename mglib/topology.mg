@@ -66357,6 +66357,32 @@ claim Hle21: Rle l2 l1.
 exact (Rle_antisym l1 l2 Hle12 Hle21).
 Qed.
 
+(** helper: 0 is the least upper bound of {0} **)
+Theorem R_lub_Sing0 : R_lub {0} 0.
+prove R_lub {0} 0.
+prove (0 :e R /\
+  (forall a:set, a :e {0} -> a :e R -> Rle a 0) /\
+  (forall u:set, u :e R ->
+     (forall a:set, a :e {0} -> a :e R -> Rle a u) ->
+     Rle 0 u)).
+apply andI.
+- apply andI.
+  + exact real_0.
+  + let a.
+    assume Ha0: a :e {0}.
+    assume HaR: a :e R.
+    claim HaEq: a = 0.
+    { exact (SingE 0 a Ha0). }
+    rewrite HaEq.
+    exact (Rle_refl 0 real_0).
+- let u.
+  assume HuR: u :e R.
+  assume Hub: forall a:set, a :e {0} -> a :e R -> Rle a u.
+  claim H0u: Rle 0 u.
+  { exact (Hub 0 (SingI 0) real_0). }
+  exact H0u.
+Qed.
+
 (** helper: existence of least upper bounds in R (used for uniform metric) **)
 (** LATEX VERSION: The expression sup{...} is assumed to exist as a real number. **)
 Theorem R_lub_exists : forall A:set,
@@ -66421,6 +66447,85 @@ rewrite Hdef1.
 rewrite Hdef2.
 rewrite Habs.
 reflexivity.
+Qed.
+
+(** helper: clipped coordinate diff is 0 on the diagonal **)
+Theorem Romega_coord_clipped_diff_self_zero : forall f n:set,
+  f :e real_sequences ->
+  n :e omega ->
+  Romega_coord_clipped_diff f f n = 0.
+let f n.
+assume Hf: f :e real_sequences.
+assume HnO: n :e omega.
+claim Hfpack: total_function_on f omega R /\ functional_graph f.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               f Hf). }
+claim Htotf: total_function_on f omega R.
+{ exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+claim HfnR: apply_fun f n :e R.
+{ exact (total_function_on_apply_fun_in_Y f omega R n Htotf HnO). }
+claim HfnS: SNo (apply_fun f n).
+{ exact (real_SNo (apply_fun f n) HfnR). }
+set t := add_SNo (apply_fun f n) (minus_SNo (apply_fun f n)).
+claim Ht0: t = 0.
+{ exact (add_SNo_minus_SNo_rinv (apply_fun f n) HfnS). }
+claim H0le0: 0 <= 0.
+{ exact (SNoLe_ref 0). }
+claim Habseq: abs_SNo 0 = 0.
+{ exact (nonneg_abs_SNo 0 H0le0). }
+claim Habs0: abs_SNo t = 0.
+{ rewrite Ht0.
+  exact Habseq. }
+claim HdefAbs: Romega_coord_abs_diff f f n = abs_SNo t.
+{ reflexivity. }
+claim HdefClip: Romega_coord_clipped_diff f f n =
+  If_i (Rlt (Romega_coord_abs_diff f f n) 1) (Romega_coord_abs_diff f f n) 1.
+{ reflexivity. }
+rewrite HdefClip.
+rewrite HdefAbs.
+rewrite Habs0.
+rewrite (If_i_1 (Rlt 0 1) 0 1 Rlt_0_1).
+reflexivity.
+Qed.
+
+(** helper: clipped diffs are {0} on the diagonal **)
+Theorem Romega_clipped_diffs_diag_eq_Sing0 : forall f:set,
+  f :e real_sequences ->
+  Romega_clipped_diffs f f = {0}.
+let f.
+assume Hf: f :e real_sequences.
+apply set_ext.
+- let a.
+  assume Ha: a :e Romega_clipped_diffs f f.
+  prove a :e {0}.
+  apply (ReplE_impred omega
+                      (fun n:set => Romega_coord_clipped_diff f f n)
+                      a
+                      Ha
+                      (a :e {0})).
+  let n.
+  assume HnO: n :e omega.
+  assume Han: a = Romega_coord_clipped_diff f f n.
+  rewrite Han.
+  claim Hz: Romega_coord_clipped_diff f f n = 0.
+  { exact (Romega_coord_clipped_diff_self_zero f n Hf HnO). }
+  rewrite Hz.
+  exact (SingI 0).
+- let a.
+  assume Ha0: a :e {0}.
+  prove a :e Romega_clipped_diffs f f.
+  claim HaEq: a = 0.
+  { exact (SingE 0 a Ha0). }
+  rewrite HaEq.
+  prove 0 :e Romega_clipped_diffs f f.
+  claim H0O: 0 :e omega.
+  { exact (nat_p_omega 0 nat_0). }
+  claim Hdef: 0 = Romega_coord_clipped_diff f f 0.
+  { rewrite (Romega_coord_clipped_diff_self_zero f 0 Hf H0O).
+    reflexivity. }
+  rewrite Hdef.
+  exact (ReplI omega (fun n:set => Romega_coord_clipped_diff f f n) 0 H0O).
 Qed.
 
 Definition Romega_uniform_metric_value : set -> set -> set := fun f g =>
@@ -66638,6 +66743,23 @@ claim Hlub2': R_lub A (Romega_uniform_metric_value g f).
 exact (R_lub_unique A (Romega_uniform_metric_value f g) (Romega_uniform_metric_value g f) Hlub1 Hlub2').
 Qed.
 
+(** helper: uniform metric value is 0 on the diagonal **)
+Theorem Romega_uniform_metric_value_self_zero : forall f:set,
+  f :e real_sequences ->
+  Romega_uniform_metric_value f f = 0.
+let f.
+assume Hf: f :e real_sequences.
+set A := Romega_clipped_diffs f f.
+claim HAeq: A = {0}.
+{ exact (Romega_clipped_diffs_diag_eq_Sing0 f Hf). }
+claim Hlub1: R_lub A (Romega_uniform_metric_value f f).
+{ exact (Romega_uniform_metric_value_is_lub f f Hf Hf). }
+claim Hlub0: R_lub A 0.
+{ rewrite HAeq.
+  exact R_lub_Sing0. }
+exact (R_lub_unique A (Romega_uniform_metric_value f f) 0 Hlub1 Hlub0).
+Qed.
+
 (** helper: uniform metric values are real numbers **)
 Theorem Romega_uniform_metric_value_in_R : forall f g:set,
   f :e real_sequences ->
@@ -66716,7 +66838,17 @@ apply andI.
         rewrite (tuple_2_0_eq y x).
         rewrite (tuple_2_1_eq y x).
         exact (Romega_uniform_metric_value_sym x y Hx Hy).
-    * admit.
+    * let x.
+      assume Hx: x :e real_sequences.
+      claim Hxxprod: (x,x) :e setprod real_sequences real_sequences.
+      { exact (tuple_2_setprod_by_pair_Sigma real_sequences real_sequences x x Hx Hx). }
+      rewrite (apply_fun_graph (setprod real_sequences real_sequences)
+                               (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+                               (x,x)
+                               Hxxprod).
+      rewrite (tuple_2_0_eq x x).
+      rewrite (tuple_2_1_eq x x).
+      exact (Romega_uniform_metric_value_self_zero x Hx).
   + admit.
 - admit.
 Qed.
@@ -67003,6 +67135,49 @@ rewrite (mul_SNo_zeroL (inv_nat i) HinvS).
 exact (SingI 0).
 Qed.
 
+(** helper: diagonal scaled diffs are exactly {0} **)
+Theorem Romega_D_scaled_diffs_diag_eq_Sing0 : forall x:set,
+  x :e R_omega_space ->
+  Romega_D_scaled_diffs x x = {0}.
+let x.
+assume Hx: x :e R_omega_space.
+apply set_ext.
+- exact (Romega_D_scaled_diffs_diag_subset0 x Hx).
+- let a.
+  assume Ha0: a :e {0}.
+  prove a :e Romega_D_scaled_diffs x x.
+  claim HaEq: a = 0.
+  { exact (SingE 0 a Ha0). }
+  rewrite HaEq.
+  prove 0 :e Romega_D_scaled_diffs x x.
+  claim H1omega: 1 :e omega.
+  { exact (nat_p_omega 1 nat_1). }
+  claim H1not0: 1 /:e {0}.
+  { assume H1: 1 :e {0}.
+    claim Heq: 1 = 0.
+    { exact (SingE 0 1 H1). }
+    exact (neq_1_0 Heq). }
+  claim H1In: 1 :e omega :\: {0}.
+  { exact (setminusI omega {0} 1 H1omega H1not0). }
+  claim HxiR: apply_fun x 1 :e R.
+  { exact (Romega_coord_in_R x 1 Hx H1omega). }
+  claim Hbd0: R_bounded_distance (apply_fun x 1) (apply_fun x 1) = 0.
+  { exact (R_bounded_distance_self_zero (apply_fun x 1) HxiR). }
+  claim HinvR: inv_nat 1 :e R.
+  { exact (inv_nat_real 1 H1omega). }
+  claim HinvS: SNo (inv_nat 1).
+  { exact (real_SNo (inv_nat 1) HinvR). }
+  claim Hdef: 0 = mul_SNo (R_bounded_distance (apply_fun x 1) (apply_fun x 1)) (inv_nat 1).
+  { rewrite Hbd0.
+    rewrite (mul_SNo_zeroL (inv_nat 1) HinvS).
+    reflexivity. }
+  rewrite Hdef.
+  exact (ReplI (omega :\: {0})
+               (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun x i)) (inv_nat i))
+               1
+               H1In).
+Qed.
+
 Definition Romega_D_metric_value : set -> set -> set := fun x y =>
   Eps_i (fun r:set => R_lub (Romega_D_scaled_diffs x y) r).
 
@@ -67259,6 +67434,23 @@ claim Hlub2': R_lub A (Romega_D_metric_value y x).
 exact (R_lub_unique A (Romega_D_metric_value x y) (Romega_D_metric_value y x) Hlub1 Hlub2').
 Qed.
 
+(** helper: D metric value is 0 on the diagonal **)
+Theorem Romega_D_metric_value_self_zero : forall x:set,
+  x :e R_omega_space ->
+  Romega_D_metric_value x x = 0.
+let x.
+assume Hx: x :e R_omega_space.
+set A := Romega_D_scaled_diffs x x.
+claim HAeq: A = {0}.
+{ exact (Romega_D_scaled_diffs_diag_eq_Sing0 x Hx). }
+claim Hlub1: R_lub A (Romega_D_metric_value x x).
+{ exact (Romega_D_metric_value_is_lub x x Hx Hx). }
+claim Hlub0: R_lub A 0.
+{ rewrite HAeq.
+  exact R_lub_Sing0. }
+exact (R_lub_unique A (Romega_D_metric_value x x) 0 Hlub1 Hlub0).
+Qed.
+
 (** helper: D metric values are real numbers **)
 Theorem Romega_D_metric_value_in_R : forall x y:set,
   x :e R_omega_space ->
@@ -67340,7 +67532,17 @@ apply andI.
           rewrite (tuple_2_0_eq y x).
           rewrite (tuple_2_1_eq y x).
           exact (Romega_D_metric_value_sym x y Hx Hy). }
-      - admit.
+      - let x.
+        assume Hx: x :e R_omega_space.
+        claim Hxxprod: (x,x) :e setprod R_omega_space R_omega_space.
+        { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space x x Hx Hx). }
+        rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+                                 (fun p:set => Romega_D_metric_value (p 0) (p 1))
+                                 (x,x)
+                                 Hxxprod).
+        rewrite (tuple_2_0_eq x x).
+        rewrite (tuple_2_1_eq x x).
+        exact (Romega_D_metric_value_self_zero x Hx).
     * admit.
   + admit.
 - (** topology equality part **)
