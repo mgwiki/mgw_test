@@ -69891,12 +69891,27 @@ apply SepI.
 	      { exact (mul_SNo_pos_pos r3 inv Hr3S HinvS Hr3posS HinvPosS). }
 	      exact (RltI 0 r0 real_0 Hr0R Hr0posS). }
     witness r0.
-    apply andI.
-    - apply andI.
-      + exact Hr0R.
-      + exact Hr0pos.
-    - (** open_ball subset cylinder **)
-      admit. }
+	    apply andI.
+	    - apply andI.
+	      + exact Hr0R.
+	      + exact Hr0pos.
+	    - (** open_ball subset cylinder **)
+	      let g. assume Hgball: g :e open_ball X d f r0.
+	      prove g :e C.
+	      claim HgX: g :e X.
+	      { exact (open_ballE1 X d f r0 g Hgball). }
+	      claim Hgprod: g :e product_space omega Xi0.
+	      { rewrite <- HXeq.
+	        exact HgX. }
+	      claim HCdef: C =
+	        {f0 :e product_space omega Xi0 |
+	          (i :e omega /\ U :e space_family_topology Xi0 i) /\ apply_fun f0 i :e U}.
+	      { reflexivity. }
+	      rewrite HCdef.
+	      apply SepI.
+	      - exact Hgprod.
+	      - (** show (i :e omega /\ U :e space_family_topology Xi0 i) /\ apply_fun g i :e U **)
+	        admit. }
   apply HexBall.
   let r0. assume Hr0pair.
   apply Hr0pair.
