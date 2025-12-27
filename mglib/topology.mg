@@ -69274,6 +69274,109 @@ set t := add_SNo xi (minus_SNo yi).
 exact (R_bounded_distance_lt_lt1_imp_abs_lt xi yi delta HxiR HyiR HdR Hdlt1 HbdRlt).
 Qed.
 
+(** helper: division by n equals inv_nat n when numerator is 1 **)
+Theorem div_SNo_1_eq_inv_nat : forall n:set,
+  SNo n -> div_SNo 1 n = inv_nat n.
+let n.
+assume HnS: SNo n.
+prove div_SNo 1 n = inv_nat n.
+claim Hdivdef: div_SNo 1 n = mul_SNo 1 (recip_SNo n).
+{ reflexivity. }
+rewrite Hdivdef.
+rewrite (mul_SNo_oneL (recip_SNo n) (SNo_recip_SNo n HnS)).
+claim Hinvdef: inv_nat n = recip_SNo n.
+{ reflexivity. }
+rewrite Hinvdef.
+reflexivity.
+Qed.
+
+(** helper: inv_nat 1 = 1 **)
+Theorem inv_nat_1_eq_1 : inv_nat 1 = 1.
+prove inv_nat 1 = 1.
+claim H1neq0: 1 <> 0.
+{ exact neq_1_0. }
+claim Hmul: mul_SNo 1 (inv_nat 1) = 1.
+{ exact (recip_SNo_invR 1 SNo_1 H1neq0). }
+rewrite <- (mul_SNo_oneL (inv_nat 1) (SNo_recip_SNo 1 SNo_1)) at 1.
+exact Hmul.
+Qed.
+
+(** helper: for i<j in omega, inv_nat (i+1) is larger than inv_nat (j+1) **)
+Theorem inv_nat_ordsucc_antitone : forall i j:set,
+  i :e omega -> j :e omega -> i :e j ->
+  Rlt (inv_nat (ordsucc j)) (inv_nat (ordsucc i)).
+let i j.
+assume HiO: i :e omega.
+assume HjO: j :e omega.
+assume Hij: i :e j.
+set mi := ordsucc i.
+set mj := ordsucc j.
+claim HiOrd: ordinal i.
+{ exact (ordinal_Hered omega omega_ordinal i HiO). }
+claim HjOrd: ordinal j.
+{ exact (ordinal_Hered omega omega_ordinal j HjO). }
+claim Hijlt: i < j.
+{ exact (ordinal_In_SNoLt j HjOrd i Hij). }
+claim HiS: SNo i.
+{ exact (omega_SNo i HiO). }
+claim HjS: SNo j.
+{ exact (omega_SNo j HjO). }
+claim HmiS: SNo mi.
+{ exact (omega_SNo mi (omega_ordsucc i HiO)). }
+claim HmjS: SNo mj.
+{ exact (omega_SNo mj (omega_ordsucc j HjO)). }
+claim Hsucclt: mi < mj.
+{ prove mi < mj.
+  rewrite <- (add_SNo_1_ordsucc i HiO).
+  rewrite <- (add_SNo_1_ordsucc j HjO).
+  exact (add_SNo_Lt1 i 1 j HiS SNo_1 HjS Hijlt). }
+claim HmiNot0: mi <> 0.
+{ exact (neq_ordsucc_0 i). }
+claim HmjNot0: mj <> 0.
+{ exact (neq_ordsucc_0 j). }
+claim HinvmiR: inv_nat mi :e R.
+{ exact (inv_nat_real mi (omega_ordsucc i HiO)). }
+claim HinvmiS: SNo (inv_nat mi).
+{ exact (real_SNo (inv_nat mi) HinvmiR). }
+claim HmiNotIn0: mi /:e {0}.
+{ assume Hmi0: mi :e {0}.
+  claim Heq0: mi = 0.
+  { exact (SingE 0 mi Hmi0). }
+  exact (HmiNot0 Heq0). }
+claim HmiIn: mi :e omega :\: {0}.
+{ exact (setminusI omega {0} mi (omega_ordsucc i HiO) HmiNotIn0). }
+claim HinvmiPosR: Rlt 0 (inv_nat mi).
+{ exact (inv_nat_pos mi HmiIn). }
+claim HinvmiPos: 0 < inv_nat mi.
+{ exact (RltE_lt 0 (inv_nat mi) HinvmiPosR). }
+claim HmulLt: mul_SNo (inv_nat mi) mi < mul_SNo (inv_nat mi) mj.
+{ exact (pos_mul_SNo_Lt (inv_nat mi) mi mj HinvmiS HinvmiPos HmiS HmjS Hsucclt). }
+claim HmulEq: mul_SNo (inv_nat mi) mi = 1.
+{ prove mul_SNo (inv_nat mi) mi = 1.
+  rewrite (mul_SNo_com (inv_nat mi) mi HinvmiS HmiS).
+  claim Hinvdef: inv_nat mi = recip_SNo mi.
+  { reflexivity. }
+  rewrite Hinvdef.
+  exact (recip_SNo_invR mi HmiS HmiNot0). }
+claim HoneLt: 1 < mul_SNo (inv_nat mi) mj.
+{ rewrite <- HmulEq at 1.
+  exact HmulLt. }
+claim Hmjpos: 0 < mj.
+{ exact (ordinal_ordsucc_pos j HjOrd). }
+claim HdivLt: div_SNo 1 mj < inv_nat mi.
+{ exact (div_SNo_pos_LtL 1 mj (inv_nat mi) SNo_1 HmjS HinvmiS Hmjpos HoneLt). }
+claim HdivEq: div_SNo 1 mj = inv_nat mj.
+{ exact (div_SNo_1_eq_inv_nat mj HmjS). }
+claim HinvLtS: inv_nat mj < inv_nat mi.
+{ rewrite <- HdivEq.
+  exact HdivLt. }
+claim HinvmiInR: inv_nat mi :e R.
+{ exact HinvmiR. }
+claim HinvMjR: inv_nat mj :e R.
+{ exact (inv_nat_real mj (omega_ordsucc j HjO)). }
+exact (RltI (inv_nat mj) (inv_nat mi) HinvMjR HinvmiInR HinvLtS).
+Qed.
+
 (** helper: D metric value satisfies triangle inequality **)
 Theorem Romega_D_metric_value_triangle : forall x y z:set,
   x :e R_omega_space -> y :e R_omega_space -> z :e R_omega_space ->
