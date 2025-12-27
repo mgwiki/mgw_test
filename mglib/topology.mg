@@ -68736,7 +68736,7 @@ Theorem ex30_18_first_countable_group_countable_basis : forall G Tg:set,
   first_countable_space G Tg ->
   ((exists D:set, D c= G /\ countable D /\ dense_in D G Tg) \/ Lindelof_space G Tg) ->
   second_countable_space G Tg.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §31 Exercise 1: regular implies disjoint closures of neighborhoods **)
