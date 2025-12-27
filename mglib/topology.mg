@@ -63487,7 +63487,7 @@ Theorem euclidean_spaces_second_countable : forall n:set,
   second_countable_space (euclidean_space n) (euclidean_topology n).
 let n.
 prove second_countable_space (euclidean_space n) (euclidean_topology n).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Example 2: uniform topology on R^omega not second countable **) 
@@ -63496,7 +63496,7 @@ Theorem Romega_uniform_first_not_second_countable :
   first_countable_space real_sequences uniform_topology /\
   ~ second_countable_space real_sequences uniform_topology.
 prove first_countable_space real_sequences uniform_topology /\ ~ second_countable_space real_sequences uniform_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **)
@@ -64628,7 +64628,7 @@ prove first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
   Lindelof_space Sorgenfrey_line Sorgenfrey_topology /\
   ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** placeholders for later refinement of product/separation constructions **) 
