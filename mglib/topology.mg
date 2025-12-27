@@ -69709,11 +69709,267 @@ apply SepI.
   claim Hltval: Rlt (Romega_D_metric_value x y) r.
   { rewrite <- Hdapp.
     exact Hltball. }
-  (** TODO: build a finite intersection of cylinder sets around y which is contained in the ball, using Hltval **)
+  (** Build a finite cylinder neighborhood around y using a small eps. **)
   claim HexF: exists F:set,
     (F :e finite_subcollections S /\ y :e intersection_of_family X F)
     /\ intersection_of_family X F c= open_ball X d x r.
-  { admit. (** FAIL **) }
+  { set dxy := apply_fun d (x,y).
+    claim Hfun: function_on d (setprod X X) R.
+    { exact (metric_on_function_on X d Hm). }
+    claim HdxyR: dxy :e R.
+    { exact (Hfun (x,y) Hxyprod). }
+    claim HdxyS: SNo dxy.
+    { exact (real_SNo dxy HdxyR). }
+    claim HrS: SNo r.
+    { exact (real_SNo r HrR). }
+    set gap := add_SNo r (minus_SNo dxy).
+    claim HgapR: gap :e R.
+    { exact (real_add_SNo r HrR (minus_SNo dxy) (real_minus_SNo dxy HdxyR)). }
+    claim HgapPos: Rlt 0 gap.
+    { claim HmdxyS: SNo (minus_SNo dxy).
+      { exact (SNo_minus_SNo dxy HdxyS). }
+      claim HdxyltS: dxy < r.
+      { exact (RltE_lt dxy r Hltball). }
+      claim Hlt': add_SNo (minus_SNo dxy) dxy < add_SNo (minus_SNo dxy) r.
+      { exact (add_SNo_Lt2 (minus_SNo dxy) dxy r HmdxyS HdxyS HrS HdxyltS). }
+      claim H0eq: add_SNo (minus_SNo dxy) dxy = 0.
+      { exact (add_SNo_minus_SNo_linv dxy HdxyS). }
+      claim Hcom: add_SNo (minus_SNo dxy) r = gap.
+      { claim Hcom0: add_SNo (minus_SNo dxy) r = add_SNo r (minus_SNo dxy).
+        { exact (add_SNo_com (minus_SNo dxy) r HmdxyS HrS). }
+        rewrite Hcom0.
+        reflexivity. }
+	      claim HgapPosS: 0 < gap.
+	      { rewrite <- H0eq at 1.
+	        rewrite <- Hcom.
+	        exact Hlt'. }
+      exact (RltI 0 gap real_0 HgapR HgapPosS). }
+    claim H1R: 1 :e R.
+    { exact real_1. }
+    claim H1pos: Rlt 0 1.
+    { exact Rlt_0_1. }
+    claim Hexeps: exists eps:set,
+      eps :e R /\ Rlt 0 eps /\ Rlt eps gap /\ Rlt eps 1 /\ Rlt eps 1 /\ Rlt eps 1.
+    { exact (exists_eps_lt_four_pos_Euclid gap 1 1 1 HgapR H1R H1R H1R HgapPos H1pos H1pos H1pos). }
+    apply Hexeps.
+    let eps. assume Hepsconj.
+    claim HepsTop: ((((eps :e R /\ Rlt 0 eps) /\ Rlt eps gap) /\ Rlt eps 1) /\ Rlt eps 1) /\ Rlt eps 1.
+    { exact Hepsconj. }
+    claim HepsTop1: (((eps :e R /\ Rlt 0 eps) /\ Rlt eps gap) /\ Rlt eps 1) /\ Rlt eps 1.
+    { apply HepsTop. assume H1 H2. exact H1. }
+    claim HepsTop2: ((eps :e R /\ Rlt 0 eps) /\ Rlt eps gap) /\ Rlt eps 1.
+    { apply HepsTop1. assume H1 H2. exact H1. }
+    claim HepsTop3: (eps :e R /\ Rlt 0 eps) /\ Rlt eps gap.
+    { apply HepsTop2. assume H1 H2. exact H1. }
+    claim HepsPair: eps :e R /\ Rlt 0 eps.
+    { apply HepsTop3. assume H1 H2. exact H1. }
+    claim HepsR: eps :e R.
+    { apply HepsPair. assume H1 H2. exact H1. }
+    claim HepsPos: Rlt 0 eps.
+    { apply HepsPair. assume H1 H2. exact H2. }
+    claim HepsLtGap: Rlt eps gap.
+    { apply HepsTop3. assume H1 H2. exact H2. }
+    claim HepsLt1: Rlt eps 1.
+    { apply HepsTop2. assume H1 H2. exact H2. }
+    (** choose N so that inv_nat (N+1) < eps **)
+    claim HexN: exists N:set, N :e omega /\ Rlt (inv_nat (ordsucc N)) eps.
+    { exact (exists_inv_nat_ordsucc_lt eps HepsR HepsPos). }
+    apply HexN.
+    let N. assume HNpair.
+    claim HNO: N :e omega.
+    { exact (andEL (N :e omega) (Rlt (inv_nat (ordsucc N)) eps) HNpair). }
+    claim HinvNLt: Rlt (inv_nat (ordsucc N)) eps.
+    { exact (andER (N :e omega) (Rlt (inv_nat (ordsucc N)) eps) HNpair). }
+    set I := ordsucc N.
+    claim HIO: I :e omega.
+    { exact (omega_ordsucc N HNO). }
+    claim HIcOmega: I c= omega.
+    { exact (ordinal_ordsucc_In_Subq omega omega_ordinal N HNO). }
+    (** define cylinders for indices in I with radius eps around y_i **)
+    set cyl := (fun i:set =>
+      product_cylinder omega Xi0 i
+        (open_interval (add_SNo (apply_fun y i) (minus_SNo eps))
+                       (add_SNo (apply_fun y i) eps))).
+    set F := Repl I cyl.
+    witness F.
+    apply andI.
+	    - (** F is a finite subcollection of the subbasis and y lies in its intersection **)
+	      apply andI.
+	      + (** F :e finite_subcollections S **)
+	        claim HFdef: finite_subcollections S = {F0 :e Power S|finite F0}.
+	        { reflexivity. }
+	        rewrite HFdef.
+	        apply SepI.
+	        * (** F :e Power S **)
+	          apply PowerI.
+	          let s. assume HsF: s :e F.
+	          prove s :e S.
+          claim Hexi: exists i:set, i :e I /\ s = cyl i.
+          { exact (ReplE I cyl s HsF). }
+          apply Hexi.
+          let i. assume Hiconj.
+          claim HiI: i :e I.
+          { exact (andEL (i :e I) (s = cyl i) Hiconj). }
+          claim Hseq: s = cyl i.
+          { exact (andER (i :e I) (s = cyl i) Hiconj). }
+          rewrite Hseq.
+          claim HiO: i :e omega.
+          { exact (HIcOmega i HiI). }
+          set Ui := open_interval (add_SNo (apply_fun y i) (minus_SNo eps))
+                                  (add_SNo (apply_fun y i) eps).
+          claim HUiTop: Ui :e R_standard_topology.
+          { (** Ui is a standard open interval, hence open **)
+            claim HyiR: apply_fun y i :e R.
+            { exact (Romega_coord_in_R y i HyX HiO). }
+            claim HyiS: SNo (apply_fun y i).
+            { exact (real_SNo (apply_fun y i) HyiR). }
+            claim HepsS: SNo eps.
+            { exact (real_SNo eps HepsR). }
+            claim HmeiR: minus_SNo eps :e R.
+            { exact (real_minus_SNo eps HepsR). }
+            claim HaR: add_SNo (apply_fun y i) (minus_SNo eps) :e R.
+            { exact (real_add_SNo (apply_fun y i) HyiR (minus_SNo eps) HmeiR). }
+            claim HbR: add_SNo (apply_fun y i) eps :e R.
+            { exact (real_add_SNo (apply_fun y i) HyiR eps HepsR). }
+            claim HbStd: Ui :e R_standard_basis.
+            { exact (famunionI R (fun a0:set => {open_interval a0 b|b :e R})
+                              (add_SNo (apply_fun y i) (minus_SNo eps)) Ui HaR
+                              (ReplI R (fun b1:set => open_interval (add_SNo (apply_fun y i) (minus_SNo eps)) b1)
+                                     (add_SNo (apply_fun y i) eps) HbR)). }
+            exact (generated_topology_contains_basis R R_standard_basis R_standard_basis_is_basis_local Ui HbStd). }
+          claim HcylIn: product_cylinder omega Xi0 i Ui :e S.
+          { claim HTi: space_family_topology Xi0 i = R_standard_topology.
+            { claim Hdef0: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+              { reflexivity. }
+              rewrite Hdef0.
+              rewrite (const_space_family_apply omega R R_standard_topology i HiO).
+              exact (tuple_2_1_eq R R_standard_topology). }
+            claim HUiIn: Ui :e space_family_topology Xi0 i.
+            { rewrite HTi.
+              exact HUiTop. }
+            exact (famunionI omega
+                             (fun j:set => {product_cylinder omega Xi0 j U0|U0 :e space_family_topology Xi0 j})
+                             i
+                             (product_cylinder omega Xi0 i Ui)
+                             HiO
+                             (ReplI (space_family_topology Xi0 i)
+                                    (fun U0:set => product_cylinder omega Xi0 i U0)
+                                    Ui
+                                    HUiIn)). }
+          exact HcylIn.
+        * (** finite F **)
+          claim HINat: nat_p I.
+          { exact (omega_nat_p I HIO). }
+          claim HIfin: finite I.
+          { exact (nat_finite I HINat). }
+          exact (Repl_finite cyl I HIfin).
+	      + (** y :e intersection_of_family X F **)
+	        claim HinterDef: intersection_of_family X F = {x0 :e X|forall U:set, U :e F -> x0 :e U}.
+	        { reflexivity. }
+	        rewrite HinterDef.
+	        apply SepI.
+	        * exact HyX.
+	        * let U0. assume HU0: U0 :e F.
+	          prove y :e U0.
+          claim Hexi: exists i:set, i :e I /\ U0 = cyl i.
+          { exact (ReplE I cyl U0 HU0). }
+          apply Hexi.
+          let i. assume Hiconj.
+          claim HiI: i :e I.
+          { exact (andEL (i :e I) (U0 = cyl i) Hiconj). }
+          claim HU0eq: U0 = cyl i.
+          { exact (andER (i :e I) (U0 = cyl i) Hiconj). }
+          rewrite HU0eq.
+	          claim HiO: i :e omega.
+	          { exact (HIcOmega i HiI). }
+	          set Ui := open_interval (add_SNo (apply_fun y i) (minus_SNo eps))
+	                                  (add_SNo (apply_fun y i) eps).
+	          claim HCdef: cyl i =
+	            {f0 :e product_space omega Xi0 |
+	              i :e omega /\ Ui :e space_family_topology Xi0 i /\ apply_fun f0 i :e Ui}.
+	          { reflexivity. }
+	          rewrite HCdef.
+		          apply SepI.
+		          - exact HyX.
+		          - (** i :e omega /\ Ui :e space_family_topology Xi0 i /\ apply_fun y i :e Ui **)
+		            prove i :e omega /\ Ui :e space_family_topology Xi0 i /\ apply_fun y i :e Ui.
+		            claim HUiTop: Ui :e R_standard_topology.
+		            { (** Ui is a standard open interval **)
+		              claim HyiR: apply_fun y i :e R.
+		              { exact (Romega_coord_in_R y i HyX HiO). }
+		              claim HmeiR: minus_SNo eps :e R.
+		              { exact (real_minus_SNo eps HepsR). }
+		              claim HaR: add_SNo (apply_fun y i) (minus_SNo eps) :e R.
+		              { exact (real_add_SNo (apply_fun y i) HyiR (minus_SNo eps) HmeiR). }
+		              claim HbR: add_SNo (apply_fun y i) eps :e R.
+		              { exact (real_add_SNo (apply_fun y i) HyiR eps HepsR). }
+		              claim HbStd: Ui :e R_standard_basis.
+		              { exact (famunionI R (fun a0:set => {open_interval a0 b|b :e R})
+		                                (add_SNo (apply_fun y i) (minus_SNo eps)) Ui HaR
+		                                (ReplI R (fun b1:set => open_interval (add_SNo (apply_fun y i) (minus_SNo eps)) b1)
+		                                       (add_SNo (apply_fun y i) eps) HbR)). }
+		              exact (generated_topology_contains_basis R R_standard_basis R_standard_basis_is_basis_local Ui HbStd). }
+		            claim HTi: space_family_topology Xi0 i = R_standard_topology.
+		            { claim Hdef0: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+		              { reflexivity. }
+		              rewrite Hdef0.
+		              rewrite (const_space_family_apply omega R R_standard_topology i HiO).
+		              exact (tuple_2_1_eq R R_standard_topology). }
+		            claim HUiIn: Ui :e space_family_topology Xi0 i.
+		            { rewrite HTi.
+		              exact HUiTop. }
+		            claim HyUi: apply_fun y i :e Ui.
+		            { claim HyiR: apply_fun y i :e R.
+		              { exact (Romega_coord_in_R y i HyX HiO). }
+		              claim HyiS: SNo (apply_fun y i).
+		              { exact (real_SNo (apply_fun y i) HyiR). }
+		              claim HepsS: SNo eps.
+		              { exact (real_SNo eps HepsR). }
+		              claim HmepsS: SNo (minus_SNo eps).
+		              { exact (SNo_minus_SNo eps HepsS). }
+		              claim Hlt1: add_SNo (apply_fun y i) (minus_SNo eps) < apply_fun y i.
+		              { rewrite <- (add_SNo_0R (apply_fun y i) HyiS) at 2.
+		                claim HepsPosS: 0 < eps.
+		                { exact (RltE_lt 0 eps HepsPos). }
+		                claim HepsNegS: minus_SNo eps < 0.
+		                { claim Htmp: minus_SNo eps < minus_SNo 0.
+		                  { exact (minus_SNo_Lt_contra 0 eps SNo_0 HepsS HepsPosS). }
+		                  claim Htmp2: minus_SNo eps < 0.
+		                  { rewrite <- minus_SNo_0.
+		                    exact Htmp. }
+		                  exact Htmp2. }
+		                exact (add_SNo_Lt2 (apply_fun y i) (minus_SNo eps) 0 HyiS HmepsS SNo_0 HepsNegS). }
+		              claim Hlt2: apply_fun y i < add_SNo (apply_fun y i) eps.
+		              { rewrite <- (add_SNo_0R (apply_fun y i) HyiS) at 1.
+		                exact (add_SNo_Lt2 (apply_fun y i) 0 eps HyiS SNo_0 HepsS (RltE_lt 0 eps HepsPos)). }
+		              claim Hlt1R: Rlt (add_SNo (apply_fun y i) (minus_SNo eps)) (apply_fun y i).
+		              { exact (RltI (add_SNo (apply_fun y i) (minus_SNo eps)) (apply_fun y i)
+		                           (real_add_SNo (apply_fun y i) HyiR (minus_SNo eps) (real_minus_SNo eps HepsR))
+		                           HyiR
+		                           Hlt1). }
+		              claim Hlt2R: Rlt (apply_fun y i) (add_SNo (apply_fun y i) eps).
+		              { exact (RltI (apply_fun y i) (add_SNo (apply_fun y i) eps)
+		                           HyiR
+		                           (real_add_SNo (apply_fun y i) HyiR eps HepsR)
+		                           Hlt2). }
+		              claim HinterDef: Ui = {x0 :e R | Rlt (add_SNo (apply_fun y i) (minus_SNo eps)) x0 /\ Rlt x0 (add_SNo (apply_fun y i) eps)}.
+		              { reflexivity. }
+		              rewrite HinterDef.
+		              exact (SepI R
+		                          (fun x0:set =>
+		                            Rlt (add_SNo (apply_fun y i) (minus_SNo eps)) x0 /\
+		                            Rlt x0 (add_SNo (apply_fun y i) eps))
+		                          (apply_fun y i)
+		                          HyiR
+		                          (andI (Rlt (add_SNo (apply_fun y i) (minus_SNo eps)) (apply_fun y i))
+		                                (Rlt (apply_fun y i) (add_SNo (apply_fun y i) eps))
+		                                Hlt1R
+		                                Hlt2R)). }
+		            claim Hleft: i :e omega /\ Ui :e space_family_topology Xi0 i.
+		            { exact (andI (i :e omega) (Ui :e space_family_topology Xi0 i) HiO HUiIn). }
+		            exact (andI (i :e omega /\ Ui :e space_family_topology Xi0 i) (apply_fun y i :e Ui) Hleft HyUi).
+    - (** intersection subset open_ball **)
+      admit. (** FAIL **) }
   apply HexF.
   let F. assume HFcore.
   claim HFleft: F :e finite_subcollections S /\ y :e intersection_of_family X F.
