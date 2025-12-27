@@ -30747,9 +30747,9 @@ Theorem ex16_9_dictionary_equals_product :
 prove R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology /\ R2_dictionary_order_topology <> R2_standard_topology.
 apply andI.
 - claim Heq: R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology.
-  { admit. }
+  { admit. (** FAIL **) }
   exact Heq.
-- admit.
+- admit. (** FAIL **)
 Qed.
 
 (** from §16 Exercise 10: compare topologies on I×I **) 
