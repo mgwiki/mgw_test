@@ -37401,6 +37401,144 @@ apply set_ext.
   exact (Hsub x Hx).
 Qed.
 
+(** helper: closure of K_set in the left ray topology is the nonnegative reals **)
+Theorem closure_of_K_in_R_ray_topology :
+  closure_of R R_ray_topology K_set = R_nonneg_set.
+apply set_ext.
+- (** closure subset R_nonneg_set **)
+  let x. assume Hx: x :e closure_of R R_ray_topology K_set.
+  prove x :e R_nonneg_set.
+  claim HxR: x :e R.
+  { exact (SepE1 R (fun x0:set => forall U:set, U :e R_ray_topology -> x0 :e U -> U :/\: K_set <> Empty) x Hx). }
+  claim Hcl: forall U:set, U :e R_ray_topology -> x :e U -> U :/\: K_set <> Empty.
+  { exact (SepE2 R (fun x0:set => forall U:set, U :e R_ray_topology -> x0 :e U -> U :/\: K_set <> Empty) x Hx). }
+  claim HxS: SNo x.
+  { exact (real_SNo x HxR). }
+  claim H0lex: 0 <= x.
+  { (** by trichotomy of < on surreals, exclude x<0 using the closure condition **)
+    apply (SNoLt_trichotomy_or_impred x 0 HxS SNo_0 (0 <= x)).
+    - assume Hxlt0: x < 0.
+      apply FalseE.
+      set U0 := {y :e R|Rlt y 0}.
+      claim HU0pow: U0 :e Power R.
+      { apply PowerI.
+        let y. assume Hy: y :e U0.
+        exact (SepE1 R (fun y0:set => Rlt y0 0) y Hy). }
+      claim HU0disj: U0 = Empty \/ U0 = R \/ (exists a :e R, U0 = {y :e R|Rlt y a}).
+      { (** left-assoc: (U0=Empty \/ U0=R) \/ exists a ... **)
+        apply orIR.
+        witness 0.
+        apply andI.
+        - exact real_0.
+        - reflexivity. }
+      claim HU0top: U0 :e R_ray_topology.
+      { exact (SepI (Power R) (fun U:set => U = Empty \/ U = R \/ (exists a :e R, U = {y :e R|Rlt y a})) U0 HU0pow HU0disj). }
+      claim HxU0: x :e U0.
+      { claim HxRlt0: Rlt x 0.
+        { exact (RltI x 0 HxR real_0 Hxlt0). }
+        exact (SepI R (fun y:set => Rlt y 0) x HxR HxRlt0). }
+      claim Hne: U0 :/\: K_set <> Empty.
+      { exact (Hcl U0 HU0top HxU0). }
+      claim Hempty: U0 :/\: K_set = Empty.
+      { apply Empty_Subq_eq.
+        let z. assume Hz: z :e U0 :/\: K_set.
+        prove z :e Empty.
+        apply FalseE.
+        claim HzU0: z :e U0.
+        { exact (binintersectE1 U0 K_set z Hz). }
+        claim HzK: z :e K_set.
+        { exact (binintersectE2 U0 K_set z Hz). }
+        claim Hzlt0: Rlt z 0.
+        { exact (SepE2 R (fun y0:set => Rlt y0 0) z HzU0). }
+        apply (ReplE_impred (omega :\: {0}) (fun n:set => inv_nat n) z HzK False).
+        let n. assume HnIn: n :e omega :\: {0}. assume Hzeq: z = inv_nat n.
+        claim Hzpos: Rlt 0 z.
+        { rewrite Hzeq.
+          exact (inv_nat_pos n HnIn). }
+        claim H00: Rlt 0 0.
+        { exact (Rlt_tra 0 z 0 Hzpos Hzlt0). }
+        exact ((Rlt_irref 0 real_0) H00). }
+      exact (Hne Hempty).
+    - assume Hx0: x = 0.
+      rewrite Hx0.
+      exact (SNoLe_ref 0).
+    - assume H0ltx: 0 < x.
+      exact (SNoLtLe 0 x H0ltx). }
+  exact (SepI R (fun x0:set => 0 <= x0) x HxR H0lex).
+- (** R_nonneg_set subset closure **)
+  let x. assume Hx: x :e R_nonneg_set.
+  prove x :e closure_of R R_ray_topology K_set.
+  claim HxR: x :e R.
+  { exact (SepE1 R (fun x0:set => 0 <= x0) x Hx). }
+  claim H0lex: 0 <= x.
+  { exact (SepE2 R (fun x0:set => 0 <= x0) x Hx). }
+  claim HxS: SNo x.
+  { exact (real_SNo x HxR). }
+  claim Hcl: forall U:set, U :e R_ray_topology -> x :e U -> U :/\: K_set <> Empty.
+  { let U. assume HU: U :e R_ray_topology. assume HxU: x :e U.
+    prove U :/\: K_set <> Empty.
+    claim HUcases: U = Empty \/ U = R \/ (exists a :e R, U = {y :e R|Rlt y a}).
+    { exact (SepE2 (Power R) (fun U0 : set => U0 = Empty \/ U0 = R \/ (exists a0 :e R, U0 = {y :e R|Rlt y a0})) U HU). }
+    apply (HUcases (U :/\: K_set <> Empty)).
+    - assume HUR: U = Empty \/ U = R.
+      apply (HUR (U :/\: K_set <> Empty)).
+      + assume HUe: U = Empty.
+        apply FalseE.
+        claim HxE: x :e Empty.
+        { rewrite <- HUe.
+          exact HxU. }
+        exact (EmptyE x HxE).
+      + assume HUeqR: U = R.
+        (** pick a K_set element below 1; it lies in U=R **)
+        claim Hexy: exists y:set, y :e halfopen_interval_left 0 1 /\ y :e K_set.
+        { exact (K_set_meets_lower_limit_neighborhood_0 0 1 real_0 real_1 (not_Rlt_refl 0 real_0) (RltI 0 1 real_0 real_1 SNoLt_0_1)). }
+        apply Hexy.
+        let y. assume Hypair.
+        claim HyK: y :e K_set.
+        { exact (andER (y :e halfopen_interval_left 0 1) (y :e K_set) Hypair). }
+        claim HyU: y :e U.
+        { rewrite HUeqR.
+          exact (K_set_Subq_R y HyK). }
+        claim HyInt: y :e U :/\: K_set.
+        { exact (binintersectI U K_set y HyU HyK). }
+        exact (elem_implies_nonempty (U :/\: K_set) y HyInt).
+    - assume Hex: exists a :e R, U = {y :e R|Rlt y a}.
+      apply Hex.
+      let a. assume Hapair.
+      claim HaR: a :e R.
+      { exact (andEL (a :e R) (U = {y :e R|Rlt y a}) Hapair). }
+      claim HUeq: U = {y :e R|Rlt y a}.
+      { exact (andER (a :e R) (U = {y :e R|Rlt y a}) Hapair). }
+      claim Hxlt: Rlt x a.
+      { rewrite HUeq in HxU.
+        exact (SepE2 R (fun y0:set => Rlt y0 a) x HxU). }
+      claim HxltS: x < a.
+      { exact (RltE_lt x a Hxlt). }
+      claim HaS: SNo a.
+      { exact (real_SNo a HaR). }
+      claim H0ltaS: 0 < a.
+      { exact (SNoLeLt_tra 0 x a SNo_0 HxS HaS H0lex HxltS). }
+      claim H0lta: Rlt 0 a.
+      { exact (RltI 0 a real_0 HaR H0ltaS). }
+      claim Hexy: exists y:set, y :e halfopen_interval_left 0 a /\ y :e K_set.
+      { exact (K_set_meets_lower_limit_neighborhood_0 0 a real_0 HaR (not_Rlt_refl 0 real_0) H0lta). }
+      apply Hexy.
+      let y. assume Hypair.
+      claim Hyhalf: y :e halfopen_interval_left 0 a.
+      { exact (andEL (y :e halfopen_interval_left 0 a) (y :e K_set) Hypair). }
+      claim HyK: y :e K_set.
+      { exact (andER (y :e halfopen_interval_left 0 a) (y :e K_set) Hypair). }
+      claim Hylt: Rlt y a.
+      { exact (andER (~(Rlt y 0)) (Rlt y a) (SepE2 R (fun y0:set => ~(Rlt y0 0) /\ Rlt y0 a) y Hyhalf)). }
+      claim HyU: y :e U.
+      { rewrite HUeq.
+        exact (SepI R (fun y0:set => Rlt y0 a) y (K_set_Subq_R y HyK) Hylt). }
+      claim HyInt: y :e U :/\: K_set.
+      { exact (binintersectI U K_set y HyU HyK). }
+      exact (elem_implies_nonempty (U :/\: K_set) y HyInt). }
+  exact (SepI R (fun x0:set => forall U:set, U :e R_ray_topology -> x0 :e U -> U :/\: K_set <> Empty) x HxR Hcl).
+Qed.
+
 Theorem ex17_16a_closure_of_K_in_five_topologies :
   closure_of R R_standard_topology K_set = K_set :\/: {0} /\
   closure_of R R_K_topology K_set = K_set /\
@@ -37432,7 +37570,7 @@ apply andI.
   + (** D: upper limit topology **)
     admit. (** FAIL **)
 - (** E: ray topology **)
-  admit. (** FAIL **)
+  exact closure_of_K_in_R_ray_topology.
 Qed.
 
 (** helper: in the left ray topology, any open set containing 1 contains 0 **)
