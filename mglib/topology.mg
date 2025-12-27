@@ -68633,7 +68633,7 @@ Theorem ex30_12a_open_map_first_countable : forall X Tx Y Ty f:set,
   continuous_map X Tx Y Ty f ->
   open_map X Tx Y Ty f ->
   first_countable_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Exercise 12b: open continuous map preserves second countability **)
@@ -68644,7 +68644,7 @@ Theorem ex30_12b_open_map_second_countable : forall X Tx Y Ty f:set,
   continuous_map X Tx Y Ty f ->
   open_map X Tx Y Ty f ->
   second_countable_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 13: disjoint open sets countable when dense countable **)
 (** LATEX VERSION: If X has countable dense subset, every collection of disjoint open sets in X is countable. **)
@@ -68654,7 +68654,7 @@ Theorem ex30_13_disjoint_open_sets_countable : forall X Tx:set,
     (forall U:set, U :e Fam -> open_in X Tx U) ->
     (forall U V:set, U :e Fam -> V :e Fam -> U <> V -> U :/\: V = Empty) ->
     countable Fam.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 14: product of Lindelof with compact is Lindelof **)
 (** LATEX VERSION: If X is Lindelöf and Y is compact, then X × Y is Lindelöf. **)
@@ -68662,7 +68662,7 @@ Theorem ex30_14_product_Lindelof_compact : forall X Tx Y Ty:set,
   Lindelof_space X Tx ->
   compact_space Y Ty ->
   Lindelof_space (setprod X Y) (product_topology X Tx Y Ty).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 15: C(I,R) uniform topology countable dense subset **)
 (** LATEX VERSION: C(I,ℝ) with uniform metric has countable dense subset and countable basis. **)
@@ -68673,7 +68673,7 @@ Theorem ex30_15_CI_has_countable_dense_uniform :
   exists D:set,
     D c= C_I_R /\ countable D /\ dense_in D C_I_R uniform_topology_C_I_R /\
     second_countable_space C_I_R uniform_topology_C_I_R.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 16a: product R^I where I=[0,1] has countable dense subset **)
 (** LATEX VERSION: The product space ℝ^I, where I=[0,1], has a countable dense subset. **)
@@ -68684,7 +68684,7 @@ Theorem ex30_16a_product_RI_countable_dense :
     dense_in D
       (product_space unit_interval (const_space_family unit_interval R R_standard_topology))
       (product_topology_full unit_interval (const_space_family unit_interval R R_standard_topology)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Exercise 16b: large product does not have countable dense subset **)
@@ -68698,7 +68698,7 @@ Theorem ex30_16b_large_product_no_countable_dense : forall J:set,
       dense_in D
         (product_space J (const_space_family J R R_standard_topology))
         (product_topology_full J (const_space_family J R R_standard_topology))).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 17: Romega box topology countability axioms **)
 (** LATEX VERSION: ℝ^ω with box topology, subspace ℚ^∞ (rationals ending in infinite 0s): which countability axioms? **)
