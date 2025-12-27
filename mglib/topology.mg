@@ -69557,18 +69557,21 @@ apply (xm (n = Empty)).
         { exact (nonempty_has_element n HnNe). }
         apply Hexi0.
         let i0. assume Hi0: i0 :e n.
-        set x0 := apply_fun f i0.
-        (** x0 is in the i0 component set = R **)
-        claim Hx0R: x0 :e space_family_set Xi i0.
-        { exact (andER (function_on f n (space_family_union n Xi))
-                       (forall i:set, i :e n -> apply_fun f i :e space_family_set Xi i)
-                       (SepE2 (Power (setprod n (space_family_union n Xi)))
-                              (fun f0:set => function_on f0 n (space_family_union n Xi) /\
-                                forall i:set, i :e n -> apply_fun f0 i :e space_family_set Xi i)
-                              f
-                              Hf)
-                       i0
-                       Hi0). }
+	        set x0 := apply_fun f i0.
+	        (** x0 is in the i0 component set = R **)
+	        claim Hx0R: x0 :e space_family_set Xi i0.
+	        { claim Hfpack: (total_function_on f n (space_family_union n Xi) /\ functional_graph f) /\
+	              forall i:set, i :e n -> apply_fun f i :e space_family_set Xi i.
+	          { exact (SepE2 (Power (setprod n (space_family_union n Xi)))
+	                         (fun f0:set => (total_function_on f0 n (space_family_union n Xi) /\ functional_graph f0) /\
+	                           forall i:set, i :e n -> apply_fun f0 i :e space_family_set Xi i)
+	                         f
+	                         Hf). }
+	          claim Hcoords: forall i:set, i :e n -> apply_fun f i :e space_family_set Xi i.
+	          { exact (andER (total_function_on f n (space_family_union n Xi) /\ functional_graph f)
+	                         (forall i:set, i :e n -> apply_fun f i :e space_family_set Xi i)
+	                         Hfpack). }
+	          exact (Hcoords i0 Hi0). }
         (** rewrite component set to R using const_space_family_apply **)
         claim HXi0: apply_fun Xi i0 = (R, R_standard_topology).
         { exact (const_space_family_apply n R R_standard_topology i0 Hi0). }
