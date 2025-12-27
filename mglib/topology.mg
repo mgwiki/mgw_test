@@ -66692,6 +66692,21 @@ apply andI.
   assume HiIn: i :e omega :\: {0}.
   assume Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i).
   rewrite Hai.
+  set bd := R_bounded_distance (apply_fun x i) (apply_fun y i).
+  set inv := inv_nat i.
+  claim HiO: i :e omega.
+  { exact (setminusE1 omega {0} i HiIn). }
+  claim HxiR: apply_fun x i :e R.
+  { exact (Romega_coord_in_R x i Hx HiO). }
+  claim HyiR: apply_fun y i :e R.
+  { exact (Romega_coord_in_R y i Hy HiO). }
+  claim HbdR: bd :e R.
+  { exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+  claim HinvR: inv :e R.
+  { exact (inv_nat_real i HiO). }
+  claim HmulR: mul_SNo bd inv :e R.
+  { exact (real_mul_SNo bd HbdR inv HinvR). }
+  apply (RleI (mul_SNo bd inv) 1 HmulR real_1).
   admit. (** FAIL **)
 Qed.
 
