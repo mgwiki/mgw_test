@@ -69957,7 +69957,38 @@ apply SepI.
 			            exact HU. }
 			        apply (andI (i :e omega /\ U :e space_family_topology Xi0 i) (apply_fun g i :e U)).
 			        - exact Hleft.
-			        - admit. }
+			        - (** reduce to showing the i-th coordinate stays in the interval neighborhood b0 c= U **)
+			          claim HgiR: apply_fun g i :e R.
+			          { exact (Romega_coord_in_R g i HgX Hi). }
+			          claim Hfgprod: (f,g) :e setprod X X.
+			          { exact (tuple_2_setprod_by_pair_Sigma X X f g HfX HgX). }
+			          claim Hdapp: apply_fun d (f,g) = Romega_D_metric_value f g.
+			          { rewrite (apply_fun_graph (setprod X X)
+			                                     (fun p:set => Romega_D_metric_value (p 0) (p 1))
+			                                     (f,g)
+			                                     Hfgprod).
+			            rewrite (tuple_2_0_eq f g).
+			            rewrite (tuple_2_1_eq f g).
+			            reflexivity. }
+			          claim Hltball: Rlt (apply_fun d (f,g)) r0.
+			          { exact (open_ballE2 X d f r0 g Hgball). }
+			          claim Hltval: Rlt (Romega_D_metric_value f g) r0.
+			          { rewrite <- Hdapp.
+			            exact Hltball. }
+			          claim Habfg: abs_SNo (add_SNo xi (minus_SNo (apply_fun g i))) < r3.
+			          { claim Hr0eq: r0 = mul_SNo r3 (inv_nat (ordsucc i)).
+			            { reflexivity. }
+			            claim Hltval2: Rlt (Romega_D_metric_value f g) (mul_SNo r3 (inv_nat (ordsucc i))).
+			            { rewrite <- Hr0eq.
+			              exact Hltval. }
+			            exact (Romega_D_metric_coord_abs_lt f g i r3 HfX HgX Hi Hr3R Hr3pos Hr3lt1 Hltval2). }
+			          claim Hgib: apply_fun g i :e open_interval a b.
+			          { (** TODO: combine Habfg with Hr3m1lt and Hr3m2lt to show g_i :e open_interval a b **)
+			            admit. }
+			          claim HgiB0: apply_fun g i :e b0.
+			          { rewrite Hb0eq.
+			            exact Hgib. }
+			          exact (Hb0subU (apply_fun g i) HgiB0). }
   apply HexBall.
   let r0. assume Hr0pair.
   apply Hr0pair.
