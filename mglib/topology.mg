@@ -68482,7 +68482,7 @@ Theorem ex30_1b_Gdelta_not_firstcountable_exists :
     topology_on X Tx /\
     (forall x:set, x :e X -> Gdelta_in X Tx (Sing x)) /\
     ~ first_countable_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 2: every basis contains countable basis when space has one **)
 (** LATEX VERSION: If X has a countable basis, then every basis for X contains a countable basis. **)
@@ -68493,7 +68493,7 @@ Theorem ex30_2_basis_contains_countable : forall X Tx:set, forall Basis:set,
     CountableSub c= Basis /\
     countable CountableSub /\
     basis_on X CountableSub.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 3: uncountable subset has uncountably many limit points **)
 (** LATEX VERSION: If X has countable basis and A is uncountable subset, then uncountably many points of A are limit points. **)
@@ -68503,7 +68503,7 @@ Theorem ex30_3_uncountably_many_limit_points : forall X Tx A:set,
   A c= X ->
   ~ countable A ->
   ~ countable {x :e A | limit_point_of X Tx A x}.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 4: compact metrizable implies second countable **)
 (** LATEX VERSION: Every compact metrizable space has a countable basis. **)
@@ -68513,7 +68513,7 @@ Theorem ex30_4_compact_metrizable_second_countable : forall X Tx d:set,
   metric_on X d ->
   Tx = metric_topology X d ->
   second_countable_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 5a: metrizable with countable dense has countable basis **)
 (** LATEX VERSION: Every metrizable space with a countable dense subset has a countable basis. **)
@@ -68521,7 +68521,7 @@ Theorem ex30_5a_metrizable_countable_dense_second_countable : forall X Tx:set,
   metrizable X Tx ->
   (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) ->
   second_countable_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Exercise 5b: metrizable Lindelof has countable basis **)
@@ -68530,20 +68530,20 @@ Theorem ex30_5b_metrizable_Lindelof_second_countable : forall X Tx:set,
   metrizable X Tx ->
   Lindelof_space X Tx ->
   second_countable_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 6a: R_l not metrizable **)
 (** LATEX VERSION: The Sorgenfrey line ℝ_ℓ is not metrizable. **)
 Theorem ex30_6a_Rl_not_metrizable :
   ~ metrizable R R_lower_limit_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Exercise 6b: ordered square not metrizable **)
 (** LATEX VERSION: The ordered square is not metrizable. **)
 Theorem ex30_6b_ordered_square_not_metrizable :
   ~ metrizable ordered_square ordered_square_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 7: countability axioms for S_Omega and Sbar_Omega **)
 (** LATEX VERSION: Determine which countability axioms S_Ω and S̄_Ω satisfy. **)
@@ -68557,7 +68557,7 @@ Theorem ex30_7_SOmega_Sbar_Omega_countability :
    ~ second_countable_space Sbar_Omega SbarOmega_topology /\
    ~ Lindelof_space Sbar_Omega SbarOmega_topology /\
    ~ (exists D:set, D c= Sbar_Omega /\ countable D /\ dense_in D Sbar_Omega SbarOmega_topology)).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 8: countability axioms for R^omega uniform topology **)
 (** LATEX VERSION: Determine which countability axioms R^ω satisfies in the uniform topology. **)
@@ -68566,7 +68566,7 @@ Theorem ex30_8_Romega_uniform_countability :
   ~ second_countable_space real_sequences uniform_topology /\
   ~ Lindelof_space real_sequences uniform_topology /\
   ~ (exists D:set, D c= real_sequences /\ countable D /\ dense_in D real_sequences uniform_topology).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §30 Exercise 9a: closed subspace of Lindelof is Lindelof **)
 (** LATEX VERSION: If A is closed in Lindelöf space X, then A is Lindelöf. **)
@@ -68574,7 +68574,7 @@ Theorem ex30_9a_closed_Lindelof : forall X Tx A:set,
   Lindelof_space X Tx ->
   closed_in X Tx A ->
   Lindelof_space A (subspace_topology X Tx A).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Exercise 9b: dense subspace need not have countable dense subset **)
@@ -68584,7 +68584,7 @@ Theorem ex30_9b_dense_not_countable_dense :
     (exists D:set, D c= X /\ countable D /\ dense_in D X Tx) /\
     dense_in A X Tx /\
     ~ (exists DA:set, DA c= A /\ countable DA /\ dense_in DA A (subspace_topology X Tx A)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Exercise 10: countable product has countable dense if factors do **)
@@ -68599,7 +68599,7 @@ Theorem ex30_10_product_countable_dense : forall Idx:set, forall Fam:set,
     D c= product_space Idx Fam /\
     countable D /\
     dense_in D (product_space Idx Fam) (product_topology_full Idx Fam).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Exercise 11a: continuous image of Lindelof is Lindelof **)
@@ -68609,7 +68609,7 @@ Theorem ex30_11a_image_Lindelof : forall X Tx Y Ty f:set,
   Lindelof_space X Tx ->
   continuous_map X Tx Y Ty f ->
   Lindelof_space (image_of f X) (subspace_topology Y Ty (image_of f X)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Exercise 11b: continuous image of separable is separable **)
@@ -68622,7 +68622,7 @@ Theorem ex30_11b_image_countable_dense : forall X Tx Y Ty f:set,
     Df c= (image_of f X) /\
     countable Df /\
     dense_in Df (image_of f X) (subspace_topology Y Ty (image_of f X)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Exercise 12a: open continuous map preserves first countability **)
