@@ -66387,6 +66387,24 @@ Theorem uniform_topology_is_topology : topology_on real_sequences uniform_topolo
 exact (metric_topology_is_topology real_sequences uniform_metric_Romega uniform_metric_Romega_is_metric).
 Qed.
 
+(** from §20 Theorem 20.4: uniform topology compared to product and box **)
+(** LATEX VERSION: The uniform topology on R^J is finer than the product topology and coarser than the box topology. **)
+Definition Romega_product_topology_on_real_sequences : set :=
+  subspace_topology R_omega_space
+    (product_topology_full omega (const_space_family omega R R_standard_topology))
+    real_sequences.
+
+Definition Romega_box_topology_on_real_sequences : set :=
+  subspace_topology R_omega_space
+    (box_topology omega (const_space_family omega R R_standard_topology))
+    real_sequences.
+
+Theorem uniform_topology_finer_than_product_and_coarser_than_box :
+  finer_than uniform_topology Romega_product_topology_on_real_sequences /\
+  coarser_than uniform_topology Romega_box_topology_on_real_sequences.
+admit. (** FAIL **)
+Qed.
+
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
 Definition open_cover : set -> set -> set -> prop :=
   fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
