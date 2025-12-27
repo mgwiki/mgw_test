@@ -69676,7 +69676,23 @@ claim Hdef: R_omega_product_topology = generated_topology_from_subbasis R_omega_
 rewrite Hdef.
 (** TODO: show the D-metric open ball is open in the generated topology from the cylinder subbasis **)
 (** Strategy: use the basis_of_subbasis neighborhood characterization and Romega_D_metric_coord_abs_lt to build a finite cylinder neighborhood inside the ball. **)
-admit.
+set X := R_omega_space.
+set d := Romega_D_metric.
+set B := basis_of_subbasis X S.
+claim HTdef: generated_topology_from_subbasis X S = generated_topology X B.
+{ reflexivity. }
+rewrite HTdef.
+claim Hgendef: generated_topology X B =
+  {U0 :e Power X | forall y :e U0, exists b :e B, y :e b /\ b c= U0}.
+{ reflexivity. }
+rewrite Hgendef.
+apply SepI.
+- (** open_ball subset X **)
+  exact (PowerI X (open_ball X d x r) (open_ball_subset_X X d x r)).
+- let y. assume Hy: y :e open_ball X d x r.
+  prove exists b :e B, y :e b /\ b c= open_ball X d x r.
+  (** TODO: choose a finite-intersection cylinder neighborhood b around y, using the D-metric bound and Romega_D_metric_coord_abs_lt **)
+  admit.
 Qed.
 
 (** helper: cylinder subbasis sets are open in the D metric topology **)
