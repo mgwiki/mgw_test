@@ -69377,6 +69377,72 @@ claim HinvMjR: inv_nat mj :e R.
 exact (RltI (inv_nat mj) (inv_nat mi) HinvMjR HinvmiInR HinvLtS).
 Qed.
 
+(** helper: given r>0, some inv_nat (n+1) is below r **)
+Theorem exists_inv_nat_ordsucc_lt : forall r:set,
+  r :e R -> Rlt 0 r ->
+  exists N:set, N :e omega /\ Rlt (inv_nat (ordsucc N)) r.
+let r.
+assume HrR: r :e R.
+assume HrposR: Rlt 0 r.
+set rinv := recip_SNo r.
+claim HrS: SNo r.
+{ exact (real_SNo r HrR). }
+claim Hrpos: 0 < r.
+{ exact (RltE_lt 0 r HrposR). }
+claim HrinvR: rinv :e R.
+{ exact (real_recip_SNo r HrR). }
+claim HrinvS: SNo rinv.
+{ exact (real_SNo rinv HrinvR). }
+claim HrinvPos: 0 < rinv.
+{ exact (recip_SNo_of_pos_is_pos r HrS Hrpos). }
+claim HrinvNN: 0 <= rinv.
+{ exact (SNoLtLe 0 rinv HrinvPos). }
+claim Hexn: exists n :e omega, n <= rinv /\ rinv < ordsucc n.
+{ exact (nonneg_real_nat_interval rinv HrinvR HrinvNN). }
+apply Hexn.
+let n. assume Hnconj.
+claim HnO: n :e omega.
+{ exact (andEL (n :e omega) (n <= rinv /\ rinv < ordsucc n) Hnconj). }
+claim Hnrest: n <= rinv /\ rinv < ordsucc n.
+{ exact (andER (n :e omega) (n <= rinv /\ rinv < ordsucc n) Hnconj). }
+claim HrinvLt: rinv < ordsucc n.
+{ exact (andER (n <= rinv) (rinv < ordsucc n) Hnrest). }
+claim HnOrd: ordinal n.
+{ exact (ordinal_Hered omega omega_ordinal n HnO). }
+claim HNpos: 0 < ordsucc n.
+{ exact (ordinal_ordsucc_pos n HnOrd). }
+claim HNinO: ordsucc n :e omega.
+{ exact (omega_ordsucc n HnO). }
+claim HNS: SNo (ordsucc n).
+{ exact (omega_SNo (ordsucc n) HNinO). }
+claim HmulLt: mul_SNo r rinv < mul_SNo r (ordsucc n).
+{ exact (pos_mul_SNo_Lt r rinv (ordsucc n) HrS Hrpos HrinvS HNS HrinvLt). }
+claim Hrne0: r <> 0.
+{ exact (SNo_pos_ne0 r HrS Hrpos). }
+claim HmulEq: mul_SNo r rinv = 1.
+{ prove mul_SNo r rinv = 1.
+  claim Hrinvdef: rinv = recip_SNo r.
+  { reflexivity. }
+  rewrite Hrinvdef.
+  exact (recip_SNo_invR r HrS Hrne0). }
+claim HoneLt: 1 < mul_SNo r (ordsucc n).
+{ rewrite <- HmulEq at 1.
+  exact HmulLt. }
+claim HdivLt: div_SNo 1 (ordsucc n) < r.
+{ exact (div_SNo_pos_LtL 1 (ordsucc n) r SNo_1 HNS HrS HNpos HoneLt). }
+claim HdivEq: div_SNo 1 (ordsucc n) = inv_nat (ordsucc n).
+{ exact (div_SNo_1_eq_inv_nat (ordsucc n) HNS). }
+claim HinvLtS: inv_nat (ordsucc n) < r.
+{ rewrite <- HdivEq.
+  exact HdivLt. }
+claim HinvR: inv_nat (ordsucc n) :e R.
+{ exact (inv_nat_real (ordsucc n) HNinO). }
+witness n.
+apply andI.
+- exact HnO.
+- exact (RltI (inv_nat (ordsucc n)) r HinvR HrR HinvLtS).
+Qed.
+
 (** helper: D metric value satisfies triangle inequality **)
 Theorem Romega_D_metric_value_triangle : forall x y z:set,
   x :e R_omega_space -> y :e R_omega_space -> z :e R_omega_space ->
