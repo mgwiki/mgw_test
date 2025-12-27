@@ -65938,7 +65938,7 @@ Theorem uncountable_product_R_not_normal : forall J:set,
 let J.
 assume HJ: uncountable_set J.
 prove ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §32 Example 2: SOmega x SbarOmega not normal **)
@@ -65965,7 +65965,8 @@ apply andI.
     { reflexivity. }
 	    rewrite HSb.
 	    exact (discrete_normal_space Sbar_Omega).
-	- admit.
+		- admit.
+		- admit. (** FAIL **)
 Qed.
 
 (** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **)
@@ -65987,7 +65988,7 @@ assume Hdisj: A :/\: B = Empty.
 prove exists f:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) f /\
     (forall x:set, x :e A -> apply_fun f x = a) /\
     (forall x:set, x :e B -> apply_fun f x = b).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §33 Definition: completely regular space **) 
