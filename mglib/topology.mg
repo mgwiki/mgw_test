@@ -70054,7 +70054,7 @@ Theorem ex48_1_Baire_union_interior : forall X Tx:set, forall Fam:set,
   X = Union Fam ->
   exists B:set, B :e Fam /\
     exists U:set, U :e Tx /\ U <> Empty /\ U c= (closure_of X Tx B).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Exercise 2: R is not countable union of closed empty interior sets **)
@@ -70064,7 +70064,7 @@ Theorem ex48_2_R_not_countable_empty_interior : forall Fam:set,
   (forall C:set, C :e Fam -> closed_in R R_standard_topology C /\
     (forall U:set, U :e R_standard_topology -> U c= C -> U = Empty)) ->
   R <> Union Fam.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Exercise 3: locally compact Hausdorff is Baire **)
@@ -70073,7 +70073,7 @@ Theorem ex48_3_locally_compact_Hausdorff_Baire : forall X Tx:set,
   locally_compact X Tx ->
   Hausdorff_space X Tx ->
   Baire_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Exercise 4: locally Baire implies Baire **)
@@ -70084,7 +70084,7 @@ Theorem ex48_4_locally_Baire_implies_Baire : forall X Tx:set,
     exists U:set, U :e Tx /\ x :e U /\
       Baire_space U (subspace_topology X Tx U)) ->
   Baire_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Exercise 5: G_delta in compact Hausdorff or complete metric is Baire **)
@@ -70095,14 +70095,14 @@ Theorem ex48_5_Gdelta_Baire : forall X Tx Y:set,
     (forall W:set, W :e Fam -> W :e Tx) /\
     Y = intersection_over_family X Fam) ->
   Baire_space Y (subspace_topology X Tx Y).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Exercise 6: irrationals are Baire **)
 (** LATEX VERSION: The irrationals are a Baire space. **)
 Theorem ex48_6_irrationals_Baire :
   Baire_space (R :\: Q) (subspace_topology R R_standard_topology (R :\: Q)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Exercise 7a: continuity set is G_delta **)
@@ -70112,7 +70112,7 @@ Theorem ex48_7a_continuity_set_Gdelta : forall f:set,
   exists Fam:set, countable_set Fam /\
     (forall U:set, U :e Fam -> U :e R_standard_topology) /\
     {x :e R | continuous_at f x} = intersection_over_family R Fam.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Exercise 7b: countable dense not G_delta **)
@@ -70124,7 +70124,7 @@ Theorem ex48_7b_countable_dense_not_Gdelta : forall D:set,
   ~ (exists Fam:set, countable_set Fam /\
       (forall W:set, W :e Fam -> W :e R_standard_topology) /\
       D = intersection_over_family R Fam).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Exercise 7: no function continuous precisely on countable dense set **)
@@ -70136,7 +70136,7 @@ Theorem ex48_7_no_function_continuous_on_countable_dense : forall D:set,
   ~ (exists f:set, function_on f R R /\
       (forall x:set, x :e D -> continuous_at f x) /\
       (forall x:set, x :e R -> x /:e D -> ~ continuous_at f x)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Exercise 8: pointwise limit continuous uncountably many points **)
@@ -70153,7 +70153,7 @@ Theorem ex48_8_pointwise_limit_continuity : forall fn:set, forall f:set,
   function_on f R R ->
   pointwise_limit_of_sequence_of_functions fn f ->
   ~ countable_set {x :e R | continuous_at f x}.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Exercise 9: Thomae function **)
@@ -70164,7 +70164,7 @@ Theorem ex48_9_Thomae_function : forall g:set, forall f:set,
   (forall n:set, n :e omega -> apply_fun f (apply_fun g n) = recip_SNo (ordsucc n)) ->
   (forall x:set, x :e R -> x /:e Q -> apply_fun f x = 0) ->
   forall x:set, x :e R -> x /:e Q -> continuous_at f x.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Exercise 10: uniform boundedness principle **)
@@ -70179,14 +70179,14 @@ Theorem ex48_10_uniform_boundedness : forall X d:set, forall FF:set,
     M :e R /\
     forall f:set, f :e FF ->
       forall x:set, x :e U -> apply_fun f x :e R.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Exercise 11: is R_l a Baire space **)
 (** LATEX VERSION: Determine whether ℝ_ℓ is a Baire space. **)
 (** FIXED: Use the existing lower limit topology constant R_lower_limit_topology. **)
 Theorem ex48_11_Rl_Baire : Baire_space R R_lower_limit_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §49 Exercise 1: verify properties of example functions **)
@@ -70281,7 +70281,7 @@ Theorem ex49_2_construct_bounded_function : forall n:set, forall eps:set,
     (forall x:set, x :e unit_interval -> apply_fun f x :e R) /\
     f :e U_n n /\
     (forall x:set, x :e unit_interval -> Rle (Abs (apply_fun f x)) eps).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Exercises: dimension theory introduction (placeholder) **) 
