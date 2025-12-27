@@ -37457,7 +37457,7 @@ apply set_ext.
           exact (inv_nat_pos n HnIn). }
         claim H00: Rlt 0 0.
         { exact (Rlt_tra 0 z 0 Hzpos Hzlt0). }
-        exact ((Rlt_irref 0 real_0) H00). }
+        exact ((not_Rlt_refl 0 real_0) H00). }
       exact (Hne Hempty).
     - assume Hx0: x = 0.
       rewrite Hx0.
@@ -37509,9 +37509,11 @@ apply set_ext.
       { exact (andEL (a :e R) (U = {y :e R|Rlt y a}) Hapair). }
       claim HUeq: U = {y :e R|Rlt y a}.
       { exact (andER (a :e R) (U = {y :e R|Rlt y a}) Hapair). }
+      claim HxUa: x :e {y :e R|Rlt y a}.
+      { rewrite <- HUeq.
+        exact HxU. }
       claim Hxlt: Rlt x a.
-      { rewrite HUeq in HxU.
-        exact (SepE2 R (fun y0:set => Rlt y0 a) x HxU). }
+      { exact (SepE2 R (fun y0:set => Rlt y0 a) x HxUa). }
       claim HxltS: x < a.
       { exact (RltE_lt x a Hxlt). }
       claim HaS: SNo a.
