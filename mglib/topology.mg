@@ -10913,7 +10913,7 @@ Qed.
 Theorem distance_R2_triangle_Rle : forall x y z:set,
   x :e EuclidPlane -> y :e EuclidPlane -> z :e EuclidPlane ->
   Rle (distance_R2 x z) (add_SNo (distance_R2 x y) (distance_R2 y z)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §13 Example 4: circular region basis elements in EuclidPlane **)
@@ -11532,7 +11532,7 @@ assume Hx: x :e EuclidPlane.
 assume Hc: c :e EuclidPlane.
 assume Hr0: Rlt 0 r0.
 assume Hxc: Rlt (distance_R2 x c) r0.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** helper for §13 Example 4: ball inside a rectangle around a point **)
