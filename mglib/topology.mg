@@ -66412,6 +66412,71 @@ Definition R_bounded_distance : set -> set -> set := fun a b =>
        (abs_SNo (add_SNo a (minus_SNo b)))
        1.
 
+(** helper: bounded distance is symmetric **)
+Theorem R_bounded_distance_sym : forall a b:set,
+  a :e R -> b :e R -> R_bounded_distance a b = R_bounded_distance b a.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+claim Habs: abs_SNo (add_SNo a (minus_SNo b)) = abs_SNo (add_SNo b (minus_SNo a)).
+{ exact (abs_SNo_dist_swap a b HaS HbS). }
+claim Hab: R_bounded_distance a b =
+  If_i (Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1)
+       (abs_SNo (add_SNo a (minus_SNo b)))
+       1.
+{ reflexivity. }
+claim Hba: R_bounded_distance b a =
+  If_i (Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1)
+       (abs_SNo (add_SNo b (minus_SNo a)))
+       1.
+{ reflexivity. }
+rewrite Hab.
+rewrite Hba.
+apply (xm (Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1)).
+- assume Hlt: Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1.
+  claim Hlt2: Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1.
+  { prove Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1.
+    rewrite <- Habs.
+    exact Hlt. }
+  rewrite (If_i_1 (Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1)
+                  (abs_SNo (add_SNo a (minus_SNo b)))
+                  1
+                  Hlt).
+  rewrite (If_i_1 (Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1)
+                  (abs_SNo (add_SNo b (minus_SNo a)))
+                  1
+                  Hlt2).
+  rewrite <- Habs.
+  reflexivity.
+- assume Hnlt: ~(Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1).
+  claim Hnlt2: ~(Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1).
+  { assume Hlt2: Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1.
+    claim Hlt1: Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1.
+    { prove Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1.
+      rewrite Habs.
+      exact Hlt2. }
+    exact (Hnlt Hlt1). }
+  rewrite (If_i_0 (Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1)
+                  (abs_SNo (add_SNo a (minus_SNo b)))
+                  1
+                  Hnlt).
+  rewrite (If_i_0 (Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1)
+                  (abs_SNo (add_SNo b (minus_SNo a)))
+                  1
+                  Hnlt2).
+  reflexivity.
+Qed.
+
+(** helper: bounded distance is always <= 1 **)
+Theorem R_bounded_distance_le_1 : forall a b:set,
+  a :e R -> b :e R -> Rle (R_bounded_distance a b) 1.
+admit. (** FAIL **)
+Qed.
+
 Definition Romega_D_scaled_diffs : set -> set -> set := fun x y =>
   Repl (omega :\: {0})
        (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i)).
