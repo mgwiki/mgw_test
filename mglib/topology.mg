@@ -67121,6 +67121,93 @@ apply (xm (Rlt (abs_SNo t) 1)
   exact (SNoLtLe 0 1 SNoLt_0_1).
 Qed.
 
+(** helper: a positive surreal is not zero **)
+Theorem SNo_pos_ne0 : forall x:set,
+  SNo x -> 0 < x -> x <> 0.
+let x.
+assume HxS: SNo x.
+assume Hpos: 0 < x.
+assume Heq: x = 0.
+claim H00: 0 < 0.
+{ rewrite <- Heq at 2.
+  exact Hpos. }
+exact ((SNoLt_irref 0) H00).
+Qed.
+
+(** helper: absolute value equals zero implies the input is zero **)
+Theorem abs_SNo_eq0 : forall x:set,
+  SNo x -> abs_SNo x = 0 -> x = 0.
+let x.
+assume HxS: SNo x.
+assume Habs0: abs_SNo x = 0.
+apply (xm (0 <= x) (x = 0)).
+- assume H0le: 0 <= x.
+  rewrite <- (nonneg_abs_SNo x H0le).
+  exact Habs0.
+- assume Hn0le: ~(0 <= x).
+  claim Hm0: minus_SNo x = 0.
+  { rewrite <- (not_nonneg_abs_SNo x Hn0le).
+    exact Habs0. }
+  claim Hsum: add_SNo (minus_SNo x) x = 0.
+  { exact (add_SNo_minus_SNo_linv x HxS). }
+  claim H0x0: add_SNo 0 x = 0.
+  { rewrite <- Hm0 at 1.
+    exact Hsum. }
+  rewrite <- (add_SNo_0L x HxS).
+  exact H0x0.
+Qed.
+
+(** helper: bounded distance equals zero implies equality **)
+Theorem R_bounded_distance_eq0 : forall a b:set,
+  a :e R -> b :e R -> R_bounded_distance a b = 0 -> a = b.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume Hbd0: R_bounded_distance a b = 0.
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+set t := add_SNo a (minus_SNo b).
+claim HtR: t :e R.
+{ claim HmbR: minus_SNo b :e R.
+  { exact (real_minus_SNo b HbR). }
+  exact (real_add_SNo a HaR (minus_SNo b) HmbR). }
+claim HtS: SNo t.
+{ exact (real_SNo t HtR). }
+claim Hdef: R_bounded_distance a b =
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+{ reflexivity. }
+claim Hif0: If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1 = 0.
+{ rewrite <- Hdef.
+  exact Hbd0. }
+apply (xm (Rlt (abs_SNo t) 1) (a = b)).
+- assume Hlt: Rlt (abs_SNo t) 1.
+  claim Ht0: t = 0.
+  { claim Habs0: abs_SNo t = 0.
+    { rewrite <- (If_i_1 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hlt).
+      exact Hif0. }
+    exact (abs_SNo_eq0 t HtS Habs0). }
+  claim Ht0': add_SNo a (minus_SNo b) = 0.
+  { exact Ht0. }
+  claim Hstep: add_SNo (add_SNo a (minus_SNo b)) b = b.
+  { rewrite Ht0' at 1.
+    rewrite (add_SNo_0L b HbS).
+    reflexivity. }
+  rewrite <- (add_SNo_0R a HaS) at 1.
+  rewrite <- (add_SNo_minus_SNo_linv b HbS) at 1.
+  rewrite (add_SNo_assoc a (minus_SNo b) b
+                         HaS (SNo_minus_SNo b HbS) HbS) at 1.
+  exact Hstep.
+- assume Hnlt: ~(Rlt (abs_SNo t) 1).
+  claim H10eq: 1 = 0.
+  { rewrite <- (If_i_0 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hnlt).
+    exact Hif0. }
+  claim H10: 1 <> 0.
+  { exact neq_1_0. }
+  exact (FalseE (H10 H10eq) (a = b)).
+Qed.
+
 (** helper: bounded distance is always <= 1 **)
 Theorem R_bounded_distance_le_1 : forall a b:set,
   a :e R -> b :e R -> Rle (R_bounded_distance a b) 1.
