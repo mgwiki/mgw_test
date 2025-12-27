@@ -69713,7 +69713,7 @@ apply SepI.
   claim HexF: exists F:set,
     (F :e finite_subcollections S /\ y :e intersection_of_family X F)
     /\ intersection_of_family X F c= open_ball X d x r.
-  { admit. }
+  { admit. (** FAIL **) }
   apply HexF.
   let F. assume HFcore.
   claim HFleft: F :e finite_subcollections S /\ y :e intersection_of_family X F.
