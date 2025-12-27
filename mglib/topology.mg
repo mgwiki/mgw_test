@@ -65997,6 +65997,12 @@ claim Hdef: uniform_metric_Romega = Eps_i P.
 rewrite Hdef.
 exact (Eps_i_ax P d Hd).
 Qed.
+
+(** helper: uniform_topology is a topology (placeholder via uniform_metric_Romega_is_metric) **)
+(** LATEX VERSION: The uniform metric induces a topology on R^ω. **)
+Theorem uniform_topology_is_topology : topology_on real_sequences uniform_topology.
+exact (metric_topology_is_topology real_sequences uniform_metric_Romega uniform_metric_Romega_is_metric).
+Qed.
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
 Definition open_cover : set -> set -> set -> prop :=
   fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
