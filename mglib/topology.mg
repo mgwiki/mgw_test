@@ -38991,6 +38991,39 @@ prove sqrt2 :e R.
 exact (sqrt_SNo_nonneg_real 2 real_2 (SNoLtLe 0 2 SNoLt_0_2)).
 Qed.
 
+(** Helper: sqrt2 is positive **)
+Theorem SNoLt_0_sqrt2 : 0 < sqrt2.
+prove 0 < sqrt2.
+claim Hs2R: sqrt2 :e R.
+{ exact sqrt2_in_R. }
+claim Hs2S: SNo sqrt2.
+{ exact (real_SNo sqrt2 Hs2R). }
+claim H0le2: 0 <= 2.
+{ exact (SNoLtLe 0 2 SNoLt_0_2). }
+claim H0les2: 0 <= sqrt2.
+{ exact (sqrt_SNo_nonneg_nonneg 2 SNo_2 H0le2). }
+apply (SNoLt_trichotomy_or_impred sqrt2 0 Hs2S SNo_0 (0 < sqrt2)).
+- assume Hs2lt0: sqrt2 < 0.
+  apply FalseE.
+  claim H0lt0: 0 < 0.
+  { exact (SNoLeLt_tra 0 sqrt2 0 SNo_0 Hs2S SNo_0 H0les2 Hs2lt0). }
+  exact ((SNoLt_irref 0) H0lt0).
+- assume Heq: sqrt2 = 0.
+  apply FalseE.
+  claim Hs2sqr: mul_SNo sqrt2 sqrt2 = 2.
+  { rewrite <- Heq at 1.
+    rewrite <- Heq at 2.
+    exact (sqrt_SNo_nonneg_sqr 2 SNo_2 (SNoLtLe 0 2 SNoLt_0_2)). }
+  claim H00: mul_SNo 0 0 = 0.
+  { exact (mul_SNo_zeroL 0 SNo_0). }
+  claim H02: 0 = 2.
+  { rewrite <- H00 at 1.
+    exact Hs2sqr. }
+  exact (neq_0_2 H02).
+- assume H0lts2: 0 < sqrt2.
+  exact H0lts2.
+Qed.
+
 Definition R_C_topology : set := generated_topology R rational_halfopen_intervals_basis.
 
 (** Helper: the lower limit topology is finer than the rational half-open topology **)
