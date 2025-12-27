@@ -69090,6 +69090,67 @@ claim Hbd0: bd = 0.
 exact (R_bounded_distance_eq0 (apply_fun x i) (apply_fun y i) HxiR HyiR Hbd0).
 Qed.
 
+(** helper: D metric value is an upper bound for each scaled coordinate distance **)
+Theorem Romega_D_metric_value_ub_scaled : forall x y i:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  i :e omega ->
+  Rle (mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+      (Romega_D_metric_value x y).
+let x y i.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+assume HiO: i :e omega.
+set A := Romega_D_scaled_diffs x y.
+set l := Romega_D_metric_value x y.
+claim Hlub: R_lub A l.
+{ exact (Romega_D_metric_value_is_lub x y Hx Hy). }
+claim Hcore: l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andEL (l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l u)
+               Hlub). }
+claim Hub: forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andER (l :e R) (forall a:set, a :e A -> a :e R -> Rle a l) Hcore). }
+set a := mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)).
+claim HaA: a :e A.
+{ exact (ReplI omega
+               (fun j:set => mul_SNo (R_bounded_distance (apply_fun x j) (apply_fun y j)) (inv_nat (ordsucc j)))
+               i
+               HiO). }
+claim HxiR: apply_fun x i :e R.
+{ exact (Romega_coord_in_R x i Hx HiO). }
+claim HyiR: apply_fun y i :e R.
+{ exact (Romega_coord_in_R y i Hy HiO). }
+claim HbdR: R_bounded_distance (apply_fun x i) (apply_fun y i) :e R.
+{ exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+claim HsuccO: ordsucc i :e omega.
+{ exact (omega_ordsucc i HiO). }
+claim HinvR: inv_nat (ordsucc i) :e R.
+{ exact (inv_nat_real (ordsucc i) HsuccO). }
+claim HaR: a :e R.
+{ exact (real_mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) HbdR
+                      (inv_nat (ordsucc i)) HinvR). }
+exact (Hub a HaA HaR).
+Qed.
+
+(** helper: if the D metric value is < r, then each scaled coordinate term is < r **)
+Theorem Romega_D_metric_value_lt_implies_scaled_lt : forall x y i r:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  i :e omega ->
+  Rlt (Romega_D_metric_value x y) r ->
+  Rlt (mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i))) r.
+let x y i r.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+assume HiO: i :e omega.
+assume Hlt: Rlt (Romega_D_metric_value x y) r.
+set a := mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)).
+claim Hale: Rle a (Romega_D_metric_value x y).
+{ exact (Romega_D_metric_value_ub_scaled x y i Hx Hy HiO). }
+exact (Rle_Rlt_tra a (Romega_D_metric_value x y) r Hale Hlt).
+Qed.
+
 (** helper: D metric value satisfies triangle inequality **)
 Theorem Romega_D_metric_value_triangle : forall x y z:set,
   x :e R_omega_space -> y :e R_omega_space -> z :e R_omega_space ->
