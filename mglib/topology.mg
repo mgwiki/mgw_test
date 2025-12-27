@@ -67805,6 +67805,106 @@ claim HRle: Rle a1 l.
 exact ((RleE_nlt a1 l HRle) Hltla1).
 Qed.
 
+(** helper: D metric value 0 implies coordinate agreement (for positive indices) **)
+Theorem Romega_D_metric_value_eq0_coord_eq : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  Romega_D_metric_value x y = 0 ->
+  forall i:set, i :e omega :\: {0} -> apply_fun x i = apply_fun y i.
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+assume Hxy0: Romega_D_metric_value x y = 0.
+let i.
+assume HiIn: i :e omega :\: {0}.
+set A := Romega_D_scaled_diffs x y.
+set l := Romega_D_metric_value x y.
+claim HlR: l :e R.
+{ exact (Romega_D_metric_value_in_R x y Hx Hy). }
+claim Hlub: R_lub A l.
+{ exact (Romega_D_metric_value_is_lub x y Hx Hy). }
+claim Hcore: l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andEL (l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l u)
+               Hlub). }
+claim Hub: forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andER (l :e R) (forall a:set, a :e A -> a :e R -> Rle a l) Hcore). }
+claim Hub0: forall a:set, a :e A -> a :e R -> Rle a 0.
+{ let a0.
+  assume Ha0A: a0 :e A.
+  assume Ha0R: a0 :e R.
+  rewrite <- Hxy0.
+  exact (Hub a0 Ha0A Ha0R). }
+claim HiO: i :e omega.
+{ exact (setminusE1 omega {0} i HiIn). }
+set bd := R_bounded_distance (apply_fun x i) (apply_fun y i).
+set inv := inv_nat i.
+set a := mul_SNo bd inv.
+claim HaA: a :e A.
+{ exact (ReplI (omega :\: {0})
+               (fun j:set => mul_SNo (R_bounded_distance (apply_fun x j) (apply_fun y j)) (inv_nat j))
+               i
+               HiIn). }
+claim HxiR: apply_fun x i :e R.
+{ exact (Romega_coord_in_R x i Hx HiO). }
+claim HyiR: apply_fun y i :e R.
+{ exact (Romega_coord_in_R y i Hy HiO). }
+claim HbdR: bd :e R.
+{ exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+claim HinvR: inv :e R.
+{ exact (inv_nat_real i HiO). }
+claim HaR: a :e R.
+{ exact (real_mul_SNo bd HbdR inv HinvR). }
+claim HRle: Rle a 0.
+{ exact (Hub0 a HaA HaR). }
+claim HnRlt0a: ~(Rlt 0 a).
+{ exact (RleE_nlt a 0 HRle). }
+claim HbdS: SNo bd.
+{ exact (real_SNo bd HbdR). }
+claim HinvS: SNo inv.
+{ exact (real_SNo inv HinvR). }
+claim HbdNN: 0 <= bd.
+{ exact (R_bounded_distance_nonneg (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+claim HinvPosR: Rlt 0 inv.
+{ exact (inv_nat_pos i HiIn). }
+claim HinvPos: 0 < inv.
+{ exact (RltE_lt 0 inv HinvPosR). }
+claim HinvNN: 0 <= inv.
+{ exact (SNoLtLe 0 inv HinvPos). }
+claim HaNN: 0 <= a.
+{ exact (mul_SNo_nonneg_nonneg bd inv HbdS HinvS HbdNN HinvNN). }
+claim Ha0: a = 0.
+{ apply (SNoLeE 0 a SNo_0 (real_SNo a HaR) HaNN (a = 0)).
+  - assume H0lta: 0 < a.
+    claim HRlt0a: Rlt 0 a.
+    { exact (RltI 0 a real_0 HaR H0lta). }
+    exact (FalseE (HnRlt0a HRlt0a) (a = 0)).
+  - assume H0eq: 0 = a.
+    rewrite <- H0eq.
+    reflexivity. }
+claim Hadef: a = mul_SNo bd inv.
+{ reflexivity. }
+claim Hbdinv0: mul_SNo bd inv = 0.
+{ rewrite <- Hadef.
+  exact Ha0. }
+claim HinvNe0: inv <> 0.
+{ exact (SNo_pos_ne0 inv HinvS HinvPos). }
+claim Hinvbd0: mul_SNo inv bd = 0.
+{ rewrite (mul_SNo_com inv bd HinvS HbdS) at 1.
+  exact Hbdinv0. }
+claim Hinv0: mul_SNo inv 0 = 0.
+{ exact (mul_SNo_zeroR inv HinvS). }
+claim Hinvbd_eq: mul_SNo inv bd = mul_SNo inv 0.
+{ rewrite Hinvbd0.
+  rewrite Hinv0.
+  reflexivity. }
+claim H0S: SNo 0.
+{ exact SNo_0. }
+claim Hbd0: bd = 0.
+{ exact (mul_SNo_nonzero_cancel inv bd 0 HinvS HinvNe0 HbdS H0S Hinvbd_eq). }
+exact (R_bounded_distance_eq0 (apply_fun x i) (apply_fun y i) HxiR HyiR Hbd0).
+Qed.
+
 Definition Romega_D_metric : set :=
   graph (setprod R_omega_space R_omega_space)
         (fun p:set => Romega_D_metric_value (p 0) (p 1)).
