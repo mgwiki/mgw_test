@@ -67889,10 +67889,10 @@ claim HF_inj: inj (Power omega) binary_sequences_Romega F.
       apply (xm (n :e A) ((if n :e A then 1 else 0) :e {0,1})).
       * assume HnA: n :e A.
         rewrite (If_i_1 (n :e A) 1 0 HnA).
-        exact (UPairI1 1 0).
+        exact (UPairI2 0 1).
       * assume HnnotA: ~(n :e A).
         rewrite (If_i_0 (n :e A) 1 0 HnnotA).
-        exact (UPairI2 1 0).
+        exact (UPairI1 0 1).
   - let A. assume HA: A :e Power omega.
     let B. assume HB: B :e Power omega.
     assume Heq: F A = F B.
