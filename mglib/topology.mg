@@ -65568,7 +65568,7 @@ Definition R_K : set := R.
 (** from §31 Example 1: R_K Hausdorff but not regular **) 
 (** LATEX VERSION: The K-topology on ℝ is Hausdorff but not regular. **)
 Theorem RK_not_regular_axiom : ~ regular_space R_K R_K_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 Theorem RK_Hausdorff_not_regular :
   Hausdorff_space R_K R_K_topology /\ ~ regular_space R_K R_K_topology.
@@ -65587,7 +65587,7 @@ Qed.
 (** LATEX VERSION: The Sorgenfrey line is normal. **)
 Theorem Sorgenfrey_line_normal : normal_space Sorgenfrey_line Sorgenfrey_topology.
 prove normal_space Sorgenfrey_line Sorgenfrey_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §31 Example 3: Sorgenfrey plane not normal **) 
@@ -65597,7 +65597,7 @@ Theorem Sorgenfrey_plane_not_normal :
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §32 Theorem 32.1: regular space with countable basis is normal **) 
