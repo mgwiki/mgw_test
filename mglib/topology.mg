@@ -39645,7 +39645,21 @@ prove closure_of R R_lower_limit_topology ex17_17_interval_A = ex17_17_interval_
   closure_of R R_C_topology ex17_17_interval_A = ex17_17_interval_A_closure_C /\
   closure_of R R_lower_limit_topology ex17_17_interval_B = ex17_17_interval_B_closure_lower /\
   closure_of R R_C_topology ex17_17_interval_B = ex17_17_interval_B_closure_lower.
-admit. (** FAIL **)
+apply andI.
+- apply andI.
+  - apply andI.
+    - (** lower limit closure of A **)
+      apply set_ext.
+      + let x. assume Hx: x :e closure_of R R_lower_limit_topology ex17_17_interval_A.
+        exact (ex17_17_closure_A_lower_Subq x Hx).
+      + let x. assume Hx: x :e ex17_17_interval_A_closure_lower.
+        exact (ex17_17_closure_A_lower_Supq x Hx).
+    - (** C-topology closure of A **)
+      admit.
+  - (** lower limit closure of B **)
+    admit.
+- (** C-topology closure of B **)
+  admit.
 Qed.
 
 (** LATEX VERSION: Exercise 18: Determine the closures of the subsets A,B,C,D,E of the ordered square listed in the text. **)
