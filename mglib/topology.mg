@@ -67924,7 +67924,7 @@ apply (xm (i = 2)).
 Qed.
 Theorem ex50_4_points_general_position_R3 :
   general_position_RN 3 {ex50_R3_zero, ex50_R3_e1, ex50_R3_e2, ex50_R3_e3, ex50_R3_ones}.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Exercise 5: embedding theorem for m=1 maps to linear graph **)
@@ -67936,7 +67936,7 @@ Theorem ex50_5_embedding_m1_linear_graph : forall X Tx:set,
   exists g:set,
     (forall x:set, x :e X -> apply_fun g x :e (euclidean_space 3)) /\
     linear_graph (apply_fun g X) R_standard_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Exercise 6: locally compact Hausdorff with countable basis embeds in R^{2m+1} **)
@@ -67952,7 +67952,7 @@ Theorem ex50_6_locally_compact_embeds : forall X Tx m:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Exercise 7: every m-manifold embeds in R^{2m+1} as closed subspace **)
@@ -67965,7 +67965,7 @@ Theorem ex50_7_manifold_closed_embedding : forall X Tx m:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Exercise 8: sigma-compact Hausdorff with compact subspaces of dimension ≤m has dimension ≤m **)
@@ -67984,7 +67984,7 @@ Theorem ex50_8_sigma_compact_dimension : forall X Tx m:set,
   Hausdorff_space X Tx ->
   (forall C:set, C c= X -> compact_space C (subspace_topology X Tx C) -> covering_dimension C (subspace_topology X Tx C) m) ->
   covering_dimension X Tx m.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Exercise 9: every m-manifold has dimension ≤m **)
@@ -67993,7 +67993,7 @@ Theorem ex50_9_manifold_dimension_le_m : forall X Tx m:set,
   m :e omega ->
   m_manifold X Tx ->
   covering_dimension X Tx m.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Exercise 10: closed subspace of R^N has dimension ≤N **)
@@ -68003,7 +68003,7 @@ Theorem ex50_10_closed_subspace_RN_dimension : forall X N:set,
   X c= (euclidean_space N) ->
   closed_in (euclidean_space N) (euclidean_topology N) X ->
   covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Exercise 11: embedding in R^N characterization **)
@@ -68015,7 +68015,7 @@ Theorem ex50_11_embedding_characterization : forall X Tx:set,
     closed_in (euclidean_space N) (euclidean_topology N) (apply_fun e X))
 <->
 (locally_compact X Tx /\ Hausdorff_space X Tx /\ second_countable_space X Tx /\ finite_dimensional_space X Tx).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from Supplementary Exercises Exercise 1: locally m-euclidean implies locally compact and locally metrizable **)
@@ -68031,7 +68031,7 @@ Definition locally_metrizable_space : set -> set -> prop := fun X Tx =>
 Theorem supp_ex_locally_euclidean_1 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   locally_compact X Tx /\ locally_metrizable_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from Supplementary Exercises Exercise 2: implications among conditions **)
@@ -68041,14 +68041,14 @@ Theorem supp_ex_locally_euclidean_2_i_implies_ii : forall X Tx m:set,
   compact_space X Tx ->
   Hausdorff_space X Tx ->
   m_manifold X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 Theorem supp_ex_locally_euclidean_2_ii_implies_iii : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   m_manifold X Tx ->
   metrizable X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 Theorem supp_ex_locally_euclidean_2_iii_implies_iv : forall X Tx:set,
