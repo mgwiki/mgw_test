@@ -49098,14 +49098,14 @@ apply (Hbetw (exists c:set, c :e X /\ apply_fun f c = r)).
       \/ (order_rel Y (apply_fun f b) r /\ order_rel Y r (apply_fun f a)))
     \/ r = apply_fun f a.
   apply (Hcases1 (exists c:set, c :e X /\ apply_fun f c = r)).
-  + assume Hstrict:
-      (order_rel Y (apply_fun f a) r /\ order_rel Y r (apply_fun f b))
-      \/ (order_rel Y (apply_fun f b) r /\ order_rel Y r (apply_fun f a)).
-    admit.
-  + assume HrEqFa: r = apply_fun f a.
-    witness a.
-    apply andI.
-    * exact Ha.
+	  + assume Hstrict:
+	      (order_rel Y (apply_fun f a) r /\ order_rel Y r (apply_fun f b))
+	      \/ (order_rel Y (apply_fun f b) r /\ order_rel Y r (apply_fun f a)).
+	    admit. (** FAIL **)
+	  + assume HrEqFa: r = apply_fun f a.
+	    witness a.
+	    apply andI.
+	    * exact Ha.
     * rewrite <- HrEqFa.
       reflexivity.
 - assume HrEqFb: r = apply_fun f b.
