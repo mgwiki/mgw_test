@@ -11104,6 +11104,32 @@ rewrite Hyp_eq_yc.
 reflexivity.
 Qed.
 
+(** helper: distance_R2 is never negative **)
+(** LATEX VERSION: d(p,c) is not < 0. **)
+Theorem distance_R2_not_Rlt_0 : forall p c:set,
+  p :e EuclidPlane -> c :e EuclidPlane -> ~(Rlt (distance_R2 p c) 0).
+let p c.
+assume Hp: p :e EuclidPlane.
+assume Hc: c :e EuclidPlane.
+assume Hlt: Rlt (distance_R2 p c) 0.
+claim Hdlt0: distance_R2 p c < 0.
+{ exact (RltE_lt (distance_R2 p c) 0 Hlt). }
+claim HdR: distance_R2 p c :e R.
+{ exact (distance_R2_in_R p c Hp Hc). }
+claim HdS: SNo (distance_R2 p c).
+{ exact (real_SNo (distance_R2 p c) HdR). }
+claim Hd0le: 0 <= distance_R2 p c.
+{ exact (distance_R2_nonneg p c Hp Hc). }
+claim Hdle0: distance_R2 p c <= 0.
+{ exact (SNoLtLe (distance_R2 p c) 0 Hdlt0). }
+claim Hd0: distance_R2 p c = 0.
+{ exact (SNoLe_antisym (distance_R2 p c) 0 HdS SNo_0 Hdle0 Hd0le). }
+claim Hbad: 0 < 0.
+{ rewrite <- Hd0 at 1.
+  exact Hdlt0. }
+exact ((SNoLt_irref 0) Hbad).
+Qed.
+
 (** from §13 Example 4: circular region basis elements in EuclidPlane **)
 (** LATEX VERSION: Circular regions: sets of the form {p in R^2 | d(p,c) < r} with c in R^2 and 0<r. **)
 Definition circular_regions : set :=
