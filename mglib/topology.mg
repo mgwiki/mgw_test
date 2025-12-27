@@ -64927,7 +64927,7 @@ Definition metrizable : set -> set -> prop := fun X Tx =>
 Theorem Sorgenfrey_plane_not_Lindelof :
   ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §30 Example 5: subspace of Lindelöf space need not be Lindelöf **) 
@@ -64936,7 +64936,7 @@ Theorem ordered_square_subspace_not_Lindelof :
   Lindelof_space ordered_square ordered_square_topology /\
   ~ Lindelof_space ordered_square_open_strip ordered_square_subspace_topology.
 prove Lindelof_space ordered_square ordered_square_topology /\ ~ Lindelof_space ordered_square_open_strip ordered_square_subspace_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §31 Lemma 31.1: closure-neighborhood reformulations of regular/normal **) 
