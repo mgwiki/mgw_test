@@ -67910,37 +67910,37 @@ let x y.
 assume Hx: x :e R_omega_space.
 assume Hy: y :e R_omega_space.
 let a.
-assume Ha: a :e Romega_D_scaled_diffs x y.
-prove a :e R.
-apply (ReplE (omega :\: {0})
-             (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i))
-             a
-             Ha).
-let i.
-assume Hiconj.
-claim HiIn: i :e omega :\: {0}.
-{ exact (andEL (i :e omega :\: {0})
-               (a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i))
-               Hiconj). }
-claim Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i).
-{ exact (andER (i :e omega :\: {0})
-               (a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i))
-               Hiconj). }
-claim HiO: i :e omega.
-{ exact (setminusE1 omega {0} i HiIn). }
-claim HxiR: apply_fun x i :e R.
-{ exact (Romega_coord_in_R x i Hx HiO). }
-claim HyiR: apply_fun y i :e R.
-{ exact (Romega_coord_in_R y i Hy HiO). }
-claim HbdR: R_bounded_distance (apply_fun x i) (apply_fun y i) :e R.
-{ exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
-claim HinvR: inv_nat i :e R.
-{ exact (inv_nat_real i HiO). }
-claim HmulR: mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i) :e R.
-{ exact (real_mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) HbdR
-                      (inv_nat i) HinvR). }
-rewrite Hai.
-exact HmulR.
+	assume Ha: a :e Romega_D_scaled_diffs x y.
+	prove a :e R.
+	apply (ReplE omega
+	             (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+	             a
+	             Ha).
+	let i.
+	assume Hiconj.
+	claim HiO: i :e omega.
+	{ exact (andEL (i :e omega)
+	               (a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+	               Hiconj). }
+	claim Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)).
+	{ exact (andER (i :e omega)
+	               (a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+	               Hiconj). }
+	claim HxiR: apply_fun x i :e R.
+	{ exact (Romega_coord_in_R x i Hx HiO). }
+	claim HyiR: apply_fun y i :e R.
+	{ exact (Romega_coord_in_R y i Hy HiO). }
+	claim HbdR: R_bounded_distance (apply_fun x i) (apply_fun y i) :e R.
+	{ exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+	claim HSi: ordsucc i :e omega.
+	{ exact (omega_ordsucc i HiO). }
+	claim HinvR: inv_nat (ordsucc i) :e R.
+	{ exact (inv_nat_real (ordsucc i) HSi). }
+	claim HmulR: mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)) :e R.
+	{ exact (real_mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) HbdR
+	                      (inv_nat (ordsucc i)) HinvR). }
+	rewrite Hai.
+	exact HmulR.
 Qed.
 
 (** helper: scaled diffs are bounded above in R **)
@@ -67955,32 +67955,39 @@ witness 1.
 apply andI.
 - exact real_1.
 - let a.
-  assume HaA: a :e Romega_D_scaled_diffs x y.
-  assume HaR: a :e R.
-  prove Rle a 1.
-  apply (ReplE_impred (omega :\: {0})
-                      (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i))
-                      a
-                      HaA
-                      (Rle a 1)).
-  let i.
-  assume HiIn: i :e omega :\: {0}.
-  assume Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i).
-  rewrite Hai.
-  set bd := R_bounded_distance (apply_fun x i) (apply_fun y i).
-  set inv := inv_nat i.
-  claim HiO: i :e omega.
-  { exact (setminusE1 omega {0} i HiIn). }
-  claim HxiR: apply_fun x i :e R.
-  { exact (Romega_coord_in_R x i Hx HiO). }
-  claim HyiR: apply_fun y i :e R.
-  { exact (Romega_coord_in_R y i Hy HiO). }
-  claim HbdR: bd :e R.
-  { exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
-  claim HinvR: inv :e R.
-  { exact (inv_nat_real i HiO). }
-  claim HmulR: mul_SNo bd inv :e R.
-  { exact (real_mul_SNo bd HbdR inv HinvR). }
+	  assume HaA: a :e Romega_D_scaled_diffs x y.
+	  assume HaR: a :e R.
+	  prove Rle a 1.
+	  apply (ReplE_impred omega
+	                      (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+	                      a
+	                      HaA
+	                      (Rle a 1)).
+	  let i.
+	  assume HiO: i :e omega.
+	  assume Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)).
+	  rewrite Hai.
+	  set bd := R_bounded_distance (apply_fun x i) (apply_fun y i).
+	  set inv := inv_nat (ordsucc i).
+	  claim HSi: ordsucc i :e omega.
+	  { exact (omega_ordsucc i HiO). }
+	  claim HsuccNotIn0: ordsucc i /:e {0}.
+	  { assume Hin0: ordsucc i :e {0}.
+	    claim Heq: ordsucc i = 0.
+	    { exact (SingE 0 (ordsucc i) Hin0). }
+	    exact (neq_ordsucc_0 i Heq). }
+	  claim HiIn: ordsucc i :e omega :\: {0}.
+	  { exact (setminusI omega {0} (ordsucc i) HSi HsuccNotIn0). }
+	  claim HxiR: apply_fun x i :e R.
+	  { exact (Romega_coord_in_R x i Hx HiO). }
+	  claim HyiR: apply_fun y i :e R.
+	  { exact (Romega_coord_in_R y i Hy HiO). }
+	  claim HbdR: bd :e R.
+	  { exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+	  claim HinvR: inv :e R.
+	  { exact (inv_nat_real (ordsucc i) HSi). }
+	  claim HmulR: mul_SNo bd inv :e R.
+	  { exact (real_mul_SNo bd HbdR inv HinvR). }
   apply (RleI (mul_SNo bd inv) 1 HmulR real_1).
   assume Hlt1: Rlt 1 (mul_SNo bd inv).
   prove False.
@@ -67988,16 +67995,16 @@ apply andI.
   { exact (RltE_lt 1 (mul_SNo bd inv) Hlt1). }
   claim HbdRle1: Rle bd 1.
   { exact (R_bounded_distance_le_1 (apply_fun x i) (apply_fun y i) HxiR HyiR). }
-  claim HinvRle1: Rle inv 1.
-  { exact (inv_nat_Rle_1 i HiIn). }
+	  claim HinvRle1: Rle inv 1.
+	  { exact (inv_nat_Rle_1 (ordsucc i) HiIn). }
   claim HbdS: SNo bd.
   { exact (real_SNo bd HbdR). }
   claim HinvS: SNo inv.
   { exact (real_SNo inv HinvR). }
   claim HmulS: SNo (mul_SNo bd inv).
   { exact (real_SNo (mul_SNo bd inv) HmulR). }
-  claim H0ltInvR: Rlt 0 inv.
-  { exact (inv_nat_pos i HiIn). }
+	  claim H0ltInvR: Rlt 0 inv.
+	  { exact (inv_nat_pos (ordsucc i) HiIn). }
   claim H0ltInv: 0 < inv.
   { exact (RltE_lt 0 inv H0ltInvR). }
   claim H0leInv: 0 <= inv.
