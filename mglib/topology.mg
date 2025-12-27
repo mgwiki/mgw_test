@@ -66777,7 +66777,7 @@ Definition relatively_compact_in_compact_convergence : set -> set -> set -> set 
 Theorem Ascoli_theorem : forall X Tx Y Ty F:set,
   compact_space X Tx -> Hausdorff_space Y Ty ->
   equicontinuous_family X Tx Y Ty F -> relatively_compact_in_compact_convergence X Tx Y Ty F.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** helper: intersection over a family within a universe X **) 
@@ -66826,14 +66826,14 @@ Qed.
 (** LATEX VERSION: Complete metric spaces are Baire. **)
 Theorem Baire_category_complete_metric : forall X d:set,
   complete_metric_space X d -> Baire_space X (metric_topology X d).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Theorem: compact Hausdorff spaces are Baire spaces **)
 (** LATEX VERSION: Compact Hausdorff spaces are Baire. **)
 Theorem Baire_category_compact_Hausdorff : forall X Tx:set,
   compact_space X Tx -> Hausdorff_space X Tx -> Baire_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §48 Theorem: Baire category theorem general version **)
@@ -66841,7 +66841,7 @@ Qed.
 (** FIXED: Corrected Baire_space to take both X and Tx parameters. **)
 Theorem Baire_category_theorem : forall X Tx:set,
   Baire_space X Tx -> forall U:set, open_in X Tx U -> U <> Empty.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §49 Definition: differentiability and nowhere-differentiable function **) 
