@@ -65971,8 +65971,8 @@ apply (Subq_countable (basis_of_subbasis X S) (finite_intersections_of X S)).
   exact (SepE1 (finite_intersections_of X S) (fun b0:set => b0 <> Empty) b Hb).
 Qed.
 (** LATEX VERSION: Real sequences and uniform metric/topology on R^ω (setup). **)
-(** FIXED: real_sequences is setexp R omega (functions omega -> R), not Power R; uses setexp from TRUSTED_DEFS.txt. **)
-Definition real_sequences : set := setexp R omega.
+(** FIXED: real_sequences is the set of set-theoretic function graphs omega -> R. **)
+Definition real_sequences : set := function_space omega R.
 
 (** helper: existence of a metric on any set (discrete metric construction) **)
 (** LATEX VERSION: Every set admits a metric (e.g. the discrete metric). **)
@@ -67804,6 +67804,120 @@ apply (xm (n = Empty)).
         exact HTeq2.
 Qed.
 
+(** from §30 Example 2: discrete subspaces of second countable spaces are countable **) 
+(** LATEX VERSION: If X has a countable basis then every discrete subspace A is countable, by choosing for each a∈A a basis element meeting A only in a. **)
+Definition discrete_subspace : set -> set -> set -> prop := fun X Tx A =>
+  A c= X /\
+  (forall a:set, a :e A -> exists U:set, U :e Tx /\ U :/\: A = {a}).
+
+(** from §30 Example 2: second countable implies discrete subspaces countable **) 
+(** LATEX VERSION: In a second-countable space, every discrete subspace is countable. **)
+Theorem second_countable_discrete_subspace_countable : forall X Tx A:set,
+  second_countable_space X Tx ->
+  discrete_subspace X Tx A ->
+  countable_set A.
+let X Tx A.
+assume Hsc: second_countable_space X Tx.
+assume Hdisc: discrete_subspace X Tx A.
+prove countable_set A.
+claim HAcX: A c= X.
+{ exact (andEL (A c= X) (forall a:set, a :e A -> exists U:set, U :e Tx /\ U :/\: A = {a}) Hdisc). }
+claim HdiscU: forall a:set, a :e A -> exists U:set, U :e Tx /\ U :/\: A = {a}.
+{ exact (andER (A c= X) (forall a:set, a :e A -> exists U:set, U :e Tx /\ U :/\: A = {a}) Hdisc). }
+claim HexB: exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
+{ exact (andER (topology_on X Tx) (exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx) Hsc). }
+apply HexB.
+let B. assume HBpair.
+claim HBasis: basis_on X B.
+{ exact (andEL (basis_on X B) (countable_set B /\ basis_generates X B Tx) HBpair). }
+claim HBrest: countable_set B /\ basis_generates X B Tx.
+{ exact (andER (basis_on X B) (countable_set B /\ basis_generates X B Tx) HBpair). }
+claim HBcount: countable_set B.
+{ exact (andEL (countable_set B) (basis_generates X B Tx) HBrest). }
+claim HBgener: basis_generates X B Tx.
+{ exact (andER (countable_set B) (basis_generates X B Tx) HBrest). }
+claim HTxeq: generated_topology X B = Tx.
+{ exact (andER (basis_on X B) (generated_topology X B = Tx) HBgener). }
+set pick := (fun a:set =>
+  Eps_i (fun b:set => b :e B /\ exists U:set, U :e Tx /\ U :/\: A = {a} /\ a :e b /\ b c= U)).
+claim HinjAB: inj A B pick.
+{ prove (forall a :e A, pick a :e B) /\ (forall a0 a1 :e A, pick a0 = pick a1 -> a0 = a1).
+  apply andI.
+  - let a. assume Ha: a :e A.
+    prove pick a :e B.
+    claim HexU: exists U:set, U :e Tx /\ U :/\: A = {a}.
+    { exact (HdiscU a Ha). }
+    apply HexU.
+    let U. assume HUpair.
+    claim HU: U :e Tx.
+    { exact (andEL (U :e Tx) (U :/\: A = {a}) HUpair). }
+    claim HUA: U :/\: A = {a}.
+    { exact (andER (U :e Tx) (U :/\: A = {a}) HUpair). }
+    claim HaX: a :e X.
+    { exact (HAcX a Ha). }
+    claim HUinGen: U :e generated_topology X B.
+    { rewrite HTxeq.
+      exact HU. }
+    claim HUbasis: forall x :e U, exists b :e B, x :e b /\ b c= U.
+    { exact (SepE2 (Power X) (fun U0:set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0) U HUinGen). }
+    claim HaU: a :e U.
+    { claim HainUA: a :e U :/\: A.
+      { rewrite HUA.
+        exact (SingI a). }
+      exact (binintersectE1 U A a HainUA). }
+    claim Hexb: exists b :e B, a :e b /\ b c= U.
+    { exact (HUbasis a HaU). }
+    apply Hexb.
+    let b. assume Hbpair2.
+    claim HbB: b :e B.
+    { exact (andEL (b :e B) (a :e b /\ b c= U) Hbpair2). }
+    claim Habsub: a :e b /\ b c= U.
+    { exact (andER (b :e B) (a :e b /\ b c= U) Hbpair2). }
+    claim Hab: a :e b.
+    { exact (andEL (a :e b) (b c= U) Habsub). }
+    claim HbsubU: b c= U.
+    { exact (andER (a :e b) (b c= U) Habsub). }
+    claim HexistsWitness: (fun b0:set => b0 :e B /\ exists U0:set, U0 :e Tx /\ U0 :/\: A = {a} /\ a :e b0 /\ b0 c= U0) b.
+    { apply andI.
+      - exact HbB.
+      - witness U.
+        apply andI.
+        + exact HU.
+        + apply andI.
+          * exact HUA
+          * apply andI.
+            { exact Hab. }
+            { exact HbsubU. } }
+    exact (Eps_i_ax (fun b0:set => b0 :e B /\ exists U0:set, U0 :e Tx /\ U0 :/\: A = {a} /\ a :e b0 /\ b0 c= U0) b HexistsWitness).
+  - let a0. assume Ha0: a0 :e A.
+    let a1. assume Ha1: a1 :e A.
+    assume Heq: pick a0 = pick a1.
+    prove a0 = a1.
+    claim H0: pick a0 :e B /\ exists U:set, U :e Tx /\ U :/\: A = {a0} /\ a0 :e pick a0 /\ pick a0 c= U.
+    { exact (Eps_i_ax (fun b0:set => b0 :e B /\ exists U0:set, U0 :e Tx /\ U0 :/\: A = {a0} /\ a0 :e b0 /\ b0 c= U0)
+                      (pick a0)
+                      (Eps_i_correct (fun b0:set => b0 :e B /\ exists U0:set, U0 :e Tx /\ U0 :/\: A = {a0} /\ a0 :e b0 /\ b0 c= U0))). }
+    admit.
+Qed.
+
+(** from §30 Example 2: the subspace of binary sequences **) 
+(** LATEX VERSION: Let A⊂R^ω be the set of all sequences of 0s and 1s; it is uncountable. **)
+Definition binary_sequences_Romega : set :=
+  {f :e real_sequences | forall n:set, n :e omega -> apply_fun f n :e {0,1}}.
+
+(** from §30 Example 2: uncountability of the binary sequences subset **) 
+(** LATEX VERSION: The set of binary sequences is uncountable because Power omega injects into it via characteristic functions. **)
+Theorem binary_sequences_Romega_uncountable : ~ countable_set binary_sequences_Romega.
+admit.
+Qed.
+
+(** from §30 Example 2: discreteness of binary sequences in the uniform topology **) 
+(** LATEX VERSION: In the uniform metric, any two distinct binary sequences have distance 1, hence the subspace is discrete. **)
+Theorem binary_sequences_Romega_discrete_in_uniform_topology :
+  discrete_subspace real_sequences uniform_topology binary_sequences_Romega.
+admit.
+Qed.
+
 (** from §30 Example 2: uniform topology on R^omega not second countable **) 
 (** LATEX VERSION: The uniform topology on the space of real sequences is first countable but not second countable. **)
 Theorem Romega_uniform_first_not_second_countable :
@@ -67814,7 +67928,13 @@ apply andI.
 - (** first countable: metric topologies are first countable **)
   exact (metric_topology_first_countable real_sequences uniform_metric_Romega uniform_metric_Romega_is_metric).
 - (** not second countable (placeholder) **)
-  admit. (** FAIL **)
+  assume Hsc: second_countable_space real_sequences uniform_topology.
+  claim Hdisc: discrete_subspace real_sequences uniform_topology binary_sequences_Romega.
+  { exact binary_sequences_Romega_discrete_in_uniform_topology. }
+  claim Hcount: countable_set binary_sequences_Romega.
+  { exact (second_countable_discrete_subspace_countable real_sequences uniform_topology binary_sequences_Romega Hsc Hdisc). }
+  apply (binary_sequences_Romega_uncountable).
+  exact Hcount.
 Qed.
 
 (** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **)
