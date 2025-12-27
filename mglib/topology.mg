@@ -53345,17 +53345,25 @@ claim Hcond: forall f :e bounded_sequences_Romega, exists b :e B, f :e b /\ b c=
         exact (tuple_2_1_eq R R_standard_topology). }
       rewrite HTi.
       exact HopenI. }
-    claim HexU: exists U:set, function_on U omega TU /\
+    claim HUmTot: total_function_on Um omega TU.
+    { exact (const_fun_total_function_on omega TU (open_interval (minus_SNo M) M) HintervalTU). }
+    claim HUmFG: functional_graph Um.
+    { exact (functional_graph_const_fun omega (open_interval (minus_SNo M) M)). }
+    claim HexU: exists U:set,
+      total_function_on U omega TU /\ functional_graph U /\
       (forall i:set, i :e omega -> apply_fun U i :e space_family_topology Xi i) /\
       bM = {f :e X | forall i:set, i :e omega -> apply_fun f i :e apply_fun U i}.
     { witness Um.
       apply andI.
       - apply andI.
-        + exact HUmfun.
+        + apply andI.
+          * exact HUmTot.
+          * exact HUmFG.
         + exact HUmcoords.
       - reflexivity. }
     exact (SepI (Power X)
-                (fun B0:set => exists U:set, function_on U omega TU /\
+                (fun B0:set => exists U:set,
+                  total_function_on U omega TU /\ functional_graph U /\
                   (forall i:set, i :e omega -> apply_fun U i :e space_family_topology Xi i) /\
                   B0 = {f :e X | forall i:set, i :e omega -> apply_fun f i :e apply_fun U i})
                 bM
