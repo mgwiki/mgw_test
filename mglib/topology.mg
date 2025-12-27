@@ -69985,8 +69985,117 @@ apply SepI.
 	      (** triangle inequality: d(x,z) <= d(x,y)+d(y,z) **)
 	      claim Htri: Rle (apply_fun d (x,z)) (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z))).
 	      { exact (metric_triangle_Rle X d x y z Hm Hx HyX HzX). }
-	      (** it remains to bound d(y,z) by eps and then use eps < gap = r-d(x,y) **)
-	      admit. (** FAIL **) }
+	      (** bound d(y,z) by eps and then use eps < gap = r-d(x,y) **)
+	      claim Hyzprod: (y,z) :e setprod X X.
+	      { exact (tuple_2_setprod_by_pair_Sigma X X y z HyX HzX). }
+	      claim Hxyprod2: (x,y) :e setprod X X.
+	      { exact (tuple_2_setprod_by_pair_Sigma X X x y Hx HyX). }
+	      claim Hfun: function_on d (setprod X X) R.
+	      { exact (metric_on_function_on X d Hm). }
+	      claim HdxyR: apply_fun d (x,y) :e R.
+	      { exact (Hfun (x,y) Hxyprod2). }
+	      claim HdyzR: apply_fun d (y,z) :e R.
+	      { exact (Hfun (y,z) Hyzprod). }
+	      claim HdxyEq: apply_fun d (x,y) = Romega_D_metric_value x y.
+	      { rewrite (apply_fun_graph (setprod X X)
+	                                 (fun p:set => Romega_D_metric_value (p 0) (p 1))
+	                                 (x,y)
+	                                 Hxyprod2).
+	        rewrite (tuple_2_0_eq x y).
+	        rewrite (tuple_2_1_eq x y).
+	        reflexivity. }
+	      claim HdyzEq: apply_fun d (y,z) = Romega_D_metric_value y z.
+	      { rewrite (apply_fun_graph (setprod X X)
+	                                 (fun p:set => Romega_D_metric_value (p 0) (p 1))
+	                                 (y,z)
+	                                 Hyzprod).
+	        rewrite (tuple_2_0_eq y z).
+	        rewrite (tuple_2_1_eq y z).
+	        reflexivity. }
+	      (** show d(y,z) <= eps by lub upper bound property **)
+	      claim HdyzLe: Rle (apply_fun d (y,z)) eps.
+	      { rewrite HdyzEq.
+	        set A := Romega_D_scaled_diffs y z.
+	        set l := Romega_D_metric_value y z.
+	        claim Hlub: R_lub A l.
+	        { exact (Romega_D_metric_value_is_lub y z HyX HzX). }
+	        claim HlubCore: l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l.
+	        { exact (andEL (l :e R /\ (forall a:set, a :e A -> a :e R -> Rle a l))
+	                       (forall u:set, u :e R ->
+	                         (forall a:set, a :e A -> a :e R -> Rle a u) ->
+	                         Rle l u)
+	                       Hlub). }
+	        claim HlubMin: forall u:set, u :e R ->
+	          (forall a:set, a :e A -> a :e R -> Rle a u) ->
+	          Rle l u.
+	        { exact (andER (l :e R /\ (forall a:set, a :e A -> a :e R -> Rle a l))
+	                       (forall u:set, u :e R ->
+	                         (forall a:set, a :e A -> a :e R -> Rle a u) ->
+	                         Rle l u)
+	                       Hlub). }
+	        claim Hub: forall a:set, a :e A -> a :e R -> Rle a eps.
+	        { let a. assume HaA: a :e A. assume HaR: a :e R.
+	          (** TODO: use HzAll and the definition of F to bound each scaled difference by eps **)
+	          admit. (** FAIL **) }
+	        claim Hle': Rle l eps.
+	        { exact (HlubMin eps HepsR Hub). }
+	        exact Hle'. }
+	      claim HsumLe: Rle (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z)))
+	                       (add_SNo (apply_fun d (x,y)) eps).
+	      { exact (Rle_add_SNo_2 (apply_fun d (x,y)) (apply_fun d (y,z)) eps HdxyR HdyzR HepsR HdyzLe). }
+	      (** show d(x,y) + eps < r using eps < gap and (d(x,y)+gap)=r **)
+	      claim HgapLt: Rlt eps gap.
+	      { exact HepsLtGap. }
+	      claim HsumLt': Rlt (add_SNo (apply_fun d (x,y)) eps) r.
+	      { claim HdxyS: SNo (apply_fun d (x,y)).
+	        { exact (real_SNo (apply_fun d (x,y)) HdxyR). }
+	        claim HepsS: SNo eps.
+	        { exact (real_SNo eps HepsR). }
+	        claim HrS: SNo r.
+	        { exact (real_SNo r HrR). }
+	        claim HgapR: gap :e R.
+	        { exact (RltE_right eps gap HgapLt). }
+	        claim HgapS: SNo gap.
+	        { exact (real_SNo gap HgapR). }
+	        claim HepsltgapS: eps < gap.
+	        { exact (RltE_lt eps gap HgapLt). }
+	        claim HsumLtS: add_SNo (apply_fun d (x,y)) eps < add_SNo (apply_fun d (x,y)) gap.
+	        { exact (add_SNo_Lt2 (apply_fun d (x,y)) eps gap HdxyS HepsS HgapS HepsltgapS). }
+	        claim HgapDef: gap = add_SNo r (minus_SNo (apply_fun d (x,y))).
+	        { reflexivity. }
+	        claim HsumEq: add_SNo (apply_fun d (x,y)) gap = r.
+	        { rewrite HgapDef.
+	          claim HmdxyS: SNo (minus_SNo (apply_fun d (x,y))).
+	          { exact (SNo_minus_SNo (apply_fun d (x,y)) HdxyS). }
+	          rewrite (add_SNo_assoc (apply_fun d (x,y)) r (minus_SNo (apply_fun d (x,y)))
+	                               HdxyS HrS HmdxyS).
+	          claim Hcom: add_SNo (apply_fun d (x,y)) r = add_SNo r (apply_fun d (x,y)).
+	          { exact (add_SNo_com (apply_fun d (x,y)) r HdxyS HrS). }
+	          rewrite Hcom at 1.
+	          rewrite <- (add_SNo_assoc r (apply_fun d (x,y)) (minus_SNo (apply_fun d (x,y)))
+	                                HrS HdxyS HmdxyS).
+	          rewrite (add_SNo_minus_SNo_rinv (apply_fun d (x,y)) HdxyS).
+	          rewrite (add_SNo_0R r HrS).
+	          reflexivity. }
+	        claim HsumLtS2: add_SNo (apply_fun d (x,y)) eps < r.
+	        { rewrite <- HsumEq.
+	          exact HsumLtS. }
+	        claim HsumR: add_SNo (apply_fun d (x,y)) eps :e R.
+	        { exact (real_add_SNo (apply_fun d (x,y)) HdxyR eps HepsR). }
+	        exact (RltI (add_SNo (apply_fun d (x,y)) eps) r HsumR HrR HsumLtS2). }
+	      claim HsumLt: Rlt (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z))) r.
+	      { exact (Rle_Rlt_tra (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z)))
+	                           (add_SNo (apply_fun d (x,y)) eps)
+	                           r
+	                           HsumLe
+	                           HsumLt'). }
+	      claim HdxzLt: Rlt (apply_fun d (x,z)) r.
+	      { exact (Rle_Rlt_tra (apply_fun d (x,z))
+	                           (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z)))
+	                           r
+	                           Htri
+	                           HsumLt). }
+	      exact (open_ballI X d x r z HzX HdxzLt). }
   apply HexF.
   let F. assume HFcore.
   claim HFleft: F :e finite_subcollections S /\ y :e intersection_of_family X F.
