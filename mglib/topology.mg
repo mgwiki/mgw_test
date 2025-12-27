@@ -31713,6 +31713,58 @@ Definition interior_of : set -> set -> set -> set := fun X T A =>
 Definition closure_of : set -> set -> set -> set := fun X T A =>
   {x :e X | forall U:set, U :e T -> x :e U -> U :/\: A <> Empty}.
 
+(** helper: in the finite complement topology, the closure of an infinite subset is all of X **)
+(** LATEX VERSION: Not a numbered item; standard fact used when computing closures in the finite complement topology. **)
+Theorem closure_infinite_finite_complement : forall X A:set,
+  A c= X ->
+  infinite A ->
+  closure_of X (finite_complement_topology X) A = X.
+let X A.
+assume HAsub: A c= X.
+assume HinfA: infinite A.
+apply set_ext.
+- (** closure subset X is definitional **)
+  let x. assume Hx: x :e closure_of X (finite_complement_topology X) A.
+  exact (SepE1 X (fun x0:set => forall U:set, U :e finite_complement_topology X -> x0 :e U -> U :/\: A <> Empty) x Hx).
+- (** show every x :e X lies in the closure **)
+  let x. assume HxX: x :e X.
+  prove x :e closure_of X (finite_complement_topology X) A.
+  claim Hcl: forall U:set, U :e finite_complement_topology X -> x :e U -> U :/\: A <> Empty.
+  { let U. assume HU: U :e finite_complement_topology X.
+    assume HxU: x :e U.
+    prove U :/\: A <> Empty.
+    (** In the finite complement topology: finite (X\\U) unless U is empty. **)
+    claim HUne: U <> Empty.
+    { exact (elem_implies_nonempty U x HxU). }
+    claim HUcases: finite (X :\: U) \/ U = Empty.
+    { exact (SepE2 (Power X) (fun U0:set => finite (X :\: U0) \/ U0 = Empty) U HU). }
+    claim HfinComp: finite (X :\: U).
+    { apply (HUcases (finite (X :\: U))).
+      - assume Hfin. exact Hfin.
+      - assume HUe.
+        apply FalseE.
+        exact (HUne HUe). }
+    (** If U∩A were empty then A ⊆ X\\U, hence A finite, contradiction. **)
+    assume Hempty: U :/\: A = Empty.
+    claim Hsub: A c= X :\: U.
+    { let a. assume HaA: a :e A.
+      prove a :e X :\: U.
+      claim HaX: a :e X.
+      { exact (HAsub a HaA). }
+      claim HanotU: a /:e U.
+      { assume HaU: a :e U.
+        claim HaUA: a :e U :/\: A.
+        { exact (binintersectI U A a HaU HaA). }
+        claim HaE: a :e Empty.
+        { rewrite <- Hempty. exact HaUA. }
+        exact (EmptyE a HaE). }
+      exact (setminusI X U a HaX HanotU). }
+    claim HfinA: finite A.
+    { exact (Subq_finite (X :\: U) HfinComp A Hsub). }
+    exact (HinfA HfinA). }
+  exact (SepI X (fun x0:set => forall U:set, U :e finite_complement_topology X -> x0 :e U -> U :/\: A <> Empty) x HxX Hcl).
+Qed.
+
 (** Helper: A is a subset of its closure **)
 Theorem subset_of_closure : forall X Tx A:set,
   topology_on X Tx -> A c= X -> A c= closure_of X Tx A.
@@ -36649,6 +36701,34 @@ claim Heq': inv_nat (ordsucc n) = inv_nat (ordsucc m).
 exact (inv_nat_ordsucc_inj n m Hn Hm Heq').
 Qed.
 
+(** helper: K_set is infinite (inject omega via n ↦ 1/(n+1)) **)
+(** LATEX VERSION: Not a numbered item; used to show K is infinite when analyzing closure in the finite complement topology. **)
+Theorem K_set_infinite : infinite K_set.
+prove infinite K_set.
+(** show atleastp omega K_set by exhibiting an injection omega -> K_set **)
+claim Hatleast: atleastp omega K_set.
+{ witness (fun n:set => inv_nat (ordsucc n)).
+  prove inj omega K_set (fun n:set => inv_nat (ordsucc n)).
+  apply andI.
+  - let n. assume Hn: n :e omega.
+    prove inv_nat (ordsucc n) :e K_set.
+    claim HsuccO: ordsucc n :e omega.
+    { exact (omega_ordsucc n Hn). }
+    claim HsuccNot0: ordsucc n /:e {0}.
+    { assume Hmem: ordsucc n :e {0}.
+      claim Heq0: ordsucc n = 0.
+      { exact (SingE 0 (ordsucc n) Hmem). }
+      exact (neq_ordsucc_0 n Heq0). }
+    claim HsuccIn: ordsucc n :e omega :\: {0}.
+    { exact (setminusI omega {0} (ordsucc n) HsuccO HsuccNot0). }
+    exact (ReplI (omega :\: {0}) (fun k:set => inv_nat k) (ordsucc n) HsuccIn).
+  - let n. assume Hn: n :e omega.
+    let m. assume Hm: m :e omega.
+    assume Heq: inv_nat (ordsucc n) = inv_nat (ordsucc m).
+    exact (inv_nat_ordsucc_inj n m Hn Hm Heq). }
+exact (atleastp_omega_infinite K_set Hatleast).
+Qed.
+
 Theorem ex17_14_sequence_in_finite_complement_topology : forall x:set,
   x :e R ->
   forall U:set,
@@ -37247,7 +37327,27 @@ prove closure_of R R_standard_topology K_set = K_set :\/: {0} /\
   closure_of R R_finite_complement_topology K_set = R /\
   closure_of R R_upper_limit_topology K_set = K_set /\
   closure_of R R_ray_topology K_set = R_nonneg_set.
-admit. (** FAIL **)
+apply andI.
+- (** prove the first four conjuncts together: ((((A /\ B) /\ C) /\ D)) **)
+  apply andI.
+  + apply andI.
+    * (** A /\ B **)
+      apply andI.
+      - admit. (** FAIL **)
+      - admit. (** FAIL **)
+    * (** C: finite complement topology **)
+      claim HKinf: infinite K_set.
+      { exact K_set_infinite. }
+      claim HKsub: K_set c= R.
+      { exact K_set_Subq_R. }
+      claim HTdef: R_finite_complement_topology = finite_complement_topology R.
+      { reflexivity. }
+      rewrite HTdef.
+      exact (closure_infinite_finite_complement R K_set HKsub HKinf).
+  + (** D: upper limit topology **)
+    admit. (** FAIL **)
+- (** E: ray topology **)
+  admit. (** FAIL **)
 Qed.
 
 (** helper: in the left ray topology, any open set containing 1 contains 0 **)
