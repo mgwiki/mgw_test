@@ -65428,17 +65428,35 @@ apply set_ext.
     { exact (setprod_Empty_left (space_family_union Empty Xi)). }
     rewrite Heqprod.
     exact (Empty_In_Power Empty). }
-  claim Hpred: function_on Empty Empty (space_family_union Empty Xi) /\
-    forall i:set, i :e Empty -> apply_fun Empty i :e space_family_set Xi i.
-  { apply andI.
+  claim Htot: total_function_on Empty Empty (space_family_union Empty Xi).
+  { prove function_on Empty Empty (space_family_union Empty Xi) /\
+      forall x:set, x :e Empty -> exists y:set, y :e space_family_union Empty Xi /\ (x,y) :e Empty.
+    apply andI.
     - let x. assume Hx: x :e Empty.
       prove apply_fun Empty x :e space_family_union Empty Xi.
       exact (EmptyE x Hx (apply_fun Empty x :e space_family_union Empty Xi)).
-    - let i. assume Hi: i :e Empty.
-      prove apply_fun Empty i :e space_family_set Xi i.
-      exact (EmptyE i Hi (apply_fun Empty i :e space_family_set Xi i)). }
+    - let x. assume Hx: x :e Empty.
+      prove exists y:set, y :e space_family_union Empty Xi /\ (x,y) :e Empty.
+      exact (EmptyE x Hx (exists y:set, y :e space_family_union Empty Xi /\ (x,y) :e Empty)). }
+  claim Hfg: functional_graph Empty.
+  { let x y1 y2.
+    assume H1: (x,y1) :e Empty.
+    assume _ : (x,y2) :e Empty.
+    prove y1 = y2.
+    exact (EmptyE (x,y1) H1 (y1 = y2)). }
+  claim Hcoords: forall i:set, i :e Empty -> apply_fun Empty i :e space_family_set Xi i.
+  { let i. assume Hi: i :e Empty.
+    prove apply_fun Empty i :e space_family_set Xi i.
+    exact (EmptyE i Hi (apply_fun Empty i :e space_family_set Xi i)). }
+  claim Hpred: (total_function_on Empty Empty (space_family_union Empty Xi) /\ functional_graph Empty) /\
+    forall i:set, i :e Empty -> apply_fun Empty i :e space_family_set Xi i.
+  { apply andI.
+    - apply andI.
+      + exact Htot.
+      + exact Hfg.
+    - exact Hcoords. }
   exact (SepI (Power (setprod Empty (space_family_union Empty Xi)))
-              (fun f0:set => function_on f0 Empty (space_family_union Empty Xi) /\
+              (fun f0:set => (total_function_on f0 Empty (space_family_union Empty Xi) /\ functional_graph f0) /\
                 forall i:set, i :e Empty -> apply_fun f0 i :e space_family_set Xi i)
               Empty Hpow Hpred).
 Qed.
