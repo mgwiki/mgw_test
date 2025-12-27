@@ -11311,7 +11311,7 @@ Qed.
 
 (** helper for §13 Example 4: two-ball refinement around a point **)
 (** LATEX VERSION: If x lies in two open balls B(c1,r1) and B(c2,r2), then there is a smaller ball B(x,r3) contained in their intersection. **)
-(** SUSPICIOUS DEFINITION: The intended proof needs a triangle inequality for distance_R2 and monotonicity style estimates for sqrt and squares; those are not yet proved in this section, so this lemma is currently admitted. **)
+(** SUSPICIOUS DEFINITION: The intended proof needs a triangle inequality for distance_R2 and monotonicity style estimates for sqrt and squares; those are not yet available here, so this lemma is currently admitted. **)
 (** NOTE: An automated proof attempt at this admit timed out. **)
 Theorem ball_refine_two_balls :
   forall x c1 c2 r1 r2:set,
@@ -11341,7 +11341,7 @@ Qed.
 
 (** helper for §13 Example 4: rectangle inside a ball around a center **)
 (** LATEX VERSION: Every point x in a ball B(c,r0) has a rectangular neighborhood contained in B(c,r0). **)
-(** SUSPICIOUS DEFINITION: This depends on coordinate to distance_R2 estimates (bounding coordinate differences by the Euclidean distance) together with basic inequalities for sqrt and squares; the required inequalities are not yet proved in this section. **)
+(** SUSPICIOUS DEFINITION: This depends on an implication from coordinate bounds to distance_R2 bounds, and on triangle-type estimates; these are not yet available here, so this lemma is currently admitted. **)
 Theorem rectangle_inside_ball :
   forall x c r0:set,
     x :e EuclidPlane ->
@@ -11360,7 +11360,7 @@ Qed.
 
 (** helper for §13 Example 4: ball inside a rectangle around a point **)
 (** LATEX VERSION: Every point x in a rectangle has a circular neighborhood contained in it. **)
-(** SUSPICIOUS DEFINITION: This needs bounds of the form abs(dx) <= distance_R2 and abs(dy) <= distance_R2, plus basic order lemmas to choose a positive radius below the rectangle margins; these are not yet proved here. **)
+(** NOTE: This lemma is proved below using abs bounds from distance_R2 and epsilon selection below finitely many positive margins. **)
 Theorem ball_inside_rectangle :
   forall b x:set,
     b :e rectangular_regions ->
