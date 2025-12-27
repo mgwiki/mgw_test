@@ -66477,6 +66477,12 @@ Theorem R_bounded_distance_le_1 : forall a b:set,
 admit. (** FAIL **)
 Qed.
 
+(** helper: bounded distance is a real number **)
+Theorem R_bounded_distance_in_R : forall a b:set,
+  a :e R -> b :e R -> R_bounded_distance a b :e R.
+admit. (** FAIL **)
+Qed.
+
 Definition Romega_D_scaled_diffs : set -> set -> set := fun x y =>
   Repl (omega :\: {0})
        (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i)).
@@ -66489,7 +66495,41 @@ Theorem Romega_D_scaled_diffs_in_R : forall x y:set,
   x :e R_omega_space ->
   y :e R_omega_space ->
   forall a:set, a :e Romega_D_scaled_diffs x y -> a :e R.
-admit. (** FAIL **)
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+let a.
+assume Ha: a :e Romega_D_scaled_diffs x y.
+prove a :e R.
+apply (ReplE (omega :\: {0})
+             (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i))
+             a
+             Ha).
+let i.
+assume Hiconj.
+claim HiIn: i :e omega :\: {0}.
+{ exact (andEL (i :e omega :\: {0})
+               (a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i))
+               Hiconj). }
+claim Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i).
+{ exact (andER (i :e omega :\: {0})
+               (a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i))
+               Hiconj). }
+claim HiO: i :e omega.
+{ exact (setminusE1 omega {0} i HiIn). }
+claim HxiR: apply_fun x i :e R.
+{ exact (Romega_coord_in_R x i Hx HiO). }
+claim HyiR: apply_fun y i :e R.
+{ exact (Romega_coord_in_R y i Hy HiO). }
+claim HbdR: R_bounded_distance (apply_fun x i) (apply_fun y i) :e R.
+{ exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+claim HinvR: inv_nat i :e R.
+{ exact (inv_nat_real i HiO). }
+claim HmulR: mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i) :e R.
+{ exact (real_mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) HbdR
+                      (inv_nat i) HinvR). }
+rewrite Hai.
+exact HmulR.
 Qed.
 
 (** helper: scaled diffs are bounded above in R **)
