@@ -69663,8 +69663,8 @@ Theorem Romega_D_metric_induces_product_topology :
   Romega_D_metric_topology = R_omega_product_topology.
 prove metric_on R_omega_space Romega_D_metric /\
   Romega_D_metric_topology = R_omega_product_topology.
-apply andI.
-- (** metric_on part (partial) **)
+claim Hm: metric_on R_omega_space Romega_D_metric.
+{ (** metric_on part (partial) **)
   prove metric_on R_omega_space Romega_D_metric.
   prove ((((function_on Romega_D_metric (setprod R_omega_space R_omega_space) R /\
            (forall x y:set, x :e R_omega_space -> y :e R_omega_space ->
@@ -69879,17 +69879,20 @@ apply andI.
 				    rewrite (tuple_2_0_eq x z).
 				    rewrite (tuple_2_1_eq x z).
 				    exact (Romega_D_metric_value_triangle x y z Hx Hy Hz).
-					- (** topology equality part **)
-					  prove Romega_D_metric_topology = R_omega_product_topology.
-					  apply set_ext.
-					  + let U. assume HU: U :e Romega_D_metric_topology.
-					    prove U :e R_omega_product_topology.
-					    (** TODO: show every D-metric open set is open in the product topology **)
-					    admit.
-					  + let U. assume HU: U :e R_omega_product_topology.
-					    prove U :e Romega_D_metric_topology.
-					    (** TODO: show every product-basic cylinder is open in the D-metric topology, then use minimality of generated_topology_from_subbasis **)
-					    admit.
+}
+apply andI.
+- exact Hm.
+- (** topology equality part **)
+  prove Romega_D_metric_topology = R_omega_product_topology.
+  apply set_ext.
+  + let U. assume HU: U :e Romega_D_metric_topology.
+    prove U :e R_omega_product_topology.
+    (** TODO: show every D-metric open set is open in the product topology **)
+    admit.
+  + let U. assume HU: U :e R_omega_product_topology.
+    prove U :e Romega_D_metric_topology.
+    (** TODO: show every product-basic cylinder is open in the D-metric topology, then use minimality of generated_topology_from_subbasis **)
+    admit.
 	Qed.
 
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
