@@ -37541,6 +37541,14 @@ apply set_ext.
   exact (SepI R (fun x0:set => forall U:set, U :e R_ray_topology -> x0 :e U -> U :/\: K_set <> Empty) x HxR Hcl).
 Qed.
 
+(** helper: for x>0 not in K_set, there is a standard open neighborhood disjoint from K_set **)
+(** LATEX VERSION: Not a numbered item; used to isolate points x>0 from the discrete set {1/n} in the standard topology. **)
+Theorem standard_open_neighborhood_disjoint_from_K_set_pos : forall x:set,
+  x :e R -> 0 < x -> ~(x :e K_set) ->
+  exists U:set, U :e R_standard_topology /\ x :e U /\ U :/\: K_set = Empty.
+admit. (** FAIL **)
+Qed.
+
 (** helper: closure of K_set in the upper limit topology is K_set **)
 Theorem closure_of_K_in_R_upper_limit_topology :
   closure_of R R_upper_limit_topology K_set = K_set.
@@ -37618,7 +37626,7 @@ apply set_ext.
         claim H00: Rlt 0 0.
         { exact (Rlt_tra 0 z 0 Hzpos Hzlt0). }
         exact ((not_Rlt_refl 0 real_0) H00). }
-      exact (Hne Hempty).
+        exact (Hne Hempty).
     - (** case x = 0: use basic upper-limit neighborhood (-1,0] **)
       assume Hx0: x = 0.
       set U1 := halfopen_interval_right (minus_SNo 1) 0.
@@ -37659,9 +37667,52 @@ apply set_ext.
           exact (inv_nat_pos n HnIn). }
         exact (Hnot0z Hzpos). }
       exact (Hne Hempty).
-    - (** case 0 < x: a separating neighborhood exists; pending full arithmetic proof **)
+    - (** case 0 < x: reduce to existence of a standard open neighborhood disjoint from K_set **)
       assume H0ltx: 0 < x.
-      admit. (** FAIL **)
+      claim Hcont: finer_than R_upper_limit_topology R_standard_topology.
+      { claim Hall:
+          (((finer_than R_upper_limit_topology R_standard_topology /\
+             finer_than R_K_topology R_standard_topology) /\
+            finer_than R_standard_topology R_finite_complement_topology) /\
+           finer_than R_standard_topology R_ray_topology).
+        { exact ex13_7_R_topology_containments. }
+        claim Hleft:
+          ((finer_than R_upper_limit_topology R_standard_topology /\
+            finer_than R_K_topology R_standard_topology) /\
+           finer_than R_standard_topology R_finite_complement_topology).
+        { exact (andEL ((finer_than R_upper_limit_topology R_standard_topology /\
+                         finer_than R_K_topology R_standard_topology) /\
+                        finer_than R_standard_topology R_finite_complement_topology)
+                       (finer_than R_standard_topology R_ray_topology)
+                       Hall). }
+        claim Hpair:
+          (finer_than R_upper_limit_topology R_standard_topology /\
+           finer_than R_K_topology R_standard_topology).
+        { exact (andEL (finer_than R_upper_limit_topology R_standard_topology /\
+                        finer_than R_K_topology R_standard_topology)
+                       (finer_than R_standard_topology R_finite_complement_topology)
+                       Hleft). }
+        exact (andEL (finer_than R_upper_limit_topology R_standard_topology)
+                     (finer_than R_K_topology R_standard_topology)
+                     Hpair). }
+      claim HexU:
+        exists U:set, U :e R_standard_topology /\ x :e U /\ U :/\: K_set = Empty.
+      { exact (standard_open_neighborhood_disjoint_from_K_set_pos x HxR H0ltx HxnotK). }
+      apply HexU.
+      let U. assume HUpair.
+      claim HUleft: U :e R_standard_topology /\ x :e U.
+      { exact (andEL (U :e R_standard_topology /\ x :e U) (U :/\: K_set = Empty) HUpair). }
+      claim HUstd: U :e R_standard_topology.
+      { exact (andEL (U :e R_standard_topology) (x :e U) HUleft). }
+      claim HxU: x :e U.
+      { exact (andER (U :e R_standard_topology) (x :e U) HUleft). }
+      claim HU: U :e R_upper_limit_topology.
+      { exact (Hcont U HUstd). }
+      claim Hne: U :/\: K_set <> Empty.
+      { exact (Hcl U HU HxU). }
+      claim HUempty: U :/\: K_set = Empty.
+      { exact (andER (U :e R_standard_topology /\ x :e U) (U :/\: K_set = Empty) HUpair). }
+      exact (Hne HUempty).
 - (** K_set subset closure **)
   let x. assume Hx: x :e K_set.
   prove x :e closure_of R R_upper_limit_topology K_set.
@@ -37727,7 +37778,27 @@ apply set_ext.
       exact (Hxne0 Hxeq0).
     - (** 0 < x: need an open neighborhood disjoint from K_set unless x∈K_set (pending) **)
       assume H0ltx: 0 < x.
-      admit. (** FAIL **)
+      apply (xm (x :e K_set)).
+      + assume HxK: x :e K_set.
+        exact (binunionI1 K_set {0} x HxK).
+      + assume HxnotK: ~(x :e K_set).
+        apply FalseE.
+        claim HexU:
+          exists U:set, U :e R_standard_topology /\ x :e U /\ U :/\: K_set = Empty.
+        { exact (standard_open_neighborhood_disjoint_from_K_set_pos x HxR H0ltx HxnotK). }
+        apply HexU.
+        let U. assume HUpair.
+        claim HUleft: U :e R_standard_topology /\ x :e U.
+        { exact (andEL (U :e R_standard_topology /\ x :e U) (U :/\: K_set = Empty) HUpair). }
+        claim HU: U :e R_standard_topology.
+        { exact (andEL (U :e R_standard_topology) (x :e U) HUleft). }
+        claim HxU: x :e U.
+        { exact (andER (U :e R_standard_topology) (x :e U) HUleft). }
+        claim Hne: U :/\: K_set <> Empty.
+        { exact (Hcl U HU HxU). }
+        claim HUempty: U :/\: K_set = Empty.
+        { exact (andER (U :e R_standard_topology /\ x :e U) (U :/\: K_set = Empty) HUpair). }
+        exact (Hne HUempty).
 - (** K_set ∪ {0} subset closure **)
   let x. assume Hx: x :e K_set :\/: {0}.
   prove x :e closure_of R R_standard_topology K_set.
