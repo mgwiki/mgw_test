@@ -66405,6 +66405,32 @@ Theorem uniform_topology_finer_than_product_and_coarser_than_box :
 admit. (** FAIL **)
 Qed.
 
+(** from §20 Theorem 20.5: product topology on R^omega is induced by a metric **)
+(** LATEX VERSION: Define D(x,y)=sup{ min(|x_i-y_i|,1) / i }. Then D induces the product topology on R^omega. **)
+Definition R_bounded_distance : set -> set -> set := fun a b =>
+  If_i (Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1)
+       (abs_SNo (add_SNo a (minus_SNo b)))
+       1.
+
+Definition Romega_D_scaled_diffs : set -> set -> set := fun x y =>
+  Repl (omega :\: {0})
+       (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i)).
+
+Definition Romega_D_metric_value : set -> set -> set := fun x y =>
+  Eps_i (fun r:set => R_lub (Romega_D_scaled_diffs x y) r).
+
+Definition Romega_D_metric : set :=
+  graph (setprod R_omega_space R_omega_space)
+        (fun p:set => Romega_D_metric_value (p 0) (p 1)).
+
+Definition Romega_D_metric_topology : set := metric_topology R_omega_space Romega_D_metric.
+
+Theorem Romega_D_metric_induces_product_topology :
+  metric_on R_omega_space Romega_D_metric /\
+  Romega_D_metric_topology = R_omega_product_topology.
+admit. (** FAIL **)
+Qed.
+
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
 Definition open_cover : set -> set -> set -> prop :=
   fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
