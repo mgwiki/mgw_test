@@ -37543,10 +37543,109 @@ Qed.
 
 (** helper: for x>0 not in K_set, there is a standard open neighborhood disjoint from K_set **)
 (** LATEX VERSION: Not a numbered item; used to isolate points x>0 from the discrete set {1/n} in the standard topology. **)
+Theorem K_set_above_positive_bound_finite : forall b:set,
+  b :e R ->
+  Rlt 0 b ->
+  finite (K_set :/\: {y :e R|Rlt b y}).
+admit. (** FAIL **)
+Qed.
+
 Theorem standard_open_neighborhood_disjoint_from_K_set_pos : forall x:set,
   x :e R -> 0 < x -> ~(x :e K_set) ->
   exists U:set, U :e R_standard_topology /\ x :e U /\ U :/\: K_set = Empty.
-admit. (** FAIL **)
+let x.
+assume HxR: x :e R.
+assume H0ltx: 0 < x.
+assume HxnotK: ~(x :e K_set).
+prove exists U:set, U :e R_standard_topology /\ x :e U /\ U :/\: K_set = Empty.
+claim H0ltxR: Rlt 0 x.
+{ exact (RltI 0 x real_0 HxR H0ltx). }
+(** pick b in K_set with b < x (using the standard fact that 1/n < x for some n) **)
+claim Hexb: exists b:set, b :e halfopen_interval_left 0 x /\ b :e K_set.
+{ exact (K_set_meets_lower_limit_neighborhood_0 0 x real_0 HxR (not_Rlt_refl 0 real_0) H0ltxR). }
+apply Hexb.
+let b. assume Hbpair.
+claim Hbhalf: b :e halfopen_interval_left 0 x.
+{ exact (andEL (b :e halfopen_interval_left 0 x) (b :e K_set) Hbpair). }
+claim HbK: b :e K_set.
+{ exact (andER (b :e halfopen_interval_left 0 x) (b :e K_set) Hbpair). }
+claim HbR: b :e R.
+{ exact (K_set_Subq_R b HbK). }
+claim Hbprop: ~(Rlt b 0) /\ Rlt b x.
+{ exact (SepE2 R (fun y0:set => ~(Rlt y0 0) /\ Rlt y0 x) b Hbhalf). }
+claim HbLtX: Rlt b x.
+{ exact (andER (~(Rlt b 0)) (Rlt b x) Hbprop). }
+claim Hbpos: Rlt 0 b.
+{ apply (ReplE_impred (omega :\: {0}) (fun n:set => inv_nat n) b HbK (Rlt 0 b)).
+  let n. assume HnIn: n :e omega :\: {0}. assume Hbeq: b = inv_nat n.
+  rewrite Hbeq.
+  exact (inv_nat_pos n HnIn). }
+
+set V := {y :e R|Rlt b y}.
+claim HVopen: V :e R_standard_topology.
+{ exact (open_ray_in_R_standard_topology b HbR). }
+claim HxV: x :e V.
+{ exact (SepI R (fun y0:set => Rlt b y0) x HxR HbLtX). }
+
+(** Let F = K_set ∩ V (a finite subset of K_set above b). **)
+set F := K_set :/\: V.
+claim HFfin: finite F.
+{ claim HFdef: F = K_set :/\: {y :e R|Rlt b y}.
+  { reflexivity. }
+  rewrite HFdef.
+  exact (K_set_above_positive_bound_finite b HbR Hbpos). }
+claim HFsubR: F c= R.
+{ let z. assume HzF: z :e F.
+  claim HzK: z :e K_set.
+  { exact (binintersectE1 K_set V z HzF). }
+  exact (K_set_Subq_R z HzK). }
+
+(** U = V ∩ (R\\F) is open, contains x, and is disjoint from K_set. **)
+set U := V :/\: (R :\: F).
+claim HRmF: R :\: F :e R_standard_topology.
+{ exact (finite_complement_open_in_R_standard_topology F HFfin HFsubR). }
+claim HUopen: U :e R_standard_topology.
+{ exact (topology_binintersect_closed R R_standard_topology V (R :\: F)
+         (R_standard_topology_is_topology_local)
+         HVopen
+         HRmF). }
+claim HxnotF: x /:e F.
+{ assume HxF: x :e F.
+  claim HxK': x :e K_set.
+  { exact (binintersectE1 K_set V x HxF). }
+  exact (HxnotK HxK'). }
+claim HxRmF: x :e R :\: F.
+{ exact (setminusI R F x HxR HxnotF). }
+claim HxU: x :e U.
+{ exact (binintersectI V (R :\: F) x HxV HxRmF). }
+
+claim HUempty: U :/\: K_set = Empty.
+{ apply Empty_Subq_eq.
+  let z. assume Hz: z :e U :/\: K_set.
+  prove z :e Empty.
+  apply FalseE.
+  claim HzU: z :e U.
+  { exact (binintersectE1 U K_set z Hz). }
+  claim HzK: z :e K_set.
+  { exact (binintersectE2 U K_set z Hz). }
+  claim HzV_RmF: z :e V :/\: (R :\: F).
+  { exact HzU. }
+  claim HzV: z :e V.
+  { exact (binintersectE1 V (R :\: F) z HzV_RmF). }
+  claim HzRmF: z :e R :\: F.
+  { exact (binintersectE2 V (R :\: F) z HzV_RmF). }
+  claim HzF: z :e F.
+  { exact (binintersectI K_set V z HzK HzV). }
+  claim HznotF: z /:e F.
+  { exact (setminusE2 R F z HzRmF). }
+  exact (HznotF HzF). }
+
+witness U.
+apply andI.
+- apply andI.
+  + exact HUopen.
+  + exact HxU.
+- exact HUempty.
 Qed.
 
 (** helper: closure of K_set in the upper limit topology is K_set **)
