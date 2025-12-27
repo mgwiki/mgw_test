@@ -65293,14 +65293,16 @@ apply andI.
       claim HsSub: s :e product_subbasis_full I Xi.
       { exact (famunionI I (fun i0:set => {product_cylinder I Xi i0 U|U :e space_family_topology Xi i0})
                        i s HiI HsRepl). }
-      claim HfProp: function_on f I (space_family_union I Xi) /\ forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j.
-      { exact (SepE2 (Power (setprod I (space_family_union I Xi)))
-                     (fun f0:set => function_on f0 I (space_family_union I Xi) /\ forall j:set, j :e I -> apply_fun f0 j :e space_family_set Xi j)
-                     f HfX). }
-      claim HfCoord: forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j.
-      { exact (andER (function_on f I (space_family_union I Xi))
-                     (forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j)
-                     HfProp). }
+	      claim HfProp: (total_function_on f I (space_family_union I Xi) /\ functional_graph f) /\
+	                    forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j.
+	      { exact (SepE2 (Power (setprod I (space_family_union I Xi)))
+	                     (fun f0:set => (total_function_on f0 I (space_family_union I Xi) /\ functional_graph f0) /\
+	                       forall j:set, j :e I -> apply_fun f0 j :e space_family_set Xi j)
+	                     f HfX). }
+	      claim HfCoord: forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j.
+	      { exact (andER (total_function_on f I (space_family_union I Xi) /\ functional_graph f)
+	                     (forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j)
+	                     HfProp). }
       claim Hfi: apply_fun f i :e space_family_set Xi i.
       { exact (HfCoord i HiI). }
       claim HfInS: f :e s.
