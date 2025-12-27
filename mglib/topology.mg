@@ -66477,10 +66477,53 @@ Theorem R_bounded_distance_le_1 : forall a b:set,
 admit. (** FAIL **)
 Qed.
 
+(** helper: abs of a real is real **)
+Theorem abs_SNo_in_R : forall x:set, x :e R -> abs_SNo x :e R.
+let x.
+assume HxR: x :e R.
+apply (xm (0 <= x)).
+- assume H0le: 0 <= x.
+  claim Habseq: abs_SNo x = x.
+  { exact (nonneg_abs_SNo x H0le). }
+  rewrite Habseq.
+  exact HxR.
+- assume Hn0le: ~(0 <= x).
+  claim HmxR: minus_SNo x :e R.
+  { exact (real_minus_SNo x HxR). }
+  claim Habseq: abs_SNo x = minus_SNo x.
+  { exact (not_nonneg_abs_SNo x Hn0le). }
+  rewrite Habseq.
+  exact HmxR.
+Qed.
+
 (** helper: bounded distance is a real number **)
 Theorem R_bounded_distance_in_R : forall a b:set,
   a :e R -> b :e R -> R_bounded_distance a b :e R.
-admit. (** FAIL **)
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+set t := add_SNo a (minus_SNo b).
+claim HmbR: minus_SNo b :e R.
+{ exact (real_minus_SNo b HbR). }
+claim HtR: t :e R.
+{ exact (real_add_SNo a HaR (minus_SNo b) HmbR). }
+claim HabsR: abs_SNo t :e R.
+{ exact (abs_SNo_in_R t HtR). }
+claim Hor:
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1 = abs_SNo t \/
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1 = 1.
+{ exact (If_i_or (Rlt (abs_SNo t) 1) (abs_SNo t) 1). }
+claim Hdef: R_bounded_distance a b =
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+{ reflexivity. }
+rewrite Hdef.
+apply Hor.
+- assume Heq: If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1 = abs_SNo t.
+  rewrite Heq.
+  exact HabsR.
+- assume Heq: If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1 = 1.
+  rewrite Heq.
+  exact real_1.
 Qed.
 
 Definition Romega_D_scaled_diffs : set -> set -> set := fun x y =>
