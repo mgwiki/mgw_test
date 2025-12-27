@@ -68209,7 +68209,7 @@ Theorem supp_ex_locally_euclidean_3 :
   locally_m_euclidean R R_standard_topology (Sing Empty) /\
   m_manifold R R_standard_topology /\
   ~ (compact_space R R_standard_topology /\ Hausdorff_space R R_standard_topology).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from Supplementary Exercises Exercise 4: R×R dictionary order is locally 1-euclidean satisfies (iii) not (ii) **)
@@ -68218,7 +68218,7 @@ Theorem supp_ex_locally_euclidean_4 :
   locally_m_euclidean EuclidPlane (order_topology EuclidPlane) (Sing Empty) /\
   metrizable EuclidPlane (order_topology EuclidPlane) /\
   ~ m_manifold EuclidPlane (order_topology EuclidPlane).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from Supplementary Exercises Exercise 5: long line is locally 1-euclidean satisfies (iv) not (iii) **)
@@ -68252,7 +68252,7 @@ Theorem supp_ex_locally_euclidean_5 :
   locally_m_euclidean long_line long_line_topology (Sing Empty) /\
   normal_space long_line long_line_topology /\
   ~ metrizable long_line long_line_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from Supplementary Exercises Exercise 7: Hausdorff iff completely regular **)
@@ -68260,7 +68260,7 @@ Qed.
 Theorem supp_ex_locally_euclidean_7 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   (Hausdorff_space X Tx <-> completely_regular_space X Tx).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from Supplementary Exercises Exercise 8: metrizable iff paracompact Hausdorff **)
@@ -68268,7 +68268,7 @@ Qed.
 Theorem supp_ex_locally_euclidean_8 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   (metrizable X Tx <-> (paracompact_space X Tx /\ Hausdorff_space X Tx)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from Supplementary Exercises Exercise 9: metrizable implies components are m-manifolds **)
@@ -68278,7 +68278,7 @@ Theorem supp_ex_locally_euclidean_9 : forall X Tx m:set,
   metrizable X Tx ->
   forall x:set, x :e X ->
     m_manifold (component_of X Tx x) (subspace_topology X Tx (component_of X Tx x)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** helper: G_delta subset coded via countable intersection of open sets **)
