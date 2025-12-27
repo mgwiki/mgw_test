@@ -57161,7 +57161,7 @@ apply andI.
   let U. assume HU: U :e Q.
   assume HyU: y :e U.
   (** Goal: find V open in Q with y∈V⊂U and V connected in the subspace topology. **)
-  admit.
+  admit. (** FAIL **)
 Qed.
 
 (** from §25 Definition: quasicomponent equivalence relation **) 
@@ -57266,10 +57266,10 @@ Theorem ex23_Rl_components :
 prove component_of R R_lower_limit_topology 0 = {0} /\ (forall x:set, x :e R -> component_of R R_lower_limit_topology x = {x}).
 apply andI.
 - (** component_of ... 0 = {0} **)
-  admit.
+  admit. (** FAIL **)
 - (** all components are singletons **)
   let x. assume HxR: x :e R.
-  admit.
+  admit. (** FAIL **)
 Qed.
 
 (** from §23 Exercise: components of ℝ^ω in product/uniform/box topologies **) 
