@@ -66680,7 +66680,45 @@ Definition uniform_topology : set := metric_topology real_sequences uniform_metr
 (** helper: uniform_metric_Romega satisfies metric_on (pending full proof) **)
 (** LATEX VERSION: The uniform metric on R^ω is a metric on the set of real sequences. **)
 Theorem uniform_metric_Romega_is_metric : metric_on real_sequences uniform_metric_Romega.
-admit. (** FAIL **)
+prove metric_on real_sequences uniform_metric_Romega.
+prove ((((function_on uniform_metric_Romega (setprod real_sequences real_sequences) R /\
+         (forall x y:set, x :e real_sequences -> y :e real_sequences ->
+            apply_fun uniform_metric_Romega (x,y) = apply_fun uniform_metric_Romega (y,x))) /\
+        (forall x:set, x :e real_sequences -> apply_fun uniform_metric_Romega (x,x) = 0)) /\
+       (forall x y:set, x :e real_sequences -> y :e real_sequences ->
+          ~(Rlt (apply_fun uniform_metric_Romega (x,y)) 0)
+          /\ (apply_fun uniform_metric_Romega (x,y) = 0 -> x = y))) /\
+      (forall x y z:set, x :e real_sequences -> y :e real_sequences -> z :e real_sequences ->
+         ~(Rlt (add_SNo (apply_fun uniform_metric_Romega (x,y)) (apply_fun uniform_metric_Romega (y,z)))
+               (apply_fun uniform_metric_Romega (x,z))))).
+apply andI.
+- apply andI.
+  + apply andI.
+    * apply andI.
+      - exact uniform_metric_Romega_function_on.
+      - let x y.
+        assume Hx: x :e real_sequences.
+        assume Hy: y :e real_sequences.
+        claim Hxyprod: (x,y) :e setprod real_sequences real_sequences.
+        { exact (tuple_2_setprod_by_pair_Sigma real_sequences real_sequences x y Hx Hy). }
+        claim Hyxprod: (y,x) :e setprod real_sequences real_sequences.
+        { exact (tuple_2_setprod_by_pair_Sigma real_sequences real_sequences y x Hy Hx). }
+        rewrite (apply_fun_graph (setprod real_sequences real_sequences)
+                                 (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+                                 (x,y)
+                                 Hxyprod).
+        rewrite (tuple_2_0_eq x y).
+        rewrite (tuple_2_1_eq x y).
+        rewrite (apply_fun_graph (setprod real_sequences real_sequences)
+                                 (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+                                 (y,x)
+                                 Hyxprod).
+        rewrite (tuple_2_0_eq y x).
+        rewrite (tuple_2_1_eq y x).
+        exact (Romega_uniform_metric_value_sym x y Hx Hy).
+    * admit.
+  + admit.
+- admit.
 Qed.
 
 (** helper: uniform_topology is a topology (placeholder via uniform_metric_Romega_is_metric) **)
