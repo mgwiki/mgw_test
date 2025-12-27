@@ -65965,8 +65965,7 @@ apply andI.
     { reflexivity. }
 	    rewrite HSb.
 	    exact (discrete_normal_space Sbar_Omega).
-		- admit.
-		- admit. (** FAIL **)
+			- admit. (** FAIL **)
 Qed.
 
 (** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **)
