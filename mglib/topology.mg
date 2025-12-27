@@ -66589,17 +66589,35 @@ claim HnO: n :e omega.
 { exact (setminusE1 omega {0} n HnIn). }
 claim Hnnot0: n /:e {0}.
 { exact (setminusE2 omega {0} n HnIn). }
+claim Hnneq0: n <> 0.
+{ assume Hn0: n = 0.
+  claim Hnin0: n :e {0}.
+  { rewrite Hn0. exact (SingI 0). }
+  exact (Hnnot0 Hnin0). }
+claim HinvR: inv_nat n :e R.
+{ exact (inv_nat_real n HnO). }
+apply (RleI (inv_nat n) 1 HinvR real_1).
+prove ~(Rlt 1 (inv_nat n)).
+assume Hlt: Rlt 1 (inv_nat n).
+claim HltS: 1 < inv_nat n.
+{ exact (RltE_lt 1 (inv_nat n) Hlt). }
+claim HnS: SNo n.
+{ exact (omega_SNo n HnO). }
+claim HinvS: SNo (inv_nat n).
+{ exact (SNo_recip_SNo n HnS). }
 claim HnNat: nat_p n.
 { exact (omega_nat_p n HnO). }
+claim HnOrd: ordinal n.
+{ exact (nat_p_ordinal n HnNat). }
+claim H1Ord: ordinal 1.
+{ exact (nat_p_ordinal 1 nat_1). }
 claim HnCase: n = 0 \/ exists k:set, nat_p k /\ n = ordsucc k.
 { exact (nat_inv n HnNat). }
 claim Hexk: exists k:set, nat_p k /\ n = ordsucc k.
 { apply (HnCase (exists k:set, nat_p k /\ n = ordsucc k)).
   - assume Hn0: n = 0.
     apply FalseE.
-    claim Hnin0: n :e {0}.
-    { rewrite Hn0. exact (SingI 0). }
-    exact (Hnnot0 Hnin0).
+    exact (Hnneq0 Hn0).
   - assume H. exact H. }
 apply Hexk.
 let k.
@@ -66608,22 +66626,31 @@ claim HkNat: nat_p k.
 { exact (andEL (nat_p k) (n = ordsucc k) Hkconj). }
 claim Hneq: n = ordsucc k.
 { exact (andER (nat_p k) (n = ordsucc k) Hkconj). }
-apply (xm (k = 0)).
-- assume Hk0: k = 0.
-  rewrite Hneq.
-  rewrite Hk0.
-  (** inv_nat 1 = 1 **)
-  claim Hinv1: inv_nat 1 = 1.
-  { claim H1neq0: 1 <> 0.
-    { exact neq_1_0. }
-    claim Hinv: mul_SNo 1 (inv_nat 1) = 1.
-    { exact (recip_SNo_invR 1 SNo_1 H1neq0). }
-    rewrite <- (mul_SNo_oneL (inv_nat 1) (SNo_recip_SNo 1 SNo_1)) at 1.
-    exact Hinv. }
-  rewrite Hinv1.
-  exact (Rle_refl 1 real_1).
-- assume Hkneq0: ~(k = 0).
-  admit. (** FAIL **)
+claim HkOrd: ordinal k.
+{ exact (nat_p_ordinal k HkNat). }
+claim H0ltn: 0 < n.
+{ rewrite Hneq.
+  exact (ordinal_ordsucc_pos k HkOrd). }
+claim HmulLt: mul_SNo n 1 < mul_SNo n (inv_nat n).
+{ exact (pos_mul_SNo_Lt n 1 (inv_nat n) HnS H0ltn SNo_1 HinvS HltS). }
+claim Hmul1: mul_SNo n 1 = n.
+{ exact (mul_SNo_oneR n HnS). }
+claim HmulInv: mul_SNo n (inv_nat n) = 1.
+{ exact (recip_SNo_invR n HnS Hnneq0). }
+claim Hnlt1: n < 1.
+{ rewrite <- Hmul1.
+  rewrite <- HmulInv at 2.
+  exact HmulLt. }
+claim HnIn1: n :e 1.
+{ exact (ordinal_SNoLt_In n 1 HnOrd H1Ord Hnlt1). }
+claim Hcase1: n :e 0 \/ n = 0.
+{ exact (ordsuccE 0 n HnIn1). }
+claim Hn0: n = 0.
+{ apply (Hcase1 (n = 0)).
+  - assume HnIn0: n :e 0.
+    exact (EmptyE n HnIn0 (n = 0)).
+  - assume H. exact H. }
+exact (Hnneq0 Hn0).
 Qed.
 
 (** helper: scaled diffs are real numbers **)
