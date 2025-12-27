@@ -69509,7 +69509,7 @@ Theorem ex31_6_closed_map_preserves_normal : forall X Tx Y Ty p:set,
   closed_map X Tx Y Ty p ->
   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun p x = y) ->
   normal_space Y Ty.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §31 Exercise 7: perfect map preserves separation/countability/local compactness **)
 (** LATEX VERSION: Perfect map (closed continuous surjective with compact fibers) preserves Hausdorff, regular, locally compact, second-countable. **)
@@ -69529,7 +69529,7 @@ Theorem ex31_7_perfect_map_properties : forall X Tx Y Ty p:set,
   (regular_space X Tx -> regular_space Y Ty) /\
   (locally_compact X Tx -> locally_compact Y Ty) /\
   (second_countable_space X Tx -> second_countable_space Y Ty).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §31 Exercise 8: orbit space of compact group action preserves properties **)
 (** LATEX VERSION: Let G be compact topological group, α action of G on X. Orbit space X/G retains Hausdorff, regular, normal, locally compact, second-countable properties. **)
@@ -69541,7 +69541,7 @@ Theorem ex31_8_orbit_space_properties : forall G Tg X Tx alpha:set,
   (normal_space X Tx -> exists XG TxG:set, normal_space XG TxG) /\
   (locally_compact X Tx -> exists XG TxG:set, locally_compact XG TxG) /\
   (second_countable_space X Tx -> exists XG TxG:set, second_countable_space XG TxG).
-admit.
+admit. (**  aby  RK_5FHausdorff_5Fnot_5Fregular euclidean_spaces_second_countable conj_myprob_69544_1_20251226_175050 . **)
 Qed.
 (** from §31 Exercise 9: Sorgenfrey plane rational/irrational diagonal non-separation **)
 (** LATEX VERSION: In ℝ_ℓ², let A = {x × (-x) | x rational}, B = {x × (-x) | x irrational}. No open sets separate A and B. **)
@@ -69557,7 +69557,7 @@ Theorem ex31_9_Sorgenfrey_plane_no_separation :
       Sorgenfrey_plane_diag_rational c= U /\
       Sorgenfrey_plane_diag_irrational c= V /\
       U :/\: V = Empty).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §32 Exercise 1: closed subspace of normal is normal **)
@@ -69566,7 +69566,7 @@ Theorem ex32_1_closed_subspace_normal : forall X Tx A:set,
   normal_space X Tx ->
   closed_in X Tx A ->
   normal_space A (subspace_topology X Tx A).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §32 Exercise 2: factor spaces of products inherit separation **)
 (** LATEX VERSION: If ∏X_α is Hausdorff/regular/normal, then so is each X_α (assuming X_α nonempty). **)
@@ -69576,9 +69576,9 @@ Theorem ex32_2_factors_inherit_separation : forall Idx Fam:set,
       forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ Hausdorff_space Xi Txi) /\
    (regular_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
       forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ regular_space Xi Txi) /\
-   (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
+      (normal_space (product_space Idx Fam) (product_topology_full Idx Fam) ->
       forall i:set, i :e Idx -> exists Xi Txi:set, apply_fun Fam i = (Xi, Txi) /\ normal_space Xi Txi)).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §32 Exercise 3: locally compact Hausdorff implies regular **)
 (** LATEX VERSION: Every locally compact Hausdorff space is regular. **)
@@ -69586,7 +69586,7 @@ Theorem ex32_3_locally_compact_Hausdorff_regular : forall X Tx:set,
   locally_compact X Tx ->
   Hausdorff_space X Tx ->
   regular_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §32 Exercise 4: regular Lindelof implies normal **)
 (** LATEX VERSION: Every regular Lindelöf space is normal. **)
@@ -69594,7 +69594,7 @@ Theorem ex32_4_regular_Lindelof_normal : forall X Tx:set,
   regular_space X Tx ->
   Lindelof_space X Tx ->
   normal_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §32 Exercise 5: normality questions for Romega product topologies **)
 (** LATEX VERSION: Is ℝ^ω normal in product topology? In uniform topology? **)
@@ -69613,7 +69613,7 @@ Theorem ex32_6_completely_normal_characterization : forall X Tx:set,
   completely_normal_space X Tx <->
   (forall A B:set, separated_subsets X Tx A B ->
     exists U V:set, open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §32 Exercise 7: completely normal examples **)
 (** LATEX VERSION: Which are completely normal: (a) subspace (b) product (c) well-ordered (d) metrizable (e) compact Hausdorff (f) regular+countable basis (g) ℝ_ℓ? **)
@@ -69632,7 +69632,7 @@ Theorem ex32_7_completely_normal_examples :
     (completely_normal_space X Tx \/ ~ completely_normal_space X Tx)) /\
   (completely_normal_space R R_lower_limit_topology \/ ~ completely_normal_space R R_lower_limit_topology).
 apply and7I.
-- admit.
+- admit. (** FAIL **)
 - let X Tx Y Ty.
   assume HX: completely_normal_space X Tx.
   assume HY: completely_normal_space Y Ty.
@@ -69640,7 +69640,7 @@ apply and7I.
 - let X.
   assume Hwo: well_ordered_set X.
   exact (xm (completely_normal_space X (order_topology X))).
-- admit.
+- admit. (** FAIL **)
 - let X Tx.
   assume Hc: compact_space X Tx.
   assume HH: Hausdorff_space X Tx.
@@ -69656,14 +69656,14 @@ Qed.
 Theorem ex32_8_linear_continuum_normal : forall X Tx:set,
   linear_continuum X Tx ->
   normal_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 (** from §32 Exercise 9: uncountable product of R not normal **)
 (** LATEX VERSION: If J is uncountable, then ℝ^J is not normal. **)
 Theorem ex32_9_uncountable_product_not_normal : forall J:set,
   ~ countable J ->
   ~ normal_space (product_space J (const_space_family J R R_standard_topology)) (product_topology_full J (const_space_family J R R_standard_topology)).
-admit.
+admit. (**  aby  countable_product_topology_subbasisÞf const_space_familyÞf conj_myprob_69666_1_20251226_175700 uncountable_setÞf uncountable_product_R_not_normal . **)
 Qed.
 
 (** helper: perfect normality predicate **)
