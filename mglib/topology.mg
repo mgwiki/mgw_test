@@ -65973,8 +65973,30 @@ Qed.
 (** LATEX VERSION: Real sequences and uniform metric/topology on R^ω (setup). **)
 (** FIXED: real_sequences is setexp R omega (functions omega -> R), not Power R; uses setexp from TRUSTED_DEFS.txt. **)
 Definition real_sequences : set := setexp R omega.
+
+(** helper: existence of a metric on any set (placeholder) **)
+(** LATEX VERSION: Every set admits a metric (e.g. the discrete metric). **)
+Theorem exists_metric_on : forall X:set, exists d:set, metric_on X d.
+admit. (** FAIL **)
+Qed.
+
 Definition uniform_metric_Romega : set := Eps_i (fun d => metric_on real_sequences d).
 Definition uniform_topology : set := metric_topology real_sequences uniform_metric_Romega.
+
+(** helper: the chosen uniform_metric_Romega satisfies metric_on (placeholder via choice) **)
+(** LATEX VERSION: The uniform metric on R^ω is a metric on the set of real sequences. **)
+Theorem uniform_metric_Romega_is_metric : metric_on real_sequences uniform_metric_Romega.
+prove metric_on real_sequences uniform_metric_Romega.
+set P := (fun d:set => metric_on real_sequences d).
+claim Hex: exists d:set, P d.
+{ exact (exists_metric_on real_sequences). }
+apply Hex.
+let d. assume Hd: P d.
+claim Hdef: uniform_metric_Romega = Eps_i P.
+{ reflexivity. }
+rewrite Hdef.
+exact (Eps_i_ax P d Hd).
+Qed.
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
 Definition open_cover : set -> set -> set -> prop :=
   fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
@@ -67503,7 +67525,11 @@ Theorem Romega_uniform_first_not_second_countable :
   first_countable_space real_sequences uniform_topology /\
   ~ second_countable_space real_sequences uniform_topology.
 prove first_countable_space real_sequences uniform_topology /\ ~ second_countable_space real_sequences uniform_topology.
-admit. (** FAIL **)
+apply andI.
+- (** first countable: metric topologies are first countable **)
+  exact (metric_topology_first_countable real_sequences uniform_metric_Romega uniform_metric_Romega_is_metric).
+- (** not second countable (placeholder) **)
+  admit. (** FAIL **)
 Qed.
 
 (** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **)
