@@ -69975,16 +69975,39 @@ apply SepI.
 			          claim Hltval: Rlt (Romega_D_metric_value f g) r0.
 			          { rewrite <- Hdapp.
 			            exact Hltball. }
-			          claim Habfg: abs_SNo (add_SNo xi (minus_SNo (apply_fun g i))) < r3.
-			          { claim Hr0eq: r0 = mul_SNo r3 (inv_nat (ordsucc i)).
-			            { reflexivity. }
-			            claim Hltval2: Rlt (Romega_D_metric_value f g) (mul_SNo r3 (inv_nat (ordsucc i))).
-			            { rewrite <- Hr0eq.
-			              exact Hltval. }
-			            exact (Romega_D_metric_coord_abs_lt f g i r3 HfX HgX Hi Hr3R Hr3pos Hr3lt1 Hltval2). }
-			          claim Hgib: apply_fun g i :e open_interval a b.
-			          { (** TODO: combine Habfg with Hr3m1lt and Hr3m2lt to show g_i :e open_interval a b **)
-			            admit. }
+				          claim Habfg: abs_SNo (add_SNo xi (minus_SNo (apply_fun g i))) < r3.
+				          { claim Hr0eq: r0 = mul_SNo r3 (inv_nat (ordsucc i)).
+				            { reflexivity. }
+				            claim Hltval2: Rlt (Romega_D_metric_value f g) (mul_SNo r3 (inv_nat (ordsucc i))).
+				            { rewrite <- Hr0eq.
+				              exact Hltval. }
+				            exact (Romega_D_metric_coord_abs_lt f g i r3 HfX HgX Hi Hr3R Hr3pos Hr3lt1 Hltval2). }
+				          claim Hgib: apply_fun g i :e open_interval a b.
+				          { set t := add_SNo xi (minus_SNo (apply_fun g i)).
+				            claim Hr3S: SNo r3.
+				            { exact (real_SNo r3 Hr3R). }
+				            claim Hr3posS: 0 < r3.
+				            { exact (RltE_lt 0 r3 Hr3pos). }
+				            claim HgiS: SNo (apply_fun g i).
+				            { exact (real_SNo (apply_fun g i) HgiR). }
+				            claim HmtS: SNo (minus_SNo (apply_fun g i)).
+				            { exact (SNo_minus_SNo (apply_fun g i) HgiS). }
+				            claim HtS: SNo t.
+				            { exact (SNo_add_SNo xi (minus_SNo (apply_fun g i)) HxiS HmtS). }
+				            claim Htlt: t < r3.
+				            { exact (abs_SNo_lt_imp_lt t r3 HtS Hr3S Hr3posS Habfg). }
+				            claim Hmtlt: minus_SNo t < r3.
+				            { exact (abs_SNo_lt_imp_neg_lt t r3 HtS Hr3S Hr3posS Habfg). }
+				            (** TODO: use Htlt Hmtlt with Hr3m1lt Hr3m2lt to derive a < g_i < b **)
+				            claim HinterDef: open_interval a b = {x0 :e R | Rlt a x0 /\ Rlt x0 b}.
+				            { reflexivity. }
+				            rewrite HinterDef.
+				            apply SepI.
+				            - exact HgiR.
+				            - prove Rlt a (apply_fun g i) /\ Rlt (apply_fun g i) b.
+				              apply andI.
+				              + admit.
+				              + admit. }
 			          claim HgiB0: apply_fun g i :e b0.
 			          { rewrite Hb0eq.
 			            exact Hgib. }
