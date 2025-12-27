@@ -66918,6 +66918,32 @@ Definition Romega_D_scaled_diffs : set -> set -> set := fun x y =>
   Repl (omega :\: {0})
        (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i)).
 
+(** helper: scaled diffs are symmetric **)
+Theorem Romega_D_scaled_diffs_sym : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  Romega_D_scaled_diffs x y = Romega_D_scaled_diffs y x.
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+apply (ReplEq_ext (omega :\: {0})
+        (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i))
+        (fun i:set => mul_SNo (R_bounded_distance (apply_fun y i) (apply_fun x i)) (inv_nat i))).
+let i.
+assume HiIn: i :e omega :\: {0}.
+claim HiO: i :e omega.
+{ exact (setminusE1 omega {0} i HiIn). }
+claim HxiR: apply_fun x i :e R.
+{ exact (Romega_coord_in_R x i Hx HiO). }
+claim HyiR: apply_fun y i :e R.
+{ exact (Romega_coord_in_R y i Hy HiO). }
+claim Hbd: R_bounded_distance (apply_fun x i) (apply_fun y i) =
+           R_bounded_distance (apply_fun y i) (apply_fun x i).
+{ exact (R_bounded_distance_sym (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+rewrite Hbd.
+reflexivity.
+Qed.
+
 Definition Romega_D_metric_value : set -> set -> set := fun x y =>
   Eps_i (fun r:set => R_lub (Romega_D_scaled_diffs x y) r).
 
@@ -67155,6 +67181,25 @@ claim Hex: exists l:set, P l.
 exact (Eps_i_ex P Hex).
 Qed.
 
+(** helper: D metric value is symmetric **)
+Theorem Romega_D_metric_value_sym : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  Romega_D_metric_value x y = Romega_D_metric_value y x.
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+set A := Romega_D_scaled_diffs x y.
+claim HAeq: A = Romega_D_scaled_diffs y x.
+{ exact (Romega_D_scaled_diffs_sym x y Hx Hy). }
+claim Hlub1: R_lub A (Romega_D_metric_value x y).
+{ exact (Romega_D_metric_value_is_lub x y Hx Hy). }
+claim Hlub2': R_lub A (Romega_D_metric_value y x).
+{ rewrite HAeq.
+  exact (Romega_D_metric_value_is_lub y x Hy Hx). }
+exact (R_lub_unique A (Romega_D_metric_value x y) (Romega_D_metric_value y x) Hlub1 Hlub2').
+Qed.
+
 (** helper: D metric values are real numbers **)
 Theorem Romega_D_metric_value_in_R : forall x y:set,
   x :e R_omega_space ->
@@ -67196,7 +67241,51 @@ Definition Romega_D_metric_topology : set := metric_topology R_omega_space Romeg
 Theorem Romega_D_metric_induces_product_topology :
   metric_on R_omega_space Romega_D_metric /\
   Romega_D_metric_topology = R_omega_product_topology.
-admit. (** FAIL **)
+prove metric_on R_omega_space Romega_D_metric /\
+  Romega_D_metric_topology = R_omega_product_topology.
+apply andI.
+- (** metric_on part (partial) **)
+  prove metric_on R_omega_space Romega_D_metric.
+  prove ((((function_on Romega_D_metric (setprod R_omega_space R_omega_space) R /\
+           (forall x y:set, x :e R_omega_space -> y :e R_omega_space ->
+              apply_fun Romega_D_metric (x,y) = apply_fun Romega_D_metric (y,x))) /\
+          (forall x:set, x :e R_omega_space -> apply_fun Romega_D_metric (x,x) = 0)) /\
+         (forall x y:set, x :e R_omega_space -> y :e R_omega_space ->
+            ~(Rlt (apply_fun Romega_D_metric (x,y)) 0)
+            /\ (apply_fun Romega_D_metric (x,y) = 0 -> x = y))) /\
+        (forall x y z:set, x :e R_omega_space -> y :e R_omega_space -> z :e R_omega_space ->
+           ~(Rlt (add_SNo (apply_fun Romega_D_metric (x,y)) (apply_fun Romega_D_metric (y,z)))
+                 (apply_fun Romega_D_metric (x,z))))).
+  apply andI.
+  + apply andI.
+    * apply andI.
+      - apply andI.
+        { exact Romega_D_metric_function_on. }
+        { let x y.
+          assume Hx: x :e R_omega_space.
+          assume Hy: y :e R_omega_space.
+          claim Hxyprod: (x,y) :e setprod R_omega_space R_omega_space.
+          { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space x y Hx Hy). }
+          claim Hyxprod: (y,x) :e setprod R_omega_space R_omega_space.
+          { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space y x Hy Hx). }
+          rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+                                   (fun p:set => Romega_D_metric_value (p 0) (p 1))
+                                   (x,y)
+                                   Hxyprod).
+          rewrite (tuple_2_0_eq x y).
+          rewrite (tuple_2_1_eq x y).
+          rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+                                   (fun p:set => Romega_D_metric_value (p 0) (p 1))
+                                   (y,x)
+                                   Hyxprod).
+          rewrite (tuple_2_0_eq y x).
+          rewrite (tuple_2_1_eq y x).
+          exact (Romega_D_metric_value_sym x y Hx Hy). }
+      - admit.
+    * admit.
+  + admit.
+- (** topology equality part **)
+  admit.
 Qed.
 
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
