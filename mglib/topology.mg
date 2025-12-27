@@ -36706,9 +36706,12 @@ Qed.
 Theorem K_set_infinite : infinite K_set.
 prove infinite K_set.
 (** show atleastp omega K_set by exhibiting an injection omega -> K_set **)
-claim Hatleast: atleastp omega K_set.
+claim Hatleast: exists f : set -> set, inj omega K_set f.
 { witness (fun n:set => inv_nat (ordsucc n)).
   prove inj omega K_set (fun n:set => inv_nat (ordsucc n)).
+  (** expand `inj` to its defining conjunction **)
+  prove (forall u :e omega, inv_nat (ordsucc u) :e K_set)
+    /\ (forall u v :e omega, inv_nat (ordsucc u) = inv_nat (ordsucc v) -> u = v).
   apply andI.
   - let n. assume Hn: n :e omega.
     prove inv_nat (ordsucc n) :e K_set.
