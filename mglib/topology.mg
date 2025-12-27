@@ -68113,9 +68113,79 @@ Qed.
 
 (** from §30 Example 2: discreteness of binary sequences in the uniform topology **) 
 (** LATEX VERSION: In the uniform metric, any two distinct binary sequences have distance 1, hence the subspace is discrete. **)
+(** helper: distance 1 between distinct binary sequences (intended property of the uniform metric) **)
+(** LATEX VERSION: For a≠b in {0,1}^ω, one has \\bar\\rho(a,b)=1. **)
+Theorem uniform_metric_Romega_binary_dist_1 : forall f g:set,
+  f :e binary_sequences_Romega ->
+  g :e binary_sequences_Romega ->
+  f <> g ->
+  apply_fun uniform_metric_Romega (f,g) = 1.
+admit.
+Qed.
+
 Theorem binary_sequences_Romega_discrete_in_uniform_topology :
   discrete_subspace real_sequences uniform_topology binary_sequences_Romega.
-admit.
+prove discrete_subspace real_sequences uniform_topology binary_sequences_Romega.
+prove binary_sequences_Romega c= real_sequences /\
+  (forall a:set, a :e binary_sequences_Romega ->
+    exists U:set, U :e uniform_topology /\ U :/\: binary_sequences_Romega = {a}).
+apply andI.
+- (** subset **)
+  let f. assume Hf: f :e binary_sequences_Romega.
+  prove f :e real_sequences.
+  exact (SepE1 real_sequences (fun f0:set => forall n:set, n :e omega -> apply_fun f0 n :e {0,1}) f Hf).
+- (** isolate each point by an open ball of radius 1 **)
+  let a. assume Ha: a :e binary_sequences_Romega.
+  set U := open_ball real_sequences uniform_metric_Romega a 1.
+  witness U.
+  prove U :e uniform_topology /\ U :/\: binary_sequences_Romega = {a}.
+  apply andI.
+  + (** U is open **)
+    claim HaX: a :e real_sequences.
+    { exact (SepE1 real_sequences (fun f0:set => forall n:set, n :e omega -> apply_fun f0 n :e {0,1}) a Ha). }
+    claim H0lt1: Rlt 0 1.
+    { exact Rlt_0_1. }
+    exact (open_ball_in_metric_topology real_sequences uniform_metric_Romega a 1
+              uniform_metric_Romega_is_metric HaX H0lt1).
+  + (** U ∩ A = {a} **)
+    apply set_ext.
+    - let f. assume HfUA: f :e U :/\: binary_sequences_Romega.
+      prove f :e {a}.
+      claim HfU: f :e U.
+      { exact (binintersectE1 U binary_sequences_Romega f HfUA). }
+      claim HfA: f :e binary_sequences_Romega.
+      { exact (binintersectE2 U binary_sequences_Romega f HfUA). }
+      claim Hdistlt: Rlt (apply_fun uniform_metric_Romega (a,f)) 1.
+      { exact (open_ballE2 real_sequences uniform_metric_Romega a 1 f HfU). }
+      apply (xm (f = a) (f :e {a})).
+      * assume Hfa: f = a.
+        rewrite Hfa.
+        exact (SingI a).
+      * assume Hfna: ~(f = a).
+        claim Hdist1: apply_fun uniform_metric_Romega (a,f) = 1.
+        { apply (uniform_metric_Romega_binary_dist_1 a f Ha HfA).
+          assume Heq: a = f.
+          apply Hfna.
+          symmetry.
+          exact Heq. }
+        claim Hbad: Rlt 1 1.
+        { rewrite <- Hdist1.
+          exact Hdistlt. }
+        exact (FalseE ((not_Rlt_refl 1 real_1) Hbad) (f :e {a})).
+    - let f. assume Hf: f :e {a}.
+      prove f :e U :/\: binary_sequences_Romega.
+      claim Hfa: f = a.
+      { exact (singleton_elem f a Hf). }
+      rewrite Hfa.
+      apply andI.
+      * (** a :e U **)
+        claim HaX: a :e real_sequences.
+        { exact (SepE1 real_sequences (fun f0:set => forall n:set, n :e omega -> apply_fun f0 n :e {0,1}) a Ha). }
+        claim H0lt1: Rlt 0 1.
+        { exact Rlt_0_1. }
+        exact (center_in_open_ball real_sequences uniform_metric_Romega a 1
+                uniform_metric_Romega_is_metric HaX H0lt1).
+      * exact Ha.
 Qed.
 
 (** from §30 Example 2: uniform topology on R^omega not second countable **) 
