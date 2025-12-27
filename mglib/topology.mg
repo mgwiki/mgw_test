@@ -67115,7 +67115,7 @@ Definition linear_graph : set -> set -> prop := fun G Tg =>
 (** LATEX VERSION: A linear graph G has topological dimension 1. **)
 Theorem linear_graph_dimension_1 : forall G Tg:set,
   linear_graph G Tg -> covering_dimension G Tg (Sing Empty).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Example 7: general position in R^3 (preliminary) **)
@@ -67203,7 +67203,7 @@ Theorem finite_set_approximation_general_position : forall N:set, forall pts:set
     general_position_RN N pts' /\
     finite pts' /\
     equip pts pts'.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Theorem 50.5: Menger-Nöbeling embedding theorem **)
@@ -67217,7 +67217,7 @@ Theorem Menger_Nobeling_embedding_full : forall X Tx m:set,
   exists N:set, exists e:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Theorem 50.6: compact subspace of R^N has dimension at most N **)
@@ -67227,7 +67227,7 @@ Theorem compact_subspace_RN_dimension_le_N : forall X N:set,
   X c= (euclidean_space N) ->
   compact_space X (subspace_topology (euclidean_space N) (euclidean_topology N) X) ->
   covering_dimension X (subspace_topology (euclidean_space N) (euclidean_topology N) X) N.
-admit.
+admit. (**  aby  euclidean_spacẽf conj_myprob_67230_1_20251226_171240 euclidean_topologỹf subspace_topologỹf compact_subspace_Rn_dimension_le prop_ext_2 . **)
 Qed.
 
 (** from §50 Corollary 50.7: compact m-manifold has dimension at most m **)
@@ -67237,7 +67237,7 @@ Theorem compact_m_manifold_dimension_le_m : forall X Tx m:set,
   compact_space X Tx ->
   m_manifold X Tx ->
   covering_dimension X Tx m.
-admit.
+admit. (**  aby  conj_myprob_67240_1_20251226_171305 m_manifoldÞf compact_manifold_dimension_le prop_ext_2 . **)
 Qed.
 
 (** from §50 Corollary 50.8: compact m-manifold embeds in R^{2m+1} **)
@@ -67250,7 +67250,7 @@ Theorem compact_m_manifold_embeds_R2mp1 : forall X Tx m:set,
   exists N:set, exists e:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Corollary 50.9: compact metrizable embeds in R^N iff finite dimensional **)
@@ -67263,7 +67263,7 @@ Theorem compact_metrizable_embeds_iff_finite_dim : forall X Tx:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e)
   <->
   finite_dimensional_space X Tx).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from Supplementary Exercises: locally m-euclidean space **)
