@@ -66970,6 +66970,39 @@ rewrite Hbd.
 reflexivity.
 Qed.
 
+(** helper: diagonal scaled diffs are all 0 **)
+Theorem Romega_D_scaled_diffs_diag_subset0 : forall x:set,
+  x :e R_omega_space ->
+  Romega_D_scaled_diffs x x c= {0}.
+let x.
+assume Hx: x :e R_omega_space.
+let a.
+assume Ha: a :e Romega_D_scaled_diffs x x.
+prove a :e {0}.
+apply (ReplE_impred (omega :\: {0})
+                    (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun x i)) (inv_nat i))
+                    a
+                    Ha
+                    (a :e {0})).
+let i.
+assume HiIn: i :e omega :\: {0}.
+assume Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun x i)) (inv_nat i).
+rewrite Hai.
+claim HiO: i :e omega.
+{ exact (setminusE1 omega {0} i HiIn). }
+claim HxiR: apply_fun x i :e R.
+{ exact (Romega_coord_in_R x i Hx HiO). }
+claim Hbd0: R_bounded_distance (apply_fun x i) (apply_fun x i) = 0.
+{ exact (R_bounded_distance_self_zero (apply_fun x i) HxiR). }
+rewrite Hbd0.
+claim HinvR: inv_nat i :e R.
+{ exact (inv_nat_real i HiO). }
+claim HinvS: SNo (inv_nat i).
+{ exact (real_SNo (inv_nat i) HinvR). }
+rewrite (mul_SNo_zeroL (inv_nat i) HinvS).
+exact (SingI 0).
+Qed.
+
 Definition Romega_D_metric_value : set -> set -> set := fun x y =>
   Eps_i (fun r:set => R_lub (Romega_D_scaled_diffs x y) r).
 
