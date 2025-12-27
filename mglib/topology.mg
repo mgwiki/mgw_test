@@ -54057,11 +54057,11 @@ set U := space_family_union omega Xi.
 set fid := {(i,i)|i :e omega}.
 
 (** show fid :e R_omega_space **)
-claim Hfid: fid :e R_omega_space.
-{ prove fid :e product_space omega Xi.
-  prove fid :e {f :e Power (setprod omega (space_family_union omega Xi))|
-     function_on f omega (space_family_union omega Xi) /\
-     forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i}.
+	claim Hfid: fid :e R_omega_space.
+	{ prove fid :e product_space omega Xi.
+	  prove fid :e {f :e Power (setprod omega (space_family_union omega Xi))|
+	     total_function_on f omega (space_family_union omega Xi) /\ functional_graph f /\
+	     forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i}.
   claim H0omega: 0 :e omega.
   { exact (nat_p_omega 0 nat_0). }
   claim HX0: apply_fun Xi 0 = (R, R_standard_topology).
@@ -54097,17 +54097,27 @@ claim Hfid: fid :e R_omega_space.
     let i. assume Hi: i :e omega. assume Hpeq: p = (i,i).
     rewrite Hpeq.
     exact (tuple_2_setprod_by_pair_Sigma omega U i i Hi (HomegaU i Hi)). }
-  claim Hpow: fid :e Power (setprod omega U).
-  { exact (PowerI (setprod omega U) fid Hsub). }
-
-  claim Hfun: function_on fid omega U.
-  { let i. assume Hi: i :e omega.
-    prove apply_fun fid i :e U.
-    claim Happ: apply_fun fid i = i.
-    { exact (identity_function_apply omega i Hi). }
-    rewrite Happ.
-    exact (HomegaU i Hi). }
-  claim Hcoords: forall i:set, i :e omega -> apply_fun fid i :e space_family_set Xi i.
+	  claim Hpow: fid :e Power (setprod omega U).
+	  { exact (PowerI (setprod omega U) fid Hsub). }
+	
+	  claim Htot: total_function_on fid omega U.
+	  { prove function_on fid omega U /\
+	      forall x:set, x :e omega -> exists y:set, y :e U /\ (x,y) :e fid.
+	    apply andI.
+	    - let i. assume Hi: i :e omega.
+	      prove apply_fun fid i :e U.
+	      claim Happ: apply_fun fid i = i.
+	      { exact (identity_function_apply omega i Hi). }
+	      rewrite Happ.
+	      exact (HomegaU i Hi).
+	    - let i. assume Hi: i :e omega.
+	      witness i.
+	      apply andI.
+	      + exact (HomegaU i Hi).
+	      + exact (ReplI omega (fun i0:set => (i0,i0)) i Hi). }
+	  claim Hfg: functional_graph fid.
+	  { exact (functional_graph_graph omega (fun i0:set => i0)). }
+	  claim Hcoords: forall i:set, i :e omega -> apply_fun fid i :e space_family_set Xi i.
   { let i. assume Hi: i :e omega.
     prove apply_fun fid i :e space_family_set Xi i.
     claim Happ: apply_fun fid i = i.
@@ -54126,15 +54136,19 @@ claim Hfid: fid :e R_omega_space.
 	    { exact (omega_SNoS_omega i Hi). }
 	    exact (SNoS_omega_real i HiSNoS). }
 
-  claim Hprop: function_on fid omega U /\ forall i:set, i :e omega -> apply_fun fid i :e space_family_set Xi i.
-  { apply andI.
-    - exact Hfun.
-    - exact Hcoords. }
-  exact (SepI (Power (setprod omega U))
-              (fun f:set => function_on f omega U /\ forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
-              fid
-              Hpow
-              Hprop). }
+	  claim Hprop: (total_function_on fid omega U /\ functional_graph fid) /\
+	               forall i:set, i :e omega -> apply_fun fid i :e space_family_set Xi i.
+	  { apply andI.
+	    - apply andI.
+	      + exact Htot.
+	      + exact Hfg.
+	    - exact Hcoords. }
+	  exact (SepI (Power (setprod omega U))
+	              (fun f:set => (total_function_on f omega U /\ functional_graph f) /\
+	                            forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
+	              fid
+	              Hpow
+	              Hprop). }
 
 (** show unbounded_sequence_Romega fid **)
 claim Huseq: unbounded_sequence_Romega fid.
