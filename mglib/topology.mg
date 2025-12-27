@@ -67920,11 +67920,13 @@ claim HF_inj: inj (Power omega) binary_sequences_Romega F.
           rewrite (apply_fun_graph omega (fun k:set => if k :e B then 1 else 0) n HnO).
           rewrite (If_i_0 (n :e B) 1 0 HnnotB).
           reflexivity. }
+        claim HBAval: apply_fun (F B) n = 1.
+        { rewrite <- Heq.
+          exact HAval. }
         claim Hcontra: 1 = 0.
         { rewrite <- HBval.
-          rewrite <- Heq.
           symmetry.
-          exact HAval. }
+          exact HBAval. }
         claim H01: 0 = 1.
         { symmetry. exact Hcontra. }
         exact (FalseE (neq_0_1 H01) (n :e B)). 
@@ -67950,9 +67952,11 @@ claim HF_inj: inj (Power omega) binary_sequences_Romega F.
           rewrite (apply_fun_graph omega (fun k:set => if k :e A then 1 else 0) n HnO).
           rewrite (If_i_0 (n :e A) 1 0 HnnotA).
           reflexivity. }
+        claim HBval0: apply_fun (F B) n = 0.
+        { rewrite Heq.
+          exact HAval. }
         claim Hcontra: 1 = 0.
-        { rewrite <- HAval.
-          rewrite Heq.
+        { rewrite <- HBval0.
           symmetry.
           exact HBval. }
         claim H01: 0 = 1.
