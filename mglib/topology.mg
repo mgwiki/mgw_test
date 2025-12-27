@@ -66697,14 +66697,14 @@ Theorem Cauchy_with_convergent_subsequence_converges : forall X d seq x:set,
   metric_on X d -> cauchy_sequence X d seq ->
   (exists subseq:set, subseq c= seq /\ converges_to X (metric_topology X d) subseq x) ->
   converges_to X (metric_topology X d) seq x.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §43 Theorem 43.2: Euclidean space is complete **) 
 (** LATEX VERSION: Euclidean spaces are complete metric spaces. **)
 Theorem Euclidean_space_complete : forall k:set,
   complete_metric_space (euclidean_space k) (euclidean_metric k).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §43 Lemma 43.3: product convergence via projections **) 
@@ -66718,13 +66718,13 @@ Theorem product_sequence_convergence_iff_coordinates : forall X J:set,
                    (product_component_topology (const_space_family J R R_standard_topology) j)
                    (Repl seq (fun s => apply_fun s j))
                    (apply_fun x j)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §43 Theorem 43.4: complete metric on R^omega **) 
 (** LATEX VERSION: The bounded product metric makes R^ω complete. **)
 Theorem product_Romega_complete : complete_metric_space (power_real omega) (bounded_product_metric omega).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §44 Theorem: space-filling curve existence **) 
@@ -66733,7 +66733,7 @@ Definition unit_square : set := setprod unit_interval unit_interval.
 Definition unit_square_topology : set :=
   product_topology unit_interval unit_interval_topology unit_interval unit_interval_topology.
 Theorem space_filling_curve : exists f:set, continuous_map unit_interval unit_interval_topology unit_square unit_square_topology f.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §45 Definition: sequential compactness **)
@@ -66749,7 +66749,7 @@ Definition sequentially_compact : set -> set -> prop := fun X Tx =>
 Theorem compact_metric_equivalences : forall X d:set,
   metric_on X d ->
   (compact_space X (metric_topology X d) <-> sequentially_compact X (metric_topology X d)).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §46 Definition: pointwise and compact convergence topologies **) 
