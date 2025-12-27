@@ -74992,7 +74992,8 @@ Theorem graph3_in_euclidean_space3 : forall g:set->set,
  set Xi := const_space_family 3 R R_standard_topology.
  set U := space_family_union 3 Xi.
  prove graph 3 g :e {f :e Power (setprod 3 U)|
-                      function_on f 3 U /\ (forall i:set, i :e 3 -> apply_fun f i :e space_family_set Xi i)}.
+                      total_function_on f 3 U /\ functional_graph f /\
+                      (forall i:set, i :e 3 -> apply_fun f i :e space_family_set Xi i)}.
  claim Hsub: graph 3 g c= setprod 3 U.
  { let p. assume Hp: p :e graph 3 g.
    prove p :e setprod 3 U.
@@ -75022,12 +75023,28 @@ Theorem graph3_in_euclidean_space3 : forall g:set->set,
    { exact (space_family_set_const_R3 i Hi3). }
    rewrite HSf.
    exact (HgR i). }
- claim Hprop: function_on (graph 3 g) 3 U /\ (forall i:set, i :e 3 -> apply_fun (graph 3 g) i :e space_family_set Xi i).
- { apply andI.
+ claim Htot: total_function_on (graph 3 g) 3 U.
+ { prove function_on (graph 3 g) 3 U /\
+     forall x:set, x :e 3 -> exists y:set, y :e U /\ (x,y) :e graph 3 g.
+   apply andI.
    - exact Hfun.
+   - let i. assume Hi3: i :e 3.
+     witness (g i).
+     apply andI.
+     + exact (Hfun i Hi3).
+     + exact (ReplI 3 (fun i0:set => (i0, g i0)) i Hi3). }
+ claim Hfg: functional_graph (graph 3 g).
+ { exact (functional_graph_graph 3 g). }
+ claim Hprop: (total_function_on (graph 3 g) 3 U /\ functional_graph (graph 3 g)) /\
+              (forall i:set, i :e 3 -> apply_fun (graph 3 g) i :e space_family_set Xi i).
+ { apply andI.
+   - apply andI.
+     + exact Htot.
+     + exact Hfg.
    - exact Hcoords. }
  exact (SepI (Power (setprod 3 U))
-            (fun f0:set => function_on f0 3 U /\ (forall i:set, i :e 3 -> apply_fun f0 i :e space_family_set Xi i))
+            (fun f0:set => (total_function_on f0 3 U /\ functional_graph f0) /\
+              (forall i:set, i :e 3 -> apply_fun f0 i :e space_family_set Xi i))
             (graph 3 g)
             Hpow
             Hprop).
