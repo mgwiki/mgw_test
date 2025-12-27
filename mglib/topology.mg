@@ -54756,10 +54756,10 @@ claim Htot: total_function_on (graph omega h) omega U0.
   apply andI.
   - exact Hfun.
   - let i. assume Hi: i :e omega.
-    witness (h i).
-    apply andI.
-    + exact (Hfun i Hi).
-    + exact (ReplI omega (fun i0:set => (i0, h i0)) i Hi). }
+	    witness (h i).
+	    apply andI.
+	    + exact (HRinU0 (h i) (HhR i Hi)).
+	    + exact (ReplI omega (fun i0:set => (i0, h i0)) i Hi). }
 claim Hfg: functional_graph (graph omega h).
 { exact (functional_graph_graph omega h). }
 claim Hprop: (total_function_on (graph omega h) omega U0 /\ functional_graph (graph omega h)) /\
