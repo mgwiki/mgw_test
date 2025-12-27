@@ -69772,8 +69772,56 @@ apply SepI.
   claim Hiltb: Rlt (apply_fun f i) b.
   { exact (andER (Rlt a (apply_fun f i)) (Rlt (apply_fun f i) b) Hxiprop). }
   claim HexBall: exists r0:set, r0 :e R /\ Rlt 0 r0 /\ open_ball X d f r0 c= C.
-  { (** TODO: choose r0 ensuring the i-th coordinate stays inside open_interval a b, hence inside U; use Romega_D_metric_coord_abs_lt and a small enough r0 < inv_nat (i+1) scaled by an interval-radius. **)
-    admit. }
+  { (** choose r0 so that the i coordinate stays in open_interval a b (hence in U) **)
+    set xi := apply_fun f i.
+    claim HxiR: xi :e R.
+    { exact (Romega_coord_in_R f i HfX Hi). }
+    claim HaS: SNo a.
+    { exact (real_SNo a HaR). }
+    claim HbS: SNo b.
+    { exact (real_SNo b HbR). }
+    claim HxiS: SNo xi.
+    { exact (real_SNo xi HxiR). }
+    set m1 := add_SNo xi (minus_SNo a).
+    set m2 := add_SNo b (minus_SNo xi).
+    claim Hm1R: m1 :e R.
+    { exact (real_add_SNo xi HxiR (minus_SNo a) (real_minus_SNo a HaR)). }
+    claim Hm2R: m2 :e R.
+    { exact (real_add_SNo b HbR (minus_SNo xi) (real_minus_SNo xi HxiR)). }
+    claim Hm1pos: Rlt 0 m1.
+    { admit. }
+    claim Hm2pos: Rlt 0 m2.
+    { admit. }
+    claim H1R: 1 :e R.
+    { exact real_1. }
+    claim H1pos: Rlt 0 1.
+    { exact Rlt_0_1. }
+    claim Hexr3: exists r3:set, r3 :e R /\ Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 1 /\ Rlt r3 1.
+    { exact (exists_eps_lt_four_pos_Euclid m1 m2 1 1 Hm1R Hm2R H1R H1R Hm1pos Hm2pos H1pos H1pos). }
+    apply Hexr3.
+    let r3.
+    assume Hr3conj: r3 :e R /\ Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 1 /\ Rlt r3 1.
+    claim Hr3R: r3 :e R.
+    { admit. }
+    claim Hr3pos: Rlt 0 r3.
+    { admit. }
+	    set inv := inv_nat (ordsucc i).
+	    claim HinvR: inv :e R.
+	    { claim Hisuc: ordsucc i :e omega.
+	      { exact (omega_ordsucc i Hi). }
+	      exact (inv_nat_real (ordsucc i) Hisuc). }
+    set r0 := mul_SNo r3 inv.
+    claim Hr0R: r0 :e R.
+    { exact (real_mul_SNo r3 Hr3R inv HinvR). }
+    claim Hr0pos: Rlt 0 r0.
+    { admit. }
+    witness r0.
+    apply andI.
+    - apply andI.
+      + exact Hr0R.
+      + exact Hr0pos.
+    - (** open_ball subset cylinder **)
+      admit. }
   apply HexBall.
   let r0. assume Hr0pair.
   apply Hr0pair.
