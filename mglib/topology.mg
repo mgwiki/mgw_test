@@ -39213,6 +39213,169 @@ prove x :e ex17_17_interval_A_closure_lower.
 exact (SepI R (fun z:set => 0 <= z /\ z < sqrt2) x HxR (andI (0 <= x) (x < sqrt2) H0lex HxltS2)).
 Qed.
 
+(** Helper for Exercise 17: closure(B) in lower limit topology is contained in {x|sqrt2<=x<x<3} **)
+(** LATEX VERSION: In the lower limit topology, points <sqrt2 and points ≥3 have neighborhoods disjoint from B=(sqrt2,3). **)
+Theorem ex17_17_closure_B_lower_Subq : closure_of R R_lower_limit_topology ex17_17_interval_B c= ex17_17_interval_B_closure_lower.
+let x. assume Hx: x :e closure_of R R_lower_limit_topology ex17_17_interval_B.
+prove x :e ex17_17_interval_B_closure_lower.
+claim HxR: x :e R.
+{ exact (SepE1 R (fun x0:set => forall U:set, U :e R_lower_limit_topology -> x0 :e U -> U :/\: ex17_17_interval_B <> Empty) x Hx). }
+claim Hxcl: forall U:set, U :e R_lower_limit_topology -> x :e U -> U :/\: ex17_17_interval_B <> Empty.
+{ exact (SepE2 R (fun x0:set => forall U:set, U :e R_lower_limit_topology -> x0 :e U -> U :/\: ex17_17_interval_B <> Empty) x Hx). }
+claim HxS: SNo x.
+{ exact (real_SNo x HxR). }
+claim Hs2R: sqrt2 :e R.
+{ exact sqrt2_in_R. }
+claim Hs2S: SNo sqrt2.
+{ exact (real_SNo sqrt2 Hs2R). }
+claim H3S: SNo 3.
+{ exact (real_SNo 3 real_3). }
+
+(** establish sqrt2 <= x by ruling out x < sqrt2 **)
+claim HnotxltS2: ~(x < sqrt2).
+{ assume HxltS2: x < sqrt2.
+  apply FalseE.
+  claim HxRltS2: Rlt x sqrt2.
+  { exact (RltI x sqrt2 HxR Hs2R HxltS2). }
+  set U := halfopen_interval_left x sqrt2.
+  claim HUopen: U :e R_lower_limit_topology.
+  { exact (halfopen_interval_left_in_R_lower_limit_topology x sqrt2 HxR Hs2R). }
+  claim HxU: x :e U.
+  { exact (halfopen_interval_left_leftmem x sqrt2 HxRltS2). }
+  claim Hne: U :/\: ex17_17_interval_B <> Empty.
+  { exact (Hxcl U HUopen HxU). }
+  claim Hempty: U :/\: ex17_17_interval_B = Empty.
+  { apply Empty_Subq_eq.
+    let y. assume Hy: y :e U :/\: ex17_17_interval_B.
+    prove y :e Empty.
+    apply FalseE.
+    claim HyU: y :e U.
+    { exact (binintersectE1 U ex17_17_interval_B y Hy). }
+    claim HyB: y :e ex17_17_interval_B.
+    { exact (binintersectE2 U ex17_17_interval_B y Hy). }
+    claim HyUprop: ~(Rlt y x) /\ Rlt y sqrt2.
+    { exact (SepE2 R (fun z:set => ~(Rlt z x) /\ Rlt z sqrt2) y HyU). }
+    claim HyltS2: Rlt y sqrt2.
+    { exact (andER (~(Rlt y x)) (Rlt y sqrt2) HyUprop). }
+    claim HyBprop: Rlt sqrt2 y /\ Rlt y 3.
+    { exact (SepE2 R (fun z:set => Rlt sqrt2 z /\ Rlt z 3) y HyB). }
+    claim Hs2lty: Rlt sqrt2 y.
+    { exact (andEL (Rlt sqrt2 y) (Rlt y 3) HyBprop). }
+    claim Hs2ltS2: Rlt sqrt2 sqrt2.
+    { exact (Rlt_tra sqrt2 y sqrt2 Hs2lty HyltS2). }
+    exact ((not_Rlt_refl sqrt2 Hs2R) Hs2ltS2). }
+  exact (Hne Hempty). }
+
+claim Hs2lex: sqrt2 <= x.
+{ apply (SNoLt_trichotomy_or_impred x sqrt2 HxS Hs2S (sqrt2 <= x)).
+  - assume Hlt: x < sqrt2.
+    apply FalseE.
+    exact (HnotxltS2 Hlt).
+  - assume Heq: x = sqrt2.
+    rewrite Heq.
+    exact (SNoLe_ref sqrt2).
+  - assume Hgt: sqrt2 < x.
+    exact (SNoLtLe sqrt2 x Hgt). }
+
+(** establish x < 3 by ruling out x = 3 and 3 < x **)
+claim Hxlt3: x < 3.
+{ apply (SNoLt_trichotomy_or_impred x 3 HxS H3S (x < 3)).
+  - assume Hlt: x < 3. exact Hlt.
+  - assume Heq: x = 3.
+    apply FalseE.
+    set b0 := add_SNo x 1.
+    claim Hb0R: b0 :e R.
+    { rewrite Heq.
+      exact (real_add_SNo 3 real_3 1 real_1). }
+    claim HxInStd: x :e open_interval (add_SNo x (minus_SNo 1)) b0.
+    { exact (real_in_open_interval_minus1_plus1 x HxR). }
+    claim HxStdProp: Rlt (add_SNo x (minus_SNo 1)) x /\ Rlt x b0.
+    { exact (SepE2 R (fun z:set => Rlt (add_SNo x (minus_SNo 1)) z /\ Rlt z b0) x HxInStd). }
+    claim Hxb0: Rlt x b0.
+    { exact (andER (Rlt (add_SNo x (minus_SNo 1)) x) (Rlt x b0) HxStdProp). }
+    set U := halfopen_interval_left x b0.
+    claim HUopen: U :e R_lower_limit_topology.
+    { exact (halfopen_interval_left_in_R_lower_limit_topology x b0 HxR Hb0R). }
+    claim HxU: x :e U.
+    { exact (halfopen_interval_left_leftmem x b0 Hxb0). }
+    claim Hne: U :/\: ex17_17_interval_B <> Empty.
+    { exact (Hxcl U HUopen HxU). }
+    claim Hempty: U :/\: ex17_17_interval_B = Empty.
+    { apply Empty_Subq_eq.
+      let y. assume Hy: y :e U :/\: ex17_17_interval_B.
+      prove y :e Empty.
+      apply FalseE.
+      claim HyU: y :e U.
+      { exact (binintersectE1 U ex17_17_interval_B y Hy). }
+      claim HyB: y :e ex17_17_interval_B.
+      { exact (binintersectE2 U ex17_17_interval_B y Hy). }
+      claim HyUprop: ~(Rlt y x) /\ Rlt y b0.
+      { exact (SepE2 R (fun z:set => ~(Rlt z x) /\ Rlt z b0) y HyU). }
+      claim Hnyx: ~(Rlt y x).
+      { exact (andEL (~(Rlt y x)) (Rlt y b0) HyUprop). }
+      claim HyBprop: Rlt sqrt2 y /\ Rlt y 3.
+      { exact (SepE2 R (fun z:set => Rlt sqrt2 z /\ Rlt z 3) y HyB). }
+      claim Hylt3: Rlt y 3.
+      { exact (andER (Rlt sqrt2 y) (Rlt y 3) HyBprop). }
+      claim Hyltx: Rlt y x.
+      { rewrite Heq.
+        exact Hylt3. }
+      exact (Hnyx Hyltx). }
+    exact (Hne Hempty).
+  - assume Hgt: 3 < x.
+    apply FalseE.
+    set b0 := add_SNo x 1.
+    claim Hb0R: b0 :e R.
+    { exact (real_add_SNo x HxR 1 real_1). }
+    claim HxInStd: x :e open_interval (add_SNo x (minus_SNo 1)) b0.
+    { exact (real_in_open_interval_minus1_plus1 x HxR). }
+    claim HxStdProp: Rlt (add_SNo x (minus_SNo 1)) x /\ Rlt x b0.
+    { exact (SepE2 R (fun z:set => Rlt (add_SNo x (minus_SNo 1)) z /\ Rlt z b0) x HxInStd). }
+    claim Hxb0: Rlt x b0.
+    { exact (andER (Rlt (add_SNo x (minus_SNo 1)) x) (Rlt x b0) HxStdProp). }
+    set U := halfopen_interval_left x b0.
+    claim HUopen: U :e R_lower_limit_topology.
+    { exact (halfopen_interval_left_in_R_lower_limit_topology x b0 HxR Hb0R). }
+    claim HxU: x :e U.
+    { exact (halfopen_interval_left_leftmem x b0 Hxb0). }
+    claim Hne: U :/\: ex17_17_interval_B <> Empty.
+    { exact (Hxcl U HUopen HxU). }
+    claim Hempty: U :/\: ex17_17_interval_B = Empty.
+    { apply Empty_Subq_eq.
+      let y. assume Hy: y :e U :/\: ex17_17_interval_B.
+      prove y :e Empty.
+      apply FalseE.
+      claim HyU: y :e U.
+      { exact (binintersectE1 U ex17_17_interval_B y Hy). }
+      claim HyB: y :e ex17_17_interval_B.
+      { exact (binintersectE2 U ex17_17_interval_B y Hy). }
+      claim HyUprop: ~(Rlt y x) /\ Rlt y b0.
+      { exact (SepE2 R (fun z:set => ~(Rlt z x) /\ Rlt z b0) y HyU). }
+      claim Hnyx: ~(Rlt y x).
+      { exact (andEL (~(Rlt y x)) (Rlt y b0) HyUprop). }
+      claim HyBprop: Rlt sqrt2 y /\ Rlt y 3.
+      { exact (SepE2 R (fun z:set => Rlt sqrt2 z /\ Rlt z 3) y HyB). }
+      claim HyR: y :e R.
+      { exact (SepE1 R (fun z:set => Rlt sqrt2 z /\ Rlt z 3) y HyB). }
+      claim Hylt3R: Rlt y 3.
+      { exact (andER (Rlt sqrt2 y) (Rlt y 3) HyBprop). }
+      claim HyS: SNo y.
+      { exact (real_SNo y HyR). }
+      claim Hylt3: y < 3.
+      { exact (RltE_lt y 3 Hylt3R). }
+      claim H3ltx: 3 < x.
+      { exact Hgt. }
+      claim Hyltx: y < x.
+      { exact (SNoLt_tra y 3 x HyS H3S HxS Hylt3 H3ltx). }
+      claim Hyltrx: Rlt y x.
+      { exact (RltI y x HyR HxR Hyltx). }
+      exact (Hnyx Hyltrx). }
+    exact (Hne Hempty). }
+
+prove x :e ex17_17_interval_B_closure_lower.
+exact (SepI R (fun z:set => sqrt2 <= z /\ z < 3) x HxR (andI (sqrt2 <= x) (x < 3) Hs2lex Hxlt3)).
+Qed.
+
 Theorem ex17_17_closures_of_A_B_in_two_topologies :
   closure_of R R_lower_limit_topology ex17_17_interval_A = ex17_17_interval_A_closure_lower /\
   closure_of R R_C_topology ex17_17_interval_A = ex17_17_interval_A_closure_C /\
