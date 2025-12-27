@@ -66734,7 +66734,66 @@ apply andI.
   claim HmulR: mul_SNo bd inv :e R.
   { exact (real_mul_SNo bd HbdR inv HinvR). }
   apply (RleI (mul_SNo bd inv) 1 HmulR real_1).
-  admit. (** FAIL **)
+  assume Hlt1: Rlt 1 (mul_SNo bd inv).
+  prove False.
+  claim H1lt: 1 < mul_SNo bd inv.
+  { exact (RltE_lt 1 (mul_SNo bd inv) Hlt1). }
+  claim HbdRle1: Rle bd 1.
+  { exact (R_bounded_distance_le_1 (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+  claim HinvRle1: Rle inv 1.
+  { exact (inv_nat_Rle_1 i HiIn). }
+  claim HbdS: SNo bd.
+  { exact (real_SNo bd HbdR). }
+  claim HinvS: SNo inv.
+  { exact (real_SNo inv HinvR). }
+  claim HmulS: SNo (mul_SNo bd inv).
+  { exact (real_SNo (mul_SNo bd inv) HmulR). }
+  claim H0ltInvR: Rlt 0 inv.
+  { exact (inv_nat_pos i HiIn). }
+  claim H0ltInv: 0 < inv.
+  { exact (RltE_lt 0 inv H0ltInvR). }
+  claim H0leInv: 0 <= inv.
+  { exact (SNoLtLe 0 inv H0ltInv). }
+  claim HbdLe1: bd <= 1.
+  { apply (SNoLt_trichotomy_or_impred bd 1 HbdS SNo_1 (bd <= 1)).
+    - assume Hlt: bd < 1.
+      exact (SNoLtLe bd 1 Hlt).
+    - assume Heq: bd = 1.
+      rewrite Heq.
+      exact (SNoLe_ref 1).
+    - assume H1ltbd: 1 < bd.
+      apply FalseE.
+      claim HbdRlt: Rlt 1 bd.
+      { exact (RltI 1 bd real_1 HbdR H1ltbd). }
+      exact ((RleE_nlt bd 1 HbdRle1) HbdRlt). }
+  claim HinvLe1: inv <= 1.
+  { apply (SNoLt_trichotomy_or_impred inv 1 HinvS SNo_1 (inv <= 1)).
+    - assume Hlt: inv < 1.
+      exact (SNoLtLe inv 1 Hlt).
+    - assume Heq: inv = 1.
+      rewrite Heq.
+      exact (SNoLe_ref 1).
+    - assume H1ltinv: 1 < inv.
+      apply FalseE.
+      claim HinvRlt: Rlt 1 inv.
+      { exact (RltI 1 inv real_1 HinvR H1ltinv). }
+      exact ((RleE_nlt inv 1 HinvRle1) HinvRlt). }
+  claim HmulLeInv: mul_SNo bd inv <= inv.
+  { exact (mul_SNo_Le1_nonneg_Le bd inv HbdS HinvS HbdLe1 H0leInv). }
+  claim HmulLe1: mul_SNo bd inv <= 1.
+  { exact (SNoLe_tra (mul_SNo bd inv) inv 1 HmulS HinvS SNo_1 HmulLeInv HinvLe1). }
+  claim Hcase: mul_SNo bd inv < 1 \/ mul_SNo bd inv = 1.
+  { exact (SNoLeE (mul_SNo bd inv) 1 HmulS SNo_1 HmulLe1). }
+  apply (Hcase False).
+  - assume HmulLt1: mul_SNo bd inv < 1.
+    claim H11: 1 < 1.
+    { exact (SNoLt_tra 1 (mul_SNo bd inv) 1 SNo_1 HmulS SNo_1 H1lt HmulLt1). }
+    exact ((SNoLt_irref 1) H11).
+  - assume HmulEq1: mul_SNo bd inv = 1.
+    claim H11: 1 < 1.
+    { rewrite <- HmulEq1 at 2.
+      exact H1lt. }
+    exact ((SNoLt_irref 1) H11).
 Qed.
 
 (** helper: the chosen D value is a least upper bound **)
