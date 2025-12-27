@@ -66583,7 +66583,47 @@ Definition Romega_D_metric_value : set -> set -> set := fun x y =>
 
 (** helper: reciprocal of a natural is <= 1 **)
 Theorem inv_nat_Rle_1 : forall n:set, n :e omega :\: {0} -> Rle (inv_nat n) 1.
-admit. (** FAIL **)
+let n.
+assume HnIn: n :e omega :\: {0}.
+claim HnO: n :e omega.
+{ exact (setminusE1 omega {0} n HnIn). }
+claim Hnnot0: n /:e {0}.
+{ exact (setminusE2 omega {0} n HnIn). }
+claim HnNat: nat_p n.
+{ exact (omega_nat_p n HnO). }
+claim HnCase: n = 0 \/ exists k:set, nat_p k /\ n = ordsucc k.
+{ exact (nat_inv n HnNat). }
+claim Hexk: exists k:set, nat_p k /\ n = ordsucc k.
+{ apply (HnCase (exists k:set, nat_p k /\ n = ordsucc k)).
+  - assume Hn0: n = 0.
+    apply FalseE.
+    claim Hnin0: n :e {0}.
+    { rewrite Hn0. exact (SingI 0). }
+    exact (Hnnot0 Hnin0).
+  - assume H. exact H. }
+apply Hexk.
+let k.
+assume Hkconj.
+claim HkNat: nat_p k.
+{ exact (andEL (nat_p k) (n = ordsucc k) Hkconj). }
+claim Hneq: n = ordsucc k.
+{ exact (andER (nat_p k) (n = ordsucc k) Hkconj). }
+apply (xm (k = 0)).
+- assume Hk0: k = 0.
+  rewrite Hneq.
+  rewrite Hk0.
+  (** inv_nat 1 = 1 **)
+  claim Hinv1: inv_nat 1 = 1.
+  { claim H1neq0: 1 <> 0.
+    { exact neq_1_0. }
+    claim Hinv: mul_SNo 1 (inv_nat 1) = 1.
+    { exact (recip_SNo_invR 1 SNo_1 H1neq0). }
+    rewrite <- (mul_SNo_oneL (inv_nat 1) (SNo_recip_SNo 1 SNo_1)) at 1.
+    exact Hinv. }
+  rewrite Hinv1.
+  exact (Rle_refl 1 real_1).
+- assume Hkneq0: ~(k = 0).
+  admit. (** FAIL **)
 Qed.
 
 (** helper: scaled diffs are real numbers **)
