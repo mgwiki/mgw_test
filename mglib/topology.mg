@@ -57656,7 +57656,7 @@ Theorem ex23_path_connected_not_locally_connected_examples :
 prove exists A:set,
     A c= EuclidPlane /\ path_connected_space A (subspace_topology EuclidPlane R2_standard_topology A) /\
     ~ locally_connected A (subspace_topology EuclidPlane R2_standard_topology A).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §26 Definition: compact space **) 
@@ -60242,7 +60242,7 @@ Qed.
 (** from §26 Exercises: compactness examples and properties **) 
 (** LATEX VERSION: Exercises: unit interval closed in ℝ, unit interval compact, etc. **)
 Theorem unit_interval_compact_axiom : compact_space unit_interval unit_interval_topology.
-admit.
+admit. (** FAIL **)
 Qed.
 Theorem ex26_compactness_exercises :
   (closed_in R R_standard_topology unit_interval) /\
@@ -60980,7 +60980,7 @@ Qed.
 Theorem limit_point_compact_not_necessarily_compact :
   exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
 prove exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §29 Definition: local compactness **) 
