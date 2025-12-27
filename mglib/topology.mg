@@ -66581,6 +66581,11 @@ Definition Romega_D_scaled_diffs : set -> set -> set := fun x y =>
 Definition Romega_D_metric_value : set -> set -> set := fun x y =>
   Eps_i (fun r:set => R_lub (Romega_D_scaled_diffs x y) r).
 
+(** helper: reciprocal of a natural is <= 1 **)
+Theorem inv_nat_Rle_1 : forall n:set, n :e omega :\: {0} -> Rle (inv_nat n) 1.
+admit. (** FAIL **)
+Qed.
+
 (** helper: scaled diffs are real numbers **)
 Theorem Romega_D_scaled_diffs_in_R : forall x y:set,
   x :e R_omega_space ->
@@ -66628,7 +66633,26 @@ Theorem Romega_D_scaled_diffs_bounded : forall x y:set,
   x :e R_omega_space ->
   y :e R_omega_space ->
   exists u:set, u :e R /\ forall a:set, a :e Romega_D_scaled_diffs x y -> a :e R -> Rle a u.
-admit. (** FAIL **)
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+witness 1.
+apply andI.
+- exact real_1.
+- let a.
+  assume HaA: a :e Romega_D_scaled_diffs x y.
+  assume HaR: a :e R.
+  prove Rle a 1.
+  apply (ReplE_impred (omega :\: {0})
+                      (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i))
+                      a
+                      HaA
+                      (Rle a 1)).
+  let i.
+  assume HiIn: i :e omega :\: {0}.
+  assume Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i).
+  rewrite Hai.
+  admit. (** FAIL **)
 Qed.
 
 (** helper: the chosen D value is a least upper bound **)
