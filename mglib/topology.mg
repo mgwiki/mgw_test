@@ -37336,7 +37336,7 @@ apply set_ext.
     apply FalseE.
     (** choose a standard open interval I containing x, then remove K_set: U = I\\K_set **)
     claim HexI: exists I :e R_standard_basis, x :e I.
-    { exact (basis_on_cov R R_standard_basis R_standard_basis_is_basis_local x HxR). }
+    { exact (basis_on_cover R R_standard_basis R_standard_basis_is_basis_local x HxR). }
     apply HexI.
     let I. assume HIpair.
     claim HIstd: I :e R_standard_basis.
@@ -37369,11 +37369,12 @@ apply set_ext.
         exact (famunionI R (fun a0 : set => {open_interval a0 b0 :\: K_set|b0 :e R}) a U HaR HUr). }
       claim HUinB: U :e (R_standard_basis :\/: R_K_basis).
       { exact (binunionI2 R_standard_basis R_K_basis U HUk). }
-      rewrite (refl_equal R_K_topology).
       exact (basis_in_generated R (R_standard_basis :\/: R_K_basis) U R_standard_plus_K_basis_is_basis_local HUinB). }
     claim HxU: x :e U.
-    { rewrite <- HIeq in HxI.
-      exact (setminusI (open_interval a b) K_set x HxI HxnotK). }
+    { claim HxOpen: x :e open_interval a b.
+      { rewrite <- HIeq.
+        exact HxI. }
+      exact (setminusI (open_interval a b) K_set x HxOpen HxnotK). }
     claim Hne: U :/\: K_set <> Empty.
     { exact (Hcl U HUopen HxU). }
     (** but (open_interval a b \\ K_set) ∩ K_set is empty **)
@@ -37387,8 +37388,7 @@ apply set_ext.
       claim HyK: y :e K_set.
       { exact (binintersectE2 U K_set y Hy). }
       claim HyNotK: y /:e K_set.
-      { rewrite (refl_equal U) in HyU.
-        exact (setminusE2 (open_interval a b) K_set y HyU). }
+      { exact (setminusE2 (open_interval a b) K_set y HyU). }
       exact (HyNotK HyK). }
     exact (Hne Hempty).
 - (** K_set is always a subset of its closure **)
