@@ -68169,7 +68169,7 @@ apply andI.
           symmetry.
           exact Heq. }
         claim Hbad: Rlt 1 1.
-        { rewrite <- Hdist1.
+        { rewrite <- Hdist1 at 1.
           exact Hdistlt. }
         exact (FalseE ((not_Rlt_refl 1 real_1) Hbad) (f :e {a})).
     - let f. assume Hf: f :e {a}.
@@ -68177,7 +68177,7 @@ apply andI.
       claim Hfa: f = a.
       { exact (singleton_elem f a Hf). }
       rewrite Hfa.
-      apply andI.
+      apply (binintersectI U binary_sequences_Romega a).
       * (** a :e U **)
         claim HaX: a :e real_sequences.
         { exact (SepE1 real_sequences (fun f0:set => forall n:set, n :e omega -> apply_fun f0 n :e {0,1}) a Ha). }
