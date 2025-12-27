@@ -9821,7 +9821,7 @@ Qed.
 
 (** from §13 Example 4: circular vs rectangular region bases **)
 (** LATEX VERSION: Example 4: circular regions and axis-parallel rectangular regions in ℝ² both form bases generating the same topology. **)
-(** FIXED: EuclidPlane is now correctly R×R (Cartesian product) since setprod = setprod. **)
+(** FIXED: EuclidPlane is now correctly R×R (Cartesian product), since `setprod` is the Σ-encoding used throughout for X×Y. **)
 Definition EuclidPlane : set := setprod R R.
 (** Coordinate selectors for points in EuclidPlane. **)
 Definition R2_xcoord : set -> set := fun p => p 0.
