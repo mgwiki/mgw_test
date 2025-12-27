@@ -68441,10 +68441,116 @@ apply andI.
 			        { let i.
 			          assume HiO: i :e omega.
 			          exact (Romega_D_metric_value_eq0_coord_eq x y Hx Hy Hval0 i HiO). }
-		        admit. }
-		  + admit.
-		- (** topology equality part **)
-		  admit.
+			        prove x = y.
+			        set Xi0 := const_space_family omega R R_standard_topology.
+			        set U0 := space_family_union omega Xi0.
+			        claim HxPow: x :e Power (setprod omega U0).
+			        { exact (SepE1 (Power (setprod omega U0))
+			                       (fun f0:set => (total_function_on f0 omega U0 /\ functional_graph f0) /\
+			                         forall j:set, j :e omega -> apply_fun f0 j :e space_family_set Xi0 j)
+			                       x
+			                       Hx). }
+			        claim HyPow: y :e Power (setprod omega U0).
+			        { exact (SepE1 (Power (setprod omega U0))
+			                       (fun f0:set => (total_function_on f0 omega U0 /\ functional_graph f0) /\
+			                         forall j:set, j :e omega -> apply_fun f0 j :e space_family_set Xi0 j)
+			                       y
+			                       Hy). }
+			        claim HxSub: x c= setprod omega U0.
+			        { exact (PowerE (setprod omega U0) x HxPow). }
+			        claim HySub: y c= setprod omega U0.
+			        { exact (PowerE (setprod omega U0) y HyPow). }
+			        claim HxPack: (total_function_on x omega U0 /\ functional_graph x) /\
+			                      forall j:set, j :e omega -> apply_fun x j :e space_family_set Xi0 j.
+			        { exact (SepE2 (Power (setprod omega U0))
+			                       (fun f0:set => (total_function_on f0 omega U0 /\ functional_graph f0) /\
+			                         forall j:set, j :e omega -> apply_fun f0 j :e space_family_set Xi0 j)
+			                       x
+			                       Hx). }
+			        claim HyPack: (total_function_on y omega U0 /\ functional_graph y) /\
+			                      forall j:set, j :e omega -> apply_fun y j :e space_family_set Xi0 j.
+			        { exact (SepE2 (Power (setprod omega U0))
+			                       (fun f0:set => (total_function_on f0 omega U0 /\ functional_graph f0) /\
+			                         forall j:set, j :e omega -> apply_fun f0 j :e space_family_set Xi0 j)
+			                       y
+			                       Hy). }
+			        claim HxCore: total_function_on x omega U0 /\ functional_graph x.
+			        { exact (andEL (total_function_on x omega U0 /\ functional_graph x)
+			                       (forall j:set, j :e omega -> apply_fun x j :e space_family_set Xi0 j)
+			                       HxPack). }
+			        claim HyCore: total_function_on y omega U0 /\ functional_graph y.
+			        { exact (andEL (total_function_on y omega U0 /\ functional_graph y)
+			                       (forall j:set, j :e omega -> apply_fun y j :e space_family_set Xi0 j)
+			                       HyPack). }
+			        claim HxTot: total_function_on x omega U0.
+			        { exact (andEL (total_function_on x omega U0) (functional_graph x) HxCore). }
+			        claim HxFG: functional_graph x.
+			        { exact (andER (total_function_on x omega U0) (functional_graph x) HxCore). }
+			        claim HyTot: total_function_on y omega U0.
+			        { exact (andEL (total_function_on y omega U0) (functional_graph y) HyCore). }
+			        claim HyFG: functional_graph y.
+			        { exact (andER (total_function_on y omega U0) (functional_graph y) HyCore). }
+			        apply set_ext.
+			        - let p. assume Hp: p :e x.
+			          prove p :e y.
+			          claim HpXY: p :e setprod omega U0.
+			          { exact (HxSub p Hp). }
+			          claim Heta: p = (p 0, p 1).
+			          { exact (setprod_eta omega U0 p HpXY). }
+			          claim Hp0: p 0 :e omega.
+			          { exact (ap0_Sigma omega (fun _ : set => U0) p HpXY). }
+			          claim Hp1: p 1 :e U0.
+			          { exact (ap1_Sigma omega (fun _ : set => U0) p HpXY). }
+			          claim Hpair: (p 0, p 1) :e x.
+			          { rewrite <- Heta.
+			            exact Hp. }
+			          claim Happx: apply_fun x (p 0) = (p 1).
+			          { exact (functional_graph_apply_fun_eq x (p 0) (p 1) HxFG Hpair). }
+			          claim Hxy: apply_fun y (p 0) = apply_fun x (p 0).
+			          { symmetry.
+			            exact (Hcoord (p 0) Hp0). }
+			          claim Happy: apply_fun y (p 0) = (p 1).
+			          { rewrite Hxy.
+			            exact Happx. }
+			          claim Hypair: (p 0, apply_fun y (p 0)) :e y.
+			          { exact (total_function_on_apply_fun_in_graph y omega U0 (p 0) HyTot Hp0). }
+			          claim Hpeq: (p 0, apply_fun y (p 0)) = (p 0, p 1).
+			          { rewrite Happy.
+			            reflexivity. }
+			          rewrite Heta.
+			          rewrite <- Hpeq.
+			          exact Hypair.
+			        - let p. assume Hp: p :e y.
+			          prove p :e x.
+			          claim HpXY: p :e setprod omega U0.
+			          { exact (HySub p Hp). }
+			          claim Heta: p = (p 0, p 1).
+			          { exact (setprod_eta omega U0 p HpXY). }
+			          claim Hp0: p 0 :e omega.
+			          { exact (ap0_Sigma omega (fun _ : set => U0) p HpXY). }
+			          claim Hp1: p 1 :e U0.
+			          { exact (ap1_Sigma omega (fun _ : set => U0) p HpXY). }
+			          claim Hpair: (p 0, p 1) :e y.
+			          { rewrite <- Heta.
+			            exact Hp. }
+			          claim Happy: apply_fun y (p 0) = (p 1).
+			          { exact (functional_graph_apply_fun_eq y (p 0) (p 1) HyFG Hpair). }
+			          claim Hyx: apply_fun x (p 0) = apply_fun y (p 0).
+			          { exact (Hcoord (p 0) Hp0). }
+			          claim Happx: apply_fun x (p 0) = (p 1).
+			          { rewrite Hyx.
+			            exact Happy. }
+			          claim Hxpair: (p 0, apply_fun x (p 0)) :e x.
+			          { exact (total_function_on_apply_fun_in_graph x omega U0 (p 0) HxTot Hp0). }
+			          claim Hpeq: (p 0, apply_fun x (p 0)) = (p 0, p 1).
+			          { rewrite Happx.
+			            reflexivity. }
+			          rewrite Heta.
+			          rewrite <- Hpeq.
+			          exact Hxpair. }
+			  + admit.
+			- (** topology equality part **)
+			  admit.
 Qed.
 
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
