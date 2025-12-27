@@ -65998,6 +65998,23 @@ Definition countable_basis_at : set -> set -> set -> prop := fun X Tx x =>
 Definition first_countable_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall x:set, x :e X -> countable_basis_at X Tx x.
 
+(** helper: open balls are monotone in the radius **)
+(** LATEX VERSION: If r1 < r2 then B(x,r1) ⊂ B(x,r2). **)
+Theorem open_ball_radius_mono : forall X d x r1 r2:set,
+  Rlt r1 r2 -> open_ball X d x r1 c= open_ball X d x r2.
+let X d x r1 r2.
+assume Hr: Rlt r1 r2.
+let y. assume Hy: y :e open_ball X d x r1.
+prove y :e open_ball X d x r2.
+claim HyX: y :e X.
+{ exact (open_ballE1 X d x r1 y Hy). }
+claim Hdlt: Rlt (apply_fun d (x,y)) r1.
+{ exact (open_ballE2 X d x r1 y Hy). }
+claim Hdlt2: Rlt (apply_fun d (x,y)) r2.
+{ exact (Rlt_tra (apply_fun d (x,y)) r1 r2 Hdlt Hr). }
+exact (open_ballI X d x r2 y HyX Hdlt2).
+Qed.
+
 (** helper: countable local basis at a point in a nonempty countable product of first-countable spaces **)
 (** LATEX VERSION: The usual product argument produces a countable neighborhood basis at a point. **)
 Theorem product_countable_basis_at_point_if_components_first_countable : forall I Xi f:set,
