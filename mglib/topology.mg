@@ -68238,25 +68238,36 @@ apply (xm (exists n:set, n :e omega /\ apply_fun f n <> apply_fun g n)
     claim HpProd: p :e setprod omega R.
     { exact (Hsubf p Hp). }
     apply (Sigma_E omega (fun _ : set => R) p HpProd).
-    let n. assume Hn: n :e omega.
-    let y. assume Hy: y :e R.
-    assume Hpdef: p = pair n y.
-    rewrite Hpdef.
-    rewrite (tuple_pair n y).
-    claim Hpf: (pair n y) :e f.
-    { rewrite <- Hpdef.
+    let n.
+    assume Hn_pair.
+    apply Hn_pair.
+    assume Hn: n :e omega.
+    assume Hrest.
+    apply Hrest.
+    let y.
+    assume Hy_pair.
+    apply Hy_pair.
+    assume Hy: y :e R.
+    assume Hpdef.
+    claim HpdefT: p = (n,y).
+    { rewrite <- (tuple_pair n y) at 1.
+      exact Hpdef. }
+    rewrite HpdefT.
+    claim Hpf: (n,y) :e f.
+    { rewrite <- HpdefT.
       exact Hp. }
-    claim Hpf_t: (n,y) :e f.
-    { rewrite <- (tuple_pair n y).
-      exact Hpf. }
     claim Happf: apply_fun f n = y.
-    { exact (functional_graph_apply_fun_eq f n y Hfunf Hpf_t). }
+    { exact (functional_graph_apply_fun_eq f n y Hfunf Hpf). }
     claim Happg: apply_fun g n = y.
     { rewrite <- Happf.
+      symmetry.
       exact (Heqpt n Hn). }
     claim Hpg: (n, apply_fun g n) :e g.
     { exact (total_function_on_apply_fun_in_graph g omega R n Htotg Hn). }
-    rewrite Happg at 2.
+    claim HtupEq: (n, apply_fun g n) = (n,y).
+    { rewrite Happg.
+      reflexivity. }
+    rewrite <- HtupEq.
     exact Hpg. }
   claim Hsub_gf: g c= f.
   { let p. assume Hp: p :e g.
@@ -68264,30 +68275,116 @@ apply (xm (exists n:set, n :e omega /\ apply_fun f n <> apply_fun g n)
     claim HpProd: p :e setprod omega R.
     { exact (Hsubg p Hp). }
     apply (Sigma_E omega (fun _ : set => R) p HpProd).
-    let n. assume Hn: n :e omega.
-    let y. assume Hy: y :e R.
-    assume Hpdef: p = pair n y.
-    rewrite Hpdef.
-    rewrite (tuple_pair n y).
-    claim Hpg: (pair n y) :e g.
-    { rewrite <- Hpdef.
+    let n.
+    assume Hn_pair.
+    apply Hn_pair.
+    assume Hn: n :e omega.
+    assume Hrest.
+    apply Hrest.
+    let y.
+    assume Hy_pair.
+    apply Hy_pair.
+    assume Hy: y :e R.
+    assume Hpdef.
+    claim HpdefT: p = (n,y).
+    { rewrite <- (tuple_pair n y) at 1.
+      exact Hpdef. }
+    rewrite HpdefT.
+    claim Hpg: (n,y) :e g.
+    { rewrite <- HpdefT.
       exact Hp. }
-    claim Hpg_t: (n,y) :e g.
-    { rewrite <- (tuple_pair n y).
-      exact Hpg. }
     claim Happg: apply_fun g n = y.
-    { exact (functional_graph_apply_fun_eq g n y Hfung Hpg_t). }
+    { exact (functional_graph_apply_fun_eq g n y Hfung Hpg). }
     claim Happf: apply_fun f n = y.
     { rewrite <- Happg.
-      symmetry.
       exact (Heqpt n Hn). }
     claim Hpf: (n, apply_fun f n) :e f.
     { exact (total_function_on_apply_fun_in_graph f omega R n Htotf Hn). }
-    rewrite Happf at 2.
+    claim HtupEq: (n, apply_fun f n) = (n,y).
+    { rewrite Happf.
+      reflexivity. }
+    rewrite <- HtupEq.
     exact Hpf. }
   claim Heq: f = g.
   { exact (set_ext f g Hsub_fg Hsub_gf). }
   exact (FalseE (Hneq Heq) (exists n:set, n :e omega /\ apply_fun f n <> apply_fun g n)).
+Qed.
+
+(** helper: antisymmetry for Rle, via SNo trichotomy on reals **)
+Theorem R_eq_of_not_Rlt : forall a b:set,
+  a :e R -> b :e R -> ~(Rlt a b) -> ~(Rlt b a) -> a = b.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume Hnltab: ~(Rlt a b).
+assume Hnltba: ~(Rlt b a).
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+apply (SNoLt_trichotomy_or_impred a b HaS HbS (a = b)).
+- assume Hab: a < b.
+  claim Hr: Rlt a b.
+  { exact (RltI a b HaR HbR Hab). }
+  exact (FalseE (Hnltab Hr) (a = b)).
+- assume Heq: a = b.
+  exact Heq.
+- assume Hba: b < a.
+  claim Hr: Rlt b a.
+  { exact (RltI b a HbR HaR Hba). }
+  exact (FalseE (Hnltba Hr) (a = b)).
+Qed.
+
+Theorem Rle_antisym : forall a b:set, Rle a b -> Rle b a -> a = b.
+let a b.
+assume Hab: Rle a b.
+assume Hba: Rle b a.
+claim HaR: a :e R.
+{ exact (RleE_left a b Hab). }
+claim HbR: b :e R.
+{ exact (RleE_left b a Hba). }
+claim Hnltab: ~(Rlt a b).
+{ exact (RleE_nlt b a Hba). }
+claim Hnltba: ~(Rlt b a).
+{ exact (RleE_nlt a b Hab). }
+exact (R_eq_of_not_Rlt a b HaR HbR Hnltab Hnltba).
+Qed.
+
+Theorem R_lub_unique : forall A l1 l2:set, R_lub A l1 -> R_lub A l2 -> l1 = l2.
+let A l1 l2.
+assume H1: R_lub A l1.
+assume H2: R_lub A l2.
+claim H1core: l1 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l1.
+{ exact (andEL (l1 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l1)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l1 u)
+               H1). }
+claim H1min: forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l1 u.
+{ exact (andER (l1 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l1)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l1 u)
+               H1). }
+claim H1R: l1 :e R.
+{ exact (andEL (l1 :e R) (forall a:set, a :e A -> a :e R -> Rle a l1) H1core). }
+claim H1ub: forall a:set, a :e A -> a :e R -> Rle a l1.
+{ exact (andER (l1 :e R) (forall a:set, a :e A -> a :e R -> Rle a l1) H1core). }
+
+claim H2core: l2 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l2.
+{ exact (andEL (l2 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l2)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l2 u)
+               H2). }
+claim H2min: forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l2 u.
+{ exact (andER (l2 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l2)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l2 u)
+               H2). }
+claim H2R: l2 :e R.
+{ exact (andEL (l2 :e R) (forall a:set, a :e A -> a :e R -> Rle a l2) H2core). }
+claim H2ub: forall a:set, a :e A -> a :e R -> Rle a l2.
+{ exact (andER (l2 :e R) (forall a:set, a :e A -> a :e R -> Rle a l2) H2core). }
+
+claim Hle12: Rle l1 l2.
+{ exact (H1min l2 H2R H2ub). }
+claim Hle21: Rle l2 l1.
+{ exact (H2min l1 H1R H1ub). }
+exact (Rle_antisym l1 l2 Hle12 Hle21).
 Qed.
 
 (** helper: distance 1 between distinct binary sequences (intended property of the uniform metric) **)
@@ -68310,6 +68407,12 @@ claim Hpair: (f,g) :e setprod real_sequences real_sequences.
 rewrite (apply_fun_graph (setprod real_sequences real_sequences)
                          (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
                          (f,g) Hpair).
+claim H0: (f,g) 0 = f.
+{ exact (tuple_2_0_eq f g). }
+claim H1: (f,g) 1 = g.
+{ exact (tuple_2_1_eq f g). }
+rewrite H0 at 1.
+rewrite H1 at 1.
 set A := Romega_clipped_diffs f g.
 set P := (fun r:set => R_lub A r).
 claim Hdef: Romega_uniform_metric_value f g = Eps_i P.
@@ -68331,10 +68434,18 @@ claim Hlub1: R_lub A 1.
       apply (xm (Rlt (Romega_coord_abs_diff f g n) 1)
                 (Rle (Romega_coord_clipped_diff f g n) 1)).
       * assume Hlt: Rlt (Romega_coord_abs_diff f g n) 1.
+        claim Hdefc: Romega_coord_clipped_diff f g n =
+          If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1.
+        { reflexivity. }
+        rewrite Hdefc.
         rewrite (If_i_1 (Rlt (Romega_coord_abs_diff f g n) 1)
                         (Romega_coord_abs_diff f g n) 1 Hlt).
         exact (Rlt_implies_Rle (Romega_coord_abs_diff f g n) 1 Hlt).
       * assume Hnlt: ~(Rlt (Romega_coord_abs_diff f g n) 1).
+        claim Hdefc: Romega_coord_clipped_diff f g n =
+          If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1.
+        { reflexivity. }
+        rewrite Hdefc.
         rewrite (If_i_0 (Rlt (Romega_coord_abs_diff f g n) 1)
                         (Romega_coord_abs_diff f g n) 1 Hnlt).
         exact (Rle_refl 1 real_1).
@@ -68367,37 +68478,53 @@ claim Hlub1: R_lub A 1.
           claim Heq: apply_fun f n0 = apply_fun g n0.
           { rewrite Hfn0. rewrite Hgn0. reflexivity. }
           exact (FalseE (Hn0neq Heq) (Romega_coord_clipped_diff f g n0 = 1)).
-        + assume Hgn1: apply_fun g n0 = 1.
-          (** abs(0-1)=1, so the clipped value is 1 **)
-          claim Habs: Romega_coord_abs_diff f g n0 = 1.
-          { rewrite Hfn0.
-            rewrite Hgn1.
-            rewrite (add_SNo_0L (minus_SNo 1) (SNo_minus_SNo 1 SNo_1)).
-            rewrite (abs_SNo_minus 1 SNo_1).
-            rewrite (pos_abs_SNo 1 SNoLt_0_1).
-            reflexivity. }
-          claim Hnlt: ~(Rlt (Romega_coord_abs_diff f g n0) 1).
-          { rewrite Habs.
-            exact (not_Rlt_refl 1 real_1). }
-          rewrite (If_i_0 (Rlt (Romega_coord_abs_diff f g n0) 1)
-                          (Romega_coord_abs_diff f g n0) 1 Hnlt).
-          reflexivity.
+	        + assume Hgn1: apply_fun g n0 = 1.
+	          (** abs(0-1)=1, so the clipped value is 1 **)
+	          claim Habs: Romega_coord_abs_diff f g n0 = 1.
+	          { claim Hdefabs: Romega_coord_abs_diff f g n0 =
+	              abs_SNo (add_SNo (apply_fun f n0) (minus_SNo (apply_fun g n0))).
+	            { reflexivity. }
+	            rewrite Hdefabs.
+	            rewrite Hfn0.
+	            rewrite Hgn1.
+	            rewrite (add_SNo_0L (minus_SNo 1) (SNo_minus_SNo 1 SNo_1)).
+	            rewrite (abs_SNo_minus 1 SNo_1).
+	            rewrite (pos_abs_SNo 1 SNoLt_0_1).
+	            reflexivity. }
+	          claim Hnlt: ~(Rlt (Romega_coord_abs_diff f g n0) 1).
+	          { rewrite Habs.
+	            exact (not_Rlt_refl 1 real_1). }
+	          claim Hdefc: Romega_coord_clipped_diff f g n0 =
+	            If_i (Rlt (Romega_coord_abs_diff f g n0) 1) (Romega_coord_abs_diff f g n0) 1.
+	          { reflexivity. }
+	          rewrite Hdefc.
+	          rewrite (If_i_0 (Rlt (Romega_coord_abs_diff f g n0) 1)
+	                          (Romega_coord_abs_diff f g n0) 1 Hnlt).
+	          reflexivity.
       - assume Hfn1: apply_fun f n0 = 1.
         apply (UPairE (apply_fun g n0) 0 1 Hg0).
-        + assume Hgn0: apply_fun g n0 = 0.
-          claim Habs: Romega_coord_abs_diff f g n0 = 1.
-          { rewrite Hfn1.
-            rewrite Hgn0.
-            rewrite minus_SNo_0.
-            rewrite (add_SNo_0R 1 SNo_1).
-            rewrite (pos_abs_SNo 1 SNoLt_0_1).
-            reflexivity. }
-          claim Hnlt: ~(Rlt (Romega_coord_abs_diff f g n0) 1).
-          { rewrite Habs.
-            exact (not_Rlt_refl 1 real_1). }
-          rewrite (If_i_0 (Rlt (Romega_coord_abs_diff f g n0) 1)
-                          (Romega_coord_abs_diff f g n0) 1 Hnlt).
-          reflexivity.
+	        + assume Hgn0: apply_fun g n0 = 0.
+	          claim Habs: Romega_coord_abs_diff f g n0 = 1.
+	          { claim Hdefabs: Romega_coord_abs_diff f g n0 =
+	              abs_SNo (add_SNo (apply_fun f n0) (minus_SNo (apply_fun g n0))).
+	            { reflexivity. }
+	            rewrite Hdefabs.
+	            rewrite Hfn1.
+	            rewrite Hgn0.
+	            rewrite minus_SNo_0.
+	            rewrite (add_SNo_0R 1 SNo_1).
+	            rewrite (pos_abs_SNo 1 SNoLt_0_1).
+	            reflexivity. }
+	          claim Hnlt: ~(Rlt (Romega_coord_abs_diff f g n0) 1).
+	          { rewrite Habs.
+	            exact (not_Rlt_refl 1 real_1). }
+	          claim Hdefc: Romega_coord_clipped_diff f g n0 =
+	            If_i (Rlt (Romega_coord_abs_diff f g n0) 1) (Romega_coord_abs_diff f g n0) 1.
+	          { reflexivity. }
+	          rewrite Hdefc.
+	          rewrite (If_i_0 (Rlt (Romega_coord_abs_diff f g n0) 1)
+	                          (Romega_coord_abs_diff f g n0) 1 Hnlt).
+	          reflexivity.
         + assume Hgn1: apply_fun g n0 = 1.
           claim Heq: apply_fun f n0 = apply_fun g n0.
           { rewrite Hfn1. rewrite Hgn1. reflexivity. }
@@ -68405,10 +68532,15 @@ claim Hlub1: R_lub A 1.
     claim H1inA: 1 :e A.
     { claim Hin: Romega_coord_clipped_diff f g n0 :e A.
       { exact (ReplI omega (fun n:set => Romega_coord_clipped_diff f g n) n0 Hn0O). }
-      rewrite Hclip1 in Hin.
+      rewrite <- Hclip1 at 1.
       exact Hin. }
     exact (Hub 1 H1inA real_1). }
-exact (Eps_i_ax P 1 Hlub1).
+claim Hex: exists r:set, P r.
+{ witness 1.
+  exact Hlub1. }
+claim HlubChosen: P (Eps_i P).
+{ exact (Eps_i_ex P Hex). }
+exact (R_lub_unique A (Eps_i P) 1 HlubChosen Hlub1).
 Qed.
 
 Theorem binary_sequences_Romega_discrete_in_uniform_topology :
