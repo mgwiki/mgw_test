@@ -65501,6 +65501,69 @@ apply (injI {F x|x :e X} omega g).
   reflexivity.
 Qed.
 
+(** helper: rationals are countable **)
+(** LATEX VERSION: The set of rational numbers is countable. **)
+Theorem rational_numbers_countable : countable_set rational_numbers.
+prove countable_set rational_numbers.
+prove countable rational_numbers.
+(** Use equip omega rational_numbers from form100_3 and transfer to atleastp rational_numbers omega. **)
+claim Hequip: equip omega rational_numbers.
+{ claim HdefQ: rational_numbers = rational.
+  { reflexivity. }
+  rewrite HdefQ.
+  exact form100_3. }
+claim Hequip_sym: equip rational_numbers omega.
+{ exact (equip_sym omega rational_numbers Hequip). }
+exact (equip_atleastp rational_numbers omega Hequip_sym).
+Qed.
+
+(** helper: rational open-interval basis is countable **)
+(** LATEX VERSION: The family {(q1,q2) | q1,q2 in Q} of rational open intervals is countable. **)
+Theorem rational_open_intervals_basis_countable : countable_set rational_open_intervals_basis.
+prove countable_set rational_open_intervals_basis.
+set QQ := setprod rational_numbers rational_numbers.
+set F : set->set := fun p:set => open_interval (p 0) (p 1).
+claim HQ: countable_set rational_numbers.
+{ exact rational_numbers_countable. }
+claim HQQ: countable_set QQ.
+{ exact (setprod_countable rational_numbers rational_numbers HQ HQ). }
+claim Himg: countable_set {F p|p :e QQ}.
+{ exact (countable_image QQ HQQ F). }
+claim Hsub: rational_open_intervals_basis c= {F p|p :e QQ}.
+{ let I. assume HI: I :e rational_open_intervals_basis.
+  prove I :e {F p|p :e QQ}.
+  (** eliminate membership in rational_open_intervals_basis **)
+  claim Hexq1: exists q1 :e rational_numbers, I :e {open_interval q1 q2|q2 :e rational_numbers}.
+  { exact (famunionE rational_numbers (fun q1:set => {open_interval q1 q2|q2 :e rational_numbers}) I HI). }
+  apply Hexq1.
+  let q1. assume Hq1pair.
+  claim Hq1Q: q1 :e rational_numbers.
+  { exact (andEL (q1 :e rational_numbers) (I :e {open_interval q1 q2|q2 :e rational_numbers}) Hq1pair). }
+  claim HIRepl: I :e {open_interval q1 q2|q2 :e rational_numbers}.
+  { exact (andER (q1 :e rational_numbers) (I :e {open_interval q1 q2|q2 :e rational_numbers}) Hq1pair). }
+  claim Hexq2: exists q2 :e rational_numbers, I = open_interval q1 q2.
+  { exact (ReplE rational_numbers (fun q2:set => open_interval q1 q2) I HIRepl). }
+  apply Hexq2.
+  let q2. assume Hq2pair.
+  claim Hq2Q: q2 :e rational_numbers.
+  { exact (andEL (q2 :e rational_numbers) (I = open_interval q1 q2) Hq2pair). }
+  claim HIeq: I = open_interval q1 q2.
+  { exact (andER (q2 :e rational_numbers) (I = open_interval q1 q2) Hq2pair). }
+  claim HpQQ: (q1,q2) :e QQ.
+  { exact (tuple_2_setprod_by_pair_Sigma rational_numbers rational_numbers q1 q2 Hq1Q Hq2Q). }
+  claim HFpair: F (q1,q2) = open_interval q1 q2.
+  { claim HFdef: F (q1,q2) = open_interval ((q1,q2) 0) ((q1,q2) 1).
+    { reflexivity. }
+    rewrite HFdef.
+    rewrite (tuple_2_0_eq q1 q2).
+    rewrite (tuple_2_1_eq q1 q2).
+    reflexivity. }
+  rewrite HIeq.
+  rewrite <- HFpair.
+  exact (ReplI QQ F (q1,q2) HpQQ). }
+exact (Subq_countable rational_open_intervals_basis {F p|p :e QQ} Himg Hsub).
+Qed.
+
 (** Helper: finite subsets of omega are countable as a family **)
 (** LATEX VERSION: The collection of all finite subsets of omega is countable. **)
 Theorem finite_subcollections_omega_countable : countable (finite_subcollections omega).
@@ -66658,6 +66721,33 @@ Qed.
 (** LATEX VERSION: Second countable means existence of a countable basis for the topology. **)
 Definition second_countable_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
+
+(** helper: R is second countable in the standard topology **)
+(** LATEX VERSION: The real line with its standard topology has a countable basis. **)
+Theorem R_standard_topology_second_countable : second_countable_space R R_standard_topology.
+prove second_countable_space R R_standard_topology.
+prove topology_on R R_standard_topology /\
+  exists B:set, basis_on R B /\ countable_set B /\ basis_generates R B R_standard_topology.
+apply andI.
+- exact R_standard_topology_is_topology.
+- witness rational_open_intervals_basis.
+  prove basis_on R rational_open_intervals_basis /\ countable_set rational_open_intervals_basis /\
+    basis_generates R rational_open_intervals_basis R_standard_topology.
+  (** left-associative conjunction: (basis_on /\ countable_set) /\ basis_generates **)
+  apply andI.
+  * (** basis_on /\ countable_set **)
+    apply andI.
+    + claim HBgenerates: basis_on R rational_open_intervals_basis /\
+        generated_topology R rational_open_intervals_basis = R_standard_topology.
+      { exact ex13_8a_rational_intervals_basis_standard. }
+      exact (andEL (basis_on R rational_open_intervals_basis)
+                   (generated_topology R rational_open_intervals_basis = R_standard_topology)
+                   HBgenerates).
+    + exact rational_open_intervals_basis_countable.
+  * (** basis_generates **)
+    prove basis_generates R rational_open_intervals_basis R_standard_topology.
+    exact ex13_8a_rational_intervals_basis_standard.
+Qed.
 
 (** from §30 Example 1: R^n has countable basis **) 
 (** LATEX VERSION: Euclidean spaces have a countable basis, hence are second countable. **)
