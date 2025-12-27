@@ -66525,7 +66525,7 @@ assume HT: Tychonoff_space X Tx.
 prove exists Ty:set,
   compact_space (Stone_Cech_compactification X Tx) Ty /\
   Hausdorff_space (Stone_Cech_compactification X Tx) Ty.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §39 Definition: locally finite family and refinement **) 
@@ -66557,7 +66557,7 @@ let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hbasis: sigma_locally_finite_basis X Tx.
 prove metrizable X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §41 Definition: paracompact space **) 
@@ -66600,7 +66600,7 @@ let X Tx.
 assume Hpara: paracompact_space X Tx.
 assume HH: Hausdorff_space X Tx.
 prove normal_space X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §42 Smirnov metrization theorem **) 
@@ -66611,7 +66611,7 @@ let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hbasis: locally_finite_basis X Tx.
 prove metrizable X Tx.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** helper: Cauchy sequence in a metric space **)
