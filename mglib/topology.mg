@@ -66003,6 +66003,7 @@ Qed.
 Theorem uniform_topology_is_topology : topology_on real_sequences uniform_topology.
 exact (metric_topology_is_topology real_sequences uniform_metric_Romega uniform_metric_Romega_is_metric).
 Qed.
+
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
 Definition open_cover : set -> set -> set -> prop :=
   fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
@@ -66193,6 +66194,12 @@ apply andI.
         claim HbSubb0: b c= b0.
         { exact (Subq_tra b (open_ball X d x s) b0 HbSubS HsSubb0). }
         exact (Subq_tra b b0 U HbSubb0 Hb0subU).
+Qed.
+
+(** helper: uniform_topology is first countable (as any metric topology) **)
+(** LATEX VERSION: The uniform topology on R^ω is first countable. **)
+Theorem uniform_topology_first_countable : first_countable_space real_sequences uniform_topology.
+exact (metric_topology_first_countable real_sequences uniform_metric_Romega uniform_metric_Romega_is_metric).
 Qed.
 
 (** helper: countable local basis at a point in a nonempty countable product of first-countable spaces **)
