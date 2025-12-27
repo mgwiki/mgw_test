@@ -69151,6 +69151,129 @@ claim Hale: Rle a (Romega_D_metric_value x y).
 exact (Rle_Rlt_tra a (Romega_D_metric_value x y) r Hale Hlt).
 Qed.
 
+(** helper: bounded distance < r with r < 1 implies abs(a-b) < r **)
+Theorem R_bounded_distance_lt_lt1_imp_abs_lt : forall a b r:set,
+  a :e R ->
+  b :e R ->
+  r :e R ->
+  Rlt r 1 ->
+  Rlt (R_bounded_distance a b) r ->
+  abs_SNo (add_SNo a (minus_SNo b)) < r.
+let a b r.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HrR: r :e R.
+assume Hrlt1: Rlt r 1.
+assume Hlt: Rlt (R_bounded_distance a b) r.
+set t := add_SNo a (minus_SNo b).
+claim HmbR: minus_SNo b :e R.
+{ exact (real_minus_SNo b HbR). }
+claim HtR: t :e R.
+{ exact (real_add_SNo a HaR (minus_SNo b) HmbR). }
+claim HabsR: abs_SNo t :e R.
+{ exact (abs_SNo_in_R t HtR). }
+claim Hbddef: R_bounded_distance a b = If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+{ reflexivity. }
+claim HIfRlt: Rlt (If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1) r.
+{ rewrite <- Hbddef.
+  exact Hlt. }
+apply (xm (Rlt (abs_SNo t) 1)).
+- assume Hablt1: Rlt (abs_SNo t) 1.
+  claim HabRlt: Rlt (abs_SNo t) r.
+  { rewrite <- (If_i_1 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hablt1).
+    exact HIfRlt. }
+  exact (RltE_lt (abs_SNo t) r HabRlt).
+- assume Hnablt1: ~(Rlt (abs_SNo t) 1).
+  claim H1lt: Rlt 1 r.
+  { rewrite <- (If_i_0 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hnablt1).
+    exact HIfRlt. }
+  claim Hrr: Rlt r r.
+  { exact (Rlt_tra r 1 r Hrlt1 H1lt). }
+  exact (FalseE ((not_Rlt_refl r HrR) Hrr) (abs_SNo t < r)).
+Qed.
+
+(** helper: D metric bound gives coordinate abs difference bound for a fixed index **)
+Theorem Romega_D_metric_coord_abs_lt : forall x y i delta:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  i :e omega ->
+  delta :e R ->
+  Rlt 0 delta ->
+  Rlt delta 1 ->
+  Rlt (Romega_D_metric_value x y) (mul_SNo delta (inv_nat (ordsucc i))) ->
+  abs_SNo (add_SNo (apply_fun x i) (minus_SNo (apply_fun y i))) < delta.
+let x y i delta.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+assume HiO: i :e omega.
+assume HdR: delta :e R.
+assume Hdpos: Rlt 0 delta.
+assume Hdlt1: Rlt delta 1.
+assume Hlt: Rlt (Romega_D_metric_value x y) (mul_SNo delta (inv_nat (ordsucc i))).
+set xi := apply_fun x i.
+set yi := apply_fun y i.
+set bd := R_bounded_distance xi yi.
+set inv := inv_nat (ordsucc i).
+claim HxiR: xi :e R.
+{ exact (Romega_coord_in_R x i Hx HiO). }
+claim HyiR: yi :e R.
+{ exact (Romega_coord_in_R y i Hy HiO). }
+claim HbdR: bd :e R.
+{ exact (R_bounded_distance_in_R xi yi HxiR HyiR). }
+claim HsuccO: ordsucc i :e omega.
+{ exact (omega_ordsucc i HiO). }
+claim HinvR: inv :e R.
+{ exact (inv_nat_real (ordsucc i) HsuccO). }
+claim HinvNot0: ordsucc i /:e {0}.
+{ assume Hi0: ordsucc i :e {0}.
+  claim Heq0: ordsucc i = 0.
+  { exact (SingE 0 (ordsucc i) Hi0). }
+  exact (neq_ordsucc_0 i Heq0). }
+claim HinvIn: ordsucc i :e omega :\: {0}.
+{ exact (setminusI omega {0} (ordsucc i) HsuccO HinvNot0). }
+claim HinvPosR: Rlt 0 inv.
+{ exact (inv_nat_pos (ordsucc i) HinvIn). }
+claim HinvPos: 0 < inv.
+{ exact (RltE_lt 0 inv HinvPosR). }
+claim HbdS: SNo bd.
+{ exact (real_SNo bd HbdR). }
+claim HdS: SNo delta.
+{ exact (real_SNo delta HdR). }
+claim HinvS: SNo inv.
+{ exact (real_SNo inv HinvR). }
+claim Hscaledlt: Rlt (mul_SNo bd inv) (mul_SNo delta inv).
+{ exact (Romega_D_metric_value_lt_implies_scaled_lt x y i (mul_SNo delta inv) Hx Hy HiO Hlt). }
+claim HscaledltS: mul_SNo bd inv < mul_SNo delta inv.
+{ exact (RltE_lt (mul_SNo bd inv) (mul_SNo delta inv) Hscaledlt). }
+claim Hbdlt: bd < delta.
+{ apply (SNoLt_trichotomy_or_impred bd delta HbdS HdS (bd < delta)).
+  - assume Hc: bd < delta.
+    exact Hc.
+  - assume Hc: bd = delta.
+    claim Heqmul: mul_SNo bd inv = mul_SNo delta inv.
+    { rewrite Hc.
+      reflexivity. }
+    claim Hbad: mul_SNo bd inv < mul_SNo bd inv.
+    { rewrite Heqmul at 2.
+      exact HscaledltS. }
+    exact (FalseE ((SNoLt_irref (mul_SNo bd inv)) Hbad) (bd < delta)).
+  - assume Hc: delta < bd.
+    claim Hmul: mul_SNo delta inv < mul_SNo bd inv.
+    { exact (pos_mul_SNo_Lt' delta bd inv HdS HbdS HinvS HinvPos Hc). }
+    claim Hbad: mul_SNo delta inv < mul_SNo delta inv.
+    { exact (SNoLt_tra (mul_SNo delta inv) (mul_SNo bd inv) (mul_SNo delta inv)
+                      (SNo_mul_SNo delta inv HdS HinvS)
+                      (SNo_mul_SNo bd inv HbdS HinvS)
+                      (SNo_mul_SNo delta inv HdS HinvS)
+                      Hmul
+                      HscaledltS). }
+    exact (FalseE ((SNoLt_irref (mul_SNo delta inv)) Hbad) (bd < delta)). }
+claim HbdRlt: Rlt bd delta.
+{ exact (RltI bd delta HbdR HdR Hbdlt). }
+set t := add_SNo xi (minus_SNo yi).
+exact (R_bounded_distance_lt_lt1_imp_abs_lt xi yi delta HxiR HyiR HdR Hdlt1 HbdRlt).
+Qed.
+
 (** helper: D metric value satisfies triangle inequality **)
 Theorem Romega_D_metric_value_triangle : forall x y z:set,
   x :e R_omega_space -> y :e R_omega_space -> z :e R_omega_space ->
