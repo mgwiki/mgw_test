@@ -69828,15 +69828,34 @@ apply SepI.
 	      assume Hr3R Hr3pos.
 	      exact Hr3pos. }
 	    set inv := inv_nat (ordsucc i).
+	    claim Hisuc: ordsucc i :e omega.
+	    { exact (omega_ordsucc i Hi). }
+	    claim HsuccNotIn0: ordsucc i /:e {0}.
+	    { assume Hin0: ordsucc i :e {0}.
+	      claim Heq: ordsucc i = 0.
+	      { exact (SingE 0 (ordsucc i) Hin0). }
+	      exact (neq_ordsucc_0 i Heq). }
+	    claim HiIn: ordsucc i :e omega :\: {0}.
+	    { exact (setminusI omega {0} (ordsucc i) Hisuc HsuccNotIn0). }
 	    claim HinvR: inv :e R.
-	    { claim Hisuc: ordsucc i :e omega.
-	      { exact (omega_ordsucc i Hi). }
-	      exact (inv_nat_real (ordsucc i) Hisuc). }
-    set r0 := mul_SNo r3 inv.
-    claim Hr0R: r0 :e R.
-    { exact (real_mul_SNo r3 Hr3R inv HinvR). }
-    claim Hr0pos: Rlt 0 r0.
-    { admit. }
+	    { exact (inv_nat_real (ordsucc i) Hisuc). }
+	    claim HinvPosR: Rlt 0 inv.
+	    { exact (inv_nat_pos (ordsucc i) HiIn). }
+	    set r0 := mul_SNo r3 inv.
+	    claim Hr0R: r0 :e R.
+	    { exact (real_mul_SNo r3 Hr3R inv HinvR). }
+	    claim Hr0pos: Rlt 0 r0.
+	    { claim Hr3S: SNo r3.
+	      { exact (real_SNo r3 Hr3R). }
+	      claim HinvS: SNo inv.
+	      { exact (real_SNo inv HinvR). }
+	      claim Hr3posS: 0 < r3.
+	      { exact (RltE_lt 0 r3 Hr3pos). }
+	      claim HinvPosS: 0 < inv.
+	      { exact (RltE_lt 0 inv HinvPosR). }
+	      claim Hr0posS: 0 < r0.
+	      { exact (mul_SNo_pos_pos r3 inv Hr3S HinvS Hr3posS HinvPosS). }
+	      exact (RltI 0 r0 real_0 Hr0R Hr0posS). }
     witness r0.
     apply andI.
     - apply andI.
