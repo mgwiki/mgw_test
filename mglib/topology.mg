@@ -31832,6 +31832,29 @@ claim HcondB: forall U:set, U :e Tx -> x :e U -> U :/\: B <> Empty.
 exact (SepI X (fun x0 => forall U:set, U :e Tx -> x0 :e U -> U :/\: B <> Empty) x HxX HcondB).
 Qed.
 
+(** Helper: closure in a finer topology is smaller **)
+(** LATEX VERSION: If T1 is finer than T2, then cl_{T1}(A) ⊆ cl_{T2}(A). **)
+Theorem closure_finer_than_Subq : forall X T1 T2 A:set,
+  finer_than T1 T2 ->
+  closure_of X T1 A c= closure_of X T2 A.
+let X T1 T2 A.
+assume Hfin: finer_than T1 T2.
+prove closure_of X T1 A c= closure_of X T2 A.
+let x. assume Hx: x :e closure_of X T1 A.
+prove x :e closure_of X T2 A.
+claim HxX: x :e X.
+{ exact (SepE1 X (fun x0:set => forall U:set, U :e T1 -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+claim Hcond: forall U:set, U :e T1 -> x :e U -> U :/\: A <> Empty.
+{ exact (SepE2 X (fun x0:set => forall U:set, U :e T1 -> x0 :e U -> U :/\: A <> Empty) x Hx). }
+claim Hcond2: forall U:set, U :e T2 -> x :e U -> U :/\: A <> Empty.
+{ let U. assume HU2: U :e T2. assume HxU: x :e U.
+  prove U :/\: A <> Empty.
+  claim HU1: U :e T1.
+  { exact (Hfin U HU2). }
+  exact (Hcond U HU1 HxU). }
+exact (SepI X (fun x0:set => forall U:set, U :e T2 -> x0 :e U -> U :/\: A <> Empty) x HxX Hcond2).
+Qed.
+
 (** Helper: interior of A is contained in A **)
 Theorem interior_subset : forall X Tx A:set,
   topology_on X Tx -> interior_of X Tx A c= A.
