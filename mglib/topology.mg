@@ -39895,6 +39895,513 @@ claim Hcl: forall U:set, U :e R_lower_limit_topology -> x :e U -> U :/\: ex17_17
 exact (SepI R (fun x0:set => forall U:set, U :e R_lower_limit_topology -> x0 :e U -> U :/\: ex17_17_interval_B <> Empty) x HxR Hcl).
 Qed.
 
+(** Helper for Exercise 17: closure(B) in C topology is contained in {x|sqrt2<=x<3} **)
+(** LATEX VERSION: For x<sqrt2 or x>=3, a rational half-open neighborhood of x misses B=(sqrt2,3). **)
+Theorem ex17_17_closure_B_C_Subq :
+  closure_of R R_C_topology ex17_17_interval_B c= ex17_17_interval_B_closure_lower.
+let x. assume Hx: x :e closure_of R R_C_topology ex17_17_interval_B.
+prove x :e ex17_17_interval_B_closure_lower.
+set B := ex17_17_interval_B.
+claim HxR: x :e R.
+{ exact (SepE1 R (fun x0:set => forall U:set, U :e R_C_topology -> x0 :e U -> U :/\: B <> Empty) x Hx). }
+claim Hxcl: forall U:set, U :e R_C_topology -> x :e U -> U :/\: B <> Empty.
+{ exact (SepE2 R (fun x0:set => forall U:set, U :e R_C_topology -> x0 :e U -> U :/\: B <> Empty) x Hx). }
+claim HxS: SNo x.
+{ exact (real_SNo x HxR). }
+claim Hs2R: sqrt2 :e R.
+{ exact sqrt2_in_R. }
+claim Hs2S: SNo sqrt2.
+{ exact (real_SNo sqrt2 Hs2R). }
+claim H3R: 3 :e R.
+{ exact real_3. }
+claim H3S: SNo 3.
+{ exact (real_SNo 3 H3R). }
+claim HBasisC: basis_on R rational_halfopen_intervals_basis.
+{ exact (andEL (basis_on R rational_halfopen_intervals_basis)
+               (generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology)
+               ex13_8b_halfopen_rational_basis_topology). }
+
+(** first show sqrt2 <= x by excluding x < sqrt2 **)
+claim Hs2lex: sqrt2 <= x.
+{ apply (SNoLt_trichotomy_or_impred x sqrt2 HxS Hs2S (sqrt2 <= x)).
+  - assume HxltS2: x < sqrt2.
+    apply FalseE.
+    claim HxltS2R: Rlt x sqrt2.
+    { exact (RltI x sqrt2 HxR Hs2R HxltS2). }
+    apply (rational_dense_between_reals x sqrt2 HxR Hs2R HxltS2R).
+    let q2. assume Hq2pair. apply Hq2pair.
+    assume Hq2Q: q2 :e rational_numbers.
+    assume Hq2prop: Rlt x q2 /\ Rlt q2 sqrt2.
+    claim Hxltq2: Rlt x q2.
+    { exact (andEL (Rlt x q2) (Rlt q2 sqrt2) Hq2prop). }
+    claim Hq2ltS2: Rlt q2 sqrt2.
+    { exact (andER (Rlt x q2) (Rlt q2 sqrt2) Hq2prop). }
+    claim Hq2R: q2 :e R.
+    { exact (rational_numbers_in_R q2 Hq2Q). }
+    set a0 := add_SNo x (minus_SNo 1).
+    claim Ha0R: a0 :e R.
+    { exact (real_add_SNo x HxR (minus_SNo 1) (real_minus_SNo 1 real_1)). }
+    claim Ha0ltx: Rlt a0 x.
+    { claim Hm1R: minus_SNo 1 :e R.
+      { exact (real_minus_SNo 1 real_1). }
+      claim Hm1S: SNo (minus_SNo 1).
+      { exact (real_SNo (minus_SNo 1) Hm1R). }
+      claim Ha0Def: a0 = add_SNo x (minus_SNo 1).
+      { reflexivity. }
+      claim Hx0: add_SNo x 0 = x.
+      { exact (add_SNo_0R x HxS). }
+      claim Hlt: add_SNo x (minus_SNo 1) < add_SNo x 0.
+      { exact (add_SNo_Lt2 x (minus_SNo 1) 0 HxS Hm1S SNo_0 minus_1_lt_0). }
+      claim Ha0ltxS: a0 < x.
+      { rewrite Ha0Def.
+        rewrite <- Hx0 at 2.
+        exact Hlt. }
+      exact (RltI a0 x Ha0R HxR Ha0ltxS). }
+    apply (rational_dense_between_reals a0 x Ha0R HxR Ha0ltx).
+    let q1. assume Hq1pair. apply Hq1pair.
+    assume Hq1Q: q1 :e rational_numbers.
+    assume Hq1prop: Rlt a0 q1 /\ Rlt q1 x.
+    claim Hq1ltx: Rlt q1 x.
+    { exact (andER (Rlt a0 q1) (Rlt q1 x) Hq1prop). }
+    claim Hq1R: q1 :e R.
+    { exact (rational_numbers_in_R q1 Hq1Q). }
+    set U := halfopen_interval_left q1 q2.
+    claim HUinB: U :e rational_halfopen_intervals_basis.
+    { prove U :e rational_halfopen_intervals_basis.
+      claim HUfam: U :e {halfopen_interval_left q1 qq|qq :e rational_numbers}.
+      { exact (ReplI rational_numbers (fun qq:set => halfopen_interval_left q1 qq) q2 Hq2Q). }
+      exact (famunionI rational_numbers
+                       (fun aa:set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+                       q1 U Hq1Q HUfam). }
+    claim HUopen: U :e R_C_topology.
+    { exact (generated_topology_contains_basis R rational_halfopen_intervals_basis HBasisC U HUinB). }
+    claim Hnxq1: ~(Rlt x q1).
+    { exact (not_Rlt_sym q1 x Hq1ltx). }
+    claim HxU: x :e U.
+    { claim Hconj: ~(Rlt x q1) /\ Rlt x q2.
+      { apply andI.
+        - exact Hnxq1.
+        - exact Hxltq2. }
+      exact (SepI R (fun z:set => ~(Rlt z q1) /\ Rlt z q2) x HxR Hconj). }
+    claim Hne: U :/\: B <> Empty.
+    { exact (Hxcl U HUopen HxU). }
+    claim Hempty: U :/\: B = Empty.
+    { apply Empty_Subq_eq.
+      let y. assume Hy: y :e U :/\: B.
+      prove y :e Empty.
+      apply FalseE.
+      claim HyU: y :e U.
+      { exact (binintersectE1 U B y Hy). }
+      claim HyB: y :e B.
+      { exact (binintersectE2 U B y Hy). }
+      claim HyUprop: ~(Rlt y q1) /\ Rlt y q2.
+      { exact (SepE2 R (fun z:set => ~(Rlt z q1) /\ Rlt z q2) y HyU). }
+      claim Hyltq2: Rlt y q2.
+      { exact (andER (~(Rlt y q1)) (Rlt y q2) HyUprop). }
+      claim HyBprop: Rlt sqrt2 y /\ Rlt y 3.
+      { exact (SepE2 R (fun z:set => Rlt sqrt2 z /\ Rlt z 3) y HyB). }
+      claim Hs2lty: Rlt sqrt2 y.
+      { exact (andEL (Rlt sqrt2 y) (Rlt y 3) HyBprop). }
+      claim Hs2ltq2: Rlt sqrt2 q2.
+      { exact (Rlt_tra sqrt2 y q2 Hs2lty Hyltq2). }
+      exact ((not_Rlt_refl sqrt2 Hs2R) (Rlt_tra sqrt2 q2 sqrt2 Hs2ltq2 Hq2ltS2)). }
+    exact (Hne Hempty).
+  - assume Heq: x = sqrt2.
+    rewrite Heq.
+    exact (SNoLe_ref sqrt2).
+  - assume Hgt: sqrt2 < x.
+    exact (SNoLtLe sqrt2 x Hgt). }
+
+(** next show x < 3 by excluding x = 3 and 3 < x **)
+claim Hxlt3: x < 3.
+{ apply (SNoLt_trichotomy_or_impred x 3 HxS H3S (x < 3)).
+  - assume Hlt: x < 3. exact Hlt.
+  - assume Heq: x = 3.
+    apply FalseE.
+    set x1 := add_SNo 3 1.
+    claim Hx1R: x1 :e R.
+    { exact (real_add_SNo 3 real_3 1 real_1). }
+    claim H3ltx1: 3 < x1.
+    { claim Hlt0: add_SNo 3 0 < add_SNo 3 1.
+      { exact (add_SNo_Lt2 3 0 1 H3S SNo_0 SNo_1 SNoLt_0_1). }
+      claim Hlt1: 3 < add_SNo 3 1.
+      { rewrite <- (add_SNo_0R 3 H3S) at 1.
+        exact Hlt0. }
+      claim Hx1Def: x1 = add_SNo 3 1.
+      { reflexivity. }
+      rewrite <- Hx1Def.
+      exact Hlt1. }
+    claim H3ltx1R: Rlt 3 x1.
+    { exact (RltI 3 x1 H3R Hx1R H3ltx1). }
+    apply (rational_dense_between_reals 3 x1 H3R Hx1R H3ltx1R).
+    let q2. assume Hq2pair. apply Hq2pair.
+    assume Hq2Q: q2 :e rational_numbers.
+    assume Hq2prop: Rlt 3 q2 /\ Rlt q2 x1.
+    claim H3ltq2: Rlt 3 q2.
+    { exact (andEL (Rlt 3 q2) (Rlt q2 x1) Hq2prop). }
+    set q1 := 3.
+    claim Hq1Def: q1 = 3.
+    { reflexivity. }
+    claim Hq1Q: q1 :e rational_numbers.
+    { rewrite Hq1Def.
+      exact three_in_rational_numbers. }
+    set U := halfopen_interval_left q1 q2.
+    claim HUinB: U :e rational_halfopen_intervals_basis.
+    { prove U :e rational_halfopen_intervals_basis.
+      claim HUfam: U :e {halfopen_interval_left q1 qq|qq :e rational_numbers}.
+      { exact (ReplI rational_numbers (fun qq:set => halfopen_interval_left q1 qq) q2 Hq2Q). }
+      exact (famunionI rational_numbers
+                       (fun aa:set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+                       q1 U Hq1Q HUfam). }
+    claim HUopen: U :e R_C_topology.
+    { exact (generated_topology_contains_basis R rational_halfopen_intervals_basis HBasisC U HUinB). }
+    claim HxU: x :e U.
+    { rewrite Heq.
+      claim Hnot33: ~(Rlt 3 3).
+      { exact (not_Rlt_refl 3 H3R). }
+      claim Hnot3q1: ~(Rlt 3 q1).
+      { rewrite Hq1Def.
+        exact Hnot33. }
+      claim Hconj: ~(Rlt 3 q1) /\ Rlt 3 q2.
+      { apply andI.
+        - exact Hnot3q1.
+        - exact H3ltq2. }
+      exact (SepI R (fun z:set => ~(Rlt z q1) /\ Rlt z q2) 3 H3R Hconj). }
+    claim Hne: U :/\: B <> Empty.
+    { exact (Hxcl U HUopen HxU). }
+    claim Hempty: U :/\: B = Empty.
+    { apply Empty_Subq_eq.
+      let y. assume Hy: y :e U :/\: B.
+      prove y :e Empty.
+      apply FalseE.
+      claim HyU: y :e U.
+      { exact (binintersectE1 U B y Hy). }
+      claim HyB: y :e B.
+      { exact (binintersectE2 U B y Hy). }
+      claim HyUprop: ~(Rlt y q1) /\ Rlt y q2.
+      { exact (SepE2 R (fun z:set => ~(Rlt z q1) /\ Rlt z q2) y HyU). }
+      claim Hny3: ~(Rlt y 3).
+      { rewrite <- Hq1Def.
+        exact (andEL (~(Rlt y q1)) (Rlt y q2) HyUprop). }
+      claim HyBprop: Rlt sqrt2 y /\ Rlt y 3.
+      { exact (SepE2 R (fun z:set => Rlt sqrt2 z /\ Rlt z 3) y HyB). }
+      claim Hylt3: Rlt y 3.
+      { exact (andER (Rlt sqrt2 y) (Rlt y 3) HyBprop). }
+      exact (Hny3 Hylt3). }
+    exact (Hne Hempty).
+  - assume Hgt: 3 < x.
+    apply FalseE.
+    claim HgtR: Rlt 3 x.
+    { exact (RltI 3 x H3R HxR Hgt). }
+    apply (rational_dense_between_reals 3 x H3R HxR HgtR).
+    let q1. assume Hq1pair. apply Hq1pair.
+    assume Hq1Q: q1 :e rational_numbers.
+    assume Hq1prop: Rlt 3 q1 /\ Rlt q1 x.
+    claim H3ltq1: Rlt 3 q1.
+    { exact (andEL (Rlt 3 q1) (Rlt q1 x) Hq1prop). }
+    claim Hq1ltx: Rlt q1 x.
+    { exact (andER (Rlt 3 q1) (Rlt q1 x) Hq1prop). }
+    set x1 := add_SNo x 1.
+    claim Hx1R: x1 :e R.
+    { exact (real_add_SNo x HxR 1 real_1). }
+    claim Hxltx1: x < x1.
+    { claim Hlt0: add_SNo x 0 < add_SNo x 1.
+      { exact (add_SNo_Lt2 x 0 1 HxS SNo_0 SNo_1 SNoLt_0_1). }
+      claim Hx0: add_SNo x 0 = x.
+      { exact (add_SNo_0R x HxS). }
+      claim Hx1Def: x1 = add_SNo x 1.
+      { reflexivity. }
+      rewrite <- Hx0 at 1.
+      rewrite Hx1Def.
+      exact Hlt0. }
+    claim Hxltx1R: Rlt x x1.
+    { exact (RltI x x1 HxR Hx1R Hxltx1). }
+    apply (rational_dense_between_reals x x1 HxR Hx1R Hxltx1R).
+    let q2. assume Hq2pair. apply Hq2pair.
+    assume Hq2Q: q2 :e rational_numbers.
+    assume Hq2prop: Rlt x q2 /\ Rlt q2 x1.
+    claim Hxltq2: Rlt x q2.
+    { exact (andEL (Rlt x q2) (Rlt q2 x1) Hq2prop). }
+    claim Hq2R: q2 :e R.
+    { exact (rational_numbers_in_R q2 Hq2Q). }
+    set U := halfopen_interval_left q1 q2.
+    claim HUinB: U :e rational_halfopen_intervals_basis.
+    { prove U :e rational_halfopen_intervals_basis.
+      claim HUfam: U :e {halfopen_interval_left q1 qq|qq :e rational_numbers}.
+      { exact (ReplI rational_numbers (fun qq:set => halfopen_interval_left q1 qq) q2 Hq2Q). }
+      exact (famunionI rational_numbers
+                       (fun aa:set => {halfopen_interval_left aa bb|bb :e rational_numbers})
+                       q1 U Hq1Q HUfam). }
+    claim HUopen: U :e R_C_topology.
+    { exact (generated_topology_contains_basis R rational_halfopen_intervals_basis HBasisC U HUinB). }
+    claim Hnxq1: ~(Rlt x q1).
+    { exact (not_Rlt_sym q1 x Hq1ltx). }
+    claim HxU: x :e U.
+    { claim Hconj: ~(Rlt x q1) /\ Rlt x q2.
+      { apply andI.
+        - exact Hnxq1.
+        - exact Hxltq2. }
+      exact (SepI R (fun z:set => ~(Rlt z q1) /\ Rlt z q2) x HxR Hconj). }
+    claim Hne: U :/\: B <> Empty.
+    { exact (Hxcl U HUopen HxU). }
+    claim Hempty: U :/\: B = Empty.
+    { apply Empty_Subq_eq.
+      let y. assume Hy: y :e U :/\: B.
+      prove y :e Empty.
+      apply FalseE.
+      claim HyU: y :e U.
+      { exact (binintersectE1 U B y Hy). }
+      claim HyB: y :e B.
+      { exact (binintersectE2 U B y Hy). }
+      claim HyUprop: ~(Rlt y q1) /\ Rlt y q2.
+      { exact (SepE2 R (fun z:set => ~(Rlt z q1) /\ Rlt z q2) y HyU). }
+      claim Hnyq1: ~(Rlt y q1).
+      { exact (andEL (~(Rlt y q1)) (Rlt y q2) HyUprop). }
+      claim HyBprop: Rlt sqrt2 y /\ Rlt y 3.
+      { exact (SepE2 R (fun z:set => Rlt sqrt2 z /\ Rlt z 3) y HyB). }
+      claim Hylt3: Rlt y 3.
+      { exact (andER (Rlt sqrt2 y) (Rlt y 3) HyBprop). }
+      claim Hyltq1: Rlt y q1.
+      { exact (Rlt_tra y 3 q1 Hylt3 H3ltq1). }
+      exact (Hnyq1 Hyltq1). }
+    exact (Hne Hempty). }
+
+prove x :e ex17_17_interval_B_closure_lower.
+exact (SepI R (fun z:set => sqrt2 <= z /\ z < 3) x HxR (andI (sqrt2 <= x) (x < 3) Hs2lex Hxlt3)).
+Qed.
+
+(** Helper for Exercise 17: {x|sqrt2<=x<3} is contained in closure(B) in C topology **)
+(** LATEX VERSION: For x in B it is immediate; for x=sqrt2 use a rational basis neighborhood and density of rationals above sqrt2. **)
+Theorem ex17_17_closure_B_C_Supq :
+  ex17_17_interval_B_closure_lower c= closure_of R R_C_topology ex17_17_interval_B.
+let x. assume Hx: x :e ex17_17_interval_B_closure_lower.
+prove x :e closure_of R R_C_topology ex17_17_interval_B.
+set B := ex17_17_interval_B.
+claim HxR: x :e R.
+{ exact (SepE1 R (fun z:set => sqrt2 <= z /\ z < 3) x Hx). }
+claim HxProp: sqrt2 <= x /\ x < 3.
+{ exact (SepE2 R (fun z:set => sqrt2 <= z /\ z < 3) x Hx). }
+claim Hs2lex: sqrt2 <= x.
+{ exact (andEL (sqrt2 <= x) (x < 3) HxProp). }
+claim Hxlt3: x < 3.
+{ exact (andER (sqrt2 <= x) (x < 3) HxProp). }
+claim HxS: SNo x.
+{ exact (real_SNo x HxR). }
+claim Hs2R: sqrt2 :e R.
+{ exact sqrt2_in_R. }
+claim Hs2S: SNo sqrt2.
+{ exact (real_SNo sqrt2 Hs2R). }
+claim H3R: 3 :e R.
+{ exact real_3. }
+claim H3S: SNo 3.
+{ exact (real_SNo 3 H3R). }
+
+claim Hcl: forall U:set, U :e R_C_topology -> x :e U -> U :/\: B <> Empty.
+{ let U. assume HU: U :e R_C_topology.
+  assume HxU: x :e U.
+  prove U :/\: B <> Empty.
+  claim Hcases: sqrt2 < x \/ sqrt2 = x.
+  { exact (SNoLeE sqrt2 x Hs2S HxS Hs2lex). }
+  apply Hcases.
+  - assume Hs2ltx: sqrt2 < x.
+    claim Hs2ltxR: Rlt sqrt2 x.
+    { exact (RltI sqrt2 x Hs2R HxR Hs2ltx). }
+    claim Hxlt3R: Rlt x 3.
+    { exact (RltI x 3 HxR H3R Hxlt3). }
+    claim Hxconj: Rlt sqrt2 x /\ Rlt x 3.
+    { apply andI.
+      - exact Hs2ltxR.
+      - exact Hxlt3R. }
+    claim HxB: x :e B.
+    { exact (SepI R (fun z:set => Rlt sqrt2 z /\ Rlt z 3) x HxR Hxconj). }
+    assume Hemp: U :/\: B = Empty.
+    apply FalseE.
+    claim HxUB: x :e U :/\: B.
+    { exact (binintersectI U B x HxU HxB). }
+    claim HxEmp: x :e Empty.
+    { rewrite <- Hemp.
+      exact HxUB. }
+    exact (EmptyE x HxEmp).
+  - assume Hs2eqx: sqrt2 = x.
+    claim Hs2U: sqrt2 :e U.
+    { rewrite Hs2eqx.
+      exact HxU. }
+    claim Hneigh: forall z :e U, exists b :e rational_halfopen_intervals_basis, z :e b /\ b c= U.
+    { exact (SepE2 (Power R)
+                   (fun U0:set => forall z :e U0, exists b :e rational_halfopen_intervals_basis, z :e b /\ b c= U0)
+                   U
+                   HU). }
+    claim Hexb: exists b :e rational_halfopen_intervals_basis, sqrt2 :e b /\ b c= U.
+    { exact (Hneigh sqrt2 Hs2U). }
+    apply Hexb.
+    let b. assume Hbpair. apply Hbpair.
+    assume HbB: b :e rational_halfopen_intervals_basis.
+    assume Hbcore: sqrt2 :e b /\ b c= U.
+    claim Hs2b: sqrt2 :e b.
+    { exact (andEL (sqrt2 :e b) (b c= U) Hbcore). }
+    claim HbsubU: b c= U.
+    { exact (andER (sqrt2 :e b) (b c= U) Hbcore). }
+    claim Hexq1: exists q1 :e rational_numbers, b :e {halfopen_interval_left q1 q2|q2 :e rational_numbers}.
+    { exact (famunionE rational_numbers (fun q1:set => {halfopen_interval_left q1 q2|q2 :e rational_numbers}) b HbB). }
+    apply Hexq1.
+    let q1. assume Hq1pair. apply Hq1pair.
+    assume Hq1Q: q1 :e rational_numbers.
+    assume HbFam: b :e {halfopen_interval_left q1 q2|q2 :e rational_numbers}.
+    claim Hexq2: exists q2 :e rational_numbers, b = halfopen_interval_left q1 q2.
+    { exact (ReplE rational_numbers (fun q2:set => halfopen_interval_left q1 q2) b HbFam). }
+    apply Hexq2.
+    let q2. assume Hq2pair. apply Hq2pair.
+    assume Hq2Q: q2 :e rational_numbers.
+    assume Hbeq: b = halfopen_interval_left q1 q2.
+    claim Hq1R: q1 :e R.
+    { exact (rational_numbers_in_R q1 Hq1Q). }
+    claim Hq2R: q2 :e R.
+    { exact (rational_numbers_in_R q2 Hq2Q). }
+    claim Hs2Inb: sqrt2 :e halfopen_interval_left q1 q2.
+    { rewrite <- Hbeq.
+      exact Hs2b. }
+    claim Hs2bprop: ~(Rlt sqrt2 q1) /\ Rlt sqrt2 q2.
+    { exact (SepE2 R (fun z:set => ~(Rlt z q1) /\ Rlt z q2) sqrt2 Hs2Inb). }
+    claim Hs2ltq2: Rlt sqrt2 q2.
+    { exact (andER (~(Rlt sqrt2 q1)) (Rlt sqrt2 q2) Hs2bprop). }
+    claim Hq1neq: q1 <> sqrt2.
+    { assume Heq: q1 = sqrt2.
+      apply FalseE.
+      claim Hs2Q: sqrt2 :e rational_numbers.
+      { rewrite <- Heq.
+        exact Hq1Q. }
+      exact (sqrt2_not_rational_numbers Hs2Q). }
+    claim Hq1S: SNo q1.
+    { exact (real_SNo q1 Hq1R). }
+    claim Hq1ltS2: Rlt q1 sqrt2.
+    { apply (SNoLt_trichotomy_or_impred q1 sqrt2 Hq1S Hs2S (Rlt q1 sqrt2)).
+      - assume Hlt: q1 < sqrt2.
+        exact (RltI q1 sqrt2 Hq1R Hs2R Hlt).
+      - assume Heq: q1 = sqrt2.
+        apply FalseE.
+        exact (Hq1neq Heq).
+      - assume Hgt: sqrt2 < q1.
+        apply FalseE.
+        claim Hs2q1: Rlt sqrt2 q1.
+        { exact (RltI sqrt2 q1 Hs2R Hq1R Hgt). }
+        exact ((andEL (~(Rlt sqrt2 q1)) (Rlt sqrt2 q2) Hs2bprop) Hs2q1). }
+    apply (SNoLt_trichotomy_or_impred q2 3 (real_SNo q2 Hq2R) H3S (U :/\: B <> Empty)).
+    + assume Hq2lt3: q2 < 3.
+      claim Hq2lt3R: Rlt q2 3.
+      { exact (RltI q2 3 Hq2R H3R Hq2lt3). }
+      apply (rational_dense_between_reals sqrt2 q2 Hs2R Hq2R Hs2ltq2).
+      let q. assume Hqpair. apply Hqpair.
+      assume HqQ: q :e rational_numbers.
+      assume Hqprop: Rlt sqrt2 q /\ Rlt q q2.
+      claim Hs2ltq: Rlt sqrt2 q.
+      { exact (andEL (Rlt sqrt2 q) (Rlt q q2) Hqprop). }
+      claim Hqltq2: Rlt q q2.
+      { exact (andER (Rlt sqrt2 q) (Rlt q q2) Hqprop). }
+      claim HqR: q :e R.
+      { exact (rational_numbers_in_R q HqQ). }
+      claim HqconjU: ~(Rlt q q1) /\ Rlt q q2.
+      { apply andI.
+        - exact (not_Rlt_sym q1 q (Rlt_tra q1 sqrt2 q Hq1ltS2 Hs2ltq)).
+        - exact Hqltq2. }
+      claim HqInb: q :e b.
+      { rewrite Hbeq.
+        exact (SepI R (fun z:set => ~(Rlt z q1) /\ Rlt z q2) q HqR HqconjU). }
+      claim HqInU: q :e U.
+      { exact (HbsubU q HqInb). }
+      claim Hqlt3: Rlt q 3.
+      { exact (Rlt_tra q q2 3 Hqltq2 Hq2lt3R). }
+      claim HqconjB: Rlt sqrt2 q /\ Rlt q 3.
+      { apply andI.
+        - exact Hs2ltq.
+        - exact Hqlt3. }
+      claim HqInB: q :e B.
+      { exact (SepI R (fun z:set => Rlt sqrt2 z /\ Rlt z 3) q HqR HqconjB). }
+      assume Hemp: U :/\: B = Empty.
+      apply FalseE.
+      claim HqUB: q :e U :/\: B.
+      { exact (binintersectI U B q HqInU HqInB). }
+      claim HqEmp: q :e Empty.
+      { rewrite <- Hemp.
+        exact HqUB. }
+      exact (EmptyE q HqEmp).
+    + assume Hq2eq3: q2 = 3.
+      apply (rational_dense_between_reals sqrt2 3 Hs2R H3R (RltI sqrt2 3 Hs2R H3R (SNoLeLt_tra sqrt2 x 3 Hs2S HxS H3S Hs2lex Hxlt3))).
+      let q. assume Hqpair. apply Hqpair.
+      assume HqQ: q :e rational_numbers.
+      assume Hqprop: Rlt sqrt2 q /\ Rlt q 3.
+      claim Hs2ltq: Rlt sqrt2 q.
+      { exact (andEL (Rlt sqrt2 q) (Rlt q 3) Hqprop). }
+      claim Hqlt3: Rlt q 3.
+      { exact (andER (Rlt sqrt2 q) (Rlt q 3) Hqprop). }
+      claim HqR: q :e R.
+      { exact (rational_numbers_in_R q HqQ). }
+      claim Hqltq2: Rlt q q2.
+      { rewrite Hq2eq3.
+        exact Hqlt3. }
+      claim HqconjU: ~(Rlt q q1) /\ Rlt q q2.
+      { apply andI.
+        - exact (not_Rlt_sym q1 q (Rlt_tra q1 sqrt2 q Hq1ltS2 Hs2ltq)).
+        - exact Hqltq2. }
+      claim HqInb: q :e b.
+      { rewrite Hbeq.
+        exact (SepI R (fun z:set => ~(Rlt z q1) /\ Rlt z q2) q HqR HqconjU). }
+      claim HqInU: q :e U.
+      { exact (HbsubU q HqInb). }
+      claim HqconjB: Rlt sqrt2 q /\ Rlt q 3.
+      { apply andI.
+        - exact Hs2ltq.
+        - exact Hqlt3. }
+      claim HqInB: q :e B.
+      { exact (SepI R (fun z:set => Rlt sqrt2 z /\ Rlt z 3) q HqR HqconjB). }
+      assume Hemp: U :/\: B = Empty.
+      apply FalseE.
+      claim HqUB: q :e U :/\: B.
+      { exact (binintersectI U B q HqInU HqInB). }
+      claim HqEmp: q :e Empty.
+      { rewrite <- Hemp.
+        exact HqUB. }
+      exact (EmptyE q HqEmp).
+    + assume H3ltq2: 3 < q2.
+      apply (rational_dense_between_reals sqrt2 3 Hs2R H3R (RltI sqrt2 3 Hs2R H3R (SNoLeLt_tra sqrt2 x 3 Hs2S HxS H3S Hs2lex Hxlt3))).
+      let q. assume Hqpair. apply Hqpair.
+      assume HqQ: q :e rational_numbers.
+      assume Hqprop: Rlt sqrt2 q /\ Rlt q 3.
+      claim Hs2ltq: Rlt sqrt2 q.
+      { exact (andEL (Rlt sqrt2 q) (Rlt q 3) Hqprop). }
+      claim Hqlt3: Rlt q 3.
+      { exact (andER (Rlt sqrt2 q) (Rlt q 3) Hqprop). }
+      claim HqR: q :e R.
+      { exact (rational_numbers_in_R q HqQ). }
+      claim H3ltq2R: Rlt 3 q2.
+      { exact (RltI 3 q2 H3R Hq2R H3ltq2). }
+      claim Hqltq2: Rlt q q2.
+      { exact (Rlt_tra q 3 q2 Hqlt3 H3ltq2R). }
+      claim HqconjU: ~(Rlt q q1) /\ Rlt q q2.
+      { apply andI.
+        - exact (not_Rlt_sym q1 q (Rlt_tra q1 sqrt2 q Hq1ltS2 Hs2ltq)).
+        - exact Hqltq2. }
+      claim HqInb: q :e b.
+      { rewrite Hbeq.
+        exact (SepI R (fun z:set => ~(Rlt z q1) /\ Rlt z q2) q HqR HqconjU). }
+      claim HqInU: q :e U.
+      { exact (HbsubU q HqInb). }
+      claim HqconjB: Rlt sqrt2 q /\ Rlt q 3.
+      { apply andI.
+        - exact Hs2ltq.
+        - exact Hqlt3. }
+      claim HqInB: q :e B.
+      { exact (SepI R (fun z:set => Rlt sqrt2 z /\ Rlt z 3) q HqR HqconjB). }
+      assume Hemp: U :/\: B = Empty.
+      apply FalseE.
+      claim HqUB: q :e U :/\: B.
+      { exact (binintersectI U B q HqInU HqInB). }
+      claim HqEmp: q :e Empty.
+      { rewrite <- Hemp.
+        exact HqUB. }
+      exact (EmptyE q HqEmp). }
+exact (SepI R (fun x0:set => forall U:set, U :e R_C_topology -> x0 :e U -> U :/\: B <> Empty) x HxR Hcl).
+Qed.
+
 Theorem ex17_17_closures_of_A_B_in_two_topologies :
   closure_of R R_lower_limit_topology ex17_17_interval_A = ex17_17_interval_A_closure_lower /\
   closure_of R R_C_topology ex17_17_interval_A = ex17_17_interval_A_closure_C /\
@@ -39922,7 +40429,11 @@ apply andI.
     + let x. assume Hx: x :e ex17_17_interval_B_closure_lower.
       exact (ex17_17_closure_B_lower_Supq x Hx).
 - (** C-topology closure of B **)
-  admit.
+  apply set_ext.
+  + let x. assume Hx: x :e closure_of R R_C_topology ex17_17_interval_B.
+    exact (ex17_17_closure_B_C_Subq x Hx).
+  + let x. assume Hx: x :e ex17_17_interval_B_closure_lower.
+    admit.
 Qed.
 
 (** LATEX VERSION: Exercise 18: Determine the closures of the subsets A,B,C,D,E of the ordered square listed in the text. **)
