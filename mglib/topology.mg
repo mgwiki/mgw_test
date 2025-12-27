@@ -66263,15 +66263,6 @@ Definition R_lub : set -> set -> prop := fun A l =>
      (forall a:set, a :e A -> a :e R -> Rle a u) ->
      Rle l u).
 
-(** helper: existence of least upper bounds in R (placeholder completeness axiom) **)
-(** LATEX VERSION: Every nonempty subset of R bounded above has a least upper bound. **)
-Theorem R_lub_exists : forall A:set,
-  (forall a:set, a :e A -> a :e R) ->
-  (exists u:set, u :e R /\ forall a:set, a :e A -> a :e R -> Rle a u) ->
-  exists l:set, R_lub A l.
-admit.
-Qed.
-
 (** helper: clipped coordinate difference (for the intended uniform metric) **)
 Definition Romega_coord_abs_diff : set -> set -> set -> set := fun f g n =>
   abs_SNo (add_SNo (apply_fun f n) (minus_SNo (apply_fun g n))).
@@ -66285,29 +66276,6 @@ Definition Romega_clipped_diffs : set -> set -> set := fun f g =>
 Definition Romega_uniform_metric_value : set -> set -> set := fun f g =>
   Eps_i (fun r:set => R_lub (Romega_clipped_diffs f g) r).
 
-(** helper: the chosen value is a least upper bound (requires R_lub_exists) **)
-Theorem Romega_uniform_metric_value_is_lub : forall f g:set,
-  f :e real_sequences ->
-  g :e real_sequences ->
-  R_lub (Romega_clipped_diffs f g) (Romega_uniform_metric_value f g).
-admit.
-Qed.
-
-(** helper: uniform metric values are real numbers **)
-Theorem Romega_uniform_metric_value_in_R : forall f g:set,
-  f :e real_sequences ->
-  g :e real_sequences ->
-  Romega_uniform_metric_value f g :e R.
-let f g.
-assume Hf: f :e real_sequences.
-assume Hg: g :e real_sequences.
-claim Hlub: R_lub (Romega_clipped_diffs f g) (Romega_uniform_metric_value f g).
-{ exact (Romega_uniform_metric_value_is_lub f g Hf Hg). }
-exact (andEL ((Romega_uniform_metric_value f g) :e R)
-             (forall a:set, a :e (Romega_clipped_diffs f g) -> a :e R -> Rle a (Romega_uniform_metric_value f g))
-             Hlub).
-Qed.
-
 (** LATEX VERSION: The uniform metric on R^ω is defined by taking the supremum of the clipped coordinate differences. **)
 Definition uniform_metric_Romega : set :=
   graph (setprod real_sequences real_sequences)
@@ -66318,49 +66286,7 @@ Definition uniform_topology : set := metric_topology real_sequences uniform_metr
 (** helper: uniform_metric_Romega satisfies metric_on (pending full proof) **)
 (** LATEX VERSION: The uniform metric on R^ω is a metric on the set of real sequences. **)
 Theorem uniform_metric_Romega_is_metric : metric_on real_sequences uniform_metric_Romega.
-prove metric_on real_sequences uniform_metric_Romega.
-prove ((((function_on uniform_metric_Romega (setprod real_sequences real_sequences) R /\
-         (forall x y:set, x :e real_sequences -> y :e real_sequences ->
-            apply_fun uniform_metric_Romega (x,y) = apply_fun uniform_metric_Romega (y,x))) /\
-        (forall x:set, x :e real_sequences -> apply_fun uniform_metric_Romega (x,x) = 0)) /\
-       (forall x y:set, x :e real_sequences -> y :e real_sequences ->
-         ~(Rlt (apply_fun uniform_metric_Romega (x,y)) 0)
-         /\ (apply_fun uniform_metric_Romega (x,y) = 0 -> x = y))) /\
-      (forall x y z:set, x :e real_sequences -> y :e real_sequences -> z :e real_sequences ->
-         ~(Rlt (add_SNo (apply_fun uniform_metric_Romega (x,y)) (apply_fun uniform_metric_Romega (y,z)))
-               (apply_fun uniform_metric_Romega (x,z))))).
-apply andI.
-- apply andI.
-  * apply andI.
-    { (** function_on and symmetry **)
-      apply andI.
-      - (** function_on uniform_metric_Romega (X×X) R **)
-        let p. assume Hp: p :e setprod real_sequences real_sequences.
-        prove apply_fun uniform_metric_Romega p :e R.
-        claim Happ: apply_fun uniform_metric_Romega p =
-          Romega_uniform_metric_value (p 0) (p 1).
-        { exact (apply_fun_graph (setprod real_sequences real_sequences)
-                                 (fun q:set => Romega_uniform_metric_value (q 0) (q 1))
-                                 p Hp). }
-        rewrite Happ.
-        admit.
-      - (** symmetry **)
-        let x y.
-        assume Hx: x :e real_sequences.
-        assume Hy: y :e real_sequences.
-        admit. }
-    { (** diagonal zero **)
-      let x. assume Hx: x :e real_sequences.
-      admit. }
-  * (** nonnegativity and identity of indiscernibles **)
-    let x y. assume Hx: x :e real_sequences. assume Hy: y :e real_sequences.
-    admit.
-- (** triangle inequality **)
-  let x y z.
-  assume Hx: x :e real_sequences.
-  assume Hy: y :e real_sequences.
-  assume Hz: z :e real_sequences.
-  admit.
+admit. (** FAIL **)
 Qed.
 
 (** helper: uniform_topology is a topology (placeholder via uniform_metric_Romega_is_metric) **)
