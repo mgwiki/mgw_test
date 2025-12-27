@@ -66437,7 +66437,7 @@ assume HA: closed_in X Tx A.
 assume Hf: continuous_map A (subspace_topology X Tx A) (closed_interval a b) (order_topology (closed_interval a b)) f.
 prove exists g:set, continuous_map X Tx (closed_interval a b) (order_topology (closed_interval a b)) g /\
     (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
-admit.
+admit. (** FAIL **)
 Qed.
 
 Theorem Tietze_extension_real : forall X Tx A f:set,
@@ -66451,7 +66451,7 @@ assume HA: closed_in X Tx A.
 assume Hf: continuous_map A (subspace_topology X Tx A) R R_standard_topology f.
 prove exists g:set, continuous_map X Tx R R_standard_topology g /\
     (forall x:set, x :e A -> apply_fun g x = apply_fun f x).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §36 Definition: m-manifold **) 
@@ -66480,7 +66480,7 @@ assume Hnorm: normal_space X Tx.
 assume Hfin: finite U.
 assume Hcover: open_cover X Tx U.
 prove exists P:set, partition_of_unity_dominated X Tx U.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §36 Theorem: compact manifold embeds in Euclidean space **) 
@@ -66493,7 +66493,7 @@ assume Hman: m_manifold X Tx.
 assume Hcomp: compact_space X Tx.
 prove exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §37 Theorem: Tychonoff theorem **)
@@ -66505,7 +66505,7 @@ Theorem Tychonoff_theorem : forall I Xi:set,
 let I Xi.
 assume Hcomp: forall i:set, i :e I -> compact_space (product_component Xi i) (product_component_topology Xi i).
 prove compact_space (product_space I Xi) (product_topology_full I Xi).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §38 Definition: Stone-Cech compactification and universal property **) 
