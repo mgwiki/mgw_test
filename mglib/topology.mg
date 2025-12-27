@@ -75029,10 +75029,10 @@ Theorem graph3_in_euclidean_space3 : forall g:set->set,
    apply andI.
    - exact Hfun.
    - let i. assume Hi3: i :e 3.
-     witness (g i).
-     apply andI.
-     + exact (Hfun i Hi3).
-     + exact (ReplI 3 (fun i0:set => (i0, g i0)) i Hi3). }
+	     witness (g i).
+	     apply andI.
+	     + exact (real_in_space_family_union_R3 (g i) (HgR i)).
+	     + exact (ReplI 3 (fun i0:set => (i0, g i0)) i Hi3). }
  claim Hfg: functional_graph (graph 3 g).
  { exact (functional_graph_graph 3 g). }
  claim Hprop: (total_function_on (graph 3 g) 3 U /\ functional_graph (graph 3 g)) /\
