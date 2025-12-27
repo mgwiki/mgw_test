@@ -67925,8 +67925,9 @@ claim HF_inj: inj (Power omega) binary_sequences_Romega F.
           exact HAval. }
         claim Hcontra: 1 = 0.
         { rewrite <- HBval.
-          symmetry.
-          exact HBAval. }
+          claim H1: 1 = apply_fun (F B) n.
+          { symmetry. exact HBAval. }
+          exact H1. }
         claim H01: 0 = 1.
         { symmetry. exact Hcontra. }
         exact (FalseE (neq_0_1 H01) (n :e B)). 
@@ -67957,8 +67958,9 @@ claim HF_inj: inj (Power omega) binary_sequences_Romega F.
           exact HAval. }
         claim Hcontra: 1 = 0.
         { rewrite <- HBval0.
-          symmetry.
-          exact HBval. }
+          claim H1: 1 = apply_fun (F B) n.
+          { symmetry. exact HBval. }
+          exact H1. }
         claim H01: 0 = 1.
         { symmetry. exact Hcontra. }
         exact (FalseE (neq_0_1 H01) (n :e A)). }
