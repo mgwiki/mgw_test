@@ -68652,14 +68652,15 @@ prove countable_basis_at (product_space I Xi) (countable_product_topology_subbas
 set X := product_space I Xi.
 set Tx := countable_product_topology_subbasis I Xi.
 set Sfull := product_subbasis_full I Xi.
-claim Hfprop: function_on f I (space_family_union I Xi) /\ forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i.
+claim Hfprop: (total_function_on f I (space_family_union I Xi) /\ functional_graph f) /\
+              forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i.
 { exact (SepE2 (Power (setprod I (space_family_union I Xi)))
-               (fun f0:set => function_on f0 I (space_family_union I Xi) /\
+               (fun f0:set => (total_function_on f0 I (space_family_union I Xi) /\ functional_graph f0) /\
                  forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i)
                f
                Hf). }
 claim Hcompf: forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i.
-{ exact (andER (function_on f I (space_family_union I Xi))
+{ exact (andER (total_function_on f I (space_family_union I Xi) /\ functional_graph f)
                (forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i)
                Hfprop). }
 claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
