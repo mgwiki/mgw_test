@@ -67995,12 +67995,30 @@ apply andI.
 	                                 (x,y)
 	                                 Hxyprod).
 	        rewrite (tuple_2_0_eq x y).
-	        rewrite (tuple_2_1_eq x y).
-	        exact (Romega_D_metric_value_nonneg x y Hx Hy). }
-	      { admit. }
-	  + admit.
-	- (** topology equality part **)
-	  admit.
+		        rewrite (tuple_2_1_eq x y).
+		        exact (Romega_D_metric_value_nonneg x y Hx Hy). }
+		      { assume H0: apply_fun Romega_D_metric (x,y) = 0.
+		        claim Hxyprod: (x,y) :e setprod R_omega_space R_omega_space.
+		        { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space x y Hx Hy). }
+		        claim Happ: apply_fun Romega_D_metric (x,y) = Romega_D_metric_value x y.
+		        { rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+		                                   (fun p:set => Romega_D_metric_value (p 0) (p 1))
+		                                   (x,y)
+		                                   Hxyprod).
+		          rewrite (tuple_2_0_eq x y).
+		          rewrite (tuple_2_1_eq x y).
+		          reflexivity. }
+		        claim Hval0: Romega_D_metric_value x y = 0.
+		        { rewrite <- Happ.
+		          exact H0. }
+		        claim Hcoord: forall i:set, i :e omega :\: {0} -> apply_fun x i = apply_fun y i.
+		        { let i.
+		          assume HiIn: i :e omega :\: {0}.
+		          exact (Romega_D_metric_value_eq0_coord_eq x y Hx Hy Hval0 i HiIn). }
+		        admit. }
+		  + admit.
+		- (** topology equality part **)
+		  admit.
 Qed.
 
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
