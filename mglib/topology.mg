@@ -67046,14 +67046,14 @@ Theorem dimension_finite_union_closed_max : forall X Tx Fam n:set,
   finite Fam ->
   (forall Y:set, Y :e Fam -> Y c= X /\ closed_in X Tx Y /\ covering_dimension Y (subspace_topology X Tx Y) n) ->
   covering_dimension (Union Fam) (subspace_topology X Tx (Union Fam)) n.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** from §50 Example 4: compact 1-manifold has dimension 1 **)
 (** LATEX VERSION: Every compact 1-manifold X has topological dimension 1. **)
 Theorem compact_1_manifold_dimension_1 : forall X Tx:set,
   compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx (Sing Empty).
-admit.
+admit. (**  aby  conj_myprob_67056_1_20251226_171004 compact_manifold_dimension_le b_eltÞf . **)
 Qed.
 
 (** from §50 Example 5: compact 2-manifold has dimension at most 2 **)
@@ -67061,7 +67061,7 @@ Qed.
 Definition two : set := Sing (Sing Empty).
 Theorem compact_2_manifold_dimension_le_2 : forall X Tx:set,
   compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx two.
-admit.
+admit. (**  aby  conj_myprob_67064_1_20251226_171016 compact_manifold_dimension_le . **)
 Qed.
 
 (** from §50 Example 6: arcs and linear graphs **)
