@@ -54750,13 +54750,27 @@ claim Hcoords: forall i:set, i :e omega -> apply_fun (graph omega h) i :e space_
     exact (tuple_2_0_eq R R_standard_topology). }
   rewrite Hset.
   exact (HhR i Hi). }
-claim Hprop: function_on (graph omega h) omega U0 /\
+claim Htot: total_function_on (graph omega h) omega U0.
+{ prove function_on (graph omega h) omega U0 /\
+    forall x:set, x :e omega -> exists y:set, y :e U0 /\ (x,y) :e graph omega h.
+  apply andI.
+  - exact Hfun.
+  - let i. assume Hi: i :e omega.
+    witness (h i).
+    apply andI.
+    + exact (Hfun i Hi).
+    + exact (ReplI omega (fun i0:set => (i0, h i0)) i Hi). }
+claim Hfg: functional_graph (graph omega h).
+{ exact (functional_graph_graph omega h). }
+claim Hprop: (total_function_on (graph omega h) omega U0 /\ functional_graph (graph omega h)) /\
   forall i:set, i :e omega -> apply_fun (graph omega h) i :e space_family_set Xi i.
 { apply andI.
-  - exact Hfun.
+  - apply andI.
+    + exact Htot.
+    + exact Hfg.
   - exact Hcoords. }
 exact (SepI (Power (setprod omega U0))
-            (fun f0:set => function_on f0 omega U0 /\
+            (fun f0:set => (total_function_on f0 omega U0 /\ functional_graph f0) /\
               forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i)
             (graph omega h)
             Hpow
