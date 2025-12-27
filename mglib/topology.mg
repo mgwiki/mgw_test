@@ -34836,7 +34836,7 @@ claim Hsub: order_interval X a b c= closed_interval_in X a b.
 	  - exact (orIR (x = a) (order_rel X a x) Hax).
 	  - exact (orIR (x = b) (order_rel X x b) Hxb). }
 claim Hclosed: closed_in X Tx (closed_interval_in X a b).
-{ admit. }
+{ admit. (** FAIL **) }
 exact (closure_subset_of_closed_superset X Tx (order_interval X a b) (closed_interval_in X a b)
   HTx Hsub Hclosed).
 Qed.
@@ -34863,7 +34863,7 @@ assume Hab: order_rel X a b.
 assume Hsucc: no_immediate_successor X a.
 assume Hpred: no_immediate_predecessor X b.
 prove closure_of X (order_topology X) (order_interval X a b) = closed_interval_in X a b.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** Helper: closure is idempotent and closed **)
@@ -35829,7 +35829,7 @@ Theorem ex17_10_order_topology_Hausdorff : forall X:set,
   Hausdorff_space X (order_topology X).
 let X.
 prove Hausdorff_space X (order_topology X).
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** LATEX VERSION: Exercise 11: Product of Hausdorff spaces is Hausdorff. **)
@@ -37033,7 +37033,7 @@ prove closure_of R R_standard_topology K_set = K_set :\/: {0} /\
   closure_of R R_finite_complement_topology K_set = R /\
   closure_of R R_upper_limit_topology K_set = K_set /\
   closure_of R R_ray_topology K_set = R_nonneg_set.
-admit.
+admit. (** FAIL **)
 Qed.
 
 (** helper: in the left ray topology, any open set containing 1 contains 0 **)
