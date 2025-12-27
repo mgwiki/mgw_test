@@ -69377,6 +69377,39 @@ claim HinvMjR: inv_nat mj :e R.
 exact (RltI (inv_nat mj) (inv_nat mi) HinvMjR HinvmiInR HinvLtS).
 Qed.
 
+(** helper: inv_nat 2 is strictly below 1 **)
+Theorem inv_nat_2_lt_1 : Rlt (inv_nat 2) 1.
+prove Rlt (inv_nat 2) 1.
+claim H0o: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
+claim H1o: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim H0in1: 0 :e 1.
+{ exact In_0_1. }
+claim Hlt: Rlt (inv_nat (ordsucc 1)) (inv_nat (ordsucc 0)).
+{ exact (inv_nat_ordsucc_antitone 0 1 H0o H1o H0in1). }
+claim Hs0: ordsucc 0 = 1.
+{ claim Heq: add_SNo 0 1 = ordsucc 0.
+  { exact (add_SNo_1_ordsucc 0 H0o). }
+  claim Heq01: add_SNo 0 1 = 1.
+  { exact (add_SNo_0L 1 SNo_1). }
+  prove ordsucc 0 = 1.
+  rewrite <- Heq.
+  rewrite Heq01.
+  reflexivity. }
+claim Hs1: ordsucc 1 = 2.
+{ claim Heq: add_SNo 1 1 = ordsucc 1.
+  { exact (add_SNo_1_ordsucc 1 H1o). }
+  prove ordsucc 1 = 2.
+  rewrite <- Heq.
+  rewrite add_SNo_1_1_2.
+  reflexivity. }
+rewrite <- inv_nat_1_eq_1 at 2.
+rewrite <- Hs1 at 1.
+rewrite <- Hs0 at 2.
+exact Hlt.
+Qed.
+
 (** helper: given r>0, some inv_nat (n+1) is below r **)
 Theorem exists_inv_nat_ordsucc_lt : forall r:set,
   r :e R -> Rlt 0 r ->
