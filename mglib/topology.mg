@@ -67838,12 +67838,13 @@ claim HBgener: basis_generates X B Tx.
 { exact (andER (basis_on X B /\ countable_set B) (basis_generates X B Tx) HBpair). }
 claim HTxeq: generated_topology X B = Tx.
 { exact (andER (basis_on X B) (generated_topology X B = Tx) HBgener). }
-set P := (fun a:set =>
-  fun b:set => b :e B /\ exists U:set, U :e Tx /\ U :/\: A = {a} /\ a :e b /\ b c= U).
-set pick := (fun a:set => Eps_i (P a)).
-claim HpickP: forall a:set, a :e A -> (P a) (pick a).
+set pick := (fun a:set =>
+  Eps_i (fun b:set => b :e B /\
+    exists U:set, U :e Tx /\ (U :/\: A = {a} /\ (a :e b /\ b c= U)))).
+claim HpickP: forall a:set, a :e A ->
+  (fun b:set => b :e B /\ exists U:set, U :e Tx /\ (U :/\: A = {a} /\ (a :e b /\ b c= U))) (pick a).
 { let a. assume Ha: a :e A.
-  prove (P a) (pick a).
+  prove (fun b:set => b :e B /\ exists U:set, U :e Tx /\ (U :/\: A = {a} /\ (a :e b /\ b c= U))) (pick a).
   claim HexU: exists U:set, U :e Tx /\ U :/\: A = {a}.
   { exact (HdiscU a Ha). }
   apply HexU.
@@ -67874,7 +67875,8 @@ claim HpickP: forall a:set, a :e A -> (P a) (pick a).
   { exact (andEL (a :e b) (b c= U) Habsub). }
   claim HbsubU: b c= U.
   { exact (andER (a :e b) (b c= U) Habsub). }
-  claim Hwit: (P a) b.
+  claim Hwit: (fun b0:set => b0 :e B /\
+    exists U0:set, U0 :e Tx /\ (U0 :/\: A = {a} /\ (a :e b0 /\ b0 c= U0))) b.
   { apply andI.
     - exact HbB.
     - witness U.
@@ -67885,39 +67887,55 @@ claim HpickP: forall a:set, a :e A -> (P a) (pick a).
         * apply andI.
           { exact Hab. }
           { exact HbsubU. } }
-  exact (Eps_i_ax (P a) b Hwit). }
+  exact (Eps_i_ax (fun b0:set => b0 :e B /\
+    exists U0:set, U0 :e Tx /\ (U0 :/\: A = {a} /\ (a :e b0 /\ b0 c= U0))) b Hwit). }
 claim HinjAB: inj A B pick.
 { prove (forall a :e A, pick a :e B) /\ (forall a0 a1 :e A, pick a0 = pick a1 -> a0 = a1).
   apply andI.
   - let a. assume Ha: a :e A.
     prove pick a :e B.
-    claim Hp: (P a) (pick a).
+    claim Hp: (fun b:set => b :e B /\ exists U:set, U :e Tx /\ (U :/\: A = {a} /\ (a :e b /\ b c= U))) (pick a).
     { exact (HpickP a Ha). }
-    exact (andEL (pick a :e B) (exists U:set, U :e Tx /\ U :/\: A = {a} /\ a :e pick a /\ pick a c= U) Hp).
+    exact (andEL (pick a :e B)
+                 (exists U:set, U :e Tx /\ (U :/\: A = {a} /\ (a :e pick a /\ pick a c= U)))
+                 Hp).
   - let a0. assume Ha0: a0 :e A.
     let a1. assume Ha1: a1 :e A.
     assume Heq: pick a0 = pick a1.
     prove a0 = a1.
-    claim Hp0: (P a0) (pick a0).
+    claim Hp0: (fun b:set => b :e B /\ exists U:set, U :e Tx /\ (U :/\: A = {a0} /\ (a0 :e b /\ b c= U))) (pick a0).
     { exact (HpickP a0 Ha0). }
-    claim Hp1: (P a1) (pick a1).
+    claim Hp1: (fun b:set => b :e B /\ exists U:set, U :e Tx /\ (U :/\: A = {a1} /\ (a1 :e b /\ b c= U))) (pick a1).
     { exact (HpickP a1 Ha1). }
-    claim Hex0: exists U:set, U :e Tx /\ U :/\: A = {a0} /\ a0 :e pick a0 /\ pick a0 c= U.
-    { exact (andER (pick a0 :e B) (exists U:set, U :e Tx /\ U :/\: A = {a0} /\ a0 :e pick a0 /\ pick a0 c= U) Hp0). }
+    claim Hex0: exists U:set, U :e Tx /\ (U :/\: A = {a0} /\ (a0 :e pick a0 /\ pick a0 c= U)).
+    { exact (andER (pick a0 :e B)
+                   (exists U:set, U :e Tx /\ (U :/\: A = {a0} /\ (a0 :e pick a0 /\ pick a0 c= U)))
+                   Hp0). }
+    claim Hex1: exists U:set, U :e Tx /\ (U :/\: A = {a1} /\ (a1 :e pick a1 /\ pick a1 c= U)).
+    { exact (andER (pick a1 :e B)
+                   (exists U:set, U :e Tx /\ (U :/\: A = {a1} /\ (a1 :e pick a1 /\ pick a1 c= U)))
+                   Hp1). }
+    claim Ha1inpick1: a1 :e pick a1.
+    { apply Hex1.
+      let U1. assume HU1pair.
+      claim HU1rest: U1 :/\: A = {a1} /\ (a1 :e pick a1 /\ pick a1 c= U1).
+      { exact (andER (U1 :e Tx) (U1 :/\: A = {a1} /\ (a1 :e pick a1 /\ pick a1 c= U1)) HU1pair). }
+      exact (andEL (a1 :e pick a1) (pick a1 c= U1)
+                   (andER (U1 :/\: A = {a1}) (a1 :e pick a1 /\ pick a1 c= U1) HU1rest)). }
     claim Ha1inpick0: a1 :e pick a0.
     { rewrite Heq.
-      exact (andER (pick a1 :e B) (exists U:set, U :e Tx /\ U :/\: A = {a1} /\ a1 :e pick a1 /\ pick a1 c= U) Hp1
-                   (a1 :e pick a0)). }
+      exact Ha1inpick1. }
     apply Hex0.
     let U0. assume HU0pair.
     claim HU0: U0 :e Tx.
-    { exact (andEL (U0 :e Tx) (U0 :/\: A = {a0} /\ a0 :e pick a0 /\ pick a0 c= U0) HU0pair). }
-    claim HU0rest: U0 :/\: A = {a0} /\ a0 :e pick a0 /\ pick a0 c= U0.
-    { exact (andER (U0 :e Tx) (U0 :/\: A = {a0} /\ a0 :e pick a0 /\ pick a0 c= U0) HU0pair). }
+    { exact (andEL (U0 :e Tx) (U0 :/\: A = {a0} /\ (a0 :e pick a0 /\ pick a0 c= U0)) HU0pair). }
+    claim HU0rest: U0 :/\: A = {a0} /\ (a0 :e pick a0 /\ pick a0 c= U0).
+    { exact (andER (U0 :e Tx) (U0 :/\: A = {a0} /\ (a0 :e pick a0 /\ pick a0 c= U0)) HU0pair). }
     claim HU0eq: U0 :/\: A = {a0}.
     { exact (andEL (U0 :/\: A = {a0}) (a0 :e pick a0 /\ pick a0 c= U0) HU0rest). }
     claim HsubU0: pick a0 c= U0.
-    { exact (andER (a0 :e pick a0) (pick a0 c= U0) (andER (U0 :/\: A = {a0}) (a0 :e pick a0 /\ pick a0 c= U0) HU0rest)). }
+    { exact (andER (a0 :e pick a0) (pick a0 c= U0)
+                   (andER (U0 :/\: A = {a0}) (a0 :e pick a0 /\ pick a0 c= U0) HU0rest)). }
     claim Ha1U0: a1 :e U0.
     { exact (HsubU0 a1 Ha1inpick0). }
     claim Ha1UA: a1 :e U0 :/\: A.
