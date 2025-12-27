@@ -68229,13 +68229,13 @@ Theorem Romega_D_metric_value_eq0_coord_eq : forall x y:set,
   x :e R_omega_space ->
   y :e R_omega_space ->
   Romega_D_metric_value x y = 0 ->
-  forall i:set, i :e omega :\: {0} -> apply_fun x i = apply_fun y i.
+  forall i:set, i :e omega -> apply_fun x i = apply_fun y i.
 let x y.
 assume Hx: x :e R_omega_space.
 assume Hy: y :e R_omega_space.
 assume Hxy0: Romega_D_metric_value x y = 0.
 let i.
-assume HiIn: i :e omega :\: {0}.
+assume HiO: i :e omega.
 set A := Romega_D_scaled_diffs x y.
 set l := Romega_D_metric_value x y.
 claim HlR: l :e R.
@@ -68254,16 +68254,14 @@ claim Hub0: forall a:set, a :e A -> a :e R -> Rle a 0.
   assume Ha0R: a0 :e R.
   rewrite <- Hxy0.
   exact (Hub a0 Ha0A Ha0R). }
-claim HiO: i :e omega.
-{ exact (setminusE1 omega {0} i HiIn). }
 set bd := R_bounded_distance (apply_fun x i) (apply_fun y i).
-set inv := inv_nat i.
+set inv := inv_nat (ordsucc i).
 set a := mul_SNo bd inv.
 claim HaA: a :e A.
-{ exact (ReplI (omega :\: {0})
-               (fun j:set => mul_SNo (R_bounded_distance (apply_fun x j) (apply_fun y j)) (inv_nat j))
+{ exact (ReplI omega
+               (fun j:set => mul_SNo (R_bounded_distance (apply_fun x j) (apply_fun y j)) (inv_nat (ordsucc j)))
                i
-               HiIn). }
+               HiO). }
 claim HxiR: apply_fun x i :e R.
 { exact (Romega_coord_in_R x i Hx HiO). }
 claim HyiR: apply_fun y i :e R.
@@ -68271,7 +68269,7 @@ claim HyiR: apply_fun y i :e R.
 claim HbdR: bd :e R.
 { exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
 claim HinvR: inv :e R.
-{ exact (inv_nat_real i HiO). }
+{ exact (inv_nat_real (ordsucc i) (omega_ordsucc i HiO)). }
 claim HaR: a :e R.
 { exact (real_mul_SNo bd HbdR inv HinvR). }
 claim HRle: Rle a 0.
@@ -68285,7 +68283,16 @@ claim HinvS: SNo inv.
 claim HbdNN: 0 <= bd.
 { exact (R_bounded_distance_nonneg (apply_fun x i) (apply_fun y i) HxiR HyiR). }
 claim HinvPosR: Rlt 0 inv.
-{ exact (inv_nat_pos i HiIn). }
+{ claim HsuccO: ordsucc i :e omega.
+  { exact (omega_ordsucc i HiO). }
+  claim HsuccNotIn0: ordsucc i /:e {0}.
+  { assume Hin0: ordsucc i :e {0}.
+    claim Heq: ordsucc i = 0.
+    { exact (SingE 0 (ordsucc i) Hin0). }
+    exact (neq_ordsucc_0 i Heq). }
+  claim HsuccIn: ordsucc i :e omega :\: {0}.
+  { exact (setminusI omega {0} (ordsucc i) HsuccO HsuccNotIn0). }
+  exact (inv_nat_pos (ordsucc i) HsuccIn). }
 claim HinvPos: 0 < inv.
 { exact (RltE_lt 0 inv HinvPosR). }
 claim HinvNN: 0 <= inv.
