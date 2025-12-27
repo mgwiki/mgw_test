@@ -67920,13 +67920,14 @@ claim HF_inj: inj (Power omega) binary_sequences_Romega F.
           rewrite (apply_fun_graph omega (fun k:set => if k :e B then 1 else 0) n HnO).
           rewrite (If_i_0 (n :e B) 1 0 HnnotB).
           reflexivity. }
-        claim HBAval: apply_fun (F B) n = 1.
-        { rewrite <- Heq.
-          exact HAval. }
+        claim HappEq: apply_fun (F A) n = apply_fun (F B) n.
+        { rewrite Heq.
+          reflexivity. }
+        claim H1: 1 = apply_fun (F B) n.
+        { rewrite <- HAval.
+          exact HappEq. }
         claim Hcontra: 1 = 0.
         { rewrite <- HBval.
-          claim H1: 1 = apply_fun (F B) n.
-          { symmetry. exact HBAval. }
           exact H1. }
         claim H01: 0 = 1.
         { symmetry. exact Hcontra. }
@@ -67953,13 +67954,17 @@ claim HF_inj: inj (Power omega) binary_sequences_Romega F.
           rewrite (apply_fun_graph omega (fun k:set => if k :e A then 1 else 0) n HnO).
           rewrite (If_i_0 (n :e A) 1 0 HnnotA).
           reflexivity. }
-        claim HBval0: apply_fun (F B) n = 0.
+        claim HappEqAB: apply_fun (F A) n = apply_fun (F B) n.
         { rewrite Heq.
-          exact HAval. }
+          reflexivity. }
+        claim HappEq: apply_fun (F B) n = apply_fun (F A) n.
+        { symmetry.
+          exact HappEqAB. }
+        claim H1: 1 = apply_fun (F A) n.
+        { rewrite <- HBval.
+          exact HappEq. }
         claim Hcontra: 1 = 0.
-        { rewrite <- HBval0.
-          claim H1: 1 = apply_fun (F B) n.
-          { symmetry. exact HBval. }
+        { rewrite <- HAval.
           exact H1. }
         claim H01: 0 = 1.
         { symmetry. exact Hcontra. }
