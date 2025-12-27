@@ -57295,9 +57295,9 @@ Theorem ex23_ordered_square_locally_conn_not_pathconn :
 prove locally_connected ordered_square ordered_square_topology /\ ~ locally_path_connected ordered_square ordered_square_topology.
 apply andI.
 - (** locally_connected **)
-  admit.
+  admit. (** FAIL **)
 - (** not locally_path_connected **)
-  admit.
+  admit. (** FAIL **)
 Qed.
 
 (** from §23 Exercise: connected open subsets of locally path connected spaces are path connected **) 
