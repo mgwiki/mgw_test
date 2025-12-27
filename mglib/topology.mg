@@ -69693,10 +69693,104 @@ set Xi0 := const_space_family omega R R_standard_topology.
 set C := product_cylinder omega Xi0 i U.
 set X := R_omega_space.
 set d := Romega_D_metric.
-claim HTm: topology_on X (metric_topology X d).
+claim HXeq: X = product_space omega Xi0.
+{ reflexivity. }
+set Tm := metric_topology X d.
+set B := famunion X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}).
+claim HTm: topology_on X Tm.
 { exact (metric_topology_is_topology X d Hm). }
-(** TODO: show C is open in the metric topology by taking for each f :e C a small D-ball contained in C; use the local-interval property of R_standard_topology at apply_fun f i. **)
-admit.
+prove C :e Tm.
+claim HTdef: Tm = generated_topology X B.
+{ reflexivity. }
+rewrite HTdef.
+prove C :e generated_topology X B.
+claim Hgendef: generated_topology X B =
+  {U0 :e Power X | forall x :e U0, exists b :e B, x :e b /\ b c= U0}.
+{ reflexivity. }
+rewrite Hgendef.
+apply SepI.
+- prove C :e Power X.
+  apply PowerI.
+  let f. assume HfC: f :e C.
+  prove f :e X.
+  rewrite HXeq.
+  exact (SepE1 (product_space omega Xi0)
+               (fun g0:set => i :e omega /\ U :e space_family_topology Xi0 i /\ apply_fun g0 i :e U)
+               f HfC).
+- let f. assume HfC: f :e C.
+  prove exists b :e B, f :e b /\ b c= C.
+  claim HfX: f :e X.
+  { rewrite HXeq.
+    exact (SepE1 (product_space omega Xi0)
+                 (fun g0:set => i :e omega /\ U :e space_family_topology Xi0 i /\ apply_fun g0 i :e U)
+                 f HfC). }
+  claim Hfprop: i :e omega /\ U :e space_family_topology Xi0 i /\ apply_fun f i :e U.
+  { exact (SepE2 (product_space omega Xi0)
+                 (fun g0:set => i :e omega /\ U :e space_family_topology Xi0 i /\ apply_fun g0 i :e U)
+                 f HfC). }
+  claim Hcore: i :e omega /\ U :e space_family_topology Xi0 i.
+  { exact (andEL (i :e omega /\ U :e space_family_topology Xi0 i) (apply_fun f i :e U) Hfprop). }
+  claim HfiU: apply_fun f i :e U.
+  { exact (andER (i :e omega /\ U :e space_family_topology Xi0 i) (apply_fun f i :e U) Hfprop). }
+  claim HUpow: U :e Power R.
+  { exact (SepE1 (Power R)
+                 (fun U0:set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+                 U HU). }
+  claim HUneigh: forall x0 :e U, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U.
+  { exact (SepE2 (Power R)
+                 (fun U0:set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+                 U HU). }
+  claim Hexb0: exists b0 :e R_standard_basis, apply_fun f i :e b0 /\ b0 c= U.
+  { exact (HUneigh (apply_fun f i) HfiU). }
+  apply Hexb0.
+  let b0. assume Hb0pair. apply Hb0pair.
+  assume Hb0Std: b0 :e R_standard_basis.
+  assume Hb0prop: apply_fun f i :e b0 /\ b0 c= U.
+  claim Hxib0: apply_fun f i :e b0.
+  { exact (andEL (apply_fun f i :e b0) (b0 c= U) Hb0prop). }
+  claim Hb0subU: b0 c= U.
+  { exact (andER (apply_fun f i :e b0) (b0 c= U) Hb0prop). }
+  claim Hexa: exists a :e R, b0 :e {open_interval a b|b :e R}.
+  { exact (famunionE R (fun a0:set => {open_interval a0 b|b :e R}) b0 Hb0Std). }
+  apply Hexa.
+  let a. assume Hapair. apply Hapair.
+  assume HaR: a :e R.
+  assume Hb0fam: b0 :e {open_interval a b|b :e R}.
+  claim Hexb: exists b :e R, b0 = open_interval a b.
+  { exact (ReplE R (fun b1:set => open_interval a b1) b0 Hb0fam). }
+  apply Hexb.
+  let b. assume Hbpair. apply Hbpair.
+  assume HbR: b :e R.
+  assume Hb0eq: b0 = open_interval a b.
+  claim Hxib0': apply_fun f i :e open_interval a b.
+  { rewrite <- Hb0eq.
+    exact Hxib0. }
+  claim Hxiprop: Rlt a (apply_fun f i) /\ Rlt (apply_fun f i) b.
+  { exact (SepE2 R (fun x0:set => Rlt a x0 /\ Rlt x0 b) (apply_fun f i) Hxib0'). }
+  claim Hailt: Rlt a (apply_fun f i).
+  { exact (andEL (Rlt a (apply_fun f i)) (Rlt (apply_fun f i) b) Hxiprop). }
+  claim Hiltb: Rlt (apply_fun f i) b.
+  { exact (andER (Rlt a (apply_fun f i)) (Rlt (apply_fun f i) b) Hxiprop). }
+  claim HexBall: exists r0:set, r0 :e R /\ Rlt 0 r0 /\ open_ball X d f r0 c= C.
+  { (** TODO: choose r0 ensuring the i-th coordinate stays inside open_interval a b, hence inside U; use Romega_D_metric_coord_abs_lt and a small enough r0 < inv_nat (i+1) scaled by an interval-radius. **)
+    admit. }
+  apply HexBall.
+  let r0. assume Hr0pair.
+  apply Hr0pair.
+  assume Hr0left Hr0sub.
+  apply Hr0left.
+  assume Hr0R Hr0pos.
+  set bset := open_ball X d f r0.
+  witness bset.
+  apply andI.
+  - prove bset :e B.
+    claim HbIn: bset :e {open_ball X d f r|r :e R, Rlt 0 r}.
+    { exact (ReplSepI R (fun r:set => Rlt 0 r) (fun r:set => open_ball X d f r) r0 Hr0R Hr0pos). }
+    exact (famunionI X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}) f bset HfX HbIn).
+  - apply andI.
+    + prove f :e bset.
+      exact (center_in_open_ball X d f r0 Hm HfX Hr0pos).
+    + exact Hr0sub.
 Qed.
 
 Theorem Romega_D_metric_induces_product_topology :
