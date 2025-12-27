@@ -69658,6 +69658,22 @@ Qed.
 
 Definition Romega_D_metric_topology : set := metric_topology R_omega_space Romega_D_metric.
 
+(** helper: open balls in the D metric are open in the product topology **)
+(** LATEX VERSION: For the D metric on R to the omega, every open ball is open in the product topology. **)
+Theorem Romega_D_metric_open_ball_in_product_topology : forall x r:set,
+  x :e R_omega_space -> r :e R -> Rlt 0 r ->
+  open_ball R_omega_space Romega_D_metric x r :e R_omega_product_topology.
+admit.
+Qed.
+
+(** helper: cylinder subbasis sets are open in the D metric topology **)
+(** LATEX VERSION: For the D metric, each cylinder set fixing one coordinate to be in an open interval is D-metric-open. **)
+Theorem Romega_product_cylinder_in_D_metric_topology : forall i U:set,
+  i :e omega -> U :e R_standard_topology ->
+  product_cylinder omega (const_space_family omega R R_standard_topology) i U :e Romega_D_metric_topology.
+admit.
+Qed.
+
 Theorem Romega_D_metric_induces_product_topology :
   metric_on R_omega_space Romega_D_metric /\
   Romega_D_metric_topology = R_omega_product_topology.
@@ -69887,13 +69903,105 @@ apply andI.
   apply set_ext.
   + let U. assume HU: U :e Romega_D_metric_topology.
     prove U :e R_omega_product_topology.
-    (** TODO: show every D-metric open set is open in the product topology **)
-    admit.
+    set X := R_omega_space.
+    set d := Romega_D_metric.
+    set B := famunion X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}).
+    claim HBasis: basis_on X B.
+    { exact (open_balls_form_basis X d Hm). }
+    claim HTprod: topology_on X R_omega_product_topology.
+    { exact Romega_product_topology_is_topology. }
+    claim Hballsub: forall b :e B, b :e R_omega_product_topology.
+    { let b. assume HbB: b :e B.
+      apply (famunionE_impred X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}) b HbB
+             (b :e R_omega_product_topology)).
+      let x0. assume Hx0X: x0 :e X.
+      assume HbIn: b :e {open_ball X d x0 r|r :e R, Rlt 0 r}.
+      apply (ReplSepE_impred R (fun r0:set => Rlt 0 r0) (fun r0:set => open_ball X d x0 r0) b HbIn
+             (b :e R_omega_product_topology)).
+      let r0. assume Hr0R: r0 :e R.
+      assume Hr0pos: Rlt 0 r0.
+      assume Hbeq: b = open_ball X d x0 r0.
+      rewrite Hbeq.
+      exact (Romega_D_metric_open_ball_in_product_topology x0 r0 Hx0X Hr0R Hr0pos). }
+    claim Hfiner: finer_than R_omega_product_topology (generated_topology X B).
+    { exact (generated_topology_finer X B R_omega_product_topology HBasis HTprod Hballsub). }
+    claim Hinc: generated_topology X B c= R_omega_product_topology.
+    { exact Hfiner. }
+    claim Hdef: Romega_D_metric_topology = generated_topology X B.
+    { reflexivity. }
+    claim HUgen: U :e generated_topology X B.
+    { rewrite <- Hdef.
+      exact HU. }
+    exact (Hinc U HUgen).
   + let U. assume HU: U :e R_omega_product_topology.
     prove U :e Romega_D_metric_topology.
-    (** TODO: show every product-basic cylinder is open in the D-metric topology, then use minimality of generated_topology_from_subbasis **)
-    admit.
-	Qed.
+    set X := R_omega_space.
+    set d := Romega_D_metric.
+    set Xi0 := const_space_family omega R R_standard_topology.
+    set S := product_subbasis_full omega Xi0.
+    claim HdefProd: R_omega_product_topology = generated_topology_from_subbasis X S.
+    { reflexivity. }
+    claim Hone: omega <> Empty.
+    { claim H0o: 0 :e omega.
+      { exact (nat_p_omega 0 nat_0). }
+      exact (elem_implies_nonempty omega 0 H0o). }
+    claim Hcomp: forall i:set, i :e omega -> topology_on (space_family_set Xi0 i) (space_family_topology Xi0 i).
+    { let i. assume Hi: i :e omega.
+      claim HXi: apply_fun Xi0 i = (R, R_standard_topology).
+      { exact (const_space_family_apply omega R R_standard_topology i Hi). }
+      claim Hset: space_family_set Xi0 i = R.
+      { claim Hdef: space_family_set Xi0 i = (apply_fun Xi0 i) 0.
+        { reflexivity. }
+        rewrite Hdef.
+        rewrite HXi.
+        exact (tuple_2_0_eq R R_standard_topology). }
+      claim Htop: topology_on R R_standard_topology.
+      { exact R_standard_topology_is_topology. }
+      rewrite Hset.
+      claim HtopEq: space_family_topology Xi0 i = R_standard_topology.
+      { claim Hdef: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+        { reflexivity. }
+        rewrite Hdef.
+        rewrite HXi.
+        exact (tuple_2_1_eq R R_standard_topology). }
+      rewrite HtopEq.
+      exact Htop. }
+    claim HSsub: subbasis_on X S.
+    { exact (product_subbasis_full_subbasis_on omega Xi0 Hone Hcomp). }
+    claim HTm: topology_on X Romega_D_metric_topology.
+    { exact (metric_topology_is_topology X d Hm). }
+    claim HSc: S c= Romega_D_metric_topology.
+    { let s. assume HsS: s :e S.
+      prove s :e Romega_D_metric_topology.
+      apply (famunionE_impred omega (fun i:set => {product_cylinder omega Xi0 i U|U :e space_family_topology Xi0 i})
+              s HsS (s :e Romega_D_metric_topology)).
+      let i. assume Hi: i :e omega.
+      assume Hsi: s :e {product_cylinder omega Xi0 i U|U :e space_family_topology Xi0 i}.
+      apply (ReplE_impred (space_family_topology Xi0 i) (fun U0:set => product_cylinder omega Xi0 i U0) s Hsi).
+      let U0. assume HU0Top: U0 :e space_family_topology Xi0 i.
+      assume Hseq: s = product_cylinder omega Xi0 i U0.
+      rewrite Hseq.
+      claim HtopEq: space_family_topology Xi0 i = R_standard_topology.
+      { claim HXi: apply_fun Xi0 i = (R, R_standard_topology).
+        { exact (const_space_family_apply omega R R_standard_topology i Hi). }
+        claim Hdef: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+        { reflexivity. }
+        rewrite Hdef.
+        rewrite HXi.
+        exact (tuple_2_1_eq R R_standard_topology). }
+      claim HU0std: U0 :e R_standard_topology.
+      { rewrite <- HtopEq.
+        exact HU0Top. }
+      exact (Romega_product_cylinder_in_D_metric_topology i U0 Hi HU0std). }
+    claim Hmin: finer_than Romega_D_metric_topology (generated_topology_from_subbasis X S).
+    { exact (topology_generated_by_basis_is_minimal X S Romega_D_metric_topology HSsub HTm HSc). }
+    claim Hinc: generated_topology_from_subbasis X S c= Romega_D_metric_topology.
+    { exact Hmin. }
+    claim HUgen: U :e generated_topology_from_subbasis X S.
+    { rewrite <- HdefProd.
+      exact HU. }
+    exact (Hinc U HUgen).
+ 	Qed.
 
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
 Definition open_cover : set -> set -> set -> prop :=
