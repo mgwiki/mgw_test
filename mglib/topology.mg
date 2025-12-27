@@ -67728,8 +67728,8 @@ apply Hor.
 Qed.
 
 Definition Romega_D_scaled_diffs : set -> set -> set := fun x y =>
-  Repl (omega :\: {0})
-       (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i)).
+  Repl omega
+       (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i))).
 
 (** helper: scaled diffs are symmetric **)
 Theorem Romega_D_scaled_diffs_sym : forall x y:set,
@@ -67739,13 +67739,11 @@ Theorem Romega_D_scaled_diffs_sym : forall x y:set,
 let x y.
 assume Hx: x :e R_omega_space.
 assume Hy: y :e R_omega_space.
-apply (ReplEq_ext (omega :\: {0})
-        (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat i))
-        (fun i:set => mul_SNo (R_bounded_distance (apply_fun y i) (apply_fun x i)) (inv_nat i))).
+apply (ReplEq_ext omega
+        (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+        (fun i:set => mul_SNo (R_bounded_distance (apply_fun y i) (apply_fun x i)) (inv_nat (ordsucc i)))).
 let i.
-assume HiIn: i :e omega :\: {0}.
-claim HiO: i :e omega.
-{ exact (setminusE1 omega {0} i HiIn). }
+assume HiO: i :e omega.
 claim HxiR: apply_fun x i :e R.
 { exact (Romega_coord_in_R x i Hx HiO). }
 claim HyiR: apply_fun y i :e R.
