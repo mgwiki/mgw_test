@@ -64997,20 +64997,12 @@ assume HTx HdirJ.
 (** build the accumulation_point_of_net conjunction **)
 apply andI.
 - prove topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X.
-  apply andI.
-	  + prove topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
-	    apply andI.
-	    * prove topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net.
-	      apply andI.
-	      - prove topology_on X Tx /\ directed_set J le /\ total_function_on net J X.
-	        apply andI.
-	        + prove topology_on X Tx /\ directed_set J le.
-	          apply andI.
-	          * exact HTx.
-	          * exact HdirJ.
-	        + exact Htot.
-	      - exact Hgraph.
-	    * exact Hdom.
+  apply and6I.
+  + exact HTx.
+  + exact HdirJ.
+  + exact Htot.
+  + exact Hgraph.
+  + exact Hdom.
   + exact HxX.
 - (** neighborhood condition **)
   let U.
@@ -65037,10 +65029,9 @@ apply andI.
   apply Hkleft.
 	  assume HkJ Hjk.
 	  witness k.
-	  apply andI.
-	  - apply andI.
-	    * exact HkJ.
-	    * exact Hjk.
+	  apply and3I.
+	  - exact HkJ.
+	  - exact Hjk.
 	  - exact (Hafter k HkJ Hik).
 Qed.
 
@@ -65093,12 +65084,10 @@ claim Hgraph: functional_graph net.
 { exact (andER (topology_on X Tx /\ directed_set J le /\ total_function_on net J X) (functional_graph net) Hcore4). }
 claim Hdom: graph_domain_subset net J.
 { exact (andER (topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net) (graph_domain_subset net J) Hcore5). }
-apply andI.
-- apply andI.
-  * apply andI.
-    { exact Hdir. }
-    { exact Htot. }
-  * exact Hgraph.
+apply and4I.
+- exact Hdir.
+- exact Htot.
+- exact Hgraph.
 - exact Hdom.
 Qed.
 
