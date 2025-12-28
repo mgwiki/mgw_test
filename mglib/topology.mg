@@ -75487,6 +75487,115 @@ Definition metrizable : set -> set -> prop := fun X Tx =>
 
 (** from §30 Example 4: product of Lindelöf spaces need not be Lindelöf **) 
 (** LATEX VERSION: The product of two Lindelöf Sorgenfrey lines (the Sorgenfrey plane) is not Lindelöf. **)
+(** from §30 Example 4: define L subset of the Sorgenfrey plane **)
+(** LATEX VERSION: L = { x × (-x) | x ∈ R_l }. **)
+Definition Sorgenfrey_plane_L : set :=
+  {(x, minus_SNo x)|x :e Sorgenfrey_line}.
+
+(** from §30 Example 4: special basis rectangles **)
+(** LATEX VERSION: Basis elements of the form [a,b) × [-a,d). **)
+Definition Sorgenfrey_plane_special_rectangle : set -> set -> set -> set :=
+  fun a b d => rectangle_set (halfopen_interval_left a b) (halfopen_interval_left (minus_SNo a) d).
+
+(** helper: L is uncountable **)
+Theorem Sorgenfrey_plane_L_uncountable : ~ countable_set Sorgenfrey_plane_L.
+assume HcountL: countable_set Sorgenfrey_plane_L.
+prove False.
+claim HinjRL: atleastp Sorgenfrey_line Sorgenfrey_plane_L.
+{ prove exists f:set -> set, inj Sorgenfrey_line Sorgenfrey_plane_L f.
+  witness (fun x:set => (x, minus_SNo x)).
+  apply (injI Sorgenfrey_line Sorgenfrey_plane_L (fun x:set => (x, minus_SNo x))).
+  - let x. assume HxR: x :e Sorgenfrey_line.
+    prove (x, minus_SNo x) :e Sorgenfrey_plane_L.
+    exact (ReplI Sorgenfrey_line (fun x0:set => (x0, minus_SNo x0)) x HxR).
+  - let x1. assume Hx1: x1 :e Sorgenfrey_line.
+    let x2. assume Hx2: x2 :e Sorgenfrey_line.
+    assume Heq: (x1, minus_SNo x1) = (x2, minus_SNo x2).
+    prove x1 = x2.
+    claim H0: (x1, minus_SNo x1) 0 = (x2, minus_SNo x2) 0.
+    { rewrite Heq. reflexivity. }
+    claim Hx10: (x1, minus_SNo x1) 0 = x1.
+    { rewrite <- (tuple_pair x1 (minus_SNo x1)).
+      exact (pair_ap_0 x1 (minus_SNo x1)). }
+    claim Hx20: (x2, minus_SNo x2) 0 = x2.
+    { rewrite <- (tuple_pair x2 (minus_SNo x2)).
+      exact (pair_ap_0 x2 (minus_SNo x2)). }
+    rewrite <- Hx10 at 1.
+    rewrite <- Hx20.
+    exact H0. }
+claim HcountR: atleastp Sorgenfrey_line omega.
+{ exact (atleastp_tra Sorgenfrey_line Sorgenfrey_plane_L omega HinjRL HcountL). }
+exact (form100_22_real_uncountable_atleastp HcountR).
+Qed.
+
+(** helper: if (x,-x) lies in [a,b)×[-a,d), then x=a **)
+Theorem Sorgenfrey_plane_special_rectangle_L_point : forall a b d x:set,
+  a :e R -> b :e R -> d :e R -> x :e R ->
+  (x, minus_SNo x) :e Sorgenfrey_plane_special_rectangle a b d ->
+  x = a.
+let a b d x.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HdR: d :e R.
+assume HxR: x :e R.
+assume Hrect: (x, minus_SNo x) :e Sorgenfrey_plane_special_rectangle a b d.
+prove x = a.
+set U := halfopen_interval_left a b.
+set V := halfopen_interval_left (minus_SNo a) d.
+claim HpUV: (x, minus_SNo x) :e setprod U V.
+{ rewrite <- rectangle_set_def.
+  exact Hrect. }
+claim Hp0U: proj0 (x, minus_SNo x) :e U.
+{ exact (proj0_Sigma U (fun _ : set => V) (x, minus_SNo x) HpUV). }
+claim Hp1V: proj1 (x, minus_SNo x) :e V.
+{ exact (proj1_Sigma U (fun _ : set => V) (x, minus_SNo x) HpUV). }
+claim Hp0U0: (x, minus_SNo x) 0 :e U.
+{ rewrite <- (proj0_ap_0 (x, minus_SNo x)).
+  exact Hp0U. }
+claim Hp1V1: (x, minus_SNo x) 1 :e V.
+{ rewrite <- (proj1_ap_1 (x, minus_SNo x)).
+  exact Hp1V. }
+claim Hx0: (x, minus_SNo x) 0 = x.
+{ rewrite <- (tuple_pair x (minus_SNo x)).
+  exact (pair_ap_0 x (minus_SNo x)). }
+claim Hx1: (x, minus_SNo x) 1 = minus_SNo x.
+{ rewrite <- (tuple_pair x (minus_SNo x)).
+  exact (pair_ap_1 x (minus_SNo x)). }
+claim HxU: x :e U.
+{ rewrite <- Hx0.
+  exact Hp0U0. }
+claim HmxV: (minus_SNo x) :e V.
+{ rewrite <- Hx1.
+  exact Hp1V1. }
+claim HxUprop: ~(Rlt x a) /\ Rlt x b.
+{ exact (SepE2 R (fun t:set => ~(Rlt t a) /\ Rlt t b) x HxU). }
+claim Hnlt_xa: ~(Rlt x a).
+{ exact (andEL (~(Rlt x a)) (Rlt x b) HxUprop). }
+claim HmxVprop: ~(Rlt (minus_SNo x) (minus_SNo a)) /\ Rlt (minus_SNo x) d.
+{ exact (SepE2 R (fun t:set => ~(Rlt t (minus_SNo a)) /\ Rlt t d) (minus_SNo x) HmxV). }
+claim Hnlt_mx_ma: ~(Rlt (minus_SNo x) (minus_SNo a)).
+{ exact (andEL (~(Rlt (minus_SNo x) (minus_SNo a))) (Rlt (minus_SNo x) d) HmxVprop). }
+claim Hnlt_ax: ~(Rlt a x).
+{ assume Hltax: Rlt a x.
+  prove False.
+  claim Hltax_lt: a < x.
+  { exact (RltE_lt a x Hltax). }
+  claim HaS: SNo a.
+  { exact (real_SNo a HaR). }
+  claim HxS: SNo x.
+  { exact (real_SNo x HxR). }
+  claim Hmx_lt_ma: (minus_SNo x) < (minus_SNo a).
+  { exact (minus_SNo_Lt_contra a x HaS HxS Hltax_lt). }
+  claim HmxR: (minus_SNo x) :e R.
+  { exact (real_minus_SNo x HxR). }
+  claim HmaR: (minus_SNo a) :e R.
+  { exact (real_minus_SNo a HaR). }
+  claim Hlt: Rlt (minus_SNo x) (minus_SNo a).
+  { exact (RltI (minus_SNo x) (minus_SNo a) HmxR HmaR Hmx_lt_ma). }
+  exact (Hnlt_mx_ma Hlt). }
+exact (R_eq_of_not_Rlt x a HxR HaR Hnlt_xa Hnlt_ax).
+Qed.
+
 Theorem Sorgenfrey_plane_not_Lindelof :
   ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
