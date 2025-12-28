@@ -70888,6 +70888,25 @@ Definition Romega_box_topology_on_real_sequences : set :=
     (box_topology omega (const_space_family omega R R_standard_topology))
     real_sequences.
 
+(** helper: the subspace topologies on real_sequences are the whole-space topologies, since real_sequences = R^omega **)
+Theorem Romega_product_topology_on_real_sequences_eq :
+  Romega_product_topology_on_real_sequences = R_omega_product_topology.
+prove Romega_product_topology_on_real_sequences = R_omega_product_topology.
+set Xi := const_space_family omega R R_standard_topology.
+set T := product_topology_full omega Xi.
+claim HTdef: R_omega_product_topology = T.
+{ reflexivity. }
+rewrite HTdef.
+claim HdefL: Romega_product_topology_on_real_sequences = subspace_topology R_omega_space T real_sequences.
+{ reflexivity. }
+rewrite HdefL.
+rewrite (real_sequences_eq_Romega_space).
+claim HT: topology_on R_omega_space T.
+{ rewrite <- HTdef.
+  exact Romega_product_topology_is_topology. }
+exact (subspace_topology_whole R_omega_space T HT).
+Qed.
+
 Theorem uniform_topology_finer_than_product_and_coarser_than_box :
   finer_than uniform_topology Romega_product_topology_on_real_sequences /\
   coarser_than uniform_topology Romega_box_topology_on_real_sequences.
