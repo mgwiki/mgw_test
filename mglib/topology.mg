@@ -64615,6 +64615,40 @@ Definition subnet_of : set -> set -> prop := fun net sub =>
     (forall k:set, k :e K ->
       apply_fun sub k = apply_fun net (apply_fun phi k)).
 
+(** helper: unpack the leK predicate used for pair-index subnets **)
+(** LATEX VERSION: In the product-directed order, (i,j) <= means neighborhood shrinks and index increases. **)
+Theorem pair_order_pred :
+  forall K le i j:set,
+    (i,j) :e {q :e setprod K K | (q 1) 0 c= (q 0) 0 /\ ((q 0) 1, (q 1) 1) :e le} ->
+    (j 0) c= (i 0) /\ ((i 1),(j 1)) :e le.
+let K le i j.
+assume Hij: (i,j) :e {q :e setprod K K | (q 1) 0 c= (q 0) 0 /\ ((q 0) 1, (q 1) 1) :e le}.
+claim Hraw: ((i,j) 1) 0 c= ((i,j) 0) 0 /\ (((i,j) 0) 1, ((i,j) 1) 1) :e le.
+{ exact (SepE2 (setprod K K) (fun q:set => (q 1) 0 c= (q 0) 0 /\ ((q 0) 1, (q 1) 1) :e le) (i,j) Hij). }
+apply andI.
+- (** (j 0) c= (i 0) **)
+  let y. assume Hy: y :e (j 0).
+  prove y :e (i 0).
+  claim Hsub: ((i,j) 1) 0 c= ((i,j) 0) 0.
+  { exact (andEL (((i,j) 1) 0 c= ((i,j) 0) 0) ((((i,j) 0) 1, ((i,j) 1) 1) :e le) Hraw). }
+  claim Hy1: y :e (((i,j) 1) 0).
+  { rewrite (tuple_2_1_eq i j). exact Hy. }
+  claim Hy0: y :e (((i,j) 0) 0).
+  { exact (Hsub y Hy1). }
+  rewrite <- (tuple_2_0_eq i j).
+  exact Hy0.
+	- (** ((i 1),(j 1)) :e le **)
+	  claim Hle: (((i,j) 0) 1, ((i,j) 1) 1) :e le.
+	  { exact (andER (((i,j) 1) 0 c= ((i,j) 0) 0) ((((i,j) 0) 1, ((i,j) 1) 1) :e le) Hraw). }
+	  claim Hi1: ((i,j) 0) 1 = (i 1).
+	  { rewrite (tuple_2_0_eq i j). reflexivity. }
+	  claim Hj1: ((i,j) 1) 1 = (j 1).
+	  { rewrite (tuple_2_1_eq i j). reflexivity. }
+	  rewrite <- Hi1.
+	  rewrite <- Hj1.
+	  exact Hle.
+Qed.
+
 (** helper: a subnet is a net **)
 (** LATEX VERSION: Any subnet is itself a net on some directed set. **)
 Theorem subnet_implies_net_on : forall net sub:set, subnet_of net sub -> net_on sub.
