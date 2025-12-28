@@ -65124,17 +65124,17 @@ Qed.
 Theorem subnet_preserves_convergence_witnessed :
   forall X Tx net sub x J K phi:set,
     topology_on X Tx ->
-	    directed_set J ->
-	    directed_set K ->
-	    total_function_on net J X ->
-	    functional_graph net ->
-	    graph_domain_subset net J ->
-	    total_function_on sub K X ->
-	    functional_graph sub ->
-	    graph_domain_subset sub K ->
-	    total_function_on phi K J ->
-	    functional_graph phi ->
-	    graph_domain_subset phi K ->
+    directed_set J ->
+    directed_set K ->
+    total_function_on net J X ->
+    functional_graph net ->
+    graph_domain_subset net J ->
+    total_function_on sub K X ->
+    functional_graph sub ->
+    graph_domain_subset sub K ->
+    total_function_on phi K J ->
+    functional_graph phi ->
+    graph_domain_subset phi K ->
 	    (forall j:set, j :e J -> exists k0:set, k0 :e K /\
 	      forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
 	        (j :e apply_fun phi k \/ j = apply_fun phi k)) ->
@@ -65149,16 +65149,16 @@ Theorem subnet_preserves_convergence_witnessed :
 let X Tx net sub x J K phi.
 assume HTx: topology_on X Tx.
 assume HdirJ: directed_set J.
-	assume HdirK: directed_set K.
-	assume Hnettot: total_function_on net J X.
-	assume Hnetgraph: functional_graph net.
-	assume Hnetdom: graph_domain_subset net J.
-	assume Hsubtot: total_function_on sub K X.
-	assume Hsubgraph: functional_graph sub.
-	assume Hsubdom: graph_domain_subset sub K.
-	assume Hphitot: total_function_on phi K J.
-	assume Hphigraph: functional_graph phi.
-	assume Hphidom: graph_domain_subset phi K.
+assume HdirK: directed_set K.
+assume Hnettot: total_function_on net J X.
+assume Hnetgraph: functional_graph net.
+assume Hnetdom: graph_domain_subset net J.
+assume Hsubtot: total_function_on sub K X.
+assume Hsubgraph: functional_graph sub.
+assume Hsubdom: graph_domain_subset sub K.
+assume Hphitot: total_function_on phi K J.
+assume Hphigraph: functional_graph phi.
+assume Hphidom: graph_domain_subset phi K.
 assume Hcofinal:
   forall j:set, j :e J -> exists k0:set, k0 :e K /\
     forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
@@ -65166,30 +65166,30 @@ assume Hcofinal:
 assume Hsubeq:
   forall k:set, k :e K -> apply_fun sub k = apply_fun net (apply_fun phi k).
 assume HxX: x :e X.
-	assume Htail:
-	  forall U:set, U :e Tx -> x :e U ->
-	    exists j0:set, j0 :e J /\
-	      forall j:set, j :e J -> (j0 :e j \/ j0 = j) ->
-	        apply_fun net j :e U.
-	prove net_converges X Tx sub x.
-	prove exists J0:set, topology_on X Tx /\ directed_set J0 /\ total_function_on sub J0 X /\ functional_graph sub /\ graph_domain_subset sub J0 /\ x :e X /\
-	  forall U:set, U :e Tx -> x :e U ->
-	    exists i0:set, i0 :e J0 /\
-	      forall i:set, i :e J0 -> (i0 :e i \/ i0 = i) -> apply_fun sub i :e U.
-	witness K.
-	apply andI.
-	- apply andI.
-	  * apply andI.
-	    { apply andI.
-	      - apply andI.
-	        + apply andI.
-	          * exact HTx.
-	          * exact HdirK.
-	        + exact Hsubtot.
-	      - exact Hsubgraph.
-	    }
-	    { exact Hsubdom. }
-	  * exact HxX.
+assume Htail:
+  forall U:set, U :e Tx -> x :e U ->
+    exists j0:set, j0 :e J /\
+      forall j:set, j :e J -> (j0 :e j \/ j0 = j) ->
+        apply_fun net j :e U.
+prove net_converges X Tx sub x.
+prove exists J0:set, topology_on X Tx /\ directed_set J0 /\ total_function_on sub J0 X /\ functional_graph sub /\ graph_domain_subset sub J0 /\ x :e X /\
+  forall U:set, U :e Tx -> x :e U ->
+    exists i0:set, i0 :e J0 /\
+      forall i:set, i :e J0 -> (i0 :e i \/ i0 = i) -> apply_fun sub i :e U.
+witness K.
+apply andI.
+- apply andI.
+  * apply andI.
+    { apply andI.
+      - apply andI.
+        + apply andI.
+          * exact HTx.
+          * exact HdirK.
+        + exact Hsubtot.
+      - exact Hsubgraph.
+    }
+    { exact Hsubdom. }
+  * exact HxX.
 - let U.
   assume HU: U :e Tx.
   assume HxU: x :e U.
