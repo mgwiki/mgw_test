@@ -66580,89 +66580,20 @@ apply andI.
   witness X.
   witness phi.
   (** build the left-associated conjunction for subnet_of data **)
-  apply andI.
-  - prove directed_set J le /\ directed_set K leK /\
-      total_function_on net J X /\ functional_graph net /\
-      total_function_on sub K X /\ functional_graph sub /\
-      total_function_on phi K J /\ functional_graph phi /\
-      graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
-      (forall i j:set, i :e K -> j :e K -> (i,j) :e leK -> (apply_fun phi i, apply_fun phi j) :e le) /\
-      (forall j:set, j :e J -> exists k:set, k :e K /\ (j, apply_fun phi k) :e le).
-    apply andI.
-    - (** peel the last conjunct (cofinality) **)
-      prove directed_set J le /\ directed_set K leK /\
-          total_function_on net J X /\ functional_graph net /\
-          total_function_on sub K X /\ functional_graph sub /\
-          total_function_on phi K J /\ functional_graph phi /\
-          graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
-          (forall i j:set, i :e K -> j :e K -> (i,j) :e leK -> (apply_fun phi i, apply_fun phi j) :e le).
-      apply andI.
-      - (** peel monotonicity of phi **)
-        prove directed_set J le /\ directed_set K leK /\
-            total_function_on net J X /\ functional_graph net /\
-            total_function_on sub K X /\ functional_graph sub /\
-            total_function_on phi K J /\ functional_graph phi /\
-            graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K.
-        apply andI.
-        - (** peel graph_domain_subset phi K **)
-          prove directed_set J le /\ directed_set K leK /\
-              total_function_on net J X /\ functional_graph net /\
-              total_function_on sub K X /\ functional_graph sub /\
-              total_function_on phi K J /\ functional_graph phi /\
-              graph_domain_subset net J /\ graph_domain_subset sub K.
-          apply andI.
-          - (** peel graph_domain_subset sub K **)
-            prove directed_set J le /\ directed_set K leK /\
-                total_function_on net J X /\ functional_graph net /\
-                total_function_on sub K X /\ functional_graph sub /\
-                total_function_on phi K J /\ functional_graph phi /\
-                graph_domain_subset net J.
-            apply andI.
-            - (** peel graph_domain_subset net J **)
-              prove directed_set J le /\ directed_set K leK /\
-                  total_function_on net J X /\ functional_graph net /\
-                  total_function_on sub K X /\ functional_graph sub /\
-                  total_function_on phi K J /\ functional_graph phi.
-              apply andI.
-              - (** peel functional_graph phi **)
-                prove directed_set J le /\ directed_set K leK /\
-                    total_function_on net J X /\ functional_graph net /\
-                    total_function_on sub K X /\ functional_graph sub /\
-                    total_function_on phi K J.
-                apply andI.
-                - (** peel total_function_on phi **)
-                  prove directed_set J le /\ directed_set K leK /\
-                      total_function_on net J X /\ functional_graph net /\
-                      total_function_on sub K X /\ functional_graph sub.
-                  apply andI.
-                  - (** peel functional_graph sub **)
-                    prove directed_set J le /\ directed_set K leK /\
-                        total_function_on net J X /\ functional_graph net /\
-                        total_function_on sub K X.
-                    apply andI.
-                    - (** peel total_function_on sub **)
-                      prove directed_set J le /\ directed_set K leK /\
-                          total_function_on net J X /\ functional_graph net.
-                      apply andI.
-                      - (** peel functional_graph net **)
-                        prove directed_set J le /\ directed_set K leK /\ total_function_on net J X.
-                        apply andI.
-                        - (** peel total_function_on net **)
-                          prove directed_set J le /\ directed_set K leK.
-                          apply andI.
-                          - exact HdirJ.
-                          - exact HdirK.
-                        - exact Htotnet.
-                      - exact Hgraphnet.
-                    - exact Htotsub.
-                  - exact Hgraphsub.
-                - exact Htotphi.
-              - exact Hgraphphi.
-            - exact Hdomnet.
-          - exact Hdomsub.
-        - exact Hdomphi.
-      - exact Hmono.
-    - exact Hcofinal.
+  apply and14I.
+  - exact HdirJ.
+  - exact HdirK.
+  - exact Htotnet.
+  - exact Hgraphnet.
+  - exact Htotsub.
+  - exact Hgraphsub.
+  - exact Htotphi.
+  - exact Hgraphphi.
+  - exact Hdomnet.
+  - exact Hdomsub.
+  - exact Hdomphi.
+  - exact Hmono.
+  - exact Hcofinal.
   - exact Hvals.
 - (** net_converges X Tx sub x **)
   prove net_converges X Tx sub x.
