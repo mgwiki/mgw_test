@@ -12523,41 +12523,40 @@ prove circular_regions c= Power EuclidPlane
   /\ (forall b1 :e circular_regions, forall b2 :e circular_regions, forall x:set,
         x :e b1 -> x :e b2 ->
         exists b3 :e circular_regions, x :e b3 /\ b3 c= b1 :/\: b2).
-apply andI.
-- apply andI.
-  + let U. assume HU: U :e circular_regions.
-    prove U :e Power EuclidPlane.
-    exact (SepE1 (Power EuclidPlane)
-                 (fun U0 : set => exists c:set, exists r:set,
-                   c :e EuclidPlane /\ Rlt 0 r /\
-                   U0 = {p :e EuclidPlane|Rlt (distance_R2 p c) r})
-                 U
-                 HU).
-  + prove forall x :e EuclidPlane, exists b :e circular_regions, x :e b.
-    let x. assume Hx.
-    witness {p :e EuclidPlane|Rlt (distance_R2 p x) 1}.
-    apply andI.
-    * prove {p :e EuclidPlane|Rlt (distance_R2 p x) 1} :e circular_regions.
-      exact (circular_regionI x 1 Hx Rlt_0_1).
-    * claim Hlt : Rlt (distance_R2 x x) 1.
-      { rewrite (distance_R2_refl_0 x Hx).
-        claim HR : 0 :e R /\ 1 :e R /\ 0 < 1.
-        { apply andI.
-          - apply andI.
-            + exact real_0.
-            + exact real_1.
-          - exact SNoLt_0_1. }
-        exact HR. }
-      exact (SepI EuclidPlane
-                  (fun p0 : set => Rlt (distance_R2 p0 x) 1)
-                  x
-                  Hx
-                  Hlt).
-	- (** intersection refinement for circular regions **)
-	  let b1. assume Hb1 : b1 :e circular_regions.
-	  let b2. assume Hb2 : b2 :e circular_regions.
-	  let x. assume Hx1 : x :e b1. assume Hx2 : x :e b2.
-	  prove exists b3 :e circular_regions, x :e b3 /\ b3 c= b1 :/\: b2.
+apply and3I.
+- let U. assume HU: U :e circular_regions.
+  prove U :e Power EuclidPlane.
+  exact (SepE1 (Power EuclidPlane)
+               (fun U0 : set => exists c:set, exists r:set,
+                 c :e EuclidPlane /\ Rlt 0 r /\
+                 U0 = {p :e EuclidPlane|Rlt (distance_R2 p c) r})
+               U
+               HU).
+- prove forall x :e EuclidPlane, exists b :e circular_regions, x :e b.
+  let x. assume Hx.
+  witness {p :e EuclidPlane|Rlt (distance_R2 p x) 1}.
+  apply andI.
+  * prove {p :e EuclidPlane|Rlt (distance_R2 p x) 1} :e circular_regions.
+    exact (circular_regionI x 1 Hx Rlt_0_1).
+  * claim Hlt : Rlt (distance_R2 x x) 1.
+    { rewrite (distance_R2_refl_0 x Hx).
+      claim HR : 0 :e R /\ 1 :e R /\ 0 < 1.
+      { apply andI.
+        - apply andI.
+          + exact real_0.
+          + exact real_1.
+        - exact SNoLt_0_1. }
+      exact HR. }
+    exact (SepI EuclidPlane
+                (fun p0 : set => Rlt (distance_R2 p0 x) 1)
+                x
+                Hx
+                Hlt).
+- (** intersection refinement for circular regions **)
+  let b1. assume Hb1 : b1 :e circular_regions.
+  let b2. assume Hb2 : b2 :e circular_regions.
+  let x. assume Hx1 : x :e b1. assume Hx2 : x :e b2.
+  prove exists b3 :e circular_regions, x :e b3 /\ b3 c= b1 :/\: b2.
 	  claim Hb1prop :
 	    exists c1:set, exists r1:set,
 	      c1 :e EuclidPlane /\ Rlt 0 r1 /\
