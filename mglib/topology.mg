@@ -8399,10 +8399,9 @@ claim HT1: topology_on X T1.
 claim HT2: topology_on X T2.
 { exact (andER (topology_on X T1) (topology_on X T2) Hpair). }
 prove topology_on X T2 /\ topology_on X T1 /\ T2 = T1.
-apply andI.
-- apply andI.
-  + exact HT2.
-  + exact HT1.
+apply and3I.
+- exact HT2.
+- exact HT1.
 - rewrite <- Heq. reflexivity.
 Qed.
 
@@ -8426,10 +8425,9 @@ claim H23eq: T2 = T3.
 claim HT3: topology_on X T3.
 { exact (andER (topology_on X T2) (topology_on X T3) H23pair). }
 prove topology_on X T1 /\ topology_on X T3 /\ T1 = T3.
-apply andI.
-- apply andI.
-  + exact HT1.
-  + exact HT3.
+apply and3I.
+- exact HT1.
+- exact HT3.
 - rewrite H12eq. rewrite H23eq. reflexivity.
 Qed.
 
@@ -8438,10 +8436,9 @@ Qed.
 Theorem topology_eq_refl : forall X T:set, topology_on X T -> topology_eq X T T.
 let X T. assume HT.
 prove topology_on X T /\ topology_on X T /\ T = T.
-apply andI.
-- apply andI.
-  + exact HT.
-  + exact HT.
+apply and3I.
+- exact HT.
+- exact HT.
 - reflexivity.
 Qed.
 
