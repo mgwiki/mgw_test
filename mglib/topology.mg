@@ -77177,7 +77177,40 @@ Qed.
 Theorem product_topology_full_regular_axiom : forall I Xi:set,
   regular_spaces_family I Xi ->
   regular_space (product_space I Xi) (product_topology_full I Xi).
-admit. (** FAIL **)
+let I Xi.
+assume Hrfam: regular_spaces_family I Xi.
+prove regular_space (product_space I Xi) (product_topology_full I Xi).
+prove one_point_sets_closed (product_space I Xi) (product_topology_full I Xi) /\
+  forall f:set, f :e product_space I Xi ->
+    forall F:set, closed_in (product_space I Xi) (product_topology_full I Xi) F -> f /:e F ->
+      exists U V:set, U :e product_topology_full I Xi /\ V :e product_topology_full I Xi /\
+        f :e U /\ F c= V /\ U :/\: V = Empty.
+(** First derive Hausdorffness of the full product (regular -> Hausdorff factorwise). **)
+claim HHfam: Hausdorff_spaces_family I Xi.
+{ let i. assume HiI: i :e I.
+  claim Hreg_i: regular_space (product_component Xi i) (product_component_topology Xi i).
+  { exact (Hrfam i HiI). }
+  exact (regular_space_implies_Hausdorff (product_component Xi i) (product_component_topology Xi i) Hreg_i). }
+claim HHprod: Hausdorff_space (product_space I Xi) (product_topology_full I Xi).
+{ exact (product_topology_full_Hausdorff_axiom I Xi HHfam). }
+claim HTprod: topology_on (product_space I Xi) (product_topology_full I Xi).
+{ exact (Hausdorff_space_topology (product_space I Xi) (product_topology_full I Xi) HHprod). }
+apply andI.
+- (** one_point_sets_closed **)
+  prove topology_on (product_space I Xi) (product_topology_full I Xi) /\
+    forall f:set, f :e product_space I Xi -> closed_in (product_space I Xi) (product_topology_full I Xi) {f}.
+  apply andI.
+  * exact HTprod.
+  * let f. assume Hf: f :e product_space I Xi.
+    exact (Hausdorff_singletons_closed (product_space I Xi) (product_topology_full I Xi) f HHprod Hf).
+- (** regular separation of point vs closed set **)
+  let f. assume Hf: f :e product_space I Xi.
+  let F. assume HFcl: closed_in (product_space I Xi) (product_topology_full I Xi) F.
+  assume HfnotF: f /:e F.
+  prove exists U V:set,
+    U :e product_topology_full I Xi /\ V :e product_topology_full I Xi /\
+      f :e U /\ F c= V /\ U :/\: V = Empty.
+  admit. (** FAIL **)
 Qed.
 
 Theorem separation_axioms_subspace_product : forall X Tx:set,
