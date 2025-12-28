@@ -64597,6 +64597,28 @@ Definition net_on : set -> prop := fun net =>
 Definition net_in_space : set -> set -> prop := fun X net =>
   exists J le:set, directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
 
+(** helper: graph comprehension yields a total function **)
+(** LATEX VERSION: If g maps A into Y, then its graph is a total function A -> Y. **)
+Theorem total_function_on_graph : forall A Y:set, forall g:set->set,
+  (forall a:set, a :e A -> g a :e Y) ->
+  total_function_on (graph A g) A Y.
+let A Y g.
+assume Hg: forall a:set, a :e A -> g a :e Y.
+prove total_function_on (graph A g) A Y.
+apply andI.
+- (** function_on **)
+  prove function_on (graph A g) A Y.
+  let a. assume Ha: a :e A.
+  rewrite (apply_fun_graph A g a Ha).
+  exact (Hg a Ha).
+- (** totality **)
+  let a. assume Ha: a :e A.
+  witness (g a).
+  apply andI.
+  + exact (Hg a Ha).
+  + exact (ReplI A (fun a0:set => (a0, g a0)) a Ha).
+Qed.
+
 (** from exercises after §29: subnet definition placeholder **)
 (** LATEX VERSION: Definition of subnet (Exercise, placeholder formalization). **)
 (** FIXED: Cofinality condition is forall j:e J, exists k0:e K, forall k:e K with k0<=k, we have j<=phi(k); old version forced phi to be constant; also subnet values satisfy sub(k) = net(phi(k)) in the same codomain X. **) 
