@@ -67803,6 +67803,22 @@ Qed.
 (** LATEX VERSION: Countable sets and related notions from §30 (countability axioms). **)
 Definition countable_set : set -> prop := fun A => countable A.
 
+(** helper: rationals are countable **)
+(** LATEX VERSION: The set of rational numbers is countable. **)
+Theorem rational_numbers_countable : countable_set rational_numbers.
+prove countable_set rational_numbers.
+prove countable rational_numbers.
+(** Use equip omega rational_numbers from form100_3 and transfer to atleastp rational_numbers omega. **)
+claim Hequip: equip omega rational_numbers.
+{ claim HdefQ: rational_numbers = rational.
+  { reflexivity. }
+  rewrite HdefQ.
+  exact form100_3. }
+claim Hequip_sym: equip rational_numbers omega.
+{ exact (equip_sym omega rational_numbers Hequip). }
+exact (equip_atleastp rational_numbers omega Hequip_sym).
+Qed.
+
 (** LATEX VERSION: Countable subcollection V of U. **)
 Definition countable_subcollection : set -> set -> prop := fun V U => V c= U /\ countable_set V.
 
@@ -68249,6 +68265,52 @@ apply (injI {F x|x :e X} omega g).
   rewrite Hy2pre.
   rewrite Heqpre.
   reflexivity.
+Qed.
+
+(** helper: rational open-interval basis is countable **)
+(** LATEX VERSION: The family {(q1,q2) | q1,q2 in Q} of rational open intervals is countable. **)
+Theorem rational_open_intervals_basis_countable : countable_set rational_open_intervals_basis.
+prove countable_set rational_open_intervals_basis.
+set QQ := setprod rational_numbers rational_numbers.
+set F : set->set := fun p:set => open_interval (p 0) (p 1).
+claim HQ: countable_set rational_numbers.
+{ exact rational_numbers_countable. }
+claim HQQ: countable_set QQ.
+{ exact (setprod_countable rational_numbers rational_numbers HQ HQ). }
+claim Himg: countable_set {F p|p :e QQ}.
+{ exact (countable_image QQ HQQ F). }
+claim Hsub: rational_open_intervals_basis c= {F p|p :e QQ}.
+{ let I. assume HI: I :e rational_open_intervals_basis.
+  prove I :e {F p|p :e QQ}.
+  claim Hexq1: exists q1 :e rational_numbers, I :e {open_interval q1 q2|q2 :e rational_numbers}.
+  { exact (famunionE rational_numbers (fun q1:set => {open_interval q1 q2|q2 :e rational_numbers}) I HI). }
+  apply Hexq1.
+  let q1. assume Hq1pair.
+  claim Hq1Q: q1 :e rational_numbers.
+  { exact (andEL (q1 :e rational_numbers) (I :e {open_interval q1 q2|q2 :e rational_numbers}) Hq1pair). }
+  claim HIRepl: I :e {open_interval q1 q2|q2 :e rational_numbers}.
+  { exact (andER (q1 :e rational_numbers) (I :e {open_interval q1 q2|q2 :e rational_numbers}) Hq1pair). }
+  claim Hexq2: exists q2 :e rational_numbers, I = open_interval q1 q2.
+  { exact (ReplE rational_numbers (fun q2:set => open_interval q1 q2) I HIRepl). }
+  apply Hexq2.
+  let q2. assume Hq2pair.
+  claim Hq2Q: q2 :e rational_numbers.
+  { exact (andEL (q2 :e rational_numbers) (I = open_interval q1 q2) Hq2pair). }
+  claim HIeq: I = open_interval q1 q2.
+  { exact (andER (q2 :e rational_numbers) (I = open_interval q1 q2) Hq2pair). }
+  claim HpQQ: (q1,q2) :e QQ.
+  { exact (tuple_2_setprod_by_pair_Sigma rational_numbers rational_numbers q1 q2 Hq1Q Hq2Q). }
+  claim HFpair: F (q1,q2) = open_interval q1 q2.
+  { claim HFdef: F (q1,q2) = open_interval ((q1,q2) 0) ((q1,q2) 1).
+    { reflexivity. }
+    rewrite HFdef.
+    rewrite (tuple_2_0_eq q1 q2).
+    rewrite (tuple_2_1_eq q1 q2).
+    reflexivity. }
+  rewrite HIeq.
+  rewrite <- HFpair.
+  exact (ReplI QQ F (q1,q2) HpQQ). }
+exact (Subq_countable rational_open_intervals_basis {F p|p :e QQ} Himg Hsub).
 Qed.
 
 (** Helper: finite subsets of omega are countable as a family **)
@@ -70624,6 +70686,16 @@ apply andI.
 	  rewrite (tuple_2_0_eq x z).
 	  rewrite (tuple_2_1_eq x z).
 	  exact (Romega_uniform_metric_value_triangle x y z Hx Hy Hz).
+Qed.
+
+(** helper: uniform topology is a topology **)
+(** LATEX VERSION: The uniform metric on real sequences induces a topology. **)
+Theorem uniform_topology_is_topology : topology_on real_sequences uniform_topology.
+prove topology_on real_sequences uniform_topology.
+claim Hdef: uniform_topology = metric_topology real_sequences uniform_metric_Romega.
+{ reflexivity. }
+rewrite Hdef.
+exact (metric_topology_is_topology real_sequences uniform_metric_Romega uniform_metric_Romega_is_metric).
 Qed.
 
 
@@ -73744,6 +73816,189 @@ Definition countable_basis_at : set -> set -> set -> prop := fun X Tx x =>
 (** LATEX VERSION: First countable means each point has a countable neighborhood basis. **)
 Definition first_countable_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall x:set, x :e X -> countable_basis_at X Tx x.
+
+(** helper: monotonicity of metric open balls in the radius **)
+Theorem open_ball_radius_mono : forall X d x r1 r2:set,
+  Rlt r1 r2 -> open_ball X d x r1 c= open_ball X d x r2.
+let X d x r1 r2.
+assume Hr: Rlt r1 r2.
+let y. assume Hy: y :e open_ball X d x r1.
+prove y :e open_ball X d x r2.
+claim HyX: y :e X.
+{ exact (open_ballE1 X d x r1 y Hy). }
+claim Hdlt: Rlt (apply_fun d (x,y)) r1.
+{ exact (open_ballE2 X d x r1 y Hy). }
+claim Hdlt2: Rlt (apply_fun d (x,y)) r2.
+{ exact (Rlt_tra (apply_fun d (x,y)) r1 r2 Hdlt Hr). }
+exact (open_ballI X d x r2 y HyX Hdlt2).
+Qed.
+
+(** helper: metric topology is first countable **)
+Theorem metric_topology_first_countable : forall X d:set,
+  metric_on X d -> first_countable_space X (metric_topology X d).
+let X d.
+assume Hm: metric_on X d.
+prove first_countable_space X (metric_topology X d).
+prove topology_on X (metric_topology X d) /\
+  forall x:set, x :e X -> countable_basis_at X (metric_topology X d) x.
+apply andI.
+- exact (metric_topology_is_topology X d Hm).
+- let x. assume Hx: x :e X.
+  prove countable_basis_at X (metric_topology X d) x.
+  prove topology_on X (metric_topology X d) /\ x :e X /\
+    exists B:set, B c= metric_topology X d /\ countable_set B /\
+      (forall b:set, b :e B -> x :e b) /\
+      (forall U:set, U :e metric_topology X d -> x :e U -> exists b:set, b :e B /\ b c= U).
+  apply and3I.
+  * exact (metric_topology_is_topology X d Hm).
+  * exact Hx.
+  * set B := {open_ball X d x (inv_nat (ordsucc n))|n :e omega}.
+    witness B.
+    apply and4I.
+    + (** B c= metric_topology X d **)
+      let b. assume Hb: b :e B.
+      prove b :e metric_topology X d.
+      apply (ReplE_impred omega (fun n:set => open_ball X d x (inv_nat (ordsucc n))) b Hb).
+      let n. assume HnOmega: n :e omega.
+      assume HbEq: b = open_ball X d x (inv_nat (ordsucc n)).
+      rewrite HbEq.
+      claim HsuccOmega: ordsucc n :e omega.
+      { exact (omega_ordsucc n HnOmega). }
+      claim HsuccNonzero: ordsucc n :e omega :\: {0}.
+      { apply setminusI.
+        - exact HsuccOmega.
+        - assume Hmem0: ordsucc n :e {0}.
+          claim Heq0: ordsucc n = 0.
+          { exact (SingE 0 (ordsucc n) Hmem0). }
+          exact (neq_ordsucc_0 n Heq0). }
+      claim HinvR: inv_nat (ordsucc n) :e R.
+      { exact (inv_nat_real (ordsucc n) HsuccOmega). }
+      claim HinvPos: Rlt 0 (inv_nat (ordsucc n)).
+      { exact (inv_nat_pos (ordsucc n) HsuccNonzero). }
+      exact (open_ball_in_metric_topology X d x (inv_nat (ordsucc n)) Hm Hx HinvPos).
+    + (** countable_set B **)
+      claim HomegaCount: countable_set omega.
+      { prove countable_set omega.
+        prove countable omega.
+        exact (Subq_atleastp omega omega (Subq_ref omega)). }
+      exact (countable_image omega HomegaCount (fun n:set => open_ball X d x (inv_nat (ordsucc n)))).
+    + (** every b in B contains x **)
+      let b. assume Hb: b :e B.
+      prove x :e b.
+      apply (ReplE_impred omega (fun n:set => open_ball X d x (inv_nat (ordsucc n))) b Hb).
+      let n. assume HnOmega: n :e omega.
+      assume HbEq: b = open_ball X d x (inv_nat (ordsucc n)).
+      rewrite HbEq.
+      claim HsuccOmega: ordsucc n :e omega.
+      { exact (omega_ordsucc n HnOmega). }
+      claim HsuccNonzero: ordsucc n :e omega :\: {0}.
+      { apply setminusI.
+        - exact HsuccOmega.
+        - assume Hmem0: ordsucc n :e {0}.
+          claim Heq0: ordsucc n = 0.
+          { exact (SingE 0 (ordsucc n) Hmem0). }
+          exact (neq_ordsucc_0 n Heq0). }
+      claim HinvR: inv_nat (ordsucc n) :e R.
+      { exact (inv_nat_real (ordsucc n) HsuccOmega). }
+      claim HinvPos: Rlt 0 (inv_nat (ordsucc n)).
+      { exact (inv_nat_pos (ordsucc n) HsuccNonzero). }
+      exact (center_in_open_ball X d x (inv_nat (ordsucc n)) Hm Hx HinvPos).
+	    + (** local refinement: for any open U containing x, find b in B with b c= U **)
+	      let U. assume HU: U :e metric_topology X d.
+	      assume HxU: x :e U.
+	      prove exists b:set, b :e B /\ b c= U.
+	      (** get a ball around x contained in U **)
+	      claim Hex: exists r :e R, Rlt 0 r /\ open_ball X d x r c= U.
+	      { set B0 := famunion X (fun c:set => {open_ball X d c r|r :e R, Rlt 0 r}).
+	        claim Hdef: metric_topology X d = generated_topology X B0.
+	        { reflexivity. }
+	        claim HUgen: U :e generated_topology X B0.
+	        { prove U :e generated_topology X B0.
+	          rewrite <- Hdef.
+	          exact HU. }
+	        claim HUcond: forall y :e U, exists b0 :e B0, y :e b0 /\ b0 c= U.
+	        { exact (SepE2 (Power X)
+	                       (fun U0:set => forall y:set, y :e U0 -> exists b0 :e B0, y :e b0 /\ b0 c= U0)
+	                       U HUgen). }
+	        claim Hexb0: exists b0 :e B0, x :e b0 /\ b0 c= U.
+	        { exact (HUcond x HxU). }
+	        apply Hexb0.
+	        let b0. assume Hb0pair.
+	        claim Hb0B0: b0 :e B0.
+	        { exact (andEL (b0 :e B0) (x :e b0 /\ b0 c= U) Hb0pair). }
+	        claim Hxinb0: x :e b0.
+	        { exact (andEL (x :e b0) (b0 c= U) (andER (b0 :e B0) (x :e b0 /\ b0 c= U) Hb0pair)). }
+	        claim Hb0sub: b0 c= U.
+	        { exact (andER (x :e b0) (b0 c= U) (andER (b0 :e B0) (x :e b0 /\ b0 c= U) Hb0pair)). }
+	        apply (famunionE_impred X (fun c:set => {open_ball X d c r|r :e R, Rlt 0 r})
+	                                b0 Hb0B0
+	                                (exists r :e R, Rlt 0 r /\ open_ball X d x r c= U)).
+	        let c. assume HcX: c :e X.
+	        assume Hb0In: b0 :e {open_ball X d c r|r :e R, Rlt 0 r}.
+	        apply (ReplSepE_impred R (fun r0:set => Rlt 0 r0) (fun r0:set => open_ball X d c r0)
+	                                b0 Hb0In
+	                                (exists r :e R, Rlt 0 r /\ open_ball X d x r c= U)).
+	        let r0. assume Hr0R: r0 :e R.
+	        assume Hr0pos: Rlt 0 r0.
+	        assume Hb0eq: b0 = open_ball X d c r0.
+	        claim HxinBall: x :e open_ball X d c r0.
+	        { rewrite <- Hb0eq.
+	          exact Hxinb0. }
+	        claim HballsubU: open_ball X d c r0 c= U.
+	        { prove open_ball X d c r0 c= U.
+	          rewrite <- Hb0eq.
+	          exact Hb0sub. }
+	        claim Hexs: exists s:set, s :e R /\ Rlt 0 s /\ open_ball X d x s c= open_ball X d c r0.
+	        { exact (open_ball_refine_center X d c x r0 Hm HcX Hx Hr0R Hr0pos HxinBall). }
+	        apply Hexs.
+	        let s. assume Hs.
+	        claim HsRpos: s :e R /\ Rlt 0 s.
+	        { exact (andEL (s :e R /\ Rlt 0 s) (open_ball X d x s c= open_ball X d c r0) Hs). }
+	        claim HsR: s :e R.
+	        { exact (andEL (s :e R) (Rlt 0 s) HsRpos). }
+	        claim Hspos: Rlt 0 s.
+	        { exact (andER (s :e R) (Rlt 0 s) HsRpos). }
+	        claim HsubBall: open_ball X d x s c= open_ball X d c r0.
+	        { exact (andER (s :e R /\ Rlt 0 s) (open_ball X d x s c= open_ball X d c r0) Hs). }
+	        claim HsubU: open_ball X d x s c= U.
+	        { exact (Subq_tra (open_ball X d x s) (open_ball X d c r0) U HsubBall HballsubU). }
+	        witness s.
+	        apply andI.
+	        - exact HsR.
+	        - apply andI.
+	          + exact Hspos.
+	          + exact HsubU. }
+	      apply Hex.
+	      let r. assume Hrp: r :e R /\ (Rlt 0 r /\ open_ball X d x r c= U).
+	      claim HrR: r :e R.
+	      { exact (andEL (r :e R) (Rlt 0 r /\ open_ball X d x r c= U) Hrp). }
+      claim Hrprop: Rlt 0 r /\ open_ball X d x r c= U.
+      { exact (andER (r :e R) (Rlt 0 r /\ open_ball X d x r c= U) Hrp). }
+      claim H0lt: Rlt 0 r.
+      { exact (andEL (Rlt 0 r) (open_ball X d x r c= U) Hrprop). }
+      claim Hballsub: open_ball X d x r c= U.
+      { exact (andER (Rlt 0 r) (open_ball X d x r c= U) Hrprop). }
+      (** pick N with inv_nat (N+1) < r and use radius monotonicity **)
+      claim HexN: exists N:set, N :e omega /\ Rlt (inv_nat (ordsucc N)) r.
+      { exact (exists_inv_nat_ordsucc_lt r HrR H0lt). }
+      apply HexN.
+      let N. assume HNpair: N :e omega /\ Rlt (inv_nat (ordsucc N)) r.
+      claim HNomega: N :e omega.
+      { exact (andEL (N :e omega) (Rlt (inv_nat (ordsucc N)) r) HNpair). }
+      claim HinvLt: Rlt (inv_nat (ordsucc N)) r.
+      { exact (andER (N :e omega) (Rlt (inv_nat (ordsucc N)) r) HNpair). }
+      witness (open_ball X d x (inv_nat (ordsucc N))).
+      apply andI.
+      - exact (ReplI omega (fun n:set => open_ball X d x (inv_nat (ordsucc n))) N HNomega).
+      - claim HsSubS: open_ball X d x (inv_nat (ordsucc N)) c= open_ball X d x r.
+        { exact (open_ball_radius_mono X d x (inv_nat (ordsucc N)) r HinvLt). }
+        exact (Subq_tra (open_ball X d x (inv_nat (ordsucc N))) (open_ball X d x r) U HsSubS Hballsub).
+Qed.
+
+(** helper: uniform topology is first countable **)
+Theorem uniform_topology_first_countable : first_countable_space real_sequences uniform_topology.
+exact (metric_topology_first_countable real_sequences uniform_metric_Romega uniform_metric_Romega_is_metric).
+Qed.
 
 (** helper: countable local basis at a point in a nonempty countable product of first-countable spaces **)
 (** LATEX VERSION: The usual product argument produces a countable neighborhood basis at a point. **)
