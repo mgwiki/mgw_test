@@ -64557,6 +64557,11 @@ Qed.
 Definition net_on : set -> prop := fun net =>
   exists J X:set, directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
 
+(** helper: a net in a specified space X **)
+(** LATEX VERSION: A net in X is a function f:J→X from a directed set J. **)
+Definition net_in_space : set -> set -> prop := fun X net =>
+  exists J:set, directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
+
 (** from exercises after §29: subnet definition placeholder **)
 (** LATEX VERSION: Definition of subnet (Exercise, placeholder formalization). **)
 (** FIXED: Cofinality condition is forall j:e J, exists k0:e K, forall k:e K with k0<=k, we have j<=phi(k); old version forced phi to be constant; also subnet values satisfy sub(k) = net(phi(k)) in the same codomain X. **) 
@@ -65689,10 +65694,10 @@ Qed.
 (** LATEX VERSION: Compactness characterized by every net having a convergent subnet. **)
 Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
   topology_on X Tx ->
-  (compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
+  (compact_space X Tx <-> forall net:set, net_in_space X net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
 let X Tx.
 assume HTx: topology_on X Tx.
-prove compact_space X Tx <-> forall net:set, net_on net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x.
+prove compact_space X Tx <-> forall net:set, net_in_space X net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x.
 admit. (** FAIL **)
 Qed.
 
