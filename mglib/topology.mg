@@ -14512,12 +14512,26 @@ Definition abc_set : set := UPair a_elt b_elt :\/: {c_elt}.
 Definition top_abc_1 : set := UPair Empty abc_set.
 Definition top_abc_2 : set := Power abc_set.
 (** FIXED: Nested `UPair` does not create a 3- or 4-element family; use unions with singletons. **)
+  (** from §13 Exercise 2: topology on three element set **)
+  (** LATEX VERSION: One of the nine candidate families of open sets on {a,b,c} is {Empty, {a}, {a,b,c}}. **)
 Definition top_abc_3 : set := UPair Empty {a_elt} :\/: {abc_set}.
+  (** from §13 Exercise 2: topology on three element set **)
+  (** LATEX VERSION: One of the nine candidate families of open sets on {a,b,c} is {Empty, {b}, {a,b,c}}. **)
 Definition top_abc_4 : set := UPair Empty {b_elt} :\/: {abc_set}.
+  (** from §13 Exercise 2: topology on three element set **)
+  (** LATEX VERSION: One of the nine candidate families of open sets on {a,b,c} is {Empty, {c}, {a,b,c}}. **)
 Definition top_abc_5 : set := UPair Empty {c_elt} :\/: {abc_set}.
+  (** from §13 Exercise 2: topology on three element set **)
+  (** LATEX VERSION: One of the nine candidate families of open sets on {a,b,c} is {Empty, {a,b}, {a,b,c}}. **)
 Definition top_abc_6 : set := UPair Empty (UPair a_elt b_elt) :\/: {abc_set}.
+  (** from §13 Exercise 2: topology on three element set **)
+  (** LATEX VERSION: One of the nine candidate families of open sets on {a,b,c} is {Empty, {a,c}, {a,b,c}}. **)
 Definition top_abc_7 : set := UPair Empty (UPair a_elt c_elt) :\/: {abc_set}.
+  (** from §13 Exercise 2: topology on three element set **)
+  (** LATEX VERSION: One of the nine candidate families of open sets on {a,b,c} is {Empty, {b,c}, {a,b,c}}. **)
 Definition top_abc_8 : set := UPair Empty (UPair b_elt c_elt) :\/: {abc_set}.
+  (** from §13 Exercise 2: topology on three element set **)
+  (** LATEX VERSION: One of the nine candidate families of open sets on {a,b,c} is {Empty, {a}, {a,b}, {a,b,c}}. **)
 Definition top_abc_9 : set := (UPair Empty {a_elt} :\/: {UPair a_elt b_elt}) :\/: {abc_set}.
 
 (** Helper: topology of the form {Empty, A, X} **)
