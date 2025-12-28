@@ -64930,6 +64930,36 @@ Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
       exists i0:set, i0 :e J /\
         forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
 
+(** helper: explicit-index version of net convergence **)
+(** LATEX VERSION: A net f:J→X converges to x if for each neighborhood U of x there exists i0∈J such that for all i≥i0, f(i)∈U. **)
+Definition net_converges_on : set -> set -> set -> set -> set -> prop := fun X Tx net J x =>
+  topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U ->
+      exists i0:set, i0 :e J /\
+        forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
+
+(** helper: convergence-on implies convergence (existential index) **)
+Theorem net_converges_on_implies_net_converges : forall X Tx net J x:set,
+  net_converges_on X Tx net J x -> net_converges X Tx net x.
+let X Tx net J x.
+assume H: net_converges_on X Tx net J x.
+prove net_converges X Tx net x.
+witness J.
+exact H.
+Qed.
+
+(** helper: convergent net has an explicit index witness **)
+Theorem net_converges_implies_exists_net_converges_on : forall X Tx net x:set,
+  net_converges X Tx net x -> exists J:set, net_converges_on X Tx net J x.
+let X Tx net x.
+assume H: net_converges X Tx net x.
+apply H.
+let J.
+assume HJ.
+witness J.
+exact HJ.
+Qed.
+
 (** helper: convergent nets have accumulation points at the limit **)
 (** LATEX VERSION: If a net converges to x, then x is an accumulation point of the net. **)
 Theorem net_converges_implies_accumulation_point : forall X Tx net x:set,
@@ -65435,14 +65465,56 @@ exact (subnet_preserves_convergence_witnessed
 Qed.
 
 (** from exercises after §29: closure via nets **) 
-(** LATEX VERSION: Closure characterized by existence of a convergent net. **)
+(** LATEX VERSION: Theorem. Let A ⊂ X. Then x ∈ \bar{A} iff there is a net of points of A converging to x. **)
+Definition net_points_in : set -> set -> set -> prop := fun A net J =>
+  forall j:set, j :e J -> apply_fun net j :e A.
+
 Theorem closure_via_nets : forall X Tx A x:set,
   topology_on X Tx ->
-  (x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x).
+  (x :e closure_of X Tx A <-> exists net J:set, net_converges_on X Tx net J x /\ net_points_in A net J).
 let X Tx A x.
 assume HTx: topology_on X Tx.
-prove x :e closure_of X Tx A <-> exists net:set, net_on net /\ net_converges X Tx net x.
-admit. (** FAIL **)
+prove x :e closure_of X Tx A <-> exists net J:set, net_converges_on X Tx net J x /\ net_points_in A net J.
+apply iffI.
+- (** (=>) closure(A) gives a convergent net in A (construction is nontrivial here) **)
+  assume Hxcl: x :e closure_of X Tx A.
+  admit. (** FAIL **)
+- (** (<=) a convergent net in A yields x in closure(A) **)
+  assume Hex: exists net J:set, net_converges_on X Tx net J x /\ net_points_in A net J.
+  apply Hex.
+  let net J.
+  assume Hpair: net_converges_on X Tx net J x /\ net_points_in A net J.
+  claim Hconv: net_converges_on X Tx net J x.
+  { exact (andEL (net_converges_on X Tx net J x) (net_points_in A net J) Hpair). }
+  claim HinA: net_points_in A net J.
+  { exact (andER (net_converges_on X Tx net J x) (net_points_in A net J) Hpair). }
+  prove x :e closure_of X Tx A.
+  apply SepI.
+  let U. assume HU: U :e Tx.
+  assume HxU: x :e U.
+  prove U :/\: A <> Empty.
+  apply Hconv. assume Hcore Htail.
+  claim Hexi0: exists i0:set, i0 :e J /\
+    forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
+  { exact (Htail U HU HxU). }
+  apply Hexi0.
+  let i0. assume Hi0pair.
+  claim Hi0J: i0 :e J.
+  { exact (andEL (i0 :e J)
+                 (forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U)
+                 Hi0pair). }
+  claim Hi0tail:
+    forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
+  { exact (andER (i0 :e J)
+                 (forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U)
+                 Hi0pair). }
+  claim Hneti0U: apply_fun net i0 :e U.
+  { exact (Hi0tail i0 Hi0J (orIR (i0 :e i0) (i0 = i0) (reflexivity))). }
+  claim Hneti0A: apply_fun net i0 :e A.
+  { exact (HinA i0 Hi0J). }
+  claim HinUA: apply_fun net i0 :e U :/\: A.
+  { exact (binintersectI U A (apply_fun net i0) Hneti0U Hneti0A). }
+  exact (elem_implies_nonempty (U :/\: A) (apply_fun net i0) HinUA).
 Qed.
 
 (** from exercises after §29: continuity via nets **)
