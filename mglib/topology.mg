@@ -76074,7 +76074,15 @@ Theorem Romega_uniform_first_not_second_countable :
   first_countable_space real_sequences uniform_topology /\
   ~ second_countable_space real_sequences uniform_topology.
 prove first_countable_space real_sequences uniform_topology /\ ~ second_countable_space real_sequences uniform_topology.
-admit. (** FAIL **)
+apply andI.
+- exact uniform_topology_first_countable.
+- assume Hsc: second_countable_space real_sequences uniform_topology.
+  prove False.
+  claim Hdisc: discrete_subspace real_sequences uniform_topology binary_sequences_Romega.
+  { exact binary_sequences_Romega_discrete_in_uniform_topology. }
+  claim Hcount: countable_set binary_sequences_Romega.
+  { exact (second_countable_discrete_subspace_countable real_sequences uniform_topology binary_sequences_Romega Hsc Hdisc). }
+  exact (binary_sequences_Romega_uncountable Hcount).
 Qed.
 
 (** from §30 Theorem 30.2: countability axioms preserved by subspaces and countable products **)
