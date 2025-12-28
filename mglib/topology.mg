@@ -65215,7 +65215,7 @@ Qed.
 
 (** from exercises after §29: convergence of subnets **) 
 (** LATEX VERSION: Convergent nets have convergent subnets to same limit. **)
-Theorem subnet_preserves_convergence :
+Theorem subnet_preserves_convergence_on :
   forall X Tx net sub x J leJ K leK phi:set,
     subnet_of_witness net sub J leJ K leK X phi ->
     net_converges_on X Tx net J leJ x ->
@@ -65312,6 +65312,18 @@ apply andI.
     { exact (HtransJ j0 (apply_fun phi k0) (apply_fun phi k) Hj0J Hphi0J HphikJ Hj0phi0 Hphimon). }
     rewrite (Hvals k HkK).
     exact (HafterJ (apply_fun phi k) HphikJ Hj0phik).
+Qed.
+
+(** from exercises after §29: convergence of subnets **) 
+(** LATEX VERSION: If a net converges, then every subnet converges to the same limit. **)
+(** SUSPICIOUS DEFINITION: With the current encoding `net_converges` hides the directed index set by existential quantification; relating it to `subnet_of` may require an index-alignment lemma that is not available. **) 
+Theorem subnet_preserves_convergence : forall X Tx net sub x:set,
+  net_converges X Tx net x -> subnet_of net sub -> net_converges X Tx sub x.
+let X Tx net sub x.
+assume Hnet: net_converges X Tx net x.
+assume Hsub: subnet_of net sub.
+prove net_converges X Tx sub x.
+admit. (** FAIL **)
 Qed.
 
 (** from exercises after §29: closure via nets **) 
