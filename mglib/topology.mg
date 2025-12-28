@@ -27428,7 +27428,8 @@ exact (subspace_topology_is_topology R R_standard_topology unit_interval
          unit_interval_sub_R).
 Qed.
 
-(** helper: flip map t |-> 1 + -t on the unit interval, used for reversing paths **)
+(** helper: flip map on the unit interval **)
+(** LATEX VERSION: Notation helper: t |-> 1-t on [0,1], used for reversing parameterizations of paths. **)
 Definition flip_unit_interval : set :=
   {(t, add_SNo 1 (minus_SNo t)) | t :e unit_interval}.
 
@@ -27847,7 +27848,12 @@ apply (SNoLt_trichotomy_or_impred bb 1 HbbS SNo_1 (exists x:set, x :e U0 /\ x <>
     { rewrite <- Heq at 2. exact HepsLtq. }
     exact ((not_Rlt_refl (eps_ 1) HepsR) Hbad).
 Qed.
+(** from §16 Example: the ordered square I_o^2 **)
+(** LATEX VERSION: The set I×I in the dictionary order topology is called the ordered square and denoted I_o^2. **)
 Definition ordered_square : set := setprod unit_interval unit_interval.
+
+(** from §16 Example: basis for the dictionary order topology on I×I **)
+(** LATEX VERSION: The dictionary order topology is the order topology induced by the lexicographic order; basic opens are intervals and rays. **)
 (** helper: basis for the dictionary order topology on I×I, using the dictionary comparison on R×R **)
 Definition ordered_square_order_basis : set :=
   ({I :e Power ordered_square | exists a :e ordered_square, exists b :e ordered_square,
@@ -27859,10 +27865,15 @@ Definition ordered_square_order_basis : set :=
    {I :e Power ordered_square | exists a :e ordered_square,
         I = {x :e ordered_square | order_rel (setprod R R) a x}}).
 
+(** from §16 Example: the ordered square topology **)
+(** LATEX VERSION: The ordered square carries the order topology from the dictionary order. **)
 Definition ordered_square_topology : set := generated_topology ordered_square ordered_square_order_basis.
 (** LATEX VERSION: The vertical strip {1/2}×(1/2,1] inside I×I. **)
 Definition ordered_square_open_strip : set :=
   {p :e ordered_square|exists y:set, p = (eps_ 1,y) /\ Rlt (eps_ 1) y /\ ~(Rlt 1 y)}.
+
+(** from §16 Example 3: order topology vs subspace topology **)
+(** LATEX VERSION: The order topology on I×I is not the same as the subspace topology inherited from R×R in the dictionary order topology. **)
 Definition ordered_square_subspace_topology : set :=
   subspace_topology (setprod R R) R2_dictionary_order_topology ordered_square.
 
