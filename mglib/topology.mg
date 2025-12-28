@@ -77144,13 +77144,13 @@ apply andI.
     { exact (andER (Uof a :e Tx) (Vof a :e Tx) H12). }
     apply andI.
     - exact HUofTx.
-	    - apply andI.
-	      + exact HVofTx.
-	      + apply andI.
-	        * exact H3.
-	        * apply andI.
-	          - exact H4.
-	          - exact H5. }
+    - apply andI.
+      + exact HVofTx.
+      + apply andI.
+        * exact H3.
+        * apply andI.
+          - exact H4.
+          - exact H5. }
 
   (** Cover A by opens Uof a. **)
   set Fam := {Uof a|a :e A}.
