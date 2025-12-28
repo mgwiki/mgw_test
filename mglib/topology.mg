@@ -65097,7 +65097,72 @@ assume Htail:
       forall j:set, j :e J -> (j0,j) :e leJ ->
         apply_fun net j :e U.
 prove net_converges X Tx sub x.
-admit. (** FAIL **)
+prove exists J0 le0:set, topology_on X Tx /\ directed_set J0 le0 /\ total_function_on sub J0 X /\ functional_graph sub /\ graph_domain_subset sub J0 /\ x :e X /\
+  forall U:set, U :e Tx -> x :e U ->
+    exists i0:set, i0 :e J0 /\
+      forall i:set, i :e J0 -> (i0,i) :e le0 -> apply_fun sub i :e U.
+witness K.
+witness leK.
+(** build the left-associated conjunction for net_converges **)
+apply andI.
+- prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K /\ x :e X.
+  apply andI.
+  + prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K.
+    apply andI.
+    * prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub.
+      apply andI.
+      - prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X.
+        apply andI.
+        + prove topology_on X Tx /\ directed_set K leK.
+          apply andI.
+          * exact HTx.
+          * exact HdirK.
+        + exact Hsubtot.
+      - exact Hsubgraph.
+    * exact Hsubdom.
+  + exact HxX.
+- (** neighborhood eventuality for sub **)
+  let U.
+  assume HU: U :e Tx.
+  assume HxU: x :e U.
+  claim Hexj0: exists j0:set, j0 :e J /\
+    forall j:set, j :e J -> (j0,j) :e leJ -> apply_fun net j :e U.
+  { exact (Htail U HU HxU). }
+  apply Hexj0.
+  let j0.
+  assume Hj0pair.
+  apply Hj0pair.
+  assume Hj0J HafterJ.
+  claim Hexk0: exists k0:set, k0 :e K /\ (j0, apply_fun phi k0) :e leJ.
+  { exact (Hcofinal j0 Hj0J). }
+  apply Hexk0.
+  let k0.
+  assume Hk0pair.
+  apply Hk0pair.
+  assume Hk0K Hj0phi0.
+  witness k0.
+  apply andI.
+  - exact Hk0K.
+  - let k.
+    assume HkK: k :e K.
+    assume Hk0k: (k0,k) :e leK.
+    prove apply_fun sub k :e U.
+    claim Hphi0J: apply_fun phi k0 :e J.
+    { exact (total_function_on_apply_fun_in_Y phi K J k0 Hphitot Hk0K). }
+    claim HphikJ: apply_fun phi k :e J.
+    { exact (total_function_on_apply_fun_in_Y phi K J k Hphitot HkK). }
+    claim Hphimon: (apply_fun phi k0, apply_fun phi k) :e leJ.
+    { exact (Hmono k0 k Hk0K HkK Hk0k). }
+    (** extract transitivity of leJ from directed_set J leJ **)
+    apply HdirJ. assume HleftJ HdirpropJ.
+    apply HleftJ. assume HJne HpoJ.
+    apply HpoJ. assume HabcJ HtransJ.
+    apply HabcJ. assume HabJ HantisymJ.
+    apply HabJ. assume HrelJ HreflJ.
+    claim Hj0phik: (j0, apply_fun phi k) :e leJ.
+    { exact (HtransJ j0 (apply_fun phi k0) (apply_fun phi k) Hj0J Hphi0J HphikJ Hj0phi0 Hphimon). }
+    rewrite (Hsubeq k HkK).
+    exact (HafterJ (apply_fun phi k) HphikJ Hj0phik).
 Qed.
 
 (** from exercises after §29: convergence of subnets **) 
