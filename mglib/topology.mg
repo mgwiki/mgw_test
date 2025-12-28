@@ -12470,17 +12470,14 @@ apply andI.
 		  claim HpProp:
 		    exists x1 y1:set,
 		      p = (x1,y1) /\ Rlt a x1 /\ Rlt x1 b0 /\ Rlt c y1 /\ Rlt y1 d0.
-		  { witness xp.
-		    witness yp.
-		    apply andI.
-		    - apply andI.
-		      + apply andI.
-		        * apply andI.
-		          - exact HpEq.
-		          - exact HaxRlt.
-		        * exact HxpLt_b0.
-		      + exact HcyRlt.
-		    - exact HypLt_d0. }
+			  { witness xp.
+			    witness yp.
+			    apply and5I.
+			    - exact HpEq.
+			    - exact HaxRlt.
+			    - exact HxpLt_b0.
+			    - exact HcyRlt.
+			    - exact HypLt_d0. }
 		  exact (SepI EuclidPlane
 		              (fun p0 : set =>
 		                exists x1 y1:set,
