@@ -17787,9 +17787,8 @@ prove (R_standard_basis :\/: R_K_basis) c= Power R
   /\ (forall b1 :e (R_standard_basis :\/: R_K_basis), forall b2 :e (R_standard_basis :\/: R_K_basis), forall x:set,
         x :e b1 -> x :e b2 ->
         exists b3 :e (R_standard_basis :\/: R_K_basis), x :e b3 /\ b3 c= b1 :/\: b2).
-apply andI.
-- apply andI.
-  + (** basis elements are subsets of R **)
+apply and3I.
+- (** basis elements are subsets of R **)
     let U. assume HU: U :e (R_standard_basis :\/: R_K_basis).
     apply (binunionE' R_standard_basis R_K_basis U (U :e Power R)).
     - (** U from standard basis **)
@@ -17822,7 +17821,7 @@ apply andI.
       { exact (open_interval_Subq_R a b). }
       exact (PowerI R (open_interval a b :\: K_set) (Subq_tra (open_interval a b :\: K_set) (open_interval a b) R Hsub1 Hsub2)).
     - exact HU.
-  + (** coverage: inherit from standard basis **)
+- (** coverage: inherit from standard basis **)
     let x. assume HxR: x :e R.
     claim Hcov: forall x0 :e R, exists b :e R_standard_basis, x0 :e b.
     { exact (andER (R_standard_basis c= Power R)
