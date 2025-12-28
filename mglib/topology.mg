@@ -74554,6 +74554,330 @@ Qed.
 
 (** from §30 Example 3: Sorgenfrey line countability properties **) 
 (** LATEX VERSION: Sorgenfrey line is first countable, separable, Lindelöf, but not second countable. **)
+
+(** helper: Sorgenfrey line is first countable (countable local basis [x,x+eps_n)) **)
+Theorem Sorgenfrey_line_first_countable :
+  first_countable_space Sorgenfrey_line Sorgenfrey_topology.
+prove first_countable_space Sorgenfrey_line Sorgenfrey_topology.
+prove topology_on Sorgenfrey_line Sorgenfrey_topology /\
+  forall x:set, x :e Sorgenfrey_line -> countable_basis_at Sorgenfrey_line Sorgenfrey_topology x.
+apply andI.
+- (** topology_on **)
+  exact R_lower_limit_topology_is_topology.
+- let x. assume HxR: x :e Sorgenfrey_line.
+  prove countable_basis_at Sorgenfrey_line Sorgenfrey_topology x.
+  set Tx := R_lower_limit_topology.
+  set Bx := Repl omega (fun N0:set => halfopen_interval_left x (add_SNo x (eps_ N0))).
+  prove topology_on Sorgenfrey_line Tx /\ x :e Sorgenfrey_line /\
+    exists B:set, B c= Tx /\ countable_set B /\
+      (forall b:set, b :e B -> x :e b) /\
+      (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U).
+  apply andI.
+  - (** topology_on /\ x:eX **)
+    apply andI.
+    + exact R_lower_limit_topology_is_topology.
+    + exact HxR.
+  - witness Bx.
+    apply andI.
+    - (** Bx c= Tx /\ countable_set Bx /\ forall b∈Bx, x∈b **)
+      apply andI.
+      + (** Bx c= Tx /\ countable_set Bx **)
+        apply andI.
+        * (** Bx c= Tx **)
+          let b. assume Hb: b :e Bx.
+          prove b :e Tx.
+          claim HexN: exists N :e omega, b = halfopen_interval_left x (add_SNo x (eps_ N)).
+          { exact (ReplE omega (fun N0:set => halfopen_interval_left x (add_SNo x (eps_ N0))) b Hb). }
+          apply HexN.
+          let N. assume HNpair.
+          claim HNomega: N :e omega.
+          { exact (andEL (N :e omega) (b = halfopen_interval_left x (add_SNo x (eps_ N))) HNpair). }
+          claim HbEq: b = halfopen_interval_left x (add_SNo x (eps_ N)).
+          { exact (andER (N :e omega) (b = halfopen_interval_left x (add_SNo x (eps_ N))) HNpair). }
+          claim HxS: SNo x.
+          { exact (real_SNo x HxR). }
+          claim HepsR: eps_ N :e R.
+          { exact (SNoS_omega_real (eps_ N) (SNo_eps_SNoS_omega N HNomega)). }
+          claim HepsS: SNo (eps_ N).
+          { exact (real_SNo (eps_ N) HepsR). }
+          claim HxplusR: add_SNo x (eps_ N) :e R.
+          { exact (real_add_SNo x HxR (eps_ N) HepsR). }
+          claim HxplusS: SNo (add_SNo x (eps_ N)).
+          { exact (real_SNo (add_SNo x (eps_ N)) HxplusR). }
+          claim HxltS: x < add_SNo x (eps_ N).
+          { exact (add_SNo_eps_Lt x HxS N HNomega). }
+          claim Hxlt: Rlt x (add_SNo x (eps_ N)).
+          { exact (RltI x (add_SNo x (eps_ N)) HxR HxplusR HxltS). }
+          rewrite HbEq.
+          exact (halfopen_interval_left_in_R_lower_limit_topology x (add_SNo x (eps_ N)) HxR HxplusR).
+        * (** countable_set Bx **)
+          claim HomegaCount: countable_set omega.
+          { exact (Subq_atleastp omega omega (Subq_ref omega)). }
+          exact (countable_image omega HomegaCount (fun N0:set => halfopen_interval_left x (add_SNo x (eps_ N0)))).
+      + (** forall b∈Bx, x∈b **)
+        let b. assume Hb: b :e Bx.
+        prove x :e b.
+        claim HexN: exists N :e omega, b = halfopen_interval_left x (add_SNo x (eps_ N)).
+        { exact (ReplE omega (fun N0:set => halfopen_interval_left x (add_SNo x (eps_ N0))) b Hb). }
+        apply HexN.
+        let N. assume HNpair.
+        claim HNomega: N :e omega.
+        { exact (andEL (N :e omega) (b = halfopen_interval_left x (add_SNo x (eps_ N))) HNpair). }
+        claim HbEq: b = halfopen_interval_left x (add_SNo x (eps_ N)).
+        { exact (andER (N :e omega) (b = halfopen_interval_left x (add_SNo x (eps_ N))) HNpair). }
+        claim HxS: SNo x.
+        { exact (real_SNo x HxR). }
+        claim HepsR: eps_ N :e R.
+        { exact (SNoS_omega_real (eps_ N) (SNo_eps_SNoS_omega N HNomega)). }
+        claim HxplusR: add_SNo x (eps_ N) :e R.
+        { exact (real_add_SNo x HxR (eps_ N) HepsR). }
+        claim HxltS: x < add_SNo x (eps_ N).
+        { exact (add_SNo_eps_Lt x HxS N HNomega). }
+        claim Hxlt: Rlt x (add_SNo x (eps_ N)).
+        { exact (RltI x (add_SNo x (eps_ N)) HxR HxplusR HxltS). }
+        rewrite HbEq.
+        exact (halfopen_interval_left_leftmem x (add_SNo x (eps_ N)) Hxlt).
+    - (** local refinement **)
+      let U. assume HU: U :e Tx.
+      assume HxU: x :e U.
+      prove exists b:set, b :e Bx /\ b c= U.
+      (** rewrite Tx as generated_topology R R_lower_limit_basis **)
+      claim HTdef: Tx = generated_topology R R_lower_limit_basis.
+      { reflexivity. }
+      claim HUgen: U :e generated_topology R R_lower_limit_basis.
+      { rewrite <- HTdef. exact HU. }
+      claim Hloc: forall y0 :e U, exists b0 :e R_lower_limit_basis, y0 :e b0 /\ b0 c= U.
+      { exact (SepE2 (Power R)
+                     (fun U0:set => forall y1 :e U0, exists b0 :e R_lower_limit_basis, y1 :e b0 /\ b0 c= U0)
+                     U
+                     HUgen). }
+      claim Hexb0: exists b0 :e R_lower_limit_basis, x :e b0 /\ b0 c= U.
+      { exact (Hloc x HxU). }
+      apply Hexb0.
+      let b0. assume Hb0pair.
+      claim Hb0B: b0 :e R_lower_limit_basis.
+      { exact (andEL (b0 :e R_lower_limit_basis) (x :e b0 /\ b0 c= U) Hb0pair). }
+      claim Hb0prop: x :e b0 /\ b0 c= U.
+      { exact (andER (b0 :e R_lower_limit_basis) (x :e b0 /\ b0 c= U) Hb0pair). }
+      claim Hxb0: x :e b0.
+      { exact (andEL (x :e b0) (b0 c= U) Hb0prop). }
+      claim Hb0subU: b0 c= U.
+      { exact (andER (x :e b0) (b0 c= U) Hb0prop). }
+      (** destruct b0 = [a,b) **)
+      claim Hexa : exists a :e R, b0 :e {halfopen_interval_left a b|b :e R}.
+      { exact (famunionE R (fun a0:set => {halfopen_interval_left a0 b|b :e R}) b0 Hb0B). }
+      apply Hexa.
+      let a. assume Hapair. apply Hapair.
+      assume HaR: a :e R.
+      assume Hb0fam: b0 :e {halfopen_interval_left a b|b :e R}.
+      claim Hexb : exists b :e R, b0 = halfopen_interval_left a b.
+      { exact (ReplE R (fun b1:set => halfopen_interval_left a b1) b0 Hb0fam). }
+      apply Hexb.
+      let b. assume Hbpair. apply Hbpair.
+      assume HbR: b :e R.
+      assume Hb0eq: b0 = halfopen_interval_left a b.
+      claim HxIn: x :e halfopen_interval_left a b.
+      { rewrite <- Hb0eq. exact Hxb0. }
+      claim HxProp: ~(Rlt x a) /\ Rlt x b.
+      { exact (SepE2 R (fun x0:set => ~(Rlt x0 a) /\ Rlt x0 b) x HxIn). }
+      claim Hnltxa: ~(Rlt x a).
+      { exact (andEL (~(Rlt x a)) (Rlt x b) HxProp). }
+      claim Hxltb: Rlt x b.
+      { exact (andER (~(Rlt x a)) (Rlt x b) HxProp). }
+      claim Hax: Rle a x.
+      { exact (RleI a x HaR HxR Hnltxa). }
+      claim Hab: Rlt a b.
+      { exact (Rle_Rlt_tra a x b Hax Hxltb). }
+      (** choose N with eps_N < b-x **)
+      set d := add_SNo b (minus_SNo x).
+      claim HxS: SNo x.
+      { exact (real_SNo x HxR). }
+      claim HbS: SNo b.
+      { exact (real_SNo b HbR). }
+      claim HmxS: SNo (minus_SNo x).
+      { exact (SNo_minus_SNo x HxS). }
+      claim HdR: d :e R.
+      { exact (real_add_SNo b HbR (minus_SNo x) (real_minus_SNo x HxR)). }
+      claim HdS: SNo d.
+      { exact (real_SNo d HdR). }
+      claim HxltbS: x < b.
+      { exact (RltE_lt x b Hxltb). }
+      claim HdposS: 0 < d.
+      { exact (SNoLt_minus_pos x b HxS HbS HxltbS). }
+      claim Hdpos: Rlt 0 d.
+      { exact (RltI 0 d real_0 HdR HdposS). }
+      claim HexN: exists N :e omega, eps_ N < d.
+      { exact (exists_eps_lt_pos d HdR Hdpos). }
+      apply HexN.
+      let N. assume HNpair.
+      claim HNomega: N :e omega.
+      { exact (andEL (N :e omega) (eps_ N < d) HNpair). }
+      claim HepsLtD: eps_ N < d.
+      { exact (andER (N :e omega) (eps_ N < d) HNpair). }
+      set b1 := add_SNo x (eps_ N).
+      set V := halfopen_interval_left x b1.
+      witness V.
+      apply andI.
+      - (** V :e Bx **)
+        claim HVeq: V = halfopen_interval_left x (add_SNo x (eps_ N)).
+        { reflexivity. }
+        rewrite HVeq.
+        exact (ReplI omega (fun N0:set => halfopen_interval_left x (add_SNo x (eps_ N0))) N HNomega).
+      - (** V c= U **)
+        let z. assume HzV: z :e V.
+        prove z :e U.
+        (** show V c= b0 and use b0 c= U **)
+        claim HepsR: eps_ N :e R.
+        { exact (SNoS_omega_real (eps_ N) (SNo_eps_SNoS_omega N HNomega)). }
+        claim HepsS: SNo (eps_ N).
+        { exact (real_SNo (eps_ N) HepsR). }
+        claim Hb1R: b1 :e R.
+        { exact (real_add_SNo x HxR (eps_ N) HepsR). }
+        claim Hb1S: SNo b1.
+        { exact (real_SNo b1 Hb1R). }
+        claim Hxltb1S: x < b1.
+        { exact (add_SNo_eps_Lt x HxS N HNomega). }
+        claim Hxltb1: Rlt x b1.
+        { exact (RltI x b1 HxR Hb1R Hxltb1S). }
+        (** b1 < b since eps_N < b-x **)
+        claim HxplusLt: add_SNo x (eps_ N) < add_SNo x d.
+        { exact (add_SNo_Lt2 x (eps_ N) d HxS HepsS HdS HepsLtD). }
+	        claim HxdEq: add_SNo x d = b.
+	        { rewrite (add_SNo_assoc x b (minus_SNo x) HxS HbS HmxS).
+	          rewrite (add_SNo_com x b HxS HbS).
+	          rewrite <- (add_SNo_assoc b x (minus_SNo x) HbS HxS HmxS).
+	          rewrite (add_SNo_minus_SNo_rinv x HxS).
+	          exact (add_SNo_0R b HbS). }
+	        claim Hb1ltbS: b1 < b.
+	        { rewrite <- HxdEq.
+	          exact HxplusLt. }
+        claim Hb1ltb: Rlt b1 b.
+        { exact (RltI b1 b Hb1R HbR Hb1ltbS). }
+        (** z in V gives z:eR, ~(z<x), z<b1 **)
+        claim HzR: z :e R.
+        { exact (SepE1 R (fun z0:set => ~(Rlt z0 x) /\ Rlt z0 b1) z HzV). }
+        claim HzProp: ~(Rlt z x) /\ Rlt z b1.
+        { exact (SepE2 R (fun z0:set => ~(Rlt z0 x) /\ Rlt z0 b1) z HzV). }
+        claim Hnltzx: ~(Rlt z x).
+        { exact (andEL (~(Rlt z x)) (Rlt z b1) HzProp). }
+        claim Hzltb1: Rlt z b1.
+        { exact (andER (~(Rlt z x)) (Rlt z b1) HzProp). }
+        claim Hxz: Rle x z.
+        { exact (RleI x z HxR HzR Hnltzx). }
+	        claim Haz: Rle a z.
+	        { exact (Rle_tra a x z Hax Hxz). }
+	        claim Hnltza: ~(Rlt z a).
+	        { exact (RleE_nlt a z Haz). }
+        claim Hzltb: Rlt z b.
+        { exact (Rlt_tra z b1 b Hzltb1 Hb1ltb). }
+        claim HzInb0: z :e halfopen_interval_left a b.
+        { exact (SepI R (fun z0:set => ~(Rlt z0 a) /\ Rlt z0 b) z HzR (andI (~(Rlt z a)) (Rlt z b) Hnltza Hzltb)). }
+	        claim HzInU: z :e U.
+	        { claim HzInb0': z :e b0.
+	          { rewrite Hb0eq.
+	            exact HzInb0. }
+	          exact (Hb0subU z HzInb0'). }
+        exact HzInU.
+Qed.
+
+(** helper: rational numbers are dense in the Sorgenfrey line **)
+Theorem Sorgenfrey_line_rationals_dense :
+  dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology.
+prove dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology.
+prove closure_of Sorgenfrey_line Sorgenfrey_topology rational_numbers = Sorgenfrey_line.
+apply set_ext.
+- (** closure subset X **)
+  exact (closure_in_space Sorgenfrey_line Sorgenfrey_topology rational_numbers R_lower_limit_topology_is_topology).
+- (** X subset closure **)
+  let x. assume HxR: x :e Sorgenfrey_line.
+  prove x :e closure_of Sorgenfrey_line Sorgenfrey_topology rational_numbers.
+  claim Hcliff: x :e closure_of Sorgenfrey_line Sorgenfrey_topology rational_numbers
+    <-> (forall U :e Sorgenfrey_topology, x :e U -> U :/\: rational_numbers <> Empty).
+  { exact (closure_characterization Sorgenfrey_line Sorgenfrey_topology rational_numbers x
+                                  R_lower_limit_topology_is_topology
+                                  HxR). }
+  apply (iffER (x :e closure_of Sorgenfrey_line Sorgenfrey_topology rational_numbers)
+               (forall U :e Sorgenfrey_topology, x :e U -> U :/\: rational_numbers <> Empty)
+               Hcliff).
+  prove forall U :e Sorgenfrey_topology, x :e U -> U :/\: rational_numbers <> Empty.
+  let U. assume HU: U :e Sorgenfrey_topology.
+  assume HxU: x :e U.
+  (** pick a basis neighborhood b0=[a,b) with x∈b0 ⊂ U **)
+  claim HTdef: Sorgenfrey_topology = generated_topology R R_lower_limit_basis.
+  { reflexivity. }
+  claim HUgen: U :e generated_topology R R_lower_limit_basis.
+  { rewrite <- HTdef. exact HU. }
+  claim Hloc: forall y0 :e U, exists b0 :e R_lower_limit_basis, y0 :e b0 /\ b0 c= U.
+  { exact (SepE2 (Power R)
+                 (fun U0:set => forall y1 :e U0, exists b0 :e R_lower_limit_basis, y1 :e b0 /\ b0 c= U0)
+                 U
+                 HUgen). }
+  claim Hexb0: exists b0 :e R_lower_limit_basis, x :e b0 /\ b0 c= U.
+  { exact (Hloc x HxU). }
+  apply Hexb0.
+  let b0. assume Hb0pair. apply Hb0pair.
+  assume Hb0B: b0 :e R_lower_limit_basis.
+  assume Hb0prop: x :e b0 /\ b0 c= U.
+  claim Hxb0: x :e b0.
+  { exact (andEL (x :e b0) (b0 c= U) Hb0prop). }
+  claim Hb0subU: b0 c= U.
+  { exact (andER (x :e b0) (b0 c= U) Hb0prop). }
+  (** destruct b0 = [a,b) **)
+  claim Hexa : exists a :e R, b0 :e {halfopen_interval_left a b|b :e R}.
+  { exact (famunionE R (fun a0:set => {halfopen_interval_left a0 b|b :e R}) b0 Hb0B). }
+  apply Hexa.
+  let a. assume Hapair. apply Hapair.
+  assume HaR: a :e R.
+  assume Hb0fam: b0 :e {halfopen_interval_left a b|b :e R}.
+  claim Hexb : exists b :e R, b0 = halfopen_interval_left a b.
+  { exact (ReplE R (fun b1:set => halfopen_interval_left a b1) b0 Hb0fam). }
+  apply Hexb.
+  let b. assume Hbpair. apply Hbpair.
+  assume HbR: b :e R.
+  assume Hb0eq: b0 = halfopen_interval_left a b.
+  claim HxIn: x :e halfopen_interval_left a b.
+  { rewrite <- Hb0eq. exact Hxb0. }
+  claim HxProp: ~(Rlt x a) /\ Rlt x b.
+  { exact (SepE2 R (fun x0:set => ~(Rlt x0 a) /\ Rlt x0 b) x HxIn). }
+  claim Hnltxa: ~(Rlt x a).
+  { exact (andEL (~(Rlt x a)) (Rlt x b) HxProp). }
+  claim Hxltb: Rlt x b.
+  { exact (andER (~(Rlt x a)) (Rlt x b) HxProp). }
+  claim Hax: Rle a x.
+  { exact (RleI a x HaR HxR Hnltxa). }
+  claim Hab: Rlt a b.
+  { exact (Rle_Rlt_tra a x b Hax Hxltb). }
+  (** pick rational q with a < q < b **)
+  apply (rational_dense_between_reals a b HaR HbR Hab).
+  let q. assume Hqpair.
+  claim HqQ: q :e rational_numbers.
+  { exact (andEL (q :e rational_numbers) (Rlt a q /\ Rlt q b) Hqpair). }
+  claim HqProp: Rlt a q /\ Rlt q b.
+  { exact (andER (q :e rational_numbers) (Rlt a q /\ Rlt q b) Hqpair). }
+  claim Haq: Rlt a q.
+  { exact (andEL (Rlt a q) (Rlt q b) HqProp). }
+  claim Hqb: Rlt q b.
+  { exact (andER (Rlt a q) (Rlt q b) HqProp). }
+  claim HqR: q :e R.
+  { exact (rational_numbers_in_R q HqQ). }
+  claim Hnltqa: ~(Rlt q a).
+  { exact (not_Rlt_sym a q Haq). }
+  claim HqInb0: q :e halfopen_interval_left a b.
+  { exact (SepI R (fun z0:set => ~(Rlt z0 a) /\ Rlt z0 b) q HqR (andI (~(Rlt q a)) (Rlt q b) Hnltqa Hqb)). }
+  claim HqInU: q :e U.
+  { claim HqInb0': q :e b0.
+    { rewrite Hb0eq.
+      exact HqInb0. }
+    exact (Hb0subU q HqInb0'). }
+  prove U :/\: rational_numbers <> Empty.
+  assume HUQ: U :/\: rational_numbers = Empty.
+  claim HqUA: q :e U :/\: rational_numbers.
+  { exact (binintersectI U rational_numbers q HqInU HqQ). }
+  claim HqEmp: q :e Empty.
+  { rewrite <- HUQ. exact HqUA. }
+  exact (EmptyE q HqEmp False).
+Qed.
+
 Theorem Sorgenfrey_line_countability :
   first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
@@ -74569,9 +74893,9 @@ apply andI.
   + (** first_countable /\ dense_in **)
     apply andI.
     * (** first_countable_space Sorgenfrey_line Sorgenfrey_topology **)
-      admit. (** FAIL **)
+      exact Sorgenfrey_line_first_countable.
     * (** dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology **)
-      admit. (** FAIL **)
+      exact Sorgenfrey_line_rationals_dense.
   + (** Lindelof_space Sorgenfrey_line Sorgenfrey_topology **)
     admit. (** FAIL **)
 - (** not second countable **)
