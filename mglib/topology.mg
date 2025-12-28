@@ -65615,6 +65615,10 @@ apply iffI.
 
   (** now prove convergence-on for the image net **)
   prove net_converges_on Y Ty (compose_fun J net f) J (apply_fun f x).
+  prove topology_on Y Ty /\ directed_set J /\ total_function_on (compose_fun J net f) J Y /\ functional_graph (compose_fun J net f) /\ graph_domain_subset (compose_fun J net f) J /\ apply_fun f x :e Y /\
+    forall V:set, V :e Ty -> apply_fun f x :e V ->
+      exists i0:set, i0 :e J /\
+        forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun (compose_fun J net f) i :e V.
   apply and7I.
   - exact HTy.
   - exact HdirJ.
