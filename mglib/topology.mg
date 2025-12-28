@@ -70628,6 +70628,3100 @@ Qed.
 
 
 
+Definition Romega_product_topology_on_real_sequences : set :=
+  subspace_topology R_omega_space
+    (product_topology_full omega (const_space_family omega R R_standard_topology))
+    real_sequences.
+
+Definition Romega_box_topology_on_real_sequences : set :=
+  subspace_topology R_omega_space
+    (box_topology omega (const_space_family omega R R_standard_topology))
+    real_sequences.
+
+Theorem uniform_topology_finer_than_product_and_coarser_than_box :
+  finer_than uniform_topology Romega_product_topology_on_real_sequences /\
+  coarser_than uniform_topology Romega_box_topology_on_real_sequences.
+admit. (** FAIL **)
+Qed.
+
+(** from §20 Theorem 20.5: product topology on R^omega is induced by a metric **)
+(** LATEX VERSION: Define D(x,y)=sup{ min(|x_i-y_i|,1) / i }. Then D induces the product topology on R^omega. **)
+Definition R_bounded_distance : set -> set -> set := fun a b =>
+  If_i (Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1)
+       (abs_SNo (add_SNo a (minus_SNo b)))
+       1.
+
+(** helper: bounded distance is symmetric **)
+Theorem R_bounded_distance_sym : forall a b:set,
+  a :e R -> b :e R -> R_bounded_distance a b = R_bounded_distance b a.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+claim Habs: abs_SNo (add_SNo a (minus_SNo b)) = abs_SNo (add_SNo b (minus_SNo a)).
+{ exact (abs_SNo_dist_swap a b HaS HbS). }
+claim Hab: R_bounded_distance a b =
+  If_i (Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1)
+       (abs_SNo (add_SNo a (minus_SNo b)))
+       1.
+{ reflexivity. }
+claim Hba: R_bounded_distance b a =
+  If_i (Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1)
+       (abs_SNo (add_SNo b (minus_SNo a)))
+       1.
+{ reflexivity. }
+rewrite Hab.
+rewrite Hba.
+apply (xm (Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1)).
+- assume Hlt: Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1.
+  claim Hlt2: Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1.
+  { prove Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1.
+    rewrite <- Habs.
+    exact Hlt. }
+  rewrite (If_i_1 (Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1)
+                  (abs_SNo (add_SNo a (minus_SNo b)))
+                  1
+                  Hlt).
+  rewrite (If_i_1 (Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1)
+                  (abs_SNo (add_SNo b (minus_SNo a)))
+                  1
+                  Hlt2).
+  rewrite <- Habs.
+  reflexivity.
+- assume Hnlt: ~(Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1).
+  claim Hnlt2: ~(Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1).
+  { assume Hlt2: Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1.
+    claim Hlt1: Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1.
+    { prove Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1.
+      rewrite Habs.
+      exact Hlt2. }
+    exact (Hnlt Hlt1). }
+  rewrite (If_i_0 (Rlt (abs_SNo (add_SNo a (minus_SNo b))) 1)
+                  (abs_SNo (add_SNo a (minus_SNo b)))
+                  1
+                  Hnlt).
+  rewrite (If_i_0 (Rlt (abs_SNo (add_SNo b (minus_SNo a))) 1)
+                  (abs_SNo (add_SNo b (minus_SNo a)))
+                  1
+                  Hnlt2).
+  reflexivity.
+Qed.
+
+(** helper: bounded distance of a point to itself is 0 **)
+Theorem R_bounded_distance_self_zero : forall a:set,
+  a :e R -> R_bounded_distance a a = 0.
+let a.
+assume HaR: a :e R.
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+set t := add_SNo a (minus_SNo a).
+claim Ht0: t = 0.
+{ exact (add_SNo_minus_SNo_rinv a HaS). }
+claim H0le0: 0 <= 0.
+{ exact (SNoLe_ref 0). }
+claim Habseq: abs_SNo 0 = 0.
+{ exact (nonneg_abs_SNo 0 H0le0). }
+claim Habs0: abs_SNo t = 0.
+{ rewrite Ht0.
+  exact Habseq. }
+claim Hdef: R_bounded_distance a a =
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+{ reflexivity. }
+rewrite Hdef.
+rewrite Habs0.
+rewrite (If_i_1 (Rlt 0 1) 0 1 Rlt_0_1).
+reflexivity.
+Qed.
+
+(** helper: bounded distance is nonnegative **)
+Theorem R_bounded_distance_nonneg : forall a b:set,
+  a :e R -> b :e R -> 0 <= R_bounded_distance a b.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+claim HbM: minus_SNo b :e R.
+{ exact (real_minus_SNo b HbR). }
+set t := add_SNo a (minus_SNo b).
+claim HtR: t :e R.
+{ exact (real_add_SNo a HaR (minus_SNo b) HbM). }
+claim HtS: SNo t.
+{ exact (real_SNo t HtR). }
+claim HabsNN: 0 <= abs_SNo t.
+{ exact (abs_SNo_nonneg t HtS). }
+claim Hdef: R_bounded_distance a b =
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+{ reflexivity. }
+rewrite Hdef.
+apply (xm (Rlt (abs_SNo t) 1)
+          (0 <= If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1)).
+- assume Hlt: Rlt (abs_SNo t) 1.
+  rewrite (If_i_1 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hlt).
+  exact HabsNN.
+- assume Hnlt: ~(Rlt (abs_SNo t) 1).
+  rewrite (If_i_0 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hnlt).
+  exact (SNoLtLe 0 1 SNoLt_0_1).
+Qed.
+
+(** helper: a positive surreal is not zero **)
+Theorem SNo_pos_ne0 : forall x:set,
+  SNo x -> 0 < x -> x <> 0.
+let x.
+assume HxS: SNo x.
+assume Hpos: 0 < x.
+assume Heq: x = 0.
+claim H00: 0 < 0.
+{ rewrite <- Heq at 2.
+  exact Hpos. }
+exact ((SNoLt_irref 0) H00).
+Qed.
+
+(** helper: absolute value equals zero implies the input is zero **)
+Theorem abs_SNo_eq0 : forall x:set,
+  SNo x -> abs_SNo x = 0 -> x = 0.
+let x.
+assume HxS: SNo x.
+assume Habs0: abs_SNo x = 0.
+apply (xm (0 <= x) (x = 0)).
+- assume H0le: 0 <= x.
+  rewrite <- (nonneg_abs_SNo x H0le).
+  exact Habs0.
+- assume Hn0le: ~(0 <= x).
+  claim Hm0: minus_SNo x = 0.
+  { rewrite <- (not_nonneg_abs_SNo x Hn0le).
+    exact Habs0. }
+  claim Hsum: add_SNo (minus_SNo x) x = 0.
+  { exact (add_SNo_minus_SNo_linv x HxS). }
+  claim H0x0: add_SNo 0 x = 0.
+  { rewrite <- Hm0 at 1.
+    exact Hsum. }
+  rewrite <- (add_SNo_0L x HxS).
+  exact H0x0.
+Qed.
+
+(** helper: bounded distance equals zero implies equality **)
+Theorem R_bounded_distance_eq0 : forall a b:set,
+  a :e R -> b :e R -> R_bounded_distance a b = 0 -> a = b.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume Hbd0: R_bounded_distance a b = 0.
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+set t := add_SNo a (minus_SNo b).
+claim HtR: t :e R.
+{ claim HmbR: minus_SNo b :e R.
+  { exact (real_minus_SNo b HbR). }
+  exact (real_add_SNo a HaR (minus_SNo b) HmbR). }
+claim HtS: SNo t.
+{ exact (real_SNo t HtR). }
+claim Hdef: R_bounded_distance a b =
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+{ reflexivity. }
+claim Hif0: If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1 = 0.
+{ rewrite <- Hdef.
+  exact Hbd0. }
+apply (xm (Rlt (abs_SNo t) 1) (a = b)).
+- assume Hlt: Rlt (abs_SNo t) 1.
+  claim Ht0: t = 0.
+  { claim Habs0: abs_SNo t = 0.
+    { rewrite <- (If_i_1 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hlt).
+      exact Hif0. }
+    exact (abs_SNo_eq0 t HtS Habs0). }
+  claim Ht0': add_SNo a (minus_SNo b) = 0.
+  { exact Ht0. }
+  claim Hstep: add_SNo (add_SNo a (minus_SNo b)) b = b.
+  { rewrite Ht0' at 1.
+    rewrite (add_SNo_0L b HbS).
+    reflexivity. }
+  rewrite <- (add_SNo_0R a HaS) at 1.
+  rewrite <- (add_SNo_minus_SNo_linv b HbS) at 1.
+  rewrite (add_SNo_assoc a (minus_SNo b) b
+                         HaS (SNo_minus_SNo b HbS) HbS) at 1.
+  exact Hstep.
+- assume Hnlt: ~(Rlt (abs_SNo t) 1).
+  claim H10eq: 1 = 0.
+  { rewrite <- (If_i_0 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hnlt).
+    exact Hif0. }
+  claim H10: 1 <> 0.
+  { exact neq_1_0. }
+  exact (FalseE (H10 H10eq) (a = b)).
+Qed.
+
+(** helper: bounded distance is always <= 1 **)
+Theorem R_bounded_distance_le_1 : forall a b:set,
+  a :e R -> b :e R -> Rle (R_bounded_distance a b) 1.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+set t := add_SNo a (minus_SNo b).
+claim HmbR: minus_SNo b :e R.
+{ exact (real_minus_SNo b HbR). }
+claim HtR: t :e R.
+{ exact (real_add_SNo a HaR (minus_SNo b) HmbR). }
+claim HabsR: abs_SNo t :e R.
+{ apply (xm (0 <= t)).
+  - assume H0le: 0 <= t.
+    claim Habseq: abs_SNo t = t.
+    { exact (nonneg_abs_SNo t H0le). }
+    rewrite Habseq.
+    exact HtR.
+  - assume Hn0le: ~(0 <= t).
+    claim HmtR: minus_SNo t :e R.
+    { exact (real_minus_SNo t HtR). }
+    claim Habseq: abs_SNo t = minus_SNo t.
+    { exact (not_nonneg_abs_SNo t Hn0le). }
+    rewrite Habseq.
+    exact HmtR. }
+claim HdistR: R_bounded_distance a b :e R.
+{ claim Hdef: R_bounded_distance a b =
+    If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+  { reflexivity. }
+  apply (xm (Rlt (abs_SNo t) 1)).
+  - assume Hlt: Rlt (abs_SNo t) 1.
+    rewrite Hdef.
+    rewrite (If_i_1 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hlt).
+    exact HabsR.
+  - assume Hnlt: ~(Rlt (abs_SNo t) 1).
+    rewrite Hdef.
+    rewrite (If_i_0 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hnlt).
+    exact real_1. }
+apply (RleI (R_bounded_distance a b) 1 HdistR real_1).
+prove ~(Rlt 1 (R_bounded_distance a b)).
+claim Hdef: R_bounded_distance a b =
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+{ reflexivity. }
+apply (xm (Rlt (abs_SNo t) 1)).
+- assume Hlt: Rlt (abs_SNo t) 1.
+  rewrite Hdef.
+  rewrite (If_i_1 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hlt).
+  exact (not_Rlt_sym (abs_SNo t) 1 Hlt).
+- assume Hnlt: ~(Rlt (abs_SNo t) 1).
+  rewrite Hdef.
+  rewrite (If_i_0 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hnlt).
+  exact (not_Rlt_refl 1 real_1).
+Qed.
+
+(** helper: abs of a real is real **)
+Theorem abs_SNo_in_R : forall x:set, x :e R -> abs_SNo x :e R.
+let x.
+assume HxR: x :e R.
+apply (xm (0 <= x)).
+- assume H0le: 0 <= x.
+  claim Habseq: abs_SNo x = x.
+  { exact (nonneg_abs_SNo x H0le). }
+  rewrite Habseq.
+  exact HxR.
+- assume Hn0le: ~(0 <= x).
+  claim HmxR: minus_SNo x :e R.
+  { exact (real_minus_SNo x HxR). }
+  claim Habseq: abs_SNo x = minus_SNo x.
+  { exact (not_nonneg_abs_SNo x Hn0le). }
+  rewrite Habseq.
+  exact HmxR.
+Qed.
+
+(** helper: bounded distance is a real number **)
+Theorem R_bounded_distance_in_R : forall a b:set,
+  a :e R -> b :e R -> R_bounded_distance a b :e R.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+set t := add_SNo a (minus_SNo b).
+claim HmbR: minus_SNo b :e R.
+{ exact (real_minus_SNo b HbR). }
+claim HtR: t :e R.
+{ exact (real_add_SNo a HaR (minus_SNo b) HmbR). }
+claim HabsR: abs_SNo t :e R.
+{ exact (abs_SNo_in_R t HtR). }
+claim Hor:
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1 = abs_SNo t \/
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1 = 1.
+{ exact (If_i_or (Rlt (abs_SNo t) 1) (abs_SNo t) 1). }
+claim Hdef: R_bounded_distance a b =
+  If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+{ reflexivity. }
+rewrite Hdef.
+apply Hor.
+- assume Heq: If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1 = abs_SNo t.
+  rewrite Heq.
+  exact HabsR.
+- assume Heq: If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1 = 1.
+  rewrite Heq.
+  exact real_1.
+Qed.
+
+(** helper: bounded distance satisfies triangle inequality (SNoLe form) **)
+Theorem R_bounded_distance_triangle_Le : forall a b c:set,
+  a :e R -> b :e R -> c :e R ->
+  R_bounded_distance a c <= add_SNo (R_bounded_distance a b) (R_bounded_distance b c).
+let a b c.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HcR: c :e R.
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+claim HcS: SNo c.
+{ exact (real_SNo c HcR). }
+set tab := add_SNo a (minus_SNo b).
+set tbc := add_SNo b (minus_SNo c).
+set tac := add_SNo a (minus_SNo c).
+claim HmbR: minus_SNo b :e R.
+{ exact (real_minus_SNo b HbR). }
+claim HmcR: minus_SNo c :e R.
+{ exact (real_minus_SNo c HcR). }
+claim HtabR: tab :e R.
+{ exact (real_add_SNo a HaR (minus_SNo b) HmbR). }
+claim HtbcR: tbc :e R.
+{ exact (real_add_SNo b HbR (minus_SNo c) HmcR). }
+claim HtacR: tac :e R.
+{ exact (real_add_SNo a HaR (minus_SNo c) HmcR). }
+claim HtabS: SNo tab.
+{ exact (real_SNo tab HtabR). }
+claim HtbcS: SNo tbc.
+{ exact (real_SNo tbc HtbcR). }
+claim HtacS: SNo tac.
+{ exact (real_SNo tac HtacR). }
+set pab := abs_SNo tab.
+set pbc := abs_SNo tbc.
+set pac := abs_SNo tac.
+claim HpabR: pab :e R.
+{ exact (abs_SNo_in_R tab HtabR). }
+claim HpbcR: pbc :e R.
+{ exact (abs_SNo_in_R tbc HtbcR). }
+claim HpacR: pac :e R.
+{ exact (abs_SNo_in_R tac HtacR). }
+claim HpabS: SNo pab.
+{ exact (real_SNo pab HpabR). }
+claim HpbcS: SNo pbc.
+{ exact (real_SNo pbc HpbcR). }
+claim HpacS: SNo pac.
+{ exact (real_SNo pac HpacR). }
+claim HpabNN: 0 <= pab.
+{ exact (abs_SNo_nonneg tab HtabS). }
+claim HpbcNN: 0 <= pbc.
+{ exact (abs_SNo_nonneg tbc HtbcS). }
+claim HabsTri: pac <= add_SNo pab pbc.
+{ exact (abs_SNo_triangle a b c HaS HbS HcS). }
+claim Hmono: If_i (Rlt pac 1) pac 1 <= If_i (Rlt (add_SNo pab pbc) 1) (add_SNo pab pbc) 1.
+{ exact (Rclip_mono pac (add_SNo pab pbc) HpacR (real_add_SNo pab HpabR pbc HpbcR) HabsTri). }
+claim Hsub: If_i (Rlt (add_SNo pab pbc) 1) (add_SNo pab pbc) 1
+             <= add_SNo (If_i (Rlt pab 1) pab 1) (If_i (Rlt pbc 1) pbc 1).
+{ exact (Rclip_subadd_nonneg pab pbc HpabR HpbcR HpabNN HpbcNN). }
+claim HdefAC: R_bounded_distance a c = If_i (Rlt pac 1) pac 1.
+{ reflexivity. }
+claim HdefAB: R_bounded_distance a b = If_i (Rlt pab 1) pab 1.
+{ reflexivity. }
+claim HdefBC: R_bounded_distance b c = If_i (Rlt pbc 1) pbc 1.
+{ reflexivity. }
+rewrite HdefAC.
+rewrite HdefAB.
+rewrite HdefBC.
+exact (SNoLe_tra (If_i (Rlt pac 1) pac 1)
+                 (If_i (Rlt (add_SNo pab pbc) 1) (add_SNo pab pbc) 1)
+                 (add_SNo (If_i (Rlt pab 1) pab 1) (If_i (Rlt pbc 1) pbc 1))
+                 (SNo_If_i (Rlt pac 1) pac 1 HpacS SNo_1)
+                 (SNo_If_i (Rlt (add_SNo pab pbc) 1) (add_SNo pab pbc) 1 (SNo_add_SNo pab pbc HpabS HpbcS) SNo_1)
+                 (SNo_add_SNo (If_i (Rlt pab 1) pab 1) (If_i (Rlt pbc 1) pbc 1)
+                              (SNo_If_i (Rlt pab 1) pab 1 HpabS SNo_1)
+                              (SNo_If_i (Rlt pbc 1) pbc 1 HpbcS SNo_1))
+                 Hmono
+                 Hsub).
+Qed.
+
+Definition Romega_D_scaled_diffs : set -> set -> set := fun x y =>
+  Repl omega
+       (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i))).
+
+(** helper: scaled diffs are symmetric **)
+Theorem Romega_D_scaled_diffs_sym : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  Romega_D_scaled_diffs x y = Romega_D_scaled_diffs y x.
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+apply (ReplEq_ext omega
+        (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+        (fun i:set => mul_SNo (R_bounded_distance (apply_fun y i) (apply_fun x i)) (inv_nat (ordsucc i)))).
+let i.
+assume HiO: i :e omega.
+claim HxiR: apply_fun x i :e R.
+{ exact (Romega_coord_in_R x i Hx HiO). }
+claim HyiR: apply_fun y i :e R.
+{ exact (Romega_coord_in_R y i Hy HiO). }
+claim Hbd: R_bounded_distance (apply_fun x i) (apply_fun y i) =
+           R_bounded_distance (apply_fun y i) (apply_fun x i).
+{ exact (R_bounded_distance_sym (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+rewrite Hbd.
+reflexivity.
+Qed.
+
+(** helper: diagonal scaled diffs are all 0 **)
+Theorem Romega_D_scaled_diffs_diag_subset0 : forall x:set,
+  x :e R_omega_space ->
+  Romega_D_scaled_diffs x x c= {0}.
+let x.
+assume Hx: x :e R_omega_space.
+let a.
+assume Ha: a :e Romega_D_scaled_diffs x x.
+prove a :e {0}.
+apply (ReplE_impred omega
+                    (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun x i)) (inv_nat (ordsucc i)))
+                    a
+                    Ha
+                    (a :e {0})).
+let i.
+assume HiO: i :e omega.
+assume Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun x i)) (inv_nat (ordsucc i)).
+rewrite Hai.
+claim HxiR: apply_fun x i :e R.
+{ exact (Romega_coord_in_R x i Hx HiO). }
+claim Hbd0: R_bounded_distance (apply_fun x i) (apply_fun x i) = 0.
+{ exact (R_bounded_distance_self_zero (apply_fun x i) HxiR). }
+rewrite Hbd0.
+claim HSi: ordsucc i :e omega.
+{ exact (omega_ordsucc i HiO). }
+claim HinvR: inv_nat (ordsucc i) :e R.
+{ exact (inv_nat_real (ordsucc i) HSi). }
+claim HinvS: SNo (inv_nat (ordsucc i)).
+{ exact (real_SNo (inv_nat (ordsucc i)) HinvR). }
+rewrite (mul_SNo_zeroL (inv_nat (ordsucc i)) HinvS).
+exact (SingI 0).
+Qed.
+
+(** helper: diagonal scaled diffs are exactly {0} **)
+Theorem Romega_D_scaled_diffs_diag_eq_Sing0 : forall x:set,
+  x :e R_omega_space ->
+  Romega_D_scaled_diffs x x = {0}.
+let x.
+assume Hx: x :e R_omega_space.
+apply set_ext.
+- exact (Romega_D_scaled_diffs_diag_subset0 x Hx).
+- let a.
+  assume Ha0: a :e {0}.
+  prove a :e Romega_D_scaled_diffs x x.
+  claim HaEq: a = 0.
+  { exact (SingE 0 a Ha0). }
+  rewrite HaEq.
+  prove 0 :e Romega_D_scaled_diffs x x.
+  claim H0omega: 0 :e omega.
+  { exact (nat_p_omega 0 nat_0). }
+  claim HxiR: apply_fun x 0 :e R.
+  { exact (Romega_coord_in_R x 0 Hx H0omega). }
+  claim Hbd0: R_bounded_distance (apply_fun x 0) (apply_fun x 0) = 0.
+  { exact (R_bounded_distance_self_zero (apply_fun x 0) HxiR). }
+  claim H10: ordsucc 0 :e omega.
+  { exact (omega_ordsucc 0 H0omega). }
+  claim HinvR: inv_nat (ordsucc 0) :e R.
+  { exact (inv_nat_real (ordsucc 0) H10). }
+  claim HinvS: SNo (inv_nat (ordsucc 0)).
+  { exact (real_SNo (inv_nat (ordsucc 0)) HinvR). }
+  claim Hdef: 0 = mul_SNo (R_bounded_distance (apply_fun x 0) (apply_fun x 0)) (inv_nat (ordsucc 0)).
+  { rewrite Hbd0.
+    rewrite (mul_SNo_zeroL (inv_nat (ordsucc 0)) HinvS).
+    reflexivity. }
+  rewrite Hdef.
+  exact (ReplI omega
+               (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun x i)) (inv_nat (ordsucc i)))
+               0
+               H0omega).
+Qed.
+
+Definition Romega_D_metric_value : set -> set -> set := fun x y =>
+  Eps_i (fun r:set => R_lub (Romega_D_scaled_diffs x y) r).
+
+(** helper: reciprocal of a natural is <= 1 **)
+Theorem inv_nat_Rle_1 : forall n:set, n :e omega :\: {0} -> Rle (inv_nat n) 1.
+let n.
+assume HnIn: n :e omega :\: {0}.
+claim HnO: n :e omega.
+{ exact (setminusE1 omega {0} n HnIn). }
+claim Hnnot0: n /:e {0}.
+{ exact (setminusE2 omega {0} n HnIn). }
+claim Hnneq0: n <> 0.
+{ assume Hn0: n = 0.
+  claim Hnin0: n :e {0}.
+  { rewrite Hn0. exact (SingI 0). }
+  exact (Hnnot0 Hnin0). }
+claim HinvR: inv_nat n :e R.
+{ exact (inv_nat_real n HnO). }
+apply (RleI (inv_nat n) 1 HinvR real_1).
+prove ~(Rlt 1 (inv_nat n)).
+assume Hlt: Rlt 1 (inv_nat n).
+claim HltS: 1 < inv_nat n.
+{ exact (RltE_lt 1 (inv_nat n) Hlt). }
+claim HnS: SNo n.
+{ exact (omega_SNo n HnO). }
+claim HinvS: SNo (inv_nat n).
+{ exact (SNo_recip_SNo n HnS). }
+claim HnNat: nat_p n.
+{ exact (omega_nat_p n HnO). }
+claim HnOrd: ordinal n.
+{ exact (nat_p_ordinal n HnNat). }
+claim H1Ord: ordinal 1.
+{ exact (nat_p_ordinal 1 nat_1). }
+claim HnCase: n = 0 \/ exists k:set, nat_p k /\ n = ordsucc k.
+{ exact (nat_inv n HnNat). }
+claim Hexk: exists k:set, nat_p k /\ n = ordsucc k.
+{ apply (HnCase (exists k:set, nat_p k /\ n = ordsucc k)).
+  - assume Hn0: n = 0.
+    apply FalseE.
+    exact (Hnneq0 Hn0).
+  - assume H. exact H. }
+apply Hexk.
+let k.
+assume Hkconj.
+claim HkNat: nat_p k.
+{ exact (andEL (nat_p k) (n = ordsucc k) Hkconj). }
+claim Hneq: n = ordsucc k.
+{ exact (andER (nat_p k) (n = ordsucc k) Hkconj). }
+claim HkOrd: ordinal k.
+{ exact (nat_p_ordinal k HkNat). }
+claim H0ltn: 0 < n.
+{ rewrite Hneq.
+  exact (ordinal_ordsucc_pos k HkOrd). }
+claim HmulLt: mul_SNo n 1 < mul_SNo n (inv_nat n).
+{ exact (pos_mul_SNo_Lt n 1 (inv_nat n) HnS H0ltn SNo_1 HinvS HltS). }
+claim Hmul1: mul_SNo n 1 = n.
+{ exact (mul_SNo_oneR n HnS). }
+claim HmulInv: mul_SNo n (inv_nat n) = 1.
+{ exact (recip_SNo_invR n HnS Hnneq0). }
+claim Hnlt1: n < 1.
+{ rewrite <- Hmul1.
+  rewrite <- HmulInv at 2.
+  exact HmulLt. }
+claim HnIn1: n :e 1.
+{ exact (ordinal_SNoLt_In n 1 HnOrd H1Ord Hnlt1). }
+claim Hcase1: n :e 0 \/ n = 0.
+{ exact (ordsuccE 0 n HnIn1). }
+claim Hn0: n = 0.
+{ apply (Hcase1 (n = 0)).
+  - assume HnIn0: n :e 0.
+    exact (EmptyE n HnIn0 (n = 0)).
+  - assume H. exact H. }
+exact (Hnneq0 Hn0).
+Qed.
+
+(** helper: scaled diffs are real numbers **)
+Theorem Romega_D_scaled_diffs_in_R : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  forall a:set, a :e Romega_D_scaled_diffs x y -> a :e R.
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+let a.
+	assume Ha: a :e Romega_D_scaled_diffs x y.
+	prove a :e R.
+	apply (ReplE omega
+	             (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+	             a
+	             Ha).
+	let i.
+	assume Hiconj.
+	claim HiO: i :e omega.
+	{ exact (andEL (i :e omega)
+	               (a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+	               Hiconj). }
+	claim Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)).
+	{ exact (andER (i :e omega)
+	               (a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+	               Hiconj). }
+	claim HxiR: apply_fun x i :e R.
+	{ exact (Romega_coord_in_R x i Hx HiO). }
+	claim HyiR: apply_fun y i :e R.
+	{ exact (Romega_coord_in_R y i Hy HiO). }
+	claim HbdR: R_bounded_distance (apply_fun x i) (apply_fun y i) :e R.
+	{ exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+	claim HSi: ordsucc i :e omega.
+	{ exact (omega_ordsucc i HiO). }
+	claim HinvR: inv_nat (ordsucc i) :e R.
+	{ exact (inv_nat_real (ordsucc i) HSi). }
+	claim HmulR: mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)) :e R.
+	{ exact (real_mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) HbdR
+	                      (inv_nat (ordsucc i)) HinvR). }
+	rewrite Hai.
+	exact HmulR.
+Qed.
+
+(** helper: scaled diffs are bounded above in R **)
+Theorem Romega_D_scaled_diffs_bounded : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  exists u:set, u :e R /\ forall a:set, a :e Romega_D_scaled_diffs x y -> a :e R -> Rle a u.
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+witness 1.
+apply andI.
+- exact real_1.
+- let a.
+	  assume HaA: a :e Romega_D_scaled_diffs x y.
+	  assume HaR: a :e R.
+	  prove Rle a 1.
+	  apply (ReplE_impred omega
+	                      (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+	                      a
+	                      HaA
+	                      (Rle a 1)).
+	  let i.
+	  assume HiO: i :e omega.
+	  assume Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)).
+	  rewrite Hai.
+	  set bd := R_bounded_distance (apply_fun x i) (apply_fun y i).
+	  set inv := inv_nat (ordsucc i).
+	  claim HSi: ordsucc i :e omega.
+	  { exact (omega_ordsucc i HiO). }
+	  claim HsuccNotIn0: ordsucc i /:e {0}.
+	  { assume Hin0: ordsucc i :e {0}.
+	    claim Heq: ordsucc i = 0.
+	    { exact (SingE 0 (ordsucc i) Hin0). }
+	    exact (neq_ordsucc_0 i Heq). }
+	  claim HiIn: ordsucc i :e omega :\: {0}.
+	  { exact (setminusI omega {0} (ordsucc i) HSi HsuccNotIn0). }
+	  claim HxiR: apply_fun x i :e R.
+	  { exact (Romega_coord_in_R x i Hx HiO). }
+	  claim HyiR: apply_fun y i :e R.
+	  { exact (Romega_coord_in_R y i Hy HiO). }
+	  claim HbdR: bd :e R.
+	  { exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+	  claim HinvR: inv :e R.
+	  { exact (inv_nat_real (ordsucc i) HSi). }
+	  claim HmulR: mul_SNo bd inv :e R.
+	  { exact (real_mul_SNo bd HbdR inv HinvR). }
+  apply (RleI (mul_SNo bd inv) 1 HmulR real_1).
+  assume Hlt1: Rlt 1 (mul_SNo bd inv).
+  prove False.
+  claim H1lt: 1 < mul_SNo bd inv.
+  { exact (RltE_lt 1 (mul_SNo bd inv) Hlt1). }
+  claim HbdRle1: Rle bd 1.
+  { exact (R_bounded_distance_le_1 (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+	  claim HinvRle1: Rle inv 1.
+	  { exact (inv_nat_Rle_1 (ordsucc i) HiIn). }
+  claim HbdS: SNo bd.
+  { exact (real_SNo bd HbdR). }
+  claim HinvS: SNo inv.
+  { exact (real_SNo inv HinvR). }
+  claim HmulS: SNo (mul_SNo bd inv).
+  { exact (real_SNo (mul_SNo bd inv) HmulR). }
+	  claim H0ltInvR: Rlt 0 inv.
+	  { exact (inv_nat_pos (ordsucc i) HiIn). }
+  claim H0ltInv: 0 < inv.
+  { exact (RltE_lt 0 inv H0ltInvR). }
+  claim H0leInv: 0 <= inv.
+  { exact (SNoLtLe 0 inv H0ltInv). }
+  claim HbdLe1: bd <= 1.
+  { apply (SNoLt_trichotomy_or_impred bd 1 HbdS SNo_1 (bd <= 1)).
+    - assume Hlt: bd < 1.
+      exact (SNoLtLe bd 1 Hlt).
+    - assume Heq: bd = 1.
+      rewrite Heq.
+      exact (SNoLe_ref 1).
+    - assume H1ltbd: 1 < bd.
+      apply FalseE.
+      claim HbdRlt: Rlt 1 bd.
+      { exact (RltI 1 bd real_1 HbdR H1ltbd). }
+      exact ((RleE_nlt bd 1 HbdRle1) HbdRlt). }
+  claim HinvLe1: inv <= 1.
+  { apply (SNoLt_trichotomy_or_impred inv 1 HinvS SNo_1 (inv <= 1)).
+    - assume Hlt: inv < 1.
+      exact (SNoLtLe inv 1 Hlt).
+    - assume Heq: inv = 1.
+      rewrite Heq.
+      exact (SNoLe_ref 1).
+    - assume H1ltinv: 1 < inv.
+      apply FalseE.
+      claim HinvRlt: Rlt 1 inv.
+      { exact (RltI 1 inv real_1 HinvR H1ltinv). }
+      exact ((RleE_nlt inv 1 HinvRle1) HinvRlt). }
+  claim HmulLeInv: mul_SNo bd inv <= inv.
+  { exact (mul_SNo_Le1_nonneg_Le bd inv HbdS HinvS HbdLe1 H0leInv). }
+  claim HmulLe1: mul_SNo bd inv <= 1.
+  { exact (SNoLe_tra (mul_SNo bd inv) inv 1 HmulS HinvS SNo_1 HmulLeInv HinvLe1). }
+  claim Hcase: mul_SNo bd inv < 1 \/ mul_SNo bd inv = 1.
+  { exact (SNoLeE (mul_SNo bd inv) 1 HmulS SNo_1 HmulLe1). }
+  apply (Hcase False).
+  - assume HmulLt1: mul_SNo bd inv < 1.
+    claim H11: 1 < 1.
+    { exact (SNoLt_tra 1 (mul_SNo bd inv) 1 SNo_1 HmulS SNo_1 H1lt HmulLt1). }
+    exact ((SNoLt_irref 1) H11).
+  - assume HmulEq1: mul_SNo bd inv = 1.
+    claim H11: 1 < 1.
+    { rewrite <- HmulEq1 at 2.
+      exact H1lt. }
+    exact ((SNoLt_irref 1) H11).
+Qed.
+
+(** helper: the chosen D value is a least upper bound **)
+Theorem Romega_D_metric_value_is_lub : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  R_lub (Romega_D_scaled_diffs x y) (Romega_D_metric_value x y).
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+set A := Romega_D_scaled_diffs x y.
+set P := (fun r:set => R_lub A r).
+claim HAinR: forall a:set, a :e A -> a :e R.
+{ exact (Romega_D_scaled_diffs_in_R x y Hx Hy). }
+claim Hub: exists u:set, u :e R /\ forall a:set, a :e A -> a :e R -> Rle a u.
+{ exact (Romega_D_scaled_diffs_bounded x y Hx Hy). }
+claim Hex: exists l:set, P l.
+{ exact (R_lub_exists A HAinR Hub). }
+exact (Eps_i_ex P Hex).
+Qed.
+
+(** helper: D metric value is symmetric **)
+Theorem Romega_D_metric_value_sym : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  Romega_D_metric_value x y = Romega_D_metric_value y x.
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+set A := Romega_D_scaled_diffs x y.
+claim HAeq: A = Romega_D_scaled_diffs y x.
+{ exact (Romega_D_scaled_diffs_sym x y Hx Hy). }
+claim Hlub1: R_lub A (Romega_D_metric_value x y).
+{ exact (Romega_D_metric_value_is_lub x y Hx Hy). }
+claim Hlub2': R_lub A (Romega_D_metric_value y x).
+{ rewrite HAeq.
+  exact (Romega_D_metric_value_is_lub y x Hy Hx). }
+exact (R_lub_unique A (Romega_D_metric_value x y) (Romega_D_metric_value y x) Hlub1 Hlub2').
+Qed.
+
+(** helper: D metric value is 0 on the diagonal **)
+Theorem Romega_D_metric_value_self_zero : forall x:set,
+  x :e R_omega_space ->
+  Romega_D_metric_value x x = 0.
+let x.
+assume Hx: x :e R_omega_space.
+set A := Romega_D_scaled_diffs x x.
+claim HAeq: A = {0}.
+{ exact (Romega_D_scaled_diffs_diag_eq_Sing0 x Hx). }
+claim Hlub1: R_lub A (Romega_D_metric_value x x).
+{ exact (Romega_D_metric_value_is_lub x x Hx Hx). }
+claim Hlub0: R_lub A 0.
+{ rewrite HAeq.
+  exact R_lub_Sing0. }
+exact (R_lub_unique A (Romega_D_metric_value x x) 0 Hlub1 Hlub0).
+Qed.
+
+(** helper: D metric values are real numbers **)
+Theorem Romega_D_metric_value_in_R : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  Romega_D_metric_value x y :e R.
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+exact (R_lub_in_R (Romega_D_scaled_diffs x y)
+                  (Romega_D_metric_value x y)
+                  (Romega_D_metric_value_is_lub x y Hx Hy)).
+Qed.
+
+(** helper: D metric values are not negative **)
+Theorem Romega_D_metric_value_nonneg : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  ~(Rlt (Romega_D_metric_value x y) 0).
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+set A := Romega_D_scaled_diffs x y.
+set l := Romega_D_metric_value x y.
+claim HlR: l :e R.
+{ exact (Romega_D_metric_value_in_R x y Hx Hy). }
+claim Hlub: R_lub A l.
+{ exact (Romega_D_metric_value_is_lub x y Hx Hy). }
+claim Hcore: l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andEL (l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l u)
+               Hlub). }
+claim Hub: forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andER (l :e R) (forall a:set, a :e A -> a :e R -> Rle a l) Hcore). }
+assume Hl0: Rlt l 0.
+prove False.
+set a1 := mul_SNo (R_bounded_distance (apply_fun x 0) (apply_fun y 0)) (inv_nat (ordsucc 0)).
+claim H0omega: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
+claim Ha1A: a1 :e A.
+{ exact (ReplI omega
+               (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+               0
+               H0omega). }
+claim HxiR: apply_fun x 0 :e R.
+{ exact (Romega_coord_in_R x 0 Hx H0omega). }
+claim HyiR: apply_fun y 0 :e R.
+{ exact (Romega_coord_in_R y 0 Hy H0omega). }
+claim HbdR: R_bounded_distance (apply_fun x 0) (apply_fun y 0) :e R.
+{ exact (R_bounded_distance_in_R (apply_fun x 0) (apply_fun y 0) HxiR HyiR). }
+claim H1omega: ordsucc 0 :e omega.
+{ exact (omega_ordsucc 0 H0omega). }
+claim H1not0: ordsucc 0 /:e {0}.
+{ assume H1: ordsucc 0 :e {0}.
+  claim Heq: ordsucc 0 = 0.
+  { exact (SingE 0 (ordsucc 0) H1). }
+  exact (neq_ordsucc_0 0 Heq). }
+claim H1In: ordsucc 0 :e omega :\: {0}.
+{ exact (setminusI omega {0} (ordsucc 0) H1omega H1not0). }
+claim HinvR: inv_nat (ordsucc 0) :e R.
+{ exact (inv_nat_real (ordsucc 0) H1omega). }
+claim Ha1R: a1 :e R.
+{ exact (real_mul_SNo (R_bounded_distance (apply_fun x 0) (apply_fun y 0)) HbdR
+                      (inv_nat (ordsucc 0)) HinvR). }
+claim Ha1S: SNo a1.
+{ exact (real_SNo a1 Ha1R). }
+claim HlS: SNo l.
+{ exact (real_SNo l HlR). }
+claim H0S: SNo 0.
+{ exact SNo_0. }
+claim HbdS: SNo (R_bounded_distance (apply_fun x 0) (apply_fun y 0)).
+{ exact (real_SNo (R_bounded_distance (apply_fun x 0) (apply_fun y 0)) HbdR). }
+claim HinvS: SNo (inv_nat (ordsucc 0)).
+{ exact (real_SNo (inv_nat (ordsucc 0)) HinvR). }
+claim HbdNN: 0 <= R_bounded_distance (apply_fun x 0) (apply_fun y 0).
+{ exact (R_bounded_distance_nonneg (apply_fun x 0) (apply_fun y 0) HxiR HyiR). }
+claim HinvPosR: Rlt 0 (inv_nat (ordsucc 0)).
+{ exact (inv_nat_pos (ordsucc 0) H1In). }
+claim HinvPos: 0 < inv_nat (ordsucc 0).
+{ exact (RltE_lt 0 (inv_nat (ordsucc 0)) HinvPosR). }
+claim HinvNN: 0 <= inv_nat (ordsucc 0).
+{ exact (SNoLtLe 0 (inv_nat (ordsucc 0)) HinvPos). }
+claim Ha1nonneg: 0 <= a1.
+{ exact (mul_SNo_nonneg_nonneg (R_bounded_distance (apply_fun x 0) (apply_fun y 0))
+                               (inv_nat (ordsucc 0))
+                               HbdS HinvS
+                               HbdNN HinvNN). }
+claim Ha1lt0n: ~(a1 < 0).
+{ claim Hcase: 0 < a1 \/ 0 = a1.
+  { exact (SNoLeE 0 a1 H0S Ha1S Ha1nonneg). }
+  assume Ha1lt0: a1 < 0.
+  apply (Hcase False).
+  - assume H0lta1: 0 < a1.
+    claim H00: 0 < 0.
+    { exact (SNoLt_tra 0 a1 0 H0S Ha1S H0S H0lta1 Ha1lt0). }
+    exact ((SNoLt_irref 0) H00).
+  - assume H0eq: 0 = a1.
+    claim H00: 0 < 0.
+    { rewrite H0eq at 1.
+      exact Ha1lt0. }
+    exact ((SNoLt_irref 0) H00). }
+claim Hl0lt: l < 0.
+{ exact (RltE_lt l 0 Hl0). }
+claim Hlta1: l < a1.
+{ apply (SNoLt_trichotomy_or_impred a1 0 Ha1S H0S (l < a1)).
+  - assume Ha1lt0: a1 < 0.
+    exact (FalseE (Ha1lt0n Ha1lt0) (l < a1)).
+  - assume Ha1eq0: a1 = 0.
+    rewrite Ha1eq0.
+    exact Hl0lt.
+  - assume H0lta1: 0 < a1.
+    exact (SNoLt_tra l 0 a1 HlS H0S Ha1S Hl0lt H0lta1). }
+claim Hltla1: Rlt l a1.
+{ exact (RltI l a1 HlR Ha1R Hlta1). }
+claim HRle: Rle a1 l.
+{ exact (Hub a1 Ha1A Ha1R). }
+exact ((RleE_nlt a1 l HRle) Hltla1).
+Qed.
+
+(** helper: D metric value 0 implies coordinate agreement (for positive indices) **)
+Theorem Romega_D_metric_value_eq0_coord_eq : forall x y:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  Romega_D_metric_value x y = 0 ->
+  forall i:set, i :e omega -> apply_fun x i = apply_fun y i.
+let x y.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+assume Hxy0: Romega_D_metric_value x y = 0.
+let i.
+assume HiO: i :e omega.
+set A := Romega_D_scaled_diffs x y.
+set l := Romega_D_metric_value x y.
+claim HlR: l :e R.
+{ exact (Romega_D_metric_value_in_R x y Hx Hy). }
+claim Hlub: R_lub A l.
+{ exact (Romega_D_metric_value_is_lub x y Hx Hy). }
+claim Hcore: l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andEL (l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l u)
+               Hlub). }
+claim Hub: forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andER (l :e R) (forall a:set, a :e A -> a :e R -> Rle a l) Hcore). }
+claim Hub0: forall a:set, a :e A -> a :e R -> Rle a 0.
+{ let a0.
+  assume Ha0A: a0 :e A.
+  assume Ha0R: a0 :e R.
+  rewrite <- Hxy0.
+  exact (Hub a0 Ha0A Ha0R). }
+set bd := R_bounded_distance (apply_fun x i) (apply_fun y i).
+set inv := inv_nat (ordsucc i).
+set a := mul_SNo bd inv.
+claim HaA: a :e A.
+{ exact (ReplI omega
+               (fun j:set => mul_SNo (R_bounded_distance (apply_fun x j) (apply_fun y j)) (inv_nat (ordsucc j)))
+               i
+               HiO). }
+claim HxiR: apply_fun x i :e R.
+{ exact (Romega_coord_in_R x i Hx HiO). }
+claim HyiR: apply_fun y i :e R.
+{ exact (Romega_coord_in_R y i Hy HiO). }
+claim HbdR: bd :e R.
+{ exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+claim HinvR: inv :e R.
+{ exact (inv_nat_real (ordsucc i) (omega_ordsucc i HiO)). }
+claim HaR: a :e R.
+{ exact (real_mul_SNo bd HbdR inv HinvR). }
+claim HRle: Rle a 0.
+{ exact (Hub0 a HaA HaR). }
+claim HnRlt0a: ~(Rlt 0 a).
+{ exact (RleE_nlt a 0 HRle). }
+claim HbdS: SNo bd.
+{ exact (real_SNo bd HbdR). }
+claim HinvS: SNo inv.
+{ exact (real_SNo inv HinvR). }
+claim HbdNN: 0 <= bd.
+{ exact (R_bounded_distance_nonneg (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+claim HinvPosR: Rlt 0 inv.
+{ claim HsuccO: ordsucc i :e omega.
+  { exact (omega_ordsucc i HiO). }
+  claim HsuccNotIn0: ordsucc i /:e {0}.
+  { assume Hin0: ordsucc i :e {0}.
+    claim Heq: ordsucc i = 0.
+    { exact (SingE 0 (ordsucc i) Hin0). }
+    exact (neq_ordsucc_0 i Heq). }
+  claim HsuccIn: ordsucc i :e omega :\: {0}.
+  { exact (setminusI omega {0} (ordsucc i) HsuccO HsuccNotIn0). }
+  exact (inv_nat_pos (ordsucc i) HsuccIn). }
+claim HinvPos: 0 < inv.
+{ exact (RltE_lt 0 inv HinvPosR). }
+claim HinvNN: 0 <= inv.
+{ exact (SNoLtLe 0 inv HinvPos). }
+claim HaNN: 0 <= a.
+{ exact (mul_SNo_nonneg_nonneg bd inv HbdS HinvS HbdNN HinvNN). }
+claim Ha0: a = 0.
+{ apply (SNoLeE 0 a SNo_0 (real_SNo a HaR) HaNN (a = 0)).
+  - assume H0lta: 0 < a.
+    claim HRlt0a: Rlt 0 a.
+    { exact (RltI 0 a real_0 HaR H0lta). }
+    exact (FalseE (HnRlt0a HRlt0a) (a = 0)).
+  - assume H0eq: 0 = a.
+    rewrite <- H0eq.
+    reflexivity. }
+claim Hadef: a = mul_SNo bd inv.
+{ reflexivity. }
+claim Hbdinv0: mul_SNo bd inv = 0.
+{ rewrite <- Hadef.
+  exact Ha0. }
+claim HinvNe0: inv <> 0.
+{ exact (SNo_pos_ne0 inv HinvS HinvPos). }
+claim Hinvbd0: mul_SNo inv bd = 0.
+{ rewrite (mul_SNo_com inv bd HinvS HbdS) at 1.
+  exact Hbdinv0. }
+claim Hinv0: mul_SNo inv 0 = 0.
+{ exact (mul_SNo_zeroR inv HinvS). }
+claim Hinvbd_eq: mul_SNo inv bd = mul_SNo inv 0.
+{ rewrite Hinvbd0.
+  rewrite Hinv0.
+  reflexivity. }
+claim H0S: SNo 0.
+{ exact SNo_0. }
+claim Hbd0: bd = 0.
+{ exact (mul_SNo_nonzero_cancel inv bd 0 HinvS HinvNe0 HbdS H0S Hinvbd_eq). }
+exact (R_bounded_distance_eq0 (apply_fun x i) (apply_fun y i) HxiR HyiR Hbd0).
+Qed.
+
+(** helper: D metric value is an upper bound for each scaled coordinate distance **)
+Theorem Romega_D_metric_value_ub_scaled : forall x y i:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  i :e omega ->
+  Rle (mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)))
+      (Romega_D_metric_value x y).
+let x y i.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+assume HiO: i :e omega.
+set A := Romega_D_scaled_diffs x y.
+set l := Romega_D_metric_value x y.
+claim Hlub: R_lub A l.
+{ exact (Romega_D_metric_value_is_lub x y Hx Hy). }
+claim Hcore: l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andEL (l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l u)
+               Hlub). }
+claim Hub: forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andER (l :e R) (forall a:set, a :e A -> a :e R -> Rle a l) Hcore). }
+set a := mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)).
+claim HaA: a :e A.
+{ exact (ReplI omega
+               (fun j:set => mul_SNo (R_bounded_distance (apply_fun x j) (apply_fun y j)) (inv_nat (ordsucc j)))
+               i
+               HiO). }
+claim HxiR: apply_fun x i :e R.
+{ exact (Romega_coord_in_R x i Hx HiO). }
+claim HyiR: apply_fun y i :e R.
+{ exact (Romega_coord_in_R y i Hy HiO). }
+claim HbdR: R_bounded_distance (apply_fun x i) (apply_fun y i) :e R.
+{ exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+claim HsuccO: ordsucc i :e omega.
+{ exact (omega_ordsucc i HiO). }
+claim HinvR: inv_nat (ordsucc i) :e R.
+{ exact (inv_nat_real (ordsucc i) HsuccO). }
+claim HaR: a :e R.
+{ exact (real_mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) HbdR
+                      (inv_nat (ordsucc i)) HinvR). }
+exact (Hub a HaA HaR).
+Qed.
+
+(** helper: if the D metric value is < r, then each scaled coordinate term is < r **)
+Theorem Romega_D_metric_value_lt_implies_scaled_lt : forall x y i r:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  i :e omega ->
+  Rlt (Romega_D_metric_value x y) r ->
+  Rlt (mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i))) r.
+let x y i r.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+assume HiO: i :e omega.
+assume Hlt: Rlt (Romega_D_metric_value x y) r.
+set a := mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i)).
+claim Hale: Rle a (Romega_D_metric_value x y).
+{ exact (Romega_D_metric_value_ub_scaled x y i Hx Hy HiO). }
+exact (Rle_Rlt_tra a (Romega_D_metric_value x y) r Hale Hlt).
+Qed.
+
+(** helper: bounded distance < r with r < 1 implies abs(a-b) < r **)
+Theorem R_bounded_distance_lt_lt1_imp_abs_lt : forall a b r:set,
+  a :e R ->
+  b :e R ->
+  r :e R ->
+  Rlt r 1 ->
+  Rlt (R_bounded_distance a b) r ->
+  abs_SNo (add_SNo a (minus_SNo b)) < r.
+let a b r.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HrR: r :e R.
+assume Hrlt1: Rlt r 1.
+assume Hlt: Rlt (R_bounded_distance a b) r.
+set t := add_SNo a (minus_SNo b).
+claim HmbR: minus_SNo b :e R.
+{ exact (real_minus_SNo b HbR). }
+claim HtR: t :e R.
+{ exact (real_add_SNo a HaR (minus_SNo b) HmbR). }
+claim HabsR: abs_SNo t :e R.
+{ exact (abs_SNo_in_R t HtR). }
+claim Hbddef: R_bounded_distance a b = If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1.
+{ reflexivity. }
+claim HIfRlt: Rlt (If_i (Rlt (abs_SNo t) 1) (abs_SNo t) 1) r.
+{ rewrite <- Hbddef.
+  exact Hlt. }
+apply (xm (Rlt (abs_SNo t) 1)).
+- assume Hablt1: Rlt (abs_SNo t) 1.
+  claim HabRlt: Rlt (abs_SNo t) r.
+  { rewrite <- (If_i_1 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hablt1).
+    exact HIfRlt. }
+  exact (RltE_lt (abs_SNo t) r HabRlt).
+- assume Hnablt1: ~(Rlt (abs_SNo t) 1).
+  claim H1lt: Rlt 1 r.
+  { rewrite <- (If_i_0 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 Hnablt1).
+    exact HIfRlt. }
+  claim Hrr: Rlt r r.
+  { exact (Rlt_tra r 1 r Hrlt1 H1lt). }
+  exact (FalseE ((not_Rlt_refl r HrR) Hrr) (abs_SNo t < r)).
+Qed.
+
+(** helper: D metric bound gives coordinate abs difference bound for a fixed index **)
+Theorem Romega_D_metric_coord_abs_lt : forall x y i delta:set,
+  x :e R_omega_space ->
+  y :e R_omega_space ->
+  i :e omega ->
+  delta :e R ->
+  Rlt 0 delta ->
+  Rlt delta 1 ->
+  Rlt (Romega_D_metric_value x y) (mul_SNo delta (inv_nat (ordsucc i))) ->
+  abs_SNo (add_SNo (apply_fun x i) (minus_SNo (apply_fun y i))) < delta.
+let x y i delta.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+assume HiO: i :e omega.
+assume HdR: delta :e R.
+assume Hdpos: Rlt 0 delta.
+assume Hdlt1: Rlt delta 1.
+assume Hlt: Rlt (Romega_D_metric_value x y) (mul_SNo delta (inv_nat (ordsucc i))).
+set xi := apply_fun x i.
+set yi := apply_fun y i.
+set bd := R_bounded_distance xi yi.
+set inv := inv_nat (ordsucc i).
+claim HxiR: xi :e R.
+{ exact (Romega_coord_in_R x i Hx HiO). }
+claim HyiR: yi :e R.
+{ exact (Romega_coord_in_R y i Hy HiO). }
+claim HbdR: bd :e R.
+{ exact (R_bounded_distance_in_R xi yi HxiR HyiR). }
+claim HsuccO: ordsucc i :e omega.
+{ exact (omega_ordsucc i HiO). }
+claim HinvR: inv :e R.
+{ exact (inv_nat_real (ordsucc i) HsuccO). }
+claim HinvNot0: ordsucc i /:e {0}.
+{ assume Hi0: ordsucc i :e {0}.
+  claim Heq0: ordsucc i = 0.
+  { exact (SingE 0 (ordsucc i) Hi0). }
+  exact (neq_ordsucc_0 i Heq0). }
+claim HinvIn: ordsucc i :e omega :\: {0}.
+{ exact (setminusI omega {0} (ordsucc i) HsuccO HinvNot0). }
+claim HinvPosR: Rlt 0 inv.
+{ exact (inv_nat_pos (ordsucc i) HinvIn). }
+claim HinvPos: 0 < inv.
+{ exact (RltE_lt 0 inv HinvPosR). }
+claim HbdS: SNo bd.
+{ exact (real_SNo bd HbdR). }
+claim HdS: SNo delta.
+{ exact (real_SNo delta HdR). }
+claim HinvS: SNo inv.
+{ exact (real_SNo inv HinvR). }
+claim Hscaledlt: Rlt (mul_SNo bd inv) (mul_SNo delta inv).
+{ exact (Romega_D_metric_value_lt_implies_scaled_lt x y i (mul_SNo delta inv) Hx Hy HiO Hlt). }
+claim HscaledltS: mul_SNo bd inv < mul_SNo delta inv.
+{ exact (RltE_lt (mul_SNo bd inv) (mul_SNo delta inv) Hscaledlt). }
+claim Hbdlt: bd < delta.
+{ apply (SNoLt_trichotomy_or_impred bd delta HbdS HdS (bd < delta)).
+  - assume Hc: bd < delta.
+    exact Hc.
+  - assume Hc: bd = delta.
+    claim Heqmul: mul_SNo bd inv = mul_SNo delta inv.
+    { rewrite Hc.
+      reflexivity. }
+    claim Hbad: mul_SNo bd inv < mul_SNo bd inv.
+    { rewrite Heqmul at 2.
+      exact HscaledltS. }
+    exact (FalseE ((SNoLt_irref (mul_SNo bd inv)) Hbad) (bd < delta)).
+  - assume Hc: delta < bd.
+    claim Hmul: mul_SNo delta inv < mul_SNo bd inv.
+    { exact (pos_mul_SNo_Lt' delta bd inv HdS HbdS HinvS HinvPos Hc). }
+    claim Hbad: mul_SNo delta inv < mul_SNo delta inv.
+    { exact (SNoLt_tra (mul_SNo delta inv) (mul_SNo bd inv) (mul_SNo delta inv)
+                      (SNo_mul_SNo delta inv HdS HinvS)
+                      (SNo_mul_SNo bd inv HbdS HinvS)
+                      (SNo_mul_SNo delta inv HdS HinvS)
+                      Hmul
+                      HscaledltS). }
+    exact (FalseE ((SNoLt_irref (mul_SNo delta inv)) Hbad) (bd < delta)). }
+claim HbdRlt: Rlt bd delta.
+{ exact (RltI bd delta HbdR HdR Hbdlt). }
+set t := add_SNo xi (minus_SNo yi).
+exact (R_bounded_distance_lt_lt1_imp_abs_lt xi yi delta HxiR HyiR HdR Hdlt1 HbdRlt).
+Qed.
+
+(** helper: division by n equals inv_nat n when numerator is 1 **)
+Theorem div_SNo_1_eq_inv_nat : forall n:set,
+  SNo n -> div_SNo 1 n = inv_nat n.
+let n.
+assume HnS: SNo n.
+prove div_SNo 1 n = inv_nat n.
+claim Hdivdef: div_SNo 1 n = mul_SNo 1 (recip_SNo n).
+{ reflexivity. }
+rewrite Hdivdef.
+rewrite (mul_SNo_oneL (recip_SNo n) (SNo_recip_SNo n HnS)).
+claim Hinvdef: inv_nat n = recip_SNo n.
+{ reflexivity. }
+rewrite Hinvdef.
+reflexivity.
+Qed.
+
+(** helper: inv_nat 1 = 1 **)
+Theorem inv_nat_1_eq_1 : inv_nat 1 = 1.
+prove inv_nat 1 = 1.
+claim H1neq0: 1 <> 0.
+{ exact neq_1_0. }
+claim Hmul: mul_SNo 1 (inv_nat 1) = 1.
+{ exact (recip_SNo_invR 1 SNo_1 H1neq0). }
+rewrite <- (mul_SNo_oneL (inv_nat 1) (SNo_recip_SNo 1 SNo_1)) at 1.
+exact Hmul.
+Qed.
+
+(** helper: for i<j in omega, inv_nat (i+1) is larger than inv_nat (j+1) **)
+Theorem inv_nat_ordsucc_antitone : forall i j:set,
+  i :e omega -> j :e omega -> i :e j ->
+  Rlt (inv_nat (ordsucc j)) (inv_nat (ordsucc i)).
+let i j.
+assume HiO: i :e omega.
+assume HjO: j :e omega.
+assume Hij: i :e j.
+set mi := ordsucc i.
+set mj := ordsucc j.
+claim HiOrd: ordinal i.
+{ exact (ordinal_Hered omega omega_ordinal i HiO). }
+claim HjOrd: ordinal j.
+{ exact (ordinal_Hered omega omega_ordinal j HjO). }
+claim Hijlt: i < j.
+{ exact (ordinal_In_SNoLt j HjOrd i Hij). }
+claim HiS: SNo i.
+{ exact (omega_SNo i HiO). }
+claim HjS: SNo j.
+{ exact (omega_SNo j HjO). }
+claim HmiS: SNo mi.
+{ exact (omega_SNo mi (omega_ordsucc i HiO)). }
+claim HmjS: SNo mj.
+{ exact (omega_SNo mj (omega_ordsucc j HjO)). }
+claim Hsucclt: mi < mj.
+{ prove mi < mj.
+  rewrite <- (add_SNo_1_ordsucc i HiO).
+  rewrite <- (add_SNo_1_ordsucc j HjO).
+  exact (add_SNo_Lt1 i 1 j HiS SNo_1 HjS Hijlt). }
+claim HmiNot0: mi <> 0.
+{ exact (neq_ordsucc_0 i). }
+claim HmjNot0: mj <> 0.
+{ exact (neq_ordsucc_0 j). }
+claim HinvmiR: inv_nat mi :e R.
+{ exact (inv_nat_real mi (omega_ordsucc i HiO)). }
+claim HinvmiS: SNo (inv_nat mi).
+{ exact (real_SNo (inv_nat mi) HinvmiR). }
+claim HmiNotIn0: mi /:e {0}.
+{ assume Hmi0: mi :e {0}.
+  claim Heq0: mi = 0.
+  { exact (SingE 0 mi Hmi0). }
+  exact (HmiNot0 Heq0). }
+claim HmiIn: mi :e omega :\: {0}.
+{ exact (setminusI omega {0} mi (omega_ordsucc i HiO) HmiNotIn0). }
+claim HinvmiPosR: Rlt 0 (inv_nat mi).
+{ exact (inv_nat_pos mi HmiIn). }
+claim HinvmiPos: 0 < inv_nat mi.
+{ exact (RltE_lt 0 (inv_nat mi) HinvmiPosR). }
+claim HmulLt: mul_SNo (inv_nat mi) mi < mul_SNo (inv_nat mi) mj.
+{ exact (pos_mul_SNo_Lt (inv_nat mi) mi mj HinvmiS HinvmiPos HmiS HmjS Hsucclt). }
+claim HmulEq: mul_SNo (inv_nat mi) mi = 1.
+{ prove mul_SNo (inv_nat mi) mi = 1.
+  rewrite (mul_SNo_com (inv_nat mi) mi HinvmiS HmiS).
+  claim Hinvdef: inv_nat mi = recip_SNo mi.
+  { reflexivity. }
+  rewrite Hinvdef.
+  exact (recip_SNo_invR mi HmiS HmiNot0). }
+claim HoneLt: 1 < mul_SNo (inv_nat mi) mj.
+{ rewrite <- HmulEq at 1.
+  exact HmulLt. }
+claim Hmjpos: 0 < mj.
+{ exact (ordinal_ordsucc_pos j HjOrd). }
+claim HdivLt: div_SNo 1 mj < inv_nat mi.
+{ exact (div_SNo_pos_LtL 1 mj (inv_nat mi) SNo_1 HmjS HinvmiS Hmjpos HoneLt). }
+claim HdivEq: div_SNo 1 mj = inv_nat mj.
+{ exact (div_SNo_1_eq_inv_nat mj HmjS). }
+claim HinvLtS: inv_nat mj < inv_nat mi.
+{ rewrite <- HdivEq.
+  exact HdivLt. }
+claim HinvmiInR: inv_nat mi :e R.
+{ exact HinvmiR. }
+claim HinvMjR: inv_nat mj :e R.
+{ exact (inv_nat_real mj (omega_ordsucc j HjO)). }
+exact (RltI (inv_nat mj) (inv_nat mi) HinvMjR HinvmiInR HinvLtS).
+Qed.
+
+(** helper: inv_nat 2 is strictly below 1 **)
+Theorem inv_nat_2_lt_1 : Rlt (inv_nat 2) 1.
+prove Rlt (inv_nat 2) 1.
+claim H0o: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
+claim H1o: 1 :e omega.
+{ exact (nat_p_omega 1 nat_1). }
+claim H0in1: 0 :e 1.
+{ exact In_0_1. }
+claim Hlt: Rlt (inv_nat (ordsucc 1)) (inv_nat (ordsucc 0)).
+{ exact (inv_nat_ordsucc_antitone 0 1 H0o H1o H0in1). }
+claim Hs0: ordsucc 0 = 1.
+{ claim Heq: add_SNo 0 1 = ordsucc 0.
+  { exact (add_SNo_1_ordsucc 0 H0o). }
+  claim Heq01: add_SNo 0 1 = 1.
+  { exact (add_SNo_0L 1 SNo_1). }
+  prove ordsucc 0 = 1.
+  rewrite <- Heq.
+  rewrite Heq01.
+  reflexivity. }
+claim Hs1: ordsucc 1 = 2.
+{ claim Heq: add_SNo 1 1 = ordsucc 1.
+  { exact (add_SNo_1_ordsucc 1 H1o). }
+  prove ordsucc 1 = 2.
+  rewrite <- Heq.
+  rewrite add_SNo_1_1_2.
+  reflexivity. }
+rewrite <- inv_nat_1_eq_1 at 2.
+rewrite <- Hs1 at 1.
+rewrite <- Hs0 at 2.
+exact Hlt.
+Qed.
+
+(** helper: given r>0, some inv_nat (n+1) is below r **)
+Theorem exists_inv_nat_ordsucc_lt : forall r:set,
+  r :e R -> Rlt 0 r ->
+  exists N:set, N :e omega /\ Rlt (inv_nat (ordsucc N)) r.
+let r.
+assume HrR: r :e R.
+assume HrposR: Rlt 0 r.
+set rinv := recip_SNo r.
+claim HrS: SNo r.
+{ exact (real_SNo r HrR). }
+claim Hrpos: 0 < r.
+{ exact (RltE_lt 0 r HrposR). }
+claim HrinvR: rinv :e R.
+{ exact (real_recip_SNo r HrR). }
+claim HrinvS: SNo rinv.
+{ exact (real_SNo rinv HrinvR). }
+claim HrinvPos: 0 < rinv.
+{ exact (recip_SNo_of_pos_is_pos r HrS Hrpos). }
+claim HrinvNN: 0 <= rinv.
+{ exact (SNoLtLe 0 rinv HrinvPos). }
+claim Hexn: exists n :e omega, n <= rinv /\ rinv < ordsucc n.
+{ exact (nonneg_real_nat_interval rinv HrinvR HrinvNN). }
+apply Hexn.
+let n. assume Hnconj.
+claim HnO: n :e omega.
+{ exact (andEL (n :e omega) (n <= rinv /\ rinv < ordsucc n) Hnconj). }
+claim Hnrest: n <= rinv /\ rinv < ordsucc n.
+{ exact (andER (n :e omega) (n <= rinv /\ rinv < ordsucc n) Hnconj). }
+claim HrinvLt: rinv < ordsucc n.
+{ exact (andER (n <= rinv) (rinv < ordsucc n) Hnrest). }
+claim HnOrd: ordinal n.
+{ exact (ordinal_Hered omega omega_ordinal n HnO). }
+claim HNpos: 0 < ordsucc n.
+{ exact (ordinal_ordsucc_pos n HnOrd). }
+claim HNinO: ordsucc n :e omega.
+{ exact (omega_ordsucc n HnO). }
+claim HNS: SNo (ordsucc n).
+{ exact (omega_SNo (ordsucc n) HNinO). }
+claim HmulLt: mul_SNo r rinv < mul_SNo r (ordsucc n).
+{ exact (pos_mul_SNo_Lt r rinv (ordsucc n) HrS Hrpos HrinvS HNS HrinvLt). }
+claim Hrne0: r <> 0.
+{ exact (SNo_pos_ne0 r HrS Hrpos). }
+claim HmulEq: mul_SNo r rinv = 1.
+{ prove mul_SNo r rinv = 1.
+  claim Hrinvdef: rinv = recip_SNo r.
+  { reflexivity. }
+  rewrite Hrinvdef.
+  exact (recip_SNo_invR r HrS Hrne0). }
+claim HoneLt: 1 < mul_SNo r (ordsucc n).
+{ rewrite <- HmulEq at 1.
+  exact HmulLt. }
+claim HdivLt: div_SNo 1 (ordsucc n) < r.
+{ exact (div_SNo_pos_LtL 1 (ordsucc n) r SNo_1 HNS HrS HNpos HoneLt). }
+claim HdivEq: div_SNo 1 (ordsucc n) = inv_nat (ordsucc n).
+{ exact (div_SNo_1_eq_inv_nat (ordsucc n) HNS). }
+claim HinvLtS: inv_nat (ordsucc n) < r.
+{ rewrite <- HdivEq.
+  exact HdivLt. }
+claim HinvR: inv_nat (ordsucc n) :e R.
+{ exact (inv_nat_real (ordsucc n) HNinO). }
+witness n.
+apply andI.
+- exact HnO.
+- exact (RltI (inv_nat (ordsucc n)) r HinvR HrR HinvLtS).
+Qed.
+
+(** helper: D metric value satisfies triangle inequality **)
+Theorem Romega_D_metric_value_triangle : forall x y z:set,
+  x :e R_omega_space -> y :e R_omega_space -> z :e R_omega_space ->
+  ~(Rlt (add_SNo (Romega_D_metric_value x y) (Romega_D_metric_value y z))
+        (Romega_D_metric_value x z)).
+let x y z.
+assume Hx: x :e R_omega_space.
+assume Hy: y :e R_omega_space.
+assume Hz: z :e R_omega_space.
+set A := Romega_D_scaled_diffs x z.
+set l := Romega_D_metric_value x z.
+set u := add_SNo (Romega_D_metric_value x y) (Romega_D_metric_value y z).
+claim Hlub: R_lub A l.
+{ exact (Romega_D_metric_value_is_lub x z Hx Hz). }
+claim HuR: u :e R.
+{ exact (real_add_SNo (Romega_D_metric_value x y)
+                      (Romega_D_metric_value_in_R x y Hx Hy)
+                      (Romega_D_metric_value y z)
+                      (Romega_D_metric_value_in_R y z Hy Hz)). }
+claim Hub: forall a:set, a :e A -> a :e R -> Rle a u.
+{ let a. assume HaA: a :e A. assume HaR: a :e R.
+  apply (ReplE_impred omega
+                      (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun z i)) (inv_nat (ordsucc i)))
+                      a
+                      HaA
+                      (Rle a u)).
+  let i. assume HiO: i :e omega.
+  assume Hai: a = mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun z i)) (inv_nat (ordsucc i)).
+  rewrite Hai.
+  set inv := inv_nat (ordsucc i).
+  set bd_xz := R_bounded_distance (apply_fun x i) (apply_fun z i).
+  set bd_xy := R_bounded_distance (apply_fun x i) (apply_fun y i).
+  set bd_yz := R_bounded_distance (apply_fun y i) (apply_fun z i).
+  set sxz := mul_SNo bd_xz inv.
+  set sxy := mul_SNo bd_xy inv.
+  set syz := mul_SNo bd_yz inv.
+  claim HxiR: apply_fun x i :e R.
+  { exact (Romega_coord_in_R x i Hx HiO). }
+  claim HyiR: apply_fun y i :e R.
+  { exact (Romega_coord_in_R y i Hy HiO). }
+  claim HziR: apply_fun z i :e R.
+  { exact (Romega_coord_in_R z i Hz HiO). }
+  claim HinvO: ordsucc i :e omega.
+  { exact (omega_ordsucc i HiO). }
+  claim HinvNot0: ordsucc i /:e {0}.
+  { assume Hin0: ordsucc i :e {0}.
+    claim Heq: ordsucc i = 0.
+    { exact (SingE 0 (ordsucc i) Hin0). }
+    exact (neq_ordsucc_0 i Heq). }
+  claim HinvIn: ordsucc i :e omega :\: {0}.
+  { exact (setminusI omega {0} (ordsucc i) HinvO HinvNot0). }
+  claim HinvR: inv :e R.
+  { exact (inv_nat_real (ordsucc i) HinvO). }
+  claim HinvS: SNo inv.
+  { exact (real_SNo inv HinvR). }
+  claim HinvPosR: Rlt 0 inv.
+  { exact (inv_nat_pos (ordsucc i) HinvIn). }
+  claim HinvPos: 0 < inv.
+  { exact (RltE_lt 0 inv HinvPosR). }
+  claim HinvNN: 0 <= inv.
+  { exact (SNoLtLe 0 inv HinvPos). }
+  claim HbdxzR: bd_xz :e R.
+  { exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun z i) HxiR HziR). }
+  claim HbdxyR: bd_xy :e R.
+  { exact (R_bounded_distance_in_R (apply_fun x i) (apply_fun y i) HxiR HyiR). }
+  claim HbdyzR: bd_yz :e R.
+  { exact (R_bounded_distance_in_R (apply_fun y i) (apply_fun z i) HyiR HziR). }
+  claim HbdxzS: SNo bd_xz.
+  { exact (real_SNo bd_xz HbdxzR). }
+  claim HbdxyS: SNo bd_xy.
+  { exact (real_SNo bd_xy HbdxyR). }
+  claim HbdyzS: SNo bd_yz.
+  { exact (real_SNo bd_yz HbdyzR). }
+  claim HbdTri: bd_xz <= add_SNo bd_xy bd_yz.
+  { exact (R_bounded_distance_triangle_Le (apply_fun x i) (apply_fun y i) (apply_fun z i) HxiR HyiR HziR). }
+  claim HmulLe: mul_SNo bd_xz inv <= mul_SNo (add_SNo bd_xy bd_yz) inv.
+  { exact (nonneg_mul_SNo_Le' bd_xz (add_SNo bd_xy bd_yz) inv
+                             HbdxzS
+                             (SNo_add_SNo bd_xy bd_yz HbdxyS HbdyzS)
+                             HinvS
+                             HinvNN
+                             HbdTri). }
+  claim HmulEq: mul_SNo (add_SNo bd_xy bd_yz) inv = add_SNo (mul_SNo bd_xy inv) (mul_SNo bd_yz inv).
+  { exact (mul_SNo_distrR bd_xy bd_yz inv HbdxyS HbdyzS HinvS). }
+  claim HsxzLe: sxz <= add_SNo sxy syz.
+  { rewrite <- HmulEq.
+    exact HmulLe. }
+  claim HsxzR: sxz :e R.
+  { exact (real_mul_SNo bd_xz HbdxzR inv HinvR). }
+  claim HsumR: add_SNo sxy syz :e R.
+  { exact (real_add_SNo sxy (real_mul_SNo bd_xy HbdxyR inv HinvR) syz (real_mul_SNo bd_yz HbdyzR inv HinvR)). }
+  claim H1: Rle sxz (add_SNo sxy syz).
+  { exact (Rle_of_SNoLe sxz (add_SNo sxy syz) HsxzR HsumR HsxzLe). }
+  claim Hlubxy: R_lub (Romega_D_scaled_diffs x y) (Romega_D_metric_value x y).
+  { exact (Romega_D_metric_value_is_lub x y Hx Hy). }
+  claim Hlubyz: R_lub (Romega_D_scaled_diffs y z) (Romega_D_metric_value y z).
+  { exact (Romega_D_metric_value_is_lub y z Hy Hz). }
+  claim Hxyub: forall b:set, b :e Romega_D_scaled_diffs x y -> b :e R -> Rle b (Romega_D_metric_value x y).
+  { exact (andER ((Romega_D_metric_value x y) :e R)
+                 (forall b:set, b :e Romega_D_scaled_diffs x y -> b :e R -> Rle b (Romega_D_metric_value x y))
+                 (andEL (((Romega_D_metric_value x y) :e R) /\
+                         forall b:set, b :e Romega_D_scaled_diffs x y -> b :e R -> Rle b (Romega_D_metric_value x y))
+                        (forall uu:set, uu :e R -> (forall b:set, b :e Romega_D_scaled_diffs x y -> b :e R -> Rle b uu) -> Rle (Romega_D_metric_value x y) uu)
+                        Hlubxy)). }
+  claim Hyzub: forall b:set, b :e Romega_D_scaled_diffs y z -> b :e R -> Rle b (Romega_D_metric_value y z).
+  { exact (andER ((Romega_D_metric_value y z) :e R)
+                 (forall b:set, b :e Romega_D_scaled_diffs y z -> b :e R -> Rle b (Romega_D_metric_value y z))
+                 (andEL (((Romega_D_metric_value y z) :e R) /\
+                         forall b:set, b :e Romega_D_scaled_diffs y z -> b :e R -> Rle b (Romega_D_metric_value y z))
+                        (forall uu:set, uu :e R -> (forall b:set, b :e Romega_D_scaled_diffs y z -> b :e R -> Rle b uu) -> Rle (Romega_D_metric_value y z) uu)
+                        Hlubyz)). }
+  claim HsxyA: sxy :e Romega_D_scaled_diffs x y.
+  { exact (ReplI omega (fun j:set => mul_SNo (R_bounded_distance (apply_fun x j) (apply_fun y j)) (inv_nat (ordsucc j))) i HiO). }
+  claim HsyzA: syz :e Romega_D_scaled_diffs y z.
+  { exact (ReplI omega (fun j:set => mul_SNo (R_bounded_distance (apply_fun y j) (apply_fun z j)) (inv_nat (ordsucc j))) i HiO). }
+  claim HsxyR: sxy :e R.
+  { exact (real_mul_SNo bd_xy HbdxyR inv HinvR). }
+  claim HsyzR: syz :e R.
+  { exact (real_mul_SNo bd_yz HbdyzR inv HinvR). }
+  claim Hsxyub: Rle sxy (Romega_D_metric_value x y).
+  { exact (Hxyub sxy HsxyA HsxyR). }
+  claim Hsyzub: Rle syz (Romega_D_metric_value y z).
+  { exact (Hyzub syz HsyzA HsyzR). }
+  claim H2a: Rle (add_SNo sxy syz) (add_SNo sxy (Romega_D_metric_value y z)).
+  { exact (Rle_add_SNo_2 sxy syz (Romega_D_metric_value y z)
+                         HsxyR HsyzR (Romega_D_metric_value_in_R y z Hy Hz)
+                         Hsyzub). }
+  claim H2b': Rle (add_SNo (Romega_D_metric_value y z) sxy) (add_SNo (Romega_D_metric_value y z) (Romega_D_metric_value x y)).
+  { exact (Rle_add_SNo_2 (Romega_D_metric_value y z) sxy (Romega_D_metric_value x y)
+                         (Romega_D_metric_value_in_R y z Hy Hz)
+                         HsxyR
+                         (Romega_D_metric_value_in_R x y Hx Hy)
+                         Hsxyub). }
+  claim H2b: Rle (add_SNo sxy (Romega_D_metric_value y z)) u.
+  { claim HcomL: add_SNo sxy (Romega_D_metric_value y z) = add_SNo (Romega_D_metric_value y z) sxy.
+    { exact (add_SNo_com sxy (Romega_D_metric_value y z)
+                         (real_SNo sxy HsxyR)
+                         (real_SNo (Romega_D_metric_value y z) (Romega_D_metric_value_in_R y z Hy Hz))). }
+    claim HcomR: u = add_SNo (Romega_D_metric_value y z) (Romega_D_metric_value x y).
+    { exact (add_SNo_com (Romega_D_metric_value x y) (Romega_D_metric_value y z)
+                         (real_SNo (Romega_D_metric_value x y) (Romega_D_metric_value_in_R x y Hx Hy))
+                         (real_SNo (Romega_D_metric_value y z) (Romega_D_metric_value_in_R y z Hy Hz))). }
+    rewrite HcomL.
+    rewrite HcomR.
+    exact H2b'. }
+  claim H2: Rle (add_SNo sxy syz) u.
+  { exact (Rle_tra (add_SNo sxy syz) (add_SNo sxy (Romega_D_metric_value y z)) u H2a H2b). }
+  exact (Rle_tra sxz (add_SNo sxy syz) u H1 H2). }
+claim Hmin: forall uu:set, uu :e R -> (forall a:set, a :e A -> a :e R -> Rle a uu) -> Rle l uu.
+{ exact (andER ((l :e R) /\ forall a:set, a :e A -> a :e R -> Rle a l)
+               (forall uu:set, uu :e R -> (forall a:set, a :e A -> a :e R -> Rle a uu) -> Rle l uu)
+               Hlub). }
+claim Hle: Rle l u.
+{ exact (Hmin u HuR Hub). }
+exact (RleE_nlt l u Hle).
+Qed.
+
+Definition Romega_D_metric : set :=
+  graph (setprod R_omega_space R_omega_space)
+        (fun p:set => Romega_D_metric_value (p 0) (p 1)).
+
+(** helper: D metric is function_on into R **)
+Theorem Romega_D_metric_function_on :
+  function_on Romega_D_metric (setprod R_omega_space R_omega_space) R.
+let p.
+assume Hp: p :e setprod R_omega_space R_omega_space.
+prove apply_fun Romega_D_metric p :e R.
+claim Happ: apply_fun Romega_D_metric p =
+  Romega_D_metric_value (p 0) (p 1).
+{ exact (apply_fun_graph (setprod R_omega_space R_omega_space)
+                         (fun q:set => Romega_D_metric_value (q 0) (q 1))
+                         p Hp). }
+rewrite Happ.
+claim Hp0: p 0 :e R_omega_space.
+{ exact (ap0_Sigma R_omega_space (fun _ : set => R_omega_space) p Hp). }
+claim Hp1: p 1 :e R_omega_space.
+{ exact (ap1_Sigma R_omega_space (fun _ : set => R_omega_space) p Hp). }
+exact (Romega_D_metric_value_in_R (p 0) (p 1) Hp0 Hp1).
+Qed.
+
+Definition Romega_D_metric_topology : set := metric_topology R_omega_space Romega_D_metric.
+
+(** helper: open balls in the D metric are open in the product topology **)
+(** LATEX VERSION: For the D metric on R to the omega, every open ball is open in the product topology. **)
+Theorem Romega_D_metric_open_ball_in_product_topology : forall x r:set,
+  metric_on R_omega_space Romega_D_metric ->
+  x :e R_omega_space -> r :e R -> Rlt 0 r ->
+  open_ball R_omega_space Romega_D_metric x r :e R_omega_product_topology.
+let x r.
+assume Hm: metric_on R_omega_space Romega_D_metric.
+assume Hx: x :e R_omega_space.
+assume HrR: r :e R.
+assume Hrpos: Rlt 0 r.
+set Xi0 := const_space_family omega R R_standard_topology.
+set S := product_subbasis_full omega Xi0.
+claim Hdef: R_omega_product_topology = generated_topology_from_subbasis R_omega_space S.
+{ reflexivity. }
+rewrite Hdef.
+(** TODO: show the D-metric open ball is open in the generated topology from the cylinder subbasis **)
+(** Strategy: use the basis_of_subbasis neighborhood characterization and Romega_D_metric_coord_abs_lt to build a finite cylinder neighborhood inside the ball. **)
+set X := R_omega_space.
+set d := Romega_D_metric.
+set B := basis_of_subbasis X S.
+claim HTdef: generated_topology_from_subbasis X S = generated_topology X B.
+{ reflexivity. }
+rewrite HTdef.
+claim Hgendef: generated_topology X B =
+  {U0 :e Power X | forall y :e U0, exists b :e B, y :e b /\ b c= U0}.
+{ reflexivity. }
+rewrite Hgendef.
+apply SepI.
+- (** open_ball subset X **)
+  exact (PowerI X (open_ball X d x r) (open_ball_subset_X X d x r)).
+- let y. assume Hy: y :e open_ball X d x r.
+  prove exists b :e B, y :e b /\ b c= open_ball X d x r.
+  (** TODO: choose a finite-intersection cylinder neighborhood b around y, using the D-metric bound and Romega_D_metric_coord_abs_lt **)
+  claim HyX: y :e X.
+  { exact (open_ballE1 X d x r y Hy). }
+  claim Hxyprod: (x,y) :e setprod X X.
+  { exact (tuple_2_setprod_by_pair_Sigma X X x y Hx HyX). }
+  claim Hdapp: apply_fun d (x,y) = Romega_D_metric_value x y.
+  { rewrite (apply_fun_graph (setprod X X)
+                             (fun p:set => Romega_D_metric_value (p 0) (p 1))
+                             (x,y)
+                             Hxyprod).
+    rewrite (tuple_2_0_eq x y).
+    rewrite (tuple_2_1_eq x y).
+    reflexivity. }
+  claim Hltball: Rlt (apply_fun d (x,y)) r.
+  { exact (open_ballE2 X d x r y Hy). }
+  claim Hltval: Rlt (Romega_D_metric_value x y) r.
+  { rewrite <- Hdapp.
+    exact Hltball. }
+  (** Build a finite cylinder neighborhood around y using a small eps. **)
+  claim HexF: exists F:set,
+    (F :e finite_subcollections S /\ y :e intersection_of_family X F)
+    /\ intersection_of_family X F c= open_ball X d x r.
+  { set dxy := apply_fun d (x,y).
+    claim Hfun: function_on d (setprod X X) R.
+    { exact (metric_on_function_on X d Hm). }
+    claim HdxyR: dxy :e R.
+    { exact (Hfun (x,y) Hxyprod). }
+    claim HdxyS: SNo dxy.
+    { exact (real_SNo dxy HdxyR). }
+    claim HrS: SNo r.
+    { exact (real_SNo r HrR). }
+    set gap := add_SNo r (minus_SNo dxy).
+    claim HgapR: gap :e R.
+    { exact (real_add_SNo r HrR (minus_SNo dxy) (real_minus_SNo dxy HdxyR)). }
+    claim HgapPos: Rlt 0 gap.
+    { claim HmdxyS: SNo (minus_SNo dxy).
+      { exact (SNo_minus_SNo dxy HdxyS). }
+      claim HdxyltS: dxy < r.
+      { exact (RltE_lt dxy r Hltball). }
+      claim Hlt': add_SNo (minus_SNo dxy) dxy < add_SNo (minus_SNo dxy) r.
+      { exact (add_SNo_Lt2 (minus_SNo dxy) dxy r HmdxyS HdxyS HrS HdxyltS). }
+      claim H0eq: add_SNo (minus_SNo dxy) dxy = 0.
+      { exact (add_SNo_minus_SNo_linv dxy HdxyS). }
+      claim Hcom: add_SNo (minus_SNo dxy) r = gap.
+      { claim Hcom0: add_SNo (minus_SNo dxy) r = add_SNo r (minus_SNo dxy).
+        { exact (add_SNo_com (minus_SNo dxy) r HmdxyS HrS). }
+        rewrite Hcom0.
+        reflexivity. }
+	      claim HgapPosS: 0 < gap.
+	      { rewrite <- H0eq at 1.
+	        rewrite <- Hcom.
+	        exact Hlt'. }
+      exact (RltI 0 gap real_0 HgapR HgapPosS). }
+    claim H1R: 1 :e R.
+    { exact real_1. }
+    claim H1pos: Rlt 0 1.
+    { exact Rlt_0_1. }
+    claim Hexeps: exists eps:set,
+      eps :e R /\ Rlt 0 eps /\ Rlt eps gap /\ Rlt eps 1 /\ Rlt eps 1 /\ Rlt eps 1.
+    { exact (exists_eps_lt_four_pos_Euclid gap 1 1 1 HgapR H1R H1R H1R HgapPos H1pos H1pos H1pos). }
+    apply Hexeps.
+    let eps. assume Hepsconj.
+    claim HepsTop: ((((eps :e R /\ Rlt 0 eps) /\ Rlt eps gap) /\ Rlt eps 1) /\ Rlt eps 1) /\ Rlt eps 1.
+    { exact Hepsconj. }
+    claim HepsTop1: (((eps :e R /\ Rlt 0 eps) /\ Rlt eps gap) /\ Rlt eps 1) /\ Rlt eps 1.
+    { apply HepsTop. assume H1 H2. exact H1. }
+    claim HepsTop2: ((eps :e R /\ Rlt 0 eps) /\ Rlt eps gap) /\ Rlt eps 1.
+    { apply HepsTop1. assume H1 H2. exact H1. }
+    claim HepsTop3: (eps :e R /\ Rlt 0 eps) /\ Rlt eps gap.
+    { apply HepsTop2. assume H1 H2. exact H1. }
+    claim HepsPair: eps :e R /\ Rlt 0 eps.
+    { apply HepsTop3. assume H1 H2. exact H1. }
+    claim HepsR: eps :e R.
+    { apply HepsPair. assume H1 H2. exact H1. }
+    claim HepsPos: Rlt 0 eps.
+    { apply HepsPair. assume H1 H2. exact H2. }
+    claim HepsLtGap: Rlt eps gap.
+    { apply HepsTop3. assume H1 H2. exact H2. }
+    claim HepsLt1: Rlt eps 1.
+    { apply HepsTop2. assume H1 H2. exact H2. }
+    (** choose N so that inv_nat (N+1) < eps **)
+    claim HexN: exists N:set, N :e omega /\ Rlt (inv_nat (ordsucc N)) eps.
+    { exact (exists_inv_nat_ordsucc_lt eps HepsR HepsPos). }
+    apply HexN.
+    let N. assume HNpair.
+    claim HNO: N :e omega.
+    { exact (andEL (N :e omega) (Rlt (inv_nat (ordsucc N)) eps) HNpair). }
+    claim HinvNLt: Rlt (inv_nat (ordsucc N)) eps.
+    { exact (andER (N :e omega) (Rlt (inv_nat (ordsucc N)) eps) HNpair). }
+    set I := ordsucc N.
+    claim HIO: I :e omega.
+    { exact (omega_ordsucc N HNO). }
+    claim HIcOmega: I c= omega.
+    { exact (ordinal_ordsucc_In_Subq omega omega_ordinal N HNO). }
+    (** define cylinders for indices in I with radius eps around y_i **)
+    set cyl := (fun i:set =>
+      product_cylinder omega Xi0 i
+        (open_interval (add_SNo (apply_fun y i) (minus_SNo eps))
+                       (add_SNo (apply_fun y i) eps))).
+    set F := Repl I cyl.
+    witness F.
+    apply andI.
+	    - (** F is a finite subcollection of the subbasis and y lies in its intersection **)
+	      apply andI.
+	      + (** F :e finite_subcollections S **)
+	        claim HFdef: finite_subcollections S = {F0 :e Power S|finite F0}.
+	        { reflexivity. }
+	        rewrite HFdef.
+	        apply SepI.
+	        * (** F :e Power S **)
+	          apply PowerI.
+	          let s. assume HsF: s :e F.
+	          prove s :e S.
+          claim Hexi: exists i:set, i :e I /\ s = cyl i.
+          { exact (ReplE I cyl s HsF). }
+          apply Hexi.
+          let i. assume Hiconj.
+          claim HiI: i :e I.
+          { exact (andEL (i :e I) (s = cyl i) Hiconj). }
+          claim Hseq: s = cyl i.
+          { exact (andER (i :e I) (s = cyl i) Hiconj). }
+          rewrite Hseq.
+          claim HiO: i :e omega.
+          { exact (HIcOmega i HiI). }
+          set Ui := open_interval (add_SNo (apply_fun y i) (minus_SNo eps))
+                                  (add_SNo (apply_fun y i) eps).
+          claim HUiTop: Ui :e R_standard_topology.
+          { (** Ui is a standard open interval, hence open **)
+            claim HyiR: apply_fun y i :e R.
+            { exact (Romega_coord_in_R y i HyX HiO). }
+            claim HyiS: SNo (apply_fun y i).
+            { exact (real_SNo (apply_fun y i) HyiR). }
+            claim HepsS: SNo eps.
+            { exact (real_SNo eps HepsR). }
+            claim HmeiR: minus_SNo eps :e R.
+            { exact (real_minus_SNo eps HepsR). }
+            claim HaR: add_SNo (apply_fun y i) (minus_SNo eps) :e R.
+            { exact (real_add_SNo (apply_fun y i) HyiR (minus_SNo eps) HmeiR). }
+            claim HbR: add_SNo (apply_fun y i) eps :e R.
+            { exact (real_add_SNo (apply_fun y i) HyiR eps HepsR). }
+            claim HbStd: Ui :e R_standard_basis.
+            { exact (famunionI R (fun a0:set => {open_interval a0 b|b :e R})
+                              (add_SNo (apply_fun y i) (minus_SNo eps)) Ui HaR
+                              (ReplI R (fun b1:set => open_interval (add_SNo (apply_fun y i) (minus_SNo eps)) b1)
+                                     (add_SNo (apply_fun y i) eps) HbR)). }
+            exact (generated_topology_contains_basis R R_standard_basis R_standard_basis_is_basis_local Ui HbStd). }
+          claim HcylIn: product_cylinder omega Xi0 i Ui :e S.
+          { claim HTi: space_family_topology Xi0 i = R_standard_topology.
+            { claim Hdef0: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+              { reflexivity. }
+              rewrite Hdef0.
+              rewrite (const_space_family_apply omega R R_standard_topology i HiO).
+              exact (tuple_2_1_eq R R_standard_topology). }
+            claim HUiIn: Ui :e space_family_topology Xi0 i.
+            { rewrite HTi.
+              exact HUiTop. }
+            exact (famunionI omega
+                             (fun j:set => {product_cylinder omega Xi0 j U0|U0 :e space_family_topology Xi0 j})
+                             i
+                             (product_cylinder omega Xi0 i Ui)
+                             HiO
+                             (ReplI (space_family_topology Xi0 i)
+                                    (fun U0:set => product_cylinder omega Xi0 i U0)
+                                    Ui
+                                    HUiIn)). }
+          exact HcylIn.
+        * (** finite F **)
+          claim HINat: nat_p I.
+          { exact (omega_nat_p I HIO). }
+          claim HIfin: finite I.
+          { exact (nat_finite I HINat). }
+          exact (Repl_finite cyl I HIfin).
+	      + (** y :e intersection_of_family X F **)
+	        claim HinterDef: intersection_of_family X F = {x0 :e X|forall U:set, U :e F -> x0 :e U}.
+	        { reflexivity. }
+	        rewrite HinterDef.
+	        apply SepI.
+	        * exact HyX.
+	        * let U0. assume HU0: U0 :e F.
+	          prove y :e U0.
+          claim Hexi: exists i:set, i :e I /\ U0 = cyl i.
+          { exact (ReplE I cyl U0 HU0). }
+          apply Hexi.
+          let i. assume Hiconj.
+          claim HiI: i :e I.
+          { exact (andEL (i :e I) (U0 = cyl i) Hiconj). }
+          claim HU0eq: U0 = cyl i.
+          { exact (andER (i :e I) (U0 = cyl i) Hiconj). }
+          rewrite HU0eq.
+	          claim HiO: i :e omega.
+	          { exact (HIcOmega i HiI). }
+	          set Ui := open_interval (add_SNo (apply_fun y i) (minus_SNo eps))
+	                                  (add_SNo (apply_fun y i) eps).
+	          claim HCdef: cyl i =
+	            {f0 :e product_space omega Xi0 |
+	              i :e omega /\ Ui :e space_family_topology Xi0 i /\ apply_fun f0 i :e Ui}.
+	          { reflexivity. }
+	          rewrite HCdef.
+		          apply SepI.
+		          - exact HyX.
+		          - (** i :e omega /\ Ui :e space_family_topology Xi0 i /\ apply_fun y i :e Ui **)
+		            prove i :e omega /\ Ui :e space_family_topology Xi0 i /\ apply_fun y i :e Ui.
+		            claim HUiTop: Ui :e R_standard_topology.
+		            { (** Ui is a standard open interval **)
+		              claim HyiR: apply_fun y i :e R.
+		              { exact (Romega_coord_in_R y i HyX HiO). }
+		              claim HmeiR: minus_SNo eps :e R.
+		              { exact (real_minus_SNo eps HepsR). }
+		              claim HaR: add_SNo (apply_fun y i) (minus_SNo eps) :e R.
+		              { exact (real_add_SNo (apply_fun y i) HyiR (minus_SNo eps) HmeiR). }
+		              claim HbR: add_SNo (apply_fun y i) eps :e R.
+		              { exact (real_add_SNo (apply_fun y i) HyiR eps HepsR). }
+		              claim HbStd: Ui :e R_standard_basis.
+		              { exact (famunionI R (fun a0:set => {open_interval a0 b|b :e R})
+		                                (add_SNo (apply_fun y i) (minus_SNo eps)) Ui HaR
+		                                (ReplI R (fun b1:set => open_interval (add_SNo (apply_fun y i) (minus_SNo eps)) b1)
+		                                       (add_SNo (apply_fun y i) eps) HbR)). }
+		              exact (generated_topology_contains_basis R R_standard_basis R_standard_basis_is_basis_local Ui HbStd). }
+		            claim HTi: space_family_topology Xi0 i = R_standard_topology.
+		            { claim Hdef0: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+		              { reflexivity. }
+		              rewrite Hdef0.
+		              rewrite (const_space_family_apply omega R R_standard_topology i HiO).
+		              exact (tuple_2_1_eq R R_standard_topology). }
+		            claim HUiIn: Ui :e space_family_topology Xi0 i.
+		            { rewrite HTi.
+		              exact HUiTop. }
+		            claim HyUi: apply_fun y i :e Ui.
+		            { claim HyiR: apply_fun y i :e R.
+		              { exact (Romega_coord_in_R y i HyX HiO). }
+		              claim HyiS: SNo (apply_fun y i).
+		              { exact (real_SNo (apply_fun y i) HyiR). }
+		              claim HepsS: SNo eps.
+		              { exact (real_SNo eps HepsR). }
+		              claim HmepsS: SNo (minus_SNo eps).
+		              { exact (SNo_minus_SNo eps HepsS). }
+		              claim Hlt1: add_SNo (apply_fun y i) (minus_SNo eps) < apply_fun y i.
+		              { rewrite <- (add_SNo_0R (apply_fun y i) HyiS) at 2.
+		                claim HepsPosS: 0 < eps.
+		                { exact (RltE_lt 0 eps HepsPos). }
+		                claim HepsNegS: minus_SNo eps < 0.
+		                { claim Htmp: minus_SNo eps < minus_SNo 0.
+		                  { exact (minus_SNo_Lt_contra 0 eps SNo_0 HepsS HepsPosS). }
+		                  claim Htmp2: minus_SNo eps < 0.
+		                  { rewrite <- minus_SNo_0.
+		                    exact Htmp. }
+		                  exact Htmp2. }
+		                exact (add_SNo_Lt2 (apply_fun y i) (minus_SNo eps) 0 HyiS HmepsS SNo_0 HepsNegS). }
+		              claim Hlt2: apply_fun y i < add_SNo (apply_fun y i) eps.
+		              { rewrite <- (add_SNo_0R (apply_fun y i) HyiS) at 1.
+		                exact (add_SNo_Lt2 (apply_fun y i) 0 eps HyiS SNo_0 HepsS (RltE_lt 0 eps HepsPos)). }
+		              claim Hlt1R: Rlt (add_SNo (apply_fun y i) (minus_SNo eps)) (apply_fun y i).
+		              { exact (RltI (add_SNo (apply_fun y i) (minus_SNo eps)) (apply_fun y i)
+		                           (real_add_SNo (apply_fun y i) HyiR (minus_SNo eps) (real_minus_SNo eps HepsR))
+		                           HyiR
+		                           Hlt1). }
+		              claim Hlt2R: Rlt (apply_fun y i) (add_SNo (apply_fun y i) eps).
+		              { exact (RltI (apply_fun y i) (add_SNo (apply_fun y i) eps)
+		                           HyiR
+		                           (real_add_SNo (apply_fun y i) HyiR eps HepsR)
+		                           Hlt2). }
+		              claim HinterDef: Ui = {x0 :e R | Rlt (add_SNo (apply_fun y i) (minus_SNo eps)) x0 /\ Rlt x0 (add_SNo (apply_fun y i) eps)}.
+		              { reflexivity. }
+		              rewrite HinterDef.
+		              exact (SepI R
+		                          (fun x0:set =>
+		                            Rlt (add_SNo (apply_fun y i) (minus_SNo eps)) x0 /\
+		                            Rlt x0 (add_SNo (apply_fun y i) eps))
+		                          (apply_fun y i)
+		                          HyiR
+		                          (andI (Rlt (add_SNo (apply_fun y i) (minus_SNo eps)) (apply_fun y i))
+		                                (Rlt (apply_fun y i) (add_SNo (apply_fun y i) eps))
+		                                Hlt1R
+		                                Hlt2R)). }
+		            claim Hleft: i :e omega /\ Ui :e space_family_topology Xi0 i.
+		            { exact (andI (i :e omega) (Ui :e space_family_topology Xi0 i) HiO HUiIn). }
+		            exact (andI (i :e omega /\ Ui :e space_family_topology Xi0 i) (apply_fun y i :e Ui) Hleft HyUi).
+	    - (** intersection subset open_ball **)
+	      prove intersection_of_family X F c= open_ball X d x r.
+	      let z. assume HzInt: z :e intersection_of_family X F.
+	      prove z :e open_ball X d x r.
+	      (** unfold intersection_of_family to get z :e X and membership in all cylinders in F **)
+	      claim HinterDefZ: intersection_of_family X F = {x0 :e X|forall U:set, U :e F -> x0 :e U}.
+	      { reflexivity. }
+	      claim HzInt0: z :e {x0 :e X|forall U:set, U :e F -> x0 :e U}.
+	      { rewrite <- HinterDefZ.
+	        exact HzInt. }
+	      claim HzX: z :e X.
+	      { exact (SepE1 X (fun x0:set => forall U:set, U :e F -> x0 :e U) z HzInt0). }
+	      claim HzAll: forall U:set, U :e F -> z :e U.
+	      { exact (SepE2 X (fun x0:set => forall U:set, U :e F -> x0 :e U) z HzInt0). }
+	      (** triangle inequality: d(x,z) <= d(x,y)+d(y,z) **)
+	      claim Htri: Rle (apply_fun d (x,z)) (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z))).
+	      { exact (metric_triangle_Rle X d x y z Hm Hx HyX HzX). }
+	      (** bound d(y,z) by eps and then use eps < gap = r-d(x,y) **)
+	      claim Hyzprod: (y,z) :e setprod X X.
+	      { exact (tuple_2_setprod_by_pair_Sigma X X y z HyX HzX). }
+	      claim Hxyprod2: (x,y) :e setprod X X.
+	      { exact (tuple_2_setprod_by_pair_Sigma X X x y Hx HyX). }
+	      claim Hfun: function_on d (setprod X X) R.
+	      { exact (metric_on_function_on X d Hm). }
+	      claim HdxyR: apply_fun d (x,y) :e R.
+	      { exact (Hfun (x,y) Hxyprod2). }
+	      claim HdyzR: apply_fun d (y,z) :e R.
+	      { exact (Hfun (y,z) Hyzprod). }
+	      claim HdxyEq: apply_fun d (x,y) = Romega_D_metric_value x y.
+	      { rewrite (apply_fun_graph (setprod X X)
+	                                 (fun p:set => Romega_D_metric_value (p 0) (p 1))
+	                                 (x,y)
+	                                 Hxyprod2).
+	        rewrite (tuple_2_0_eq x y).
+	        rewrite (tuple_2_1_eq x y).
+	        reflexivity. }
+	      claim HdyzEq: apply_fun d (y,z) = Romega_D_metric_value y z.
+	      { rewrite (apply_fun_graph (setprod X X)
+	                                 (fun p:set => Romega_D_metric_value (p 0) (p 1))
+	                                 (y,z)
+	                                 Hyzprod).
+	        rewrite (tuple_2_0_eq y z).
+	        rewrite (tuple_2_1_eq y z).
+	        reflexivity. }
+	      (** show d(y,z) <= eps by lub upper bound property **)
+	      claim HdyzLe: Rle (apply_fun d (y,z)) eps.
+	      { rewrite HdyzEq.
+	        set A := Romega_D_scaled_diffs y z.
+	        set l := Romega_D_metric_value y z.
+	        claim Hlub: R_lub A l.
+	        { exact (Romega_D_metric_value_is_lub y z HyX HzX). }
+	        claim HlubCore: l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l.
+	        { exact (andEL (l :e R /\ (forall a:set, a :e A -> a :e R -> Rle a l))
+	                       (forall u:set, u :e R ->
+	                         (forall a:set, a :e A -> a :e R -> Rle a u) ->
+	                         Rle l u)
+	                       Hlub). }
+	        claim HlubMin: forall u:set, u :e R ->
+	          (forall a:set, a :e A -> a :e R -> Rle a u) ->
+	          Rle l u.
+	        { exact (andER (l :e R /\ (forall a:set, a :e A -> a :e R -> Rle a l))
+	                       (forall u:set, u :e R ->
+	                         (forall a:set, a :e A -> a :e R -> Rle a u) ->
+	                         Rle l u)
+	                       Hlub). }
+	        claim Hub: forall a:set, a :e A -> a :e R -> Rle a eps.
+	        { let a. assume HaA: a :e A. assume HaR: a :e R.
+	          apply (ReplE_impred omega
+	                  (fun i0:set => mul_SNo (R_bounded_distance (apply_fun y i0) (apply_fun z i0)) (inv_nat (ordsucc i0)))
+	                  a
+	                  HaA
+	                  (Rle a eps)).
+	          let i0. assume Hi0O: i0 :e omega.
+	          assume Hai0: a = mul_SNo (R_bounded_distance (apply_fun y i0) (apply_fun z i0)) (inv_nat (ordsucc i0)).
+	          rewrite Hai0.
+	          apply (xm (i0 :e I)).
+	          - assume Hi0I: i0 :e I.
+	            (** z lies in the cylinder around y_i0, so its i0-coordinate is eps-close to y_i0 **)
+	            set yi := apply_fun y i0.
+	            set zi := apply_fun z i0.
+	            set Ui0 := open_interval (add_SNo yi (minus_SNo eps)) (add_SNo yi eps).
+	            set bd := R_bounded_distance yi zi.
+	            set inv := inv_nat (ordsucc i0).
+	            claim HyiR: yi :e R.
+	            { exact (Romega_coord_in_R y i0 HyX Hi0O). }
+	            claim HziR: zi :e R.
+	            { exact (Romega_coord_in_R z i0 HzX Hi0O). }
+	            claim HyiS: SNo yi.
+	            { exact (real_SNo yi HyiR). }
+	            claim HziS: SNo zi.
+	            { exact (real_SNo zi HziR). }
+	            claim HepsS: SNo eps.
+	            { exact (real_SNo eps HepsR). }
+	            claim HbdR: bd :e R.
+	            { exact (R_bounded_distance_in_R yi zi HyiR HziR). }
+	            claim HbdS: SNo bd.
+	            { exact (real_SNo bd HbdR). }
+	            claim HSi0: ordsucc i0 :e omega.
+	            { exact (omega_ordsucc i0 Hi0O). }
+	            claim HinvR: inv :e R.
+	            { exact (inv_nat_real (ordsucc i0) HSi0). }
+	            claim HinvS: SNo inv.
+	            { exact (real_SNo inv HinvR). }
+	            claim HmulR: mul_SNo bd inv :e R.
+	            { exact (real_mul_SNo bd HbdR inv HinvR). }
+	            claim HmulS: SNo (mul_SNo bd inv).
+	            { exact (real_SNo (mul_SNo bd inv) HmulR). }
+	            (** obtain zi in Ui0 from cylinder membership **)
+	            claim HcylInF: cyl i0 :e F.
+	            { claim HFdef: F = Repl I cyl.
+	              { reflexivity. }
+	              rewrite HFdef.
+	              exact (ReplI I cyl i0 Hi0I). }
+	            claim HzCyl: z :e cyl i0.
+	            { exact (HzAll (cyl i0) HcylInF). }
+	            claim HzCyl0: z :e product_cylinder omega Xi0 i0 Ui0.
+	            { prove z :e product_cylinder omega Xi0 i0 Ui0.
+	              claim HcylEq: cyl i0 = product_cylinder omega Xi0 i0 Ui0.
+	              { reflexivity. }
+	              rewrite <- HcylEq.
+	              exact HzCyl. }
+	            claim HzCylConj: i0 :e omega /\ Ui0 :e space_family_topology Xi0 i0 /\ apply_fun z i0 :e Ui0.
+	            { exact (SepE2 (product_space omega Xi0)
+	                           (fun f0:set => i0 :e omega /\ Ui0 :e space_family_topology Xi0 i0 /\ apply_fun f0 i0 :e Ui0)
+	                           z
+	                           HzCyl0). }
+	            claim HziUi0: zi :e Ui0.
+	            { apply HzCylConj.
+	              assume Htmp HziUi0.
+	              exact HziUi0. }
+	            (** turn Ui0 membership into bounds **)
+	            claim HUi0Def: Ui0 = {x0 :e R | Rlt (add_SNo yi (minus_SNo eps)) x0 /\ Rlt x0 (add_SNo yi eps)}.
+	            { reflexivity. }
+	            claim HziUi0': zi :e {x0 :e R | Rlt (add_SNo yi (minus_SNo eps)) x0 /\ Rlt x0 (add_SNo yi eps)}.
+	            { rewrite <- HUi0Def.
+	              exact HziUi0. }
+	            claim HziConj: Rlt (add_SNo yi (minus_SNo eps)) zi /\ Rlt zi (add_SNo yi eps).
+	            { exact (SepE2 R (fun x0:set => Rlt (add_SNo yi (minus_SNo eps)) x0 /\ Rlt x0 (add_SNo yi eps)) zi HziUi0'). }
+	            claim HleftR: Rlt (add_SNo yi (minus_SNo eps)) zi.
+	            { exact (andEL (Rlt (add_SNo yi (minus_SNo eps)) zi) (Rlt zi (add_SNo yi eps)) HziConj). }
+	            claim HrightR: Rlt zi (add_SNo yi eps).
+	            { exact (andER (Rlt (add_SNo yi (minus_SNo eps)) zi) (Rlt zi (add_SNo yi eps)) HziConj). }
+	            claim HyimepsR: add_SNo yi (minus_SNo eps) :e R.
+	            { exact (real_add_SNo yi HyiR (minus_SNo eps) (real_minus_SNo eps HepsR)). }
+	            claim HyiepsR: add_SNo yi eps :e R.
+	            { exact (real_add_SNo yi HyiR eps HepsR). }
+	            claim HyimepsS: SNo (add_SNo yi (minus_SNo eps)).
+	            { exact (real_SNo (add_SNo yi (minus_SNo eps)) HyimepsR). }
+	            claim HyiepsS: SNo (add_SNo yi eps).
+	            { exact (real_SNo (add_SNo yi eps) HyiepsR). }
+	            claim HleftS: add_SNo yi (minus_SNo eps) < zi.
+	            { exact (RltE_lt (add_SNo yi (minus_SNo eps)) zi HleftR). }
+	            claim HrightS: zi < add_SNo yi eps.
+	            { exact (RltE_lt zi (add_SNo yi eps) HrightR). }
+	            set t := add_SNo yi (minus_SNo zi).
+	            claim HtR: t :e R.
+	            { exact (real_add_SNo yi HyiR (minus_SNo zi) (real_minus_SNo zi HziR)). }
+	            claim HtS: SNo t.
+	            { exact (real_SNo t HtR). }
+	            (** derive bounds: -eps < t < eps **)
+	            claim HmYiS: SNo (minus_SNo yi).
+	            { exact (SNo_minus_SNo yi HyiS). }
+	            claim HmZiS: SNo (minus_SNo zi).
+	            { exact (SNo_minus_SNo zi HziS). }
+	            claim HmepsS: SNo (minus_SNo eps).
+	            { exact (SNo_minus_SNo eps HepsS). }
+	            (** from zi < yi+eps get -eps < yi-zi **)
+	            claim HdiffLt1: add_SNo (minus_SNo yi) zi < add_SNo (minus_SNo yi) (add_SNo yi eps).
+	            { exact (add_SNo_Lt2 (minus_SNo yi) zi (add_SNo yi eps) HmYiS HziS HyiepsS HrightS). }
+	            claim HdiffLt2: add_SNo zi (minus_SNo yi) < eps.
+	            { prove add_SNo zi (minus_SNo yi) < eps.
+	              rewrite <- (add_SNo_com (minus_SNo yi) zi HmYiS HziS) at 1.
+	              claim HRhs: add_SNo (minus_SNo yi) (add_SNo yi eps) = eps.
+	              { claim Hassoc: add_SNo (minus_SNo yi) (add_SNo yi eps) = add_SNo (add_SNo (minus_SNo yi) yi) eps.
+	                { exact (add_SNo_assoc (minus_SNo yi) yi eps HmYiS HyiS HepsS). }
+	                rewrite Hassoc.
+	                rewrite (add_SNo_minus_SNo_linv yi HyiS).
+	                rewrite (add_SNo_0L eps HepsS).
+	                reflexivity. }
+	              rewrite <- HRhs.
+	              exact HdiffLt1. }
+	            claim HmDiff: minus_SNo eps < minus_SNo (add_SNo zi (minus_SNo yi)).
+	            { exact (minus_SNo_Lt_contra (add_SNo zi (minus_SNo yi)) eps
+	                                        (SNo_add_SNo zi (minus_SNo yi) HziS HmYiS)
+	                                        HepsS
+	                                        HdiffLt2). }
+	            claim HmDiffEq: minus_SNo (add_SNo zi (minus_SNo yi)) = t.
+	            { rewrite (minus_add_SNo_distr zi (minus_SNo yi) HziS HmYiS).
+	              rewrite (minus_SNo_invol yi HyiS).
+	              rewrite (add_SNo_com (minus_SNo zi) yi HmZiS HyiS).
+	              reflexivity. }
+	            claim HloLt: minus_SNo eps < t.
+	            { rewrite <- HmDiffEq.
+	              exact HmDiff. }
+	            (** from yi-eps < zi get t < eps **)
+	            claim HdiffLt3: add_SNo (minus_SNo yi) (add_SNo yi (minus_SNo eps)) < add_SNo (minus_SNo yi) zi.
+	            { exact (add_SNo_Lt2 (minus_SNo yi) (add_SNo yi (minus_SNo eps)) zi
+	                                HmYiS HyimepsS HziS HleftS). }
+	            claim HdiffLt4: minus_SNo eps < add_SNo zi (minus_SNo yi).
+	            { prove minus_SNo eps < add_SNo zi (minus_SNo yi).
+	              rewrite <- (add_SNo_com (minus_SNo yi) zi HmYiS HziS).
+	              claim HLhs: add_SNo (minus_SNo yi) (add_SNo yi (minus_SNo eps)) = minus_SNo eps.
+	              { claim Hassoc2: add_SNo (minus_SNo yi) (add_SNo yi (minus_SNo eps)) = add_SNo (add_SNo (minus_SNo yi) yi) (minus_SNo eps).
+	                { exact (add_SNo_assoc (minus_SNo yi) yi (minus_SNo eps) HmYiS HyiS HmepsS). }
+	                rewrite Hassoc2.
+	                rewrite (add_SNo_minus_SNo_linv yi HyiS).
+	                rewrite (add_SNo_0L (minus_SNo eps) HmepsS).
+	                reflexivity. }
+	              rewrite <- HLhs at 1.
+	              exact HdiffLt3. }
+	            claim HtLt: t < eps.
+	            { rewrite <- HmDiffEq.
+	              rewrite <- (minus_SNo_invol eps HepsS).
+	              exact (minus_SNo_Lt_contra (minus_SNo eps) (add_SNo zi (minus_SNo yi))
+	                                        HmepsS
+	                                        (SNo_add_SNo zi (minus_SNo yi) HziS HmYiS)
+	                                        HdiffLt4). }
+	            claim Hlo: minus_SNo eps <= t.
+	            { exact (SNoLtLe (minus_SNo eps) t HloLt). }
+	            claim Hhi: t <= eps.
+	            { exact (SNoLtLe t eps HtLt). }
+	            claim HabsLe: abs_SNo t <= eps.
+	            { exact (abs_SNo_Le_of_bounds t eps HtS HepsS Hlo Hhi). }
+	            claim HabsR: abs_SNo t :e R.
+	            { exact (abs_SNo_in_R t HtR). }
+	            claim HabsS: SNo (abs_SNo t).
+	            { exact (SNo_abs_SNo t HtS). }
+	            (** bd = abs t since abs t < 1 **)
+	            claim HepsLt1S: eps < 1.
+	            { exact (RltE_lt eps 1 HepsLt1). }
+	            claim HabsLt1S: abs_SNo t < 1.
+	            { exact (SNoLeLt_tra (abs_SNo t) eps 1 HabsS HepsS SNo_1 HabsLe HepsLt1S). }
+	            claim HabsLt1R: Rlt (abs_SNo t) 1.
+	            { exact (RltI (abs_SNo t) 1 HabsR real_1 HabsLt1S). }
+	            claim HbdEq: bd = abs_SNo t.
+	            { claim HbdDef: bd =
+	                If_i (Rlt (abs_SNo (add_SNo yi (minus_SNo zi))) 1)
+	                     (abs_SNo (add_SNo yi (minus_SNo zi)))
+	                     1.
+	              { reflexivity. }
+	              rewrite HbdDef.
+	              rewrite (If_i_1 (Rlt (abs_SNo (add_SNo yi (minus_SNo zi))) 1)
+	                              (abs_SNo (add_SNo yi (minus_SNo zi)))
+	                              1
+	                              HabsLt1R).
+	              reflexivity. }
+	            claim HbdLe: bd <= eps.
+	            { rewrite HbdEq.
+	              exact HabsLe. }
+	            (** inv <= 1 and inv >= 0 **)
+	            claim HsuccNotIn0: ordsucc i0 /:e {0}.
+	            { assume Hin0: ordsucc i0 :e {0}.
+	              claim Heq0: ordsucc i0 = 0.
+	              { exact (SingE 0 (ordsucc i0) Hin0). }
+	              exact (neq_ordsucc_0 i0 Heq0). }
+	            claim HiIn: ordsucc i0 :e omega :\: {0}.
+	            { exact (setminusI omega {0} (ordsucc i0) HSi0 HsuccNotIn0). }
+	            claim HinvRle1: Rle inv 1.
+	            { exact (inv_nat_Rle_1 (ordsucc i0) HiIn). }
+	            claim HinvLe1: inv <= 1.
+	            { apply (SNoLt_trichotomy_or_impred inv 1 HinvS SNo_1 (inv <= 1)).
+	              - assume Hlt: inv < 1.
+	                exact (SNoLtLe inv 1 Hlt).
+	              - assume Heq: inv = 1.
+	                rewrite Heq.
+	                exact (SNoLe_ref 1).
+	              - assume H1lt: 1 < inv.
+	                apply FalseE.
+	                claim HinvRlt: Rlt 1 inv.
+	                { exact (RltI 1 inv real_1 HinvR H1lt). }
+	                exact ((RleE_nlt inv 1 HinvRle1) HinvRlt). }
+	            claim HinvPosR: Rlt 0 inv.
+	            { exact (inv_nat_pos (ordsucc i0) HiIn). }
+	            claim HinvPosS: 0 < inv.
+	            { exact (RltE_lt 0 inv HinvPosR). }
+	            claim HinvNN: 0 <= inv.
+	            { exact (SNoLtLe 0 inv HinvPosS). }
+	            claim HbdNN: 0 <= bd.
+	            { exact (R_bounded_distance_nonneg yi zi HyiR HziR). }
+	            claim HmulLe: mul_SNo bd inv <= eps.
+	            { claim HmulLe': mul_SNo bd inv <= mul_SNo eps 1.
+	              { exact (nonneg_mul_SNo_Le2 bd inv eps 1 HbdS HinvS HepsS SNo_1 HbdNN HinvNN HbdLe HinvLe1). }
+	              prove mul_SNo bd inv <= eps.
+	              rewrite <- (mul_SNo_oneR eps HepsS).
+	              exact HmulLe'. }
+	            exact (Rle_of_SNoLe (mul_SNo bd inv) eps HmulR HepsR HmulLe).
+	          - assume Hnot: ~(i0 :e I).
+	            (** for i0 outside I, inv_nat(ordsucc i0) is small enough so the scaled diff is <= eps **)
+	            set yi := apply_fun y i0.
+	            set zi := apply_fun z i0.
+	            set bd := R_bounded_distance yi zi.
+	            set inv := inv_nat (ordsucc i0).
+	            claim HyiR: yi :e R.
+	            { exact (Romega_coord_in_R y i0 HyX Hi0O). }
+	            claim HziR: zi :e R.
+	            { exact (Romega_coord_in_R z i0 HzX Hi0O). }
+	            claim HyiS: SNo yi.
+	            { exact (real_SNo yi HyiR). }
+	            claim HziS: SNo zi.
+	            { exact (real_SNo zi HziR). }
+	            claim HbdR: bd :e R.
+	            { exact (R_bounded_distance_in_R yi zi HyiR HziR). }
+	            claim HbdS: SNo bd.
+	            { exact (real_SNo bd HbdR). }
+	            claim HSi0: ordsucc i0 :e omega.
+	            { exact (omega_ordsucc i0 Hi0O). }
+	            claim HinvR: inv :e R.
+	            { exact (inv_nat_real (ordsucc i0) HSi0). }
+	            claim HinvS: SNo inv.
+	            { exact (real_SNo inv HinvR). }
+	            claim HmulR: mul_SNo bd inv :e R.
+	            { exact (real_mul_SNo bd HbdR inv HinvR). }
+	            (** show inv < eps using antitonicity, since i0 is outside I = ordsucc N **)
+	            claim Hi0Ord: ordinal i0.
+	            { exact (ordinal_Hered omega omega_ordinal i0 Hi0O). }
+	            claim HIdef0: I = ordsucc N.
+	            { reflexivity. }
+	            claim HNOrd: ordinal N.
+	            { exact (ordinal_Hered omega omega_ordinal N HNO). }
+	            claim HIOrd: ordinal I.
+	            { rewrite HIdef0.
+	              exact (ordinal_ordsucc N HNOrd). }
+	            claim Hcases: i0 :e I \/ I c= i0.
+	            { exact (ordinal_In_Or_Subq i0 I Hi0Ord HIOrd). }
+	            claim HIc: I c= i0.
+	            { apply (Hcases (I c= i0)).
+	              - assume Hi0InI: i0 :e I.
+	                apply FalseE.
+	                exact (Hnot Hi0InI).
+	              - assume Hsub: I c= i0.
+	                exact Hsub. }
+	            claim HNInI: N :e I.
+	            { rewrite HIdef0.
+	              exact (ordsuccI2 N). }
+	            claim HNi0: N :e i0.
+	            { exact (HIc N HNInI). }
+	            claim HinvLtN: Rlt (inv_nat (ordsucc i0)) (inv_nat (ordsucc N)).
+	            { exact (inv_nat_ordsucc_antitone N i0 HNO Hi0O HNi0). }
+	            claim HinvLt: Rlt (inv_nat (ordsucc i0)) eps.
+	            { exact (Rlt_tra (inv_nat (ordsucc i0)) (inv_nat (ordsucc N)) eps HinvLtN HinvNLt). }
+	            claim HepsS: SNo eps.
+	            { exact (real_SNo eps HepsR). }
+	            claim HinvLtS: inv < eps.
+	            { exact (RltE_lt inv eps HinvLt). }
+	            claim HinvLe: inv <= eps.
+	            { exact (SNoLtLe inv eps HinvLtS). }
+	            (** bound mul by inv since bd <= 1 **)
+	            claim HbdLe1R: Rle bd 1.
+	            { exact (R_bounded_distance_le_1 yi zi HyiR HziR). }
+	            claim HbdLe1: bd <= 1.
+	            { apply (SNoLt_trichotomy_or_impred bd 1 HbdS SNo_1 (bd <= 1)).
+	              - assume Hlt: bd < 1.
+	                exact (SNoLtLe bd 1 Hlt).
+	              - assume Heq: bd = 1.
+	                rewrite Heq.
+	                exact (SNoLe_ref 1).
+	              - assume H1lt: 1 < bd.
+	                apply FalseE.
+	                claim HbdRlt: Rlt 1 bd.
+	                { exact (RltI 1 bd real_1 HbdR H1lt). }
+	                exact ((RleE_nlt bd 1 HbdLe1R) HbdRlt). }
+	            claim HinvPosR: Rlt 0 inv.
+	            { set mi := ordsucc i0.
+	              claim HmiNotIn0: mi /:e {0}.
+	              { assume Hin0: mi :e {0}.
+	                claim Heq0: mi = 0.
+	                { exact (SingE 0 mi Hin0). }
+	                exact (neq_ordsucc_0 i0 Heq0). }
+	              claim HmiIn: mi :e omega :\: {0}.
+	              { exact (setminusI omega {0} mi HSi0 HmiNotIn0). }
+	              exact (inv_nat_pos mi HmiIn). }
+	            claim HinvPosS: 0 < inv.
+	            { exact (RltE_lt 0 inv HinvPosR). }
+	            claim HinvNN: 0 <= inv.
+	            { exact (SNoLtLe 0 inv HinvPosS). }
+	            claim HmulLeInv: mul_SNo bd inv <= inv.
+	            { exact (mul_SNo_Le1_nonneg_Le bd inv HbdS HinvS HbdLe1 HinvNN). }
+	            claim HmulS: SNo (mul_SNo bd inv).
+	            { exact (real_SNo (mul_SNo bd inv) HmulR). }
+	            claim HmulLe: mul_SNo bd inv <= eps.
+	            { exact (SNoLe_tra (mul_SNo bd inv) inv eps HmulS HinvS HepsS HmulLeInv HinvLe). }
+	            exact (Rle_of_SNoLe (mul_SNo bd inv) eps HmulR HepsR HmulLe). }
+	        claim Hle': Rle l eps.
+	        { exact (HlubMin eps HepsR Hub). }
+	        exact Hle'. }
+	      claim HsumLe: Rle (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z)))
+	                       (add_SNo (apply_fun d (x,y)) eps).
+	      { exact (Rle_add_SNo_2 (apply_fun d (x,y)) (apply_fun d (y,z)) eps HdxyR HdyzR HepsR HdyzLe). }
+	      (** show d(x,y) + eps < r using eps < gap and (d(x,y)+gap)=r **)
+	      claim HgapLt: Rlt eps gap.
+	      { exact HepsLtGap. }
+	      claim HsumLt': Rlt (add_SNo (apply_fun d (x,y)) eps) r.
+	      { claim HdxyS: SNo (apply_fun d (x,y)).
+	        { exact (real_SNo (apply_fun d (x,y)) HdxyR). }
+	        claim HepsS: SNo eps.
+	        { exact (real_SNo eps HepsR). }
+	        claim HrS: SNo r.
+	        { exact (real_SNo r HrR). }
+	        claim HgapR: gap :e R.
+	        { exact (RltE_right eps gap HgapLt). }
+	        claim HgapS: SNo gap.
+	        { exact (real_SNo gap HgapR). }
+	        claim HepsltgapS: eps < gap.
+	        { exact (RltE_lt eps gap HgapLt). }
+	        claim HsumLtS: add_SNo (apply_fun d (x,y)) eps < add_SNo (apply_fun d (x,y)) gap.
+	        { exact (add_SNo_Lt2 (apply_fun d (x,y)) eps gap HdxyS HepsS HgapS HepsltgapS). }
+	        claim HgapDef: gap = add_SNo r (minus_SNo (apply_fun d (x,y))).
+	        { reflexivity. }
+	        claim HsumEq: add_SNo (apply_fun d (x,y)) gap = r.
+	        { rewrite HgapDef.
+	          claim HmdxyS: SNo (minus_SNo (apply_fun d (x,y))).
+	          { exact (SNo_minus_SNo (apply_fun d (x,y)) HdxyS). }
+	          rewrite (add_SNo_assoc (apply_fun d (x,y)) r (minus_SNo (apply_fun d (x,y)))
+	                               HdxyS HrS HmdxyS).
+	          claim Hcom: add_SNo (apply_fun d (x,y)) r = add_SNo r (apply_fun d (x,y)).
+	          { exact (add_SNo_com (apply_fun d (x,y)) r HdxyS HrS). }
+	          rewrite Hcom at 1.
+	          rewrite <- (add_SNo_assoc r (apply_fun d (x,y)) (minus_SNo (apply_fun d (x,y)))
+	                                HrS HdxyS HmdxyS).
+	          rewrite (add_SNo_minus_SNo_rinv (apply_fun d (x,y)) HdxyS).
+	          rewrite (add_SNo_0R r HrS).
+	          reflexivity. }
+	        claim HsumLtS2: add_SNo (apply_fun d (x,y)) eps < r.
+	        { rewrite <- HsumEq.
+	          exact HsumLtS. }
+	        claim HsumR: add_SNo (apply_fun d (x,y)) eps :e R.
+	        { exact (real_add_SNo (apply_fun d (x,y)) HdxyR eps HepsR). }
+	        exact (RltI (add_SNo (apply_fun d (x,y)) eps) r HsumR HrR HsumLtS2). }
+	      claim HsumLt: Rlt (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z))) r.
+	      { exact (Rle_Rlt_tra (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z)))
+	                           (add_SNo (apply_fun d (x,y)) eps)
+	                           r
+	                           HsumLe
+	                           HsumLt'). }
+	      claim HdxzLt: Rlt (apply_fun d (x,z)) r.
+	      { exact (Rle_Rlt_tra (apply_fun d (x,z))
+	                           (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z)))
+	                           r
+	                           Htri
+	                           HsumLt). }
+	      exact (open_ballI X d x r z HzX HdxzLt). }
+  apply HexF.
+  let F. assume HFcore.
+  claim HFleft: F :e finite_subcollections S /\ y :e intersection_of_family X F.
+  { apply HFcore.
+    assume HFleft HFsub.
+    exact HFleft. }
+  claim HFsub: intersection_of_family X F c= open_ball X d x r.
+  { apply HFcore.
+    assume HFleft HFsub.
+    exact HFsub. }
+  claim HF: F :e finite_subcollections S.
+  { apply HFleft.
+    assume HF HyIn.
+    exact HF. }
+  claim HyIn: y :e intersection_of_family X F.
+  { apply HFleft.
+    assume HF HyIn.
+    exact HyIn. }
+  witness (intersection_of_family X F).
+  apply andI.
+  - prove intersection_of_family X F :e B.
+	    claim Hnon: intersection_of_family X F <> Empty.
+	    { assume Heq: intersection_of_family X F = Empty.
+	      prove False.
+	      claim HyE: y :e Empty.
+	      { rewrite <- Heq.
+	        exact HyIn. }
+	      exact (EmptyE y HyE). }
+    exact (finite_intersection_in_basis X S F HF Hnon).
+  - apply andI.
+    + exact HyIn.
+    + exact HFsub.
+Qed.
+
+(** helper: cylinder subbasis sets are open in the D metric topology **)
+(** LATEX VERSION: For the D metric, each cylinder set fixing one coordinate to be in an open interval is D-metric-open. **)
+Theorem Romega_product_cylinder_in_D_metric_topology : forall i U:set,
+  metric_on R_omega_space Romega_D_metric ->
+  i :e omega -> U :e R_standard_topology ->
+  product_cylinder omega (const_space_family omega R R_standard_topology) i U :e Romega_D_metric_topology.
+let i U.
+assume Hm: metric_on R_omega_space Romega_D_metric.
+assume Hi: i :e omega.
+assume HU: U :e R_standard_topology.
+set Xi0 := const_space_family omega R R_standard_topology.
+set C := product_cylinder omega Xi0 i U.
+set X := R_omega_space.
+set d := Romega_D_metric.
+claim HXeq: X = product_space omega Xi0.
+{ reflexivity. }
+set Tm := metric_topology X d.
+set B := famunion X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}).
+claim HTm: topology_on X Tm.
+{ exact (metric_topology_is_topology X d Hm). }
+prove C :e Tm.
+claim HTdef: Tm = generated_topology X B.
+{ reflexivity. }
+rewrite HTdef.
+prove C :e generated_topology X B.
+claim Hgendef: generated_topology X B =
+  {U0 :e Power X | forall x :e U0, exists b :e B, x :e b /\ b c= U0}.
+{ reflexivity. }
+rewrite Hgendef.
+apply SepI.
+- prove C :e Power X.
+  apply PowerI.
+  let f. assume HfC: f :e C.
+  prove f :e X.
+  rewrite HXeq.
+  exact (SepE1 (product_space omega Xi0)
+               (fun g0:set => i :e omega /\ U :e space_family_topology Xi0 i /\ apply_fun g0 i :e U)
+               f HfC).
+- let f. assume HfC: f :e C.
+  prove exists b :e B, f :e b /\ b c= C.
+  claim HfX: f :e X.
+  { rewrite HXeq.
+    exact (SepE1 (product_space omega Xi0)
+                 (fun g0:set => i :e omega /\ U :e space_family_topology Xi0 i /\ apply_fun g0 i :e U)
+                 f HfC). }
+  claim Hfprop: i :e omega /\ U :e space_family_topology Xi0 i /\ apply_fun f i :e U.
+  { exact (SepE2 (product_space omega Xi0)
+                 (fun g0:set => i :e omega /\ U :e space_family_topology Xi0 i /\ apply_fun g0 i :e U)
+                 f HfC). }
+  claim Hcore: i :e omega /\ U :e space_family_topology Xi0 i.
+  { exact (andEL (i :e omega /\ U :e space_family_topology Xi0 i) (apply_fun f i :e U) Hfprop). }
+  claim HfiU: apply_fun f i :e U.
+  { exact (andER (i :e omega /\ U :e space_family_topology Xi0 i) (apply_fun f i :e U) Hfprop). }
+  claim HUpow: U :e Power R.
+  { exact (SepE1 (Power R)
+                 (fun U0:set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+                 U HU). }
+  claim HUneigh: forall x0 :e U, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U.
+  { exact (SepE2 (Power R)
+                 (fun U0:set => forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0)
+                 U HU). }
+  claim Hexb0: exists b0 :e R_standard_basis, apply_fun f i :e b0 /\ b0 c= U.
+  { exact (HUneigh (apply_fun f i) HfiU). }
+  apply Hexb0.
+  let b0. assume Hb0pair. apply Hb0pair.
+  assume Hb0Std: b0 :e R_standard_basis.
+  assume Hb0prop: apply_fun f i :e b0 /\ b0 c= U.
+  claim Hxib0: apply_fun f i :e b0.
+  { exact (andEL (apply_fun f i :e b0) (b0 c= U) Hb0prop). }
+  claim Hb0subU: b0 c= U.
+  { exact (andER (apply_fun f i :e b0) (b0 c= U) Hb0prop). }
+  claim Hexa: exists a :e R, b0 :e {open_interval a b|b :e R}.
+  { exact (famunionE R (fun a0:set => {open_interval a0 b|b :e R}) b0 Hb0Std). }
+  apply Hexa.
+  let a. assume Hapair. apply Hapair.
+  assume HaR: a :e R.
+  assume Hb0fam: b0 :e {open_interval a b|b :e R}.
+  claim Hexb: exists b :e R, b0 = open_interval a b.
+  { exact (ReplE R (fun b1:set => open_interval a b1) b0 Hb0fam). }
+  apply Hexb.
+  let b. assume Hbpair. apply Hbpair.
+  assume HbR: b :e R.
+  assume Hb0eq: b0 = open_interval a b.
+  claim Hxib0': apply_fun f i :e open_interval a b.
+  { rewrite <- Hb0eq.
+    exact Hxib0. }
+  claim Hxiprop: Rlt a (apply_fun f i) /\ Rlt (apply_fun f i) b.
+  { exact (SepE2 R (fun x0:set => Rlt a x0 /\ Rlt x0 b) (apply_fun f i) Hxib0'). }
+  claim Hailt: Rlt a (apply_fun f i).
+  { exact (andEL (Rlt a (apply_fun f i)) (Rlt (apply_fun f i) b) Hxiprop). }
+  claim Hiltb: Rlt (apply_fun f i) b.
+  { exact (andER (Rlt a (apply_fun f i)) (Rlt (apply_fun f i) b) Hxiprop). }
+  claim HexBall: exists r0:set, r0 :e R /\ Rlt 0 r0 /\ open_ball X d f r0 c= C.
+  { (** choose r0 so that the i coordinate stays in open_interval a b (hence in U) **)
+    set xi := apply_fun f i.
+    claim HxiR: xi :e R.
+    { exact (Romega_coord_in_R f i HfX Hi). }
+    claim HaS: SNo a.
+    { exact (real_SNo a HaR). }
+    claim HbS: SNo b.
+    { exact (real_SNo b HbR). }
+    claim HxiS: SNo xi.
+    { exact (real_SNo xi HxiR). }
+    set m1 := add_SNo xi (minus_SNo a).
+    set m2 := add_SNo b (minus_SNo xi).
+    claim Hm1R: m1 :e R.
+    { exact (real_add_SNo xi HxiR (minus_SNo a) (real_minus_SNo a HaR)). }
+	    claim Hm2R: m2 :e R.
+	    { exact (real_add_SNo b HbR (minus_SNo xi) (real_minus_SNo xi HxiR)). }
+	    claim Hm1pos: Rlt 0 m1.
+	    { claim Haxlt: a < xi.
+	      { exact (RltE_lt a xi Hailt). }
+	      claim Hm1posS: 0 < m1.
+	      { claim HmaS: SNo (minus_SNo a).
+	        { exact (SNo_minus_SNo a HaS). }
+	        claim Hlt: add_SNo (minus_SNo a) a < add_SNo (minus_SNo a) xi.
+	        { exact (add_SNo_Lt2 (minus_SNo a) a xi HmaS HaS HxiS Haxlt). }
+	        claim H0eq: add_SNo (minus_SNo a) a = 0.
+	        { exact (add_SNo_minus_SNo_linv a HaS). }
+	        claim Hm1eq: add_SNo (minus_SNo a) xi = m1.
+	        { claim Hcom: add_SNo (minus_SNo a) xi = add_SNo xi (minus_SNo a).
+	          { exact (add_SNo_com (minus_SNo a) xi HmaS HxiS). }
+	          rewrite Hcom.
+	          reflexivity. }
+	        rewrite <- H0eq at 1.
+	        rewrite <- Hm1eq at 1.
+	        exact Hlt. }
+	      exact (RltI 0 m1 real_0 Hm1R Hm1posS). }
+	    claim Hm2pos: Rlt 0 m2.
+	    { claim Hxblt: xi < b.
+	      { exact (RltE_lt xi b Hiltb). }
+	      claim Hm2posS: 0 < m2.
+	      { claim HmxiS: SNo (minus_SNo xi).
+	        { exact (SNo_minus_SNo xi HxiS). }
+	        claim Hlt: add_SNo (minus_SNo xi) xi < add_SNo (minus_SNo xi) b.
+	        { exact (add_SNo_Lt2 (minus_SNo xi) xi b HmxiS HxiS HbS Hxblt). }
+	        claim H0eq: add_SNo (minus_SNo xi) xi = 0.
+	        { exact (add_SNo_minus_SNo_linv xi HxiS). }
+	        claim Hm2eq: add_SNo (minus_SNo xi) b = m2.
+	        { claim Hcom: add_SNo (minus_SNo xi) b = add_SNo b (minus_SNo xi).
+	          { exact (add_SNo_com (minus_SNo xi) b HmxiS HbS). }
+	          rewrite Hcom.
+	          reflexivity. }
+	        rewrite <- H0eq at 1.
+	        rewrite <- Hm2eq at 1.
+	        exact Hlt. }
+	      exact (RltI 0 m2 real_0 Hm2R Hm2posS). }
+    claim H1R: 1 :e R.
+    { exact real_1. }
+    claim H1pos: Rlt 0 1.
+    { exact Rlt_0_1. }
+    claim Hexr3: exists r3:set, r3 :e R /\ Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 1 /\ Rlt r3 1.
+    { exact (exists_eps_lt_four_pos_Euclid m1 m2 1 1 Hm1R Hm2R H1R H1R Hm1pos Hm2pos H1pos H1pos). }
+	    apply Hexr3.
+	    let r3.
+	    assume Hr3conj: r3 :e R /\ Rlt 0 r3 /\ Rlt r3 m1 /\ Rlt r3 m2 /\ Rlt r3 1 /\ Rlt r3 1.
+	    claim Hr3top: ((((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2) /\ Rlt r3 1) /\ Rlt r3 1.
+	    { exact Hr3conj. }
+	    claim Hr3top1: (((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2) /\ Rlt r3 1.
+	    { apply Hr3top.
+	      assume Hr3top1 Hr3lt1b.
+	      exact Hr3top1. }
+	    claim Hr3top2: ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1) /\ Rlt r3 m2.
+	    { apply Hr3top1.
+	      assume Hr3top2 Hr3lt1.
+	      exact Hr3top2. }
+	    claim Hr3top3: (r3 :e R /\ Rlt 0 r3) /\ Rlt r3 m1.
+	    { apply Hr3top2.
+	      assume Hr3top3 Hr3m2.
+	      exact Hr3top3. }
+	    claim Hr3pair: r3 :e R /\ Rlt 0 r3.
+	    { apply Hr3top3.
+	      assume Hr3pair Hr3m1.
+	      exact Hr3pair. }
+	    claim Hr3R: r3 :e R.
+	    { apply Hr3pair.
+	      assume Hr3R Hr3pos.
+	      exact Hr3R. }
+	    claim Hr3pos: Rlt 0 r3.
+	    { apply Hr3pair.
+	      assume Hr3R Hr3pos.
+	      exact Hr3pos. }
+	    claim Hr3lt1b: Rlt r3 1.
+	    { apply Hr3top.
+	      assume Hr3top1 Hr3lt1b.
+	      exact Hr3lt1b. }
+	    claim Hr3lt1: Rlt r3 1.
+	    { apply Hr3top1.
+	      assume Hr3top2 Hr3lt1.
+	      exact Hr3lt1. }
+	    claim Hr3m2lt: Rlt r3 m2.
+	    { apply Hr3top2.
+	      assume Hr3top3 Hr3m2lt.
+	      exact Hr3m2lt. }
+	    claim Hr3m1lt: Rlt r3 m1.
+	    { apply Hr3top3.
+	      assume Hr3pair Hr3m1lt.
+	      exact Hr3m1lt. }
+	    set inv := inv_nat (ordsucc i).
+	    claim Hisuc: ordsucc i :e omega.
+	    { exact (omega_ordsucc i Hi). }
+	    claim HsuccNotIn0: ordsucc i /:e {0}.
+	    { assume Hin0: ordsucc i :e {0}.
+	      claim Heq: ordsucc i = 0.
+	      { exact (SingE 0 (ordsucc i) Hin0). }
+	      exact (neq_ordsucc_0 i Heq). }
+	    claim HiIn: ordsucc i :e omega :\: {0}.
+	    { exact (setminusI omega {0} (ordsucc i) Hisuc HsuccNotIn0). }
+	    claim HinvR: inv :e R.
+	    { exact (inv_nat_real (ordsucc i) Hisuc). }
+	    claim HinvPosR: Rlt 0 inv.
+	    { exact (inv_nat_pos (ordsucc i) HiIn). }
+	    set r0 := mul_SNo r3 inv.
+	    claim Hr0R: r0 :e R.
+	    { exact (real_mul_SNo r3 Hr3R inv HinvR). }
+	    claim Hr0pos: Rlt 0 r0.
+	    { claim Hr3S: SNo r3.
+	      { exact (real_SNo r3 Hr3R). }
+	      claim HinvS: SNo inv.
+	      { exact (real_SNo inv HinvR). }
+	      claim Hr3posS: 0 < r3.
+	      { exact (RltE_lt 0 r3 Hr3pos). }
+	      claim HinvPosS: 0 < inv.
+	      { exact (RltE_lt 0 inv HinvPosR). }
+	      claim Hr0posS: 0 < r0.
+	      { exact (mul_SNo_pos_pos r3 inv Hr3S HinvS Hr3posS HinvPosS). }
+	      exact (RltI 0 r0 real_0 Hr0R Hr0posS). }
+    witness r0.
+	    apply andI.
+	    - apply andI.
+	      + exact Hr0R.
+	      + exact Hr0pos.
+	    - (** open_ball subset cylinder **)
+	      let g. assume Hgball: g :e open_ball X d f r0.
+	      prove g :e C.
+	      claim HgX: g :e X.
+	      { exact (open_ballE1 X d f r0 g Hgball). }
+	      claim Hgprod: g :e product_space omega Xi0.
+	      { rewrite <- HXeq.
+	        exact HgX. }
+	      claim HCdef: C =
+	        {f0 :e product_space omega Xi0 |
+	          (i :e omega /\ U :e space_family_topology Xi0 i) /\ apply_fun f0 i :e U}.
+	      { reflexivity. }
+		      rewrite HCdef.
+		      apply SepI.
+		      - exact Hgprod.
+			      - (** show (i :e omega /\ U :e space_family_topology Xi0 i) /\ apply_fun g i :e U **)
+			        prove (i :e omega /\ U :e space_family_topology Xi0 i) /\ apply_fun g i :e U.
+			        claim Hleft: i :e omega /\ U :e space_family_topology Xi0 i.
+			        { apply andI.
+			          - exact Hi.
+			          - claim HTi: space_family_topology Xi0 i = R_standard_topology.
+			            { claim Hdef: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+			              { reflexivity. }
+			              rewrite Hdef.
+			              rewrite (const_space_family_apply omega R R_standard_topology i Hi).
+			              exact (tuple_2_1_eq R R_standard_topology). }
+			            rewrite HTi.
+			            exact HU. }
+			        apply (andI (i :e omega /\ U :e space_family_topology Xi0 i) (apply_fun g i :e U)).
+			        - exact Hleft.
+			        - (** reduce to showing the i-th coordinate stays in the interval neighborhood b0 c= U **)
+			          claim HgiR: apply_fun g i :e R.
+			          { exact (Romega_coord_in_R g i HgX Hi). }
+			          claim Hfgprod: (f,g) :e setprod X X.
+			          { exact (tuple_2_setprod_by_pair_Sigma X X f g HfX HgX). }
+			          claim Hdapp: apply_fun d (f,g) = Romega_D_metric_value f g.
+			          { rewrite (apply_fun_graph (setprod X X)
+			                                     (fun p:set => Romega_D_metric_value (p 0) (p 1))
+			                                     (f,g)
+			                                     Hfgprod).
+			            rewrite (tuple_2_0_eq f g).
+			            rewrite (tuple_2_1_eq f g).
+			            reflexivity. }
+			          claim Hltball: Rlt (apply_fun d (f,g)) r0.
+			          { exact (open_ballE2 X d f r0 g Hgball). }
+			          claim Hltval: Rlt (Romega_D_metric_value f g) r0.
+			          { rewrite <- Hdapp.
+			            exact Hltball. }
+				          claim Habfg: abs_SNo (add_SNo xi (minus_SNo (apply_fun g i))) < r3.
+				          { claim Hr0eq: r0 = mul_SNo r3 (inv_nat (ordsucc i)).
+				            { reflexivity. }
+				            claim Hltval2: Rlt (Romega_D_metric_value f g) (mul_SNo r3 (inv_nat (ordsucc i))).
+				            { rewrite <- Hr0eq.
+				              exact Hltval. }
+				            exact (Romega_D_metric_coord_abs_lt f g i r3 HfX HgX Hi Hr3R Hr3pos Hr3lt1 Hltval2). }
+				          claim Hgib: apply_fun g i :e open_interval a b.
+				          { set t := add_SNo xi (minus_SNo (apply_fun g i)).
+				            claim Hr3S: SNo r3.
+				            { exact (real_SNo r3 Hr3R). }
+				            claim Hr3posS: 0 < r3.
+				            { exact (RltE_lt 0 r3 Hr3pos). }
+				            claim Hm1S: SNo m1.
+				            { exact (real_SNo m1 Hm1R). }
+				            claim Hm2S: SNo m2.
+				            { exact (real_SNo m2 Hm2R). }
+				            claim Hr3m1ltS: r3 < m1.
+				            { exact (RltE_lt r3 m1 Hr3m1lt). }
+				            claim Hr3m2ltS: r3 < m2.
+				            { exact (RltE_lt r3 m2 Hr3m2lt). }
+				            claim HgiS: SNo (apply_fun g i).
+				            { exact (real_SNo (apply_fun g i) HgiR). }
+				            claim HmtS: SNo (minus_SNo (apply_fun g i)).
+				            { exact (SNo_minus_SNo (apply_fun g i) HgiS). }
+				            claim HtS: SNo t.
+				            { exact (SNo_add_SNo xi (minus_SNo (apply_fun g i)) HxiS HmtS). }
+				            claim Htlt: t < r3.
+				            { exact (abs_SNo_lt_imp_lt t r3 HtS Hr3S Hr3posS Habfg). }
+				            claim Hmtlt: minus_SNo t < r3.
+				            { exact (abs_SNo_lt_imp_neg_lt t r3 HtS Hr3S Hr3posS Habfg). }
+				            claim HinterDef: open_interval a b = {x0 :e R | Rlt a x0 /\ Rlt x0 b}.
+				            { reflexivity. }
+				            rewrite HinterDef.
+				            apply SepI.
+				            - exact HgiR.
+				            - prove Rlt a (apply_fun g i) /\ Rlt (apply_fun g i) b.
+				              apply andI.
+				              + (** a < g_i from xi - g_i < r3 < xi - a **)
+				                prove Rlt a (apply_fun g i).
+				                claim Htltm1: t < m1.
+				                { exact (SNoLt_tra t r3 m1 HtS Hr3S Hm1S Htlt Hr3m1ltS). }
+				                claim HmaS: SNo (minus_SNo a).
+				                { exact (SNo_minus_SNo a HaS). }
+				                claim Htdef: t = add_SNo xi (minus_SNo (apply_fun g i)).
+				                { reflexivity. }
+				                claim Hm1def: m1 = add_SNo xi (minus_SNo a).
+				                { reflexivity. }
+				                claim Htltm1': add_SNo xi (minus_SNo (apply_fun g i)) < add_SNo xi (minus_SNo a).
+				                { rewrite <- Htdef.
+				                  rewrite <- Hm1def.
+				                  exact Htltm1. }
+				                claim Hneglt: minus_SNo (apply_fun g i) < minus_SNo a.
+				                { exact (add_SNo_Lt2_cancel xi (minus_SNo (apply_fun g i)) (minus_SNo a)
+				                                          HxiS HmtS HmaS Htltm1'). }
+				                claim Hnegneg: minus_SNo (minus_SNo a) < minus_SNo (minus_SNo (apply_fun g i)).
+				                { exact (minus_SNo_Lt_contra (minus_SNo (apply_fun g i)) (minus_SNo a) HmtS HmaS Hneglt). }
+				                claim Hainv: minus_SNo (minus_SNo a) = a.
+				                { exact (minus_SNo_invol a HaS). }
+				                claim Hgiinv: minus_SNo (minus_SNo (apply_fun g i)) = apply_fun g i.
+				                { exact (minus_SNo_invol (apply_fun g i) HgiS). }
+				                claim HaltS: a < apply_fun g i.
+				                { rewrite <- Hainv at 1.
+				                  rewrite <- Hgiinv.
+				                  exact Hnegneg. }
+				                exact (RltI a (apply_fun g i) HaR HgiR HaltS).
+				              + (** g_i < b from g_i - xi < r3 < b - xi **)
+				                prove Rlt (apply_fun g i) b.
+				                claim Hmtltm2: minus_SNo t < m2.
+				                { exact (SNoLt_tra (minus_SNo t) r3 m2
+				                                   (SNo_minus_SNo t HtS) Hr3S Hm2S
+				                                   Hmtlt Hr3m2ltS). }
+				                claim HmxiS: SNo (minus_SNo xi).
+				                { exact (SNo_minus_SNo xi HxiS). }
+				                claim Hm2def: m2 = add_SNo b (minus_SNo xi).
+				                { reflexivity. }
+				                claim Hnegtdistr: minus_SNo t = add_SNo (minus_SNo xi) (minus_SNo (minus_SNo (apply_fun g i))).
+				                { exact (minus_add_SNo_distr xi (minus_SNo (apply_fun g i)) HxiS HmtS). }
+				                claim Hgiinv2: minus_SNo (minus_SNo (apply_fun g i)) = apply_fun g i.
+				                { exact (minus_SNo_invol (apply_fun g i) HgiS). }
+				                claim Hnegteq: minus_SNo t = add_SNo (minus_SNo xi) (apply_fun g i).
+				                { rewrite <- Hgiinv2 at 2.
+				                  exact Hnegtdistr. }
+				                claim Hnegteq2: add_SNo (apply_fun g i) (minus_SNo xi) = minus_SNo t.
+				                { claim Hcom: add_SNo (minus_SNo xi) (apply_fun g i) = add_SNo (apply_fun g i) (minus_SNo xi).
+				                  { exact (add_SNo_com (minus_SNo xi) (apply_fun g i) HmxiS HgiS). }
+				                  rewrite <- Hcom.
+				                  rewrite <- Hnegteq.
+				                  reflexivity. }
+				                claim Hineq: add_SNo (apply_fun g i) (minus_SNo xi) < add_SNo b (minus_SNo xi).
+				                { rewrite Hnegteq2.
+				                  rewrite <- Hm2def.
+				                  exact Hmtltm2. }
+				                claim HltS: apply_fun g i < b.
+				                { exact (add_SNo_Lt1_cancel (apply_fun g i) (minus_SNo xi) b HgiS HmxiS HbS Hineq). }
+				                exact (RltI (apply_fun g i) b HgiR HbR HltS). }
+			          claim HgiB0: apply_fun g i :e b0.
+			          { rewrite Hb0eq.
+			            exact Hgib. }
+			          exact (Hb0subU (apply_fun g i) HgiB0). }
+  apply HexBall.
+  let r0. assume Hr0pair.
+  apply Hr0pair.
+  assume Hr0left Hr0sub.
+  apply Hr0left.
+  assume Hr0R Hr0pos.
+  set bset := open_ball X d f r0.
+  witness bset.
+  apply andI.
+  - prove bset :e B.
+    claim HbIn: bset :e {open_ball X d f r|r :e R, Rlt 0 r}.
+    { exact (ReplSepI R (fun r:set => Rlt 0 r) (fun r:set => open_ball X d f r) r0 Hr0R Hr0pos). }
+    exact (famunionI X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}) f bset HfX HbIn).
+  - apply andI.
+    + prove f :e bset.
+      exact (center_in_open_ball X d f r0 Hm HfX Hr0pos).
+    + exact Hr0sub.
+Qed.
+
+Theorem Romega_D_metric_induces_product_topology :
+  metric_on R_omega_space Romega_D_metric /\
+  Romega_D_metric_topology = R_omega_product_topology.
+prove metric_on R_omega_space Romega_D_metric /\
+  Romega_D_metric_topology = R_omega_product_topology.
+claim Hm: metric_on R_omega_space Romega_D_metric.
+{ (** metric_on part (partial) **)
+  prove metric_on R_omega_space Romega_D_metric.
+  prove ((((function_on Romega_D_metric (setprod R_omega_space R_omega_space) R /\
+           (forall x y:set, x :e R_omega_space -> y :e R_omega_space ->
+              apply_fun Romega_D_metric (x,y) = apply_fun Romega_D_metric (y,x))) /\
+          (forall x:set, x :e R_omega_space -> apply_fun Romega_D_metric (x,x) = 0)) /\
+         (forall x y:set, x :e R_omega_space -> y :e R_omega_space ->
+            ~(Rlt (apply_fun Romega_D_metric (x,y)) 0)
+            /\ (apply_fun Romega_D_metric (x,y) = 0 -> x = y))) /\
+        (forall x y z:set, x :e R_omega_space -> y :e R_omega_space -> z :e R_omega_space ->
+           ~(Rlt (add_SNo (apply_fun Romega_D_metric (x,y)) (apply_fun Romega_D_metric (y,z)))
+                 (apply_fun Romega_D_metric (x,z))))).
+  apply andI.
+  + apply andI.
+    * apply andI.
+      - apply andI.
+        { exact Romega_D_metric_function_on. }
+        { let x y.
+          assume Hx: x :e R_omega_space.
+          assume Hy: y :e R_omega_space.
+          claim Hxyprod: (x,y) :e setprod R_omega_space R_omega_space.
+          { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space x y Hx Hy). }
+          claim Hyxprod: (y,x) :e setprod R_omega_space R_omega_space.
+          { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space y x Hy Hx). }
+          rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+                                   (fun p:set => Romega_D_metric_value (p 0) (p 1))
+                                   (x,y)
+                                   Hxyprod).
+          rewrite (tuple_2_0_eq x y).
+          rewrite (tuple_2_1_eq x y).
+          rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+                                   (fun p:set => Romega_D_metric_value (p 0) (p 1))
+                                   (y,x)
+                                   Hyxprod).
+          rewrite (tuple_2_0_eq y x).
+          rewrite (tuple_2_1_eq y x).
+          exact (Romega_D_metric_value_sym x y Hx Hy). }
+      - let x.
+        assume Hx: x :e R_omega_space.
+        claim Hxxprod: (x,x) :e setprod R_omega_space R_omega_space.
+        { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space x x Hx Hx). }
+        rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+                                 (fun p:set => Romega_D_metric_value (p 0) (p 1))
+                                 (x,x)
+                                 Hxxprod).
+        rewrite (tuple_2_0_eq x x).
+	        rewrite (tuple_2_1_eq x x).
+	        exact (Romega_D_metric_value_self_zero x Hx).
+	    * let x y.
+	      assume Hx: x :e R_omega_space.
+	      assume Hy: y :e R_omega_space.
+	      apply andI.
+	      { claim Hxyprod: (x,y) :e setprod R_omega_space R_omega_space.
+	        { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space x y Hx Hy). }
+	        rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+	                                 (fun p:set => Romega_D_metric_value (p 0) (p 1))
+	                                 (x,y)
+	                                 Hxyprod).
+	        rewrite (tuple_2_0_eq x y).
+		        rewrite (tuple_2_1_eq x y).
+		        exact (Romega_D_metric_value_nonneg x y Hx Hy). }
+		      { assume H0: apply_fun Romega_D_metric (x,y) = 0.
+		        claim Hxyprod: (x,y) :e setprod R_omega_space R_omega_space.
+		        { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space x y Hx Hy). }
+		        claim Happ: apply_fun Romega_D_metric (x,y) = Romega_D_metric_value x y.
+		        { rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+		                                   (fun p:set => Romega_D_metric_value (p 0) (p 1))
+		                                   (x,y)
+		                                   Hxyprod).
+		          rewrite (tuple_2_0_eq x y).
+		          rewrite (tuple_2_1_eq x y).
+		          reflexivity. }
+		        claim Hval0: Romega_D_metric_value x y = 0.
+		        { rewrite <- Happ.
+		          exact H0. }
+			        claim Hcoord: forall i:set, i :e omega -> apply_fun x i = apply_fun y i.
+			        { let i.
+			          assume HiO: i :e omega.
+			          exact (Romega_D_metric_value_eq0_coord_eq x y Hx Hy Hval0 i HiO). }
+			        prove x = y.
+			        set Xi0 := const_space_family omega R R_standard_topology.
+			        set U0 := space_family_union omega Xi0.
+			        claim HxPow: x :e Power (setprod omega U0).
+			        { exact (SepE1 (Power (setprod omega U0))
+			                       (fun f0:set => (total_function_on f0 omega U0 /\ functional_graph f0) /\
+			                         forall j:set, j :e omega -> apply_fun f0 j :e space_family_set Xi0 j)
+			                       x
+			                       Hx). }
+			        claim HyPow: y :e Power (setprod omega U0).
+			        { exact (SepE1 (Power (setprod omega U0))
+			                       (fun f0:set => (total_function_on f0 omega U0 /\ functional_graph f0) /\
+			                         forall j:set, j :e omega -> apply_fun f0 j :e space_family_set Xi0 j)
+			                       y
+			                       Hy). }
+			        claim HxSub: x c= setprod omega U0.
+			        { exact (PowerE (setprod omega U0) x HxPow). }
+			        claim HySub: y c= setprod omega U0.
+			        { exact (PowerE (setprod omega U0) y HyPow). }
+			        claim HxPack: (total_function_on x omega U0 /\ functional_graph x) /\
+			                      forall j:set, j :e omega -> apply_fun x j :e space_family_set Xi0 j.
+			        { exact (SepE2 (Power (setprod omega U0))
+			                       (fun f0:set => (total_function_on f0 omega U0 /\ functional_graph f0) /\
+			                         forall j:set, j :e omega -> apply_fun f0 j :e space_family_set Xi0 j)
+			                       x
+			                       Hx). }
+			        claim HyPack: (total_function_on y omega U0 /\ functional_graph y) /\
+			                      forall j:set, j :e omega -> apply_fun y j :e space_family_set Xi0 j.
+			        { exact (SepE2 (Power (setprod omega U0))
+			                       (fun f0:set => (total_function_on f0 omega U0 /\ functional_graph f0) /\
+			                         forall j:set, j :e omega -> apply_fun f0 j :e space_family_set Xi0 j)
+			                       y
+			                       Hy). }
+			        claim HxCore: total_function_on x omega U0 /\ functional_graph x.
+			        { exact (andEL (total_function_on x omega U0 /\ functional_graph x)
+			                       (forall j:set, j :e omega -> apply_fun x j :e space_family_set Xi0 j)
+			                       HxPack). }
+			        claim HyCore: total_function_on y omega U0 /\ functional_graph y.
+			        { exact (andEL (total_function_on y omega U0 /\ functional_graph y)
+			                       (forall j:set, j :e omega -> apply_fun y j :e space_family_set Xi0 j)
+			                       HyPack). }
+			        claim HxTot: total_function_on x omega U0.
+			        { exact (andEL (total_function_on x omega U0) (functional_graph x) HxCore). }
+			        claim HxFG: functional_graph x.
+			        { exact (andER (total_function_on x omega U0) (functional_graph x) HxCore). }
+			        claim HyTot: total_function_on y omega U0.
+			        { exact (andEL (total_function_on y omega U0) (functional_graph y) HyCore). }
+			        claim HyFG: functional_graph y.
+			        { exact (andER (total_function_on y omega U0) (functional_graph y) HyCore). }
+			        apply set_ext.
+			        - let p. assume Hp: p :e x.
+			          prove p :e y.
+			          claim HpXY: p :e setprod omega U0.
+			          { exact (HxSub p Hp). }
+			          claim Heta: p = (p 0, p 1).
+			          { exact (setprod_eta omega U0 p HpXY). }
+			          claim Hp0: p 0 :e omega.
+			          { exact (ap0_Sigma omega (fun _ : set => U0) p HpXY). }
+			          claim Hp1: p 1 :e U0.
+			          { exact (ap1_Sigma omega (fun _ : set => U0) p HpXY). }
+			          claim Hpair: (p 0, p 1) :e x.
+			          { rewrite <- Heta.
+			            exact Hp. }
+			          claim Happx: apply_fun x (p 0) = (p 1).
+			          { exact (functional_graph_apply_fun_eq x (p 0) (p 1) HxFG Hpair). }
+			          claim Hxy: apply_fun y (p 0) = apply_fun x (p 0).
+			          { symmetry.
+			            exact (Hcoord (p 0) Hp0). }
+			          claim Happy: apply_fun y (p 0) = (p 1).
+			          { rewrite Hxy.
+			            exact Happx. }
+			          claim Hypair: (p 0, apply_fun y (p 0)) :e y.
+			          { exact (total_function_on_apply_fun_in_graph y omega U0 (p 0) HyTot Hp0). }
+			          claim Hpeq: (p 0, apply_fun y (p 0)) = (p 0, p 1).
+			          { rewrite Happy.
+			            reflexivity. }
+			          rewrite Heta.
+			          rewrite <- Hpeq.
+			          exact Hypair.
+			        - let p. assume Hp: p :e y.
+			          prove p :e x.
+			          claim HpXY: p :e setprod omega U0.
+			          { exact (HySub p Hp). }
+			          claim Heta: p = (p 0, p 1).
+			          { exact (setprod_eta omega U0 p HpXY). }
+			          claim Hp0: p 0 :e omega.
+			          { exact (ap0_Sigma omega (fun _ : set => U0) p HpXY). }
+			          claim Hp1: p 1 :e U0.
+			          { exact (ap1_Sigma omega (fun _ : set => U0) p HpXY). }
+			          claim Hpair: (p 0, p 1) :e y.
+			          { rewrite <- Heta.
+			            exact Hp. }
+			          claim Happy: apply_fun y (p 0) = (p 1).
+			          { exact (functional_graph_apply_fun_eq y (p 0) (p 1) HyFG Hpair). }
+			          claim Hyx: apply_fun x (p 0) = apply_fun y (p 0).
+			          { exact (Hcoord (p 0) Hp0). }
+			          claim Happx: apply_fun x (p 0) = (p 1).
+			          { rewrite Hyx.
+			            exact Happy. }
+			          claim Hxpair: (p 0, apply_fun x (p 0)) :e x.
+			          { exact (total_function_on_apply_fun_in_graph x omega U0 (p 0) HxTot Hp0). }
+			          claim Hpeq: (p 0, apply_fun x (p 0)) = (p 0, p 1).
+			          { rewrite Happx.
+			            reflexivity. }
+			          rewrite Heta.
+			          rewrite <- Hpeq.
+			          exact Hxpair. }
+				  + let x y z.
+				    assume Hx: x :e R_omega_space.
+				    assume Hy: y :e R_omega_space.
+				    assume Hz: z :e R_omega_space.
+				    claim Hxyprod: (x,y) :e setprod R_omega_space R_omega_space.
+				    { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space x y Hx Hy). }
+				    claim Hyzprod: (y,z) :e setprod R_omega_space R_omega_space.
+				    { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space y z Hy Hz). }
+				    claim Hxzprod: (x,z) :e setprod R_omega_space R_omega_space.
+				    { exact (tuple_2_setprod_by_pair_Sigma R_omega_space R_omega_space x z Hx Hz). }
+				    rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+				                             (fun p:set => Romega_D_metric_value (p 0) (p 1))
+				                             (x,y)
+				                             Hxyprod).
+				    rewrite (tuple_2_0_eq x y).
+				    rewrite (tuple_2_1_eq x y).
+				    rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+				                             (fun p:set => Romega_D_metric_value (p 0) (p 1))
+				                             (y,z)
+				                             Hyzprod).
+				    rewrite (tuple_2_0_eq y z).
+				    rewrite (tuple_2_1_eq y z).
+				    rewrite (apply_fun_graph (setprod R_omega_space R_omega_space)
+				                             (fun p:set => Romega_D_metric_value (p 0) (p 1))
+				                             (x,z)
+				                             Hxzprod).
+				    rewrite (tuple_2_0_eq x z).
+				    rewrite (tuple_2_1_eq x z).
+				    exact (Romega_D_metric_value_triangle x y z Hx Hy Hz).
+}
+apply andI.
+- exact Hm.
+- (** topology equality part **)
+  prove Romega_D_metric_topology = R_omega_product_topology.
+  apply set_ext.
+  + let U. assume HU: U :e Romega_D_metric_topology.
+    prove U :e R_omega_product_topology.
+    set X := R_omega_space.
+    set d := Romega_D_metric.
+    set B := famunion X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}).
+    claim HBasis: basis_on X B.
+    { exact (open_balls_form_basis X d Hm). }
+    claim HTprod: topology_on X R_omega_product_topology.
+    { exact Romega_product_topology_is_topology. }
+    claim Hballsub: forall b :e B, b :e R_omega_product_topology.
+    { let b. assume HbB: b :e B.
+      apply (famunionE_impred X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}) b HbB
+             (b :e R_omega_product_topology)).
+      let x0. assume Hx0X: x0 :e X.
+      assume HbIn: b :e {open_ball X d x0 r|r :e R, Rlt 0 r}.
+      apply (ReplSepE_impred R (fun r0:set => Rlt 0 r0) (fun r0:set => open_ball X d x0 r0) b HbIn
+             (b :e R_omega_product_topology)).
+      let r0. assume Hr0R: r0 :e R.
+      assume Hr0pos: Rlt 0 r0.
+      assume Hbeq: b = open_ball X d x0 r0.
+      rewrite Hbeq.
+      exact (Romega_D_metric_open_ball_in_product_topology x0 r0 Hm Hx0X Hr0R Hr0pos). }
+    claim Hfiner: finer_than R_omega_product_topology (generated_topology X B).
+    { exact (generated_topology_finer X B R_omega_product_topology HBasis HTprod Hballsub). }
+    claim Hinc: generated_topology X B c= R_omega_product_topology.
+    { exact Hfiner. }
+    claim Hdef: Romega_D_metric_topology = generated_topology X B.
+    { reflexivity. }
+    claim HUgen: U :e generated_topology X B.
+    { rewrite <- Hdef.
+      exact HU. }
+    exact (Hinc U HUgen).
+  + let U. assume HU: U :e R_omega_product_topology.
+    prove U :e Romega_D_metric_topology.
+    set X := R_omega_space.
+    set d := Romega_D_metric.
+    set Xi0 := const_space_family omega R R_standard_topology.
+    set S := product_subbasis_full omega Xi0.
+    claim HdefProd: R_omega_product_topology = generated_topology_from_subbasis X S.
+    { reflexivity. }
+    claim Hone: omega <> Empty.
+    { claim H0o: 0 :e omega.
+      { exact (nat_p_omega 0 nat_0). }
+      exact (elem_implies_nonempty omega 0 H0o). }
+    claim Hcomp: forall i:set, i :e omega -> topology_on (space_family_set Xi0 i) (space_family_topology Xi0 i).
+    { let i. assume Hi: i :e omega.
+      claim HXi: apply_fun Xi0 i = (R, R_standard_topology).
+      { exact (const_space_family_apply omega R R_standard_topology i Hi). }
+      claim Hset: space_family_set Xi0 i = R.
+      { claim Hdef: space_family_set Xi0 i = (apply_fun Xi0 i) 0.
+        { reflexivity. }
+        rewrite Hdef.
+        rewrite HXi.
+        exact (tuple_2_0_eq R R_standard_topology). }
+      claim Htop: topology_on R R_standard_topology.
+      { exact R_standard_topology_is_topology. }
+      rewrite Hset.
+      claim HtopEq: space_family_topology Xi0 i = R_standard_topology.
+      { claim Hdef: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+        { reflexivity. }
+        rewrite Hdef.
+        rewrite HXi.
+        exact (tuple_2_1_eq R R_standard_topology). }
+      rewrite HtopEq.
+      exact Htop. }
+    claim HSsub: subbasis_on X S.
+    { exact (product_subbasis_full_subbasis_on omega Xi0 Hone Hcomp). }
+    claim HTm: topology_on X Romega_D_metric_topology.
+    { exact (metric_topology_is_topology X d Hm). }
+    claim HSc: S c= Romega_D_metric_topology.
+    { let s. assume HsS: s :e S.
+      prove s :e Romega_D_metric_topology.
+      apply (famunionE_impred omega (fun i:set => {product_cylinder omega Xi0 i U|U :e space_family_topology Xi0 i})
+              s HsS (s :e Romega_D_metric_topology)).
+      let i. assume Hi: i :e omega.
+      assume Hsi: s :e {product_cylinder omega Xi0 i U|U :e space_family_topology Xi0 i}.
+      apply (ReplE_impred (space_family_topology Xi0 i) (fun U0:set => product_cylinder omega Xi0 i U0) s Hsi).
+      let U0. assume HU0Top: U0 :e space_family_topology Xi0 i.
+      assume Hseq: s = product_cylinder omega Xi0 i U0.
+      rewrite Hseq.
+      claim HtopEq: space_family_topology Xi0 i = R_standard_topology.
+      { claim HXi: apply_fun Xi0 i = (R, R_standard_topology).
+        { exact (const_space_family_apply omega R R_standard_topology i Hi). }
+        claim Hdef: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+        { reflexivity. }
+        rewrite Hdef.
+        rewrite HXi.
+        exact (tuple_2_1_eq R R_standard_topology). }
+      claim HU0std: U0 :e R_standard_topology.
+      { rewrite <- HtopEq.
+        exact HU0Top. }
+      exact (Romega_product_cylinder_in_D_metric_topology i U0 Hm Hi HU0std). }
+    claim Hmin: finer_than Romega_D_metric_topology (generated_topology_from_subbasis X S).
+    { exact (topology_generated_by_basis_is_minimal X S Romega_D_metric_topology HSsub HTm HSc). }
+    claim Hinc: generated_topology_from_subbasis X S c= Romega_D_metric_topology.
+    { exact Hmin. }
+    claim HUgen: U :e generated_topology_from_subbasis X S.
+    { rewrite <- HdefProd.
+      exact HU. }
+    exact (Hinc U HUgen).
+ 	Qed.
+
+
+
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
 Definition open_cover : set -> set -> set -> prop :=
   fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
