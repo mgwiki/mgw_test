@@ -11118,10 +11118,9 @@ claim HPred :
     c0 :e EuclidPlane /\ Rlt 0 r0 /\
     {p :e EuclidPlane|Rlt (distance_R2 p c) r} = {p :e EuclidPlane|Rlt (distance_R2 p c0) r0}.
 { witness c. witness r.
-  apply andI.
-  - apply andI.
-    + exact Hc.
-    + exact Hr.
+  apply and3I.
+  - exact Hc.
+  - exact Hr.
   - reflexivity. }
 exact (SepI (Power EuclidPlane)
             (fun U0 : set =>
@@ -11166,22 +11165,12 @@ claim HPred :
         = {p :e EuclidPlane|exists x y:set, p = (x,y) /\ Rlt a0 x /\ Rlt x b0 /\ Rlt c0 y /\ Rlt y d0}.
 { witness a. witness b. witness c. witness d.
   apply andI.
-  - (** a:eR /\ b:eR /\ c:eR /\ d:eR /\ Rlt a b /\ Rlt c d **)
-    apply andI.
-    + (** a:eR /\ b:eR /\ c:eR /\ d:eR /\ Rlt a b **)
-      apply andI.
-      * (** a:eR /\ b:eR /\ c:eR /\ d:eR **)
-        apply andI.
-        { (** a:eR /\ b:eR /\ c:eR **)
-          apply andI.
-          - (** a:eR /\ b:eR **)
-            apply andI.
-            + exact Ha.
-            + exact Hb.
-          - exact Hc.
-        }
-        { exact Hd. }
-      * exact Hab.
+  - apply and6I.
+    + exact Ha.
+    + exact Hb.
+    + exact Hc.
+    + exact Hd.
+    + exact Hab.
     + exact Hcd.
   - reflexivity. }
 exact (SepI (Power EuclidPlane)
