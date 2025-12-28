@@ -48351,6 +48351,8 @@ apply andI.
 - exact Hsub.
 Qed.
 
+(** from §20: metric topology induced by a metric **)
+(** LATEX VERSION: If d is a metric on X, the collection of all epsilon balls B_d(x,eps) forms a basis for a topology on X, called the metric topology induced by d. **)
 Definition metric_topology : set -> set -> set := fun X d =>
   generated_topology X (famunion X (fun x => {open_ball X d x r|r :e R, Rlt 0 r})).
 
@@ -49070,6 +49072,8 @@ apply set_ext.
   exact (ReplI U (fun x0:set => apply_fun (compose_fun X f g) x0) x HxU).
 Qed.
 
+(** from §21: convergence in metric spaces **)
+(** LATEX VERSION: In a metric space, a sequence converges to x if for every eps>0 there exists N such that d(x_n,x) < eps for all n >= N. **)
 (** FIXED: Removed extra parentheses around pair argument to d metric. **)
 Definition sequence_converges_metric : set -> set -> set -> set -> prop :=
   fun X d seq x =>
@@ -49328,7 +49332,9 @@ apply xm (x = y).
   exact (Htri HsumltR).
 Qed.
 
-(** uniform convergence of function sequences between metric spaces **) 
+(** from §21: uniform convergence of sequences of functions **)
+(** LATEX VERSION: A sequence of functions f_n:X->Y converges uniformly to f if for each eps>0 there exists N such that d_Y(f_n(x),f(x)) < eps for all n>=N and all x in X. **)
+(** uniform convergence of function sequences between metric spaces **)
 Definition uniform_convergence_functions :
   set -> set -> set -> set -> set -> set -> prop :=
   fun X dX Y dY f_seq f =>
