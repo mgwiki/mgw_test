@@ -65710,28 +65710,15 @@ apply iffI.
         forall i:set, i :e J -> (i0,i) :e le -> apply_fun (compose_fun J net f) i :e V.
 	  apply andI.
 	  - (** core data **)
-	    (** core goal is left-associated: (((((A /\ B) /\ C) /\ D) /\ E) /\ F) **)
-	    apply andI.
-	    + (** ((((A /\ B) /\ C) /\ D) /\ E) **)
-	      apply andI.
-	      * (** (((A /\ B) /\ C) /\ D) **)
-	        apply andI.
-	        { (** ((A /\ B) /\ C) **)
-	          apply andI.
-	          - (** (A /\ B) **)
-		            apply andI.
-		            + exact HTy.
-		            + exact HdirJ.
-		          - (** C: total_function_on comp **)
-		            claim Hnetfun: function_on net J X.
-		            { exact (total_function_on_function_on net J X Htot). }
-		            exact (total_function_on_compose_fun J X Y net f Hnetfun HfXY). }
-		        { (** D: functional_graph comp **)
-		          exact (functional_graph_compose_fun J net f). }
-		      * (** E: graph_domain_subset comp **)
-		        exact (graph_domain_subset_compose_fun J net f).
-		    + (** F: f(x) :e Y **)
-		      exact (HfXY x HxX).
+	    apply and6I.
+	    + exact HTy.
+	    + exact HdirJ.
+	    + claim Hnetfun: function_on net J X.
+	      { exact (total_function_on_function_on net J X Htot). }
+	      exact (total_function_on_compose_fun J X Y net f Hnetfun HfXY).
+	    + exact (functional_graph_compose_fun J net f).
+	    + exact (graph_domain_subset_compose_fun J net f).
+	    + exact (HfXY x HxX).
 	  - (** tail for composed net **)
     let V.
     assume HV: V :e Ty.
