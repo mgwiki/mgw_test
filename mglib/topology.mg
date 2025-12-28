@@ -77826,7 +77826,15 @@ Qed.
 (** LATEX VERSION: The Sorgenfrey line is Lindelöf. **)
 Theorem Sorgenfrey_line_Lindelof : Lindelof_space Sorgenfrey_line Sorgenfrey_topology.
 prove Lindelof_space Sorgenfrey_line Sorgenfrey_topology.
-admit. (** FAIL **)
+prove topology_on Sorgenfrey_line Sorgenfrey_topology /\
+  forall U:set, open_cover Sorgenfrey_line Sorgenfrey_topology U ->
+    exists V:set, countable_subcollection V U /\ covers Sorgenfrey_line V.
+apply andI.
+- exact R_lower_limit_topology_is_topology.
+- let U.
+  assume HU: open_cover Sorgenfrey_line Sorgenfrey_topology U.
+  (** TODO: Lindelof subcover extraction for the lower limit topology. **)
+  admit. (** FAIL **)
 Qed.
 
 Theorem Sorgenfrey_line_countability :
