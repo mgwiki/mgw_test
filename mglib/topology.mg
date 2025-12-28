@@ -68658,10 +68658,129 @@ apply (Subq_countable (basis_of_subbasis X S) (finite_intersections_of X S)).
   exact (SepE1 (finite_intersections_of X S) (fun b0:set => b0 <> Empty) b Hb).
 Qed.
 (** LATEX VERSION: Real sequences and uniform metric/topology on R^ω (setup). **)
-(** FIXED: real_sequences is setexp R omega (functions omega -> R), not Power R; uses setexp from TRUSTED_DEFS.txt. **)
-Definition real_sequences : set := setexp R omega.
-Definition uniform_metric_Romega : set := Eps_i (fun d => metric_on real_sequences d).
-Definition uniform_topology : set := metric_topology real_sequences uniform_metric_Romega.
+(** FIXED: real_sequences is the set of total single-valued graphs omega -> R. **)
+Definition real_sequences : set :=
+  {f :e Power (setprod omega R) | total_function_on f omega R /\ functional_graph f}.
+
+(** helper: extensionality for real_sequences by pointwise apply_fun equality **)
+Theorem real_sequences_ext : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  (forall n:set, n :e omega -> apply_fun f n = apply_fun g n) ->
+  f = g.
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+assume Hagree: forall n:set, n :e omega -> apply_fun f n = apply_fun g n.
+claim HfPow: f :e Power (setprod omega R).
+{ exact (SepE1 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               f Hf). }
+claim HgPow: g :e Power (setprod omega R).
+{ exact (SepE1 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               g Hg). }
+claim HfSub: f c= setprod omega R.
+{ exact (PowerE (setprod omega R) f HfPow). }
+claim HgSub: g c= setprod omega R.
+{ exact (PowerE (setprod omega R) g HgPow). }
+claim Hfpack: total_function_on f omega R /\ functional_graph f.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               f Hf). }
+claim Hgpack: total_function_on g omega R /\ functional_graph g.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun g0:set => total_function_on g0 omega R /\ functional_graph g0)
+               g Hg). }
+claim Hftot: total_function_on f omega R.
+{ exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+claim Hgtot: total_function_on g omega R.
+{ exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+claim Hffun: functional_graph f.
+{ exact (andER (total_function_on f omega R) (functional_graph f) Hfpack). }
+claim Hgfun: functional_graph g.
+{ exact (andER (total_function_on g omega R) (functional_graph g) Hgpack). }
+claim Hgtot2: forall n:set, n :e omega -> exists y:set, y :e R /\ (n,y) :e g.
+{ exact (andER (function_on g omega R)
+               (forall x:set, x :e omega -> exists y:set, y :e R /\ (x,y) :e g)
+               Hgtot). }
+claim Hftot2: forall n:set, n :e omega -> exists y:set, y :e R /\ (n,y) :e f.
+{ exact (andER (function_on f omega R)
+               (forall x:set, x :e omega -> exists y:set, y :e R /\ (x,y) :e f)
+               Hftot). }
+apply set_ext.
+- let p. assume Hp: p :e f.
+  prove p :e g.
+  claim HpXY: p :e setprod omega R.
+  { exact (HfSub p Hp). }
+  claim Heta: p = (p 0, p 1).
+  { exact (setprod_eta omega R p HpXY). }
+  claim Hp0: p 0 :e omega.
+  { exact (ap0_Sigma omega (fun _ : set => R) p HpXY). }
+  claim Hp1: p 1 :e R.
+  { exact (ap1_Sigma omega (fun _ : set => R) p HpXY). }
+  claim Hpair: (p 0, p 1) :e f.
+  { rewrite <- Heta.
+    exact Hp. }
+  claim Happf: apply_fun f (p 0) = (p 1).
+  { exact (functional_graph_apply_fun_eq f (p 0) (p 1) Hffun Hpair). }
+  claim Hfg: apply_fun f (p 0) = apply_fun g (p 0).
+  { exact (Hagree (p 0) Hp0). }
+  claim Hgf: apply_fun g (p 0) = apply_fun f (p 0).
+  { symmetry.
+    exact Hfg. }
+  claim Happg: apply_fun g (p 0) = (p 1).
+  { rewrite Hgf.
+    exact Happf. }
+  claim Hexg: exists y:set, (p 0, y) :e g.
+  { apply (Hgtot2 (p 0) Hp0).
+    let y.
+    assume Hy: y :e R /\ (p 0, y) :e g.
+    witness y.
+    exact (andER (y :e R) ((p 0, y) :e g) Hy). }
+  claim Hgpair: (p 0, apply_fun g (p 0)) :e g.
+  { exact (apply_fun_in_graph_of_ex g (p 0) Hexg). }
+  claim Hpeq: (p 0, apply_fun g (p 0)) = (p 0, p 1).
+  { rewrite Happg.
+    reflexivity. }
+  rewrite Heta.
+  rewrite <- Hpeq.
+  exact Hgpair.
+- let p. assume Hp: p :e g.
+  prove p :e f.
+  claim HpXY: p :e setprod omega R.
+  { exact (HgSub p Hp). }
+  claim Heta: p = (p 0, p 1).
+  { exact (setprod_eta omega R p HpXY). }
+  claim Hp0: p 0 :e omega.
+  { exact (ap0_Sigma omega (fun _ : set => R) p HpXY). }
+  claim Hp1: p 1 :e R.
+  { exact (ap1_Sigma omega (fun _ : set => R) p HpXY). }
+  claim Hpair: (p 0, p 1) :e g.
+  { rewrite <- Heta.
+    exact Hp. }
+  claim Happg: apply_fun g (p 0) = (p 1).
+  { exact (functional_graph_apply_fun_eq g (p 0) (p 1) Hgfun Hpair). }
+  claim Hfg: apply_fun f (p 0) = apply_fun g (p 0).
+  { exact (Hagree (p 0) Hp0). }
+  claim Happf: apply_fun f (p 0) = (p 1).
+  { rewrite Hfg.
+    exact Happg. }
+  claim Hexf: exists y:set, (p 0, y) :e f.
+  { apply (Hftot2 (p 0) Hp0).
+    let y.
+    assume Hy: y :e R /\ (p 0, y) :e f.
+    witness y.
+    exact (andER (y :e R) ((p 0, y) :e f) Hy). }
+  claim Hfpair: (p 0, apply_fun f (p 0)) :e f.
+  { exact (apply_fun_in_graph_of_ex f (p 0) Hexf). }
+  claim Hpeq: (p 0, apply_fun f (p 0)) = (p 0, p 1).
+  { rewrite Happf.
+    reflexivity. }
+  rewrite Heta.
+  rewrite <- Hpeq.
+  exact Hfpair.
+Qed.
 
 (** helper: existence of a metric on any set (discrete metric construction) **)
 (** LATEX VERSION: Every set admits a metric (e.g. the discrete metric). **)
@@ -69039,6 +69158,1476 @@ Theorem R_lub_exists : forall A:set,
   exists l:set, R_lub A l.
 admit. (** FAIL **)
 Qed.
+
+Definition Romega_coord_abs_diff : set -> set -> set -> set := fun f g n =>
+  abs_SNo (add_SNo (apply_fun f n) (minus_SNo (apply_fun g n))).
+
+Definition Romega_coord_clipped_diff : set -> set -> set -> set := fun f g n =>
+  If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1.
+
+Definition Romega_clipped_diffs : set -> set -> set := fun f g =>
+  Repl omega (fun n:set => Romega_coord_clipped_diff f g n).
+
+(** helper: clipped diffs are symmetric **)
+Theorem Romega_clipped_diffs_sym : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  Romega_clipped_diffs f g = Romega_clipped_diffs g f.
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+apply (ReplEq_ext omega
+        (fun n:set => Romega_coord_clipped_diff f g n)
+        (fun n:set => Romega_coord_clipped_diff g f n)).
+let n.
+assume HnO: n :e omega.
+claim Hfpack: total_function_on f omega R /\ functional_graph f.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               f Hf). }
+claim Hgpack: total_function_on g omega R /\ functional_graph g.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun g0:set => total_function_on g0 omega R /\ functional_graph g0)
+               g Hg). }
+claim Htotf: total_function_on f omega R.
+{ exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+claim Htotg: total_function_on g omega R.
+{ exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+claim HfnR: apply_fun f n :e R.
+{ exact (total_function_on_apply_fun_in_Y f omega R n Htotf HnO). }
+claim HgnR: apply_fun g n :e R.
+{ exact (total_function_on_apply_fun_in_Y g omega R n Htotg HnO). }
+claim HfnS: SNo (apply_fun f n).
+{ exact (real_SNo (apply_fun f n) HfnR). }
+claim HgnS: SNo (apply_fun g n).
+{ exact (real_SNo (apply_fun g n) HgnR). }
+claim Habs: Romega_coord_abs_diff f g n = Romega_coord_abs_diff g f n.
+{ exact (abs_SNo_dist_swap (apply_fun f n) (apply_fun g n) HfnS HgnS). }
+claim Hdef1: Romega_coord_clipped_diff f g n =
+  If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1.
+{ reflexivity. }
+claim Hdef2: Romega_coord_clipped_diff g f n =
+  If_i (Rlt (Romega_coord_abs_diff g f n) 1) (Romega_coord_abs_diff g f n) 1.
+{ reflexivity. }
+rewrite Hdef1.
+rewrite Hdef2.
+rewrite Habs.
+reflexivity.
+Qed.
+
+(** helper: clipped coordinate diff is 0 on the diagonal **)
+Theorem Romega_coord_clipped_diff_self_zero : forall f n:set,
+  f :e real_sequences ->
+  n :e omega ->
+  Romega_coord_clipped_diff f f n = 0.
+let f n.
+assume Hf: f :e real_sequences.
+assume HnO: n :e omega.
+claim Hfpack: total_function_on f omega R /\ functional_graph f.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               f Hf). }
+claim Htotf: total_function_on f omega R.
+{ exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+claim HfnR: apply_fun f n :e R.
+{ exact (total_function_on_apply_fun_in_Y f omega R n Htotf HnO). }
+claim HfnS: SNo (apply_fun f n).
+{ exact (real_SNo (apply_fun f n) HfnR). }
+set t := add_SNo (apply_fun f n) (minus_SNo (apply_fun f n)).
+claim Ht0: t = 0.
+{ exact (add_SNo_minus_SNo_rinv (apply_fun f n) HfnS). }
+claim H0le0: 0 <= 0.
+{ exact (SNoLe_ref 0). }
+claim Habseq: abs_SNo 0 = 0.
+{ exact (nonneg_abs_SNo 0 H0le0). }
+claim Habs0: abs_SNo t = 0.
+{ rewrite Ht0.
+  exact Habseq. }
+claim HdefAbs: Romega_coord_abs_diff f f n = abs_SNo t.
+{ reflexivity. }
+claim HdefClip: Romega_coord_clipped_diff f f n =
+  If_i (Rlt (Romega_coord_abs_diff f f n) 1) (Romega_coord_abs_diff f f n) 1.
+{ reflexivity. }
+rewrite HdefClip.
+rewrite HdefAbs.
+rewrite Habs0.
+rewrite (If_i_1 (Rlt 0 1) 0 1 Rlt_0_1).
+reflexivity.
+Qed.
+
+(** helper: clipped diffs are {0} on the diagonal **)
+Theorem Romega_clipped_diffs_diag_eq_Sing0 : forall f:set,
+  f :e real_sequences ->
+  Romega_clipped_diffs f f = {0}.
+let f.
+assume Hf: f :e real_sequences.
+apply set_ext.
+- let a.
+  assume Ha: a :e Romega_clipped_diffs f f.
+  prove a :e {0}.
+  apply (ReplE_impred omega
+                      (fun n:set => Romega_coord_clipped_diff f f n)
+                      a
+                      Ha
+                      (a :e {0})).
+  let n.
+  assume HnO: n :e omega.
+  assume Han: a = Romega_coord_clipped_diff f f n.
+  rewrite Han.
+  claim Hz: Romega_coord_clipped_diff f f n = 0.
+  { exact (Romega_coord_clipped_diff_self_zero f n Hf HnO). }
+  rewrite Hz.
+  exact (SingI 0).
+- let a.
+  assume Ha0: a :e {0}.
+  prove a :e Romega_clipped_diffs f f.
+  claim HaEq: a = 0.
+  { exact (SingE 0 a Ha0). }
+  rewrite HaEq.
+  prove 0 :e Romega_clipped_diffs f f.
+  claim H0O: 0 :e omega.
+  { exact (nat_p_omega 0 nat_0). }
+  claim Hdef: 0 = Romega_coord_clipped_diff f f 0.
+  { rewrite (Romega_coord_clipped_diff_self_zero f 0 Hf H0O).
+    reflexivity. }
+  rewrite Hdef.
+  exact (ReplI omega (fun n:set => Romega_coord_clipped_diff f f n) 0 H0O).
+Qed.
+
+Definition Romega_uniform_metric_value : set -> set -> set := fun f g =>
+  Eps_i (fun r:set => R_lub (Romega_clipped_diffs f g) r).
+
+(** helper: clipped diffs are real numbers **)
+Theorem Romega_clipped_diffs_in_R : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  forall a:set, a :e Romega_clipped_diffs f g -> a :e R.
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+let a.
+assume HaA: a :e Romega_clipped_diffs f g.
+prove a :e R.
+apply (ReplE_impred omega
+                    (fun n:set => Romega_coord_clipped_diff f g n)
+                    a
+                    HaA
+                    (a :e R)).
+let n.
+assume HnO: n :e omega.
+assume Han: a = Romega_coord_clipped_diff f g n.
+rewrite Han.
+claim Hfpack: total_function_on f omega R /\ functional_graph f.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               f Hf). }
+claim Hgpack: total_function_on g omega R /\ functional_graph g.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun g0:set => total_function_on g0 omega R /\ functional_graph g0)
+               g Hg). }
+claim Htotf: total_function_on f omega R.
+{ exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+claim Htotg: total_function_on g omega R.
+{ exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+claim HfnR: apply_fun f n :e R.
+{ exact (total_function_on_apply_fun_in_Y f omega R n Htotf HnO). }
+claim HgnR: apply_fun g n :e R.
+{ exact (total_function_on_apply_fun_in_Y g omega R n Htotg HnO). }
+set t := add_SNo (apply_fun f n) (minus_SNo (apply_fun g n)).
+claim HmgnR: minus_SNo (apply_fun g n) :e R.
+{ exact (real_minus_SNo (apply_fun g n) HgnR). }
+claim HtR: t :e R.
+{ exact (real_add_SNo (apply_fun f n) HfnR (minus_SNo (apply_fun g n)) HmgnR). }
+claim HabsR: abs_SNo t :e R.
+{ apply (xm (0 <= t) (abs_SNo t :e R)).
+  - assume H0le: 0 <= t.
+    claim Habseq: abs_SNo t = t.
+    { exact (nonneg_abs_SNo t H0le). }
+    rewrite Habseq.
+    exact HtR.
+  - assume Hn0le: ~(0 <= t).
+    claim HmtR: minus_SNo t :e R.
+    { exact (real_minus_SNo t HtR). }
+    claim Habseq: abs_SNo t = minus_SNo t.
+    { exact (not_nonneg_abs_SNo t Hn0le). }
+    rewrite Habseq.
+    exact HmtR. }
+claim HabsDef: Romega_coord_abs_diff f g n = abs_SNo t.
+{ reflexivity. }
+claim HabsDiffR: Romega_coord_abs_diff f g n :e R.
+{ rewrite HabsDef.
+  exact HabsR. }
+claim Hdef: Romega_coord_clipped_diff f g n =
+  If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1.
+{ reflexivity. }
+apply (xm (Rlt (Romega_coord_abs_diff f g n) 1)
+          (Romega_coord_clipped_diff f g n :e R)).
+- assume Hlt: Rlt (Romega_coord_abs_diff f g n) 1.
+  rewrite Hdef.
+  rewrite (If_i_1 (Rlt (Romega_coord_abs_diff f g n) 1)
+                  (Romega_coord_abs_diff f g n) 1 Hlt).
+  exact HabsDiffR.
+- assume Hnlt: ~(Rlt (Romega_coord_abs_diff f g n) 1).
+  rewrite Hdef.
+  rewrite (If_i_0 (Rlt (Romega_coord_abs_diff f g n) 1)
+                  (Romega_coord_abs_diff f g n) 1 Hnlt).
+  exact real_1.
+Qed.
+
+(** helper: clipped diffs are bounded above in R **)
+Theorem Romega_clipped_diffs_bounded : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  exists u:set, u :e R /\ forall a:set, a :e Romega_clipped_diffs f g -> a :e R -> Rle a u.
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+witness 1.
+apply andI.
+- exact real_1.
+- let a.
+  assume HaA: a :e Romega_clipped_diffs f g.
+  assume HaR: a :e R.
+  prove Rle a 1.
+  apply (RleI a 1 HaR real_1).
+  assume Hlt1: Rlt 1 a.
+  prove False.
+  apply (ReplE_impred omega
+                      (fun n:set => Romega_coord_clipped_diff f g n)
+                      a
+                      HaA
+                      False).
+  let n.
+  assume HnO: n :e omega.
+  assume Han: a = Romega_coord_clipped_diff f g n.
+  claim Hlt': Rlt 1 (Romega_coord_clipped_diff f g n).
+  { rewrite <- Han.
+    exact Hlt1. }
+  claim Hfpack: total_function_on f omega R /\ functional_graph f.
+  { exact (SepE2 (Power (setprod omega R))
+                 (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+                 f Hf). }
+  claim Hgpack: total_function_on g omega R /\ functional_graph g.
+  { exact (SepE2 (Power (setprod omega R))
+                 (fun g0:set => total_function_on g0 omega R /\ functional_graph g0)
+                 g Hg). }
+  claim Htotf: total_function_on f omega R.
+  { exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+  claim Htotg: total_function_on g omega R.
+  { exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+  claim HfnR: apply_fun f n :e R.
+  { exact (total_function_on_apply_fun_in_Y f omega R n Htotf HnO). }
+  claim HgnR: apply_fun g n :e R.
+  { exact (total_function_on_apply_fun_in_Y g omega R n Htotg HnO). }
+  set t := add_SNo (apply_fun f n) (minus_SNo (apply_fun g n)).
+  claim HmgnR: minus_SNo (apply_fun g n) :e R.
+  { exact (real_minus_SNo (apply_fun g n) HgnR). }
+  claim HtR: t :e R.
+  { exact (real_add_SNo (apply_fun f n) HfnR (minus_SNo (apply_fun g n)) HmgnR). }
+  claim HabsR: abs_SNo t :e R.
+  { apply (xm (0 <= t) (abs_SNo t :e R)).
+    - assume H0le: 0 <= t.
+      claim Habseq: abs_SNo t = t.
+      { exact (nonneg_abs_SNo t H0le). }
+      rewrite Habseq.
+      exact HtR.
+    - assume Hn0le: ~(0 <= t).
+      claim HmtR: minus_SNo t :e R.
+      { exact (real_minus_SNo t HtR). }
+      claim Habseq: abs_SNo t = minus_SNo t.
+      { exact (not_nonneg_abs_SNo t Hn0le). }
+      rewrite Habseq.
+      exact HmtR. }
+  claim HabsDef: Romega_coord_abs_diff f g n = abs_SNo t.
+  { reflexivity. }
+  claim HabsDiffR: Romega_coord_abs_diff f g n :e R.
+  { rewrite HabsDef.
+    exact HabsR. }
+  claim Hdef: Romega_coord_clipped_diff f g n =
+    If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1.
+  { reflexivity. }
+  apply (xm (Rlt (Romega_coord_abs_diff f g n) 1) False).
+  - assume Hlt: Rlt (Romega_coord_abs_diff f g n) 1.
+    claim Hnlt1abs: ~(Rlt 1 (Romega_coord_abs_diff f g n)).
+    { exact (not_Rlt_sym (Romega_coord_abs_diff f g n) 1 Hlt). }
+    claim HclEq: Romega_coord_clipped_diff f g n = Romega_coord_abs_diff f g n.
+    { rewrite Hdef.
+      rewrite (If_i_1 (Rlt (Romega_coord_abs_diff f g n) 1)
+                      (Romega_coord_abs_diff f g n) 1 Hlt).
+      reflexivity. }
+    claim Hlt1abs: Rlt 1 (Romega_coord_abs_diff f g n).
+    { rewrite <- HclEq.
+      exact Hlt'. }
+    exact (Hnlt1abs Hlt1abs).
+  - assume Hnlt: ~(Rlt (Romega_coord_abs_diff f g n) 1).
+    claim HclEq: Romega_coord_clipped_diff f g n = 1.
+    { rewrite Hdef.
+      rewrite (If_i_0 (Rlt (Romega_coord_abs_diff f g n) 1)
+                      (Romega_coord_abs_diff f g n) 1 Hnlt).
+      reflexivity. }
+    claim Hlt11: Rlt 1 1.
+    { rewrite <- HclEq at 2.
+      exact Hlt'. }
+    exact (not_Rlt_refl 1 real_1 Hlt11).
+Qed.
+
+(** helper: the chosen uniform metric value is a least upper bound **)
+Theorem Romega_uniform_metric_value_is_lub : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  R_lub (Romega_clipped_diffs f g) (Romega_uniform_metric_value f g).
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+set A := Romega_clipped_diffs f g.
+set P := (fun r:set => R_lub A r).
+claim HAinR: forall a:set, a :e A -> a :e R.
+{ exact (Romega_clipped_diffs_in_R f g Hf Hg). }
+claim Hub: exists u:set, u :e R /\ forall a:set, a :e A -> a :e R -> Rle a u.
+{ exact (Romega_clipped_diffs_bounded f g Hf Hg). }
+claim Hex: exists l:set, P l.
+{ exact (R_lub_exists A HAinR Hub). }
+exact (Eps_i_ex P Hex).
+Qed.
+
+(** helper: uniform metric value is symmetric **)
+Theorem Romega_uniform_metric_value_sym : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  Romega_uniform_metric_value f g = Romega_uniform_metric_value g f.
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+set A := Romega_clipped_diffs f g.
+claim HAeq: A = Romega_clipped_diffs g f.
+{ exact (Romega_clipped_diffs_sym f g Hf Hg). }
+claim Hlub1: R_lub A (Romega_uniform_metric_value f g).
+{ exact (Romega_uniform_metric_value_is_lub f g Hf Hg). }
+claim Hlub2': R_lub A (Romega_uniform_metric_value g f).
+{ rewrite HAeq.
+  exact (Romega_uniform_metric_value_is_lub g f Hg Hf). }
+exact (R_lub_unique A (Romega_uniform_metric_value f g) (Romega_uniform_metric_value g f) Hlub1 Hlub2').
+Qed.
+
+(** helper: uniform metric value is 0 on the diagonal **)
+Theorem Romega_uniform_metric_value_self_zero : forall f:set,
+  f :e real_sequences ->
+  Romega_uniform_metric_value f f = 0.
+let f.
+assume Hf: f :e real_sequences.
+set A := Romega_clipped_diffs f f.
+claim HAeq: A = {0}.
+{ exact (Romega_clipped_diffs_diag_eq_Sing0 f Hf). }
+claim Hlub1: R_lub A (Romega_uniform_metric_value f f).
+{ exact (Romega_uniform_metric_value_is_lub f f Hf Hf). }
+claim Hlub0: R_lub A 0.
+{ rewrite HAeq.
+  exact R_lub_Sing0. }
+exact (R_lub_unique A (Romega_uniform_metric_value f f) 0 Hlub1 Hlub0).
+Qed.
+
+(** helper: uniform metric values are real numbers **)
+Theorem Romega_uniform_metric_value_in_R : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  Romega_uniform_metric_value f g :e R.
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+exact (R_lub_in_R (Romega_clipped_diffs f g)
+                  (Romega_uniform_metric_value f g)
+                  (Romega_uniform_metric_value_is_lub f g Hf Hg)).
+Qed.
+
+(** helper: uniform metric values are not negative **)
+Theorem Romega_uniform_metric_value_nonneg : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  ~(Rlt (Romega_uniform_metric_value f g) 0).
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+set A := Romega_clipped_diffs f g.
+set l := Romega_uniform_metric_value f g.
+claim HlR: l :e R.
+{ exact (Romega_uniform_metric_value_in_R f g Hf Hg). }
+claim Hlub: R_lub A l.
+{ exact (Romega_uniform_metric_value_is_lub f g Hf Hg). }
+claim Hcore: l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andEL (l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l u)
+               Hlub). }
+claim Hub: forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andER (l :e R) (forall a:set, a :e A -> a :e R -> Rle a l) Hcore). }
+assume Hl0: Rlt l 0.
+prove False.
+set a0 := Romega_coord_clipped_diff f g 0.
+claim H0O: 0 :e omega.
+{ exact (nat_p_omega 0 nat_0). }
+claim Ha0A: a0 :e A.
+{ exact (ReplI omega (fun n:set => Romega_coord_clipped_diff f g n) 0 H0O). }
+claim Ha0R: a0 :e R.
+{ exact (Romega_clipped_diffs_in_R f g Hf Hg a0 Ha0A). }
+claim Ha0S: SNo a0.
+{ exact (real_SNo a0 Ha0R). }
+claim HlS: SNo l.
+{ exact (real_SNo l HlR). }
+claim H0S: SNo 0.
+{ exact SNo_0. }
+claim H0le0: 0 <= 0.
+{ exact (SNoLe_ref 0). }
+claim Ha0nonneg: 0 <= a0.
+{ set t := add_SNo (apply_fun f 0) (minus_SNo (apply_fun g 0)).
+  claim Hfpack: total_function_on f omega R /\ functional_graph f.
+  { exact (SepE2 (Power (setprod omega R))
+                 (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+                 f Hf). }
+  claim Hgpack: total_function_on g omega R /\ functional_graph g.
+  { exact (SepE2 (Power (setprod omega R))
+                 (fun g0:set => total_function_on g0 omega R /\ functional_graph g0)
+                 g Hg). }
+  claim Htotf: total_function_on f omega R.
+  { exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+  claim Htotg: total_function_on g omega R.
+  { exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+  claim Hf0R: apply_fun f 0 :e R.
+  { exact (total_function_on_apply_fun_in_Y f omega R 0 Htotf H0O). }
+  claim Hg0R: apply_fun g 0 :e R.
+  { exact (total_function_on_apply_fun_in_Y g omega R 0 Htotg H0O). }
+  claim HmfR: minus_SNo (apply_fun g 0) :e R.
+  { exact (real_minus_SNo (apply_fun g 0) Hg0R). }
+  claim HtR: t :e R.
+  { exact (real_add_SNo (apply_fun f 0) Hf0R (minus_SNo (apply_fun g 0)) HmfR). }
+  claim HtS: SNo t.
+  { exact (real_SNo t HtR). }
+  claim HabsNN: 0 <= abs_SNo t.
+  { exact (abs_SNo_nonneg t HtS). }
+  claim HdefAbs: Romega_coord_abs_diff f g 0 = abs_SNo t.
+  { reflexivity. }
+  claim Hdef: a0 =
+    If_i (Rlt (Romega_coord_abs_diff f g 0) 1) (Romega_coord_abs_diff f g 0) 1.
+  { reflexivity. }
+  rewrite Hdef.
+  apply (xm (Rlt (Romega_coord_abs_diff f g 0) 1) (0 <= (If_i (Rlt (Romega_coord_abs_diff f g 0) 1) (Romega_coord_abs_diff f g 0) 1))).
+  - assume Hlt: Rlt (Romega_coord_abs_diff f g 0) 1.
+    rewrite (If_i_1 (Rlt (Romega_coord_abs_diff f g 0) 1) (Romega_coord_abs_diff f g 0) 1 Hlt).
+    rewrite HdefAbs.
+    exact HabsNN.
+  - assume Hnlt: ~(Rlt (Romega_coord_abs_diff f g 0) 1).
+    rewrite (If_i_0 (Rlt (Romega_coord_abs_diff f g 0) 1) (Romega_coord_abs_diff f g 0) 1 Hnlt).
+    exact (SNoLtLe 0 1 SNoLt_0_1). }
+claim Ha0lt0n: ~(a0 < 0).
+{ claim Hcase: 0 < a0 \/ 0 = a0.
+  { exact (SNoLeE 0 a0 H0S Ha0S Ha0nonneg). }
+  assume Ha0lt0: a0 < 0.
+  apply (Hcase False).
+  - assume H0lta0: 0 < a0.
+    claim H00: 0 < 0.
+    { exact (SNoLt_tra 0 a0 0 H0S Ha0S H0S H0lta0 Ha0lt0). }
+    exact ((SNoLt_irref 0) H00).
+  - assume H0eq: 0 = a0.
+    claim H00: 0 < 0.
+    { rewrite H0eq at 1.
+      exact Ha0lt0. }
+    exact ((SNoLt_irref 0) H00). }
+claim Hl0lt: l < 0.
+{ exact (RltE_lt l 0 Hl0). }
+claim Hlta0: l < a0.
+{ apply (SNoLt_trichotomy_or_impred a0 0 Ha0S H0S (l < a0)).
+  - assume Ha0lt0: a0 < 0.
+    exact (FalseE (Ha0lt0n Ha0lt0) (l < a0)).
+  - assume Ha0eq0: a0 = 0.
+    rewrite Ha0eq0.
+    exact Hl0lt.
+  - assume H0lta0: 0 < a0.
+    exact (SNoLt_tra l 0 a0 HlS H0S Ha0S Hl0lt H0lta0). }
+claim Hltla0: Rlt l a0.
+{ exact (RltI l a0 HlR Ha0R Hlta0). }
+claim HRle: Rle a0 l.
+{ exact (Hub a0 Ha0A Ha0R). }
+exact ((RleE_nlt a0 l HRle) Hltla0).
+Qed.
+
+(** helper: clipped coordinate difference is nonnegative **)
+Theorem Romega_coord_clipped_diff_nonneg : forall f g n:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  n :e omega ->
+  0 <= Romega_coord_clipped_diff f g n.
+let f g n.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+assume HnO: n :e omega.
+set t := add_SNo (apply_fun f n) (minus_SNo (apply_fun g n)).
+claim Hfpack: total_function_on f omega R /\ functional_graph f.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               f Hf). }
+claim Hgpack: total_function_on g omega R /\ functional_graph g.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun g0:set => total_function_on g0 omega R /\ functional_graph g0)
+               g Hg). }
+claim Htotf: total_function_on f omega R.
+{ exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+claim Htotg: total_function_on g omega R.
+{ exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+claim HfnR: apply_fun f n :e R.
+{ exact (total_function_on_apply_fun_in_Y f omega R n Htotf HnO). }
+claim HgnR: apply_fun g n :e R.
+{ exact (total_function_on_apply_fun_in_Y g omega R n Htotg HnO). }
+claim HmgnR: minus_SNo (apply_fun g n) :e R.
+{ exact (real_minus_SNo (apply_fun g n) HgnR). }
+claim HtR: t :e R.
+{ exact (real_add_SNo (apply_fun f n) HfnR (minus_SNo (apply_fun g n)) HmgnR). }
+claim HtS: SNo t.
+{ exact (real_SNo t HtR). }
+claim HabsNN: 0 <= abs_SNo t.
+{ exact (abs_SNo_nonneg t HtS). }
+claim HdefAbs: Romega_coord_abs_diff f g n = abs_SNo t.
+{ reflexivity. }
+claim Hdef: Romega_coord_clipped_diff f g n =
+  If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1.
+{ reflexivity. }
+rewrite Hdef.
+apply (xm (Rlt (Romega_coord_abs_diff f g n) 1)
+          (0 <= If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1)).
+- assume Hlt: Rlt (Romega_coord_abs_diff f g n) 1.
+  rewrite (If_i_1 (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1 Hlt).
+  rewrite HdefAbs.
+  exact HabsNN.
+- assume Hnlt: ~(Rlt (Romega_coord_abs_diff f g n) 1).
+  rewrite (If_i_0 (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1 Hnlt).
+  exact (SNoLtLe 0 1 SNoLt_0_1).
+Qed.
+
+(** helper: uniform metric value 0 implies pointwise equality **)
+Theorem Romega_uniform_metric_value_eq0_coord_eq : forall f g:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  Romega_uniform_metric_value f g = 0 ->
+  forall n:set, n :e omega -> apply_fun f n = apply_fun g n.
+let f g.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+assume Hfg0: Romega_uniform_metric_value f g = 0.
+let n.
+assume HnO: n :e omega.
+set A := Romega_clipped_diffs f g.
+set l := Romega_uniform_metric_value f g.
+claim HlR: l :e R.
+{ exact (Romega_uniform_metric_value_in_R f g Hf Hg). }
+claim Hlub: R_lub A l.
+{ exact (Romega_uniform_metric_value_is_lub f g Hf Hg). }
+claim Hcore: l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andEL (l :e R /\ forall a:set, a :e A -> a :e R -> Rle a l)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l u)
+               Hlub). }
+claim Hub: forall a:set, a :e A -> a :e R -> Rle a l.
+{ exact (andER (l :e R) (forall a:set, a :e A -> a :e R -> Rle a l) Hcore). }
+claim Hub0: forall a:set, a :e A -> a :e R -> Rle a 0.
+{ let a0.
+  assume Ha0A: a0 :e A.
+  assume Ha0R: a0 :e R.
+  rewrite <- Hfg0.
+  exact (Hub a0 Ha0A Ha0R). }
+set a := Romega_coord_clipped_diff f g n.
+claim HaA: a :e A.
+{ exact (ReplI omega (fun m:set => Romega_coord_clipped_diff f g m) n HnO). }
+claim HaR: a :e R.
+{ exact (Romega_clipped_diffs_in_R f g Hf Hg a HaA). }
+claim HRle: Rle a 0.
+{ exact (Hub0 a HaA HaR). }
+claim HnRlt0a: ~(Rlt 0 a).
+{ exact (RleE_nlt a 0 HRle). }
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HaNN: 0 <= a.
+{ exact (Romega_coord_clipped_diff_nonneg f g n Hf Hg HnO). }
+claim Ha0: a = 0.
+{ apply (SNoLeE 0 a SNo_0 HaS HaNN (a = 0)).
+  - assume H0lta: 0 < a.
+    claim HRlt0a: Rlt 0 a.
+    { exact (RltI 0 a real_0 HaR H0lta). }
+    exact (FalseE (HnRlt0a HRlt0a) (a = 0)).
+  - assume H0eq: 0 = a.
+    rewrite <- H0eq.
+    reflexivity. }
+claim HfnR: apply_fun f n :e R.
+{ claim Hfpack: total_function_on f omega R /\ functional_graph f.
+  { exact (SepE2 (Power (setprod omega R))
+                 (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+                 f Hf). }
+  claim Htotf: total_function_on f omega R.
+  { exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+  exact (total_function_on_apply_fun_in_Y f omega R n Htotf HnO). }
+claim HgnR: apply_fun g n :e R.
+{ claim Hgpack: total_function_on g omega R /\ functional_graph g.
+  { exact (SepE2 (Power (setprod omega R))
+                 (fun g0:set => total_function_on g0 omega R /\ functional_graph g0)
+                 g Hg). }
+  claim Htotg: total_function_on g omega R.
+  { exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+  exact (total_function_on_apply_fun_in_Y g omega R n Htotg HnO). }
+set t := add_SNo (apply_fun f n) (minus_SNo (apply_fun g n)).
+claim HmgnR: minus_SNo (apply_fun g n) :e R.
+{ exact (real_minus_SNo (apply_fun g n) HgnR). }
+claim HtR: t :e R.
+{ exact (real_add_SNo (apply_fun f n) HfnR (minus_SNo (apply_fun g n)) HmgnR). }
+claim HtS: SNo t.
+{ exact (real_SNo t HtR). }
+claim Habs0: abs_SNo t = 0.
+{ claim HdefAbs: Romega_coord_abs_diff f g n = abs_SNo t.
+  { reflexivity. }
+  claim HdefClip: a = If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1.
+  { reflexivity. }
+  claim Ha0if: If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1 = 0.
+  { rewrite <- HdefClip.
+    exact Ha0. }
+  apply (xm (Rlt (Romega_coord_abs_diff f g n) 1) (abs_SNo t = 0)).
+  - assume Hlt: Rlt (Romega_coord_abs_diff f g n) 1.
+    claim Hif: If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1 =
+               (Romega_coord_abs_diff f g n).
+    { exact (If_i_1 (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1 Hlt). }
+    claim HabsR0: Romega_coord_abs_diff f g n = 0.
+    { rewrite <- Hif.
+      exact Ha0if. }
+    rewrite <- HdefAbs.
+    exact HabsR0.
+  - assume Hnlt: ~(Rlt (Romega_coord_abs_diff f g n) 1).
+    claim Hif: If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1 = 1.
+    { exact (If_i_0 (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1 Hnlt). }
+    claim H10eq: 1 = 0.
+    { rewrite <- Hif.
+      exact Ha0if. }
+    exact (FalseE ((neq_1_0) H10eq) (abs_SNo t = 0)). }
+claim Ht0: t = 0.
+{ apply (xm (0 <= t) (t = 0)).
+  - assume H0le: 0 <= t.
+    rewrite <- (nonneg_abs_SNo t H0le).
+    exact Habs0.
+  - assume Hn0le: ~(0 <= t).
+    claim Hm0: minus_SNo t = 0.
+    { rewrite <- (not_nonneg_abs_SNo t Hn0le).
+      exact Habs0. }
+    claim Hsum: add_SNo (minus_SNo t) t = 0.
+    { exact (add_SNo_minus_SNo_linv t HtS). }
+    claim H0t0: add_SNo 0 t = 0.
+    { rewrite <- Hm0 at 1.
+      exact Hsum. }
+    rewrite <- (add_SNo_0L t HtS).
+    exact H0t0. }
+claim Htdef: t = add_SNo (apply_fun f n) (minus_SNo (apply_fun g n)).
+{ reflexivity. }
+claim Ht0': add_SNo (apply_fun f n) (minus_SNo (apply_fun g n)) = 0.
+{ rewrite <- Htdef.
+  exact Ht0. }
+claim Hrhs0: add_SNo (apply_fun g n) (minus_SNo (apply_fun g n)) = 0.
+{ exact (add_SNo_minus_SNo_rinv (apply_fun g n) (real_SNo (apply_fun g n) HgnR)). }
+claim Heq: add_SNo (apply_fun f n) (minus_SNo (apply_fun g n)) =
+           add_SNo (apply_fun g n) (minus_SNo (apply_fun g n)).
+{ rewrite Ht0' at 1.
+  rewrite Hrhs0 at 1.
+  reflexivity. }
+exact (add_SNo_cancel_R (apply_fun f n) (minus_SNo (apply_fun g n)) (apply_fun g n)
+                        (real_SNo (apply_fun f n) HfnR)
+                        (SNo_minus_SNo (apply_fun g n) (real_SNo (apply_fun g n) HgnR))
+                        (real_SNo (apply_fun g n) HgnR)
+                        Heq).
+Qed.
+
+(** from §20 Definition: uniform metric on R to the omega **)
+(** LATEX VERSION: The uniform metric on R^ω is defined by taking the supremum of the clipped coordinate differences. **)
+Definition uniform_metric_Romega : set :=
+  graph (setprod real_sequences real_sequences)
+        (fun p:set => Romega_uniform_metric_value (p 0) (p 1)).
+
+(** helper: uniform_metric_Romega is function_on into R **)
+Theorem uniform_metric_Romega_function_on : function_on uniform_metric_Romega (setprod real_sequences real_sequences) R.
+let p.
+assume Hp: p :e setprod real_sequences real_sequences.
+prove apply_fun uniform_metric_Romega p :e R.
+claim Happ: apply_fun uniform_metric_Romega p =
+  Romega_uniform_metric_value (p 0) (p 1).
+{ exact (apply_fun_graph (setprod real_sequences real_sequences)
+                         (fun q:set => Romega_uniform_metric_value (q 0) (q 1))
+                         p Hp). }
+rewrite Happ.
+claim Hp0: p 0 :e real_sequences.
+{ exact (ap0_Sigma real_sequences (fun _ : set => real_sequences) p Hp). }
+claim Hp1: p 1 :e real_sequences.
+{ exact (ap1_Sigma real_sequences (fun _ : set => real_sequences) p Hp). }
+exact (Romega_uniform_metric_value_in_R (p 0) (p 1) Hp0 Hp1).
+Qed.
+
+Definition uniform_topology : set := metric_topology real_sequences uniform_metric_Romega.
+
+(** helper: convert SNoLe to Rle on reals **)
+Theorem Rle_of_SNoLe : forall a b:set,
+  a :e R -> b :e R -> a <= b -> Rle a b.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume Hab: a <= b.
+apply (RleI a b HaR HbR).
+assume Hlt: Rlt b a.
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+claim Hblta: b < a.
+{ exact (RltE_lt b a Hlt). }
+claim Haalt: a < a.
+{ exact (SNoLeLt_tra a b a HaS HbS HaS Hab Hblta). }
+exact ((SNoLt_irref a) Haalt).
+Qed.
+
+(** helper: abs upper bound **)
+Theorem abs_SNo_upper_bound : forall x:set,
+  SNo x -> x <= abs_SNo x.
+let x.
+assume HxS: SNo x.
+apply (xm (0 <= x)).
+- assume H0le: 0 <= x.
+  rewrite (nonneg_abs_SNo x H0le).
+  exact (SNoLe_ref x).
+- assume Hn0le: ~(0 <= x).
+  rewrite (not_nonneg_abs_SNo x Hn0le).
+  claim Hxlt0: x < 0.
+  { apply (SNoLt_trichotomy_or_impred x 0 HxS SNo_0 (x < 0)).
+    - assume H: x < 0.
+      exact H.
+    - assume Hx0: x = 0.
+      claim H0le0: 0 <= x.
+      { rewrite Hx0.
+        exact (SNoLe_ref 0). }
+      exact (FalseE (Hn0le H0le0) (x < 0)).
+    - assume H0ltx: 0 < x.
+      claim H0lex: 0 <= x.
+      { exact (SNoLtLe 0 x H0ltx). }
+      exact (FalseE (Hn0le H0lex) (x < 0)). }
+	  claim Hxle0: x <= 0.
+	  { exact (SNoLtLe x 0 Hxlt0). }
+	  claim H0lemx: 0 <= minus_SNo x.
+	  { rewrite <- minus_SNo_0 at 1.
+	    exact (minus_SNo_Le_contra x 0 HxS SNo_0 Hxle0). }
+	  exact (SNoLe_tra x 0 (minus_SNo x) HxS SNo_0 (SNo_minus_SNo x HxS) Hxle0 H0lemx).
+Qed.
+
+(** helper: abs lower bound **)
+Theorem abs_SNo_lower_bound : forall x:set,
+  SNo x -> minus_SNo (abs_SNo x) <= x.
+let x.
+assume HxS: SNo x.
+apply (xm (0 <= x)).
+- assume H0le: 0 <= x.
+	  rewrite (nonneg_abs_SNo x H0le).
+	  claim Hmxle0: minus_SNo x <= 0.
+	  { rewrite <- minus_SNo_0 at 1.
+	    exact (minus_SNo_Le_contra 0 x SNo_0 HxS H0le). }
+	  exact (SNoLe_tra (minus_SNo x) 0 x (SNo_minus_SNo x HxS) SNo_0 HxS Hmxle0 H0le).
+- assume Hn0le: ~(0 <= x).
+  rewrite (not_nonneg_abs_SNo x Hn0le).
+  rewrite (minus_SNo_invol x HxS).
+  exact (SNoLe_ref x).
+Qed.
+
+(** helper: abs bound from two-sided bounds **)
+Theorem abs_SNo_Le_of_bounds : forall t u:set,
+  SNo t -> SNo u -> minus_SNo u <= t -> t <= u -> abs_SNo t <= u.
+let t u.
+assume HtS: SNo t.
+assume HuS: SNo u.
+assume Hlo: minus_SNo u <= t.
+assume Hhi: t <= u.
+apply (xm (0 <= t)).
+- assume H0le: 0 <= t.
+  rewrite (nonneg_abs_SNo t H0le).
+  exact Hhi.
+- assume Hn0le: ~(0 <= t).
+  rewrite (not_nonneg_abs_SNo t Hn0le).
+	  claim Hmtleu: minus_SNo t <= u.
+	  { claim HmHlo: minus_SNo t <= minus_SNo (minus_SNo u).
+	    { exact (minus_SNo_Le_contra (minus_SNo u) t (SNo_minus_SNo u HuS) HtS Hlo). }
+	    rewrite <- (minus_SNo_invol u HuS) at 1.
+	    exact HmHlo. }
+	  exact Hmtleu.
+Qed.
+
+(** helper: abs subadditivity **)
+Theorem abs_SNo_subadd : forall x y:set,
+  SNo x -> SNo y ->
+  abs_SNo (add_SNo x y) <= add_SNo (abs_SNo x) (abs_SNo y).
+let x y.
+assume HxS: SNo x.
+assume HyS: SNo y.
+set u := add_SNo (abs_SNo x) (abs_SNo y).
+claim HabsxS: SNo (abs_SNo x).
+{ exact (SNo_abs_SNo x HxS). }
+claim HabsyS: SNo (abs_SNo y).
+{ exact (SNo_abs_SNo y HyS). }
+claim HuS: SNo u.
+{ exact (SNo_add_SNo (abs_SNo x) (abs_SNo y) HabsxS HabsyS). }
+claim Hxub: x <= abs_SNo x.
+{ exact (abs_SNo_upper_bound x HxS). }
+claim Hyub: y <= abs_SNo y.
+{ exact (abs_SNo_upper_bound y HyS). }
+claim Hhi: add_SNo x y <= u.
+{ exact (add_SNo_Le3 x y (abs_SNo x) (abs_SNo y) HxS HyS HabsxS HabsyS Hxub Hyub). }
+claim Hxlo: minus_SNo (abs_SNo x) <= x.
+{ exact (abs_SNo_lower_bound x HxS). }
+claim Hylo: minus_SNo (abs_SNo y) <= y.
+{ exact (abs_SNo_lower_bound y HyS). }
+claim Hlo': add_SNo (minus_SNo (abs_SNo x)) (minus_SNo (abs_SNo y)) <= add_SNo x y.
+{ exact (add_SNo_Le3 (minus_SNo (abs_SNo x)) (minus_SNo (abs_SNo y)) x y
+                    (SNo_minus_SNo (abs_SNo x) HabsxS)
+                    (SNo_minus_SNo (abs_SNo y) HabsyS)
+                    HxS HyS Hxlo Hylo). }
+claim Hlo: minus_SNo u <= add_SNo x y.
+{ rewrite (minus_add_SNo_distr (abs_SNo x) (abs_SNo y) HabsxS HabsyS).
+  exact Hlo'. }
+exact (abs_SNo_Le_of_bounds (add_SNo x y) u
+                            (SNo_add_SNo x y HxS HyS)
+                            HuS
+                            Hlo
+                            Hhi).
+Qed.
+
+(** helper: abs triangle inequality **)
+Theorem abs_SNo_triangle : forall a b c:set,
+  SNo a -> SNo b -> SNo c ->
+  abs_SNo (add_SNo a (minus_SNo c))
+  <= add_SNo (abs_SNo (add_SNo a (minus_SNo b))) (abs_SNo (add_SNo b (minus_SNo c))).
+let a b c.
+assume HaS: SNo a.
+assume HbS: SNo b.
+assume HcS: SNo c.
+set x := add_SNo a (minus_SNo b).
+set y := add_SNo b (minus_SNo c).
+claim HmaS: SNo (minus_SNo a).
+{ exact (SNo_minus_SNo a HaS). }
+claim HmbS: SNo (minus_SNo b).
+{ exact (SNo_minus_SNo b HbS). }
+claim HmcS: SNo (minus_SNo c).
+{ exact (SNo_minus_SNo c HcS). }
+claim HxS: SNo x.
+{ exact (SNo_add_SNo a (minus_SNo b) HaS HmbS). }
+claim HyS: SNo y.
+{ exact (SNo_add_SNo b (minus_SNo c) HbS HmcS). }
+claim HxyS: SNo (add_SNo x y).
+{ exact (SNo_add_SNo x y HxS HyS). }
+claim HrhsS: SNo (add_SNo (abs_SNo x) (abs_SNo y)).
+{ exact (SNo_add_SNo (abs_SNo x) (abs_SNo y) (SNo_abs_SNo x HxS) (SNo_abs_SNo y HyS)). }
+claim Hsum: add_SNo x y = add_SNo a (minus_SNo c).
+{ claim Hassoc1: add_SNo x y = add_SNo (add_SNo a (minus_SNo b)) (add_SNo b (minus_SNo c)).
+  { reflexivity. }
+  rewrite Hassoc1.
+  rewrite <- (add_SNo_assoc a (minus_SNo b) (add_SNo b (minus_SNo c)) HaS HmbS (SNo_add_SNo b (minus_SNo c) HbS HmcS)).
+  rewrite (add_SNo_assoc (minus_SNo b) b (minus_SNo c) HmbS HbS HmcS).
+  rewrite (add_SNo_minus_SNo_linv b HbS).
+  rewrite (add_SNo_0L (minus_SNo c) HmcS).
+  reflexivity. }
+rewrite <- Hsum at 1.
+exact (abs_SNo_subadd x y HxS HyS).
+Qed.
+
+(** helper: SNo is stable under If_i **)
+Theorem SNo_If_i : forall P:prop, forall x y:set,
+  SNo x -> SNo y -> SNo (If_i P x y).
+let P x y.
+assume HxS: SNo x.
+assume HyS: SNo y.
+apply (xm P).
+- assume HP.
+  rewrite (If_i_1 P x y HP).
+  exact HxS.
+- assume HnP.
+  rewrite (If_i_0 P x y HnP).
+  exact HyS.
+Qed.
+
+(** helper: coordinate abs differences are reals **)
+Theorem Romega_coord_abs_diff_in_R : forall f g n:set,
+  f :e real_sequences -> g :e real_sequences -> n :e omega ->
+  Romega_coord_abs_diff f g n :e R.
+let f g n.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+assume HnO: n :e omega.
+claim Hfpack: total_function_on f omega R /\ functional_graph f.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+               f Hf). }
+claim Hgpack: total_function_on g omega R /\ functional_graph g.
+{ exact (SepE2 (Power (setprod omega R))
+               (fun g0:set => total_function_on g0 omega R /\ functional_graph g0)
+               g Hg). }
+claim Htotf: total_function_on f omega R.
+{ exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+claim Htotg: total_function_on g omega R.
+{ exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+claim HfnR: apply_fun f n :e R.
+{ exact (total_function_on_apply_fun_in_Y f omega R n Htotf HnO). }
+claim HgnR: apply_fun g n :e R.
+{ exact (total_function_on_apply_fun_in_Y g omega R n Htotg HnO). }
+set t := add_SNo (apply_fun f n) (minus_SNo (apply_fun g n)).
+claim HmgnR: minus_SNo (apply_fun g n) :e R.
+{ exact (real_minus_SNo (apply_fun g n) HgnR). }
+claim HtR: t :e R.
+{ exact (real_add_SNo (apply_fun f n) HfnR (minus_SNo (apply_fun g n)) HmgnR). }
+claim HtS: SNo t.
+{ exact (real_SNo t HtR). }
+claim HabsR: abs_SNo t :e R.
+{ apply (xm (0 <= t) (abs_SNo t :e R)).
+  - assume H0le: 0 <= t.
+    rewrite (nonneg_abs_SNo t H0le).
+    exact HtR.
+	  - assume Hn0le: ~(0 <= t).
+	    rewrite (not_nonneg_abs_SNo t Hn0le).
+	    exact (real_minus_SNo t HtR). }
+	claim Hdef: Romega_coord_abs_diff f g n = abs_SNo t.
+	{ reflexivity. }
+	rewrite Hdef.
+	exact HabsR.
+Qed.
+
+(** helper: clipped function on reals (min with 1) is monotone **)
+Theorem Rclip_mono : forall t s:set,
+  t :e R -> s :e R -> t <= s ->
+  If_i (Rlt t 1) t 1 <= If_i (Rlt s 1) s 1.
+let t s.
+assume HtR: t :e R.
+assume HsR: s :e R.
+assume Hts: t <= s.
+claim HtS: SNo t.
+{ exact (real_SNo t HtR). }
+claim HsS: SNo s.
+{ exact (real_SNo s HsR). }
+apply (xm (Rlt t 1)).
+- assume Htlt: Rlt t 1.
+  claim HtltS: t < 1.
+  { exact (RltE_lt t 1 Htlt). }
+  rewrite (If_i_1 (Rlt t 1) t 1 Htlt).
+  apply (xm (Rlt s 1)).
+  + assume Hslt: Rlt s 1.
+    rewrite (If_i_1 (Rlt s 1) s 1 Hslt).
+    exact Hts.
+  + assume Hnsl: ~(Rlt s 1).
+    rewrite (If_i_0 (Rlt s 1) s 1 Hnsl).
+    exact (SNoLtLe t 1 HtltS).
+	- assume Hntl: ~(Rlt t 1).
+	  rewrite (If_i_0 (Rlt t 1) t 1 Hntl).
+	  apply (xm (Rlt s 1)).
+	  + assume Hslt: Rlt s 1.
+	    rewrite (If_i_1 (Rlt s 1) s 1 Hslt).
+	    claim HsltS: s < 1.
+	    { exact (RltE_lt s 1 Hslt). }
+	    claim Ht1: t < 1.
+	    { exact (SNoLeLt_tra t s 1 HtS HsS SNo_1 Hts HsltS). }
+	    claim Htlt: Rlt t 1.
+	    { exact (RltI t 1 HtR real_1 Ht1). }
+	    exact (FalseE (Hntl Htlt) (1 <= s)).
+	  + assume Hnsl: ~(Rlt s 1).
+	    rewrite (If_i_0 (Rlt s 1) s 1 Hnsl).
+	    exact (SNoLe_ref 1).
+Qed.
+
+(** helper: clipped subadditivity for nonnegative reals **)
+Theorem Rclip_subadd_nonneg : forall p q:set,
+  p :e R -> q :e R ->
+  0 <= p -> 0 <= q ->
+  If_i (Rlt (add_SNo p q) 1) (add_SNo p q) 1
+  <= add_SNo (If_i (Rlt p 1) p 1) (If_i (Rlt q 1) q 1).
+let p q.
+assume HpR: p :e R.
+assume HqR: q :e R.
+assume HpNN: 0 <= p.
+assume HqNN: 0 <= q.
+claim HpS: SNo p.
+{ exact (real_SNo p HpR). }
+claim HqS: SNo q.
+{ exact (real_SNo q HqR). }
+claim HpplusqS: SNo (add_SNo p q).
+{ exact (SNo_add_SNo p q HpS HqS). }
+apply (xm (Rlt (add_SNo p q) 1)).
+- assume Hlt: Rlt (add_SNo p q) 1.
+  rewrite (If_i_1 (Rlt (add_SNo p q) 1) (add_SNo p q) 1 Hlt).
+  (** under p+q<1, both p<1 and q<1 **)
+  claim Hp1: Rlt p 1.
+  { apply (SNoLt_trichotomy_or_impred p 1 HpS SNo_1 (Rlt p 1)).
+    - assume Hpl: p < 1.
+      exact (RltI p 1 HpR real_1 Hpl).
+	    - assume Hpeq: p = 1.
+	      claim HsumS: SNo (add_SNo p q).
+	      { exact (real_SNo (add_SNo p q) (real_add_SNo p HpR q HqR)). }
+	      claim Hsumlt: add_SNo p q < 1.
+	      { exact (RltE_lt (add_SNo p q) 1 Hlt). }
+	      claim H1lesum: 1 <= add_SNo p q.
+	      { rewrite Hpeq.
+	        rewrite <- (add_SNo_0R 1 SNo_1) at 1.
+	        exact (add_SNo_Le2 1 0 q SNo_1 SNo_0 HqS HqNN). }
+	      claim H11: 1 < 1.
+	      { exact (SNoLeLt_tra 1 (add_SNo p q) 1 SNo_1 HsumS SNo_1 H1lesum Hsumlt). }
+	      exact (FalseE ((SNoLt_irref 1) H11) (Rlt p 1)).
+	    - assume H1lp: 1 < p.
+	      claim H1lep: 1 <= p.
+	      { exact (SNoLtLe 1 p H1lp). }
+      claim H1lesum: 1 <= add_SNo p q.
+      { claim Hplepq: p <= add_SNo p q.
+        { rewrite <- (add_SNo_0R p HpS) at 1.
+          exact (add_SNo_Le2 p 0 q HpS SNo_0 HqS HqNN). }
+        exact (SNoLe_tra 1 p (add_SNo p q) SNo_1 HpS (SNo_add_SNo p q HpS HqS) H1lep Hplepq). }
+      claim Hsumlt: add_SNo p q < 1.
+      { exact (RltE_lt (add_SNo p q) 1 Hlt). }
+      claim H11: 1 < 1.
+      { exact (SNoLeLt_tra 1 (add_SNo p q) 1 SNo_1 (SNo_add_SNo p q HpS HqS) SNo_1 H1lesum Hsumlt). }
+      exact (FalseE ((SNoLt_irref 1) H11) (Rlt p 1)). }
+  claim Hq1: Rlt q 1.
+  { apply (SNoLt_trichotomy_or_impred q 1 HqS SNo_1 (Rlt q 1)).
+    - assume Hql: q < 1.
+      exact (RltI q 1 HqR real_1 Hql).
+	    - assume Hqeq: q = 1.
+	      claim HsumS: SNo (add_SNo p q).
+	      { exact (real_SNo (add_SNo p q) (real_add_SNo p HpR q HqR)). }
+	      claim Hsumlt: add_SNo p q < 1.
+	      { exact (RltE_lt (add_SNo p q) 1 Hlt). }
+	      claim H1lesum: 1 <= add_SNo p q.
+	      { rewrite Hqeq.
+	        rewrite (add_SNo_com p 1 HpS SNo_1).
+	        rewrite <- (add_SNo_0R 1 SNo_1) at 1.
+	        exact (add_SNo_Le2 1 0 p SNo_1 SNo_0 HpS HpNN). }
+	      claim H11: 1 < 1.
+	      { exact (SNoLeLt_tra 1 (add_SNo p q) 1 SNo_1 HsumS SNo_1 H1lesum Hsumlt). }
+	      exact (FalseE ((SNoLt_irref 1) H11) (Rlt q 1)).
+	    - assume H1lq: 1 < q.
+	      claim H1leq: 1 <= q.
+	      { exact (SNoLtLe 1 q H1lq). }
+	      claim H1lesum: 1 <= add_SNo p q.
+	      { claim Hqlesum: q <= add_SNo p q.
+	        { rewrite (add_SNo_com p q HpS HqS).
+	          rewrite <- (add_SNo_0R q HqS) at 1.
+	          exact (add_SNo_Le2 q 0 p HqS SNo_0 HpS HpNN). }
+	        exact (SNoLe_tra 1 q (add_SNo p q) SNo_1 HqS (SNo_add_SNo p q HpS HqS) H1leq Hqlesum). }
+	      claim HsumS: SNo (add_SNo p q).
+	      { exact (SNo_add_SNo p q HpS HqS). }
+	      claim Hsumlt: add_SNo p q < 1.
+	      { exact (RltE_lt (add_SNo p q) 1 Hlt). }
+	      claim H11: 1 < 1.
+	      { exact (SNoLeLt_tra 1 (add_SNo p q) 1 SNo_1 HsumS SNo_1 H1lesum Hsumlt). }
+	      exact (FalseE ((SNoLt_irref 1) H11) (Rlt q 1)). }
+  rewrite (If_i_1 (Rlt p 1) p 1 Hp1).
+  rewrite (If_i_1 (Rlt q 1) q 1 Hq1).
+  exact (SNoLe_ref (add_SNo p q)).
+- assume Hnlt: ~(Rlt (add_SNo p q) 1).
+  rewrite (If_i_0 (Rlt (add_SNo p q) 1) (add_SNo p q) 1 Hnlt).
+  (** show 1 <= clip(p)+clip(q) **)
+  apply (xm (Rlt p 1)).
+  + assume Hp1: Rlt p 1.
+    rewrite (If_i_1 (Rlt p 1) p 1 Hp1).
+    apply (xm (Rlt q 1)).
+    - assume Hq1: Rlt q 1.
+      rewrite (If_i_1 (Rlt q 1) q 1 Hq1).
+      claim H1le: 1 <= add_SNo p q.
+      { apply (SNoLt_trichotomy_or_impred (add_SNo p q) 1 HpplusqS SNo_1 (1 <= add_SNo p q)).
+        - assume Hslt: add_SNo p q < 1.
+          claim Hr: Rlt (add_SNo p q) 1.
+          { exact (RltI (add_SNo p q) 1 (real_add_SNo p HpR q HqR) real_1 Hslt). }
+          exact (FalseE (Hnlt Hr) (1 <= add_SNo p q)).
+        - assume Heq: add_SNo p q = 1.
+          rewrite Heq.
+          exact (SNoLe_ref 1).
+        - assume H1lt: 1 < add_SNo p q.
+          exact (SNoLtLe 1 (add_SNo p q) H1lt). }
+      exact H1le.
+	    - assume Hnq1: ~(Rlt q 1).
+	      rewrite (If_i_0 (Rlt q 1) q 1 Hnq1).
+	      (** 1 <= p+1 since p is nonnegative **)
+	      rewrite (add_SNo_com p 1 HpS SNo_1).
+	      rewrite <- (add_SNo_0R 1 SNo_1) at 1.
+	      exact (add_SNo_Le2 1 0 p SNo_1 SNo_0 HpS HpNN).
+	  + assume Hnp1: ~(Rlt p 1).
+	    rewrite (If_i_0 (Rlt p 1) p 1 Hnp1).
+	    claim HclipS: SNo (If_i (Rlt q 1) q 1).
+	    { apply (xm (Rlt q 1)).
+	      - assume Hq1.
+	        rewrite (If_i_1 (Rlt q 1) q 1 Hq1).
+	        exact HqS.
+	      - assume Hnq1.
+	        rewrite (If_i_0 (Rlt q 1) q 1 Hnq1).
+	        exact SNo_1. }
+	    claim HclipNN: 0 <= If_i (Rlt q 1) q 1.
+	    { apply (xm (Rlt q 1)).
+	      - assume Hq1.
+	        rewrite (If_i_1 (Rlt q 1) q 1 Hq1).
+	        exact HqNN.
+	      - assume Hnq1.
+	        rewrite (If_i_0 (Rlt q 1) q 1 Hnq1).
+	        exact (SNoLtLe 0 1 SNoLt_0_1). }
+	    rewrite <- (add_SNo_0R 1 SNo_1) at 1.
+	    exact (add_SNo_Le2 1 0 (If_i (Rlt q 1) q 1) SNo_1 SNo_0 HclipS HclipNN).
+Qed.
+
+(** helper: coordinate abs triangle for real sequences **)
+Theorem Romega_coord_abs_diff_triangle : forall f g h n:set,
+  f :e real_sequences -> g :e real_sequences -> h :e real_sequences ->
+  n :e omega ->
+  Romega_coord_abs_diff f h n <= add_SNo (Romega_coord_abs_diff f g n) (Romega_coord_abs_diff g h n).
+let f g h n.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+assume Hh: h :e real_sequences.
+assume HnO: n :e omega.
+claim Hfpack: total_function_on f omega R /\ functional_graph f.
+{ exact (SepE2 (Power (setprod omega R)) (fun f0:set => total_function_on f0 omega R /\ functional_graph f0) f Hf). }
+claim Hgpack: total_function_on g omega R /\ functional_graph g.
+{ exact (SepE2 (Power (setprod omega R)) (fun g0:set => total_function_on g0 omega R /\ functional_graph g0) g Hg). }
+claim Hhpack: total_function_on h omega R /\ functional_graph h.
+{ exact (SepE2 (Power (setprod omega R)) (fun h0:set => total_function_on h0 omega R /\ functional_graph h0) h Hh). }
+claim Hftot: total_function_on f omega R.
+{ exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+claim Hgtot: total_function_on g omega R.
+{ exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+claim Hhtot: total_function_on h omega R.
+{ exact (andEL (total_function_on h omega R) (functional_graph h) Hhpack). }
+claim HfnR: apply_fun f n :e R.
+{ exact (total_function_on_apply_fun_in_Y f omega R n Hftot HnO). }
+claim HgnR: apply_fun g n :e R.
+{ exact (total_function_on_apply_fun_in_Y g omega R n Hgtot HnO). }
+claim HhnR: apply_fun h n :e R.
+{ exact (total_function_on_apply_fun_in_Y h omega R n Hhtot HnO). }
+claim HfnS: SNo (apply_fun f n).
+{ exact (real_SNo (apply_fun f n) HfnR). }
+claim HgnS: SNo (apply_fun g n).
+{ exact (real_SNo (apply_fun g n) HgnR). }
+claim HhnS: SNo (apply_fun h n).
+{ exact (real_SNo (apply_fun h n) HhnR). }
+set a := apply_fun f n.
+set b := apply_fun g n.
+set c := apply_fun h n.
+claim HdefL: Romega_coord_abs_diff f h n = abs_SNo (add_SNo a (minus_SNo c)).
+{ reflexivity. }
+claim HdefR1: Romega_coord_abs_diff f g n = abs_SNo (add_SNo a (minus_SNo b)).
+{ reflexivity. }
+claim HdefR2: Romega_coord_abs_diff g h n = abs_SNo (add_SNo b (minus_SNo c)).
+{ reflexivity. }
+rewrite HdefL.
+rewrite HdefR1.
+rewrite HdefR2.
+exact (abs_SNo_triangle a b c HfnS HgnS HhnS).
+Qed.
+
+(** helper: coordinate clipped triangle for real sequences **)
+Theorem Romega_coord_clipped_diff_triangle : forall f g h n:set,
+  f :e real_sequences -> g :e real_sequences -> h :e real_sequences ->
+  n :e omega ->
+  Romega_coord_clipped_diff f h n <= add_SNo (Romega_coord_clipped_diff f g n) (Romega_coord_clipped_diff g h n).
+let f g h n.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+assume Hh: h :e real_sequences.
+assume HnO: n :e omega.
+set r := Romega_coord_abs_diff f h n.
+set p := Romega_coord_abs_diff f g n.
+set q := Romega_coord_abs_diff g h n.
+claim HrR: r :e R.
+{ exact (Romega_coord_abs_diff_in_R f h n Hf Hh HnO). }
+claim HpR: p :e R.
+{ exact (Romega_coord_abs_diff_in_R f g n Hf Hg HnO). }
+claim HqR: q :e R.
+{ exact (Romega_coord_abs_diff_in_R g h n Hg Hh HnO). }
+claim HrS: SNo r.
+{ exact (real_SNo r HrR). }
+claim HpS: SNo p.
+{ exact (real_SNo p HpR). }
+claim HqS: SNo q.
+{ exact (real_SNo q HqR). }
+claim HabsTri: r <= add_SNo p q.
+{ exact (Romega_coord_abs_diff_triangle f g h n Hf Hg Hh HnO). }
+claim HppNN: 0 <= p.
+{ set t := add_SNo (apply_fun f n) (minus_SNo (apply_fun g n)).
+  claim HtS: SNo t.
+  { claim HtR: t :e R.
+    { claim Ht1R: apply_fun f n :e R.
+      { claim Hfpack: total_function_on f omega R /\ functional_graph f.
+        { exact (SepE2 (Power (setprod omega R)) (fun f0:set => total_function_on f0 omega R /\ functional_graph f0) f Hf). }
+        claim Htotf: total_function_on f omega R.
+        { exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+        exact (total_function_on_apply_fun_in_Y f omega R n Htotf HnO). }
+      claim Ht2R: minus_SNo (apply_fun g n) :e R.
+      { claim Hgpack: total_function_on g omega R /\ functional_graph g.
+        { exact (SepE2 (Power (setprod omega R)) (fun g0:set => total_function_on g0 omega R /\ functional_graph g0) g Hg). }
+        claim Htotg: total_function_on g omega R.
+        { exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+        claim HgnR: apply_fun g n :e R.
+        { exact (total_function_on_apply_fun_in_Y g omega R n Htotg HnO). }
+        exact (real_minus_SNo (apply_fun g n) HgnR). }
+      exact (real_add_SNo (apply_fun f n) Ht1R (minus_SNo (apply_fun g n)) Ht2R). }
+    exact (real_SNo t HtR). }
+  claim Hdef: p = abs_SNo t.
+  { reflexivity. }
+  rewrite Hdef.
+  exact (abs_SNo_nonneg t HtS). }
+claim HqqNN: 0 <= q.
+{ set t := add_SNo (apply_fun g n) (minus_SNo (apply_fun h n)).
+  claim HtS: SNo t.
+  { claim HtR: t :e R.
+    { claim Ht1R: apply_fun g n :e R.
+      { claim Hgpack: total_function_on g omega R /\ functional_graph g.
+        { exact (SepE2 (Power (setprod omega R)) (fun g0:set => total_function_on g0 omega R /\ functional_graph g0) g Hg). }
+        claim Htotg: total_function_on g omega R.
+        { exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+        exact (total_function_on_apply_fun_in_Y g omega R n Htotg HnO). }
+      claim Ht2R: minus_SNo (apply_fun h n) :e R.
+      { claim Hhpack: total_function_on h omega R /\ functional_graph h.
+        { exact (SepE2 (Power (setprod omega R)) (fun h0:set => total_function_on h0 omega R /\ functional_graph h0) h Hh). }
+        claim Htoth: total_function_on h omega R.
+        { exact (andEL (total_function_on h omega R) (functional_graph h) Hhpack). }
+        claim HhnR: apply_fun h n :e R.
+        { exact (total_function_on_apply_fun_in_Y h omega R n Htoth HnO). }
+        exact (real_minus_SNo (apply_fun h n) HhnR). }
+      exact (real_add_SNo (apply_fun g n) Ht1R (minus_SNo (apply_fun h n)) Ht2R). }
+    exact (real_SNo t HtR). }
+  claim Hdef: q = abs_SNo t.
+  { reflexivity. }
+  rewrite Hdef.
+  exact (abs_SNo_nonneg t HtS). }
+claim HdefL: Romega_coord_clipped_diff f h n = If_i (Rlt r 1) r 1.
+{ reflexivity. }
+claim HdefR1: Romega_coord_clipped_diff f g n = If_i (Rlt p 1) p 1.
+{ reflexivity. }
+claim HdefR2: Romega_coord_clipped_diff g h n = If_i (Rlt q 1) q 1.
+{ reflexivity. }
+rewrite HdefL.
+rewrite HdefR1.
+rewrite HdefR2.
+claim Hmono: If_i (Rlt r 1) r 1 <= If_i (Rlt (add_SNo p q) 1) (add_SNo p q) 1.
+{ exact (Rclip_mono r (add_SNo p q) HrR (real_add_SNo p HpR q HqR) HabsTri). }
+claim Hsub: If_i (Rlt (add_SNo p q) 1) (add_SNo p q) 1 <= add_SNo (If_i (Rlt p 1) p 1) (If_i (Rlt q 1) q 1).
+{ exact (Rclip_subadd_nonneg p q HpR HqR HppNN HqqNN). }
+exact (SNoLe_tra (If_i (Rlt r 1) r 1)
+                 (If_i (Rlt (add_SNo p q) 1) (add_SNo p q) 1)
+                 (add_SNo (If_i (Rlt p 1) p 1) (If_i (Rlt q 1) q 1))
+                 (SNo_If_i (Rlt r 1) r 1 HrS SNo_1)
+                 (SNo_If_i (Rlt (add_SNo p q) 1) (add_SNo p q) 1 (SNo_add_SNo p q HpS HqS) SNo_1)
+                 (SNo_add_SNo (If_i (Rlt p 1) p 1) (If_i (Rlt q 1) q 1)
+                              (SNo_If_i (Rlt p 1) p 1 HpS SNo_1)
+                              (SNo_If_i (Rlt q 1) q 1 HqS SNo_1))
+                 Hmono
+                 Hsub).
+Qed.
+
+(** helper: uniform metric value triangle inequality **)
+Theorem Romega_uniform_metric_value_triangle : forall x y z:set,
+  x :e real_sequences -> y :e real_sequences -> z :e real_sequences ->
+  ~(Rlt (add_SNo (Romega_uniform_metric_value x y) (Romega_uniform_metric_value y z))
+        (Romega_uniform_metric_value x z)).
+let x y z.
+assume Hx: x :e real_sequences.
+assume Hy: y :e real_sequences.
+assume Hz: z :e real_sequences.
+set A := Romega_clipped_diffs x z.
+set l := Romega_uniform_metric_value x z.
+set u := add_SNo (Romega_uniform_metric_value x y) (Romega_uniform_metric_value y z).
+claim Hlub: R_lub A l.
+{ exact (Romega_uniform_metric_value_is_lub x z Hx Hz). }
+claim HlR: l :e R.
+{ exact (R_lub_in_R A l Hlub). }
+claim HuR: u :e R.
+{ exact (real_add_SNo (Romega_uniform_metric_value x y)
+                      (Romega_uniform_metric_value_in_R x y Hx Hy)
+                      (Romega_uniform_metric_value y z)
+                      (Romega_uniform_metric_value_in_R y z Hy Hz)). }
+claim Hub: forall a:set, a :e A -> a :e R -> Rle a u.
+{ let a. assume HaA: a :e A. assume HaR: a :e R.
+  apply (ReplE_impred omega (fun n:set => Romega_coord_clipped_diff x z n) a HaA (Rle a u)).
+  let n. assume HnO: n :e omega.
+  assume Haeq: a = Romega_coord_clipped_diff x z n.
+  rewrite Haeq.
+  set axz := Romega_coord_clipped_diff x z n.
+  set axy := Romega_coord_clipped_diff x y n.
+  set ayz := Romega_coord_clipped_diff y z n.
+  claim HaxzLe: axz <= add_SNo axy ayz.
+  { exact (Romega_coord_clipped_diff_triangle x y z n Hx Hy Hz HnO). }
+  claim HaxzR: axz :e R.
+  { exact (Romega_clipped_diffs_in_R x z Hx Hz axz (ReplI omega (fun k:set => Romega_coord_clipped_diff x z k) n HnO)). }
+  claim HaxyR: axy :e R.
+  { exact (Romega_clipped_diffs_in_R x y Hx Hy axy (ReplI omega (fun k:set => Romega_coord_clipped_diff x y k) n HnO)). }
+  claim HayzR: ayz :e R.
+  { exact (Romega_clipped_diffs_in_R y z Hy Hz ayz (ReplI omega (fun k:set => Romega_coord_clipped_diff y z k) n HnO)). }
+  claim HsumR: add_SNo axy ayz :e R.
+  { exact (real_add_SNo axy HaxyR ayz HayzR). }
+  claim H1: Rle axz (add_SNo axy ayz).
+  { exact (Rle_of_SNoLe axz (add_SNo axy ayz) HaxzR HsumR HaxzLe). }
+  claim Hlubxy: R_lub (Romega_clipped_diffs x y) (Romega_uniform_metric_value x y).
+  { exact (Romega_uniform_metric_value_is_lub x y Hx Hy). }
+  claim Hlubyz: R_lub (Romega_clipped_diffs y z) (Romega_uniform_metric_value y z).
+  { exact (Romega_uniform_metric_value_is_lub y z Hy Hz). }
+  claim Hxyub: forall b:set, b :e Romega_clipped_diffs x y -> b :e R -> Rle b (Romega_uniform_metric_value x y).
+  { exact (andER ((Romega_uniform_metric_value x y) :e R)
+                 (forall b:set, b :e Romega_clipped_diffs x y -> b :e R -> Rle b (Romega_uniform_metric_value x y))
+                 (andEL (((Romega_uniform_metric_value x y) :e R) /\
+                         forall b:set, b :e Romega_clipped_diffs x y -> b :e R -> Rle b (Romega_uniform_metric_value x y))
+                        (forall uu:set, uu :e R -> (forall b:set, b :e Romega_clipped_diffs x y -> b :e R -> Rle b uu) -> Rle (Romega_uniform_metric_value x y) uu)
+                        Hlubxy)). }
+  claim Hyzub: forall b:set, b :e Romega_clipped_diffs y z -> b :e R -> Rle b (Romega_uniform_metric_value y z).
+  { exact (andER ((Romega_uniform_metric_value y z) :e R)
+                 (forall b:set, b :e Romega_clipped_diffs y z -> b :e R -> Rle b (Romega_uniform_metric_value y z))
+                 (andEL (((Romega_uniform_metric_value y z) :e R) /\
+                         forall b:set, b :e Romega_clipped_diffs y z -> b :e R -> Rle b (Romega_uniform_metric_value y z))
+                        (forall uu:set, uu :e R -> (forall b:set, b :e Romega_clipped_diffs y z -> b :e R -> Rle b uu) -> Rle (Romega_uniform_metric_value y z) uu)
+                        Hlubyz)). }
+  claim Haxyub: Rle axy (Romega_uniform_metric_value x y).
+  { exact (Hxyub axy (ReplI omega (fun k:set => Romega_coord_clipped_diff x y k) n HnO) HaxyR). }
+  claim Hayzub: Rle ayz (Romega_uniform_metric_value y z).
+  { exact (Hyzub ayz (ReplI omega (fun k:set => Romega_coord_clipped_diff y z k) n HnO) HayzR). }
+  claim H2a: Rle (add_SNo axy ayz) (add_SNo axy (Romega_uniform_metric_value y z)).
+  { exact (Rle_add_SNo_2 axy ayz (Romega_uniform_metric_value y z) HaxyR HayzR (Romega_uniform_metric_value_in_R y z Hy Hz) Hayzub). }
+	  claim H2b': Rle (add_SNo (Romega_uniform_metric_value y z) axy) (add_SNo (Romega_uniform_metric_value y z) (Romega_uniform_metric_value x y)).
+	  { exact (Rle_add_SNo_2 (Romega_uniform_metric_value y z) axy (Romega_uniform_metric_value x y)
+	                         (Romega_uniform_metric_value_in_R y z Hy Hz)
+	                         HaxyR
+	                         (Romega_uniform_metric_value_in_R x y Hx Hy)
+	                         Haxyub). }
+	  claim H2b: Rle (add_SNo axy (Romega_uniform_metric_value y z)) (add_SNo (Romega_uniform_metric_value x y) (Romega_uniform_metric_value y z)).
+	  { claim HcomL: add_SNo axy (Romega_uniform_metric_value y z) = add_SNo (Romega_uniform_metric_value y z) axy.
+	    { exact (add_SNo_com axy (Romega_uniform_metric_value y z)
+	                         (real_SNo axy HaxyR)
+	                         (real_SNo (Romega_uniform_metric_value y z) (Romega_uniform_metric_value_in_R y z Hy Hz))). }
+	    claim HcomR: add_SNo (Romega_uniform_metric_value x y) (Romega_uniform_metric_value y z)
+	                  = add_SNo (Romega_uniform_metric_value y z) (Romega_uniform_metric_value x y).
+	    { exact (add_SNo_com (Romega_uniform_metric_value x y) (Romega_uniform_metric_value y z)
+	                         (real_SNo (Romega_uniform_metric_value x y) (Romega_uniform_metric_value_in_R x y Hx Hy))
+	                         (real_SNo (Romega_uniform_metric_value y z) (Romega_uniform_metric_value_in_R y z Hy Hz))). }
+	    rewrite HcomL.
+	    rewrite HcomR.
+	    exact H2b'. }
+  claim H2: Rle (add_SNo axy ayz) u.
+  { exact (Rle_tra (add_SNo axy ayz) (add_SNo axy (Romega_uniform_metric_value y z)) u H2a H2b). }
+  exact (Rle_tra axz (add_SNo axy ayz) u H1 H2). }
+claim Hmin: forall uu:set, uu :e R -> (forall a:set, a :e A -> a :e R -> Rle a uu) -> Rle l uu.
+{ exact (andER ((l :e R) /\ forall a:set, a :e A -> a :e R -> Rle a l)
+               (forall uu:set, uu :e R -> (forall a:set, a :e A -> a :e R -> Rle a uu) -> Rle l uu)
+               Hlub). }
+claim Hle: Rle l u.
+{ exact (Hmin u HuR Hub). }
+exact (RleE_nlt l u Hle).
+Qed.
+
+(** helper: uniform_metric_Romega satisfies metric_on (pending full proof) **)
+(** LATEX VERSION: The uniform metric on R^ω is a metric on the set of real sequences. **)
+Theorem uniform_metric_Romega_is_metric : metric_on real_sequences uniform_metric_Romega.
+prove metric_on real_sequences uniform_metric_Romega.
+prove ((((function_on uniform_metric_Romega (setprod real_sequences real_sequences) R /\
+         (forall x y:set, x :e real_sequences -> y :e real_sequences ->
+            apply_fun uniform_metric_Romega (x,y) = apply_fun uniform_metric_Romega (y,x))) /\
+        (forall x:set, x :e real_sequences -> apply_fun uniform_metric_Romega (x,x) = 0)) /\
+       (forall x y:set, x :e real_sequences -> y :e real_sequences ->
+          ~(Rlt (apply_fun uniform_metric_Romega (x,y)) 0)
+          /\ (apply_fun uniform_metric_Romega (x,y) = 0 -> x = y))) /\
+      (forall x y z:set, x :e real_sequences -> y :e real_sequences -> z :e real_sequences ->
+         ~(Rlt (add_SNo (apply_fun uniform_metric_Romega (x,y)) (apply_fun uniform_metric_Romega (y,z)))
+               (apply_fun uniform_metric_Romega (x,z))))).
+apply andI.
+- apply andI.
+  + apply andI.
+    * apply andI.
+      - exact uniform_metric_Romega_function_on.
+      - let x y.
+        assume Hx: x :e real_sequences.
+        assume Hy: y :e real_sequences.
+        claim Hxyprod: (x,y) :e setprod real_sequences real_sequences.
+        { exact (tuple_2_setprod_by_pair_Sigma real_sequences real_sequences x y Hx Hy). }
+        claim Hyxprod: (y,x) :e setprod real_sequences real_sequences.
+        { exact (tuple_2_setprod_by_pair_Sigma real_sequences real_sequences y x Hy Hx). }
+        rewrite (apply_fun_graph (setprod real_sequences real_sequences)
+                                 (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+                                 (x,y)
+                                 Hxyprod).
+        rewrite (tuple_2_0_eq x y).
+        rewrite (tuple_2_1_eq x y).
+        rewrite (apply_fun_graph (setprod real_sequences real_sequences)
+                                 (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+                                 (y,x)
+                                 Hyxprod).
+        rewrite (tuple_2_0_eq y x).
+        rewrite (tuple_2_1_eq y x).
+        exact (Romega_uniform_metric_value_sym x y Hx Hy).
+    * let x.
+      assume Hx: x :e real_sequences.
+      claim Hxxprod: (x,x) :e setprod real_sequences real_sequences.
+      { exact (tuple_2_setprod_by_pair_Sigma real_sequences real_sequences x x Hx Hx). }
+      rewrite (apply_fun_graph (setprod real_sequences real_sequences)
+                               (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+                               (x,x)
+                               Hxxprod).
+      rewrite (tuple_2_0_eq x x).
+      rewrite (tuple_2_1_eq x x).
+      exact (Romega_uniform_metric_value_self_zero x Hx).
+  + let x y.
+    assume Hx: x :e real_sequences.
+    assume Hy: y :e real_sequences.
+    prove ~(Rlt (apply_fun uniform_metric_Romega (x,y)) 0) /\ (apply_fun uniform_metric_Romega (x,y) = 0 -> x = y).
+    apply andI.
+    * claim Hxyprod: (x,y) :e setprod real_sequences real_sequences.
+      { exact (tuple_2_setprod_by_pair_Sigma real_sequences real_sequences x y Hx Hy). }
+      rewrite (apply_fun_graph (setprod real_sequences real_sequences)
+                               (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+                               (x,y)
+                               Hxyprod).
+      rewrite (tuple_2_0_eq x y).
+	      rewrite (tuple_2_1_eq x y).
+	      exact (Romega_uniform_metric_value_nonneg x y Hx Hy).
+	    * assume H0: apply_fun uniform_metric_Romega (x,y) = 0.
+	      claim Hxyprod: (x,y) :e setprod real_sequences real_sequences.
+	      { exact (tuple_2_setprod_by_pair_Sigma real_sequences real_sequences x y Hx Hy). }
+	      claim Happ: apply_fun uniform_metric_Romega (x,y) = Romega_uniform_metric_value x y.
+	      { rewrite (apply_fun_graph (setprod real_sequences real_sequences)
+	                                 (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+	                                 (x,y)
+	                                 Hxyprod).
+	        rewrite (tuple_2_0_eq x y).
+	        rewrite (tuple_2_1_eq x y).
+	        reflexivity. }
+	      claim Hval0: Romega_uniform_metric_value x y = 0.
+	      { rewrite <- Happ.
+	        exact H0. }
+	      claim Hcoord: forall n:set, n :e omega -> apply_fun x n = apply_fun y n.
+	      { let n.
+	        assume HnO: n :e omega.
+	        exact (Romega_uniform_metric_value_eq0_coord_eq x y Hx Hy Hval0 n HnO). }
+		      exact (real_sequences_ext x y Hx Hy Hcoord).
+	- let x y z.
+	  assume Hx: x :e real_sequences.
+	  assume Hy: y :e real_sequences.
+	  assume Hz: z :e real_sequences.
+	  claim Hxyprod: (x,y) :e setprod real_sequences real_sequences.
+	  { exact (tuple_2_setprod_by_pair_Sigma real_sequences real_sequences x y Hx Hy). }
+	  claim Hyzprod: (y,z) :e setprod real_sequences real_sequences.
+	  { exact (tuple_2_setprod_by_pair_Sigma real_sequences real_sequences y z Hy Hz). }
+	  claim Hxzprod: (x,z) :e setprod real_sequences real_sequences.
+	  { exact (tuple_2_setprod_by_pair_Sigma real_sequences real_sequences x z Hx Hz). }
+	  rewrite (apply_fun_graph (setprod real_sequences real_sequences)
+	                           (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+	                           (x,y)
+	                           Hxyprod).
+	  rewrite (tuple_2_0_eq x y).
+	  rewrite (tuple_2_1_eq x y).
+	  rewrite (apply_fun_graph (setprod real_sequences real_sequences)
+	                           (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+	                           (y,z)
+	                           Hyzprod).
+	  rewrite (tuple_2_0_eq y z).
+	  rewrite (tuple_2_1_eq y z).
+	  rewrite (apply_fun_graph (setprod real_sequences real_sequences)
+	                           (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+	                           (x,z)
+	                           Hxzprod).
+	  rewrite (tuple_2_0_eq x z).
+	  rewrite (tuple_2_1_eq x z).
+	  exact (Romega_uniform_metric_value_triangle x y z Hx Hy Hz).
+Qed.
+
+
+
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
 Definition open_cover : set -> set -> set -> prop :=
   fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
