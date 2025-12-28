@@ -65256,15 +65256,15 @@ claim HnettotJX: total_function_on net J X.
   { let j. assume HjJ: j :e J.
     claim HjJc: j :e Jc.
     { exact (HJsub j HjJ). }
-    exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc j HjJc). }
+    exact (total_function_on_apply_fun_in_Y net Jc X j Hnettotc HjJc). }
   claim Htot: forall j:set, j :e J -> exists y:set, y :e X /\ (j,y) :e net.
   { let j. assume HjJ: j :e J.
     witness (apply_fun net j).
     apply andI.
     - claim HjJc: j :e Jc.
       { exact (HJsub j HjJ). }
-      exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc j HjJc).
-    - exact (total_function_on_apply_fun_in_graph net J X0 Hnettot0 j HjJ). }
+      exact (total_function_on_apply_fun_in_Y net Jc X j Hnettotc HjJc).
+    - exact (total_function_on_apply_fun_in_graph net J X0 j Hnettot0 HjJ). }
   exact (andI (function_on net J X)
               (forall j:set, j :e J -> exists y:set, y :e X /\ (j,y) :e net)
               Hfun
@@ -65278,7 +65278,7 @@ claim HsubtotKX: total_function_on sub K X.
     { exact ((total_function_on_function_on phi K J Hphitot) k HkK). }
     claim HphikJc: apply_fun phi k :e Jc.
     { exact (HJsub (apply_fun phi k) HphikJ). }
-    exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc (apply_fun phi k) HphikJc). }
+    exact (total_function_on_apply_fun_in_Y net Jc X (apply_fun phi k) Hnettotc HphikJc). }
   claim Htot: forall k:set, k :e K -> exists y:set, y :e X /\ (k,y) :e sub.
   { let k. assume HkK: k :e K.
     witness (apply_fun sub k).
@@ -65288,8 +65288,8 @@ claim HsubtotKX: total_function_on sub K X.
       { exact ((total_function_on_function_on phi K J Hphitot) k HkK). }
       claim HphikJc: apply_fun phi k :e Jc.
       { exact (HJsub (apply_fun phi k) HphikJ). }
-      exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc (apply_fun phi k) HphikJc).
-    - exact (total_function_on_apply_fun_in_graph sub K X0 Hsubtot0 k HkK). }
+      exact (total_function_on_apply_fun_in_Y net Jc X (apply_fun phi k) Hnettotc HphikJc).
+    - exact (total_function_on_apply_fun_in_graph sub K X0 k Hsubtot0 HkK). }
   exact (andI (function_on sub K X)
               (forall k:set, k :e K -> exists y:set, y :e X /\ (k,y) :e sub)
               Hfun
