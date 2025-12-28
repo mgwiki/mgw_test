@@ -69147,6 +69147,159 @@ apply andI.
          exact (not_Rlt_sym 1 2 H12).
 Qed.
 
+(** helper: each component carrier in the constant omega-family is R **)
+Theorem space_family_set_const_Romega : forall i:set,
+  i :e omega ->
+  space_family_set (const_space_family omega R R_standard_topology) i = R.
+let i.
+assume HiO: i :e omega.
+set Xi := const_space_family omega R R_standard_topology.
+claim HXi: apply_fun Xi i = (R, R_standard_topology).
+{ exact (const_space_family_apply omega R R_standard_topology i HiO). }
+prove (apply_fun Xi i) 0 = R.
+rewrite HXi.
+exact (tuple_2_0_eq R R_standard_topology).
+Qed.
+
+(** helper: the carrier union in the constant omega-family is R **)
+Theorem space_family_union_const_Romega :
+  space_family_union omega (const_space_family omega R R_standard_topology) = R.
+set Xi := const_space_family omega R R_standard_topology.
+apply set_ext.
+- let y.
+  assume HyU: y :e space_family_union omega Xi.
+  prove y :e R.
+  set S := {space_family_set Xi i|i :e omega}.
+  apply (UnionE_impred S y HyU (y :e R)).
+  let U.
+  assume HyUin: y :e U.
+  assume HUin: U :e S.
+  apply (ReplE_impred omega (fun i:set => space_family_set Xi i) U HUin (y :e R)).
+  let i.
+  assume HiO: i :e omega.
+  assume HUi: U = space_family_set Xi i.
+  claim HySf: y :e space_family_set Xi i.
+  { prove y :e space_family_set Xi i.
+    rewrite <- HUi.
+    exact HyUin. }
+  rewrite <- (space_family_set_const_Romega i HiO).
+  exact HySf.
+- let y.
+  assume HyR: y :e R.
+  prove y :e space_family_union omega Xi.
+  set S := {space_family_set Xi i|i :e omega}.
+  prove y :e Union S.
+  claim H0O: 0 :e omega.
+  { exact (nat_p_omega 0 nat_0). }
+  claim HUin: space_family_set Xi 0 :e S.
+  { exact (ReplI omega (fun i:set => space_family_set Xi i) 0 H0O). }
+  claim HyU0: y :e space_family_set Xi 0.
+  { rewrite (space_family_set_const_Romega 0 H0O).
+    exact HyR. }
+  exact (UnionI S y (space_family_set Xi 0) HyU0 HUin).
+Qed.
+
+(** helper: the set of real sequences is the same as R to the omega product space **)
+Theorem real_sequences_eq_Romega_space : real_sequences = R_omega_space.
+apply set_ext.
+- let f.
+  assume Hf: f :e real_sequences.
+  prove f :e R_omega_space.
+  claim Hdef: R_omega_space = product_space omega (const_space_family omega R R_standard_topology).
+  { reflexivity. }
+  rewrite Hdef.
+  prove f :e product_space omega (const_space_family omega R R_standard_topology).
+  claim Hproddef: product_space omega (const_space_family omega R R_standard_topology) =
+    {f0 :e Power (setprod omega (space_family_union omega (const_space_family omega R R_standard_topology)))|
+       total_function_on f0 omega (space_family_union omega (const_space_family omega R R_standard_topology)) /\ functional_graph f0 /\
+       forall i:set, i :e omega -> apply_fun f0 i :e space_family_set (const_space_family omega R R_standard_topology) i}.
+  { reflexivity. }
+  rewrite Hproddef.
+  apply (SepI (Power (setprod omega (space_family_union omega (const_space_family omega R R_standard_topology))))
+              (fun f0:set =>
+                 total_function_on f0 omega (space_family_union omega (const_space_family omega R R_standard_topology)) /\ functional_graph f0 /\
+                 forall i:set, i :e omega -> apply_fun f0 i :e space_family_set (const_space_family omega R R_standard_topology) i)
+              f).
+  - (** membership in Power **)
+    claim HfPow: f :e Power (setprod omega R).
+    { exact (SepE1 (Power (setprod omega R))
+                   (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+                   f
+                   Hf). }
+    rewrite (space_family_union_const_Romega).
+    exact HfPow.
+  - (** predicate part **)
+    claim Hpack: total_function_on f omega R /\ functional_graph f.
+    { exact (SepE2 (Power (setprod omega R))
+                   (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+                   f
+                   Hf). }
+    claim Htot: total_function_on f omega R.
+    { exact (andEL (total_function_on f omega R) (functional_graph f) Hpack). }
+    claim Hfun: functional_graph f.
+    { exact (andER (total_function_on f omega R) (functional_graph f) Hpack). }
+    apply andI.
+    + apply andI.
+      * rewrite (space_family_union_const_Romega).
+        exact Htot.
+      * exact Hfun.
+    + let i.
+      assume HiO: i :e omega.
+      rewrite (space_family_set_const_Romega i HiO).
+      exact (total_function_on_apply_fun_in_Y f omega R i Htot HiO).
+- let f.
+  assume Hf: f :e R_omega_space.
+  prove f :e real_sequences.
+  claim Hdef: R_omega_space = product_space omega (const_space_family omega R R_standard_topology).
+  { reflexivity. }
+  claim Hproddef: product_space omega (const_space_family omega R R_standard_topology) =
+    {f0 :e Power (setprod omega (space_family_union omega (const_space_family omega R R_standard_topology)))|
+       total_function_on f0 omega (space_family_union omega (const_space_family omega R R_standard_topology)) /\ functional_graph f0 /\
+       forall i:set, i :e omega -> apply_fun f0 i :e space_family_set (const_space_family omega R R_standard_topology) i}.
+  { reflexivity. }
+  claim HfP: f :e {f0 :e Power (setprod omega (space_family_union omega (const_space_family omega R R_standard_topology)))|
+                    total_function_on f0 omega (space_family_union omega (const_space_family omega R R_standard_topology)) /\ functional_graph f0 /\
+                    forall i:set, i :e omega -> apply_fun f0 i :e space_family_set (const_space_family omega R R_standard_topology) i}.
+  { rewrite <- Hproddef.
+    rewrite <- Hdef.
+    exact Hf. }
+  (** unpack product_space membership **)
+  claim HfPowU: f :e Power (setprod omega (space_family_union omega (const_space_family omega R R_standard_topology))).
+  { exact (SepE1 (Power (setprod omega (space_family_union omega (const_space_family omega R R_standard_topology))))
+                 (fun f0:set =>
+                    total_function_on f0 omega (space_family_union omega (const_space_family omega R R_standard_topology)) /\ functional_graph f0 /\
+                    forall i:set, i :e omega -> apply_fun f0 i :e space_family_set (const_space_family omega R R_standard_topology) i)
+                 f
+                 HfP). }
+  claim HfPred: total_function_on f omega (space_family_union omega (const_space_family omega R R_standard_topology)) /\ functional_graph f /\
+                forall i:set, i :e omega -> apply_fun f i :e space_family_set (const_space_family omega R R_standard_topology) i.
+  { exact (SepE2 (Power (setprod omega (space_family_union omega (const_space_family omega R R_standard_topology))))
+                 (fun f0:set =>
+                    total_function_on f0 omega (space_family_union omega (const_space_family omega R R_standard_topology)) /\ functional_graph f0 /\
+                    forall i:set, i :e omega -> apply_fun f0 i :e space_family_set (const_space_family omega R R_standard_topology) i)
+                 f
+                 HfP). }
+  set A := total_function_on f omega (space_family_union omega (const_space_family omega R R_standard_topology)).
+  set B := functional_graph f.
+  set C := forall i:set, i :e omega -> apply_fun f i :e space_family_set (const_space_family omega R R_standard_topology) i.
+  claim Hab: A /\ B.
+  { exact (andEL (A /\ B) C HfPred). }
+  claim HtotU: A.
+  { exact (andEL A B Hab). }
+  claim Hfun: B.
+  { exact (andER A B Hab). }
+  (** build real_sequences membership **)
+  apply (SepI (Power (setprod omega R))
+              (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+              f).
+  - rewrite <- (space_family_union_const_Romega).
+    exact HfPowU.
+	  - apply andI.
+	    + rewrite <- (space_family_union_const_Romega).
+	      exact HtotU.
+	    + exact Hfun.
+Qed.
+
 Definition R_upper_bound : set -> set -> prop := fun A u =>
   u :e R /\ forall a:set, a :e A -> a :e R -> Rle a u.
 
