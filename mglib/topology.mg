@@ -67508,7 +67508,6 @@ claim Hnet0: net_in_space X net0.
       * (** directed_set J le **)
         exact (finite_subcollections_directed_by_subset Fam).
       * (** total_function_on net0 J X **)
-        prove total_function_on net0 J X.
         claim Hpick_in: forall F:set, F :e J -> pickx F :e X.
         { let F. assume HFJ: F :e J.
           prove pickx F :e X.
