@@ -76627,6 +76627,48 @@ Qed.
 
 (** from §30 Example 3: Sorgenfrey line countability properties **) 
 (** LATEX VERSION: Sorgenfrey line is first countable, separable, Lindelöf, but not second countable. **)
+(** helper: Sorgenfrey line is first countable (countable local basis [x,x+eps_n)) **)
+Theorem Sorgenfrey_line_first_countable :
+  first_countable_space Sorgenfrey_line Sorgenfrey_topology.
+prove first_countable_space Sorgenfrey_line Sorgenfrey_topology.
+admit. (** FAIL **)
+Qed.
+
+(** helper: rational numbers are dense in the Sorgenfrey line **)
+Theorem Sorgenfrey_line_rationals_dense :
+  dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology.
+prove dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology.
+admit. (** FAIL **)
+Qed.
+
+(** helper: disjoint nonempty open families are countable in a space with countable dense subset **)
+(** LATEX VERSION: In a space with a countable dense subset D, any pairwise disjoint family of nonempty open sets is countable. **)
+Theorem disjoint_open_family_countable_of_dense : forall X Tx D Fam:set,
+  topology_on X Tx ->
+  dense_in D X Tx ->
+  countable_set D ->
+  Fam c= Tx ->
+  (forall U:set, U :e Fam -> U <> Empty) ->
+  pairwise_disjoint Fam ->
+  countable_set Fam.
+let X Tx D Fam.
+assume HTx.
+assume Hdense.
+assume HcountD.
+assume HFamSub.
+assume Hne.
+assume Hdisj.
+prove countable_set Fam.
+admit. (** FAIL **)
+Qed.
+
+(** helper: Sorgenfrey line is not second countable **)
+Theorem Sorgenfrey_line_not_second_countable :
+  ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
+assume Hsc : second_countable_space Sorgenfrey_line Sorgenfrey_topology.
+prove False.
+admit. (** FAIL **)
+Qed.
 Theorem Sorgenfrey_line_countability :
   first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
