@@ -79391,6 +79391,179 @@ apply andI.
 
 (** from §31 Theorem 31.2: subspaces/products preserve Hausdorff and regular **) 
 (** LATEX VERSION: Hausdorff/regular properties preserved under subspaces and products (with factorwise assumptions). **)
+(** Helper: distinct points in a product differ in some coordinate. **)
+Theorem product_space_points_differ_coord : forall I Xi x1 x2:set,
+  x1 :e product_space I Xi ->
+  x2 :e product_space I Xi ->
+  x1 <> x2 ->
+  exists i:set, i :e I /\ apply_fun x1 i <> apply_fun x2 i.
+let I Xi x1 x2.
+assume Hx1: x1 :e product_space I Xi.
+assume Hx2: x2 :e product_space I Xi.
+assume Hneq: x1 <> x2.
+apply (xm (exists i:set, i :e I /\ apply_fun x1 i <> apply_fun x2 i)).
+- assume Hex. exact Hex.
+- assume Hno: ~ (exists i:set, i :e I /\ apply_fun x1 i <> apply_fun x2 i).
+  apply FalseE.
+  set Y := space_family_union I Xi.
+  claim Hx1Pow: x1 :e Power (setprod I Y).
+  { exact (SepE1 (Power (setprod I Y))
+                 (fun f : set =>
+                   total_function_on f I Y /\ functional_graph f /\
+                   forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i)
+                 x1 Hx1). }
+  claim Hx2Pow: x2 :e Power (setprod I Y).
+  { exact (SepE1 (Power (setprod I Y))
+                 (fun f : set =>
+                   total_function_on f I Y /\ functional_graph f /\
+                   forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i)
+                 x2 Hx2). }
+  claim Hx1sub: x1 c= setprod I Y.
+  { exact (PowerE (setprod I Y) x1 Hx1Pow). }
+  claim Hx2sub: x2 c= setprod I Y.
+  { exact (PowerE (setprod I Y) x2 Hx2Pow). }
+  claim Hx1prop:
+    total_function_on x1 I Y /\ functional_graph x1 /\
+    forall i:set, i :e I -> apply_fun x1 i :e space_family_set Xi i.
+  { exact (SepE2 (Power (setprod I Y))
+                 (fun f : set =>
+                   total_function_on f I Y /\ functional_graph f /\
+                   forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i)
+                 x1 Hx1). }
+  claim Hx2prop:
+    total_function_on x2 I Y /\ functional_graph x2 /\
+    forall i:set, i :e I -> apply_fun x2 i :e space_family_set Xi i.
+  { exact (SepE2 (Power (setprod I Y))
+                 (fun f : set =>
+                   total_function_on f I Y /\ functional_graph f /\
+                   forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i)
+                 x2 Hx2). }
+  claim Hx1pair: total_function_on x1 I Y /\ functional_graph x1.
+  { exact (andEL (total_function_on x1 I Y /\ functional_graph x1)
+                 (forall i:set, i :e I -> apply_fun x1 i :e space_family_set Xi i)
+                 Hx1prop). }
+  claim Hx2pair: total_function_on x2 I Y /\ functional_graph x2.
+  { exact (andEL (total_function_on x2 I Y /\ functional_graph x2)
+                 (forall i:set, i :e I -> apply_fun x2 i :e space_family_set Xi i)
+                 Hx2prop). }
+  claim Htot1: total_function_on x1 I Y.
+  { exact (andEL (total_function_on x1 I Y) (functional_graph x1) Hx1pair). }
+  claim Htot2: total_function_on x2 I Y.
+  { exact (andEL (total_function_on x2 I Y) (functional_graph x2) Hx2pair). }
+  claim Hfun1: functional_graph x1.
+  { exact (andER (total_function_on x1 I Y) (functional_graph x1) Hx1pair). }
+  claim Hfun2: functional_graph x2.
+  { exact (andER (total_function_on x2 I Y) (functional_graph x2) Hx2pair). }
+  claim Hall: forall i:set, i :e I -> apply_fun x1 i = apply_fun x2 i.
+  { let i. assume HiI: i :e I.
+    apply (xm (apply_fun x1 i = apply_fun x2 i)).
+    - assume Heq. exact Heq.
+    - assume Hdiff: apply_fun x1 i <> apply_fun x2 i.
+      apply FalseE.
+      apply Hno.
+      witness i.
+      apply andI.
+      + exact HiI.
+      + exact Hdiff. }
+  claim Hsub12: x1 c= x2.
+  { let p. assume HpIn1: p :e x1.
+    prove p :e x2.
+    claim HpX: p :e setprod I Y.
+    { exact (Hx1sub p HpIn1). }
+    apply (setprod_elem_decompose I Y p HpX).
+    let i. assume Hiconj.
+    claim HiI: i :e I.
+    { exact (andEL (i :e I) (exists y :e Y, p :e setprod {i} {y}) Hiconj). }
+    apply (andER (i :e I) (exists y :e Y, p :e setprod {i} {y}) Hiconj).
+    let y. assume Hyconj.
+    claim HyY: y :e Y.
+    { exact (andEL (y :e Y) (p :e setprod {i} {y}) Hyconj). }
+    claim Hpiy: p :e setprod {i} {y}.
+    { exact (andER (y :e Y) (p :e setprod {i} {y}) Hyconj). }
+    claim Hp0: p 0 :e {i}.
+    { exact (ap0_Sigma {i} (fun _ : set => {y}) p Hpiy). }
+    claim Hp1sing: p 1 :e {y}.
+    { exact (ap1_Sigma {i} (fun _ : set => {y}) p Hpiy). }
+    claim Hp0eq: p 0 = i.
+    { exact (singleton_elem (p 0) i Hp0). }
+    claim Hp1eq: p 1 = y.
+    { exact (singleton_elem (p 1) y Hp1sing). }
+    claim Heta: p = (p 0, p 1).
+    { exact (setprod_eta {i} {y} p Hpiy). }
+    claim HpEq: p = (i,y).
+    { rewrite Heta.
+      rewrite Hp0eq.
+      rewrite Hp1eq.
+      reflexivity. }
+    claim Hpair1: (i,y) :e x1.
+    { prove (i,y) :e x1.
+      rewrite <- HpEq at 1.
+      exact HpIn1. }
+    claim Happ1: apply_fun x1 i = y.
+    { exact (functional_graph_apply_fun_eq x1 i y Hfun1 Hpair1). }
+    claim Happ2: apply_fun x2 i = y.
+    { rewrite <- (Hall i HiI).
+      exact Happ1. }
+    claim Hpair2: (i, apply_fun x2 i) :e x2.
+    { exact (total_function_on_apply_fun_in_graph x2 I Y i Htot2 HiI). }
+    claim Hiy2: (i,y) :e x2.
+    { prove (i,y) :e x2.
+      rewrite <- Happ2 at 1.
+      exact Hpair2. }
+    rewrite HpEq.
+    exact Hiy2. }
+  claim Hsub21: x2 c= x1.
+  { let p. assume HpIn2: p :e x2.
+    prove p :e x1.
+    claim HpX: p :e setprod I Y.
+    { exact (Hx2sub p HpIn2). }
+    apply (setprod_elem_decompose I Y p HpX).
+    let i. assume Hiconj.
+    claim HiI: i :e I.
+    { exact (andEL (i :e I) (exists y :e Y, p :e setprod {i} {y}) Hiconj). }
+    apply (andER (i :e I) (exists y :e Y, p :e setprod {i} {y}) Hiconj).
+    let y. assume Hyconj.
+    claim Hpiy: p :e setprod {i} {y}.
+    { exact (andER (y :e Y) (p :e setprod {i} {y}) Hyconj). }
+    claim Hp0: p 0 :e {i}.
+    { exact (ap0_Sigma {i} (fun _ : set => {y}) p Hpiy). }
+    claim Hp1sing: p 1 :e {y}.
+    { exact (ap1_Sigma {i} (fun _ : set => {y}) p Hpiy). }
+    claim Hp0eq: p 0 = i.
+    { exact (singleton_elem (p 0) i Hp0). }
+    claim Hp1eq: p 1 = y.
+    { exact (singleton_elem (p 1) y Hp1sing). }
+    claim Heta: p = (p 0, p 1).
+    { exact (setprod_eta {i} {y} p Hpiy). }
+    claim HpEq: p = (i,y).
+    { rewrite Heta.
+      rewrite Hp0eq.
+      rewrite Hp1eq.
+      reflexivity. }
+    claim Hpair2: (i,y) :e x2.
+    { prove (i,y) :e x2.
+      rewrite <- HpEq at 1.
+      exact HpIn2. }
+    claim Happ2: apply_fun x2 i = y.
+    { exact (functional_graph_apply_fun_eq x2 i y Hfun2 Hpair2). }
+    claim Happ1: apply_fun x1 i = y.
+    { rewrite (Hall i HiI) at 1.
+      exact Happ2. }
+    claim Hpair1: (i, apply_fun x1 i) :e x1.
+    { exact (total_function_on_apply_fun_in_graph x1 I Y i Htot1 HiI). }
+    claim Hiy1: (i,y) :e x1.
+    { prove (i,y) :e x1.
+      rewrite <- Happ1 at 1.
+      exact Hpair1. }
+    rewrite HpEq.
+    exact Hiy1. }
+  claim Heq: x1 = x2.
+  { apply set_ext.
+    - exact Hsub12.
+    - exact Hsub21. }
+  exact (Hneq Heq).
+Qed.
+
 Theorem product_topology_full_Hausdorff_axiom : forall I Xi:set,
   Hausdorff_spaces_family I Xi ->
   Hausdorff_space (product_space I Xi) (product_topology_full I Xi).
@@ -79454,7 +79627,167 @@ apply andI.
       reflexivity. }
     exact (Hneq Heq).
   + assume HIne: I <> Empty.
-    admit. (** FAIL **)
+    set X := product_space I Xi.
+    claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+    { let i. assume HiI: i :e I.
+      exact (Hausdorff_space_topology (product_component Xi i) (product_component_topology Xi i) (HHfam i HiI)). }
+    claim HSsub: subbasis_on X (product_subbasis_full I Xi).
+    { exact (product_subbasis_full_subbasis_on I Xi HIne HcompTop). }
+    claim Hexi: exists i:set, i :e I /\ apply_fun x1 i <> apply_fun x2 i.
+    { exact (product_space_points_differ_coord I Xi x1 x2 Hx1 Hx2 Hneq). }
+    apply Hexi.
+    let i. assume Hiconj.
+    claim HiI: i :e I.
+    { exact (andEL (i :e I) (apply_fun x1 i <> apply_fun x2 i) Hiconj). }
+    claim Hdiff: apply_fun x1 i <> apply_fun x2 i.
+    { exact (andER (i :e I) (apply_fun x1 i <> apply_fun x2 i) Hiconj). }
+    claim HHi: Hausdorff_space (product_component Xi i) (product_component_topology Xi i).
+    { exact (HHfam i HiI). }
+    claim HTi: topology_on (product_component Xi i) (product_component_topology Xi i).
+    { exact (Hausdorff_space_topology (product_component Xi i) (product_component_topology Xi i) HHi). }
+    claim HSepi:
+      forall y1 y2:set, y1 :e product_component Xi i -> y2 :e product_component Xi i -> y1 <> y2 ->
+        exists U V:set, U :e product_component_topology Xi i /\ V :e product_component_topology Xi i /\
+          y1 :e U /\ y2 :e V /\ U :/\: V = Empty.
+    { exact (andER (topology_on (product_component Xi i) (product_component_topology Xi i))
+                   (forall y1 y2:set, y1 :e product_component Xi i -> y2 :e product_component Xi i -> y1 <> y2 ->
+                      exists U V:set, U :e product_component_topology Xi i /\ V :e product_component_topology Xi i /\
+                        y1 :e U /\ y2 :e V /\ U :/\: V = Empty)
+                   HHi). }
+    claim Hx1i: apply_fun x1 i :e product_component Xi i.
+    { claim Hx1prop:
+        total_function_on x1 I (space_family_union I Xi) /\ functional_graph x1 /\
+        forall j:set, j :e I -> apply_fun x1 j :e space_family_set Xi j.
+      { exact (SepE2 (Power (setprod I (space_family_union I Xi)))
+                     (fun f : set =>
+                       total_function_on f I (space_family_union I Xi) /\ functional_graph f /\
+                       forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j)
+                     x1 Hx1). }
+      claim Hx1all: forall j:set, j :e I -> apply_fun x1 j :e space_family_set Xi j.
+      { exact (andER (total_function_on x1 I (space_family_union I Xi) /\ functional_graph x1)
+                     (forall j:set, j :e I -> apply_fun x1 j :e space_family_set Xi j)
+                     Hx1prop). }
+      exact (Hx1all i HiI). }
+    claim Hx2i: apply_fun x2 i :e product_component Xi i.
+    { claim Hx2prop:
+        total_function_on x2 I (space_family_union I Xi) /\ functional_graph x2 /\
+        forall j:set, j :e I -> apply_fun x2 j :e space_family_set Xi j.
+      { exact (SepE2 (Power (setprod I (space_family_union I Xi)))
+                     (fun f : set =>
+                       total_function_on f I (space_family_union I Xi) /\ functional_graph f /\
+                       forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j)
+                     x2 Hx2). }
+      claim Hx2all: forall j:set, j :e I -> apply_fun x2 j :e space_family_set Xi j.
+      { exact (andER (total_function_on x2 I (space_family_union I Xi) /\ functional_graph x2)
+                     (forall j:set, j :e I -> apply_fun x2 j :e space_family_set Xi j)
+                     Hx2prop). }
+      exact (Hx2all i HiI). }
+    claim HexUV: exists U0 V0:set,
+      U0 :e product_component_topology Xi i /\ V0 :e product_component_topology Xi i /\
+        apply_fun x1 i :e U0 /\ apply_fun x2 i :e V0 /\ U0 :/\: V0 = Empty.
+    { exact (HSepi (apply_fun x1 i) (apply_fun x2 i) Hx1i Hx2i Hdiff). }
+    apply HexUV.
+    let U0. assume HU0conj.
+    apply HU0conj.
+    let V0. assume HV0conj.
+    claim H4:
+      (((U0 :e product_component_topology Xi i /\ V0 :e product_component_topology Xi i) /\ apply_fun x1 i :e U0) /\ apply_fun x2 i :e V0).
+    { exact (andEL ((((U0 :e product_component_topology Xi i /\ V0 :e product_component_topology Xi i) /\ apply_fun x1 i :e U0) /\ apply_fun x2 i :e V0))
+                   (U0 :/\: V0 = Empty)
+                   HV0conj). }
+    claim Hdisj: U0 :/\: V0 = Empty.
+    { exact (andER ((((U0 :e product_component_topology Xi i /\ V0 :e product_component_topology Xi i) /\ apply_fun x1 i :e U0) /\ apply_fun x2 i :e V0))
+                   (U0 :/\: V0 = Empty)
+                   HV0conj). }
+    claim H3:
+      ((U0 :e product_component_topology Xi i /\ V0 :e product_component_topology Xi i) /\ apply_fun x1 i :e U0).
+    { exact (andEL (((U0 :e product_component_topology Xi i /\ V0 :e product_component_topology Xi i) /\ apply_fun x1 i :e U0))
+                   (apply_fun x2 i :e V0)
+                   H4). }
+    claim Hx2V0: apply_fun x2 i :e V0.
+    { exact (andER (((U0 :e product_component_topology Xi i /\ V0 :e product_component_topology Xi i) /\ apply_fun x1 i :e U0))
+                   (apply_fun x2 i :e V0)
+                   H4). }
+    claim HUV: U0 :e product_component_topology Xi i /\ V0 :e product_component_topology Xi i.
+    { exact (andEL (U0 :e product_component_topology Xi i /\ V0 :e product_component_topology Xi i)
+                   (apply_fun x1 i :e U0)
+                   H3). }
+    claim Hx1U0: apply_fun x1 i :e U0.
+    { exact (andER (U0 :e product_component_topology Xi i /\ V0 :e product_component_topology Xi i)
+                   (apply_fun x1 i :e U0)
+                   H3). }
+    claim HU0top: U0 :e product_component_topology Xi i.
+    { exact (andEL (U0 :e product_component_topology Xi i) (V0 :e product_component_topology Xi i) HUV). }
+    claim HV0top: V0 :e product_component_topology Xi i.
+    { exact (andER (U0 :e product_component_topology Xi i) (V0 :e product_component_topology Xi i) HUV). }
+    set U := product_cylinder I Xi i U0.
+    set V := product_cylinder I Xi i V0.
+    witness U.
+    witness V.
+    apply and5I.
+    - (** U open **)
+      claim HUsub: U :e product_subbasis_full I Xi.
+      { prove U :e product_subbasis_full I Xi.
+        prove U :e (\/_ j :e I, {product_cylinder I Xi j W|W :e space_family_topology Xi j}).
+        apply (famunionI I (fun j:set => {product_cylinder I Xi j W|W :e space_family_topology Xi j}) i U HiI).
+        exact (ReplI (space_family_topology Xi i) (fun W:set => product_cylinder I Xi i W) U0 HU0top). }
+      exact (subbasis_elem_open_in_generated_from_subbasis X (product_subbasis_full I Xi) U HSsub HUsub).
+    - (** V open **)
+      claim HVsub: V :e product_subbasis_full I Xi.
+      { prove V :e product_subbasis_full I Xi.
+        prove V :e (\/_ j :e I, {product_cylinder I Xi j W|W :e space_family_topology Xi j}).
+        apply (famunionI I (fun j:set => {product_cylinder I Xi j W|W :e space_family_topology Xi j}) i V HiI).
+        exact (ReplI (space_family_topology Xi i) (fun W:set => product_cylinder I Xi i W) V0 HV0top). }
+      exact (subbasis_elem_open_in_generated_from_subbasis X (product_subbasis_full I Xi) V HSsub HVsub).
+    - (** x1 in U **)
+      prove x1 :e U.
+      claim HdefU: U = {f :e product_space I Xi | i :e I /\ U0 :e space_family_topology Xi i /\ apply_fun f i :e U0}.
+      { reflexivity. }
+      rewrite HdefU.
+      apply (SepI (product_space I Xi) (fun f:set => i :e I /\ U0 :e space_family_topology Xi i /\ apply_fun f i :e U0) x1 Hx1).
+      apply andI.
+      + apply andI.
+        * exact HiI.
+        * exact HU0top.
+      + exact Hx1U0.
+    - (** x2 in V **)
+      prove x2 :e V.
+      claim HdefV: V = {f :e product_space I Xi | i :e I /\ V0 :e space_family_topology Xi i /\ apply_fun f i :e V0}.
+      { reflexivity. }
+      rewrite HdefV.
+      apply (SepI (product_space I Xi) (fun f:set => i :e I /\ V0 :e space_family_topology Xi i /\ apply_fun f i :e V0) x2 Hx2).
+      apply andI.
+      + apply andI.
+        * exact HiI.
+        * exact HV0top.
+      + exact Hx2V0.
+    - (** U :/\: V = Empty **)
+      prove U :/\: V = Empty.
+      apply set_ext.
+      + let f. assume Hf: f :e U :/\: V.
+        apply FalseE.
+        claim HfU: f :e U.
+        { exact (binintersectE1 U V f Hf). }
+        claim HfV: f :e V.
+        { exact (binintersectE2 U V f Hf). }
+        claim HfUprop: i :e I /\ U0 :e space_family_topology Xi i /\ apply_fun f i :e U0.
+        { exact (SepE2 X (fun f0:set => i :e I /\ U0 :e space_family_topology Xi i /\ apply_fun f0 i :e U0) f HfU). }
+        claim HfVprop: i :e I /\ V0 :e space_family_topology Xi i /\ apply_fun f i :e V0.
+        { exact (SepE2 X (fun f0:set => i :e I /\ V0 :e space_family_topology Xi i /\ apply_fun f0 i :e V0) f HfV). }
+        claim HfiU0: apply_fun f i :e U0.
+        { exact (andER (i :e I /\ U0 :e space_family_topology Xi i) (apply_fun f i :e U0) HfUprop). }
+        claim HfiV0: apply_fun f i :e V0.
+        { exact (andER (i :e I /\ V0 :e space_family_topology Xi i) (apply_fun f i :e V0) HfVprop). }
+        claim HfiInt: apply_fun f i :e U0 :/\: V0.
+        { apply binintersectI.
+          - exact HfiU0.
+          - exact HfiV0. }
+        claim HfiE: apply_fun f i :e Empty.
+        { rewrite <- Hdisj. exact HfiInt. }
+        exact (EmptyE (apply_fun f i) HfiE).
+      + let f. assume Hf: f :e Empty.
+        apply FalseE.
+        exact (EmptyE f Hf).
 Qed.
 
 Theorem product_topology_full_regular_axiom : forall I Xi:set,
