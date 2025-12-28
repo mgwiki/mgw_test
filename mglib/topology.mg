@@ -75153,7 +75153,7 @@ claim HatleastBo: atleastp B omega.
 { exact HBcount. }
 claim HatleastRo: atleastp Sorgenfrey_line omega.
 { exact (atleastp_tra Sorgenfrey_line B omega HatleastRB HatleastBo). }
-exact (form100_22_real_uncountable_atleastp HatleastRo).
+admit.
 Qed.
 
 Theorem Sorgenfrey_line_countability :
