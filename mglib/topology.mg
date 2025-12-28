@@ -65987,7 +65987,336 @@ Theorem subnet_converges_to_accumulation : forall X Tx net x:set,
 let X Tx net x.
 assume Hacc: accumulation_point_of_net X Tx net x.
 prove exists sub:set, subnet_of net sub /\ net_converges X Tx sub x.
-admit. (** FAIL **)
+apply Hacc.
+let J.
+assume Hexle:
+  exists le:set, topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U ->
+      forall j0:set, j0 :e J ->
+        exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U.
+apply Hexle.
+let le.
+assume Hdata:
+  topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U ->
+      forall j0:set, j0 :e J ->
+        exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U.
+apply Hdata.
+assume Hcore Hfreq.
+apply Hcore.
+assume Hcore5 HxX.
+apply Hcore5.
+assume Hcore4 Hdomnet.
+apply Hcore4.
+assume Hcore3 Hgraphnet.
+apply Hcore3.
+assume Hcore2 Htotnet.
+apply Hcore2.
+assume HTx HdirJ.
+
+claim Hfunnet: function_on net J X.
+{ exact (total_function_on_function_on net J X Htotnet). }
+
+(** extract reflexivity of le from directed_set J le **)
+claim Hrefl: forall j0:set, j0 :e J -> (j0,j0) :e le.
+{ let j0. assume Hj0: j0 :e J.
+  apply HdirJ. assume HleftJ HupperJ.
+  apply HleftJ. assume HJne HpoJ.
+  apply HpoJ. assume Hleft13 HtransJ.
+  apply Hleft13. assume H12 HantisymJ.
+  apply H12. assume HrelJ HreflJ.
+  exact (HreflJ j0 Hj0). }
+
+(** build the standard neighborhood-index subnet **)
+set N := {U :e Tx | x :e U}.
+set K := {p :e setprod N J | apply_fun net (p 1) :e p 0}.
+set leK := {q :e setprod K K | (q 1) 0 c= (q 0) 0 /\ ((q 0) 1, (q 1) 1) :e le}.
+set phi := graph K (fun k:set => k 1).
+set sub := graph K (fun k:set => apply_fun net (k 1)).
+
+(** directed_set K leK is the only hard infrastructure point here **)
+claim HdirK: directed_set K leK.
+{ admit. (** FAIL **) }
+
+(** sub is total_function_on K -> X **)
+claim Htotsub: total_function_on sub K X.
+{ prove total_function_on sub K X.
+  prove function_on sub K X /\ forall k:set, k :e K -> exists y:set, y :e X /\ (k,y) :e sub.
+  apply andI.
+  - let k. assume HkK: k :e K.
+    prove apply_fun sub k :e X.
+    claim HkProd: k :e setprod N J.
+    { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) k HkK). }
+    claim Hk1J: k 1 :e J.
+    { exact (ap1_Sigma N (fun _ : set => J) k HkProd). }
+    rewrite (apply_fun_graph K (fun k0:set => apply_fun net (k0 1)) k HkK).
+    exact (Hfunnet (k 1) Hk1J).
+  - let k. assume HkK: k :e K.
+    prove exists y:set, y :e X /\ (k,y) :e sub.
+    witness (apply_fun net (k 1)).
+    apply andI.
+    + claim HkProd: k :e setprod N J.
+      { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) k HkK). }
+      claim Hk1J: k 1 :e J.
+      { exact (ap1_Sigma N (fun _ : set => J) k HkProd). }
+      exact (Hfunnet (k 1) Hk1J).
+    + exact (ReplI K (fun k0:set => (k0, apply_fun net (k0 1))) k HkK). }
+
+claim Hgraphsub: functional_graph sub.
+{ exact (functional_graph_graph K (fun k0:set => apply_fun net (k0 1))). }
+
+claim Hdomsub: graph_domain_subset sub K.
+{ exact (graph_domain_subset_graph K (fun k0:set => apply_fun net (k0 1))). }
+
+(** phi is total_function_on K -> J **)
+claim Htotphi: total_function_on phi K J.
+{ prove total_function_on phi K J.
+  prove function_on phi K J /\ forall k:set, k :e K -> exists y:set, y :e J /\ (k,y) :e phi.
+  apply andI.
+  - let k. assume HkK: k :e K.
+    prove apply_fun phi k :e J.
+    claim HkProd: k :e setprod N J.
+    { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) k HkK). }
+    claim Hk1J: k 1 :e J.
+    { exact (ap1_Sigma N (fun _ : set => J) k HkProd). }
+    rewrite (apply_fun_graph K (fun k0:set => k0 1) k HkK).
+    exact Hk1J.
+  - let k. assume HkK: k :e K.
+    prove exists y:set, y :e J /\ (k,y) :e phi.
+    witness (k 1).
+    apply andI.
+    + claim HkProd: k :e setprod N J.
+      { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) k HkK). }
+      exact (ap1_Sigma N (fun _ : set => J) k HkProd).
+    + exact (ReplI K (fun k0:set => (k0, k0 1)) k HkK). }
+
+claim Hgraphphi: functional_graph phi.
+{ exact (functional_graph_graph K (fun k0:set => k0 1)). }
+
+claim Hdomphi: graph_domain_subset phi K.
+{ exact (graph_domain_subset_graph K (fun k0:set => k0 1)). }
+
+(** monotonicity of phi with respect to leK and le **)
+claim Hmono: forall i j:set, i :e K -> j :e K -> (i,j) :e leK -> (apply_fun phi i, apply_fun phi j) :e le.
+{ let i j.
+  assume HiK: i :e K.
+  assume HjK: j :e K.
+  assume Hij: (i,j) :e leK.
+  claim Hle: ((i 1),(j 1)) :e le.
+  { exact (andER ((j 0) c= (i 0)) (((i 1),(j 1)) :e le) (pair_order_pred K le i j Hij)). }
+  rewrite (apply_fun_graph K (fun k0:set => k0 1) i HiK).
+  rewrite (apply_fun_graph K (fun k0:set => k0 1) j HjK).
+  exact Hle. }
+
+(** cofinality: for each j0 choose (X,j0) **)
+claim Hcofinal: forall j0:set, j0 :e J -> exists k:set, k :e K /\ (j0, apply_fun phi k) :e le.
+{ let j0. assume Hj0: j0 :e J.
+  claim HXTx: X :e Tx.
+  { exact (topology_has_X X Tx HTx). }
+  claim HXN: X :e N.
+  { exact (SepI Tx (fun U0:set => x :e U0) X HXTx HxX). }
+  claim Hnetj0X: apply_fun net j0 :e X.
+  { exact (Hfunnet j0 Hj0). }
+  claim HkProd: (X,j0) :e setprod N J.
+  { exact (tuple_2_setprod_by_pair_Sigma N J X j0 HXN Hj0). }
+  claim Hk_in: apply_fun net ((X,j0) 1) :e (X,j0) 0.
+  { rewrite (tuple_2_1_eq X j0).
+    rewrite (tuple_2_0_eq X j0).
+    exact Hnetj0X. }
+  claim HkK: (X,j0) :e K.
+  { exact (SepI (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) (X,j0) HkProd Hk_in). }
+  witness (X,j0).
+  apply andI.
+  - exact HkK.
+  - rewrite (apply_fun_graph K (fun k0:set => k0 1) (X,j0) HkK).
+    rewrite (tuple_2_1_eq X j0).
+    exact (Hrefl j0 Hj0). }
+
+(** value relation: sub k = net (phi k) **)
+claim Hvals: forall k:set, k :e K -> apply_fun sub k = apply_fun net (apply_fun phi k).
+{ let k. assume HkK: k :e K.
+  rewrite (apply_fun_graph K (fun k0:set => apply_fun net (k0 1)) k HkK).
+  rewrite (apply_fun_graph K (fun k0:set => k0 1) k HkK).
+  reflexivity. }
+
+witness sub.
+apply andI.
+- (** subnet_of net sub **)
+  prove subnet_of net sub.
+  prove exists J0 leJ0 K0 leK0 X0 phi0:set,
+    directed_set J0 leJ0 /\ directed_set K0 leK0 /\
+    total_function_on net J0 X0 /\ functional_graph net /\
+    total_function_on sub K0 X0 /\ functional_graph sub /\
+    total_function_on phi0 K0 J0 /\ functional_graph phi0 /\
+    graph_domain_subset net J0 /\ graph_domain_subset sub K0 /\ graph_domain_subset phi0 K0 /\
+    (forall i j:set, i :e K0 -> j :e K0 -> (i,j) :e leK0 ->
+      (apply_fun phi0 i, apply_fun phi0 j) :e leJ0) /\
+    (forall j:set, j :e J0 -> exists k:set, k :e K0 /\ (j, apply_fun phi0 k) :e leJ0) /\
+    (forall k:set, k :e K0 -> apply_fun sub k = apply_fun net (apply_fun phi0 k)).
+  witness J.
+  witness le.
+  witness K.
+  witness leK.
+  witness X.
+  witness phi.
+  (** build the left-associated conjunction for subnet_of data **)
+  apply andI.
+  - prove directed_set J le /\ directed_set K leK /\
+      total_function_on net J X /\ functional_graph net /\
+      total_function_on sub K X /\ functional_graph sub /\
+      total_function_on phi K J /\ functional_graph phi /\
+      graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
+      (forall i j:set, i :e K -> j :e K -> (i,j) :e leK -> (apply_fun phi i, apply_fun phi j) :e le) /\
+      (forall j:set, j :e J -> exists k:set, k :e K /\ (j, apply_fun phi k) :e le).
+    apply andI.
+    - (** peel the last conjunct (cofinality) **)
+      prove directed_set J le /\ directed_set K leK /\
+          total_function_on net J X /\ functional_graph net /\
+          total_function_on sub K X /\ functional_graph sub /\
+          total_function_on phi K J /\ functional_graph phi /\
+          graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
+          (forall i j:set, i :e K -> j :e K -> (i,j) :e leK -> (apply_fun phi i, apply_fun phi j) :e le).
+      apply andI.
+      - (** peel monotonicity of phi **)
+        prove directed_set J le /\ directed_set K leK /\
+            total_function_on net J X /\ functional_graph net /\
+            total_function_on sub K X /\ functional_graph sub /\
+            total_function_on phi K J /\ functional_graph phi /\
+            graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K.
+        apply andI.
+        - (** peel graph_domain_subset phi K **)
+          prove directed_set J le /\ directed_set K leK /\
+              total_function_on net J X /\ functional_graph net /\
+              total_function_on sub K X /\ functional_graph sub /\
+              total_function_on phi K J /\ functional_graph phi /\
+              graph_domain_subset net J /\ graph_domain_subset sub K.
+          apply andI.
+          - (** peel graph_domain_subset sub K **)
+            prove directed_set J le /\ directed_set K leK /\
+                total_function_on net J X /\ functional_graph net /\
+                total_function_on sub K X /\ functional_graph sub /\
+                total_function_on phi K J /\ functional_graph phi /\
+                graph_domain_subset net J.
+            apply andI.
+            - (** peel graph_domain_subset net J **)
+              prove directed_set J le /\ directed_set K leK /\
+                  total_function_on net J X /\ functional_graph net /\
+                  total_function_on sub K X /\ functional_graph sub /\
+                  total_function_on phi K J /\ functional_graph phi.
+              apply andI.
+              - (** peel functional_graph phi **)
+                prove directed_set J le /\ directed_set K leK /\
+                    total_function_on net J X /\ functional_graph net /\
+                    total_function_on sub K X /\ functional_graph sub /\
+                    total_function_on phi K J.
+                apply andI.
+                - (** peel total_function_on phi **)
+                  prove directed_set J le /\ directed_set K leK /\
+                      total_function_on net J X /\ functional_graph net /\
+                      total_function_on sub K X /\ functional_graph sub.
+                  apply andI.
+                  - (** peel functional_graph sub **)
+                    prove directed_set J le /\ directed_set K leK /\
+                        total_function_on net J X /\ functional_graph net /\
+                        total_function_on sub K X.
+                    apply andI.
+                    - (** peel total_function_on sub **)
+                      prove directed_set J le /\ directed_set K leK /\
+                          total_function_on net J X /\ functional_graph net.
+                      apply andI.
+                      - (** peel functional_graph net **)
+                        prove directed_set J le /\ directed_set K leK /\ total_function_on net J X.
+                        apply andI.
+                        - (** peel total_function_on net **)
+                          prove directed_set J le /\ directed_set K leK.
+                          apply andI.
+                          - exact HdirJ.
+                          - exact HdirK.
+                        - exact Htotnet.
+                      - exact Hgraphnet.
+                    - exact Htotsub.
+                  - exact Hgraphsub.
+                - exact Htotphi.
+              - exact Hgraphphi.
+            - exact Hdomnet.
+          - exact Hdomsub.
+        - exact Hdomphi.
+      - exact Hmono.
+    - exact Hcofinal.
+  - exact Hvals.
+- (** net_converges X Tx sub x **)
+  prove net_converges X Tx sub x.
+  prove exists J0 le0:set, topology_on X Tx /\ directed_set J0 le0 /\ total_function_on sub J0 X /\ functional_graph sub /\ graph_domain_subset sub J0 /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U ->
+      exists i0:set, i0 :e J0 /\ forall i:set, i :e J0 -> (i0,i) :e le0 -> apply_fun sub i :e U.
+	  witness K.
+	  witness leK.
+	  apply andI.
+	  - (** core data **)
+		    prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K /\ x :e X.
+		    apply andI.
+		    - prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K.
+		      apply andI.
+		      - prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub.
+		        apply andI.
+		        - prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X.
+		          apply andI.
+		          - prove topology_on X Tx /\ directed_set K leK.
+		             apply andI.
+		             - exact HTx.
+		             - exact HdirK.
+		          - exact Htotsub.
+		        - exact Hgraphsub.
+		      - exact Hdomsub.
+		    - exact HxX.
+	  - (** eventuality from neighborhood shrinking **)
+	    let U. assume HU: U :e Tx.
+	    assume HxU: x :e U.
+	    prove exists i0:set, i0 :e K /\ forall i:set, i :e K -> (i0,i) :e leK -> apply_fun sub i :e U.
+    claim HJne: J <> Empty.
+    { exact (directed_set_nonempty J le HdirJ). }
+    claim Hexj0: exists j0:set, j0 :e J.
+    { exact (nonempty_has_element J HJne). }
+    apply Hexj0.
+    let j0. assume Hj0: j0 :e J.
+    claim Hexj: exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U.
+    { exact (Hfreq U HU HxU j0 Hj0). }
+	    apply Hexj.
+	    let j.
+	    assume HjPack: j :e J /\ (j0,j) :e le /\ apply_fun net j :e U.
+	    claim Hj_left: j :e J /\ (j0,j) :e le.
+	    { exact (andEL (j :e J /\ (j0,j) :e le) (apply_fun net j :e U) HjPack). }
+	    claim HjJ: j :e J.
+	    { exact (andEL (j :e J) ((j0,j) :e le) Hj_left). }
+	    claim HnetjU: apply_fun net j :e U.
+	    { exact (andER (j :e J /\ (j0,j) :e le) (apply_fun net j :e U) HjPack). }
+    claim HUN: U :e N.
+    { exact (SepI Tx (fun U0:set => x :e U0) U HU HxU). }
+    claim Hi0Prod: (U,j) :e setprod N J.
+    { exact (tuple_2_setprod_by_pair_Sigma N J U j HUN HjJ). }
+    claim Hi0_in: apply_fun net ((U,j) 1) :e (U,j) 0.
+    { rewrite (tuple_2_1_eq U j).
+      rewrite (tuple_2_0_eq U j).
+      exact HnetjU. }
+    claim Hi0K: (U,j) :e K.
+    { exact (SepI (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) (U,j) Hi0Prod Hi0_in). }
+    witness (U,j).
+    apply andI.
+    + exact Hi0K.
+    + let i. assume HiK: i :e K.
+      assume Hi0i: ((U,j),i) :e leK.
+      prove apply_fun sub i :e U.
+      claim Hiprod: i :e setprod N J.
+      { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) i HiK). }
+      claim Hinet: apply_fun net (i 1) :e i 0.
+      { exact (SepE2 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) i HiK). }
+      claim HsubU: (i 0) c= ((U,j) 0).
+      { exact (andEL ((i 0) c= ((U,j) 0)) (((U,j) 1,(i 1)) :e le) (pair_order_pred K le (U,j) i Hi0i)). }
+      claim HinetU: apply_fun net (i 1) :e ((U,j) 0).
+      { exact (HsubU (apply_fun net (i 1)) Hinet). }
+      rewrite (apply_fun_graph K (fun k0:set => apply_fun net (k0 1)) i HiK).
+      rewrite <- (tuple_2_0_eq U j).
+      exact HinetU.
 Qed.
 
 (** from exercises after §29: compactness via nets **) 
