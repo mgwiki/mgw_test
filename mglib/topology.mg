@@ -65099,13 +65099,13 @@ claim Hleft2: topology_on X Tx /\ directed_set J.
 { exact (andEL (topology_on X Tx /\ directed_set J) (total_function_on net J X) Hleft3). }
 claim HdirJ: directed_set J.
 { exact (andER (topology_on X Tx) (directed_set J) Hleft2). }
-apply andI.
-- apply andI.
-  * exact HdirJ.
-  * exact Htot.
-- apply andI.
-  * exact Hgraph.
-  * exact Hdom.
+	apply andI.
+	- apply andI.
+	  * apply andI.
+	    { exact HdirJ. }
+	    { exact Htot. }
+	  * exact Hgraph.
+	- exact Hdom.
 Qed.
 
 (** from exercises after §29: convergence of subnets **) 
