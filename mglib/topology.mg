@@ -65272,7 +65272,98 @@ prove (continuous_map X Tx Y Ty f <->
     forall net J le x:set,
       net_converges_on X Tx net J le x ->
         net_converges_on Y Ty (compose_fun J net f) J le (apply_fun f x)).
-admit. (** FAIL **)
+apply iffI.
+- assume Hcont: continuous_map X Tx Y Ty f.
+  prove forall net J le x:set,
+    net_converges_on X Tx net J le x ->
+      net_converges_on Y Ty (compose_fun J net f) J le (apply_fun f x).
+  let net J le x.
+  assume Hnetconv: net_converges_on X Tx net J le x.
+  (** extract function_on f X Y and preimage condition from continuity **)
+  claim HfXY: function_on f X Y.
+  { exact (continuous_map_function_on X Tx Y Ty f Hcont). }
+  claim Hpre: forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+  { exact (continuous_map_preimage X Tx Y Ty f Hcont). }
+  (** unpack net_converges_on for net **)
+  apply Hnetconv.
+  assume Hcore Htail.
+  apply Hcore.
+  assume Hcore5 HxX.
+  apply Hcore5.
+  assume Hcore4 Hdom.
+  apply Hcore4.
+  assume Hcore3 Hgraph.
+  apply Hcore3.
+  assume Hcore2 Htot.
+  apply Hcore2.
+  assume HTx0 HdirJ.
+  (** build net_converges_on for the composed net **)
+  prove net_converges_on Y Ty (compose_fun J net f) J le (apply_fun f x).
+  prove topology_on Y Ty /\ directed_set J le /\ total_function_on (compose_fun J net f) J Y /\ functional_graph (compose_fun J net f) /\ graph_domain_subset (compose_fun J net f) J /\ (apply_fun f x) :e Y /\
+    forall V:set, V :e Ty -> apply_fun f x :e V ->
+      exists i0:set, i0 :e J /\
+        forall i:set, i :e J -> (i0,i) :e le -> apply_fun (compose_fun J net f) i :e V.
+	  apply andI.
+	  - (** core data **)
+	    (** core goal is left-associated: (((((A /\ B) /\ C) /\ D) /\ E) /\ F) **)
+	    apply andI.
+	    + (** ((((A /\ B) /\ C) /\ D) /\ E) **)
+	      apply andI.
+	      * (** (((A /\ B) /\ C) /\ D) **)
+	        apply andI.
+	        { (** ((A /\ B) /\ C) **)
+	          apply andI.
+	          - (** (A /\ B) **)
+		            apply andI.
+		            + exact HTy.
+		            + exact HdirJ.
+		          - (** C: total_function_on comp **)
+		            claim Hnetfun: function_on net J X.
+		            { exact (total_function_on_function_on net J X Htot). }
+		            exact (total_function_on_compose_fun J X Y net f Hnetfun HfXY). }
+		        { (** D: functional_graph comp **)
+		          exact (functional_graph_compose_fun J net f). }
+		      * (** E: graph_domain_subset comp **)
+		        exact (graph_domain_subset_compose_fun J net f).
+		    + (** F: f(x) :e Y **)
+		      exact (HfXY x HxX).
+	  - (** tail for composed net **)
+    let V.
+    assume HV: V :e Ty.
+    assume HfxV: apply_fun f x :e V.
+    set W := preimage_of X f V.
+    claim HWTx: W :e Tx.
+    { exact (Hpre V HV). }
+    claim HxW: x :e W.
+    { exact (SepI X (fun x0:set => apply_fun f x0 :e V) x HxX HfxV). }
+    claim Hexi0: exists i0:set, i0 :e J /\
+      forall i:set, i :e J -> (i0,i) :e le -> apply_fun net i :e W.
+    { exact (Htail W HWTx HxW). }
+    apply Hexi0.
+    let i0.
+    assume Hi0pair.
+    apply Hi0pair.
+    assume Hi0J Hafter.
+    witness i0.
+    apply andI.
+    + exact Hi0J.
+    + let i.
+      assume HiJ: i :e J.
+      assume Hi0i: (i0,i) :e le.
+      prove apply_fun (compose_fun J net f) i :e V.
+      claim HnetiW: apply_fun net i :e W.
+      { exact (Hafter i HiJ Hi0i). }
+      claim HnetiV: apply_fun f (apply_fun net i) :e V.
+      { exact (SepE2 X (fun x0:set => apply_fun f x0 :e V) (apply_fun net i) HnetiW). }
+      claim Happ: apply_fun (compose_fun J net f) i = apply_fun f (apply_fun net i).
+      { exact (compose_fun_apply J net f i HiJ). }
+      rewrite Happ.
+      exact HnetiV.
+- assume Hnets: forall net J le x:set,
+    net_converges_on X Tx net J le x ->
+      net_converges_on Y Ty (compose_fun J net f) J le (apply_fun f x).
+  prove continuous_map X Tx Y Ty f.
+  admit. (** FAIL **)
 Qed.
 
 (** from exercises after §29: accumulation points and subnets **)
