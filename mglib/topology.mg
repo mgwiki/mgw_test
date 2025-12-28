@@ -53293,15 +53293,23 @@ Definition R_omega_box_topology : set :=
 Definition R_omega_product_topology : set :=
   product_topology_full omega (const_space_family omega R R_standard_topology).
 
+(** from §23 Example 6: bounded sequences in R^omega **)
+(** LATEX VERSION: A sequence is bounded if all coordinates lie in some interval (-M,M) for a single M. **)
 Definition bounded_sequence_Romega : set -> prop := fun f =>
   exists M:set, M :e R /\ forall n:set, n :e omega -> apply_fun f n :e open_interval (minus_SNo M) M.
 
+(** from §23 Example 6: the set of bounded sequences **)
+(** LATEX VERSION: Let B be the set of bounded sequences; it is used to separate R^omega in the box topology. **)
 Definition bounded_sequences_Romega : set :=
   {f :e R_omega_space | bounded_sequence_Romega f}.
 
+(** from §23 Example 6: unbounded sequences in R^omega **)
+(** LATEX VERSION: A sequence is unbounded if for every M there is some coordinate outside (-M,M). **)
 Definition unbounded_sequence_Romega : set -> prop := fun f =>
   forall M:set, M :e R -> exists n:set, n :e omega /\ ~(apply_fun f n :e open_interval (minus_SNo M) M).
 
+(** from §23 Example 6: the set of unbounded sequences **)
+(** LATEX VERSION: Let U be the set of unbounded sequences; it is used to separate R^omega in the box topology. **)
 Definition unbounded_sequences_Romega : set :=
   {f :e R_omega_space | unbounded_sequence_Romega f}.
 
