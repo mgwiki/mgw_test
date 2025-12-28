@@ -74983,7 +74983,7 @@ claim Hinj: inj Sorgenfrey_line B f.
     + assume Hx1ltx2: x1 < x2.
       apply FalseE.
       set U2 := halfopen_interval_left x2 (add_SNo x2 1).
-      claim Hfx2prop: f x2 :e B /\ (x2 :e f x2 /\ f x2 c= U2).
+      claim Hfx2prop: f x2 :e B /\ x2 :e f x2 /\ f x2 c= U2.
       { (** reuse existence as above **)
         claim HU2In: U2 :e Sorgenfrey_topology.
         { claim Hx21R: add_SNo x2 1 :e R.
@@ -75013,11 +75013,9 @@ claim Hinj: inj Sorgenfrey_line B f.
                      (andI (~(Rlt x2 x2)) (Rlt x2 (add_SNo x2 1)) (not_Rlt_refl x2 Hx2R) Hx2lt)). }
         claim Hexb2: exists b0 :e B, x2 :e b0 /\ b0 c= U2.
         { exact (HU2Prop x2 Hx2U2). }
-        exact (Eps_i_ex (fun b:set => b :e B /\ (x2 :e b /\ b c= U2)) Hexb2). }
+        exact (Eps_i_ex (fun b:set => b :e B /\ x2 :e b /\ b c= U2) Hexb2). }
       claim Hfx2sub: f x2 c= U2.
-      { claim Htmp: x2 :e f x2 /\ f x2 c= U2.
-        { exact (andER (f x2 :e B) (x2 :e f x2 /\ f x2 c= U2) Hfx2prop). }
-        exact (andER (x2 :e f x2) (f x2 c= U2) Htmp). }
+      { exact (andER (f x2 :e B /\ x2 :e f x2) (f x2 c= U2) Hfx2prop). }
       claim Hx1infx1: x1 :e f x1.
       { set U1 := halfopen_interval_left x1 (add_SNo x1 1).
         claim HU1In: U1 :e Sorgenfrey_topology.
@@ -75048,11 +75046,11 @@ claim Hinj: inj Sorgenfrey_line B f.
                      (andI (~(Rlt x1 x1)) (Rlt x1 (add_SNo x1 1)) (not_Rlt_refl x1 Hx1R) Hx1lt)). }
         claim Hexb1: exists b0 :e B, x1 :e b0 /\ b0 c= U1.
         { exact (HU1Prop x1 Hx1U1). }
-        claim Hfx1prop: f x1 :e B /\ (x1 :e f x1 /\ f x1 c= U1).
-        { exact (Eps_i_ex (fun b:set => b :e B /\ (x1 :e b /\ b c= U1)) Hexb1). }
-        claim Htmp: x1 :e f x1 /\ f x1 c= U1.
-        { exact (andER (f x1 :e B) (x1 :e f x1 /\ f x1 c= U1) Hfx1prop). }
-        exact (andEL (x1 :e f x1) (f x1 c= U1) Htmp). }
+        claim Hfx1prop: f x1 :e B /\ x1 :e f x1 /\ f x1 c= U1.
+        { exact (Eps_i_ex (fun b:set => b :e B /\ x1 :e b /\ b c= U1) Hexb1). }
+        claim Htmp: f x1 :e B /\ x1 :e f x1.
+        { exact (andEL (f x1 :e B /\ x1 :e f x1) (f x1 c= U1) Hfx1prop). }
+        exact (andER (f x1 :e B) (x1 :e f x1) Htmp). }
       claim Hx1infx2: x1 :e f x2.
       { rewrite <- Heq.
         exact Hx1infx1. }
@@ -75070,7 +75068,7 @@ claim Hinj: inj Sorgenfrey_line B f.
     + assume Hx2ltx1: x2 < x1.
       apply FalseE.
       set U1 := halfopen_interval_left x1 (add_SNo x1 1).
-      claim Hfx1prop: f x1 :e B /\ (x1 :e f x1 /\ f x1 c= U1).
+      claim Hfx1prop: f x1 :e B /\ x1 :e f x1 /\ f x1 c= U1.
       { claim HU1In: U1 :e Sorgenfrey_topology.
         { claim Hx11R: add_SNo x1 1 :e R.
           { exact (real_add_SNo x1 Hx1R 1 real_1). }
@@ -75098,11 +75096,9 @@ claim Hinj: inj Sorgenfrey_line B f.
                      (andI (~(Rlt x1 x1)) (Rlt x1 (add_SNo x1 1)) (not_Rlt_refl x1 Hx1R) Hx1lt)). }
         claim Hexb1: exists b0 :e B, x1 :e b0 /\ b0 c= U1.
         { exact (HU1Prop x1 Hx1U1). }
-        exact (Eps_i_ex (fun b:set => b :e B /\ (x1 :e b /\ b c= U1)) Hexb1). }
+        exact (Eps_i_ex (fun b:set => b :e B /\ x1 :e b /\ b c= U1) Hexb1). }
       claim Hfx1sub: f x1 c= U1.
-      { claim Htmp: x1 :e f x1 /\ f x1 c= U1.
-        { exact (andER (f x1 :e B) (x1 :e f x1 /\ f x1 c= U1) Hfx1prop). }
-        exact (andER (x1 :e f x1) (f x1 c= U1) Htmp). }
+      { exact (andER (f x1 :e B /\ x1 :e f x1) (f x1 c= U1) Hfx1prop). }
       claim Hx2infx2: x2 :e f x2.
       { set U2 := halfopen_interval_left x2 (add_SNo x2 1).
         claim HU2In: U2 :e Sorgenfrey_topology.
@@ -75132,11 +75128,11 @@ claim Hinj: inj Sorgenfrey_line B f.
                      (andI (~(Rlt x2 x2)) (Rlt x2 (add_SNo x2 1)) (not_Rlt_refl x2 Hx2R) Hx2lt)). }
         claim Hexb2: exists b0 :e B, x2 :e b0 /\ b0 c= U2.
         { exact (HU2Prop x2 Hx2U2). }
-        claim Hfx2prop: f x2 :e B /\ (x2 :e f x2 /\ f x2 c= U2).
-        { exact (Eps_i_ex (fun b:set => b :e B /\ (x2 :e b /\ b c= U2)) Hexb2). }
-        claim Htmp: x2 :e f x2 /\ f x2 c= U2.
-        { exact (andER (f x2 :e B) (x2 :e f x2 /\ f x2 c= U2) Hfx2prop). }
-        exact (andEL (x2 :e f x2) (f x2 c= U2) Htmp). }
+        claim Hfx2prop: f x2 :e B /\ x2 :e f x2 /\ f x2 c= U2.
+        { exact (Eps_i_ex (fun b:set => b :e B /\ x2 :e b /\ b c= U2) Hexb2). }
+        claim Htmp: f x2 :e B /\ x2 :e f x2.
+        { exact (andEL (f x2 :e B /\ x2 :e f x2) (f x2 c= U2) Hfx2prop). }
+        exact (andER (f x2 :e B) (x2 :e f x2) Htmp). }
       claim Hx2infx1: x2 :e f x1.
       { rewrite Heq.
         exact Hx2infx2. }
