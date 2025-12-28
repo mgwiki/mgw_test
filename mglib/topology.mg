@@ -80192,8 +80192,153 @@ apply andI.
         { rewrite (binintersect_com X Empty).
           exact (binintersect_Subq_eq_1 Empty X (Subq_Empty X)). }
         exact Hinter.
-    + assume HFne: F <> Empty.
-      admit. (** FAIL **)
+	    + assume HFne: F <> Empty.
+	      (** Use the closed-set witness F = X \\ Uc with Uc open containing x, then pick a basis neighborhood b0 ⊆ Uc. **)
+	      claim HFpkg: F c= X /\ exists Uc :e T, F = X :\: Uc.
+	      { exact (closed_in_package X T F HF). }
+	      claim HFsubX: F c= X.
+	      { exact (andEL (F c= X) (exists Uc :e T, F = X :\: Uc) HFpkg). }
+	      claim HexUc: exists Uc :e T, F = X :\: Uc.
+	      { exact (andER (F c= X) (exists Uc :e T, F = X :\: Uc) HFpkg). }
+	      apply HexUc.
+	      let Uc. assume HUc_conj.
+	      apply HUc_conj.
+	      assume HUcT: Uc :e T.
+	      assume HFeq: F = X :\: Uc.
+
+	      claim HxUc: x :e Uc.
+	      { apply (xm (x :e Uc)).
+	        - assume H. exact H.
+	        - assume HxnotUc: x /:e Uc.
+	          apply FalseE.
+	          claim HxF: x :e F.
+	          { rewrite HFeq.
+	            exact (setminusI X Uc x Hx HxnotUc). }
+	          exact (HxnotF HxF). }
+
+	      (** Unfold generated topology: T = generated_topology X (basis_of_subbasis X S). **)
+	      claim HTdef1: T = generated_topology_from_subbasis X S.
+	      { reflexivity. }
+	      claim HTdef2: generated_topology_from_subbasis X S = generated_topology X (basis_of_subbasis X S).
+	      { reflexivity. }
+	      claim HUcG: Uc :e generated_topology X (basis_of_subbasis X S).
+	      { rewrite <- HTdef2.
+	        rewrite <- HTdef1.
+	        exact HUcT. }
+
+	      (** Extract the local basis property for Uc. **)
+	      claim HUc_local:
+	        forall z :e Uc, exists b :e basis_of_subbasis X S, z :e b /\ b c= Uc.
+	      { exact (SepE2 (Power X)
+	                     (fun U0:set => forall z :e U0, exists b :e basis_of_subbasis X S, z :e b /\ b c= U0)
+	                     Uc HUcG). }
+	      claim Hexb0: exists b0 :e basis_of_subbasis X S, x :e b0 /\ b0 c= Uc.
+	      { exact (HUc_local x HxUc). }
+	      apply Hexb0.
+	      let b0. assume Hb0_conj.
+	      apply Hb0_conj.
+	      assume Hb0B: b0 :e basis_of_subbasis X S.
+	      assume Hb0props.
+	      claim Hxb0: x :e b0.
+	      { exact (andEL (x :e b0) (b0 c= Uc) Hb0props). }
+	      claim Hb0subUc: b0 c= Uc.
+	      { exact (andER (x :e b0) (b0 c= Uc) Hb0props). }
+
+	      (** b0 is open in T since basis_of_subbasis is a basis under HSsub. **)
+	      claim HBasis: basis_on X (basis_of_subbasis X S).
+	      { exact (finite_intersections_basis_of_subbasis X S HSsub). }
+	      claim Hb0T: b0 :e T.
+	      { rewrite HTdef1.
+	        rewrite HTdef2.
+	        exact (generated_topology_contains_basis X (basis_of_subbasis X S) HBasis b0 Hb0B). }
+
+		      (** Main regularity step needed: shrink to U with closure(U) ⊆ Uc. **)
+		      set U := b0.
+		      claim HUinT: U :e T.
+		      { exact Hb0T. }
+		      claim HxU: x :e U.
+		      { exact Hxb0. }
+		      claim HUsubX: U c= X.
+		      { let z. assume Hz: z :e U.
+		        prove z :e X.
+		        claim Hzb0: z :e b0.
+		        { exact Hz. }
+		        claim HzUc: z :e Uc.
+		        { exact (Hb0subUc z Hzb0). }
+		        claim HUcsub: Uc c= X.
+		        { claim HUcPow: Uc :e Power X.
+		          { exact (SepE1 (Power X)
+		                         (fun U0:set => forall z :e U0, exists b :e basis_of_subbasis X S, z :e b /\ b c= U0)
+	                         Uc HUcG). }
+	          exact (PowerE X Uc HUcPow). }
+	        exact (HUcsub z HzUc). }
+
+	      claim HclU_sub_Uc: closure_of X T U c= Uc.
+	      { admit. (** FAIL **) }
+
+	      (** Let V be the open complement of cl(U); then F ⊆ V and U ∩ V = ∅. **)
+	      claim HclU_closed: closed_in X T (closure_of X T U).
+	      { exact (closure_is_closed X T U HT HUsubX). }
+	      claim HclU_pkg: closure_of X T U c= X /\ exists V0 :e T, closure_of X T U = X :\: V0.
+	      { exact (closed_in_package X T (closure_of X T U) HclU_closed). }
+	      claim HexV0: exists V0 :e T, closure_of X T U = X :\: V0.
+	      { exact (andER (closure_of X T U c= X) (exists V0 :e T, closure_of X T U = X :\: V0) HclU_pkg). }
+		      apply HexV0.
+		      let V0. assume HV0_conj.
+		      apply HV0_conj.
+		      assume HV0T: V0 :e T.
+		      assume HclEq: closure_of X T U = X :\: V0.
+
+		      witness U.
+		      witness V0.
+		      apply and5I.
+		      - exact HUinT.
+		      - exact HV0T.
+		      - exact HxU.
+		      - (** F c= V **)
+		        let y. assume HyF: y :e F.
+		        prove y :e V0.
+		        claim HyX: y :e X.
+		        { exact (HFsubX y HyF). }
+		        claim HyNotUc: y /:e Uc.
+		        { claim HyInXU: y :e X :\: Uc.
+		          { rewrite <- HFeq.
+		            exact HyF. }
+		          exact (setminusE2 X Uc y HyInXU). }
+		        claim HyNotClU: y /:e closure_of X T U.
+		        { assume HyCl: y :e closure_of X T U.
+		          apply FalseE.
+		          claim HyUc: y :e Uc.
+		          { exact (HclU_sub_Uc y HyCl). }
+		          exact (HyNotUc HyUc). }
+		        (** Since cl(U) = X \\ V, HyNotClU gives y :e V. **)
+		        claim HyV: y :e V0.
+		        { apply (xm (y :e V0)).
+		          - assume H. exact H.
+		          - assume HyNotV0: y /:e V0.
+		            apply FalseE.
+		            claim HyClU: y :e closure_of X T U.
+		            { rewrite HclEq.
+		              exact (setminusI X V0 y HyX HyNotV0). }
+		            exact (HyNotClU HyClU). }
+		        exact HyV.
+		      - (** U :/\: V = Empty **)
+		        apply Empty_Subq_eq.
+		        let z. assume Hz: z :e U :/\: V0.
+		        prove z :e Empty.
+		        apply FalseE.
+		        claim HzU: z :e U.
+		        { exact (binintersectE1 U V0 z Hz). }
+		        claim HzV0: z :e V0.
+		        { exact (binintersectE2 U V0 z Hz). }
+		        claim HzCl: z :e closure_of X T U.
+		        { exact (subset_of_closure X T U HT HUsubX z HzU). }
+		        claim HzXminus: z :e X :\: V0.
+		        { rewrite <- HclEq.
+		          exact HzCl. }
+		        claim HzNotV0: z /:e V0.
+		        { exact (setminusE2 X V0 z HzXminus). }
+		        exact (HzNotV0 HzV0).
 Qed.
 
 Theorem separation_axioms_subspace_product : forall X Tx:set,
