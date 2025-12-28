@@ -65639,7 +65639,311 @@ apply iffI.
     net_converges_on X Tx net J le x ->
       net_converges_on Y Ty (compose_fun J net f) J le (apply_fun f x).
   prove continuous_map X Tx Y Ty f.
-  admit. (** FAIL **)
+  prove topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
+    forall V:set, V :e Ty -> preimage_of X f V :e Tx.
+  (** continuous_map is a left-associated conjunction **)
+  apply andI.
+  - (** (topology_on X Tx /\ topology_on Y Ty) /\ function_on f X Y **)
+    apply andI.
+    + (** topology_on X Tx /\ topology_on Y Ty **)
+      apply andI.
+      - exact HTx.
+      - exact HTy.
+    + (** function_on f X Y **)
+      prove function_on f X Y.
+      let x. assume HxX: x :e X.
+      (** constant net at x on singleton index {x} **)
+      set J0 := {x}.
+      set le0 := setprod J0 J0.
+      set net0 := graph J0 (fun _:set => x).
+      claim Hdir0: directed_set J0 le0.
+      { prove directed_set J0 le0.
+        prove (J0 <> Empty /\ partial_order_on J0 le0) /\
+          forall a b:set, a :e J0 -> b :e J0 ->
+            exists c:set, c :e J0 /\ (a,c) :e le0 /\ (b,c) :e le0.
+        apply andI.
+        - (** nonempty and partial order **)
+          apply andI.
+          + exact (elem_implies_nonempty J0 x (SingI x)).
+	          + (** partial_order_on J0 le0 **)
+	            prove partial_order_on J0 le0.
+	            prove ((relation_on le0 J0 /\
+	                     (forall a:set, a :e J0 -> (a,a) :e le0)) /\
+	                    (forall a b:set, a :e J0 -> b :e J0 ->
+	                      (a,b) :e le0 -> (b,a) :e le0 -> a = b)) /\
+	                  (forall a b c:set, a :e J0 -> b :e J0 -> c :e J0 ->
+	                    (a,b) :e le0 -> (b,c) :e le0 -> (a,c) :e le0).
+	            (** partial_order_on is left-associated: ((relation_on /\ refl) /\ antisym) /\ trans **)
+	            apply andI.
+            - (** (relation_on /\ refl) /\ antisym **)
+              apply andI.
+              + (** relation_on /\ refl **)
+                apply andI.
+                - (** relation_on le0 J0 **)
+                  prove relation_on le0 J0.
+                  let a b. assume Hab: (a,b) :e le0.
+                  prove a :e J0 /\ b :e J0.
+                  claim Ha0: (a,b) 0 :e J0.
+                  { exact (ap0_Sigma J0 (fun _ : set => J0) (a,b) Hab). }
+                  claim Hb1: (a,b) 1 :e J0.
+                  { exact (ap1_Sigma J0 (fun _ : set => J0) (a,b) Hab). }
+                  apply andI.
+                  - rewrite <- (tuple_2_0_eq a b). exact Ha0.
+                  - rewrite <- (tuple_2_1_eq a b). exact Hb1.
+                - (** reflexive **)
+                  let a. assume HaJ: a :e J0.
+                  claim HaEq: a = x.
+                  { exact (SingE x a HaJ). }
+                  rewrite HaEq.
+                  exact (tuple_2_setprod_by_pair_Sigma J0 J0 x x (SingI x) (SingI x)).
+              + (** antisymmetric **)
+                let a b.
+                assume HaJ: a :e J0.
+                assume HbJ: b :e J0.
+                assume Hab: (a,b) :e le0.
+                assume Hba: (b,a) :e le0.
+                prove a = b.
+                rewrite (SingE x a HaJ).
+                rewrite (SingE x b HbJ).
+                reflexivity.
+            - (** transitive **)
+              let a b c.
+              assume HaJ: a :e J0.
+              assume HbJ: b :e J0.
+              assume HcJ: c :e J0.
+              assume Hab: (a,b) :e le0.
+              assume Hbc: (b,c) :e le0.
+              prove (a,c) :e le0.
+              claim HaEq: a = x.
+              { exact (SingE x a HaJ). }
+              claim HcEq: c = x.
+              { exact (SingE x c HcJ). }
+              rewrite HaEq.
+              rewrite HcEq.
+              exact (tuple_2_setprod_by_pair_Sigma J0 J0 x x (SingI x) (SingI x)).
+        - (** upper bound property **)
+          let a b. assume HaJ: a :e J0. assume HbJ: b :e J0.
+          witness x.
+          apply andI.
+          + apply andI.
+            - exact (SingI x).
+            - claim HaEq: a = x.
+              { exact (SingE x a HaJ). }
+              rewrite HaEq.
+              exact (tuple_2_setprod_by_pair_Sigma J0 J0 x x (SingI x) (SingI x)).
+          + claim HbEq: b = x.
+            { exact (SingE x b HbJ). }
+            rewrite HbEq.
+            exact (tuple_2_setprod_by_pair_Sigma J0 J0 x x (SingI x) (SingI x)). }
+      claim Hnet0conv: net_converges_on X Tx net0 J0 le0 x.
+      { prove net_converges_on X Tx net0 J0 le0 x.
+        prove topology_on X Tx /\ directed_set J0 le0 /\ total_function_on net0 J0 X /\ functional_graph net0 /\ graph_domain_subset net0 J0 /\ x :e X /\
+          forall U:set, U :e Tx -> x :e U ->
+            exists i0:set, i0 :e J0 /\
+              forall i:set, i :e J0 -> (i0,i) :e le0 -> apply_fun net0 i :e U.
+        apply andI.
+        - (** core **)
+          apply andI.
+          + apply andI.
+            - apply andI.
+              + apply andI.
+                { apply andI.
+                  - exact HTx.
+                  - exact Hdir0. }
+	                { (** total_function_on net0 J0 X **)
+	                  prove total_function_on net0 J0 X.
+	                  prove function_on net0 J0 X /\
+	                    forall j:set, j :e J0 -> exists y:set, y :e X /\ (j,y) :e net0.
+	                  apply andI.
+                  - prove function_on net0 J0 X.
+                    let j. assume Hj: j :e J0.
+                    rewrite (apply_fun_graph J0 (fun _:set => x) j Hj).
+                    exact HxX.
+                  - let j. assume Hj: j :e J0.
+                    witness x.
+                    apply andI.
+                    + exact HxX.
+                    + exact (ReplI J0 (fun a0:set => (a0,x)) j Hj). }
+              + exact (functional_graph_graph J0 (fun _:set => x)).
+            - exact (graph_domain_subset_graph J0 (fun _:set => x)).
+          + exact HxX.
+        - (** tail **)
+          let U. assume HU: U :e Tx. assume HxU: x :e U.
+          witness x.
+          apply andI.
+          + exact (SingI x).
+          + let i. assume Hi: i :e J0.
+            assume Hle: (x,i) :e le0.
+            rewrite (apply_fun_graph J0 (fun _:set => x) i Hi).
+            exact HxU. }
+      claim Himg0: net_converges_on Y Ty (compose_fun J0 net0 f) J0 le0 (apply_fun f x).
+      { exact (Hnets net0 J0 le0 x Hnet0conv). }
+      apply Himg0.
+      assume Hcore0 Htail0.
+      apply Hcore0.
+      assume Hcore05 HfxY.
+      exact HfxY.
+  - (** preimage condition **)
+    let V. assume HV: V :e Ty.
+    set W := preimage_of X f V.
+    prove W :e Tx.
+    (** family of opens contained in W **)
+    set Fam := {U :e Tx | U c= W}.
+    claim HFamPow: Fam :e Power Tx.
+    { apply PowerI.
+      let U. assume HU: U :e Fam.
+      exact (SepE1 Tx (fun U0:set => U0 c= W) U HU). }
+    (** neighborhood lemma: each x in W has an open neighborhood contained in W **)
+    claim Hnbhd: forall x0:set, x0 :e W -> exists U:set, U :e Tx /\ x0 :e U /\ U c= W.
+    { let x0. assume Hx0W: x0 :e W.
+      claim Hx0X: x0 :e X.
+      { exact (SepE1 X (fun z:set => apply_fun f z :e V) x0 Hx0W). }
+      claim Hfx0V: apply_fun f x0 :e V.
+      { exact (SepE2 X (fun z:set => apply_fun f z :e V) x0 Hx0W). }
+      (** show x0 not in closure of X \\ W **)
+      claim Hnotcl: x0 /:e closure_of X Tx (X :\: W).
+      { apply (xm (x0 :e closure_of X Tx (X :\: W))).
+        - assume Hcl: x0 :e closure_of X Tx (X :\: W).
+          (** build a net in X\\W converging to x0 **)
+	          claim Hexnet: exists net J le:set,
+	            net_converges_on X Tx net J le x0 /\ net_points_in (X :\: W) net J.
+	          { exact (iffEL (x0 :e closure_of X Tx (X :\: W))
+	                         (exists net J le:set,
+	                           net_converges_on X Tx net J le x0 /\ net_points_in (X :\: W) net J)
+	                         (closure_via_nets X Tx (X :\: W) x0 HTx)
+	                         Hcl). }
+          apply Hexnet.
+          let net. assume Hex1: exists J le:set, net_converges_on X Tx net J le x0 /\ net_points_in (X :\: W) net J.
+          apply Hex1.
+          let J. assume Hex2: exists le:set, net_converges_on X Tx net J le x0 /\ net_points_in (X :\: W) net J.
+          apply Hex2.
+          let le. assume Hboth: net_converges_on X Tx net J le x0 /\ net_points_in (X :\: W) net J.
+          apply Hboth. assume Hconv Hpts.
+          claim Himg: net_converges_on Y Ty (compose_fun J net f) J le (apply_fun f x0).
+          { exact (Hnets net J le x0 Hconv). }
+          (** extract directed_set J le and reflexivity **)
+          apply Himg. assume Hcore Htail.
+          apply Hcore. assume Hcore5 Hfx0Y.
+          apply Hcore5. assume Hcore4 Hdom.
+          apply Hcore4. assume Hcore3 Hgraph.
+          apply Hcore3. assume Hcore2 Htot.
+          apply Hcore2. assume HTy0 Hdir.
+          (** use the tail for neighborhood V **)
+          claim Hexi0: exists i0:set, i0 :e J /\
+            forall i:set, i :e J -> (i0,i) :e le -> apply_fun (compose_fun J net f) i :e V.
+          { exact (Htail V HV Hfx0V). }
+          apply Hexi0.
+          let i0. assume Hi0pair.
+          apply Hi0pair. assume Hi0J Hafter.
+          (** get (i0,i0) :e le from directed_set reflexivity **)
+          claim Hleft: J <> Empty /\ partial_order_on J le.
+          { exact (andEL (J <> Empty /\ partial_order_on J le)
+                         (forall a b:set, a :e J -> b :e J ->
+                           exists c:set, c :e J /\ (a,c) :e le /\ (b,c) :e le)
+                         Hdir). }
+          claim Hpo: partial_order_on J le.
+          { exact (andER (J <> Empty) (partial_order_on J le) Hleft). }
+          claim Hrefl: forall a:set, a :e J -> (a,a) :e le.
+          { apply Hpo. assume Hab Htrans.
+            apply Hab. assume Hab2 Hantisym.
+            apply Hab2. assume Hrel Hrefl0.
+            exact Hrefl0. }
+          claim Hrefl0: (i0,i0) :e le.
+          { exact (Hrefl i0 Hi0J). }
+          (** now show i0 violates eventuality since all points lie outside V **)
+          claim HnotV: apply_fun (compose_fun J net f) i0 /:e V.
+          { claim Hneti0: apply_fun net i0 :e X :\: W.
+            { exact (Hpts i0 Hi0J). }
+            claim Hi0X: apply_fun net i0 :e X.
+            { exact (setminusE1 X W (apply_fun net i0) Hneti0). }
+            claim Hi0notW: apply_fun net i0 /:e W.
+            { exact (setminusE2 X W (apply_fun net i0) Hneti0). }
+            assume Hbad: apply_fun (compose_fun J net f) i0 :e V.
+            claim Happ: apply_fun (compose_fun J net f) i0 = apply_fun f (apply_fun net i0).
+            { exact (compose_fun_apply J net f i0 Hi0J). }
+            claim Hfi0V: apply_fun f (apply_fun net i0) :e V.
+            { rewrite <- Happ. exact Hbad. }
+            claim Hi0W: apply_fun net i0 :e W.
+            { exact (SepI X (fun z:set => apply_fun f z :e V) (apply_fun net i0) Hi0X Hfi0V). }
+            exact (Hi0notW Hi0W False). }
+	          claim Hv: apply_fun (compose_fun J net f) i0 :e V.
+	          { exact (Hafter i0 Hi0J Hrefl0). }
+	          assume Hcl2: x0 :e closure_of X Tx (X :\: W).
+	          exact (HnotV Hv).
+	        - assume Hncl: x0 /:e closure_of X Tx (X :\: W).
+	          exact Hncl. }
+      (** from not-closure derive an open neighborhood contained in W **)
+      apply (xm (exists U:set, U :e Tx /\ x0 :e U /\ U c= W)).
+      - assume Hex. exact Hex.
+      - assume Hno.
+        apply FalseE.
+        (** show x0 is in the closure, contradicting Hnotcl **)
+        claim Hx0cl: x0 :e closure_of X Tx (X :\: W).
+        { prove x0 :e {z :e X | forall U:set, U :e Tx -> z :e U -> U :/\: (X :\: W) <> Empty}.
+          apply (SepI X (fun z:set => forall U:set, U :e Tx -> z :e U -> U :/\: (X :\: W) <> Empty) x0 Hx0X).
+          let U. assume HU: U :e Tx. assume Hx0U: x0 :e U.
+          prove U :/\: (X :\: W) <> Empty.
+          assume Hemp: U :/\: (X :\: W) = Empty.
+          (** Hemp implies U c= W **)
+          claim HUsW: U c= W.
+          { let y. assume HyU: y :e U.
+            prove y :e W.
+            apply (xm (y :e W)).
+            - assume HyW: y :e W. exact HyW.
+            - assume HyNW: y /:e W.
+              claim HyX: y :e X.
+              { claim HUsubX: U c= X.
+                { exact (PowerE X U ((topology_sub_Power X Tx HTx) U HU)). }
+                exact (HUsubX y HyU). }
+              claim HyInComp: y :e X :\: W.
+              { exact (setminusI X W y HyX HyNW). }
+              claim HyInInt: y :e U :/\: (X :\: W).
+              { exact (binintersectI U (X :\: W) y HyU HyInComp). }
+	              claim HyEmpty: y :e Empty.
+	              { rewrite <- Hemp. exact HyInInt. }
+	              apply FalseE.
+	              exact (EmptyE y HyEmpty). }
+          apply Hno.
+          witness U.
+          prove (U :e Tx /\ x0 :e U) /\ U c= W.
+          apply andI.
+          - apply andI.
+            + exact HU.
+            + exact Hx0U.
+          - exact HUsW. }
+          exact (Hnotcl Hx0cl). }
+    (** show Union Fam = W **)
+    claim HUnionEq: Union Fam = W.
+    { apply set_ext.
+      - (** Union Fam c= W **)
+        let y. assume Hy: y :e Union Fam.
+        apply (UnionE_impred Fam y Hy (y :e W)).
+        let U. assume HyU: y :e U.
+        assume HUFam: U :e Fam.
+        claim HUsub: U c= W.
+        { exact (SepE2 Tx (fun U0:set => U0 c= W) U HUFam). }
+        exact (HUsub y HyU).
+      - (** W c= Union Fam **)
+        let y. assume HyW: y :e W.
+        claim HexU: exists U:set, U :e Tx /\ y :e U /\ U c= W.
+        { exact (Hnbhd y HyW). }
+	        apply HexU.
+	        let U. assume HUpack: U :e Tx /\ y :e U /\ U c= W.
+	        claim Hleft: U :e Tx /\ y :e U.
+	        { exact (andEL (U :e Tx /\ y :e U) (U c= W) HUpack). }
+	        claim HU: U :e Tx.
+	        { exact (andEL (U :e Tx) (y :e U) Hleft). }
+	        claim HyU: y :e U.
+	        { exact (andER (U :e Tx) (y :e U) Hleft). }
+	        claim HUsW: U c= W.
+	        { exact (andER (U :e Tx /\ y :e U) (U c= W) HUpack). }
+	        claim HUFam: U :e Fam.
+	        { exact (SepI Tx (fun U0:set => U0 c= W) U HU HUsW). }
+	        exact (UnionI Fam y U HyU HUFam). }
+    claim HUnionOpen: Union Fam :e Tx.
+    { exact (topology_union_axiom X Tx HTx Fam HFamPow). }
+    rewrite <- HUnionEq.
+    exact HUnionOpen.
 Qed.
 
 (** from exercises after §29: accumulation points and subnets **)
