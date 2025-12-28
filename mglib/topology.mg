@@ -9191,25 +9191,24 @@ claim HBasis : basis_on X C.
 { prove (C c= Power X
          /\ (forall x :e X, exists c :e C, x :e c)
          /\ (forall b1 :e C, forall b2 :e C, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e C, x :e b3 /\ b3 c= b1 :/\: b2)).
-  apply andI.
-  - apply andI.
-    * let c. assume HcC.
-      exact (HTsubPow c (HCsub c HcC)).
-    * let x. assume HxX.
-      claim Hex : exists c :e C, x :e c /\ c c= X.
-      { exact (Href X HXT x HxX). }
-      apply Hex.
-      let c. assume Hpair.
-      claim HcC : c :e C.
-      { exact (andEL (c :e C) (x :e c /\ c c= X) Hpair). }
-      claim Hcprop : x :e c /\ c c= X.
-      { exact (andER (c :e C) (x :e c /\ c c= X) Hpair). }
-      claim Hxc : x :e c.
-      { exact (andEL (x :e c) (c c= X) Hcprop). }
-      witness c.
-      apply andI.
-      - exact HcC.
-      - exact Hxc.
+  apply and3I.
+  - let c. assume HcC.
+    exact (HTsubPow c (HCsub c HcC)).
+  - let x. assume HxX.
+    claim Hex : exists c :e C, x :e c /\ c c= X.
+    { exact (Href X HXT x HxX). }
+    apply Hex.
+    let c. assume Hpair.
+    claim HcC : c :e C.
+    { exact (andEL (c :e C) (x :e c /\ c c= X) Hpair). }
+    claim Hcprop : x :e c /\ c c= X.
+    { exact (andER (c :e C) (x :e c /\ c c= X) Hpair). }
+    claim Hxc : x :e c.
+    { exact (andEL (x :e c) (c c= X) Hcprop). }
+    witness c.
+    apply andI.
+    - exact HcC.
+    - exact Hxc.
   - let c1. assume Hc1C.
     let c2. assume Hc2C.
     let x. assume Hxc1 Hxc2.
