@@ -64555,7 +64555,7 @@ Qed.
 (** LATEX VERSION: A net is a function from a directed set into a space. **)
 (** FIXED: net_on now requires total_function_on and functional_graph, so apply_fun behaves as the unique graph value and not just an Eps choice. **)
 Definition net_on : set -> prop := fun net =>
-  exists J X:set, directed_set J /\ total_function_on net J X /\ functional_graph net.
+  exists J X:set, directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
 
 (** from exercises after §29: subnet definition placeholder **)
 (** LATEX VERSION: Definition of subnet (Exercise, placeholder formalization). **)
@@ -64568,6 +64568,7 @@ Definition subnet_of : set -> set -> prop := fun net sub =>
     total_function_on net J X /\ functional_graph net /\
     total_function_on sub K X /\ functional_graph sub /\
     total_function_on phi K J /\ functional_graph phi /\
+    graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
     (forall j:set, j :e J -> exists k0:set, k0 :e K /\
       forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
         (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
@@ -64586,6 +64587,7 @@ let J. assume Hrest: exists K X phi:set,
   total_function_on net J X /\ functional_graph net /\
   total_function_on sub K X /\ functional_graph sub /\
   total_function_on phi K J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
   (forall j:set, j :e J -> exists k0:set, k0 :e K /\
     forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
       (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
@@ -64597,6 +64599,7 @@ let K. assume Hrest2: exists X phi:set,
   total_function_on net J X /\ functional_graph net /\
   total_function_on sub K X /\ functional_graph sub /\
   total_function_on phi K J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
   (forall j:set, j :e J -> exists k0:set, k0 :e K /\
     forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
       (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
@@ -64608,6 +64611,7 @@ let X. assume Hrest3: exists phi:set,
   total_function_on net J X /\ functional_graph net /\
   total_function_on sub K X /\ functional_graph sub /\
   total_function_on phi K J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
   (forall j:set, j :e J -> exists k0:set, k0 :e K /\
     forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
       (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
@@ -64619,39 +64623,48 @@ let phi. assume Hdata:
   total_function_on net J X /\ functional_graph net /\
   total_function_on sub K X /\ functional_graph sub /\
   total_function_on phi K J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
   (forall j:set, j :e J -> exists k0:set, k0 :e K /\
     forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
       (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
   (forall k:set, k :e K ->
     apply_fun sub k = apply_fun net (apply_fun phi k)).
-prove exists J0 X0:set, directed_set J0 /\ total_function_on sub J0 X0 /\ functional_graph sub.
+prove exists J0 X0:set, directed_set J0 /\ total_function_on sub J0 X0 /\ functional_graph sub /\ graph_domain_subset sub J0.
 witness K.
 witness X.
-prove directed_set K /\ total_function_on sub K X /\ functional_graph sub.
+prove directed_set K /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K.
 (** destruct subnet_of data by repeated conjunction elimination **)
 apply Hdata.
 assume Hcore Heq.
 apply Hcore.
 assume Hcore2 Hcofinal.
 apply Hcore2.
-assume Hcore3 Hphi_graph.
+assume Hcore3 Hdomphi.
 apply Hcore3.
-assume Hcore4 Hphi_totfun.
+assume Hcore4 Hdomsub.
 apply Hcore4.
-assume Hcore5 Hsub_graph.
+assume Hcore5 Hdomnet.
 apply Hcore5.
-assume Hcore6 Hsub_totfun.
+assume Hcore6 Hphi_graph.
 apply Hcore6.
-assume Hcore7 Hnet_graph.
+assume Hcore7 Hphi_totfun.
 apply Hcore7.
-assume Hcore8 Hnet_totfun.
+assume Hcore8 Hsub_graph.
 apply Hcore8.
+assume Hcore9 Hsub_totfun.
+apply Hcore9.
+assume Hcore10 Hnet_graph.
+apply Hcore10.
+assume Hcore11 Hnet_totfun.
+apply Hcore11.
 assume HdirJ HdirK.
 apply andI.
 - apply andI.
-  * exact HdirK.
-  * exact Hsub_totfun.
-- exact Hsub_graph.
+  + apply andI.
+    - exact HdirK.
+    - exact Hsub_totfun.
+  + exact Hsub_graph.
+- exact Hdomsub.
 Qed.
 
 (** helper: if sub is a subnet, net is a net **)
@@ -64666,6 +64679,7 @@ let J. assume Hrest: exists K X phi:set,
   total_function_on net J X /\ functional_graph net /\
   total_function_on sub K X /\ functional_graph sub /\
   total_function_on phi K J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
   (forall j:set, j :e J -> exists k0:set, k0 :e K /\
     forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
       (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
@@ -64677,6 +64691,7 @@ let K. assume Hrest2: exists X phi:set,
   total_function_on net J X /\ functional_graph net /\
   total_function_on sub K X /\ functional_graph sub /\
   total_function_on phi K J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
   (forall j:set, j :e J -> exists k0:set, k0 :e K /\
     forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
       (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
@@ -64688,6 +64703,7 @@ let X. assume Hrest3: exists phi:set,
   total_function_on net J X /\ functional_graph net /\
   total_function_on sub K X /\ functional_graph sub /\
   total_function_on phi K J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
   (forall j:set, j :e J -> exists k0:set, k0 :e K /\
     forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
       (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
@@ -64699,54 +64715,65 @@ let phi. assume Hdata:
   total_function_on net J X /\ functional_graph net /\
   total_function_on sub K X /\ functional_graph sub /\
   total_function_on phi K J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
   (forall j:set, j :e J -> exists k0:set, k0 :e K /\
     forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
       (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
   (forall k:set, k :e K ->
     apply_fun sub k = apply_fun net (apply_fun phi k)).
-prove exists J0 X0:set, directed_set J0 /\ total_function_on net J0 X0 /\ functional_graph net.
+prove exists J0 X0:set, directed_set J0 /\ total_function_on net J0 X0 /\ functional_graph net /\ graph_domain_subset net J0.
 witness J.
 witness X.
-prove directed_set J /\ total_function_on net J X /\ functional_graph net.
+prove directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
 apply Hdata.
 assume Hcore Heq.
 apply Hcore.
 assume Hcore2 Hcofinal.
 apply Hcore2.
-assume Hcore3 Hphi_graph.
+assume Hcore3 Hdomphi.
 apply Hcore3.
-assume Hcore4 Hphi_totfun.
+assume Hcore4 Hdomsub.
 apply Hcore4.
-assume Hcore5 Hsub_graph.
+assume Hcore5 Hdomnet.
 apply Hcore5.
-assume Hcore6 Hsub_totfun.
+assume Hcore6 Hphi_graph.
 apply Hcore6.
-assume Hcore7 Hnet_graph.
+assume Hcore7 Hphi_totfun.
 apply Hcore7.
-assume Hcore8 Hnet_totfun.
+assume Hcore8 Hsub_graph.
 apply Hcore8.
+assume Hcore9 Hsub_totfun.
+apply Hcore9.
+assume Hcore10 Hnet_graph.
+apply Hcore10.
+assume Hcore11 Hnet_totfun.
+apply Hcore11.
 assume HdirJ HdirK.
 apply andI.
 - apply andI.
-  * exact HdirJ.
-  * exact Hnet_totfun.
-- exact Hnet_graph.
+  + apply andI.
+    - exact HdirJ.
+    - exact Hnet_totfun.
+  + exact Hnet_graph.
+- exact Hdomnet.
 Qed.
 
 (** helper: a net is a subnet of itself **)
 (** LATEX VERSION: Every net is a subnet of itself via the identity index map. **)
 Theorem subnet_of_refl_witnessed : forall J X net:set,
-  directed_set J -> total_function_on net J X -> functional_graph net -> subnet_of net net.
+  directed_set J -> total_function_on net J X -> functional_graph net -> graph_domain_subset net J -> subnet_of net net.
 let J X net.
 assume HdirJ: directed_set J.
 assume Hnettot: total_function_on net J X.
 assume Hnetgraph: functional_graph net.
+assume Hnetdom: graph_domain_subset net J.
 prove subnet_of net net.
 prove exists J0 K0 X0 phi:set,
   directed_set J0 /\ directed_set K0 /\
   total_function_on net J0 X0 /\ functional_graph net /\
   total_function_on net K0 X0 /\ functional_graph net /\
   total_function_on phi K0 J0 /\ functional_graph phi /\
+  graph_domain_subset net J0 /\ graph_domain_subset net K0 /\ graph_domain_subset phi K0 /\
   (forall j:set, j :e J0 -> exists k0:set, k0 :e K0 /\
     forall k:set, k :e K0 -> (k0 :e k \/ k0 = k) ->
       (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
@@ -64761,6 +64788,7 @@ prove directed_set J /\ directed_set J /\
   total_function_on net J X /\ functional_graph net /\
   total_function_on net J X /\ functional_graph net /\
   total_function_on phi J J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset net J /\ graph_domain_subset phi J /\
   (forall j:set, j :e J -> exists k0:set, k0 :e J /\
     forall k:set, k :e J -> (k0 :e k \/ k0 = k) ->
       (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
@@ -64792,6 +64820,10 @@ claim HphiTot: total_function_on phi J J.
 claim HphiGraph: functional_graph phi.
 { rewrite HphiDef.
   exact (functional_graph_graph J (fun y:set => y)).
+}
+claim Hdomphi: graph_domain_subset phi J.
+{ rewrite HphiDef.
+  exact (graph_domain_subset_graph J (fun y:set => y)).
 }
 claim Hcofinal:
   forall j:set, j :e J -> exists k0:set, k0 :e J /\
@@ -64829,10 +64861,24 @@ claim H1234567 : (((((directed_set J /\ directed_set J) /\ total_function_on net
 { exact (andI (((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) (total_function_on phi J J) H123456 HphiTot). }
 claim H12345678 : ((((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on phi J J) /\ functional_graph phi.
 { exact (andI ((((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on phi J J) (functional_graph phi) H1234567 HphiGraph). }
-claim H123456789 : (((((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on phi J J) /\ functional_graph phi) /\ (forall j:set, j :e J -> exists k0:set, k0 :e J /\ forall k:set, k :e J -> (k0 :e k \/ k0 = k) -> (j :e apply_fun phi k \/ j = apply_fun phi k)).
-{ exact (andI (((((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on phi J J) /\ functional_graph phi) (forall j:set, j :e J -> exists k0:set, k0 :e J /\ forall k:set, k :e J -> (k0 :e k \/ k0 = k) -> (j :e apply_fun phi k \/ j = apply_fun phi k)) H12345678 Hcofinal). }
+claim H123456789 : (((((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on phi J J) /\ functional_graph phi) /\ graph_domain_subset net J.
+{ exact (andI (((((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on phi J J) /\ functional_graph phi)
+              (graph_domain_subset net J)
+              H12345678 Hnetdom). }
+claim H12345678910 : ((((((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on phi J J) /\ functional_graph phi) /\ graph_domain_subset net J) /\ graph_domain_subset net J.
+{ exact (andI ((((((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on phi J J) /\ functional_graph phi) /\ graph_domain_subset net J)
+              (graph_domain_subset net J)
+              H123456789 Hnetdom). }
+claim H1234567891011 : (((((((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on phi J J) /\ functional_graph phi) /\ graph_domain_subset net J) /\ graph_domain_subset net J) /\ graph_domain_subset phi J.
+{ exact (andI (((((((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on phi J J) /\ functional_graph phi) /\ graph_domain_subset net J) /\ graph_domain_subset net J)
+              (graph_domain_subset phi J)
+              H12345678910 Hdomphi). }
+claim H123456789101112 : ((((((((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on phi J J) /\ functional_graph phi) /\ graph_domain_subset net J) /\ graph_domain_subset net J) /\ graph_domain_subset phi J) /\ (forall j:set, j :e J -> exists k0:set, k0 :e J /\ forall k:set, k :e J -> (k0 :e k \/ k0 = k) -> (j :e apply_fun phi k \/ j = apply_fun phi k)).
+{ exact (andI ((((((((((directed_set J /\ directed_set J) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on net J X) /\ functional_graph net) /\ total_function_on phi J J) /\ functional_graph phi) /\ graph_domain_subset net J) /\ graph_domain_subset net J) /\ graph_domain_subset phi J)
+              (forall j:set, j :e J -> exists k0:set, k0 :e J /\ forall k:set, k :e J -> (k0 :e k \/ k0 = k) -> (j :e apply_fun phi k \/ j = apply_fun phi k))
+              H1234567891011 Hcofinal). }
 apply andI.
-- exact H123456789.
+- exact H123456789101112.
 - exact Heq.
 Qed.
 
@@ -64842,18 +64888,26 @@ Theorem subnet_of_refl : forall net:set, net_on net -> subnet_of net net.
 let net. assume Hnet: net_on net.
 prove subnet_of net net.
 apply Hnet.
-let J. assume Hrest: exists X:set, directed_set J /\ total_function_on net J X /\ functional_graph net.
+let J. assume Hrest: exists X:set, directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
 apply Hrest.
-let X. assume HJX: directed_set J /\ total_function_on net J X /\ functional_graph net.
+let X. assume HJX: directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
+claim Hleft3: (directed_set J /\ total_function_on net J X) /\ functional_graph net.
+{ exact (andEL ((directed_set J /\ total_function_on net J X) /\ functional_graph net)
+               (graph_domain_subset net J)
+               HJX). }
+claim Hdom: graph_domain_subset net J.
+{ exact (andER ((directed_set J /\ total_function_on net J X) /\ functional_graph net)
+               (graph_domain_subset net J)
+               HJX). }
 claim Hleft: directed_set J /\ total_function_on net J X.
-{ exact (andEL (directed_set J /\ total_function_on net J X) (functional_graph net) HJX). }
+{ exact (andEL (directed_set J /\ total_function_on net J X) (functional_graph net) Hleft3). }
 claim Hgraph: functional_graph net.
-{ exact (andER (directed_set J /\ total_function_on net J X) (functional_graph net) HJX). }
+{ exact (andER (directed_set J /\ total_function_on net J X) (functional_graph net) Hleft3). }
 claim HdirJ: directed_set J.
 { exact (andEL (directed_set J) (total_function_on net J X) Hleft). }
 claim Htot: total_function_on net J X.
 { exact (andER (directed_set J) (total_function_on net J X) Hleft). }
-exact (subnet_of_refl_witnessed J X net HdirJ Htot Hgraph).
+exact (subnet_of_refl_witnessed J X net HdirJ Htot Hgraph Hdom).
 Qed.
 
 (** from exercises after §29: accumulation point of a net **)
@@ -64861,7 +64915,7 @@ Qed.
 (** FIXED: accumulation_point_of_net now includes Tx, quantifies only over U:e Tx with x:e U, and uses cofinality forall j0:e J, exists j>=j0 with net(j):e U; net is total_function_on into X with functional_graph. **) 
 (** SUSPICIOUS DEFINITION: Index comparison uses membership-based <= (j0 :e j \/ j0 = j), which is tailored to ordinal indices and may require alignment lemmas later. **) 
 Definition accumulation_point_of_net : set -> set -> set -> set -> prop := fun X Tx net x =>
-  exists J:set, topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ x :e X /\
+  exists J:set, topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X /\
     forall U:set, U :e Tx -> x :e U ->
       forall j0:set, j0 :e J ->
         exists j:set, j :e J /\ (j0 :e j \/ j0 = j) /\ apply_fun net j :e U.
@@ -64871,7 +64925,7 @@ Definition accumulation_point_of_net : set -> set -> set -> set -> prop := fun X
 (** FIXED: net_converges uses eventuality: forall U:e Tx with x:e U, exists i0:e J such that forall i:e J with i0<=i (i0 :e i \/ i0 = i), we have net(i):e U; net is total_function_on with functional_graph. **) 
 (** SUSPICIOUS DEFINITION: As above, this uses membership-based comparison on the index set; it is adequate for ordinal-indexed nets but may require extra axioms for arbitrary directed sets. **)
 Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
-  exists J:set, topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ x :e X /\
+  exists J:set, topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X /\
     forall U:set, U :e Tx -> x :e U ->
       exists i0:set, i0 :e J /\
         forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
@@ -64886,19 +64940,19 @@ prove accumulation_point_of_net X Tx net x.
 apply Hconv.
 let J.
 assume HJ:
-  topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ x :e X /\
+  topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X /\
     forall U:set, U :e Tx -> x :e U ->
       exists i0:set, i0 :e J /\
         forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
 prove accumulation_point_of_net X Tx net x.
-prove exists J0:set, topology_on X Tx /\ directed_set J0 /\ total_function_on net J0 X /\ functional_graph net /\ x :e X /\
+prove exists J0:set, topology_on X Tx /\ directed_set J0 /\ total_function_on net J0 X /\ functional_graph net /\ graph_domain_subset net J0 /\ x :e X /\
   forall U:set, U :e Tx -> x :e U ->
     forall j0:set, j0 :e J0 ->
       exists j:set, j :e J0 /\ (j0 :e j \/ j0 = j) /\ apply_fun net j :e U.
 witness J.
 claim Hcore:
-  topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ x :e X.
-{ exact (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ x :e X)
+  topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X.
+{ exact (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X)
                (forall U:set, U :e Tx -> x :e U ->
                  exists i0:set, i0 :e J /\
                    forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U)
@@ -64907,24 +64961,54 @@ claim Htail:
   forall U:set, U :e Tx -> x :e U ->
     exists i0:set, i0 :e J /\
       forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
-{ exact (andER (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ x :e X)
+{ exact (andER (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X)
                (forall U:set, U :e Tx -> x :e U ->
                  exists i0:set, i0 :e J /\
                    forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U)
                HJ). }
 claim Htopdir: topology_on X Tx /\ directed_set J.
-{ exact (andEL (topology_on X Tx /\ directed_set J) (total_function_on net J X) (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X) (functional_graph net) (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net) (x :e X) Hcore))). }
+{ exact (andEL (topology_on X Tx /\ directed_set J)
+               (total_function_on net J X)
+               (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X)
+                      (functional_graph net)
+                      (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net)
+                             (graph_domain_subset net J)
+                             (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J)
+                                    (x :e X)
+                                    Hcore)))). }
 claim HTxJ: topology_on X Tx.
 { exact (andEL (topology_on X Tx) (directed_set J) Htopdir). }
 claim HdirJ: directed_set J.
 { exact (andER (topology_on X Tx) (directed_set J) Htopdir). }
 claim HtotJ: total_function_on net J X.
-{ exact (andER (topology_on X Tx /\ directed_set J) (total_function_on net J X) (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X) (functional_graph net) (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net) (x :e X) Hcore))). }
+{ exact (andER (topology_on X Tx /\ directed_set J)
+               (total_function_on net J X)
+               (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X)
+                      (functional_graph net)
+                      (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net)
+                             (graph_domain_subset net J)
+                             (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J)
+                                    (x :e X)
+                                    Hcore)))). }
 claim HgraphJ: functional_graph net.
-{ exact (andER (topology_on X Tx /\ directed_set J /\ total_function_on net J X) (functional_graph net) (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net) (x :e X) Hcore)). }
+{ exact (andER (topology_on X Tx /\ directed_set J /\ total_function_on net J X)
+               (functional_graph net)
+               (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net)
+                      (graph_domain_subset net J)
+                      (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J)
+                             (x :e X)
+                             Hcore))). }
+claim HdomJ: graph_domain_subset net J.
+{ exact (andER (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net)
+               (graph_domain_subset net J)
+               (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J)
+                      (x :e X)
+                      Hcore)). }
 claim HxX: x :e X.
-{ exact (andER (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net) (x :e X) Hcore). }
-prove topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ x :e X /\
+{ exact (andER (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J)
+               (x :e X)
+               Hcore). }
+prove topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X /\
   forall U:set, U :e Tx -> x :e U ->
     forall j0:set, j0 :e J ->
       exists j:set, j :e J /\ (j0 :e j \/ j0 = j) /\ apply_fun net j :e U.
@@ -64985,28 +65069,30 @@ assume H: net_converges X Tx net x.
 prove net_on net.
 apply H.
 let J.
-assume HJ: topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ x :e X /\
+assume HJ: topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X /\
   forall U:set, U :e Tx -> x :e U ->
     exists i0:set, i0 :e J /\
       forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
 prove net_on net.
-prove exists J0 X0:set, directed_set J0 /\ total_function_on net J0 X0 /\ functional_graph net.
+prove exists J0 X0:set, directed_set J0 /\ total_function_on net J0 X0 /\ functional_graph net /\ graph_domain_subset net J0.
 witness J.
 witness X.
-claim Hcore: topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ x :e X.
-{ exact (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ x :e X)
+claim Hcore: topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X.
+{ exact (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X)
                (forall U:set, U :e Tx -> x :e U ->
                  exists i0:set, i0 :e J /\
                    forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U)
                HJ). }
-claim Hleft4: topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net.
-{ exact (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net)
-               (x :e X)
-               Hcore). }
+	claim Hleft5: topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X.
+	{ exact Hcore. }
+claim Hleft4: topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
+{ exact (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J) (x :e X) Hcore). }
 claim Hgraph: functional_graph net.
-{ exact (andER (topology_on X Tx /\ directed_set J /\ total_function_on net J X) (functional_graph net) Hleft4). }
+{ exact (andER (topology_on X Tx /\ directed_set J /\ total_function_on net J X) (functional_graph net) (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net) (graph_domain_subset net J) Hleft4)). }
+claim Hdom: graph_domain_subset net J.
+{ exact (andER (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net) (graph_domain_subset net J) Hleft4). }
 claim Hleft3: topology_on X Tx /\ directed_set J /\ total_function_on net J X.
-{ exact (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X) (functional_graph net) Hleft4). }
+{ exact (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X) (functional_graph net) (andEL (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net) (graph_domain_subset net J) Hleft4)). }
 claim Htot: total_function_on net J X.
 { exact (andER (topology_on X Tx /\ directed_set J) (total_function_on net J X) Hleft3). }
 claim Hleft2: topology_on X Tx /\ directed_set J.
@@ -65017,7 +65103,9 @@ apply andI.
 - apply andI.
   * exact HdirJ.
   * exact Htot.
-- exact Hgraph.
+- apply andI.
+  * exact Hgraph.
+  * exact Hdom.
 Qed.
 
 (** from exercises after §29: convergence of subnets **) 
