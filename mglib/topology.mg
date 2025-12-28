@@ -74950,11 +74950,9 @@ claim Hinj: inj Sorgenfrey_line B f.
                    Ux HUxGen). }
     claim Hexb: exists b0 :e B, x :e b0 /\ b0 c= Ux.
     { exact (HUxProp x HxUx). }
-    claim Hfxprop: f x :e B /\ x :e f x /\ f x c= Ux.
-    { exact (Eps_i_ex (fun b:set => b :e B /\ x :e b /\ b c= Ux) Hexb). }
-    claim Htmp: f x :e B /\ x :e f x.
-    { exact (andEL (f x :e B /\ x :e f x) (f x c= Ux) Hfxprop). }
-    exact (andEL (f x :e B) (x :e f x) Htmp). 
+    claim Hfxprop: f x :e B /\ (x :e f x /\ f x c= Ux).
+    { exact (Eps_i_ex (fun b:set => b :e B /\ (x :e b /\ b c= Ux)) Hexb). }
+    exact (andEL (f x :e B) (x :e f x /\ f x c= Ux) Hfxprop). 
   - (** injectivity on points **)
     let x1 x2.
     assume Hx1R: x1 :e Sorgenfrey_line.
