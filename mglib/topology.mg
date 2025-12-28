@@ -17112,62 +17112,62 @@ prove R_upper_limit_basis c= Power R
   /\ (forall b1 :e R_upper_limit_basis, forall b2 :e R_upper_limit_basis, forall x:set,
         x :e b1 -> x :e b2 ->
         exists b3 :e R_upper_limit_basis, x :e b3 /\ b3 c= b1 :/\: b2).
-apply andI.
-- apply andI.
-  + (** basis elements are subsets of R **)
-    let U. assume HU : U :e R_upper_limit_basis.
-    prove U :e Power R.
-    claim Hexa : exists a :e R, U :e {halfopen_interval_right a b|b :e R}.
-    { exact (famunionE R (fun a0 : set => {halfopen_interval_right a0 b|b :e R}) U HU). }
-    apply Hexa.
-    let a. assume Hapair.
-    claim HaR : a :e R.
-    { exact (andEL (a :e R) (U :e {halfopen_interval_right a b|b :e R}) Hapair). }
-    claim HUfam : U :e {halfopen_interval_right a b|b :e R}.
-    { exact (andER (a :e R) (U :e {halfopen_interval_right a b|b :e R}) Hapair). }
-    claim Hexb : exists b :e R, U = halfopen_interval_right a b.
-    { exact (ReplE R (fun b0 : set => halfopen_interval_right a b0) U HUfam). }
-    apply Hexb.
-    let b. assume Hbpair.
-    claim HbR : b :e R.
-    { exact (andEL (b :e R) (U = halfopen_interval_right a b) Hbpair). }
-    claim HUeq : U = halfopen_interval_right a b.
-    { exact (andER (b :e R) (U = halfopen_interval_right a b) Hbpair). }
-    rewrite HUeq.
-    exact (PowerI R (halfopen_interval_right a b) (halfopen_interval_right_Subq_R a b)).
-  + (** coverage: every x has a basis neighborhood (x-1,x] **)
-    let x. assume HxR.
-    claim Hm1R : minus_SNo 1 :e R.
-    { exact (real_minus_SNo 1 real_1). }
-    set a0 := add_SNo x (minus_SNo 1).
-    claim Ha0R : a0 :e R.
-    { exact (real_add_SNo x HxR (minus_SNo 1) Hm1R). }
-    set I := halfopen_interval_right a0 x.
-    witness I.
-    apply andI.
-    * (** I is in the upper limit basis **)
-      claim HIa : I :e {halfopen_interval_right a0 bb|bb :e R}.
-      { exact (ReplI R (fun bb : set => halfopen_interval_right a0 bb) x HxR). }
-      exact (famunionI R (fun aa : set => {halfopen_interval_right aa bb|bb :e R}) a0 I Ha0R HIa).
-    * (** x is in I **)
-      claim HxS : SNo x.
-      { exact (real_SNo x HxR). }
-      claim Hm1S : SNo (minus_SNo 1).
-      { exact (SNo_minus_SNo 1 SNo_1). }
-      claim Ha0ltx : a0 < x.
-      { claim Hlt : add_SNo x (minus_SNo 1) < add_SNo x 0.
-        { exact (add_SNo_Lt2 x (minus_SNo 1) 0 HxS Hm1S SNo_0 minus_1_lt_0). }
-        rewrite <- (add_SNo_0R x HxS) at 2.
-        exact Hlt. }
-      claim Ha0x : Rlt a0 x.
-      { exact (RltI a0 x Ha0R HxR Ha0ltx). }
-      claim Hnx : ~(Rlt x x).
-      { exact (not_Rlt_refl x HxR). }
-      claim Hconj : Rlt a0 x /\ ~(Rlt x x).
-      { apply andI.
-        - exact Ha0x.
-        - exact Hnx. }
-      exact (SepI R (fun x0 : set => Rlt a0 x0 /\ ~(Rlt x x0)) x HxR Hconj).
+apply and3I.
+- (** basis elements are subsets of R **)
+  let U. assume HU : U :e R_upper_limit_basis.
+  prove U :e Power R.
+  claim Hexa : exists a :e R, U :e {halfopen_interval_right a b|b :e R}.
+  { exact (famunionE R (fun a0 : set => {halfopen_interval_right a0 b|b :e R}) U HU). }
+  apply Hexa.
+  let a. assume Hapair.
+  claim HaR : a :e R.
+  { exact (andEL (a :e R) (U :e {halfopen_interval_right a b|b :e R}) Hapair). }
+  claim HUfam : U :e {halfopen_interval_right a b|b :e R}.
+  { exact (andER (a :e R) (U :e {halfopen_interval_right a b|b :e R}) Hapair). }
+  claim Hexb : exists b :e R, U = halfopen_interval_right a b.
+  { exact (ReplE R (fun b0 : set => halfopen_interval_right a b0) U HUfam). }
+  apply Hexb.
+  let b. assume Hbpair.
+  claim HbR : b :e R.
+  { exact (andEL (b :e R) (U = halfopen_interval_right a b) Hbpair). }
+  claim HUeq : U = halfopen_interval_right a b.
+  { exact (andER (b :e R) (U = halfopen_interval_right a b) Hbpair). }
+  rewrite HUeq.
+  exact (PowerI R (halfopen_interval_right a b) (halfopen_interval_right_Subq_R a b)).
+- (** coverage: every x has a basis neighborhood (x-1,x] **)
+  let x. assume HxR.
+  claim Hm1R : minus_SNo 1 :e R.
+  { exact (real_minus_SNo 1 real_1). }
+  set a0 := add_SNo x (minus_SNo 1).
+  claim Ha0R : a0 :e R.
+  { exact (real_add_SNo x HxR (minus_SNo 1) Hm1R). }
+  set I := halfopen_interval_right a0 x.
+  witness I.
+  apply andI.
+  - (** I is in the upper limit basis **)
+    prove I :e R_upper_limit_basis.
+    claim HIa : I :e {halfopen_interval_right a0 bb|bb :e R}.
+    { exact (ReplI R (fun bb : set => halfopen_interval_right a0 bb) x HxR). }
+    exact (famunionI R (fun aa : set => {halfopen_interval_right aa bb|bb :e R}) a0 I Ha0R HIa).
+  - (** x is in I **)
+    claim HxS : SNo x.
+    { exact (real_SNo x HxR). }
+    claim Hm1S : SNo (minus_SNo 1).
+    { exact (SNo_minus_SNo 1 SNo_1). }
+    claim Ha0ltx : a0 < x.
+    { claim Hlt : add_SNo x (minus_SNo 1) < add_SNo x 0.
+      { exact (add_SNo_Lt2 x (minus_SNo 1) 0 HxS Hm1S SNo_0 minus_1_lt_0). }
+      rewrite <- (add_SNo_0R x HxS) at 2.
+      exact Hlt. }
+    claim Ha0x : Rlt a0 x.
+    { exact (RltI a0 x Ha0R HxR Ha0ltx). }
+    claim Hnx : ~(Rlt x x).
+    { exact (not_Rlt_refl x HxR). }
+    claim Hconj : Rlt a0 x /\ ~(Rlt x x).
+    { apply andI.
+      - exact Ha0x.
+      - exact Hnx. }
+    exact (SepI R (fun x0 : set => Rlt a0 x0 /\ ~(Rlt x x0)) x HxR Hconj).
 - (** intersection refinement **)
   let b1. assume Hb1.
   let b2. assume Hb2.
