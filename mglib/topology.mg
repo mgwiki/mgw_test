@@ -80148,7 +80148,52 @@ apply andI.
         exact (binintersect_Subq_eq_1 Empty (product_space Empty Xi) (Subq_Empty (product_space Empty Xi))). }
       exact Hinter.
   - assume HIne: I <> Empty.
-    admit. (** FAIL **)
+    set X := product_space I Xi.
+    set T := product_topology_full I Xi.
+    set S := product_subbasis_full I Xi.
+    claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+    { let i. assume HiI: i :e I.
+      claim Hreg: regular_space (product_component Xi i) (product_component_topology Xi i).
+      { exact (Hrfam i HiI). }
+      claim Hopc: one_point_sets_closed (product_component Xi i) (product_component_topology Xi i).
+      { exact (andEL (one_point_sets_closed (product_component Xi i) (product_component_topology Xi i))
+                     (forall x0:set, x0 :e product_component Xi i ->
+                       forall F0:set, closed_in (product_component Xi i) (product_component_topology Xi i) F0 -> x0 /:e F0 ->
+                         exists U0 V0:set,
+                           U0 :e product_component_topology Xi i /\ V0 :e product_component_topology Xi i /\
+                           x0 :e U0 /\ F0 c= V0 /\ U0 :/\: V0 = Empty)
+                     Hreg). }
+      exact (andEL (topology_on (product_component Xi i) (product_component_topology Xi i))
+                   (forall x0:set, x0 :e product_component Xi i -> closed_in (product_component Xi i) (product_component_topology Xi i) {x0})
+                   Hopc). }
+    claim HSsub: subbasis_on X S.
+    { exact (product_subbasis_full_subbasis_on I Xi HIne HcompTop). }
+    claim HT: topology_on X T.
+    { exact (topology_from_subbasis_is_topology X S HSsub). }
+    let x. assume Hx: x :e X.
+    let F. assume HF: closed_in X T F.
+    assume HxnotF: x /:e F.
+    prove exists U V:set,
+      U :e T /\ V :e T /\ x :e U /\ F c= V /\ U :/\: V = Empty.
+    apply (xm (F = Empty)).
+    + assume HF0: F = Empty.
+      witness X.
+      witness Empty.
+      apply and5I.
+      - exact (topology_has_X X T HT).
+      - exact (topology_has_empty X T HT).
+      - exact Hx.
+      - let y. assume HyF: y :e F.
+        prove y :e Empty.
+        rewrite <- HF0.
+        exact HyF.
+      - (** X :/\: Empty = Empty **)
+        claim Hinter: X :/\: Empty = Empty.
+        { rewrite (binintersect_com X Empty).
+          exact (binintersect_Subq_eq_1 Empty X (Subq_Empty X)). }
+        exact Hinter.
+    + assume HFne: F <> Empty.
+      admit. (** FAIL **)
 Qed.
 
 Theorem separation_axioms_subspace_product : forall X Tx:set,
