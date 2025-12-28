@@ -67490,21 +67490,23 @@ apply andI.
     claim HabFin: finite (a :\/: b).
     { exact (binunion_finite a HaFin b HbFin). }
     exact (SepI (Power S) (fun F0:set => finite F0) (a :\/: b) HabPow HabFin). }
+  (** conjunction is left-associative: (A /\ B) /\ C **)
   apply andI.
-  + exact HabJ.
-  + apply andI.
+  + (** A /\ B **)
+    apply andI.
+    - exact HabJ.
     - (** (a, a :\/: b) :e le **)
       apply (SepI (setprod J J) (fun p:set => (p 0) c= (p 1)) (a, a :\/: b)).
       + exact (tuple_2_setprod_by_pair_Sigma J J a (a :\/: b) HaJ HabJ).
       + rewrite (tuple_2_0_eq a (a :\/: b)).
         rewrite (tuple_2_1_eq a (a :\/: b)).
         exact (binunion_Subq_1 a b).
-    - (** (b, a :\/: b) :e le **)
-      apply (SepI (setprod J J) (fun p:set => (p 0) c= (p 1)) (b, a :\/: b)).
-      + exact (tuple_2_setprod_by_pair_Sigma J J b (a :\/: b) HbJ HabJ).
-      + rewrite (tuple_2_0_eq b (a :\/: b)).
-        rewrite (tuple_2_1_eq b (a :\/: b)).
-        exact (binunion_Subq_2 a b).
+  + (** (b, a :\/: b) :e le **)
+    apply (SepI (setprod J J) (fun p:set => (p 0) c= (p 1)) (b, a :\/: b)).
+    - exact (tuple_2_setprod_by_pair_Sigma J J b (a :\/: b) HbJ HabJ).
+    - rewrite (tuple_2_0_eq b (a :\/: b)).
+      rewrite (tuple_2_1_eq b (a :\/: b)).
+      exact (binunion_Subq_2 a b).
 Qed.
 
 (** helper: a cover with no finite subcover yields a net with no convergent subnet **)
