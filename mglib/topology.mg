@@ -70907,6 +70907,13 @@ rewrite Hdef.
 exact (metric_topology_is_topology real_sequences uniform_metric_Romega uniform_metric_Romega_is_metric).
 Qed.
 
+(** helper: uniform_topology is also a topology on R^omega (since real_sequences = R^omega) **)
+Theorem uniform_topology_is_topology_on_Romega_space : topology_on R_omega_space uniform_topology.
+prove topology_on R_omega_space uniform_topology.
+rewrite <- (real_sequences_eq_Romega_space).
+exact uniform_topology_is_topology.
+Qed.
+
 
 
 Definition Romega_product_topology_on_real_sequences : set :=
@@ -70948,7 +70955,55 @@ apply andI.
   prove finer_than uniform_topology Romega_product_topology_on_real_sequences.
   rewrite (Romega_product_topology_on_real_sequences_eq).
   (** remaining goal: R_omega_product_topology c= uniform_topology **)
-  admit. (** FAIL **)
+  prove R_omega_product_topology c= uniform_topology.
+  set Xi0 := const_space_family omega R R_standard_topology.
+  set X := product_space omega Xi0.
+  set S := product_subbasis_full omega Xi0.
+  claim HXeq: X = R_omega_space.
+  { reflexivity. }
+  claim HSsub: subbasis_on X S.
+  { claim H0O: 0 :e omega.
+    { exact (nat_p_omega 0 nat_0). }
+    claim Hone: omega <> Empty.
+    { exact (elem_implies_nonempty omega 0 H0O). }
+    claim Hcomp: forall i:set, i :e omega -> topology_on (space_family_set Xi0 i) (space_family_topology Xi0 i).
+    { let i. assume HiO: i :e omega.
+      claim HXi: apply_fun Xi0 i = (R, R_standard_topology).
+      { exact (const_space_family_apply omega R R_standard_topology i HiO). }
+      claim Hset: space_family_set Xi0 i = R.
+      { claim Hdef: space_family_set Xi0 i = (apply_fun Xi0 i) 0.
+        { reflexivity. }
+        rewrite Hdef.
+        rewrite HXi.
+        exact (tuple_2_0_eq R R_standard_topology). }
+      claim Htop: space_family_topology Xi0 i = R_standard_topology.
+      { claim Hdef: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+        { reflexivity. }
+        rewrite Hdef.
+        rewrite HXi.
+        exact (tuple_2_1_eq R R_standard_topology). }
+      rewrite Hset.
+      rewrite Htop.
+      exact R_standard_topology_is_topology_local. }
+    exact (product_subbasis_full_subbasis_on omega Xi0 Hone Hcomp). }
+  claim HtopU: topology_on X uniform_topology.
+  { rewrite HXeq.
+    exact uniform_topology_is_topology_on_Romega_space. }
+  claim HSinc: S c= uniform_topology.
+  { admit. (** FAIL **) }
+  claim Hmin: finer_than uniform_topology (generated_topology_from_subbasis X S).
+  { exact (topology_generated_by_basis_is_minimal X S uniform_topology HSsub HtopU HSinc). }
+  claim Hinc: generated_topology_from_subbasis X S c= uniform_topology.
+  { exact Hmin. }
+  claim HdefProd: R_omega_product_topology = generated_topology_from_subbasis X S.
+  { reflexivity. }
+  let U.
+  assume HU: U :e R_omega_product_topology.
+  prove U :e uniform_topology.
+  claim HUgen: U :e generated_topology_from_subbasis X S.
+  { rewrite <- HdefProd.
+    exact HU. }
+  exact (Hinc U HUgen).
 - (** uniform-open sets are box-open (uniform is coarser than box) **)
   prove coarser_than uniform_topology Romega_box_topology_on_real_sequences.
   (** remaining goal: uniform_topology c= Romega_box_topology_on_real_sequences **)
