@@ -79387,12 +79387,60 @@ apply andI.
 		          - exact HAsubV0.
 		        + exact HBsubW0.
 		      - exact HdisjVW.
-		Qed.
+	Qed.
 
-(** Helper for products used in §31. **)
-(** Helper: distinct points in a product differ in some coordinate. **)
-Theorem product_space_points_differ_coord : forall I Xi x1 x2:set,
-  x1 :e product_space I Xi ->
+	(** Helper: regular spaces admit closure-shrinking neighborhoods (used in product regularity proofs). **)
+	Theorem regular_space_shrink_neighborhood : forall X Tx x U:set,
+	  regular_space X Tx ->
+	  x :e X ->
+	  U :e Tx ->
+	  x :e U ->
+	  exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U.
+	let X Tx x U.
+	assume Hreg: regular_space X Tx.
+	assume HxX: x :e X.
+	assume HU: U :e Tx.
+	assume HxU: x :e U.
+	prove exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U.
+	claim HT1: one_point_sets_closed X Tx.
+	{ exact (andEL (one_point_sets_closed X Tx)
+	               (forall x0:set, x0 :e X ->
+	                 forall F:set, closed_in X Tx F -> x0 /:e F ->
+	                   exists U0 V0:set, U0 :e Tx /\ V0 :e Tx /\ x0 :e U0 /\ F c= V0 /\ U0 :/\: V0 = Empty)
+	               Hreg). }
+	claim HTx: topology_on X Tx.
+	{ exact (andEL (topology_on X Tx)
+	               (forall x0:set, x0 :e X -> closed_in X Tx {x0})
+	               HT1). }
+	claim Hlemma: one_point_sets_closed X Tx ->
+	  (regular_space X Tx <->
+	     forall x0 U0:set, x0 :e X -> U0 :e Tx -> x0 :e U0 ->
+	       exists V0:set, V0 :e Tx /\ x0 :e V0 /\ closure_of X Tx V0 c= U0).
+	{ exact (andEL (one_point_sets_closed X Tx -> (regular_space X Tx <->
+	             forall x0 U0:set, x0 :e X -> U0 :e Tx -> x0 :e U0 ->
+	               exists V0:set, V0 :e Tx /\ x0 :e V0 /\ closure_of X Tx V0 c= U0))
+	           (one_point_sets_closed X Tx -> (normal_space X Tx <->
+	             forall A U0:set, closed_in X Tx A -> U0 :e Tx -> A c= U0 ->
+	               exists V0:set, V0 :e Tx /\ A c= V0 /\ closure_of X Tx V0 c= U0))
+	           (regular_normal_via_closure X Tx HTx)). }
+	claim Hiff: regular_space X Tx <->
+	  forall x0 U0:set, x0 :e X -> U0 :e Tx -> x0 :e U0 ->
+	    exists V0:set, V0 :e Tx /\ x0 :e V0 /\ closure_of X Tx V0 c= U0.
+	{ exact (Hlemma HT1). }
+	claim Hcrit:
+	  forall x0 U0:set, x0 :e X -> U0 :e Tx -> x0 :e U0 ->
+	    exists V0:set, V0 :e Tx /\ x0 :e V0 /\ closure_of X Tx V0 c= U0.
+	{ exact (iffEL (regular_space X Tx)
+	               (forall x0 U0:set, x0 :e X -> U0 :e Tx -> x0 :e U0 ->
+	                  exists V0:set, V0 :e Tx /\ x0 :e V0 /\ closure_of X Tx V0 c= U0)
+	               Hiff Hreg). }
+	exact (Hcrit x U HxX HU HxU).
+	Qed.
+
+	(** Helper for products used in §31. **)
+	(** Helper: distinct points in a product differ in some coordinate. **)
+	Theorem product_space_points_differ_coord : forall I Xi x1 x2:set,
+	  x1 :e product_space I Xi ->
   x2 :e product_space I Xi ->
   x1 <> x2 ->
   exists i:set, i :e I /\ apply_fun x1 i <> apply_fun x2 i.
