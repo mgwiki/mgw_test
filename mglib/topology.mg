@@ -76803,29 +76803,29 @@ Theorem separation_axioms_subspace_product : forall X Tx:set,
   (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi)) /\
   (forall Y:set, Y c= X -> regular_space X Tx -> regular_space Y (subspace_topology X Tx Y)) /\
   (forall I Xi:set, regular_spaces_family I Xi -> regular_space (product_space I Xi) (product_topology_full I Xi)).
-	let X Tx.
-	assume HTx: topology_on X Tx.
-	prove (forall Y:set, Y c= X -> Hausdorff_space X Tx -> Hausdorff_space Y (subspace_topology X Tx Y)) /\
-	  (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi)) /\
-	  (forall Y:set, Y c= X -> regular_space X Tx -> regular_space Y (subspace_topology X Tx Y)) /\
-	  (forall I Xi:set, regular_spaces_family I Xi -> regular_space (product_space I Xi) (product_topology_full I Xi)).
-	apply andI.
-	- apply andI.
-		  + apply andI.
-		    - let Y. assume HYsub: Y c= X.
-		      assume HH: Hausdorff_space X Tx.
-		      prove Hausdorff_space Y (subspace_topology X Tx Y).
-		      exact (ex17_12_subspace_Hausdorff X Tx Y HH HYsub).
-		    - let I Xi. assume HHfam: Hausdorff_spaces_family I Xi.
-		      exact (product_topology_full_Hausdorff_axiom I Xi HHfam).
-			  + let Y. assume HYsub: Y c= X.
-			    assume Hreg: regular_space X Tx.
-			    prove one_point_sets_closed Y (subspace_topology X Tx Y) /\
-		      forall y0:set, y0 :e Y ->
-		        forall F0:set, closed_in Y (subspace_topology X Tx Y) F0 -> y0 /:e F0 ->
-		          exists U V:set, U :e subspace_topology X Tx Y /\ V :e subspace_topology X Tx Y /\ y0 :e U /\ F0 c= V /\ U :/\: V = Empty.
-		    claim HTy: topology_on Y (subspace_topology X Tx Y).
-		    { exact (subspace_topology_is_topology X Tx Y HTx HYsub). }
+let X Tx.
+assume HTx: topology_on X Tx.
+prove (forall Y:set, Y c= X -> Hausdorff_space X Tx -> Hausdorff_space Y (subspace_topology X Tx Y)) /\
+  (forall I Xi:set, Hausdorff_spaces_family I Xi -> Hausdorff_space (product_space I Xi) (product_topology_full I Xi)) /\
+  (forall Y:set, Y c= X -> regular_space X Tx -> regular_space Y (subspace_topology X Tx Y)) /\
+  (forall I Xi:set, regular_spaces_family I Xi -> regular_space (product_space I Xi) (product_topology_full I Xi)).
+apply andI.
+- apply andI.
+  + apply andI.
+    - let Y. assume HYsub: Y c= X.
+      assume HH: Hausdorff_space X Tx.
+      prove Hausdorff_space Y (subspace_topology X Tx Y).
+      exact (ex17_12_subspace_Hausdorff X Tx Y HH HYsub).
+    - let I Xi. assume HHfam: Hausdorff_spaces_family I Xi.
+      exact (product_topology_full_Hausdorff_axiom I Xi HHfam).
+  + let Y. assume HYsub: Y c= X.
+    assume Hreg: regular_space X Tx.
+    prove one_point_sets_closed Y (subspace_topology X Tx Y) /\
+      forall y0:set, y0 :e Y ->
+        forall F0:set, closed_in Y (subspace_topology X Tx Y) F0 -> y0 /:e F0 ->
+          exists U V:set, U :e subspace_topology X Tx Y /\ V :e subspace_topology X Tx Y /\ y0 :e U /\ F0 c= V /\ U :/\: V = Empty.
+    claim HTy: topology_on Y (subspace_topology X Tx Y).
+    { exact (subspace_topology_is_topology X Tx Y HTx HYsub). }
 	    claim HT1X: one_point_sets_closed X Tx.
 	    { exact (andEL (one_point_sets_closed X Tx)
 	                   (forall x:set, x :e X ->
