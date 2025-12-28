@@ -9766,6 +9766,31 @@ apply (RleI a a Ha Ha).
 exact (not_Rlt_refl a Ha).
 Qed.
 
+(** helper: antisymmetry for Rle, via SNo trichotomy on reals **)
+Theorem R_eq_of_not_Rlt : forall a b:set,
+  a :e R -> b :e R -> ~(Rlt a b) -> ~(Rlt b a) -> a = b.
+let a b.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume Hnltab: ~(Rlt a b).
+assume Hnltba: ~(Rlt b a).
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+apply (SNoLt_trichotomy_or_impred a b HaS HbS (a = b)).
+- assume Hab: a < b.
+  claim Hr: Rlt a b.
+  { exact (RltI a b HaR HbR Hab). }
+  exact (FalseE (Hnltab Hr) (a = b)).
+- assume Heq: a = b.
+  exact Heq.
+- assume Hba: b < a.
+  claim Hr: Rlt b a.
+  { exact (RltI b a HbR HaR Hba). }
+  exact (FalseE (Hnltba Hr) (a = b)).
+Qed.
+
 (** helper: antisymmetry of Rle **)
 (** LATEX VERSION: If a ≤ b and b ≤ a then a = b. **)
 Theorem Rle_antisym : forall a b:set, Rle a b -> Rle b a -> a = b.
