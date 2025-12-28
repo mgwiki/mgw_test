@@ -65116,7 +65116,188 @@ let X Tx net sub x.
 assume Hnet: net_converges X Tx net x.
 assume Hsub: subnet_of net sub.
 prove net_converges X Tx sub x.
-admit. (** FAIL **)
+apply Hsub.
+let J.
+assume Hrest: exists K X0 phi:set,
+  directed_set J /\ directed_set K /\
+  total_function_on net J X0 /\ functional_graph net /\
+  total_function_on sub K X0 /\ functional_graph sub /\
+  total_function_on phi K J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+apply Hrest.
+let K.
+assume Hrest2: exists X0 phi:set,
+  directed_set J /\ directed_set K /\
+  total_function_on net J X0 /\ functional_graph net /\
+  total_function_on sub K X0 /\ functional_graph sub /\
+  total_function_on phi K J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+apply Hrest2.
+let X0.
+assume Hrest3: exists phi:set,
+  directed_set J /\ directed_set K /\
+  total_function_on net J X0 /\ functional_graph net /\
+  total_function_on sub K X0 /\ functional_graph sub /\
+  total_function_on phi K J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+apply Hrest3.
+let phi.
+assume Hpack:
+  directed_set J /\ directed_set K /\
+  total_function_on net J X0 /\ functional_graph net /\
+  total_function_on sub K X0 /\ functional_graph sub /\
+  total_function_on phi K J /\ functional_graph phi /\
+  graph_domain_subset net J /\ graph_domain_subset sub K /\ graph_domain_subset phi K /\
+  (forall j:set, j :e J -> exists k0:set, k0 :e K /\
+    forall k:set, k :e K -> (k0 :e k \/ k0 = k) ->
+      (j :e apply_fun phi k \/ j = apply_fun phi k)) /\
+  (forall k:set, k :e K ->
+    apply_fun sub k = apply_fun net (apply_fun phi k)).
+
+(** destruct subnet_of package (left-assoc /\) **)
+apply Hpack. assume H12 Hsubeq.
+apply H12. assume H11 Hcofinal.
+apply H11. assume H10 Hphidom.
+apply H10. assume H9 Hsubdom.
+apply H9. assume H8 Hnetdom.
+apply H8. assume H7 Hphigraph.
+apply H7. assume H6 Hphitot.
+apply H6. assume H5 Hsubgraph.
+apply H5. assume H4 Hsubtot0.
+apply H4. assume H3 Hnetgraph.
+apply H3. assume H2 Hnettot0.
+apply H2. assume HdirJ HdirK.
+
+(** extract convergence witness for net **)
+apply Hnet.
+let Jc.
+assume HJc:
+  topology_on X Tx /\ directed_set Jc /\ total_function_on net Jc X /\ functional_graph net /\ graph_domain_subset net Jc /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U ->
+      exists i0:set, i0 :e Jc /\
+        forall i:set, i :e Jc -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
+apply HJc. assume Hcore Htailc.
+apply Hcore. assume Hcore5 HxX.
+apply Hcore5. assume Hcore4 Hnetdomc.
+apply Hcore4. assume Hcore3 Hnetgraphc.
+apply Hcore3. assume Hcore2 Hnettotc.
+apply Hcore2. assume HTx HdirJc.
+
+(** J and Jc are equal because both are total domains of the same graph **)
+claim HJsub: J c= Jc.
+{ let j. assume HjJ: j :e J.
+  claim Hex: exists y:set, y :e X0 /\ (j,y) :e net.
+  { exact (total_function_on_totality net J X0 Hnettot0 j HjJ). }
+  apply Hex.
+  let y. assume Hy.
+  claim Hjy: (j,y) :e net.
+  { exact (andER (y :e X0) ((j,y) :e net) Hy). }
+  exact (Hnetdomc j y Hjy). }
+claim HJcsub: Jc c= J.
+{ let j. assume HjJc: j :e Jc.
+  claim Hex: exists y:set, y :e X /\ (j,y) :e net.
+  { exact (total_function_on_totality net Jc X Hnettotc j HjJc). }
+  apply Hex.
+  let y. assume Hy.
+  claim Hjy: (j,y) :e net.
+  { exact (andER (y :e X) ((j,y) :e net) Hy). }
+  exact (Hnetdom j y Hjy). }
+claim HeqJ: J = Jc.
+{ apply set_ext.
+  - exact HJsub.
+  - exact HJcsub. }
+
+(** translate eventuality tail to J using J=Jc **)
+claim HtailJ:
+  forall U:set, U :e Tx -> x :e U ->
+    exists j0:set, j0 :e J /\
+      forall j:set, j :e J -> (j0 :e j \/ j0 = j) -> apply_fun net j :e U.
+{ let U. assume HU: U :e Tx. assume HxU: x :e U.
+  claim Hex: exists j0:set, j0 :e Jc /\
+      forall j:set, j :e Jc -> (j0 :e j \/ j0 = j) -> apply_fun net j :e U.
+  { exact (Htailc U HU HxU). }
+  apply Hex.
+  let j0. assume Hj0pair.
+  claim Hj0Jc: j0 :e Jc.
+  { exact (andEL (j0 :e Jc)
+                 (forall j:set, j :e Jc -> (j0 :e j \/ j0 = j) -> apply_fun net j :e U)
+                 Hj0pair). }
+  claim Hj0tail:
+    forall j:set, j :e Jc -> (j0 :e j \/ j0 = j) -> apply_fun net j :e U.
+  { exact (andER (j0 :e Jc)
+                 (forall j:set, j :e Jc -> (j0 :e j \/ j0 = j) -> apply_fun net j :e U)
+                 Hj0pair). }
+  witness j0.
+  apply andI.
+  - exact (HJcsub j0 Hj0Jc).
+  - let j. assume HjJ: j :e J. assume Hj0le: (j0 :e j \/ j0 = j).
+    claim HjJc: j :e Jc.
+    { exact (HJsub j HjJ). }
+    exact (Hj0tail j HjJc Hj0le). }
+
+(** upgrade codomains from X0 to X using J=Jc and functionality **)
+claim HnettotJX: total_function_on net J X.
+{ apply andI.
+  - prove function_on net J X.
+    let j. assume HjJ: j :e J.
+    claim HjJc: j :e Jc.
+    { exact (HJsub j HjJ). }
+    exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc j HjJc).
+  - let j. assume HjJ: j :e J.
+    prove exists y:set, y :e X /\ (j,y) :e net.
+    witness (apply_fun net j).
+    apply andI.
+    * claim HjJc: j :e Jc.
+      { exact (HJsub j HjJ). }
+      exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc j HjJc).
+    * exact (total_function_on_apply_fun_in_graph net J X0 Hnettot0 j HjJ). }
+
+claim HsubtotKX: total_function_on sub K X.
+{ apply andI.
+  - prove function_on sub K X.
+    let k. assume HkK: k :e K.
+    rewrite (Hsubeq k HkK).
+    claim HphikJ: apply_fun phi k :e J.
+    { exact ((total_function_on_function_on phi K J Hphitot) k HkK). }
+    claim HphikJc: apply_fun phi k :e Jc.
+    { exact (HJsub (apply_fun phi k) HphikJ). }
+    exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc (apply_fun phi k) HphikJc).
+  - let k. assume HkK: k :e K.
+    prove exists y:set, y :e X /\ (k,y) :e sub.
+    witness (apply_fun sub k).
+    apply andI.
+    * rewrite (Hsubeq k HkK).
+      claim HphikJ: apply_fun phi k :e J.
+      { exact ((total_function_on_function_on phi K J Hphitot) k HkK). }
+      claim HphikJc: apply_fun phi k :e Jc.
+      { exact (HJsub (apply_fun phi k) HphikJ). }
+      exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc (apply_fun phi k) HphikJc).
+    * exact (total_function_on_apply_fun_in_graph sub K X0 Hsubtot0 k HkK). }
+
+exact (subnet_preserves_convergence_witnessed
+  X Tx net sub x J K phi
+  HTx HdirJ HdirK
+  HnettotJX Hnetgraph Hnetdom
+  HsubtotKX Hsubgraph Hsubdom
+  Hphitot Hphigraph Hphidom
+  Hcofinal Hsubeq
+  HxX
+  HtailJ).
 Qed.
 
 (** helper: subnet preserves convergence for fixed index set witnesses **)
