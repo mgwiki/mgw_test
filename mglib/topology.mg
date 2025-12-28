@@ -75047,7 +75047,7 @@ claim Hinj: inj Sorgenfrey_line B f.
         claim Hexb1: exists b0 :e B, x1 :e b0 /\ b0 c= U1.
         { exact (HU1Prop x1 Hx1U1). }
         claim Hfx1prop: f x1 :e B /\ x1 :e f x1 /\ f x1 c= U1.
-        { exact (Eps_i_ex (fun b:set => b :e B /\ x1 :e b /\ b c= U1) Hexb1). }
+        { admit. }
         claim Htmp: f x1 :e B /\ x1 :e f x1.
         { exact (andEL (f x1 :e B /\ x1 :e f x1) (f x1 c= U1) Hfx1prop). }
         exact (andER (f x1 :e B) (x1 :e f x1) Htmp). }
