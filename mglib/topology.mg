@@ -8023,30 +8023,23 @@ prove Power X c= Power X
 /\ X :e Power X
 /\ (forall UFam :e Power (Power X), Union UFam :e Power X)
 /\ (forall U :e Power X, forall V :e Power X, U :/\: V :e Power X).
-apply andI.
-- prove ((Power X c= Power X /\ Empty :e Power X) /\ X :e Power X /\ (forall UFam :e Power (Power X), Union UFam :e Power X)).
-  apply andI.
-  * prove Power X c= Power X /\ Empty :e Power X /\ X :e Power X.
-    apply andI.
-    { prove Power X c= Power X /\ Empty :e Power X.
-      apply andI.
-      - exact (Subq_ref (Power X)).
-      - apply Empty_In_Power.
-    }
-    { apply PowerI. exact (Subq_ref X). }
-  * prove forall UFam :e Power (Power X), Union UFam :e Power X.
-    let UFam. assume Hfam: UFam :e Power (Power X).
-    apply PowerI X (Union UFam).
-    let x. assume HxUnion: x :e Union UFam.
-    apply UnionE_impred UFam x HxUnion.
-    let U. assume HUinx: x :e U. assume HUinFam: U :e UFam.
-    claim HFamSub: UFam c= Power X.
-    { exact (iffEL (UFam :e Power (Power X)) (UFam c= Power X) (PowerEq (Power X) UFam) Hfam). }
-    claim HUinPower: U :e Power X.
-    { exact HFamSub U HUinFam. }
-    claim HUsub : U c= X.
-    { exact (iffEL (U :e Power X) (U c= X) (PowerEq X U) HUinPower). }
-    exact (HUsub x HUinx).
+apply and5I.
+- exact (Subq_ref (Power X)).
+- apply Empty_In_Power.
+- apply PowerI. exact (Subq_ref X).
+- prove forall UFam :e Power (Power X), Union UFam :e Power X.
+  let UFam. assume Hfam: UFam :e Power (Power X).
+  apply PowerI X (Union UFam).
+  let x. assume HxUnion: x :e Union UFam.
+  apply UnionE_impred UFam x HxUnion.
+  let U. assume HUinx: x :e U. assume HUinFam: U :e UFam.
+  claim HFamSub: UFam c= Power X.
+  { exact (iffEL (UFam :e Power (Power X)) (UFam c= Power X) (PowerEq (Power X) UFam) Hfam). }
+  claim HUinPower: U :e Power X.
+  { exact HFamSub U HUinFam. }
+  claim HUsub : U c= X.
+  { exact (iffEL (U :e Power X) (U c= X) (PowerEq X U) HUinPower). }
+  exact (HUsub x HUinx).
 - prove forall U :e Power X, forall V :e Power X, U :/\: V :e Power X.
   let U. assume HU: U :e Power X.
   let V. assume HV: V :e Power X.
