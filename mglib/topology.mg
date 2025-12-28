@@ -65556,20 +65556,7 @@ apply iffI.
   claim Hdir: directed_set J le.
   { exact (neighborhoods_directed_by_reverse_inclusion X Tx x HTx HxX). }
   claim Htot: total_function_on net J X.
-  { prove total_function_on net J X.
-    prove function_on net J X /\ forall U:set, U :e J -> exists y:set, y :e X /\ (U,y) :e net.
-    apply andI.
-    - prove function_on net J X.
-      let U. assume HUJ: U :e J.
-      prove apply_fun net U :e X.
-      rewrite (apply_fun_graph J g U HUJ).
-      exact (Hg_in_X U HUJ).
-    - let U. assume HUJ: U :e J.
-      prove exists y:set, y :e X /\ (U,y) :e net.
-      witness (g U).
-      apply andI.
-      + exact (Hg_in_X U HUJ).
-      + exact (ReplI J (fun U0:set => (U0, g U0)) U HUJ). }
+  { exact (total_function_on_graph J X g Hg_in_X). }
   witness net.
   witness J.
   witness le.
@@ -67588,21 +67575,7 @@ claim Hnet0: net_in_space X net0.
           claim Hprop: pickx F :e X /\ ~(pickx F :e Union F).
           { exact (Eps_i_ax (fun x0:set => x0 :e X /\ ~(x0 :e Union F)) x Hx). }
           exact (andEL (pickx F :e X) (~(pickx F :e Union F)) Hprop). }
-        claim Hfun: function_on net0 J X.
-        { let F. assume HFJ: F :e J.
-          prove apply_fun net0 F :e X.
-          rewrite (apply_fun_graph J pickx F HFJ).
-          exact (Hpick_in F HFJ). }
-        claim Htot': forall F:set, F :e J -> exists y:set, y :e X /\ (F,y) :e net0.
-        { let F. assume HFJ: F :e J.
-          witness (pickx F).
-          apply andI.
-          - exact (Hpick_in F HFJ).
-          - exact (ReplI J (fun F0:set => (F0, pickx F0)) F HFJ). }
-        exact (andI (function_on net0 J X)
-                    (forall x:set, x :e J -> exists y:set, y :e X /\ (x,y) :e net0)
-                    Hfun
-                    Htot').
+        exact (total_function_on_graph J X pickx Hpick_in).
     + (** functional_graph net0 **)
       exact (functional_graph_graph J pickx).
   - (** graph_domain_subset net0 J **)
