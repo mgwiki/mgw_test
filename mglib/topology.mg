@@ -77324,7 +77324,37 @@ apply (xm (I = Empty)).
   { exact (andEL (x :e b) (b c= U) Htmpb). }
   claim HbsubU: b c= U.
   { exact (andER (x :e b) (b c= U) Htmpb). }
-  (** TODO: shrink inside basis element b; this is the core regularity argument for products. **)
+  claim HbB0: b :e B0.
+  { exact (andEL (b :e B0) (x :e b /\ b c= U) Hbpair). }
+  (** Unfold `b :e basis_of_subbasis X0 S0`: b is a nonempty finite intersection of subbasis elements. **)
+  claim HbFinInt: b :e finite_intersections_of X0 S0.
+  { exact (SepE1 (finite_intersections_of X0 S0) (fun b0:set => b0 <> Empty) b HbB0). }
+  claim HbNe: b <> Empty.
+  { exact (SepE2 (finite_intersections_of X0 S0) (fun b0:set => b0 <> Empty) b HbB0). }
+  claim HexF: exists F:set, F :e finite_subcollections S0 /\ b = intersection_of_family X0 F.
+  { exact (ReplE (finite_subcollections S0) (fun F0:set => intersection_of_family X0 F0) b HbFinInt). }
+  apply HexF.
+  let F. assume HFpair.
+  claim HFfinSub: F :e finite_subcollections S0.
+  { exact (andEL (F :e finite_subcollections S0) (b = intersection_of_family X0 F) HFpair). }
+  claim HbEqInt: b = intersection_of_family X0 F.
+  { exact (andER (F :e finite_subcollections S0) (b = intersection_of_family X0 F) HFpair). }
+  claim HFpow: F :e Power S0.
+  { exact (SepE1 (Power S0) (fun F0:set => finite F0) F HFfinSub). }
+  claim HFfin: finite F.
+  { exact (SepE2 (Power S0) (fun F0:set => finite F0) F HFfinSub). }
+  claim HFsub: F c= S0.
+  { exact (PowerE S0 F HFpow). }
+  claim HxInt: x :e intersection_of_family X0 F.
+  { rewrite <- HbEqInt.
+    exact Hbx. }
+  claim Hall_s: forall s:set, s :e F -> x :e s.
+  { let s. assume HsF: s :e F.
+    claim Hprop: forall s0:set, s0 :e F -> x :e s0.
+    { exact (SepE2 X0 (fun x0:set => forall s0:set, s0 :e F -> x0 :e s0) x HxInt). }
+    exact (Hprop s HsF). }
+  (** At this point, every s :e F is a subbasis element (s :e S0), and x lies in each such s. **)
+  (** TODO: for each cylinder s = product_cylinder I Xi i Ui in F, shrink Ui in the i-th factor using factorwise regularity, lift to a smaller cylinder s', and take the finite intersection of s' to obtain V with closure(V) ⊆ b ⊆ U. **)
   admit. (** FAIL **)
 Qed.
 
