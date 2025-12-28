@@ -79502,9 +79502,95 @@ apply andI.
       { exact (product_subbasis_full_subbasis_on I Xi HIne HcompTop). }
       exact (topology_from_subbasis_is_topology (product_space I Xi) (product_subbasis_full I Xi) HS).
   + (** singletons closed in the product topology **)
-    admit. (** FAIL **)
+    let x. assume Hx: x :e product_space I Xi.
+    prove closed_in (product_space I Xi) (product_topology_full I Xi) {x}.
+    apply (xm (I = Empty)).
+    * assume HI0: I = Empty.
+      rewrite HI0.
+      (** reduce to the empty-index product, which is a singleton {Empty} **)
+      claim HX0: product_space Empty Xi = {Empty}.
+      { exact (product_space_empty_index Xi). }
+      claim HxEidx: x :e product_space Empty Xi.
+      { prove x :e product_space Empty Xi.
+        rewrite <- HI0.
+        exact Hx. }
+      claim HxS: x :e {Empty}.
+      { rewrite <- HX0.
+        exact HxEidx. }
+      claim HxEq: x = Empty.
+      { exact (SingE Empty x HxS). }
+      claim HT0: topology_on (product_space Empty Xi) (product_topology_full Empty Xi).
+      { claim HTdef: product_topology_full Empty Xi = countable_product_topology_subbasis Empty Xi.
+        { reflexivity. }
+        rewrite HTdef.
+        exact (countable_product_topology_subbasis_empty_is_topology Xi). }
+      claim HsetEq: {x} = product_space Empty Xi.
+      { rewrite HxEq.
+        rewrite <- HX0.
+        reflexivity. }
+      rewrite HsetEq.
+      exact (X_is_closed (product_space Empty Xi) (product_topology_full Empty Xi) HT0).
+    * assume HIne: I <> Empty.
+      admit. (** FAIL **)
 - (** regular separation axiom for the product **)
-  admit. (** FAIL **)
+  apply (xm (I = Empty)).
+  - assume HI0: I = Empty.
+    rewrite HI0.
+    (** in the singleton empty-index product, regularity is trivial **)
+    let x. assume Hx: x :e product_space Empty Xi.
+    let F. assume HF: closed_in (product_space Empty Xi) (product_topology_full Empty Xi) F.
+    assume HxnotF: x /:e F.
+    prove exists U V:set,
+      U :e product_topology_full Empty Xi /\ V :e product_topology_full Empty Xi /\
+      x :e U /\ F c= V /\ U :/\: V = Empty.
+    claim HT0: topology_on (product_space Empty Xi) (product_topology_full Empty Xi).
+    { claim HTdef: product_topology_full Empty Xi = countable_product_topology_subbasis Empty Xi.
+      { reflexivity. }
+      rewrite HTdef.
+      exact (countable_product_topology_subbasis_empty_is_topology Xi). }
+    witness (product_space Empty Xi).
+    witness Empty.
+    (** we use U = X and V = Empty **)
+    apply and5I.
+    - exact (topology_has_X (product_space Empty Xi) (product_topology_full Empty Xi) HT0).
+    - exact (topology_has_empty (product_space Empty Xi) (product_topology_full Empty Xi) HT0).
+    - exact Hx.
+    - (** F c= Empty, since X is a singleton and x /:e F **)
+      let y. assume HyF: y :e F.
+      prove y :e Empty.
+      claim HFsub: F c= product_space Empty Xi.
+      { exact (closed_in_subset (product_space Empty Xi) (product_topology_full Empty Xi) F HF). }
+      claim HyX: y :e product_space Empty Xi.
+      { exact (HFsub y HyF). }
+      claim HX0: product_space Empty Xi = {Empty}.
+      { exact (product_space_empty_index Xi). }
+      claim HyS: y :e {Empty}.
+      { rewrite <- HX0.
+        exact HyX. }
+      claim HyEq: y = Empty.
+      { exact (SingE Empty y HyS). }
+      claim HxS: x :e {Empty}.
+      { rewrite <- HX0.
+        exact Hx. }
+      claim HxEq: x = Empty.
+      { exact (SingE Empty x HxS). }
+      claim Hyx: y = x.
+      { rewrite HyEq.
+        rewrite <- HxEq.
+        reflexivity. }
+      apply FalseE.
+      claim HxF: x :e F.
+      { prove x :e F.
+        rewrite <- Hyx.
+        exact HyF. }
+      exact (HxnotF HxF).
+    - (** (product_space Empty Xi) :/\: Empty = Empty **)
+      claim Hinter: (product_space Empty Xi) :/\: Empty = Empty.
+      { rewrite (binintersect_com (product_space Empty Xi) Empty).
+        exact (binintersect_Subq_eq_1 Empty (product_space Empty Xi) (Subq_Empty (product_space Empty Xi))). }
+      exact Hinter.
+  - assume HIne: I <> Empty.
+    admit. (** FAIL **)
 Qed.
 
 Theorem separation_axioms_subspace_product : forall X Tx:set,
