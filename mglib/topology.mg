@@ -66611,6 +66611,58 @@ apply andI.
   exact HB.
 Qed.
 
+(** helper: in a compact space, every net has an accumulation point **)
+(** LATEX VERSION: Every net in a compact space has an accumulation point. **)
+Theorem compact_space_net_has_accumulation_point : forall X Tx net:set,
+  compact_space X Tx ->
+  net_in_space X net ->
+  exists x0:set, accumulation_point_of_net X Tx net x0.
+let X Tx net.
+assume Hcomp: compact_space X Tx.
+assume Hnet: net_in_space X net.
+prove exists x0:set, accumulation_point_of_net X Tx net x0.
+(** Full proof is by the standard open-cover contradiction argument; we are currently only setting up the canonical witnesses. **)
+apply Hnet.
+let J. assume Hexle:
+  exists le:set, directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
+apply Hexle.
+let le. assume Hnetdata:
+  directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
+apply Hnetdata.
+assume Hleft Hdomnet.
+apply Hleft.
+assume Hleft2 Hgraphnet.
+apply Hleft2.
+assume HdirJ Htotnet.
+
+claim HTx: topology_on X Tx.
+{ exact (compact_space_topology X Tx Hcomp). }
+
+(** Package the data in the shape demanded by accumulation_point_of_net. **)
+(** The existence of x0 and the cofinal neighborhood property will be proved later. **)
+admit. (** FAIL **)
+Qed.
+
+(** helper: a cover with no finite subcover yields a net with no convergent subnet **)
+(** LATEX VERSION: If an open cover has no finite subcover, one can build a net witnessing non-compactness (no convergent subnet). **)
+Theorem open_cover_no_finite_subcover_implies_net_counterexample : forall X Tx Fam:set,
+  topology_on X Tx ->
+  open_cover_of X Tx Fam ->
+  ~(has_finite_subcover X Tx Fam) ->
+  exists net0:set,
+    net_in_space X net0 /\
+    (forall sub x:set, subnet_of net0 sub -> ~(net_converges X Tx sub x)).
+let X Tx Fam.
+assume HTx: topology_on X Tx.
+assume Hcover: open_cover_of X Tx Fam.
+assume Hnofin: ~(has_finite_subcover X Tx Fam).
+prove exists net0:set,
+  net_in_space X net0 /\
+  (forall sub x:set, subnet_of net0 sub -> ~(net_converges X Tx sub x)).
+(** Standard construction: index set = finite subcollections of Fam ordered by inclusion; net chooses a point not covered by the finite union. **)
+admit. (** FAIL **)
+Qed.
+
 Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
   topology_on X Tx ->
   (compact_space X Tx <-> forall net:set, net_in_space X net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
@@ -66623,7 +66675,7 @@ apply iffI.
   let net. assume Hnet: net_in_space X net.
   prove exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x.
   claim Hexacc: exists x0:set, accumulation_point_of_net X Tx net x0.
-  { admit. (** FAIL **) }
+  { exact (compact_space_net_has_accumulation_point X Tx net Hcomp Hnet). }
   apply Hexacc.
   let x0. assume Hacc: accumulation_point_of_net X Tx net x0.
   apply (subnet_converges_to_accumulation X Tx net x0 Hacc).
@@ -66645,7 +66697,7 @@ apply iffI.
       claim Hexnet: exists net0:set,
         net_in_space X net0 /\
         (forall sub x:set, subnet_of net0 sub -> ~(net_converges X Tx sub x)).
-      { admit. (** FAIL **) }
+      { exact (open_cover_no_finite_subcover_implies_net_counterexample X Tx Fam HTx Hcover Hnofin). }
       apply Hexnet.
       let net0. assume Hnet0pack:
         net_in_space X net0 /\
