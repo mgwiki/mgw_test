@@ -80304,7 +80304,21 @@ apply andI.
 			          find an open neighborhood U of x whose closure is still inside the chosen basis neighborhood b0 ⊆ Uc. **)
 			      claim HexU: exists U:set,
 			        U :e T /\ x :e U /\ U c= b0 /\ closure_of X T U c= b0.
-			      { admit. (** FAIL **) }
+			      { apply (xm (b0 = X)).
+			        - assume Hb0X: b0 = X.
+			          witness X.
+			          apply and4I.
+			          + exact (topology_has_X X T HT).
+			          + exact Hx.
+			          + rewrite Hb0X.
+			            exact (Subq_ref X).
+			          + rewrite Hb0X.
+			            claim HclXeq: closure_of X T X = X.
+			            { exact (closure_of_space X T HT). }
+			            rewrite HclXeq.
+			            exact (Subq_ref X).
+			        - assume Hb0neX: b0 <> X.
+			          admit. (** FAIL **) }
 			      apply HexU.
 			      let U. assume HU_conj.
 			      claim HU12: (U :e T /\ x :e U) /\ U c= b0.
