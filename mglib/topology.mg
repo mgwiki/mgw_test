@@ -76789,340 +76789,376 @@ Theorem product_topology_full_Hausdorff_axiom : forall I Xi:set,
   Hausdorff_spaces_family I Xi ->
   Hausdorff_space (product_space I Xi) (product_topology_full I Xi).
 let I Xi.
-assume Hfam: Hausdorff_spaces_family I Xi.
-prove topology_on (product_space I Xi) (product_topology_full I Xi) /\
-  forall f g:set, f :e product_space I Xi -> g :e product_space I Xi -> f <> g ->
-    exists U V:set, U :e product_topology_full I Xi /\ V :e product_topology_full I Xi /\
-      f :e U /\ g :e V /\ U :/\: V = Empty.
+assume HHfam: Hausdorff_spaces_family I Xi.
+prove Hausdorff_space (product_space I Xi) (product_topology_full I Xi).
 apply andI.
 - (** topology_on **)
   apply (xm (I = Empty)).
-  * assume HI0: I = Empty.
-    rewrite HI0.
-    claim HTdef: product_topology_full Empty Xi = countable_product_topology_subbasis Empty Xi.
-    { reflexivity. }
-    rewrite HTdef.
+  * assume HIeq: I = Empty.
+    rewrite HIeq.
+    (** product_topology_full Empty Xi is definitionally countable_product_topology_subbasis Empty Xi **)
     exact (countable_product_topology_subbasis_empty_is_topology Xi).
-  * assume HIne: ~(I = Empty).
-    claim HcompTop: forall i:set, i :e I ->
-      topology_on (product_component Xi i) (product_component_topology Xi i).
+  * assume HIne: I <> Empty.
+    claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
     { let i. assume HiI: i :e I.
       claim HHi: Hausdorff_space (product_component Xi i) (product_component_topology Xi i).
-      { exact (Hfam i HiI). }
-      exact (Hausdorff_space_topology (product_component Xi i) (product_component_topology Xi i) HHi). }
-    claim HSfull: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+      { exact (HHfam i HiI). }
+      claim HTi0: topology_on (product_component Xi i) (product_component_topology Xi i).
+      { exact (Hausdorff_space_topology (product_component Xi i) (product_component_topology Xi i) HHi). }
+      rewrite (product_component_def Xi i) at 1.
+      rewrite (product_component_topology_def Xi i) at 1.
+      exact HTi0. }
+    claim HSsub: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
     { exact (product_subbasis_full_subbasis_on I Xi HIne HcompTop). }
-    claim HTdef: product_topology_full I Xi =
-      generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi).
-    { reflexivity. }
-    rewrite HTdef.
-    exact (topology_from_subbasis_is_topology (product_space I Xi) (product_subbasis_full I Xi) HSfull).
-
-- (** Hausdorff separation **)
+    exact (topology_from_subbasis_is_topology (product_space I Xi) (product_subbasis_full I Xi) HSsub).
+- (** separation **)
   let f g.
-  assume HfX: f :e product_space I Xi.
-  assume HgX: g :e product_space I Xi.
+  assume Hf: f :e product_space I Xi.
+  assume Hg: g :e product_space I Xi.
   assume Hneq: f <> g.
-  prove exists U V:set, U :e product_topology_full I Xi /\ V :e product_topology_full I Xi /\
-    f :e U /\ g :e V /\ U :/\: V = Empty.
   apply (xm (I = Empty)).
-  * assume HI0: I = Empty.
-    (** In the empty product, product_space Empty Xi = {Empty}, so f=g, contradiction. **)
-	    claim HfS: f :e {Empty}.
-	    { rewrite <- (product_space_empty_index Xi).
-	      rewrite <- HI0.
-	      exact HfX. }
-	    claim HgS: g :e {Empty}.
-	    { rewrite <- (product_space_empty_index Xi).
-	      rewrite <- HI0.
-	      exact HgX. }
-    claim Hfeq: f = Empty.
-    { exact (SingE Empty f HfS). }
-	    claim Hgeq: g = Empty.
-	    { exact (SingE Empty g HgS). }
-	    apply FalseE.
-	    claim Hfg: f = g.
-	    { rewrite Hfeq.
-	      rewrite Hgeq.
-	      reflexivity. }
-	    exact (Hneq Hfg).
+  * assume HIeq: I = Empty.
+    (** Empty-index product is a singleton {Empty}, so distinct points are impossible **)
+    claim HfE: f :e product_space Empty Xi.
+    { rewrite <- HIeq.
+      exact Hf. }
+    claim HgE: g :e product_space Empty Xi.
+    { rewrite <- HIeq.
+      exact Hg. }
+    claim Hf0: f = Empty.
+    { claim HfSing: f :e {Empty}.
+      { prove f :e {Empty}.
+        rewrite <- (product_space_empty_index Xi).
+        exact HfE. }
+      exact (SingE Empty f HfSing). }
+    claim Hg0: g = Empty.
+    { claim HgSing: g :e {Empty}.
+      { prove g :e {Empty}.
+        rewrite <- (product_space_empty_index Xi).
+        exact HgE. }
+      exact (SingE Empty g HgSing). }
+    claim Heqfg: f = g.
+    { rewrite Hf0. rewrite Hg0. reflexivity. }
+    apply FalseE.
+    exact (Hneq Heqfg).
+  * assume HIne: I <> Empty.
+    (** Extract the product-space invariants for f and g **)
+    set Y := space_family_union I Xi.
+    claim HfPow: f :e Power (setprod I Y).
+    { exact (SepE1 (Power (setprod I Y))
+                   (fun f0:set =>
+                     total_function_on f0 I Y /\ functional_graph f0 /\
+                     forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i)
+                   f Hf). }
+    claim HgPow: g :e Power (setprod I Y).
+    { exact (SepE1 (Power (setprod I Y))
+                   (fun g0:set =>
+                     total_function_on g0 I Y /\ functional_graph g0 /\
+                     forall i:set, i :e I -> apply_fun g0 i :e space_family_set Xi i)
+                   g Hg). }
+    claim HfSub: f c= (setprod I Y).
+    { exact (PowerE (setprod I Y) f HfPow). }
+    claim HgSub: g c= (setprod I Y).
+    { exact (PowerE (setprod I Y) g HgPow). }
+    claim HfProp: total_function_on f I Y /\ functional_graph f /\ forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i.
+    { exact (SepE2 (Power (setprod I Y))
+                   (fun f0:set =>
+                     total_function_on f0 I Y /\ functional_graph f0 /\
+                     forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i)
+                   f Hf). }
+    claim HgProp: total_function_on g I Y /\ functional_graph g /\ forall i:set, i :e I -> apply_fun g i :e space_family_set Xi i.
+    { exact (SepE2 (Power (setprod I Y))
+                   (fun g0:set =>
+                     total_function_on g0 I Y /\ functional_graph g0 /\
+                     forall i:set, i :e I -> apply_fun g0 i :e space_family_set Xi i)
+                   g Hg). }
+    claim HfCore: (total_function_on f I Y /\ functional_graph f).
+    { exact (andEL (total_function_on f I Y /\ functional_graph f)
+                   (forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i)
+                   HfProp). }
+    claim HgCore: (total_function_on g I Y /\ functional_graph g).
+    { exact (andEL (total_function_on g I Y /\ functional_graph g)
+                   (forall i:set, i :e I -> apply_fun g i :e space_family_set Xi i)
+                   HgProp). }
+    claim Hftot: total_function_on f I Y.
+    { exact (andEL (total_function_on f I Y) (functional_graph f) HfCore). }
+    claim Hfgraph: functional_graph f.
+    { exact (andER (total_function_on f I Y) (functional_graph f) HfCore). }
+    claim Hgtot: total_function_on g I Y.
+    { exact (andEL (total_function_on g I Y) (functional_graph g) HgCore). }
+    claim Hggraph: functional_graph g.
+    { exact (andER (total_function_on g I Y) (functional_graph g) HgCore). }
+    claim HfComp: forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i.
+    { exact (andER (total_function_on f I Y /\ functional_graph f)
+                   (forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i)
+                   HfProp). }
+    claim HgComp: forall i:set, i :e I -> apply_fun g i :e space_family_set Xi i.
+    { exact (andER (total_function_on g I Y /\ functional_graph g)
+                   (forall i:set, i :e I -> apply_fun g i :e space_family_set Xi i)
+                   HgProp). }
 
-  * assume HIne: ~(I = Empty).
-    set Tprod := product_topology_full I Xi.
-    set Uunion := space_family_union I Xi.
-    claim HcompTop: forall i:set, i :e I ->
-      topology_on (product_component Xi i) (product_component_topology Xi i).
-    { let i. assume HiI: i :e I.
-      claim HHi: Hausdorff_space (product_component Xi i) (product_component_topology Xi i).
-      { exact (Hfam i HiI). }
-      exact (Hausdorff_space_topology (product_component Xi i) (product_component_topology Xi i) HHi). }
-    claim HSfull: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
-    { exact (product_subbasis_full_subbasis_on I Xi HIne HcompTop). }
-
-    (** Find a coordinate where f and g differ. **)
-    claim Hexi: exists i:set, i :e I /\ apply_fun f i <> apply_fun g i.
+    (** Obtain a coordinate where f and g differ **)
+    claim HexDiff: exists i:set, i :e I /\ apply_fun f i <> apply_fun g i.
     { apply (xm (exists i:set, i :e I /\ apply_fun f i <> apply_fun g i)).
-      - assume H. exact H.
+      - assume Hex. exact Hex.
       - assume Hno.
-        (** Otherwise f and g are pointwise equal, hence equal as graphs, contradiction. **)
-        claim Hptw: forall i:set, i :e I -> apply_fun f i = apply_fun g i.
+        (** If all coordinates agree, then the graphs are equal **)
+        claim Hall: forall i:set, i :e I -> apply_fun f i = apply_fun g i.
         { let i. assume HiI: i :e I.
           apply (xm (apply_fun f i = apply_fun g i)).
-          - assume Heq. exact Heq.
-          - assume Hne.
-            apply FalseE.
+          + assume Heq. exact Heq.
+          + assume Hneqi.
+            prove False.
             apply Hno.
             witness i.
             apply andI.
-            + exact HiI.
-            + exact Hne. }
-        (** Extract totality and functionality and setprod-subset facts from product_space membership. **)
-        claim HfPow: f :e Power (setprod I Uunion).
-        { exact (SepE1 (Power (setprod I Uunion))
-                       (fun f0:set => total_function_on f0 I Uunion /\ functional_graph f0 /\
-                         forall i0:set, i0 :e I -> apply_fun f0 i0 :e product_component Xi i0)
-                       f HfX). }
-        claim HfProp: total_function_on f I Uunion /\ functional_graph f /\
-          forall i0:set, i0 :e I -> apply_fun f i0 :e product_component Xi i0.
-        { exact (SepE2 (Power (setprod I Uunion))
-                       (fun f0:set => total_function_on f0 I Uunion /\ functional_graph f0 /\
-                         forall i0:set, i0 :e I -> apply_fun f0 i0 :e product_component Xi i0)
-                       f HfX). }
-        claim HgPow: g :e Power (setprod I Uunion).
-        { exact (SepE1 (Power (setprod I Uunion))
-                       (fun f0:set => total_function_on f0 I Uunion /\ functional_graph f0 /\
-                         forall i0:set, i0 :e I -> apply_fun f0 i0 :e product_component Xi i0)
-                       g HgX). }
-        claim HgProp: total_function_on g I Uunion /\ functional_graph g /\
-          forall i0:set, i0 :e I -> apply_fun g i0 :e product_component Xi i0.
-        { exact (SepE2 (Power (setprod I Uunion))
-                       (fun f0:set => total_function_on f0 I Uunion /\ functional_graph f0 /\
-                         forall i0:set, i0 :e I -> apply_fun f0 i0 :e product_component Xi i0)
-                       g HgX). }
-        claim Hf12: total_function_on f I Uunion /\ functional_graph f.
-        { exact (andEL (total_function_on f I Uunion /\ functional_graph f)
-                       (forall i0:set, i0 :e I -> apply_fun f i0 :e product_component Xi i0)
-                       HfProp). }
-        claim Hftot: total_function_on f I Uunion.
-        { exact (andEL (total_function_on f I Uunion) (functional_graph f) Hf12). }
-        claim Hffun: functional_graph f.
-        { exact (andER (total_function_on f I Uunion) (functional_graph f) Hf12). }
-
-        claim Hg12: total_function_on g I Uunion /\ functional_graph g.
-        { exact (andEL (total_function_on g I Uunion /\ functional_graph g)
-                       (forall i0:set, i0 :e I -> apply_fun g i0 :e product_component Xi i0)
-                       HgProp). }
-        claim Hgtot: total_function_on g I Uunion.
-        { exact (andEL (total_function_on g I Uunion) (functional_graph g) Hg12). }
-        claim Hgfun: functional_graph g.
-        { exact (andER (total_function_on g I Uunion) (functional_graph g) Hg12). }
-        claim HfSub: f c= setprod I Uunion.
-        { exact (PowerE (setprod I Uunion) f HfPow). }
-        claim HgSub: g c= setprod I Uunion.
-        { exact (PowerE (setprod I Uunion) g HgPow). }
-        claim Hfg: f = g.
+            * exact HiI.
+            * exact Hneqi. }
+        claim Heqfg: f = g.
         { apply set_ext.
-          + let p. assume HpF: p :e f.
+          - let p. assume Hp: p :e f.
             prove p :e g.
-            claim HpProd: p :e setprod I Uunion.
-            { exact (HfSub p HpF). }
-            claim HpEta: p = (p 0, p 1).
-            { exact (setprod_eta I Uunion p HpProd). }
-            claim Hp0I: (p 0) :e I.
-            { exact (ap0_Sigma I (fun _ : set => Uunion) p HpProd). }
-            claim HpPairF: (p 0, p 1) :e f.
-            { rewrite <- HpEta.
-              exact HpF. }
-            claim Hfval: apply_fun f (p 0) = (p 1).
-            { exact (functional_graph_apply_fun_eq f (p 0) (p 1) Hffun HpPairF). }
-            claim Hgval: apply_fun g (p 0) = (p 1).
-            { rewrite <- (Hptw (p 0) Hp0I).
-              exact Hfval. }
-            claim HpG0: (p 0, apply_fun g (p 0)) :e g.
-            { exact (total_function_on_apply_fun_in_graph g I Uunion (p 0) Hgtot Hp0I). }
-            claim HpPairG: (p 0, p 1) :e g.
-            { rewrite <- Hgval.
-              exact HpG0. }
-            rewrite HpEta.
-            exact HpPairG.
-          + let p. assume HpG: p :e g.
+            claim HpProd: p :e (setprod I Y).
+            { exact (HfSub p Hp). }
+            claim Hexxy: exists i :e I, exists y :e Y, p = pair i y.
+            { exact (Sigma_E I (fun _ : set => Y) p HpProd). }
+            apply Hexxy.
+            let i. assume HiRest.
+            claim HiI: i :e I.
+            { exact (andEL (i :e I) (exists y :e Y, p = pair i y) HiRest). }
+            claim Hexy: exists y :e Y, p = pair i y.
+            { exact (andER (i :e I) (exists y :e Y, p = pair i y) HiRest). }
+            apply Hexy.
+            let y. assume HyRest.
+            claim HyY: y :e Y.
+            { exact (andEL (y :e Y) (p = pair i y) HyRest). }
+            claim Hpeq: p = pair i y.
+            { exact (andER (y :e Y) (p = pair i y) HyRest). }
+            claim Hpeq2: p = (i,y).
+            { rewrite Hpeq. rewrite (tuple_pair i y). reflexivity. }
+            claim HpairF: (i,y) :e f.
+            { rewrite <- Hpeq2. exact Hp. }
+            claim HappFy: apply_fun f i = y.
+            { exact (functional_graph_apply_fun_eq f i y Hfgraph HpairF). }
+            claim HappEq: apply_fun g i = y.
+            { rewrite <- (Hall i HiI). exact HappFy. }
+            claim HpairG0: (i, apply_fun g i) :e g.
+            { exact (total_function_on_apply_fun_in_graph g I Y i Hgtot HiI). }
+            prove (i,y) :e g.
+            rewrite <- HappEq.
+            exact HpairG0.
+          - let p. assume Hp: p :e g.
             prove p :e f.
-            claim HpProd: p :e setprod I Uunion.
-            { exact (HgSub p HpG). }
-            claim HpEta: p = (p 0, p 1).
-            { exact (setprod_eta I Uunion p HpProd). }
-            claim Hp0I: (p 0) :e I.
-            { exact (ap0_Sigma I (fun _ : set => Uunion) p HpProd). }
-            claim HpPairG: (p 0, p 1) :e g.
-            { rewrite <- HpEta.
-              exact HpG. }
-            claim Hgval: apply_fun g (p 0) = (p 1).
-            { exact (functional_graph_apply_fun_eq g (p 0) (p 1) Hgfun HpPairG). }
-            claim Hfval: apply_fun f (p 0) = (p 1).
-            { rewrite <- Hgval.
-              rewrite (Hptw (p 0) Hp0I).
-              reflexivity. }
-            claim HpF0: (p 0, apply_fun f (p 0)) :e f.
-            { exact (total_function_on_apply_fun_in_graph f I Uunion (p 0) Hftot Hp0I). }
-            claim HpPairF: (p 0, p 1) :e f.
-            { rewrite <- Hfval.
-              exact HpF0. }
-            rewrite HpEta.
-            exact HpPairF. }
+            claim HpProd: p :e (setprod I Y).
+            { exact (HgSub p Hp). }
+            claim Hexxy: exists i :e I, exists y :e Y, p = pair i y.
+            { exact (Sigma_E I (fun _ : set => Y) p HpProd). }
+            apply Hexxy.
+            let i. assume HiRest.
+            claim HiI: i :e I.
+            { exact (andEL (i :e I) (exists y :e Y, p = pair i y) HiRest). }
+            claim Hexy: exists y :e Y, p = pair i y.
+            { exact (andER (i :e I) (exists y :e Y, p = pair i y) HiRest). }
+            apply Hexy.
+            let y. assume HyRest.
+            claim HyY: y :e Y.
+            { exact (andEL (y :e Y) (p = pair i y) HyRest). }
+            claim Hpeq: p = pair i y.
+            { exact (andER (y :e Y) (p = pair i y) HyRest). }
+            claim Hpeq2: p = (i,y).
+            { rewrite Hpeq. rewrite (tuple_pair i y). reflexivity. }
+            claim HpairG: (i,y) :e g.
+            { rewrite <- Hpeq2. exact Hp. }
+            claim HappGy: apply_fun g i = y.
+            { exact (functional_graph_apply_fun_eq g i y Hggraph HpairG). }
+            claim HappEq: apply_fun f i = y.
+            { rewrite (Hall i HiI). exact HappGy. }
+            claim HpairF0: (i, apply_fun f i) :e f.
+            { exact (total_function_on_apply_fun_in_graph f I Y i Hftot HiI). }
+            prove (i,y) :e f.
+            rewrite <- HappEq.
+            exact HpairF0. }
         apply FalseE.
-        exact (Hneq Hfg). }
-    apply Hexi.
-    let i. assume Hiprop: i :e I /\ apply_fun f i <> apply_fun g i.
+        exact (Hneq Heqfg). }
+
+    apply HexDiff.
+    let i. assume HiParts.
     claim HiI: i :e I.
-    { exact (andEL (i :e I) (apply_fun f i <> apply_fun g i) Hiprop). }
-    claim Hnefg: apply_fun f i <> apply_fun g i.
-    { exact (andER (i :e I) (apply_fun f i <> apply_fun g i) Hiprop). }
+    { exact (andEL (i :e I) (apply_fun f i <> apply_fun g i) HiParts). }
+    claim Hdiff: apply_fun f i <> apply_fun g i.
+    { exact (andER (i :e I) (apply_fun f i <> apply_fun g i) HiParts). }
 
-    (** Values lie in the i-th component space. **)
-    claim HfProp: total_function_on f I Uunion /\ functional_graph f /\
-      forall i0:set, i0 :e I -> apply_fun f i0 :e product_component Xi i0.
-    { exact (SepE2 (Power (setprod I Uunion))
-                   (fun f0:set => total_function_on f0 I Uunion /\ functional_graph f0 /\
-                     forall i0:set, i0 :e I -> apply_fun f0 i0 :e product_component Xi i0)
-                   f HfX). }
-    claim HgProp: total_function_on g I Uunion /\ functional_graph g /\
-      forall i0:set, i0 :e I -> apply_fun g i0 :e product_component Xi i0.
-    { exact (SepE2 (Power (setprod I Uunion))
-                   (fun f0:set => total_function_on f0 I Uunion /\ functional_graph f0 /\
-                     forall i0:set, i0 :e I -> apply_fun f0 i0 :e product_component Xi i0)
-                   g HgX). }
-    claim Hfcomp: forall i0:set, i0 :e I -> apply_fun f i0 :e product_component Xi i0.
-    { exact (andER (total_function_on f I Uunion /\ functional_graph f)
-                   (forall i0:set, i0 :e I -> apply_fun f i0 :e product_component Xi i0)
-                   HfProp). }
-    claim Hgcomp: forall i0:set, i0 :e I -> apply_fun g i0 :e product_component Xi i0.
-    { exact (andER (total_function_on g I Uunion /\ functional_graph g)
-                   (forall i0:set, i0 :e I -> apply_fun g i0 :e product_component Xi i0)
-                   HgProp). }
-    claim Hfi: apply_fun f i :e product_component Xi i.
-    { exact (Hfcomp i HiI). }
-    claim Hgi: apply_fun g i :e product_component Xi i.
-    { exact (Hgcomp i HiI). }
-
-    (** Separate the values in the i-th factor and lift to cylinders. **)
+    (** Get Hausdorff separation in the i-th factor **)
     claim HHi: Hausdorff_space (product_component Xi i) (product_component_topology Xi i).
-    { exact (Hfam i HiI). }
-    claim Hsep: exists U V:set, U :e product_component_topology Xi i /\ V :e product_component_topology Xi i /\
-      apply_fun f i :e U /\ apply_fun g i :e V /\ U :/\: V = Empty.
+    { exact (HHfam i HiI). }
+    claim Hx1: apply_fun f i :e product_component Xi i.
+    { rewrite (product_component_def Xi i).
+      exact (HfComp i HiI). }
+    claim Hx2: apply_fun g i :e product_component Xi i.
+    { rewrite (product_component_def Xi i).
+      exact (HgComp i HiI). }
+    claim HexUV: exists Ui Vi:set,
+      Ui :e product_component_topology Xi i /\
+      Vi :e product_component_topology Xi i /\
+      apply_fun f i :e Ui /\ apply_fun g i :e Vi /\ Ui :/\: Vi = Empty.
     { exact (Hausdorff_space_separation (product_component Xi i) (product_component_topology Xi i)
-              (apply_fun f i) (apply_fun g i) HHi Hfi Hgi Hnefg). }
-    apply Hsep.
-    let Ui. assume HexVi.
-    apply HexVi.
-    let Vi. assume HUV.
-    claim H1234: (((Ui :e product_component_topology Xi i /\ Vi :e product_component_topology Xi i) /\ apply_fun f i :e Ui) /\ apply_fun g i :e Vi).
-    { exact (andEL ((((Ui :e product_component_topology Xi i /\ Vi :e product_component_topology Xi i) /\ apply_fun f i :e Ui) /\ apply_fun g i :e Vi))
-                   (Ui :/\: Vi = Empty)
-                   HUV). }
-    claim Hdisj: Ui :/\: Vi = Empty.
-    { exact (andER ((((Ui :e product_component_topology Xi i /\ Vi :e product_component_topology Xi i) /\ apply_fun f i :e Ui) /\ apply_fun g i :e Vi))
-                   (Ui :/\: Vi = Empty)
-                   HUV). }
-    claim H123: (Ui :e product_component_topology Xi i /\ Vi :e product_component_topology Xi i) /\ apply_fun f i :e Ui.
-    { exact (andEL ((Ui :e product_component_topology Xi i /\ Vi :e product_component_topology Xi i) /\ apply_fun f i :e Ui)
-                   (apply_fun g i :e Vi)
-                   H1234). }
-    claim H4: apply_fun g i :e Vi.
-    { exact (andER ((Ui :e product_component_topology Xi i /\ Vi :e product_component_topology Xi i) /\ apply_fun f i :e Ui)
-                   (apply_fun g i :e Vi)
-                   H1234). }
-    claim H12: Ui :e product_component_topology Xi i /\ Vi :e product_component_topology Xi i.
-    { exact (andEL (Ui :e product_component_topology Xi i /\ Vi :e product_component_topology Xi i)
-                   (apply_fun f i :e Ui)
-                   H123). }
-    claim H3: apply_fun f i :e Ui.
-    { exact (andER (Ui :e product_component_topology Xi i /\ Vi :e product_component_topology Xi i)
-                   (apply_fun f i :e Ui)
-                   H123). }
-    claim HUiT: Ui :e product_component_topology Xi i.
-    { exact (andEL (Ui :e product_component_topology Xi i) (Vi :e product_component_topology Xi i) H12). }
-    claim HViT: Vi :e product_component_topology Xi i.
-    { exact (andER (Ui :e product_component_topology Xi i) (Vi :e product_component_topology Xi i) H12). }
-    (** Package in the product topology. **)
+              (apply_fun f i) (apply_fun g i) HHi Hx1 Hx2 Hdiff). }
+    set Ui := Eps_i (fun U0:set =>
+      exists V0:set,
+        U0 :e product_component_topology Xi i /\
+        V0 :e product_component_topology Xi i /\
+        apply_fun f i :e U0 /\ apply_fun g i :e V0 /\ U0 :/\: V0 = Empty).
+    claim HUiProp: exists V0:set,
+      Ui :e product_component_topology Xi i /\
+      V0 :e product_component_topology Xi i /\
+      apply_fun f i :e Ui /\ apply_fun g i :e V0 /\ Ui :/\: V0 = Empty.
+    { exact (Eps_i_ex (fun U0:set =>
+              exists V0:set,
+                U0 :e product_component_topology Xi i /\
+                V0 :e product_component_topology Xi i /\
+                apply_fun f i :e U0 /\ apply_fun g i :e V0 /\ U0 :/\: V0 = Empty) HexUV). }
+    set Vi := Eps_i (fun V0:set =>
+      Ui :e product_component_topology Xi i /\
+      V0 :e product_component_topology Xi i /\
+      apply_fun f i :e Ui /\ apply_fun g i :e V0 /\ Ui :/\: V0 = Empty).
+    claim HViProp: Ui :e product_component_topology Xi i /\
+      Vi :e product_component_topology Xi i /\
+      apply_fun f i :e Ui /\ apply_fun g i :e Vi /\ Ui :/\: Vi = Empty.
+    { exact (Eps_i_ex (fun V0:set =>
+              Ui :e product_component_topology Xi i /\
+              V0 :e product_component_topology Xi i /\
+              apply_fun f i :e Ui /\ apply_fun g i :e V0 /\ Ui :/\: V0 = Empty) HUiProp). }
+
+    claim HUiOpen0: Ui :e product_component_topology Xi i.
+    { exact (andEL (Ui :e product_component_topology Xi i)
+                   (Vi :e product_component_topology Xi i /\ apply_fun f i :e Ui /\ apply_fun g i :e Vi /\ Ui :/\: Vi = Empty)
+                   HViProp). }
+    claim Hrest1: Vi :e product_component_topology Xi i /\ apply_fun f i :e Ui /\ apply_fun g i :e Vi /\ Ui :/\: Vi = Empty.
+    { exact (andER (Ui :e product_component_topology Xi i)
+                   (Vi :e product_component_topology Xi i /\ apply_fun f i :e Ui /\ apply_fun g i :e Vi /\ Ui :/\: Vi = Empty)
+                   HViProp). }
+    claim HViOpen0: Vi :e product_component_topology Xi i.
+    { exact (andEL (Vi :e product_component_topology Xi i)
+                   (apply_fun f i :e Ui /\ apply_fun g i :e Vi /\ Ui :/\: Vi = Empty)
+                   Hrest1). }
+    claim Hrest2: apply_fun f i :e Ui /\ apply_fun g i :e Vi /\ Ui :/\: Vi = Empty.
+    { exact (andER (Vi :e product_component_topology Xi i)
+                   (apply_fun f i :e Ui /\ apply_fun g i :e Vi /\ Ui :/\: Vi = Empty)
+                   Hrest1). }
+    claim HfiUi: apply_fun f i :e Ui.
+    { exact (andEL (apply_fun f i :e Ui)
+                   (apply_fun g i :e Vi /\ Ui :/\: Vi = Empty)
+                   Hrest2). }
+    claim Hrest3: apply_fun g i :e Vi /\ Ui :/\: Vi = Empty.
+    { exact (andER (apply_fun f i :e Ui)
+                   (apply_fun g i :e Vi /\ Ui :/\: Vi = Empty)
+                   Hrest2). }
+    claim HgiVi: apply_fun g i :e Vi.
+    { exact (andEL (apply_fun g i :e Vi) (Ui :/\: Vi = Empty) Hrest3). }
+    claim HdisjUiVi: Ui :/\: Vi = Empty.
+    { exact (andER (apply_fun g i :e Vi) (Ui :/\: Vi = Empty) Hrest3). }
+
+    (** Convert Ui, Vi openness to the space_family_topology used in product_subbasis_full **)
+    claim HUiOpen: Ui :e space_family_topology Xi i.
+    { prove Ui :e (apply_fun Xi i) 1.
+      - rewrite <- (product_component_topology_def Xi i).
+        exact HUiOpen0. }
+    claim HViOpen: Vi :e space_family_topology Xi i.
+    { prove Vi :e (apply_fun Xi i) 1.
+      - rewrite <- (product_component_topology_def Xi i).
+        exact HViOpen0. }
+
     set Ucyl := product_cylinder I Xi i Ui.
     set Vcyl := product_cylinder I Xi i Vi.
-    witness Ucyl.
-    witness Vcyl.
-    apply andI.
-    - (** Ucyl open and Vcyl open **)
-      apply andI.
-	      + (** Ucyl ∈ Tprod **)
-	        claim HUsub: Ucyl :e product_subbasis_full I Xi.
-	        { set F := (fun j:set => {product_cylinder I Xi j U0|U0 :e product_component_topology Xi j}).
-	          prove Ucyl :e (\/_ j :e I, F j).
-	          exact (famunionI I F i Ucyl HiI
-	                 (ReplI (product_component_topology Xi i) (fun U0:set => product_cylinder I Xi i U0) Ui HUiT)). }
-	        exact (subbasis_elem_open_in_generated_from_subbasis (product_space I Xi) (product_subbasis_full I Xi) Ucyl HSfull HUsub).
-	      + (** Vcyl ∈ Tprod **)
-	        claim HVsub: Vcyl :e product_subbasis_full I Xi.
-	        { set F := (fun j:set => {product_cylinder I Xi j U0|U0 :e product_component_topology Xi j}).
-	          prove Vcyl :e (\/_ j :e I, F j).
-	          exact (famunionI I F i Vcyl HiI
-	                 (ReplI (product_component_topology Xi i) (fun U0:set => product_cylinder I Xi i U0) Vi HViT)). }
-	        exact (subbasis_elem_open_in_generated_from_subbasis (product_space I Xi) (product_subbasis_full I Xi) Vcyl HSfull HVsub).
-    - (** f∈Ucyl, g∈Vcyl, and disjointness **)
-      apply andI.
-      + (** f ∈ Ucyl /\ g ∈ Vcyl **)
-        apply andI.
-        * prove f :e Ucyl.
-          apply (SepI (product_space I Xi) (fun h:set => i :e I /\ Ui :e product_component_topology Xi i /\ apply_fun h i :e Ui)).
-          -- exact HfX.
-          -- apply andI.
-             ++ exact HiI.
-             ++ apply andI.
-                ** exact (andEL (Ui :e product_component_topology Xi i)
-                                (V :e product_component_topology Xi i /\ (apply_fun f i :e Ui /\ (apply_fun g i :e V /\ U :/\: V = Empty)))
-                                HUiProp).
-                ** exact (andEL (apply_fun f i :e Ui)
-                                (apply_fun g i :e V /\ U :/\: V = Empty)
-                                (andER (V :e product_component_topology Xi i)
-                                       (apply_fun f i :e Ui /\ (apply_fun g i :e V /\ U :/\: V = Empty))
-                                       HUiProp)).
-        * prove g :e Vcyl.
-          apply (SepI (product_space I Xi) (fun h:set => i :e I /\ Vi :e product_component_topology Xi i /\ apply_fun h i :e Vi)).
-          -- exact HgX.
-          -- apply andI.
-             ++ exact HiI.
-             ++ apply andI.
-                ** exact (andEL (V :e product_component_topology Xi i)
-                                (apply_fun f i :e Ui /\ (apply_fun g i :e V /\ U :/\: V = Empty))
-                                HViProp).
-                ** exact (andEL (apply_fun g i :e V)
-                                (U :/\: V = Empty)
-                                (andER (apply_fun f i :e Ui)
-                                       (apply_fun g i :e V /\ U :/\: V = Empty)
-                                       HViProp)).
-      + (** Ucyl ∩ Vcyl = Empty **)
-        apply Empty_Subq_eq.
-        let h. assume Hh: h :e Ucyl :/\: Vcyl.
+
+    (** Subbasis membership **)
+    claim HUsub: Ucyl :e product_subbasis_full I Xi.
+    { claim HUrepl: Ucyl :e {product_cylinder I Xi i U0|U0 :e space_family_topology Xi i}.
+      { exact (ReplI (space_family_topology Xi i) (fun U0:set => product_cylinder I Xi i U0) Ui HUiOpen). }
+      exact (famunionI I (fun j:set => {product_cylinder I Xi j U0|U0 :e space_family_topology Xi j}) i Ucyl HiI HUrepl). }
+    claim HVsub: Vcyl :e product_subbasis_full I Xi.
+    { claim HVrepl: Vcyl :e {product_cylinder I Xi i U0|U0 :e space_family_topology Xi i}.
+      { exact (ReplI (space_family_topology Xi i) (fun U0:set => product_cylinder I Xi i U0) Vi HViOpen). }
+      exact (famunionI I (fun j:set => {product_cylinder I Xi j U0|U0 :e space_family_topology Xi j}) i Vcyl HiI HVrepl). }
+
+    (** Subbasis_on for openness of cylinder sets **)
+    claim HcompTop: forall j:set, j :e I -> topology_on (space_family_set Xi j) (space_family_topology Xi j).
+    { let j. assume HjI: j :e I.
+      claim HHj: Hausdorff_space (product_component Xi j) (product_component_topology Xi j).
+      { exact (HHfam j HjI). }
+      claim HTj0: topology_on (product_component Xi j) (product_component_topology Xi j).
+      { exact (Hausdorff_space_topology (product_component Xi j) (product_component_topology Xi j) HHj). }
+      rewrite (product_component_def Xi j) at 1.
+      rewrite (product_component_topology_def Xi j) at 1.
+      exact HTj0. }
+    claim HSsub: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+    { exact (product_subbasis_full_subbasis_on I Xi HIne HcompTop). }
+    claim HUopen: Ucyl :e product_topology_full I Xi.
+    { exact (subbasis_elem_open_in_generated_from_subbasis (product_space I Xi) (product_subbasis_full I Xi) Ucyl HSsub HUsub). }
+    claim HVopen: Vcyl :e product_topology_full I Xi.
+    { exact (subbasis_elem_open_in_generated_from_subbasis (product_space I Xi) (product_subbasis_full I Xi) Vcyl HSsub HVsub). }
+
+    (** Membership of f and g in their cylinders **)
+    claim HfInUcyl: f :e Ucyl.
+    { apply SepI.
+      - exact Hf.
+      - apply andI.
+        + exact HiI.
+        + apply andI.
+          * exact HUiOpen.
+          * exact HfiUi. }
+    claim HgInVcyl: g :e Vcyl.
+    { apply SepI.
+      - exact Hg.
+      - apply andI.
+        + exact HiI.
+        + apply andI.
+          * exact HViOpen.
+          * exact HgiVi. }
+
+    (** Disjointness of cylinder sets **)
+    claim HcylDisj: Ucyl :/\: Vcyl = Empty.
+    { apply set_ext.
+      - let h. assume Hh: h :e Ucyl :/\: Vcyl.
         prove h :e Empty.
         claim HhU: h :e Ucyl.
         { exact (binintersectE1 Ucyl Vcyl h Hh). }
         claim HhV: h :e Vcyl.
         { exact (binintersectE2 Ucyl Vcyl h Hh). }
-        claim HhUprop: i :e I /\ Ui :e product_component_topology Xi i /\ apply_fun h i :e Ui.
-        { exact (SepE2 (product_space I Xi) (fun h0:set => i :e I /\ Ui :e product_component_topology Xi i /\ apply_fun h0 i :e Ui) h HhU). }
-        claim HhVprop: i :e I /\ V :e product_component_topology Xi i /\ apply_fun h i :e V.
-        { exact (SepE2 (product_space I Xi) (fun h0:set => i :e I /\ Vi :e product_component_topology Xi i /\ apply_fun h0 i :e Vi) h HhV). }
-        claim HhiU: apply_fun h i :e Ui.
-        { exact (andER (i :e I) (Ui :e product_component_topology Xi i /\ apply_fun h i :e Ui) HhUprop
-                       (andER (Ui :e product_component_topology Xi i) (apply_fun h i :e Ui)
-                              (andER (i :e I) (Ui :e product_component_topology Xi i /\ apply_fun h i :e Ui) HhUprop))). }
-        claim HhiV: apply_fun h i :e V.
-        { exact (andER (i :e I) (V :e product_component_topology Xi i /\ apply_fun h i :e V) HhVprop
-                       (andER (V :e product_component_topology Xi i) (apply_fun h i :e V)
-                              (andER (i :e I) (V :e product_component_topology Xi i /\ apply_fun h i :e V) HhVprop))). }
-        claim HhiUV: apply_fun h i :e Ui :/\: V.
-        { exact (binintersectI Ui V (apply_fun h i) HhiU HhiV). }
-        claim HEmpty: apply_fun h i :e Empty.
-        { rewrite <- Hdisj. exact HhiUV. }
+        claim HhUi: apply_fun h i :e Ui.
+        { exact (andER (i :e I /\ Ui :e space_family_topology Xi i)
+                       (apply_fun h i :e Ui)
+                       (SepE2 (product_space I Xi)
+                              (fun h0:set => i :e I /\ Ui :e space_family_topology Xi i /\ apply_fun h0 i :e Ui)
+                              h HhU)). }
+        claim HhVi: apply_fun h i :e Vi.
+        { exact (andER (i :e I /\ Vi :e space_family_topology Xi i)
+                       (apply_fun h i :e Vi)
+                       (SepE2 (product_space I Xi)
+                              (fun h0:set => i :e I /\ Vi :e space_family_topology Xi i /\ apply_fun h0 i :e Vi)
+                              h HhV)). }
+        claim HhIn: apply_fun h i :e Ui :/\: Vi.
+        { exact (binintersectI Ui Vi (apply_fun h i) HhUi HhVi). }
+        claim Hempty: apply_fun h i :e Empty.
+        { rewrite <- HdisjUiVi. exact HhIn. }
+        exact (EmptyE (apply_fun h i) Hempty).
+      - let h. assume Hh: h :e Empty.
+        prove h :e Ucyl :/\: Vcyl.
         apply FalseE.
-        exact (EmptyE (apply_fun h i) HEmpty False).
+        exact (EmptyE h Hh False). }
+
+    (** Final Hausdorff witnesses **)
+    witness Ucyl.
+    witness Vcyl.
+    apply andI.
+    - apply andI.
+      + apply andI.
+        * apply andI.
+          -- exact HUopen.
+          -- exact HVopen.
+        * exact HfInUcyl.
+      + exact HgInVcyl.
+    - exact HcylDisj.
 Qed.
 
 Theorem product_topology_full_regular_axiom : forall I Xi:set,
