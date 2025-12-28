@@ -64553,12 +64553,14 @@ Qed.
 
 (** from exercises after §29: nets as functions from directed sets **) 
 (** LATEX VERSION: A net is a function from a directed set into a space. **)
+(** FIXED: net_on now requires total_function_on and functional_graph, so apply_fun behaves as the unique graph value and not just an Eps choice. **)
 Definition net_on : set -> prop := fun net =>
   exists J X:set, directed_set J /\ total_function_on net J X /\ functional_graph net.
 
 (** from exercises after §29: subnet definition placeholder **)
 (** LATEX VERSION: Definition of subnet (Exercise, placeholder formalization). **)
 (** FIXED: Cofinality condition is forall j:e J, exists k0:e K, forall k:e K with k0<=k, we have j<=phi(k); old version forced phi to be constant; also subnet values satisfy sub(k) = net(phi(k)) in the same codomain X. **) 
+(** FIXED: subnet_of now requires total_function_on and functional_graph for net, sub, and phi, avoiding apply_fun ambiguity on these maps. **)
 (** SUSPICIOUS DEFINITION: subnet_of packages shared codomain and cofinal map; relating it to net_converges may require an index-alignment lemma since net_converges hides the index set. **) 
 Definition subnet_of : set -> set -> prop := fun net sub =>
   exists J K X phi:set,
@@ -64856,7 +64858,7 @@ Qed.
 
 (** from exercises after §29: accumulation point of a net **)
 (** LATEX VERSION: An accumulation point of a net means every neighborhood contains infinitely many (or cofinal) net points; placeholder formalization. **)
-(** FIXED: accumulation_point_of_net now includes Tx, quantifies only over U:e Tx with x:e U, and uses cofinality forall j0:e J, exists j>=j0 with net(j):e U; net is a function into X. **) 
+(** FIXED: accumulation_point_of_net now includes Tx, quantifies only over U:e Tx with x:e U, and uses cofinality forall j0:e J, exists j>=j0 with net(j):e U; net is total_function_on into X with functional_graph. **) 
 (** SUSPICIOUS DEFINITION: Index comparison uses membership-based <= (j0 :e j \/ j0 = j), which is tailored to ordinal indices and may require alignment lemmas later. **) 
 Definition accumulation_point_of_net : set -> set -> set -> set -> prop := fun X Tx net x =>
   exists J:set, topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ x :e X /\
@@ -64866,7 +64868,7 @@ Definition accumulation_point_of_net : set -> set -> set -> set -> prop := fun X
 
 (** from exercises after §29: net convergence **)
 (** LATEX VERSION: A net converges to x if eventually in every neighborhood U of x. **)
-(** FIXED: net_converges uses eventuality: forall U:e Tx with x:e U, exists i0:e J such that forall i:e J with i0<=i (i0 :e i \/ i0 = i), we have net(i):e U; old version only required one index in each neighborhood. **) 
+(** FIXED: net_converges uses eventuality: forall U:e Tx with x:e U, exists i0:e J such that forall i:e J with i0<=i (i0 :e i \/ i0 = i), we have net(i):e U; net is total_function_on with functional_graph. **) 
 (** SUSPICIOUS DEFINITION: As above, this uses membership-based comparison on the index set; it is adequate for ordinal-indexed nets but may require extra axioms for arbitrary directed sets. **)
 Definition net_converges : set -> set -> set -> set -> prop := fun X Tx net x =>
   exists J:set, topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ x :e X /\
