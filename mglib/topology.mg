@@ -66983,7 +66983,247 @@ claim HfinFam: has_finite_subcover X Tx Fam.
 { exact (compact_space_subcover_property X Tx Hcomp Fam Hcover). }
 
 claim HnofinFam: ~(has_finite_subcover X Tx Fam).
-{ admit. (** FAIL **) }
+{ assume Hfin: has_finite_subcover X Tx Fam.
+  apply Hfin.
+  let G. assume HGpack: G c= Fam /\ finite G /\ X c= Union G.
+  claim HGleft: G c= Fam /\ finite G.
+  { exact (andEL (G c= Fam /\ finite G)
+                 (X c= Union G)
+                 HGpack). }
+  claim HGsub: G c= Fam.
+  { exact (andEL (G c= Fam)
+                 (finite G)
+                 HGleft). }
+  claim HGfin: finite G.
+  { exact (andER (G c= Fam)
+                 (finite G)
+                 HGleft). }
+  claim HGcov: X c= Union G.
+  { exact (andER (G c= Fam /\ finite G)
+                 (X c= Union G)
+                 HGpack). }
+
+  claim Hpo: partial_order_on J le.
+  { claim Hleft: J <> Empty /\ partial_order_on J le.
+    { exact (andEL (J <> Empty /\ partial_order_on J le)
+                   (forall a b:set, a :e J -> b :e J ->
+                     exists c:set, c :e J /\ (a,c) :e le /\ (b,c) :e le)
+                   HdirJ). }
+    exact (andER (J <> Empty) (partial_order_on J le) Hleft). }
+
+  claim Hrefl: forall a:set, a :e J -> (a,a) :e le.
+  { let a. assume HaJ: a :e J.
+    apply Hpo. assume Hleft1 Htrans0.
+    apply Hleft1. assume Hleft2 Hantisym0.
+    apply Hleft2. assume Hrel0 Hrefl0.
+    exact (Hrefl0 a HaJ). }
+
+  claim Htrans: forall a b c:set, a :e J -> b :e J -> c :e J -> (a,b) :e le -> (b,c) :e le -> (a,c) :e le.
+  { apply Hpo. assume Hleft1 Htrans0.
+    exact Htrans0. }
+
+  claim Hpickpair_prop: forall x:set, x :e X ->
+    pickpair x :e setprod Tx J /\ x :e ((pickpair x) 0) /\ ((pickpair x) 1) :e J /\
+      forall j:set, j :e J -> (((pickpair x) 1),j) :e le -> ~(apply_fun net j :e ((pickpair x) 0)).
+  { let x. assume HxX: x :e X.
+    claim HexUJ: exists U j0:set, Bad x U j0.
+    { exact (HexBad x HxX). }
+    apply HexUJ.
+    let U. assume Hexj0: exists j0:set, Bad x U j0.
+    apply Hexj0.
+    let j0. assume Hbad: Bad x U j0.
+    claim Hbadleft: (U :e Tx /\ x :e U) /\ j0 :e J.
+    { exact (andEL ((U :e Tx /\ x :e U) /\ j0 :e J)
+                   (forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U))
+                   Hbad). }
+    claim HbadUx: U :e Tx /\ x :e U.
+    { exact (andEL (U :e Tx /\ x :e U) (j0 :e J) Hbadleft). }
+    claim HUTx: U :e Tx.
+    { exact (andEL (U :e Tx) (x :e U) HbadUx). }
+    claim HxU: x :e U.
+    { exact (andER (U :e Tx) (x :e U) HbadUx). }
+    claim Hj0J: j0 :e J.
+    { exact (andER (U :e Tx /\ x :e U) (j0 :e J) Hbadleft). }
+    claim Htail:
+      forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U).
+    { exact (andER ((U :e Tx /\ x :e U) /\ j0 :e J)
+                   (forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U))
+                   Hbad). }
+    claim Hp:
+      (((U,j0) :e setprod Tx J /\ x :e ((U,j0) 0)) /\ ((U,j0) 1) :e J) /\
+        forall j:set, j :e J -> (((U,j0) 1),j) :e le -> ~(apply_fun net j :e ((U,j0) 0)).
+    { apply andI.
+      - apply andI.
+        + apply andI.
+          * exact (tuple_2_setprod_by_pair_Sigma Tx J U j0 HUTx Hj0J).
+          * rewrite (tuple_2_0_eq U j0).
+            exact HxU.
+        + rewrite (tuple_2_1_eq U j0).
+          exact Hj0J.
+      - let j. assume HjJ: j :e J. assume Hj0j: (((U,j0) 1),j) :e le.
+        prove ~(apply_fun net j :e ((U,j0) 0)).
+        claim Hj0j': (j0,j) :e le.
+        { rewrite <- (tuple_2_1_eq U j0).
+          exact Hj0j. }
+        rewrite (tuple_2_0_eq U j0).
+        exact (Htail j HjJ Hj0j'). }
+    exact (Eps_i_ax
+             (fun p:set =>
+               p :e setprod Tx J /\ x :e (p 0) /\ (p 1) :e J /\
+                 forall j:set, j :e J -> ((p 1),j) :e le -> ~(apply_fun net j :e (p 0)))
+             (U,j0)
+             Hp). }
+
+  set P := (fun G0:set =>
+    G0 c= Fam ->
+    exists j0:set, j0 :e J /\
+      forall U:set, U :e G0 ->
+        forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U)).
+
+  claim HP0: P Empty.
+  { assume _: Empty c= Fam.
+    claim HJne: J <> Empty.
+    { exact (directed_set_nonempty J le HdirJ). }
+    apply (nonempty_has_element J HJne).
+    let j0. assume Hj0J: j0 :e J.
+    witness j0.
+    apply andI.
+    - exact Hj0J.
+    - let U. assume HU: U :e Empty.
+      apply FalseE.
+      exact ((EmptyE U) HU). }
+
+  claim HPstep: forall X0 y:set, finite X0 -> y /:e X0 -> P X0 -> P (X0 :\/: {y}).
+  { let X0 y.
+    assume HX0fin: finite X0.
+    assume HyX0: y /:e X0.
+    assume IH: P X0.
+    assume HsubAll: (X0 :\/: {y}) c= Fam.
+    claim HX0sub: X0 c= Fam.
+    { let U. assume HU: U :e X0.
+      claim HUb: U :e (X0 :\/: {y}).
+      { exact (binunionI1 X0 {y} U HU). }
+      exact (HsubAll U HUb). }
+    claim HyFam: y :e Fam.
+    { claim Hyin: y :e (X0 :\/: {y}).
+      { exact (binunionI2 X0 {y} y (SingI y)). }
+      exact (HsubAll y Hyin). }
+    apply (IH HX0sub).
+    let jX. assume HjXpack:
+      jX :e J /\
+        forall U:set, U :e X0 ->
+          forall j:set, j :e J -> (jX,j) :e le -> ~(apply_fun net j :e U).
+    claim HjXJ: jX :e J.
+    { exact (andEL (jX :e J)
+                   (forall U:set, U :e X0 -> forall j:set, j :e J -> (jX,j) :e le -> ~(apply_fun net j :e U))
+                   HjXpack). }
+    claim HtailX0:
+      forall U:set, U :e X0 -> forall j:set, j :e J -> (jX,j) :e le -> ~(apply_fun net j :e U).
+    { exact (andER (jX :e J)
+                   (forall U:set, U :e X0 -> forall j:set, j :e J -> (jX,j) :e le -> ~(apply_fun net j :e U))
+                   HjXpack). }
+    claim Hexx: exists x:set, x :e X /\ y = ((pickpair x) 0).
+    { exact (ReplE X (fun x0:set => ((pickpair x0) 0)) y HyFam). }
+    apply Hexx.
+    let x. assume Hxpack: x :e X /\ y = ((pickpair x) 0).
+    claim HxX: x :e X.
+    { exact (andEL (x :e X) (y = ((pickpair x) 0)) Hxpack). }
+    claim HyEq: y = ((pickpair x) 0).
+    { exact (andER (x :e X) (y = ((pickpair x) 0)) Hxpack). }
+    set jY := ((pickpair x) 1).
+    claim HjYJ: jY :e J.
+    { claim Hpa: pickpair x :e setprod Tx J /\ x :e ((pickpair x) 0) /\ jY :e J /\
+        forall j:set, j :e J -> (jY,j) :e le -> ~(apply_fun net j :e ((pickpair x) 0)).
+      { exact (Hpickpair_prop x HxX). }
+      claim HpaL: (pickpair x :e setprod Tx J /\ x :e ((pickpair x) 0)) /\ jY :e J.
+      { exact (andEL ((pickpair x :e setprod Tx J /\ x :e ((pickpair x) 0)) /\ jY :e J)
+                     (forall j:set, j :e J -> (jY,j) :e le -> ~(apply_fun net j :e ((pickpair x) 0)))
+                     Hpa). }
+      exact (andER (pickpair x :e setprod Tx J /\ x :e ((pickpair x) 0)) (jY :e J) HpaL). }
+    claim HtailY:
+      forall j:set, j :e J -> (jY,j) :e le -> ~(apply_fun net j :e y).
+    { let j. assume HjJ: j :e J. assume HjYj: (jY,j) :e le.
+      prove ~(apply_fun net j :e y).
+      rewrite HyEq.
+      claim Hpa: pickpair x :e setprod Tx J /\ x :e ((pickpair x) 0) /\ jY :e J /\
+        forall j0:set, j0 :e J -> (jY,j0) :e le -> ~(apply_fun net j0 :e ((pickpair x) 0)).
+      { exact (Hpickpair_prop x HxX). }
+      exact ((andER ((pickpair x :e setprod Tx J /\ x :e ((pickpair x) 0)) /\ jY :e J)
+                    (forall j0:set, j0 :e J -> (jY,j0) :e le -> ~(apply_fun net j0 :e ((pickpair x) 0)))
+                    Hpa) j HjJ HjYj). }
+    claim Hexub: exists j0:set, j0 :e J /\ (jX,j0) :e le /\ (jY,j0) :e le.
+    { exact (directed_set_upper_bound_property J le HdirJ jX jY HjXJ HjYJ). }
+    apply Hexub.
+    let j0. assume Hj0pack: j0 :e J /\ (jX,j0) :e le /\ (jY,j0) :e le.
+    claim Hj0left: j0 :e J /\ (jX,j0) :e le.
+    { exact (andEL (j0 :e J /\ (jX,j0) :e le)
+                   ((jY,j0) :e le)
+                   Hj0pack). }
+    claim Hj0J: j0 :e J.
+    { exact (andEL (j0 :e J)
+                   ((jX,j0) :e le)
+                   Hj0left). }
+    claim HjXj0: (jX,j0) :e le.
+    { exact (andER (j0 :e J)
+                   ((jX,j0) :e le)
+                   Hj0left). }
+    claim HjYj0: (jY,j0) :e le.
+    { exact (andER (j0 :e J /\ (jX,j0) :e le)
+                   ((jY,j0) :e le)
+                   Hj0pack). }
+    witness j0.
+    apply andI.
+    - exact Hj0J.
+    - let U. assume HU: U :e (X0 :\/: {y}).
+      prove forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U).
+      apply (binunionE' X0 {y} U
+               (forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U))).
+      + assume HUx0: U :e X0.
+        let j. assume HjJ: j :e J. assume Hj0j: (j0,j) :e le.
+        prove ~(apply_fun net j :e U).
+        claim HjXj: (jX,j) :e le.
+        { exact (Htrans jX j0 j HjXJ Hj0J HjJ HjXj0 Hj0j). }
+        exact (HtailX0 U HUx0 j HjJ HjXj).
+      + assume HUy: U :e {y}.
+        claim HUeq: U = y.
+        { exact (SingE y U HUy). }
+        rewrite HUeq.
+        let j. assume HjJ: j :e J. assume Hj0j: (j0,j) :e le.
+        prove ~(apply_fun net j :e y).
+        claim HjYj: (jY,j) :e le.
+        { exact (Htrans jY j0 j HjYJ Hj0J HjJ HjYj0 Hj0j). }
+        exact (HtailY j HjJ HjYj).
+      + exact HU. }
+
+  claim HPG: P G.
+  { exact (finite_ind P HP0 HPstep G HGfin). }
+
+  apply (HPG HGsub).
+  let j0. assume Hj0pack: j0 :e J /\
+    forall U:set, U :e G -> forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U).
+  claim Hj0J: j0 :e J.
+  { exact (andEL (j0 :e J)
+                 (forall U:set, U :e G -> forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U))
+                 Hj0pack). }
+  claim HavoidG:
+    forall U:set, U :e G -> forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U).
+  { exact (andER (j0 :e J)
+                 (forall U:set, U :e G -> forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U))
+                 Hj0pack). }
+
+  claim HnotUnion: ~(apply_fun net j0 :e Union G).
+  { assume Hmem: apply_fun net j0 :e Union G.
+    apply (UnionE G (apply_fun net j0) Hmem).
+    let U. assume HU: apply_fun net j0 :e U /\ U :e G.
+    claim HUin: U :e G.
+    { exact (andER (apply_fun net j0 :e U) (U :e G) HU). }
+    claim Hrefl0: (j0,j0) :e le.
+    { exact (Hrefl j0 Hj0J). }
+    exact ((HavoidG U HUin j0 Hj0J Hrefl0) (andEL (apply_fun net j0 :e U) (U :e G) HU)). }
+
+  claim Hnetj0X: apply_fun net j0 :e X.
+  { exact (total_function_on_apply_fun_in_Y net J X j0 Htotnet Hj0J). }
+  exact (HnotUnion (HGcov (apply_fun net j0) Hnetj0X)). }
 
 exact (HnofinFam HfinFam).
 Qed.
