@@ -66638,9 +66638,34 @@ assume HdirJ Htotnet.
 claim HTx: topology_on X Tx.
 { exact (compact_space_topology X Tx Hcomp). }
 
-(** Package the data in the shape demanded by accumulation_point_of_net. **)
-(** The existence of x0 and the cofinal neighborhood property will be proved later. **)
-admit. (** FAIL **)
+(** Standard proof strategy: if there is no accumulation point, pick for each x :e X an open neighborhood Ux and a threshold index jx such that the tail of the net avoids Ux; the chosen neighborhoods form an open cover with no finite subcover, contradicting compactness. **)
+apply dneg.
+assume Hno: ~(exists x0:set, accumulation_point_of_net X Tx net x0).
+prove False.
+
+set Bad := (fun x U j0:set =>
+  U :e Tx /\ x :e U /\ j0 :e J /\ forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U)).
+
+claim HexBad: forall x:set, x :e X -> exists U j0:set, Bad x U j0.
+{ admit. (** FAIL **) }
+
+set pickpair := (fun x:set =>
+  Eps_i (fun p:set =>
+    p :e setprod Tx J /\ x :e (p 0) /\ (p 1) :e J /\
+      forall j:set, j :e J -> ((p 1),j) :e le -> ~(apply_fun net j :e (p 0)))).
+
+set Fam := {(pickpair x) 0|x :e X}.
+
+claim Hcover: open_cover_of X Tx Fam.
+{ admit. (** FAIL **) }
+
+claim HfinFam: has_finite_subcover X Tx Fam.
+{ exact (compact_space_subcover_property X Tx Hcomp Fam Hcover). }
+
+claim HnofinFam: ~(has_finite_subcover X Tx Fam).
+{ admit. (** FAIL **) }
+
+exact (HnofinFam HfinFam).
 Qed.
 
 (** helper: a cover with no finite subcover yields a net with no convergent subnet **)
@@ -66660,7 +66685,25 @@ prove exists net0:set,
   net_in_space X net0 /\
   (forall sub x:set, subnet_of net0 sub -> ~(net_converges X Tx sub x)).
 (** Standard construction: index set = finite subcollections of Fam ordered by inclusion; net chooses a point not covered by the finite union. **)
-admit. (** FAIL **)
+
+set J := finite_subcollections Fam.
+set le := {p :e setprod J J | (p 0) c= (p 1)}.
+
+set pickx := (fun F:set =>
+  Eps_i (fun x:set => x :e X /\ ~(x :e Union F))).
+
+set net0 := graph J pickx.
+
+claim Hnet0: net_in_space X net0.
+{ admit. (** FAIL **) }
+
+claim Hnosub: forall sub x:set, subnet_of net0 sub -> ~(net_converges X Tx sub x).
+{ admit. (** FAIL **) }
+
+witness net0.
+apply andI.
+- exact Hnet0.
+- exact Hnosub.
 Qed.
 
 Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
