@@ -79611,6 +79611,147 @@ apply (xm (exists i:set, i :e I /\ apply_fun x1 i <> apply_fun x2 i)).
 exact (Hneq Heq).
 Qed.
 
+(** Helper: closure of a cylinder stays inside the cylinder of the coordinate closure. **)
+Theorem closure_of_product_cylinder_sub : forall I Xi i V U:set,
+  I <> Empty ->
+  (forall j:set, j :e I -> topology_on (space_family_set Xi j) (space_family_topology Xi j)) ->
+  i :e I ->
+  V :e space_family_topology Xi i ->
+  U :e space_family_topology Xi i ->
+  closure_of (space_family_set Xi i) (space_family_topology Xi i) V c= U ->
+  closure_of (product_space I Xi) (product_topology_full I Xi) (product_cylinder I Xi i V)
+    c= product_cylinder I Xi i U.
+let I Xi i V U.
+assume HIne: I <> Empty.
+assume HcompTop: forall j:set, j :e I -> topology_on (space_family_set Xi j) (space_family_topology Xi j).
+assume HiI: i :e I.
+assume HV: V :e space_family_topology Xi i.
+assume HU: U :e space_family_topology Xi i.
+assume HclVsubU: closure_of (space_family_set Xi i) (space_family_topology Xi i) V c= U.
+set X := product_space I Xi.
+set T := product_topology_full I Xi.
+set S := product_subbasis_full I Xi.
+prove closure_of X T (product_cylinder I Xi i V) c= product_cylinder I Xi i U.
+claim HSsub: subbasis_on X S.
+{ exact (product_subbasis_full_subbasis_on I Xi HIne HcompTop). }
+claim HT: topology_on X T.
+{ exact (topology_from_subbasis_is_topology X S HSsub). }
+let f. assume Hfcl: f :e closure_of X T (product_cylinder I Xi i V).
+prove f :e product_cylinder I Xi i U.
+claim HfX: f :e X.
+{ exact (closure_in_space X T (product_cylinder I Xi i V) HT f Hfcl). }
+apply (xm (apply_fun f i :e U)).
+- assume HfiU: apply_fun f i :e U.
+  claim HdefCylU: product_cylinder I Xi i U =
+    {g :e X | i :e I /\ U :e space_family_topology Xi i /\ apply_fun g i :e U}.
+  { reflexivity. }
+  rewrite HdefCylU.
+  claim Hprop: i :e I /\ U :e space_family_topology Xi i /\ apply_fun f i :e U.
+  { apply andI.
+    - apply andI.
+      + exact HiI.
+      + exact HU.
+    - exact HfiU. }
+  exact (SepI X (fun g:set => i :e I /\ U :e space_family_topology Xi i /\ apply_fun g i :e U) f HfX Hprop).
+- assume HfiNotU: apply_fun f i /:e U.
+  apply FalseE.
+  claim Htopi: topology_on (space_family_set Xi i) (space_family_topology Xi i).
+  { exact (HcompTop i HiI). }
+  claim HTsub: (space_family_topology Xi i) c= Power (space_family_set Xi i).
+  { exact (topology_subset_axiom (space_family_set Xi i) (space_family_topology Xi i) Htopi). }
+	  claim HVsubXi: V c= space_family_set Xi i.
+	  { exact (PowerE (space_family_set Xi i) V (HTsub V HV)). }
+	  claim Hfprop:
+	    total_function_on f I (space_family_union I Xi) /\ functional_graph f /\
+	    forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j.
+	  { exact (SepE2 (Power (setprod I (space_family_union I Xi)))
+	                 (fun g : set =>
+	                   total_function_on g I (space_family_union I Xi) /\ functional_graph g /\
+	                   forall j:set, j :e I -> apply_fun g j :e space_family_set Xi j)
+	                 f HfX). }
+	  claim Hcoords: forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j.
+	  { exact (andER (total_function_on f I (space_family_union I Xi) /\ functional_graph f)
+	                 (forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j)
+	                 Hfprop). }
+	  claim Hxcoord: apply_fun f i :e space_family_set Xi i.
+	  { exact (Hcoords i HiI). }
+  claim HfiNotClV: apply_fun f i /:e closure_of (space_family_set Xi i) (space_family_topology Xi i) V.
+  { assume HfiClV: apply_fun f i :e closure_of (space_family_set Xi i) (space_family_topology Xi i) V.
+    exact (HfiNotU (HclVsubU (apply_fun f i) HfiClV)). }
+  claim HexW: exists W:set,
+    W :e space_family_topology Xi i /\ apply_fun f i :e W /\ W :/\: V = Empty.
+  { exact (not_in_closure_has_disjoint_open (space_family_set Xi i) (space_family_topology Xi i) V (apply_fun f i)
+             Htopi HVsubXi Hxcoord HfiNotClV). }
+	  apply HexW.
+	  let W. assume HWconj.
+	  claim HWcore: W :e space_family_topology Xi i /\ apply_fun f i :e W.
+	  { exact (andEL (W :e space_family_topology Xi i /\ apply_fun f i :e W)
+	                 (W :/\: V = Empty)
+	                 HWconj). }
+	  claim HWdisj: W :/\: V = Empty.
+	  { exact (andER (W :e space_family_topology Xi i /\ apply_fun f i :e W)
+	                 (W :/\: V = Empty)
+	                 HWconj). }
+	  claim HW0: W :e space_family_topology Xi i.
+	  { exact (andEL (W :e space_family_topology Xi i) (apply_fun f i :e W) HWcore). }
+	  claim HfiW: apply_fun f i :e W.
+	  { exact (andER (W :e space_family_topology Xi i) (apply_fun f i :e W) HWcore). }
+  set N := product_cylinder I Xi i W.
+  claim HNsub: N :e S.
+  { prove N :e (\/_ j :e I, {product_cylinder I Xi j U0|U0 :e space_family_topology Xi j}).
+    apply (famunionI I (fun j:set => {product_cylinder I Xi j U0|U0 :e space_family_topology Xi j}) i N HiI).
+    exact (ReplI (space_family_topology Xi i) (fun U0:set => product_cylinder I Xi i U0) W HW0). }
+  claim HNopen: N :e T.
+  { exact (subbasis_elem_open_in_generated_from_subbasis X S N HSsub HNsub). }
+  claim HfN: f :e N.
+  { claim HdefCylW: N =
+      {g :e X | i :e I /\ W :e space_family_topology Xi i /\ apply_fun g i :e W}.
+    { reflexivity. }
+    rewrite HdefCylW.
+    claim HpropW: i :e I /\ W :e space_family_topology Xi i /\ apply_fun f i :e W.
+    { apply andI.
+      - apply andI.
+        + exact HiI.
+        + exact HW0.
+      - exact HfiW. }
+    exact (SepI X (fun g:set => i :e I /\ W :e space_family_topology Xi i /\ apply_fun g i :e W) f
+               HfX HpropW). }
+  claim Hcliff_prod:
+    f :e closure_of X T (product_cylinder I Xi i V) <->
+      (forall O :e T, f :e O -> O :/\: product_cylinder I Xi i V <> Empty).
+  { exact (closure_characterization X T (product_cylinder I Xi i V) f HT HfX). }
+  claim HallO: forall O :e T, f :e O -> O :/\: product_cylinder I Xi i V <> Empty.
+  { exact (iffEL (f :e closure_of X T (product_cylinder I Xi i V))
+                 (forall O :e T, f :e O -> O :/\: product_cylinder I Xi i V <> Empty)
+                 Hcliff_prod Hfcl). }
+  claim Hcontr: N :/\: product_cylinder I Xi i V <> Empty.
+  { exact (HallO N HNopen HfN). }
+  claim HNintEmpty: N :/\: product_cylinder I Xi i V = Empty.
+  { apply Empty_Subq_eq.
+    let z. assume Hz: z :e N :/\: product_cylinder I Xi i V.
+    prove z :e Empty.
+    claim HzN: z :e N.
+    { exact (binintersectE1 N (product_cylinder I Xi i V) z Hz). }
+    claim HzV: z :e product_cylinder I Xi i V.
+    { exact (binintersectE2 N (product_cylinder I Xi i V) z Hz). }
+    claim HzNprop: i :e I /\ W :e space_family_topology Xi i /\ apply_fun z i :e W.
+    { exact (SepE2 X (fun g:set => i :e I /\ W :e space_family_topology Xi i /\ apply_fun g i :e W) z HzN). }
+    claim HzVprop: i :e I /\ V :e space_family_topology Xi i /\ apply_fun z i :e V.
+    { exact (SepE2 X (fun g:set => i :e I /\ V :e space_family_topology Xi i /\ apply_fun g i :e V) z HzV). }
+    claim HziW: apply_fun z i :e W.
+    { exact (andER (i :e I /\ W :e space_family_topology Xi i) (apply_fun z i :e W) HzNprop). }
+    claim HziV: apply_fun z i :e V.
+    { exact (andER (i :e I /\ V :e space_family_topology Xi i) (apply_fun z i :e V) HzVprop). }
+    claim HziWV: apply_fun z i :e W :/\: V.
+    { exact (binintersectI W V (apply_fun z i) HziW HziV). }
+	    claim HziE: apply_fun z i :e Empty.
+	    { rewrite <- HWdisj.
+	      exact HziWV. }
+	    apply FalseE.
+	    exact (EmptyE (apply_fun z i) HziE). }
+  exact (Hcontr HNintEmpty).
+Qed.
+
 (** from §31 Theorem 31.2 (products): Hausdorff part **) 
 (** LATEX VERSION: Hausdorff/regular properties preserved under subspaces and products (with factorwise assumptions). **)
 Theorem product_topology_full_Hausdorff_axiom : forall I Xi:set,
