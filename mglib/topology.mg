@@ -64958,11 +64958,7 @@ Theorem net_converges_implies_exists_net_converges_on : forall X Tx net x:set,
   net_converges X Tx net x -> exists J:set, net_converges_on X Tx net J x.
 let X Tx net x.
 assume H: net_converges X Tx net x.
-apply H.
-let J.
-assume HJ.
-witness J.
-exact HJ.
+exact H.
 Qed.
 
 (** helper: convergent nets have accumulation points at the limit **)
