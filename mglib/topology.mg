@@ -64737,7 +64737,87 @@ assume Hnettot: total_function_on net J X.
 assume Hnetgraph: functional_graph net.
 assume Hnetdom: graph_domain_subset net J.
 prove subnet_of net net.
-admit. (** FAIL **)
+prove exists J0 leJ0 K0 leK0 X0 phi0:set,
+  directed_set J0 leJ0 /\ directed_set K0 leK0 /\
+  total_function_on net J0 X0 /\ functional_graph net /\
+  total_function_on net K0 X0 /\ functional_graph net /\
+  total_function_on phi0 K0 J0 /\ functional_graph phi0 /\
+  graph_domain_subset net J0 /\ graph_domain_subset net K0 /\ graph_domain_subset phi0 K0 /\
+  (forall i j:set, i :e K0 -> j :e K0 -> (i,j) :e leK0 ->
+    (apply_fun phi0 i, apply_fun phi0 j) :e leJ0) /\
+  (forall j:set, j :e J0 -> exists k:set, k :e K0 /\ (j, apply_fun phi0 k) :e leJ0) /\
+  (forall k:set, k :e K0 -> apply_fun net k = apply_fun net (apply_fun phi0 k)).
+witness J.
+witness le.
+witness J.
+witness le.
+witness X.
+witness {(y,y) | y :e J}.
+prove directed_set J le /\ directed_set J le /\
+  total_function_on net J X /\ functional_graph net /\
+  total_function_on net J X /\ functional_graph net /\
+  total_function_on {(y,y) | y :e J} J J /\ functional_graph {(y,y) | y :e J} /\
+  graph_domain_subset net J /\ graph_domain_subset net J /\ graph_domain_subset {(y,y) | y :e J} J /\
+  (forall i j:set, i :e J -> j :e J -> (i,j) :e le ->
+    (apply_fun {(y,y) | y :e J} i, apply_fun {(y,y) | y :e J} j) :e le) /\
+  (forall j:set, j :e J -> exists k:set, k :e J /\ (j, apply_fun {(y,y) | y :e J} k) :e le) /\
+  (forall k:set, k :e J ->
+    apply_fun net k = apply_fun net (apply_fun {(y,y) | y :e J} k)).
+(** unpack reflexivity on J from directed_set **)
+apply HdirJ. assume Hleft Hdirprop.
+apply Hleft. assume HJne Hpo.
+apply Hpo. assume Habc Htrans.
+apply Habc. assume Hab Hantisym.
+apply Hab. assume Hrel Hrefl.
+(** build the left-associated conjunction chain from the right **)
+apply andI.
+- apply andI.
+  - apply andI.
+    - apply andI.
+      - apply andI.
+        - apply andI.
+          - apply andI.
+            - apply andI.
+              - apply andI.
+                - apply andI.
+                  - apply andI.
+                    - apply andI.
+                      - apply andI.
+                        - exact HdirJ.
+                        - exact HdirJ.
+                      - exact Hnettot.
+                    - exact Hnetgraph.
+                  - exact Hnettot.
+                - exact Hnetgraph.
+              - exact (identity_total_function_on J).
+            - exact (functional_graph_graph J (fun y:set => y)).
+          - exact Hnetdom.
+        - exact Hnetdom.
+      - exact (graph_domain_subset_graph J (fun y:set => y)).
+    - (** monotone of the identity map **)
+      let i j.
+      assume HiJ: i :e J.
+      assume HjJ: j :e J.
+      assume Hij: (i,j) :e le.
+      prove (apply_fun {(y,y) | y :e J} i, apply_fun {(y,y) | y :e J} j) :e le.
+      rewrite (identity_function_apply J i HiJ).
+      rewrite (identity_function_apply J j HjJ).
+      exact Hij.
+  - (** cofinality of the identity map **)
+    let j.
+    assume HjJ: j :e J.
+    prove exists k:set, k :e J /\ (j, apply_fun {(y,y) | y :e J} k) :e le.
+    witness j.
+    apply andI.
+    * exact HjJ.
+    * rewrite (identity_function_apply J j HjJ).
+      exact (Hrefl j HjJ).
+- (** pointwise equality net(k) = net(phi(k)) **)
+  let k.
+  assume HkJ: k :e J.
+  prove apply_fun net k = apply_fun net (apply_fun {(y,y) | y :e J} k).
+  rewrite (identity_function_apply J k HkJ).
+  reflexivity.
 Qed.
 
 (** helper: if net_on net then subnet_of net net **)
@@ -64745,7 +64825,23 @@ Qed.
 Theorem subnet_of_refl : forall net:set, net_on net -> subnet_of net net.
 let net. assume Hnet: net_on net.
 prove subnet_of net net.
-admit. (** FAIL **)
+claim Hex: exists J le X:set,
+  directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
+{ exact Hnet. }
+apply Hex.
+let J.
+assume Hex1.
+apply Hex1.
+let le.
+assume Hex2.
+apply Hex2.
+let X.
+assume Hall.
+(** unpack the 4-way conjunction in net_on (left-associative) **)
+apply Hall. assume Hleft Hdom.
+apply Hleft. assume Hleft2 Hgraph.
+apply Hleft2. assume Hdir Htot.
+exact (subnet_of_refl_witnessed J le X net Hdir Htot Hgraph Hdom).
 Qed.
 
 (** from exercises after §29: accumulation point of a net **)
