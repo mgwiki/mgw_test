@@ -7863,98 +7863,90 @@ prove countable_complement_topology X c= Power X
 /\ X :e countable_complement_topology X
 /\ (forall UFam :e Power (countable_complement_topology X), Union UFam :e countable_complement_topology X)
 /\ (forall U :e countable_complement_topology X, forall V :e countable_complement_topology X, U :/\: V :e countable_complement_topology X).
-apply andI.
-- prove (countable_complement_topology X c= Power X /\ Empty :e countable_complement_topology X) /\ X :e countable_complement_topology X /\ (forall UFam :e Power (countable_complement_topology X), Union UFam :e countable_complement_topology X).
-  apply andI.
-  * prove countable_complement_topology X c= Power X /\ Empty :e countable_complement_topology X /\ X :e countable_complement_topology X.
-    apply andI.
-    { prove countable_complement_topology X c= Power X /\ Empty :e countable_complement_topology X.
-      apply andI.
-      - let U. assume HU: U :e countable_complement_topology X.
-        exact (SepE1 (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) U HU).
-      - exact HEmptyOpen.
+apply and5I.
+- let U. assume HU: U :e countable_complement_topology X.
+  exact (SepE1 (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) U HU).
+- exact HEmptyOpen.
+- claim Hdiff_empty : X :\: X = Empty.
+  { apply Empty_Subq_eq.
+    let x. assume Hx.
+    claim HxX : x :e X.
+    { exact (setminusE1 X X x Hx). }
+    claim Hxnot : x /:e X.
+    { exact (setminusE2 X X x Hx). }
+    apply FalseE.
+    exact (Hxnot HxX).
+  }
+  claim HcountDiff : countable (X :\: X).
+  { rewrite Hdiff_empty. exact countable_Empty. }
+  exact (SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty)
+              X (Self_In_Power X)
+              (orIL (countable (X :\: X)) (X = Empty) HcountDiff)).
+- prove forall UFam :e Power (countable_complement_topology X), Union UFam :e countable_complement_topology X.
+  let UFam. assume Hfam: UFam :e Power (countable_complement_topology X).
+  claim Hsub : UFam c= countable_complement_topology X.
+  { exact (PowerE (countable_complement_topology X) UFam Hfam). }
+  apply xm (exists U:set, U :e UFam /\ countable (X :\: U)).
+  - assume Hex: exists U:set, U :e UFam /\ countable (X :\: U).
+    claim HUnionInPower : Union UFam :e Power X.
+    { apply PowerI X (Union UFam).
+      let x. assume HxUnion.
+      apply UnionE_impred UFam x HxUnion.
+      let U. assume HxU HUin.
+      claim HUinPow : U :e Power X.
+      { exact (SepE1 (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) U (Hsub U HUin)). }
+      claim HUsubX : U c= X.
+      { exact (PowerE X U HUinPow). }
+      exact (HUsubX x HxU).
     }
-    { claim Hdiff_empty : X :\: X = Empty.
-      { apply Empty_Subq_eq.
-        let x. assume Hx.
+    claim HUnionPred : countable (X :\: Union UFam) \/ Union UFam = Empty.
+    { apply orIL.
+      apply Hex.
+      let U. assume HUdata. apply HUdata.
+      assume HUin.
+      assume HUcount.
+      prove countable (X :\: Union UFam).
+      claim Hsubset : X :\: Union UFam c= X :\: U.
+      { let x. assume Hx.
         claim HxX : x :e X.
-        { exact (setminusE1 X X x Hx). }
-        claim Hxnot : x /:e X.
-        { exact (setminusE2 X X x Hx). }
-        apply FalseE.
-        exact (Hxnot HxX).
-      }
-      claim HcountDiff : countable (X :\: X).
-      { rewrite Hdiff_empty. exact countable_Empty. }
-      exact (SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty)
-                  X (Self_In_Power X)
-                  (orIL (countable (X :\: X)) (X = Empty) HcountDiff)).
-    }
-  * prove forall UFam :e Power (countable_complement_topology X), Union UFam :e countable_complement_topology X.
-    let UFam. assume Hfam: UFam :e Power (countable_complement_topology X).
-    claim Hsub : UFam c= countable_complement_topology X.
-    { exact (PowerE (countable_complement_topology X) UFam Hfam). }
-    apply xm (exists U:set, U :e UFam /\ countable (X :\: U)).
-    - assume Hex: exists U:set, U :e UFam /\ countable (X :\: U).
-      claim HUnionInPower : Union UFam :e Power X.
-      { apply PowerI X (Union UFam).
-        let x. assume HxUnion.
-        apply UnionE_impred UFam x HxUnion.
-        let U. assume HxU HUin.
-        claim HUinPow : U :e Power X.
-        { exact (SepE1 (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) U (Hsub U HUin)). }
-        claim HUsubX : U c= X.
-        { exact (PowerE X U HUinPow). }
-        exact (HUsubX x HxU).
-      }
-      claim HUnionPred : countable (X :\: Union UFam) \/ Union UFam = Empty.
-      { apply orIL.
-        apply Hex.
-        let U. assume HUdata. apply HUdata.
-        assume HUin.
-        assume HUcount.
-        prove countable (X :\: Union UFam).
-        claim Hsubset : X :\: Union UFam c= X :\: U.
-        { let x. assume Hx.
-          claim HxX : x :e X.
-          { exact (setminusE1 X (Union UFam) x Hx). }
-          claim HnotUnion : x /:e Union UFam.
-          { exact (setminusE2 X (Union UFam) x Hx). }
-          claim HnotU : x /:e U.
-          { assume HxU.
-            apply HnotUnion.
-            exact (UnionI UFam x U HxU HUin).
-          }
-          apply setminusI.
-          - exact HxX.
-          - exact HnotU.
+        { exact (setminusE1 X (Union UFam) x Hx). }
+        claim HnotUnion : x /:e Union UFam.
+        { exact (setminusE2 X (Union UFam) x Hx). }
+        claim HnotU : x /:e U.
+        { assume HxU.
+          apply HnotUnion.
+          exact (UnionI UFam x U HxU HUin).
         }
-        exact (Subq_countable (X :\: Union UFam) (X :\: U) HUcount Hsubset).
+        apply setminusI.
+        - exact HxX.
+        - exact HnotU.
       }
-      exact (SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty)
-                  (Union UFam) HUnionInPower HUnionPred).
-    - assume Hnone: ~exists U:set, U :e UFam /\ countable (X :\: U).
-      claim HUnionEmpty : Union UFam = Empty.
-      { apply Empty_Subq_eq.
-        let x. assume HxUnion.
-        apply UnionE_impred UFam x HxUnion.
-        let U. assume HxU HUin.
-        claim HUdata : countable (X :\: U) \/ U = Empty.
-        { exact (SepE2 (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) U (Hsub U HUin)). }
-        apply HUdata (x :e Empty).
-        - assume HUcount.
-          apply FalseE.
-          apply Hnone.
-          witness U.
-          apply andI.
-          + exact HUin.
-          + exact HUcount.
-        - assume HUempty : U = Empty.
-          rewrite <- HUempty.
-          exact HxU.
-      }
-      rewrite HUnionEmpty.
-      exact HEmptyOpen.
+      exact (Subq_countable (X :\: Union UFam) (X :\: U) HUcount Hsubset).
+    }
+    exact (SepI (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty)
+                (Union UFam) HUnionInPower HUnionPred).
+  - assume Hnone: ~exists U:set, U :e UFam /\ countable (X :\: U).
+    claim HUnionEmpty : Union UFam = Empty.
+    { apply Empty_Subq_eq.
+      let x. assume HxUnion.
+      apply UnionE_impred UFam x HxUnion.
+      let U. assume HxU HUin.
+      claim HUdata : countable (X :\: U) \/ U = Empty.
+      { exact (SepE2 (Power X) (fun U0 : set => countable (X :\: U0) \/ U0 = Empty) U (Hsub U HUin)). }
+      apply HUdata (x :e Empty).
+      - assume HUcount.
+        apply FalseE.
+        apply Hnone.
+        witness U.
+        apply andI.
+        + exact HUin.
+        + exact HUcount.
+      - assume HUempty : U = Empty.
+        rewrite <- HUempty.
+        exact HxU.
+    }
+    rewrite HUnionEmpty.
+    exact HEmptyOpen.
 - prove forall U :e countable_complement_topology X, forall V :e countable_complement_topology X, U :/\: V :e countable_complement_topology X.
   let U. assume HU: U :e countable_complement_topology X.
   let V. assume HV: V :e countable_complement_topology X.
