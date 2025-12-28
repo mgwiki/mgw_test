@@ -65895,20 +65895,10 @@ apply iffI.
                 { apply andI.
                   - exact HTx.
                   - exact Hdir0. }
-	                { (** total_function_on net0 J0 X **)
-	                  prove total_function_on net0 J0 X.
-	                  prove function_on net0 J0 X /\
-	                    forall j:set, j :e J0 -> exists y:set, y :e X /\ (j,y) :e net0.
-	                  apply andI.
-                  - prove function_on net0 J0 X.
-                    let j. assume Hj: j :e J0.
-                    rewrite (apply_fun_graph J0 (fun _:set => x) j Hj).
-                    exact HxX.
-                  - let j. assume Hj: j :e J0.
-                    witness x.
-                    apply andI.
-                    + exact HxX.
-                    + exact (ReplI J0 (fun a0:set => (a0,x)) j Hj). }
+                { (** total_function_on net0 J0 X **)
+                  claim Hgconst: forall j:set, j :e J0 -> (fun _:set => x) j :e X.
+                  { let j. assume Hj: j :e J0. exact HxX. }
+                  exact (total_function_on_graph J0 X (fun _:set => x) Hgconst). }
               + exact (functional_graph_graph J0 (fun _:set => x)).
             - exact (graph_domain_subset_graph J0 (fun _:set => x)).
           + exact HxX.
@@ -66421,27 +66411,14 @@ claim HdirK: directed_set K leK.
 
 (** sub is total_function_on K -> X **)
 claim Htotsub: total_function_on sub K X.
-{ prove total_function_on sub K X.
-  prove function_on sub K X /\ forall k:set, k :e K -> exists y:set, y :e X /\ (k,y) :e sub.
-  apply andI.
-  - let k. assume HkK: k :e K.
-    prove apply_fun sub k :e X.
+{ claim Hgsub: forall k:set, k :e K -> (fun k0:set => apply_fun net (k0 1)) k :e X.
+  { let k. assume HkK: k :e K.
     claim HkProd: k :e setprod N J.
     { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) k HkK). }
     claim Hk1J: k 1 :e J.
     { exact (ap1_Sigma N (fun _ : set => J) k HkProd). }
-    rewrite (apply_fun_graph K (fun k0:set => apply_fun net (k0 1)) k HkK).
-    exact (Hfunnet (k 1) Hk1J).
-  - let k. assume HkK: k :e K.
-    prove exists y:set, y :e X /\ (k,y) :e sub.
-    witness (apply_fun net (k 1)).
-    apply andI.
-    + claim HkProd: k :e setprod N J.
-      { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) k HkK). }
-      claim Hk1J: k 1 :e J.
-      { exact (ap1_Sigma N (fun _ : set => J) k HkProd). }
-      exact (Hfunnet (k 1) Hk1J).
-    + exact (ReplI K (fun k0:set => (k0, apply_fun net (k0 1))) k HkK). }
+    exact (Hfunnet (k 1) Hk1J). }
+  exact (total_function_on_graph K X (fun k0:set => apply_fun net (k0 1)) Hgsub). }
 
 claim Hgraphsub: functional_graph sub.
 { exact (functional_graph_graph K (fun k0:set => apply_fun net (k0 1))). }
@@ -66451,25 +66428,12 @@ claim Hdomsub: graph_domain_subset sub K.
 
 (** phi is total_function_on K -> J **)
 claim Htotphi: total_function_on phi K J.
-{ prove total_function_on phi K J.
-  prove function_on phi K J /\ forall k:set, k :e K -> exists y:set, y :e J /\ (k,y) :e phi.
-  apply andI.
-  - let k. assume HkK: k :e K.
-    prove apply_fun phi k :e J.
+{ claim Hgphi: forall k:set, k :e K -> (fun k0:set => k0 1) k :e J.
+  { let k. assume HkK: k :e K.
     claim HkProd: k :e setprod N J.
     { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) k HkK). }
-    claim Hk1J: k 1 :e J.
-    { exact (ap1_Sigma N (fun _ : set => J) k HkProd). }
-    rewrite (apply_fun_graph K (fun k0:set => k0 1) k HkK).
-    exact Hk1J.
-  - let k. assume HkK: k :e K.
-    prove exists y:set, y :e J /\ (k,y) :e phi.
-    witness (k 1).
-    apply andI.
-    + claim HkProd: k :e setprod N J.
-      { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) k HkK). }
-      exact (ap1_Sigma N (fun _ : set => J) k HkProd).
-    + exact (ReplI K (fun k0:set => (k0, k0 1)) k HkK). }
+    exact (ap1_Sigma N (fun _ : set => J) k HkProd). }
+  exact (total_function_on_graph K J (fun k0:set => k0 1) Hgphi). }
 
 claim Hgraphphi: functional_graph phi.
 { exact (functional_graph_graph K (fun k0:set => k0 1)). }
