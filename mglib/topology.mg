@@ -25285,6 +25285,8 @@ exact (lemma_topology_from_basis (setprod X Y) (product_subbasis X Tx Y Ty)
          (product_subbasis_is_basis X Tx Y Ty HTx HTy)).
 Qed.
 
+(** from §15: basis for a product from bases in the factors **)
+(** LATEX VERSION: If B and C are bases for X and Y, then {B×C} is a basis for X×Y in the product topology. **)
 (** Definition: product basis from two bases **)
 Definition product_basis_from : set -> set -> set :=
   fun Bx By => \/_ U :e Bx, {setprod U V | V :e By}.
