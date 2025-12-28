@@ -25951,8 +25951,10 @@ apply andI.
   reflexivity.
 Qed.
 
+(** from §18 Continuous Functions: functions as maps between sets **)
+(** LATEX VERSION: A function f:X→Y assigns to each x∈X a point f(x)∈Y; continuity is defined using inverse images of open sets. **)
 (** FIXED: Function-related definitions use ordered pairs, not UPair; functions are sets of ordered pairs (x,y), apply_fun looks up y with (x,y) ∈ f, identity is {(y,y)|y∈X}. **)
-(** SUSPICIOUS DEFINITION: `apply_fun` is based on `Eps_i`, so `function_on` only constrains the chosen values, not that `f` is a genuine functional graph; later results about unions/preimages may require extra axioms. Use `total_function_on` when totality is required. **)
+(** SUSPICIOUS DEFINITION: `apply_fun` is based on `Eps_i`, so `function_on` only constrains the chosen values, not that `f` is a genuine functional graph; later results about unions and preimages may require extra axioms. Use `total_function_on` when totality is required. **)
 Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => (x,y) :e f).
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod X Y)|function_on f X Y}.
