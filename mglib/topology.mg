@@ -64605,6 +64605,8 @@ Theorem total_function_on_graph : forall A Y:set, forall g:set->set,
 let A Y g.
 assume Hg: forall a:set, a :e A -> g a :e Y.
 prove total_function_on (graph A g) A Y.
+prove function_on (graph A g) A Y /\
+  forall a:set, a :e A -> exists y:set, y :e Y /\ (a,y) :e (graph A g).
 apply andI.
 - (** function_on **)
   prove function_on (graph A g) A Y.
