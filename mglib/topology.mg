@@ -76793,6 +76793,387 @@ rewrite Hbd.
 reflexivity.
 Qed.
 
+(** from §30 Example 4: L is closed in the Sorgenfrey plane **)
+(** LATEX VERSION: L is closed in the Sorgenfrey plane. **)
+Theorem Sorgenfrey_plane_L_closed :
+  closed_in (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology Sorgenfrey_plane_L.
+prove closed_in (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology Sorgenfrey_plane_L.
+set X := setprod Sorgenfrey_line Sorgenfrey_line.
+set Tx := Sorgenfrey_plane_topology.
+set L := Sorgenfrey_plane_L.
+set B := product_subbasis Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology.
+
+(** topology on X **)
+claim HTline: topology_on Sorgenfrey_line Sorgenfrey_topology.
+{ exact R_lower_limit_topology_is_topology. }
+claim HBasis: basis_on X B.
+{ exact (product_subbasis_is_basis Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology HTline HTline). }
+claim HTx: topology_on X Tx.
+{ exact (lemma_topology_from_basis X B HBasis). }
+
+(** L ⊂ X **)
+claim HLsub: L c= X.
+{ let p. assume HpL: p :e L.
+  claim Hex: exists x :e R, p = (x, minus_SNo x).
+  { exact (ReplE R (fun x0:set => (x0, minus_SNo x0)) p HpL). }
+  apply Hex.
+  let x. assume Hxpair: x :e R /\ p = (x, minus_SNo x).
+  claim HxR: x :e R.
+  { exact (andEL (x :e R) (p = (x, minus_SNo x)) Hxpair). }
+  claim Hpeq: p = (x, minus_SNo x).
+  { exact (andER (x :e R) (p = (x, minus_SNo x)) Hxpair). }
+  claim HmxR: (minus_SNo x) :e R.
+  { exact (real_minus_SNo x HxR). }
+  rewrite Hpeq.
+  exact (tuple_2_setprod_by_pair_Sigma R R x (minus_SNo x) HxR HmxR). }
+
+(** show U = X\\L is open in Tx **)
+set U := X :\: L.
+claim HUinT: U :e Tx.
+{ claim HTdef: Tx = generated_topology X B.
+  { reflexivity. }
+  rewrite HTdef.
+  prove U :e generated_topology X B.
+  claim HUpow: U :e Power X.
+  { exact (setminus_In_Power X L). }
+  claim HUloc: forall p :e U, exists b :e B, p :e b /\ b c= U.
+  { let p. assume HpU: p :e U.
+    claim HpX: p :e X.
+    { exact (setminusE1 X L p HpU). }
+    claim HpnotL: p /:e L.
+    { exact (setminusE2 X L p HpU). }
+    claim Hp0R: (p 0) :e R.
+    { exact (ap0_Sigma R (fun _ : set => R) p HpX). }
+    claim Hp1R: (p 1) :e R.
+    { exact (ap1_Sigma R (fun _ : set => R) p HpX). }
+    claim Hm0R: (minus_SNo (p 0)) :e R.
+    { exact (real_minus_SNo (p 0) Hp0R). }
+    claim Hp0S: SNo (p 0).
+    { exact (real_SNo (p 0) Hp0R). }
+    claim Hp1S: SNo (p 1).
+    { exact (real_SNo (p 1) Hp1R). }
+    claim Hm0S: SNo (minus_SNo (p 0)).
+    { exact (real_SNo (minus_SNo (p 0)) Hm0R). }
+
+    (** split by trichotomy on p1 vs -p0 **)
+    apply (SNoLt_trichotomy_or_impred (p 1) (minus_SNo (p 0)) Hp1S Hm0S (exists b :e B, p :e b /\ b c= U)).
+    - (** case p1 < -p0 **)
+      assume Hylt: (p 1) < (minus_SNo (p 0)).
+      claim HyltR: Rlt (p 1) (minus_SNo (p 0)).
+      { exact (RltI (p 1) (minus_SNo (p 0)) Hp1R Hm0R Hylt). }
+      claim Hexq: exists q :e rational_numbers, Rlt (p 1) q /\ Rlt q (minus_SNo (p 0)).
+      { exact (rational_dense_between_reals (p 1) (minus_SNo (p 0)) Hp1R Hm0R HyltR). }
+      apply Hexq.
+      let q. assume Hqpair.
+      claim HqQ: q :e rational_numbers.
+      { exact (andEL (q :e rational_numbers) (Rlt (p 1) q /\ Rlt q (minus_SNo (p 0))) Hqpair). }
+      claim Hqprop: Rlt (p 1) q /\ Rlt q (minus_SNo (p 0)).
+      { exact (andER (q :e rational_numbers) (Rlt (p 1) q /\ Rlt q (minus_SNo (p 0))) Hqpair). }
+      claim Hp1q: Rlt (p 1) q.
+      { exact (andEL (Rlt (p 1) q) (Rlt q (minus_SNo (p 0))) Hqprop). }
+      claim Hq_m0: Rlt q (minus_SNo (p 0)).
+      { exact (andER (Rlt (p 1) q) (Rlt q (minus_SNo (p 0))) Hqprop). }
+      claim HqR: q :e R.
+      { exact (rational_numbers_in_R q HqQ). }
+      claim HqS: SNo q.
+      { exact (real_SNo q HqR). }
+      claim HmqR: (minus_SNo q) :e R.
+      { exact (real_minus_SNo q HqR). }
+      claim Hq_m0_lt: q < (minus_SNo (p 0)).
+      { exact (RltE_lt q (minus_SNo (p 0)) Hq_m0). }
+      claim Hp0_lt_mq: (p 0) < (minus_SNo q).
+      { exact (minus_SNo_Lt_contra2 q (p 0) HqS Hp0S Hq_m0_lt). }
+      claim Hp0mq: Rlt (p 0) (minus_SNo q).
+      { exact (RltI (p 0) (minus_SNo q) Hp0R HmqR Hp0_lt_mq). }
+
+      set U0 := halfopen_interval_left (p 0) (minus_SNo q).
+      set V0 := halfopen_interval_left (p 1) q.
+
+      claim HU0T: U0 :e Sorgenfrey_topology.
+      { exact (halfopen_interval_left_in_R_lower_limit_topology (p 0) (minus_SNo q) Hp0R HmqR). }
+      claim HV0T: V0 :e Sorgenfrey_topology.
+      { exact (halfopen_interval_left_in_R_lower_limit_topology (p 1) q Hp1R HqR). }
+      claim HbB: rectangle_set U0 V0 :e B.
+      { prove rectangle_set U0 V0 :e product_subbasis R R_lower_limit_topology R R_lower_limit_topology.
+        claim HbRepl: rectangle_set U0 V0 :e {rectangle_set U0 V|V :e R_lower_limit_topology}.
+        { exact (ReplI R_lower_limit_topology (fun V:set => rectangle_set U0 V) V0 HV0T). }
+        exact (famunionI R_lower_limit_topology (fun Ux:set => {rectangle_set Ux V|V :e R_lower_limit_topology})
+                         U0 (rectangle_set U0 V0) HU0T HbRepl). }
+      claim HpU0: (p 0) :e U0.
+      { exact (halfopen_interval_left_leftmem (p 0) (minus_SNo q) Hp0mq). }
+      claim HpV0: (p 1) :e V0.
+      { exact (halfopen_interval_left_leftmem (p 1) q Hp1q). }
+      claim Hpb: p :e rectangle_set U0 V0.
+      { claim HpEta: p = (p 0, p 1).
+        { exact (setprod_eta R R p HpX). }
+        rewrite HpEta at 1.
+        exact (tuple_2_rectangle_set U0 V0 (p 0) (p 1) HpU0 HpV0). }
+      claim HbSub: rectangle_set U0 V0 c= U.
+      { let z. assume Hz: z :e rectangle_set U0 V0.
+        prove z :e U.
+        claim HzX: z :e X.
+        { claim HzProd: z :e setprod U0 V0.
+          { rewrite <- rectangle_set_def.
+            exact Hz. }
+          exact (setprod_Subq U0 V0 R R (halfopen_interval_left_Subq_R (p 0) (minus_SNo q))
+                                   (halfopen_interval_left_Subq_R (p 1) q)
+                                   z HzProd). }
+        apply setminusI X L z HzX.
+        assume HzL: z :e L.
+        claim Hext: exists t :e R, z = (t, minus_SNo t).
+        { exact (ReplE R (fun t0:set => (t0, minus_SNo t0)) z HzL). }
+        apply Hext.
+        let t. assume Htpair.
+        claim HtR: t :e R.
+        { exact (andEL (t :e R) (z = (t, minus_SNo t)) Htpair). }
+        claim Hzeq: z = (t, minus_SNo t).
+        { exact (andER (t :e R) (z = (t, minus_SNo t)) Htpair). }
+        claim HmtR: (minus_SNo t) :e R.
+        { exact (real_minus_SNo t HtR). }
+        claim HtS: SNo t.
+        { exact (real_SNo t HtR). }
+        claim HmtS: SNo (minus_SNo t).
+        { exact (real_SNo (minus_SNo t) HmtR). }
+        claim Hz0: z 0 = t.
+        { rewrite Hzeq. exact (tuple_2_0_eq t (minus_SNo t)). }
+        claim Hz1: z 1 = minus_SNo t.
+        { rewrite Hzeq. exact (tuple_2_1_eq t (minus_SNo t)). }
+        claim Hz0U0: (z 0) :e U0.
+        { claim HzProd: z :e setprod U0 V0.
+          { rewrite <- rectangle_set_def.
+            exact Hz. }
+          exact (ap0_Sigma U0 (fun _ : set => V0) z HzProd). }
+        claim Hz1V0: (z 1) :e V0.
+        { claim HzProd: z :e setprod U0 V0.
+          { rewrite <- rectangle_set_def.
+            exact Hz. }
+          exact (ap1_Sigma U0 (fun _ : set => V0) z HzProd). }
+        claim HtU0: t :e U0.
+        { rewrite <- Hz0. exact Hz0U0. }
+        claim HmtV0: (minus_SNo t) :e V0.
+        { rewrite <- Hz1. exact Hz1V0. }
+        claim HtU0prop: ~(Rlt t (p 0)) /\ Rlt t (minus_SNo q).
+        { exact (SepE2 R (fun u:set => ~(Rlt u (p 0)) /\ Rlt u (minus_SNo q)) t HtU0). }
+        claim Ht_lt_mq: Rlt t (minus_SNo q).
+        { exact (andER (~(Rlt t (p 0))) (Rlt t (minus_SNo q)) HtU0prop). }
+        claim HmtV0prop: ~(Rlt (minus_SNo t) (p 1)) /\ Rlt (minus_SNo t) q.
+        { exact (SepE2 R (fun v:set => ~(Rlt v (p 1)) /\ Rlt v q) (minus_SNo t) HmtV0). }
+        claim Hmt_lt_q: Rlt (minus_SNo t) q.
+        { exact (andER (~(Rlt (minus_SNo t) (p 1))) (Rlt (minus_SNo t) q) HmtV0prop). }
+        claim Ht_lt_mq_lt: t < (minus_SNo q).
+        { exact (RltE_lt t (minus_SNo q) Ht_lt_mq). }
+        claim Hq_lt_mt: q < (minus_SNo t).
+        { exact (minus_SNo_Lt_contra2 t q HtS HqS Ht_lt_mq_lt). }
+        claim Hq_lt_mtR: Rlt q (minus_SNo t).
+        { exact (RltI q (minus_SNo t) HqR HmtR Hq_lt_mt). }
+        exact ((not_Rlt_sym q (minus_SNo t) Hq_lt_mtR) Hmt_lt_q). }
+        witness (rectangle_set U0 V0).
+        apply andI.
+        - exact HbB.
+        - apply andI.
+          * exact Hpb.
+          * exact HbSub.
+
+    - (** case p1 = -p0: contradiction with p∉L, then close by FalseE **)
+      assume Hyeq: (p 1) = (minus_SNo (p 0)).
+      apply FalseE.
+      (** show p ∈ L from the coordinates **)
+      claim HpEta: p = (p 0, p 1).
+      { exact (setprod_eta R R p HpX). }
+	      claim Htuple: (p 0, p 1) = (p 0, minus_SNo (p 0)).
+	      { apply (tuple_2_ext (p 0) (p 1) (p 0) (minus_SNo (p 0))).
+	        - reflexivity.
+	        - exact Hyeq. }
+      claim HptupleL: (p 0, p 1) :e L.
+      { rewrite Htuple.
+        exact (ReplI R (fun x0:set => (x0, minus_SNo x0)) (p 0) Hp0R). }
+      claim HpL: p :e L.
+      { rewrite HpEta.
+        exact HptupleL. }
+      exact (HpnotL HpL).
+
+    - (** case -p0 < p1 **)
+      assume Hlt: (minus_SNo (p 0)) < (p 1).
+      claim HltR: Rlt (minus_SNo (p 0)) (p 1).
+      { exact (RltI (minus_SNo (p 0)) (p 1) Hm0R Hp1R Hlt). }
+      claim Hexq: exists q :e rational_numbers, Rlt (minus_SNo (p 0)) q /\ Rlt q (p 1).
+      { exact (rational_dense_between_reals (minus_SNo (p 0)) (p 1) Hm0R Hp1R HltR). }
+      apply Hexq.
+      let q. assume Hqpair.
+      claim HqQ: q :e rational_numbers.
+      { exact (andEL (q :e rational_numbers) (Rlt (minus_SNo (p 0)) q /\ Rlt q (p 1)) Hqpair). }
+      claim Hqprop: Rlt (minus_SNo (p 0)) q /\ Rlt q (p 1).
+      { exact (andER (q :e rational_numbers) (Rlt (minus_SNo (p 0)) q /\ Rlt q (p 1)) Hqpair). }
+      claim Hm0q: Rlt (minus_SNo (p 0)) q.
+      { exact (andEL (Rlt (minus_SNo (p 0)) q) (Rlt q (p 1)) Hqprop). }
+      claim Hqy: Rlt q (p 1).
+      { exact (andER (Rlt (minus_SNo (p 0)) q) (Rlt q (p 1)) Hqprop). }
+      claim HqR: q :e R.
+      { exact (rational_numbers_in_R q HqQ). }
+      claim HqS: SNo q.
+      { exact (real_SNo q HqR). }
+      claim Hy1R: (add_SNo (p 1) 1) :e R.
+      { exact (real_add_SNo (p 1) Hp1R 1 real_1). }
+      claim Hy1S: SNo (add_SNo (p 1) 1).
+      { exact (real_SNo (add_SNo (p 1) 1) Hy1R). }
+	      claim Hp1_lt_p11: (p 1) < (add_SNo (p 1) 1).
+	      { rewrite <- (add_SNo_0R (p 1) Hp1S) at 1.
+	        exact (add_SNo_Lt2 (p 1) 0 1 Hp1S SNo_0 SNo_1 SNoLt_0_1). }
+      claim Hp1_lt_p11R: Rlt (p 1) (add_SNo (p 1) 1).
+      { exact (RltI (p 1) (add_SNo (p 1) 1) Hp1R Hy1R Hp1_lt_p11). }
+      claim Hq_lt_y1: Rlt q (add_SNo (p 1) 1).
+      { exact (Rlt_tra q (p 1) (add_SNo (p 1) 1) Hqy Hp1_lt_p11R). }
+
+	      set U0 := halfopen_interval_left (p 0) (add_SNo (p 0) 1).
+	      set V0 := halfopen_interval_left q (add_SNo (p 1) 1).
+
+      claim Hp01R: (add_SNo (p 0) 1) :e R.
+      { exact (real_add_SNo (p 0) Hp0R 1 real_1). }
+      claim Hp01S: SNo (add_SNo (p 0) 1).
+      { exact (real_SNo (add_SNo (p 0) 1) Hp01R). }
+	      claim Hp0_lt_p01: (p 0) < (add_SNo (p 0) 1).
+	      { rewrite <- (add_SNo_0R (p 0) Hp0S) at 1.
+	        exact (add_SNo_Lt2 (p 0) 0 1 Hp0S SNo_0 SNo_1 SNoLt_0_1). }
+      claim Hp0_lt_p01R: Rlt (p 0) (add_SNo (p 0) 1).
+      { exact (RltI (p 0) (add_SNo (p 0) 1) Hp0R Hp01R Hp0_lt_p01). }
+
+      claim HU0T: U0 :e Sorgenfrey_topology.
+      { exact (halfopen_interval_left_in_R_lower_limit_topology (p 0) (add_SNo (p 0) 1) Hp0R Hp01R). }
+      claim HV0T: V0 :e Sorgenfrey_topology.
+      { exact (halfopen_interval_left_in_R_lower_limit_topology q (add_SNo (p 1) 1) HqR Hy1R). }
+	      claim HbB: (rectangle_set U0 V0) :e B.
+	      { prove (rectangle_set U0 V0) :e product_subbasis R R_lower_limit_topology R R_lower_limit_topology.
+	        claim HbRepl: (rectangle_set U0 V0) :e {rectangle_set U0 V|V :e R_lower_limit_topology}.
+	        { exact (ReplI R_lower_limit_topology (fun V:set => rectangle_set U0 V) V0 HV0T). }
+	        exact (famunionI R_lower_limit_topology (fun Ux:set => {rectangle_set Ux V|V :e R_lower_limit_topology})
+	                         U0 (rectangle_set U0 V0) HU0T HbRepl). }
+      claim HpU0: (p 0) :e U0.
+      { exact (halfopen_interval_left_leftmem (p 0) (add_SNo (p 0) 1) Hp0_lt_p01R). }
+      claim HpV0: (p 1) :e V0.
+      { (** q < p1 implies not(p1<q), so p1∈[q,p1+1) **)
+        claim Hnlt: ~(Rlt (p 1) q).
+        { exact (not_Rlt_sym q (p 1) Hqy). }
+        claim Hp1V0prop: ~(Rlt (p 1) q) /\ Rlt (p 1) (add_SNo (p 1) 1).
+        { apply andI.
+          - exact Hnlt.
+          - exact Hp1_lt_p11R. }
+        exact (SepI R (fun v:set => ~(Rlt v q) /\ Rlt v (add_SNo (p 1) 1)) (p 1) Hp1R Hp1V0prop). }
+	      claim Hpb: p :e rectangle_set U0 V0.
+	      { claim HpEta: p = (p 0, p 1).
+	        { exact (setprod_eta R R p HpX). }
+	        rewrite HpEta at 1.
+	        exact (tuple_2_rectangle_set U0 V0 (p 0) (p 1) HpU0 HpV0). }
+	      claim HbSub: (rectangle_set U0 V0) c= U.
+	      { let z. assume Hz: z :e rectangle_set U0 V0.
+	        prove z :e U.
+	        claim HzProd: z :e setprod U0 V0.
+	        { rewrite <- rectangle_set_def.
+	          exact Hz. }
+	        claim HzX: z :e X.
+	        { exact (setprod_Subq U0 V0 R R (halfopen_interval_left_Subq_R (p 0) (add_SNo (p 0) 1))
+	                               (halfopen_interval_left_Subq_R q (add_SNo (p 1) 1))
+	                               z HzProd). }
+        apply setminusI X L z HzX.
+        assume HzL: z :e L.
+        claim Hext: exists t :e R, z = (t, minus_SNo t).
+        { exact (ReplE R (fun t0:set => (t0, minus_SNo t0)) z HzL). }
+        apply Hext.
+        let t. assume Htpair.
+        claim HtR: t :e R.
+        { exact (andEL (t :e R) (z = (t, minus_SNo t)) Htpair). }
+        claim Hzeq: z = (t, minus_SNo t).
+        { exact (andER (t :e R) (z = (t, minus_SNo t)) Htpair). }
+        claim HmtR: (minus_SNo t) :e R.
+        { exact (real_minus_SNo t HtR). }
+        claim HtS: SNo t.
+        { exact (real_SNo t HtR). }
+        claim HmtS: SNo (minus_SNo t).
+        { exact (real_SNo (minus_SNo t) HmtR). }
+        claim Hz0: z 0 = t.
+        { rewrite Hzeq. exact (tuple_2_0_eq t (minus_SNo t)). }
+        claim Hz1: z 1 = minus_SNo t.
+        { rewrite Hzeq. exact (tuple_2_1_eq t (minus_SNo t)). }
+	        claim Hz0U0: (z 0) :e U0.
+	        { exact (ap0_Sigma U0 (fun _ : set => V0) z HzProd). }
+	        claim Hz1V0: (z 1) :e V0.
+	        { exact (ap1_Sigma U0 (fun _ : set => V0) z HzProd). }
+        claim HtU0: t :e U0.
+        { rewrite <- Hz0. exact Hz0U0. }
+        claim HmtV0: (minus_SNo t) :e V0.
+        { rewrite <- Hz1. exact Hz1V0. }
+        claim HtU0prop: ~(Rlt t (p 0)) /\ Rlt t (add_SNo (p 0) 1).
+        { exact (SepE2 R (fun u:set => ~(Rlt u (p 0)) /\ Rlt u (add_SNo (p 0) 1)) t HtU0). }
+        claim Hnlt_tx: ~(Rlt t (p 0)).
+        { exact (andEL (~(Rlt t (p 0))) (Rlt t (add_SNo (p 0) 1)) HtU0prop). }
+        claim HmtV0prop: ~(Rlt (minus_SNo t) q) /\ Rlt (minus_SNo t) (add_SNo (p 1) 1).
+        { exact (SepE2 R (fun v:set => ~(Rlt v q) /\ Rlt v (add_SNo (p 1) 1)) (minus_SNo t) HmtV0). }
+        claim Hnlt_mt_q: ~(Rlt (minus_SNo t) q).
+        { exact (andEL (~(Rlt (minus_SNo t) q)) (Rlt (minus_SNo t) (add_SNo (p 1) 1)) HmtV0prop). }
+        (** show -t < q, contradicting ~( -t < q ) **)
+        apply (SNoLt_trichotomy_or_impred (p 0) t Hp0S HtS False).
+        - assume Hp0lt: (p 0) < t.
+          claim Hmt_lt_m0: (minus_SNo t) < (minus_SNo (p 0)).
+          { exact (minus_SNo_Lt_contra (p 0) t Hp0S HtS Hp0lt). }
+          claim Hmt_m0: Rlt (minus_SNo t) (minus_SNo (p 0)).
+          { exact (RltI (minus_SNo t) (minus_SNo (p 0)) HmtR Hm0R Hmt_lt_m0). }
+          claim Hmt_q: Rlt (minus_SNo t) q.
+          { exact (Rlt_tra (minus_SNo t) (minus_SNo (p 0)) q Hmt_m0 Hm0q). }
+          exact (Hnlt_mt_q Hmt_q).
+        - assume Heq0: (p 0) = t.
+          claim Hmt_q: Rlt (minus_SNo t) q.
+          { rewrite <- Heq0.
+            exact Hm0q. }
+          exact (Hnlt_mt_q Hmt_q).
+        - assume Htlt: t < (p 0).
+          claim Hr: Rlt t (p 0).
+          { exact (RltI t (p 0) HtR Hp0R Htlt). }
+          exact (FalseE (Hnlt_tx Hr) False). }
+      witness (rectangle_set U0 V0).
+      apply andI.
+      - exact HbB.
+      - apply andI.
+        * exact Hpb.
+        * exact HbSub.
+  }
+  exact (SepI (Power X) (fun U0:set => forall p0 :e U0, exists b :e B, p0 :e b /\ b c= U0) U HUpow HUloc). }
+
+claim Hex: exists U0 :e Tx, L = X :\: U0.
+{ witness U.
+  apply andI.
+  - exact HUinT.
+  - prove L = X :\: U.
+    (** U is X\\L, so X\\U = L since L ⊂ X **)
+    prove L = X :\: (X :\: L).
+    apply set_ext.
+    + let p. assume HpL: p :e L.
+      prove p :e X :\: (X :\: L).
+      claim HpX: p :e X.
+      { exact (HLsub p HpL). }
+      apply setminusI X (X :\: L) p HpX.
+      assume HpXL: p :e X :\: L.
+      claim HpnotL: p /:e L.
+      { exact (setminusE2 X L p HpXL). }
+      exact (HpnotL HpL).
+    + let p. assume Hp: p :e X :\: (X :\: L).
+      prove p :e L.
+      claim HpX: p :e X.
+      { exact (setminusE1 X (X :\: L) p Hp). }
+      claim HpnotXL: p /:e X :\: L.
+      { exact (setminusE2 X (X :\: L) p Hp). }
+      apply (xm (p :e L)).
+      - assume HpL: p :e L.
+        exact HpL.
+      - assume HpnotL: p /:e L.
+        claim HpXL: p :e X :\: L.
+        { apply setminusI.
+          - exact HpX.
+          - exact HpnotL. }
+        apply FalseE.
+        exact (HpnotXL HpXL). }
+
+exact (closed_inI X Tx L HTx HLsub Hex).
+Qed.
+
 Theorem Sorgenfrey_plane_not_Lindelof :
   ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
