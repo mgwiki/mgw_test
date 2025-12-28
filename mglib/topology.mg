@@ -75642,6 +75642,17 @@ claim Hnlt_ax: ~(Rlt a x).
 exact (R_eq_of_not_Rlt x a HxR HaR Hnlt_xa Hnlt_ax).
 Qed.
 
+(** helper: extensionality for 2-tuples **)
+Theorem tuple_2_ext : forall a b c d:set,
+  a = c -> b = d -> (a,b) = (c,d).
+let a b c d.
+assume Hac: a = c.
+assume Hbd: b = d.
+rewrite Hac.
+rewrite Hbd.
+reflexivity.
+Qed.
+
 (** helper: L is closed in the Sorgenfrey plane **)
 Theorem Sorgenfrey_plane_L_closed :
   closed_in (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology Sorgenfrey_plane_L.
