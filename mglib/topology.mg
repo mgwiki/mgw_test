@@ -80476,11 +80476,329 @@ apply andI.
 			          claim HxInInter: x :e intersection_of_family X F.
 			          { rewrite <- Hb0eqF.
 			            exact Hxb0. }
-			          claim HxAll: forall s:set, s :e F -> x :e s.
-			          { exact (SepE2 X (fun z0:set => forall U0:set, U0 :e F -> z0 :e U0) x HxInInter). }
-			          (** Next step (still missing): shrink each subbasis cylinder in F around x using component regularity,
-			              and build a finite intersection U with closure(U) c= b0. **)
-			          admit. (** FAIL **) }
+				          claim HxAll: forall s:set, s :e F -> x :e s.
+				          { exact (SepE2 X (fun z0:set => forall U0:set, U0 :e F -> z0 :e U0) x HxInInter). }
+				          (** Use finite induction on the finite family F of subbasis elements:
+				              shrink each cylinder around x, then intersect the shrunk cylinders. **)
+				          claim HFpowS: F :e Power S.
+				          { exact (SepE1 (Power S) (fun F0:set => finite F0) F HFfin). }
+				          claim HFin: finite F.
+				          { exact (SepE2 (Power S) (fun F0:set => finite F0) F HFfin). }
+				          claim HFsubS: F c= S.
+				          { exact (PowerE S F HFpowS). }
+
+				          claim HpEmpty: Empty c= F ->
+				            exists U0:set,
+				              U0 :e T /\ x :e U0 /\
+				              U0 c= intersection_of_family X Empty /\
+				              closure_of X T U0 c= intersection_of_family X Empty.
+				          { assume Hsub: Empty c= F.
+				            witness X.
+				            apply and4I.
+				            - exact (topology_has_X X T HT).
+				            - exact Hx.
+				            - rewrite (intersection_of_family_empty_eq X).
+				              exact (Subq_ref X).
+				            - rewrite (intersection_of_family_empty_eq X).
+				              claim HclX: closure_of X T X = X.
+				              { exact (closure_of_space X T HT). }
+				              rewrite HclX.
+				              exact (Subq_ref X). }
+
+				          claim HpStep: forall H s:set,
+				            finite H ->
+				            s /:e H ->
+				            (H c= F ->
+				              exists U0:set,
+				                U0 :e T /\ x :e U0 /\
+				                U0 c= intersection_of_family X H /\
+				                closure_of X T U0 c= intersection_of_family X H) ->
+				            ((H :\/: {s}) c= F ->
+				              exists U0:set,
+				                U0 :e T /\ x :e U0 /\
+				                U0 c= intersection_of_family X (H :\/: {s}) /\
+				                closure_of X T U0 c= intersection_of_family X (H :\/: {s})).
+				          { let H s.
+				            assume HfH: finite H.
+				            assume HsnotH: s /:e H.
+				            assume HP: H c= F ->
+				              exists U0:set,
+				                U0 :e T /\ x :e U0 /\
+				                U0 c= intersection_of_family X H /\
+				                closure_of X T U0 c= intersection_of_family X H.
+				            assume HsubHF: (H :\/: {s}) c= F.
+				            (** derive H c= F and s :e F **)
+				            claim HsubH: H c= H :\/: {s}.
+				            { exact (binunion_Subq_1 H {s}). }
+				            claim HsubF: H c= F.
+				            { exact (Subq_tra H (H :\/: {s}) F HsubH HsubHF). }
+				            claim Hsin: s :e H :\/: {s}.
+				            { exact (binunionI2 H {s} s (SingI s)). }
+				            claim HsF: s :e F.
+				            { exact (HsubHF s Hsin). }
+				            (** get inductive neighborhood Uh for H **)
+				            claim HexUh: exists Uh:set,
+				              Uh :e T /\ x :e Uh /\ Uh c= intersection_of_family X H /\ closure_of X T Uh c= intersection_of_family X H.
+				            { exact (HP HsubF). }
+				            apply HexUh.
+				            let Uh. assume HUh_conj.
+				            claim HUh12: (Uh :e T /\ x :e Uh) /\ Uh c= intersection_of_family X H.
+				            { exact (andEL ((Uh :e T /\ x :e Uh) /\ Uh c= intersection_of_family X H)
+				                           (closure_of X T Uh c= intersection_of_family X H)
+				                           HUh_conj). }
+				            claim HclUh: closure_of X T Uh c= intersection_of_family X H.
+				            { exact (andER ((Uh :e T /\ x :e Uh) /\ Uh c= intersection_of_family X H)
+				                           (closure_of X T Uh c= intersection_of_family X H)
+				                           HUh_conj). }
+				            claim HUhTxHx: Uh :e T /\ x :e Uh.
+				            { exact (andEL (Uh :e T /\ x :e Uh) (Uh c= intersection_of_family X H) HUh12). }
+				            claim HUhT: Uh :e T.
+				            { exact (andEL (Uh :e T) (x :e Uh) HUhTxHx). }
+				            claim HxUh: x :e Uh.
+				            { exact (andER (Uh :e T) (x :e Uh) HUhTxHx). }
+				            claim HUhsub: Uh c= intersection_of_family X H.
+				            { exact (andER (Uh :e T /\ x :e Uh) (Uh c= intersection_of_family X H) HUh12). }
+
+				            (** Decompose the added subbasis element s into a coordinate cylinder. **)
+				            claim HsS: s :e S.
+				            { exact (HFsubS s HsF). }
+				            set Fam := (fun i0:set => {product_cylinder I Xi i0 U0|U0 :e space_family_topology Xi i0}).
+				            claim HsFam: s :e (\/_ i0 :e I, Fam i0).
+				            { exact HsS. }
+				            claim HexiU: exists i0:set,
+				              i0 :e I /\ exists U0 :e space_family_topology Xi i0, s = product_cylinder I Xi i0 U0.
+				            { apply (famunionE_impred I Fam s HsFam (exists i0:set, i0 :e I /\ exists U0 :e space_family_topology Xi i0, s = product_cylinder I Xi i0 U0)).
+				              let i0. assume Hi0I: i0 :e I.
+				              assume HsFi0: s :e Fam i0.
+				              claim HexU0: exists U0 :e space_family_topology Xi i0, s = product_cylinder I Xi i0 U0.
+				              { exact (ReplE (space_family_topology Xi i0) (fun U0:set => product_cylinder I Xi i0 U0) s HsFi0). }
+				              witness i0.
+				              apply andI.
+				              - exact Hi0I.
+				              - exact HexU0. }
+				            apply HexiU.
+				            let i0. assume Hi0conj.
+				            claim Hi0I: i0 :e I.
+				            { exact (andEL (i0 :e I) (exists U0 :e space_family_topology Xi i0, s = product_cylinder I Xi i0 U0) Hi0conj). }
+				            claim HexU0: exists U0 :e space_family_topology Xi i0, s = product_cylinder I Xi i0 U0.
+				            { exact (andER (i0 :e I) (exists U0 :e space_family_topology Xi i0, s = product_cylinder I Xi i0 U0) Hi0conj). }
+				            apply HexU0.
+				            let U0. assume HU0conj.
+				            claim HU0top: U0 :e space_family_topology Xi i0.
+				            { exact (andEL (U0 :e space_family_topology Xi i0) (s = product_cylinder I Xi i0 U0) HU0conj). }
+				            claim HsEq: s = product_cylinder I Xi i0 U0.
+				            { exact (andER (U0 :e space_family_topology Xi i0) (s = product_cylinder I Xi i0 U0) HU0conj). }
+
+				            (** x is in s because x is in the full intersection b0 = ⋂F and s :e F. **)
+				            claim Hxs: x :e s.
+				            { exact (HxAll s HsF). }
+				            claim HxCyl: x :e product_cylinder I Xi i0 U0.
+				            { rewrite <- HsEq.
+				              exact Hxs. }
+				            claim HxCylProp: i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun x i0 :e U0.
+				            { exact (SepE2 X (fun f0:set => i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun f0 i0 :e U0) x HxCyl). }
+				            claim Hxi0U0: apply_fun x i0 :e U0.
+				            { exact (andER (i0 :e I /\ U0 :e space_family_topology Xi i0) (apply_fun x i0 :e U0) HxCylProp). }
+
+				            (** Shrink inside U0 using regularity of the i0-th component. **)
+				            claim Hreg0: regular_space (product_component Xi i0) (product_component_topology Xi i0).
+				            { exact (Hrfam i0 Hi0I). }
+				            claim Hregi0: regular_space (space_family_set Xi i0) (space_family_topology Xi i0).
+				            { claim HeqX0: product_component Xi i0 = space_family_set Xi i0.
+				              { reflexivity. }
+				              claim HeqT0: product_component_topology Xi i0 = space_family_topology Xi i0.
+				              { reflexivity. }
+				              rewrite <- HeqX0.
+				              rewrite <- HeqT0.
+				              exact Hreg0. }
+				            claim Hxprop:
+				              total_function_on x I (space_family_union I Xi) /\ functional_graph x /\
+				              forall j:set, j :e I -> apply_fun x j :e space_family_set Xi j.
+				            { exact (SepE2 (Power (setprod I (space_family_union I Xi)))
+				                           (fun f0 : set =>
+				                             total_function_on f0 I (space_family_union I Xi) /\ functional_graph f0 /\
+				                             forall j:set, j :e I -> apply_fun f0 j :e space_family_set Xi j)
+				                           x Hx). }
+				            claim HcoordsX: forall j:set, j :e I -> apply_fun x j :e space_family_set Xi j.
+				            { exact (andER (total_function_on x I (space_family_union I Xi) /\ functional_graph x)
+				                           (forall j:set, j :e I -> apply_fun x j :e space_family_set Xi j)
+				                           Hxprop). }
+				            claim Hxi0X0: apply_fun x i0 :e space_family_set Xi i0.
+				            { exact (HcoordsX i0 Hi0I). }
+				            claim HexV0: exists V0:set,
+				              V0 :e space_family_topology Xi i0 /\ apply_fun x i0 :e V0 /\
+				              closure_of (space_family_set Xi i0) (space_family_topology Xi i0) V0 c= U0.
+				            { exact (regular_space_shrink_neighborhood (space_family_set Xi i0) (space_family_topology Xi i0) (apply_fun x i0) U0
+				                       Hregi0 Hxi0X0 HU0top Hxi0U0). }
+				            apply HexV0.
+				            let V0. assume HV0conj.
+				            claim HV0core: V0 :e space_family_topology Xi i0 /\ apply_fun x i0 :e V0.
+				            { exact (andEL (V0 :e space_family_topology Xi i0 /\ apply_fun x i0 :e V0)
+				                           (closure_of (space_family_set Xi i0) (space_family_topology Xi i0) V0 c= U0)
+				                           HV0conj). }
+				            claim HV0top: V0 :e space_family_topology Xi i0.
+				            { exact (andEL (V0 :e space_family_topology Xi i0) (apply_fun x i0 :e V0) HV0core). }
+				            claim Hxi0V0: apply_fun x i0 :e V0.
+				            { exact (andER (V0 :e space_family_topology Xi i0) (apply_fun x i0 :e V0) HV0core). }
+				            claim HclV0subU0: closure_of (space_family_set Xi i0) (space_family_topology Xi i0) V0 c= U0.
+				            { exact (andER (V0 :e space_family_topology Xi i0 /\ apply_fun x i0 :e V0)
+				                           (closure_of (space_family_set Xi i0) (space_family_topology Xi i0) V0 c= U0)
+				                           HV0conj). }
+
+				            set Wcyl := product_cylinder I Xi i0 V0.
+				            claim HWcylS: Wcyl :e S.
+				            { prove Wcyl :e (\/_ j :e I, {product_cylinder I Xi j U1|U1 :e space_family_topology Xi j}).
+				              apply (famunionI I (fun j:set => {product_cylinder I Xi j U1|U1 :e space_family_topology Xi j}) i0 Wcyl Hi0I).
+				              exact (ReplI (space_family_topology Xi i0) (fun U1:set => product_cylinder I Xi i0 U1) V0 HV0top). }
+				            claim HWcylT: Wcyl :e T.
+				            { exact (subbasis_elem_open_in_generated_from_subbasis X S Wcyl HSsub HWcylS). }
+				            claim HxWcyl: x :e Wcyl.
+				            { claim HdefW: Wcyl = {f0 :e X | i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun f0 i0 :e V0}.
+				              { reflexivity. }
+				              rewrite HdefW.
+				              exact (SepI X (fun f0:set => i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun f0 i0 :e V0) x
+				                         Hx (andI (i0 :e I /\ V0 :e space_family_topology Xi i0) (apply_fun x i0 :e V0)
+				                                  (andI (i0 :e I) (V0 :e space_family_topology Xi i0) Hi0I HV0top) Hxi0V0)). }
+
+				            claim HclWsubS: closure_of X T Wcyl c= product_cylinder I Xi i0 U0.
+				            { exact (closure_of_product_cylinder_sub I Xi i0 V0 U0 HIne HcompTop Hi0I HV0top HU0top HclV0subU0). }
+
+				            (** Build Unew := Uh ∩ Wcyl. **)
+				            set Unew := Uh :/\: Wcyl.
+				            witness Unew.
+				            apply and4I.
+				            - exact (lemma_intersection_two_open X T Uh Wcyl HT HUhT HWcylT).
+				            - exact (binintersectI Uh Wcyl x HxUh HxWcyl).
+				            - (** Unew ⊆ ⋂(H ∪ {s}) **)
+				              claim HinterEq: intersection_of_family X (H :\/: {s}) = (intersection_of_family X H) :/\: s.
+				              { exact (intersection_of_family_adjoin X H s). }
+				              rewrite HinterEq.
+				              let z. assume Hz: z :e Unew.
+				              prove z :e (intersection_of_family X H) :/\: s.
+				              claim HzUh: z :e Uh.
+				              { exact (binintersectE1 Uh Wcyl z Hz). }
+				              claim HzW: z :e Wcyl.
+				              { exact (binintersectE2 Uh Wcyl z Hz). }
+				              claim HzInterH: z :e intersection_of_family X H.
+				              { exact (HUhsub z HzUh). }
+				              claim Hzs: z :e s.
+					              { (** Wcyl ⊆ s follows from closure(V0) ⊆ U0, hence V0 ⊆ U0. **)
+					                claim HV0subU0: V0 c= U0.
+					                { claim Htopi0: topology_on (space_family_set Xi i0) (space_family_topology Xi i0).
+					                  { exact (HcompTop i0 Hi0I). }
+					                  claim HTsub0: (space_family_topology Xi i0) c= Power (space_family_set Xi i0).
+					                  { exact (topology_subset_axiom (space_family_set Xi i0) (space_family_topology Xi i0) Htopi0). }
+					                  claim HV0subXi: V0 c= space_family_set Xi i0.
+					                  { exact (PowerE (space_family_set Xi i0) V0 (HTsub0 V0 HV0top)). }
+					                  claim HV0subCl: V0 c= closure_of (space_family_set Xi i0) (space_family_topology Xi i0) V0.
+					                  { exact (subset_of_closure (space_family_set Xi i0) (space_family_topology Xi i0) V0 Htopi0 HV0subXi). }
+					                  exact (Subq_tra V0
+					                                  (closure_of (space_family_set Xi i0) (space_family_topology Xi i0) V0)
+					                                  U0
+					                                  HV0subCl
+					                                  HclV0subU0). }
+				                claim HWsub: Wcyl c= product_cylinder I Xi i0 U0.
+				                { let f0. assume Hf0: f0 :e Wcyl.
+				                  prove f0 :e product_cylinder I Xi i0 U0.
+				                  claim Hf0X: f0 :e X.
+				                  { exact (SepE1 X (fun g:set => i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun g i0 :e V0) f0 Hf0). }
+				                  claim Hprop0: i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun f0 i0 :e V0.
+				                  { exact (SepE2 X (fun g:set => i0 :e I /\ V0 :e space_family_topology Xi i0 /\ apply_fun g i0 :e V0) f0 Hf0). }
+				                  claim HfiV0: apply_fun f0 i0 :e V0.
+				                  { exact (andER (i0 :e I /\ V0 :e space_family_topology Xi i0) (apply_fun f0 i0 :e V0) Hprop0). }
+				                  claim HfiU0: apply_fun f0 i0 :e U0.
+				                  { exact (HV0subU0 (apply_fun f0 i0) HfiV0). }
+					                  claim HdefCylU0: product_cylinder I Xi i0 U0 =
+					                    {g :e X | i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun g i0 :e U0}.
+					                  { reflexivity. }
+					                  rewrite HdefCylU0.
+					                  claim HpropU0: i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun f0 i0 :e U0.
+					                  { apply andI.
+					                    - apply andI.
+					                      + exact Hi0I.
+					                      + exact HU0top.
+					                    - exact HfiU0. }
+					                  exact (SepI X (fun g:set => i0 :e I /\ U0 :e space_family_topology Xi i0 /\ apply_fun g i0 :e U0) f0 Hf0X HpropU0). }
+				                rewrite HsEq.
+				                exact (HWsub z HzW). }
+				              exact (binintersectI (intersection_of_family X H) s z HzInterH Hzs).
+				            - (** closure(Unew) ⊆ ⋂(H ∪ {s}) **)
+				              claim HUnewSubX: Unew c= X.
+				              { claim HTsubX: T c= Power X.
+				                { exact (topology_subset_axiom X T HT). }
+				                claim HUhSubX: Uh c= X.
+				                { exact (PowerE X Uh (HTsubX Uh HUhT)). }
+				                claim HWSubX: Wcyl c= X.
+				                { exact (PowerE X Wcyl (HTsubX Wcyl HWcylT)). }
+				                let z. assume Hz: z :e Unew.
+				                prove z :e X.
+				                exact (HUhSubX z (binintersectE1 Uh Wcyl z Hz)). }
+				              claim HclInt:
+				                closure_of X T Unew c= (closure_of X T Uh) :/\: (closure_of X T Wcyl).
+				              { exact (closure_intersection_contained X T Uh Wcyl HT
+				                        (PowerE X Uh (topology_subset_axiom X T HT Uh HUhT))
+				                        (PowerE X Wcyl (topology_subset_axiom X T HT Wcyl HWcylT))). }
+				              claim HinterEq2: intersection_of_family X (H :\/: {s}) = (intersection_of_family X H) :/\: s.
+				              { exact (intersection_of_family_adjoin X H s). }
+				              rewrite HinterEq2.
+				              let z. assume Hzcl: z :e closure_of X T Unew.
+				              prove z :e (intersection_of_family X H) :/\: s.
+				              claim Hzcl2: z :e (closure_of X T Uh) :/\: (closure_of X T Wcyl).
+				              { exact (HclInt z Hzcl). }
+				              claim HzclUh: z :e closure_of X T Uh.
+				              { exact (binintersectE1 (closure_of X T Uh) (closure_of X T Wcyl) z Hzcl2). }
+				              claim HzclW: z :e closure_of X T Wcyl.
+				              { exact (binintersectE2 (closure_of X T Uh) (closure_of X T Wcyl) z Hzcl2). }
+				              claim HzInterH: z :e intersection_of_family X H.
+				              { exact (HclUh z HzclUh). }
+				              claim Hzs: z :e s.
+					              { rewrite HsEq.
+					                exact (HclWsubS z HzclW). }
+					              exact (binintersectI (intersection_of_family X H) s z HzInterH Hzs). }
+				            admit. (** FAIL **)
+					          }
+
+				          claim HPall: forall H:set, finite H ->
+				            (H c= F ->
+				              exists U0:set,
+				                U0 :e T /\ x :e U0 /\
+				                U0 c= intersection_of_family X H /\
+				                closure_of X T U0 c= intersection_of_family X H).
+				          { exact (finite_ind
+				                     (fun H:set => H c= F ->
+				                       exists U0:set,
+				                         U0 :e T /\ x :e U0 /\
+				                         U0 c= intersection_of_family X H /\
+				                         closure_of X T U0 c= intersection_of_family X H)
+				                     HpEmpty HpStep). }
+				          claim HPF:
+				            (F c= F ->
+				              exists U0:set,
+				                U0 :e T /\ x :e U0 /\
+				                U0 c= intersection_of_family X F /\
+				                closure_of X T U0 c= intersection_of_family X F).
+				          { exact (HPall F HFin). }
+				          claim HexU0: exists U0:set,
+				            U0 :e T /\ x :e U0 /\ U0 c= intersection_of_family X F /\ closure_of X T U0 c= intersection_of_family X F.
+				          { exact (HPF (Subq_ref F)). }
+				          apply HexU0.
+				          let U0. assume HU0conj.
+				          witness U0.
+				          apply and4I.
+				          - exact (andEL (U0 :e T) (x :e U0 /\ U0 c= intersection_of_family X F /\ closure_of X T U0 c= intersection_of_family X F) HU0conj).
+				          - exact (andEL (x :e U0) (U0 c= intersection_of_family X F /\ closure_of X T U0 c= intersection_of_family X F)
+				                         (andER (U0 :e T) (x :e U0 /\ U0 c= intersection_of_family X F /\ closure_of X T U0 c= intersection_of_family X F) HU0conj)).
+				          - rewrite <- Hb0eqF.
+				            exact (andEL (U0 c= intersection_of_family X F) (closure_of X T U0 c= intersection_of_family X F)
+				                         (andER (x :e U0) (U0 c= intersection_of_family X F /\ closure_of X T U0 c= intersection_of_family X F)
+				                                (andER (U0 :e T) (x :e U0 /\ U0 c= intersection_of_family X F /\ closure_of X T U0 c= intersection_of_family X F) HU0conj))).
+				          - rewrite <- Hb0eqF.
+				            exact (andER (U0 c= intersection_of_family X F) (closure_of X T U0 c= intersection_of_family X F)
+				                         (andER (x :e U0) (U0 c= intersection_of_family X F /\ closure_of X T U0 c= intersection_of_family X F)
+				                                (andER (U0 :e T) (x :e U0 /\ U0 c= intersection_of_family X F /\ closure_of X T U0 c= intersection_of_family X F) HU0conj))). }
+				          }
+					}
+				      }
 			      apply HexU.
 			      let U. assume HU_conj.
 			      claim HU12: (U :e T /\ x :e U) /\ U c= b0.
