@@ -75987,12 +75987,12 @@ claim HUinT: U :e Tx.
           claim Hr: Rlt t (p 0).
           { exact (RltI t (p 0) HtR Hp0R Htlt). }
           exact (FalseE (Hnlt_tx Hr) False). }
-	      witness (rectangle_set U0 V0).
-	      apply andI.
-	      - exact HbB.
-	      - apply andI.
-	        * exact Hpb.
-		        * exact HbSub.
+      witness (rectangle_set U0 V0).
+      apply andI.
+      - exact HbB.
+      - apply andI.
+        * exact Hpb.
+        * exact HbSub.
   }
   exact (SepI (Power X) (fun U0:set => forall p0 :e U0, exists b :e B, p0 :e b /\ b c= U0) U HUpow HUloc). }
 
