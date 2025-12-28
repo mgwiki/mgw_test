@@ -76638,7 +76638,98 @@ Qed.
 Theorem Sorgenfrey_line_rationals_dense :
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology.
 prove dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology.
-admit. (** FAIL **)
+prove closure_of Sorgenfrey_line Sorgenfrey_topology rational_numbers = Sorgenfrey_line.
+apply set_ext.
+- (** closure subset X **)
+  exact (closure_in_space Sorgenfrey_line Sorgenfrey_topology rational_numbers R_lower_limit_topology_is_topology).
+- (** X subset closure **)
+  let x. assume HxR: x :e Sorgenfrey_line.
+  prove x :e closure_of Sorgenfrey_line Sorgenfrey_topology rational_numbers.
+  claim Hcliff: x :e closure_of Sorgenfrey_line Sorgenfrey_topology rational_numbers
+    <-> (forall U :e Sorgenfrey_topology, x :e U -> U :/\: rational_numbers <> Empty).
+  { exact (closure_characterization Sorgenfrey_line Sorgenfrey_topology rational_numbers x
+                                  R_lower_limit_topology_is_topology
+                                  HxR). }
+  apply (iffER (x :e closure_of Sorgenfrey_line Sorgenfrey_topology rational_numbers)
+               (forall U :e Sorgenfrey_topology, x :e U -> U :/\: rational_numbers <> Empty)
+               Hcliff).
+  prove forall U :e Sorgenfrey_topology, x :e U -> U :/\: rational_numbers <> Empty.
+  let U. assume HU: U :e Sorgenfrey_topology.
+  assume HxU: x :e U.
+  (** pick a basis neighborhood b0=[a,b) with x∈b0 ⊂ U **)
+  claim HTdef: Sorgenfrey_topology = generated_topology R R_lower_limit_basis.
+  { reflexivity. }
+  claim HUgen: U :e generated_topology R R_lower_limit_basis.
+  { rewrite <- HTdef. exact HU. }
+  claim Hloc: forall y0 :e U, exists b0 :e R_lower_limit_basis, y0 :e b0 /\ b0 c= U.
+  { exact (SepE2 (Power R)
+                 (fun U0:set => forall y1 :e U0, exists b0 :e R_lower_limit_basis, y1 :e b0 /\ b0 c= U0)
+                 U
+                 HUgen). }
+  claim Hexb0: exists b0 :e R_lower_limit_basis, x :e b0 /\ b0 c= U.
+  { exact (Hloc x HxU). }
+  apply Hexb0.
+  let b0. assume Hb0pair. apply Hb0pair.
+  assume Hb0B: b0 :e R_lower_limit_basis.
+  assume Hb0prop: x :e b0 /\ b0 c= U.
+  claim Hxb0: x :e b0.
+  { exact (andEL (x :e b0) (b0 c= U) Hb0prop). }
+  claim Hb0subU: b0 c= U.
+  { exact (andER (x :e b0) (b0 c= U) Hb0prop). }
+  (** destruct b0 = [a,b) **)
+  claim Hexa : exists a :e R, b0 :e {halfopen_interval_left a b|b :e R}.
+  { exact (famunionE R (fun a0:set => {halfopen_interval_left a0 b|b :e R}) b0 Hb0B). }
+  apply Hexa.
+  let a. assume Hapair. apply Hapair.
+  assume HaR: a :e R.
+  assume Hb0fam: b0 :e {halfopen_interval_left a b|b :e R}.
+  claim Hexb : exists b :e R, b0 = halfopen_interval_left a b.
+  { exact (ReplE R (fun b1:set => halfopen_interval_left a b1) b0 Hb0fam). }
+  apply Hexb.
+  let b. assume Hbpair. apply Hbpair.
+  assume HbR: b :e R.
+  assume Hb0eq: b0 = halfopen_interval_left a b.
+  claim HxIn: x :e halfopen_interval_left a b.
+  { rewrite <- Hb0eq. exact Hxb0. }
+  claim HxProp: ~(Rlt x a) /\ Rlt x b.
+  { exact (SepE2 R (fun x0:set => ~(Rlt x0 a) /\ Rlt x0 b) x HxIn). }
+  claim Hnltxa: ~(Rlt x a).
+  { exact (andEL (~(Rlt x a)) (Rlt x b) HxProp). }
+  claim Hxltb: Rlt x b.
+  { exact (andER (~(Rlt x a)) (Rlt x b) HxProp). }
+  claim Hax: Rle a x.
+  { exact (RleI a x HaR HxR Hnltxa). }
+  claim Hab: Rlt a b.
+  { exact (Rle_Rlt_tra a x b Hax Hxltb). }
+  (** pick rational q with a < q < b **)
+  apply (rational_dense_between_reals a b HaR HbR Hab).
+  let q. assume Hqpair.
+  claim HqQ: q :e rational_numbers.
+  { exact (andEL (q :e rational_numbers) (Rlt a q /\ Rlt q b) Hqpair). }
+  claim HqProp: Rlt a q /\ Rlt q b.
+  { exact (andER (q :e rational_numbers) (Rlt a q /\ Rlt q b) Hqpair). }
+  claim Haq: Rlt a q.
+  { exact (andEL (Rlt a q) (Rlt q b) HqProp). }
+  claim Hqb: Rlt q b.
+  { exact (andER (Rlt a q) (Rlt q b) HqProp). }
+  claim HqR: q :e R.
+  { exact (rational_numbers_in_R q HqQ). }
+  claim Hnltqa: ~(Rlt q a).
+  { exact (not_Rlt_sym a q Haq). }
+  claim HqInb0: q :e halfopen_interval_left a b.
+  { exact (SepI R (fun z0:set => ~(Rlt z0 a) /\ Rlt z0 b) q HqR (andI (~(Rlt q a)) (Rlt q b) Hnltqa Hqb)). }
+  claim HqInU: q :e U.
+  { claim HqInb0': q :e b0.
+    { rewrite Hb0eq.
+      exact HqInb0. }
+    exact (Hb0subU q HqInb0'). }
+  prove U :/\: rational_numbers <> Empty.
+  assume HUQ: U :/\: rational_numbers = Empty.
+  claim HqUA: q :e U :/\: rational_numbers.
+  { exact (binintersectI U rational_numbers q HqInU HqQ). }
+  claim HqEmp: q :e Empty.
+  { rewrite <- HUQ. exact HqUA. }
+    exact (EmptyE q HqEmp False).
 Qed.
 
 (** helper: disjoint nonempty open families are countable in a space with countable dense subset **)
