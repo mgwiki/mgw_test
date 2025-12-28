@@ -75497,6 +75497,52 @@ Definition Sorgenfrey_plane_L : set :=
 Definition Sorgenfrey_plane_special_rectangle : set -> set -> set -> set :=
   fun a b d => rectangle_set (halfopen_interval_left a b) (halfopen_interval_left (minus_SNo a) d).
 
+(** helper: special rectangles are open in the Sorgenfrey plane **)
+Theorem Sorgenfrey_plane_special_rectangle_open : forall a b d:set,
+  a :e R -> b :e R -> d :e R ->
+  Sorgenfrey_plane_special_rectangle a b d :e Sorgenfrey_plane_topology.
+let a b d.
+assume HaR: a :e R.
+assume HbR: b :e R.
+assume HdR: d :e R.
+prove Sorgenfrey_plane_special_rectangle a b d :e Sorgenfrey_plane_topology.
+set U := halfopen_interval_left a b.
+set V := halfopen_interval_left (minus_SNo a) d.
+claim HTx: topology_on Sorgenfrey_line Sorgenfrey_topology.
+{ exact R_lower_limit_topology_is_topology. }
+claim HUopen: U :e Sorgenfrey_topology.
+{ exact (halfopen_interval_left_in_R_lower_limit_topology a b HaR HbR). }
+claim HmaR: (minus_SNo a) :e R.
+{ exact (real_minus_SNo a HaR). }
+claim HVopen: V :e Sorgenfrey_topology.
+{ exact (halfopen_interval_left_in_R_lower_limit_topology (minus_SNo a) d HmaR HdR). }
+claim HBasis: basis_on (setprod Sorgenfrey_line Sorgenfrey_line)
+  (product_subbasis Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology).
+{ exact (product_subbasis_is_basis Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology
+         HTx HTx). }
+claim HrectIn: rectangle_set U V
+  :e product_subbasis Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology.
+{ claim HVfam: rectangle_set U V :e {rectangle_set U V0|V0 :e Sorgenfrey_topology}.
+  { exact (ReplI Sorgenfrey_topology (fun V0:set => rectangle_set U V0) V HVopen). }
+  exact (famunionI Sorgenfrey_topology (fun U0:set => {rectangle_set U0 V0|V0 :e Sorgenfrey_topology})
+         U (rectangle_set U V) HUopen HVfam). }
+claim HdefRect: Sorgenfrey_plane_special_rectangle a b d = rectangle_set U V.
+{ reflexivity. }
+claim HdefTop: Sorgenfrey_plane_topology
+  = product_topology Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology.
+{ reflexivity. }
+claim HdefProd: product_topology Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology
+  = generated_topology (setprod Sorgenfrey_line Sorgenfrey_line)
+      (product_subbasis Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology).
+{ reflexivity. }
+rewrite HdefTop.
+rewrite HdefProd.
+rewrite HdefRect.
+exact (generated_topology_contains_basis (setprod Sorgenfrey_line Sorgenfrey_line)
+       (product_subbasis Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology)
+       HBasis (rectangle_set U V) HrectIn).
+Qed.
+
 (** helper: L is uncountable **)
 Theorem Sorgenfrey_plane_L_uncountable : ~ countable_set Sorgenfrey_plane_L.
 assume HcountL: countable_set Sorgenfrey_plane_L.
