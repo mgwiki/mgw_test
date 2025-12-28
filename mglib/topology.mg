@@ -66580,27 +66580,19 @@ apply andI.
       exists i0:set, i0 :e J0 /\ forall i:set, i :e J0 -> (i0,i) :e le0 -> apply_fun sub i :e U.
 	  witness K.
 	  witness leK.
-	  apply andI.
-	  - (** core data **)
-		    prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K /\ x :e X.
-		    apply andI.
-		    - prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K.
-		      apply andI.
-		      - prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub.
-		        apply andI.
-		        - prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X.
-		          apply andI.
-		          - prove topology_on X Tx /\ directed_set K leK.
-		             apply andI.
-		             - exact HTx.
-		             - exact HdirK.
-		          - exact Htotsub.
-		        - exact Hgraphsub.
-		      - exact Hdomsub.
-		    - exact HxX.
-	  - (** eventuality from neighborhood shrinking **)
-	    let U. assume HU: U :e Tx.
-	    assume HxU: x :e U.
+		  apply andI.
+		  - (** core data **)
+			    prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K /\ x :e X.
+			    apply and6I.
+			    - exact HTx.
+			    - exact HdirK.
+			    - exact Htotsub.
+			    - exact Hgraphsub.
+			    - exact Hdomsub.
+			    - exact HxX.
+		  - (** eventuality from neighborhood shrinking **)
+		    let U. assume HU: U :e Tx.
+		    assume HxU: x :e U.
 	    prove exists i0:set, i0 :e K /\ forall i:set, i :e K -> (i0,i) :e leK -> apply_fun sub i :e U.
     claim HJne: J <> Empty.
     { exact (directed_set_nonempty J le HdirJ). }
