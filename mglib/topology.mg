@@ -74750,6 +74750,33 @@ Qed.
 Definition second_countable_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ exists B:set, basis_on X B /\ countable_set B /\ basis_generates X B Tx.
 
+(** helper: R is second countable in the standard topology **)
+(** LATEX VERSION: The real line with its standard topology has a countable basis. **)
+Theorem R_standard_topology_second_countable : second_countable_space R R_standard_topology.
+prove second_countable_space R R_standard_topology.
+prove topology_on R R_standard_topology /\
+  exists B:set, basis_on R B /\ countable_set B /\ basis_generates R B R_standard_topology.
+apply andI.
+- exact R_standard_topology_is_topology.
+- witness rational_open_intervals_basis.
+  prove basis_on R rational_open_intervals_basis /\ countable_set rational_open_intervals_basis /\
+    basis_generates R rational_open_intervals_basis R_standard_topology.
+  (** left-associative conjunction: (basis_on /\ countable_set) /\ basis_generates **)
+  apply andI.
+  * (** basis_on /\ countable_set **)
+    apply andI.
+    + claim HBgenerates: basis_on R rational_open_intervals_basis /\
+        generated_topology R rational_open_intervals_basis = R_standard_topology.
+      { exact ex13_8a_rational_intervals_basis_standard. }
+      exact (andEL (basis_on R rational_open_intervals_basis)
+                   (generated_topology R rational_open_intervals_basis = R_standard_topology)
+                   HBgenerates).
+    + exact rational_open_intervals_basis_countable.
+  * (** basis_generates **)
+    prove basis_generates R rational_open_intervals_basis R_standard_topology.
+    exact ex13_8a_rational_intervals_basis_standard.
+Qed.
+
 (** from §30 Example 1: R^n has countable basis **) 
 (** LATEX VERSION: Euclidean spaces have a countable basis, hence are second countable. **)
 Theorem euclidean_spaces_second_countable : forall n:set,
