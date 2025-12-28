@@ -71059,10 +71059,338 @@ apply andI.
       prove f :e X0.
       rewrite real_sequences_eq_Romega_space.
       exact HfRomega.
-    - (** neighborhood condition for generated_topology: use a uniform open ball inside the cylinder **)
-      let f. assume HfC: f :e C.
-      admit. (** FAIL **)
-  }
+	    - (** neighborhood condition for generated_topology: use a uniform open ball inside the cylinder **)
+	      let f. assume HfC: f :e C.
+	      (** choose an interval neighborhood of the j-th coordinate inside U0, then a uniform radius r>0 forcing the j-th coordinate to stay inside it **)
+	      claim HfX0: f :e X0.
+	      { claim HfRomega: f :e R_omega_space.
+	        { exact (SepE1 R_omega_space
+	                 (fun f0:set => j :e omega /\ U0 :e space_family_topology Xi0 j /\ apply_fun f0 j :e U0)
+	                 f HfC). }
+	        rewrite real_sequences_eq_Romega_space.
+	        exact HfRomega. }
+	      claim Hcore: j :e omega /\ U0 :e space_family_topology Xi0 j /\ apply_fun f j :e U0.
+	      { exact (SepE2 R_omega_space
+	               (fun f0:set => j :e omega /\ U0 :e space_family_topology Xi0 j /\ apply_fun f0 j :e U0)
+	               f HfC). }
+	      claim Hcore1: j :e omega /\ U0 :e space_family_topology Xi0 j.
+	      { exact (andEL (j :e omega /\ U0 :e space_family_topology Xi0 j) (apply_fun f j :e U0) Hcore). }
+	      claim HfjU0: apply_fun f j :e U0.
+	      { exact (andER (j :e omega /\ U0 :e space_family_topology Xi0 j) (apply_fun f j :e U0) Hcore). }
+	      claim HjO': j :e omega.
+	      { exact (andEL (j :e omega) (U0 :e space_family_topology Xi0 j) Hcore1). }
+	      claim HU0Top': U0 :e space_family_topology Xi0 j.
+	      { exact (andER (j :e omega) (U0 :e space_family_topology Xi0 j) Hcore1). }
+	      claim HU0std': U0 :e R_standard_topology.
+	      { rewrite <- HtopEq.
+	        exact HU0Top'. }
+	      (** unpack U0 openness in R_standard_topology = generated_topology R R_standard_basis **)
+	      claim HU0prop: forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0.
+	      { exact (SepE2 (Power R)
+	               (fun U1 : set => forall x0 :e U1, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U1)
+	               U0 HU0std'). }
+	      apply (HU0prop (apply_fun f j) HfjU0).
+	      let I0. assume HI0pair.
+	      claim HI0basis: I0 :e R_standard_basis.
+	      { exact (andEL (I0 :e R_standard_basis) ((apply_fun f j) :e I0 /\ I0 c= U0) HI0pair). }
+	      claim HI0prop: (apply_fun f j) :e I0 /\ I0 c= U0.
+	      { exact (andER (I0 :e R_standard_basis) ((apply_fun f j) :e I0 /\ I0 c= U0) HI0pair). }
+	      claim HfjI0: (apply_fun f j) :e I0.
+	      { exact (andEL ((apply_fun f j) :e I0) (I0 c= U0) HI0prop). }
+	      claim HI0sub: I0 c= U0.
+	      { exact (andER ((apply_fun f j) :e I0) (I0 c= U0) HI0prop). }
+	      (** destruct I0 as an open interval (a0,b0) **)
+	      claim Hexa0: exists a0 :e R, I0 :e {open_interval a0 b0|b0 :e R}.
+	      { exact (famunionE R (fun a0:set => {open_interval a0 b0|b0 :e R}) I0 HI0basis). }
+	      apply Hexa0.
+	      let a0. assume Ha0pair.
+	      claim Ha0R: a0 :e R.
+	      { exact (andEL (a0 :e R) (I0 :e {open_interval a0 b0|b0 :e R}) Ha0pair). }
+	      claim HI0fam: I0 :e {open_interval a0 b0|b0 :e R}.
+	      { exact (andER (a0 :e R) (I0 :e {open_interval a0 b0|b0 :e R}) Ha0pair). }
+	      claim Hexb0: exists b0 :e R, I0 = open_interval a0 b0.
+	      { exact (ReplE R (fun b00:set => open_interval a0 b00) I0 HI0fam). }
+	      apply Hexb0.
+	      let b0. assume Hb0pair.
+	      claim Hb0R: b0 :e R.
+	      { exact (andEL (b0 :e R) (I0 = open_interval a0 b0) Hb0pair). }
+	      claim HI0eq: I0 = open_interval a0 b0.
+	      { exact (andER (b0 :e R) (I0 = open_interval a0 b0) Hb0pair). }
+	      (** set x = f(j) and extract a0 < x < b0 **)
+	      claim HfjR: apply_fun f j :e R.
+	      { claim Hfpack: total_function_on f omega R /\ functional_graph f.
+	        { exact (SepE2 (Power (setprod omega R))
+	                 (fun f0:set => total_function_on f0 omega R /\ functional_graph f0)
+	                 f HfX0). }
+	        claim Htotf: total_function_on f omega R.
+	        { exact (andEL (total_function_on f omega R) (functional_graph f) Hfpack). }
+	        exact (total_function_on_apply_fun_in_Y f omega R j Htotf HjO'). }
+		      claim HfjInInt: apply_fun f j :e open_interval a0 b0.
+		      { rewrite <- HI0eq.
+		        exact HfjI0. }
+	      claim HintPred: Rlt a0 (apply_fun f j) /\ Rlt (apply_fun f j) b0.
+	      { exact (SepE2 R (fun z : set => Rlt a0 z /\ Rlt z b0) (apply_fun f j) HfjInInt). }
+	      claim Ha0x: Rlt a0 (apply_fun f j).
+	      { exact (andEL (Rlt a0 (apply_fun f j)) (Rlt (apply_fun f j) b0) HintPred). }
+	      claim Hxb0: Rlt (apply_fun f j) b0.
+	      { exact (andER (Rlt a0 (apply_fun f j)) (Rlt (apply_fun f j) b0) HintPred). }
+	      (** define the positive gaps da = x-a0 and db = b0-x **)
+	      set da := add_SNo (apply_fun f j) (minus_SNo a0).
+	      set db := add_SNo b0 (minus_SNo (apply_fun f j)).
+	      claim Ha0S: SNo a0.
+	      { exact (real_SNo a0 Ha0R). }
+	      claim Hb0S: SNo b0.
+	      { exact (real_SNo b0 Hb0R). }
+	      claim HxS: SNo (apply_fun f j).
+	      { exact (real_SNo (apply_fun f j) HfjR). }
+	      claim Hm_a0R: minus_SNo a0 :e R.
+	      { exact (real_minus_SNo a0 Ha0R). }
+	      claim Hm_xR: minus_SNo (apply_fun f j) :e R.
+	      { exact (real_minus_SNo (apply_fun f j) HfjR). }
+	      claim HdaR: da :e R.
+	      { exact (real_add_SNo (apply_fun f j) HfjR (minus_SNo a0) Hm_a0R). }
+	      claim HdbR: db :e R.
+	      { exact (real_add_SNo b0 Hb0R (minus_SNo (apply_fun f j)) Hm_xR). }
+	      claim Ha0xlt: a0 < apply_fun f j.
+	      { exact (RltE_lt a0 (apply_fun f j) Ha0x). }
+	      claim Hxb0lt: apply_fun f j < b0.
+	      { exact (RltE_lt (apply_fun f j) b0 Hxb0). }
+	      claim H0da_lt: 0 < da.
+	      { claim H0a0eq: add_SNo 0 a0 = a0.
+	        { exact (add_SNo_0L a0 Ha0S). }
+	        claim H0a0ltx: add_SNo 0 a0 < apply_fun f j.
+	        { rewrite H0a0eq at 1.
+	          exact Ha0xlt. }
+	        exact (add_SNo_minus_Lt2b (apply_fun f j) a0 0 HxS Ha0S SNo_0 H0a0ltx). }
+	      claim H0db_lt: 0 < db.
+	      { claim H0xeq: add_SNo 0 (apply_fun f j) = apply_fun f j.
+	        { exact (add_SNo_0L (apply_fun f j) HxS). }
+	        claim H0xltb0: add_SNo 0 (apply_fun f j) < b0.
+	        { rewrite H0xeq at 1.
+	          exact Hxb0lt. }
+	        exact (add_SNo_minus_Lt2b b0 (apply_fun f j) 0 Hb0S HxS SNo_0 H0xltb0). }
+	      claim H0da: Rlt 0 da.
+	      { exact (RltI 0 da real_0 HdaR H0da_lt). }
+	      claim H0db: Rlt 0 db.
+	      { exact (RltI 0 db real_0 HdbR H0db_lt). }
+	      (** choose r3 < da and r3 < db, then r < r3 and r < 1 **)
+	      apply (exists_eps_lt_two_pos_Euclid da db HdaR HdbR H0da H0db).
+	      let r3. assume Hr3pack.
+	      claim Hr3pair1: (r3 :e R /\ Rlt 0 r3) /\ Rlt r3 da.
+	      { exact (andEL ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 da) (Rlt r3 db) Hr3pack). }
+	      claim Hr3db: Rlt r3 db.
+	      { exact (andER ((r3 :e R /\ Rlt 0 r3) /\ Rlt r3 da) (Rlt r3 db) Hr3pack). }
+	      claim Hr3pair0: r3 :e R /\ Rlt 0 r3.
+	      { exact (andEL (r3 :e R /\ Rlt 0 r3) (Rlt r3 da) Hr3pair1). }
+	      claim Hr3da: Rlt r3 da.
+	      { exact (andER (r3 :e R /\ Rlt 0 r3) (Rlt r3 da) Hr3pair1). }
+	      claim Hr3R: r3 :e R.
+	      { exact (andEL (r3 :e R) (Rlt 0 r3) Hr3pair0). }
+	      claim Hr3pos: Rlt 0 r3.
+	      { exact (andER (r3 :e R) (Rlt 0 r3) Hr3pair0). }
+	      apply (exists_eps_lt_two_pos_Euclid r3 1 Hr3R real_1 Hr3pos Rlt_0_1).
+	      let r. assume Hrpack.
+	      claim Hrpair1: (r :e R /\ Rlt 0 r) /\ Rlt r r3.
+	      { exact (andEL ((r :e R /\ Rlt 0 r) /\ Rlt r r3) (Rlt r 1) Hrpack). }
+	      claim Hr1: Rlt r 1.
+	      { exact (andER ((r :e R /\ Rlt 0 r) /\ Rlt r r3) (Rlt r 1) Hrpack). }
+	      claim Hrpair0: r :e R /\ Rlt 0 r.
+	      { exact (andEL (r :e R /\ Rlt 0 r) (Rlt r r3) Hrpair1). }
+	      claim Hrr3: Rlt r r3.
+	      { exact (andER (r :e R /\ Rlt 0 r) (Rlt r r3) Hrpair1). }
+	      claim HrR: r :e R.
+	      { exact (andEL (r :e R) (Rlt 0 r) Hrpair0). }
+	      claim Hrpos: Rlt 0 r.
+	      { exact (andER (r :e R) (Rlt 0 r) Hrpair0). }
+	      claim Hrda: Rlt r da.
+	      { exact (Rlt_tra r r3 da Hrr3 Hr3da). }
+	      claim Hrdb: Rlt r db.
+	      { exact (Rlt_tra r r3 db Hrr3 Hr3db). }
+	      (** define the neighborhood ball around f **)
+	      set ball := open_ball X0 d f r.
+	      witness ball.
+	      apply andI.
+	      - (** ball is in B **)
+	        prove ball :e B.
+	        claim Hball_in_rfam: ball :e {open_ball X0 d f rr|rr :e R, Rlt 0 rr}.
+	        { exact (ReplSepI R (fun rr:set => Rlt 0 rr) (fun rr:set => open_ball X0 d f rr) r HrR Hrpos). }
+	        exact (famunionI X0 (fun x0:set => {open_ball X0 d x0 rr|rr :e R, Rlt 0 rr})
+	               f ball HfX0 Hball_in_rfam).
+	      - apply andI.
+	        + (** f is in its ball **)
+	          exact (center_in_open_ball X0 d f r uniform_metric_Romega_is_metric HfX0 Hrpos).
+	        + (** the ball is contained in the cylinder **)
+	          prove ball c= C.
+	          let g. assume Hgball: g :e ball.
+	          claim HgX0: g :e X0.
+	          { exact (open_ballE1 X0 d f r g Hgball). }
+	          claim Hltfg: Rlt (apply_fun d (f,g)) r.
+	          { exact (open_ballE2 X0 d f r g Hgball). }
+		          (** convert metric value to Romega_uniform_metric_value f g **)
+		          claim Hpfg: (f,g) :e setprod real_sequences real_sequences.
+		          { exact (tuple_2_setprod_by_pair_Sigma real_sequences real_sequences f g HfX0 HgX0). }
+		          claim Happ0: apply_fun d (f,g) =
+		            Romega_uniform_metric_value ((f,g) 0) ((f,g) 1).
+		          { exact (apply_fun_graph (setprod real_sequences real_sequences)
+		                   (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+		                   (f,g) Hpfg). }
+		          claim Hp0: (f,g) 0 = f.
+		          { exact (tuple_2_0_eq f g). }
+		          claim Hp1: (f,g) 1 = g.
+		          { exact (tuple_2_1_eq f g). }
+		          claim Happ: apply_fun d (f,g) = Romega_uniform_metric_value f g.
+		          { rewrite Happ0.
+		            rewrite Hp0.
+		            rewrite Hp1.
+		            reflexivity. }
+	          claim HltU: Rlt (Romega_uniform_metric_value f g) r.
+	          { rewrite <- Happ.
+	            exact Hltfg. }
+	          (** bound the j-th clipped coordinate difference **)
+	          claim Hclip: Rlt (Romega_coord_clipped_diff f g j) r.
+	          { exact (Romega_coord_clipped_diff_lt_of_uniform_lt f g j r HfX0 HgX0 HjO' HltU). }
+	          (** since r<1, clipped diff < r forces abs diff < r **)
+	          claim Habs: Rlt (Romega_coord_abs_diff f g j) r.
+	          { set A := Romega_coord_abs_diff f g j.
+	            claim HdefClip: Romega_coord_clipped_diff f g j =
+	              If_i (Rlt A 1) A 1.
+	            { reflexivity. }
+		            apply (xm (Rlt A 1) (Rlt A r)).
+		            - assume Halt1: Rlt A 1.
+		              claim HclipEq: Romega_coord_clipped_diff f g j = A.
+		              { rewrite HdefClip.
+		                rewrite (If_i_1 (Rlt A 1) A 1 Halt1).
+		                reflexivity. }
+		              rewrite <- HclipEq at 1.
+		              exact Hclip.
+	            - assume Hnalt1: ~(Rlt A 1).
+	              claim Hcl1: Romega_coord_clipped_diff f g j = 1.
+	              { rewrite HdefClip.
+	                rewrite (If_i_0 (Rlt A 1) A 1 Hnalt1).
+	                reflexivity. }
+	              claim H1ltr: Rlt 1 r.
+	              { rewrite <- Hcl1 at 1.
+	                exact Hclip. }
+	              prove Rlt A r.
+	              exact (FalseE ((not_Rlt_sym r 1 Hr1) H1ltr) (Rlt A r)).
+	          }
+	          (** derive bounds on g(j) from abs(f(j)-g(j)) < r **)
+	          claim HfjR2: apply_fun f j :e R.
+	          { exact HfjR. }
+	          claim HgjR: apply_fun g j :e R.
+	          { claim Hgpack: total_function_on g omega R /\ functional_graph g.
+	            { exact (SepE2 (Power (setprod omega R))
+	                     (fun g0:set => total_function_on g0 omega R /\ functional_graph g0)
+	                     g HgX0). }
+	            claim Htotg: total_function_on g omega R.
+	            { exact (andEL (total_function_on g omega R) (functional_graph g) Hgpack). }
+	            exact (total_function_on_apply_fun_in_Y g omega R j Htotg HjO'). }
+	          claim HrS: SNo r.
+	          { exact (real_SNo r HrR). }
+	          claim HtS: SNo (add_SNo (apply_fun f j) (minus_SNo (apply_fun g j))).
+	          { exact (SNo_add_SNo (apply_fun f j) (minus_SNo (apply_fun g j)) HxS
+	                    (SNo_minus_SNo (apply_fun g j) (real_SNo (apply_fun g j) HgjR))). }
+	          claim Hrposlt: 0 < r.
+	          { exact (RltE_lt 0 r Hrpos). }
+	          claim Hablt: abs_SNo (add_SNo (apply_fun f j) (minus_SNo (apply_fun g j))) < r.
+	          { exact (RltE_lt (Romega_coord_abs_diff f g j) r Habs). }
+	          claim Hxg_lt: add_SNo (apply_fun f j) (minus_SNo (apply_fun g j)) < r.
+	          { exact (abs_SNo_lt_imp_lt (add_SNo (apply_fun f j) (minus_SNo (apply_fun g j))) r
+	                    HtS HrS Hrposlt Hablt). }
+	          claim Hg_x_lt: minus_SNo (add_SNo (apply_fun f j) (minus_SNo (apply_fun g j))) < r.
+	          { exact (abs_SNo_lt_imp_neg_lt (add_SNo (apply_fun f j) (minus_SNo (apply_fun g j))) r
+	                    HtS HrS Hrposlt Hablt). }
+	          (** show x-r < g(j) **)
+	          claim Hx_lt_rg: apply_fun f j < add_SNo r (apply_fun g j).
+	          { exact (add_SNo_minus_Lt1 (apply_fun f j) (apply_fun g j) r
+	                    HxS (real_SNo (apply_fun g j) HgjR) HrS Hxg_lt). }
+		          claim Hx_lt_gr: apply_fun f j < add_SNo (apply_fun g j) r.
+		          { rewrite (add_SNo_com (apply_fun g j) r (real_SNo (apply_fun g j) HgjR) HrS).
+		            exact Hx_lt_rg. }
+	          claim Hxmr_lt_g: add_SNo (apply_fun f j) (minus_SNo r) < apply_fun g j.
+	          { exact (add_SNo_minus_Lt1b (apply_fun f j) r (apply_fun g j)
+	                    HxS HrS (real_SNo (apply_fun g j) HgjR) Hx_lt_gr). }
+		          (** show g(j) < x+r **)
+		          claim Hg_lt_rx: apply_fun g j < add_SNo r (apply_fun f j).
+		          { claim HgjS: SNo (apply_fun g j).
+		            { exact (real_SNo (apply_fun g j) HgjR). }
+		            claim HabsSwap: abs_SNo (add_SNo (apply_fun f j) (minus_SNo (apply_fun g j))) =
+		              abs_SNo (add_SNo (apply_fun g j) (minus_SNo (apply_fun f j))).
+		            { exact (abs_SNo_dist_swap (apply_fun f j) (apply_fun g j) HxS HgjS). }
+		            claim Hab2: abs_SNo (add_SNo (apply_fun g j) (minus_SNo (apply_fun f j))) < r.
+		            { rewrite <- HabsSwap.
+		              exact Hablt. }
+		            claim Ht2S: SNo (add_SNo (apply_fun g j) (minus_SNo (apply_fun f j))).
+		            { exact (SNo_add_SNo (apply_fun g j) (minus_SNo (apply_fun f j)) HgjS
+		                      (SNo_minus_SNo (apply_fun f j) HxS)). }
+		            claim Hgmx_lt: add_SNo (apply_fun g j) (minus_SNo (apply_fun f j)) < r.
+		            { exact (abs_SNo_lt_imp_lt (add_SNo (apply_fun g j) (minus_SNo (apply_fun f j))) r
+		                      Ht2S HrS Hrposlt Hab2). }
+		            exact (add_SNo_minus_Lt1 (apply_fun g j) (apply_fun f j) r
+		                      HgjS HxS HrS Hgmx_lt). }
+		  claim Hg_lt_xr: apply_fun g j < add_SNo (apply_fun f j) r.
+		  { rewrite (add_SNo_com (apply_fun f j) r HxS HrS).
+		    exact Hg_lt_rx. }
+	          (** relate r<da and r<db to interval bounds for g(j) **)
+	          claim Hrda_lt: r < da.
+	          { exact (RltE_lt r da Hrda). }
+	          claim Hrdb_lt: r < db.
+	          { exact (RltE_lt r db Hrdb). }
+	          claim Harltx: add_SNo a0 r < apply_fun f j.
+	          { claim Hra_lt_x: add_SNo r a0 < apply_fun f j.
+	            { exact (add_SNo_minus_Lt2 (apply_fun f j) a0 r HxS Ha0S HrS Hrda_lt). }
+	            rewrite (add_SNo_com a0 r Ha0S HrS) at 1.
+	            exact Hra_lt_x. }
+	          claim Ha0_lt_xmr: a0 < add_SNo (apply_fun f j) (minus_SNo r).
+	          { exact (add_SNo_minus_Lt2b (apply_fun f j) r a0 HxS HrS Ha0S Harltx). }
+		          claim Hb0gt_xpr: add_SNo (apply_fun f j) r < b0.
+		          { claim Hxr_lt_b: add_SNo r (apply_fun f j) < b0.
+		            { exact (add_SNo_minus_Lt2 b0 (apply_fun f j) r Hb0S HxS HrS Hrdb_lt). }
+		            rewrite (add_SNo_com (apply_fun f j) r HxS HrS) at 1.
+		            exact Hxr_lt_b. }
+	          (** now show g(j) is in the open interval and hence in U0 **)
+	          claim Hagj: a0 < apply_fun g j.
+	          { exact (SNoLt_tra a0 (add_SNo (apply_fun f j) (minus_SNo r)) (apply_fun g j)
+	                    Ha0S (SNo_add_SNo (apply_fun f j) (minus_SNo r) HxS (SNo_minus_SNo r HrS))
+	                    (real_SNo (apply_fun g j) HgjR)
+	                    Ha0_lt_xmr Hxmr_lt_g). }
+	          claim Hgjb: apply_fun g j < b0.
+	          { exact (SNoLt_tra (apply_fun g j) (add_SNo (apply_fun f j) r) b0
+	                    (real_SNo (apply_fun g j) HgjR)
+	                    (SNo_add_SNo (apply_fun f j) r HxS HrS)
+	                    Hb0S
+	                    Hg_lt_xr Hb0gt_xpr). }
+	          claim HRlt_a0gj: Rlt a0 (apply_fun g j).
+	          { exact (RltI a0 (apply_fun g j) Ha0R HgjR Hagj). }
+	          claim HRlt_gjb0: Rlt (apply_fun g j) b0.
+	          { exact (RltI (apply_fun g j) b0 HgjR Hb0R Hgjb). }
+	          claim HgInInt: apply_fun g j :e open_interval a0 b0.
+	          { exact (SepI R (fun z : set => Rlt a0 z /\ Rlt z b0) (apply_fun g j) HgjR
+	                   (andI (Rlt a0 (apply_fun g j)) (Rlt (apply_fun g j) b0) HRlt_a0gj HRlt_gjb0)). }
+	          claim HgI0: apply_fun g j :e I0.
+	          { rewrite HI0eq.
+	            exact HgInInt. }
+	          claim HgjU0: apply_fun g j :e U0.
+	          { exact (HI0sub (apply_fun g j) HgI0). }
+		          (** finally, g is in the cylinder C **)
+		          prove g :e C.
+		          claim HCdef: C =
+		            {f0 :e product_space omega Xi0 | j :e omega /\ U0 :e space_family_topology Xi0 j /\ apply_fun f0 j :e U0}.
+		          { reflexivity. }
+		          rewrite HCdef.
+		          apply SepI.
+		          - (** g is a real sequence, hence in the product space **)
+		            claim HXdef: X = product_space omega Xi0.
+		            { reflexivity. }
+		            rewrite <- HXdef.
+		            rewrite <- HXeq.
+		            rewrite <- real_sequences_eq_Romega_space.
+		            exact HgX0.
+		          - (** predicate: j∈omega and U0 open and g(j)∈U0 **)
+		            claim Hleft: j :e omega /\ U0 :e space_family_topology Xi0 j.
+		            { exact (andI (j :e omega) (U0 :e space_family_topology Xi0 j) HjO' HU0Top'). }
+		            exact (andI (j :e omega /\ U0 :e space_family_topology Xi0 j) (apply_fun g j :e U0) Hleft HgjU0).
+		  }
   claim Hmin: finer_than uniform_topology (generated_topology_from_subbasis X S).
   { exact (topology_generated_by_basis_is_minimal X S uniform_topology HSsub HtopU HSinc). }
   claim Hinc: generated_topology_from_subbasis X S c= uniform_topology.
