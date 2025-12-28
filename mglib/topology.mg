@@ -65078,6 +65078,20 @@ apply andI.
 - exact Hdom.
 Qed.
 
+(** helper: packaged subnet witness with explicit index sets **)
+(** LATEX VERSION: Data of a subnet given by a cofinal order-preserving map phi:K→J. **)
+Definition subnet_of_witness : set -> set -> set -> set -> set -> set -> set -> set -> prop :=
+  fun net sub J leJ K leK X phi =>
+    directed_set J leJ /\ directed_set K leK /\
+    total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\
+    total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K /\
+    total_function_on phi K J /\ functional_graph phi /\ graph_domain_subset phi K /\
+    (forall i j:set, i :e K -> j :e K -> (i,j) :e leK ->
+      (apply_fun phi i, apply_fun phi j) :e leJ) /\
+    (forall j:set, j :e J -> exists k:set, k :e K /\ (j, apply_fun phi k) :e leJ) /\
+    (forall k:set, k :e K ->
+      apply_fun sub k = apply_fun net (apply_fun phi k)).
+
 (** helper: subnet preserves convergence for fixed index set witnesses **)
 (** LATEX VERSION: If net converges along J and sub is obtained by a cofinal map phi:K→J, then sub converges. **)
 Theorem subnet_preserves_convergence_witnessed :
@@ -65201,13 +65215,103 @@ Qed.
 
 (** from exercises after §29: convergence of subnets **) 
 (** LATEX VERSION: Convergent nets have convergent subnets to same limit. **)
-Theorem subnet_preserves_convergence : forall X Tx net sub x:set,
-  net_converges X Tx net x -> subnet_of net sub -> net_converges X Tx sub x.
-let X Tx net sub x.
-assume Hnet: net_converges X Tx net x.
-assume Hsub: subnet_of net sub.
-prove net_converges X Tx sub x.
-admit. (** FAIL **)
+Theorem subnet_preserves_convergence :
+  forall X Tx net sub x J leJ K leK phi:set,
+    subnet_of_witness net sub J leJ K leK X phi ->
+    net_converges_on X Tx net J leJ x ->
+    net_converges_on X Tx sub K leK x.
+let X Tx net sub x J leJ K leK phi.
+assume Hw: subnet_of_witness net sub J leJ K leK X phi.
+assume Hconv: net_converges_on X Tx net J leJ x.
+prove net_converges_on X Tx sub K leK x.
+
+(** unpack Hconv (left-associated conjunction) **)
+apply Hconv. assume Hcore Htail.
+apply Hcore. assume Hcore5 HxX.
+apply Hcore5. assume Hcore4 Hdomnet.
+apply Hcore4. assume Hcore3 Hgraphnet.
+apply Hcore3. assume Hcore2 Htotnet.
+apply Hcore2. assume HTx HdirJ.
+
+(** unpack Hw only for subnet-specific data **)
+apply Hw. assume Hleft Hwrest.
+apply Hleft. assume HdirJ2 HdirK.
+apply Hwrest. assume Hleft2 Hwrest2.
+apply Hleft2. assume Htotnet2 Hgraphnet2.
+apply Hwrest2. assume Hleft3 Hwrest3.
+apply Hleft3. assume Hdomnet2 Htotsub.
+apply Hwrest3. assume Hleft4 Hwrest4.
+apply Hleft4. assume Hgraphsub Hdomsub.
+apply Hwrest4. assume Hleft5 Hwrest5.
+apply Hleft5. assume Htotphi Hgraphphi.
+apply Hwrest5. assume Hleft6 Hwrest6.
+apply Hleft6. assume Hdomphi Hmono.
+apply Hwrest6. assume Hcofinal Hvals.
+
+prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K /\ x :e X /\
+  forall U:set, U :e Tx -> x :e U ->
+    exists i0:set, i0 :e K /\
+      forall i:set, i :e K -> (i0,i) :e leK -> apply_fun sub i :e U.
+apply andI.
+- (** core data **)
+  prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K /\ x :e X.
+  apply andI.
+  + prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K.
+    apply andI.
+    * prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub.
+      apply andI.
+      - prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X.
+        apply andI.
+        + prove topology_on X Tx /\ directed_set K leK.
+          apply andI.
+          * exact HTx.
+          * exact HdirK.
+        + exact Htotsub.
+      - exact Hgraphsub.
+    * exact Hdomsub.
+  + exact HxX.
+- (** eventuality for sub along leK **)
+  let U.
+  assume HU: U :e Tx.
+  assume HxU: x :e U.
+  claim Hexj0: exists j0:set, j0 :e J /\
+    forall j:set, j :e J -> (j0,j) :e leJ -> apply_fun net j :e U.
+  { exact (Htail U HU HxU). }
+  apply Hexj0.
+  let j0.
+  assume Hj0pair.
+  apply Hj0pair.
+  assume Hj0J HafterJ.
+  claim Hexk0: exists k0:set, k0 :e K /\ (j0, apply_fun phi k0) :e leJ.
+  { exact (Hcofinal j0 Hj0J). }
+  apply Hexk0.
+  let k0.
+  assume Hk0pair.
+  apply Hk0pair.
+  assume Hk0K Hj0phi0.
+  witness k0.
+  apply andI.
+  + exact Hk0K.
+  + let k.
+    assume HkK: k :e K.
+    assume Hk0k: (k0,k) :e leK.
+    prove apply_fun sub k :e U.
+    claim Hphi0J: apply_fun phi k0 :e J.
+    { exact (total_function_on_apply_fun_in_Y phi K J k0 Htotphi Hk0K). }
+    claim HphikJ: apply_fun phi k :e J.
+    { exact (total_function_on_apply_fun_in_Y phi K J k Htotphi HkK). }
+    claim Hphimon: (apply_fun phi k0, apply_fun phi k) :e leJ.
+    { exact (Hmono k0 k Hk0K HkK Hk0k). }
+    (** extract transitivity of leJ from directed_set J leJ **)
+    apply HdirJ. assume HleftJ HdirpropJ.
+    apply HleftJ. assume HJne HpoJ.
+    apply HpoJ. assume HabcJ HtransJ.
+    apply HabcJ. assume HabJ HantisymJ.
+    apply HabJ. assume HrelJ HreflJ.
+    claim Hj0phik: (j0, apply_fun phi k) :e leJ.
+    { exact (HtransJ j0 (apply_fun phi k0) (apply_fun phi k) Hj0J Hphi0J HphikJ Hj0phi0 Hphimon). }
+    rewrite (Hvals k HkK).
+    exact (HafterJ (apply_fun phi k) HphikJ Hj0phik).
 Qed.
 
 (** from exercises after §29: closure via nets **) 
