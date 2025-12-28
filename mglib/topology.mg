@@ -26210,6 +26210,8 @@ claim Hpair: (x, apply_fun f x) :e f.
 exact (Hrange x (apply_fun f x) Hpair).
 Qed.
 
+(** from §18 Continuous Functions: set theoretic graphs of functions **)
+(** LATEX VERSION: A function may be identified with its graph, the set of ordered pairs (x,f(x)). **)
 (** Helper: graph of a meta level function as a set of ordered pairs **)
 Definition graph : set -> (set -> set) -> set := fun A g => {(a, g a) | a :e A}.
 
@@ -26244,6 +26246,8 @@ rewrite <- Ha_eq.
 reflexivity.
 Qed.
 
+(** from §18 Continuous Functions: functions defined on all points **)
+(** LATEX VERSION: A function f:X->Y assigns a value f(x) in Y for each x in X. **)
 (** Helper: total function graph on X into Y (in addition to function_on) **)
 Definition total_function_on : set -> set -> set -> prop := fun f X Y =>
   function_on f X Y /\ forall x:set, x :e X -> exists y:set, y :e Y /\ (x,y) :e f.
@@ -26324,6 +26328,8 @@ rewrite <- HappEq.
 exact HappY.
 Qed.
 
+(** from §18 Continuous Functions: constant functions **)
+(** LATEX VERSION: A constant function on A takes every a in A to the same value x. **)
 (** Helper: constant function as a graph **)
 Definition const_fun : set -> set -> set := fun A x => {(a,x) | a :e A}.
 
@@ -26421,6 +26427,8 @@ apply andI.
   + exact (ReplI X (fun y0:set => (y0,y0)) x HxX).
 Qed.
 
+(** from §19 The Product Topology: constant families in products **)
+(** LATEX VERSION: In cartesian products, one often considers the constant family taking each index i to the same space X. **)
 Definition const_family : set -> set -> set := fun I X => {(i,X)|i :e I}.
 
 (** Helper: apply_fun for const_family **)
@@ -26432,7 +26440,12 @@ prove apply_fun (const_family I X) i = X.
 exact (const_fun_apply I X i Hi).
 Qed.
 
+(** from §19 The Product Topology: extracting components of a family of spaces **)
+(** LATEX VERSION: A product consists of a family of spaces X_i with topologies; we refer to the i-th factor and its topology. **)
 Definition product_component : set -> set -> set := fun Xi i => (apply_fun Xi i) 0.
+
+(** from §19 The Product Topology: extracting components of a family of spaces **)
+(** LATEX VERSION: A product consists of a family of spaces X_i with topologies; we refer to the i-th factor and its topology. **)
 Definition product_component_topology : set -> set -> set := fun Xi i => (apply_fun Xi i) 1.
 
 (** Helper: unfold product_component and product_component_topology **)
@@ -26450,7 +26463,9 @@ prove product_component_topology Xi i = (apply_fun Xi i) 1.
 reflexivity.
 Qed.
 
-(** family of spaces as a family of pairs (X_i, T_i) **) 
+(** from §19 The Product Topology: a family of topological spaces indexed by I **)
+(** LATEX VERSION: Consider a cartesian product of a family of spaces; we package each space X_i with its topology. **)
+(** family of spaces as a family of pairs (X_i, T_i) **)
 Definition const_space_family : set -> set -> set -> set := fun I X Tx =>
   {(i,(X,Tx))|i :e I}.
 
@@ -26463,40 +26478,76 @@ prove apply_fun (const_space_family I X Tx) i = (X,Tx).
 exact (const_fun_apply I (X,Tx) i Hi).
 Qed.
 
+(** from §19 The Product Topology: component space and component topology **)
+(** LATEX VERSION: For a family Xi, each index i determines a space X_i and a topology T_i. **)
 Definition space_family_set : set -> set -> set := fun Xi i => (apply_fun Xi i) 0.
+
+(** from §19 The Product Topology: component space and component topology **)
+(** LATEX VERSION: For a family Xi, each index i determines a space X_i and a topology T_i. **)
 Definition space_family_topology : set -> set -> set := fun Xi i => (apply_fun Xi i) 1.
 
+(** from §19 The Product Topology: union of component carriers **)
+(** LATEX VERSION: We take the union of all component spaces X_i as an ambient codomain for product functions. **)
 Definition space_family_union : set -> set -> set := fun I Xi =>
   Union {space_family_set Xi i|i :e I}.
+
+(** from §19 The Product Topology: union of component topology families **)
+(** LATEX VERSION: We take the union of all component topologies T_i as an ambient codomain for cylinder parameters. **)
 Definition topology_family_union : set -> set -> set := fun I Xi =>
   Union {space_family_topology Xi i|i :e I}.
 
+(** from §19 The Product Topology: cartesian product as a set of choice functions **)
+(** LATEX VERSION: The cartesian product consists of all functions f with f(i) in X_i for each index i. **)
 Definition product_space : set -> set -> set := fun I Xi =>
   {f :e Power (setprod I (space_family_union I Xi))|
      total_function_on f I (space_family_union I Xi) /\ functional_graph f /\
      forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i}.
 (** FIXED: product_space elements are total functional graphs I -> space_family_union, matching the intended set-theoretic product and avoiding Eps-choice pathologies. **)
+(** from §19 The Product Topology: subbasis elements via projections **)
+(** LATEX VERSION: Subbasis elements have the form pi_i^{-1}(U_i), restricting only the i-th coordinate to lie in an open set U_i. **)
 Definition product_cylinder : set -> set -> set -> set -> set :=
   fun I Xi i U =>
     {f :e product_space I Xi | i :e I /\ U :e space_family_topology Xi i /\ apply_fun f i :e U}.
+
+(** from §19 The Product Topology: product topology subbasis **)
+(** LATEX VERSION: The product topology is generated by the subbasis of all inverse images of opens under coordinate projections. **)
 Definition product_subbasis_full : set -> set -> set :=
   fun I Xi => \/_ i :e I, {product_cylinder I Xi i U|U :e space_family_topology Xi i}.
+
+(** from §19 The Product Topology: product topology on an indexed product **)
+(** LATEX VERSION: The product topology is the topology generated by the projection subbasis. **)
 Definition product_topology_full : set -> set -> set := fun I Xi =>
   generated_topology_from_subbasis (product_space I Xi) (product_subbasis_full I Xi).
 (** FIXED: Was using Power set which generates discrete topology, not box topology; now box_topology is generated from the box_basis (products of opens in each component). **)
+(** from §19 The Product Topology: box topology on an indexed product **)
+(** LATEX VERSION: The box topology has as basis all products of open sets in each coordinate, with no finiteness restriction. **)
 Definition box_basis : set -> set -> set := fun I Xi =>
   {B :e Power (product_space I Xi) |
     exists U:set, total_function_on U I (topology_family_union I Xi) /\ functional_graph U /\
       (forall i:set, i :e I -> apply_fun U i :e space_family_topology Xi i) /\
       B = {f :e product_space I Xi | forall i:set, i :e I -> apply_fun f i :e apply_fun U i}}.
 (** FIXED: box_basis witnesses are total functional graphs U:I->(union of component topologies), ensuring `apply_fun U i` is backed by an actual graph element. **)
+(** from §19 The Product Topology: box topology generated by box_basis **)
+(** LATEX VERSION: The box topology is the topology generated by the box basis. **)
 Definition box_topology : set -> set -> set := fun I Xi =>
   generated_topology (product_space I Xi) (box_basis I Xi).
+
+(** from §19 The Product Topology: notation for countable products **)
+(** LATEX VERSION: For countable index sets, we use the same product space and product topology constructions. **)
 Definition countable_product_space : set -> set -> set := fun I Xi =>
   product_space I Xi.
+
+(** from §19 The Product Topology: notation for countable products **)
+(** LATEX VERSION: For countable index sets, we use the product topology on the product space. **)
 Definition countable_product_topology : set -> set -> set := fun I Xi =>
   product_topology_full I Xi.
+
+(** from §19 Example 1: Euclidean n space as a finite product of R **)
+(** LATEX VERSION: Euclidean n space R^n is a finite cartesian product of copies of R with the product topology. **)
 Definition euclidean_space : set -> set := fun n => product_space n (const_space_family n R R_standard_topology).
+
+(** from §19 Example 1: Euclidean n space as a finite product of R **)
+(** LATEX VERSION: Euclidean n space has the product topology, which agrees with the box topology in the finite case. **)
 Definition euclidean_topology : set -> set := fun n => product_topology_full n (const_space_family n R R_standard_topology).
 
 (** from §15 Example: standard topology on ℝ² as product topology **) 
