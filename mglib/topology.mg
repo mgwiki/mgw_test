@@ -9766,6 +9766,35 @@ apply (RleI a a Ha Ha).
 exact (not_Rlt_refl a Ha).
 Qed.
 
+(** helper: antisymmetry of Rle **)
+(** LATEX VERSION: If a ≤ b and b ≤ a then a = b. **)
+Theorem Rle_antisym : forall a b:set, Rle a b -> Rle b a -> a = b.
+let a b.
+assume Hab: Rle a b.
+assume Hba: Rle b a.
+claim HaR: a :e R.
+{ exact (RleE_left a b Hab). }
+claim HbR: b :e R.
+{ exact (RleE_right a b Hab). }
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+claim Hnltab: ~(Rlt a b).
+{ exact (RleE_nlt b a Hba). }
+claim Hnltba: ~(Rlt b a).
+{ exact (RleE_nlt a b Hab). }
+apply (SNoLt_trichotomy_or_impred a b HaS HbS (a = b)).
+- assume Hablt: a < b.
+  apply FalseE.
+  exact (Hnltab (RltI a b HaR HbR Hablt)).
+- assume HabEq: a = b.
+  exact HabEq.
+- assume Hbalt: b < a.
+  apply FalseE.
+  exact (Hnltba (RltI b a HbR HaR Hbalt)).
+Qed.
+
 (** helper for §13 Example 4: 0 < 1 in Rlt form **)
 (** LATEX VERSION: We use 0<1 in the usual order on R. **)
 Theorem Rlt_0_1 : Rlt 0 1.
@@ -68633,6 +68662,383 @@ Qed.
 Definition real_sequences : set := setexp R omega.
 Definition uniform_metric_Romega : set := Eps_i (fun d => metric_on real_sequences d).
 Definition uniform_topology : set := metric_topology real_sequences uniform_metric_Romega.
+
+(** helper: existence of a metric on any set (discrete metric construction) **)
+(** LATEX VERSION: Every set admits a metric (e.g. the discrete metric). **)
+Theorem exists_metric_on : forall X:set, exists d:set, metric_on X d.
+let X.
+(** Discrete metric: d(x,y)=0 if x=y, else 1. **)
+set g : set -> set := fun p:set => if (p 0 = p 1) then 0 else 1.
+set d : set := graph (setprod X X) g.
+witness d.
+prove metric_on X d.
+prove ((((function_on d (setprod X X) R /\
+         (forall x y:set, x :e X -> y :e X -> apply_fun d (x,y) = apply_fun d (y,x))) /\
+        (forall x:set, x :e X -> apply_fun d (x,x) = 0)) /\
+       (forall x y:set, x :e X -> y :e X ->
+         ~(Rlt (apply_fun d (x,y)) 0) /\ (apply_fun d (x,y) = 0 -> x = y))) /\
+      (forall x y z:set, x :e X -> y :e X -> z :e X ->
+        ~(Rlt (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z))) (apply_fun d (x,z))))).
+apply andI.
+- (** left-associative core: ((A /\ B) /\ C) /\ D **)
+  apply andI.
+  + (** (A /\ B) /\ C **)
+    apply andI.
+    * (** A /\ B **)
+      apply andI.
+      - (** function_on d (X×X) R **)
+         prove function_on d (setprod X X) R.
+         let p. assume Hp: p :e setprod X X.
+         prove apply_fun d p :e R.
+         rewrite (apply_fun_graph (setprod X X) g p Hp).
+         apply (xm (p 0 = p 1) ((if (p 0 = p 1) then 0 else 1) :e R)).
+         - assume H01: p 0 = p 1.
+           rewrite (If_i_1 (p 0 = p 1) 0 1 H01).
+           exact real_0.
+         - assume H01n: ~(p 0 = p 1).
+           rewrite (If_i_0 (p 0 = p 1) 0 1 H01n).
+           exact real_1.
+      - (** symmetry **)
+         let x y. assume Hx: x :e X. assume Hy: y :e X.
+         prove apply_fun d (x,y) = apply_fun d (y,x).
+         claim Hxyprod: (x,y) :e setprod X X.
+         { exact (tuple_2_setprod_by_pair_Sigma X X x y Hx Hy). }
+         claim Hyxprod: (y,x) :e setprod X X.
+         { exact (tuple_2_setprod_by_pair_Sigma X X y x Hy Hx). }
+         rewrite (apply_fun_graph (setprod X X) g (x,y) Hxyprod).
+         rewrite (apply_fun_graph (setprod X X) g (y,x) Hyxprod).
+         apply (xm (x = y)
+                   ((if (x,y) 0 = (x,y) 1 then 0 else 1) =
+                    (if (y,x) 0 = (y,x) 1 then 0 else 1))).
+         - assume Hxy: x = y.
+            claim H01: (x,y) 0 = (x,y) 1.
+            { rewrite (tuple_2_0_eq x y).
+              rewrite (tuple_2_1_eq x y).
+              exact Hxy. }
+            claim H10: (y,x) 0 = (y,x) 1.
+            { rewrite (tuple_2_0_eq y x).
+              rewrite (tuple_2_1_eq y x).
+              symmetry. exact Hxy. }
+            rewrite (If_i_1 ((x,y) 0 = (x,y) 1) 0 1 H01).
+            rewrite (If_i_1 ((y,x) 0 = (y,x) 1) 0 1 H10).
+            reflexivity.
+         - assume HxyN: ~(x = y).
+            claim H01n: ~((x,y) 0 = (x,y) 1).
+            { assume H01.
+              apply HxyN.
+              prove x = y.
+              claim H0: (x,y) 0 = x.
+              { exact (tuple_2_0_eq x y). }
+              claim H1: (x,y) 1 = y.
+              { exact (tuple_2_1_eq x y). }
+              rewrite <- H0 at 1.
+              rewrite <- H1 at 2.
+              exact H01. }
+            claim H10n: ~((y,x) 0 = (y,x) 1).
+            { assume H10.
+              apply HxyN.
+              prove x = y.
+              claim Hy0: (y,x) 0 = y.
+              { exact (tuple_2_0_eq y x). }
+              claim Hx1: (y,x) 1 = x.
+              { exact (tuple_2_1_eq y x). }
+              rewrite <- Hx1 at 1.
+              rewrite <- Hy0 at 2.
+              symmetry.
+              exact H10. }
+            rewrite (If_i_0 ((x,y) 0 = (x,y) 1) 0 1 H01n).
+            rewrite (If_i_0 ((y,x) 0 = (y,x) 1) 0 1 H10n).
+            reflexivity.
+    * (** diagonal zero **)
+      let x. assume Hx: x :e X.
+      prove apply_fun d (x,x) = 0.
+      claim Hxxprod: (x,x) :e setprod X X.
+      { exact (tuple_2_setprod_by_pair_Sigma X X x x Hx Hx). }
+      rewrite (apply_fun_graph (setprod X X) g (x,x) Hxxprod).
+      rewrite (tuple_2_0_eq x x).
+      rewrite (tuple_2_1_eq x x).
+      claim Hrefl: x = x.
+      { reflexivity. }
+      rewrite (If_i_1 (x = x) 0 1 Hrefl).
+      reflexivity.
+  + (** nonneg + identity of indiscernibles **)
+    let x y. assume Hx: x :e X. assume Hy: y :e X.
+    prove ~(Rlt (apply_fun d (x,y)) 0) /\ (apply_fun d (x,y) = 0 -> x = y).
+    claim Hxyprod: (x,y) :e setprod X X.
+    { exact (tuple_2_setprod_by_pair_Sigma X X x y Hx Hy). }
+    rewrite (apply_fun_graph (setprod X X) g (x,y) Hxyprod).
+    apply (xm (x = y) ( ~(Rlt (if (x,y) 0 = (x,y) 1 then 0 else 1) 0) /\
+                         ((if (x,y) 0 = (x,y) 1 then 0 else 1) = 0 -> x = y))).
+    * assume Hxy: x = y.
+      claim H01: (x,y) 0 = (x,y) 1.
+      { rewrite (tuple_2_0_eq x y).
+        rewrite (tuple_2_1_eq x y).
+        exact Hxy. }
+      rewrite (If_i_1 ((x,y) 0 = (x,y) 1) 0 1 H01).
+    apply andI.
+      - exact (not_Rlt_refl 0 real_0).
+      - assume _. exact Hxy.
+    * assume HxyN: ~(x = y).
+      claim H01n: ~((x,y) 0 = (x,y) 1).
+      { assume H01.
+        apply HxyN.
+        prove x = y.
+        claim H0: (x,y) 0 = x.
+        { exact (tuple_2_0_eq x y). }
+        claim H1: (x,y) 1 = y.
+        { exact (tuple_2_1_eq x y). }
+        rewrite <- H0 at 1.
+        rewrite <- H1 at 2.
+        exact H01. }
+      rewrite (If_i_0 ((x,y) 0 = (x,y) 1) 0 1 H01n).
+    apply andI.
+      - exact (not_Rlt_sym 0 1 Rlt_0_1).
+      - assume H10: 1 = 0.
+         apply FalseE.
+         exact (neq_1_0 H10).
+- (** triangle inequality **)
+  let x y z. assume Hx: x :e X. assume Hy: y :e X. assume Hz: z :e X.
+  prove ~(Rlt (add_SNo (apply_fun d (x,y)) (apply_fun d (y,z))) (apply_fun d (x,z))).
+  claim Hxyprod: (x,y) :e setprod X X.
+  { exact (tuple_2_setprod_by_pair_Sigma X X x y Hx Hy). }
+  claim Hyzprod: (y,z) :e setprod X X.
+  { exact (tuple_2_setprod_by_pair_Sigma X X y z Hy Hz). }
+  claim Hxzprod: (x,z) :e setprod X X.
+  { exact (tuple_2_setprod_by_pair_Sigma X X x z Hx Hz). }
+  rewrite (apply_fun_graph (setprod X X) g (x,y) Hxyprod).
+  rewrite (apply_fun_graph (setprod X X) g (y,z) Hyzprod).
+  rewrite (apply_fun_graph (setprod X X) g (x,z) Hxzprod).
+  apply (xm (x = y) (~(Rlt (add_SNo (if (x,y) 0 = (x,y) 1 then 0 else 1)
+                                     (if (y,z) 0 = (y,z) 1 then 0 else 1))
+                            (if (x,z) 0 = (x,z) 1 then 0 else 1)))).
+  - assume Hxy: x = y.
+    claim Hxy01: (x,y) 0 = (x,y) 1.
+    { rewrite (tuple_2_0_eq x y).
+      rewrite (tuple_2_1_eq x y).
+      exact Hxy. }
+    rewrite (If_i_1 ((x,y) 0 = (x,y) 1) 0 1 Hxy01).
+    apply (xm (y = z) (~(Rlt (add_SNo 0 (if (y,z) 0 = (y,z) 1 then 0 else 1))
+                              (if (x,z) 0 = (x,z) 1 then 0 else 1)))).
+    - assume Hyz: y = z.
+      claim Hyz01: (y,z) 0 = (y,z) 1.
+      { rewrite (tuple_2_0_eq y z).
+        rewrite (tuple_2_1_eq y z).
+        exact Hyz. }
+      claim Hxz: x = z.
+      { rewrite Hxy. exact Hyz. }
+      claim Hxz01: (x,z) 0 = (x,z) 1.
+      { rewrite (tuple_2_0_eq x z).
+        rewrite (tuple_2_1_eq x z).
+        exact Hxz. }
+      rewrite (If_i_1 ((y,z) 0 = (y,z) 1) 0 1 Hyz01).
+      rewrite (If_i_1 ((x,z) 0 = (x,z) 1) 0 1 Hxz01).
+      rewrite (add_SNo_0L 0 SNo_0).
+      exact (not_Rlt_refl 0 real_0).
+    - assume HyzN: ~(y = z).
+      claim Hyz01n: ~((y,z) 0 = (y,z) 1).
+      { assume H01.
+        apply HyzN.
+        prove y = z.
+        claim H0: (y,z) 0 = y.
+        { exact (tuple_2_0_eq y z). }
+        claim H1: (y,z) 1 = z.
+        { exact (tuple_2_1_eq y z). }
+        rewrite <- H0 at 1.
+        rewrite <- H1 at 2.
+        exact H01. }
+      claim Hxz01n: ~((x,z) 0 = (x,z) 1).
+      { assume H01.
+        apply HyzN.
+        prove y = z.
+        rewrite <- Hxy.
+        claim H0: (x,z) 0 = x.
+        { exact (tuple_2_0_eq x z). }
+        claim H1: (x,z) 1 = z.
+        { exact (tuple_2_1_eq x z). }
+        rewrite <- H0 at 1.
+        rewrite <- H1 at 2.
+        exact H01. }
+      rewrite (If_i_0 ((y,z) 0 = (y,z) 1) 0 1 Hyz01n).
+      rewrite (If_i_0 ((x,z) 0 = (x,z) 1) 0 1 Hxz01n).
+      rewrite (add_SNo_0L 1 SNo_1).
+      exact (not_Rlt_refl 1 real_1).
+  - assume HxyN: ~(x = y).
+    claim Hxy01n: ~((x,y) 0 = (x,y) 1).
+    { assume H01.
+      apply HxyN.
+      prove x = y.
+      claim H0: (x,y) 0 = x.
+      { exact (tuple_2_0_eq x y). }
+      claim H1: (x,y) 1 = y.
+      { exact (tuple_2_1_eq x y). }
+      rewrite <- H0 at 1.
+      rewrite <- H1 at 2.
+      exact H01. }
+    rewrite (If_i_0 ((x,y) 0 = (x,y) 1) 0 1 Hxy01n).
+    apply (xm (y = z) (~(Rlt (add_SNo 1 (if (y,z) 0 = (y,z) 1 then 0 else 1))
+                              (if (x,z) 0 = (x,z) 1 then 0 else 1)))).
+    - assume Hyz: y = z.
+      claim Hyz01: (y,z) 0 = (y,z) 1.
+      { rewrite (tuple_2_0_eq y z).
+        rewrite (tuple_2_1_eq y z).
+        exact Hyz. }
+      claim Hxz01n: ~((x,z) 0 = (x,z) 1).
+      { assume H01.
+        apply HxyN.
+        prove x = y.
+        rewrite Hyz.
+        claim H0: (x,z) 0 = x.
+        { exact (tuple_2_0_eq x z). }
+        claim H1: (x,z) 1 = z.
+        { exact (tuple_2_1_eq x z). }
+        rewrite <- H0 at 1.
+        rewrite <- H1 at 2.
+        exact H01. }
+      rewrite (If_i_1 ((y,z) 0 = (y,z) 1) 0 1 Hyz01).
+      rewrite (If_i_0 ((x,z) 0 = (x,z) 1) 0 1 Hxz01n).
+      rewrite (add_SNo_0R 1 SNo_1).
+      exact (not_Rlt_refl 1 real_1).
+    - assume HyzN: ~(y = z).
+      claim Hyz01n: ~((y,z) 0 = (y,z) 1).
+      { assume H01.
+        apply HyzN.
+        prove y = z.
+        claim H0: (y,z) 0 = y.
+        { exact (tuple_2_0_eq y z). }
+        claim H1: (y,z) 1 = z.
+        { exact (tuple_2_1_eq y z). }
+        rewrite <- H0 at 1.
+        rewrite <- H1 at 2.
+        exact H01. }
+      rewrite (If_i_0 ((y,z) 0 = (y,z) 1) 0 1 Hyz01n).
+      apply (xm (x = z) (~(Rlt (add_SNo 1 1) (if (x,z) 0 = (x,z) 1 then 0 else 1)))).
+      - assume Hxz: x = z.
+         claim Hxz01: (x,z) 0 = (x,z) 1.
+         { rewrite (tuple_2_0_eq x z).
+           rewrite (tuple_2_1_eq x z).
+           exact Hxz. }
+         rewrite (If_i_1 ((x,z) 0 = (x,z) 1) 0 1 Hxz01).
+         rewrite add_SNo_1_1_2.
+         claim H0lt2: Rlt 0 2.
+         { exact (RltI 0 2 real_0 real_2 SNoLt_0_2). }
+         exact (not_Rlt_sym 0 2 H0lt2).
+      - assume HxzN: ~(x = z).
+         claim Hxz01n: ~((x,z) 0 = (x,z) 1).
+         { assume H01.
+           apply HxzN.
+           prove x = z.
+           claim H0: (x,z) 0 = x.
+           { exact (tuple_2_0_eq x z). }
+           claim H1: (x,z) 1 = z.
+           { exact (tuple_2_1_eq x z). }
+           rewrite <- H0 at 1.
+           rewrite <- H1 at 2.
+           exact H01. }
+         rewrite (If_i_0 ((x,z) 0 = (x,z) 1) 0 1 Hxz01n).
+         rewrite add_SNo_1_1_2.
+         claim H12: Rlt 1 2.
+         { exact (RltI 1 2 real_1 real_2 SNoLt_1_2). }
+         exact (not_Rlt_sym 1 2 H12).
+Qed.
+
+Definition R_upper_bound : set -> set -> prop := fun A u =>
+  u :e R /\ forall a:set, a :e A -> a :e R -> Rle a u.
+
+Definition R_lub : set -> set -> prop := fun A l =>
+  l :e R /\
+  (forall a:set, a :e A -> a :e R -> Rle a l) /\
+  (forall u:set, u :e R ->
+     (forall a:set, a :e A -> a :e R -> Rle a u) ->
+     Rle l u).
+
+(** helper: extract l :e R from R_lub **)
+Theorem R_lub_in_R : forall A l:set, R_lub A l -> l :e R.
+let A l.
+assume Hlub: R_lub A l.
+(** R_lub A l parses as ((l :e R /\ UB) /\ MIN) because /\ is left associative **)
+claim Hcore: l :e R /\ (forall a:set, a :e A -> a :e R -> Rle a l).
+{ exact (andEL (l :e R /\ (forall a:set, a :e A -> a :e R -> Rle a l))
+               (forall u:set, u :e R ->
+                 (forall a:set, a :e A -> a :e R -> Rle a u) ->
+                 Rle l u)
+               Hlub). }
+exact (andEL (l :e R)
+             (forall a:set, a :e A -> a :e R -> Rle a l)
+             Hcore).
+Qed.
+
+(** helper: uniqueness of least upper bounds in R **)
+Theorem R_lub_unique : forall A l1 l2:set, R_lub A l1 -> R_lub A l2 -> l1 = l2.
+let A l1 l2.
+assume H1: R_lub A l1.
+assume H2: R_lub A l2.
+claim H1core: l1 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l1.
+{ exact (andEL (l1 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l1)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l1 u)
+               H1). }
+claim H1min: forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l1 u.
+{ exact (andER (l1 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l1)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l1 u)
+               H1). }
+claim H1R: l1 :e R.
+{ exact (andEL (l1 :e R) (forall a:set, a :e A -> a :e R -> Rle a l1) H1core). }
+claim H1ub: forall a:set, a :e A -> a :e R -> Rle a l1.
+{ exact (andER (l1 :e R) (forall a:set, a :e A -> a :e R -> Rle a l1) H1core). }
+
+claim H2core: l2 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l2.
+{ exact (andEL (l2 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l2)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l2 u)
+               H2). }
+claim H2min: forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l2 u.
+{ exact (andER (l2 :e R /\ forall a:set, a :e A -> a :e R -> Rle a l2)
+               (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l2 u)
+               H2). }
+claim H2R: l2 :e R.
+{ exact (andEL (l2 :e R) (forall a:set, a :e A -> a :e R -> Rle a l2) H2core). }
+claim H2ub: forall a:set, a :e A -> a :e R -> Rle a l2.
+{ exact (andER (l2 :e R) (forall a:set, a :e A -> a :e R -> Rle a l2) H2core). }
+
+claim Hle12: Rle l1 l2.
+{ exact (H1min l2 H2R H2ub). }
+claim Hle21: Rle l2 l1.
+{ exact (H2min l1 H1R H1ub). }
+exact (Rle_antisym l1 l2 Hle12 Hle21).
+Qed.
+
+(** helper: 0 is the least upper bound of {0} **)
+Theorem R_lub_Sing0 : R_lub {0} 0.
+prove R_lub {0} 0.
+prove (0 :e R /\
+  (forall a:set, a :e {0} -> a :e R -> Rle a 0) /\
+  (forall u:set, u :e R ->
+     (forall a:set, a :e {0} -> a :e R -> Rle a u) ->
+     Rle 0 u)).
+apply andI.
+- apply andI.
+  + exact real_0.
+  + let a.
+    assume Ha0: a :e {0}.
+    assume HaR: a :e R.
+    claim HaEq: a = 0.
+    { exact (SingE 0 a Ha0). }
+    rewrite HaEq.
+    exact (Rle_refl 0 real_0).
+- let u.
+  assume HuR: u :e R.
+  assume Hub: forall a:set, a :e {0} -> a :e R -> Rle a u.
+  claim H0u: Rle 0 u.
+  { exact (Hub 0 (SingI 0) real_0). }
+  exact H0u.
+Qed.
+
+(** helper: existence of least upper bounds in R (used for uniform metric) **)
+(** LATEX VERSION: The expression sup{...} is assumed to exist as a real number. **)
+Theorem R_lub_exists : forall A:set,
+  (forall a:set, a :e A -> a :e R) ->
+  (exists u:set, u :e R /\ forall a:set, a :e A -> a :e R -> Rle a u) ->
+  exists l:set, R_lub A l.
+admit. (** FAIL **)
+Qed.
 (** LATEX VERSION: Open cover and Lindelöf space definitions. **)
 Definition open_cover : set -> set -> set -> prop :=
   fun X Tx U => (forall u:set, u :e U -> u :e Tx) /\ covers X U.
