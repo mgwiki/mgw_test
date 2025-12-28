@@ -21744,6 +21744,8 @@ claim Heps2': eps_ 1 :e 2.
 exact (eps_1_not_in_2 Heps2').
 Qed.
 
+(** helper: tagging notation y' **)
+(** LATEX VERSION: Notation helper: we sometimes tag points by adjoining a marker; this is used in constructed examples and does not correspond to a named TeX definition. **)
 (** helper: reintroduce tagging notation y' as SetAdjoin y {1} in the topology section **)
 Definition tag_topology : set -> set := fun y => SetAdjoin y {1}.
 Postfix ' 100 := tag_topology.
@@ -47291,6 +47293,7 @@ Definition metric_on : set -> set -> prop := fun X d =>
            (apply_fun d (x,z)))).
 
 (** Helper: metric_on plus totality of the graph on X×X **)
+(** LATEX VERSION: In addition to the metric axioms, we often require the distance function to be defined on all pairs in X×X as a total function. **)
 Definition metric_on_total : set -> set -> prop := fun X d =>
   metric_on X d /\ total_function_on d (setprod X X) R.
 
@@ -48797,9 +48800,17 @@ apply iffI.
                 U HUinPow HUprop).
 Qed.
 
-(** sequences as functions from omega **) 
+(** from §17: convergent sequences **)
+(** LATEX VERSION: A sequence x1,x2,... in X converges to x if for each neighborhood U of x there is N such that x_n is in U for all n >= N. **)
+(** sequences as functions from omega **)
 Definition sequence_in : set -> set -> prop := fun seq A => function_on seq omega A.
+
+(** from §17: convergent sequences **)
+(** LATEX VERSION: A sequence is a function from the positive integers (modeled here by omega) into the space. **)
 Definition sequence_on : set -> set -> prop := fun seq A => function_on seq omega A.
+
+(** from §17: definition of convergence of a sequence **)
+(** LATEX VERSION: The neighborhood definition of convergence: eventually the sequence lies in every neighborhood of the limit point. **)
 Definition converges_to : set -> set -> set -> set -> prop :=
   fun X Tx seq x =>
     topology_on X Tx /\ sequence_on seq X /\ x :e X /\
@@ -48867,11 +48878,18 @@ exact (andER ((topology_on X Tx /\ sequence_on seq X) /\ x :e X)
                  forall n:set, n :e omega -> N c= n -> apply_fun seq n :e U)
              H).
 Qed.
-(** map a sequence seq by a function f, giving the composed sequence n ↦ f(seq(n)) **)
+(** from §18: sequences and continuous functions **)
+(** LATEX VERSION: If f is a function and (x_n) a sequence, then (f(x_n)) is the composed sequence. **)
+(** map a sequence seq by a function f, giving the composed sequence n -> f(seq(n)) **)
 Definition map_sequence : set -> set -> set := fun f seq => compose_fun omega seq f.
 
+(** from §18: image of a set under a function **)
+(** LATEX VERSION: The image f(U) consists of all points f(x) with x in U. **)
 (** image of a set U under a function f **)
 Definition image_of : set -> set -> set := fun f U => Repl U (fun x => apply_fun f x).
+
+(** from §21: sequences of functions **)
+(** LATEX VERSION: For a sequence of functions f_n and a point x, the value is f_n(x). **)
 Definition function_sequence_value : set -> set -> set -> set :=
   fun f_seq n x => apply_fun (apply_fun f_seq n) x.
 
