@@ -74881,7 +74881,179 @@ Qed.
 (** helper: Sorgenfrey line is not second countable **)
 Theorem Sorgenfrey_line_not_second_countable :
   ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
-admit. (** FAIL **)
+assume Hsc : second_countable_space Sorgenfrey_line Sorgenfrey_topology.
+prove False.
+claim HexB: exists B:set, basis_on Sorgenfrey_line B /\ countable_set B /\ basis_generates Sorgenfrey_line B Sorgenfrey_topology.
+{ exact (andER (topology_on Sorgenfrey_line Sorgenfrey_topology)
+               (exists B:set, basis_on Sorgenfrey_line B /\ countable_set B /\ basis_generates Sorgenfrey_line B Sorgenfrey_topology)
+               Hsc). }
+apply HexB.
+let B. assume HBpair.
+claim HBasisCount: basis_on Sorgenfrey_line B /\ countable_set B.
+{ exact (andEL (basis_on Sorgenfrey_line B /\ countable_set B) (basis_generates Sorgenfrey_line B Sorgenfrey_topology) HBpair). }
+claim HBasis: basis_on Sorgenfrey_line B.
+{ exact (andEL (basis_on Sorgenfrey_line B) (countable_set B) HBasisCount). }
+claim HBcount: countable_set B.
+{ exact (andER (basis_on Sorgenfrey_line B) (countable_set B) HBasisCount). }
+claim HBgener: basis_generates Sorgenfrey_line B Sorgenfrey_topology.
+{ exact (andER (basis_on Sorgenfrey_line B /\ countable_set B) (basis_generates Sorgenfrey_line B Sorgenfrey_topology) HBpair). }
+claim HTxeq: generated_topology Sorgenfrey_line B = Sorgenfrey_topology.
+{ exact (andER (basis_on Sorgenfrey_line B) (generated_topology Sorgenfrey_line B = Sorgenfrey_topology) HBgener). }
+
+set pick := (fun x:set =>
+  Eps_i (fun b:set => b :e B /\ x :e b /\ b c= halfopen_interval_left x (add_SNo x 1))).
+
+claim HpickP: forall x:set, x :e Sorgenfrey_line ->
+  (fun b:set => b :e B /\ x :e b /\ b c= halfopen_interval_left x (add_SNo x 1)) (pick x).
+{ let x. assume HxX: x :e Sorgenfrey_line.
+  prove (fun b:set => b :e B /\ x :e b /\ b c= halfopen_interval_left x (add_SNo x 1)) (pick x).
+  claim HxR: x :e R.
+  { exact HxX. }
+  claim Hx1R: add_SNo x 1 :e R.
+  { exact (real_add_SNo x HxR 1 real_1). }
+  set U := halfopen_interval_left x (add_SNo x 1).
+  claim HUDef: U = halfopen_interval_left x (add_SNo x 1).
+  { reflexivity. }
+  claim HUopen: U :e Sorgenfrey_topology.
+  { exact (halfopen_interval_left_in_R_lower_limit_topology x (add_SNo x 1) HxR Hx1R). }
+  claim HUgen: U :e generated_topology Sorgenfrey_line B.
+  { rewrite HTxeq.
+    exact HUopen. }
+  claim HUbasis: forall z :e U, exists b :e B, z :e b /\ b c= U.
+  { exact (SepE2 (Power Sorgenfrey_line)
+                 (fun U0:set => forall z0 :e U0, exists b0 :e B, z0 :e b0 /\ b0 c= U0)
+                 U
+                 HUgen). }
+  claim HxU: x :e U.
+  { rewrite HUDef.
+    claim HUeq: halfopen_interval_left x (add_SNo x 1)
+      = {z :e R|~(Rlt z x) /\ Rlt z (add_SNo x 1)}.
+    { reflexivity. }
+    rewrite HUeq.
+    apply (SepI R (fun z:set => ~(Rlt z x) /\ Rlt z (add_SNo x 1)) x HxR).
+    apply andI.
+    - exact (not_Rlt_refl x HxR).
+    - claim HxS: SNo x.
+      { exact (real_SNo x HxR). }
+      claim Htmp: add_SNo x 0 < add_SNo x 1.
+      { exact (add_SNo_Lt2 x 0 1 HxS SNo_0 SNo_1 SNoLt_0_1). }
+      claim Hlt: x < add_SNo x 1.
+      { prove x < add_SNo x 1.
+        rewrite <- (add_SNo_0R x HxS) at 1.
+        exact Htmp. }
+      exact (RltI x (add_SNo x 1) HxR Hx1R Hlt). }
+  claim Hexb: exists b :e B, x :e b /\ b c= U.
+  { exact (HUbasis x HxU). }
+  apply Hexb.
+  let b. assume Hbpair.
+  claim HbB: b :e B.
+  { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
+  claim Hbprop: x :e b /\ b c= U.
+  { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
+  claim Hxb: x :e b.
+  { exact (andEL (x :e b) (b c= U) Hbprop). }
+  claim Hbsub: b c= U.
+  { exact (andER (x :e b) (b c= U) Hbprop). }
+  claim Hwit0: b :e B /\ x :e b /\ b c= halfopen_interval_left x (add_SNo x 1).
+  { apply andI.
+    - apply andI.
+      + exact HbB.
+      + exact Hxb.
+    - rewrite <- HUDef.
+      exact Hbsub. }
+  exact (Eps_i_ax (fun b0:set => b0 :e B /\ x :e b0 /\ b0 c= halfopen_interval_left x (add_SNo x 1)) b Hwit0). }
+
+claim HinjRB: inj R B pick.
+{ claim H1: forall x :e R, pick x :e B.
+  { let x. assume HxR: x :e R.
+    prove pick x :e B.
+    claim Hp: (fun b:set => b :e B /\ x :e b /\ b c= halfopen_interval_left x (add_SNo x 1)) (pick x).
+    { exact (HpickP x HxR). }
+    apply Hp.
+    assume Hcore Hsub.
+    apply Hcore.
+    assume HpB HxIn.
+    exact HpB. }
+  claim H2: forall x0 x1 :e R, pick x0 = pick x1 -> x0 = x1.
+  { let x0. assume Hx0R: x0 :e R.
+    let x1. assume Hx1R: x1 :e R.
+    assume Heq: pick x0 = pick x1.
+    prove x0 = x1.
+    claim Hp0: (fun b:set => b :e B /\ x0 :e b /\ b c= halfopen_interval_left x0 (add_SNo x0 1)) (pick x0).
+    { exact (HpickP x0 Hx0R). }
+    claim Hp1: (fun b:set => b :e B /\ x1 :e b /\ b c= halfopen_interval_left x1 (add_SNo x1 1)) (pick x1).
+    { exact (HpickP x1 Hx1R). }
+    claim Hx0in0: x0 :e pick x0.
+    { apply Hp0.
+      assume Hcore0 Hsub0.
+      apply Hcore0.
+      assume Hp0B Hx0in.
+      exact Hx0in. }
+    claim Hsub1: pick x1 c= halfopen_interval_left x1 (add_SNo x1 1).
+    { apply Hp1.
+      assume Hcore1 Hsub1.
+      exact Hsub1. }
+    claim Hx0in1: x0 :e pick x1.
+    { rewrite <- Heq.
+      exact Hx0in0. }
+    claim Hx0U1: x0 :e halfopen_interval_left x1 (add_SNo x1 1).
+    { exact (Hsub1 x0 Hx0in1). }
+    claim HU1prop: ~(Rlt x0 x1) /\ Rlt x0 (add_SNo x1 1).
+    { exact (SepE2 R (fun z:set => ~(Rlt z x1) /\ Rlt z (add_SNo x1 1)) x0 Hx0U1). }
+    claim Hnlt01: ~(Rlt x0 x1).
+    { exact (andEL (~(Rlt x0 x1)) (Rlt x0 (add_SNo x1 1)) HU1prop). }
+    claim Hx0S: SNo x0.
+    { exact (real_SNo x0 Hx0R). }
+    claim Hx1S: SNo x1.
+    { exact (real_SNo x1 Hx1R). }
+    apply (SNoLt_trichotomy_or_impred x0 x1 Hx0S Hx1S (x0 = x1)).
+    - assume Hlt: x0 < x1.
+      prove x0 = x1.
+      claim H01: Rlt x0 x1.
+      { exact (RltI x0 x1 Hx0R Hx1R Hlt). }
+      exact (FalseE (Hnlt01 H01) (x0 = x1)).
+    - assume Heq01: x0 = x1.
+      exact Heq01.
+    - assume Hlt: x1 < x0.
+      prove x0 = x1.
+      claim Hx1in1: x1 :e pick x1.
+      { apply Hp1.
+        assume Hcore1 Hsub1.
+        apply Hcore1.
+        assume Hp1B Hx1in.
+        exact Hx1in. }
+      claim Hsub0: pick x0 c= halfopen_interval_left x0 (add_SNo x0 1).
+      { apply Hp0.
+        assume Hcore0 Hsub0.
+        exact Hsub0. }
+      claim Hx1in0: x1 :e pick x0.
+      { rewrite Heq.
+        exact Hx1in1. }
+      claim Hx1U0: x1 :e halfopen_interval_left x0 (add_SNo x0 1).
+      { exact (Hsub0 x1 Hx1in0). }
+      claim HU0prop: ~(Rlt x1 x0) /\ Rlt x1 (add_SNo x0 1).
+      { exact (SepE2 R (fun z:set => ~(Rlt z x0) /\ Rlt z (add_SNo x0 1)) x1 Hx1U0). }
+      claim Hnlt10: ~(Rlt x1 x0).
+      { exact (andEL (~(Rlt x1 x0)) (Rlt x1 (add_SNo x0 1)) HU0prop). }
+      claim H10: Rlt x1 x0.
+      { exact (RltI x1 x0 Hx1R Hx0R Hlt). }
+      exact (FalseE (Hnlt10 H10) (x0 = x1)). }
+  exact (injI R B pick H1 H2). }
+
+claim HinjRBp: atleastp R B.
+{ prove exists f:set -> set, inj R B f.
+  witness pick.
+  exact HinjRB. }
+claim HcountB: atleastp B omega.
+{ exact HBcount. }
+claim HcountR: atleastp R omega.
+{ exact (atleastp_tra R B omega HinjRBp HcountB). }
+claim HdefR: R = real.
+{ reflexivity. }
+claim Hcount_real: atleastp real omega.
+{ rewrite <- HdefR.
+  exact HcountR. }
+exact (form100_22_real_uncountable_atleastp Hcount_real).
 Qed.
 
 Theorem Sorgenfrey_line_countability :
