@@ -54886,6 +54886,8 @@ exact (SepI (Power (setprod omega U0))
             Hprop).
 Qed.
 
+(** from §19: coordinate inclusions into infinite products **)
+(** LATEX VERSION: One often considers the map r -> (r,0,0,...) into R^omega when working with product and box topologies. **)
 (** Helper: a sequence supported at coordinate 0 **)
 Definition Romega_singleton_seq : set -> set := fun r =>
   graph omega (fun i:set => If_i (0 :e i) 0 r).
@@ -54950,6 +54952,8 @@ apply (SepI R_omega_space (fun f0:set => forall i:set, i :e omega -> 0 :e i -> a
   reflexivity.
 Qed.
 
+(** from §19: coordinate inclusion map into R^omega **)
+(** LATEX VERSION: Define the inclusion r -> (r,0,0,...) as a function from R into the product space. **)
 (** Helper: map r in R to the singleton sequence **)
 Definition Romega_singleton_map : set := graph R Romega_singleton_seq.
 
