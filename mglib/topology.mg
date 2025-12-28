@@ -65493,11 +65493,18 @@ apply iffI.
   claim HinA: net_points_in A net J.
   { exact (andER (net_converges_on X Tx net J x) (net_points_in A net J) Hpair). }
   prove x :e closure_of X Tx A.
-  apply SepI.
-  let U. assume HU: U :e Tx.
-  assume HxU: x :e U.
-  prove U :/\: A <> Empty.
+  (** unfold closure_of to use SepI **)
+  prove x :e {x0 :e X | forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty}.
   apply Hconv. assume Hcore Htail.
+  claim HxX0: x :e X.
+  { exact (andER (topology_on X Tx /\ directed_set J /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J)
+                 (x :e X)
+                 Hcore). }
+  apply SepI.
+  - exact HxX0.
+  - let U. assume HU: U :e Tx.
+    assume HxU: x :e U.
+    prove U :/\: A <> Empty.
   claim Hexi0: exists i0:set, i0 :e J /\
     forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
   { exact (Htail U HU HxU). }
