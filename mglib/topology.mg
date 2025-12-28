@@ -9646,10 +9646,9 @@ Definition Rle : set -> set -> prop := fun a b =>
 Theorem RleI : forall a b:set, a :e R -> b :e R -> ~(Rlt b a) -> Rle a b.
 let a b. assume Ha Hb Hnlt.
 prove a :e R /\ b :e R /\ ~(Rlt b a).
-apply andI.
-- apply andI.
-  + exact Ha.
-  + exact Hb.
+apply and3I.
+- exact Ha.
+- exact Hb.
 - exact Hnlt.
 Qed.
 
@@ -9676,10 +9675,9 @@ Qed.
 Theorem RltI : forall a b:set, a :e R -> b :e R -> a < b -> Rlt a b.
 let a b. assume Ha Hb Hab.
 prove a :e R /\ b :e R /\ a < b.
-apply andI.
-- apply andI.
-  + exact Ha.
-  + exact Hb.
+apply and3I.
+- exact Ha.
+- exact Hb.
 - exact Hab.
 Qed.
 
