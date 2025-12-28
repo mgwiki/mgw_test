@@ -65252,42 +65252,48 @@ claim HtailJ:
 
 (** upgrade codomains from X0 to X using J=Jc and functionality **)
 claim HnettotJX: total_function_on net J X.
-{ apply andI.
-  - prove function_on net J X.
-    let j. assume HjJ: j :e J.
+{ claim Hfun: function_on net J X.
+  { let j. assume HjJ: j :e J.
     claim HjJc: j :e Jc.
     { exact (HJsub j HjJ). }
-    exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc j HjJc).
-  - let j. assume HjJ: j :e J.
-    prove exists y:set, y :e X /\ (j,y) :e net.
+    exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc j HjJc). }
+  claim Htot: forall j:set, j :e J -> exists y:set, y :e X /\ (j,y) :e net.
+  { let j. assume HjJ: j :e J.
     witness (apply_fun net j).
     apply andI.
-    * claim HjJc: j :e Jc.
+    - claim HjJc: j :e Jc.
       { exact (HJsub j HjJ). }
       exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc j HjJc).
-    * exact (total_function_on_apply_fun_in_graph net J X0 Hnettot0 j HjJ). }
+    - exact (total_function_on_apply_fun_in_graph net J X0 Hnettot0 j HjJ). }
+  exact (andI (function_on net J X)
+              (forall j:set, j :e J -> exists y:set, y :e X /\ (j,y) :e net)
+              Hfun
+              Htot). }
 
 claim HsubtotKX: total_function_on sub K X.
-{ apply andI.
-  - prove function_on sub K X.
-    let k. assume HkK: k :e K.
+{ claim Hfun: function_on sub K X.
+  { let k. assume HkK: k :e K.
     rewrite (Hsubeq k HkK).
     claim HphikJ: apply_fun phi k :e J.
     { exact ((total_function_on_function_on phi K J Hphitot) k HkK). }
     claim HphikJc: apply_fun phi k :e Jc.
     { exact (HJsub (apply_fun phi k) HphikJ). }
-    exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc (apply_fun phi k) HphikJc).
-  - let k. assume HkK: k :e K.
-    prove exists y:set, y :e X /\ (k,y) :e sub.
+    exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc (apply_fun phi k) HphikJc). }
+  claim Htot: forall k:set, k :e K -> exists y:set, y :e X /\ (k,y) :e sub.
+  { let k. assume HkK: k :e K.
     witness (apply_fun sub k).
     apply andI.
-    * rewrite (Hsubeq k HkK).
+    - rewrite (Hsubeq k HkK).
       claim HphikJ: apply_fun phi k :e J.
       { exact ((total_function_on_function_on phi K J Hphitot) k HkK). }
       claim HphikJc: apply_fun phi k :e Jc.
       { exact (HJsub (apply_fun phi k) HphikJ). }
       exact (total_function_on_apply_fun_in_Y net Jc X Hnettotc (apply_fun phi k) HphikJc).
-    * exact (total_function_on_apply_fun_in_graph sub K X0 Hsubtot0 k HkK). }
+    - exact (total_function_on_apply_fun_in_graph sub K X0 Hsubtot0 k HkK). }
+  exact (andI (function_on sub K X)
+              (forall k:set, k :e K -> exists y:set, y :e X /\ (k,y) :e sub)
+              Hfun
+              Htot). }
 
 exact (subnet_preserves_convergence_witnessed
   X Tx net sub x J K phi
