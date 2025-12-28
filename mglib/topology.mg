@@ -69730,6 +69730,37 @@ claim Hex: exists l:set, P l.
 exact (Eps_i_ex P Hex).
 Qed.
 
+(** helper: each clipped coordinate difference is bounded above by the uniform metric value **)
+Theorem Romega_coord_clipped_diff_le_uniform : forall f g i:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  i :e omega ->
+  Rle (Romega_coord_clipped_diff f g i) (Romega_uniform_metric_value f g).
+let f g i.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+assume Hi: i :e omega.
+set A := Romega_clipped_diffs f g.
+set l := Romega_uniform_metric_value f g.
+claim Hlub: R_lub A l.
+{ exact (Romega_uniform_metric_value_is_lub f g Hf Hg). }
+(** extract the upper-bound clause from R_lub **)
+set P := l :e R.
+set UB := forall a:set, a :e A -> a :e R -> Rle a l.
+set MIN := forall u:set, u :e R ->
+            (forall a:set, a :e A -> a :e R -> Rle a u) ->
+            Rle l u.
+claim Hcore: P /\ UB.
+{ exact (andEL (P /\ UB) MIN Hlub). }
+claim Hub: UB.
+{ exact (andER P UB Hcore). }
+claim Hai: Romega_coord_clipped_diff f g i :e A.
+{ exact (ReplI omega (fun n:set => Romega_coord_clipped_diff f g n) i Hi). }
+claim HaiR: Romega_coord_clipped_diff f g i :e R.
+{ exact (Romega_clipped_diffs_in_R f g Hf Hg (Romega_coord_clipped_diff f g i) Hai). }
+exact (Hub (Romega_coord_clipped_diff f g i) Hai HaiR).
+Qed.
+
 (** helper: uniform metric value is symmetric **)
 Theorem Romega_uniform_metric_value_sym : forall f g:set,
   f :e real_sequences ->
