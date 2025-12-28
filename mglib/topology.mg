@@ -79394,13 +79394,81 @@ apply andI.
 Theorem product_topology_full_Hausdorff_axiom : forall I Xi:set,
   Hausdorff_spaces_family I Xi ->
   Hausdorff_space (product_space I Xi) (product_topology_full I Xi).
-admit. (** FAIL **)
+let I Xi.
+assume HHfam: Hausdorff_spaces_family I Xi.
+prove Hausdorff_space (product_space I Xi) (product_topology_full I Xi).
+prove topology_on (product_space I Xi) (product_topology_full I Xi) /\
+  forall x1 x2:set, x1 :e product_space I Xi -> x2 :e product_space I Xi -> x1 <> x2 ->
+    exists U V:set, U :e product_topology_full I Xi /\ V :e product_topology_full I Xi /\
+      x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+apply andI.
+- (** topology_on product_topology_full **)
+  apply (xm (I = Empty)).
+  + assume HI0: I = Empty.
+    rewrite HI0.
+    claim Hdef: product_topology_full Empty Xi = countable_product_topology_subbasis Empty Xi.
+    { reflexivity. }
+    rewrite Hdef.
+    exact (countable_product_topology_subbasis_empty_is_topology Xi).
+  + assume HIne: I <> Empty.
+    claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+    { let i. assume HiI: i :e I.
+      exact (Hausdorff_space_topology (product_component Xi i) (product_component_topology Xi i) (HHfam i HiI)). }
+    claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+    { exact (product_subbasis_full_subbasis_on I Xi HIne HcompTop). }
+    exact (topology_from_subbasis_is_topology (product_space I Xi) (product_subbasis_full I Xi) HS).
+- (** Hausdorff separation axiom for product_topology_full **)
+  admit. (** FAIL **)
 Qed.
 
 Theorem product_topology_full_regular_axiom : forall I Xi:set,
   regular_spaces_family I Xi ->
   regular_space (product_space I Xi) (product_topology_full I Xi).
-admit. (** FAIL **)
+let I Xi.
+assume Hrfam: regular_spaces_family I Xi.
+prove regular_space (product_space I Xi) (product_topology_full I Xi).
+prove one_point_sets_closed (product_space I Xi) (product_topology_full I Xi) /\
+  forall x:set, x :e product_space I Xi ->
+    forall F:set, closed_in (product_space I Xi) (product_topology_full I Xi) F -> x /:e F ->
+      exists U V:set,
+        U :e product_topology_full I Xi /\ V :e product_topology_full I Xi /\
+        x :e U /\ F c= V /\ U :/\: V = Empty.
+apply andI.
+- (** one_point_sets_closed for the product **)
+  prove topology_on (product_space I Xi) (product_topology_full I Xi) /\
+    forall x:set, x :e product_space I Xi -> closed_in (product_space I Xi) (product_topology_full I Xi) {x}.
+  apply andI.
+  + (** topology_on product_topology_full **)
+    apply (xm (I = Empty)).
+    * assume HI0: I = Empty.
+      rewrite HI0.
+      claim Hdef: product_topology_full Empty Xi = countable_product_topology_subbasis Empty Xi.
+      { reflexivity. }
+      rewrite Hdef.
+      exact (countable_product_topology_subbasis_empty_is_topology Xi).
+    * assume HIne: I <> Empty.
+      claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
+      { let i. assume HiI: i :e I.
+        claim Hreg: regular_space (product_component Xi i) (product_component_topology Xi i).
+        { exact (Hrfam i HiI). }
+        claim Hopc: one_point_sets_closed (product_component Xi i) (product_component_topology Xi i).
+        { exact (andEL (one_point_sets_closed (product_component Xi i) (product_component_topology Xi i))
+                       (forall x:set, x :e product_component Xi i ->
+                         forall F:set, closed_in (product_component Xi i) (product_component_topology Xi i) F -> x /:e F ->
+                           exists U V:set,
+                             U :e product_component_topology Xi i /\ V :e product_component_topology Xi i /\
+                             x :e U /\ F c= V /\ U :/\: V = Empty)
+                       Hreg). }
+        exact (andEL (topology_on (product_component Xi i) (product_component_topology Xi i))
+                     (forall x:set, x :e product_component Xi i -> closed_in (product_component Xi i) (product_component_topology Xi i) {x})
+                     Hopc). }
+      claim HS: subbasis_on (product_space I Xi) (product_subbasis_full I Xi).
+      { exact (product_subbasis_full_subbasis_on I Xi HIne HcompTop). }
+      exact (topology_from_subbasis_is_topology (product_space I Xi) (product_subbasis_full I Xi) HS).
+  + (** singletons closed in the product topology **)
+    admit. (** FAIL **)
+- (** regular separation axiom for the product **)
+  admit. (** FAIL **)
 Qed.
 
 Theorem separation_axioms_subspace_product : forall X Tx:set,
