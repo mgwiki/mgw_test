@@ -65483,7 +65483,10 @@ apply iffI.
 - (** (<=) a convergent net in A yields x in closure(A) **)
   assume Hex: exists net J:set, net_converges_on X Tx net J x /\ net_points_in A net J.
   apply Hex.
-  let net J.
+  let net.
+  assume HexJ: exists J:set, net_converges_on X Tx net J x /\ net_points_in A net J.
+  apply HexJ.
+  let J.
   assume Hpair: net_converges_on X Tx net J x /\ net_points_in A net J.
   claim Hconv: net_converges_on X Tx net J x.
   { exact (andEL (net_converges_on X Tx net J x) (net_points_in A net J) Hpair). }
