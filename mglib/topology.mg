@@ -65192,7 +65192,283 @@ prove x :e closure_of X Tx A <->
 apply iffI.
 - assume Hxcl: x :e closure_of X Tx A.
   prove exists net J le:set, net_converges_on X Tx net J le x /\ net_points_in A net J.
-  admit. (** FAIL **)
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hxcl). }
+  claim Hmeet: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+  { exact (SepE2 X (fun x0:set => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hxcl). }
+  set J := {U :e Tx | x :e U}.
+  set le := {p :e setprod J J | p 1 c= p 0}.
+  set g := fun U:set => Eps_i (fun y:set => y :e U :/\: A).
+  set net := graph J g.
+  claim HTsub: Tx c= Power X.
+  { exact (topology_sub_Power X Tx HTx). }
+  claim HsubX: forall U:set, U :e Tx -> U c= X.
+  { let U. assume HU: U :e Tx.
+    claim HU_pow: U :e Power X.
+    { exact (HTsub U HU). }
+    exact (PowerE X U HU_pow). }
+  claim HJmeet: forall U:set, U :e J -> U :/\: A <> Empty.
+  { let U. assume HUJ: U :e J.
+    claim HUTx: U :e Tx.
+    { exact (SepE1 Tx (fun U0:set => x :e U0) U HUJ). }
+    claim HxU: x :e U.
+    { exact (SepE2 Tx (fun U0:set => x :e U0) U HUJ). }
+    exact (Hmeet U HUTx HxU). }
+  claim Hg_in: forall U:set, U :e J -> g U :e U :/\: A.
+  { let U. assume HUJ: U :e J.
+    claim HUne: U :/\: A <> Empty.
+    { exact (HJmeet U HUJ). }
+    claim Hexy: exists y:set, y :e U :/\: A.
+    { exact (nonempty_has_element (U :/\: A) HUne). }
+    exact (Eps_i_ex (fun y:set => y :e U :/\: A) Hexy). }
+  claim Hg_in_X: forall U:set, U :e J -> g U :e X.
+  { let U. assume HUJ: U :e J.
+    claim HUTx: U :e Tx.
+    { exact (SepE1 Tx (fun U0:set => x :e U0) U HUJ). }
+    claim HUsub: U c= X.
+    { exact (HsubX U HUTx). }
+    claim HgU_in_U: g U :e U.
+    { exact (binintersectE1 U A (g U) (Hg_in U HUJ)). }
+    exact (HUsub (g U) HgU_in_U). }
+  claim Hdir: directed_set J le.
+  { prove directed_set J le.
+    prove (J <> Empty /\ partial_order_on J le) /\
+      forall a b:set, a :e J -> b :e J ->
+        exists c:set, c :e J /\ (a,c) :e le /\ (b,c) :e le.
+    apply andI.
+    - (** J <> Empty /\ partial_order_on J le **)
+      apply andI.
+      + claim HXTx: X :e Tx.
+        { exact (topology_has_X X Tx HTx). }
+        claim HXJ: X :e J.
+        { exact (SepI Tx (fun U0:set => x :e U0) X HXTx HxX). }
+        exact (elem_implies_nonempty J X HXJ).
+      + prove partial_order_on J le.
+        prove relation_on le J /\
+          (forall a:set, a :e J -> (a,a) :e le) /\
+          (forall a b:set, a :e J -> b :e J -> (a,b) :e le -> (b,a) :e le -> a = b) /\
+          (forall a b c:set, a :e J -> b :e J -> c :e J -> (a,b) :e le -> (b,c) :e le -> (a,c) :e le).
+        (** partial_order_on J le = (((relation_on /\ refl) /\ antisym) /\ trans) **)
+        apply andI.
+        - (** (relation_on /\ refl) /\ antisym **)
+          apply andI.
+          + (** relation_on /\ refl **)
+            apply andI.
+            - (** relation_on le J **)
+              prove relation_on le J.
+              let a b. assume Hab: (a,b) :e le.
+              prove a :e J /\ b :e J.
+              claim Hprod: (a,b) :e setprod J J.
+              { exact (SepE1 (setprod J J) (fun p:set => p 1 c= p 0) (a,b) Hab). }
+              claim Ha0: (a,b) 0 :e J.
+              { exact (ap0_Sigma J (fun _ : set => J) (a,b) Hprod). }
+              claim Hb1: (a,b) 1 :e J.
+              { exact (ap1_Sigma J (fun _ : set => J) (a,b) Hprod). }
+              apply andI.
+              - rewrite <- (tuple_2_0_eq a b). exact Ha0.
+              - rewrite <- (tuple_2_1_eq a b). exact Hb1.
+            - (** reflexive **)
+              let a. assume HaJ: a :e J.
+              prove (a,a) :e le.
+              apply (SepI (setprod J J) (fun p:set => p 1 c= p 0) (a,a)).
+              + exact (tuple_2_setprod_by_pair_Sigma J J a a HaJ HaJ).
+              + rewrite (tuple_2_1_eq a a).
+                rewrite (tuple_2_0_eq a a).
+                exact (Subq_ref a).
+          + (** antisymmetric **)
+            let a b.
+            assume HaJ: a :e J.
+            assume HbJ: b :e J.
+            assume Hab: (a,b) :e le.
+            assume Hba: (b,a) :e le.
+            prove a = b.
+            apply set_ext.
+            - claim Hba_sub: (b,a) 1 c= (b,a) 0.
+              { exact (SepE2 (setprod J J) (fun p:set => p 1 c= p 0) (b,a) Hba). }
+              let y. assume Hy: y :e a.
+              claim Hy1: y :e (b,a) 1.
+              { rewrite (tuple_2_1_eq b a). exact Hy. }
+              claim Hy0: y :e (b,a) 0.
+              { exact (Hba_sub y Hy1). }
+              rewrite <- (tuple_2_0_eq b a).
+              exact Hy0.
+            - claim Hab_sub: (a,b) 1 c= (a,b) 0.
+              { exact (SepE2 (setprod J J) (fun p:set => p 1 c= p 0) (a,b) Hab). }
+              let y. assume Hy: y :e b.
+              claim Hy1: y :e (a,b) 1.
+              { rewrite (tuple_2_1_eq a b). exact Hy. }
+              claim Hy0: y :e (a,b) 0.
+              { exact (Hab_sub y Hy1). }
+              rewrite <- (tuple_2_0_eq a b).
+              exact Hy0.
+        - (** transitive **)
+          let a b c.
+          assume HaJ: a :e J.
+          assume HbJ: b :e J.
+          assume HcJ: c :e J.
+          assume Hab: (a,b) :e le.
+          assume Hbc: (b,c) :e le.
+          prove (a,c) :e le.
+          apply (SepI (setprod J J) (fun p:set => p 1 c= p 0) (a,c)).
+          + exact (tuple_2_setprod_by_pair_Sigma J J a c HaJ HcJ).
+          + claim Hab_sub: (a,b) 1 c= (a,b) 0.
+            { exact (SepE2 (setprod J J) (fun p:set => p 1 c= p 0) (a,b) Hab). }
+            claim Hbc_sub: (b,c) 1 c= (b,c) 0.
+            { exact (SepE2 (setprod J J) (fun p:set => p 1 c= p 0) (b,c) Hbc). }
+            claim HcSubb: c c= b.
+            { let y. assume Hy: y :e c.
+              claim Hy1: y :e (b,c) 1.
+              { rewrite (tuple_2_1_eq b c). exact Hy. }
+              claim Hy0: y :e (b,c) 0.
+              { exact (Hbc_sub y Hy1). }
+              rewrite <- (tuple_2_0_eq b c).
+              exact Hy0. }
+            claim HbSuba: b c= a.
+            { let y. assume Hy: y :e b.
+              claim Hy1: y :e (a,b) 1.
+              { rewrite (tuple_2_1_eq a b). exact Hy. }
+              claim Hy0: y :e (a,b) 0.
+              { exact (Hab_sub y Hy1). }
+              rewrite <- (tuple_2_0_eq a b).
+              exact Hy0. }
+            rewrite (tuple_2_1_eq a c).
+            rewrite (tuple_2_0_eq a c).
+            exact (Subq_tra c b a HcSubb HbSuba).
+    - (** upper bound property **)
+      let U V.
+      assume HUJ: U :e J.
+      assume HVJ: V :e J.
+      prove exists W:set, W :e J /\ (U,W) :e le /\ (V,W) :e le.
+      witness (U :/\: V).
+      apply andI.
+      + (** W :e J /\ (U,W) :e le **)
+        apply andI.
+        - (** W :e J **)
+          claim HUTx: U :e Tx.
+          { exact (SepE1 Tx (fun U0:set => x :e U0) U HUJ). }
+          claim HVTx: V :e Tx.
+          { exact (SepE1 Tx (fun U0:set => x :e U0) V HVJ). }
+          claim HxU: x :e U.
+          { exact (SepE2 Tx (fun U0:set => x :e U0) U HUJ). }
+          claim HxV: x :e V.
+          { exact (SepE2 Tx (fun U0:set => x :e U0) V HVJ). }
+          claim HWTx: U :/\: V :e Tx.
+          { exact (topology_binintersect_closed X Tx U V HTx HUTx HVTx). }
+          claim HxW: x :e U :/\: V.
+          { exact (binintersectI U V x HxU HxV). }
+          exact (SepI Tx (fun U0:set => x :e U0) (U :/\: V) HWTx HxW).
+        - (** (U,U∩V) :e le **)
+          claim HWJ: U :/\: V :e J.
+          { claim HUTx: U :e Tx.
+            { exact (SepE1 Tx (fun U0:set => x :e U0) U HUJ). }
+            claim HVTx: V :e Tx.
+            { exact (SepE1 Tx (fun U0:set => x :e U0) V HVJ). }
+            claim HxU: x :e U.
+            { exact (SepE2 Tx (fun U0:set => x :e U0) U HUJ). }
+            claim HxV: x :e V.
+            { exact (SepE2 Tx (fun U0:set => x :e U0) V HVJ). }
+            claim HWTx: U :/\: V :e Tx.
+            { exact (topology_binintersect_closed X Tx U V HTx HUTx HVTx). }
+            claim HxW: x :e U :/\: V.
+            { exact (binintersectI U V x HxU HxV). }
+            exact (SepI Tx (fun U0:set => x :e U0) (U :/\: V) HWTx HxW). }
+          apply (SepI (setprod J J) (fun p:set => p 1 c= p 0) (U, U :/\: V)).
+          + exact (tuple_2_setprod_by_pair_Sigma J J U (U :/\: V) HUJ HWJ).
+          + rewrite (tuple_2_1_eq U (U :/\: V)).
+            rewrite (tuple_2_0_eq U (U :/\: V)).
+            exact (binintersect_Subq_1 U V).
+      + (** (V,U∩V) :e le **)
+        claim HWJ: U :/\: V :e J.
+        { claim HUTx: U :e Tx.
+          { exact (SepE1 Tx (fun U0:set => x :e U0) U HUJ). }
+          claim HVTx: V :e Tx.
+          { exact (SepE1 Tx (fun U0:set => x :e U0) V HVJ). }
+          claim HxU: x :e U.
+          { exact (SepE2 Tx (fun U0:set => x :e U0) U HUJ). }
+          claim HxV: x :e V.
+          { exact (SepE2 Tx (fun U0:set => x :e U0) V HVJ). }
+          claim HWTx: U :/\: V :e Tx.
+          { exact (topology_binintersect_closed X Tx U V HTx HUTx HVTx). }
+          claim HxW: x :e U :/\: V.
+          { exact (binintersectI U V x HxU HxV). }
+          exact (SepI Tx (fun U0:set => x :e U0) (U :/\: V) HWTx HxW). }
+        apply (SepI (setprod J J) (fun p:set => p 1 c= p 0) (V, U :/\: V)).
+        - exact (tuple_2_setprod_by_pair_Sigma J J V (U :/\: V) HVJ HWJ).
+        - rewrite (tuple_2_1_eq V (U :/\: V)).
+          rewrite (tuple_2_0_eq V (U :/\: V)).
+          exact (binintersect_Subq_2 U V). }
+  claim Htot: total_function_on net J X.
+  { prove total_function_on net J X.
+    prove function_on net J X /\ forall U:set, U :e J -> exists y:set, y :e X /\ (U,y) :e net.
+    apply andI.
+    - prove function_on net J X.
+      let U. assume HUJ: U :e J.
+      prove apply_fun net U :e X.
+      rewrite (apply_fun_graph J g U HUJ).
+      exact (Hg_in_X U HUJ).
+    - let U. assume HUJ: U :e J.
+      prove exists y:set, y :e X /\ (U,y) :e net.
+      witness (g U).
+      apply andI.
+      + exact (Hg_in_X U HUJ).
+      + exact (ReplI J (fun U0:set => (U0, g U0)) U HUJ). }
+  witness net.
+  witness J.
+  witness le.
+  apply andI.
+  - prove net_converges_on X Tx net J le x.
+    prove topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X /\
+      forall U:set, U :e Tx -> x :e U ->
+        exists i0:set, i0 :e J /\
+          forall i:set, i :e J -> (i0,i) :e le -> apply_fun net i :e U.
+    apply andI.
+    - (** core **)
+      apply andI.
+      + (** ((((A /\ B) /\ C) /\ D) /\ E) **)
+        apply andI.
+        - (** (((A /\ B) /\ C) /\ D) **)
+          apply andI.
+          + (** ((A /\ B) /\ C) **)
+            apply andI.
+            { (** (A /\ B) **)
+              apply andI.
+              - exact HTx.
+              - exact Hdir. }
+            { exact Htot. }
+          + exact (functional_graph_graph J g).
+        - exact (graph_domain_subset_graph J g).
+      + exact HxX.
+    - (** tail **)
+      let U0.
+      assume HU0: U0 :e Tx.
+      assume HxU0: x :e U0.
+      prove exists i0:set, i0 :e J /\
+        forall i:set, i :e J -> (i0,i) :e le -> apply_fun net i :e U0.
+      witness U0.
+      apply andI.
+      + exact (SepI Tx (fun U0a:set => x :e U0a) U0 HU0 HxU0).
+      + let i. assume HiJ: i :e J.
+        assume Hlei: (U0,i) :e le.
+        prove apply_fun net i :e U0.
+        claim Hsub: (U0,i) 1 c= (U0,i) 0.
+        { exact (SepE2 (setprod J J) (fun p:set => p 1 c= p 0) (U0,i) Hlei). }
+        claim HiSub: i c= U0.
+        { let y. assume Hy: y :e i.
+          claim Hy1: y :e (U0,i) 1.
+          { rewrite (tuple_2_1_eq U0 i). exact Hy. }
+          claim Hy0: y :e (U0,i) 0.
+          { exact (Hsub y Hy1). }
+          rewrite <- (tuple_2_0_eq U0 i).
+          exact Hy0. }
+        rewrite (apply_fun_graph J g i HiJ).
+        claim Hgi_in_i: g i :e i.
+        { exact (binintersectE1 i A (g i) (Hg_in i HiJ)). }
+        exact (HiSub (g i) Hgi_in_i).
+  - prove net_points_in A net J.
+    let U. assume HUJ: U :e J.
+    prove apply_fun net U :e A.
+    rewrite (apply_fun_graph J g U HUJ).
+    exact (binintersectE2 U A (g U) (Hg_in U HUJ)).
 - assume Hex: exists net J le:set, net_converges_on X Tx net J le x /\ net_points_in A net J.
   apply Hex.
   let net.
