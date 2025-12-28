@@ -76862,7 +76862,17 @@ prove first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
   Lindelof_space Sorgenfrey_line Sorgenfrey_topology /\
   ~ second_countable_space Sorgenfrey_line Sorgenfrey_topology.
-admit. (** FAIL **)
+apply andI.
+- (** first_countable /\ dense_in /\ Lindelof **)
+  apply andI.
+  + (** first_countable /\ dense_in **)
+    apply andI.
+    * exact Sorgenfrey_line_first_countable.
+    * exact Sorgenfrey_line_rationals_dense.
+  + (** Lindelof_space Sorgenfrey_line Sorgenfrey_topology **)
+    admit. (** FAIL **)
+- (** not second countable **)
+  exact Sorgenfrey_line_not_second_countable.
 Qed.
 
 (** placeholders for later refinement of product/separation constructions **) 
