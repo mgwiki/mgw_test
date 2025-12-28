@@ -13152,22 +13152,18 @@ apply and3I.
             b3rect = {p1 :e EuclidPlane|
                        exists x0:set, exists y0:set,
                          p1 = (x0,y0) /\ Rlt a0 x0 /\ Rlt x0 b0 /\ Rlt c0 y0 /\ Rlt y0 d0}.
-      { witness a3. witness b3x. witness c3. witness d3.
-        claim H1 : a3 :e R /\ b3x :e R.
-        { apply andI.
-          - exact Ha3R.
-          - exact Hb3xR. }
-        claim H12 : (a3 :e R /\ b3x :e R) /\ c3 :e R.
-        { exact (andI (a3 :e R /\ b3x :e R) (c3 :e R) H1 Hc3R). }
-        claim H123 : ((a3 :e R /\ b3x :e R) /\ c3 :e R) /\ d3 :e R.
-        { exact (andI ((a3 :e R /\ b3x :e R) /\ c3 :e R) (d3 :e R) H12 Hd3R). }
-        claim H1234 : (((a3 :e R /\ b3x :e R) /\ c3 :e R) /\ d3 :e R) /\ Rlt a3 b3x.
-        { exact (andI (((a3 :e R /\ b3x :e R) /\ c3 :e R) /\ d3 :e R) (Rlt a3 b3x) H123 Hab3). }
-        claim H12345 : ((((a3 :e R /\ b3x :e R) /\ c3 :e R) /\ d3 :e R) /\ Rlt a3 b3x) /\ Rlt c3 d3.
-        { exact (andI ((((a3 :e R /\ b3x :e R) /\ c3 :e R) /\ d3 :e R) /\ Rlt a3 b3x) (Rlt c3 d3) H1234 Hcd3). }
-        apply andI.
-        - exact H12345.
-        - reflexivity. }
+	      { witness a3. witness b3x. witness c3. witness d3.
+	        apply andI.
+	        - claim H12345 : a3 :e R /\ b3x :e R /\ c3 :e R /\ d3 :e R /\ Rlt a3 b3x /\ Rlt c3 d3.
+	          { apply and6I.
+	            + exact Ha3R.
+	            + exact Hb3xR.
+	            + exact Hc3R.
+	            + exact Hd3R.
+	            + exact Hab3.
+	            + exact Hcd3. }
+	          exact H12345.
+	        - reflexivity. }
       exact (SepI (Power EuclidPlane)
                   (fun U0 : set =>
                     exists a b c d:set, a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d /\
@@ -13189,14 +13185,13 @@ apply and3I.
         claim Hpred :
           exists x0:set, exists y0:set,
             p = (x0,y0) /\ Rlt a3 x0 /\ Rlt x0 b3x /\ Rlt c3 y0 /\ Rlt y0 d3.
-        { witness x1. witness y1.
-          claim H1 : p = (x1,y1) /\ Rlt a3 x1.
-          { exact (andI (p = (x1,y1)) (Rlt a3 x1) Hp_tup1 Hax3). }
-          claim H12 : (p = (x1,y1) /\ Rlt a3 x1) /\ Rlt x1 b3x.
-          { exact (andI (p = (x1,y1) /\ Rlt a3 x1) (Rlt x1 b3x) H1 Hxb3). }
-          claim H123 : ((p = (x1,y1) /\ Rlt a3 x1) /\ Rlt x1 b3x) /\ Rlt c3 y1.
-          { exact (andI ((p = (x1,y1) /\ Rlt a3 x1) /\ Rlt x1 b3x) (Rlt c3 y1) H12 Hcy3). }
-          exact (andI (((p = (x1,y1) /\ Rlt a3 x1) /\ Rlt x1 b3x) /\ Rlt c3 y1) (Rlt y1 d3) H123 Hyd3). }
+	        { witness x1. witness y1.
+	          apply and5I.
+	          - exact Hp_tup1.
+	          - exact Hax3.
+	          - exact Hxb3.
+	          - exact Hcy3.
+	          - exact Hyd3. }
         exact (SepI EuclidPlane
                     (fun q : set =>
                       exists x0:set, exists y0:set,
