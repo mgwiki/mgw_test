@@ -34038,7 +34038,9 @@ claim Hsep: forall a b:set, a :e X -> b :e X -> a <> b ->
 exact (Hsep x1 x2 Hx1 Hx2 Hneq).
 Qed.
 
-(** FIXED: Quantifier scope error; T1_space requires finite subsets of X to be closed (F ⊆ X -> finite F -> closed_in X Tx F), not all finite sets. **)
+(** from §17: the T1 axiom **)
+(** LATEX VERSION: The T1 axiom says that finite point sets are closed. **)
+(** FIXED: Quantifier scope error; T1_space requires finite subsets of X to be closed (F c= X -> finite F -> closed_in X Tx F), not all finite sets. **)
 Definition T1_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ (forall F:set, F c= X -> finite F -> closed_in X Tx F).
 
@@ -41113,6 +41115,8 @@ prove closure_of ordered_square ordered_square_topology ordsq_A = ordsq_A :\/: {
 admit. (** FAIL **)
 Qed.
 
+(** from §17 Exercise 19: boundary of a set **)
+(** LATEX VERSION: For A c= X, define Bd A = cl(A) ∩ cl(X-A). **)
 Definition boundary_of : set -> set -> set -> set := fun X Tx A =>
   closure_of X Tx A :/\: closure_of X Tx (X :\: A).
 
@@ -41554,6 +41558,8 @@ apply set_ext.
   exact (SepI (setprod X Y) (fun q => apply_fun (projection2 X Y) q :e V) p HpXY Hprop).
 Qed.
 
+(** from §18 Continuity of a Function: definition of continuity **)
+(** LATEX VERSION: A function f: X -> Y is continuous if for each open set V of Y, the inverse image f^{-1}(V) is open in X. **)
 (** SUSPICIOUS DEFINITION: `continuous_map` relies on `function_on` via `apply_fun`/`Eps_i`, so it enforces only preimage-openness and codomain membership, not totality of the graph; use `total_function_on` when totality is needed. **)
 Definition continuous_map : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f =>
@@ -41801,6 +41807,8 @@ apply andI.
   exact (SepE2 (Power Y) (fun U0:set => preimage_of X f U0 :e Tx) V HVTpre).
 Qed.
 
+(** from §18 Continuity of a Function: continuous maps are functions defined on all points **)
+(** LATEX VERSION: Continuity is defined for functions f:X->Y; in formalization we often require totality of the graph explicitly. **)
 (** Helper: continuous_map variant with totality of the graph **)
 Definition continuous_map_total : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f =>
