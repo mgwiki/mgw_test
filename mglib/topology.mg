@@ -64944,6 +64944,11 @@ Theorem net_converges_on_implies_net_converges : forall X Tx net J x:set,
 let X Tx net J x.
 assume H: net_converges_on X Tx net J x.
 prove net_converges X Tx net x.
+prove exists J0:set,
+  topology_on X Tx /\ directed_set J0 /\ total_function_on net J0 X /\ functional_graph net /\ graph_domain_subset net J0 /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U ->
+      exists i0:set, i0 :e J0 /\
+        forall i:set, i :e J0 -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U.
 witness J.
 exact H.
 Qed.
@@ -65509,7 +65514,9 @@ apply iffI.
                  (forall i:set, i :e J -> (i0 :e i \/ i0 = i) -> apply_fun net i :e U)
                  Hi0pair). }
   claim Hneti0U: apply_fun net i0 :e U.
-  { exact (Hi0tail i0 Hi0J (orIR (i0 :e i0) (i0 = i0) (reflexivity))). }
+  { claim Hrefl: i0 = i0.
+    { reflexivity. }
+    exact (Hi0tail i0 Hi0J (orIR (i0 :e i0) (i0 = i0) Hrefl)). }
   claim Hneti0A: apply_fun net i0 :e A.
   { exact (HinA i0 Hi0J). }
   claim HinUA: apply_fun net i0 :e U :/\: A.
