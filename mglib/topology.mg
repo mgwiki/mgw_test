@@ -16013,49 +16013,49 @@ prove R_standard_basis c= Power R
   /\ (forall b1 :e R_standard_basis, forall b2 :e R_standard_basis, forall x:set,
         x :e b1 -> x :e b2 ->
         exists b3 :e R_standard_basis, x :e b3 /\ b3 c= b1 :/\: b2).
-apply andI.
-- apply andI.
-  + (** basis elements are subsets of R **)
-    let U. assume HU : U :e R_standard_basis.
-    prove U :e Power R.
-    (** destruct U ∈ ⋃_{a∈R} {open_interval a b | b∈R} **)
-    claim Hexa : exists a :e R, U :e {open_interval a b|b :e R}.
-    { exact (famunionE R (fun a0 : set => {open_interval a0 b|b :e R}) U HU). }
-    apply Hexa.
-    let a. assume Hapair.
-    claim HaR : a :e R.
-    { exact (andEL (a :e R) (U :e {open_interval a b|b :e R}) Hapair). }
-    claim HUfam : U :e {open_interval a b|b :e R}.
-    { exact (andER (a :e R) (U :e {open_interval a b|b :e R}) Hapair). }
-    claim Hexb : exists b :e R, U = open_interval a b.
-    { exact (ReplE R (fun b0 : set => open_interval a b0) U HUfam). }
-    apply Hexb.
-    let b. assume Hbpair.
-    claim HbR : b :e R.
-    { exact (andEL (b :e R) (U = open_interval a b) Hbpair). }
-    claim HUeq : U = open_interval a b.
-    { exact (andER (b :e R) (U = open_interval a b) Hbpair). }
-    rewrite HUeq.
-    exact (PowerI R (open_interval a b) (open_interval_Subq_R a b)).
-  + (** coverage: every x has a basis neighborhood **)
-    let x. assume HxR.
-    (** choose (x-1, x+1) **)
-    claim Hm1R : minus_SNo 1 :e R.
-    { exact (real_minus_SNo 1 real_1). }
-    set a0 := add_SNo x (minus_SNo 1).
-    set b0 := add_SNo x 1.
-    claim Ha0R : a0 :e R.
-    { exact (real_add_SNo x HxR (minus_SNo 1) Hm1R). }
-    claim Hb0R : b0 :e R.
-    { exact (real_add_SNo x HxR 1 real_1). }
-    set I := open_interval a0 b0.
-    witness I.
-    apply andI.
-    * (** I is in the standard basis **)
-      claim HIa : I :e {open_interval a0 bb|bb :e R}.
-      { exact (ReplI R (fun bb : set => open_interval a0 bb) b0 Hb0R). }
-      exact (famunionI R (fun aa : set => {open_interval aa bb|bb :e R}) a0 I Ha0R HIa).
-    * (** x is in I **)
+apply and3I.
+- (** basis elements are subsets of R **)
+  let U. assume HU : U :e R_standard_basis.
+  prove U :e Power R.
+  (** destruct U ∈ ⋃_{a∈R} {open_interval a b | b∈R} **)
+  claim Hexa : exists a :e R, U :e {open_interval a b|b :e R}.
+  { exact (famunionE R (fun a0 : set => {open_interval a0 b|b :e R}) U HU). }
+  apply Hexa.
+  let a. assume Hapair.
+  claim HaR : a :e R.
+  { exact (andEL (a :e R) (U :e {open_interval a b|b :e R}) Hapair). }
+  claim HUfam : U :e {open_interval a b|b :e R}.
+  { exact (andER (a :e R) (U :e {open_interval a b|b :e R}) Hapair). }
+  claim Hexb : exists b :e R, U = open_interval a b.
+  { exact (ReplE R (fun b0 : set => open_interval a b0) U HUfam). }
+  apply Hexb.
+  let b. assume Hbpair.
+  claim HbR : b :e R.
+  { exact (andEL (b :e R) (U = open_interval a b) Hbpair). }
+  claim HUeq : U = open_interval a b.
+  { exact (andER (b :e R) (U = open_interval a b) Hbpair). }
+  rewrite HUeq.
+  exact (PowerI R (open_interval a b) (open_interval_Subq_R a b)).
+- (** coverage: every x has a basis neighborhood **)
+  let x. assume HxR.
+  (** choose (x-1, x+1) **)
+  claim Hm1R : minus_SNo 1 :e R.
+  { exact (real_minus_SNo 1 real_1). }
+  set a0 := add_SNo x (minus_SNo 1).
+  set b0 := add_SNo x 1.
+  claim Ha0R : a0 :e R.
+  { exact (real_add_SNo x HxR (minus_SNo 1) Hm1R). }
+  claim Hb0R : b0 :e R.
+  { exact (real_add_SNo x HxR 1 real_1). }
+  set I := open_interval a0 b0.
+  witness I.
+  apply andI.
+  - (** I is in the standard basis **)
+    prove I :e R_standard_basis.
+    claim HIa : I :e {open_interval a0 bb|bb :e R}.
+    { exact (ReplI R (fun bb : set => open_interval a0 bb) b0 Hb0R). }
+    exact (famunionI R (fun aa : set => {open_interval aa bb|bb :e R}) a0 I Ha0R HIa).
+  - (** x is in I **)
       claim HxS : SNo x.
       { exact (real_SNo x HxR). }
       claim Hm1S : SNo (minus_SNo 1).
