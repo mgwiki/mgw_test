@@ -53167,15 +53167,15 @@ assume Hf: f :e R_omega_space.
 assume Hi: i :e omega.
 prove apply_fun f i :e R.
 set Xi := const_space_family omega R R_standard_topology.
-claim Hfprop: function_on f omega (space_family_union omega Xi) /\
+claim Hfprop: total_function_on f omega (space_family_union omega Xi) /\ functional_graph f /\
               forall j:set, j :e omega -> apply_fun f j :e space_family_set Xi j.
 { exact (SepE2 (Power (setprod omega (space_family_union omega Xi)))
-               (fun f0:set => function_on f0 omega (space_family_union omega Xi) /\
+               (fun f0:set => total_function_on f0 omega (space_family_union omega Xi) /\ functional_graph f0 /\
                  forall j:set, j :e omega -> apply_fun f0 j :e space_family_set Xi j)
                f
                Hf). }
 claim Hcoords: forall j:set, j :e omega -> apply_fun f j :e space_family_set Xi j.
-{ exact (andER (function_on f omega (space_family_union omega Xi))
+{ exact (andER (total_function_on f omega (space_family_union omega Xi) /\ functional_graph f)
                (forall j:set, j :e omega -> apply_fun f j :e space_family_set Xi j)
                Hfprop). }
 claim Hfi: apply_fun f i :e space_family_set Xi i.
@@ -53285,10 +53285,10 @@ claim Hcond: forall f :e bounded_sequences_Romega, exists b :e B, f :e b /\ b c=
       exact (SepE1 X (fun g0:set => forall i:set, i :e omega -> apply_fun g0 i :e apply_fun Um i) g Hg). }
     claim HbMpow: bM :e Power X.
     { exact (PowerI X bM HbMsub). }
-    claim HUmfun: function_on Um omega TU.
-    { claim Htot: total_function_on Um omega TU.
-      { exact (const_fun_total_function_on omega TU (open_interval (minus_SNo M) M) HintervalTU). }
-      exact (total_function_on_function_on Um omega TU Htot). }
+    claim Htot: total_function_on Um omega TU.
+    { exact (const_fun_total_function_on omega TU (open_interval (minus_SNo M) M) HintervalTU). }
+    claim HUmgraph: functional_graph Um.
+    { exact (functional_graph_const_fun omega (open_interval (minus_SNo M) M)). }
     claim HUmcoords: forall i:set, i :e omega -> apply_fun Um i :e space_family_topology Xi i.
     { let i. assume Hi: i :e omega.
       prove apply_fun Um i :e space_family_topology Xi i.
@@ -53305,17 +53305,19 @@ claim Hcond: forall f :e bounded_sequences_Romega, exists b :e B, f :e b /\ b c=
         exact (tuple_2_1_eq R R_standard_topology). }
       rewrite HTi.
       exact HopenI. }
-    claim HexU: exists U:set, function_on U omega TU /\
+    claim HexU: exists U:set, total_function_on U omega TU /\ functional_graph U /\
       (forall i:set, i :e omega -> apply_fun U i :e space_family_topology Xi i) /\
       bM = {f :e X | forall i:set, i :e omega -> apply_fun f i :e apply_fun U i}.
     { witness Um.
       apply andI.
       - apply andI.
-        + exact HUmfun.
+        + apply andI.
+          * exact Htot.
+          * exact HUmgraph.
         + exact HUmcoords.
       - reflexivity. }
     exact (SepI (Power X)
-                (fun B0:set => exists U:set, function_on U omega TU /\
+                (fun B0:set => exists U:set, total_function_on U omega TU /\ functional_graph U /\
                   (forall i:set, i :e omega -> apply_fun U i :e space_family_topology Xi i) /\
                   B0 = {f :e X | forall i:set, i :e omega -> apply_fun f i :e apply_fun U i})
                 bM
@@ -53503,6 +53505,29 @@ claim Hcond: forall f :e unbounded_sequences_Romega, exists b :e B, f :e b /\ b 
                     R_standard_topology
                     HopenI
                     HTfam). }
+    claim HUtot: total_function_on U omega TU.
+    { claim Htot': forall i:set, i :e omega -> exists y:set, y :e TU /\ (i,y) :e U.
+      { let i. assume Hi: i :e omega.
+        witness (apply_fun U i).
+        apply andI.
+        - exact (HUfun i Hi).
+        - claim H1: (i, open_interval (add_SNo (apply_fun f i) (minus_SNo 1))
+                                    (add_SNo (apply_fun f i) 1)) :e U.
+          { exact (ReplI omega (fun i0:set =>
+                    (i0, open_interval (add_SNo (apply_fun f i0) (minus_SNo 1))
+                                       (add_SNo (apply_fun f i0) 1))) i Hi). }
+          exact (Eps_i_ax (fun z:set => (i,z) :e U)
+                          (open_interval (add_SNo (apply_fun f i) (minus_SNo 1))
+                                         (add_SNo (apply_fun f i) 1))
+                          H1). }
+      exact (andI (function_on U omega TU)
+                  (forall x:set, x :e omega -> exists y:set, y :e TU /\ (x,y) :e U)
+                  HUfun
+                  Htot'). }
+    claim HUgraph: functional_graph U.
+    { exact (functional_graph_graph omega (fun i0:set =>
+              open_interval (add_SNo (apply_fun f i0) (minus_SNo 1))
+                            (add_SNo (apply_fun f i0) 1))). }
     claim HUcoords: forall i:set, i :e omega -> apply_fun U i :e space_family_topology Xi i.
     { let i. assume Hi: i :e omega.
       prove apply_fun U i :e space_family_topology Xi i.
@@ -53541,24 +53566,26 @@ claim Hcond: forall f :e unbounded_sequences_Romega, exists b :e B, f :e b /\ b 
         open_interval (add_SNo (apply_fun f i) (minus_SNo 1))
                       (add_SNo (apply_fun f i) 1).
       { exact (HUapply i Hi). }
-      rewrite HappUi.
-      exact HopenI. }
-    claim HexU: exists U0:set, function_on U0 omega TU /\
-      (forall i:set, i :e omega -> apply_fun U0 i :e space_family_topology Xi i) /\
-      bU = {f0 :e X | forall i:set, i :e omega -> apply_fun f0 i :e apply_fun U0 i}.
-    { witness U.
-      apply andI.
-      - apply andI.
-        + exact HUfun.
-        + exact HUcoords.
-      - reflexivity. }
-    exact (SepI (Power X)
-                (fun B0:set => exists U0:set, function_on U0 omega TU /\
-                  (forall i:set, i :e omega -> apply_fun U0 i :e space_family_topology Xi i) /\
-                  B0 = {f0 :e X | forall i:set, i :e omega -> apply_fun f0 i :e apply_fun U0 i})
-                bU
-                HbUpow
-                HexU).
+	      rewrite HappUi.
+	      exact HopenI. }
+	    claim HexU: exists U0:set, total_function_on U0 omega TU /\ functional_graph U0 /\
+	      (forall i:set, i :e omega -> apply_fun U0 i :e space_family_topology Xi i) /\
+	      bU = {f0 :e X | forall i:set, i :e omega -> apply_fun f0 i :e apply_fun U0 i}.
+	    { witness U.
+	      apply andI.
+	      - apply andI.
+	        + apply andI.
+	          * exact HUtot.
+	          * exact HUgraph.
+	        + exact HUcoords.
+	      - reflexivity. }
+	    exact (SepI (Power X)
+	                (fun B0:set => exists U0:set, total_function_on U0 omega TU /\ functional_graph U0 /\
+	                  (forall i:set, i :e omega -> apply_fun U0 i :e space_family_topology Xi i) /\
+	                  B0 = {f0 :e X | forall i:set, i :e omega -> apply_fun f0 i :e apply_fun U0 i})
+	                bU
+	                HbUpow
+	                HexU).
   - apply andI.
     + (** f :e bU **)
       prove f :e bU.
@@ -53892,7 +53919,7 @@ claim H0U: 0 :e U.
 claim Hf0: f0 :e R_omega_space.
 { prove f0 :e product_space omega Xi.
   prove f0 :e {f :e Power (setprod omega (space_family_union omega Xi))|
-     function_on f omega (space_family_union omega Xi) /\
+     total_function_on f omega (space_family_union omega Xi) /\ functional_graph f /\
      forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i}.
   set U0 := space_family_union omega Xi.
   claim Hsub: f0 c= setprod omega U0.
@@ -53904,13 +53931,10 @@ claim Hf0: f0 :e R_omega_space.
     exact (tuple_2_setprod_by_pair_Sigma omega U0 a 0 HaO H0U). }
   claim Hpow: f0 :e Power (setprod omega U0).
   { exact (PowerI (setprod omega U0) f0 Hsub). }
-  claim Hfun: function_on f0 omega U0.
-  { let i. assume Hi: i :e omega.
-    prove apply_fun f0 i :e U0.
-    claim Happ: apply_fun f0 i = 0.
-    { exact (const_fun_apply omega 0 i Hi). }
-    rewrite Happ.
-    exact H0U. }
+  claim Htot: total_function_on f0 omega U0.
+  { exact (const_fun_total_function_on omega U0 0 H0U). }
+  claim Hgraph: functional_graph f0.
+  { exact (functional_graph_const_fun omega 0). }
   claim Hcoords: forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i.
   { let i. assume Hi: i :e omega.
     prove apply_fun f0 i :e space_family_set Xi i.
@@ -53927,12 +53951,16 @@ claim Hf0: f0 :e R_omega_space.
       exact (tuple_2_0_eq R R_standard_topology). }
     rewrite Hset.
     exact real_0. }
-  claim Hprop: function_on f0 omega U0 /\ forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i.
+  claim Hprop: total_function_on f0 omega U0 /\ functional_graph f0 /\
+               forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i.
   { apply andI.
-    - exact Hfun.
+    - apply andI.
+      + exact Htot.
+      + exact Hgraph.
     - exact Hcoords. }
   exact (SepI (Power (setprod omega U0))
-              (fun f:set => function_on f omega U0 /\ forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
+              (fun f:set => total_function_on f omega U0 /\ functional_graph f /\
+                            forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
               f0
               Hpow
               Hprop). }
@@ -53981,7 +54009,7 @@ set fid := {(i,i)|i :e omega}.
 claim Hfid: fid :e R_omega_space.
 { prove fid :e product_space omega Xi.
   prove fid :e {f :e Power (setprod omega (space_family_union omega Xi))|
-     function_on f omega (space_family_union omega Xi) /\
+     total_function_on f omega (space_family_union omega Xi) /\ functional_graph f /\
      forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i}.
   claim H0omega: 0 :e omega.
   { exact (nat_p_omega 0 nat_0). }
@@ -54028,6 +54056,19 @@ claim Hfid: fid :e R_omega_space.
     { exact (identity_function_apply omega i Hi). }
     rewrite Happ.
     exact (HomegaU i Hi). }
+  claim Htot: total_function_on fid omega U.
+  { claim Htot': forall i:set, i :e omega -> exists y:set, y :e U /\ (i,y) :e fid.
+    { let i. assume Hi: i :e omega.
+      witness i.
+      apply andI.
+      - exact (HomegaU i Hi).
+      - exact (ReplI omega (fun i0:set => (i0,i0)) i Hi). }
+    exact (andI (function_on fid omega U)
+                (forall x:set, x :e omega -> exists y:set, y :e U /\ (x,y) :e fid)
+                Hfun
+                Htot'). }
+  claim Hgraph: functional_graph fid.
+  { exact (functional_graph_graph omega (fun i0:set => i0)). }
   claim Hcoords: forall i:set, i :e omega -> apply_fun fid i :e space_family_set Xi i.
   { let i. assume Hi: i :e omega.
     prove apply_fun fid i :e space_family_set Xi i.
@@ -54047,12 +54088,16 @@ claim Hfid: fid :e R_omega_space.
 	    { exact (omega_SNoS_omega i Hi). }
 	    exact (SNoS_omega_real i HiSNoS). }
 
-  claim Hprop: function_on fid omega U /\ forall i:set, i :e omega -> apply_fun fid i :e space_family_set Xi i.
+  claim Hprop: total_function_on fid omega U /\ functional_graph fid /\
+               forall i:set, i :e omega -> apply_fun fid i :e space_family_set Xi i.
   { apply andI.
-    - exact Hfun.
+    - apply andI.
+      + exact Htot.
+      + exact Hgraph.
     - exact Hcoords. }
   exact (SepI (Power (setprod omega U))
-              (fun f:set => function_on f omega U /\ forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
+              (fun f:set => total_function_on f omega U /\ functional_graph f /\
+                            forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
               fid
               Hpow
               Hprop). }
@@ -54248,7 +54293,7 @@ claim H0U0: 0 :e U0.
 
 prove Romega_zero :e product_space omega Xi.
 prove Romega_zero :e {f :e Power (setprod omega (space_family_union omega Xi))|
-   function_on f omega (space_family_union omega Xi) /\
+   total_function_on f omega (space_family_union omega Xi) /\ functional_graph f /\
    forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i}.
 claim Hsub: Romega_zero c= setprod omega U0.
 { let p. assume Hp: p :e Romega_zero.
@@ -54261,8 +54306,8 @@ claim Hpow: Romega_zero :e Power (setprod omega U0).
 { exact (PowerI (setprod omega U0) Romega_zero Hsub). }
 claim Htot: total_function_on Romega_zero omega U0.
 { exact (const_fun_total_function_on omega U0 0 H0U0). }
-claim Hfun: function_on Romega_zero omega U0.
-{ exact (total_function_on_function_on Romega_zero omega U0 Htot). }
+claim Hgraph: functional_graph Romega_zero.
+{ exact (functional_graph_const_fun omega 0). }
 claim Hcoords: forall i:set, i :e omega -> apply_fun Romega_zero i :e space_family_set Xi i.
 { let i. assume Hi: i :e omega.
   prove apply_fun Romega_zero i :e space_family_set Xi i.
@@ -54279,12 +54324,16 @@ claim Hcoords: forall i:set, i :e omega -> apply_fun Romega_zero i :e space_fami
     exact (tuple_2_0_eq R R_standard_topology). }
   rewrite Hset.
   exact real_0. }
-claim Hprop: function_on Romega_zero omega U0 /\ forall i:set, i :e omega -> apply_fun Romega_zero i :e space_family_set Xi i.
+claim Hprop: total_function_on Romega_zero omega U0 /\ functional_graph Romega_zero /\
+             forall i:set, i :e omega -> apply_fun Romega_zero i :e space_family_set Xi i.
 { apply andI.
-  - exact Hfun.
+  - apply andI.
+    + exact Htot.
+    + exact Hgraph.
   - exact Hcoords. }
 exact (SepI (Power (setprod omega U0))
-            (fun f:set => function_on f omega U0 /\ forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
+            (fun f:set => total_function_on f omega U0 /\ functional_graph f /\
+                          forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
             Romega_zero
             Hpow
             Hprop).
@@ -54419,18 +54468,18 @@ claim HUnionS: Union S = X.
         apply andI.
         - exact Hi0.
         - exact HU0top.
-      + claim Hfprop: function_on f omega (space_family_union omega Xi) /\
-            forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i.
-          { exact (SepE2 (Power (setprod omega (space_family_union omega Xi)))
-                         (fun f0:set => function_on f0 omega (space_family_union omega Xi) /\
-                           forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i)
-                         f
-                         Hf). }
-          claim Hcoords: forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i.
-          { exact (andER (function_on f omega (space_family_union omega Xi))
-                         (forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
-                         Hfprop). }
-          exact (Hcoords i0 Hi0).
+	      + claim Hfprop: total_function_on f omega (space_family_union omega Xi) /\ functional_graph f /\
+	            forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i.
+	          { exact (SepE2 (Power (setprod omega (space_family_union omega Xi)))
+	                         (fun f0:set => total_function_on f0 omega (space_family_union omega Xi) /\ functional_graph f0 /\
+	                           forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i)
+	                         f
+	                         Hf). }
+	          claim Hcoords: forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i.
+	          { exact (andER (total_function_on f omega (space_family_union omega Xi) /\ functional_graph f)
+	                         (forall i:set, i :e omega -> apply_fun f i :e space_family_set Xi i)
+	                         Hfprop). }
+	          exact (Hcoords i0 Hi0).
     - exact Hs0S. }
 
 claim HS: subbasis_on X S.
@@ -54653,13 +54702,28 @@ claim Hcoords: forall i:set, i :e omega -> apply_fun (graph omega h) i :e space_
     exact (tuple_2_0_eq R R_standard_topology). }
   rewrite Hset.
   exact (HhR i Hi). }
-claim Hprop: function_on (graph omega h) omega U0 /\
+claim Htot: total_function_on (graph omega h) omega U0.
+{ claim Htot': forall i:set, i :e omega -> exists y:set, y :e U0 /\ (i,y) :e graph omega h.
+  { let i. assume Hi: i :e omega.
+    witness (h i).
+    apply andI.
+    - exact (HRinU0 (h i) (HhR i Hi)).
+    - exact (ReplI omega (fun a:set => (a, h a)) i Hi). }
+  exact (andI (function_on (graph omega h) omega U0)
+              (forall x:set, x :e omega -> exists y:set, y :e U0 /\ (x,y) :e graph omega h)
+              Hfun
+              Htot'). }
+claim Hgraph: functional_graph (graph omega h).
+{ exact (functional_graph_graph omega h). }
+claim Hprop: total_function_on (graph omega h) omega U0 /\ functional_graph (graph omega h) /\
   forall i:set, i :e omega -> apply_fun (graph omega h) i :e space_family_set Xi i.
 { apply andI.
-  - exact Hfun.
+  - apply andI.
+    + exact Htot.
+    + exact Hgraph.
   - exact Hcoords. }
 exact (SepI (Power (setprod omega U0))
-            (fun f0:set => function_on f0 omega U0 /\
+            (fun f0:set => total_function_on f0 omega U0 /\ functional_graph f0 /\
               forall i:set, i :e omega -> apply_fun f0 i :e space_family_set Xi i)
             (graph omega h)
             Hpow
@@ -65182,12 +65246,14 @@ apply andI.
       claim HsSub: s :e product_subbasis_full I Xi.
       { exact (famunionI I (fun i0:set => {product_cylinder I Xi i0 U|U :e space_family_topology Xi i0})
                        i s HiI HsRepl). }
-      claim HfProp: function_on f I (space_family_union I Xi) /\ forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j.
+      claim HfProp: total_function_on f I (space_family_union I Xi) /\ functional_graph f /\
+                    forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j.
       { exact (SepE2 (Power (setprod I (space_family_union I Xi)))
-                     (fun f0:set => function_on f0 I (space_family_union I Xi) /\ forall j:set, j :e I -> apply_fun f0 j :e space_family_set Xi j)
+                     (fun f0:set => total_function_on f0 I (space_family_union I Xi) /\ functional_graph f0 /\
+                       forall j:set, j :e I -> apply_fun f0 j :e space_family_set Xi j)
                      f HfX). }
       claim HfCoord: forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j.
-      { exact (andER (function_on f I (space_family_union I Xi))
+      { exact (andER (total_function_on f I (space_family_union I Xi) /\ functional_graph f)
                      (forall j:set, j :e I -> apply_fun f j :e space_family_set Xi j)
                      HfProp). }
       claim Hfi: apply_fun f i :e space_family_set Xi i.
@@ -65286,7 +65352,7 @@ apply set_ext.
   prove f :e {Empty}.
   claim HfPow: f :e Power (setprod Empty (space_family_union Empty Xi)).
   { exact (SepE1 (Power (setprod Empty (space_family_union Empty Xi)))
-                 (fun f0:set => function_on f0 Empty (space_family_union Empty Xi) /\
+                 (fun f0:set => total_function_on f0 Empty (space_family_union Empty Xi) /\ functional_graph f0 /\
                    forall i:set, i :e Empty -> apply_fun f0 i :e space_family_set Xi i)
                  f Hf). }
   claim Heqprod: setprod Empty (space_family_union Empty Xi) = Empty.
@@ -65315,17 +65381,37 @@ apply set_ext.
     { exact (setprod_Empty_left (space_family_union Empty Xi)). }
     rewrite Heqprod.
     exact (Empty_In_Power Empty). }
-  claim Hpred: function_on Empty Empty (space_family_union Empty Xi) /\
+  claim Htot: total_function_on Empty Empty (space_family_union Empty Xi).
+  { claim Hfun: function_on Empty Empty (space_family_union Empty Xi).
+    { let x. assume Hx: x :e Empty.
+      prove apply_fun Empty x :e space_family_union Empty Xi.
+      exact (EmptyE x Hx (apply_fun Empty x :e space_family_union Empty Xi)). }
+    claim Htot': forall x:set, x :e Empty -> exists y:set, y :e space_family_union Empty Xi /\ (x,y) :e Empty.
+    { let x. assume Hx: x :e Empty.
+      prove exists y:set, y :e space_family_union Empty Xi /\ (x,y) :e Empty.
+      exact (EmptyE x Hx (exists y:set, y :e space_family_union Empty Xi /\ (x,y) :e Empty)). }
+    exact (andI (function_on Empty Empty (space_family_union Empty Xi))
+                (forall x:set, x :e Empty -> exists y:set, y :e space_family_union Empty Xi /\ (x,y) :e Empty)
+                Hfun
+                Htot'). }
+  claim Hgraph: functional_graph Empty.
+  { let x y1 y2.
+    assume H1: (x,y1) :e Empty.
+    assume H2: (x,y2) :e Empty.
+    exact (EmptyE (x,y1) H1 (y1 = y2)). }
+  claim Hcoords: forall i:set, i :e Empty -> apply_fun Empty i :e space_family_set Xi i.
+  { let i. assume Hi: i :e Empty.
+    prove apply_fun Empty i :e space_family_set Xi i.
+    exact (EmptyE i Hi (apply_fun Empty i :e space_family_set Xi i)). }
+  claim Hpred: total_function_on Empty Empty (space_family_union Empty Xi) /\ functional_graph Empty /\
     forall i:set, i :e Empty -> apply_fun Empty i :e space_family_set Xi i.
   { apply andI.
-    - let x. assume Hx: x :e Empty.
-      prove apply_fun Empty x :e space_family_union Empty Xi.
-      exact (EmptyE x Hx (apply_fun Empty x :e space_family_union Empty Xi)).
-    - let i. assume Hi: i :e Empty.
-      prove apply_fun Empty i :e space_family_set Xi i.
-      exact (EmptyE i Hi (apply_fun Empty i :e space_family_set Xi i)). }
+    - apply andI.
+      + exact Htot.
+      + exact Hgraph.
+    - exact Hcoords. }
   exact (SepI (Power (setprod Empty (space_family_union Empty Xi)))
-              (fun f0:set => function_on f0 Empty (space_family_union Empty Xi) /\
+              (fun f0:set => total_function_on f0 Empty (space_family_union Empty Xi) /\ functional_graph f0 /\
                 forall i:set, i :e Empty -> apply_fun f0 i :e space_family_set Xi i)
               Empty Hpow Hpred).
 Qed.
@@ -65952,14 +66038,15 @@ prove countable_basis_at (product_space I Xi) (countable_product_topology_subbas
 set X := product_space I Xi.
 set Tx := countable_product_topology_subbasis I Xi.
 set Sfull := product_subbasis_full I Xi.
-claim Hfprop: function_on f I (space_family_union I Xi) /\ forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i.
+claim Hfprop: total_function_on f I (space_family_union I Xi) /\ functional_graph f /\
+              forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i.
 { exact (SepE2 (Power (setprod I (space_family_union I Xi)))
-               (fun f0:set => function_on f0 I (space_family_union I Xi) /\
+               (fun f0:set => total_function_on f0 I (space_family_union I Xi) /\ functional_graph f0 /\
                  forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i)
                f
                Hf). }
 claim Hcompf: forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i.
-{ exact (andER (function_on f I (space_family_union I Xi))
+{ exact (andER (total_function_on f I (space_family_union I Xi) /\ functional_graph f)
                (forall i:set, i :e I -> apply_fun f i :e space_family_set Xi i)
                Hfprop). }
 claim HcompTop: forall i:set, i :e I -> topology_on (space_family_set Xi i) (space_family_topology Xi i).
@@ -67145,12 +67232,14 @@ apply andI.
 					                           (andEL (Bsel i0 c= Power (space_family_set Xi i0) /\ (forall x :e space_family_set Xi i0, exists b :e Bsel i0, x :e b))
 					                                  (forall b1 :e Bsel i0, forall b2 :e Bsel i0, forall x:set, x :e b1 -> x :e b2 -> exists b3 :e Bsel i0, x :e b3 /\ b3 c= b1 :/\: b2)
 					                                  HBsel_i0)). }
-					            claim Hf0prop: function_on f0 I (space_family_union I Xi) /\ forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i.
+					            claim Hf0prop: total_function_on f0 I (space_family_union I Xi) /\ functional_graph f0 /\
+					                           forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i.
 					            { exact (SepE2 (Power (setprod I (space_family_union I Xi)))
-					                         (fun f1:set => function_on f1 I (space_family_union I Xi) /\ forall i:set, i :e I -> apply_fun f1 i :e space_family_set Xi i)
+					                         (fun f1:set => total_function_on f1 I (space_family_union I Xi) /\ functional_graph f1 /\
+					                           forall i:set, i :e I -> apply_fun f1 i :e space_family_set Xi i)
 					                         f0 Hf0). }
 					            claim Hcompf0: forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i.
-					            { exact (andER (function_on f0 I (space_family_union I Xi))
+					            { exact (andER (total_function_on f0 I (space_family_union I Xi) /\ functional_graph f0)
 					                           (forall i:set, i :e I -> apply_fun f0 i :e space_family_set Xi i)
 					                           Hf0prop). }
 					            claim Hfi0: apply_fun f0 i0 :e space_family_set Xi i0.
@@ -70966,10 +71055,11 @@ Theorem graph3_in_euclidean_space3 : forall g:set->set,
   graph 3 g :e euclidean_space 3.
  let g.
  assume HgR: forall i:set, g i :e R.
- set Xi := const_space_family 3 R R_standard_topology.
- set U := space_family_union 3 Xi.
- prove graph 3 g :e {f :e Power (setprod 3 U)|
-                      function_on f 3 U /\ (forall i:set, i :e 3 -> apply_fun f i :e space_family_set Xi i)}.
+	 set Xi := const_space_family 3 R R_standard_topology.
+	 set U := space_family_union 3 Xi.
+	 prove graph 3 g :e {f :e Power (setprod 3 U)|
+	                      total_function_on f 3 U /\ functional_graph f /\
+	                      (forall i:set, i :e 3 -> apply_fun f i :e space_family_set Xi i)}.
  claim Hsub: graph 3 g c= setprod 3 U.
  { let p. assume Hp: p :e graph 3 g.
    prove p :e setprod 3 U.
@@ -70982,9 +71072,9 @@ Theorem graph3_in_euclidean_space3 : forall g:set->set,
    exact (tuple_2_setprod_by_pair_Sigma 3 U i (g i) Hi3 HgiU). }
  claim Hpow: graph 3 g :e Power (setprod 3 U).
  { exact (PowerI (setprod 3 U) (graph 3 g) Hsub). }
- claim Hfun: function_on (graph 3 g) 3 U.
- { let i. assume Hi3: i :e 3.
-   prove apply_fun (graph 3 g) i :e U.
+	 claim Hfun: function_on (graph 3 g) 3 U.
+	 { let i. assume Hi3: i :e 3.
+	   prove apply_fun (graph 3 g) i :e U.
    claim Happ: apply_fun (graph 3 g) i = g i.
    { exact (apply_fun_graph 3 g i Hi3). }
    rewrite Happ.
@@ -70997,17 +71087,34 @@ Theorem graph3_in_euclidean_space3 : forall g:set->set,
    rewrite Happ.
    claim HSf: space_family_set Xi i = R.
    { exact (space_family_set_const_R3 i Hi3). }
-   rewrite HSf.
-   exact (HgR i). }
- claim Hprop: function_on (graph 3 g) 3 U /\ (forall i:set, i :e 3 -> apply_fun (graph 3 g) i :e space_family_set Xi i).
- { apply andI.
-   - exact Hfun.
-   - exact Hcoords. }
- exact (SepI (Power (setprod 3 U))
-            (fun f0:set => function_on f0 3 U /\ (forall i:set, i :e 3 -> apply_fun f0 i :e space_family_set Xi i))
-            (graph 3 g)
-            Hpow
-            Hprop).
+	   rewrite HSf.
+	   exact (HgR i). }
+	 claim Htot: total_function_on (graph 3 g) 3 U.
+	 { claim Htot': forall i:set, i :e 3 -> exists y:set, y :e U /\ (i,y) :e graph 3 g.
+	   { let i. assume Hi3: i :e 3.
+	     witness (g i).
+	     apply andI.
+	     - exact (real_in_space_family_union_R3 (g i) (HgR i)).
+	     - exact (ReplI 3 (fun i0:set => (i0, g i0)) i Hi3). }
+	   exact (andI (function_on (graph 3 g) 3 U)
+	               (forall x:set, x :e 3 -> exists y:set, y :e U /\ (x,y) :e graph 3 g)
+	               Hfun
+	               Htot'). }
+	 claim Hgraph: functional_graph (graph 3 g).
+	 { exact (functional_graph_graph 3 g). }
+	 claim Hprop: total_function_on (graph 3 g) 3 U /\ functional_graph (graph 3 g) /\
+	              (forall i:set, i :e 3 -> apply_fun (graph 3 g) i :e space_family_set Xi i).
+	 { apply andI.
+	   - apply andI.
+	     + exact Htot.
+	     + exact Hgraph.
+	   - exact Hcoords. }
+	 exact (SepI (Power (setprod 3 U))
+	            (fun f0:set => total_function_on f0 3 U /\ functional_graph f0 /\
+	                           (forall i:set, i :e 3 -> apply_fun f0 i :e space_family_set Xi i))
+	            (graph 3 g)
+	            Hpow
+	            Hprop).
 Qed.
 
 (** explicit points in R³ as coordinate functions **)
