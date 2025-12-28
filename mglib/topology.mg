@@ -70910,7 +70910,18 @@ Qed.
 Theorem uniform_topology_finer_than_product_and_coarser_than_box :
   finer_than uniform_topology Romega_product_topology_on_real_sequences /\
   coarser_than uniform_topology Romega_box_topology_on_real_sequences.
-admit. (** FAIL **)
+prove finer_than uniform_topology Romega_product_topology_on_real_sequences /\
+  coarser_than uniform_topology Romega_box_topology_on_real_sequences.
+apply andI.
+- (** product opens are uniform-open (uniform is finer than product) **)
+  prove finer_than uniform_topology Romega_product_topology_on_real_sequences.
+  rewrite (Romega_product_topology_on_real_sequences_eq).
+  (** remaining goal: R_omega_product_topology c= uniform_topology **)
+  admit. (** FAIL **)
+- (** uniform-open sets are box-open (uniform is coarser than box) **)
+  prove coarser_than uniform_topology Romega_box_topology_on_real_sequences.
+  (** remaining goal: uniform_topology c= Romega_box_topology_on_real_sequences **)
+  admit. (** FAIL **)
 Qed.
 
 (** from §20 Theorem 20.5: product topology on R^omega is induced by a metric **)
