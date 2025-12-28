@@ -69761,6 +69761,23 @@ claim HaiR: Romega_coord_clipped_diff f g i :e R.
 exact (Hub (Romega_coord_clipped_diff f g i) Hai HaiR).
 Qed.
 
+(** helper: uniform metric bound implies coordinate clipped bound **)
+Theorem Romega_coord_clipped_diff_lt_of_uniform_lt : forall f g i r:set,
+  f :e real_sequences ->
+  g :e real_sequences ->
+  i :e omega ->
+  Rlt (Romega_uniform_metric_value f g) r ->
+  Rlt (Romega_coord_clipped_diff f g i) r.
+let f g i r.
+assume Hf: f :e real_sequences.
+assume Hg: g :e real_sequences.
+assume Hi: i :e omega.
+assume Hlt: Rlt (Romega_uniform_metric_value f g) r.
+claim Hle: Rle (Romega_coord_clipped_diff f g i) (Romega_uniform_metric_value f g).
+{ exact (Romega_coord_clipped_diff_le_uniform f g i Hf Hg Hi). }
+exact (Rle_Rlt_tra_Euclid (Romega_coord_clipped_diff f g i) (Romega_uniform_metric_value f g) r Hle Hlt).
+Qed.
+
 (** helper: uniform metric value is symmetric **)
 Theorem Romega_uniform_metric_value_sym : forall f g:set,
   f :e real_sequences ->
