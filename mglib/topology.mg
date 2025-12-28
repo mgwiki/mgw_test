@@ -66036,7 +66036,277 @@ set sub := graph K (fun k:set => apply_fun net (k 1)).
 
 (** directed_set K leK is the only hard infrastructure point here **)
 claim HdirK: directed_set K leK.
-{ admit. (** FAIL **) }
+{ prove directed_set K leK.
+  (** extract partial_order_on J le data **)
+  claim HJpack: J <> Empty /\ partial_order_on J le.
+  { exact (andEL (J <> Empty /\ partial_order_on J le)
+                 (forall a b:set, a :e J -> b :e J ->
+                   exists c:set, c :e J /\ (a,c) :e le /\ (b,c) :e le)
+                 HdirJ). }
+  claim HJpo: partial_order_on J le.
+  { exact (andER (J <> Empty) (partial_order_on J le) HJpack). }
+  claim HantisymJ:
+    forall a b:set, a :e J -> b :e J -> (a,b) :e le -> (b,a) :e le -> a = b.
+  { apply HJpo. assume Hleft13 HtransJ.
+    apply Hleft13. assume H12 HantisymJ0.
+    apply H12. assume HrelJ HreflJ.
+    exact HantisymJ0. }
+  claim HtransJ:
+    forall a b c:set, a :e J -> b :e J -> c :e J -> (a,b) :e le -> (b,c) :e le -> (a,c) :e le.
+  { apply HJpo. assume Hleft13 HtransJ0.
+    apply Hleft13. assume H12 HantisymJ0.
+    apply H12. assume HrelJ HreflJ.
+    exact HtransJ0. }
+
+  prove (K <> Empty /\ partial_order_on K leK) /\
+    forall a b:set, a :e K -> b :e K ->
+      exists c:set, c :e K /\ (a,c) :e leK /\ (b,c) :e leK.
+  apply andI.
+  - (** K <> Empty /\ partial_order_on K leK **)
+    apply andI.
+    + (** K <> Empty **)
+      claim HJne: J <> Empty.
+      { exact (andEL (J <> Empty) (partial_order_on J le) HJpack). }
+      claim Hexj0: exists j0:set, j0 :e J.
+      { exact (nonempty_has_element J HJne). }
+      apply Hexj0.
+      let j0. assume Hj0: j0 :e J.
+      claim HXTx: X :e Tx.
+      { exact (topology_has_X X Tx HTx). }
+      claim HXN: X :e N.
+      { exact (SepI Tx (fun U0:set => x :e U0) X HXTx HxX). }
+      claim Hnetj0X: apply_fun net j0 :e X.
+      { exact (Hfunnet j0 Hj0). }
+      claim HpProd: (X,j0) :e setprod N J.
+      { exact (tuple_2_setprod_by_pair_Sigma N J X j0 HXN Hj0). }
+      claim Hp_in: apply_fun net ((X,j0) 1) :e (X,j0) 0.
+      { rewrite (tuple_2_1_eq X j0).
+        rewrite (tuple_2_0_eq X j0).
+        exact Hnetj0X. }
+      claim HpK: (X,j0) :e K.
+      { exact (SepI (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) (X,j0) HpProd Hp_in). }
+      exact (elem_implies_nonempty K (X,j0) HpK).
+    + (** partial_order_on K leK **)
+      prove partial_order_on K leK.
+      prove relation_on leK K /\
+        (forall a:set, a :e K -> (a,a) :e leK) /\
+        (forall a b:set, a :e K -> b :e K -> (a,b) :e leK -> (b,a) :e leK -> a = b) /\
+        (forall a b c:set, a :e K -> b :e K -> c :e K -> (a,b) :e leK -> (b,c) :e leK -> (a,c) :e leK).
+      apply andI.
+      - (** (relation_on /\ refl) /\ antisym **)
+        apply andI.
+        + (** relation_on /\ refl **)
+          apply andI.
+          - (** relation_on leK K **)
+            prove relation_on leK K.
+            let a b. assume Hab: (a,b) :e leK.
+            prove a :e K /\ b :e K.
+            claim Hprod: (a,b) :e setprod K K.
+            { exact (SepE1 (setprod K K) (fun q:set => (q 1) 0 c= (q 0) 0 /\ ((q 0) 1, (q 1) 1) :e le) (a,b) Hab). }
+            claim HaK: (a,b) 0 :e K.
+            { exact (ap0_Sigma K (fun _ : set => K) (a,b) Hprod). }
+            claim HbK: (a,b) 1 :e K.
+            { exact (ap1_Sigma K (fun _ : set => K) (a,b) Hprod). }
+            apply andI.
+            - rewrite <- (tuple_2_0_eq a b). exact HaK.
+            - rewrite <- (tuple_2_1_eq a b). exact HbK.
+          - (** reflexive **)
+            let a. assume HaK: a :e K.
+            prove (a,a) :e leK.
+            apply (SepI (setprod K K) (fun q:set => (q 1) 0 c= (q 0) 0 /\ ((q 0) 1, (q 1) 1) :e le) (a,a)).
+            + exact (tuple_2_setprod_by_pair_Sigma K K a a HaK HaK).
+            + apply andI.
+              - rewrite (tuple_2_1_eq a a).
+                rewrite (tuple_2_0_eq a a).
+                exact (Subq_ref (a 0)).
+              - claim HaProd: a :e setprod N J.
+                { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) a HaK). }
+                claim Ha1J: a 1 :e J.
+                { exact (ap1_Sigma N (fun _ : set => J) a HaProd). }
+                rewrite (tuple_2_0_eq a a).
+                rewrite (tuple_2_1_eq a a).
+                exact (Hrefl (a 1) Ha1J).
+        + (** antisymmetric **)
+          let a b.
+          assume HaK: a :e K.
+          assume HbK: b :e K.
+          assume Hab: (a,b) :e leK.
+          assume Hba: (b,a) :e leK.
+          prove a = b.
+          claim Habp: (b 0) c= (a 0) /\ ((a 1),(b 1)) :e le.
+          { exact (pair_order_pred K le a b Hab). }
+          claim Hbabp: (a 0) c= (b 0) /\ ((b 1),(a 1)) :e le.
+          { exact (pair_order_pred K le b a Hba). }
+          claim Hb0suba0: (b 0) c= (a 0).
+          { exact (andEL ((b 0) c= (a 0)) (((a 1),(b 1)) :e le) Habp). }
+          claim Ha0subb0: (a 0) c= (b 0).
+          { exact (andEL ((a 0) c= (b 0)) (((b 1),(a 1)) :e le) Hbabp). }
+          claim Ha0eq: (a 0) = (b 0).
+          { apply set_ext.
+            - let y. assume Hy: y :e (a 0). exact (Ha0subb0 y Hy).
+            - let y. assume Hy: y :e (b 0). exact (Hb0suba0 y Hy). }
+          claim Hab1: ((a 1),(b 1)) :e le.
+          { exact (andER ((b 0) c= (a 0)) (((a 1),(b 1)) :e le) Habp). }
+          claim Hba1: ((b 1),(a 1)) :e le.
+          { exact (andER ((a 0) c= (b 0)) (((b 1),(a 1)) :e le) Hbabp). }
+          claim HaProd: a :e setprod N J.
+          { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) a HaK). }
+          claim HbProd: b :e setprod N J.
+          { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) b HbK). }
+          claim Ha1J: a 1 :e J.
+          { exact (ap1_Sigma N (fun _ : set => J) a HaProd). }
+          claim Hb1J: b 1 :e J.
+          { exact (ap1_Sigma N (fun _ : set => J) b HbProd). }
+          claim Ha1eq: (a 1) = (b 1).
+          { exact (HantisymJ (a 1) (b 1) Ha1J Hb1J Hab1 Hba1). }
+          claim Haeta: a = (a 0, a 1).
+          { exact (setprod_eta N J a HaProd). }
+          claim Hbeta: b = (b 0, b 1).
+          { exact (setprod_eta N J b HbProd). }
+          rewrite Haeta.
+          rewrite Hbeta.
+          exact (coords_eq_tuple (a 0) (a 1) (b 0) (b 1) Ha0eq Ha1eq).
+      - (** transitive **)
+        let a b c.
+        assume HaK: a :e K.
+        assume HbK: b :e K.
+        assume HcK: c :e K.
+        assume Hab: (a,b) :e leK.
+        assume Hbc: (b,c) :e leK.
+        prove (a,c) :e leK.
+        apply (SepI (setprod K K) (fun q:set => (q 1) 0 c= (q 0) 0 /\ ((q 0) 1, (q 1) 1) :e le) (a,c)).
+        + exact (tuple_2_setprod_by_pair_Sigma K K a c HaK HcK).
+        + claim Habp: (b 0) c= (a 0) /\ ((a 1),(b 1)) :e le.
+          { exact (pair_order_pred K le a b Hab). }
+          claim Hbcp: (c 0) c= (b 0) /\ ((b 1),(c 1)) :e le.
+          { exact (pair_order_pred K le b c Hbc). }
+          claim Hc0subb0: (c 0) c= (b 0).
+          { exact (andEL ((c 0) c= (b 0)) (((b 1),(c 1)) :e le) Hbcp). }
+          claim Hb0suba0: (b 0) c= (a 0).
+          { exact (andEL ((b 0) c= (a 0)) (((a 1),(b 1)) :e le) Habp). }
+          claim Hc0suba0: (c 0) c= (a 0).
+          { exact (Subq_tra (c 0) (b 0) (a 0) Hc0subb0 Hb0suba0). }
+          claim Hab1: ((a 1),(b 1)) :e le.
+          { exact (andER ((b 0) c= (a 0)) (((a 1),(b 1)) :e le) Habp). }
+          claim Hbc1: ((b 1),(c 1)) :e le.
+          { exact (andER ((c 0) c= (b 0)) (((b 1),(c 1)) :e le) Hbcp). }
+          claim HaProd: a :e setprod N J.
+          { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) a HaK). }
+          claim HbProd: b :e setprod N J.
+          { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) b HbK). }
+          claim HcProd: c :e setprod N J.
+          { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) c HcK). }
+          claim Ha1J: a 1 :e J.
+          { exact (ap1_Sigma N (fun _ : set => J) a HaProd). }
+          claim Hb1J: b 1 :e J.
+          { exact (ap1_Sigma N (fun _ : set => J) b HbProd). }
+          claim Hc1J: c 1 :e J.
+          { exact (ap1_Sigma N (fun _ : set => J) c HcProd). }
+          claim Hac1: ((a 1),(c 1)) :e le.
+          { exact (HtransJ (a 1) (b 1) (c 1) Ha1J Hb1J Hc1J Hab1 Hbc1). }
+          apply andI.
+          - rewrite (tuple_2_1_eq a c).
+            rewrite (tuple_2_0_eq a c).
+            exact Hc0suba0.
+          - rewrite (tuple_2_0_eq a c).
+            rewrite (tuple_2_1_eq a c).
+            exact Hac1.
+  - (** upper bound property of K **)
+    let a b.
+    assume HaK: a :e K.
+    assume HbK: b :e K.
+    prove exists c:set, c :e K /\ (a,c) :e leK /\ (b,c) :e leK.
+    claim HaProd: a :e setprod N J.
+    { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) a HaK). }
+    claim HbProd: b :e setprod N J.
+    { exact (SepE1 (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) b HbK). }
+    claim Ha0N: a 0 :e N.
+    { exact (ap0_Sigma N (fun _ : set => J) a HaProd). }
+    claim Hb0N: b 0 :e N.
+    { exact (ap0_Sigma N (fun _ : set => J) b HbProd). }
+    claim Ha1J: a 1 :e J.
+    { exact (ap1_Sigma N (fun _ : set => J) a HaProd). }
+    claim Hb1J: b 1 :e J.
+    { exact (ap1_Sigma N (fun _ : set => J) b HbProd). }
+    claim Ha0Tx: a 0 :e Tx.
+    { exact (SepE1 Tx (fun U0:set => x :e U0) (a 0) Ha0N). }
+    claim Hb0Tx: b 0 :e Tx.
+    { exact (SepE1 Tx (fun U0:set => x :e U0) (b 0) Hb0N). }
+    claim Hxa0: x :e (a 0).
+    { exact (SepE2 Tx (fun U0:set => x :e U0) (a 0) Ha0N). }
+    claim Hxb0: x :e (b 0).
+    { exact (SepE2 Tx (fun U0:set => x :e U0) (b 0) Hb0N). }
+    claim HWTx: (a 0) :/\: (b 0) :e Tx.
+    { exact (topology_binintersect_closed X Tx (a 0) (b 0) HTx Ha0Tx Hb0Tx). }
+    claim HxW: x :e (a 0) :/\: (b 0).
+    { exact (binintersectI (a 0) (b 0) x Hxa0 Hxb0). }
+    claim HWN: (a 0) :/\: (b 0) :e N.
+    { exact (SepI Tx (fun U0:set => x :e U0) ((a 0) :/\: (b 0)) HWTx HxW). }
+    claim Hexm: exists m:set, m :e J /\ (a 1, m) :e le /\ (b 1, m) :e le.
+    { exact (directed_set_upper_bound_property J le HdirJ (a 1) (b 1) Ha1J Hb1J). }
+	    apply Hexm.
+	    let m. assume HmPack: m :e J /\ (a 1, m) :e le /\ (b 1, m) :e le.
+	    claim Hm_left: m :e J /\ (a 1, m) :e le.
+	    { exact (andEL (m :e J /\ (a 1, m) :e le) ((b 1, m) :e le) HmPack). }
+	    claim HmJ: m :e J.
+	    { exact (andEL (m :e J) ((a 1, m) :e le) Hm_left). }
+	    claim Ham: (a 1, m) :e le.
+	    { exact (andER (m :e J) ((a 1, m) :e le) Hm_left). }
+	    claim Hbm: (b 1, m) :e le.
+	    { exact (andER (m :e J /\ (a 1, m) :e le) ((b 1, m) :e le) HmPack). }
+    claim Hexj: exists j:set, j :e J /\ (m,j) :e le /\ apply_fun net j :e ((a 0) :/\: (b 0)).
+    { exact (Hfreq ((a 0) :/\: (b 0)) HWTx HxW m HmJ). }
+    apply Hexj.
+    let j. assume HjPack: j :e J /\ (m,j) :e le /\ apply_fun net j :e ((a 0) :/\: (b 0)).
+    claim Hj_left: j :e J /\ (m,j) :e le.
+    { exact (andEL (j :e J /\ (m,j) :e le) (apply_fun net j :e ((a 0) :/\: (b 0))) HjPack). }
+    claim HjJ: j :e J.
+    { exact (andEL (j :e J) ((m,j) :e le) Hj_left). }
+    claim Hmj: (m,j) :e le.
+    { exact (andER (j :e J) ((m,j) :e le) Hj_left). }
+    claim HnetjW: apply_fun net j :e ((a 0) :/\: (b 0)).
+    { exact (andER (j :e J /\ (m,j) :e le) (apply_fun net j :e ((a 0) :/\: (b 0))) HjPack). }
+    claim HcProd: (((a 0) :/\: (b 0)), j) :e setprod N J.
+    { exact (tuple_2_setprod_by_pair_Sigma N J ((a 0) :/\: (b 0)) j HWN HjJ). }
+    claim Hc_in: apply_fun net ((((a 0) :/\: (b 0)), j) 1) :e (((a 0) :/\: (b 0)), j) 0.
+    { rewrite (tuple_2_1_eq ((a 0) :/\: (b 0)) j).
+      rewrite (tuple_2_0_eq ((a 0) :/\: (b 0)) j).
+      exact HnetjW. }
+    claim HcK: (((a 0) :/\: (b 0)), j) :e K.
+    { exact (SepI (setprod N J) (fun p:set => apply_fun net (p 1) :e p 0) (((a 0) :/\: (b 0)), j) HcProd Hc_in). }
+    witness (((a 0) :/\: (b 0)), j).
+    apply andI.
+    - apply andI.
+      + exact HcK.
+      + (** (a,c) :e leK **)
+        apply (SepI (setprod K K) (fun q:set => (q 1) 0 c= (q 0) 0 /\ ((q 0) 1, (q 1) 1) :e le) (a,(((a 0) :/\: (b 0)), j))).
+	        * exact (tuple_2_setprod_by_pair_Sigma K K a (((a 0) :/\: (b 0)), j) HaK HcK).
+	        * apply andI.
+	          - rewrite (tuple_2_1_eq a (((a 0) :/\: (b 0)), j)) at 1.
+	            rewrite (tuple_2_0_eq ((a 0) :/\: (b 0)) j) at 1.
+	            rewrite (tuple_2_0_eq a (((a 0) :/\: (b 0)), j)) at 1.
+	            exact (binintersect_Subq_1 (a 0) (b 0)).
+	          - claim Haj: (a 1, j) :e le.
+	            { exact (HtransJ (a 1) m j Ha1J HmJ HjJ Ham Hmj). }
+	            rewrite (tuple_2_0_eq a (((a 0) :/\: (b 0)), j)) at 1.
+	            rewrite (tuple_2_1_eq a (((a 0) :/\: (b 0)), j)) at 1.
+	            rewrite (tuple_2_1_eq ((a 0) :/\: (b 0)) j) at 1.
+	            exact Haj.
+	    - (** (b,c) :e leK **)
+	      apply (SepI (setprod K K) (fun q:set => (q 1) 0 c= (q 0) 0 /\ ((q 0) 1, (q 1) 1) :e le) (b,(((a 0) :/\: (b 0)), j))).
+	      + exact (tuple_2_setprod_by_pair_Sigma K K b (((a 0) :/\: (b 0)), j) HbK HcK).
+	      + apply andI.
+	        - rewrite (tuple_2_1_eq b (((a 0) :/\: (b 0)), j)) at 1.
+	          rewrite (tuple_2_0_eq ((a 0) :/\: (b 0)) j) at 1.
+	          rewrite (tuple_2_0_eq b (((a 0) :/\: (b 0)), j)) at 1.
+	          exact (binintersect_Subq_2 (a 0) (b 0)).
+	        - claim Hbj: (b 1, j) :e le.
+	          { exact (HtransJ (b 1) m j Hb1J HmJ HjJ Hbm Hmj). }
+	          rewrite (tuple_2_0_eq b (((a 0) :/\: (b 0)), j)) at 1.
+	          rewrite (tuple_2_1_eq b (((a 0) :/\: (b 0)), j)) at 1.
+	          rewrite (tuple_2_1_eq ((a 0) :/\: (b 0)) j) at 1.
+	          exact Hbj.
+	}
 
 (** sub is total_function_on K -> X **)
 claim Htotsub: total_function_on sub K X.
@@ -66327,7 +66597,56 @@ Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
 let X Tx.
 assume HTx: topology_on X Tx.
 prove compact_space X Tx <-> forall net:set, net_in_space X net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x.
-admit. (** FAIL **)
+apply iffI.
+- assume Hcomp: compact_space X Tx.
+  prove forall net:set, net_in_space X net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x.
+  let net. assume Hnet: net_in_space X net.
+  prove exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x.
+  claim Hexacc: exists x0:set, accumulation_point_of_net X Tx net x0.
+  { admit. (** FAIL **) }
+  apply Hexacc.
+  let x0. assume Hacc: accumulation_point_of_net X Tx net x0.
+  apply (subnet_converges_to_accumulation X Tx net x0 Hacc).
+  let sub. assume Hsub: subnet_of net sub /\ net_converges X Tx sub x0.
+  witness sub.
+  witness x0.
+  exact Hsub.
+- assume Hnets: forall net:set, net_in_space X net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x.
+  prove topology_on X Tx /\ forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
+  apply andI.
+  - exact HTx.
+  - let Fam. assume Hcover: open_cover_of X Tx Fam.
+    prove has_finite_subcover X Tx Fam.
+    apply (xm (has_finite_subcover X Tx Fam)).
+    + assume Hfin: has_finite_subcover X Tx Fam.
+      exact Hfin.
+    + assume Hnofin: ~(has_finite_subcover X Tx Fam).
+      apply FalseE.
+      claim Hexnet: exists net0:set,
+        net_in_space X net0 /\
+        (forall sub x:set, subnet_of net0 sub -> ~(net_converges X Tx sub x)).
+      { admit. (** FAIL **) }
+      apply Hexnet.
+      let net0. assume Hnet0pack:
+        net_in_space X net0 /\
+        (forall sub x:set, subnet_of net0 sub -> ~(net_converges X Tx sub x)).
+      claim Hnet0: net_in_space X net0.
+      { exact (andEL (net_in_space X net0)
+                     (forall sub x:set, subnet_of net0 sub -> ~(net_converges X Tx sub x))
+                     Hnet0pack). }
+      claim Hnosub: forall sub x:set, subnet_of net0 sub -> ~(net_converges X Tx sub x).
+      { exact (andER (net_in_space X net0)
+                     (forall sub x:set, subnet_of net0 sub -> ~(net_converges X Tx sub x))
+                     Hnet0pack). }
+      apply (Hnets net0 Hnet0).
+      let sub. assume Hexx.
+      apply Hexx.
+      let x. assume Hsubconv: subnet_of net0 sub /\ net_converges X Tx sub x.
+      claim Hsub: subnet_of net0 sub.
+      { exact (andEL (subnet_of net0 sub) (net_converges X Tx sub x) Hsubconv). }
+      claim Hconv: net_converges X Tx sub x.
+      { exact (andER (subnet_of net0 sub) (net_converges X Tx sub x) Hsubconv). }
+      exact ((Hnosub sub x Hsub) Hconv).
 Qed.
 
 (** from §30 Definition 30.1: countable basis at a point / first countable **) 
