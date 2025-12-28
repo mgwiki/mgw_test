@@ -77174,10 +77174,262 @@ claim Hex: exists U0 :e Tx, L = X :\: U0.
 exact (closed_inI X Tx L HTx HLsub Hex).
 Qed.
 
+(** from §30 Example 4: Sorgenfrey plane not Lindelof **)
+(** LATEX VERSION: The Sorgenfrey plane is not Lindelöf. **)
 Theorem Sorgenfrey_plane_not_Lindelof :
   ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove ~ Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit. (** FAIL **)
+assume HL: Lindelof_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+prove False.
+set X := setprod Sorgenfrey_line Sorgenfrey_line.
+set Tx := Sorgenfrey_plane_topology.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall U:set, open_cover X Tx U ->
+                 exists V:set, countable_subcollection V U /\ covers X V)
+               HL). }
+claim HLind: forall U:set, open_cover X Tx U ->
+  exists V:set, countable_subcollection V U /\ covers X V.
+{ exact (andER (topology_on X Tx)
+               (forall U:set, open_cover X Tx U ->
+                 exists V:set, countable_subcollection V U /\ covers X V)
+               HL). }
+
+(** define the standard open cover from the text **)
+set L := Sorgenfrey_plane_L.
+set Lcomp := X :\: L.
+set FamSpec := (\/_ a :e R, \/_ b :e R, {Sorgenfrey_plane_special_rectangle a b d|d :e R}).
+set Cover := {Lcomp} :\/: FamSpec.
+
+claim Hcover_open: forall U:set, U :e Cover -> U :e Tx.
+{ let U. assume HU: U :e Cover.
+  apply (binunionE {Lcomp} FamSpec U HU).
+  - assume HUs: U :e {Lcomp}.
+    claim Heq: U = Lcomp.
+    { exact (SingE Lcomp U HUs). }
+    rewrite Heq.
+    claim Hcl: closed_in X Tx L.
+    { exact Sorgenfrey_plane_L_closed. }
+    claim Hopen: open_in X Tx (X :\: L).
+    { exact (open_of_closed_complement X Tx L Hcl). }
+    exact (andER (topology_on X Tx) ((X :\: L) :e Tx) Hopen).
+  - assume HUF: U :e FamSpec.
+    claim Hexa: exists a :e R, U :e (\/_ b :e R, {Sorgenfrey_plane_special_rectangle a b d|d :e R}).
+    { exact (famunionE R (fun a0:set => \/_ b :e R, {Sorgenfrey_plane_special_rectangle a0 b d|d :e R}) U HUF). }
+    apply Hexa.
+    let a. assume Hap: a :e R /\ U :e (\/_ b :e R, {Sorgenfrey_plane_special_rectangle a b d|d :e R}).
+    claim HaR: a :e R.
+    { exact (andEL (a :e R) (U :e (\/_ b :e R, {Sorgenfrey_plane_special_rectangle a b d|d :e R})) Hap). }
+    claim HUin: U :e (\/_ b :e R, {Sorgenfrey_plane_special_rectangle a b d|d :e R}).
+    { exact (andER (a :e R) (U :e (\/_ b :e R, {Sorgenfrey_plane_special_rectangle a b d|d :e R})) Hap). }
+    claim Hexb: exists b :e R, U :e {Sorgenfrey_plane_special_rectangle a b d|d :e R}.
+    { exact (famunionE R (fun b0:set => {Sorgenfrey_plane_special_rectangle a b0 d|d :e R}) U HUin). }
+    apply Hexb.
+    let b. assume Hbp: b :e R /\ U :e {Sorgenfrey_plane_special_rectangle a b d|d :e R}.
+    claim HbR: b :e R.
+    { exact (andEL (b :e R) (U :e {Sorgenfrey_plane_special_rectangle a b d|d :e R}) Hbp). }
+    claim HUrepl: U :e {Sorgenfrey_plane_special_rectangle a b d|d :e R}.
+    { exact (andER (b :e R) (U :e {Sorgenfrey_plane_special_rectangle a b d|d :e R}) Hbp). }
+    claim Hexd: exists d :e R, U = Sorgenfrey_plane_special_rectangle a b d.
+    { exact (ReplE R (fun d0:set => Sorgenfrey_plane_special_rectangle a b d0) U HUrepl). }
+    apply Hexd.
+    let d. assume Hdp: d :e R /\ U = Sorgenfrey_plane_special_rectangle a b d.
+    claim HdR: d :e R.
+    { exact (andEL (d :e R) (U = Sorgenfrey_plane_special_rectangle a b d) Hdp). }
+    claim Heq: U = Sorgenfrey_plane_special_rectangle a b d.
+    { exact (andER (d :e R) (U = Sorgenfrey_plane_special_rectangle a b d) Hdp). }
+    rewrite Heq.
+    exact (Sorgenfrey_plane_special_rectangle_open a b d HaR HbR HdR). }
+
+claim Hcover_covers: covers X Cover.
+{ let p. assume HpX: p :e X.
+  apply (xm (p :e L)).
+  - assume HpL: p :e L.
+    (** pick x with p=(x,-x), then choose a basis rectangle about it **)
+    claim Hexx: exists x :e R, p = (x, minus_SNo x).
+    { exact (ReplE R (fun x0:set => (x0, minus_SNo x0)) p HpL). }
+    apply Hexx.
+    let x. assume Hxp: x :e R /\ p = (x, minus_SNo x).
+    claim HxR: x :e R.
+    { exact (andEL (x :e R) (p = (x, minus_SNo x)) Hxp). }
+    claim Hpeq: p = (x, minus_SNo x).
+    { exact (andER (x :e R) (p = (x, minus_SNo x)) Hxp). }
+	set b := add_SNo x 1.
+	set d := add_SNo (minus_SNo x) 1.
+	claim HbR: b :e R.
+	{ exact (real_add_SNo x HxR 1 real_1). }
+	claim HdR: d :e R.
+	{ exact (real_add_SNo (minus_SNo x) (real_minus_SNo x HxR) 1 real_1). }
+    set U0 := Sorgenfrey_plane_special_rectangle x b d.
+    claim HU0inFam: U0 :e FamSpec.
+    { prove U0 :e (\/_ a :e R, \/_ b0 :e R, {Sorgenfrey_plane_special_rectangle a b0 d0|d0 :e R}).
+      apply (famunionI R (fun a0:set => \/_ b0 :e R, {Sorgenfrey_plane_special_rectangle a0 b0 d0|d0 :e R}) x).
+      - exact HxR.
+      - prove U0 :e (\/_ b0 :e R, {Sorgenfrey_plane_special_rectangle x b0 d0|d0 :e R}).
+        apply (famunionI R (fun b0:set => {Sorgenfrey_plane_special_rectangle x b0 d0|d0 :e R}) b).
+        + exact HbR.
+        + prove U0 :e {Sorgenfrey_plane_special_rectangle x b d0|d0 :e R}.
+          exact (ReplI R (fun d0:set => Sorgenfrey_plane_special_rectangle x b d0) d HdR). }
+	claim HU0inC: U0 :e Cover.
+	{ exact (binunionI2 {Lcomp} FamSpec U0 HU0inFam). }
+	claim HpU0: p :e U0.
+	{ rewrite Hpeq.
+	  claim HU0eq: U0 = rectangle_set (halfopen_interval_left x b) (halfopen_interval_left (minus_SNo x) d).
+	  { reflexivity. }
+	  rewrite HU0eq.
+	  rewrite rectangle_set_def.
+	  prove (x, minus_SNo x) :e setprod (halfopen_interval_left x b) (halfopen_interval_left (minus_SNo x) d).
+	  apply tuple_2_setprod_by_pair_Sigma.
+	  - claim HxS: SNo x.
+	    { exact (real_SNo x HxR). }
+	    claim Hx_lt_bS: x < b.
+	    { rewrite <- (add_SNo_0R x HxS) at 1.
+	      exact (add_SNo_Lt2 x 0 1 HxS SNo_0 SNo_1 SNoLt_0_1). }
+	    claim Hx_lt_bR: Rlt x b.
+	    { exact (RltI x b HxR HbR Hx_lt_bS). }
+	    exact (halfopen_interval_left_leftmem x b Hx_lt_bR).
+	  - claim HmxR: (minus_SNo x) :e R.
+	    { exact (real_minus_SNo x HxR). }
+	    claim HmxS: SNo (minus_SNo x).
+	    { exact (real_SNo (minus_SNo x) HmxR). }
+	    claim Hmx_lt_dS: (minus_SNo x) < d.
+	    { rewrite <- (add_SNo_0R (minus_SNo x) HmxS) at 1.
+	      exact (add_SNo_Lt2 (minus_SNo x) 0 1 HmxS SNo_0 SNo_1 SNoLt_0_1). }
+	    claim Hmx_lt_dR: Rlt (minus_SNo x) d.
+	    { exact (RltI (minus_SNo x) d HmxR HdR Hmx_lt_dS). }
+	    exact (halfopen_interval_left_leftmem (minus_SNo x) d Hmx_lt_dR). }
+    witness U0.
+    apply andI.
+    - exact HU0inC.
+    - exact HpU0.
+  - assume HpnotL: p /:e L.
+    claim HpLcomp: p :e Lcomp.
+    { apply setminusI.
+      - exact HpX.
+      - exact HpnotL. }
+    claim HLcompC: Lcomp :e Cover.
+    { exact (binunionI1 {Lcomp} FamSpec Lcomp (SingI Lcomp)). }
+    witness Lcomp.
+    apply andI.
+    - exact HLcompC.
+    - exact HpLcomp. }
+
+claim Hcover: open_cover X Tx Cover.
+{ prove (forall u:set, u :e Cover -> u :e Tx) /\ covers X Cover.
+  apply andI.
+  - exact Hcover_open.
+  - exact Hcover_covers. }
+
+claim HexV: exists V:set, countable_subcollection V Cover /\ covers X V.
+{ exact (HLind Cover Hcover). }
+apply HexV.
+let V. assume HVp: countable_subcollection V Cover /\ covers X V.
+claim HVcount: countable_subcollection V Cover.
+{ exact (andEL (countable_subcollection V Cover) (covers X V) HVp). }
+claim HVcov: covers X V.
+{ exact (andER (countable_subcollection V Cover) (covers X V) HVp). }
+
+(** define choice of a set in V covering each point of L, and show injective **)
+set pick := fun x:set => Eps_i (fun U0:set => U0 :e V /\ (x, minus_SNo x) :e U0).
+
+claim Hpick_spec: forall x:set, x :e R ->
+  pick x :e V /\ (x, minus_SNo x) :e pick x.
+{ let x. assume HxR: x :e R.
+  claim HpxX: (x, minus_SNo x) :e X.
+  { exact (tuple_2_setprod_by_pair_Sigma R R x (minus_SNo x) HxR (real_minus_SNo x HxR)). }
+  claim Hp_in_cov: exists U0:set, U0 :e V /\ (x, minus_SNo x) :e U0.
+  { exact (HVcov (x, minus_SNo x) HpxX). }
+  apply Hp_in_cov.
+  let U0. assume HU0pair: U0 :e V /\ (x, minus_SNo x) :e U0.
+  exact (Eps_i_ax (fun U1:set => U1 :e V /\ (x, minus_SNo x) :e U1) U0 HU0pair). }
+
+claim Hpick_inj: inj R V pick.
+{ apply (injI R V pick).
+  - let x. assume HxR: x :e R.
+    exact (andEL (pick x :e V) ((x, minus_SNo x) :e pick x) (Hpick_spec x HxR)).
+  - let x1. assume Hx1R: x1 :e R.
+    let x2. assume Hx2R: x2 :e R.
+    assume Heq: pick x1 = pick x2.
+    prove x1 = x2.
+    claim Hmem1: (x1, minus_SNo x1) :e pick x1.
+    { exact (andER (pick x1 :e V) ((x1, minus_SNo x1) :e pick x1) (Hpick_spec x1 Hx1R)). }
+	    claim Hmem2: (x2, minus_SNo x2) :e pick x2.
+	    { exact (andER (pick x2 :e V) ((x2, minus_SNo x2) :e pick x2) (Hpick_spec x2 Hx2R)). }
+	    claim Hmem1p: (x1, minus_SNo x1) :e pick x2.
+	    { rewrite <- Heq at 1.
+	      exact Hmem1. }
+	    claim Hboth: (x1, minus_SNo x1) :e pick x2 /\ (x2, minus_SNo x2) :e pick x2.
+	    { apply andI.
+	      - exact Hmem1p.
+	      - exact Hmem2. }
+    claim HVsub: V c= Cover.
+    { exact (andEL (V c= Cover) (countable_set V) HVcount). }
+    claim HcoverU: pick x2 :e Cover.
+    { apply HVsub.
+      exact (andEL (pick x2 :e V) ((x2, minus_SNo x2) :e pick x2) (Hpick_spec x2 Hx2R)). }
+    apply (binunionE {Lcomp} FamSpec (pick x2) HcoverU).
+	    - assume Hsing: pick x2 :e {Lcomp}.
+	      claim HeqL: pick x2 = Lcomp.
+	      { exact (SingE Lcomp (pick x2) Hsing). }
+	      apply FalseE.
+	      claim Hmem2L: (x2, minus_SNo x2) :e Lcomp.
+	      { rewrite <- HeqL at 1.
+	        exact Hmem2. }
+	      exact (setminusE2 X L (x2, minus_SNo x2) Hmem2L
+	             (ReplI R (fun x0:set => (x0, minus_SNo x0)) x2 Hx2R)).
+	    - assume Hfam: pick x2 :e FamSpec.
+      claim Hexa: exists a :e R, pick x2 :e (\/_ b0 :e R, {Sorgenfrey_plane_special_rectangle a b0 d0|d0 :e R}).
+      { exact (famunionE R (fun a0:set => \/_ b0 :e R, {Sorgenfrey_plane_special_rectangle a0 b0 d0|d0 :e R}) (pick x2) Hfam). }
+      apply Hexa.
+      let a. assume Hap: a :e R /\ pick x2 :e (\/_ b0 :e R, {Sorgenfrey_plane_special_rectangle a b0 d0|d0 :e R}).
+      claim HaR: a :e R.
+      { exact (andEL (a :e R) (pick x2 :e (\/_ b0 :e R, {Sorgenfrey_plane_special_rectangle a b0 d0|d0 :e R})) Hap). }
+      claim HUin: pick x2 :e (\/_ b0 :e R, {Sorgenfrey_plane_special_rectangle a b0 d0|d0 :e R}).
+      { exact (andER (a :e R) (pick x2 :e (\/_ b0 :e R, {Sorgenfrey_plane_special_rectangle a b0 d0|d0 :e R})) Hap). }
+      claim Hexb: exists b0 :e R, pick x2 :e {Sorgenfrey_plane_special_rectangle a b0 d0|d0 :e R}.
+      { exact (famunionE R (fun b0:set => {Sorgenfrey_plane_special_rectangle a b0 d0|d0 :e R}) (pick x2) HUin). }
+      apply Hexb.
+      let b. assume Hbp: b :e R /\ pick x2 :e {Sorgenfrey_plane_special_rectangle a b d0|d0 :e R}.
+      claim HbR2: b :e R.
+      { exact (andEL (b :e R) (pick x2 :e {Sorgenfrey_plane_special_rectangle a b d0|d0 :e R}) Hbp). }
+      claim HUrepl: pick x2 :e {Sorgenfrey_plane_special_rectangle a b d0|d0 :e R}.
+      { exact (andER (b :e R) (pick x2 :e {Sorgenfrey_plane_special_rectangle a b d0|d0 :e R}) Hbp). }
+      claim Hexd: exists d :e R, pick x2 = Sorgenfrey_plane_special_rectangle a b d.
+      { exact (ReplE R (fun d0:set => Sorgenfrey_plane_special_rectangle a b d0) (pick x2) HUrepl). }
+      apply Hexd.
+      let d. assume Hdp: d :e R /\ pick x2 = Sorgenfrey_plane_special_rectangle a b d.
+      claim HdR2: d :e R.
+      { exact (andEL (d :e R) (pick x2 = Sorgenfrey_plane_special_rectangle a b d) Hdp). }
+      claim HeqU: pick x2 = Sorgenfrey_plane_special_rectangle a b d.
+      { exact (andER (d :e R) (pick x2 = Sorgenfrey_plane_special_rectangle a b d) Hdp). }
+	      claim Hp1inPick: (x1, minus_SNo x1) :e pick x2.
+	      { exact (andEL ((x1, minus_SNo x1) :e pick x2) ((x2, minus_SNo x2) :e pick x2) Hboth). }
+	      claim Hp1inRect: (x1, minus_SNo x1) :e Sorgenfrey_plane_special_rectangle a b d.
+	      { rewrite <- HeqU at 1.
+	        exact Hp1inPick. }
+	      claim Hp2inRect: (x2, minus_SNo x2) :e Sorgenfrey_plane_special_rectangle a b d.
+	      { rewrite <- HeqU at 1.
+	        exact Hmem2. }
+	      claim Hx1eq: x1 = a.
+	      { exact (Sorgenfrey_plane_special_rectangle_L_point a b d x1 HaR HbR2 HdR2 Hx1R Hp1inRect). }
+	      claim Hx2eq: x2 = a.
+	      { exact (Sorgenfrey_plane_special_rectangle_L_point a b d x2 HaR HbR2 HdR2 Hx2R Hp2inRect). }
+	      rewrite Hx1eq.
+	      rewrite Hx2eq.
+	      reflexivity.
+} 
+
+claim HinjRV: atleastp R V.
+{ prove exists f : set -> set, inj R V f.
+  witness pick.
+  exact Hpick_inj. }
+claim HVOmega: atleastp V omega.
+{ claim HcountV: countable_set V.
+  { exact (andER (V c= Cover) (countable_set V) HVcount). }
+  exact HcountV. }
+claim HcountR: atleastp R omega.
+{ exact (atleastp_tra R V omega HinjRV HVOmega). }
+exact (form100_22_real_uncountable_atleastp HcountR).
 Qed.
 
 (** from §30 Example 5: subspace of Lindelöf space need not be Lindelöf **) 
