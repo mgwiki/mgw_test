@@ -74953,10 +74953,25 @@ claim Hinj: inj Sorgenfrey_line B f.
     apply Hexb.
     let b0.
     assume Hb0pair: b0 :e B /\ (x :e b0 /\ b0 c= Ux).
-    set Px := (fun b:set => b :e B /\ (x :e b /\ b c= Ux)).
-    claim HPxf: Px (f x).
-    { exact (Eps_i_ax Px b0 Hb0pair). }
-    exact (andEL (f x :e B) (x :e f x /\ f x c= Ux) HPxf). 
+    claim Hb0B: b0 :e B.
+    { exact (andEL (b0 :e B) (x :e b0 /\ b0 c= Ux) Hb0pair). }
+    claim Hb0rest: x :e b0 /\ b0 c= Ux.
+    { exact (andER (b0 :e B) (x :e b0 /\ b0 c= Ux) Hb0pair). }
+    claim Hb0x: x :e b0.
+    { exact (andEL (x :e b0) (b0 c= Ux) Hb0rest). }
+    claim Hb0sub: b0 c= halfopen_interval_left x (add_SNo x 1).
+    { exact (andER (x :e b0) (b0 c= Ux) Hb0rest). }
+    claim Hb0P: b0 :e B /\ x :e b0 /\ b0 c= halfopen_interval_left x (add_SNo x 1).
+    { apply andI.
+      - apply andI.
+        * exact Hb0B.
+        * exact Hb0x.
+      - exact Hb0sub. }
+    claim HPxf: f x :e B /\ x :e f x /\ f x c= halfopen_interval_left x (add_SNo x 1).
+    { exact (Eps_i_ax (fun b:set => b :e B /\ x :e b /\ b c= halfopen_interval_left x (add_SNo x 1)) b0 Hb0P). }
+    claim Htmp: f x :e B /\ x :e f x.
+    { exact (andEL (f x :e B /\ x :e f x) (f x c= halfopen_interval_left x (add_SNo x 1)) HPxf). }
+    exact (andEL (f x :e B) (x :e f x) Htmp). 
   - (** injectivity on points **)
     let x1 x2.
     assume Hx1R: x1 :e Sorgenfrey_line.
