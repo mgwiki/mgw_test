@@ -65835,30 +65835,26 @@ apply iffI.
             exact (tuple_2_setprod_by_pair_Sigma J0 J0 x x (SingI x) (SingI x)). }
       claim Hnet0conv: net_converges_on X Tx net0 J0 le0 x.
       { prove net_converges_on X Tx net0 J0 le0 x.
-        prove topology_on X Tx /\ directed_set J0 le0 /\ total_function_on net0 J0 X /\ functional_graph net0 /\ graph_domain_subset net0 J0 /\ x :e X /\
-          forall U:set, U :e Tx -> x :e U ->
-            exists i0:set, i0 :e J0 /\
-              forall i:set, i :e J0 -> (i0,i) :e le0 -> apply_fun net0 i :e U.
-        apply andI.
-        - (** core **)
-          apply andI.
-          + apply andI.
-            - apply andI.
-              + apply andI.
-                { apply andI.
-                  - exact HTx.
-                  - exact Hdir0. }
-                { (** total_function_on net0 J0 X **)
-                  claim Hgconst: forall j:set, j :e J0 -> (fun _:set => x) j :e X.
-                  { let j. assume Hj: j :e J0. exact HxX. }
-                  exact (total_function_on_graph J0 X (fun _:set => x) Hgconst). }
-              + exact (functional_graph_graph J0 (fun _:set => x)).
-            - exact (graph_domain_subset_graph J0 (fun _:set => x)).
-          + exact HxX.
-        - (** tail **)
-          let U. assume HU: U :e Tx. assume HxU: x :e U.
-          witness x.
-          apply andI.
+	        prove topology_on X Tx /\ directed_set J0 le0 /\ total_function_on net0 J0 X /\ functional_graph net0 /\ graph_domain_subset net0 J0 /\ x :e X /\
+	          forall U:set, U :e Tx -> x :e U ->
+	            exists i0:set, i0 :e J0 /\
+	              forall i:set, i :e J0 -> (i0,i) :e le0 -> apply_fun net0 i :e U.
+	        apply andI.
+	        - (** core **)
+	          prove topology_on X Tx /\ directed_set J0 le0 /\ total_function_on net0 J0 X /\ functional_graph net0 /\ graph_domain_subset net0 J0 /\ x :e X.
+	          apply and6I.
+	          + exact HTx.
+	          + exact Hdir0.
+	          + claim Hgconst: forall j:set, j :e J0 -> (fun _:set => x) j :e X.
+	            { let j. assume Hj: j :e J0. exact HxX. }
+	            exact (total_function_on_graph J0 X (fun _:set => x) Hgconst).
+	          + exact (functional_graph_graph J0 (fun _:set => x)).
+	          + exact (graph_domain_subset_graph J0 (fun _:set => x)).
+	          + exact HxX.
+	        - (** tail **)
+	          let U. assume HU: U :e Tx. assume HxU: x :e U.
+	          witness x.
+	          apply andI.
           + exact (SingI x).
           + let i. assume Hi: i :e J0.
             assume Hle: (x,i) :e le0.
