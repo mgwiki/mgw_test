@@ -64621,7 +64621,53 @@ Theorem subnet_implies_net_on : forall net sub:set, subnet_of net sub -> net_on 
 let net sub.
 assume Hsub: subnet_of net sub.
 prove net_on sub.
-admit. (** FAIL **)
+apply Hsub.
+let J.
+assume Hex1.
+apply Hex1.
+let leJ.
+assume Hex2.
+apply Hex2.
+let K.
+assume Hex3.
+apply Hex3.
+let leK.
+assume Hex4.
+apply Hex4.
+let X.
+assume Hex5.
+apply Hex5.
+let phi.
+assume Hall.
+prove exists J0 le0 X0:set,
+  directed_set J0 le0 /\ total_function_on sub J0 X0 /\ functional_graph sub /\ graph_domain_subset sub J0.
+witness K.
+witness leK.
+witness X.
+prove directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K.
+(** unpack the conjunction chain in subnet_of (left-associative) **)
+apply Hall. assume H13 Hvals.
+apply H13. assume H12 Hcofinal.
+apply H12. assume H11 Hmono.
+apply H11. assume H10 Hdomphi.
+apply H10. assume H9 Hdomsub.
+apply H9. assume H8 Hdomnet.
+apply H8. assume H7 Hgraphphi.
+apply H7. assume H6 Htotphi.
+apply H6. assume H5 Hgraphsub.
+apply H5. assume H4 Htotsub.
+apply H4. assume H3 Hgraphnet.
+apply H3. assume H2 Htotnet.
+apply H2. assume HdirJ HdirK.
+apply andI.
+- (** ((directed_set /\ total_function_on) /\ functional_graph) **)
+  apply andI.
+  + (** directed_set /\ total_function_on **)
+    apply andI.
+    * exact HdirK.
+    * exact Htotsub.
+  + exact Hgraphsub.
+- exact Hdomsub.
 Qed.
 
 (** helper: if sub is a subnet, net is a net **)
@@ -64630,7 +64676,53 @@ Theorem subnet_implies_net_on_source : forall net sub:set, subnet_of net sub -> 
 let net sub.
 assume Hsub: subnet_of net sub.
 prove net_on net.
-admit. (** FAIL **)
+apply Hsub.
+let J.
+assume Hex1.
+apply Hex1.
+let leJ.
+assume Hex2.
+apply Hex2.
+let K.
+assume Hex3.
+apply Hex3.
+let leK.
+assume Hex4.
+apply Hex4.
+let X.
+assume Hex5.
+apply Hex5.
+let phi.
+assume Hall.
+prove exists J0 le0 X0:set,
+  directed_set J0 le0 /\ total_function_on net J0 X0 /\ functional_graph net /\ graph_domain_subset net J0.
+witness J.
+witness leJ.
+witness X.
+prove directed_set J leJ /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
+(** unpack the conjunction chain in subnet_of (left-associative) **)
+apply Hall. assume H13 Hvals.
+apply H13. assume H12 Hcofinal.
+apply H12. assume H11 Hmono.
+apply H11. assume H10 Hdomphi.
+apply H10. assume H9 Hdomsub.
+apply H9. assume H8 Hdomnet.
+apply H8. assume H7 Hgraphphi.
+apply H7. assume H6 Htotphi.
+apply H6. assume H5 Hgraphsub.
+apply H5. assume H4 Htotsub.
+apply H4. assume H3 Hgraphnet.
+apply H3. assume H2 Htotnet.
+apply H2. assume HdirJ HdirK.
+apply andI.
+- (** ((directed_set /\ total_function_on) /\ functional_graph) **)
+  apply andI.
+  + (** directed_set /\ total_function_on **)
+    apply andI.
+    * exact HdirJ.
+    * exact Htotnet.
+  + exact Hgraphnet.
+- exact Hdomnet.
 Qed.
 
 (** helper: a net is a subnet of itself **)
