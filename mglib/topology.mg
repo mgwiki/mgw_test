@@ -15043,95 +15043,87 @@ prove topology_on abc_set top_abc_1 /\ topology_on abc_set top_abc_2 /\
            T1 c= T2}.
 apply andI.
 - (** nine topology axioms **)
-  apply andI.
-  - apply andI.
-    - apply andI.
-      - apply andI.
-        - apply andI.
-          - apply andI.
-            - apply andI.
-	              - apply andI.
-	                - (** topology_on abc_set top_abc_1 **)
-	                  claim Ht1: top_abc_1 = indiscrete_topology abc_set.
-	                  { reflexivity. }
-	                  rewrite Ht1.
-	                  exact (indiscrete_topology_on abc_set).
-	                - (** topology_on abc_set top_abc_2 **)
-                  claim Ht2: top_abc_2 = discrete_topology abc_set.
-                  { reflexivity. }
-                  rewrite Ht2.
-                  exact (discrete_topology_on abc_set).
-              - (** topology_on abc_set top_abc_3 **)
-                claim HA: {a_elt} c= abc_set.
-                { let x. assume Hx: x :e {a_elt}.
-                  prove x :e abc_set.
-                  claim Hxeq: x = a_elt.
-                  { exact (SingE a_elt x Hx). }
-                  rewrite Hxeq.
-                  exact (binunionI1 (UPair a_elt b_elt) {c_elt} a_elt (UPairI1 a_elt b_elt)).
-                }
-                exact (topology_three_sets abc_set {a_elt} HA).
-            - (** topology_on abc_set top_abc_4 **)
-              claim HB: {b_elt} c= abc_set.
-              { let x. assume Hx: x :e {b_elt}.
-                prove x :e abc_set.
-                claim Hxeq: x = b_elt.
-                { exact (SingE b_elt x Hx). }
-                rewrite Hxeq.
-                exact (binunionI1 (UPair a_elt b_elt) {c_elt} b_elt (UPairI2 a_elt b_elt)).
-              }
-              exact (topology_three_sets abc_set {b_elt} HB).
-          - (** topology_on abc_set top_abc_5 **)
-            claim HC: {c_elt} c= abc_set.
-            { let x. assume Hx: x :e {c_elt}.
-              prove x :e abc_set.
-              claim Hxeq: x = c_elt.
-              { exact (SingE c_elt x Hx). }
-              rewrite Hxeq.
-              exact (binunionI2 (UPair a_elt b_elt) {c_elt} c_elt (SingI c_elt)).
-            }
-            exact (topology_three_sets abc_set {c_elt} HC).
-        - (** topology_on abc_set top_abc_6 **)
-          claim HAB: (UPair a_elt b_elt) c= abc_set.
-          { let x. assume Hx: x :e UPair a_elt b_elt.
-            prove x :e abc_set.
-            apply (UPairE x a_elt b_elt Hx).
-            - assume Hxeq: x = a_elt.
-              rewrite Hxeq.
-              exact (binunionI1 (UPair a_elt b_elt) {c_elt} a_elt (UPairI1 a_elt b_elt)).
-            - assume Hxeq: x = b_elt.
-              rewrite Hxeq.
-              exact (binunionI1 (UPair a_elt b_elt) {c_elt} b_elt (UPairI2 a_elt b_elt)).
-          }
-          exact (topology_three_sets abc_set (UPair a_elt b_elt) HAB).
-      - (** topology_on abc_set top_abc_7 **)
-        claim HAC: (UPair a_elt c_elt) c= abc_set.
-        { let x. assume Hx: x :e UPair a_elt c_elt.
-          prove x :e abc_set.
-          apply (UPairE x a_elt c_elt Hx).
-          - assume Hxeq: x = a_elt.
-            rewrite Hxeq.
-            exact (binunionI1 (UPair a_elt b_elt) {c_elt} a_elt (UPairI1 a_elt b_elt)).
-          - assume Hxeq: x = c_elt.
-            rewrite Hxeq.
-            exact (binunionI2 (UPair a_elt b_elt) {c_elt} c_elt (SingI c_elt)).
-        }
-        exact (topology_three_sets abc_set (UPair a_elt c_elt) HAC).
-    - (** topology_on abc_set top_abc_8 **)
-      claim HBC: (UPair b_elt c_elt) c= abc_set.
-      { let x. assume Hx: x :e UPair b_elt c_elt.
-        prove x :e abc_set.
-        apply (UPairE x b_elt c_elt Hx).
-        - assume Hxeq: x = b_elt.
-          rewrite Hxeq.
-          exact (binunionI1 (UPair a_elt b_elt) {c_elt} b_elt (UPairI2 a_elt b_elt)).
-        - assume Hxeq: x = c_elt.
-          rewrite Hxeq.
-          exact (binunionI2 (UPair a_elt b_elt) {c_elt} c_elt (SingI c_elt)).
-      }
-      exact (topology_three_sets abc_set (UPair b_elt c_elt) HBC).
-  - (** topology_on abc_set top_abc_9 **)
-    claim HAinAB: {a_elt} c= UPair a_elt b_elt.
+  claim proof1 : topology_on abc_set top_abc_1.
+  { claim Ht1: top_abc_1 = indiscrete_topology abc_set.
+    { reflexivity. }
+    rewrite Ht1.
+    exact (indiscrete_topology_on abc_set). }
+  claim proof2 : topology_on abc_set top_abc_2.
+  { claim Ht2: top_abc_2 = discrete_topology abc_set.
+    { reflexivity. }
+    rewrite Ht2.
+    exact (discrete_topology_on abc_set). }
+  claim proof3 : topology_on abc_set top_abc_3.
+  { claim HA: {a_elt} c= abc_set.
+    { let x. assume Hx: x :e {a_elt}.
+      prove x :e abc_set.
+      claim Hxeq: x = a_elt.
+      { exact (SingE a_elt x Hx). }
+      rewrite Hxeq.
+      exact (binunionI1 (UPair a_elt b_elt) {c_elt} a_elt (UPairI1 a_elt b_elt)).
+    }
+    exact (topology_three_sets abc_set {a_elt} HA). }
+  claim proof4 : topology_on abc_set top_abc_4.
+  { claim HB: {b_elt} c= abc_set.
+    { let x. assume Hx: x :e {b_elt}.
+      prove x :e abc_set.
+      claim Hxeq: x = b_elt.
+      { exact (SingE b_elt x Hx). }
+      rewrite Hxeq.
+      exact (binunionI1 (UPair a_elt b_elt) {c_elt} b_elt (UPairI2 a_elt b_elt)).
+    }
+    exact (topology_three_sets abc_set {b_elt} HB). }
+  claim proof5 : topology_on abc_set top_abc_5.
+  { claim HC: {c_elt} c= abc_set.
+    { let x. assume Hx: x :e {c_elt}.
+      prove x :e abc_set.
+      claim Hxeq: x = c_elt.
+      { exact (SingE c_elt x Hx). }
+      rewrite Hxeq.
+      exact (binunionI2 (UPair a_elt b_elt) {c_elt} c_elt (SingI c_elt)).
+    }
+    exact (topology_three_sets abc_set {c_elt} HC). }
+  claim proof6 : topology_on abc_set top_abc_6.
+  { claim HAB: (UPair a_elt b_elt) c= abc_set.
+    { let x. assume Hx: x :e UPair a_elt b_elt.
+      prove x :e abc_set.
+      apply (UPairE x a_elt b_elt Hx).
+      - assume Hxeq: x = a_elt.
+        rewrite Hxeq.
+        exact (binunionI1 (UPair a_elt b_elt) {c_elt} a_elt (UPairI1 a_elt b_elt)).
+      - assume Hxeq: x = b_elt.
+        rewrite Hxeq.
+        exact (binunionI1 (UPair a_elt b_elt) {c_elt} b_elt (UPairI2 a_elt b_elt)).
+    }
+    exact (topology_three_sets abc_set (UPair a_elt b_elt) HAB). }
+  claim proof7 : topology_on abc_set top_abc_7.
+  { claim HAC: (UPair a_elt c_elt) c= abc_set.
+    { let x. assume Hx: x :e UPair a_elt c_elt.
+      prove x :e abc_set.
+      apply (UPairE x a_elt c_elt Hx).
+      - assume Hxeq: x = a_elt.
+        rewrite Hxeq.
+        exact (binunionI1 (UPair a_elt b_elt) {c_elt} a_elt (UPairI1 a_elt b_elt)).
+      - assume Hxeq: x = c_elt.
+        rewrite Hxeq.
+        exact (binunionI2 (UPair a_elt b_elt) {c_elt} c_elt (SingI c_elt)).
+    }
+    exact (topology_three_sets abc_set (UPair a_elt c_elt) HAC). }
+  claim proof8 : topology_on abc_set top_abc_8.
+  { claim HBC: (UPair b_elt c_elt) c= abc_set.
+    { let x. assume Hx: x :e UPair b_elt c_elt.
+      prove x :e abc_set.
+      apply (UPairE x b_elt c_elt Hx).
+      - assume Hxeq: x = b_elt.
+        rewrite Hxeq.
+        exact (binunionI1 (UPair a_elt b_elt) {c_elt} b_elt (UPairI2 a_elt b_elt)).
+      - assume Hxeq: x = c_elt.
+        rewrite Hxeq.
+        exact (binunionI2 (UPair a_elt b_elt) {c_elt} c_elt (SingI c_elt)).
+    }
+    exact (topology_three_sets abc_set (UPair b_elt c_elt) HBC). }
+  claim proof9 : topology_on abc_set top_abc_9.
+  { claim HAinAB: {a_elt} c= UPair a_elt b_elt.
     { let x. assume Hx: x :e {a_elt}.
       prove x :e UPair a_elt b_elt.
       claim Hxeq: x = a_elt.
@@ -15144,7 +15136,46 @@ apply andI.
       prove x :e abc_set.
       exact (binunionI1 (UPair a_elt b_elt) {c_elt} x Hx).
     }
-    exact (topology_chain_four_sets abc_set {a_elt} (UPair a_elt b_elt) HAinAB HABsubX).
+    exact (topology_chain_four_sets abc_set {a_elt} (UPair a_elt b_elt) HAinAB HABsubX). }
+  claim H6 :
+    topology_on abc_set top_abc_1 /\ topology_on abc_set top_abc_2 /\
+    topology_on abc_set top_abc_3 /\ topology_on abc_set top_abc_4 /\
+    topology_on abc_set top_abc_5 /\ topology_on abc_set top_abc_6.
+  { apply and6I.
+    + exact proof1.
+    + exact proof2.
+    + exact proof3.
+    + exact proof4.
+    + exact proof5.
+    + exact proof6. }
+  claim H7 :
+    (topology_on abc_set top_abc_1 /\ topology_on abc_set top_abc_2 /\
+     topology_on abc_set top_abc_3 /\ topology_on abc_set top_abc_4 /\
+     topology_on abc_set top_abc_5 /\ topology_on abc_set top_abc_6)
+    /\ topology_on abc_set top_abc_7.
+  { apply andI.
+    - exact H6.
+    - exact proof7. }
+  claim H8 :
+    ((topology_on abc_set top_abc_1 /\ topology_on abc_set top_abc_2 /\
+      topology_on abc_set top_abc_3 /\ topology_on abc_set top_abc_4 /\
+      topology_on abc_set top_abc_5 /\ topology_on abc_set top_abc_6)
+     /\ topology_on abc_set top_abc_7)
+    /\ topology_on abc_set top_abc_8.
+  { apply andI.
+    - exact H7.
+    - exact proof8. }
+  claim H9 :
+    (((topology_on abc_set top_abc_1 /\ topology_on abc_set top_abc_2 /\
+       topology_on abc_set top_abc_3 /\ topology_on abc_set top_abc_4 /\
+       topology_on abc_set top_abc_5 /\ topology_on abc_set top_abc_6)
+      /\ topology_on abc_set top_abc_7)
+     /\ topology_on abc_set top_abc_8)
+    /\ topology_on abc_set top_abc_9.
+  { apply andI.
+    - exact H8.
+    - exact proof9. }
+  exact H9.
 - (** finer_pairs set of refinement pairs **)
   witness
     {p :e Power (Power (Power abc_set))|
