@@ -76770,18 +76770,18 @@ apply andI.
         { exact (setminusE2 X (closure_of X Tx V0) z HzW). }
         apply FalseE.
         exact (Hznotcl Hzcl). }
-		      witness V0.
-		      witness W0.
-		      apply andI.
-		      - apply andI.
-		        + apply andI.
-		          - apply andI.
-		            + exact HV0Tx.
-		            + exact HW0Tx.
-		          - exact HAsubV0.
-		        + exact HBsubW0.
-		      - exact HdisjVW.
-		Qed.
+      witness V0.
+      witness W0.
+      apply andI.
+      - apply andI.
+        + apply andI.
+          - apply andI.
+            + exact HV0Tx.
+            + exact HW0Tx.
+          - exact HAsubV0.
+        + exact HBsubW0.
+      - exact HdisjVW.
+Qed.
 
 (** from §31 Theorem 31.2: subspaces/products preserve Hausdorff and regular **) 
 (** LATEX VERSION: Hausdorff/regular properties preserved under subspaces and products (with factorwise assumptions). **)
