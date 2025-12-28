@@ -8939,22 +8939,22 @@ claim proofE : forall U :e generated_topology X B, forall V :e generated_topolog
     { exact (andEL (b3 :e B) (x :e b3 /\ b3 c= b1 :/\: b2) Hbpair3). }
     claim Hb3prop : x :e b3 /\ b3 c= b1 :/\: b2.
     { exact (andER (b3 :e B) (x :e b3 /\ b3 c= b1 :/\: b2) Hbpair3). }
-    claim HxB3 : x :e b3.
-    { exact (andEL (x :e b3) (b3 c= b1 :/\: b2) Hb3prop). }
-    claim Hb3Sub : b3 c= b1 :/\: b2.
-  { exact (andER (x :e b3) (b3 c= b1 :/\: b2) Hb3prop). }
-    witness b3.
-    apply andI.
-    - exact Hb3.
-    - apply andI.
-      * exact HxB3.
-      * let y. assume Hyb3.
-        claim Hy_in_b1b2 : y :e b1 :/\: b2.
-        { exact (Hb3Sub y Hyb3). }
-        apply binintersectE b1 b2 y Hy_in_b1b2.
-        assume Hyb1 Hyb2.
-        apply binintersectI U V y (Hb1Sub y Hyb1) (Hb2Sub y Hyb2). }
-  exact (SepI (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) (U :/\: V) HPowCap HCapProp). }
+	    claim HxB3 : x :e b3.
+	    { exact (andEL (x :e b3) (b3 c= b1 :/\: b2) Hb3prop). }
+	    claim Hb3Sub : b3 c= b1 :/\: b2.
+	  { exact (andER (x :e b3) (b3 c= b1 :/\: b2) Hb3prop). }
+	    witness b3.
+	    apply andI.
+	    - exact Hb3.
+	    - apply andI.
+	      * exact HxB3.
+	      * let y. assume Hyb3.
+	        claim Hy_in_b1b2 : y :e b1 :/\: b2.
+	        { exact (Hb3Sub y Hyb3). }
+	        apply binintersectE b1 b2 y Hy_in_b1b2.
+	        assume Hyb1 Hyb2.
+	        apply binintersectI U V y (Hb1Sub y Hyb1) (Hb2Sub y Hyb2). }
+	  exact (SepI (Power X) (fun U0 : set => forall x0 :e U0, exists b :e B, x0 :e b /\ b c= U0) (U :/\: V) HPowCap HCapProp). }
 prove generated_topology X B c= Power X
 /\ Empty :e generated_topology X B
 /\ X :e generated_topology X B
