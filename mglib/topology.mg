@@ -79389,8 +79389,7 @@ apply andI.
 		      - exact HdisjVW.
 		Qed.
 
-(** from §31 Theorem 31.2: subspaces/products preserve Hausdorff and regular **) 
-(** LATEX VERSION: Hausdorff/regular properties preserved under subspaces and products (with factorwise assumptions). **)
+(** Helper for products used in §31. **)
 (** Helper: distinct points in a product differ in some coordinate. **)
 Theorem product_space_points_differ_coord : forall I Xi x1 x2:set,
   x1 :e product_space I Xi ->
@@ -79561,9 +79560,11 @@ apply (xm (exists i:set, i :e I /\ apply_fun x1 i <> apply_fun x2 i)).
   { apply set_ext.
     - exact Hsub12.
     - exact Hsub21. }
-  exact (Hneq Heq).
+exact (Hneq Heq).
 Qed.
 
+(** from §31 Theorem 31.2 (products): Hausdorff part **) 
+(** LATEX VERSION: Hausdorff/regular properties preserved under subspaces and products (with factorwise assumptions). **)
 Theorem product_topology_full_Hausdorff_axiom : forall I Xi:set,
   Hausdorff_spaces_family I Xi ->
   Hausdorff_space (product_space I Xi) (product_topology_full I Xi).
@@ -79790,6 +79791,8 @@ apply andI.
         exact (EmptyE f Hf).
 Qed.
 
+(** from §31 Theorem 31.2 (products): regular part **) 
+(** LATEX VERSION: Hausdorff/regular properties preserved under subspaces and products (with factorwise assumptions). **)
 Theorem product_topology_full_regular_axiom : forall I Xi:set,
   regular_spaces_family I Xi ->
   regular_space (product_space I Xi) (product_topology_full I Xi).
