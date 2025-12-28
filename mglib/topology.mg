@@ -64901,7 +64901,89 @@ Theorem net_converges_implies_accumulation_point : forall X Tx net x:set,
 let X Tx net x.
 assume Hconv: net_converges X Tx net x.
 prove accumulation_point_of_net X Tx net x.
-admit. (** FAIL **)
+apply Hconv.
+let J.
+assume HJ: exists le:set,
+  topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U ->
+      exists i0:set, i0 :e J /\
+        forall i:set, i :e J -> (i0,i) :e le -> apply_fun net i :e U.
+apply HJ.
+let le.
+assume Hdata:
+  topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U ->
+      exists i0:set, i0 :e J /\
+        forall i:set, i :e J -> (i0,i) :e le -> apply_fun net i :e U.
+prove accumulation_point_of_net X Tx net x.
+prove exists J0 le0:set,
+  topology_on X Tx /\ directed_set J0 le0 /\ total_function_on net J0 X /\ functional_graph net /\ graph_domain_subset net J0 /\ x :e X /\
+    forall U:set, U :e Tx -> x :e U ->
+      forall j0:set, j0 :e J0 ->
+        exists j:set, j :e J0 /\ (j0,j) :e le0 /\ apply_fun net j :e U.
+witness J.
+witness le.
+(** unpack the convergence data **)
+apply Hdata.
+assume Hcore Hevent.
+apply Hcore.
+assume Hcore5 HxX.
+apply Hcore5.
+assume Hcore4 Hdom.
+apply Hcore4.
+assume Hcore3 Hgraph.
+apply Hcore3.
+assume Hcore2 Htot.
+apply Hcore2.
+assume HTx HdirJ.
+(** build the accumulation_point_of_net conjunction **)
+apply andI.
+- prove topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X.
+  apply andI.
+	  + prove topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J.
+	    apply andI.
+	    * prove topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net.
+	      apply andI.
+	      - prove topology_on X Tx /\ directed_set J le /\ total_function_on net J X.
+	        apply andI.
+	        + prove topology_on X Tx /\ directed_set J le.
+	          apply andI.
+	          * exact HTx.
+	          * exact HdirJ.
+	        + exact Htot.
+	      - exact Hgraph.
+	    * exact Hdom.
+  + exact HxX.
+- (** neighborhood condition **)
+  let U.
+  assume HU: U :e Tx.
+  assume HxU: x :e U.
+  let j0.
+  assume Hj0J: j0 :e J.
+  prove exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U.
+  claim Hexi0: exists i0:set, i0 :e J /\
+    forall i:set, i :e J -> (i0,i) :e le -> apply_fun net i :e U.
+  { exact (Hevent U HU HxU). }
+  apply Hexi0.
+  let i0.
+  assume Hi0pair.
+  apply Hi0pair.
+  assume Hi0J Hafter.
+  claim Hexk: exists k:set, k :e J /\ (j0,k) :e le /\ (i0,k) :e le.
+  { exact (directed_set_upper_bound_property J le HdirJ j0 i0 Hj0J Hi0J). }
+  apply Hexk.
+  let k.
+  assume Hk.
+  apply Hk.
+  assume Hkleft Hik.
+  apply Hkleft.
+	  assume HkJ Hjk.
+	  witness k.
+	  apply andI.
+	  - apply andI.
+	    * exact HkJ.
+	    * exact Hjk.
+	  - exact (Hafter k HkJ Hik).
 Qed.
 
 (** helper: any convergent net is a net_on **)
