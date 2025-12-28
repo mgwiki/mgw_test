@@ -8960,14 +8960,11 @@ prove generated_topology X B c= Power X
 /\ X :e generated_topology X B
 /\ (forall UFam :e Power (generated_topology X B), Union UFam :e generated_topology X B)
 /\ (forall U :e generated_topology X B, forall V :e generated_topology X B, U :/\: V :e generated_topology X B).
-  apply andI.
-- apply andI.
-  * apply andI.
-    { apply andI.
-      - exact proofA.
-      - exact proofB. }
-    { exact proofC. }
-  * exact proofD.
+apply and5I.
+- exact proofA.
+- exact proofB.
+- exact proofC.
+- exact proofD.
 - exact proofE.
 Qed.
 
