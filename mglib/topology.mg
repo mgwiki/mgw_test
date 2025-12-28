@@ -80318,6 +80318,27 @@ apply andI.
 			            rewrite HclXeq.
 			            exact (Subq_ref X).
 			        - assume Hb0neX: b0 <> X.
+			          (** Decompose b0 as a nonempty finite intersection of subbasis elements. **)
+			          claim Hb0fin: b0 :e finite_intersections_of X S.
+			          { exact (SepE1 (finite_intersections_of X S) (fun b:set => b <> Empty) b0 Hb0B). }
+			          claim Hb0ne: b0 <> Empty.
+			          { exact (SepE2 (finite_intersections_of X S) (fun b:set => b <> Empty) b0 Hb0B). }
+			          claim HexF: exists F :e finite_subcollections S, b0 = intersection_of_family X F.
+			          { exact (ReplE (finite_subcollections S) (fun F0:set => intersection_of_family X F0) b0 Hb0fin). }
+			          set F := Eps_i (fun F0:set => F0 :e finite_subcollections S /\ b0 = intersection_of_family X F0).
+			          claim HFprop: F :e finite_subcollections S /\ b0 = intersection_of_family X F.
+			          { exact (Eps_i_ex (fun F0:set => F0 :e finite_subcollections S /\ b0 = intersection_of_family X F0) HexF). }
+			          claim HFfin: F :e finite_subcollections S.
+			          { exact (andEL (F :e finite_subcollections S) (b0 = intersection_of_family X F) HFprop). }
+			          claim Hb0eqF: b0 = intersection_of_family X F.
+			          { exact (andER (F :e finite_subcollections S) (b0 = intersection_of_family X F) HFprop). }
+			          claim HxInInter: x :e intersection_of_family X F.
+			          { rewrite <- Hb0eqF.
+			            exact Hxb0. }
+			          claim HxAll: forall s:set, s :e F -> x :e s.
+			          { exact (SepE2 X (fun z0:set => forall U0:set, U0 :e F -> z0 :e U0) x HxInInter). }
+			          (** Next step (still missing): shrink each subbasis cylinder in F around x using component regularity,
+			              and build a finite intersection U with closure(U) c= b0. **)
 			          admit. (** FAIL **) }
 			      apply HexU.
 			      let U. assume HU_conj.
