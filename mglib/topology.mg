@@ -64775,6 +64775,152 @@ apply and4I.
 - exact Hdomnet.
 Qed.
 
+(** helper: conjunction introduction up to 14 **)
+Section PropN2.
+Variable P1 P2 P3 P4 P5 P6 P7 P8 P9 P10 P11 P12 P13 P14:prop.
+
+Theorem and8I : P1 -> P2 -> P3 -> P4 -> P5 -> P6 -> P7 -> P8 ->
+  P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8.
+assume H1:P1. assume H2:P2. assume H3:P3. assume H4:P4.
+assume H5:P5. assume H6:P6. assume H7:P7. assume H8:P8.
+apply andI.
+- prove P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7.
+  apply and7I.
+  - exact H1.
+  - exact H2.
+  - exact H3.
+  - exact H4.
+  - exact H5.
+  - exact H6.
+  - exact H7.
+- exact H8.
+Qed.
+
+Theorem and9I : P1 -> P2 -> P3 -> P4 -> P5 -> P6 -> P7 -> P8 -> P9 ->
+  P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8 /\ P9.
+assume H1:P1. assume H2:P2. assume H3:P3. assume H4:P4.
+assume H5:P5. assume H6:P6. assume H7:P7. assume H8:P8. assume H9:P9.
+apply andI.
+- prove P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8.
+  apply and8I.
+  - exact H1.
+  - exact H2.
+  - exact H3.
+  - exact H4.
+  - exact H5.
+  - exact H6.
+  - exact H7.
+  - exact H8.
+- exact H9.
+Qed.
+
+Theorem and10I : P1 -> P2 -> P3 -> P4 -> P5 -> P6 -> P7 -> P8 -> P9 -> P10 ->
+  P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8 /\ P9 /\ P10.
+assume H1:P1. assume H2:P2. assume H3:P3. assume H4:P4.
+assume H5:P5. assume H6:P6. assume H7:P7. assume H8:P8. assume H9:P9. assume H10:P10.
+apply andI.
+- prove P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8 /\ P9.
+  apply and9I.
+  - exact H1.
+  - exact H2.
+  - exact H3.
+  - exact H4.
+  - exact H5.
+  - exact H6.
+  - exact H7.
+  - exact H8.
+  - exact H9.
+- exact H10.
+Qed.
+
+Theorem and11I : P1 -> P2 -> P3 -> P4 -> P5 -> P6 -> P7 -> P8 -> P9 -> P10 -> P11 ->
+  P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8 /\ P9 /\ P10 /\ P11.
+assume H1:P1. assume H2:P2. assume H3:P3. assume H4:P4.
+assume H5:P5. assume H6:P6. assume H7:P7. assume H8:P8. assume H9:P9. assume H10:P10. assume H11:P11.
+apply andI.
+- prove P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8 /\ P9 /\ P10.
+  apply and10I.
+  - exact H1.
+  - exact H2.
+  - exact H3.
+  - exact H4.
+  - exact H5.
+  - exact H6.
+  - exact H7.
+  - exact H8.
+  - exact H9.
+  - exact H10.
+- exact H11.
+Qed.
+
+Theorem and12I : P1 -> P2 -> P3 -> P4 -> P5 -> P6 -> P7 -> P8 -> P9 -> P10 -> P11 -> P12 ->
+  P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8 /\ P9 /\ P10 /\ P11 /\ P12.
+assume H1:P1. assume H2:P2. assume H3:P3. assume H4:P4.
+assume H5:P5. assume H6:P6. assume H7:P7. assume H8:P8. assume H9:P9. assume H10:P10. assume H11:P11. assume H12:P12.
+apply andI.
+- prove P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8 /\ P9 /\ P10 /\ P11.
+  apply and11I.
+  - exact H1.
+  - exact H2.
+  - exact H3.
+  - exact H4.
+  - exact H5.
+  - exact H6.
+  - exact H7.
+  - exact H8.
+  - exact H9.
+  - exact H10.
+  - exact H11.
+- exact H12.
+Qed.
+
+Theorem and13I : P1 -> P2 -> P3 -> P4 -> P5 -> P6 -> P7 -> P8 -> P9 -> P10 -> P11 -> P12 -> P13 ->
+  P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8 /\ P9 /\ P10 /\ P11 /\ P12 /\ P13.
+assume H1:P1. assume H2:P2. assume H3:P3. assume H4:P4.
+assume H5:P5. assume H6:P6. assume H7:P7. assume H8:P8. assume H9:P9. assume H10:P10. assume H11:P11. assume H12:P12. assume H13:P13.
+apply andI.
+- prove P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8 /\ P9 /\ P10 /\ P11 /\ P12.
+  apply and12I.
+  - exact H1.
+  - exact H2.
+  - exact H3.
+  - exact H4.
+  - exact H5.
+  - exact H6.
+  - exact H7.
+  - exact H8.
+  - exact H9.
+  - exact H10.
+  - exact H11.
+  - exact H12.
+- exact H13.
+Qed.
+
+Theorem and14I : P1 -> P2 -> P3 -> P4 -> P5 -> P6 -> P7 -> P8 -> P9 -> P10 -> P11 -> P12 -> P13 -> P14 ->
+  P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8 /\ P9 /\ P10 /\ P11 /\ P12 /\ P13 /\ P14.
+assume H1:P1. assume H2:P2. assume H3:P3. assume H4:P4.
+assume H5:P5. assume H6:P6. assume H7:P7. assume H8:P8. assume H9:P9. assume H10:P10. assume H11:P11. assume H12:P12. assume H13:P13. assume H14:P14.
+apply andI.
+- prove P1 /\ P2 /\ P3 /\ P4 /\ P5 /\ P6 /\ P7 /\ P8 /\ P9 /\ P10 /\ P11 /\ P12 /\ P13.
+  apply and13I.
+  - exact H1.
+  - exact H2.
+  - exact H3.
+  - exact H4.
+  - exact H5.
+  - exact H6.
+  - exact H7.
+  - exact H8.
+  - exact H9.
+  - exact H10.
+  - exact H11.
+  - exact H12.
+  - exact H13.
+- exact H14.
+Qed.
+
+End PropN2.
+
 (** helper: a net is a subnet of itself **)
 (** LATEX VERSION: Every net is a subnet of itself via the identity index map. **)
 Theorem subnet_of_refl_witnessed : forall J le X net:set,
@@ -64819,55 +64965,43 @@ apply Hleft. assume HJne Hpo.
 apply Hpo. assume Habc Htrans.
 apply Habc. assume Hab Hantisym.
 apply Hab. assume Hrel Hrefl.
-(** build the left-associated conjunction chain from the right **)
-apply andI.
-- apply andI.
-  - apply andI.
-    - apply andI.
-      - apply andI.
-        - apply andI.
-          - apply andI.
-            - apply andI.
-              - apply andI.
-                - apply andI.
-                  - apply andI.
-                    - apply andI.
-                      - apply andI.
-                        - exact HdirJ.
-                        - exact HdirJ.
-                      - exact Hnettot.
-                    - exact Hnetgraph.
-                  - exact Hnettot.
-                - exact Hnetgraph.
-              - exact (identity_total_function_on J).
-            - exact (functional_graph_graph J (fun y:set => y)).
-          - exact Hnetdom.
-        - exact Hnetdom.
-      - exact (graph_domain_subset_graph J (fun y:set => y)).
-    - (** monotone of the identity map **)
-      let i j.
-      assume HiJ: i :e J.
-      assume HjJ: j :e J.
-      assume Hij: (i,j) :e le.
-      prove (apply_fun {(y,y) | y :e J} i, apply_fun {(y,y) | y :e J} j) :e le.
-      rewrite (identity_function_apply J i HiJ).
-      rewrite (identity_function_apply J j HjJ).
-      exact Hij.
-  - (** cofinality of the identity map **)
-    let j.
-    assume HjJ: j :e J.
-    prove exists k:set, k :e J /\ (j, apply_fun {(y,y) | y :e J} k) :e le.
-    witness j.
-    apply andI.
-    * exact HjJ.
-    * rewrite (identity_function_apply J j HjJ).
-      exact (Hrefl j HjJ).
-- (** pointwise equality net(k) = net(phi(k)) **)
-  let k.
+claim Hmono_id: forall i j:set, i :e J -> j :e J -> (i,j) :e le ->
+  (apply_fun {(y,y) | y :e J} i, apply_fun {(y,y) | y :e J} j) :e le.
+{ let i j.
+  assume HiJ: i :e J.
+  assume HjJ: j :e J.
+  assume Hij: (i,j) :e le.
+  rewrite (identity_function_apply J i HiJ).
+  rewrite (identity_function_apply J j HjJ).
+  exact Hij. }
+claim Hcofinal_id: forall j:set, j :e J -> exists k:set, k :e J /\ (j, apply_fun {(y,y) | y :e J} k) :e le.
+{ let j.
+  assume HjJ: j :e J.
+  witness j.
+  apply andI.
+  - exact HjJ.
+  - rewrite (identity_function_apply J j HjJ).
+    exact (Hrefl j HjJ). }
+claim Hvals_id: forall k:set, k :e J -> apply_fun net k = apply_fun net (apply_fun {(y,y) | y :e J} k).
+{ let k.
   assume HkJ: k :e J.
-  prove apply_fun net k = apply_fun net (apply_fun {(y,y) | y :e J} k).
   rewrite (identity_function_apply J k HkJ).
-  reflexivity.
+  reflexivity. }
+apply and14I.
+- exact HdirJ.
+- exact HdirJ.
+- exact Hnettot.
+- exact Hnetgraph.
+- exact Hnettot.
+- exact Hnetgraph.
+- exact (identity_total_function_on J).
+- exact (functional_graph_graph J (fun y:set => y)).
+- exact Hnetdom.
+- exact Hnetdom.
+- exact (graph_domain_subset_graph J (fun y:set => y)).
+- exact Hmono_id.
+- exact Hcofinal_id.
+- exact Hvals_id.
 Qed.
 
 (** helper: if net_on net then subnet_of net net **)
