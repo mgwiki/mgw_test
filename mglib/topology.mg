@@ -66591,6 +66591,26 @@ Qed.
 
 (** from exercises after §29: compactness via nets **) 
 (** LATEX VERSION: Compactness characterized by every net having a convergent subnet. **)
+	
+(** helper: classical negation of implication **)
+Theorem not_imp : forall A B:prop, ~(A -> B) -> A /\ ~B.
+let A B.
+assume H: ~(A -> B).
+apply andI.
+- (** A **)
+  apply dneg.
+  assume HnA: ~A.
+  apply H.
+  assume a:A.
+  apply FalseE.
+  exact (HnA a).
+- (** ~B **)
+  assume HB: B.
+  apply H.
+  assume _:A.
+  exact HB.
+Qed.
+
 Theorem compact_iff_every_net_has_convergent_subnet : forall X Tx:set,
   topology_on X Tx ->
   (compact_space X Tx <-> forall net:set, net_in_space X net -> exists sub x:set, subnet_of net sub /\ net_converges X Tx sub x).
