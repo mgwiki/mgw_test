@@ -80476,11 +80476,74 @@ apply andI.
 			          claim HxInInter: x :e intersection_of_family X F.
 			          { rewrite <- Hb0eqF.
 			            exact Hxb0. }
-			          claim HxAll: forall s:set, s :e F -> x :e s.
-			          { exact (SepE2 X (fun z0:set => forall U0:set, U0 :e F -> z0 :e U0) x HxInInter). }
-			          (** Next step (still missing): shrink each subbasis cylinder in F around x using component regularity,
-			              and build a finite intersection U with closure(U) c= b0. **)
-			          admit. (** FAIL **) }
+				          claim HxAll: forall s:set, s :e F -> x :e s.
+				          { exact (SepE2 X (fun z0:set => forall U0:set, U0 :e F -> z0 :e U0) x HxInInter). }
+				          (** Next step (still missing): shrink each subbasis cylinder in F around x using component regularity,
+				              and build a finite intersection U with closure(U) c= b0. **)
+				          claim HFpowS: F :e Power S.
+				          { exact (SepE1 (Power S) (fun F0:set => finite F0) F HFfin). }
+				          claim HFin: finite F.
+				          { exact (SepE2 (Power S) (fun F0:set => finite F0) F HFfin). }
+				          claim HFsubS: F c= S.
+				          { exact (PowerE S F HFpowS). }
+
+				          set p : set -> prop := fun H:set =>
+				            H c= F ->
+				              exists U0:set,
+				                U0 :e T /\ x :e U0 /\ U0 c= intersection_of_family X H /\
+				                closure_of X T U0 c= intersection_of_family X H.
+
+				          claim HpEmpty: p Empty.
+				          { assume Hsub: Empty c= F.
+				            witness X.
+				            apply and4I.
+				            - exact (topology_has_X X T HT).
+				            - exact Hx.
+				            - rewrite (intersection_of_family_empty_eq X).
+				              exact (Subq_ref X).
+				            - rewrite (intersection_of_family_empty_eq X).
+				              claim HclX: closure_of X T X = X.
+				              { exact (closure_of_space X T HT). }
+				              rewrite HclX.
+				              exact (Subq_ref X). }
+
+				          claim HpStep: forall H y:set, finite H -> y /:e H -> p H -> p (H :\/: {y}).
+				          { admit. (** FAIL **) }
+
+				          claim HpAll: forall H:set, finite H -> p H.
+				          { exact (finite_ind p HpEmpty HpStep). }
+				          claim HpF: p F.
+				          { exact (HpAll F HFin). }
+				          claim HexU0: exists U0:set,
+				            U0 :e T /\ x :e U0 /\ U0 c= intersection_of_family X F /\
+				            closure_of X T U0 c= intersection_of_family X F.
+				          { exact (HpF (Subq_ref F)). }
+				          apply HexU0.
+				          let U0. assume HU0conj.
+				          claim HU0l: (U0 :e T /\ x :e U0 /\ U0 c= intersection_of_family X F).
+				          { exact (andEL (U0 :e T /\ x :e U0 /\ U0 c= intersection_of_family X F)
+				                         (closure_of X T U0 c= intersection_of_family X F)
+				                         HU0conj). }
+				          claim HU0cl: closure_of X T U0 c= intersection_of_family X F.
+				          { exact (andER (U0 :e T /\ x :e U0 /\ U0 c= intersection_of_family X F)
+				                         (closure_of X T U0 c= intersection_of_family X F)
+				                         HU0conj). }
+				          claim HU0Tx: U0 :e T /\ x :e U0.
+				          { exact (andEL (U0 :e T /\ x :e U0) (U0 c= intersection_of_family X F) HU0l). }
+				          claim HU0T: U0 :e T.
+				          { exact (andEL (U0 :e T) (x :e U0) HU0Tx). }
+				          claim HxU0: x :e U0.
+				          { exact (andER (U0 :e T) (x :e U0) HU0Tx). }
+				          claim HU0sub: U0 c= intersection_of_family X F.
+				          { exact (andER (U0 :e T /\ x :e U0) (U0 c= intersection_of_family X F) HU0l). }
+				          witness U0.
+				          apply and4I.
+				          - exact HU0T.
+				          - exact HxU0.
+				          - rewrite Hb0eqF.
+				            exact HU0sub.
+				          - rewrite Hb0eqF.
+				            exact HU0cl. }
 			      apply HexU.
 			      let U. assume HU_conj.
 			      claim HU12: (U :e T /\ x :e U) /\ U c= b0.
