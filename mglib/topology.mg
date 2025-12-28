@@ -77821,6 +77821,14 @@ claim Hcount_real: atleastp real omega.
   exact HcountR. }
 exact (form100_22_real_uncountable_atleastp Hcount_real).
 Qed.
+
+(** helper: Sorgenfrey line is Lindelöf **)
+(** LATEX VERSION: The Sorgenfrey line is Lindelöf. **)
+Theorem Sorgenfrey_line_Lindelof : Lindelof_space Sorgenfrey_line Sorgenfrey_topology.
+prove Lindelof_space Sorgenfrey_line Sorgenfrey_topology.
+admit. (** FAIL **)
+Qed.
+
 Theorem Sorgenfrey_line_countability :
   first_countable_space Sorgenfrey_line Sorgenfrey_topology /\
   dense_in rational_numbers Sorgenfrey_line Sorgenfrey_topology /\
@@ -77838,7 +77846,7 @@ apply andI.
     * exact Sorgenfrey_line_first_countable.
     * exact Sorgenfrey_line_rationals_dense.
   + (** Lindelof_space Sorgenfrey_line Sorgenfrey_topology **)
-    admit. (** FAIL **)
+    exact Sorgenfrey_line_Lindelof.
 - (** not second countable **)
   exact Sorgenfrey_line_not_second_countable.
 Qed.
