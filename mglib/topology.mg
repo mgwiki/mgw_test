@@ -74913,7 +74913,7 @@ set f := (fun x:set =>
     b :e B /\ x :e b /\ b c= halfopen_interval_left x (add_SNo x 1))).
 claim Hinj: inj Sorgenfrey_line B f.
 { prove inj Sorgenfrey_line B f.
-  apply andI.
+  apply (injI Sorgenfrey_line B f).
   - (** image in B **)
     let x. assume HxR: x :e Sorgenfrey_line.
     prove f x :e B.
