@@ -11307,12 +11307,10 @@ apply (ordinal_trichotomy_or_impred N1 N2 Hord1 Hord2
   claim HepsNlt1Rlt: Rlt r3 (eps_ N1).
   { exact (RltI r3 (eps_ N1) Hr3R Heps1R HepsNlt1). }
   witness r3.
-  apply andI.
-  - apply andI.
-    + apply andI.
-      * exact Hr3R.
-      * exact Hr3pos.
-    + exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
+  apply and4I.
+  - exact Hr3R.
+  - exact Hr3pos.
+  - exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
   - exact (Rlt_tra r3 (eps_ N2) b HepsNlt2Rlt Heps2Rlt).
 - assume Heq: N1 = N2.
   set N := ordsucc N1.
@@ -11332,12 +11330,10 @@ apply (ordinal_trichotomy_or_impred N1 N2 Hord1 Hord2
   claim HepsNlt1Rlt: Rlt r3 (eps_ N1).
   { exact (RltI r3 (eps_ N1) Hr3R Heps1R HepsNlt1). }
   witness r3.
-  apply andI.
-  - apply andI.
-    + apply andI.
-      * exact Hr3R.
-      * exact Hr3pos.
-    + exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
+  apply and4I.
+  - exact Hr3R.
+  - exact Hr3pos.
+  - exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
   - claim Heps1Rltb: Rlt (eps_ N1) b.
     { prove Rlt (eps_ N1) b.
       rewrite Heq at 1.
@@ -11367,12 +11363,10 @@ apply (ordinal_trichotomy_or_impred N1 N2 Hord1 Hord2
   claim HepsNlt2Rlt: Rlt r3 (eps_ N2).
   { exact (RltI r3 (eps_ N2) Hr3R Heps2R HepsNlt2). }
   witness r3.
-  apply andI.
-  - apply andI.
-    + apply andI.
-      * exact Hr3R.
-      * exact Hr3pos.
-    + exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
+  apply and4I.
+  - exact Hr3R.
+  - exact Hr3pos.
+  - exact (Rlt_tra r3 (eps_ N1) a HepsNlt1Rlt Heps1Rlt).
   - exact (Rlt_tra r3 (eps_ N2) b HepsNlt2Rlt Heps2Rlt).
 Qed.
 
