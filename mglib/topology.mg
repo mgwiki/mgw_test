@@ -65189,7 +65189,72 @@ let X Tx A x.
 assume HTx: topology_on X Tx.
 prove x :e closure_of X Tx A <->
   exists net J le:set, net_converges_on X Tx net J le x /\ net_points_in A net J.
-admit. (** FAIL **)
+apply iffI.
+- assume Hxcl: x :e closure_of X Tx A.
+  prove exists net J le:set, net_converges_on X Tx net J le x /\ net_points_in A net J.
+  admit. (** FAIL **)
+- assume Hex: exists net J le:set, net_converges_on X Tx net J le x /\ net_points_in A net J.
+  apply Hex.
+  let net.
+  assume Hex1: exists J le:set, net_converges_on X Tx net J le x /\ net_points_in A net J.
+  apply Hex1.
+  let J.
+  assume Hex2: exists le:set, net_converges_on X Tx net J le x /\ net_points_in A net J.
+  apply Hex2.
+  let le.
+  assume Hboth: net_converges_on X Tx net J le x /\ net_points_in A net J.
+  apply Hboth.
+  assume Hconv Hpts.
+  (** unfold closure_of via SepI **)
+  (** unfold net_converges_on into core + tail **)
+  apply Hconv.
+  assume Hcore Htail.
+  apply Hcore.
+  assume Hcore5 HxX.
+  apply Hcore5.
+  assume Hcore4 Hdom.
+  apply Hcore4.
+  assume Hcore3 Hgraph.
+  apply Hcore3.
+  assume Hcore2 Htot.
+  apply Hcore2.
+  assume HTx0 HdirJ.
+  prove x :e closure_of X Tx A.
+  prove x :e {x0 :e X | forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty}.
+  apply (SepI X (fun x0:set => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x HxX).
+  (** show every neighborhood meets A **)
+  let U.
+  assume HU: U :e Tx.
+  assume HxU: x :e U.
+  prove U :/\: A <> Empty.
+  (** get eventual index i0 for U from convergence tail **)
+  claim Hexi0: exists i0:set, i0 :e J /\
+    forall i:set, i :e J -> (i0,i) :e le -> apply_fun net i :e U.
+  { exact (Htail U HU HxU). }
+  apply Hexi0.
+  let i0.
+  assume Hi0pair.
+  apply Hi0pair.
+  assume Hi0J Hafter.
+  (** extract reflexivity from directed_set J le **)
+  apply HdirJ. assume HleftJ HdirpropJ.
+  apply HleftJ. assume HJne HpoJ.
+  apply HpoJ. assume HabcJ HtransJ.
+  apply HabcJ. assume HabJ HantisymJ.
+  apply HabJ. assume HrelJ HreflJ.
+  claim Hi0refl: (i0,i0) :e le.
+  { exact (HreflJ i0 Hi0J). }
+  claim HyU: apply_fun net i0 :e U.
+  { exact (Hafter i0 Hi0J Hi0refl). }
+  claim HyA: apply_fun net i0 :e A.
+  { exact (Hpts i0 Hi0J). }
+  claim HyUA: apply_fun net i0 :e U :/\: A.
+  { exact (binintersectI U A (apply_fun net i0) HyU HyA). }
+  (** conclude nonempty **)
+  assume Hempty: U :/\: A = Empty.
+  claim HyEmpty: apply_fun net i0 :e Empty.
+  { rewrite <- Hempty. exact HyUA. }
+  exact (EmptyE (apply_fun net i0) HyEmpty False).
 Qed.
 
 (** from exercises after §29: continuity via nets **)
