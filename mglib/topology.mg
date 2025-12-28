@@ -77180,11 +77180,6 @@ Theorem product_topology_full_regular_axiom : forall I Xi:set,
 let I Xi.
 assume Hrfam: regular_spaces_family I Xi.
 prove regular_space (product_space I Xi) (product_topology_full I Xi).
-prove one_point_sets_closed (product_space I Xi) (product_topology_full I Xi) /\
-  forall f:set, f :e product_space I Xi ->
-    forall F:set, closed_in (product_space I Xi) (product_topology_full I Xi) F -> f /:e F ->
-      exists U V:set, U :e product_topology_full I Xi /\ V :e product_topology_full I Xi /\
-        f :e U /\ F c= V /\ U :/\: V = Empty.
 (** First derive Hausdorffness of the full product (regular -> Hausdorff factorwise). **)
 claim HHfam: Hausdorff_spaces_family I Xi.
 { let i. assume HiI: i :e I.
@@ -77195,22 +77190,53 @@ claim HHprod: Hausdorff_space (product_space I Xi) (product_topology_full I Xi).
 { exact (product_topology_full_Hausdorff_axiom I Xi HHfam). }
 claim HTprod: topology_on (product_space I Xi) (product_topology_full I Xi).
 { exact (Hausdorff_space_topology (product_space I Xi) (product_topology_full I Xi) HHprod). }
-apply andI.
-- (** one_point_sets_closed **)
-  prove topology_on (product_space I Xi) (product_topology_full I Xi) /\
-    forall f:set, f :e product_space I Xi -> closed_in (product_space I Xi) (product_topology_full I Xi) {f}.
+claim HT1prod: one_point_sets_closed (product_space I Xi) (product_topology_full I Xi).
+{ prove topology_on (product_space I Xi) (product_topology_full I Xi) /\
+    forall f:set, f :e product_space I Xi ->
+      closed_in (product_space I Xi) (product_topology_full I Xi) {f}.
   apply andI.
-  * exact HTprod.
-  * let f. assume Hf: f :e product_space I Xi.
-    exact (Hausdorff_singletons_closed (product_space I Xi) (product_topology_full I Xi) f HHprod Hf).
-- (** regular separation of point vs closed set **)
-  let f. assume Hf: f :e product_space I Xi.
-  let F. assume HFcl: closed_in (product_space I Xi) (product_topology_full I Xi) F.
-  assume HfnotF: f /:e F.
-  prove exists U V:set,
-    U :e product_topology_full I Xi /\ V :e product_topology_full I Xi /\
-      f :e U /\ F c= V /\ U :/\: V = Empty.
-  admit. (** FAIL **)
+  - exact HTprod.
+  - let f. assume Hf: f :e product_space I Xi.
+    exact (Hausdorff_singletons_closed (product_space I Xi) (product_topology_full I Xi) f HHprod Hf). }
+
+(** Use Lemma 31.1 (regular_normal_via_closure) to reduce regularity to the closure-shrink criterion. **)
+claim Hshrink_iff:
+  regular_space (product_space I Xi) (product_topology_full I Xi) <->
+  forall x U:set,
+    x :e product_space I Xi ->
+    U :e product_topology_full I Xi ->
+    x :e U ->
+    exists V:set,
+      V :e product_topology_full I Xi /\ x :e V /\
+      closure_of (product_space I Xi) (product_topology_full I Xi) V c= U.
+{ exact ((andEL
+            (one_point_sets_closed (product_space I Xi) (product_topology_full I Xi) ->
+              (regular_space (product_space I Xi) (product_topology_full I Xi) <->
+                forall x U:set, x :e product_space I Xi ->
+                  U :e product_topology_full I Xi -> x :e U ->
+                    exists V:set,
+                      V :e product_topology_full I Xi /\ x :e V /\
+                      closure_of (product_space I Xi) (product_topology_full I Xi) V c= U))
+            (one_point_sets_closed (product_space I Xi) (product_topology_full I Xi) ->
+              (normal_space (product_space I Xi) (product_topology_full I Xi) <->
+                forall A U:set, closed_in (product_space I Xi) (product_topology_full I Xi) A ->
+                  U :e product_topology_full I Xi -> A c= U ->
+                    exists V:set,
+                      V :e product_topology_full I Xi /\ A c= V /\
+                      closure_of (product_space I Xi) (product_topology_full I Xi) V c= U))
+            (regular_normal_via_closure (product_space I Xi) (product_topology_full I Xi) HTprod))
+         HT1prod). }
+
+apply (iffER (regular_space (product_space I Xi) (product_topology_full I Xi))
+             (forall x U:set,
+               x :e product_space I Xi ->
+               U :e product_topology_full I Xi ->
+               x :e U ->
+               exists V:set,
+                 V :e product_topology_full I Xi /\ x :e V /\
+                 closure_of (product_space I Xi) (product_topology_full I Xi) V c= U)
+             Hshrink_iff).
+admit. (** FAIL **)
 Qed.
 
 Theorem separation_axioms_subspace_product : forall X Tx:set,
