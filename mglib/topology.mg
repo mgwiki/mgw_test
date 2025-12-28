@@ -16625,52 +16625,52 @@ prove R_lower_limit_basis c= Power R
   /\ (forall b1 :e R_lower_limit_basis, forall b2 :e R_lower_limit_basis, forall x:set,
         x :e b1 -> x :e b2 ->
         exists b3 :e R_lower_limit_basis, x :e b3 /\ b3 c= b1 :/\: b2).
-apply andI.
-- apply andI.
-  + (** basis elements are subsets of R **)
-    let U. assume HU : U :e R_lower_limit_basis.
-    prove U :e Power R.
-    claim Hexa : exists a :e R, U :e {halfopen_interval_left a b|b :e R}.
-    { exact (famunionE R (fun a0:set => {halfopen_interval_left a0 b|b :e R}) U HU). }
-    apply Hexa.
-    let a. assume Hapair.
-    claim HaR : a :e R.
-    { exact (andEL (a :e R) (U :e {halfopen_interval_left a b|b :e R}) Hapair). }
-    claim HUfam : U :e {halfopen_interval_left a b|b :e R}.
-    { exact (andER (a :e R) (U :e {halfopen_interval_left a b|b :e R}) Hapair). }
-    claim Hexb : exists b :e R, U = halfopen_interval_left a b.
-    { exact (ReplE R (fun b0 : set => halfopen_interval_left a b0) U HUfam). }
-    apply Hexb.
-    let b. assume Hbpair.
-    claim HUeq : U = halfopen_interval_left a b.
-    { exact (andER (b :e R) (U = halfopen_interval_left a b) Hbpair). }
-    rewrite HUeq.
-    exact (PowerI R (halfopen_interval_left a b) (halfopen_interval_left_Subq_R a b)).
-  + (** coverage: every x has a basis neighborhood [x,x+1) **)
-    let x. assume HxR.
-    claim HxS : SNo x.
-    { exact (real_SNo x HxR). }
-    set b0 := add_SNo x 1.
-    claim Hb0R : b0 :e R.
-    { exact (real_add_SNo x HxR 1 real_1). }
-    claim Hb0S : SNo b0.
-    { exact (real_SNo b0 Hb0R). }
-    claim Hxltb0 : x < b0.
-    { claim Hx0lt : add_SNo x 0 < add_SNo x 1.
-      { exact (add_SNo_Lt2 x 0 1 HxS SNo_0 SNo_1 SNoLt_0_1). }
-      rewrite <- (add_SNo_0R x HxS) at 1.
-      exact Hx0lt. }
-    claim Hxb0 : Rlt x b0.
-    { exact (RltI x b0 HxR Hb0R Hxltb0). }
-    set I := halfopen_interval_left x b0.
-    witness I.
-    apply andI.
-    * (** I is in the lower limit basis **)
-      claim HIa : I :e {halfopen_interval_left x bb|bb :e R}.
-      { exact (ReplI R (fun bb : set => halfopen_interval_left x bb) b0 Hb0R). }
-      exact (famunionI R (fun aa : set => {halfopen_interval_left aa bb|bb :e R}) x I HxR HIa).
-    * (** x is in I **)
-      exact (halfopen_interval_left_leftmem x b0 Hxb0).
+apply and3I.
+- (** basis elements are subsets of R **)
+  let U. assume HU : U :e R_lower_limit_basis.
+  prove U :e Power R.
+  claim Hexa : exists a :e R, U :e {halfopen_interval_left a b|b :e R}.
+  { exact (famunionE R (fun a0:set => {halfopen_interval_left a0 b|b :e R}) U HU). }
+  apply Hexa.
+  let a. assume Hapair.
+  claim HaR : a :e R.
+  { exact (andEL (a :e R) (U :e {halfopen_interval_left a b|b :e R}) Hapair). }
+  claim HUfam : U :e {halfopen_interval_left a b|b :e R}.
+  { exact (andER (a :e R) (U :e {halfopen_interval_left a b|b :e R}) Hapair). }
+  claim Hexb : exists b :e R, U = halfopen_interval_left a b.
+  { exact (ReplE R (fun b0 : set => halfopen_interval_left a b0) U HUfam). }
+  apply Hexb.
+  let b. assume Hbpair.
+  claim HUeq : U = halfopen_interval_left a b.
+  { exact (andER (b :e R) (U = halfopen_interval_left a b) Hbpair). }
+  rewrite HUeq.
+  exact (PowerI R (halfopen_interval_left a b) (halfopen_interval_left_Subq_R a b)).
+- (** coverage: every x has a basis neighborhood [x,x+1) **)
+  let x. assume HxR.
+  claim HxS : SNo x.
+  { exact (real_SNo x HxR). }
+  set b0 := add_SNo x 1.
+  claim Hb0R : b0 :e R.
+  { exact (real_add_SNo x HxR 1 real_1). }
+  claim Hb0S : SNo b0.
+  { exact (real_SNo b0 Hb0R). }
+  claim Hxltb0 : x < b0.
+  { claim Hx0lt : add_SNo x 0 < add_SNo x 1.
+    { exact (add_SNo_Lt2 x 0 1 HxS SNo_0 SNo_1 SNoLt_0_1). }
+    rewrite <- (add_SNo_0R x HxS) at 1.
+    exact Hx0lt. }
+  claim Hxb0 : Rlt x b0.
+  { exact (RltI x b0 HxR Hb0R Hxltb0). }
+  set I := halfopen_interval_left x b0.
+  witness I.
+  apply andI.
+  - (** I is in the lower limit basis **)
+    prove I :e R_lower_limit_basis.
+    claim HIa : I :e {halfopen_interval_left x bb|bb :e R}.
+    { exact (ReplI R (fun bb : set => halfopen_interval_left x bb) b0 Hb0R). }
+    exact (famunionI R (fun aa : set => {halfopen_interval_left aa bb|bb :e R}) x I HxR HIa).
+  - (** x is in I **)
+    exact (halfopen_interval_left_leftmem x b0 Hxb0).
 - (** intersection refinement **)
   let b1. assume Hb1.
   let b2. assume Hb2.
