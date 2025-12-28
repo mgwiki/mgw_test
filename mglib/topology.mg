@@ -79418,7 +79418,43 @@ apply andI.
     { exact (product_subbasis_full_subbasis_on I Xi HIne HcompTop). }
     exact (topology_from_subbasis_is_topology (product_space I Xi) (product_subbasis_full I Xi) HS).
 - (** Hausdorff separation axiom for product_topology_full **)
-  admit. (** FAIL **)
+  let x1 x2.
+  assume Hx1: x1 :e product_space I Xi.
+  assume Hx2: x2 :e product_space I Xi.
+  assume Hneq: x1 <> x2.
+  prove exists U V:set, U :e product_topology_full I Xi /\ V :e product_topology_full I Xi /\
+    x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+  apply (xm (I = Empty)).
+  + assume HI0: I = Empty.
+    apply FalseE.
+    (** product_space Empty Xi = {Empty}, so no distinct points exist **)
+    claim HX0: product_space Empty Xi = {Empty}.
+    { exact (product_space_empty_index Xi). }
+    claim Hx1S: x1 :e {Empty}.
+    { rewrite <- HX0.
+      claim Hx1Eidx: x1 :e product_space Empty Xi.
+      { prove x1 :e product_space Empty Xi.
+        rewrite <- HI0.
+        exact Hx1. }
+      exact Hx1Eidx. }
+    claim Hx2S: x2 :e {Empty}.
+    { rewrite <- HX0.
+      claim Hx2Eidx: x2 :e product_space Empty Xi.
+      { prove x2 :e product_space Empty Xi.
+        rewrite <- HI0.
+        exact Hx2. }
+      exact Hx2Eidx. }
+    claim Hx1E: x1 = Empty.
+    { exact (SingE Empty x1 Hx1S). }
+    claim Hx2E: x2 = Empty.
+    { exact (SingE Empty x2 Hx2S). }
+    claim Heq: x1 = x2.
+    { rewrite Hx1E.
+      rewrite Hx2E.
+      reflexivity. }
+    exact (Hneq Heq).
+  + assume HIne: I <> Empty.
+    admit. (** FAIL **)
 Qed.
 
 Theorem product_topology_full_regular_axiom : forall I Xi:set,
