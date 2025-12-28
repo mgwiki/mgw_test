@@ -74875,7 +74875,121 @@ apply set_ext.
   { exact (binintersectI U rational_numbers q HqInU HqQ). }
   claim HqEmp: q :e Empty.
   { rewrite <- HUQ. exact HqUA. }
-  exact (EmptyE q HqEmp False).
+    exact (EmptyE q HqEmp False).
+Qed.
+
+(** helper: disjoint nonempty open families are countable in a space with countable dense subset **)
+(** LATEX VERSION: In a space with a countable dense subset D, any pairwise disjoint family of nonempty open sets is countable. **)
+Theorem disjoint_open_family_countable_of_dense : forall X Tx D Fam:set,
+  topology_on X Tx ->
+  dense_in D X Tx ->
+  countable_set D ->
+  Fam c= Tx ->
+  (forall U:set, U :e Fam -> U <> Empty) ->
+  pairwise_disjoint Fam ->
+  countable_set Fam.
+let X Tx D Fam.
+assume HTx: topology_on X Tx.
+assume Hdense: dense_in D X Tx.
+assume HcountD: countable_set D.
+assume HFamSub: Fam c= Tx.
+assume Hne: forall U:set, U :e Fam -> U <> Empty.
+assume Hdisj: pairwise_disjoint Fam.
+prove countable_set Fam.
+
+claim dense_meets_nonempty_open: forall U:set,
+  U :e Tx -> U <> Empty -> exists d:set, d :e D /\ d :e U.
+{ let U. assume HUopen: U :e Tx. assume HUne: U <> Empty.
+  claim Hexx: exists x:set, x :e U.
+  { exact (nonempty_has_element U HUne). }
+  set x0 := Eps_i (fun x:set => x :e U).
+  claim Hx0U: x0 :e U.
+  { exact (Eps_i_ex (fun x:set => x :e U) Hexx). }
+  claim HUSubX: U c= X.
+  { exact (topology_elem_subset X Tx U HTx HUopen). }
+  claim Hx0X: x0 :e X.
+  { exact (HUSubX x0 Hx0U). }
+  claim HclEq: closure_of X Tx D = X.
+  { exact Hdense. }
+  claim Hx0cl: x0 :e closure_of X Tx D.
+  { rewrite HclEq. exact Hx0X. }
+  claim Hcliff: x0 :e closure_of X Tx D <-> (forall W :e Tx, x0 :e W -> W :/\: D <> Empty).
+  { exact (closure_characterization X Tx D x0 HTx Hx0X). }
+  claim Hneigh: forall W :e Tx, x0 :e W -> W :/\: D <> Empty.
+  { exact (iffEL (x0 :e closure_of X Tx D)
+                 (forall W :e Tx, x0 :e W -> W :/\: D <> Empty)
+                 Hcliff
+                 Hx0cl). }
+  claim HUDne: U :/\: D <> Empty.
+  { exact (Hneigh U HUopen Hx0U). }
+  claim HexUD: exists d:set, d :e U :/\: D.
+  { exact (nonempty_has_element (U :/\: D) HUDne). }
+  apply HexUD.
+  let d. assume HdUD: d :e U :/\: D.
+  witness d.
+  apply andI.
+  - exact (binintersectE2 U D d HdUD).
+  - exact (binintersectE1 U D d HdUD). }
+
+(** pick a dense point in each open set of Fam **)
+set pick := (fun U:set => Eps_i (fun d:set => d :e D /\ d :e U)).
+
+claim Hpick_in_D: forall U:set, U :e Fam -> pick U :e D.
+{ let U. assume HUfam: U :e Fam.
+  claim HUopen: U :e Tx.
+  { exact (HFamSub U HUfam). }
+  claim HUne: U <> Empty.
+  { exact (Hne U HUfam). }
+  claim Hexd: exists d:set, d :e D /\ d :e U.
+  { exact (dense_meets_nonempty_open U HUopen HUne). }
+  apply Hexd.
+  let d. assume Hdpair: d :e D /\ d :e U.
+  claim HpickProp: pick U :e D /\ pick U :e U.
+  { exact (Eps_i_ax (fun d0:set => d0 :e D /\ d0 :e U) d Hdpair). }
+  exact (andEL (pick U :e D) (pick U :e U) HpickProp). }
+
+claim Hpick_in_U: forall U:set, U :e Fam -> pick U :e U.
+{ let U. assume HUfam: U :e Fam.
+  claim HUopen: U :e Tx.
+  { exact (HFamSub U HUfam). }
+  claim HUne: U <> Empty.
+  { exact (Hne U HUfam). }
+  claim Hexd: exists d:set, d :e D /\ d :e U.
+  { exact (dense_meets_nonempty_open U HUopen HUne). }
+  apply Hexd.
+  let d. assume Hdpair: d :e D /\ d :e U.
+  claim HpickProp: pick U :e D /\ pick U :e U.
+  { exact (Eps_i_ax (fun d0:set => d0 :e D /\ d0 :e U) d Hdpair). }
+  exact (andER (pick U :e D) (pick U :e U) HpickProp). }
+
+claim HinjFamD: atleastp Fam D.
+{ prove exists f:set -> set, inj Fam D f.
+  witness pick.
+  apply (injI Fam D pick).
+  - let U. assume HUfam: U :e Fam.
+    exact (Hpick_in_D U HUfam).
+  - let U1. assume HU1: U1 :e Fam.
+    let U2. assume HU2: U2 :e Fam.
+    assume Heq: pick U1 = pick U2.
+    prove U1 = U2.
+    apply (dneg (U1 = U2)).
+    assume Hneq: ~(U1 = U2).
+    prove False.
+    claim Hinter: U1 :/\: U2 = Empty.
+    { exact (Hdisj U1 U2 HU1 HU2 Hneq). }
+    claim HpickU1: pick U1 :e U1.
+    { exact (Hpick_in_U U1 HU1). }
+    claim HpickU2: pick U1 :e U2.
+    { rewrite Heq.
+      exact (Hpick_in_U U2 HU2). }
+    claim Hpt: pick U1 :e U1 :/\: U2.
+    { exact (binintersectI U1 U2 (pick U1) HpickU1 HpickU2). }
+    claim Hbad: pick U1 :e Empty.
+    { rewrite <- Hinter. exact Hpt. }
+    exact (EmptyE (pick U1) Hbad False). 
+}
+
+exact (atleastp_tra Fam D omega HinjFamD HcountD).
 Qed.
 
 (** helper: Sorgenfrey line is not second countable **)
