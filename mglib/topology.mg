@@ -64717,14 +64717,10 @@ apply H5. assume H4 Htotsub.
 apply H4. assume H3 Hgraphnet.
 apply H3. assume H2 Htotnet.
 apply H2. assume HdirJ HdirK.
-apply andI.
-- (** ((directed_set /\ total_function_on) /\ functional_graph) **)
-  apply andI.
-  + (** directed_set /\ total_function_on **)
-    apply andI.
-    * exact HdirK.
-    * exact Htotsub.
-  + exact Hgraphsub.
+apply and4I.
+- exact HdirK.
+- exact Htotsub.
+- exact Hgraphsub.
 - exact Hdomsub.
 Qed.
 
