@@ -25959,14 +25959,20 @@ Definition apply_fun : set -> set -> set := fun f x => Eps_i (fun y => (x,y) :e 
 Definition function_on : set -> set -> set -> prop := fun f X Y => forall x:set, x :e X -> apply_fun f x :e Y.
 Definition function_space : set -> set -> set := fun X Y => {f :e Power (setprod X Y)|function_on f X Y}.
 
+(** from §18 Continuous Functions: set-theoretic encoding of functions **)
+(** LATEX VERSION: A function is single-valued: if f(x)=y1 and f(x)=y2 then y1=y2. **)
 (** Helper: a functional graph is single valued **)
 Definition functional_graph : set -> prop :=
   fun f => forall x y1 y2:set, (x,y1) :e f -> (x,y2) :e f -> y1 = y2.
 
+(** from §18 Continuous Functions: domain and codomain restrictions for graphs **)
+(** LATEX VERSION: A function f:X→Y has domain contained in X and range contained in Y. **)
 (** Helper: graph domain restriction **)
 Definition graph_domain_subset : set -> set -> prop :=
   fun f X => forall x y:set, (x,y) :e f -> x :e X.
 
+(** from §18 Continuous Functions: domain and codomain restrictions for graphs **)
+(** LATEX VERSION: A function f:X→Y has domain contained in X and range contained in Y. **)
 (** Helper: graph range restriction **)
 Definition graph_range_subset : set -> set -> prop :=
   fun f Y => forall x y:set, (x,y) :e f -> y :e Y.
