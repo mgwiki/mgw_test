@@ -8061,82 +8061,75 @@ prove indiscrete_topology X c= Power X
 /\ X :e indiscrete_topology X
 /\ (forall UFam :e Power (indiscrete_topology X), Union UFam :e indiscrete_topology X)
 /\ (forall U :e indiscrete_topology X, forall V :e indiscrete_topology X, U :/\: V :e indiscrete_topology X).
-apply andI.
-- prove (indiscrete_topology X c= Power X /\ Empty :e indiscrete_topology X) /\ X :e indiscrete_topology X /\ (forall UFam :e Power (indiscrete_topology X), Union UFam :e indiscrete_topology X).
-  apply andI.
-  * prove indiscrete_topology X c= Power X /\ Empty :e indiscrete_topology X /\ X :e indiscrete_topology X.
-    apply andI.
-    { prove indiscrete_topology X c= Power X /\ Empty :e indiscrete_topology X.
-      apply andI.
-      - let U. assume HU: U :e indiscrete_topology X.
-        apply UPairE U Empty X HU.
-        + assume HUe: U = Empty. rewrite HUe. exact (Empty_In_Power X).
-        + assume HUX: U = X. rewrite HUX. exact (Self_In_Power X).
-      - exact (UPairI1 Empty X).
+apply and5I.
+- let U. assume HU: U :e indiscrete_topology X.
+  apply UPairE U Empty X HU.
+  + assume HUe: U = Empty. rewrite HUe. exact (Empty_In_Power X).
+  + assume HUX: U = X. rewrite HUX. exact (Self_In_Power X).
+- exact (UPairI1 Empty X).
+- exact (UPairI2 Empty X).
+- prove forall UFam :e Power (indiscrete_topology X), Union UFam :e indiscrete_topology X.
+  let UFam. assume Hfam: UFam :e Power (indiscrete_topology X).
+  claim Hsub : UFam c= indiscrete_topology X.
+  { exact (PowerE (indiscrete_topology X) UFam Hfam). }
+  apply xm (exists U:set, U :e UFam /\ U = X).
+  - assume Hex: exists U:set, U :e UFam /\ U = X.
+    claim HUnion_sub : Union UFam c= X.
+    { let x. assume HxUnion.
+      apply UnionE_impred UFam x HxUnion.
+      let U. assume HxU HUin.
+      claim HUtop : U :e indiscrete_topology X.
+      { exact (Hsub U HUin). }
+      apply UPairE U Empty X HUtop.
+      - assume HUe: U = Empty.
+        claim HxEmpty : x :e Empty.
+        { rewrite <- HUe. exact HxU. }
+        exact (EmptyE x HxEmpty (x :e X)).
+      - assume HUX: U = X.
+        rewrite <- HUX.
+        exact HxU.
     }
-    { exact (UPairI2 Empty X). }
-  * prove forall UFam :e Power (indiscrete_topology X), Union UFam :e indiscrete_topology X.
-    let UFam. assume Hfam: UFam :e Power (indiscrete_topology X).
-    claim Hsub : UFam c= indiscrete_topology X.
-    { exact (PowerE (indiscrete_topology X) UFam Hfam). }
-    apply xm (exists U:set, U :e UFam /\ U = X).
-    - assume Hex: exists U:set, U :e UFam /\ U = X.
-      claim HUnion_sub : Union UFam c= X.
-      { let x. assume HxUnion.
-        apply UnionE_impred UFam x HxUnion.
-        let U. assume HxU HUin.
-        claim HUtop : U :e indiscrete_topology X.
-        { exact (Hsub U HUin). }
-        apply UPairE U Empty X HUtop.
-        - assume HUe: U = Empty.
-          claim HxEmpty : x :e Empty.
-          { rewrite <- HUe. exact HxU. }
-          exact (EmptyE x HxEmpty (x :e X)).
-        - assume HUX: U = X.
-          rewrite <- HUX.
-          exact HxU.
-      }
-      claim HX_sub : X c= Union UFam.
-      { let x. assume HxX.
-        apply Hex.
-        let U. assume HUinpair : U :e UFam /\ U = X.
-        claim HUin : U :e UFam.
-        { exact (andEL (U :e UFam) (U = X) HUinpair). }
-        claim HUeq : U = X.
-        { exact (andER (U :e UFam) (U = X) HUinpair). }
-        claim HxU : x :e U.
-        { rewrite HUeq. exact HxX. }
-        apply UnionI UFam x U HxU HUin.
-      }
-      claim HUnion_eq : Union UFam = X.
-      { apply set_ext.
-        - exact HUnion_sub.
-        - exact HX_sub.
-      }
-      rewrite HUnion_eq.
-      exact (UPairI2 Empty X).
-    - assume Hnone: ~exists U:set, U :e UFam /\ U = X.
-      claim HUnion_empty : Union UFam = Empty.
-      { apply Empty_Subq_eq.
-        let x. assume HxUnion.
-        apply UnionE_impred UFam x HxUnion.
-        let U. assume HxU HUin.
-        claim HUtop : U :e indiscrete_topology X.
-        { exact (Hsub U HUin). }
-        apply UPairE U Empty X HUtop.
-        - assume HUe: U = Empty.
-          claim HxEmpty : x :e Empty.
-          { rewrite <- HUe. exact HxU. }
-          exact HxEmpty.
-        - assume HUX: U = X.
-          apply FalseE.
-          apply Hnone.
-          witness U.
-          apply andI.
-          + exact HUin.
-          + exact HUX.
-      }
-      rewrite HUnion_empty. exact (UPairI1 Empty X).
+    claim HX_sub : X c= Union UFam.
+    { let x. assume HxX.
+      apply Hex.
+      let U. assume HUinpair : U :e UFam /\ U = X.
+      claim HUin : U :e UFam.
+      { exact (andEL (U :e UFam) (U = X) HUinpair). }
+      claim HUeq : U = X.
+      { exact (andER (U :e UFam) (U = X) HUinpair). }
+      claim HxU : x :e U.
+      { rewrite HUeq. exact HxX. }
+      apply UnionI UFam x U HxU HUin.
+    }
+    claim HUnion_eq : Union UFam = X.
+    { apply set_ext.
+      - exact HUnion_sub.
+      - exact HX_sub.
+    }
+    rewrite HUnion_eq.
+    exact (UPairI2 Empty X).
+  - assume Hnone: ~exists U:set, U :e UFam /\ U = X.
+    claim HUnion_empty : Union UFam = Empty.
+    { apply Empty_Subq_eq.
+      let x. assume HxUnion.
+      apply UnionE_impred UFam x HxUnion.
+      let U. assume HxU HUin.
+      claim HUtop : U :e indiscrete_topology X.
+      { exact (Hsub U HUin). }
+      apply UPairE U Empty X HUtop.
+      - assume HUe: U = Empty.
+        claim HxEmpty : x :e Empty.
+        { rewrite <- HUe. exact HxU. }
+        exact HxEmpty.
+      - assume HUX: U = X.
+        apply FalseE.
+        apply Hnone.
+        witness U.
+        apply andI.
+        + exact HUin.
+        + exact HUX.
+    }
+    rewrite HUnion_empty. exact (UPairI1 Empty X).
 - prove forall U :e indiscrete_topology X, forall V :e indiscrete_topology X, U :/\: V :e indiscrete_topology X.
   let U. assume HU: U :e indiscrete_topology X.
   let V. assume HV: V :e indiscrete_topology X.
