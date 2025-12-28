@@ -65178,20 +65178,12 @@ witness leK.
 (** build the left-associated conjunction for net_converges **)
 apply andI.
 - prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K /\ x :e X.
-  apply andI.
-  + prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K.
-    apply andI.
-    * prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub.
-      apply andI.
-      - prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X.
-        apply andI.
-        + prove topology_on X Tx /\ directed_set K leK.
-          apply andI.
-          * exact HTx.
-          * exact HdirK.
-        + exact Hsubtot.
-      - exact Hsubgraph.
-    * exact Hsubdom.
+  apply and6I.
+  + exact HTx.
+  + exact HdirK.
+  + exact Hsubtot.
+  + exact Hsubgraph.
+  + exact Hsubdom.
   + exact HxX.
 - (** neighborhood eventuality for sub **)
   let U.
