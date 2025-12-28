@@ -65271,20 +65271,12 @@ prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ fun
 apply andI.
 - (** core data **)
   prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K /\ x :e X.
-  apply andI.
-  + prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K.
-    apply andI.
-    * prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub.
-      apply andI.
-      - prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X.
-        apply andI.
-        + prove topology_on X Tx /\ directed_set K leK.
-          apply andI.
-          * exact HTx.
-          * exact HdirK.
-        + exact Htotsub.
-      - exact Hgraphsub.
-    * exact Hdomsub.
+  apply and6I.
+  + exact HTx.
+  + exact HdirK.
+  + exact Htotsub.
+  + exact Hgraphsub.
+  + exact Hdomsub.
   + exact HxX.
 - (** eventuality for sub along leK **)
   let U.
