@@ -71404,11 +71404,503 @@ apply andI.
   { rewrite <- HdefProd.
     exact HU. }
   exact (Hinc U HUgen).
-- (** uniform-open sets are box-open (uniform is coarser than box) **)
-  prove coarser_than uniform_topology Romega_box_topology_on_real_sequences.
-  (** remaining goal: uniform_topology c= Romega_box_topology_on_real_sequences **)
-  admit. (** FAIL **)
-Qed.
+	- (** uniform-open sets are box-open (uniform is coarser than box) **)
+	  prove coarser_than uniform_topology Romega_box_topology_on_real_sequences.
+	  (** remaining goal: uniform_topology c= Romega_box_topology_on_real_sequences **)
+	  prove uniform_topology c= Romega_box_topology_on_real_sequences.
+	  set Xi0 := const_space_family omega R R_standard_topology.
+	  set X0 := real_sequences.
+	  set d := uniform_metric_Romega.
+	  set Bballs := famunion X0 (fun x0:set => {open_ball X0 d x0 rr|rr :e R, Rlt 0 rr}).
+	  set BoxT := box_topology omega Xi0.
+	  set BoxB := box_basis omega Xi0.
+		  claim HBoxRefine: forall c x r:set,
+		    c :e X0 -> x :e X0 -> r :e R -> Rlt 0 r ->
+		    x :e open_ball X0 d c r ->
+		    exists bb:set, bb :e BoxB /\ x :e bb /\ bb c= open_ball X0 d c r.
+		  { let c x r.
+		    assume HcX0: c :e X0.
+		    assume HxX0: x :e X0.
+		    assume HrR: r :e R.
+		    assume Hrpos: Rlt 0 r.
+		    assume Hxin: x :e open_ball X0 d c r.
+		    claim Hm: metric_on X0 d.
+		    { exact uniform_metric_Romega_is_metric. }
+		    claim Href: exists s:set, s :e R /\ Rlt 0 s /\ open_ball X0 d x s c= open_ball X0 d c r.
+		    { exact (open_ball_refine_center X0 d c x r Hm HcX0 HxX0 HrR Hrpos Hxin). }
+		    apply Href.
+		    let s. assume HsPack.
+		    claim HsPair: s :e R /\ Rlt 0 s.
+		    { exact (andEL (s :e R /\ Rlt 0 s) (open_ball X0 d x s c= open_ball X0 d c r) HsPack). }
+		    claim HsR: s :e R.
+		    { exact (andEL (s :e R) (Rlt 0 s) HsPair). }
+		    claim Hspos: Rlt 0 s.
+		    { exact (andER (s :e R) (Rlt 0 s) HsPair). }
+		    claim HsSub: open_ball X0 d x s c= open_ball X0 d c r.
+		    { exact (andER (s :e R /\ Rlt 0 s) (open_ball X0 d x s c= open_ball X0 d c r) HsPack). }
+		    claim Hexeps: exists eps:set, eps :e R /\ Rlt 0 eps /\ Rlt eps s /\ Rlt eps 1.
+		    { exact (exists_eps_lt_two_pos_Euclid s 1 HsR real_1 Hspos Rlt_0_1). }
+		    apply Hexeps.
+		    let eps. assume HepsPack.
+		    claim HepsCore: (eps :e R /\ Rlt 0 eps) /\ Rlt eps s.
+		    { exact (andEL ((eps :e R /\ Rlt 0 eps) /\ Rlt eps s) (Rlt eps 1) HepsPack). }
+		    claim Hepslt1: Rlt eps 1.
+		    { exact (andER ((eps :e R /\ Rlt 0 eps) /\ Rlt eps s) (Rlt eps 1) HepsPack). }
+		    claim HepsPair: eps :e R /\ Rlt 0 eps.
+		    { exact (andEL (eps :e R /\ Rlt 0 eps) (Rlt eps s) HepsCore). }
+		    claim HepsltS: Rlt eps s.
+		    { exact (andER (eps :e R /\ Rlt 0 eps) (Rlt eps s) HepsCore). }
+		    claim HepsR: eps :e R.
+		    { exact (andEL (eps :e R) (Rlt 0 eps) HepsPair). }
+		    claim Hepspos: Rlt 0 eps.
+		    { exact (andER (eps :e R) (Rlt 0 eps) HepsPair). }
+		
+		    set Ufun := graph omega (fun i:set =>
+		      open_interval (add_SNo (apply_fun x i) (minus_SNo eps))
+		                    (add_SNo (apply_fun x i) eps)).
+		    set bb := {f :e product_space omega Xi0 | forall i:set, i :e omega -> apply_fun f i :e apply_fun Ufun i}.
+		    witness bb.
+		    apply andI.
+		    - prove bb :e BoxB /\ x :e bb.
+		      apply andI.
+		      + (** bb :e BoxB **)
+		        prove bb :e BoxB.
+		        claim HBoxBdef: BoxB = box_basis omega Xi0.
+		        { reflexivity. }
+		        rewrite HBoxBdef.
+		        claim HBoxBasisDef: box_basis omega Xi0 =
+		          {B :e Power (product_space omega Xi0) |
+		            exists U:set, total_function_on U omega (topology_family_union omega Xi0) /\ functional_graph U /\
+		              (forall i:set, i :e omega -> apply_fun U i :e space_family_topology Xi0 i) /\
+		              B = {f :e product_space omega Xi0 | forall i:set, i :e omega -> apply_fun f i :e apply_fun U i}}.
+		        { reflexivity. }
+		        rewrite HBoxBasisDef.
+		      claim HbbPow: bb :e Power (product_space omega Xi0).
+		      { apply PowerI.
+		        let f. assume Hfbb: f :e bb.
+		        exact (SepE1 (product_space omega Xi0)
+		                     (fun f0:set => forall i:set, i :e omega -> apply_fun f0 i :e apply_fun Ufun i)
+		                     f Hfbb). }
+		      apply (SepI (Power (product_space omega Xi0))
+		                  (fun B:set =>
+		                    exists U:set, total_function_on U omega (topology_family_union omega Xi0) /\ functional_graph U /\
+		                      (forall i:set, i :e omega -> apply_fun U i :e space_family_topology Xi0 i) /\
+		                      B = {f :e product_space omega Xi0 | forall i:set, i :e omega -> apply_fun f i :e apply_fun U i})
+		                  bb HbbPow).
+		      witness Ufun.
+			      (** prove ((A /\ B) /\ C) /\ D with left-assoc /\ **)
+			      apply andI.
+			      - apply andI.
+			        + apply andI.
+			          * (** total_function_on **)
+			             prove total_function_on Ufun omega (topology_family_union omega Xi0).
+			             apply (total_function_on_graph omega (topology_family_union omega Xi0)
+			                     (fun i:set => open_interval (add_SNo (apply_fun x i) (minus_SNo eps))
+			                                                 (add_SNo (apply_fun x i) eps))).
+			             let i. assume HiO: i :e omega.
+			             prove open_interval (add_SNo (apply_fun x i) (minus_SNo eps))
+			                                 (add_SNo (apply_fun x i) eps)
+			                   :e topology_family_union omega Xi0.
+			             claim HXiTop: space_family_topology Xi0 i = R_standard_topology.
+			             { claim Hdef0: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+			               { reflexivity. }
+			               rewrite Hdef0.
+			               rewrite (const_space_family_apply omega R R_standard_topology i HiO).
+			               exact (tuple_2_1_eq R R_standard_topology). }
+			             claim HxiR: apply_fun x i :e R.
+			             { claim HxRomega: x :e R_omega_space.
+			               { rewrite <- real_sequences_eq_Romega_space.
+			                 exact HxX0. }
+			               exact (Romega_coord_in_R x i HxRomega HiO). }
+			             claim HmepsR: minus_SNo eps :e R.
+			             { exact (real_minus_SNo eps HepsR). }
+			             claim HaR: add_SNo (apply_fun x i) (minus_SNo eps) :e R.
+			             { exact (real_add_SNo (apply_fun x i) HxiR (minus_SNo eps) HmepsR). }
+			             claim HbR: add_SNo (apply_fun x i) eps :e R.
+			             { exact (real_add_SNo (apply_fun x i) HxiR eps HepsR). }
+			             claim HintervalTop: open_interval (add_SNo (apply_fun x i) (minus_SNo eps))
+			                                                (add_SNo (apply_fun x i) eps)
+			                     :e space_family_topology Xi0 i.
+			             { rewrite HXiTop.
+			               exact (open_interval_in_R_standard_topology_endpoints
+			                      (add_SNo (apply_fun x i) (minus_SNo eps))
+			                      (add_SNo (apply_fun x i) eps)
+			                      HaR HbR). }
+			             claim HTiFam: space_family_topology Xi0 i :e {space_family_topology Xi0 j|j :e omega}.
+			             { exact (ReplI omega (fun j:set => space_family_topology Xi0 j) i HiO). }
+			             claim HtuDef: topology_family_union omega Xi0 = Union {space_family_topology Xi0 j|j :e omega}.
+			             { reflexivity. }
+			             rewrite HtuDef.
+			             exact (UnionI {space_family_topology Xi0 j|j :e omega}
+			                           (open_interval (add_SNo (apply_fun x i) (minus_SNo eps))
+			                                          (add_SNo (apply_fun x i) eps))
+			                           (space_family_topology Xi0 i)
+			                           HintervalTop
+			                           HTiFam).
+			          * (** functional_graph **)
+			             exact (functional_graph_graph omega (fun i:set => open_interval (add_SNo (apply_fun x i) (minus_SNo eps))
+			                                                                    (add_SNo (apply_fun x i) eps))).
+			          + (** forall i, apply_fun Ufun i in space_family_topology **)
+			            let i. assume HiO: i :e omega.
+			            claim HappU: apply_fun Ufun i =
+			              open_interval (add_SNo (apply_fun x i) (minus_SNo eps))
+			                            (add_SNo (apply_fun x i) eps).
+		            { exact (apply_fun_graph omega
+		                       (fun j:set => open_interval (add_SNo (apply_fun x j) (minus_SNo eps))
+		                                                   (add_SNo (apply_fun x j) eps))
+		                       i HiO). }
+		            rewrite HappU.
+		            claim HXiTop: space_family_topology Xi0 i = R_standard_topology.
+		            { claim Hdef0: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
+		              { reflexivity. }
+		              rewrite Hdef0.
+		              rewrite (const_space_family_apply omega R R_standard_topology i HiO).
+		              exact (tuple_2_1_eq R R_standard_topology). }
+		            rewrite HXiTop.
+		            claim HxiR: apply_fun x i :e R.
+		            { claim HxRomega: x :e R_omega_space.
+		              { rewrite <- real_sequences_eq_Romega_space.
+		                exact HxX0. }
+		              exact (Romega_coord_in_R x i HxRomega HiO). }
+		            claim HmepsR: minus_SNo eps :e R.
+		            { exact (real_minus_SNo eps HepsR). }
+		            claim HaR: add_SNo (apply_fun x i) (minus_SNo eps) :e R.
+		            { exact (real_add_SNo (apply_fun x i) HxiR (minus_SNo eps) HmepsR). }
+		            claim HbR: add_SNo (apply_fun x i) eps :e R.
+		            { exact (real_add_SNo (apply_fun x i) HxiR eps HepsR). }
+		            exact (open_interval_in_R_standard_topology_endpoints
+		                    (add_SNo (apply_fun x i) (minus_SNo eps))
+		                    (add_SNo (apply_fun x i) eps)
+		                    HaR HbR).
+			      - (** bb definition matches **)
+			        reflexivity.
+		      + (** x :e bb **)
+		        prove x :e bb.
+		        apply SepI.
+		        * (** x in product_space omega Xi0 **)
+		          prove x :e product_space omega Xi0.
+		          claim HxRomega: x :e R_omega_space.
+		          { rewrite <- real_sequences_eq_Romega_space.
+		            exact HxX0. }
+		          exact HxRomega.
+		        * (** coord membership **)
+		          let i. assume HiO: i :e omega.
+		          prove apply_fun x i :e apply_fun Ufun i.
+		          claim HappU: apply_fun Ufun i =
+		            open_interval (add_SNo (apply_fun x i) (minus_SNo eps))
+		                          (add_SNo (apply_fun x i) eps).
+		          { exact (apply_fun_graph omega
+		                     (fun j:set => open_interval (add_SNo (apply_fun x j) (minus_SNo eps))
+		                                                 (add_SNo (apply_fun x j) eps))
+		                     i HiO). }
+		          rewrite HappU.
+		          (** x(i) is in its own interval of radius eps **)
+		          claim HxiR: apply_fun x i :e R.
+		          { claim HxRomega: x :e R_omega_space.
+		            { rewrite <- real_sequences_eq_Romega_space.
+		              exact HxX0. }
+		            exact (Romega_coord_in_R x i HxRomega HiO). }
+		          claim HxiS: SNo (apply_fun x i).
+		          { exact (real_SNo (apply_fun x i) HxiR). }
+		          claim HepsS: SNo eps.
+		          { exact (real_SNo eps HepsR). }
+		          claim HmepsS: SNo (minus_SNo eps).
+		          { exact (SNo_minus_SNo eps HepsS). }
+		          claim Hlt1: add_SNo (apply_fun x i) (minus_SNo eps) < apply_fun x i.
+		          { rewrite <- (add_SNo_0R (apply_fun x i) HxiS) at 2.
+		            claim HepsPosS: 0 < eps.
+		            { exact (RltE_lt 0 eps Hepspos). }
+		            claim HepsNegS: minus_SNo eps < 0.
+		            { claim Htmp: minus_SNo eps < minus_SNo 0.
+		              { exact (minus_SNo_Lt_contra 0 eps SNo_0 HepsS HepsPosS). }
+		              claim Htmp2: minus_SNo eps < 0.
+		              { rewrite <- minus_SNo_0.
+		                exact Htmp. }
+		              exact Htmp2. }
+		            exact (add_SNo_Lt2 (apply_fun x i) (minus_SNo eps) 0 HxiS HmepsS SNo_0 HepsNegS). }
+		          claim Hlt2: apply_fun x i < add_SNo (apply_fun x i) eps.
+		          { rewrite <- (add_SNo_0R (apply_fun x i) HxiS) at 1.
+		            exact (add_SNo_Lt2 (apply_fun x i) 0 eps HxiS SNo_0 HepsS (RltE_lt 0 eps Hepspos)). }
+		          claim Hlt1R: Rlt (add_SNo (apply_fun x i) (minus_SNo eps)) (apply_fun x i).
+		          { exact (RltI (add_SNo (apply_fun x i) (minus_SNo eps)) (apply_fun x i)
+		                       (real_add_SNo (apply_fun x i) HxiR (minus_SNo eps) (real_minus_SNo eps HepsR))
+		                       HxiR Hlt1). }
+			          claim Hlt2R: Rlt (apply_fun x i) (add_SNo (apply_fun x i) eps).
+			          { exact (RltI (apply_fun x i) (add_SNo (apply_fun x i) eps)
+			                       HxiR
+			                       (real_add_SNo (apply_fun x i) HxiR eps HepsR)
+			                       Hlt2). }
+			          claim HinterDef: open_interval (add_SNo (apply_fun x i) (minus_SNo eps))
+			                                  (add_SNo (apply_fun x i) eps)
+			            = {x0 :e R|Rlt (add_SNo (apply_fun x i) (minus_SNo eps)) x0 /\
+			                       Rlt x0 (add_SNo (apply_fun x i) eps)}.
+			          { reflexivity. }
+			          rewrite HinterDef.
+			          apply SepI.
+			          - exact HxiR.
+			          - exact (andI (Rlt (add_SNo (apply_fun x i) (minus_SNo eps)) (apply_fun x i))
+			                        (Rlt (apply_fun x i) (add_SNo (apply_fun x i) eps))
+			                        Hlt1R
+			                        Hlt2R).
+		    - (** bb subset ball around c **)
+		      prove bb c= open_ball X0 d c r.
+		        claim HballSub: open_ball X0 d x s c= open_ball X0 d c r.
+		        { exact HsSub. }
+		        apply (Subq_tra bb (open_ball X0 d x s) (open_ball X0 d c r)).
+		        * (** bb subset open_ball x s **)
+		          prove bb c= open_ball X0 d x s.
+		          let f. assume Hfbb: f :e bb.
+		          claim HfProd: f :e product_space omega Xi0.
+		          { exact (SepE1 (product_space omega Xi0)
+		                   (fun f0:set => forall i:set, i :e omega -> apply_fun f0 i :e apply_fun Ufun i)
+		                   f Hfbb). }
+		          claim HfX0: f :e X0.
+		          { prove f :e real_sequences.
+		            rewrite real_sequences_eq_Romega_space.
+		            exact HfProd. }
+		          prove f :e open_ball X0 d x s.
+		          claim HxfProd: (x,f) :e setprod X0 X0.
+		          { exact (tuple_2_setprod_by_pair_Sigma X0 X0 x f HxX0 HfX0). }
+		          claim HdfEq: apply_fun d (x,f) = Romega_uniform_metric_value x f.
+		          { rewrite (apply_fun_graph (setprod real_sequences real_sequences)
+		                                     (fun p:set => Romega_uniform_metric_value (p 0) (p 1))
+		                                     (x,f)
+		                                     HxfProd).
+		            rewrite (tuple_2_0_eq x f).
+		            rewrite (tuple_2_1_eq x f).
+		            reflexivity. }
+		          apply (open_ballI X0 d x s f HfX0).
+		          rewrite HdfEq.
+		          claim Hle: Rle (Romega_uniform_metric_value x f) eps.
+		          { set A := Romega_clipped_diffs x f.
+		            set l := Romega_uniform_metric_value x f.
+		            claim Hlub: R_lub A l.
+		            { exact (Romega_uniform_metric_value_is_lub x f HxX0 HfX0). }
+		            claim Hmin: forall u:set, u :e R ->
+		              (forall a:set, a :e A -> a :e R -> Rle a u) ->
+		              Rle l u.
+		            { exact (andER (l :e R /\ (forall a:set, a :e A -> a :e R -> Rle a l))
+		                           (forall u:set, u :e R -> (forall a:set, a :e A -> a :e R -> Rle a u) -> Rle l u)
+		                           Hlub). }
+		            claim Hub: forall a:set, a :e A -> a :e R -> Rle a eps.
+		            { let a. assume HaA: a :e A. assume HaR: a :e R.
+		              apply (ReplE omega (fun n:set => Romega_coord_clipped_diff x f n) a HaA).
+		              let n. assume HnAnd.
+		              apply HnAnd.
+		              assume HnO: n :e omega.
+		              assume HaEq: a = Romega_coord_clipped_diff x f n.
+		              rewrite HaEq.
+		              claim HfCoord: apply_fun f n :e apply_fun Ufun n.
+		              { exact ((SepE2 (product_space omega Xi0)
+		                       (fun f0:set => forall i:set, i :e omega -> apply_fun f0 i :e apply_fun Ufun i)
+		                       f Hfbb) n HnO). }
+		              claim HappU: apply_fun Ufun n =
+		                open_interval (add_SNo (apply_fun x n) (minus_SNo eps))
+		                              (add_SNo (apply_fun x n) eps).
+		              { exact (apply_fun_graph omega
+		                         (fun j:set => open_interval (add_SNo (apply_fun x j) (minus_SNo eps))
+		                                                     (add_SNo (apply_fun x j) eps))
+		                         n HnO). }
+		              claim HfnIn: apply_fun f n :e open_interval (add_SNo (apply_fun x n) (minus_SNo eps))
+		                                                      (add_SNo (apply_fun x n) eps).
+		              { rewrite <- HappU.
+		                exact HfCoord. }
+		              claim HfnR: apply_fun f n :e R.
+		              { claim HfRomega: f :e R_omega_space.
+		                { exact HfProd. }
+		                exact (Romega_coord_in_R f n HfRomega HnO). }
+		              claim HxnR: apply_fun x n :e R.
+		              { claim HxRomega: x :e R_omega_space.
+		                { rewrite <- real_sequences_eq_Romega_space.
+		                  exact HxX0. }
+		                exact (Romega_coord_in_R x n HxRomega HnO). }
+		              claim HfiS: SNo (apply_fun f n).
+		              { exact (real_SNo (apply_fun f n) HfnR). }
+		              claim HxiS: SNo (apply_fun x n).
+		              { exact (real_SNo (apply_fun x n) HxnR). }
+		              claim HepsS: SNo eps.
+		              { exact (real_SNo eps HepsR). }
+		              claim HmepsS: SNo (minus_SNo eps).
+		              { exact (SNo_minus_SNo eps HepsS). }
+		              claim HloHi: Rlt (add_SNo (apply_fun x n) (minus_SNo eps)) (apply_fun f n) /\
+		                           Rlt (apply_fun f n) (add_SNo (apply_fun x n) eps).
+		              { exact (SepE2 R
+		                       (fun x0:set => Rlt (add_SNo (apply_fun x n) (minus_SNo eps)) x0 /\
+		                                    Rlt x0 (add_SNo (apply_fun x n) eps))
+		                       (apply_fun f n)
+		                       HfnIn). }
+		              claim HloR: Rlt (add_SNo (apply_fun x n) (minus_SNo eps)) (apply_fun f n).
+		              { exact (andEL (Rlt (add_SNo (apply_fun x n) (minus_SNo eps)) (apply_fun f n))
+		                             (Rlt (apply_fun f n) (add_SNo (apply_fun x n) eps))
+		                             HloHi). }
+		              claim HhiR: Rlt (apply_fun f n) (add_SNo (apply_fun x n) eps).
+		              { exact (andER (Rlt (add_SNo (apply_fun x n) (minus_SNo eps)) (apply_fun f n))
+		                             (Rlt (apply_fun f n) (add_SNo (apply_fun x n) eps))
+		                             HloHi). }
+		              claim Hlo: add_SNo (apply_fun x n) (minus_SNo eps) < apply_fun f n.
+		              { exact (RltE_lt (add_SNo (apply_fun x n) (minus_SNo eps)) (apply_fun f n) HloR). }
+		              claim Hhi: apply_fun f n < add_SNo (apply_fun x n) eps.
+		              { exact (RltE_lt (apply_fun f n) (add_SNo (apply_fun x n) eps) HhiR). }
+		              set t := add_SNo (apply_fun x n) (minus_SNo (apply_fun f n)).
+		              claim HtR: t :e R.
+		              { exact (real_add_SNo (apply_fun x n) HxnR (minus_SNo (apply_fun f n))
+		                      (real_minus_SNo (apply_fun f n) HfnR)). }
+		              claim HtS: SNo t.
+		              { exact (real_SNo t HtR). }
+		              claim Htlt: t < eps.
+		              { claim Hxlt2: apply_fun x n < add_SNo (apply_fun f n) eps.
+		                { exact (add_SNo_minus_Lt1 (apply_fun x n) eps (apply_fun f n) HxiS HepsS HfiS Hlo). }
+		                claim Hxlt3: apply_fun x n < add_SNo eps (apply_fun f n).
+		                { rewrite (add_SNo_com eps (apply_fun f n) HepsS HfiS) at 1.
+		                  exact Hxlt2. }
+		                exact (add_SNo_minus_Lt1b (apply_fun x n) (apply_fun f n) eps HxiS HfiS HepsS Hxlt3). }
+		              claim Htgt: minus_SNo eps < t.
+			              {
+		                claim Hflt2: add_SNo (apply_fun f n) (minus_SNo eps) < apply_fun x n.
+		                { exact (add_SNo_minus_Lt1b (apply_fun f n) eps (apply_fun x n) HfiS HepsS HxiS Hhi). }
+		                claim Hflt3: add_SNo (minus_SNo eps) (apply_fun f n) < apply_fun x n.
+		                { rewrite (add_SNo_com (minus_SNo eps) (apply_fun f n) HmepsS HfiS) at 1.
+		                  exact Hflt2. }
+		                exact (add_SNo_minus_Lt2b (apply_fun x n) (apply_fun f n) (minus_SNo eps)
+		                        HxiS HfiS HmepsS Hflt3). }
+		              claim HtLe: t <= eps.
+		              { exact (SNoLtLe t eps Htlt). }
+		              claim HmEpsLe: minus_SNo eps <= t.
+		              { exact (SNoLtLe (minus_SNo eps) t Htgt). }
+		              claim HabLe: abs_SNo t <= eps.
+		              { exact (abs_SNo_Le_of_bounds t eps HtS HepsS HmEpsLe HtLe). }
+		              claim HabsR: abs_SNo t :e R.
+		              { apply (xm (0 <= t)).
+		                - assume H0le: 0 <= t.
+		                  rewrite (nonneg_abs_SNo t H0le).
+		                  exact HtR.
+		                - assume Hn0le: ~(0 <= t).
+		                  claim HmtR: minus_SNo t :e R.
+		                  { exact (real_minus_SNo t HtR). }
+		                  rewrite (not_nonneg_abs_SNo t Hn0le).
+		                  exact HmtR. }
+		              claim HabsLeR: Rle (abs_SNo t) eps.
+		              { exact (Rle_of_SNoLe (abs_SNo t) eps HabsR HepsR HabLe). }
+		              claim HabsLt1: Rlt (abs_SNo t) 1.
+		              { exact (Rle_Rlt_tra_Euclid (abs_SNo t) eps 1 HabsLeR Hepslt1). }
+		              claim HcdDef: Romega_coord_clipped_diff x f n =
+		                If_i (Rlt (Romega_coord_abs_diff x f n) 1) (Romega_coord_abs_diff x f n) 1.
+		              { reflexivity. }
+		              claim HabsDef2: Romega_coord_abs_diff x f n = abs_SNo t.
+		              { reflexivity. }
+		              rewrite HcdDef.
+		              rewrite HabsDef2.
+		              rewrite (If_i_1 (Rlt (abs_SNo t) 1) (abs_SNo t) 1 HabsLt1).
+		              exact HabsLeR. }
+		            exact (Hmin eps HepsR Hub). }
+		          exact (Rle_Rlt_tra_Euclid (Romega_uniform_metric_value x f) eps s Hle HepsltS).
+		        * exact (HballSub).
+		  }
+		  let U. assume HU: U :e uniform_topology.
+		  prove U :e Romega_box_topology_on_real_sequences.
+	  claim HUdef: uniform_topology = generated_topology X0 Bballs.
+	  { reflexivity. }
+	  claim HUgen: U :e generated_topology X0 Bballs.
+	  { rewrite <- HUdef.
+	    exact HU. }
+	  claim HUpow: U :e Power X0.
+	  { exact (SepE1 (Power X0)
+	           (fun U0 : set => forall x0 :e U0, exists b :e Bballs, x0 :e b /\ b c= U0)
+	           U HUgen). }
+	  claim HUprop: forall x0 :e U, exists b :e Bballs, x0 :e b /\ b c= U.
+	  { exact (SepE2 (Power X0)
+	           (fun U0 : set => forall x0 :e U0, exists b :e Bballs, x0 :e b /\ b c= U0)
+	           U HUgen). }
+	  claim HUsub: U c= X0.
+	  { exact (PowerE X0 U HUpow). }
+		  (** It suffices to show U is a box-open set in the whole-space box topology, since real_sequences = R^omega. **)
+		  claim HBoxPow: U :e Power (product_space omega Xi0).
+		  { claim HXeq: R_omega_space = product_space omega Xi0.
+		    { reflexivity. }
+		    rewrite <- HXeq.
+		    rewrite <- real_sequences_eq_Romega_space.
+		    exact HUpow. }
+	  claim HBoxProp: forall x0 :e U, exists b0 :e BoxB, x0 :e b0 /\ b0 c= U.
+	  { let x0. assume Hx0U: x0 :e U.
+	    apply (HUprop x0 Hx0U).
+	    let b. assume Hbpair.
+	    claim HbB: b :e Bballs.
+	    { exact (andEL (b :e Bballs) (x0 :e b /\ b c= U) Hbpair). }
+	    claim Hbprop: x0 :e b /\ b c= U.
+	    { exact (andER (b :e Bballs) (x0 :e b /\ b c= U) Hbpair). }
+	    claim Hx0b: x0 :e b.
+	    { exact (andEL (x0 :e b) (b c= U) Hbprop). }
+	    claim HbsubU: b c= U.
+	    { exact (andER (x0 :e b) (b c= U) Hbprop). }
+	    (** destruct b as an open ball around some center c with radius r>0 **)
+	    apply (famunionE_impred X0 (fun c:set => {open_ball X0 d c rr|rr :e R, Rlt 0 rr}) b HbB
+	            (exists b0 :e BoxB, x0 :e b0 /\ b0 c= U)).
+	    let c. assume HcX0: c :e X0.
+	    assume Hbin: b :e {open_ball X0 d c rr|rr :e R, Rlt 0 rr}.
+	    apply (ReplSepE_impred R (fun rr:set => Rlt 0 rr) (fun rr:set => open_ball X0 d c rr)
+	            b Hbin
+	            (exists b0 :e BoxB, x0 :e b0 /\ b0 c= U)).
+	    let r. assume HrR: r :e R.
+	    assume Hrpos: Rlt 0 r.
+		    assume Hbeq: b = open_ball X0 d c r.
+		    claim Hx0inball: x0 :e open_ball X0 d c r.
+		    { rewrite <- Hbeq.
+		      exact Hx0b. }
+		    apply (HBoxRefine c x0 r HcX0 (HUsub x0 Hx0U) HrR Hrpos Hx0inball).
+		    let bb. assume Hbbpack.
+		    claim Hbbpair1: bb :e BoxB /\ x0 :e bb.
+		    { exact (andEL (bb :e BoxB /\ x0 :e bb) (bb c= open_ball X0 d c r) Hbbpack). }
+		    claim HbbB: bb :e BoxB.
+		    { exact (andEL (bb :e BoxB) (x0 :e bb) Hbbpair1). }
+		    claim Hx0bb: x0 :e bb.
+		    { exact (andER (bb :e BoxB) (x0 :e bb) Hbbpair1). }
+		    claim HbbsubBall: bb c= open_ball X0 d c r.
+		    { exact (andER (bb :e BoxB /\ x0 :e bb) (bb c= open_ball X0 d c r) Hbbpack). }
+	    claim HballsubU: open_ball X0 d c r c= U.
+	    { rewrite <- Hbeq.
+	      exact HbsubU. }
+	    claim HbbsubU: bb c= U.
+	    { exact (Subq_tra bb (open_ball X0 d c r) U HbbsubBall HballsubU). }
+	    witness bb.
+	    apply andI.
+	    - exact HbbB.
+	    - apply andI.
+	      + exact Hx0bb.
+	      + exact HbbsubU. }
+		  (** show U is open in the box topology on the whole product space **)
+		  claim HUinBoxT: U :e BoxT.
+		  { claim HBoxDef: BoxT =
+		      generated_topology (product_space omega Xi0) BoxB.
+		    { reflexivity. }
+		    rewrite HBoxDef.
+		    claim HgenDef: generated_topology (product_space omega Xi0) BoxB =
+		      {U0 :e Power (product_space omega Xi0) |
+		        forall x0 :e U0, exists b0 :e BoxB, x0 :e b0 /\ b0 c= U0}.
+		    { reflexivity. }
+		    rewrite HgenDef.
+		    apply SepI.
+		    - exact HBoxPow.
+		    - exact HBoxProp. }
+		  (** conclude U is open in the subspace topology on real_sequences (whole space) **)
+			  prove U :e subspace_topology R_omega_space BoxT real_sequences.
+			  claim HsubDef: subspace_topology R_omega_space BoxT real_sequences =
+			    {U0 :e Power real_sequences | exists V :e BoxT, U0 = V :/\: real_sequences}.
+			  { reflexivity. }
+			  rewrite HsubDef.
+			  claim Hexists: exists V :e BoxT, U = V :/\: real_sequences.
+			  { witness U.
+			    apply andI.
+			    - exact HUinBoxT.
+			    - claim HIntEq: U :/\: real_sequences = U.
+			      { exact (binintersect_Subq_eq_1 U real_sequences HUsub). }
+			      rewrite HIntEq.
+			      reflexivity. }
+			  exact (SepI (Power real_sequences)
+			              (fun U0:set => exists V :e BoxT, U0 = V :/\: real_sequences)
+			              U
+			              HUpow
+			              Hexists).
+	Qed.
 
 (** from §20 Theorem 20.5: product topology on R^omega is induced by a metric **)
 (** LATEX VERSION: Define D(x,y)=sup{ min(|x_i-y_i|,1) / i }. Then D induces the product topology on R^omega. **)
