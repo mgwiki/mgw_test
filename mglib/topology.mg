@@ -65541,20 +65541,13 @@ apply iffI.
           forall i:set, i :e J -> (i0,i) :e le -> apply_fun net i :e U.
     apply andI.
     - (** core **)
-      apply andI.
-      + (** ((((A /\ B) /\ C) /\ D) /\ E) **)
-        apply andI.
-        - (** (((A /\ B) /\ C) /\ D) **)
-          apply andI.
-          + (** ((A /\ B) /\ C) **)
-            apply andI.
-            { (** (A /\ B) **)
-              apply andI.
-              - exact HTx.
-              - exact Hdir. }
-            { exact Htot. }
-          + exact (functional_graph_graph J g).
-        - exact (graph_domain_subset_graph J g).
+      prove topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X.
+      apply and6I.
+      + exact HTx.
+      + exact Hdir.
+      + exact Htot.
+      + exact (functional_graph_graph J g).
+      + exact (graph_domain_subset_graph J g).
       + exact HxX.
     - (** tail **)
       let U0.
