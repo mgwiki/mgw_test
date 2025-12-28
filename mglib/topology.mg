@@ -12541,10 +12541,9 @@ apply and3I.
   * claim Hlt : Rlt (distance_R2 x x) 1.
     { rewrite (distance_R2_refl_0 x Hx).
       claim HR : 0 :e R /\ 1 :e R /\ 0 < 1.
-      { apply andI.
-        - apply andI.
-          + exact real_0.
-          + exact real_1.
+      { apply and3I.
+        - exact real_0.
+        - exact real_1.
         - exact SNoLt_0_1. }
       exact HR. }
     exact (SepI EuclidPlane
