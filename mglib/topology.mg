@@ -71007,7 +71007,62 @@ apply andI.
   { rewrite HXeq.
     exact uniform_topology_is_topology_on_Romega_space. }
   claim HSinc: S c= uniform_topology.
-  { admit. (** FAIL **) }
+  { let s. assume HsS: s :e S.
+    prove s :e uniform_topology.
+    apply (famunionE_impred omega
+            (fun j:set => {product_cylinder omega Xi0 j U|U :e space_family_topology Xi0 j})
+            s HsS
+            (s :e uniform_topology)).
+    let j. assume HjO: j :e omega.
+    assume Hsj: s :e {product_cylinder omega Xi0 j U|U :e space_family_topology Xi0 j}.
+    apply (ReplE_impred (space_family_topology Xi0 j)
+            (fun U0:set => product_cylinder omega Xi0 j U0)
+            s Hsj
+            (s :e uniform_topology)).
+    let U0.
+    assume HU0Top: U0 :e space_family_topology Xi0 j.
+    assume Hseq: s = product_cylinder omega Xi0 j U0.
+    rewrite Hseq.
+    (** reduce the component topology to R_standard_topology **)
+    claim HtopEq: space_family_topology Xi0 j = R_standard_topology.
+    { claim HXi: apply_fun Xi0 j = (R, R_standard_topology).
+      { exact (const_space_family_apply omega R R_standard_topology j HjO). }
+      claim Hdef: space_family_topology Xi0 j = (apply_fun Xi0 j) 1.
+      { reflexivity. }
+      rewrite Hdef.
+      rewrite HXi.
+      exact (tuple_2_1_eq R R_standard_topology). }
+    claim HU0std: U0 :e R_standard_topology.
+    { rewrite <- HtopEq.
+      exact HU0Top. }
+    (** show cylinder is open in the uniform metric topology **)
+    set X0 := real_sequences.
+    set d := uniform_metric_Romega.
+    set C := product_cylinder omega Xi0 j U0.
+    set B := famunion X0 (fun x0:set => {open_ball X0 d x0 r|r :e R, Rlt 0 r}).
+    claim HTdef: uniform_topology = generated_topology X0 B.
+    { reflexivity. }
+    rewrite HTdef.
+    prove C :e generated_topology X0 B.
+    claim Hgendef: generated_topology X0 B =
+      {U1 :e Power X0 | forall x :e U1, exists b :e B, x :e b /\ b c= U1}.
+    { reflexivity. }
+    rewrite Hgendef.
+    apply SepI.
+    - (** C is a subset of real_sequences **)
+      apply PowerI.
+      let f. assume HfC: f :e C.
+      claim HfRomega: f :e R_omega_space.
+      { exact (SepE1 R_omega_space
+               (fun f0:set => j :e omega /\ U0 :e space_family_topology Xi0 j /\ apply_fun f0 j :e U0)
+               f HfC). }
+      prove f :e X0.
+      rewrite real_sequences_eq_Romega_space.
+      exact HfRomega.
+    - (** neighborhood condition for generated_topology: use a uniform open ball inside the cylinder **)
+      let f. assume HfC: f :e C.
+      admit. (** FAIL **)
+  }
   claim Hmin: finer_than uniform_topology (generated_topology_from_subbasis X S).
   { exact (topology_generated_by_basis_is_minimal X S uniform_topology HSsub HtopU HSinc). }
   claim Hinc: generated_topology_from_subbasis X S c= uniform_topology.
