@@ -77236,7 +77236,96 @@ apply (iffER (regular_space (product_space I Xi) (product_topology_full I Xi))
                  V :e product_topology_full I Xi /\ x :e V /\
                  closure_of (product_space I Xi) (product_topology_full I Xi) V c= U)
              Hshrink_iff).
-admit. (** FAIL **)
+(** Now prove the closure-shrink criterion. We split off the empty-index case. **)
+apply (xm (I = Empty)).
+- assume HIeq: I = Empty.
+  let x U.
+  assume HxX: x :e product_space I Xi.
+  assume HUopen: U :e product_topology_full I Xi.
+  assume HxU: x :e U.
+  (** In the empty-index case the product is a singleton {Empty}; any open containing x must be X. **)
+  claim HXdef: product_space I Xi = {Empty}.
+  { rewrite HIeq.
+    exact (product_space_empty_index Xi). }
+  claim HxEq: x = Empty.
+  { claim HxSing: x :e {Empty}.
+    { prove x :e {Empty}.
+      rewrite <- HXdef.
+      exact HxX. }
+    exact (SingE Empty x HxSing). }
+  claim HUIeq: U = product_space I Xi.
+  { (** U is open, hence U c= product_space I Xi; and x :e U forces U to be the whole singleton **)
+    claim HUsub: U c= product_space I Xi.
+    { claim HTsub: product_topology_full I Xi c= Power (product_space I Xi).
+      { exact (topology_subset_axiom (product_space I Xi) (product_topology_full I Xi) HTprod). }
+      claim HUpow: U :e Power (product_space I Xi).
+      { exact (HTsub U HUopen). }
+      exact (PowerE (product_space I Xi) U HUpow). }
+    apply set_ext.
+    - let z. assume HzU: z :e U.
+      exact (HUsub z HzU).
+    - let z. assume HzX: z :e product_space I Xi.
+      claim HzSing: z :e {Empty}.
+      { prove z :e {Empty}.
+        rewrite <- HXdef.
+        exact HzX. }
+      claim HzEq: z = Empty.
+      { exact (SingE Empty z HzSing). }
+      rewrite HzEq.
+      rewrite <- HxEq.
+      exact HxU. }
+  witness (product_space I Xi).
+  apply andI.
+  - apply andI.
+    + (** X is open in its topology **)
+      claim HXopen: product_space I Xi :e product_topology_full I Xi.
+      { exact (topology_has_X (product_space I Xi) (product_topology_full I Xi) HTprod). }
+      exact HXopen.
+    + rewrite HxEq.
+      rewrite HXdef.
+      exact (SingI Empty).
+	  - (** closure of X is X **)
+	    prove closure_of (product_space I Xi) (product_topology_full I Xi) (product_space I Xi) c= U.
+	    rewrite HUIeq.
+	    rewrite (closure_of_space (product_space I Xi) (product_topology_full I Xi) HTprod).
+	    exact (Subq_ref (product_space I Xi)).
+- assume HIne: I <> Empty.
+  (** Nonempty index: reduce to a basis element b ⊆ U around x, then shrink inside b. **)
+  let x U.
+  assume HxX: x :e product_space I Xi.
+  assume HUopen: U :e product_topology_full I Xi.
+  assume HxU: x :e U.
+  set X0 := product_space I Xi.
+  set S0 := product_subbasis_full I Xi.
+  set B0 := basis_of_subbasis X0 S0.
+  claim HTdef: product_topology_full I Xi = generated_topology_from_subbasis X0 S0.
+  { reflexivity. }
+  claim HgenDef: generated_topology_from_subbasis X0 S0 = generated_topology X0 B0.
+  { reflexivity. }
+  claim HUgen: U :e generated_topology X0 B0.
+  { prove U :e generated_topology X0 B0.
+    rewrite <- HgenDef.
+    rewrite <- HTdef.
+    exact HUopen. }
+  (** generated topology local basis property at x **)
+  claim Hloc: forall x0 :e U, exists b :e B0, x0 :e b /\ b c= U.
+  { exact (SepE2 (Power X0)
+                 (fun U0:set => forall x0 :e U0, exists b :e B0, x0 :e b /\ b c= U0)
+                 U
+                 HUgen). }
+  claim Hexb: exists b :e B0, x :e b /\ b c= U.
+  { exact (Hloc x HxU). }
+  apply Hexb.
+  let b. assume Hbpair.
+  (** Hbpair is the bundled witness properties; extract x∈b and b⊆U (and b∈B0 if needed) using left-associativity. **)
+  claim Htmpb: x :e b /\ b c= U.
+  { exact (andER (b :e B0) (x :e b /\ b c= U) Hbpair). }
+  claim Hbx: x :e b.
+  { exact (andEL (x :e b) (b c= U) Htmpb). }
+  claim HbsubU: b c= U.
+  { exact (andER (x :e b) (b c= U) Htmpb). }
+  (** TODO: shrink inside basis element b; this is the core regularity argument for products. **)
+  admit. (** FAIL **)
 Qed.
 
 Theorem separation_axioms_subspace_product : forall X Tx:set,
