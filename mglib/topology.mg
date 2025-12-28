@@ -65234,19 +65234,19 @@ apply Hcore3. assume Hcore2 Htotnet.
 apply Hcore2. assume HTx HdirJ.
 
 (** unpack Hw only for subnet-specific data **)
-apply Hw. assume Hleft Hwrest.
-apply Hleft. assume HdirJ2 HdirK.
-apply Hwrest. assume Hleft2 Hwrest2.
-apply Hleft2. assume Htotnet2 Hgraphnet2.
-apply Hwrest2. assume Hleft3 Hwrest3.
-apply Hleft3. assume Hdomnet2 Htotsub.
-apply Hwrest3. assume Hleft4 Hwrest4.
-apply Hleft4. assume Hgraphsub Hdomsub.
-apply Hwrest4. assume Hleft5 Hwrest5.
-apply Hleft5. assume Htotphi Hgraphphi.
-apply Hwrest5. assume Hleft6 Hwrest6.
-apply Hleft6. assume Hdomphi Hmono.
-apply Hwrest6. assume Hcofinal Hvals.
+apply Hw. assume Hwcore Hvals.
+apply Hwcore. assume Hwcore2 Hcofinal.
+apply Hwcore2. assume Hwcore3 Hmono.
+apply Hwcore3. assume Hwcore4 Hdomphi.
+apply Hwcore4. assume Hwcore5 Hgraphphi.
+apply Hwcore5. assume Hwcore6 Htotphi.
+apply Hwcore6. assume Hwcore7 Hdomsub.
+apply Hwcore7. assume Hwcore8 Hgraphsub.
+apply Hwcore8. assume Hwcore9 Htotsub.
+apply Hwcore9. assume Hwcore10 Hdomnet2.
+apply Hwcore10. assume Hwcore11 Hgraphnet2.
+apply Hwcore11. assume Hwcore12 Htotnet2.
+apply Hwcore12. assume HdirJ2 HdirK.
 
 prove topology_on X Tx /\ directed_set K leK /\ total_function_on sub K X /\ functional_graph sub /\ graph_domain_subset sub K /\ x :e X /\
   forall U:set, U :e Tx -> x :e U ->
