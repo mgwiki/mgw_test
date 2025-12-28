@@ -66647,7 +66647,135 @@ set Bad := (fun x U j0:set =>
   U :e Tx /\ x :e U /\ j0 :e J /\ forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U)).
 
 claim HexBad: forall x:set, x :e X -> exists U j0:set, Bad x U j0.
-{ admit. (** FAIL **) }
+{ let x. assume HxX: x :e X.
+  claim Hnacc: ~(accumulation_point_of_net X Tx net x).
+  { claim Hall: forall x0:set, ~(accumulation_point_of_net X Tx net x0).
+    { exact (not_ex_all_demorgan_i (fun x0:set => accumulation_point_of_net X Tx net x0) Hno). }
+    exact (Hall x). }
+  claim HnotForallU:
+    ~(forall U:set, U :e Tx -> x :e U ->
+      forall j0:set, j0 :e J ->
+        exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U).
+  { assume HallU:
+      forall U:set, U :e Tx -> x :e U ->
+        forall j0:set, j0 :e J ->
+          exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U.
+    apply Hnacc.
+    prove accumulation_point_of_net X Tx net x.
+    witness J. witness le.
+    apply andI.
+    - (** topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J /\ x :e X **)
+      apply andI.
+      + (** topology_on X Tx /\ directed_set J le /\ total_function_on net J X /\ functional_graph net /\ graph_domain_subset net J **)
+        apply andI.
+        * exact HTx.
+        * apply andI.
+          { exact HdirJ. }
+          { apply andI.
+            - exact Htotnet.
+            - apply andI.
+              + exact Hgraphnet.
+              + exact Hdomnet. }
+      + exact HxX
+    - exact HallU. }
+  apply (not_all_ex_demorgan_i
+           (fun U:set =>
+             U :e Tx -> x :e U ->
+               forall j0:set, j0 :e J ->
+                 exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U)
+           HnotForallU).
+  let U. assume HnU:
+    ~(U :e Tx -> x :e U ->
+        forall j0:set, j0 :e J ->
+          exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U).
+  claim HUa: U :e Tx /\ ~(x :e U ->
+    forall j0:set, j0 :e J ->
+      exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U).
+  { exact (not_imp (U :e Tx)
+                   (x :e U ->
+                     forall j0:set, j0 :e J ->
+                       exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U)
+                   HnU). }
+  claim HUTx: U :e Tx.
+  { exact (andEL (U :e Tx)
+                 (~(x :e U ->
+                   forall j0:set, j0 :e J ->
+                     exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U))
+                 HUa). }
+  claim Hn2:
+    ~(x :e U ->
+      forall j0:set, j0 :e J ->
+        exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U).
+  { exact (andER (U :e Tx)
+                 (~(x :e U ->
+                   forall j0:set, j0 :e J ->
+                     exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U))
+                 HUa). }
+  claim Hxb:
+    x :e U /\
+    ~(forall j0:set, j0 :e J ->
+        exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U).
+  { exact (not_imp (x :e U)
+                   (forall j0:set, j0 :e J ->
+                     exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U)
+                   Hn2). }
+  claim HxU: x :e U.
+  { exact (andEL (x :e U)
+                 (~(forall j0:set, j0 :e J ->
+                   exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U))
+                 Hxb). }
+  claim HnForallj0:
+    ~(forall j0:set, j0 :e J ->
+        exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U).
+  { exact (andER (x :e U)
+                 (~(forall j0:set, j0 :e J ->
+                   exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U))
+                 Hxb). }
+  apply (not_all_ex_demorgan_i
+           (fun j0:set =>
+             j0 :e J ->
+               exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U)
+           HnForallj0).
+  let j0. assume Hnj0:
+    ~(j0 :e J ->
+        exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U).
+  claim Hj0a:
+    j0 :e J /\
+    ~(exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U).
+  { exact (not_imp (j0 :e J)
+                   (exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U)
+                   Hnj0). }
+  claim Hj0J: j0 :e J.
+  { exact (andEL (j0 :e J)
+                 (~(exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U))
+                 Hj0a). }
+  claim HnExj:
+    ~(exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U).
+  { exact (andER (j0 :e J)
+                 (~(exists j:set, j :e J /\ (j0,j) :e le /\ apply_fun net j :e U))
+                 Hj0a). }
+  witness U. witness j0.
+  prove Bad x U j0.
+  apply andI.
+  - (** U :e Tx /\ x :e U /\ j0 :e J **)
+    apply andI.
+    + (** U :e Tx /\ x :e U **)
+      apply andI.
+      * exact HUTx.
+      * exact HxU.
+    + exact Hj0J.
+  - (** tail avoids U **)
+    let j. assume HjJ: j :e J.
+    assume Hj0j: (j0,j) :e le.
+    prove ~(apply_fun net j :e U).
+    assume HjU: apply_fun net j :e U.
+    apply HnExj.
+    witness j.
+    apply andI.
+    - apply andI.
+      + exact HjJ.
+      + exact Hj0j.
+    - exact HjU. }
 
 set pickpair := (fun x:set =>
   Eps_i (fun p:set =>
@@ -66657,7 +66785,147 @@ set pickpair := (fun x:set =>
 set Fam := {(pickpair x) 0|x :e X}.
 
 claim Hcover: open_cover_of X Tx Fam.
-{ admit. (** FAIL **) }
+{ claim HTsub: Tx c= Power X.
+  { exact (topology_sub_Power X Tx HTx). }
+  claim HpickBad: forall x:set, x :e X -> Bad x ((pickpair x) 0) ((pickpair x) 1).
+  { let x. assume HxX: x :e X.
+    claim HexUJ: exists U j0:set, Bad x U j0.
+    { exact (HexBad x HxX). }
+    apply HexUJ.
+    let U. assume Hexj0: exists j0:set, Bad x U j0.
+    apply Hexj0.
+    let j0. assume Hbad: Bad x U j0.
+    claim Hp: (U,j0) :e setprod Tx J /\
+      x :e ((U,j0) 0) /\ ((U,j0) 1) :e J /\
+        forall j:set, j :e J -> (((U,j0) 1),j) :e le -> ~(apply_fun net j :e ((U,j0) 0)).
+    { apply andI.
+      - (** (U,j0) :e setprod Tx J **)
+        exact (tuple_2_setprod_by_pair_Sigma Tx J U j0
+                 (andEL (U :e Tx) (x :e U) (andEL (U :e Tx /\ x :e U) (j0 :e J) Hbad))
+                 (andER (U :e Tx /\ x :e U) (j0 :e J) Hbad)).
+      - (** x :e ((U,j0) 0) /\ ((U,j0) 1) :e J /\ tail avoids **)
+        apply andI.
+        + (** x :e ((U,j0) 0) **)
+          rewrite (tuple_2_0_eq U j0).
+          exact (andER (U :e Tx) (x :e U)
+                       (andEL (U :e Tx /\ x :e U) (j0 :e J) Hbad)).
+        + apply andI.
+          * rewrite (tuple_2_1_eq U j0).
+            exact (andER (U :e Tx /\ x :e U) (j0 :e J) Hbad).
+          * let j. assume HjJ: j :e J. assume Hj0j: (((U,j0) 1),j) :e le.
+            rewrite (tuple_2_1_eq U j0) in Hj0j.
+            rewrite (tuple_2_0_eq U j0).
+            exact ((andER (U :e Tx /\ x :e U /\ j0 :e J)
+                          (forall j:set, j :e J -> (j0,j) :e le -> ~(apply_fun net j :e U))
+                          Hbad) j HjJ Hj0j). } }
+    claim Hprop: Bad x ((pickpair x) 0) ((pickpair x) 1) /\
+      pickpair x :e setprod Tx J.
+    { claim Hpa: pickpair x :e setprod Tx J /\ x :e ((pickpair x) 0) /\ ((pickpair x) 1) :e J /\
+        forall j:set, j :e J -> (((pickpair x) 1),j) :e le -> ~(apply_fun net j :e ((pickpair x) 0)).
+      { exact (Eps_i_ax
+                 (fun p:set =>
+                   p :e setprod Tx J /\ x :e (p 0) /\ (p 1) :e J /\
+                     forall j:set, j :e J -> ((p 1),j) :e le -> ~(apply_fun net j :e (p 0)))
+                 (U,j0) Hp). }
+      apply andI.
+      - (** Bad x ((pickpair x) 0) ((pickpair x) 1) **)
+        apply andI.
+        + apply andI.
+          * (** ((pickpair x) 0) :e Tx **)
+            claim Hpp: pickpair x :e setprod Tx J.
+            { exact (andEL (pickpair x :e setprod Tx J)
+                           (x :e ((pickpair x) 0) /\ ((pickpair x) 1) :e J /\
+                             forall j:set, j :e J -> (((pickpair x) 1),j) :e le -> ~(apply_fun net j :e ((pickpair x) 0)))
+                           Hpa). }
+            exact (ap0_Sigma Tx (fun _ : set => J) (pickpair x) Hpp).
+          * (** x :e ((pickpair x) 0) **)
+            exact (andEL (x :e ((pickpair x) 0))
+                         (((pickpair x) 1) :e J /\
+                           forall j:set, j :e J -> (((pickpair x) 1),j) :e le -> ~(apply_fun net j :e ((pickpair x) 0)))
+                         (andER (pickpair x :e setprod Tx J)
+                                (x :e ((pickpair x) 0) /\ ((pickpair x) 1) :e J /\
+                                  forall j:set, j :e J -> (((pickpair x) 1),j) :e le -> ~(apply_fun net j :e ((pickpair x) 0)))
+                                Hpa)).
+        + (** ((pickpair x) 1) :e J **)
+          exact (andEL (((pickpair x) 1) :e J)
+                       (forall j:set, j :e J -> (((pickpair x) 1),j) :e le -> ~(apply_fun net j :e ((pickpair x) 0)))
+                       (andER (x :e ((pickpair x) 0))
+                              (((pickpair x) 1) :e J /\
+                                forall j:set, j :e J -> (((pickpair x) 1),j) :e le -> ~(apply_fun net j :e ((pickpair x) 0)))
+                              (andER (pickpair x :e setprod Tx J)
+                                     (x :e ((pickpair x) 0) /\ ((pickpair x) 1) :e J /\
+                                       forall j:set, j :e J -> (((pickpair x) 1),j) :e le -> ~(apply_fun net j :e ((pickpair x) 0)))
+                                     Hpa))).
+      - (** pickpair x :e setprod Tx J **)
+        exact (andEL (pickpair x :e setprod Tx J)
+                     (x :e ((pickpair x) 0) /\ ((pickpair x) 1) :e J /\
+                       forall j:set, j :e J -> (((pickpair x) 1),j) :e le -> ~(apply_fun net j :e ((pickpair x) 0)))
+                     Hpa). }
+    exact (andEL (Bad x ((pickpair x) 0) ((pickpair x) 1))
+                 (pickpair x :e setprod Tx J)
+                 Hprop). }
+  prove open_cover_of X Tx Fam.
+  apply andI.
+  - (** (topology_on X Tx /\ Fam c= Power X /\ X c= Union Fam) **)
+    apply andI.
+    + (** topology_on X Tx /\ Fam c= Power X **)
+      apply andI.
+      * exact HTx
+      * (** Fam c= Power X **)
+        let U. assume HU: U :e Fam.
+        prove U :e Power X.
+        apply PowerI.
+        let y. assume Hy: y :e U.
+        prove y :e X.
+        claim Hexx: exists x:set, x :e X /\ U = ((pickpair x) 0).
+        { exact (ReplE_impred X (fun x0:set => ((pickpair x0) 0)) U HU). }
+        apply Hexx.
+        let x. assume HxU:
+          x :e X /\ U = ((pickpair x) 0).
+        claim HxX: x :e X.
+        { exact (andEL (x :e X) (U = ((pickpair x) 0)) HxU). }
+        claim HUeq: U = ((pickpair x) 0).
+        { exact (andER (x :e X) (U = ((pickpair x) 0)) HxU). }
+        claim HUtx: U :e Tx.
+        { rewrite HUeq.
+          exact (andEL (((pickpair x) 0) :e Tx)
+                       (x :e ((pickpair x) 0))
+                       (andEL (((pickpair x) 0) :e Tx /\ x :e ((pickpair x) 0))
+                              (((pickpair x) 1) :e J)
+                              (HpickBad x HxX))). }
+        claim HUpow: U :e Power X.
+        { exact (HTsub U HUtx). }
+        exact (PowerE X U HUpow y Hy).
+    + (** X c= Union Fam **)
+      let y. assume HyX: y :e X.
+      prove y :e Union Fam.
+      claim HUy: y :e ((pickpair y) 0).
+      { exact (andER (((pickpair y) 0) :e Tx)
+                     (y :e ((pickpair y) 0))
+                     (andEL (((pickpair y) 0) :e Tx /\ y :e ((pickpair y) 0))
+                            (((pickpair y) 1) :e J)
+                            (HpickBad y HyX))). }
+      claim HUyFam: ((pickpair y) 0) :e Fam.
+      { exact (ReplI X (fun x0:set => ((pickpair x0) 0)) y HyX). }
+      exact (UnionI Fam y ((pickpair y) 0) HUy HUyFam).
+  - (** forall U:set, U :e Fam -> U :e Tx **)
+    let U. assume HU: U :e Fam.
+    prove U :e Tx.
+    claim Hexx: exists x:set, x :e X /\ U = ((pickpair x) 0).
+    { exact (ReplE_impred X (fun x0:set => ((pickpair x0) 0)) U HU). }
+    apply Hexx.
+    let x. assume HxU:
+      x :e X /\ U = ((pickpair x) 0).
+    claim HxX: x :e X.
+    { exact (andEL (x :e X) (U = ((pickpair x) 0)) HxU). }
+    claim HUeq: U = ((pickpair x) 0).
+    { exact (andER (x :e X) (U = ((pickpair x) 0)) HxU). }
+    rewrite HUeq.
+    exact (andEL (((pickpair x) 0) :e Tx)
+                 (x :e ((pickpair x) 0))
+                 (andEL (((pickpair x) 0) :e Tx /\ x :e ((pickpair x) 0))
+                        (((pickpair x) 1) :e J)
+                        (HpickBad x HxX))). }
 
 claim HfinFam: has_finite_subcover X Tx Fam.
 { exact (compact_space_subcover_property X Tx Hcomp Fam Hcover). }
