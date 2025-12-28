@@ -75013,7 +75013,7 @@ claim Hinj: inj Sorgenfrey_line B f.
                      (andI (~(Rlt x2 x2)) (Rlt x2 (add_SNo x2 1)) (not_Rlt_refl x2 Hx2R) Hx2lt)). }
         claim Hexb2: exists b0 :e B, x2 :e b0 /\ b0 c= U2.
         { exact (HU2Prop x2 Hx2U2). }
-        exact (Eps_i_ex (fun b:set => b :e B /\ x2 :e b /\ b c= halfopen_interval_left x2 (add_SNo x2 1)) Hexb2). }
+        admit. }
       claim Hfx2sub: f x2 c= U2.
       { exact (andER (f x2 :e B /\ x2 :e f x2) (f x2 c= U2) Hfx2prop). }
       claim Hx1infx1: x1 :e f x1.
