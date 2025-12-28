@@ -74973,8 +74973,9 @@ claim Hinj: inj Sorgenfrey_line B f.
     { exact (andEL (f x :e B /\ x :e f x) (f x c= halfopen_interval_left x (add_SNo x 1)) HPxf). }
     exact (andEL (f x :e B) (x :e f x) Htmp). 
   - (** injectivity on points **)
-    let x1 x2.
+    let x1.
     assume Hx1R: x1 :e Sorgenfrey_line.
+    let x2.
     assume Hx2R: x2 :e Sorgenfrey_line.
     assume Heq: f x1 = f x2.
     prove x1 = x2.
