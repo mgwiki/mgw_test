@@ -75013,16 +75013,7 @@ claim Hinj: inj Sorgenfrey_line B f.
                      (andI (~(Rlt x2 x2)) (Rlt x2 (add_SNo x2 1)) (not_Rlt_refl x2 Hx2R) Hx2lt)). }
         claim Hexb2: exists b0 :e B, x2 :e b0 /\ b0 c= U2.
         { exact (HU2Prop x2 Hx2U2). }
-        claim Hexb2': exists b:set, b :e B /\ (x2 :e b /\ b c= U2).
-        { apply Hexb2.
-          let b0.
-          assume Hb0B: b0 :e B.
-          assume Hb0rest: x2 :e b0 /\ b0 c= U2.
-          witness b0.
-          apply andI.
-          - exact Hb0B.
-          - exact Hb0rest. }
-        exact (Eps_i_ex (fun b:set => b :e B /\ (x2 :e b /\ b c= U2)) Hexb2'). }
+        exact (Eps_i_ex (fun b:set => b :e B /\ (x2 :e b /\ b c= U2)) Hexb2). }
       claim Hfx2sub: f x2 c= U2.
       { claim Htmp: x2 :e f x2 /\ f x2 c= U2.
         { exact (andER (f x2 :e B) (x2 :e f x2 /\ f x2 c= U2) Hfx2prop). }
@@ -75058,16 +75049,7 @@ claim Hinj: inj Sorgenfrey_line B f.
         claim Hexb1: exists b0 :e B, x1 :e b0 /\ b0 c= U1.
         { exact (HU1Prop x1 Hx1U1). }
         claim Hfx1prop: f x1 :e B /\ (x1 :e f x1 /\ f x1 c= U1).
-        { claim Hexb1': exists b:set, b :e B /\ (x1 :e b /\ b c= U1).
-          { apply Hexb1.
-            let b0.
-            assume Hb0B: b0 :e B.
-            assume Hb0rest: x1 :e b0 /\ b0 c= U1.
-            witness b0.
-            apply andI.
-            - exact Hb0B.
-            - exact Hb0rest. }
-          exact (Eps_i_ex (fun b:set => b :e B /\ (x1 :e b /\ b c= U1)) Hexb1'). }
+        { exact (Eps_i_ex (fun b:set => b :e B /\ (x1 :e b /\ b c= U1)) Hexb1). }
         claim Htmp: x1 :e f x1 /\ f x1 c= U1.
         { exact (andER (f x1 :e B) (x1 :e f x1 /\ f x1 c= U1) Hfx1prop). }
         exact (andEL (x1 :e f x1) (f x1 c= U1) Htmp). }
@@ -75116,16 +75098,7 @@ claim Hinj: inj Sorgenfrey_line B f.
                      (andI (~(Rlt x1 x1)) (Rlt x1 (add_SNo x1 1)) (not_Rlt_refl x1 Hx1R) Hx1lt)). }
         claim Hexb1: exists b0 :e B, x1 :e b0 /\ b0 c= U1.
         { exact (HU1Prop x1 Hx1U1). }
-        claim Hexb1': exists b:set, b :e B /\ (x1 :e b /\ b c= U1).
-        { apply Hexb1.
-          let b0.
-          assume Hb0B: b0 :e B.
-          assume Hb0rest: x1 :e b0 /\ b0 c= U1.
-          witness b0.
-          apply andI.
-          - exact Hb0B.
-          - exact Hb0rest. }
-        exact (Eps_i_ex (fun b:set => b :e B /\ (x1 :e b /\ b c= U1)) Hexb1'). }
+        exact (Eps_i_ex (fun b:set => b :e B /\ (x1 :e b /\ b c= U1)) Hexb1). }
       claim Hfx1sub: f x1 c= U1.
       { claim Htmp: x1 :e f x1 /\ f x1 c= U1.
         { exact (andER (f x1 :e B) (x1 :e f x1 /\ f x1 c= U1) Hfx1prop). }
@@ -75160,16 +75133,7 @@ claim Hinj: inj Sorgenfrey_line B f.
         claim Hexb2: exists b0 :e B, x2 :e b0 /\ b0 c= U2.
         { exact (HU2Prop x2 Hx2U2). }
         claim Hfx2prop: f x2 :e B /\ (x2 :e f x2 /\ f x2 c= U2).
-        { claim Hexb2': exists b:set, b :e B /\ (x2 :e b /\ b c= U2).
-          { apply Hexb2.
-            let b0.
-            assume Hb0B: b0 :e B.
-            assume Hb0rest: x2 :e b0 /\ b0 c= U2.
-            witness b0.
-            apply andI.
-            - exact Hb0B.
-            - exact Hb0rest. }
-          exact (Eps_i_ex (fun b:set => b :e B /\ (x2 :e b /\ b c= U2)) Hexb2'). }
+        { exact (Eps_i_ex (fun b:set => b :e B /\ (x2 :e b /\ b c= U2)) Hexb2). }
         claim Htmp: x2 :e f x2 /\ f x2 c= U2.
         { exact (andER (f x2 :e B) (x2 :e f x2 /\ f x2 c= U2) Hfx2prop). }
         exact (andEL (x2 :e f x2) (f x2 c= U2) Htmp). }
