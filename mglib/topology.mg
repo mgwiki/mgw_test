@@ -74780,8 +74780,10 @@ Qed.
 (** from §30 Example 1: R^n has countable basis **) 
 (** LATEX VERSION: Euclidean spaces have a countable basis, hence are second countable. **)
 Theorem euclidean_spaces_second_countable : forall n:set,
+  n :e omega ->
   second_countable_space (euclidean_space n) (euclidean_topology n).
 let n.
+assume Hn: n :e omega.
 prove second_countable_space (euclidean_space n) (euclidean_topology n).
 admit. (** FAIL **)
 Qed.
