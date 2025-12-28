@@ -80252,29 +80252,46 @@ apply andI.
 	        rewrite HTdef2.
 	        exact (generated_topology_contains_basis X (basis_of_subbasis X S) HBasis b0 Hb0B). }
 
-		      (** Main regularity step needed: shrink to U with closure(U) ⊆ Uc. **)
-		      set U := b0.
-		      claim HUinT: U :e T.
-		      { exact Hb0T. }
-		      claim HxU: x :e U.
-		      { exact Hxb0. }
-		      claim HUsubX: U c= X.
-		      { let z. assume Hz: z :e U.
-		        prove z :e X.
-		        claim Hzb0: z :e b0.
-		        { exact Hz. }
-		        claim HzUc: z :e Uc.
-		        { exact (Hb0subUc z Hzb0). }
-		        claim HUcsub: Uc c= X.
-		        { claim HUcPow: Uc :e Power X.
-		          { exact (SepE1 (Power X)
-		                         (fun U0:set => forall z :e U0, exists b :e basis_of_subbasis X S, z :e b /\ b c= U0)
-	                         Uc HUcG). }
-	          exact (PowerE X Uc HUcPow). }
-	        exact (HUcsub z HzUc). }
-
-	      claim HclU_sub_Uc: closure_of X T U c= Uc.
-	      { admit. (** FAIL **) }
+			      (** Main regularity step needed:
+			          find an open neighborhood U of x whose closure is still inside the chosen basis neighborhood b0 ⊆ Uc. **)
+			      claim HexU: exists U:set,
+			        U :e T /\ x :e U /\ U c= b0 /\ closure_of X T U c= b0.
+			      { admit. (** FAIL **) }
+			      apply HexU.
+			      let U. assume HU_conj.
+			      claim HU12: (U :e T /\ x :e U) /\ U c= b0.
+			      { exact (andEL ((U :e T /\ x :e U) /\ U c= b0) (closure_of X T U c= b0) HU_conj). }
+			      claim HclU_sub_b0: closure_of X T U c= b0.
+			      { exact (andER ((U :e T /\ x :e U) /\ U c= b0) (closure_of X T U c= b0) HU_conj). }
+			      claim HU1: U :e T /\ x :e U.
+			      { exact (andEL (U :e T /\ x :e U) (U c= b0) HU12). }
+			      claim HUsubb0: U c= b0.
+			      { exact (andER (U :e T /\ x :e U) (U c= b0) HU12). }
+			      claim HUinT: U :e T.
+			      { exact (andEL (U :e T) (x :e U) HU1). }
+			      claim HxU: x :e U.
+			      { exact (andER (U :e T) (x :e U) HU1). }
+			      claim HUsubX: U c= X.
+			      { let z. assume Hz: z :e U.
+			        prove z :e X.
+			        claim Hzb0: z :e b0.
+			        { exact (HUsubb0 z Hz). }
+			        claim HzUc: z :e Uc.
+			        { exact (Hb0subUc z Hzb0). }
+			        claim HUcsub: Uc c= X.
+			        { claim HUcPow: Uc :e Power X.
+			          { exact (SepE1 (Power X)
+			                         (fun U0:set => forall z :e U0, exists b :e basis_of_subbasis X S, z :e b /\ b c= U0)
+		                         Uc HUcG). }
+		          exact (PowerE X Uc HUcPow). }
+			        exact (HUcsub z HzUc). }
+	
+			      claim HclU_sub_Uc: closure_of X T U c= Uc.
+			      { let y. assume HyCl: y :e closure_of X T U.
+			        prove y :e Uc.
+			        claim Hyb0: y :e b0.
+			        { exact (HclU_sub_b0 y HyCl). }
+			        exact (Hb0subUc y Hyb0). }
 
 	      (** Let V be the open complement of cl(U); then F ⊆ V and U ∩ V = ∅. **)
 	      claim HclU_closed: closed_in X T (closure_of X T U).
