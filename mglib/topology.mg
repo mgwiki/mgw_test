@@ -28902,6 +28902,8 @@ exact (SepI X (fun x0:set => order_rel X a x0 /\ order_rel X x0 b)
             x HxX (andI (order_rel X a x) (order_rel X x b) Hax Hxb)).
 Qed.
 
+(** from §16: convex subsets of ordered sets **)
+(** LATEX VERSION: A subset Y of an ordered set X is convex in X if for each pair of points a<b of Y, the entire interval between them in X lies in Y. **)
 (** Helper: convex subset definition used in Theorem 16.4 **)
 Definition convex_in : set -> set -> prop := fun X Y =>
   Y c= X /\
@@ -30010,29 +30012,40 @@ Definition halfopen_interval_left_in : set -> set -> set -> set := fun X a b =>
 Definition halfopen_interval_right_in : set -> set -> set -> set := fun X a b =>
   {x :e X | order_rel X a x /\ (x = b \/ order_rel X x b)}.
 
+(** from §16 Exercise 7: rays in ordered sets **)
+(** LATEX VERSION: A ray in X is one of the sets (a,∞), [a,∞), (-∞,a), (-∞,a]. **)
 Definition closed_ray_upper : set -> set -> set := fun X a =>
   {x :e X | x = a \/ order_rel X a x}.
 
+(** from §16 Exercise 7: rays in ordered sets **)
+(** LATEX VERSION: A ray in X is one of the sets (a,∞), [a,∞), (-∞,a), (-∞,a]. **)
 Definition closed_ray_lower : set -> set -> set := fun X a =>
   {x :e X | x = a \/ order_rel X x a}.
 
+(** from §16 Exercise 7: intervals in ordered sets **)
+(** LATEX VERSION: An interval in X is one of (a,b), [a,b), (a,b], [a,b]. **)
 Definition interval_in : set -> set -> set -> set -> prop := fun X a b Y =>
   Y = order_interval X a b
   \/ Y = halfopen_interval_left_in X a b
   \/ Y = halfopen_interval_right_in X a b
   \/ Y = closed_interval_in X a b.
 
+(** from §16 Exercise 7: rays in ordered sets **)
+(** LATEX VERSION: A ray in X is one of the open or closed upper or lower rays determined by a point a. **)
 Definition ray_in : set -> set -> set -> prop := fun X a Y =>
   Y = open_ray_upper X a
   \/ Y = closed_ray_upper X a
   \/ Y = open_ray_lower X a
   \/ Y = closed_ray_lower X a.
 
+(** from §16 Exercise 7: intervals or rays criterion **)
+(** LATEX VERSION: The question asks whether every proper convex subset must be an interval or a ray. **)
 Definition interval_or_ray_in : set -> set -> prop := fun X Y =>
   (exists a b:set, a :e X /\ b :e X /\ interval_in X a b Y)
   \/ (exists a:set, a :e X /\ ray_in X a Y).
 
 (** Counterexample pattern inside Q: points with q^2 < 2 form a convex set with no endpoint in Q. **)
+(** LATEX VERSION: Consider the subset of Q consisting of rationals q such that q^2 < 2; it is convex but not an interval or ray in Q. **)
 Definition Q_sqrt2_cut : set := {q :e rational_numbers | mul_SNo q q < 2}.
 
 (** helper for §16 Exercise 7: 2 is a rational number **)
