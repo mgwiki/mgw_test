@@ -8174,94 +8174,86 @@ prove finite_complement_topology X c= Power X
 /\ X :e finite_complement_topology X
 /\ (forall UFam :e Power (finite_complement_topology X), Union UFam :e finite_complement_topology X)
 /\ (forall U :e finite_complement_topology X, forall V :e finite_complement_topology X, U :/\: V :e finite_complement_topology X).
-apply andI.
-- prove (finite_complement_topology X c= Power X /\ Empty :e finite_complement_topology X) /\ X :e finite_complement_topology X /\ (forall UFam :e Power (finite_complement_topology X), Union UFam :e finite_complement_topology X).
-  apply andI.
-  * prove finite_complement_topology X c= Power X /\ Empty :e finite_complement_topology X /\ X :e finite_complement_topology X.
-    apply andI.
-    { prove finite_complement_topology X c= Power X /\ Empty :e finite_complement_topology X.
-      apply andI.
-      - let U. assume HU: U :e finite_complement_topology X.
-        exact (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU).
-      - exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) Empty (Empty_In_Power X) (orIR (finite (X :\: Empty)) (Empty = Empty) (fun P H => H))).
+apply and5I.
+- let U. assume HU: U :e finite_complement_topology X.
+  exact (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U HU).
+- exact HEmptyOpen.
+- claim Hdiff_empty : X :\: X = Empty.
+  { apply Empty_Subq_eq.
+    let x. assume Hx.
+    claim HxX : x :e X.
+    { exact (setminusE1 X X x Hx). }
+    claim Hxnot : x /:e X.
+    { exact (setminusE2 X X x Hx). }
+    apply FalseE.
+    exact (Hxnot HxX).
+  }
+  claim HfinDiff : finite (X :\: X).
+  { rewrite Hdiff_empty. exact finite_Empty. }
+  exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) X (Self_In_Power X) (orIL (finite (X :\: X)) (X = Empty) HfinDiff)).
+- prove forall UFam :e Power (finite_complement_topology X), Union UFam :e finite_complement_topology X.
+  let UFam. assume Hfam: UFam :e Power (finite_complement_topology X).
+  claim Hsub : UFam c= finite_complement_topology X.
+  { exact (PowerE (finite_complement_topology X) UFam Hfam). }
+  apply xm (exists U:set, U :e UFam /\ finite (X :\: U)).
+  - assume Hex: exists U:set, U :e UFam /\ finite (X :\: U).
+    claim HUnionInPower : Union UFam :e Power X.
+    { apply PowerI X (Union UFam).
+      let x. assume HxUnion.
+      apply UnionE_impred UFam x HxUnion.
+      let U. assume HxU HUin.
+      claim HUinPow : U :e Power X.
+      { exact (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U (Hsub U HUin)). }
+      claim HUsub : U c= X.
+      { exact (PowerE X U HUinPow). }
+      exact (HUsub x HxU).
     }
-    { claim Hdiff_empty : X :\: X = Empty.
-      { apply Empty_Subq_eq.
-        let x. assume Hx.
+    claim HUnionPred : finite (X :\: Union UFam) \/ Union UFam = Empty.
+    { apply orIL.
+      apply Hex.
+      let U. assume Hpair : U :e UFam /\ finite (X :\: U).
+      claim HUin : U :e UFam.
+      { exact (andEL (U :e UFam) (finite (X :\: U)) Hpair). }
+      claim HUfin : finite (X :\: U).
+      { exact (andER (U :e UFam) (finite (X :\: U)) Hpair). }
+      claim Hsubset : X :\: Union UFam c= X :\: U.
+      { let x. assume Hx.
         claim HxX : x :e X.
-        { exact (setminusE1 X X x Hx). }
-        claim Hxnot : x /:e X.
-        { exact (setminusE2 X X x Hx). }
-        apply FalseE.
-        exact (Hxnot HxX).
-      }
-      claim HfinDiff : finite (X :\: X).
-      { rewrite Hdiff_empty. exact finite_Empty. }
-      exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) X (Self_In_Power X) (orIL (finite (X :\: X)) (X = Empty) HfinDiff)).
-    }
-  * prove forall UFam :e Power (finite_complement_topology X), Union UFam :e finite_complement_topology X.
-    let UFam. assume Hfam: UFam :e Power (finite_complement_topology X).
-    claim Hsub : UFam c= finite_complement_topology X.
-    { exact (PowerE (finite_complement_topology X) UFam Hfam). }
-    apply xm (exists U:set, U :e UFam /\ finite (X :\: U)).
-    - assume Hex: exists U:set, U :e UFam /\ finite (X :\: U).
-      claim HUnionInPower : Union UFam :e Power X.
-      { apply PowerI X (Union UFam).
-        let x. assume HxUnion.
-        apply UnionE_impred UFam x HxUnion.
-        let U. assume HxU HUin.
-        claim HUinPow : U :e Power X.
-        { exact (SepE1 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U (Hsub U HUin)). }
-        claim HUsub : U c= X.
-        { exact (PowerE X U HUinPow). }
-        exact (HUsub x HxU).
-      }
-      claim HUnionPred : finite (X :\: Union UFam) \/ Union UFam = Empty.
-      { apply orIL.
-        apply Hex.
-        let U. assume Hpair : U :e UFam /\ finite (X :\: U).
-        claim HUin : U :e UFam.
-        { exact (andEL (U :e UFam) (finite (X :\: U)) Hpair). }
-        claim HUfin : finite (X :\: U).
-        { exact (andER (U :e UFam) (finite (X :\: U)) Hpair). }
-        claim Hsubset : X :\: Union UFam c= X :\: U.
-        { let x. assume Hx.
-          claim HxX : x :e X.
-          { exact (setminusE1 X (Union UFam) x Hx). }
-          claim HnotUnion : x /:e Union UFam.
-          { exact (setminusE2 X (Union UFam) x Hx). }
-          claim HnotU : x /:e U.
-          { assume HxU.
-            apply HnotUnion.
-            apply UnionI UFam x U HxU HUin.
-          }
-          apply setminusI X U x HxX HnotU.
+        { exact (setminusE1 X (Union UFam) x Hx). }
+        claim HnotUnion : x /:e Union UFam.
+        { exact (setminusE2 X (Union UFam) x Hx). }
+        claim HnotU : x /:e U.
+        { assume HxU.
+          apply HnotUnion.
+          apply UnionI UFam x U HxU HUin.
         }
-        exact (Subq_finite (X :\: U) HUfin (X :\: Union UFam) Hsubset).
+        apply setminusI X U x HxX HnotU.
       }
-      exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) (Union UFam) HUnionInPower HUnionPred).
-    - assume Hnone: ~exists U:set, U :e UFam /\ finite (X :\: U).
-      claim HUnionEmpty : Union UFam = Empty.
-      { apply Empty_Subq_eq.
-        let x. assume HxUnion.
-        apply UnionE_impred UFam x HxUnion.
-        let U. assume HxU HUin.
-        claim HUdata : finite (X :\: U) \/ U = Empty.
-        { exact (SepE2 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U (Hsub U HUin)). }
-        apply HUdata (x :e Empty).
-        - assume HUfin.
-          apply FalseE.
-          apply Hnone.
-          witness U.
-          apply andI.
-          + exact HUin.
-          + exact HUfin.
-        - assume HUempty : U = Empty.
-          rewrite <- HUempty.
-          exact HxU.
-      }
-      rewrite HUnionEmpty.
-      exact HEmptyOpen.
+      exact (Subq_finite (X :\: U) HUfin (X :\: Union UFam) Hsubset).
+    }
+    exact (SepI (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) (Union UFam) HUnionInPower HUnionPred).
+  - assume Hnone: ~exists U:set, U :e UFam /\ finite (X :\: U).
+    claim HUnionEmpty : Union UFam = Empty.
+    { apply Empty_Subq_eq.
+      let x. assume HxUnion.
+      apply UnionE_impred UFam x HxUnion.
+      let U. assume HxU HUin.
+      claim HUdata : finite (X :\: U) \/ U = Empty.
+      { exact (SepE2 (Power X) (fun U0 : set => finite (X :\: U0) \/ U0 = Empty) U (Hsub U HUin)). }
+      apply HUdata (x :e Empty).
+      - assume HUfin.
+        apply FalseE.
+        apply Hnone.
+        witness U.
+        apply andI.
+        + exact HUin.
+        + exact HUfin.
+      - assume HUempty : U = Empty.
+        rewrite <- HUempty.
+        exact HxU.
+    }
+    rewrite HUnionEmpty.
+    exact HEmptyOpen.
 - prove forall U :e finite_complement_topology X, forall V :e finite_complement_topology X, U :/\: V :e finite_complement_topology X.
   let U. assume HU: U :e finite_complement_topology X.
   let V. assume HV: V :e finite_complement_topology X.
