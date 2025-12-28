@@ -9624,7 +9624,9 @@ Qed.
 
 (** Misleading "OrderedPair" definition eliminated. Cartesian products use setprod (defined at line 2717). Individual ordered pairs use tuple notation (x,y). **)
 
-(** ambient real line **) 
+(** from §13: the real line as ambient set for the standard and related topologies **)
+(** LATEX VERSION: We consider the real line R and define standard, lower limit, and K-topologies on it. **)
+(** ambient real line **)
 Definition R : set := real.
 
 (** rational numbers as subset of reals **)
@@ -9632,7 +9634,9 @@ Definition R : set := real.
 (** FIXED: Now uses proper rational definition from line 6202. rational = {x :e real | exists m :e int, exists n :e omega\\{0}, x = m/n}. **)
 Definition Q : set := rational.
 
-(** ordering relation on the reals **) 
+(** from §13: the usual order on the real line **)
+(** LATEX VERSION: We use the standard relations < and ≤ on the real line. **)
+(** ordering relation on the reals **)
 Definition Rlt : set -> set -> prop := fun a b =>
   a :e R /\ b :e R /\ a < b.
 
@@ -9783,8 +9787,13 @@ Qed.
 (** LATEX VERSION: Example 4: circular regions and axis-parallel rectangular regions in ℝ² both form bases generating the same topology. **)
 (** FIXED: EuclidPlane is now correctly R×R (Cartesian product), since `setprod` is the Σ-encoding used throughout for X×Y. **)
 Definition EuclidPlane : set := setprod R R.
+(** from §13 Examples 1-2: coordinates on the plane **)
+(** LATEX VERSION: A point in the plane is described by its x and y coordinates. **)
 (** Coordinate selectors for points in EuclidPlane. **)
 Definition R2_xcoord : set -> set := fun p => p 0.
+
+(** from §13 Examples 1-2: coordinates on the plane **)
+(** LATEX VERSION: A point in the plane is described by its x and y coordinates. **)
 Definition R2_ycoord : set -> set := fun p => p 1.
 
 (** from §13 Example 4: coordinates of a point in R×R are real **)
