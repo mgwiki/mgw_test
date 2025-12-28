@@ -66695,7 +66695,237 @@ set pickx := (fun F:set =>
 set net0 := graph J pickx.
 
 claim Hnet0: net_in_space X net0.
-{ admit. (** FAIL **) }
+{ prove net_in_space X net0.
+  prove exists J0 le0:set, directed_set J0 le0 /\ total_function_on net0 J0 X /\ functional_graph net0 /\ graph_domain_subset net0 J0.
+  witness J.
+  witness le.
+  prove directed_set J le /\ total_function_on net0 J X /\ functional_graph net0 /\ graph_domain_subset net0 J.
+  apply andI.
+  - prove directed_set J le /\ total_function_on net0 J X /\ functional_graph net0.
+    apply andI.
+    + prove directed_set J le /\ total_function_on net0 J X.
+      apply andI.
+      * (** directed_set J le **)
+        prove directed_set J le.
+	        prove (J <> Empty /\ partial_order_on J le) /\
+	          forall a b:set, a :e J -> b :e J -> exists c:set, c :e J /\ (a,c) :e le /\ (b,c) :e le.
+	        apply andI.
+	        - (** J <> Empty /\ partial_order_on J le **)
+	           apply andI.
+           + (** J <> Empty **)
+             assume HJemp: J = Empty.
+             claim HEmptyPow: Empty :e Power Fam.
+             { exact (Empty_In_Power Fam). }
+             claim HEmptyFin: finite Empty.
+             { exact finite_Empty. }
+             claim HEmptyJ: Empty :e J.
+             { exact (SepI (Power Fam) (fun F0:set => finite F0) Empty HEmptyPow HEmptyFin). }
+             claim HEmptyIn: Empty :e Empty.
+             { rewrite <- HJemp at 2. exact HEmptyJ. }
+             exact (EmptyE Empty HEmptyIn).
+	           + (** partial_order_on J le **)
+	             prove partial_order_on J le.
+	             prove relation_on le J /\
+	               (forall a:set, a :e J -> (a,a) :e le) /\
+	               (forall a b:set, a :e J -> b :e J -> (a,b) :e le -> (b,a) :e le -> a = b) /\
+	               (forall a b c:set, a :e J -> b :e J -> c :e J -> (a,b) :e le -> (b,c) :e le -> (a,c) :e le).
+	             (** partial_order_on J le = (((relation_on /\ refl) /\ antisym) /\ trans) **)
+	             apply andI.
+	             - (** (relation_on /\ refl) /\ antisym **)
+	               apply andI.
+	               + (** relation_on /\ refl **)
+	                 apply andI.
+	                 * (** relation_on le J **)
+	                   prove relation_on le J.
+	                   let a b. assume Hab: (a,b) :e le.
+	                   prove a :e J /\ b :e J.
+	                   claim Hprod: (a,b) :e setprod J J.
+	                   { exact (SepE1 (setprod J J) (fun p:set => (p 0) c= (p 1)) (a,b) Hab). }
+	                   claim Ha0: (a,b) 0 :e J.
+	                   { exact (ap0_Sigma J (fun _ : set => J) (a,b) Hprod). }
+	                   claim Hb1: (a,b) 1 :e J.
+	                   { exact (ap1_Sigma J (fun _ : set => J) (a,b) Hprod). }
+	                   apply andI.
+	                   - rewrite <- (tuple_2_0_eq a b). exact Ha0.
+	                   - rewrite <- (tuple_2_1_eq a b). exact Hb1.
+	                 * (** reflexive **)
+	                   let a. assume HaJ: a :e J.
+	                   prove (a,a) :e le.
+	                   apply (SepI (setprod J J) (fun p:set => (p 0) c= (p 1)) (a,a)).
+	                   - exact (tuple_2_setprod_by_pair_Sigma J J a a HaJ HaJ).
+	                   - rewrite (tuple_2_0_eq a a).
+	                     rewrite (tuple_2_1_eq a a).
+	                     exact (Subq_ref a).
+	               + (** antisymmetric **)
+	                 let a b. assume HaJ: a :e J. assume HbJ: b :e J.
+		                 assume Hab: (a,b) :e le.
+		                 assume Hba: (b,a) :e le.
+		                 prove a = b.
+		                 claim Habsub: a c= b.
+		                 { claim Hraw: (a,b) 0 c= (a,b) 1.
+		                   { exact (SepE2 (setprod J J) (fun p:set => (p 0) c= (p 1)) (a,b) Hab). }
+		                   let x. assume Hx: x :e a.
+		                   prove x :e b.
+		                   claim Hx0: x :e (a,b) 0.
+		                   { rewrite (tuple_2_0_eq a b). exact Hx. }
+		                   claim Hx1: x :e (a,b) 1.
+		                   { exact (Hraw x Hx0). }
+		                   rewrite <- (tuple_2_1_eq a b).
+		                   exact Hx1. }
+		                 claim Hbasub: b c= a.
+		                 { claim Hraw: (b,a) 0 c= (b,a) 1.
+		                   { exact (SepE2 (setprod J J) (fun p:set => (p 0) c= (p 1)) (b,a) Hba). }
+		                   let x. assume Hx: x :e b.
+		                   prove x :e a.
+		                   claim Hx0: x :e (b,a) 0.
+		                   { rewrite (tuple_2_0_eq b a). exact Hx. }
+		                   claim Hx1: x :e (b,a) 1.
+		                   { exact (Hraw x Hx0). }
+		                   rewrite <- (tuple_2_1_eq b a).
+		                   exact Hx1. }
+	                 apply set_ext.
+	                 - let x. assume Hx: x :e a. exact (Habsub x Hx).
+	                 - let x. assume Hx: x :e b. exact (Hbasub x Hx).
+	             - (** transitive **)
+	               let a b c.
+	               assume HaJ: a :e J. assume HbJ: b :e J. assume HcJ: c :e J.
+	               assume Hab: (a,b) :e le.
+		               assume Hbc: (b,c) :e le.
+		               prove (a,c) :e le.
+		               claim Habsub: a c= b.
+		               { claim Hraw: (a,b) 0 c= (a,b) 1.
+		                 { exact (SepE2 (setprod J J) (fun p:set => (p 0) c= (p 1)) (a,b) Hab). }
+		                 let x. assume Hx: x :e a.
+		                 prove x :e b.
+		                 claim Hx0: x :e (a,b) 0.
+		                 { rewrite (tuple_2_0_eq a b). exact Hx. }
+		                 claim Hx1: x :e (a,b) 1.
+		                 { exact (Hraw x Hx0). }
+		                 rewrite <- (tuple_2_1_eq a b).
+		                 exact Hx1. }
+		               claim Hbcsub: b c= c.
+		               { claim Hraw: (b,c) 0 c= (b,c) 1.
+		                 { exact (SepE2 (setprod J J) (fun p:set => (p 0) c= (p 1)) (b,c) Hbc). }
+		                 let x. assume Hx: x :e b.
+		                 prove x :e c.
+		                 claim Hx0: x :e (b,c) 0.
+		                 { rewrite (tuple_2_0_eq b c). exact Hx. }
+		                 claim Hx1: x :e (b,c) 1.
+		                 { exact (Hraw x Hx0). }
+		                 rewrite <- (tuple_2_1_eq b c).
+		                 exact Hx1. }
+		               claim Hacsub: a c= c.
+		               { exact (Subq_tra a b c Habsub Hbcsub). }
+	               apply (SepI (setprod J J) (fun p:set => (p 0) c= (p 1)) (a,c)).
+	               - exact (tuple_2_setprod_by_pair_Sigma J J a c HaJ HcJ).
+	               - rewrite (tuple_2_0_eq a c).
+	                 rewrite (tuple_2_1_eq a c).
+	                 exact Hacsub.
+	        - (** upper bound property of J under inclusion **)
+	           let a b. assume HaJ: a :e J. assume HbJ: b :e J.
+	           prove exists c:set, c :e J /\ (a,c) :e le /\ (b,c) :e le.
+           witness (a :\/: b).
+           apply andI.
+           - apply andI.
+             + (** a :\/: b :e J **)
+               prove a :\/: b :e J.
+               claim HaPow: a :e Power Fam.
+               { exact (SepE1 (Power Fam) (fun F0:set => finite F0) a HaJ). }
+               claim HbPow: b :e Power Fam.
+               { exact (SepE1 (Power Fam) (fun F0:set => finite F0) b HbJ). }
+               claim Hafin: finite a.
+               { exact (SepE2 (Power Fam) (fun F0:set => finite F0) a HaJ). }
+               claim Hbfin: finite b.
+               { exact (SepE2 (Power Fam) (fun F0:set => finite F0) b HbJ). }
+               claim Hasub: a c= Fam.
+               { exact (PowerE Fam a HaPow). }
+               claim Hbsub: b c= Fam.
+               { exact (PowerE Fam b HbPow). }
+               claim Habsub: a :\/: b c= Fam.
+               { exact (binunion_Subq_min a b Fam Hasub Hbsub). }
+               claim HabPow: a :\/: b :e Power Fam.
+               { exact (PowerI Fam (a :\/: b) Habsub). }
+               claim Habfin: finite (a :\/: b).
+               { exact (binunion_finite a Hafin b Hbfin). }
+               exact (SepI (Power Fam) (fun F0:set => finite F0) (a :\/: b) HabPow Habfin).
+             + (** (a, a :\/: b) :e le **)
+               apply (SepI (setprod J J) (fun p:set => (p 0) c= (p 1)) (a, a :\/: b)).
+               * exact (tuple_2_setprod_by_pair_Sigma J J a (a :\/: b) HaJ
+                        (SepI (Power Fam) (fun F0:set => finite F0) (a :\/: b)
+                              (PowerI Fam (a :\/: b)
+                                      (binunion_Subq_min a b Fam
+                                                         (PowerE Fam a (SepE1 (Power Fam) (fun F0:set => finite F0) a HaJ))
+                                                         (PowerE Fam b (SepE1 (Power Fam) (fun F0:set => finite F0) b HbJ))))
+                              (binunion_finite a (SepE2 (Power Fam) (fun F0:set => finite F0) a HaJ)
+                                               b (SepE2 (Power Fam) (fun F0:set => finite F0) b HbJ)))).
+               * rewrite (tuple_2_0_eq a (a :\/: b)).
+                 rewrite (tuple_2_1_eq a (a :\/: b)).
+                 exact (binunion_Subq_1 a b).
+           - (** (b, a :\/: b) :e le **)
+             apply (SepI (setprod J J) (fun p:set => (p 0) c= (p 1)) (b, a :\/: b)).
+             + exact (tuple_2_setprod_by_pair_Sigma J J b (a :\/: b) HbJ
+                      (SepI (Power Fam) (fun F0:set => finite F0) (a :\/: b)
+                            (PowerI Fam (a :\/: b)
+                                    (binunion_Subq_min a b Fam
+                                                       (PowerE Fam a (SepE1 (Power Fam) (fun F0:set => finite F0) a HaJ))
+                                                       (PowerE Fam b (SepE1 (Power Fam) (fun F0:set => finite F0) b HbJ))))
+                            (binunion_finite a (SepE2 (Power Fam) (fun F0:set => finite F0) a HaJ)
+                                             b (SepE2 (Power Fam) (fun F0:set => finite F0) b HbJ)))).
+             + rewrite (tuple_2_0_eq b (a :\/: b)).
+               rewrite (tuple_2_1_eq b (a :\/: b)).
+               exact (binunion_Subq_2 a b).
+      * (** total_function_on net0 J X **)
+        prove total_function_on net0 J X.
+        claim Hpick_in: forall F:set, F :e J -> pickx F :e X.
+        { let F. assume HFJ: F :e J.
+          prove pickx F :e X.
+          claim HFpow: F :e Power Fam.
+          { exact (SepE1 (Power Fam) (fun F0:set => finite F0) F HFJ). }
+          claim HFfin: finite F.
+          { exact (SepE2 (Power Fam) (fun F0:set => finite F0) F HFJ). }
+          claim HFsub: F c= Fam.
+          { exact (PowerE Fam F HFpow). }
+          claim Hnotcov: ~(X c= Union F).
+          { assume Hcov: X c= Union F.
+            apply Hnofin.
+            apply (has_finite_subcoverI X Tx Fam F).
+            apply andI.
+            - apply andI.
+              + exact HFsub.
+              + exact HFfin.
+            - exact Hcov. }
+          claim Hexx: exists x:set, x :e X /\ ~(x :e Union F).
+          { claim Hex': exists x:set, ~(x :e X -> x :e Union F).
+            { exact (not_all_ex_demorgan_i (fun x:set => x :e X -> x :e Union F) Hnotcov). }
+            apply Hex'.
+            let x. assume Hnx: ~(x :e X -> x :e Union F).
+            witness x.
+            exact (not_imp (x :e X) (x :e Union F) Hnx). }
+          apply Hexx.
+          let x. assume Hx: x :e X /\ ~(x :e Union F).
+          claim Hprop: pickx F :e X /\ ~(pickx F :e Union F).
+          { exact (Eps_i_ax (fun x0:set => x0 :e X /\ ~(x0 :e Union F)) x Hx). }
+          exact (andEL (pickx F :e X) (~(pickx F :e Union F)) Hprop). }
+        claim Hfun: function_on net0 J X.
+        { let F. assume HFJ: F :e J.
+          prove apply_fun net0 F :e X.
+          rewrite (apply_fun_graph J pickx F HFJ).
+          exact (Hpick_in F HFJ). }
+        claim Htot': forall F:set, F :e J -> exists y:set, y :e X /\ (F,y) :e net0.
+        { let F. assume HFJ: F :e J.
+          witness (pickx F).
+          apply andI.
+          - exact (Hpick_in F HFJ).
+          - exact (ReplI J (fun F0:set => (F0, pickx F0)) F HFJ). }
+        exact (andI (function_on net0 J X)
+                    (forall x:set, x :e J -> exists y:set, y :e X /\ (x,y) :e net0)
+                    Hfun
+                    Htot').
+    + (** functional_graph net0 **)
+      exact (functional_graph_graph J pickx).
+  - (** graph_domain_subset net0 J **)
+    exact (graph_domain_subset_graph J pickx).
+}
 
 claim Hnosub: forall sub x:set, subnet_of net0 sub -> ~(net_converges X Tx sub x).
 { admit. (** FAIL **) }
