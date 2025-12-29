@@ -63326,12 +63326,7 @@ apply iffI.
           { reflexivity. }
           rewrite <- HdefTy.
           exact HWty. }
-        apply (subspace_topologyE X Tx Y W HWsub).
-        let V0. assume HV0pair.
-        witness V0.
-        apply andI.
-        - exact (andEL (V0 :e Tx) (W = V0 :/\: Y) HV0pair).
-        - exact (andER (V0 :e Tx) (W = V0 :/\: Y) HV0pair). }
+        exact (subspace_topologyE X Tx Y W HWsub). }
       apply HexV.
       let V0. assume HV0pair: V0 :e Tx /\ W = V0 :/\: Y.
       exact (andEL (Vof W :e Tx) (W = Vof W :/\: Y)
@@ -63356,12 +63351,7 @@ apply iffI.
             { reflexivity. }
             rewrite <- HdefTy.
             exact HWty. }
-          apply (subspace_topologyE X Tx Y W HWsub).
-          let V0. assume HV0pair.
-          witness V0.
-          apply andI.
-          - exact (andEL (V0 :e Tx) (W = V0 :/\: Y) HV0pair).
-          - exact (andER (V0 :e Tx) (W = V0 :/\: Y) HV0pair). }
+          exact (subspace_topologyE X Tx Y W HWsub). }
         claim Hpick: W = Vof W :/\: Y.
         { apply HexV.
           let V0. assume HV0pair: V0 :e Tx /\ W = V0 :/\: Y.
@@ -63460,12 +63450,7 @@ apply iffI.
           { reflexivity. }
           rewrite <- HdefTy.
           exact HWty. }
-        apply (subspace_topologyE X Tx Y (Wof V) HWsub).
-        let V0. assume HV0pair.
-        witness V0.
-        apply andI.
-        - exact (andEL (V0 :e Tx) ((Wof V) = V0 :/\: Y) HV0pair).
-        - exact (andER (V0 :e Tx) ((Wof V) = V0 :/\: Y) HV0pair). }
+        exact (subspace_topologyE X Tx Y (Wof V) HWsub). }
       claim HWrepr: (Wof V) = (Vof (Wof V)) :/\: Y.
       { apply HexV.
         let V0. assume HV0pair: V0 :e Tx /\ (Wof V) = V0 :/\: Y.
