@@ -93029,6 +93029,29 @@ Definition covering_dimension : set -> set -> set -> prop := fun X Tx n =>
         open_cover_of X Tx B /\
         refines_cover B A /\
         collection_has_order_at_most_m_plus_one X B n.
+
+(** helper: projections from covering_dimension package **)
+Theorem covering_dimension_topology_on : forall X Tx n:set,
+  covering_dimension X Tx n -> topology_on X Tx.
+let X Tx n.
+assume Hdim: covering_dimension X Tx n.
+apply Hdim.
+assume Hcore Hrest.
+apply Hcore.
+assume HTx Hn.
+exact HTx.
+Qed.
+
+Theorem covering_dimension_n_in_omega : forall X Tx n:set,
+  covering_dimension X Tx n -> n :e omega.
+let X Tx n.
+assume Hdim: covering_dimension X Tx n.
+apply Hdim.
+assume Hcore Hrest.
+apply Hcore.
+assume HTx Hn.
+exact Hn.
+Qed.
 (** LATEX VERSION: X is finite dimensional if dim(X) ≤ m for some m. **)
 Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
