@@ -88260,6 +88260,160 @@ witness V.
 exact (andEL (open_cover X Tx V /\ locally_finite_family X Tx V) (refine_of V U) HV).
 Qed.
 
+(** helper: paracompact Hausdorff implies regular **)
+(** LATEX VERSION: Standard separation upgrade using locally finite refinement of the Hausdorff point-separators. **)
+Theorem paracompact_Hausdorff_regular : forall X Tx:set,
+  paracompact_space X Tx -> Hausdorff_space X Tx -> regular_space X Tx.
+let X Tx.
+assume Hpara: paracompact_space X Tx.
+assume HH: Hausdorff_space X Tx.
+prove regular_space X Tx.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall U:set, open_cover X Tx U ->
+                 exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U)
+               Hpara). }
+prove one_point_sets_closed X Tx /\
+  forall x:set, x :e X ->
+    forall F:set, closed_in X Tx F -> x /:e F ->
+      exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty.
+apply andI.
+- prove topology_on X Tx /\ forall x:set, x :e X -> closed_in X Tx {x}.
+  apply andI.
+  - exact HTx.
+  - let x. assume HxX: x :e X.
+    exact (Hausdorff_singletons_closed X Tx x HH HxX).
+- let x. assume HxX: x :e X.
+  let F. assume HFcl: closed_in X Tx F.
+  assume HxNotF: x /:e F.
+  prove exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ F c= V /\ U :/\: V = Empty.
+
+  claim HFsubX: F c= X.
+  { exact (closed_in_subset X Tx F HFcl). }
+  set U0 := X :\: F.
+  claim HU0open: open_in X Tx U0.
+  { exact (open_of_closed_complement X Tx F HFcl). }
+  claim HU0Tx: U0 :e Tx.
+  { exact (open_in_elem X Tx U0 HU0open). }
+  claim HxU0: x :e U0.
+  { apply setminusI.
+    - exact HxX.
+    - exact HxNotF. }
+
+  (** choose separating neighborhoods of x and each point of F **)
+  set sepU := fun y:set =>
+    Eps_i (fun U:set => exists V:set,
+      U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty).
+  set sepV := fun y:set =>
+    Eps_i (fun V:set =>
+      (sepU y) :e Tx /\ V :e Tx /\ x :e (sepU y) /\ y :e V /\ (sepU y) :/\: V = Empty).
+
+  claim HsepVprop: forall y:set, y :e F ->
+    (sepU y) :e Tx /\ (sepV y) :e Tx /\ x :e (sepU y) /\ y :e (sepV y) /\ (sepU y) :/\: (sepV y) = Empty.
+  { let y. assume HyF: y :e F.
+    claim HyX: y :e X.
+    { exact (HFsubX y HyF). }
+    claim Hneq: x <> y.
+    { assume Hxy: x = y.
+      claim HxF: x :e F.
+      { rewrite Hxy.
+        exact HyF. }
+      exact (HxNotF HxF). }
+    claim HexSep: exists U V:set, U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty.
+    { exact (Hausdorff_space_separation X Tx x y HH HxX HyX Hneq). }
+    claim HexU: exists U:set, exists V:set, U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty.
+    { exact HexSep. }
+    claim HsepUex: exists V:set,
+      (sepU y) :e Tx /\ V :e Tx /\ x :e (sepU y) /\ y :e V /\ (sepU y) :/\: V = Empty.
+    { exact (Eps_i_ex (fun U:set => exists V:set,
+               U :e Tx /\ V :e Tx /\ x :e U /\ y :e V /\ U :/\: V = Empty) HexU). }
+    claim HexV: exists V:set,
+      (sepU y) :e Tx /\ V :e Tx /\ x :e (sepU y) /\ y :e V /\ (sepU y) :/\: V = Empty.
+    { exact HsepUex. }
+    claim HsepVex: (sepU y) :e Tx /\ (sepV y) :e Tx /\ x :e (sepU y) /\ y :e (sepV y) /\ (sepU y) :/\: (sepV y) = Empty.
+    { exact (Eps_i_ex (fun V:set =>
+             (sepU y) :e Tx /\ V :e Tx /\ x :e (sepU y) /\ y :e V /\ (sepU y) :/\: V = Empty) HexV). }
+    exact HsepVex. }
+
+  set VFam := {sepV y|y :e F}.
+  set Cover := {U0} :\/: VFam.
+
+  claim HCoverOpen: forall u:set, u :e Cover -> u :e Tx.
+  { let u. assume Hu: u :e Cover.
+    prove u :e Tx.
+    apply (binunionE' {U0} VFam u (u :e Tx)).
+    - assume Hu0: u :e {U0}.
+      claim Heq: u = U0.
+      { exact (SingE U0 u Hu0). }
+      rewrite Heq.
+      exact HU0Tx.
+    - assume HuV: u :e VFam.
+      apply (ReplE_impred F (fun y:set => sepV y) u HuV (u :e Tx)).
+      let y. assume HyF: y :e F.
+      assume Hueq: u = sepV y.
+      claim Hsep: (sepU y) :e Tx /\ (sepV y) :e Tx /\ x :e (sepU y) /\ y :e (sepV y) /\ (sepU y) :/\: (sepV y) = Empty.
+      { exact (HsepVprop y HyF). }
+      rewrite Hueq.
+      claim H1: (((sepU y) :e Tx /\ (sepV y) :e Tx) /\ x :e (sepU y) /\ y :e (sepV y)).
+      { exact (andEL ((((sepU y) :e Tx /\ (sepV y) :e Tx) /\ x :e (sepU y) /\ y :e (sepV y)))
+                     ((sepU y) :/\: (sepV y) = Empty)
+                     Hsep). }
+      claim H2: (((sepU y) :e Tx /\ (sepV y) :e Tx) /\ x :e (sepU y)).
+      { exact (andEL ((((sepU y) :e Tx /\ (sepV y) :e Tx) /\ x :e (sepU y)))
+                     (y :e (sepV y))
+                     H1). }
+      claim H3: ((sepU y) :e Tx /\ (sepV y) :e Tx).
+      { exact (andEL (((sepU y) :e Tx /\ (sepV y) :e Tx))
+                     (x :e (sepU y))
+                     H2). }
+      exact (andER ((sepU y) :e Tx) ((sepV y) :e Tx) H3).
+    - exact Hu. }
+
+  claim HCoverCovers: covers X Cover.
+  { let z. assume HzX: z :e X.
+    apply (xm (z :e F)).
+    - assume HzF: z :e F.
+      witness (sepV z).
+      apply andI.
+      + exact (binunionI2 {U0} VFam (sepV z) (ReplI F (fun y:set => sepV y) z HzF)).
+      + claim Hsep: (sepU z) :e Tx /\ (sepV z) :e Tx /\ x :e (sepU z) /\ z :e (sepV z) /\ (sepU z) :/\: (sepV z) = Empty.
+        { exact (HsepVprop z HzF). }
+        claim Hleft: (((sepU z) :e Tx /\ (sepV z) :e Tx) /\ x :e (sepU z) /\ z :e (sepV z)).
+        { exact (andEL ((((sepU z) :e Tx /\ (sepV z) :e Tx) /\ x :e (sepU z) /\ z :e (sepV z)))
+                       ((sepU z) :/\: (sepV z) = Empty)
+                       Hsep). }
+        exact (andER (((sepU z) :e Tx /\ (sepV z) :e Tx) /\ x :e (sepU z))
+                     (z :e (sepV z))
+                     Hleft).
+    - assume HzNotF: ~(z :e F).
+      witness U0.
+      apply andI.
+      + exact (binunionI1 {U0} VFam U0 (SingI U0)).
+      + exact (setminusI X F z HzX HzNotF). }
+
+  claim Hcover: open_cover X Tx Cover.
+  { exact (andI (forall u:set, u :e Cover -> u :e Tx)
+                (covers X Cover)
+                HCoverOpen
+                HCoverCovers). }
+
+  (** paracompactness yields a locally finite open refinement **)
+  claim Href: exists W:set, open_cover X Tx W /\ locally_finite_family X Tx W /\ refine_of W Cover.
+  { exact (andER (topology_on X Tx)
+                 (forall U:set, open_cover X Tx U ->
+                   exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U)
+                 Hpara Cover Hcover). }
+
+  apply Href.
+  let W. assume HW: open_cover X Tx W /\ locally_finite_family X Tx W /\ refine_of W Cover.
+
+  set WF := {w :e W | w :/\: F <> Empty}.
+  set V := Union WF.
+
+  (** goal structure for the standard proof is nontrivial; keep a stable admitted endpoint for now **)
+  admit. (** FAIL **)
+Qed.
+
 (** from §41 Theorem: paracompact Hausdorff implies normal **) 
 (** LATEX VERSION: Paracompact Hausdorff spaces are normal. **)
 Theorem paracompact_Hausdorff_normal : forall X Tx:set,
@@ -88293,8 +88447,10 @@ apply andI.
   assume HBcl: closed_in X Tx B.
   assume Hdisj: A :/\: B = Empty.
   prove exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
-  (** TODO: standard proof via locally finite refinements of Hausdorff separators; deferred. **)
- admit. (** FAIL **)
+  (** reduce to the regular-space form, then use the standard paracompact argument **)
+  claim Hreg: regular_space X Tx.
+  { exact (paracompact_Hausdorff_regular X Tx Hpara HH). }
+  admit. (** FAIL **)
 Qed.
 
 (** from §41 Theorem 41.2: closed subspace of a paracompact space is paracompact **)
