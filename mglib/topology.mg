@@ -29465,6 +29465,8 @@ Definition interval_A : set := {x :e R | one_half < abs_SNo x /\ abs_SNo x < 1}.
 Definition interval_B : set := {x :e R | one_half < abs_SNo x /\ ~(1 < abs_SNo x)}.
 Definition interval_C : set := {x :e R | ~(abs_SNo x < one_half) /\ abs_SNo x < 1}.
 Definition interval_D : set := {x :e R | ~(abs_SNo x < one_half) /\ ~(1 < abs_SNo x)}.
+(** from §16 Exercise 3: set E in the subspace [-1,1] **)
+(** LATEX VERSION: E = {x ∈ ℝ | 0<|x|<1 and 1/x ∉ ℤ_+}. **)
 Definition interval_E : set := {x :e R | 0 < abs_SNo x /\ abs_SNo x < 1 /\ ~ (div_SNo 1 x :e Zplus)}.
 
 Theorem ex16_3_open_sets_subspace : forall X Tx Y:set,
@@ -41428,6 +41430,8 @@ Definition ordsq_C : set := {p :e ordered_square|exists x:set, p = (x,0) /\ Rlt 
 Definition ordsq_D : set := {p :e ordered_square|exists x:set, p = (x,eps_ 1) /\ Rlt 0 x /\ Rlt x 1}.
 Definition ordsq_E : set := {p :e ordered_square|exists y:set, p = (eps_ 1,y) /\ Rlt 0 y /\ Rlt y 1}.
 
+(** from §17 Exercise 18: named corner points and closure description helper sets **)
+(** LATEX VERSION: Use points (0,1) and (1,0); closure of E adds the endpoints (eps(1),0) and (eps(1),1). **)
 Definition ordsq_p01 : set := (0,1).
 Definition ordsq_p10 : set := (1,0).
 Definition ordsq_E_closure : set := ordsq_E :\/: {(eps_ 1,0)} :\/: {(eps_ 1,1)}.
