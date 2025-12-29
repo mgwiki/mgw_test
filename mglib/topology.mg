@@ -91187,6 +91187,7 @@ Theorem U_eps_open_dense_stub : forall X Tx Y d fn eps:set,
   metric_on_total Y d ->
   (forall n:set, n :e omega ->
     continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n)) ->
+  (forall x:set, x :e X -> exists N:set, N :e omega /\ x :e A_N_eps X Y d fn N eps) ->
   eps :e R -> Rlt 0 eps ->
   open_in X Tx (U_eps X Tx Y d fn eps) /\ dense_in (U_eps X Tx Y d fn eps) X Tx.
 let X Tx Y d fn eps.
@@ -91194,6 +91195,7 @@ assume HB: Baire_space X Tx.
 assume Hd: metric_on_total Y d.
 assume Hcont: forall n:set, n :e omega ->
   continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n).
+assume Hcover: forall x:set, x :e X -> exists N:set, N :e omega /\ x :e A_N_eps X Y d fn N eps.
 assume Heps: eps :e R.
 assume HepsPos: Rlt 0 eps.
 prove open_in X Tx (U_eps X Tx Y d fn eps) /\ dense_in (U_eps X Tx Y d fn eps) X Tx.
@@ -91268,6 +91270,9 @@ claim HTx: topology_on X Tx.
                  (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
                  dense_in (intersection_over_family X U) X Tx)
                HB). }
+claim HcoverAll: forall eps0:set, eps0 :e R -> Rlt 0 eps0 ->
+  forall x:set, x :e X -> exists N:set, N :e omega /\ x :e A_N_eps X Y d fn N eps0.
+{ admit. (** FAIL **) }
 set Ufam := {U_eps X Tx Y d fn (inv_nat (ordsucc n)) | n :e omega}.
 claim HcountOmega: countable_set omega.
 { prove countable_set omega.
@@ -91296,7 +91301,9 @@ claim HUfamSub: Ufam c= Tx.
   claim Htmp: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) /\
               dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx.
   { exact (U_eps_open_dense_stub X Tx Y d fn (inv_nat (ordsucc n0))
-           HB Hd Hcont HepsR HepsPos). }
+           HB Hd Hcont
+           (HcoverAll (inv_nat (ordsucc n0)) HepsR HepsPos)
+           HepsR HepsPos). }
   claim Hop: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))).
   { exact (andEL (open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))))
                  (dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx)
@@ -91327,7 +91334,9 @@ claim HUfamDense: forall u:set, u :e Ufam -> u :e Tx /\ dense_in u X Tx.
   claim Htmp: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) /\
               dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx.
   { exact (U_eps_open_dense_stub X Tx Y d fn (inv_nat (ordsucc n0))
-           HB Hd Hcont HepsR HepsPos). }
+           HB Hd Hcont
+           (HcoverAll (inv_nat (ordsucc n0)) HepsR HepsPos)
+           HepsR HepsPos). }
   claim Hop: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))).
   { exact (andEL (open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))))
                  (dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx)
