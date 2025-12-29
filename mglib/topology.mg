@@ -1685,11 +1685,11 @@ Definition equip : set -> set -> prop
  := fun X Y : set => exists f : set -> set, bij X Y f.
 
 Theorem equip_atleastp: forall X Y, equip X Y -> atleastp X Y.
-admit.
+admit. (** FAIL **)
 Qed.
 
 Theorem equip_ref : forall X, equip X X.
-admit.
+admit. (** FAIL **)
 Qed.
 
 Theorem equip_sym : forall X Y, equip X Y -> equip Y X.
@@ -91203,7 +91203,7 @@ claim Hdprel: order_rel R a dp.
 { exact (SepE2 R (fun x0:set => order_rel R a x0) dp HdpRay'). }
 claim Hlt: Rlt a dp.
 { exact (order_rel_R_implies_Rlt a dp Hdprel). }
-admit.
+admit. (** FAIL **)
 Qed.
 
 Theorem metric_distance_preimage_open_ray_upper : forall Y d a:set,
@@ -91325,7 +91325,7 @@ claim Hdprel: order_rel R dp b.
 { exact (SepE2 R (fun x0:set => order_rel R x0 b) dp HdpRay'). }
 claim Hlt: Rlt dp b.
 { exact (order_rel_R_implies_Rlt dp b Hdprel). }
-admit.
+admit. (** FAIL **)
 Qed.
 
 Theorem metric_distance_preimage_open_ray_lower : forall Y d b:set,
