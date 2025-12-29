@@ -91183,20 +91183,27 @@ Definition U_eps : set -> set -> set -> set -> set -> set -> set :=
 (** helper: U(eps) should be open and dense under hypotheses of Theorem 48.5 **)
 (** LATEX VERSION: In the proof of Theorem 48.5, U(eps) is shown to be open and dense. **)
 Theorem U_eps_open_dense_stub : forall X Tx Y d fn eps:set,
-  topology_on X Tx ->
+  Baire_space X Tx ->
   metric_on_total Y d ->
   (forall n:set, n :e omega ->
     continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n)) ->
   eps :e R -> Rlt 0 eps ->
   open_in X Tx (U_eps X Tx Y d fn eps) /\ dense_in (U_eps X Tx Y d fn eps) X Tx.
 let X Tx Y d fn eps.
-assume HTx: topology_on X Tx.
+assume HB: Baire_space X Tx.
 assume Hd: metric_on_total Y d.
 assume Hcont: forall n:set, n :e omega ->
   continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n).
 assume Heps: eps :e R.
 assume HepsPos: Rlt 0 eps.
 prove open_in X Tx (U_eps X Tx Y d fn eps) /\ dense_in (U_eps X Tx Y d fn eps) X Tx.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall U:set,
+                 U c= Tx -> countable_set U ->
+                 (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
+                 dense_in (intersection_over_family X U) X Tx)
+               HB). }
 apply andI.
 - (** U_eps is open **)
   prove open_in X Tx (U_eps X Tx Y d fn eps).
@@ -91289,7 +91296,7 @@ claim HUfamSub: Ufam c= Tx.
   claim Htmp: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) /\
               dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx.
   { exact (U_eps_open_dense_stub X Tx Y d fn (inv_nat (ordsucc n0))
-           HTx Hd Hcont HepsR HepsPos). }
+           HB Hd Hcont HepsR HepsPos). }
   claim Hop: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))).
   { exact (andEL (open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))))
                  (dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx)
@@ -91320,7 +91327,7 @@ claim HUfamDense: forall u:set, u :e Ufam -> u :e Tx /\ dense_in u X Tx.
   claim Htmp: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) /\
               dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx.
   { exact (U_eps_open_dense_stub X Tx Y d fn (inv_nat (ordsucc n0))
-           HTx Hd Hcont HepsR HepsPos). }
+           HB Hd Hcont HepsR HepsPos). }
   claim Hop: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))).
   { exact (andEL (open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))))
                  (dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx)
