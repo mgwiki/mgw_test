@@ -27894,7 +27894,7 @@ apply set_ext.
 - let U. assume HU: U :e subspace_topology X Tx X.
   prove U :e Tx.
   claim Hex: exists V :e Tx, U = V :/\: X.
-  { exact (SepE2 (Power X) (fun U0:set => exists V :e Tx, U0 = V :/\: X) U HU). }
+  { exact (subspace_topologyE X Tx X U HU). }
   apply Hex.
   let V. assume HVpair.
   claim HV: V :e Tx.
@@ -42838,7 +42838,7 @@ apply andI.
   + exact HfunXZ0.
 - let B. assume HB: B :e Tz0.
   claim Hex: exists V :e Ty, B = V :/\: Z0.
-  { exact (SepE2 (Power Z0) (fun U0:set => exists V :e Ty, U0 = V :/\: Z0) B HB). }
+  { exact (subspace_topologyE Y Ty Z0 B HB). }
   apply Hex.
   let V. assume HVpair.
   claim HV: V :e Ty.
@@ -68221,14 +68221,14 @@ claim HexPoint:
       claim HTx: topology_on X Tx.
       { exact (locally_compact_topology X Tx Hlc). }
       apply set_ext.
-      * let W. assume HW: W :e subspace_topology Y Ty X.
-        prove W :e Tx.
-        claim Hex: exists V :e Ty, W = V :/\: X.
-        { exact (SepE2 (Power X) (fun U0:set => exists V :e Ty, U0 = V :/\: X) W HW). }
-        apply Hex.
-        let V. assume HVpair.
-        claim HV: V :e Ty.
-        { exact (andEL (V :e Ty) (W = V :/\: X) HVpair). }
+	      * let W. assume HW: W :e subspace_topology Y Ty X.
+	        prove W :e Tx.
+	        claim Hex: exists V :e Ty, W = V :/\: X.
+	        { exact (subspace_topologyE Y Ty X W HW). }
+	        apply Hex.
+	        let V. assume HVpair.
+	        claim HV: V :e Ty.
+	        { exact (andEL (V :e Ty) (W = V :/\: X) HVpair). }
         claim HWeq: W = V :/\: X.
         { exact (andER (V :e Ty) (W = V :/\: X) HVpair). }
         claim HVprop:
