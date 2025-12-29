@@ -91203,7 +91203,78 @@ claim Hdprel: order_rel R a dp.
 { exact (SepE2 R (fun x0:set => order_rel R a x0) dp HdpRay'). }
 claim Hlt: Rlt a dp.
 { exact (order_rel_R_implies_Rlt a dp Hdprel). }
-admit. (** FAIL **)
+claim Hp0Y: p 0 :e Y.
+{ exact (ap0_Sigma Y (fun _ : set => Y) p HpDom). }
+claim Hp1Y: p 1 :e Y.
+{ exact (ap1_Sigma Y (fun _ : set => Y) p HpDom). }
+claim HaS: SNo a.
+{ exact (real_SNo a HaR). }
+claim HdpS: SNo dp.
+{ exact (real_SNo dp HdpR). }
+claim HmaR: minus_SNo a :e R.
+{ exact (real_minus_SNo a HaR). }
+claim HmaS: SNo (minus_SNo a).
+{ exact (real_SNo (minus_SNo a) HmaR). }
+set dgap := add_SNo (minus_SNo a) dp.
+claim HdgapR: dgap :e R.
+{ exact (real_add_SNo (minus_SNo a) HmaR dp HdpR). }
+claim HltS: a < dp.
+{ exact (RltE_lt a dp Hlt). }
+claim HsumLt: add_SNo (minus_SNo a) a < add_SNo (minus_SNo a) dp.
+{ exact (add_SNo_Lt2 (minus_SNo a) a dp HmaS HaS HdpS HltS). }
+claim HgapPosS: 0 < dgap.
+{ rewrite <- (add_SNo_minus_SNo_linv a HaS) at 1.
+  exact HsumLt. }
+claim HgapPos: Rlt 0 dgap.
+{ exact (RltI 0 dgap real_0 HdgapR HgapPosS). }
+
+apply (exists_eps_lt_pos_Euclid dgap HdgapR HgapPos).
+let N. assume HNpair.
+claim HNomega: N :e omega.
+{ exact (andEL (N :e omega) (eps_ N < dgap) HNpair). }
+claim HepsNlt: eps_ N < dgap.
+{ exact (andER (N :e omega) (eps_ N < dgap) HNpair). }
+set r := eps_ (ordsucc N).
+claim HsuccO: ordsucc N :e omega.
+{ exact (omega_ordsucc N HNomega). }
+claim HrR: r :e R.
+{ exact (SNoS_omega_real r (SNo_eps_SNoS_omega (ordsucc N) HsuccO)). }
+claim HrS: SNo r.
+{ exact (real_SNo r HrR). }
+claim H0ltr: 0 < r.
+{ exact (SNo_eps_pos (ordsucc N) HsuccO). }
+claim HrPos: Rlt 0 r.
+{ exact (RltI 0 r real_0 HrR H0ltr). }
+claim HrHalf: add_SNo r r = eps_ N.
+{ exact (eps_ordsucc_half_add N (omega_nat_p N HNomega)). }
+claim HepsS: SNo (eps_ N).
+{ exact (SNo_eps_ N HNomega). }
+claim HdgapS: SNo dgap.
+{ exact (real_SNo dgap HdgapR). }
+claim HtmpLt: add_SNo a (eps_ N) < add_SNo a dgap.
+{ exact (add_SNo_Lt2 a (eps_ N) dgap HaS HepsS HdgapS HepsNlt). }
+claim Haeq: add_SNo a dgap = dp.
+{ claim HdgapDef: dgap = add_SNo (minus_SNo a) dp.
+  { reflexivity. }
+  rewrite HdgapDef.
+  rewrite (add_SNo_assoc a (minus_SNo a) dp HaS HmaS HdpS).
+  rewrite (add_SNo_minus_SNo_rinv a HaS).
+  exact (add_SNo_0L dp HdpS). }
+claim HaepsLt: add_SNo a (eps_ N) < dp.
+{ rewrite <- Haeq.
+  exact HtmpLt. }
+claim HarLt: add_SNo a (add_SNo r r) < dp.
+{ rewrite HrHalf.
+  exact HaepsLt. }
+
+witness r.
+apply andI.
+- apply andI.
+  + exact HrR.
+  + exact HrPos.
+- (** Main metric-rectangle containment argument remains to be completed. **)
+  (** It should use triangle inequality and HarLt to show any (u,v) in the rectangle has a < d(u,v). **)
+  admit. (** FAIL **)
 Qed.
 
 Theorem metric_distance_preimage_open_ray_upper : forall Y d a:set,
@@ -91325,7 +91396,78 @@ claim Hdprel: order_rel R dp b.
 { exact (SepE2 R (fun x0:set => order_rel R x0 b) dp HdpRay'). }
 claim Hlt: Rlt dp b.
 { exact (order_rel_R_implies_Rlt dp b Hdprel). }
-admit. (** FAIL **)
+claim Hp0Y: p 0 :e Y.
+{ exact (ap0_Sigma Y (fun _ : set => Y) p HpDom). }
+claim Hp1Y: p 1 :e Y.
+{ exact (ap1_Sigma Y (fun _ : set => Y) p HpDom). }
+claim HbS: SNo b.
+{ exact (real_SNo b HbR). }
+claim HdpS: SNo dp.
+{ exact (real_SNo dp HdpR). }
+claim HmdpR: minus_SNo dp :e R.
+{ exact (real_minus_SNo dp HdpR). }
+claim HmdpS: SNo (minus_SNo dp).
+{ exact (real_SNo (minus_SNo dp) HmdpR). }
+set dgap := add_SNo (minus_SNo dp) b.
+claim HdgapR: dgap :e R.
+{ exact (real_add_SNo (minus_SNo dp) HmdpR b HbR). }
+claim HltS: dp < b.
+{ exact (RltE_lt dp b Hlt). }
+claim HsumLt: add_SNo (minus_SNo dp) dp < add_SNo (minus_SNo dp) b.
+{ exact (add_SNo_Lt2 (minus_SNo dp) dp b HmdpS HdpS HbS HltS). }
+claim HgapPosS: 0 < dgap.
+{ rewrite <- (add_SNo_minus_SNo_linv dp HdpS) at 1.
+  exact HsumLt. }
+claim HgapPos: Rlt 0 dgap.
+{ exact (RltI 0 dgap real_0 HdgapR HgapPosS). }
+
+apply (exists_eps_lt_pos_Euclid dgap HdgapR HgapPos).
+let N. assume HNpair.
+claim HNomega: N :e omega.
+{ exact (andEL (N :e omega) (eps_ N < dgap) HNpair). }
+claim HepsNlt: eps_ N < dgap.
+{ exact (andER (N :e omega) (eps_ N < dgap) HNpair). }
+set r := eps_ (ordsucc N).
+claim HsuccO: ordsucc N :e omega.
+{ exact (omega_ordsucc N HNomega). }
+claim HrR: r :e R.
+{ exact (SNoS_omega_real r (SNo_eps_SNoS_omega (ordsucc N) HsuccO)). }
+claim HrS: SNo r.
+{ exact (real_SNo r HrR). }
+claim H0ltr: 0 < r.
+{ exact (SNo_eps_pos (ordsucc N) HsuccO). }
+claim HrPos: Rlt 0 r.
+{ exact (RltI 0 r real_0 HrR H0ltr). }
+claim HrHalf: add_SNo r r = eps_ N.
+{ exact (eps_ordsucc_half_add N (omega_nat_p N HNomega)). }
+claim HepsS: SNo (eps_ N).
+{ exact (SNo_eps_ N HNomega). }
+claim HdgapS: SNo dgap.
+{ exact (real_SNo dgap HdgapR). }
+claim HtmpLt: add_SNo dp (eps_ N) < add_SNo dp dgap.
+{ exact (add_SNo_Lt2 dp (eps_ N) dgap HdpS HepsS HdgapS HepsNlt). }
+claim Hdeq: add_SNo dp dgap = b.
+{ claim HdgapDef: dgap = add_SNo (minus_SNo dp) b.
+  { reflexivity. }
+  rewrite HdgapDef.
+  rewrite (add_SNo_assoc dp (minus_SNo dp) b HdpS HmdpS HbS).
+  rewrite (add_SNo_minus_SNo_rinv dp HdpS).
+  exact (add_SNo_0L b HbS). }
+claim HdpepsLt: add_SNo dp (eps_ N) < b.
+{ rewrite <- Hdeq.
+  exact HtmpLt. }
+claim HdrLt: add_SNo dp (add_SNo r r) < b.
+{ rewrite HrHalf.
+  exact HdpepsLt. }
+
+witness r.
+apply andI.
+- apply andI.
+  + exact HrR.
+  + exact HrPos.
+- (** Main metric-rectangle containment argument remains to be completed. **)
+  (** It should use triangle inequality and HdrLt to show any (u,v) in the rectangle has d(u,v) < b. **)
+  admit. (** FAIL **)
 Qed.
 
 Theorem metric_distance_preimage_open_ray_lower : forall Y d b:set,
