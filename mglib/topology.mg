@@ -43906,14 +43906,14 @@ apply andI.
 	          * exact HTx.
 	          * exact HTz0.
 	        + exact HfunXZ0.
-	      - let B. assume HB: B :e subspace_topology Y Ty Z0.
-	        (** B is of the form V ∩ Z0 for some V open in Y **)
-	        claim Hex: exists V :e Ty, B = V :/\: Z0.
-	        { exact (SepE2 (Power Z0) (fun U0:set => exists V :e Ty, U0 = V :/\: Z0) B HB). }
-	        apply Hex.
-	        let V. assume HVpair.
-	        claim HV: V :e Ty.
-	        { exact (andEL (V :e Ty) (B = V :/\: Z0) HVpair). }
+		      - let B. assume HB: B :e subspace_topology Y Ty Z0.
+		        (** B is of the form V ∩ Z0 for some V open in Y **)
+		        claim Hex: exists V :e Ty, B = V :/\: Z0.
+		        { exact (subspace_topologyE Y Ty Z0 B HB). }
+		        apply Hex.
+		        let V. assume HVpair.
+		        claim HV: V :e Ty.
+		        { exact (andEL (V :e Ty) (B = V :/\: Z0) HVpair). }
 	        claim HB_eq: B = V :/\: Z0.
 	        { exact (andER (V :e Ty) (B = V :/\: Z0) HVpair). }
 	        claim HeqPre: preimage_of X f B = preimage_of X f V.
@@ -61136,11 +61136,11 @@ assume HCconn: connected_space C (subspace_topology X Tx C).
 prove C c= X.
 claim HCtop: topology_on C (subspace_topology X Tx C).
 { exact (connected_space_topology C (subspace_topology X Tx C) HCconn). }
-claim HCinSub: C :e subspace_topology X Tx C.
-{ exact (topology_has_X C (subspace_topology X Tx C) HCtop). }
-claim HexV: exists V :e Tx, C = V :/\: C.
-{ exact (SepE2 (Power C) (fun U0:set => exists V :e Tx, U0 = V :/\: C) C HCinSub). }
-apply HexV.
+	claim HCinSub: C :e subspace_topology X Tx C.
+	{ exact (topology_has_X C (subspace_topology X Tx C) HCtop). }
+	claim HexV: exists V :e Tx, C = V :/\: C.
+	{ exact (subspace_topologyE X Tx C C HCinSub). }
+	apply HexV.
 let V. assume HVpair.
 claim HVTx: V :e Tx.
 { exact (andEL (V :e Tx) (C = V :/\: C) HVpair). }
