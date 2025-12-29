@@ -30208,7 +30208,7 @@ apply set_ext.
   prove W :e subspace_topology Y (subspace_topology X Tx Y) A.
   (** W ∈ subspace_topology X Tx A means W ∈ Power A ∧ ∃V∈Tx, W = V ∩ A **)
   claim HWPowerA: W :e Power A.
-  { exact (SepE1 (Power A) (fun W0:set => exists V :e Tx, W0 = V :/\: A) W HW). }
+  { exact (subspace_topology_in_Power X Tx A W HW). }
   claim HWexists: exists V :e Tx, W = V :/\: A.
   { exact (subspace_topologyE X Tx A W HW). }
   apply HWexists.
