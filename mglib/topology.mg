@@ -86106,9 +86106,22 @@ Definition bounded_product_metric : set -> set := fun J => discrete_metric (powe
 
 (** from §43 Lemma 43.1: Cauchy with convergent subsequence converges **) 
 (** LATEX VERSION: In a metric space, a Cauchy sequence with a convergent subsequence converges to the same limit. **)
+(** helper: strictly increasing index map on ω (used to model subsequences) **)
+(** LATEX VERSION: A subsequence is obtained by composing with a strictly increasing map f:ω→ω. **)
+Definition omega_strictly_increasing : set -> prop := fun f =>
+  forall m n:set, m :e omega -> n :e omega -> m :e n -> apply_fun f m :e apply_fun f n.
+
+(** helper: subsequence of a sequence seq:ω→X **)
+(** LATEX VERSION: subseq is a subsequence of seq if subseq(n)=seq(f(n)) for some strictly increasing f:ω→ω. **)
+Definition subsequence_of : set -> set -> prop := fun seq subseq =>
+  exists f:set,
+    total_function_on f omega omega /\ functional_graph f /\ graph_domain_subset f omega /\
+    omega_strictly_increasing f /\
+    subseq = compose_fun omega f seq.
+
 Theorem Cauchy_with_convergent_subsequence_converges : forall X d seq x:set,
   metric_on X d -> cauchy_sequence X d seq ->
-  (exists subseq:set, subseq c= seq /\ converges_to X (metric_topology X d) subseq x) ->
+  (exists subseq:set, subsequence_of seq subseq /\ converges_to X (metric_topology X d) subseq x) ->
   converges_to X (metric_topology X d) seq x.
 admit. (** FAIL **)
 Qed.
@@ -86155,7 +86168,7 @@ Qed.
 Definition sequentially_compact : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   forall seq:set, sequence_on seq X ->
-    exists subseq:set, exists x:set, subseq c= seq /\ converges_to X Tx subseq x.
+    exists subseq:set, exists x:set, subsequence_of seq subseq /\ converges_to X Tx subseq x.
 
 (** from §45 Theorem: compactness in metric spaces equivalences **) 
 (** LATEX VERSION: In metric spaces, compact ⇔ sequentially compact. **)
