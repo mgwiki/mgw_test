@@ -79106,6 +79106,164 @@ Definition Lindelof_space : set -> set -> prop :=
 Definition Sorgenfrey_line : set := R.
 Definition Sorgenfrey_topology : set := R_lower_limit_topology.
 
+(** helper: the Sorgenfrey (lower limit) topology on R is Hausdorff **)
+(** LATEX VERSION: The Sorgenfrey line is Hausdorff; distinct points can be separated by half-open intervals. **)
+Theorem R_lower_limit_topology_Hausdorff : Hausdorff_space R R_lower_limit_topology.
+prove Hausdorff_space R R_lower_limit_topology.
+prove topology_on R R_lower_limit_topology /\
+  forall x1 x2:set, x1 :e R -> x2 :e R -> x1 <> x2 ->
+    exists U V:set, U :e R_lower_limit_topology /\ V :e R_lower_limit_topology /\
+      x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+apply andI.
+- exact R_lower_limit_topology_is_topology.
+- let x1 x2.
+  assume Hx1R: x1 :e R.
+  assume Hx2R: x2 :e R.
+  assume Hneq: x1 <> x2.
+  prove exists U V:set, U :e R_lower_limit_topology /\ V :e R_lower_limit_topology /\
+    x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
+  claim Hx1S: SNo x1.
+  { exact (real_SNo x1 Hx1R). }
+  claim Hx2S: SNo x2.
+  { exact (real_SNo x2 Hx2R). }
+  apply (SNoLt_trichotomy_or_impred x1 x2 Hx1S Hx2S
+    (exists U V:set, U :e R_lower_limit_topology /\ V :e R_lower_limit_topology /\
+      x1 :e U /\ x2 :e V /\ U :/\: V = Empty)).
+  - assume Hlt: x1 < x2.
+    set U := halfopen_interval_left x1 x2.
+    set b := add_SNo x2 1.
+    claim HbR: b :e R.
+    { exact (real_add_SNo x2 Hx2R 1 real_1). }
+    set V := halfopen_interval_left x2 b.
+    witness U.
+    witness V.
+    claim HUopen: U :e R_lower_limit_topology.
+    { exact (halfopen_interval_left_in_R_lower_limit_topology x1 x2 Hx1R Hx2R). }
+    claim HVopen: V :e R_lower_limit_topology.
+    { exact (halfopen_interval_left_in_R_lower_limit_topology x2 b Hx2R HbR). }
+    claim Hx1U: x1 :e U.
+    { prove x1 :e {x :e R | ~(Rlt x x1) /\ Rlt x x2}.
+      apply SepI.
+      - exact Hx1R.
+      - exact (andI (~(Rlt x1 x1)) (Rlt x1 x2)
+                    (not_Rlt_refl x1 Hx1R)
+                    (RltI x1 x2 Hx1R Hx2R Hlt)). }
+    claim Hx2ltb: x2 < b.
+    { claim H0lt1: 0 < 1.
+      { exact SNoLt_0_1. }
+      claim Hx20: add_SNo x2 0 = x2.
+      { exact (add_SNo_0R x2 Hx2S). }
+      claim Hx2lt: add_SNo x2 0 < add_SNo x2 1.
+      { exact (add_SNo_Lt2 x2 0 1 Hx2S SNo_0 SNo_1 H0lt1). }
+      prove x2 < b.
+      (** b = add_SNo x2 1; rewrite the goal to use Hx2lt **)
+      rewrite <- Hx20 at 1.
+      exact Hx2lt. }
+    claim Hx2V: x2 :e V.
+    { prove x2 :e {x :e R | ~(Rlt x x2) /\ Rlt x b}.
+      apply SepI.
+      - exact Hx2R.
+      - exact (andI (~(Rlt x2 x2)) (Rlt x2 b)
+                    (not_Rlt_refl x2 Hx2R)
+                    (RltI x2 b Hx2R HbR Hx2ltb)). }
+    claim HUVempty: U :/\: V = Empty.
+    { apply Empty_Subq_eq.
+      let z. assume Hz: z :e U :/\: V.
+      prove z :e Empty.
+      claim HzU: z :e U.
+      { exact (binintersectE1 U V z Hz). }
+      claim HzV: z :e V.
+      { exact (binintersectE2 U V z Hz). }
+      claim HzUprop: ~(Rlt z x1) /\ Rlt z x2.
+      { exact (SepE2 R (fun x:set => ~(Rlt x x1) /\ Rlt x x2) z HzU). }
+      claim HzVprop: ~(Rlt z x2) /\ Rlt z b.
+      { exact (SepE2 R (fun x:set => ~(Rlt x x2) /\ Rlt x b) z HzV). }
+      claim Hzltx2: Rlt z x2.
+      { exact (andER (~(Rlt z x1)) (Rlt z x2) HzUprop). }
+      claim Hznltx2: ~(Rlt z x2).
+      { exact (andEL (~(Rlt z x2)) (Rlt z b) HzVprop). }
+      apply FalseE.
+      exact (Hznltx2 Hzltx2). }
+    apply and5I.
+    - exact HUopen.
+    - exact HVopen.
+    - exact Hx1U.
+    - exact Hx2V.
+    - exact HUVempty.
+  - assume Heq: x1 = x2.
+    apply FalseE.
+    exact (Hneq Heq).
+  - assume Hgt: x2 < x1.
+    (** symmetric, swapping x1 and x2 **)
+    set U := halfopen_interval_left x2 x1.
+    set b := add_SNo x1 1.
+    claim HbR: b :e R.
+    { exact (real_add_SNo x1 Hx1R 1 real_1). }
+    set V := halfopen_interval_left x1 b.
+    witness V.
+    witness U.
+    claim HVopen: V :e R_lower_limit_topology.
+    { exact (halfopen_interval_left_in_R_lower_limit_topology x1 b Hx1R HbR). }
+    claim HUopen: U :e R_lower_limit_topology.
+    { exact (halfopen_interval_left_in_R_lower_limit_topology x2 x1 Hx2R Hx1R). }
+    claim Hx2U: x2 :e U.
+    { prove x2 :e {x :e R | ~(Rlt x x2) /\ Rlt x x1}.
+      apply SepI.
+      - exact Hx2R.
+      - exact (andI (~(Rlt x2 x2)) (Rlt x2 x1)
+                    (not_Rlt_refl x2 Hx2R)
+                    (RltI x2 x1 Hx2R Hx1R Hgt)). }
+    claim Hx1ltb: x1 < b.
+    { claim H0lt1: 0 < 1.
+      { exact SNoLt_0_1. }
+      claim Hx10: add_SNo x1 0 = x1.
+      { exact (add_SNo_0R x1 Hx1S). }
+      claim Hx1lt: add_SNo x1 0 < add_SNo x1 1.
+      { exact (add_SNo_Lt2 x1 0 1 Hx1S SNo_0 SNo_1 H0lt1). }
+      prove x1 < b.
+      (** b = add_SNo x1 1; rewrite the goal to use Hx1lt **)
+      rewrite <- Hx10 at 1.
+      exact Hx1lt. }
+    claim Hx1V: x1 :e V.
+    { prove x1 :e {x :e R | ~(Rlt x x1) /\ Rlt x b}.
+      apply SepI.
+      - exact Hx1R.
+      - exact (andI (~(Rlt x1 x1)) (Rlt x1 b)
+                    (not_Rlt_refl x1 Hx1R)
+                    (RltI x1 b Hx1R HbR Hx1ltb)). }
+    claim HUVempty: V :/\: U = Empty.
+    { apply Empty_Subq_eq.
+      let z. assume Hz: z :e V :/\: U.
+      prove z :e Empty.
+      claim HzV: z :e V.
+      { exact (binintersectE1 V U z Hz). }
+      claim HzU: z :e U.
+      { exact (binintersectE2 V U z Hz). }
+      claim HzVprop: ~(Rlt z x1) /\ Rlt z b.
+      { exact (SepE2 R (fun x:set => ~(Rlt x x1) /\ Rlt x b) z HzV). }
+      claim HzUprop: ~(Rlt z x2) /\ Rlt z x1.
+      { exact (SepE2 R (fun x:set => ~(Rlt x x2) /\ Rlt x x1) z HzU). }
+      claim Hzltx1: Rlt z x1.
+      { exact (andER (~(Rlt z x2)) (Rlt z x1) HzUprop). }
+      claim Hznltx1: ~(Rlt z x1).
+      { exact (andEL (~(Rlt z x1)) (Rlt z b) HzVprop). }
+      apply FalseE.
+      exact (Hznltx1 Hzltx1). }
+    apply and5I.
+    - exact HVopen.
+    - exact HUopen.
+    - exact Hx1V.
+    - exact Hx2U.
+    - exact HUVempty.
+Qed.
+
+(** helper: Sorgenfrey_line is Hausdorff **)
+(** LATEX VERSION: The Sorgenfrey line (R_l) is Hausdorff. **)
+Theorem Sorgenfrey_line_Hausdorff : Hausdorff_space Sorgenfrey_line Sorgenfrey_topology.
+prove Hausdorff_space Sorgenfrey_line Sorgenfrey_topology.
+exact R_lower_limit_topology_Hausdorff.
+Qed.
+
 
 (** LATEX VERSION: Countable basis at x (Definition 30.1). **)
 (** FIXED: countable_basis_at uses a countable local basis B c= Tx at x, not a global basis_on X B; avoids collapsing first countable into second countable. **)
@@ -87882,7 +88040,19 @@ Qed.
 Theorem Sorgenfrey_plane_not_paracompact :
   ~ paracompact_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove ~ paracompact_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit. (** FAIL **)
+assume Hpara: paracompact_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+prove False.
+claim HHline: Hausdorff_space Sorgenfrey_line Sorgenfrey_topology.
+{ exact Sorgenfrey_line_Hausdorff. }
+claim HHplane: Hausdorff_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+{ exact (ex17_11_product_Hausdorff Sorgenfrey_line Sorgenfrey_topology Sorgenfrey_line Sorgenfrey_topology HHline HHline). }
+claim Hnorm: normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+{ exact (paracompact_Hausdorff_normal (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology Hpara HHplane). }
+claim Hnotnorm: ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+{ exact (andER (regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology)
+               (~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology)
+               Sorgenfrey_plane_not_normal). }
+exact (Hnotnorm Hnorm).
 Qed.
 
 (** from §41 Example 5: R^omega is paracompact in product and uniform topologies **)
@@ -87892,7 +88062,34 @@ Theorem Romega_paracompact_product_topology :
                     (product_topology_full omega (const_space_family omega R R_standard_topology)).
 prove paracompact_space (product_space omega (const_space_family omega R R_standard_topology))
                         (product_topology_full omega (const_space_family omega R R_standard_topology)).
-admit. (** FAIL **)
+claim Hmetr: metrizable (product_space omega (const_space_family omega R R_standard_topology))
+                        (product_topology_full omega (const_space_family omega R R_standard_topology)).
+{ prove exists d:set,
+    metric_on (product_space omega (const_space_family omega R R_standard_topology)) d /\
+    metric_topology (product_space omega (const_space_family omega R R_standard_topology)) d =
+      product_topology_full omega (const_space_family omega R R_standard_topology).
+  witness Romega_D_metric.
+  claim Hpair: metric_on R_omega_space Romega_D_metric /\ Romega_D_metric_topology = R_omega_product_topology.
+  { exact Romega_D_metric_induces_product_topology. }
+  claim Hm: metric_on R_omega_space Romega_D_metric.
+  { exact (andEL (metric_on R_omega_space Romega_D_metric)
+                 (Romega_D_metric_topology = R_omega_product_topology)
+                 Hpair). }
+  claim Heq: Romega_D_metric_topology = R_omega_product_topology.
+  { exact (andER (metric_on R_omega_space Romega_D_metric)
+                 (Romega_D_metric_topology = R_omega_product_topology)
+                 Hpair). }
+  apply andI.
+  - exact Hm.
+  - (** rewrite metric_topology via definition of Romega_D_metric_topology, then use the induced-topology equality **)
+    claim Hdef: metric_topology R_omega_space Romega_D_metric = Romega_D_metric_topology.
+    { reflexivity. }
+    rewrite Hdef.
+    rewrite Heq.
+    reflexivity. }
+exact (metrizable_paracompact (product_space omega (const_space_family omega R R_standard_topology))
+                              (product_topology_full omega (const_space_family omega R R_standard_topology))
+                              Hmetr).
 Qed.
 
 (** from §41 Example 6: uncountable product of R is not paracompact **)
