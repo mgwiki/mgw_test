@@ -82509,7 +82509,11 @@ Theorem Sorgenfrey_plane_not_normal :
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
 prove regular_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology /\
   ~ normal_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
-admit. (** FAIL **)
+apply andI.
+- (** regularity of the Sorgenfrey plane (skeleton) **)
+  admit. (** FAIL **)
+- (** non-normality of the Sorgenfrey plane (skeleton) **)
+  admit. (** FAIL **)
 Qed.
 
 (** from §32 Theorem 32.1: regular space with countable basis is normal **) 
