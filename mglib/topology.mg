@@ -27945,11 +27945,11 @@ apply andI.
   + prove subspace_topology X Tx Y c= Power Y /\ Empty :e subspace_topology X Tx Y /\ Y :e subspace_topology X Tx Y.
     apply andI.
     * prove subspace_topology X Tx Y c= Power Y /\ Empty :e subspace_topology X Tx Y.
-      apply andI.
-      { prove subspace_topology X Tx Y c= Power Y.
-        let U. assume HU: U :e subspace_topology X Tx Y.
-        exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HU).
-      }
+	      apply andI.
+	      { prove subspace_topology X Tx Y c= Power Y.
+	        let U. assume HU: U :e subspace_topology X Tx Y.
+	        exact (subspace_topology_in_Power X Tx Y U HU).
+	      }
       { prove Empty :e subspace_topology X Tx Y.
         claim HEmptyTx: Empty :e Tx.
         { exact (topology_has_empty X Tx HTx). }
