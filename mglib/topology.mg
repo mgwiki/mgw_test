@@ -93062,6 +93062,31 @@ Definition finite_dimensional_space : set -> set -> prop := fun X Tx =>
         refines_cover B A /\
         collection_has_order_at_most_m_plus_one X B m.
 
+(** helper: projections from finite_dimensional_space package **)
+Theorem finite_dimensional_space_topology_on : forall X Tx:set,
+  finite_dimensional_space X Tx -> topology_on X Tx.
+let X Tx.
+assume Hfd: finite_dimensional_space X Tx.
+apply Hfd.
+assume HTx Hexm.
+exact HTx.
+Qed.
+
+Theorem finite_dimensional_space_exists_bound : forall X Tx:set,
+  finite_dimensional_space X Tx ->
+  exists m:set, m :e omega /\
+    forall A:set, open_cover_of X Tx A ->
+      exists B:set,
+        open_cover_of X Tx B /\
+        refines_cover B A /\
+        collection_has_order_at_most_m_plus_one X B m.
+let X Tx.
+assume Hfd: finite_dimensional_space X Tx.
+apply Hfd.
+assume HTx Hexm.
+exact Hexm.
+Qed.
+
 (** from §50 Theorem: compact subspace of R^n has dimension at most n **) 
 (** LATEX VERSION: Compact subspace of ℝ^n has covering dimension ≤ n. **)
 Theorem compact_subspace_Rn_dimension_le : forall N X:set,
