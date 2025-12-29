@@ -71764,7 +71764,7 @@ prove exists net0:set,
 (** Standard construction: index set = finite subcollections of Fam ordered by inclusion; net chooses a point not covered by the finite union. **)
 
 set J := finite_subcollections Fam.
-set le := {p :e setprod J J | (p 0) c= (p 1)}.
+set le := inclusion_rel J.
 
 set pickx := (fun F:set =>
   Eps_i (fun x:set => x :e X /\ ~(x :e Union F))).
