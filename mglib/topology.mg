@@ -68661,7 +68661,7 @@ Qed.
 
 (** from exercises after §29: convergence of subnets **) 
 (** LATEX VERSION: If a net converges, then every subnet converges to the same limit. **)
-(** SUSPICIOUS DEFINITION: `net_converges` hides the directed index set/order by existential quantification; relating it to `subnet_of` requires an index/order alignment lemma that is not available in this development. Prefer `subnet_preserves_convergence_on` which works with explicit witness data. **) 
+(** SUSPICIOUS DEFINITION: `net_converges` hides the directed index set/order by existential quantification; but `subnet_of` also chooses its own index set/order `J,leJ` for `net`. A proof needs an alignment lemma showing that the witness `J0,le0` from `net_converges` can be taken to match the `J,leJ` used by the subnet data (or that eventuality transfers between the two). Such an alignment lemma is not available in this development. Prefer `subnet_preserves_convergence_on` which works with explicit witness data. **) 
 Theorem subnet_preserves_convergence : forall X Tx net sub x:set,
   net_converges X Tx net x -> subnet_of net sub -> net_converges X Tx sub x.
 let X Tx net sub x.
