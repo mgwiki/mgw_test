@@ -27665,6 +27665,30 @@ Qed.
 Definition subspace_topology : set -> set -> set -> set :=
   fun X Tx Y => {U :e Power Y | exists V :e Tx, U = V :/\: Y}.
 
+(** helper: elimination for subspace_topology membership **)
+Theorem subspace_topologyE : forall X Tx Y U:set,
+  U :e subspace_topology X Tx Y -> exists V :e Tx, U = V :/\: Y.
+let X Tx Y U.
+assume HU: U :e subspace_topology X Tx Y.
+exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HU).
+Qed.
+
+(** helper: basic open sets of subspace_topology are intersections **)
+Theorem subspace_topologyI : forall X Tx Y V:set,
+  V :e Tx -> (V :/\: Y) :e subspace_topology X Tx Y.
+let X Tx Y V.
+assume HV: V :e Tx.
+claim HVsub: V :/\: Y c= Y.
+{ exact (binintersect_Subq_2 V Y). }
+claim HVpow: V :/\: Y :e Power Y.
+{ exact (PowerI Y (V :/\: Y) HVsub). }
+apply (SepI (Power Y) (fun U0:set => exists V0 :e Tx, U0 = V0 :/\: Y) (V :/\: Y) HVpow).
+witness V.
+apply andI.
+- exact HV.
+- reflexivity.
+Qed.
+
 (** helper: subspace topology on whole space equals original topology **)
 Theorem subspace_topology_whole : forall X Tx:set,
   topology_on X Tx ->
