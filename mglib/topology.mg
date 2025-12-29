@@ -39419,10 +39419,6 @@ Definition R_C_topology : set := generated_topology R rational_halfopen_interval
 Theorem R_lower_limit_finer_than_R_C : finer_than R_lower_limit_topology R_C_topology.
 prove finer_than R_lower_limit_topology R_C_topology.
 (** apply generated_topology_finer with T = R_lower_limit_topology and basis B = rational_halfopen_intervals_basis **)
-claim HBasisC: basis_on R rational_halfopen_intervals_basis.
-{ exact (andEL (basis_on R rational_halfopen_intervals_basis)
-               (generated_topology R rational_halfopen_intervals_basis <> R_lower_limit_topology)
-               ex13_8b_halfopen_rational_basis_topology). }
 claim HTlower: topology_on R R_lower_limit_topology.
 { exact R_lower_limit_topology_is_topology. }
 claim HBsub: forall b :e rational_halfopen_intervals_basis, b :e R_lower_limit_topology.
@@ -39467,8 +39463,8 @@ claim HBsub: forall b :e rational_halfopen_intervals_basis, b :e R_lower_limit_t
            (halfopen_interval_left q1 q2)
            HbInLowerBasis). }
   exact HbInGen. }
-exact (generated_topology_finer R rational_halfopen_intervals_basis R_lower_limit_topology
-       HBasisC HTlower HBsub).
+exact (generated_topology_finer_weak R rational_halfopen_intervals_basis R_lower_limit_topology
+       HTlower HBsub).
 Qed.
 
 (** from §17 Exercise 17: the interval A **)
