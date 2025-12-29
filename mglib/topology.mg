@@ -67307,6 +67307,8 @@ Definition partial_order_on : set -> set -> prop := fun J le =>
   (forall a b c:set, a :e J -> b :e J -> c :e J ->
     (a,b) :e le -> (b,c) :e le -> (a,c) :e le).
 
+(** from exercises after §29: directed set **)
+(** LATEX VERSION: A directed set is a nonempty partially ordered set in which any two elements have a common upper bound. **)
 Definition directed_set : set -> set -> prop := fun J le =>
   (J <> Empty /\ partial_order_on J le) /\
   forall a b:set, a :e J -> b :e J ->
