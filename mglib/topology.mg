@@ -63445,6 +63445,8 @@ Definition bijection : set -> set -> set -> prop := fun X Y f =>
   (forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y /\
      (forall x':set, x' :e X -> apply_fun f x' = y -> x' = x)).
 
+(** from §26 Theorem 26.6: inverse of a bijection (graph form) **)
+(** LATEX VERSION: If f:X→Y is bijective, define its inverse f^{-1}:Y→X; we represent it as a graph { (y, f^{-1}(y)) | y∈Y }. **)
 Definition inv_fun_graph : set -> set -> set -> set := fun X f Y =>
   {(y, inv X (fun x:set => apply_fun f x) y)|y :e Y}.
 
@@ -63626,6 +63628,8 @@ apply set_ext.
     exact HxA.
 Qed.
 
+(** from §13: absolute value notation **)
+(** LATEX VERSION: We write |x| for the absolute value of x. **)
 Definition Abs : set -> set := abs_SNo.
 
 Theorem compact_to_Hausdorff_inverse_continuous : forall X Tx Y Ty f:set,
