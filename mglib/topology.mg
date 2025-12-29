@@ -27803,6 +27803,78 @@ rewrite HUeq.
 exact (subspace_topologyI X Tx2 Y V HV2).
 Qed.
 
+(** helper: union closure for the subspace topology **)
+Theorem subspace_topology_union_closed : forall X Tx Y UFam:set,
+  topology_on X Tx -> Y c= X ->
+  UFam c= subspace_topology X Tx Y ->
+  Union UFam :e subspace_topology X Tx Y.
+let X Tx Y UFam.
+assume HTx: topology_on X Tx.
+assume HY: Y c= X.
+assume HUFam: UFam c= subspace_topology X Tx Y.
+prove Union UFam :e subspace_topology X Tx Y.
+set VFam := {V :e Tx | exists U :e UFam, U = V :/\: Y}.
+claim HVFamTx: VFam c= Tx.
+{ let V. assume HV: V :e VFam.
+  exact (SepE1 Tx (fun V0 => exists U :e UFam, U = V0 :/\: Y) V HV). }
+claim HUnionVFam: Union VFam :e Tx.
+{ exact (topology_union_closed X Tx VFam HTx HVFamTx). }
+claim HUnionEq: Union UFam = (Union VFam) :/\: Y.
+{ apply set_ext.
+  - let x. assume Hx: x :e Union UFam.
+    apply UnionE_impred UFam x Hx.
+    let U. assume HxU: x :e U. assume HUinFam: U :e UFam.
+    claim HUinSub: U :e subspace_topology X Tx Y.
+    { exact (HUFam U HUinFam). }
+    claim HUexists: exists V :e Tx, U = V :/\: Y.
+    { exact (subspace_topologyE X Tx Y U HUinSub). }
+    apply HUexists.
+    let V. assume HVpair.
+    claim HVTx: V :e Tx.
+    { exact (andEL (V :e Tx) (U = V :/\: Y) HVpair). }
+    claim HUeq: U = V :/\: Y.
+    { exact (andER (V :e Tx) (U = V :/\: Y) HVpair). }
+    apply binintersectI.
+    + prove x :e Union VFam.
+      claim HxV: x :e V.
+      { claim HxVY: x :e V :/\: Y.
+        { rewrite <- HUeq. exact HxU. }
+        exact (binintersectE1 V Y x HxVY). }
+      claim HVinVFam: V :e VFam.
+      { apply (SepI Tx (fun V0 => exists U0 :e UFam, U0 = V0 :/\: Y) V HVTx).
+        witness U.
+        apply andI.
+        - exact HUinFam.
+        - exact HUeq. }
+      exact (UnionI VFam x V HxV HVinVFam).
+    + prove x :e Y.
+      claim HxVY: x :e V :/\: Y.
+      { rewrite <- HUeq. exact HxU. }
+      exact (binintersectE2 V Y x HxVY).
+  - let x. assume Hx: x :e (Union VFam) :/\: Y.
+    claim HxUnionV: x :e Union VFam.
+    { exact (binintersectE1 (Union VFam) Y x Hx). }
+    claim HxY: x :e Y.
+    { exact (binintersectE2 (Union VFam) Y x Hx). }
+    apply UnionE_impred VFam x HxUnionV.
+    let V. assume HxV: x :e V. assume HVin: V :e VFam.
+    claim HVexists: exists U :e UFam, U = V :/\: Y.
+    { exact (SepE2 Tx (fun V0 => exists U0 :e UFam, U0 = V0 :/\: Y) V HVin). }
+    apply HVexists.
+    let U. assume HUpair.
+    claim HUinFam: U :e UFam.
+    { exact (andEL (U :e UFam) (U = V :/\: Y) HUpair). }
+    claim HUeq: U = V :/\: Y.
+    { exact (andER (U :e UFam) (U = V :/\: Y) HUpair). }
+    claim HxU: x :e U.
+    { rewrite HUeq.
+      exact (binintersectI V Y x HxV HxY). }
+    exact (UnionI UFam x U HxU HUinFam).
+}
+rewrite HUnionEq.
+exact (subspace_topologyI X Tx Y (Union VFam) HUnionVFam).
+Qed.
+
 (** helper: subspace topology on whole space equals original topology **)
 Theorem subspace_topology_whole : forall X Tx:set,
   topology_on X Tx ->
