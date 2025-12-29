@@ -69985,22 +69985,17 @@ apply iffI.
       apply andI.
       + exact (SepI Tx (fun U0a:set => x :e U0a) U0 HU0 HxU0).
       + let i. assume HiJ: i :e J.
-        assume Hlei: (U0,i) :e le.
-        prove apply_fun net i :e U0.
-        claim Hsub: (U0,i) 1 c= (U0,i) 0.
-        { exact (SepE2 (setprod J J) (fun p:set => p 1 c= p 0) (U0,i) Hlei). }
-        claim HiSub: i c= U0.
-        { let y. assume Hy: y :e i.
-          claim Hy1: y :e (U0,i) 1.
-          { rewrite (tuple_2_1_eq U0 i). exact Hy. }
-          claim Hy0: y :e (U0,i) 0.
-          { exact (Hsub y Hy1). }
-          rewrite <- (tuple_2_0_eq U0 i).
-          exact Hy0. }
-        rewrite (apply_fun_graph J g i HiJ).
-        claim Hgi_in_i: g i :e i.
-        { exact (binintersectE1 i A (g i) (Hg_in i HiJ)). }
-        exact (HiSub (g i) Hgi_in_i).
+	        assume Hlei: (U0,i) :e le.
+	        prove apply_fun net i :e U0.
+	        claim HleiR: (U0,i) :e rev_inclusion_rel J.
+	        { rewrite (rev_inclusion_rel_def J).
+	          exact Hlei. }
+	        claim HiSub: i c= U0.
+	        { exact (andER ((U0,i) :e setprod J J) (i c= U0) (rev_inclusion_relE J U0 i HleiR)). }
+	        rewrite (apply_fun_graph J g i HiJ).
+	        claim Hgi_in_i: g i :e i.
+	        { exact (binintersectE1 i A (g i) (Hg_in i HiJ)). }
+	        exact (HiSub (g i) Hgi_in_i).
   - prove net_points_in A net J.
     let U. assume HUJ: U :e J.
     prove apply_fun net U :e A.
