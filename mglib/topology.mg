@@ -15780,6 +15780,35 @@ claim HfinX: finite X.
 exact (HinfX HfinX).
 Qed.
 
+(** helper: infinite sets are nonempty **)
+(** LATEX VERSION: (set theory) An infinite set cannot be empty. **)
+Theorem infinite_nonempty : forall X:set, infinite X -> exists x:set, x :e X.
+let X.
+assume HinfX: infinite X.
+apply (xm (exists x:set, x :e X)).
+- assume Hex. exact Hex.
+- assume Hno: ~(exists x:set, x :e X).
+  prove exists x:set, x :e X.
+  apply FalseE.
+  claim HXeq: X = Empty.
+  { apply set_ext.
+    - let x. assume HxX: x :e X.
+      prove x :e Empty.
+      apply FalseE.
+      apply Hno.
+      witness x.
+      exact HxX.
+    - let x. assume HxE: x :e Empty.
+      prove x :e X.
+      apply FalseE.
+      exact (EmptyE x HxE).
+  }
+  claim HfinX: finite X.
+  { rewrite HXeq.
+    exact finite_Empty. }
+  exact (HinfX HfinX).
+Qed.
+
 Theorem ex13_3b_witness_sets : forall X:set,
   infinite X ->
   exists U V:set,
