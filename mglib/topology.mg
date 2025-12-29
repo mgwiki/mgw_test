@@ -11464,136 +11464,6 @@ claim Hbad: 0 < 0.
 exact ((SNoLt_irref 0) Hbad).
 Qed.
 
-(** helper: Euclidean metric as a graph on EuclidPlane **)
-(** LATEX VERSION: The Euclidean metric d on R^2 is given by d(p,q)=distance_R2 p q. **)
-Definition EuclidPlane_metric : set :=
-  graph (setprod EuclidPlane EuclidPlane) (fun pq:set => distance_R2 (pq 0) (pq 1)).
-
-(** helper: evaluate EuclidPlane_metric on a pair **)
-Theorem EuclidPlane_metric_apply : forall p q:set,
-  p :e EuclidPlane -> q :e EuclidPlane ->
-  apply_fun EuclidPlane_metric (p,q) = distance_R2 p q.
-let p q.
-assume Hp: p :e EuclidPlane.
-assume Hq: q :e EuclidPlane.
-prove apply_fun EuclidPlane_metric (p,q) = distance_R2 p q.
-claim Hpq: (p,q) :e setprod EuclidPlane EuclidPlane.
-{ exact (tuple_2_setprod_by_pair_Sigma EuclidPlane EuclidPlane p q Hp Hq). }
-rewrite (apply_fun_graph (setprod EuclidPlane EuclidPlane)
-         (fun pq0:set => distance_R2 (pq0 0) (pq0 1))
-         (p,q) Hpq).
-rewrite (tuple_2_0_eq p q).
-rewrite (tuple_2_1_eq p q).
-reflexivity.
-Qed.
-
-(** helper: EuclidPlane_metric satisfies the metric axioms on EuclidPlane **)
-Theorem EuclidPlane_metric_is_metric_on : metric_on EuclidPlane EuclidPlane_metric.
-prove metric_on EuclidPlane EuclidPlane_metric.
-prove function_on EuclidPlane_metric (setprod EuclidPlane EuclidPlane) R /\
-  (forall x y:set, x :e EuclidPlane -> y :e EuclidPlane ->
-     apply_fun EuclidPlane_metric (x,y) = apply_fun EuclidPlane_metric (y,x)) /\
-  (forall x:set, x :e EuclidPlane -> apply_fun EuclidPlane_metric (x,x) = 0) /\
-  (forall x y:set, x :e EuclidPlane -> y :e EuclidPlane ->
-     ~(Rlt (apply_fun EuclidPlane_metric (x,y)) 0)
-     /\ (apply_fun EuclidPlane_metric (x,y) = 0 -> x = y)) /\
-  (forall x y z:set, x :e EuclidPlane -> y :e EuclidPlane -> z :e EuclidPlane ->
-     ~(Rlt (add_SNo (apply_fun EuclidPlane_metric (x,y)) (apply_fun EuclidPlane_metric (y,z)))
-           (apply_fun EuclidPlane_metric (x,z)))).
-apply andI.
-- (** function_on + symmetry + reflexive + positive-definite **)
-  apply andI.
-  + (** function_on + symmetry + reflexive **)
-    apply andI.
-    * (** function_on EuclidPlane_metric (EuclidPlane×EuclidPlane) R **)
-      let pq. assume Hpq: pq :e setprod EuclidPlane EuclidPlane.
-      prove apply_fun EuclidPlane_metric pq :e R.
-      rewrite (apply_fun_graph (setprod EuclidPlane EuclidPlane)
-               (fun pq0:set => distance_R2 (pq0 0) (pq0 1))
-               pq Hpq).
-      claim Hp: (pq 0) :e EuclidPlane.
-      { exact (ap0_Sigma EuclidPlane (fun _ : set => EuclidPlane) pq Hpq). }
-      claim Hq: (pq 1) :e EuclidPlane.
-      { exact (ap1_Sigma EuclidPlane (fun _ : set => EuclidPlane) pq Hpq). }
-      exact (distance_R2_in_R (pq 0) (pq 1) Hp Hq).
-    * (** symmetry and reflexive **)
-      apply andI.
-      -- (** symmetry **)
-         let x y.
-         assume Hx: x :e EuclidPlane.
-         assume Hy: y :e EuclidPlane.
-         rewrite (EuclidPlane_metric_apply x y Hx Hy).
-         rewrite (EuclidPlane_metric_apply y x Hy Hx).
-         exact (distance_R2_sym x y Hx Hy).
-      -- (** reflexive **)
-         let x.
-         assume Hx: x :e EuclidPlane.
-         rewrite (EuclidPlane_metric_apply x x Hx Hx).
-         exact (distance_R2_refl_0 x Hx).
-  + (** positive-definite **)
-    let x y.
-    assume Hx: x :e EuclidPlane.
-    assume Hy: y :e EuclidPlane.
-    prove ~(Rlt (apply_fun EuclidPlane_metric (x,y)) 0)
-      /\ (apply_fun EuclidPlane_metric (x,y) = 0 -> x = y).
-    apply andI.
-    * (** nonnegativity: not (Rlt d 0) **)
-      prove ~(Rlt (apply_fun EuclidPlane_metric (x,y)) 0).
-      assume Hlt: Rlt (apply_fun EuclidPlane_metric (x,y)) 0.
-      prove False.
-      rewrite (EuclidPlane_metric_apply x y Hx Hy) in Hlt.
-      claim HdR: distance_R2 x y :e R.
-      { exact (distance_R2_in_R x y Hx Hy). }
-      claim HdS: SNo (distance_R2 x y).
-      { exact (real_SNo (distance_R2 x y) HdR). }
-      claim Hdlt0: (distance_R2 x y) < 0.
-      { exact (RltE_lt (distance_R2 x y) 0 Hlt). }
-      claim Hdle0: (distance_R2 x y) <= 0.
-      { exact (SNoLtLe (distance_R2 x y) 0 Hdlt0). }
-      claim H0led: 0 <= distance_R2 x y.
-      { exact (distance_R2_nonneg x y Hx Hy). }
-      claim Hdeq0: distance_R2 x y = 0.
-      { exact (SNoLe_antisym (distance_R2 x y) 0 HdS SNo_0 Hdle0 H0led). }
-      claim Hbad: 0 < 0.
-      { rewrite <- Hdeq0 at 1.
-        exact Hdlt0. }
-      exact ((SNoLt_irref 0) Hbad).
-    * (** d(x,y)=0 implies x=y **)
-      assume Hd0: apply_fun EuclidPlane_metric (x,y) = 0.
-      rewrite (EuclidPlane_metric_apply x y Hx Hy) in Hd0.
-      exact (distance_R2_eq0 x y Hx Hy Hd0).
-- (** triangle inequality **)
-  let x y z.
-  assume Hx: x :e EuclidPlane.
-  assume Hy: y :e EuclidPlane.
-  assume Hz: z :e EuclidPlane.
-  prove ~(Rlt (add_SNo (apply_fun EuclidPlane_metric (x,y)) (apply_fun EuclidPlane_metric (y,z)))
-             (apply_fun EuclidPlane_metric (x,z))).
-  rewrite (EuclidPlane_metric_apply x y Hx Hy).
-  rewrite (EuclidPlane_metric_apply y z Hy Hz).
-  rewrite (EuclidPlane_metric_apply x z Hx Hz).
-  claim Htri: Rle (distance_R2 x z) (add_SNo (distance_R2 x y) (distance_R2 y z)).
-  { exact (distance_R2_triangle_Rle x y z Hx Hy Hz). }
-  exact (RleE_nlt (distance_R2 x z) (add_SNo (distance_R2 x y) (distance_R2 y z)) Htri).
-Qed.
-
-(** helper: EuclidPlane_metric is total as a function on EuclidPlane×EuclidPlane **)
-Theorem EuclidPlane_metric_is_metric_on_total : metric_on_total EuclidPlane EuclidPlane_metric.
-prove metric_on_total EuclidPlane EuclidPlane_metric.
-apply andI.
-- exact EuclidPlane_metric_is_metric_on.
-- (** total_function_on **)
-  apply (total_function_on_graph (setprod EuclidPlane EuclidPlane) R
-         (fun pq:set => distance_R2 (pq 0) (pq 1))).
-  let pq.
-  assume Hpq: pq :e setprod EuclidPlane EuclidPlane.
-  claim Hp: (pq 0) :e EuclidPlane.
-  { exact (ap0_Sigma EuclidPlane (fun _ : set => EuclidPlane) pq Hpq). }
-  claim Hq: (pq 1) :e EuclidPlane.
-  { exact (ap1_Sigma EuclidPlane (fun _ : set => EuclidPlane) pq Hpq). }
-  exact (distance_R2_in_R (pq 0) (pq 1) Hp Hq).
-Qed.
-
 (** from §13 Example 4: circular region basis elements in EuclidPlane **)
 (** LATEX VERSION: Circular regions: sets of the form {p in R^2 | d(p,c) < r} with c in R^2 and 0<r. **)
 Definition circular_regions : set :=
@@ -47983,6 +47853,153 @@ assume Hab Hrefl.
 apply Hab.
 assume Hf Hsym.
 exact Hf.
+Qed.
+
+(** helper: Euclidean metric as a graph on EuclidPlane **)
+(** LATEX VERSION: The Euclidean metric d on R^2 is given by d(p,q)=distance_R2 p q. **)
+Definition EuclidPlane_metric : set :=
+  graph (setprod EuclidPlane EuclidPlane) (fun pq:set => distance_R2 (pq 0) (pq 1)).
+
+(** helper: evaluate EuclidPlane_metric on a pair **)
+Theorem EuclidPlane_metric_apply : forall p q:set,
+  p :e EuclidPlane -> q :e EuclidPlane ->
+  apply_fun EuclidPlane_metric (p,q) = distance_R2 p q.
+let p q.
+assume Hp: p :e EuclidPlane.
+assume Hq: q :e EuclidPlane.
+prove apply_fun EuclidPlane_metric (p,q) = distance_R2 p q.
+claim Hpq: (p,q) :e (setprod EuclidPlane EuclidPlane).
+{ exact (tuple_2_setprod_by_pair_Sigma EuclidPlane EuclidPlane p q Hp Hq). }
+rewrite (apply_fun_graph (setprod EuclidPlane EuclidPlane)
+         (fun pq0:set => distance_R2 (pq0 0) (pq0 1))
+         (p,q) Hpq).
+rewrite (tuple_2_0_eq p q).
+rewrite (tuple_2_1_eq p q).
+reflexivity.
+Qed.
+
+(** helper: EuclidPlane_metric satisfies the metric axioms on EuclidPlane **)
+Theorem EuclidPlane_metric_is_metric_on : metric_on EuclidPlane EuclidPlane_metric.
+prove metric_on EuclidPlane EuclidPlane_metric.
+prove function_on EuclidPlane_metric (setprod EuclidPlane EuclidPlane) R /\
+  (forall x y:set, x :e EuclidPlane -> y :e EuclidPlane ->
+     apply_fun EuclidPlane_metric (x,y) = apply_fun EuclidPlane_metric (y,x)) /\
+  (forall x:set, x :e EuclidPlane -> apply_fun EuclidPlane_metric (x,x) = 0) /\
+  (forall x y:set, x :e EuclidPlane -> y :e EuclidPlane ->
+     ~(Rlt (apply_fun EuclidPlane_metric (x,y)) 0)
+     /\ (apply_fun EuclidPlane_metric (x,y) = 0 -> x = y)) /\
+  (forall x y z:set, x :e EuclidPlane -> y :e EuclidPlane -> z :e EuclidPlane ->
+     ~(Rlt (add_SNo (apply_fun EuclidPlane_metric (x,y)) (apply_fun EuclidPlane_metric (y,z)))
+           (apply_fun EuclidPlane_metric (x,z)))).
+apply andI.
+- (** function_on + symmetry + reflexive + positive-definite **)
+  apply andI.
+  + (** (function_on /\ symmetry) /\ reflexive (left-associated) **)
+    apply andI.
+    * (** function_on /\ symmetry **)
+      apply andI.
+      - (** function_on EuclidPlane_metric (EuclidPlane×EuclidPlane) R **)
+         let pq. assume Hpq: pq :e (setprod EuclidPlane EuclidPlane).
+         prove apply_fun EuclidPlane_metric pq :e R.
+         rewrite (apply_fun_graph (setprod EuclidPlane EuclidPlane)
+                  (fun pq0:set => distance_R2 (pq0 0) (pq0 1))
+                  pq Hpq).
+         claim Hp: (pq 0) :e EuclidPlane.
+         { exact (ap0_Sigma EuclidPlane (fun _ : set => EuclidPlane) pq Hpq). }
+         claim Hq: (pq 1) :e EuclidPlane.
+         { exact (ap1_Sigma EuclidPlane (fun _ : set => EuclidPlane) pq Hpq). }
+         exact (distance_R2_in_R (pq 0) (pq 1) Hp Hq).
+      - (** symmetry **)
+         let x y.
+         assume Hx: x :e EuclidPlane.
+         assume Hy: y :e EuclidPlane.
+         rewrite (EuclidPlane_metric_apply x y Hx Hy).
+         rewrite (EuclidPlane_metric_apply y x Hy Hx).
+         exact (distance_R2_sym x y Hx Hy).
+    * (** reflexive **)
+      let x.
+      assume Hx: x :e EuclidPlane.
+      rewrite (EuclidPlane_metric_apply x x Hx Hx).
+      exact (distance_R2_refl_0 x Hx).
+  + (** positive-definite **)
+    let x y.
+    assume Hx: x :e EuclidPlane.
+    assume Hy: y :e EuclidPlane.
+    prove ~(Rlt (apply_fun EuclidPlane_metric (x,y)) 0)
+      /\ (apply_fun EuclidPlane_metric (x,y) = 0 -> x = y).
+    apply andI.
+    * (** nonnegativity: not (Rlt d 0) **)
+      prove ~(Rlt (apply_fun EuclidPlane_metric (x,y)) 0).
+      assume Hlt: Rlt (apply_fun EuclidPlane_metric (x,y)) 0.
+      prove False.
+      claim Hlt2: Rlt (distance_R2 x y) 0.
+      { rewrite <- (EuclidPlane_metric_apply x y Hx Hy).
+        exact Hlt. }
+      claim HdR: distance_R2 x y :e R.
+      { exact (distance_R2_in_R x y Hx Hy). }
+      claim HdS: SNo (distance_R2 x y).
+      { exact (real_SNo (distance_R2 x y) HdR). }
+      claim Hdlt0: (distance_R2 x y) < 0.
+      { exact (RltE_lt (distance_R2 x y) 0 Hlt2). }
+      claim Hdle0: (distance_R2 x y) <= 0.
+      { exact (SNoLtLe (distance_R2 x y) 0 Hdlt0). }
+      claim H0led: 0 <= distance_R2 x y.
+      { exact (distance_R2_nonneg x y Hx Hy). }
+      claim Hdeq0: distance_R2 x y = 0.
+      { exact (SNoLe_antisym (distance_R2 x y) 0 HdS SNo_0 Hdle0 H0led). }
+      claim Hbad: 0 < 0.
+      { rewrite <- Hdeq0 at 1.
+        exact Hdlt0. }
+      exact ((SNoLt_irref 0) Hbad).
+    * (** d(x,y)=0 implies x=y **)
+      assume Hd0: apply_fun EuclidPlane_metric (x,y) = 0.
+      claim Hd02: distance_R2 x y = 0.
+      { rewrite <- (EuclidPlane_metric_apply x y Hx Hy).
+        exact Hd0. }
+      exact (distance_R2_eq0 x y Hx Hy Hd02).
+- (** triangle inequality **)
+  let x y z.
+  assume Hx: x :e EuclidPlane.
+  assume Hy: y :e EuclidPlane.
+  assume Hz: z :e EuclidPlane.
+  prove ~(Rlt (add_SNo (apply_fun EuclidPlane_metric (x,y)) (apply_fun EuclidPlane_metric (y,z)))
+             (apply_fun EuclidPlane_metric (x,z))).
+  rewrite (EuclidPlane_metric_apply x y Hx Hy).
+  rewrite (EuclidPlane_metric_apply y z Hy Hz).
+  rewrite (EuclidPlane_metric_apply x z Hx Hz).
+  claim Htri: Rle (distance_R2 x z) (add_SNo (distance_R2 x y) (distance_R2 y z)).
+  { exact (distance_R2_triangle_Rle x y z Hx Hy Hz). }
+  exact (RleE_nlt (distance_R2 x z) (add_SNo (distance_R2 x y) (distance_R2 y z)) Htri).
+Qed.
+
+(** helper: EuclidPlane_metric is total as a function on EuclidPlane×EuclidPlane **)
+Theorem EuclidPlane_metric_is_metric_on_total : metric_on_total EuclidPlane EuclidPlane_metric.
+prove metric_on_total EuclidPlane EuclidPlane_metric.
+prove metric_on EuclidPlane EuclidPlane_metric /\
+  total_function_on EuclidPlane_metric (setprod EuclidPlane EuclidPlane) R.
+apply andI.
+- exact EuclidPlane_metric_is_metric_on.
+- (** total_function_on EuclidPlane_metric (EuclidPlane×EuclidPlane) R **)
+  prove total_function_on EuclidPlane_metric (setprod EuclidPlane EuclidPlane) R.
+  prove function_on EuclidPlane_metric (setprod EuclidPlane EuclidPlane) R /\
+    forall pq:set, pq :e (setprod EuclidPlane EuclidPlane) ->
+      exists y:set, y :e R /\ (pq,y) :e EuclidPlane_metric.
+  apply andI.
+  + exact (metric_on_function_on EuclidPlane EuclidPlane_metric EuclidPlane_metric_is_metric_on).
+  + let pq. assume Hpq: pq :e (setprod EuclidPlane EuclidPlane).
+    prove exists y:set, y :e R /\ (pq,y) :e EuclidPlane_metric.
+    witness (distance_R2 (pq 0) (pq 1)).
+    apply andI.
+    * (** y :e R **)
+      claim Hp: (pq 0) :e EuclidPlane.
+      { exact (ap0_Sigma EuclidPlane (fun _ : set => EuclidPlane) pq Hpq). }
+      claim Hq: (pq 1) :e EuclidPlane.
+      { exact (ap1_Sigma EuclidPlane (fun _ : set => EuclidPlane) pq Hpq). }
+      exact (distance_R2_in_R (pq 0) (pq 1) Hp Hq).
+    * (** (pq,y) :e EuclidPlane_metric **)
+      exact (ReplI (setprod EuclidPlane EuclidPlane)
+                   (fun pq0:set => (pq0, distance_R2 (pq0 0) (pq0 1)))
+                   pq Hpq).
 Qed.
 
 (** Helper: symmetry of a metric **)
