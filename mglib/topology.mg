@@ -91183,7 +91183,15 @@ Theorem metric_distance_above_has_product_ball : forall Y d a p:set,
   exists r:set, r :e R /\ Rlt 0 r /\
     rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r)
       c= preimage_of (setprod Y Y) d (open_ray_upper R a).
-admit. (** FAIL **)
+let Y d a p.
+assume Hd: metric_on_total Y d.
+assume HaR: a :e R.
+assume Hp: p :e preimage_of (setprod Y Y) d (open_ray_upper R a).
+claim HpDom: p :e setprod Y Y.
+{ exact (SepE1 (setprod Y Y) (fun q:set => apply_fun d q :e open_ray_upper R a) p Hp). }
+claim HdpRay: apply_fun d p :e open_ray_upper R a.
+{ exact (SepE2 (setprod Y Y) (fun q:set => apply_fun d q :e open_ray_upper R a) p Hp). }
+admit.
 Qed.
 
 Theorem metric_distance_preimage_open_ray_upper : forall Y d a:set,
@@ -91285,7 +91293,15 @@ Theorem metric_distance_below_has_product_ball : forall Y d b p:set,
   exists r:set, r :e R /\ Rlt 0 r /\
     rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r)
       c= preimage_of (setprod Y Y) d (open_ray_lower R b).
-admit. (** FAIL **)
+let Y d b p.
+assume Hd: metric_on_total Y d.
+assume HbR: b :e R.
+assume Hp: p :e preimage_of (setprod Y Y) d (open_ray_lower R b).
+claim HpDom: p :e setprod Y Y.
+{ exact (SepE1 (setprod Y Y) (fun q:set => apply_fun d q :e open_ray_lower R b) p Hp). }
+claim HdpRay: apply_fun d p :e open_ray_lower R b.
+{ exact (SepE2 (setprod Y Y) (fun q:set => apply_fun d q :e open_ray_lower R b) p Hp). }
+admit.
 Qed.
 
 Theorem metric_distance_preimage_open_ray_lower : forall Y d b:set,
