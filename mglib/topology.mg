@@ -91176,11 +91176,115 @@ Definition A_N_eps : set -> set -> set -> set -> set -> set -> set :=
 
 (** helper: distance map is continuous in the product topology of a metric space **)
 (** LATEX VERSION: The distance function d:Y×Y→R is continuous for the product of the metric topology on Y. **)
+Theorem metric_distance_above_has_product_ball : forall Y d a p:set,
+  metric_on_total Y d ->
+  a :e R ->
+  p :e preimage_of (setprod Y Y) d (open_ray_upper R a) ->
+  exists r:set, r :e R /\ Rlt 0 r /\
+    rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r)
+      c= preimage_of (setprod Y Y) d (open_ray_upper R a).
+admit. (** FAIL **)
+Qed.
+
 Theorem metric_distance_preimage_open_ray_upper : forall Y d a:set,
   metric_on_total Y d ->
   a :e R ->
   preimage_of (setprod Y Y) d (open_ray_upper R a) :e
     (product_topology Y (metric_topology Y d) Y (metric_topology Y d)).
+let Y d a.
+assume Hd: metric_on_total Y d.
+assume HaR: a :e R.
+set Ty := metric_topology Y d.
+set Tprod := product_topology Y Ty Y Ty.
+set W := preimage_of (setprod Y Y) d (open_ray_upper R a).
+prove W :e product_topology Y Ty Y Ty.
+claim HdefT: product_topology Y Ty Y Ty =
+  generated_topology (setprod Y Y) (product_subbasis Y Ty Y Ty).
+{ reflexivity. }
+rewrite HdefT.
+claim HdefGen: generated_topology (setprod Y Y) (product_subbasis Y Ty Y Ty) =
+  {U :e Power (setprod Y Y) |
+    forall p :e U, exists b :e product_subbasis Y Ty Y Ty, p :e b /\ b c= U}.
+{ reflexivity. }
+rewrite HdefGen.
+apply (SepI (Power (setprod Y Y))
+  (fun U:set =>
+    forall p :e U, exists b :e product_subbasis Y Ty Y Ty, p :e b /\ b c= U)
+  W).
+- apply PowerI.
+  let p. assume Hp: p :e W.
+  exact (SepE1 (setprod Y Y) (fun q:set => apply_fun d q :e open_ray_upper R a) p Hp).
+- let p. assume Hp: p :e W.
+  prove exists b :e product_subbasis Y Ty Y Ty, p :e b /\ b c= W.
+  claim HpDom: p :e setprod Y Y.
+  { exact (SepE1 (setprod Y Y) (fun q:set => apply_fun d q :e open_ray_upper R a) p Hp). }
+  claim Hp0Y: p 0 :e Y.
+  { exact (ap0_Sigma Y (fun _ : set => Y) p HpDom). }
+  claim Hp1Y: p 1 :e Y.
+  { exact (ap1_Sigma Y (fun _ : set => Y) p HpDom). }
+  claim Hm: metric_on Y d.
+  { exact (metric_on_total_imp_metric_on Y d Hd). }
+  claim Hexr: exists r:set, r :e R /\ Rlt 0 r /\
+    rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r) c= W.
+  { exact (metric_distance_above_has_product_ball Y d a p Hd HaR Hp). }
+  apply Hexr.
+  let r. assume Hr.
+  claim HrPack: (r :e R /\ Rlt 0 r) /\ rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r) c= W.
+  { exact Hr. }
+  claim Hr1: r :e R /\ Rlt 0 r.
+  { exact (andEL (r :e R /\ Rlt 0 r)
+                 (rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r) c= W)
+                 HrPack). }
+  claim HrR: r :e R.
+  { exact (andEL (r :e R) (Rlt 0 r) Hr1). }
+  claim HrPos: Rlt 0 r.
+  { exact (andER (r :e R) (Rlt 0 r) Hr1). }
+  claim Hbsub: rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r) c= W.
+  { exact (andER (r :e R /\ Rlt 0 r)
+                 (rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r) c= W)
+                 HrPack). }
+  set U := open_ball Y d (p 0) r.
+  set V := open_ball Y d (p 1) r.
+  set b := rectangle_set U V.
+  witness b.
+  apply andI.
+  - prove b :e product_subbasis Y Ty Y Ty.
+    prove b :e \/_ U0 :e Ty, {rectangle_set U0 V0|V0 :e Ty}.
+    claim HUinTy: U :e Ty.
+    { exact (open_ball_in_metric_topology Y d (p 0) r Hm Hp0Y HrPos). }
+    claim HVinTy: V :e Ty.
+    { exact (open_ball_in_metric_topology Y d (p 1) r Hm Hp1Y HrPos). }
+    claim HbInFam: b :e {rectangle_set U V0|V0 :e Ty}.
+    { exact (ReplI Ty (fun V0:set => rectangle_set U V0) V HVinTy). }
+    exact (famunionI Ty (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) U b HUinTy HbInFam).
+  - apply andI.
+    + prove p :e b.
+      claim HbEq0: b = rectangle_set U V.
+      { reflexivity. }
+      rewrite HbEq0.
+      claim HpEta: p = (p 0, p 1).
+      { exact (setprod_eta Y Y p HpDom). }
+      rewrite HpEta.
+      claim Hp0In: p 0 :e U.
+      { exact (center_in_open_ball Y d (p 0) r Hm Hp0Y HrPos). }
+      claim Hp1In: p 1 :e V.
+      { exact (center_in_open_ball Y d (p 1) r Hm Hp1Y HrPos). }
+      rewrite rectangle_set_def.
+      admit.
+    + prove b c= W.
+      claim HbEq: b = rectangle_set U V.
+      { reflexivity. }
+      rewrite HbEq.
+      exact Hbsub.
+Qed.
+
+Theorem metric_distance_below_has_product_ball : forall Y d b p:set,
+  metric_on_total Y d ->
+  b :e R ->
+  p :e preimage_of (setprod Y Y) d (open_ray_lower R b) ->
+  exists r:set, r :e R /\ Rlt 0 r /\
+    rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r)
+      c= preimage_of (setprod Y Y) d (open_ray_lower R b).
 admit. (** FAIL **)
 Qed.
 
@@ -91189,7 +91293,91 @@ Theorem metric_distance_preimage_open_ray_lower : forall Y d b:set,
   b :e R ->
   preimage_of (setprod Y Y) d (open_ray_lower R b) :e
     (product_topology Y (metric_topology Y d) Y (metric_topology Y d)).
-admit. (** FAIL **)
+let Y d b.
+assume Hd: metric_on_total Y d.
+assume HbR: b :e R.
+set Ty := metric_topology Y d.
+set Tprod := product_topology Y Ty Y Ty.
+set W := preimage_of (setprod Y Y) d (open_ray_lower R b).
+prove W :e product_topology Y Ty Y Ty.
+claim HdefT: product_topology Y Ty Y Ty =
+  generated_topology (setprod Y Y) (product_subbasis Y Ty Y Ty).
+{ reflexivity. }
+rewrite HdefT.
+claim HdefGen: generated_topology (setprod Y Y) (product_subbasis Y Ty Y Ty) =
+  {U :e Power (setprod Y Y) |
+    forall p :e U, exists bb :e product_subbasis Y Ty Y Ty, p :e bb /\ bb c= U}.
+{ reflexivity. }
+rewrite HdefGen.
+apply (SepI (Power (setprod Y Y))
+  (fun U:set =>
+    forall p :e U, exists bb :e product_subbasis Y Ty Y Ty, p :e bb /\ bb c= U)
+  W).
+- apply PowerI.
+  let p. assume Hp: p :e W.
+  exact (SepE1 (setprod Y Y) (fun q:set => apply_fun d q :e open_ray_lower R b) p Hp).
+- let p. assume Hp: p :e W.
+  prove exists bb :e product_subbasis Y Ty Y Ty, p :e bb /\ bb c= W.
+  claim HpDom: p :e setprod Y Y.
+  { exact (SepE1 (setprod Y Y) (fun q:set => apply_fun d q :e open_ray_lower R b) p Hp). }
+  claim Hp0Y: p 0 :e Y.
+  { exact (ap0_Sigma Y (fun _ : set => Y) p HpDom). }
+  claim Hp1Y: p 1 :e Y.
+  { exact (ap1_Sigma Y (fun _ : set => Y) p HpDom). }
+  claim Hm: metric_on Y d.
+  { exact (metric_on_total_imp_metric_on Y d Hd). }
+  claim Hexr: exists r:set, r :e R /\ Rlt 0 r /\
+    rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r) c= W.
+  { exact (metric_distance_below_has_product_ball Y d b p Hd HbR Hp). }
+  apply Hexr.
+  let r. assume Hr.
+  claim HrPack: (r :e R /\ Rlt 0 r) /\ rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r) c= W.
+  { exact Hr. }
+  claim Hr1: r :e R /\ Rlt 0 r.
+  { exact (andEL (r :e R /\ Rlt 0 r)
+                 (rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r) c= W)
+                 HrPack). }
+  claim HrR: r :e R.
+  { exact (andEL (r :e R) (Rlt 0 r) Hr1). }
+  claim HrPos: Rlt 0 r.
+  { exact (andER (r :e R) (Rlt 0 r) Hr1). }
+  claim Hbsub: rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r) c= W.
+  { exact (andER (r :e R /\ Rlt 0 r)
+                 (rectangle_set (open_ball Y d (p 0) r) (open_ball Y d (p 1) r) c= W)
+                 HrPack). }
+  set U := open_ball Y d (p 0) r.
+  set V := open_ball Y d (p 1) r.
+  set bb := rectangle_set U V.
+  witness bb.
+  apply andI.
+  - prove bb :e product_subbasis Y Ty Y Ty.
+    prove bb :e \/_ U0 :e Ty, {rectangle_set U0 V0|V0 :e Ty}.
+    claim HUinTy: U :e Ty.
+    { exact (open_ball_in_metric_topology Y d (p 0) r Hm Hp0Y HrPos). }
+    claim HVinTy: V :e Ty.
+    { exact (open_ball_in_metric_topology Y d (p 1) r Hm Hp1Y HrPos). }
+    claim HbInFam: bb :e {rectangle_set U V0|V0 :e Ty}.
+    { exact (ReplI Ty (fun V0:set => rectangle_set U V0) V HVinTy). }
+    exact (famunionI Ty (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) U bb HUinTy HbInFam).
+  - apply andI.
+    + prove p :e bb.
+      claim HbEq0: bb = rectangle_set U V.
+      { reflexivity. }
+      rewrite HbEq0.
+      claim HpEta: p = (p 0, p 1).
+      { exact (setprod_eta Y Y p HpDom). }
+      rewrite HpEta.
+      claim Hp0In: p 0 :e U.
+      { exact (center_in_open_ball Y d (p 0) r Hm Hp0Y HrPos). }
+      claim Hp1In: p 1 :e V.
+      { exact (center_in_open_ball Y d (p 1) r Hm Hp1Y HrPos). }
+      rewrite rectangle_set_def.
+      admit.
+    + prove bb c= W.
+      claim HbEq: bb = rectangle_set U V.
+      { reflexivity. }
+      rewrite HbEq.
+      exact Hbsub.
 Qed.
 
 Theorem metric_distance_continuous : forall Y d:set,
