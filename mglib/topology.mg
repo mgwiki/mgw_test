@@ -88251,6 +88251,152 @@ claim Hfam: Hausdorff_spaces_family m (const_space_family m R R_standard_topolog
 exact (Hprod m (const_space_family m R R_standard_topology) Hfam).
 Qed.
 
+(** helper: m-manifold implies locally m-euclidean **)
+(** LATEX VERSION: Every m-manifold is locally m-euclidean. **)
+Theorem m_manifold_implies_locally_m_euclidean : forall X Tx m:set,
+  m_manifold X Tx m -> locally_m_euclidean X Tx m.
+let X Tx m.
+assume Hman: m_manifold X Tx m.
+prove locally_m_euclidean X Tx m.
+claim Hparts: ((Hausdorff_space X Tx /\ second_countable_space X Tx) /\ m :e omega) /\
+              (forall x:set, x :e X ->
+                exists U:set, U :e Tx /\ x :e U /\
+                  exists V:set, V :e (euclidean_topology m) /\
+                    exists f:set,
+                      homeomorphism U (subspace_topology X Tx U)
+                                   V (subspace_topology (euclidean_space m) (euclidean_topology m) V) f).
+{ exact Hman. }
+claim H123: (Hausdorff_space X Tx /\ second_countable_space X Tx) /\ m :e omega.
+{ exact (andEL ((Hausdorff_space X Tx /\ second_countable_space X Tx) /\ m :e omega)
+               (forall x:set, x :e X ->
+                 exists U:set, U :e Tx /\ x :e U /\
+                   exists V:set, V :e (euclidean_topology m) /\
+                     exists f:set,
+                       homeomorphism U (subspace_topology X Tx U)
+                                    V (subspace_topology (euclidean_space m) (euclidean_topology m) V) f)
+               Hparts). }
+claim Hlocal:
+  forall x:set, x :e X ->
+    exists U:set, U :e Tx /\ x :e U /\
+      exists V:set, V :e (euclidean_topology m) /\
+        exists f:set,
+          homeomorphism U (subspace_topology X Tx U)
+                       V (subspace_topology (euclidean_space m) (euclidean_topology m) V) f.
+{ exact (andER ((Hausdorff_space X Tx /\ second_countable_space X Tx) /\ m :e omega)
+               (forall x:set, x :e X ->
+                 exists U:set, U :e Tx /\ x :e U /\
+                   exists V:set, V :e (euclidean_topology m) /\
+                     exists f:set,
+                       homeomorphism U (subspace_topology X Tx U)
+                                    V (subspace_topology (euclidean_space m) (euclidean_topology m) V) f)
+               Hparts). }
+claim H12: Hausdorff_space X Tx /\ second_countable_space X Tx.
+{ exact (andEL (Hausdorff_space X Tx /\ second_countable_space X Tx)
+               (m :e omega)
+               H123). }
+claim HHaus: Hausdorff_space X Tx.
+{ exact (andEL (Hausdorff_space X Tx) (second_countable_space X Tx) H12). }
+claim Hmomega: m :e omega.
+{ exact (andER (Hausdorff_space X Tx /\ second_countable_space X Tx)
+               (m :e omega)
+               H123). }
+claim Htop: topology_on X Tx.
+{ exact (Hausdorff_space_topology X Tx HHaus). }
+claim HeuTop: topology_on (euclidean_space m) (euclidean_topology m).
+{ exact (Hausdorff_space_topology (euclidean_space m) (euclidean_topology m) (euclidean_space_Hausdorff m)). }
+prove (m :e omega /\ topology_on X Tx) /\
+      (forall x0:set, x0 :e X ->
+        exists U0:set, exists V0:set, exists f0:set,
+          open_in X Tx U0 /\ x0 :e U0 /\ V0 c= (euclidean_space m) /\
+            open_in (euclidean_space m) (euclidean_topology m) V0 /\
+            homeomorphism U0 (subspace_topology X Tx U0)
+                         V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0).
+apply andI.
+- exact (andI (m :e omega) (topology_on X Tx) Hmomega Htop).
+- let x0. assume Hx0X: x0 :e X.
+  prove exists U0:set, exists V0:set, exists f0:set,
+    open_in X Tx U0 /\ x0 :e U0 /\ V0 c= (euclidean_space m) /\
+      open_in (euclidean_space m) (euclidean_topology m) V0 /\
+      homeomorphism U0 (subspace_topology X Tx U0)
+                   V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0.
+  claim Hex: exists U0:set, U0 :e Tx /\ x0 :e U0 /\
+      exists V0:set, V0 :e (euclidean_topology m) /\
+        exists f0:set,
+          homeomorphism U0 (subspace_topology X Tx U0)
+                       V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0.
+  { exact (Hlocal x0 Hx0X). }
+  apply Hex.
+  let U0. assume HU0: U0 :e Tx /\ x0 :e U0 /\
+      exists V0:set, V0 :e (euclidean_topology m) /\
+        exists f0:set,
+          homeomorphism U0 (subspace_topology X Tx U0)
+                       V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0.
+  claim HU0pair: U0 :e Tx /\ x0 :e U0.
+  { exact (andEL (U0 :e Tx /\ x0 :e U0)
+                 (exists V0:set, V0 :e (euclidean_topology m) /\
+                   exists f0:set,
+                     homeomorphism U0 (subspace_topology X Tx U0)
+                                  V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0)
+                 HU0). }
+  claim HU0Tx: U0 :e Tx.
+  { exact (andEL (U0 :e Tx) (x0 :e U0) HU0pair). }
+  claim Hx0U0: x0 :e U0.
+  { exact (andER (U0 :e Tx) (x0 :e U0) HU0pair). }
+  claim HexV: exists V0:set, V0 :e (euclidean_topology m) /\
+              exists f0:set,
+                homeomorphism U0 (subspace_topology X Tx U0)
+                             V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0.
+  { exact (andER (U0 :e Tx /\ x0 :e U0)
+                 (exists V0:set, V0 :e (euclidean_topology m) /\
+                   exists f0:set,
+                     homeomorphism U0 (subspace_topology X Tx U0)
+                                  V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0)
+                 HU0). }
+  apply HexV.
+  let V0. assume HV0: V0 :e (euclidean_topology m) /\
+              exists f0:set,
+                homeomorphism U0 (subspace_topology X Tx U0)
+                             V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0.
+  claim HV0open: V0 :e (euclidean_topology m).
+  { exact (andEL (V0 :e (euclidean_topology m))
+                 (exists f0:set,
+                   homeomorphism U0 (subspace_topology X Tx U0)
+                                V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0)
+                 HV0). }
+  claim Hexf: exists f0:set,
+                homeomorphism U0 (subspace_topology X Tx U0)
+                             V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0.
+  { exact (andER (V0 :e (euclidean_topology m))
+                 (exists f0:set,
+                   homeomorphism U0 (subspace_topology X Tx U0)
+                                V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0)
+                 HV0). }
+  apply Hexf.
+  let f0. assume Hhomeo:
+    homeomorphism U0 (subspace_topology X Tx U0)
+                 V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0.
+  witness U0. witness V0. witness f0.
+  claim HU0open: open_in X Tx U0.
+  { exact (open_inI X Tx U0 Htop HU0Tx). }
+  claim HV0open_in: open_in (euclidean_space m) (euclidean_topology m) V0.
+  { exact (open_inI (euclidean_space m) (euclidean_topology m) V0 HeuTop HV0open). }
+  claim HV0sub: V0 c= (euclidean_space m).
+  { exact (open_in_subset (euclidean_space m) (euclidean_topology m) V0 HV0open_in). }
+  prove open_in X Tx U0 /\ x0 :e U0 /\ V0 c= (euclidean_space m) /\
+        open_in (euclidean_space m) (euclidean_topology m) V0 /\
+        homeomorphism U0 (subspace_topology X Tx U0)
+                     V0 (subspace_topology (euclidean_space m) (euclidean_topology m) V0) f0.
+  apply andI.
+  + apply andI.
+    * apply andI.
+      { apply andI.
+        - exact HU0open.
+        - exact Hx0U0. }
+      { exact HV0sub. }
+    * exact HV0open_in.
+  + exact Hhomeo.
+Qed.
+
 (** helper: Euclidean spaces are T1 **)
 (** LATEX VERSION: Euclidean spaces satisfy the T1 axiom (finite sets are closed). **)
 Theorem euclidean_space_T1 : forall m:set,
