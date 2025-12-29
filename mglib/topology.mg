@@ -79871,10 +79871,12 @@ Qed.
 (** LATEX VERSION: If a sequence in A converges to x, then x is in the closure of A (no countability needed). **)
 Theorem convergent_sequence_implies_closure : forall X Tx A x:set,
   topology_on X Tx ->
+  A c= X ->
   (exists seq:set, sequence_in seq A /\ converges_to X Tx seq x) ->
   x :e closure_of X Tx A.
 let X Tx A x.
 assume HTx: topology_on X Tx.
+assume HAsub: A c= X.
 assume Hseq: exists seq:set, sequence_in seq A /\ converges_to X Tx seq x.
 prove x :e closure_of X Tx A.
 apply Hseq.
@@ -79920,14 +79922,104 @@ claim HyEmp: apply_fun seq N :e Empty.
 exact (EmptyE (apply_fun seq N) HyEmp False).
 Qed.
 
+(** helper: equip preserves finiteness **) 
+(** LATEX VERSION: If X is equip to Y and Y is finite, then X is finite. **)
+Theorem equip_finite_transfer : forall X Y:set,
+  equip X Y -> finite Y -> finite X.
+let X Y.
+assume Heq: equip X Y.
+assume Hfin: finite Y.
+prove finite X.
+prove exists n :e omega, equip X n.
+apply Hfin.
+let n. assume Hpair: n :e omega /\ equip Y n.
+claim Hn: n :e omega.
+{ exact (andEL (n :e omega) (equip Y n) Hpair). }
+claim HeqYn: equip Y n.
+{ exact (andER (n :e omega) (equip Y n) Hpair). }
+claim HeqXn: equip X n.
+{ exact (equip_tra X Y n Heq HeqYn). }
+witness n.
+apply andI.
+- exact Hn.
+- exact HeqXn.
+Qed.
+
+(** helper: injection gives equip with its image **)
+(** LATEX VERSION: An injection f:X→Y is a bijection from X onto its image f[X]. **)
+Theorem inj_equip_image : forall X Y:set, forall f:set->set,
+  inj X Y f -> equip X {f x|x :e X}.
+let X Y f.
+assume Hinj: inj X Y f.
+prove equip X {f x|x :e X}.
+prove exists g : set -> set, bij X {f x|x :e X} g.
+witness f.
+prove bij X {f x|x :e X} f.
+prove ((forall u :e X, f u :e {f x|x :e X}) /\
+       (forall u v :e X, f u = f v -> u = v)) /\
+      (forall w :e {f x|x :e X}, exists u :e X, f u = w).
+apply andI.
+- (** (forall u, f u in image) /\ injective **)
+  apply andI.
+  + let u. assume Hu: u :e X.
+    exact (ReplI X (fun x0:set => f x0) u Hu).
+  + exact (andER (forall x :e X, f x :e Y)
+                 (forall x z :e X, f x = f z -> x = z)
+                 Hinj).
+- (** surjective onto the image **)
+  let w. assume Hw: w :e {f x|x :e X}.
+  prove exists u :e X, f u = w.
+  apply (ReplE_impred X (fun x0:set => f x0) w Hw
+                      (exists u :e X, f u = w)).
+  let u. assume HuX: u :e X.
+  assume Hweq: w = f u.
+  witness u.
+  apply andI.
+  + exact HuX.
+  + rewrite <- Hweq.
+    reflexivity.
+Qed.
+
+(** helper: injection into a finite ordinal implies finiteness **) 
+(** LATEX VERSION: If X injects into a finite set, then X is finite. **)
+Theorem inj_into_finite_nat : forall X n:set, forall f:set->set,
+  nat_p n -> inj X n f -> finite X.
+let X n f.
+assume Hnat: nat_p n.
+assume Hinj: inj X n f.
+prove finite X.
+set Img := {f x|x :e X}.
+claim Heq: equip X Img.
+{ exact (inj_equip_image X n f Hinj). }
+claim Hsub: Img c= n.
+{ let y. assume Hy: y :e Img.
+  prove y :e n.
+  apply (ReplE_impred X (fun x0:set => f x0) y Hy (y :e n)).
+  let x. assume Hx: x :e X.
+  assume Hyx: y = f x.
+  claim Hcod: forall u :e X, f u :e n.
+  { exact (andEL (forall u :e X, f u :e n)
+                 (forall u v :e X, f u = f v -> u = v)
+                 Hinj). }
+  rewrite Hyx.
+  exact (Hcod x Hx). }
+claim Hfinn: finite n.
+{ exact (nat_finite n Hnat). }
+claim HfinImg: finite Img.
+{ exact (Subq_finite n Hfinn Img Hsub). }
+exact (equip_finite_transfer X Img Heq HfinImg).
+Qed.
+
 (** from §30 Theorem 30.1(a): sequences and closure in first-countable spaces **) 
 (** LATEX VERSION: If X is first countable, then x is in cl(A) iff there exists a sequence in A converging to x. **)
 Theorem first_countable_sequences_detect_closure : forall X Tx A x:set,
   first_countable_space X Tx ->
+  A c= X ->
   (x :e closure_of X Tx A <->
     exists seq:set, sequence_in seq A /\ converges_to X Tx seq x).
 let X Tx A x.
 assume Hfc: first_countable_space X Tx.
+assume HAsub: A c= X.
 prove x :e closure_of X Tx A <->
   exists seq:set, sequence_in seq A /\ converges_to X Tx seq x.
 apply iffI.
@@ -79961,13 +80053,206 @@ apply iffI.
                    (forall b:set, b :e B -> x :e b) /\
                    (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U))
                  Hpack). }
-  (** remaining construction is nontrivial in this library and is left for later proof work **)
-  admit. (** FAIL **)
+  claim Hclprop: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+  { exact (SepE2 X (fun x0:set => forall U0:set, U0 :e Tx -> x0 :e U0 -> U0 :/\: A <> Empty) x Hxcl). }
+  apply HBex.
+  let B.
+  assume HB: B c= Tx /\ countable_set B /\
+      (forall b:set, b :e B -> x :e b) /\
+      (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U).
+  claim HBCD: (B c= Tx /\ countable_set B) /\ (forall b:set, b :e B -> x :e b).
+  { exact (andEL ((B c= Tx /\ countable_set B) /\ (forall b:set, b :e B -> x :e b))
+                 (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U)
+                 HB). }
+  claim HAB: B c= Tx /\ countable_set B.
+  { exact (andEL (B c= Tx /\ countable_set B)
+                 (forall b:set, b :e B -> x :e b)
+                 HBCD). }
+  claim HBsubTx: B c= Tx.
+  { exact (andEL (B c= Tx) (countable_set B) HAB). }
+  claim HcountB: countable_set B.
+  { exact (andER (B c= Tx) (countable_set B) HAB). }
+  claim Hx_in_B: forall b:set, b :e B -> x :e b.
+  { exact (andER (B c= Tx /\ countable_set B)
+                 (forall b:set, b :e B -> x :e b)
+                 HBCD). }
+  claim HrefB: forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U.
+  { exact (andER ((B c= Tx /\ countable_set B) /\ (forall b:set, b :e B -> x :e b))
+                 (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U)
+                 HB). }
+  apply HcountB.
+  let code. assume Hcodeinj: inj B omega code.
+  claim Hcode_cod: forall b :e B, code b :e omega.
+  { exact (andEL (forall b :e B, code b :e omega)
+                 (forall b1 b2 :e B, code b1 = code b2 -> b1 = b2)
+                 Hcodeinj). }
+  claim Hcode_inj: forall b1 b2 :e B, code b1 = code b2 -> b1 = b2.
+  { exact (andER (forall b :e B, code b :e omega)
+                 (forall b1 b2 :e B, code b1 = code b2 -> b1 = b2)
+                 Hcodeinj). }
+  set F := (fun n:set => {b :e B | code b :e ordsucc n}).
+  set Ubase := (fun n:set => intersection_of_family X (F n)).
+  claim HUinfo: forall n:set, n :e omega ->
+    (Ubase n :e Tx /\ x :e Ubase n) /\ Ubase n :/\: A <> Empty.
+  { let n. assume HnO: n :e omega.
+    prove (Ubase n :e Tx /\ x :e Ubase n) /\ Ubase n :/\: A <> Empty.
+    claim HnNat: nat_p n.
+    { exact (omega_nat_p n HnO). }
+    claim HsuccNat: nat_p (ordsucc n).
+    { exact (nat_ordsucc n HnNat). }
+    claim HFsubB: F n c= B.
+    { let b. assume Hb: b :e F n.
+      exact (SepE1 B (fun b0:set => code b0 :e ordsucc n) b Hb). }
+    claim HFsubTx: F n c= Tx.
+    { let b. assume Hb: b :e F n.
+      claim HbB: b :e B.
+      { exact (HFsubB b Hb). }
+      exact (HBsubTx b HbB). }
+    claim HFpow: F n :e Power Tx.
+    { exact (PowerI Tx (F n) HFsubTx). }
+    claim HinjFn: inj (F n) (ordsucc n) code.
+    { apply injI.
+      - let b. assume Hb: b :e F n.
+        exact (SepE2 B (fun b0:set => code b0 :e ordsucc n) b Hb).
+      - let b1. assume Hb1: b1 :e F n.
+        let b2. assume Hb2: b2 :e F n.
+        assume Heq: code b1 = code b2.
+        claim Hb1B: b1 :e B.
+        { exact (HFsubB b1 Hb1). }
+        claim Hb2B: b2 :e B.
+        { exact (HFsubB b2 Hb2). }
+        exact (Hcode_inj b1 Hb1B b2 Hb2B Heq). }
+    claim HFin: finite (F n).
+    { exact (inj_into_finite_nat (F n) (ordsucc n) code HsuccNat HinjFn). }
+    claim HUinTx: Ubase n :e Tx.
+    { exact (finite_intersection_in_topology X Tx (F n) HTx HFpow HFin). }
+    claim HxU: x :e Ubase n.
+    { prove x :e intersection_of_family X (F n).
+      claim HxAll: forall U:set, U :e F n -> x :e U.
+      { let T. assume HT: T :e F n.
+        claim HTB: T :e B.
+        { exact (HFsubB T HT). }
+        exact (Hx_in_B T HTB). }
+      exact (SepI X (fun z:set => forall U:set, U :e F n -> z :e U) x HxX HxAll). }
+    claim Hne: Ubase n :/\: A <> Empty.
+    { exact (Hclprop (Ubase n) HUinTx HxU). }
+    apply andI.
+    - apply andI.
+      + exact HUinTx.
+      + exact HxU.
+    - exact Hne. }
+	  set pick := (fun n:set => Eps_i (fun y:set => y :e (Ubase n :/\: A))).
+	  set seq := graph omega pick.
+	  claim Hseqdef: seq = graph omega pick.
+	  { reflexivity. }
+	  witness seq.
+	  apply andI.
+	  - (** sequence_in seq A **)
+	    prove sequence_in seq A.
+	    prove function_on seq omega A.
+		    let n. assume HnO: n :e omega.
+		    prove apply_fun seq n :e A.
+		    claim Happ: apply_fun seq n = pick n.
+		    { rewrite Hseqdef.
+		      exact (apply_fun_graph omega pick n HnO). }
+		    rewrite Happ.
+		    claim HUA: (Ubase n :e Tx /\ x :e Ubase n) /\ Ubase n :/\: A <> Empty.
+		    { exact (HUinfo n HnO). }
+    claim Hne: Ubase n :/\: A <> Empty.
+    { exact (andER (Ubase n :e Tx /\ x :e Ubase n) (Ubase n :/\: A <> Empty) HUA). }
+    claim Hex: exists y:set, y :e (Ubase n :/\: A).
+    { exact (nonempty_has_element (Ubase n :/\: A) Hne). }
+    claim Hpickin: pick n :e (Ubase n :/\: A).
+    { exact (Eps_i_ex (fun y:set => y :e (Ubase n :/\: A)) Hex). }
+    exact (binintersectE2 (Ubase n) A (pick n) Hpickin).
+  - (** converges_to X Tx seq x **)
+    prove converges_to X Tx seq x.
+    prove (topology_on X Tx /\ sequence_on seq X) /\ x :e X /\
+      forall V:set, V :e Tx -> x :e V ->
+        exists N:set, N :e omega /\
+          forall n:set, n :e omega -> N c= n -> apply_fun seq n :e V.
+    apply andI.
+    + (** (topology_on /\ sequence_on) /\ x:e X **)
+      apply andI.
+      * (** topology_on /\ sequence_on **)
+        apply andI.
+        { exact HTx. }
+	        { prove sequence_on seq X.
+	          let n. assume HnO: n :e omega.
+	          prove apply_fun seq n :e X.
+	          claim Happ: apply_fun seq n = pick n.
+	          { rewrite Hseqdef.
+	            exact (apply_fun_graph omega pick n HnO). }
+	          rewrite Happ.
+	          claim HUA: (Ubase n :e Tx /\ x :e Ubase n) /\ Ubase n :/\: A <> Empty.
+	          { exact (HUinfo n HnO). }
+          claim Hne: Ubase n :/\: A <> Empty.
+          { exact (andER (Ubase n :e Tx /\ x :e Ubase n) (Ubase n :/\: A <> Empty) HUA). }
+          claim Hex: exists y:set, y :e (Ubase n :/\: A).
+          { exact (nonempty_has_element (Ubase n :/\: A) Hne). }
+          claim Hpickin: pick n :e (Ubase n :/\: A).
+          { exact (Eps_i_ex (fun y:set => y :e (Ubase n :/\: A)) Hex). }
+          claim HpickU: pick n :e Ubase n.
+          { exact (binintersectE1 (Ubase n) A (pick n) Hpickin). }
+          exact (SepE1 X (fun y:set => forall T:set, T :e (F n) -> y :e T) (pick n) HpickU). }
+      * exact HxX.
+    + (** tail condition **)
+      let V. assume HV: V :e Tx. assume HxV: x :e V.
+      claim Hexb: exists b:set, b :e B /\ b c= V.
+      { exact (HrefB V HV HxV). }
+      apply Hexb.
+      let b0. assume Hb0pair.
+      claim Hb0B: b0 :e B.
+      { exact (andEL (b0 :e B) (b0 c= V) Hb0pair). }
+      claim Hb0subV: b0 c= V.
+      { exact (andER (b0 :e B) (b0 c= V) Hb0pair). }
+      set N := ordsucc (code b0).
+      witness N.
+      apply andI.
+      * (** N :e omega **)
+        claim Hcodeb0: code b0 :e omega.
+        { exact (Hcode_cod b0 Hb0B). }
+        exact (omega_ordsucc (code b0) Hcodeb0).
+      * (** eventually in V **)
+	        let n. assume HnO: n :e omega. assume HNsub: N c= n.
+	        prove apply_fun seq n :e V.
+	        claim Happ: apply_fun seq n = pick n.
+	        { rewrite Hseqdef.
+	          exact (apply_fun_graph omega pick n HnO). }
+	        rewrite Happ.
+	        (** show pick n is in Ubase n and Ubase n c= b0 c= V **)
+	        claim HUA: (Ubase n :e Tx /\ x :e Ubase n) /\ Ubase n :/\: A <> Empty.
+	        { exact (HUinfo n HnO). }
+        claim Hne: Ubase n :/\: A <> Empty.
+        { exact (andER (Ubase n :e Tx /\ x :e Ubase n) (Ubase n :/\: A <> Empty) HUA). }
+        claim Hex: exists y:set, y :e (Ubase n :/\: A).
+        { exact (nonempty_has_element (Ubase n :/\: A) Hne). }
+        claim Hpickin: pick n :e (Ubase n :/\: A).
+        { exact (Eps_i_ex (fun y:set => y :e (Ubase n :/\: A)) Hex). }
+        claim HpickU: pick n :e Ubase n.
+        { exact (binintersectE1 (Ubase n) A (pick n) Hpickin). }
+        claim Hcode_in_N: code b0 :e N.
+        { exact (ordsuccI2 (code b0)). }
+        claim Hcode_in_n: code b0 :e n.
+        { exact (HNsub (code b0) Hcode_in_N). }
+        claim Hcode_in_succn: code b0 :e ordsucc n.
+        { exact (ordsuccI1 n (code b0) Hcode_in_n). }
+        claim Hb0Fn: b0 :e F n.
+        { exact (SepI B (fun b:set => code b :e ordsucc n) b0 Hb0B Hcode_in_succn). }
+        claim HUnsubb0: Ubase n c= b0.
+        { let z. assume Hz: z :e Ubase n.
+          prove z :e b0.
+          claim Hall: forall T:set, T :e F n -> z :e T.
+          { exact (SepE2 X (fun z0:set => forall T:set, T :e F n -> z0 :e T) z Hz). }
+          exact (Hall b0 Hb0Fn). }
+        claim Hzb0: pick n :e b0.
+        { exact (HUnsubb0 (pick n) HpickU). }
+        exact (Hb0subV (pick n) Hzb0).
 - (** existence of convergent sequence -> closure (general) **)
   assume Hseq: exists seq:set, sequence_in seq A /\ converges_to X Tx seq x.
   claim HTx: topology_on X Tx.
   { exact (andEL (topology_on X Tx) (forall x0:set, x0 :e X -> countable_basis_at X Tx x0) Hfc). }
-  exact (convergent_sequence_implies_closure X Tx A x HTx Hseq).
+  exact (convergent_sequence_implies_closure X Tx A x HTx HAsub Hseq).
 Qed.
 
 (** from §30 Theorem 30.1(b): sequences and continuity in first-countable spaces **)
