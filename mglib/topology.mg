@@ -56684,7 +56684,69 @@ prove topology_on unit_interval unit_interval_topology /\
   ~(exists U V:set, U :e unit_interval_topology /\ V :e unit_interval_topology /\ separation_of unit_interval U V).
 apply andI.
 - exact unit_interval_topology_on.
-- admit. (** FAIL **)
+- assume Hsep: exists U V:set, U :e unit_interval_topology /\ V :e unit_interval_topology /\ separation_of unit_interval U V.
+  (** Destructure the separation (as in interval_connected) and defer the order argument. **)
+  apply Hsep.
+  let U. assume HexV: exists V:set, U :e unit_interval_topology /\ V :e unit_interval_topology /\ separation_of unit_interval U V.
+  apply HexV.
+  let V. assume HUV: U :e unit_interval_topology /\ V :e unit_interval_topology /\ separation_of unit_interval U V.
+  claim HUV0: U :e unit_interval_topology /\ V :e unit_interval_topology.
+  { exact (andEL (U :e unit_interval_topology /\ V :e unit_interval_topology)
+                 (separation_of unit_interval U V)
+                 HUV). }
+  claim HUopen: U :e unit_interval_topology.
+  { exact (andEL (U :e unit_interval_topology) (V :e unit_interval_topology) HUV0). }
+  claim HVopen: V :e unit_interval_topology.
+  { exact (andER (U :e unit_interval_topology) (V :e unit_interval_topology) HUV0). }
+  claim HsepUV: separation_of unit_interval U V.
+  { exact (andER (U :e unit_interval_topology /\ V :e unit_interval_topology)
+                 (separation_of unit_interval U V)
+                 HUV). }
+  claim Hpart1: ((((U :e Power unit_interval /\ V :e Power unit_interval) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
+  { exact (andEL ((((U :e Power unit_interval /\ V :e Power unit_interval) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                 (U :\/: V = unit_interval)
+                 HsepUV). }
+  claim Hunion: U :\/: V = unit_interval.
+  { exact (andER ((((U :e Power unit_interval /\ V :e Power unit_interval) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                 (U :\/: V = unit_interval)
+                 HsepUV). }
+  claim HAux: (((U :e Power unit_interval /\ V :e Power unit_interval) /\ U :/\: V = Empty) /\ U <> Empty).
+  { exact (andEL (((U :e Power unit_interval /\ V :e Power unit_interval) /\ U :/\: V = Empty) /\ U <> Empty)
+                 (V <> Empty)
+                 Hpart1). }
+  claim HVne: V <> Empty.
+  { exact (andER (((U :e Power unit_interval /\ V :e Power unit_interval) /\ U :/\: V = Empty) /\ U <> Empty)
+                 (V <> Empty)
+                 Hpart1). }
+  claim Hpowdisj: (U :e Power unit_interval /\ V :e Power unit_interval) /\ U :/\: V = Empty.
+  { exact (andEL ((U :e Power unit_interval /\ V :e Power unit_interval) /\ U :/\: V = Empty)
+                 (U <> Empty)
+                 HAux). }
+  claim HUne: U <> Empty.
+  { exact (andER ((U :e Power unit_interval /\ V :e Power unit_interval) /\ U :/\: V = Empty)
+                 (U <> Empty)
+                 HAux). }
+  claim Hpow: U :e Power unit_interval /\ V :e Power unit_interval.
+  { exact (andEL (U :e Power unit_interval /\ V :e Power unit_interval)
+                 (U :/\: V = Empty)
+                 Hpowdisj). }
+  claim Hdisj: U :/\: V = Empty.
+  { exact (andER (U :e Power unit_interval /\ V :e Power unit_interval)
+                 (U :/\: V = Empty)
+                 Hpowdisj). }
+  claim HUpow: U :e Power unit_interval.
+  { exact (andEL (U :e Power unit_interval) (V :e Power unit_interval) Hpow). }
+  claim HVpow: V :e Power unit_interval.
+  { exact (andER (U :e Power unit_interval) (V :e Power unit_interval) Hpow). }
+  claim HUsub: U c= unit_interval.
+  { exact (PowerE unit_interval U HUpow). }
+  claim HVsub: V c= unit_interval.
+  { exact (PowerE unit_interval V HVpow). }
+  claim Hexu0: exists u0:set, u0 :e U.
+  { exact (nonempty_has_element U HUne). }
+  claim Hexv0: exists v0:set, v0 :e V.
+  { exact (nonempty_has_element V HVne). }
+  admit. (** FAIL **)
 Qed.
 
 Theorem zero_one_in_unit_interval : 0 :e unit_interval /\ 1 :e unit_interval.
