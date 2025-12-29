@@ -86218,6 +86218,8 @@ Qed.
 (** from §46 Definition: pointwise and compact convergence topologies **) 
 (** LATEX VERSION: The topology of pointwise convergence on Y^X is the product topology on ∏_{x∈X} Y (evaluations are continuous). **)
 (** We implement pointwise convergence on the graph-based `function_space X Y` via the evaluation subbasis. **)
+(** from §46 Definition: pointwise convergence subbasis via evaluations **) 
+(** LATEX VERSION: A subbasis is given by sets {f ∈ Y^X | f(x) ∈ U} for x∈X and U open in Y. **)
 Definition pointwise_subbasis : set -> set -> set -> set -> set :=
   fun X Tx Y Ty =>
     {S :e Power (function_space X Y) |
