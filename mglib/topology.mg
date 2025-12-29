@@ -91192,9 +91192,153 @@ assume Hcont: forall n:set, n :e omega ->
 assume HN: N :e omega.
 assume HepsR: eps :e R.
 prove closed_in X Tx (A_N_eps X Y d fn N eps).
-(** TODO: show complement is open, as a union over n,m of sets where d(fn n,fn m) is in the open ray (eps,inf) **)
-(** TODO: then use closed_inI with witness complement open set **)
-admit. (** FAIL **)
+set Ubad :=
+  {x :e X |
+    exists n:set, n :e omega /\ N c= n /\
+      exists m:set, m :e omega /\ N c= m /\
+        Rlt eps (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x)) }.
+claim HdefA: A_N_eps X Y d fn N eps =
+  {x :e X |
+    forall n:set, n :e omega -> N c= n ->
+      forall m:set, m :e omega -> N c= m ->
+        Rle (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x)) eps }.
+{ reflexivity. }
+claim HeqComp: A_N_eps X Y d fn N eps = X :\: Ubad.
+{ rewrite HdefA.
+  apply set_ext.
+  - let x. assume HxA: x :e
+      {x0 :e X |
+        forall n:set, n :e omega -> N c= n ->
+          forall m:set, m :e omega -> N c= m ->
+            Rle (apply_fun d (apply_fun (apply_fun fn n) x0, apply_fun (apply_fun fn m) x0)) eps }.
+    prove x :e X :\: Ubad.
+    claim HxX: x :e X.
+    { exact (SepE1 X
+              (fun x0:set =>
+                forall n:set, n :e omega -> N c= n ->
+                  forall m:set, m :e omega -> N c= m ->
+                    Rle (apply_fun d (apply_fun (apply_fun fn n) x0, apply_fun (apply_fun fn m) x0)) eps)
+              x HxA). }
+    claim HxProp:
+      forall n:set, n :e omega -> N c= n ->
+        forall m:set, m :e omega -> N c= m ->
+          Rle (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x)) eps.
+    { exact (SepE2 X
+              (fun x0:set =>
+                forall n:set, n :e omega -> N c= n ->
+                  forall m:set, m :e omega -> N c= m ->
+                    Rle (apply_fun d (apply_fun (apply_fun fn n) x0, apply_fun (apply_fun fn m) x0)) eps)
+              x HxA). }
+    apply setminusI.
+    + exact HxX.
+    + assume HxU: x :e Ubad.
+      claim Hexn: exists n:set, n :e omega /\ N c= n /\
+        exists m:set, m :e omega /\ N c= m /\
+          Rlt eps (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x)).
+      { exact (SepE2 X
+                (fun x0:set =>
+                  exists n0:set, n0 :e omega /\ N c= n0 /\
+                    exists m0:set, m0 :e omega /\ N c= m0 /\
+                      Rlt eps (apply_fun d (apply_fun (apply_fun fn n0) x0, apply_fun (apply_fun fn m0) x0)))
+                x HxU). }
+      apply Hexn.
+      let n. assume Hn.
+      claim HnCore: (n :e omega /\ N c= n).
+      { exact (andEL (n :e omega /\ N c= n)
+                     (exists m0:set, m0 :e omega /\ N c= m0 /\
+                       Rlt eps (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m0) x)))
+                     Hn). }
+      claim Hexm: exists m0:set, m0 :e omega /\ N c= m0 /\
+        Rlt eps (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m0) x)).
+      { exact (andER (n :e omega /\ N c= n)
+                     (exists m0:set, m0 :e omega /\ N c= m0 /\
+                       Rlt eps (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m0) x)))
+                     Hn). }
+      claim HnO: n :e omega.
+      { exact (andEL (n :e omega) (N c= n) HnCore). }
+      claim HNn: N c= n.
+      { exact (andER (n :e omega) (N c= n) HnCore). }
+      apply Hexm.
+      let m0. assume Hm0.
+      claim Hm0Core: (m0 :e omega /\ N c= m0).
+      { exact (andEL (m0 :e omega /\ N c= m0)
+                     (Rlt eps (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m0) x)))
+                     Hm0). }
+      claim Hlt: Rlt eps (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m0) x)).
+      { exact (andER (m0 :e omega /\ N c= m0)
+                     (Rlt eps (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m0) x)))
+                     Hm0). }
+      claim Hm0O: m0 :e omega.
+      { exact (andEL (m0 :e omega) (N c= m0) Hm0Core). }
+      claim HNm0: N c= m0.
+      { exact (andER (m0 :e omega) (N c= m0) Hm0Core). }
+      claim Hle: Rle (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m0) x)) eps.
+      { exact (HxProp n HnO HNn m0 Hm0O HNm0). }
+      exact ((RleE_nlt (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m0) x)) eps Hle) Hlt).
+  - let x. assume Hx: x :e X :\: Ubad.
+    prove x :e
+      {x0 :e X |
+        forall n:set, n :e omega -> N c= n ->
+          forall m:set, m :e omega -> N c= m ->
+            Rle (apply_fun d (apply_fun (apply_fun fn n) x0, apply_fun (apply_fun fn m) x0)) eps }.
+    claim HxX: x :e X.
+    { exact (setminusE1 X Ubad x Hx). }
+    claim HxNotU: x /:e Ubad.
+    { exact (setminusE2 X Ubad x Hx). }
+    apply (SepI X
+            (fun x0:set =>
+              forall n:set, n :e omega -> N c= n ->
+                forall m:set, m :e omega -> N c= m ->
+                  Rle (apply_fun d (apply_fun (apply_fun fn n) x0, apply_fun (apply_fun fn m) x0)) eps)
+            x HxX).
+    let n. assume HnO: n :e omega. assume HNn: N c= n.
+    let m. assume HmO: m :e omega. assume HNm: N c= m.
+    claim HfnOn: function_on (apply_fun fn n) X Y.
+    { exact (continuous_map_function_on X Tx Y (metric_topology Y d) (apply_fun fn n) (Hcont n HnO)). }
+    claim HfmOn: function_on (apply_fun fn m) X Y.
+    { exact (continuous_map_function_on X Tx Y (metric_topology Y d) (apply_fun fn m) (Hcont m HmO)). }
+    claim HnxY: apply_fun (apply_fun fn n) x :e Y.
+    { exact (HfnOn x HxX). }
+    claim HmxY: apply_fun (apply_fun fn m) x :e Y.
+    { exact (HfmOn x HxX). }
+    claim HdTot: total_function_on d (setprod Y Y) R.
+    { exact (metric_on_total_total_function Y d Hd). }
+    claim Hpair: (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x) :e setprod Y Y.
+    { exact (tuple_2_setprod_by_pair_Sigma Y Y
+              (apply_fun (apply_fun fn n) x)
+              (apply_fun (apply_fun fn m) x)
+              HnxY HmxY). }
+    claim HdxR: apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x) :e R.
+    { exact (total_function_on_apply_fun_in_Y d (setprod Y Y) R
+              (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x)
+              HdTot
+              Hpair). }
+    apply (RleI (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x)) eps HdxR HepsR).
+    assume Hlt: Rlt eps (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x)).
+    claim HxBad: x :e Ubad.
+    { apply (SepI X
+              (fun x0:set =>
+                exists n0:set, n0 :e omega /\ N c= n0 /\
+                  exists m0:set, m0 :e omega /\ N c= m0 /\
+                    Rlt eps (apply_fun d (apply_fun (apply_fun fn n0) x0, apply_fun (apply_fun fn m0) x0)))
+              x HxX).
+	      witness n.
+	      apply andI.
+	      - apply andI.
+	        + exact HnO.
+	        + exact HNn.
+	      - witness m.
+	        apply andI.
+	        + apply andI.
+	          * exact HmO.
+	          * exact HNm.
+	        + exact Hlt. }
+	    exact (HxNotU HxBad). }
+rewrite HeqComp.
+claim HUbad: Ubad :e Tx.
+{ (** TODO: show Ubad is open in Tx, using continuity of fn n and the metric topology on Y **)
+  admit. (** FAIL **) }
+exact (closed_of_open_complement X Tx Ubad HTx HUbad).
 Qed.
 
 (** helper: U(eps) as union of interiors of A_N(eps) **)
