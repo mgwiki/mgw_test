@@ -91187,6 +91187,7 @@ Theorem U_eps_open_dense_stub : forall X Tx Y d fn eps:set,
   metric_on_total Y d ->
   (forall n:set, n :e omega ->
     continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n)) ->
+  (forall N:set, N :e omega -> closed_in X Tx (A_N_eps X Y d fn N eps)) ->
   (forall x:set, x :e X -> exists N:set, N :e omega /\ x :e A_N_eps X Y d fn N eps) ->
   eps :e R -> Rlt 0 eps ->
   open_in X Tx (U_eps X Tx Y d fn eps) /\ dense_in (U_eps X Tx Y d fn eps) X Tx.
@@ -91195,6 +91196,7 @@ assume HB: Baire_space X Tx.
 assume Hd: metric_on_total Y d.
 assume Hcont: forall n:set, n :e omega ->
   continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n).
+assume Hclosed: forall N:set, N :e omega -> closed_in X Tx (A_N_eps X Y d fn N eps).
 assume Hcover: forall x:set, x :e X -> exists N:set, N :e omega /\ x :e A_N_eps X Y d fn N eps.
 assume Heps: eps :e R.
 assume HepsPos: Rlt 0 eps.
@@ -91241,7 +91243,261 @@ apply andI.
   rewrite HdefU.
   exact (open_inI X Tx (Union UFam) HTx HUnionInTx).
 - (** U_eps is dense: proof uses Lemma 48.4 in the TeX argument **)
-  admit. (** FAIL **)
+  prove dense_in (U_eps X Tx Y d fn eps) X Tx.
+  prove closure_of X Tx (U_eps X Tx Y d fn eps) = X.
+  apply set_ext.
+  + (** closure(U_eps) ⊆ X **)
+    exact (closure_in_space X Tx (U_eps X Tx Y d fn eps) HTx).
+  + (** X ⊆ closure(U_eps) by neighborhood characterization **)
+    let x. assume HxX: x :e X.
+    prove x :e closure_of X Tx (U_eps X Tx Y d fn eps).
+    claim Hcliff:
+      x :e closure_of X Tx (U_eps X Tx Y d fn eps) <->
+      (forall U :e Tx, x :e U -> U :/\: (U_eps X Tx Y d fn eps) <> Empty).
+    { exact (closure_characterization X Tx (U_eps X Tx Y d fn eps) x HTx HxX). }
+    apply (iffER (x :e closure_of X Tx (U_eps X Tx Y d fn eps))
+                 (forall U :e Tx, x :e U -> U :/\: (U_eps X Tx Y d fn eps) <> Empty)
+                 Hcliff).
+    prove forall U :e Tx, x :e U -> U :/\: (U_eps X Tx Y d fn eps) <> Empty.
+    let U. assume HU: U :e Tx. assume HxU: x :e U.
+    claim HUne: U <> Empty.
+    { exact (elem_implies_nonempty U x HxU). }
+    (** Use Baire on the open subspace U to find N with Int_U (U∩A_N) nonempty. **)
+    claim HUopen: open_in X Tx U.
+    { exact (open_inI X Tx U HTx HU). }
+    claim HBU: Baire_space U (subspace_topology X Tx U).
+    { exact (Baire_open_subspace X Tx U HB HUopen). }
+    claim HBcU: Baire_space_closed U (subspace_topology X Tx U).
+    { exact (Baire_space_imp_closed U (subspace_topology X Tx U) HBU). }
+    claim HTu: topology_on U (subspace_topology X Tx U).
+    { exact (subspace_topology_is_topology X Tx U HTx (open_in_subset X Tx U HUopen)). }
+    claim HBUprop:
+      forall Fam:set,
+        countable_set Fam ->
+        (forall A:set, A :e Fam ->
+          closed_in U (subspace_topology X Tx U) A /\ interior_of U (subspace_topology X Tx U) A = Empty) ->
+        interior_of U (subspace_topology X Tx U) (Union Fam) = Empty.
+    { exact (andER (topology_on U (subspace_topology X Tx U))
+                   (forall Fam:set,
+                     countable_set Fam ->
+                     (forall A:set, A :e Fam ->
+                       closed_in U (subspace_topology X Tx U) A /\ interior_of U (subspace_topology X Tx U) A = Empty) ->
+                     interior_of U (subspace_topology X Tx U) (Union Fam) = Empty)
+                   HBcU). }
+    set Fam := {U :/\: (A_N_eps X Y d fn N eps) | N :e omega}.
+    claim HomegaCount: countable_set omega.
+    { prove countable_set omega.
+      prove countable omega.
+      exact (Subq_atleastp omega omega (Subq_ref omega)). }
+    claim HcountFam: countable_set Fam.
+    { exact (countable_image omega HomegaCount (fun N0:set => U :/\: (A_N_eps X Y d fn N0 eps))). }
+    claim HFamClosed: forall B:set, B :e Fam ->
+      closed_in U (subspace_topology X Tx U) B.
+    { let B. assume HBmem: B :e Fam.
+      claim HexN: exists N:set, N :e omega /\ B = U :/\: (A_N_eps X Y d fn N eps).
+      { exact (ReplE omega (fun N0:set => U :/\: (A_N_eps X Y d fn N0 eps)) B HBmem). }
+      apply HexN.
+      let N. assume HN: N :e omega /\ B = U :/\: (A_N_eps X Y d fn N eps).
+      claim HNin: N :e omega.
+      { exact (andEL (N :e omega) (B = U :/\: (A_N_eps X Y d fn N eps)) HN). }
+      claim HBdef: B = U :/\: (A_N_eps X Y d fn N eps).
+      { exact (andER (N :e omega) (B = U :/\: (A_N_eps X Y d fn N eps)) HN). }
+      (** B is intersection with U of a closed set in X **)
+      claim HclX: closed_in X Tx (A_N_eps X Y d fn N eps).
+      { exact (Hclosed N HNin). }
+      claim HsubU: U c= X.
+      { exact (topology_elem_subset X Tx U HTx HU). }
+      claim HBclosedU: closed_in U (subspace_topology X Tx U) (A_N_eps X Y d fn N eps :/\: U).
+      { apply (iffER (closed_in U (subspace_topology X Tx U) (A_N_eps X Y d fn N eps :/\: U))
+                     (exists C:set, closed_in X Tx C /\ (A_N_eps X Y d fn N eps :/\: U) = C :/\: U)
+                     (closed_in_subspace_iff_intersection X Tx U (A_N_eps X Y d fn N eps :/\: U) HTx HsubU)).
+        witness (A_N_eps X Y d fn N eps).
+        apply andI.
+        - exact HclX.
+        - apply set_ext.
+          + let z. assume Hz: z :e (A_N_eps X Y d fn N eps :/\: U).
+            exact Hz.
+          + let z. assume Hz: z :e (A_N_eps X Y d fn N eps :/\: U).
+            exact Hz. }
+      rewrite HBdef.
+      (** commute intersection **)
+      claim Hcomm: U :/\: (A_N_eps X Y d fn N eps) = (A_N_eps X Y d fn N eps) :/\: U.
+      { apply set_ext.
+        - let z. assume Hz: z :e U :/\: (A_N_eps X Y d fn N eps).
+          prove z :e (A_N_eps X Y d fn N eps) :/\: U.
+          exact (binintersectI (A_N_eps X Y d fn N eps) U z
+                 (binintersectE2 U (A_N_eps X Y d fn N eps) z Hz)
+                 (binintersectE1 U (A_N_eps X Y d fn N eps) z Hz)).
+        - let z. assume Hz: z :e (A_N_eps X Y d fn N eps) :/\: U.
+          prove z :e U :/\: (A_N_eps X Y d fn N eps).
+          exact (binintersectI U (A_N_eps X Y d fn N eps) z
+                 (binintersectE2 (A_N_eps X Y d fn N eps) U z Hz)
+                 (binintersectE1 (A_N_eps X Y d fn N eps) U z Hz)). }
+      rewrite Hcomm.
+      exact HBclosedU. }
+    (** If all interiors are empty, then interior of Union Fam is empty, but Union Fam = U. **)
+    claim HexNgood:
+      exists N:set, N :e omega /\
+        interior_of U (subspace_topology X Tx U) (U :/\: (A_N_eps X Y d fn N eps)) <> Empty.
+    { apply (xm (exists N:set, N :e omega /\
+        interior_of U (subspace_topology X Tx U) (U :/\: (A_N_eps X Y d fn N eps)) <> Empty)).
+      - assume Hex. exact Hex.
+      - assume Hno: ~ (exists N:set, N :e omega /\
+          interior_of U (subspace_topology X Tx U) (U :/\: (A_N_eps X Y d fn N eps)) <> Empty).
+        prove exists N:set, N :e omega /\
+          interior_of U (subspace_topology X Tx U) (U :/\: (A_N_eps X Y d fn N eps)) <> Empty.
+        apply FalseE.
+        (** build the empty-interior hypothesis for Baire_space_closed on U **)
+        claim HFamPack: forall B:set, B :e Fam ->
+          closed_in U (subspace_topology X Tx U) B /\ interior_of U (subspace_topology X Tx U) B = Empty.
+        { let B. assume HBmem: B :e Fam.
+          claim HBcl: closed_in U (subspace_topology X Tx U) B.
+          { exact (HFamClosed B HBmem). }
+          claim HexN: exists N:set, N :e omega /\ B = U :/\: (A_N_eps X Y d fn N eps).
+          { exact (ReplE omega (fun N0:set => U :/\: (A_N_eps X Y d fn N0 eps)) B HBmem). }
+          apply HexN.
+          let N. assume HN: N :e omega /\ B = U :/\: (A_N_eps X Y d fn N eps).
+          claim HNin: N :e omega.
+          { exact (andEL (N :e omega) (B = U :/\: (A_N_eps X Y d fn N eps)) HN). }
+          claim HBdef: B = U :/\: (A_N_eps X Y d fn N eps).
+          { exact (andER (N :e omega) (B = U :/\: (A_N_eps X Y d fn N eps)) HN). }
+          claim Hempt: interior_of U (subspace_topology X Tx U) B = Empty.
+          { rewrite HBdef.
+            apply (xm (interior_of U (subspace_topology X Tx U)
+                         (U :/\: (A_N_eps X Y d fn N eps)) = Empty)).
+            - assume Heq. exact Heq.
+            - assume Hneq: interior_of U (subspace_topology X Tx U)
+                         (U :/\: (A_N_eps X Y d fn N eps)) <> Empty.
+              apply FalseE.
+              apply Hno.
+              witness N.
+              apply andI.
+              + exact HNin.
+              + exact Hneq. }
+          apply andI.
+          + exact HBcl.
+          + exact Hempt. }
+        claim HintUnion: interior_of U (subspace_topology X Tx U) (Union Fam) = Empty.
+        { exact (HBUprop Fam HcountFam HFamPack). }
+        (** show Union Fam = U **)
+        claim HUnionEq: Union Fam = U.
+        { apply set_ext.
+          - let z. assume Hz: z :e Union Fam.
+            apply (UnionE_impred Fam z Hz (z :e U)).
+            let B. assume HzB: z :e B. assume HBmem: B :e Fam.
+            claim HBsubU: B c= U.
+            { apply (ReplE_impred omega (fun N0:set => U :/\: (A_N_eps X Y d fn N0 eps)) B HBmem (B c= U)).
+              let N0. assume _. assume HBdef.
+              rewrite HBdef.
+              exact (binintersect_Subq_1 U (A_N_eps X Y d fn N0 eps)). }
+            exact (HBsubU z HzB).
+          - let z. assume HzU: z :e U.
+            prove z :e Union Fam.
+            claim HzX: z :e X.
+            { exact (topology_elem_subset X Tx U HTx HU z HzU). }
+            claim HexN: exists N:set, N :e omega /\ z :e A_N_eps X Y d fn N eps.
+            { exact (Hcover z HzX). }
+            apply HexN.
+            let N. assume HN: N :e omega /\ z :e A_N_eps X Y d fn N eps.
+            claim HNin: N :e omega.
+            { exact (andEL (N :e omega) (z :e A_N_eps X Y d fn N eps) HN). }
+            claim HzAN: z :e A_N_eps X Y d fn N eps.
+            { exact (andER (N :e omega) (z :e A_N_eps X Y d fn N eps) HN). }
+            claim HzB: z :e U :/\: (A_N_eps X Y d fn N eps).
+            { exact (binintersectI U (A_N_eps X Y d fn N eps) z HzU HzAN). }
+            claim HBmem: (U :/\: (A_N_eps X Y d fn N eps)) :e Fam.
+            { exact (ReplI omega (fun N0:set => U :/\: (A_N_eps X Y d fn N0 eps)) N HNin). }
+            exact (UnionI Fam z (U :/\: (A_N_eps X Y d fn N eps)) HzB HBmem). }
+        claim HintU: interior_of U (subspace_topology X Tx U) U = U.
+        { exact (interior_of_space U (subspace_topology X Tx U) HTu). }
+        claim HintUEmpty: interior_of U (subspace_topology X Tx U) U = Empty.
+        { rewrite <- HintUnion.
+          rewrite HUnionEq.
+          reflexivity. }
+        claim HUeqEmpty: U = Empty.
+        { rewrite <- HintU.
+          exact HintUEmpty. }
+        exact (HUne HUeqEmpty). }
+    (** Use the nonempty interior point to get a point in U∩U_eps **)
+    apply HexNgood.
+    let N. assume HN: N :e omega /\
+      interior_of U (subspace_topology X Tx U) (U :/\: (A_N_eps X Y d fn N eps)) <> Empty.
+    claim HNin: N :e omega.
+    { exact (andEL (N :e omega)
+                   (interior_of U (subspace_topology X Tx U) (U :/\: (A_N_eps X Y d fn N eps)) <> Empty)
+                   HN). }
+    claim HintNe: interior_of U (subspace_topology X Tx U) (U :/\: (A_N_eps X Y d fn N eps)) <> Empty.
+    { exact (andER (N :e omega)
+                   (interior_of U (subspace_topology X Tx U) (U :/\: (A_N_eps X Y d fn N eps)) <> Empty)
+                   HN). }
+    claim Hexy: exists y:set, y :e interior_of U (subspace_topology X Tx U) (U :/\: (A_N_eps X Y d fn N eps)).
+    { exact (nonempty_has_element (interior_of U (subspace_topology X Tx U) (U :/\: (A_N_eps X Y d fn N eps))) HintNe). }
+    apply Hexy.
+    let y. assume HyInt: y :e interior_of U (subspace_topology X Tx U) (U :/\: (A_N_eps X Y d fn N eps)).
+    claim HyU: y :e U.
+    { exact (SepE1 U (fun y0:set => exists W:set,
+        W :e subspace_topology X Tx U /\ y0 :e W /\ W c= (U :/\: (A_N_eps X Y d fn N eps))) y HyInt). }
+    claim HexW: exists W:set, W :e subspace_topology X Tx U /\ y :e W /\ W c= (U :/\: (A_N_eps X Y d fn N eps)).
+    { exact (SepE2 U (fun y0:set => exists W:set,
+        W :e subspace_topology X Tx U /\ y0 :e W /\ W c= (U :/\: (A_N_eps X Y d fn N eps))) y HyInt). }
+    apply HexW.
+    let W. assume HW: W :e subspace_topology X Tx U /\ y :e W /\ W c= (U :/\: (A_N_eps X Y d fn N eps)).
+    claim HWpack: (W :e subspace_topology X Tx U /\ y :e W) /\ W c= (U :/\: (A_N_eps X Y d fn N eps)).
+    { exact HW. }
+    claim HW1: W :e subspace_topology X Tx U /\ y :e W.
+    { exact (andEL (W :e subspace_topology X Tx U /\ y :e W)
+                   (W c= (U :/\: (A_N_eps X Y d fn N eps)))
+                   HWpack). }
+    claim HWsub: W c= (U :/\: (A_N_eps X Y d fn N eps)).
+    { exact (andER (W :e subspace_topology X Tx U /\ y :e W)
+                   (W c= (U :/\: (A_N_eps X Y d fn N eps)))
+                   HWpack). }
+    claim HyW: y :e W.
+    { exact (andER (W :e subspace_topology X Tx U) (y :e W) HW1). }
+    claim HWTy: W :e subspace_topology X Tx U.
+    { exact (andEL (W :e subspace_topology X Tx U) (y :e W) HW1). }
+    claim HexV: exists V :e Tx, W = V :/\: U.
+    { exact (subspace_topologyE X Tx U W HWTy). }
+    apply HexV.
+    let V. assume HV: V :e Tx /\ W = V :/\: U.
+    claim HVin: V :e Tx.
+    { exact (andEL (V :e Tx) (W = V :/\: U) HV). }
+    claim HWdef: W = V :/\: U.
+    { exact (andER (V :e Tx) (W = V :/\: U) HV). }
+    claim HWTx: W :e Tx.
+    { rewrite HWdef.
+      exact (lemma_intersection_two_open X Tx V U HTx HVin HU). }
+    claim HWsubA: W c= (A_N_eps X Y d fn N eps).
+    { let z. assume HzW: z :e W.
+      claim HzUA: z :e U :/\: (A_N_eps X Y d fn N eps).
+      { exact (HWsub z HzW). }
+      exact (binintersectE2 U (A_N_eps X Y d fn N eps) z HzUA). }
+    claim HyIntX: y :e interior_of X Tx (A_N_eps X Y d fn N eps).
+    { claim HyX: y :e X.
+      { exact (topology_elem_subset X Tx U HTx HU y HyU). }
+      claim HdefInt: interior_of X Tx (A_N_eps X Y d fn N eps) =
+        {x0 :e X | exists U0:set, U0 :e Tx /\ x0 :e U0 /\ U0 c= (A_N_eps X Y d fn N eps)}.
+      { reflexivity. }
+      rewrite HdefInt.
+      apply (SepI X (fun x0:set => exists U0:set, U0 :e Tx /\ x0 :e U0 /\ U0 c= (A_N_eps X Y d fn N eps)) y HyX).
+      witness W.
+      apply and3I.
+      - exact HWTx.
+      - exact HyW.
+      - exact HWsubA. }
+    (** y belongs to the N-th interior hence to U_eps and also y∈U, so U∩U_eps nonempty **)
+    claim HyInFam: interior_of X Tx (A_N_eps X Y d fn N eps) :e
+      {interior_of X Tx (A_N_eps X Y d fn N0 eps) | N0 :e omega}.
+    { exact (ReplI omega (fun N0:set => interior_of X Tx (A_N_eps X Y d fn N0 eps)) N HNin). }
+    claim HyUeps: y :e U_eps X Tx Y d fn eps.
+    { exact (UnionI {interior_of X Tx (A_N_eps X Y d fn N0 eps) | N0 :e omega}
+                    y
+                    (interior_of X Tx (A_N_eps X Y d fn N eps))
+                    HyIntX
+                    HyInFam). }
+    claim HyInter: y :e U :/\: (U_eps X Tx Y d fn eps).
+    { exact (binintersectI U (U_eps X Tx Y d fn eps) y HyU HyUeps). }
+    exact (elem_implies_nonempty (U :/\: (U_eps X Tx Y d fn eps)) y HyInter).
 Qed.
 
 (** from §48 Theorem 48.5: continuity points of pointwise limit are dense **)
@@ -91273,6 +91529,9 @@ claim HTx: topology_on X Tx.
 claim HcoverAll: forall eps0:set, eps0 :e R -> Rlt 0 eps0 ->
   forall x:set, x :e X -> exists N:set, N :e omega /\ x :e A_N_eps X Y d fn N eps0.
 { admit. (** FAIL **) }
+claim HclosedAll: forall eps0:set, eps0 :e R ->
+  forall N:set, N :e omega -> closed_in X Tx (A_N_eps X Y d fn N eps0).
+{ admit. (** FAIL **) }
 set Ufam := {U_eps X Tx Y d fn (inv_nat (ordsucc n)) | n :e omega}.
 claim HcountOmega: countable_set omega.
 { prove countable_set omega.
@@ -91302,6 +91561,7 @@ claim HUfamSub: Ufam c= Tx.
               dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx.
   { exact (U_eps_open_dense_stub X Tx Y d fn (inv_nat (ordsucc n0))
            HB Hd Hcont
+           (HclosedAll (inv_nat (ordsucc n0)) HepsR)
            (HcoverAll (inv_nat (ordsucc n0)) HepsR HepsPos)
            HepsR HepsPos). }
   claim Hop: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))).
@@ -91335,6 +91595,7 @@ claim HUfamDense: forall u:set, u :e Ufam -> u :e Tx /\ dense_in u X Tx.
               dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx.
   { exact (U_eps_open_dense_stub X Tx Y d fn (inv_nat (ordsucc n0))
            HB Hd Hcont
+           (HclosedAll (inv_nat (ordsucc n0)) HepsR)
            (HcoverAll (inv_nat (ordsucc n0)) HepsR HepsPos)
            HepsR HepsPos). }
   claim Hop: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))).
