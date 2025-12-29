@@ -88410,8 +88410,270 @@ apply andI.
   set WF := {w :e W | w :/\: F <> Empty}.
   set V := Union WF.
 
-  (** goal structure for the standard proof is nontrivial; keep a stable admitted endpoint for now **)
-  admit. (** FAIL **)
+  (** unpack refinement data **)
+  claim HWpair: open_cover X Tx W /\ locally_finite_family X Tx W.
+  { exact (andEL (open_cover X Tx W /\ locally_finite_family X Tx W)
+                 (refine_of W Cover)
+                 HW). }
+  claim HWref: refine_of W Cover.
+  { exact (andER (open_cover X Tx W /\ locally_finite_family X Tx W)
+                 (refine_of W Cover)
+                 HW). }
+  claim HWcover: open_cover X Tx W.
+  { exact (andEL (open_cover X Tx W) (locally_finite_family X Tx W) HWpair). }
+  claim HLFW: locally_finite_family X Tx W.
+  { exact (andER (open_cover X Tx W) (locally_finite_family X Tx W) HWpair). }
+  claim HWopen: forall w:set, w :e W -> w :e Tx.
+  { exact (andEL (forall w:set, w :e W -> w :e Tx) (covers X W) HWcover). }
+  claim HWcovers: covers X W.
+  { exact (andER (forall w:set, w :e W -> w :e Tx) (covers X W) HWcover). }
+
+  (** WF is a locally finite open family **)
+  claim HWFsubW: WF c= W.
+  { exact (Sep_Subq W (fun w:set => w :/\: F <> Empty)). }
+  claim HLF_WF: locally_finite_family X Tx WF.
+  { exact (locally_finite_subfamily X Tx W WF HLFW HWFsubW). }
+  claim HWFsubTx: WF c= Tx.
+  { let w. assume HwWF: w :e WF.
+    claim HwW: w :e W.
+    { exact (SepE1 W (fun w0:set => w0 :/\: F <> Empty) w HwWF). }
+    exact (HWopen w HwW). }
+
+  (** V is open and contains F **)
+  claim HVTx: V :e Tx.
+  { exact (topology_union_closed X Tx WF HTx HWFsubTx). }
+  claim HVsubX: V c= X.
+  { let z. assume HzV: z :e V.
+    apply (UnionE_impred WF z HzV).
+    let w. assume Hzw: z :e w.
+    assume HwWF: w :e WF.
+    claim HwTx: w :e Tx.
+    { exact (HWFsubTx w HwWF). }
+    claim HwsubX: w c= X.
+    { exact (topology_elem_subset X Tx w HTx HwTx). }
+    exact (HwsubX z Hzw). }
+  claim HFsubV: F c= V.
+  { let y. assume HyF: y :e F.
+    prove y :e V.
+    claim HyX: y :e X.
+    { exact (HFsubX y HyF). }
+    apply (HWcovers y HyX).
+    let w. assume HwW: w :e W /\ y :e w.
+    claim HwInW: w :e W.
+    { exact (andEL (w :e W) (y :e w) HwW). }
+    claim Hyw: y :e w.
+    { exact (andER (w :e W) (y :e w) HwW). }
+    claim HwFnon: w :/\: F <> Empty.
+    { exact (elem_implies_nonempty (w :/\: F) y (binintersectI w F y Hyw HyF)). }
+    claim HwWF: w :e WF.
+    { exact (SepI W (fun w0:set => w0 :/\: F <> Empty) w HwInW HwFnon). }
+    exact (UnionI WF y w Hyw HwWF). }
+
+  (** build the closed set C := Union closures(WF) = closure(V) and take U = X\\C **)
+  set ClWF := {closure_of X Tx w|w :e WF}.
+  set C := Union ClWF.
+  claim HWFsubX: forall w:set, w :e WF -> w c= X.
+  { let w. assume HwWF: w :e WF.
+    claim HwTx: w :e Tx.
+    { exact (HWFsubTx w HwWF). }
+    exact (topology_elem_subset X Tx w HTx HwTx). }
+  claim HVdef: V = Union WF.
+  { reflexivity. }
+  claim HclVsubC': closure_of X Tx (Union WF) c= C.
+  { exact (closure_Union_locally_finite_subset_Union_closures X Tx WF HWFsubX HLF_WF). }
+  claim HclVsubC: closure_of X Tx V c= C.
+  { rewrite HVdef.
+    exact HclVsubC'. }
+
+  claim HCsubclV: C c= closure_of X Tx V.
+  { let z. assume HzC: z :e C.
+    prove z :e closure_of X Tx V.
+    apply (UnionE_impred ClWF z HzC).
+    let clw. assume Hzclw: z :e clw.
+    assume Hclw: clw :e ClWF.
+    apply (ReplE_impred WF (fun w:set => closure_of X Tx w) clw Hclw).
+    let w. assume HwWF: w :e WF.
+    assume Hclweq: clw = closure_of X Tx w.
+    claim Hzclw2: z :e closure_of X Tx w.
+    { rewrite <- Hclweq.
+      exact Hzclw. }
+    (** w c= V and V c= X, hence closure(w) c= closure(V) **)
+    claim HwsubV: w c= V.
+    { let t. assume Htw: t :e w.
+      exact (UnionI WF t w Htw HwWF). }
+    claim Hclwsub: closure_of X Tx w c= closure_of X Tx V.
+    { exact (closure_monotone X Tx w V HTx HwsubV HVsubX). }
+    exact (Hclwsub z Hzclw2). }
+
+  claim HCeq: closure_of X Tx V = C.
+  { apply set_ext.
+    - exact HclVsubC.
+    - exact HCsubclV. }
+
+  claim HCclosed: closed_in X Tx C.
+  { rewrite <- HCeq.
+    exact (closure_is_closed X Tx V HTx HVsubX). }
+  set U := X :\: C.
+  claim HUopen: open_in X Tx U.
+  { exact (open_of_closed_complement X Tx C HCclosed). }
+  claim HUTx: U :e Tx.
+  { exact (open_in_elem X Tx U HUopen). }
+
+  (** x belongs to U by showing x is in no closure(w) for w in WF **)
+  claim HxNotC: x /:e C.
+  { assume HxC: x :e C.
+    apply (UnionE_impred ClWF x HxC).
+    let clw. assume Hxclw: x :e clw.
+    assume Hclw: clw :e ClWF.
+    apply (ReplE_impred WF (fun w:set => closure_of X Tx w) clw Hclw).
+    let w. assume HwWF: w :e WF.
+    assume Hclweq: clw = closure_of X Tx w.
+    claim Hxclw2: x :e closure_of X Tx w.
+    { rewrite <- Hclweq.
+      exact Hxclw. }
+    (** get u in Cover with w c= u; since w meets F, u cannot be U0, hence u = sepV y for some y∈F **)
+    claim HwW: w :e W.
+    { exact (HWFsubW w HwWF). }
+    claim Hexu: exists u:set, u :e Cover /\ w c= u.
+    { exact (HWref w HwW). }
+    apply Hexu.
+    let u. assume Hu: u :e Cover /\ w c= u.
+    claim HuCover: u :e Cover.
+    { exact (andEL (u :e Cover) (w c= u) Hu). }
+    claim Hwsubu: w c= u.
+    { exact (andER (u :e Cover) (w c= u) Hu). }
+    (** split u ∈ {U0} ∪ VFam **)
+    claim HxNotclw: x /:e closure_of X Tx w.
+    { apply (binunionE {U0} VFam u HuCover).
+      - assume Hu0: u :e {U0}.
+        claim Hueq: u = U0.
+        { exact (SingE U0 u Hu0). }
+        claim HwsubU0: w c= U0.
+        { let t. assume Htw: t :e w.
+          prove t :e U0.
+          rewrite <- Hueq.
+          exact (Hwsubu t Htw). }
+        (** w ⊆ U0 implies w∩F = Empty, contradicting w∈WF **)
+        claim HwFnon: w :/\: F <> Empty.
+        { exact (SepE2 W (fun w0:set => w0 :/\: F <> Empty) w HwWF). }
+        claim HwFsubEmpty: w :/\: F c= Empty.
+        { let t. assume Ht: t :e w :/\: F.
+          prove t :e Empty.
+          claim Htpair: t :e w /\ t :e F.
+          { exact (binintersectE w F t Ht). }
+          claim Htw: t :e w.
+          { exact (andEL (t :e w) (t :e F) Htpair). }
+          claim HtF: t :e F.
+          { exact (andER (t :e w) (t :e F) Htpair). }
+          claim HtU0: t :e U0.
+          { exact (HwsubU0 t Htw). }
+          claim HtNotF: t /:e F.
+          { exact (setminusE2 X F t HtU0). }
+          apply FalseE.
+          exact (HtNotF HtF). }
+        claim HwFEmpty: w :/\: F = Empty.
+        { exact (Empty_Subq_eq (w :/\: F) HwFsubEmpty). }
+        apply FalseE.
+        exact (HwFnon HwFEmpty).
+      - assume HuV: u :e VFam.
+        (** obtain y with u = sepV y **)
+        apply (ReplE_impred F (fun y0:set => sepV y0) u HuV (x /:e closure_of X Tx w)).
+        let y. assume HyF: y :e F.
+        assume Hueq: u = sepV y.
+        claim HwsubVy: w c= sepV y.
+        { let t. assume Htw: t :e w.
+          prove t :e sepV y.
+          rewrite <- Hueq.
+          exact (Hwsubu t Htw). }
+        claim Hsep: (sepU y) :e Tx /\ (sepV y) :e Tx /\ x :e (sepU y) /\ y :e (sepV y) /\ (sepU y) :/\: (sepV y) = Empty.
+        { exact (HsepVprop y HyF). }
+        claim Hleft: (((sepU y) :e Tx /\ (sepV y) :e Tx) /\ x :e (sepU y) /\ y :e (sepV y)).
+        { exact (andEL ((((sepU y) :e Tx /\ (sepV y) :e Tx) /\ x :e (sepU y) /\ y :e (sepV y)))
+                       ((sepU y) :/\: (sepV y) = Empty)
+                       Hsep). }
+        claim Hdisj: (sepU y) :/\: (sepV y) = Empty.
+        { exact (andER ((((sepU y) :e Tx /\ (sepV y) :e Tx) /\ x :e (sepU y) /\ y :e (sepV y)))
+                       ((sepU y) :/\: (sepV y) = Empty)
+                       Hsep). }
+        claim Htmp: (((sepU y) :e Tx /\ (sepV y) :e Tx) /\ x :e (sepU y)).
+        { exact (andEL ((((sepU y) :e Tx /\ (sepV y) :e Tx) /\ x :e (sepU y)))
+                       (y :e (sepV y))
+                       Hleft). }
+        claim HUV: ((sepU y) :e Tx /\ (sepV y) :e Tx).
+        { exact (andEL (((sepU y) :e Tx /\ (sepV y) :e Tx))
+                       (x :e (sepU y))
+                       Htmp). }
+        claim HUyTx: (sepU y) :e Tx.
+        { exact (andEL ((sepU y) :e Tx) ((sepV y) :e Tx) HUV). }
+        claim HxUy: x :e sepU y.
+        { exact (andER (((sepU y) :e Tx /\ (sepV y) :e Tx)) (x :e (sepU y)) Htmp). }
+        (** sepU y is a neighborhood of x disjoint from w (since w ⊆ sepV y) **)
+        claim HUywEmpty: (sepU y) :/\: w = Empty.
+        { apply Empty_Subq_eq.
+          let t. assume Ht: t :e (sepU y) :/\: w.
+          prove t :e Empty.
+          claim Htpair: t :e sepU y /\ t :e w.
+          { exact (binintersectE (sepU y) w t Ht). }
+          claim HtUy: t :e sepU y.
+          { exact (andEL (t :e sepU y) (t :e w) Htpair). }
+          claim Htw: t :e w.
+          { exact (andER (t :e sepU y) (t :e w) Htpair). }
+          claim HtVy: t :e sepV y.
+          { exact (HwsubVy t Htw). }
+          claim HtUyVy: t :e (sepU y) :/\: (sepV y).
+          { exact (binintersectI (sepU y) (sepV y) t HtUy HtVy). }
+          rewrite <- Hdisj.
+          exact HtUyVy. }
+        (** if x were in closure(w), then sepU y ∩ w would be nonempty, contradiction **)
+        claim Hclprop: forall U:set, U :e Tx -> x :e U -> U :/\: w <> Empty.
+        { exact (SepE2 X (fun x0:set => forall U:set, U :e Tx -> x0 :e U -> U :/\: w <> Empty) x Hxclw2). }
+        claim Hnon: (sepU y) :/\: w <> Empty.
+        { exact (Hclprop (sepU y) HUyTx HxUy). }
+        apply FalseE.
+        exact (Hnon HUywEmpty). }
+    exact (HxNotclw Hxclw2).
+  }
+
+  claim HxU: x :e U.
+  { exact (setminusI X C x HxX HxNotC). }
+
+  (** U and V are disjoint since V ⊆ C **)
+  claim HVsubC: V c= C.
+  { let z. assume HzV: z :e V.
+    prove z :e C.
+    apply (UnionE_impred WF z HzV).
+    let w. assume Hzw: z :e w.
+    assume HwWF: w :e WF.
+    claim HwsubX: w c= X.
+    { exact (HWFsubX w HwWF). }
+    claim Hzclw: z :e closure_of X Tx w.
+    { exact (subset_of_closure X Tx w HTx HwsubX z Hzw). }
+    exact (UnionI ClWF z (closure_of X Tx w) Hzclw (ReplI WF (fun w0:set => closure_of X Tx w0) w HwWF)). }
+  claim HUdisjV: U :/\: V = Empty.
+  { apply Empty_Subq_eq.
+    let z. assume Hz: z :e U :/\: V.
+    prove z :e Empty.
+    claim Hzpair: z :e U /\ z :e V.
+    { exact (binintersectE U V z Hz). }
+    claim HzU: z :e U.
+    { exact (andEL (z :e U) (z :e V) Hzpair). }
+    claim HzV: z :e V.
+    { exact (andER (z :e U) (z :e V) Hzpair). }
+    claim HzNotC: z /:e C.
+    { exact (setminusE2 X C z HzU). }
+    claim HzC: z :e C.
+    { exact (HVsubC z HzV). }
+    apply FalseE.
+    exact (HzNotC HzC). }
+
+  witness U.
+  witness V.
+  apply and5I.
+  - exact HUTx.
+  - exact HVTx.
+  - exact HxU.
+  - exact HFsubV.
+  - exact HUdisjV.
 Qed.
 
 (** from §41 Theorem: paracompact Hausdorff implies normal **) 
