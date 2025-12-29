@@ -65847,12 +65847,18 @@ claim HHausY: Hausdorff_space Y Ty.
 	           claim HPredUV:
 	             (p /:e U :/\: V /\ U :/\: V :e Tx) \/
 	             (p :e U :/\: V /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U :/\: V = Y :\: K0).
-	           { claim HUVinTx2: U :/\: V :e Tx.
-	             { rewrite HUVeq. exact HUVinTx. }
-	             exact (orIL (p /:e U :/\: V /\ U :/\: V :e Tx)
-	                         (p :e U :/\: V /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U :/\: V = Y :\: K0)
-	                         (andI (p /:e U :/\: V) (U :/\: V :e Tx) HpnotUV HUVinTx2)). }
-	           admit.
+		           { claim HUVinTx2: U :/\: V :e Tx.
+		             { rewrite HUVeq. exact HUVinTx. }
+		             exact (orIL (p /:e U :/\: V /\ U :/\: V :e Tx)
+		                         (p :e U :/\: V /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U :/\: V = Y :\: K0)
+		                         (andI (p /:e U :/\: V) (U :/\: V :e Tx) HpnotUV HUVinTx2)). }
+		           exact (SepI (Power Y)
+		                       (fun U0:set =>
+		                         (p /:e U0 /\ U0 :e Tx) \/
+		                         (p :e U0 /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U0 = Y :\: K0))
+		                       (U :/\: V)
+		                       HUVpowY
+		                       HPredUV).
       * assume HcaseU: p :e U /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U = Y :\: K.
         admit.
   - (** separation axiom **)
