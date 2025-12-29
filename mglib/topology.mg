@@ -65002,7 +65002,420 @@ Qed.
 Theorem limit_point_compact_not_necessarily_compact :
   exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
 prove exists X Tx:set, limit_point_compact X Tx /\ ~ compact_space X Tx.
-admit. (** FAIL **)
+set Y := {0,1}.
+set Ty := indiscrete_topology Y.
+set Tx0 := discrete_topology omega.
+set X := setprod omega Y.
+set Tx := product_topology omega Tx0 Y Ty.
+witness X.
+witness Tx.
+apply andI.
+- (** limit_point_compact X Tx **)
+  prove limit_point_compact X Tx.
+  prove topology_on X Tx /\
+    forall A:set, A c= X -> infinite A -> exists x:set, limit_point_of X Tx A x.
+  apply andI.
+  + (** topology_on X Tx **)
+    exact (product_topology_is_topology omega Tx0 Y Ty (discrete_topology_on omega) (indiscrete_topology_on Y)).
+  + (** every infinite A has a limit point **)
+    let A.
+    assume HA: A c= X.
+    assume HinfA: infinite A.
+    prove exists x:set, limit_point_of X Tx A x.
+    (** First: A is nonempty since Empty is finite. **)
+	    claim HAnotEmpty: A <> Empty.
+	    { apply (xm (A = Empty)).
+	      - assume HAeq: A = Empty.
+	        apply FalseE.
+	        prove False.
+	        apply HinfA.
+	        rewrite HAeq.
+	        exact finite_Empty.
+	      - assume Hneq: A <> Empty.
+	        exact Hneq. }
+    (** Extract an element a :e A by classical reasoning. **)
+    claim Hexa: exists a:set, a :e A.
+    { apply (xm (exists a:set, a :e A)).
+      - assume Hex. exact Hex.
+	      - assume Hnoex: ~(exists a:set, a :e A).
+	        apply FalseE.
+	        prove False.
+	        apply HAnotEmpty.
+	        apply set_ext.
+	        + let x. assume HxA: x :e A.
+	          apply FalseE.
+	          prove False.
+	          claim Hex: exists a:set, a :e A.
+	          { witness x.
+	            exact HxA. }
+	          exact (Hnoex Hex).
+		        + let x. assume HxE: x :e Empty.
+		          apply FalseE.
+		          prove False.
+		          apply (EmptyE x).
+		          exact HxE. }
+    apply Hexa.
+    let a. assume HaA: a :e A.
+    claim HaX: a :e X.
+    { exact (HA a HaA). }
+    claim Ha0w: a 0 :e omega.
+    { exact (ap0_Sigma omega (fun _ : set => Y) a HaX). }
+    claim Ha1Y: a 1 :e Y.
+    { exact (ap1_Sigma omega (fun _ : set => Y) a HaX). }
+    claim Ha1cases: a 1 = 0 \/ a 1 = 1.
+    { exact (UPairE (a 1) 0 1 Ha1Y). }
+    apply Ha1cases.
+    * (** Case a = (a0,0); use x = (a0,1) as a limit point. **)
+      assume Ha10: a 1 = 0.
+      set x := (a 0, 1).
+      witness x.
+      prove limit_point_of X Tx A x.
+	      prove topology_on X Tx /\ x :e X /\
+	        forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+	      apply andI.
+	      - apply andI.
+	        + (** topology_on X Tx **)
+	          exact (product_topology_is_topology omega Tx0 Y Ty (discrete_topology_on omega) (indiscrete_topology_on Y)).
+	        + (** x :e X **)
+	          claim H1Y: 1 :e Y.
+	          { exact (UPairI2 0 1). }
+	          exact (tuple_2_setprod_by_pair_Sigma omega Y (a 0) 1 Ha0w H1Y).
+	      - (** neighborhood condition **)
+	        let U. assume HU: U :e Tx. assume HxU: x :e U.
+	        prove exists y:set, y :e A /\ y <> x /\ y :e U.
+         (** Use the generated_topology neighborhood property to find a basis rectangle b ⊂ U with x ∈ b. **)
+         claim HUprop: forall p :e U, exists b :e product_subbasis omega Tx0 Y Ty, p :e b /\ b c= U.
+         { exact (SepE2 (Power X)
+                        (fun U0 : set => forall p0 :e U0,
+                           exists b :e product_subbasis omega Tx0 Y Ty, p0 :e b /\ b c= U0)
+                        U HU). }
+	         claim Hexb: exists b :e product_subbasis omega Tx0 Y Ty, x :e b /\ b c= U.
+	         { exact (HUprop x HxU). }
+	         apply Hexb.
+	         let b. assume Hbp: b :e product_subbasis omega Tx0 Y Ty /\ (x :e b /\ b c= U).
+	         claim HbB: b :e product_subbasis omega Tx0 Y Ty.
+	         { exact (andEL (b :e product_subbasis omega Tx0 Y Ty) (x :e b /\ b c= U) Hbp). }
+	         claim Hbprop: x :e b /\ b c= U.
+	         { exact (andER (b :e product_subbasis omega Tx0 Y Ty) (x :e b /\ b c= U) Hbp). }
+	         claim Hxb: x :e b.
+	         { exact (andEL (x :e b) (b c= U) Hbprop). }
+	         claim HbsubU: b c= U.
+	         { exact (andER (x :e b) (b c= U) Hbprop). }
+         (** Decode b as a rectangle_set U0 V0. **)
+         claim HexU0: exists U0 :e Tx0, b :e {rectangle_set U0 V|V :e Ty}.
+         { exact (famunionE Tx0 (fun U0:set => {rectangle_set U0 V|V :e Ty}) b HbB). }
+         apply HexU0.
+         let U0. assume HU0pair: U0 :e Tx0 /\ b :e {rectangle_set U0 V|V :e Ty}.
+         claim HU0: U0 :e Tx0.
+         { exact (andEL (U0 :e Tx0) (b :e {rectangle_set U0 V|V :e Ty}) HU0pair). }
+         claim HbRepl: b :e {rectangle_set U0 V|V :e Ty}.
+         { exact (andER (U0 :e Tx0) (b :e {rectangle_set U0 V|V :e Ty}) HU0pair). }
+         claim HexV0: exists V0 :e Ty, b = rectangle_set U0 V0.
+         { exact (ReplE Ty (fun V0:set => rectangle_set U0 V0) b HbRepl). }
+         apply HexV0.
+         let V0. assume HV0pair: V0 :e Ty /\ b = rectangle_set U0 V0.
+         claim HV0: V0 :e Ty.
+         { exact (andEL (V0 :e Ty) (b = rectangle_set U0 V0) HV0pair). }
+         claim Hbeq: b = rectangle_set U0 V0.
+         { exact (andER (V0 :e Ty) (b = rectangle_set U0 V0) HV0pair). }
+         (** From x ∈ b = U0×V0, infer a0 ∈ U0 and 1 ∈ V0. **)
+         claim HxRect: x :e rectangle_set U0 V0.
+         { rewrite <- Hbeq. exact Hxb. }
+         claim Hx0U0: x 0 :e U0.
+         { exact (ap0_Sigma U0 (fun _ : set => V0) x HxRect). }
+         claim Hx1V0: x 1 :e V0.
+         { exact (ap1_Sigma U0 (fun _ : set => V0) x HxRect). }
+         claim Hx0eq: x 0 = a 0.
+         { exact (tuple_2_0_eq (a 0) 1). }
+         claim Hx1eq: x 1 = 1.
+         { exact (tuple_2_1_eq (a 0) 1). }
+         claim Ha0U0: a 0 :e U0.
+         { rewrite <- Hx0eq.
+           exact Hx0U0. }
+         (** In the indiscrete topology, the only nonempty open is Y, so V0 = Y. **)
+         claim HV0cases: V0 = Empty \/ V0 = Y.
+         { exact (UPairE V0 Empty Y HV0). }
+         claim HV0ne: V0 <> Empty.
+         { exact (elem_implies_nonempty V0 (x 1) Hx1V0). }
+         claim HV0Y: V0 = Y.
+         { apply HV0cases.
+           - assume HV0E: V0 = Empty.
+             apply FalseE.
+             prove False.
+             exact (HV0ne HV0E).
+           - assume HV0Y': V0 = Y.
+             exact HV0Y'. }
+	         claim HxRectY: x :e rectangle_set U0 Y.
+	         { rewrite <- HV0Y.
+	           exact HxRect. }
+         (** Now show a ∈ b ⊆ U, hence a ∈ U. **)
+         claim HaEta: a = (a 0, a 1).
+         { exact (setprod_eta omega Y a HaX). }
+         claim H0Y: 0 :e Y.
+         { exact (UPairI1 0 1). }
+         claim HaInRect: a :e rectangle_set U0 V0.
+         { rewrite HV0Y.
+           rewrite HaEta.
+           rewrite Ha10.
+           exact (tuple_2_setprod_by_pair_Sigma U0 Y (a 0) 0 Ha0U0 H0Y). }
+         claim HaInb: a :e b.
+         { rewrite Hbeq.
+           exact HaInRect. }
+	         claim HaU: a :e U.
+	         { exact (HbsubU a HaInb). }
+	         witness a.
+	         apply andI.
+	         - apply andI.
+	           + exact HaA.
+	           + prove a <> x.
+		             assume Heq: a = x.
+		             claim Heq1: a 1 = x 1.
+		             { rewrite <- Heq.
+		               reflexivity. }
+		             claim H01: 0 = 1.
+		             { rewrite <- Ha10 at 1.
+		               rewrite <- Hx1eq at 2.
+		               exact Heq1. }
+	             exact (neq_0_1 H01).
+	         - exact HaU.
+    * (** Case a = (a0,1); use x = (a0,0) as a limit point. **)
+      assume Ha11: a 1 = 1.
+      set x := (a 0, 0).
+      witness x.
+      prove limit_point_of X Tx A x.
+	      prove topology_on X Tx /\ x :e X /\
+	        forall U:set, U :e Tx -> x :e U -> exists y:set, y :e A /\ y <> x /\ y :e U.
+	      apply andI.
+	      - apply andI.
+	        + exact (product_topology_is_topology omega Tx0 Y Ty (discrete_topology_on omega) (indiscrete_topology_on Y)).
+	        + claim H0Y: 0 :e Y.
+	          { exact (UPairI1 0 1). }
+	          exact (tuple_2_setprod_by_pair_Sigma omega Y (a 0) 0 Ha0w H0Y).
+	      - let U. assume HU: U :e Tx. assume HxU: x :e U.
+	        prove exists y:set, y :e A /\ y <> x /\ y :e U.
+         claim HUprop: forall p :e U, exists b :e product_subbasis omega Tx0 Y Ty, p :e b /\ b c= U.
+         { exact (SepE2 (Power X)
+                        (fun U0 : set => forall p0 :e U0,
+                           exists b :e product_subbasis omega Tx0 Y Ty, p0 :e b /\ b c= U0)
+                        U HU). }
+	         claim Hexb: exists b :e product_subbasis omega Tx0 Y Ty, x :e b /\ b c= U.
+	         { exact (HUprop x HxU). }
+	         apply Hexb.
+	         let b. assume Hbp: b :e product_subbasis omega Tx0 Y Ty /\ (x :e b /\ b c= U).
+	         claim HbB: b :e product_subbasis omega Tx0 Y Ty.
+	         { exact (andEL (b :e product_subbasis omega Tx0 Y Ty) (x :e b /\ b c= U) Hbp). }
+	         claim Hbprop: x :e b /\ b c= U.
+	         { exact (andER (b :e product_subbasis omega Tx0 Y Ty) (x :e b /\ b c= U) Hbp). }
+	         claim Hxb: x :e b.
+	         { exact (andEL (x :e b) (b c= U) Hbprop). }
+	         claim HbsubU: b c= U.
+	         { exact (andER (x :e b) (b c= U) Hbprop). }
+         claim HexU0: exists U0 :e Tx0, b :e {rectangle_set U0 V|V :e Ty}.
+         { exact (famunionE Tx0 (fun U0:set => {rectangle_set U0 V|V :e Ty}) b HbB). }
+         apply HexU0.
+         let U0. assume HU0pair: U0 :e Tx0 /\ b :e {rectangle_set U0 V|V :e Ty}.
+         claim HbRepl: b :e {rectangle_set U0 V|V :e Ty}.
+         { exact (andER (U0 :e Tx0) (b :e {rectangle_set U0 V|V :e Ty}) HU0pair). }
+         claim HexV0: exists V0 :e Ty, b = rectangle_set U0 V0.
+         { exact (ReplE Ty (fun V0:set => rectangle_set U0 V0) b HbRepl). }
+         apply HexV0.
+         let V0. assume HV0pair: V0 :e Ty /\ b = rectangle_set U0 V0.
+         claim HV0: V0 :e Ty.
+         { exact (andEL (V0 :e Ty) (b = rectangle_set U0 V0) HV0pair). }
+         claim Hbeq: b = rectangle_set U0 V0.
+         { exact (andER (V0 :e Ty) (b = rectangle_set U0 V0) HV0pair). }
+         claim HxRect: x :e rectangle_set U0 V0.
+         { rewrite <- Hbeq. exact Hxb. }
+         claim Hx0U0: x 0 :e U0.
+         { exact (ap0_Sigma U0 (fun _ : set => V0) x HxRect). }
+         claim Hx1V0: x 1 :e V0.
+         { exact (ap1_Sigma U0 (fun _ : set => V0) x HxRect). }
+         claim Hx0eq: x 0 = a 0.
+         { exact (tuple_2_0_eq (a 0) 0). }
+         claim Hx1eq: x 1 = 0.
+         { exact (tuple_2_1_eq (a 0) 0). }
+         claim Ha0U0: a 0 :e U0.
+         { rewrite <- Hx0eq.
+           exact Hx0U0. }
+         claim HV0cases: V0 = Empty \/ V0 = Y.
+         { exact (UPairE V0 Empty Y HV0). }
+         claim HV0ne: V0 <> Empty.
+         { exact (elem_implies_nonempty V0 (x 1) Hx1V0). }
+         claim HV0Y: V0 = Y.
+         { apply HV0cases.
+           - assume HV0E: V0 = Empty.
+             apply FalseE.
+             prove False.
+             exact (HV0ne HV0E).
+           - assume HV0Y': V0 = Y.
+             exact HV0Y'. }
+         claim HaEta: a = (a 0, a 1).
+         { exact (setprod_eta omega Y a HaX). }
+         claim H1Y: 1 :e Y.
+         { exact (UPairI2 0 1). }
+         claim HaInRect: a :e rectangle_set U0 V0.
+         { rewrite HV0Y.
+           rewrite HaEta.
+           rewrite Ha11.
+           exact (tuple_2_setprod_by_pair_Sigma U0 Y (a 0) 1 Ha0U0 H1Y). }
+         claim HaInb: a :e b.
+         { rewrite Hbeq.
+           exact HaInRect. }
+	         claim HaU: a :e U.
+	         { exact (HbsubU a HaInb). }
+	         witness a.
+	         apply andI.
+	         - apply andI.
+	           + exact HaA.
+	           + prove a <> x.
+		             assume Heq: a = x.
+		             claim Heq1: a 1 = x 1.
+		             { rewrite <- Heq.
+		               reflexivity. }
+		             claim H01: 0 = 1.
+		             { rewrite <- Ha11 at 1.
+		               rewrite <- Hx1eq at 1.
+		               rewrite Heq1.
+		               reflexivity. }
+	             exact (neq_0_1 H01).
+	         - exact HaU.
+- (** ~ compact_space X Tx **)
+  prove ~ compact_space X Tx.
+  assume Hcomp: compact_space X Tx.
+  (** Define the standard open cover by vertical fibers {n}×Y. **)
+	  set Fam := {rectangle_set {n} Y|n :e omega}.
+	  claim Hcov: open_cover_of X Tx Fam.
+	  { prove topology_on X Tx /\ Fam c= Power X /\ X c= Union Fam /\ (forall U0:set, U0 :e Fam -> U0 :e Tx).
+	    (** conjunction is left-associative: ((topology_on /\ FamSub) /\ Xcov) /\ AllOpen **)
+	    apply andI.
+	    - apply andI.
+	      + (** topology_on /\ Fam c= Power X **)
+	        apply andI.
+	        * exact (product_topology_is_topology omega Tx0 Y Ty (discrete_topology_on omega) (indiscrete_topology_on Y)).
+	        * (** Fam c= Power X **)
+	          let U0. assume HU0: U0 :e Fam.
+	          prove U0 :e Power X.
+	          apply (ReplE omega (fun n:set => rectangle_set {n} Y) U0 HU0).
+	          let n. assume Hnconj: n :e omega /\ U0 = rectangle_set {n} Y.
+	          claim Hn: n :e omega.
+	          { exact (andEL (n :e omega) (U0 = rectangle_set {n} Y) Hnconj). }
+	          claim HU0eq: U0 = rectangle_set {n} Y.
+	          { exact (andER (n :e omega) (U0 = rectangle_set {n} Y) Hnconj). }
+	          claim HsingSub: {n} c= omega.
+	          { exact (singleton_subset n omega Hn). }
+	          claim HrectSub: rectangle_set {n} Y c= X.
+	          { exact (setprod_Subq {n} Y omega Y HsingSub (Subq_ref Y)). }
+	          rewrite HU0eq.
+	          exact (PowerI X (rectangle_set {n} Y) HrectSub).
+	      + (** X c= Union Fam **)
+	        let p. assume HpX: p :e X.
+	        prove p :e Union Fam.
+	        claim Hp0w: p 0 :e omega.
+	        { exact (ap0_Sigma omega (fun _ : set => Y) p HpX). }
+	        claim Hp1Y: p 1 :e Y.
+	        { exact (ap1_Sigma omega (fun _ : set => Y) p HpX). }
+	        claim HpEta: p = (p 0, p 1).
+	        { exact (setprod_eta omega Y p HpX). }
+	        claim HU0Fam: rectangle_set {p 0} Y :e Fam.
+	        { exact (ReplI omega (fun n:set => rectangle_set {n} Y) (p 0) Hp0w). }
+		        claim HpU0: p :e rectangle_set {p 0} Y.
+		        { rewrite HpEta at 1.
+		          claim Hsing: p 0 :e {p 0}.
+		          { exact (SingI (p 0)). }
+		          exact (tuple_2_rectangle_set {p 0} Y (p 0) (p 1) Hsing Hp1Y). }
+	        exact (UnionI Fam p (rectangle_set {p 0} Y) HpU0 HU0Fam).
+	    - (** every U0 ∈ Fam is open in Tx **)
+	      let U0. assume HU0: U0 :e Fam.
+	      prove U0 :e Tx.
+	      apply (ReplE omega (fun n:set => rectangle_set {n} Y) U0 HU0).
+	      let n. assume Hnconj: n :e omega /\ U0 = rectangle_set {n} Y.
+	      claim Hn: n :e omega.
+	      { exact (andEL (n :e omega) (U0 = rectangle_set {n} Y) Hnconj). }
+	      claim HU0eq: U0 = rectangle_set {n} Y.
+	      { exact (andER (n :e omega) (U0 = rectangle_set {n} Y) Hnconj). }
+	      claim HTx0: topology_on omega Tx0.
+	      { exact (discrete_topology_on omega). }
+	      claim HTy: topology_on Y Ty.
+	      { exact (indiscrete_topology_on Y). }
+	      claim HBasis: basis_on X (product_subbasis omega Tx0 Y Ty).
+	      { exact (product_subbasis_is_basis omega Tx0 Y Ty HTx0 HTy). }
+	      claim HsingOpen: {n} :e Tx0.
+	      { apply PowerI.
+	        exact (singleton_subset n omega Hn). }
+	      claim HYopen: Y :e Ty.
+	      { exact (topology_has_X Y Ty HTy). }
+	      claim HU0sub: rectangle_set {n} Y :e product_subbasis omega Tx0 Y Ty.
+	      { claim HrectFam: rectangle_set {n} Y :e {rectangle_set {n} V0|V0 :e Ty}.
+	        { exact (ReplI Ty (fun V0:set => rectangle_set {n} V0) Y HYopen). }
+	        exact (famunionI Tx0 (fun U1:set => {rectangle_set U1 V0|V0 :e Ty}) {n} (rectangle_set {n} Y) HsingOpen HrectFam). }
+	      rewrite HU0eq.
+	      exact (generated_topology_contains_basis X (product_subbasis omega Tx0 Y Ty) HBasis (rectangle_set {n} Y) HU0sub). }
+  claim Hfin: has_finite_subcover X Tx Fam.
+  { exact (compact_space_subcover_property X Tx Hcomp Fam Hcov). }
+	  (** Any finite subcover induces a finite set of indices covering all of omega; contradiction. **)
+	  apply Hfin.
+	  let G. assume HG: G c= Fam /\ finite G /\ X c= Union G.
+	  (** conjunction is left-associative: (G⊆Fam /\ finite G) /\ X⊆Union G **)
+	  claim HGleft: G c= Fam /\ finite G.
+	  { exact (andEL (G c= Fam /\ finite G) (X c= Union G) HG). }
+	  claim HcovG: X c= Union G.
+	  { exact (andER (G c= Fam /\ finite G) (X c= Union G) HG). }
+	  claim HGsub: G c= Fam.
+	  { exact (andEL (G c= Fam) (finite G) HGleft). }
+	  claim HGfin: finite G.
+	  { exact (andER (G c= Fam) (finite G) HGleft). }
+  (** PickN associates to each g∈G its unique index n with g = {n}×Y. **)
+  set pickN := fun g:set => Eps_i (fun n:set => n :e omega /\ g = rectangle_set {n} Y).
+  set N := {pickN g|g :e G}.
+  claim HNfin: finite N.
+  { exact (Repl_finite (fun g:set => pickN g) G HGfin). }
+  (** omega ⊆ N because G covers every (m,0). **)
+  claim H0Y: 0 :e Y.
+  { exact (UPairI1 0 1). }
+  claim HomegaSub: omega c= N.
+  { let m. assume Hm: m :e omega.
+    prove m :e N.
+    set p := (m,0).
+    claim HpX: p :e X.
+    { exact (tuple_2_setprod_by_pair_Sigma omega Y m 0 Hm H0Y). }
+    claim HpUnion: p :e Union G.
+    { exact (HcovG p HpX). }
+    apply (UnionE_impred G p HpUnion).
+    let g. assume Hpg: p :e g.
+    assume HgG: g :e G.
+    (** derive the defining property for pickN g from g∈Fam **)
+	    claim HgFam: g :e Fam.
+	    { exact (HGsub g HgG). }
+		    claim Hexn: exists n:set, n :e omega /\ g = rectangle_set {n} Y.
+		    { exact (ReplE omega (fun n0:set => rectangle_set {n0} Y) g HgFam). }
+    claim HpickProp: pickN g :e omega /\ g = rectangle_set {pickN g} Y.
+    { exact (Eps_i_ex (fun n:set => n :e omega /\ g = rectangle_set {n} Y) Hexn). }
+    claim HgeqPick: g = rectangle_set {pickN g} Y.
+    { exact (andER (pickN g :e omega) (g = rectangle_set {pickN g} Y) HpickProp). }
+    claim HpInPickRect: p :e rectangle_set {pickN g} Y.
+    { rewrite <- HgeqPick.
+      exact Hpg. }
+    claim Hp0InSing: p 0 :e {pickN g}.
+    { exact (ap0_Sigma {pickN g} (fun _ : set => Y) p HpInPickRect). }
+    claim Hpeq0: p 0 = m.
+    { exact (tuple_2_0_eq m 0). }
+    claim HmInSing: m :e {pickN g}.
+    { rewrite <- Hpeq0.
+      exact Hp0InSing. }
+    claim HmEq: m = pickN g.
+    { exact (SingE (pickN g) m HmInSing). }
+    rewrite HmEq.
+    exact (ReplI G (fun g0:set => pickN g0) g HgG). }
+  (** Conclude finite omega, contradicting infinity. **)
+  claim HfinOmega: finite omega.
+  { exact (Subq_finite N HNfin omega HomegaSub). }
+  claim HinfOmega: infinite omega.
+  { claim Hatleast: atleastp omega omega.
+    { exact (Subq_atleastp omega omega (Subq_ref omega)). }
+    exact (atleastp_omega_infinite omega Hatleast). }
+  apply FalseE.
+  prove False.
+  exact (HinfOmega HfinOmega).
 Qed.
 
 (** from §29 Definition: local compactness **) 
