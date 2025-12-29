@@ -8867,8 +8867,12 @@ Qed.
 (** NOTE: `open_set` is defined as an alias of `open_in` to avoid duplicate bookkeeping. **)
 Definition topological_space : set -> set -> prop := topology_on.
 
+(** from §12: alternative naming for topology family **)
+(** LATEX VERSION: We write T for the family of open sets, and call it the open_set_family. **)
 Definition open_set_family : set -> set -> set := fun _ T => T.
 
+(** from §12: alternative naming for open sets **)
+(** LATEX VERSION: A subset U of X is open iff U is in the topology T; we name this predicate open_set. **)
 Definition open_set : set -> set -> set -> prop := open_in.
 
 (** from §13 Definition: basis for a topology **) 
@@ -14868,7 +14872,11 @@ Definition c_elt : set := {{Empty}}.
 (** FIXED: Use binunion to create proper 3-element set {a,b,c}; old UPair a_elt (UPair b_elt c_elt) gave {a,{b,c}}, new UPair a_elt b_elt :\/: {c_elt} gives {a,b,c}. **)
 Definition abc_set : set := UPair a_elt b_elt :\/: {c_elt}.
 
+(** from §13 Exercise 2: topology on three element set **)
+(** LATEX VERSION: One of the nine candidate families is the indiscrete topology {Empty, X}. **)
 Definition top_abc_1 : set := UPair Empty abc_set.
+(** from §13 Exercise 2: topology on three element set **)
+(** LATEX VERSION: One of the nine candidate families is the discrete topology Power(X). **)
 Definition top_abc_2 : set := Power abc_set.
 (** FIXED: Nested `UPair` does not create a 3- or 4-element family; use unions with singletons. **)
   (** from §13 Exercise 2: topology on three element set **)
