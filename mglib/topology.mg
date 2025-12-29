@@ -79934,6 +79934,34 @@ apply iffI.
 - (** closure -> existence of convergent sequence (needs first countability) **)
   assume Hxcl: x :e closure_of X Tx A.
   prove exists seq:set, sequence_in seq A /\ converges_to X Tx seq x.
+  claim HTx: topology_on X Tx.
+  { exact (andEL (topology_on X Tx)
+                 (forall x0:set, x0 :e X -> countable_basis_at X Tx x0)
+                 Hfc). }
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hxcl). }
+  claim Hbas_all: forall x0:set, x0 :e X -> countable_basis_at X Tx x0.
+  { exact (andER (topology_on X Tx)
+                 (forall x0:set, x0 :e X -> countable_basis_at X Tx x0)
+                 Hfc). }
+  claim Hbas: countable_basis_at X Tx x.
+  { exact (Hbas_all x HxX). }
+  (** Unpack the countable local basis B at x, then choose a decreasing neighborhood base and points of A in each neighborhood. **)
+  claim HBex: exists B:set,
+    B c= Tx /\ countable_set B /\
+      (forall b:set, b :e B -> x :e b) /\
+      (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U).
+  { claim Hpack: (topology_on X Tx /\ x :e X) /\
+      exists B:set, B c= Tx /\ countable_set B /\
+        (forall b:set, b :e B -> x :e b) /\
+        (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U).
+    { exact Hbas. }
+    exact (andER (topology_on X Tx /\ x :e X)
+                 (exists B:set, B c= Tx /\ countable_set B /\
+                   (forall b:set, b :e B -> x :e b) /\
+                   (forall U:set, U :e Tx -> x :e U -> exists b:set, b :e B /\ b c= U))
+                 Hpack). }
+  (** remaining construction is nontrivial in this library and is left for later proof work **)
   admit. (** FAIL **)
 - (** existence of convergent sequence -> closure (general) **)
   assume Hseq: exists seq:set, sequence_in seq A /\ converges_to X Tx seq x.
