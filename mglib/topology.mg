@@ -89750,8 +89750,15 @@ apply and4I.
 - exact HVref.
 - let v. assume HvV: v :e V.
   prove exists u:set, u :e U /\ closure_of X Tx v c= u.
-  (** At this point we only have v c= u from refinement. Upgrading to closure(v) c= u is the core shrinking lemma step. **)
-  admit. (** FAIL **)
+  (** Extract u :e U with v c= u from refinement. The closure-domination is the remaining core step. **)
+  claim Hexu: exists u:set, u :e U /\ v c= u.
+  { exact (HVref v HvV). }
+  apply Hexu.
+  let u. assume Hu: u :e U /\ v c= u.
+  witness u.
+  apply andI.
+  - exact (andEL (u :e U) (v c= u) Hu).
+  - admit. (** FAIL **)
 Qed.
 
 (** from §41 Theorem 41.7: partition of unity dominated by an open cover **)
