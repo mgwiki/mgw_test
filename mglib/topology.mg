@@ -27368,6 +27368,250 @@ claim Hall: forall U :e rectangular_regions, U :e R2_standard_topology.
 exact (generated_topology_finer_weak EuclidPlane rectangular_regions R2_standard_topology HtopPlane Hall).
 Qed.
 
+(** helper: rectangular regions generate the standard topology on R^2 **)
+(** LATEX VERSION: The family of all rectangular regions (a,b)×(c,d) forms a basis that generates the standard topology on ℝ². **)
+Theorem generated_topology_rectangular_regions_eq_R2_standard_topology :
+  generated_topology EuclidPlane rectangular_regions = R2_standard_topology.
+prove generated_topology EuclidPlane rectangular_regions = R2_standard_topology.
+(** Use Lemma 13.2 / basis_refines_topology with the refinement property coming from the definition of product_topology as a generated topology. **)
+claim HtopR: topology_on R R_standard_topology.
+{ exact R_standard_topology_is_topology_local. }
+claim HtopPlane: topology_on EuclidPlane R2_standard_topology.
+{ exact (product_topology_is_topology R R_standard_topology R R_standard_topology HtopR HtopR). }
+claim HCsub: forall Cx :e rectangular_regions, Cx :e R2_standard_topology.
+{ let Cx. assume HCx: Cx :e rectangular_regions.
+  exact (rectangular_regions_subset_R2_standard_topology Cx HCx). }
+
+(** Main refinement: for any U open in R2_standard_topology and p∈U, find a rectangular region inside U containing p. **)
+claim Href:
+  forall U :e R2_standard_topology, forall p :e U,
+    exists Cx :e rectangular_regions, p :e Cx /\ Cx c= U.
+{ let U. assume HU: U :e R2_standard_topology.
+  let p. assume HpU: p :e U.
+  (** Unfold membership in the generated topology defining the product topology. **)
+  claim HeqPlane: EuclidPlane = setprod R R.
+  { reflexivity. }
+  set B := product_subbasis R R_standard_topology R R_standard_topology.
+  claim HUgenRR: U :e generated_topology (setprod R R) B.
+  { (** R2_standard_topology = product_topology R R_standard_topology R R_standard_topology by definition **)
+    claim Hdef: R2_standard_topology = generated_topology (setprod R R) B.
+    { reflexivity. }
+    rewrite Hdef.
+    rewrite <- HeqPlane.
+    exact HU. }
+  claim HUgen: U :e generated_topology EuclidPlane B.
+  { rewrite HeqPlane. exact HUgenRR. }
+  claim HUsub: U c= EuclidPlane.
+  { exact (generated_topology_subset EuclidPlane B U HUgen). }
+  claim HpE: p :e EuclidPlane.
+  { exact (HUsub p HpU). }
+  claim HUprop:
+    forall x :e U, exists b :e B, x :e b /\ b c= U.
+  { exact (SepE2 (Power EuclidPlane)
+          (fun U0:set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
+          U HUgen). }
+  claim Hexb: exists b :e B, p :e b /\ b c= U.
+  { exact (HUprop p HpU). }
+  apply Hexb.
+  let b. assume Hbpair: b :e B /\ (p :e b /\ b c= U).
+  claim HbB: b :e B.
+  { exact (andEL (b :e B) (p :e b /\ b c= U) Hbpair). }
+  claim Hbprop: p :e b /\ b c= U.
+  { exact (andER (b :e B) (p :e b /\ b c= U) Hbpair). }
+  claim Hpb: p :e b.
+  { exact (andEL (p :e b) (b c= U) Hbprop). }
+  claim HbsubU: b c= U.
+  { exact (andER (p :e b) (b c= U) Hbprop). }
+
+  (** Destruct b ∈ product_subbasis: b = U0×V0 with U0,V0 open in R. **)
+  apply (famunionE_impred R_standard_topology
+         (fun U0:set => {rectangle_set U0 V|V :e R_standard_topology})
+         b HbB
+         (exists Cx :e rectangular_regions, p :e Cx /\ Cx c= U)).
+  let U0. assume HU0: U0 :e R_standard_topology.
+  assume HbIn: b :e {rectangle_set U0 V|V :e R_standard_topology}.
+  apply (ReplE_impred R_standard_topology (fun V0:set => rectangle_set U0 V0) b HbIn
+         (exists Cx :e rectangular_regions, p :e Cx /\ Cx c= U)).
+  let V0. assume HV0: V0 :e R_standard_topology.
+  assume Hbeq: b = rectangle_set U0 V0.
+
+  claim HpbUV: p :e rectangle_set U0 V0.
+  { rewrite <- Hbeq. exact Hpb. }
+  claim HpUV: p :e setprod U0 V0.
+  { rewrite <- rectangle_set_def. exact HpbUV. }
+  claim Hp0U0: p 0 :e U0.
+  { exact (ap0_Sigma U0 (fun _ : set => V0) p HpUV). }
+  claim Hp1V0: p 1 :e V0.
+  { exact (ap1_Sigma U0 (fun _ : set => V0) p HpUV). }
+  claim HpEta: p = (p 0, p 1).
+  { exact (setprod_eta U0 V0 p HpUV). }
+
+  (** Refine U0 around p0 using the standard basis on R. **)
+  claim HU0gen: U0 :e generated_topology R R_standard_basis.
+  { rewrite <- R_standard_topology_def_eq. exact HU0. }
+  claim HU0prop: forall x0 :e U0, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U0.
+  { exact (SepE2 (Power R)
+          (fun U1:set => forall x0 :e U1, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U1)
+          U0 HU0gen). }
+  claim HexI1: exists I1 :e R_standard_basis, (p 0) :e I1 /\ I1 c= U0.
+  { exact (HU0prop (p 0) Hp0U0). }
+  apply HexI1.
+  let I1. assume HI1pair: I1 :e R_standard_basis /\ ((p 0) :e I1 /\ I1 c= U0).
+  claim HI1: I1 :e R_standard_basis.
+  { exact (andEL (I1 :e R_standard_basis) ((p 0) :e I1 /\ I1 c= U0) HI1pair). }
+  claim HI1prop: (p 0) :e I1 /\ I1 c= U0.
+  { exact (andER (I1 :e R_standard_basis) ((p 0) :e I1 /\ I1 c= U0) HI1pair). }
+  claim Hp0I1: (p 0) :e I1.
+  { exact (andEL ((p 0) :e I1) (I1 c= U0) HI1prop). }
+  claim HI1sub: I1 c= U0.
+  { exact (andER ((p 0) :e I1) (I1 c= U0) HI1prop). }
+
+  (** Extract I1 = open_interval a b1 with a,b1 ∈ R. **)
+  claim Hexa: exists a :e R, I1 :e {open_interval a b|b :e R}.
+  { exact (famunionE R (fun a0:set => {open_interval a0 b|b :e R}) I1 HI1). }
+  apply Hexa.
+  let a. assume Hapair: a :e R /\ I1 :e {open_interval a b|b :e R}.
+  claim HaR: a :e R.
+  { exact (andEL (a :e R) (I1 :e {open_interval a b|b :e R}) Hapair). }
+  claim HI1fam: I1 :e {open_interval a b|b :e R}.
+  { exact (andER (a :e R) (I1 :e {open_interval a b|b :e R}) Hapair). }
+  claim Hexb1: exists b1 :e R, I1 = open_interval a b1.
+  { exact (ReplE R (fun b0:set => open_interval a b0) I1 HI1fam). }
+  apply Hexb1.
+  let b1. assume Hb1pair: b1 :e R /\ I1 = open_interval a b1.
+  claim Hb1R: b1 :e R.
+  { exact (andEL (b1 :e R) (I1 = open_interval a b1) Hb1pair). }
+  claim HI1eq: I1 = open_interval a b1.
+  { exact (andER (b1 :e R) (I1 = open_interval a b1) Hb1pair). }
+  claim Hp0InInt: (p 0) :e open_interval a b1.
+  { rewrite <- HI1eq. exact Hp0I1. }
+  claim Hp0ineq: Rlt a (p 0) /\ Rlt (p 0) b1.
+  { exact (SepE2 R (fun z:set => Rlt a z /\ Rlt z b1) (p 0) Hp0InInt). }
+  claim Hap0: Rlt a (p 0).
+  { exact (andEL (Rlt a (p 0)) (Rlt (p 0) b1) Hp0ineq). }
+  claim Hp0b1: Rlt (p 0) b1.
+  { exact (andER (Rlt a (p 0)) (Rlt (p 0) b1) Hp0ineq). }
+  claim Hab: Rlt a b1.
+  { exact (Rlt_tra a (p 0) b1 Hap0 Hp0b1). }
+
+  (** Refine V0 around p1 using the standard basis on R. **)
+  claim HV0gen: V0 :e generated_topology R R_standard_basis.
+  { rewrite <- R_standard_topology_def_eq. exact HV0. }
+  claim HV0prop: forall y0 :e V0, exists J1 :e R_standard_basis, y0 :e J1 /\ J1 c= V0.
+  { exact (SepE2 (Power R)
+          (fun U1:set => forall x0 :e U1, exists b0 :e R_standard_basis, x0 :e b0 /\ b0 c= U1)
+          V0 HV0gen). }
+  claim HexI2: exists I2 :e R_standard_basis, (p 1) :e I2 /\ I2 c= V0.
+  { exact (HV0prop (p 1) Hp1V0). }
+  apply HexI2.
+  let I2. assume HI2pair: I2 :e R_standard_basis /\ ((p 1) :e I2 /\ I2 c= V0).
+  claim HI2: I2 :e R_standard_basis.
+  { exact (andEL (I2 :e R_standard_basis) ((p 1) :e I2 /\ I2 c= V0) HI2pair). }
+  claim HI2prop: (p 1) :e I2 /\ I2 c= V0.
+  { exact (andER (I2 :e R_standard_basis) ((p 1) :e I2 /\ I2 c= V0) HI2pair). }
+  claim Hp1I2: (p 1) :e I2.
+  { exact (andEL ((p 1) :e I2) (I2 c= V0) HI2prop). }
+  claim HI2sub: I2 c= V0.
+  { exact (andER ((p 1) :e I2) (I2 c= V0) HI2prop). }
+
+  claim Hexc: exists c :e R, I2 :e {open_interval c d|d :e R}.
+  { exact (famunionE R (fun c0:set => {open_interval c0 d|d :e R}) I2 HI2). }
+  apply Hexc.
+  let c. assume Hcpair: c :e R /\ I2 :e {open_interval c d|d :e R}.
+  claim HcR: c :e R.
+  { exact (andEL (c :e R) (I2 :e {open_interval c d|d :e R}) Hcpair). }
+  claim HI2fam: I2 :e {open_interval c d|d :e R}.
+  { exact (andER (c :e R) (I2 :e {open_interval c d|d :e R}) Hcpair). }
+  claim Hexd1: exists d1 :e R, I2 = open_interval c d1.
+  { exact (ReplE R (fun d0:set => open_interval c d0) I2 HI2fam). }
+  apply Hexd1.
+  let d1. assume Hd1pair: d1 :e R /\ I2 = open_interval c d1.
+  claim Hd1R: d1 :e R.
+  { exact (andEL (d1 :e R) (I2 = open_interval c d1) Hd1pair). }
+  claim HI2eq: I2 = open_interval c d1.
+  { exact (andER (d1 :e R) (I2 = open_interval c d1) Hd1pair). }
+  claim Hp1InInt: (p 1) :e open_interval c d1.
+  { rewrite <- HI2eq. exact Hp1I2. }
+  claim Hp1ineq: Rlt c (p 1) /\ Rlt (p 1) d1.
+  { exact (SepE2 R (fun z:set => Rlt c z /\ Rlt z d1) (p 1) Hp1InInt). }
+  claim Hcp1: Rlt c (p 1).
+  { exact (andEL (Rlt c (p 1)) (Rlt (p 1) d1) Hp1ineq). }
+  claim Hp1d1: Rlt (p 1) d1.
+  { exact (andER (Rlt c (p 1)) (Rlt (p 1) d1) Hp1ineq). }
+  claim Hcd: Rlt c d1.
+  { exact (Rlt_tra c (p 1) d1 Hcp1 Hp1d1). }
+
+  (** Define the refined rectangular region and show it lies inside U. **)
+  set Rg := {q :e EuclidPlane|
+               exists x y:set, q = (x,y) /\ Rlt a x /\ Rlt x b1 /\ Rlt c y /\ Rlt y d1}.
+  claim HRgRect: Rg :e rectangular_regions.
+  { exact (rectangular_regionI a b1 c d1 HaR Hb1R HcR Hd1R Hab Hcd). }
+  claim HpRg: p :e Rg.
+  { rewrite HpEta.
+    claim Hp0R: (p 0) :e R.
+    { exact (SepE1 R (fun z:set => Rlt a z /\ Rlt z b1) (p 0) Hp0InInt). }
+    claim Hp1R: (p 1) :e R.
+    { exact (SepE1 R (fun z:set => Rlt c z /\ Rlt z d1) (p 1) Hp1InInt). }
+    claim HpE2: (p 0, p 1) :e EuclidPlane.
+    { claim HeqPlane2: EuclidPlane = setprod R R.
+      { reflexivity. }
+      rewrite HeqPlane2.
+      exact (tuple_2_setprod_by_pair_Sigma R R (p 0) (p 1) Hp0R Hp1R). }
+    claim Hpred:
+      exists x y:set, (p 0, p 1) = (x,y) /\ Rlt a x /\ Rlt x b1 /\ Rlt c y /\ Rlt y d1.
+    { witness (p 0).
+      witness (p 1).
+      apply and5I.
+      - reflexivity.
+      - exact Hap0.
+      - exact Hp0b1.
+      - exact Hcp1.
+      - exact Hp1d1. }
+    exact (SepI EuclidPlane
+            (fun q0:set => exists x y:set, q0 = (x,y) /\ Rlt a x /\ Rlt x b1 /\ Rlt c y /\ Rlt y d1)
+            (p 0, p 1)
+            HpE2
+            Hpred). }
+
+  claim HRgSubb: Rg c= b.
+  { (** Rg = open rectangle = rectangle_set(open_interval a b1)(open_interval c d1) and subsets preserve product. **)
+    claim HI1subU0: open_interval a b1 c= U0.
+    { rewrite <- HI1eq. exact HI1sub. }
+    claim HI2subV0: open_interval c d1 c= V0.
+    { rewrite <- HI2eq. exact HI2sub. }
+    claim HsetprodSub: setprod (open_interval a b1) (open_interval c d1) c= setprod U0 V0.
+    { exact (setprod_Subq (open_interval a b1) (open_interval c d1) U0 V0 HI1subU0 HI2subV0). }
+    claim HrectSub: rectangle_set (open_interval a b1) (open_interval c d1) c= rectangle_set U0 V0.
+    { rewrite rectangle_set_def.
+      rewrite rectangle_set_def.
+      exact HsetprodSub. }
+    let q. assume HqRg: q :e Rg.
+    prove q :e b.
+    claim HqRect: q :e rectangle_set (open_interval a b1) (open_interval c d1).
+    { rewrite <- (open_rectangle_set_eq_rectangle_set_intervals a b1 c d1).
+      exact HqRg. }
+    claim HqInUV: q :e rectangle_set U0 V0.
+    { exact (HrectSub q HqRect). }
+    rewrite Hbeq.
+    exact HqInUV. }
+  claim HRgSubU: Rg c= U.
+  { exact (Subq_tra Rg b U HRgSubb HbsubU). }
+  witness Rg.
+  apply andI.
+  - exact HRgRect.
+  - apply andI.
+    + exact HpRg.
+    + exact HRgSubU. }
+
+(** Apply basis_refines_topology and extract equality **)
+claim HBgener: basis_on EuclidPlane rectangular_regions /\ generated_topology EuclidPlane rectangular_regions = R2_standard_topology.
+{ exact (basis_refines_topology EuclidPlane R2_standard_topology rectangular_regions
+         HtopPlane HCsub Href). }
+exact (andER (basis_on EuclidPlane rectangular_regions)
+             (generated_topology EuclidPlane rectangular_regions = R2_standard_topology)
+             HBgener).
+Qed.
+
 (** from §16 Definition: subspace topology **) 
 (** LATEX VERSION: The subspace topology on Y⊂X with topology Tx consists of intersections V∩Y with V open in X. **)
 (** SUSPICIOUS DEFINITION: This is phrased as a family of subsets of `Y` (via `Power Y`) with witnesses `V :e Tx`; proofs often need to extract both the witness and the subset fact. **)
