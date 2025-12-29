@@ -65728,7 +65728,178 @@ claim HHausY: Hausdorff_space Y Ty.
 		                     { exact (compact_space_topology Kp TopKp HKpComp). }
 		                     (** If Kp\\K is open in TopKp, then K is closed in Kp, hence compact. **)
 		                     claim HUopen: Kp :\: K :e TopKp.
-		                     { admit. }
+		                     { (** Express Kp\\K as a union of sets of the form U∩Kp, and use union-closure of the subspace topology. **)
+		                       set FamKp := {W :e TopKp | exists U:set, U :e UFam /\ W = U :/\: Kp}.
+		                       claim HFamKpPow: FamKp :e Power TopKp.
+		                       { apply PowerI.
+		                         let W. assume HW: W :e FamKp.
+		                         exact (SepE1 TopKp (fun W0:set => exists U:set, U :e UFam /\ W0 = U :/\: Kp) W HW). }
+		                       claim HUnionFamKpTop: Union FamKp :e TopKp.
+		                       { exact (topology_union_closed_pow Kp TopKp FamKp HTopKp HFamKpPow). }
+		                       claim HeqUnion: Kp :\: K = Union FamKp.
+		                       { apply set_ext.
+		                         - let y. assume Hy: y :e Kp :\: K.
+		                           claim HyKp: y :e Kp.
+		                           { exact (setminusE1 Kp K y Hy). }
+		                           claim HyNotK: y /:e K.
+		                           { exact (setminusE2 Kp K y Hy). }
+		                           claim HyY: y :e Y.
+		                           { exact (HKpSubY y HyKp). }
+		                           (** From y∉K = Y\\Union UFam and y∈Y, deduce y∈Union UFam. **)
+		                           claim HyUnion: y :e Union UFam.
+		                           { apply (xm (y :e Union UFam)).
+		                             - assume HyU. exact HyU.
+		                             - assume HyNotUnion: ~(y :e Union UFam).
+		                               claim HyK: y :e K.
+		                               { exact (setminusI Y (Union UFam) y HyY HyNotUnion). }
+		                               apply FalseE.
+		                               exact (HyNotK HyK). }
+		                           (** Choose U∈UFam with y∈U; then W := U∩Kp is in FamKp and contains y. **)
+		                           apply (UnionE_impred UFam y HyUnion).
+		                           let U. assume HyU: y :e U. assume HUUFam: U :e UFam.
+		                           set W := U :/\: Kp.
+		                           claim HyW: y :e W.
+		                           { exact (binintersectI U Kp y HyU HyKp). }
+		                           (** Show W ∈ TopKp. **)
+		                           claim HWTop: W :e TopKp.
+		                           { claim HWpow: W :e Power Kp.
+		                             { apply PowerI.
+		                               let z. assume HzW: z :e W.
+		                               exact (binintersectE2 U Kp z HzW). }
+		                             claim HUty: U :e Ty.
+		                             { exact (HUFamSub U HUUFam). }
+		                             claim HUprop:
+		                               (p /:e U /\ U :e Tx) \/
+		                               (p :e U /\ exists K1:set, compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X /\ U = Y :\: K1).
+		                             { exact (SepE2 (Power Y)
+		                                            (fun U0:set =>
+		                                              (p /:e U0 /\ U0 :e Tx) \/
+		                                              (p :e U0 /\ exists K1:set, compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X /\ U0 = Y :\: K1))
+		                                            U
+		                                            HUty). }
+		                             apply HUprop.
+			                             - assume Hcase: p /:e U /\ U :e Tx.
+			                               claim HUinTx: U :e Tx.
+			                               { exact (andER (p /:e U) (U :e Tx) Hcase). }
+			                               (** In the subspace topology, U∩Kp is open with witness U∈Tx. **)
+			                               claim HexV: exists V :e Tx, W = V :/\: Kp.
+			                               { witness U.
+			                                 apply andI.
+			                                 - exact HUinTx.
+			                                 - reflexivity. }
+			                               exact (SepI (Power Kp)
+			                                           (fun W0:set => exists V :e Tx, W0 = V :/\: Kp)
+			                                           W
+			                                           HWpow
+			                                           HexV).
+		                             - assume Hcase: p :e U /\ exists K1:set, compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X /\ U = Y :\: K1.
+		                               claim HexK1: exists K1:set, compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X /\ U = Y :\: K1.
+		                               { exact (andER (p :e U)
+		                                              (exists K1:set, compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X /\ U = Y :\: K1)
+		                                              Hcase). }
+		                               apply HexK1.
+		                               let K1. assume HK1pkg.
+		                               claim HK1left: compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X.
+		                               { exact (andEL (compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X)
+		                                              (U = Y :\: K1)
+		                                              HK1pkg). }
+		                               claim HK1comp: compact_space K1 (subspace_topology X Tx K1).
+		                               { exact (andEL (compact_space K1 (subspace_topology X Tx K1))
+		                                              (K1 c= X)
+		                                              HK1left). }
+		                               claim HK1subX: K1 c= X.
+		                               { exact (andER (compact_space K1 (subspace_topology X Tx K1))
+		                                              (K1 c= X)
+		                                              HK1left). }
+		                               claim HUeq: U = Y :\: K1.
+		                               { exact (andER (compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X)
+		                                              (U = Y :\: K1)
+		                                              HK1pkg). }
+		                               claim HK1closed: closed_in X Tx K1.
+		                               { exact (Hausdorff_compact_sets_closed X Tx K1 HH HK1subX HK1comp). }
+		                               claim Hop: open_in X Tx (X :\: K1).
+		                               { exact (open_of_closed_complement X Tx K1 HK1closed). }
+		                               claim HVinTx: (X :\: K1) :e Tx.
+		                               { exact (open_in_elem X Tx (X :\: K1) Hop). }
+		                               (** Show W = (X\\K1) ∩ Kp. **)
+		                               claim HeqW: W = (X :\: K1) :/\: Kp.
+		                               { rewrite HUeq.
+		                                 apply set_ext.
+		                                 - let x. assume Hx: x :e (Y :\: K1) :/\: Kp.
+		                                   claim HxYK1: x :e Y :\: K1.
+		                                   { exact (binintersectE1 (Y :\: K1) Kp x Hx). }
+		                                   claim HxKp: x :e Kp.
+		                                   { exact (binintersectE2 (Y :\: K1) Kp x Hx). }
+		                                   claim HxnotK1: x /:e K1.
+		                                   { exact (setminusE2 Y K1 x HxYK1). }
+		                                   claim HxX: x :e X.
+		                                   { exact (HKpSubX x HxKp). }
+		                                   claim HxXK1: x :e X :\: K1.
+		                                   { exact (setminusI X K1 x HxX HxnotK1). }
+		                                   apply binintersectI.
+		                                   * exact HxXK1.
+		                                   * exact HxKp.
+		                                 - let x. assume Hx: x :e (X :\: K1) :/\: Kp.
+		                                   claim HxXK1: x :e X :\: K1.
+		                                   { exact (binintersectE1 (X :\: K1) Kp x Hx). }
+		                                   claim HxKp: x :e Kp.
+		                                   { exact (binintersectE2 (X :\: K1) Kp x Hx). }
+		                                   claim HxnotK1: x /:e K1.
+		                                   { exact (setminusE2 X K1 x HxXK1). }
+		                                   claim HxY: x :e Y.
+		                                   { exact (HKpSubY x HxKp). }
+		                                   claim HxYK1: x :e Y :\: K1.
+		                                   { exact (setminusI Y K1 x HxY HxnotK1). }
+		                                   apply binintersectI.
+		                                   * exact HxYK1.
+		                                   * exact HxKp. }
+		                               (** Conclude W ∈ subspace_topology X Tx Kp. **)
+		                               claim HexV: exists V :e Tx, W = V :/\: Kp.
+		                               { witness (X :\: K1).
+		                                 apply andI.
+		                                 - exact HVinTx.
+		                                 - exact HeqW. }
+		                               exact (SepI (Power Kp)
+		                                           (fun W0:set => exists V :e Tx, W0 = V :/\: Kp)
+		                                           W
+		                                           HWpow
+		                                           HexV). }
+		                           (** Now W ∈ FamKp. **)
+		                           claim HWFam: W :e FamKp.
+		                           { claim HexU: exists U0:set, U0 :e UFam /\ W = U0 :/\: Kp.
+		                             { witness U.
+		                               apply andI.
+		                               - exact HUUFam.
+		                               - reflexivity. }
+		                             exact (SepI TopKp (fun W0:set => exists U0:set, U0 :e UFam /\ W0 = U0 :/\: Kp) W HWTop HexU). }
+		                           exact (UnionI FamKp y W HyW HWFam).
+		                         - let y. assume Hy: y :e Union FamKp.
+		                           apply (UnionE_impred FamKp y Hy).
+		                           let W. assume HyW: y :e W. assume HWFam: W :e FamKp.
+		                           claim HexU: exists U:set, U :e UFam /\ W = U :/\: Kp.
+		                           { exact (SepE2 TopKp (fun W0:set => exists U:set, U :e UFam /\ W0 = U :/\: Kp) W HWFam). }
+		                           apply HexU.
+		                           let U. assume HUand.
+		                           claim HUUFam: U :e UFam.
+		                           { exact (andEL (U :e UFam) (W = U :/\: Kp) HUand). }
+		                           claim HWeq: W = U :/\: Kp.
+		                           { exact (andER (U :e UFam) (W = U :/\: Kp) HUand). }
+		                           claim HyUKp: y :e U :/\: Kp.
+		                           { rewrite <- HWeq. exact HyW. }
+		                           claim HyKp: y :e Kp.
+		                           { exact (binintersectE2 U Kp y HyUKp). }
+		                           claim HyU: y :e U.
+		                           { exact (binintersectE1 U Kp y HyUKp). }
+		                           claim HyUnionUFam: y :e Union UFam.
+		                           { exact (UnionI UFam y U HyU HUUFam). }
+		                           claim HyNotK: y /:e K.
+		                           { assume HyK: y :e K.
+		                             claim HyNotUnion: y /:e Union UFam.
+		                             { exact (setminusE2 Y (Union UFam) y HyK). }
+		                             exact (HyNotUnion HyUnionUFam). }
+		                           exact (setminusI Kp K y HyKp HyNotK). }
+		                       rewrite HeqUnion.
+		                       exact HUnionFamKpTop. }
 		                     claim HKclosedTmp: closed_in Kp TopKp (Kp :\: (Kp :\: K)).
 		                     { exact (closed_of_open_complement Kp TopKp (Kp :\: K) HTopKp HUopen). }
 		                     claim HKclosed: closed_in Kp TopKp K.
