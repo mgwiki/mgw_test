@@ -91159,7 +91159,50 @@ Theorem U_eps_open_dense_stub : forall X Tx Y d fn eps:set,
     continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n)) ->
   eps :e R -> Rlt 0 eps ->
   open_in X Tx (U_eps X Tx Y d fn eps) /\ dense_in (U_eps X Tx Y d fn eps) X Tx.
-admit. (** FAIL **)
+let X Tx Y d fn eps.
+assume HTx: topology_on X Tx.
+assume Hd: metric_on_total Y d.
+assume Hcont: forall n:set, n :e omega ->
+  continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n).
+assume Heps: eps :e R.
+assume HepsPos: Rlt 0 eps.
+prove open_in X Tx (U_eps X Tx Y d fn eps) /\ dense_in (U_eps X Tx Y d fn eps) X Tx.
+apply andI.
+- (** U_eps is open **)
+  prove open_in X Tx (U_eps X Tx Y d fn eps).
+  set UFam := {interior_of X Tx (A_N_eps X Y d fn N eps) | N :e omega}.
+  claim HdefU: U_eps X Tx Y d fn eps = Union UFam.
+  { reflexivity. }
+  claim HUFamPow: UFam :e Power Tx.
+  { apply (PowerI Tx UFam).
+    let U0. assume HU0: U0 :e UFam.
+    prove U0 :e Tx.
+    claim HexN: exists N:set, N :e omega /\ U0 = interior_of X Tx (A_N_eps X Y d fn N eps).
+    { exact (ReplE omega (fun N0:set => interior_of X Tx (A_N_eps X Y d fn N0 eps)) U0 HU0). }
+    apply HexN.
+    let N. assume HN: N :e omega /\ U0 = interior_of X Tx (A_N_eps X Y d fn N eps).
+    claim HNeq: U0 = interior_of X Tx (A_N_eps X Y d fn N eps).
+    { exact (andER (N :e omega) (U0 = interior_of X Tx (A_N_eps X Y d fn N eps)) HN). }
+    rewrite HNeq.
+    (** interior is open, and A_N_eps is a subset of X by definition **)
+    claim HANsub: A_N_eps X Y d fn N eps c= X.
+    { let x. assume Hx: x :e A_N_eps X Y d fn N eps.
+      exact (SepE1 X
+        (fun x0:set =>
+          forall n:set, n :e omega -> N c= n ->
+            forall m:set, m :e omega -> N c= m ->
+              Rle (apply_fun d (apply_fun (apply_fun fn n) x0, apply_fun (apply_fun fn m) x0)) eps)
+        x Hx). }
+    exact (interior_is_open X Tx (A_N_eps X Y d fn N eps) HTx HANsub). }
+  claim HUnionInTx: Union UFam :e Tx.
+  { exact (topology_union_closed_pow X Tx UFam HTx HUFamPow). }
+  claim HUepsInTx: U_eps X Tx Y d fn eps :e Tx.
+  { rewrite HdefU.
+    exact HUnionInTx. }
+  rewrite HdefU.
+  exact (open_inI X Tx (Union UFam) HTx HUnionInTx).
+- (** U_eps is dense: proof uses Lemma 48.4 in the TeX argument **)
+  admit. (** FAIL **)
 Qed.
 
 (** from §48 Theorem 48.5: continuity points of pointwise limit are dense **)
