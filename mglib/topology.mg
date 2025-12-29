@@ -87795,7 +87795,131 @@ apply andI.
   assume Hdisj: A :/\: B = Empty.
   prove exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
   (** TODO: standard proof via locally finite refinements of Hausdorff separators; deferred. **)
-  admit. (** FAIL **)
+ admit. (** FAIL **)
+Qed.
+
+(** from §41 Theorem 41.2: closed subspace of a paracompact space is paracompact **)
+(** LATEX VERSION: Every closed subspace of a paracompact space is paracompact. **)
+Theorem closed_subspace_paracompact : forall X Tx Y:set,
+  paracompact_space X Tx ->
+  closed_in X Tx Y ->
+  paracompact_space Y (subspace_topology X Tx Y).
+let X Tx Y.
+assume Hpara: paracompact_space X Tx.
+assume HYcl: closed_in X Tx Y.
+prove paracompact_space Y (subspace_topology X Tx Y).
+admit. (** FAIL **)
+Qed.
+
+(** from §41 Lemma 41.3 (Michael): countably locally finite refinements and locally finite refinements **)
+(** LATEX VERSION: In a regular space, the following are equivalent: open cover has (1) open countably locally finite refinement, (2) locally finite refinement, (3) locally finite closed refinement, (4) locally finite open refinement. **)
+Definition sigma_locally_finite_family : set -> set -> set -> prop := fun X Tx F =>
+  topology_on X Tx /\
+  exists Fams:set,
+    countable_set Fams /\
+    Fams c= Power (Power X) /\
+    (forall G:set, G :e Fams -> locally_finite_family X Tx G) /\
+    F = Union Fams.
+
+(** helper: closed cover (collection of closed subsets covering X) **)
+Definition closed_cover : set -> set -> set -> prop := fun X Tx C =>
+  (forall c:set, c :e C -> closed_in X Tx c) /\ covers X C.
+
+Theorem Michael_lemma_41_3 : forall X Tx:set,
+  regular_space X Tx ->
+  (forall U:set, open_cover X Tx U ->
+     exists V:set, open_cover X Tx V /\ sigma_locally_finite_family X Tx V /\ refine_of V U) ->
+  (forall U:set, open_cover X Tx U ->
+     exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U).
+let X Tx.
+assume Hreg: regular_space X Tx.
+assume Hsig: forall U:set, open_cover X Tx U ->
+  exists V:set, open_cover X Tx V /\ sigma_locally_finite_family X Tx V /\ refine_of V U.
+prove forall U:set, open_cover X Tx U ->
+  exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U.
+admit. (** FAIL **)
+Qed.
+
+(** from §41 Theorem 41.4: metrizable implies paracompact **)
+(** LATEX VERSION: Every metrizable space is paracompact. **)
+Theorem metrizable_paracompact : forall X Tx:set,
+  metrizable X Tx -> paracompact_space X Tx.
+let X Tx.
+assume Hmet: metrizable X Tx.
+prove paracompact_space X Tx.
+admit. (** FAIL **)
+Qed.
+
+(** from §41 Theorem 41.5: regular Lindelof implies paracompact **)
+(** LATEX VERSION: Every regular Lindelof space is paracompact. **)
+Theorem regular_Lindelof_paracompact : forall X Tx:set,
+  regular_space X Tx -> Lindelof_space X Tx -> paracompact_space X Tx.
+let X Tx.
+assume Hreg: regular_space X Tx.
+assume HL: Lindelof_space X Tx.
+prove paracompact_space X Tx.
+admit. (** FAIL **)
+Qed.
+
+(** from §41 Lemma 41.6 (shrinking lemma): locally finite open shrinking of an open cover **)
+(** LATEX VERSION: If X is paracompact Hausdorff and U is an indexed open cover, there exists a locally finite open cover V with closure(V) contained in U. **)
+Theorem shrinking_lemma_41_6 : forall X Tx U:set,
+  paracompact_space X Tx ->
+  Hausdorff_space X Tx ->
+  open_cover X Tx U ->
+  exists V:set,
+    open_cover X Tx V /\
+    locally_finite_family X Tx V /\
+    refine_of V U /\
+    forall v:set, v :e V -> exists u:set, u :e U /\ closure_of X Tx v c= u.
+let X Tx U.
+assume Hpara: paracompact_space X Tx.
+assume HH: Hausdorff_space X Tx.
+assume Hcover: open_cover X Tx U.
+prove exists V:set,
+  open_cover X Tx V /\
+  locally_finite_family X Tx V /\
+  refine_of V U /\
+  forall v:set, v :e V -> exists u:set, u :e U /\ closure_of X Tx v c= u.
+admit. (** FAIL **)
+Qed.
+
+(** from §41 Theorem 41.7: partition of unity dominated by an open cover **)
+(** LATEX VERSION: For a paracompact Hausdorff space X and an indexed open cover U, there exists a partition of unity on X dominated by U. **)
+Theorem paracompact_Hausdorff_partition_of_unity : forall X Tx U:set,
+  paracompact_space X Tx ->
+  Hausdorff_space X Tx ->
+  open_cover X Tx U ->
+  partition_of_unity_dominated X Tx U.
+let X Tx U.
+assume Hpara: paracompact_space X Tx.
+assume HH: Hausdorff_space X Tx.
+assume Hcover: open_cover X Tx U.
+prove partition_of_unity_dominated X Tx U.
+admit. (** FAIL **)
+Qed.
+
+(** from §41 Theorem 41.8: positive continuous function bounded on a locally finite collection **)
+(** LATEX VERSION: If C is locally finite and eps assigns a positive number to each C, there is continuous f>0 with f(x) <= eps(C) for x in C. **)
+Theorem paracompact_Hausdorff_locally_finite_bounded_function : forall X Tx C eps:set,
+  paracompact_space X Tx ->
+  Hausdorff_space X Tx ->
+  locally_finite_family X Tx C ->
+  (forall c:set, c :e C -> apply_fun eps c :e R /\ Rlt 0 (apply_fun eps c)) ->
+  exists f:set,
+    continuous_map X Tx R R_standard_topology f /\
+    (forall x:set, x :e X -> Rlt 0 (apply_fun f x)) /\
+    (forall c x:set, c :e C -> x :e c -> Rle (apply_fun f x) (apply_fun eps c)).
+let X Tx C eps.
+assume Hpara: paracompact_space X Tx.
+assume HH: Hausdorff_space X Tx.
+assume Hloc: locally_finite_family X Tx C.
+assume Heps: forall c:set, c :e C -> apply_fun eps c :e R /\ Rlt 0 (apply_fun eps c).
+prove exists f:set,
+  continuous_map X Tx R R_standard_topology f /\
+  (forall x:set, x :e X -> Rlt 0 (apply_fun f x)) /\
+  (forall c x:set, c :e C -> x :e c -> Rle (apply_fun f x) (apply_fun eps c)).
+admit. (** FAIL **)
 Qed.
 
 (** from §42 Smirnov metrization theorem **) 
