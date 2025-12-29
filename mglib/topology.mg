@@ -85206,12 +85206,12 @@ apply andI.
 	Qed.
 
 	(** Helper: regular spaces admit closure-shrinking neighborhoods (used in product regularity proofs). **)
-	Theorem regular_space_shrink_neighborhood : forall X Tx x U:set,
-	  regular_space X Tx ->
-	  x :e X ->
-	  U :e Tx ->
-	  x :e U ->
-	  exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U.
+		Theorem regular_space_shrink_neighborhood : forall X Tx x U:set,
+		  regular_space X Tx ->
+		  x :e X ->
+		  U :e Tx ->
+		  x :e U ->
+		  exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= U.
 	let X Tx x U.
 	assume Hreg: regular_space X Tx.
 	assume HxX: x :e X.
@@ -85250,8 +85250,58 @@ apply andI.
 	               (forall x0 U0:set, x0 :e X -> U0 :e Tx -> x0 :e U0 ->
 	                  exists V0:set, V0 :e Tx /\ x0 :e V0 /\ closure_of X Tx V0 c= U0)
 	               Hiff Hreg). }
-	exact (Hcrit x U HxX HU HxU).
-	Qed.
+		exact (Hcrit x U HxX HU HxU).
+		Qed.
+
+		(** Helper: normal spaces admit closure-shrinking open neighborhoods of closed subsets. **)
+		(** LATEX VERSION: If X is normal and A is closed with A ⊆ U (U open), then there exists open V with A ⊆ V and closure(V) ⊆ U. **)
+		Theorem normal_space_shrink_closed : forall X Tx A U:set,
+		  normal_space X Tx ->
+		  closed_in X Tx A ->
+		  U :e Tx ->
+		  A c= U ->
+		  exists V:set, V :e Tx /\ A c= V /\ closure_of X Tx V c= U.
+		let X Tx A U.
+		assume Hnorm: normal_space X Tx.
+		assume HAcl: closed_in X Tx A.
+		assume HU: U :e Tx.
+		assume HAU: A c= U.
+		prove exists V:set, V :e Tx /\ A c= V /\ closure_of X Tx V c= U.
+		claim HT1: one_point_sets_closed X Tx.
+		{ exact (andEL (one_point_sets_closed X Tx)
+		               (forall A0 B0:set, closed_in X Tx A0 -> closed_in X Tx B0 -> A0 :/\: B0 = Empty ->
+		                 exists U0 V0:set, U0 :e Tx /\ V0 :e Tx /\ A0 c= U0 /\ B0 c= V0 /\ U0 :/\: V0 = Empty)
+		               Hnorm). }
+		claim HTx: topology_on X Tx.
+		{ exact (andEL (topology_on X Tx)
+		               (forall x0:set, x0 :e X -> closed_in X Tx {x0})
+		               HT1). }
+		claim Hlemma:
+		  one_point_sets_closed X Tx ->
+		  (normal_space X Tx <->
+		     forall A0 U0:set, closed_in X Tx A0 -> U0 :e Tx -> A0 c= U0 ->
+		       exists V0:set, V0 :e Tx /\ A0 c= V0 /\ closure_of X Tx V0 c= U0).
+		{ exact (andER (one_point_sets_closed X Tx -> (regular_space X Tx <->
+		             forall x0 U0:set, x0 :e X -> U0 :e Tx -> x0 :e U0 ->
+		               exists V0:set, V0 :e Tx /\ x0 :e V0 /\ closure_of X Tx V0 c= U0))
+		           (one_point_sets_closed X Tx -> (normal_space X Tx <->
+		             forall A0 U0:set, closed_in X Tx A0 -> U0 :e Tx -> A0 c= U0 ->
+		               exists V0:set, V0 :e Tx /\ A0 c= V0 /\ closure_of X Tx V0 c= U0))
+		           (regular_normal_via_closure X Tx HTx)). }
+		claim Hiff:
+		  normal_space X Tx <->
+		  forall A0 U0:set, closed_in X Tx A0 -> U0 :e Tx -> A0 c= U0 ->
+		    exists V0:set, V0 :e Tx /\ A0 c= V0 /\ closure_of X Tx V0 c= U0.
+		{ exact (Hlemma HT1). }
+		claim Hcrit:
+		  forall A0 U0:set, closed_in X Tx A0 -> U0 :e Tx -> A0 c= U0 ->
+		    exists V0:set, V0 :e Tx /\ A0 c= V0 /\ closure_of X Tx V0 c= U0.
+		{ exact (iffEL (normal_space X Tx)
+		               (forall A0 U0:set, closed_in X Tx A0 -> U0 :e Tx -> A0 c= U0 ->
+		                 exists V0:set, V0 :e Tx /\ A0 c= V0 /\ closure_of X Tx V0 c= U0)
+		               Hiff Hnorm). }
+		exact (Hcrit A U HAcl HU HAU).
+		Qed.
 
 	(** Helper for products used in §31. **)
 	(** Helper: distinct points in a product differ in some coordinate. **)
