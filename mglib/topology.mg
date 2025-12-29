@@ -65519,8 +65519,6 @@ set Ty := {U :e Power Y |
   (p :e U /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U = Y :\: K)}.
 witness Y.
 witness Ty.
-claim HcompY: compact_space Y Ty.
-{ admit. (** FAIL **) }
 claim HHausY: Hausdorff_space Y Ty.
 { prove topology_on Y Ty /\
     forall x1 x2:set, x1 :e Y -> x2 :e Y -> x1 <> x2 ->
@@ -66734,8 +66732,45 @@ claim HHausY: Hausdorff_space Y Ty.
         apply FalseE.
         apply Hneq.
         rewrite Hx1p'.
-        rewrite Hx2p'.
-        reflexivity. }
+	        rewrite Hx2p'.
+	        reflexivity. }
+claim HcompY: compact_space Y Ty.
+{ (** Standard one-point compactification compactness argument. **)
+  claim HTy: topology_on Y Ty.
+  { exact (Hausdorff_space_topology Y Ty HHausY). }
+  prove compact_space Y Ty.
+  prove topology_on Y Ty /\ forall Fam:set, open_cover_of Y Ty Fam -> has_finite_subcover Y Ty Fam.
+  apply andI.
+  - exact HTy.
+  - let Fam. assume HFam: open_cover_of Y Ty Fam.
+    prove has_finite_subcover Y Ty Fam.
+    (** Choose a member U0 of the cover containing p. **)
+    claim HYcov: Y c= Union Fam.
+    { exact (open_cover_of_covers Y Ty Fam HFam). }
+    claim HpY: p :e Y.
+    { exact (binunionI2 X {p} p (SingI p)). }
+    claim HpUnion: p :e Union Fam.
+    { exact (HYcov p HpY). }
+    apply (UnionE_impred Fam p HpUnion).
+    let U0. assume HpU0: p :e U0. assume HU0Fam: U0 :e Fam.
+    claim HU0Ty: U0 :e Ty.
+    { exact (open_cover_of_members_open Y Ty Fam U0 HFam HU0Fam). }
+    claim HU0prop:
+      (p /:e U0 /\ U0 :e Tx) \/
+      (p :e U0 /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U0 = Y :\: K0).
+    { exact (SepE2 (Power Y)
+                   (fun U1:set =>
+                     (p /:e U1 /\ U1 :e Tx) \/
+                     (p :e U1 /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U1 = Y :\: K0))
+                   U0
+                   HU0Ty). }
+    apply HU0prop.
+    - assume Hbad: p /:e U0 /\ U0 :e Tx.
+      apply FalseE.
+      exact ((andEL (p /:e U0) (U0 :e Tx) Hbad) HpU0).
+    - assume Hgood: p :e U0 /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U0 = Y :\: K0.
+      (** TODO: use compactness of the complement K0 to extract a finite subcover of K0 from Fam, then add U0. **)
+      admit. }
 claim HXsubY: X c= Y.
 { let x. assume HxX: x :e X.
   exact (binunionI1 X {p} x HxX). }
