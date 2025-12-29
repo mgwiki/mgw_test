@@ -89769,46 +89769,193 @@ prove exists V:set,
   locally_finite_family X Tx V /\
   refine_of V U /\
   forall v:set, v :e V -> exists u:set, u :e U /\ closure_of X Tx v c= u.
-(** First obtain a locally finite open refinement from paracompactness. **)
+(** Use regularity to first refine U by a cover with closure contained in U, then apply paracompactness. **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall U0:set, open_cover X Tx U0 ->
+                 exists V0:set, open_cover X Tx V0 /\ locally_finite_family X Tx V0 /\ refine_of V0 U0)
+               Hpara). }
+claim Hreg: regular_space X Tx.
+{ exact (paracompact_Hausdorff_regular X Tx Hpara HH). }
+claim HUTx: forall u:set, u :e U -> u :e Tx.
+{ exact (andEL (forall u0:set, u0 :e U -> u0 :e Tx)
+               (covers X U)
+               Hcover). }
+claim HUcov: covers X U.
+{ exact (andER (forall u0:set, u0 :e U -> u0 :e Tx)
+               (covers X U)
+               Hcover). }
+
+(** For each x in X, pick u(x) in U with x in u(x). **)
+set pickU := fun x:set => Eps_i (fun u:set => u :e U /\ x :e u).
+claim HpickU: forall x:set, x :e X -> pickU x :e U /\ x :e pickU x.
+{ let x. assume HxX: x :e X.
+  claim Hex: exists u:set, u :e U /\ x :e u.
+  { exact (HUcov x HxX). }
+  apply Hex.
+  let u. assume Hu: u :e U /\ x :e u.
+  exact (Eps_i_ax (fun u0:set => u0 :e U /\ x :e u0) u Hu). }
+claim HpickUTx: forall x:set, x :e X -> pickU x :e Tx.
+{ let x. assume HxX: x :e X.
+  exact (HUTx (pickU x)
+              (andEL (pickU x :e U) (x :e pickU x) (HpickU x HxX))). }
+
+(** For each x in X, pick an open neighborhood V(x) with closure(V(x)) contained in u(x). **)
+set pickV := fun x:set =>
+  Eps_i (fun V:set => V :e Tx /\ x :e V /\ closure_of X Tx V c= pickU x).
+claim HpickV: forall x:set, x :e X ->
+  pickV x :e Tx /\ x :e pickV x /\ closure_of X Tx (pickV x) c= pickU x.
+{ let x. assume HxX: x :e X.
+  claim Hux: pickU x :e U /\ x :e pickU x.
+  { exact (HpickU x HxX). }
+  claim HuxTx: pickU x :e Tx.
+  { exact (HpickUTx x HxX). }
+  claim Hxux: x :e pickU x.
+  { exact (andER (pickU x :e U) (x :e pickU x) Hux). }
+  claim HexV: exists V:set, V :e Tx /\ x :e V /\ closure_of X Tx V c= pickU x.
+  { exact (regular_space_shrink_neighborhood X Tx x (pickU x) Hreg HxX HuxTx Hxux). }
+  apply HexV.
+  let V. assume HV: V :e Tx /\ x :e V /\ closure_of X Tx V c= pickU x.
+  exact (Eps_i_ax (fun V0:set => V0 :e Tx /\ x :e V0 /\ closure_of X Tx V0 c= pickU x) V HV). }
+
+(** Form the induced cover W = {V(x) | x in X}. **)
+set W := Repl X (fun x:set => pickV x).
+claim HcoverW: open_cover X Tx W.
+{ prove (forall w:set, w :e W -> w :e Tx) /\ covers X W.
+  apply andI.
+  - let w. assume Hw: w :e W.
+    claim Hex: exists x:set, x :e X /\ w = pickV x.
+    { exact (ReplE X (fun x0:set => pickV x0) w Hw). }
+    apply Hex.
+    let x. assume Hx: x :e X /\ w = pickV x.
+    claim HxX: x :e X.
+    { exact (andEL (x :e X) (w = pickV x) Hx). }
+    claim Heq: w = pickV x.
+    { exact (andER (x :e X) (w = pickV x) Hx). }
+    rewrite Heq.
+    claim Hpv: pickV x :e Tx /\ x :e pickV x /\ closure_of X Tx (pickV x) c= pickU x.
+    { exact (HpickV x HxX). }
+    claim Hpvpair: pickV x :e Tx /\ x :e pickV x.
+    { exact (andEL (pickV x :e Tx /\ x :e pickV x)
+                   (closure_of X Tx (pickV x) c= pickU x)
+                   Hpv). }
+    exact (andEL (pickV x :e Tx) (x :e pickV x) Hpvpair).
+  - let x. assume HxX: x :e X.
+    witness (pickV x).
+    apply andI.
+    + exact (ReplI X (fun x0:set => pickV x0) x HxX).
+    + claim Hpv: pickV x :e Tx /\ x :e pickV x /\ closure_of X Tx (pickV x) c= pickU x.
+      { exact (HpickV x HxX). }
+      claim Hpvpair: pickV x :e Tx /\ x :e pickV x.
+      { exact (andEL (pickV x :e Tx /\ x :e pickV x)
+                     (closure_of X Tx (pickV x) c= pickU x)
+                     Hpv). }
+      exact (andER (pickV x :e Tx) (x :e pickV x) Hpvpair). }
+
+(** Apply paracompactness to obtain a locally finite open refinement of W. **)
 claim HparaFor: forall U0:set, open_cover X Tx U0 ->
   exists V0:set, open_cover X Tx V0 /\ locally_finite_family X Tx V0 /\ refine_of V0 U0.
 { exact (andER (topology_on X Tx)
                (forall U0:set, open_cover X Tx U0 ->
                  exists V0:set, open_cover X Tx V0 /\ locally_finite_family X Tx V0 /\ refine_of V0 U0)
                Hpara). }
-claim HexV: exists V0:set, open_cover X Tx V0 /\ locally_finite_family X Tx V0 /\ refine_of V0 U.
-{ exact (HparaFor U Hcover). }
+claim HexV: exists V0:set, open_cover X Tx V0 /\ locally_finite_family X Tx V0 /\ refine_of V0 W.
+{ exact (HparaFor W HcoverW). }
 apply HexV.
-let V. assume HV: open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U.
+let V. assume HV: open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V W.
 witness V.
-(** Split the 3-conjunction from paracompactness and leave the closure domination as a future goal. **)
 claim HVpair: open_cover X Tx V /\ locally_finite_family X Tx V.
 { exact (andEL (open_cover X Tx V /\ locally_finite_family X Tx V)
-               (refine_of V U)
+               (refine_of V W)
                HV). }
-claim HVref: refine_of V U.
+claim HVrefW: refine_of V W.
 { exact (andER (open_cover X Tx V /\ locally_finite_family X Tx V)
-               (refine_of V U)
+               (refine_of V W)
                HV). }
 claim HVcover: open_cover X Tx V.
 { exact (andEL (open_cover X Tx V) (locally_finite_family X Tx V) HVpair). }
 claim HVlf: locally_finite_family X Tx V.
 { exact (andER (open_cover X Tx V) (locally_finite_family X Tx V) HVpair). }
+claim HTsub: Tx c= Power X.
+{ exact (topology_subset_axiom X Tx HTx). }
+claim HVTx: forall v:set, v :e V -> v :e Tx.
+{ exact (andEL (forall v0:set, v0 :e V -> v0 :e Tx)
+               (covers X V)
+               HVcover). }
+
+(** Main closure domination statement for members of V. **)
+claim Hcldom: forall v:set, v :e V -> exists u:set, u :e U /\ closure_of X Tx v c= u.
+{ let v. assume HvV: v :e V.
+  claim Hexw: exists w:set, w :e W /\ v c= w.
+  { exact (HVrefW v HvV). }
+  apply Hexw.
+  let w. assume Hw: w :e W /\ v c= w.
+  claim HwW: w :e W.
+  { exact (andEL (w :e W) (v c= w) Hw). }
+  claim Hvsubw: v c= w.
+  { exact (andER (w :e W) (v c= w) Hw). }
+  claim Hexx: exists x:set, x :e X /\ w = pickV x.
+  { exact (ReplE X (fun x0:set => pickV x0) w HwW). }
+  apply Hexx.
+  let x. assume Hx: x :e X /\ w = pickV x.
+  claim HxX: x :e X.
+  { exact (andEL (x :e X) (w = pickV x) Hx). }
+  claim Heqw: w = pickV x.
+  { exact (andER (x :e X) (w = pickV x) Hx). }
+  set u := pickU x.
+  witness u.
+  apply andI.
+  - exact (andEL (u :e U) (x :e u) (HpickU x HxX)).
+	  - prove closure_of X Tx v c= u.
+	    claim HwTx: w :e Tx.
+	    { rewrite Heqw.
+	      claim Hpv: pickV x :e Tx /\ x :e pickV x /\ closure_of X Tx (pickV x) c= pickU x.
+	      { exact (HpickV x HxX). }
+	      claim Hpvpair: pickV x :e Tx /\ x :e pickV x.
+	      { exact (andEL (pickV x :e Tx /\ x :e pickV x)
+	                     (closure_of X Tx (pickV x) c= pickU x)
+	                     Hpv). }
+	      exact (andEL (pickV x :e Tx) (x :e pickV x) Hpvpair). }
+	    claim HwPow: w :e Power X.
+	    { exact (HTsub w HwTx). }
+    claim HwsubX: w c= X.
+    { exact (PowerE X w HwPow). }
+    claim Hclvclw: closure_of X Tx v c= closure_of X Tx w.
+    { exact (closure_monotone X Tx v w HTx Hvsubw HwsubX). }
+	    claim Hclwsub: closure_of X Tx w c= u.
+	    { rewrite Heqw.
+	      claim Hpv: pickV x :e Tx /\ x :e pickV x /\ closure_of X Tx (pickV x) c= pickU x.
+	      { exact (HpickV x HxX). }
+	      exact (andER (pickV x :e Tx /\ x :e pickV x)
+	                   (closure_of X Tx (pickV x) c= pickU x)
+	                   Hpv). }
+	    exact (Subq_tra (closure_of X Tx v) (closure_of X Tx w) u Hclvclw Hclwsub). }
+
 apply and4I.
 - exact HVcover.
 - exact HVlf.
-- exact HVref.
-- let v. assume HvV: v :e V.
-  prove exists u:set, u :e U /\ closure_of X Tx v c= u.
-  (** Extract u :e U with v c= u from refinement. The closure-domination is the remaining core step. **)
-  claim Hexu: exists u:set, u :e U /\ v c= u.
-  { exact (HVref v HvV). }
+- (** refine_of V U via closure domination **)
+  let v. assume HvV: v :e V.
+  prove exists u:set, u :e U /\ v c= u.
+  claim Hexu: exists u:set, u :e U /\ closure_of X Tx v c= u.
+  { exact (Hcldom v HvV). }
   apply Hexu.
-  let u. assume Hu: u :e U /\ v c= u.
+  let u. assume Hu: u :e U /\ closure_of X Tx v c= u.
   witness u.
   apply andI.
-  - exact (andEL (u :e U) (v c= u) Hu).
-  - admit. (** FAIL **)
+  - exact (andEL (u :e U) (closure_of X Tx v c= u) Hu).
+  - (** v c= closure(v) c= u **)
+    claim HvTx: v :e Tx.
+    { exact (HVTx v HvV). }
+    claim HvPow: v :e Power X.
+    { exact (HTsub v HvTx). }
+    claim HvsubX: v c= X.
+    { exact (PowerE X v HvPow). }
+    claim Hvsubcl: v c= closure_of X Tx v.
+    { exact (subset_of_closure X Tx v HTx HvsubX). }
+    exact (Subq_tra v (closure_of X Tx v) u Hvsubcl
+                   (andER (u :e U) (closure_of X Tx v c= u) Hu)).
+- exact Hcldom.
 Qed.
 
 (** from §41 Theorem 41.7: partition of unity dominated by an open cover **)
