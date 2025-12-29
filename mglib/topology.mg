@@ -52885,23 +52885,14 @@ apply iffI.
     (** Neighborhood in subspace: U = W ∩ Y **)
     set U := W :/\: Y.
     witness U.
-    (** Bounded-exists goal is U∈Ty ∧ (x∈U ∧ U⊆A) **)
-    apply andI.
-    - (** U ∈ subspace topology with witness W **)
-      prove U :e subspace_topology X Tx Y.
-      claim HUpowY: U :e Power Y.
-      { apply PowerI.
-        let t. assume Ht: t :e U.
-        exact (binintersectE2 W Y t Ht). }
-      claim HexWU: exists V :e Tx, U = V :/\: Y.
-      { witness W.
-        apply andI.
-        - exact HWTx.
-        - reflexivity. }
-      exact (SepI (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUpowY HexWU).
-    - (** x ∈ U ∧ U ⊆ A **)
-      apply andI.
-      + exact (binintersectI W Y x HxW HxY).
+	    (** Bounded-exists goal is U∈Ty ∧ (x∈U ∧ U⊆A) **)
+	    apply andI.
+	    - (** U ∈ subspace topology with witness W **)
+	      prove U :e subspace_topology X Tx Y.
+	      exact (subspace_topologyI X Tx Y W HWTx).
+	    - (** x ∈ U ∧ U ⊆ A **)
+	      apply andI.
+	      + exact (binintersectI W Y x HxW HxY).
       + (** U ⊆ A since U ⊆ Y and disjoint from B, and A ∪ B = Y **)
         prove U c= A.
         let t. assume Ht: t :e U.
@@ -52994,23 +52985,14 @@ apply iffI.
       exact Hexy. }
     set U := W :/\: Y.
     witness U.
-    (** Bounded-exists goal is U∈Ty ∧ (x∈U ∧ U⊆B) **)
-    apply andI.
-    - (** U ∈ subspace topology **)
-      prove U :e subspace_topology X Tx Y.
-      claim HUpowY: U :e Power Y.
-      { apply PowerI.
-        let t. assume Ht: t :e U.
-        exact (binintersectE2 W Y t Ht). }
-      claim HexWU: exists V :e Tx, U = V :/\: Y.
-      { witness W.
-        apply andI.
-        - exact HWTx.
-        - reflexivity. }
-      exact (SepI (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUpowY HexWU).
-    - (** x ∈ U ∧ U ⊆ B **)
-      apply andI.
-      + exact (binintersectI W Y x HxW HxY).
+	    (** Bounded-exists goal is U∈Ty ∧ (x∈U ∧ U⊆B) **)
+	    apply andI.
+	    - (** U ∈ subspace topology **)
+	      prove U :e subspace_topology X Tx Y.
+	      exact (subspace_topologyI X Tx Y W HWTx).
+	    - (** x ∈ U ∧ U ⊆ B **)
+	      apply andI.
+	      + exact (binintersectI W Y x HxW HxY).
       + prove U c= B.
         let t. assume Ht: t :e U.
         prove t :e B.
@@ -63185,20 +63167,11 @@ apply iffI.
       let W. assume HW: W :e FamY.
       prove W :e Ty.
       apply (ReplE_impred Fam (fun U:set => U :/\: Y) W HW).
-      let U. assume HUfam: U :e Fam.
-      assume HWeq: W = U :/\: Y.
-      rewrite HWeq.
-      prove (U :/\: Y) :e subspace_topology X Tx Y.
-      prove (U :/\: Y) :e {U0 :e Power Y | exists V :e Tx, U0 = V :/\: Y}.
-      apply SepI.
-      + apply PowerI.
-        exact (binintersect_Subq_2 U Y).
-      + prove exists V :e Tx, U :/\: Y = V :/\: Y.
-        witness U.
-        apply andI.
-        * exact (HFamSub U HUfam).
-        * reflexivity. }
-  (** Apply compactness of Y in the subspace topology. **)
+	      let U. assume HUfam: U :e Fam.
+	      assume HWeq: W = U :/\: Y.
+	      rewrite HWeq.
+	      exact (subspace_topologyI X Tx Y U (HFamSub U HUfam)).
+	  (** Apply compactness of Y in the subspace topology. **)
   claim Hsubcover: forall Fam0:set, open_cover_of Y Ty Fam0 -> has_finite_subcover Y Ty Fam0.
   { exact (andER (topology_on Y Ty)
                  (forall Fam0:set, open_cover_of Y Ty Fam0 -> has_finite_subcover Y Ty Fam0)
