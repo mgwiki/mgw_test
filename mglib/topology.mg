@@ -87094,29 +87094,29 @@ Qed.
 
 (** from §32 Example 2: SOmega x SbarOmega not normal **)
 (** LATEX VERSION: Product S_Ω×S̄_Ω gives a non-normal example. **)
-(** FIXED: Use the binary product topology on S_Omega × Sbar_Omega, not a function-space product indexed by S_Omega × Sbar_Omega. **) 
-Definition S_Omega : set := omega.
-Definition Sbar_Omega : set := Power omega.
-Definition SOmega_topology : set := discrete_topology S_Omega.
-Definition SbarOmega_topology : set := discrete_topology Sbar_Omega.
+(** FIXED: Use abstract placeholders matching topology.tex: S_Omega is an uncountable well-ordered set and Sbar_Omega is S_Omega with one new point adjoined. **)
+(** NOTE: We model the point Omega by adjoining S_Omega itself; by In_irref we have S_Omega /:e S_Omega, so this really adds a new element. **)
+Theorem exists_uncountable_well_ordered_set : exists X:set, well_ordered_set X /\ uncountable_set X.
+admit. (** FAIL **)
+Qed.
+Definition S_Omega : set := Eps_i (fun X:set => well_ordered_set X /\ uncountable_set X).
+Theorem S_Omega_well_ordered_uncountable : well_ordered_set S_Omega /\ uncountable_set S_Omega.
+prove well_ordered_set S_Omega /\ uncountable_set S_Omega.
+claim Hex: exists X:set, well_ordered_set X /\ uncountable_set X.
+{ exact exists_uncountable_well_ordered_set. }
+exact (Eps_i_ex (fun X:set => well_ordered_set X /\ uncountable_set X) Hex).
+Qed.
+Definition Sbar_Omega : set := SetAdjoin S_Omega S_Omega.
+(** LATEX VERSION: Both spaces are given the order topology. **)
+Definition SOmega_topology : set := order_topology S_Omega.
+Definition SbarOmega_topology : set := order_topology Sbar_Omega.
 
 Theorem SOmega_SbarOmega_not_normal :
   normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
   ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
 prove normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology /\
   ~ normal_space (setprod S_Omega Sbar_Omega) (product_topology S_Omega SOmega_topology Sbar_Omega SbarOmega_topology).
-apply andI.
-- prove normal_space S_Omega SOmega_topology /\ normal_space Sbar_Omega SbarOmega_topology.
-  apply andI.
-  * claim HSO: SOmega_topology = discrete_topology S_Omega.
-    { reflexivity. }
-    rewrite HSO.
-    exact (discrete_normal_space S_Omega).
-  * claim HSb: SbarOmega_topology = discrete_topology Sbar_Omega.
-    { reflexivity. }
-	    rewrite HSb.
-	    exact (discrete_normal_space Sbar_Omega).
-			- admit. (** FAIL **)
+admit. (** FAIL **)
 Qed.
 
 (** from §33 Theorem 33.1 (Urysohn lemma): continuous function separating closed sets in normal space **)
