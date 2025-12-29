@@ -15955,36 +15955,146 @@ claim HUnionClosure: forall UFam :e Power (infinite_complement_family X),
 { exact (andER ((infinite_complement_family X c= Power X /\ Empty :e infinite_complement_family X) /\ X :e infinite_complement_family X)
               (forall UFam :e Power (infinite_complement_family X), Union UFam :e infinite_complement_family X)
               H1). }
-(** Use the (admitted) witness sets showing union failure **)
-apply (ex13_3b_witness_sets X HinfX).
-let U.
-assume HexV.
-apply HexV.
-let V.
-assume HUV.
-claim Hcore: U :e infinite_complement_family X /\ V :e infinite_complement_family X.
-{ exact (andEL (U :e infinite_complement_family X /\ V :e infinite_complement_family X)
-              (~(Union (UPair U V) :e infinite_complement_family X))
-              HUV). }
-claim Hnot: ~(Union (UPair U V) :e infinite_complement_family X).
-{ exact (andER (U :e infinite_complement_family X /\ V :e infinite_complement_family X)
-              (~(Union (UPair U V) :e infinite_complement_family X))
-              HUV). }
-claim HU: U :e infinite_complement_family X.
-{ exact (andEL (U :e infinite_complement_family X) (V :e infinite_complement_family X) Hcore). }
-claim HV: V :e infinite_complement_family X.
-{ exact (andER (U :e infinite_complement_family X) (V :e infinite_complement_family X) Hcore). }
-claim HUVsub: UPair U V c= infinite_complement_family X.
-{ let W. assume HW: W :e UPair U V.
-  apply (UPairE W U V HW (W :e infinite_complement_family X)).
-  - assume HWU: W = U. rewrite HWU. exact HU.
-  - assume HWV: W = V. rewrite HWV. exact HV.
+(** Build a family of finite subsets of X\\{p}; each is Tinfty-open, but the union is X\\{p}, which is not Tinfty-open. **)
+apply (infinite_nonempty X HinfX).
+let p. assume HpX: p :e X.
+set Y := X :\: {p}.
+set Fam := {F :e Power Y | finite F}.
+
+(** Fam is a subfamily of Tinfty-open sets **)
+claim HFamSub: Fam c= infinite_complement_family X.
+{ let F. assume HF: F :e Fam.
+  claim HFpowY: F :e Power Y.
+  { exact (SepE1 (Power Y) (fun F0:set => finite F0) F HF). }
+  claim HFsubY: F c= Y.
+  { exact (PowerE Y F HFpowY). }
+  claim HYsubX: Y c= X.
+  { let x. assume HxY: x :e Y.
+    exact (setminusE1 X {p} x HxY). }
+  claim HFsubX: F c= X.
+  { exact (Subq_tra F Y X HFsubY HYsubX). }
+  claim HFpowX: F :e Power X.
+  { exact (PowerI X F HFsubX). }
+  claim HfinF: finite F.
+  { exact (SepE2 (Power Y) (fun F0:set => finite F0) F HF). }
+  claim HinfComp: infinite (X :\: F).
+  { exact (infinite_setminus_finite X F HinfX HfinF). }
+  claim Hpred: infinite (X :\: F) \/ F = Empty \/ F = X.
+  { apply orIL.
+    apply orIL.
+    exact HinfComp. }
+  exact (SepI (Power X)
+              (fun U0 : set => infinite (X :\: U0) \/ U0 = Empty \/ U0 = X)
+              F
+              HFpowX
+              Hpred).
 }
-claim HUVinPower: UPair U V :e Power (infinite_complement_family X).
-{ apply PowerI. exact HUVsub. }
-claim HUnionIn: Union (UPair U V) :e infinite_complement_family X.
-{ exact (HUnionClosure (UPair U V) HUVinPower). }
-exact (Hnot HUnionIn).
+claim HFamPow: Fam :e Power (infinite_complement_family X).
+{ apply PowerI.
+  exact HFamSub. }
+
+(** Union Fam = Y **)
+claim HUnionEq: Union Fam = Y.
+{ apply set_ext.
+  - let x. assume HxU: x :e Union Fam.
+    prove x :e Y.
+    apply UnionE_impred Fam x HxU.
+    let F. assume HxF: x :e F. assume HF: F :e Fam.
+    claim HFpowY: F :e Power Y.
+    { exact (SepE1 (Power Y) (fun F0:set => finite F0) F HF). }
+    claim HFsubY: F c= Y.
+    { exact (PowerE Y F HFpowY). }
+    exact (HFsubY x HxF).
+  - let x. assume HxY: x :e Y.
+    prove x :e Union Fam.
+    (** singleton {x} is in Fam **)
+    claim HxYsub: {x} c= Y.
+    { let z. assume Hz: z :e {x}.
+      prove z :e Y.
+      claim Hzeq: z = x.
+      { exact (SingE x z Hz). }
+      rewrite Hzeq.
+      exact HxY. }
+    claim HxPowY: {x} :e Power Y.
+    { exact (PowerI Y {x} HxYsub). }
+    claim HxFin: finite {x}.
+    { exact (Sing_finite x). }
+    claim HsingFam: {x} :e Fam.
+    { exact (SepI (Power Y) (fun F0:set => finite F0) {x} HxPowY HxFin). }
+    exact (UnionI Fam x {x} (SingI x) HsingFam).
+}
+
+(** Y is not Tinfty-open: its complement is {p}, finite, and Y is neither Empty nor X **)
+claim HYneX: ~(Y = X).
+{ assume Heq: Y = X.
+  claim HpY: p :e Y.
+  { rewrite Heq. exact HpX. }
+  claim Hpnot: p /:e {p}.
+  { exact (setminusE2 X {p} p HpY). }
+  exact (Hpnot (SingI p)). }
+claim HYneEmpty: ~(Y = Empty).
+{ assume Heq: Y = Empty.
+  claim HyEx: exists x:set, x :e Y.
+  { exact (infinite_setminus_finite_nonempty X {p} HinfX (Sing_finite p)). }
+  apply HyEx.
+  let x. assume HxY.
+  claim HxE: x :e Empty.
+  { rewrite <- Heq. exact HxY. }
+  exact (EmptyE x HxE). }
+claim HnotOpenY: ~(Y :e infinite_complement_family X).
+{ assume HYopen: Y :e infinite_complement_family X.
+  claim HYdisj: infinite (X :\: Y) \/ Y = Empty \/ Y = X.
+  { exact (SepE2 (Power X) (fun U0:set => infinite (X :\: U0) \/ U0 = Empty \/ U0 = X) Y HYopen). }
+  apply HYdisj.
+  - assume Hleft: infinite (X :\: Y) \/ Y = Empty.
+    apply Hleft.
+    + (** show ~(infinite (X\\Y)) since X\\Y = {p} is finite **)
+      assume HinfComp: infinite (X :\: Y).
+      claim HcompEq: X :\: Y = {p}.
+      { (** Y = X\\{p} so X\\Y = {p} **)
+        claim HYdef: Y = X :\: {p}.
+        { reflexivity. }
+        rewrite HYdef.
+        apply set_ext.
+        - let x. assume Hx: x :e X :\: (X :\: {p}).
+          prove x :e {p}.
+          claim HxX: x :e X.
+          { exact (setminusE1 X (X :\: {p}) x Hx). }
+          claim HxnotY: x /:e X :\: {p}.
+          { exact (setminusE2 X (X :\: {p}) x Hx). }
+          apply (xm (x :e {p})).
+          * assume HxS. exact HxS.
+          * assume HxnotS: ~(x :e {p}).
+            apply FalseE.
+            apply HxnotY.
+            exact (setminusI X {p} x HxX HxnotS).
+        - let x. assume Hx: x :e {p}.
+          prove x :e X :\: (X :\: {p}).
+          claim Hxeq: x = p.
+          { exact (SingE p x Hx). }
+          rewrite Hxeq.
+          apply setminusI.
+          * exact HpX.
+          * assume HpY: p :e X :\: {p}.
+            claim HpnotS: p /:e {p}.
+            { exact (setminusE2 X {p} p HpY). }
+            exact (HpnotS (SingI p)).
+      }
+      claim HinfSing: infinite {p}.
+      { rewrite <- HcompEq.
+        exact HinfComp. }
+      exact (HinfSing (Sing_finite p)).
+    + assume HYemp. exact (HYneEmpty HYemp).
+  - assume HYX. exact (HYneX HYX).
+}
+
+(** Now the union-closure axiom yields Y open, contradiction **)
+claim HUnionIn: Union Fam :e infinite_complement_family X.
+{ exact (HUnionClosure Fam HFamPow). }
+claim HYopen: Y :e infinite_complement_family X.
+{ rewrite <- HUnionEq.
+  exact HUnionIn. }
+exact (HnotOpenY HYopen).
 Qed.
 
 (** helper: structured witness outline for Tinfty failure, for infinite ambient sets **) 
