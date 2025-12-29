@@ -1674,11 +1674,11 @@ Definition atleastp : set -> set -> prop
  := fun X Y : set => exists f : set -> set, inj X Y f.
 
 Theorem atleastp_tra: forall X Y Z, atleastp X Y -> atleastp Y Z -> atleastp X Z.
-admit.
+ admit. (** FAIL **)
 Qed.
 
 Theorem Subq_atleastp : forall X Y, X c= Y -> atleastp X Y.
-admit.
+ admit. (** FAIL **)
 Qed.
 
 Definition equip : set -> set -> prop
