@@ -87949,7 +87949,7 @@ Definition open_map : set -> set -> set -> set -> set -> prop :=
 (** from Supplementary Exercises: Topological Groups **)
 (** LATEX VERSION: A topological group is a group that is T1, such that multiplication G×G→G and inversion G→G are continuous. **)
 Definition topological_group : set -> set -> prop := fun G Tg =>
-  topology_on G Tg /\
+  T1_space G Tg /\
   exists mult inv e:set,
     function_on mult (setprod G G) G /\
     function_on inv G G /\
