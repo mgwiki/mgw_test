@@ -8933,6 +8933,31 @@ Qed.
 Definition generated_topology : set -> set -> set := fun X B =>
   {U :e Power X | forall x :e U, exists b :e B, x :e b /\ b c= U}.
 
+(** Helper: Any declared generator element is open in the generated topology **)
+(** LATEX VERSION: If U is one of the designated generators and U ⊂ X, then U is open in the generated topology. **)
+Theorem generated_topology_contains_elem : forall X B U:set,
+  U :e Power X ->
+  U :e B ->
+  U :e generated_topology X B.
+let X B U.
+assume HUpow: U :e Power X.
+assume HUinB: U :e B.
+prove U :e generated_topology X B.
+claim HUprop : forall x :e U, exists b :e B, x :e b /\ b c= U.
+{ let x. assume HxU: x :e U.
+  witness U.
+  apply andI.
+  - exact HUinB.
+  - apply andI.
+    + exact HxU.
+    + exact (Subq_ref U). }
+exact (SepI (Power X)
+            (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0)
+            U
+            HUpow
+            HUprop).
+Qed.
+
 (** Helper: Basis elements are subsets of X **)
 Theorem basis_elem_subset : forall X B b:set,
   basis_on X B -> b :e B -> b c= X.
@@ -9199,6 +9224,69 @@ claim Hb0prop : forall x :e b0, exists b :e B, x :e b /\ b c= b0.
     * exact Hxb3.
     * exact Hb3subb0. }
 exact (SepI (Power X) (fun U0 : set => forall x :e U0, exists b :e B, x :e b /\ b c= U0) b0 (PowerI X b0 Hb0_subX) Hb0prop).
+Qed.
+
+(** Helper: generated topology is contained in any topology that contains the generators **)
+(** LATEX VERSION: If T is a topology on X and every generator b∈B is in T, then every set generated from B is in T. **)
+(** NOTE: This does not require B to satisfy the basis axioms; it is a general “generated topology is minimal” direction. **)
+Theorem generated_topology_finer_weak : forall X B T:set,
+  topology_on X T ->
+  (forall b :e B, b :e T) ->
+  finer_than T (generated_topology X B).
+let X B T.
+assume HT: topology_on X T.
+assume HBsub: forall b :e B, b :e T.
+prove finer_than T (generated_topology X B).
+prove generated_topology X B c= T.
+let U. assume HU: U :e generated_topology X B.
+prove U :e T.
+claim HUsubX : U c= X.
+{ exact (PowerE X U
+         (SepE1 (Power X)
+               (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
+               U HU)). }
+claim HUprop : forall x :e U, exists b :e B, x :e b /\ b c= U.
+{ exact (SepE2 (Power X)
+              (fun U0 : set => forall x0 :e U0, exists b0 :e B, x0 :e b0 /\ b0 c= U0)
+              U HU). }
+set Fam : set := {b :e B|b c= U}.
+claim HFamSubT : Fam c= T.
+{ let b. assume HbFam: b :e Fam.
+  claim HbB: b :e B.
+  { exact (SepE1 B (fun b0 : set => b0 c= U) b HbFam). }
+  exact (HBsub b HbB). }
+claim HFamPowT : Fam :e Power T.
+{ apply PowerI.
+  exact HFamSubT. }
+claim HUnionInT : Union Fam :e T.
+{ exact (topology_union_axiom X T HT Fam HFamPowT). }
+claim HUnionEq : Union Fam = U.
+{ apply set_ext.
+  - let x. assume HxUnion: x :e Union Fam.
+    apply (UnionE_impred Fam x HxUnion).
+    let b. assume Hxb: x :e b.
+    assume HbFam: b :e Fam.
+    claim HbsubU: b c= U.
+    { exact (SepE2 B (fun b0 : set => b0 c= U) b HbFam). }
+    exact (HbsubU x Hxb).
+  - let x. assume HxU: x :e U.
+    claim Hexb: exists b :e B, x :e b /\ b c= U.
+    { exact (HUprop x HxU). }
+    apply Hexb.
+    let b. assume Hbpair.
+    claim HbB : b :e B.
+    { exact (andEL (b :e B) (x :e b /\ b c= U) Hbpair). }
+    claim Hbprop : x :e b /\ b c= U.
+    { exact (andER (b :e B) (x :e b /\ b c= U) Hbpair). }
+    claim Hxb : x :e b.
+    { exact (andEL (x :e b) (b c= U) Hbprop). }
+    claim HbsubU : b c= U.
+    { exact (andER (x :e b) (b c= U) Hbprop). }
+    claim HbFam : b :e Fam.
+    { exact (SepI B (fun b0 : set => b0 c= U) b HbB HbsubU). }
+    exact (UnionI Fam x b Hxb HbFam). }
+rewrite <- HUnionEq.
+exact HUnionInT.
 Qed.
 
 (** from §13: shorthand for basis generating topology **) 
@@ -22683,8 +22771,11 @@ apply (binunionE' ({I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}
     rewrite HUeq.
     claim HUinB: open_ray_upper X a :e order_topology_basis X.
     { exact (open_ray_upper_in_order_topology_basis X a HaX). }
-    exact (generated_topology_contains_basis X (order_topology_basis X) (order_topology_basis_is_basis X)
-            (open_ray_upper X a) HUinB).
+    claim HUpow: open_ray_upper X a :e Power X.
+    { apply PowerI.
+      let x. assume HxU: x :e open_ray_upper X a.
+      exact (SepE1 X (fun x0 : set => order_rel X a x0) x HxU). }
+    exact (generated_topology_contains_elem X (order_topology_basis X) (open_ray_upper X a) HUpow HUinB).
   + assume HU2: U :e {I0 :e Power X | exists b :e X, I0 = open_ray_lower X b}.
     claim Hex: exists b :e X, U = open_ray_lower X b.
     { exact (SepE2 (Power X) (fun I0 : set => exists b :e X, I0 = open_ray_lower X b) U HU2). }
@@ -22697,8 +22788,11 @@ apply (binunionE' ({I0 :e Power X | exists a :e X, I0 = open_ray_upper X a}
     rewrite HUeq.
     claim HUinB: open_ray_lower X b :e order_topology_basis X.
     { exact (open_ray_lower_in_order_topology_basis X b HbX). }
-    exact (generated_topology_contains_basis X (order_topology_basis X) (order_topology_basis_is_basis X)
-            (open_ray_lower X b) HUinB).
+    claim HUpow: open_ray_lower X b :e Power X.
+    { apply PowerI.
+      let x. assume HxU: x :e open_ray_lower X b.
+      exact (SepE1 X (fun x0 : set => order_rel X x0 b) x HxU). }
+    exact (generated_topology_contains_elem X (order_topology_basis X) (open_ray_lower X b) HUpow HUinB).
   + exact HU0.
 - assume HUX: U :e {X}.
   claim HUeq: U = X.
@@ -22966,7 +23060,7 @@ apply set_ext.
   { let b. assume Hb.
     exact (order_topology_basis_sub_generated_from_open_rays X b Hb). }
   claim Hfiner: finer_than Tsub (generated_topology X (order_topology_basis X)).
-  { exact (generated_topology_finer X (order_topology_basis X) Tsub (order_topology_basis_is_basis X) HTsub HBsub). }
+  { exact (generated_topology_finer_weak X (order_topology_basis X) Tsub HTsub HBsub). }
   exact (Hfiner U HU).
 Qed.
 
