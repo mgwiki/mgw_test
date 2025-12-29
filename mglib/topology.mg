@@ -90402,12 +90402,31 @@ Theorem Baire_category_compact_Hausdorff : forall X Tx:set,
 admit. (** FAIL **)
 Qed.
 
-(** from §48 Theorem: Baire category theorem general version **)
-(** LATEX VERSION: General Baire category consequence: nonempty open sets in Baire space. **)
-(** FIXED: Corrected Baire_space to take both X and Tx parameters. **)
+(** from §48 Theorem 48.2 (Baire category theorem): compact Hausdorff or complete metric implies Baire **)
+(** LATEX VERSION: If X is compact Hausdorff or a complete metric space, then X is a Baire space. **)
 Theorem Baire_category_theorem : forall X Tx:set,
-  Baire_space X Tx -> forall U:set, open_in X Tx U -> U <> Empty.
-admit. (** FAIL **)
+  (compact_space X Tx /\ Hausdorff_space X Tx) \/
+  (exists d:set, complete_metric_space X d /\ Tx = metric_topology X d) ->
+  Baire_space X Tx.
+let X Tx.
+assume Hcase:
+  (compact_space X Tx /\ Hausdorff_space X Tx) \/
+  (exists d:set, complete_metric_space X d /\ Tx = metric_topology X d).
+prove Baire_space X Tx.
+apply Hcase.
+- assume Hcomp: compact_space X Tx /\ Hausdorff_space X Tx.
+  exact (Baire_category_compact_Hausdorff X Tx
+           (andEL (compact_space X Tx) (Hausdorff_space X Tx) Hcomp)
+           (andER (compact_space X Tx) (Hausdorff_space X Tx) Hcomp)).
+- assume Hmet: exists d:set, complete_metric_space X d /\ Tx = metric_topology X d.
+  apply Hmet.
+  let d. assume Hd: complete_metric_space X d /\ Tx = metric_topology X d.
+  claim Hcomp: complete_metric_space X d.
+  { exact (andEL (complete_metric_space X d) (Tx = metric_topology X d) Hd). }
+  claim HtopEq: Tx = metric_topology X d.
+  { exact (andER (complete_metric_space X d) (Tx = metric_topology X d) Hd). }
+  rewrite HtopEq.
+  exact (Baire_category_complete_metric X d Hcomp).
 Qed.
 
 (** from §49 Definition: differentiability and nowhere-differentiable function **) 
