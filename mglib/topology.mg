@@ -15898,6 +15898,26 @@ apply (xm (exists b:set, b :e X /\ ~(b = a))).
   exact (HinfX HfinX).
 Qed.
 
+(** helper: infinite minus finite is nonempty **)
+(** LATEX VERSION: (set theory) If X is infinite and F is finite then X\\F is nonempty. **)
+Theorem infinite_setminus_finite_nonempty : forall X F:set,
+  infinite X -> finite F -> exists x:set, x :e X :\: F.
+let X F.
+assume HinfX: infinite X.
+assume HfinF: finite F.
+claim HinfXF: infinite (X :\: F).
+{ exact (infinite_setminus_finite X F HinfX HfinF). }
+exact (infinite_nonempty (X :\: F) HinfXF).
+Qed.
+
+(** helper: removing one point from an infinite set leaves an infinite set (proved in topology section) **)
+(** LATEX VERSION: (set theory) If X is infinite then X\\{y} is infinite. **)
+Theorem infinite_remove1_top : forall X y:set, infinite X -> infinite (X :\: {y}).
+let X y.
+assume HinfX: infinite X.
+exact (infinite_setminus_finite X {y} HinfX (Sing_finite y)).
+Qed.
+
 Theorem ex13_3b_witness_sets : forall X:set,
   infinite X ->
   exists U V:set,
