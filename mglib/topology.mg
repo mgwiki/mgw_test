@@ -28141,7 +28141,7 @@ apply iffI.
   prove exists V :e Tx, U = V :/\: Y.
   claim HUinSubspace: U :e subspace_topology X Tx Y.
   { exact (andER (topology_on Y (subspace_topology X Tx Y)) (U :e subspace_topology X Tx Y) HopenU). }
-  exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSubspace).
+  exact (subspace_topologyE X Tx Y U HUinSubspace).
 - assume Hexists: exists V :e Tx, U = V :/\: Y.
   prove open_in Y (subspace_topology X Tx Y) U.
   prove topology_on Y (subspace_topology X Tx Y) /\ U :e subspace_topology X Tx Y.
@@ -28149,9 +28149,15 @@ apply iffI.
   + prove topology_on Y (subspace_topology X Tx Y).
     exact (subspace_topology_is_topology X Tx Y HTx HY).
   + prove U :e subspace_topology X Tx Y.
-    claim HUinPowerY: U :e Power Y.
-    { apply PowerI. exact HU. }
-    exact (SepI (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinPowerY Hexists).
+    apply Hexists.
+    let V.
+    assume HVpair: V :e Tx /\ U = V :/\: Y.
+    claim HV: V :e Tx.
+    { exact (andEL (V :e Tx) (U = V :/\: Y) HVpair). }
+    claim HUeq: U = V :/\: Y.
+    { exact (andER (V :e Tx) (U = V :/\: Y) HVpair). }
+    rewrite HUeq.
+    exact (subspace_topologyI X Tx Y V HV).
 Qed.
 
 (** from §16 Lemma 16.1: basis for the subspace topology **) 
@@ -28209,7 +28215,7 @@ claim Href: forall U :e subspace_topology X Tx Y, forall x :e U,
 { let U. assume HU: U :e subspace_topology X Tx Y.
   let x. assume HxU: x :e U.
   claim HUprop: exists V :e Tx, U = V :/\: Y.
-  { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HU). }
+  { exact (subspace_topologyE X Tx Y U HU). }
   apply HUprop.
   let V. assume HVpair.
   claim HVTx: V :e Tx.
