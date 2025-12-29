@@ -15918,20 +15918,6 @@ assume HinfX: infinite X.
 exact (infinite_setminus_finite X {y} HinfX (Sing_finite y)).
 Qed.
 
-Theorem ex13_3b_witness_sets : forall X:set,
-  infinite X ->
-  exists U V:set,
-    U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
-    ~(Union (UPair U V) :e infinite_complement_family X).
-let X.
-assume HinfX: infinite X.
-prove exists U V:set,
-  U :e infinite_complement_family X /\ V :e infinite_complement_family X /\
-  ~(Union (UPair U V) :e infinite_complement_family X).
-(** SUSPICIOUS DEFINITION: This needs a set-theoretic construction on an arbitrary infinite set X producing U,V with infinite complements but with (X\\(U∪V)) finite nonempty; this is nontrivial in this development, so the witness construction is currently admitted. **)
-admit. (** FAIL **)
-Qed.
-
 (** LATEX VERSION: Exercise 3: For infinite X, Tinfty is not a topology (union-closure fails). **)
 Theorem ex13_3b_Tinfty_not_topology : forall X:set,
   infinite X ->
