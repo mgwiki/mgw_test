@@ -30202,7 +30202,7 @@ apply set_ext.
   claim HWPowerA: W :e Power A.
   { exact (SepE1 (Power A) (fun W0:set => exists V :e Tx, W0 = V :/\: A) W HW). }
   claim HWexists: exists V :e Tx, W = V :/\: A.
-  { exact (SepE2 (Power A) (fun W0:set => exists V :e Tx, W0 = V :/\: A) W HW). }
+  { exact (subspace_topologyE X Tx A W HW). }
   apply HWexists.
   let V.
   assume HV: V :e Tx /\ W = V :/\: A.
@@ -30249,12 +30249,12 @@ prove subspace_topology X T' Y c= subspace_topology X T Y.
 let W.
 assume HW: W :e subspace_topology X T' Y.
 prove W :e subspace_topology X T Y.
-(** W ∈ subspace_topology X T' Y means W ∈ Power Y ∧ ∃V'∈T', W = V' ∩ Y **)
-claim HWPowerY: W :e Power Y.
-{ exact (SepE1 (Power Y) (fun W0:set => exists V :e T', W0 = V :/\: Y) W HW). }
-claim HWexists: exists V :e T', W = V :/\: Y.
-{ exact (SepE2 (Power Y) (fun W0:set => exists V :e T', W0 = V :/\: Y) W HW). }
-apply HWexists.
+  (** W ∈ subspace_topology X T' Y means W ∈ Power Y ∧ ∃V'∈T', W = V' ∩ Y **)
+  claim HWPowerY: W :e Power Y.
+  { exact (SepE1 (Power Y) (fun W0:set => exists V :e T', W0 = V :/\: Y) W HW). }
+  claim HWexists: exists V :e T', W = V :/\: Y.
+  { exact (subspace_topologyE X T' Y W HW). }
+  apply HWexists.
 let V'.
 assume HV': V' :e T' /\ W = V' :/\: Y.
 claim HV'inT': V' :e T'.
