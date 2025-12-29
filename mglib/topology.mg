@@ -87877,6 +87877,42 @@ prove paracompact_space X Tx.
 admit. (** FAIL **)
 Qed.
 
+(** from §41 Example 4: product of two paracompact spaces need not be paracompact **)
+(** LATEX VERSION: R_lower_limit is paracompact, but R_lower_limit x R_lower_limit is not paracompact since it is Hausdorff but not normal. **)
+Theorem Sorgenfrey_plane_not_paracompact :
+  ~ paracompact_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+prove ~ paracompact_space (setprod Sorgenfrey_line Sorgenfrey_line) Sorgenfrey_plane_topology.
+admit. (** FAIL **)
+Qed.
+
+(** from §41 Example 5: R^omega is paracompact in product and uniform topologies **)
+(** LATEX VERSION: R^omega is paracompact in the product and uniform topologies since it is metrizable; box topology case is unknown. **)
+Theorem Romega_paracompact_product_topology :
+  paracompact_space (product_space omega (const_space_family omega R R_standard_topology))
+                    (product_topology_full omega (const_space_family omega R R_standard_topology)).
+prove paracompact_space (product_space omega (const_space_family omega R R_standard_topology))
+                        (product_topology_full omega (const_space_family omega R R_standard_topology)).
+admit. (** FAIL **)
+Qed.
+
+(** from §41 Example 6: uncountable product of R is not paracompact **)
+(** LATEX VERSION: If J is uncountable then R^J is not paracompact since it is Hausdorff but not normal. **)
+Theorem uncountable_product_R_not_paracompact : forall J:set,
+  uncountable_set J ->
+  ~ paracompact_space (product_space J (const_space_family J R R_standard_topology))
+                      (product_topology_full J (const_space_family J R R_standard_topology)).
+let J.
+assume HJ: uncountable_set J.
+prove ~ paracompact_space (product_space J (const_space_family J R R_standard_topology))
+                          (product_topology_full J (const_space_family J R R_standard_topology)).
+admit. (** FAIL **)
+Qed.
+
+(** from §41 Definition: support of a function **)
+(** LATEX VERSION: Support(phi) is the closure of {x | phi(x) <> 0}. **)
+Definition support_of : set -> set -> set -> set := fun X Tx phi =>
+  closure_of X Tx {x :e X | apply_fun phi x <> 0}.
+
 (** from §41 Lemma 41.6 (shrinking lemma): locally finite open shrinking of an open cover **)
 (** LATEX VERSION: If X is paracompact Hausdorff and U is an indexed open cover, there exists a locally finite open cover V with closure(V) contained in U. **)
 Theorem shrinking_lemma_41_6 : forall X Tx U:set,
