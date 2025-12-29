@@ -79867,9 +79867,9 @@ apply andI.
         exact (Hb0subU z Hzb0).
 Qed.
 
-(** from §30 Theorem 30.1(a): sequences and closure in first-countable spaces **) 
-(** LATEX VERSION: In first-countable spaces, sequential closure detects topological closure. **)
-Theorem first_countable_sequences_detect_closure : forall X Tx A x:set,
+(** helper: any convergent sequence yields closure membership **) 
+(** LATEX VERSION: If a sequence in A converges to x, then x is in the closure of A (no countability needed). **)
+Theorem convergent_sequence_implies_closure : forall X Tx A x:set,
   topology_on X Tx ->
   (exists seq:set, sequence_in seq A /\ converges_to X Tx seq x) ->
   x :e closure_of X Tx A.
@@ -79918,6 +79918,28 @@ claim HyUA: apply_fun seq N :e U :/\: A.
 claim HyEmp: apply_fun seq N :e Empty.
 { rewrite <- HUAEq. exact HyUA. }
 exact (EmptyE (apply_fun seq N) HyEmp False).
+Qed.
+
+(** from §30 Theorem 30.1(a): sequences and closure in first-countable spaces **) 
+(** LATEX VERSION: If X is first countable, then x is in cl(A) iff there exists a sequence in A converging to x. **)
+Theorem first_countable_sequences_detect_closure : forall X Tx A x:set,
+  first_countable_space X Tx ->
+  (x :e closure_of X Tx A <->
+    exists seq:set, sequence_in seq A /\ converges_to X Tx seq x).
+let X Tx A x.
+assume Hfc: first_countable_space X Tx.
+prove x :e closure_of X Tx A <->
+  exists seq:set, sequence_in seq A /\ converges_to X Tx seq x.
+apply iffI.
+- (** closure -> existence of convergent sequence (needs first countability) **)
+  assume Hxcl: x :e closure_of X Tx A.
+  prove exists seq:set, sequence_in seq A /\ converges_to X Tx seq x.
+  admit. (** FAIL **)
+- (** existence of convergent sequence -> closure (general) **)
+  assume Hseq: exists seq:set, sequence_in seq A /\ converges_to X Tx seq x.
+  claim HTx: topology_on X Tx.
+  { exact (andEL (topology_on X Tx) (forall x0:set, x0 :e X -> countable_basis_at X Tx x0) Hfc). }
+  exact (convergent_sequence_implies_closure X Tx A x HTx Hseq).
 Qed.
 
 (** from §30 Theorem 30.1(b): sequences and continuity in first-countable spaces **)
