@@ -30311,9 +30311,13 @@ Qed.
 Definition closed_interval_in : set -> set -> set -> set := fun X a b =>
   {x :e X | (x = a \/ order_rel X a x) /\ (x = b \/ order_rel X x b)}.
 
+(** from §16 Exercise 7: half-open intervals in an ordered set **) 
+(** LATEX VERSION: [a,b) = {x∈X | a≤x<b}. **)
 Definition halfopen_interval_left_in : set -> set -> set -> set := fun X a b =>
   {x :e X | (x = a \/ order_rel X a x) /\ order_rel X x b}.
 
+(** from §16 Exercise 7: half-open intervals in an ordered set **) 
+(** LATEX VERSION: (a,b] = {x∈X | a<x≤b}. **)
 Definition halfopen_interval_right_in : set -> set -> set -> set := fun X a b =>
   {x :e X | order_rel X a x /\ (x = b \/ order_rel X x b)}.
 
