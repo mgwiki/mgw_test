@@ -69792,7 +69792,8 @@ let X Tx x.
 assume HTx: topology_on X Tx.
 assume HxX: x :e X.
 set J := {U :e Tx | x :e U}.
-set le := {p :e setprod J J | p 1 c= p 0}.
+rewrite <- (rev_inclusion_rel_def J).
+set le := rev_inclusion_rel J.
 prove directed_set J le.
 prove (J <> Empty /\ partial_order_on J le) /\
   forall a b:set, a :e J -> b :e J -> exists c:set, c :e J /\ (a,c) :e le /\ (b,c) :e le.
@@ -69816,86 +69817,60 @@ apply andI.
       apply andI.
       + (** relation_on /\ refl **)
         apply andI.
-        - (** relation_on le J **)
-          prove relation_on le J.
-          let a b. assume Hab: (a,b) :e le.
-          prove a :e J /\ b :e J.
-          claim Hprod: (a,b) :e setprod J J.
-          { exact (SepE1 (setprod J J) (fun p:set => p 1 c= p 0) (a,b) Hab). }
-          claim Ha0: (a,b) 0 :e J.
-          { exact (ap0_Sigma J (fun _ : set => J) (a,b) Hprod). }
-          claim Hb1: (a,b) 1 :e J.
-          { exact (ap1_Sigma J (fun _ : set => J) (a,b) Hprod). }
+	        - (** relation_on le J **)
+	          prove relation_on le J.
+	          let a b. assume Hab: (a,b) :e le.
+	          prove a :e J /\ b :e J.
+	          claim Hprod: (a,b) :e setprod J J.
+	          { exact (andEL ((a,b) :e setprod J J) (b c= a) (rev_inclusion_relE J a b Hab)). }
+	          claim Ha0: (a,b) 0 :e J.
+	          { exact (ap0_Sigma J (fun _ : set => J) (a,b) Hprod). }
+	          claim Hb1: (a,b) 1 :e J.
+	          { exact (ap1_Sigma J (fun _ : set => J) (a,b) Hprod). }
           apply andI.
           + rewrite <- (tuple_2_0_eq a b). exact Ha0.
           + rewrite <- (tuple_2_1_eq a b). exact Hb1.
-        - (** reflexive **)
-          let a. assume HaJ: a :e J.
-          prove (a,a) :e le.
-          apply (SepI (setprod J J) (fun p:set => p 1 c= p 0) (a,a)).
-          + exact (tuple_2_setprod_by_pair_Sigma J J a a HaJ HaJ).
-          + rewrite (tuple_2_1_eq a a).
-            rewrite (tuple_2_0_eq a a).
-            exact (Subq_ref a).
+	        - (** reflexive **)
+	          let a. assume HaJ: a :e J.
+	          prove (a,a) :e le.
+	          apply (rev_inclusion_relI J a a).
+	          + exact (tuple_2_setprod_by_pair_Sigma J J a a HaJ HaJ).
+	          + exact (Subq_ref a).
       + (** antisymmetric **)
         let a b.
         assume HaJ: a :e J.
         assume HbJ: b :e J.
-        assume Hab: (a,b) :e le.
-        assume Hba: (b,a) :e le.
-        prove a = b.
-        apply set_ext.
-        - claim Hba_sub: (b,a) 1 c= (b,a) 0.
-          { exact (SepE2 (setprod J J) (fun p:set => p 1 c= p 0) (b,a) Hba). }
-          let y. assume Hy: y :e a.
-          claim Hy1: y :e (b,a) 1.
-          { rewrite (tuple_2_1_eq b a). exact Hy. }
-          claim Hy0: y :e (b,a) 0.
-          { exact (Hba_sub y Hy1). }
-          rewrite <- (tuple_2_0_eq b a).
-          exact Hy0.
-        - claim Hab_sub: (a,b) 1 c= (a,b) 0.
-          { exact (SepE2 (setprod J J) (fun p:set => p 1 c= p 0) (a,b) Hab). }
-          let y. assume Hy: y :e b.
-          claim Hy1: y :e (a,b) 1.
-          { rewrite (tuple_2_1_eq a b). exact Hy. }
-          claim Hy0: y :e (a,b) 0.
-          { exact (Hab_sub y Hy1). }
-          rewrite <- (tuple_2_0_eq a b).
-          exact Hy0.
+	        assume Hab: (a,b) :e le.
+	        assume Hba: (b,a) :e le.
+	        prove a = b.
+	        claim Hab_sub: b c= a.
+	        { exact (andER ((a,b) :e setprod J J) (b c= a) (rev_inclusion_relE J a b Hab)). }
+	        claim Hba_sub: a c= b.
+	        { exact (andER ((b,a) :e setprod J J) (a c= b) (rev_inclusion_relE J b a Hba)). }
+	        apply set_ext.
+	        - let y. assume Hy: y :e a.
+	          prove y :e b.
+	          exact (Hba_sub y Hy).
+	        - let y. assume Hy: y :e b.
+	          prove y :e a.
+	          exact (Hab_sub y Hy).
     - (** transitive **)
       let a b c.
       assume HaJ: a :e J.
       assume HbJ: b :e J.
       assume HcJ: c :e J.
-      assume Hab: (a,b) :e le.
-      assume Hbc: (b,c) :e le.
-      prove (a,c) :e le.
-      claim Hab_sub: (a,b) 1 c= (a,b) 0.
-      { exact (SepE2 (setprod J J) (fun p:set => p 1 c= p 0) (a,b) Hab). }
-      claim Hbc_sub: (b,c) 1 c= (b,c) 0.
-      { exact (SepE2 (setprod J J) (fun p:set => p 1 c= p 0) (b,c) Hbc). }
-      claim Hba: b c= a.
-      { let y. assume Hy: y :e b.
-        claim Hy1: y :e (a,b) 1.
-        { rewrite (tuple_2_1_eq a b). exact Hy. }
-        claim Hy0: y :e (a,b) 0.
-        { exact (Hab_sub y Hy1). }
-        rewrite <- (tuple_2_0_eq a b).
-        exact Hy0. }
-      claim Hcb: c c= b.
-      { let y. assume Hy: y :e c.
-        claim Hy1: y :e (b,c) 1.
-        { rewrite (tuple_2_1_eq b c). exact Hy. }
-        claim Hy0: y :e (b,c) 0.
-        { exact (Hbc_sub y Hy1). }
-        rewrite <- (tuple_2_0_eq b c).
-        exact Hy0. }
-      apply (SepI (setprod J J) (fun p:set => p 1 c= p 0) (a,c)).
-      + exact (tuple_2_setprod_by_pair_Sigma J J a c HaJ HcJ).
-      + rewrite (tuple_2_1_eq a c).
-        rewrite (tuple_2_0_eq a c).
-        exact (Subq_tra c b a Hcb Hba).
+	      assume Hab: (a,b) :e le.
+	      assume Hbc: (b,c) :e le.
+	      prove (a,c) :e le.
+	      claim Hab_sub: b c= a.
+	      { exact (andER ((a,b) :e setprod J J) (b c= a) (rev_inclusion_relE J a b Hab)). }
+	      claim Hbc_sub: c c= b.
+	      { exact (andER ((b,c) :e setprod J J) (c c= b) (rev_inclusion_relE J b c Hbc)). }
+	      claim Hca: c c= a.
+	      { exact (Subq_tra c b a Hbc_sub Hab_sub). }
+	      apply (rev_inclusion_relI J a c).
+	      + exact (tuple_2_setprod_by_pair_Sigma J J a c HaJ HcJ).
+	      + exact Hca.
 - (** upper bound property of neighborhoods under reverse inclusion **)
   let U V.
   assume HUJ: U :e J.
@@ -69916,20 +69891,16 @@ apply andI.
   { exact (binintersectI U V x HxU HxV). }
   claim HWJ: U :/\: V :e J.
   { exact (SepI Tx (fun U0:set => x :e U0) (U :/\: V) HWTx HxW). }
-  (** conjunction is left-associative: (A /\ B) /\ C **)
-  apply andI.
-  + apply andI.
-    - exact HWJ.
-    - apply (SepI (setprod J J) (fun p:set => p 1 c= p 0) (U, U :/\: V)).
-      + exact (tuple_2_setprod_by_pair_Sigma J J U (U :/\: V) HUJ HWJ).
-      + rewrite (tuple_2_1_eq U (U :/\: V)).
-        rewrite (tuple_2_0_eq U (U :/\: V)).
-        exact (binintersect_Subq_1 U V).
-  + apply (SepI (setprod J J) (fun p:set => p 1 c= p 0) (V, U :/\: V)).
-    - exact (tuple_2_setprod_by_pair_Sigma J J V (U :/\: V) HVJ HWJ).
-    - rewrite (tuple_2_1_eq V (U :/\: V)).
-      rewrite (tuple_2_0_eq V (U :/\: V)).
-      exact (binintersect_Subq_2 U V).
+	  (** conjunction is left-associative: (A /\ B) /\ C **)
+	  apply andI.
+	  + apply andI.
+	    - exact HWJ.
+	    - apply (rev_inclusion_relI J U (U :/\: V)).
+	      + exact (tuple_2_setprod_by_pair_Sigma J J U (U :/\: V) HUJ HWJ).
+	      + exact (binintersect_Subq_1 U V).
+	  + apply (rev_inclusion_relI J V (U :/\: V)).
+	    - exact (tuple_2_setprod_by_pair_Sigma J J V (U :/\: V) HVJ HWJ).
+	    - exact (binintersect_Subq_2 U V).
 Qed.
 
 Theorem closure_via_nets : forall X Tx A x:set,
