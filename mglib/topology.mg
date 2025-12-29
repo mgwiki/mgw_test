@@ -87262,7 +87262,17 @@ Qed.
 
 (** from §36 Definition: m-manifold **) 
 (** LATEX VERSION: An m-manifold is Hausdorff and second countable (dimension suppressed here). **)
-Definition m_manifold : set -> set -> prop := fun X Tx => Hausdorff_space X Tx /\ second_countable_space X Tx.
+(** LATEX VERSION: An m-manifold is a Hausdorff space with a countable basis such that each point has a neighborhood homeomorphic with an open subset of R^m. **)
+Definition m_manifold : set -> set -> set -> prop := fun X Tx m =>
+  Hausdorff_space X Tx /\
+  second_countable_space X Tx /\
+  m :e omega /\
+  forall x:set, x :e X ->
+    exists U:set, U :e Tx /\ x :e U /\
+      exists V:set, V :e (euclidean_topology m) /\
+        exists f:set,
+          homeomorphism U (subspace_topology X Tx U)
+                       V (subspace_topology (euclidean_space m) (euclidean_topology m) V) f.
 
 (** from §36 Definition: partition of unity dominated by a cover **) 
 (** LATEX VERSION: Partition of unity subordinate to an open cover (dominated). **)
@@ -87292,10 +87302,11 @@ Qed.
 (** from §36 Theorem: compact manifold embeds in Euclidean space **) 
 (** LATEX VERSION: Any compact manifold embeds in some Euclidean space. **)
 Theorem compact_manifold_embeds_in_Euclidean : forall X Tx:set,
-  m_manifold X Tx -> compact_space X Tx -> exists N:set, exists e:set,
+  forall m:set, m_manifold X Tx m -> compact_space X Tx -> exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 let X Tx.
-assume Hman: m_manifold X Tx.
+let m.
+assume Hman: m_manifold X Tx m.
 assume Hcomp: compact_space X Tx.
 prove exists N:set, exists e:set,
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
@@ -87900,7 +87911,7 @@ Qed.
 (** from §50 Theorem: compact m-manifold has dimension at most m **) 
 (** LATEX VERSION: Compact m-manifold has covering dimension ≤ m. **)
 Theorem compact_manifold_dimension_le : forall X Tx m:set,
-  m_manifold X Tx -> compact_space X Tx -> covering_dimension X Tx m.
+  m_manifold X Tx m -> compact_space X Tx -> covering_dimension X Tx m.
 admit. (** FAIL **)
 Qed.
 
@@ -87946,7 +87957,7 @@ Qed.
 (** from §50 Example 4: compact 1-manifold has dimension 1 **)
 (** LATEX VERSION: Every compact 1-manifold X has topological dimension 1. **)
 Theorem compact_1_manifold_dimension_1 : forall X Tx:set,
-  compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx (Sing Empty).
+  compact_space X Tx -> m_manifold X Tx (Sing Empty) -> covering_dimension X Tx (Sing Empty).
 admit. (**  aby  conj_myprob_67056_1_20251226_171004 compact_manifold_dimension_le b_eltÞf . **)
 Qed.
 
@@ -87954,7 +87965,7 @@ Qed.
 (** LATEX VERSION: Every compact 2-manifold X has topological dimension at most 2. **)
 Definition two : set := Sing (Sing Empty).
 Theorem compact_2_manifold_dimension_le_2 : forall X Tx:set,
-  compact_space X Tx -> m_manifold X Tx -> covering_dimension X Tx two.
+  compact_space X Tx -> m_manifold X Tx two -> covering_dimension X Tx two.
 admit. (**  aby  conj_myprob_67064_1_20251226_171016 compact_manifold_dimension_le . **)
 Qed.
 
@@ -88147,7 +88158,7 @@ Qed.
 Theorem compact_m_manifold_dimension_le_m : forall X Tx m:set,
   m :e omega ->
   compact_space X Tx ->
-  m_manifold X Tx ->
+  m_manifold X Tx m ->
   covering_dimension X Tx m.
 admit. (**  aby  conj_myprob_67240_1_20251226_171305 m_manifoldÞf compact_manifold_dimension_le prop_ext_2 . **)
 Qed.
@@ -88158,7 +88169,7 @@ Qed.
 Theorem compact_m_manifold_embeds_R2mp1 : forall X Tx m:set,
   m :e omega ->
   compact_space X Tx ->
-  m_manifold X Tx ->
+  m_manifold X Tx m ->
   exists N:set, exists e:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
@@ -88894,7 +88905,7 @@ Qed.
 (** FIXED: Dimension error - should be 2m+1, not m+1. **)
 Theorem ex50_7_manifold_closed_embedding : forall X Tx m:set,
   m :e omega ->
-  m_manifold X Tx ->
+  m_manifold X Tx m ->
   exists N:set, exists e:set,
     N = add_nat (mul_nat two m) (Sing Empty) /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e /\
@@ -88925,7 +88936,7 @@ Qed.
 (** LATEX VERSION: Every m-manifold has topological dimension at most m. **)
 Theorem ex50_9_manifold_dimension_le_m : forall X Tx m:set,
   m :e omega ->
-  m_manifold X Tx ->
+  m_manifold X Tx m ->
   covering_dimension X Tx m.
 admit. (** FAIL **)
 Qed.
@@ -88974,13 +88985,13 @@ Theorem supp_ex_locally_euclidean_2_i_implies_ii : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   compact_space X Tx ->
   Hausdorff_space X Tx ->
-  m_manifold X Tx.
+  m_manifold X Tx m.
 admit. (** FAIL **)
 Qed.
 
 Theorem supp_ex_locally_euclidean_2_ii_implies_iii : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
-  m_manifold X Tx ->
+  m_manifold X Tx m ->
   metrizable X Tx.
 admit. (** FAIL **)
 Qed.
@@ -89141,7 +89152,7 @@ Qed.
 (** LATEX VERSION: R is locally 1-euclidean and satisfies (ii) but not (i). **)
 Theorem supp_ex_locally_euclidean_3 :
   locally_m_euclidean R R_standard_topology (Sing Empty) /\
-  m_manifold R R_standard_topology /\
+  m_manifold R R_standard_topology (Sing Empty) /\
   ~ (compact_space R R_standard_topology /\ Hausdorff_space R R_standard_topology).
 admit. (** FAIL **)
 Qed.
@@ -89151,7 +89162,7 @@ Qed.
 Theorem supp_ex_locally_euclidean_4 :
   locally_m_euclidean EuclidPlane (order_topology EuclidPlane) (Sing Empty) /\
   metrizable EuclidPlane (order_topology EuclidPlane) /\
-  ~ m_manifold EuclidPlane (order_topology EuclidPlane).
+  ~ m_manifold EuclidPlane (order_topology EuclidPlane) (Sing Empty).
 admit. (** FAIL **)
 Qed.
 
@@ -89213,7 +89224,7 @@ Theorem supp_ex_locally_euclidean_9 : forall X Tx m:set,
   locally_m_euclidean X Tx m ->
   metrizable X Tx ->
   forall x:set, x :e X ->
-    m_manifold (component_of X Tx x) (subspace_topology X Tx (component_of X Tx x)).
+    m_manifold (component_of X Tx x) (subspace_topology X Tx (component_of X Tx x)) m.
 admit. (** FAIL **)
 Qed.
 
@@ -90967,9 +90978,9 @@ Definition ex35_9_coherent_topology_normal : set :=
 (** LATEX VERSION: Exercises on manifolds and partitions of unity. **)
 Definition ex36_manifold_embedding_exercises : set :=
   {p :e Power (Power (Power (Power (Power (Power R))))) |
-    exists M TM f:set,
+    exists M TM m f:set,
       p = setprod (setprod M TM) f /\
-      m_manifold M TM ->
+      m_manifold M TM m ->
       exists n:set, embedding_of M TM (euclidean_space n) (euclidean_topology n) f}.
 (** from §37 Exercises: Tychonoff theorem applications (placeholder) **) 
 (** LATEX VERSION: Exercises applying the Tychonoff theorem to products of compact spaces. **)
