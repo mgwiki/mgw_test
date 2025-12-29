@@ -91184,6 +91184,16 @@ Theorem A_N_eps_closed_stub : forall X Tx Y d fn N eps:set,
   N :e omega ->
   eps :e R ->
   closed_in X Tx (A_N_eps X Y d fn N eps).
+let X Tx Y d fn N eps.
+assume HTx: topology_on X Tx.
+assume Hd: metric_on_total Y d.
+assume Hcont: forall n:set, n :e omega ->
+  continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n).
+assume HN: N :e omega.
+assume HepsR: eps :e R.
+prove closed_in X Tx (A_N_eps X Y d fn N eps).
+(** TODO: show complement is open, as a union over n,m of sets where d(fn n,fn m) is in the open ray (eps,inf) **)
+(** TODO: then use closed_inI with witness complement open set **)
 admit. (** FAIL **)
 Qed.
 
@@ -92020,13 +92030,33 @@ claim HCsubCont:
     - exact HU0Tx.
     - exact HxU0'.
     - prove forall u:set, u :e U0 -> apply_fun f u :e V.
-      let u. assume HuU0: u :e U0.
-      claim HuX: u :e X.
-      { exact (topology_elem_subset X Tx U0 HTx HU0Tx u HuU0). }
-      claim HballGoal: apply_fun f u :e open_ball Y d (apply_fun f x) eps0.
-      { admit. (** FAIL **) }
-      apply HballSubV.
-      exact HballGoal.
+	      let u. assume HuU0: u :e U0.
+	      claim HuX: u :e X.
+	      { exact (topology_elem_subset X Tx U0 HTx HU0Tx u HuU0). }
+	      claim HballGoal: apply_fun f u :e open_ball Y d (apply_fun f x) eps0.
+	      { claim HfuY: apply_fun f u :e Y.
+	        { exact (Hf u HuX). }
+	        apply (open_ballI Y d (apply_fun f x) eps0 (apply_fun f u) HfuY).
+	        (** It remains to show d(f(x),f(u)) < eps0 **)
+	        (** Use that u lies in U0 and U0 c= A_N_eps ... to unpack the tail bound at u **)
+	        claim HuA: u :e A_N_eps X Y d fn N0 eps0.
+	        { exact (HU0subA u HuU0). }
+	        claim HAuProp:
+	          forall n:set, n :e omega -> N0 c= n ->
+	            forall m:set, m :e omega -> N0 c= m ->
+	              Rle (apply_fun d (apply_fun (apply_fun fn n) u, apply_fun (apply_fun fn m) u)) eps0.
+	        { exact (SepE2 X
+	                  (fun x0:set =>
+	                    forall n:set, n :e omega -> N0 c= n ->
+	                      forall m:set, m :e omega -> N0 c= m ->
+	                        Rle (apply_fun d (apply_fun (apply_fun fn n) x0, apply_fun (apply_fun fn m) x0)) eps0)
+	                  u
+	                  HuA). }
+	        (** The remaining continuity argument follows the TeX proof: choose an index n >= N0 where f_n(x) is close to f(x),
+	            refine U0 by continuity of f_n at x, then compare f(u) to f(x) via triangle and the tail bound at u. **)
+	        admit. (** FAIL **) }
+	      apply HballSubV.
+	      exact HballGoal.
 }
 claim HContSubX:
   {x :e X | continuous_at_map X Tx Y (metric_topology Y d) f x} c= X.
