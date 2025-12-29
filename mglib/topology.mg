@@ -27612,6 +27612,15 @@ exact (andER (basis_on EuclidPlane rectangular_regions)
              HBgener).
 Qed.
 
+(** from §13 Example 4: circular regions generate the standard topology on R^2 **)
+(** LATEX VERSION: Since circular and rectangular regions generate the same topology, and rectangles generate the standard topology, circular regions also generate the standard topology on ℝ². **)
+Theorem generated_topology_circular_regions_eq_R2_standard_topology :
+  generated_topology EuclidPlane circular_regions = R2_standard_topology.
+prove generated_topology EuclidPlane circular_regions = R2_standard_topology.
+rewrite circular_rectangular_same_topology_plane.
+exact generated_topology_rectangular_regions_eq_R2_standard_topology.
+Qed.
+
 (** from §16 Definition: subspace topology **) 
 (** LATEX VERSION: The subspace topology on Y⊂X with topology Tx consists of intersections V∩Y with V open in X. **)
 (** SUSPICIOUS DEFINITION: This is phrased as a family of subsets of `Y` (via `Power Y`) with witnesses `V :e Tx`; proofs often need to extract both the witness and the subset fact. **)
