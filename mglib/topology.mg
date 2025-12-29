@@ -49780,6 +49780,15 @@ rewrite (metric_topology_EuclidPlane_metric_eq_generated_rectangular_regions).
 exact generated_topology_rectangular_regions_sub_R2_standard_topology.
 Qed.
 
+(** helper: Euclidean metric topology equals the standard topology on R^2 **)
+(** LATEX VERSION: The topology induced by the Euclidean metric on ℝ² coincides with the standard product topology on ℝ². **)
+Theorem metric_topology_EuclidPlane_metric_eq_R2_standard_topology :
+  metric_topology EuclidPlane EuclidPlane_metric = R2_standard_topology.
+prove metric_topology EuclidPlane EuclidPlane_metric = R2_standard_topology.
+rewrite (metric_topology_EuclidPlane_metric_eq_generated_rectangular_regions).
+exact generated_topology_rectangular_regions_eq_R2_standard_topology.
+Qed.
+
 (** Helper: open balls are open in the metric topology **)
 Theorem open_ball_open_in_metric_topology : forall X d x r:set,
   metric_on X d -> x :e X -> Rlt 0 r ->
