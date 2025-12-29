@@ -86705,8 +86705,8 @@ Definition end_points_of_arc : set -> set -> set -> set -> prop := fun X Tx p q 
   arc X Tx /\
   p :e X /\ q :e X /\
   p <> q /\
-  connected_space (X :\: (Sing p)) Tx /\
-  connected_space (X :\: (Sing q)) Tx.
+  connected_space (X :\: (Sing p)) (subspace_topology X Tx (X :\: (Sing p))) /\
+  connected_space (X :\: (Sing q)) (subspace_topology X Tx (X :\: (Sing q))).
 
 (** from §50 Example 6: finite linear graph **)
 (** LATEX VERSION: A finite linear graph G is Hausdorff and is the union of finitely many arcs; any two arcs meet in at most a common end point. **)
@@ -86715,7 +86715,7 @@ Definition linear_graph : set -> set -> prop := fun G Tg =>
   exists Arcs:set,
     finite Arcs /\
     (forall A:set, A :e Arcs ->
-      exists Ta:set, arc A Ta /\ A c= G) /\
+      A c= G /\ arc A (subspace_topology G Tg A)) /\
     G = Union Arcs /\
     (forall A B:set, A :e Arcs -> B :e Arcs -> A <> B ->
       exists p:set, (A :/\: B = Empty \/ A :/\: B = Sing p)).
