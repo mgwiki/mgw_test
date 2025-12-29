@@ -27643,6 +27643,22 @@ apply andI.
 - exact generated_topology_circular_regions_eq_R2_standard_topology.
 Qed.
 
+(** helper: reverse equalities for rewriting **)
+Theorem R2_standard_topology_eq_generated_rectangular_regions :
+  R2_standard_topology = generated_topology EuclidPlane rectangular_regions.
+prove R2_standard_topology = generated_topology EuclidPlane rectangular_regions.
+symmetry.
+exact generated_topology_rectangular_regions_eq_R2_standard_topology.
+Qed.
+
+(** helper: reverse equalities for rewriting **)
+Theorem R2_standard_topology_eq_generated_circular_regions :
+  R2_standard_topology = generated_topology EuclidPlane circular_regions.
+prove R2_standard_topology = generated_topology EuclidPlane circular_regions.
+symmetry.
+exact generated_topology_circular_regions_eq_R2_standard_topology.
+Qed.
+
 (** from §16 Definition: subspace topology **) 
 (** LATEX VERSION: The subspace topology on Y⊂X with topology Tx consists of intersections V∩Y with V open in X. **)
 (** SUSPICIOUS DEFINITION: This is phrased as a family of subsets of `Y` (via `Power Y`) with witnesses `V :e Tx`; proofs often need to extract both the witness and the subset fact. **)
