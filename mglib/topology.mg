@@ -27776,7 +27776,7 @@ claim HVV: VV :e Tx.
 claim HVeq: V = VV :/\: Y.
 { exact (andER (VV :e Tx) (V = VV :/\: Y) HVVpair). }
 claim HUV: VU :/\: VV :e Tx.
-{ exact (topology_intersection_closed X Tx VU VV HTx HVU HVV). }
+{ exact (topology_binintersect_closed X Tx VU VV HTx HVU HVV). }
 rewrite (subspace_topology_binintersect_witness X Tx Y U V VU VV HUeq HVeq).
 exact (subspace_topologyI X Tx Y (VU :/\: VV) HUV).
 Qed.
