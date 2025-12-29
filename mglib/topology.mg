@@ -87769,7 +87769,33 @@ let X Tx.
 assume Hpara: paracompact_space X Tx.
 assume HH: Hausdorff_space X Tx.
 prove normal_space X Tx.
-admit. (** FAIL **)
+(** unpack topology_on from paracompactness **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall U:set, open_cover X Tx U ->
+                 exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U)
+               Hpara). }
+
+(** one-point sets are closed in Hausdorff spaces **)
+claim HT1: one_point_sets_closed X Tx.
+{ prove topology_on X Tx /\ forall x:set, x :e X -> closed_in X Tx {x}.
+  apply andI.
+  - exact HTx.
+  - let x. assume HxX: x :e X.
+    exact (Hausdorff_singletons_closed X Tx x HH HxX). }
+
+prove one_point_sets_closed X Tx /\
+  forall A B:set, closed_in X Tx A -> closed_in X Tx B -> A :/\: B = Empty ->
+    exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+apply andI.
+- exact HT1.
+- let A B.
+  assume HAcl: closed_in X Tx A.
+  assume HBcl: closed_in X Tx B.
+  assume Hdisj: A :/\: B = Empty.
+  prove exists U V:set, U :e Tx /\ V :e Tx /\ A c= U /\ B c= V /\ U :/\: V = Empty.
+  (** TODO: standard proof via locally finite refinements of Hausdorff separators; deferred. **)
+  admit. (** FAIL **)
 Qed.
 
 (** from §42 Smirnov metrization theorem **) 
