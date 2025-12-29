@@ -86450,7 +86450,7 @@ Definition discrete_metric : set -> set := fun X =>
 (** helper: placeholder metric on euclidean_space n **) 
 (** from §24 Euclidean space: auxiliary metric on euclidean_space n **)
 (** LATEX VERSION: Euclidean space R^n is a metric space in its usual Euclidean metric. **)
-(** SUSPICIOUS DEFINITION: This is currently a discrete metric placeholder, not the Euclidean metric; it should be replaced by a faithful definition if later proofs need Euclidean distances. **)
+(** SUSPICIOUS DEFINITION: This is currently a discrete metric placeholder, not the Euclidean metric; later in this file we develop an explicit Euclidean distance `distance_R2` on `EuclidPlane = R×R`, but `euclidean_metric n` should eventually be replaced by a faithful ℓ^2-style metric on `euclidean_space n`. **)
 Definition euclidean_metric : set -> set := fun n => discrete_metric (euclidean_space n).
 
 (** helper: bounded product metric on R^omega **) 
