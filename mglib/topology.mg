@@ -22576,6 +22576,7 @@ Definition order_topology_basis : set -> set := fun X =>
    {I :e Power X | exists b :e X, I = {x :e X | order_rel X x b}}
    :\/:
    {I :e Power X | exists a :e X, I = {x :e X | order_rel X a x}}).
+(** NOTE: This `order_topology_basis` includes both open intervals and open rays for all X; the TeX-definition basis is given separately as `order_topology_basis_tex`. **)
 
 (** from §14 The Order Topology: least and largest elements **)
 (** LATEX VERSION: a0 is the smallest element of X if every x∈X satisfies not(x<a0); b0 is the largest if not(b0<x) for all x∈X. **)
