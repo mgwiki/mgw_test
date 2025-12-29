@@ -16279,6 +16279,8 @@ let q. assume Hq.
 exact (rational_numbers_Subq_R q Hq).
 Qed.
 
+(** from §13: open intervals in ℝ **)
+(** LATEX VERSION: For a<b in ℝ, the open interval (a,b) is {x∈ℝ | a<x and x<b}. **)
 Definition open_interval : set -> set -> set := fun a b => {x :e R|Rlt a x /\ Rlt x b}.
 (** SUSPICIOUS DEFINITION: The endpoints `a,b` are not required to be in `R` explicitly; membership uses `Rlt` so ill-typed endpoints make the interval behave like `Empty`. **)
 (** from §13 Exercise 6: lower limit basis element **)
