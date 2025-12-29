@@ -30078,6 +30078,53 @@ Definition closed_ray_upper : set -> set -> set := fun X a =>
 Definition closed_ray_lower : set -> set -> set := fun X a =>
   {x :e X | x = a \/ order_rel X x a}.
 
+(** Helper: closed intervals are intersections of closed rays **)
+(** LATEX VERSION: In an ordered set, the closed interval [a,b] equals [a,∞) ∩ (-∞,b]. **)
+Theorem closed_interval_in_eq_ray_intersection : forall X a b:set,
+  closed_interval_in X a b = (closed_ray_upper X a) :/\: (closed_ray_lower X b).
+let X a b.
+apply set_ext.
+- let x. assume Hx: x :e closed_interval_in X a b.
+  prove x :e (closed_ray_upper X a) :/\: (closed_ray_lower X b).
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => (x0 = a \/ order_rel X a x0) /\ (x0 = b \/ order_rel X x0 b)) x Hx). }
+  claim Hcond: (x = a \/ order_rel X a x) /\ (x = b \/ order_rel X x b).
+  { exact (SepE2 X (fun x0:set => (x0 = a \/ order_rel X a x0) /\ (x0 = b \/ order_rel X x0 b)) x Hx). }
+  claim Hleft: x = a \/ order_rel X a x.
+  { exact (andEL (x = a \/ order_rel X a x) (x = b \/ order_rel X x b) Hcond). }
+  claim Hright: x = b \/ order_rel X x b.
+  { exact (andER (x = a \/ order_rel X a x) (x = b \/ order_rel X x b) Hcond). }
+  apply binintersectI.
+  * (** x :e closed_ray_upper X a **)
+    prove x :e closed_ray_upper X a.
+    exact (SepI X (fun x0:set => x0 = a \/ order_rel X a x0) x HxX Hleft).
+  * (** x :e closed_ray_lower X b **)
+    prove x :e closed_ray_lower X b.
+    exact (SepI X (fun x0:set => x0 = b \/ order_rel X x0 b) x HxX Hright).
+- let x. assume Hx: x :e (closed_ray_upper X a) :/\: (closed_ray_lower X b).
+  prove x :e closed_interval_in X a b.
+  claim Hpair: x :e closed_ray_upper X a /\ x :e closed_ray_lower X b.
+  { exact (binintersectE (closed_ray_upper X a) (closed_ray_lower X b) x Hx). }
+  claim HxUp: x :e closed_ray_upper X a.
+  { exact (andEL (x :e closed_ray_upper X a) (x :e closed_ray_lower X b) Hpair). }
+  claim HxLow: x :e closed_ray_lower X b.
+  { exact (andER (x :e closed_ray_upper X a) (x :e closed_ray_lower X b) Hpair). }
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => x0 = a \/ order_rel X a x0) x HxUp). }
+  claim Hleft: x = a \/ order_rel X a x.
+  { exact (SepE2 X (fun x0:set => x0 = a \/ order_rel X a x0) x HxUp). }
+  claim Hright: x = b \/ order_rel X x b.
+  { exact (SepE2 X (fun x0:set => x0 = b \/ order_rel X x0 b) x HxLow). }
+  claim Hdef: closed_interval_in X a b =
+    {x0 :e X | (x0 = a \/ order_rel X a x0) /\ (x0 = b \/ order_rel X x0 b)}.
+  { reflexivity. }
+  rewrite Hdef.
+  exact (SepI X (fun x0:set => (x0 = a \/ order_rel X a x0) /\ (x0 = b \/ order_rel X x0 b))
+              x
+              HxX
+              (andI (x = a \/ order_rel X a x) (x = b \/ order_rel X x b) Hleft Hright)).
+Qed.
+
 (** from §16 Exercise 7: intervals in ordered sets **)
 (** LATEX VERSION: An interval in X is one of (a,b), [a,b), (a,b], [a,b]. **)
 Definition interval_in : set -> set -> set -> set -> prop := fun X a b Y =>
