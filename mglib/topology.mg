@@ -91663,7 +91663,113 @@ claim HdenseC: dense_in (intersection_over_family X Ufam) X Tx.
 claim HCsubCont:
   intersection_over_family X Ufam c=
     {x :e X | continuous_at_map X Tx Y (metric_topology Y d) f x}.
-{ admit. (** FAIL **) }
+{ let x.
+  assume HxC: x :e intersection_over_family X Ufam.
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun z0:set => forall u0:set, u0 :e Ufam -> z0 :e u0) x HxC). }
+  claim HxAll: forall u0:set, u0 :e Ufam -> x :e u0.
+  { exact (SepE2 X (fun z0:set => forall u0:set, u0 :e Ufam -> z0 :e u0) x HxC). }
+  apply (SepI X (fun x0:set => continuous_at_map X Tx Y (metric_topology Y d) f x0) x HxX).
+  prove continuous_at_map X Tx Y (metric_topology Y d) f x.
+  claim HdefCont: continuous_at_map X Tx Y (metric_topology Y d) f x =
+    (function_on f X Y /\ x :e X /\
+      forall V:set, V :e metric_topology Y d -> apply_fun f x :e V ->
+        exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V).
+  { reflexivity. }
+  rewrite HdefCont.
+  apply andI.
+  - (** function and x in X **)
+    apply andI.
+    + exact Hf.
+    + exact HxX.
+  - (** neighborhood form continuity into the metric topology **)
+    let V.
+    assume HV: V :e metric_topology Y d.
+    assume HfxV: apply_fun f x :e V.
+    claim Hexn0: exists n0:set, n0 :e omega /\
+      open_ball Y d (apply_fun f x) (inv_nat (ordsucc n0)) c= V.
+    { admit. (** FAIL **) }
+    apply Hexn0.
+    let n0.
+    assume Hn0: n0 :e omega /\ open_ball Y d (apply_fun f x) (inv_nat (ordsucc n0)) c= V.
+    claim Hn0in: n0 :e omega.
+    { exact (andEL (n0 :e omega)
+                   (open_ball Y d (apply_fun f x) (inv_nat (ordsucc n0)) c= V)
+                   Hn0). }
+    claim HballSubV: open_ball Y d (apply_fun f x) (inv_nat (ordsucc n0)) c= V.
+    { exact (andER (n0 :e omega)
+                   (open_ball Y d (apply_fun f x) (inv_nat (ordsucc n0)) c= V)
+                   Hn0). }
+    claim HsuccOmega: ordsucc n0 :e omega.
+    { exact (omega_ordsucc n0 Hn0in). }
+    claim Hnot0: ordsucc n0 /:e {0}.
+    { assume Hmem0: ordsucc n0 :e {0}.
+      claim Heq0: ordsucc n0 = 0.
+      { exact (SingE 0 (ordsucc n0) Hmem0). }
+      exact ((neq_ordsucc_0 n0) Heq0). }
+    claim HsuccIn: ordsucc n0 :e omega :\: {0}.
+    { exact (setminusI omega {0} (ordsucc n0) HsuccOmega Hnot0). }
+    set eps0 := inv_nat (ordsucc n0).
+    claim Heps0R: eps0 :e R.
+    { exact (inv_nat_real (ordsucc n0) HsuccOmega). }
+    claim Heps0Pos: Rlt 0 eps0.
+    { exact (inv_nat_pos (ordsucc n0) HsuccIn). }
+    claim Hu0in: (U_eps X Tx Y d fn eps0) :e Ufam.
+    { exact (ReplI omega (fun n1:set => U_eps X Tx Y d fn (inv_nat (ordsucc n1))) n0 Hn0in). }
+    claim HxU0: x :e (U_eps X Tx Y d fn eps0).
+    { exact (HxAll (U_eps X Tx Y d fn eps0) Hu0in). }
+    set UFam := {interior_of X Tx (A_N_eps X Y d fn N eps0) | N :e omega}.
+    claim HUepsDef: U_eps X Tx Y d fn eps0 = Union UFam.
+    { reflexivity. }
+    claim HxUnion: x :e Union UFam.
+    { rewrite <- HUepsDef.
+      exact HxU0. }
+    apply (UnionE_impred UFam x HxUnion
+      (exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V)).
+    let W.
+    assume HxW: x :e W.
+    assume HWin: W :e UFam.
+    apply (ReplE_impred omega (fun N0:set => interior_of X Tx (A_N_eps X Y d fn N0 eps0))
+            W HWin
+            (exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V)).
+    let N0.
+    assume HN0: N0 :e omega.
+    assume HWdef: W = interior_of X Tx (A_N_eps X Y d fn N0 eps0).
+    claim HxInt: x :e interior_of X Tx (A_N_eps X Y d fn N0 eps0).
+    { rewrite <- HWdef.
+      exact HxW. }
+    claim HxX2: x :e X.
+    { exact HxX. }
+    claim HintDef: interior_of X Tx (A_N_eps X Y d fn N0 eps0) =
+      {x0 :e X | exists U0:set, U0 :e Tx /\ x0 :e U0 /\ U0 c= (A_N_eps X Y d fn N0 eps0)}.
+    { reflexivity. }
+    claim HexU0: exists U0:set, U0 :e Tx /\ x :e U0 /\ U0 c= (A_N_eps X Y d fn N0 eps0).
+    { claim HxInt2: x :e
+        {x0 :e X | exists U0:set, U0 :e Tx /\ x0 :e U0 /\ U0 c= (A_N_eps X Y d fn N0 eps0)}.
+      { rewrite <- HintDef.
+        exact HxInt. }
+      exact (SepE2 X (fun x0:set => exists U0:set, U0 :e Tx /\ x0 :e U0 /\ U0 c= (A_N_eps X Y d fn N0 eps0)) x HxInt2). }
+    apply HexU0.
+    let U0.
+    assume HU0: U0 :e Tx /\ x :e U0 /\ U0 c= (A_N_eps X Y d fn N0 eps0).
+    claim HU0pair: U0 :e Tx /\ x :e U0.
+    { exact (andEL (U0 :e Tx /\ x :e U0)
+                   (U0 c= (A_N_eps X Y d fn N0 eps0))
+                   HU0). }
+    claim HU0subA: U0 c= (A_N_eps X Y d fn N0 eps0).
+    { exact (andER (U0 :e Tx /\ x :e U0)
+                   (U0 c= (A_N_eps X Y d fn N0 eps0))
+                   HU0). }
+    claim HU0Tx: U0 :e Tx.
+    { exact (andEL (U0 :e Tx) (x :e U0) HU0pair). }
+    claim HxU0': x :e U0.
+    { exact (andER (U0 :e Tx) (x :e U0) HU0pair). }
+    witness U0.
+    apply and3I.
+    - exact HU0Tx.
+    - exact HxU0'.
+    - admit. (** FAIL **)
+}
 claim HContSubX:
   {x :e X | continuous_at_map X Tx Y (metric_topology Y d) f x} c= X.
 { let x. assume Hx: x :e {x0 :e X | continuous_at_map X Tx Y (metric_topology Y d) f x0}.
