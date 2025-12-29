@@ -32954,6 +32954,7 @@ assume Htop: topology_on X Tx.
 assume HC: closed_in X Tx C.
 assume HD: closed_in X Tx D.
 prove closed_in X Tx (C :\/: D).
+(** Proof: reuse the earlier lemma `closed_binunion`, which only needs `closed_in` hypotheses. **)
 exact (closed_binunion X Tx C D HC HD).
 Qed.
 
@@ -33072,6 +33073,7 @@ assume Htop: topology_on X Tx.
 assume HC: closed_in X Tx C.
 assume HD: closed_in X Tx D.
 prove closed_in X Tx (C :/\: D).
+(** Proof: reuse the earlier lemma `closed_binintersect`, which only needs `closed_in` hypotheses. **)
 exact (closed_binintersect X Tx C D HC HD).
 Qed.
 
