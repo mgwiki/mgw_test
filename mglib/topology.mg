@@ -91135,6 +91135,33 @@ Definition pointwise_limit_metric : set -> set -> set -> set -> set -> prop :=
           forall n:set, n :e omega -> N c= n ->
             Rlt (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) eps.
 
+(** helper: Cauchy tail set A_N(eps) for a sequence of maps into a metric space **)
+(** LATEX VERSION: A_N(eps) is the set of x such that d(f_n(x),f_m(x)) ≤ eps for all n,m ≥ N. **)
+Definition A_N_eps : set -> set -> set -> set -> set -> set -> set :=
+  fun X Y d fn N eps =>
+    {x :e X |
+      forall n:set, n :e omega -> N c= n ->
+        forall m:set, m :e omega -> N c= m ->
+          Rle (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x)) eps }.
+
+(** helper: U(eps) as union of interiors of A_N(eps) **)
+(** LATEX VERSION: U(eps) is the union over N of Int(A_N(eps)). **)
+Definition U_eps : set -> set -> set -> set -> set -> set -> set :=
+  fun X Tx Y d fn eps =>
+    Union {interior_of X Tx (A_N_eps X Y d fn N eps) | N :e omega}.
+
+(** helper: U(eps) should be open and dense under hypotheses of Theorem 48.5 **)
+(** LATEX VERSION: In the proof of Theorem 48.5, U(eps) is shown to be open and dense. **)
+Theorem U_eps_open_dense_stub : forall X Tx Y d fn eps:set,
+  topology_on X Tx ->
+  metric_on_total Y d ->
+  (forall n:set, n :e omega ->
+    continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n)) ->
+  eps :e R -> Rlt 0 eps ->
+  open_in X Tx (U_eps X Tx Y d fn eps) /\ dense_in (U_eps X Tx Y d fn eps) X Tx.
+admit. (** FAIL **)
+Qed.
+
 (** from §48 Theorem 48.5: continuity points of pointwise limit are dense **)
 (** LATEX VERSION: Theorem 48.5: If f_n:X→Y are continuous and f_n(x)→f(x) pointwise into metric space Y, then continuity points of f form a dense subset of X when X is Baire. **)
 Theorem pointwise_limit_continuity_points_dense : forall X Tx Y d fn f:set,
