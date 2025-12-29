@@ -91266,19 +91266,19 @@ apply (SepI (Power (setprod Y Y))
     { exact (ReplI Ty (fun V0:set => rectangle_set U V0) V HVinTy). }
     exact (famunionI Ty (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) U b HUinTy HbInFam).
   - apply andI.
-    + prove p :e b.
-      claim HbEq0: b = rectangle_set U V.
-      { reflexivity. }
-      rewrite HbEq0.
-      claim HpEta: p = (p 0, p 1).
-      { exact (setprod_eta Y Y p HpDom). }
-      rewrite HpEta.
-      claim Hp0In: p 0 :e U.
-      { exact (center_in_open_ball Y d (p 0) r Hm Hp0Y HrPos). }
-      claim Hp1In: p 1 :e V.
-      { exact (center_in_open_ball Y d (p 1) r Hm Hp1Y HrPos). }
-      rewrite rectangle_set_def.
-      admit.
+	    + prove p :e b.
+	      claim HbEq0: b = rectangle_set U V.
+	      { reflexivity. }
+	      rewrite HbEq0.
+	      rewrite rectangle_set_def.
+	      claim HpEta0: p = (p 0, p 1).
+	      { exact (setprod_eta Y Y p HpDom). }
+	      rewrite HpEta0 at 1.
+	      claim Hp0In: p 0 :e U.
+	      { exact (center_in_open_ball Y d (p 0) r Hm Hp0Y HrPos). }
+	      claim Hp1In: p 1 :e V.
+	      { exact (center_in_open_ball Y d (p 1) r Hm Hp1Y HrPos). }
+	      exact (tuple_2_setprod_by_pair_Sigma U V (p 0) (p 1) Hp0In Hp1In).
     + prove b c= W.
       claim HbEq: b = rectangle_set U V.
       { reflexivity. }
@@ -91376,19 +91376,19 @@ apply (SepI (Power (setprod Y Y))
     { exact (ReplI Ty (fun V0:set => rectangle_set U V0) V HVinTy). }
     exact (famunionI Ty (fun U0:set => {rectangle_set U0 V0|V0 :e Ty}) U bb HUinTy HbInFam).
   - apply andI.
-    + prove p :e bb.
-      claim HbEq0: bb = rectangle_set U V.
-      { reflexivity. }
-      rewrite HbEq0.
-      claim HpEta: p = (p 0, p 1).
-      { exact (setprod_eta Y Y p HpDom). }
-      rewrite HpEta.
-      claim Hp0In: p 0 :e U.
-      { exact (center_in_open_ball Y d (p 0) r Hm Hp0Y HrPos). }
-      claim Hp1In: p 1 :e V.
-      { exact (center_in_open_ball Y d (p 1) r Hm Hp1Y HrPos). }
-      rewrite rectangle_set_def.
-      admit.
+	    + prove p :e bb.
+	      claim HbEq0: bb = rectangle_set U V.
+	      { reflexivity. }
+	      rewrite HbEq0.
+	      rewrite rectangle_set_def.
+	      claim HpEta0: p = (p 0, p 1).
+	      { exact (setprod_eta Y Y p HpDom). }
+	      rewrite HpEta0 at 1.
+	      claim Hp0In: p 0 :e U.
+	      { exact (center_in_open_ball Y d (p 0) r Hm Hp0Y HrPos). }
+	      claim Hp1In: p 1 :e V.
+	      { exact (center_in_open_ball Y d (p 1) r Hm Hp1Y HrPos). }
+	      exact (tuple_2_setprod_by_pair_Sigma U V (p 0) (p 1) Hp0In Hp1In).
     + prove bb c= W.
       claim HbEq: bb = rectangle_set U V.
       { reflexivity. }
