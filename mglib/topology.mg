@@ -63171,11 +63171,12 @@ apply iffI.
 	      assume HWeq: W = U :/\: Y.
 	      rewrite HWeq.
 	      exact (subspace_topologyI X Tx Y U (HFamSub U HUfam)).
+	  }
 	  (** Apply compactness of Y in the subspace topology. **)
-  claim Hsubcover: forall Fam0:set, open_cover_of Y Ty Fam0 -> has_finite_subcover Y Ty Fam0.
-  { exact (andER (topology_on Y Ty)
-                 (forall Fam0:set, open_cover_of Y Ty Fam0 -> has_finite_subcover Y Ty Fam0)
-                 Hcomp). }
+	  claim Hsubcover: forall Fam0:set, open_cover_of Y Ty Fam0 -> has_finite_subcover Y Ty Fam0.
+	  { exact (andER (topology_on Y Ty)
+	                 (forall Fam0:set, open_cover_of Y Ty Fam0 -> has_finite_subcover Y Ty Fam0)
+	                 Hcomp). }
   claim HfinY: has_finite_subcover Y Ty FamY.
   { exact (Hsubcover FamY HcoverFamY). }
   apply HfinY.
