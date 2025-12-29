@@ -91174,6 +91174,16 @@ Definition A_N_eps : set -> set -> set -> set -> set -> set -> set :=
         forall m:set, m :e omega -> N c= m ->
           Rle (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x)) eps }.
 
+(** helper: distance map is continuous in the product topology of a metric space **)
+(** LATEX VERSION: The distance function d:Y×Y→R is continuous for the product of the metric topology on Y. **)
+Theorem metric_distance_continuous : forall Y d:set,
+  metric_on_total Y d ->
+  continuous_map (setprod Y Y)
+    (product_topology Y (metric_topology Y d) Y (metric_topology Y d))
+    R R_standard_topology d.
+admit. (** FAIL **)
+Qed.
+
 (** helper: A_N(eps) is closed under continuity hypotheses **)
 (** LATEX VERSION: In Theorem 48.5, A_N(eps) is closed as an intersection of closed sets defined by d(f_n,f_m)≤eps. **)
 Theorem A_N_eps_closed_stub : forall X Tx Y d fn N eps:set,
@@ -91336,7 +91346,11 @@ claim HeqComp: A_N_eps X Y d fn N eps = X :\: Ubad.
 	    exact (HxNotU HxBad). }
 rewrite HeqComp.
 claim HUbad: Ubad :e Tx.
-{ (** TODO: show Ubad is open in Tx, using continuity of fn n and the metric topology on Y **)
+{ set Veps := {r :e R | Rlt eps r}.
+  claim HVeps: Veps :e R_standard_topology.
+  { exact (open_ray_in_R_standard_topology eps HepsR). }
+  (** Strategy: express Ubad as a union of preimages of Veps under x |-> d(fn n x, fn m x). **)
+  (** Remaining work: build the union and show each preimage is in Tx using continuity and metric_distance_continuous. **)
   admit. (** FAIL **) }
 exact (closed_of_open_complement X Tx Ubad HTx HUbad).
 Qed.
