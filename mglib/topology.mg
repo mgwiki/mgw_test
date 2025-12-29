@@ -72074,9 +72074,13 @@ apply set_ext.
 	    + exact Hfun.
 Qed.
 
+(** from §24 Definition (linear continuum): least upper bound property (upper bounds) **)
+(** LATEX VERSION: (1) L has the least upper bound property. **)
 Definition R_upper_bound : set -> set -> prop := fun A u =>
   u :e R /\ forall a:set, a :e A -> a :e R -> Rle a u.
 
+(** from §24 Definition (linear continuum): least upper bound property (least upper bounds) **)
+(** LATEX VERSION: (1) L has the least upper bound property. **)
 Definition R_lub : set -> set -> prop := fun A l =>
   l :e R /\
   (forall a:set, a :e A -> a :e R -> Rle a l) /\
@@ -72173,12 +72177,18 @@ Theorem R_lub_exists : forall A:set,
 admit. (** FAIL **)
 Qed.
 
+(** from §20 Definition: uniform metric on R^J (coordinate absolute differences) **)
+(** LATEX VERSION: Define d̄(x,y)=min{|x-y|,1} and ρ̄(x,y)=sup{ d̄(xα,yα) | α∈J }. **)
 Definition Romega_coord_abs_diff : set -> set -> set -> set := fun f g n =>
   abs_SNo (add_SNo (apply_fun f n) (minus_SNo (apply_fun g n))).
 
+(** from §20 Definition: uniform metric on R^J (clipped coordinate differences) **)
+(** LATEX VERSION: Use the bounded metric d̄(x,y)=min{|x-y|,1} on R. **)
 Definition Romega_coord_clipped_diff : set -> set -> set -> set := fun f g n =>
   If_i (Rlt (Romega_coord_abs_diff f g n) 1) (Romega_coord_abs_diff f g n) 1.
 
+(** from §20 Definition: uniform metric on R^J (family of clipped differences) **)
+(** LATEX VERSION: ρ̄(x,y)=sup{ d̄(xα,yα) | α∈J }. **)
 Definition Romega_clipped_diffs : set -> set -> set := fun f g =>
   Repl omega (fun n:set => Romega_coord_clipped_diff f g n).
 
@@ -72308,6 +72318,8 @@ apply set_ext.
   exact (ReplI omega (fun n:set => Romega_coord_clipped_diff f f n) 0 H0O).
 Qed.
 
+(** from §20 Definition: uniform metric on R^J (supremum of clipped coordinate differences) **)
+(** LATEX VERSION: Define ρ̄(x,y)=sup{ d̄(xα,yα) | α∈J }. **)
 Definition Romega_uniform_metric_value : set -> set -> set := fun f g =>
   Eps_i (fun r:set => R_lub (Romega_clipped_diffs f g) r).
 
@@ -72921,6 +72933,8 @@ claim Hp1: p 1 :e real_sequences.
 exact (Romega_uniform_metric_value_in_R (p 0) (p 1) Hp0 Hp1).
 Qed.
 
+(** from §20 Definition: uniform topology induced by the uniform metric **)
+(** LATEX VERSION: The topology it induces is called the uniform topology. **)
 Definition uniform_topology : set := metric_topology real_sequences uniform_metric_Romega.
 
 (** helper: convert SNoLe to Rle on reals **)
@@ -73707,11 +73721,15 @@ Qed.
 
 
 
+(** from §20 Theorem 20.4: compare uniform topology with product/box topology on R^J **)
+(** LATEX VERSION: The uniform topology is finer than the product topology and coarser than the box topology. **)
 Definition Romega_product_topology_on_real_sequences : set :=
   subspace_topology R_omega_space
     (product_topology_full omega (const_space_family omega R R_standard_topology))
     real_sequences.
 
+(** from §20 Theorem 20.4: compare uniform topology with product/box topology on R^J **)
+(** LATEX VERSION: The uniform topology is finer than the product topology and coarser than the box topology. **)
 Definition Romega_box_topology_on_real_sequences : set :=
   subspace_topology R_omega_space
     (box_topology omega (const_space_family omega R R_standard_topology))
