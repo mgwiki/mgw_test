@@ -86057,9 +86057,13 @@ Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F =>
     exists N:set, N :e Tx /\ x :e N /\
       exists S:set, finite S /\ S c= F /\
         forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
+(** from §39 Definition: locally finite collection (applied to a basis) **)
+(** LATEX VERSION: A collection A is locally finite in X if every point has a neighborhood intersecting only finitely many elements of A. **)
 Definition locally_finite_basis : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   exists B:set, basis_on X B /\ locally_finite_family X Tx B.
+(** from §39 Definition: countably locally finite (sigma-locally finite) collection **)
+(** LATEX VERSION: A collection B is countably locally finite if it is the countable union of collections B_n, each locally finite. **)
 Definition sigma_locally_finite_basis : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
   exists Fams:set, countable_set Fams /\
@@ -86144,6 +86148,8 @@ Definition cauchy_sequence : set -> set -> set -> prop := fun X d seq =>
         Rlt (apply_fun d (apply_fun seq m, apply_fun seq n)) eps.
 
 (** Helper: cauchy_sequence plus totality of the metric graph on X×X **)
+(** from §43 Definition: Cauchy sequence in a metric space **)
+(** LATEX VERSION: A sequence x_n is Cauchy if for every ε>0 there exists N such that d(x_m,x_n)<ε for m,n>N. **)
 Definition cauchy_sequence_total : set -> set -> set -> prop := fun X d seq =>
   metric_on_total X d /\ sequence_on seq X /\
   forall eps:set, eps :e R /\ Rlt 0 eps ->
@@ -86196,14 +86202,20 @@ Definition complete_metric_space : set -> set -> prop := fun X d =>
     exists x:set, converges_to X (metric_topology X d) seq x.
 
 (** Helper: complete_metric_space plus totality of the metric graph on X×X **)
+(** from §43 Definition: complete metric space (total metric graph variant) **)
+(** LATEX VERSION: A metric space is complete if every Cauchy sequence converges. **)
 Definition complete_metric_space_total : set -> set -> prop := fun X d =>
   metric_on_total X d /\
   forall seq:set, sequence_on seq X -> cauchy_sequence_total X d seq ->
     exists x:set, converges_to X (metric_topology X d) seq x.
 (** FIXED: discrete_metric uses ordered pairs ((x,y), value) and famunion; it represents d(x,y)=0 if x=y and 1 otherwise. **) 
+(** from §20 Metric topology: auxiliary definition of the discrete metric **)
+(** LATEX VERSION: The discrete metric satisfies d(x,y)=0 if x=y and d(x,y)=1 otherwise. **)
 Definition discrete_metric : set -> set := fun X =>
   famunion X (fun x => {((x,y), If_i (x = y) 0 1) | y :e X}).
 (** helper: placeholder metric on euclidean_space n **) 
+(** from §24 Euclidean space: auxiliary metric on euclidean_space n **)
+(** LATEX VERSION: Euclidean space R^n is a metric space in its usual Euclidean metric. **)
 Definition euclidean_metric : set -> set := fun n => discrete_metric (euclidean_space n).
 
 (** helper: bounded product metric on R^omega **) 
