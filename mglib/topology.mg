@@ -23249,8 +23249,6 @@ apply set_ext.
   exact (Hfiner U HU).
 - let U. assume HU: U :e R_standard_topology.
   prove U :e order_topology R.
-  claim HBasisStd: basis_on R R_standard_basis.
-  { exact (R_standard_basis_is_basis). }
   claim HTord: topology_on R (order_topology R).
   { rewrite <- (open_rays_subbasis_for_order_topology R).
     exact (topology_from_subbasis_is_topology R (open_rays_subbasis R) (open_rays_subbasis_is_subbasis R)). }
@@ -23340,12 +23338,12 @@ apply set_ext.
     { exact (binunionI1 A B (open_interval a b0) HInA). }
 	    claim HInABC: open_interval a b0 :e (A :\/: B :\/: C).
 	    { exact (binunionI1 (A :\/: B) C (open_interval a b0) HInAB). }
-	    claim HbBasis: open_interval a b0 :e order_topology_basis R.
-	    { exact HInABC. }
-	    exact (generated_topology_contains_elem R (order_topology_basis R) (open_interval a b0) HPow HbBasis).
-	  }
+		    claim HbBasis: open_interval a b0 :e order_topology_basis R.
+		    { exact HInABC. }
+		    exact (generated_topology_contains_elem R (order_topology_basis R) (open_interval a b0) HPow HbBasis).
+		  }
   claim Hfiner: finer_than (order_topology R) (generated_topology R R_standard_basis).
-  { exact (generated_topology_finer R R_standard_basis (order_topology R) HBasisStd HTord HBsubStd). }
+  { exact (generated_topology_finer_weak R R_standard_basis (order_topology R) HTord HBsubStd). }
   exact (Hfiner U HU).
 Qed.
 
