@@ -14238,6 +14238,32 @@ Definition intersection_of_family : set -> set -> set :=
 Definition finite_subcollections : set -> set :=
   fun S => {F :e Power S|finite F}.
 
+(** helper: introduction and eliminations for intersection_of_family **)
+Theorem intersection_of_familyI : forall X Fam x:set,
+  x :e X ->
+  (forall U:set, U :e Fam -> x :e U) ->
+  x :e intersection_of_family X Fam.
+let X Fam x.
+assume HxX: x :e X.
+assume Hall: forall U:set, U :e Fam -> x :e U.
+exact (SepI X (fun x0:set => forall U:set, U :e Fam -> x0 :e U) x HxX Hall).
+Qed.
+
+Theorem intersection_of_familyE1 : forall X Fam x:set,
+  x :e intersection_of_family X Fam -> x :e X.
+let X Fam x.
+assume Hx: x :e intersection_of_family X Fam.
+exact (SepE1 X (fun x0:set => forall U:set, U :e Fam -> x0 :e U) x Hx).
+Qed.
+
+Theorem intersection_of_familyE2 : forall X Fam x:set,
+  x :e intersection_of_family X Fam ->
+  forall U:set, U :e Fam -> x :e U.
+let X Fam x.
+assume Hx: x :e intersection_of_family X Fam.
+exact (SepE2 X (fun x0:set => forall U:set, U :e Fam -> x0 :e U) x Hx).
+Qed.
+
 (** FIXED: Now takes X to pass to intersection_of_family. **)
 Definition finite_intersections_of : set -> set -> set := fun X S =>
   {intersection_of_family X F|F :e finite_subcollections S}.
