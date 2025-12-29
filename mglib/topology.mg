@@ -15809,6 +15809,26 @@ apply (xm (exists x:set, x :e X)).
   exact (HinfX HfinX).
 Qed.
 
+(** helper: unordered pairs are finite **)
+(** LATEX VERSION: (set theory) A two-element set {a,b} is finite. **)
+Theorem finite_UPair : forall a b:set, finite (UPair a b).
+let a b.
+set Y := {a} :\/: {b}.
+claim HfinY: finite Y.
+{ exact (binunion_finite {a} (Sing_finite a) {b} (Sing_finite b)). }
+claim Hsub: (UPair a b) c= Y.
+{ let x. assume Hx: x :e UPair a b.
+  apply (UPairE x a b Hx (x :e Y)).
+  - assume Hxa: x = a.
+    rewrite Hxa.
+    exact (binunionI1 {a} {b} a (SingI a)).
+  - assume Hxb: x = b.
+    rewrite Hxb.
+    exact (binunionI2 {a} {b} b (SingI b)).
+}
+exact (Subq_finite Y HfinY (UPair a b) Hsub).
+Qed.
+
 Theorem ex13_3b_witness_sets : forall X:set,
   infinite X ->
   exists U V:set,
