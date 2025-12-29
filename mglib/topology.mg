@@ -15829,6 +15829,14 @@ claim Hsub: (UPair a b) c= Y.
 exact (Subq_finite Y HfinY (UPair a b) Hsub).
 Qed.
 
+(** helper: removing two points from an infinite set leaves an infinite set **)
+(** LATEX VERSION: (set theory) If X is infinite then X\\{a,b} is infinite. **)
+Theorem infinite_remove2 : forall X a b:set, infinite X -> infinite (X :\: UPair a b).
+let X a b.
+assume HinfX: infinite X.
+exact (infinite_setminus_finite X (UPair a b) HinfX (finite_UPair a b)).
+Qed.
+
 Theorem ex13_3b_witness_sets : forall X:set,
   infinite X ->
   exists U V:set,
