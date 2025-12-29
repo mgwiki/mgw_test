@@ -39416,7 +39416,7 @@ Definition R_C_topology : set := generated_topology R rational_halfopen_interval
 (** LATEX VERSION: Since the half-open rational intervals are among the half-open real intervals, the topology they generate is coarser than the lower limit topology. **)
 Theorem R_lower_limit_finer_than_R_C : finer_than R_lower_limit_topology R_C_topology.
 prove finer_than R_lower_limit_topology R_C_topology.
-(** apply generated_topology_finer with T = R_lower_limit_topology and basis B = rational_halfopen_intervals_basis **)
+(** apply generated_topology_finer_weak with T = R_lower_limit_topology and generators B = rational_halfopen_intervals_basis **)
 claim HTlower: topology_on R R_lower_limit_topology.
 { exact R_lower_limit_topology_is_topology. }
 claim HBsub: forall b :e rational_halfopen_intervals_basis, b :e R_lower_limit_topology.
