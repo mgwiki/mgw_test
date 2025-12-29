@@ -57452,10 +57452,14 @@ Qed.
 (** The midpoint is eps_ 1, and twice eps_ 1 equals 1. **)
 
 (** left half of the unit interval: [0, eps_ 1] encoded by negated strict inequality **)
+(** from §25: concatenating paths (split the parameter interval) **)
+(** LATEX VERSION: Split I=[0,1] into the halves [0,1/2] and [1/2,1] and rescale them to define concatenation of paths. **)
 Definition unit_interval_left_half : set :=
   {t :e unit_interval | ~(Rlt (eps_ 1) t)}.
 
 (** right half of the unit interval: [eps_ 1, 1] encoded by negated strict inequality **)
+(** from §25: concatenating paths (split the parameter interval) **)
+(** LATEX VERSION: The right half [1/2,1] of I, used to rescale and paste paths. **)
 Definition unit_interval_right_half : set :=
   {t :e unit_interval | ~(Rlt t (eps_ 1))}.
 
@@ -57472,6 +57476,8 @@ exact (SepE1 unit_interval (fun t0:set => ~(Rlt t0 (eps_ 1))) t Ht).
 Qed.
 
 (** scaling maps used for concatenation, defined only on the appropriate halves **)
+(** from §25: concatenating paths (rescaling maps) **)
+(** LATEX VERSION: Use t↦2t on [0,1/2] and t↦2t−1 on [1/2,1] to reparametrize two paths into one. **)
 Definition double_map_left_half : set := graph unit_interval_left_half (fun t:set => mul_SNo 2 t).
 Definition double_minus_one_map_right_half : set :=
   graph unit_interval_right_half (fun t:set => add_SNo (mul_SNo 2 t) (minus_SNo 1)).
@@ -60377,8 +60383,13 @@ apply set_ext.
     - exact Hp1.
 Qed.
 
+(** from §23 Connected Spaces / separations: disjoint families **)
+(** LATEX VERSION: A family is pairwise disjoint if any two distinct members have empty intersection. **)
 Definition pairwise_disjoint : set -> prop := fun Fam =>
   forall U V:set, U :e Fam -> V :e Fam -> U <> V -> U :/\: V = Empty.
+
+(** from §26 Compactness: cover relation **)
+(** LATEX VERSION: A family U covers X if every point of X lies in some member of U. **)
 Definition covers : set -> set -> prop :=
   fun X U => forall x:set, x :e X -> exists u:set, u :e U /\ x :e u.
 
@@ -61791,6 +61802,8 @@ claim Hprop: forall U0:set, U0 :e Fam -> U0 :e Tx.
 exact (Hprop U HU).
 Qed.
 
+(** from §26 Compactness: finite subcover **)
+(** LATEX VERSION: A cover has a finite subcover if some finite subcollection still covers X. **)
 Definition has_finite_subcover : set -> set -> set -> prop := fun X Tx Fam =>
   exists G:set, G c= Fam /\ finite G /\ X c= Union G.
 
@@ -61805,6 +61818,8 @@ witness G.
 exact HG.
 Qed.
 
+(** from §26 Compactness: compact space **)
+(** LATEX VERSION: X is compact if every open cover of X has a finite subcover. **)
 Definition compact_space : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\ forall Fam:set, open_cover_of X Tx Fam -> has_finite_subcover X Tx Fam.
 
