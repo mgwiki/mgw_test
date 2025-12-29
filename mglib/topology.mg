@@ -91197,11 +91197,183 @@ Definition U_eps : set -> set -> set -> set -> set -> set -> set :=
 (** LATEX VERSION: In Theorem 48.5, the union of A_N(eps) equals X because f_n(x) converges for each x. **)
 Theorem pointwise_limit_metric_imp_cover_A_N_eps_stub : forall X Y d fn f eps:set,
   metric_on_total Y d ->
+  (forall n:set, n :e omega -> function_on (apply_fun fn n) X Y) ->
   function_on f X Y ->
   pointwise_limit_metric X Y d fn f ->
   eps :e R -> Rlt 0 eps ->
   forall x:set, x :e X -> exists N:set, N :e omega /\ x :e A_N_eps X Y d fn N eps.
-admit. (** FAIL **)
+let X Y d fn f eps.
+assume Hd: metric_on_total Y d.
+assume Hfn: forall n:set, n :e omega -> function_on (apply_fun fn n) X Y.
+assume Hf: function_on f X Y.
+assume Hlim: pointwise_limit_metric X Y d fn f.
+assume HepsR: eps :e R.
+assume HepsPos: Rlt 0 eps.
+let x. assume HxX: x :e X.
+claim HexNsmall: exists Nsmall :e omega, eps_ Nsmall < eps.
+{ exact (exists_eps_lt_pos_Euclid eps HepsR HepsPos). }
+apply HexNsmall.
+let Nsmall. assume HNsmallpair.
+claim HNsmallO: Nsmall :e omega.
+{ exact (andEL (Nsmall :e omega) (eps_ Nsmall < eps) HNsmallpair). }
+claim HepsNlt: eps_ Nsmall < eps.
+{ exact (andER (Nsmall :e omega) (eps_ Nsmall < eps) HNsmallpair). }
+claim HNsmallNat: nat_p Nsmall.
+{ exact (omega_nat_p Nsmall HNsmallO). }
+claim HNsuccO: ordsucc Nsmall :e omega.
+{ exact (omega_ordsucc Nsmall HNsmallO). }
+set eps2 := eps_ (ordsucc Nsmall).
+claim Heps2R: eps2 :e R.
+{ exact (SNoS_omega_real eps2 (SNo_eps_SNoS_omega (ordsucc Nsmall) HNsuccO)). }
+claim Heps2Pos: Rlt 0 eps2.
+{ exact (RltI 0 eps2 real_0 Heps2R (SNo_eps_pos (ordsucc Nsmall) HNsuccO)). }
+claim HepsHalf: add_SNo eps2 eps2 = eps_ Nsmall.
+{ exact (eps_ordsucc_half_add Nsmall HNsmallNat). }
+claim HepsNR: eps_ Nsmall :e R.
+{ exact (SNoS_omega_real (eps_ Nsmall) (SNo_eps_SNoS_omega Nsmall HNsmallO)). }
+claim HepsNS: SNo (eps_ Nsmall).
+{ exact (real_SNo (eps_ Nsmall) HepsNR). }
+claim HepsS: SNo eps.
+{ exact (real_SNo eps HepsR). }
+claim HepsNltR: Rlt (eps_ Nsmall) eps.
+{ exact (RltI (eps_ Nsmall) eps HepsNR HepsR HepsNlt). }
+claim HexN0: exists N0:set, N0 :e omega /\
+  forall n:set, n :e omega -> N0 c= n ->
+    Rlt (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) eps2.
+{ exact (Hlim x HxX eps2 Heps2R Heps2Pos). }
+apply HexN0.
+let N0. assume HN0pair.
+claim HN0O: N0 :e omega.
+{ exact (andEL (N0 :e omega)
+               (forall n:set, n :e omega -> N0 c= n ->
+                 Rlt (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) eps2)
+               HN0pair). }
+claim Htail: forall n:set, n :e omega -> N0 c= n ->
+  Rlt (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) eps2.
+{ exact (andER (N0 :e omega)
+               (forall n:set, n :e omega -> N0 c= n ->
+                 Rlt (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) eps2)
+               HN0pair). }
+witness N0.
+apply andI.
+- exact HN0O.
+- claim HdefA: A_N_eps X Y d fn N0 eps =
+    {x0 :e X |
+      forall n:set, n :e omega -> N0 c= n ->
+        forall m:set, m :e omega -> N0 c= m ->
+          Rle (apply_fun d (apply_fun (apply_fun fn n) x0, apply_fun (apply_fun fn m) x0)) eps }.
+  { reflexivity. }
+  rewrite HdefA.
+  apply (SepI X
+            (fun x0:set =>
+              forall n:set, n :e omega -> N0 c= n ->
+                forall m:set, m :e omega -> N0 c= m ->
+                  Rle (apply_fun d (apply_fun (apply_fun fn n) x0, apply_fun (apply_fun fn m) x0)) eps)
+            x
+            HxX).
+  let n. assume HnO: n :e omega. assume HN0n: N0 c= n.
+  let m. assume HmO: m :e omega. assume HN0m: N0 c= m.
+  claim HfxY: apply_fun f x :e Y.
+  { exact (Hf x HxX). }
+  claim HfnxY: apply_fun (apply_fun fn n) x :e Y.
+  { exact ((Hfn n HnO) x HxX). }
+  claim HfmxY: apply_fun (apply_fun fn m) x :e Y.
+  { exact ((Hfn m HmO) x HxX). }
+  claim HmY: metric_on Y d.
+  { exact (metric_on_total_imp_metric_on Y d Hd). }
+  claim Hsym: apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x) =
+              apply_fun d (apply_fun (apply_fun fn m) x, apply_fun f x).
+  { exact (metric_on_symmetric Y d (apply_fun f x) (apply_fun (apply_fun fn m) x) HmY HfxY HfmxY). }
+  claim Hdn: Rlt (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) eps2.
+  { exact (Htail n HnO HN0n). }
+  claim Hdm: Rlt (apply_fun d (apply_fun (apply_fun fn m) x, apply_fun f x)) eps2.
+  { exact (Htail m HmO HN0m). }
+  claim Hdm2: Rlt (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)) eps2.
+  { rewrite Hsym.
+    exact Hdm. }
+  claim HdR: metric_on Y d.
+  { exact HmY. }
+  claim Htri: Rle (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x))
+                 (add_SNo (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x))
+                          (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x))).
+  { exact (metric_triangle_Rle Y d
+           (apply_fun (apply_fun fn n) x)
+           (apply_fun f x)
+           (apply_fun (apply_fun fn m) x)
+           HdR
+           HfnxY
+           HfxY
+           HfmxY). }
+  claim Hdnlt: (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) < eps2.
+  { exact (RltE_lt (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) eps2 Hdn). }
+  claim Hdmlt: (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)) < eps2.
+  { exact (RltE_lt (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)) eps2 Hdm2). }
+  claim HdnR: (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) :e R.
+  { exact (RltE_left (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) eps2 Hdn). }
+  claim HdmR: (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)) :e R.
+  { exact (RltE_left (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)) eps2 Hdm2). }
+  claim HdnS: SNo (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)).
+  { exact (real_SNo (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) HdnR). }
+  claim HdmS: SNo (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)).
+  { exact (real_SNo (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)) HdmR). }
+  claim Heps2S: SNo eps2.
+  { exact (real_SNo eps2 Heps2R). }
+  claim Hsumlt: add_SNo (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x))
+                         (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x))
+               < add_SNo eps2 eps2.
+  { exact (add_SNo_Lt3
+           (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x))
+           (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x))
+           eps2 eps2
+           HdnS HdmS Heps2S Heps2S
+           Hdnlt Hdmlt). }
+  claim HsumR: add_SNo (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x))
+                       (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)) :e R.
+  { exact (real_add_SNo
+           (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) HdnR
+           (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)) HdmR). }
+  claim Hsumlt2: add_SNo (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x))
+                          (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x))
+               < eps_ Nsmall.
+  { rewrite <- HepsHalf.
+    exact Hsumlt. }
+  claim Hsumlt3: add_SNo (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x))
+                          (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x))
+               < eps.
+  { exact (SNoLt_tra
+           (add_SNo (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x))
+                    (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)))
+           (eps_ Nsmall)
+           eps
+           (SNo_add_SNo (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x))
+                        (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x))
+                        HdnS HdmS)
+           HepsNS
+           HepsS
+           Hsumlt2
+           HepsNlt). }
+  claim HsumepsR: Rlt (add_SNo (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x))
+                               (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)))
+                    eps.
+  { exact (RltI
+           (add_SNo (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x))
+                    (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)))
+           eps
+           HsumR
+           HepsR
+           Hsumlt3). }
+  claim HdnmLt: Rlt (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x)) eps.
+  { exact (Rle_Rlt_tra
+           (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x))
+           (add_SNo (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x))
+                    (apply_fun d (apply_fun f x, apply_fun (apply_fun fn m) x)))
+           eps
+           Htri
+           HsumepsR). }
+  exact (Rlt_implies_Rle
+         (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x))
+         eps
+         HdnmLt).
 Qed.
 
 (** helper: U(eps) should be open and dense under hypotheses of Theorem 48.5 **)
@@ -91555,9 +91727,12 @@ claim HcoverAll: forall eps0:set, eps0 :e R -> Rlt 0 eps0 ->
 { let eps0.
   assume Heps0R: eps0 :e R.
   assume Heps0Pos: Rlt 0 eps0.
+  claim HfnOn: forall n:set, n :e omega -> function_on (apply_fun fn n) X Y.
+  { let n. assume Hn: n :e omega.
+    exact (continuous_map_function_on X Tx Y (metric_topology Y d) (apply_fun fn n) (Hcont n Hn)). }
   let x.
   assume HxX: x :e X.
-  exact (pointwise_limit_metric_imp_cover_A_N_eps_stub X Y d fn f eps0 Hd Hf Hlim Heps0R Heps0Pos x HxX). }
+  exact (pointwise_limit_metric_imp_cover_A_N_eps_stub X Y d fn f eps0 Hd HfnOn Hf Hlim Heps0R Heps0Pos x HxX). }
 claim HclosedAll: forall eps0:set, eps0 :e R ->
   forall N:set, N :e omega -> closed_in X Tx (A_N_eps X Y d fn N eps0).
 { let eps0.
