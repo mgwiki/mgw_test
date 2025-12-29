@@ -87978,8 +87978,11 @@ Definition completely_normal_space : set -> set -> prop := fun X Tx =>
 Definition linear_continuum : set -> set -> prop := fun X Tx =>
   (** FIXED: Use `order_rel X` (the order relation used by `order_topology X`), not an unrelated existential relation. **)
   Tx = order_topology X /\
+  (exists x y:set, x :e X /\ y :e X /\ x <> y) /\
+  (forall x y:set, x :e X -> y :e X -> order_rel X x y ->
+    exists z:set, z :e X /\ order_rel X x z /\ order_rel X z y) /\
   (forall A:set, A c= X -> A <> Empty ->
-    (exists upper:set, upper :e X /\ forall a:set, a :e A -> order_rel X a upper) ->
+    (exists upper:set, upper :e X /\ forall a:set, a :e A -> order_rel X a upper \/ a = upper) ->
     exists lub:set, lub :e X /\
       (forall a:set, a :e A -> order_rel X a lub \/ a = lub) /\
       (forall bound:set, bound :e X ->
@@ -89490,10 +89493,13 @@ Definition image_of_map : set -> set -> set -> set -> set -> set :=
 (** from §35 Exercise 6: absolute retracts **)
 (** LATEX VERSION: A normal space Y is an absolute retract if every closed copy of Y in a normal space is a retract. **)
 Definition absolute_retract : set -> set -> prop := fun X Tx =>
-  Hausdorff_space X Tx /\
-  forall Y Ty, normal_space Y Ty ->
-    exists e:set, embedding_of X Tx Y Ty e /\
-      exists r:set, retraction_of Y Ty (image_of_map X Tx Y Ty e).
+  normal_space X Tx /\
+  forall Z Tz Y0 f:set,
+    normal_space Z Tz ->
+    Y0 c= Z ->
+    closed_in Z Tz Y0 ->
+    homeomorphism X Tx Y0 (subspace_topology Z Tz Y0) f ->
+    retraction_of Z Tz Y0.
 
 (** from §35 Exercise 9: topology coherent with a sequence of subspaces **)
 (** LATEX VERSION: U is open in X iff U∩X_i is open in X_i for each i; this is the topology coherent with the X_i. **)
