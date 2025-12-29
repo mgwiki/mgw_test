@@ -92981,6 +92981,47 @@ Definition collection_has_order_at_most_m_plus_one : set -> set -> set -> prop :
 Definition refines_cover : set -> set -> prop := fun B A =>
   forall U:set, U :e B -> exists V:set, V :e A /\ U c= V.
 
+(** helper: refinement is reflexive **)
+Theorem refines_cover_ref : forall A:set, refines_cover A A.
+let A.
+prove refines_cover A A.
+let U. assume HU: U :e A.
+witness U.
+apply andI.
+- exact HU.
+- exact (Subq_ref U).
+Qed.
+
+(** helper: refinement is transitive **)
+Theorem refines_cover_tra : forall A B C:set,
+  refines_cover C B -> refines_cover B A -> refines_cover C A.
+let A B C.
+assume HCB: refines_cover C B.
+assume HBA: refines_cover B A.
+prove refines_cover C A.
+let U. assume HU: U :e C.
+claim HexV: exists V:set, V :e B /\ U c= V.
+{ exact (HCB U HU). }
+apply HexV.
+let V. assume HVpair.
+claim HVB: V :e B.
+{ exact (andEL (V :e B) (U c= V) HVpair). }
+claim HUV: U c= V.
+{ exact (andER (V :e B) (U c= V) HVpair). }
+claim HexW: exists W:set, W :e A /\ V c= W.
+{ exact (HBA V HVB). }
+apply HexW.
+let W. assume HWpair.
+claim HWA: W :e A.
+{ exact (andEL (W :e A) (V c= W) HWpair). }
+claim HVW: V c= W.
+{ exact (andER (W :e A) (V c= W) HWpair). }
+witness W.
+apply andI.
+- exact HWA.
+- exact (Subq_tra U V W HUV HVW).
+Qed.
+
 Definition covering_dimension : set -> set -> set -> prop := fun X Tx n =>
   topology_on X Tx /\ n :e omega /\
     forall A:set, open_cover_of X Tx A ->
