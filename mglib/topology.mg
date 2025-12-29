@@ -31432,10 +31432,22 @@ Theorem ex16_9_dictionary_equals_product :
   /\ R2_dictionary_order_topology <> R2_standard_topology.
 prove R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology /\ R2_dictionary_order_topology <> R2_standard_topology.
 apply andI.
-- claim Heq: R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology.
-  { admit. (** FAIL **) }
+- (** equality of the two topologies (skeleton) **)
+  claim Heq: R2_dictionary_order_topology = product_topology R (discrete_topology R) R R_standard_topology.
+  { apply set_ext.
+    - let U. assume HU: U :e R2_dictionary_order_topology.
+      prove U :e product_topology R (discrete_topology R) R R_standard_topology.
+      (** TODO: relate dictionary-order basic opens to product subbasis rectangles; likely uses explicit form of order_rel on R×R. **)
+      admit. (** FAIL **)
+    - let U. assume HU: U :e product_topology R (discrete_topology R) R R_standard_topology.
+      prove U :e R2_dictionary_order_topology.
+      (** TODO: show product basic rectangles are open in the dictionary order topology; likely uses open rays and interval descriptions. **)
+      admit. (** FAIL **)
+  }
   exact Heq.
-- admit. (** FAIL **)
+- (** strict inequality vs the standard topology (skeleton) **)
+  (** TODO: exhibit a set open in one topology but not the other. **)
+  admit. (** FAIL **)
 Qed.
 
 (** from §16 Exercise 10: compare topologies on I×I **) 
