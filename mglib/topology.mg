@@ -87954,6 +87954,12 @@ Definition topological_group : set -> set -> prop := fun G Tg =>
     function_on mult (setprod G G) G /\
     function_on inv G G /\
     e :e G /\
+    (forall x y z:set,
+      x :e G -> y :e G -> z :e G ->
+      apply_fun mult (apply_fun mult (x,y), z) = apply_fun mult (x, apply_fun mult (y,z))) /\
+    (forall x:set, x :e G -> apply_fun mult (e,x) = x /\ apply_fun mult (x,e) = x) /\
+    (forall x:set, x :e G ->
+      apply_fun mult (x, apply_fun inv x) = e /\ apply_fun mult (apply_fun inv x, x) = e) /\
     continuous_map (setprod G G) (product_topology G Tg G Tg) G Tg mult /\
     continuous_map G Tg G Tg inv.
 
