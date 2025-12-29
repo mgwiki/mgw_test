@@ -23248,7 +23248,8 @@ apply set_ext.
   claim HBasisStd: basis_on R R_standard_basis.
   { exact (R_standard_basis_is_basis). }
   claim HTord: topology_on R (order_topology R).
-  { exact (order_topology_is_topology R). }
+  { rewrite <- (open_rays_subbasis_for_order_topology R).
+    exact (topology_from_subbasis_is_topology R (open_rays_subbasis R) (open_rays_subbasis_is_subbasis R)). }
   claim HBsubStd: forall b :e R_standard_basis, b :e order_topology R.
   { let b. assume Hb: b :e R_standard_basis.
     prove b :e order_topology R.
@@ -23352,7 +23353,10 @@ Theorem dictionary_order_topology_is_topology :
   topology_on (setprod R R) R2_dictionary_order_topology.
 prove topology_on (setprod R R) R2_dictionary_order_topology.
 (** R2_dictionary_order_topology = order_topology (setprod R R) by definition **)
-exact (order_topology_is_topology (setprod R R)).
+rewrite <- (open_rays_subbasis_for_order_topology (setprod R R)).
+exact (topology_from_subbasis_is_topology (setprod R R)
+        (open_rays_subbasis (setprod R R))
+        (open_rays_subbasis_is_subbasis (setprod R R))).
 Qed.
 
 (** from §14 Example 2: rectangle subbasis yields product-style topology **) 
@@ -35464,7 +35468,8 @@ let X a b.
 prove closure_of X (order_topology X) (order_interval X a b) c= closed_interval_in X a b.
 set Tx := order_topology X.
 claim HTx: topology_on X Tx.
-{ exact (order_topology_is_topology X). }
+{ rewrite <- (open_rays_subbasis_for_order_topology X).
+  exact (topology_from_subbasis_is_topology X (open_rays_subbasis X) (open_rays_subbasis_is_subbasis X)). }
 claim Hsub: order_interval X a b c= closed_interval_in X a b.
 { let x. assume Hx: x :e order_interval X a b.
   prove x :e closed_interval_in X a b.
