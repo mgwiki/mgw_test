@@ -66768,9 +66768,254 @@ claim HcompY: compact_space Y Ty.
     - assume Hbad: p /:e U0 /\ U0 :e Tx.
       apply FalseE.
       exact ((andEL (p /:e U0) (U0 :e Tx) Hbad) HpU0).
-    - assume Hgood: p :e U0 /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U0 = Y :\: K0.
-      (** TODO: use compactness of the complement K0 to extract a finite subcover of K0 from Fam, then add U0. **)
-      admit. }
+	    - assume Hgood: p :e U0 /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U0 = Y :\: K0.
+	      (** Use compactness of the complement K0 to extract a finite subcover of K0, then add U0. **)
+	      claim HexK0:
+	        exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U0 = Y :\: K0.
+	      { exact (andER (p :e U0)
+	                     (exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U0 = Y :\: K0)
+	                     Hgood). }
+	      apply HexK0.
+	      let K0. assume HK0pkg.
+	      claim HK0left: compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X.
+	      { exact (andEL (compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X)
+	                     (U0 = Y :\: K0)
+	                     HK0pkg). }
+	      claim HK0comp: compact_space K0 (subspace_topology X Tx K0).
+	      { exact (andEL (compact_space K0 (subspace_topology X Tx K0))
+	                     (K0 c= X)
+	                     HK0left). }
+	      claim HK0subX: K0 c= X.
+	      { exact (andER (compact_space K0 (subspace_topology X Tx K0))
+	                     (K0 c= X)
+	                     HK0left). }
+	      claim HU0eq: U0 = Y :\: K0.
+	      { exact (andER (compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X)
+	                     (U0 = Y :\: K0)
+	                     HK0pkg). }
+	      claim HTxX: topology_on X Tx.
+	      { exact (locally_compact_topology X Tx Hlc). }
+	      (** Build an ambient Tx-open cover of K0 derived from Fam by intersecting with X. **)
+	      set FamX := {V :e Tx | exists U:set, U :e Fam /\ V = U :/\: X}.
+	      claim HFamXsub: FamX c= Tx.
+	      { let V. assume HV: V :e FamX.
+	        exact (SepE1 Tx (fun V0:set => exists U:set, U :e Fam /\ V0 = U :/\: X) V HV). }
+	      claim HK0covFamX: K0 c= Union FamX.
+	      { let x. assume HxK0: x :e K0.
+	        claim HxX: x :e X.
+	        { exact (HK0subX x HxK0). }
+	        claim HxY: x :e Y.
+	        { exact (binunionI1 X {p} x HxX). }
+	        claim HxUnionFam: x :e Union Fam.
+	        { exact (HYcov x HxY). }
+	        (** Choose U∈Fam with x∈U, and set V := U∩X ∈ Tx. **)
+	        apply (UnionE_impred Fam x HxUnionFam).
+	        let U. assume HxU: x :e U. assume HUinFam: U :e Fam.
+	        claim HUinTy: U :e Ty.
+	        { exact (open_cover_of_members_open Y Ty Fam U HFam HUinFam). }
+	        claim HUprop:
+	          (p /:e U /\ U :e Tx) \/
+	          (p :e U /\ exists K1:set, compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X /\ U = Y :\: K1).
+	        { exact (SepE2 (Power Y)
+	                       (fun U1:set =>
+	                         (p /:e U1 /\ U1 :e Tx) \/
+	                         (p :e U1 /\ exists K1:set, compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X /\ U1 = Y :\: K1))
+	                       U
+	                       HUinTy). }
+	        set V := U :/\: X.
+	        claim HVTx: V :e Tx.
+	        { apply HUprop.
+	          - assume Hcase: p /:e U /\ U :e Tx.
+	            claim HUinTx: U :e Tx.
+	            { exact (andER (p /:e U) (U :e Tx) Hcase). }
+	            claim HUs: U c= X.
+	            { exact (topology_elem_subset X Tx U HTxX HUinTx). }
+	            rewrite (binintersect_Subq_eq_1 U X HUs).
+	            exact HUinTx.
+	          - assume Hcase: p :e U /\ exists K1:set, compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X /\ U = Y :\: K1.
+	            claim HexK1: exists K1:set, compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X /\ U = Y :\: K1.
+	            { exact (andER (p :e U)
+	                           (exists K1:set, compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X /\ U = Y :\: K1)
+	                           Hcase). }
+	            apply HexK1.
+	            let K1. assume HK1pkg.
+	            claim HK1left: compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X.
+	            { exact (andEL (compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X)
+	                           (U = Y :\: K1)
+	                           HK1pkg). }
+	            claim HK1comp: compact_space K1 (subspace_topology X Tx K1).
+	            { exact (andEL (compact_space K1 (subspace_topology X Tx K1))
+	                           (K1 c= X)
+	                           HK1left). }
+	            claim HK1subX: K1 c= X.
+	            { exact (andER (compact_space K1 (subspace_topology X Tx K1))
+	                           (K1 c= X)
+	                           HK1left). }
+	            claim HUeq1: U = Y :\: K1.
+	            { exact (andER (compact_space K1 (subspace_topology X Tx K1) /\ K1 c= X)
+	                           (U = Y :\: K1)
+	                           HK1pkg). }
+	            claim HK1closed: closed_in X Tx K1.
+	            { exact (Hausdorff_compact_sets_closed X Tx K1 HH HK1subX HK1comp). }
+		            claim Hop: open_in X Tx (X :\: K1).
+		            { exact (open_of_closed_complement X Tx K1 HK1closed). }
+		            claim HXK1: (X :\: K1) :e Tx.
+		            { exact (open_in_elem X Tx (X :\: K1) Hop). }
+		            rewrite HUeq1.
+		            claim HeqV: (Y :\: K1) :/\: X = X :\: K1.
+		            { apply set_ext.
+		              - let y. assume Hy: y :e (Y :\: K1) :/\: X.
+		                claim HyYK1: y :e Y :\: K1.
+		                { exact (binintersectE1 (Y :\: K1) X y Hy). }
+		                claim HyX: y :e X.
+		                { exact (binintersectE2 (Y :\: K1) X y Hy). }
+		                claim HynotK1: y /:e K1.
+		                { exact (setminusE2 Y K1 y HyYK1). }
+		                exact (setminusI X K1 y HyX HynotK1).
+		              - let y. assume Hy: y :e X :\: K1.
+		                claim HyX: y :e X.
+		                { exact (setminusE1 X K1 y Hy). }
+		                claim HynotK1: y /:e K1.
+		                { exact (setminusE2 X K1 y Hy). }
+		                claim HyY: y :e Y.
+		                { exact (binunionI1 X {p} y HyX). }
+		                claim HyYK1: y :e Y :\: K1.
+		                { exact (setminusI Y K1 y HyY HynotK1). }
+		                exact (binintersectI (Y :\: K1) X y HyYK1 HyX). }
+		            rewrite HeqV.
+		            exact HXK1. }
+		        claim HVinFamX: V :e FamX.
+		        { apply (SepI Tx (fun V0:set => exists U0:set, U0 :e Fam /\ V0 = U0 :/\: X) V).
+		          - exact HVTx.
+		          - prove exists U0:set, U0 :e Fam /\ V = U0 :/\: X.
+		            witness U.
+		            apply andI.
+		            * exact HUinFam.
+		            * reflexivity. }
+	        claim HxV: x :e V.
+	        { exact (binintersectI U X x HxU HxX). }
+	        exact (UnionI FamX x V HxV HVinFamX). }
+	      (** Apply compactness of K0 via ambient covers to FamX. **)
+	      claim HK0equiv:
+	        (compact_space K0 (subspace_topology X Tx K0) <->
+	          forall Fam0:set, (Fam0 c= Tx /\ K0 c= Union Fam0) -> has_finite_subcover K0 Tx Fam0).
+	      { exact (compact_subspace_via_ambient_covers X Tx K0 HTxX HK0subX). }
+	      claim HK0amb:
+	        forall Fam0:set, (Fam0 c= Tx /\ K0 c= Union Fam0) -> has_finite_subcover K0 Tx Fam0.
+	      { exact (iffEL (compact_space K0 (subspace_topology X Tx K0))
+	                     (forall Fam0:set, (Fam0 c= Tx /\ K0 c= Union Fam0) -> has_finite_subcover K0 Tx Fam0)
+	                     HK0equiv
+	                     HK0comp). }
+	      claim HfinX: has_finite_subcover K0 Tx FamX.
+	      { exact (HK0amb FamX (andI (FamX c= Tx) (K0 c= Union FamX) HFamXsub HK0covFamX)). }
+	      (** Lift the finite subcover of K0 by Tx-sets in FamX to a finite subcover of Y by Ty-sets in Fam. **)
+		      apply HfinX.
+		      let Gx. assume HGx.
+		      claim HGxleft: Gx c= FamX /\ finite Gx.
+		      { exact (andEL (Gx c= FamX /\ finite Gx) (K0 c= Union Gx) HGx). }
+		      claim HGxsub: Gx c= FamX.
+		      { exact (andEL (Gx c= FamX) (finite Gx) HGxleft). }
+		      claim HGxfin: finite Gx.
+		      { exact (andER (Gx c= FamX) (finite Gx) HGxleft). }
+		      claim HK0covGx: K0 c= Union Gx.
+		      { exact (andER (Gx c= FamX /\ finite Gx) (K0 c= Union Gx) HGx). }
+	      (** Choose, for each V∈Gx, one U∈Fam with V = U∩X. **)
+	      set pickU := fun V:set => Eps_i (fun U:set => U :e Fam /\ V = U :/\: X).
+	      set Gpre := {pickU V|V :e Gx}.
+	      claim HGpreFin: finite Gpre.
+	      { exact (Repl_finite (fun V:set => pickU V) Gx HGxfin). }
+	      claim HGpreSub: Gpre c= Fam.
+	      { let U. assume HU: U :e Gpre.
+	        claim HexV: exists V:set, V :e Gx /\ U = pickU V.
+	        { exact (ReplE Gx (fun V0:set => pickU V0) U HU). }
+	        apply HexV.
+	        let V. assume HVand.
+	        claim HVinGx: V :e Gx.
+	        { exact (andEL (V :e Gx) (U = pickU V) HVand). }
+	        claim HUeqp: U = pickU V.
+	        { exact (andER (V :e Gx) (U = pickU V) HVand). }
+	        claim HVinFamX: V :e FamX.
+	        { exact (HGxsub V HVinGx). }
+	        claim HexU: exists U0:set, U0 :e Fam /\ V = U0 :/\: X.
+	        { exact (SepE2 Tx (fun V0:set => exists U0:set, U0 :e Fam /\ V0 = U0 :/\: X) V HVinFamX). }
+	        claim Hpick: (pickU V) :e Fam /\ V = (pickU V) :/\: X.
+	        { apply HexU.
+	          let U0. assume HU0and.
+	          exact (Eps_i_ax (fun U1:set => U1 :e Fam /\ V = U1 :/\: X) U0 HU0and). }
+	        rewrite HUeqp.
+	        exact (andEL ((pickU V) :e Fam) (V = (pickU V) :/\: X) Hpick). }
+	      claim HK0covGpre: K0 c= Union Gpre.
+	      { let x. assume HxK0: x :e K0.
+	        claim HxUnion: x :e Union Gx.
+	        { exact (HK0covGx x HxK0). }
+	        apply (UnionE_impred Gx x HxUnion).
+	        let V. assume HxV: x :e V. assume HVinGx: V :e Gx.
+	        claim HVinFamX: V :e FamX.
+	        { exact (HGxsub V HVinGx). }
+	        claim HexU: exists U0:set, U0 :e Fam /\ V = U0 :/\: X.
+	        { exact (SepE2 Tx (fun V0:set => exists U0:set, U0 :e Fam /\ V0 = U0 :/\: X) V HVinFamX). }
+	        claim Hpick: (pickU V) :e Fam /\ V = (pickU V) :/\: X.
+	        { apply HexU.
+	          let U0. assume HU0and.
+	          exact (Eps_i_ax (fun U1:set => U1 :e Fam /\ V = U1 :/\: X) U0 HU0and). }
+		        claim HxPick: x :e pickU V.
+		        { claim HxV': x :e (pickU V) :/\: X.
+		          { claim HeqV: V = (pickU V) :/\: X.
+		            { exact (andER ((pickU V) :e Fam) (V = (pickU V) :/\: X) Hpick). }
+		            rewrite <- HeqV.
+		            exact HxV. }
+		          exact (binintersectE1 (pickU V) X x HxV'). }
+		        claim HpickInGpre: pickU V :e Gpre.
+		        { exact (ReplI Gx (fun V0:set => pickU V0) V HVinGx). }
+		        exact (UnionI Gpre x (pickU V) HxPick HpickInGpre). }
+		      (** Final finite subcover of Y: G := Gpre ∪ {U0}. **)
+		      set G := Gpre :\/: {U0}.
+		      apply (has_finite_subcoverI Y Ty Fam G).
+		      apply andI.
+		      - (** G c= Fam /\ finite G **)
+		        apply andI.
+		        + (** G c= Fam **)
+		          let U. assume HU: U :e G.
+		          apply (binunionE Gpre {U0} U HU (U :e Fam)).
+		          * assume HUpre: U :e Gpre.
+		            exact (HGpreSub U HUpre).
+		          * assume HUsing: U :e {U0}.
+		            claim Heq: U = U0.
+		            { exact (SingE U0 U HUsing). }
+		            rewrite Heq.
+		            exact HU0Fam.
+		        + (** finite G **)
+		          exact (binunion_finite Gpre HGpreFin {U0} (Sing_finite U0)).
+		      - (** Y c= Union G **)
+		        let y. assume HyY: y :e Y.
+		        apply (binunionE X {p} y HyY (y :e Union G)).
+		        + (** y in X **)
+		          assume HyX: y :e X.
+		          apply (xm (y :e U0)).
+		          * assume HyU0: y :e U0.
+		            exact (UnionI G y U0 HyU0 (binunionI2 Gpre {U0} U0 (SingI U0))).
+		          * assume HyNotU0: ~(y :e U0).
+		            claim HyK0: y :e K0.
+		            { apply (xm (y :e K0)).
+		              - assume HyK0. exact HyK0.
+		              - assume HyNotK0: ~(y :e K0).
+		                claim HyU0': y :e U0.
+		                { rewrite HU0eq.
+		                  exact (setminusI Y K0 y HyY HyNotK0). }
+		                apply FalseE.
+		                exact (HyNotU0 HyU0'). }
+		            claim HyUnionPre: y :e Union Gpre.
+		            { exact (HK0covGpre y HyK0). }
+		            apply (UnionE_impred Gpre y HyUnionPre).
+		            let U. assume HyU: y :e U. assume HUpre: U :e Gpre.
+		            exact (UnionI G y U HyU (binunionI1 Gpre {U0} U HUpre)).
+		        + (** y = p **)
+		          assume Hyp: y :e {p}.
+		          claim Heq: y = p.
+		          { exact (SingE p y Hyp). }
+		          rewrite Heq.
+		          exact (UnionI G p U0 HpU0 (binunionI2 Gpre {U0} U0 (SingI U0))).
+		      }
 claim HXsubY: X c= Y.
 { let x. assume HxX: x :e X.
   exact (binunionI1 X {p} x HxX). }
