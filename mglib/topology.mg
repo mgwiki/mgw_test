@@ -90880,6 +90880,274 @@ apply Hcase.
   exact (Baire_category_complete_metric X d Hcomp).
 Qed.
 
+(** from §48 Lemma 48.4: open subspace of Baire is Baire **)
+(** LATEX VERSION: Lemma 48.4: Any open subspace Y of a Baire space X is itself a Baire space. **)
+Theorem Baire_open_subspace : forall X Tx Y:set,
+  Baire_space X Tx ->
+  open_in X Tx Y ->
+  Baire_space Y (subspace_topology X Tx Y).
+let X Tx Y.
+assume HB: Baire_space X Tx.
+assume HYopen: open_in X Tx Y.
+prove Baire_space Y (subspace_topology X Tx Y).
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall U:set,
+                 U c= Tx -> countable_set U ->
+                 (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
+                 dense_in (intersection_over_family X U) X Tx)
+               HB). }
+claim HYsub: Y c= X.
+{ exact (open_in_subset X Tx Y HYopen). }
+claim HYinTx: Y :e Tx.
+{ exact (open_in_elem X Tx Y HYopen). }
+claim HTy: topology_on Y (subspace_topology X Tx Y).
+{ exact (subspace_topology_is_topology X Tx Y HTx HYsub). }
+claim HBcX: Baire_space_closed X Tx.
+{ exact (Baire_space_imp_closed X Tx HB). }
+claim HpropX:
+  forall Fam0:set,
+    countable_set Fam0 ->
+    (forall A0:set, A0 :e Fam0 -> closed_in X Tx A0 /\ interior_of X Tx A0 = Empty) ->
+    interior_of X Tx (Union Fam0) = Empty.
+{ exact (andER (topology_on X Tx)
+               (forall Fam0:set,
+                 countable_set Fam0 ->
+                 (forall A0:set, A0 :e Fam0 -> closed_in X Tx A0 /\ interior_of X Tx A0 = Empty) ->
+                 interior_of X Tx (Union Fam0) = Empty)
+               HBcX). }
+
+claim HBcY: Baire_space_closed Y (subspace_topology X Tx Y).
+{ prove topology_on Y (subspace_topology X Tx Y) /\
+    forall Fam:set,
+      countable_set Fam ->
+      (forall A:set, A :e Fam ->
+        closed_in Y (subspace_topology X Tx Y) A /\ interior_of Y (subspace_topology X Tx Y) A = Empty) ->
+      interior_of Y (subspace_topology X Tx Y) (Union Fam) = Empty.
+  apply andI.
+  - exact HTy.
+  - let Fam. assume Hcount: countable_set Fam.
+    assume HFam: forall A:set, A :e Fam ->
+      closed_in Y (subspace_topology X Tx Y) A /\ interior_of Y (subspace_topology X Tx Y) A = Empty.
+    prove interior_of Y (subspace_topology X Tx Y) (Union Fam) = Empty.
+    set FamX := {closure_of X Tx A | A :e Fam}.
+    claim HcountX: countable_set FamX.
+    { exact (countable_image Fam Hcount (fun A0:set => closure_of X Tx A0)). }
+    claim HFamX: forall C:set, C :e FamX -> closed_in X Tx C /\ interior_of X Tx C = Empty.
+    { let C. assume HC: C :e FamX.
+      claim HexA: exists A:set, A :e Fam /\ C = closure_of X Tx A.
+      { exact (ReplE Fam (fun A0:set => closure_of X Tx A0) C HC). }
+      apply HexA.
+      let A. assume HA: A :e Fam /\ C = closure_of X Tx A.
+      claim HAin: A :e Fam.
+      { exact (andEL (A :e Fam) (C = closure_of X Tx A) HA). }
+      claim HeqC: C = closure_of X Tx A.
+      { exact (andER (A :e Fam) (C = closure_of X Tx A) HA). }
+      claim HApack: closed_in Y (subspace_topology X Tx Y) A /\ interior_of Y (subspace_topology X Tx Y) A = Empty.
+      { exact (HFam A HAin). }
+      claim HclosedY: closed_in Y (subspace_topology X Tx Y) A.
+      { exact (andEL (closed_in Y (subspace_topology X Tx Y) A)
+                     (interior_of Y (subspace_topology X Tx Y) A = Empty)
+                     HApack). }
+      claim HintY: interior_of Y (subspace_topology X Tx Y) A = Empty.
+      { exact (andER (closed_in Y (subspace_topology X Tx Y) A)
+                     (interior_of Y (subspace_topology X Tx Y) A = Empty)
+                     HApack). }
+      claim HAsubY: A c= Y.
+      { exact (closed_in_subset Y (subspace_topology X Tx Y) A HclosedY). }
+      claim HAsubX: A c= X.
+      { let a. assume Ha: a :e A.
+        exact (HYsub a (HAsubY a Ha)). }
+      claim HclosedX: closed_in X Tx (closure_of X Tx A).
+      { exact (closure_is_closed X Tx A HTx HAsubX). }
+      claim HintX: interior_of X Tx (closure_of X Tx A) = Empty.
+      { apply set_ext.
+        - let x. assume Hx: x :e interior_of X Tx (closure_of X Tx A).
+          prove x :e Empty.
+          claim HexU: exists U:set, U :e Tx /\ x :e U /\ U c= closure_of X Tx A.
+          { exact (SepE2 X (fun x0:set => exists U:set, U :e Tx /\ x0 :e U /\ U c= closure_of X Tx A) x Hx). }
+          apply HexU.
+          let U. assume HU: U :e Tx /\ x :e U /\ U c= closure_of X Tx A.
+          claim HU12: U :e Tx /\ x :e U.
+          { exact (andEL (U :e Tx /\ x :e U) (U c= closure_of X Tx A) HU). }
+          claim HUinTx: U :e Tx.
+          { exact (andEL (U :e Tx) (x :e U) HU12). }
+          claim HxU: x :e U.
+          { exact (andER (U :e Tx) (x :e U) HU12). }
+          claim HUsub: U c= closure_of X Tx A.
+          { exact (andER (U :e Tx /\ x :e U) (U c= closure_of X Tx A) HU). }
+          claim HxclA: x :e closure_of X Tx A.
+          { exact (HUsub x HxU). }
+          claim Hclcond: forall V:set, V :e Tx -> x :e V -> V :/\: A <> Empty.
+          { exact (SepE2 X (fun x0:set => forall V:set, V :e Tx -> x0 :e V -> V :/\: A <> Empty) x HxclA). }
+          claim HUAne: U :/\: A <> Empty.
+          { exact (Hclcond U HUinTx HxU). }
+          claim Hexy: exists y:set, y :e U :/\: A.
+          { exact (nonempty_has_element (U :/\: A) HUAne). }
+          apply Hexy.
+          let y. assume HyUA: y :e U :/\: A.
+          claim HyU: y :e U.
+          { exact (binintersectE1 U A y HyUA). }
+          claim HyA: y :e A.
+          { exact (binintersectE2 U A y HyUA). }
+          claim HyY: y :e Y.
+          { exact (HAsubY y HyA). }
+          claim HUyOpenX: (U :/\: Y) :e Tx.
+          { exact (lemma_intersection_two_open X Tx U Y HTx HUinTx HYinTx). }
+          claim HUyOpenY: (U :/\: Y) :e subspace_topology X Tx Y.
+          { exact (subspace_topologyI X Tx Y U HUinTx). }
+          claim HclYeq: closure_of Y (subspace_topology X Tx Y) A = A.
+          { exact (closed_closure_eq Y (subspace_topology X Tx Y) A HTy HclosedY). }
+          claim HclSub: closure_of Y (subspace_topology X Tx Y) A = (closure_of X Tx A) :/\: Y.
+          { exact (closure_in_subspace X Tx Y A HTx HYsub HAsubY). }
+          claim HAeq: A = (closure_of X Tx A) :/\: Y.
+          { rewrite <- HclYeq at 1.
+            exact HclSub. }
+          claim HUySubA: (U :/\: Y) c= A.
+          { let z. assume Hz: z :e U :/\: Y.
+            prove z :e A.
+            rewrite HAeq.
+            apply binintersectI.
+            - exact (HUsub z (binintersectE1 U Y z Hz)).
+            - exact (binintersectE2 U Y z Hz). }
+          claim HyIntY: y :e interior_of Y (subspace_topology X Tx Y) A.
+          { claim HdefInt: interior_of Y (subspace_topology X Tx Y) A =
+              {y0 :e Y | exists W:set, W :e subspace_topology X Tx Y /\ y0 :e W /\ W c= A}.
+            { reflexivity. }
+            rewrite HdefInt.
+            apply (SepI Y (fun y0:set => exists W:set, W :e subspace_topology X Tx Y /\ y0 :e W /\ W c= A) y).
+            - exact HyY.
+            - witness (U :/\: Y).
+              apply and3I.
+              + exact HUyOpenY.
+              + exact (binintersectI U Y y HyU HyY).
+              + exact HUySubA. }
+          claim HyEmpty: y :e Empty.
+          { rewrite <- HintY.
+            exact HyIntY. }
+          apply FalseE.
+          exact (EmptyE y HyEmpty).
+        - let x. assume HxE: x :e Empty.
+          prove x :e interior_of X Tx (closure_of X Tx A).
+          apply FalseE.
+          exact (EmptyE x HxE). }
+      apply andI.
+      - prove closed_in X Tx C.
+        rewrite HeqC.
+        exact HclosedX.
+      - prove interior_of X Tx C = Empty.
+        rewrite HeqC.
+        exact HintX. }
+    claim HintUnionX: interior_of X Tx (Union FamX) = Empty.
+    { exact (HpropX FamX HcountX HFamX). }
+    claim HUnionSub: Union Fam c= Union FamX.
+    { let z. assume Hz: z :e Union Fam.
+      prove z :e Union FamX.
+      apply (UnionE_impred Fam z Hz (z :e Union FamX)).
+      let A. assume HzA: z :e A. assume HAin: A :e Fam.
+      claim HAsubY: A c= Y.
+      { exact (closed_in_subset Y (subspace_topology X Tx Y) A
+               (andEL (closed_in Y (subspace_topology X Tx Y) A)
+                      (interior_of Y (subspace_topology X Tx Y) A = Empty)
+                      (HFam A HAin))). }
+      claim HAsubX: A c= X.
+      { let a. assume HaA: a :e A.
+        exact (HYsub a (HAsubY a HaA)). }
+      claim Hzcl: z :e closure_of X Tx A.
+      { exact (subset_of_closure X Tx A HTx HAsubX z HzA). }
+      claim Hmem: (closure_of X Tx A) :e FamX.
+      { exact (ReplI Fam (fun A0:set => closure_of X Tx A0) A HAin). }
+      exact (UnionI FamX z (closure_of X Tx A) Hzcl Hmem). }
+    apply set_ext.
+    - let y. assume Hy: y :e interior_of Y (subspace_topology X Tx Y) (Union Fam).
+      prove y :e Empty.
+      claim HexW: exists W:set, W :e subspace_topology X Tx Y /\ y :e W /\ W c= Union Fam.
+      { exact (SepE2 Y (fun y0:set => exists W:set, W :e subspace_topology X Tx Y /\ y0 :e W /\ W c= Union Fam) y Hy). }
+      apply HexW.
+      let W. assume HW: W :e subspace_topology X Tx Y /\ y :e W /\ W c= Union Fam.
+      claim HW12: W :e subspace_topology X Tx Y /\ y :e W.
+      { exact (andEL (W :e subspace_topology X Tx Y /\ y :e W) (W c= Union Fam) HW). }
+      claim HWTy: W :e subspace_topology X Tx Y.
+      { exact (andEL (W :e subspace_topology X Tx Y) (y :e W) HW12). }
+      claim HyW: y :e W.
+      { exact (andER (W :e subspace_topology X Tx Y) (y :e W) HW12). }
+      claim HWsubU: W c= Union Fam.
+      { exact (andER (W :e subspace_topology X Tx Y /\ y :e W) (W c= Union Fam) HW). }
+      claim HexV: exists V :e Tx, W = V :/\: Y.
+      { exact (subspace_topologyE X Tx Y W HWTy). }
+      apply HexV.
+      let V. assume HV: V :e Tx /\ W = V :/\: Y.
+      claim HVTx: V :e Tx.
+      { exact (andEL (V :e Tx) (W = V :/\: Y) HV). }
+      claim HWdef: W = V :/\: Y.
+      { exact (andER (V :e Tx) (W = V :/\: Y) HV). }
+      claim HWTx: W :e Tx.
+      { rewrite HWdef.
+        exact (lemma_intersection_two_open X Tx V Y HTx HVTx HYinTx). }
+      claim HyY: y :e Y.
+      { exact (SepE1 Y (fun y0:set => exists W0:set, W0 :e subspace_topology X Tx Y /\ y0 :e W0 /\ W0 c= Union Fam) y Hy). }
+      claim HyX: y :e X.
+      { exact (HYsub y HyY). }
+      claim HyW_X: y :e W.
+      { exact HyW. }
+      claim HWsubUnionX: W c= Union FamX.
+      { let z. assume HzW: z :e W.
+        claim HzUnion: z :e Union Fam.
+        { exact (HWsubU z HzW). }
+        exact (HUnionSub z HzUnion). }
+      claim HyIntX: y :e interior_of X Tx (Union FamX).
+      { claim HdefIntX: interior_of X Tx (Union FamX) =
+          {x0 :e X | exists U:set, U :e Tx /\ x0 :e U /\ U c= Union FamX}.
+        { reflexivity. }
+        rewrite HdefIntX.
+        apply (SepI X (fun x0:set => exists U:set, U :e Tx /\ x0 :e U /\ U c= Union FamX) y HyX).
+        witness W.
+        apply and3I.
+        - exact HWTx.
+        - exact HyW_X.
+        - exact HWsubUnionX. }
+      claim HyEmpty: y :e Empty.
+      { rewrite <- HintUnionX.
+        exact HyIntX. }
+      exact HyEmpty.
+    - let y. assume HyE: y :e Empty.
+      prove y :e interior_of Y (subspace_topology X Tx Y) (Union Fam).
+      apply FalseE.
+      exact (EmptyE y HyE). }
+exact (Baire_space_closed_imp Y (subspace_topology X Tx Y) HBcY).
+Qed.
+
+(** helper: continuity at a point into a topological space **)
+(** LATEX VERSION: f is continuous at x if every neighborhood of f(x) contains the image of some neighborhood of x. **)
+Definition continuous_at_map : set -> set -> set -> set -> set -> set -> prop :=
+  fun X Tx Y Ty f x =>
+    function_on f X Y /\ x :e X /\
+    forall V:set, V :e Ty -> apply_fun f x :e V ->
+      exists U:set, U :e Tx /\ x :e U /\ forall u:set, u :e U -> apply_fun f u :e V.
+
+(** helper: pointwise convergence of a sequence of maps into a metric space **)
+(** LATEX VERSION: f_n converges pointwise to f if for each x and each epsilon, eventually d(f_n(x),f(x))<epsilon. **)
+Definition pointwise_limit_metric : set -> set -> set -> set -> set -> prop :=
+  fun X Y d fn f =>
+    forall x:set, x :e X ->
+      forall eps:set, eps :e R -> Rlt 0 eps ->
+        exists N:set, N :e omega /\
+          forall n:set, n :e omega -> N c= n ->
+            Rlt (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun f x)) eps.
+
+(** from §48 Theorem 48.5: continuity points of pointwise limit are dense **)
+(** LATEX VERSION: Theorem 48.5: If f_n:X→Y are continuous and f_n(x)→f(x) pointwise into metric space Y, then continuity points of f form a dense subset of X when X is Baire. **)
+Theorem pointwise_limit_continuity_points_dense : forall X Tx Y d fn f:set,
+  metric_on_total Y d ->
+  (forall n:set, n :e omega ->
+    continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n)) ->
+  function_on f X Y ->
+  pointwise_limit_metric X Y d fn f ->
+  Baire_space X Tx ->
+  dense_in {x :e X | continuous_at_map X Tx Y (metric_topology Y d) f x} X Tx.
+admit. (** FAIL **)
+Qed.
+
 (** from §49 Definition: differentiability and nowhere-differentiable function **) 
 (** LATEX VERSION: A function is differentiable at x if the difference quotient (f(x+h)-f(x))/h tends to a limit as h→0 (with x+h in the domain); nowhere differentiable means differentiable at no point. **)
 Definition differentiable_at : set -> set -> prop := fun f x =>
