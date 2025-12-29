@@ -27621,6 +27621,28 @@ rewrite circular_rectangular_same_topology_plane.
 exact generated_topology_rectangular_regions_eq_R2_standard_topology.
 Qed.
 
+(** from §13 Example 4: rectangular regions form a basis generating the standard topology on R^2 **)
+(** LATEX VERSION: The rectangular regions form a basis for the standard topology on ℝ². **)
+Theorem rectangular_regions_generate_R2_standard_topology :
+  basis_generates EuclidPlane rectangular_regions R2_standard_topology.
+prove basis_generates EuclidPlane rectangular_regions R2_standard_topology.
+prove basis_on EuclidPlane rectangular_regions /\ generated_topology EuclidPlane rectangular_regions = R2_standard_topology.
+apply andI.
+- exact rectangular_regions_basis_plane.
+- exact generated_topology_rectangular_regions_eq_R2_standard_topology.
+Qed.
+
+(** from §13 Example 4: circular regions form a basis generating the standard topology on R^2 **)
+(** LATEX VERSION: The circular regions form a basis for the standard topology on ℝ². **)
+Theorem circular_regions_generate_R2_standard_topology :
+  basis_generates EuclidPlane circular_regions R2_standard_topology.
+prove basis_generates EuclidPlane circular_regions R2_standard_topology.
+prove basis_on EuclidPlane circular_regions /\ generated_topology EuclidPlane circular_regions = R2_standard_topology.
+apply andI.
+- exact circular_regions_basis_plane.
+- exact generated_topology_circular_regions_eq_R2_standard_topology.
+Qed.
+
 (** from §16 Definition: subspace topology **) 
 (** LATEX VERSION: The subspace topology on Y⊂X with topology Tx consists of intersections V∩Y with V open in X. **)
 (** SUSPICIOUS DEFINITION: This is phrased as a family of subsets of `Y` (via `Power Y`) with witnesses `V :e Tx`; proofs often need to extract both the witness and the subset fact. **)
