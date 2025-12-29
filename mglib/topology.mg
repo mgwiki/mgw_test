@@ -68433,12 +68433,70 @@ Definition partial_order_on : set -> set -> prop := fun J le =>
   (forall a b c:set, a :e J -> b :e J -> c :e J ->
     (a,b) :e le -> (b,c) :e le -> (a,c) :e le).
 
+(** helper: extract transitivity from partial_order_on **)
+Theorem partial_order_on_trans : forall J le:set,
+  partial_order_on J le ->
+  forall a b c:set, a :e J -> b :e J -> c :e J ->
+    (a,b) :e le -> (b,c) :e le -> (a,c) :e le.
+let J le.
+assume Hpo: partial_order_on J le.
+prove forall a b c:set, a :e J -> b :e J -> c :e J ->
+  (a,b) :e le -> (b,c) :e le -> (a,c) :e le.
+let a b c.
+assume HaJ: a :e J.
+assume HbJ: b :e J.
+assume HcJ: c :e J.
+assume Hab: (a,b) :e le.
+assume Hbc: (b,c) :e le.
+claim Hleft: ((relation_on le J /\ (forall a0:set, a0 :e J -> (a0,a0) :e le)) /\
+              (forall a0 b0:set, a0 :e J -> b0 :e J -> (a0,b0) :e le -> (b0,a0) :e le -> a0 = b0)).
+{ exact (andEL
+          ((relation_on le J /\ (forall a0:set, a0 :e J -> (a0,a0) :e le)) /\
+           (forall a0 b0:set, a0 :e J -> b0 :e J -> (a0,b0) :e le -> (b0,a0) :e le -> a0 = b0))
+          (forall a0 b0 c0:set, a0 :e J -> b0 :e J -> c0 :e J ->
+             (a0,b0) :e le -> (b0,c0) :e le -> (a0,c0) :e le)
+          Hpo). }
+claim Htrans: forall a0 b0 c0:set, a0 :e J -> b0 :e J -> c0 :e J ->
+  (a0,b0) :e le -> (b0,c0) :e le -> (a0,c0) :e le.
+{ exact (andER
+          ((relation_on le J /\ (forall a0:set, a0 :e J -> (a0,a0) :e le)) /\
+           (forall a0 b0:set, a0 :e J -> b0 :e J -> (a0,b0) :e le -> (b0,a0) :e le -> a0 = b0))
+          (forall a0 b0 c0:set, a0 :e J -> b0 :e J -> c0 :e J ->
+             (a0,b0) :e le -> (b0,c0) :e le -> (a0,c0) :e le)
+          Hpo). }
+exact (Htrans a b c HaJ HbJ HcJ Hab Hbc).
+Qed.
+
 (** from exercises after §29: directed set **)
 (** LATEX VERSION: A directed set is a nonempty partially ordered set in which any two elements have a common upper bound. **)
 Definition directed_set : set -> set -> prop := fun J le =>
   (J <> Empty /\ partial_order_on J le) /\
   forall a b:set, a :e J -> b :e J ->
     exists c:set, c :e J /\ (a,c) :e le /\ (b,c) :e le.
+
+(** helper: extract partial_order_on from directed_set **)
+Theorem directed_set_partial_order : forall J le:set,
+  directed_set J le -> partial_order_on J le.
+let J le.
+assume HJ: directed_set J le.
+claim Hleft: J <> Empty /\ partial_order_on J le.
+{ exact (andEL
+          (J <> Empty /\ partial_order_on J le)
+          (forall a b:set, a :e J -> b :e J ->
+             exists c:set, c :e J /\ (a,c) :e le /\ (b,c) :e le)
+          HJ). }
+exact (andER (J <> Empty) (partial_order_on J le) Hleft).
+Qed.
+
+(** helper: transitivity from directed_set **)
+Theorem directed_set_trans : forall J le:set,
+  directed_set J le ->
+  forall a b c:set, a :e J -> b :e J -> c :e J ->
+    (a,b) :e le -> (b,c) :e le -> (a,c) :e le.
+let J le.
+assume HJ: directed_set J le.
+exact (partial_order_on_trans J le (directed_set_partial_order J le HJ)).
+Qed.
 
 (** helper: directed sets are nonempty **)
 Theorem directed_set_nonempty : forall J le:set, directed_set J le -> J <> Empty.
@@ -69446,14 +69504,8 @@ apply andI.
     { exact (total_function_on_apply_fun_in_Y phi K J k Hphitot HkK). }
     claim Hphimon: (apply_fun phi k0, apply_fun phi k) :e leJ.
     { exact (Hmono k0 k Hk0K HkK Hk0k). }
-    (** extract transitivity of leJ from directed_set J leJ **)
-    apply HdirJ. assume HleftJ HdirpropJ.
-    apply HleftJ. assume HJne HpoJ.
-    apply HpoJ. assume HabcJ HtransJ.
-    apply HabcJ. assume HabJ HantisymJ.
-    apply HabJ. assume HrelJ HreflJ.
     claim Hj0phik: (j0, apply_fun phi k) :e leJ.
-    { exact (HtransJ j0 (apply_fun phi k0) (apply_fun phi k) Hj0J Hphi0J HphikJ Hj0phi0 Hphimon). }
+    { exact (directed_set_trans J leJ HdirJ j0 (apply_fun phi k0) (apply_fun phi k) Hj0J Hphi0J HphikJ Hj0phi0 Hphimon). }
     rewrite (Hsubeq k HkK).
     exact (HafterJ (apply_fun phi k) HphikJ Hj0phik).
 Qed.
@@ -69535,20 +69587,14 @@ apply andI.
     prove apply_fun sub k :e U.
     claim Hphi0J: apply_fun phi k0 :e J.
     { exact (total_function_on_apply_fun_in_Y phi K J k0 Htotphi Hk0K). }
-    claim HphikJ: apply_fun phi k :e J.
-    { exact (total_function_on_apply_fun_in_Y phi K J k Htotphi HkK). }
-    claim Hphimon: (apply_fun phi k0, apply_fun phi k) :e leJ.
-    { exact (Hmono k0 k Hk0K HkK Hk0k). }
-    (** extract transitivity of leJ from directed_set J leJ **)
-    apply HdirJ. assume HleftJ HdirpropJ.
-    apply HleftJ. assume HJne HpoJ.
-    apply HpoJ. assume HabcJ HtransJ.
-    apply HabcJ. assume HabJ HantisymJ.
-    apply HabJ. assume HrelJ HreflJ.
-    claim Hj0phik: (j0, apply_fun phi k) :e leJ.
-    { exact (HtransJ j0 (apply_fun phi k0) (apply_fun phi k) Hj0J Hphi0J HphikJ Hj0phi0 Hphimon). }
-    rewrite (Hvals k HkK).
-    exact (HafterJ (apply_fun phi k) HphikJ Hj0phik).
+	    claim HphikJ: apply_fun phi k :e J.
+	    { exact (total_function_on_apply_fun_in_Y phi K J k Htotphi HkK). }
+	    claim Hphimon: (apply_fun phi k0, apply_fun phi k) :e leJ.
+	    { exact (Hmono k0 k Hk0K HkK Hk0k). }
+	    claim Hj0phik: (j0, apply_fun phi k) :e leJ.
+	    { exact (directed_set_trans J leJ HdirJ j0 (apply_fun phi k0) (apply_fun phi k) Hj0J Hphi0J HphikJ Hj0phi0 Hphimon). }
+	    rewrite (Hvals k HkK).
+	    exact (HafterJ (apply_fun phi k) HphikJ Hj0phik).
 Qed.
 
 (** from exercises after §29: convergence of subnets **) 
