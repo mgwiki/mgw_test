@@ -87905,7 +87905,32 @@ let J.
 assume HJ: uncountable_set J.
 prove ~ paracompact_space (product_space J (const_space_family J R R_standard_topology))
                           (product_topology_full J (const_space_family J R R_standard_topology)).
-admit. (** FAIL **)
+assume Hpara: paracompact_space (product_space J (const_space_family J R R_standard_topology))
+                                (product_topology_full J (const_space_family J R R_standard_topology)).
+prove False.
+claim HHfam: Hausdorff_spaces_family J (const_space_family J R R_standard_topology).
+{ let i. assume Hi: i :e J.
+  prove Hausdorff_space (product_component (const_space_family J R R_standard_topology) i)
+                       (product_component_topology (const_space_family J R R_standard_topology) i).
+  rewrite (product_component_def (const_space_family J R R_standard_topology) i).
+  rewrite (product_component_topology_def (const_space_family J R R_standard_topology) i).
+  rewrite (const_space_family_apply J R R_standard_topology i Hi).
+  rewrite (tuple_2_0_eq R R_standard_topology).
+  rewrite (tuple_2_1_eq R R_standard_topology).
+  exact R_standard_topology_Hausdorff. }
+claim HHprod: Hausdorff_space (product_space J (const_space_family J R R_standard_topology))
+                             (product_topology_full J (const_space_family J R R_standard_topology)).
+{ exact (product_topology_full_Hausdorff_axiom J (const_space_family J R R_standard_topology) HHfam). }
+claim Hnorm: normal_space (product_space J (const_space_family J R R_standard_topology))
+                          (product_topology_full J (const_space_family J R R_standard_topology)).
+{ exact (paracompact_Hausdorff_normal (product_space J (const_space_family J R R_standard_topology))
+                                     (product_topology_full J (const_space_family J R R_standard_topology))
+                                     Hpara HHprod). }
+claim Hnotnorm:
+  ~ normal_space (product_space J (const_space_family J R R_standard_topology))
+                 (product_topology_full J (const_space_family J R R_standard_topology)).
+{ exact (uncountable_product_R_not_normal J HJ). }
+exact (Hnotnorm Hnorm).
 Qed.
 
 (** from §41 Definition: support of a function **)
