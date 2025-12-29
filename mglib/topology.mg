@@ -27995,7 +27995,7 @@ apply andI.
         claim HUinSubspace: U :e subspace_topology X Tx Y.
         { exact (HUFamsub U HUinFam). }
         claim HUexists: exists V :e Tx, U = V :/\: Y.
-        { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSubspace). }
+        { exact (subspace_topologyE X Tx Y U HUinSubspace). }
         apply HUexists.
         let V. assume HVandEq. apply HVandEq.
         assume HVTx: V :e Tx. assume HUeq: U = V :/\: Y.
@@ -28056,9 +28056,9 @@ apply andI.
   let V. assume HV: V :e subspace_topology X Tx Y.
   prove U :/\: V :e subspace_topology X Tx Y.
   claim HUexists: exists V1 :e Tx, U = V1 :/\: Y.
-  { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HU). }
+  { exact (subspace_topologyE X Tx Y U HU). }
   claim HVexists: exists V2 :e Tx, V = V2 :/\: Y.
-  { exact (SepE2 (Power Y) (fun V0:set => exists V :e Tx, V0 = V :/\: Y) V HV). }
+  { exact (subspace_topologyE X Tx Y V HV). }
   apply HUexists.
   let V1. assume HV1andEq. apply HV1andEq.
   assume HV1Tx: V1 :e Tx. assume HUeq: U = V1 :/\: Y.
@@ -30313,7 +30313,7 @@ apply set_ext.
   claim HUPowerY: U :e Power Y.
   { exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSubY). }
   claim HUexists: exists V :e Tx, U = V :/\: Y.
-  { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSubY). }
+  { exact (subspace_topologyE X Tx Y U HUinSubY). }
   apply HUexists.
   let V.
   assume HV: V :e Tx /\ U = V :/\: Y.
@@ -30452,7 +30452,7 @@ claim HUinSub: U :e subspace_topology X Tx Y.
 claim HUPowerY: U :e Power Y.
 { exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSub). }
 claim HUexists: exists V :e Tx, U = V :/\: Y.
-{ exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSub). }
+{ exact (subspace_topologyE X Tx Y U HUinSub). }
 apply HUexists.
 let V.
 assume HV: V :e Tx /\ U = V :/\: Y.
@@ -34646,11 +34646,11 @@ apply iffI.
   let U. assume HandEq. apply HandEq.
   assume HUsubspace: U :e subspace_topology X Tx Y.
   assume HAeq: A = Y :\: U.
-  claim HUexV: exists V :e Tx, U = V :/\: Y.
-  { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUsubspace). }
-  apply HUexV.
-  let V. assume HVandEq. apply HVandEq.
-  assume HV: V :e Tx. assume HUeq: U = V :/\: Y.
+claim HUexV: exists V :e Tx, U = V :/\: Y.
+{ exact (subspace_topologyE X Tx Y U HUsubspace). }
+apply HUexV.
+let V. assume HVandEq. apply HVandEq.
+assume HV: V :e Tx. assume HUeq: U = V :/\: Y.
   set C := X :\: V.
   claim HCclosed: closed_in X Tx C.
   { prove topology_on X Tx /\ (C c= X /\ exists W :e Tx, C = X :\: W).
@@ -34976,7 +34976,7 @@ apply set_ext.
   { let U. assume HU: U :e subspace_topology X Tx Y. assume HyU: y :e U.
     prove U :/\: A <> Empty.
     claim HUex: exists V :e Tx, U = V :/\: Y.
-    { exact (SepE2 (Power Y) (fun U0 => exists V :e Tx, U0 = V :/\: Y) U HU). }
+    { exact (subspace_topologyE X Tx Y U HU). }
     apply HUex.
     let V. assume HVandEq. apply HVandEq.
     assume HV: V :e Tx. assume HUeq: U = V :/\: Y.
@@ -52659,7 +52659,7 @@ apply iffI.
       { exact (andER (b :e B) (limit_point_of X Tx A b) Hbconj). }
       (** Extract B = V ∩ Y for some V open in X **)
       claim HexV: exists V :e Tx, B = V :/\: Y.
-      { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) B HBinTy). }
+      { exact (subspace_topologyE X Tx Y B HBinTy). }
       apply HexV.
       let V. assume HVpair.
       claim HVTx: V :e Tx.
@@ -52728,7 +52728,7 @@ apply iffI.
     { exact (andER (a :e A) (limit_point_of X Tx B a) Haconj). }
       (** Extract A = U ∩ Y for some U open in X **)
       claim HexU: exists U :e Tx, A = U :/\: Y.
-      { exact (SepE2 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) A HAinTy). }
+      { exact (subspace_topologyE X Tx Y A HAinTy). }
       apply HexU.
       let U. assume HUpair.
       claim HUTx: U :e Tx.
