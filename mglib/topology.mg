@@ -16034,42 +16034,42 @@ claim HnotOpenY: ~(Y :e infinite_complement_family X).
   apply HYdisj.
   - assume Hleft: infinite (X :\: Y) \/ Y = Empty.
     apply Hleft.
-    + (** show ~(infinite (X\\Y)) since X\\Y = {p} is finite **)
-      assume HinfComp: infinite (X :\: Y).
-      claim HcompEq: X :\: Y = {p}.
-      { (** Y = X\\{p} so X\\Y = {p} **)
-        claim HYdef: Y = X :\: {p}.
-        { reflexivity. }
-        rewrite HYdef.
-        apply set_ext.
-        - let x. assume Hx: x :e X :\: (X :\: {p}).
-          prove x :e {p}.
-          claim HxX: x :e X.
-          { exact (setminusE1 X (X :\: {p}) x Hx). }
-          claim HxnotY: x /:e X :\: {p}.
-          { exact (setminusE2 X (X :\: {p}) x Hx). }
-          apply (xm (x :e {p})).
-          * assume HxS. exact HxS.
-          * assume HxnotS: ~(x :e {p}).
-            apply FalseE.
-            apply HxnotY.
-            exact (setminusI X {p} x HxX HxnotS).
-        - let x. assume Hx: x :e {p}.
-          prove x :e X :\: (X :\: {p}).
-          claim Hxeq: x = p.
-          { exact (SingE p x Hx). }
-          rewrite Hxeq.
-          apply setminusI.
-          * exact HpX.
-          * assume HpY: p :e X :\: {p}.
-            claim HpnotS: p /:e {p}.
-            { exact (setminusE2 X {p} p HpY). }
-            exact (HpnotS (SingI p)).
-      }
-      claim HinfSing: infinite {p}.
-      { rewrite <- HcompEq.
-        exact HinfComp. }
-      exact (HinfSing (Sing_finite p)).
+	    + (** show ~(infinite (X\\Y)) since X\\Y = {p} is finite **)
+	      assume HinfComp: infinite (X :\: Y).
+	      claim HcompEq: X :\: Y = {p}.
+	      { (** Y = X\\{p} so X\\Y = {p} **)
+	        claim HYdef: Y = X :\: {p}.
+	        { reflexivity. }
+	        rewrite HYdef.
+	        apply set_ext.
+	        - let x. assume Hx: x :e X :\: (X :\: {p}).
+	          prove x :e {p}.
+	          claim HxX: x :e X.
+	          { exact (setminusE1 X (X :\: {p}) x Hx). }
+	          claim HxnotY: x /:e X :\: {p}.
+	          { exact (setminusE2 X (X :\: {p}) x Hx). }
+	          apply (xm (x :e {p})).
+	          * assume HxS. exact HxS.
+	          * assume HxnotS: ~(x :e {p}).
+	            apply FalseE.
+	            apply HxnotY.
+	            exact (setminusI X {p} x HxX HxnotS).
+	        - let x. assume Hx: x :e {p}.
+	          prove x :e X :\: (X :\: {p}).
+	          claim Hxeq: x = p.
+	          { exact (SingE p x Hx). }
+	          rewrite Hxeq.
+	          apply setminusI.
+	          * exact HpX.
+	          * assume HpY: p :e X :\: {p}.
+	            claim HpnotS: p /:e {p}.
+	            { exact (setminusE2 X {p} p HpY). }
+	            exact (HpnotS (SingI p)).
+	      }
+	      claim HinfSing: infinite {p}.
+	      { rewrite <- HcompEq.
+	        exact HinfComp. }
+	      exact (HinfSing (Sing_finite p)).
     + assume HYemp. exact (HYneEmpty HYemp).
   - assume HYX. exact (HYneX HYX).
 }
@@ -86450,11 +86450,13 @@ Definition discrete_metric : set -> set := fun X =>
 (** helper: placeholder metric on euclidean_space n **) 
 (** from §24 Euclidean space: auxiliary metric on euclidean_space n **)
 (** LATEX VERSION: Euclidean space R^n is a metric space in its usual Euclidean metric. **)
+(** SUSPICIOUS DEFINITION: This is currently a discrete metric placeholder, not the Euclidean metric; it should be replaced by a faithful definition if later proofs need Euclidean distances. **)
 Definition euclidean_metric : set -> set := fun n => discrete_metric (euclidean_space n).
 
 (** helper: bounded product metric on R^omega **) 
 (** LATEX VERSION: Bounded product metric on R^ω (placeholder). **)
 (** LATEX VERSION: On R^ω, use the bounded product metric D (defined earlier as `Romega_D_metric`). **)
+(** SUSPICIOUS DEFINITION: For J ≠ ω this currently falls back to the discrete metric; this is a placeholder rather than a faithful bounded-product metric on R^J. **)
 Definition bounded_product_metric : set -> set := fun J =>
   If_i (J = omega) Romega_D_metric (discrete_metric (power_real J)).
 
