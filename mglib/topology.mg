@@ -86699,6 +86699,8 @@ claim Hab: topology_on unit_interval unit_interval_topology /\ topology_on X Tx.
 exact (andER (topology_on unit_interval unit_interval_topology) (topology_on X Tx) Hab).
 Qed.
 
+(** from §50 Example 6: end points of an arc **)
+(** LATEX VERSION: The end points of an arc A are points p,q such that A-{p} and A-{q} are connected. **)
 Definition end_points_of_arc : set -> set -> set -> set -> prop := fun X Tx p q =>
   arc X Tx /\
   p :e X /\ q :e X /\
@@ -86706,6 +86708,8 @@ Definition end_points_of_arc : set -> set -> set -> set -> prop := fun X Tx p q 
   connected_space (X :\: (Sing p)) Tx /\
   connected_space (X :\: (Sing q)) Tx.
 
+(** from §50 Example 6: finite linear graph **)
+(** LATEX VERSION: A finite linear graph G is Hausdorff and is the union of finitely many arcs; any two arcs meet in at most a common end point. **)
 Definition linear_graph : set -> set -> prop := fun G Tg =>
   Hausdorff_space G Tg /\
   exists Arcs:set,
@@ -86731,18 +86735,28 @@ Definition R3_ycoord : set -> set := fun p => p 1.
 Definition R3_zcoord : set -> set := fun p => p 2.
 
 (** helper: differences of coordinates **)
+(** from §50 Example 7: coordinate differences in R^3 **)
+(** LATEX VERSION: Use differences of coordinates to form determinants testing collinearity and coplanarity. **)
 Definition R3_dx : set -> set -> set := fun p q =>
   add_SNo (R3_xcoord q) (minus_SNo (R3_xcoord p)).
+(** from §50 Example 7: coordinate differences in R^3 **)
+(** LATEX VERSION: Use differences of coordinates to form determinants testing collinearity and coplanarity. **)
 Definition R3_dy : set -> set -> set := fun p q =>
   add_SNo (R3_ycoord q) (minus_SNo (R3_ycoord p)).
+(** from §50 Example 7: coordinate differences in R^3 **)
+(** LATEX VERSION: Use differences of coordinates to form determinants testing collinearity and coplanarity. **)
 Definition R3_dz : set -> set -> set := fun p q =>
   add_SNo (R3_zcoord q) (minus_SNo (R3_zcoord p)).
 
 (** helper: 2 by 2 determinant a d minus b c **)
+(** from §50 Example 7: determinant criteria for collinearity/coplanarity **)
+(** LATEX VERSION: Determinants of coordinate differences vanish when points are collinear or coplanar. **)
 Definition det2_SNo : set -> set -> set -> set -> set := fun a b c d =>
   add_SNo (mul_SNo a d) (minus_SNo (mul_SNo b c)).
 
 (** helper: 3 by 3 determinant for rows (a1,a2,a3), (b1,b2,b3), (c1,c2,c3) **)
+(** from §50 Example 7: determinant criteria for collinearity/coplanarity **)
+(** LATEX VERSION: Determinants of coordinate differences vanish when points are collinear or coplanar. **)
 Definition det3_SNo : set -> set -> set -> set -> set -> set -> set -> set -> set -> set :=
   fun a1 a2 a3 b1 b2 b3 c1 c2 c3 =>
     add_SNo
@@ -86751,12 +86765,16 @@ Definition det3_SNo : set -> set -> set -> set -> set -> set -> set -> set -> se
         (minus_SNo (mul_SNo a2 (det2_SNo b1 b3 c1 c3)))
         (mul_SNo a3 (det2_SNo b1 b2 c1 c2))).
 
+(** from §50 Example 7: definition of collinearity in R^3 **)
+(** LATEX VERSION: No three of the points are collinear. **)
 Definition collinear_in_R3 : set -> set -> set -> prop := fun p q r =>
   p :e (euclidean_space 3) /\ q :e (euclidean_space 3) /\ r :e (euclidean_space 3) /\
   det2_SNo (R3_dx p q) (R3_dy p q) (R3_dx p r) (R3_dy p r) = 0 /\
   det2_SNo (R3_dx p q) (R3_dz p q) (R3_dx p r) (R3_dz p r) = 0 /\
   det2_SNo (R3_dy p q) (R3_dz p q) (R3_dy p r) (R3_dz p r) = 0.
 
+(** from §50 Example 7: definition of coplanarity in R^3 **)
+(** LATEX VERSION: No four of the points are coplanar. **)
 Definition coplanar_in_R3 : set -> set -> set -> set -> prop := fun p q r s =>
   p :e (euclidean_space 3) /\ q :e (euclidean_space 3) /\ r :e (euclidean_space 3) /\ s :e (euclidean_space 3) /\
   det3_SNo
@@ -87316,6 +87334,8 @@ claim Hex: exists S:set, S c= EuclidPlane.
   exact (Subq_Empty EuclidPlane). }
 exact (Eps_i_ex (fun S:set => S c= EuclidPlane) Hex).
 Qed.
+(** from §24 Example 7: topologist's sine curve (subspace topology) **)
+(** LATEX VERSION: The topologist's sine curve is the closure of {(x,sin(1/x)) | 0<x<=1} in R^2, i.e. that set together with the vertical interval 0×[-1,1]. **)
 Definition topologists_sine_curve_topology : set :=
   subspace_topology EuclidPlane R2_standard_topology topologists_sine_curve.
 Theorem EuclidPlane_R2_standard_topology_on : topology_on EuclidPlane R2_standard_topology.
@@ -87863,6 +87883,8 @@ claim Hex: exists L:set, infinite L.
   exact infinite_omega. }
 exact (Eps_i_ex (fun L:set => infinite L) Hex).
 Qed.
+(** from §24 Theorem/Exercise: topology on the long line **)
+(** LATEX VERSION: The long line is the ordered set S_Omega×[0,1) in the dictionary order with its smallest element deleted, with the order topology. **)
 Definition long_line_topology : set := Eps_i (fun T:set => topology_on long_line T).
 Theorem long_line_topology_on : topology_on long_line long_line_topology.
 prove topology_on long_line long_line_topology.
@@ -87905,6 +87927,8 @@ admit. (** FAIL **)
 Qed.
 
 (** helper: G_delta subset coded via countable intersection of open sets **)
+(** from §30 and §48: G_delta sets **)
+(** LATEX VERSION: A G_delta set is a countable intersection of open sets. **)
 Definition Gdelta_in : set -> set -> set -> prop := fun X Tx A =>
   exists Fam:set, countable_set Fam /\
     (forall U :e Fam, open_in X Tx U) /\
@@ -87912,12 +87936,16 @@ Definition Gdelta_in : set -> set -> set -> prop := fun X Tx A =>
 
 (** helper: open map - images of open sets are open **)
 (** FIXED: open_map uses image_of f U for set images; apply_fun is only for elements. **) 
+(** from Supplementary Exercises: topological groups and open maps **)
+(** LATEX VERSION: A map is open if it carries open sets to open sets. **)
 Definition open_map : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty f =>
     topology_on X Tx /\ topology_on Y Ty /\ function_on f X Y /\
     forall U:set, U :e Tx -> image_of f U :e Ty.
 
 (** helper: simple topological group structure **)
+(** from Supplementary Exercises: Topological Groups **)
+(** LATEX VERSION: A topological group is a group that is T1, such that multiplication G×G→G and inversion G→G are continuous. **)
 Definition topological_group : set -> set -> prop := fun G Tg =>
   topology_on G Tg /\
   exists mult inv e:set,
@@ -87928,16 +87956,22 @@ Definition topological_group : set -> set -> prop := fun G Tg =>
     continuous_map G Tg G Tg inv.
 
 (** helper: separated subsets predicate **)
+(** from §31 and §32: separated subsets (complete normality context) **)
+(** LATEX VERSION: Two sets A,B are separated if cl(A)∩B=∅ and A∩cl(B)=∅. **)
 Definition separated_subsets : set -> set -> set -> set -> prop := fun X Tx A B =>
   closure_of X Tx A :/\: B = Empty /\ A :/\: closure_of X Tx B = Empty.
 
 (** helper: completely normal predicate **)
+(** from §32 Definition: completely normal spaces **)
+(** LATEX VERSION: X is completely normal if every pair of separated sets can be separated by disjoint open sets. **)
 Definition completely_normal_space : set -> set -> prop := fun X Tx =>
   normal_space X Tx /\
   (forall A B:set, separated_subsets X Tx A B -> exists U V:set,
       open_in X Tx U /\ open_in X Tx V /\ A c= U /\ B c= V /\ U :/\: V = Empty).
 
 (** helper: linear continuum predicate (order topology with least upper bound property) **)
+(** from §24 Definition: linear continuum **)
+(** LATEX VERSION: A simply ordered set with more than one element is a linear continuum if it has the least upper bound property and between any x<y there is z with x<z<y. **)
 Definition linear_continuum : set -> set -> prop := fun X Tx =>
   (** FIXED: Use `order_rel X` (the order relation used by `order_topology X`), not an unrelated existential relation. **)
   Tx = order_topology X /\
