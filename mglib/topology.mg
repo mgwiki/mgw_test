@@ -71624,7 +71624,7 @@ Qed.
 (** LATEX VERSION: (auxiliary) Finite subcollections of S form a directed set under subset inclusion, with upper bound given by union. **)
 Theorem finite_subcollections_directed_by_subset : forall S:set,
   directed_set (finite_subcollections S)
-    {p :e setprod (finite_subcollections S) (finite_subcollections S) | (p 0) c= (p 1)}.
+    (inclusion_rel (finite_subcollections S)).
 let S.
 set J := finite_subcollections S.
 set le := inclusion_rel J.
