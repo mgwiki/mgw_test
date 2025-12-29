@@ -89719,7 +89719,39 @@ prove exists V:set,
   locally_finite_family X Tx V /\
   refine_of V U /\
   forall v:set, v :e V -> exists u:set, u :e U /\ closure_of X Tx v c= u.
-admit. (** FAIL **)
+(** First obtain a locally finite open refinement from paracompactness. **)
+claim HparaFor: forall U0:set, open_cover X Tx U0 ->
+  exists V0:set, open_cover X Tx V0 /\ locally_finite_family X Tx V0 /\ refine_of V0 U0.
+{ exact (andER (topology_on X Tx)
+               (forall U0:set, open_cover X Tx U0 ->
+                 exists V0:set, open_cover X Tx V0 /\ locally_finite_family X Tx V0 /\ refine_of V0 U0)
+               Hpara). }
+claim HexV: exists V0:set, open_cover X Tx V0 /\ locally_finite_family X Tx V0 /\ refine_of V0 U.
+{ exact (HparaFor U Hcover). }
+apply HexV.
+let V. assume HV: open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U.
+witness V.
+(** Split the 3-conjunction from paracompactness and leave the closure domination as a future goal. **)
+claim HVpair: open_cover X Tx V /\ locally_finite_family X Tx V.
+{ exact (andEL (open_cover X Tx V /\ locally_finite_family X Tx V)
+               (refine_of V U)
+               HV). }
+claim HVref: refine_of V U.
+{ exact (andER (open_cover X Tx V /\ locally_finite_family X Tx V)
+               (refine_of V U)
+               HV). }
+claim HVcover: open_cover X Tx V.
+{ exact (andEL (open_cover X Tx V) (locally_finite_family X Tx V) HVpair). }
+claim HVlf: locally_finite_family X Tx V.
+{ exact (andER (open_cover X Tx V) (locally_finite_family X Tx V) HVpair). }
+apply and4I.
+- exact HVcover.
+- exact HVlf.
+- exact HVref.
+- let v. assume HvV: v :e V.
+  prove exists u:set, u :e U /\ closure_of X Tx v c= u.
+  (** At this point we only have v c= u from refinement. Upgrading to closure(v) c= u is the core shrinking lemma step. **)
+  admit. (** FAIL **)
 Qed.
 
 (** from §41 Theorem 41.7: partition of unity dominated by an open cover **)
