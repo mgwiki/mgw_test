@@ -23361,10 +23361,16 @@ Qed.
 Theorem rectangles_basis_for_R2 :
   exists B:set, basis_on (setprod R R) B /\ generated_topology (setprod R R) B = R2_dictionary_order_topology.
 prove exists B:set, basis_on (setprod R R) B /\ generated_topology (setprod R R) B = R2_dictionary_order_topology.
-witness (order_topology_basis (setprod R R)).
+witness (basis_of_subbasis (setprod R R) (open_rays_subbasis (setprod R R))).
 apply andI.
-- exact (order_topology_basis_is_basis (setprod R R)).
-- reflexivity.
+- exact (finite_intersections_basis_of_subbasis (setprod R R)
+          (open_rays_subbasis (setprod R R))
+          (open_rays_subbasis_is_subbasis (setprod R R))).
+- claim HdefR2: R2_dictionary_order_topology = order_topology (setprod R R).
+  { reflexivity. }
+  rewrite HdefR2.
+  rewrite <- (open_rays_subbasis_for_order_topology (setprod R R)).
+  reflexivity.
 Qed.
 
 (** from §14 Example 3: order topology on ℤ₊ is discrete **)
@@ -28235,35 +28241,33 @@ claim HUdic: U :e subspace_topology (setprod R R) R2_dictionary_order_topology o
   set b := (eps_ 1, 2).
   set V := {p :e setprod R R | order_rel (setprod R R) a p /\ order_rel (setprod R R) p b}.
 
-  claim HVopen: V :e R2_dictionary_order_topology.
-  { claim HdefR2: R2_dictionary_order_topology = order_topology (setprod R R).
-    { reflexivity. }
-    rewrite HdefR2.
-    claim HdefOT: order_topology (setprod R R) =
-      generated_topology (setprod R R) (order_topology_basis (setprod R R)).
-    { reflexivity. }
-    rewrite HdefOT.
-    set X := setprod R R.
-    set B := order_topology_basis X.
-    claim HBasis: basis_on X B.
-    { exact (order_topology_basis_is_basis X). }
-    claim HVinB: V :e B.
-    { set Bint := {I :e Power X | exists a0 :e X, exists b0 :e X,
-                    I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}.
-      set Blow := {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}.
-      set Bup := {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}.
-      claim HdefB: B = (Bint :\/: Blow :\/: Bup).
-      { reflexivity. }
-      rewrite HdefB.
-      claim HVsubX: V c= X.
-      { let p. assume Hp: p :e V.
-        exact (SepE1 X (fun p0:set => order_rel X a p0 /\ order_rel X p0 b) p Hp). }
-      claim HVpow: V :e Power X.
-      { exact (PowerI X V HVsubX). }
-      claim HaX: a :e X.
-      { exact (tuple_2_setprod_by_pair_Sigma R R (eps_ 1) (eps_ 1) eps_1_in_R eps_1_in_R). }
-      claim HbX: b :e X.
-      { exact (tuple_2_setprod_by_pair_Sigma R R (eps_ 1) 2 eps_1_in_R two_in_R). }
+	  claim HVopen: V :e R2_dictionary_order_topology.
+	  { claim HdefR2: R2_dictionary_order_topology = order_topology (setprod R R).
+	    { reflexivity. }
+	    rewrite HdefR2.
+	    claim HdefOT: order_topology (setprod R R) =
+	      generated_topology (setprod R R) (order_topology_basis (setprod R R)).
+	    { reflexivity. }
+	    rewrite HdefOT.
+	    set X := setprod R R.
+	    set B := order_topology_basis X.
+	    claim HVsubX: V c= X.
+	    { let p. assume Hp: p :e V.
+	      exact (SepE1 X (fun p0:set => order_rel X a p0 /\ order_rel X p0 b) p Hp). }
+	    claim HVpow: V :e Power X.
+	    { exact (PowerI X V HVsubX). }
+	    claim HVinB: V :e B.
+	    { set Bint := {I :e Power X | exists a0 :e X, exists b0 :e X,
+	                    I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}.
+	      set Blow := {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}.
+	      set Bup := {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}.
+	      claim HdefB: B = (Bint :\/: Blow :\/: Bup).
+	      { reflexivity. }
+	      rewrite HdefB.
+	      claim HaX: a :e X.
+	      { exact (tuple_2_setprod_by_pair_Sigma R R (eps_ 1) (eps_ 1) eps_1_in_R eps_1_in_R). }
+	      claim HbX: b :e X.
+	      { exact (tuple_2_setprod_by_pair_Sigma R R (eps_ 1) 2 eps_1_in_R two_in_R). }
       claim HVpred: exists a0 :e X, exists b0 :e X,
         V = {x :e X | order_rel X a0 x /\ order_rel X x b0}.
       { witness a.
@@ -28273,15 +28277,15 @@ claim HUdic: U :e subspace_topology (setprod R R) R2_dictionary_order_topology o
           apply andI.
           + exact HbX.
           + reflexivity. }
-      claim HVinBint: V :e Bint.
-      { exact (SepI (Power X)
-                   (fun I0:set => exists a0 :e X, exists b0 :e X,
-                        I0 = {x :e X | order_rel X a0 x /\ order_rel X x b0})
-                   V HVpow HVpred). }
-      claim HVinAB: V :e (Bint :\/: Blow).
-      { exact (binunionI1 Bint Blow V HVinBint). }
-      exact (binunionI1 (Bint :\/: Blow) Bup V HVinAB). }
-    exact (basis_in_generated X B V HBasis HVinB). }
+	      claim HVinBint: V :e Bint.
+	      { exact (SepI (Power X)
+	                   (fun I0:set => exists a0 :e X, exists b0 :e X,
+	                        I0 = {x :e X | order_rel X a0 x /\ order_rel X x b0})
+	                   V HVpow HVpred). }
+	      claim HVinAB: V :e (Bint :\/: Blow).
+	      { exact (binunionI1 Bint Blow V HVinBint). }
+	      exact (binunionI1 (Bint :\/: Blow) Bup V HVinAB). }
+	    exact (generated_topology_contains_elem X B V HVpow HVinB). }
 
   claim HeqU: U = V :/\: ordered_square.
   { apply set_ext.
@@ -31468,33 +31472,29 @@ apply andI.
       rewrite HdefR2.
       claim HdefOT: order_topology (setprod R R) =
         generated_topology (setprod R R) (order_topology_basis (setprod R R)).
-      { reflexivity. }
-      rewrite HdefOT.
-      claim HBasis: basis_on (setprod R R) (order_topology_basis (setprod R R)).
-      { exact (order_topology_basis_is_basis (setprod R R)). }
-      (** V is a basis element: an open interval (a,b) in the dictionary order **)
-      claim HVinB: V :e order_topology_basis (setprod R R).
-      { (** abbreviate the three families in the definition of order_topology_basis **)
-        set X := setprod R R.
-        set Fint := {I :e Power X | exists a0 :e X, exists b0 :e X,
-                      I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}.
-        set Flow := {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}.
-        set Fup  := {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}.
-        claim HbasisDef: order_topology_basis X = (Fint :\/: Flow :\/: Fup).
-        { reflexivity. }
-        rewrite HbasisDef.
-        (** V belongs to Fint by construction **)
-        claim HVsubX: V c= X.
-        { let p. assume Hp: p :e V.
-          exact (SepE1 X
-                       (fun p0:set => order_rel X a p0 /\ order_rel X p0 b)
-                       p
-                       Hp). }
-        claim HVpowX: V :e Power X.
-        { exact (PowerI X V HVsubX). }
-        (** show a and b are points of X **)
-        claim H1omega: 1 :e omega.
-        { exact (nat_p_omega 1 nat_1). }
+	      { reflexivity. }
+	      rewrite HdefOT.
+	      set X := setprod R R.
+	      set B := order_topology_basis X.
+	      claim HVsubX: V c= X.
+	      { let p. assume Hp: p :e V.
+	        exact (SepE1 X (fun p0:set => order_rel X a p0 /\ order_rel X p0 b) p Hp). }
+	      claim HVpowX: V :e Power X.
+	      { exact (PowerI X V HVsubX). }
+	      (** V is a basis element: an open interval (a,b) in the dictionary order **)
+	      claim HVinB: V :e B.
+	      { (** abbreviate the three families in the definition of order_topology_basis **)
+	        set Fint := {I :e Power X | exists a0 :e X, exists b0 :e X,
+	                      I = {x :e X | order_rel X a0 x /\ order_rel X x b0}}.
+	        set Flow := {I :e Power X | exists b0 :e X, I = {x :e X | order_rel X x b0}}.
+	        set Fup  := {I :e Power X | exists a0 :e X, I = {x :e X | order_rel X a0 x}}.
+	        claim HbasisDef: B = (Fint :\/: Flow :\/: Fup).
+	        { reflexivity. }
+	        rewrite HbasisDef.
+	        (** V belongs to Fint by construction **)
+	        (** show a and b are points of X **)
+	        claim H1omega: 1 :e omega.
+	        { exact (nat_p_omega 1 nat_1). }
         claim Heps1SNoS: eps_ 1 :e SNoS_ omega.
         { exact (SNo_eps_SNoS_omega 1 H1omega). }
 	        claim Heps1R: eps_ 1 :e R.
@@ -31533,16 +31533,12 @@ apply andI.
                       HVpowX
                       HVex). }
         (** inject into the left-associated union (Fint :\/: Flow) :\/: Fup **)
-        claim HVinLeft: V :e (Fint :\/: Flow).
-        { exact (binunionI1 Fint Flow V HVinF). }
-        exact (binunionI1 (Fint :\/: Flow) Fup V HVinLeft).
-      }
-      exact (generated_topology_contains_basis (setprod R R)
-                                              (order_topology_basis (setprod R R))
-                                              HBasis
-                                              V
-                                              HVinB).
-    }
+	        claim HVinLeft: V :e (Fint :\/: Flow).
+	        { exact (binunionI1 Fint Flow V HVinF). }
+	        exact (binunionI1 (Fint :\/: Flow) Fup V HVinLeft).
+	      }
+	      exact (generated_topology_contains_elem X B V HVpowX HVinB).
+	    }
     claim HeqU: U = V :/\: ordered_square.
     { (** this is the key set identity from Example 3 **)
       apply set_ext.
