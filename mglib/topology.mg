@@ -27682,11 +27682,12 @@ claim HVsub: V :/\: Y c= Y.
 { exact (binintersect_Subq_2 V Y). }
 claim HVpow: V :/\: Y :e Power Y.
 { exact (PowerI Y (V :/\: Y) HVsub). }
-apply (SepI (Power Y) (fun U0:set => exists V0 :e Tx, U0 = V0 :/\: Y) (V :/\: Y) HVpow).
-witness V.
-apply andI.
-- exact HV.
-- reflexivity.
+claim Hex: exists V0 :e Tx, (V :/\: Y) = V0 :/\: Y.
+{ witness V.
+  apply andI.
+  - exact HV.
+  - reflexivity. }
+exact (SepI (Power Y) (fun U0:set => exists V0 :e Tx, U0 = V0 :/\: Y) (V :/\: Y) HVpow Hex).
 Qed.
 
 (** helper: subspace topology on whole space equals original topology **)
