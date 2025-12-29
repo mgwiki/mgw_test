@@ -87961,6 +87961,7 @@ Definition topological_group : set -> set -> prop := fun G Tg =>
 (** from §31 and §32: separated subsets (complete normality context) **)
 (** LATEX VERSION: Two sets A,B are separated if cl(A)∩B=∅ and A∩cl(B)=∅. **)
 Definition separated_subsets : set -> set -> set -> set -> prop := fun X Tx A B =>
+  A c= X /\ B c= X /\
   closure_of X Tx A :/\: B = Empty /\ A :/\: closure_of X Tx B = Empty.
 
 (** helper: completely normal predicate **)
