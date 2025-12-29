@@ -69840,12 +69840,11 @@ Qed.
 (** LATEX VERSION: The collection {U∈Tx | x∈U} is directed under reverse inclusion; an upper bound for U,V is U∩V. **)
 Theorem neighborhoods_directed_by_reverse_inclusion : forall X Tx x:set,
   topology_on X Tx -> x :e X ->
-  directed_set {U :e Tx | x :e U} {p :e setprod {U :e Tx | x :e U} {U :e Tx | x :e U} | p 1 c= p 0}.
+  directed_set {U :e Tx | x :e U} (rev_inclusion_rel {U :e Tx | x :e U}).
 let X Tx x.
 assume HTx: topology_on X Tx.
 assume HxX: x :e X.
 set J := {U :e Tx | x :e U}.
-rewrite <- (rev_inclusion_rel_def J).
 set le := rev_inclusion_rel J.
 prove directed_set J le.
 prove (J <> Empty /\ partial_order_on J le) /\
@@ -70006,12 +70005,11 @@ apply iffI.
     { exact (binintersectE1 U A (g U) (Hg_in U HUJ)). }
     exact (HUsub (g U) HgU_in_U). }
 	  claim Hdir: directed_set J le.
-	  { rewrite (rev_inclusion_rel_def J).
-	    exact (neighborhoods_directed_by_reverse_inclusion X Tx x HTx HxX). }
-  claim Htot: total_function_on net J X.
-  { exact (total_function_on_graph J X g Hg_in_X). }
-  witness net.
-  witness J.
+	  { exact (neighborhoods_directed_by_reverse_inclusion X Tx x HTx HxX). }
+	  claim Htot: total_function_on net J X.
+	  { exact (total_function_on_graph J X g Hg_in_X). }
+	  witness net.
+	  witness J.
   witness le.
   apply andI.
   - prove net_converges_on X Tx net J le x.
