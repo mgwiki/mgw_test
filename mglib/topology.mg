@@ -30218,17 +30218,10 @@ apply set_ext.
   { exact (andEL (V :e Tx) (W = V :/\: A) HV). }
   claim HWeqVA: W = V :/\: A.
   { exact (andER (V :e Tx) (W = V :/\: A) HV). }
-  (** Set U = V ∩ Y. Then U ∈ subspace_topology X Tx Y, and W = U ∩ A **)
-  set U := V :/\: Y.
-  claim HUinSubY: U :e subspace_topology X Tx Y.
-  { claim HUPowerY: U :e Power Y.
-    { exact (PowerI Y U (binintersect_Subq_2 V Y)). }
-    claim HUPred: exists V0 :e Tx, U = V0 :/\: Y.
-    { witness V.
-      apply andI.
-      - exact HVinTx.
-      - reflexivity. }
-    exact (SepI (Power Y) (fun U0:set => exists V0 :e Tx, U0 = V0 :/\: Y) U HUPowerY HUPred). }
+	(** Set U = V ∩ Y. Then U ∈ subspace_topology X Tx Y, and W = U ∩ A **)
+	set U := V :/\: Y.
+	claim HUinSubY: U :e subspace_topology X Tx Y.
+	{ exact (subspace_topologyI X Tx Y V HVinTx). }
   claim HWeqUA: W = U :/\: A.
   { rewrite HWeqVA.
     symmetry.
