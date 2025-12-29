@@ -27695,9 +27695,14 @@ Theorem subspace_topology_subset : forall X Tx Y U:set,
   U :e subspace_topology X Tx Y -> U c= Y.
 let X Tx Y U.
 assume HU: U :e subspace_topology X Tx Y.
-claim HUpow: U :e Power Y.
-{ exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HU). }
-exact (PowerE Y U HUpow).
+claim Hex: exists V :e Tx, U = V :/\: Y.
+{ exact (subspace_topologyE X Tx Y U HU). }
+apply Hex.
+let V. assume HVpair.
+claim HUeq: U = V :/\: Y.
+{ exact (andER (V :e Tx) (U = V :/\: Y) HVpair). }
+rewrite HUeq.
+exact (binintersect_Subq_2 V Y).
 Qed.
 
 (** helper: elements of the subspace topology are members of Power Y **)
@@ -27705,7 +27710,8 @@ Theorem subspace_topology_in_Power : forall X Tx Y U:set,
   U :e subspace_topology X Tx Y -> U :e Power Y.
 let X Tx Y U.
 assume HU: U :e subspace_topology X Tx Y.
-exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HU).
+apply PowerI.
+exact (subspace_topology_subset X Tx Y U HU).
 Qed.
 
 (** helper: intersection of two subspace-open sets is subspace-open, with an explicit witness **)
