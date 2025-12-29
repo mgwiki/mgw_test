@@ -88367,6 +88367,8 @@ Definition Q_infty : set :=
     (forall n:set, n :e omega -> apply_fun f n :e rational_numbers) /\
     (exists n0:set, n0 :e omega /\
       forall m:set, m :e omega -> ~(m :e n0) -> apply_fun f m = 0)}.
+(** from §30 Exercise 17: subspace topology on Q^infty inside R^omega (box topology) **)
+(** LATEX VERSION: Consider Q^infty as a subspace of R^omega in the box topology. **)
 Definition Q_infty_topology : set :=
   subspace_topology R_omega_space R_omega_box_topology Q_infty.
 Theorem ex30_17_Romega_box_countability :
@@ -89326,6 +89328,8 @@ admit. (**  aby  countable_product_topology_subbasisÞf const_space_familyÞf co
 Qed.
 
 (** helper: perfect normality predicate **)
+(** from §33 Exercise 6: perfectly normal spaces **)
+(** LATEX VERSION: X is perfectly normal if X is normal and every closed set in X is a G_delta set. **)
 Definition perfectly_normal_space : set -> set -> prop := fun X Tx =>
   normal_space X Tx /\ (forall A:set, closed_in X Tx A -> Gdelta_in X Tx A).
 
@@ -89469,27 +89473,39 @@ admit. (** FAIL **)
 Qed.
 
 (** helper: retraction data **) 
+(** from §35 Exercise 4: retracts and retractions **)
+(** LATEX VERSION: If Y is a subspace of Z, a retraction r:Z→Y satisfies r(y)=y for each y in Y. **)
 Definition retraction_of : set -> set -> set -> prop := fun X Tx A =>
   A c= X /\ exists r:set,
     function_on r X X /\ continuous_map X Tx X Tx r /\
     (forall x:set, x :e X -> apply_fun r x :e A) /\
     (forall x:set, x :e A -> apply_fun r x = x).
 
+(** from §35 Exercise 6: absolute retracts (image of embedding) **)
+(** LATEX VERSION: Absolute retract: for every normal Z and closed Y0 homeomorphic to Y, the subspace Y0 is a retract of Z. **)
 Definition image_of_map : set -> set -> set -> set -> set -> set :=
   fun X Tx Y Ty f => image_of f X.
 
+(** from §35 Exercise 6: absolute retracts **)
+(** LATEX VERSION: A normal space Y is an absolute retract if every closed copy of Y in a normal space is a retract. **)
 Definition absolute_retract : set -> set -> prop := fun X Tx =>
   Hausdorff_space X Tx /\
   forall Y Ty, normal_space Y Ty ->
     exists e:set, embedding_of X Tx Y Ty e /\
       exists r:set, retraction_of Y Ty (image_of_map X Tx Y Ty e).
 
+(** from §35 Exercise 9: topology coherent with a sequence of subspaces **)
+(** LATEX VERSION: U is open in X iff U∩X_i is open in X_i for each i; this is the topology coherent with the X_i. **)
 Definition coherent_topology : set -> set -> set -> set -> prop := fun X Tx Y Ty =>
   topology_on X Tx /\ topology_on Y Ty /\ X c= Y /\ subspace_topology Y Ty X = Tx.
 
+(** from §37 Theorem (Tychonoff): product of compact spaces is compact **)
+(** LATEX VERSION: If each factor X_alpha is compact, then the product space is compact. **)
 Definition compact_spaces_family : set -> set -> prop := fun I Xi =>
   forall i:set, i :e I -> compact_space (product_component Xi i) (product_component_topology Xi i).
 
+(** from §22 Definition: surjective map **)
+(** LATEX VERSION: A map p:X→Y is surjective if every y in Y equals p(x) for some x in X. **)
 Definition surjective_map : set -> set -> set -> prop := fun X Y f =>
   function_on f X Y /\ forall y:set, y :e Y -> exists x:set, x :e X /\ apply_fun f x = y.
 
