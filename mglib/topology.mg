@@ -60955,131 +60955,232 @@ assume Hquot: quotient_map X Tx Y f.
 assume Hloc: locally_connected X Tx.
 prove locally_connected Y (quotient_topology X Tx Y f).
 set Q := quotient_topology X Tx Y f.
+claim HTx: topology_on X Tx.
+{ exact (locally_connected_topology X Tx Hloc). }
+claim HTyQ: topology_on Y Q.
+{ exact (quotient_topology_is_topology X Tx Y f HTx Hquot). }
+claim Hfun: function_on f X Y.
+{ exact (andER (topology_on X Tx) (function_on f X Y)
+               (andEL (topology_on X Tx /\ function_on f X Y)
+                      (forall y0:set, y0 :e Y -> exists x:set, x :e X /\ apply_fun f x = y0)
+                      Hquot)). }
+claim Hsurj: forall y0:set, y0 :e Y -> exists x:set, x :e X /\ apply_fun f x = y0.
+{ exact (andER (topology_on X Tx /\ function_on f X Y)
+               (forall y0:set, y0 :e Y -> exists x:set, x :e X /\ apply_fun f x = y0)
+               Hquot). }
+claim Hcont: continuous_map X Tx Y Q f.
+{ prove topology_on X Tx /\ topology_on Y Q /\ function_on f X Y /\
+    forall W:set, W :e Q -> preimage_of X f W :e Tx.
+  apply andI.
+  - apply andI.
+    + apply andI.
+      * exact HTx.
+      * exact HTyQ.
+    + exact Hfun.
+  - let W. assume HW: W :e Q.
+    claim Hraw: {x0 :e X|apply_fun f x0 :e W} :e Tx.
+    { exact (SepE2 (Power Y) (fun V0:set => {x0 :e X|apply_fun f x0 :e V0} :e Tx) W HW). }
+    claim Heq: preimage_of X f W = {x0 :e X|apply_fun f x0 :e W}.
+    { reflexivity. }
+    rewrite Heq.
+    exact Hraw. }
+
 prove topology_on Y Q /\
   forall y:set, y :e Y ->
     forall U:set, U :e Q -> y :e U ->
       exists V:set, V :e Q /\ y :e V /\ V c= U /\ connected_space V (subspace_topology Y Q V).
 apply andI.
-- (** topology_on Y Q **)
-  claim HTx: topology_on X Tx.
-  { exact (locally_connected_topology X Tx Hloc). }
-  exact (quotient_topology_is_topology X Tx Y f HTx Hquot).
-- (** neighborhood property (stub) **)
-  let y. assume HyY: y :e Y.
+- exact HTyQ.
+- let y. assume HyY: y :e Y.
   let U. assume HU: U :e Q.
   assume HyU: y :e U.
-  (** Goal: find V in Q with y∈V⊂U and V connected in the subspace topology. **)
-  claim HTx: topology_on X Tx.
-  { exact (locally_connected_topology X Tx Hloc). }
-  claim HTyQ: topology_on Y Q.
-  { exact (quotient_topology_is_topology X Tx Y f HTx Hquot). }
-  claim Hfpair: topology_on X Tx /\ function_on f X Y.
-  { exact (andEL (topology_on X Tx /\ function_on f X Y)
-                 (forall y0:set, y0 :e Y -> exists x:set, x :e X /\ apply_fun f x = y0)
-                 Hquot). }
-  claim Hfun: function_on f X Y.
-  { exact (andER (topology_on X Tx) (function_on f X Y) Hfpair). }
-  claim Hsurj: forall y0:set, y0 :e Y -> exists x:set, x :e X /\ apply_fun f x = y0.
-  { exact (andER (topology_on X Tx /\ function_on f X Y)
-                 (forall y0:set, y0 :e Y -> exists x:set, x :e X /\ apply_fun f x = y0)
-                 Hquot). }
 
+  claim HUpowY: U :e Power Y.
+  { exact (SepE1 (Power Y) (fun V0:set => preimage_of X f V0 :e Tx) U HU). }
+  claim HUsubY: U c= Y.
+  { exact (PowerE Y U HUpowY). }
+  set Tu := subspace_topology Y Q U.
+  claim HTu: topology_on U Tu.
+  { exact (subspace_topology_is_topology Y Q U HTyQ HUsubY). }
+
+  (** Let V be the component of y in the open set U (as a subspace). **)
+  set V := component_of U Tu y.
+  claim HyV: y :e V.
+  { exact (point_in_component U Tu y HTu HyU). }
+  claim HVsubU: V c= U.
+  { let t. assume Ht: t :e V.
+    exact (SepE1 U (fun t0:set => exists C:set, connected_space C (subspace_topology U Tu C) /\ y :e C /\ t0 :e C) t Ht). }
+  claim HVsubY: V c= Y.
+  { exact (Subq_tra V U Y HVsubU HUsubY). }
+
+  (** V is connected in the ambient subspace topology on Y. **)
+  claim HconnVu: connected_space V (subspace_topology U Tu V).
+  { exact (component_of_connected U Tu y HTu HyU). }
+  claim HeqTopV: subspace_topology U Tu V = subspace_topology Y Q V.
+  { exact (ex16_1_subspace_transitive Y Q U V HTyQ HUsubY HVsubU). }
+  claim HconnV: connected_space V (subspace_topology Y Q V).
+  { rewrite <- HeqTopV.
+    exact HconnVu. }
+
+  (** Show V is open in the quotient topology by proving its preimage is open in Tx. **)
   set preU := preimage_of X f U.
   claim HpreU: preU :e Tx.
-  { claim Hraw: {x :e X|apply_fun f x :e U} :e Tx.
-    { exact (SepE2 (Power Y) (fun V0:set => {x :e X|apply_fun f x :e V0} :e Tx) U HU). }
-    claim Heq: preU = {x :e X|apply_fun f x :e U}.
+  { claim Hraw: {x0 :e X|apply_fun f x0 :e U} :e Tx.
+    { exact (SepE2 (Power Y) (fun V0:set => {x0 :e X|apply_fun f x0 :e V0} :e Tx) U HU). }
+    claim Heq: preU = {x0 :e X|apply_fun f x0 :e U}.
     { reflexivity. }
     rewrite Heq.
     exact Hraw. }
 
-  apply (Hsurj y HyY).
-  let x. assume Hxpair: x :e X /\ apply_fun f x = y.
-  claim HxX: x :e X.
-  { exact (andEL (x :e X) (apply_fun f x = y) Hxpair). }
-  claim Hfxy: apply_fun f x = y.
-  { exact (andER (x :e X) (apply_fun f x = y) Hxpair). }
-  claim HfxU: apply_fun f x :e U.
-  { rewrite Hfxy.
-    exact HyU. }
-  claim HxpreU: x :e preU.
-  { claim Heq: preU = {x0 :e X|apply_fun f x0 :e U}.
-    { reflexivity. }
-    rewrite Heq.
-    exact (SepI X (fun x0:set => apply_fun f x0 :e U) x HxX HfxU). }
+  set preV := preimage_of X f V.
+  set UFam := {W :e Tx | W c= preV /\ connected_space W (subspace_topology X Tx W)}.
+  claim HUFsub: UFam c= Tx.
+  { let W. assume HW: W :e UFam.
+    exact (SepE1 Tx (fun W0:set => W0 c= preV /\ connected_space W0 (subspace_topology X Tx W0)) W HW). }
+  claim HUnionTx: Union UFam :e Tx.
+  { exact (topology_union_closed X Tx UFam HTx HUFsub). }
+  claim HUnionEq: Union UFam = preV.
+  { apply set_ext.
+    - let x0. assume Hx0: x0 :e Union UFam.
+      apply (UnionE UFam x0 Hx0).
+      let W. assume Hx0W: x0 :e W /\ W :e UFam.
+      claim Hx0W0: x0 :e W.
+      { exact (andEL (x0 :e W) (W :e UFam) Hx0W). }
+      claim HWUF: W :e UFam.
+      { exact (andER (x0 :e W) (W :e UFam) Hx0W). }
+      claim HWprop: W c= preV /\ connected_space W (subspace_topology X Tx W).
+      { exact (SepE2 Tx (fun W0:set => W0 c= preV /\ connected_space W0 (subspace_topology X Tx W0)) W HWUF). }
+      claim HWsub: W c= preV.
+      { exact (andEL (W c= preV) (connected_space W (subspace_topology X Tx W)) HWprop). }
+      exact (HWsub x0 Hx0W0).
+    - let x0. assume Hx0: x0 :e preV.
+      (** Extract y0 = f(x0) ∈ V, and use local connectedness in the open set preU. **)
+      claim Hx0X: x0 :e X.
+      { exact (SepE1 X (fun x1:set => apply_fun f x1 :e V) x0 Hx0). }
+      claim Hy0V: apply_fun f x0 :e V.
+      { exact (SepE2 X (fun x1:set => apply_fun f x1 :e V) x0 Hx0). }
+      claim Hy0U: apply_fun f x0 :e U.
+      { exact (HVsubU (apply_fun f x0) Hy0V). }
+      claim Hx0preU: x0 :e preU.
+      { claim Heq: preU = {x1 :e X|apply_fun f x1 :e U}.
+        { reflexivity. }
+        rewrite Heq.
+        exact (SepI X (fun x1:set => apply_fun f x1 :e U) x0 Hx0X Hy0U). }
 
-  apply (locally_connected_local X Tx x preU Hloc HxX HpreU HxpreU).
-  let Vx. assume HVxpack: Vx :e Tx /\ x :e Vx /\ Vx c= preU /\ connected_space Vx (subspace_topology X Tx Vx).
-  claim HVx123: ((Vx :e Tx /\ x :e Vx) /\ Vx c= preU) /\ connected_space Vx (subspace_topology X Tx Vx).
-  { exact HVxpack. }
-  claim HVx12: (Vx :e Tx /\ x :e Vx) /\ Vx c= preU.
-  { exact (andEL ((Vx :e Tx /\ x :e Vx) /\ Vx c= preU)
-                 (connected_space Vx (subspace_topology X Tx Vx))
-                 HVx123). }
-  claim HVxTx: Vx :e Tx.
-  { exact (andEL (Vx :e Tx) (x :e Vx)
-                 (andEL (Vx :e Tx /\ x :e Vx) (Vx c= preU) HVx12)). }
-  claim HxVx: x :e Vx.
-  { exact (andER (Vx :e Tx) (x :e Vx)
-                 (andEL (Vx :e Tx /\ x :e Vx) (Vx c= preU) HVx12)). }
-  claim HVxsubpreU: Vx c= preU.
-  { exact (andER (Vx :e Tx /\ x :e Vx) (Vx c= preU) HVx12). }
-  claim HVxconn: connected_space Vx (subspace_topology X Tx Vx).
-  { exact (andER ((Vx :e Tx /\ x :e Vx) /\ Vx c= preU)
-                 (connected_space Vx (subspace_topology X Tx Vx))
-                 HVx123). }
-  claim HVxsubX: Vx c= X.
-  { exact (topology_elem_subset X Tx Vx HTx HVxTx). }
+      apply (locally_connected_local X Tx x0 preU Hloc Hx0X HpreU Hx0preU).
+      let W0. assume HW0pack: W0 :e Tx /\ x0 :e W0 /\ W0 c= preU /\ connected_space W0 (subspace_topology X Tx W0).
 
-  set V := image_of f Vx.
+      claim HW0pair: (W0 :e Tx /\ x0 :e W0) /\ W0 c= preU.
+      { exact (andEL ((W0 :e Tx /\ x0 :e W0) /\ W0 c= preU)
+                     (connected_space W0 (subspace_topology X Tx W0))
+                     HW0pack). }
+      claim HW0Tx: W0 :e Tx.
+      { exact (andEL (W0 :e Tx) (x0 :e W0)
+                     (andEL (W0 :e Tx /\ x0 :e W0) (W0 c= preU) HW0pair)). }
+      claim Hx0W0: x0 :e W0.
+      { exact (andER (W0 :e Tx) (x0 :e W0)
+                     (andEL (W0 :e Tx /\ x0 :e W0) (W0 c= preU) HW0pair)). }
+      claim HW0subpreU: W0 c= preU.
+      { exact (andER (W0 :e Tx /\ x0 :e W0) (W0 c= preU) HW0pair). }
+      claim HW0conn: connected_space W0 (subspace_topology X Tx W0).
+      { exact (andER ((W0 :e Tx /\ x0 :e W0) /\ W0 c= preU)
+                     (connected_space W0 (subspace_topology X Tx W0))
+                     HW0pack). }
 
-  claim HyV: y :e V.
-  { claim HfxV: apply_fun f x :e V.
-    { exact (ReplI Vx (fun x0:set => apply_fun f x0) x HxVx). }
-    rewrite <- Hfxy.
-    exact HfxV. }
+      (** Show W0 ⊆ preV by showing f[W0] ⊆ V. **)
+      set ImW0 := image_of f W0.
+      claim HImSubU: ImW0 c= U.
+      { let y1. assume Hy1: y1 :e ImW0.
+        apply (ReplE_impred W0 (fun z:set => apply_fun f z) y1 Hy1).
+        let z. assume HzW0: z :e W0.
+        assume Hy1eq: y1 = apply_fun f z.
+        claim HzpreU: z :e preU.
+        { exact (HW0subpreU z HzW0). }
+        claim HfzU: apply_fun f z :e U.
+        { exact (SepE2 X (fun u0:set => apply_fun f u0 :e U) z HzpreU). }
+        rewrite Hy1eq.
+        exact HfzU. }
 
-  claim HVsubU: V c= U.
-  { let y0. assume Hy0: y0 :e V.
-    apply (ReplE_impred Vx (fun x0:set => apply_fun f x0) y0 Hy0).
-    let x0. assume Hx0: x0 :e Vx.
-    assume Hy0eq: y0 = apply_fun f x0.
-    claim Hx0pre: x0 :e preU.
-    { exact (HVxsubpreU x0 Hx0). }
-    claim Hfx0U: apply_fun f x0 :e U.
-    { exact (SepE2 X (fun u0:set => apply_fun f u0 :e U) x0 Hx0pre). }
-    rewrite Hy0eq.
-    exact Hfx0U. }
+      claim HcontW0: continuous_map W0 (subspace_topology X Tx W0) Y Q f.
+      { claim HW0subX: W0 c= X.
+        { exact (topology_elem_subset X Tx W0 HTx HW0Tx). }
+        exact (continuous_on_subspace_rule X Tx Y Q f W0 HTx HTyQ HW0subX Hcont). }
+      claim HImConnY: connected_space ImW0 (subspace_topology Y Q ImW0).
+      { exact (continuous_image_connected W0 (subspace_topology X Tx W0) Y Q f HW0conn HcontW0). }
+      claim HeqTopIm: subspace_topology U Tu ImW0 = subspace_topology Y Q ImW0.
+      { exact (ex16_1_subspace_transitive Y Q U ImW0 HTyQ HUsubY HImSubU). }
+      claim HImConnU: connected_space ImW0 (subspace_topology U Tu ImW0).
+      { rewrite HeqTopIm.
+        exact HImConnY. }
 
-  claim Hcont: continuous_map X Tx Y Q f.
-  { prove topology_on X Tx /\ topology_on Y Q /\ function_on f X Y /\
-      forall W:set, W :e Q -> preimage_of X f W :e Tx.
-    apply andI.
-    - apply andI.
-      + apply andI.
-        * exact HTx.
-        * exact HTyQ.
-      + exact Hfun.
-    - let W. assume HW: W :e Q.
-      claim Hraw: {x0 :e X|apply_fun f x0 :e W} :e Tx.
-      { exact (SepE2 (Power Y) (fun V0:set => {x0 :e X|apply_fun f x0 :e V0} :e Tx) W HW). }
-      claim Heq: preimage_of X f W = {x0 :e X|apply_fun f x0 :e W}.
-      { reflexivity. }
-      rewrite Heq.
-      exact Hraw. }
+      claim Hy0Im: apply_fun f x0 :e ImW0.
+      { exact (ReplI W0 (fun z:set => apply_fun f z) x0 Hx0W0). }
 
-  claim HcontVx: continuous_map Vx (subspace_topology X Tx Vx) Y Q f.
-  { exact (continuous_on_subspace_rule X Tx Y Q f Vx HTx HTyQ HVxsubX Hcont). }
-  claim HconnV: connected_space V (subspace_topology Y Q V).
-  { exact (continuous_image_connected Vx (subspace_topology X Tx Vx) Y Q f HVxconn HcontVx). }
+      claim HImSubComp: ImW0 c= component_of U Tu (apply_fun f x0).
+      { let y1. assume Hy1: y1 :e ImW0.
+        prove y1 :e component_of U Tu (apply_fun f x0).
+        prove y1 :e {t :e U | exists C:set, connected_space C (subspace_topology U Tu C) /\ apply_fun f x0 :e C /\ t :e C}.
+        apply SepI.
+        - exact (HImSubU y1 Hy1).
+        - prove exists C:set, connected_space C (subspace_topology U Tu C) /\ apply_fun f x0 :e C /\ y1 :e C.
+          witness ImW0.
+          prove connected_space ImW0 (subspace_topology U Tu ImW0) /\ apply_fun f x0 :e ImW0 /\ y1 :e ImW0.
+          apply andI.
+          + apply andI.
+            * exact HImConnU.
+            * exact Hy0Im.
+          + exact Hy1. }
+
+      (** Since y0 ∈ V (the component of y in U), component(y0) = V. **)
+      claim Hy0U0: apply_fun f x0 :e U.
+      { exact Hy0U. }
+      claim HeqComp: component_of U Tu (apply_fun f x0) = V.
+      { claim HVdef: V = component_of U Tu y.
+        { reflexivity. }
+        claim Hy0Comp: apply_fun f x0 :e component_of U Tu y.
+        { rewrite <- HVdef.
+          exact Hy0V. }
+        rewrite HVdef.
+        exact (component_of_eq_if_in U Tu y (apply_fun f x0) HTu HyU Hy0Comp). }
+      claim HImSubV: ImW0 c= V.
+      { rewrite <- HeqComp.
+        exact HImSubComp. }
+
+      claim HW0subpreV: W0 c= preV.
+      { let z. assume Hz: z :e W0.
+        prove z :e preV.
+        claim HfzV: apply_fun f z :e V.
+        { claim HfzIm: apply_fun f z :e ImW0.
+          { exact (ReplI W0 (fun t:set => apply_fun f t) z Hz). }
+          exact (HImSubV (apply_fun f z) HfzIm). }
+        exact (SepI X (fun x1:set => apply_fun f x1 :e V) z
+                    (topology_elem_subset X Tx W0 HTx HW0Tx z Hz)
+                    HfzV). }
+
+      claim HW0inUFam: W0 :e UFam.
+      { apply SepI.
+        - exact HW0Tx.
+        - prove W0 c= preV /\ connected_space W0 (subspace_topology X Tx W0).
+          apply andI.
+          + exact HW0subpreV.
+          + exact HW0conn. }
+      exact (UnionI UFam x0 W0 Hx0W0 HW0inUFam). }
+  claim HpreV: preV :e Tx.
+  { rewrite <- HUnionEq.
+    exact HUnionTx. }
+  claim HVpowY: V :e Power Y.
+  { apply PowerI.
+    let y0. assume Hy0: y0 :e V.
+    exact (HVsubY y0 Hy0). }
+  claim HVQ: V :e Q.
+  { exact (SepI (Power Y) (fun V0:set => preimage_of X f V0 :e Tx) V HVpowY HpreV). }
 
   witness V.
   prove V :e Q /\ y :e V /\ V c= U /\ connected_space V (subspace_topology Y Q V).
   apply andI.
   - apply andI.
     + apply andI.
-      * (** TODO: show V is open in the quotient topology; this requires additional quotient_map structure (saturation) beyond the current definition. **)
-        admit. (** FAIL **)
+      * exact HVQ.
       * exact HyV.
     + exact HVsubU.
   - exact HconnV.
