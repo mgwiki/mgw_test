@@ -16223,13 +16223,13 @@ apply set_ext.
     { exact (andEL (topology_on X T) (A c= T) HTcond). }
     claim HAinT: A c= T.
     { exact (andER (topology_on X T) (A c= T) HTcond). }
-    (** Apply generated_topology_finer: if T contains all basis elements, generated_topology X A c= T **)
+    (** Apply generated_topology_finer_weak: if T contains all generators in A, generated_topology X A c= T **)
     claim HGenSubT: generated_topology X A c= T.
     { claim HAllAinT: forall a :e A, a :e T.
       { let a. assume Ha: a :e A.
         exact (HAinT a Ha).
       }
-      exact (generated_topology_finer X A T HA HTtop HAllAinT).
+      exact (generated_topology_finer_weak X A T HTtop HAllAinT).
     }
     exact (HGenSubT U HU).
   }
@@ -29918,11 +29918,9 @@ Theorem ex16_5a_product_monotone : forall X T T' Y U U':set,
 	assume HTy': topology_on Y U'.
 	assume Hfiner: T c= T' /\ U c= U'.
 	prove product_topology X T Y U c= product_topology X T' Y U'.
-	claim HBasis: basis_on (setprod X Y) (product_subbasis X T Y U).
-	{ exact (product_subbasis_is_basis X T Y U HTx HTy). }
 	claim HTprod': topology_on (setprod X Y) (product_topology X T' Y U').
 	{ exact (product_topology_is_topology X T' Y U' HTx' HTy'). }
-	apply (generated_topology_finer (setprod X Y) (product_subbasis X T Y U) (product_topology X T' Y U') HBasis HTprod').
+	apply (generated_topology_finer_weak (setprod X Y) (product_subbasis X T Y U) (product_topology X T' Y U') HTprod').
 	let b. assume Hb: b :e product_subbasis X T Y U.
 	prove b :e product_topology X T' Y U'.
 	claim HexU0: exists U0 :e T, b :e {rectangle_set U0 V|V :e U}.
