@@ -87265,6 +87265,18 @@ claim Hex: exists X:set, well_ordered_set X /\ uncountable_set X.
 exact (Eps_i_ex (fun X:set => well_ordered_set X /\ uncountable_set X) Hex).
 Qed.
 Definition Sbar_Omega : set := SetAdjoin S_Omega S_Omega.
+(** helper: S_Omega is a subset of Sbar_Omega **)
+Theorem S_Omega_Subq_Sbar_Omega : S_Omega c= Sbar_Omega.
+prove S_Omega c= Sbar_Omega.
+exact (binunion_Subq_1 S_Omega {S_Omega}).
+Qed.
+
+(** helper: the adjoined point Omega (represented by S_Omega) is in Sbar_Omega **)
+Theorem S_Omega_in_Sbar_Omega : S_Omega :e Sbar_Omega.
+prove S_Omega :e Sbar_Omega.
+apply (binunionI2 S_Omega {S_Omega} S_Omega).
+exact (SingI S_Omega).
+Qed.
 (** LATEX VERSION: Both spaces are given the order topology. **)
 Definition SOmega_topology : set := order_topology S_Omega.
 Definition SbarOmega_topology : set := order_topology Sbar_Omega.
