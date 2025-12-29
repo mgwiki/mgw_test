@@ -65472,6 +65472,31 @@ prove closed_in X Tx A.
 exact (compact_subspace_in_Hausdorff_closed X Tx A HH HA Hcomp).
 Qed.
 
+(** Helper: Empty subspace is compact **)
+Theorem compact_empty_subspace : forall X Tx:set,
+  topology_on X Tx ->
+  compact_space Empty (subspace_topology X Tx Empty).
+let X Tx.
+assume HTx: topology_on X Tx.
+prove compact_space Empty (subspace_topology X Tx Empty).
+prove topology_on Empty (subspace_topology X Tx Empty) /\
+  forall Fam:set, open_cover_of Empty (subspace_topology X Tx Empty) Fam ->
+    has_finite_subcover Empty (subspace_topology X Tx Empty) Fam.
+apply andI.
+- (** topology_on Empty (subspace_topology X Tx Empty) **)
+  exact (subspace_topology_is_topology X Tx Empty HTx (Subq_Empty X)).
+  - (** finite subcover property is trivial on Empty **)
+  let Fam. assume HFam: open_cover_of Empty (subspace_topology X Tx Empty) Fam.
+  apply (has_finite_subcoverI Empty (subspace_topology X Tx Empty) Fam Empty).
+  apply andI.
+  + (** Empty c= Fam /\ finite Empty **)
+    apply andI.
+    * exact (Subq_Empty Fam).
+    * exact finite_Empty.
+  + (** Empty c= Union Empty **)
+    exact (Subq_Empty (Union Empty)).
+Qed.
+
 (** from §29: one-point compactification placeholder **) 
 (** LATEX VERSION: One-point compactification of a locally compact Hausdorff space. **)
 Definition one_point_compactification : set -> set -> set -> set -> prop := fun X Tx Y Ty =>
@@ -65501,8 +65526,335 @@ claim HHausY: Hausdorff_space Y Ty.
     forall x1 x2:set, x1 :e Y -> x2 :e Y -> x1 <> x2 ->
       exists U V:set, U :e Ty /\ V :e Ty /\ x1 :e U /\ x2 :e V /\ U :/\: V = Empty.
   apply andI.
-  - (** topology_on Y Ty **)
-    admit. (** FAIL **) 
+	  - (** topology_on Y Ty **)
+	    prove topology_on Y Ty.
+	    claim HTx: topology_on X Tx.
+	    { exact (locally_compact_topology X Tx Hlc). }
+	    prove Ty c= Power Y
+	      /\ Empty :e Ty
+	      /\ Y :e Ty
+	      /\ (forall UFam :e Power Ty, Union UFam :e Ty)
+	      /\ (forall U :e Ty, forall V :e Ty, U :/\: V :e Ty).
+	    (** Build the left-associative conjunction in topology_on Y Ty. **)
+	    apply andI.
+    + (** (((Ty c= Power Y /\ Empty :e Ty) /\ Y :e Ty) /\ Union axiom) **)
+      apply andI.
+	      * (** (Ty c= Power Y /\ Empty :e Ty) /\ Y :e Ty **)
+	        apply andI.
+	        - (** Ty c= Power Y /\ Empty :e Ty **)
+	           apply andI.
+           { (** Ty c= Power Y **)
+             prove Ty c= Power Y.
+             let U. assume HUty: U :e Ty.
+             exact (SepE1 (Power Y)
+                          (fun U0:set =>
+                            (p /:e U0 /\ U0 :e Tx) \/
+                            (p :e U0 /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U0 = Y :\: K))
+                          U
+                          HUty).
+           }
+           { (** Empty :e Ty **)
+             prove Empty :e Ty.
+             claim HEmptyPowY: Empty :e Power Y.
+             { exact (Empty_In_Power Y). }
+             claim HEmptyTx: Empty :e Tx.
+             { exact (topology_has_empty X Tx HTx). }
+             claim HpnotEmpty: p /:e Empty.
+             { exact (EmptyE p). }
+             claim HPred:
+               (p /:e Empty /\ Empty :e Tx) \/
+               (p :e Empty /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ Empty = Y :\: K).
+             { exact (orIL (p /:e Empty /\ Empty :e Tx)
+                           (p :e Empty /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ Empty = Y :\: K)
+                           (andI (p /:e Empty) (Empty :e Tx) HpnotEmpty HEmptyTx)). }
+             exact (SepI (Power Y)
+                         (fun U0:set =>
+                           (p /:e U0 /\ U0 :e Tx) \/
+                           (p :e U0 /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U0 = Y :\: K))
+                         Empty
+                         HEmptyPowY
+                         HPred).
+           }
+	        - (** Y :e Ty **)
+	           prove Y :e Ty.
+           claim HYpowY: Y :e Power Y.
+           { exact (Self_In_Power Y). }
+           claim HpY: p :e Y.
+           { exact (binunionI2 X {p} p (SingI p)). }
+           claim HEmptyComp: compact_space Empty (subspace_topology X Tx Empty).
+           { exact (compact_empty_subspace X Tx HTx). }
+           claim HPredY:
+             (p /:e Y /\ Y :e Tx) \/
+             (p :e Y /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ Y = Y :\: K).
+           { apply orIR.
+             apply andI.
+             - exact HpY.
+	             - witness Empty.
+	               apply andI.
+	               * (** compact_space Empty (subspace_topology X Tx Empty) /\ Empty c= X **)
+	                 apply andI.
+	                 + exact HEmptyComp.
+	                 + exact (Subq_Empty X).
+	               * (** Y = Y :\: Empty **)
+	                 rewrite (setminus_Empty_eq Y). reflexivity.
+	           }
+           exact (SepI (Power Y)
+                       (fun U0:set =>
+                         (p /:e U0 /\ U0 :e Tx) \/
+                         (p :e U0 /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U0 = Y :\: K))
+                       Y
+                       HYpowY
+                       HPredY).
+      * (** Union axiom **)
+        let UFam. assume HUFamPow: UFam :e Power Ty.
+        prove Union UFam :e Ty.
+        claim HUFamSub: UFam c= Ty.
+        { exact (PowerE Ty UFam HUFamPow). }
+        claim HUnionPowY: Union UFam :e Power Y.
+        { apply PowerI.
+          let y. assume HyU: y :e Union UFam.
+          apply (UnionE_impred UFam y HyU).
+          let U. assume HyUin: y :e U. assume HUUFam: U :e UFam.
+          claim HUty: U :e Ty.
+          { exact (HUFamSub U HUUFam). }
+          claim HUpowY: U :e Power Y.
+          { exact (SepE1 (Power Y)
+                         (fun U0:set =>
+                           (p /:e U0 /\ U0 :e Tx) \/
+                           (p :e U0 /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U0 = Y :\: K))
+                         U
+                         HUty). }
+          claim HUsubY: U c= Y.
+          { exact (PowerE Y U HUpowY). }
+          exact (HUsubY y HyUin). }
+        apply (xm (p :e Union UFam)).
+        - (** p in Union UFam **)
+           assume HpUnion: p :e Union UFam.
+           set K := Y :\: Union UFam.
+           claim HUnionEq: Union UFam = Y :\: K.
+           { rewrite (setminus_setminus_eq Y (Union UFam) (PowerE Y (Union UFam) HUnionPowY)).
+             reflexivity. }
+           claim HKsubX: K c= X.
+           { let y. assume HyK: y :e K.
+             claim HyY: y :e Y.
+             { exact (setminusE1 Y (Union UFam) y HyK). }
+             apply (binunionE X {p} y HyY (y :e X)).
+             - assume HyX: y :e X. exact HyX.
+             - assume Hyp: y :e {p}.
+               claim Heq: y = p.
+               { exact (SingE p y Hyp). }
+               apply FalseE.
+               apply (setminusE2 Y (Union UFam) y HyK).
+               rewrite Heq.
+               exact HpUnion. }
+           claim HPredUnion:
+             (p /:e Union UFam /\ Union UFam :e Tx) \/
+             (p :e Union UFam /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ Union UFam = Y :\: K0).
+           { apply orIR.
+             apply andI.
+             - exact HpUnion.
+	             - witness K.
+	               apply andI.
+	               * (** compact_space K (subspace_topology X Tx K) /\ K c= X **)
+	                 apply andI.
+	                 + admit.
+	                 + exact HKsubX.
+	               * (** Union UFam = Y :\: K **)
+	                 exact HUnionEq. }
+	           exact (SepI (Power Y)
+                       (fun U0:set =>
+                         (p /:e U0 /\ U0 :e Tx) \/
+                         (p :e U0 /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U0 = Y :\: K0))
+                       (Union UFam)
+                       HUnionPowY
+                       HPredUnion).
+        - (** p not in Union UFam **)
+           assume HpNotUnion: ~(p :e Union UFam).
+           claim HpNotUnion2: p /:e Union UFam.
+           { exact HpNotUnion. }
+           claim HUFamTx: UFam c= Tx.
+           { let U. assume HUUFam: U :e UFam.
+             claim HUty: U :e Ty.
+             { exact (HUFamSub U HUUFam). }
+             claim HUprop:
+               (p /:e U /\ U :e Tx) \/
+               (p :e U /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U = Y :\: K).
+             { exact (SepE2 (Power Y)
+                            (fun U0:set =>
+                              (p /:e U0 /\ U0 :e Tx) \/
+                              (p :e U0 /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U0 = Y :\: K))
+                            U
+                            HUty). }
+             apply HUprop.
+             - assume Hcase: p /:e U /\ U :e Tx.
+               exact (andER (p /:e U) (U :e Tx) Hcase).
+             - assume Hcase: p :e U /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U = Y :\: K.
+               apply FalseE.
+               claim HpU: p :e U.
+               { exact (andEL (p :e U) (exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U = Y :\: K) Hcase). }
+               apply HpNotUnion.
+               exact (UnionI UFam p U HpU HUUFam). }
+           claim HUnionTx: Union UFam :e Tx.
+           { exact (topology_union_closed X Tx UFam HTx HUFamTx). }
+           claim HPredUnion:
+             (p /:e Union UFam /\ Union UFam :e Tx) \/
+             (p :e Union UFam /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ Union UFam = Y :\: K0).
+           { exact (orIL (p /:e Union UFam /\ Union UFam :e Tx)
+                         (p :e Union UFam /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ Union UFam = Y :\: K0)
+                         (andI (p /:e Union UFam) (Union UFam :e Tx) HpNotUnion2 HUnionTx)). }
+           exact (SepI (Power Y)
+                       (fun U0:set =>
+                         (p /:e U0 /\ U0 :e Tx) \/
+                         (p :e U0 /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U0 = Y :\: K0))
+                       (Union UFam)
+                       HUnionPowY
+                       HPredUnion).
+    + (** Intersection axiom **)
+      let U. assume HUty: U :e Ty.
+      let V. assume HVty: V :e Ty.
+      prove U :/\: V :e Ty.
+      claim HUpowY: U :e Power Y.
+      { exact (SepE1 (Power Y)
+                     (fun U0:set =>
+                       (p /:e U0 /\ U0 :e Tx) \/
+                       (p :e U0 /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U0 = Y :\: K))
+                     U
+                     HUty). }
+      claim HVpowY: V :e Power Y.
+      { exact (SepE1 (Power Y)
+                     (fun U0:set =>
+                       (p /:e U0 /\ U0 :e Tx) \/
+                       (p :e U0 /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U0 = Y :\: K))
+                     V
+                     HVty). }
+      claim HUVpowY: U :/\: V :e Power Y.
+      { apply PowerI.
+        let y. assume HyUV: y :e U :/\: V.
+        claim HyU: y :e U.
+        { exact (binintersectE1 U V y HyUV). }
+        claim HUsubY: U c= Y.
+        { exact (PowerE Y U HUpowY). }
+        exact (HUsubY y HyU). }
+      claim HUprop:
+        (p /:e U /\ U :e Tx) \/
+        (p :e U /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U = Y :\: K).
+      { exact (SepE2 (Power Y)
+                     (fun U0:set =>
+                       (p /:e U0 /\ U0 :e Tx) \/
+                       (p :e U0 /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U0 = Y :\: K))
+                     U
+                     HUty). }
+      claim HVprop:
+        (p /:e V /\ V :e Tx) \/
+        (p :e V /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ V = Y :\: K).
+      { exact (SepE2 (Power Y)
+                     (fun U0:set =>
+                       (p /:e U0 /\ U0 :e Tx) \/
+                       (p :e U0 /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U0 = Y :\: K))
+                     V
+                     HVty). }
+      apply HUprop.
+      * assume HcaseU: p /:e U /\ U :e Tx.
+        claim HUpnot: p /:e U.
+        { exact (andEL (p /:e U) (U :e Tx) HcaseU). }
+        claim HUinTx: U :e Tx.
+        { exact (andER (p /:e U) (U :e Tx) HcaseU). }
+        apply HVprop.
+        - assume HcaseV: p /:e V /\ V :e Tx.
+           claim HVinTx: V :e Tx.
+           { exact (andER (p /:e V) (V :e Tx) HcaseV). }
+           claim HUVinTx: U :/\: V :e Tx.
+           { exact (topology_binintersect_closed X Tx U V HTx HUinTx HVinTx). }
+           claim HpnotUV: p /:e U :/\: V.
+           { assume HpUV: p :e U :/\: V.
+             claim HpU: p :e U.
+             { exact (binintersectE1 U V p HpUV). }
+             exact (HUpnot HpU). }
+           claim HPredUV:
+             (p /:e U :/\: V /\ U :/\: V :e Tx) \/
+             (p :e U :/\: V /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U :/\: V = Y :\: K0).
+           { exact (orIL (p /:e U :/\: V /\ U :/\: V :e Tx)
+                         (p :e U :/\: V /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U :/\: V = Y :\: K0)
+                         (andI (p /:e U :/\: V) (U :/\: V :e Tx) HpnotUV HUVinTx)). }
+           exact (SepI (Power Y)
+                       (fun U0:set =>
+                         (p /:e U0 /\ U0 :e Tx) \/
+                         (p :e U0 /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U0 = Y :\: K0))
+                       (U :/\: V)
+                       HUVpowY
+                       HPredUV).
+        - assume HcaseV: p :e V /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ V = Y :\: K.
+           claim HexK: exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ V = Y :\: K.
+           { exact (andER (p :e V)
+                          (exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ V = Y :\: K)
+                          HcaseV). }
+	           apply HexK.
+	           let K. assume HKpkg.
+	           claim HKleft: compact_space K (subspace_topology X Tx K) /\ K c= X.
+	           { exact (andEL (compact_space K (subspace_topology X Tx K) /\ K c= X)
+	                          (V = Y :\: K)
+	                          HKpkg). }
+	           claim HKcomp: compact_space K (subspace_topology X Tx K).
+	           { exact (andEL (compact_space K (subspace_topology X Tx K))
+	                          (K c= X)
+	                          HKleft). }
+	           claim HKsubX: K c= X.
+	           { exact (andER (compact_space K (subspace_topology X Tx K))
+	                          (K c= X)
+	                          HKleft). }
+	           claim HVeq: V = Y :\: K.
+	           { exact (andER (compact_space K (subspace_topology X Tx K) /\ K c= X)
+	                          (V = Y :\: K)
+	                          HKpkg). }
+           claim HclK: closed_in X Tx K.
+           { exact (Hausdorff_compact_sets_closed X Tx K HH HKsubX HKcomp). }
+           claim HopK: open_in X Tx (X :\: K).
+           { exact (open_of_closed_complement X Tx K HclK). }
+           claim HUVinTx: U :/\: (X :\: K) :e Tx.
+           { exact (topology_binintersect_closed X Tx U (X :\: K) HTx HUinTx (open_in_elem X Tx (X :\: K) HopK)). }
+           claim HUVeq: U :/\: V = U :/\: (X :\: K).
+           { rewrite HVeq.
+             apply set_ext.
+             - let x. assume Hx: x :e U :/\: (Y :\: K).
+               claim HxU: x :e U.
+               { exact (binintersectE1 U (Y :\: K) x Hx). }
+               claim HxYK: x :e Y :\: K.
+               { exact (binintersectE2 U (Y :\: K) x Hx). }
+               claim HxnotK: x /:e K.
+               { exact (setminusE2 Y K x HxYK). }
+               claim HxX: x :e X.
+               { exact ((topology_elem_subset X Tx U HTx HUinTx) x HxU). }
+               claim HxXK: x :e X :\: K.
+               { exact (setminusI X K x HxX HxnotK). }
+               exact (binintersectI U (X :\: K) x HxU HxXK).
+             - let x. assume Hx: x :e U :/\: (X :\: K).
+               claim HxU: x :e U.
+               { exact (binintersectE1 U (X :\: K) x Hx). }
+               claim HxXK: x :e X :\: K.
+               { exact (binintersectE2 U (X :\: K) x Hx). }
+               claim HxnotK: x /:e K.
+               { exact (setminusE2 X K x HxXK). }
+               claim HxY: x :e Y.
+               { exact (binunionI1 X {p} x ((topology_elem_subset X Tx U HTx HUinTx) x HxU)). }
+               claim HxYK: x :e Y :\: K.
+               { exact (setminusI Y K x HxY HxnotK). }
+               exact (binintersectI U (Y :\: K) x HxU HxYK). }
+           claim HpnotUV: p /:e U :/\: V.
+           { assume HpUV: p :e U :/\: V.
+             claim HpU: p :e U.
+             { exact (binintersectE1 U V p HpUV). }
+             exact (HUpnot HpU). }
+	           claim HPredUV:
+	             (p /:e U :/\: V /\ U :/\: V :e Tx) \/
+	             (p :e U :/\: V /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U :/\: V = Y :\: K0).
+	           { claim HUVinTx2: U :/\: V :e Tx.
+	             { rewrite HUVeq. exact HUVinTx. }
+	             exact (orIL (p /:e U :/\: V /\ U :/\: V :e Tx)
+	                         (p :e U :/\: V /\ exists K0:set, compact_space K0 (subspace_topology X Tx K0) /\ K0 c= X /\ U :/\: V = Y :\: K0)
+	                         (andI (p /:e U :/\: V) (U :/\: V :e Tx) HpnotUV HUVinTx2)). }
+	           admit.
+      * assume HcaseU: p :e U /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U = Y :\: K.
+        admit.
   - (** separation axiom **)
     let x1 x2.
     assume Hx1Y: x1 :e Y.
