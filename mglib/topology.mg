@@ -69730,6 +69730,59 @@ Qed.
 Definition net_points_in : set -> set -> set -> prop := fun A net J =>
   forall j:set, j :e J -> apply_fun net j :e A.
 
+(** helper: reverse-inclusion relation on a family of sets **)
+Definition rev_inclusion_rel : set -> set := fun J =>
+  {p :e setprod J J | p 1 c= p 0}.
+
+Theorem rev_inclusion_rel_def : forall J:set,
+  rev_inclusion_rel J = {p :e setprod J J | p 1 c= p 0}.
+let J.
+reflexivity.
+Qed.
+
+Theorem rev_inclusion_relE : forall J a b:set,
+  (a,b) :e rev_inclusion_rel J -> (a,b) :e setprod J J /\ b c= a.
+let J a b.
+assume Hab: (a,b) :e rev_inclusion_rel J.
+claim Hab': (a,b) :e {p :e setprod J J | p 1 c= p 0}.
+{ rewrite <- (rev_inclusion_rel_def J).
+  exact Hab. }
+claim Hprod: (a,b) :e setprod J J.
+{ exact (SepE1 (setprod J J) (fun p:set => p 1 c= p 0) (a,b) Hab'). }
+claim Hsub: (a,b) 1 c= (a,b) 0.
+{ exact (SepE2 (setprod J J) (fun p:set => p 1 c= p 0) (a,b) Hab'). }
+apply andI.
+- exact Hprod.
+- prove b c= a.
+  let y. assume Hy: y :e b.
+  prove y :e a.
+  claim Hy1: y :e (a,b) 1.
+  { rewrite (tuple_2_1_eq a b). exact Hy. }
+  claim Hy0: y :e (a,b) 0.
+  { exact (Hsub y Hy1). }
+  rewrite <- (tuple_2_0_eq a b).
+  exact Hy0.
+Qed.
+
+Theorem rev_inclusion_relI : forall J a b:set,
+  (a,b) :e setprod J J -> b c= a -> (a,b) :e rev_inclusion_rel J.
+let J a b.
+assume Hprod: (a,b) :e setprod J J.
+assume Hsub: b c= a.
+prove (a,b) :e rev_inclusion_rel J.
+rewrite (rev_inclusion_rel_def J).
+apply (SepI (setprod J J) (fun p:set => p 1 c= p 0) (a,b) Hprod).
+prove (a,b) 1 c= (a,b) 0.
+let y. assume Hy: y :e (a,b) 1.
+prove y :e (a,b) 0.
+claim Hyb: y :e b.
+{ rewrite <- (tuple_2_1_eq a b). exact Hy. }
+claim Hya: y :e a.
+{ exact (Hsub y Hyb). }
+rewrite (tuple_2_0_eq a b).
+exact Hya.
+Qed.
+
 (** helper: neighborhoods at a point form a directed set (reverse inclusion) **)
 (** LATEX VERSION: The collection {U∈Tx | x∈U} is directed under reverse inclusion; an upper bound for U,V is U∩V. **)
 Theorem neighborhoods_directed_by_reverse_inclusion : forall X Tx x:set,
