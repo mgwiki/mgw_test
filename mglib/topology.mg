@@ -87476,6 +87476,8 @@ Theorem graph3_in_euclidean_space3 : forall g:set->set,
 Qed.
 
 (** explicit points in R³ as coordinate functions **)
+(** from §50 Exercise 4: specific points in general position in R³ **)
+(** LATEX VERSION: Show that 0, e1, e2, e3, and (1,1,1) are in general position in R^3. **)
 Definition ex50_R3_zero : set := graph 3 (fun _ : set => 0).
 Definition ex50_R3_ones : set := graph 3 (fun _ : set => 1).
 Definition ex50_R3_e1 : set := graph 3 (fun i:set => if i = 0 then 1 else 0).
