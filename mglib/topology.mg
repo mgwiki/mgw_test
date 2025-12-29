@@ -30163,7 +30163,7 @@ apply set_ext.
   claim HWPowerA: W :e Power A.
   { exact (SepE1 (Power A) (fun U0:set => exists U :e subspace_topology X Tx Y, U0 = U :/\: A) W HW). }
   claim HWexists: exists U :e subspace_topology X Tx Y, W = U :/\: A.
-  { exact (SepE2 (Power A) (fun U0:set => exists U :e subspace_topology X Tx Y, U0 = U :/\: A) W HW). }
+  { exact (subspace_topologyE Y (subspace_topology X Tx Y) A W HW). }
   apply HWexists.
   let U.
   assume HU: U :e subspace_topology X Tx Y /\ W = U :/\: A.
