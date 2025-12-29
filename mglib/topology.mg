@@ -15837,6 +15837,67 @@ assume HinfX: infinite X.
 exact (infinite_setminus_finite X (UPair a b) HinfX (finite_UPair a b)).
 Qed.
 
+(** helper: infinite sets contain two distinct elements **)
+(** LATEX VERSION: (set theory) If X is infinite then there exist a,b in X with a ≠ b. **)
+Theorem infinite_two_distinct : forall X:set,
+  infinite X -> exists a b:set, a :e X /\ b :e X /\ ~(a = b).
+let X.
+assume HinfX: infinite X.
+apply (infinite_nonempty X HinfX).
+let a.
+assume HaX.
+apply (xm (exists b:set, b :e X /\ ~(b = a))).
+- assume Hex.
+  apply Hex.
+  let b. assume Hb.
+  witness a.
+  witness b.
+  apply andI.
+  - (** a :e X /\ b :e X **)
+    apply andI.
+    + exact HaX.
+    + exact (andEL (b :e X) (~(b = a)) Hb).
+  - (** ~(a=b) **)
+    assume Hab: a = b.
+    claim Hba: b = a.
+    { prove b = a.
+      rewrite <- Hab.
+      reflexivity. }
+    exact ((andER (b :e X) (~(b = a)) Hb) Hba).
+- assume Hno: ~(exists b:set, b :e X /\ ~(b = a)).
+  prove exists a b:set, a :e X /\ b :e X /\ ~(a = b).
+  apply FalseE.
+  (** show X = {a} **)
+  claim HXeq: X = {a}.
+  { apply set_ext.
+    - let x. assume HxX: x :e X.
+      prove x :e {a}.
+      claim Hxeq: x = a.
+      { apply (xm (x = a)).
+        - assume Hxa. exact Hxa.
+        - assume Hxna: ~(x = a).
+          apply FalseE.
+          apply Hno.
+          witness x.
+          apply andI.
+          + exact HxX.
+          + exact Hxna.
+      }
+      rewrite Hxeq.
+      exact (SingI a).
+    - let x. assume HxS: x :e {a}.
+      prove x :e X.
+      claim Hxeq: x = a.
+      { exact (SingE a x HxS). }
+      rewrite Hxeq.
+      exact HaX.
+  }
+  claim HfinX: finite X.
+  { rewrite HXeq.
+    exact (Sing_finite a). }
+  exact (HinfX HfinX).
+Qed.
+
 Theorem ex13_3b_witness_sets : forall X:set,
   infinite X ->
   exists U V:set,
