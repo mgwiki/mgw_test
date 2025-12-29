@@ -15360,12 +15360,12 @@ apply andI.
         apply (binunionE' (UPair Empty A) {B} V (B :/\: V :e T)).
         - assume HV1: V :e UPair Empty A.
            apply (UPairE V Empty A HV1).
-           - assume HVeq: V = Empty.
-               rewrite HVeq.
-               claim HcapEq: B :/\: Empty = Empty.
-               { rewrite (binintersect_com B Empty). exact (binintersect_Subq_eq_1 Empty B (Subq_Empty B)). }
-               rewrite HcapEq.
-               exact HEmptyIn.
+	           - assume HVeq: V = Empty.
+	               rewrite HVeq.
+	               claim HcapEq: B :/\: Empty = Empty.
+	               { exact (binintersect_Empty_right B). }
+	               rewrite HcapEq.
+	               exact HEmptyIn.
            - assume HVeq: V = A.
                rewrite HVeq.
                claim HcapEq: B :/\: A = A.
@@ -85455,11 +85455,10 @@ apply andI.
         rewrite <- Hyx.
         exact HyF. }
       exact (HxnotF HxF).
-    - (** (product_space Empty Xi) :/\: Empty = Empty **)
-      claim Hinter: (product_space Empty Xi) :/\: Empty = Empty.
-      { rewrite (binintersect_com (product_space Empty Xi) Empty).
-        exact (binintersect_Subq_eq_1 Empty (product_space Empty Xi) (Subq_Empty (product_space Empty Xi))). }
-      exact Hinter.
+	    - (** (product_space Empty Xi) :/\: Empty = Empty **)
+	      claim Hinter: (product_space Empty Xi) :/\: Empty = Empty.
+	      { exact (binintersect_Empty_right (product_space Empty Xi)). }
+	      exact Hinter.
   - assume HIne: I <> Empty.
     set X := product_space I Xi.
     set T := product_topology_full I Xi.
