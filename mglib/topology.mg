@@ -91174,11 +91174,35 @@ Definition A_N_eps : set -> set -> set -> set -> set -> set -> set :=
         forall m:set, m :e omega -> N c= m ->
           Rle (apply_fun d (apply_fun (apply_fun fn n) x, apply_fun (apply_fun fn m) x)) eps }.
 
+(** helper: A_N(eps) is closed under continuity hypotheses **)
+(** LATEX VERSION: In Theorem 48.5, A_N(eps) is closed as an intersection of closed sets defined by d(f_n,f_m)≤eps. **)
+Theorem A_N_eps_closed_stub : forall X Tx Y d fn N eps:set,
+  topology_on X Tx ->
+  metric_on_total Y d ->
+  (forall n:set, n :e omega ->
+    continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n)) ->
+  N :e omega ->
+  eps :e R ->
+  closed_in X Tx (A_N_eps X Y d fn N eps).
+admit. (** FAIL **)
+Qed.
+
 (** helper: U(eps) as union of interiors of A_N(eps) **)
 (** LATEX VERSION: U(eps) is the union over N of Int(A_N(eps)). **)
 Definition U_eps : set -> set -> set -> set -> set -> set -> set :=
   fun X Tx Y d fn eps =>
     Union {interior_of X Tx (A_N_eps X Y d fn N eps) | N :e omega}.
+
+(** helper: pointwise limit implies eventual Cauchy, hence X is covered by A_N(eps) **)
+(** LATEX VERSION: In Theorem 48.5, the union of A_N(eps) equals X because f_n(x) converges for each x. **)
+Theorem pointwise_limit_metric_imp_cover_A_N_eps_stub : forall X Y d fn f eps:set,
+  metric_on_total Y d ->
+  function_on f X Y ->
+  pointwise_limit_metric X Y d fn f ->
+  eps :e R -> Rlt 0 eps ->
+  forall x:set, x :e X -> exists N:set, N :e omega /\ x :e A_N_eps X Y d fn N eps.
+admit. (** FAIL **)
+Qed.
 
 (** helper: U(eps) should be open and dense under hypotheses of Theorem 48.5 **)
 (** LATEX VERSION: In the proof of Theorem 48.5, U(eps) is shown to be open and dense. **)
@@ -91528,10 +91552,19 @@ claim HTx: topology_on X Tx.
                HB). }
 claim HcoverAll: forall eps0:set, eps0 :e R -> Rlt 0 eps0 ->
   forall x:set, x :e X -> exists N:set, N :e omega /\ x :e A_N_eps X Y d fn N eps0.
-{ admit. (** FAIL **) }
+{ let eps0.
+  assume Heps0R: eps0 :e R.
+  assume Heps0Pos: Rlt 0 eps0.
+  let x.
+  assume HxX: x :e X.
+  exact (pointwise_limit_metric_imp_cover_A_N_eps_stub X Y d fn f eps0 Hd Hf Hlim Heps0R Heps0Pos x HxX). }
 claim HclosedAll: forall eps0:set, eps0 :e R ->
   forall N:set, N :e omega -> closed_in X Tx (A_N_eps X Y d fn N eps0).
-{ admit. (** FAIL **) }
+{ let eps0.
+  assume Heps0R: eps0 :e R.
+  let N.
+  assume HN: N :e omega.
+  exact (A_N_eps_closed_stub X Tx Y d fn N eps0 HTx Hd Hcont HN Heps0R). }
 set Ufam := {U_eps X Tx Y d fn (inv_nat (ordsucc n)) | n :e omega}.
 claim HcountOmega: countable_set omega.
 { prove countable_set omega.
