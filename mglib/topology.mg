@@ -87963,6 +87963,33 @@ Definition topological_group : set -> set -> prop := fun G Tg =>
     continuous_map (setprod G G) (product_topology G Tg G Tg) G Tg mult /\
     continuous_map G Tg G Tg inv.
 
+(** helper: extract T1_space from topological_group **)
+Theorem topological_group_T1 : forall G Tg:set, topological_group G Tg -> T1_space G Tg.
+let G Tg.
+assume H: topological_group G Tg.
+exact (andEL (T1_space G Tg)
+             (exists mult inv e:set,
+               function_on mult (setprod G G) G /\
+               function_on inv G G /\
+               e :e G /\
+               (forall x y z:set,
+                 x :e G -> y :e G -> z :e G ->
+                 apply_fun mult (apply_fun mult (x,y), z) = apply_fun mult (x, apply_fun mult (y,z))) /\
+               (forall x:set, x :e G -> apply_fun mult (e,x) = x /\ apply_fun mult (x,e) = x) /\
+               (forall x:set, x :e G ->
+                 apply_fun mult (x, apply_fun inv x) = e /\ apply_fun mult (apply_fun inv x, x) = e) /\
+               continuous_map (setprod G G) (product_topology G Tg G Tg) G Tg mult /\
+               continuous_map G Tg G Tg inv)
+             H).
+Qed.
+
+(** helper: topological groups are topological spaces **)
+Theorem topological_group_is_topology : forall G Tg:set, topological_group G Tg -> topology_on G Tg.
+let G Tg.
+assume H: topological_group G Tg.
+exact (T1_space_topology G Tg (topological_group_T1 G Tg H)).
+Qed.
+
 (** helper: separated subsets predicate **)
 (** from §31 and §32: separated subsets (complete normality context) **)
 (** LATEX VERSION: Two sets A,B are separated if cl(A)∩B=∅ and A∩cl(B)=∅. **)
