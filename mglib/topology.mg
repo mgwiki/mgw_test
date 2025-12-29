@@ -23365,7 +23365,7 @@ Qed.
 
 (** from §14 Example 2: rectangle subbasis yields product-style topology **) 
 (** LATEX VERSION: Rectangle-type sets give a basis generating the dictionary order topology on ℝ×ℝ. **)
-(** NOTE: Current witness uses `order_topology_basis`; rectangle characterization is not yet formalized. **)
+(** NOTE: Current witness uses the canonical basis from the open-rays subbasis via `basis_of_subbasis`; rectangle characterization is not yet formalized. **)
 Theorem rectangles_basis_for_R2 :
   exists B:set, basis_on (setprod R R) B /\ generated_topology (setprod R R) B = R2_dictionary_order_topology.
 prove exists B:set, basis_on (setprod R R) B /\ generated_topology (setprod R R) B = R2_dictionary_order_topology.
