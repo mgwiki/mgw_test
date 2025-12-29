@@ -27781,6 +27781,28 @@ rewrite (subspace_topology_binintersect_witness X Tx Y U V VU VV HUeq HVeq).
 exact (subspace_topologyI X Tx Y (VU :/\: VV) HUV).
 Qed.
 
+(** helper: monotonicity of the subspace topology in the ambient topology **)
+Theorem subspace_topology_mono : forall X Tx1 Tx2 Y U:set,
+  Tx1 c= Tx2 ->
+  U :e subspace_topology X Tx1 Y ->
+  U :e subspace_topology X Tx2 Y.
+let X Tx1 Tx2 Y U.
+assume Hsub: Tx1 c= Tx2.
+assume HU: U :e subspace_topology X Tx1 Y.
+claim Hex: exists V :e Tx1, U = V :/\: Y.
+{ exact (subspace_topologyE X Tx1 Y U HU). }
+apply Hex.
+let V. assume HVpair.
+claim HV1: V :e Tx1.
+{ exact (andEL (V :e Tx1) (U = V :/\: Y) HVpair). }
+claim HUeq: U = V :/\: Y.
+{ exact (andER (V :e Tx1) (U = V :/\: Y) HVpair). }
+claim HV2: V :e Tx2.
+{ exact (Hsub V HV1). }
+rewrite HUeq.
+exact (subspace_topologyI X Tx2 Y V HV2).
+Qed.
+
 (** helper: subspace topology on whole space equals original topology **)
 Theorem subspace_topology_whole : forall X Tx:set,
   topology_on X Tx ->
