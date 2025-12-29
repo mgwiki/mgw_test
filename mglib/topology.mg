@@ -70271,15 +70271,12 @@ apply iffI.
                          (forall a b:set, a :e J -> b :e J ->
                            exists c:set, c :e J /\ (a,c) :e le /\ (b,c) :e le)
                          Hdir). }
-          claim Hpo: partial_order_on J le.
-          { exact (andER (J <> Empty) (partial_order_on J le) Hleft). }
-          claim Hrefl: forall a:set, a :e J -> (a,a) :e le.
-          { apply Hpo. assume Hab Htrans.
-            apply Hab. assume Hab2 Hantisym.
-            apply Hab2. assume Hrel Hrefl0.
-            exact Hrefl0. }
-          claim Hrefl0: (i0,i0) :e le.
-          { exact (Hrefl i0 Hi0J). }
+	          claim Hpo: partial_order_on J le.
+	          { exact (andER (J <> Empty) (partial_order_on J le) Hleft). }
+	          claim Hrefl: forall a:set, a :e J -> (a,a) :e le.
+	          { exact (partial_order_on_refl J le Hpo). }
+	          claim Hrefl0: (i0,i0) :e le.
+	          { exact (Hrefl i0 Hi0J). }
           (** now show i0 violates eventuality since all points lie outside V **)
           claim HnotV: apply_fun (compose_fun J net f) i0 /:e V.
           { claim Hneti0: apply_fun net i0 :e X :\: W.
@@ -71293,16 +71290,11 @@ claim HnofinFam: ~(has_finite_subcover X Tx Fam).
                    HdirJ). }
     exact (andER (J <> Empty) (partial_order_on J le) Hleft). }
 
-  claim Hrefl: forall a:set, a :e J -> (a,a) :e le.
-  { let a. assume HaJ: a :e J.
-    apply Hpo. assume Hleft1 Htrans0.
-    apply Hleft1. assume Hleft2 Hantisym0.
-    apply Hleft2. assume Hrel0 Hrefl0.
-    exact (Hrefl0 a HaJ). }
+	  claim Hrefl: forall a:set, a :e J -> (a,a) :e le.
+	  { exact (partial_order_on_refl J le Hpo). }
 
-  claim Htrans: forall a b c:set, a :e J -> b :e J -> c :e J -> (a,b) :e le -> (b,c) :e le -> (a,c) :e le.
-  { apply Hpo. assume Hleft1 Htrans0.
-    exact Htrans0. }
+	  claim Htrans: forall a b c:set, a :e J -> b :e J -> c :e J -> (a,b) :e le -> (b,c) :e le -> (a,c) :e le.
+	  { exact (partial_order_on_trans J le Hpo). }
 
   claim Hpickpair_prop: forall x:set, x :e X ->
     pickpair x :e setprod Tx J /\ x :e ((pickpair x) 0) /\ ((pickpair x) 1) :e J /\
