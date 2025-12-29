@@ -73819,8 +73819,8 @@ apply SepI.
           { exact (HIcOmega i HiI). }
           set Ui := open_interval (add_SNo (apply_fun y i) (minus_SNo eps))
                                   (add_SNo (apply_fun y i) eps).
-          claim HUiTop: Ui :e R_standard_topology.
-          { (** Ui is a standard open interval, hence open **)
+	          claim HUiTop: Ui :e R_standard_topology.
+	          { (** Ui is a standard open interval, hence open **)
             claim HyiR: apply_fun y i :e R.
             { exact (Romega_coord_in_R y i HyX HiO). }
             claim HyiS: SNo (apply_fun y i).
@@ -73833,12 +73833,22 @@ apply SepI.
             { exact (real_add_SNo (apply_fun y i) HyiR (minus_SNo eps) HmeiR). }
             claim HbR: add_SNo (apply_fun y i) eps :e R.
             { exact (real_add_SNo (apply_fun y i) HyiR eps HepsR). }
-            claim HbStd: Ui :e R_standard_basis.
-            { exact (famunionI R (fun a0:set => {open_interval a0 b|b :e R})
-                              (add_SNo (apply_fun y i) (minus_SNo eps)) Ui HaR
-                              (ReplI R (fun b1:set => open_interval (add_SNo (apply_fun y i) (minus_SNo eps)) b1)
-                                     (add_SNo (apply_fun y i) eps) HbR)). }
-            exact (generated_topology_contains_basis R R_standard_basis R_standard_basis_is_basis_local Ui HbStd). }
+	            claim HbStd: Ui :e R_standard_basis.
+	            { exact (famunionI R (fun a0:set => {open_interval a0 b|b :e R})
+	                              (add_SNo (apply_fun y i) (minus_SNo eps)) Ui HaR
+	                              (ReplI R (fun b1:set => open_interval (add_SNo (apply_fun y i) (minus_SNo eps)) b1)
+	                                     (add_SNo (apply_fun y i) eps) HbR)). }
+	            claim HPow: Ui :e Power R.
+	            { claim HUiEq: Ui = open_interval (add_SNo (apply_fun y i) (minus_SNo eps))
+	                                             (add_SNo (apply_fun y i) eps).
+	              { reflexivity. }
+	              rewrite HUiEq.
+	              exact (PowerI R
+	                           (open_interval (add_SNo (apply_fun y i) (minus_SNo eps))
+	                                          (add_SNo (apply_fun y i) eps))
+	                           (open_interval_Subq_R (add_SNo (apply_fun y i) (minus_SNo eps))
+	                                                 (add_SNo (apply_fun y i) eps))). }
+	            exact (generated_topology_contains_elem R R_standard_basis Ui HPow HbStd). }
           claim HcylIn: product_cylinder omega Xi0 i Ui :e S.
           { claim HTi: space_family_topology Xi0 i = R_standard_topology.
             { claim Hdef0: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
@@ -73895,8 +73905,8 @@ apply SepI.
 		          - exact HyX.
 		          - (** i :e omega /\ Ui :e space_family_topology Xi0 i /\ apply_fun y i :e Ui **)
 		            prove i :e omega /\ Ui :e space_family_topology Xi0 i /\ apply_fun y i :e Ui.
-		            claim HUiTop: Ui :e R_standard_topology.
-		            { (** Ui is a standard open interval **)
+			          claim HUiTop: Ui :e R_standard_topology.
+			          { (** Ui is a standard open interval **)
 		              claim HyiR: apply_fun y i :e R.
 		              { exact (Romega_coord_in_R y i HyX HiO). }
 		              claim HmeiR: minus_SNo eps :e R.
@@ -73905,12 +73915,22 @@ apply SepI.
 		              { exact (real_add_SNo (apply_fun y i) HyiR (minus_SNo eps) HmeiR). }
 		              claim HbR: add_SNo (apply_fun y i) eps :e R.
 		              { exact (real_add_SNo (apply_fun y i) HyiR eps HepsR). }
-		              claim HbStd: Ui :e R_standard_basis.
-		              { exact (famunionI R (fun a0:set => {open_interval a0 b|b :e R})
-		                                (add_SNo (apply_fun y i) (minus_SNo eps)) Ui HaR
-		                                (ReplI R (fun b1:set => open_interval (add_SNo (apply_fun y i) (minus_SNo eps)) b1)
-		                                       (add_SNo (apply_fun y i) eps) HbR)). }
-		              exact (generated_topology_contains_basis R R_standard_basis R_standard_basis_is_basis_local Ui HbStd). }
+			              claim HbStd: Ui :e R_standard_basis.
+			              { exact (famunionI R (fun a0:set => {open_interval a0 b|b :e R})
+			                                (add_SNo (apply_fun y i) (minus_SNo eps)) Ui HaR
+			                                (ReplI R (fun b1:set => open_interval (add_SNo (apply_fun y i) (minus_SNo eps)) b1)
+			                                       (add_SNo (apply_fun y i) eps) HbR)). }
+			              claim HPow: Ui :e Power R.
+			              { claim HUiEq: Ui = open_interval (add_SNo (apply_fun y i) (minus_SNo eps))
+			                                               (add_SNo (apply_fun y i) eps).
+			                { reflexivity. }
+			                rewrite HUiEq.
+			                exact (PowerI R
+			                             (open_interval (add_SNo (apply_fun y i) (minus_SNo eps))
+			                                            (add_SNo (apply_fun y i) eps))
+			                             (open_interval_Subq_R (add_SNo (apply_fun y i) (minus_SNo eps))
+			                                                   (add_SNo (apply_fun y i) eps))). }
+			              exact (generated_topology_contains_elem R R_standard_basis Ui HPow HbStd). }
 		            claim HTi: space_family_topology Xi0 i = R_standard_topology.
 		            { claim Hdef0: space_family_topology Xi0 i = (apply_fun Xi0 i) 1.
 		              { reflexivity. }
