@@ -88256,7 +88256,7 @@ Qed.
 (** LATEX VERSION: A collection A is locally finite in X if every point has a neighborhood intersecting only finitely many elements of A. **)
 Definition locally_finite_basis : set -> set -> prop := fun X Tx =>
   topology_on X Tx /\
-  exists B:set, basis_on X B /\ locally_finite_family X Tx B.
+  exists B:set, basis_on X B /\ locally_finite_family X Tx B /\ (forall b:set, b :e B -> b :e Tx).
 (** from §39 Definition: countably locally finite (sigma-locally finite) collection **)
 (** LATEX VERSION: A collection B is countably locally finite if it is the countable union of collections B_n, each locally finite. **)
 Definition sigma_locally_finite_basis : set -> set -> prop := fun X Tx =>
@@ -88276,6 +88276,107 @@ assume Hreg: regular_space X Tx.
 assume Hbasis: sigma_locally_finite_basis X Tx.
 prove metrizable X Tx.
 admit. (** FAIL **)
+Qed.
+
+(** helper: locally finite basis implies sigma-locally finite basis (singleton family) **)
+Theorem locally_finite_basis_imp_sigma_locally_finite_basis : forall X Tx:set,
+  locally_finite_basis X Tx -> sigma_locally_finite_basis X Tx.
+let X Tx.
+assume Hlfb: locally_finite_basis X Tx.
+prove sigma_locally_finite_basis X Tx.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (exists B:set, basis_on X B /\ locally_finite_family X Tx B /\ (forall b:set, b :e B -> b :e Tx))
+               Hlfb). }
+prove topology_on X Tx /\
+  exists Fams:set, countable_set Fams /\
+    Fams c= Power (Power X) /\
+    (forall F:set, F :e Fams -> locally_finite_family X Tx F) /\
+    basis_on X (Union Fams) /\
+    forall b:set, b :e Union Fams -> b :e Tx.
+apply andI.
+- exact HTx.
+- claim HexB: exists B:set, basis_on X B /\ locally_finite_family X Tx B /\ (forall b:set, b :e B -> b :e Tx).
+  { exact (andER (topology_on X Tx)
+                 (exists B:set, basis_on X B /\ locally_finite_family X Tx B /\ (forall b:set, b :e B -> b :e Tx))
+                 Hlfb). }
+  apply HexB.
+  let B. assume HB: basis_on X B /\ locally_finite_family X Tx B /\ (forall b:set, b :e B -> b :e Tx).
+  claim HBpair: basis_on X B /\ locally_finite_family X Tx B.
+  { exact (andEL (basis_on X B /\ locally_finite_family X Tx B)
+                 (forall b:set, b :e B -> b :e Tx)
+                 HB). }
+  claim HBbasis: basis_on X B.
+  { exact (andEL (basis_on X B) (locally_finite_family X Tx B) HBpair). }
+  claim HBlf: locally_finite_family X Tx B.
+  { exact (andER (basis_on X B) (locally_finite_family X Tx B) HBpair). }
+  claim HBopen: forall b:set, b :e B -> b :e Tx.
+  { exact (andER (basis_on X B /\ locally_finite_family X Tx B)
+                 (forall b:set, b :e B -> b :e Tx)
+                 HB). }
+  set Fams := Sing B.
+  witness Fams.
+  (** follow left associativity: (((A /\ B) /\ C) /\ D) /\ E **)
+  apply andI.
+  - (** left part: ((countable_set Fams /\ Fams c= Power(Power X)) /\ ...) /\ basis_on ... **)
+    apply andI.
+    + (** left: (countable_set Fams /\ Fams c= Power (Power X)) /\ (forall F, ...) **)
+      apply andI.
+      * (** countable_set Fams /\ Fams c= Power (Power X) **)
+        apply andI.
+        - prove countable_set Fams.
+           prove countable Fams.
+           exact (finite_countable Fams (Sing_finite B)).
+        - (** Fams c= Power (Power X) **)
+           prove Fams c= Power (Power X).
+           let F. assume HF: F :e Fams.
+           prove F :e Power (Power X).
+           claim HeqF: F = B.
+           { exact (SingE B F HF). }
+           rewrite HeqF.
+           claim HBsub: B c= Power X.
+           { exact (basis_on_sub_Power X B HBbasis). }
+           exact (PowerI (Power X) B HBsub).
+      * (** each F in Fams is locally_finite_family **)
+        let F. assume HF: F :e Fams.
+        prove locally_finite_family X Tx F.
+        claim HeqF: F = B.
+        { exact (SingE B F HF). }
+        rewrite HeqF.
+        exact HBlf.
+    + (** basis_on X (Union Fams) **)
+      prove basis_on X (Union Fams).
+      claim HUnionEq: Union Fams = B.
+      { apply (set_ext (Union Fams) B).
+        - let y. assume Hy: y :e Union Fams.
+          apply (UnionE_impred Fams y Hy (y :e B)).
+          let Y. assume HyY: y :e Y. assume HYF: Y :e Fams.
+          claim HeqY: Y = B.
+          { exact (SingE B Y HYF). }
+          rewrite <- HeqY.
+          exact HyY.
+        - let y. assume Hy: y :e B.
+          exact (UnionI Fams y B Hy (SingI B)). }
+      rewrite HUnionEq.
+      exact HBbasis.
+  - (** every b in Union Fams is open **)
+    let b. assume Hb: b :e Union Fams.
+    prove b :e Tx.
+    claim HUnionEq: Union Fams = B.
+    { apply (set_ext (Union Fams) B).
+      - let y. assume Hy: y :e Union Fams.
+        apply (UnionE_impred Fams y Hy (y :e B)).
+        let Y. assume HyY: y :e Y. assume HYF: Y :e Fams.
+        claim HeqY: Y = B.
+        { exact (SingE B Y HYF). }
+        rewrite <- HeqY.
+        exact HyY.
+      - let y. assume Hy: y :e B.
+        exact (UnionI Fams y B Hy (SingI B)). }
+    claim HbB: b :e B.
+    { rewrite <- HUnionEq.
+      exact Hb. }
+    exact (HBopen b HbB).
 Qed.
 
 (** from §41 Definition: paracompact space **) 
@@ -90004,7 +90105,9 @@ let X Tx.
 assume Hreg: regular_space X Tx.
 assume Hbasis: locally_finite_basis X Tx.
 prove metrizable X Tx.
-admit. (** FAIL **)
+claim Hsigma: sigma_locally_finite_basis X Tx.
+{ exact (locally_finite_basis_imp_sigma_locally_finite_basis X Tx Hbasis). }
+exact (Nagata_Smirnov_metrization X Tx Hreg Hsigma).
 Qed.
 
 (** helper: Cauchy sequence in a metric space **)
