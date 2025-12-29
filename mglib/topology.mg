@@ -7028,6 +7028,96 @@ apply (closed_inI X T (C :/\: D)).
   * exact Heq.
 Qed.
 
+(** Helper: union of two closed sets is closed **)
+(** LATEX VERSION: Complements turn finite unions of closed sets into finite intersections of open sets. **)
+Theorem closed_binunion : forall X T C D:set,
+  closed_in X T C ->
+  closed_in X T D ->
+  closed_in X T (C :\/: D).
+let X T C D.
+assume HC: closed_in X T C.
+assume HD: closed_in X T D.
+prove closed_in X T (C :\/: D).
+claim HTx: topology_on X T.
+{ exact (closed_in_topology X T C HC). }
+claim HexU: exists U :e T, C = X :\: U.
+{ exact (closed_in_exists_open_complement X T C HC). }
+claim HexV: exists V :e T, D = X :\: V.
+{ exact (closed_in_exists_open_complement X T D HD). }
+apply HexU.
+let U. assume HUcore.
+apply HUcore.
+assume HU: U :e T.
+assume HCe: C = X :\: U.
+apply HexV.
+let V. assume HVcore.
+apply HVcore.
+assume HV: V :e T.
+assume HDe: D = X :\: V.
+set W := U :/\: V.
+claim HW: W :e T.
+{ exact (topology_binintersect_closed X T U V HTx HU HV). }
+claim Hsubset: (C :\/: D) c= X.
+{ let x. assume Hx: x :e C :\/: D.
+  apply (binunionE C D x Hx).
+  - assume HxC: x :e C.
+    exact (closed_in_subset X T C HC x HxC).
+  - assume HxD: x :e D.
+    exact (closed_in_subset X T D HD x HxD). }
+claim Heq: (C :\/: D) = X :\: W.
+{ rewrite HCe.
+  rewrite HDe.
+  apply set_ext.
+  - let x. assume Hx: x :e (X :\: U) :\/: (X :\: V).
+    prove x :e X :\: W.
+    apply (binunionE (X :\: U) (X :\: V) x Hx).
+    + assume HxU: x :e X :\: U.
+      claim HxX: x :e X.
+      { exact (setminusE1 X U x HxU). }
+      claim HxNotU: x /:e U.
+      { exact (setminusE2 X U x HxU). }
+      claim HxNotW: x /:e W.
+      { assume HxW: x :e W.
+        claim HxUin: x :e U.
+        { exact (binintersectE1 U V x HxW). }
+        exact (HxNotU HxUin). }
+      exact (setminusI X W x HxX HxNotW).
+    + assume HxV: x :e X :\: V.
+      claim HxX: x :e X.
+      { exact (setminusE1 X V x HxV). }
+      claim HxNotV: x /:e V.
+      { exact (setminusE2 X V x HxV). }
+      claim HxNotW: x /:e W.
+      { assume HxW: x :e W.
+        claim HxVin: x :e V.
+        { exact (binintersectE2 U V x HxW). }
+        exact (HxNotV HxVin). }
+      exact (setminusI X W x HxX HxNotW).
+  - let x. assume Hx: x :e X :\: W.
+    prove x :e (X :\: U) :\/: (X :\: V).
+    claim HxX: x :e X.
+    { exact (setminusE1 X W x Hx). }
+    claim HxNotW: x /:e W.
+    { exact (setminusE2 X W x Hx). }
+    apply (xm (x :e U)).
+    + assume HxUin: x :e U.
+      claim HxNotV: x /:e V.
+      { assume HxVin: x :e V.
+        claim HxW: x :e W.
+        { exact (binintersectI U V x HxUin HxVin). }
+        exact (HxNotW HxW). }
+      exact (binunionI2 (X :\: U) (X :\: V) x (setminusI X V x HxX HxNotV)).
+    + assume HxNotU: ~(x :e U).
+      exact (binunionI1 (X :\: U) (X :\: V) x (setminusI X U x HxX HxNotU)). }
+apply (closed_inI X T (C :\/: D)).
+- exact HTx.
+- exact Hsubset.
+- witness W.
+  apply andI.
+  * exact HW.
+  * exact Heq.
+Qed.
+
 (** Helper: Complement of closed set is open **)
 Theorem open_of_closed_complement : forall X T C:set,
   closed_in X T C -> open_in X T (X :\: C).
