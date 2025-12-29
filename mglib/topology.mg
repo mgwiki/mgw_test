@@ -27144,6 +27144,230 @@ prove R2_standard_topology = product_topology R R_standard_topology R R_standard
 reflexivity.
 Qed.
 
+(** helper: the usual open rectangle set equals the cartesian product of open intervals **)
+(** LATEX VERSION: {(x,y) | a<x<b and c<y<d} = (a,b)×(c,d). **)
+Theorem open_rectangle_set_eq_rectangle_set_intervals : forall a b c d:set,
+  {p :e EuclidPlane|
+     exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}
+    = rectangle_set (open_interval a b) (open_interval c d).
+let a b c d.
+apply set_ext.
+- let p. assume Hp:
+    p :e {p0 :e EuclidPlane|
+           exists x y:set, p0 = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}.
+  prove p :e rectangle_set (open_interval a b) (open_interval c d).
+  claim Hex:
+    exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d.
+  { exact (SepE2 EuclidPlane
+          (fun p0:set => exists x y:set, p0 = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d)
+          p Hp). }
+  apply Hex.
+  let x. assume Hexy: exists y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d.
+  apply Hexy.
+  let y. assume Hcore: p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d.
+  claim Hleft4: p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y.
+  { exact (andEL (p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y) (Rlt y d) Hcore). }
+  claim Hyd: Rlt y d.
+  { exact (andER (p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y) (Rlt y d) Hcore). }
+  claim Hleft3: p = (x,y) /\ Rlt a x /\ Rlt x b.
+  { exact (andEL (p = (x,y) /\ Rlt a x /\ Rlt x b) (Rlt c y) Hleft4). }
+  claim Hcy: Rlt c y.
+  { exact (andER (p = (x,y) /\ Rlt a x /\ Rlt x b) (Rlt c y) Hleft4). }
+  claim Hleft2: p = (x,y) /\ Rlt a x.
+  { exact (andEL (p = (x,y) /\ Rlt a x) (Rlt x b) Hleft3). }
+  claim Hxb: Rlt x b.
+  { exact (andER (p = (x,y) /\ Rlt a x) (Rlt x b) Hleft3). }
+  claim Hpeq: p = (x,y).
+  { exact (andEL (p = (x,y)) (Rlt a x) Hleft2). }
+  claim Hax: Rlt a x.
+  { exact (andER (p = (x,y)) (Rlt a x) Hleft2). }
+  claim HxR: x :e R.
+  { exact (RltE_right a x Hax). }
+  claim HyR: y :e R.
+  { exact (RltE_right c y Hcy). }
+  claim HxIn: x :e open_interval a b.
+  { exact (SepI R (fun z:set => Rlt a z /\ Rlt z b) x HxR (andI (Rlt a x) (Rlt x b) Hax Hxb)). }
+  claim HyIn: y :e open_interval c d.
+  { exact (SepI R (fun z:set => Rlt c z /\ Rlt z d) y HyR (andI (Rlt c y) (Rlt y d) Hcy Hyd)). }
+  rewrite Hpeq.
+  exact (tuple_2_rectangle_set (open_interval a b) (open_interval c d) x y HxIn HyIn).
+- let p. assume Hp: p :e rectangle_set (open_interval a b) (open_interval c d).
+  prove p :e {p0 :e EuclidPlane|
+               exists x y:set, p0 = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}.
+  claim HpUV: p :e setprod (open_interval a b) (open_interval c d).
+  { rewrite rectangle_set_def. exact Hp. }
+  claim Hp0U: p 0 :e open_interval a b.
+  { exact (ap0_Sigma (open_interval a b) (fun _ : set => open_interval c d) p HpUV). }
+  claim Hp1V: p 1 :e open_interval c d.
+  { exact (ap1_Sigma (open_interval a b) (fun _ : set => open_interval c d) p HpUV). }
+  claim Hp0R: p 0 :e R.
+  { exact (SepE1 R (fun z:set => Rlt a z /\ Rlt z b) (p 0) Hp0U). }
+  claim Hp1R: p 1 :e R.
+  { exact (SepE1 R (fun z:set => Rlt c z /\ Rlt z d) (p 1) Hp1V). }
+  claim HpEta: p = (p 0, p 1).
+  { exact (setprod_eta (open_interval a b) (open_interval c d) p HpUV). }
+  claim HpE: p :e EuclidPlane.
+  { rewrite HpEta.
+    exact (tuple_2_setprod_by_pair_Sigma R R (p 0) (p 1) Hp0R Hp1R). }
+  claim Hp0ineq: Rlt a (p 0) /\ Rlt (p 0) b.
+  { exact (SepE2 R (fun z:set => Rlt a z /\ Rlt z b) (p 0) Hp0U). }
+  claim Hp1ineq: Rlt c (p 1) /\ Rlt (p 1) d.
+  { exact (SepE2 R (fun z:set => Rlt c z /\ Rlt z d) (p 1) Hp1V). }
+  claim Hap0: Rlt a (p 0).
+  { exact (andEL (Rlt a (p 0)) (Rlt (p 0) b) Hp0ineq). }
+  claim Hp0b: Rlt (p 0) b.
+  { exact (andER (Rlt a (p 0)) (Rlt (p 0) b) Hp0ineq). }
+  claim Hcp1: Rlt c (p 1).
+  { exact (andEL (Rlt c (p 1)) (Rlt (p 1) d) Hp1ineq). }
+  claim Hp1d: Rlt (p 1) d.
+  { exact (andER (Rlt c (p 1)) (Rlt (p 1) d) Hp1ineq). }
+  claim Hpred: exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d.
+  { witness (p 0).
+    witness (p 1).
+    apply and5I.
+    - exact HpEta.
+    - exact Hap0.
+    - exact Hp0b.
+    - exact Hcp1.
+    - exact Hp1d. }
+  exact (SepI EuclidPlane
+            (fun p0:set =>
+              exists x y:set, p0 = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d)
+            p
+            HpE
+            Hpred).
+Qed.
+
+(** helper: an open rectangle is open in the standard topology on R^2 **)
+(** LATEX VERSION: If a<b and c<d, then (a,b)×(c,d) is open in the product topology on ℝ². **)
+Theorem open_rectangle_in_R2_standard_topology : forall a b c d:set,
+  Rlt a b -> Rlt c d ->
+  {p :e EuclidPlane|
+     exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}
+    :e R2_standard_topology.
+let a b c d.
+assume Hab: Rlt a b.
+assume Hcd: Rlt c d.
+rewrite (open_rectangle_set_eq_rectangle_set_intervals a b c d).
+claim HU: open_interval a b :e R_standard_topology.
+{ exact (open_interval_in_R_standard_topology a b Hab). }
+claim HV: open_interval c d :e R_standard_topology.
+{ exact (open_interval_in_R_standard_topology c d Hcd). }
+claim HtopR: topology_on R R_standard_topology.
+{ exact R_standard_topology_is_topology_local. }
+claim HrectInFam: rectangle_set (open_interval a b) (open_interval c d)
+  :e {rectangle_set (open_interval a b) V|V :e R_standard_topology}.
+{ exact (ReplI R_standard_topology (fun V0:set => rectangle_set (open_interval a b) V0)
+         (open_interval c d) HV). }
+claim HrectInSub: rectangle_set (open_interval a b) (open_interval c d)
+  :e product_subbasis R R_standard_topology R R_standard_topology.
+{ exact (famunionI R_standard_topology
+         (fun U0:set => {rectangle_set U0 V|V :e R_standard_topology})
+         (open_interval a b)
+         (rectangle_set (open_interval a b) (open_interval c d))
+         HU
+         HrectInFam). }
+claim HrectPow: rectangle_set (open_interval a b) (open_interval c d) :e Power (setprod R R).
+{ apply PowerI.
+  let p. assume Hp: p :e rectangle_set (open_interval a b) (open_interval c d).
+  prove p :e setprod R R.
+  claim HpUV: p :e setprod (open_interval a b) (open_interval c d).
+  { rewrite rectangle_set_def. exact Hp. }
+  claim Hp0U: p 0 :e open_interval a b.
+  { exact (ap0_Sigma (open_interval a b) (fun _ : set => open_interval c d) p HpUV). }
+  claim Hp1V: p 1 :e open_interval c d.
+  { exact (ap1_Sigma (open_interval a b) (fun _ : set => open_interval c d) p HpUV). }
+  claim Hp0R: p 0 :e R.
+  { exact (SepE1 R (fun z:set => Rlt a z /\ Rlt z b) (p 0) Hp0U). }
+  claim Hp1R: p 1 :e R.
+  { exact (SepE1 R (fun z:set => Rlt c z /\ Rlt z d) (p 1) Hp1V). }
+  claim HpEta: p = (p 0, p 1).
+  { exact (setprod_eta (open_interval a b) (open_interval c d) p HpUV). }
+  rewrite HpEta.
+  exact (tuple_2_setprod_by_pair_Sigma R R (p 0) (p 1) Hp0R Hp1R).
+}
+exact (generated_topology_contains_elem (setprod R R)
+        (product_subbasis R R_standard_topology R R_standard_topology)
+        (rectangle_set (open_interval a b) (open_interval c d))
+        HrectPow
+        HrectInSub).
+Qed.
+
+(** helper: every rectangular region is open in the standard topology on R^2 **)
+(** LATEX VERSION: Every axis-parallel open rectangle (a,b)×(c,d) is open in the standard topology on ℝ². **)
+Theorem rectangular_regions_subset_R2_standard_topology : forall U:set,
+  U :e rectangular_regions -> U :e R2_standard_topology.
+let U.
+assume HU: U :e rectangular_regions.
+prove U :e R2_standard_topology.
+claim Hdesc:
+  exists a b c d:set,
+    a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d /\
+      U = {p :e EuclidPlane|
+             exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}.
+{ exact (SepE2 (Power EuclidPlane)
+        (fun U0:set =>
+          exists a0 b0 c0 d0:set,
+            a0 :e R /\ b0 :e R /\ c0 :e R /\ d0 :e R /\ Rlt a0 b0 /\ Rlt c0 d0 /\
+              U0 = {p :e EuclidPlane|
+                     exists x y:set, p = (x,y) /\ Rlt a0 x /\ Rlt x b0 /\ Rlt c0 y /\ Rlt y d0})
+        U HU). }
+apply Hdesc.
+let a. assume Hbex: exists b c d:set,
+  a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d /\
+    U = {p :e EuclidPlane|
+           exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}.
+apply Hbex.
+let b. assume Hcex: exists c d:set,
+  a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d /\
+    U = {p :e EuclidPlane|
+           exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}.
+apply Hcex.
+let c. assume Hdex: exists d:set,
+  a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d /\
+    U = {p :e EuclidPlane|
+           exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}.
+apply Hdex.
+let d. assume Hcore:
+  a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d /\
+    U = {p :e EuclidPlane|
+           exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}.
+claim Hleft6: a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d.
+{ exact (andEL (a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d)
+               (U = {p :e EuclidPlane|
+                      exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d})
+               Hcore). }
+claim HUeq:
+  U = {p :e EuclidPlane|
+         exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d}.
+{ exact (andER (a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b /\ Rlt c d)
+               (U = {p :e EuclidPlane|
+                      exists x y:set, p = (x,y) /\ Rlt a x /\ Rlt x b /\ Rlt c y /\ Rlt y d})
+               Hcore). }
+claim Hleft5: a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b.
+{ exact (andEL (a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b) (Rlt c d) Hleft6). }
+claim Hcd: Rlt c d.
+{ exact (andER (a :e R /\ b :e R /\ c :e R /\ d :e R /\ Rlt a b) (Rlt c d) Hleft6). }
+claim Hab: Rlt a b.
+{ exact (andER (a :e R /\ b :e R /\ c :e R /\ d :e R) (Rlt a b) Hleft5). }
+rewrite HUeq.
+exact (open_rectangle_in_R2_standard_topology a b c d Hab Hcd).
+Qed.
+
+(** helper: topology generated by rectangular regions is contained in the standard topology on R^2 **)
+(** LATEX VERSION: The topology generated by rectangular regions is no finer than the standard topology on ℝ². **)
+Theorem generated_topology_rectangular_regions_sub_R2_standard_topology :
+  generated_topology EuclidPlane rectangular_regions c= R2_standard_topology.
+claim HtopR: topology_on R R_standard_topology.
+{ exact R_standard_topology_is_topology_local. }
+claim HtopPlane: topology_on EuclidPlane R2_standard_topology.
+{ exact (product_topology_is_topology R R_standard_topology R R_standard_topology HtopR HtopR). }
+claim Hall: forall U :e rectangular_regions, U :e R2_standard_topology.
+{ let U. assume HU: U :e rectangular_regions.
+  exact (rectangular_regions_subset_R2_standard_topology U HU). }
+exact (generated_topology_finer_weak EuclidPlane rectangular_regions R2_standard_topology HtopPlane Hall).
+Qed.
+
 (** from §16 Definition: subspace topology **) 
 (** LATEX VERSION: The subspace topology on Y⊂X with topology Tx consists of intersections V∩Y with V open in X. **)
 (** SUSPICIOUS DEFINITION: This is phrased as a family of subsets of `Y` (via `Power Y`) with witnesses `V :e Tx`; proofs often need to extract both the witness and the subset fact. **)
@@ -49301,6 +49525,15 @@ Theorem metric_topology_EuclidPlane_metric_eq_generated_rectangular_regions :
 prove metric_topology EuclidPlane EuclidPlane_metric = generated_topology EuclidPlane rectangular_regions.
 rewrite (metric_topology_EuclidPlane_metric_eq_generated_circular_regions).
 exact (circular_rectangular_same_topology_plane).
+Qed.
+
+(** helper: Euclidean metric topology is contained in the standard topology on R^2 **)
+(** LATEX VERSION: The metric topology induced by the Euclidean metric is no finer than the standard topology on ℝ². **)
+Theorem metric_topology_EuclidPlane_metric_sub_R2_standard_topology :
+  metric_topology EuclidPlane EuclidPlane_metric c= R2_standard_topology.
+prove metric_topology EuclidPlane EuclidPlane_metric c= R2_standard_topology.
+rewrite (metric_topology_EuclidPlane_metric_eq_generated_rectangular_regions).
+exact generated_topology_rectangular_regions_sub_R2_standard_topology.
 Qed.
 
 (** Helper: open balls are open in the metric topology **)
