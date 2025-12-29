@@ -82797,6 +82797,36 @@ Qed.
 (** LATEX VERSION: A is dense in X if its closure equals X. **)
 Definition dense_in : set -> set -> set -> prop := fun A X Tx => closure_of X Tx A = X.
 
+(** Helper: density is preserved by supersets **)
+(** LATEX VERSION: If A is dense in X and A ⊆ B ⊆ X, then B is dense in X. **)
+Theorem dense_in_superset : forall A B X Tx:set,
+  topology_on X Tx ->
+  A c= B -> B c= X ->
+  dense_in A X Tx ->
+  dense_in B X Tx.
+let A B X Tx.
+assume HTx: topology_on X Tx.
+assume HAB: A c= B.
+assume HBX: B c= X.
+assume HdA: dense_in A X Tx.
+prove dense_in B X Tx.
+prove closure_of X Tx B = X.
+apply set_ext.
+- (** closure(B) ⊆ X **)
+  exact (closure_in_space X Tx B HTx).
+- (** X ⊆ closure(B) because closure(A)=X and closure(A)⊆closure(B) **)
+  let x. assume HxX: x :e X.
+  prove x :e closure_of X Tx B.
+  claim HclMono: closure_of X Tx A c= closure_of X Tx B.
+  { exact (closure_monotone X Tx A B HTx HAB HBX). }
+  claim HdAeq: closure_of X Tx A = X.
+  { exact HdA. }
+  claim HxclA: x :e closure_of X Tx A.
+  { rewrite HdAeq.
+    exact HxX. }
+  exact (HclMono x HxclA).
+Qed.
+
 (** from §30 Theorem 30.3(a): countable basis implies Lindelöf **) 
 (** LATEX VERSION: A second-countable space is Lindelöf (every open cover has countable subcover). **)
 Theorem countable_basis_implies_Lindelof : forall X Tx:set,
@@ -91215,7 +91245,60 @@ Theorem pointwise_limit_continuity_points_dense : forall X Tx Y d fn f:set,
   pointwise_limit_metric X Y d fn f ->
   Baire_space X Tx ->
   dense_in {x :e X | continuous_at_map X Tx Y (metric_topology Y d) f x} X Tx.
-admit. (** FAIL **)
+let X Tx Y d fn f.
+assume Hd: metric_on_total Y d.
+assume Hcont: forall n:set, n :e omega ->
+  continuous_map X Tx Y (metric_topology Y d) (apply_fun fn n).
+assume Hf: function_on f X Y.
+assume Hlim: pointwise_limit_metric X Y d fn f.
+assume HB: Baire_space X Tx.
+prove dense_in {x :e X | continuous_at_map X Tx Y (metric_topology Y d) f x} X Tx.
+(** Outline of TeX proof: define U(eps)=⋃ Int(A_N(eps)), show each U(eps) open dense, use Baire to get C=⋂U(1/n) dense, show f continuous on C. **)
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall U:set,
+                 U c= Tx -> countable_set U ->
+                 (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
+                 dense_in (intersection_over_family X U) X Tx)
+               HB). }
+set Ufam := {U_eps X Tx Y d fn (inv_nat (ordsucc n)) | n :e omega}.
+claim HcountOmega: countable_set omega.
+{ prove countable_set omega.
+  prove countable omega.
+  exact (Subq_atleastp omega omega (Subq_ref omega)). }
+claim HcountUfam: countable_set Ufam.
+{ exact (countable_image omega HcountOmega (fun n0:set => U_eps X Tx Y d fn (inv_nat (ordsucc n0)))). }
+claim HUfamSub: Ufam c= Tx.
+{ admit. (** FAIL **) }
+claim HUfamDense: forall u:set, u :e Ufam -> u :e Tx /\ dense_in u X Tx.
+{ admit. (** FAIL **) }
+claim HBprop: forall U0:set,
+  U0 c= Tx -> countable_set U0 ->
+  (forall u:set, u :e U0 -> u :e Tx /\ dense_in u X Tx) ->
+  dense_in (intersection_over_family X U0) X Tx.
+{ exact (andER (topology_on X Tx)
+               (forall U0:set,
+                 U0 c= Tx -> countable_set U0 ->
+                 (forall u:set, u :e U0 -> u :e Tx /\ dense_in u X Tx) ->
+                 dense_in (intersection_over_family X U0) X Tx)
+               HB). }
+claim HdenseC: dense_in (intersection_over_family X Ufam) X Tx.
+{ exact (HBprop Ufam HUfamSub HcountUfam HUfamDense). }
+claim HCsubCont:
+  intersection_over_family X Ufam c=
+    {x :e X | continuous_at_map X Tx Y (metric_topology Y d) f x}.
+{ admit. (** FAIL **) }
+claim HContSubX:
+  {x :e X | continuous_at_map X Tx Y (metric_topology Y d) f x} c= X.
+{ let x. assume Hx: x :e {x0 :e X | continuous_at_map X Tx Y (metric_topology Y d) f x0}.
+  exact (SepE1 X (fun x0:set => continuous_at_map X Tx Y (metric_topology Y d) f x0) x Hx). }
+exact (dense_in_superset (intersection_over_family X Ufam)
+        {x :e X | continuous_at_map X Tx Y (metric_topology Y d) f x}
+        X Tx
+        HTx
+        HCsubCont
+        HContSubX
+        HdenseC).
 Qed.
 
 (** from §49 Definition: differentiability and nowhere-differentiable function **) 
