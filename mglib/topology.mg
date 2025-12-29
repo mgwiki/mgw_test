@@ -87825,18 +87825,34 @@ Definition sigma_locally_finite_family : set -> set -> set -> prop := fun X Tx F
 Definition closed_cover : set -> set -> set -> prop := fun X Tx C =>
   (forall c:set, c :e C -> closed_in X Tx c) /\ covers X C.
 
+Definition Michael_cond41_3_1 : set -> set -> prop := fun X Tx =>
+  forall U:set, open_cover X Tx U ->
+    exists V:set, open_cover X Tx V /\ sigma_locally_finite_family X Tx V /\ refine_of V U.
+
+Definition Michael_cond41_3_2 : set -> set -> prop := fun X Tx =>
+  forall U:set, open_cover X Tx U ->
+    exists V:set, covers X V /\ locally_finite_family X Tx V /\ refine_of V U.
+
+Definition Michael_cond41_3_3 : set -> set -> prop := fun X Tx =>
+  forall U:set, open_cover X Tx U ->
+    exists V:set, closed_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U.
+
+Definition Michael_cond41_3_4 : set -> set -> prop := fun X Tx =>
+  forall U:set, open_cover X Tx U ->
+    exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U.
+
 Theorem Michael_lemma_41_3 : forall X Tx:set,
   regular_space X Tx ->
-  (forall U:set, open_cover X Tx U ->
-     exists V:set, open_cover X Tx V /\ sigma_locally_finite_family X Tx V /\ refine_of V U) ->
-  (forall U:set, open_cover X Tx U ->
-     exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U).
+  (Michael_cond41_3_1 X Tx -> Michael_cond41_3_2 X Tx) /\
+  (Michael_cond41_3_2 X Tx -> Michael_cond41_3_3 X Tx) /\
+  (Michael_cond41_3_3 X Tx -> Michael_cond41_3_4 X Tx) /\
+  (Michael_cond41_3_4 X Tx -> Michael_cond41_3_1 X Tx).
 let X Tx.
 assume Hreg: regular_space X Tx.
-assume Hsig: forall U:set, open_cover X Tx U ->
-  exists V:set, open_cover X Tx V /\ sigma_locally_finite_family X Tx V /\ refine_of V U.
-prove forall U:set, open_cover X Tx U ->
-  exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U.
+prove (Michael_cond41_3_1 X Tx -> Michael_cond41_3_2 X Tx) /\
+  (Michael_cond41_3_2 X Tx -> Michael_cond41_3_3 X Tx) /\
+  (Michael_cond41_3_3 X Tx -> Michael_cond41_3_4 X Tx) /\
+  (Michael_cond41_3_4 X Tx -> Michael_cond41_3_1 X Tx).
 admit. (** FAIL **)
 Qed.
 
