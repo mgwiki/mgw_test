@@ -87978,7 +87978,372 @@ let X Tx Y.
 assume Hpara: paracompact_space X Tx.
 assume HYcl: closed_in X Tx Y.
 prove paracompact_space Y (subspace_topology X Tx Y).
-admit. (** FAIL **)
+set Ty := subspace_topology X Tx Y.
+prove topology_on Y Ty /\
+  forall UY:set, open_cover Y Ty UY ->
+    exists VY:set, open_cover Y Ty VY /\ locally_finite_family Y Ty VY /\ refine_of VY UY.
+apply andI.
+- (** topology on the closed subspace **)
+  claim HTx: topology_on X Tx.
+  { exact (andEL (topology_on X Tx)
+                 (forall U:set, open_cover X Tx U ->
+                   exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U)
+                 Hpara). }
+  claim HYpkg: Y c= X /\ exists U :e Tx, Y = X :\: U.
+  { exact (closed_in_package X Tx Y HYcl). }
+  claim HYsub: Y c= X.
+  { exact (andEL (Y c= X) (exists U :e Tx, Y = X :\: U) HYpkg). }
+  exact (subspace_topology_is_topology X Tx Y HTx HYsub).
+- (** every open cover of the subspace has a locally finite open refinement **)
+  let UY.
+  assume HUY: open_cover Y Ty UY.
+  prove exists VY:set, open_cover Y Ty VY /\ locally_finite_family Y Ty VY /\ refine_of VY UY.
+  claim HTx: topology_on X Tx.
+  { exact (andEL (topology_on X Tx)
+                 (forall U:set, open_cover X Tx U ->
+                   exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U)
+                 Hpara). }
+  claim HYpkg: Y c= X /\ exists U :e Tx, Y = X :\: U.
+  { exact (closed_in_package X Tx Y HYcl). }
+  claim HYsubX: Y c= X.
+  { exact (andEL (Y c= X) (exists U :e Tx, Y = X :\: U) HYpkg). }
+  claim HTy: topology_on Y Ty.
+  { exact (subspace_topology_is_topology X Tx Y HTx HYsubX). }
+  claim HUYop: forall u:set, u :e UY -> u :e Ty.
+  { exact (andEL (forall u:set, u :e UY -> u :e Ty) (covers Y UY) HUY). }
+  claim HUYcov: covers Y UY.
+  { exact (andER (forall u:set, u :e UY -> u :e Ty) (covers Y UY) HUY). }
+
+  (** lift the subspace cover to an open cover of X **)
+  set U0 := {V :e Tx | exists u :e UY, u = V :/\: Y}.
+  claim HXYopen: X :\: Y :e Tx.
+  { claim Hop: open_in X Tx (X :\: Y).
+    { exact (open_of_closed_complement X Tx Y HYcl). }
+    exact (andER (topology_on X Tx) ((X :\: Y) :e Tx) Hop). }
+  set UX := U0 :\/: {X :\: Y}.
+  claim HUXopen: forall u:set, u :e UX -> u :e Tx.
+  { let u. assume HuUX: u :e UX.
+    apply (binunionE U0 {X :\: Y} u HuUX).
+    - assume HuU0: u :e U0.
+      exact (SepE1 Tx (fun V:set => exists u0 :e UY, u0 = V :/\: Y) u HuU0).
+    - assume HuS: u :e {X :\: Y}.
+      claim HuEq: u = X :\: Y.
+      { exact (SingE (X :\: Y) u HuS). }
+      rewrite HuEq.
+      exact HXYopen. }
+  claim HUXcov: covers X UX.
+  { let x. assume HxX: x :e X.
+    apply (xm (x :e Y)).
+    - assume HxY: x :e Y.
+      claim HcovYx: exists u:set, u :e UY /\ x :e u.
+      { exact (HUYcov x HxY). }
+      apply HcovYx.
+      let u. assume Hu: u :e UY /\ x :e u.
+      claim HuUY: u :e UY.
+      { exact (andEL (u :e UY) (x :e u) Hu). }
+      claim Hxu: x :e u.
+      { exact (andER (u :e UY) (x :e u) Hu). }
+      claim HuTy: u :e Ty.
+      { exact (HUYop u HuUY). }
+      claim HexV: exists V :e Tx, u = V :/\: Y.
+      { exact (subspace_topologyE X Tx Y u HuTy). }
+      apply HexV.
+      let V. assume HV: V :e Tx /\ u = V :/\: Y.
+      claim HVTx: V :e Tx.
+      { exact (andEL (V :e Tx) (u = V :/\: Y) HV). }
+      claim HuEq: u = V :/\: Y.
+      { exact (andER (V :e Tx) (u = V :/\: Y) HV). }
+      witness V.
+      apply andI.
+      - claim HVU0: V :e U0.
+        { apply (SepI Tx (fun W:set => exists u0 :e UY, u0 = W :/\: Y) V HVTx).
+          witness u.
+          apply andI.
+          - exact HuUY.
+          - exact HuEq. }
+        exact (binunionI1 U0 {X :\: Y} V HVU0).
+      - claim HxVY: x :e V :/\: Y.
+        { rewrite <- HuEq.
+          exact Hxu. }
+        exact (binintersectE1 V Y x HxVY).
+    - assume HxNotY: ~(x :e Y).
+      witness (X :\: Y).
+      apply andI.
+      - exact (binunionI2 U0 {X :\: Y} (X :\: Y) (SingI (X :\: Y))).
+      - exact (setminusI X Y x HxX HxNotY). }
+  claim HUX: open_cover X Tx UX.
+  { prove (forall u:set, u :e UX -> u :e Tx) /\ covers X UX.
+    apply andI.
+    - exact HUXopen.
+    - exact HUXcov. }
+
+  (** apply paracompactness in X **)
+  claim HparaFor: forall U:set, open_cover X Tx U ->
+    exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U.
+  { exact (andER (topology_on X Tx)
+                 (forall U:set, open_cover X Tx U ->
+                   exists V:set, open_cover X Tx V /\ locally_finite_family X Tx V /\ refine_of V U)
+                 Hpara). }
+  claim HexVX: exists VX:set, open_cover X Tx VX /\ locally_finite_family X Tx VX /\ refine_of VX UX.
+  { exact (HparaFor UX HUX). }
+  apply HexVX.
+  let VX. assume HVX: open_cover X Tx VX /\ locally_finite_family X Tx VX /\ refine_of VX UX.
+  claim HVXab: open_cover X Tx VX /\ locally_finite_family X Tx VX.
+  { exact (andEL (open_cover X Tx VX /\ locally_finite_family X Tx VX) (refine_of VX UX) HVX). }
+  claim HrefVX: refine_of VX UX.
+  { exact (andER (open_cover X Tx VX /\ locally_finite_family X Tx VX) (refine_of VX UX) HVX). }
+  claim HVXcover: open_cover X Tx VX.
+  { exact (andEL (open_cover X Tx VX) (locally_finite_family X Tx VX) HVXab). }
+  claim HLFVX: locally_finite_family X Tx VX.
+  { exact (andER (open_cover X Tx VX) (locally_finite_family X Tx VX) HVXab). }
+  claim HVXop: forall v:set, v :e VX -> v :e Tx.
+  { exact (andEL (forall v:set, v :e VX -> v :e Tx) (covers X VX) HVXcover). }
+  claim HVXcov: covers X VX.
+  { exact (andER (forall v:set, v :e VX -> v :e Tx) (covers X VX) HVXcover). }
+
+  (** restrict the refinement back to Y **)
+  set VY := {v :/\: Y | v :e VX, v :/\: Y <> Empty}.
+
+  claim HVYopen: forall w:set, w :e VY -> w :e Ty.
+  { let w. assume Hw: w :e VY.
+    apply (ReplSepE_impred VX (fun v:set => v :/\: Y <> Empty) (fun v:set => v :/\: Y) w Hw (w :e Ty)).
+    let v. assume HvVX: v :e VX.
+    assume HvNon: v :/\: Y <> Empty.
+    assume HwEq: w = v :/\: Y.
+    claim HvTx: v :e Tx.
+    { exact (HVXop v HvVX). }
+    claim Hsub: v :/\: Y :e Ty.
+    { exact (subspace_topologyI X Tx Y v HvTx). }
+    rewrite HwEq.
+    exact Hsub. }
+
+  claim HVYcov: covers Y VY.
+  { let y. assume HyY: y :e Y.
+    claim HyX: y :e X.
+    { exact (HYsubX y HyY). }
+    claim Hexv: exists v:set, v :e VX /\ y :e v.
+    { exact (HVXcov y HyX). }
+    apply Hexv.
+    let v. assume Hv: v :e VX /\ y :e v.
+    claim HvVX: v :e VX.
+    { exact (andEL (v :e VX) (y :e v) Hv). }
+    claim Hyv: y :e v.
+    { exact (andER (v :e VX) (y :e v) Hv). }
+    set w := v :/\: Y.
+    witness w.
+    apply andI.
+    - exact (ReplSepI VX (fun t:set => t :/\: Y <> Empty) (fun t:set => t :/\: Y) v HvVX
+                (elem_implies_nonempty (v :/\: Y) y (binintersectI v Y y Hyv HyY))).
+    - exact (binintersectI v Y y Hyv HyY). }
+
+  claim HVY: open_cover Y Ty VY.
+  { prove (forall w:set, w :e VY -> w :e Ty) /\ covers Y VY.
+    apply andI.
+    - exact HVYopen.
+    - exact HVYcov. }
+
+  claim HrefVY: refine_of VY UY.
+  { let w. assume Hw: w :e VY.
+    apply (ReplSepE_impred VX (fun v:set => v :/\: Y <> Empty) (fun v:set => v :/\: Y) w Hw
+              (exists u:set, u :e UY /\ w c= u)).
+    let v. assume HvVX: v :e VX.
+    assume HvNon: v :/\: Y <> Empty.
+    assume HwEq: w = v :/\: Y.
+    claim Hexu: exists u:set, u :e UX /\ v c= u.
+    { exact (HrefVX v HvVX). }
+    apply Hexu.
+    let u. assume Hu: u :e UX /\ v c= u.
+    claim HuUX: u :e UX.
+    { exact (andEL (u :e UX) (v c= u) Hu). }
+    claim HvSubu: v c= u.
+    { exact (andER (u :e UX) (v c= u) Hu). }
+    apply (binunionE U0 {X :\: Y} u HuUX).
+    - assume HuU0: u :e U0.
+      claim Hexu0: exists u0 :e UY, u0 = u :/\: Y.
+      { exact (SepE2 Tx (fun V0:set => exists u0 :e UY, u0 = V0 :/\: Y) u HuU0). }
+      apply Hexu0.
+      let u0. assume Hu0: u0 :e UY /\ u0 = u :/\: Y.
+      claim Hu0UY: u0 :e UY.
+      { exact (andEL (u0 :e UY) (u0 = u :/\: Y) Hu0). }
+      claim Hu0Eq: u0 = u :/\: Y.
+      { exact (andER (u0 :e UY) (u0 = u :/\: Y) Hu0). }
+      witness u0.
+      apply andI.
+      - exact Hu0UY.
+      - let z. assume Hz: z :e w.
+        prove z :e u0.
+        claim HzvY: z :e v :/\: Y.
+        { rewrite <- HwEq.
+          exact Hz. }
+        claim Hzv: z :e v.
+        { exact (binintersectE1 v Y z HzvY). }
+        claim HzY: z :e Y.
+        { exact (binintersectE2 v Y z HzvY). }
+        claim Hzu: z :e u.
+        { exact (HvSubu z Hzv). }
+        claim HzuY: z :e u :/\: Y.
+        { exact (binintersectI u Y z Hzu HzY). }
+        rewrite Hu0Eq.
+        exact HzuY.
+    - assume HuComp: u :e {X :\: Y}.
+      (** impossible since w is nonempty but u is disjoint from Y **)
+      claim HuEq: u = X :\: Y.
+      { exact (SingE (X :\: Y) u HuComp). }
+      apply FalseE.
+      claim HwNon: w <> Empty.
+      { rewrite HwEq.
+        exact HvNon. }
+      claim Hzex: exists z:set, z :e w.
+      { exact (nonempty_has_element w HwNon). }
+      apply Hzex.
+      let z. assume Hz: z :e w.
+      claim HzvY: z :e v :/\: Y.
+      { rewrite <- HwEq.
+        exact Hz. }
+      claim Hzv: z :e v.
+      { exact (binintersectE1 v Y z HzvY). }
+      claim HzY: z :e Y.
+      { exact (binintersectE2 v Y z HzvY). }
+      claim Hzu: z :e u.
+      { exact (HvSubu z Hzv). }
+      claim HzuXY: z :e X :\: Y.
+      { rewrite <- HuEq.
+        exact Hzu. }
+      claim HzNotY: z /:e Y.
+      { exact (setminusE2 X Y z HzuXY). }
+      exact (HzNotY HzY). }
+
+  (** local finiteness survives restriction to a subspace **)
+  claim HLFVY: locally_finite_family Y Ty VY.
+  { prove topology_on Y Ty /\
+      forall y:set, y :e Y ->
+        exists N:set, N :e Ty /\ y :e N /\
+          exists S:set, finite S /\ S c= VY /\
+            forall A:set, A :e VY -> A :/\: N <> Empty -> A :e S.
+    apply andI.
+    - exact HTy.
+    - let y. assume HyY: y :e Y.
+      claim HyX: y :e X.
+      { exact (HYsubX y HyY). }
+      claim HLFpkg: forall x:set, x :e X ->
+        exists N:set, N :e Tx /\ x :e N /\
+          exists S:set, finite S /\ S c= VX /\
+            forall A:set, A :e VX -> A :/\: N <> Empty -> A :e S.
+      { exact (andER (topology_on X Tx)
+                     (forall x:set, x :e X ->
+                       exists N:set, N :e Tx /\ x :e N /\
+                         exists S:set, finite S /\ S c= VX /\
+                           forall A:set, A :e VX -> A :/\: N <> Empty -> A :e S)
+                     HLFVX). }
+      claim HexN: exists N:set, N :e Tx /\ y :e N /\
+        exists S:set, finite S /\ S c= VX /\
+          forall A:set, A :e VX -> A :/\: N <> Empty -> A :e S.
+      { exact (HLFpkg y HyX). }
+      apply HexN.
+      let N. assume HN: N :e Tx /\ y :e N /\
+        exists S:set, finite S /\ S c= VX /\
+          forall A:set, A :e VX -> A :/\: N <> Empty -> A :e S.
+      claim HexS: exists S:set, finite S /\ S c= VX /\ forall A:set, A :e VX -> A :/\: N <> Empty -> A :e S.
+      { exact (andER (N :e Tx /\ y :e N)
+                     (exists S:set, finite S /\ S c= VX /\ forall A:set, A :e VX -> A :/\: N <> Empty -> A :e S)
+                     HN). }
+      claim HNy: N :e Tx /\ y :e N.
+      { exact (andEL (N :e Tx /\ y :e N)
+                     (exists S:set, finite S /\ S c= VX /\ forall A:set, A :e VX -> A :/\: N <> Empty -> A :e S)
+                     HN). }
+      claim HNTx: N :e Tx.
+      { exact (andEL (N :e Tx) (y :e N) HNy). }
+      claim HyN: y :e N.
+      { exact (andER (N :e Tx) (y :e N) HNy). }
+      set NY := N :/\: Y.
+      claim HNYTy: NY :e Ty.
+      { exact (subspace_topologyI X Tx Y N HNTx). }
+      claim HyNY: y :e NY.
+      { exact (binintersectI N Y y HyN HyY). }
+      witness NY.
+      apply andI.
+      - prove NY :e Ty /\ y :e NY.
+        apply andI.
+        * exact HNYTy.
+        * exact HyNY.
+      - apply HexS.
+        let S. assume HS: finite S /\ S c= VX /\ forall A:set, A :e VX -> A :/\: N <> Empty -> A :e S.
+          claim HS1: finite S /\ S c= VX.
+          { exact (andEL (finite S /\ S c= VX)
+                         (forall A:set, A :e VX -> A :/\: N <> Empty -> A :e S)
+                         HS). }
+          claim HSprop: forall A:set, A :e VX -> A :/\: N <> Empty -> A :e S.
+          { exact (andER (finite S /\ S c= VX)
+                         (forall A:set, A :e VX -> A :/\: N <> Empty -> A :e S)
+                         HS). }
+          claim HSfin: finite S.
+          { exact (andEL (finite S) (S c= VX) HS1). }
+          claim HSsubVX: S c= VX.
+          { exact (andER (finite S) (S c= VX) HS1). }
+          set SY := {v :/\: Y | v :e S, v :/\: Y <> Empty}.
+          witness SY.
+          apply andI.
+          { apply andI.
+            { (** SY finite **)
+            claim HSimgfin: finite {t :/\: Y | t :e S}.
+            { exact (Repl_finite (fun t:set => t :/\: Y) S HSfin). }
+            claim HSYsub: SY c= {t :/\: Y | t :e S}.
+            { let w. assume HwSY: w :e SY.
+              apply (ReplSepE_impred S (fun t:set => t :/\: Y <> Empty) (fun t:set => t :/\: Y) w HwSY (w :e {t :/\: Y | t :e S})).
+              let t. assume HtS: t :e S.
+              assume HtNon: t :/\: Y <> Empty.
+              assume HwEq: w = t :/\: Y.
+              rewrite HwEq.
+              exact (ReplI S (fun t0:set => t0 :/\: Y) t HtS). }
+            exact (Subq_finite {t :/\: Y | t :e S} HSimgfin SY HSYsub). }
+            { (** SY subset of VY **)
+            let w. assume HwSY: w :e SY.
+            apply (ReplSepE_impred S (fun t:set => t :/\: Y <> Empty) (fun t:set => t :/\: Y) w HwSY (w :e VY)).
+            let t. assume HtS: t :e S.
+            assume HtNon: t :/\: Y <> Empty.
+            assume HwEq: w = t :/\: Y.
+            claim HtVX: t :e VX.
+            { exact (HSsubVX t HtS). }
+            rewrite HwEq.
+            exact (ReplSepI VX (fun v0:set => v0 :/\: Y <> Empty) (fun v0:set => v0 :/\: Y) t HtVX HtNon). } }
+          { (** key property **)
+            let A. assume HA: A :e VY.
+            assume HAnN: A :/\: NY <> Empty.
+            apply (ReplSepE_impred VX (fun v0:set => v0 :/\: Y <> Empty) (fun v0:set => v0 :/\: Y) A HA (A :e SY)).
+            let v0. assume Hv0VX: v0 :e VX.
+            assume Hv0Non: v0 :/\: Y <> Empty.
+            assume HAeq: A = v0 :/\: Y.
+            claim Hexz: exists z:set, z :e A :/\: NY.
+            { exact (nonempty_has_element (A :/\: NY) HAnN). }
+            apply Hexz.
+            let z. assume Hz: z :e A :/\: NY.
+            claim HzA: z :e A.
+            { exact (binintersectE1 A NY z Hz). }
+            claim HzNY: z :e NY.
+            { exact (binintersectE2 A NY z Hz). }
+            claim Hzv0Y: z :e v0 :/\: Y.
+            { rewrite <- HAeq.
+              exact HzA. }
+            claim Hzv0: z :e v0.
+            { exact (binintersectE1 v0 Y z Hzv0Y). }
+            claim HzN: z :e N.
+            { exact (binintersectE1 N Y z HzNY). }
+            claim Hzv0N: z :e v0 :/\: N.
+            { exact (binintersectI v0 N z Hzv0 HzN). }
+            claim Hv0N: v0 :/\: N <> Empty.
+            { exact (elem_implies_nonempty (v0 :/\: N) z Hzv0N). }
+            claim Hv0S: v0 :e S.
+            { exact (HSprop v0 Hv0VX Hv0N). }
+            rewrite HAeq.
+            exact (ReplSepI S (fun t1:set => t1 :/\: Y <> Empty) (fun t1:set => t1 :/\: Y) v0 Hv0S Hv0Non). } }
+
+  witness VY.
+  prove (open_cover Y Ty VY /\ locally_finite_family Y Ty VY) /\ refine_of VY UY.
+  apply andI.
+  - apply andI.
+    + exact HVY.
+    + exact HLFVY.
+  - exact HrefVY.
 Qed.
 
 (** from §41 Lemma 41.3 (Michael): countably locally finite refinements and locally finite refinements **)
