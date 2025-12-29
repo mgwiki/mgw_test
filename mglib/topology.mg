@@ -91844,7 +91844,14 @@ claim HCsubCont:
     apply and3I.
     - exact HU0Tx.
     - exact HxU0'.
-    - admit. (** FAIL **)
+    - prove forall u:set, u :e U0 -> apply_fun f u :e V.
+      let u. assume HuU0: u :e U0.
+      claim HuX: u :e X.
+      { exact (topology_elem_subset X Tx U0 HTx HU0Tx u HuU0). }
+      claim HballGoal: apply_fun f u :e open_ball Y d (apply_fun f x) eps0.
+      { admit. (** FAIL **) }
+      apply HballSubV.
+      exact HballGoal.
 }
 claim HContSubX:
   {x :e X | continuous_at_map X Tx Y (metric_topology Y d) f x} c= X.
