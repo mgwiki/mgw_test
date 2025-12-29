@@ -82037,8 +82037,12 @@ Definition separating_family_of_functions : set -> set -> set -> set -> prop :=
 Definition embedding_of : set -> set -> set -> set -> set -> prop := fun X Tx Y Ty f =>
   homeomorphism X Tx (image_of f X) (subspace_topology Y Ty (image_of f X)) f.
 (** LATEX VERSION: Power and unit-interval cubes helpers; metrizability predicate. **)
-Definition power_real : set -> set := fun J => function_space J R.
-Definition unit_interval_power : set -> set := fun J => function_space J unit_interval.
+(** LATEX VERSION: Notation R^J for the product of copies of R with the standard topology. **)
+Definition power_real : set -> set := fun J =>
+  product_space J (const_space_family J R R_standard_topology).
+(** LATEX VERSION: Notation [0,1]^J for the product of copies of [0,1] (subspace topology). **)
+Definition unit_interval_power : set -> set := fun J =>
+  product_space J (const_space_family J unit_interval unit_interval_topology).
 Definition metrizable : set -> set -> prop := fun X Tx =>
   exists d:set, metric_on X d /\ metric_topology X d = Tx.
 
@@ -86102,7 +86106,9 @@ Definition euclidean_metric : set -> set := fun n => discrete_metric (euclidean_
 
 (** helper: bounded product metric on R^omega **) 
 (** LATEX VERSION: Bounded product metric on R^ω (placeholder). **)
-Definition bounded_product_metric : set -> set := fun J => discrete_metric (power_real J).
+(** LATEX VERSION: On R^ω, use the bounded product metric D (defined earlier as `Romega_D_metric`). **)
+Definition bounded_product_metric : set -> set := fun J =>
+  If_i (J = omega) Romega_D_metric (discrete_metric (power_real J)).
 
 (** from §43 Lemma 43.1: Cauchy with convergent subsequence converges **) 
 (** LATEX VERSION: In a metric space, a Cauchy sequence with a convergent subsequence converges to the same limit. **)
