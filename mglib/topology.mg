@@ -27700,6 +27700,87 @@ claim HUpow: U :e Power Y.
 exact (PowerE Y U HUpow).
 Qed.
 
+(** helper: intersection of two subspace-open sets is subspace-open, with an explicit witness **)
+Theorem subspace_topology_binintersect_witness : forall X Tx Y U V VU VV:set,
+  U = VU :/\: Y ->
+  V = VV :/\: Y ->
+  U :/\: V = (VU :/\: VV) :/\: Y.
+let X Tx Y U V VU VV.
+assume HU: U = VU :/\: Y.
+assume HV: V = VV :/\: Y.
+prove U :/\: V = (VU :/\: VV) :/\: Y.
+apply set_ext.
+- let x. assume Hx: x :e U :/\: V.
+  claim HxUV: x :e U /\ x :e V.
+  { exact (binintersectE U V x Hx). }
+  claim HxU: x :e U.
+  { exact (andEL (x :e U) (x :e V) HxUV). }
+  claim HxV: x :e V.
+  { exact (andER (x :e U) (x :e V) HxUV). }
+  claim HxUY: x :e VU :/\: Y.
+  { rewrite <- HU. exact HxU. }
+  claim HxVY: x :e VV :/\: Y.
+  { rewrite <- HV. exact HxV. }
+  claim HxVU: x :e VU.
+  { exact (binintersectE1 VU Y x HxUY). }
+  claim HxVV: x :e VV.
+  { exact (binintersectE1 VV Y x HxVY). }
+  claim HxY: x :e Y.
+  { exact (binintersectE2 VU Y x HxUY). }
+  claim HxVUVV: x :e VU :/\: VV.
+  { exact (binintersectI VU VV x HxVU HxVV). }
+  exact (binintersectI (VU :/\: VV) Y x HxVUVV HxY).
+- let x. assume Hx: x :e (VU :/\: VV) :/\: Y.
+  claim HxVUVV: x :e VU :/\: VV.
+  { exact (binintersectE1 (VU :/\: VV) Y x Hx). }
+  claim HxY: x :e Y.
+  { exact (binintersectE2 (VU :/\: VV) Y x Hx). }
+  claim HxVU: x :e VU.
+  { exact (binintersectE1 VU VV x HxVUVV). }
+  claim HxVV: x :e VV.
+  { exact (binintersectE2 VU VV x HxVUVV). }
+  claim HxU: x :e U.
+  { rewrite HU.
+    exact (binintersectI VU Y x HxVU HxY). }
+  claim HxV: x :e V.
+  { rewrite HV.
+    exact (binintersectI VV Y x HxVV HxY). }
+  exact (binintersectI U V x HxU HxV).
+Qed.
+
+(** helper: intersection closure for the subspace topology **)
+Theorem subspace_topology_binintersect : forall X Tx Y U V:set,
+  topology_on X Tx -> Y c= X ->
+  U :e subspace_topology X Tx Y ->
+  V :e subspace_topology X Tx Y ->
+  U :/\: V :e subspace_topology X Tx Y.
+let X Tx Y U V.
+assume HTx: topology_on X Tx.
+assume HY: Y c= X.
+assume HU: U :e subspace_topology X Tx Y.
+assume HV: V :e subspace_topology X Tx Y.
+claim HexU: exists VU :e Tx, U = VU :/\: Y.
+{ exact (subspace_topologyE X Tx Y U HU). }
+claim HexV: exists VV :e Tx, V = VV :/\: Y.
+{ exact (subspace_topologyE X Tx Y V HV). }
+apply HexU.
+let VU. assume HVUpair.
+claim HVU: VU :e Tx.
+{ exact (andEL (VU :e Tx) (U = VU :/\: Y) HVUpair). }
+claim HUeq: U = VU :/\: Y.
+{ exact (andER (VU :e Tx) (U = VU :/\: Y) HVUpair). }
+apply HexV.
+let VV. assume HVVpair.
+claim HVV: VV :e Tx.
+{ exact (andEL (VV :e Tx) (V = VV :/\: Y) HVVpair). }
+claim HVeq: V = VV :/\: Y.
+{ exact (andER (VV :e Tx) (V = VV :/\: Y) HVVpair). }
+claim HUV: VU :/\: VV :e Tx.
+{ exact (topology_intersection_closed X Tx VU VV HTx HVU HVV). }
+rewrite (subspace_topology_binintersect_witness X Tx Y U V VU VV HUeq HVeq).
+exact (subspace_topologyI X Tx Y (VU :/\: VV) HUV).
+Qed.
+
 (** helper: subspace topology on whole space equals original topology **)
 Theorem subspace_topology_whole : forall X Tx:set,
   topology_on X Tx ->
