@@ -91269,9 +91269,75 @@ claim HcountOmega: countable_set omega.
 claim HcountUfam: countable_set Ufam.
 { exact (countable_image omega HcountOmega (fun n0:set => U_eps X Tx Y d fn (inv_nat (ordsucc n0)))). }
 claim HUfamSub: Ufam c= Tx.
-{ admit. (** FAIL **) }
+{ let U. assume HU: U :e Ufam.
+  apply (ReplE_impred omega (fun n0:set => U_eps X Tx Y d fn (inv_nat (ordsucc n0))) U HU (U :e Tx)).
+  let n0. assume Hn0: n0 :e omega.
+  assume HeqU: U = U_eps X Tx Y d fn (inv_nat (ordsucc n0)).
+  claim HsuccOmega: ordsucc n0 :e omega.
+  { exact (omega_ordsucc n0 Hn0). }
+  claim Hnot0: ordsucc n0 /:e {0}.
+  { assume Hmem0: ordsucc n0 :e {0}.
+    claim Heq0: ordsucc n0 = 0.
+    { exact (SingE 0 (ordsucc n0) Hmem0). }
+    exact ((neq_ordsucc_0 n0) Heq0). }
+  claim HsuccIn: ordsucc n0 :e omega :\: {0}.
+  { exact (setminusI omega {0} (ordsucc n0) HsuccOmega Hnot0). }
+  claim HepsR: inv_nat (ordsucc n0) :e R.
+  { exact (inv_nat_real (ordsucc n0) HsuccOmega). }
+  claim HepsPos: Rlt 0 (inv_nat (ordsucc n0)).
+  { exact (inv_nat_pos (ordsucc n0) HsuccIn). }
+  claim Htmp: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) /\
+              dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx.
+  { exact (U_eps_open_dense_stub X Tx Y d fn (inv_nat (ordsucc n0))
+           HTx Hd Hcont HepsR HepsPos). }
+  claim Hop: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))).
+  { exact (andEL (open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))))
+                 (dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx)
+                 Htmp). }
+  claim HUinTx: U_eps X Tx Y d fn (inv_nat (ordsucc n0)) :e Tx.
+  { exact (open_in_elem X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) Hop). }
+  rewrite HeqU.
+  exact HUinTx. }
 claim HUfamDense: forall u:set, u :e Ufam -> u :e Tx /\ dense_in u X Tx.
-{ admit. (** FAIL **) }
+{ let u. assume Hu: u :e Ufam.
+  apply (ReplE_impred omega (fun n0:set => U_eps X Tx Y d fn (inv_nat (ordsucc n0))) u Hu
+        (u :e Tx /\ dense_in u X Tx)).
+  let n0. assume Hn0: n0 :e omega.
+  assume HeqU: u = U_eps X Tx Y d fn (inv_nat (ordsucc n0)).
+  claim HsuccOmega: ordsucc n0 :e omega.
+  { exact (omega_ordsucc n0 Hn0). }
+  claim Hnot0: ordsucc n0 /:e {0}.
+  { assume Hmem0: ordsucc n0 :e {0}.
+    claim Heq0: ordsucc n0 = 0.
+    { exact (SingE 0 (ordsucc n0) Hmem0). }
+    exact ((neq_ordsucc_0 n0) Heq0). }
+  claim HsuccIn: ordsucc n0 :e omega :\: {0}.
+  { exact (setminusI omega {0} (ordsucc n0) HsuccOmega Hnot0). }
+  claim HepsR: inv_nat (ordsucc n0) :e R.
+  { exact (inv_nat_real (ordsucc n0) HsuccOmega). }
+  claim HepsPos: Rlt 0 (inv_nat (ordsucc n0)).
+  { exact (inv_nat_pos (ordsucc n0) HsuccIn). }
+  claim Htmp: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) /\
+              dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx.
+  { exact (U_eps_open_dense_stub X Tx Y d fn (inv_nat (ordsucc n0))
+           HTx Hd Hcont HepsR HepsPos). }
+  claim Hop: open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))).
+  { exact (andEL (open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))))
+                 (dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx)
+                 Htmp). }
+  claim Hdense: dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx.
+  { exact (andER (open_in X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))))
+                 (dense_in (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) X Tx)
+                 Htmp). }
+  claim HUinTx: u :e Tx.
+  { rewrite HeqU.
+    exact (open_in_elem X Tx (U_eps X Tx Y d fn (inv_nat (ordsucc n0))) Hop). }
+  claim Hdenseu: dense_in u X Tx.
+  { rewrite HeqU.
+    exact Hdense. }
+  apply andI.
+  - exact HUinTx.
+  - exact Hdenseu. }
 claim HBprop: forall U0:set,
   U0 c= Tx -> countable_set U0 ->
   (forall u:set, u :e U0 -> u :e Tx /\ dense_in u X Tx) ->
