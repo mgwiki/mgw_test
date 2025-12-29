@@ -32954,57 +32954,7 @@ assume Htop: topology_on X Tx.
 assume HC: closed_in X Tx C.
 assume HD: closed_in X Tx D.
 prove closed_in X Tx (C :\/: D).
-  (** C = X \\ U and D = X \\ V for some open U,V; then C ∪ D = X \\ (U ∩ V) and U ∩ V is open. **)
-prove topology_on X Tx /\ (C :\/: D c= X /\ exists W :e Tx, C :\/: D = X :\: W).
-apply andI.
-- exact Htop.
-- claim HC_parts: C c= X /\ exists U :e Tx, C = X :\: U.
-  { exact (andER (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HC). }
-  claim HD_parts: D c= X /\ exists V :e Tx, D = X :\: V.
-  { exact (andER (topology_on X Tx) (D c= X /\ exists V :e Tx, D = X :\: V) HD). }
-  claim HC_sub: C c= X.
-  { exact (andEL (C c= X) (exists U :e Tx, C = X :\: U) HC_parts). }
-  claim HD_sub: D c= X.
-  { exact (andEL (D c= X) (exists V :e Tx, D = X :\: V) HD_parts). }
-  claim HCex: exists U :e Tx, C = X :\: U.
-  { exact (andER (C c= X) (exists U :e Tx, C = X :\: U) HC_parts). }
-  claim HDex: exists V :e Tx, D = X :\: V.
-  { exact (andER (D c= X) (exists V :e Tx, D = X :\: V) HD_parts). }
-  apply andI.
-  + (** C ∪ D ⊆ X **)
-    let x. assume Hx: x :e C :\/: D.
-    apply (binunionE C D x Hx).
-    * assume HxC: x :e C. exact (HC_sub x HxC).
-    * assume HxD: x :e D. exact (HD_sub x HxD).
-  + (** exists W :e Tx, C ∪ D = X \ W **)
-    apply HCex.
-    let U. assume HU_conj: U :e Tx /\ C = X :\: U.
-    claim HU: U :e Tx.
-    { exact (andEL (U :e Tx) (C = X :\: U) HU_conj). }
-    claim HCeq: C = X :\: U.
-    { exact (andER (U :e Tx) (C = X :\: U) HU_conj). }
-    apply HDex.
-    let V. assume HV_conj: V :e Tx /\ D = X :\: V.
-    claim HV: V :e Tx.
-    { exact (andEL (V :e Tx) (D = X :\: V) HV_conj). }
-    claim HDeq: D = X :\: V.
-    { exact (andER (V :e Tx) (D = X :\: V) HV_conj). }
-    (** Set W = U ∩ V, which is open **)
-    set W := U :/\: V.
-    claim HW_open: W :e Tx.
-    { exact (lemma_intersection_two_open X Tx U V Htop HU HV). }
-	    witness W.
-	    apply andI.
-	    * exact HW_open.
-	    * (** Prove C ∪ D = X \ W using De Morgan lemma **)
-	      prove C :\/: D = X :\: W.
-	      rewrite HCeq.
-	      rewrite HDeq.
-	      claim HWdef: W = U :/\: V.
-	      { reflexivity. }
-	      rewrite HWdef.
-	      rewrite (setminus_binintersect_eq_binunion X U V).
-	      reflexivity.
+exact (closed_binunion X Tx C D HC HD).
 Qed.
 
 (** Helper: Empty is closed **)
@@ -33122,55 +33072,7 @@ assume Htop: topology_on X Tx.
 assume HC: closed_in X Tx C.
 assume HD: closed_in X Tx D.
 prove closed_in X Tx (C :/\: D).
-  (** C = X \\ U and D = X \\ V for some open U,V; then C ∩ D = (X\\U) ∩ (X\\V) = X \\ (U ∪ V) and U ∪ V is open. **)
-prove topology_on X Tx /\ (C :/\: D c= X /\ exists W :e Tx, C :/\: D = X :\: W).
-apply andI.
-- exact Htop.
-- claim HC_parts: C c= X /\ exists U :e Tx, C = X :\: U.
-  { exact (andER (topology_on X Tx) (C c= X /\ exists U :e Tx, C = X :\: U) HC). }
-  claim HD_parts: D c= X /\ exists V :e Tx, D = X :\: V.
-  { exact (andER (topology_on X Tx) (D c= X /\ exists V :e Tx, D = X :\: V) HD). }
-  claim HC_sub: C c= X.
-  { exact (andEL (C c= X) (exists U :e Tx, C = X :\: U) HC_parts). }
-  claim HCex: exists U :e Tx, C = X :\: U.
-  { exact (andER (C c= X) (exists U :e Tx, C = X :\: U) HC_parts). }
-  claim HDex: exists V :e Tx, D = X :\: V.
-  { exact (andER (D c= X) (exists V :e Tx, D = X :\: V) HD_parts). }
-  apply andI.
-  + (** C ∩ D ⊆ X **)
-    let x. assume Hx: x :e C :/\: D.
-    claim HxC: x :e C.
-    { exact (binintersectE1 C D x Hx). }
-    exact (HC_sub x HxC).
-  + (** exists W :e Tx, C ∩ D = X \ W **)
-    apply HCex.
-    let U. assume HU_conj: U :e Tx /\ C = X :\: U.
-    claim HU: U :e Tx.
-    { exact (andEL (U :e Tx) (C = X :\: U) HU_conj). }
-    claim HCeq: C = X :\: U.
-    { exact (andER (U :e Tx) (C = X :\: U) HU_conj). }
-    apply HDex.
-    let V. assume HV_conj: V :e Tx /\ D = X :\: V.
-    claim HV: V :e Tx.
-    { exact (andEL (V :e Tx) (D = X :\: V) HV_conj). }
-      claim HDeq: D = X :\: V.
-      { exact (andER (V :e Tx) (D = X :\: V) HV_conj). }
-      (** Set W = U ∪ V, which is open **)
-      set W := U :\/: V.
-      claim HW_open: W :e Tx.
-      { exact (lemma_union_two_open X Tx U V Htop HU HV). }
-      witness W.
-      apply andI.
-      * exact HW_open.
-      * (** Prove C ∩ D = X \ W using De Morgan lemma **)
-        prove C :/\: D = X :\: W.
-	      rewrite HCeq.
-	      rewrite HDeq.
-	      claim HWdef: W = U :\/: V.
-	      { reflexivity. }
-	      rewrite HWdef.
-	      rewrite <- (setminus_binunion_eq_binintersect X U V).
-	      reflexivity.
+exact (closed_binintersect X Tx C D HC HD).
 Qed.
 
 Theorem closed_closure_eq : forall X Tx C:set,
