@@ -91349,9 +91349,158 @@ claim HUbad: Ubad :e Tx.
 { set Veps := {r :e R | Rlt eps r}.
   claim HVeps: Veps :e R_standard_topology.
   { exact (open_ray_in_R_standard_topology eps HepsR). }
-  (** Strategy: express Ubad as a union of preimages of Veps under x |-> d(fn n x, fn m x). **)
-  (** Remaining work: build the union and show each preimage is in Tx using continuity and metric_distance_continuous. **)
-  admit. (** FAIL **) }
+  set IndN := {k :e omega | N c= k}.
+  set Iprod := setprod IndN IndN.
+  set Fam := {preimage_of X
+                (compose_fun X
+                  (pair_map X (apply_fun fn (p 0)) (apply_fun fn (p 1)))
+                  d)
+                Veps
+              | p :e Iprod}.
+  claim HFamSub: Fam c= Tx.
+  { let U. assume HU: U :e Fam.
+    apply (ReplE_impred Iprod
+            (fun p0:set =>
+              preimage_of X
+                (compose_fun X
+                  (pair_map X (apply_fun fn (p0 0)) (apply_fun fn (p0 1)))
+                  d)
+                Veps)
+            U HU (U :e Tx)).
+    let p. assume Hp: p :e Iprod.
+    assume HeqU: U =
+      preimage_of X
+        (compose_fun X
+          (pair_map X (apply_fun fn (p 0)) (apply_fun fn (p 1)))
+          d)
+        Veps.
+    claim Hp0In: p 0 :e IndN.
+    { exact (ap0_Sigma IndN (fun k:set => IndN) p Hp). }
+    claim Hp1In: p 1 :e IndN.
+    { exact (ap1_Sigma IndN (fun k:set => IndN) p Hp). }
+    claim HnO: (p 0) :e omega.
+    { exact (SepE1 omega (fun k:set => N c= k) (p 0) Hp0In). }
+    claim HmO: (p 1) :e omega.
+    { exact (SepE1 omega (fun k:set => N c= k) (p 1) Hp1In). }
+    set n := p 0.
+    set m := p 1.
+    set h := compose_fun X (pair_map X (apply_fun fn n) (apply_fun fn m)) d.
+    claim HpairCont:
+      continuous_map X Tx (setprod Y Y)
+        (product_topology Y (metric_topology Y d) Y (metric_topology Y d))
+        (pair_map X (apply_fun fn n) (apply_fun fn m)).
+    { exact (maps_into_products_axiom X Tx
+              Y (metric_topology Y d)
+              Y (metric_topology Y d)
+              (apply_fun fn n) (apply_fun fn m)
+              (Hcont n HnO) (Hcont m HmO)). }
+    claim Hdcont:
+      continuous_map (setprod Y Y)
+        (product_topology Y (metric_topology Y d) Y (metric_topology Y d))
+        R R_standard_topology d.
+    { exact (metric_distance_continuous Y d Hd). }
+    claim Hhcont: continuous_map X Tx R R_standard_topology h.
+    { exact (composition_continuous X Tx (setprod Y Y)
+              (product_topology Y (metric_topology Y d) Y (metric_topology Y d))
+              R R_standard_topology
+              (pair_map X (apply_fun fn n) (apply_fun fn m))
+              d
+              HpairCont Hdcont). }
+    claim HpreIn: preimage_of X h Veps :e Tx.
+    { exact (continuous_map_preimage X Tx R R_standard_topology h Hhcont Veps HVeps). }
+    rewrite HeqU.
+    exact HpreIn. }
+  claim HUbadEq: Ubad = Union Fam.
+  { apply set_ext.
+    - let x. assume HxU: x :e Ubad.
+      prove x :e Union Fam.
+      claim Hexnm: exists n0:set, n0 :e omega /\ N c= n0 /\
+        exists m0:set, m0 :e omega /\ N c= m0 /\
+          Rlt eps (apply_fun d (apply_fun (apply_fun fn n0) x, apply_fun (apply_fun fn m0) x)).
+      { exact (SepE2 X
+                (fun x0:set =>
+                  exists n0:set, n0 :e omega /\ N c= n0 /\
+                    exists m0:set, m0 :e omega /\ N c= m0 /\
+                      Rlt eps (apply_fun d (apply_fun (apply_fun fn n0) x0, apply_fun (apply_fun fn m0) x0)))
+                x HxU). }
+      apply Hexnm.
+      let n0. assume Hn0.
+      claim Hn0Core: (n0 :e omega /\ N c= n0).
+      { exact (andEL (n0 :e omega /\ N c= n0)
+                     (exists m0:set, m0 :e omega /\ N c= m0 /\
+                       Rlt eps (apply_fun d (apply_fun (apply_fun fn n0) x, apply_fun (apply_fun fn m0) x)))
+                     Hn0). }
+      claim Hexm0: exists m0:set, m0 :e omega /\ N c= m0 /\
+        Rlt eps (apply_fun d (apply_fun (apply_fun fn n0) x, apply_fun (apply_fun fn m0) x)).
+      { exact (andER (n0 :e omega /\ N c= n0)
+                     (exists m0:set, m0 :e omega /\ N c= m0 /\
+                       Rlt eps (apply_fun d (apply_fun (apply_fun fn n0) x, apply_fun (apply_fun fn m0) x)))
+                     Hn0). }
+      claim Hn0O: n0 :e omega.
+      { exact (andEL (n0 :e omega) (N c= n0) Hn0Core). }
+      claim HNn0: N c= n0.
+      { exact (andER (n0 :e omega) (N c= n0) Hn0Core). }
+      apply Hexm0.
+      let m0. assume Hm0.
+      claim Hm0Core: (m0 :e omega /\ N c= m0).
+      { exact (andEL (m0 :e omega /\ N c= m0)
+                     (Rlt eps (apply_fun d (apply_fun (apply_fun fn n0) x, apply_fun (apply_fun fn m0) x)))
+                     Hm0). }
+      claim Hlt: Rlt eps (apply_fun d (apply_fun (apply_fun fn n0) x, apply_fun (apply_fun fn m0) x)).
+      { exact (andER (m0 :e omega /\ N c= m0)
+                     (Rlt eps (apply_fun d (apply_fun (apply_fun fn n0) x, apply_fun (apply_fun fn m0) x)))
+                     Hm0). }
+      claim Hm0O: m0 :e omega.
+      { exact (andEL (m0 :e omega) (N c= m0) Hm0Core). }
+      claim HNm0: N c= m0.
+      { exact (andER (m0 :e omega) (N c= m0) Hm0Core). }
+      claim HxX: x :e X.
+      { exact (SepE1 X
+                (fun x0:set =>
+                  exists n1:set, n1 :e omega /\ N c= n1 /\
+                    exists m1:set, m1 :e omega /\ N c= m1 /\
+                      Rlt eps (apply_fun d (apply_fun (apply_fun fn n1) x0, apply_fun (apply_fun fn m1) x0)))
+                x HxU). }
+      claim Hn0In: n0 :e IndN.
+      { exact (SepI omega (fun k:set => N c= k) n0 Hn0O HNn0). }
+      claim Hm0In: m0 :e IndN.
+      { exact (SepI omega (fun k:set => N c= k) m0 Hm0O HNm0). }
+      set p0 := (n0,m0).
+      claim Hp0: p0 :e Iprod.
+      { exact (tuple_2_setprod_by_pair_Sigma IndN IndN n0 m0 Hn0In Hm0In). }
+      set U0 := preimage_of X
+        (compose_fun X (pair_map X (apply_fun fn (p0 0)) (apply_fun fn (p0 1))) d) Veps.
+      claim HU0Fam: U0 :e Fam.
+      { exact (ReplI Iprod
+              (fun p1:set =>
+                preimage_of X
+                  (compose_fun X
+                    (pair_map X (apply_fun fn (p1 0)) (apply_fun fn (p1 1)))
+                    d)
+                  Veps)
+              p0 Hp0). }
+      claim HxU0in: x :e U0.
+      { claim HxCond: apply_fun
+          (compose_fun X (pair_map X (apply_fun fn (p0 0)) (apply_fun fn (p0 1))) d) x :e Veps.
+        { (** Remaining algebra: unfold apply_fun of compose_fun and pair_map to reduce to Hlt **)
+          admit. (** FAIL **) }
+        exact (SepI X
+                (fun x0:set => apply_fun
+                  (compose_fun X (pair_map X (apply_fun fn (p0 0)) (apply_fun fn (p0 1))) d) x0 :e Veps)
+                x HxX HxCond). }
+      exact (UnionI Fam x U0 HxU0in HU0Fam).
+    - let x. assume Hx: x :e Union Fam.
+      prove x :e Ubad.
+      apply (UnionE_impred Fam x Hx (x :e Ubad)).
+      let U. assume HxU: x :e U. assume HU: U :e Fam.
+      (** Remaining algebra: extract an index p in Iprod and then unpack x in the corresponding preimage into the required witness. **)
+      admit. (** FAIL **) }
+  claim HUnionIn: Union Fam :e Tx.
+  { claim HFamPow: Fam :e Power Tx.
+    { exact (PowerI Tx Fam HFamSub). }
+    exact (topology_union_axiom X Tx HTx Fam HFamPow). }
+  rewrite HUbadEq.
+  exact HUnionIn. }
 exact (closed_of_open_complement X Tx Ubad HTx HUbad).
 Qed.
 
