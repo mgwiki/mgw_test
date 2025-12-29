@@ -50256,6 +50256,16 @@ Definition sequence_in : set -> set -> prop := fun seq A => function_on seq omeg
 (** LATEX VERSION: A sequence is a function from the positive integers (modeled here by omega) into the space. **)
 Definition sequence_on : set -> set -> prop := fun seq A => function_on seq omega A.
 
+(** helper: apply_fun for a graph under definitional equality **)
+Theorem apply_fun_of_graph_eq : forall f A:set, forall g:set->set, forall a:set,
+  f = graph A g -> a :e A -> apply_fun f a = g a.
+let f A g a.
+assume Hf: f = graph A g.
+assume Ha: a :e A.
+rewrite Hf.
+exact (apply_fun_graph A g a Ha).
+Qed.
+
 (** from §17: definition of convergence of a sequence **)
 (** LATEX VERSION: The neighborhood definition of convergence: eventually the sequence lies in every neighborhood of the limit point. **)
 Definition converges_to : set -> set -> set -> set -> prop :=
