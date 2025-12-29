@@ -52756,14 +52756,26 @@ apply (Hbetw (exists c:set, c :e X /\ apply_fun f c = r)).
       \/ (order_rel Y (apply_fun f b) r /\ order_rel Y r (apply_fun f a)))
     \/ r = apply_fun f a.
   apply (Hcases1 (exists c:set, c :e X /\ apply_fun f c = r)).
-	  + assume Hstrict:
-	      (order_rel Y (apply_fun f a) r /\ order_rel Y r (apply_fun f b))
-	      \/ (order_rel Y (apply_fun f b) r /\ order_rel Y r (apply_fun f a)).
-	    admit. (** FAIL **)
-	  + assume HrEqFa: r = apply_fun f a.
-	    witness a.
-	    apply andI.
-	    * exact Ha.
+		  + assume Hstrict:
+		      (order_rel Y (apply_fun f a) r /\ order_rel Y r (apply_fun f b))
+		      \/ (order_rel Y (apply_fun f b) r /\ order_rel Y r (apply_fun f a)).
+		    (** Reduce to showing r lies in the image Im = f(X); the connectedness argument is deferred. **)
+		    claim HrIm: r :e Im.
+		    { (** TODO: use connectedness of Im in the order topology on Y to show all between-values are attained. **)
+		      admit. (** FAIL **) }
+		    apply (ReplE_impred X (fun x0:set => apply_fun f x0) r HrIm
+		           (exists c:set, c :e X /\ apply_fun f c = r)).
+		    let c. assume HcX: c :e X.
+		    assume Hreq: r = apply_fun f c.
+		    witness c.
+		    apply andI.
+		    * exact HcX.
+		    * symmetry.
+		      exact Hreq.
+		  + assume HrEqFa: r = apply_fun f a.
+		    witness a.
+		    apply andI.
+		    * exact Ha.
     * rewrite <- HrEqFa.
       reflexivity.
 - assume HrEqFb: r = apply_fun f b.
