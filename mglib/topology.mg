@@ -48167,6 +48167,47 @@ assume Hlt: Rlt (apply_fun d (x,y)) r.
 exact (SepI X (fun y0:set => Rlt (apply_fun d (x,y0)) r) y HyX Hlt).
 Qed.
 
+(** helper: Euclidean open balls are circular regions (via distance_R2) **)
+(** LATEX VERSION: For Euclidean metric d(p,q)=distance_R2 p q, the open ball B_d(c,r) equals {p∈R^2 | distance_R2(p,c) < r}. **)
+Theorem open_ball_EuclidPlane_metric_eq : forall c r:set,
+  c :e EuclidPlane ->
+  open_ball EuclidPlane EuclidPlane_metric c r
+    = {p :e EuclidPlane|Rlt (distance_R2 p c) r}.
+let c r.
+assume Hc: c :e EuclidPlane.
+apply set_ext.
+- let p. assume Hp: p :e open_ball EuclidPlane EuclidPlane_metric c r.
+  prove p :e {p0 :e EuclidPlane|Rlt (distance_R2 p0 c) r}.
+  claim HpE: p :e EuclidPlane.
+  { exact (open_ballE1 EuclidPlane EuclidPlane_metric c r p Hp). }
+  claim Hlt: Rlt (apply_fun EuclidPlane_metric (c,p)) r.
+  { exact (open_ballE2 EuclidPlane EuclidPlane_metric c r p Hp). }
+  claim Hcp: apply_fun EuclidPlane_metric (c,p) = distance_R2 c p.
+  { exact (EuclidPlane_metric_apply c p Hc HpE). }
+  claim Hsym: distance_R2 c p = distance_R2 p c.
+  { exact (distance_R2_sym c p Hc HpE). }
+  claim Hltcp: Rlt (distance_R2 c p) r.
+  { rewrite <- Hcp. exact Hlt. }
+  claim Hltpc: Rlt (distance_R2 p c) r.
+  { rewrite <- Hsym. exact Hltcp. }
+  exact (SepI EuclidPlane (fun p0:set => Rlt (distance_R2 p0 c) r) p HpE Hltpc).
+- let p. assume Hp: p :e {p0 :e EuclidPlane|Rlt (distance_R2 p0 c) r}.
+  prove p :e open_ball EuclidPlane EuclidPlane_metric c r.
+  claim HpE: p :e EuclidPlane.
+  { exact (SepE1 EuclidPlane (fun p0:set => Rlt (distance_R2 p0 c) r) p Hp). }
+  claim Hltpc: Rlt (distance_R2 p c) r.
+  { exact (SepE2 EuclidPlane (fun p0:set => Rlt (distance_R2 p0 c) r) p Hp). }
+  claim Hsym: distance_R2 p c = distance_R2 c p.
+  { exact (distance_R2_sym p c HpE Hc). }
+  claim Hltcp: Rlt (distance_R2 c p) r.
+  { rewrite <- Hsym. exact Hltpc. }
+  claim Hcp: apply_fun EuclidPlane_metric (c,p) = distance_R2 c p.
+  { exact (EuclidPlane_metric_apply c p Hc HpE). }
+  claim Hlt: Rlt (apply_fun EuclidPlane_metric (c,p)) r.
+  { rewrite Hcp. exact Hltcp. }
+  exact (open_ballI EuclidPlane EuclidPlane_metric c r p HpE Hlt).
+Qed.
+
 (** Helper: open balls are subsets of X **)
 Theorem open_ball_subset_X : forall X d x r:set, open_ball X d x r c= X.
 let X d x r.
@@ -49168,6 +49209,88 @@ let X d.
 assume Hd: metric_on X d.
 prove generated_topology X (famunion X (fun x => {open_ball X d x r|r :e R, Rlt 0 r})) = metric_topology X d.
 (** By definition, metric_topology X d = generated_topology X (famunion X (fun x => {open_ball X d x r|r :e R, Rlt 0 r})) **)
+reflexivity.
+Qed.
+
+(** helper: EuclidPlane_metric open balls are circular regions **)
+(** LATEX VERSION: For Euclidean metric on R^2, every metric open ball is a circular region (and conversely). **)
+Theorem open_ball_EuclidPlane_metric_in_circular_regions : forall c r:set,
+  c :e EuclidPlane -> r :e R -> Rlt 0 r ->
+  open_ball EuclidPlane EuclidPlane_metric c r :e circular_regions.
+let c r.
+assume Hc: c :e EuclidPlane.
+assume HrR: r :e R.
+assume Hrpos: Rlt 0 r.
+rewrite (open_ball_EuclidPlane_metric_eq c r Hc).
+exact (circular_regionI c r Hc Hrpos).
+Qed.
+
+(** helper: the family of EuclidPlane_metric open balls equals circular_regions **)
+(** LATEX VERSION: {B_d(c,r) | c∈R^2, r>0} = {U⊂R^2 | ∃c,r>0, U={p|d(p,c)<r}}. **)
+Theorem EuclidPlane_metric_open_balls_family_eq_circular_regions :
+  famunion EuclidPlane (fun c:set => {open_ball EuclidPlane EuclidPlane_metric c r|r :e R, Rlt 0 r})
+    = circular_regions.
+apply set_ext.
+- let U. assume HU: U :e famunion EuclidPlane (fun c:set => {open_ball EuclidPlane EuclidPlane_metric c r|r :e R, Rlt 0 r}).
+  prove U :e circular_regions.
+  apply (famunionE_impred EuclidPlane (fun c0:set => {open_ball EuclidPlane EuclidPlane_metric c0 r|r :e R, Rlt 0 r})
+         U HU (U :e circular_regions)).
+  let c. assume Hc: c :e EuclidPlane.
+  assume HUIn: U :e {open_ball EuclidPlane EuclidPlane_metric c r|r :e R, Rlt 0 r}.
+  apply (ReplSepE_impred R (fun r0:set => Rlt 0 r0) (fun r0:set => open_ball EuclidPlane EuclidPlane_metric c r0)
+         U HUIn (U :e circular_regions)).
+  let r. assume HrR: r :e R.
+  assume Hrpos: Rlt 0 r.
+  assume HUeq: U = open_ball EuclidPlane EuclidPlane_metric c r.
+  rewrite HUeq.
+  exact (open_ball_EuclidPlane_metric_in_circular_regions c r Hc HrR Hrpos).
+- let U. assume HU: U :e circular_regions.
+  prove U :e famunion EuclidPlane (fun c0:set => {open_ball EuclidPlane EuclidPlane_metric c0 r|r :e R, Rlt 0 r}).
+  claim HUdesc:
+    exists c:set, exists r:set,
+      c :e EuclidPlane /\ Rlt 0 r /\
+      U = {p :e EuclidPlane|Rlt (distance_R2 p c) r}.
+  { exact (SepE2 (Power EuclidPlane)
+          (fun U0:set =>
+            exists c0:set, exists r0:set,
+              c0 :e EuclidPlane /\ Rlt 0 r0 /\
+              U0 = {p :e EuclidPlane|Rlt (distance_R2 p c0) r0})
+          U HU). }
+  apply HUdesc.
+  let c. assume HrEx:
+    exists r:set, c :e EuclidPlane /\ Rlt 0 r /\ U = {p :e EuclidPlane|Rlt (distance_R2 p c) r}.
+  apply HrEx.
+  let r. assume Hcore:
+    c :e EuclidPlane /\ Rlt 0 r /\ U = {p :e EuclidPlane|Rlt (distance_R2 p c) r}.
+  claim Hcr: c :e EuclidPlane /\ Rlt 0 r.
+  { exact (andEL (c :e EuclidPlane /\ Rlt 0 r) (U = {p :e EuclidPlane|Rlt (distance_R2 p c) r}) Hcore). }
+  claim HUeq0: U = {p :e EuclidPlane|Rlt (distance_R2 p c) r}.
+  { exact (andER (c :e EuclidPlane /\ Rlt 0 r) (U = {p :e EuclidPlane|Rlt (distance_R2 p c) r}) Hcore). }
+  claim Hc: c :e EuclidPlane.
+  { exact (andEL (c :e EuclidPlane) (Rlt 0 r) Hcr). }
+  claim Hrpos: Rlt 0 r.
+  { exact (andER (c :e EuclidPlane) (Rlt 0 r) Hcr). }
+  claim HrR: r :e R.
+  { exact (RltE_right 0 r Hrpos). }
+  claim HUeqBall: U = open_ball EuclidPlane EuclidPlane_metric c r.
+  { rewrite HUeq0.
+    rewrite <- (open_ball_EuclidPlane_metric_eq c r Hc).
+    reflexivity. }
+  claim HballIn: open_ball EuclidPlane EuclidPlane_metric c r :e {open_ball EuclidPlane EuclidPlane_metric c rr|rr :e R, Rlt 0 rr}.
+  { exact (ReplSepI R (fun rr:set => Rlt 0 rr) (fun rr:set => open_ball EuclidPlane EuclidPlane_metric c rr) r HrR Hrpos). }
+  claim HUIn: U :e {open_ball EuclidPlane EuclidPlane_metric c rr|rr :e R, Rlt 0 rr}.
+  { rewrite HUeqBall. exact HballIn. }
+  exact (famunionI EuclidPlane (fun c0:set => {open_ball EuclidPlane EuclidPlane_metric c0 rr|rr :e R, Rlt 0 rr})
+         c U Hc HUIn).
+Qed.
+
+(** helper: Euclidean metric topology equals the topology generated by circular regions **)
+(** LATEX VERSION: The metric topology induced by Euclidean distance on R^2 equals the topology generated by circular regions. **)
+Theorem metric_topology_EuclidPlane_metric_eq_generated_circular_regions :
+  metric_topology EuclidPlane EuclidPlane_metric = generated_topology EuclidPlane circular_regions.
+prove metric_topology EuclidPlane EuclidPlane_metric = generated_topology EuclidPlane circular_regions.
+rewrite <- (metric_topology_generated_by_balls EuclidPlane EuclidPlane_metric EuclidPlane_metric_is_metric_on).
+rewrite (EuclidPlane_metric_open_balls_family_eq_circular_regions).
 reflexivity.
 Qed.
 
