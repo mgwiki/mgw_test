@@ -87989,6 +87989,193 @@ exact (andER (topology_on X Tx)
                    forall A:set, A :e F -> A :/\: N <> Empty -> A :e S)
              HLF).
 Qed.
+
+(** helper: closure of a union is contained in the union of closures for locally finite families **)
+Theorem closure_Union_locally_finite_subset_Union_closures : forall X Tx Fam:set,
+  (forall A:set, A :e Fam -> A c= X) ->
+  locally_finite_family X Tx Fam ->
+  closure_of X Tx (Union Fam) c= Union {closure_of X Tx A|A :e Fam}.
+let X Tx Fam.
+assume HFsubX: forall A:set, A :e Fam -> A c= X.
+assume HLF: locally_finite_family X Tx Fam.
+claim HTx: topology_on X Tx.
+{ exact (locally_finite_family_topology X Tx Fam HLF). }
+set ClFam := {closure_of X Tx A|A :e Fam}.
+let x. assume Hxcl: x :e closure_of X Tx (Union Fam).
+prove x :e Union ClFam.
+apply (xm (x :e Union ClFam)).
+- assume H. exact H.
+- assume Hnot: x /:e Union ClFam.
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => forall U:set, U :e Tx -> x0 :e U -> U :/\: (Union Fam) <> Empty) x Hxcl). }
+  claim HxNbhd: forall U:set, U :e Tx -> x :e U -> U :/\: (Union Fam) <> Empty.
+  { exact (SepE2 X (fun x0:set => forall U:set, U :e Tx -> x0 :e U -> U :/\: (Union Fam) <> Empty) x Hxcl). }
+  claim HexLF: exists N:set, N :e Tx /\ x :e N /\
+    exists S:set, finite S /\ S c= Fam /\
+      forall A:set, A :e Fam -> A :/\: N <> Empty -> A :e S.
+  { exact (locally_finite_family_property X Tx Fam HLF x HxX). }
+  apply HexLF.
+  let N. assume HN: N :e Tx /\ x :e N /\
+    exists S:set, finite S /\ S c= Fam /\
+      forall A:set, A :e Fam -> A :/\: N <> Empty -> A :e S.
+  claim HN1: N :e Tx /\ x :e N.
+  { exact (andEL (N :e Tx /\ x :e N)
+                 (exists S:set, finite S /\ S c= Fam /\ forall A:set, A :e Fam -> A :/\: N <> Empty -> A :e S)
+                 HN). }
+  claim HNTx: N :e Tx.
+  { exact (andEL (N :e Tx) (x :e N) HN1). }
+  claim HxN: x :e N.
+  { exact (andER (N :e Tx) (x :e N) HN1). }
+  claim HexS: exists S:set, finite S /\ S c= Fam /\ forall A:set, A :e Fam -> A :/\: N <> Empty -> A :e S.
+  { exact (andER (N :e Tx /\ x :e N)
+                 (exists S:set, finite S /\ S c= Fam /\ forall A:set, A :e Fam -> A :/\: N <> Empty -> A :e S)
+                 HN). }
+  apply HexS.
+  let S. assume HS: finite S /\ S c= Fam /\ forall A:set, A :e Fam -> A :/\: N <> Empty -> A :e S.
+  claim HS1: finite S /\ S c= Fam.
+  { exact (andEL (finite S /\ S c= Fam)
+                 (forall A:set, A :e Fam -> A :/\: N <> Empty -> A :e S)
+                 HS). }
+  claim HSfin: finite S.
+  { exact (andEL (finite S) (S c= Fam) HS1). }
+  claim HSsubFam: S c= Fam.
+  { exact (andER (finite S) (S c= Fam) HS1). }
+  claim HSprop: forall A:set, A :e Fam -> A :/\: N <> Empty -> A :e S.
+  { exact (andER (finite S /\ S c= Fam)
+                 (forall A:set, A :e Fam -> A :/\: N <> Empty -> A :e S)
+                 HS). }
+
+  (** choose for each A in S an open neighborhood of x disjoint from A **)
+  set sep_open := fun A:set => Eps_i (fun U:set => U :e Tx /\ x :e U /\ U :/\: A = Empty).
+  set UFam := {sep_open A|A :e S}.
+
+  claim HUFamFin: finite UFam.
+  { exact (Repl_finite (fun A:set => sep_open A) S HSfin). }
+  claim HUFamSubTx: UFam c= Tx.
+  { let U. assume HU: U :e UFam.
+    apply (ReplE_impred S (fun A:set => sep_open A) U HU (U :e Tx)).
+    let A. assume HA: A :e S.
+    assume HUeq: U = sep_open A.
+    claim HAFam: A :e Fam.
+    { exact (HSsubFam A HA). }
+    claim HxNotClA: x /:e closure_of X Tx A.
+    { assume HxClA: x :e closure_of X Tx A.
+      claim HclAin: closure_of X Tx A :e ClFam.
+      { exact (ReplI Fam (fun A0:set => closure_of X Tx A0) A HAFam). }
+      claim HxInUnion: x :e Union ClFam.
+      { exact (UnionI ClFam x (closure_of X Tx A) HxClA HclAin). }
+      exact (Hnot HxInUnion). }
+    claim HAX: A c= X.
+    { exact (HFsubX A HAFam). }
+    claim HexU: exists U0:set, U0 :e Tx /\ x :e U0 /\ U0 :/\: A = Empty.
+    { exact (not_in_closure_has_disjoint_open X Tx A x HTx HAX HxX HxNotClA). }
+    claim Hsep: (sep_open A) :e Tx /\ x :e (sep_open A) /\ (sep_open A) :/\: A = Empty.
+    { exact (Eps_i_ex (fun U0:set => U0 :e Tx /\ x :e U0 /\ U0 :/\: A = Empty) HexU). }
+    rewrite HUeq.
+    claim HsepAB: (sep_open A) :e Tx /\ x :e (sep_open A).
+    { exact (andEL ((sep_open A) :e Tx /\ x :e (sep_open A))
+                   ((sep_open A) :/\: A = Empty)
+                   Hsep). }
+    exact (andEL ((sep_open A) :e Tx)
+                 (x :e (sep_open A))
+                 HsepAB). }
+  claim HUFamPow: UFam :e Power Tx.
+  { apply PowerI.
+    exact HUFamSubTx. }
+  set Uinter := intersection_of_family X UFam.
+  claim HUinterTx: Uinter :e Tx.
+  { exact (finite_intersection_in_topology X Tx UFam HTx HUFamPow HUFamFin). }
+
+  set M := N :/\: Uinter.
+  claim HMTx: M :e Tx.
+  { exact (topology_binintersect_closed X Tx N Uinter HTx HNTx HUinterTx). }
+  claim HxUinter: x :e Uinter.
+  { claim HallUFam: forall U:set, U :e UFam -> x :e U.
+    { let U. assume HU: U :e UFam.
+      prove x :e U.
+      apply (ReplE_impred S (fun A:set => sep_open A) U HU (x :e U)).
+      let A. assume HA: A :e S.
+      assume HUeq: U = sep_open A.
+      claim HAFam: A :e Fam.
+      { exact (HSsubFam A HA). }
+      claim HxNotClA: x /:e closure_of X Tx A.
+      { assume HxClA: x :e closure_of X Tx A.
+        claim HclAin: closure_of X Tx A :e ClFam.
+        { exact (ReplI Fam (fun A0:set => closure_of X Tx A0) A HAFam). }
+        claim HxInUnion: x :e Union ClFam.
+        { exact (UnionI ClFam x (closure_of X Tx A) HxClA HclAin). }
+        exact (Hnot HxInUnion). }
+      claim HAX: A c= X.
+      { exact (HFsubX A HAFam). }
+      claim HexU: exists U0:set, U0 :e Tx /\ x :e U0 /\ U0 :/\: A = Empty.
+      { exact (not_in_closure_has_disjoint_open X Tx A x HTx HAX HxX HxNotClA). }
+      claim Hsep: (sep_open A) :e Tx /\ x :e (sep_open A) /\ (sep_open A) :/\: A = Empty.
+      { exact (Eps_i_ex (fun U0:set => U0 :e Tx /\ x :e U0 /\ U0 :/\: A = Empty) HexU). }
+      rewrite HUeq.
+      claim HsepAB: (sep_open A) :e Tx /\ x :e (sep_open A).
+      { exact (andEL ((sep_open A) :e Tx /\ x :e (sep_open A))
+                     ((sep_open A) :/\: A = Empty)
+                     Hsep). }
+      exact (andER ((sep_open A) :e Tx)
+                   (x :e (sep_open A))
+                   HsepAB). }
+    exact (SepI X (fun x0:set => forall U:set, U :e UFam -> x0 :e U) x
+                HxX
+                HallUFam). }
+  claim HxM: x :e M.
+  { exact (binintersectI N Uinter x HxN HxUinter). }
+
+  claim HMEmpty: M :/\: (Union Fam) = Empty.
+  { apply Empty_Subq_eq.
+    let z. assume Hz: z :e M :/\: (Union Fam).
+    prove z :e Empty.
+    claim HzM: z :e M.
+    { exact (binintersectE1 M (Union Fam) z Hz). }
+    claim HzUF: z :e Union Fam.
+    { exact (binintersectE2 M (Union Fam) z Hz). }
+    claim HzN: z :e N.
+    { exact (binintersectE1 N Uinter z HzM). }
+    claim HzUinter: z :e Uinter.
+    { exact (binintersectE2 N Uinter z HzM). }
+    apply (UnionE_impred Fam z HzUF).
+    let A0. assume HzA0: z :e A0.
+    assume HA0Fam: A0 :e Fam.
+    claim HA0Nnon: A0 :/\: N <> Empty.
+    { exact (elem_implies_nonempty (A0 :/\: N) z (binintersectI A0 N z HzA0 HzN)). }
+    claim HA0S: A0 :e S.
+    { exact (HSprop A0 HA0Fam HA0Nnon). }
+    claim HUA0: (sep_open A0) :e UFam.
+    { exact (ReplI S (fun A:set => sep_open A) A0 HA0S). }
+    claim HzInSep: z :e sep_open A0.
+    { exact (SepE2 X (fun x0:set => forall U:set, U :e UFam -> x0 :e U) z HzUinter (sep_open A0) HUA0). }
+    claim HxNotClA0: x /:e closure_of X Tx A0.
+    { assume HxClA0: x :e closure_of X Tx A0.
+      claim HclAin: closure_of X Tx A0 :e ClFam.
+      { exact (ReplI Fam (fun A1:set => closure_of X Tx A1) A0 HA0Fam). }
+      claim HxInUnion: x :e Union ClFam.
+      { exact (UnionI ClFam x (closure_of X Tx A0) HxClA0 HclAin). }
+      exact (Hnot HxInUnion). }
+    claim HA0X: A0 c= X.
+    { exact (HFsubX A0 HA0Fam). }
+    claim HexU: exists U0:set, U0 :e Tx /\ x :e U0 /\ U0 :/\: A0 = Empty.
+    { exact (not_in_closure_has_disjoint_open X Tx A0 x HTx HA0X HxX HxNotClA0). }
+    claim Hsep: (sep_open A0) :e Tx /\ x :e (sep_open A0) /\ (sep_open A0) :/\: A0 = Empty.
+    { exact (Eps_i_ex (fun U0:set => U0 :e Tx /\ x :e U0 /\ U0 :/\: A0 = Empty) HexU). }
+    claim HsepEq: (sep_open A0) :/\: A0 = Empty.
+    { exact (andER ((sep_open A0) :e Tx /\ x :e (sep_open A0))
+                   ((sep_open A0) :/\: A0 = Empty)
+                   Hsep). }
+    claim HzInInt: z :e (sep_open A0) :/\: A0.
+    { exact (binintersectI (sep_open A0) A0 z HzInSep HzA0). }
+    rewrite <- HsepEq.
+    exact HzInInt. }
+
+  (** contradiction with x being in the closure of Union Fam **)
+  claim Hcontra: M :/\: (Union Fam) <> Empty.
+  { exact (HxNbhd M HMTx HxM). }
+  apply FalseE.
+  exact (Hcontra HMEmpty).
+Qed.
 (** from §39 Definition: locally finite collection (applied to a basis) **)
 (** LATEX VERSION: A collection A is locally finite in X if every point has a neighborhood intersecting only finitely many elements of A. **)
 Definition locally_finite_basis : set -> set -> prop := fun X Tx =>
