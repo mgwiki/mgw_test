@@ -16996,7 +16996,9 @@ claim HbFam : open_interval a b :e {open_interval a b0|b0 :e R}.
 { exact (ReplI R (fun b0:set => open_interval a b0) b HbR). }
 claim HbStd : open_interval a b :e R_standard_basis.
 { exact (famunionI R (fun a0:set => {open_interval a0 b0|b0 :e R}) a (open_interval a b) HaR HbFam). }
-exact (generated_topology_contains_basis R R_standard_basis R_standard_basis_is_basis_local (open_interval a b) HbStd).
+claim HPow: open_interval a b :e Power R.
+{ exact (PowerI R (open_interval a b) (open_interval_Subq_R a b)). }
+exact (generated_topology_contains_elem R R_standard_basis (open_interval a b) HPow HbStd).
 Qed.
 
 (** from §13: the standard topology on R is a topology **)
@@ -23166,15 +23168,17 @@ apply set_ext.
 
         rewrite Hbeq.
         rewrite HintEq.
-        claim HIinBasis: open_interval a b0 :e R_standard_basis.
-        { claim HIa: open_interval a b0 :e {open_interval a bb|bb :e R}.
-          { exact (ReplI R (fun bb : set => open_interval a bb) b0 Hb0R). }
-          exact (famunionI R (fun aa : set => {open_interval aa bb|bb :e R}) a (open_interval a b0) HaR HIa). }
-        exact (generated_topology_contains_basis R R_standard_basis (R_standard_basis_is_basis) (open_interval a b0) HIinBasis).
-      + assume HbB: b :e B.
-        claim Hex: exists b0 :e R, b = {x :e R | order_rel R x b0}.
-        { exact (SepE2 (Power R)
-                      (fun I0 : set => exists b0 :e R, I0 = {x :e R | order_rel R x b0})
+	        claim HIinBasis: open_interval a b0 :e R_standard_basis.
+	        { claim HIa: open_interval a b0 :e {open_interval a bb|bb :e R}.
+	          { exact (ReplI R (fun bb : set => open_interval a bb) b0 Hb0R). }
+	          exact (famunionI R (fun aa : set => {open_interval aa bb|bb :e R}) a (open_interval a b0) HaR HIa). }
+	        claim HPow: open_interval a b0 :e Power R.
+	        { exact (PowerI R (open_interval a b0) (open_interval_Subq_R a b0)). }
+	        exact (generated_topology_contains_elem R R_standard_basis (open_interval a b0) HPow HIinBasis).
+	      + assume HbB: b :e B.
+	        claim Hex: exists b0 :e R, b = {x :e R | order_rel R x b0}.
+	        { exact (SepE2 (Power R)
+	                      (fun I0 : set => exists b0 :e R, I0 = {x :e R | order_rel R x b0})
                       b HbB). }
         apply Hex.
         let b0. assume Hbp.
@@ -30055,7 +30059,9 @@ claim HbFam : open_interval a b :e {open_interval a b0|b0 :e R}.
 { exact (ReplI R (fun b0:set => open_interval a b0) b HbR). }
 claim HbStd : open_interval a b :e R_standard_basis.
 { exact (famunionI R (fun a0:set => {open_interval a0 b0|b0 :e R}) a (open_interval a b) HaR HbFam). }
-exact (generated_topology_contains_basis R R_standard_basis R_standard_basis_is_basis_local (open_interval a b) HbStd).
+claim HPow: open_interval a b :e Power R.
+{ exact (PowerI R (open_interval a b) (open_interval_Subq_R a b)). }
+exact (generated_topology_contains_elem R R_standard_basis (open_interval a b) HPow HbStd).
 Qed.
 
 (** helper: rational open intervals are in the rational-interval basis **)
