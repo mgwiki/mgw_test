@@ -27690,6 +27690,16 @@ claim Hex: exists V0 :e Tx, (V :/\: Y) = V0 :/\: Y.
 exact (SepI (Power Y) (fun U0:set => exists V0 :e Tx, U0 = V0 :/\: Y) (V :/\: Y) HVpow Hex).
 Qed.
 
+(** helper: elements of the subspace topology are subsets of Y **)
+Theorem subspace_topology_subset : forall X Tx Y U:set,
+  U :e subspace_topology X Tx Y -> U c= Y.
+let X Tx Y U.
+assume HU: U :e subspace_topology X Tx Y.
+claim HUpow: U :e Power Y.
+{ exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HU). }
+exact (PowerE Y U HUpow).
+Qed.
+
 (** helper: subspace topology on whole space equals original topology **)
 Theorem subspace_topology_whole : forall X Tx:set,
   topology_on X Tx ->
