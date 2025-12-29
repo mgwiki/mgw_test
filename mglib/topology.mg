@@ -47513,7 +47513,7 @@ claim HallB: forall b :e B, b :e Tprod.
   rewrite HrectEq.
   exact Hcap. }
 claim Hfiner: finer_than Tprod (generated_topology (setprod X Y) B).
-{ exact (generated_topology_finer (setprod X Y) B Tprod HBasis HTprod HallB). }
+{ exact (generated_topology_finer_weak (setprod X Y) B Tprod HTprod HallB). }
 exact Hfiner.
 Qed.
 
@@ -75088,8 +75088,6 @@ apply andI.
     set X := R_omega_space.
     set d := Romega_D_metric.
     set B := famunion X (fun x0:set => {open_ball X d x0 r|r :e R, Rlt 0 r}).
-    claim HBasis: basis_on X B.
-    { exact (open_balls_form_basis X d Hm). }
     claim HTprod: topology_on X R_omega_product_topology.
     { exact Romega_product_topology_is_topology. }
     claim Hballsub: forall b :e B, b :e R_omega_product_topology.
@@ -75106,7 +75104,7 @@ apply andI.
       rewrite Hbeq.
       exact (Romega_D_metric_open_ball_in_product_topology x0 r0 Hm Hx0X Hr0R Hr0pos). }
     claim Hfiner: finer_than R_omega_product_topology (generated_topology X B).
-    { exact (generated_topology_finer X B R_omega_product_topology HBasis HTprod Hballsub). }
+    { exact (generated_topology_finer_weak X B R_omega_product_topology HTprod Hballsub). }
     claim Hinc: generated_topology X B c= R_omega_product_topology.
     { exact Hfiner. }
     claim Hdef: Romega_D_metric_topology = generated_topology X B.
