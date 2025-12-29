@@ -69916,12 +69916,12 @@ apply iffI.
   prove exists net J le:set, net_converges_on X Tx net J le x /\ net_points_in A net J.
   claim HxX: x :e X.
   { exact (SepE1 X (fun x0:set => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hxcl). }
-  claim Hmeet: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
-  { exact (SepE2 X (fun x0:set => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hxcl). }
-  set J := {U :e Tx | x :e U}.
-  set le := {p :e setprod J J | p 1 c= p 0}.
-  set g := fun U:set => Eps_i (fun y:set => y :e U :/\: A).
-  set net := graph J g.
+	  claim Hmeet: forall U:set, U :e Tx -> x :e U -> U :/\: A <> Empty.
+	  { exact (SepE2 X (fun x0:set => forall U:set, U :e Tx -> x0 :e U -> U :/\: A <> Empty) x Hxcl). }
+	  set J := {U :e Tx | x :e U}.
+	  set le := rev_inclusion_rel J.
+	  set g := fun U:set => Eps_i (fun y:set => y :e U :/\: A).
+	  set net := graph J g.
   claim HTsub: Tx c= Power X.
   { exact (topology_sub_Power X Tx HTx). }
   claim HsubX: forall U:set, U :e Tx -> U c= X.
@@ -69952,8 +69952,9 @@ apply iffI.
     claim HgU_in_U: g U :e U.
     { exact (binintersectE1 U A (g U) (Hg_in U HUJ)). }
     exact (HUsub (g U) HgU_in_U). }
-  claim Hdir: directed_set J le.
-  { exact (neighborhoods_directed_by_reverse_inclusion X Tx x HTx HxX). }
+	  claim Hdir: directed_set J le.
+	  { rewrite (rev_inclusion_rel_def J).
+	    exact (neighborhoods_directed_by_reverse_inclusion X Tx x HTx HxX). }
   claim Htot: total_function_on net J X.
   { exact (total_function_on_graph J X g Hg_in_X). }
   witness net.
