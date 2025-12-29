@@ -8050,6 +8050,22 @@ claim HUsub: U c= X.
 exact (HUsub x HxU).
 Qed.
 
+(** Helper: intersection with Empty on the left **)
+Theorem binintersect_Empty_left : forall A:set,
+  Empty :/\: A = Empty.
+let A.
+apply Empty_Subq_eq.
+exact (binintersect_Subq_1 Empty A).
+Qed.
+
+(** Helper: intersection with Empty on the right **)
+Theorem binintersect_Empty_right : forall A:set,
+  A :/\: Empty = Empty.
+let A.
+apply Empty_Subq_eq.
+exact (binintersect_Subq_2 A Empty).
+Qed.
+
 (** Helper: Setminus with subset is in Power set **)
 Theorem setminus_Power : forall X U:set,
   U :e Power X -> X :\: U :e Power X.
@@ -15033,28 +15049,23 @@ apply andI.
   apply (binunionE' (UPair Empty A) {X} U (U :/\: V :e T)).
   - assume HU0: U :e UPair Empty A.
     apply (UPairE U Empty A HU0).
-    + assume HUeq: U = Empty.
-      rewrite HUeq.
-      claim HcapEq: Empty :/\: V = Empty.
-      { apply set_ext.
-        - let x. assume Hx: x :e Empty :/\: V.
-          exact (binintersectE1 Empty V x Hx).
-        - let x. assume Hx: x :e Empty.
-          exact (binintersectI Empty V x Hx (EmptyE x Hx (x :e V))).
-      }
-      rewrite HcapEq.
-      exact HEmptyIn.
+	    + assume HUeq: U = Empty.
+	      rewrite HUeq.
+	      claim HcapEq: Empty :/\: V = Empty.
+	      { exact (binintersect_Empty_left V). }
+	      rewrite HcapEq.
+	      exact HEmptyIn.
     + assume HUeq: U = A.
       rewrite HUeq.
       apply (binunionE' (UPair Empty A) {X} V (A :/\: V :e T)).
       * assume HV0: V :e UPair Empty A.
         apply (UPairE V Empty A HV0).
-        - assume HVeq: V = Empty.
-           rewrite HVeq.
-           claim HcapEq: A :/\: Empty = Empty.
-           { rewrite (binintersect_com A Empty). exact (binintersect_Subq_eq_1 Empty A (Subq_Empty A)). }
-           rewrite HcapEq.
-           exact HEmptyIn.
+	        - assume HVeq: V = Empty.
+	           rewrite HVeq.
+	           claim HcapEq: A :/\: Empty = Empty.
+	           { exact (binintersect_Empty_right A). }
+	           rewrite HcapEq.
+	           exact HEmptyIn.
         - assume HVeq: V = A.
            rewrite HVeq.
            claim HcapEq: A :/\: A = A.
@@ -15297,17 +15308,12 @@ apply andI.
     apply (binunionE' (UPair Empty A) {B} U (U :/\: V :e T)).
     + assume HU1: U :e UPair Empty A.
       apply (UPairE U Empty A HU1).
-      * assume HUeq: U = Empty.
-        rewrite HUeq.
-        claim HcapEq: Empty :/\: V = Empty.
-        { apply set_ext.
-          - let x. assume Hx: x :e Empty :/\: V.
-            exact (binintersectE1 Empty V x Hx).
-          - let x. assume Hx: x :e Empty.
-            exact (binintersectI Empty V x Hx (EmptyE x Hx (x :e V))).
-        }
-        rewrite HcapEq.
-        exact HEmptyIn.
+	      * assume HUeq: U = Empty.
+	        rewrite HUeq.
+	        claim HcapEq: Empty :/\: V = Empty.
+	        { exact (binintersect_Empty_left V). }
+	        rewrite HcapEq.
+	        exact HEmptyIn.
       * assume HUeq: U = A.
         rewrite HUeq.
         apply (binunionE' T0 {X} V (A :/\: V :e T)).
@@ -15315,12 +15321,12 @@ apply andI.
            apply (binunionE' (UPair Empty A) {B} V (A :/\: V :e T)).
            - assume HV1: V :e UPair Empty A.
                apply (UPairE V Empty A HV1).
-               * assume HVeq: V = Empty.
-                 rewrite HVeq.
-                 claim HcapEq: A :/\: Empty = Empty.
-                 { rewrite (binintersect_com A Empty). exact (binintersect_Subq_eq_1 Empty A (Subq_Empty A)). }
-                 rewrite HcapEq.
-                 exact HEmptyIn.
+	               * assume HVeq: V = Empty.
+	                 rewrite HVeq.
+	                 claim HcapEq: A :/\: Empty = Empty.
+	                 { exact (binintersect_Empty_right A). }
+	                 rewrite HcapEq.
+	                 exact HEmptyIn.
                * assume HVeq: V = A.
                  rewrite HVeq.
                  claim HcapEq: A :/\: A = A.
@@ -85496,8 +85502,7 @@ apply andI.
         exact HyF.
       - (** X :/\: Empty = Empty **)
         claim Hinter: X :/\: Empty = Empty.
-        { rewrite (binintersect_com X Empty).
-          exact (binintersect_Subq_eq_1 Empty X (Subq_Empty X)). }
+        { exact (binintersect_Empty_right X). }
         exact Hinter.
 	    + assume HFne: F <> Empty.
 	      (** Use the closed-set witness F = X \\ Uc with Uc open containing x, then pick a basis neighborhood b0 ⊆ Uc. **)
