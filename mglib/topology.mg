@@ -82043,6 +82043,21 @@ Definition power_real : set -> set := fun J =>
 (** LATEX VERSION: Notation [0,1]^J for the product of copies of [0,1] (subspace topology). **)
 Definition unit_interval_power : set -> set := fun J =>
   product_space J (const_space_family J unit_interval unit_interval_topology).
+
+(** helper: ω-power of R equals the previously defined R^ω product space **)
+(** LATEX VERSION: Identify ℝ^ω with the earlier `R_omega_space` definition. **)
+Theorem power_real_omega_eq_Romega_space : power_real omega = R_omega_space.
+prove power_real omega = R_omega_space.
+reflexivity.
+Qed.
+
+(** helper: ω-power of [0,1] as a product space **)
+(** LATEX VERSION: Identify [0,1]^ω with the corresponding product space. **)
+Theorem unit_interval_power_omega_def :
+  unit_interval_power omega = product_space omega (const_space_family omega unit_interval unit_interval_topology).
+prove unit_interval_power omega = product_space omega (const_space_family omega unit_interval unit_interval_topology).
+reflexivity.
+Qed.
 Definition metrizable : set -> set -> prop := fun X Tx =>
   exists d:set, metric_on X d /\ metric_topology X d = Tx.
 
@@ -86110,6 +86125,20 @@ Definition euclidean_metric : set -> set := fun n => discrete_metric (euclidean_
 Definition bounded_product_metric : set -> set := fun J =>
   If_i (J = omega) Romega_D_metric (discrete_metric (power_real J)).
 
+(** helper: the bounded product metric at ω is Romega_D_metric **)
+(** LATEX VERSION: Specializing the definition to ω yields the D-metric on ℝ^ω. **)
+Theorem bounded_product_metric_omega_eq : bounded_product_metric omega = Romega_D_metric.
+prove bounded_product_metric omega = Romega_D_metric.
+claim Hdef: bounded_product_metric omega =
+  If_i (omega = omega) Romega_D_metric (discrete_metric (power_real omega)).
+{ reflexivity. }
+rewrite Hdef.
+claim Homega: omega = omega.
+{ reflexivity. }
+rewrite (If_i_1 (omega = omega) Romega_D_metric (discrete_metric (power_real omega)) Homega).
+reflexivity.
+Qed.
+
 (** from §43 Lemma 43.1: Cauchy with convergent subsequence converges **) 
 (** LATEX VERSION: In a metric space, a Cauchy sequence with a convergent subsequence converges to the same limit. **)
 (** helper: strictly increasing index map on ω (used to model subsequences) **)
@@ -86156,6 +86185,8 @@ Qed.
 (** from §43 Theorem 43.4: complete metric on R^omega **) 
 (** LATEX VERSION: The bounded product metric makes R^ω complete. **)
 Theorem product_Romega_complete : complete_metric_space (power_real omega) (bounded_product_metric omega).
+rewrite (power_real_omega_eq_Romega_space).
+rewrite (bounded_product_metric_omega_eq).
 admit. (** FAIL **)
 Qed.
 
