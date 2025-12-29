@@ -87302,13 +87302,16 @@ Qed.
 (** from §36 Theorem: compact manifold embeds in Euclidean space **) 
 (** LATEX VERSION: Any compact manifold embeds in some Euclidean space. **)
 Theorem compact_manifold_embeds_in_Euclidean : forall X Tx:set,
-  forall m:set, m_manifold X Tx m -> compact_space X Tx -> exists N:set, exists e:set,
-    embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
+  forall m:set, m_manifold X Tx m -> compact_space X Tx ->
+    exists N:set, exists e:set,
+      N :e omega /\ N <> Empty /\
+      embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 let X Tx.
 let m.
 assume Hman: m_manifold X Tx m.
 assume Hcomp: compact_space X Tx.
 prove exists N:set, exists e:set,
+    N :e omega /\ N <> Empty /\
     embedding_of X Tx (euclidean_space N) (euclidean_topology N) e.
 admit. (** FAIL **)
 Qed.
