@@ -65487,7 +65487,223 @@ let X Tx.
 assume Hlc: locally_compact X Tx.
 assume HH: Hausdorff_space X Tx.
 prove exists Y Ty:set, one_point_compactification X Tx Y Ty.
-admit. (** FAIL **)
+set p := X.
+set Y := X :\/: {p}.
+set Ty := {U :e Power Y |
+  (p /:e U /\ U :e Tx) \/
+  (p :e U /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U = Y :\: K)}.
+witness Y.
+witness Ty.
+claim HcompY: compact_space Y Ty.
+{ admit. (** FAIL **) }
+claim HHausY: Hausdorff_space Y Ty.
+{ admit. (** FAIL **) }
+claim HXsubY: X c= Y.
+{ let x. assume HxX: x :e X.
+  exact (binunionI1 X {p} x HxX). }
+claim HexPoint:
+  exists p0:set, p0 :e Y /\ ~ p0 :e X /\
+    subspace_topology Y Ty X = Tx /\
+    (forall y:set, y :e Y -> y :e X \/ y = p0).
+{ witness p.
+  apply andI.
+  - (** (p :e Y /\ ~ p :e X) /\ subspace_topology Y Ty X = Tx **)
+    prove (p :e Y /\ ~ p :e X) /\ subspace_topology Y Ty X = Tx.
+    apply andI.
+    + (** p :e Y /\ ~ p :e X **)
+      apply andI.
+      * (** p :e Y **)
+        exact (binunionI2 X {p} p (SingI p)).
+      * (** ~ p :e X **)
+        claim HpEq: p = X.
+        { reflexivity. }
+        rewrite HpEq.
+        exact (In_irref X).
+    + (** subspace_topology Y Ty X = Tx **)
+      claim HTx: topology_on X Tx.
+      { exact (locally_compact_topology X Tx Hlc). }
+      apply set_ext.
+      * let W. assume HW: W :e subspace_topology Y Ty X.
+        prove W :e Tx.
+        claim Hex: exists V :e Ty, W = V :/\: X.
+        { exact (SepE2 (Power X) (fun U0:set => exists V :e Ty, U0 = V :/\: X) W HW). }
+        apply Hex.
+        let V. assume HVpair.
+        claim HV: V :e Ty.
+        { exact (andEL (V :e Ty) (W = V :/\: X) HVpair). }
+        claim HWeq: W = V :/\: X.
+        { exact (andER (V :e Ty) (W = V :/\: X) HVpair). }
+        claim HVprop:
+          (p /:e V /\ V :e Tx) \/
+          (p :e V /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ V = Y :\: K).
+        { exact (SepE2 (Power Y)
+                       (fun U0:set =>
+                         (p /:e U0 /\ U0 :e Tx) \/
+                         (p :e U0 /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U0 = Y :\: K))
+                       V
+                       HV). }
+        apply HVprop.
+        - assume Hcase: p /:e V /\ V :e Tx.
+           claim HVinTx: V :e Tx.
+           { exact (andER (p /:e V) (V :e Tx) Hcase). }
+           claim HVsubX: V c= X.
+           { exact (topology_elem_subset X Tx V HTx HVinTx). }
+           claim HVeq: V :/\: X = V.
+           { exact (binintersect_Subq_eq_1 V X HVsubX). }
+           claim HWeqV: W = V.
+           { rewrite HWeq. exact HVeq. }
+           rewrite HWeqV.
+           exact HVinTx.
+        - assume Hcase: p :e V /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ V = Y :\: K.
+           claim HexK: exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ V = Y :\: K.
+           { exact (andER (p :e V)
+                          (exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ V = Y :\: K)
+                          Hcase). }
+           apply HexK.
+           let K. assume HKpkg.
+           claim HKleft: compact_space K (subspace_topology X Tx K) /\ K c= X.
+           { exact (andEL (compact_space K (subspace_topology X Tx K) /\ K c= X)
+                          (V = Y :\: K)
+                          HKpkg). }
+           claim HKcomp: compact_space K (subspace_topology X Tx K).
+           { exact (andEL (compact_space K (subspace_topology X Tx K)) (K c= X) HKleft). }
+           claim HKsubX: K c= X.
+           { exact (andER (compact_space K (subspace_topology X Tx K)) (K c= X) HKleft). }
+           claim HVe: V = Y :\: K.
+           { exact (andER (compact_space K (subspace_topology X Tx K) /\ K c= X)
+                          (V = Y :\: K)
+                          HKpkg). }
+           claim HWdef: W = (Y :\: K) :/\: X.
+           { rewrite HWeq. rewrite HVe. reflexivity. }
+           claim HeqWXK: (Y :\: K) :/\: X = X :\: K.
+           { apply set_ext.
+             - let x. assume Hx: x :e (Y :\: K) :/\: X.
+               prove x :e X :\: K.
+               claim Hpair: x :e (Y :\: K) /\ x :e X.
+               { exact (binintersectE (Y :\: K) X x Hx). }
+               claim HxYK: x :e Y :\: K.
+               { exact (andEL (x :e Y :\: K) (x :e X) Hpair). }
+               claim HxX: x :e X.
+               { exact (andER (x :e Y :\: K) (x :e X) Hpair). }
+               claim HxnotK: x /:e K.
+               { exact (setminusE2 Y K x HxYK). }
+               exact (setminusI X K x HxX HxnotK).
+             - let x. assume Hx: x :e X :\: K.
+               prove x :e (Y :\: K) :/\: X.
+               claim HxX: x :e X.
+               { exact (setminusE1 X K x Hx). }
+               claim HxnotK: x /:e K.
+               { exact (setminusE2 X K x Hx). }
+               claim HxY: x :e Y.
+               { exact (binunionI1 X {p} x HxX). }
+               claim HxYK: x :e Y :\: K.
+               { exact (setminusI Y K x HxY HxnotK). }
+               exact (binintersectI (Y :\: K) X x HxYK HxX). }
+           claim HWis: W = X :\: K.
+           { rewrite HWdef. exact HeqWXK. }
+           rewrite HWis.
+           claim HKclosed: closed_in X Tx K.
+           { exact (Hausdorff_compact_sets_closed X Tx K HH HKsubX HKcomp). }
+           claim HKpkg2: K c= X /\ exists U:set, U :e Tx /\ K = X :\: U.
+           { exact (closed_in_package X Tx K HKclosed). }
+           claim HexU: exists U:set, U :e Tx /\ K = X :\: U.
+           { exact (andER (K c= X) (exists U:set, U :e Tx /\ K = X :\: U) HKpkg2). }
+           apply HexU.
+           let U. assume HUpkg.
+           claim HUinTx: U :e Tx.
+           { exact (andEL (U :e Tx) (K = X :\: U) HUpkg). }
+           claim HKeq: K = X :\: U.
+           { exact (andER (U :e Tx) (K = X :\: U) HUpkg). }
+           claim HUsubX: U c= X.
+           { exact (topology_elem_subset X Tx U HTx HUinTx). }
+           claim HeqXminusK: X :\: K = U.
+           { apply set_ext.
+             - let x. assume Hx: x :e X :\: K.
+               prove x :e U.
+               claim HxX: x :e X.
+               { exact (setminusE1 X K x Hx). }
+               claim HxnotK: x /:e K.
+               { exact (setminusE2 X K x Hx). }
+               claim HxnotXU: x /:e X :\: U.
+               { rewrite <- HKeq. exact HxnotK. }
+               apply (xm (x :e U)).
+               + assume HxU: x :e U.
+                 exact HxU.
+               + assume HxnotU: ~(x :e U).
+                 claim HxXU: x :e X :\: U.
+                 { exact (setminusI X U x HxX HxnotU). }
+                 apply FalseE.
+                 exact (HxnotXU HxXU).
+             - let x. assume Hx: x :e U.
+               prove x :e X :\: K.
+               claim HxX: x :e X.
+               { exact (HUsubX x Hx). }
+               claim HxnotK: x /:e K.
+               { assume HxK: x :e K.
+	                 claim HxXU: x :e X :\: U.
+	                 { rewrite <- HKeq. exact HxK. }
+                 claim HxnotU: x /:e U.
+                 { exact (setminusE2 X U x HxXU). }
+                 exact (HxnotU Hx). }
+               exact (setminusI X K x HxX HxnotK). }
+           rewrite HeqXminusK.
+           exact HUinTx.
+      * let W. assume HW: W :e Tx.
+        prove W :e subspace_topology Y Ty X.
+        claim HWsubX: W c= X.
+        { exact (topology_elem_subset X Tx W HTx HW). }
+        claim HWsubY: W c= Y.
+        { let x. assume HxW: x :e W.
+          exact (binunionI1 X {p} x (HWsubX x HxW)). }
+        claim HWpowY: W :e Power Y.
+        { exact (PowerI Y W HWsubY). }
+        claim HpnotW: p /:e W.
+        { assume HpW: p :e W.
+          claim HpX: p :e X.
+          { exact (HWsubX p HpW). }
+          claim HpEq: p = X.
+          { reflexivity. }
+          claim HXself: X :e X.
+          { rewrite <- HpEq. exact HpX. }
+          exact ((In_irref X) HXself). }
+        claim HWTy: W :e Ty.
+        { exact (SepI (Power Y)
+                     (fun U0:set =>
+                       (p /:e U0 /\ U0 :e Tx) \/
+                       (p :e U0 /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ U0 = Y :\: K))
+                     W
+                     HWpowY
+                     (orIL (p /:e W /\ W :e Tx)
+                           (p :e W /\ exists K:set, compact_space K (subspace_topology X Tx K) /\ K c= X /\ W = Y :\: K)
+                           (andI (p /:e W) (W :e Tx) HpnotW HW))). }
+        claim HWpowX: W :e Power X.
+        { exact (PowerI X W HWsubX). }
+        claim HeqW: W = W :/\: X.
+        { rewrite (binintersect_Subq_eq_1 W X HWsubX). reflexivity. }
+        claim Hex: exists V :e Ty, W = V :/\: X.
+        { witness W.
+          exact (andI (W :e Ty) (W = W :/\: X) HWTy HeqW). }
+        exact (SepI (Power X) (fun U0:set => exists V :e Ty, U0 = V :/\: X) W HWpowX Hex).
+  - (** forall y:set, y :e Y -> y :e X \/ y = p **)
+    let y. assume Hy: y :e Y.
+    apply (binunionE X {p} y Hy).
+    + assume HyX: y :e X.
+      exact (orIL (y :e X) (y = p) HyX).
+    + assume Hyp: y :e {p}.
+      claim Heq: y = p.
+      { exact (SingE p y Hyp). }
+      exact (orIR (y :e X) (y = p) Heq). }
+prove one_point_compactification X Tx Y Ty.
+exact
+  (andI
+    ((compact_space Y Ty /\ Hausdorff_space Y Ty) /\ X c= Y)
+    (exists p0:set, p0 :e Y /\ ~ p0 :e X /\ subspace_topology Y Ty X = Tx /\ (forall y:set, y :e Y -> y :e X \/ y = p0))
+    (andI
+      (compact_space Y Ty /\ Hausdorff_space Y Ty)
+      (X c= Y)
+      (andI (compact_space Y Ty) (Hausdorff_space Y Ty) HcompY HHausY)
+      HXsubY)
+    HexPoint).
 Qed.
 
 (** from §29 Exercises: local compactness and compactification **) 
