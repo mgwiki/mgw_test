@@ -90360,6 +90360,457 @@ Definition Baire_space : set -> set -> prop := fun X Tx =>
     (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
     dense_in (intersection_over_family X U) X Tx.
 
+(** from §48 Definition (closed-set form): Baire space **)
+(** LATEX VERSION: X is Baire if for any countable family of closed subsets with empty interior, the union has empty interior. **)
+Definition Baire_space_closed : set -> set -> prop := fun X Tx =>
+  topology_on X Tx /\
+  forall Fam:set,
+    countable_set Fam ->
+    (forall A:set, A :e Fam -> closed_in X Tx A /\ interior_of X Tx A = Empty) ->
+    interior_of X Tx (Union Fam) = Empty.
+
+(** helper: union of complements equals complement of intersection_over_family **)
+Theorem union_of_complements_eq_complement_of_intersection_over_family : forall X U:set,
+  (forall u:set, u :e U -> u c= X) ->
+  Union {X :\: u | u :e U} = X :\: (intersection_over_family X U).
+let X U.
+assume HUsub: forall u:set, u :e U -> u c= X.
+apply (set_ext (Union {X :\: u | u :e U}) (X :\: (intersection_over_family X U))).
+- let x. assume Hx: x :e Union {X :\: u | u :e U}.
+  prove x :e X :\: (intersection_over_family X U).
+  apply (UnionE_impred {X :\: u | u :e U} x Hx (x :e X :\: (intersection_over_family X U))).
+  let Y. assume HxY: x :e Y. assume HY: Y :e {X :\: u | u :e U}.
+  claim Hexu: exists u:set, u :e U /\ Y = X :\: u.
+  { exact (ReplE U (fun u0:set => X :\: u0) Y HY). }
+  apply Hexu.
+  let u. assume Hu: u :e U /\ Y = X :\: u.
+  claim HuU: u :e U.
+  { exact (andEL (u :e U) (Y = X :\: u) Hu). }
+  claim HeqY: Y = X :\: u.
+  { exact (andER (u :e U) (Y = X :\: u) Hu). }
+  claim HxXu: x :e X :\: u.
+  { rewrite <- HeqY.
+    exact HxY. }
+  claim HxX: x :e X.
+  { exact (setminusE1 X u x HxXu). }
+  claim Hxnotu: x /:e u.
+  { exact (setminusE2 X u x HxXu). }
+  apply setminusI.
+  - exact HxX.
+  - assume HxinInt: x :e intersection_over_family X U.
+    claim Hall: forall u0:set, u0 :e U -> x :e u0.
+    { exact (SepE2 X (fun x0:set => forall u0:set, u0 :e U -> x0 :e u0) x HxinInt). }
+    exact (Hxnotu (Hall u HuU)).
+- let x. assume Hx: x :e X :\: (intersection_over_family X U).
+  prove x :e Union {X :\: u | u :e U}.
+  claim HxX: x :e X.
+  { exact (setminusE1 X (intersection_over_family X U) x Hx). }
+  claim HxnotInt: x /:e intersection_over_family X U.
+  { exact (setminusE2 X (intersection_over_family X U) x Hx). }
+  claim HnotAll: ~ (forall u:set, u :e U -> x :e u).
+  { assume Hall: forall u:set, u :e U -> x :e u.
+    apply HxnotInt.
+    claim HdefInt: intersection_over_family X U =
+      {x0 :e X|forall u0:set, u0 :e U -> x0 :e u0}.
+    { reflexivity. }
+    rewrite HdefInt.
+    apply (SepI X (fun x0:set => forall u0:set, u0 :e U -> x0 :e u0) x HxX).
+    exact Hall. }
+  claim Hexu: exists u:set, ~ (u :e U -> x :e u).
+  { exact (not_all_ex_demorgan_i (fun u0:set => u0 :e U -> x :e u0) HnotAll). }
+  apply Hexu.
+  let u. assume Hnimp: ~ (u :e U -> x :e u).
+  claim Hu: u :e U /\ x /:e u.
+  { exact (not_imp (u :e U) (x :e u) Hnimp). }
+  claim HuU: u :e U.
+  { exact (andEL (u :e U) (x /:e u) Hu). }
+  claim Hxnotu: x /:e u.
+  { exact (andER (u :e U) (x /:e u) Hu). }
+  claim HxXu: x :e X :\: u.
+  { apply setminusI.
+    - exact HxX.
+    - exact Hxnotu. }
+  claim Hmem: (X :\: u) :e {X :\: u0 | u0 :e U}.
+  { exact (ReplI U (fun u0:set => X :\: u0) u HuU). }
+  exact (UnionI {X :\: u0 | u0 :e U} x (X :\: u) HxXu Hmem).
+Qed.
+
+(** helper: intersection of complements equals complement of Union **)
+Theorem intersection_of_complements_eq_complement_of_Union : forall X Fam:set,
+  (forall A:set, A :e Fam -> A c= X) ->
+  intersection_over_family X {X :\: A | A :e Fam} = X :\: Union Fam.
+let X Fam.
+assume Hsub: forall A:set, A :e Fam -> A c= X.
+apply set_ext.
+- let x. assume Hx: x :e intersection_over_family X {X :\: A | A :e Fam}.
+  prove x :e X :\: Union Fam.
+  claim HxX: x :e X.
+  { exact (SepE1 X (fun x0:set => forall U0:set, U0 :e {X :\: A | A :e Fam} -> x0 :e U0) x Hx). }
+  claim Hall: forall U0:set, U0 :e {X :\: A | A :e Fam} -> x :e U0.
+  { exact (SepE2 X (fun x0:set => forall U0:set, U0 :e {X :\: A | A :e Fam} -> x0 :e U0) x Hx). }
+  apply setminusI.
+  - exact HxX.
+  - assume HxUnion: x :e Union Fam.
+    apply (UnionE_impred Fam x HxUnion (False)).
+    let A. assume HxA: x :e A. assume HA: A :e Fam.
+    claim HXminusA: (X :\: A) :e {X :\: A0 | A0 :e Fam}.
+    { exact (ReplI Fam (fun A0:set => X :\: A0) A HA). }
+    claim HxXminusA: x :e X :\: A.
+    { exact (Hall (X :\: A) HXminusA). }
+    exact (setminusE2 X A x HxXminusA HxA).
+- let x. assume Hx: x :e X :\: Union Fam.
+  prove x :e intersection_over_family X {X :\: A | A :e Fam}.
+  claim HxX: x :e X.
+  { exact (setminusE1 X (Union Fam) x Hx). }
+  claim HdefInt: intersection_over_family X {X :\: A | A :e Fam} =
+    {x0 :e X|forall U0:set, U0 :e {X :\: A | A :e Fam} -> x0 :e U0}.
+  { reflexivity. }
+  rewrite HdefInt.
+  apply (SepI X (fun x0:set => forall U0:set, U0 :e {X :\: A | A :e Fam} -> x0 :e U0) x HxX).
+  let U0. assume HU0: U0 :e {X :\: A | A :e Fam}.
+  prove x :e U0.
+  claim HexA: exists A:set, A :e Fam /\ U0 = X :\: A.
+  { exact (ReplE Fam (fun A0:set => X :\: A0) U0 HU0). }
+  apply HexA.
+  let A. assume HA: A :e Fam /\ U0 = X :\: A.
+  claim HAin: A :e Fam.
+  { exact (andEL (A :e Fam) (U0 = X :\: A) HA). }
+  claim HU0eq: U0 = X :\: A.
+  { exact (andER (A :e Fam) (U0 = X :\: A) HA). }
+  rewrite HU0eq.
+  apply setminusI.
+  - exact HxX.
+  - assume HxA: x :e A.
+    apply (setminusE2 X (Union Fam) x Hx).
+    exact (UnionI Fam x A HxA HAin).
+Qed.
+
+(** from §48 Lemma 48.1 (direction): closed-set Baire implies open-set Baire **)
+(** LATEX VERSION: Lemma 48.1: X is Baire iff countable intersections of dense open sets are dense. **)
+Theorem Baire_space_closed_imp : forall X Tx:set,
+  Baire_space_closed X Tx -> Baire_space X Tx.
+let X Tx.
+assume HBc: Baire_space_closed X Tx.
+prove Baire_space X Tx.
+prove topology_on X Tx /\
+  forall U:set,
+    U c= Tx -> countable_set U ->
+    (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
+    dense_in (intersection_over_family X U) X Tx.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall Fam:set, countable_set Fam ->
+                 (forall A:set, A :e Fam -> closed_in X Tx A /\ interior_of X Tx A = Empty) ->
+                 interior_of X Tx (Union Fam) = Empty)
+               HBc). }
+apply andI.
+- exact HTx.
+- let U.
+  assume HUsub: U c= Tx.
+  assume HUcount: countable_set U.
+  assume HUdense: forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx.
+  prove dense_in (intersection_over_family X U) X Tx.
+  (** Consider the family of closed complements Fam = {X\\u | u in U}. **)
+  set Fam := {X :\: u | u :e U}.
+  claim HFamcount: countable_set Fam.
+  { exact (countable_image U HUcount (fun u0:set => X :\: u0)). }
+  claim HFamprop: forall A:set, A :e Fam -> closed_in X Tx A /\ interior_of X Tx A = Empty.
+  { let A. assume HA: A :e Fam.
+    claim Hexu: exists u:set, u :e U /\ A = X :\: u.
+    { exact (ReplE U (fun u0:set => X :\: u0) A HA). }
+    apply Hexu.
+    let u. assume Hu: u :e U /\ A = X :\: u.
+    claim HuU: u :e U.
+    { exact (andEL (u :e U) (A = X :\: u) Hu). }
+    claim HAeq: A = X :\: u.
+    { exact (andER (u :e U) (A = X :\: u) Hu). }
+    claim Hup: u :e Tx /\ dense_in u X Tx.
+    { exact (HUdense u HuU). }
+    claim HuTx: u :e Tx.
+    { exact (andEL (u :e Tx) (dense_in u X Tx) Hup). }
+	    claim Hclu: dense_in u X Tx.
+	    { exact (andER (u :e Tx) (dense_in u X Tx) Hup). }
+	    claim HTsub: Tx c= Power X.
+	    { exact (topology_subset_axiom X Tx HTx). }
+	    claim HuPow: u :e Power X.
+	    { exact (HTsub u HuTx). }
+	    claim HusubX: u c= X.
+	    { exact (PowerE X u HuPow). }
+    rewrite HAeq.
+    apply andI.
+    - (** closed complement **)
+      exact (closed_of_open_complement X Tx u HTx HuTx).
+	    - (** empty interior: int(X\\u) = X \\ cl(u) = Empty since cl(u)=X **)
+	      claim Hdual: interior_of X Tx (X :\: u) = X :\: closure_of X Tx (X :\: (X :\: u)).
+	      { exact (interior_closure_complement_duality X Tx (X :\: u) HTx (setminus_Subq X u)). }
+	      rewrite Hdual.
+	      rewrite (setminus_setminus_eq X u HusubX).
+	      claim HcluEq: closure_of X Tx u = X.
+	      { exact Hclu. }
+	      rewrite HcluEq.
+	      (** X \\ X = Empty **)
+	      claim Hxx: X :\: X = Empty.
+	      { apply Empty_Subq_eq.
+	        let z. assume Hz: z :e X :\: X.
+	        prove z :e Empty.
+	        claim HzX: z :e X.
+	        { exact (setminusE1 X X z Hz). }
+	        claim HznotX: z /:e X.
+	        { exact (setminusE2 X X z Hz). }
+	        apply FalseE.
+	        exact (HznotX HzX). }
+	      exact Hxx. }
+  claim HintUnion: interior_of X Tx (Union Fam) = Empty.
+  { exact ((andER (topology_on X Tx)
+                  (forall Fam0:set, countable_set Fam0 ->
+                    (forall A:set, A :e Fam0 -> closed_in X Tx A /\ interior_of X Tx A = Empty) ->
+                    interior_of X Tx (Union Fam0) = Empty)
+                  HBc) Fam HFamcount HFamprop). }
+  (** Union Fam = X \\ intersection(U) **)
+  claim HsubU: forall u:set, u :e U -> u c= X.
+  { let u. assume Hu: u :e U.
+    claim HuTx: u :e Tx.
+    { exact (HUsub u Hu). }
+    exact (topology_elem_subset X Tx u HTx HuTx). }
+  claim HUnionEq: Union Fam = X :\: (intersection_over_family X U).
+  { exact (union_of_complements_eq_complement_of_intersection_over_family X U HsubU). }
+  (** from HintUnion and duality: closure(intersection) = X **)
+  claim HintUnion2: interior_of X Tx (X :\: (intersection_over_family X U)) = Empty.
+  { rewrite <- HUnionEq.
+    exact HintUnion. }
+  claim Hdual: interior_of X Tx (X :\: (intersection_over_family X U)) =
+               X :\: closure_of X Tx (X :\: (X :\: (intersection_over_family X U))).
+  { exact (interior_closure_complement_duality X Tx (X :\: (intersection_over_family X U))
+           HTx
+           (setminus_Subq X (intersection_over_family X U))). }
+  claim HintUnion3: X :\: closure_of X Tx (intersection_over_family X U) = Empty.
+  { claim HintSub: intersection_over_family X U c= X.
+    { let z. assume Hz: z :e intersection_over_family X U.
+      exact (SepE1 X (fun z0:set => forall u0:set, u0 :e U -> z0 :e u0) z Hz). }
+    rewrite <- (setminus_setminus_eq X (intersection_over_family X U) HintSub).
+    rewrite <- Hdual.
+    exact HintUnion2. }
+  (** interior = Empty implies closure = X **)
+  apply (set_ext (closure_of X Tx (intersection_over_family X U)) X).
+  - exact (closure_in_space X Tx (intersection_over_family X U) HTx).
+  - let x. assume HxX: x :e X.
+    prove x :e closure_of X Tx (intersection_over_family X U).
+    apply (xm (x :e closure_of X Tx (intersection_over_family X U))).
+    + assume H. exact H.
+    + assume Hnot: x /:e closure_of X Tx (intersection_over_family X U).
+      apply FalseE.
+      claim Hxminus: x :e X :\: closure_of X Tx (intersection_over_family X U).
+      { apply setminusI.
+        - exact HxX.
+        - exact Hnot. }
+      claim HxE: x :e Empty.
+      { rewrite <- HintUnion3.
+        exact Hxminus. }
+      exact (EmptyE x HxE).
+Qed.
+
+(** from §48 Lemma 48.1 (direction): open-set Baire implies closed-set Baire **)
+(** LATEX VERSION: Lemma 48.1: X is Baire iff countable intersections of dense open sets are dense. **)
+Theorem Baire_space_imp_closed : forall X Tx:set,
+  Baire_space X Tx -> Baire_space_closed X Tx.
+let X Tx.
+assume HB: Baire_space X Tx.
+prove Baire_space_closed X Tx.
+prove topology_on X Tx /\
+  forall Fam:set,
+    countable_set Fam ->
+    (forall A:set, A :e Fam -> closed_in X Tx A /\ interior_of X Tx A = Empty) ->
+    interior_of X Tx (Union Fam) = Empty.
+claim HTx: topology_on X Tx.
+{ exact (andEL (topology_on X Tx)
+               (forall U:set, U c= Tx -> countable_set U ->
+                 (forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx) ->
+                 dense_in (intersection_over_family X U) X Tx)
+               HB). }
+apply andI.
+- exact HTx.
+- let Fam.
+  assume Hcount: countable_set Fam.
+  assume Hclosed: forall A:set, A :e Fam -> closed_in X Tx A /\ interior_of X Tx A = Empty.
+  prove interior_of X Tx (Union Fam) = Empty.
+  (** Define U = {X\\A | A in Fam}; these are open and dense. **)
+  set U := {X :\: A | A :e Fam}.
+  claim HUcount: countable_set U.
+  { exact (countable_image Fam Hcount (fun A0:set => X :\: A0)). }
+  claim HUsub: U c= Tx.
+  { let u. assume Hu: u :e U.
+    claim HexA: exists A:set, A :e Fam /\ u = X :\: A.
+    { exact (ReplE Fam (fun A0:set => X :\: A0) u Hu). }
+    apply HexA.
+    let A. assume HA: A :e Fam /\ u = X :\: A.
+    claim HAin: A :e Fam.
+    { exact (andEL (A :e Fam) (u = X :\: A) HA). }
+    claim Heq: u = X :\: A.
+    { exact (andER (A :e Fam) (u = X :\: A) HA). }
+    claim HAcl: closed_in X Tx A.
+    { exact (andEL (closed_in X Tx A) (interior_of X Tx A = Empty) (Hclosed A HAin)). }
+    claim Hopen: open_in X Tx (X :\: A).
+    { exact (open_of_closed_complement X Tx A HAcl). }
+    claim HopenTx: (X :\: A) :e Tx.
+    { exact (open_in_elem X Tx (X :\: A) Hopen). }
+    rewrite Heq.
+    exact HopenTx. }
+  claim HUprop: forall u:set, u :e U -> u :e Tx /\ dense_in u X Tx.
+  { let u. assume Hu: u :e U.
+    claim HuTx: u :e Tx.
+    { exact (HUsub u Hu). }
+    claim HexA: exists A:set, A :e Fam /\ u = X :\: A.
+    { exact (ReplE Fam (fun A0:set => X :\: A0) u Hu). }
+    apply HexA.
+    let A. assume HA: A :e Fam /\ u = X :\: A.
+    claim HAin: A :e Fam.
+    { exact (andEL (A :e Fam) (u = X :\: A) HA). }
+    claim Heq: u = X :\: A.
+    { exact (andER (A :e Fam) (u = X :\: A) HA). }
+    claim HintA: interior_of X Tx A = Empty.
+    { exact (andER (closed_in X Tx A) (interior_of X Tx A = Empty) (Hclosed A HAin)). }
+    (** int(A)=Empty implies closure(X\\A)=X by duality **)
+    claim Hdual: interior_of X Tx A = X :\: closure_of X Tx (X :\: A).
+    { exact (interior_closure_complement_duality X Tx A HTx (closed_in_subset X Tx A
+             (andEL (closed_in X Tx A) (interior_of X Tx A = Empty) (Hclosed A HAin)))). }
+    claim HcomplEmpty: X :\: closure_of X Tx (X :\: A) = Empty.
+    { rewrite <- Hdual.
+      exact HintA. }
+    apply andI.
+    - exact HuTx.
+    - (** closure(u) = X **)
+      claim HcomplEmptyU: X :\: closure_of X Tx u = Empty.
+      { rewrite Heq.
+        exact HcomplEmpty. }
+      apply (set_ext (closure_of X Tx u) X).
+      + exact (closure_in_space X Tx u HTx).
+      + let x. assume HxX: x :e X.
+        prove x :e closure_of X Tx u.
+        apply (xm (x :e closure_of X Tx u)).
+        * assume H. exact H.
+        * assume Hnot: x /:e closure_of X Tx u.
+          apply FalseE.
+          claim Hxminus: x :e X :\: closure_of X Tx u.
+          { apply setminusI. exact HxX. exact Hnot. }
+          claim HxE: x :e Empty.
+          { rewrite <- HcomplEmptyU.
+            exact Hxminus. }
+          exact (EmptyE x HxE). }
+  (** Apply HB to U to get density of intersection; then deduce interior of Union Fam is Empty. **)
+  claim HdenseInt: dense_in (intersection_over_family X U) X Tx.
+  { exact ((andER (topology_on X Tx)
+                  (forall U0:set, U0 c= Tx -> countable_set U0 ->
+                    (forall u0:set, u0 :e U0 -> u0 :e Tx /\ dense_in u0 X Tx) ->
+                    dense_in (intersection_over_family X U0) X Tx)
+                  HB) U HUsub HUcount HUprop). }
+  (** Union Fam = X \\ intersection(U) **)
+  claim HsubFam: forall A:set, A :e Fam -> A c= X.
+  { let A. assume HA: A :e Fam.
+    exact (closed_in_subset X Tx A (andEL (closed_in X Tx A) (interior_of X Tx A = Empty) (Hclosed A HA))). }
+  (** Here we need Union Fam; use De Morgan for complements **)
+  claim HDeMorgan: X :\: (intersection_over_family X U) = Union Fam.
+  { apply (set_ext (X :\: (intersection_over_family X U)) (Union Fam)).
+    - let x. assume Hx: x :e X :\: (intersection_over_family X U).
+      (** x not in intersection implies exists A in Fam with x in A **)
+      claim HxX: x :e X.
+      { exact (setminusE1 X (intersection_over_family X U) x Hx). }
+      claim Hxnot: x /:e intersection_over_family X U.
+      { exact (setminusE2 X (intersection_over_family X U) x Hx). }
+      claim HnotAll: ~ (forall u0:set, u0 :e U -> x :e u0).
+      { assume Hall.
+        apply Hxnot.
+        claim HdefInt: intersection_over_family X U =
+          {x0 :e X|forall u1:set, u1 :e U -> x0 :e u1}.
+        { reflexivity. }
+        rewrite HdefInt.
+        apply (SepI X (fun x0:set => forall u1:set, u1 :e U -> x0 :e u1) x HxX).
+        exact Hall. }
+      claim Hexu: exists u0:set, ~ (u0 :e U -> x :e u0).
+      { exact (not_all_ex_demorgan_i (fun u0:set => u0 :e U -> x :e u0) HnotAll). }
+      apply Hexu.
+      let u0. assume Hnimp: ~ (u0 :e U -> x :e u0).
+      claim Hu0: u0 :e U /\ x /:e u0.
+      { exact (not_imp (u0 :e U) (x :e u0) Hnimp). }
+      claim Hu0U: u0 :e U.
+      { exact (andEL (u0 :e U) (x /:e u0) Hu0). }
+      claim Hxnotu0: x /:e u0.
+      { exact (andER (u0 :e U) (x /:e u0) Hu0). }
+      claim HexA: exists A:set, A :e Fam /\ u0 = X :\: A.
+      { exact (ReplE Fam (fun A0:set => X :\: A0) u0 Hu0U). }
+      apply HexA.
+      let A. assume HA: A :e Fam /\ u0 = X :\: A.
+      claim HAin: A :e Fam.
+      { exact (andEL (A :e Fam) (u0 = X :\: A) HA). }
+      claim Hu0eq: u0 = X :\: A.
+      { exact (andER (A :e Fam) (u0 = X :\: A) HA). }
+      (** x notin X\\A implies x in A **)
+      claim HxA: x :e A.
+      { apply dneg.
+        assume HxnotA: x /:e A.
+        apply Hxnotu0.
+        rewrite Hu0eq.
+        apply setminusI.
+        - exact HxX.
+        - exact HxnotA. }
+      exact (UnionI Fam x A HxA HAin).
+    - let x. assume Hx: x :e Union Fam.
+      prove x :e X :\: (intersection_over_family X U).
+      apply (UnionE_impred Fam x Hx (x :e X :\: (intersection_over_family X U))).
+      let A. assume HxA: x :e A. assume HAin: A :e Fam.
+      claim HAsubX: A c= X.
+      { exact (HsubFam A HAin). }
+      claim HxX: x :e X.
+      { exact (HAsubX x HxA). }
+      apply setminusI.
+      - exact HxX.
+      - assume HxInt: x :e intersection_over_family X U.
+        claim Hall: forall u0:set, u0 :e U -> x :e u0.
+        { exact (SepE2 X (fun x0:set => forall u0:set, u0 :e U -> x0 :e u0) x HxInt). }
+        set u0 := X :\: A.
+        claim Hu0U: u0 :e U.
+        { exact (ReplI Fam (fun A0:set => X :\: A0) A HAin). }
+        claim Hxnu0: x /:e u0.
+        { assume Hxu0: x :e u0.
+          exact (setminusE2 X A x Hxu0 HxA). }
+        exact (Hxnu0 (Hall u0 Hu0U)). }
+  (** Now interior(Union Fam) = Empty follows from dense intersection and duality. **)
+  claim HUnionU: Union Fam = X :\: (intersection_over_family X U).
+  { symmetry. exact HDeMorgan. }
+  rewrite HUnionU.
+  set I := intersection_over_family X U.
+  claim HIsub: I c= X.
+  { let z. assume Hz: z :e I.
+    exact (SepE1 X (fun z0:set => forall u0:set, u0 :e U -> z0 :e u0) z Hz). }
+  claim Hdual: interior_of X Tx (X :\: I) = X :\: closure_of X Tx (X :\: (X :\: I)).
+  { exact (interior_closure_complement_duality X Tx (X :\: I) HTx (setminus_Subq X I)). }
+  rewrite Hdual.
+  rewrite (setminus_setminus_eq X I HIsub).
+  claim HclEq: closure_of X Tx I = X.
+  { exact HdenseInt. }
+  rewrite HclEq.
+  claim Hxx: X :\: X = Empty.
+  { apply Empty_Subq_eq.
+    let z. assume Hz: z :e X :\: X.
+    prove z :e Empty.
+    claim HzX: z :e X.
+    { exact (setminusE1 X X z Hz). }
+    claim HznotX: z /:e X.
+    { exact (setminusE2 X X z Hz). }
+    apply FalseE.
+    exact (HznotX HzX). }
+  exact Hxx.
+Qed.
+
+(** from §48 Lemma 48.1: equivalence of closed and open formulations **)
+(** LATEX VERSION: Lemma 48.1: X is Baire iff any countable intersection of dense open sets is dense. **)
+Theorem Baire_space_closed_iff : forall X Tx:set,
+  (Baire_space_closed X Tx <-> Baire_space X Tx).
+let X Tx.
+apply iffI.
+- exact (Baire_space_closed_imp X Tx).
+- exact (Baire_space_imp_closed X Tx).
+Qed.
+
 (** from §48 Lemma 48.1: dense G_delta characterization of Baire space **)
 (** LATEX VERSION: Equivalent dense G_δ characterization of Baire spaces. **)
 Theorem Baire_space_dense_Gdelta : forall X Tx:set,
