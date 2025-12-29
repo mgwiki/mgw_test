@@ -41409,7 +41409,24 @@ prove closure_of ordered_square ordered_square_topology ordsq_A = ordsq_A :\/: {
   closure_of ordered_square ordered_square_topology ordsq_C = ordsq_C :\/: {ordsq_p01} :\/: {ordsq_p10} /\
   closure_of ordered_square ordered_square_topology ordsq_D = ordsq_D :\/: ordsq_C :\/: {ordsq_p01} :\/: {ordsq_p10} /\
   closure_of ordered_square ordered_square_topology ordsq_E = ordsq_E_closure.
-admit. (** FAIL **)
+(** conjunction is left-associative: ((((A /\ B) /\ C) /\ D) /\ E) **)
+apply andI.
+- (** (((A /\ B) /\ C) /\ D) **)
+  apply andI.
+  + (** ((A /\ B) /\ C) **)
+    apply andI.
+    * (** (A /\ B) **)
+      apply andI.
+      - (** closure(A) **)
+        admit. (** FAIL **)
+      - (** closure(B) **)
+        admit. (** FAIL **)
+    * (** closure(C) **)
+      admit. (** FAIL **)
+  + (** closure(D) **)
+    admit. (** FAIL **)
+- (** closure(E) **)
+  admit. (** FAIL **)
 Qed.
 
 (** from §17 Exercise 19: boundary of a set **)
