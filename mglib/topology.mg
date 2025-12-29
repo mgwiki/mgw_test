@@ -52589,7 +52589,69 @@ prove topology_on R R_standard_topology /\
 apply andI.
 - exact R_standard_topology_is_topology.
 - assume Hsep: exists U V:set, U :e R_standard_topology /\ V :e R_standard_topology /\ separation_of R U V.
-  (** standard proof uses order properties of R to contradict existence of a separation **)
+  (** Destructure the separation and record the basic consequences; the remaining order/completeness argument is deferred. **)
+  apply Hsep.
+  let U. assume HexV: exists V:set, U :e R_standard_topology /\ V :e R_standard_topology /\ separation_of R U V.
+  apply HexV.
+  let V. assume HUV: U :e R_standard_topology /\ V :e R_standard_topology /\ separation_of R U V.
+  claim HUV0: U :e R_standard_topology /\ V :e R_standard_topology.
+  { exact (andEL (U :e R_standard_topology /\ V :e R_standard_topology)
+                 (separation_of R U V)
+                 HUV). }
+  claim HUopen: U :e R_standard_topology.
+  { exact (andEL (U :e R_standard_topology) (V :e R_standard_topology) HUV0). }
+  claim HVopen: V :e R_standard_topology.
+  { exact (andER (U :e R_standard_topology) (V :e R_standard_topology) HUV0). }
+  claim HsepUV: separation_of R U V.
+  { exact (andER (U :e R_standard_topology /\ V :e R_standard_topology)
+                 (separation_of R U V)
+                 HUV). }
+  (** Extract useful facts from separation_of; conjunction is left-associative. **)
+  claim Hpart1: ((((U :e Power R /\ V :e Power R) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty).
+  { exact (andEL ((((U :e Power R /\ V :e Power R) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                 (U :\/: V = R)
+                 HsepUV). }
+  claim Hunion: U :\/: V = R.
+  { exact (andER ((((U :e Power R /\ V :e Power R) /\ U :/\: V = Empty) /\ U <> Empty) /\ V <> Empty)
+                 (U :\/: V = R)
+                 HsepUV). }
+  claim HAux: (((U :e Power R /\ V :e Power R) /\ U :/\: V = Empty) /\ U <> Empty).
+  { exact (andEL (((U :e Power R /\ V :e Power R) /\ U :/\: V = Empty) /\ U <> Empty)
+                 (V <> Empty)
+                 Hpart1). }
+  claim HVne: V <> Empty.
+  { exact (andER (((U :e Power R /\ V :e Power R) /\ U :/\: V = Empty) /\ U <> Empty)
+                 (V <> Empty)
+                 Hpart1). }
+  claim Hpowdisj: (U :e Power R /\ V :e Power R) /\ U :/\: V = Empty.
+  { exact (andEL ((U :e Power R /\ V :e Power R) /\ U :/\: V = Empty)
+                 (U <> Empty)
+                 HAux). }
+  claim HUne: U <> Empty.
+  { exact (andER ((U :e Power R /\ V :e Power R) /\ U :/\: V = Empty)
+                 (U <> Empty)
+                 HAux). }
+  claim Hpow: U :e Power R /\ V :e Power R.
+  { exact (andEL (U :e Power R /\ V :e Power R)
+                 (U :/\: V = Empty)
+                 Hpowdisj). }
+  claim Hdisj: U :/\: V = Empty.
+  { exact (andER (U :e Power R /\ V :e Power R)
+                 (U :/\: V = Empty)
+                 Hpowdisj). }
+  claim HUpow: U :e Power R.
+  { exact (andEL (U :e Power R) (V :e Power R) Hpow). }
+  claim HVpow: V :e Power R.
+  { exact (andER (U :e Power R) (V :e Power R) Hpow). }
+  claim HUsub: U c= R.
+  { exact (PowerE R U HUpow). }
+  claim HVsub: V c= R.
+  { exact (PowerE R V HVpow). }
+  claim Hexu0: exists u0:set, u0 :e U.
+  { exact (nonempty_has_element U HUne). }
+  claim Hexv0: exists v0:set, v0 :e V.
+  { exact (nonempty_has_element V HVne). }
+  (** TODO: standard order/completeness argument to contradict Hdisj and Hunion; deferred. **)
   admit. (** FAIL **)
 Qed.
 
