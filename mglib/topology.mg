@@ -91189,8 +91189,20 @@ assume HaR: a :e R.
 assume Hp: p :e preimage_of (setprod Y Y) d (open_ray_upper R a).
 claim HpDom: p :e setprod Y Y.
 { exact (SepE1 (setprod Y Y) (fun q:set => apply_fun d q :e open_ray_upper R a) p Hp). }
-claim HdpRay: apply_fun d p :e open_ray_upper R a.
+set dp := apply_fun d p.
+claim HdpRay: dp :e open_ray_upper R a.
 { exact (SepE2 (setprod Y Y) (fun q:set => apply_fun d q :e open_ray_upper R a) p Hp). }
+claim HrayDef: open_ray_upper R a = {x :e R | order_rel R a x}.
+{ reflexivity. }
+claim HdpRay': dp :e {x :e R | order_rel R a x}.
+{ rewrite <- HrayDef.
+  exact HdpRay. }
+claim HdpR: dp :e R.
+{ exact (SepE1 R (fun x0:set => order_rel R a x0) dp HdpRay'). }
+claim Hdprel: order_rel R a dp.
+{ exact (SepE2 R (fun x0:set => order_rel R a x0) dp HdpRay'). }
+claim Hlt: Rlt a dp.
+{ exact (order_rel_R_implies_Rlt a dp Hdprel). }
 admit.
 Qed.
 
@@ -91299,8 +91311,20 @@ assume HbR: b :e R.
 assume Hp: p :e preimage_of (setprod Y Y) d (open_ray_lower R b).
 claim HpDom: p :e setprod Y Y.
 { exact (SepE1 (setprod Y Y) (fun q:set => apply_fun d q :e open_ray_lower R b) p Hp). }
-claim HdpRay: apply_fun d p :e open_ray_lower R b.
+set dp := apply_fun d p.
+claim HdpRay: dp :e open_ray_lower R b.
 { exact (SepE2 (setprod Y Y) (fun q:set => apply_fun d q :e open_ray_lower R b) p Hp). }
+claim HrayDef: open_ray_lower R b = {x :e R | order_rel R x b}.
+{ reflexivity. }
+claim HdpRay': dp :e {x :e R | order_rel R x b}.
+{ rewrite <- HrayDef.
+  exact HdpRay. }
+claim HdpR: dp :e R.
+{ exact (SepE1 R (fun x0:set => order_rel R x0 b) dp HdpRay'). }
+claim Hdprel: order_rel R dp b.
+{ exact (SepE2 R (fun x0:set => order_rel R x0 b) dp HdpRay'). }
+claim Hlt: Rlt dp b.
+{ exact (order_rel_R_implies_Rlt dp b Hdprel). }
 admit.
 Qed.
 
