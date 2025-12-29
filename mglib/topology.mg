@@ -86356,6 +86356,8 @@ Definition equicontinuous_family : set -> set -> set -> set -> set -> prop :=
         exists U:set, U :e Tx /\ x :e U /\
           forall f:set, f :e F -> apply_fun f x :e V ->
             forall y:set, y :e U -> apply_fun f y :e V.
+(** from §47 Ascoli theorem: relatively compact subsets in compact convergence topology **)
+(** LATEX VERSION: A subset F of C(X,Y) has compact closure in the compact convergence topology. **)
 Definition relatively_compact_in_compact_convergence : set -> set -> set -> set -> set -> prop :=
   fun X Tx Y Ty F =>
     topology_on X Tx /\ topology_on Y Ty /\ F c= function_space X Y /\
@@ -86448,6 +86450,8 @@ Definition differentiable_at : set -> set -> prop := fun f x =>
           Rlt (Abs (add_SNo
                       (div_SNo (add_SNo (apply_fun f (add_SNo x h)) (minus_SNo (apply_fun f x))) h)
                       (minus_SNo L))) eps.
+(** from §49 Definition: nowhere differentiable function **)
+(** LATEX VERSION: A function is nowhere differentiable if it is differentiable at no point of its domain. **)
 Definition nowhere_differentiable : set -> prop := fun f =>
   function_on f unit_interval R /\ forall x:set, x :e unit_interval -> ~ differentiable_at f x.
 
@@ -86459,8 +86463,12 @@ Theorem I_topology_on : topology_on unit_interval I_topology.
 prove topology_on unit_interval I_topology.
 exact unit_interval_topology_on.
 Qed.
+(** from §49 Definition: continuous functions h:[0,1]→R **)
+(** LATEX VERSION: Let h:[0,1]→R be a continuous function. **)
 Definition continuous_real_on_I : set -> prop := fun f =>
   continuous_map unit_interval I_topology R R_standard_topology f.
+(** from §49 Definition: C(I,R) as continuous functions on I=[0,1] **)
+(** LATEX VERSION: Let C(I,R) denote the space of continuous maps f:I→R. **)
 Definition C_I_R : set := {f :e function_space unit_interval R | continuous_real_on_I f}.
 
 (** from §49 Theorem 49.1: approximation by nowhere-differentiable functions **)
@@ -86477,16 +86485,24 @@ Theorem theorem_49_1_nowhere_differentiable_approx : forall h eps:set,
 admit. (** FAIL **)
 Qed.
 
+(** from §49 Definition: forward difference quotient |(f(x+h)-f(x))/h| **)
+(** LATEX VERSION: Consider the difference quotient (f(x+h)-f(x))/h. **)
 Definition diffquot_forward_abs : set -> set -> set -> set := fun f x h =>
   Abs (div_SNo (add_SNo (apply_fun f (add_SNo x h)) (minus_SNo (apply_fun f x))) h).
+(** from §49 Definition: backward difference quotient |(f(x)-f(x-h))/h| **)
+(** LATEX VERSION: Consider the difference quotient (f(x)-f(x-h))/h. **)
 Definition diffquot_backward_abs : set -> set -> set -> set := fun f x h =>
   Abs (div_SNo (add_SNo (apply_fun f (add_SNo x (minus_SNo h))) (minus_SNo (apply_fun f x))) (minus_SNo h)).
 
+(** from §49 Definition: predicate Δ_h f > n using forward/backward difference quotients **)
+(** LATEX VERSION: Define Δ_h f > n in terms of a large difference quotient for some 0<h≤1/n. **)
 Definition Delta_gt : set -> set -> set -> set -> prop := fun f x h n =>
   (add_SNo x h :e unit_interval /\ Rlt n (diffquot_forward_abs f x h))
   \/
   (add_SNo x (minus_SNo h) :e unit_interval /\ Rlt n (diffquot_backward_abs f x h)).
 
+(** from §49 Definition: the open sets U_n in C(I,R) (Baire category argument) **)
+(** LATEX VERSION: For n≥2, define U_n ⊆ C(I,R) using existence of small h with Δ_h f > n. **)
 Definition U_n : set -> set := fun n =>
   {f :e C_I_R | n :e omega /\ 2 c= n /\
     exists h:set, h :e R /\ Rlt 0 h /\ Rle h (div_SNo 1 n) /\
