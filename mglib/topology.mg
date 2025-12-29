@@ -16392,6 +16392,12 @@ Definition R_standard_topology : set :=
   generated_topology R R_standard_basis.
 (** SUSPICIOUS DEFINITION: This basis includes all `open_interval a b` with `a,b :e R` without requiring `Rlt a b`; empty intervals are allowed as basis elements, which is harmless but can complicate refinement arguments. **)
 
+(** Helper: unfold the definition of the standard topology on R. **)
+Theorem R_standard_topology_def_eq : R_standard_topology = generated_topology R R_standard_basis.
+prove R_standard_topology = generated_topology R R_standard_basis.
+reflexivity.
+Qed.
+
 (** from §13: standard open intervals form a basis on R **)
 (** LATEX VERSION: The collection of open intervals (a,b) is a basis for the standard topology on R. **)
 Theorem R_standard_basis_is_basis_local : basis_on R R_standard_basis.
@@ -23087,8 +23093,6 @@ prove order_topology R = R_standard_topology.
 apply set_ext.
 - let U. assume HU: U :e order_topology R.
   prove U :e R_standard_topology.
-  claim HBasis: basis_on R (order_topology_basis R).
-  { exact (order_topology_basis_is_basis R). }
   claim HTstd: topology_on R R_standard_topology.
   { exact R_standard_topology_is_topology. }
   claim HBsub: forall b :e order_topology_basis R, b :e R_standard_topology.
@@ -23237,7 +23241,7 @@ apply set_ext.
     - exact HbU.
   }
   claim Hfiner: finer_than R_standard_topology (generated_topology R (order_topology_basis R)).
-  { exact (generated_topology_finer R (order_topology_basis R) R_standard_topology HBasis HTstd HBsub). }
+  { exact (generated_topology_finer_weak R (order_topology_basis R) R_standard_topology HTstd HBsub). }
   exact (Hfiner U HU).
 - let U. assume HU: U :e R_standard_topology.
   prove U :e order_topology R.
@@ -23329,13 +23333,12 @@ apply set_ext.
 
     claim HInAB: open_interval a b0 :e (A :\/: B).
     { exact (binunionI1 A B (open_interval a b0) HInA). }
-    claim HInABC: open_interval a b0 :e (A :\/: B :\/: C).
-    { exact (binunionI1 (A :\/: B) C (open_interval a b0) HInAB). }
-    claim HbBasis: open_interval a b0 :e order_topology_basis R.
-    { exact HInABC. }
-    exact (generated_topology_contains_basis R (order_topology_basis R) (order_topology_basis_is_basis R)
-            (open_interval a b0) HbBasis).
-  }
+	    claim HInABC: open_interval a b0 :e (A :\/: B :\/: C).
+	    { exact (binunionI1 (A :\/: B) C (open_interval a b0) HInAB). }
+	    claim HbBasis: open_interval a b0 :e order_topology_basis R.
+	    { exact HInABC. }
+	    exact (generated_topology_contains_elem R (order_topology_basis R) (open_interval a b0) HPow HbBasis).
+	  }
   claim Hfiner: finer_than (order_topology R) (generated_topology R R_standard_basis).
   { exact (generated_topology_finer R R_standard_basis (order_topology R) HBasisStd HTord HBsubStd). }
   exact (Hfiner U HU).
