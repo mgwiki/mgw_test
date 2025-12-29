@@ -68638,6 +68638,52 @@ Qed.
 Definition rel_restrict : set -> set -> set := fun le K =>
   {p :e le | p 0 :e K /\ p 1 :e K}.
 
+(** helper: definitional unfolding for rel_restrict **)
+Theorem rel_restrict_def : forall le K:set,
+  rel_restrict le K = {p :e le | p 0 :e K /\ p 1 :e K}.
+let le K.
+reflexivity.
+Qed.
+
+(** helper: elimination for rel_restrict **)
+Theorem rel_restrictE : forall le K a b:set,
+  (a,b) :e rel_restrict le K -> (a,b) :e le /\ a :e K /\ b :e K.
+let le K a b.
+assume HabK: (a,b) :e rel_restrict le K.
+claim HabK': (a,b) :e {p :e le | p 0 :e K /\ p 1 :e K}.
+{ rewrite <- (rel_restrict_def le K).
+  exact HabK. }
+claim Hraw: (a,b) :e le /\ ((a,b) 0 :e K /\ (a,b) 1 :e K).
+{ exact (SepE le (fun p:set => p 0 :e K /\ p 1 :e K) (a,b) HabK'). }
+claim Hab: (a,b) :e le.
+{ exact (andEL ((a,b) :e le) (((a,b) 0 :e K /\ (a,b) 1 :e K)) Hraw). }
+claim Ha0: ((a,b) 0) :e K.
+{ exact (andEL (((a,b) 0 :e K)) (((a,b) 1 :e K))
+              (andER ((a,b) :e le) (((a,b) 0 :e K /\ (a,b) 1 :e K)) Hraw)). }
+claim Hb1: ((a,b) 1) :e K.
+{ exact (andER (((a,b) 0 :e K)) (((a,b) 1 :e K))
+              (andER ((a,b) :e le) (((a,b) 0 :e K /\ (a,b) 1 :e K)) Hraw)). }
+apply and3I.
+- exact Hab.
+- rewrite <- (tuple_2_0_eq a b). exact Ha0.
+- rewrite <- (tuple_2_1_eq a b). exact Hb1.
+Qed.
+
+(** helper: introduction for rel_restrict **)
+Theorem rel_restrictI : forall le K a b:set,
+  (a,b) :e le -> a :e K -> b :e K -> (a,b) :e rel_restrict le K.
+let le K a b.
+assume Hab: (a,b) :e le.
+assume HaK: a :e K.
+assume HbK: b :e K.
+prove (a,b) :e rel_restrict le K.
+rewrite (rel_restrict_def le K).
+apply (SepI le (fun p:set => p 0 :e K /\ p 1 :e K) (a,b) Hab).
+apply andI.
+- rewrite (tuple_2_0_eq a b). exact HaK.
+- rewrite (tuple_2_1_eq a b). exact HbK.
+Qed.
+
 (** from exercises after §29: cofinal subsets of directed sets are directed **)
 (** LATEX VERSION: If J is directed and K is cofinal in J, then K is directed (with the restricted order). **)
 Theorem cofinal_subset_directed : forall J le K:set,
@@ -68698,61 +68744,61 @@ apply andI.
 	    - (** (relation_on /\ reflexive) /\ antisymmetric **)
 	      apply andI.
 	      + (** relation_on /\ reflexive **)
-        apply andI.
-        * (** relation_on on K **)
-          prove relation_on (rel_restrict le K) K.
-          prove forall a b:set, (a,b) :e rel_restrict le K -> a :e K /\ b :e K.
-          let a b.
-          assume Hab: (a,b) :e rel_restrict le K.
-          prove a :e K /\ b :e K.
-          claim HabSep: (a,b) :e le /\ ((a,b) 0 :e K /\ (a,b) 1 :e K).
-          { exact (SepE le (fun p:set => p 0 :e K /\ p 1 :e K) (a,b) Hab). }
-          claim Ha0: (a,b) 0 :e K.
-          { exact (andEL ((a,b) 0 :e K) ((a,b) 1 :e K)
-                        (andER ((a,b) :e le) ((a,b) 0 :e K /\ (a,b) 1 :e K) HabSep)). }
-          claim Hb1: (a,b) 1 :e K.
-          { exact (andER ((a,b) 0 :e K) ((a,b) 1 :e K)
-                        (andER ((a,b) :e le) ((a,b) 0 :e K /\ (a,b) 1 :e K) HabSep)). }
-          apply andI.
-          - prove a :e K.
-            rewrite <- (tuple_2_0_eq a b).
-            exact Ha0.
-          - prove b :e K.
-            rewrite <- (tuple_2_1_eq a b).
-            exact Hb1.
+	        apply andI.
+	        * (** relation_on on K **)
+	          prove relation_on (rel_restrict le K) K.
+	          prove forall a b:set, (a,b) :e rel_restrict le K -> a :e K /\ b :e K.
+	          let a b.
+	          assume Hab: (a,b) :e rel_restrict le K.
+	          prove a :e K /\ b :e K.
+	          claim Hab3: (a,b) :e le /\ a :e K /\ b :e K.
+	          { exact (rel_restrictE le K a b Hab). }
+	          claim Hab2: (a,b) :e le /\ a :e K.
+	          { exact (andEL ((a,b) :e le /\ a :e K) (b :e K) Hab3). }
+	          claim HaK: a :e K.
+	          { exact (andER ((a,b) :e le) (a :e K) Hab2). }
+	          claim HbK: b :e K.
+	          { exact (andER ((a,b) :e le /\ a :e K) (b :e K) Hab3). }
+	          apply andI.
+	          - prove a :e K.
+	            exact HaK.
+	          - prove b :e K.
+	            exact HbK.
 	        * (** reflexive **)
 	          let a. assume HaK: a :e K.
 	          prove (a,a) :e rel_restrict le K.
-	          prove (a,a) :e {p :e le | p 0 :e K /\ p 1 :e K}.
 	          claim HaJ: a :e J.
 	          { exact (HK a HaK). }
 	          claim Haa: (a,a) :e le.
 	          { exact (Hrefl a HaJ). }
-	          apply (SepI le (fun p:set => p 0 :e K /\ p 1 :e K) (a,a) Haa).
-	          apply andI.
-	          - rewrite (tuple_2_0_eq a a). exact HaK.
-	          - rewrite (tuple_2_1_eq a a). exact HaK.
-      + (** antisymmetric **)
-        let a b.
-        assume HaK: a :e K.
-        assume HbK: b :e K.
+	          exact (rel_restrictI le K a a Haa HaK HaK).
+	      + (** antisymmetric **)
+	        let a b.
+	        assume HaK: a :e K.
+	        assume HbK: b :e K.
         assume HabK: (a,b) :e rel_restrict le K.
         assume HbaK: (b,a) :e rel_restrict le K.
         prove a = b.
         claim HaJ: a :e J.
         { exact (HK a HaK). }
         claim HbJ: b :e J.
-        { exact (HK b HbK). }
-        claim Hab: (a,b) :e le.
-        { exact (andEL ((a,b) :e le) ((a,b) 0 :e K /\ (a,b) 1 :e K)
-                       (SepE le (fun p:set => p 0 :e K /\ p 1 :e K) (a,b) HabK)). }
-        claim Hba: (b,a) :e le.
-        { exact (andEL ((b,a) :e le) ((b,a) 0 :e K /\ (b,a) 1 :e K)
-                       (SepE le (fun p:set => p 0 :e K /\ p 1 :e K) (b,a) HbaK)). }
-        exact (Hantisym a b HaJ HbJ Hab Hba).
-    - (** transitive **)
-      let a b c.
-      assume HaK: a :e K.
+	        { exact (HK b HbK). }
+	        claim Hab: (a,b) :e le.
+	        { claim Hab3: (a,b) :e le /\ a :e K /\ b :e K.
+	          { exact (rel_restrictE le K a b HabK). }
+	          claim Hab2: (a,b) :e le /\ a :e K.
+	          { exact (andEL ((a,b) :e le /\ a :e K) (b :e K) Hab3). }
+	          exact (andEL ((a,b) :e le) (a :e K) Hab2). }
+	        claim Hba: (b,a) :e le.
+	        { claim Hba3: (b,a) :e le /\ b :e K /\ a :e K.
+	          { exact (rel_restrictE le K b a HbaK). }
+	          claim Hba2: (b,a) :e le /\ b :e K.
+	          { exact (andEL ((b,a) :e le /\ b :e K) (a :e K) Hba3). }
+	          exact (andEL ((b,a) :e le) (b :e K) Hba2). }
+	        exact (Hantisym a b HaJ HbJ Hab Hba).
+	    - (** transitive **)
+	      let a b c.
+	      assume HaK: a :e K.
       assume HbK: b :e K.
       assume HcK: c :e K.
       assume HabK: (a,b) :e rel_restrict le K.
@@ -68760,23 +68806,25 @@ apply andI.
       prove (a,c) :e rel_restrict le K.
       claim HaJ: a :e J.
       { exact (HK a HaK). }
-      claim HbJ: b :e J.
-      { exact (HK b HbK). }
-      claim HcJ: c :e J.
-      { exact (HK c HcK). }
-      claim Hab: (a,b) :e le.
-      { exact (andEL ((a,b) :e le) ((a,b) 0 :e K /\ (a,b) 1 :e K)
-                     (SepE le (fun p:set => p 0 :e K /\ p 1 :e K) (a,b) HabK)). }
-      claim Hbc: (b,c) :e le.
-      { exact (andEL ((b,c) :e le) ((b,c) 0 :e K /\ (b,c) 1 :e K)
-                     (SepE le (fun p:set => p 0 :e K /\ p 1 :e K) (b,c) HbcK)). }
-	      claim Hac: (a,c) :e le.
-	      { exact (Htrans a b c HaJ HbJ HcJ Hab Hbc). }
-	      prove (a,c) :e {p :e le | p 0 :e K /\ p 1 :e K}.
-	      apply (SepI le (fun p:set => p 0 :e K /\ p 1 :e K) (a,c) Hac).
-	      apply andI.
-	      - rewrite (tuple_2_0_eq a c). exact HaK.
-	      - rewrite (tuple_2_1_eq a c). exact HcK.
+	      claim HbJ: b :e J.
+	      { exact (HK b HbK). }
+	      claim HcJ: c :e J.
+	      { exact (HK c HcK). }
+	      claim Hab: (a,b) :e le.
+	      { claim Hab3: (a,b) :e le /\ a :e K /\ b :e K.
+	        { exact (rel_restrictE le K a b HabK). }
+	        claim Hab2: (a,b) :e le /\ a :e K.
+	        { exact (andEL ((a,b) :e le /\ a :e K) (b :e K) Hab3). }
+	        exact (andEL ((a,b) :e le) (a :e K) Hab2). }
+	      claim Hbc: (b,c) :e le.
+	      { claim Hbc3: (b,c) :e le /\ b :e K /\ c :e K.
+	        { exact (rel_restrictE le K b c HbcK). }
+	        claim Hbc2: (b,c) :e le /\ b :e K.
+	        { exact (andEL ((b,c) :e le /\ b :e K) (c :e K) Hbc3). }
+	        exact (andEL ((b,c) :e le) (b :e K) Hbc2). }
+		      claim Hac: (a,c) :e le.
+		      { exact (Htrans a b c HaJ HbJ HcJ Hab Hbc). }
+		      exact (rel_restrictI le K a c Hac HaK HcK).
 - (** directedness in K **)
   let a b.
   assume HaK: a :e K.
