@@ -68433,6 +68433,63 @@ Definition partial_order_on : set -> set -> prop := fun J le =>
   (forall a b c:set, a :e J -> b :e J -> c :e J ->
     (a,b) :e le -> (b,c) :e le -> (a,c) :e le).
 
+(** helper: extract reflexivity from partial_order_on **)
+Theorem partial_order_on_refl : forall J le:set,
+  partial_order_on J le ->
+  forall a:set, a :e J -> (a,a) :e le.
+let J le.
+assume Hpo: partial_order_on J le.
+prove forall a:set, a :e J -> (a,a) :e le.
+let a. assume HaJ: a :e J.
+claim Htmp: (relation_on le J /\ (forall a0:set, a0 :e J -> (a0,a0) :e le)) /\
+            (forall a0 b0:set, a0 :e J -> b0 :e J -> (a0,b0) :e le -> (b0,a0) :e le -> a0 = b0).
+{ exact (andEL
+          ((relation_on le J /\ (forall a0:set, a0 :e J -> (a0,a0) :e le)) /\
+           (forall a0 b0:set, a0 :e J -> b0 :e J -> (a0,b0) :e le -> (b0,a0) :e le -> a0 = b0))
+          (forall a0 b0 c0:set, a0 :e J -> b0 :e J -> c0 :e J ->
+             (a0,b0) :e le -> (b0,c0) :e le -> (a0,c0) :e le)
+          Hpo). }
+claim Hrelrefl: relation_on le J /\ (forall a0:set, a0 :e J -> (a0,a0) :e le).
+{ exact (andEL
+          (relation_on le J /\ (forall a0:set, a0 :e J -> (a0,a0) :e le))
+          (forall a0 b0:set, a0 :e J -> b0 :e J -> (a0,b0) :e le -> (b0,a0) :e le -> a0 = b0)
+          Htmp). }
+claim Hrefl: forall a0:set, a0 :e J -> (a0,a0) :e le.
+{ exact (andER
+          (relation_on le J)
+          (forall a0:set, a0 :e J -> (a0,a0) :e le)
+          Hrelrefl). }
+exact (Hrefl a HaJ).
+Qed.
+
+(** helper: extract antisymmetry from partial_order_on **)
+Theorem partial_order_on_antisym : forall J le:set,
+  partial_order_on J le ->
+  forall a b:set, a :e J -> b :e J -> (a,b) :e le -> (b,a) :e le -> a = b.
+let J le.
+assume Hpo: partial_order_on J le.
+prove forall a b:set, a :e J -> b :e J -> (a,b) :e le -> (b,a) :e le -> a = b.
+let a b.
+assume HaJ: a :e J.
+assume HbJ: b :e J.
+assume Hab: (a,b) :e le.
+assume Hba: (b,a) :e le.
+claim Htmp: (relation_on le J /\ (forall a0:set, a0 :e J -> (a0,a0) :e le)) /\
+            (forall a0 b0:set, a0 :e J -> b0 :e J -> (a0,b0) :e le -> (b0,a0) :e le -> a0 = b0).
+{ exact (andEL
+          ((relation_on le J /\ (forall a0:set, a0 :e J -> (a0,a0) :e le)) /\
+           (forall a0 b0:set, a0 :e J -> b0 :e J -> (a0,b0) :e le -> (b0,a0) :e le -> a0 = b0))
+          (forall a0 b0 c0:set, a0 :e J -> b0 :e J -> c0 :e J ->
+             (a0,b0) :e le -> (b0,c0) :e le -> (a0,c0) :e le)
+          Hpo). }
+claim Hantisym: forall a0 b0:set, a0 :e J -> b0 :e J -> (a0,b0) :e le -> (b0,a0) :e le -> a0 = b0.
+{ exact (andER
+          (relation_on le J /\ (forall a0:set, a0 :e J -> (a0,a0) :e le))
+          (forall a0 b0:set, a0 :e J -> b0 :e J -> (a0,b0) :e le -> (b0,a0) :e le -> a0 = b0)
+          Htmp). }
+exact (Hantisym a b HaJ HbJ Hab Hba).
+Qed.
+
 (** helper: extract transitivity from partial_order_on **)
 Theorem partial_order_on_trans : forall J le:set,
   partial_order_on J le ->
@@ -68486,6 +68543,15 @@ claim Hleft: J <> Empty /\ partial_order_on J le.
              exists c:set, c :e J /\ (a,c) :e le /\ (b,c) :e le)
           HJ). }
 exact (andER (J <> Empty) (partial_order_on J le) Hleft).
+Qed.
+
+(** helper: reflexivity from directed_set **)
+Theorem directed_set_refl : forall J le:set,
+  directed_set J le ->
+  forall a:set, a :e J -> (a,a) :e le.
+let J le.
+assume HJ: directed_set J le.
+exact (partial_order_on_refl J le (directed_set_partial_order J le HJ)).
 Qed.
 
 (** helper: transitivity from directed_set **)
@@ -69906,21 +69972,15 @@ apply iffI.
   { exact (Htail U HU HxU). }
   apply Hexi0.
   let i0.
-  assume Hi0pair.
-  apply Hi0pair.
-  assume Hi0J Hafter.
-  (** extract reflexivity from directed_set J le **)
-  apply HdirJ. assume HleftJ HdirpropJ.
-  apply HleftJ. assume HJne HpoJ.
-  apply HpoJ. assume HabcJ HtransJ.
-  apply HabcJ. assume HabJ HantisymJ.
-  apply HabJ. assume HrelJ HreflJ.
-  claim Hi0refl: (i0,i0) :e le.
-  { exact (HreflJ i0 Hi0J). }
-  claim HyU: apply_fun net i0 :e U.
-  { exact (Hafter i0 Hi0J Hi0refl). }
-  claim HyA: apply_fun net i0 :e A.
-  { exact (Hpts i0 Hi0J). }
+	  assume Hi0pair.
+	  apply Hi0pair.
+	  assume Hi0J Hafter.
+	  claim Hi0refl: (i0,i0) :e le.
+	  { exact (directed_set_refl J le HdirJ i0 Hi0J). }
+	  claim HyU: apply_fun net i0 :e U.
+	  { exact (Hafter i0 Hi0J Hi0refl). }
+	  claim HyA: apply_fun net i0 :e A.
+	  { exact (Hpts i0 Hi0J). }
   claim HyUA: apply_fun net i0 :e U :/\: A.
   { exact (binintersectI U A (apply_fun net i0) HyU HyA). }
   (** conclude nonempty **)
@@ -70356,12 +70416,7 @@ claim Hfunnet: function_on net J X.
 (** extract reflexivity of le from directed_set J le **)
 claim Hrefl: forall j0:set, j0 :e J -> (j0,j0) :e le.
 { let j0. assume Hj0: j0 :e J.
-  apply HdirJ. assume HleftJ HupperJ.
-  apply HleftJ. assume HJne HpoJ.
-  apply HpoJ. assume Hleft13 HtransJ.
-  apply Hleft13. assume H12 HantisymJ.
-  apply H12. assume HrelJ HreflJ.
-  exact (HreflJ j0 Hj0). }
+  exact (directed_set_refl J le HdirJ j0 Hj0). }
 
 (** build the standard neighborhood-index subnet **)
 set N := {U :e Tx | x :e U}.
@@ -70383,16 +70438,10 @@ claim HdirK: directed_set K leK.
   { exact (andER (J <> Empty) (partial_order_on J le) HJpack). }
   claim HantisymJ:
     forall a b:set, a :e J -> b :e J -> (a,b) :e le -> (b,a) :e le -> a = b.
-  { apply HJpo. assume Hleft13 HtransJ.
-    apply Hleft13. assume H12 HantisymJ0.
-    apply H12. assume HrelJ HreflJ.
-    exact HantisymJ0. }
+  { exact (partial_order_on_antisym J le HJpo). }
   claim HtransJ:
     forall a b c:set, a :e J -> b :e J -> c :e J -> (a,b) :e le -> (b,c) :e le -> (a,c) :e le.
-  { apply HJpo. assume Hleft13 HtransJ0.
-    apply Hleft13. assume H12 HantisymJ0.
-    apply H12. assume HrelJ HreflJ.
-    exact HtransJ0. }
+  { exact (partial_order_on_trans J le HJpo). }
 
   prove (K <> Empty /\ partial_order_on K leK) /\
     forall a b:set, a :e K -> b :e K ->
