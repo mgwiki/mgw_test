@@ -88104,6 +88104,25 @@ exact (metrizable_paracompact (product_space omega (const_space_family omega R R
                               Hmetr).
 Qed.
 
+(** from §41 Example 5 (uniform topology): R^omega is paracompact in the uniform topology **)
+(** LATEX VERSION: R^omega is paracompact in the uniform topology since it is metrizable. **)
+Theorem Romega_paracompact_uniform_topology :
+  paracompact_space real_sequences uniform_topology.
+prove paracompact_space real_sequences uniform_topology.
+claim Hmetr: metrizable real_sequences uniform_topology.
+{ prove exists d:set, metric_on real_sequences d /\ metric_topology real_sequences d = uniform_topology.
+  witness uniform_metric_Romega.
+  apply andI.
+  - (** metric_on part **)
+    exact uniform_metric_Romega_is_metric.
+  - (** topology equality is definitional **)
+    claim Hdef: uniform_topology = metric_topology real_sequences uniform_metric_Romega.
+    { reflexivity. }
+    rewrite Hdef.
+    reflexivity. }
+exact (metrizable_paracompact real_sequences uniform_topology Hmetr).
+Qed.
+
 (** from §41 Example 6: uncountable product of R is not paracompact **)
 (** LATEX VERSION: If J is uncountable then R^J is not paracompact since it is Hausdorff but not normal. **)
 Theorem uncountable_product_R_not_paracompact : forall J:set,
