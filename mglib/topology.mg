@@ -22588,7 +22588,7 @@ Definition is_largest_element : set -> set -> prop := fun X b0 =>
 (** from §14 Definition: order topology basis (TeX version) **)
 (** LATEX VERSION: Assuming X has more than one element, a basis consists of (1) open intervals (a,b); (2) [a0,b) if a0 is the smallest element; (3) (a,b0] if b0 is the largest element. **)
 Definition order_topology_basis_tex : set -> set := fun X =>
-  ({I :e Power X | exists a :e X, exists b :e X, order_rel X a b /\ I = order_interval X a b}
+  ({I :e Power X | exists a :e X, exists b :e X, order_rel X a b /\ I = {x :e X | order_rel X a x /\ order_rel X x b}}
    :\/:
    {I :e Power X | exists a0 b:set, is_least_element X a0 /\ b :e X /\ order_rel X a0 b /\ I = halfopen_interval_left_in X a0 b}
    :\/:
