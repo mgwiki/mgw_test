@@ -27700,6 +27700,14 @@ claim HUpow: U :e Power Y.
 exact (PowerE Y U HUpow).
 Qed.
 
+(** helper: elements of the subspace topology are members of Power Y **)
+Theorem subspace_topology_in_Power : forall X Tx Y U:set,
+  U :e subspace_topology X Tx Y -> U :e Power Y.
+let X Tx Y U.
+assume HU: U :e subspace_topology X Tx Y.
+exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HU).
+Qed.
+
 (** helper: intersection of two subspace-open sets is subspace-open, with an explicit witness **)
 Theorem subspace_topology_binintersect_witness : forall X Tx Y U V VU VV:set,
   U = VU :/\: Y ->
@@ -30173,7 +30181,7 @@ apply set_ext.
   { exact (andER (U :e subspace_topology X Tx Y) (W = U :/\: A) HU). }
   (** U ∈ subspace_topology X Tx Y means U ∈ Power Y ∧ ∃V∈Tx, U = V ∩ Y **)
   claim HUPowerY: U :e Power Y.
-  { exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSubY). }
+  { exact (subspace_topology_in_Power X Tx Y U HUinSubY). }
   claim HUexists: exists V :e Tx, U = V :/\: Y.
   { exact (subspace_topologyE X Tx Y U HUinSubY). }
   apply HUexists.
@@ -30251,7 +30259,7 @@ assume HW: W :e subspace_topology X T' Y.
 prove W :e subspace_topology X T Y.
   (** W ∈ subspace_topology X T' Y means W ∈ Power Y ∧ ∃V'∈T', W = V' ∩ Y **)
   claim HWPowerY: W :e Power Y.
-  { exact (SepE1 (Power Y) (fun W0:set => exists V :e T', W0 = V :/\: Y) W HW). }
+  { exact (subspace_topology_in_Power X T' Y W HW). }
   claim HWexists: exists V :e T', W = V :/\: Y.
   { exact (subspace_topologyE X T' Y W HW). }
   apply HWexists.
@@ -30310,11 +30318,11 @@ claim HtopY: topology_on Y (subspace_topology X Tx Y).
 { exact (andEL (topology_on Y (subspace_topology X Tx Y)) (U :e subspace_topology X Tx Y) HU). }
 claim HUinSub: U :e subspace_topology X Tx Y.
 { exact (andER (topology_on Y (subspace_topology X Tx Y)) (U :e subspace_topology X Tx Y) HU). }
-(** U ∈ subspace_topology X Tx Y means U ∈ Power Y ∧ ∃V∈Tx, U = V ∩ Y **)
-claim HUPowerY: U :e Power Y.
-{ exact (SepE1 (Power Y) (fun U0:set => exists V :e Tx, U0 = V :/\: Y) U HUinSub). }
-claim HUexists: exists V :e Tx, U = V :/\: Y.
-{ exact (subspace_topologyE X Tx Y U HUinSub). }
+  (** U ∈ subspace_topology X Tx Y means U ∈ Power Y ∧ ∃V∈Tx, U = V ∩ Y **)
+  claim HUPowerY: U :e Power Y.
+  { exact (subspace_topology_in_Power X Tx Y U HUinSub). }
+  claim HUexists: exists V :e Tx, U = V :/\: Y.
+  { exact (subspace_topologyE X Tx Y U HUinSub). }
 apply HUexists.
 let V.
 assume HV: V :e Tx /\ U = V :/\: Y.
