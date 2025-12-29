@@ -75085,6 +75085,8 @@ exact (SNoLe_tra (If_i (Rlt pac 1) pac 1)
                  Hsub).
 Qed.
 
+(** from §20 Theorem 20.5: the D metric on R^ω (scaled bounded coordinate differences) **)
+(** LATEX VERSION: Define D(x,y)=sup{ d̄(x_i,y_i)/i }. **)
 Definition Romega_D_scaled_diffs : set -> set -> set := fun x y =>
   Repl omega
        (fun i:set => mul_SNo (R_bounded_distance (apply_fun x i) (apply_fun y i)) (inv_nat (ordsucc i))).
@@ -75184,6 +75186,8 @@ apply set_ext.
                H0omega).
 Qed.
 
+(** from §20 Theorem 20.5: D(x,y) is the supremum of the scaled bounded coordinate differences **)
+(** LATEX VERSION: D(x,y)=sup{ d̄(x_i,y_i)/i }. **)
 Definition Romega_D_metric_value : set -> set -> set := fun x y =>
   Eps_i (fun r:set => R_lub (Romega_D_scaled_diffs x y) r).
 
@@ -76232,6 +76236,8 @@ claim Hle: Rle l u.
 exact (RleE_nlt l u Hle).
 Qed.
 
+(** from §20 Theorem 20.5: the D metric graph on R^ω × R^ω **)
+(** LATEX VERSION: Then D is a metric that induces the product topology on R^ω. **)
 Definition Romega_D_metric : set :=
   graph (setprod R_omega_space R_omega_space)
         (fun p:set => Romega_D_metric_value (p 0) (p 1)).
@@ -76255,6 +76261,8 @@ claim Hp1: p 1 :e R_omega_space.
 exact (Romega_D_metric_value_in_R (p 0) (p 1) Hp0 Hp1).
 Qed.
 
+(** from §20 Theorem 20.5: the product topology on R^ω is induced by the D metric **)
+(** LATEX VERSION: Then D is a metric that induces the product topology on R^ω. **)
 Definition Romega_D_metric_topology : set := metric_topology R_omega_space Romega_D_metric.
 
 (** helper: open balls in the D metric are open in the product topology **)
