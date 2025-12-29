@@ -87873,6 +87873,122 @@ Definition locally_finite_family : set -> set -> set -> prop := fun X Tx F =>
     exists N:set, N :e Tx /\ x :e N /\
       exists S:set, finite S /\ S c= F /\
         forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
+
+(** helper: subfamily of a locally finite family is locally finite **)
+Theorem locally_finite_subfamily : forall X Tx F G:set,
+  locally_finite_family X Tx F ->
+  G c= F ->
+  locally_finite_family X Tx G.
+let X Tx F G.
+assume HLF: locally_finite_family X Tx F.
+assume HGF: G c= F.
+prove locally_finite_family X Tx G.
+prove topology_on X Tx /\
+  forall x:set, x :e X ->
+    exists N:set, N :e Tx /\ x :e N /\
+      exists S:set, finite S /\ S c= G /\
+        forall A:set, A :e G -> A :/\: N <> Empty -> A :e S.
+apply andI.
+- exact (andEL (topology_on X Tx)
+               (forall x:set, x :e X ->
+                 exists N:set, N :e Tx /\ x :e N /\
+                   exists S:set, finite S /\ S c= F /\
+                     forall A:set, A :e F -> A :/\: N <> Empty -> A :e S)
+               HLF).
+- let x. assume HxX: x :e X.
+  claim HLFx: exists N:set, N :e Tx /\ x :e N /\
+    exists S:set, finite S /\ S c= F /\
+      forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
+  { exact (andER (topology_on X Tx)
+                 (forall x0:set, x0 :e X ->
+                   exists N:set, N :e Tx /\ x0 :e N /\
+                     exists S:set, finite S /\ S c= F /\
+                       forall A:set, A :e F -> A :/\: N <> Empty -> A :e S)
+                 HLF x HxX). }
+  apply HLFx.
+  let N. assume HN: N :e Tx /\ x :e N /\
+    exists S:set, finite S /\ S c= F /\
+      forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
+  witness N.
+  claim HNpair: N :e Tx /\ x :e N.
+  { exact (andEL (N :e Tx /\ x :e N)
+                 (exists S:set, finite S /\ S c= F /\ forall A:set, A :e F -> A :/\: N <> Empty -> A :e S)
+                 HN). }
+  claim HexS: exists S:set, finite S /\ S c= F /\ forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
+  { exact (andER (N :e Tx /\ x :e N)
+                 (exists S:set, finite S /\ S c= F /\ forall A:set, A :e F -> A :/\: N <> Empty -> A :e S)
+                 HN). }
+  apply andI.
+  - exact HNpair.
+  - apply HexS.
+    let S. assume HS: finite S /\ S c= F /\ forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
+      claim HS1: finite S /\ S c= F.
+      { exact (andEL (finite S /\ S c= F)
+                     (forall A:set, A :e F -> A :/\: N <> Empty -> A :e S)
+                     HS). }
+      claim HSfin: finite S.
+      { exact (andEL (finite S) (S c= F) HS1). }
+      claim HSsubF: S c= F.
+      { exact (andER (finite S) (S c= F) HS1). }
+      claim HSprop: forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
+      { exact (andER (finite S /\ S c= F)
+                     (forall A:set, A :e F -> A :/\: N <> Empty -> A :e S)
+                     HS). }
+      set SG := {A :e S | A :e G}.
+      witness SG.
+      prove (finite SG /\ SG c= G) /\
+        forall A:set, A :e G -> A :/\: N <> Empty -> A :e SG.
+      apply andI.
+      - prove finite SG /\ SG c= G.
+        apply andI.
+        * (** SG finite **)
+          claim HSGsub: SG c= S.
+          { exact (Sep_Subq S (fun A:set => A :e G)). }
+          exact (Subq_finite S HSfin SG HSGsub).
+        * (** SG c= G **)
+          let A. assume HA: A :e SG.
+          exact (SepE2 S (fun A0:set => A0 :e G) A HA).
+      - (** membership property **)
+        let A. assume HAG: A :e G.
+        assume HAnN: A :/\: N <> Empty.
+        claim HAF: A :e F.
+        { exact (HGF A HAG). }
+        claim HAS: A :e S.
+        { exact (HSprop A HAF HAnN). }
+        apply SepI.
+        - exact HAS.
+        - exact HAG.
+Qed.
+
+(** helper: extract topology_on from locally_finite_family **)
+Theorem locally_finite_family_topology : forall X Tx F:set,
+  locally_finite_family X Tx F -> topology_on X Tx.
+let X Tx F.
+assume HLF: locally_finite_family X Tx F.
+exact (andEL (topology_on X Tx)
+             (forall x:set, x :e X ->
+               exists N:set, N :e Tx /\ x :e N /\
+                 exists S:set, finite S /\ S c= F /\
+                   forall A:set, A :e F -> A :/\: N <> Empty -> A :e S)
+             HLF).
+Qed.
+
+(** helper: extract the neighborhood-finite part from locally_finite_family **)
+Theorem locally_finite_family_property : forall X Tx F:set,
+  locally_finite_family X Tx F ->
+  forall x:set, x :e X ->
+    exists N:set, N :e Tx /\ x :e N /\
+      exists S:set, finite S /\ S c= F /\
+        forall A:set, A :e F -> A :/\: N <> Empty -> A :e S.
+let X Tx F.
+assume HLF: locally_finite_family X Tx F.
+exact (andER (topology_on X Tx)
+             (forall x:set, x :e X ->
+               exists N:set, N :e Tx /\ x :e N /\
+                 exists S:set, finite S /\ S c= F /\
+                   forall A:set, A :e F -> A :/\: N <> Empty -> A :e S)
+             HLF).
+Qed.
 (** from §39 Definition: locally finite collection (applied to a basis) **)
 (** LATEX VERSION: A collection A is locally finite in X if every point has a neighborhood intersecting only finitely many elements of A. **)
 Definition locally_finite_basis : set -> set -> prop := fun X Tx =>
