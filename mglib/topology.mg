@@ -68678,21 +68678,26 @@ apply andI.
     prove partial_order_on K (rel_restrict le K).
     (** unpack partial_order_on J le from HJ **)
     apply HJ. assume Hleft Hdir.
-    apply Hleft. assume HJne Hpo.
-    (** unfold partial_order_on K (rel_restrict le K) **)
-    prove relation_on (rel_restrict le K) K /\
-      (forall a:set, a :e K -> (a,a) :e rel_restrict le K) /\
-      (forall a b:set, a :e K -> b :e K -> (a,b) :e rel_restrict le K -> (b,a) :e rel_restrict le K -> a = b) /\
-      (forall a b c:set, a :e K -> b :e K -> c :e K ->
-        (a,b) :e rel_restrict le K -> (b,c) :e rel_restrict le K -> (a,c) :e rel_restrict le K).
-    (** unpack relation/reflexive/antisym/trans for J **)
-    apply Hpo. assume Habc Htrans.
-    apply Habc. assume Hab Hantisym.
-    apply Hab. assume Hrel Hrefl.
-    apply andI.
-    - (** (relation_on /\ reflexive) /\ antisymmetric **)
-      apply andI.
-      + (** relation_on /\ reflexive **)
+	    apply Hleft. assume HJne Hpo.
+	    (** unfold partial_order_on K (rel_restrict le K) **)
+	    prove relation_on (rel_restrict le K) K /\
+	      (forall a:set, a :e K -> (a,a) :e rel_restrict le K) /\
+	      (forall a b:set, a :e K -> b :e K -> (a,b) :e rel_restrict le K -> (b,a) :e rel_restrict le K -> a = b) /\
+	      (forall a b c:set, a :e K -> b :e K -> c :e K ->
+	        (a,b) :e rel_restrict le K -> (b,c) :e rel_restrict le K -> (a,c) :e rel_restrict le K).
+	    (** pull out reflexive/antisym/trans for J **)
+	    claim Hrefl: forall a:set, a :e J -> (a,a) :e le.
+	    { exact (partial_order_on_refl J le Hpo). }
+	    claim Hantisym: forall a b:set, a :e J -> b :e J ->
+	      (a,b) :e le -> (b,a) :e le -> a = b.
+	    { exact (partial_order_on_antisym J le Hpo). }
+	    claim Htrans: forall a b c:set, a :e J -> b :e J -> c :e J ->
+	      (a,b) :e le -> (b,c) :e le -> (a,c) :e le.
+	    { exact (partial_order_on_trans J le Hpo). }
+	    apply andI.
+	    - (** (relation_on /\ reflexive) /\ antisymmetric **)
+	      apply andI.
+	      + (** relation_on /\ reflexive **)
         apply andI.
         * (** relation_on on K **)
           prove relation_on (rel_restrict le K) K.
@@ -68777,16 +68782,16 @@ apply andI.
   assume HaK: a :e K.
   assume HbK: b :e K.
   prove exists c:set, c :e K /\ (a,c) :e rel_restrict le K /\ (b,c) :e rel_restrict le K.
-	  (** unpack directedness and transitivity on J **)
-	  apply HJ. assume Hleft Hdir.
-	  apply Hleft. assume HJne Hpo.
-	  apply Hpo. assume Habc Htrans.
-	  apply Habc. assume Hab Hantisym.
-	  apply Hab. assume Hrel Hrefl.
-	  claim HaJ: a :e J.
-	  { exact (HK a HaK). }
-	  claim HbJ: b :e J.
-	  { exact (HK b HbK). }
+		  (** unpack directedness and transitivity on J **)
+		  apply HJ. assume Hleft Hdir.
+		  apply Hleft. assume HJne Hpo.
+		  claim Htrans: forall a b c:set, a :e J -> b :e J -> c :e J ->
+		    (a,b) :e le -> (b,c) :e le -> (a,c) :e le.
+		  { exact (partial_order_on_trans J le Hpo). }
+		  claim HaJ: a :e J.
+		  { exact (HK a HaK). }
+		  claim HbJ: b :e J.
+		  { exact (HK b HbK). }
 	  claim Hexm: exists m:set, m :e J /\ (a,m) :e le /\ (b,m) :e le.
 	  { exact (Hdir a b HaJ HbJ). }
 	  apply Hexm.
@@ -69196,17 +69201,14 @@ prove directed_set J le /\ directed_set J le /\
     (apply_fun {(y,y) | y :e J} i, apply_fun {(y,y) | y :e J} j) :e le) /\
   (forall j:set, j :e J -> exists k:set, k :e J /\ (j, apply_fun {(y,y) | y :e J} k) :e le) /\
   (forall k:set, k :e J ->
-    apply_fun net k = apply_fun net (apply_fun {(y,y) | y :e J} k)).
-(** unpack reflexivity on J from directed_set **)
-apply HdirJ. assume Hleft Hdirprop.
-apply Hleft. assume HJne Hpo.
-apply Hpo. assume Habc Htrans.
-apply Habc. assume Hab Hantisym.
-apply Hab. assume Hrel Hrefl.
-claim Hmono_id: forall i j:set, i :e J -> j :e J -> (i,j) :e le ->
-  (apply_fun {(y,y) | y :e J} i, apply_fun {(y,y) | y :e J} j) :e le.
-{ let i j.
-  assume HiJ: i :e J.
+	  apply_fun net k = apply_fun net (apply_fun {(y,y) | y :e J} k)).
+	(** reflexivity on J from directedness **)
+	claim Hrefl: forall j:set, j :e J -> (j,j) :e le.
+	{ exact (directed_set_refl J le HdirJ). }
+	claim Hmono_id: forall i j:set, i :e J -> j :e J -> (i,j) :e le ->
+	  (apply_fun {(y,y) | y :e J} i, apply_fun {(y,y) | y :e J} j) :e le.
+	{ let i j.
+	  assume HiJ: i :e J.
   assume HjJ: j :e J.
   assume Hij: (i,j) :e le.
   rewrite (identity_function_apply J i HiJ).
