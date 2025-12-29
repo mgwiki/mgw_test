@@ -91688,7 +91688,83 @@ claim HCsubCont:
     assume HfxV: apply_fun f x :e V.
     claim Hexn0: exists n0:set, n0 :e omega /\
       open_ball Y d (apply_fun f x) (inv_nat (ordsucc n0)) c= V.
-    { admit. (** FAIL **) }
+    { claim HmY: metric_on Y d.
+      { exact (metric_on_total_imp_metric_on Y d Hd). }
+      set B := famunion Y (fun y0:set => {open_ball Y d y0 r|r :e R, Rlt 0 r}).
+      claim HdefMT: metric_topology Y d = generated_topology Y B.
+      { reflexivity. }
+      claim HVgen: V :e generated_topology Y B.
+      { rewrite <- HdefMT.
+        exact HV. }
+      claim HVloc: forall y0 :e V, exists b :e B, y0 :e b /\ b c= V.
+      { exact (SepE2 (Power Y)
+                     (fun U0:set => forall y0 :e U0, exists b :e B, y0 :e b /\ b c= U0)
+                     V
+                     HVgen). }
+      claim HfxY: apply_fun f x :e Y.
+      { exact (Hf x HxX). }
+      apply (HVloc (apply_fun f x) HfxV).
+      let b. assume Hbpair.
+      claim HbB: b :e B.
+      { exact (andEL (b :e B) (apply_fun f x :e b /\ b c= V) Hbpair). }
+      claim Hbprop: apply_fun f x :e b /\ b c= V.
+      { exact (andER (b :e B) (apply_fun f x :e b /\ b c= V) Hbpair). }
+      claim Hfxb: apply_fun f x :e b.
+      { exact (andEL (apply_fun f x :e b) (b c= V) Hbprop). }
+      claim HbsubV: b c= V.
+      { exact (andER (apply_fun f x :e b) (b c= V) Hbprop). }
+      (** destruct b as an open ball around some center c with radius r>0 **)
+      apply (famunionE_impred Y (fun y0:set => {open_ball Y d y0 r|r :e R, Rlt 0 r}) b HbB
+             (exists n0:set, n0 :e omega /\ open_ball Y d (apply_fun f x) (inv_nat (ordsucc n0)) c= V)).
+      let c. assume HcY: c :e Y.
+      assume HbIn: b :e {open_ball Y d c r|r :e R, Rlt 0 r}.
+      apply (ReplSepE_impred R (fun r0:set => Rlt 0 r0) (fun r0:set => open_ball Y d c r0) b HbIn
+             (exists n0:set, n0 :e omega /\ open_ball Y d (apply_fun f x) (inv_nat (ordsucc n0)) c= V)).
+      let r. assume HrR: r :e R.
+      assume Hrpos: Rlt 0 r.
+      assume Hbeq: b = open_ball Y d c r.
+      claim HfxInBall: apply_fun f x :e open_ball Y d c r.
+      { rewrite <- Hbeq.
+        exact Hfxb. }
+      claim Hexs: exists s:set, s :e R /\ Rlt 0 s /\ open_ball Y d (apply_fun f x) s c= open_ball Y d c r.
+      { exact (open_ball_refine_center Y d c (apply_fun f x) r HmY HcY HfxY HrR Hrpos HfxInBall). }
+      apply Hexs.
+      let s. assume Hs.
+      claim Hs12: s :e R /\ Rlt 0 s.
+      { exact (andEL (s :e R /\ Rlt 0 s)
+                     (open_ball Y d (apply_fun f x) s c= open_ball Y d c r)
+                     Hs). }
+      claim HsR: s :e R.
+      { exact (andEL (s :e R) (Rlt 0 s) Hs12). }
+      claim Hspos: Rlt 0 s.
+      { exact (andER (s :e R) (Rlt 0 s) Hs12). }
+      claim HballSubCr: open_ball Y d (apply_fun f x) s c= open_ball Y d c r.
+      { exact (andER (s :e R /\ Rlt 0 s)
+                     (open_ball Y d (apply_fun f x) s c= open_ball Y d c r)
+                     Hs). }
+      claim HCrSubV: open_ball Y d c r c= V.
+      { rewrite <- Hbeq.
+        exact HbsubV. }
+      claim HballSSubV: open_ball Y d (apply_fun f x) s c= V.
+      { exact (Subq_tra (open_ball Y d (apply_fun f x) s) (open_ball Y d c r) V HballSubCr HCrSubV). }
+      claim HexN: exists N:set, N :e omega /\ Rlt (inv_nat (ordsucc N)) s.
+      { exact (exists_inv_nat_ordsucc_lt s HsR Hspos). }
+      apply HexN.
+      let N. assume HNpair.
+      claim HNin: N :e omega.
+      { exact (andEL (N :e omega) (Rlt (inv_nat (ordsucc N)) s) HNpair). }
+      claim HinvLt: Rlt (inv_nat (ordsucc N)) s.
+      { exact (andER (N :e omega) (Rlt (inv_nat (ordsucc N)) s) HNpair). }
+      witness N.
+      apply andI.
+      - exact HNin.
+      - claim HsubSmall: open_ball Y d (apply_fun f x) (inv_nat (ordsucc N)) c= open_ball Y d (apply_fun f x) s.
+        { exact (open_ball_radius_mono Y d (apply_fun f x) (inv_nat (ordsucc N)) s HinvLt). }
+        exact (Subq_tra (open_ball Y d (apply_fun f x) (inv_nat (ordsucc N)))
+                        (open_ball Y d (apply_fun f x) s)
+                        V
+                        HsubSmall
+                        HballSSubV). }
     apply Hexn0.
     let n0.
     assume Hn0: n0 :e omega /\ open_ball Y d (apply_fun f x) (inv_nat (ordsucc n0)) c= V.
