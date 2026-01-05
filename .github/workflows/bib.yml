@@ -26,10 +26,10 @@ jobs:
 #    - run: pip3 install pyyaml pandas openpyxl 
     - name: check and htmlize
       run: |
-        find mglib/ -type f | parallel --will-cite './bin/megalodonw.pl 60 {} {}'
+        find mglib/ -type f | parallel --will-cite './bin/megalodonw.pl 180 {} {}'
         ls sig | parallel --will-cite './bin/megalodonw.pl 10 sig/{} sig/{}'
         ls sig | parallel --will-cite './bin/megalodonw.pl 40 sig/{} -pfg -html docs/sig/{}.html sig/{} > pfg/sig/{}.pfg'
-        find mglib/ -type f | perl -pe 's/^mglib\///' | parallel --will-cite './bin/megalodonw.pl 60 mglib/{} -pfg -html docs/{}.html mglib/{} > pfg/{}.pfg'
+        find mglib/ -type f | perl -pe 's/^mglib\///' | parallel --will-cite './bin/megalodonw.pl 180 mglib/{} -pfg -html docs/{}.html mglib/{} > pfg/{}.pfg'
         ./bin/indexer.py -r docs
         for i in `find docs/sig/ -type f && find docs/ -type f -not -path 'docs/sig/*'`; do perl -e '$h=$ARGV[0]; while(<>) {if(m/<a name=([^\/]+)/) {$l=$1} while(m/php\?b=([0-9A-Fa-f]{64})\b/g) { print "$1:\047$h\047:$l\n"}   }' $i; done > etc/rindex.txt
     - name: update the repo
