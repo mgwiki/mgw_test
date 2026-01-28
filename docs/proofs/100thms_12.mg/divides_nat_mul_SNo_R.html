@@ -1,0 +1,23 @@
+<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">m</span> be given.</div>
+<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hm</span>.</div>
+<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">n</span> be given.</div>
+<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>.</div>
+<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">m</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#omega">ω</a></span></span> <a href="#notation_2">∧</a> <span class="ltree"><span class="ltree"><span class="ltree">m</span> <a href="#notation_72">*</a> <span class="ltree">n</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#omega">ω</a></span></span></span> <a href="#notation_2">∧</a> <span class="ltree">∃k<a href="#notation_8"> ∈ </a><span class="ltree"><a classname="anamelink" href="#omega">ω</a></span>,  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#mul_nat">mul_nat</a></span> <span class="ltree">m</span></span> <span class="ltree">k</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree">m</span> <a href="#notation_72">*</a> <span class="ltree">n</span></span></span></span></span>.</div>
+<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#and3I">and3I</a></span></span> to the current goal.</div>
+<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hm</span></span>.</div>
+</div>
+<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#mul_SNo_In_omega">mul_SNo_In_omega</a></span></span> to the current goal.</div>
+<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hm</span></span>.</div>
+</div>
+<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hn</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="witnesstac">We use <span class="ltree"><span class="ltree">n</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#andI">andI</a></span></span> to the current goal.</div>
+<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hn</span></span>.</div>
+</div>
+<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#mul_nat">mul_nat</a></span> <span class="ltree">m</span></span> <span class="ltree">n</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree">m</span> <a href="#notation_72">*</a> <span class="ltree">n</span></span></span>.</div>
+<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#mul_nat_mul_SNo">mul_nat_mul_SNo</a></span> <span class="ltree">m</span></span> <span class="ltree">Hm</span></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span></span>.</div>
+</div>
+</div>
+∎

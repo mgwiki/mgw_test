@@ -1,0 +1,18 @@
+<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">{w ∈ <span class="ltree"><span class="ltree">SNoL</span> <span class="ltree">1</span></span>|<span class="ltree"><span class="ltree">0</span> <a href="#notation_6">≤</a> <span class="ltree">w</span></span>}</span> = <span class="ltree">1</span></span>.</div>
+<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">SNoL_1</span></span> (from left to right).</div>
+<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">{w ∈ <span class="ltree">1</span>|<span class="ltree"><span class="ltree">0</span> <a href="#notation_6">≤</a> <span class="ltree">w</span></span>}</span> = <span class="ltree">1</span></span>.</div>
+<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">set_ext</span></span> to the current goal.</div>
+<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">Sep_Subq</span> <span class="ltree">1</span></span> <span class="ltree">(<span class="ltree">λw ⇒  <span class="ltree"><span class="ltree">0</span> <a href="#notation_6">≤</a> <span class="ltree">w</span></span></span>)</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">w</span> be given.</div>
+<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hw</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span>  <a href="#In_notation">∈</a>  <span class="ltree">1</span></span></span>.</div>
+<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">cases_1</span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span> to the current goal.</div>
+<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">0</span>  <a href="#In_notation">∈</a>  <span class="ltree">{w ∈ <span class="ltree">1</span>|<span class="ltree"><span class="ltree">0</span> <a href="#notation_6">≤</a> <span class="ltree">w</span></span>}</span></span>.</div>
+<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SepI</span></span> to the current goal.</div>
+<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">In_0_1</span></span>.</div>
+</div>
+<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">0</span> <a href="#notation_6">≤</a> <span class="ltree">0</span></span>.</div>
+<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNoLe_ref</span></span> to the current goal.</div>
+</div>
+</div>
+∎

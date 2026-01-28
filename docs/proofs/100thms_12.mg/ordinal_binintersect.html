@@ -1,0 +1,17 @@
+<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">alpha and beta</span> be given.</div>
+<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Ha Hb</span>.</div>
+<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Ha</span></span> to the current goal.</div>
+<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Ha1 _</span>.</div>
+<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hb</span></span> to the current goal.</div>
+<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hb1 _</span>.</div>
+<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordinal_In_Or_Subq">ordinal_In_Or_Subq</a></span> <span class="ltree">alpha</span></span> <span class="ltree">beta</span></span> <span class="ltree">Ha</span></span> <span class="ltree">Hb</span></span></span> to the current goal.</div>
+<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">alpha</span>  <a href="#In_notation">∈</a>  <span class="ltree">beta</span></span></span>.</div>
+<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#binintersect_Subq_eq_1">binintersect_Subq_eq_1</a></span> <span class="ltree">alpha</span></span> <span class="ltree">beta</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Hb1</span> <span class="ltree">alpha</span></span> <span class="ltree">H1</span></span>)</span></span></span> (from left to right).</div>
+<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Ha</span></span>.</div>
+</div>
+<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">beta</span>  <a href="#Subq_notation">⊆</a>  <span class="ltree">alpha</span></span></span>.</div>
+<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><a classname="anamelink" href="#binintersect_com">binintersect_com</a></span></span> (from left to right).</div>
+<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#binintersect_Subq_eq_1">binintersect_Subq_eq_1</a></span> <span class="ltree">beta</span></span> <span class="ltree">alpha</span></span> <span class="ltree">H1</span></span></span> (from left to right).</div>
+<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hb</span></span>.</div>
+</div>
+∎
