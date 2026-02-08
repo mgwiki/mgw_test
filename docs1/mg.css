@@ -1,0 +1,91 @@
+body {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.srcline {
+  opacity: 0;
+  font-size: 0.8em;
+  margin-right: 0.6em;
+  user-select: none;
+  font-family: monospace;
+}
+.docitemwrap, .pftacwrap {
+  display: flex;
+  gap: 0.5em;
+  align-items: baseline;
+}
+
+.docitemwrap:hover .srcline,
+.pftacwrap:hover .srcline {
+  opacity: 0.6;
+}
+
+
+.thmandproof {
+    margin-bottom: 20px;
+}
+
+.thmdecl {
+    margin-bottom: 10px;
+}
+
+.thmprop {
+    padding-left: 20px;
+}
+
+.ltree {
+    color: #3F85AF;
+}
+
+.anamelink {
+    color: #3F85AF;
+    text-decoration: none;
+}
+
+.anamelink:hover {
+    text-decoration: underline;
+}
+
+.pfglinks {
+    margin-bottom: 10px;
+}
+
+.proof {
+    margin-left: 20px;
+    border-left: 2px solid #3F85AF;
+    padding-left: 10px;
+}
+
+.proofpres {
+    cursor: pointer;
+}
+
+.pftackeyword {
+    font-weight: bold;
+}
+
+/* Removing this for now because special cases like "Use symmetry" and "Use f_equal" do not have a class but should be indented the same as the others listed here.
+.rewritetac, .applytac, .lettac, .assumetac, .provetac, .subproof, .exact, .claimtac, .settac, .witnesstac {
+    margin-left: 10px;
+}
+*/
+
+.subproof {
+    margin-left: 40px;
+    border-left: 2px solid #3F85AF;
+    padding-left: 10px;
+}
+
+.sectionend {
+    margin-top: 30px;
+    font-weight: bold;
+}
+
+a[name]:target {
+  display: block;
+  background: #5D9BF7;
+  height: 1em;
+  margin-bottom: 2px;
+}
