@@ -1,97 +1,177 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HX</span>: <span class="ltree"><span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">X</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">finite</span> <span class="ltree">X</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree"><span class="ltree">X</span> ≠ <span class="ltree">0</span></span></span>.</div>
-<div class="settac"><span class="pftackeyword">Set</span> <span class="ltree">X'</span> to be the term <span class="ltree"><span class="ltree">{<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>|x ∈ <span class="ltree">X</span>}</span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree">∀z<a href="#In_notation"> ∈ </a><span class="ltree">X'</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">z</span></span></span></span>.</div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">X</span></span> <span class="ltree">(<span class="ltree">λx ⇒  <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span>)</span></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hzx</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span> = <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hzx</span></span> (from left to right).</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNo_minus_SNo</span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">HX</span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L2</span>: <span class="ltree"><span class="ltree"><span class="ltree">finite</span> <span class="ltree">X'</span></span></span>.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H1</span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">n</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>: <span class="ltree"><span class="ltree"><span class="ltree">n</span>  <a href="#In_notation">∈</a>  <span class="ltree">ω</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">equip</span> <span class="ltree">X</span></span> <span class="ltree">n</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃n ∈ <span class="ltree">ω</span>,  <span class="ltree"><span class="ltree"><span class="ltree">equip</span> <span class="ltree">X'</span></span> <span class="ltree">n</span></span></span>.</div>
-<div class="witnesstac">We use <span class="ltree"><span class="ltree">n</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">andI</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hn</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="944">L944</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">equip</span> <span class="ltree">X'</span></span> <span class="ltree">n</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">equip_tra</span> <span class="ltree">X'</span></span> <span class="ltree">X</span></span> <span class="ltree">n</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">equip</span> <span class="ltree">X'</span></span> <span class="ltree">X</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">equip_sym</span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">equip</span> <span class="ltree">X</span></span> <span class="ltree">X'</span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃f : <span class="ltree"><span class="ltree">set</span> → <span class="ltree">set</span></span>,  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">bij</span> <span class="ltree">X</span></span> <span class="ltree">X'</span></span> <span class="ltree">f</span></span></span>.</div>
-<div class="witnesstac">We use <span class="ltree"><span class="ltree">minus_SNo</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">bijI</span></span> to the current goal.</div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">X'</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">ReplI</span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hx</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="945">L945</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HX</span>: <span class="ltree"><span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">X</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span></span></span>.</div>
 </div>
-<div class="subproof"><div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x'</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx'</span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hxx'</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span> = <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x'</span></span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x</span> = <span class="ltree">x'</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="946">L946</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">finite</span> <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="947">L947</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree"><span class="ltree">X</span> ≠ <span class="ltree">0</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="948">L948</span><div class="settac"><span class="pftackeyword">Set</span> <span class="ltree">X'</span> to be the term <span class="ltree"><span class="ltree">{<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>|x ∈ <span class="ltree">X</span>}</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="949">L949</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree">∀z<a href="#In_notation"> ∈ </a><span class="ltree">X'</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">z</span></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="951">L951</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="951">L951</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="951">L951</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">X</span></span> <span class="ltree">(<span class="ltree">λx ⇒  <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span>)</span></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="952">L952</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="953">L953</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="953">L953</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hzx</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span> = <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="954">L954</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hzx</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="955">L955</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNo_minus_SNo</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="955">L955</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="956">L956</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">HX</span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="957">L957</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L2</span>: <span class="ltree"><span class="ltree"><span class="ltree">finite</span> <span class="ltree">X'</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="959">L959</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H1</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="959">L959</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">n</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="960">L960</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="960">L960</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="960">L960</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>: <span class="ltree"><span class="ltree"><span class="ltree">n</span>  <a href="#In_notation">∈</a>  <span class="ltree">ω</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="961">L961</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">equip</span> <span class="ltree">X</span></span> <span class="ltree">n</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="962">L962</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃n ∈ <span class="ltree">ω</span>,  <span class="ltree"><span class="ltree"><span class="ltree">equip</span> <span class="ltree">X'</span></span> <span class="ltree">n</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="963">L963</span><div class="witnesstac">We use <span class="ltree"><span class="ltree">n</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="964">L964</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">andI</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="965">L965</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hn</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="966">L966</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">equip</span> <span class="ltree">X'</span></span> <span class="ltree">n</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="966">L966</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">equip_tra</span> <span class="ltree">X'</span></span> <span class="ltree">X</span></span> <span class="ltree">n</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="968">L968</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">equip</span> <span class="ltree">X'</span></span> <span class="ltree">X</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="968">L968</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">equip_sym</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="968">L968</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">equip</span> <span class="ltree">X</span></span> <span class="ltree">X'</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="969">L969</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃f : <span class="ltree"><span class="ltree">set</span> → <span class="ltree">set</span></span>,  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">bij</span> <span class="ltree">X</span></span> <span class="ltree">X'</span></span> <span class="ltree">f</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="970">L970</span><div class="witnesstac">We use <span class="ltree"><span class="ltree">minus_SNo</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="971">L971</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">bijI</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="973">L973</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="973">L973</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="973">L973</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">X'</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="974">L974</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">ReplI</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="974">L974</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hx</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="975">L975</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="975">L975</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="975">L975</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x'</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="975">L975</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx'</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="975">L975</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hxx'</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span> = <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x'</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="976">L976</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x</span> = <span class="ltree">x'</span></span>.</div>
+</div>
 <div>Use transitivity with <span class="ltree"><a href="#notation_7">-</a> <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span>,  and <span class="ltree"><a href="#notation_7">-</a> <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x'</span></span></span>.</div>
 <div class="subproof"><div>Use symmetry.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">minus_SNo_invol</span> <span class="ltree">x</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">HX</span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span>)</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="979">L979</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">minus_SNo_invol</span> <span class="ltree">x</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">HX</span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span>)</span></span></span>.</div>
+</div>
 </div>
 <div class="subproof"><div>Use f_equal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hxx'</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="980">L980</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hxx'</span></span>.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">minus_SNo_invol</span> <span class="ltree">x'</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">HX</span> <span class="ltree">x'</span></span> <span class="ltree">Hx'</span></span>)</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="981">L981</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">minus_SNo_invol</span> <span class="ltree">x'</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">HX</span> <span class="ltree">x'</span></span> <span class="ltree">Hx'</span></span>)</span></span></span>.</div>
+</div>
 </div>
 </div></div>
-<div class="subproof"><div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">w</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hw</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span>  <a href="#In_notation">∈</a>  <span class="ltree">X'</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">X</span></span> <span class="ltree">(<span class="ltree">λx ⇒  <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span>)</span></span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hwx</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span> = <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃u ∈ <span class="ltree">X</span>,  <span class="ltree"><span class="ltree"><a href="#notation_7">-</a> <span class="ltree">u</span></span> = <span class="ltree">w</span></span></span>.</div>
-<div class="witnesstac">We use <span class="ltree"><span class="ltree">x</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">andI</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hx</span></span>.</div>
+<div class="subproof"><div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="983">L983</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">w</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="983">L983</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hw</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span>  <a href="#In_notation">∈</a>  <span class="ltree">X'</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="983">L983</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">X</span></span> <span class="ltree">(<span class="ltree">λx ⇒  <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span>)</span></span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="984">L984</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="985">L985</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="985">L985</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hwx</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span> = <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="986">L986</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃u ∈ <span class="ltree">X</span>,  <span class="ltree"><span class="ltree"><a href="#notation_7">-</a> <span class="ltree">u</span></span> = <span class="ltree">w</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="987">L987</span><div class="witnesstac">We use <span class="ltree"><span class="ltree">x</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="988">L988</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">andI</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="990">L990</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hx</span></span>.</div>
+</div>
 </div>
 <div class="subproof"><div>Use symmetry.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hwx</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="991">L991</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hwx</span></span>.</div>
+</div>
 </div>
 </div></div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">equip</span> <span class="ltree">X</span></span> <span class="ltree">n</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H3</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="993">L993</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">equip</span> <span class="ltree">X</span></span> <span class="ltree">n</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="993">L993</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H3</span></span>.</div>
 </div>
 </div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L3</span>: <span class="ltree"><span class="ltree"><span class="ltree">X'</span> ≠ <span class="ltree">0</span></span></span>.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">X'</span> = <span class="ltree">0</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H2</span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">X</span> = <span class="ltree">0</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Empty_eq</span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree">EmptyE</span> <span class="ltree">(<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>)</span></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">0</span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">H1</span></span> (from right to left).</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">ReplI</span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hx</span></span>.</div>
-</div><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#finite_max_exists">finite_max_exists</a></span> <span class="ltree">X'</span></span> <span class="ltree">L1</span></span> <span class="ltree">L2</span></span> <span class="ltree">L3</span></span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">y</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hy</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#SNo_max_of">SNo_max_of</a></span> <span class="ltree">X'</span></span> <span class="ltree">y</span></span></span>.</div>
-<div class="witnesstac">We use <span class="ltree"><span class="ltree">(<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">y</span></span>)</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#SNo_min_of">SNo_min_of</a></span> <span class="ltree">X</span></span> <span class="ltree">(<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">y</span></span>)</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#minus_SNo_max_min" '>minus_SNo_max_min'</a></span> <span class="ltree">X</span></span> <span class="ltree">y</span></span> <span class="ltree">HX</span></span> <span class="ltree">Hy</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="994">L994</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L3</span>: <span class="ltree"><span class="ltree"><span class="ltree">X'</span> ≠ <span class="ltree">0</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="996">L996</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">X'</span> = <span class="ltree">0</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="996">L996</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H2</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="997">L997</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">X</span> = <span class="ltree">0</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="997">L997</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Empty_eq</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="998">L998</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="999">L999</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="999">L999</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree">EmptyE</span> <span class="ltree">(<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>)</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1000">L1000</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">0</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1001">L1001</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">H1</span></span> (from right to left).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1002">L1002</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">ReplI</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1002">L1002</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hx</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="1003">L1003</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#finite_max_exists" class="anamelink">finite_max_exists</a></span> <span class="ltree">X'</span></span> <span class="ltree">L1</span></span> <span class="ltree">L2</span></span> <span class="ltree">L3</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1004">L1004</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">y</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1005">L1005</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hy</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#SNo_max_of" class="anamelink">SNo_max_of</a></span> <span class="ltree">X'</span></span> <span class="ltree">y</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1006">L1006</span><div class="witnesstac">We use <span class="ltree"><span class="ltree">(<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">y</span></span>)</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1007">L1007</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#SNo_min_of" class="anamelink">SNo_min_of</a></span> <span class="ltree">X</span></span> <span class="ltree">(<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">y</span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1008">L1008</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#minus_SNo_max_min" ' class="anamelink">minus_SNo_max_min'</a></span> <span class="ltree">X</span></span> <span class="ltree">y</span></span> <span class="ltree">HX</span></span> <span class="ltree">Hy</span></span></span>.</div>
+</div>
 ∎

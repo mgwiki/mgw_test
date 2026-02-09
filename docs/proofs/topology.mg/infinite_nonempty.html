@@ -1,31 +1,59 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HinfX</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#infinite">infinite</a></span> <span class="ltree">X</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a classname="anamelink" href="#xm">xm</a></span> <span class="ltree">(<span class="ltree">∃x<a href="#notation_8"> : </a><span class="ltree">set</span>,  <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>)</span></span>)</span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hex</span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hex</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: infinite sets are nonempty ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="17470">L17470</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
+</div><div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: (set theory) An infinite set cannot be empty. ***)</div>
+
+<div class="pftacwrap"><span class="srcline" data-line="17471">L17471</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HinfX</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#infinite" class="anamelink">infinite</a></span> <span class="ltree">X</span></span></span>.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hno</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">(<span class="ltree">∃x<a href="#notation_8"> : </a><span class="ltree">set</span>,  <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>)</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃x<a href="#notation_8"> : </a><span class="ltree">set</span>,  <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#FalseE">FalseE</a></span></span> to the current goal.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HXeq</span>: <span class="ltree"><span class="ltree"><span class="ltree">X</span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span></span>.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#set_ext">set_ext</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxX</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#FalseE">FalseE</a></span></span> to the current goal.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hno</span></span> to the current goal.</div>
-<div class="witnesstac">We use <span class="ltree"><span class="ltree">x</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HxX</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="17472">L17472</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a href="#xm" class="anamelink">xm</a></span> <span class="ltree">(<span class="ltree">∃x<a href="#notation_8"> : </a><span class="ltree">set</span>,  <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>)</span></span>)</span></span> to the current goal.</div>
 </div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxE</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#FalseE">FalseE</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#EmptyE">EmptyE</a></span> <span class="ltree">x</span></span> <span class="ltree">HxE</span></span>)</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="17474">L17474</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hex</span>.</div>
 </div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HfinX</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#finite">finite</a></span> <span class="ltree">X</span></span></span>.</div>
-<div class="subproof"><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HXeq</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a classname="anamelink" href="#finite_Empty">finite_Empty</a></span></span>.</div>
-</div><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">HinfX</span> <span class="ltree">HfinX</span></span>)</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="17474">L17474</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hex</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="17475">L17475</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hno</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">(<span class="ltree">∃x<a href="#notation_8"> : </a><span class="ltree">set</span>,  <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>)</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17475">L17475</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃x<a href="#notation_8"> : </a><span class="ltree">set</span>,  <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17476">L17476</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#FalseE" class="anamelink">FalseE</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17477">L17477</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HXeq</span>: <span class="ltree"><span class="ltree"><span class="ltree">X</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="17479">L17479</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#set_ext" class="anamelink">set_ext</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="17480">L17480</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17480">L17480</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxX</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17480">L17480</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17481">L17481</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#FalseE" class="anamelink">FalseE</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17482">L17482</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hno</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17483">L17483</span><div class="witnesstac">We use <span class="ltree"><span class="ltree">x</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17484">L17484</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HxX</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="17486">L17486</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17486">L17486</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxE</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17486">L17486</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17487">L17487</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#FalseE" class="anamelink">FalseE</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17488">L17488</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#EmptyE" class="anamelink">EmptyE</a></span> <span class="ltree">x</span></span> <span class="ltree">HxE</span></span>)</span></span>.</div>
+</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="17490">L17490</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HfinX</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#finite" class="anamelink">finite</a></span> <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="17492">L17492</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HXeq</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="17492">L17492</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a href="#finite_Empty" class="anamelink">finite_Empty</a></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="17493">L17493</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">HinfX</span> <span class="ltree">HfinX</span></span>)</span></span>.</div>
+</div>
 </div>
 ∎

@@ -1,16 +1,31 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">A and B</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">(<span class="ltree"><span class="ltree">A</span> → <span class="ltree">B</span></span>)</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#andI">andI</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#dneg">dneg</a></span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HnA</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">A</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">a</span>: <span class="ltree"><span class="ltree">A</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#FalseE">FalseE</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">HnA</span> <span class="ltree">a</span></span>)</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: classical negation of implication ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="81091">L81091</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">A and B</span> be given.</div>
+</div><div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: Classical logic lemma: not(A→B) implies A and not B. ***)</div>
+
+<div class="pftacwrap"><span class="srcline" data-line="81092">L81092</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">(<span class="ltree"><span class="ltree">A</span> → <span class="ltree">B</span></span>)</span></span></span>.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HB</span>: <span class="ltree"><span class="ltree">B</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">_</span>: <span class="ltree"><span class="ltree">A</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HB</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="81093">L81093</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#andI" class="anamelink">andI</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="81095">L81095</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#dneg" class="anamelink">dneg</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="81095">L81095</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HnA</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">A</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="81096">L81096</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="81097">L81097</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">a</span>: <span class="ltree"><span class="ltree">A</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="81098">L81098</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#FalseE" class="anamelink">FalseE</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="81099">L81099</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">HnA</span> <span class="ltree">a</span></span>)</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="81101">L81101</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HB</span>: <span class="ltree"><span class="ltree">B</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="81101">L81101</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="81102">L81102</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">_</span>: <span class="ltree"><span class="ltree">A</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="81103">L81103</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HB</span></span>.</div>
+</div>
 </div>
 ∎

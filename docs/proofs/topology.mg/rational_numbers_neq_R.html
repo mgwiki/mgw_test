@@ -1,6 +1,12 @@
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Heq</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#rational_numbers">rational_numbers</a></span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#R">R</a></span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a classname="anamelink" href="#False">False</a></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#R_neq_rational_numbers">R_neq_rational_numbers</a></span></span> to the current goal.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from right to left).</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: rational_numbers is not R ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="31089">L31089</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Heq</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#rational_numbers" class="anamelink">rational_numbers</a></span> <a href="#notation_5">=</a> <span class="ltree"><a href="#R" class="anamelink">R</a></span></span></span>.</div>
+</div><div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: Rational numbers form a proper subset of the reals, so they are not equal to R. ***)</div>
+
+<div class="pftacwrap"><span class="srcline" data-line="31090">L31090</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a href="#False" class="anamelink">False</a></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31091">L31091</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#R_neq_rational_numbers" class="anamelink">R_neq_rational_numbers</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31092">L31092</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from right to left).</div>
+</div>
 <div>Use reflexivity.</div>
 ∎

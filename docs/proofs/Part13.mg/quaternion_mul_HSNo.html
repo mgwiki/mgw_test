@@ -1,45 +1,76 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">w</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hw</span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">pa</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">add_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">mul_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">p0</span> <span class="ltree">z</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">p0</span> <span class="ltree">w</span></span>)</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">minus_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">mul_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">conj_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">p1</span> <span class="ltree">w</span></span>)</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">p1</span> <span class="ltree">z</span></span>)</span></span>)</span></span>)</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">add_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">mul_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">p1</span> <span class="ltree">w</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">p0</span> <span class="ltree">z</span></span>)</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">mul_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">p1</span> <span class="ltree">z</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">conj_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">p0</span> <span class="ltree">w</span></span>)</span></span>)</span></span>)</span></span>)</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#quaternion">quaternion</a></span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Lz0</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">p0</span> <span class="ltree">z</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">complex</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#quaternion_p0_complex">quaternion_p0_complex</a></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Lz1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">p1</span> <span class="ltree">z</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">complex</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#quaternion_p1_complex">quaternion_p1_complex</a></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Lw0</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">p0</span> <span class="ltree">w</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">complex</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#quaternion_p0_complex">quaternion_p0_complex</a></span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Lw1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">p1</span> <span class="ltree">w</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">complex</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#quaternion_p1_complex">quaternion_p1_complex</a></span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span>.</div>
-</div><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#quaternion_I">quaternion_I</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_add_CSNo</span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_mul_CSNo</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1517">L1517</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1518">L1518</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>.</div>
 </div>
+<div class="pftacwrap"><span class="srcline" data-line="1518">L1518</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">w</span> be given.</div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_minus_CSNo</span></span> to the current goal.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_mul_CSNo</span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_conj_CSNo</span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1518">L1518</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hw</span>.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1518">L1518</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">pa</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">add_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">mul_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">p0</span> <span class="ltree">z</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">p0</span> <span class="ltree">w</span></span>)</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">minus_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">mul_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">conj_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">p1</span> <span class="ltree">w</span></span>)</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">p1</span> <span class="ltree">z</span></span>)</span></span>)</span></span>)</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">add_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">mul_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">p1</span> <span class="ltree">w</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">p0</span> <span class="ltree">z</span></span>)</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">mul_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">p1</span> <span class="ltree">z</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">conj_CSNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">p0</span> <span class="ltree">w</span></span>)</span></span>)</span></span>)</span></span>)</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#quaternion" class="anamelink">quaternion</a></span></span>.</div>
 </div>
+<div class="pftacwrap"><span class="srcline" data-line="1521">L1521</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Lz0</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">p0</span> <span class="ltree">z</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">complex</span></span></span>.</div>
 </div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1523">L1523</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#quaternion_p0_complex" class="anamelink">quaternion_p0_complex</a></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span>.</div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_add_CSNo</span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_mul_CSNo</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="1523">L1523</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Lz1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">p1</span> <span class="ltree">z</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">complex</span></span></span>.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1525">L1525</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#quaternion_p1_complex" class="anamelink">quaternion_p1_complex</a></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="1525">L1525</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Lw0</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">p0</span> <span class="ltree">w</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">complex</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1527">L1527</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#quaternion_p0_complex" class="anamelink">quaternion_p0_complex</a></span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="1527">L1527</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Lw1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">p1</span> <span class="ltree">w</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">complex</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1529">L1529</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#quaternion_p1_complex" class="anamelink">quaternion_p1_complex</a></span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="1529">L1529</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#quaternion_I" class="anamelink">quaternion_I</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1531">L1531</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_add_CSNo</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1532">L1532</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_mul_CSNo</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1533">L1533</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
 </div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_mul_CSNo</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1534">L1534</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_conj_CSNo</span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1535">L1535</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_minus_CSNo</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1535">L1535</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_mul_CSNo</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1536">L1536</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_conj_CSNo</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1536">L1536</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1537">L1537</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1538">L1538</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_add_CSNo</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1539">L1539</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_mul_CSNo</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1540">L1540</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1541">L1541</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1542">L1542</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_mul_CSNo</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1543">L1543</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1544">L1544</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">complex_conj_CSNo</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1544">L1544</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">??</span></span>.</div>
+</div>
 </div>
 </div>
 </div>

@@ -1,23 +1,40 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">n</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>: <span class="ltree"><span class="ltree"><span class="ltree">n</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L0i</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span></span>.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#Subq_omega_int">Subq_omega_int</a></span></span> to the current goal.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#nat_p_omega">nat_p_omega</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a classname="anamelink" href="#nat_0">nat_0</a></span></span>.</div>
-</div><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">n</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span> <a href="#notation_2">∧</a> <span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span></span> <a href="#notation_2">∧</a> <span class="ltree">∃k<a href="#notation_8"> ∈ </a><span class="ltree"><a classname="anamelink" href="#int">int</a></span>,  <span class="ltree"><span class="ltree"><span class="ltree">n</span> <a href="#notation_66">*</a> <span class="ltree">k</span></span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#and3I">and3I</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hn</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="27861">L27861</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">n</span> be given.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">L0i</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="27862">L27862</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>: <span class="ltree"><span class="ltree"><span class="ltree">n</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span></span>.</div>
 </div>
-<div class="subproof"><div class="witnesstac">We use <span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#andI">andI</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">L0i</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="27862">L27862</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L0i</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span></span>.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">n</span> <a href="#notation_66">*</a> <span class="ltree"><a href="#notation_21">0</a></span></span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#mul_SNo_zeroR">mul_SNo_zeroR</a></span> <span class="ltree">n</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#int_SNo">int_SNo</a></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span>)</span></span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27864">L27864</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#Subq_omega_int" class="anamelink">Subq_omega_int</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27864">L27864</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#nat_p_omega" class="anamelink">nat_p_omega</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27865">L27865</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a href="#nat_0" class="anamelink">nat_0</a></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="27867">L27867</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">n</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span> <a href="#notation_2">∧</a> <span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span></span> <a href="#notation_2">∧</a> <span class="ltree">∃k<a href="#notation_8"> ∈ </a><span class="ltree"><a href="#int" class="anamelink">int</a></span>,  <span class="ltree"><span class="ltree"><span class="ltree">n</span> <a href="#notation_66">*</a> <span class="ltree">k</span></span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27868">L27868</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#and3I" class="anamelink">and3I</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27870">L27870</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hn</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27871">L27871</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27871">L27871</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">L0i</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27872">L27872</span><div class="witnesstac">We use <span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27872">L27872</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#andI" class="anamelink">andI</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27873">L27873</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27873">L27873</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">L0i</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27874">L27874</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">n</span> <a href="#notation_66">*</a> <span class="ltree"><a href="#notation_21">0</a></span></span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27874">L27874</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#mul_SNo_zeroR" class="anamelink">mul_SNo_zeroR</a></span> <span class="ltree">n</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#int_SNo" class="anamelink">int_SNo</a></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span>)</span></span></span>.</div>
+</div>
 </div>
 </div>
 ∎

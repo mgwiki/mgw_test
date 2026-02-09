@@ -1,59 +1,104 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">m, n, m' and n'</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#divides_int">divides_int</a></span> <span class="ltree">m</span></span> <span class="ltree">m'</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#divides_int">divides_int</a></span> <span class="ltree">n</span></span> <span class="ltree">n'</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H1</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hm</span>: <span class="ltree"><span class="ltree"><span class="ltree">m</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hm'</span>: <span class="ltree"><span class="ltree"><span class="ltree">m'</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">k</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hk</span>: <span class="ltree"><span class="ltree"><span class="ltree">k</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">m</span> <a href="#notation_66">*</a> <span class="ltree">k</span></span> <a href="#notation_5">=</a> <span class="ltree">m'</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H2</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>: <span class="ltree"><span class="ltree"><span class="ltree">n</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn'</span>: <span class="ltree"><span class="ltree"><span class="ltree">n'</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">l</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hl</span>: <span class="ltree"><span class="ltree"><span class="ltree">l</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H4</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">n</span> <a href="#notation_66">*</a> <span class="ltree">l</span></span> <a href="#notation_5">=</a> <span class="ltree">n'</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">m</span> <a href="#notation_66">*</a> <span class="ltree">n</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span> <a href="#notation_2">∧</a> <span class="ltree"><span class="ltree"><span class="ltree">m'</span> <a href="#notation_66">*</a> <span class="ltree">n'</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#int">int</a></span></span></span> <a href="#notation_2">∧</a> <span class="ltree">∃q<a href="#notation_8"> ∈ </a><span class="ltree"><a classname="anamelink" href="#int">int</a></span>,  <span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">m</span> <a href="#notation_66">*</a> <span class="ltree">n</span></span>)</span> <a href="#notation_66">*</a> <span class="ltree">q</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree">m'</span> <a href="#notation_66">*</a> <span class="ltree">n'</span></span></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#and3I">and3I</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#int_mul_SNo">int_mul_SNo</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hm</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="27915">L27915</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">m, n, m' and n'</span> be given.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hn</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="27916">L27916</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#divides_int" class="anamelink">divides_int</a></span> <span class="ltree">m</span></span> <span class="ltree">m'</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27917">L27917</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#divides_int" class="anamelink">divides_int</a></span> <span class="ltree">n</span></span> <span class="ltree">n'</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27918">L27918</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H1</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27919">L27919</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27919">L27919</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27919">L27919</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hm</span>: <span class="ltree"><span class="ltree"><span class="ltree">m</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27920">L27920</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hm'</span>: <span class="ltree"><span class="ltree"><span class="ltree">m'</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27921">L27921</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27922">L27922</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27922">L27922</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">k</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27923">L27923</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27923">L27923</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27923">L27923</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hk</span>: <span class="ltree"><span class="ltree"><span class="ltree">k</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27924">L27924</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">m</span> <a href="#notation_66">*</a> <span class="ltree">k</span></span> <a href="#notation_5">=</a> <span class="ltree">m'</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27925">L27925</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H2</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27926">L27926</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27926">L27926</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27926">L27926</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>: <span class="ltree"><span class="ltree"><span class="ltree">n</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27927">L27927</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn'</span>: <span class="ltree"><span class="ltree"><span class="ltree">n'</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27928">L27928</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27929">L27929</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27929">L27929</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">l</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27930">L27930</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27930">L27930</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27930">L27930</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hl</span>: <span class="ltree"><span class="ltree"><span class="ltree">l</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27931">L27931</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H4</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">n</span> <a href="#notation_66">*</a> <span class="ltree">l</span></span> <a href="#notation_5">=</a> <span class="ltree">n'</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27932">L27932</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">m</span> <a href="#notation_66">*</a> <span class="ltree">n</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span> <a href="#notation_2">∧</a> <span class="ltree"><span class="ltree"><span class="ltree">m'</span> <a href="#notation_66">*</a> <span class="ltree">n'</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#int" class="anamelink">int</a></span></span></span> <a href="#notation_2">∧</a> <span class="ltree">∃q<a href="#notation_8"> ∈ </a><span class="ltree"><a href="#int" class="anamelink">int</a></span>,  <span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">m</span> <a href="#notation_66">*</a> <span class="ltree">n</span></span>)</span> <a href="#notation_66">*</a> <span class="ltree">q</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree">m'</span> <a href="#notation_66">*</a> <span class="ltree">n'</span></span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27933">L27933</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#and3I" class="anamelink">and3I</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27935">L27935</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#int_mul_SNo" class="anamelink">int_mul_SNo</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27936">L27936</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hm</span></span>.</div>
 </div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#int_mul_SNo">int_mul_SNo</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hm'</span></span>.</div>
-</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hn'</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27937">L27937</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hn</span></span>.</div>
 </div>
 </div>
-<div class="subproof"><div class="witnesstac">We use <span class="ltree"><span class="ltree"><span class="ltree">k</span> <a href="#notation_66">*</a> <span class="ltree">l</span></span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#andI">andI</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#int_mul_SNo">int_mul_SNo</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hk</span></span>.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hl</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27938">L27938</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#int_mul_SNo" class="anamelink">int_mul_SNo</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27939">L27939</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hm'</span></span>.</div>
 </div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">m</span> <a href="#notation_66">*</a> <span class="ltree">n</span></span>)</span> <a href="#notation_66">*</a> <span class="ltree">(<span class="ltree"><span class="ltree">k</span> <a href="#notation_66">*</a> <span class="ltree">l</span></span>)</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree">m'</span> <a href="#notation_66">*</a> <span class="ltree">n'</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#mul_SNo_com_4_inner_mid">mul_SNo_com_4_inner_mid</a></span> <span class="ltree">m</span></span> <span class="ltree">n</span></span> <span class="ltree">k</span></span> <span class="ltree">l</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#int_SNo">int_SNo</a></span> <span class="ltree">m</span></span> <span class="ltree">Hm</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#int_SNo">int_SNo</a></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#int_SNo">int_SNo</a></span> <span class="ltree">k</span></span> <span class="ltree">Hk</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#int_SNo">int_SNo</a></span> <span class="ltree">l</span></span> <span class="ltree">Hl</span></span>)</span></span></span> (from left to right).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">m</span> <a href="#notation_66">*</a> <span class="ltree">k</span></span>)</span> <a href="#notation_66">*</a> <span class="ltree">(<span class="ltree"><span class="ltree">n</span> <a href="#notation_66">*</a> <span class="ltree">l</span></span>)</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree">m'</span> <a href="#notation_66">*</a> <span class="ltree">n'</span></span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27940">L27940</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hn'</span></span>.</div>
+</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27941">L27941</span><div class="witnesstac">We use <span class="ltree"><span class="ltree"><span class="ltree">k</span> <a href="#notation_66">*</a> <span class="ltree">l</span></span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27941">L27941</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#andI" class="anamelink">andI</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27942">L27942</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#int_mul_SNo" class="anamelink">int_mul_SNo</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27943">L27943</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hk</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27944">L27944</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hl</span></span>.</div>
+</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27945">L27945</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">m</span> <a href="#notation_66">*</a> <span class="ltree">n</span></span>)</span> <a href="#notation_66">*</a> <span class="ltree">(<span class="ltree"><span class="ltree">k</span> <a href="#notation_66">*</a> <span class="ltree">l</span></span>)</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree">m'</span> <a href="#notation_66">*</a> <span class="ltree">n'</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27945">L27945</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#mul_SNo_com_4_inner_mid" class="anamelink">mul_SNo_com_4_inner_mid</a></span> <span class="ltree">m</span></span> <span class="ltree">n</span></span> <span class="ltree">k</span></span> <span class="ltree">l</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#int_SNo" class="anamelink">int_SNo</a></span> <span class="ltree">m</span></span> <span class="ltree">Hm</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#int_SNo" class="anamelink">int_SNo</a></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#int_SNo" class="anamelink">int_SNo</a></span> <span class="ltree">k</span></span> <span class="ltree">Hk</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#int_SNo" class="anamelink">int_SNo</a></span> <span class="ltree">l</span></span> <span class="ltree">Hl</span></span>)</span></span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="27946">L27946</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">m</span> <a href="#notation_66">*</a> <span class="ltree">k</span></span>)</span> <a href="#notation_66">*</a> <span class="ltree">(<span class="ltree"><span class="ltree">n</span> <a href="#notation_66">*</a> <span class="ltree">l</span></span>)</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree">m'</span> <a href="#notation_66">*</a> <span class="ltree">n'</span></span></span>.</div>
+</div>
 <div>Use f_equal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H3</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27949">L27949</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H3</span></span>.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H4</span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="27950">L27950</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H4</span></span>.</div>
+</div>
 </div>
 </div>
 </div>

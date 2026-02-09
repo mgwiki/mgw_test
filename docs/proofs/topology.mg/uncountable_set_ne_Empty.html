@@ -1,14 +1,28 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hunc</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#uncountable_set">uncountable_set</a></span> <span class="ltree">X</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Heq</span>: <span class="ltree"><span class="ltree"><span class="ltree">X</span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#FalseE">FalseE</a></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a classname="anamelink" href="#False">False</a></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HcountE</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#countable_set">countable_set</a></span> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span></span>.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#countable_set">countable_set</a></span> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#countable">countable</a></span> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a classname="anamelink" href="#countable_Empty">countable_Empty</a></span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HcountX</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#countable_set">countable_set</a></span> <span class="ltree">X</span></span></span>.</div>
-<div class="subproof"><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HcountE</span></span>.</div>
-</div><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">Hunc</span> <span class="ltree">HcountX</span></span>)</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="128588">L128588</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
+</div><div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: uncountable sets are nonempty ***)</div>
+
+<div class="pftacwrap"><span class="srcline" data-line="128589">L128589</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hunc</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#uncountable_set" class="anamelink">uncountable_set</a></span> <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="128590">L128590</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Heq</span>: <span class="ltree"><span class="ltree"><span class="ltree">X</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="128591">L128591</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#FalseE" class="anamelink">FalseE</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="128592">L128592</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a href="#False" class="anamelink">False</a></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="128593">L128593</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HcountE</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#countable_set" class="anamelink">countable_set</a></span> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="128595">L128595</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#countable_set" class="anamelink">countable_set</a></span> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="128595">L128595</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#countable" class="anamelink">countable</a></span> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="128596">L128596</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a href="#countable_Empty" class="anamelink">countable_Empty</a></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="128597">L128597</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HcountX</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#countable_set" class="anamelink">countable_set</a></span> <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="128599">L128599</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="128599">L128599</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HcountE</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="128600">L128600</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">Hunc</span> <span class="ltree">HcountX</span></span>)</span></span>.</div>
+</div>
 ∎

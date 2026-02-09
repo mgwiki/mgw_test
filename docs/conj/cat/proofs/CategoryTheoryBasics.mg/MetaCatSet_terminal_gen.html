@@ -1,37 +1,66 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">Obj</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HO</span>.</div>
-<div class="witnesstac">We use <span class="ltree"><span class="ltree">1</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="witnesstac">We use <span class="ltree"><span class="ltree">(<span class="ltree">λX ⇒  <span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree">0</span></span>)</span></span>)</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">Obj</span> <span class="ltree">1</span></span> ∧ <span class="ltree">∀X : <span class="ltree">set</span>,  <span class="ltree"><span class="ltree"><span class="ltree">Obj</span> <span class="ltree">X</span></span> → <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#SetHom">SetHom</a></span> <span class="ltree">X</span></span> <span class="ltree">1</span></span> <span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree">0</span></span>)</span></span> ∧ <span class="ltree">∀h' : <span class="ltree">set</span>,  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#SetHom">SetHom</a></span> <span class="ltree">X</span></span> <span class="ltree">1</span></span> <span class="ltree">h'</span></span> → <span class="ltree"><span class="ltree">h'</span> = <span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree">0</span></span>)</span></span></span></span></span></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">andI</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HO</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="879">L879</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">Obj</span> be given.</div>
 </div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HX</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">andI</span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#SetHom">SetHom</a></span> <span class="ltree">X</span></span> <span class="ltree">1</span></span> <span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree">0</span></span>)</span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree">0</span></span>)</span>  <a href="#In_notation">∈</a>  <span class="ltree">∏x ∈ <span class="ltree">X</span>,  <span class="ltree">1</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">lam_Pi</span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">In_0_1</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="880">L880</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HO</span>.</div>
 </div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">h</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hh</span>: <span class="ltree"><span class="ltree"><span class="ltree">h</span>  <a href="#In_notation">∈</a>  <span class="ltree">∏x ∈ <span class="ltree">X</span>,  <span class="ltree">1</span></span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">h</span> = <span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree">0</span></span>)</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="880">L880</span><div class="witnesstac">We use <span class="ltree"><span class="ltree">1</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="881">L881</span><div class="witnesstac">We use <span class="ltree"><span class="ltree">(<span class="ltree">λX ⇒  <span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree">0</span></span>)</span></span>)</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="881">L881</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">Obj</span> <span class="ltree">1</span></span> ∧ <span class="ltree">∀X : <span class="ltree">set</span>,  <span class="ltree"><span class="ltree"><span class="ltree">Obj</span> <span class="ltree">X</span></span> → <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#SetHom" class="anamelink">SetHom</a></span> <span class="ltree">X</span></span> <span class="ltree">1</span></span> <span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree">0</span></span>)</span></span> ∧ <span class="ltree">∀h' : <span class="ltree">set</span>,  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#SetHom" class="anamelink">SetHom</a></span> <span class="ltree">X</span></span> <span class="ltree">1</span></span> <span class="ltree">h'</span></span> → <span class="ltree"><span class="ltree">h'</span> = <span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree">0</span></span>)</span></span></span></span></span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="885">L885</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">andI</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="887">L887</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HO</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="888">L888</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="888">L888</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HX</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="888">L888</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">andI</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="889">L889</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#SetHom" class="anamelink">SetHom</a></span> <span class="ltree">X</span></span> <span class="ltree">1</span></span> <span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree">0</span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="889">L889</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree">0</span></span>)</span>  <a href="#In_notation">∈</a>  <span class="ltree">∏x ∈ <span class="ltree">X</span>,  <span class="ltree">1</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="889">L889</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">lam_Pi</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="890">L890</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="890">L890</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="890">L890</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">In_0_1</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="892">L892</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">h</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="892">L892</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hh</span>: <span class="ltree"><span class="ltree"><span class="ltree">h</span>  <a href="#In_notation">∈</a>  <span class="ltree">∏x ∈ <span class="ltree">X</span>,  <span class="ltree">1</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="892">L892</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">h</span> = <span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree">0</span></span>)</span></span>.</div>
+</div>
 <div>Use transitivity with  and <span class="ltree">(<span class="ltree">λx ∈ <span class="ltree">X</span> ⇒  <span class="ltree"><span class="ltree">h</span> <span class="ltree">x</span></span></span>)</span>.</div>
 <div class="subproof"><div>Use symmetry.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">Pi_eta</span> <span class="ltree">X</span></span> <span class="ltree">(<span class="ltree">λ_ ⇒  <span class="ltree">1</span></span>)</span></span> <span class="ltree">h</span></span> <span class="ltree">Hh</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="895">L895</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">Pi_eta</span> <span class="ltree">X</span></span> <span class="ltree">(<span class="ltree">λ_ ⇒  <span class="ltree">1</span></span>)</span></span> <span class="ltree">h</span></span> <span class="ltree">Hh</span></span></span>.</div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">lam_ext</span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">h</span> <span class="ltree">x</span></span> = <span class="ltree">0</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">SingE</span> <span class="ltree">0</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">h</span> <span class="ltree">x</span></span>)</span></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">h</span> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">{<span class="ltree">0</span>}</span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">eq_1_Sing0</span></span> (from right to left).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">h</span> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">1</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ap_Pi</span> <span class="ltree">X</span></span> <span class="ltree">(<span class="ltree">λ_ ⇒  <span class="ltree">1</span></span>)</span></span> <span class="ltree">h</span></span> <span class="ltree">x</span></span> <span class="ltree">Hh</span></span> <span class="ltree">Hx</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="896">L896</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">lam_ext</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="896">L896</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="896">L896</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="896">L896</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">h</span> <span class="ltree">x</span></span> = <span class="ltree">0</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="897">L897</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">SingE</span> <span class="ltree">0</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">h</span> <span class="ltree">x</span></span>)</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="898">L898</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">h</span> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">{<span class="ltree">0</span>}</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="899">L899</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">eq_1_Sing0</span></span> (from right to left).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="900">L900</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">h</span> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">1</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="901">L901</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ap_Pi</span> <span class="ltree">X</span></span> <span class="ltree">(<span class="ltree">λ_ ⇒  <span class="ltree">1</span></span>)</span></span> <span class="ltree">h</span></span> <span class="ltree">x</span></span> <span class="ltree">Hh</span></span> <span class="ltree">Hx</span></span></span>.</div>
+</div>
 </div>
 </div>
 </div>

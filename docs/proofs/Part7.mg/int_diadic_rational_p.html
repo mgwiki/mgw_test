@@ -1,18 +1,30 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">m</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hm</span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃k ∈ <span class="ltree">ω</span>,  <span class="ltree">∃m' ∈ <span class="ltree"><a classname="anamelink" href="#int">int</a></span>,  <span class="ltree"><span class="ltree">m</span> = <span class="ltree"><span class="ltree"><span class="ltree">eps_</span> <span class="ltree">k</span></span> <a href="#notation_15">*</a> <span class="ltree">m'</span></span></span></span></span>.</div>
-<div class="witnesstac">We use <span class="ltree"><span class="ltree">0</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">andI</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">nat_p_omega</span> <span class="ltree">0</span></span> <span class="ltree">nat_0</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1106">L1106</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">m</span> be given.</div>
 </div>
-<div class="subproof"><div class="witnesstac">We use <span class="ltree"><span class="ltree">m</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">andI</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hm</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1107">L1107</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hm</span>.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">m</span> = <span class="ltree"><span class="ltree"><span class="ltree">eps_</span> <span class="ltree">0</span></span> <a href="#notation_15">*</a> <span class="ltree">m</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">eps_0_1</span></span> (from left to right).</div>
+<div class="pftacwrap"><span class="srcline" data-line="1107">L1107</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃k ∈ <span class="ltree">ω</span>,  <span class="ltree">∃m' ∈ <span class="ltree"><a href="#int" class="anamelink">int</a></span>,  <span class="ltree"><span class="ltree">m</span> = <span class="ltree"><span class="ltree"><span class="ltree">eps_</span> <span class="ltree">k</span></span> <a href="#notation_15">*</a> <span class="ltree">m'</span></span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1108">L1108</span><div class="witnesstac">We use <span class="ltree"><span class="ltree">0</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1109">L1109</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">andI</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1110">L1110</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">nat_p_omega</span> <span class="ltree">0</span></span> <span class="ltree">nat_0</span></span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1111">L1111</span><div class="witnesstac">We use <span class="ltree"><span class="ltree">m</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1111">L1111</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">andI</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1112">L1112</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hm</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1113">L1113</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">m</span> = <span class="ltree"><span class="ltree"><span class="ltree">eps_</span> <span class="ltree">0</span></span> <a href="#notation_15">*</a> <span class="ltree">m</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1113">L1113</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">eps_0_1</span></span> (from left to right).</div>
+</div>
 <div>Use symmetry.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">mul_SNo_oneL</span> <span class="ltree">m</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#int_SNo">int_SNo</a></span> <span class="ltree">m</span></span> <span class="ltree">Hm</span></span>)</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1114">L1114</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">mul_SNo_oneL</span> <span class="ltree">m</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#int_SNo" class="anamelink">int_SNo</a></span> <span class="ltree">m</span></span> <span class="ltree">Hm</span></span>)</span></span></span>.</div>
+</div>
 </div>
 </div>
 ∎

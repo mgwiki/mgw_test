@@ -1,15 +1,27 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">n</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#nat_ind">nat_ind</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#nat_p">nat_p</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">n</span> <a href="#notation_25">^</a> <span class="ltree"><a href="#notation_21">0</a></span></span>)</span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><a classname="anamelink" href="#exp_nat_0">exp_nat_0</a></span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a classname="anamelink" href="#nat_1">nat_1</a></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="4054">L4054</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">n</span> be given.</div>
 </div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">m</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hm IHm</span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#nat_p">nat_p</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">n</span> <a href="#notation_25">^</a> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordsucc">ordsucc</a></span> <span class="ltree">m</span></span></span>)</span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#exp_nat_S">exp_nat_S</a></span> <span class="ltree">n</span></span> <span class="ltree">m</span></span> <span class="ltree">Hm</span></span></span> (from left to right).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#nat_p">nat_p</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">n</span> <a href="#notation_24">*</a> <span class="ltree"><span class="ltree">n</span> <a href="#notation_25">^</a> <span class="ltree">m</span></span></span>)</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#mul_nat_p">mul_nat_p</a></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">n</span> <a href="#notation_25">^</a> <span class="ltree">m</span></span>)</span></span> <span class="ltree">IHm</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="4055">L4055</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4055">L4055</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#nat_ind" class="anamelink">nat_ind</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="4056">L4056</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#nat_p" class="anamelink">nat_p</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">n</span> <a href="#notation_25">^</a> <span class="ltree"><a href="#notation_21">0</a></span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4056">L4056</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><a href="#exp_nat_0" class="anamelink">exp_nat_0</a></span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4057">L4057</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a href="#nat_1" class="anamelink">nat_1</a></span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="4058">L4058</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">m</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4058">L4058</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hm IHm</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4058">L4058</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#nat_p" class="anamelink">nat_p</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">n</span> <a href="#notation_25">^</a> <span class="ltree"><span class="ltree"><a href="#ordsucc" class="anamelink">ordsucc</a></span> <span class="ltree">m</span></span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4059">L4059</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#exp_nat_S" class="anamelink">exp_nat_S</a></span> <span class="ltree">n</span></span> <span class="ltree">m</span></span> <span class="ltree">Hm</span></span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4060">L4060</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#nat_p" class="anamelink">nat_p</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">n</span> <a href="#notation_24">*</a> <span class="ltree"><span class="ltree">n</span> <a href="#notation_25">^</a> <span class="ltree">m</span></span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4061">L4061</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#mul_nat_p" class="anamelink">mul_nat_p</a></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">n</span> <a href="#notation_25">^</a> <span class="ltree">m</span></span>)</span></span> <span class="ltree">IHm</span></span></span>.</div>
+</div>
 </div>
 ∎

@@ -1,34 +1,61 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx Hx1</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">nat_ind</span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">1</span> ≤ <span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">0</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#exp_SNo_nat_0">exp_SNo_nat_0</a></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span></span> (from left to right).</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNoLe_ref</span></span> to the current goal.</div>
+<div class="pftacwrap"><span class="srcline" data-line="8352">L8352</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
 </div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">n</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">IHn</span>: <span class="ltree"><span class="ltree"><span class="ltree">1</span> ≤ <span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">n</span></span></span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Lxn</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">n</span></span>)</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#SNo_exp_SNo_nat">SNo_exp_SNo_nat</a></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span></span>.</div>
-</div><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">1</span> ≤ <span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">(<span class="ltree"><span class="ltree">ordsucc</span> <span class="ltree">n</span></span>)</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#exp_SNo_nat_S">exp_SNo_nat_S</a></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span></span> (from left to right).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">1</span> ≤ <span class="ltree"><span class="ltree">x</span> <a href="#notation_7">*</a> <span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">n</span></span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#mul_SNo_oneL">mul_SNo_oneL</a></span> <span class="ltree">1</span></span> <span class="ltree">SNo_1</span></span></span> (from right to left).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">1</span> <a href="#notation_7">*</a> <span class="ltree">1</span></span> ≤ <span class="ltree"><span class="ltree">x</span> <a href="#notation_7">*</a> <span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">n</span></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#nonneg_mul_SNo_Le2">nonneg_mul_SNo_Le2</a></span> <span class="ltree">1</span></span> <span class="ltree">1</span></span> <span class="ltree">x</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">n</span></span>)</span></span> <span class="ltree">SNo_1</span></span> <span class="ltree">SNo_1</span></span> <span class="ltree">Hx</span></span> <span class="ltree">Lxn</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">0</span> ≤ <span class="ltree">1</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNoLtLe</span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">SNoLt_0_1</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="8353">L8353</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx Hx1</span>.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">0</span> ≤ <span class="ltree">1</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNoLtLe</span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">SNoLt_0_1</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="8353">L8353</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">nat_ind</span></span> to the current goal.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">1</span> ≤ <span class="ltree">x</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hx1</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8355">L8355</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">1</span> ≤ <span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">0</span></span></span>.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">1</span> ≤ <span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">n</span></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">IHn</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="8355">L8355</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#exp_SNo_nat_0" class="anamelink">exp_SNo_nat_0</a></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8355">L8355</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNoLe_ref</span></span> to the current goal.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8356">L8356</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">n</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8356">L8356</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8356">L8356</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">IHn</span>: <span class="ltree"><span class="ltree"><span class="ltree">1</span> ≤ <span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">n</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8357">L8357</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Lxn</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">n</span></span>)</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8359">L8359</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#SNo_exp_SNo_nat" class="anamelink">SNo_exp_SNo_nat</a></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="8359">L8359</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">1</span> ≤ <span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">(<span class="ltree"><span class="ltree">ordsucc</span> <span class="ltree">n</span></span>)</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8360">L8360</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#exp_SNo_nat_S" class="anamelink">exp_SNo_nat_S</a></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8361">L8361</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">1</span> ≤ <span class="ltree"><span class="ltree">x</span> <a href="#notation_7">*</a> <span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">n</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8362">L8362</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#mul_SNo_oneL" class="anamelink">mul_SNo_oneL</a></span> <span class="ltree">1</span></span> <span class="ltree">SNo_1</span></span></span> (from right to left).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8363">L8363</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">1</span> <a href="#notation_7">*</a> <span class="ltree">1</span></span> ≤ <span class="ltree"><span class="ltree">x</span> <a href="#notation_7">*</a> <span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">n</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8364">L8364</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#nonneg_mul_SNo_Le2" class="anamelink">nonneg_mul_SNo_Le2</a></span> <span class="ltree">1</span></span> <span class="ltree">1</span></span> <span class="ltree">x</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">n</span></span>)</span></span> <span class="ltree">SNo_1</span></span> <span class="ltree">SNo_1</span></span> <span class="ltree">Hx</span></span> <span class="ltree">Lxn</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8366">L8366</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">0</span> ≤ <span class="ltree">1</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8366">L8366</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNoLtLe</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8366">L8366</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">SNoLt_0_1</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8367">L8367</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">0</span> ≤ <span class="ltree">1</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8367">L8367</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNoLtLe</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8367">L8367</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">SNoLt_0_1</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8368">L8368</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">1</span> ≤ <span class="ltree">x</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8368">L8368</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hx1</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8369">L8369</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">1</span> ≤ <span class="ltree"><span class="ltree">x</span> <a href="#notation_8">^</a> <span class="ltree">n</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8369">L8369</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">IHn</span></span>.</div>
+</div>
 </div>
 </div>
 ∎

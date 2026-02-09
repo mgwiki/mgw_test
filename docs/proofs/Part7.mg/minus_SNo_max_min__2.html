@@ -1,24 +1,45 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X and y</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HX H1</span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree"><span class="ltree">{<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">z</span></span>|z ∈ <span class="ltree">{<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>|x ∈ <span class="ltree">X</span>}</span>}</span> = <span class="ltree">X</span></span></span>.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">Repl_invol_eq</span> <span class="ltree">SNo</span></span> <span class="ltree">minus_SNo</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∀x,  <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span> → <span class="ltree"><span class="ltree"><a href="#notation_7">-</a> <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span> = <span class="ltree">x</span></span></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">minus_SNo_invol</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="496">L496</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X and y</span> be given.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">X</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HX</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="497">L497</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HX H1</span>.</div>
 </div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L2</span>: <span class="ltree"><span class="ltree">∀z<a href="#In_notation"> ∈ </a><span class="ltree">{<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>|x ∈ <span class="ltree">X</span>}</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">z</span></span></span></span>.</div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">X</span></span> <span class="ltree">(<span class="ltree">λx ⇒  <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span>)</span></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hzx</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span> = <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hzx</span></span> (from left to right).</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNo_minus_SNo</span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">HX</span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span></span>.</div>
-</div><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">L1</span></span> (from right to left).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#minus_SNo_max_min">minus_SNo_max_min</a></span> <span class="ltree">{<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>|x ∈ <span class="ltree">X</span>}</span></span> <span class="ltree">y</span></span> <span class="ltree">L2</span></span> <span class="ltree">H1</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="497">L497</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree"><span class="ltree">{<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">z</span></span>|z ∈ <span class="ltree">{<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>|x ∈ <span class="ltree">X</span>}</span>}</span> = <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="499">L499</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">Repl_invol_eq</span> <span class="ltree">SNo</span></span> <span class="ltree">minus_SNo</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="500">L500</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∀x,  <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span> → <span class="ltree"><span class="ltree"><a href="#notation_7">-</a> <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span> = <span class="ltree">x</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="500">L500</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">minus_SNo_invol</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="501">L501</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">X</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="501">L501</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HX</span></span>.</div>
+</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="502">L502</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L2</span>: <span class="ltree"><span class="ltree">∀z<a href="#In_notation"> ∈ </a><span class="ltree">{<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>|x ∈ <span class="ltree">X</span>}</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">z</span></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="504">L504</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="504">L504</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="504">L504</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">X</span></span> <span class="ltree">(<span class="ltree">λx ⇒  <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span>)</span></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="505">L505</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="506">L506</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="506">L506</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hzx</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span> = <span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="507">L507</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hzx</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="508">L508</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNo_minus_SNo</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="508">L508</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="509">L509</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">HX</span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="510">L510</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">L1</span></span> (from right to left).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="511">L511</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#minus_SNo_max_min" class="anamelink">minus_SNo_max_min</a></span> <span class="ltree">{<span class="ltree"><a href="#notation_7">-</a> <span class="ltree">x</span></span>|x ∈ <span class="ltree">X</span>}</span></span> <span class="ltree">y</span></span> <span class="ltree">L2</span></span> <span class="ltree">H1</span></span></span>.</div>
+</div>
 ∎

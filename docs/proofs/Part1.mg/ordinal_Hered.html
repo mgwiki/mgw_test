@@ -1,20 +1,37 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">alpha</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#TransSet">TransSet</a></span> <span class="ltree">alpha</span></span> <a href="#notation_2">∧</a> <span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">alpha</span>,  <span class="ltree"><span class="ltree"><a classname="anamelink" href="#TransSet">TransSet</a></span> <span class="ltree">x</span></span></span></span></span>.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">beta</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree"><span class="ltree">beta</span>  <a href="#In_notation">∈</a>  <span class="ltree">alpha</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#TransSet">TransSet</a></span> <span class="ltree">beta</span></span> <a href="#notation_2">∧</a> <span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">beta</span>,  <span class="ltree"><span class="ltree"><a classname="anamelink" href="#TransSet">TransSet</a></span> <span class="ltree">x</span></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H1</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#TransSet">TransSet</a></span> <span class="ltree">alpha</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H4</span>: <span class="ltree"><span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">alpha</span>,  <span class="ltree"><span class="ltree"><a classname="anamelink" href="#TransSet">TransSet</a></span> <span class="ltree">x</span></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#andI">andI</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">H4</span> <span class="ltree">beta</span></span> <span class="ltree">H2</span></span>)</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1823">L1823</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">alpha</span> be given.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">beta</span>,  <span class="ltree"><span class="ltree"><a classname="anamelink" href="#TransSet">TransSet</a></span> <span class="ltree">x</span></span></span>.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">beta</span></span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">alpha</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">H3</span> <span class="ltree">beta</span></span> <span class="ltree">H2</span></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span>)</span></span>.</div>
-</div><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#TransSet">TransSet</a></span> <span class="ltree">x</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">H4</span> <span class="ltree">x</span></span> <span class="ltree">L1</span></span>)</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1824">L1824</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#TransSet" class="anamelink">TransSet</a></span> <span class="ltree">alpha</span></span> <a href="#notation_2">∧</a> <span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">alpha</span>,  <span class="ltree"><span class="ltree"><a href="#TransSet" class="anamelink">TransSet</a></span> <span class="ltree">x</span></span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1825">L1825</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">beta</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1826">L1826</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree"><span class="ltree">beta</span>  <a href="#In_notation">∈</a>  <span class="ltree">alpha</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1827">L1827</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#TransSet" class="anamelink">TransSet</a></span> <span class="ltree">beta</span></span> <a href="#notation_2">∧</a> <span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">beta</span>,  <span class="ltree"><span class="ltree"><a href="#TransSet" class="anamelink">TransSet</a></span> <span class="ltree">x</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1828">L1828</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H1</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1829">L1829</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#TransSet" class="anamelink">TransSet</a></span> <span class="ltree">alpha</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1830">L1830</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H4</span>: <span class="ltree"><span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">alpha</span>,  <span class="ltree"><span class="ltree"><a href="#TransSet" class="anamelink">TransSet</a></span> <span class="ltree">x</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1831">L1831</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#andI" class="anamelink">andI</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1833">L1833</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">H4</span> <span class="ltree">beta</span></span> <span class="ltree">H2</span></span>)</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1834">L1834</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">beta</span>,  <span class="ltree"><span class="ltree"><a href="#TransSet" class="anamelink">TransSet</a></span> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1834">L1834</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1835">L1835</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">beta</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1836">L1836</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">alpha</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1838">L1838</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">H3</span> <span class="ltree">beta</span></span> <span class="ltree">H2</span></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="1838">L1838</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#TransSet" class="anamelink">TransSet</a></span> <span class="ltree">x</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1839">L1839</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">H4</span> <span class="ltree">x</span></span> <span class="ltree">L1</span></span>)</span></span>.</div>
+</div>
 </div>
 ∎
