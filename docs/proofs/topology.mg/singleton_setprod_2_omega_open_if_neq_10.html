@@ -1,41 +1,79 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxX</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#setprod">setprod</a></span> <span class="ltree"><a href="#notation_21">2</a></span></span> <span class="ltree"><a classname="anamelink" href="#omega">ω</a></span></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hneq10</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_6">≠</a> <span class="ltree">(<span class="ltree"><a href="#notation_21">1</a></span>,<span class="ltree"><a href="#notation_21">0</a></span>)</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Sigma_E">Sigma_E</a></span> <span class="ltree"><a href="#notation_21">2</a></span></span> <span class="ltree">(<span class="ltree">λ_ : <span class="ltree">set</span> ⇒  <span class="ltree"><a classname="anamelink" href="#omega">ω</a></span></span>)</span></span> <span class="ltree">x</span></span> <span class="ltree">HxX</span></span>)</span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">i</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HiPair</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HiPair</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hi2 HmPair</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HmPair</span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">m</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HmPair2</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HmPair2</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HmO HxEqPair</span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HxEq</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree">(<span class="ltree">i</span>,<span class="ltree">m</span>)</span></span></span>.</div>
-<div class="subproof"><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HxEqPair</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#tuple_pair">tuple_pair</a></span> <span class="ltree">i</span></span> <span class="ltree">m</span></span>)</span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hi01</span>: <span class="ltree"><span class="ltree"><span class="ltree">i</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#notation_15">{</a><span class="ltree"><a href="#notation_21">0</a></span><a href="#notation_15">,</a><span class="ltree"><a href="#notation_21">1</a></span><a href="#notation_15">}</a></span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Subq_2_UPair01">Subq_2_UPair01</a></span> <span class="ltree">i</span></span> <span class="ltree">Hi2</span></span>)</span></span>.</div>
-</div><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#UPairE">UPairE</a></span> <span class="ltree">i</span></span> <span class="ltree"><a href="#notation_21">0</a></span></span> <span class="ltree"><a href="#notation_21">1</a></span></span> <span class="ltree">Hi01</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><a href="#notation_15">{</a><span class="ltree">x</span><a href="#notation_15">}</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a classname="anamelink" href="#order_topology">order_topology</a></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#setprod">setprod</a></span> <span class="ltree"><a href="#notation_21">2</a></span></span> <span class="ltree"><a classname="anamelink" href="#omega">ω</a></span></span>)</span></span></span>)</span></span>)</span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hi0</span>: <span class="ltree"><span class="ltree"><span class="ltree">i</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HxEq</span></span> (from left to right).</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hi0</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#singleton_setprod_2_omega_0k_open">singleton_setprod_2_omega_0k_open</a></span> <span class="ltree">m</span></span> <span class="ltree">HmO</span></span>)</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** from §31 Exercise 3: every order topology regular ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: Every order topology is regular. ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: singleton openness away from (1,0) in setprod 2 omega ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="276591">L276591</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hi1</span>: <span class="ltree"><span class="ltree"><span class="ltree">i</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">1</a></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a classname="anamelink" href="#xm">xm</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">m</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span>)</span></span>)</span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hm0</span>: <span class="ltree"><span class="ltree"><span class="ltree">m</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#FalseE">FalseE</a></span></span> to the current goal.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hneq10</span></span> to the current goal.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HxEq</span></span> (from left to right).</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hi1</span></span> (from left to right).</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hm0</span></span> (from left to right).</div>
+<div class="pftacwrap"><span class="srcline" data-line="276592">L276592</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxX</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><span class="ltree"><a href="#setprod" class="anamelink">setprod</a></span> <span class="ltree"><a href="#notation_21">2</a></span></span> <span class="ltree"><a href="#omega" class="anamelink">ω</a></span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276593">L276593</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hneq10</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_6">≠</a> <span class="ltree">(<span class="ltree"><a href="#notation_21">1</a></span>,<span class="ltree"><a href="#notation_21">0</a></span>)</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276594">L276594</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#Sigma_E" class="anamelink">Sigma_E</a></span> <span class="ltree"><a href="#notation_21">2</a></span></span> <span class="ltree">(<span class="ltree">λ_ : <span class="ltree">set</span> ⇒  <span class="ltree"><a href="#omega" class="anamelink">ω</a></span></span>)</span></span> <span class="ltree">x</span></span> <span class="ltree">HxX</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276595">L276595</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">i</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276596">L276596</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HiPair</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276596">L276596</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HiPair</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276596">L276596</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hi2 HmPair</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276597">L276597</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HmPair</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276597">L276597</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">m</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276598">L276598</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HmPair2</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276598">L276598</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HmPair2</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276598">L276598</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HmO HxEqPair</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276599">L276599</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HxEq</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree">(<span class="ltree">i</span>,<span class="ltree">m</span>)</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="276601">L276601</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HxEqPair</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276601">L276601</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#tuple_pair" class="anamelink">tuple_pair</a></span> <span class="ltree">i</span></span> <span class="ltree">m</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="276601">L276601</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hi01</span>: <span class="ltree"><span class="ltree"><span class="ltree">i</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#notation_15">{</a><span class="ltree"><a href="#notation_21">0</a></span><a href="#notation_15">,</a><span class="ltree"><a href="#notation_21">1</a></span><a href="#notation_15">}</a></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="276603">L276603</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#Subq_2_UPair01" class="anamelink">Subq_2_UPair01</a></span> <span class="ltree">i</span></span> <span class="ltree">Hi2</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="276603">L276603</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#UPairE" class="anamelink">UPairE</a></span> <span class="ltree">i</span></span> <span class="ltree"><a href="#notation_21">0</a></span></span> <span class="ltree"><a href="#notation_21">1</a></span></span> <span class="ltree">Hi01</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><a href="#notation_15">{</a><span class="ltree">x</span><a href="#notation_15">}</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a href="#order_topology" class="anamelink">order_topology</a></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#setprod" class="anamelink">setprod</a></span> <span class="ltree"><a href="#notation_21">2</a></span></span> <span class="ltree"><a href="#omega" class="anamelink">ω</a></span></span>)</span></span></span>)</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="276605">L276605</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hi0</span>: <span class="ltree"><span class="ltree"><span class="ltree">i</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276605">L276605</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HxEq</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276606">L276606</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hi0</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276607">L276607</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#singleton_setprod_2_omega_0k_open" class="anamelink">singleton_setprod_2_omega_0k_open</a></span> <span class="ltree">m</span></span> <span class="ltree">HmO</span></span>)</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="276609">L276609</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hi1</span>: <span class="ltree"><span class="ltree"><span class="ltree">i</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">1</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276609">L276609</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a href="#xm" class="anamelink">xm</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">m</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span>)</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="276611">L276611</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hm0</span>: <span class="ltree"><span class="ltree"><span class="ltree">m</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276611">L276611</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#FalseE" class="anamelink">FalseE</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276612">L276612</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hneq10</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276613">L276613</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HxEq</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276614">L276614</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hi1</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276615">L276615</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hm0</span></span> (from left to right).</div>
+</div>
 <div>Use reflexivity.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hmneq0</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">(<span class="ltree"><span class="ltree">m</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span>)</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HxEq</span></span> (from left to right).</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hi1</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#singleton_setprod_2_omega_1n_open_if_nonzero">singleton_setprod_2_omega_1n_open_if_nonzero</a></span> <span class="ltree">m</span></span> <span class="ltree">HmO</span></span> <span class="ltree">Hmneq0</span></span>)</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="276618">L276618</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hmneq0</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">(<span class="ltree"><span class="ltree">m</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span>)</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276618">L276618</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HxEq</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276619">L276619</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hi1</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="276620">L276620</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#singleton_setprod_2_omega_1n_open_if_nonzero" class="anamelink">singleton_setprod_2_omega_1n_open_if_nonzero</a></span> <span class="ltree">m</span></span> <span class="ltree">HmO</span></span> <span class="ltree">Hmneq0</span></span>)</span></span>.</div>
+</div>
 </div>
 </div>
 ∎

@@ -1,9 +1,19 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxS</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#SNo">SNo</a></span> <span class="ltree">x</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hpos</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span> <a href="#notation_45">&lt;</a> <span class="ltree">x</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Heq</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">H00</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span> <a href="#notation_45">&lt;</a> <span class="ltree"><a href="#notation_21">0</a></span></span></span>.</div>
-<div class="subproof"><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from right to left) at position 2.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hpos</span></span>.</div>
-</div><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a classname="anamelink" href="#SNoLt_irref">SNoLt_irref</a></span> <span class="ltree"><a href="#notation_21">0</a></span></span>)</span> <span class="ltree">H00</span></span>)</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: a positive surreal is not zero ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: If 0 &lt; x then x is not equal to 0. ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="118864">L118864</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="118865">L118865</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxS</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#SNo" class="anamelink">SNo</a></span> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="118866">L118866</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hpos</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span> <a href="#notation_45">&lt;</a> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="118867">L118867</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Heq</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="118868">L118868</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">H00</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span> <a href="#notation_45">&lt;</a> <span class="ltree"><a href="#notation_21">0</a></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="118870">L118870</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from right to left) at position 2.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="118870">L118870</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hpos</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="118871">L118871</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a href="#SNoLt_irref" class="anamelink">SNoLt_irref</a></span> <span class="ltree"><a href="#notation_21">0</a></span></span>)</span> <span class="ltree">H00</span></span>)</span></span>.</div>
+</div>
 ∎

@@ -1,18 +1,35 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X and T</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HT</span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hempty</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span>  <a href="#In_notation">∈</a>  <span class="ltree">T</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#topology_has_empty">topology_has_empty</a></span> <span class="ltree">X</span></span> <span class="ltree">T</span></span> <span class="ltree">HT</span></span>)</span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HX</span>: <span class="ltree"><span class="ltree"><span class="ltree">X</span>  <a href="#In_notation">∈</a>  <span class="ltree">T</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#topology_has_X">topology_has_X</a></span> <span class="ltree">X</span></span> <span class="ltree">T</span></span> <span class="ltree">HT</span></span>)</span></span>.</div>
-</div><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">U</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HU</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a classname="anamelink" href="#indiscrete_topology">indiscrete_topology</a></span> <span class="ltree">X</span></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#UPairE">UPairE</a></span> <span class="ltree">U</span></span> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span> <span class="ltree">X</span></span> <span class="ltree">HU</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HUempty</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HUempty</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hempty</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** from §12: indiscrete topology is the coarsest ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: The indiscrete topology on X is coarser than any other topology on X. ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="8779">L8779</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X and T</span> be given.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HUX</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span> <a href="#notation_5">=</a> <span class="ltree">X</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HUX</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HX</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="8780">L8780</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HT</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8780">L8780</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hempty</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span>  <a href="#In_notation">∈</a>  <span class="ltree">T</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8782">L8782</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#topology_has_empty" class="anamelink">topology_has_empty</a></span> <span class="ltree">X</span></span> <span class="ltree">T</span></span> <span class="ltree">HT</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="8782">L8782</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HX</span>: <span class="ltree"><span class="ltree"><span class="ltree">X</span>  <a href="#In_notation">∈</a>  <span class="ltree">T</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8784">L8784</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#topology_has_X" class="anamelink">topology_has_X</a></span> <span class="ltree">X</span></span> <span class="ltree">T</span></span> <span class="ltree">HT</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="8784">L8784</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">U</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8785">L8785</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HU</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a href="#indiscrete_topology" class="anamelink">indiscrete_topology</a></span> <span class="ltree">X</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8785">L8785</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#UPairE" class="anamelink">UPairE</a></span> <span class="ltree">U</span></span> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span> <span class="ltree">X</span></span> <span class="ltree">HU</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8787">L8787</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HUempty</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8787">L8787</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HUempty</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8787">L8787</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hempty</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8788">L8788</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HUX</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span> <a href="#notation_5">=</a> <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8788">L8788</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HUX</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8788">L8788</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HX</span></span>.</div>
+</div>
 </div>
 ∎

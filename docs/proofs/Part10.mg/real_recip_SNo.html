@@ -1,32 +1,58 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Lx</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#real_SNo">real_SNo</a></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span></span>.</div>
-</div><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">SNoLt_trichotomy_or_impred</span> <span class="ltree">x</span></span> <span class="ltree">0</span></span> <span class="ltree">Lx</span></span> <span class="ltree">SNo_0</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">&lt;</a> <span class="ltree">0</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">recip_SNo_negcase</span> <span class="ltree">x</span></span> <span class="ltree">Lx</span></span> <span class="ltree">H1</span></span></span> (from left to right).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree"><span class="ltree">recip_SNo_pos</span> <span class="ltree">(<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span>)</span></span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#real">real</a></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#real_minus_SNo">real_minus_SNo</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">recip_SNo_pos</span> <span class="ltree">(<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span>)</span></span>)</span></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">recip_SNo_pos</span> <span class="ltree">(<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span>)</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#real">real</a></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#real_recip_SNo_pos">real_recip_SNo_pos</a></span> <span class="ltree">(<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span>)</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#real">real</a></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#real_minus_SNo">real_minus_SNo</a></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="5276">L5276</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">0</span> <a href="#notation_5">&lt;</a> <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">minus_SNo_Lt_contra2</span> <span class="ltree">x</span></span> <span class="ltree">0</span></span> <span class="ltree">Lx</span></span> <span class="ltree">SNo_0</span></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x</span> <a href="#notation_5">&lt;</a> <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">0</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">minus_SNo_0</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H1</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="5277">L5277</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5277">L5277</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Lx</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="5279">L5279</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#real_SNo" class="anamelink">real_SNo</a></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="5279">L5279</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">SNoLt_trichotomy_or_impred</span> <span class="ltree">x</span></span> <span class="ltree">0</span></span> <span class="ltree">Lx</span></span> <span class="ltree">SNo_0</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="5281">L5281</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">&lt;</a> <span class="ltree">0</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5281">L5281</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">recip_SNo_negcase</span> <span class="ltree">x</span></span> <span class="ltree">Lx</span></span> <span class="ltree">H1</span></span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5282">L5282</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree"><span class="ltree">recip_SNo_pos</span> <span class="ltree">(<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span>)</span></span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#real" class="anamelink">real</a></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5283">L5283</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#real_minus_SNo" class="anamelink">real_minus_SNo</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">recip_SNo_pos</span> <span class="ltree">(<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span>)</span></span>)</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5284">L5284</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">recip_SNo_pos</span> <span class="ltree">(<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span>)</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#real" class="anamelink">real</a></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5285">L5285</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#real_recip_SNo_pos" class="anamelink">real_recip_SNo_pos</a></span> <span class="ltree">(<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span>)</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="5287">L5287</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#real" class="anamelink">real</a></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5287">L5287</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#real_minus_SNo" class="anamelink">real_minus_SNo</a></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span></span>.</div>
 </div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> = <span class="ltree">0</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">H1</span></span> (from left to right).</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">recip_SNo_0</span></span> (from left to right).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">0</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#real">real</a></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a classname="anamelink" href="#real_0">real_0</a></span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="5289">L5289</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">0</span> <a href="#notation_5">&lt;</a> <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span></span>.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">0</span> <a href="#notation_5">&lt;</a> <span class="ltree">x</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">recip_SNo_poscase</span> <span class="ltree">x</span></span> <span class="ltree">H1</span></span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#real_recip_SNo_pos">real_recip_SNo_pos</a></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span> <span class="ltree">H1</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="5289">L5289</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">minus_SNo_Lt_contra2</span> <span class="ltree">x</span></span> <span class="ltree">0</span></span> <span class="ltree">Lx</span></span> <span class="ltree">SNo_0</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5290">L5290</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x</span> <a href="#notation_5">&lt;</a> <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">0</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5291">L5291</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">minus_SNo_0</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5292">L5292</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H1</span></span>.</div>
+</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="5294">L5294</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> = <span class="ltree">0</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5294">L5294</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">H1</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5294">L5294</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">recip_SNo_0</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5294">L5294</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">0</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#real" class="anamelink">real</a></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5295">L5295</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a href="#real_0" class="anamelink">real_0</a></span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="5297">L5297</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">0</span> <a href="#notation_5">&lt;</a> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5297">L5297</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">recip_SNo_poscase</span> <span class="ltree">x</span></span> <span class="ltree">H1</span></span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="5298">L5298</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#real_recip_SNo_pos" class="anamelink">real_recip_SNo_pos</a></span> <span class="ltree">x</span></span> <span class="ltree">Hx</span></span> <span class="ltree">H1</span></span></span>.</div>
+</div>
 </div>
 ∎

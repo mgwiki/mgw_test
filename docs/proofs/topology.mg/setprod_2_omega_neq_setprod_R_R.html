@@ -1,6 +1,12 @@
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Heq</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#setprod">setprod</a></span> <span class="ltree"><a href="#notation_21">2</a></span></span> <span class="ltree"><a classname="anamelink" href="#omega">ω</a></span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#setprod">setprod</a></span> <span class="ltree"><a classname="anamelink" href="#R">R</a></span></span> <span class="ltree"><a classname="anamelink" href="#R">R</a></span></span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a classname="anamelink" href="#False">False</a></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#setprod_R_R_neq_setprod_2_omega">setprod_R_R_neq_setprod_2_omega</a></span></span> to the current goal.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from right to left).</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: setprod 2 omega is not setprod R R ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="30992">L30992</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Heq</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setprod" class="anamelink">setprod</a></span> <span class="ltree"><a href="#notation_21">2</a></span></span> <span class="ltree"><a href="#omega" class="anamelink">ω</a></span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#setprod" class="anamelink">setprod</a></span> <span class="ltree"><a href="#R" class="anamelink">R</a></span></span> <span class="ltree"><a href="#R" class="anamelink">R</a></span></span></span></span>.</div>
+</div><div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: Since R×R is not 2×omega (by earlier inequality), these products are distinct. ***)</div>
+
+<div class="pftacwrap"><span class="srcline" data-line="30993">L30993</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a href="#False" class="anamelink">False</a></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="30994">L30994</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#setprod_R_R_neq_setprod_2_omega" class="anamelink">setprod_R_R_neq_setprod_2_omega</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="30995">L30995</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from right to left).</div>
+</div>
 <div>Use reflexivity.</div>
 ∎

@@ -1,16 +1,29 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">T</span> be given.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">U</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Htop HU</span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#closed_in">closed_in</a></span> <span class="ltree">X</span></span> <span class="ltree">T</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">X</span> <a href="#notation_20">∖</a> <span class="ltree">U</span></span>)</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#closed_inI">closed_inI</a></span> <span class="ltree">X</span></span> <span class="ltree">T</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">X</span> <a href="#notation_20">∖</a> <span class="ltree">U</span></span>)</span></span>)</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Htop</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** from §12: complement of open set is closed ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="6882">L6882</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
+</div><div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: If U is open in topology T on X, then X\\U is closed in that topology. ***)</div>
+
+<div class="pftacwrap"><span class="srcline" data-line="6883">L6883</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">T</span> be given.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#setminus_Subq">setminus_Subq</a></span> <span class="ltree">X</span></span> <span class="ltree">U</span></span>)</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="6883">L6883</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">U</span> be given.</div>
 </div>
-<div class="subproof"><div class="witnesstac">We use <span class="ltree"><span class="ltree">U</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#andI">andI</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HU</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="6883">L6883</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Htop HU</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="6884">L6884</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#closed_in" class="anamelink">closed_in</a></span> <span class="ltree">X</span></span> <span class="ltree">T</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">X</span> <a href="#notation_20">∖</a> <span class="ltree">U</span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="6885">L6885</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#closed_inI" class="anamelink">closed_inI</a></span> <span class="ltree">X</span></span> <span class="ltree">T</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">X</span> <a href="#notation_20">∖</a> <span class="ltree">U</span></span>)</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="6887">L6887</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Htop</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="6888">L6888</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#setminus_Subq" class="anamelink">setminus_Subq</a></span> <span class="ltree">X</span></span> <span class="ltree">U</span></span>)</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="6889">L6889</span><div class="witnesstac">We use <span class="ltree"><span class="ltree">U</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="6889">L6889</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#andI" class="anamelink">andI</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="6891">L6891</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HU</span></span>.</div>
+</div>
 </div>
 <div class="subproof"><div>Use reflexivity.</div>
 </div>

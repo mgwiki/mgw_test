@@ -1,7 +1,16 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x, y and S</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hxy</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree">y</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HyS</span>: <span class="ltree"><span class="ltree"><span class="ltree">y</span>  <a href="#In_notation">∈</a>  <span class="ltree">S</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">S</span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hxy</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HyS</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: equality substitution for membership ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** from basic set theory: substitution by equality in membership ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="249314">L249314</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x, y and S</span> be given.</div>
+</div><div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: If x=y and y is in S, then x is in S. ***)</div>
+
+<div class="pftacwrap"><span class="srcline" data-line="249315">L249315</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hxy</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree">y</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="249316">L249316</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HyS</span>: <span class="ltree"><span class="ltree"><span class="ltree">y</span>  <a href="#In_notation">∈</a>  <span class="ltree">S</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="249317">L249317</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">S</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="249318">L249318</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hxy</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="249319">L249319</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HyS</span></span>.</div>
+</div>
 ∎

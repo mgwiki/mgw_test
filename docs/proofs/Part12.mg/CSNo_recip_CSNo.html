@@ -1,27 +1,47 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>.</div>
-<div class="settac"><span class="pftackeyword">Set</span> <span class="ltree">s</span> to be the term <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">Re</span> <span class="ltree">z</span></span> <a href="#notation_8">^</a> <span class="ltree">2</span></span> <a href="#notation_5">+</a> <span class="ltree"><span class="ltree"><span class="ltree">Im</span> <span class="ltree">z</span></span> <a href="#notation_8">^</a> <span class="ltree">2</span></span></span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">LRezR</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">Re</span> <span class="ltree">z</span></span>)</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#CSNo_ReR">CSNo_ReR</a></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">LImzR</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">Im</span> <span class="ltree">z</span></span>)</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#CSNo_ImR">CSNo_ImR</a></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Ls</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">s</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#SNo_abs_sqr_CSNo">SNo_abs_sqr_CSNo</a></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span>.</div>
-</div><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CSNo">CSNo</a></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">pa</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Re</span> <span class="ltree">z</span></span> <a href="#notation_7">:/:</a> <span class="ltree">s</span></span>)</span></span> <span class="ltree">(<span class="ltree"><a href="#notation_4">-</a> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Im</span> <span class="ltree">z</span></span> <a href="#notation_7">:/:</a> <span class="ltree">s</span></span>)</span></span>)</span></span>)</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CSNo_I">CSNo_I</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Re</span> <span class="ltree">z</span></span> <a href="#notation_7">:/:</a> <span class="ltree">s</span></span>)</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNo_div_SNo</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">LRezR</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="907">L907</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Ls</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="908">L908</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="908">L908</span><div class="settac"><span class="pftackeyword">Set</span> <span class="ltree">s</span> to be the term <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">Re</span> <span class="ltree">z</span></span> <a href="#notation_8">^</a> <span class="ltree">2</span></span> <a href="#notation_5">+</a> <span class="ltree"><span class="ltree"><span class="ltree">Im</span> <span class="ltree">z</span></span> <a href="#notation_8">^</a> <span class="ltree">2</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="909">L909</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">LRezR</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">Re</span> <span class="ltree">z</span></span>)</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="911">L911</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#CSNo_ReR" class="anamelink">CSNo_ReR</a></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="911">L911</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">LImzR</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><span class="ltree">Im</span> <span class="ltree">z</span></span>)</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="913">L913</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#CSNo_ImR" class="anamelink">CSNo_ImR</a></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="913">L913</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Ls</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">s</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="915">L915</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#SNo_abs_sqr_CSNo" class="anamelink">SNo_abs_sqr_CSNo</a></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="915">L915</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#CSNo" class="anamelink">CSNo</a></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">pa</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Re</span> <span class="ltree">z</span></span> <a href="#notation_7">:/:</a> <span class="ltree">s</span></span>)</span></span> <span class="ltree">(<span class="ltree"><a href="#notation_4">-</a> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Im</span> <span class="ltree">z</span></span> <a href="#notation_7">:/:</a> <span class="ltree">s</span></span>)</span></span>)</span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="916">L916</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#CSNo_I" class="anamelink">CSNo_I</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="918">L918</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Re</span> <span class="ltree">z</span></span> <a href="#notation_7">:/:</a> <span class="ltree">s</span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="918">L918</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNo_div_SNo</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="920">L920</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">LRezR</span></span>.</div>
 </div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><a href="#notation_4">-</a> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Im</span> <span class="ltree">z</span></span> <a href="#notation_7">:/:</a> <span class="ltree">s</span></span>)</span></span>)</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNo_minus_SNo</span></span> to the current goal.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNo_div_SNo</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">LImzR</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="921">L921</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Ls</span></span>.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Ls</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="922">L922</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><a href="#notation_4">-</a> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Im</span> <span class="ltree">z</span></span> <a href="#notation_7">:/:</a> <span class="ltree">s</span></span>)</span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="922">L922</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNo_minus_SNo</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="923">L923</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNo_div_SNo</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="925">L925</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">LImzR</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="926">L926</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Ls</span></span>.</div>
+</div>
 </div>
 </div>
 ∎

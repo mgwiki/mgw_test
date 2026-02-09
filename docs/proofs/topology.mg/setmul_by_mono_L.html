@@ -1,22 +1,43 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">mult, U1, U2 and V</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hsub</span>: <span class="ltree"><span class="ltree"><span class="ltree">U1</span>  <a href="#Subq_notation">⊆</a>  <span class="ltree">U2</span></span></span>.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">y</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hy</span>: <span class="ltree"><span class="ltree"><span class="ltree">y</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#setmul_by">setmul_by</a></span> <span class="ltree">mult</span></span> <span class="ltree">U1</span></span> <span class="ltree">V</span></span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">y</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#setmul_by">setmul_by</a></span> <span class="ltree">mult</span></span> <span class="ltree">U2</span></span> <span class="ltree">V</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#setmul_byE">setmul_byE</a></span> <span class="ltree">U1</span></span> <span class="ltree">V</span></span> <span class="ltree">mult</span></span> <span class="ltree">y</span></span> <span class="ltree">Hy</span></span>)</span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">u</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HuPack</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HuPack</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hu1 Hexv</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hexv</span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">v</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HvPack</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HvPack</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HvV Hyeq</span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hyeq</span></span> (from left to right).</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#setmul_byI">setmul_byI</a></span> <span class="ltree">U2</span></span> <span class="ltree">V</span></span> <span class="ltree">mult</span></span> <span class="ltree">u</span></span> <span class="ltree">v</span></span>)</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Hsub</span> <span class="ltree">u</span></span> <span class="ltree">Hu1</span></span>)</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: monotonicity of setmul_by in the left argument ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: If U1⊆U2 then U1V⊆U2V. ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="259594">L259594</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">mult, U1, U2 and V</span> be given.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HvV</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="259595">L259595</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hsub</span>: <span class="ltree"><span class="ltree"><span class="ltree">U1</span>  <a href="#Subq_notation">⊆</a>  <span class="ltree">U2</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259596">L259596</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">y</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259597">L259597</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hy</span>: <span class="ltree"><span class="ltree"><span class="ltree">y</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_by" class="anamelink">setmul_by</a></span> <span class="ltree">mult</span></span> <span class="ltree">U1</span></span> <span class="ltree">V</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259597">L259597</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">y</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_by" class="anamelink">setmul_by</a></span> <span class="ltree">mult</span></span> <span class="ltree">U2</span></span> <span class="ltree">V</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259598">L259598</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_byE" class="anamelink">setmul_byE</a></span> <span class="ltree">U1</span></span> <span class="ltree">V</span></span> <span class="ltree">mult</span></span> <span class="ltree">y</span></span> <span class="ltree">Hy</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259599">L259599</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">u</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259600">L259600</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HuPack</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259600">L259600</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HuPack</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259601">L259601</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hu1 Hexv</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259602">L259602</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hexv</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259603">L259603</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">v</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259604">L259604</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HvPack</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259604">L259604</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HvPack</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259605">L259605</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HvV Hyeq</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259606">L259606</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hyeq</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259607">L259607</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_byI" class="anamelink">setmul_byI</a></span> <span class="ltree">U2</span></span> <span class="ltree">V</span></span> <span class="ltree">mult</span></span> <span class="ltree">u</span></span> <span class="ltree">v</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="259609">L259609</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Hsub</span> <span class="ltree">u</span></span> <span class="ltree">Hu1</span></span>)</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="259610">L259610</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HvV</span></span>.</div>
+</div>
 </div>
 ∎

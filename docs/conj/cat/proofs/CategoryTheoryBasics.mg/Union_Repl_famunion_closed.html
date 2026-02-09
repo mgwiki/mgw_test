@@ -1,13 +1,25 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">U</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HU</span>: <span class="ltree"><span class="ltree"><span class="ltree">Union_closed</span> <span class="ltree">U</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HR</span>: <span class="ltree"><span class="ltree"><span class="ltree">Repl_closed</span> <span class="ltree">U</span></span></span>.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HX</span>: <span class="ltree"><span class="ltree"><span class="ltree">X</span>  <a href="#In_notation">∈</a>  <span class="ltree">U</span></span></span>.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">F</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HF</span>: <span class="ltree"><span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">X</span>,  <span class="ltree"><span class="ltree"><span class="ltree">F</span> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">U</span></span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">famunion</span> <span class="ltree">X</span></span> <span class="ltree">F</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">U</span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">⋃</span> <span class="ltree">{<span class="ltree"><span class="ltree">F</span> <span class="ltree">x</span></span>|x ∈ <span class="ltree">X</span>}</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">U</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HU</span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">{<span class="ltree"><span class="ltree">F</span> <span class="ltree">x</span></span>|x ∈ <span class="ltree">X</span>}</span>  <a href="#In_notation">∈</a>  <span class="ltree">U</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">HR</span> <span class="ltree">X</span></span> <span class="ltree">HX</span></span> <span class="ltree">F</span></span> <span class="ltree">HF</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1216">L1216</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">U</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1217">L1217</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HU</span>: <span class="ltree"><span class="ltree"><span class="ltree">Union_closed</span> <span class="ltree">U</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1218">L1218</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HR</span>: <span class="ltree"><span class="ltree"><span class="ltree">Repl_closed</span> <span class="ltree">U</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1219">L1219</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1220">L1220</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HX</span>: <span class="ltree"><span class="ltree"><span class="ltree">X</span>  <a href="#In_notation">∈</a>  <span class="ltree">U</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1221">L1221</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">F</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1222">L1222</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HF</span>: <span class="ltree"><span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">X</span>,  <span class="ltree"><span class="ltree"><span class="ltree">F</span> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">U</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1223">L1223</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">famunion</span> <span class="ltree">X</span></span> <span class="ltree">F</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">U</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1224">L1224</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">⋃</span> <span class="ltree">{<span class="ltree"><span class="ltree">F</span> <span class="ltree">x</span></span>|x ∈ <span class="ltree">X</span>}</span></span>  <a href="#In_notation">∈</a>  <span class="ltree">U</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1225">L1225</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HU</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1226">L1226</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">{<span class="ltree"><span class="ltree">F</span> <span class="ltree">x</span></span>|x ∈ <span class="ltree">X</span>}</span>  <a href="#In_notation">∈</a>  <span class="ltree">U</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1227">L1227</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">HR</span> <span class="ltree">X</span></span> <span class="ltree">HX</span></span> <span class="ltree">F</span></span> <span class="ltree">HF</span></span></span>.</div>
+</div>
 ∎

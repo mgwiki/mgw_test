@@ -1,18 +1,33 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x and y</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hy</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">y</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hxy</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_2">≤</a> <span class="ltree">y</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">SNoLeE</span> <span class="ltree">x</span></span> <span class="ltree">y</span></span> <span class="ltree">Hx</span></span> <span class="ltree">Hy</span></span> <span class="ltree">Hxy</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> &lt; <span class="ltree">y</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree">y</span></span> <a href="#notation_2">≤</a> <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNoLtLe</span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree">y</span></span> &lt; <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#minus_SNo_Lt_contra">minus_SNo_Lt_contra</a></span> <span class="ltree">x</span></span> <span class="ltree">y</span></span> <span class="ltree">Hx</span></span> <span class="ltree">Hy</span></span> <span class="ltree">H1</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="316">L316</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x and y</span> be given.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> = <span class="ltree">y</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree">y</span></span> <a href="#notation_2">≤</a> <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">H1</span></span> (from left to right).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree">y</span></span> <a href="#notation_2">≤</a> <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">y</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNoLe_ref</span></span> to the current goal.</div>
+<div class="pftacwrap"><span class="srcline" data-line="317">L317</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hx</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="318">L318</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hy</span>: <span class="ltree"><span class="ltree"><span class="ltree">SNo</span> <span class="ltree">y</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="319">L319</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hxy</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_2">≤</a> <span class="ltree">y</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="320">L320</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">SNoLeE</span> <span class="ltree">x</span></span> <span class="ltree">y</span></span> <span class="ltree">Hx</span></span> <span class="ltree">Hy</span></span> <span class="ltree">Hxy</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="322">L322</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> &lt; <span class="ltree">y</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="322">L322</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree">y</span></span> <a href="#notation_2">≤</a> <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="323">L323</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNoLtLe</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="324">L324</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree">y</span></span> &lt; <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="325">L325</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#minus_SNo_Lt_contra" class="anamelink">minus_SNo_Lt_contra</a></span> <span class="ltree">x</span></span> <span class="ltree">y</span></span> <span class="ltree">Hx</span></span> <span class="ltree">Hy</span></span> <span class="ltree">H1</span></span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="327">L327</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> = <span class="ltree">y</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="327">L327</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree">y</span></span> <a href="#notation_2">≤</a> <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="328">L328</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">H1</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="329">L329</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree">y</span></span> <a href="#notation_2">≤</a> <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">y</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="330">L330</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">SNoLe_ref</span></span> to the current goal.</div>
+</div>
 </div>
 ∎

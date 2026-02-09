@@ -1,92 +1,163 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">alpha and beta</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Ha Hb</span>.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">p, q and r</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hpq Hqr</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoLtE">PNoLtE</a></span> <span class="ltree">alpha</span></span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span> <span class="ltree">Hqr</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoLt_">PNoLt_</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">alpha</span> <a href="#notation_19">∩</a> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span>)</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hqr1</span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">delta</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr2</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hqr2</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hd</span>: <span class="ltree"><span class="ltree"><span class="ltree">delta</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree">alpha</span> <a href="#notation_19">∩</a> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#binintersectE">binintersectE</a></span> <span class="ltree">alpha</span></span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span> <span class="ltree">delta</span></span> <span class="ltree">Hd</span></span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hd1 Hd2</span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr3</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hqr3</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr3</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hqr3</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr3</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_">PNoEq_</a></span> <span class="ltree">delta</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr4</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree"><span class="ltree">q</span> <span class="ltree">delta</span></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr5</span>: <span class="ltree"><span class="ltree"><span class="ltree">r</span> <span class="ltree">delta</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoLt">PNoLt</a></span> <span class="ltree">alpha</span></span> <span class="ltree">p</span></span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span> <span class="ltree">r</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoLtI1">PNoLtI1</a></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃delta<a href="#notation_8"> ∈ </a><span class="ltree"><span class="ltree">alpha</span> <a href="#notation_19">∩</a> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span>,  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_">PNoEq_</a></span> <span class="ltree">delta</span></span> <span class="ltree">p</span></span> <span class="ltree">r</span></span> <a href="#notation_2">∧</a> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree"><span class="ltree">p</span> <span class="ltree">delta</span></span></span></span> <a href="#notation_2">∧</a> <span class="ltree"><span class="ltree">r</span> <span class="ltree">delta</span></span></span></span>.</div>
-<div class="witnesstac">We use <span class="ltree"><span class="ltree">delta</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#andI">andI</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hd</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="8053">L8053</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">alpha and beta</span> be given.</div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#and3I">and3I</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_">PNoEq_</a></span> <span class="ltree">delta</span></span> <span class="ltree">p</span></span> <span class="ltree">r</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_tra_">PNoEq_tra_</a></span> <span class="ltree">delta</span></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_">PNoEq_</a></span> <span class="ltree">delta</span></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_antimon_">PNoEq_antimon_</a></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span> <span class="ltree">alpha</span></span> <span class="ltree">Ha</span></span> <span class="ltree">delta</span></span> <span class="ltree">Hd1</span></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_">PNoEq_</a></span> <span class="ltree">alpha</span></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hpq</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="8054">L8054</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Ha Hb</span>.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_">PNoEq_</a></span> <span class="ltree">delta</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr3</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="8054">L8054</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">p, q and r</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8055">L8055</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hpq Hqr</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8056">L8056</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoLtE" class="anamelink">PNoLtE</a></span> <span class="ltree">alpha</span></span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span> <span class="ltree">Hqr</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8058">L8058</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoLt_" class="anamelink">PNoLt_</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">alpha</span> <a href="#notation_19">∩</a> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span>)</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8058">L8058</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hqr1</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8059">L8059</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">delta</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8059">L8059</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr2</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8059">L8059</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hqr2</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8059">L8059</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hd</span>: <span class="ltree"><span class="ltree"><span class="ltree">delta</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree">alpha</span> <a href="#notation_19">∩</a> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8060">L8060</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#binintersectE" class="anamelink">binintersectE</a></span> <span class="ltree">alpha</span></span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span> <span class="ltree">delta</span></span> <span class="ltree">Hd</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8061">L8061</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hd1 Hd2</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8062">L8062</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr3</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8063">L8063</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hqr3</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8063">L8063</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr3</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8063">L8063</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hqr3</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8063">L8063</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr3</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_" class="anamelink">PNoEq_</a></span> <span class="ltree">delta</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8064">L8064</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr4</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree"><span class="ltree">q</span> <span class="ltree">delta</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8065">L8065</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr5</span>: <span class="ltree"><span class="ltree"><span class="ltree">r</span> <span class="ltree">delta</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8066">L8066</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoLt" class="anamelink">PNoLt</a></span> <span class="ltree">alpha</span></span> <span class="ltree">p</span></span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span> <span class="ltree">r</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8067">L8067</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#PNoLtI1" class="anamelink">PNoLtI1</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8068">L8068</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃delta<a href="#notation_8"> ∈ </a><span class="ltree"><span class="ltree">alpha</span> <a href="#notation_19">∩</a> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span>,  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_" class="anamelink">PNoEq_</a></span> <span class="ltree">delta</span></span> <span class="ltree">p</span></span> <span class="ltree">r</span></span> <a href="#notation_2">∧</a> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree"><span class="ltree">p</span> <span class="ltree">delta</span></span></span></span> <a href="#notation_2">∧</a> <span class="ltree"><span class="ltree">r</span> <span class="ltree">delta</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8069">L8069</span><div class="witnesstac">We use <span class="ltree"><span class="ltree">delta</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8070">L8070</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#andI" class="anamelink">andI</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8071">L8071</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hd</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8072">L8072</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#and3I" class="anamelink">and3I</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8073">L8073</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_" class="anamelink">PNoEq_</a></span> <span class="ltree">delta</span></span> <span class="ltree">p</span></span> <span class="ltree">r</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8073">L8073</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_tra_" class="anamelink">PNoEq_tra_</a></span> <span class="ltree">delta</span></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8074">L8074</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_" class="anamelink">PNoEq_</a></span> <span class="ltree">delta</span></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8074">L8074</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_antimon_" class="anamelink">PNoEq_antimon_</a></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span> <span class="ltree">alpha</span></span> <span class="ltree">Ha</span></span> <span class="ltree">delta</span></span> <span class="ltree">Hd1</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8075">L8075</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_" class="anamelink">PNoEq_</a></span> <span class="ltree">alpha</span></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8076">L8076</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hpq</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8078">L8078</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_" class="anamelink">PNoEq_</a></span> <span class="ltree">delta</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8078">L8078</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr3</span></span>.</div>
+</div>
 </div>
 </div></div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree"><span class="ltree">p</span> <span class="ltree">delta</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">p</span> <span class="ltree">delta</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hqr4</span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">q</span> <span class="ltree">delta</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#iffEL">iffEL</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">p</span> <span class="ltree">delta</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">q</span> <span class="ltree">delta</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Hpq</span> <span class="ltree">delta</span></span> <span class="ltree">Hd1</span></span>)</span></span> <span class="ltree">H1</span></span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8080">L8080</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree"><span class="ltree">p</span> <span class="ltree">delta</span></span></span>.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">r</span> <span class="ltree">delta</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr5</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="8080">L8080</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">p</span> <span class="ltree">delta</span></span></span>.</div>
 </div>
+<div class="pftacwrap"><span class="srcline" data-line="8081">L8081</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hqr4</span></span> to the current goal.</div>
 </div>
+<div class="pftacwrap"><span class="srcline" data-line="8082">L8082</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">q</span> <span class="ltree">delta</span></span>.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr1</span>: <span class="ltree"><span class="ltree"><span class="ltree">alpha</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_">PNoEq_</a></span> <span class="ltree">alpha</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr3</span>: <span class="ltree"><span class="ltree"><span class="ltree">r</span> <span class="ltree">alpha</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoLt">PNoLt</a></span> <span class="ltree">alpha</span></span> <span class="ltree">p</span></span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span> <span class="ltree">r</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoLtI2">PNoLtI2</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">alpha</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr1</span></span>.</div>
-</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_">PNoEq_</a></span> <span class="ltree">alpha</span></span> <span class="ltree">p</span></span> <span class="ltree">r</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_tra_">PNoEq_tra_</a></span> <span class="ltree">alpha</span></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hpq</span></span>.</div>
-</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr2</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="8083">L8083</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#iffEL" class="anamelink">iffEL</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">p</span> <span class="ltree">delta</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">q</span> <span class="ltree">delta</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Hpq</span> <span class="ltree">delta</span></span> <span class="ltree">Hd1</span></span>)</span></span> <span class="ltree">H1</span></span></span>.</div>
 </div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">r</span> <span class="ltree">alpha</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr3</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8085">L8085</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">r</span> <span class="ltree">delta</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8085">L8085</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr5</span></span>.</div>
 </div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#beta">beta</a></span>  <a href="#In_notation">∈</a>  <span class="ltree">alpha</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_">PNoEq_</a></span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr3</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree"><span class="ltree">q</span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoLt">PNoLt</a></span> <span class="ltree">alpha</span></span> <span class="ltree">p</span></span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span> <span class="ltree">r</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoLtI3">PNoLtI3</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#beta">beta</a></span>  <a href="#In_notation">∈</a>  <span class="ltree">alpha</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr1</span></span>.</div>
-</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_">PNoEq_</a></span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span> <span class="ltree">p</span></span> <span class="ltree">r</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_tra_">PNoEq_tra_</a></span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#PNoEq_antimon_">PNoEq_antimon_</a></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span> <span class="ltree">alpha</span></span> <span class="ltree">Ha</span></span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span> <span class="ltree">Hqr1</span></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hpq</span></span>.</div>
-</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr2</span></span>.</div>
 </div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree"><span class="ltree">p</span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">p</span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hqr3</span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#iffEL">iffEL</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">p</span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">q</span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Hpq</span> <span class="ltree"><a classname="anamelink" href="#beta">beta</a></span></span> <span class="ltree">Hqr1</span></span>)</span></span> <span class="ltree">H1</span></span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8086">L8086</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr1</span>: <span class="ltree"><span class="ltree"><span class="ltree">alpha</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8086">L8086</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_" class="anamelink">PNoEq_</a></span> <span class="ltree">alpha</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8087">L8087</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr3</span>: <span class="ltree"><span class="ltree"><span class="ltree">r</span> <span class="ltree">alpha</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8088">L8088</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoLt" class="anamelink">PNoLt</a></span> <span class="ltree">alpha</span></span> <span class="ltree">p</span></span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span> <span class="ltree">r</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8089">L8089</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#PNoLtI2" class="anamelink">PNoLtI2</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8091">L8091</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">alpha</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8091">L8091</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr1</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8092">L8092</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_" class="anamelink">PNoEq_</a></span> <span class="ltree">alpha</span></span> <span class="ltree">p</span></span> <span class="ltree">r</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8092">L8092</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_tra_" class="anamelink">PNoEq_tra_</a></span> <span class="ltree">alpha</span></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8093">L8093</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hpq</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8094">L8094</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr2</span></span>.</div>
+</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8095">L8095</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">r</span> <span class="ltree">alpha</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8095">L8095</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr3</span></span>.</div>
+</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8096">L8096</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#beta" class="anamelink">beta</a></span>  <a href="#In_notation">∈</a>  <span class="ltree">alpha</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8096">L8096</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_" class="anamelink">PNoEq_</a></span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8097">L8097</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hqr3</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree"><span class="ltree">q</span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8098">L8098</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoLt" class="anamelink">PNoLt</a></span> <span class="ltree">alpha</span></span> <span class="ltree">p</span></span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span> <span class="ltree">r</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8099">L8099</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#PNoLtI3" class="anamelink">PNoLtI3</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8101">L8101</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#beta" class="anamelink">beta</a></span>  <a href="#In_notation">∈</a>  <span class="ltree">alpha</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8101">L8101</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr1</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8102">L8102</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_" class="anamelink">PNoEq_</a></span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span> <span class="ltree">p</span></span> <span class="ltree">r</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8102">L8102</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_tra_" class="anamelink">PNoEq_tra_</a></span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span> <span class="ltree">r</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8103">L8103</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#PNoEq_antimon_" class="anamelink">PNoEq_antimon_</a></span> <span class="ltree">p</span></span> <span class="ltree">q</span></span> <span class="ltree">alpha</span></span> <span class="ltree">Ha</span></span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span> <span class="ltree">Hqr1</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8103">L8103</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hpq</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8104">L8104</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hqr2</span></span>.</div>
+</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8105">L8105</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree"><span class="ltree">p</span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8105">L8105</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">p</span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8106">L8106</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hqr3</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8107">L8107</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#iffEL" class="anamelink">iffEL</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">p</span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree">q</span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Hpq</span> <span class="ltree"><a href="#beta" class="anamelink">beta</a></span></span> <span class="ltree">Hqr1</span></span>)</span></span> <span class="ltree">H1</span></span></span>.</div>
+</div>
 </div>
 </div>
 ∎

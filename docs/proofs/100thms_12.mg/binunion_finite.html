@@ -1,18 +1,33 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HX</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#finite_ind">finite_ind</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#finite">finite</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">X</span> <a href="#notation_14">∪</a> <span class="ltree"><a href="#notation_21">0</a></span></span>)</span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#binunion_idr">binunion_idr</a></span> <span class="ltree">X</span></span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HX</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="4926">L4926</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
 </div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">Y and z</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HY</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#finite">finite</a></span> <span class="ltree">Y</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span> <a href="#notation_10">∉</a> <span class="ltree">Y</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">IH</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#finite">finite</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">X</span> <a href="#notation_14">∪</a> <span class="ltree">Y</span></span>)</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#finite">finite</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">X</span> <a href="#notation_14">∪</a> <span class="ltree">(<span class="ltree"><span class="ltree">Y</span> <a href="#notation_14">∪</a> <span class="ltree"><a href="#notation_15">{</a><span class="ltree">z</span><a href="#notation_15">}</a></span></span>)</span></span>)</span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><a classname="anamelink" href="#binunion_asso">binunion_asso</a></span></span> (from left to right).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#finite">finite</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">X</span> <a href="#notation_14">∪</a> <span class="ltree">Y</span></span>)</span> <a href="#notation_14">∪</a> <span class="ltree"><a href="#notation_15">{</a><span class="ltree">z</span><a href="#notation_15">}</a></span></span>)</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#adjoin_finite">adjoin_finite</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">IH</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="4927">L4927</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HX</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4927">L4927</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#finite_ind" class="anamelink">finite_ind</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="4929">L4929</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#finite" class="anamelink">finite</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">X</span> <a href="#notation_14">∪</a> <span class="ltree"><a href="#notation_21">0</a></span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4929">L4929</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><a href="#binunion_idr" class="anamelink">binunion_idr</a></span> <span class="ltree">X</span></span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4930">L4930</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HX</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="4931">L4931</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">Y and z</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4931">L4931</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HY</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#finite" class="anamelink">finite</a></span> <span class="ltree">Y</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4932">L4932</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span> <a href="#notation_10">∉</a> <span class="ltree">Y</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4933">L4933</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">IH</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#finite" class="anamelink">finite</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">X</span> <a href="#notation_14">∪</a> <span class="ltree">Y</span></span>)</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4934">L4934</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#finite" class="anamelink">finite</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">X</span> <a href="#notation_14">∪</a> <span class="ltree">(<span class="ltree"><span class="ltree">Y</span> <a href="#notation_14">∪</a> <span class="ltree"><a href="#notation_15">{</a><span class="ltree">z</span><a href="#notation_15">}</a></span></span>)</span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4935">L4935</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><a href="#binunion_asso" class="anamelink">binunion_asso</a></span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4936">L4936</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#finite" class="anamelink">finite</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">X</span> <a href="#notation_14">∪</a> <span class="ltree">Y</span></span>)</span> <a href="#notation_14">∪</a> <span class="ltree"><a href="#notation_15">{</a><span class="ltree">z</span><a href="#notation_15">}</a></span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4937">L4937</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#adjoin_finite" class="anamelink">adjoin_finite</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="4938">L4938</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">IH</span></span>.</div>
+</div>
 </div>
 ∎

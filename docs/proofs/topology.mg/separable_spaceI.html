@@ -1,11 +1,21 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X, Tx and D</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcount</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#countable_set">countable_set</a></span> <span class="ltree">D</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hdense</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#dense_in">dense_in</a></span> <span class="ltree">D</span></span> <span class="ltree">X</span></span> <span class="ltree">Tx</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃D0<a href="#notation_8"> : </a><span class="ltree">set</span>,  <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#countable_set">countable_set</a></span> <span class="ltree">D0</span></span> <a href="#notation_2">∧</a> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#dense_in">dense_in</a></span> <span class="ltree">D0</span></span> <span class="ltree">X</span></span> <span class="ltree">Tx</span></span></span></span>.</div>
-<div class="witnesstac">We use <span class="ltree"><span class="ltree">D</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#andI">andI</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hcount</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: build separable_space from a witness ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: If D is countable and dense, then the space is separable. ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="126019">L126019</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X, Tx and D</span> be given.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hdense</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="126020">L126020</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcount</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#countable_set" class="anamelink">countable_set</a></span> <span class="ltree">D</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="126021">L126021</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hdense</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#dense_in" class="anamelink">dense_in</a></span> <span class="ltree">D</span></span> <span class="ltree">X</span></span> <span class="ltree">Tx</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="126022">L126022</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∃D0<a href="#notation_8"> : </a><span class="ltree">set</span>,  <span class="ltree"><span class="ltree"><span class="ltree"><a href="#countable_set" class="anamelink">countable_set</a></span> <span class="ltree">D0</span></span> <a href="#notation_2">∧</a> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#dense_in" class="anamelink">dense_in</a></span> <span class="ltree">D0</span></span> <span class="ltree">X</span></span> <span class="ltree">Tx</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="126023">L126023</span><div class="witnesstac">We use <span class="ltree"><span class="ltree">D</span></span> to <span class="pftackeyword">witness</span> the existential quantifier.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="126024">L126024</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#andI" class="anamelink">andI</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="126026">L126026</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hcount</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="126027">L126027</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hdense</span></span>.</div>
+</div>
 </div>
 ∎

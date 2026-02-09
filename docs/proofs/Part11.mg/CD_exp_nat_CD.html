@@ -1,21 +1,37 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">nat_ind</span></span> to the current goal.</div>
-<div class="subproof"><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_exp_nat_0">CD_exp_nat_0</a></span></span> (from left to right).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_carr">CD_carr</a></span> <span class="ltree">1</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_carr_0ext">CD_carr_0ext</a></span> <span class="ltree">F_0</span></span> <span class="ltree">1</span></span> <span class="ltree">F_1</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="2267">L2267</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
 </div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">n</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">IHn</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_carr">CD_carr</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">z</span> <a href="#notation_137">^</a> <span class="ltree">n</span></span>)</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_exp_nat_S">CD_exp_nat_S</a></span> <span class="ltree">z</span></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span></span> (from left to right).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_carr">CD_carr</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">z</span> <a href="#notation_136">⨯</a> <span class="ltree"><span class="ltree">z</span> <a href="#notation_137">^</a> <span class="ltree">n</span></span></span>)</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_mul_CD">CD_mul_CD</a></span> <span class="ltree">minus</span></span> <span class="ltree">conj</span></span> <span class="ltree">add</span></span> <span class="ltree">mul</span></span> <span class="ltree">F_minus</span></span> <span class="ltree">F_conj</span></span> <span class="ltree">F_add</span></span> <span class="ltree">F_mul</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_carr">CD_carr</a></span> <span class="ltree">z</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hz</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="2268">L2268</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>.</div>
 </div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_carr">CD_carr</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">z</span> <a href="#notation_137">^</a> <span class="ltree">n</span></span>)</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">IHn</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="2268">L2268</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">nat_ind</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="2270">L2270</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><a href="#CD_exp_nat_0" class="anamelink">CD_exp_nat_0</a></span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2270">L2270</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#CD_carr" class="anamelink">CD_carr</a></span> <span class="ltree">1</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2271">L2271</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#CD_carr_0ext" class="anamelink">CD_carr_0ext</a></span> <span class="ltree">F_0</span></span> <span class="ltree">1</span></span> <span class="ltree">F_1</span></span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="2273">L2273</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">n</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2273">L2273</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hn</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2273">L2273</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">IHn</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#CD_carr" class="anamelink">CD_carr</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">z</span> <a href="#notation_137">^</a> <span class="ltree">n</span></span>)</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2274">L2274</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#CD_exp_nat_S" class="anamelink">CD_exp_nat_S</a></span> <span class="ltree">z</span></span> <span class="ltree">n</span></span> <span class="ltree">Hn</span></span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2275">L2275</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#CD_carr" class="anamelink">CD_carr</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">z</span> <a href="#notation_136">⨯</a> <span class="ltree"><span class="ltree">z</span> <a href="#notation_137">^</a> <span class="ltree">n</span></span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2276">L2276</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#CD_mul_CD" class="anamelink">CD_mul_CD</a></span> <span class="ltree">minus</span></span> <span class="ltree">conj</span></span> <span class="ltree">add</span></span> <span class="ltree">mul</span></span> <span class="ltree">F_minus</span></span> <span class="ltree">F_conj</span></span> <span class="ltree">F_add</span></span> <span class="ltree">F_mul</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="2278">L2278</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#CD_carr" class="anamelink">CD_carr</a></span> <span class="ltree">z</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2278">L2278</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hz</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="2279">L2279</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#CD_carr" class="anamelink">CD_carr</a></span> <span class="ltree">(<span class="ltree"><span class="ltree">z</span> <a href="#notation_137">^</a> <span class="ltree">n</span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2279">L2279</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">IHn</span></span>.</div>
+</div>
 </div>
 </div>
 ∎

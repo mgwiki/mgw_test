@@ -1,31 +1,62 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">net, sub, J, leJ, K, leK, X and phi</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#subnet_of_witness">subnet_of_witness</a></span> <span class="ltree">net</span></span> <span class="ltree">sub</span></span> <span class="ltree">J</span></span> <span class="ltree">leJ</span></span> <span class="ltree">K</span></span> <span class="ltree">leK</span></span> <span class="ltree">X</span></span> <span class="ltree">phi</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#total_function_on">total_function_on</a></span> <span class="ltree">sub</span></span> <span class="ltree">K</span></span> <span class="ltree">X</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore13 Hvals</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore13</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore12 Hcofinal</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore12</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore11 Hmono</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore11</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore10 Hdomphi</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore10</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore9 Hgraphphi</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore9</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore8 Htotphi</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore8</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore7 Hdomsub</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore7</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore6 Hgraphsub</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore6</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore5 Htotsub</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore5</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore4 Hdomnet</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore4</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore3 Hgraphnet</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore3</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore2 Htotnet</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore2</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HdirJ HdirK</span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Htotsub</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: From a subnet witness package, extract that the subnet is total on K. ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="107794">L107794</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">net, sub, J, leJ, K, leK, X and phi</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107795">L107795</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#subnet_of_witness" class="anamelink">subnet_of_witness</a></span> <span class="ltree">net</span></span> <span class="ltree">sub</span></span> <span class="ltree">J</span></span> <span class="ltree">leJ</span></span> <span class="ltree">K</span></span> <span class="ltree">leK</span></span> <span class="ltree">X</span></span> <span class="ltree">phi</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107796">L107796</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#total_function_on" class="anamelink">total_function_on</a></span> <span class="ltree">sub</span></span> <span class="ltree">K</span></span> <span class="ltree">X</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107797">L107797</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107798">L107798</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore13 Hvals</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107798">L107798</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore13</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107799">L107799</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore12 Hcofinal</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107799">L107799</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore12</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107800">L107800</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore11 Hmono</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107800">L107800</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore11</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107801">L107801</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore10 Hdomphi</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107801">L107801</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore10</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107802">L107802</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore9 Hgraphphi</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107802">L107802</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore9</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107803">L107803</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore8 Htotphi</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107803">L107803</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore8</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107804">L107804</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore7 Hdomsub</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107804">L107804</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore7</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107805">L107805</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore6 Hgraphsub</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107805">L107805</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore6</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107806">L107806</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore5 Htotsub</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107806">L107806</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore5</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107807">L107807</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore4 Hdomnet</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107807">L107807</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore4</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107808">L107808</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore3 Hgraphnet</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107808">L107808</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore3</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107809">L107809</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hcore2 Htotnet</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107809">L107809</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hcore2</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107810">L107810</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HdirJ HdirK</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="107810">L107810</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Htotsub</span></span>.</div>
+</div>
 ∎

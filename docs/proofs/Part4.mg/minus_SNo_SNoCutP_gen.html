@@ -1,58 +1,112 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">L and R</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HLR</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">SNoCutP</span> <span class="ltree">L</span></span> <span class="ltree">R</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HLR</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HLR1</span>: <span class="ltree"><span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">L</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HLR2</span>: <span class="ltree"><span class="ltree">∀y<a href="#In_notation"> ∈ </a><span class="ltree">R</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">y</span></span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HLR3</span>: <span class="ltree"><span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">L</span>,  <span class="ltree">∀y<a href="#In_notation"> ∈ </a><span class="ltree">R</span>,  <span class="ltree"><span class="ltree">x</span> &lt; <span class="ltree">y</span></span></span></span></span>.</div>
-<div class="settac"><span class="pftackeyword">Set</span> <span class="ltree">Lm</span> to be the term <span class="ltree"><span class="ltree">{<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">z</span></span>|z ∈ <span class="ltree">R</span>}</span></span>.</div>
-<div class="settac"><span class="pftackeyword">Set</span> <span class="ltree">Rm</span> to be the term <span class="ltree"><span class="ltree">{<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">w</span></span>|w ∈ <span class="ltree">L</span>}</span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">∀w<a href="#In_notation"> ∈ </a><span class="ltree">Lm</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">w</span></span></span>)</span> ∧ <span class="ltree">(<span class="ltree">∀z<a href="#In_notation"> ∈ </a><span class="ltree">Rm</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">z</span></span></span>)</span></span> ∧ <span class="ltree">(<span class="ltree">∀w<a href="#In_notation"> ∈ </a><span class="ltree">Lm</span>,  <span class="ltree">∀z<a href="#In_notation"> ∈ </a><span class="ltree">Rm</span>,  <span class="ltree"><span class="ltree">w</span> &lt; <span class="ltree">z</span></span></span></span>)</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">and3I</span></span> to the current goal.</div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">w</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hw</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span>  <a href="#In_notation">∈</a>  <span class="ltree">Lm</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">w</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">R</span></span> <span class="ltree">(<span class="ltree">λz ⇒  <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">z</span></span></span>)</span></span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span>  <a href="#In_notation">∈</a>  <span class="ltree">R</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hwz</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span> = <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">z</span></span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hwz</span></span> (from left to right).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">z</span></span>)</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#SNo_minus_SNo">SNo_minus_SNo</a></span></span> to the current goal.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HLR2</span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hz</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="342">L342</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">L and R</span> be given.</div>
 </div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span>  <a href="#In_notation">∈</a>  <span class="ltree">Rm</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">z</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">L</span></span> <span class="ltree">(<span class="ltree">λw ⇒  <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">w</span></span></span>)</span></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">w</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hw</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span>  <a href="#In_notation">∈</a>  <span class="ltree">L</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hzw</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span> = <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">w</span></span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hzw</span></span> (from left to right).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">w</span></span>)</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#SNo_minus_SNo">SNo_minus_SNo</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">HLR1</span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="343">L343</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HLR</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">SNoCutP</span> <span class="ltree">L</span></span> <span class="ltree">R</span></span></span>.</div>
 </div>
-<div class="subproof"><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">w</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hw</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span>  <a href="#In_notation">∈</a>  <span class="ltree">Lm</span></span></span>.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span>  <a href="#In_notation">∈</a>  <span class="ltree">Rm</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">R</span></span> <span class="ltree">(<span class="ltree">λz ⇒  <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">z</span></span></span>)</span></span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">u</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hu</span>: <span class="ltree"><span class="ltree"><span class="ltree">u</span>  <a href="#In_notation">∈</a>  <span class="ltree">R</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hwu</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span> = <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">u</span></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">L</span></span> <span class="ltree">(<span class="ltree">λw ⇒  <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">w</span></span></span>)</span></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">v</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hv</span>: <span class="ltree"><span class="ltree"><span class="ltree">v</span>  <a href="#In_notation">∈</a>  <span class="ltree">L</span></span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hzv</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span> = <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">v</span></span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">w</span> &lt; <span class="ltree">z</span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hwu</span></span> (from left to right).</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hzv</span></span> (from left to right).</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree">u</span></span> &lt; <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">v</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#minus_SNo_Lt_contra">minus_SNo_Lt_contra</a></span> <span class="ltree">v</span></span> <span class="ltree">u</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">HLR1</span> <span class="ltree">v</span></span> <span class="ltree">Hv</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">HLR2</span> <span class="ltree">u</span></span> <span class="ltree">Hu</span></span>)</span></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">v</span> &lt; <span class="ltree">u</span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">HLR3</span> <span class="ltree">v</span></span> <span class="ltree">Hv</span></span> <span class="ltree">u</span></span> <span class="ltree">Hu</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="344">L344</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HLR</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="345">L345</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="345">L345</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="345">L345</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HLR1</span>: <span class="ltree"><span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">L</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">x</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="346">L346</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HLR2</span>: <span class="ltree"><span class="ltree">∀y<a href="#In_notation"> ∈ </a><span class="ltree">R</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">y</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="347">L347</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HLR3</span>: <span class="ltree"><span class="ltree">∀x<a href="#In_notation"> ∈ </a><span class="ltree">L</span>,  <span class="ltree">∀y<a href="#In_notation"> ∈ </a><span class="ltree">R</span>,  <span class="ltree"><span class="ltree">x</span> &lt; <span class="ltree">y</span></span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="348">L348</span><div class="settac"><span class="pftackeyword">Set</span> <span class="ltree">Lm</span> to be the term <span class="ltree"><span class="ltree">{<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">z</span></span>|z ∈ <span class="ltree">R</span>}</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="349">L349</span><div class="settac"><span class="pftackeyword">Set</span> <span class="ltree">Rm</span> to be the term <span class="ltree"><span class="ltree">{<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">w</span></span>|w ∈ <span class="ltree">L</span>}</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="350">L350</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">∀w<a href="#In_notation"> ∈ </a><span class="ltree">Lm</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">w</span></span></span>)</span> ∧ <span class="ltree">(<span class="ltree">∀z<a href="#In_notation"> ∈ </a><span class="ltree">Rm</span>,  <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">z</span></span></span>)</span></span> ∧ <span class="ltree">(<span class="ltree">∀w<a href="#In_notation"> ∈ </a><span class="ltree">Lm</span>,  <span class="ltree">∀z<a href="#In_notation"> ∈ </a><span class="ltree">Rm</span>,  <span class="ltree"><span class="ltree">w</span> &lt; <span class="ltree">z</span></span></span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="353">L353</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">and3I</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="355">L355</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">w</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="355">L355</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hw</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span>  <a href="#In_notation">∈</a>  <span class="ltree">Lm</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="355">L355</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">w</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="356">L356</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">R</span></span> <span class="ltree">(<span class="ltree">λz ⇒  <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">z</span></span></span>)</span></span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="357">L357</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="358">L358</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span>  <a href="#In_notation">∈</a>  <span class="ltree">R</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="359">L359</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hwz</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span> = <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">z</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="360">L360</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hwz</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="361">L361</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">z</span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="362">L362</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#SNo_minus_SNo" class="anamelink">SNo_minus_SNo</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="363">L363</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HLR2</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="364">L364</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hz</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="365">L365</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="365">L365</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span>  <a href="#In_notation">∈</a>  <span class="ltree">Rm</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="365">L365</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">z</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="366">L366</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">L</span></span> <span class="ltree">(<span class="ltree">λw ⇒  <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">w</span></span></span>)</span></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="367">L367</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">w</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="368">L368</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hw</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span>  <a href="#In_notation">∈</a>  <span class="ltree">L</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="369">L369</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hzw</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span> = <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">w</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="370">L370</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hzw</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="371">L371</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">SNo</span> <span class="ltree">(<span class="ltree"><a href="#notation_1">-</a> <span class="ltree">w</span></span>)</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="372">L372</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#SNo_minus_SNo" class="anamelink">SNo_minus_SNo</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="373">L373</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">HLR1</span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="375">L375</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">w</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="375">L375</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hw</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span>  <a href="#In_notation">∈</a>  <span class="ltree">Lm</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="375">L375</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="376">L376</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span>  <a href="#In_notation">∈</a>  <span class="ltree">Rm</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="376">L376</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">R</span></span> <span class="ltree">(<span class="ltree">λz ⇒  <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">z</span></span></span>)</span></span> <span class="ltree">w</span></span> <span class="ltree">Hw</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="377">L377</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">u</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="378">L378</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hu</span>: <span class="ltree"><span class="ltree"><span class="ltree">u</span>  <a href="#In_notation">∈</a>  <span class="ltree">R</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="379">L379</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hwu</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span> = <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">u</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="380">L380</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ReplE_impred</span> <span class="ltree">L</span></span> <span class="ltree">(<span class="ltree">λw ⇒  <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">w</span></span></span>)</span></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="381">L381</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">v</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="382">L382</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hv</span>: <span class="ltree"><span class="ltree"><span class="ltree">v</span>  <a href="#In_notation">∈</a>  <span class="ltree">L</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="383">L383</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hzv</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span> = <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">v</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="384">L384</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">w</span> &lt; <span class="ltree">z</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="385">L385</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hwu</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="386">L386</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hzv</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="386">L386</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">-</a> <span class="ltree">u</span></span> &lt; <span class="ltree"><a href="#notation_1">-</a> <span class="ltree">v</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="387">L387</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#minus_SNo_Lt_contra" class="anamelink">minus_SNo_Lt_contra</a></span> <span class="ltree">v</span></span> <span class="ltree">u</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">HLR1</span> <span class="ltree">v</span></span> <span class="ltree">Hv</span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">HLR2</span> <span class="ltree">u</span></span> <span class="ltree">Hu</span></span>)</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="388">L388</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">v</span> &lt; <span class="ltree">u</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="389">L389</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">HLR3</span> <span class="ltree">v</span></span> <span class="ltree">Hv</span></span> <span class="ltree">u</span></span> <span class="ltree">Hu</span></span></span>.</div>
+</div>
 </div>
 ∎

@@ -1,21 +1,39 @@
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Pex</span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">f</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hf</span>: <span class="ltree"><span class="ltree"><span class="ltree">P</span> <span class="ltree">f</span></span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree"><span class="ltree">f</span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Descr_Vo1">Descr_Vo1</a></span></span></span>.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#func_ext">func_ext</a></span> <span class="ltree">set</span></span> <span class="ltree">prop</span></span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">f</span> <span class="ltree">x</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#Descr_Vo1">Descr_Vo1</a></span> <span class="ltree">x</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#prop_ext_2">prop_ext_2</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">f</span> <span class="ltree">x</span></span></span>.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">h</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hh</span>: <span class="ltree"><span class="ltree"><span class="ltree">P</span> <span class="ltree">h</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">h</span> <span class="ltree">x</span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">Puniq</span> <span class="ltree">f</span></span> <span class="ltree">h</span></span> <span class="ltree">Hf</span></span> <span class="ltree">Hh</span></span></span> (from right to left).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H1</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="3257">L3257</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Pex</span></span> to the current goal.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Descr_Vo1">Descr_Vo1</a></span> <span class="ltree">x</span></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">H1</span> <span class="ltree">f</span></span> <span class="ltree">Hf</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="3258">L3258</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">f</span> be given.</div>
 </div>
-</div><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">L1</span></span> (from right to left).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hf</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="3259">L3259</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hf</span>: <span class="ltree"><span class="ltree"><span class="ltree">P</span> <span class="ltree">f</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="3259">L3259</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree"><span class="ltree">f</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Descr_Vo1" class="anamelink">Descr_Vo1</a></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="3261">L3261</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#func_ext" class="anamelink">func_ext</a></span> <span class="ltree">set</span></span> <span class="ltree">prop</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="3261">L3261</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="3262">L3262</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree">f</span> <span class="ltree">x</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree"><a href="#Descr_Vo1" class="anamelink">Descr_Vo1</a></span> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="3263">L3263</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#prop_ext_2" class="anamelink">prop_ext_2</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="3265">L3265</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">f</span> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="3265">L3265</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">h</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="3265">L3265</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hh</span>: <span class="ltree"><span class="ltree"><span class="ltree">P</span> <span class="ltree">h</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="3265">L3265</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">h</span> <span class="ltree">x</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="3265">L3265</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">Puniq</span> <span class="ltree">f</span></span> <span class="ltree">h</span></span> <span class="ltree">Hf</span></span> <span class="ltree">Hh</span></span></span> (from right to left).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="3266">L3266</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H1</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="3267">L3267</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#Descr_Vo1" class="anamelink">Descr_Vo1</a></span> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="3267">L3267</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">H1</span> <span class="ltree">f</span></span> <span class="ltree">Hf</span></span></span>.</div>
+</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="3269">L3269</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">L1</span></span> (from right to left).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="3270">L3270</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hf</span></span>.</div>
+</div>
 ∎

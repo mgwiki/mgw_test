@@ -1,43 +1,72 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z and w</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz Hw</span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_carr">CD_carr</a></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">pa</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">proj0</span> <span class="ltree">z</span></span> <a href="#notation_16">*</a> <span class="ltree"><span class="ltree">proj0</span> <span class="ltree">w</span></span></span> <a href="#notation_15">+</a> <span class="ltree"><a href="#notation_14">-</a> <span class="ltree"><span class="ltree"><span class="ltree">conj</span> <span class="ltree">(<span class="ltree"><span class="ltree">proj1</span> <span class="ltree">w</span></span>)</span></span> <a href="#notation_16">*</a> <span class="ltree"><span class="ltree">proj1</span> <span class="ltree">z</span></span></span></span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">proj1</span> <span class="ltree">w</span></span> <a href="#notation_16">*</a> <span class="ltree"><span class="ltree">proj0</span> <span class="ltree">z</span></span></span> <a href="#notation_15">+</a> <span class="ltree"><span class="ltree"><span class="ltree">proj1</span> <span class="ltree">z</span></span> <a href="#notation_16">*</a> <span class="ltree"><span class="ltree">conj</span> <span class="ltree">(<span class="ltree"><span class="ltree">proj0</span> <span class="ltree">w</span></span>)</span></span></span></span>)</span></span>)</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_carr_I">CD_carr_I</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_add</span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_mul</span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_proj0R">CD_proj0R</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hz</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="480">L480</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z and w</span> be given.</div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_proj0R">CD_proj0R</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hw</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="481">L481</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz Hw</span>.</div>
 </div>
+<div class="pftacwrap"><span class="srcline" data-line="481">L481</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#CD_carr" class="anamelink">CD_carr</a></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">pa</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">proj0</span> <span class="ltree">z</span></span> <a href="#notation_16">*</a> <span class="ltree"><span class="ltree">proj0</span> <span class="ltree">w</span></span></span> <a href="#notation_15">+</a> <span class="ltree"><a href="#notation_14">-</a> <span class="ltree"><span class="ltree"><span class="ltree">conj</span> <span class="ltree">(<span class="ltree"><span class="ltree">proj1</span> <span class="ltree">w</span></span>)</span></span> <a href="#notation_16">*</a> <span class="ltree"><span class="ltree">proj1</span> <span class="ltree">z</span></span></span></span></span>)</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">proj1</span> <span class="ltree">w</span></span> <a href="#notation_16">*</a> <span class="ltree"><span class="ltree">proj0</span> <span class="ltree">z</span></span></span> <a href="#notation_15">+</a> <span class="ltree"><span class="ltree"><span class="ltree">proj1</span> <span class="ltree">z</span></span> <a href="#notation_16">*</a> <span class="ltree"><span class="ltree">conj</span> <span class="ltree">(<span class="ltree"><span class="ltree">proj0</span> <span class="ltree">w</span></span>)</span></span></span></span>)</span></span>)</span></span>.</div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_minus</span></span> to the current goal.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_mul</span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_conj</span></span> to the current goal.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_proj1R">CD_proj1R</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hw</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="482">L482</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#CD_carr_I" class="anamelink">CD_carr_I</a></span></span> to the current goal.</div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_proj1R">CD_proj1R</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hz</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="484">L484</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_add</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="485">L485</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_mul</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="486">L486</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#CD_proj0R" class="anamelink">CD_proj0R</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="486">L486</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hz</span></span>.</div>
 </div>
 </div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="487">L487</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#CD_proj0R" class="anamelink">CD_proj0R</a></span></span> to the current goal.</div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_add</span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_mul</span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_proj1R">CD_proj1R</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hw</span></span>.</div>
-</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_proj0R">CD_proj0R</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hz</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="487">L487</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hw</span></span>.</div>
 </div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_mul</span></span> to the current goal.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_proj1R">CD_proj1R</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hz</span></span>.</div>
 </div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_conj</span></span> to the current goal.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#CD_proj0R">CD_proj0R</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hw</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="488">L488</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_minus</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="488">L488</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_mul</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="490">L490</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_conj</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="490">L490</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#CD_proj1R" class="anamelink">CD_proj1R</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="490">L490</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hw</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="491">L491</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#CD_proj1R" class="anamelink">CD_proj1R</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="491">L491</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hz</span></span>.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="492">L492</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_add</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="493">L493</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_mul</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="494">L494</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#CD_proj1R" class="anamelink">CD_proj1R</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="494">L494</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hw</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="495">L495</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#CD_proj0R" class="anamelink">CD_proj0R</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="495">L495</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hz</span></span>.</div>
+</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="496">L496</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_mul</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="497">L497</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#CD_proj1R" class="anamelink">CD_proj1R</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="497">L497</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hz</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="498">L498</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">F_conj</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="498">L498</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#CD_proj0R" class="anamelink">CD_proj0R</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="498">L498</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hw</span></span>.</div>
+</div>
 </div>
 </div>
 </div>

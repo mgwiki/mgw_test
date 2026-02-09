@@ -1,27 +1,49 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">alpha and beta</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Ha Hb Hab</span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree"><span class="ltree">alpha</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree">ordsucc</span> <span class="ltree">beta</span></span></span></span>.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ordinal_In_Or_Subq</span> <span class="ltree">alpha</span></span> <span class="ltree">beta</span></span> <span class="ltree">Ha</span></span> <span class="ltree">Hb</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">alpha</span>  <a href="#In_notation">∈</a>  <span class="ltree">beta</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">ordsuccI1</span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H1</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="2077">L2077</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">alpha and beta</span> be given.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">beta</span>  <a href="#Subq_notation">⊆</a>  <span class="ltree">alpha</span></span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1a</span>: <span class="ltree"><span class="ltree"><span class="ltree">alpha</span> = <span class="ltree">beta</span></span></span>.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">set_ext</span></span> to the current goal.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hab</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="2078">L2078</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Ha Hb Hab</span>.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H1</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="2078">L2078</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree"><span class="ltree">alpha</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree">ordsucc</span> <span class="ltree">beta</span></span></span></span>.</div>
 </div>
-</div><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">L1a</span></span> (from left to right).</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">ordsuccI2</span></span> to the current goal.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="2080">L2080</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">ordinal_In_Or_Subq</span> <span class="ltree">alpha</span></span> <span class="ltree">beta</span></span> <span class="ltree">Ha</span></span> <span class="ltree">Hb</span></span></span> to the current goal.</div>
 </div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">La1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#SNo">SNo</a></span> <span class="ltree">alpha</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordinal_SNo">ordinal_SNo</a></span> <span class="ltree">alpha</span></span> <span class="ltree">Ha</span></span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">La2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#SNoLev">SNoLev</a></span> <span class="ltree">alpha</span></span> = <span class="ltree">alpha</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordinal_SNoLev">ordinal_SNoLev</a></span> <span class="ltree">alpha</span></span> <span class="ltree">Ha</span></span></span>.</div>
-</div><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordinal_SNoLev_max_2">ordinal_SNoLev_max_2</a></span> <span class="ltree">beta</span></span> <span class="ltree">Hb</span></span> <span class="ltree">alpha</span></span> <span class="ltree">La1</span></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#SNoLev">SNoLev</a></span> <span class="ltree">alpha</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree">ordsucc</span> <span class="ltree">beta</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">La2</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">L1</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="2081">L2081</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">alpha</span>  <a href="#In_notation">∈</a>  <span class="ltree">beta</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2081">L2081</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">ordsuccI1</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2081">L2081</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H1</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="2082">L2082</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree">beta</span>  <a href="#Subq_notation">⊆</a>  <span class="ltree">alpha</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2082">L2082</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1a</span>: <span class="ltree"><span class="ltree"><span class="ltree">alpha</span> = <span class="ltree">beta</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="2084">L2084</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">set_ext</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="2085">L2085</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hab</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="2086">L2086</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H1</span></span>.</div>
+</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="2087">L2087</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">L1a</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2088">L2088</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">ordsuccI2</span></span> to the current goal.</div>
+</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="2089">L2089</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">La1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#SNo" class="anamelink">SNo</a></span> <span class="ltree">alpha</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="2091">L2091</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#ordinal_SNo" class="anamelink">ordinal_SNo</a></span> <span class="ltree">alpha</span></span> <span class="ltree">Ha</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="2091">L2091</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">La2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#SNoLev" class="anamelink">SNoLev</a></span> <span class="ltree">alpha</span></span> = <span class="ltree">alpha</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="2093">L2093</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#ordinal_SNoLev" class="anamelink">ordinal_SNoLev</a></span> <span class="ltree">alpha</span></span> <span class="ltree">Ha</span></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="2093">L2093</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#ordinal_SNoLev_max_2" class="anamelink">ordinal_SNoLev_max_2</a></span> <span class="ltree">beta</span></span> <span class="ltree">Hb</span></span> <span class="ltree">alpha</span></span> <span class="ltree">La1</span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2094">L2094</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#SNoLev" class="anamelink">SNoLev</a></span> <span class="ltree">alpha</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree">ordsucc</span> <span class="ltree">beta</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2095">L2095</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">La2</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="2096">L2096</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">L1</span></span>.</div>
+</div>
 ∎

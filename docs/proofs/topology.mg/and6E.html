@@ -1,16 +1,33 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">A, B, C, D, E and F</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">p</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hp</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">H</span> <span class="ltree">p</span></span>)</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1 Hf</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">H1</span> <span class="ltree">p</span></span>)</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2 He</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">H2</span> <span class="ltree">p</span></span>)</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3 Hd</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">H3</span> <span class="ltree">p</span></span>)</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H4 Hc</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">H4</span> <span class="ltree">p</span></span>)</span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Ha Hb</span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">Hp</span> <span class="ltree">Ha</span></span> <span class="ltree">Hb</span></span> <span class="ltree">Hc</span></span> <span class="ltree">Hd</span></span> <span class="ltree">He</span></span> <span class="ltree">Hf</span></span>)</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** Helper: eliminate a 6-way conjunction A /\ B /\ C /\ D /\ E /\ F ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: Destruct a 6-way conjunction into its six components. ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="31970">L31970</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">A, B, C, D, E and F</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31971">L31971</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31972">L31972</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">p</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31973">L31973</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hp</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31973">L31973</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">H</span> <span class="ltree">p</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31974">L31974</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1 Hf</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31975">L31975</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">H1</span> <span class="ltree">p</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31976">L31976</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2 He</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31977">L31977</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">H2</span> <span class="ltree">p</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31978">L31978</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3 Hd</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31979">L31979</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">H3</span> <span class="ltree">p</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31980">L31980</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H4 Hc</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31981">L31981</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">H4</span> <span class="ltree">p</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31982">L31982</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Ha Hb</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="31983">L31983</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">Hp</span> <span class="ltree">Ha</span></span> <span class="ltree">Hb</span></span> <span class="ltree">Hc</span></span> <span class="ltree">Hd</span></span> <span class="ltree">He</span></span> <span class="ltree">Hf</span></span>)</span></span>.</div>
+</div>
 ∎

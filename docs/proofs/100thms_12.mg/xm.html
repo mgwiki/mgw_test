@@ -1,61 +1,115 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">P</span> of type <span class="ltree"><span class="ltree">prop</span></span> be given.</div>
-<div class="settac"><span class="pftackeyword">Set</span> <span class="ltree">p1</span> to be the term <span class="ltree"><span class="ltree">λx : <span class="ltree">set</span> ⇒  <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span></span></span>.</div>
-<div class="settac"><span class="pftackeyword">Set</span> <span class="ltree">p2</span> to be the term <span class="ltree"><span class="ltree">λx : <span class="ltree">set</span> ⇒  <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_6">≠</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span></span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree"><span class="ltree">p1</span> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span></span>.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span>)</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#orIL">orIL</a></span></span> to the current goal.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree">λq H ⇒  <span class="ltree">H</span></span>)</span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a classname="anamelink" href="#Eps_i">Eps_i</a></span> <span class="ltree">p1</span></span>)</span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Eps_i_ax">Eps_i_ax</a></span> <span class="ltree">p1</span></span> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span> <span class="ltree">L1</span></span>)</span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L3</span>: <span class="ltree"><span class="ltree"><span class="ltree">p2</span> <span class="ltree">(<span class="ltree"><span class="ltree"><a classname="anamelink" href="#Power">𝒫</a></span> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span>)</span></span></span>.</div>
-<div class="subproof"><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Power">𝒫</a></span> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span>)</span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#orIL">orIL</a></span></span> to the current goal.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Power">𝒫</a></span> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#EmptyE">EmptyE</a></span> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">H1</span></span> (from right to left) at position 2.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#Empty_In_Power">Empty_In_Power</a></span></span> to the current goal.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L4</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Eps_i">Eps_i</a></span> <span class="ltree">p2</span></span> <a href="#notation_6">≠</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Eps_i_ax">Eps_i_ax</a></span> <span class="ltree">p2</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><a classname="anamelink" href="#Power">𝒫</a></span> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span>)</span></span> <span class="ltree">L3</span></span>)</span></span>.</div>
-</div><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">L2</span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Eps_i">Eps_i</a></span> <span class="ltree">p1</span></span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">L4</span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Eps_i">Eps_i</a></span> <span class="ltree">p2</span></span> <a href="#notation_6">≠</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">P</span> <a href="#notation_3">∨</a> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">P</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#orIR">orIR</a></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">P</span></span>.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3</span>: <span class="ltree"><span class="ltree">P</span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L5</span>: <span class="ltree"><span class="ltree"><span class="ltree">p1</span> <a href="#notation_5">=</a> <span class="ltree">p2</span></span></span>.</div>
-<div class="subproof"><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#pred_ext">pred_ext</a></span></span> to the current goal.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#iffI">iffI</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H4</span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">(<span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">(<span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span>)</span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span>)</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#orIR">orIR</a></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">P</span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H3</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="116">L116</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">P</span> of type <span class="ltree"><span class="ltree">prop</span></span> be given.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H4</span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span>)</span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#orIR">orIR</a></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">P</span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H3</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="117">L117</span><div class="settac"><span class="pftackeyword">Set</span> <span class="ltree">p1</span> to be the term <span class="ltree"><span class="ltree">λx : <span class="ltree">set</span> ⇒  <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span></span></span>.</div>
 </div>
-</div><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H2</span></span> to the current goal.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">L5</span></span> (from right to left).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H1</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="118">L118</span><div class="settac"><span class="pftackeyword">Set</span> <span class="ltree">p2</span> to be the term <span class="ltree"><span class="ltree">λx : <span class="ltree">set</span> ⇒  <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_6">≠</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span></span></span>.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree">P</span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">P</span> <a href="#notation_3">∨</a> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">P</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#orIL">orIL</a></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">P</span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H2</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="119">L119</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree"><span class="ltree">p1</span> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="121">L121</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span>)</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="121">L121</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#orIL" class="anamelink">orIL</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="121">L121</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree">λq H ⇒  <span class="ltree">H</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="121">L121</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a href="#Eps_i" class="anamelink">Eps_i</a></span> <span class="ltree">p1</span></span>)</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="123">L123</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#Eps_i_ax" class="anamelink">Eps_i_ax</a></span> <span class="ltree">p1</span></span> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span> <span class="ltree">L1</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="123">L123</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L3</span>: <span class="ltree"><span class="ltree"><span class="ltree">p2</span> <span class="ltree">(<span class="ltree"><span class="ltree"><a href="#Power" class="anamelink">𝒫</a></span> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span>)</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="125">L125</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#Power" class="anamelink">𝒫</a></span> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span>)</span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="125">L125</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#orIL" class="anamelink">orIL</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="125">L125</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#Power" class="anamelink">𝒫</a></span> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="126">L126</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#EmptyE" class="anamelink">EmptyE</a></span> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="127">L127</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="128">L128</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">H1</span></span> (from right to left) at position 2.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="129">L129</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#Empty_In_Power" class="anamelink">Empty_In_Power</a></span></span> to the current goal.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="130">L130</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L4</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#Eps_i" class="anamelink">Eps_i</a></span> <span class="ltree">p2</span></span> <a href="#notation_6">≠</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="132">L132</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#Eps_i_ax" class="anamelink">Eps_i_ax</a></span> <span class="ltree">p2</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><a href="#Power" class="anamelink">𝒫</a></span> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span>)</span></span> <span class="ltree">L3</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="132">L132</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">L2</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="134">L134</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#Eps_i" class="anamelink">Eps_i</a></span> <span class="ltree">p1</span></span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="134">L134</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">L4</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="136">L136</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#Eps_i" class="anamelink">Eps_i</a></span> <span class="ltree">p2</span></span> <a href="#notation_6">≠</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="136">L136</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">P</span> <a href="#notation_3">∨</a> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">P</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="137">L137</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#orIR" class="anamelink">orIR</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="138">L138</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">P</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="139">L139</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3</span>: <span class="ltree"><span class="ltree">P</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="140">L140</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L5</span>: <span class="ltree"><span class="ltree"><span class="ltree">p1</span> <a href="#notation_5">=</a> <span class="ltree">p2</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="142">L142</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#pred_ext" class="anamelink">pred_ext</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="142">L142</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="142">L142</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#iffI" class="anamelink">iffI</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="143">L143</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H4</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="143">L143</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">(<span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">(<span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span>)</span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span>)</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="144">L144</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#orIR" class="anamelink">orIR</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="145">L145</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">P</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="146">L146</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H3</span></span>.</div>
 </div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree">P</span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">P</span> <a href="#notation_3">∨</a> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">P</span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#orIL">orIL</a></span></span> to the current goal.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">P</span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H1</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="148">L148</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H4</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="148">L148</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span> <a href="#notation_3">∨</a> <span class="ltree">P</span></span>)</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="149">L149</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#orIR" class="anamelink">orIR</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="150">L150</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">P</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="151">L151</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H3</span></span>.</div>
+</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="153">L153</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">H2</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="154">L154</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">L5</span></span> (from right to left).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="154">L154</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H1</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="155">L155</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree">P</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="155">L155</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">P</span> <a href="#notation_3">∨</a> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">P</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="156">L156</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#orIL" class="anamelink">orIL</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="157">L157</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">P</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="158">L158</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H2</span></span>.</div>
+</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="160">L160</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree">P</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="160">L160</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">P</span> <a href="#notation_3">∨</a> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">P</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="161">L161</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#orIL" class="anamelink">orIL</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="162">L162</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">P</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="163">L163</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H1</span></span>.</div>
+</div>
 </div>
 ∎

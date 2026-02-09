@@ -1,9 +1,19 @@
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Heq</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Zplus">Zplus</a></span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#R">R</a></span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a classname="anamelink" href="#False">False</a></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">H0R</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#R">R</a></span></span></span>.</div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a classname="anamelink" href="#real_0">real_0</a></span></span>.</div>
-</div><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">H0Z</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a classname="anamelink" href="#Zplus">Zplus</a></span></span></span>.</div>
-<div class="subproof"><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H0R</span></span>.</div>
-</div><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a classname="anamelink" href="#zero_not_in_Zplus">zero_not_in_Zplus</a></span> <span class="ltree">H0Z</span></span>)</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** Helper: Zplus is not R ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="30864">L30864</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Heq</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#Zplus" class="anamelink">Zplus</a></span> <a href="#notation_5">=</a> <span class="ltree"><a href="#R" class="anamelink">R</a></span></span></span>.</div>
+</div><div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: 0 is in R but 0 is not in Zplus, so Zplus is not R. ***)</div>
+
+<div class="pftacwrap"><span class="srcline" data-line="30865">L30865</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a href="#False" class="anamelink">False</a></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="30866">L30866</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">H0R</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#R" class="anamelink">R</a></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="30868">L30868</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a href="#real_0" class="anamelink">real_0</a></span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="30868">L30868</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">H0Z</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#notation_21">0</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#Zplus" class="anamelink">Zplus</a></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="30870">L30870</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="30870">L30870</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H0R</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="30870">L30870</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a href="#zero_not_in_Zplus" class="anamelink">zero_not_in_Zplus</a></span> <span class="ltree">H0Z</span></span>)</span></span>.</div>
+</div>
 ∎

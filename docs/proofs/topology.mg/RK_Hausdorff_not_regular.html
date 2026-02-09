@@ -1,10 +1,18 @@
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#Hausdorff_space">Hausdorff_space</a></span> <span class="ltree"><a classname="anamelink" href="#R_K">R_K</a></span></span> <span class="ltree"><a classname="anamelink" href="#R_K_topology">R_K_topology</a></span></span> <a href="#notation_2">∧</a> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#regular_space">regular_space</a></span> <span class="ltree"><a classname="anamelink" href="#R_K">R_K</a></span></span> <span class="ltree"><a classname="anamelink" href="#R_K_topology">R_K_topology</a></span></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#andI">andI</a></span></span> to the current goal.</div>
-<div class="subproof"><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HRKeq</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#R_K">R_K</a></span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#R">R</a></span></span></span>.</div>
-<div class="subproof"><div>Use reflexivity.</div>
-</div><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HRKeq</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a classname="anamelink" href="#R_K_topology_Hausdorff">R_K_topology_Hausdorff</a></span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: The K topology on the real line is Hausdorff but not regular. ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="141623">L141623</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#Hausdorff_space" class="anamelink">Hausdorff_space</a></span> <span class="ltree"><a href="#R_K" class="anamelink">R_K</a></span></span> <span class="ltree"><a href="#R_K_topology" class="anamelink">R_K_topology</a></span></span> <a href="#notation_2">∧</a> <span class="ltree"><a href="#notation_1">¬</a> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#regular_space" class="anamelink">regular_space</a></span> <span class="ltree"><a href="#R_K" class="anamelink">R_K</a></span></span> <span class="ltree"><a href="#R_K_topology" class="anamelink">R_K_topology</a></span></span></span></span>.</div>
 </div>
-<div class="subproof"><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a classname="anamelink" href="#RK_not_regular_axiom">RK_not_regular_axiom</a></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="141624">L141624</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#andI" class="anamelink">andI</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="141626">L141626</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HRKeq</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#R_K" class="anamelink">R_K</a></span> <a href="#notation_5">=</a> <span class="ltree"><a href="#R" class="anamelink">R</a></span></span></span>.</div>
+</div>
+<div class="subproof"><div>Use reflexivity.</div>
+</div><div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** Hausdorff part follows from earlier theorem about R_K_topology ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="141628">L141628</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HRKeq</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="141629">L141629</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a href="#R_K_topology_Hausdorff" class="anamelink">R_K_topology_Hausdorff</a></span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="141631">L141631</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a href="#RK_not_regular_axiom" class="anamelink">RK_not_regular_axiom</a></span></span>.</div>
+</div>
 </div>
 ∎

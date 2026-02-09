@@ -1,14 +1,27 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#indiscrete_topology">indiscrete_topology</a></span> <span class="ltree">X</span></span>  <a href="#Subq_notation">⊆</a>  <span class="ltree"><span class="ltree"><a classname="anamelink" href="#countable_complement_topology">countable_complement_topology</a></span> <span class="ltree">X</span></span></span>.</div>
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">U</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HU</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a classname="anamelink" href="#indiscrete_topology">indiscrete_topology</a></span> <span class="ltree">X</span></span></span></span>.</div>
-<div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#UPairE">UPairE</a></span> <span class="ltree">U</span></span> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span> <span class="ltree">X</span></span> <span class="ltree">HU</span></span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HUempty</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span> <a href="#notation_5">=</a> <span class="ltree"><a classname="anamelink" href="#Empty">Empty</a></span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HUempty</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a classname="anamelink" href="#countable_complement_topology_contains_empty">countable_complement_topology_contains_empty</a></span> <span class="ltree">X</span></span>)</span></span>.</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** from §12 examples: indiscrete coarser than countable complement ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: The indiscrete topology is coarser than the countable complement topology. ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="8927">L8927</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X</span> be given.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HUX</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span> <a href="#notation_5">=</a> <span class="ltree">X</span></span></span>.</div>
-<div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HUX</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a classname="anamelink" href="#countable_complement_topology_contains_full">countable_complement_topology_contains_full</a></span> <span class="ltree">X</span></span>)</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="8928">L8928</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#indiscrete_topology" class="anamelink">indiscrete_topology</a></span> <span class="ltree">X</span></span>  <a href="#Subq_notation">⊆</a>  <span class="ltree"><span class="ltree"><a href="#countable_complement_topology" class="anamelink">countable_complement_topology</a></span> <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8929">L8929</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">U</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8930">L8930</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HU</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a href="#indiscrete_topology" class="anamelink">indiscrete_topology</a></span> <span class="ltree">X</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8930">L8930</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#UPairE" class="anamelink">UPairE</a></span> <span class="ltree">U</span></span> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span> <span class="ltree">X</span></span> <span class="ltree">HU</span></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8932">L8932</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HUempty</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#Empty" class="anamelink">Empty</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8932">L8932</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HUempty</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8932">L8932</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a href="#countable_complement_topology_contains_empty" class="anamelink">countable_complement_topology_contains_empty</a></span> <span class="ltree">X</span></span>)</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="8933">L8933</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HUX</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span> <a href="#notation_5">=</a> <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8933">L8933</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HUX</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="8933">L8933</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a href="#countable_complement_topology_contains_full" class="anamelink">countable_complement_topology_contains_full</a></span> <span class="ltree">X</span></span>)</span></span>.</div>
+</div>
 </div>
 ∎

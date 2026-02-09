@@ -1,24 +1,42 @@
-<div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">a and b</span> be given.</div>
-<div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordsucc">ordsucc</a></span> <span class="ltree">a</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordsucc">ordsucc</a></span> <span class="ltree">b</span></span></span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree"><span class="ltree">a</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordsucc">ordsucc</a></span> <span class="ltree">b</span></span></span></span>.</div>
-<div class="subproof"><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">H1</span></span> (from right to left).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordsuccI2">ordsuccI2</a></span> <span class="ltree">a</span></span>)</span></span>.</div>
-</div><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordsuccE">ordsuccE</a></span> <span class="ltree">b</span></span> <span class="ltree">a</span></span> <span class="ltree">L1</span></span>)</span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree"><span class="ltree">a</span>  <a href="#In_notation">∈</a>  <span class="ltree">b</span></span></span>.</div>
-<div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L2</span>: <span class="ltree"><span class="ltree"><span class="ltree">b</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordsucc">ordsucc</a></span> <span class="ltree">a</span></span></span></span>.</div>
-<div class="subproof"><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">H1</span></span> (from left to right).</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordsuccI2">ordsuccI2</a></span> <span class="ltree">b</span></span>)</span></span>.</div>
-</div><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#ordsuccE">ordsuccE</a></span> <span class="ltree">a</span></span> <span class="ltree">b</span></span> <span class="ltree">L2</span></span>)</span></span> to the current goal.</div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3</span>: <span class="ltree"><span class="ltree"><span class="ltree">b</span>  <a href="#In_notation">∈</a>  <span class="ltree">a</span></span></span>.</div>
-<div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a classname="anamelink" href="#False">False</a></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a classname="anamelink" href="#In_no2cycle">In_no2cycle</a></span> <span class="ltree">a</span></span> <span class="ltree">b</span></span> <span class="ltree">H2</span></span> <span class="ltree">H3</span></span>)</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1253">L1253</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">a and b</span> be given.</div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3</span>: <span class="ltree"><span class="ltree"><span class="ltree">b</span> <a href="#notation_5">=</a> <span class="ltree">a</span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1254">L1254</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#ordsucc" class="anamelink">ordsucc</a></span> <span class="ltree">a</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree"><a href="#ordsucc" class="anamelink">ordsucc</a></span> <span class="ltree">b</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1255">L1255</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L1</span>: <span class="ltree"><span class="ltree"><span class="ltree">a</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a href="#ordsucc" class="anamelink">ordsucc</a></span> <span class="ltree">b</span></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1257">L1257</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">H1</span></span> (from right to left).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1258">L1258</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a href="#ordsuccI2" class="anamelink">ordsuccI2</a></span> <span class="ltree">a</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="1260">L1260</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#ordsuccE" class="anamelink">ordsuccE</a></span> <span class="ltree">b</span></span> <span class="ltree">a</span></span> <span class="ltree">L1</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1262">L1262</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree"><span class="ltree">a</span>  <a href="#In_notation">∈</a>  <span class="ltree">b</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1262">L1262</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">L2</span>: <span class="ltree"><span class="ltree"><span class="ltree">b</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a href="#ordsucc" class="anamelink">ordsucc</a></span> <span class="ltree">a</span></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1264">L1264</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">H1</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1265">L1265</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><a href="#ordsuccI2" class="anamelink">ordsuccI2</a></span> <span class="ltree">b</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="1267">L1267</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#ordsuccE" class="anamelink">ordsuccE</a></span> <span class="ltree">a</span></span> <span class="ltree">b</span></span> <span class="ltree">L2</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1269">L1269</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3</span>: <span class="ltree"><span class="ltree"><span class="ltree">b</span>  <a href="#In_notation">∈</a>  <span class="ltree">a</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1269">L1269</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><a href="#False" class="anamelink">False</a></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1269">L1269</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#In_no2cycle" class="anamelink">In_no2cycle</a></span> <span class="ltree">a</span></span> <span class="ltree">b</span></span> <span class="ltree">H2</span></span> <span class="ltree">H3</span></span>)</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1270">L1270</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H3</span>: <span class="ltree"><span class="ltree"><span class="ltree">b</span> <a href="#notation_5">=</a> <span class="ltree">a</span></span></span>.</div>
+</div>
 <div>Use symmetry.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H3</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="1270">L1270</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H3</span></span>.</div>
 </div>
 </div>
-<div class="subproof"><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree"><span class="ltree">a</span> <a href="#notation_5">=</a> <span class="ltree">b</span></span></span>.</div>
-<div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H2</span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="1271">L1271</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">H2</span>: <span class="ltree"><span class="ltree"><span class="ltree">a</span> <a href="#notation_5">=</a> <span class="ltree">b</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="1271">L1271</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">H2</span></span>.</div>
+</div>
 </div>
 ∎
