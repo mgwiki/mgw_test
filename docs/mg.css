@@ -4,6 +4,25 @@ body {
     line-height: 1.5;
 }
 
+.srcline {
+  opacity: 0;
+  font-size: 0.8em;
+  margin-right: 0.6em;
+  user-select: none;
+  font-family: monospace;
+}
+.docitemwrap, .pftacwrap {
+  display: flex;
+  gap: 0.5em;
+  align-items: baseline;
+}
+
+.docitemwrap:hover .srcline,
+.pftacwrap:hover .srcline {
+  opacity: 0.6;
+}
+
+
 .thmandproof {
     margin-bottom: 20px;
 }
