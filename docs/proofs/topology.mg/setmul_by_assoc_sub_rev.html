@@ -1,0 +1,102 @@
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: associativity inclusion for setmul_by (reverse direction) ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: Under associativity of multiplication, U(VW) ⊆ (UV)W. ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="259788">L259788</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">G, mult, U, V and W</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259789">L259789</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hmultfun</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#function_on" class="anamelink">function_on</a></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#setprod" class="anamelink">setprod</a></span> <span class="ltree">G</span></span> <span class="ltree">G</span></span>)</span></span> <span class="ltree">G</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259790">L259790</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hassoc</span>: <span class="ltree"><span class="ltree">∀x y z : <span class="ltree">set</span>,  <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">G</span></span> → <span class="ltree"><span class="ltree"><span class="ltree">y</span>  <a href="#In_notation">∈</a>  <span class="ltree">G</span></span> → <span class="ltree"><span class="ltree"><span class="ltree">z</span>  <a href="#In_notation">∈</a>  <span class="ltree">G</span></span> → <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#apply_fun" class="anamelink">apply_fun</a></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#apply_fun" class="anamelink">apply_fun</a></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree">x</span>,<span class="ltree">y</span>)</span></span>,<span class="ltree">z</span>)</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#apply_fun" class="anamelink">apply_fun</a></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree">x</span>,<span class="ltree"><span class="ltree"><span class="ltree"><a href="#apply_fun" class="anamelink">apply_fun</a></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree">y</span>,<span class="ltree">z</span>)</span></span>)</span></span></span></span></span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259793">L259793</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HUG</span>: <span class="ltree"><span class="ltree"><span class="ltree">U</span>  <a href="#Subq_notation">⊆</a>  <span class="ltree">G</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259794">L259794</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HVG</span>: <span class="ltree"><span class="ltree"><span class="ltree">V</span>  <a href="#Subq_notation">⊆</a>  <span class="ltree">G</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259795">L259795</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HWG</span>: <span class="ltree"><span class="ltree"><span class="ltree">W</span>  <a href="#Subq_notation">⊆</a>  <span class="ltree">G</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259796">L259796</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">y</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259797">L259797</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hy</span>: <span class="ltree"><span class="ltree"><span class="ltree">y</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_by" class="anamelink">setmul_by</a></span> <span class="ltree">mult</span></span> <span class="ltree">U</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_by" class="anamelink">setmul_by</a></span> <span class="ltree">mult</span></span> <span class="ltree">V</span></span> <span class="ltree">W</span></span>)</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259797">L259797</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">y</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_by" class="anamelink">setmul_by</a></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_by" class="anamelink">setmul_by</a></span> <span class="ltree">mult</span></span> <span class="ltree">U</span></span> <span class="ltree">V</span></span>)</span></span> <span class="ltree">W</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259798">L259798</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_byE" class="anamelink">setmul_byE</a></span> <span class="ltree">U</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_by" class="anamelink">setmul_by</a></span> <span class="ltree">mult</span></span> <span class="ltree">V</span></span> <span class="ltree">W</span></span>)</span></span> <span class="ltree">mult</span></span> <span class="ltree">y</span></span> <span class="ltree">Hy</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259799">L259799</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">u</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259800">L259800</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HuPack</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259800">L259800</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HuPack</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259801">L259801</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HuU Hexvw</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259802">L259802</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hexvw</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259803">L259803</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">vw</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259804">L259804</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HvwPack</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259804">L259804</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HvwPack</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259805">L259805</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hvw Hyeq</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259806">L259806</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_byE" class="anamelink">setmul_byE</a></span> <span class="ltree">V</span></span> <span class="ltree">W</span></span> <span class="ltree">mult</span></span> <span class="ltree">vw</span></span> <span class="ltree">Hvw</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259807">L259807</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">v</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259808">L259808</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HvPack</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259808">L259808</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HvPack</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259809">L259809</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HvV Hexw</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259810">L259810</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">Hexw</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259811">L259811</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">w</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259812">L259812</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HwPack</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259812">L259812</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">HwPack</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259813">L259813</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HwW Hvweq</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259814">L259814</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hyeq</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259815">L259815</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hvweq</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259816">L259816</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HuG</span>: <span class="ltree"><span class="ltree"><span class="ltree">u</span>  <a href="#In_notation">∈</a>  <span class="ltree">G</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="259818">L259818</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">HUG</span> <span class="ltree">u</span></span> <span class="ltree">HuU</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="259818">L259818</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HvG</span>: <span class="ltree"><span class="ltree"><span class="ltree">v</span>  <a href="#In_notation">∈</a>  <span class="ltree">G</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="259820">L259820</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">HVG</span> <span class="ltree">v</span></span> <span class="ltree">HvV</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="259820">L259820</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HwG</span>: <span class="ltree"><span class="ltree"><span class="ltree">w</span>  <a href="#In_notation">∈</a>  <span class="ltree">G</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="259822">L259822</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">HWG</span> <span class="ltree">w</span></span> <span class="ltree">HwW</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="259822">L259822</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HassocEq</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#apply_fun" class="anamelink">apply_fun</a></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree">u</span>,<span class="ltree"><span class="ltree"><span class="ltree"><a href="#apply_fun" class="anamelink">apply_fun</a></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree">v</span>,<span class="ltree">w</span>)</span></span>)</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#apply_fun" class="anamelink">apply_fun</a></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#apply_fun" class="anamelink">apply_fun</a></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree">u</span>,<span class="ltree">v</span>)</span></span>,<span class="ltree">w</span>)</span></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="259824">L259824</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">Hassoc</span> <span class="ltree">u</span></span> <span class="ltree">v</span></span> <span class="ltree">w</span></span> <span class="ltree">HuG</span></span> <span class="ltree">HvG</span></span> <span class="ltree">HwG</span></span>)</span></span> (from left to right).</div>
+</div>
+<div>Use reflexivity.</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="259825">L259825</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HassocEq</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259826">L259826</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HuvIn</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#apply_fun" class="anamelink">apply_fun</a></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree">u</span>,<span class="ltree">v</span>)</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_by" class="anamelink">setmul_by</a></span> <span class="ltree">mult</span></span> <span class="ltree">U</span></span> <span class="ltree">V</span></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="259828">L259828</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_byI" class="anamelink">setmul_byI</a></span> <span class="ltree">U</span></span> <span class="ltree">V</span></span> <span class="ltree">mult</span></span> <span class="ltree">u</span></span> <span class="ltree">v</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="259829">L259829</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HuU</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="259830">L259830</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HvV</span></span>.</div>
+</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="259830">L259830</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_byI" class="anamelink">setmul_byI</a></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#setmul_by" class="anamelink">setmul_by</a></span> <span class="ltree">mult</span></span> <span class="ltree">U</span></span> <span class="ltree">V</span></span>)</span></span> <span class="ltree">W</span></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#apply_fun" class="anamelink">apply_fun</a></span> <span class="ltree">mult</span></span> <span class="ltree">(<span class="ltree">u</span>,<span class="ltree">v</span>)</span></span>)</span></span> <span class="ltree">w</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="259832">L259832</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HuvIn</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="259833">L259833</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HwW</span></span>.</div>
+</div>
+</div>
+∎

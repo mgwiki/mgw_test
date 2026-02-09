@@ -1,0 +1,19 @@
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: dyadic01_unit membership shifts down along even numerators ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: If k is even and k divided by 2 to the power n plus 1 lies in [0,1], then (k divided by 2) divided by 2 to the power n lies in [0,1]. ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="261095">L261095</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">n</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="261096">L261096</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">k</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="261096">L261096</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HnNat</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#nat_p" class="anamelink">nat_p</a></span> <span class="ltree">n</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="261097">L261097</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HkNat</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#nat_p" class="anamelink">nat_p</a></span> <span class="ltree">k</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="261098">L261098</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hmod0</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#mod2_nat" class="anamelink">mod2_nat</a></span> <span class="ltree">k</span></span> <a href="#notation_5">=</a> <span class="ltree"><a href="#notation_21">0</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="261099">L261099</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hpk</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#dyadic_value" class="anamelink">dyadic_value</a></span> <span class="ltree">(<span class="ltree"><span class="ltree"><a href="#ordsucc" class="anamelink">ordsucc</a></span> <span class="ltree">n</span></span>)</span></span> <span class="ltree">k</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#dyadic01_unit" class="anamelink">dyadic01_unit</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="261100">L261100</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#dyadic_value_shift_even" class="anamelink">dyadic_value_shift_even</a></span> <span class="ltree">n</span></span> <span class="ltree">k</span></span> <span class="ltree">HnNat</span></span> <span class="ltree">HkNat</span></span> <span class="ltree">Hmod0</span></span>)</span></span> (from right to left).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="261101">L261101</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hpk</span></span>.</div>
+</div>
+∎
