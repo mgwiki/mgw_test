@@ -1,0 +1,48 @@
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper for §30 Exercise 1b: singletons away from p are open ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="273117">L273117</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="273118">L273118</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxX</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#ex30_1b_AF_X" class="anamelink">ex30_1b_AF_X</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="273119">L273119</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hneq</span>: <span class="ltree"><span class="ltree"><a href="#notation_1">¬</a> <span class="ltree">(<span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#ex30_1b_AF_p" class="anamelink">ex30_1b_AF_p</a></span></span>)</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="273120">L273120</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#open_inI" class="anamelink">open_inI</a></span></span> to the current goal.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="273122">L273122</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree"><a href="#ex30_1b_AF_topology_on" class="anamelink">ex30_1b_AF_topology_on</a></span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="273123">L273123</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hpow</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#Sing" class="anamelink">Sing</a></span> <span class="ltree">x</span></span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a href="#Power" class="anamelink">𝒫</a></span> <span class="ltree"><a href="#ex30_1b_AF_X" class="anamelink">ex30_1b_AF_X</a></span></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** {x} avoids p ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="273125">L273125</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#PowerI" class="anamelink">PowerI</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="273125">L273125</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">z</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="273126">L273126</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hz</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a href="#Sing" class="anamelink">Sing</a></span> <span class="ltree">x</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="273126">L273126</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">HzEq</span>: <span class="ltree"><span class="ltree"><span class="ltree">z</span> <a href="#notation_5">=</a> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="273128">L273128</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#SingE" class="anamelink">SingE</a></span> <span class="ltree">x</span></span> <span class="ltree">z</span></span> <span class="ltree">Hz</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="273128">L273128</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">HzEq</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="273129">L273129</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">HxX</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="273130">L273130</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#ex30_1b_AF_openI_avoids_p" class="anamelink">ex30_1b_AF_openI_avoids_p</a></span> <span class="ltree">(<span class="ltree"><span class="ltree"><a href="#Sing" class="anamelink">Sing</a></span> <span class="ltree">x</span></span>)</span></span> <span class="ltree">Hpow</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="273131">L273131</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HpSing</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#ex30_1b_AF_p" class="anamelink">ex30_1b_AF_p</a></span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><a href="#Sing" class="anamelink">Sing</a></span> <span class="ltree">x</span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="273132">L273132</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Heq</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#ex30_1b_AF_p" class="anamelink">ex30_1b_AF_p</a></span> <a href="#notation_5">=</a> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="273134">L273134</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#SingE" class="anamelink">SingE</a></span> <span class="ltree">x</span></span> <span class="ltree"><a href="#ex30_1b_AF_p" class="anamelink">ex30_1b_AF_p</a></span></span> <span class="ltree">HpSing</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="273134">L273134</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hxp</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span> <a href="#notation_5">=</a> <span class="ltree"><a href="#ex30_1b_AF_p" class="anamelink">ex30_1b_AF_p</a></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="273136">L273136</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from right to left).</div>
+</div>
+<div>Use reflexivity.</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="273136">L273136</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#FalseE" class="anamelink">FalseE</a></span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="273137">L273137</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree">Hneq</span> <span class="ltree">Hxp</span></span>)</span></span>.</div>
+</div>
+</div>
+∎
