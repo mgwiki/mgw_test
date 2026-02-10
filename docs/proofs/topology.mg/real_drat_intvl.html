@@ -1,0 +1,32 @@
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: every real admits dyadic-rational lower approximations ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: For any real x and any k, there exists a dyadic rational q with q &lt; x &lt; q + eps_k. ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** REVIEWED: This is the dyadic-interval approximation property supplied by `real_E`. ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="259851">L259851</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259852">L259852</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxR</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#R" class="anamelink">R</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259853">L259853</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree">∀k<a href="#In_notation"> ∈ </a><span class="ltree"><a href="#omega" class="anamelink">ω</a></span>,  <span class="ltree">∃q<a href="#notation_8"> ∈ </a><span class="ltree"><span class="ltree"><a href="#SNoS_" class="anamelink">SNoS_</a></span> <span class="ltree"><a href="#omega" class="anamelink">ω</a></span></span>,  <span class="ltree"><span class="ltree"><span class="ltree">q</span> <a href="#notation_45">&lt;</a> <span class="ltree">x</span></span> <a href="#notation_2">∧</a> <span class="ltree"><span class="ltree">x</span> <a href="#notation_45">&lt;</a> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#add_SNo" class="anamelink">add_SNo</a></span> <span class="ltree">q</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><a href="#eps_" class="anamelink">eps_</a></span> <span class="ltree">k</span></span>)</span></span></span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259854">L259854</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">k</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259855">L259855</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HkO</span>: <span class="ltree"><span class="ltree"><span class="ltree">k</span>  <a href="#In_notation">∈</a>  <span class="ltree"><a href="#omega" class="anamelink">ω</a></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259855">L259855</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#real_E" class="anamelink">real_E</a></span> <span class="ltree">x</span></span> <span class="ltree">HxR</span></span> <span class="ltree">(<span class="ltree">∃q<a href="#notation_8"> ∈ </a><span class="ltree"><span class="ltree"><a href="#SNoS_" class="anamelink">SNoS_</a></span> <span class="ltree"><a href="#omega" class="anamelink">ω</a></span></span>,  <span class="ltree"><span class="ltree"><span class="ltree">q</span> <a href="#notation_45">&lt;</a> <span class="ltree">x</span></span> <a href="#notation_2">∧</a> <span class="ltree"><span class="ltree">x</span> <a href="#notation_45">&lt;</a> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#add_SNo" class="anamelink">add_SNo</a></span> <span class="ltree">q</span></span> <span class="ltree">(<span class="ltree"><span class="ltree"><a href="#eps_" class="anamelink">eps_</a></span> <span class="ltree">k</span></span>)</span></span></span></span></span>)</span></span>)</span></span> to the current goal.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259856">L259856</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxS</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259857">L259857</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hlev</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259858">L259858</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxSNoS</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259859">L259859</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hlow</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259860">L259860</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hup</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259861">L259861</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Huniq</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259862">L259862</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Happrox</span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="259863">L259863</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree">Happrox</span> <span class="ltree">k</span></span> <span class="ltree">HkO</span></span>)</span></span>.</div>
+</div>
+∎
