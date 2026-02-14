@@ -1,0 +1,18 @@
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: introduction for intersection_over_family ***)</div>
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: If x lies in X and in every U in Fam, then x lies in intersection_over_family X Fam. ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="243237">L243237</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">X, Fam and x</span> be given.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="243238">L243238</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxX</span>: <span class="ltree"><span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">X</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="243239">L243239</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Hall</span>: <span class="ltree"><span class="ltree">∀U : <span class="ltree">set</span>,  <span class="ltree"><span class="ltree"><span class="ltree">U</span>  <a href="#In_notation">∈</a>  <span class="ltree">Fam</span></span> → <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree">U</span></span></span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="243240">L243240</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x</span>  <a href="#In_notation">∈</a>  <span class="ltree"><span class="ltree"><span class="ltree"><a href="#intersection_over_family" class="anamelink">intersection_over_family</a></span> <span class="ltree">X</span></span> <span class="ltree">Fam</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="243241">L243241</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hdef</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#intersection_over_family" class="anamelink">intersection_over_family</a></span> <span class="ltree">X</span></span> <span class="ltree">Fam</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#intersection_of_family" class="anamelink">intersection_of_family</a></span> <span class="ltree">X</span></span> <span class="ltree">Fam</span></span></span></span>.</div>
+</div>
+<div class="subproof"><div>Use reflexivity.</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="243243">L243243</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hdef</span></span> (from left to right).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="243244">L243244</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#intersection_of_familyI" class="anamelink">intersection_of_familyI</a></span> <span class="ltree">X</span></span> <span class="ltree">Fam</span></span> <span class="ltree">x</span></span> <span class="ltree">HxX</span></span> <span class="ltree">Hall</span></span>)</span></span>.</div>
+</div>
+∎

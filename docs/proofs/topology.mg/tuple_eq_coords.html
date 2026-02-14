@@ -1,53 +1,53 @@
 <div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper: equality of ordered pairs is coordinatewise ***)</div>
 <div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: If (x1,y1) = (x2,y2) then x1=x2 and y1=y2. ***)</div>
-<div class="pftacwrap"><span class="srcline" data-line="10482">L10482</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x1, y1, x2 and y2</span> be given.</div>
+<div class="pftacwrap"><span class="srcline" data-line="10580">L10580</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x1, y1, x2 and y2</span> be given.</div>
 </div>
-<div class="pftacwrap"><span class="srcline" data-line="10483">L10483</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Heq</span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="10581">L10581</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">Heq</span>.</div>
 </div>
-<div class="pftacwrap"><span class="srcline" data-line="10483">L10483</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#andI" class="anamelink">andI</a></span></span> to the current goal.</div>
+<div class="pftacwrap"><span class="srcline" data-line="10581">L10581</span><div class="applytac"><span class="pftackeyword">Apply</span> <span class="ltree"><span class="ltree"><a href="#andI" class="anamelink">andI</a></span></span> to the current goal.</div>
 </div>
-<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10485">L10485</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x1</span> <a href="#notation_5">=</a> <span class="ltree">x2</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10583">L10583</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">x1</span> <a href="#notation_5">=</a> <span class="ltree">x2</span></span>.</div>
 </div>
-<div class="pftacwrap"><span class="srcline" data-line="10485">L10485</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hproj0</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">x1</span>,<span class="ltree">y1</span>)</span> <span class="ltree"><a href="#notation_21">0</a></span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree">(<span class="ltree">x2</span>,<span class="ltree">y2</span>)</span> <span class="ltree"><a href="#notation_21">0</a></span></span></span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="10583">L10583</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hproj0</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">x1</span>,<span class="ltree">y1</span>)</span> <span class="ltree"><a href="#notation_21">0</a></span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree">(<span class="ltree">x2</span>,<span class="ltree">y2</span>)</span> <span class="ltree"><a href="#notation_21">0</a></span></span></span></span>.</div>
 </div>
-<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10487">L10487</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from left to right).</div>
-</div>
-<div>Use reflexivity.</div>
-</div><div class="pftacwrap"><span class="srcline" data-line="10487">L10487</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hx1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">x1</span>,<span class="ltree">y1</span>)</span> <span class="ltree"><a href="#notation_21">0</a></span></span> <a href="#notation_5">=</a> <span class="ltree">x1</span></span></span>.</div>
-</div>
-<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10489">L10489</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#tuple_2_0_eq" class="anamelink">tuple_2_0_eq</a></span> <span class="ltree">x1</span></span> <span class="ltree">y1</span></span>)</span></span>.</div>
-</div>
-</div><div class="pftacwrap"><span class="srcline" data-line="10489">L10489</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hx2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">x2</span>,<span class="ltree">y2</span>)</span> <span class="ltree"><a href="#notation_21">0</a></span></span> <a href="#notation_5">=</a> <span class="ltree">x2</span></span></span>.</div>
-</div>
-<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10491">L10491</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#tuple_2_0_eq" class="anamelink">tuple_2_0_eq</a></span> <span class="ltree">x2</span></span> <span class="ltree">y2</span></span>)</span></span>.</div>
-</div>
-</div><div class="pftacwrap"><span class="srcline" data-line="10491">L10491</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hx1</span></span> (from right to left).</div>
-</div>
-<div class="pftacwrap"><span class="srcline" data-line="10492">L10492</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hx2</span></span> (from right to left).</div>
-</div>
-<div class="pftacwrap"><span class="srcline" data-line="10493">L10493</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hproj0</span></span>.</div>
-</div>
-</div>
-<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10495">L10495</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">y1</span> <a href="#notation_5">=</a> <span class="ltree">y2</span></span>.</div>
-</div>
-<div class="pftacwrap"><span class="srcline" data-line="10495">L10495</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hproj1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">x1</span>,<span class="ltree">y1</span>)</span> <span class="ltree"><a href="#notation_21">1</a></span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree">(<span class="ltree">x2</span>,<span class="ltree">y2</span>)</span> <span class="ltree"><a href="#notation_21">1</a></span></span></span></span>.</div>
-</div>
-<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10497">L10497</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from left to right).</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10585">L10585</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from left to right).</div>
 </div>
 <div>Use reflexivity.</div>
-</div><div class="pftacwrap"><span class="srcline" data-line="10497">L10497</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hy1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">x1</span>,<span class="ltree">y1</span>)</span> <span class="ltree"><a href="#notation_21">1</a></span></span> <a href="#notation_5">=</a> <span class="ltree">y1</span></span></span>.</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="10585">L10585</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hx1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">x1</span>,<span class="ltree">y1</span>)</span> <span class="ltree"><a href="#notation_21">0</a></span></span> <a href="#notation_5">=</a> <span class="ltree">x1</span></span></span>.</div>
 </div>
-<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10499">L10499</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#tuple_2_1_eq" class="anamelink">tuple_2_1_eq</a></span> <span class="ltree">x1</span></span> <span class="ltree">y1</span></span>)</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10587">L10587</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#tuple_2_0_eq" class="anamelink">tuple_2_0_eq</a></span> <span class="ltree">x1</span></span> <span class="ltree">y1</span></span>)</span></span>.</div>
 </div>
-</div><div class="pftacwrap"><span class="srcline" data-line="10499">L10499</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hy2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">x2</span>,<span class="ltree">y2</span>)</span> <span class="ltree"><a href="#notation_21">1</a></span></span> <a href="#notation_5">=</a> <span class="ltree">y2</span></span></span>.</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="10587">L10587</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hx2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">x2</span>,<span class="ltree">y2</span>)</span> <span class="ltree"><a href="#notation_21">0</a></span></span> <a href="#notation_5">=</a> <span class="ltree">x2</span></span></span>.</div>
 </div>
-<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10501">L10501</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#tuple_2_1_eq" class="anamelink">tuple_2_1_eq</a></span> <span class="ltree">x2</span></span> <span class="ltree">y2</span></span>)</span></span>.</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10589">L10589</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#tuple_2_0_eq" class="anamelink">tuple_2_0_eq</a></span> <span class="ltree">x2</span></span> <span class="ltree">y2</span></span>)</span></span>.</div>
 </div>
-</div><div class="pftacwrap"><span class="srcline" data-line="10501">L10501</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hy1</span></span> (from right to left).</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="10589">L10589</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hx1</span></span> (from right to left).</div>
 </div>
-<div class="pftacwrap"><span class="srcline" data-line="10502">L10502</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hy2</span></span> (from right to left).</div>
+<div class="pftacwrap"><span class="srcline" data-line="10590">L10590</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hx2</span></span> (from right to left).</div>
 </div>
-<div class="pftacwrap"><span class="srcline" data-line="10503">L10503</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hproj1</span></span>.</div>
+<div class="pftacwrap"><span class="srcline" data-line="10591">L10591</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hproj0</span></span>.</div>
+</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10593">L10593</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree">y1</span> <a href="#notation_5">=</a> <span class="ltree">y2</span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="10593">L10593</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hproj1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">x1</span>,<span class="ltree">y1</span>)</span> <span class="ltree"><a href="#notation_21">1</a></span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree">(<span class="ltree">x2</span>,<span class="ltree">y2</span>)</span> <span class="ltree"><a href="#notation_21">1</a></span></span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10595">L10595</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Heq</span></span> (from left to right).</div>
+</div>
+<div>Use reflexivity.</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="10595">L10595</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hy1</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">x1</span>,<span class="ltree">y1</span>)</span> <span class="ltree"><a href="#notation_21">1</a></span></span> <a href="#notation_5">=</a> <span class="ltree">y1</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10597">L10597</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#tuple_2_1_eq" class="anamelink">tuple_2_1_eq</a></span> <span class="ltree">x1</span></span> <span class="ltree">y1</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="10597">L10597</span><div class="claimtac">We prove the intermediate <span class="pftackeyword">claim</span> <span class="ltree">Hy2</span>: <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree">(<span class="ltree">x2</span>,<span class="ltree">y2</span>)</span> <span class="ltree"><a href="#notation_21">1</a></span></span> <a href="#notation_5">=</a> <span class="ltree">y2</span></span></span>.</div>
+</div>
+<div class="subproof"><div class="pftacwrap"><span class="srcline" data-line="10599">L10599</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#tuple_2_1_eq" class="anamelink">tuple_2_1_eq</a></span> <span class="ltree">x2</span></span> <span class="ltree">y2</span></span>)</span></span>.</div>
+</div>
+</div><div class="pftacwrap"><span class="srcline" data-line="10599">L10599</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hy1</span></span> (from right to left).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="10600">L10600</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">Hy2</span></span> (from right to left).</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="10601">L10601</span><div class="exact">An <span class="pftackeyword">exact</span> proof term for the current goal is <span class="ltree"><span class="ltree">Hproj1</span></span>.</div>
 </div>
 </div>
 ∎

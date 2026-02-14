@@ -1,0 +1,18 @@
+<div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** helper for §49: doubling equals adding to itself ***)</div>
+<div class="pftacwrap"><span class="srcline" data-line="254716">L254716</span><div class="lettac"><span class="pftackeyword">Let</span> <span class="ltree">x</span> be given.</div>
+</div><div class="proof-comment" style="color:#666; font-style:italic; margin:0.25em 0 0.45em 2.2em;">(*** LATEX VERSION: For x in the surreal reals, one has 2x = x + x. ***)</div>
+
+<div class="pftacwrap"><span class="srcline" data-line="254717">L254717</span><div class="assumetac"><span class="pftackeyword">Assume</span> <span class="ltree">HxS</span>: <span class="ltree"><span class="ltree"><span class="ltree"><a href="#SNo" class="anamelink">SNo</a></span> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="254717">L254717</span><div class="provetac">We will <span class="pftackeyword">prove</span> <span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#mul_SNo" class="anamelink">mul_SNo</a></span> <span class="ltree"><a href="#notation_21">2</a></span></span> <span class="ltree">x</span></span> <a href="#notation_5">=</a> <span class="ltree"><span class="ltree"><span class="ltree"><a href="#add_SNo" class="anamelink">add_SNo</a></span> <span class="ltree">x</span></span> <span class="ltree">x</span></span></span>.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="254718">L254718</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree"><a href="#add_SNo_1_1_2" class="anamelink">add_SNo_1_1_2</a></span></span> (from right to left) at position 1.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="254719">L254719</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><span class="ltree"><a href="#mul_SNo_distrR" class="anamelink">mul_SNo_distrR</a></span> <span class="ltree"><a href="#notation_21">1</a></span></span> <span class="ltree"><a href="#notation_21">1</a></span></span> <span class="ltree">x</span></span> <span class="ltree"><a href="#SNo_1" class="anamelink">SNo_1</a></span></span> <span class="ltree"><a href="#SNo_1" class="anamelink">SNo_1</a></span></span> <span class="ltree">HxS</span></span>)</span></span> (from left to right) at position 1.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="254720">L254720</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#mul_SNo_oneL" class="anamelink">mul_SNo_oneL</a></span> <span class="ltree">x</span></span> <span class="ltree">HxS</span></span>)</span></span> (from left to right) at position 1.</div>
+</div>
+<div class="pftacwrap"><span class="srcline" data-line="254721">L254721</span><div class="rewritetac"><span class="pftackeyword">rewrite</span> the current goal using <span class="ltree"><span class="ltree">(<span class="ltree"><span class="ltree"><span class="ltree"><a href="#mul_SNo_oneL" class="anamelink">mul_SNo_oneL</a></span> <span class="ltree">x</span></span> <span class="ltree">HxS</span></span>)</span></span> (from left to right) at position 1.</div>
+</div>
+<div>Use reflexivity.</div>
+∎
